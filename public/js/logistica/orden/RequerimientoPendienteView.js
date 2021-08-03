@@ -3,14 +3,24 @@
 var vardataTables = funcDatatables();
 
 class RequerimientoPendienteView {
-    init() {
-        this.renderRequerimientoPendienteListModule(null, null);
+    constructor(requerimientoPendienteCtrl){
+        this.requerimientoPendienteCtrl = requerimientoPendienteCtrl;
+    }
+
+    initializeEventHandler(){
+        $('#modal-atender-con-almacen').on("click","button.handleClickGuardarAtendidoConAlmacen", ()=>{
+            this.guardarAtendidoConAlmacen();
+        });
+
+        $('#requerimientos_pendientes').on("click","button.handleClickCrearOrdenCompra", ()=>{
+            this.crearOrdenCompra();
+        });
     }
 
     renderRequerimientoPendienteListModule(id_empresa = null, id_sede = null) {
-        requerimientoPendienteCtrl.getRequerimientosPendientes(id_empresa, id_sede).then(function (res) {
-            requerimientoPendienteView.construirTablaListaRequerimientosPendientes(res);
-        }).catch(function (err) {
+        this.requerimientoPendienteCtrl.getRequerimientosPendientes(id_empresa, id_sede).then( (res) =>{
+            this.construirTablaListaRequerimientosPendientes(res);
+        }).catch( (err) =>{
             console.log(err)
         })
     }
@@ -26,6 +36,7 @@ class RequerimientoPendienteView {
 
     construirTablaListaRequerimientosPendientes(data) {
         // requerimientoPendienteCtrl.limpiarTabla('listaRequerimientosPendientes');
+        let that =this;
 
         vista_extendida();
         tablaListaRequerimientosPendientes= $('#listaRequerimientosPendientes').DataTable({
@@ -51,7 +62,7 @@ class RequerimientoPendienteView {
                 },
                 {
                     render: function (data, type, row) {
-                        return `<label class="lbl-codigo" title="Abrir Requerimiento" onClick="requerimientoPendienteView.abrirRequerimiento(${row.id_requerimiento})">${row.codigo}</label>`;
+                        return `<label class="lbl-codigo handleClickAbrirRequerimiento" title="Abrir Requerimiento" data-id-requerimiento="${row.id_requerimiento}">${row.codigo}</label>`;
                     }
                 },
 
@@ -89,20 +100,20 @@ class RequerimientoPendienteView {
                                 '</div>');
                         } else {
                             let openDiv = '<div class="btn-group" role="group">';
-                            let btnVerDetalleRequerimiento= '<button type="button" class="btn btn-default btn-xs" name="btnVerDetalleRequerimiento" title="Ver detalle requerimiento" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.verDetalleRequerimiento(this);"><i class="fas fa-chevron-down fa-sm"></i></button>';
+                            let btnVerDetalleRequerimiento= '<button type="button" class="btn btn-default btn-xs handleClickVerDetalleRequerimiento" name="btnVerDetalleRequerimiento" title="Ver detalle requerimiento" data-id-requerimiento="' + row.id_requerimiento + '" ><i class="fas fa-chevron-down fa-sm"></i></button>';
 
                             // let btnAgregarItemBase = '<button type="button" class="btn btn-success btn-xs" name="btnAgregarItemBase" title="Mapear productos" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.openModalAgregarItemBase(this);"  ><i class="fas fa-sign-out-alt"></i></button>';
                             let btnMapearProductos = '<button type="button" class="mapeo btn btn-success btn-xs" title="Mapear productos" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo="' + row.codigo + '"  ><i class="fas fa-sign-out-alt"></i></button>';
                             let btnAtenderAlmacen='';
                             let btnCrearOrdenCompra = '';
                                 if(row.count_pendientes ==0){
-                                    btnAtenderAlmacen = '<button type="button" class="btn btn-primary btn-xs" name="btnOpenModalAtenderConAlmacen" title="Atender con almacén" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.atenderConAlmacen(this);"><i class="fas fa-dolly fa-sm"></i></button>';
-                                    btnCrearOrdenCompra = '<button type="button" class="btn btn-warning btn-xs" name="btnCrearOrdenCompraPorRequerimiento" title="Crear Orden de Compra" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.crearOrdenCompraPorRequerimiento(this);"><i class="fas fa-file-invoice"></i></button>';
+                                    btnAtenderAlmacen = '<button type="button" class="btn btn-primary btn-xs handleClickAtenderConAlmacen" name="btnOpenModalAtenderConAlmacen" title="Atender con almacén" data-id-requerimiento="' + row.id_requerimiento + '"><i class="fas fa-dolly fa-sm"></i></button>';
+                                    btnCrearOrdenCompra = '<button type="button" class="btn btn-warning btn-xs handleClickCrearOrdenCompraPorRequerimiento" name="btnCrearOrdenCompraPorRequerimiento" title="Crear Orden de Compra" data-id-requerimiento="' + row.id_requerimiento + '"  ><i class="fas fa-file-invoice"></i></button>';
                                 }
-                            let btnCrearOrdenServicio = '<button type="button" class="btn btn-danger btn-xs" name="btnCrearOrdenServicioPorRequerimiento" title="Crear Orden de Servicio" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.crearOrdenServicioPorRequerimiento(this);"><i class="fas fa-file-invoice fa-sm"></i></button>';
+                            let btnCrearOrdenServicio = '<button type="button" class="btn btn-danger btn-xs handleClickCrearOrdenServicioPorRequerimiento" name="btnCrearOrdenServicioPorRequerimiento" title="Crear Orden de Servicio" data-id-requerimiento="' + row.id_requerimiento + '"  ><i class="fas fa-file-invoice fa-sm"></i></button>';
                             let btnVercuadroCostos ='';
                             if(row.id_tipo_requerimiento ==1){
-                                btnVercuadroCostos= '<button type="button" class="btn btn-info btn-xs" name="btnVercuadroCostos" title="Ver Cuadro Costos" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.openModalCuadroCostos(this);"><i class="fas fa-eye fa-sm"></i></button>';
+                                btnVercuadroCostos= '<button type="button" class="btn btn-info btn-xs handleClickOpenModalCuadroCostos" name="btnVercuadroCostos" title="Ver Cuadro Costos" data-id-requerimiento="' + row.id_requerimiento + '" ><i class="fas fa-eye fa-sm"></i></button>';
                             }
 
                             let closeDiv = '</div>';
@@ -123,7 +134,6 @@ class RequerimientoPendienteView {
                 }
             ],
             'initComplete': function () {
-
                 var trs = this.$('tr');
            
                 for (let i = 0; i < trs.length; i++) {
@@ -141,7 +151,7 @@ class RequerimientoPendienteView {
                     }
                     let id = this.childNodes[1].childNodes[0].childNodes[0].dataset.idRequerimiento
                     let stateCheck = this.childNodes[1].childNodes[0].childNodes[0].checked
-                    requerimientoPendienteCtrl.controlListCheckReq(id, stateCheck);
+                    that.requerimientoPendienteCtrl.controlListCheckReq(id, stateCheck);
                 }
 
                 let listaRequerimientosPendientes_filter = document.querySelector("div[id='listaRequerimientosPendientes_filter']");
@@ -150,8 +160,33 @@ class RequerimientoPendienteView {
                 buttonFiler.className = "btn btn-default pull-left";
                 buttonFiler.style = "margin-right: 30px;";
                 buttonFiler.innerHTML = "<i class='fas fa-filter'></i> Filtros";
-                buttonFiler.addEventListener('click', requerimientoPendienteView.abrirModalFiltrosRequerimientosPendientes, false);
+                buttonFiler.addEventListener('click', this.abrirModalFiltrosRequerimientosPendientes, false);
                 listaRequerimientosPendientes_filter.appendChild(buttonFiler);
+
+                $('#listaRequerimientosPendientes tbody').on("click","label.handleClickAbrirRequerimiento",function(e){
+                    that.abrirRequerimiento(e.currentTarget.dataset.idRequerimiento);
+                });
+
+                $('#listaRequerimientosPendientes tbody').on("click","button.handleClickVerDetalleRequerimiento",function(e){
+                    // var data = $('#listaRequerimientosPendientes').DataTable().row($(this).parents("tr")).data();
+                    that.verDetalleRequerimiento(e.currentTarget);
+                });
+
+                $('#listaRequerimientosPendientes tbody').on("click","button.handleClickAtenderConAlmacen",function(e){
+                    that.atenderConAlmacen(e.currentTarget);
+                });
+
+                $('#listaRequerimientosPendientes tbody').on("click","button.handleClickOpenModalCuadroCostos",function(e){
+                    that.openModalCuadroCostos(e.currentTarget);
+                });
+
+                $('#listaRequerimientosPendientes tbody').on("click","button.handleClickCrearOrdenCompraPorRequerimiento",function(e){
+                    that.crearOrdenCompraPorRequerimiento(e.currentTarget);
+                });
+                $('#listaRequerimientosPendientes tbody').on("click","button.handleClickCrearOrdenServicioPorRequerimiento",function(e){
+                    that.crearOrdenServicioPorRequerimiento(e.currentTarget);
+                });
+                
 
             },
             'columnDefs': [
@@ -196,8 +231,51 @@ class RequerimientoPendienteView {
     }
 
     verDetalleRequerimiento(obj){
-        requerimientoPendienteCtrl.verDetalleRequerimientoListaRequerimientosPendientes(obj);
+        this.verDetalleRequerimientoListaRequerimientosPendientes(obj);
 
+    }
+
+
+    verDetalleRequerimientoListaRequerimientosPendientes(obj) {
+        
+        let tr = obj.closest('tr');
+        var row = tablaListaRequerimientosPendientes.row(tr);
+        var id = obj.dataset.idRequerimiento;
+        if (row.child.isShown()) {
+            //  This row is already open - close it
+            row.child.hide();
+            tr.classList.remove('shown');
+        }
+        else {
+            // Open this row
+            //    row.child( format(iTableCounter, id) ).show();
+            this.buildFormatListaRequerimientosPendientes(iTableCounter, id, row);
+            tr.classList.add('shown');
+            // try datatable stuff
+            oInnerTable = $('#listaRequerimientosPendientes_' + iTableCounter).dataTable({
+                //    data: sections, 
+                autoWidth: true,
+                deferRender: true,
+                info: false,
+                lengthChange: false,
+                ordering: false,
+                paging: false,
+                scrollX: false,
+                scrollY: false,
+                searching: false,
+                columns: [
+                ]
+            });
+            iTableCounter = iTableCounter + 1;
+        }
+    }
+
+    buildFormatListaRequerimientosPendientes(table_id, id, row) {
+        this.requerimientoPendienteCtrl.obtenerDetalleRequerimientos(id).then((res) =>{
+            this.construirDetalleRequerimientoListaRequerimientosPendientes(table_id,row,res);
+        }).catch(function(err) {
+            console.log(err)
+        })
     }
 
     construirDetalleRequerimientoListaRequerimientosPendientes(table_id,row,response){
@@ -324,41 +402,22 @@ class RequerimientoPendienteView {
 
     }
 
-    statusBtnGenerarOrden() {
-        let countStateCheckTrue = 0;
 
-        listCheckReq.map(value => {
-            if (value.stateCheck == true) {
-                countStateCheckTrue += 1;
-            }
-        })
-
-
-        if (countStateCheckTrue > 0) {
-            document
-                .getElementById('btnCrearOrdenCompra')
-                .removeAttribute('disabled')
-        } else {
-            document
-                .getElementById('btnCrearOrdenCompra')
-                .setAttribute('disabled', true)
-        }
-    }
 
 
 
 
     // atender con almacen
     atenderConAlmacen(obj) {
-        requerimientoPendienteCtrl.openModalAtenderConAlmacen(obj).then(function (res) {
-            requerimientoPendienteView.construirTablaListaItemsRequerimientoParaAtenderConAlmacen(res);
+        this.requerimientoPendienteCtrl.openModalAtenderConAlmacen(obj).then((res)=> {
+            this.construirTablaListaItemsRequerimientoParaAtenderConAlmacen(res);
         }).catch(function (err) {
             console.log(err)
         })
     }
 
     construirTablaListaItemsRequerimientoParaAtenderConAlmacen(data) { // data.almacenes, data.detalle_requerimiento
-        console.log(data);
+        let that =this;
         let data_detalle_requerimiento = data.detalle_requerimiento;
         let data_almacenes = data.almacenes;
         $('#listaItemsRequerimientoParaAtenderConAlmacen').dataTable({
@@ -418,7 +477,7 @@ class RequerimientoPendienteView {
                         function (data, type, row, meta) {
                             let select = '';
                             if (row.tiene_transformacion == false) {
-                                select = `<select class="form-control" data-indice="${meta.row}" onChange="requerimientoPendienteCtrl.updateSelectAlmacenAAtender(this,event)" >`;
+                                select = `<select class="form-control handleChangeUpdateSelectAlmacenAAtender" data-indice="${meta.row}" >`;
                                 select += `<option value ="0">Sin selección</option>`;
                                 data_almacenes.forEach(element => {
                                     if (row.id_almacen_reserva == element.id_almacen) {
@@ -440,15 +499,26 @@ class RequerimientoPendienteView {
                         function (data, type, row, meta) {
                             let action = '';
                             if (row.tiene_transformacion == false) {
-                                action = `<input type="text" name="cantidad_a_atender" class="form-control" style="width: 70px;" data-indice="${meta.row}" onkeyup="requerimientoPendienteCtrl.updateInputCantidadAAtender(this,event);" value="${parseInt(row.stock_comprometido ? row.stock_comprometido : 0)}" />`;
+                                action = `<input type="text" name="cantidad_a_atender" class="form-control handleBlurUpdateInputCantidadAAtender" style="width: 70px;" data-indice="${meta.row}" value="${parseInt(row.stock_comprometido ? row.stock_comprometido : 0)}" />`;
 
-                                requerimientoPendienteView.updateObjCantidadAAtender(meta.row, row.stock_comprometido);
+                                that.updateObjCantidadAAtender(meta.row, row.stock_comprometido);
 
                             }
                             return action;
                         }
                 }
             ],
+            'initComplete': function () {
+
+                $('#listaItemsRequerimientoParaAtenderConAlmacen tbody').on("change","select.handleChangeUpdateSelectAlmacenAAtender",(e)=>{
+                    that.requerimientoPendienteCtrl.updateSelectAlmacenAAtender(e.currentTarget);
+                });
+
+                $('#listaItemsRequerimientoParaAtenderConAlmacen tbody').on("blur","input.handleBlurUpdateInputCantidadAAtender", (e)=>{
+                    that.requerimientoPendienteCtrl.updateInputCantidadAAtender(e.currentTarget);
+                });
+
+            },
             "createdRow": function (row, data, dataIndex) {
 
                 // $(row.childNodes[7]).css('background-color', '#586c86');  
@@ -468,40 +538,50 @@ class RequerimientoPendienteView {
     }
 
 
+
+ 
     updateObjCantidadAAtender(indice, valor) {
-        requerimientoPendienteCtrl.updateObjCantidadAAtender(indice, valor);
+        this.requerimientoPendienteCtrl.updateObjCantidadAAtender(indice, valor);
     }
 
 
     guardarAtendidoConAlmacen() {
-        requerimientoPendienteCtrl.guardarAtendidoConAlmacen().then(function(res) {
+        this.requerimientoPendienteCtrl.guardarAtendidoConAlmacen().then((res) =>{
             if (res.update_det_req > 0) {
-                alert("Se realizo con éxito la reserva");
-                requerimientoPendienteCtrl.getDataItemsRequerimientoParaAtenderConAlmacen(res.id_requerimiento).then(function (res) {
-                    requerimientoPendienteView.construirTablaListaItemsRequerimientoParaAtenderConAlmacen(res);
+                Lobibox.notify('success', {
+                    title:false,
+                    size: 'mini',
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    msg: `Reserva actualizsada`
+                });
+                this.requerimientoPendienteCtrl.getDataItemsRequerimientoParaAtenderConAlmacen(res.id_requerimiento).then(function (res) {
+                    this.construirTablaListaItemsRequerimientoParaAtenderConAlmacen(res);
                 }).catch(function (err) {
                     console.log(err)
+                    Swal.fire(
+                        '',
+                        'Hubo un problema al intentar guardar la reserva, por favor vuelva a intentarlo',
+                        'error'
+                    );
                 })
 
-                requerimientoPendienteView.renderRequerimientoPendienteListModule(null,null);
+                this.renderRequerimientoPendienteListModule(null,null);
 
             } else {
-                alert("Ocurrio un problema al intentar guardar la reserva");
+                Swal.fire(
+                    '',
+                    'Hubo un problema al intentar guardar la reserva, por favor vuelva a intentarlo',
+                    'error'
+                );
             }
         }).catch(function (err) {
             console.log(err)
         })
     }
 
-    // Agregar item base
-    // openModalAgregarItemBase(obj) {
-    //     requerimientoPendienteCtrl.openModalAgregarItemBase();
-    //     requerimientoPendienteCtrl.tieneItemsParaCompra(obj);
-    //     requerimientoPendienteCtrl.getDataListaItemsCuadroCostosPorIdRequerimiento();
-    //     requerimientoPendienteCtrl.getDataListaItemsCuadroCostosPorIdRequerimientoPendienteCompra();
-    //     requerimientoPendienteCtrl.validarObjItemsParaCompra();
-
-    // }
+ 
 
 
 
@@ -560,33 +640,33 @@ class RequerimientoPendienteView {
 
 
     updateInputCategoriaModalItemsParaCompra(event) {
-        requerimientoPendienteCtrl.updateInputCategoriaModalItemsParaCompra(event)
+        this.requerimientoPendienteCtrl.updateInputCategoriaModalItemsParaCompra(event)
     }
     updateInputSubcategoriaModalItemsParaCompra(event) {
-        requerimientoPendienteCtrl.updateInputSubcategoriaModalItemsParaCompra(event);
+        this.requerimientoPendienteCtrl.updateInputSubcategoriaModalItemsParaCompra(event);
     }
     updateInputClasificacionModalItemsParaCompra(event) {
-        requerimientoPendienteCtrl.updateInputClasificacionModalItemsParaCompra(event)
+        this.requerimientoPendienteCtrl.updateInputClasificacionModalItemsParaCompra(event)
     }
     updateInputUnidadMedidaModalItemsParaCompra(event) {
-        requerimientoPendienteCtrl.updateInputUnidadMedidaModalItemsParaCompra(event);
+        this.requerimientoPendienteCtrl.updateInputUnidadMedidaModalItemsParaCompra(event);
     }
 
     updateInputCantidadModalItemsParaCompra(event) {
-        requerimientoPendienteCtrl.updateInputCantidadModalItemsParaCompra(event);
+        this.requerimientoPendienteCtrl.updateInputCantidadModalItemsParaCompra(event);
     }
     updateInputPartNumberModalItemsParaCompra(event) {
-        requerimientoPendienteCtrl.updateInputPartNumberModalItemsParaCompra(event);
+        this.requerimientoPendienteCtrl.updateInputPartNumberModalItemsParaCompra(event);
     }
 
     guardarItemParaCompraEnCatalogo(obj, indice) {
-        requerimientoPendienteCtrl.guardarItemParaCompraEnCatalogo(obj, indice);
+        this.requerimientoPendienteCtrl.guardarItemParaCompraEnCatalogo(obj, indice);
 
     }
     eliminarItemDeListadoParaCompra(obj, indice) {
         let id = obj.dataset.id;
         let tr = obj.parentNode.parentNode.parentNode;
-        requerimientoPendienteCtrl.eliminarItemDeListadoParaCompra(indice)
+        this.requerimientoPendienteCtrl.eliminarItemDeListadoParaCompra(indice)
         this.retornarItemAlDetalleCC(id);
         tr.remove(tr);
         this.actualizarIndicesDeTabla();
@@ -604,8 +684,7 @@ class RequerimientoPendienteView {
         //         trs[0].remove();
         //     }
         // }
-        // requerimientoPendienteCtrl.limpiarTabla('ListaModalDetalleCuadroCostos');
-
+ 
         if (trs.length > 1) {
             trs.forEach(tr => {
                 idItemDetCCList.push(tr.children[9].children[0].dataset.id)
@@ -795,7 +874,7 @@ class RequerimientoPendienteView {
     }
 
     guardarItemsEnDetalleRequerimiento() {
-        requerimientoPendienteCtrl.guardarItemsEnDetalleRequerimiento();
+        this.requerimientoPendienteCtrl.guardarItemsEnDetalleRequerimiento();
 
     }
 
@@ -834,10 +913,10 @@ class RequerimientoPendienteView {
 
     // ver detalle cuadro de costos
     openModalCuadroCostos(obj) {
-        requerimientoPendienteCtrl.openModalCuadroCostos(obj).then(function (res) {
+        this.requerimientoPendienteCtrl.openModalCuadroCostos(obj).then((res) =>{
             if (res.status == 200) {
-                requerimientoPendienteView.llenarCabeceraModalDetalleCuadroCostos(res.head)
-                requerimientoPendienteView.construirTablaListaDetalleCuadroCostos(res.detalle);
+                this.llenarCabeceraModalDetalleCuadroCostos(res.head)
+                this.construirTablaListaDetalleCuadroCostos(res.detalle);
             }
         }).catch(function (err) {
             console.log(err)
@@ -989,19 +1068,18 @@ class RequerimientoPendienteView {
 
     // Crear orden por requerimiento
     crearOrdenCompraPorRequerimiento(obj) {
-        requerimientoPendienteCtrl.crearOrdenCompraPorRequerimiento(obj);
+        this.requerimientoPendienteCtrl.crearOrdenCompraPorRequerimiento(obj);
 
     }
     // Crear orden de servicio por requerimiento
     crearOrdenServicioPorRequerimiento(obj) {
-        requerimientoPendienteCtrl.crearOrdenServicioPorRequerimiento(obj);
+        this.requerimientoPendienteCtrl.crearOrdenServicioPorRequerimiento(obj);
 
     }
 
     crearOrdenCompra() {
-        requerimientoPendienteCtrl.crearOrdenCompra();
+        this.requerimientoPendienteCtrl.crearOrdenCompra();
 
     }
 }
 
-const requerimientoPendienteView = new RequerimientoPendienteView();

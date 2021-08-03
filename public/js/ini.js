@@ -78,7 +78,11 @@ $(document).ready(function(){
 					nuevo_equi_sol();
 				}
 				else if (page == 'crear-orden-requerimiento'){
-					nueva_orden();
+					const ordenModel = new OrdenModel();
+					const ordenController = new OrdenCtrl(ordenModel);
+					const ordenView = new OrdenView(ordenController);
+					ordenView.nuevaOrden();
+
 				}
 				else if (page == 'requerimiento'){
 					nuevo_req();

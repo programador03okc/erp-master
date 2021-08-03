@@ -19,7 +19,9 @@
                             <h5>Estado</h5>
                             <div style="display:flex;">
                                 <select class="form-control" name="estado_orden" >
-                                    <option value="0">Elija una opción</option>
+                                    @foreach ($estados as $estado)
+                                        <option value="{{$estado->id_estado}}">{{$estado->descripcion}}</option>
+                                    @endforeach     
                                 </select>
                             </div>
                         </div>
@@ -27,7 +29,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                     <button type="button" onclick="requerimientoPendienteView.updateEstadoOrdenCompra();" class="btn btn-sm btn-success">Actualizar</button>
+                     <button type="button" class="btn btn-sm btn-success handleClickUpdateEstadoOrdenCompra">Actualizar</button>
                 </div>
             </form>
         </div>

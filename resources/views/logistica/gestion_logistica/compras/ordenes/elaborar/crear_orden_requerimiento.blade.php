@@ -81,7 +81,7 @@ Elaborar orden
                         <div class="col-md-2" id="group-datos_para_despacho-sede">
                             <div class="checkbox">
                                 <label>
-                                    <input class="activation" type="checkbox" name="incluye_igv" onclick="ordenView.incluyeIGVHandle(event);" checked> Incluye IGV?
+                                    <input class="activation handleClickIncluyeIGV" type="checkbox" name="incluye_igv" checked> Incluye IGV?
                                 </label>
                             </div>
                         </div>
@@ -282,9 +282,9 @@ Elaborar orden
                             <h6>Item's de requerimiento</h6>
                         </legend>
                         <div class="btn-group" role="group" aria-label="...">
-                            <button type="button" class="btn btn-xs btn-success activation" onclick="ordenView.catalogoProductosModal();" id="btnAgregarProducto" data-toggle="tooltip" data-placement="bottom" title="Agregar Detalle"><i class="fas fa-plus"></i> Producto
+                            <button type="button" class="btn btn-xs btn-success activation handleClickCatalogoProductosModal" id="btnAgregarProducto" data-toggle="tooltip" data-placement="bottom" title="Agregar Detalle"><i class="fas fa-plus"></i> Producto
                             </button>
-                            <button type="button" class="btn btn-xs btn-default activation" onclick="ordenView.vincularRequerimientoAOrdenModal();" id="btnAgregarVinculoRequerimiento" data-toggle="tooltip" data-placement="bottom" title="Agregar items de otro requerimiento" disabled><i class="fas fa-plus"></i> Vincular otro requerimiento
+                            <button type="button" class="btn btn-xs btn-default activation handleClickVincularRequerimientoAOrdenModal" id="btnAgregarVinculoRequerimiento" data-toggle="tooltip" data-placement="bottom" title="Agregar items de otro requerimiento" disabled><i class="fas fa-plus"></i> Vincular otro requerimiento
                             </button>
                         </div>
                         <table class="table table-striped table-condensed table-bordered" id="listaDetalleOrden" width="100%">
@@ -364,7 +364,6 @@ Elaborar orden
 <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
 <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
 <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
-<script src="{{('/js/logistica/orden/modal_ordenes_elaboradas.js')}}"></script>
 <script src="{{('/js/logistica/orden/modal_proveedor.js')}}"></script>
 <script src="{{('/js/logistica/add_proveedor.js')}}"></script>
 <script src="{{ asset('js/publico/ubigeoModal.js')}}"></script>
@@ -379,9 +378,16 @@ Elaborar orden
 
 
 <script>
-    $(document).ready(function() {
+
+
+    window.onload = function() {
         seleccionarMenu(window.location);
 
-    });
+        const ordenModel = new OrdenModel();
+        const ordenController = new OrdenCtrl(ordenModel);
+        const ordenView = new OrdenView(ordenController);
+        ordenView.init();
+        ordenView.initializeEventHandler();
+};
 </script>
 @endsection

@@ -9,7 +9,7 @@ class ListaOrdenModel {
             if(id_empresa >0){
                 $.ajax({
                     type: 'GET',
-                    url: `istar-sedes-por-empresa/` + id_empresa,
+                    url: `listar-sedes-por-empresa/` + id_empresa,
                     dataType: 'JSON',
                     success(response) {
                         resolve(response) // Resolve promise and go to then() 
@@ -167,7 +167,4 @@ class ListaOrdenModel {
         window.open('listar-ordenes-excel');
     }
 }
-
-
-const listaOrdenModel = new ListaOrdenModel();
 

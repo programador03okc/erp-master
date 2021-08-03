@@ -17,7 +17,7 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <label title="Tipo orden">
-                                    <input type="checkbox" name="chkTipoOrden" onclick="listaOrdenView.chkTipoOrden(event)">&nbsp; Tipo Orden
+                                    <input type="checkbox" class="handleCheckTipoOrden" name="chkTipoOrden">&nbsp; Tipo Orden
                                 </label> 
                             </div>
                             <div class="col-md-8">
@@ -31,7 +31,7 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <label title="Vinculado por">
-                                    <input type="checkbox" name="chkVinculadoPor" onclick="listaOrdenView.chkVinculadoPor(event)" >&nbsp; Vinculado por
+                                    <input type="checkbox" class="handleCheckVinculadoPor" name="chkVinculadoPor">&nbsp; Vinculado por
                                 </label> 
                             </div>
                             <div class="col-md-8">
@@ -46,11 +46,11 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <label title="Empresa">
-                                    <input type="checkbox" name="chkEmpresa" onclick="listaOrdenView.chkEmpresa(event)" >&nbsp; Empresa
+                                    <input type="checkbox" name="chkEmpresa"  class="handleCheckEmpresa" >&nbsp; Empresa
                                 </label> 
                             </div>
                             <div class="col-md-8">
-                                <select class="form-control input-sm" name="empresa" onChange="listaOrdenView.handleChangeFilterReqByEmpresa(event);" disabled>
+                                <select class="form-control input-sm handleChangeFilterReqByEmpresa" name="empresa" disabled>
                                     <option value=null>Todas las Empresas</option>
                                     @foreach ($empresas as $emp)
                                     <option value="{{$emp->id_empresa}}" data-url-logo="{{$emp->logo_empresa}}">{{$emp->razon_social}}</option>
@@ -62,7 +62,7 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <label title="Sede">
-                                    <input type="checkbox" name="chkSede" onclick="listaOrdenView.chkSede(event)">&nbsp; Sede
+                                    <input type="checkbox" name="chkSede" class="handleCheckSede">&nbsp; Sede
                                 </label> 
                             </div>
                             <div class="col-md-8">
@@ -74,7 +74,7 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <label title="Tipo Proveedor">
-                                    <input type="checkbox" name="chkTipoProveedor" onclick="listaOrdenView.chkTipoProveedor(event)" >&nbsp; Tipo Proveedor
+                                    <input type="checkbox" name="chkTipoProveedor"  class="handleCheckTipoProveedor" >&nbsp; Tipo Proveedor
                                 </label> 
                             </div>
                             <div class="col-md-8">
@@ -88,7 +88,7 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <label title="En almacén">
-                                    <input type="checkbox" name="chkEnAlmacen" onclick="listaOrdenView.chkEnAlmacen(event)" >&nbsp; En almacen
+                                    <input type="checkbox" name="chkEnAlmacen" class="handleCheckEnAlmacen" >&nbsp; En almacen
                                 </label> 
                             </div>
                             <div class="col-md-8">
@@ -102,7 +102,7 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <label title="Subtotal">
-                                    <input type="checkbox" name="chkSubtotal" onclick="listaOrdenView.chkSubtotal(event)" >&nbsp; Subtotal
+                                    <input type="checkbox" name="chkSubtotal" class="handleCheckSubtotal" >&nbsp; Subtotal
                                 </label> 
                             </div>
                             <div class="col-md-2">
@@ -122,7 +122,7 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <label title="Estado">
-                                    <input type="checkbox" name="chkEstado" onclick="listaOrdenView.chkEstado(event)" >&nbsp; Estado
+                                    <input type="checkbox" name="chkEstado" class="handleCheckEstado" >&nbsp; Estado
                                 </label> 
                             </div>
                             <div class="col-md-8">
@@ -139,7 +139,7 @@
                 </form> 
             </div>
             <div class="modal-footer">
-                <button class="btn btn-sm btn-success" onClick="listaOrdenView.aplicarFiltrosVistaDetalleOrden();">Aplicar</button>
+                <button class="btn btn-sm btn-success handleClickAplicarFiltrosVistaDetalleOrden">Aplicar</button>
             </div>
         </div>
     </div>

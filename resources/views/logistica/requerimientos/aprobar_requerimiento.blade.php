@@ -158,7 +158,7 @@ var grupos = JSON.parse('{!!$gruposUsuario!!}');
         const aprobarRequerimientoView= new AprobarRequerimientoView(requerimientoController);
 
         aprobarRequerimientoView.mostrar();
-
+        aprobarRequerimientoView.addEventToFilterButtons();
 
 
     });

@@ -108,7 +108,10 @@ function openModal(type, active){
         
         /* logistica */
         case 'requerimiento':
-            historialRequerimientoView.mostrarHistorial();
+            const requerimientoModel = new RequerimientoModel();
+            const requerimientoController = new RequerimientoCtrl(requerimientoModel);
+            const requerimientoView = new RequerimientoView(requerimientoController);
+            requerimientoView.mostrarHistorial();
         break;
         case 'cuadro_comparativo':
             modalCuadroComparativo();
@@ -118,7 +121,10 @@ function openModal(type, active){
 
         break;
         case 'crear-orden-requerimiento':
-            ordenesElaboradasModal();
+            const ordenModel = new OrdenModel();
+            const ordenController = new OrdenCtrl(ordenModel);
+            const ordenView = new OrdenView(ordenController);
+            ordenView.ordenesElaboradasModal();
         break;
         
         /* administracion */
@@ -429,12 +435,22 @@ function eventRegister(type, data, action, frm_active){
         //Logistica
         case 'requerimiento':
             // save_requerimiento(action);
+            const requerimientoModel = new RequerimientoModel();
+            const requerimientoController = new RequerimientoCtrl(requerimientoModel);
+            const requerimientoView = new RequerimientoView(requerimientoController);
             requerimientoView.actionGuardarEditarRequerimiento();
+            
+            break;
 
-        break;
         case 'crear-orden-requerimiento':
-            save_orden(data, action);
-        break;
+            // save_orden(data, action);
+            const ordenModel = new OrdenModel();
+            const ordenController = new OrdenCtrl(ordenModel);
+            const ordenView = new OrdenView(ordenController);
+            ordenView.save_orden(data, action);
+            
+            break;
+
         case 'proveedores':
             save_form(data, action, frm_active);
         break;
@@ -703,7 +719,11 @@ function anularRegister(type, ids, active){
             anular_requerimiento(ids);
         break;
         case 'crear-orden-requerimiento':
-            anular_orden(ids);
+           const ordenModel = new OrdenModel();
+            const ordenController = new OrdenCtrl(ordenModel);
+            const ordenView = new OrdenView(ordenController);
+            ordenView.anularOrden(ids);
+            
         break;
         //Tesoreria
         case 'tesoreria_solicitudes':

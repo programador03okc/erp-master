@@ -3,10 +3,134 @@ var cantidadFiltrosActivosCabecera=0;
 var cantidadFiltrosActivosDetalle=0;
 
 class ListaOrdenView {
+    constructor(listaOrdenCtrl){
+        this.listaOrdenCtrl = listaOrdenCtrl;
+    }
+
     init() {
         this.vista_extendida()
-        listaOrdenView.tipoVistaPorCabecera();
+        this.tipoVistaPorCabecera();
     }
+
+    initializeEventHandler(){
+        $('#listar_ordenes').on("click","button.handleClickTipoVistaPorCabecera", ()=>{
+            this.tipoVistaPorCabecera();
+        });
+        $('#modal-editar-estado-orden').on("click","button.handleClickUpdateEstadoOrdenCompra", ()=>{
+            this.updateEstadoOrdenCompra();
+        });
+        $('#listar_ordenes').on("click","button.handleClickTipoVistaPorItem", ()=>{
+            this.tipoVistaPorItem();
+        });
+        $('#modal-editar-estado-detalle-orden').on("click","button.handleClickUpdateEstadoDetalleOrdenCompra", ()=>{
+            this.updateEstadoDetalleOrdenCompra();
+        });
+
+        $('#modal-ver-orden').on("click","span.handleClickEditarEstadoOrden", (e)=>{
+            this.editarEstadoOrden(e.currentTarget);
+        });
+        $('#listaOrdenes tbody').on("click","label.handleClickAbrirOrden",(e)=>{
+            var data = $('#listaOrdenes').DataTable().row($(this).parents("tr")).data();
+            this.abrirOrden(data.id_orden_compra);
+        });
+        
+        $('#listaOrdenes tbody').on("click","label.handleClickAbrirRequerimiento",(e)=>{
+            // var data = $('#listaOrdenes').DataTable().row($(this).parents("tr")).data();
+            this.abrirRequerimiento(e.currentTarget.dataset.idRequerimiento);
+        });
+        $('#listaOrdenes tbody').on("click","button.handleCliclVerDetalleOrden",(e)=>{
+            this.verDetalleOrden(e.currentTarget);
+        });
+        $('#listaOrdenes tbody').on("click","button.handleClickAnularOrden",(e)=>{
+            this.anularOrden(e.currentTarget);
+        });
+        $('#listaOrdenes tbody').on("click","button.handleClickImprimirOrden",(e)=>{
+            this.abrirOrden(e.currentTarget.dataset.idOrdenCompra);
+        });
+
+
+        $('#listaDetalleOrden tbody').on("click","span.handleClickVerOrdenModal",(e)=>{
+            this.verOrdenModal(e.currentTarget);
+        });
+        $('#listaDetalleOrden tbody').on("click","span.handleClickEditarEstadoItemOrden",(e)=>{
+            this.editarEstadoItemOrden(e.currentTarget);
+        });
+        
+        $('#listaDetalleOrden tbody').on("click","button.handleClickAnularOrden",(e)=>{
+            this.anularOrden(e.currentTarget);
+        });
+        $('#listaDetalleOrden tbody').on("click","button.handleClickImprimirOrden",(e)=>{
+            this.abrirOrden(e.currentTarget.dataset.idOrdenCompra);
+        });
+        $('#listaDetalleOrden tbody').on("click","button.handleClickDocumentosVinculados",(e)=>{
+            this.documentosVinculados(e.currentTarget);
+        });
+
+
+        $('#modal-filtro-lista-ordenes-elaboradas').on("click","input.handleCheckTipoOrden",(e)=>{
+            this.chkTipoOrden(e);
+        });
+
+        $('#modal-filtro-lista-ordenes-elaboradas').on("click","input.handleCheckVinculadoPor",(e)=>{
+            this.chkVinculadoPor(e);
+        });
+        $('#modal-filtro-lista-ordenes-elaboradas').on("click","input.handleCheckEmpresa",(e)=>{
+            this.chkEmpresa(e);
+        });
+        $('#modal-filtro-lista-ordenes-elaboradas').on("click","input.handleCheckSede",(e)=>{
+            this.chkSede(e);
+        });
+        $('#modal-filtro-lista-ordenes-elaboradas').on("click","input.handleCheckTipoProveedor",(e)=>{
+            this.chkTipoProveedor(e);
+        });
+        $('#modal-filtro-lista-ordenes-elaboradas').on("click","input.handleCheckEnAlmacen",(e)=>{
+            this.chkEnAlmacen(e);
+        });
+        $('#modal-filtro-lista-ordenes-elaboradas').on("click","input.handleCheckMontoOrden",(e)=>{
+            this.chkMontoOrden(e);
+        });
+        $('#modal-filtro-lista-ordenes-elaboradas').on("click","input.handleCheckEstado",(e)=>{
+            this.chkEstado(e);
+        });
+        $('#modal-filtro-lista-ordenes-elaboradas').on("change","select.handleChangeFilterReqByEmpresa",(e)=>{
+            this.handleChangeFilterReqByEmpresa(e);
+        });
+        $('#modal-filtro-lista-ordenes-elaboradas').on("click","button.handleClickAplicarFiltrosVistaCabeceraOrden",()=>{
+            this.aplicarFiltrosVistaCabeceraOrden();
+        });
+
+        $('#modal-filtro-lista-items-orden-elaboradas').on("click","input.handleCheckTipoOrden",(e)=>{
+            this.chkTipoOrden(e);
+        });
+        $('#modal-filtro-lista-items-orden-elaboradas').on("click","input.handleCheckVinculadoPor",(e)=>{
+            this.chkVinculadoPor(e);
+        });
+        $('#modal-filtro-lista-items-orden-elaboradas').on("click","input.handleCheckEmpresa",(e)=>{
+            this.chkEmpresa(e);
+        });
+        $('#modal-filtro-lista-items-orden-elaboradas').on("change","select.handleChangeFilterReqByEmpresa",(e)=>{
+            this.handleChangeFilterReqByEmpresa(e);
+        });
+        $('#modal-filtro-lista-items-orden-elaboradas').on("click","input.handleCheckSede",(e)=>{
+            this.chkSede(e);
+        });
+        $('#modal-filtro-lista-items-orden-elaboradas').on("click","input.handleCheckTipoProveedor",(e)=>{
+            this.chkTipoProveedor(e);
+        });
+        $('#modal-filtro-lista-items-orden-elaboradas').on("click","input.handleCheckEnAlmacen",(e)=>{
+            this.chkEnAlmacen(e);
+        });
+        $('#modal-filtro-lista-items-orden-elaboradas').on("click","input.handleCheckSubtotal",(e)=>{
+            this.chkSubtotal(e);
+        });
+        $('#modal-filtro-lista-items-orden-elaboradas').on("click","input.handleCheckEstado",(e)=>{
+            this.chkEstado(e);
+        });
+        $('#modal-filtro-lista-items-orden-elaboradas').on("click","button.handleClickAplicarFiltrosVistaDetalleOrden",()=>{
+            this.aplicarFiltrosVistaDetalleOrden();
+        });
+    }
+
 
     vista_extendida(){
         let body=document.getElementsByTagName('body')[0];
@@ -22,9 +146,9 @@ class ListaOrdenView {
         document.querySelector("div[id='contenedor-tabla-nivel-cabecera']").classList.remove('oculto');
         document.querySelector("div[id='contenedor-tabla-nivel-item']").classList.add('oculto');
 
-        listaOrdenView.limpiarFiltrosActivosCabeceraOrden();
+        this.limpiarFiltrosActivosCabeceraOrden();
         
-        listaOrdenView.obtenerListaOrdenesElaboradas();
+        this.obtenerListaOrdenesElaboradas();
         
     }
     tipoVistaPorItem(){
@@ -33,9 +157,9 @@ class ListaOrdenView {
         document.querySelector("div[id='contenedor-tabla-nivel-cabecera']").classList.add('oculto');
         document.querySelector("div[id='contenedor-tabla-nivel-item']").classList.remove('oculto');
         
-        listaOrdenView.limpiarFiltrosActivosDetalleOrden();
+        this.limpiarFiltrosActivosDetalleOrden();
 
-        listaOrdenView.obtenerListaDetalleOrdenesElaboradas();
+        this.obtenerListaDetalleOrdenesElaboradas();
 
     }
     
@@ -84,10 +208,8 @@ class ListaOrdenView {
 
     }
 
-    exportTableToExcel(tableID){
-        if(tableID =='listaOrdenes'){
-            return listaOrdenCtrl.descargarListaOrdenesVistaCabecera();
-        }
+    exportTableToExcel(){
+        this.listaOrdenCtrl.descargarListaOrdenesVistaCabecera();
     }
 
     filtroTablaListaOrdenesVistaCabecera(){
@@ -118,89 +240,89 @@ class ListaOrdenView {
 
     chkTipoOrden(e) {
         if (e.target.checked == true) {
-            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='tipoOrden']").removeAttribute('disabled');
+            document.querySelector("form[id="+(this.getNameModalActive())+"] select[name='tipoOrden']").removeAttribute('disabled');
         } else {
-            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='tipoOrden']").setAttribute('disabled', true);
+            document.querySelector("form[id="+(this.getNameModalActive())+"] select[name='tipoOrden']").setAttribute('disabled', true);
         }
     }
 
     chkVinculadoPor(e) {
         if (e.target.checked == true) {
-            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='vinculadoPor']").removeAttribute('disabled');
+            document.querySelector("form[id="+(this.getNameModalActive())+"] select[name='vinculadoPor']").removeAttribute('disabled');
         } else {
-            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='vinculadoPor']").setAttribute('disabled', true);
+            document.querySelector("form[id="+(this.getNameModalActive())+"] select[name='vinculadoPor']").setAttribute('disabled', true);
         }
     }
 
     chkEmpresa(e) {
         if (e.target.checked == true) {
-            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='empresa']").removeAttribute('disabled');
+            document.querySelector("form[id="+(this.getNameModalActive())+"] select[name='empresa']").removeAttribute('disabled');
         } else {
-            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='empresa']").setAttribute('disabled', true);
+            document.querySelector("form[id="+(this.getNameModalActive())+"] select[name='empresa']").setAttribute('disabled', true);
         }
     }
 
     chkSede(e) {
         if (e.target.checked == true) {
-            let idEmpresa = document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='empresa']").value;
+            let idEmpresa = document.querySelector("form[id="+(this.getNameModalActive())+"] select[name='empresa']").value;
             if(idEmpresa>0){
-                document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='sede']").removeAttribute('disabled');
+                document.querySelector("form[id="+(this.getNameModalActive())+"] select[name='sede']").removeAttribute('disabled');
             }else{
                 alert("antes debe seleccionar una empresa");
-                document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] input[name='chkSede']").checked=false;
-                document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='sede']").setAttribute('disabled', true);
+                document.querySelector("form[id="+(this.getNameModalActive())+"] input[name='chkSede']").checked=false;
+                document.querySelector("form[id="+(this.getNameModalActive())+"] select[name='sede']").setAttribute('disabled', true);
             }
         } else {
-            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='sede']").setAttribute('disabled', true);
+            document.querySelector("form[id="+(this.getNameModalActive())+"] select[name='sede']").setAttribute('disabled', true);
         }
     }
 
     chkTipoProveedor(e) {
         if (e.target.checked == true) {
-            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='tipoProveedor']").removeAttribute('disabled');
+            document.querySelector("form[id="+(this.getNameModalActive())+"] select[name='tipoProveedor']").removeAttribute('disabled');
         } else {
-            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='tipoProveedor']").setAttribute('disabled', true);
+            document.querySelector("form[id="+(this.getNameModalActive())+"] select[name='tipoProveedor']").setAttribute('disabled', true);
         }
     }
 
     chkEnAlmacen(e) {
         if (e.target.checked == true) {
-            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='enAlmacen']").removeAttribute('disabled');
+            document.querySelector("form[id="+(this.getNameModalActive())+"] select[name='enAlmacen']").removeAttribute('disabled');
         } else {
-            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='enAlmacen']").setAttribute('disabled', true);
+            document.querySelector("form[id="+(this.getNameModalActive())+"] select[name='enAlmacen']").setAttribute('disabled', true);
         }
     }
 
     chkMontoOrden(e) {
         if (e.target.checked == true) {
-            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='signoTotalOrden']").removeAttribute('disabled');
-            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] input[name='montoTotalOrden']").removeAttribute('disabled');
+            document.querySelector("form[id="+(this.getNameModalActive())+"] select[name='signoTotalOrden']").removeAttribute('disabled');
+            document.querySelector("form[id="+(this.getNameModalActive())+"] input[name='montoTotalOrden']").removeAttribute('disabled');
         } else {
-            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='signoTotalOrden']").setAttribute('disabled', true);
-            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] input[name='montoTotalOrden']").setAttribute('disabled', true);
+            document.querySelector("form[id="+(this.getNameModalActive())+"] select[name='signoTotalOrden']").setAttribute('disabled', true);
+            document.querySelector("form[id="+(this.getNameModalActive())+"] input[name='montoTotalOrden']").setAttribute('disabled', true);
         }
     }
     chkSubtotal(e) {
         if (e.target.checked == true) {
-            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='signoSubtotal']").removeAttribute('disabled');
-            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] input[name='subtotal']").removeAttribute('disabled');
+            document.querySelector("form[id="+(this.getNameModalActive())+"] select[name='signoSubtotal']").removeAttribute('disabled');
+            document.querySelector("form[id="+(this.getNameModalActive())+"] input[name='subtotal']").removeAttribute('disabled');
         } else {
-            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='signoSubtotal']").setAttribute('disabled', true);
-            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] input[name='subtotal']").setAttribute('disabled', true);
+            document.querySelector("form[id="+(this.getNameModalActive())+"] select[name='signoSubtotal']").setAttribute('disabled', true);
+            document.querySelector("form[id="+(this.getNameModalActive())+"] input[name='subtotal']").setAttribute('disabled', true);
         }
     }
     chkEstado(e) {
         if (e.target.checked == true) {
-            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='estado']").removeAttribute('disabled');
+            document.querySelector("form[id="+(this.getNameModalActive())+"] select[name='estado']").removeAttribute('disabled');
         } else {
-            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='estado']").setAttribute('disabled', true);
+            document.querySelector("form[id="+(this.getNameModalActive())+"] select[name='estado']").setAttribute('disabled', true);
         }
     }
 
     handleChangeFilterReqByEmpresa(event) {
         let id_empresa = event.target.value;
-        listaOrdenCtrl.getDataSelectSede(id_empresa).then(function (res) {
-            listaOrdenView.llenarSelectSede(res);
+        this.listaOrdenCtrl.getDataSelectSede(id_empresa).then( (res)=> {
+            this.llenarSelectSede(res);
         }).catch(function (err) {
             console.log(err)
         })
@@ -208,7 +330,7 @@ class ListaOrdenView {
     }
 
     llenarSelectSede(array) {
-        let selectElement = document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='sede']");
+        let selectElement = document.querySelector("form[id='"+this.getNameModalActive()+"'] select[name='sede']");
 
         if (selectElement.options.length > 0) {
             var i, L = selectElement.options.length - 1;
@@ -302,15 +424,14 @@ class ListaOrdenView {
         }
 
         $('#modal-filtro-lista-ordenes-elaboradas').modal('hide');
-        console.log(tipoOrden);
         this.obtenerListaOrdenesElaboradas(tipoOrden, vinculadoPor, empresa, sede, tipoProveedor, enAlmacen, signoTotalOrden, montoTotalOrden, estado);
 
     }
 
     obtenerListaOrdenesElaboradas(tipoOrden=null, vinculadoPor=null, empresa=null, sede=null, tipoProveedor=null, enAlmacen=null, signoTotalOrden=null, montoTotalOrden=null, estado=null){
-        listaOrdenCtrl.obtenerListaOrdenesElaboradas(tipoOrden, vinculadoPor, empresa, sede, tipoProveedor, enAlmacen, signoTotalOrden, montoTotalOrden, estado).then(function(res) {
-            listaOrdenView.construirTablaListaOrdenesElaboradas(res);
-        }).catch(function(err) {
+        this.listaOrdenCtrl.obtenerListaOrdenesElaboradas(tipoOrden, vinculadoPor, empresa, sede, tipoProveedor, enAlmacen, signoTotalOrden, montoTotalOrden, estado).then((res)=> {
+            this.construirTablaListaOrdenesElaboradas(res);
+        }).catch((err)=> {
             console.log(err)
         })
     }
@@ -395,6 +516,7 @@ class ListaOrdenView {
     }
 
     construirTablaListaOrdenesElaboradas(data){
+        let that=this;
         tablaListaOrdenes = $('#listaOrdenes').DataTable({
             'processing':true,
             'destroy':true,
@@ -416,14 +538,14 @@ class ListaOrdenView {
                 },
                 {'render':
                 function (data, type, row, meta){
-                    return '<label class="lbl-codigo" title="Abrir Orden" onClick="listaOrdenView.abrirOrden('+row.id_orden_compra+')">'+row.codigo+'</label>';
+                    return '<label class="lbl-codigo handleClickAbrirOrden" title="Abrir Orden" data-id-orden="'+row.id_orden_compra+'">'+row.codigo+'</label>';
                     }
                 },
                 {
                     'render': function (data, type, row) {
                         let labelRequerimiento='';
                         (row['requerimientos']).forEach(element => {
-                            labelRequerimiento += `<label class="lbl-codigo" title="Abrir orden" onclick="listaOrdenView.abrirRequerimiento(${element.id_requerimiento})">${element.codigo}</label>`;
+                            labelRequerimiento += `<label class="lbl-codigo handleClickAbrirRequerimiento" title="Abrir requerimiento"  data-id-requerimiento="${element.id_requerimiento}" >${element.codigo}</label>`;
                         });
                         return labelRequerimiento;
                         
@@ -530,12 +652,12 @@ class ListaOrdenView {
                 {'render':
                     function (data, type, row, meta){
                         let containerOpenBrackets='<div class="btn-group" role="group" style="margin-bottom: 5px;display: flex;flex-direction: row;flex-wrap: nowrap;">';
-                        let btnImprimirOrden= '<button type="button" class="imprimir_orden btn btn-md btn-warning boton" onClick="listaOrdenView.imprimir_orden(event)" title="Imprimir Orden"  data-toggle="tooltip" data-placement="bottom" data-id-orden-compra="'+row.id_orden_compra+'"  data-id-pago=""> <i class="fas fa-file-pdf"></i> </button>';
+                        let btnImprimirOrden= '<button type="button" class="btn btn-md btn-warning boton handleClickImprimirOrden" title="Imprimir Orden"  data-toggle="tooltip" data-placement="bottom" data-id-orden-compra="'+row.id_orden_compra+'"  data-id-pago=""> <i class="fas fa-file-pdf"></i> </button>';
                         let btnAnularOrden='';
                         if(![6,27,28].includes(row.estado) ){
-                            btnAnularOrden = '<button type="button" class="btn btn-md btn-danger boton" name="btnAnularOrden" title="Anular orden" data-codigo-orden="'+row.codigo+'" data-id-orden-compra="'+row.id_orden_compra+'" onclick="listaOrdenView.anularOrden(this);"><i class="fas fa-backspace fa-xs"></i></button>';
+                            btnAnularOrden = '<button type="button" class="btn btn-md btn-danger boton handleClickAnularOrden" name="btnAnularOrden" title="Anular orden" data-codigo-orden="'+row.codigo+'" data-id-orden-compra="'+row.id_orden_compra+'"><i class="fas fa-backspace fa-xs"></i></button>';
                         }
-                        let btnVerDetalle= `<button type="button" class="ver-detalle btn btn-primary boton" onclick="listaOrdenView.verDetalleOrden(this)" data-toggle="tooltip" data-placement="bottom" title="Ver Detalle" data-id="${row.id_orden_compra}">
+                        let btnVerDetalle= `<button type="button" class="ver-detalle btn btn-primary boton handleCliclVerDetalleOrden" data-toggle="tooltip" data-placement="bottom" title="Ver Detalle" data-id="${row.id_orden_compra}">
                         <i class="fas fa-chevron-down"></i>
                         </button>`;
                         let containerCloseBrackets='</div>';
@@ -563,7 +685,7 @@ class ListaOrdenView {
                 buttonFiler.id = "btnFiltroListaOrdenCabecera";
                 buttonFiler.className = "btn btn-default pull-left";
                 buttonFiler.innerHTML = "<i class='fas fa-filter'></i> Filtros: <span id='cantidadFiltrosActivosCabecera'>0</span>";
-                buttonFiler.addEventListener('click', listaOrdenView.filtroTablaListaOrdenesVistaCabecera, false);
+                buttonFiler.addEventListener('click', that.filtroTablaListaOrdenesVistaCabecera, false);
 
                 divInputGroupBtn.appendChild(buttonFiler);   
 
@@ -572,11 +694,15 @@ class ListaOrdenView {
                 buttonExportToExcel.id = "btnExportarAExcel";
                 buttonExportToExcel.className = "btn btn-default pull-left";
                 buttonExportToExcel.innerHTML = "<i class='far fa-file-excel'></i> Descargar";
-                buttonExportToExcel.addEventListener('click',  function(){listaOrdenView.exportTableToExcel('listaOrdenes')}, false);
+                buttonExportToExcel.addEventListener('click', that.exportTableToExcel.bind(that), false);
 
                 divInputGroupBtn.appendChild(buttonExportToExcel);     
                 
-                listaOrdenView.mostrarCantidadFiltrosActivosCabeceraOrden();
+                that.mostrarCantidadFiltrosActivosCabeceraOrden();
+                
+
+
+
             },
             "createdRow": function (row, data, dataIndex) {
                
@@ -606,7 +732,7 @@ class ListaOrdenView {
                     <td style="border: none;">${element.oportunidad !== null ? element.oportunidad : ''}</td>
                     <td style="border: none;">${element.nombre !== null ? element.nombre : ''}</td>
                     <td style="border: none;">${element.user_name !== null ? element.user_name : ''}</td>
-                    <td style="border: none;"><label class="lbl-codigo" title="Abrir Requerimiento" onClick="listaOrdenView.abrirRequerimiento(${element.id_requerimiento})">${element.codigo_req}</label> ${element.sede_req}</td>
+                    <td style="border: none;"><label class="lbl-codigo handleClickAbrirRequerimiento" title="Abrir Requerimiento" data-id-requerimiento="${element.id_requerimiento}">${element.codigo_req}</label> ${element.sede_req}</td>
                     <td style="border: none;">${element.codigo}</td>
                     <td style="border: none;">${element.part_number !== null ? element.part_number : ''}</td>
                     <td style="border: none;">${element.descripcion}</td>
@@ -668,30 +794,61 @@ class ListaOrdenView {
         win.focus(); 
     }
 
-    imprimir_orden(event){
-        if (event.currentTarget.dataset.idOrdenCompra > 0){
-            window.open('generar-orden-pdf/'+event.currentTarget.dataset.idOrdenCompra);
-        }
-    }
+ 
 
     verDetalleOrden(obj){
-        listaOrdenCtrl.verDetalleOrden(obj);
-    }   
+        let tr = obj.closest('tr');
+        var row = tablaListaOrdenes.row(tr);
+        var id = obj.dataset.id;
+        if (row.child.isShown()) {
+            //  This row is already open - close it
+            row.child.hide();
+            tr.classList.remove('shown');
+        }
+        else {
+            // Open this row
+            //    row.child( format(iTableCounter, id) ).show();
+            this.buildFormat(iTableCounter, id, row);
+            tr.classList.add('shown');
+            // try datatable stuff
+            oInnerTable = $('#listaOrdenes_' + iTableCounter).dataTable({
+                //    data: sections, 
+                autoWidth: true,
+                deferRender: true,
+                info: false,
+                lengthChange: false,
+                ordering: false,
+                paging: false,
+                scrollX: false,
+                scrollY: false,
+                searching: false,
+                columns: [
+                ]
+            });
+            iTableCounter = iTableCounter + 1;
+        }    }   
 
 
-
+        buildFormat(table_id, id, row) {
+            this.listaOrdenCtrl.obtenerDetalleOrdenElaboradas(id).then((res)=> {
+                this.construirDetalleOrdenElaboradas(table_id,row,res);
+            }).catch((err)=> {
+                console.log(err)
+            })
+        }
 
     // vista nivel de items
 
     obtenerListaDetalleOrdenesElaboradas(tipoOrden=null, vinculadoPor=null, empresa=null, sede=null, tipoProveedor=null, enAlmacen=null, signoSubtotal=null, Subtotal=null, estado=null){
-        listaOrdenCtrl.obtenerListaDetalleOrdenesElaboradas(tipoOrden, vinculadoPor, empresa, sede, tipoProveedor, enAlmacen, signoSubtotal, Subtotal, estado).then(function(res) {
-            listaOrdenView.construirTablaListaDetalleOrdenesElaboradas(res);
-        }).catch(function(err) {
+        this.listaOrdenCtrl.obtenerListaDetalleOrdenesElaboradas(tipoOrden, vinculadoPor, empresa, sede, tipoProveedor, enAlmacen, signoSubtotal, Subtotal, estado).then((res)=> {
+            this.construirTablaListaDetalleOrdenesElaboradas(res);
+        }).catch((err)=> {
             console.log(err)
         })
     }
 
     construirTablaListaDetalleOrdenesElaboradas(data){
+        let that = this;
         $('#listaDetalleOrden').DataTable({
             'processing':true,
             'destroy':true,
@@ -702,7 +859,7 @@ class ListaOrdenView {
             'data': data,
             'columns': [
                 { render: function (data, type, row) {     
-                    return `<span class="label label-primary" onClick="listaOrdenView.verOrdenModal(this);" data-id-estado-detalle-orden-compra="${row.id_detalle_orden_estado}" data-id-orden-compra="${row.detalle_orden_id_orden_compra}" data-id-detalle-orden-compra="${row.detalle_orden_id_detalle_orden}"  data-codigo-requerimiento="${row.codigo_requerimiento}" data-id-requerimiento="${row.orden_id_requerimiento}" data-codigo-item="${row.alm_prod_codigo}" style="cursor: pointer;" title="Ver Orden">${row.orden_codigo}</span>`;
+                    return `<span class="label label-primary handleClickVerOrdenModal" data-id-estado-detalle-orden-compra="${row.id_detalle_orden_estado}" data-id-orden-compra="${row.detalle_orden_id_orden_compra}" data-id-detalle-orden-compra="${row.detalle_orden_id_detalle_orden}"  data-codigo-requerimiento="${row.codigo_requerimiento}" data-id-requerimiento="${row.orden_id_requerimiento}" data-codigo-item="${row.alm_prod_codigo}" style="cursor: pointer;" title="Ver Orden">${row.orden_codigo}</span>`;
                     }
                 },
                 { render: function (data, type, row) {   
@@ -790,7 +947,7 @@ class ListaOrdenView {
                 { render: function (data, type, row) {    
                     let estadoDetalleOrdenHabilitadasActualizar=[1,2,3,4,5,6,15];
                     if(estadoDetalleOrdenHabilitadasActualizar.includes(row.id_detalle_orden_estado) ==true){
-                        return `<span class="label label-default" onClick="listaOrdenView.editarEstadoItemOrden(this);" data-id-estado-detalle-orden-compra="${row.id_detalle_orden_estado}" data-id-orden-compra="${row.detalle_orden_id_orden_compra}" data-id-detalle-orden-compra="${row.detalle_orden_id_detalle_orden}" data-codigo-item="${row.alm_prod_codigo}" style="cursor: pointer;" title="Cambiar Estado de Item">${row.detalle_orden_estado}</span>`;
+                        return `<span class="label label-default handleClickEditarEstadoItemOrden" data-id-estado-detalle-orden-compra="${row.id_detalle_orden_estado}" data-id-orden-compra="${row.detalle_orden_id_orden_compra}" data-id-detalle-orden-compra="${row.detalle_orden_id_detalle_orden}" data-codigo-item="${row.alm_prod_codigo}" style="cursor: pointer;" title="Cambiar Estado de Item">${row.detalle_orden_estado}</span>`;
                     }else{
                         return `<span class="label label-default" data-id-estado-detalle-orden-compra="${row.id_detalle_orden_estado}" data-id-orden-compra="${row.detalle_orden_id_orden_compra}" data-id-detalle-orden-compra="${row.detalle_orden_id_detalle_orden}" data-codigo-item="${row.alm_prod_codigo}" style="cursor: default;">${row.detalle_orden_estado}</span>`;
                     }
@@ -799,12 +956,12 @@ class ListaOrdenView {
                 },
                 { render: function (data, type, row) {         
                         let containerOpenBrackets = '<div class="btn-group btn-group-sm" role="group">';
-                        let btnImprimirOrden = '<button type="button" class="btn btn-default btn-xs" name="btnGenerarOrdenRequerimientoPDF" title="Descargar Orden" data-id-requerimiento="'+row.orden_id_requerimiento+'"  data-codigo-requerimiento="'+row.codigo_requerimiento+'" data-id-orden-compra="'+row.orden_id_orden_compra+'" onclick="listaOrdenView.generarOrdenRequerimientoPDF(this);"><i class="fas fa-file-download fa-xs"></i></button>';
+                        let btnImprimirOrden = '<button type="button" class="btn btn-default btn-xs handleClickImprimirOrden" name="btnGenerarOrdenRequerimientoPDF" title="Descargar Orden" data-id-requerimiento="'+row.orden_id_requerimiento+'"  data-codigo-requerimiento="'+row.codigo_requerimiento+'" data-id-orden-compra="'+row.orden_id_orden_compra+'"><i class="fas fa-file-download fa-xs"></i></button>';
                         let btnAnularOrden='';
                         if(![6,27,28].includes(row.orden_estado) ){
-                            btnAnularOrden = '<button type="button" class="btn btn-danger btn-xs" name="btnAnularOrden" title="Anular Orden" data-codigo-orden="'+row.orden_codigo+'" data-id-orden-compra="'+row.orden_id_orden_compra+'" onclick="listaOrdenView.anularOrden(this);"><i class="fas fa-backspace fa-xs"></i></button>';
+                            btnAnularOrden = '<button type="button" class="btn btn-danger btn-xs handleClickAnularOrden" name="btnAnularOrden" title="Anular Orden" data-codigo-orden="'+row.orden_codigo+'" data-id-orden-compra="'+row.orden_id_orden_compra+'"><i class="fas fa-backspace fa-xs"></i></button>';
                         }
-                        let btnDocumentosVinculados = '<button type="button" class="btn btn-primary btn-xs" name="btnDocumentosVinculados" title="Ver Documento Vinculados" data-id-requerimiento="'+row.orden_id_requerimiento+'"  data-codigo-requerimiento="'+row.codigo_requerimiento+'" data-id-orden-compra="'+row.orden_id_orden_compra+'" onclick="listaOrdenView.documentosVinculados(this);"><i class="fas fa-folder fa-xs"></i></button>';
+                        let btnDocumentosVinculados = '<button type="button" class="btn btn-primary btn-xs handleClickDocumentosVinculados" name="btnDocumentosVinculados" title="Ver Documento Vinculados" data-id-requerimiento="'+row.orden_id_requerimiento+'"  data-codigo-requerimiento="'+row.codigo_requerimiento+'" data-id-orden-compra="'+row.orden_id_orden_compra+'"><i class="fas fa-folder fa-xs"></i></button>';
                         let containerCloseBrackets = '</div>';
                         return (containerOpenBrackets+btnImprimirOrden+btnDocumentosVinculados+btnAnularOrden+containerCloseBrackets);
 
@@ -820,11 +977,12 @@ class ListaOrdenView {
                 buttonFiler.className = "btn btn-default pull-left";
                 buttonFiler.style = "margin-right: 30px;";
                 buttonFiler.innerHTML = "<i class='fas fa-filter'></i> Filtros: <span id='cantidadFiltrosActivosDetalle'>0</span>";
-                buttonFiler.addEventListener('click', listaOrdenView.filtroTablaListaOrdenesVistaDetalle, false);
+                buttonFiler.addEventListener('click', that.filtroTablaListaOrdenesVistaDetalle, false);
 
                 listaDetalleOrden_filter.appendChild(buttonFiler);      
                 
-                listaOrdenView.mostrarCantidadFiltrosActivosDetalleOrden();
+                that.mostrarCantidadFiltrosActivosDetalleOrden();
+
 
             
             }
@@ -842,19 +1000,20 @@ class ListaOrdenView {
             show: true,
             backdrop: 'true'
         });
-        listaOrdenCtrl.ver_orden(id_orden).then(function(res) {
+        this.listaOrdenCtrl.ver_orden(id_orden).then((res)=> {
             if (res.status ==200){
-                listaOrdenView.llenarCabeceraOrden(res.data.orden);
-                listaOrdenView.llenarTablaItemsOrden(res.data.detalle_orden);
+                this.llenarCabeceraOrden(res.data.orden);
+                this.llenarTablaItemsOrden(res.data.detalle_orden);
             }else{
                 alert("sin data");
             }
-        }).catch(function(err) {
+        }).catch((err)=> {
             console.log(err)
         })
     }
 
     llenarTablaItemsOrden(data){
+        let that = this;
         $('#tablaItemOrdenCompra').dataTable({
             bDestroy: true,
             order: [[0, 'asc']],
@@ -887,14 +1046,19 @@ class ListaOrdenView {
                         let estadoDetalleOrdenHabilitadasActualizar=[1,2,3,4,5,6,15];
     
                         if(estadoDetalleOrdenHabilitadasActualizar.includes(row.id_estado_detalle_orden)==true){
-                            return `<span class="label label-default" onClick="listaOrdenView.editarEstadoItemOrden(this);" data-id-estado-detalle-orden-compra="${row.id_estado_detalle_orden}" data-id-orden-compra="${row.id_orden_compra}" data-id-detalle-orden-compra="${row.id_detalle_orden}" data-codigo-item="${row.codigo_item}" style="cursor: pointer;" title="Cambiar Estado de Item">${row.estado_detalle_orden}</span>`;
+                            return `<span class="label label-default handleClickEditarEstadoItemOrden" data-id-estado-detalle-orden-compra="${row.id_estado_detalle_orden}" data-id-orden-compra="${row.id_orden_compra}" data-id-detalle-orden-compra="${row.id_detalle_orden}" data-codigo-item="${row.codigo_item}" style="cursor: pointer;" title="Cambiar Estado de Item">${row.estado_detalle_orden}</span>`;
                         }else{
                             return `<span class="label label-default" data-id-estado-detalle-orden-compra="${row.id_estado_detalle_orden}" data-id-orden-compra="${row.id_orden_compra}" data-id-detalle-orden-compra="${row.id_detalle_orden}" data-codigo-item="${row.codigo_item}" style="cursor: default;" >${row.estado_detalle_orden}</span>`;
                         }
                     }
-                }
+                },
             ],
-    
+            "initComplete": function() {
+
+                $('#tablaItemOrdenCompra tbody').on("click","span.handleClickEditarEstadoItemOrden",function(e){
+                    that.editarEstadoItemOrden(e.currentTarget);
+                });
+            },
         })
     
         let tablelistaitem = document.getElementById('tablaItemOrdenCompra_wrapper');
@@ -913,7 +1077,7 @@ class ListaOrdenView {
         let estadoOrdenHabilitadasActualizar=[1,2,3,4,5,6,15];
     
         if(estadoOrdenHabilitadasActualizar.includes(data.id_estado)==true){
-            document.querySelector("p[id='inputEstado']").innerHTML = `<span class="label label-default" id="estado_orden" onClick="listaOrdenView.editarEstadoOrden(this);" data-id-estado-orden-compra="${data.id_estado}" data-id-orden-compra="${data.id_orden_compra}" data-codigo-orden-compra="${data.codigo_softlink}" style="cursor: pointer;" title="Cambiar Estado de Orden">${data.estado_doc}</span>`
+            document.querySelector("p[id='inputEstado']").innerHTML = `<span class="label label-default handleClickEditarEstadoOrden" id="estado_orden" data-id-estado-orden-compra="${data.id_estado}" data-id-orden-compra="${data.id_orden_compra}" data-codigo-orden-compra="${data.codigo_softlink}" style="cursor: pointer;" title="Cambiar Estado de Orden">${data.estado_doc}</span>`
         }else{
             document.querySelector("p[id='inputEstado']").innerHTML = `<span class="label label-default" id="estado_orden" data-id-estado-orden-compra="${data.id_estado}" data-id-orden-compra="${data.id_orden_compra}" data-codigo-orden-compra="${data.codigo_softlink}" style="cursor: default;">${data.estado_doc}</span>`
         }
@@ -932,7 +1096,6 @@ class ListaOrdenView {
         document.querySelector("div[id='modal-editar-estado-orden'] input[name='id_orden_compra'").value = id_orden;
         document.querySelector("div[id='modal-editar-estado-orden'] span[name='codigo_orden_compra'").textContent = codigo;
     
-        this.fillEstados(id_estado_actual);
     }
 
     editarEstadoItemOrden(obj){
@@ -959,19 +1122,34 @@ class ListaOrdenView {
         let id_estado_orden_selected = document.querySelector("div[id='modal-editar-estado-orden'] select[name='estado_orden'").value;
         let estado_orden_selected = document.querySelector("div[id='modal-editar-estado-orden'] select[name='estado_orden'")[document.querySelector("div[id='modal-editar-estado-orden'] select[name='estado_orden'").selectedIndex].textContent;
 
-        listaOrdenCtrl.actualizarEstadoOrdenPorRequerimiento(id_orden_compra,id_estado_orden_selected).then(function(res){
-            listaOrdenView.tipoVistaPorItem();
+        this.listaOrdenCtrl.actualizarEstadoOrdenPorRequerimiento(id_orden_compra,id_estado_orden_selected).then((res)=>{
+            this.tipoVistaPorItem();
 
             if(res ==1){
-                alert('El estado fue Actualizado');
+                Lobibox.notify('success', {
+                    title:false,
+                    size: 'mini',
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    msg: `El estado del item fue actualizado`
+                });
                 document.querySelector("span[id='estado_orden']").textContent = estado_orden_selected;
                 $('#modal-editar-estado-orden').modal('hide');
             }else{
-                alert('Hubo un problema al intentar Actualizado');
-                
+                Swal.fire(
+                    '',
+                    'Lo sentimos hubo un problema en el servidor al intentar actualizar el estado, por favor vuelva a intentarlo',
+                    'error'
+                );
             }
         }).catch(function(err){
             console.log(err)
+            Swal.fire(
+                '',
+                'Lo sentimos hubo un problema en el servidor al intentar actualizar el estado, por favor vuelva a intentarlo',
+                'error'
+            );
         })
         
     }
@@ -982,27 +1160,56 @@ class ListaOrdenView {
         let id_estado_detalle_orden_selected = document.querySelector("div[id='modal-editar-estado-detalle-orden'] select[name='estado_detalle_orden'").value;
         let estado_detalle_orden_selected = document.querySelector("div[id='modal-editar-estado-detalle-orden'] select[name='estado_detalle_orden'")[document.querySelector("div[id='modal-editar-estado-detalle-orden'] select[name='estado_detalle_orden'").selectedIndex].textContent;
 
-        listaOrdenCtrl.actualizarEstadoDetalleOrdenPorRequerimiento(id_detalle_orden_compra,id_estado_detalle_orden_selected).then(function(res){
-            listaOrdenView.tipoVistaPorItem();
+        this.listaOrdenCtrl.actualizarEstadoDetalleOrdenPorRequerimiento(id_detalle_orden_compra,id_estado_detalle_orden_selected).then((res)=>{
+            this.tipoVistaPorItem();
             if(res ==1){
-                alert('El estado del item fue actualizado');
-                listaOrdenCtrl.ver_orden(id_orden_compra).then(function(res) {
+                Lobibox.notify('success', {
+                    title:false,
+                    size: 'mini',
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    msg: `El estado del item fue actualizado`
+                });
+                this.listaOrdenCtrl.ver_orden(id_orden_compra).then((res)=> {
                     if (res.status ==200){
-                        listaOrdenView.llenarCabeceraOrden(res.data.orden);
-                        listaOrdenView.llenarTablaItemsOrden(res.data.detalle_orden);
+                        this.llenarCabeceraOrden(res.data.orden);
+                        this.llenarTablaItemsOrden(res.data.detalle_orden);
                     }else{
-                        alert("sin data");
+                        Lobibox.notify('info', {
+                            title:false,
+                            size: 'mini',
+                            rounded: true,
+                            sound: false,
+                            delayIndicator: false,
+                            msg: `sin data disponible para mostrar`
+                        });
+                     
                     }
-                }).catch(function(err) {
+                }).catch((err)=> {
+                    Swal.fire(
+                        '',
+                        'Lo sentimos hubo un problema en el servidor, por favor vuelva a intentarlo',
+                        'error'
+                    );
                     console.log(err)
                 })
                 $('#modal-editar-estado-detalle-orden').modal('hide');
             }else{
-                alert('Hubo un problema al intentar Actualizado');
+                Swal.fire(
+                    '',
+                    'Lo sentimos hubo un problema al intentar actualizar el estado, por favor vuelva a intentarlo',
+                    'error'
+                );
                 
             }
         }).catch(function(err){
             console.log(err)
+            Swal.fire(
+                '',
+                'Lo sentimos hubo un problema en el servidor al intentar actualizar el estado, por favor vuelva a intentarlo',
+                'error'
+            );
         })
         
     }
@@ -1014,22 +1221,38 @@ class ListaOrdenView {
 
     anularOrden(obj){
         let codigoOrden = obj.dataset.codigoOrden;
-        let id_orden = obj.dataset.idOrdenCompra;
-
+        let id = obj.dataset.idOrdenCompra;
+        console.log(id);
         var ask = confirm('¿Desea anular la orden '+codigoOrden+'?');
         if (ask == true){
-            listaOrdenCtrl.anularOrden(id_orden).then(function(res) {
-                    if (res.status == 200) {
-                        alert(res.mensaje);
-                        listaOrdenView.tipoVistaPorItem();
-                    }else {
-                        console.log(res);
-                        alert(res.mensaje);
-                        
-                    }
-            }).catch(function(err) {
+            this.listaOrdenCtrl.anularOrden(id).then((res)=> {
+                if (res.status == 200) {
+                    Lobibox.notify('success', {
+                        title:false,
+                        size: 'mini',
+                        rounded: true,
+                        sound: false,
+                        delayIndicator: false,
+                        msg: 'Orden anulada'
+                    });
+                    // let url = "/logistica/gestion-logistica/compras/ordenes/listado/index";
+                    location.reload();
+                } else {
+                    Swal.fire(
+                        '',
+                        'Lo sentimos hubo un error en el servidor al intentar anular la orden, por favor vuelva a intentarlo',
+                        'error'
+                    );
+                    console.log(res);
+                }
+            }).catch( (err)=> {
                 console.log(err)
-            })
+                Swal.fire(
+                    '',
+                    'Lo sentimos hubo un error en el servidor, por favor vuelva a intentarlo',
+                    'error'
+                );
+            });
         }
 
 
@@ -1042,9 +1265,9 @@ class ListaOrdenView {
         });
 
         let id_orden_compra = obj.dataset.idOrdenCompra;
-        listaOrdenCtrl.listarDocumentosVinculados(id_orden_compra).then(function(res) {
-            listaOrdenView.llenarTablaDocumentosVinculados(res.data);
-        }).catch(function(err) {
+        this.listaOrdenCtrl.listarDocumentosVinculados(id_orden_compra).then((res)=> {
+            this.llenarTablaDocumentosVinculados(res.data);
+        }).catch((err)=> {
         console.log(err)
         })
     }
@@ -1074,7 +1297,4 @@ class ListaOrdenView {
         tableDocumentosVinculados.childNodes[0].childNodes[0].hidden = true;
     }
     
-    // 
 }
-
-const listaOrdenView = new ListaOrdenView();

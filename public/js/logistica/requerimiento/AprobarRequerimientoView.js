@@ -8,7 +8,6 @@ class AprobarRequerimientoView {
         this.requerimientoCtrl = requerimientoCtrl;
         this.$fila=null;
         this.verDetallesEvent();
-        this.addEventToFilterButtons();
     }
 
     limpiarTabla(idElement) {
@@ -275,25 +274,7 @@ class AprobarRequerimientoView {
 
 
 
-    verDetalleRequerimientoSoloLectura(idRequerimiento) {
-        $('#modal-requerimiento').modal({
-            show: true,
-            backdrop: 'true'
-        });
 
-        document.querySelector("div[id='modal-requerimiento'] fieldset[id='group-acciones']").classList.add("oculto");
-        document.querySelector("div[id='modal-requerimiento'] button[id='btnRegistrarRespuesta']").classList.add("oculto");
-
-        this.requerimientoCtrl.getRequerimiento(idRequerimiento).then((res)=> {
-            this.construirSeccionDatosGenerales(res['requerimiento'][0]);
-            this.construirSeccionItemsDeRequerimiento(res['det_req'],res['requerimiento'][0]['simbolo_moneda']);
-            this.construirSeccionHistorialAprobacion(res['historial_aprobacion']);
-            $('#modal-requerimiento div.modal-body').LoadingOverlay("hide", true);
-
-        }).catch(function (err) {
-            console.log(err)
-        })
-    }
 
     verDetallesEvent(){
         

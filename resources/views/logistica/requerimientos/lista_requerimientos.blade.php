@@ -155,7 +155,7 @@ Listado de requerimientos
 
 <script src="{{ asset('js/logistica/requerimiento/ArchivoAdjunto.js')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/TrazabilidadRequerimientoView.js')}}"></script>
-<script src="{{ asset('js/logistica/requerimiento/AprobarRequerimientoView.js')}}"></script>
+<!-- <script src="{{ asset('js/logistica/requerimiento/AprobarRequerimientoView.js')}}"></script> -->
 <script src="{{ asset('js/logistica/requerimiento/ListarRequerimientoView.js')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/RequerimientoView.js')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/RequerimientoController.js')}}"></script>
@@ -174,10 +174,10 @@ Listado de requerimientos
         const requerimientoModel = new RequerimientoModel();
         const requerimientoController = new RequerimientoCtrl(requerimientoModel);
         const listarRequerimientoView = new ListarRequerimientoView(requerimientoController);
-
+        
         listarRequerimientoView.mostrar('ALL');
-
-
+        
+        listarRequerimientoView.initializeEventHandler();
  
     });
 

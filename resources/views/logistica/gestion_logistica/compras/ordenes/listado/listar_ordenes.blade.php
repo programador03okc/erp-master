@@ -1,7 +1,6 @@
 @extends('layout.main')
 @include('layout.menu_logistica')
 @section('option')
-    @include('layout.option')
 @endsection
 
 @section('cabecera')
@@ -18,7 +17,7 @@
 @endsection
 
 @section('content')
-<div class="page-main" type="listar_ordenes">
+<div class="page-main" type="listar_ordenes" id="listar_ordenes">
     <legend class="mylegend">
     </legend>
 
@@ -27,8 +26,8 @@
         <div class="col-md-3">
             <div class="input-group">
                 <div class="input-group-btn">
-                    <button type="button" class="btn btn-default" id="btnTipoVistaPorCabecera" title="Ver tabla a nivel de cabecera" onclick="listaOrdenView.tipoVistaPorCabecera();"><i class="fas fa-columns"></i> Vista a nivel de Cabecera</button>
-                    <button type="button" class="btn btn-default" id="btnTipoVistaPorItemPara" title="Ver tabla a nivel de Items" onclick="listaOrdenView.tipoVistaPorItem();"><i class="fas fa-table"></i> Vista a nivel de Item's</button>
+                    <button type="button" class="btn btn-default handleClickTipoVistaPorCabecera" id="btnTipoVistaPorCabecera" title="Ver tabla a nivel de cabecera"><i class="fas fa-columns"></i> Vista a nivel de Cabecera</button>
+                    <button type="button" class="btn btn-default handleClickTipoVistaPorItem" id="btnTipoVistaPorItemPara" title="Ver tabla a nivel de Items"><i class="fas fa-table"></i> Vista a nivel de Item's</button>
                 </div>
             </div>
         </div>
@@ -128,5 +127,18 @@
     <script src="{{('/js/logistica/orden/listaOrdenController.js')}}"></script>
     <script src="{{('/js/logistica/orden/listaOrdenModel.js')}}"></script>
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
+
+    <script>
+        
+        window.onload = function () {
+        const listaOrdenModel = new ListaOrdenModel();
+        const listaOrdenCtrl = new ListaOrdenCtrl(listaOrdenModel);
+        const listaOrdenView = new ListaOrdenView(listaOrdenCtrl);
+
+        listaOrdenView.init();
+        listaOrdenView.initializeEventHandler();
+    };
+
+    </script>
 
 @endsection

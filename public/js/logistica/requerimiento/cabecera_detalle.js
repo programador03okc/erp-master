@@ -1,5 +1,5 @@
 function nuevo_req(){
-    console.log('nuevo');
+    // console.log('nuevo');
     document.querySelector("div[id='group-historial-revisiones']").setAttribute('hidden',true);
 
     data_item=[];

@@ -1,6 +1,10 @@
 class TrazabilidadRequerimiento{
+    constructor(requerimientoCtrl) {
+        this.requerimientoCtrl = requerimientoCtrl;
 
-    verTrazabilidadRequerimientoModal(idRequerimiento){
+    }
+    verTrazabilidadRequerimientoModal(data,that){
+        let idRequerimiento = data.id_requerimiento;
 
         $('#modal-trazabilidad-requerimiento').modal({
             show: true
@@ -13,7 +17,7 @@ class TrazabilidadRequerimiento{
     
 
     mostrarRequerimiento(idRequerimiento){
-        requerimientoCtrl.getCabeceraRequerimiento(idRequerimiento).then(function (res) {
+        this.requerimientoCtrl.getCabeceraRequerimiento(idRequerimiento).then( (res)=> {
             document.querySelector("div[id='modal-trazabilidad-requerimiento'] ul[id='head_requerimiento'] span[id='codigo_requerimiento']").textContent= res.codigo;
             document.querySelector("div[id='modal-trazabilidad-requerimiento'] ul[id='head_requerimiento'] span[id='requerimiento_creado_por']").textContent= res.nombre_completo_usuario;
             document.querySelector("div[id='modal-trazabilidad-requerimiento'] ul[id='head_requerimiento'] span[id='fecha_registro_requerimiento']").textContent= res.fecha_registro;
@@ -24,7 +28,7 @@ class TrazabilidadRequerimiento{
     }
 
     mostrarHistorialAprobacion(idRequerimiento){
-        requerimientoCtrl.getHistorialAprobacion(idRequerimiento).then(function (res) {
+        this.requerimientoCtrl.getHistorialAprobacion(idRequerimiento).then((res) =>{
             let html ='';
             if(res.length >0){
                 res.forEach(element => {
@@ -59,8 +63,8 @@ class TrazabilidadRequerimiento{
     }
 
     mostrarTrazabilidadDetalleRequerimiento(idRequerimiento){
-        requerimientoCtrl.getTrazabilidadDetalleRequerimiento(idRequerimiento).then(function (res) {
-            trazabilidadRequerimientoView.construirTablaTrazabilidadDetalleRequerimiento(res);
+        this.requerimientoCtrl.getTrazabilidadDetalleRequerimiento(idRequerimiento).then( (res)=> {
+            this.construirTablaTrazabilidadDetalleRequerimiento(res);
         }).catch(function (err) {
             console.log(err)
         })
@@ -120,7 +124,7 @@ class TrazabilidadRequerimiento{
                     'render': function (data, type, row) {
                         let labelOrdenes='';
                         (row['ordenes_compra']).forEach(element => {
-                            labelOrdenes += `<label class="lbl-codigo" title="Abrir orden" onclick="trazabilidadRequerimientoView.abrirOrden(${element.id_orden_compra})">${element.codigo}</label>`;
+                            labelOrdenes += `<label class="lbl-codigo" title="Abrir orden" onclick="abrirOrden(${element.id_orden_compra})">${element.codigo}</label>`;
                         });
                         return labelOrdenes;
                         
@@ -130,7 +134,7 @@ class TrazabilidadRequerimiento{
                     'render': function (data, type, row) {
                         let labelGuiaIngreso='';
                         (row['guias_ingreso']).forEach(element => {
-                            labelGuiaIngreso += `<label class="lbl-codigo" title="Abrir Guia Ingreso" onclick="trazabilidadRequerimientoView.abrirIngreso(${element.id_mov_alm})">${element.codigo}</label>`;
+                            labelGuiaIngreso += `<label class="lbl-codigo" title="Abrir Guia Ingreso" onclick="abrirIngreso(${element.id_mov_alm})">${element.codigo}</label>`;
                         });
                         return labelGuiaIngreso;
                         
@@ -169,6 +173,5 @@ class TrazabilidadRequerimiento{
     }
 }
 
-const trazabilidadRequerimientoView = new TrazabilidadRequerimiento();
 
 

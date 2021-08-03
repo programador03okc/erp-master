@@ -54,7 +54,7 @@ Requerimientos pendientes
                                             </table>
                                             <div class="row">
                                                 <div class="col-md-12 right">
-                                                    <button class="btn btn-warning" type="button" id="btnCrearOrdenCompra" onClick="requerimientoPendienteView.crearOrdenCompra();" disabled>
+                                                    <button class="btn btn-warning handleClickCrearOrdenCompra" type="button" id="btnCrearOrdenCompra" disabled>
                                                         Crear Orden <i class="fas fa-file-invoice"></i>
                                                     </button>
 
@@ -110,18 +110,26 @@ Requerimientos pendientes
 <script src="{{ asset('js/logistica/mapeo/mapeoAsignarProducto.js')}}"></script>
 
 <script>
+
     $(document).ready(function() {
         seleccionarMenu(window.location);
 
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
             let tab = $(e.target).attr("href") // activated tab
-            console.log('tab: '+tab);
+            // console.log('tab: '+tab);
 
             if (tab=='#seleccionar'){
                 $('#productosSugeridos').DataTable().ajax.reload();
                 $('#productosCatalogo').DataTable().ajax.reload();
             }
-         });
+        });
+
+        const requerimientoPendienteModel = new RequerimientoPendienteModel();
+        const requerimientoPendienteController = new RequerimientoPendienteCtrl(requerimientoPendienteModel);
+        const requerimientoPendienteView = new RequerimientoPendienteView(requerimientoPendienteController);
+
+        requerimientoPendienteView.renderRequerimientoPendienteListModule(null, null);
+        requerimientoPendienteView.initializeEventHandler();
 
     });
 </script>
