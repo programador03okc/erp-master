@@ -51,6 +51,8 @@ class Facturacion {
                             return row["nombre_corto"];
                         } else if (row["nombre_corto_trans"] !== null) {
                             return row["nombre_corto_trans"];
+                        } else {
+                            return "";
                         }
                     },
                     className: "text-center"
@@ -65,6 +67,8 @@ class Facturacion {
                             return row["codigo_req"];
                         } else if (row["codigo_trans"] !== null) {
                             return row["codigo_trans"];
+                        } else {
+                            return "";
                         }
                     },
                     className: "text-center"

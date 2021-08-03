@@ -939,7 +939,6 @@ class TransferenciaController extends Controller
 
     public function guardar_salida_transferencia(Request $request)
     {
-
         try {
             DB::beginTransaction();
             // database queries here
@@ -1662,10 +1661,9 @@ class TransferenciaController extends Controller
                         }
                     }
                 }
-            }
-
-            if ($todas_transformaciones == $transformaciones) {
-                $transformacion = true;
+                if ($todas_transformaciones == $transformaciones) {
+                    $transformacion = true;
+                }
             }
 
             foreach ($detalle_req as $det) {
@@ -1839,10 +1837,9 @@ class TransferenciaController extends Controller
                     }
                 }
             }
-        }
-
-        if ($todas_transformaciones == $transformaciones) {
-            $transformacion = true;
+            if ($todas_transformaciones == $transformaciones) {
+                $transformacion = true;
+            }
         }
 
         foreach ($req_detalle as $det) {
@@ -1900,7 +1897,11 @@ class TransferenciaController extends Controller
             }
         }
 
-        return response()->json(['requerimiento' => $req, 'detalle' => ($transformacion ? $items_transf : $items_base)]);
+        return response()->json([
+            'requerimiento' => $req, 'detalle' => ($transformacion ? $items_transf : $items_base),
+            'items_transf' => $items_transf, 'items_base' => $items_base,
+            'transformaciones' => $transformaciones, 'todas_transformaciones' => $todas_transformaciones
+        ]);
     }
 
 
