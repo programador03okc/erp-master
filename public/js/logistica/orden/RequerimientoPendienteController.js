@@ -154,39 +154,15 @@ class RequerimientoPendienteCtrl{
         }
     }
 
-    guardarAtendidoConAlmacen(){
-        var newItemsParaAtenderConAlmacenList = [];
-        var itemsBaseList = [];
-        itemsBaseList = itemsParaAtenderConAlmacenList.filter(function( obj ) {
-            return (obj.tiene_transformacion ==false);
-        });
-        
-        newItemsParaAtenderConAlmacenList = itemsParaAtenderConAlmacenList.filter(function( obj ) {
-            return (obj.id_almacen_reserva >0) && (obj.cantidad_a_atender >0);
-        });
-        var hasCantidadNoPermitida = false;
-        newItemsParaAtenderConAlmacenList.forEach(element => {
-        
-            if(parseInt(element.cantidad_a_atender) > parseInt(element.cantidad)){
-                alert("No puede reservar una 'cantidad a atender' mayor a la 'cantidad' ");
-                hasCantidadNoPermitida=true;
-            } 
-        });
-        
-        if(hasCantidadNoPermitida== false){
-            if(newItemsParaAtenderConAlmacenList.length >0){
-                return requerimientoPendienteModel.guardarAtendidoConAlmacen({'lista_items_reservar':newItemsParaAtenderConAlmacenList,'lista_items_base':itemsBaseList});
+    guardarAtendidoConAlmacen(newItemsParaAtenderConAlmacenList,itemsBaseList){
+        console.log('controll');
+        return this.requerimientoPendienteModel.guardarAtendidoConAlmacen({'lista_items_reservar':newItemsParaAtenderConAlmacenList,'lista_items_base':itemsBaseList});
 
-            }else{
-                alert("seleccione un almacén y especifique una cantidad a atender mayor a cero.");
-            }
-    
-        }
 
     }
 
     getDataItemsRequerimientoParaAtenderConAlmacen(id_requerimiento){
-        return requerimientoPendienteModel.getDataItemsRequerimientoParaAtenderConAlmacen(id_requerimiento);
+        return this.requerimientoPendienteModel.getDataItemsRequerimientoParaAtenderConAlmacen(id_requerimiento);
 
     }
 
@@ -206,7 +182,7 @@ class RequerimientoPendienteCtrl{
         reqTrueList=[id_requerimiento];
         itemsParaCompraList=[];
         
-        return requerimientoPendienteModel.tieneItemsParaCompra(reqTrueList).then(function(res) {
+        return this.requerimientoPendienteModel.tieneItemsParaCompra(reqTrueList).then(function(res) {
             itemsParaCompraList= res.data;
             if(itemsParaCompraList.length >0){
                 //validar y habilitar boton guardar

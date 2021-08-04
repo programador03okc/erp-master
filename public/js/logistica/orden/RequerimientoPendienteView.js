@@ -546,39 +546,84 @@ class RequerimientoPendienteView {
 
 
     guardarAtendidoConAlmacen() {
-        this.requerimientoPendienteCtrl.guardarAtendidoConAlmacen().then((res) =>{
-            if (res.update_det_req > 0) {
-                Lobibox.notify('success', {
-                    title:false,
-                    size: 'mini',
-                    rounded: true,
-                    sound: false,
-                    delayIndicator: false,
-                    msg: `Reserva actualizsada`
-                });
-                this.requerimientoPendienteCtrl.getDataItemsRequerimientoParaAtenderConAlmacen(res.id_requerimiento).then(function (res) {
-                    this.construirTablaListaItemsRequerimientoParaAtenderConAlmacen(res);
-                }).catch(function (err) {
-                    console.log(err)
-                    Swal.fire(
-                        '',
-                        'Hubo un problema al intentar guardar la reserva, por favor vuelva a intentarlo',
-                        'error'
-                    );
-                })
 
-                this.renderRequerimientoPendienteListModule(null,null);
-
-            } else {
+        console.log('accion guardarAtendidoConAlmacen');
+        var newItemsParaAtenderConAlmacenList = [];
+        var itemsBaseList = [];
+        itemsBaseList = itemsParaAtenderConAlmacenList.filter(function( obj ) {
+            return (obj.tiene_transformacion ==false);
+        });
+        
+        newItemsParaAtenderConAlmacenList = itemsParaAtenderConAlmacenList.filter(function( obj ) {
+            return (obj.id_almacen_reserva >0) && (obj.cantidad_a_atender >0);
+        });
+        var hasCantidadNoPermitida = false;
+        newItemsParaAtenderConAlmacenList.forEach(element => {
+            console.log(element.cantidad_a_atender);
+            if(parseInt(element.cantidad_a_atender) == 0){
                 Swal.fire(
                     '',
-                    'Hubo un problema al intentar guardar la reserva, por favor vuelva a intentarlo',
-                    'error'
+                    'No puede reservar una cantidad cero',
+                    'warning'
+                );
+                hasCantidadNoPermitida=true;
+            } 
+            if(parseInt(element.cantidad_a_atender) > parseInt(element.cantidad)){
+                Swal.fire(
+                    '',
+                    'No puede reservar una cantidad a atender mayor a la cantidad solicitada',
+                    'warning'
+                );
+                hasCantidadNoPermitida=true;
+            } 
+        });
+        
+        if(hasCantidadNoPermitida== false){
+            if(newItemsParaAtenderConAlmacenList.length >0){
+                this.requerimientoPendienteCtrl.guardarAtendidoConAlmacen(newItemsParaAtenderConAlmacenList,itemsBaseList).then((res) =>{
+                    if (res.update_det_req > 0) {
+                        Lobibox.notify('success', {
+                            title:false,
+                            size: 'mini',
+                            rounded: true,
+                            sound: false,
+                            delayIndicator: false,
+                            msg: `Reserva actualizsada`
+                        });
+                        this.requerimientoPendienteCtrl.getDataItemsRequerimientoParaAtenderConAlmacen(res.id_requerimiento).then( (res)=> {
+                            this.construirTablaListaItemsRequerimientoParaAtenderConAlmacen(res);
+                        }).catch(function (err) {
+                            console.log(err)
+                            Swal.fire(
+                                '',
+                                'Hubo un problema al intentar actualizar la tabla',
+                                'error'
+                            );
+                        })
+        
+                        this.renderRequerimientoPendienteListModule(null,null);
+        
+                    } else {
+                        Swal.fire(
+                            '',
+                            'Hubo un problema al intentar guardar la reserva, por favor vuelva a intentarlo',
+                            'error'
+                        );
+                    }
+                }).catch(function (err) {
+                    console.log(err)
+                })
+            }else{
+                Swal.fire(
+                    '',
+                    'seleccione un almacén y especifique una cantidad a atender mayor a cero.',
+                    'warning'
                 );
             }
-        }).catch(function (err) {
-            console.log(err)
-        })
+    
+        }
+
+
     }
 
  
