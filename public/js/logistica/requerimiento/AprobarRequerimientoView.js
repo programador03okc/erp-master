@@ -491,6 +491,7 @@ class AprobarRequerimientoView {
     }
 
     construirSeccionHistorialAprobacion(data) {
+        this.limpiarTabla('listaHistorialRevision');
         let html = '';
         if (data.length > 0) {
             for (let i = 0; i < data.length; i++) {
