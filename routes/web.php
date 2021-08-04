@@ -712,6 +712,8 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('observar-documento', 'Logistica\RequerimientoController@observarDocumento')->name('observar-documento');
 					Route::post('anular-documento', 'Logistica\RequerimientoController@anularDocumento')->name('anular-documento');
 					Route::get('listar-sedes-por-empresa/{id?}', 'Logistica\RequerimientoController@listarSedesPorEmpresa')->name('listar-sedes-por-empresa');
+					Route::get('imprimir-requerimiento-pdf/{id}/{codigo}', 'Logistica\RequerimientoController@generar_requerimiento_pdf');
+
 				});
 				Route::group(['as' => 'mapeo.', 'prefix' => 'mapeo'], function () {
 

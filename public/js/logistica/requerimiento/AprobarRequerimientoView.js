@@ -25,7 +25,22 @@ class AprobarRequerimientoView {
         document.querySelector("select[class~='handleChangeFiltroListadoBySede']").addEventListener("change", this.handleChangeFiltroListado.bind(this), false);
         document.querySelector("select[class~='handleChangeFiltroListadoByGrupo']").addEventListener("change", this.handleChangeFiltroListado.bind(this), false);
         document.querySelector("select[class~='handleChangeFiltroListadoByPrioridad']").addEventListener("change", this.handleChangeFiltroListado.bind(this), false);
+
+        $('#listaDetalleRequerimientoModal').on("click","a.handleClickVerAdjuntosItem", (e)=>{
+            this.verAdjuntosItem(e.currentTarget.dataset.idDetalleRequerimiento);
+        });
  
+        $('#modal-requerimiento').on("click","button.handleClickImprimirRequerimientoPdf", (e)=>{
+            this.imprimirRequerimientoPdf(e);
+        });
+ 
+ 
+    }
+
+    imprimirRequerimientoPdf(){
+        var id = document.getElementsByName("id_requerimiento")[0].value;
+        window.open('imprimir-requerimiento-pdf/'+id+'/0');
+    
     }
 
     mostrar(idEmpresa, idSede, idGrupo, idPrioridad) {
@@ -463,13 +478,10 @@ class AprobarRequerimientoView {
                 <td style="text-align:right;">${simboloMoneda} ${(data[i].subtotal ? Util.formatoNumero(data[i].subtotal, 2) : (Util.formatoNumero((data[i].cantidad*data[i].precio_unitario),2)))}</td>
                 <td>${data[i].motivo ? data[i].motivo : ''}</td>
                 <td style="text-align: center;"> 
-                    ${cantidadAdjuntosItem>0?'<a title="Ver archivos adjuntos de item" style="cursor:pointer;" class="handleClickVerAdjuntosItem'+i+'" >Ver (<span name="cantidadAdjuntosItem">'+cantidadAdjuntosItem+'</span>)</a>':'-'}
+                    ${cantidadAdjuntosItem>0?'<a title="Ver archivos adjuntos de item" style="cursor:pointer;" class="handleClickVerAdjuntosItem" data-id-detalle-requerimiento="'+data[i].id_detalle_requerimiento+'" >Ver (<span name="cantidadAdjuntosItem">'+cantidadAdjuntosItem+'</span>)</a>':'-'}
                 </td>
             </tr>`);
                 
-
-                document.querySelector("a[class='handleClickVerAdjuntosItem"+i+"']").addEventListener("click", this.verAdjuntosItem.bind(this,data[i].id_detalle_requerimiento), false);
-
             }
 
 
