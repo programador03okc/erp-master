@@ -1108,13 +1108,13 @@ class OrdenView {
         var id_tp_documento = $('[name=id_tp_documento]').val();
         var msj = '';
         if (codigo_orden == ''){
-            msj+='\n Es necesario que ingrese un código de orden Softlink';
+            msj+='Es necesario que ingrese un código de orden Softlink.<br>';
         }
         if (id_proveedor == ''){
-            msj+='\n Es necesario que seleccione un Proveedor';
+            msj+='Es necesario que seleccione un Proveedor.<br>';
         }
         if (id_tp_documento!= '3' && plazo_entrega == ''){
-            msj+='\n Es necesario que ingrese un plazo de entrega';
+            msj+='Es necesario que ingrese un plazo de entrega.<br>';
         }
         let cantidadInconsistenteInputPrecio=0;
         let cantidadInconsistenteMapeoProducto=0;
@@ -1129,10 +1129,10 @@ class OrdenView {
 
         })
         if(cantidadInconsistenteInputPrecio>0){
-            msj+='\n Es necesario que ingrese un precio / precio mayor a cero';
+            msj+='Es necesario que ingrese un precio / precio mayor a cero.<br>';
         }
         if(cantidadInconsistenteMapeoProducto>0){
-            msj+='\n Tiene productos sin mapear';
+            msj+='Tiene productos sin mapear.<br>';
         }
 
         let cantidadInconsistenteInputCantidadAComprar=0;
@@ -1143,7 +1143,7 @@ class OrdenView {
             }
         })
         if(cantidadInconsistenteInputCantidadAComprar>0){
-            msj+='\n Es necesario que ingrese una cantidad a comprar / cantidad a comprar mayor a cero';
+            msj+='Es necesario que ingrese una cantidad a comprar / cantidad a comprar mayor a cero.<br>';
     
         }           
         return  msj;
@@ -1154,7 +1154,12 @@ class OrdenView {
         if (action == 'register'){
             var msj = this.validaOrdenRequerimiento();
             if (msj.length > 0){
-                alert(msj);
+                Swal.fire({
+                    title:'',
+                    html:msj,
+                    icon:'warning'
+                }
+                );
                 // changeStateButton('editar');
                 // changeStateButton('guardar');
                 // $('#form-crear-orden-requerimiento').attr('type', 'register');

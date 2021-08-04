@@ -603,7 +603,7 @@ class ComprasPendientesController extends Controller
                 $updateDetReq += DB::table('almacen.alm_det_req')
                     ->where('id_detalle_requerimiento', $det['id_detalle_requerimiento'])
                     ->update([
-                        'stock_comprometido' => $det['cantidad_a_atender'],
+                        'stock_comprometido' => $det['cantidad_a_atender'] >0 ? $det['cantidad_a_atender']:null,
                         'id_almacen_reserva' => $det['id_almacen_reserva'] > 0 ? $det['id_almacen_reserva'] : null,
                         'estado' => $estado
                     ]);

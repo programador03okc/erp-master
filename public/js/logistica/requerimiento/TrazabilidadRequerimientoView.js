@@ -1,6 +1,7 @@
 class TrazabilidadRequerimiento{
     constructor(requerimientoCtrl) {
         this.requerimientoCtrl = requerimientoCtrl;
+        this.initializeEventHandler();
 
     }
     verTrazabilidadRequerimientoModal(data,that){
@@ -12,9 +13,17 @@ class TrazabilidadRequerimiento{
         this.mostrarRequerimiento(idRequerimiento);
         this.mostrarHistorialAprobacion(idRequerimiento);
         this.mostrarTrazabilidadDetalleRequerimiento(idRequerimiento);
-
     }
-    
+    initializeEventHandler(){
+
+        $('#listaTrazabilidadDetalleRequerimiento tbody').on("click","label.handleClickAbrirOrden", (e)=>{
+            console.log(e.currentTarget.dataset.idOrden);
+            this.abrirOrden(e.currentTarget.dataset.idOrden);
+        });
+        $('#listaTrazabilidadDetalleRequerimiento tbody').on("click","label.handleClickAbrirIngreso", (e)=>{
+            this.abrirIngreso(e.currentTarget.dataset.idMovimientoAlmacen);
+        });
+    }
 
     mostrarRequerimiento(idRequerimiento){
         this.requerimientoCtrl.getCabeceraRequerimiento(idRequerimiento).then( (res)=> {
@@ -124,7 +133,7 @@ class TrazabilidadRequerimiento{
                     'render': function (data, type, row) {
                         let labelOrdenes='';
                         (row['ordenes_compra']).forEach(element => {
-                            labelOrdenes += `<label class="lbl-codigo" title="Abrir orden" onclick="abrirOrden(${element.id_orden_compra})">${element.codigo}</label>`;
+                            labelOrdenes += `<label class="lbl-codigo handleClickAbrirOrden" title="Abrir orden" data-id-orden="${element.id_orden_compra}" >${element.codigo}</label>`;
                         });
                         return labelOrdenes;
                         
@@ -134,7 +143,7 @@ class TrazabilidadRequerimiento{
                     'render': function (data, type, row) {
                         let labelGuiaIngreso='';
                         (row['guias_ingreso']).forEach(element => {
-                            labelGuiaIngreso += `<label class="lbl-codigo" title="Abrir Guia Ingreso" onclick="abrirIngreso(${element.id_mov_alm})">${element.codigo}</label>`;
+                            labelGuiaIngreso += `<label class="lbl-codigo handleClickAbrirIngreso" title="Abrir Guia Ingreso" data-id-movimiento-almacen="${element.id_mov_alm}">${element.codigo}</label>`;
                         });
                         return labelGuiaIngreso;
                         
