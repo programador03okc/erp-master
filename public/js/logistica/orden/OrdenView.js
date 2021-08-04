@@ -137,7 +137,11 @@ class OrdenView {
                             }
                         );
                         if(detalleOrdenList.length ==0){
-                            alert("No puede generar una orden sin antes agregar item(s) base");
+                            Swal.fire(
+                                '',
+                                'No puede generar una orden sin antes agregar item(s) base',
+                                'info'
+                            );
         
                         }else{
                             this.loadHeadRequerimiento(response.requerimiento[0],idTipoOrden);
@@ -414,7 +418,11 @@ class OrdenView {
 
                 this.calcTotalOrdenDetalleList();
             }else{
-                alert('Hubo un problema al intentar anular el item');
+                Swal.fire(
+                    '',
+                    'Hubo un problema al intentar anular el item.',
+                    'error'
+                );
             }
         }else{
             return false;
@@ -1160,7 +1168,14 @@ class OrdenView {
                     success: function(response){
                         // console.log(response);
                         if (response > 0){
-                            alert('Orden de registrada con éxito');
+                            Lobibox.notify('success', {
+                                title:false,
+                                size: 'mini',
+                                rounded: true,
+                                sound: false,
+                                delayIndicator: false,
+                                msg: `Orden de registrada con éxito`
+                            });
                             changeStateButton('guardar');
                             $('#form-crear-orden-requerimiento').attr('type', 'register');
                             changeStateInput('form-crear-orden-requerimiento', true);
@@ -1172,6 +1187,11 @@ class OrdenView {
                         }
                     }
                 }).fail( function( jqXHR, textStatus, errorThrown ){
+                    Swal.fire(
+                        '',
+                        'Hubo un problema al intentar guardar la orden, por favor vuelva a intentarlo',
+                        'error'
+                    );
                     console.log(jqXHR);
                     console.log(textStatus);
                     console.log(errorThrown);
@@ -1187,19 +1207,35 @@ class OrdenView {
                 success: function(response){
                     // console.log(response);
                     if (response > 0){
-                        alert("Orden Actualizada");
+                        Lobibox.notify('success', {
+                            title:false,
+                            size: 'mini',
+                            rounded: true,
+                            sound: false,
+                            delayIndicator: false,
+                            msg: `Orden de actualizada con éxito`
+                        });
                         changeStateButton('guardar');
                         $('#form-crear-orden-requerimiento').attr('type', 'register');
                         changeStateInput('form-crear-orden-requerimiento', true);
                     }
                 }
             }).fail( function(jqXHR, textStatus, errorThrown){
+                Swal.fire(
+                    '',
+                    'Hubo un problema al intentar actualizar la orden, por favor vuelva a intentarlo',
+                    'error'
+                );
                 console.log(jqXHR);
                 console.log(textStatus);
                 console.log(errorThrown);
             });   
         }else{
-            alert("Hubo un error en la acción de la botonera, el action no esta definido");
+            Swal.fire(
+                '',
+                'Hubo un error en la acción de la botonera, el action no esta definido',
+                'error'
+            );
         }
     }
 
@@ -1332,6 +1368,11 @@ class OrdenView {
                 
             }
         }).fail(( jqXHR, textStatus, errorThrown )=>{
+            Swal.fire(
+                '',
+                'Hubo un problema al intentar mostrar la orden, por favor vuelva a intentarlo.',
+                'error'
+            );
             console.log(jqXHR);
             console.log(textStatus);
             console.log(errorThrown);

@@ -547,7 +547,7 @@ class RequerimientoPendienteView {
 
     guardarAtendidoConAlmacen() {
 
-        console.log('accion guardarAtendidoConAlmacen');
+        // console.log('accion guardarAtendidoConAlmacen');
         var newItemsParaAtenderConAlmacenList = [];
         var itemsBaseList = [];
         itemsBaseList = itemsParaAtenderConAlmacenList.filter(function( obj ) {
@@ -559,7 +559,7 @@ class RequerimientoPendienteView {
         });
         var hasCantidadNoPermitida = false;
         newItemsParaAtenderConAlmacenList.forEach(element => {
-            console.log(element.cantidad_a_atender);
+            // console.log(element.cantidad_a_atender);
             if(parseInt(element.cantidad_a_atender) == 0){
                 Swal.fire(
                     '',
