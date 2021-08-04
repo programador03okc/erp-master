@@ -18,7 +18,7 @@ class OrdenView {
             // ordenView.changeStateInput('form-crear-orden-requerimiento', false);
             // ordenView.changeStateButton('editar');
             this.obtenerRequerimiento(reqTrueList, tipoOrden);
-            let btnVinculoAReq = `<span class="text-info" id="text-info-req-vinculado" > <a onClick="window.location.reload();" style="cursor:pointer;" title="Recargar con Valores Iniciales del Requerimiento">(vinculado a un Requerimiento)</a> <span class="badge label-danger" onClick="ordenView.eliminarVinculoReq();" style="position: absolute;margin-top: -5px;margin-left: 5px; cursor:pointer" title="Eliminar vínculo">×</span></span>`;
+            let btnVinculoAReq = `<span class="text-info" id="text-info-req-vinculado" > <a onClick="window.location.reload();" style="cursor:pointer;" title="Recargar con Valores Iniciales del Requerimiento">(vinculado a un Requerimiento)</a> <span class="badge label-danger handleClickEliminarVinculoReq" style="position: absolute;margin-top: -5px;margin-left: 5px; cursor:pointer" title="Eliminar vínculo">×</span></span>`;
             document.querySelector("section[class='content-header']").children[0].innerHTML += btnVinculoAReq;
 
         }
@@ -34,6 +34,19 @@ class OrdenView {
 
     initializeEventHandler(){
 
+        $('.content-header').on("click","span.handleClickEliminarVinculoReq", ()=>{
+            this.eliminarVinculoReq();
+        });
+
+        $('#form-crear-orden-requerimiento').on("change","select.handleChangeSede", (e)=>{
+            this.changeSede(e.currentTarget);
+        });
+        $('#form-crear-orden-requerimiento').on("change","select.handleChangeCondicion", ()=>{
+            this.handleChangeCondicion();
+        });
+        $('#form-crear-orden-requerimiento').on("change","select.handleChangeMoneda", (e)=>{
+            this.changeMoneda(e.currentTarget);
+        });
         $('#form-crear-orden-requerimiento').on("click","input.handleClickIncluyeIGV", (e)=>{
             this.incluyeIGV(e);
         });
@@ -48,6 +61,20 @@ class OrdenView {
             // var data = $('#listaItems').DataTable().row($(this).parents("tr")).data();
                 this.selectItem(e.currentTarget,e.currentTarget.dataset.idProducto);
         });
+
+
+        $('#listaDetalleOrden tbody').on("blur","input.handleBlurUpdateInputPrecio", (e)=>{
+            this.updateInputPrecio(e);
+        });
+        $('#listaDetalleOrden tbody').on("blur","input.handleBlurUpdateInputCantidadAComprar", (e)=>{
+            this.updateInputCantidadAComprar(e);
+        });
+
+        $('#listaDetalleOrden tbody').on("blur","input.handleBlurUpdateInputSubtotal", (e)=>{
+            this.updateInputSubtotal(e);
+        });
+
+
         $('#listaDetalleOrden tbody').on("click","button.handleClickOpenModalEliminarItemOrden",(e)=>{
             this.openModalEliminarItemOrden(e.currentTarget);
         });
@@ -162,8 +189,20 @@ class OrdenView {
     }
 
     changeSede(obj) {
-        this.ordenCtrl.changeSede(obj);
+        var id_empresa = obj.options[obj.selectedIndex].getAttribute('data-id-empresa');
+        var id_ubigeo = obj.options[obj.selectedIndex].getAttribute('data-id-ubigeo');
+        var ubigeo_descripcion = obj.options[obj.selectedIndex].getAttribute('data-ubigeo-descripcion');
+        var direccion = obj.options[obj.selectedIndex].getAttribute('data-direccion');
+        this.changeLogoEmprsa(id_empresa);
+        this.llenarUbigeo(direccion,id_ubigeo,ubigeo_descripcion);
     }
+
+    llenarUbigeo(direccion,id_ubigeo,ubigeo_descripcion){
+        document.querySelector("input[name='direccion_destino']").value=direccion;
+        document.querySelector("input[name='id_ubigeo_destino']").value=id_ubigeo;
+        document.querySelector("input[name='ubigeo_destino']").value=ubigeo_descripcion;
+    }
+
 
     changeLogoEmprsa(id_empresa) {
         switch (id_empresa) {
@@ -191,7 +230,7 @@ class OrdenView {
         }
     }
 
-    handlechangeCondicion(event) {
+    handleChangeCondicion() {
         let condicion = document.getElementsByName('id_condicion')[0];
         let text_condicion = condicion.options[condicion.selectedIndex].text;
 
@@ -281,9 +320,9 @@ class OrdenView {
                     'render':
                         function (data, type, row, meta) {
                             if (row.estado == 7) {
-                                return '<input type="number" name="precio" data-id="' + (row.id) + '" placeholder="0.00" min="0"  class="form-control" data-row="' + (meta.row + 1) + '" data-id_requerimiento="' + (row.id_requerimiento ? row.id_requerimiento : 0) + '" data-id_detalle_requerimiento="' + (row.id_detalle_requerimiento ? row.id_detalle_requerimiento : 0) + '" value="' + (row.precio_unitario ? row.precio_unitario : "") + '" onChange="ordenCtrl.updateInputPrecio(event);" style="width:90px;" disabled/>';
+                                return '<input type="number" name="precio" data-id="' + (row.id) + '" placeholder="0.00" min="0"  class="form-control handleBlurUpdateInputPrecio" data-row="' + (meta.row + 1) + '" data-id_requerimiento="' + (row.id_requerimiento ? row.id_requerimiento : 0) + '" data-id_detalle_requerimiento="' + (row.id_detalle_requerimiento ? row.id_detalle_requerimiento : 0) + '" value="' + (row.precio_unitario ? row.precio_unitario : "") + '" style="width:90px;" disabled/>';
                             } else {
-                                return '<input type="number" name="precio" data-id="' + (row.id) + '" placeholder="0.00" min="0" class="form-control" data-row="' + (meta.row + 1) + '" data-id_requerimiento="' + (row.id_requerimiento ? row.id_requerimiento : 0) + '" data-id_detalle_requerimiento="' + (row.id_detalle_requerimiento ? row.id_detalle_requerimiento : 0) + '" value="' + (row.precio_unitario ? row.precio_unitario : "") + '" onChange="ordenCtrl.updateInputPrecio(event);" style="width:90px;"/>';
+                                return '<input type="number" name="precio" data-id="' + (row.id) + '" placeholder="0.00" min="0" class="form-control handleBlurUpdateInputPrecio" data-row="' + (meta.row + 1) + '" data-id_requerimiento="' + (row.id_requerimiento ? row.id_requerimiento : 0) + '" data-id_detalle_requerimiento="' + (row.id_detalle_requerimiento ? row.id_detalle_requerimiento : 0) + '" value="' + (row.precio_unitario ? row.precio_unitario : "") + '" style="width:90px;"/>';
                             }
                         }, 'name': 'precio'
                 },
@@ -291,19 +330,18 @@ class OrdenView {
                     'render':
                          (data, type, row, meta)=> {
                             if (row.estado == 7) {
-                                return '<input type="number" name="cantidad_a_comprar" data-id="' + (row.id) + '" min="0" class="form-control" data-row="' + (meta.row + 1) + '" data-id_requerimiento="' + (row.id_requerimiento ? row.id_requerimiento : 0) + '" data-id_detalle_requerimiento="' + (row.id_detalle_requerimiento ? row.id_detalle_requerimiento : 0) + '"   onchange="ordenCtrl.updateInputCantidadAComprar(event);" value="' + (row.cantidad_a_comprar ? row.cantidad_a_comprar : row.cantidad) + '" style="width:70px;" disabled />';
+                                return '<input type="number" name="cantidad_a_comprar" data-id="' + (row.id) + '" min="0" class="form-control handleBlurUpdateInputCantidadAComprar" data-row="' + (meta.row + 1) + '" data-id_requerimiento="' + (row.id_requerimiento ? row.id_requerimiento : 0) + '" data-id_detalle_requerimiento="' + (row.id_detalle_requerimiento ? row.id_detalle_requerimiento : 0) + '" value="' + (row.cantidad_a_comprar ? row.cantidad_a_comprar : row.cantidad) + '" style="width:70px;" disabled />';
                             } else {
-                                this.ordenCtrl.updateInObjCantidadAComprar((row.row + 1), (row.id_requerimiento), (row.id_detalle_requerimiento), (row.cantidad));
+                                that.updateInObjCantidadAComprar((row.row + 1), (row.id_requerimiento), (row.id_detalle_requerimiento), (row.cantidad));
 
-                                return '<input type="number" name="cantidad_a_comprar" data-id="' + (row.id) + '" min="0" class="form-control" data-row="' + (meta.row + 1) + '" data-id_requerimiento="' + (row.id_requerimiento ? row.id_requerimiento : 0) + '" data-id_detalle_requerimiento="' + (row.id_detalle_requerimiento ? row.id_detalle_requerimiento : 0) + '"   onchange="ordenCtrl.updateInputCantidadAComprar(event);" value="' + (row.cantidad_a_comprar ? row.cantidad_a_comprar : row.cantidad) + '" style="width:70px;"/>';
+                                return '<input type="number" name="cantidad_a_comprar" data-id="' + (row.id) + '" min="0" class="form-control handleBlurUpdateInputCantidadAComprar" data-row="' + (meta.row + 1) + '" data-id_requerimiento="' + (row.id_requerimiento ? row.id_requerimiento : 0) + '" data-id_detalle_requerimiento="' + (row.id_detalle_requerimiento ? row.id_detalle_requerimiento : 0) + '" value="' + (row.cantidad_a_comprar ? row.cantidad_a_comprar : row.cantidad) + '" style="width:70px;"/>';
                             }
                         }, 'name': 'cantidad_a_comprar'
                 },
                 {
                     'render':
                         function (data, type, row, meta) {
-                            // return '<div style="display:flex;"><var name="simboloMoneda"></var> <div name="subtotal" data-id="'+(row.id)+'" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'">'+((Math.round((row.cantidad*row.precio_unitario) * 100) / 100).toFixed(2))+'</div></div>';
-                            return '<input type="number" name="subtotal" data-id="' + (row.id) + '" min="0" class="form-control" data-row="' + (meta.row + 1) + '" data-id_requerimiento="' + (row.id_requerimiento ? row.id_requerimiento : 0) + '" data-id_detalle_requerimiento="' + (row.id_detalle_requerimiento ? row.id_detalle_requerimiento : 0) + '"   onchange="ordenCtrl.updateInputSubtotal(event);" value="' + ((Math.round((row.cantidad * row.precio_unitario) * 100) / 100).toFixed(2)) + '" style="width:90px;"/>';
+                            return '<input type="number" name="subtotal" data-id="' + (row.id) + '" min="0" class="form-control handleBlurUpdateInputSubtotal" data-row="' + (meta.row + 1) + '" data-id_requerimiento="' + (row.id_requerimiento ? row.id_requerimiento : 0) + '" data-id_detalle_requerimiento="' + (row.id_detalle_requerimiento ? row.id_detalle_requerimiento : 0) + '" value="' + ((Math.round((row.cantidad * row.precio_unitario) * 100) / 100).toFixed(2)) + '" style="width:90px;"/>';
 
                         }, 'name': 'subtotal'
                 },
@@ -327,7 +365,6 @@ class OrdenView {
                 this.updateAllSimboloMoneda();
                 this.calcTotalOrdenDetalleList();
 
-      
                 
             },
             'rowCallback': (row, data) =>{
@@ -542,6 +579,123 @@ class OrdenView {
             'listaItems_filter'
         )
         listaItems_filter.querySelector("input[type='search']").style.width = '100%';
+    }
+
+    updateInputCantidadAComprar(event){
+        let nuevoValor =event.target.value;
+        let idSelected = event.target.dataset.id;
+        let sizeInputCantidad = document.querySelectorAll("span[name='cantidad']").length;
+        let cantidad =0;
+        for (let index = 0; index < sizeInputCantidad; index++) {
+            let id = document.querySelectorAll("span[name='cantidad']")[index].dataset.id;
+            if(id == idSelected){
+                cantidad = document.querySelectorAll("span[name='cantidad']")[index].textContent;
+                if(parseFloat(nuevoValor) >0){                
+                    // actualizar datadetreq cantidad
+                    this.updateInObjCantidadAComprar(idSelected,nuevoValor);
+                    this.calcTotalDetalleRequerimiento(idSelected);
+    
+                    // console.log(detalleOrdenList);
+                    // 
+                }
+                
+                // if(parseFloat(nuevoValor) > parseFloat(cantidad)){
+                //     alert("La cantidad a comprar no puede ser mayor a la cantidad `solicitada");
+                //     document.querySelectorAll("input[name='cantidad_a_comprar']")[index].value= cantidad;
+                //     updateInObjCantidadAComprar(rowNumberSelected,idRequerimientoSelected,idDetalleRequerimientoSelected,cantidad);
+    
+                // }
+            }
+        }
+    }
+    updateInObjCantidadAComprar(id,valor){
+        detalleOrdenList.forEach((element,index) => {
+                if(element.id == id){
+                detalleOrdenList[index].cantidad_a_comprar = valor;
+                }
+        });
+    }
+
+    updateInputPrecio(event){
+        let nuevoValor =event.target.value;
+        let id = event.target.dataset.id;
+        this.updateInObjPrecioReferencial(id,nuevoValor);
+        this.calcTotalDetalleRequerimiento(id);
+    }
+
+    updateInObjPrecioReferencial(id,valor){
+        
+        detalleOrdenList.forEach((element,index) => {
+            if(element.id == id){
+                detalleOrdenList[index].precio_unitario = valor;
+            }
+
+        });
+    }
+
+
+    calcTotalDetalleRequerimiento(id){
+        let simbolo_moneda_selected = document.querySelector("select[name='id_moneda']")[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda;
+        let sizeInputTotal = document.querySelectorAll("input[name='subtotal']").length;
+        for (let index = 0; index < sizeInputTotal; index++) {
+            let idElement = document.querySelectorAll("input[name='subtotal']")[index].dataset.id;
+            if(idElement == id){
+                let precio = document.querySelectorAll("input[name='precio']")[index].value?document.querySelectorAll("input[name='precio']")[index].value:0;
+                let cantidad =( document.querySelectorAll("input[name='cantidad_a_comprar']")[index].value)>0?document.querySelectorAll("input[name='cantidad_a_comprar']")[index].value:document.querySelectorAll("input[name='cantidad']")[index].value;
+                let calSubtotal =(parseFloat(precio) * parseFloat(cantidad));
+                
+                let subtotal = formatDecimalDigitos(calSubtotal,2);
+                // console.log(subtotal);
+                document.querySelectorAll("input[name='subtotal']")[index].value=subtotal;
+                this.updateInObjSubtotal(id,subtotal);
+            }
+        }
+        let total =0;
+        for (let index = 0; index < sizeInputTotal; index++) {
+            let num = document.querySelectorAll("input[name='subtotal']")[index].value?document.querySelectorAll("input[name='subtotal']")[index].value:0;
+            total += parseFloat(num);
+        }
+
+        let montoNeto= total;
+        let igv = (total*0.18);
+        let montoTotal=  parseFloat(montoNeto)+parseFloat(igv);
+        document.querySelector("tfoot span[name='simboloMoneda']").textContent= simbolo_moneda_selected;
+        document.querySelector("label[name='montoNeto']").textContent=Util.formatoNumero(montoNeto, 2);
+        document.querySelector("label[name='igv']").textContent= Util.formatoNumero(igv, 3);
+        document.querySelector("label[name='montoTotal']").textContent= Util.formatoNumero(montoTotal, 2);
+    }
+
+    updateInObjSubtotal(id,valor){
+        detalleOrdenList.forEach((element,index) => {
+            if(element.id == id){
+                detalleOrdenList[index].subtotal = valor;
+            }
+    });
+    }
+
+    updateInputSubtotal(event){
+        let nuevoValor =event.target.value;
+        let idSelected = event.target.dataset.id;
+        let cantidadAComprar =0;
+        let precio =0;
+        let sizeInputCantidad = document.querySelectorAll("span[name='cantidad']").length;
+        for (let index = 0; index < sizeInputCantidad; index++) {
+            let id = document.querySelectorAll("input[name='cantidad_a_comprar']")[index].dataset.id;
+            if(id == idSelected){
+                cantidadAComprar = document.querySelectorAll("input[name='cantidad_a_comprar']")[index].value;
+                precio = document.querySelectorAll("input[name='precio']")[index].value;
+                if(parseFloat(nuevoValor) >0){                
+                    // actualizar datadetreq cantidad
+                    let nuevoPrecio= (nuevoValor/cantidadAComprar)
+                    this.updateInObjPrecioReferencial(id,nuevoPrecio);
+                    document.querySelectorAll("input[name='precio']")[index].value=nuevoPrecio;
+                    this.calcTotalDetalleRequerimiento(idSelected);
+
+                }
+                
+ 
+            }
+        }
     }
 
     selectItem(obj, idProducto) {
@@ -858,6 +1012,7 @@ class OrdenView {
 
     // mostrar info si esta vinculado con un requerimiento
     eliminarVinculoReq() {
+        console.log('remove sessionStorage');
         sessionStorage.removeItem('reqCheckedList');
         sessionStorage.removeItem('tipoOrden');
         window.location.reload();

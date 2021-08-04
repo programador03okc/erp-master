@@ -20,6 +20,7 @@ use App\Models\Contabilidad\Banco;
 use App\Models\Contabilidad\CuentaContribuyente;
 use App\Models\Contabilidad\TipoCuenta;
 use App\Models\Logistica\Orden;
+use App\Models\Logistica\Proveedor;
 use Carbon\Carbon;
 class OrdenController extends Controller
 {
@@ -3576,17 +3577,20 @@ class OrdenController extends Controller
     }
 
 
-    public function listarCuentasBancariasContribuyente($idContribuyente){
-        $cuentas = CuentaContribuyente::mostrarCuentasContribuyente($idContribuyente)->get();
+    public function listarCuentasBancariasProveedor($idProveedor){
+        // $cuentas = CuentaContribuyente::mostrarCuentasContribuyente($idProveedor)->get();
+        $cuentas = Proveedor::mostrarCuentasProveedor($idProveedor)->get();
         return $cuentas;
     }
 
     public function guardarCuentaBancariaProveedor(Request $request){
         $status=0;
 
+        $idContribuyente = Proveedor::find($request->id_proveedor)->id_contribuyente;
+
         $idCuentaContribuyente = DB::table('contabilidad.adm_cta_contri')->insertGetId(
             [
-                'id_contribuyente' => $request->id_contribuyente,
+                'id_contribuyente' => $idContribuyente,
                 'id_banco' => $request->id_banco,
                 'id_tipo_cuenta' => $request->id_tipo_cuenta,
                 'nro_cuenta' => $request->nro_cuenta,

@@ -43,7 +43,7 @@ Elaborar orden
 
                         <div class="col-md-2" id="group-fecha_orden">
                             <h5>Moneda</h5>
-                            <select class="form-control activation" name="id_moneda" onChange="ordenView.changeMoneda(this);">
+                            <select class="form-control activation handleChangeMoneda" name="id_moneda">
                                 @foreach ($tp_moneda as $tpm)
                                 <option value="{{$tpm->id_moneda}}" data-simbolo-moneda="{{$tpm->simbolo}}">{{$tpm->descripcion}} ( {{$tpm->simbolo}} )</option>
                                 @endforeach
@@ -65,7 +65,7 @@ Elaborar orden
                         </div>
                         <div class="col-md-2" id="group-datos_para_despacho-sede">
                             <h5>Empresa - Sede</h5>
-                            <select class="form-control activation " name="id_sede" onChange="ordenView.changeSede(this);">
+                            <select class="form-control activation handleChangeSede" name="id_sede">
                                 @foreach ($sedes as $sede)
                                 <option value="{{$sede->id_sede}}" data-id-empresa="{{$sede->id_empresa}}" data-direccion="{{$sede->direccion}}" data-id-ubigeo="{{$sede->id_ubigeo}}" data-ubigeo-descripcion="{{$sede->ubigeo_descripcion}}">{{$sede->descripcion}}</option>
                                 @endforeach
@@ -166,7 +166,7 @@ Elaborar orden
                         <div class="col-md-3" id="group-condicion_compra-forma_pago">
                             <h5>Forma de pago</h5>
                             <div style="display:flex;">
-                                <select class="form-control group-elemento activation" name="id_condicion" onchange="ordenView.handlechangeCondicion(event);" style="width:100%; text-align:center;">
+                                <select class="form-control group-elemento activation handleChangeCondicion" name="id_condicion" style="width:100%; text-align:center;">
                                     @foreach ($condiciones as $cond)
                                     <option value="{{$cond->id_condicion_pago}}">{{$cond->descripcion}}</option>
                                     @endforeach

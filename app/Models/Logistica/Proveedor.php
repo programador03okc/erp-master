@@ -6,25 +6,24 @@ use Illuminate\Database\Eloquent\Model;
 
 class Proveedor extends Model
 {
-    //
     protected $table = 'logistica.log_prove';
-    //primary key
     protected $primaryKey = 'id_proveedor';
-    //  public $incrementing = false;
-    //Timesptamps
     public $timestamps = false;
-
-    protected $fillable = [
-        'id_contribuyente',
-        'codigo',
-        'estado',
-        'fecha_registro'
-
-    ];
-
     protected $guarded = ['id_proveedor'];
 
+    public static function mostrarCuentasProveedor($idProveedor)
+    {
+
+        $data = Proveedor::with('contribuyente','cuentaContribuyente.banco','cuentaContribuyente.banco.contribuyente','cuentaContribuyente.tipoCuenta','cuentaContribuyente.moneda')
+        ->where('log_prove.id_proveedor', '=', $idProveedor);
+        return $data;
+    }
+
+
     public function contribuyente(){
-        return $this->belongsTo('App\Models\Logistica\Contribuyente','id_contribuyente','id_contribuyente');
+        return $this->belongsTo('App\Models\Contabilidad\Contribuyente','id_contribuyente','id_contribuyente');
+    }
+    public function cuentaContribuyente(){
+        return $this->belongsTo('App\Models\Contabilidad\CuentaContribuyente','id_contribuyente','id_contribuyente');
     }
 }
