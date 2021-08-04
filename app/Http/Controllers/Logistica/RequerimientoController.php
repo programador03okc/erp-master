@@ -1888,7 +1888,7 @@ class RequerimientoController extends Controller
 
             $aprobacion->id_aprobacion=123;
             $seNotificaraporEmail= true;
-            // DB::commit();
+            DB::commit();
             return response()->json(['id_aprobacion' => $aprobacion->id_aprobacion, 'notificacion_por_emial' => $seNotificaraporEmail]);
         } catch (Exception $e) {
             DB::rollBack();
