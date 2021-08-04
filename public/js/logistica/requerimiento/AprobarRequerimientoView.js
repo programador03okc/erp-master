@@ -34,6 +34,13 @@ class AprobarRequerimientoView {
             this.imprimirRequerimientoPdf(e);
         });
  
+        $('#modal-requerimiento').on("change","select.handleChangeUpdateAccion", (e)=>{
+            this.updateAccion(e.currentTarget);
+        });
+        $('#modal-requerimiento').on("click","button.handleClickRegistrarRespuesta", ()=>{
+            this.registrarRespuesta();
+        });
+ 
  
     }
 
@@ -329,8 +336,6 @@ class AprobarRequerimientoView {
                     this.construirSeccionItemsDeRequerimiento(res['det_req'],res['requerimiento'][0]['simbolo_moneda']);
                     this.construirSeccionHistorialAprobacion(res['historial_aprobacion']);
 
-                    document.querySelector("select[class~='handleChangeUpdateAccion']").addEventListener("change", this.updateAccion, false);
-                    document.querySelector("button[class~='handleClickRegistrarRespuesta']").addEventListener("click", this.registrarRespuesta.bind(this), false);
 
                     $('#modal-requerimiento div.modal-body').LoadingOverlay("hide", true);
         
@@ -534,20 +539,19 @@ class AprobarRequerimientoView {
 
     }
 
-    updateAccion() {
-        
-        if (this.value > 0) {
+    updateAccion(obj) {
+        if (obj.value > 0) {
             document.querySelector("div[id='modal-requerimiento'] select[id='accion']").closest('div[class~="form-group"]').classList.remove("has-error")
-            if (this.closest('div[class~="form-group"]').querySelector("span")) {
-                this.closest('div[class~="form-group"]').querySelector("span").remove();
+            if (obj.closest('div[class~="form-group"]').querySelector("span")) {
+                obj.closest('div[class~="form-group"]').querySelector("span").remove();
             }
         } else {
-            this.closest('div[class~="form-group"]').classList.add("has-error")
-            if (this.closest('div[class~="form-group"]').querySelector("span") == null) {
+            obj.closest('div[class~="form-group"]').classList.add("has-error")
+            if (obj.closest('div[class~="form-group"]').querySelector("span") == null) {
                 let newSpanInfo = document.createElement("span");
                 newSpanInfo.classList.add('text-danger');
                 newSpanInfo.textContent = '(Seleccione una acción)';
-                this.closest('div[class~="form-group"]').appendChild(newSpanInfo);
+                obj.closest('div[class~="form-group"]').appendChild(newSpanInfo);
             }
         }
     }
