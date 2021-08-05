@@ -576,11 +576,10 @@ function listarRequerimientosPendientes(permiso) {
                               row["codigo"] +
                               '" title="Anular Requerimiento" >' +
                               '<i class="fas fa-trash"></i></button>'
-                            : "") +
-                        (// (row['estado'] == 19 && row['id_tipo_requerimiento'] == 1 && row['sede_requerimiento'] == row['sede_orden'] && row['id_od'] == null) || //compra
+                            : "") + // (row['estado'] == 19 && row['id_tipo_requerimiento'] == 1 && row['sede_requerimiento'] == row['sede_orden'] && row['id_od'] == null) || //compra
                         // (row['estado'] == 19 && row['id_tipo_requerimiento'] == 1 && row['sede_requerimiento'] !== row['sede_orden'] && row['id_transferencia'] !== null && row['id_od'] == null) || //compra con transferencia
                         // (row['estado'] == 10) || (row['estado'] == 22) ||
-                        (row["estado"] == 28 &&
+                        ((row["estado"] == 28 &&
                             row["tiene_transformacion"] == false) || //(row['estado'] == 27) ||
                         (row["estado"] == 19 &&
                             row["id_tipo_requerimiento"] !== 1) ||
@@ -627,7 +626,15 @@ function listarRequerimientosPendientes(permiso) {
                                   row["codigo_od"]
                               }" title="Adjuntar Boleta/Factura" >
                                 <i class="fas fa-paperclip"></i></button>`
-                            : "")
+                            : "") +
+                        `<button type="button" class="facturar btn btn-${
+                            row["enviar_facturacion"] ? "info" : "default"
+                        } boton" data-toggle="tooltip" 
+                        data-placement="bottom" title="Enviar a Facturación" 
+                        data-id="${row["id_requerimiento"]}" data-cod="${
+                            row["codigo"]
+                        }">
+                        <i class="fas fa-check"></i></button>`
                     );
                     // } else {
                     //     return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
@@ -640,6 +647,18 @@ function listarRequerimientosPendientes(permiso) {
         ]
     });
 }
+
+$("#requerimientosEnProceso tbody").on("click", "button.facturar", function() {
+    var id = $(this).data("id");
+    var cod = $(this).data("cod");
+    var rspta = confirm(
+        "¿Está seguro que desea mandar a facturar el " + cod + "?"
+    );
+
+    if (rspta) {
+        enviarFacturar(id, "enProceso");
+    }
+});
 
 $("#requerimientosEnProceso tbody").on(
     "click",
@@ -694,6 +713,33 @@ function anularOrdenDespacho(id, proviene) {
     $.ajax({
         type: "GET",
         url: "anular_orden_despacho/" + id,
+        dataType: "JSON",
+        success: function(response) {
+            console.log(response);
+            if (response > 0) {
+                if (proviene == "enProceso") {
+                    $("#requerimientosEnProceso")
+                        .DataTable()
+                        .ajax.reload();
+                } else if (proviene == "enTransformacion") {
+                    $("#requerimientosEnTransformacion")
+                        .DataTable()
+                        .ajax.reload();
+                }
+                actualizaCantidadDespachosTabs();
+            }
+        }
+    }).fail(function(jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
+
+function enviarFacturar(id, proviene) {
+    $.ajax({
+        type: "GET",
+        url: "enviarFacturar/" + id,
         dataType: "JSON",
         success: function(response) {
             console.log(response);
@@ -931,10 +977,9 @@ function listarRequerimientosEnTransformacion(permiso) {
                                   row["codigo"] +
                                   '" title="Anular Requerimiento" >' +
                                   '<i class="fas fa-trash"></i></button>'
-                                : "") +
-                            (//     (row['estado'] == 19 && row['id_tipo_requerimiento'] == 1 && row['sede_requerimiento'] == row['sede_orden'] && row['id_od'] == null) || //compra
+                                : "") + //     (row['estado'] == 19 && row['id_tipo_requerimiento'] == 1 && row['sede_requerimiento'] == row['sede_orden'] && row['id_od'] == null) || //compra
                             // (row['estado'] == 19 && row['id_tipo_requerimiento'] == 1 && row['sede_requerimiento'] !== row['sede_orden'] && row['id_transferencia'] !== null && row['id_od'] == null) || //compra con transferencia
-                            (row["estado"] == 19 &&
+                            ((row["estado"] == 19 &&
                                 row["confirmacion_pago"] == true &&
                                 /*row['id_od'] == null &&*/ row[
                                     "count_transferencia"

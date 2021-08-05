@@ -892,6 +892,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('getTimelineOrdenDespacho/{id}', 'DistribucionController@getTimelineOrdenDespacho');
 				Route::post('guardarEstadoTimeLine', 'DistribucionController@guardarEstadoTimeLine');
 				Route::post('mostrarEstados', 'DistribucionController@mostrarEstados');
+				Route::get('enviarFacturar/{id}', 'DistribucionController@enviarFacturar');
 			});
 
 			Route::group(['as' => 'trazabilidad-requerimientos.', 'prefix' => 'trazabilidad-requerimientos'], function () {
@@ -1607,10 +1608,12 @@ Route::group(['middleware' => ['auth']], function () {
 
 			Route::get('index', 'Tesoreria\Facturacion\PendientesFacturacionController@view_pendientes_facturacion')->name('index');
 			Route::post('listarGuiasVentaPendientes', 'Tesoreria\Facturacion\PendientesFacturacionController@listarGuiasVentaPendientes')->name('listar-guias-pendientes');
+			Route::post('listarRequerimientosPendientes', 'Tesoreria\Facturacion\PendientesFacturacionController@listarRequerimientosPendientes')->name('listar-requerimientos-pendientes');
 			Route::get('obtenerGuiaVenta/{id}', 'Tesoreria\Facturacion\PendientesFacturacionController@obtenerGuiaVenta')->name('obtener-guia-venta');
-			Route::post('guardar_doc_venta', 'Tesoreria\Facturacion\PendientesFacturacionController@guardar_doc_venta')->name('guardar-guia-venta');
+			Route::post('guardar_doc_venta', 'Tesoreria\Facturacion\PendientesFacturacionController@guardar_doc_venta')->name('guardar-doc-venta');
 			Route::get('documentos_ver/{id}', 'Tesoreria\Facturacion\PendientesFacturacionController@documentos_ver')->name('ver-doc-venta');
-			Route::get('anular_doc_ven/{id}', 'Tesoreria\Facturacion\PendientesFacturacionController@anular_doc_ven')->name('ver-doc-venta');
+			Route::get('anular_doc_ven/{id}', 'Tesoreria\Facturacion\PendientesFacturacionController@anular_doc_ven')->name('anular-doc-venta');
+			Route::get('obtenerRequerimiento/{id}', 'Tesoreria\Facturacion\PendientesFacturacionController@obtenerRequerimiento')->name('obtener-requerimiento');
 		});
 	});
 

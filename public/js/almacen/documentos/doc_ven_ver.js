@@ -1,4 +1,7 @@
-function documentosVer(id) {
+let origenVer = "";
+
+function documentosVer(id, origen) {
+    origenVer = origen;
     $("#modal-doc_ven_ver").modal({
         show: true
     });
@@ -34,7 +37,9 @@ function documentosVer(id) {
                 </tr>
                 <tr>
                     <th colSpan="2">Proveedor: </th>
-                    <td colSpan="3">${element.nro_documento +
+                    <td colSpan="3">${(element.nro_documento !== null
+                        ? element.nro_documento
+                        : "") +
                         " - " +
                         element.razon_social}</td>
                     <th colSpan="2">Importe: </th>
@@ -48,7 +53,7 @@ function documentosVer(id) {
                 <tr><td colSpan="12"></td></tr>
                 <tr style="background-color: Gainsboro;">
                     <th>#</th>
-                    <th>Guía</th>
+                    <th>Guía/Req</th>
                     <th>Código</th>
                     <th>PartNumber</th>
                     <th>Descripción</th>
@@ -72,6 +77,8 @@ function documentosVer(id) {
                         <td>${
                             item.serie !== null
                                 ? item.serie + "-" + item.numero
+                                : item.codigo_req !== null
+                                ? item.codigo_req
                                 : ""
                         }</td>
                         <td>${item.codigo !== null ? item.codigo : ""}</td>
@@ -145,9 +152,14 @@ function anularDocVenta(id) {
             success: function(response) {
                 console.log(response);
                 alert("Se anuló correctamente el documento.");
-                let facturacion = new Facturacion();
-                facturacion.listarGuias();
                 $("#modal-doc_ven_ver").modal("hide");
+                let facturacion = new Facturacion();
+
+                if (origenVer == "guia") {
+                    facturacion.listarGuias();
+                } else if (origenVer == "requerimiento") {
+                    facturacion.listarRequerimientos();
+                }
             }
         }).fail(function(jqXHR, textStatus, errorThrown) {
             console.log(jqXHR);

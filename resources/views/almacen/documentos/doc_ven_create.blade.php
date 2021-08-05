@@ -7,7 +7,7 @@
                     <h3 class="modal-title">Generar Documento de Venta</h3>
                 </div>
                 <div class="modal-body">
-                    <!-- <input type="text" style="display:none;" name="id_doc_com"> -->
+                    <input type="text" style="display:none;" name="id_requerimiento">
                     <input type="text" style="display:none;" name="id_almacen_doc">
 
                     <div class="row">
@@ -53,7 +53,7 @@
                             <h5>Razon Social Cliente</h5>
                             <input type="text" class="form-control" name="cliente_razon_social" readOnly>
                         </div>
-                        <div class="col-md-3">
+                        <div class="guia col-md-3">
                             <h5>Serie-Número (Guía)</h5>
                             <div class="input-group">
                                 <input type="text" style="display:none;" name="id_guia">
@@ -63,16 +63,22 @@
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <h5>Importe Total segun OCAM</h5>
+                            <h5>Moneda</h5>
                             <div style="display:flex;">
-                                <input type="text" name="simbolo" class="form-control group-elemento" style="width:40px;text-align:center;" readOnly />
-                                <input type="text" name="importe_oc" class="form-control group-elemento" style="text-align: right;" readOnly />
                                 <select class="form-control group-elemento" name="moneda" onChange="changeMoneda();">
                                     <option value="0">Elija una opción</option>
                                     @foreach ($monedas as $mon)
                                     <option value="{{$mon->id_moneda}}" data-sim="{{$mon->simbolo}}">{{$mon->descripcion}}</option>
                                     @endforeach
                                 </select>
+                            </div>
+                        </div>
+                        <div class="ocam col-md-3">
+                            <h5>Importe Total segun OCAM</h5>
+                            <div style="display:flex;">
+                                <input type="text" name="simbolo" class="form-control group-elemento" style="width:40px;text-align:center;" readOnly />
+                                <input type="text" name="importe_oc" class="form-control group-elemento" style="text-align: right;" readOnly />
+
                             </div>
                         </div>
                         <!-- <div class="col-md-3">
@@ -95,7 +101,7 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>Guía</th>
+                                        <th>Guía/Req</th>
                                         <th>Código</th>
                                         <th>PartNumber</th>
                                         <th>Descripción</th>
@@ -108,6 +114,7 @@
                                         <th>Total
                                             <!-- <i class="fas fa-plus-circle icon-tabla green boton agregarServicio" data-toggle="tooltip" data-placement="bottom" title="Agregar Servicio" onClick="agregarServicio();"></i> -->
                                         </th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
