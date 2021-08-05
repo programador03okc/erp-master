@@ -38,16 +38,16 @@ Requerimientos pendientes
                                                 <thead>
                                                     <tr>
                                                         <th hidden>Id</th>
-                                                        <th>Selec.</th>
-                                                        <th>Código</th>
-                                                        <th>Concepto</th>
-                                                        <th>Fecha creación</th>
-                                                        <th>Tipo Req.</th>
-                                                        <th>Proveedor/Entidad</th>
-                                                        <th>Empresa - Sede</th>
-                                                        <th>Creado por</th>
-                                                        <th>Estado</th>
-                                                        <th>Acción</th>
+                                                        <th style="text-align:center;">Selec.</th>
+                                                        <th style="text-align:center;">Código</th>
+                                                        <th style="text-align:center;">Concepto</th>
+                                                        <th style="text-align:center;">Fecha creación</th>
+                                                        <th style="text-align:center;">Tipo Req.</th>
+                                                        <th style="text-align:center;">Proveedor/Entidad</th>
+                                                        <th style="text-align:center;">Empresa - Sede</th>
+                                                        <th style="text-align:center;">Creado por</th>
+                                                        <th style="text-align:center;">Estado</th>
+                                                        <th style="text-align:center;">Acción</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody></tbody>
@@ -82,6 +82,7 @@ Requerimientos pendientes
 @include('logistica.requerimientos.mapeo.mapeoItemsRequerimiento')
 @include('logistica.requerimientos.mapeo.mapeoAsignarProducto')
 
+@include('logistica.gestion_logistica.compras.pendientes.modal_observar_requerimiento_logistica')
 @include('logistica.gestion_logistica.compras.pendientes.modal_filtro_requerimientos_pendientes')
 @include('logistica.gestion_logistica.compras.pendientes.modal_ver_cuadro_costos')
 @include('logistica.gestion_logistica.compras.pendientes.modal_agregar_items_requerimiento')
