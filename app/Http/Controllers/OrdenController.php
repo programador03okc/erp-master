@@ -255,8 +255,7 @@ class OrdenController extends Controller
         $orden_list=[];
         $detalle_orden_list=[];
 
-        $orden_obj = DB::table('logistica.log_ord_compra')
-        ->select(
+        $orden_obj = Orden::select(
             'log_ord_compra.id_orden_compra as orden_id_orden_compra',
             'log_ord_compra.id_grupo_cotizacion as orden_id_grupo_cotizacion',
             'log_ord_compra.id_tp_documento as orden_id_tp_documento',
@@ -974,7 +973,7 @@ class OrdenController extends Controller
 
 
         ->where([
-            // ['log_ord_compra.codigo', '=', 'OC-21050010'],
+            // ['log_ord_compra.codigo', '=', 'OC-21070148'],
             ['log_ord_compra.estado', '!=', 7],
             ['log_ord_compra.id_grupo_cotizacion', '=', null],
             $tipoOrden >0 ? ['log_ord_compra.id_tp_documento',$tipoOrden]:[null],
@@ -1030,7 +1029,7 @@ class OrdenController extends Controller
                 $data_orden[]=[
                     'id_orden_compra'=> $element->id_orden_compra,
                     'id_tp_documento'=> $element->id_tp_documento,
-                    'fecha' => date_format(date_create($element->fecha),'Y-m-d'), 
+                    'fecha' => $element->fecha, 
                     'codigo'=> $element->codigo,
                     'descripcion_sede_empresa'=> $element->descripcion_sede_empresa,
                     'nro_documento'=> $element->nro_documento, 

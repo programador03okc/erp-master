@@ -30,8 +30,7 @@ class ListaOrdenView {
             this.editarEstadoOrden(e.currentTarget);
         });
         $('#listaOrdenes tbody').on("click","label.handleClickAbrirOrden",(e)=>{
-            var data = $('#listaOrdenes').DataTable().row($(this).parents("tr")).data();
-            this.abrirOrden(data.id_orden_compra);
+            this.abrirOrden(e.currentTarget.dataset.idOrden);
         });
         
         $('#listaOrdenes tbody').on("click","label.handleClickAbrirRequerimiento",(e)=>{
@@ -538,14 +537,14 @@ class ListaOrdenView {
                 },
                 {'render':
                 function (data, type, row, meta){
-                    return '<label class="lbl-codigo handleClickAbrirOrden" title="Abrir Orden" data-id-orden="'+row.id_orden_compra+'">'+row.codigo+'</label>';
+                    return '<label class="lbl-codigo handleClickAbrirOrden" title="Ir a orden" data-id-orden="'+row.id_orden_compra+'">'+(row.codigo?row.codigo:'')+'</label>';
                     }
                 },
                 {
                     'render': function (data, type, row) {
                         let labelRequerimiento='';
                         (row['requerimientos']).forEach(element => {
-                            labelRequerimiento += `<label class="lbl-codigo handleClickAbrirRequerimiento" title="Abrir requerimiento"  data-id-requerimiento="${element.id_requerimiento}" >${element.codigo}</label>`;
+                            labelRequerimiento += `<label class="lbl-codigo handleClickAbrirRequerimiento" title="Ir a requerimiento"  data-id-requerimiento="${element.id_requerimiento}" >${element.codigo?element.codigo:''}</label>`;
                         });
                         return labelRequerimiento;
                         
@@ -586,13 +585,17 @@ class ListaOrdenView {
                     function (data, type, row, meta){
                         let output='No aplica';
                         if(row.id_tp_documento ==2){ // orden de compra
-                            var estimatedTimeOfArrive= moment(row['fecha']).add(row['plazo_entrega'], 'days').format('YYYY-MM-DD');
-                            let dias_restantes = restarFechas(fecha_actual(), sumaFecha(row['plazo_entrega'], row['fecha']));
-                            var porc = dias_restantes * 100 / (parseFloat(row['plazo_entrega'])).toFixed(2);
-                            var color = (porc > 50 ? 'success' : ((porc <= 50 && porc > 20) ? 'warning' : 'danger'));
+                    
+                            let estimatedTimeOfArrive= moment(row['fecha'],'DD-MM-YYYY').add(row['plazo_entrega'], 'days').format('DD-MM-YYYY');
+                            let sumaFechaConPlazo =moment(row['fecha'],"DD-MM-YYYY").add(row['plazo_entrega'], 'days').format("DD-MM-YYYY").toString();
+                            // let dias_restantes = restarFechas(fecha_actual(), sumaFechaConPlazo);
+                            let fechaActual= moment().format('DD-MM-YYYY').toString();
+                            let dias_restantes= moment(sumaFechaConPlazo,'DD-MM-YYYY').diff(moment(fechaActual,'DD-MM-YYYY'), 'days');
+                            let porc = dias_restantes * 100 / (parseFloat(row['plazo_entrega'])).toFixed(2);
+                            let color = (porc > 50 ? 'success' : ((porc <= 50 && porc > 20) ? 'warning' : 'danger'));
                             output= `<div class="progress-group">
                             <span class="progress-text">${estimatedTimeOfArrive} <br> Nro días Restantes</span>
-                            <span class="float-right"><b>${dias_restantes?dias_restantes:''}</b> / ${row.plazo_entrega?row.plazo_entrega:''}</span>
+                            <span class="float-right"><b>${dias_restantes>0?dias_restantes:'0'}</b></span>
                             <div class="progress progress-sm">
                                 <div class="progress-bar bg-${color}" style="width: ${(porc<1)?'100':porc}%"></div>
                             </div>
@@ -610,7 +613,7 @@ class ListaOrdenView {
                         let fechaOrden =moment(row.fecha);
                         let fechaRequerimiento =moment(row.fecha_registro_requerimiento);
                         let tiempoAtencionLogistica = fechaOrden.diff((fechaRequerimiento), 'days');
-                        return `${tiempoAtencionLogistica} días`;
+                        return `${tiempoAtencionLogistica>0?(tiempoAtencionLogistica+' días'):'0 días'} `;
                     }
                 },
                 {'render':
@@ -619,7 +622,7 @@ class ListaOrdenView {
                         let fechaOrden =moment(row.fecha);
                         let tiempoAtencionProveedor = fechaOrden.diff((fechaIngresoAlmacen), 'days');
                         if(row.fecha_ingreso_almacen !=null){
-                            return `${tiempoAtencionProveedor} días`;
+                            return `${tiempoAtencionProveedor>0?(tiempoAtencionProveedor+' días'):'0 días'}`;
                         }else{
                             return '';
                         }
@@ -775,23 +778,23 @@ class ListaOrdenView {
     }
 
     abrirRequerimiento(idRequerimiento){
-        // localStorage.setItem('idRequerimiento', idRequerimiento);
-        // let url = "/logistica/gestion-logistica/requerimiento/elaboracion/index";
-        // var win = window.open(url, "_self");
-        // win.focus(); 
-        let url =`/logistica/gestion-logistica/requerimiento/elaboracion/imprimir-requerimiento-pdf/${idRequerimiento}/0`;
+        localStorage.setItem('idRequerimiento', idRequerimiento);
+        let url = "/logistica/gestion-logistica/requerimiento/elaboracion/index";
         var win = window.open(url, "_blank");
         win.focus(); 
+        // let url =`/logistica/gestion-logistica/requerimiento/elaboracion/imprimir-requerimiento-pdf/${idRequerimiento}/0`;
+        // var win = window.open(url, "_blank");
+        // win.focus(); 
     }
 
     abrirOrden(idOrden){
-        // sessionStorage.setItem("idOrden",idOrden);
-        // let url ="/logistica/gestion-logistica/compras/ordenes/elaborar/index";
-        // var win = window.open(url, '_blank');
-        // win.focus();
-        let url =`/logistica/gestion-logistica/compras/ordenes/listado/generar-orden-pdf/${idOrden}`;
-        var win = window.open(url, "_blank");
-        win.focus(); 
+        sessionStorage.setItem("idOrden",idOrden);
+        let url ="/logistica/gestion-logistica/compras/ordenes/elaborar/index";
+        var win = window.open(url, '_blank');
+        win.focus();
+        // let url =`/logistica/gestion-logistica/compras/ordenes/listado/generar-orden-pdf/${idOrden}`;
+        // var win = window.open(url, "_blank");
+        // win.focus(); 
     }
 
  
@@ -920,7 +923,7 @@ class ListaOrdenView {
                     }
                 },
                 { render: function (data, type, row) {     
-                    return `${row.orden_plazo_entrega?row.orden_plazo_entrega+' días':''}`;
+                    return `${row.orden_plazo_entrega>0?row.orden_plazo_entrega+' días':''}`;
                     }
                 },
                 { render: function (data, type, row) {     

@@ -16,6 +16,18 @@ class Orden extends Model {
 
     public $timestamps = false;
 
+    public function getFechaAttribute(){
+        $fecha= new Carbon($this->attributes['fecha']);
+        return $fecha->format('d-m-Y');
+    }
+    public function getFechaRegistroRequerimientoAttribute(){
+        $fecha= new Carbon($this->attributes['fecha_registro_requerimiento']);
+        return $fecha->format('d-m-Y');
+    }
+    public function getFechaIngresoAlmacenAttribute(){
+        $fecha= new Carbon($this->attributes['fecha_ingreso_almacen']);
+        return $fecha->format('d-m-Y');
+    }
 
     public function mostrar()
     {
