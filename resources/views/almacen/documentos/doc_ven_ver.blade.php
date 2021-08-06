@@ -10,7 +10,7 @@
                     <input type="text" style="display:none;" name="id_doc_ven">
                     <div class="row">
                         <div class="col-md-12">
-                            <table class="mytable table table-condensed table-bordered table-okc-view" width="100%" id="documentos" style="margin-top:10px; margin-bottom: 0px; font-size: 12px;">
+                            <table class="mytable table table-condensed table-bordered table-okc-view" width="100%" id="documentos" style="margin-top:10px; margin-bottom: 0px; font-size: 11px;">
                                 <tbody></tbody>
                             </table>
                         </div>

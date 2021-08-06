@@ -18,14 +18,17 @@ function open_doc_ven_create(id_guia) {
         .val(id_tp_doc)
         .trigger("change.select2");
     $("[name=fecha_emision_doc]").val(fecha_actual());
+    $("[name=fecha_vencimiento]").val(fecha_actual());
     $("[name=serie_doc]").val("");
     $("[name=numero_doc]").val("");
+    $("[name=id_condicion]").val("");
+    $("[name=credito_dias]").val("");
     $("[name=moneda]").val(1);
     $("[name=simbolo]").val("S/");
 
     $(".guia").show();
     $(".ocam").hide();
-    // totales.simbolo = "S/";
+    totales.simbolo = "S/";
     obtenerGuía(id_guia);
 }
 
@@ -45,15 +48,18 @@ function open_doc_ven_requerimiento_create(id_requerimiento) {
         .val(id_tp_doc)
         .trigger("change.select2");
     $("[name=fecha_emision_doc]").val(fecha_actual());
+    $("[name=fecha_vencimiento]").val(fecha_actual());
     $("[name=serie_doc]").val("");
     $("[name=numero_doc]").val("");
+    $("[name=id_condicion]").val("");
+    $("[name=credito_dias]").val("");
     $("[name=moneda]").val(1);
     $("[name=simbolo]").val("S/");
     $("[name=id_requerimiento]").val(id_requerimiento);
 
     $(".guia").hide();
     $(".ocam").show();
-    // totales.simbolo = "S/";
+    totales.simbolo = "S/";
     obtenerRequerimiento(id_requerimiento);
 }
 
@@ -77,22 +83,44 @@ function obtenerGuía(id) {
                         : ""
                 );
                 $("[name=id_guia]").val(response["guia"].id_guia_ven);
-                $("[name=serie_guia]").val(response["guia"].serie);
-                $("[name=numero_guia]").val(response["guia"].numero);
                 $("[name=id_sede]").val(response["guia"].id_sede);
             }
 
             if (response["detalle"].length > 0) {
-                listaItems = response["detalle"];
-                simbolo = listaItems[0].moneda_oc == "s" ? "S/" : "$";
+                response["detalle"].forEach(det => {
+                    if (
+                        parseFloat(
+                            det.cantidad_facturada !== null
+                                ? det.cantidad_facturada
+                                : 0
+                        ) < parseFloat(det.cantidad)
+                    ) {
+                        det.cantidad_real =
+                            parseFloat(det.cantidad) -
+                            parseFloat(
+                                det.cantidad_facturada !== null
+                                    ? det.cantidad_facturada
+                                    : 0
+                            );
+                        listaItems.push(det);
+                    }
+                });
 
-                $("[name=moneda]").val(listaItems[0].moneda_oc == "s" ? 1 : 2);
-                $("[name=simbolo]").val(simbolo);
-                $("[name=importe_oc]").val(listaItems[0].monto_total);
+                if (
+                    listaItems.length > 0 &&
+                    listaItems[0].moneda_oc !== undefined
+                ) {
+                    simbolo = listaItems[0].moneda_oc == "s" ? "S/" : "$";
+                    $("[name=moneda]").val(
+                        listaItems[0].moneda_oc == "s" ? 1 : 2
+                    );
+                    $("[name=simbolo]").val(simbolo);
+                    $("[name=importe_oc]").val(listaItems[0].monto_total);
+                    totales.simbolo = simbolo;
+                }
 
                 totales = { porcentaje_igv: parseFloat(response["igv"]) };
 
-                totales.simbolo = simbolo;
                 mostrarListaItems();
             }
         }
@@ -121,22 +149,45 @@ function obtenerRequerimiento(id) {
                 $("[name=id_requerimiento]").val(
                     response["req"].id_requerimiento
                 );
-                // $("[name=serie_guia]").val(response["req"].serie);
-                // $("[name=numero_guia]").val(response["req"].numero);
                 $("[name=id_sede]").val(response["req"].id_sede);
             }
 
             if (response["detalle"].length > 0) {
-                listaItems = response["detalle"];
-                simbolo = listaItems[0].moneda_oc == "s" ? "S/" : "$";
+                response["detalle"].forEach(det => {
+                    if (
+                        parseFloat(
+                            det.cantidad_facturada !== null
+                                ? det.cantidad_facturada
+                                : 0
+                        ) < parseFloat(det.cantidad)
+                    ) {
+                        det.cantidad_real =
+                            parseFloat(det.cantidad) -
+                            parseFloat(
+                                det.cantidad_facturada !== null
+                                    ? det.cantidad_facturada
+                                    : 0
+                            );
+                        listaItems.push(det);
+                    }
+                });
 
-                $("[name=moneda]").val(listaItems[0].moneda_oc == "s" ? 1 : 2);
-                $("[name=simbolo]").val(simbolo);
-                $("[name=importe_oc]").val(listaItems[0].monto_total);
+                if (
+                    listaItems.length > 0 &&
+                    listaItems[0].moneda_oc !== undefined
+                ) {
+                    simbolo = listaItems[0].moneda_oc == "s" ? "S/" : "$";
+
+                    $("[name=moneda]").val(
+                        listaItems[0].moneda_oc == "s" ? 1 : 2
+                    );
+                    $("[name=simbolo]").val(simbolo);
+                    $("[name=importe_oc]").val(listaItems[0].monto_total);
+                    totales.simbolo = simbolo;
+                }
 
                 totales = { porcentaje_igv: parseFloat(response["igv"]) };
 
-                totales.simbolo = simbolo;
                 mostrarListaItems();
             }
         }
@@ -151,6 +202,7 @@ function mostrarListaItems() {
     var html = "";
     var i = 1;
     var sub_total = 0;
+    var cantidad = 0;
 
     listaItems.forEach(element => {
         element.porcentaje_dscto =
@@ -161,7 +213,7 @@ function mostrarListaItems() {
             element.total_dscto !== undefined ? element.total_dscto : 0;
         element.precio = element.precio !== undefined ? element.precio : 0.01;
         element.sub_total =
-            parseFloat(element.cantidad) * parseFloat(element.precio);
+            parseFloat(element.cantidad_real) * parseFloat(element.precio);
         element.total = element.sub_total - element.total_dscto;
         sub_total += element.total;
 
@@ -181,7 +233,16 @@ function mostrarListaItems() {
                 ? `<input type="text" class="form-control descripcion" value="${element.descripcion}" data-id="${element.id_detalle_requerimiento}"/>`
                 : element.descripcion
         }</td>
-        <td>${element.cantidad}</td>
+        <td>
+            <input type="number" class="form-control right cantidad" value="${
+                element.cantidad_real
+            }" max="${element.cantidad_real}"
+            data-id="${
+                element.id_detalle_requerimiento !== undefined
+                    ? element.id_detalle_requerimiento
+                    : element.id_guia_ven_det
+            }" min="0" />
+        </td>
         <td>${element.abreviatura}</td>
         <td>
             <input type="number" class="form-control right unitario" value="${
@@ -271,6 +332,26 @@ function mostrarListaItems() {
     $("[name=importe]").val(formatNumber.decimal(totales.total, "", -2));
 }
 
+$("#detalleItems tbody").on("change", ".cantidad", function() {
+    let id = $(this).data("id");
+    let cantidad = parseFloat($(this).val());
+    let sub_total = 0;
+    console.log("cantidad: " + cantidad);
+
+    listaItems.forEach(element => {
+        if (
+            element.id_guia_ven_det == id ||
+            element.id_detalle_requerimiento == id
+        ) {
+            element.cantidad_real = cantidad;
+            element.sub_total = cantidad * parseFloat(element.precio);
+            element.total = element.sub_total - element.total_dscto;
+            console.log(element);
+        }
+    });
+    mostrarListaItems();
+});
+
 $("#detalleItems tbody").on("change", ".unitario", function() {
     let id = $(this).data("id");
     let unitario = parseFloat($(this).val());
@@ -282,7 +363,7 @@ $("#detalleItems tbody").on("change", ".unitario", function() {
             element.id_detalle_requerimiento == id
         ) {
             element.precio = unitario;
-            element.sub_total = unitario * parseFloat(element.cantidad);
+            element.sub_total = unitario * parseFloat(element.cantidad_real);
             element.total = element.sub_total - element.total_dscto;
             console.log(element);
         }
@@ -377,7 +458,7 @@ $("#form-doc_create").on("submit", function(e) {
                     : null,
             id_producto: element.id_producto,
             descripcion: element.id_producto == null ? element.descripcion : "",
-            cantidad: element.cantidad,
+            cantidad: element.cantidad_real,
             id_unid_med: element.id_unid_med,
             precio: element.precio,
             sub_total: element.sub_total,

@@ -25,12 +25,39 @@ Gestión de Transferencias
         <div class="page-main" type="transferencias">
             <div class="col-md-12" id="tab-transferencias" style="padding-left:0px;padding-right:0px;">
                 <ul class="nav nav-tabs" id="myTab">
-                    <li class="active"><a type="#porEnviar">Transferencias Pendientes de Enviar</a></li>
+                    <li class="active"><a type="#requerimientos">Requerimientos Pendientes</a></li>
+                    <li class=""><a type="#porEnviar">Transferencias Pendientes de Enviar</a></li>
                     <li class=""><a type="#pendientes">Transferencias Pendientes de Recibir</a></li>
                     <li class=""><a type="#recibidas">Transferencias Recibidas</a></li>
                 </ul>
                 <div class="content-tabs">
-                    <section id="porEnviar">
+                    <section id="requerimientos">
+                        <form id="form-requerimientos" type="register">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <table class="mytable table table-condensed table-bordered table-okc-view" id="listaRequerimientos">
+                                        <thead>
+                                            <tr>
+                                                <th hidden></th>
+                                                <th></th>
+                                                <th>Código</th>
+                                                <th>Fecha Registro</th>
+                                                <th>Almacén Origen</th>
+                                                <th>Almacén Destino</th>
+                                                <th>Codigo Req.</th>
+                                                <th>Concepto</th>
+                                                <th>Sede que Solicita</th>
+                                                <th>Elaborado Por</th>
+                                                <th width="10%">Acción</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </form>
+                    </section>
+                    <section id="porEnviar" hidden>
                         <form id="form-porEnviar" type="register">
                             <div class="row">
                                 <div class="col-md-2"><label>Almacén Origen:</label></div>
@@ -44,9 +71,6 @@ Gestión de Transferencias
                                     </select>
                                 </div>
                                 <div class="col-md-6 right">
-                                    <!-- <button type="button" class="btn btn-info" data-toggle="tooltip" 
-                                        data-placement="bottom" title="Nueva Transferencia" 
-                                        onClick="guia_compraModal();">Nueva Transferencia con Guía</button> -->
                                     <button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Nueva Transferencia" onClick="openRequerimientoModal();">Nueva Transferencia con Req.</button>
                                 </div>
                             </div>

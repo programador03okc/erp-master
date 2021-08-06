@@ -36,8 +36,8 @@ Facturación
                                         <thead>
                                             <tr>
                                                 <th hidden>#</th>
-                                                <th>Factura</th>
-                                                <th>Fecha Factura</th>
+                                                <!-- <th>Factura</th>
+                                                <th>Fecha Factura</th> -->
                                                 <th>Guía</th>
                                                 <th>Fecha Guía</th>
                                                 <th>Sede Guía</th>
@@ -48,7 +48,7 @@ Facturación
                                                 <th>OCC</th>
                                                 <th>C.P.</th>
                                                 <th>Monto de OCC</th> -->
-                                                <th style="width:5%;">Acción</th>
+                                                <th style="width:8%;">Acción</th>
                                             </tr>
                                         </thead>
                                         <tbody></tbody>
@@ -67,8 +67,8 @@ Facturación
                                         <thead>
                                             <tr>
                                                 <th hidden>#</th>
-                                                <th>Factura</th>
-                                                <th>Fecha Factura</th>
+                                                <!-- <th>Factura</th>
+                                                <th>Fecha Factura</th> -->
                                                 <th>Código</th>
                                                 <th>Concepto</th>
                                                 <th>Sede Req</th>
@@ -77,7 +77,7 @@ Facturación
                                                 <th>OCAM</th>
                                                 <th>C.P.</th>
                                                 <!-- <th>Monto de O/C</th> -->
-                                                <th style="width:5%;">Acción</th>
+                                                <th style="width:8%;">Acción</th>
                                             </tr>
                                         </thead>
                                         <tbody></tbody>
@@ -113,6 +113,8 @@ Facturación
 <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
 <script src="{{ asset('js/tesoreria/facturacion/pendientesFacturacion.js')}}"></script>
+<script src="{{ asset('js/tesoreria/facturacion/facturacionGuia.js')}}"></script>
+<script src="{{ asset('js/tesoreria/facturacion/facturacionRequerimiento.js')}}"></script>
 <script src="{{ asset('js/almacen/documentos/doc_ven_create.js')}}"></script>
 <script src="{{ asset('js/almacen/documentos/doc_ven_ver.js')}}"></script>
 <script>

@@ -7,7 +7,7 @@ class Facturacion {
     listarGuias() {
         var vardataTables = funcDatatables();
         // console.time();
-        $("#listaGuias").DataTable({
+        tableGuias = $("#listaGuias").DataTable({
             dom: vardataTables[1],
             buttons: vardataTables[2],
             language: vardataTables[0],
@@ -23,20 +23,6 @@ class Facturacion {
                 { data: "id_guia_ven" },
                 {
                     render: function(data, type, row) {
-                        return row["doc_ven"] !== null ? row["doc_ven"] : "";
-                    },
-                    className: "text-center"
-                },
-                {
-                    render: function(data, type, row) {
-                        return row["fecha_doc_ven"] !== null
-                            ? formatDate(row["fecha_doc_ven"])
-                            : "";
-                    },
-                    className: "text-center"
-                },
-                {
-                    render: function(data, type, row) {
                         return row["serie"] + "-" + row["numero"];
                     },
                     className: "text-center"
@@ -47,15 +33,12 @@ class Facturacion {
                     },
                     className: "text-center"
                 },
-                // { data: "fecha_emision", className: "text-center" },
                 {
                     data: "sede_descripcion",
                     name: "sis_sede.descripcion",
                     className: "text-center"
                 },
-                // { data: "nro_documento", name: "adm_contri.nro_documento" },
                 { data: "razon_social", name: "adm_contri.razon_social" },
-                // { data: "nombre_corto", name: "sis_usua.nombre_corto" },
                 {
                     render: function(data, type, row) {
                         if (row["nombre_corto"] !== null) {
@@ -69,43 +52,24 @@ class Facturacion {
                     className: "text-center"
                 },
                 { data: "codigo_trans", name: "trans.codigo" },
-                // { data: "codigo_req", name: "alm_req.codigo" },
-                // {
-                //     render: function(data, type, row) {
-                //         return row["orden_am"] !== null ? row["orden_am"] : "";
-                //     },
-                //     className: "text-center"
-                // },
-                // {
-                //     data: "codigo_oportunidad",
-                //     name: "oc_propias_view.codigo_oportunidad",
-                //     className: "text-center"
-                // },
-                // {
-                //     render: function(data, type, row) {
-                //         if (row["monto_total"] !== null) {
-                //             return formatNumber.decimal(
-                //                 row["monto_total"],
-                //                 row["moneda_oc"] == "s" ? "S/" : "$",
-                //                 2
-                //             );
-                //         } else {
-                //             return "";
-                //         }
-                //     },
-                //     className: "text-right"
-                // },
                 {
                     render: function(data, type, row) {
-                        return `<button type="button" class="${
-                            row["count_facturas"] > 0 ? "ver_doc" : "doc"
-                        } btn btn-${
-                            row["count_facturas"] > 0 ? "info" : "default"
-                        } btn-xs" data-toggle="tooltip" 
+                        return `${
+                            row["items_restantes"] > 0
+                                ? `<button type="button" class="doc btn btn-success btn-xs" data-toggle="tooltip" 
                             data-placement="bottom" title="Generar Factura" 
                             data-guia="${row["id_guia_ven"]}"
                             data-doc="${row["id_doc_ven"]}">
-                            <i class="fas fa-file-medical"></i></button>`;
+                            <i class="fas fa-plus"></i></button>`
+                                : ""
+                        }
+                        ${
+                            row["count_facturas"] > 0
+                                ? `<button type="button" class="detalle btn btn-primary btn-xs" data-toggle="tooltip" 
+                                data-placement="bottom" data-id="${row["id_guia_ven"]}" title="Ver Detalle" >
+                                <i class="fas fa-chevron-down"></i></button>`
+                                : ""
+                        }`;
                     },
                     className: "text-center"
                 }
@@ -117,7 +81,7 @@ class Facturacion {
     listarRequerimientos() {
         var vardataTables = funcDatatables();
         // console.time();
-        $("#listaRequerimientos").DataTable({
+        tableRequerimientos = $("#listaRequerimientos").DataTable({
             dom: vardataTables[1],
             buttons: vardataTables[2],
             language: vardataTables[0],
@@ -131,55 +95,32 @@ class Facturacion {
             },
             columns: [
                 { data: "id_requerimiento" },
-                {
-                    render: function(data, type, row) {
-                        return row["doc_ven"] !== null ? row["doc_ven"] : "";
-                    },
-                    className: "text-center"
-                },
-                {
-                    render: function(data, type, row) {
-                        return row["fecha_doc_ven"] !== null
-                            ? formatDate(row["fecha_doc_ven"])
-                            : "";
-                    },
-                    className: "text-center"
-                },
                 { data: "codigo", className: "text-center" },
                 { data: "concepto" },
-                // {
-                //     render: function(data, type, row) {
-                //         return formatDate(row["fecha_requerimiento"]);
-                //     },
-                //     className: "text-center"
-                // },
-                // { data: "fecha_requerimiento", className: "text-center" },
                 {
                     data: "sede_descripcion",
                     name: "sis_sede.descripcion",
                     className: "text-center"
                 },
-                // {
-                //     render: function(data, type, row) {
-                //         return row["nro_documento"] !== undefined
-                //             ? row["nro_documento"]
-                //             : "";
-                //     },
-                //     className: "text-center"
-                // },
-                // { data: "nro_documento", name: "adm_contri.nro_documento" },
                 { data: "razon_social", name: "adm_contri.razon_social" },
                 { data: "nombre_corto", name: "sis_usua.nombre_corto" },
                 {
                     render: function(data, type, row) {
                         return (
-                            '<a href="#" class="archivos" data-id="' +
-                            row["id_oc_propia"] +
-                            '" data-tipo="' +
-                            row["tipo"] +
-                            '">' +
-                            row["nro_orden"] +
-                            "</a>"
+                            // '<a href="#" class="archivos" data-id="' +
+                            // row["id_oc_propia"] +
+                            // '" data-tipo="' +
+                            // row["tipo"] +
+                            // '">' +
+                            // row["nro_orden"] +
+                            // "</a>" +
+                            row["orden_am"] !== null
+                                ? row["nro_orden"] +
+                                      `<br><a href="https://apps1.perucompras.gob.pe//OrdenCompra/obtenerPdfOrdenPublico?ID_OrdenCompra=${row["id_oc_propia"]}&ImprimirCompleto=1">
+                            <span class="label label-success">Ver O.E.</span></a>
+                            <a href="${row["url_oc_fisica"]}">
+                            <span class="label label-warning">Ver O.F.</span></a>`
+                                : ""
                         );
                     },
                     className: "text-center"
@@ -189,31 +130,24 @@ class Facturacion {
                     name: "oc_propias_view.codigo_oportunidad",
                     className: "text-center"
                 },
-                // {
-                //     render: function(data, type, row) {
-                //         if (row["monto_total"] !== null) {
-                //             return formatNumber.decimal(
-                //                 row["monto_total"],
-                //                 row["moneda_oc"] == "s" ? "S/" : "$",
-                //                 2
-                //             );
-                //         } else {
-                //             return "";
-                //         }
-                //     },
-                //     className: "text-right"
-                // },
                 {
                     render: function(data, type, row) {
-                        return `<button type="button" class="${
-                            row["count_facturas"] > 0 ? "ver_doc" : "doc"
-                        } btn btn-${
-                            row["count_facturas"] > 0 ? "info" : "default"
-                        } btn-xs" data-toggle="tooltip" 
+                        return `${
+                            row["items_restantes"] > 0
+                                ? `<button type="button" class="doc btn btn-success btn-xs" data-toggle="tooltip" 
                             data-placement="bottom" title="Generar Factura" 
                             data-req="${row["id_requerimiento"]}"
                             data-doc="${row["id_doc_ven"]}">
-                            <i class="fas fa-file-medical"></i></button>`;
+                            <i class="fas fa-plus"></i></button>`
+                                : ""
+                        }
+                            ${
+                                row["count_facturas"] > 0
+                                    ? `<button type="button" class="detalle btn btn-primary btn-xs" data-toggle="tooltip" 
+                                    data-placement="bottom" data-id="${row["id_requerimiento"]}" title="Ver Detalle" >
+                                    <i class="fas fa-chevron-down"></i></button>`
+                                    : ""
+                            }`;
                     },
                     className: "text-center"
                 }
@@ -226,11 +160,6 @@ class Facturacion {
 $("#listaGuias tbody").on("click", "button.doc", function() {
     var id_guia = $(this).data("guia");
     open_doc_ven_create(id_guia);
-});
-
-$("#listaGuias tbody").on("click", "button.ver_doc", function() {
-    var id_doc = $(this).data("doc");
-    documentosVer(id_doc, "guia");
 });
 
 $("#listaRequerimientos tbody").on("click", "button.doc", function() {

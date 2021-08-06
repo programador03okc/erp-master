@@ -34,7 +34,9 @@ function documentosVer(id) {
                 </tr>
                 <tr>
                     <th colSpan="2">Proveedor: </th>
-                    <td colSpan="3">${element.nro_documento +
+                    <td colSpan="3">${(element.nro_documento !== null
+                        ? element.nro_documento
+                        : "") +
                         " - " +
                         element.razon_social}</td>
                     <th colSpan="2">Importe: </th>

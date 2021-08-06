@@ -251,13 +251,11 @@ class TransferenciaController extends Controller
             )
             ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'guia_ven_det.id_producto')
             ->join('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
-            // ->join('almacen.trans_detalle','trans_detalle.id_trans_detalle','=','guia_ven_det.id_trans_det')
             ->leftJoin('almacen.trans_detalle', function ($join) {
                 $join->on('trans_detalle.id_trans_detalle', '=', 'guia_ven_det.id_trans_det');
                 $join->where('trans_detalle.estado', '!=', 7);
             })
             ->join('almacen.trans', 'trans.id_transferencia', '=', 'trans_detalle.id_transferencia')
-            // ->leftjoin('almacen.alm_det_req','alm_det_req.id_detalle_requerimiento','=','trans_detalle.id_requerimiento_detalle')
             ->leftJoin('almacen.alm_det_req', function ($join) {
                 $join->on('alm_det_req.id_detalle_requerimiento', '=', 'trans_detalle.id_requerimiento_detalle');
                 $join->where('alm_det_req.estado', '!=', 7);
@@ -2093,10 +2091,33 @@ class TransferenciaController extends Controller
     function listarRequerimientos()
     {
         $data = DB::table('almacen.alm_req')
-            ->select('alm_req.*', 'adm_estado_doc.estado_doc')
+            ->select(
+                'alm_req.*',
+                'adm_estado_doc.estado_doc'
+                // DB::raw("(SELECT COUNT(*) FROM almacen.alm_det_req 
+                //         inner join logistica.log_det_ord_compra as log on(
+                //                 log.id_detalle_requerimiento = alm_det_req.id_detalle_requerimiento and
+                //                 log.estado != 7
+                //         )
+                //         inner join almacen.guia_com_det as guia on(
+                //                 guia.id_oc_det = log.id_detalle_orden and
+                //                 guia.estado != 7
+                //         )
+                //         inner join almacen.mov_alm_det as ing on(
+                //                 ing.id_guia_com_det = guia.id_guia_com_det and
+                //                 ing.estado != 7
+                //         )
+                //         inner join almacen.alm_req as req on(
+                //                 req.id_requerimiento = alm_det_req.id_requerimiento
+                //         )
+                //         where   ing.id_mov_alm = mov_alm.id_mov_alm
+                //                 and req.id_sede != alm_almacen.id_sede
+                //                 and alm_det_req.estado != 7) AS count_sedes_diferentes")
+            )
             ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'alm_req.estado')
             ->where([['alm_req.estado', '!=', 7]])
             ->get();
+
         $output['data'] = $data;
         return response()->json($output);
     }

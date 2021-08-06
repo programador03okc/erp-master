@@ -50,43 +50,52 @@ class PendientesFacturacionController extends Controller
                 'alm_req.tiene_transformacion',
                 'sede_req.descripcion as sede_descripcion_req',
                 'trans.codigo as codigo_trans',
+
+                DB::raw("(SELECT count(guia.id_guia_ven_det) FROM almacen.guia_ven_det AS guia
+                    LEFT JOIN almacen.doc_ven_det AS doc
+                        on( guia.id_guia_ven_det = doc.id_guia_ven_det
+                        and doc.estado != 7)
+                    WHERE guia.id_guia_ven = guia_ven.id_guia_ven
+                    and doc.id_guia_ven_det is null) AS items_restantes"),
+
                 DB::raw("(SELECT count(distinct id_doc_ven) FROM almacen.doc_ven AS d
                     INNER JOIN almacen.guia_ven_det AS guia
-                        on(guia.id_guia_ven = guia_ven.id_guia_ven)
+                        on( guia.id_guia_ven = guia_ven.id_guia_ven
+                        and guia.estado != 7)
                     INNER JOIN almacen.doc_ven_det AS doc
-                        on(doc.id_guia_ven_det = guia.id_guia_ven_det)
-                    WHERE d.id_doc_ven = doc.id_doc
-                      and doc.estado != 7) AS count_facturas"),
-                DB::raw("(SELECT distinct id_doc_ven FROM almacen.doc_ven AS d
-                    INNER JOIN almacen.guia_ven_det AS guia on(
-                        guia.id_guia_ven = guia_ven.id_guia_ven)
-                    INNER JOIN almacen.doc_ven_det AS doc on(
-                        doc.id_guia_ven_det = guia.id_guia_ven_det and
-                        doc.estado != 7)
-                    WHERE d.id_doc_ven = doc.id_doc
-                    limit 1) AS id_doc_ven"),
-                DB::raw("(SELECT distinct (c.abreviatura) || ' ' || (d.serie) || '-' || (d.numero) as serie_numero FROM almacen.doc_ven AS d
-                    INNER JOIN almacen.guia_ven_det AS guia on(
-                        guia.id_guia_ven = guia_ven.id_guia_ven)
-                    INNER JOIN almacen.doc_ven_det AS doc on(
-                        doc.id_guia_ven_det = guia.id_guia_ven_det and
-                        doc.estado != 7)
-                    INNER JOIN almacen.doc_ven AS dv on(
-                        dv.id_doc_ven = doc.id_doc and
-                        dv.estado != 7)
-                    INNER JOIN contabilidad.cont_tp_doc AS c on(
-                        c.id_tp_doc = dv.id_tp_doc and
-                        c.estado != 7)
-                    WHERE d.id_doc_ven = doc.id_doc
-                    limit 1) AS doc_ven"),
-                DB::raw("(SELECT distinct d.fecha_emision FROM almacen.doc_ven AS d
-                    INNER JOIN almacen.guia_ven_det AS guia on(
-                        guia.id_guia_ven = guia_ven.id_guia_ven)
-                    INNER JOIN almacen.doc_ven_det AS doc on(
-                        doc.id_guia_ven_det = guia.id_guia_ven_det and
-                        doc.estado != 7)
-                    WHERE d.id_doc_ven = doc.id_doc
-                    limit 1) AS fecha_doc_ven"),
+                        on( guia.id_guia_ven_det = doc.id_guia_ven_det
+                        and doc.estado != 7)
+                    WHERE d.id_doc_ven = doc.id_doc) AS count_facturas")
+                // DB::raw("(SELECT distinct id_doc_ven FROM almacen.doc_ven AS d
+                //     INNER JOIN almacen.guia_ven_det AS guia on(
+                //         guia.id_guia_ven = guia_ven.id_guia_ven)
+                //     INNER JOIN almacen.doc_ven_det AS doc on(
+                //         doc.id_guia_ven_det = guia.id_guia_ven_det and
+                //         doc.estado != 7)
+                //     WHERE d.id_doc_ven = doc.id_doc
+                //     limit 1) AS id_doc_ven"),
+                // DB::raw("(SELECT distinct (c.abreviatura) || ' ' || (d.serie) || '-' || (d.numero) as serie_numero FROM almacen.doc_ven AS d
+                //     INNER JOIN almacen.guia_ven_det AS guia on(
+                //         guia.id_guia_ven = guia_ven.id_guia_ven)
+                //     INNER JOIN almacen.doc_ven_det AS doc on(
+                //         doc.id_guia_ven_det = guia.id_guia_ven_det and
+                //         doc.estado != 7)
+                //     INNER JOIN almacen.doc_ven AS dv on(
+                //         dv.id_doc_ven = doc.id_doc and
+                //         dv.estado != 7)
+                //     INNER JOIN contabilidad.cont_tp_doc AS c on(
+                //         c.id_tp_doc = dv.id_tp_doc and
+                //         c.estado != 7)
+                //     WHERE d.id_doc_ven = doc.id_doc
+                //     limit 1) AS doc_ven"),
+                // DB::raw("(SELECT distinct d.fecha_emision FROM almacen.doc_ven AS d
+                //     INNER JOIN almacen.guia_ven_det AS guia on(
+                //         guia.id_guia_ven = guia_ven.id_guia_ven)
+                //     INNER JOIN almacen.doc_ven_det AS doc on(
+                //         doc.id_guia_ven_det = guia.id_guia_ven_det and
+                //         doc.estado != 7)
+                //     WHERE d.id_doc_ven = doc.id_doc
+                //     limit 1) AS fecha_doc_ven"),
             )
             ->join('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'guia_ven.id_cliente')
             ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
@@ -104,6 +113,32 @@ class PendientesFacturacionController extends Controller
             ->where('guia_ven.id_operacion', 1);
 
         return datatables($data)->toJson();
+    }
+
+    public function detalleFacturasGuias($id_guia)
+    {
+        $data = DB::table('almacen.guia_ven')
+            ->select(
+                'doc_ven.*',
+                DB::raw("(cont_tp_doc.abreviatura) || ' ' || (doc_ven.serie) || '-' || (doc_ven.numero) as serie_numero"),
+                'sis_sede.descripcion as sede_descripcion',
+                'adm_contri.razon_social',
+                'sis_moneda.simbolo',
+                'sis_usua.nombre_corto'
+            )
+            ->join('almacen.guia_ven_det', 'guia_ven_det.id_guia_ven', '=', 'guia_ven.id_guia_ven')
+            ->join('almacen.doc_ven_det', 'doc_ven_det.id_guia_ven_det', '=', 'guia_ven_det.id_guia_ven_det')
+            ->join('almacen.doc_ven', 'doc_ven.id_doc_ven', '=', 'doc_ven_det.id_doc')
+            ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'doc_ven.id_sede')
+            ->join('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'doc_ven.id_cliente')
+            ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
+            ->join('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'doc_ven.moneda')
+            ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'doc_ven.usuario')
+            ->join('contabilidad.cont_tp_doc', 'cont_tp_doc.id_tp_doc', '=', 'doc_ven.id_tp_doc')
+            ->where('guia_ven.id_guia_ven', $id_guia)
+            ->where([['doc_ven.estado', '!=', 7]])
+            ->get();
+        return response()->json($data);
     }
 
     public function listarRequerimientosPendientes()
@@ -136,39 +171,46 @@ class PendientesFacturacionController extends Controller
                             and doc.estado != 7)
                     WHERE d.id_doc_ven = doc.id_doc) AS count_facturas"),
 
-                DB::raw("(SELECT distinct id_doc_ven FROM almacen.doc_ven AS d
-                    INNER JOIN almacen.alm_det_req AS req
-                        on( req.id_requerimiento = alm_req.id_requerimiento)
-                    INNER JOIN almacen.doc_ven_det AS doc
-                        on( doc.id_detalle_requerimiento = req.id_detalle_requerimiento
-                            and doc.estado != 7)
-                    WHERE d.id_doc_ven = doc.id_doc
-                    limit 1) AS id_doc_ven"),
+                DB::raw("(SELECT count(alm_det_req.id_detalle_requerimiento) FROM almacen.alm_det_req 
+                    LEFT JOIN almacen.doc_ven_det
+                    on( alm_det_req.id_detalle_requerimiento = doc_ven_det.id_detalle_requerimiento )
+                    WHERE alm_det_req.id_requerimiento = alm_req.id_requerimiento
+                    and alm_det_req.entrega_cliente = true
+                    and doc_ven_det.id_detalle_requerimiento is null) AS items_restantes"),
 
-                DB::raw("(SELECT distinct (c.abreviatura) || ' ' || (d.serie) || '-' || (d.numero) as serie_numero 
-                    FROM almacen.doc_ven AS d
-                    INNER JOIN almacen.alm_det_req AS req
-                        on( req.id_requerimiento = alm_req.id_requerimiento)
-                    INNER JOIN almacen.doc_ven_det AS doc
-                        on( doc.id_detalle_requerimiento = req.id_detalle_requerimiento
-                            and doc.estado != 7)
-                    INNER JOIN almacen.doc_ven AS dv on(
-                        dv.id_doc_ven = doc.id_doc and
-                        dv.estado != 7)
-                    INNER JOIN contabilidad.cont_tp_doc AS c on(
-                        c.id_tp_doc = dv.id_tp_doc and
-                        c.estado != 7)
-                    WHERE d.id_doc_ven = doc.id_doc
-                    limit 1) AS doc_ven"),
+                // DB::raw("(SELECT distinct id_doc_ven FROM almacen.doc_ven AS d
+                //     INNER JOIN almacen.alm_det_req AS req
+                //         on( req.id_requerimiento = alm_req.id_requerimiento)
+                //     INNER JOIN almacen.doc_ven_det AS doc
+                //         on( doc.id_detalle_requerimiento = req.id_detalle_requerimiento
+                //             and doc.estado != 7)
+                //     WHERE d.id_doc_ven = doc.id_doc
+                //     limit 1) AS id_doc_ven"),
 
-                DB::raw("(SELECT distinct d.fecha_emision FROM almacen.doc_ven AS d
-                    INNER JOIN almacen.alm_det_req AS req
-                        on( req.id_requerimiento = alm_req.id_requerimiento)
-                    INNER JOIN almacen.doc_ven_det AS doc
-                        on( doc.id_detalle_requerimiento = req.id_detalle_requerimiento
-                            and doc.estado != 7)
-                    WHERE d.id_doc_ven = doc.id_doc
-                    limit 1) AS fecha_doc_ven")
+                // DB::raw("(SELECT distinct (c.abreviatura) || ' ' || (d.serie) || '-' || (d.numero) as serie_numero 
+                //     FROM almacen.doc_ven AS d
+                //     INNER JOIN almacen.alm_det_req AS req
+                //         on( req.id_requerimiento = alm_req.id_requerimiento)
+                //     INNER JOIN almacen.doc_ven_det AS doc
+                //         on( doc.id_detalle_requerimiento = req.id_detalle_requerimiento
+                //             and doc.estado != 7)
+                //     INNER JOIN almacen.doc_ven AS dv on(
+                //         dv.id_doc_ven = doc.id_doc and
+                //         dv.estado != 7)
+                //     INNER JOIN contabilidad.cont_tp_doc AS c on(
+                //         c.id_tp_doc = dv.id_tp_doc and
+                //         c.estado != 7)
+                //     WHERE d.id_doc_ven = doc.id_doc
+                //     limit 1) AS doc_ven"),
+
+                // DB::raw("(SELECT distinct d.fecha_emision FROM almacen.doc_ven AS d
+                //     INNER JOIN almacen.alm_det_req AS req
+                //         on( req.id_requerimiento = alm_req.id_requerimiento)
+                //     INNER JOIN almacen.doc_ven_det AS doc
+                //         on( doc.id_detalle_requerimiento = req.id_detalle_requerimiento
+                //             and doc.estado != 7)
+                //     WHERE d.id_doc_ven = doc.id_doc
+                //     limit 1) AS fecha_doc_ven")
             )
             ->join('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'alm_req.id_cliente')
             ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
@@ -180,6 +222,32 @@ class PendientesFacturacionController extends Controller
             ->where('alm_req.enviar_facturacion', true);
 
         return datatables($data)->toJson();
+    }
+
+    public function detalleFacturasRequerimientos($id_requerimiento)
+    {
+        $data = DB::table('almacen.alm_req')
+            ->select(
+                'doc_ven.*',
+                DB::raw("(cont_tp_doc.abreviatura) || ' ' || (doc_ven.serie) || '-' || (doc_ven.numero) as serie_numero"),
+                'sis_sede.descripcion as sede_descripcion',
+                'adm_contri.razon_social',
+                'sis_moneda.simbolo',
+                'sis_usua.nombre_corto'
+            )
+            ->join('almacen.alm_det_req', 'alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento')
+            ->join('almacen.doc_ven_det', 'doc_ven_det.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento')
+            ->join('almacen.doc_ven', 'doc_ven.id_doc_ven', '=', 'doc_ven_det.id_doc')
+            ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'doc_ven.id_sede')
+            ->join('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'doc_ven.id_cliente')
+            ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
+            ->join('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'doc_ven.moneda')
+            ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'doc_ven.usuario')
+            ->join('contabilidad.cont_tp_doc', 'cont_tp_doc.id_tp_doc', '=', 'doc_ven.id_tp_doc')
+            ->where('alm_req.id_requerimiento', $id_requerimiento)
+            ->where([['doc_ven.estado', '!=', 7]])
+            ->get();
+        return response()->json($data);
     }
 
     public function obtenerGuiaVenta($id)
@@ -210,8 +278,10 @@ class PendientesFacturacionController extends Controller
                 'alm_und_medida.abreviatura',
                 'oc_propias_view.monto_total',
                 'oc_propias_view.moneda_oc',
-                'oc_propias_view.nombre_largo_responsable'
-                // 'alm_req.id_sede'
+                'oc_propias_view.nombre_largo_responsable',
+                DB::raw("(SELECT SUM(doc_ven_det.cantidad) FROM almacen.doc_ven_det
+                    WHERE doc_ven_det.id_guia_ven_det = guia_ven_det.id_guia_ven_det
+                    and doc_ven_det.estado != 7) AS cantidad_facturada")
             )
             ->leftjoin('almacen.guia_ven', 'guia_ven.id_guia_ven', '=', 'guia_ven_det.id_guia_ven')
             ->leftjoin('almacen.orden_despacho_det', 'orden_despacho_det.id_od_detalle', '=', 'guia_ven_det.id_od_det')
@@ -259,7 +329,10 @@ class PendientesFacturacionController extends Controller
                 'alm_und_medida.abreviatura',
                 'oc_propias_view.monto_total',
                 'oc_propias_view.moneda_oc',
-                'oc_propias_view.nombre_largo_responsable'
+                'oc_propias_view.nombre_largo_responsable',
+                DB::raw("(SELECT SUM(doc_ven_det.cantidad) FROM almacen.doc_ven_det
+                    WHERE doc_ven_det.id_detalle_requerimiento = alm_det_req.id_detalle_requerimiento
+                    and doc_ven_det.estado != 7) AS cantidad_facturada")
             )
             ->leftjoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
             ->leftjoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
@@ -291,7 +364,9 @@ class PendientesFacturacionController extends Controller
                     'id_tp_doc' => $request->id_tp_doc,
                     'id_cliente' => $request->id_cliente,
                     'fecha_emision' => $request->fecha_emision_doc,
-                    'fecha_vcmto' => $request->fecha_emision_doc,
+                    'fecha_vcmto' => $request->fecha_vencimiento,
+                    'id_condicion' => $request->id_condicion,
+                    'credito_dias' => $request->credito_dias,
                     'id_sede' => $request->id_sede,
                     'moneda' => $request->moneda,
                     'sub_total' => $request->sub_total,
@@ -350,7 +425,7 @@ class PendientesFacturacionController extends Controller
                 'doc_ven.total_a_pagar',
                 'doc_ven.sub_total',
                 'doc_ven.total_igv',
-                // 'log_cdn_pago.descripcion as condicion_descripcion',
+                'log_cdn_pago.descripcion as condicion_descripcion',
                 'sis_sede.descripcion as sede_descripcion',
                 'doc_ven.credito_dias',
                 'doc_ven.tipo_cambio'
@@ -359,7 +434,7 @@ class PendientesFacturacionController extends Controller
             ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
             ->join('contabilidad.cont_tp_doc', 'cont_tp_doc.id_tp_doc', '=', 'doc_ven.id_tp_doc')
             ->join('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'doc_ven.moneda')
-            // ->leftJoin('logistica.log_cdn_pago','log_cdn_pago.id_condicion_pago','=','doc_ven.id_condicion')
+            ->leftJoin('logistica.log_cdn_pago', 'log_cdn_pago.id_condicion_pago', '=', 'doc_ven.id_condicion')
             ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'doc_ven.id_sede')
             ->where('doc_ven.id_doc_ven', $id_doc)
             ->distinct()
