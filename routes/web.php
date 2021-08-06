@@ -1609,10 +1609,11 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::get('index', 'Tesoreria\Facturacion\PendientesFacturacionController@view_pendientes_facturacion')->name('index');
 			Route::post('listarGuiasVentaPendientes', 'Tesoreria\Facturacion\PendientesFacturacionController@listarGuiasVentaPendientes')->name('listar-guias-pendientes');
 			Route::post('listarRequerimientosPendientes', 'Tesoreria\Facturacion\PendientesFacturacionController@listarRequerimientosPendientes')->name('listar-requerimientos-pendientes');
-			Route::get('obtenerGuiaVenta/{id}', 'Tesoreria\Facturacion\PendientesFacturacionController@obtenerGuiaVenta')->name('obtener-guia-venta');
 			Route::post('guardar_doc_venta', 'Tesoreria\Facturacion\PendientesFacturacionController@guardar_doc_venta')->name('guardar-doc-venta');
 			Route::get('documentos_ver/{id}', 'Tesoreria\Facturacion\PendientesFacturacionController@documentos_ver')->name('ver-doc-venta');
 			Route::get('anular_doc_ven/{id}', 'Tesoreria\Facturacion\PendientesFacturacionController@anular_doc_ven')->name('anular-doc-venta');
+			Route::get('obtenerGuiaVenta/{id}', 'Tesoreria\Facturacion\PendientesFacturacionController@obtenerGuiaVenta')->name('obtener-guia-venta');
+			Route::post('obtenerGuiaVentaSeleccionadas', 'Tesoreria\Facturacion\PendientesFacturacionController@obtenerGuiaVentaSeleccionadas')->name('obtener-guias-ventas');
 			Route::get('obtenerRequerimiento/{id}', 'Tesoreria\Facturacion\PendientesFacturacionController@obtenerRequerimiento')->name('obtener-requerimiento');
 			Route::get('detalleFacturasGuias/{id}', 'Tesoreria\Facturacion\PendientesFacturacionController@detalleFacturasGuias')->name('detalle-facturas-guia');
 			Route::get('detalleFacturasRequerimientos/{id}', 'Tesoreria\Facturacion\PendientesFacturacionController@detalleFacturasRequerimientos')->name('detalle-facturas-guia');

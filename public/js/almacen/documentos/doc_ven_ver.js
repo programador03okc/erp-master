@@ -1,7 +1,8 @@
 let origenVer = "";
 
-function documentosVer(id, origen) {
+function verDocumentoVenta(id, origen) {
     origenVer = origen;
+    console.log("id" + id);
     $("#modal-doc_ven_ver").modal({
         show: true
     });
@@ -12,7 +13,7 @@ function documentosVer(id, origen) {
         success: function(response) {
             console.log(response);
             let html = "";
-            $("[name=id_doc_ven]").val();
+
             response["docs"].forEach(element => {
                 html += `
                 <tr>
@@ -32,8 +33,8 @@ function documentosVer(id, origen) {
                         "-" +
                         element.numero}</td>
                     <th></td>
-                    <th colSpan="2">Empresa-Sede: </th>
-                    <td colSpan="2">${element.sede_descripcion}</td>
+                    <th colSpan="2">Empresa: </th>
+                    <td colSpan="2">${element.empresa_razon_social}</td>
                     <th colSpan="2">Fecha Emisión: </th>
                     <td colSpan="3">${formatDate(element.fecha_emision)}</td>
                 </tr>
@@ -53,7 +54,7 @@ function documentosVer(id, origen) {
                         ? element.condicion_descripcion
                         : "") +
                         (element.credito_dias !== null
-                            ? element.credito_dias + " días"
+                            ? " " + element.credito_dias + " días"
                             : "")}</td>
                 </tr>
                 <tr><td colSpan="12"></td></tr>

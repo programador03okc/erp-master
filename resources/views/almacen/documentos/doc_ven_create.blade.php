@@ -7,7 +7,6 @@
                     <h3 class="modal-title">Generar Documento de Venta</h3>
                 </div>
                 <div class="modal-body">
-                    <input type="text" style="display:none;" name="id_requerimiento">
                     <input type="text" style="display:none;" name="id_almacen_doc">
 
                     <div class="row">
@@ -37,11 +36,11 @@
                             <input type="date" class="form-control" name="fecha_vencimiento">
                         </div>
                         <div class="col-md-3">
-                            <h5>Empresa-Sede</h5>
-                            <select class="form-control js-example-basic-single" name="id_sede">
+                            <h5>Empresa</h5>
+                            <select class="form-control js-example-basic-single" name="id_empresa">
                                 <option value="0">Elija una opción</option>
-                                @foreach ($sedes as $sede)
-                                <option value="{{$sede->id_sede}}">{{$sede->descripcion}}</option>
+                                @foreach ($empresas as $empresa)
+                                <option value="{{$empresa->id_empresa}}">{{$empresa->razon_social}}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -58,15 +57,6 @@
                             <h5>Razon Social Cliente</h5>
                             <input type="text" class="form-control" name="cliente_razon_social" readOnly>
                         </div>
-                        <!-- <div class="guia col-md-2">
-                            <h5>Serie-Número (Guía)</h5>
-                            <div class="input-group">
-                                <input type="text" style="display:none;" name="id_guia">
-                                <input type="text" class="form-control" name="serie_guia" readOnly>
-                                <span class="input-group-addon">-</span>
-                                <input type="text" class="form-control" name="numero_guia" readOnly>
-                            </div>
-                        </div> -->
                         <div class="col-md-2">
                             <h5>Moneda</h5>
                             <div style="display:flex;">

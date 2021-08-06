@@ -1,3 +1,4 @@
+let guias_seleccionadas = [];
 class Facturacion {
     constructor() {
         // this.permisoConfirmarDenegarFacturacion = permisoConfirmarDenegarFacturacion;
@@ -41,9 +42,10 @@ class Facturacion {
                 { data: "razon_social", name: "adm_contri.razon_social" },
                 {
                     render: function(data, type, row) {
-                        if (row["nombre_corto"] !== null) {
-                            return row["nombre_corto"];
-                        } else if (row["nombre_corto_trans"] !== null) {
+                        // if (row["nombre_corto"] !== null) {
+                        //     return row["nombre_corto"];
+                        // } else
+                        if (row["nombre_corto_trans"] !== null) {
                             return row["nombre_corto_trans"];
                         } else {
                             return "";
@@ -74,7 +76,68 @@ class Facturacion {
                     className: "text-center"
                 }
             ],
-            columnDefs: [{ aTargets: [0], sClass: "invisible" }]
+            drawCallback: function() {
+                $('#listaGuias tbody tr td input[type="checkbox"]').iCheck({
+                    checkboxClass: "icheckbox_flat-blue"
+                });
+            },
+            columnDefs: [
+                // { aTargets: [0], sClass: "invisible" },
+                {
+                    targets: 0,
+                    searchable: false,
+                    orderable: false,
+                    className: "dt-body-center",
+                    checkboxes: {
+                        selectRow: true,
+                        selectCallback: function(nodes, selected) {
+                            $('input[type="checkbox"]', nodes).iCheck("update");
+                        },
+                        selectAllCallback: function(
+                            nodes,
+                            selected,
+                            indeterminate
+                        ) {
+                            $('input[type="checkbox"]', nodes).iCheck("update");
+                        }
+                    }
+                }
+            ],
+            order: [[0, "desc"]]
+        });
+
+        $(
+            $("#listaGuias")
+                .DataTable()
+                .table()
+                .container()
+        ).on("ifChanged", ".dt-checkboxes", function(event) {
+            var cell = $("#listaGuias")
+                .DataTable()
+                .cell($(this).closest("td"));
+            cell.checkboxes.select(this.checked);
+
+            var data = $("#listaGuias")
+                .DataTable()
+                .row($(this).parents("tr"))
+                .data();
+            console.log(this.checked);
+
+            if (data !== null && data !== undefined) {
+                if (this.checked) {
+                    guias_seleccionadas.push(data);
+                } else {
+                    var index = guias_seleccionadas.findIndex(function(
+                        item,
+                        i
+                    ) {
+                        return item.id_guia_ven == data.id_guia_ven;
+                    });
+                    if (index !== null) {
+                        guias_seleccionadas.splice(index, 1);
+                    }
+                }
+            }
         });
     }
 
@@ -165,11 +228,6 @@ $("#listaGuias tbody").on("click", "button.doc", function() {
 $("#listaRequerimientos tbody").on("click", "button.doc", function() {
     var id_req = $(this).data("req");
     open_doc_ven_requerimiento_create(id_req);
-});
-
-$("#listaRequerimientos tbody").on("click", "button.ver_doc", function() {
-    var id_doc = $(this).data("doc");
-    documentosVer(id_doc, "requerimiento");
 });
 
 $("#listaRequerimientos tbody").on("click", "a.archivos", function(e) {

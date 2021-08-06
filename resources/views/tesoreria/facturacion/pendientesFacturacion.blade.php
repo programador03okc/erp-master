@@ -5,6 +5,12 @@
 Facturación
 @endsection
 
+@section('estilos')
+<link rel="stylesheet" href="{{ asset('template/plugins/iCheck/all.css') }}">
+<link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
+<link rel="stylesheet" href="{{ asset('template/plugins/jquery-datatables-checkboxes/css/dataTables.checkboxes.css') }}">
+@endsection
+
 @section('breadcrumb')
 <ol class="breadcrumb">
     <li><a href="{{route('tesoreria.index')}}"><i class="fas fa-tachometer-alt"></i> Tesorería</a></li>
@@ -35,24 +41,21 @@ Facturación
                                     <table class="mytable table table-condensed table-bordered table-okc-view" id="listaGuias">
                                         <thead>
                                             <tr>
-                                                <th hidden>#</th>
-                                                <!-- <th>Factura</th>
-                                                <th>Fecha Factura</th> -->
+                                                <th hidden></th>
+                                                <th></th>
                                                 <th>Guía</th>
                                                 <th>Fecha Guía</th>
                                                 <th>Sede Guía</th>
                                                 <th>Entidad/Cliente</th>
                                                 <th>Responsable</th>
                                                 <th>Cod.Trans.</th>
-                                                <!-- <th>Cod.Req.</th>
-                                                <th>OCC</th>
-                                                <th>C.P.</th>
-                                                <th>Monto de OCC</th> -->
                                                 <th style="width:8%;">Acción</th>
                                             </tr>
                                         </thead>
                                         <tbody></tbody>
                                     </table>
+                                    <button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Ingresar Factura" onClick="open_doc_ven_create_guias_seleccionadas();">
+                                        Ingresar Factura</button>
                                 </div>
                             </div>
                         </form>
@@ -67,8 +70,6 @@ Facturación
                                         <thead>
                                             <tr>
                                                 <th hidden>#</th>
-                                                <!-- <th>Factura</th>
-                                                <th>Fecha Factura</th> -->
                                                 <th>Código</th>
                                                 <th>Concepto</th>
                                                 <th>Sede Req</th>
@@ -76,7 +77,6 @@ Facturación
                                                 <th>Responsable</th>
                                                 <th>OCAM</th>
                                                 <th>C.P.</th>
-                                                <!-- <th>Monto de O/C</th> -->
                                                 <th style="width:8%;">Acción</th>
                                             </tr>
                                         </thead>
@@ -110,6 +110,9 @@ Facturación
     <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script> -->
+<script src="{{ asset('template/plugins/iCheck/icheck.min.js') }}"></script>
+<script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
+<script src="{{ asset('template/plugins/jquery-datatables-checkboxes/js/dataTables.checkboxes.min.js') }}"></script>
 <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
 <script src="{{ asset('js/tesoreria/facturacion/pendientesFacturacion.js')}}"></script>
@@ -130,10 +133,11 @@ Facturación
             let tab = $(e.target).attr("href");
 
             if (tab == '#guias') {
-                $('#listaGuias').DataTable().ajax.reload();
+                // $('#listaGuias').DataTable().ajax.reload();
+                facturacion.listarGuias();
             } else if (tab == '#requerimientos') {
-                facturacion.listarRequerimientos();
                 // $('#listaRequerimientos').DataTable().ajax.reload();
+                facturacion.listarRequerimientos();
             }
         });
 

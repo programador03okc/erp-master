@@ -42,44 +42,49 @@ function detalleFacturasGuia(table_id, id, row) {
 
             if (response.length > 0) {
                 response.forEach(element => {
-                    html +=
-                        '<tr id="' +
-                        element.id_doc_ven +
-                        '">' +
-                        '<td style="border: none;">' +
-                        i +
-                        "</td>" +
-                        '<td style="border: none; text-align: center">' +
-                        (element.serie_numero !== null
-                            ? element.serie_numero
-                            : "") +
-                        "</td>" +
-                        '<td style="border: none; text-align: center">' +
-                        element.sede_descripcion +
-                        "</td>" +
-                        '<td style="border: none; text-align: center">' +
-                        formatDate(element.fecha_emision) +
-                        "</td>" +
-                        '<td style="border: none; text-align: center">' +
-                        element.razon_social +
-                        "</td>" +
-                        '<td style="border: none; text-align: center">' +
-                        formatNumber.decimal(
-                            element.total_a_pagar,
-                            element.simbolo,
-                            -2
-                        ) +
-                        "</td>" +
-                        '<td style="border: none; text-align: center">' +
-                        element.nombre_corto +
-                        "</td>" +
-                        '<td style="border: none; text-align: center">' +
-                        `<button type="button" class="ver_doc btn btn-info btn-xs" data-toggle="tooltip" 
+                    html += `<tr id="${element.id_doc_ven}">
+                        <td style="border: none;">${i}</td>
+                        <td style="border: none; text-align: center">
+                            ${
+                                element.serie_numero !== null
+                                    ? element.serie_numero
+                                    : ""
+                            }
+                        </td>
+                        <td style="border: none; text-align: center">
+                            ${element.empresa_razon_social}
+                        </td>
+                        <td style="border: none; text-align: center">
+                            ${formatDate(element.fecha_emision)}
+                        </td>
+                        <td style="border: none; text-align: center">
+                            ${element.razon_social}
+                        </td>
+                        <td style="border: none; text-align: center">
+                            ${formatNumber.decimal(
+                                element.total_a_pagar,
+                                element.simbolo,
+                                -2
+                            )}
+                        </td>
+                        <td style="border: none; text-align: center">
+                            ${element.nombre_corto}
+                        </td>
+                        <td style="border: none; text-align: center">
+                            ${element.condicion +
+                                (element.credito_dias !== null
+                                    ? element.credito_dias + " días"
+                                    : "")}
+                        </td>
+                        <td style="border: none; text-align: center">
+                        <button type="button" class="ver_doc btn btn-info btn-xs" data-toggle="tooltip" 
                             data-placement="bottom" title="Ver Factura"
-                            onClick="documentosVer(${element.id_doc_ven}, 'guia')">
-                            <i class="fas fa-file-alt"></i></button>` +
-                        "</td>" +
-                        "</tr>";
+                            onClick="verDocumentoVenta(${
+                                element.id_doc_ven
+                            }, 'guia')">
+                            <i class="fas fa-file-alt"></i></button>
+                        </td>
+                        </tr>`;
                     i++;
                 });
                 var tabla = `<table class="table table-sm" style="border: none;" 
@@ -88,12 +93,13 @@ function detalleFacturasGuia(table_id, id, row) {
                     <tr>
                         <td style="border: none; text-align: center">#</td>
                         <td style="border: none; text-align: center">Documento</td>
-                        <td style="border: none; text-align: center">Sede</td>
+                        <td style="border: none; text-align: center">Empresa</td>
                         <td style="border: none; text-align: center">Fecha Emisión</td>
                         <td style="border: none; text-align: center">Cliente</td>
                         <td style="border: none; text-align: center">Total a pagar</td>
                         <td style="border: none; text-align: center">Registrado por</td>
-                        <td style="border: none; text-align: center">Fecha Registro</td>
+                        <td style="border: none; text-align: center">Condición Pago</td>
+                        <td style="border: none; text-align: center"></td>
                     </tr>
                 </thead>
                 <tbody>${html}</tbody>

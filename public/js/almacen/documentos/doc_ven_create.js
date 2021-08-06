@@ -2,10 +2,7 @@ let listaItems = [];
 let totales = {};
 let origen = "";
 
-function open_doc_ven_create(id_guia) {
-    console.log("open_doc_ven_create");
-    origen = "guia";
-
+function inicializarDocVen() {
     $("#modal-doc_ven_create").modal({
         show: true
     });
@@ -25,42 +22,77 @@ function open_doc_ven_create(id_guia) {
     $("[name=credito_dias]").val("");
     $("[name=moneda]").val(1);
     $("[name=simbolo]").val("S/");
+    totales.simbolo = "S/";
+}
+
+function open_doc_ven_create(id_guia) {
+    inicializarDocVen();
+    origen = "guia";
 
     $(".guia").show();
     $(".ocam").hide();
-    totales.simbolo = "S/";
+
     obtenerGuía(id_guia);
 }
 
 function open_doc_ven_requerimiento_create(id_requerimiento) {
-    console.log("open_doc_ven_create");
+    inicializarDocVen();
     origen = "requerimiento";
-
-    $("#modal-doc_ven_create").modal({
-        show: true
-    });
-
-    $("#detalleItems tbody").html("");
-    listaItems = [];
-
-    var id_tp_doc = 2;
-    $("[name=id_tp_doc]")
-        .val(id_tp_doc)
-        .trigger("change.select2");
-    $("[name=fecha_emision_doc]").val(fecha_actual());
-    $("[name=fecha_vencimiento]").val(fecha_actual());
-    $("[name=serie_doc]").val("");
-    $("[name=numero_doc]").val("");
-    $("[name=id_condicion]").val("");
-    $("[name=credito_dias]").val("");
-    $("[name=moneda]").val(1);
-    $("[name=simbolo]").val("S/");
-    $("[name=id_requerimiento]").val(id_requerimiento);
 
     $(".guia").hide();
     $(".ocam").show();
-    totales.simbolo = "S/";
+
     obtenerRequerimiento(id_requerimiento);
+}
+
+function open_doc_ven_create_guias_seleccionadas() {
+    var id_empresa = null;
+    var id_cliente = null;
+    var dif_emp = 0;
+    var dif_clientes = 0;
+    var id_guias_seleccionadas = [];
+    let razon_social = "";
+    let ruc = "";
+
+    guias_seleccionadas.forEach(element => {
+        id_guias_seleccionadas.push(element.id_guia_ven);
+
+        if (id_empresa == null) {
+            id_empresa = element.id_empresa;
+            razon_social = encodeURIComponent(element.razon_social);
+            ruc = element.nro_documento;
+        } else if (element.id_empresa !== id_empresa) {
+            dif_emp++;
+        }
+        if (id_cliente == null) {
+            id_cliente = element.id_cliente;
+        } else if (element.id_cliente !== id_cliente) {
+            dif_clientes++;
+        }
+    });
+
+    var text = "";
+    if (dif_emp > 0) text += "Debe seleccionar Guías de la misma Empresa\n";
+    if (dif_clientes > 0)
+        text += "Debe seleccionar Guías para el mismo Cliente";
+
+    if (dif_emp + dif_clientes > 0) {
+        alert(text);
+    } else {
+        inicializarDocVen();
+        origen = "guia";
+
+        $(".guia").hide();
+        $(".ocam").hide();
+
+        obtenerGuiaSeleccionadas(
+            id_guias_seleccionadas,
+            ruc,
+            razon_social,
+            id_cliente,
+            id_empresa
+        );
+    }
 }
 
 function obtenerGuía(id) {
@@ -70,7 +102,6 @@ function obtenerGuía(id) {
         dataType: "JSON",
         success: function(response) {
             console.log(response);
-            let simbolo = "";
 
             if (response["guia"] !== null) {
                 $("[name=id_cliente]").val(response["guia"].id_cliente);
@@ -82,8 +113,7 @@ function obtenerGuía(id) {
                         ? response["guia"].nro_documento
                         : ""
                 );
-                $("[name=id_guia]").val(response["guia"].id_guia_ven);
-                $("[name=id_sede]").val(response["guia"].id_sede);
+                $("[name=id_empresa]").val(response["guia"].id_empresa);
             }
 
             if (response["detalle"].length > 0) {
@@ -106,18 +136,63 @@ function obtenerGuía(id) {
                     }
                 });
 
-                if (
-                    listaItems.length > 0 &&
-                    listaItems[0].moneda_oc !== undefined
-                ) {
-                    simbolo = listaItems[0].moneda_oc == "s" ? "S/" : "$";
-                    $("[name=moneda]").val(
-                        listaItems[0].moneda_oc == "s" ? 1 : 2
-                    );
-                    $("[name=simbolo]").val(simbolo);
-                    $("[name=importe_oc]").val(listaItems[0].monto_total);
-                    totales.simbolo = simbolo;
-                }
+                totales = { porcentaje_igv: parseFloat(response["igv"]) };
+
+                mostrarListaItems();
+            }
+        }
+    }).fail(function(jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
+
+function obtenerGuiaSeleccionadas(
+    id_guias_seleccionadas,
+    ruc,
+    razon_social,
+    id_cliente,
+    id_empresa
+) {
+    // var data =
+    //     "id_guias_seleccionadas=" + JSON.stringify(id_guias_seleccionadas);
+    $.ajax({
+        type: "POST",
+        url: "obtenerGuiaVentaSeleccionadas",
+        data: {
+            id_guias_seleccionadas: id_guias_seleccionadas
+        },
+        dataType: "JSON",
+        success: function(response) {
+            console.log(response);
+
+            $("[name=id_cliente]").val(id_cliente);
+            $("[name=cliente_razon_social]").val(
+                decodeURIComponent(razon_social)
+            );
+            $("[name=cliente_ruc]").val(ruc);
+            $("[name=id_empresa]").val(id_empresa);
+
+            if (response["detalle"].length > 0) {
+                response["detalle"].forEach(det => {
+                    if (
+                        parseFloat(
+                            det.cantidad_facturada !== null
+                                ? det.cantidad_facturada
+                                : 0
+                        ) < parseFloat(det.cantidad)
+                    ) {
+                        det.cantidad_real =
+                            parseFloat(det.cantidad) -
+                            parseFloat(
+                                det.cantidad_facturada !== null
+                                    ? det.cantidad_facturada
+                                    : 0
+                            );
+                        listaItems.push(det);
+                    }
+                });
 
                 totales = { porcentaje_igv: parseFloat(response["igv"]) };
 
@@ -149,7 +224,7 @@ function obtenerRequerimiento(id) {
                 $("[name=id_requerimiento]").val(
                     response["req"].id_requerimiento
                 );
-                $("[name=id_sede]").val(response["req"].id_sede);
+                $("[name=id_empresa]").val(response["req"].id_empresa);
             }
 
             if (response["detalle"].length > 0) {
@@ -234,7 +309,7 @@ function mostrarListaItems() {
                 : element.descripcion
         }</td>
         <td>
-            <input type="number" class="form-control right cantidad" value="${
+            <input type="number" class="form-control right cantidad" style="width: 90px;" value="${
                 element.cantidad_real
             }" max="${element.cantidad_real}"
             data-id="${
@@ -305,7 +380,7 @@ function mostrarListaItems() {
         <th colSpan="11" class="text-right">Sub Total <label name="sim">${
             totales.simbolo
         }</label></th>
-        <th class="text-right">${formatNumber.decimal(
+        <th class="text-right" colSpan="2">${formatNumber.decimal(
             totales.sub_total,
             "",
             -2
@@ -315,13 +390,17 @@ function mostrarListaItems() {
         <th colSpan="11" class="text-right">IGV ${
             totales.porcentaje_igv
         }% <label name="sim">${totales.simbolo}</label></th>
-        <th class="text-right">${formatNumber.decimal(totales.igv, "", -2)}</th>
+        <th class="text-right" colSpan="2">${formatNumber.decimal(
+            totales.igv,
+            "",
+            -2
+        )}</th>
     </tr>
     <tr>
         <th colSpan="11" class="text-right"> Total <label name="sim">${
             totales.simbolo
         }</label></th>
-        <th class="text-right">${formatNumber.decimal(
+        <th class="text-right" colSpan="2">${formatNumber.decimal(
             totales.total,
             "",
             -2
