@@ -38,6 +38,10 @@ Facturación
                         <form id="form-guias" type="register">
                             <div class="row">
                                 <div class="col-md-12">
+                                    <div style="display: flex;justify-content: flex-end;">
+                                        <button type="button" class="btn btn-success btn-flat" data-toggle="tooltip" data-placement="bottom" title="Seleccione varias Guias para ingresar Factura" onClick="open_doc_ven_create_guias_seleccionadas();">
+                                            Ingresar Factura</button>
+                                    </div>
                                     <table class="mytable table table-condensed table-bordered table-okc-view" id="listaGuias">
                                         <thead>
                                             <tr>
@@ -54,8 +58,7 @@ Facturación
                                         </thead>
                                         <tbody></tbody>
                                     </table>
-                                    <button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Ingresar Factura" onClick="open_doc_ven_create_guias_seleccionadas();">
-                                        Ingresar Factura</button>
+
                                 </div>
                             </div>
                         </form>
@@ -94,9 +97,9 @@ Facturación
     </div>
 </div>
 
-@include('tesoreria.pagos.procesarPago')
-@include('almacen.documentos.doc_ven_create')
-@include('almacen.documentos.doc_ven_ver')
+@include('tesoreria.facturacion.doc_ven_create')
+@include('tesoreria.facturacion.doc_ven_ver')
+@include('tesoreria.facturacion.archivos_oc_mgcp')
 
 @endsection
 

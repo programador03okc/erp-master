@@ -70,12 +70,15 @@ function detalleFacturasRequerimiento(table_id, id, row) {
                                     ? " " + element.credito_dias + " días"
                                     : "")}</td>
                         <td style="border: none; text-align: center">
-                        <button type="button" class="ver_doc btn btn-info btn-xs" data-toggle="tooltip" 
-                            data-placement="bottom" title="Ver Factura"
-                            onClick="verDocumentoVenta(${
-                                element.id_doc_ven
-                            }, 'requerimiento')">
-                            <i class="fas fa-file-alt"></i></button>
+                            <div style="display: flex;">
+                                <button type="button" class="ver_doc btn btn-info btn-xs btn-flat" data-toggle="tooltip" 
+                                    data-placement="bottom" title="Ver Factura"
+                                    onClick="verDocumentoVenta(${
+                                        element.id_doc_ven
+                                    }, 'requerimiento')">
+                                    <i class="fas fa-file-alt"></i></button>
+                                
+                            <div/>
                         </td>
                         <td><td/>
                         </tr>`;

@@ -15,6 +15,7 @@ class PendientesFacturacionController extends Controller
     {
         $tp_doc = GenericoAlmacenController::mostrar_tp_doc_cbo();
         $empresas = $this->mostrar_empresas_cbo();
+        $motivos = $this->mostrar_motivos_emision_cbo();
         $monedas = GenericoAlmacenController::mostrar_moneda_cbo();
         $condiciones = GenericoAlmacenController::mostrar_condiciones_cbo();
 
@@ -31,6 +32,15 @@ class PendientesFacturacionController extends Controller
             ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
             ->where([['adm_empresa.estado', '!=', 7]])
             ->orderBy('adm_contri.razon_social')
+            ->get();
+        return $data;
+    }
+
+    public static function mostrar_motivos_emision_cbo()
+    {
+        $data = DB::table('almacen.doc_motivo_emision')
+            ->select('doc_motivo_emision.*')
+            ->where([['doc_motivo_emision.estado', '!=', 7]])
             ->get();
         return $data;
     }
@@ -88,6 +98,7 @@ class PendientesFacturacionController extends Controller
                 'doc_ven.*',
                 DB::raw("(cont_tp_doc.abreviatura) || ' ' || (doc_ven.serie) || '-' || (doc_ven.numero) as serie_numero"),
                 'empresa.razon_social as empresa_razon_social',
+                'adm_contri.nro_documento',
                 'adm_contri.razon_social',
                 'sis_moneda.simbolo',
                 'sis_usua.nombre_corto',
@@ -452,5 +463,22 @@ class PendientesFacturacionController extends Controller
             ->update(['estado' => 7]);
 
         return response()->json($update);
+    }
+
+    public function obtenerArchivosOc(Request $request)
+    {
+        $dataEnviar['id'] = $request->id;
+        $dataEnviar['tipo'] = $request->tipo;
+        $cUrl = curl_init();
+        curl_setopt($cUrl, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($cUrl, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt($cUrl, CURLOPT_VERBOSE, true);
+        curl_setopt($cUrl, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($cUrl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($cUrl, CURLOPT_URL, 'https://mgcp.okccloud.com/mgcp/ordenes-compra/propias/obtener-informacion-adicional');
+        curl_setopt($cUrl, CURLOPT_POST, true);
+        curl_setopt($cUrl, CURLOPT_POSTFIELDS, (http_build_query($dataEnviar)));
+        curl_setopt($cUrl, CURLOPT_HEADER, 0);
+        return curl_exec($cUrl); //Devuelve el JSON que recibió de MGCP
     }
 }

@@ -77,12 +77,15 @@ function detalleFacturasGuia(table_id, id, row) {
                                     : "")}
                         </td>
                         <td style="border: none; text-align: center">
-                        <button type="button" class="ver_doc btn btn-info btn-xs" data-toggle="tooltip" 
-                            data-placement="bottom" title="Ver Factura"
-                            onClick="verDocumentoVenta(${
-                                element.id_doc_ven
-                            }, 'guia')">
-                            <i class="fas fa-file-alt"></i></button>
+                            <div style="display: flex;">
+                                <button type="button" class="ver_doc btn btn-info btn-xs btn-flat" data-toggle="tooltip" 
+                                    data-placement="bottom" title="Ver Factura"
+                                    onClick="verDocumentoVenta(${
+                                        element.id_doc_ven
+                                    }, 'guia')">
+                                    <i class="fas fa-file-alt"></i></button>
+                                
+                            <div/>
                         </td>
                         </tr>`;
                     i++;

@@ -25,6 +25,29 @@ function inicializarDocVen() {
     totales.simbolo = "S/";
 }
 
+// function open_nota_credito_create(
+//     id_empresa,
+//     id_cliente,
+//     nro_documento,
+//     razon_social,
+//     moneda
+//     // des_origen
+// ) {
+//     inicializarDocVen();
+//     origen = des_origen;
+
+//     console.log("empresa" + id_guia);
+//     $("[name=id_tp_doc]").val(8);
+//     $("[name=id_empresa]").val(id_empresa);
+//     $("[name=id_cliente]").val(id_cliente);
+//     $("[name=cliente_ruc]").val(nro_documento);
+//     $("[name=cliente_razon_social]").val(decodeURIComponent(razon_social));
+//     $("[name=moneda]").val(moneda);
+
+//     $(".guia").hide();
+//     $(".ocam").hide();
+// }
+
 function open_doc_ven_create(id_guia) {
     inicializarDocVen();
     origen = "guia";

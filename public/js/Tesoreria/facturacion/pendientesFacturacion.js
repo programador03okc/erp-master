@@ -42,9 +42,6 @@ class Facturacion {
                 { data: "razon_social", name: "adm_contri.razon_social" },
                 {
                     render: function(data, type, row) {
-                        // if (row["nombre_corto"] !== null) {
-                        //     return row["nombre_corto"];
-                        // } else
                         if (row["nombre_corto_trans"] !== null) {
                             return row["nombre_corto_trans"];
                         } else {
@@ -56,9 +53,10 @@ class Facturacion {
                 { data: "codigo_trans", name: "trans.codigo" },
                 {
                     render: function(data, type, row) {
-                        return `${
+                        return `<div style="display: flex;">
+                        ${
                             row["items_restantes"] > 0
-                                ? `<button type="button" class="doc btn btn-success btn-xs" data-toggle="tooltip" 
+                                ? `<button type="button" class="doc btn btn-success btn-xs btn-flat" data-toggle="tooltip" 
                             data-placement="bottom" title="Generar Factura" 
                             data-guia="${row["id_guia_ven"]}"
                             data-doc="${row["id_doc_ven"]}">
@@ -67,11 +65,11 @@ class Facturacion {
                         }
                         ${
                             row["count_facturas"] > 0
-                                ? `<button type="button" class="detalle btn btn-primary btn-xs" data-toggle="tooltip" 
+                                ? `<button type="button" class="detalle btn btn-primary btn-xs btn-flat" data-toggle="tooltip" 
                                 data-placement="bottom" data-id="${row["id_guia_ven"]}" title="Ver Detalle" >
                                 <i class="fas fa-chevron-down"></i></button>`
                                 : ""
-                        }`;
+                        }<div/>`;
                     },
                     className: "text-center"
                 }
@@ -170,20 +168,20 @@ class Facturacion {
                 {
                     render: function(data, type, row) {
                         return (
-                            // '<a href="#" class="archivos" data-id="' +
-                            // row["id_oc_propia"] +
-                            // '" data-tipo="' +
-                            // row["tipo"] +
-                            // '">' +
-                            // row["nro_orden"] +
-                            // "</a>" +
-                            row["orden_am"] !== null
-                                ? row["nro_orden"] +
-                                      `<br><a href="https://apps1.perucompras.gob.pe//OrdenCompra/obtenerPdfOrdenPublico?ID_OrdenCompra=${row["id_oc_propia"]}&ImprimirCompleto=1">
-                            <span class="label label-success">Ver O.E.</span></a>
-                            <a href="${row["url_oc_fisica"]}">
-                            <span class="label label-warning">Ver O.F.</span></a>`
-                                : ""
+                            '<a href="#" class="archivos" data-id="' +
+                            row["id_oc_propia"] +
+                            '" data-tipo="' +
+                            row["tipo"] +
+                            '">' +
+                            row["nro_orden"] +
+                            "</a>"
+                            // row["orden_am"] !== null
+                            //     ? row["nro_orden"] +
+                            //           `<br><a href="https://apps1.perucompras.gob.pe//OrdenCompra/obtenerPdfOrdenPublico?ID_OrdenCompra=${row["id_oc_propia"]}&ImprimirCompleto=1">
+                            // <span class="label label-success">Ver O.E.</span></a>
+                            // <a href="${row["url_oc_fisica"]}">
+                            // <span class="label label-warning">Ver O.F.</span></a>`
+                            //     : ""
                         );
                     },
                     className: "text-center"
@@ -195,9 +193,9 @@ class Facturacion {
                 },
                 {
                     render: function(data, type, row) {
-                        return `${
+                        return `<div style="display: flex;">${
                             row["items_restantes"] > 0
-                                ? `<button type="button" class="doc btn btn-success btn-xs" data-toggle="tooltip" 
+                                ? `<button type="button" class="doc btn btn-success btn-xs btn-flat" data-toggle="tooltip" 
                             data-placement="bottom" title="Generar Factura" 
                             data-req="${row["id_requerimiento"]}"
                             data-doc="${row["id_doc_ven"]}">
@@ -206,11 +204,11 @@ class Facturacion {
                         }
                             ${
                                 row["count_facturas"] > 0
-                                    ? `<button type="button" class="detalle btn btn-primary btn-xs" data-toggle="tooltip" 
+                                    ? `<button type="button" class="detalle btn btn-primary btn-xs btn-flat" data-toggle="tooltip" 
                                     data-placement="bottom" data-id="${row["id_requerimiento"]}" title="Ver Detalle" >
                                     <i class="fas fa-chevron-down"></i></button>`
                                     : ""
-                            }`;
+                            }<div/>`;
                     },
                     className: "text-center"
                 }
@@ -242,18 +240,15 @@ function obtenerArchivosMgcp(id, tipo) {
     console.log("id:" + id + "tipo: " + tipo);
     $.ajax({
         type: "POST",
-        url:
-            "https://mgcp.okccloud.com/mgcp/ordenes-compra/propias/obtener-informacion-adicional",
+        url: "obtenerArchivosOc",
         data: { id: id, tipo: tipo },
         dataType: "JSON",
         success: function(response) {
             console.log(response);
-            // if (response > 0) {
-            //     alert("Comprobante registrado con éxito");
-            //     $("#modal-doc_ven_create").modal("hide");
-            //     let facturacion = new Facturacion();
-            //     facturacion.listarGuias();
-            // }
+            $("#modal-archivos_oc_mgcp").modal({
+                show: true
+            });
+            $("#lista_archivos_oc_mgcp").html(response.archivos);
         }
     }).fail(function(jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
