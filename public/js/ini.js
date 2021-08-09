@@ -18,7 +18,6 @@ $(document).ready(function(){
 
     page = $('.page-main').attr('type');
 	var form = $('.page-main form[type=register]').attr('id');
-
 	if (page == 'asistencia'){
 		$('.sidebar-mini').addClass('sidebar-collapse');
 	}else if (page == 'datos_rrhh'){
@@ -223,7 +222,7 @@ $(document).ready(function(){
 				}
             break;
 			case 'btnCopiar':
-				console.log('copiar'+page);
+				// console.log('copiar'+page);
 				if (page == 'requerimiento'){
 					copiarDocumento();
 				}

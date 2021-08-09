@@ -1,13 +1,4 @@
 
-var itemsParaCompraList=[]
-var reqTrueList=[]
-var listCheckReq=[]
-var infoStateInput = [];
-var tempDetalleItemsParaCompraCC = [];
-
-var tablaListaRequerimientosPendientes;
-var iTableCounter = 1;
-var oInnerTable;
 //================ Controller ==================
 class RequerimientoPendienteCtrl{
     constructor(requerimientoPendienteModel) {
@@ -106,52 +97,8 @@ class RequerimientoPendienteCtrl{
     // atender con almacén
 
     openModalAtenderConAlmacen(obj){
-        $('#modal-atender-con-almacen').modal({
-            show: true,
-            backdrop: 'true'
-        });
 
         return requerimientoPendienteModel.getDataItemsRequerimientoParaAtenderConAlmacen(obj.dataset.idRequerimiento);
-    }
-
-    updateSelectAlmacenAAtender(obj){
-        let idValor = obj.value;
-        let indiceSelected = obj.dataset.indice;
-        itemsParaAtenderConAlmacenList.forEach((element, index) => {
-            if (index == indiceSelected) {
-                itemsParaAtenderConAlmacenList[index].id_almacen_reserva = parseInt(idValor);
-            }
-        });
-        // console.log(itemsParaAtenderConAlmacenList);
-    }
-
-    updateObjCantidadAAtender(indice, valor){
-        itemsParaAtenderConAlmacenList.forEach((element, index) => {
-            if (index == indice) {
-                itemsParaAtenderConAlmacenList[index].cantidad_a_atender = valor;
-            }
-        });
-    }
-
-    updateInputCantidadAAtender(obj){
-        let nuevoValor = obj.value;
-        let indiceSelected = obj.dataset.indice;
-        let cantidad = obj.parentNode.parentNode.children[5].textContent;
-        if(parseInt(nuevoValor) > parseInt(cantidad) || parseInt(nuevoValor) <= 0 ){
-    
-            obj.parentNode.parentNode.querySelector("input[name='cantidad_a_atender']").value= cantidad;
-            itemsParaAtenderConAlmacenList.forEach((element, index) => {
-                if (index == indiceSelected) {
-                    itemsParaAtenderConAlmacenList[index].cantidad_a_atender = cantidad;
-                }
-            });
-        }else{
-            itemsParaAtenderConAlmacenList.forEach((element, index) => {
-                if (index == indiceSelected) {
-                    itemsParaAtenderConAlmacenList[index].cantidad_a_atender = nuevoValor;
-                }
-            });
-        }
     }
 
     guardarAtendidoConAlmacen(newItemsParaAtenderConAlmacenList,itemsBaseList){
@@ -650,7 +597,7 @@ class RequerimientoPendienteCtrl{
         sessionStorage.setItem('reqCheckedList', JSON.stringify(reqTrueList));
         sessionStorage.setItem('tipoOrden', 'COMPRA');
         let url ="/logistica/gestion-logistica/compras/ordenes/elaborar/index";
-        var win = window.location.replace(url);
+        var win = location.href=url;
     }
     // Crear orden servicio por requerimiento
     crearOrdenServicioPorRequerimiento(obj){
@@ -658,7 +605,7 @@ class RequerimientoPendienteCtrl{
         sessionStorage.setItem('reqCheckedList', JSON.stringify(reqTrueList));
         sessionStorage.setItem('tipoOrden', 'SERVICIO');
         let url ="/logistica/gestion-logistica/compras/ordenes/elaborar/index";
-        var win = window.location.replace(url);
+        var win = location.href=url;
     }
 
     crearOrdenCompra(){

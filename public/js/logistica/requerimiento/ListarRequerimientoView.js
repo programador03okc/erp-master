@@ -1,6 +1,6 @@
 var tempArchivoAdjuntoRequerimientoList = [];
 var tempArchivoAdjuntoRequerimientoToDeleteList = [];
-var tempArchivoAdjuntoItemList=[];
+var tempArchivoAdjuntoItemList = [];
 class ListarRequerimientoView {
 
     constructor(requerimientoCtrl) {
@@ -19,21 +19,21 @@ class ListarRequerimientoView {
 
     // }
 
-    initializeEventHandler(){
+    initializeEventHandler() {
         document.querySelector("button[class~='handleClickImprimirRequerimientoPdf']").addEventListener("click", this.imprimirRequerimientoPdf.bind(this), false);
 
     }
 
 
-    imprimirRequerimientoPdf(){
+    imprimirRequerimientoPdf() {
         var id = document.getElementsByName("id_requerimiento")[0].value;
-        window.open('imprimir-requerimiento-pdf/'+id+'/0');
-    
+        window.open('imprimir-requerimiento-pdf/' + id + '/0');
+
     }
 
     limpiarTabla(idElement) {
         let nodeTbody = document.querySelector("table[id='" + idElement + "'] tbody");
-        if(nodeTbody!=null){
+        if (nodeTbody != null) {
             while (nodeTbody.children.length > 0) {
                 nodeTbody.removeChild(nodeTbody.lastChild);
             }
@@ -134,14 +134,14 @@ class ListarRequerimientoView {
                         let btnEditar = '';
                         let btnAnular = '';
                         // let btnMandarAPago = '';
-                        let btnDetalleRapido = '<button type="button" class="btn btn-xs btn-info handleClickVerDetalleRequerimientoSoloLectura" data-id-requerimiento="'+row['id_requerimiento']+'" title="Ver detalle" ><i class="fas fa-eye fa-xs"></i></button>';
+                        let btnDetalleRapido = '<button type="button" class="btn btn-xs btn-info handleClickVerDetalleRequerimientoSoloLectura" data-id-requerimiento="' + row['id_requerimiento'] + '" title="Ver detalle" ><i class="fas fa-eye fa-xs"></i></button>';
                         let btnTrazabilidad = '<button type="button" class="btn btn-xs btn-primary handleClickVerTrazabilidadRequerimiento" title="Trazabilidad"><i class="fas fa-route fa-xs"></i></button>';
                         // if(row.estado ==2){
                         //         btnMandarAPago = '<button type="button" class="btn btn-xs btn-success" title="Mandar a pago" onClick="listarRequerimientoView.requerimientoAPago(' + row['id_requerimiento'] + ');"><i class="fas fa-hand-holding-usd fa-xs"></i></button>';
                         //     }
                         if (row.id_usuario == auth_user.id_usuario && (row.estado == 1 || row.estado == 3)) {
                             btnEditar = '<button type="button" class="btn btn-xs btn-warning handleClickAbrirRequerimiento" title="Editar" ><i class="fas fa-edit fa-xs"></i></button>';
-                            btnAnular = '<button type="button" class="btn btn-xs btn-danger handleClickAnularRequerimiento" title="Anular" ><i class="fas fa-trash fa-xs"></i></button>';
+                            btnAnular = '<button type="button" class="btn btn-xs btn-danger handleClickAnularRequerimiento" title="Anular" ><i class="fas fa-times fa-xs"></i></button>';
                         }
 
 
@@ -151,40 +151,40 @@ class ListarRequerimientoView {
 
             ],
             'initComplete': function () {
-                
+
                 // var table = document.querySelector("table[id='ListaRequerimientosElaborados'] tbody")
                 // var buttons = table.querySelectorAll(".handleClickVerDetalleRequerimientoSoloLectura");
                 // var i = 0, length = buttons.length;
                 // for (i; i < length; i++) {
                 //         buttons[i].addEventListener("click", that.verDetalleRequerimientoSoloLectura.bind(this,that), false);
                 // }
-          
-                $('#ListaRequerimientosElaborados tbody').on("click","label.handleClickAbrirOrden", function(){
+
+                $('#ListaRequerimientosElaborados tbody').on("click", "label.handleClickAbrirOrden", function () {
                     var idOrdenCompra = $('#ListaRequerimientosElaborados').DataTable().row($(this).parents("tr")).node().querySelector("label[class~='handleClickAbrirOrden']").dataset.idOrdenCompra;
                     // console.log(idOrdenCompra);
                     that.trazabilidadRequerimiento.abrirOrden(idOrdenCompra);
                 });
-                $('#ListaRequerimientosElaborados tbody').on("click","label.handleClickAbrirRequerimiento", function(){
+                $('#ListaRequerimientosElaborados tbody').on("click", "label.handleClickAbrirRequerimiento", function () {
                     var data = $('#ListaRequerimientosElaborados').DataTable().row($(this).parents("tr")).data();
                     that.abrirRequerimiento(data.id_requerimiento);
                 });
-                $('#ListaRequerimientosElaborados tbody').on("click","button.handleClickAbrirRequerimiento", function(){
+                $('#ListaRequerimientosElaborados tbody').on("click", "button.handleClickAbrirRequerimiento", function () {
                     var data = $('#ListaRequerimientosElaborados').DataTable().row($(this).parents("tr")).data();
                     that.abrirRequerimiento(data.id_requerimiento);
                 });
-                $('#ListaRequerimientosElaborados tbody').on("click","button.handleClickAnularRequerimiento", function(){
+                $('#ListaRequerimientosElaborados tbody').on("click", "button.handleClickAnularRequerimiento", function () {
                     var data = $('#ListaRequerimientosElaborados').DataTable().row($(this).parents("tr")).data();
-                    that.anularRequerimiento(data.id_requerimiento);
+                    that.anularRequerimiento(this,data.id_requerimiento,data.codigo);
                 });
 
-                $('#ListaRequerimientosElaborados tbody').on("click","button.handleClickVerTrazabilidadRequerimiento", function(){
+                $('#ListaRequerimientosElaborados tbody').on("click", "button.handleClickVerTrazabilidadRequerimiento", function () {
                     var data = $('#ListaRequerimientosElaborados').DataTable().row($(this).parents("tr")).data();
-                    that.trazabilidadRequerimiento.verTrazabilidadRequerimientoModal(data,that);
+                    that.trazabilidadRequerimiento.verTrazabilidadRequerimientoModal(data, that);
                 });
 
-                $('#ListaRequerimientosElaborados tbody').on("click","button.handleClickVerDetalleRequerimientoSoloLectura", function(){
+                $('#ListaRequerimientosElaborados tbody').on("click", "button.handleClickVerDetalleRequerimientoSoloLectura", function () {
                     var data = $('#ListaRequerimientosElaborados').DataTable().row($(this).parents("tr")).data();
-                    that.verDetalleRequerimientoSoloLectura(data,that);
+                    that.verDetalleRequerimientoSoloLectura(data, that);
                 });
             }
         });
@@ -194,7 +194,7 @@ class ListarRequerimientoView {
         });
     }
 
-    verDetalleRequerimientoSoloLectura(data,that) {
+    verDetalleRequerimientoSoloLectura(data, that) {
         let idRequerimiento = data.id_requerimiento;
         $('#modal-requerimiento').modal({
             show: true,
@@ -204,9 +204,9 @@ class ListarRequerimientoView {
         document.querySelector("div[id='modal-requerimiento'] fieldset[id='group-acciones']").classList.add("oculto");
         document.querySelector("div[id='modal-requerimiento'] button[id='btnRegistrarRespuesta']").classList.add("oculto");
 
-        that.requerimientoCtrl.getRequerimiento(idRequerimiento).then((res)=> {
+        that.requerimientoCtrl.getRequerimiento(idRequerimiento).then((res) => {
             that.construirSeccionDatosGenerales(res['requerimiento'][0]);
-            that.construirSeccionItemsDeRequerimiento(res['det_req'],res['requerimiento'][0]['simbolo_moneda']);
+            that.construirSeccionItemsDeRequerimiento(res['det_req'], res['requerimiento'][0]['simbolo_moneda']);
             that.construirSeccionHistorialAprobacion(res['historial_aprobacion']);
             $('#modal-requerimiento div.modal-body').LoadingOverlay("hide", true);
 
@@ -252,7 +252,7 @@ class ListarRequerimientoView {
 
             });
 
-            document.querySelector("a[class~='handleClickVerAdjuntosRequerimiento']")?(document.querySelector("a[class~='handleClickVerAdjuntosRequerimiento']").addEventListener("click", this.verAdjuntosRequerimiento.bind(this), false)):false;
+            document.querySelector("a[class~='handleClickVerAdjuntosRequerimiento']") ? (document.querySelector("a[class~='handleClickVerAdjuntosRequerimiento']").addEventListener("click", this.verAdjuntosRequerimiento.bind(this), false)) : false;
 
         }
 
@@ -326,7 +326,7 @@ class ListarRequerimientoView {
 
                     });
                 }
-            document.querySelector("tbody[id='body_item_requerimiento']").insertAdjacentHTML('beforeend', `<tr>
+                document.querySelector("tbody[id='body_item_requerimiento']").insertAdjacentHTML('beforeend', `<tr>
                 <td>${i + 1}</td>
                 <td>${data[i].descripcion_partida ? data[i].descripcion_partida : ''}</td>
                 <td>${data[i].descripcion_centro_costo ? data[i].descripcion_centro_costo : ''}</td>
@@ -335,21 +335,21 @@ class ListarRequerimientoView {
                 <td>${data[i].unidad_medida}</td>
                 <td style="text-align:center;">${data[i].cantidad}</td>
                 <td style="text-align:right;">${simboloMoneda} ${Util.formatoNumero(data[i].precio_unitario, 2)}</td>
-                <td style="text-align:right;">${simboloMoneda} ${(data[i].subtotal ? Util.formatoNumero(data[i].subtotal, 2) : (Util.formatoNumero((data[i].cantidad*data[i].precio_unitario),2)))}</td>
+                <td style="text-align:right;">${simboloMoneda} ${(data[i].subtotal ? Util.formatoNumero(data[i].subtotal, 2) : (Util.formatoNumero((data[i].cantidad * data[i].precio_unitario), 2)))}</td>
                 <td>${data[i].motivo ? data[i].motivo : ''}</td>
                 <td style="text-align: center;"> 
-                    ${cantidadAdjuntosItem>0?'<a title="Ver archivos adjuntos de item" style="cursor:pointer;" class="handleClickVerAdjuntosItem'+i+'" >Ver (<span name="cantidadAdjuntosItem">'+cantidadAdjuntosItem+'</span>)</a>':'-'}
+                    ${cantidadAdjuntosItem > 0 ? '<a title="Ver archivos adjuntos de item" style="cursor:pointer;" class="handleClickVerAdjuntosItem' + i + '" >Ver (<span name="cantidadAdjuntosItem">' + cantidadAdjuntosItem + '</span>)</a>' : '-'}
                 </td>
             </tr>`);
-                
-            document.querySelector("a[class='handleClickVerAdjuntosItem"+i+"']")?document.querySelector("a[class~='handleClickVerAdjuntosItem"+i+"']").addEventListener("click", this.verAdjuntosItem.bind(this,data[i].id_detalle_requerimiento), false):false;
+
+                document.querySelector("a[class='handleClickVerAdjuntosItem" + i + "']") ? document.querySelector("a[class~='handleClickVerAdjuntosItem" + i + "']").addEventListener("click", this.verAdjuntosItem.bind(this, data[i].id_detalle_requerimiento), false) : false;
 
 
             }
 
 
         }
- 
+
 
     }
 
@@ -379,14 +379,15 @@ class ListarRequerimientoView {
 
 
     }
-    
+
     construirSeccionHistorialAprobacion(data) {
+        this.limpiarTabla('listaHistorialRevision');
         let html = '';
         if (data.length > 0) {
             for (let i = 0; i < data.length; i++) {
                 html += `<tr>
                     <td style="text-align:center;">${data[i].nombre_usuario ? data[i].nombre_usuario : ''}</td>
-                    <td style="text-align:center;">${data[i].accion ? data[i].accion : ''}${data[i].tiene_sustento ==true ? ' (Tiene sustento)': ''}</td>
+                    <td style="text-align:center;">${data[i].accion ? data[i].accion : ''}${data[i].tiene_sustento == true ? ' (Tiene sustento)' : ''}</td>
                     <td style="text-align:left;">${data[i].detalle_observacion ? data[i].detalle_observacion : ''}</td>
                     <td style="text-align:center;">${data[i].fecha_vobo ? data[i].fecha_vobo : ''}</td>
                 </tr>`;
@@ -415,19 +416,45 @@ class ListarRequerimientoView {
     }
 
 
-    anularRequerimiento(idRequerimiento) {
-        this.requerimientoCtrl.anularRequerimiento(idRequerimiento).then(function (res) {
-            if (res.estado == 7) {
-                alert(`${res.mensaje}`);
-                location.reload();
-                $('#wrapper-okc').LoadingOverlay("hide", true);
-            } else {
-                $('#wrapper-okc').LoadingOverlay("hide", true);
-                alert(`${res.mensaje}`);
+    anularRequerimiento(obj,idRequerimiento,codigo) {
+        Swal.fire({
+            title: 'Esta seguro que desea anular el requerimiento '+codigo+'?',
+            text: "No podrás revertir esto.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: 'Cancelar',
+            confirmButtonText: 'Si, anular'
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.requerimientoCtrl.anularRequerimiento(idRequerimiento).then(function (res) {
+                    if (res.estado == 7) {
+                        $('#wrapper-okc').LoadingOverlay("hide", true);
+                        obj.closest('tr').remove();
+                        Swal.fire(
+                            'Anulado',
+                            res.mensaje,
+                            'success'
+                        );
+                    } else {
+                        $('#wrapper-okc').LoadingOverlay("hide", true);
+                        Swal.fire(
+                            'Hubo un problema',
+                            res.mensaje,
+                            'error'
+                        );
+                    }
+                }).catch(function (err) {
+                    console.log(err)
+                })
+
+
             }
-        }).catch(function (err) {
-            console.log(err)
         })
+
+
     }
 
 

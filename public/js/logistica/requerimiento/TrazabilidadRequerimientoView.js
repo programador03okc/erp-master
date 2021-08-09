@@ -64,6 +64,17 @@ class TrazabilidadRequerimiento{
                 $(function () {
                     $('[data-toggle="popover"]').popover()
                   })
+            }else{
+                html +=`
+                <div class="stepper-item ">
+                    <div class="step-counter" tabindex="0" data-container="body" data-toggle="popover" data-trigger="focus"  data-html="true" data-placement="bottom">
+ 
+                    </div>
+                    <div class="step-name">Sin historial de aprobación</div>
+                </div>
+                `;       
+                
+                document.querySelector("div[class='stepper-wrapper']").innerHTML=html;
             }
 
         }).catch(function (err) {

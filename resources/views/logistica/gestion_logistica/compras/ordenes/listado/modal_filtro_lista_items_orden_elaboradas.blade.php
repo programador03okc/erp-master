@@ -139,6 +139,7 @@
                 </form> 
             </div>
             <div class="modal-footer">
+                <button class="btn btn-sm btn-primary" class="close" data-dismiss="modal" >Cancelar</button>
                 <button class="btn btn-sm btn-success handleClickAplicarFiltrosVistaDetalleOrden">Aplicar</button>
             </div>
         </div>

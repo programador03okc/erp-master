@@ -311,6 +311,8 @@ class AprobarRequerimientoView {
                 $modalRequerimiento.find("input[name='idRolAprobante']").val(event.currentTarget.dataset.idRolAprobante);
                 $modalRequerimiento.find("input[name='idFlujo']").val(event.currentTarget.dataset.idFlujo);
                 $modalRequerimiento.find("input[name='aprobacionFinalOPendiente']").val(event.currentTarget.dataset.aprobacionFinalOPendiente);
+                $modalRequerimiento.find("textarea[id='comentario']").val('');
+                $modalRequerimiento.find("select[id='accion']").val(0);
 
 
                 var customElement = $("<div>", {

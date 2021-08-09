@@ -107,6 +107,8 @@ class RequerimientoController extends Controller
             ->select(
                 'alm_req.codigo as codigo_requerimiento',
                 'alm_det_req.*',
+                'sis_moneda.simbolo as moneda_simbolo',
+                'sis_moneda.descripcion as moneda_descripcion',
                 'adm_estado_doc.estado_doc',
                 'adm_estado_doc.bootstrap_color',
                 'alm_prod.descripcion as producto_descripcion',
@@ -118,6 +120,7 @@ class RequerimientoController extends Controller
             ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_det_req.id_unidad_medida')
             ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'alm_det_req.estado')
             ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+            ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'alm_det_req.id_moneda')
             // ->leftJoin('almacen.alm_almacen as almacen_reserva','almacen_reserva.id_almacen','=','alm_det_req.id_almacen_reserva')
             ->where([
                 ['alm_det_req.id_requerimiento', '=', $id_requerimiento],
@@ -424,8 +427,8 @@ class RequerimientoController extends Controller
                             trans_detalle.estado != 7) AS suma_transferencias")
                 )
                 ->where([
-                    ['alm_det_req.id_requerimiento', '=', $requerimiento[0]['id_requerimiento']],
-                    ['alm_det_req.estado', '!=', 7]
+                    ['alm_det_req.id_requerimiento', '=', $requerimiento[0]['id_requerimiento']]
+                   
                 ])
                 ->orderBy('alm_item.id_item', 'asc')
                 ->get();
@@ -629,7 +632,6 @@ class RequerimientoController extends Controller
                 $detalleArray[] = $detalle;
                 $montoTotal += $detalle->cantidad * $detalle->precio_unitario;
             }
-
 
             $documento = new Documento();
             $documento->id_tp_documento = 1;

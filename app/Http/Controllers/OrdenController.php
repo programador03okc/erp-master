@@ -255,35 +255,35 @@ class OrdenController extends Controller
         $orden_list=[];
         $detalle_orden_list=[];
 
-        $orden_obj = Orden::select(
-            'log_ord_compra.id_orden_compra as orden_id_orden_compra',
-            'log_ord_compra.id_grupo_cotizacion as orden_id_grupo_cotizacion',
-            'log_ord_compra.id_tp_documento as orden_id_tp_documento',
-            'log_ord_compra.fecha as orden_fecha',
-            'log_ord_compra.incluye_igv as orden_incluye_igv',
-            'log_ord_compra.id_usuario as orden_id_usuario',
-            'log_ord_compra.id_moneda as orden_id_moneda',
-            'log_ord_compra.igv_porcentaje as orden_igv_porcentaje',
-            'log_ord_compra.monto_subtotal as orden_monto_subtotal',
-            'log_ord_compra.monto_igv as orden_monto_igv',
-            'log_ord_compra.monto_total as orden_monto_total',
-            'log_ord_compra.estado as orden_estado',
-            'log_ord_compra.id_proveedor as orden_id_proveedor',
-            'log_ord_compra.codigo as orden_codigo',
-            'log_ord_compra.id_cotizacion as orden_id_cotizacion',
-            'log_ord_compra.id_condicion as orden_id_condicion',
-            'log_ord_compra.plazo_dias as orden_plazo_dias',
-            'log_ord_compra.id_cta_principal as orden_id_cta_principal',
-            'log_ord_compra.id_cta_alternativa as orden_id_cta_alternativa',
-            'log_ord_compra.id_cta_detraccion as orden_id_cta_detraccion',
-            'log_ord_compra.personal_autorizado_1 as orden_personal_autorizado_1',
-            'log_ord_compra.personal_autorizado_2 as orden_personal_autorizado_2',
-            'log_ord_compra.plazo_entrega as orden_plazo_entrega',
-            'log_ord_compra.en_almacen as orden_en_almacen',
-            'log_ord_compra.id_occ as orden_id_occ',
-            'log_ord_compra.id_sede as orden_id_sede',
-            'log_ord_compra.id_requerimiento as orden_id_requerimiento',
-            'log_ord_compra.codigo_softlink as orden_codigo_softlink',
+        $orden_obj =Orden::select(
+            'log_ord_compra.id_orden_compra as id_orden_compra',
+            'log_ord_compra.id_grupo_cotizacion',
+            'log_ord_compra.id_tp_documento',
+            'log_ord_compra.fecha',
+            'log_ord_compra.incluye_igv',
+            'log_ord_compra.id_usuario',
+            'log_ord_compra.id_moneda',
+            'sis_moneda.simbolo as simbolo_moneda',
+            'log_ord_compra.igv_porcentaje',
+            'log_ord_compra.monto_subtotal',
+            'log_ord_compra.monto_igv',
+            'log_ord_compra.monto_total',
+            'log_ord_compra.estado',
+            'log_ord_compra.id_proveedor',
+            'log_ord_compra.codigo',
+            'log_ord_compra.id_cotizacion',
+            'log_ord_compra.id_condicion',
+            'log_ord_compra.plazo_dias',
+            'log_ord_compra.id_cta_principal',
+            'log_ord_compra.id_cta_alternativa',
+            'log_ord_compra.id_cta_detraccion',
+            'log_ord_compra.personal_autorizado_1',
+            'log_ord_compra.personal_autorizado_2',
+            'log_ord_compra.plazo_entrega',
+            'log_ord_compra.en_almacen',
+            'log_ord_compra.id_occ',
+            'log_ord_compra.id_sede',
+            'log_ord_compra.codigo_softlink',
             'log_ord_compra.observacion',
             'adm_contri.id_contribuyente',
             'adm_contri.razon_social',
@@ -301,6 +301,7 @@ class OrdenController extends Controller
             'log_det_ord_compra.descripcion_adicional as detalle_orden_descripcion_adicional',
             'log_det_ord_compra.cantidad as detalle_orden_cantidad',
             'log_det_ord_compra.precio as detalle_orden_precio',
+            'cc_am.moneda_pvu',
             'cc_am_filas.cantidad as cdc_cantidad',
             'cc_am_filas.pvu_oc as cdc_precio',
             'log_det_ord_compra.id_unidad_medida as detalle_orden_id_unidad_medida',
@@ -311,6 +312,7 @@ class OrdenController extends Controller
             'alm_req.concepto',
             'alm_req.id_cliente',
             'contri_cli.razon_social as razon_social_cliente',
+            'alm_req.id_requerimiento',
             'alm_req.codigo as codigo_requerimiento',
             'alm_prod.codigo AS alm_prod_codigo',
             'alm_prod.part_number',
@@ -318,10 +320,12 @@ class OrdenController extends Controller
             'alm_subcat.descripcion as subcategoria',
             'alm_prod.descripcion AS alm_prod_descripcion'
         )
+        
         ->leftJoin('logistica.log_det_ord_compra', 'log_det_ord_compra.id_orden_compra', '=', 'log_ord_compra.id_orden_compra')
         ->leftJoin('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
         ->leftJoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
         ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'log_ord_compra.id_sede')
+        ->leftJoin('configuracion.sis_moneda', 'log_ord_compra.id_moneda', '=', 'sis_moneda.id_moneda')
         ->leftJoin('logistica.estados_compra', 'log_det_ord_compra.estado', '=', 'estados_compra.id_estado')
         ->leftJoin('almacen.alm_prod', 'log_det_ord_compra.id_producto', '=', 'alm_prod.id_producto')
         ->leftJoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
@@ -331,8 +335,10 @@ class OrdenController extends Controller
         ->leftJoin('comercial.com_cliente','com_cliente.id_cliente','=','alm_req.id_cliente')
         ->leftJoin('contabilidad.adm_contri as contri_cli','contri_cli.id_contribuyente','=','com_cliente.id_contribuyente')
         ->leftJoin('mgcp_cuadro_costos.cc_am_filas', 'cc_am_filas.id', '=', 'alm_det_req.id_cc_am_filas')
+        ->leftJoin('mgcp_cuadro_costos.cc_am', 'cc_am_filas.id_cc_am', '=', 'cc_am.id_cc')
 
         ->where([
+            // ['log_ord_compra.codigo', '=', 'OC-21080176'],
             ['log_ord_compra.estado', '!=', 7],
             $tipoOrden >0 ? ['log_ord_compra.id_tp_documento',$tipoOrden]:[null],
             $empresa >0 ? ['sis_sede.id_empresa',$empresa]:[null],
@@ -366,9 +372,10 @@ class OrdenController extends Controller
         ->whereRaw('coalesce((log_det_ord_compra.cantidad * log_det_ord_compra.precio) ,0) '.$simboloSubtotal.' '.$subtotal)
         ->get();
 
-        $orden_list = collect($orden_obj)->map(function($x){ return (array) $x; })->toArray(); 
+        // $orden_list = collect($orden_obj)->map(function($x){ return (array) $x; })->toArray(); 
+        // Debugbar::info($orden_obj);
 
-        $output['data']=$orden_list;
+        $output['data']=$orden_obj;
         return $output;
     }
 
@@ -973,7 +980,7 @@ class OrdenController extends Controller
 
 
         ->where([
-            // ['log_ord_compra.codigo', '=', 'OC-21070148'],
+            // ['log_ord_compra.codigo', '=', 'OC-21070121'],
             ['log_ord_compra.estado', '!=', 7],
             ['log_ord_compra.id_grupo_cotizacion', '=', null],
             $tipoOrden >0 ? ['log_ord_compra.id_tp_documento',$tipoOrden]:[null],
@@ -1061,7 +1068,8 @@ class OrdenController extends Controller
             }
         }
 
-        $detalle_orden = Orden::select(
+        // $detalle_orden = Orden::select(
+            $detalle_orden = DB::table('logistica.log_ord_compra')->select(
             'log_ord_compra.id_orden_compra',
             'log_det_ord_compra.id_detalle_orden',
             'alm_req.id_requerimiento',
@@ -1075,17 +1083,22 @@ class OrdenController extends Controller
             'estados_aprobacion.estado as estado_aprobacion'
             )
         ->leftJoin('logistica.log_det_ord_compra', 'log_det_ord_compra.id_orden_compra', '=', 'log_ord_compra.id_orden_compra')
-        ->leftJoin('almacen.guia_com_det', 'guia_com_det.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden')
         ->leftJoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
+        ->leftJoin('almacen.guia_com_det', 'guia_com_det.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden')
         ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
         ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
         ->leftJoin('mgcp_cuadro_costos.estados_aprobacion', 'estados_aprobacion.id', '=', 'cc.estado_aprobacion')
         ->leftJoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
         ->leftJoin('mgcp_acuerdo_marco.oc_propias', 'oc_propias.id_oportunidad', '=', 'oportunidades.id')
-        ->where([['log_ord_compra.estado', '!=', 7]])
+        ->where([
+            // ['log_ord_compra.codigo', '=', 'OC-21070121'],
+            ['log_ord_compra.estado', '!=', 7]
+
+        ])
         ->orderBy('log_ord_compra.fecha','desc')
         ->get();
 
+         
         $data_detalle_orden=[];
         if(count($ord_compra)>0){
             foreach($detalle_orden as $element){
@@ -1106,6 +1119,7 @@ class OrdenController extends Controller
         }
 
       
+        // Debugbar::info($data_detalle_orden);
 
         foreach ($data_orden as $ordenKey => $ordenValue) {
             foreach ($data_detalle_orden as $detalleOrdnKey => $detalleOrdenValue) {
@@ -2019,14 +2033,14 @@ class OrdenController extends Controller
                 <table width="100%" class="tablePDF" border="0" style="font-size:8px;">
                 <thead>
                     <tr class="subtitle">
-                        <td width="3%">Código</td>
-                        <td width="3%">Part Number</td>
-                        <td width="20%">Descripción</td>
-                        <td width="3%">Und</td>
-                        <td width="3%">Cant.</td>
-                        <td width="3%">Precio</td>
-                        <td width="3%">Descuento</td>
-                        <td width="5%">Total</td>
+                        <td style="width:3%; color:white; text-align:center;">Código</td>
+                        <td style="width:3%; color:white; text-align:center;">Part Number</td>
+                        <td style="width:20%; color:white; text-align:center;">Descripción</td>
+                        <td style="width:3%; color:white; text-align:center;">Und</td>
+                        <td style="width:3%; color:white; text-align:center;">Cant.</td>
+                        <td style="width:3%; color:white; text-align:center;">Precio</td>
+                        <td style="width:3%; color:white; text-align:center;">Descuento</td>
+                        <td style="width:5%; color:white; text-align:center;">Total</td>
                     </tr>   
                 </thead>';
 
@@ -2063,10 +2077,10 @@ class OrdenController extends Controller
             }
             $html .= '<td>' . $data['unidad_medida'] . '</td>';
             $html .= '<td style="text-align:center">' . $data['cantidad'] . '</td>';
-            $html .= '<td style="text-align:center">' . number_format($data['precio'],2,'.','') . '</td>';
+            $html .= '<td style="text-align:center">' .$ordenArray['head']['moneda_simbolo']. number_format($data['precio'],2,'.','') . '</td>';
             // $html .= '<td class="right">' . number_format((($data['cantidad'] * $data['precio']) - (($data['cantidad']* $data['precio'])/1.18)),2,'.','') . '</td>';
             $html .= '<td style="text-align:right"> </td>';
-            $html .= '<td style="text-align:right">' . $data['subtotal']. '</td>';
+            $html .= '<td style="text-align:right">' .$ordenArray['head']['moneda_simbolo']. number_format($data['subtotal'],2,'.',''). '</td>';
             $html .= '</tr>';
             // $total = $total + ($data['cantidad'] * $data['precio']);
         }
@@ -3152,7 +3166,8 @@ class OrdenController extends Controller
             'adm_contri.razon_social',
             'adm_contri.nro_documento',
             'log_cdn_pago.descripcion as condicion',
-            'sis_moneda.simbolo',
+            'sis_moneda.simbolo as simbolo_moneda',
+            'sis_moneda.descripcion as descripcion_moneda',
             'cta_prin.nro_cuenta as nro_cuenta_prin',
             'cta_alter.nro_cuenta as nro_cuenta_alter',
             'cta_detra.nro_cuenta as nro_cuenta_detra',
@@ -3185,7 +3200,8 @@ class OrdenController extends Controller
                         'razon_social'   => $data->razon_social,
                         'nro_documento'  => $data->nro_documento,
                         'condicion'      => $data->condicion,
-                        'simbolo'        => $data->simbolo,
+                        'descripcion_moneda' => $data->descripcion_moneda,
+                        'simbolo_moneda'        => $data->simbolo_moneda,
                         'id_estado'     => $data->estado,
                         'estado_doc'     => $data->estado_doc,
                         'id_condicion'   => $data->id_condicion,
@@ -3206,6 +3222,8 @@ class OrdenController extends Controller
 
 
         $log_det_ord_compra = DB::table('logistica.log_det_ord_compra')
+        ->leftjoin('logistica.log_ord_compra','log_ord_compra.id_orden_compra','=','log_det_ord_compra.id_orden_compra')
+        ->leftjoin('configuracion.sis_moneda','sis_moneda.id_moneda','=','log_ord_compra.id_moneda')
         ->leftJoin('almacen.alm_prod', 'log_det_ord_compra.id_producto', '=', 'alm_prod.id_producto')
         ->leftJoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
         ->leftJoin('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
@@ -3225,6 +3243,8 @@ class OrdenController extends Controller
             'log_det_ord_compra.lugar_despacho',
             'log_det_ord_compra.descripcion_adicional',
             'log_det_ord_compra.id_unidad_medida',
+            'sis_moneda.simbolo as simbolo_moneda',
+            'sis_moneda.descripcion as descripcion_moneda',
             'log_det_ord_compra.precio',
             'log_det_ord_compra.cantidad',
             'log_det_ord_compra.estado as id_estado_detalle_orden',
@@ -3274,9 +3294,11 @@ class OrdenController extends Controller
                         'id_requerimiento'          => $data->id_requerimiento,
                         'codigo_requerimiento'      => $data->codigo_requerimiento,
                         'cantidad'                  => $data->cantidad,
-                        'id_unidad_medida'             => $data->id_unidad_medida,
+                        'id_unidad_medida'          => $data->id_unidad_medida,
                         'unidad_medida'             => $data->unidad_medida,
-                        'precio_unitario'        => $data->precio_unitario,
+                        'descripcion_moneda'        => $data->descripcion_moneda,
+                        'simbolo_moneda'            => $data->simbolo_moneda,
+                        'precio_unitario'           => $data->precio_unitario,
                         'descripcion_adicional'     => $data->descripcion_adicional,
                         'lugar_entrega'             => $data->lugar_entrega,
                         'fecha_registro'            => $data->fecha_registro_alm_det_req,

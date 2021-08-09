@@ -54,10 +54,6 @@ Requerimientos pendientes
                                             </table>
                                             <div class="row">
                                                 <div class="col-md-12 right">
-                                                    <button class="btn btn-warning handleClickCrearOrdenCompra" type="button" id="btnCrearOrdenCompra" disabled>
-                                                        Crear Orden <i class="fas fa-file-invoice"></i>
-                                                    </button>
-
                                                 </div>
                                             </div>
                                         </form>

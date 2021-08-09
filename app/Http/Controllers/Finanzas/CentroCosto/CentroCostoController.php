@@ -45,6 +45,7 @@ class CentroCostoController extends Controller
         ->where('estado',1)
         ->whereIn('id_grupo',$idGrupoList)
         ->whereRaw('centro_costo.version = (select max("version") from finanzas.centro_costo)')
+        ->select(['*'])
         ->get();
         
         return response()->json($centro_costos);

@@ -25,7 +25,7 @@ Listado de requerimientos
                 <form id="form-requerimientosElaborados" type="register">
                     <div class="row">
                         <div class="col-md-2">
-                            <h5>Mostar</h5>
+                            <h5>Elaborado por</h5>
                             <div style="display:flex;">
                                 <select class="form-control" name="mostrar_me_all" onChange="listarRequerimientoView.handleChangeFiltroListado();">
                                     <option value="ALL">Todos</option>

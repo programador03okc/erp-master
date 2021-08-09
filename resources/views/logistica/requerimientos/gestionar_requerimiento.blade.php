@@ -479,7 +479,7 @@ Crear / editar requerimiento
                             <tfoot>
                                 <tr>
                                     <td colspan="8" class="text-right"><strong>Total:</strong></td>
-                                    <td class="text-right"><span name="simbolo_moneda">S/</span><label name="total"> 0.00</label></td>
+                                    <td class="text-right"><span name="simboloMoneda">S/</span><label name="total"> 0.00</label></td>
                                     <td></td>
                                     <td></td>
                                     <td></td>

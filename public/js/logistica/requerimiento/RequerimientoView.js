@@ -91,6 +91,9 @@ class RequerimientoView {
     }
 
     mostrarHistorial() {
+        changeStateButton('inicio');
+
+
         $('#modal-historial-requerimiento').modal({
             show: true,
             backdrop: 'true'
@@ -126,7 +129,31 @@ class RequerimientoView {
                 { 'data': 'razon_social', 'name': 'adm_contri.razon_social', 'className': 'text-center' },
                 { 'data': 'grupo', 'name': 'adm_grupo.descripcion' },
                 { 'data': 'division', 'name': 'adm_flujo.nombre' },
-                { 'data': 'estado_doc', 'name': 'adm_estado_doc.estado_doc' },
+                {'render':
+                    function (data, type, row){
+                        switch (row['estado']) {
+                            case 1:
+                                return '<span class="label label-default">' + row['estado_doc'] + '</span>';
+                                break;
+                            case 2:
+                                return '<span class="label label-success">' + row['estado_doc'] + '</span>';
+                                break;
+                            case 3:
+                                return '<span class="label label-warning">' + row['estado_doc'] + '</span>';
+                                break;
+                            case 5:
+                                return '<span class="label label-primary">' + row['estado_doc'] + '</span>';
+                                break;
+                            case 7:
+                                return '<span class="label label-danger">' + row['estado_doc'] + '</span>';
+                                break;
+                            default:
+                                return '<span class="label label-default">' + row['estado_doc'] + '</span>';
+                                break;
+
+                        }
+                    }
+                },
                 { 'data': 'fecha_registro', 'name': 'alm_req.fecha_registro' }
             ],
             'columnDefs': [
@@ -192,10 +219,15 @@ class RequerimientoView {
 
     mostrarRequerimiento(data) {
         if (data.hasOwnProperty('requerimiento')) {
+            document.querySelector("input[name='nombre_archivo']").removeAttribute("disabled");
+            this.RestablecerFormularioRequerimiento();
             var btnImprimirRequerimiento = document.getElementsByName("btn-imprimir-requerimento-pdf");
-            disabledControl(btnImprimirRequerimiento, false);
             var btnAdjuntosRequerimiento = document.getElementsByName("btn-adjuntos-requerimiento");
+            let allButtonAdjuntarNuevo = document.querySelectorAll("input[name='nombre_archivo']");
+
+            disabledControl(btnImprimirRequerimiento, false);
             disabledControl(btnAdjuntosRequerimiento, false);
+
             var btnTrazabilidadRequerimiento = document.getElementsByName("btn-ver-trazabilidad-requerimiento");
             disabledControl(btnTrazabilidadRequerimiento, false);
 
@@ -203,21 +235,42 @@ class RequerimientoView {
             if (data.hasOwnProperty('det_req')) {
                 if(data['requerimiento'][0].estado == 7 || data['requerimiento'][0].estado == 2){
                     changeStateButton('cancelar'); //init.js
+                    $("#form-requerimiento .activation").attr('disabled', true);
+
                 }else if(data['requerimiento'][0].estado ==1  && data['requerimiento'][0].id_usuario == auth_user.id_usuario){
                     
-                    changeStateButton('editar'); //init.js
-                    changeStateInput('form-requerimiento', false);
                     document.querySelector("form[id='form-requerimiento']").setAttribute('type','edition');
+                    changeStateButton('historial'); //init.js
+
+                    allButtonAdjuntarNuevo.forEach(element => {
+                        element.removeAttribute("disabled");
+                    });
+
+
+                    $("#form-requerimiento .activation").attr('disabled', true);
 
                 }else if((data['requerimiento'][0].estado ==1 || data['requerimiento'][0].estado ==3)  && data['requerimiento'][0].id_usuario == auth_user.id_usuario){
                     document.querySelector("div[id='group-historial-revisiones']").removeAttribute('hidden');
                     this.mostrarHistorialRevisionAprobacion(data['historial_aprobacion']);
-                    changeStateButton('editar'); //init.js
-                    changeStateInput('form-requerimiento', false);
                     document.querySelector("form[id='form-requerimiento']").setAttribute('type','edition');
+                    changeStateButton('editar'); //init.js
+                    disabledControl(btnAdjuntosRequerimiento, false);
+
+
+                    allButtonAdjuntarNuevo.forEach(element => {
+                        element.removeAttribute("disabled");
+                    });
+
+                    $("#form-requerimiento .activation").attr('disabled', false);
+
+
 
                 }else{
                     document.querySelector("div[id='group-historial-revisiones']").setAttribute('hidden',true);
+                    allButtonAdjuntarNuevo.forEach(element => {
+                        element.setAttribute("disabled",true);
+                    });
+
 
                 }
                 this.mostrarDetalleRequerimiento(data['det_req'],data['requerimiento'][0]['estado']);
@@ -321,16 +374,17 @@ class RequerimientoView {
 
     mostrarDetalleRequerimiento(data,estado) {
         let hasDisabledInput= 'disabled';
-        if(estado ==1 || estado == 3){
+        if(estado == 3){
             hasDisabledInput= '';
         }
 
         this.limpiarTabla('ListaDetalleRequerimiento');
         vista_extendida();
+
         for (let i = 0; i < data.length; i++) {
-            if (data[i].estado != 7) { 
+
                 if (data[i].id_tipo_item == 1) { // producto
-                document.querySelector("tbody[id='body_detalle_requerimiento']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
+                document.querySelector("tbody[id='body_detalle_requerimiento']").insertAdjacentHTML('beforeend', `<tr style="text-align:center; background-color:${data[i].estado ==7?'#f5e4e4':''}; ">
                 <td></td>
                 <td><p class="descripcion-partida" data-id-partida="${data[i].id_partida}" data-presupuesto-total="${data[i].presupuesto_total_partida}" title="${data[i].codigo_partida != null ? data[i].codigo_partida : ''}" >${data[i].descripcion_partida != null ? data[i].descripcion_partida : '(NO SELECCIONADO)'}</p><button type="button" class="btn btn-xs btn-info activation handleClickCargarModalPartidas" name="partida" ${hasDisabledInput}>Seleccionar</button> 
                     <div class="form-group">
@@ -358,7 +412,7 @@ class RequerimientoView {
                         <input class="form-control activation input-sm precio text-right handleBurUpdateSubtotal handleBlurUpdatePrecioItem handleBlurCalcularPresupuestoUtilizadoYSaldoPorPartida" type="number" min="0" name="precioUnitario[]" value="${data[i].precio_unitario}" placeholder="Precio U." ${hasDisabledInput}>
                     </div>
                 </td>  
-                <td style="text-align:right;"><span class="moneda" name="simboloMoneda[]">S/</span><span class="subtotal" name="subtotal[]">0.00</span></td>
+                <td style="text-align:right;"><span class="moneda" name="simboloMoneda">S/</span><span class="subtotal" name="subtotal[]">0.00</span></td>
                 <td><textarea class="form-control activation input-sm" name="motivo[]"  value="${data[i].motivo != null ? data[i].motivo : ''}" placeholder="Motivo de requerimiento de item (opcional)" ${hasDisabledInput} >${data[i].motivo != null ? data[i].motivo : ''}</textarea></td>
                 <td>
                     <div class="btn-group" role="group">
@@ -373,7 +427,7 @@ class RequerimientoView {
                 </td>
                 </tr>`);
                 } else { // servicio
-                    document.querySelector("tbody[id='body_detalle_requerimiento']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
+                    document.querySelector("tbody[id='body_detalle_requerimiento']").insertAdjacentHTML('beforeend', `<tr style="text-align:center;  background-color:${data[i].estado ==7?'#f5e4e4':''};">
                     <td></td>
                     <td><p class="descripcion-partida" data-id-partida="${data[i].id_partida}" data-presupuesto-total="${data[i].presupuesto_total_partida}" title="${data[i].codigo_partida != null ? data[i].codigo_partida : ''}" >${data[i].descripcion_partida != null ? data[i].descripcion_partida : '(NO SELECCIONADO)'}</p><button type="button" class="btn btn-xs btn-info activation handleClickCargarModalPartidas" name="partida" ${hasDisabledInput}>Seleccionar</button> 
                         <div class="form-group">
@@ -401,7 +455,7 @@ class RequerimientoView {
                             <input class="form-control activation input-sm precio text-right handleBurUpdateSubtotal handleBlurUpdateCantidadItem handleBlurCalcularPresupuestoUtilizadoYSaldoPorPartida" type="number" min="0" name="precioUnitario[]" value="${data[i].precio_unitario}"  placeholder="Precio U." ${hasDisabledInput}>
                         </div>  
                     </td>
-                    <td style="text-align:right;"><span class="moneda" name="simboloMoneda[]">S/</span><span class="subtotal" name="subtotal[]">0.00</span></td>
+                    <td style="text-align:right;"><span class="moneda" name="simboloMoneda">S/</span><span class="subtotal" name="subtotal[]">0.00</span></td>
                     <td><textarea class="form-control activation input-sm" name="motivo[]"  value="${data[i].motivo != null ? data[i].motivo : ''}" placeholder="Motivo de requerimiento de item (opcional)" ${hasDisabledInput} >${data[i].motivo != null ? data[i].motivo : ''}</textarea></td>
                     <td>
                         <div class="btn-group" role="group">
@@ -416,7 +470,7 @@ class RequerimientoView {
                     </td>
                     </tr>`);
                 }
-            }
+            
         }
         this.updateContadorItem();
         this.autoUpdateSubtotal();
@@ -473,17 +527,22 @@ class RequerimientoView {
     }
     // cabecera requerimiento
     changeMonedaSelect(e) {
-        let moneda = e.target.value == 1 ? 'S/' : '$';
-
-        document.querySelector("form[id='form-requerimiento'] span[name='simboloMoneda']").textContent = moneda;
-        document.querySelector("div[name='montoMoneda']").textContent = moneda;
-        if (document.querySelector("form[id='form-requerimiento'] table span[class='moneda']")) {
-            document.querySelectorAll("form[id='form-requerimiento'] span[class='moneda']").forEach(element => {
-                element.textContent = moneda;
+        let simboloMonedaPresupuestoUtilizado =document.querySelector("select[name='moneda']").options[document.querySelector("select[name='moneda']").selectedIndex].dataset.simbolo
+        let allSelectorSimboloMoneda = document.getElementsByName("simboloMoneda");
+        if(allSelectorSimboloMoneda.length >0){
+            allSelectorSimboloMoneda.forEach(element => {
+                element.textContent=simboloMonedaPresupuestoUtilizado;
             });
         }
-        // document.querySelector("form[id='form-requerimiento'] table span[class='moneda']") ? document.querySelector("form[id='form-requerimiento'] table span[class='moneda']").textContent = moneda : null;
-        document.querySelector("form[id='form-requerimiento'] table span[name='simbolo_moneda']").textContent = moneda;
+
+        // let moneda = e.target.value == 1 ? 'S/' : '$';
+
+        document.querySelector("div[name='montoMoneda']").textContent = simboloMonedaPresupuestoUtilizado;
+        // if (document.querySelector("form[id='form-requerimiento'] table span[class='moneda']")) {
+        //     document.querySelectorAll("form[id='form-requerimiento'] span[class='moneda']").forEach(element => {
+        //         element.textContent = moneda;
+        //     });
+        // }
         this.calcularPresupuestoUtilizadoYSaldoPorPartida();
 
     }
@@ -740,7 +799,7 @@ class RequerimientoView {
                 <div class="form-group">
                     <input class="form-control input-sm precio text-right handleBurUpdateSubtotal handleBlurUpdatePrecioItem handleBlurCalcularPresupuestoUtilizadoYSaldoPorPartida" type="number" min="0" name="precioUnitario[]" placeholder="Precio U."></td>
                 </div>  
-            <td style="text-align:right;"><span class="moneda" name="simboloMoneda[]">${document.querySelector("select[name='moneda']").options[document.querySelector("select[name='moneda']").selectedIndex].dataset.simbolo}</span><span class="subtotal" name="subtotal[]">0.00</span></td>
+            <td style="text-align:right;"><span class="moneda" name="simboloMoneda">${document.querySelector("select[name='moneda']").options[document.querySelector("select[name='moneda']").selectedIndex].dataset.simbolo}</span><span class="subtotal" name="subtotal[]">0.00</span></td>
             <td><textarea class="form-control input-sm" name="motivo[]" placeholder="Motivo de requerimiento de item (opcional)"></textarea></td>
             <td>
                 <div class="btn-group" role="group">
@@ -794,7 +853,7 @@ class RequerimientoView {
                     <input class="form-control input-sm precio text-right handleBurUpdateSubtotal handleBlurUpdatePrecioItem handleBlurCalcularPresupuestoUtilizadoYSaldoPorPartida" type="number" min="0" name="precioUnitario[]"  placeholder="Precio U.">
                 </div>
             </td>
-            <td style="text-align:right;"><span class="moneda" name="simboloMoneda[]">${document.querySelector("select[name='moneda']").options[document.querySelector("select[name='moneda']").selectedIndex].dataset.simbolo}</span><span class="subtotal" name="subtotal[]">0.00</span></td>
+            <td style="text-align:right;"><span class="moneda" name="simboloMoneda">${document.querySelector("select[name='moneda']").options[document.querySelector("select[name='moneda']").selectedIndex].dataset.simbolo}</span><span class="subtotal" name="subtotal[]">0.00</span></td>
             <td><textarea class="form-control input-sm" name="motivo[]" placeholder="Motivo de requerimiento de item (opcional)"></textarea></td>
             <td>
                 <div class="btn-group" role="group">
@@ -853,7 +912,7 @@ class RequerimientoView {
         }
     }
     updateCentroCostoItem(obj) {
-        let text = obj;
+        let text = obj.value;
         if (text.length > 0) {
             obj.closest("div").classList.remove('has-error');
             if (obj.closest("td").querySelector("span")) {
@@ -1022,11 +1081,12 @@ class RequerimientoView {
     }
 
     changeBtnIcon(obj) {
-        if (obj.target.children[0].className == 'fas fa-chevron-right') {
+        
+        if (obj.currentTarget.children[0].className == 'fas fa-chevron-right') {
 
-            obj.target.children[0].classList.replace('fa-chevron-right', 'fa-chevron-down')
+            obj.currentTarget.children[0].classList.replace('fa-chevron-right', 'fa-chevron-down')
         } else {
-            obj.target.children[0].classList.replace('fa-chevron-down', 'fa-chevron-right')
+            obj.currentTarget.children[0].classList.replace('fa-chevron-down', 'fa-chevron-right')
         }
     }
 
@@ -1153,7 +1213,7 @@ class RequerimientoView {
                 <td>${element.codigo}</td>
                 <td>${element.descripcion}</td>
                 <td style="text-align:right;"><span>S/</span>${Util.formatoNumero(element.presupuesto_total, 2)}</td>
-                <td style="text-align:right;"><span class="moneda">${element.simbolo_moneda_presupuesto_utilizado}</span>${element.presupuesto_utilizado_al_cambio>0?(Util.formatoNumero(element.presupuesto_utilizado, 2)+' (S/'+Util.formatoNumero(element.presupuesto_utilizado_al_cambio, 2)+')'):(Util.formatoNumero(element.presupuesto_utilizado, 2))}</td>
+                <td style="text-align:right;"><span class="simboloMoneda">${element.simbolo_moneda_presupuesto_utilizado}</span>${element.presupuesto_utilizado_al_cambio>0?(Util.formatoNumero(element.presupuesto_utilizado, 2)+' (S/'+Util.formatoNumero(element.presupuesto_utilizado_al_cambio, 2)+')'):(Util.formatoNumero(element.presupuesto_utilizado, 2))}</td>
                 <td style="text-align:right; color:${element.saldo >= 0 ? '#333' : '#dd4b39'}"><span>S/</span>${Util.formatoNumero(element.saldo, 2)}</td>
             </tr>`);
 
@@ -1293,6 +1353,7 @@ class RequerimientoView {
             show: true
         });
 
+
         document.querySelector("div[id='modal-adjuntar-archivos-requerimiento'] div[class='bootstrap-filestyle input-group'] input[type='text']").classList.add('oculto');
         document.querySelector("div[id='modal-adjuntar-archivos-requerimiento'] span[class='buttonText']").textContent = "Agregar archivo";
         document.querySelector("div[id='modal-adjuntar-archivos-requerimiento'] div[id='group-action-upload-file']").classList.remove('oculto');
@@ -1313,11 +1374,16 @@ class RequerimientoView {
 
     construirTablaAdjuntosRequerimiento(data, categoriaAdjuntoList) {
         let html = '';
+        let hasDisableBtnEliminarArchivoRequerimiento= '';
+        let estadoActualRequerimiento = document.querySelector("input[name='estado']").value;
+        if( estadoActualRequerimiento !=1 && estadoActualRequerimiento !=3){
+            hasDisableBtnEliminarArchivoRequerimiento = 'disabled';
+        }
         data.forEach(element => {
             html += `<tr id="${element.id}" style="text-align:center">
         <td style="text-align:left;">${element.nameFile}</td>
         <td>
-            <select class="form-control" name="categoriaAdjunto" onChange="ArchivoAdjunto.changeCategoriaAdjunto(this)">
+            <select class="form-control" name="categoriaAdjunto" onChange="ArchivoAdjunto.changeCategoriaAdjunto(this)" ${hasDisableBtnEliminarArchivoRequerimiento}>
         `;
             categoriaAdjuntoList.forEach(categoria => {
                 if (element.category == categoria.id_categoria_adjunto) {
@@ -1334,7 +1400,7 @@ class RequerimientoView {
             if (Number.isInteger(element.id)) {
                 html += `<button type="button" class="btn btn-info btn-md" name="btnDescargarArchivoRequerimiento" title="Descargar" onclick="ArchivoAdjunto.descargarArchivoRequerimiento('${element.id}');" ><i class="fas fa-file-archive"></i></button>`;
             }
-            html += `<button type="button" class="btn btn-danger btn-md" name="btnEliminarArchivoRequerimiento" title="Eliminar" onclick="ArchivoAdjunto.eliminarArchivoRequerimiento(this,'${element.id}');" ><i class="fas fa-trash-alt"></i></button>
+            html += `<button type="button" class="btn btn-danger btn-md" name="btnEliminarArchivoRequerimiento" title="Eliminar" onclick="ArchivoAdjunto.eliminarArchivoRequerimiento(this,'${element.id}');" ${hasDisableBtnEliminarArchivoRequerimiento} ><i class="fas fa-trash-alt"></i></button>
             </div>
         </td>
         </tr>`;
@@ -1374,6 +1440,10 @@ class RequerimientoView {
 
     listarAdjuntosDeItem() {
         let html = '';
+        let estadoActualRequerimiento = document.querySelector("input[name='estado']").value;
+        if( estadoActualRequerimiento !=1 && estadoActualRequerimiento !=3){
+            hasDisableBtnEliminarArchivoRequerimiento = 'disabled';
+        }
         tempArchivoAdjuntoItemList.forEach(element => {
             if (tempIdRegisterActive == element.idRegister) {
                 html += `<tr>
@@ -1383,7 +1453,7 @@ class RequerimientoView {
                 if (Number.isInteger(element.id)) {
                     html += `<button type="button" class="btn btn-info btn-md" name="btnDescargarArchivoItem" title="Descargar" onclick="ArchivoAdjunto.descargarArchivoItem('${element.id}');" ><i class="fas fa-file-archive"></i></button>`;
                 }
-                html += `<button type="button" class="btn btn-danger btn-md" name="btnEliminarArchivoItem" title="Eliminar" onclick="ArchivoAdjunto.eliminarArchivoItem(this,'${element.id}');" ><i class="fas fa-trash-alt"></i></button>`;
+                html += `<button type="button" class="btn btn-danger btn-md" name="btnEliminarArchivoItem" title="Eliminar" onclick="ArchivoAdjunto.eliminarArchivoItem(this,'${element.id}');" ${hasDisableBtnEliminarArchivoRequerimiento}><i class="fas fa-trash-alt"></i></button>`;
                 html += `</div>
                 </td>
                 </tr>`;
@@ -1537,8 +1607,6 @@ class RequerimientoView {
         }
 
         if (continuar) {
-            console.log("se va a guardar");
-
             let formData = new FormData($('#form-requerimiento')[0]);
             let ItemWithIdRegisterList = [];
             if (tempArchivoAdjuntoItemList.length > 0) {
@@ -1606,11 +1674,10 @@ class RequerimientoView {
                             Lobibox.notify('success', {
                                 title:false,
                                 size: 'mini',
-                                width:500,
                                 rounded: true,
                                 sound: false,
                                 delayIndicator: false,
-                                msg: `Requerimiento guardado con código: ${response.codigo}. La página se limpiara para que pueda volver a crear un requerimiento.`
+                                msg: `Requerimiento ${response.codigo} guardado.`
                             });
                             // location.reload();
                             this.RestablecerFormularioRequerimiento();
@@ -1725,9 +1792,30 @@ class RequerimientoView {
         tempArchivoAdjuntoRequerimientoList = [];
         tempCentroCostoSelected=null;
         tempIdRegisterActive=null
- 
+        this.restaurarTotalMonedaDefault();
+        this.calcularPresupuestoUtilizadoYSaldoPorPartida();
+        document.querySelector("div[id='group-historial-revisiones']").setAttribute("hidden",true);
+        document.querySelector("span[name='cantidadAdjuntosRequerimiento']").textContent=0;
         disabledControl(document.getElementsByName("btn-imprimir-requerimento-pdf"), true);
-        disabledControl(document.getElementsByName("btn-adjuntos-requerimiento"), false);
+        disabledControl(document.getElementsByName("btn-adjuntos-requerimiento"), true);
+
+    
+    }
+
+    restaurarTotalMonedaDefault(){
+        let allSelectorTotal= document.getElementsByName("total");
+        let simboloMonedaPresupuestoUtilizado =document.querySelector("select[name='moneda']").options[document.querySelector("select[name='moneda']").selectedIndex].dataset.simbolo
+        let allSelectorSimboloMoneda = document.getElementsByName("simboloMoneda");
+        if(allSelectorSimboloMoneda.length >0){
+            allSelectorSimboloMoneda.forEach(element => {
+                element.textContent=simboloMonedaPresupuestoUtilizado;
+            });
+        }
+        if(allSelectorTotal.length >0){
+            allSelectorTotal.forEach(element => {
+                element.textContent='0.00';
+            });
+        }
     }
 
 }

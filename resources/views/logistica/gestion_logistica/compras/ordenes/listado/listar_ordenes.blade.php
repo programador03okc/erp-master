@@ -68,7 +68,7 @@
 
     <div class="row" id="contenedor-tabla-nivel-item">
         <div class="col-md-12">
-            <table class="mytable table table-condensed table-bordered table-okc-view" id="listaDetalleOrden" style="font-size: 10px;">
+            <table class="mytable table table-condensed table-bordered table-okc-view" id="listaDetalleOrden" style="font-size: 9px;">
                 <thead>
                     <tr>
                     <th >OC</th>
@@ -81,16 +81,14 @@
                     <th >Categoría</th>
                     <th >Part Number</th>
                     <th >Descripción</th>
-                    <!-- <th >Cantidad Orden</th> -->
                     <th >Precio Orden</th>
-                    <!-- <th >Cantidad CC</th> -->
                     <th >Precio CC</th>
                     <th >Fecha Emisión</th>
                     <th >Plazo Entrega</th>
-                    <th width="20%">ETA</th>
+                    <th style="width:15%">ETA</th>
                     <th >Sede - Empresa</th>
                     <th >Estado</th>
-                    <th width="10%">ACCIONES</th>
+                    <th style="width:20%">Acción</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -116,6 +114,7 @@
 @endsection
 
 @section('scripts')
+    <script src="{{ asset('js/util.js')}}"></script>
     <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Almacen\Requerimiento;
 use App\Models\Almacen\UnidadMedida;
 use App\Models\Configuracion\Moneda;
 use Illuminate\Support\Facades\DB;
@@ -152,8 +153,7 @@ class ComprasPendientesController extends Controller
         $requerimiento = array();
         $detalleRequerimiento = array();
 
-        $alm_req = DB::table('almacen.alm_req')
-            ->join('almacen.alm_tp_req', 'alm_req.id_tipo_requerimiento', '=', 'alm_tp_req.id_tipo_requerimiento')
+        $alm_req = Requerimiento::join('almacen.alm_tp_req', 'alm_req.id_tipo_requerimiento', '=', 'alm_tp_req.id_tipo_requerimiento')
             ->leftJoin('almacen.tipo_cliente', 'tipo_cliente.id_tipo_cliente', '=', 'alm_req.tipo_cliente')
             ->leftJoin('administracion.adm_estado_doc', 'alm_req.estado', '=', 'adm_estado_doc.id_estado_doc')
             ->leftJoin('configuracion.sis_usua', 'alm_req.id_usuario', '=', 'sis_usua.id_usuario')

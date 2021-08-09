@@ -134,8 +134,8 @@
                 </fieldset>
             </div>
             <div class="modal-footer">
+                <button class="btn btn-primary" class="close" data-dismiss="modal">Cerrar</button>
                 <button class="btn btn-success handleClickRegistrarRespuesta" id="btnRegistrarRespuesta" >Registrar respuesta</button>
-                <button class="btn btn-danger" class="close" data-dismiss="modal">Cancelar</button>
             </div>
         </div>
     </div>

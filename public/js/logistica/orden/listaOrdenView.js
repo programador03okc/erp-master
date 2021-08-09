@@ -33,6 +33,9 @@ class ListaOrdenView {
             this.abrirOrden(e.currentTarget.dataset.idOrden);
         });
         
+        $('#listaOrdenes tbody').on("click","button.handleClickAbrirOrdenPDF",(e)=>{
+            this.abrirOrdenPDF(e.currentTarget.dataset.idOrdenCompra);
+        });
         $('#listaOrdenes tbody').on("click","label.handleClickAbrirRequerimiento",(e)=>{
             // var data = $('#listaOrdenes').DataTable().row($(this).parents("tr")).data();
             this.abrirRequerimiento(e.currentTarget.dataset.idRequerimiento);
@@ -40,12 +43,11 @@ class ListaOrdenView {
         $('#listaOrdenes tbody').on("click","button.handleCliclVerDetalleOrden",(e)=>{
             this.verDetalleOrden(e.currentTarget);
         });
+        
         $('#listaOrdenes tbody').on("click","button.handleClickAnularOrden",(e)=>{
             this.anularOrden(e.currentTarget);
         });
-        $('#listaOrdenes tbody').on("click","button.handleClickImprimirOrden",(e)=>{
-            this.abrirOrden(e.currentTarget.dataset.idOrdenCompra);
-        });
+    
 
 
         $('#listaDetalleOrden tbody').on("click","span.handleClickVerOrdenModal",(e)=>{
@@ -58,7 +60,10 @@ class ListaOrdenView {
         $('#listaDetalleOrden tbody').on("click","button.handleClickAnularOrden",(e)=>{
             this.anularOrden(e.currentTarget);
         });
-        $('#listaDetalleOrden tbody').on("click","button.handleClickImprimirOrden",(e)=>{
+        $('#listaDetalleOrden tbody').on("click","button.handleClickAbrirOrdenPDF",(e)=>{
+            this.abrirOrdenPDF(e.currentTarget.dataset.idOrdenCompra);
+        });
+        $('#listaDetalleOrden tbody').on("click","button.handleClickAbrirOrden",(e)=>{
             this.abrirOrden(e.currentTarget.dataset.idOrdenCompra);
         });
         $('#listaDetalleOrden tbody').on("click","button.handleClickDocumentosVinculados",(e)=>{
@@ -588,7 +593,6 @@ class ListaOrdenView {
                     
                             let estimatedTimeOfArrive= moment(row['fecha'],'DD-MM-YYYY').add(row['plazo_entrega'], 'days').format('DD-MM-YYYY');
                             let sumaFechaConPlazo =moment(row['fecha'],"DD-MM-YYYY").add(row['plazo_entrega'], 'days').format("DD-MM-YYYY").toString();
-                            // let dias_restantes = restarFechas(fecha_actual(), sumaFechaConPlazo);
                             let fechaActual= moment().format('DD-MM-YYYY').toString();
                             let dias_restantes= moment(sumaFechaConPlazo,'DD-MM-YYYY').diff(moment(fechaActual,'DD-MM-YYYY'), 'days');
                             let porc = dias_restantes * 100 / (parseFloat(row['plazo_entrega'])).toFixed(2);
@@ -655,7 +659,7 @@ class ListaOrdenView {
                 {'render':
                     function (data, type, row, meta){
                         let containerOpenBrackets='<div class="btn-group" role="group" style="margin-bottom: 5px;display: flex;flex-direction: row;flex-wrap: nowrap;">';
-                        let btnImprimirOrden= '<button type="button" class="btn btn-md btn-warning boton handleClickImprimirOrden" title="Imprimir Orden"  data-toggle="tooltip" data-placement="bottom" data-id-orden-compra="'+row.id_orden_compra+'"  data-id-pago=""> <i class="fas fa-file-pdf"></i> </button>';
+                        let btnImprimirOrden= '<button type="button" class="btn btn-md btn-warning boton handleClickAbrirOrdenPDF" title="Abrir orden PDF"  data-toggle="tooltip" data-placement="bottom" data-id-orden-compra="'+row.id_orden_compra+'"  data-id-pago=""> <i class="fas fa-file-pdf"></i> </button>';
                         let btnAnularOrden='';
                         if(![6,27,28].includes(row.estado) ){
                             btnAnularOrden = '<button type="button" class="btn btn-md btn-danger boton handleClickAnularOrden" name="btnAnularOrden" title="Anular orden" data-codigo-orden="'+row.codigo+'" data-id-orden-compra="'+row.id_orden_compra+'"><i class="fas fa-backspace fa-xs"></i></button>';
@@ -777,14 +781,16 @@ class ListaOrdenView {
             row.child(tabla).show();
     }
 
+    abrirRequerimientoPDF(idRequerimiento){
+        let url =`/logistica/gestion-logistica/requerimiento/elaboracion/imprimir-requerimiento-pdf/${idRequerimiento}/0`;
+        var win = window.open(url, "_blank");
+        win.focus(); 
+    }
     abrirRequerimiento(idRequerimiento){
         localStorage.setItem('idRequerimiento', idRequerimiento);
         let url = "/logistica/gestion-logistica/requerimiento/elaboracion/index";
         var win = window.open(url, "_blank");
         win.focus(); 
-        // let url =`/logistica/gestion-logistica/requerimiento/elaboracion/imprimir-requerimiento-pdf/${idRequerimiento}/0`;
-        // var win = window.open(url, "_blank");
-        // win.focus(); 
     }
 
     abrirOrden(idOrden){
@@ -792,9 +798,12 @@ class ListaOrdenView {
         let url ="/logistica/gestion-logistica/compras/ordenes/elaborar/index";
         var win = window.open(url, '_blank');
         win.focus();
-        // let url =`/logistica/gestion-logistica/compras/ordenes/listado/generar-orden-pdf/${idOrden}`;
-        // var win = window.open(url, "_blank");
-        // win.focus(); 
+    }
+
+    abrirOrdenPDF(idOrden){
+        let url =`/logistica/gestion-logistica/compras/ordenes/listado/generar-orden-pdf/${idOrden}`;
+        var win = window.open(url, "_blank");
+        win.focus(); 
     }
 
  
@@ -862,7 +871,7 @@ class ListaOrdenView {
             'data': data,
             'columns': [
                 { render: function (data, type, row) {     
-                    return `<span class="label label-primary handleClickVerOrdenModal" data-id-estado-detalle-orden-compra="${row.id_detalle_orden_estado}" data-id-orden-compra="${row.detalle_orden_id_orden_compra}" data-id-detalle-orden-compra="${row.detalle_orden_id_detalle_orden}"  data-codigo-requerimiento="${row.codigo_requerimiento}" data-id-requerimiento="${row.orden_id_requerimiento}" data-codigo-item="${row.alm_prod_codigo}" style="cursor: pointer;" title="Ver Orden">${row.orden_codigo}</span>`;
+                    return `<span class="label label-primary handleClickVerOrdenModal" data-id-estado-detalle-orden-compra="${row.id_detalle_orden_estado}" data-id-orden-compra="${row.id_orden_compra}" data-id-detalle-orden-compra="${row.detalle_orden_id_detalle_orden}"  data-codigo-requerimiento="${row.codigo_requerimiento}" data-id-requerimiento="${row.id_requerimiento}" data-codigo-item="${row.alm_prod_codigo}" style="cursor: pointer;" title="Ver Orden">${row.codigo}</span>`;
                     }
                 },
                 { render: function (data, type, row) {   
@@ -870,7 +879,7 @@ class ListaOrdenView {
                     }
                 },
                 { render: function (data, type, row) {     
-                    return `${row.orden_codigo_softlink?row.orden_codigo_softlink:''}`;
+                    return `${row.codigo_softlink?row.codigo_softlink:''}`;
     
                     }
                 },
@@ -902,41 +911,35 @@ class ListaOrdenView {
                     return `${row.alm_prod_descripcion?row.alm_prod_descripcion:''}`;
                     }
                 },
-                // { render: function (data, type, row) {     
-                //     return `${row.detalle_orden_precio?row.detalle_orden_cantidad:''}`;
-                //     }
-                // },
                 { render: function (data, type, row) {     
-                    return `${row.detalle_orden_precio?(parseFloat(row.detalle_orden_precio).toFixed(2)):''}`;
-                    }
-                },
-                // { render: function (data, type, row) {     
-                //     return `${row.cdc_cantidad?row.cdc_cantidad:''}`;
-                //     }
-                // },
-                { render: function (data, type, row) {     
-                    return `${row.cdc_precio?row.cdc_precio:''}`;
+                    return `${row.detalle_orden_precio?(row.simbolo_moneda+Util.formatoNumero(row.detalle_orden_precio,2)):''}`;
                     }
                 },
                 { render: function (data, type, row) {     
-                    return `${row.orden_fecha?moment(row.orden_fecha).format('YYYY-MM-DD'):''}`;
+                    return `${row.cdc_precio?((row.moneda_pvu=='s'?'S/':row.moneda_pvu=='d'?'$':'')+Util.formatoNumero(row.cdc_precio,2)):''}`;
                     }
                 },
                 { render: function (data, type, row) {     
-                    return `${row.orden_plazo_entrega>0?row.orden_plazo_entrega+' días':''}`;
+                    return `${row.fecha?moment(row.fecha).format('YYYY-MM-DD'):''}`;
+                    }
+                },
+                { render: function (data, type, row) {     
+                    return `${row.plazo_entrega>0?row.plazo_entrega+' días':''}`;
                     }
                 },
                 { render: function (data, type, row) {     
                     
                     let output='No aplica';
-                    if(row['orden_id_tp_documento'] ==2){ // orden de compra
-                    var estimatedTimeOfArrive= moment(row['orden_fecha']).add(row['orden_plazo_entrega'], 'days').format('YYYY-MM-DD');
-                    let dias_restantes = restarFechas(fecha_actual(), sumaFecha(row['orden_plazo_entrega'], row['orden_fecha']));
-                    var porc = dias_restantes * 100 / (parseFloat(row['orden_plazo_entrega'])).toFixed(2);
-                    var color = (porc > 50 ? 'success' : ((porc <= 50 && porc > 20) ? 'warning' : 'danger'));
+                    if(row['id_tp_documento'] ==2){ // orden de compra
+                        let estimatedTimeOfArrive= moment(row['fecha'],'DD-MM-YYYY').add(row['plazo_entrega'], 'days').format('DD-MM-YYYY');
+                        let sumaFechaConPlazo =moment(row['fecha'],"DD-MM-YYYY").add(row['plazo_entrega'], 'days').format("DD-MM-YYYY").toString();
+                        let fechaActual= moment().format('DD-MM-YYYY').toString();
+                        let dias_restantes= moment(sumaFechaConPlazo,'DD-MM-YYYY').diff(moment(fechaActual,'DD-MM-YYYY'), 'days');
+                        let porc = dias_restantes * 100 / (parseFloat(row['plazo_entrega'])).toFixed(2);
+                        let color = (porc > 50 ? 'success' : ((porc <= 50 && porc > 20) ? 'warning' : 'danger'));
                     output= `<div class="progress-group">
                         <span class="progress-text">${estimatedTimeOfArrive} <br> Nro días Restantes</span>
-                        <span class="float-right"><b>${dias_restantes?dias_restantes:''}</b> / ${row['orden_plazo_entrega']?row['orden_plazo_entrega']:''}</span>
+                        <span class="float-right"><b>${dias_restantes>0?dias_restantes:'0'}</b></span>
                         <div class="progress progress-sm">
                             <div class="progress-bar bg-${color}" style="width: ${(porc<1)?'100':porc}%"></div>
                         </div>
@@ -946,7 +949,10 @@ class ListaOrdenView {
                     return output;
                     }
                 },
-                {'data': 'empresa_sede'},
+                { render: function (data, type, row) {     
+                    return `${row.empresa_sede?row.empresa_sede:''}`;
+                    }
+                },
                 { render: function (data, type, row) {    
                     let estadoDetalleOrdenHabilitadasActualizar=[1,2,3,4,5,6,15];
                     if(estadoDetalleOrdenHabilitadasActualizar.includes(row.id_detalle_orden_estado) ==true){
@@ -958,19 +964,40 @@ class ListaOrdenView {
                     }
                 },
                 { render: function (data, type, row) {         
-                        let containerOpenBrackets = '<div class="btn-group btn-group-sm" role="group">';
-                        let btnImprimirOrden = '<button type="button" class="btn btn-default btn-xs handleClickImprimirOrden" name="btnGenerarOrdenRequerimientoPDF" title="Descargar Orden" data-id-requerimiento="'+row.orden_id_requerimiento+'"  data-codigo-requerimiento="'+row.codigo_requerimiento+'" data-id-orden-compra="'+row.orden_id_orden_compra+'"><i class="fas fa-file-download fa-xs"></i></button>';
+                        let containerOpenBrackets = '<div class="btn-group btn-group-sm" role="group" style="margin-bottom: 5px;display: flex;flex-direction: row;flex-wrap: nowrap;">';
+                        let btnImprimirOrden = '<button type="button" class="btn btn-md btn-warning boton handleClickAbrirOrdenPDF" name="btnGenerarOrdenRequerimientoPDF" title="Abrir orden PDF" data-id-requerimiento="'+row.id_requerimiento+'"  data-codigo-requerimiento="'+row.codigo_requerimiento+'" data-id-orden-compra="'+row.id_orden_compra+'"><i class="fas fa-file-download fa-xs"></i></button>';
                         let btnAnularOrden='';
                         if(![6,27,28].includes(row.orden_estado) ){
-                            btnAnularOrden = '<button type="button" class="btn btn-danger btn-xs handleClickAnularOrden" name="btnAnularOrden" title="Anular Orden" data-codigo-orden="'+row.orden_codigo+'" data-id-orden-compra="'+row.orden_id_orden_compra+'"><i class="fas fa-backspace fa-xs"></i></button>';
+                            btnAnularOrden = '<button type="button" class="btn btn-md btn-danger boton handleClickAnularOrden" name="btnAnularOrden" title="Anular orden" data-codigo-orden="'+row.codigo+'" data-id-orden-compra="'+row.id_orden_compra+'"><i class="fas fa-backspace fa-xs"></i></button>';
                         }
-                        let btnDocumentosVinculados = '<button type="button" class="btn btn-primary btn-xs handleClickDocumentosVinculados" name="btnDocumentosVinculados" title="Ver Documento Vinculados" data-id-requerimiento="'+row.orden_id_requerimiento+'"  data-codigo-requerimiento="'+row.codigo_requerimiento+'" data-id-orden-compra="'+row.orden_id_orden_compra+'"><i class="fas fa-folder fa-xs"></i></button>';
+                        let btnDocumentosVinculados = '<button type="button" class="btn btn-md btn-primary boton handleClickDocumentosVinculados" name="btnDocumentosVinculados" title="Ver documentos vinculados" data-id-requerimiento="'+row.id_requerimiento+'"  data-codigo-requerimiento="'+row.codigo_requerimiento+'" data-id-orden-compra="'+row.id_orden_compra+'"><i class="fas fa-folder fa-xs"></i></button>';
                         let containerCloseBrackets = '</div>';
                         return (containerOpenBrackets+btnImprimirOrden+btnDocumentosVinculados+btnAnularOrden+containerCloseBrackets);
 
                     }   
                 }   
             ],
+            'columnDefs': [
+                { 'aTargets': [0],'className': "text-center" },
+                { 'aTargets': [1],'className': "text-center" },
+                { 'aTargets': [2],'className': "text-center" },
+                { 'aTargets': [3],'className': "text-left" },
+                { 'aTargets': [4],'className': "text-center" },
+                { 'aTargets': [5],'className': "text-center" },
+                { 'aTargets': [6],'className': "text-center" },
+                { 'aTargets': [7],'className': "text-center" },
+                { 'aTargets': [8],'className': "text-center" },
+                { 'aTargets': [9],'className': "text-left" },
+                { 'aTargets': [10],'className': "text-right" },
+                { 'aTargets': [11],'className': "text-right" },
+                { 'aTargets': [12],'className': "text-center" },
+                { 'aTargets': [13],'className': "text-center" },
+                { 'aTargets': [14],'className': "text-center" },
+                { 'aTargets': [15],'className': "text-center" },
+                { 'aTargets': [16],'className': "text-center" },
+                { 'aTargets': [17],'className': "text-center" }
+            ],
+
             "initComplete": function() {
 
                 let listaDetalleOrden_filter = document.querySelector("div[id='listaDetalleOrden_filter']");
@@ -1042,8 +1069,16 @@ class ListaOrdenView {
                 { data: 'descripcion' },
                 { data: 'unidad_medida' },
                 { data: 'cantidad' },
-                { data: 'precio_unitario' },
-                { data: 'subtotal' },
+                {'render':
+                    function (data, type, row){
+                        return `${row.precio_unitario?((row.simbolo_moneda?row.simbolo_moneda:'')+Util.formatoNumero(row.precio_unitario,2)):''}`;
+                    }
+                },
+                {'render':
+                    function (data, type, row){
+                        return `${row.subtotal?((row.simbolo_moneda?row.simbolo_moneda:'')+Util.formatoNumero(row.subtotal,2)):''}`;
+                    }
+                },
                 {'render':
                     function (data, type, row, meta){
                         let estadoDetalleOrdenHabilitadasActualizar=[1,2,3,4,5,6,15];
@@ -1055,6 +1090,19 @@ class ListaOrdenView {
                         }
                     }
                 },
+            ],
+            'columnDefs': [
+                { 'aTargets': [0],'className': "text-center" },
+                { 'aTargets': [1],'className': "text-center" },
+                { 'aTargets': [2],'className': "text-center" },
+                { 'aTargets': [3],'className': "text-center" },
+                { 'aTargets': [4],'className': "text-center" },
+                { 'aTargets': [5],'className': "text-left" },
+                { 'aTargets': [6],'className': "text-center" },
+                { 'aTargets': [7],'className': "text-center" },
+                { 'aTargets': [8],'className': "text-right" },
+                { 'aTargets': [9],'className': "text-right" },
+                { 'aTargets': [10],'className': "text-center" }
             ],
             "initComplete": function() {
 
@@ -1073,7 +1121,7 @@ class ListaOrdenView {
         document.querySelector("span[id='inputCodigo']").textContent = data.codigo;
         document.querySelector("p[id='inputProveedor']").textContent = data.razon_social+' RUC: '+data.nro_documento;
         document.querySelector("p[id='inputFecha']").textContent = data.fecha;
-        document.querySelector("p[id='inputMoneda']").textContent = data.simbolo;
+        document.querySelector("p[id='inputMoneda']").textContent = data.descripcion_moneda;
         document.querySelector("p[id='inputCondicion']").textContent = data.condicion+' '+data.plazo_dias+' días';
         document.querySelector("p[id='inputPlazoEntrega']").textContent = data.plazo_entrega;
         document.querySelector("p[id='inputCodigoSoftlink']").textContent = data.codigo_softlink;

@@ -28,7 +28,7 @@ Revisar y aprobar requerimientos
                             <h5>Empresa</h5>
                             <div style="display:flex;">
                                 <select class="form-control handleChangeFilterEmpresaListReqByEmpresa handleChangeFiltroListadoByEmpresa" name="id_empresa_select" >
-                                    <option value="0">Elija una opción</option>
+                                    <option value="0">Todas</option>
                                     @foreach ($empresas as $emp)
                                     <option value="{{$emp->id_empresa}}" data-url-logo="{{$emp->logo_empresa}}">{{$emp->razon_social}}</option>
                                     @endforeach
