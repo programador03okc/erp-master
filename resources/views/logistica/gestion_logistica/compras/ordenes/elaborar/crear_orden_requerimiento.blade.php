@@ -282,7 +282,7 @@ Elaborar orden
                             <h6>Item's de requerimiento</h6>
                         </legend>
                         <div class="btn-group" role="group" aria-label="...">
-                            <button type="button" class="btn btn-xs btn-success activation handleClickCatalogoProductosModal" id="btnAgregarProducto" data-toggle="tooltip" data-placement="bottom" title="Agregar Detalle"><i class="fas fa-plus"></i> Producto
+                            <button type="button" class="btn btn-xs btn-success activation handleClickCatalogoProductosModal" id="btnAgregarProducto" data-toggle="tooltip" data-placement="bottom" title="Agregar producto de regalo"><i class="fas fa-plus"></i> Producto
                             </button>
                             <button type="button" class="btn btn-xs btn-default activation handleClickVincularRequerimientoAOrdenModal" id="btnAgregarVinculoRequerimiento" data-toggle="tooltip" data-placement="bottom" title="Agregar items de otro requerimiento" disabled><i class="fas fa-plus"></i> Vincular otro requerimiento
                             </button>

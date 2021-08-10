@@ -132,7 +132,9 @@ function cuentasBancariasModal(){
 function listarCuentasBancariasContribuyente(idProveedor){
 
     getCuentasBancarias(idProveedor).then(function (res) {
-        ConstruirTablalistaCuentasBancariasProveedor(res);
+        if(res[0].cuenta_contribuyente){
+            ConstruirTablalistaCuentasBancariasProveedor(res);
+        }
     }).catch(function (err) {
         Swal.fire(
             '',

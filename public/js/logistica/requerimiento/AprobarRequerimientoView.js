@@ -481,8 +481,8 @@ class AprobarRequerimientoView {
                 <td>${data[i].producto_descripcion ? data[i].producto_descripcion : (data[i].descripcion ? data[i].descripcion : '')} </td>
                 <td>${data[i].unidad_medida}</td>
                 <td style="text-align:center;">${data[i].cantidad}</td>
-                <td style="text-align:right;">${simboloMoneda} ${Util.formatoNumero(data[i].precio_unitario, 2)}</td>
-                <td style="text-align:right;">${simboloMoneda} ${(data[i].subtotal ? Util.formatoNumero(data[i].subtotal, 2) : (Util.formatoNumero((data[i].cantidad*data[i].precio_unitario),2)))}</td>
+                <td style="text-align:right;">${simboloMoneda}${Util.formatoNumero(data[i].precio_unitario, 2)}</td>
+                <td style="text-align:right;">${simboloMoneda}${(data[i].subtotal ? Util.formatoNumero(data[i].subtotal, 2) : (Util.formatoNumero((data[i].cantidad*data[i].precio_unitario),2)))}</td>
                 <td>${data[i].motivo ? data[i].motivo : ''}</td>
                 <td style="text-align: center;"> 
                     ${cantidadAdjuntosItem>0?'<a title="Ver archivos adjuntos de item" style="cursor:pointer;" class="handleClickVerAdjuntosItem" data-id-detalle-requerimiento="'+data[i].id_detalle_requerimiento+'" >Ver (<span name="cantidadAdjuntosItem">'+cantidadAdjuntosItem+'</span>)</a>':'-'}

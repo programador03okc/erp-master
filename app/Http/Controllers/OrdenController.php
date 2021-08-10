@@ -2987,6 +2987,7 @@ class OrdenController extends Controller
                     'incluye_igv' => $request->incluye_igv?$request->incluye_igv:true,
                     'id_proveedor' => $request->id_proveedor,
                     'id_contacto' => $request->id_contacto_proveedor?$request->id_contacto_proveedor:null,
+                    'id_cta_principal' => $request->id_cuenta_principal_proveedor?$request->id_cuenta_principal_proveedor:null,
 
                     'plazo_entrega' => $request->plazo_entrega?$request->plazo_entrega:null,
                     'id_condicion' => $request->id_condicion?$request->id_condicion:null,

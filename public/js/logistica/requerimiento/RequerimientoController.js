@@ -6,6 +6,11 @@ class RequerimientoCtrl{
     //     this.requerimientoView.init();
     // }
 
+    getDivisiones(){
+        return this.requerimientoModel.getDivisiones();
+
+    }
+
     getTipoCambioCompra(fecha){
         return this.requerimientoModel.getTipoCambioCompra(fecha);
 

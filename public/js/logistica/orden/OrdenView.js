@@ -23,9 +23,29 @@ class OrdenView {
 
         }
         var idOrden = sessionStorage.getItem('idOrden');
+        var action = sessionStorage.getItem('action');
         if (idOrden > 0) {
             this.mostrarOrden(idOrden);
-            changeStateButton('historial');
+        }
+        if (action.length > 0) {
+            switch (action) {
+                case 'register':
+                    changeStateButton('nuevo');
+                    break;
+                case 'edition':
+                    changeStateButton('editar');
+                    $("#form-crear-orden-requerimiento .activation").attr('disabled', false);
+                    changeStateInput('form-crear-orden-requerimiento', false);
+
+                    break;
+                case 'historial':
+                    changeStateButton('historial');
+                    $("#form-crear-orden-requerimiento .activation").attr('disabled', true);
+                    break;
+            }
+        }else{
+            changeStateButton('inicio');
+            $("#form-crear-orden-requerimiento .activation").attr('disabled', true);
 
         }
         this.getTipoCambioCompra();
@@ -146,8 +166,8 @@ class OrdenView {
                         }else{
                             this.loadHeadRequerimiento(response.requerimiento[0],idTipoOrden);
                             this.listar_detalle_orden_requerimiento(detalleOrdenList);
-                            changeStateInput('form-crear-orden-requerimiento', false);
-                            changeStateButton('editar');
+                            // changeStateInput('form-crear-orden-requerimiento', false);
+                            // changeStateButton('editar');
                             
                         }
                     }
@@ -324,9 +344,9 @@ class OrdenView {
                     'render':
                         function (data, type, row, meta) {
                             if (row.estado == 7) {
-                                return '<input type="number" name="precio" data-id="' + (row.id) + '" placeholder="0.00" min="0"  class="form-control handleBlurUpdateInputPrecio" data-row="' + (meta.row + 1) + '" data-id_requerimiento="' + (row.id_requerimiento ? row.id_requerimiento : 0) + '" data-id_detalle_requerimiento="' + (row.id_detalle_requerimiento ? row.id_detalle_requerimiento : 0) + '" value="' + (row.precio_unitario ? row.precio_unitario : "") + '" style="width:90px;" disabled/>';
+                                return '<input type="number" name="precio" data-id="' + (row.id) + '" placeholder="0.00" min="0"  class="form-control activation handleBlurUpdateInputPrecio" data-row="' + (meta.row + 1) + '" data-id_requerimiento="' + (row.id_requerimiento ? row.id_requerimiento : 0) + '" data-id_detalle_requerimiento="' + (row.id_detalle_requerimiento ? row.id_detalle_requerimiento : 0) + '" value="' + (row.precio_unitario ? row.precio_unitario : "") + '" style="width:90px;" disabled/>';
                             } else {
-                                return '<input type="number" name="precio" data-id="' + (row.id) + '" placeholder="0.00" min="0" class="form-control handleBlurUpdateInputPrecio" data-row="' + (meta.row + 1) + '" data-id_requerimiento="' + (row.id_requerimiento ? row.id_requerimiento : 0) + '" data-id_detalle_requerimiento="' + (row.id_detalle_requerimiento ? row.id_detalle_requerimiento : 0) + '" value="' + (row.precio_unitario ? row.precio_unitario : "") + '" style="width:90px;"/>';
+                                return '<input type="number" name="precio" data-id="' + (row.id) + '" placeholder="0.00" min="0" class="form-control activation handleBlurUpdateInputPrecio" data-row="' + (meta.row + 1) + '" data-id_requerimiento="' + (row.id_requerimiento ? row.id_requerimiento : 0) + '" data-id_detalle_requerimiento="' + (row.id_detalle_requerimiento ? row.id_detalle_requerimiento : 0) + '" data-producto-regalo="'+(row.producto_regalo?row.producto_regalo:false)+'" value="' + (row.precio_unitario ? row.precio_unitario : "") + '" style="width:90px;" disabled/>';
                             }
                         }, 'name': 'precio'
                 },
@@ -334,18 +354,18 @@ class OrdenView {
                     'render':
                          (data, type, row, meta)=> {
                             if (row.estado == 7) {
-                                return '<input type="number" name="cantidad_a_comprar" data-id="' + (row.id) + '" min="0" class="form-control handleBlurUpdateInputCantidadAComprar" data-row="' + (meta.row + 1) + '" data-id_requerimiento="' + (row.id_requerimiento ? row.id_requerimiento : 0) + '" data-id_detalle_requerimiento="' + (row.id_detalle_requerimiento ? row.id_detalle_requerimiento : 0) + '" value="' + (row.cantidad_a_comprar ? row.cantidad_a_comprar : row.cantidad) + '" style="width:70px;" disabled />';
+                                return '<input type="number" name="cantidad_a_comprar" data-id="' + (row.id) + '" min="0" class="form-control activation handleBlurUpdateInputCantidadAComprar" data-row="' + (meta.row + 1) + '" data-id_requerimiento="' + (row.id_requerimiento ? row.id_requerimiento : 0) + '" data-id_detalle_requerimiento="' + (row.id_detalle_requerimiento ? row.id_detalle_requerimiento : 0) + '" value="' + (row.cantidad_a_comprar ? row.cantidad_a_comprar : row.cantidad) + '" style="width:70px;" disabled />';
                             } else {
                                 that.updateInObjCantidadAComprar((row.row + 1), (row.id_requerimiento), (row.id_detalle_requerimiento), (row.cantidad));
 
-                                return '<input type="number" name="cantidad_a_comprar" data-id="' + (row.id) + '" min="0" class="form-control handleBlurUpdateInputCantidadAComprar" data-row="' + (meta.row + 1) + '" data-id_requerimiento="' + (row.id_requerimiento ? row.id_requerimiento : 0) + '" data-id_detalle_requerimiento="' + (row.id_detalle_requerimiento ? row.id_detalle_requerimiento : 0) + '" value="' + (row.cantidad_a_comprar ? row.cantidad_a_comprar : row.cantidad) + '" style="width:70px;"/>';
+                                return '<input type="number" name="cantidad_a_comprar" data-id="' + (row.id) + '" min="0" class="form-control activation handleBlurUpdateInputCantidadAComprar" data-row="' + (meta.row + 1) + '" data-id_requerimiento="' + (row.id_requerimiento ? row.id_requerimiento : 0) + '" data-id_detalle_requerimiento="' + (row.id_detalle_requerimiento ? row.id_detalle_requerimiento : 0) + '" value="' + (row.cantidad_a_comprar ? row.cantidad_a_comprar : row.cantidad) + '" style="width:70px;" disabled/ >';
                             }
                         }, 'name': 'cantidad_a_comprar'
                 },
                 {
                     'render':
                         function (data, type, row, meta) {
-                            return '<input type="number" name="subtotal" data-id="' + (row.id) + '" min="0" class="form-control handleBlurUpdateInputSubtotal" data-row="' + (meta.row + 1) + '" data-id_requerimiento="' + (row.id_requerimiento ? row.id_requerimiento : 0) + '" data-id_detalle_requerimiento="' + (row.id_detalle_requerimiento ? row.id_detalle_requerimiento : 0) + '" value="' + ((Math.round((row.cantidad * row.precio_unitario) * 100) / 100).toFixed(2)) + '" style="width:90px;"/>';
+                            return '<input type="number" name="subtotal" data-id="' + (row.id) + '" min="0" class="form-control activation handleBlurUpdateInputSubtotal" data-row="' + (meta.row + 1) + '" data-id_requerimiento="' + (row.id_requerimiento ? row.id_requerimiento : 0) + '" data-id_detalle_requerimiento="' + (row.id_detalle_requerimiento ? row.id_detalle_requerimiento : 0) + '" value="' + ((Math.round((row.cantidad * row.precio_unitario) * 100) / 100).toFixed(2)) + '" style="width:90px;" disabled />';
 
                         }, 'name': 'subtotal'
                 },
@@ -627,12 +647,27 @@ class OrdenView {
     updateInputPrecio(event){
         let nuevoValor =event.target.value;
         let id = event.target.dataset.id;
-        this.updateInObjPrecioReferencial(id,nuevoValor);
-        this.calcTotalDetalleRequerimiento(id);
+        let isGift =(event.target.dataset.productoRegalo);
+        if(isGift =='true'){
+            if(nuevoValor>10){
+                Swal.fire(
+                    '',
+                    'El precio fijado para un producto de regalo no puede ser mayor a 10.00',
+                    'info'
+                );
+                event.target.value='';
+            }else{
+                this.updateInObjPrecioReferencial(id,nuevoValor);
+                this.calcTotalDetalleRequerimiento(id);
+            }
+        }else{
+            this.updateInObjPrecioReferencial(id,nuevoValor);
+            this.calcTotalDetalleRequerimiento(id);
+        }
+
     }
 
     updateInObjPrecioReferencial(id,valor){
-        
         detalleOrdenList.forEach((element,index) => {
             if(element.id == id){
                 detalleOrdenList[index].precio_unitario = valor;
@@ -713,7 +748,7 @@ class OrdenView {
         var idServ = tr.children[2].innerHTML;
         var idEqui = tr.children[3].innerHTML;
         var codigo = tr.children[4].innerHTML;
-        var partNum = tr.children[5].innerHTML;
+        var partNum = (tr.children[5].innerHTML)+'<br><span class="label label-default">Producto de regalo</span>';
         var categoria = tr.children[6].innerHTML;
         var subcategoria = tr.children[7].innerHTML;
         var descri = tr.children[8].innerHTML;
@@ -761,6 +796,7 @@ class OrdenView {
             'stock_comprometido': null,
             'subtotal': 0,
             'tiene_transformacion': false,
+            'producto_regalo': true,
             'unidad_medida': document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='unidad_medida']").textContent
             };
             this.agregarProductoADetalleOrdenList(data);
@@ -778,7 +814,6 @@ class OrdenView {
     }
 
     agregarProductoADetalleOrdenList(data){
-        console.log(data);
         if(typeof detalleOrdenList != 'undefined'){
             detalleOrdenList.push(data);
             this.listar_detalle_orden_requerimiento(detalleOrdenList);
@@ -1151,6 +1186,8 @@ class OrdenView {
 
 
     guardar_orden_requerimiento(action,data){
+        console.log(action);
+        console.log(data);
         if (action == 'register'){
             var msj = this.validaOrdenRequerimiento();
             if (msj.length > 0){

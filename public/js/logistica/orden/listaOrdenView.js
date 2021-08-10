@@ -795,6 +795,7 @@ class ListaOrdenView {
 
     abrirOrden(idOrden){
         sessionStorage.setItem("idOrden",idOrden);
+        sessionStorage.setItem("action",'historial');
         let url ="/logistica/gestion-logistica/compras/ordenes/elaborar/index";
         var win = window.open(url, '_blank');
         win.focus();
