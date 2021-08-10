@@ -39,16 +39,14 @@ Gestión de Transferencias
                                         <thead>
                                             <tr>
                                                 <th hidden></th>
-                                                <th></th>
                                                 <th>Código</th>
-                                                <th>Fecha Registro</th>
-                                                <th>Almacén Origen</th>
-                                                <th>Almacén Destino</th>
-                                                <th>Codigo Req.</th>
                                                 <th>Concepto</th>
-                                                <th>Sede que Solicita</th>
-                                                <th>Elaborado Por</th>
-                                                <th width="10%">Acción</th>
+                                                <th>Sede Req</th>
+                                                <th>Entidad/Cliente</th>
+                                                <th>Responsable</th>
+                                                <th>OCAM</th>
+                                                <th>C.P.</th>
+                                                <th width="5%">Acción</th>
                                             </tr>
                                         </thead>
                                         <tbody></tbody>
@@ -69,9 +67,6 @@ Gestión de Transferencias
                                         <option value="{{$alm->id_almacen}}">{{$alm->descripcion}}</option>
                                         @endforeach
                                     </select>
-                                </div>
-                                <div class="col-md-6 right">
-                                    <button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Nueva Transferencia" onClick="openRequerimientoModal();">Nueva Transferencia con Req.</button>
                                 </div>
                             </div>
                             <div class="row">
@@ -184,15 +179,16 @@ Gestión de Transferencias
 </div>
 <!-- @include('almacen.guias.guia_compraModal') -->
 @include('almacen.guias.guia_com_ver')
-@include('almacen.transferencias.ver_requerimiento')
+@include('almacen.transferencias.transferenciaCreate')
 @include('almacen.transferencias.transferenciaRecibir')
 @include('almacen.transferencias.transferenciaEnviar')
 @include('almacen.transferencias.transferenciaDetalle')
 @include('almacen.transferencias.ver_series')
-@include('almacen.transferencias.requerimientoModal')
+<!-- @include('almacen.transferencias.requerimientoModal') -->
 @include('almacen.guias.guia_com_obs')
 @include('almacen.guias.guia_ven_obs')
 @include('almacen.guias.guia_ven_series')
+@include('tesoreria.facturacion.archivos_oc_mgcp')
 
 @endsection
 
@@ -214,12 +210,13 @@ Gestión de Transferencias
 <script src="{{ asset('js/almacen/transferencias/listar_transferencias.js')}}"></script>
 <script src="{{ asset('js/almacen/transferencias/transferenciaRecibir.js')}}"></script>
 <script src="{{ asset('js/almacen/transferencias/transferenciaEnviar.js')}}"></script>
-<script src="{{ asset('js/almacen/transferencias/requerimientoModal.js')}}"></script>
+<!-- <script src="{{ asset('js/almacen/transferencias/requerimientoModal.js')}}"></script> -->
 <!-- <script src="{{ asset('js/logistica/requerimiento/historial.js')}}"></script> -->
 <!-- <script src="{{ asset('js/almacen/guia/guia_compraModal.js')}}"></script> -->
 <script src="{{ asset('js/almacen/transferencias/transferenciaCreate.js')}}"></script>
 <!-- <script src="{{ asset('js/almacen/guia/guia_com_det_series.js')}}"></script> -->
 <script src="{{ asset('js/almacen/guia/guia_ven_series.js')}}"></script>
+<script src="{{ asset('js/tesoreria/facturacion/archivosMgcp.js')}}"></script>
 
 <script>
     $(document).ready(function() {

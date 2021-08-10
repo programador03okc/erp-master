@@ -1324,8 +1324,9 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('transferencia/{id}', 'Almacen\Movimiento\OrdenesPendientesController@transferencia');
 				Route::get('verGuiaCompraTransferencia/{id}', 'Almacen\Movimiento\TransferenciaController@verGuiaCompraTransferencia');
 				Route::get('verRequerimiento/{id}', 'Almacen\Movimiento\TransferenciaController@verRequerimiento');
-				Route::get('generarTransferenciaRequerimiento/{id}', 'Almacen\Movimiento\TransferenciaController@generarTransferenciaRequerimiento');
+				Route::post('generarTransferenciaRequerimiento', 'Almacen\Movimiento\TransferenciaController@generarTransferenciaRequerimiento');
 				Route::get('listar_series_guia_ven/{id}', 'Almacen\Movimiento\SalidasPendientesController@listar_series_guia_ven');
+				Route::post('obtenerArchivosOc', 'Tesoreria\Facturacion\PendientesFacturacionController@obtenerArchivosOc')->name('obtener-archivos-oc');
 			});
 		});
 

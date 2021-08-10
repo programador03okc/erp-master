@@ -121,6 +121,7 @@ Facturación
 <script src="{{ asset('js/tesoreria/facturacion/pendientesFacturacion.js')}}"></script>
 <script src="{{ asset('js/tesoreria/facturacion/facturacionGuia.js')}}"></script>
 <script src="{{ asset('js/tesoreria/facturacion/facturacionRequerimiento.js')}}"></script>
+<script src="{{ asset('js/tesoreria/facturacion/archivosMgcp.js')}}"></script>
 <script src="{{ asset('js/almacen/documentos/doc_ven_create.js')}}"></script>
 <script src="{{ asset('js/almacen/documentos/doc_ven_ver.js')}}"></script>
 <script>
