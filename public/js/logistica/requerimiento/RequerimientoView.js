@@ -429,7 +429,7 @@ class RequerimientoView {
                         <input type="text" class="centroCosto" name="idCentroCosto[]" value="${data[i].id_centro_costo}" hidden>
                     </div>
                 </td>
-                <td><input class="form-control activation input-sm" type="text" name="partNumber[]" placeholder="Part number" value="${data[i].part_number != null ? data[i].part_number : ''}" ${hasDisabledInput}></td>
+                <td><input class="form-control activation input-sm" type="text" name="partNumber[]" placeholder="Part number" value="${data[i].part_number != null ? data[i].part_number : (data[i].producto_part_number?data[i].producto_part_number:'')}" ${hasDisabledInput}></td>
                 <td>
                     <div class="form-group">
                         <textarea class="form-control activation input-sm descripcion handleBlurUpdateDescripcionItem" name="descripcion[]" placeholder="Descripción" value="${data[i].descripcion != null ? data[i].descripcion : ''}"   ${hasDisabledInput} >${data[i].descripcion != null ? data[i].descripcion : ''}</textarea></td>
