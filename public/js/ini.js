@@ -163,7 +163,10 @@ $(document).ready(function(){
 					// console.log(page);
 					
 					if (page == 'requerimiento'){
-						editRequerimiento();
+						const requerimientoModel = new RequerimientoModel();
+						const requerimientoController = new RequerimientoCtrl(requerimientoModel);
+						const requerimientoView = new RequerimientoView(requerimientoController);
+						requerimientoView.editRequerimiento();
 					}
 					else if (page == 'cuadro_comparativo'){
 						editValorizaciones();

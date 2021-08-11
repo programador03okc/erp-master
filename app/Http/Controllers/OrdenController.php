@@ -20,8 +20,11 @@ use App\Models\Contabilidad\Banco;
 use App\Models\Contabilidad\CuentaContribuyente;
 use App\Models\Contabilidad\TipoCuenta;
 use App\Models\Logistica\Orden;
+use App\Models\Logistica\OrdenCompraDetalle;
 use App\Models\Logistica\Proveedor;
 use Carbon\Carbon;
+use Exception;
+
 class OrdenController extends Controller
 {
 
@@ -1365,7 +1368,6 @@ class OrdenController extends Controller
         'alm_req.codigo as codigo_requerimiento',
         'log_det_ord_compra.id_producto',
         'log_det_ord_compra.id_item',
-        'alm_item.codigo AS codigo_item',
         'alm_prod.descripcion AS descripcion_producto',
         'alm_prod.codigo AS codigo_producto',
         'alm_prod.part_number',
@@ -1380,10 +1382,11 @@ class OrdenController extends Controller
         'alm_und_medida.descripcion AS unidad_medida',
         'log_det_ord_compra.subtotal',
         'log_det_ord_compra.id_detalle_requerimiento',
-        'log_det_ord_compra.estado'
+        'log_det_ord_compra.estado',
+        'guia_com_det.id_guia_com',
+        'guia_com_det.estado as estado_guia_com_det'
     )
     ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'log_det_ord_compra.id_unidad_medida')
-    ->leftJoin('almacen.alm_item', 'alm_item.id_item', '=', 'log_det_ord_compra.id_item')
     ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'log_det_ord_compra.id_producto')
     ->leftJoin('configuracion.sis_usua as sis_usua_aut', 'sis_usua_aut.id_usuario', '=', 'log_det_ord_compra.personal_autorizado')
     ->leftJoin('rrhh.rrhh_trab as trab_aut', 'trab_aut.id_trabajador', '=', 'sis_usua_aut.id_trabajador')
@@ -1391,6 +1394,8 @@ class OrdenController extends Controller
     ->leftJoin('rrhh.rrhh_perso as pers_aut', 'pers_aut.id_persona', '=', 'post_aut.id_persona')
     ->leftJoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
     ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+    ->leftJoin('almacen.guia_com_det', 'guia_com_det.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden')
+
     ->where([
         ['log_det_ord_compra.id_orden_compra', '=', $id_orden]
     ])
@@ -1406,10 +1411,8 @@ class OrdenController extends Controller
                 'id_detalle_requerimiento' => $data->id_detalle_requerimiento,
                 'id_requerimiento' => $data->id_requerimiento,
                 'codigo_requerimiento' => $data->codigo_requerimiento,
-                'id_item' => $data->id_item,
                 'id_tipo_item' => 1,
                 'id_producto' => $data->id_producto,
-                'codigo_item' => $data->codigo_item,
                 'codigo_producto' => $data->codigo_producto,
                 'descripcion' => $data->descripcion_producto,
                 'descripcion_producto' => $data->descripcion_producto,
@@ -1428,7 +1431,9 @@ class OrdenController extends Controller
                 // 'incluye_igv' => $data->incluye_igv,
                 'garantia' => $data->garantia,
                 'lugar_despacho' => $data->lugar_despacho,
-                'estado' => $data->estado
+                'estado' => $data->estado,
+                'id_guia_com' => $data->id_guia_com,
+                'estado_guia_com_det' => $data->estado_guia_com_det
                 // 'nombre_personal_autorizado' => $data->nombre_personal_autorizado 
             ];
             $idDetalleReqList[]=$data->id_detalle_requerimiento;
@@ -2580,88 +2585,70 @@ class OrdenController extends Controller
     }
 
     public function guardar_orden_por_requerimiento(Request $request){
+
         // try {
         //     DB::beginTransaction();
 
-            $usuario = Auth::user()->id_usuario;
+            $orden = new Orden();
             $tp_doc = ($request->id_tp_documento !== null ? $request->id_tp_documento : 2);
-            $codigo = $this->nextCodigoOrden($tp_doc);
-            $guardarEnRequerimiento = $request->guardarEnRequerimiento;
+            $orden->codigo =  $this->nextCodigoOrden($tp_doc);
+            $orden->id_grupo_cotizacion = $request->id_grupo_cotizacion?$request->id_grupo_cotizacion:null;
+            $orden->id_tp_documento = $tp_doc;
+            $orden->fecha = new Carbon();
+            $orden->id_usuario = Auth::user()->id_usuario;
+            $orden->id_moneda = $request->id_moneda?$request->id_moneda:null;
+            $orden->incluye_igv = isset($request->incluye_igv)?$request->incluye_igv:true;
+            $orden->id_proveedor = $request->id_proveedor;
+            $orden->id_cta_principal = isset($request->id_cuenta_principal_proveedor)?$request->id_cuenta_principal_proveedor:null;
+            $orden->id_contacto = isset($request->id_contacto_proveedor)?$request->id_contacto_proveedor:null;
+            $orden->plazo_entrega =  $request->plazo_entrega?$request->plazo_entrega:null;
+            $orden->id_condicion = $request->id_condicion?$request->id_condicion:null;
+            $orden->plazo_dias = $request->plazo_dias?$request->plazo_dias:null;
+            $orden->id_cotizacion = $request->id_cotizacion?$request->id_cotizacion:null;
+            $orden->id_tp_doc = isset($request->id_tp_doc)?$request->id_tp_doc:null;
+            $orden->personal_autorizado_1 = $request->personal_autorizado_1?$request->personal_autorizado_1:null;
+            $orden->personal_autorizado_2 = $request->personal_autorizado_2?$request->personal_autorizado_2:null;
+            $orden->id_occ = $request->id_cc?$request->id_cc:null;
+            $orden->id_sede = $request->id_sede?$request->id_sede:null;
+            $orden->direccion_destino = $request->direccion_destino?$request->direccion_destino:null;
+            $orden->ubigeo_destino = isset($request->id_ubigeo_destino)?$request->id_ubigeo_destino:null;
+            $orden->en_almacen = false;
+            $orden->estado = 1;
+            $orden->codigo_softlink = $request->codigo_orden!==null ? $request->codigo_orden : '';
+            $orden->observacion = isset($request->observacion)?$request->observacion:null;
+            $orden->tipo_cambio_compra = isset($request->tipo_cambio_compra)?$request->tipo_cambio_compra:true;
+            $orden->save();
 
-            $id_orden = DB::table('logistica.log_ord_compra')
-            ->insertGetId(
-                [
-                    'id_grupo_cotizacion' => isset($request->id_grupo_cotizacion)?$request->id_grupo_cotizacion:null,
-                    'id_tp_documento' =>  $tp_doc,
-                    'fecha' => date('Y-m-d H:i:s'),
-                    'id_usuario' => $usuario?$usuario:null,
-                    'id_moneda' => ($request->id_moneda?$request->id_moneda:null),
-                    'incluye_igv' =>  isset($request->incluye_igv)?$request->incluye_igv:true,
-                    'id_proveedor' => $request->id_proveedor,
-                    'id_cta_principal' => isset($request->id_cuenta_principal_proveedor)?$request->id_cuenta_principal_proveedor:null,
-                    'id_contacto' => isset($request->id_contacto_proveedor)?$request->id_contacto_proveedor:null,
-                    'codigo' => $codigo?$codigo:null,
-                    'plazo_entrega' => $request->plazo_entrega?$request->plazo_entrega:null,
-                    'id_condicion' => $request->id_condicion?$request->id_condicion:null,
-                    'plazo_dias' => $request->plazo_dias?$request->plazo_dias:null,
-                    'id_cotizacion' => $request->id_cotizacion?$request->id_cotizacion:null,
-                    'id_tp_doc' =>  isset($request->id_tp_doc)?$request->id_tp_doc:null,
-                    'personal_autorizado_1' => $request->personal_autorizado_1?$request->personal_autorizado_1:null,
-                    'personal_autorizado_2' => $request->personal_autorizado_2?$request->personal_autorizado_2:null,
-                    'id_occ' => $request->id_cc?$request->id_cc:null,
-                    'id_sede' => $request->id_sede?$request->id_sede:null,
-                    'direccion_destino' => $request->direccion_destino?$request->direccion_destino:null,
-                    'ubigeo_destino' => isset($request->id_ubigeo_destino)?$request->id_ubigeo_destino:null,
-                    'en_almacen' => false,
-                    'estado' => 1,
-                    'codigo_softlink' => ($request->codigo_orden!==null ? $request->codigo_orden : ''),
-                    'observacion' => isset($request->observacion)?$request->observacion:null,
-                    'tipo_cambio_compra' =>  isset($request->tipo_cambio_compra)?$request->tipo_cambio_compra:true
-                ],
-                'id_orden_compra'
-            );
-
-            $dataDetalle = $request->detalle;
-
-            $allidReqList=[];
-            $allIdDetReqList=[];
-            foreach($dataDetalle as $d) {
-                $allIdDetReqList[]=$d['id_detalle_requerimiento'];
-
-                if($d['cantidad_a_comprar'] > 0 && $d['estado'] != 7){
-                    if($guardarEnRequerimiento == false){
-                        DB::table('logistica.log_det_ord_compra')
-                        ->insert([
-                            'id_orden_compra'=>$id_orden,
-                            'id_item'=> ($d['id_item'] ? $d['id_item'] : null),
-                            'id_producto'=> (isset($d['id_producto']) ? $d['id_producto'] : null),
-                            'id_detalle_requerimiento'=> ($d['id_detalle_requerimiento'] ? $d['id_detalle_requerimiento'] : null),
-                            'cantidad'=> $d['cantidad_a_comprar'],
-                            'id_unidad_medida'=> $d['id_unidad_medida'],
-                            'precio'=> $d['precio_unitario'],
-                            'descripcion_adicional'=> $d['descripcion_adicional'],
-                            'subtotal'=> $d['subtotal']?$d['subtotal']:0,
-                            'tipo_item_id'=> (isset($d['id_tipo_item'])?$d['id_tipo_item']:null),
-                            'estado'=> 1
-                            // 'fecha_registro'=> date('Y-m-d H:i:s')
-                        ]);
-                    }
-
-                }
+            $count = count($request->descripcion);
+            for ($i = 0; $i < $count; $i++) {
+            $detalle = new OrdenCompraDetalle();
+            $detalle->id_orden_compra= $orden->id_orden_compra;
+            $detalle->id_producto= ($request->idProducto[$i]?$request->idProducto[$i]:null);
+            $detalle->id_detalle_requerimiento=$request->idDetalleRequerimiento[$i]?$request->idDetalleRequerimiento[$i]:null;
+            $detalle->cantidad=$request->cantidadAComprarRequerida[$i];
+            $detalle->id_unidad_medida=$request->unidad[$i];
+            $detalle->precio=$request->precioUnitario[$i];
+            $detalle->descripcion_adicional=($request->descripcion[$i]?$request->descripcion[$i]:null);
+            $detalle->subtotal= floatval($request->cantidadAComprarRequerida[$i] * $request->precioUnitario[$i]);
+            $detalle->tipo_item_id=$request->idTipoItem[$i];
+            $detalle->estado=1;
+            // $detalle->fecha_registro = new Carbon();
+            $detalle->save();
             }
 
-        
-            if(isset($id_orden) and $id_orden >0){
-                $this->actualizarNuevoEstadoRequerimiento($id_orden,$codigo);
+            if(isset($orden->id_orden_compra) and $orden->id_orden_compra >0){
+                $this->actualizarNuevoEstadoRequerimiento($orden->id_orden_compra,$orden->codigo);
             
             }
             
 
         // DB::commit();
-            return response()->json($id_orden);
+            return response()->json(['id_orden_compra' => $orden->id_orden_compra, 'codigo' => $orden->codigo]);
 
-        // } catch (\PDOException $e) {
+        // } catch (Exception $e) {
         //     DB::rollBack();
+        //     return response()->json(['id_orden_compra' => 0, 'codigo' => '', 'mensaje' => 'Hubo un problema al guardar la orden. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
+
         // }
 
     }
@@ -2971,183 +2958,79 @@ class OrdenController extends Controller
         try {
             DB::beginTransaction();
 
-            $usuario = Auth::user()->id_usuario;
-            $id_orden = $request->id_orden;
-            $tp_doc = ($request->id_tp_documento !== null ? $request->id_tp_documento : 2);
+            $orden = Orden::where("id_orden_compra", $request->id_orden)->first();
+            $orden->id_grupo_cotizacion = $request->id_grupo_cotizacion?$request->id_grupo_cotizacion:null;
+            $orden->id_tp_documento = ($request->id_tp_documento !== null ? $request->id_tp_documento : 2);
+            $orden->fecha = new Carbon();
+            $orden->id_usuario = Auth::user()->id_usuario;
+            $orden->id_moneda = $request->id_moneda?$request->id_moneda:null;
+            $orden->incluye_igv = isset($request->incluye_igv)?$request->incluye_igv:true;
+            $orden->id_proveedor = $request->id_proveedor;
+            $orden->id_cta_principal = isset($request->id_cuenta_principal_proveedor)?$request->id_cuenta_principal_proveedor:null;
+            $orden->id_contacto = isset($request->id_contacto_proveedor)?$request->id_contacto_proveedor:null;
+            $orden->plazo_entrega =  $request->plazo_entrega?$request->plazo_entrega:null;
+            $orden->id_condicion = $request->id_condicion?$request->id_condicion:null;
+            $orden->plazo_dias = $request->plazo_dias?$request->plazo_dias:null;
+            $orden->id_cotizacion = $request->id_cotizacion?$request->id_cotizacion:null;
+            $orden->id_tp_doc = isset($request->id_tp_doc)?$request->id_tp_doc:null;
+            $orden->personal_autorizado_1 = $request->personal_autorizado_1?$request->personal_autorizado_1:null;
+            $orden->personal_autorizado_2 = $request->personal_autorizado_2?$request->personal_autorizado_2:null;
+            $orden->id_occ = $request->id_cc?$request->id_cc:null;
+            $orden->id_sede = $request->id_sede?$request->id_sede:null;
+            $orden->direccion_destino = $request->direccion_destino?$request->direccion_destino:null;
+            $orden->ubigeo_destino = isset($request->id_ubigeo_destino)?$request->id_ubigeo_destino:null;
+            $orden->codigo_softlink = $request->codigo_orden!==null ? $request->codigo_orden : '';
+            $orden->observacion = isset($request->observacion)?$request->observacion:null;
+            $orden->tipo_cambio_compra = isset($request->tipo_cambio_compra)?$request->tipo_cambio_compra:true;
+            $orden->save();
 
-            DB::table('logistica.log_ord_compra')
-            ->where('log_ord_compra.id_orden_compra',$id_orden)
-            ->update(
-                [
-                    'id_grupo_cotizacion' => isset($request->id_grupo_cotizacion)?$request->id_grupo_cotizacion:null,
-                    'id_tp_documento' =>  $tp_doc,
-                    'fecha' => isset($request->fecha_emision)?str_replace("T", " ", $request->fecha_emision):null,
-                    'id_usuario' => $usuario?$usuario:null,
-                    'id_moneda' => $request->id_moneda?$request->id_moneda:null,
-                    'incluye_igv' => $request->incluye_igv?$request->incluye_igv:true,
-                    'id_proveedor' => $request->id_proveedor,
-                    'id_contacto' => $request->id_contacto_proveedor?$request->id_contacto_proveedor:null,
+            $TodoDetalleOrden = OrdenCompraDetalle::where("id_orden_compra", $orden->id_orden_compra)->get();
+            $idDetalleProcesado = [];
+            $count = count($request->descripcion);
+            for ($i = 0; $i < $count; $i++) {
+                $id = $request->idRegister[$i];
+                if (preg_match('/[A-Za-z].*[0-9]|[0-9].*[A-Za-z]/', $id)) // es un id con numeros y letras => es nuevo, insertar
+                {
+                    $detalle = new OrdenCompraDetalle();
+                    $detalle->id_orden_compra= $orden->id_orden_compra;
+                    $detalle->id_producto= $request->idProducto[$i];
+                    $detalle->id_detalle_requerimiento=$request->idDetalleRequerimiento[$i];
+                    $detalle->cantidad=$request->cantidadAComprarRequerida[$i];
+                    $detalle->id_unidad_medida=$request->unidad[$i];
+                    $detalle->precio=$request->precioUnitario[$i];
+                    $detalle->descripcion_adicional=$request->descripcion[$i];
+                    $detalle->subtotal= floatval($request->cantidadAComprarRequerida[$i] * $request->precioUnitario[$i]);
+                    $detalle->tipo_item_id=$request->idTipoItem[$i];
+                    $detalle->estado=1;
+                    $detalle->save();
 
-                    'plazo_entrega' => $request->plazo_entrega?$request->plazo_entrega:null,
-                    'id_condicion' => $request->id_condicion?$request->id_condicion:null,
-                    'plazo_dias' => $request->plazo_dias?$request->plazo_dias:null,
-                    'id_cotizacion' => $request->id_cotizacion?$request->id_cotizacion:null,
-                    'id_tp_doc' =>  isset($request->id_tp_doc)?$request->id_tp_doc:null,
-                    'personal_autorizado_1' => $request->personal_autorizado_1?$request->personal_autorizado_1:null,
-                    'personal_autorizado_2' => $request->personal_autorizado_2?$request->personal_autorizado_2:null,
-                    'id_occ' => $request->id_cc?$request->id_cc:null,
-                    'id_sede' => $request->id_sede?$request->id_sede:null,
-                    'direccion_destino' => $request->direccion_destino?$request->direccion_destino:null,
-                    'ubigeo_destino' => isset($request->id_ubigeo_destino)?$request->id_ubigeo_destino:null,
-                    'codigo_softlink' => ($request->codigo_orden!==null ? $request->codigo_orden : ''),
-                    'observacion' => isset($request->observacion)?$request->observacion:null
-                ]
-            );
+                }else{ // es un id solo de numerico => actualiza
+                    $detalle = OrdenCompraDetalle::where("id_detalle_orden", $id)->first();
+                    $detalle->id_producto= $request->idProducto[$i];
+                    $detalle->id_detalle_requerimiento=$request->idDetalleRequerimiento[$i];
+                    $detalle->cantidad=$request->cantidadAComprarRequerida[$i];
+                    $detalle->id_unidad_medida=$request->unidad[$i];
+                    $detalle->precio=$request->precioUnitario[$i];
+                    $detalle->descripcion_adicional=$request->descripcion[$i];
+                    $detalle->subtotal= floatval($request->cantidadAComprarRequerida[$i] * $request->precioUnitario[$i]);
+                    $detalle->tipo_item_id=$request->idTipoItem[$i];
+                    $detalle->save();
 
-            $dataDetalle = $request->detalle;
- 
-
-            $allidReqList=[];
-            foreach($dataDetalle as $d) {
-                $allidReqList[]= $d['id_requerimiento'];
-
-                if($d['cantidad_a_comprar'] > 0 && $d['estado'] > 0){
-                    DB::table('logistica.log_det_ord_compra')
-                    ->where('log_det_ord_compra.id_detalle_orden',$d['id_detalle_orden'])
-                    ->update([
-                        'id_orden_compra'=>$id_orden,
-                        'id_item'=> ($d['id_item'] ? $d['id_item'] : null),
-                        'id_producto'=> (isset($d['id_producto']) ? $d['id_producto'] : null),
-                        'id_detalle_requerimiento'=> ($d['id_detalle_requerimiento'] ? $d['id_detalle_requerimiento'] : null),
-                        'cantidad'=> $d['cantidad_a_comprar'],
-                        'id_unidad_medida'=> $d['id_unidad_medida'],
-                        'precio'=> $d['precio_unitario'],
-                        'descripcion_adicional'=> $d['descripcion_producto'],
-                        'tipo_item_id'=> $d['id_tipo_item']?$d['id_tipo_item']:null,
-                        'subtotal'=> $d['subtotal']?$d['subtotal']:0,
-                        'estado'=> $d['estado']?$d['estado']:17
-                    ]);
-                    
-
-                }
-
-                if($d['cantidad_a_comprar'] > 0 && $d['estado'] == 0){
-                    DB::table('logistica.log_det_ord_compra')
-                    ->insert([
-                        'id_orden_compra'=>$id_orden,
-                        'id_item'=> ($d['id_item'] ? $d['id_item'] : null),
-                        'id_producto'=> (isset($d['id_producto']) ? $d['id_producto'] : null),
-                        'id_detalle_requerimiento'=>  null,
-                        'cantidad'=> $d['cantidad_a_comprar'],
-                        'id_unidad_medida'=> $d['id_unidad_medida'],
-                        'precio'=> $d['precio_unitario'],
-                        'descripcion_adicional'=> $d['descripcion_producto'],
-                        'tipo_item_id'=> $d['id_tipo_item']?$d['id_tipo_item']:null,
-                        'subtotal'=> $d['subtotal']?$d['subtotal']:0,
-                        'estado'=> 1
-                    ]);
-                    
+                    $idDetalleProcesado[] = $detalle->id_detalle_orden;
 
                 }
             }
 
-            $uniqueIdReqList = array_unique($allidReqList);
-
-            $idRequerimientoAtentidosTotalList=[];
-            $idRequerimientoAtentidosParcialList=[];
-
-            $sizeDataDetalle = count($dataDetalle);
-            $countAtendido=0;
-            
-                // foreach ($dataDetalle as $d) {
-                //     if(($d['cantidad_a_comprar'] + $d['stock_comprometido'] ) == $d['cantidad'] ){
-                //         $countAtendido+=1;
-                //         $idRequerimientoAtentidosTotalList[]=$d['id_requerimiento'];
-
-                //         if($this->cambioElEstadoActualDetalleReq($d['id_detalle_requerimiento']) == false ){
-                //             DB::table('almacen.alm_det_req')
-                //             ->where('id_detalle_requerimiento',$d['id_detalle_requerimiento'])
-                //             ->update(
-                //                 [
-                //                     'estado'=>5, //atendido total
-                //                     'stock_comprometido'=> $d['stock_comprometido']?$d['stock_comprometido']:0
-                //                 ] 
-                //             ); 
-                //         }
-
-                //     }
-                //     if((($d['cantidad_a_comprar'] + $d['stock_comprometido'] )>0) && (($d['cantidad_a_comprar'] + $d['stock_comprometido'] ) < $d['cantidad'])){
-                //         $idRequerimientoAtentidosParcialList[]=$d['id_requerimiento'];
-                //         if($this->cambioElEstadoActualDetalleReq($d['id_detalle_requerimiento']) == false ){
-                //             DB::table('almacen.alm_det_req')
-                //             ->where('id_detalle_requerimiento',$d['id_detalle_requerimiento'])
-                //             ->update(
-                //                 [
-                //                     'estado'=>15, // atendido parcial
-                //                     'stock_comprometido'=> $d['stock_comprometido']?$d['stock_comprometido']:0
-                //                 ]
-                                
-                //             ); 
-                //         }
-                //     }
-                // } 
-                // if(count($idRequerimientoAtentidosTotalList)>0){
-                //     foreach ($idRequerimientoAtentidosTotalList as $key => $id_req) {
-
-                //         if($countAtendido ==$sizeDataDetalle){
-
-                //             if($this->cambioElEstadoActualReq($id_req) == false ){
-                //                 DB::table('almacen.alm_req')
-                //                 ->where('id_requerimiento',$id_req)
-                //                 ->update(['estado'=>5]); // atendido total
-        
-                //                 DB::table('almacen.alm_req_obs')
-                //                 ->insert([  'id_requerimiento'=>$id_req,
-                //                             'accion'=>'ATENDIDO TOTAL',
-                //                             'descripcion'=>'Se generó Orden de Compra '.$codigo,
-                //                             'id_usuario'=>$usuario,
-                //                             'fecha_registro'=>date('Y-m-d H:i:s')
-                //                 ]);
-                //             }
-                //         }else{
-                //             if($this->cambioElEstadoActualReq($id_req) == false ){
-                //                 DB::table('almacen.alm_req')
-                //                 ->where('id_requerimiento',$id_req)
-                //                 ->update(['estado'=>15]); // atendido parcial
-        
-                //                 DB::table('almacen.alm_req_obs')
-                //                 ->insert([  'id_requerimiento'=>$id_req,
-                //                             'accion'=>'ATENDIDO PARCIAL',
-                //                             'descripcion'=>'Se generó Orden de Compra '.$codigo,
-                //                             'id_usuario'=>$usuario,
-                //                             'fecha_registro'=>date('Y-m-d H:i:s')
-                //                 ]);
-                //             }
-                //         }
-
-                //     }
-
-                // }
-            //     if(count($idRequerimientoAtentidosParcialList)>0){
-            //         foreach ($idRequerimientoAtentidosParcialList as $key => $id_req) {
-            //             if($this->cambioElEstadoActualReq($id_req) == false ){
-            //             DB::table('almacen.alm_req')
-            //             ->where('id_requerimiento',$id_req)
-            //             ->update(['estado'=>15]); // atendido parcial
-
-            //             DB::table('almacen.alm_req_obs')
-            //             ->insert([  'id_requerimiento'=>$id_req,
-            //                         'accion'=>'ATENDIDO PARCIAL',
-            //                         'descripcion'=>'Se generó Orden de Compra '.$codigo,
-            //                         'id_usuario'=>$usuario,
-            //                         'fecha_registro'=>date('Y-m-d H:i:s')
-            //             ]);
-            //         }
-            //     }
-            // }
+            foreach ($TodoDetalleOrden as $detalleOrden) {
+                if (!in_array($detalleOrden->id_detalle_orden, $idDetalleProcesado)) {
+                    $detalleConAnulidad = OrdenCompraDetalle::where("id_detalle_orden", $detalleOrden->id_detalle_orden)->first();
+                    $detalleConAnulidad->estado = 7;
+                    $detalleConAnulidad->save();
+                }
+            }
 
         DB::commit();
-            return response()->json($id_orden);
+            return response()->json($orden->id_orden_compra);
 
         } catch (\PDOException $e) {
             DB::rollBack();

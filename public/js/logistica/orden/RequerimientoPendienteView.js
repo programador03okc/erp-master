@@ -255,13 +255,13 @@ class RequerimientoPendienteView {
                 }
 
                 let listaRequerimientosPendientes_filter = document.querySelector("div[id='listaRequerimientosPendientes_filter']");
-                let buttonFiler = document.createElement("button");
-                buttonFiler.type = "button";
-                buttonFiler.className = "btn btn-default pull-left";
-                buttonFiler.style = "margin-right: 30px;";
-                buttonFiler.innerHTML = "<i class='fas fa-filter'></i> Filtros";
-                buttonFiler.addEventListener('click', that.abrirModalFiltrosRequerimientosPendientes, false);
-                listaRequerimientosPendientes_filter.appendChild(buttonFiler);
+                // let buttonFiler = document.createElement("button");
+                // buttonFiler.type = "button";
+                // buttonFiler.className = "btn btn-default pull-left";
+                // buttonFiler.style = "margin-right: 30px;";
+                // buttonFiler.innerHTML = "<i class='fas fa-filter'></i> Filtros";
+                // buttonFiler.addEventListener('click', that.abrirModalFiltrosRequerimientosPendientes, false);
+                // listaRequerimientosPendientes_filter.appendChild(buttonFiler);
 
                 let buttonCrearOrden = document.createElement("button");
                 buttonCrearOrden.type = "button";
@@ -628,14 +628,23 @@ class RequerimientoPendienteView {
         let nuevoValor = obj.value;
         let indiceSelected = obj.dataset.indice;
         let cantidad = obj.dataset.cantidad;
-        if(parseInt(nuevoValor) > parseInt(cantidad) || parseInt(nuevoValor) <= 0 ){
+        if(parseInt(nuevoValor) > parseInt(cantidad) || parseInt(nuevoValor) < 0 ){
     
-            // obj.parentNode.parentNode.querySelector("input[name='cantidad_a_atender']").value= cantidad;
-            // itemsParaAtenderConAlmacenList.forEach((element, index) => {
-            //     if (index == indiceSelected) {
-            //         itemsParaAtenderConAlmacenList[index].cantidad_a_atender = cantidad;
-            //     }
-            // });
+            itemsParaAtenderConAlmacenList.forEach((element, index) => {
+                if (index == indiceSelected) {
+                    Lobibox.notify('info', {
+                        title:false,
+                        size: 'mini',
+                        rounded: true,
+                        sound: false,
+                        delayIndicator: false,
+                        msg: `El valor ingresado desborda a la cantidad solicitada`
+                    });
+           
+                    itemsParaAtenderConAlmacenList[index].cantidad_a_atender = 0;
+                    obj.value=0;
+                }
+            });
         }else{
             itemsParaAtenderConAlmacenList.forEach((element, index) => {
                 if (index == indiceSelected) {
@@ -656,39 +665,50 @@ class RequerimientoPendienteView {
 
 
     guardarAtendidoConAlmacen() {
-
         // console.log('accion guardarAtendidoConAlmacen');
         var newItemsParaAtenderConAlmacenList = [];
         var itemsBaseList = [];
         itemsBaseList = itemsParaAtenderConAlmacenList.filter(function( obj ) {
             return (obj.tiene_transformacion ==false);
         });
+        let almacenEstablecidoSinCantidadAAtender=0;
+        let cantidadAAtenderEstablecidoSinAlmacen=0;
+        itemsParaAtenderConAlmacenList.forEach(element => {
+            if(element.id_almacen_reserva >0 && !element.cantidad_a_atender>0){
+                almacenEstablecidoSinCantidadAAtender ++;
+            }
+            if(!element.id_almacen_reserva >0 && element.cantidad_a_atender>0){
+                cantidadAAtenderEstablecidoSinAlmacen ++;
+            }
+        });
+
+        if(almacenEstablecidoSinCantidadAAtender >0){
+            Lobibox.notify('info', {
+                title:false,
+                size: 'mini',
+                rounded: true,
+                sound: false,
+                delayIndicator: false,
+                msg: `selecciono un almacén pero no especificó la cantidad a antender, se omitirá esa reserva`
+            });
+        }
+        if(cantidadAAtenderEstablecidoSinAlmacen >0){
+            Lobibox.notify('info', {
+                title:false,
+                size: 'mini',
+                rounded: true,
+                sound: false,
+                delayIndicator: false,
+                msg: `Especificó una cantidad pero no seleccionó un almacén, se omitirá esa reserva`
+            });
+        }
+
         
         newItemsParaAtenderConAlmacenList = itemsParaAtenderConAlmacenList.filter(function( obj ) {
             return (obj.id_almacen_reserva >0) && (obj.cantidad_a_atender >0);
         });
-        var hasCantidadNoPermitida = false;
-        newItemsParaAtenderConAlmacenList.forEach(element => {
-            // console.log(element.cantidad_a_atender);
-            if(parseInt(element.cantidad_a_atender) == 0){
-                Swal.fire(
-                    '',
-                    'No puede reservar una cantidad cero',
-                    'warning'
-                );
-                hasCantidadNoPermitida=true;
-            } 
-            if(parseInt(element.cantidad_a_atender) > parseInt(element.cantidad)){
-                Swal.fire(
-                    '',
-                    'No puede reservar una cantidad a atender mayor a la cantidad solicitada',
-                    'warning'
-                );
-                hasCantidadNoPermitida=true;
-            } 
-        });
-        
-        if(hasCantidadNoPermitida== false){
+
+
             if(newItemsParaAtenderConAlmacenList.length >0){
                 this.requerimientoPendienteCtrl.guardarAtendidoConAlmacen(newItemsParaAtenderConAlmacenList,itemsBaseList).then((res) =>{
                     if (res.update_det_req > 0) {
@@ -698,7 +718,7 @@ class RequerimientoPendienteView {
                             rounded: true,
                             sound: false,
                             delayIndicator: false,
-                            msg: `Reserva actualizsada`
+                            msg: `Se actualizo la reserva para ${newItemsParaAtenderConAlmacenList.length} productos`
                         });
                         this.requerimientoPendienteCtrl.getDataItemsRequerimientoParaAtenderConAlmacen(res.id_requerimiento).then( (res)=> {
                             this.construirTablaListaItemsRequerimientoParaAtenderConAlmacen(res);
@@ -731,7 +751,7 @@ class RequerimientoPendienteView {
                 );
             }
     
-        }
+        
 
 
     }

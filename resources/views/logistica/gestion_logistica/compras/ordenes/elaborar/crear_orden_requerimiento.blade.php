@@ -282,7 +282,9 @@ Elaborar orden
                             <h6>Item's de requerimiento</h6>
                         </legend>
                         <div class="btn-group" role="group" aria-label="...">
-                            <button type="button" class="btn btn-xs btn-success activation handleClickCatalogoProductosModal" id="btnAgregarProducto" data-toggle="tooltip" data-placement="bottom" title="Agregar Detalle"><i class="fas fa-plus"></i> Producto
+                            <button type="button" class="btn btn-xs btn-success activation handleClickCatalogoProductosModal" id="btnAgregarProducto" data-toggle="tooltip" data-placement="bottom" title="Agregar producto de regalo"><i class="fas fa-plus"></i> Producto
+                            </button>
+                            <button type="button" class="btn btn-xs btn-primary activation handleClickAgregarServicio" id="btnAgregarServicio" data-toggle="tooltip" data-placement="bottom" title="Agregar servicio"><i class="fas fa-plus"></i> Servicio
                             </button>
                             <button type="button" class="btn btn-xs btn-default activation handleClickVincularRequerimientoAOrdenModal" id="btnAgregarVinculoRequerimiento" data-toggle="tooltip" data-placement="bottom" title="Agregar items de otro requerimiento" disabled><i class="fas fa-plus"></i> Vincular otro requerimiento
                             </button>
@@ -290,18 +292,18 @@ Elaborar orden
                         <table class="table table-striped table-condensed table-bordered" id="listaDetalleOrden" width="100%">
                             <thead>
                                 <tr>
-                                    <th>Req.</th>
-                                    <th>Part number</th>
+                                    <th style="width: 5%">Req.</th>
+                                    <th style="width: 5%">Part number</th>
                                     <th>Item</th>
-                                    <th>Unidad</th>
-                                    <th>Cantidad</th>
-                                    <th>Precio</th>
-                                    <th>Cantidad a comprar</th>
-                                    <th>Total</th>
-                                    <th>Acción</th>
+                                    <th style="width: 8%">Unidad</th>
+                                    <th style="width: 5%">Cantidad Solicitada</th>
+                                    <th style="width: 10%">Costo</th>
+                                    <th style="width: 8%">Cantidad a comprar / requerir</th>
+                                    <th style="width: 6%">Total</th>
+                                    <th style="width: 5%">Acción</th>
                                 </tr>
                             </thead>
-                            <tbody></tbody>
+                            <tbody id="body_detalle_orden"></tbody>
                             <tfoot>
                                 <tr>
                                     <td colspan="7" class="text-right"><strong>Monto neto:</strong></td>
@@ -341,6 +343,14 @@ Elaborar orden
 
 
 </form>
+</div>
+
+<div class="hidden" id="divOculto">
+    <select id="selectUnidadMedida">
+        @foreach ($unidades_medida as $unidad)
+        <option value="{{$unidad->id_unidad_medida}}" {{$unidad->id_unidad_medida=='1' ? 'selected' : ''}}>{{$unidad->descripcion}}</option>
+        @endforeach
+    </select>
 </div>
 @include('logistica.gestion_logistica.compras.ordenes.elaborar.modal_vincular_requerimiento_orden')
 @include('logistica.gestion_logistica.compras.ordenes.elaborar.modal_catalogo_items')

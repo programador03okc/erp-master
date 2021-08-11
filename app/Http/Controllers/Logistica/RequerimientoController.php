@@ -82,6 +82,10 @@ class RequerimientoController extends Controller
         return view('logistica/requerimientos/gestionar_requerimiento', compact('idTrabajador', 'nombreUsuario', 'categoria_adjunto', 'grupos', 'sis_identidad', 'tipo_requerimiento', 'monedas', 'prioridades', 'empresas', 'unidadesMedida', 'roles', 'periodos', 'bancos', 'tipos_cuenta', 'clasificaciones', 'subcategorias', 'categorias', 'unidades', 'proyectos_activos', 'fuentes', 'divisiones'));
     }
 
+    public function listaDivisiones()
+    {
+        return DivisionArea::all();
+    }
     public function mostrarPartidas($idGrupo, $idProyecto = null)
     {
         return Presupuesto::mostrarPartidas($idGrupo, $idProyecto);

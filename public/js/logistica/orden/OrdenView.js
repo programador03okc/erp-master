@@ -5,7 +5,7 @@ var tablaListaRequerimientosParaVincular;
 var detalleOrdenList=[];
 var iTableCounter = 1;
 var oInnerTable;
-
+var actionPage=null;
 class OrdenView {
     constructor(ordenCtrl){
         this.ordenCtrl = ordenCtrl;
@@ -14,7 +14,7 @@ class OrdenView {
     init() {
         var reqTrueList = JSON.parse(sessionStorage.getItem('reqCheckedList'));
         var tipoOrden = sessionStorage.getItem('tipoOrden');
-        if (reqTrueList != null && (reqTrueList.length > 0)) {
+        if (reqTrueList != undefined && reqTrueList != null && (reqTrueList.length > 0)) {
             // ordenView.changeStateInput('form-crear-orden-requerimiento', false);
             // ordenView.changeStateButton('editar');
             this.obtenerRequerimiento(reqTrueList, tipoOrden);
@@ -23,13 +23,41 @@ class OrdenView {
 
         }
         var idOrden = sessionStorage.getItem('idOrden');
+        actionPage = sessionStorage.getItem('action');
+        // sessionStorage.removeItem('action');
+
         if (idOrden > 0) {
             this.mostrarOrden(idOrden);
-            changeStateButton('historial');
-
         }
+
         this.getTipoCambioCompra();
 
+    }
+
+    setStatusPage(){
+        if (actionPage != undefined && actionPage !=null) {
+            // console.log(actionPage);
+            switch (actionPage) {
+                case 'register':
+                    changeStateButton('nuevo');
+                    changeStateInput('form-crear-orden-requerimiento', false);
+                    break;
+                case 'edition':
+                    changeStateButton('editar');
+                    $("#form-crear-orden-requerimiento .activation").attr('disabled', false);
+                    changeStateInput('form-crear-orden-requerimiento', false);
+
+                    break;
+                case 'historial':
+                    changeStateButton('historial');
+                    $("#form-crear-orden-requerimiento .activation").attr('disabled', true);
+                    break;
+            }
+        }else{
+            changeStateButton('inicio');
+            $("#form-crear-orden-requerimiento .activation").attr('disabled', true);
+
+        }
     }
 
     initializeEventHandler(){
@@ -47,12 +75,16 @@ class OrdenView {
         $('#form-crear-orden-requerimiento').on("change","select.handleChangeMoneda", (e)=>{
             this.changeMoneda(e.currentTarget);
         });
-        $('#form-crear-orden-requerimiento').on("click","input.handleClickIncluyeIGV", (e)=>{
-            this.incluyeIGV(e);
+        $('#form-crear-orden-requerimiento').on("click","input.handleClickIncluyeIGV", ()=>{
+            this.calcularMontosTotales();
         });
 
         $('#form-crear-orden-requerimiento').on("click","button.handleClickCatalogoProductosModal", ()=>{
             this.catalogoProductosModal();
+        });
+
+        $('#form-crear-orden-requerimiento').on("click","button.handleClickAgregarServicio", ()=>{
+            this.agregarServicio();
         });
         $('#form-crear-orden-requerimiento').on("click","button.handleClickVincularRequerimientoAOrdenModal", ()=>{
             this.vincularRequerimientoAOrdenModal();
@@ -66,6 +98,7 @@ class OrdenView {
         $('#listaDetalleOrden tbody').on("blur","input.handleBlurUpdateInputPrecio", (e)=>{
             this.updateInputPrecio(e);
         });
+
         $('#listaDetalleOrden tbody').on("blur","input.handleBlurUpdateInputCantidadAComprar", (e)=>{
             this.updateInputCantidadAComprar(e);
         });
@@ -77,6 +110,14 @@ class OrdenView {
 
         $('#listaDetalleOrden tbody').on("click","button.handleClickOpenModalEliminarItemOrden",(e)=>{
             this.openModalEliminarItemOrden(e.currentTarget);
+        });
+
+        $('#listaDetalleOrden tbody').on("blur","input.handleBurUpdateSubtotal", (e)=>{
+            this.updateSubtotal(e.target);
+        });
+
+        $('#listaOrdenesElaboradas tbody').on("click","button.handleClickSelectOrden", (e)=>{
+            this.selectOrden(e.currentTarget.dataset.idOrden);
         });
     }
 
@@ -136,28 +177,32 @@ class OrdenView {
                                 'unidad_medida':element.unidad_medida
                             }
                         );
-                        if(detalleOrdenList.length ==0){
-                            Swal.fire(
-                                '',
-                                'No puede generar una orden sin antes agregar item(s) base',
-                                'info'
-                            );
-        
-                        }else{
-                            this.loadHeadRequerimiento(response.requerimiento[0],idTipoOrden);
-                            this.listar_detalle_orden_requerimiento(detalleOrdenList);
-                            changeStateInput('form-crear-orden-requerimiento', false);
-                            changeStateButton('editar');
-                            
-                        }
+
                     }
                 });
+                if(detalleOrdenList.length ==0){
+                    Swal.fire(
+                        '',
+                        'No puede generar una orden sin antes agregar item(s) base',
+                        'info'
+                    );
+
+                }else{
+                    this.loadHeadRequerimiento(response.requerimiento[0],idTipoOrden);
+                    this.listarDetalleOrdeRequerimiento(detalleOrdenList);
+                    this.setStatusPage();
+                 
+                    
+                }
             }
         }).fail( ( jqXHR, textStatus, errorThrown )=>{
             console.log(jqXHR);
             console.log(textStatus);
             console.log(errorThrown);
         });
+
+        // sessionStorage.removeItem('reqCheckedList');
+        // sessionStorage.removeItem('tipoOrden');
     }
 
     getTipoCambioCompra() {
@@ -172,6 +217,7 @@ class OrdenView {
             console.log(err)
         })
     }
+
     changeMoneda(event) {
         simboloMoneda = event.options[event.selectedIndex].dataset.simboloMoneda;
 
@@ -268,234 +314,158 @@ class OrdenView {
 
     }
 
-
-    listar_detalle_orden_requerimiento(data) {
+    listarDetalleOrdeRequerimiento(data){
         this.limpiarTabla('listaDetalleOrden');
+        vista_extendida();
 
-        const that = this;
-        $('#listaDetalleOrden').DataTable({
-            'bInfo': false,
-            // 'scrollCollapse': true,
-            'serverSide': false,
-            'processing': false,
-            'paging': false,
-            'searching': false,
-            'language': vardataTables[0],
-            'destroy': true,
-            'dom': 'Bfrtip',
-            'order': false,
-            'data': data,
-            'bDestroy': true,
-            'columns': [
+        for(let i = 0; i < data.length; i++) {
+            if (data[i].id_tipo_item == 1) { // producto
+                document.querySelector("tbody[id='body_detalle_orden']").insertAdjacentHTML('beforeend', `<tr style="text-align:center; background-color:${data[i].estado ==7?'#f5e4e4':''}; ">
+                    <td class="text-center">${data[i].codigo_requerimiento?data[i].codigo_requerimiento:''} <input type="hidden"  name="idRegister[]" value="${data[i].id_detalle_orden?data[i].id_detalle_orden:this.makeId()}"> <input type="hidden"  name="idDetalleRequerimiento[]" value="${data[i].id_detalle_requerimiento?data[i].id_detalle_requerimiento:''}">  <input type="hidden"  name="idTipoItem[]" value="1"></td>
+                    <td class="text-center">${data[i].part_number?data[i].part_number:''} <input type="hidden"  name="idProducto[]" value="${(data[i].id_producto ? data[i].id_producto : data[i].id_producto)} "></td>
+                    <td class="text-left">${(data[i].descripcion_producto ? data[i].descripcion_producto : data[i].descripcion_adicional)} <input type="hidden"  name="descripcion[]" value="${(data[i].descripcion_producto ? data[i].descripcion_producto : data[i].descripcion_adicional)} "></td>
+                    <td><select name="unidad[]" class="form-control ${(data[i].estado_guia_com_det>0 && data[i].estado_guia_com_det !=7?'':'activation')} input-sm" value="${data[i].id_unidad_medida}" disabled>${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
+                    <td>${(data[i].cantidad ? data[i].cantidad :'')}</td>
+                    <td>
+                        <div class="input-group">
+                            <div class="input-group-addon" style="background:lightgray;">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</div>
+                            <input class="form-control precio input-sm text-right ${(data[i].estado_guia_com_det>0 && data[i].estado_guia_com_det !=7?'':'activation')} handleBlurUpdateInputPrecio handleBurUpdateSubtotal" data-id-tipo-item="1" data-producto-regalo="${(data[i].producto_regalo?data[i].producto_regalo:false)}" type="number" min="0" name="precioUnitario[]"  placeholder="" value="${data[i].precio_unitario?data[i].precio_unitario:0}" disabled>
+                        </div>
+                    </td>
+                    <td>
+                        <input class="form-control cantidad_a_comprar input-sm text-right ${(data[i].estado_guia_com_det>0 && data[i].estado_guia_com_det !=7?'':'activation')}  handleBurUpdateSubtotal"  data-id-tipo-item="1" type="number" min="0" name="cantidadAComprarRequerida[]"  placeholder="" value="${data[i].cantidad_a_comprar?data[i].cantidad_a_comprar:''}" disabled>
+                    </td>
+                    <td style="text-align:right;"><span class="moneda" name="simboloMoneda">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</span><span class="subtotal" name="subtotal[]">0.00</span></td>
+                    <td>
+                        <button type="button" class="btn btn-danger btn-sm ${(data[i].estado_guia_com_det>0 && data[i].estado_guia_com_det !=7?'':'activation')} handleClickOpenModalEliminarItemOrden" name="btnOpenModalEliminarItemOrden" title="Eliminar Item" disabled>
+                        <i class="fas fa-trash fa-sm"></i>
+                        </button>
+                    </td>
+                 </tr>`);
+            }else{ //servicio
+                document.querySelector("tbody[id='body_detalle_orden']").insertAdjacentHTML('beforeend', `<tr style="text-align:center; background-color:${data[i].estado ==7?'#f5e4e4':''}; ">
+                    <td>${data[i].codigo_requerimiento?data[i].codigo_requerimiento:''} <input type="hidden"  name="idRegister[]" value="${data[i].id_detalle_orden?data[i].id_detalle_orden:this.makeId()}"> <input type="hidden"  name="idDetalleRequerimiento[]" value="${data[i].id_detalle_requerimiento?data[i].id_detalle_requerimiento:''}"> <input type="hidden"  name="idTipoItem[]" value="1"></td>
+                    <td>(No aplica) <input type="hidden"  name="idProducto[]" value=""></td>
+                    <td><textarea name="descripcion[]" placeholder="Descripción" class="form-control activation" value="${(data[i].descripcion_adicional ? data[i].descripcion_adicional : '')}" style="width:100%;height: 60px;overflow: scroll;"> </textarea> </td>
+                    <td><select name="unidad[]" class="form-control activation input-sm" value="${data[i].id_unidad_medida}" disabled>${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
+                    <td>${(data[i].cantidad ? data[i].cantidad :'')}</td>
+                    <td>
+                        <div class="input-group">
+                            <div class="input-group-addon" style="background:lightgray;">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</div>
+                            <input class="form-control precio input-sm text-right activation  handleBurUpdateSubtotal" data-id-tipo-item="2" type="number" min="0" name="precioUnitario[]"  placeholder="" value="${data[i].precio_unitario?data[i].precio_unitario:0}" disabled>
+                        </div>
+                    </td>
+                    <td>
+                        <input class="form-control cantidad_a_comprar input-sm text-right activation handleBurUpdateSubtotal" data-id-tipo-item="2" type="number" min="0" name="cantidadAComprarRequerida[]"  placeholder="" value="${data[i].cantidad_a_comprar?data[i].cantidad_a_comprar:''}" disabled>
+                    </td>
+                    <td style="text-align:right;"><span class="moneda" name="simboloMoneda">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</span><span class="subtotal" name="subtotal[]">0.00</span></td>
+                    <td>
+                        <button type="button" class="btn btn-danger btn-sm activation handleClickOpenModalEliminarItemOrden" name="btnOpenModalEliminarItemOrden" title="Eliminar Item" disabled>
+                        <i class="fas fa-trash fa-sm"></i>
+                        </button>
+                    </td>
+                </tr>`);
+            }
 
-                {
-                    'render':
-                        function (data, type, row, meta) {
-                            return row.codigo_requerimiento;
-                        }, 'name': 'codigo_requerimiento'
-                },
-                {
-                    'render':
-                        function (data, type, row, meta) {
-                            return row.part_number;
-                        }, 'name': 'codigo_item'
-                },
-                {
-                    'render':
-                        function (data, type, row, meta) {
-                            return row.descripcion_producto ? row.descripcion_producto : row.descripcion_adicional;
-                        }, 'name': 'descripcion_adicional'
-                },
-                {
-                    'render':
-                        function (data, type, row, meta) {
-                            return row.unidad_medida;
-                        }, 'name': 'unidad_medida'
-                },
-                {
-                    'render':
-                        function (data, type, row, meta) {
-                            // return '<input type="text" class="form-control" name="cantidad" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'" value="'+row.cantidad+'" onChange="updateInputCantidad(event);" style="width: 70px;" disabled/>';
-                            return '<span name="cantidad" data-id="' + (row.id) + '" data-row="' + (meta.row + 1) + '" data-id_requerimiento="' + (row.id_requerimiento ? row.id_requerimiento : 0) + '" data-id_detalle_requerimiento="' + (row.id_detalle_requerimiento ? row.id_detalle_requerimiento : 0) + '">' + row.cantidad + '</span>';
+        }
+        this.autoUpdateSubtotal();
+    }
 
-                        }, 'name': 'cantidad'
-                },
-                {
-                    'render':
-                        function (data, type, row, meta) {
-                            if (row.estado == 7) {
-                                return '<input type="number" name="precio" data-id="' + (row.id) + '" placeholder="0.00" min="0"  class="form-control handleBlurUpdateInputPrecio" data-row="' + (meta.row + 1) + '" data-id_requerimiento="' + (row.id_requerimiento ? row.id_requerimiento : 0) + '" data-id_detalle_requerimiento="' + (row.id_detalle_requerimiento ? row.id_detalle_requerimiento : 0) + '" value="' + (row.precio_unitario ? row.precio_unitario : "") + '" style="width:90px;" disabled/>';
-                            } else {
-                                return '<input type="number" name="precio" data-id="' + (row.id) + '" placeholder="0.00" min="0" class="form-control handleBlurUpdateInputPrecio" data-row="' + (meta.row + 1) + '" data-id_requerimiento="' + (row.id_requerimiento ? row.id_requerimiento : 0) + '" data-id_detalle_requerimiento="' + (row.id_detalle_requerimiento ? row.id_detalle_requerimiento : 0) + '" value="' + (row.precio_unitario ? row.precio_unitario : "") + '" style="width:90px;"/>';
-                            }
-                        }, 'name': 'precio'
-                },
-                {
-                    'render':
-                         (data, type, row, meta)=> {
-                            if (row.estado == 7) {
-                                return '<input type="number" name="cantidad_a_comprar" data-id="' + (row.id) + '" min="0" class="form-control handleBlurUpdateInputCantidadAComprar" data-row="' + (meta.row + 1) + '" data-id_requerimiento="' + (row.id_requerimiento ? row.id_requerimiento : 0) + '" data-id_detalle_requerimiento="' + (row.id_detalle_requerimiento ? row.id_detalle_requerimiento : 0) + '" value="' + (row.cantidad_a_comprar ? row.cantidad_a_comprar : row.cantidad) + '" style="width:70px;" disabled />';
-                            } else {
-                                that.updateInObjCantidadAComprar((row.row + 1), (row.id_requerimiento), (row.id_detalle_requerimiento), (row.cantidad));
+    autoUpdateSubtotal(){
+        let tbodyChildren = document.querySelector("tbody[id='body_detalle_orden']").children;
+        for (let i = 0; i < tbodyChildren.length; i++) {
+            this.updateSubtotal(tbodyChildren[i]);
+        }
+    }
+    
+    updateSubtotal(obj){
+        let tr = obj.closest("tr");
+        let cantidad = parseFloat(tr.querySelector("input[class~='cantidad_a_comprar']").value);
+        let precioUnitario = parseFloat(tr.querySelector("input[class~='precio']").value);
+        let subtotal = (cantidad * precioUnitario);
+        tr.querySelector("span[class='subtotal']").textContent = Util.formatoNumero(subtotal, 2);
+        this.calcularMontosTotales();
+    }
 
-                                return '<input type="number" name="cantidad_a_comprar" data-id="' + (row.id) + '" min="0" class="form-control handleBlurUpdateInputCantidadAComprar" data-row="' + (meta.row + 1) + '" data-id_requerimiento="' + (row.id_requerimiento ? row.id_requerimiento : 0) + '" data-id_detalle_requerimiento="' + (row.id_detalle_requerimiento ? row.id_detalle_requerimiento : 0) + '" value="' + (row.cantidad_a_comprar ? row.cantidad_a_comprar : row.cantidad) + '" style="width:70px;"/>';
-                            }
-                        }, 'name': 'cantidad_a_comprar'
-                },
-                {
-                    'render':
-                        function (data, type, row, meta) {
-                            return '<input type="number" name="subtotal" data-id="' + (row.id) + '" min="0" class="form-control handleBlurUpdateInputSubtotal" data-row="' + (meta.row + 1) + '" data-id_requerimiento="' + (row.id_requerimiento ? row.id_requerimiento : 0) + '" data-id_detalle_requerimiento="' + (row.id_detalle_requerimiento ? row.id_detalle_requerimiento : 0) + '" value="' + ((Math.round((row.cantidad * row.precio_unitario) * 100) / 100).toFixed(2)) + '" style="width:90px;"/>';
+    calcularMontosTotales() {
+        let TableTBody = document.querySelector("tbody[id='body_detalle_orden']");
+        let childrenTableTbody = TableTBody.children;
+        let totalNetoProductos = 0;
+        let totalNetoServicio = 0;
+        for (let index = 0; index < childrenTableTbody.length; index++) {
+            let tipoItem = childrenTableTbody[index].querySelector("input[class~='cantidad_a_comprar']").dataset.idTipoItem;
+            if(tipoItem==1){
+                let cantidad = parseFloat(childrenTableTbody[index].querySelector("input[class~='cantidad_a_comprar']").value ? childrenTableTbody[index].querySelector("input[class~='cantidad_a_comprar']").value : 0);
+                let precioUnitario = parseFloat(childrenTableTbody[index].querySelector("input[class~='precio']").value ? childrenTableTbody[index].querySelector("input[class~='precio']").value : 0);
+                totalNetoProductos += (cantidad * precioUnitario);
+            }else{
+                let cantidad = parseFloat(childrenTableTbody[index].querySelector("input[class~='cantidad_a_comprar']").value ? childrenTableTbody[index].querySelector("input[class~='cantidad_a_comprar']").value : 0);
+                let precioUnitario = parseFloat(childrenTableTbody[index].querySelector("input[class~='precio']").value ? childrenTableTbody[index].querySelector("input[class~='precio']").value : 0);
+                totalNetoServicio += (cantidad * precioUnitario);
+            }
+        }
+ 
+        this.updateSimboloMoneda();
+        document.querySelector("label[name='montoNeto']").textContent = Util.formatoNumero((totalNetoProductos+totalNetoServicio), 2);
 
-                        }, 'name': 'subtotal'
-                },
-                {
-                    'render':
-                        function (data, type, row, meta) {
+        let incluyeIGV= document.querySelector("input[name='incluye_igv']").checked;
+        if(incluyeIGV==true){
+            let igv = (Math.round((totalNetoProductos*0.18) * 100) / 100).toFixed(2);
+            let montoTotalProducto= (Math.round((parseFloat(totalNetoProductos)+parseFloat(igv)) * 100) / 100).toFixed(2)
+            document.querySelector("label[name='igv']").textContent= igv;
+            let MontoTotal =parseFloat(montoTotalProducto) + parseFloat(totalNetoServicio);
+            document.querySelector("label[name='montoTotal']").textContent= Util.formatoNumero(MontoTotal,2);
 
-                            let action = `
-                            <div class="btn-group btn-group-sm" role="group">
-                                <button type="button" class="btn btn-danger btn-sm activation handleClickOpenModalEliminarItemOrden" name="btnOpenModalEliminarItemOrden" title="Eliminar Item"  data-id="${(row.id)}" data-key="${(row.id)}" data-row="${(meta.row)}" data-id_requerimiento="${(row.id_requerimiento ? row.id_requerimiento : 0)}" data-id_detalle_requerimiento="${(row.id_detalle_requerimiento ? row.id_detalle_requerimiento : 0)}" >
-                                <i class="fas fa-trash fa-sm"></i>
-                                </button>
-                            </div>
-                            `;
-
-                            return action;
-                        }
-                }
-            ],
-            "initComplete": ()=> {
-                this.updateAllSimboloMoneda();
-                this.calcTotalOrdenDetalleList();
-
-                
-            },
-            'rowCallback': (row, data) =>{
-                if (data.estado == '7') {
-                    $('td', row).css({ 'background-color': 'mistyrose', 'color': 'indianred' });
-                }
-            },
-
-            'columnDefs': [
-                {
-                    'targets': "_all",
-                    'orderable': false
-                },
-                { width: '10px', targets: 0, sWidth: '8%' },
-                { width: '20px', targets: 1, sWidth: '8%' },
-                { width: '50px', targets: 2, sWidth: '30%' },
-                { width: '10px', targets: 3, sWidth: '5%' },
-                { width: '10px', targets: 4, sWidth: '5%' },
-                { width: '10px', targets: 5, sWidth: '10%' },
-                { width: '10px', targets: 6, sWidth: '10%' },
-                { width: '10px', targets: 7, sWidth: '10%' },
-                { width: '5px', targets: 8, sWidth: '8%', sClass: 'text-center' }
-            ],
-            'order': [[1, "asc"]]
-
-
-        });
-
-        $('#listaDetalleOrden thead th').off('click')
-        $('#listaDetalleOrden tr').css('cursor', 'default');
-
-
+        }else{
+            let MontoTotal =parseFloat(totalNetoProductos) + parseFloat(totalNetoServicio);
+            document.querySelector("label[name='igv']").textContent= Util.formatoNumero(0,2);
+            document.querySelector("label[name='montoTotal']").textContent= Util.formatoNumero(MontoTotal,2);
+        }
 
     }
 
 
+    updateSimboloMoneda(){
+        let simboloMonedaPresupuestoUtilizado =document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda;
+        let allSelectorSimboloMoneda = document.getElementsByName("simboloMoneda");
+        if(allSelectorSimboloMoneda.length >0){
+            allSelectorSimboloMoneda.forEach(element => {
+                element.textContent=simboloMonedaPresupuestoUtilizado;
+            });
+        }
+    }
 
 
     openModalEliminarItemOrden(obj){
-        var ask = confirm('Esta seguro que quiere anular el item ?');
-        if (ask == true){
-            this.eliminadoFilaTablaListaDetalleOrden(obj);
-            let id= obj.dataset.id;
-            if(id.length >0){
+        // this.calcTotalOrdenDetalleList();
+        Swal.fire({
+            title: 'Esta seguro?',
+            text: "No podrás revertir esta acción",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: 'cancelar',
+            confirmButtonText: 'Si, eliminar'
 
-                    detalleOrdenList = detalleOrdenList.filter((item, i) => item.id != id);
-
-                this.calcTotalOrdenDetalleList();
-            }else{
-                Swal.fire(
-                    '',
-                    'Hubo un problema al intentar anular el item.',
-                    'error'
-                );
+        }).then((result) => {
+            if (result.isConfirmed) {
+                let tr = obj.closest("tr");
+                tr.remove();
+                this.calcularMontosTotales();
+            Swal.fire(
+                'Eliminado',
+                'El item fue eliminado.',
+                'success'
+            ) 
             }
-        }else{
-            return false;
-        }
-    }
+        })
 
-    calcTotalDetalleOrden(keySelected){
-        let sizeInputTotal = document.querySelectorAll("div[name='subtotal']").length;
-        for (let index = 0; index < sizeInputTotal; index++) {
-            let key = document.querySelectorAll("div[name='subtotal']")[index].dataset.key;
-            if(key == keySelected){
-                let precio = document.querySelectorAll("input[name='precio']")[index].value?document.querySelectorAll("input[name='precio']")[index].value:0;
-                let cantidad =document.querySelectorAll("input[name='cantidad_a_comprar']")[index].value;
-                let subtotal = (parseFloat(precio) * parseFloat(cantidad)).toFixed(2);
-                document.querySelectorAll("div[name='subtotal']")[index].textContent=subtotal;
-                    detalleOrdenList.forEach((element,index) => {
-                        if(element.id == key){
-                                detalleOrdenList[index].subtotal = subtotal;
-                            
-                        }
-                    });
-                
-            }
-        }
-        
-        this.calcTotalOrdenDetalleList();
-    
-    }
 
-    calcTotalOrdenDetalleList(hasIGV =null){
-        
-        let sizeInputTotal = document.querySelectorAll("input[name='subtotal']").length;
-        let total =0;
-        let simbolo_moneda_selected = document.querySelector("select[name='id_moneda']")[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda;
-
-        if (hasIGV == null){
-            hasIGV= document.querySelector("input[name='incluye_igv']").checked;
-        }
-
-        if(hasIGV == true){
-            for (let index = 0; index < sizeInputTotal; index++) {
-                let num = document.querySelectorAll("input[name='subtotal']")[index].value?document.querySelectorAll("input[name='subtotal']")[index].value:0;
-                total += parseFloat(num);
-            }
-    
-            let montoNeto= (Math.round(total * 100) / 100).toFixed(2);
-            let igv = (Math.round((total*0.18) * 100) / 100).toFixed(2);
-            let montoTotal= (Math.round((parseFloat(montoNeto)+parseFloat(igv)) * 100) / 100).toFixed(2)
-            document.querySelector("tfoot span[name='simboloMoneda']").textContent= simbolo_moneda_selected;
-            document.querySelector("label[name='montoNeto']").textContent=montoNeto;
-            document.querySelector("label[name='igv']").textContent= igv;
-            document.querySelector("label[name='montoTotal']").textContent= montoTotal;
-        }else if(hasIGV == false){
-            for (let index = 0; index < sizeInputTotal; index++) {
-                let num = document.querySelectorAll("input[name='subtotal']")[index].value?document.querySelectorAll("input[name='subtotal']")[index].value:0;
-                total += parseFloat(num);
-            }
-
-            let montoNeto= (Math.round(total * 100) / 100).toFixed(2);
-            let montoTotal= (Math.round((parseFloat(montoNeto)) * 100) / 100).toFixed(2)
-            document.querySelector("tfoot span[name='simboloMoneda']").textContent= simbolo_moneda_selected;
-            document.querySelector("label[name='montoNeto']").textContent=montoNeto;
-            document.querySelector("label[name='igv']").textContent= '0.00';
-            document.querySelector("label[name='montoTotal']").textContent= montoTotal;
-        }
-    
     }
 
 
-    eliminadoFilaTablaListaDetalleOrden(obj) {
-        let tr = obj.parentNode.parentNode.parentNode;
-        tr.remove();
-    }
+ 
 
 
     // modal agregar producto en orden 
@@ -589,57 +559,29 @@ class OrdenView {
         listaItems_filter.querySelector("input[type='search']").style.width = '100%';
     }
 
-    updateInputCantidadAComprar(event){
-        let nuevoValor =event.target.value;
-        let idSelected = event.target.dataset.id;
-        let sizeInputCantidad = document.querySelectorAll("span[name='cantidad']").length;
-        let cantidad =0;
-        for (let index = 0; index < sizeInputCantidad; index++) {
-            let id = document.querySelectorAll("span[name='cantidad']")[index].dataset.id;
-            if(id == idSelected){
-                cantidad = document.querySelectorAll("span[name='cantidad']")[index].textContent;
-                if(parseFloat(nuevoValor) >0){                
-                    // actualizar datadetreq cantidad
-                    this.updateInObjCantidadAComprar(idSelected,nuevoValor);
-                    this.calcTotalDetalleRequerimiento(idSelected);
-    
-                    // console.log(detalleOrdenList);
-                    // 
-                }
-                
-                // if(parseFloat(nuevoValor) > parseFloat(cantidad)){
-                //     alert("La cantidad a comprar no puede ser mayor a la cantidad `solicitada");
-                //     document.querySelectorAll("input[name='cantidad_a_comprar']")[index].value= cantidad;
-                //     updateInObjCantidadAComprar(rowNumberSelected,idRequerimientoSelected,idDetalleRequerimientoSelected,cantidad);
-    
-                // }
-            }
-        }
-    }
-    updateInObjCantidadAComprar(id,valor){
-        detalleOrdenList.forEach((element,index) => {
-                if(element.id == id){
-                detalleOrdenList[index].cantidad_a_comprar = valor;
-                }
-        });
-    }
+ 
+ 
+
+ 
 
     updateInputPrecio(event){
         let nuevoValor =event.target.value;
         let id = event.target.dataset.id;
-        this.updateInObjPrecioReferencial(id,nuevoValor);
-        this.calcTotalDetalleRequerimiento(id);
+        let isGift =(event.target.dataset.productoRegalo);
+        if(isGift =='true'){
+            if(nuevoValor>10){
+                Swal.fire(
+                    '',
+                    'El precio fijado para un producto de regalo no puede ser mayor a 10.00',
+                    'info'
+                );
+                event.target.value='';
+            } 
+        }
+
     }
 
-    updateInObjPrecioReferencial(id,valor){
-        
-        detalleOrdenList.forEach((element,index) => {
-            if(element.id == id){
-                detalleOrdenList[index].precio_unitario = valor;
-            }
-
-        });
-    }
+ 
 
 
     calcTotalDetalleRequerimiento(id){
@@ -681,30 +623,7 @@ class OrdenView {
     });
     }
 
-    updateInputSubtotal(event){
-        let nuevoValor =event.target.value;
-        let idSelected = event.target.dataset.id;
-        let cantidadAComprar =0;
-        let precio =0;
-        let sizeInputCantidad = document.querySelectorAll("span[name='cantidad']").length;
-        for (let index = 0; index < sizeInputCantidad; index++) {
-            let id = document.querySelectorAll("input[name='cantidad_a_comprar']")[index].dataset.id;
-            if(id == idSelected){
-                cantidadAComprar = document.querySelectorAll("input[name='cantidad_a_comprar']")[index].value;
-                precio = document.querySelectorAll("input[name='precio']")[index].value;
-                if(parseFloat(nuevoValor) >0){                
-                    // actualizar datadetreq cantidad
-                    let nuevoPrecio= (nuevoValor/cantidadAComprar)
-                    this.updateInObjPrecioReferencial(id,nuevoPrecio);
-                    document.querySelectorAll("input[name='precio']")[index].value=nuevoPrecio;
-                    this.calcTotalDetalleRequerimiento(idSelected);
-
-                }
-                
  
-            }
-        }
-    }
 
     selectItem(obj, idProducto) {
         let tr = obj.closest('tr');
@@ -713,61 +632,109 @@ class OrdenView {
         var idServ = tr.children[2].innerHTML;
         var idEqui = tr.children[3].innerHTML;
         var codigo = tr.children[4].innerHTML;
-        var partNum = tr.children[5].innerHTML;
+        var partNum = (tr.children[5].innerHTML)+'<br><span class="label label-default">Producto de regalo</span>';
         var categoria = tr.children[6].innerHTML;
         var subcategoria = tr.children[7].innerHTML;
         var descri = tr.children[8].innerHTML;
         var unidad = tr.children[9].innerHTML;
         var id_unidad = tr.children[10].innerHTML;
-        document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_item']").textContent = idItem;
-        document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='codigo']").textContent = codigo;
-        document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='part_number']").textContent = partNum;
-        document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='descripcion']").textContent = descri;
-        document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_producto']").textContent = idProd;
-        document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_servicio']").textContent = idServ;
-        document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_equipo']").textContent = idEqui;
-        document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='unidad_medida']").textContent = unidad;
-        document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_unidad_medida']").textContent = id_unidad;
-        document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='categoria']").textContent = categoria;
-        document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='subcategoria']").textContent = subcategoria;
-
-        this.componerItemSeleccionado();
-
-    }
-
-    componerItemSeleccionado(){
-        let data = {
+        // document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_item']").textContent = idItem;
+        // document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='codigo']").textContent = codigo;
+        // document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='part_number']").textContent = partNum;
+        // document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='descripcion']").textContent = descri;
+        // document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_producto']").textContent = idProd;
+        // document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_servicio']").textContent = idServ;
+        // document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_equipo']").textContent = idEqui;
+        // document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='unidad_medida']").textContent = unidad;
+        // document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_unidad_medida']").textContent = id_unidad;
+        // document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='categoria']").textContent = categoria;
+        // document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='subcategoria']").textContent = subcategoria;
+        this.agregarProducto( [{
             'id': this.makeId(),
-            'cantidad': 1,
+            'cantidad': null,
             'cantidad_a_comprar': 1,
-            'codigo_item': null,
-            'codigo_producto': document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='codigo']").textContent,
-            'codigo_requerimiento': "",
+            'codigo_producto': codigo,
+            'codigo_requerimiento': null,
             'descripcion_adicional': null,
-            'descripcion_producto': document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='descripcion']").textContent,
+            'descripcion_producto': descri,
             'estado': 0,
             'garantia': null,
             'id_detalle_orden': null,
             'id_detalle_requerimiento': null,
-            'id_item': document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_item']").textContent,
             'id_tipo_item':1,
-            'id_producto': parseInt(document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_producto']").textContent),
+            'id_producto': idProd,
             'id_requerimiento': null,
-            'id_unidad_medida': document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_unidad_medida']").textContent,
+            'id_unidad_medida': id_unidad,
             'lugar_despacho': null,
-            'part_number':   parseInt(document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_producto']").textContent)>0? (document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='part_number']").textContent):' (Sin mapear)',
+            'part_number':  partNum,
             'precio_unitario': 0,
             'id_moneda': 1,
             'stock_comprometido': null,
             'subtotal': 0,
             'tiene_transformacion': false,
-            'unidad_medida': document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='unidad_medida']").textContent
-            };
-            this.agregarProductoADetalleOrdenList(data);
-        
+            'producto_regalo': true,
+            'unidad_medida': unidad
+            }]);
             $('#modal-catalogo-items').modal('hide');
+
     }
 
+  
+
+    agregarProducto(data){
+        vista_extendida();
+        document.querySelector("tbody[id='body_detalle_orden']").insertAdjacentHTML('beforeend', `<tr style="text-align:center;">
+        <td class="text-center">${data[0].codigo_requerimiento?data[0].codigo_requerimiento:''} <input type="hidden"  name="idRegister[]" value="${data[0].id_detalle_orden?data[0].id_detalle_orden:this.makeId()}"> <input type="hidden"  name="idDetalleRequerimiento[]" value="${data[0].id_detalle_requerimiento?data[0].id_detalle_requerimiento:''}"> <input type="hidden"  name="idTipoItem[]" value="1"> </td>
+        <td class="text-center">${data[0].part_number?data[0].part_number:''} <input type="hidden"  name="idProducto[]" value="${(data[0].id_producto ? data[0].id_producto : data[0].id_producto)} "> </td>
+        <td class="text-left">${(data[0].descripcion_producto ? data[0].descripcion_producto : data[0].descripcion_adicional)}  <input type="hidden"  name="descripcion[]" value="${(data[0].descripcion_producto ? data[0].descripcion_producto : data[0].descripcion_adicional)} "></td>
+        <td><select name="unidad[]" class="form-control ${(data[0].estado_guia_com_det>0 && data[0].estado_guia_com_det !=7?'':'activation')} input-sm" value="${data[0].id_unidad_medida}" >${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
+        <td>${(data[0].cantidad ? data[0].cantidad :'')}</td>
+        <td>
+            <div class="input-group">
+                <div class="input-group-addon" style="background:lightgray;">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</div>
+                <input class="form-control precio input-sm text-right ${(data[0].estado_guia_com_det>0 && data[0].estado_guia_com_det !=7?'':'activation')} handleBlurUpdateInputPrecio handleBurUpdateSubtotal" data-id-tipo-item="1" data-producto-regalo="${(data[0].producto_regalo?data[0].producto_regalo:false)}" type="number" min="0" name="precioUnitario[]"  placeholder="" value="${data[0].precio_unitario?data[0].precio_unitario:0}" >
+            </div>
+        </td>
+        <td>
+            <input class="form-control cantidad_a_comprar input-sm text-right ${(data[0].estado_guia_com_det>0 && data[0].estado_guia_com_det !=7?'':'activation')}  handleBurUpdateSubtotal"  data-id-tipo-item="1" type="number" min="0" name="cantidadAComprarRequerida[]"  placeholder="" value="${data[0].cantidad_a_comprar?data[0].cantidad_a_comprar:''}" >
+        </td>
+        <td style="text-align:right;"><span class="moneda" name="simboloMoneda">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</span><span class="subtotal" name="subtotal[]">0.00</span></td>
+        <td>
+            <button type="button" class="btn btn-danger btn-sm ${(data[0].estado_guia_com_det>0 && data[0].estado_guia_com_det !=7?'':'activation')} handleClickOpenModalEliminarItemOrden" name="btnOpenModalEliminarItemOrden" title="Eliminar Item" >
+            <i class="fas fa-trash fa-sm"></i>
+            </button>
+        </td>
+     </tr>`);
+    }
+
+    agregarServicio(){
+        vista_extendida();
+
+        document.querySelector("tbody[id='body_detalle_orden']").insertAdjacentHTML('beforeend', `<tr style="text-align:center;">
+        <td><input type="hidden"  name="idRegister[]" value="${this.makeId()}"><input type="hidden"  name="idDetalleRequerimiento[]" value=""> <input type="hidden"  name="idTipoItem[]" value="2"></td>
+        <td>(No aplica) <input type="hidden"  name="idProducto[]" value=""></td>
+        <td><textarea name="descripcion[]" placeholder="Descripción" class="form-control activation" value="" style="width:100%;height: 60px;overflow: scroll;"> </textarea>  </td>
+        <td>Servicio<input type="hidden"  name="unidad[]" value="38"></td>
+        <td></td>
+        <td>
+            <div class="input-group">
+                <div class="input-group-addon" style="background:lightgray;">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</div>
+                <input class="form-control precio input-sm text-right activation handleBurUpdatePrecio handleBurUpdateSubtotal" data-id-tipo-item="2" type="number" min="0" name="precioUnitario[]"  placeholder="" value="0" >
+            </div>
+        </td>
+        <td>
+            <input class="form-control cantidad_a_comprar input-sm text-right activation  handleBurUpdateSubtotal" data-id-tipo-item="2" type="number" min="0" name="cantidadAComprarRequerida[]"  placeholder="" value="" >
+        </td>
+        <td style="text-align:right;"><span class="moneda" name="simboloMoneda">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</span><span class="subtotal" name="subtotal[]">0.00</span></td>
+        <td>
+            <button type="button" class="btn btn-danger btn-sm activation handleClickOpenModalEliminarItemOrden" name="btnOpenModalEliminarItemOrden" title="Eliminar Item" >
+            <i class="fas fa-trash fa-sm"></i>
+            </button>
+        </td>
+    </tr>`); 
+    }
+
+    
     makeId (){
         let ID = "";
         let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -777,16 +744,7 @@ class OrdenView {
         return ID;
     }
 
-    agregarProductoADetalleOrdenList(data){
-        console.log(data);
-        if(typeof detalleOrdenList != 'undefined'){
-            detalleOrdenList.push(data);
-            this.listar_detalle_orden_requerimiento(detalleOrdenList);
-    
-        }else{
-            alert("Hubo un problema al agregar el producto al Listado");
-        }
-    }
+ 
 
     vincularRequerimientoAOrdenModal() {
         $('#modal-vincular-requerimiento-orden').modal({
@@ -960,7 +918,7 @@ class OrdenView {
         this.ordenCtrl.obtenerDetalleRequerimientos(idRequerimiento).then((res)=> {
             res.forEach((element) => {
                 i++;
-                this.agregarProductoADetalleOrdenList({
+                this.agregarProducto([{
                     'id': this.makeId(),
                     'cantidad': 1,
                     'cantidad_a_comprar': 1,
@@ -984,9 +942,10 @@ class OrdenView {
                     'id_moneda': 1,
                     'stock_comprometido': null,
                     'subtotal': 0,
+                    'producto_regalo': false,
                     'tiene_transformacion': false,
                     'unidad_medida': element.abreviatura
-                    });
+                    }]);
         });
 
         if(i>0){
@@ -1028,77 +987,77 @@ class OrdenView {
 
  
 
-    get_header_orden_requerimiento() {
-        let id_orden = document.querySelector("div[type='crear-orden-requerimiento'] input[name='id_orden']").value;
-        let tipo_cambio_compra = document.querySelector("div[type='crear-orden-requerimiento'] input[name='tipo_cambio_compra']").value;
-        let id_tp_documento = document.querySelector("div[type='crear-orden-requerimiento'] select[name='id_tp_documento']").value;
+    // get_header_orden_requerimiento() {
+    //     let id_orden = document.querySelector("div[type='crear-orden-requerimiento'] input[name='id_orden']").value;
+    //     let tipo_cambio_compra = document.querySelector("div[type='crear-orden-requerimiento'] input[name='tipo_cambio_compra']").value;
+    //     let id_tp_documento = document.querySelector("div[type='crear-orden-requerimiento'] select[name='id_tp_documento']").value;
 
-        let id_moneda = document.querySelector("div[type='crear-orden-requerimiento'] select[name='id_moneda']").value;
-        let codigo_orden = document.querySelector("div[type='crear-orden-requerimiento'] input[name='codigo_orden']").value;
-        let fecha_emision = document.querySelector("div[type='crear-orden-requerimiento'] input[name='fecha_emision']").value;
-        let incluye_igv = document.querySelector("div[type='crear-orden-requerimiento'] input[name='incluye_igv']").checked;
+    //     let id_moneda = document.querySelector("div[type='crear-orden-requerimiento'] select[name='id_moneda']").value;
+    //     let codigo_orden = document.querySelector("div[type='crear-orden-requerimiento'] input[name='codigo_orden']").value;
+    //     let fecha_emision = document.querySelector("div[type='crear-orden-requerimiento'] input[name='fecha_emision']").value;
+    //     let incluye_igv = document.querySelector("div[type='crear-orden-requerimiento'] input[name='incluye_igv']").checked;
 
-        let id_proveedor = document.querySelector("div[type='crear-orden-requerimiento'] input[name='id_proveedor']").value;
-        let id_contrib = document.querySelector("div[type='crear-orden-requerimiento'] input[name='id_contrib']").value;
-        let id_contacto_proveedor = document.querySelector("div[type='crear-orden-requerimiento'] input[name='id_contacto_proveedor']").value;
-        let id_cuenta_principal_proveedor = document.querySelector("div[type='crear-orden-requerimiento'] input[name='id_cuenta_principal_proveedor']").value;
+    //     let id_proveedor = document.querySelector("div[type='crear-orden-requerimiento'] input[name='id_proveedor']").value;
+    //     let id_contrib = document.querySelector("div[type='crear-orden-requerimiento'] input[name='id_contrib']").value;
+    //     let id_contacto_proveedor = document.querySelector("div[type='crear-orden-requerimiento'] input[name='id_contacto_proveedor']").value;
+    //     let id_cuenta_principal_proveedor = document.querySelector("div[type='crear-orden-requerimiento'] input[name='id_cuenta_principal_proveedor']").value;
 
-        let id_condicion = document.querySelector("div[type='crear-orden-requerimiento'] select[name='id_condicion']").value;
-        let plazo_dias = document.querySelector("div[type='crear-orden-requerimiento'] input[name='plazo_dias']").value;
-        let plazo_entrega = document.querySelector("div[type='crear-orden-requerimiento'] input[name='plazo_entrega']").value;
-        let id_cc = document.querySelector("div[type='crear-orden-requerimiento'] input[name='id_cc']").value;
-        let id_tp_doc = document.querySelector("div[type='crear-orden-requerimiento'] select[name='id_tp_doc']").value;
+    //     let id_condicion = document.querySelector("div[type='crear-orden-requerimiento'] select[name='id_condicion']").value;
+    //     let plazo_dias = document.querySelector("div[type='crear-orden-requerimiento'] input[name='plazo_dias']").value;
+    //     let plazo_entrega = document.querySelector("div[type='crear-orden-requerimiento'] input[name='plazo_entrega']").value;
+    //     let id_cc = document.querySelector("div[type='crear-orden-requerimiento'] input[name='id_cc']").value;
+    //     let id_tp_doc = document.querySelector("div[type='crear-orden-requerimiento'] select[name='id_tp_doc']").value;
 
-        let id_sede = document.querySelector("div[type='crear-orden-requerimiento'] select[name='id_sede']").value;
-        let direccion_destino = document.querySelector("div[type='crear-orden-requerimiento'] input[name='direccion_destino']").value;
-        let id_ubigeo_destino = document.querySelector("div[type='crear-orden-requerimiento'] input[name='id_ubigeo_destino']").value;
+    //     let id_sede = document.querySelector("div[type='crear-orden-requerimiento'] select[name='id_sede']").value;
+    //     let direccion_destino = document.querySelector("div[type='crear-orden-requerimiento'] input[name='direccion_destino']").value;
+    //     let id_ubigeo_destino = document.querySelector("div[type='crear-orden-requerimiento'] input[name='id_ubigeo_destino']").value;
 
-        let personal_autorizado_1 = document.querySelector("div[type='crear-orden-requerimiento'] input[name='personal_autorizado_1']").value;
-        let personal_autorizado_2 = document.querySelector("div[type='crear-orden-requerimiento'] input[name='personal_autorizado_2']").value;
-        let observacion = document.querySelector("div[type='crear-orden-requerimiento'] textarea[name='observacion']").value;
+    //     let personal_autorizado_1 = document.querySelector("div[type='crear-orden-requerimiento'] input[name='personal_autorizado_1']").value;
+    //     let personal_autorizado_2 = document.querySelector("div[type='crear-orden-requerimiento'] input[name='personal_autorizado_2']").value;
+    //     let observacion = document.querySelector("div[type='crear-orden-requerimiento'] textarea[name='observacion']").value;
 
-        let data = {
-            'id_orden': id_orden,
-            'tipo_cambio_compra': tipo_cambio_compra,
-            'id_tp_documento': id_tp_documento,
-            'id_moneda': id_moneda,
-            'codigo_orden': codigo_orden,
-            'fecha_emision': fecha_emision,
-            'incluye_igv': incluye_igv,
+    //     let data = {
+    //         'id_orden': id_orden,
+    //         'tipo_cambio_compra': tipo_cambio_compra,
+    //         'id_tp_documento': id_tp_documento,
+    //         'id_moneda': id_moneda,
+    //         'codigo_orden': codigo_orden,
+    //         'fecha_emision': fecha_emision,
+    //         'incluye_igv': incluye_igv,
 
-            'id_proveedor': id_proveedor,
-            'id_contrib': id_contrib,
-            'id_contacto_proveedor': id_contacto_proveedor,
-            'id_cuenta_principal_proveedor': id_cuenta_principal_proveedor,
+    //         'id_proveedor': id_proveedor,
+    //         'id_contrib': id_contrib,
+    //         'id_contacto_proveedor': id_contacto_proveedor,
+    //         'id_cuenta_principal_proveedor': id_cuenta_principal_proveedor,
 
-            'id_condicion': id_condicion,
-            'plazo_dias': plazo_dias,
-            'plazo_entrega': plazo_entrega,
-            'id_tp_doc': id_tp_doc,
-            'id_cc': id_cc,
+    //         'id_condicion': id_condicion,
+    //         'plazo_dias': plazo_dias,
+    //         'plazo_entrega': plazo_entrega,
+    //         'id_tp_doc': id_tp_doc,
+    //         'id_cc': id_cc,
 
-            'id_sede': id_sede,
-            'direccion_destino': direccion_destino,
-            'id_ubigeo_destino': id_ubigeo_destino,
+    //         'id_sede': id_sede,
+    //         'direccion_destino': direccion_destino,
+    //         'id_ubigeo_destino': id_ubigeo_destino,
 
-            'personal_autorizado_1': personal_autorizado_1,
-            'personal_autorizado_2': personal_autorizado_2,
-            'observacion': observacion,
+    //         'personal_autorizado_1': personal_autorizado_1,
+    //         'personal_autorizado_2': personal_autorizado_2,
+    //         'observacion': observacion,
 
-            'detalle': []
-        }
+    //         'detalle': []
+    //     }
 
-        return data;
-    }
+    //     return data;
+    // }
 
-    incluyeIGV(e) {
-        this.calcTotalOrdenDetalleList(e.currentTarget.checked);
-    }
+    // incluyeIGV(e) {
+        // this.calcTotalOrdenDetalleList(e.currentTarget.checked);
+    // }
 
     save_orden(data, action) {
-        let payload_orden = this.get_header_orden_requerimiento();
-        payload_orden.detalle = (typeof detalleOrdenList != 'undefined') ? detalleOrdenList : detalleOrdenList;
-        this.guardar_orden_requerimiento(action, payload_orden);
+        // let payload_orden = this.get_header_orden_requerimiento();
+        // payload_orden.detalle = (typeof detalleOrdenList != 'undefined') ? detalleOrdenList : detalleOrdenList;
+        this.guardar_orden_requerimiento(action);
     }
 
     validaOrdenRequerimiento(){
@@ -1117,40 +1076,38 @@ class OrdenView {
             msj+='Es necesario que ingrese un plazo de entrega.<br>';
         }
         let cantidadInconsistenteInputPrecio=0;
-        let cantidadInconsistenteMapeoProducto=0;
-        // let inputPrecio= document.querySelectorAll("table[id='listaDetalleOrden'] input[name='precio']");
-        detalleOrdenList.forEach((element)=>{
-            if(!parseFloat(element.precio_unitario) >0  && element.estado !=7){
+
+        let allInputPrecio= document.querySelectorAll("table[id='listaDetalleOrden'] input[class~='precio']");
+        allInputPrecio.forEach((element)=>{
+            if(!parseFloat(element.value) >0 ){
                 cantidadInconsistenteInputPrecio++;
             }
-            if((element.id_tipo_item==1) && (element.id_producto =='' || element.id_producto ==null)){
-                cantidadInconsistenteMapeoProducto++;
-            }
-
         })
+ 
         if(cantidadInconsistenteInputPrecio>0){
-            msj+='Es necesario que ingrese un precio / precio mayor a cero.<br>';
+            msj+='Debe ingresar un precio mayor a cero.<br>';
         }
-        if(cantidadInconsistenteMapeoProducto>0){
-            msj+='Tiene productos sin mapear.<br>';
-        }
+  
 
         let cantidadInconsistenteInputCantidadAComprar=0;
-        let inputCantidadAComprar= document.querySelectorAll("table[id='listaDetalleOrden'] input[name='cantidad_a_comprar']");
+        let inputCantidadAComprar= document.querySelectorAll("table[id='listaDetalleOrden'] input[class~='cantidad_a_comprar']");
         inputCantidadAComprar.forEach((element)=>{
             if(element.value == null || element.value =='' || element.value ==0){
                 cantidadInconsistenteInputCantidadAComprar++;
             }
         })
         if(cantidadInconsistenteInputCantidadAComprar>0){
-            msj+='Es necesario que ingrese una cantidad a comprar / cantidad a comprar mayor a cero.<br>';
+            msj+='Debe ingresar una cantidad mayor a cero.<br>';
     
         }           
         return  msj;
     }
 
 
-    guardar_orden_requerimiento(action,data){
+    guardar_orden_requerimiento(action){
+        // console.log(action);
+        let formData = new FormData($('#form-crear-orden-requerimiento')[0]);
+
         if (action == 'register'){
             var msj = this.validaOrdenRequerimiento();
             if (msj.length > 0){
@@ -1168,18 +1125,20 @@ class OrdenView {
                 $.ajax({
                     type: 'POST',
                     url: 'guardar',
-                    data: data,
+                    data: formData,
+                    processData: false,
+                    contentType: false,
                     dataType: 'JSON',
                     success: function(response){
-                        // console.log(response);
-                        if (response > 0){
+                        console.log(response);
+                        if (response.id_orden_compra > 0){
                             Lobibox.notify('success', {
                                 title:false,
                                 size: 'mini',
                                 rounded: true,
                                 sound: false,
                                 delayIndicator: false,
-                                msg: `Orden de registrada con éxito`
+                                msg: `Orden ${response.codigo} creada.`
                             });
                             changeStateButton('guardar');
                             $('#form-crear-orden-requerimiento').attr('type', 'register');
@@ -1187,8 +1146,14 @@ class OrdenView {
     
                             sessionStorage.removeItem('reqCheckedList');
                             sessionStorage.removeItem('tipoOrden');
-                            window.open("generar-orden-pdf/"+response, '_blank');
+                            window.open("generar-orden-pdf/"+response.id_orden_compra, '_blank');
     
+                        }else{
+                            Swal.fire(
+                                '',
+                                'Lo sentimos hubo un error en el servidor al intentar guardar la orden, por favor vuelva a intentarlo',
+                                'error'
+                            );
                         }
                     }
                 }).fail( function( jqXHR, textStatus, errorThrown ){
@@ -1207,7 +1172,9 @@ class OrdenView {
             $.ajax({
                 type: 'POST',
                 url: 'actualizar',
-                data: data,
+                data: formData,
+                processData: false,
+                contentType: false,
                 dataType: 'JSON',
                 success: function(response){
                     // console.log(response);
@@ -1218,7 +1185,7 @@ class OrdenView {
                             rounded: true,
                             sound: false,
                             delayIndicator: false,
-                            msg: `Orden de actualizada con éxito`
+                            msg: `Orden actualizada`
                         });
                         changeStateButton('guardar');
                         $('#form-crear-orden-requerimiento').attr('type', 'register');
@@ -1253,7 +1220,7 @@ class OrdenView {
 
     nuevaOrden() {
         $('#form-crear-orden-requerimiento')[0].reset();
-        fechaHoy();
+        this.fechaHoy();
 
         // document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_proveedor']").value = '';
         // document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_contrib']").value = '';
@@ -1285,6 +1252,8 @@ class OrdenView {
     //  modal ordenes elaboradas 
 
     ordenesElaboradasModal(){
+        changeStateButton('inicio'); //init.js
+
         $('#modal-ordenes-elaboradas').modal({
             show: true,
             backdrop: 'true'
@@ -1323,7 +1292,7 @@ class OrdenView {
                         'render': (data, type, row)=> {
 
                             return `<center><div class="btn-group" role="group" style="margin-bottom: 5px;">
-                            <button type="button" class="btn btn-xs btn-success handleClickSelectOrden" title="Seleccionar" >Seleccionar</button>
+                            <button type="button" class="btn btn-xs btn-success handleClickSelectOrden" data-id-orden="${row.id_orden_compra}" title="Seleccionar" >Seleccionar</button>
                             </div></center>
                             `;
                         }
@@ -1331,10 +1300,7 @@ class OrdenView {
                     
                 ],
                 'initComplete':  ()=> {
-                    $('#listaOrdenesElaboradas tbody').on("click","button.handleClickSelectOrden", function(){
-                        var data = $('#listaOrdenesElaboradas').DataTable().row($(this).parents("tr")).data();
-                        that.selectOrden(data.id_orden_compra);
-                    });
+
                 },
                 'columnDefs': [{ className: "text-right", 'aTargets': [0], 'sClass': 'invisible'}]
             });
@@ -1355,7 +1321,7 @@ class OrdenView {
     
     selectOrden(idOrden){
         this.mostrarOrden(idOrden);
-        changeStateInput('form-crear-orden-requerimiento', true);
+        actionPage='historial';
         $('#modal-ordenes-elaboradas').modal('hide');
     }
     
@@ -1365,12 +1331,12 @@ class OrdenView {
             url: 'mostrar-orden/'+id,
             dataType: 'JSON',
             success: (response)=>{
-                // console.log(response);
                 this.loadHeadOrden(response.head);
-                this.listar_detalle_orden_requerimiento(response.detalle);
+                this.listarDetalleOrdeRequerimiento(response.detalle);
                 detalleOrdenList= response.detalle;
-                
-                
+                // console.log(sessionStorage.getItem('action'));
+                sessionStorage.removeItem('idOrden');
+                this.setStatusPage();
             }
         }).fail(( jqXHR, textStatus, errorThrown )=>{
             Swal.fire(
@@ -1378,10 +1344,13 @@ class OrdenView {
                 'Hubo un problema al intentar mostrar la orden, por favor vuelva a intentarlo.',
                 'error'
             );
+            sessionStorage.removeItem('idOrden');
             console.log(jqXHR);
             console.log(textStatus);
             console.log(errorThrown);
         });
+
+
     }
 
     
