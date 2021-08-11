@@ -713,7 +713,6 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('anular-documento', 'Logistica\RequerimientoController@anularDocumento')->name('anular-documento');
 					Route::get('listar-sedes-por-empresa/{id?}', 'Logistica\RequerimientoController@listarSedesPorEmpresa')->name('listar-sedes-por-empresa');
 					Route::get('imprimir-requerimiento-pdf/{id}/{codigo}', 'Logistica\RequerimientoController@generar_requerimiento_pdf');
-
 				});
 				Route::group(['as' => 'mapeo.', 'prefix' => 'mapeo'], function () {
 
@@ -1136,6 +1135,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('transferencia/{id}', 'Almacen\Movimiento\OrdenesPendientesController@transferencia');
 				Route::post('obtenerGuiaSeleccionadas', 'Almacen\Movimiento\OrdenesPendientesController@obtenerGuiaSeleccionadas');
 				Route::get('anular_doc_com/{id}', 'Almacen\Movimiento\OrdenesPendientesController@anular_doc_com');
+
+				Route::post('obtenerArchivosOc', 'Tesoreria\Facturacion\PendientesFacturacionController@obtenerArchivosOc')->name('obtener-archivos-oc');
 			});
 
 			Route::group(['as' => 'pendientes-salida.', 'prefix' => 'pendientes-salida'], function () {
