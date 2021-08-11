@@ -882,7 +882,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('guardar_proveedor', 'LogisticaController@guardar_proveedor');
 				Route::get('mostrar_clientes', 'Comercial\ClienteController@mostrar_clientes');
 				Route::get('listar_personas', 'RecursosHumanosController@mostrar_persona_table');
-				Route::get('listarDetalleTransferencias/{id}', 'TransferenciaController@listarDetalleTransferencias');
+				Route::get('listarDetalleTransferencias/{id}', 'Almacen\Movimiento\TransferenciaController@listarDetalleTransferencias');
 				Route::get('listar_ubigeos', 'AlmacenController@listar_ubigeos');
 				Route::post('save_cliente', 'LogisticaController@save_cliente');
 				Route::get('listarRequerimientosElaborados', 'DistribucionController@listarRequerimientosElaborados');
@@ -894,6 +894,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('getTimelineOrdenDespacho/{id}', 'DistribucionController@getTimelineOrdenDespacho');
 				Route::post('guardarEstadoTimeLine', 'DistribucionController@guardarEstadoTimeLine');
 				Route::post('mostrarEstados', 'DistribucionController@mostrarEstados');
+				Route::get('enviarFacturar/{id}', 'DistribucionController@enviarFacturar');
 			});
 
 			Route::group(['as' => 'trazabilidad-requerimientos.', 'prefix' => 'trazabilidad-requerimientos'], function () {
@@ -1301,7 +1302,7 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::group(['as' => 'gestion-transferencias.', 'prefix' => 'gestion-transferencias'], function () {
 				//Transferencias
 				Route::get('index', 'Almacen\Movimiento\TransferenciaController@view_listar_transferencias')->name('index');
-				// Route::get('listar_transferencias_pendientes/{ori}', 'Almacen\Movimiento\TransferenciaController@listar_transferencias_pendientes');
+				Route::get('listarRequerimientos', 'Almacen\Movimiento\TransferenciaController@listarRequerimientos');
 				Route::get('listar_transferencias_recibidas/{ori}', 'Almacen\Movimiento\TransferenciaController@listar_transferencias_recibidas');
 				Route::get('listar_transferencia_detalle/{id}', 'Almacen\Movimiento\TransferenciaController@listar_transferencia_detalle');
 				Route::post('guardar_ingreso_transferencia', 'Almacen\Movimiento\TransferenciaController@guardar_ingreso_transferencia');
@@ -1325,8 +1326,10 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('transferencia/{id}', 'Almacen\Movimiento\OrdenesPendientesController@transferencia');
 				Route::get('verGuiaCompraTransferencia/{id}', 'Almacen\Movimiento\TransferenciaController@verGuiaCompraTransferencia');
 				Route::get('verRequerimiento/{id}', 'Almacen\Movimiento\TransferenciaController@verRequerimiento');
-				Route::get('generarTransferenciaRequerimiento/{id}', 'Almacen\Movimiento\TransferenciaController@generarTransferenciaRequerimiento');
+				Route::post('generarTransferenciaRequerimiento', 'Almacen\Movimiento\TransferenciaController@generarTransferenciaRequerimiento');
 				Route::get('listar_series_guia_ven/{id}', 'Almacen\Movimiento\SalidasPendientesController@listar_series_guia_ven');
+				Route::post('obtenerArchivosOc', 'Tesoreria\Facturacion\PendientesFacturacionController@obtenerArchivosOc')->name('obtener-archivos-oc');
+				Route::get('mostrar_transportistas', 'DistribucionController@mostrar_transportistas');
 			});
 		});
 
@@ -1609,10 +1612,16 @@ Route::group(['middleware' => ['auth']], function () {
 
 			Route::get('index', 'Tesoreria\Facturacion\PendientesFacturacionController@view_pendientes_facturacion')->name('index');
 			Route::post('listarGuiasVentaPendientes', 'Tesoreria\Facturacion\PendientesFacturacionController@listarGuiasVentaPendientes')->name('listar-guias-pendientes');
-			Route::get('obtenerGuiaVenta/{id}', 'Tesoreria\Facturacion\PendientesFacturacionController@obtenerGuiaVenta')->name('obtener-guia-venta');
-			Route::post('guardar_doc_venta', 'Tesoreria\Facturacion\PendientesFacturacionController@guardar_doc_venta')->name('guardar-guia-venta');
+			Route::post('listarRequerimientosPendientes', 'Tesoreria\Facturacion\PendientesFacturacionController@listarRequerimientosPendientes')->name('listar-requerimientos-pendientes');
+			Route::post('guardar_doc_venta', 'Tesoreria\Facturacion\PendientesFacturacionController@guardar_doc_venta')->name('guardar-doc-venta');
 			Route::get('documentos_ver/{id}', 'Tesoreria\Facturacion\PendientesFacturacionController@documentos_ver')->name('ver-doc-venta');
-			Route::get('anular_doc_ven/{id}', 'Tesoreria\Facturacion\PendientesFacturacionController@anular_doc_ven')->name('ver-doc-venta');
+			Route::get('anular_doc_ven/{id}', 'Tesoreria\Facturacion\PendientesFacturacionController@anular_doc_ven')->name('anular-doc-venta');
+			Route::get('obtenerGuiaVenta/{id}', 'Tesoreria\Facturacion\PendientesFacturacionController@obtenerGuiaVenta')->name('obtener-guia-venta');
+			Route::post('obtenerGuiaVentaSeleccionadas', 'Tesoreria\Facturacion\PendientesFacturacionController@obtenerGuiaVentaSeleccionadas')->name('obtener-guias-ventas');
+			Route::get('obtenerRequerimiento/{id}', 'Tesoreria\Facturacion\PendientesFacturacionController@obtenerRequerimiento')->name('obtener-requerimiento');
+			Route::get('detalleFacturasGuias/{id}', 'Tesoreria\Facturacion\PendientesFacturacionController@detalleFacturasGuias')->name('detalle-facturas-guia');
+			Route::get('detalleFacturasRequerimientos/{id}', 'Tesoreria\Facturacion\PendientesFacturacionController@detalleFacturasRequerimientos')->name('detalle-facturas-guia');
+			Route::post('obtenerArchivosOc', 'Tesoreria\Facturacion\PendientesFacturacionController@obtenerArchivosOc')->name('obtener-archivos-oc');
 		});
 	});
 

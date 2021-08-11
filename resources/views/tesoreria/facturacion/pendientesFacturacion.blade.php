@@ -5,6 +5,12 @@
 Facturación
 @endsection
 
+@section('estilos')
+<link rel="stylesheet" href="{{ asset('template/plugins/iCheck/all.css') }}">
+<link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
+<link rel="stylesheet" href="{{ asset('template/plugins/jquery-datatables-checkboxes/css/dataTables.checkboxes.css') }}">
+@endsection
+
 @section('breadcrumb')
 <ol class="breadcrumb">
     <li><a href="{{route('tesoreria.index')}}"><i class="fas fa-tachometer-alt"></i> Tesorería</a></li>
@@ -21,8 +27,8 @@ Facturación
             <div class="col-md-12" style="padding-top:10px;padding-bottom:10px;">
 
                 <ul class="nav nav-tabs" id="myTab">
-                    <li class="active"><a data-toggle="tab" href="#guias">Guías de Venta</a></li>
-                    <!-- <li class=""><a data-toggle="tab" href="#ordenes">Ordenes de compra</a></li> -->
+                    <li class="active"><a data-toggle="tab" href="#guias">Ventas Internas</a></li>
+                    <li class=""><a data-toggle="tab" href="#requerimientos">Ventas Externas</a></li>
                 </ul>
 
                 <div class="tab-content">
@@ -32,23 +38,49 @@ Facturación
                         <form id="form-guias" type="register">
                             <div class="row">
                                 <div class="col-md-12">
+                                    <div style="display: flex;justify-content: flex-end;">
+                                        <button type="button" class="btn btn-success btn-flat" data-toggle="tooltip" data-placement="bottom" title="Seleccione varias Guias para ingresar Factura" onClick="open_doc_ven_create_guias_seleccionadas();">
+                                            Ingresar Factura</button>
+                                    </div>
                                     <table class="mytable table table-condensed table-bordered table-okc-view" id="listaGuias">
                                         <thead>
                                             <tr>
-                                                <th hidden>#</th>
-                                                <th>Serie</th>
-                                                <th>Número</th>
-                                                <th>Fecha Emisión</th>
-                                                <!-- <th>Tipo Operación</th> -->
+                                                <th hidden></th>
+                                                <th></th>
+                                                <th>Guía</th>
+                                                <th>Fecha Guía</th>
                                                 <th>Sede Guía</th>
-                                                <th>RUC</th>
                                                 <th>Entidad/Cliente</th>
                                                 <th>Responsable</th>
-                                                <th>Cod.Req.</th>
+                                                <th>Cod.Trans.</th>
+                                                <th style="width:8%;">Acción</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div id="requerimientos" class="tab-pane fade ">
+                        <br>
+                        <form id="form-requerimientos" type="register">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <table class="mytable table table-condensed table-bordered table-okc-view" id="listaRequerimientos">
+                                        <thead>
+                                            <tr>
+                                                <th hidden>#</th>
+                                                <th>Código</th>
+                                                <th>Concepto</th>
+                                                <th>Sede Req</th>
+                                                <th>Entidad/Cliente</th>
+                                                <th>Responsable</th>
                                                 <th>OCAM</th>
                                                 <th>C.P.</th>
-                                                <th>Monto de O/C</th>
-                                                <th style="width:5%;">Acción</th>
+                                                <th style="width:8%;">Acción</th>
                                             </tr>
                                         </thead>
                                         <tbody></tbody>
@@ -65,9 +97,9 @@ Facturación
     </div>
 </div>
 
-@include('tesoreria.pagos.procesarPago')
-@include('almacen.documentos.doc_ven_create')
-@include('almacen.documentos.doc_ven_ver')
+@include('tesoreria.facturacion.doc_ven_create')
+@include('tesoreria.facturacion.doc_ven_ver')
+@include('tesoreria.facturacion.archivos_oc_mgcp')
 
 @endsection
 
@@ -81,9 +113,15 @@ Facturación
     <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script> -->
+<script src="{{ asset('template/plugins/iCheck/icheck.min.js') }}"></script>
+<script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
+<script src="{{ asset('template/plugins/jquery-datatables-checkboxes/js/dataTables.checkboxes.min.js') }}"></script>
 <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
 <script src="{{ asset('js/tesoreria/facturacion/pendientesFacturacion.js')}}"></script>
+<script src="{{ asset('js/tesoreria/facturacion/facturacionGuia.js')}}"></script>
+<script src="{{ asset('js/tesoreria/facturacion/facturacionRequerimiento.js')}}"></script>
+<script src="{{ asset('js/tesoreria/facturacion/archivosMgcp.js')}}"></script>
 <script src="{{ asset('js/almacen/documentos/doc_ven_create.js')}}"></script>
 <script src="{{ asset('js/almacen/documentos/doc_ven_ver.js')}}"></script>
 <script>
@@ -94,6 +132,18 @@ Facturación
         // let facturacion = new Facturacion('{{Auth::user()->tieneAccion(78)}}');
         let facturacion = new Facturacion();
         facturacion.listarGuias();
+
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
+            let tab = $(e.target).attr("href");
+
+            if (tab == '#guias') {
+                // $('#listaGuias').DataTable().ajax.reload();
+                facturacion.listarGuias();
+            } else if (tab == '#requerimientos') {
+                // $('#listaRequerimientos').DataTable().ajax.reload();
+                facturacion.listarRequerimientos();
+            }
+        });
 
     });
 </script>

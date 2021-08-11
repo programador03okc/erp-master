@@ -7,20 +7,10 @@
                     <h3 class="modal-title">Generar Documento de Venta</h3>
                 </div>
                 <div class="modal-body">
-                    <!-- <input type="text" style="display:none;" name="id_doc_com"> -->
                     <input type="text" style="display:none;" name="id_almacen_doc">
 
                     <div class="row">
-                        <div class="col-md-3">
-                            <h5>Empresa-Sede</h5>
-                            <select class="form-control js-example-basic-single" name="id_sede">
-                                <option value="0">Elija una opción</option>
-                                @foreach ($sedes as $sede)
-                                <option value="{{$sede->id_sede}}">{{$sede->descripcion}}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <h5>Tipo de Documento</h5>
                             <select class="form-control js-example-basic-single" name="id_tp_doc">
                                 <option value="0">Elija una opción</option>
@@ -37,13 +27,27 @@
                                 <input type="text" class="form-control" name="numero_doc" onBlur="ceros_numero_doc();" required placeholder="000000">
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <h5>Fecha de Emisión</h5>
                             <input type="date" class="form-control" name="fecha_emision_doc">
                         </div>
+                        <div class="col-md-2">
+                            <h5>Fecha Vencimiento</h5>
+                            <input type="date" class="form-control" name="fecha_vencimiento">
+                        </div>
+                        <div class="col-md-3">
+                            <h5>Empresa</h5>
+                            <select class="form-control js-example-basic-single" name="id_empresa">
+                                <option value="0">Elija una opción</option>
+                                @foreach ($empresas as $empresa)
+                                <option value="{{$empresa->id_empresa}}">{{$empresa->razon_social}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
                     </div>
                     <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <h5>RUC Cliente</h5>
                             <input type="text" style="display:none;" name="id_cliente">
                             <input type="text" style="display:none;" name="id_cta_principal">
@@ -53,20 +57,9 @@
                             <h5>Razon Social Cliente</h5>
                             <input type="text" class="form-control" name="cliente_razon_social" readOnly>
                         </div>
-                        <div class="col-md-3">
-                            <h5>Serie-Número (Guía)</h5>
-                            <div class="input-group">
-                                <input type="text" style="display:none;" name="id_guia">
-                                <input type="text" class="form-control" name="serie_guia" readOnly>
-                                <span class="input-group-addon">-</span>
-                                <input type="text" class="form-control" name="numero_guia" readOnly>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <h5>Importe Total segun OCAM</h5>
+                        <div class="col-md-2">
+                            <h5>Moneda</h5>
                             <div style="display:flex;">
-                                <input type="text" name="simbolo" class="form-control group-elemento" style="width:40px;text-align:center;" readOnly />
-                                <input type="text" name="importe_oc" class="form-control group-elemento" style="text-align: right;" readOnly />
                                 <select class="form-control group-elemento" name="moneda" onChange="changeMoneda();">
                                     <option value="0">Elija una opción</option>
                                     @foreach ($monedas as $mon)
@@ -75,27 +68,34 @@
                                 </select>
                             </div>
                         </div>
-                        <!-- <div class="col-md-3">
+                        <div class="ocam col-md-2">
+                            <h5>Importe Total segun OCAM</h5>
+                            <div style="display:flex;">
+                                <input type="text" name="simbolo" class="form-control group-elemento" style="width:40px;text-align:center;" readOnly />
+                                <input type="text" name="importe_oc" class="form-control group-elemento" style="text-align: right;" readOnly />
+
+                            </div>
+                        </div>
+                        <div class="col-md-3">
                             <h5>Condición de compra</h5>
                             <div style="display:flex;">
-                                <select class="form-control group-elemento" name="id_condicion" style="width:150px;">
-                                    <option value="0">Elija una opción</option>
+                                <select class="form-control group-elemento" name="id_condicion" style="width:150px;" required>
                                     @foreach ($condiciones as $con)
-                                        <option value="{{$con->id_condicion_pago}}">{{$con->descripcion}}</option>
+                                    <option value="{{$con->id_condicion_pago}}">{{$con->descripcion}}</option>
                                     @endforeach
                                 </select>
-                                <input type="text" name="credito_dias" class="form-control group-elemento" style="text-align: right;"/>
-                                <input type="text" class="form-control group-elemento" style="width:50px;text-align:center;" value="días" readOnly/>
+                                <input type="text" name="credito_dias" class="form-control group-elemento" style="text-align: right;" />
+                                <input type="text" class="form-control group-elemento" style="width:50px;text-align:center;" value="días" readOnly />
                             </div>
-                        </div> -->
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <table class="mytable table table-condensed table-bordered table-okc-view" width="100%" id="detalleItems" style="margin-top:10px; margin-bottom: 0px;">
+                            <table class="mytable table table-condensed table-bordered table-okc-view" width="100%" id="detalleItems" style="margin-top:10px; margin-bottom: 0px; font-size:11px;">
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>Guía</th>
+                                        <th>Guía/Req</th>
                                         <th>Código</th>
                                         <th>PartNumber</th>
                                         <th>Descripción</th>
@@ -108,6 +108,7 @@
                                         <th>Total
                                             <!-- <i class="fas fa-plus-circle icon-tabla green boton agregarServicio" data-toggle="tooltip" data-placement="bottom" title="Agregar Servicio" onClick="agregarServicio();"></i> -->
                                         </th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>

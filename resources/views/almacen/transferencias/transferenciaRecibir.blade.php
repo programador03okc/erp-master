@@ -6,40 +6,39 @@
                 <h3 class="modal-title">Recepción de la Transferencia <label class="subtitulo_red" id="cod_trans"></label> - Guía: <label id="guia" class="subtitulo_blue"></label></h3>
             </div>
             <div class="modal-body">
-                <input type="text" class="oculto" name="id_transferencia" >
-                <input type="text" class="oculto" name="id_guia_ven" >
-                <input type="text" class="oculto" name="id_requerimiento" >
-                <input type="text" class="oculto" name="estado" >
-                <input type="text" class="oculto" name="guia_ingreso_compra" >
+                <input type="text" class="oculto" name="id_transferencia">
+                <input type="text" class="oculto" name="id_guia_ven">
+                <input type="text" class="oculto" name="id_requerimiento">
+                <input type="text" class="oculto" name="estado">
+                <input type="text" class="oculto" name="guia_ingreso_compra">
                 <div class="row">
                     <div class="col-md-3">
                         <h5>Fecha Ingreso</h5>
-                        <input type="date" class="form-control" name="fecha_almacen" required/>
+                        <input type="date" class="form-control" name="fecha_almacen" required />
                     </div>
                     <div class="col-md-4">
                         <h5>Almacén Destino</h5>
-                        <input type="text" class="oculto" name="id_almacen_destino"/>
-                        <input type="text" class="form-control" name="almacen_destino" disabled="true"/>
+                        <input type="text" class="oculto" name="id_almacen_destino" />
+                        <input type="text" class="form-control" name="almacen_destino" disabled="true" />
                     </div>
                     <div class="col-md-4">
                         <h5>Responsable Destino</h5>
                         <select class="form-control" name="responsable_destino" style="width:200px;">
                             <option value="0">Elija una opción</option>
                             @foreach ($usuarios as $usu)
-                                <option value="{{$usu->id_usuario}}">{{$usu->nombre_corto}}</option>
+                            <option value="{{$usu->id_usuario}}">{{$usu->nombre_corto}}</option>
                             @endforeach
                         </select>
                     </div>
                 </div>
-                <br/>
-                <table class="mytable table table-striped table-condensed table-bordered table-okc-view" 
-                    id="listaTransferenciaDetalleRecibir">
+                <br />
+                <table class="mytable table table-striped table-condensed table-bordered table-okc-view" id="listaTransferenciaDetalleRecibir">
                     <thead>
                         <tr>
                             <td width="3%"></td>
                             <td width="6%">Código Trans.</td>
                             <td width="6%">Código Req.</td>
-                            <td width="6%">Concepto</td>
+                            <!-- <td width="6%">Concepto</td> -->
                             <td width="10%">Código</td>
                             <td>PartNumber</td>
                             <td>Descripción</td>

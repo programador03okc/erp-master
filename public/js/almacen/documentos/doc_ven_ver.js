@@ -1,4 +1,8 @@
-function documentosVer(id) {
+let origenVer = "";
+
+function verDocumentoVenta(id, origen) {
+    origenVer = origen;
+    console.log("id" + id);
     $("#modal-doc_ven_ver").modal({
         show: true
     });
@@ -9,7 +13,7 @@ function documentosVer(id) {
         success: function(response) {
             console.log(response);
             let html = "";
-            $("[name=id_doc_ven]").val();
+
             response["docs"].forEach(element => {
                 html += `
                 <tr>
@@ -29,26 +33,34 @@ function documentosVer(id) {
                         "-" +
                         element.numero}</td>
                     <th></td>
-                    <th colSpan="2">Empresa-Sede: </th>
-                    <td colSpan="3">${element.sede_descripcion}</td>
+                    <th colSpan="2">Empresa: </th>
+                    <td colSpan="2">${element.empresa_razon_social}</td>
+                    <th colSpan="2">Fecha Emisión: </th>
+                    <td colSpan="3">${formatDate(element.fecha_emision)}</td>
                 </tr>
                 <tr>
                     <th colSpan="2">Proveedor: </th>
-                    <td colSpan="3">${element.nro_documento +
-                        " - " +
-                        element.razon_social}</td>
+                    <td colSpan="3">${(element.nro_documento !== null
+                        ? element.nro_documento + " - "
+                        : "") + element.razon_social}</td>
                     <th colSpan="2">Importe: </th>
                     <td colSpan="2">${formatNumber.decimal(
                         element.total_a_pagar,
                         element.simbolo,
                         -2
                     )}</td>
-                    
+                    <th colSpan="2">Condición: </th>
+                    <td colSpan="3">${(element.condicion_descripcion !== null
+                        ? element.condicion_descripcion
+                        : "") +
+                        (element.credito_dias !== null
+                            ? " " + element.credito_dias + " días"
+                            : "")}</td>
                 </tr>
                 <tr><td colSpan="12"></td></tr>
                 <tr style="background-color: Gainsboro;">
                     <th>#</th>
-                    <th>Guía</th>
+                    <th>Guía/Req</th>
                     <th>Código</th>
                     <th>PartNumber</th>
                     <th>Descripción</th>
@@ -72,6 +84,8 @@ function documentosVer(id) {
                         <td>${
                             item.serie !== null
                                 ? item.serie + "-" + item.numero
+                                : item.codigo_req !== null
+                                ? item.codigo_req
                                 : ""
                         }</td>
                         <td>${item.codigo !== null ? item.codigo : ""}</td>
@@ -145,9 +159,14 @@ function anularDocVenta(id) {
             success: function(response) {
                 console.log(response);
                 alert("Se anuló correctamente el documento.");
-                let facturacion = new Facturacion();
-                facturacion.listarGuias();
                 $("#modal-doc_ven_ver").modal("hide");
+                let facturacion = new Facturacion();
+
+                if (origenVer == "guia") {
+                    facturacion.listarGuias();
+                } else if (origenVer == "requerimiento") {
+                    facturacion.listarRequerimientos();
+                }
             }
         }).fail(function(jqXHR, textStatus, errorThrown) {
             console.log(jqXHR);

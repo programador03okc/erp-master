@@ -14,14 +14,35 @@ class PendientesFacturacionController extends Controller
     function view_pendientes_facturacion()
     {
         $tp_doc = GenericoAlmacenController::mostrar_tp_doc_cbo();
-        $sedes = GenericoAlmacenController::mostrar_sedes_cbo();
+        $empresas = $this->mostrar_empresas_cbo();
+        $motivos = $this->mostrar_motivos_emision_cbo();
         $monedas = GenericoAlmacenController::mostrar_moneda_cbo();
         $condiciones = GenericoAlmacenController::mostrar_condiciones_cbo();
 
         return view(
             'tesoreria/facturacion/pendientesFacturacion',
-            compact('tp_doc', 'sedes', 'monedas', 'condiciones')
+            compact('tp_doc', 'empresas', 'monedas', 'condiciones')
         );
+    }
+
+    public static function mostrar_empresas_cbo()
+    {
+        $data = DB::table('administracion.adm_empresa')
+            ->select('adm_empresa.*', 'adm_contri.razon_social')
+            ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
+            ->where([['adm_empresa.estado', '!=', 7]])
+            ->orderBy('adm_contri.razon_social')
+            ->get();
+        return $data;
+    }
+
+    public static function mostrar_motivos_emision_cbo()
+    {
+        $data = DB::table('almacen.doc_motivo_emision')
+            ->select('doc_motivo_emision.*')
+            ->where([['doc_motivo_emision.estado', '!=', 7]])
+            ->get();
+        return $data;
     }
 
     public function listarGuiasVentaPendientes()
@@ -31,63 +52,152 @@ class PendientesFacturacionController extends Controller
                 'guia_ven.*',
                 'adm_contri.nro_documento',
                 'adm_contri.razon_social',
-                'sis_usua.nombre_corto',
                 'usu_trans.nombre_corto as nombre_corto_trans',
                 'adm_estado_doc.estado_doc',
                 'adm_estado_doc.bootstrap_color',
-                // DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_persona"),
                 'alm_almacen.descripcion as almacen_descripcion',
                 'sis_sede.descripcion as sede_descripcion',
-                'oc_propias_view.nro_orden as orden_am',
+                'sis_sede.id_empresa',
+                'trans.codigo as codigo_trans',
+
+                DB::raw("(SELECT count(guia.id_guia_ven_det) FROM almacen.guia_ven_det AS guia
+                    LEFT JOIN almacen.doc_ven_det AS doc
+                        on( guia.id_guia_ven_det = doc.id_guia_ven_det
+                        and doc.estado != 7)
+                    WHERE guia.id_guia_ven = guia_ven.id_guia_ven
+                    and doc.id_guia_ven_det is null) AS items_restantes"),
+
+                DB::raw("(SELECT count(distinct id_doc_ven) FROM almacen.doc_ven AS d
+                    INNER JOIN almacen.guia_ven_det AS guia
+                        on( guia.id_guia_ven = guia_ven.id_guia_ven
+                        and guia.estado != 7)
+                    INNER JOIN almacen.doc_ven_det AS doc
+                        on( guia.id_guia_ven_det = doc.id_guia_ven_det
+                        and doc.estado != 7)
+                    WHERE d.id_doc_ven = doc.id_doc) AS count_facturas")
+            )
+            ->join('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'guia_ven.id_cliente')
+            ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
+            ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'guia_ven.id_almacen')
+            ->join('almacen.trans', 'trans.id_transferencia', '=', 'guia_ven.id_transferencia')
+            ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'trans.id_requerimiento')
+            ->join('administracion.sis_sede as sede_req', 'sede_req.id_sede', '=', 'alm_req.id_sede')
+            ->leftjoin('configuracion.sis_usua as usu_trans', 'usu_trans.id_usuario', '=', 'trans.responsable_origen')
+            ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'guia_ven.id_sede')
+            ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'guia_ven.estado')
+            ->where('guia_ven.estado', 1)
+            ->where('guia_ven.id_operacion', 1);
+
+        return datatables($data)->toJson();
+    }
+
+    public function detalleFacturasGuias($id_guia)
+    {
+        $data = DB::table('almacen.guia_ven')
+            ->select(
+                'doc_ven.*',
+                DB::raw("(cont_tp_doc.abreviatura) || ' ' || (doc_ven.serie) || '-' || (doc_ven.numero) as serie_numero"),
+                'empresa.razon_social as empresa_razon_social',
+                'adm_contri.nro_documento',
+                'adm_contri.razon_social',
+                'sis_moneda.simbolo',
+                'sis_usua.nombre_corto',
+                'log_cdn_pago.descripcion as condicion'
+            )
+            ->join('almacen.guia_ven_det', 'guia_ven_det.id_guia_ven', '=', 'guia_ven.id_guia_ven')
+            ->join('almacen.doc_ven_det', 'doc_ven_det.id_guia_ven_det', '=', 'guia_ven_det.id_guia_ven_det')
+            ->join('almacen.doc_ven', 'doc_ven.id_doc_ven', '=', 'doc_ven_det.id_doc')
+            ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'doc_ven.id_empresa')
+            ->join('contabilidad.adm_contri as empresa', 'empresa.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
+            ->join('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'doc_ven.id_cliente')
+            ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
+            ->join('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'doc_ven.moneda')
+            ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'doc_ven.usuario')
+            ->join('contabilidad.cont_tp_doc', 'cont_tp_doc.id_tp_doc', '=', 'doc_ven.id_tp_doc')
+            ->join('logistica.log_cdn_pago', 'log_cdn_pago.id_condicion_pago', '=', 'doc_ven.id_condicion')
+            ->where('guia_ven.id_guia_ven', $id_guia)
+            ->where([['doc_ven.estado', '!=', 7]])
+            ->get();
+        return response()->json($data);
+    }
+
+    public function listarRequerimientosPendientes()
+    {
+        $data = DB::table('almacen.alm_req')
+            ->select(
+                'alm_req.*',
+                'adm_contri.nro_documento',
+                'adm_contri.razon_social',
+                'sis_usua.nombre_corto',
+                'adm_estado_doc.estado_doc',
+                'adm_estado_doc.bootstrap_color',
+                'sis_sede.descripcion as sede_descripcion',
+                'oc_propias_view.nro_orden',
                 'oc_propias_view.codigo_oportunidad',
-                'oc_propias_view.nombre_entidad',
+                // 'oc_propias_view.nombre_entidad',
                 'oc_propias_view.id as id_oc_propia',
-                'oc_propias_view.url_oc_fisica',
+                // 'oc_propias_view.url_oc_fisica',
                 'oc_propias_view.tipo',
                 'oc_propias_view.monto_total',
                 'oc_propias_view.nombre_largo_responsable',
                 'alm_req.codigo as codigo_req',
                 'oc_propias_view.moneda_oc',
-                'alm_req.id_requerimiento',
-                'alm_req.tiene_transformacion',
-                'sede_req.descripcion as sede_descripcion_req',
-                'trans.codigo as codigo_trans',
-                // 'tp_ope.descripcion as operacion',
+
                 DB::raw("(SELECT count(distinct id_doc_ven) FROM almacen.doc_ven AS d
-                    INNER JOIN almacen.guia_ven_det AS guia
-                        on(guia.id_guia_ven = guia_ven.id_guia_ven)
+                    INNER JOIN almacen.alm_det_req AS req
+                        on( req.id_requerimiento = alm_req.id_requerimiento)
                     INNER JOIN almacen.doc_ven_det AS doc
-                        on(doc.id_guia_ven_det = guia.id_guia_ven_det)
-                    WHERE d.id_doc_ven = doc.id_doc
-                      and doc.estado != 7) AS count_facturas"),
-                DB::raw("(SELECT distinct id_doc_ven FROM almacen.doc_ven AS d
-                    INNER JOIN almacen.guia_ven_det AS guia on(
-                        guia.id_guia_ven = guia_ven.id_guia_ven)
-                    INNER JOIN almacen.doc_ven_det AS doc on(
-                        doc.id_guia_ven_det = guia.id_guia_ven_det and
-                        doc.estado != 7)
-                    WHERE d.id_doc_ven = doc.id_doc
-                    limit 1) AS id_doc_ven")
+                        on( doc.id_detalle_requerimiento = req.id_detalle_requerimiento 
+                            and doc.estado != 7)
+                    WHERE d.id_doc_ven = doc.id_doc) AS count_facturas"),
+
+                DB::raw("(SELECT count(alm_det_req.id_detalle_requerimiento) FROM almacen.alm_det_req 
+                    LEFT JOIN almacen.doc_ven_det
+                    on( alm_det_req.id_detalle_requerimiento = doc_ven_det.id_detalle_requerimiento )
+                    WHERE alm_det_req.id_requerimiento = alm_req.id_requerimiento
+                    and alm_det_req.entrega_cliente = true
+                    and doc_ven_det.id_detalle_requerimiento is null) AS items_restantes")
+
             )
-            ->leftJoin('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'guia_ven.id_cliente')
-            ->leftJoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
-            ->leftJoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'guia_ven.id_almacen')
-            ->leftJoin('almacen.orden_despacho', 'orden_despacho.id_od', '=', 'guia_ven.id_od')
-            ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'orden_despacho.id_requerimiento')
-            ->leftJoin('administracion.sis_sede as sede_req', 'sede_req.id_sede', '=', 'alm_req.id_sede')
-            // ->leftjoin('rrhh.rrhh_perso','rrhh_perso.id_persona','=','guia_ven.id_persona')
-            ->leftJoin('almacen.trans', 'trans.id_transferencia', '=', 'guia_ven.id_transferencia')
-            ->leftjoin('configuracion.sis_usua as usu_trans', 'usu_trans.id_usuario', '=', 'trans.responsable_origen')
+            ->join('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'alm_req.id_cliente')
+            ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
+            ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_req.id_sede')
             ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
             ->leftJoin('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'cc.id_oportunidad')
-            ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'guia_ven.id_sede')
             ->leftjoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'alm_req.id_usuario')
-            ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'guia_ven.estado')
-            // ->join('almacen.tp_ope', 'tp_ope.id_operacion', '=', 'guia_ven.id_operacion')
-            ->where('guia_ven.estado', 1)
-            ->where('guia_ven.id_operacion', 1);
+            ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'alm_req.estado')
+            ->where('alm_req.enviar_facturacion', true);
 
         return datatables($data)->toJson();
+    }
+
+    public function detalleFacturasRequerimientos($id_requerimiento)
+    {
+        $data = DB::table('almacen.alm_req')
+            ->select(
+                'doc_ven.*',
+                DB::raw("(cont_tp_doc.abreviatura) || ' ' || (doc_ven.serie) || '-' || (doc_ven.numero) as serie_numero"),
+                'empresa.razon_social as empresa_razon_social',
+                'adm_contri.razon_social',
+                'sis_moneda.simbolo',
+                'sis_usua.nombre_corto',
+                'log_cdn_pago.descripcion as condicion'
+            )
+            ->join('almacen.alm_det_req', 'alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento')
+            ->join('almacen.doc_ven_det', 'doc_ven_det.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento')
+            ->join('almacen.doc_ven', 'doc_ven.id_doc_ven', '=', 'doc_ven_det.id_doc')
+            ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'doc_ven.id_empresa')
+            ->join('contabilidad.adm_contri as empresa', 'empresa.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
+            ->join('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'doc_ven.id_cliente')
+            ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
+            ->join('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'doc_ven.moneda')
+            ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'doc_ven.usuario')
+            ->join('contabilidad.cont_tp_doc', 'cont_tp_doc.id_tp_doc', '=', 'doc_ven.id_tp_doc')
+            ->join('logistica.log_cdn_pago', 'log_cdn_pago.id_condicion_pago', '=', 'doc_ven.id_condicion')
+            ->where('alm_req.id_requerimiento', $id_requerimiento)
+            ->where([['doc_ven.estado', '!=', 7]])
+            ->get();
+        return response()->json($data);
     }
 
     public function obtenerGuiaVenta($id)
@@ -100,8 +210,9 @@ class PendientesFacturacionController extends Controller
                 'adm_contri.nro_documento',
                 'guia_ven.serie',
                 'guia_ven.numero',
-                'guia_ven.id_sede'
+                'sis_sede.id_empresa'
             )
+            ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'guia_ven.id_sede')
             ->join('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'guia_ven.id_cliente')
             ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
             ->where('guia_ven.id_guia_ven', $id)
@@ -118,8 +229,10 @@ class PendientesFacturacionController extends Controller
                 'alm_und_medida.abreviatura',
                 'oc_propias_view.monto_total',
                 'oc_propias_view.moneda_oc',
-                'oc_propias_view.nombre_largo_responsable'
-                // 'alm_req.id_sede'
+                'oc_propias_view.nombre_largo_responsable',
+                DB::raw("(SELECT SUM(doc_ven_det.cantidad) FROM almacen.doc_ven_det
+                    WHERE doc_ven_det.id_guia_ven_det = guia_ven_det.id_guia_ven_det
+                    and doc_ven_det.estado != 7) AS cantidad_facturada")
             )
             ->leftjoin('almacen.guia_ven', 'guia_ven.id_guia_ven', '=', 'guia_ven_det.id_guia_ven')
             ->leftjoin('almacen.orden_despacho_det', 'orden_despacho_det.id_od_detalle', '=', 'guia_ven_det.id_od_det')
@@ -139,6 +252,90 @@ class PendientesFacturacionController extends Controller
         return response()->json(['guia' => $guia, 'detalle' => $detalle, 'igv' => $igv->porcentaje]);
     }
 
+    public function obtenerGuiaVentaSeleccionadas(Request $request)
+    {
+        $detalle = DB::table('almacen.guia_ven_det')
+            ->select(
+                'guia_ven_det.*',
+                'guia_ven.serie',
+                'guia_ven.numero',
+                'alm_prod.codigo',
+                'alm_prod.descripcion',
+                'alm_prod.part_number',
+                'alm_und_medida.abreviatura',
+                'oc_propias_view.monto_total',
+                'oc_propias_view.moneda_oc',
+                'oc_propias_view.nombre_largo_responsable',
+                DB::raw("(SELECT SUM(doc_ven_det.cantidad) FROM almacen.doc_ven_det
+                    WHERE doc_ven_det.id_guia_ven_det = guia_ven_det.id_guia_ven_det
+                    and doc_ven_det.estado != 7) AS cantidad_facturada")
+            )
+            ->leftjoin('almacen.guia_ven', 'guia_ven.id_guia_ven', '=', 'guia_ven_det.id_guia_ven')
+            ->leftjoin('almacen.orden_despacho_det', 'orden_despacho_det.id_od_detalle', '=', 'guia_ven_det.id_od_det')
+            ->leftjoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'orden_despacho_det.id_detalle_requerimiento')
+            ->leftjoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+            ->leftjoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
+            ->leftjoin('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'cc.id_oportunidad')
+            ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'guia_ven_det.id_producto')
+            ->join('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
+            ->whereIn('guia_ven_det.id_guia_ven', $request->id_guias_seleccionadas)
+            ->get();
+
+        $igv = DB::table('contabilidad.cont_impuesto')
+            ->where('codigo', 'IGV')->first();
+
+        return response()->json(['detalle' => $detalle, 'igv' => $igv->porcentaje]);
+    }
+
+    public function obtenerRequerimiento($id)
+    {
+        $req = DB::table('almacen.alm_req')
+            ->select(
+                'alm_req.id_requerimiento',
+                'alm_req.id_cliente',
+                'adm_contri.razon_social',
+                'adm_contri.nro_documento',
+                'alm_req.codigo',
+                'alm_req.concepto',
+                'sis_sede.id_empresa'
+            )
+            ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_req.id_sede')
+            ->join('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'alm_req.id_cliente')
+            ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
+            ->where('alm_req.id_requerimiento', $id)
+            ->first();
+
+        $detalle = DB::table('almacen.alm_det_req')
+            ->select(
+                'alm_det_req.*',
+                'alm_req.codigo as cod_req',
+                'alm_prod.codigo',
+                'alm_prod.descripcion',
+                'alm_prod.part_number',
+                'alm_prod.id_unidad_medida as id_unid_med',
+                'alm_und_medida.abreviatura',
+                'oc_propias_view.monto_total',
+                'oc_propias_view.moneda_oc',
+                'oc_propias_view.nombre_largo_responsable',
+                DB::raw("(SELECT SUM(doc_ven_det.cantidad) FROM almacen.doc_ven_det
+                    WHERE doc_ven_det.id_detalle_requerimiento = alm_det_req.id_detalle_requerimiento
+                    and doc_ven_det.estado != 7) AS cantidad_facturada")
+            )
+            ->leftjoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+            ->leftjoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
+            ->leftjoin('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'cc.id_oportunidad')
+            ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_det_req.id_producto')
+            ->join('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
+            ->where('alm_det_req.id_requerimiento', $id)
+            ->where('alm_det_req.entrega_cliente', true)
+            ->get();
+
+        $igv = DB::table('contabilidad.cont_impuesto')
+            ->where('codigo', 'IGV')->first();
+
+        return response()->json(['req' => $req, 'detalle' => $detalle, 'igv' => $igv->porcentaje]);
+    }
+
     public function guardar_doc_venta(Request $request)
     {
         try {
@@ -154,8 +351,11 @@ class PendientesFacturacionController extends Controller
                     'id_tp_doc' => $request->id_tp_doc,
                     'id_cliente' => $request->id_cliente,
                     'fecha_emision' => $request->fecha_emision_doc,
-                    'fecha_vcmto' => $request->fecha_emision_doc,
-                    'id_sede' => $request->id_sede,
+                    'fecha_vcmto' => $request->fecha_vencimiento,
+                    'id_condicion' => $request->id_condicion,
+                    'credito_dias' => $request->credito_dias,
+                    'id_empresa' => $request->id_empresa,
+                    // 'id_sede' => $request->id_sede,
                     'moneda' => $request->moneda,
                     'sub_total' => $request->sub_total,
                     'total_igv' => $request->igv,
@@ -174,7 +374,8 @@ class PendientesFacturacionController extends Controller
                 DB::table('almacen.doc_ven_det')
                     ->insert([
                         'id_doc' => $id_doc,
-                        'id_guia_ven_det' => $item->id_guia_ven_det,
+                        'id_guia_ven_det' => isset($item->id_guia_ven_det) ? $item->id_guia_ven_det : null,
+                        'id_detalle_requerimiento' => isset($item->id_detalle_requerimiento) ? $item->id_detalle_requerimiento : null,
                         'id_item' => $item->id_producto,
                         'cantidad' => $item->cantidad,
                         'id_unid_med' => $item->id_unid_med,
@@ -212,8 +413,8 @@ class PendientesFacturacionController extends Controller
                 'doc_ven.total_a_pagar',
                 'doc_ven.sub_total',
                 'doc_ven.total_igv',
-                // 'log_cdn_pago.descripcion as condicion_descripcion',
-                'sis_sede.descripcion as sede_descripcion',
+                'log_cdn_pago.descripcion as condicion_descripcion',
+                'empresa.razon_social as empresa_razon_social',
                 'doc_ven.credito_dias',
                 'doc_ven.tipo_cambio'
             )
@@ -221,8 +422,9 @@ class PendientesFacturacionController extends Controller
             ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
             ->join('contabilidad.cont_tp_doc', 'cont_tp_doc.id_tp_doc', '=', 'doc_ven.id_tp_doc')
             ->join('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'doc_ven.moneda')
-            // ->leftJoin('logistica.log_cdn_pago','log_cdn_pago.id_condicion_pago','=','doc_ven.id_condicion')
-            ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'doc_ven.id_sede')
+            ->leftJoin('logistica.log_cdn_pago', 'log_cdn_pago.id_condicion_pago', '=', 'doc_ven.id_condicion')
+            ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'doc_ven.id_empresa')
+            ->join('contabilidad.adm_contri as empresa', 'empresa.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
             ->where('doc_ven.id_doc_ven', $id_doc)
             ->distinct()
             ->get();
@@ -235,8 +437,11 @@ class PendientesFacturacionController extends Controller
                 'alm_prod.part_number',
                 'alm_und_medida.abreviatura',
                 'guia_ven.serie',
-                'guia_ven.numero'
+                'guia_ven.numero',
+                'alm_req.codigo as codigo_req'
             )
+            ->leftjoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'doc_ven_det.id_detalle_requerimiento')
+            ->leftjoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
             ->leftjoin('almacen.guia_ven_det', 'guia_ven_det.id_guia_ven_det', '=', 'doc_ven_det.id_guia_ven_det')
             ->leftjoin('almacen.guia_ven', 'guia_ven.id_guia_ven', '=', 'guia_ven_det.id_guia_ven')
             ->leftjoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'doc_ven_det.id_item')
@@ -258,5 +463,22 @@ class PendientesFacturacionController extends Controller
             ->update(['estado' => 7]);
 
         return response()->json($update);
+    }
+
+    public function obtenerArchivosOc(Request $request)
+    {
+        $dataEnviar['id'] = $request->id;
+        $dataEnviar['tipo'] = $request->tipo;
+        $cUrl = curl_init();
+        curl_setopt($cUrl, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($cUrl, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt($cUrl, CURLOPT_VERBOSE, true);
+        curl_setopt($cUrl, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($cUrl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($cUrl, CURLOPT_URL, 'https://mgcp.okccloud.com/mgcp/ordenes-compra/propias/obtener-informacion-adicional');
+        curl_setopt($cUrl, CURLOPT_POST, true);
+        curl_setopt($cUrl, CURLOPT_POSTFIELDS, (http_build_query($dataEnviar)));
+        curl_setopt($cUrl, CURLOPT_HEADER, 0);
+        return curl_exec($cUrl); //Devuelve el JSON que recibió de MGCP
     }
 }

@@ -16,8 +16,9 @@ function iniciar(permiso, usuario) {
     valor_permiso = permiso;
     usuario_session = usuario;
 
-    listarTransferenciasPorEnviar();
+    listarRequerimientosPendientes();
     console.log(permiso);
+
     $("ul.nav-tabs li a").click(function() {
         $("ul.nav-tabs li").removeClass("active");
         $(this)
@@ -35,7 +36,9 @@ function iniciar(permiso, usuario) {
         changeStateInput(activeForm, true);
 
         // clearDataTable();
-        if (activeForm == "form-pendientes") {
+        if (activeForm == "form-requerimientos") {
+            listarRequerimientosPendientes();
+        } else if (activeForm == "form-pendientes") {
             listarTransferenciasPendientes();
         } else if (activeForm == "form-porEnviar") {
             listarTransferenciasPorEnviar();
@@ -46,6 +49,105 @@ function iniciar(permiso, usuario) {
     });
     vista_extendida();
 }
+
+function listarRequerimientosPendientes() {
+    // var alm_destino = $("[name=id_almacen_destino_lista]").val();
+
+    // if (alm_destino !== "" && alm_destino !== "") {
+    var vardataTables = funcDatatables();
+
+    $("#listaRequerimientos").DataTable({
+        dom: vardataTables[1],
+        buttons: vardataTables[2],
+        language: vardataTables[0],
+        // "scrollX": true,
+        destroy: true,
+        ajax: "listarRequerimientos",
+        columns: [
+            { data: "id_requerimiento" },
+            // { data: "codigo", className: "text-center" },
+            {
+                render: function(data, type, row) {
+                    return (
+                        '<a href="#" class="verRequerimiento" data-id="' +
+                        row["id_requerimiento"] +
+                        '" >' +
+                        row["codigo"] +
+                        "</a>"
+                    );
+                },
+                className: "text-center"
+            },
+            { data: "concepto" },
+            {
+                data: "sede_descripcion",
+                name: "sis_sede.descripcion",
+                className: "text-center"
+            },
+            { data: "razon_social", name: "adm_contri.razon_social" },
+            { data: "nombre_corto", name: "sis_usua.nombre_corto" },
+            {
+                render: function(data, type, row) {
+                    return (
+                        '<a href="#" class="archivos" data-id="' +
+                        row["id_oc_propia"] +
+                        '" data-tipo="' +
+                        row["tipo"] +
+                        '">' +
+                        row["nro_orden"] +
+                        "</a>"
+                    );
+                },
+                className: "text-center"
+            },
+            {
+                data: "codigo_oportunidad",
+                name: "oc_propias_view.codigo_oportunidad",
+                className: "text-center"
+            },
+            {
+                render: function(data, type, row) {
+                    // if (valor_permiso == "1") {
+                    return `<button type="button" class="transferencia btn btn-success boton" data-toggle="tooltip"
+                            data-placement="bottom" data-id="${row["id_requerimiento"]}" title="Crear Transferencia(s)" >
+                            <i class="fas fa-exchange-alt"></i></button>`;
+                    // } else {
+                    // return "";
+                    // }
+                },
+                className: "text-center"
+            }
+        ],
+        columnDefs: [
+            {
+                aTargets: [0],
+                sClass: "invisible"
+            }
+        ]
+    });
+    // }
+}
+
+$("#listaRequerimientos tbody").on("click", "a.verRequerimiento", function(e) {
+    $(e.preventDefault());
+    var id = $(this).data("id");
+    localStorage.setItem("idRequerimiento", id);
+    let url = "/logistica/gestion-logistica/requerimiento/elaboracion/index";
+    var win = window.open(url, "_blank");
+    win.focus();
+});
+
+$("#listaRequerimientos tbody").on("click", "a.archivos", function(e) {
+    $(e.preventDefault());
+    var id = $(this).data("id");
+    var tipo = $(this).data("tipo");
+    obtenerArchivosMgcp(id, tipo);
+});
+
+$("#listaRequerimientos tbody").on("click", "button.transferencia", function() {
+    var id = $(this).data("id");
+    ver_requerimiento(id);
+});
 
 function listarTransferenciasPorEnviar() {
     var alm_origen = $("[name=id_almacen_origen_lista]").val();
@@ -208,15 +310,6 @@ function listarTransferenciasPendientes() {
                         }
                     }
                 },
-                // {'render':
-                //     function (data, type, row){
-                //         if (row['id_guia_ven'] !== null){
-                //             return ('<label class="lbl-codigo" title="Abrir Guía" onClick="abrir_guia_venta('+row['id_guia_ven']+')">'+row['guia_ven']+'</label>');
-                //         } else {
-                //             return '';
-                //         }
-                //     }
-                // },
                 { data: "guia_ven" },
                 { data: "alm_origen_descripcion" },
                 { data: "alm_destino_descripcion" },
@@ -622,7 +715,7 @@ function abrir_guia_compra(id_guia_compra) {
 
 function abrir_requerimiento(id_requerimiento) {
     // Abrir nuevo tab
-    localStorage.setItem("id_requerimiento", id_requerimiento);
+    localStorage.setItem("idRequerimiento", id_requerimiento);
     let url = "/logistica/gestion-logistica/requerimiento/elaboracion/index";
     var win = window.open(url, "_blank");
     // Cambiar el foco al nuevo tab (punto opcional)

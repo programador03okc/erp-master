@@ -1,6 +1,6 @@
-<div class="modal fade" tabindex="-1" role="dialog" id="modal-ver_requerimiento">
-    <div class="modal-dialog" style="width:900px;">
-        <div class="modal-content" >
+<div class="modal fade" tabindex="-1" role="dialog" id="modal-ver_requerimiento" style="overflow-y: scroll;">
+    <div class="modal-dialog" style="width:1100px;">
+        <div class="modal-content">
             <form id="form-ver_requerimiento">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
@@ -31,8 +31,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <table class="mytable table table-condensed table-bordered table-okc-view" width="100%" 
-                                id="detalleRequerimiento"  style="margin-top:10px;">
+                            <table class="mytable table table-condensed table-bordered table-okc-view" width="100%" id="detalleRequerimiento" style="margin-top:10px;">
                                 <thead>
                                     <tr>
                                         <th>#</th>
@@ -43,7 +42,7 @@
                                         <th>Descripción</th>
                                         <th>Cantidad</th>
                                         <th>Unid</th>
-                                        <th>Series</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -52,7 +51,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <input type="submit" id="submit_guia" class="btn btn-success" value="Generar Transferencia"/>
+                    <input type="submit" id="submit_guia" class="btn btn-success" value="Generar Transferencia" />
                     <!-- <button class="btn btn-sm btn-success" onClick="generar_transferencia();">Generar Transferencia</button> -->
                 </div>
             </form>
