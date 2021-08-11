@@ -18,6 +18,7 @@ class RequerimientoView {
         // $('[name=periodo]').val(today.getFullYear());
         this.getTipoCambioCompra();
         var idRequerimiento = localStorage.getItem("idRequerimiento");
+        console.log(idRequerimiento);
         if (idRequerimiento !== null){
             this.cargarRequerimiento(idRequerimiento)
             localStorage.removeItem("idRequerimiento");
@@ -419,34 +420,34 @@ class RequerimientoView {
                 if (data[i].id_tipo_item == 1) { // producto
                 document.querySelector("tbody[id='body_detalle_requerimiento']").insertAdjacentHTML('beforeend', `<tr style="text-align:center; background-color:${data[i].estado ==7?'#f5e4e4':''}; ">
                 <td></td>
-                <td><p class="descripcion-partida" data-id-partida="${data[i].id_partida}" data-presupuesto-total="${data[i].presupuesto_total_partida}" title="${data[i].codigo_partida != null ? data[i].codigo_partida : ''}" >${data[i].descripcion_partida != null ? data[i].descripcion_partida : '(NO SELECCIONADO)'}</p><button type="button" class="btn btn-xs btn-info activation handleClickCargarModalPartidas" name="partida" ${hasDisabledInput}>Seleccionar</button> 
+                <td><p class="descripcion-partida" data-id-partida="${data[i].id_partida}" data-presupuesto-total="${data[i].presupuesto_total_partida}" title="${data[i].codigo_partida ?? ''}" >${data[i].descripcion_partida ?? '(NO SELECCIONADO)'}</p><button type="button" class="btn btn-xs btn-info activation handleClickCargarModalPartidas" name="partida" ${hasDisabledInput}>Seleccionar</button> 
                     <div class="form-group">
                         <input type="text" class="partida" name="idPartida[]" value="${data[i].id_partida}" hidden>
                     </div>
                 </td>
-                <td><p class="descripcion-centro-costo" title="${data[i].codigo_centro_costo != null ? data[i].codigo_centro_costo : ''}">${data[i].descripcion_centro_costo != null ? data[i].descripcion_centro_costo : '(NO SELECCIONADO)'}</p><button type="button" class="btn btn-xs btn-primary activation handleClickCargarModalCentroCostos" name="centroCostos"  ${tempCentroCostoSelected != undefined ? 'disabled' : ''} title="${tempCentroCostoSelected != undefined ? 'El centro de costo esta asignado a un proyecto' : ''}" ${hasDisabledInput} >Seleccionar</button> 
+                <td><p class="descripcion-centro-costo" title="${data[i].codigo_centro_costo ?? ''}">${data[i].descripcion_centro_costo ?? '(NO SELECCIONADO)'}</p><button type="button" class="btn btn-xs btn-primary activation handleClickCargarModalCentroCostos" name="centroCostos"  ${tempCentroCostoSelected != undefined ? 'disabled' : ''} title="${tempCentroCostoSelected != undefined ? 'El centro de costo esta asignado a un proyecto' : ''}" ${hasDisabledInput} >Seleccionar</button> 
                     <div class="form-group">
                         <input type="text" class="centroCosto" name="idCentroCosto[]" value="${data[i].id_centro_costo}" hidden>
                     </div>
                 </td>
-                <td><input class="form-control activation input-sm" type="text" name="partNumber[]" placeholder="Part number" value="${data[i].part_number != null ? data[i].part_number : (data[i].producto_part_number?data[i].producto_part_number:'')}" ${hasDisabledInput}></td>
+                <td><input class="form-control activation input-sm" type="text" name="partNumber[]" placeholder="Part number" value="${data[i].part_number ?? (data[i].producto_part_number??'')}" ${hasDisabledInput}></td>
                 <td>
                     <div class="form-group">
-                        <textarea class="form-control activation input-sm descripcion handleBlurUpdateDescripcionItem" name="descripcion[]" placeholder="Descripción" value="${data[i].descripcion != null ? data[i].descripcion : ''}"   ${hasDisabledInput} >${data[i].descripcion != null ? data[i].descripcion : ''}</textarea></td>
+                        <textarea class="form-control activation input-sm descripcion handleBlurUpdateDescripcionItem" name="descripcion[]" placeholder="Descripción" value="${data[i].descripcion ?? (data[i].producto_descripcion??'')}"   ${hasDisabledInput} >${data[i].descripcion ?? (data[i].producto_descripcion??'')}</textarea></td>
                     </div>
                 <td><select name="unidad[]" class="form-control activation input-sm" value="${data[i].id_unidad_medida}" ${hasDisabledInput} >${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
                 <td>
                     <div class="form-group">
-                        <input class="form-control activation input-sm cantidad text-right handleBurUpdateSubtotal handleBlurUpdateCantidadItem handleBlurCalcularPresupuestoUtilizadoYSaldoPorPartida" type="number" min="1" name="cantidad[]"  value="${data[i].cantidad}"   placeholder="Cantidad" ${hasDisabledInput}>
+                        <input class="form-control activation input-sm cantidad text-right handleBurUpdateSubtotal handleBlurUpdateCantidadItem handleBlurCalcularPresupuestoUtilizadoYSaldoPorPartida" type="number" min="1" name="cantidad[]"  value="${data[i].cantidad??''}"   placeholder="Cantidad" ${hasDisabledInput}>
                     </div>
                 </td>
                 <td>
                     <div class="form-group">
-                        <input class="form-control activation input-sm precio text-right handleBurUpdateSubtotal handleBlurUpdatePrecioItem handleBlurCalcularPresupuestoUtilizadoYSaldoPorPartida" type="number" min="0" name="precioUnitario[]" value="${data[i].precio_unitario}" placeholder="Precio U." ${hasDisabledInput}>
+                        <input class="form-control activation input-sm precio text-right handleBurUpdateSubtotal handleBlurUpdatePrecioItem handleBlurCalcularPresupuestoUtilizadoYSaldoPorPartida" type="number" min="0" name="precioUnitario[]" value="${data[i].precio_unitario??''}" placeholder="Precio U." ${hasDisabledInput}>
                     </div>
                 </td>  
                 <td style="text-align:right;"><span class="moneda" name="simboloMoneda">${document.querySelector("select[name='moneda']").options[document.querySelector("select[name='moneda']").selectedIndex].dataset.simbolo}</span><span class="subtotal" name="subtotal[]">0.00</span></td>
-                <td><textarea class="form-control activation input-sm" name="motivo[]"  value="${data[i].motivo != null ? data[i].motivo : ''}" placeholder="Motivo de requerimiento de item (opcional)" ${hasDisabledInput} >${data[i].motivo != null ? data[i].motivo : ''}</textarea></td>
+                <td><textarea class="form-control activation input-sm" name="motivo[]"  value="${data[i].motivo ??  ''}" placeholder="Motivo de requerimiento de item (opcional)" ${hasDisabledInput} >${data[i].motivo ?? ''}</textarea></td>
                 <td>
                     <div class="btn-group" role="group">
                         <input type="hidden" class="tipoItem" name="tipoItem[]" value="1">
@@ -467,7 +468,7 @@ class RequerimientoView {
                             <input type="text" class="partida" name="idPartida[]" value="${data[i].id_partida}" hidden>
                         </div>
                     </td>
-                    <td><p class="descripcion-centro-costo" title="${data[i].codigo_centro_costo != null ? data[i].codigo_centro_costo : ''}">${data[i].descripcion_centro_costo != null ? data[i].descripcion_centro_costo : '(NO SELECCIONADO)'}</p><button type="button" class="btn btn-xs btn-primary activation handleClickCargarModalCentroCostos" name="centroCostos" ${tempCentroCostoSelected != undefined ? 'disabled' : ''} title="${tempCentroCostoSelected != undefined ? 'El centro de costo esta asignado a un proyecto' : ''}" ${hasDisabledInput} >Seleccionar</button> 
+                    <td><p class="descripcion-centro-costo" title="${data[i].codigo_centro_costo ?? ''}">${data[i].descripcion_centro_costo ?? '(NO SELECCIONADO)'}</p><button type="button" class="btn btn-xs btn-primary activation handleClickCargarModalCentroCostos" name="centroCostos" ${tempCentroCostoSelected != undefined ? 'disabled' : ''} title="${tempCentroCostoSelected != undefined ? 'El centro de costo esta asignado a un proyecto' : ''}" ${hasDisabledInput} >Seleccionar</button> 
                         <div class="form-group">
                             <input type="text" class="centroCosto" name="idCentroCosto[]" value="${data[i].id_centro_costo}" hidden>
                         </div>
@@ -475,21 +476,21 @@ class RequerimientoView {
                     <td>(Servicio)<input type="hidden" name="partNumber[]"></td>
                     <td>
                         <div class="form-group">
-                        <textarea class="form-control activation input-sm descripcion handleBlurUpdateDescripcionItem" name="descripcion[]" placeholder="Descripción" value="${data[i].descripcion != null ? data[i].descripcion : ''}" ${hasDisabledInput} >${data[i].descripcion != null ? data[i].descripcion : ''}</textarea></td>
+                        <textarea class="form-control activation input-sm descripcion handleBlurUpdateDescripcionItem" name="descripcion[]" placeholder="Descripción" value="${data[i].descripcion ?? ''}" ${hasDisabledInput} >${data[i].descripcion ?? ''}</textarea></td>
                         </div>
                     <td><select name="unidad[]" class="form-control activation input-sm" value="${data[i].id_unidad_medida}"  ${hasDisabledInput}>${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
                     <td>
                         <div class="form-group">
-                            <input class="form-control activation input-sm cantidad text-right handleBurUpdateSubtotal handleBlurUpdateCantidadItem handleBlurCalcularPresupuestoUtilizadoYSaldoPorPartida" type="number" min="1" name="cantidad[]"  value="${data[i].cantidad}"  placeholder="Cantidad" ${hasDisabledInput}>
+                            <input class="form-control activation input-sm cantidad text-right handleBurUpdateSubtotal handleBlurUpdateCantidadItem handleBlurCalcularPresupuestoUtilizadoYSaldoPorPartida" type="number" min="1" name="cantidad[]"  value="${data[i].cantidad??''}"  placeholder="Cantidad" ${hasDisabledInput}>
                         </div>
                     </td>
                     <td>
                         <div class="form-group">
-                            <input class="form-control activation input-sm precio text-right handleBurUpdateSubtotal handleBlurUpdateCantidadItem handleBlurCalcularPresupuestoUtilizadoYSaldoPorPartida" type="number" min="0" name="precioUnitario[]" value="${data[i].precio_unitario}"  placeholder="Precio U." ${hasDisabledInput}>
+                            <input class="form-control activation input-sm precio text-right handleBurUpdateSubtotal handleBlurUpdateCantidadItem handleBlurCalcularPresupuestoUtilizadoYSaldoPorPartida" type="number" min="0" name="precioUnitario[]" value="${data[i].precio_unitario??''}"  placeholder="Precio U." ${hasDisabledInput}>
                         </div>  
                     </td>
                     <td style="text-align:right;"><span class="moneda" name="simboloMoneda">${document.querySelector("select[name='moneda']").options[document.querySelector("select[name='moneda']").selectedIndex].dataset.simbolo}</span><span class="subtotal" name="subtotal[]">0.00</span></td>
-                    <td><textarea class="form-control activation input-sm" name="motivo[]"  value="${data[i].motivo != null ? data[i].motivo : ''}" placeholder="Motivo de requerimiento de item (opcional)" ${hasDisabledInput} >${data[i].motivo != null ? data[i].motivo : ''}</textarea></td>
+                    <td><textarea class="form-control activation input-sm" name="motivo[]"  value="${data[i].motivo ?? ''}" placeholder="Motivo de requerimiento de item (opcional)" ${hasDisabledInput} >${data[i].motivo ?? ''}</textarea></td>
                     <td>
                         <div class="btn-group" role="group">
                             <input type="hidden" class="tipoItem" name="tipoItem[]" value="1">

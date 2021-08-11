@@ -532,7 +532,7 @@ class ListaOrdenView {
             'columns': [
                 {'render':
                 function (data, type, row, meta){
-                    return `${row.codigo_oportunidad?row.codigo_oportunidad:''}`;
+                    return `${(row.codigo_oportunidad ?? '')}`;
                     }
                 },
                 {'render':
@@ -542,14 +542,14 @@ class ListaOrdenView {
                 },
                 {'render':
                 function (data, type, row, meta){
-                    return '<label class="lbl-codigo handleClickAbrirOrden" title="Ir a orden" data-id-orden="'+row.id_orden_compra+'">'+(row.codigo?row.codigo:'')+'</label>';
+                    return '<label class="lbl-codigo handleClickAbrirOrden" title="Ir a orden" data-id-orden="'+row.id_orden_compra+'">'+(row.codigo??'')+'</label>';
                     }
                 },
                 {
                     'render': function (data, type, row) {
                         let labelRequerimiento='';
                         (row['requerimientos']).forEach(element => {
-                            labelRequerimiento += `<label class="lbl-codigo handleClickAbrirRequerimiento" title="Ir a requerimiento"  data-id-requerimiento="${element.id_requerimiento}" >${element.codigo?element.codigo:''}</label>`;
+                            labelRequerimiento += `<label class="lbl-codigo handleClickAbrirRequerimiento" title="Ir a requerimiento"  data-id-requerimiento="${element.id_requerimiento}" >${(element.codigo??'')}</label>`;
                         });
                         return labelRequerimiento;
                         
@@ -563,27 +563,27 @@ class ListaOrdenView {
                 },
                 {'render':
                     function (data, type, row, meta){
-                    return `${row.fecha_vencimiento_ocam?row.fecha_vencimiento_ocam:''}`;
+                    return `${(row.fecha_vencimiento_ocam ?? '')}`;
                 }
             },
             {'render':
             function (data, type, row, meta){
-                        return `${row.fecha_ingreso_almacen?row.fecha_ingreso_almacen:''}`;
+                        return `${(row.fecha_ingreso_almacen ?? '')}`;
                     }
                 },
                 {'render':
                     function (data, type, row, meta){
-                        return `${row.estado_aprobacion_cc?row.estado_aprobacion_cc:''}`;
+                        return `${(row.estado_aprobacion_cc ?? '')}`;
                     }
                 },
                 {'render':
                     function (data, type, row, meta){
-                        return `${row.fecha_estado?row.fecha_estado:''}`;
+                        return `${(row.fecha_estado ?? '')}`;
                     }
                 },
                 {'render':
                     function (data, type, row, meta){
-                        return `${row.fecha_registro_requerimiento?row.fecha_registro_requerimiento:''}`;
+                        return `${(row.fecha_registro_requerimiento ?? '')}`;
                     }
                 },
                 {'render':
@@ -644,13 +644,13 @@ class ListaOrdenView {
                         let total=0;
                         if(row.id_moneda ==2){
                             if(parseFloat(row.tipo_cambio_compra) >0){
-                                total = '<span title="$'+row.monto_total_orden+'">'+"S/"+((row.monto_total_orden *row.tipo_cambio_compra).toFixed(2))+'</span>';
+                                total = '<span title="$'+row.monto_total_orden+'">'+"S/"+($.number((row.monto_total_orden *row.tipo_cambio_compra),2))+'</span>';
                             }else{
-                                total =(row.moneda_simbolo+((parseFloat(row.monto_total_orden).toFixed(2))));
+                                total =(row.moneda_simbolo+(($.number(row.monto_total_orden,2))));
 
                             }
                         }else{
-                            total =(row.moneda_simbolo+((parseFloat(row.monto_total_orden).toFixed(2))));
+                            total =(row.moneda_simbolo+(($.number(row.monto_total_orden,2))));
 
                         }
                         return total;
@@ -673,7 +673,9 @@ class ListaOrdenView {
                 }
                 
             ],
-            'columnDefs': [{ className: "text-right", 'aTargets': [0]}]
+            'columnDefs': [{ className: "text-right", 'aTargets': [0]},
+            {className: "text-right", 'aTargets': [18]}
+            ]
             ,"initComplete": function() {
 
                 let listaOrdenes_filter = document.querySelector("div[id='listaOrdenes_filter']");
@@ -745,8 +747,8 @@ class ListaOrdenView {
                     <td style="border: none;">${element.descripcion}</td>
                     <td style="border: none;">${element.cantidad}</td>
                     <td style="border: none;">${element.abreviatura}</td>
-                    <td style="border: none;">${formatNumber.decimal(element.precio, '', 2)}</td>
-                    <td style="border: none;">${formatNumber.decimal(element.subtotal, '', 2)}</td>
+                    <td style="border: none;">${element.moneda_simbolo}${$.number(element.precio,2)}</td>
+                    <td style="border: none;">${element.moneda_simbolo}${$.number((element.cantidad*element.precio),2)}</td>
                     </tr>`;
                 });
                 var tabla = `<table class="table table-sm" style="border: none;" 
@@ -754,7 +756,7 @@ class ListaOrdenView {
                 <thead style="color: black;background-color: #c7cacc;">
                     <tr>
                         <th style="border: none;">Orden Elec.</th>
-                        <th style="border: none;">Cod.CC</th>
+                        <th style="border: none;">Cod.CDP</th>
                         <th style="border: none;">Oportunidad</th>
                         <th style="border: none;">Entidad</th>
                         <th style="border: none;">Corporativo</th>
@@ -764,7 +766,7 @@ class ListaOrdenView {
                         <th style="border: none;">Descripción</th>
                         <th style="border: none;">Cantidad</th>
                         <th style="border: none;">Und.Med</th>
-                        <th style="border: none;">Unitario</th>
+                        <th style="border: none;">Prec.Unit.</th>
                         <th style="border: none;">Total</th>
                     </tr>
                 </thead>

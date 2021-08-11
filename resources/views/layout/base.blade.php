@@ -86,6 +86,7 @@
 	<script src="{{ asset('template/adminlte/js/adminlte.min.js') }}"></script>
 	<script src="{{ asset('template/plugins/iCheck/icheck.min.js') }}"></script>
 	<script src="{{ asset('template/plugins/lobibox/dist/js/lobibox.min.js') }}"></script>
+	<script src="{{ asset('template/plugins/jquery-number/jquery.number.min.js') }}"></script>
 
 	<script src="{{ asset('js/ini.js')}}"></script>
 	<script src="{{ asset('js/function.js')}}"></script>

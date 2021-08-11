@@ -1148,7 +1148,9 @@ class OrdenController extends Controller
     public function detalleOrden($idOrden){
         $detalle = DB::table('logistica.log_det_ord_compra')
         ->select(
-            'log_det_ord_compra.*','alm_prod.codigo',
+            'log_det_ord_compra.*','alm_prod.codigo', 
+            'sis_moneda.simbolo as moneda_simbolo',
+            'sis_moneda.descripcion as moneda_descripcion',
             'alm_prod.part_number','alm_cat_prod.descripcion as categoria',
             'alm_subcat.descripcion as subcategoria','alm_req.id_requerimiento',
             'alm_prod.descripcion','alm_und_medida.abreviatura','alm_req.codigo as codigo_req',
@@ -1157,6 +1159,8 @@ class OrdenController extends Controller
             'entidades.nombre','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica',
             'users.name as user_name'
         )
+        ->leftjoin('logistica.log_ord_compra', 'log_ord_compra.id_orden_compra', '=', 'log_det_ord_compra.id_orden_compra')
+        ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'log_ord_compra.id_moneda')
         ->leftjoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'log_det_ord_compra.id_producto')
         ->leftjoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
         ->leftjoin('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
@@ -1553,8 +1557,7 @@ class OrdenController extends Controller
     public function get_orden_por_requerimiento($id_orden_compra)
     {
         
-        $head_orden_compra = DB::table('logistica.log_ord_compra')
-            ->select(
+        $head_orden_compra = Orden::select(
                 'log_ord_compra.id_orden_compra',
                 'log_ord_compra.id_tp_documento',
                 'adm_tp_docum.descripcion AS tipo_documento',
@@ -2082,10 +2085,10 @@ class OrdenController extends Controller
             }
             $html .= '<td>' . $data['unidad_medida'] . '</td>';
             $html .= '<td style="text-align:center">' . $data['cantidad'] . '</td>';
-            $html .= '<td style="text-align:center">' .$ordenArray['head']['moneda_simbolo']. number_format($data['precio'],2,'.','') . '</td>';
+            $html .= '<td style="text-align:center">' .$ordenArray['head']['moneda_simbolo']. number_format($data['precio'],2) . '</td>';
             // $html .= '<td class="right">' . number_format((($data['cantidad'] * $data['precio']) - (($data['cantidad']* $data['precio'])/1.18)),2,'.','') . '</td>';
             $html .= '<td style="text-align:right"> </td>';
-            $html .= '<td style="text-align:right">' .$ordenArray['head']['moneda_simbolo']. number_format($data['subtotal'],2,'.',''). '</td>';
+            $html .= '<td style="text-align:right">' .$ordenArray['head']['moneda_simbolo']. number_format($data['subtotal'],2). '</td>';
             $html .= '</tr>';
             // $total = $total + ($data['cantidad'] * $data['precio']);
         }
@@ -2095,15 +2098,15 @@ class OrdenController extends Controller
         $html .= '
                 <tr>
                     <td class="right noBorder textBold"  colspan="7">Monto Neto '.$ordenArray['head']['moneda_simbolo'].'</td>
-                    <td class="right  noBorder textBold">' . number_format($monto_neto,2,'.','') . '</td>
+                    <td class="right  noBorder textBold">' . number_format($monto_neto,2) . '</td>
                 </tr>
                 <tr>
                     <td class="right noBorder textBold"  colspan="7">IGV '.$ordenArray['head']['moneda_simbolo'].'</td>
-                    <td class="right noBorder textBold">' . number_format($igv,2,'.','') . '</td>
+                    <td class="right noBorder textBold">' . number_format($igv,2) . '</td>
                 </tr>
                 <tr>
                     <td class="right noBorder textBold"  colspan="7">Monto Total '.$ordenArray['head']['moneda_simbolo'].'</td>
-                    <td class="right noBorder textBold">' . number_format($monto_total,2,'.','') . '</td>
+                    <td class="right noBorder textBold">' . number_format($monto_total,2) . '</td>
                 </tr>
                 </table>
                 <br>
@@ -2112,22 +2115,22 @@ class OrdenController extends Controller
         
                 $html.='
                 <table width="100%" border=0>
-                <caption class="left subtitle" style="padding-bottom:10px; font-size:0.6rem">Condición de Compra:</caption>
+                <caption class="left subtitle" style="padding-bottom:10px; font-size:0.7rem">Condición de compra:</caption>
 
                 <tr>
-                <td nowrap  width="15%" class="subtitle">Forma de Pago: </td>
+                <td nowrap  width="15%" class="subtitle">-Forma de Pago: </td>
                 <td  class="verticalTop left">' . $ordenArray['head']['condicion_compra']['condicion_pago'].' '.(($ordenArray['head']['condicion_compra']['id_condicion'] ==2)?$ordenArray['head']['condicion_compra']['plazo_dias']. ' días':''). '</td>';
 
             
             $html.=' 
-                    <td width="15%" class="verticalTop subtitle">Plazo entrega: </td>
+                    <td width="15%" class="verticalTop subtitle">-Plazo entrega: </td>
                     <td class="verticalTop">' . $ordenArray['head']['condicion_compra']['plazo_entrega'].' Días</td>
             
                 </tr>
                 <tr>
-                    <td width="15%" class="verticalTop subtitle">CDC / Req.: </td>
+                    <td width="15%" class="verticalTop subtitle">-CDC / Req.: </td>
                     <td class="verticalTop">' . ($ordenArray['head']['codigo_cc']?$ordenArray['head']['codigo_cc']:$ordenArray['head']['codigo_requerimiento']) . '</td
-                    <td nowrap width="15%" class="verticalTop subtitle">Ejecutivo Responsable: </td>
+                    <td nowrap width="15%" class="verticalTop subtitle">-Ejecutivo Responsable: </td>
                     <td class="verticalTop ">' . ($ordenArray['head']['nombre_responsable_cc']) . '</td
                 </tr>
                 </table>
@@ -2139,16 +2142,16 @@ class OrdenController extends Controller
 
         $html.='
                 <table width="100%" border=0>
-                <caption class="left subtitle" style="padding-bottom:10px; font-size:0.6rem">Datos para el Despacho:</caption>
+                <caption class="left subtitle" style="padding-bottom:10px; font-size:0.7rem">Datos para el despacho:</caption>
 
                 <tr>
-                    <td nowrap  width="15%" class="verticalTop subtitle">Destino / Dirección: </td>
+                    <td nowrap  width="15%" class="verticalTop subtitle">-Destino / Dirección: </td>
                     <td class="verticalTop">' . $ordenArray['head']['datos_para_despacho']['direccion_destino'] .'<br>'.$ordenArray['head']['datos_para_despacho']['ubigeo_destino'] .'</td>
-                    <td width="15%" class="verticalTop subtitle">Personal Autorizado:</td>
+                    <td width="15%" class="verticalTop subtitle">-Personal Autorizado:</td>
                     <td class="verticalTop">' .$personal_autorizado_1.($personal_autorizado_2?("<br>".$personal_autorizado_2):"").'</td>
                 </tr>
                 <tr>
-                    <td nowrap  width="15%" class="subtitle">Observación:</td>
+                    <td nowrap  width="15%" class="subtitle">-Observación:</td>
                     <td class="verticalTop">' . $ordenArray['head']['observacion']. '</td>
                 </tr>
                 </table>
@@ -2158,18 +2161,18 @@ class OrdenController extends Controller
 
         $html.='
             <table width="100%" border=0>
-                <caption class="left subtitle" style="padding-bottom:10px; font-size:0.6rem">Facturar a Nombre:</caption>
+                <caption class="left subtitle" style="padding-bottom:10px; font-size:0.7rem">Facturar a nombre:</caption>
 
                 <tr>
-                    <td nowrap  width="15%" class="verticalTop subtitle">Razón Social: </td>
+                    <td nowrap  width="15%" class="verticalTop subtitle">-Razón Social: </td>
                     <td class="verticalTop">' . $ordenArray['head']['facturar_a_nombre']['razon_social_empresa'].'</td>
                 </tr>
                 <tr>
-                    <td nowrap  width="15%" class="verticalTop subtitle">RUC: </td>
+                    <td nowrap  width="15%" class="verticalTop subtitle">-RUC: </td>
                     <td class="verticalTop">' . $ordenArray['head']['facturar_a_nombre']['nro_documento_empresa'].'</td>
                 </tr>
                 <tr>
-                    <td nowrap  width="15%" class="verticalTop subtitle">Dirección: </td>
+                    <td nowrap  width="15%" class="verticalTop subtitle">-Dirección: </td>
                     <td class="verticalTop">' .$ordenArray['head']['facturar_a_nombre']['direccion_fiscal_empresa'] .',<br>'.$ordenArray['head']['facturar_a_nombre']['ubigeo_empresa'].'</td>
 
                 </tr>

@@ -39,7 +39,7 @@
             <table class="mytable table table-condensed table-bordered table-okc-view" id="listaOrdenes" style="font-size: 9px;">
                 <thead>
                     <tr>
-                        <th>Cuadro costos</th>
+                        <th>Cuadro de presupuesto</th>
                         <th>Proveedor</th>
                         <th>Nro.orden</th>
                         <th >Req.</th>
@@ -56,7 +56,7 @@
                         <th style="width:5%">Tiem. Atenc. Log.</th>
                         <th style="width:5%">Tiem. Atenc. Prov.</th>
                         <th>Facturas</th>
-                        <th>Monto Presup. CC</th>
+                        <th>Monto Presup. CDP</th>
                         <th>Monto Orden</th>
                         <th >Acción</th>
                     </tr>
@@ -122,7 +122,7 @@
     <!-- <script src="{{('/js/logistica/orden/listar_ordenes.js')}}"></script> -->
     <!-- <script src="{{('/js/logistica/orden/orden_ver_detalle.js')}}"></script> -->
 
-    <script src="{{('/js/logistica/orden/listaOrdenView.js')}}"></script>
+    <script src="{{('/js/logistica/orden/listaOrdenView.js?v=2')}}"></script>
     <script src="{{('/js/logistica/orden/listaOrdenController.js')}}"></script>
     <script src="{{('/js/logistica/orden/listaOrdenModel.js')}}"></script>
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>

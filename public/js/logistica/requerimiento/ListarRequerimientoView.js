@@ -160,30 +160,30 @@ class ListarRequerimientoView {
                 // }
 
                 $('#ListaRequerimientosElaborados tbody').on("click", "label.handleClickAbrirOrden", function () {
-                    var idOrdenCompra = $('#ListaRequerimientosElaborados').DataTable().row($(this).parents("tr")).node().querySelector("label[class~='handleClickAbrirOrden']").dataset.idOrdenCompra;
+                    let idOrdenCompra = $('#ListaRequerimientosElaborados').DataTable().row($(this).parents("tr")).node().querySelector("label[class~='handleClickAbrirOrden']").dataset.idOrdenCompra;
                     // console.log(idOrdenCompra);
                     that.trazabilidadRequerimiento.abrirOrden(idOrdenCompra);
                 });
                 $('#ListaRequerimientosElaborados tbody').on("click", "label.handleClickAbrirRequerimiento", function () {
-                    var data = $('#ListaRequerimientosElaborados').DataTable().row($(this).parents("tr")).data();
+                    let data = $('#ListaRequerimientosElaborados').DataTable().row($(this).parents("tr")).data();
                     that.abrirRequerimiento(data.id_requerimiento);
                 });
                 $('#ListaRequerimientosElaborados tbody').on("click", "button.handleClickAbrirRequerimiento", function () {
-                    var data = $('#ListaRequerimientosElaborados').DataTable().row($(this).parents("tr")).data();
+                    let data = $('#ListaRequerimientosElaborados').DataTable().row($(this).parents("tr")).data();
                     that.abrirRequerimiento(data.id_requerimiento);
                 });
                 $('#ListaRequerimientosElaborados tbody').on("click", "button.handleClickAnularRequerimiento", function () {
-                    var data = $('#ListaRequerimientosElaborados').DataTable().row($(this).parents("tr")).data();
-                    that.anularRequerimiento(this,data.id_requerimiento,data.codigo);
+                    let data = $('#ListaRequerimientosElaborados').DataTable().row($(this).parents("tr")).data();
+                    that.anularRequerimiento($(this),data.id_requerimiento,data.codigo);
                 });
 
                 $('#ListaRequerimientosElaborados tbody').on("click", "button.handleClickVerTrazabilidadRequerimiento", function () {
-                    var data = $('#ListaRequerimientosElaborados').DataTable().row($(this).parents("tr")).data();
+                    let data = $('#ListaRequerimientosElaborados').DataTable().row($(this).parents("tr")).data();
                     that.trazabilidadRequerimiento.verTrazabilidadRequerimientoModal(data, that);
                 });
 
                 $('#ListaRequerimientosElaborados tbody').on("click", "button.handleClickVerDetalleRequerimientoSoloLectura", function () {
-                    var data = $('#ListaRequerimientosElaborados').DataTable().row($(this).parents("tr")).data();
+                    let data = $('#ListaRequerimientosElaborados').DataTable().row($(this).parents("tr")).data();
                     that.verDetalleRequerimientoSoloLectura(data, that);
                 });
             }
@@ -432,7 +432,9 @@ class ListarRequerimientoView {
                 this.requerimientoCtrl.anularRequerimiento(idRequerimiento).then(function (res) {
                     if (res.estado == 7) {
                         $('#wrapper-okc').LoadingOverlay("hide", true);
-                        obj.closest('tr').remove();
+                        obj.closest('tr').fadeOut(500,function(){
+                            $(this).remove();
+                        });
                         Swal.fire(
                             'Anulado',
                             res.mensaje,

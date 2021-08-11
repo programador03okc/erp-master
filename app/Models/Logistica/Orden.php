@@ -19,6 +19,10 @@ class Orden extends Model {
         $fecha= new Carbon($this->attributes['fecha']);
         return $fecha->format('d-m-Y');
     }
+    public function getFechaOrdenAttribute(){
+        $fecha= new Carbon($this->attributes['fecha_orden']);
+        return $fecha->format('d-m-Y');
+    }
     public function getFechaRegistroRequerimientoAttribute(){
         $fecha= new Carbon($this->attributes['fecha_registro_requerimiento']);
         return $fecha->format('d-m-Y');
