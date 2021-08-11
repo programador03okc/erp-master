@@ -122,7 +122,7 @@
     <!-- <script src="{{('/js/logistica/orden/listar_ordenes.js')}}"></script> -->
     <!-- <script src="{{('/js/logistica/orden/orden_ver_detalle.js')}}"></script> -->
 
-    <script src="{{('/js/logistica/orden/listaOrdenView.js?v=2')}}"></script>
+    <script src="{{('/js/logistica/orden/listaOrdenView.js')}}"></script>
     <script src="{{('/js/logistica/orden/listaOrdenController.js')}}"></script>
     <script src="{{('/js/logistica/orden/listaOrdenModel.js')}}"></script>
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>

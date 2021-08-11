@@ -17,7 +17,7 @@ class RequerimientoView {
         this.initializeEventHandler();
         // $('[name=periodo]').val(today.getFullYear());
         this.getTipoCambioCompra();
-        var idRequerimiento = localStorage.getItem("idRequerimiento");
+        let idRequerimiento = localStorage.getItem("idRequerimiento");
         console.log(idRequerimiento);
         if (idRequerimiento !== null){
             this.cargarRequerimiento(idRequerimiento)
@@ -416,7 +416,7 @@ class RequerimientoView {
         vista_extendida();
 
         for (let i = 0; i < data.length; i++) {
-
+           
                 if (data[i].id_tipo_item == 1) { // producto
                 document.querySelector("tbody[id='body_detalle_requerimiento']").insertAdjacentHTML('beforeend', `<tr style="text-align:center; background-color:${data[i].estado ==7?'#f5e4e4':''}; ">
                 <td></td>
@@ -430,10 +430,10 @@ class RequerimientoView {
                         <input type="text" class="centroCosto" name="idCentroCosto[]" value="${data[i].id_centro_costo}" hidden>
                     </div>
                 </td>
-                <td><input class="form-control activation input-sm" type="text" name="partNumber[]" placeholder="Part number" value="${data[i].part_number ?? (data[i].producto_part_number??'')}" ${hasDisabledInput}></td>
+                <td><input class="form-control activation input-sm" type="text" name="partNumber[]" placeholder="Part number" value="${((data[i].part_number!=null && data[i].part_number.length >0) ? data[i].part_number: (data[i].producto_part_number != null? data[i].producto_part_number:''))}" ${hasDisabledInput}></td>
                 <td>
                     <div class="form-group">
-                        <textarea class="form-control activation input-sm descripcion handleBlurUpdateDescripcionItem" name="descripcion[]" placeholder="Descripción" value="${data[i].descripcion ?? (data[i].producto_descripcion??'')}"   ${hasDisabledInput} >${data[i].descripcion ?? (data[i].producto_descripcion??'')}</textarea></td>
+                        <textarea class="form-control activation input-sm descripcion handleBlurUpdateDescripcionItem" name="descripcion[]" placeholder="Descripción" value="${((data[i].descripcion != null && data[i].descripcion >0 )?data[i].descripcion:(data[i].producto_descripcion !=null ?data[i].producto_descripcion:''))}"   ${hasDisabledInput} >${(data[i].descripcion != null ?data[i].descripcion:(data[i].producto_descripcion !=null ?data[i].producto_descripcion:''))}</textarea></td>
                     </div>
                 <td><select name="unidad[]" class="form-control activation input-sm" value="${data[i].id_unidad_medida}" ${hasDisabledInput} >${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
                 <td>
