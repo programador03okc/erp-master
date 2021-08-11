@@ -1049,13 +1049,17 @@ Route::group(['middleware' => ['auth']], function () {
 				//Almacen
 				Route::get('index', 'Almacen\Ubicacion\AlmacenController@view_almacenes')->name('index');
 				Route::get('listar_almacenes', 'Almacen\Ubicacion\AlmacenController@mostrar_almacenes');
-				Route::get('cargar_almacen/{id}', 'Almacen\Ubicacion\AlmacenController@mostrar_almacen');
+				Route::get('mostrar_almacen/{id}', 'Almacen\Ubicacion\AlmacenController@mostrar_almacen');
 				Route::post('guardar_almacen', 'Almacen\Ubicacion\AlmacenController@guardar_almacen');
 				Route::post('editar_almacen', 'Almacen\Ubicacion\AlmacenController@update_almacen');
 				Route::get('anular_almacen/{id}', 'Almacen\Ubicacion\AlmacenController@anular_almacen');
 				Route::get('listar_ubigeos', 'Almacen\Ubicacion\AlmacenController@listar_ubigeos');
 
 				Route::get('almacen_posicion/{id}', 'Almacen\Ubicacion\PosicionController@almacen_posicion');
+				Route::get('listarUsuarios', 'Almacen\Ubicacion\AlmacenController@listarUsuarios');
+				Route::post('guardarAlmacenUsuario', 'Almacen\Ubicacion\AlmacenController@guardarAlmacenUsuario');
+				Route::get('listarAlmacenUsuarios/{id}', 'Almacen\Ubicacion\AlmacenController@listarAlmacenUsuarios');
+				Route::get('anularAlmacenUsuario/{id}', 'Almacen\Ubicacion\AlmacenController@anularAlmacenUsuario');
 			});
 
 			Route::group(['as' => 'posiciones.', 'prefix' => 'posiciones'], function () {
