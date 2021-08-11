@@ -48,6 +48,11 @@ Almacenes
                     <input type="hidden" name="_token" value="{{csrf_token()}}" id="token">
                     <input type="hidden" name="id_almacen" primary="ids">
                     <div class="row">
+                        <div class="col-md-12">
+                            <label style="font-size: 15px;">Datos del Almacén</label>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-md-8">
                             <h5>Sede</h5>
                             <select class="form-control activation" name="id_sede" disabled="true">
@@ -63,9 +68,18 @@ Almacenes
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-8">
                             <h5>Descripción</h5>
                             <input type="text" class="form-control activation" name="descripcion" disabled="true">
+                        </div>
+                        <div class="col-md-4">
+                            <h5>Tipo de Almacén</h5>
+                            <select class="form-control activation" name="id_tipo_almacen" disabled="true">
+                                <option value="0">Elija una opción</option>
+                                @foreach ($tipos as $tipo)
+                                <option value="{{$tipo->id_tipo_almacen}}">{{$tipo->descripcion}}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                     <div class="row">
@@ -86,37 +100,27 @@ Almacenes
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h5>Tipo de Almacén</h5>
-                            <select class="form-control activation" name="id_tipo_almacen" disabled="true">
-                                <option value="0">Elija una opción</option>
-                                @foreach ($tipos as $tipo)
-                                <option value="{{$tipo->id_tipo_almacen}}">{{$tipo->descripcion}}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <table class="mytable table table-condensed table-bordered table-okc-view" width="100%" id="listaAlmacenUsuarios" style="margin-top:10px; margin-bottom: 0px;">
-                                <thead style="color: black;background-color: #c7cacc;">
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Usuario</th>
-                                        <th>Crear/Editar</th>
-                                        <th>Ver</th>
-                                        <th>
-                                            <i class="fas fa-plus-circle icon-tabla green boton agregarUsuario" data-toggle="tooltip" data-placement="bottom" title="Agregar Usuario" onClick="openAlmacenUsuario();"></i>
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                                <tfoot></tfoot>
-                            </table>
-                        </div>
-                    </div>
                 </form>
+                <div class="row">
+                    <div class="col-md-12">
+                        <label style="font-size: 15px;">Lista de Accesos de Usuario por Almacén</label>
+                        <table class="mytable table table-condensed table-bordered table-okc-view" width="100%" id="listaAlmacenUsuarios" style="margin-top:10px; margin-bottom: 0px;">
+                            <thead style="color: black;background-color: #c7cacc;">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Usuario</th>
+                                    <th>Crear/Editar</th>
+                                    <th>Ver</th>
+                                    <th>
+                                        <i class="fas fa-plus-circle icon-tabla green boton text-center" style="padding: 0px;" data-toggle="tooltip" data-placement="bottom" title="Agregar Usuario" onClick="openAlmacenUsuario();"></i>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                            <tfoot></tfoot>
+                        </table>
+                    </div>
+                </div>
             </fieldset>
         </div>
     </div>

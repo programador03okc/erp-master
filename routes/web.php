@@ -1059,6 +1059,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('listarUsuarios', 'Almacen\Ubicacion\AlmacenController@listarUsuarios');
 				Route::post('guardarAlmacenUsuario', 'Almacen\Ubicacion\AlmacenController@guardarAlmacenUsuario');
 				Route::get('listarAlmacenUsuarios/{id}', 'Almacen\Ubicacion\AlmacenController@listarAlmacenUsuarios');
+				Route::get('anularAlmacenUsuario/{id}', 'Almacen\Ubicacion\AlmacenController@anularAlmacenUsuario');
 			});
 
 			Route::group(['as' => 'posiciones.', 'prefix' => 'posiciones'], function () {

@@ -1,7 +1,7 @@
 $(function() {
     listar_almacenes();
     var form = $(".page-main form[type=register]").attr("id");
-    $(".group-table .mytable tbody").on("click", "tr", function() {
+    $("#listaAlmacen tbody").on("click", "tr", function() {
         if ($(this).hasClass("eventClick")) {
             $(this).removeClass("eventClick");
         } else {

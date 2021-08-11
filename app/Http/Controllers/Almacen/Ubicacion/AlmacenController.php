@@ -200,4 +200,13 @@ class AlmacenController extends Controller
 
         return response()->json($data);
     }
+
+    public function anularAlmacenUsuario($id)
+    {
+        $data = DB::table('almacen.alm_almacen_usuario')
+            ->where('id_almacen_usuario', $id)
+            ->update(['estado' => 7]);
+
+        return response()->json($data);
+    }
 }
