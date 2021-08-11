@@ -2,6 +2,21 @@ class RequerimientoModel {
     constructor () {
     }
 
+    getDivisiones(){
+        return new Promise(function(resolve, reject) {
+            $.ajax({
+                type: 'GET',
+                url:`lista-divisiones`,
+                dataType: 'JSON',
+                success(response) {
+                    resolve(response);
+                },
+                error: function(err) {
+                reject(err) // Reject the promise and go to catch()
+                }
+                });
+            }); 
+    }
     getTipoCambioCompra(fecha){
         return new Promise(function(resolve, reject) {
             $.ajax({

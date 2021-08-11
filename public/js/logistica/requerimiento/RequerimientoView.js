@@ -90,6 +90,12 @@ class RequerimientoView {
         });
     }
 
+    editRequerimiento(){
+        if(parseInt(document.querySelector("input[name='id_requerimiento']").value) > 0){
+            $("#form-requerimiento .activation").attr('disabled', false);
+        }
+    }
+
     mostrarHistorial() {
         changeStateButton('inicio');
 
@@ -231,6 +237,23 @@ class RequerimientoView {
             var btnTrazabilidadRequerimiento = document.getElementsByName("btn-ver-trazabilidad-requerimiento");
             disabledControl(btnTrazabilidadRequerimiento, false);
 
+            // construir select con todas la divisiones
+            let optionSelectDivisionHTML='';
+            this.requerimientoCtrl.getDivisiones().then((res)=> {
+                res.forEach(element => {
+                        optionSelectDivisionHTML += `<option value="${element.id_division}" selected>${element.descripcion}</option> `;
+                });
+                document.querySelector("select[name='division']").innerHTML=optionSelectDivisionHTML;
+            }).catch(function (err) {
+                console.log(err)
+                Swal.fire(
+                    '',
+                    'Hubo un error al intentar cargar todo las divisiones',
+                    'error'
+                );
+            })
+            // 
+
             this.mostrarCabeceraRequerimiento(data['requerimiento'][0]);
             if (data.hasOwnProperty('det_req')) {
                 if(data['requerimiento'][0].estado == 7 || data['requerimiento'][0].estado == 2){
@@ -287,6 +310,8 @@ class RequerimientoView {
 
     
     mostrarCabeceraRequerimiento(data) {
+
+        
         // console.log(auth_user);
         // document.querySelector("input[name='id_usuario_session']").value =data.
         document.querySelector("input[name='id_usuario_req']").value = data.id_usuario;
@@ -351,6 +376,14 @@ class RequerimientoView {
             ArchivoAdjunto.updateContadorTotalAdjuntosRequerimiento();
 
         }
+        let simboloMonedaPresupuestoUtilizado =document.querySelector("select[name='moneda']").options[document.querySelector("select[name='moneda']").selectedIndex].dataset.simbolo;
+        let allSelectorSimboloMoneda = document.getElementsByName("simboloMoneda");
+        if(allSelectorSimboloMoneda.length >0){
+            allSelectorSimboloMoneda.forEach(element => {
+                element.textContent=simboloMonedaPresupuestoUtilizado;
+            });
+        }
+
     }
 
 
@@ -412,7 +445,7 @@ class RequerimientoView {
                         <input class="form-control activation input-sm precio text-right handleBurUpdateSubtotal handleBlurUpdatePrecioItem handleBlurCalcularPresupuestoUtilizadoYSaldoPorPartida" type="number" min="0" name="precioUnitario[]" value="${data[i].precio_unitario}" placeholder="Precio U." ${hasDisabledInput}>
                     </div>
                 </td>  
-                <td style="text-align:right;"><span class="moneda" name="simboloMoneda">S/</span><span class="subtotal" name="subtotal[]">0.00</span></td>
+                <td style="text-align:right;"><span class="moneda" name="simboloMoneda">${document.querySelector("select[name='moneda']").options[document.querySelector("select[name='moneda']").selectedIndex].dataset.simbolo}</span><span class="subtotal" name="subtotal[]">0.00</span></td>
                 <td><textarea class="form-control activation input-sm" name="motivo[]"  value="${data[i].motivo != null ? data[i].motivo : ''}" placeholder="Motivo de requerimiento de item (opcional)" ${hasDisabledInput} >${data[i].motivo != null ? data[i].motivo : ''}</textarea></td>
                 <td>
                     <div class="btn-group" role="group">
@@ -455,7 +488,7 @@ class RequerimientoView {
                             <input class="form-control activation input-sm precio text-right handleBurUpdateSubtotal handleBlurUpdateCantidadItem handleBlurCalcularPresupuestoUtilizadoYSaldoPorPartida" type="number" min="0" name="precioUnitario[]" value="${data[i].precio_unitario}"  placeholder="Precio U." ${hasDisabledInput}>
                         </div>  
                     </td>
-                    <td style="text-align:right;"><span class="moneda" name="simboloMoneda">S/</span><span class="subtotal" name="subtotal[]">0.00</span></td>
+                    <td style="text-align:right;"><span class="moneda" name="simboloMoneda">${document.querySelector("select[name='moneda']").options[document.querySelector("select[name='moneda']").selectedIndex].dataset.simbolo}</span><span class="subtotal" name="subtotal[]">0.00</span></td>
                     <td><textarea class="form-control activation input-sm" name="motivo[]"  value="${data[i].motivo != null ? data[i].motivo : ''}" placeholder="Motivo de requerimiento de item (opcional)" ${hasDisabledInput} >${data[i].motivo != null ? data[i].motivo : ''}</textarea></td>
                     <td>
                         <div class="btn-group" role="group">
@@ -1440,6 +1473,7 @@ class RequerimientoView {
 
     listarAdjuntosDeItem() {
         let html = '';
+        let hasDisableBtnEliminarArchivoRequerimiento= '';
         let estadoActualRequerimiento = document.querySelector("input[name='estado']").value;
         if( estadoActualRequerimiento !=1 && estadoActualRequerimiento !=3){
             hasDisableBtnEliminarArchivoRequerimiento = 'disabled';
@@ -1677,7 +1711,7 @@ class RequerimientoView {
                                 rounded: true,
                                 sound: false,
                                 delayIndicator: false,
-                                msg: `Requerimiento ${response.codigo} guardado.`
+                                msg: `Se ha creado el requerimiento ${response.codigo}`
                             });
                             // location.reload();
                             this.RestablecerFormularioRequerimiento();
@@ -1788,6 +1822,7 @@ class RequerimientoView {
         this.limpiarTabla('listaArchivosRequerimiento');
         this.limpiarTabla('listaArchivos');
         this.limpiarTabla('listaPartidasActivas');
+        this.limpiarMesajesValidacion();
         tempArchivoAdjuntoItemList = [];
         tempArchivoAdjuntoRequerimientoList = [];
         tempCentroCostoSelected=null;
@@ -1800,6 +1835,22 @@ class RequerimientoView {
         disabledControl(document.getElementsByName("btn-adjuntos-requerimiento"), true);
 
     
+    }
+
+    limpiarMesajesValidacion(){
+        let allDivError = document.querySelectorAll("div[class='form-group has-error']");
+        let allSpanDanger =document.querySelectorAll("span[class~='text-danger']");
+        if(allDivError.length >0){
+            allDivError.forEach(element => {
+                element.classList.remove('has-error');
+            });
+        }
+        if(allSpanDanger.length >0){
+            allSpanDanger.forEach(element => {
+                element.remove();
+            });
+        }
+
     }
 
     restaurarTotalMonedaDefault(){
