@@ -20,7 +20,11 @@ use App\Models\Contabilidad\Banco;
 use App\Models\Contabilidad\CuentaContribuyente;
 use App\Models\Contabilidad\TipoCuenta;
 use App\Models\Logistica\Orden;
+use App\Models\Logistica\OrdenCompraDetalle;
+use App\Models\Logistica\Proveedor;
 use Carbon\Carbon;
+use Exception;
+
 class OrdenController extends Controller
 {
 
@@ -254,36 +258,35 @@ class OrdenController extends Controller
         $orden_list=[];
         $detalle_orden_list=[];
 
-        $orden_obj = DB::table('logistica.log_ord_compra')
-        ->select(
-            'log_ord_compra.id_orden_compra as orden_id_orden_compra',
-            'log_ord_compra.id_grupo_cotizacion as orden_id_grupo_cotizacion',
-            'log_ord_compra.id_tp_documento as orden_id_tp_documento',
-            'log_ord_compra.fecha as orden_fecha',
-            'log_ord_compra.incluye_igv as orden_incluye_igv',
-            'log_ord_compra.id_usuario as orden_id_usuario',
-            'log_ord_compra.id_moneda as orden_id_moneda',
-            'log_ord_compra.igv_porcentaje as orden_igv_porcentaje',
-            'log_ord_compra.monto_subtotal as orden_monto_subtotal',
-            'log_ord_compra.monto_igv as orden_monto_igv',
-            'log_ord_compra.monto_total as orden_monto_total',
-            'log_ord_compra.estado as orden_estado',
-            'log_ord_compra.id_proveedor as orden_id_proveedor',
-            'log_ord_compra.codigo as orden_codigo',
-            'log_ord_compra.id_cotizacion as orden_id_cotizacion',
-            'log_ord_compra.id_condicion as orden_id_condicion',
-            'log_ord_compra.plazo_dias as orden_plazo_dias',
-            'log_ord_compra.id_cta_principal as orden_id_cta_principal',
-            'log_ord_compra.id_cta_alternativa as orden_id_cta_alternativa',
-            'log_ord_compra.id_cta_detraccion as orden_id_cta_detraccion',
-            'log_ord_compra.personal_autorizado_1 as orden_personal_autorizado_1',
-            'log_ord_compra.personal_autorizado_2 as orden_personal_autorizado_2',
-            'log_ord_compra.plazo_entrega as orden_plazo_entrega',
-            'log_ord_compra.en_almacen as orden_en_almacen',
-            'log_ord_compra.id_occ as orden_id_occ',
-            'log_ord_compra.id_sede as orden_id_sede',
-            'log_ord_compra.id_requerimiento as orden_id_requerimiento',
-            'log_ord_compra.codigo_softlink as orden_codigo_softlink',
+        $orden_obj =Orden::select(
+            'log_ord_compra.id_orden_compra as id_orden_compra',
+            'log_ord_compra.id_grupo_cotizacion',
+            'log_ord_compra.id_tp_documento',
+            'log_ord_compra.fecha',
+            'log_ord_compra.incluye_igv',
+            'log_ord_compra.id_usuario',
+            'log_ord_compra.id_moneda',
+            'sis_moneda.simbolo as simbolo_moneda',
+            'log_ord_compra.igv_porcentaje',
+            'log_ord_compra.monto_subtotal',
+            'log_ord_compra.monto_igv',
+            'log_ord_compra.monto_total',
+            'log_ord_compra.estado',
+            'log_ord_compra.id_proveedor',
+            'log_ord_compra.codigo',
+            'log_ord_compra.id_cotizacion',
+            'log_ord_compra.id_condicion',
+            'log_ord_compra.plazo_dias',
+            'log_ord_compra.id_cta_principal',
+            'log_ord_compra.id_cta_alternativa',
+            'log_ord_compra.id_cta_detraccion',
+            'log_ord_compra.personal_autorizado_1',
+            'log_ord_compra.personal_autorizado_2',
+            'log_ord_compra.plazo_entrega',
+            'log_ord_compra.en_almacen',
+            'log_ord_compra.id_occ',
+            'log_ord_compra.id_sede',
+            'log_ord_compra.codigo_softlink',
             'log_ord_compra.observacion',
             'adm_contri.id_contribuyente',
             'adm_contri.razon_social',
@@ -301,6 +304,7 @@ class OrdenController extends Controller
             'log_det_ord_compra.descripcion_adicional as detalle_orden_descripcion_adicional',
             'log_det_ord_compra.cantidad as detalle_orden_cantidad',
             'log_det_ord_compra.precio as detalle_orden_precio',
+            'cc_am.moneda_pvu',
             'cc_am_filas.cantidad as cdc_cantidad',
             'cc_am_filas.pvu_oc as cdc_precio',
             'log_det_ord_compra.id_unidad_medida as detalle_orden_id_unidad_medida',
@@ -311,6 +315,7 @@ class OrdenController extends Controller
             'alm_req.concepto',
             'alm_req.id_cliente',
             'contri_cli.razon_social as razon_social_cliente',
+            'alm_req.id_requerimiento',
             'alm_req.codigo as codigo_requerimiento',
             'alm_prod.codigo AS alm_prod_codigo',
             'alm_prod.part_number',
@@ -318,10 +323,12 @@ class OrdenController extends Controller
             'alm_subcat.descripcion as subcategoria',
             'alm_prod.descripcion AS alm_prod_descripcion'
         )
+        
         ->leftJoin('logistica.log_det_ord_compra', 'log_det_ord_compra.id_orden_compra', '=', 'log_ord_compra.id_orden_compra')
         ->leftJoin('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
         ->leftJoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
         ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'log_ord_compra.id_sede')
+        ->leftJoin('configuracion.sis_moneda', 'log_ord_compra.id_moneda', '=', 'sis_moneda.id_moneda')
         ->leftJoin('logistica.estados_compra', 'log_det_ord_compra.estado', '=', 'estados_compra.id_estado')
         ->leftJoin('almacen.alm_prod', 'log_det_ord_compra.id_producto', '=', 'alm_prod.id_producto')
         ->leftJoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
@@ -331,8 +338,10 @@ class OrdenController extends Controller
         ->leftJoin('comercial.com_cliente','com_cliente.id_cliente','=','alm_req.id_cliente')
         ->leftJoin('contabilidad.adm_contri as contri_cli','contri_cli.id_contribuyente','=','com_cliente.id_contribuyente')
         ->leftJoin('mgcp_cuadro_costos.cc_am_filas', 'cc_am_filas.id', '=', 'alm_det_req.id_cc_am_filas')
+        ->leftJoin('mgcp_cuadro_costos.cc_am', 'cc_am_filas.id_cc_am', '=', 'cc_am.id_cc')
 
         ->where([
+            // ['log_ord_compra.codigo', '=', 'OC-21080176'],
             ['log_ord_compra.estado', '!=', 7],
             $tipoOrden >0 ? ['log_ord_compra.id_tp_documento',$tipoOrden]:[null],
             $empresa >0 ? ['sis_sede.id_empresa',$empresa]:[null],
@@ -366,9 +375,10 @@ class OrdenController extends Controller
         ->whereRaw('coalesce((log_det_ord_compra.cantidad * log_det_ord_compra.precio) ,0) '.$simboloSubtotal.' '.$subtotal)
         ->get();
 
-        $orden_list = collect($orden_obj)->map(function($x){ return (array) $x; })->toArray(); 
+        // $orden_list = collect($orden_obj)->map(function($x){ return (array) $x; })->toArray(); 
+        // Debugbar::info($orden_obj);
 
-        $output['data']=$orden_list;
+        $output['data']=$orden_obj;
         return $output;
     }
 
@@ -973,7 +983,7 @@ class OrdenController extends Controller
 
 
         ->where([
-            // ['log_ord_compra.codigo', '=', 'OC-21050010'],
+            // ['log_ord_compra.codigo', '=', 'OC-21070121'],
             ['log_ord_compra.estado', '!=', 7],
             ['log_ord_compra.id_grupo_cotizacion', '=', null],
             $tipoOrden >0 ? ['log_ord_compra.id_tp_documento',$tipoOrden]:[null],
@@ -1029,7 +1039,7 @@ class OrdenController extends Controller
                 $data_orden[]=[
                     'id_orden_compra'=> $element->id_orden_compra,
                     'id_tp_documento'=> $element->id_tp_documento,
-                    'fecha' => date_format(date_create($element->fecha),'Y-m-d'), 
+                    'fecha' => $element->fecha, 
                     'codigo'=> $element->codigo,
                     'descripcion_sede_empresa'=> $element->descripcion_sede_empresa,
                     'nro_documento'=> $element->nro_documento, 
@@ -1061,7 +1071,8 @@ class OrdenController extends Controller
             }
         }
 
-        $detalle_orden = Orden::select(
+        // $detalle_orden = Orden::select(
+            $detalle_orden = DB::table('logistica.log_ord_compra')->select(
             'log_ord_compra.id_orden_compra',
             'log_det_ord_compra.id_detalle_orden',
             'alm_req.id_requerimiento',
@@ -1075,17 +1086,22 @@ class OrdenController extends Controller
             'estados_aprobacion.estado as estado_aprobacion'
             )
         ->leftJoin('logistica.log_det_ord_compra', 'log_det_ord_compra.id_orden_compra', '=', 'log_ord_compra.id_orden_compra')
-        ->leftJoin('almacen.guia_com_det', 'guia_com_det.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden')
         ->leftJoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
+        ->leftJoin('almacen.guia_com_det', 'guia_com_det.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden')
         ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
         ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
         ->leftJoin('mgcp_cuadro_costos.estados_aprobacion', 'estados_aprobacion.id', '=', 'cc.estado_aprobacion')
         ->leftJoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
         ->leftJoin('mgcp_acuerdo_marco.oc_propias', 'oc_propias.id_oportunidad', '=', 'oportunidades.id')
-        ->where([['log_ord_compra.estado', '!=', 7]])
+        ->where([
+            // ['log_ord_compra.codigo', '=', 'OC-21070121'],
+            ['log_ord_compra.estado', '!=', 7]
+
+        ])
         ->orderBy('log_ord_compra.fecha','desc')
         ->get();
 
+         
         $data_detalle_orden=[];
         if(count($ord_compra)>0){
             foreach($detalle_orden as $element){
@@ -1106,6 +1122,7 @@ class OrdenController extends Controller
         }
 
       
+        // Debugbar::info($data_detalle_orden);
 
         foreach ($data_orden as $ordenKey => $ordenValue) {
             foreach ($data_detalle_orden as $detalleOrdnKey => $detalleOrdenValue) {
@@ -1351,7 +1368,6 @@ class OrdenController extends Controller
         'alm_req.codigo as codigo_requerimiento',
         'log_det_ord_compra.id_producto',
         'log_det_ord_compra.id_item',
-        'alm_item.codigo AS codigo_item',
         'alm_prod.descripcion AS descripcion_producto',
         'alm_prod.codigo AS codigo_producto',
         'alm_prod.part_number',
@@ -1366,10 +1382,11 @@ class OrdenController extends Controller
         'alm_und_medida.descripcion AS unidad_medida',
         'log_det_ord_compra.subtotal',
         'log_det_ord_compra.id_detalle_requerimiento',
-        'log_det_ord_compra.estado'
+        'log_det_ord_compra.estado',
+        'guia_com_det.id_guia_com',
+        'guia_com_det.estado as estado_guia_com_det'
     )
     ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'log_det_ord_compra.id_unidad_medida')
-    ->leftJoin('almacen.alm_item', 'alm_item.id_item', '=', 'log_det_ord_compra.id_item')
     ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'log_det_ord_compra.id_producto')
     ->leftJoin('configuracion.sis_usua as sis_usua_aut', 'sis_usua_aut.id_usuario', '=', 'log_det_ord_compra.personal_autorizado')
     ->leftJoin('rrhh.rrhh_trab as trab_aut', 'trab_aut.id_trabajador', '=', 'sis_usua_aut.id_trabajador')
@@ -1377,6 +1394,8 @@ class OrdenController extends Controller
     ->leftJoin('rrhh.rrhh_perso as pers_aut', 'pers_aut.id_persona', '=', 'post_aut.id_persona')
     ->leftJoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
     ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+    ->leftJoin('almacen.guia_com_det', 'guia_com_det.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden')
+
     ->where([
         ['log_det_ord_compra.id_orden_compra', '=', $id_orden]
     ])
@@ -1392,10 +1411,8 @@ class OrdenController extends Controller
                 'id_detalle_requerimiento' => $data->id_detalle_requerimiento,
                 'id_requerimiento' => $data->id_requerimiento,
                 'codigo_requerimiento' => $data->codigo_requerimiento,
-                'id_item' => $data->id_item,
                 'id_tipo_item' => 1,
                 'id_producto' => $data->id_producto,
-                'codigo_item' => $data->codigo_item,
                 'codigo_producto' => $data->codigo_producto,
                 'descripcion' => $data->descripcion_producto,
                 'descripcion_producto' => $data->descripcion_producto,
@@ -1414,7 +1431,9 @@ class OrdenController extends Controller
                 // 'incluye_igv' => $data->incluye_igv,
                 'garantia' => $data->garantia,
                 'lugar_despacho' => $data->lugar_despacho,
-                'estado' => $data->estado
+                'estado' => $data->estado,
+                'id_guia_com' => $data->id_guia_com,
+                'estado_guia_com_det' => $data->estado_guia_com_det
                 // 'nombre_personal_autorizado' => $data->nombre_personal_autorizado 
             ];
             $idDetalleReqList[]=$data->id_detalle_requerimiento;
@@ -1609,7 +1628,7 @@ class OrdenController extends Controller
                 DB::raw("(dis_contac.descripcion) || ' ' || (prov_contac.descripcion) || ' ' || (dpto_contac.descripcion)  AS ubigeo_contacto")
 
             )
-            ->Join('administracion.adm_tp_docum', 'adm_tp_docum.id_tp_documento', '=', 'log_ord_compra.id_tp_documento')
+            ->leftJoin('administracion.adm_tp_docum', 'adm_tp_docum.id_tp_documento', '=', 'log_ord_compra.id_tp_documento')
             ->leftJoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'log_ord_compra.id_usuario')
             ->leftJoin('rrhh.rrhh_trab as trab', 'trab.id_trabajador', '=', 'sis_usua.id_trabajador')
             ->leftJoin('rrhh.rrhh_postu as post', 'post.id_postulante', '=', 'trab.id_postulante')
@@ -1617,7 +1636,7 @@ class OrdenController extends Controller
             ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'log_ord_compra.id_moneda')
             ->leftJoin('logistica.log_cdn_pago', 'log_cdn_pago.id_condicion_pago', '=', 'log_ord_compra.id_condicion')
             // ->leftJoin('contabilidad.adm_ctb_contac', 'adm_ctb_contac.id_datos_contacto', '=', 'log_ord_compra.personal_responsable')
-            ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
+            ->leftJoin('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
             ->leftJoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
             ->leftJoin('contabilidad.sis_identi', 'sis_identi.id_doc_identidad', '=', 'adm_contri.id_doc_identidad')
             // ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'log_ord_compra.id_requerimiento')
@@ -1656,7 +1675,6 @@ class OrdenController extends Controller
                 ['log_ord_compra.estado', '!=', 7]
             ])
             ->get();
-
             // return $head_orden_compra;
 
         $detalle_orden_compra = DB::table('logistica.log_det_ord_compra')
@@ -1863,7 +1881,8 @@ class OrdenController extends Controller
         $result['head']['codigo_requerimiento']=$codigoReqText;
         $result['head']['codigo_cc']= isset($codigo_oportunidad)?$codigo_oportunidad:'';
         $result['head']['nombre_responsable_cc']=isset($nombre_responsable)?$nombre_responsable:'';
-        
+      
+
         return $result;
     }
     public function imprimir_orden_por_requerimiento_pdf($id_orden_compra)
@@ -1965,7 +1984,7 @@ class OrdenController extends Controller
             </head>
             <body>';
             
-                if($ordenArray['head']['logo_empresa'] != null){
+                if(isset($ordenArray['head']['logo_empresa']) && ($ordenArray['head']['logo_empresa'] != null)){
                     $html.='<img src=".'.$ordenArray['head']['logo_empresa'].'" alt="Logo" height="75px">';
                 }
 
@@ -2019,14 +2038,14 @@ class OrdenController extends Controller
                 <table width="100%" class="tablePDF" border="0" style="font-size:8px;">
                 <thead>
                     <tr class="subtitle">
-                        <td width="3%">Código</td>
-                        <td width="3%">Part Number</td>
-                        <td width="20%">Descripción</td>
-                        <td width="3%">Und</td>
-                        <td width="3%">Cant.</td>
-                        <td width="3%">Precio</td>
-                        <td width="3%">Descuento</td>
-                        <td width="5%">Total</td>
+                        <td style="width:3%; color:white; text-align:center;">Código</td>
+                        <td style="width:3%; color:white; text-align:center;">Part Number</td>
+                        <td style="width:20%; color:white; text-align:center;">Descripción</td>
+                        <td style="width:3%; color:white; text-align:center;">Und</td>
+                        <td style="width:3%; color:white; text-align:center;">Cant.</td>
+                        <td style="width:3%; color:white; text-align:center;">Precio</td>
+                        <td style="width:3%; color:white; text-align:center;">Descuento</td>
+                        <td style="width:5%; color:white; text-align:center;">Total</td>
                     </tr>   
                 </thead>';
 
@@ -2035,7 +2054,8 @@ class OrdenController extends Controller
         foreach ($ordenArray['detalle'] as $key => $data) {
             $monto_neto += $data['subtotal'] ;
         }
-
+        $igv =0;
+        $monto_total=0;
         foreach ($ordenArray['detalle'] as $key => $data) {
           
             if($ordenArray['head']['incluye_igv'] == true){
@@ -2062,10 +2082,10 @@ class OrdenController extends Controller
             }
             $html .= '<td>' . $data['unidad_medida'] . '</td>';
             $html .= '<td style="text-align:center">' . $data['cantidad'] . '</td>';
-            $html .= '<td style="text-align:center">' . number_format($data['precio'],2,'.','') . '</td>';
+            $html .= '<td style="text-align:center">' .$ordenArray['head']['moneda_simbolo']. number_format($data['precio'],2,'.','') . '</td>';
             // $html .= '<td class="right">' . number_format((($data['cantidad'] * $data['precio']) - (($data['cantidad']* $data['precio'])/1.18)),2,'.','') . '</td>';
             $html .= '<td style="text-align:right"> </td>';
-            $html .= '<td style="text-align:right">' . $data['subtotal']. '</td>';
+            $html .= '<td style="text-align:right">' .$ordenArray['head']['moneda_simbolo']. number_format($data['subtotal'],2,'.',''). '</td>';
             $html .= '</tr>';
             // $total = $total + ($data['cantidad'] * $data['precio']);
         }
@@ -2565,88 +2585,70 @@ class OrdenController extends Controller
     }
 
     public function guardar_orden_por_requerimiento(Request $request){
+
         // try {
         //     DB::beginTransaction();
 
-            $usuario = Auth::user()->id_usuario;
+            $orden = new Orden();
             $tp_doc = ($request->id_tp_documento !== null ? $request->id_tp_documento : 2);
-            $codigo = $this->nextCodigoOrden($tp_doc);
-            $guardarEnRequerimiento = $request->guardarEnRequerimiento;
+            $orden->codigo =  $this->nextCodigoOrden($tp_doc);
+            $orden->id_grupo_cotizacion = $request->id_grupo_cotizacion?$request->id_grupo_cotizacion:null;
+            $orden->id_tp_documento = $tp_doc;
+            $orden->fecha = new Carbon();
+            $orden->id_usuario = Auth::user()->id_usuario;
+            $orden->id_moneda = $request->id_moneda?$request->id_moneda:null;
+            $orden->incluye_igv = isset($request->incluye_igv)?$request->incluye_igv:true;
+            $orden->id_proveedor = $request->id_proveedor;
+            $orden->id_cta_principal = isset($request->id_cuenta_principal_proveedor)?$request->id_cuenta_principal_proveedor:null;
+            $orden->id_contacto = isset($request->id_contacto_proveedor)?$request->id_contacto_proveedor:null;
+            $orden->plazo_entrega =  $request->plazo_entrega?$request->plazo_entrega:null;
+            $orden->id_condicion = $request->id_condicion?$request->id_condicion:null;
+            $orden->plazo_dias = $request->plazo_dias?$request->plazo_dias:null;
+            $orden->id_cotizacion = $request->id_cotizacion?$request->id_cotizacion:null;
+            $orden->id_tp_doc = isset($request->id_tp_doc)?$request->id_tp_doc:null;
+            $orden->personal_autorizado_1 = $request->personal_autorizado_1?$request->personal_autorizado_1:null;
+            $orden->personal_autorizado_2 = $request->personal_autorizado_2?$request->personal_autorizado_2:null;
+            $orden->id_occ = $request->id_cc?$request->id_cc:null;
+            $orden->id_sede = $request->id_sede?$request->id_sede:null;
+            $orden->direccion_destino = $request->direccion_destino?$request->direccion_destino:null;
+            $orden->ubigeo_destino = isset($request->id_ubigeo_destino)?$request->id_ubigeo_destino:null;
+            $orden->en_almacen = false;
+            $orden->estado = 1;
+            $orden->codigo_softlink = $request->codigo_orden!==null ? $request->codigo_orden : '';
+            $orden->observacion = isset($request->observacion)?$request->observacion:null;
+            $orden->tipo_cambio_compra = isset($request->tipo_cambio_compra)?$request->tipo_cambio_compra:true;
+            $orden->save();
 
-            $id_orden = DB::table('logistica.log_ord_compra')
-            ->insertGetId(
-                [
-                    'id_grupo_cotizacion' => isset($request->id_grupo_cotizacion)?$request->id_grupo_cotizacion:null,
-                    'id_tp_documento' =>  $tp_doc,
-                    'fecha' => date('Y-m-d H:i:s'),
-                    'id_usuario' => $usuario?$usuario:null,
-                    'id_moneda' => ($request->id_moneda?$request->id_moneda:null),
-                    'incluye_igv' =>  isset($request->incluye_igv)?$request->incluye_igv:true,
-                    'id_proveedor' => $request->id_proveedor,
-                    'id_cta_principal' => isset($request->id_cuenta_principal_proveedor)?$request->id_cuenta_principal_proveedor:null,
-                    'id_contacto' => isset($request->id_contacto_proveedor)?$request->id_contacto_proveedor:null,
-                    'codigo' => $codigo?$codigo:null,
-                    'plazo_entrega' => $request->plazo_entrega?$request->plazo_entrega:null,
-                    'id_condicion' => $request->id_condicion?$request->id_condicion:null,
-                    'plazo_dias' => $request->plazo_dias?$request->plazo_dias:null,
-                    'id_cotizacion' => $request->id_cotizacion?$request->id_cotizacion:null,
-                    'id_tp_doc' =>  isset($request->id_tp_doc)?$request->id_tp_doc:null,
-                    'personal_autorizado_1' => $request->personal_autorizado_1?$request->personal_autorizado_1:null,
-                    'personal_autorizado_2' => $request->personal_autorizado_2?$request->personal_autorizado_2:null,
-                    'id_occ' => $request->id_cc?$request->id_cc:null,
-                    'id_sede' => $request->id_sede?$request->id_sede:null,
-                    'direccion_destino' => $request->direccion_destino?$request->direccion_destino:null,
-                    'ubigeo_destino' => isset($request->id_ubigeo_destino)?$request->id_ubigeo_destino:null,
-                    'en_almacen' => false,
-                    'estado' => 1,
-                    'codigo_softlink' => ($request->codigo_orden!==null ? $request->codigo_orden : ''),
-                    'observacion' => isset($request->observacion)?$request->observacion:null,
-                    'tipo_cambio_compra' =>  isset($request->tipo_cambio_compra)?$request->tipo_cambio_compra:true
-                ],
-                'id_orden_compra'
-            );
-
-            $dataDetalle = $request->detalle;
-
-            $allidReqList=[];
-            $allIdDetReqList=[];
-            foreach($dataDetalle as $d) {
-                $allIdDetReqList[]=$d['id_detalle_requerimiento'];
-
-                if($d['cantidad_a_comprar'] > 0 && $d['estado'] != 7){
-                    if($guardarEnRequerimiento == false){
-                        DB::table('logistica.log_det_ord_compra')
-                        ->insert([
-                            'id_orden_compra'=>$id_orden,
-                            'id_item'=> ($d['id_item'] ? $d['id_item'] : null),
-                            'id_producto'=> (isset($d['id_producto']) ? $d['id_producto'] : null),
-                            'id_detalle_requerimiento'=> ($d['id_detalle_requerimiento'] ? $d['id_detalle_requerimiento'] : null),
-                            'cantidad'=> $d['cantidad_a_comprar'],
-                            'id_unidad_medida'=> $d['id_unidad_medida'],
-                            'precio'=> $d['precio_unitario'],
-                            'descripcion_adicional'=> $d['descripcion_adicional'],
-                            'subtotal'=> $d['subtotal']?$d['subtotal']:0,
-                            'tipo_item_id'=> (isset($d['id_tipo_item'])?$d['id_tipo_item']:null),
-                            'estado'=> 1
-                            // 'fecha_registro'=> date('Y-m-d H:i:s')
-                        ]);
-                    }
-
-                }
+            $count = count($request->descripcion);
+            for ($i = 0; $i < $count; $i++) {
+            $detalle = new OrdenCompraDetalle();
+            $detalle->id_orden_compra= $orden->id_orden_compra;
+            $detalle->id_producto= ($request->idProducto[$i]?$request->idProducto[$i]:null);
+            $detalle->id_detalle_requerimiento=$request->idDetalleRequerimiento[$i]?$request->idDetalleRequerimiento[$i]:null;
+            $detalle->cantidad=$request->cantidadAComprarRequerida[$i];
+            $detalle->id_unidad_medida=$request->unidad[$i];
+            $detalle->precio=$request->precioUnitario[$i];
+            $detalle->descripcion_adicional=($request->descripcion[$i]?$request->descripcion[$i]:null);
+            $detalle->subtotal= floatval($request->cantidadAComprarRequerida[$i] * $request->precioUnitario[$i]);
+            $detalle->tipo_item_id=$request->idTipoItem[$i];
+            $detalle->estado=1;
+            // $detalle->fecha_registro = new Carbon();
+            $detalle->save();
             }
 
-        
-            if(isset($id_orden) and $id_orden >0){
-                $this->actualizarNuevoEstadoRequerimiento($id_orden,$codigo);
+            if(isset($orden->id_orden_compra) and $orden->id_orden_compra >0){
+                $this->actualizarNuevoEstadoRequerimiento($orden->id_orden_compra,$orden->codigo);
             
             }
             
 
         // DB::commit();
-            return response()->json($id_orden);
+            return response()->json(['id_orden_compra' => $orden->id_orden_compra, 'codigo' => $orden->codigo]);
 
-        // } catch (\PDOException $e) {
+        // } catch (Exception $e) {
         //     DB::rollBack();
+        //     return response()->json(['id_orden_compra' => 0, 'codigo' => '', 'mensaje' => 'Hubo un problema al guardar la orden. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
+
         // }
 
     }
@@ -2956,183 +2958,79 @@ class OrdenController extends Controller
         try {
             DB::beginTransaction();
 
-            $usuario = Auth::user()->id_usuario;
-            $id_orden = $request->id_orden;
-            $tp_doc = ($request->id_tp_documento !== null ? $request->id_tp_documento : 2);
+            $orden = Orden::where("id_orden_compra", $request->id_orden)->first();
+            $orden->id_grupo_cotizacion = $request->id_grupo_cotizacion?$request->id_grupo_cotizacion:null;
+            $orden->id_tp_documento = ($request->id_tp_documento !== null ? $request->id_tp_documento : 2);
+            $orden->fecha = new Carbon();
+            $orden->id_usuario = Auth::user()->id_usuario;
+            $orden->id_moneda = $request->id_moneda?$request->id_moneda:null;
+            $orden->incluye_igv = isset($request->incluye_igv)?$request->incluye_igv:true;
+            $orden->id_proveedor = $request->id_proveedor;
+            $orden->id_cta_principal = isset($request->id_cuenta_principal_proveedor)?$request->id_cuenta_principal_proveedor:null;
+            $orden->id_contacto = isset($request->id_contacto_proveedor)?$request->id_contacto_proveedor:null;
+            $orden->plazo_entrega =  $request->plazo_entrega?$request->plazo_entrega:null;
+            $orden->id_condicion = $request->id_condicion?$request->id_condicion:null;
+            $orden->plazo_dias = $request->plazo_dias?$request->plazo_dias:null;
+            $orden->id_cotizacion = $request->id_cotizacion?$request->id_cotizacion:null;
+            $orden->id_tp_doc = isset($request->id_tp_doc)?$request->id_tp_doc:null;
+            $orden->personal_autorizado_1 = $request->personal_autorizado_1?$request->personal_autorizado_1:null;
+            $orden->personal_autorizado_2 = $request->personal_autorizado_2?$request->personal_autorizado_2:null;
+            $orden->id_occ = $request->id_cc?$request->id_cc:null;
+            $orden->id_sede = $request->id_sede?$request->id_sede:null;
+            $orden->direccion_destino = $request->direccion_destino?$request->direccion_destino:null;
+            $orden->ubigeo_destino = isset($request->id_ubigeo_destino)?$request->id_ubigeo_destino:null;
+            $orden->codigo_softlink = $request->codigo_orden!==null ? $request->codigo_orden : '';
+            $orden->observacion = isset($request->observacion)?$request->observacion:null;
+            $orden->tipo_cambio_compra = isset($request->tipo_cambio_compra)?$request->tipo_cambio_compra:true;
+            $orden->save();
 
-            DB::table('logistica.log_ord_compra')
-            ->where('log_ord_compra.id_orden_compra',$id_orden)
-            ->update(
-                [
-                    'id_grupo_cotizacion' => isset($request->id_grupo_cotizacion)?$request->id_grupo_cotizacion:null,
-                    'id_tp_documento' =>  $tp_doc,
-                    'fecha' => isset($request->fecha_emision)?str_replace("T", " ", $request->fecha_emision):null,
-                    'id_usuario' => $usuario?$usuario:null,
-                    'id_moneda' => $request->id_moneda?$request->id_moneda:null,
-                    'incluye_igv' => $request->incluye_igv?$request->incluye_igv:true,
-                    'id_proveedor' => $request->id_proveedor,
-                    'id_contacto' => $request->id_contacto_proveedor?$request->id_contacto_proveedor:null,
+            $TodoDetalleOrden = OrdenCompraDetalle::where("id_orden_compra", $orden->id_orden_compra)->get();
+            $idDetalleProcesado = [];
+            $count = count($request->descripcion);
+            for ($i = 0; $i < $count; $i++) {
+                $id = $request->idRegister[$i];
+                if (preg_match('/[A-Za-z].*[0-9]|[0-9].*[A-Za-z]/', $id)) // es un id con numeros y letras => es nuevo, insertar
+                {
+                    $detalle = new OrdenCompraDetalle();
+                    $detalle->id_orden_compra= $orden->id_orden_compra;
+                    $detalle->id_producto= $request->idProducto[$i];
+                    $detalle->id_detalle_requerimiento=$request->idDetalleRequerimiento[$i];
+                    $detalle->cantidad=$request->cantidadAComprarRequerida[$i];
+                    $detalle->id_unidad_medida=$request->unidad[$i];
+                    $detalle->precio=$request->precioUnitario[$i];
+                    $detalle->descripcion_adicional=$request->descripcion[$i];
+                    $detalle->subtotal= floatval($request->cantidadAComprarRequerida[$i] * $request->precioUnitario[$i]);
+                    $detalle->tipo_item_id=$request->idTipoItem[$i];
+                    $detalle->estado=1;
+                    $detalle->save();
 
-                    'plazo_entrega' => $request->plazo_entrega?$request->plazo_entrega:null,
-                    'id_condicion' => $request->id_condicion?$request->id_condicion:null,
-                    'plazo_dias' => $request->plazo_dias?$request->plazo_dias:null,
-                    'id_cotizacion' => $request->id_cotizacion?$request->id_cotizacion:null,
-                    'id_tp_doc' =>  isset($request->id_tp_doc)?$request->id_tp_doc:null,
-                    'personal_autorizado_1' => $request->personal_autorizado_1?$request->personal_autorizado_1:null,
-                    'personal_autorizado_2' => $request->personal_autorizado_2?$request->personal_autorizado_2:null,
-                    'id_occ' => $request->id_cc?$request->id_cc:null,
-                    'id_sede' => $request->id_sede?$request->id_sede:null,
-                    'direccion_destino' => $request->direccion_destino?$request->direccion_destino:null,
-                    'ubigeo_destino' => isset($request->id_ubigeo_destino)?$request->id_ubigeo_destino:null,
-                    'codigo_softlink' => ($request->codigo_orden!==null ? $request->codigo_orden : ''),
-                    'observacion' => isset($request->observacion)?$request->observacion:null
-                ]
-            );
+                }else{ // es un id solo de numerico => actualiza
+                    $detalle = OrdenCompraDetalle::where("id_detalle_orden", $id)->first();
+                    $detalle->id_producto= $request->idProducto[$i];
+                    $detalle->id_detalle_requerimiento=$request->idDetalleRequerimiento[$i];
+                    $detalle->cantidad=$request->cantidadAComprarRequerida[$i];
+                    $detalle->id_unidad_medida=$request->unidad[$i];
+                    $detalle->precio=$request->precioUnitario[$i];
+                    $detalle->descripcion_adicional=$request->descripcion[$i];
+                    $detalle->subtotal= floatval($request->cantidadAComprarRequerida[$i] * $request->precioUnitario[$i]);
+                    $detalle->tipo_item_id=$request->idTipoItem[$i];
+                    $detalle->save();
 
-            $dataDetalle = $request->detalle;
- 
-
-            $allidReqList=[];
-            foreach($dataDetalle as $d) {
-                $allidReqList[]= $d['id_requerimiento'];
-
-                if($d['cantidad_a_comprar'] > 0 && $d['estado'] > 0){
-                    DB::table('logistica.log_det_ord_compra')
-                    ->where('log_det_ord_compra.id_detalle_orden',$d['id_detalle_orden'])
-                    ->update([
-                        'id_orden_compra'=>$id_orden,
-                        'id_item'=> ($d['id_item'] ? $d['id_item'] : null),
-                        'id_producto'=> (isset($d['id_producto']) ? $d['id_producto'] : null),
-                        'id_detalle_requerimiento'=> ($d['id_detalle_requerimiento'] ? $d['id_detalle_requerimiento'] : null),
-                        'cantidad'=> $d['cantidad_a_comprar'],
-                        'id_unidad_medida'=> $d['id_unidad_medida'],
-                        'precio'=> $d['precio_unitario'],
-                        'descripcion_adicional'=> $d['descripcion_producto'],
-                        'tipo_item_id'=> $d['id_tipo_item']?$d['id_tipo_item']:null,
-                        'subtotal'=> $d['subtotal']?$d['subtotal']:0,
-                        'estado'=> $d['estado']?$d['estado']:17
-                    ]);
-                    
-
-                }
-
-                if($d['cantidad_a_comprar'] > 0 && $d['estado'] == 0){
-                    DB::table('logistica.log_det_ord_compra')
-                    ->insert([
-                        'id_orden_compra'=>$id_orden,
-                        'id_item'=> ($d['id_item'] ? $d['id_item'] : null),
-                        'id_producto'=> (isset($d['id_producto']) ? $d['id_producto'] : null),
-                        'id_detalle_requerimiento'=>  null,
-                        'cantidad'=> $d['cantidad_a_comprar'],
-                        'id_unidad_medida'=> $d['id_unidad_medida'],
-                        'precio'=> $d['precio_unitario'],
-                        'descripcion_adicional'=> $d['descripcion_producto'],
-                        'tipo_item_id'=> $d['id_tipo_item']?$d['id_tipo_item']:null,
-                        'subtotal'=> $d['subtotal']?$d['subtotal']:0,
-                        'estado'=> 1
-                    ]);
-                    
+                    $idDetalleProcesado[] = $detalle->id_detalle_orden;
 
                 }
             }
 
-            $uniqueIdReqList = array_unique($allidReqList);
-
-            $idRequerimientoAtentidosTotalList=[];
-            $idRequerimientoAtentidosParcialList=[];
-
-            $sizeDataDetalle = count($dataDetalle);
-            $countAtendido=0;
-            
-                // foreach ($dataDetalle as $d) {
-                //     if(($d['cantidad_a_comprar'] + $d['stock_comprometido'] ) == $d['cantidad'] ){
-                //         $countAtendido+=1;
-                //         $idRequerimientoAtentidosTotalList[]=$d['id_requerimiento'];
-
-                //         if($this->cambioElEstadoActualDetalleReq($d['id_detalle_requerimiento']) == false ){
-                //             DB::table('almacen.alm_det_req')
-                //             ->where('id_detalle_requerimiento',$d['id_detalle_requerimiento'])
-                //             ->update(
-                //                 [
-                //                     'estado'=>5, //atendido total
-                //                     'stock_comprometido'=> $d['stock_comprometido']?$d['stock_comprometido']:0
-                //                 ] 
-                //             ); 
-                //         }
-
-                //     }
-                //     if((($d['cantidad_a_comprar'] + $d['stock_comprometido'] )>0) && (($d['cantidad_a_comprar'] + $d['stock_comprometido'] ) < $d['cantidad'])){
-                //         $idRequerimientoAtentidosParcialList[]=$d['id_requerimiento'];
-                //         if($this->cambioElEstadoActualDetalleReq($d['id_detalle_requerimiento']) == false ){
-                //             DB::table('almacen.alm_det_req')
-                //             ->where('id_detalle_requerimiento',$d['id_detalle_requerimiento'])
-                //             ->update(
-                //                 [
-                //                     'estado'=>15, // atendido parcial
-                //                     'stock_comprometido'=> $d['stock_comprometido']?$d['stock_comprometido']:0
-                //                 ]
-                                
-                //             ); 
-                //         }
-                //     }
-                // } 
-                // if(count($idRequerimientoAtentidosTotalList)>0){
-                //     foreach ($idRequerimientoAtentidosTotalList as $key => $id_req) {
-
-                //         if($countAtendido ==$sizeDataDetalle){
-
-                //             if($this->cambioElEstadoActualReq($id_req) == false ){
-                //                 DB::table('almacen.alm_req')
-                //                 ->where('id_requerimiento',$id_req)
-                //                 ->update(['estado'=>5]); // atendido total
-        
-                //                 DB::table('almacen.alm_req_obs')
-                //                 ->insert([  'id_requerimiento'=>$id_req,
-                //                             'accion'=>'ATENDIDO TOTAL',
-                //                             'descripcion'=>'Se generó Orden de Compra '.$codigo,
-                //                             'id_usuario'=>$usuario,
-                //                             'fecha_registro'=>date('Y-m-d H:i:s')
-                //                 ]);
-                //             }
-                //         }else{
-                //             if($this->cambioElEstadoActualReq($id_req) == false ){
-                //                 DB::table('almacen.alm_req')
-                //                 ->where('id_requerimiento',$id_req)
-                //                 ->update(['estado'=>15]); // atendido parcial
-        
-                //                 DB::table('almacen.alm_req_obs')
-                //                 ->insert([  'id_requerimiento'=>$id_req,
-                //                             'accion'=>'ATENDIDO PARCIAL',
-                //                             'descripcion'=>'Se generó Orden de Compra '.$codigo,
-                //                             'id_usuario'=>$usuario,
-                //                             'fecha_registro'=>date('Y-m-d H:i:s')
-                //                 ]);
-                //             }
-                //         }
-
-                //     }
-
-                // }
-            //     if(count($idRequerimientoAtentidosParcialList)>0){
-            //         foreach ($idRequerimientoAtentidosParcialList as $key => $id_req) {
-            //             if($this->cambioElEstadoActualReq($id_req) == false ){
-            //             DB::table('almacen.alm_req')
-            //             ->where('id_requerimiento',$id_req)
-            //             ->update(['estado'=>15]); // atendido parcial
-
-            //             DB::table('almacen.alm_req_obs')
-            //             ->insert([  'id_requerimiento'=>$id_req,
-            //                         'accion'=>'ATENDIDO PARCIAL',
-            //                         'descripcion'=>'Se generó Orden de Compra '.$codigo,
-            //                         'id_usuario'=>$usuario,
-            //                         'fecha_registro'=>date('Y-m-d H:i:s')
-            //             ]);
-            //         }
-            //     }
-            // }
+            foreach ($TodoDetalleOrden as $detalleOrden) {
+                if (!in_array($detalleOrden->id_detalle_orden, $idDetalleProcesado)) {
+                    $detalleConAnulidad = OrdenCompraDetalle::where("id_detalle_orden", $detalleOrden->id_detalle_orden)->first();
+                    $detalleConAnulidad->estado = 7;
+                    $detalleConAnulidad->save();
+                }
+            }
 
         DB::commit();
-            return response()->json($id_orden);
+            return response()->json($orden->id_orden_compra);
 
         } catch (\PDOException $e) {
             DB::rollBack();
@@ -3151,7 +3049,8 @@ class OrdenController extends Controller
             'adm_contri.razon_social',
             'adm_contri.nro_documento',
             'log_cdn_pago.descripcion as condicion',
-            'sis_moneda.simbolo',
+            'sis_moneda.simbolo as simbolo_moneda',
+            'sis_moneda.descripcion as descripcion_moneda',
             'cta_prin.nro_cuenta as nro_cuenta_prin',
             'cta_alter.nro_cuenta as nro_cuenta_alter',
             'cta_detra.nro_cuenta as nro_cuenta_detra',
@@ -3184,7 +3083,8 @@ class OrdenController extends Controller
                         'razon_social'   => $data->razon_social,
                         'nro_documento'  => $data->nro_documento,
                         'condicion'      => $data->condicion,
-                        'simbolo'        => $data->simbolo,
+                        'descripcion_moneda' => $data->descripcion_moneda,
+                        'simbolo_moneda'        => $data->simbolo_moneda,
                         'id_estado'     => $data->estado,
                         'estado_doc'     => $data->estado_doc,
                         'id_condicion'   => $data->id_condicion,
@@ -3205,6 +3105,8 @@ class OrdenController extends Controller
 
 
         $log_det_ord_compra = DB::table('logistica.log_det_ord_compra')
+        ->leftjoin('logistica.log_ord_compra','log_ord_compra.id_orden_compra','=','log_det_ord_compra.id_orden_compra')
+        ->leftjoin('configuracion.sis_moneda','sis_moneda.id_moneda','=','log_ord_compra.id_moneda')
         ->leftJoin('almacen.alm_prod', 'log_det_ord_compra.id_producto', '=', 'alm_prod.id_producto')
         ->leftJoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
         ->leftJoin('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
@@ -3224,6 +3126,8 @@ class OrdenController extends Controller
             'log_det_ord_compra.lugar_despacho',
             'log_det_ord_compra.descripcion_adicional',
             'log_det_ord_compra.id_unidad_medida',
+            'sis_moneda.simbolo as simbolo_moneda',
+            'sis_moneda.descripcion as descripcion_moneda',
             'log_det_ord_compra.precio',
             'log_det_ord_compra.cantidad',
             'log_det_ord_compra.estado as id_estado_detalle_orden',
@@ -3273,9 +3177,11 @@ class OrdenController extends Controller
                         'id_requerimiento'          => $data->id_requerimiento,
                         'codigo_requerimiento'      => $data->codigo_requerimiento,
                         'cantidad'                  => $data->cantidad,
-                        'id_unidad_medida'             => $data->id_unidad_medida,
+                        'id_unidad_medida'          => $data->id_unidad_medida,
                         'unidad_medida'             => $data->unidad_medida,
-                        'precio_unitario'        => $data->precio_unitario,
+                        'descripcion_moneda'        => $data->descripcion_moneda,
+                        'simbolo_moneda'            => $data->simbolo_moneda,
+                        'precio_unitario'           => $data->precio_unitario,
                         'descripcion_adicional'     => $data->descripcion_adicional,
                         'lugar_entrega'             => $data->lugar_entrega,
                         'fecha_registro'            => $data->fecha_registro_alm_det_req,
@@ -3575,17 +3481,20 @@ class OrdenController extends Controller
     }
 
 
-    public function listarCuentasBancariasContribuyente($idContribuyente){
-        $cuentas = CuentaContribuyente::mostrarCuentasContribuyente($idContribuyente)->get();
+    public function listarCuentasBancariasProveedor($idProveedor){
+        // $cuentas = CuentaContribuyente::mostrarCuentasContribuyente($idProveedor)->get();
+        $cuentas = Proveedor::mostrarCuentasProveedor($idProveedor)->get();
         return $cuentas;
     }
 
     public function guardarCuentaBancariaProveedor(Request $request){
         $status=0;
 
+        $idContribuyente = Proveedor::find($request->id_proveedor)->id_contribuyente;
+
         $idCuentaContribuyente = DB::table('contabilidad.adm_cta_contri')->insertGetId(
             [
-                'id_contribuyente' => $request->id_contribuyente,
+                'id_contribuyente' => $idContribuyente,
                 'id_banco' => $request->id_banco,
                 'id_tipo_cuenta' => $request->id_tipo_cuenta,
                 'nro_cuenta' => $request->nro_cuenta,

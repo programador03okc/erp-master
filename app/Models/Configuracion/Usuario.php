@@ -20,15 +20,6 @@ class Usuario extends Authenticatable
 
     public $timestamps = false;
 
-   protected $fillable = [
-        'id_trabajador',
-        'usuario',
-        'clave',
-        'estado',
-        'fecha_registro',
-        'acceso',
-    ];
-
 	protected $hidden = [
 		'clave',
 	];
@@ -45,7 +36,7 @@ class Usuario extends Authenticatable
 
     public function trabajador()
     {
-        return $this->belongsTo('App\Models\Rrhh\Trabajador','id_trabajador')->withDefault();
+        return $this->belongsTo('App\Models\rrhh\Trabajador','id_trabajador')->withDefault();
     }
 
     public function tieneAccion($id)
@@ -229,9 +220,7 @@ class Usuario extends Authenticatable
 
 
 
-    /*public function trabajador(){
-        return $this->belongsTo('App\Models\Tesoreria\Trabajador','id_trabajador','id_trabajador');
-    }*/
+  
 
 
 	public function obtenerRoles() {
@@ -294,4 +283,5 @@ class Usuario extends Authenticatable
 		//dd('b');
 		return false;
 	}
+
 }

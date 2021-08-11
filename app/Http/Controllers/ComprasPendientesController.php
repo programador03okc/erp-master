@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Almacen\Requerimiento;
 use App\Models\Almacen\UnidadMedida;
 use App\Models\Configuracion\Moneda;
 use Illuminate\Support\Facades\DB;
@@ -152,12 +153,13 @@ class ComprasPendientesController extends Controller
         $requerimiento = array();
         $detalleRequerimiento = array();
 
-        $alm_req = DB::table('almacen.alm_req')
-            ->join('almacen.alm_tp_req', 'alm_req.id_tipo_requerimiento', '=', 'alm_tp_req.id_tipo_requerimiento')
+        $alm_req = Requerimiento::join('almacen.alm_tp_req', 'alm_req.id_tipo_requerimiento', '=', 'alm_tp_req.id_tipo_requerimiento')
             ->leftJoin('almacen.tipo_cliente', 'tipo_cliente.id_tipo_cliente', '=', 'alm_req.tipo_cliente')
-            ->leftJoin('configuracion.sis_usua', 'alm_req.id_usuario', '=', 'sis_usua.id_usuario')
             ->leftJoin('administracion.adm_estado_doc', 'alm_req.estado', '=', 'adm_estado_doc.id_estado_doc')
+            ->leftJoin('configuracion.sis_usua', 'alm_req.id_usuario', '=', 'sis_usua.id_usuario')
             ->leftJoin('rrhh.rrhh_trab', 'sis_usua.id_trabajador', '=', 'rrhh_trab.id_trabajador')
+            ->leftJoin('rrhh.rrhh_postu', 'rrhh_postu.id_postulante', '=', 'rrhh_trab.id_postulante')
+            ->leftJoin('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'rrhh_postu.id_persona')
             ->leftJoin('rrhh.rrhh_rol', 'alm_req.id_rol', '=', 'rrhh_rol.id_rol')
             ->leftJoin('rrhh.rrhh_rol_concepto', 'rrhh_rol_concepto.id_rol_concepto', '=', 'rrhh_rol.id_rol_concepto')
             ->leftJoin('administracion.adm_area', 'alm_req.id_area', '=', 'adm_area.id_area')
@@ -185,6 +187,7 @@ class ComprasPendientesController extends Controller
                 'alm_req.tipo_cliente',
                 'tipo_cliente.descripcion AS tipo_cliente_desc',
                 'sis_usua.usuario',
+                DB::raw("CONCAT(rrhh_perso.nombres,' ',rrhh_perso.apellido_paterno,' ',rrhh_perso.apellido_materno) as nombre_usuario"),
                 'rrhh_rol.id_area',
                 'adm_area.descripcion AS area_desc',
                 'rrhh_rol.id_rol',
@@ -253,6 +256,7 @@ class ComprasPendientesController extends Controller
                 'tipo_cliente' => $data->tipo_cliente,
                 'tipo_cliente_desc' => $data->tipo_cliente_desc,
                 'usuario' => $data->usuario,
+                'nombre_usuario' => $data->nombre_usuario,
                 'id_area' => $data->id_area,
                 'area_desc' => $data->area_desc,
                 'id_rol' => $data->id_rol,
@@ -599,7 +603,7 @@ class ComprasPendientesController extends Controller
                 $updateDetReq += DB::table('almacen.alm_det_req')
                     ->where('id_detalle_requerimiento', $det['id_detalle_requerimiento'])
                     ->update([
-                        'stock_comprometido' => $det['cantidad_a_atender'],
+                        'stock_comprometido' => $det['cantidad_a_atender'] >0 ? $det['cantidad_a_atender']:null,
                         'id_almacen_reserva' => $det['id_almacen_reserva'] > 0 ? $det['id_almacen_reserva'] : null,
                         'estado' => $estado
                     ]);

@@ -18,7 +18,6 @@ $(document).ready(function(){
 
     page = $('.page-main').attr('type');
 	var form = $('.page-main form[type=register]').attr('id');
-
 	if (page == 'asistencia'){
 		$('.sidebar-mini').addClass('sidebar-collapse');
 	}else if (page == 'datos_rrhh'){
@@ -78,7 +77,11 @@ $(document).ready(function(){
 					nuevo_equi_sol();
 				}
 				else if (page == 'crear-orden-requerimiento'){
-					nueva_orden();
+					const ordenModel = new OrdenModel();
+					const ordenController = new OrdenCtrl(ordenModel);
+					const ordenView = new OrdenView(ordenController);
+					ordenView.nuevaOrden();
+
 				}
 				else if (page == 'requerimiento'){
 					nuevo_req();
@@ -160,7 +163,10 @@ $(document).ready(function(){
 					// console.log(page);
 					
 					if (page == 'requerimiento'){
-						editRequerimiento();
+						const requerimientoModel = new RequerimientoModel();
+						const requerimientoController = new RequerimientoCtrl(requerimientoModel);
+						const requerimientoView = new RequerimientoView(requerimientoController);
+						requerimientoView.editRequerimiento();
 					}
 					else if (page == 'cuadro_comparativo'){
 						editValorizaciones();
@@ -219,7 +225,7 @@ $(document).ready(function(){
 				}
             break;
 			case 'btnCopiar':
-				console.log('copiar'+page);
+				// console.log('copiar'+page);
 				if (page == 'requerimiento'){
 					copiarDocumento();
 				}

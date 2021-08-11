@@ -428,7 +428,16 @@ function eventRegister(type, data, action, frm_active) {
         //Logistica
         case "requerimiento":
             // save_requerimiento(action);
+            const requerimientoModel = new RequerimientoModel();
+            const requerimientoController = new RequerimientoCtrl(
+                requerimientoModel
+            );
+            const requerimientoView = new RequerimientoView(
+                requerimientoController
+            );
             requerimientoView.actionGuardarEditarRequerimiento();
+
+            break;
 
             break;
         case "crear-orden-requerimiento":

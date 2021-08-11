@@ -19,16 +19,18 @@ $(function () {
             if (response.success) {
             var timerInterval;
             Swal.fire({
-                type: 'success',
+                icon: 'success',
                 title: 'Bienvenido!',
-                footer: 'Redireccionando a la página principal',
                 html: 'Bienvenido al Sistema.',
+                footer: 'Redireccionando a la página principal',
+                showConfirmButton: false,
                 timer: 3000,
-                onBeforeOpen: function onBeforeOpen() {
-                Swal.showLoading();
+
+                didOpen: () => {
+                    Swal.showLoading();
                 },
-                onClose: function onClose() {
-                clearInterval(timerInterval);
+                willClose: () => {
+                    clearInterval(timerInterval);
                 }
             }).then(function (result) {
                 if (result.dismiss === Swal.DismissReason.timer) {
@@ -39,11 +41,13 @@ $(function () {
         }
         }).fail(function (jqXHR, textStatus, errorThrown) {
         Swal.fire({
+            icon: 'error',
             title: 'Problema al iniciar sesión',
             text: 'El usuario o contraseña no son correctos',
             imageUrl: 'images/guard_man.png',
             imageWidth: 100,
             imageHeight: 100,
+            showConfirmButton: true,
             backdrop: 'rgba(255, 0, 13, 0.3)'
         });
         document.getElementsByTagName('button')[0].removeAttribute('disabled');

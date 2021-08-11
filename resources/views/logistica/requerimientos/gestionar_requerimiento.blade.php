@@ -77,12 +77,11 @@ Crear / editar requerimiento
                         <span class="label label-default" id="codigo_requerimiento"></span>
                         <small>Tipo cambio($): <span id="tipo_cambio_compra">0.00</span></small> 
                         <span class="label label-default" id="estado_doc"></span>
-                        <button type="button" name="btn-imprimir-requerimento-pdf" class="btn btn-info btn-sm" onclick="requerimientoView.imprimirRequerimientoPdf();" disabled><i class="fas fa-print"></i> Imprimir</button>
-                        <button type="button" name="btn-adjuntos-requerimiento" class="btn btn-sm btn-warning" title="Archivos adjuntos" onclick="requerimientoView.adjuntarArchivoRequerimiento();" disabled><i class="fas fa-file-archive"></i>
-                            <span class="badge" name="cantidadAdjuntosRequerimiento" style="position:absolute; right: 178px; border: solid 0.1px;">0</span>
+                        <button type="button" name="btn-imprimir-requerimento-pdf" class="btn btn-info btn-sm handleClickImprimirRequerimientoPdf" title="Imprimir requerimiento en .pdf" disabled><i class="fas fa-print"></i> Imprimir</button>
+                        <button type="button" name="btn-adjuntos-requerimiento" class="btn btn-sm btn-warning handleClickAdjuntarArchivoRequerimiento" title="Archivos adjuntos"  disabled><i class="fas fa-file-archive"></i>
+                            <span class="badge" name="cantidadAdjuntosRequerimiento" style="position:absolute; right: 74px; border: solid 0.1px;">0</span>
                             Adjuntos
                         </button>
-                        <button type="button" name="btn-ver-trazabilidad-requerimiento" class="btn btn-sm btn-primary" title="Ver Trazabilidads" onclick="trazabilidadRequerimientoView.verTrazabilidadRequerimientoModal();" disabled><i class="fas fa-shoe-prints"></i> Trazabilidad</button>
                     </div>
                 </h4>
                 <fieldset class="group-table">
@@ -105,14 +104,14 @@ Crear / editar requerimiento
                         <div class="col-md-6">
                             <div class="form-group">
                                 <h5>Concepto/Motivo</h5>
-                                <input type="text" class="form-control activation" name="concepto" onkeyup="requerimientoView.updateConcepto(this);">
+                                <input type="text" class="form-control activation handleChangeUpdateConcepto" name="concepto" >
                             </div>
                         </div>
 
                         <div class="col-md-2" id="input-group-moneda">
                             <div class="form-group">
                                 <h5>Moneda</h5>
-                                <select class="form-control activation" name="moneda" onChange="requerimientoView.changeMonedaSelect(event)" disabled="true">
+                                <select class="form-control activation handleChangeUpdateMoneda" name="moneda" disabled="true">
                                     @foreach ($monedas as $moneda)
                                     <option data-simbolo="{{$moneda->simbolo}}" value="{{$moneda->id_moneda}}">{{$moneda->descripcion}}</option>
                                     @endforeach
@@ -158,7 +157,7 @@ Crear / editar requerimiento
                         <div class="col-md-2" id="input-group-empresa">
                             <div class="form-group">
                                 <h5>Empresa</h5>
-                                <select name="empresa" id="empresa" class="form-control activation" onChange="requerimientoView.changeOptEmpresaSelect(event); requerimientoView.updateEmpresa(this);">
+                                <select name="empresa" id="empresa" class="form-control activation handleChangeOptEmpresa handleChangeUpdateEmpresa">
                                     <option value="0">Elija una opción</option>
                                     @foreach ($empresas as $empresa)
                                     <option value="{{$empresa->id_empresa}}">{{ $empresa->razon_social}}</option>
@@ -170,7 +169,7 @@ Crear / editar requerimiento
                         <div class="col-md-2" id="input-group-sede">
                             <div class="form-group">
                                 <h5>Sede</h5>
-                                <select id="sede" name="sede" class="form-control activation" onChange="requerimientoView.changeOptUbigeo(event); requerimientoView.updateSede(this);">
+                                <select id="sede" name="sede" class="form-control activation handleChangeOptUbigeo handleChangeUpdateSede">
                                     <option value="0">Elija una opción</option>
                                 </select>
                             </div>
@@ -179,7 +178,7 @@ Crear / editar requerimiento
                         <div class="col-md-2" id="input-group-fecha_entrega">
                             <div class="form-group">
                                 <h5>Fecha límite entrega</h5>
-                                <input type="date" class="form-control input-sm activation" name="fecha_entrega" onChange="requerimientoView.updateFechaLimite(this);">
+                                <input type="date" class="form-control input-sm activation handleChangeFechaLimite" name="fecha_entrega">
                             </div>
                         </div>
 
@@ -480,7 +479,7 @@ Crear / editar requerimiento
                             <tfoot>
                                 <tr>
                                     <td colspan="8" class="text-right"><strong>Total:</strong></td>
-                                    <td class="text-right"><span name="simbolo_moneda">S/</span><label name="total"> 0.00</label></td>
+                                    <td class="text-right"><span name="simboloMoneda">S/</span><label name="total"> 0.00</label></td>
                                     <td></td>
                                     <td></td>
                                     <td></td>
@@ -697,18 +696,16 @@ Crear / editar requerimiento
     //         cambiarTipoFormulario(6)
     //     }
     // });
-    $(document).ready(function() {
-        // $('#btnNuevo').trigger('click');
+ 
+
+    window.onload = function() {
+
         seleccionarMenu(window.location);
         var descripcion_grupo = '{{Auth::user()->getGrupo()->descripcion}}';
         var id_grupo = '{{Auth::user()->getGrupo()->id_grupo}}';
         document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value = id_grupo;
 
 
-        // const nuevoView = new NuevoRequerimientoView();
-        // nuevoView.agregarFilaEvent();
-
-        // controlInput(id_grupo,descripcion_grupo);
         inicializar(
 
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.mostrar-requerimiento')}}",
@@ -726,9 +723,10 @@ Crear / editar requerimiento
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.obtener-construir-cliente')}}",
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.grupo-select-item-para-compra')}}"
         );
-    });
-
-    window.onload = function() {
+        
+        const requerimientoModel = new RequerimientoModel();
+        const requerimientoController = new RequerimientoCtrl(requerimientoModel);
+        const requerimientoView= new RequerimientoView(requerimientoController);
         requerimientoView.init();
     };
 </script>

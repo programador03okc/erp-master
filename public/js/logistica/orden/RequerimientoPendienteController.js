@@ -1,19 +1,8 @@
-var itemsParaCompraList=[]
-var reqTrueList=[]
-var listCheckReq=[]
-var infoStateInput = [];
-var tempDetalleItemsParaCompraCC = [];
 
-var tablaListaRequerimientosPendientes;
-var iTableCounter = 1;
-var oInnerTable;
 //================ Controller ==================
 class RequerimientoPendienteCtrl{
-    constructor(RequerimientoPendienteView) {
-        this.requerimientoPendienteView = RequerimientoPendienteView;
-    }
-    init() {
-        this.requerimientoPendienteView.init();
+    constructor(requerimientoPendienteModel) {
+        this.requerimientoPendienteModel = requerimientoPendienteModel;
     }
 
     getRequerimientosPendientes(id_empresa=null,id_sede=null) {
@@ -49,6 +38,27 @@ class RequerimientoPendienteCtrl{
             return str.trim();
     }
     // check
+
+    statusBtnGenerarOrden() {
+        let countStateCheckTrue = 0;
+
+        listCheckReq.map(value => {
+            if (value.stateCheck == true) {
+                countStateCheckTrue += 1;
+            }
+        })
+
+
+        if (countStateCheckTrue > 0) {
+            document
+                .getElementById('btnCrearOrdenCompra')
+                .removeAttribute('disabled')
+        } else {
+            document
+                .getElementById('btnCrearOrdenCompra')
+                .setAttribute('disabled', true)
+        }
+    }
     controlListCheckReq(id,stateCheck){
         if (stateCheck.length == 0) {
             let newCheckReq = {
@@ -56,7 +66,7 @@ class RequerimientoPendienteCtrl{
                 stateCheck: stateCheck,
             };
             listCheckReq.push(newCheckReq);
-            requerimientoPendienteView.statusBtnGenerarOrden();
+            this.statusBtnGenerarOrden();
         }else{
             let arrIdReq=[];
             let newCheckReq = {
@@ -80,95 +90,26 @@ class RequerimientoPendienteCtrl{
                 listCheckReq.push(newCheckReq)
             }
         
-            requerimientoPendienteView.statusBtnGenerarOrden();
+            this.statusBtnGenerarOrden();
         }
     }
 
     // atender con almacén
 
     openModalAtenderConAlmacen(obj){
-        $('#modal-atender-con-almacen').modal({
-            show: true,
-            backdrop: 'true'
-        });
 
         return requerimientoPendienteModel.getDataItemsRequerimientoParaAtenderConAlmacen(obj.dataset.idRequerimiento);
     }
 
-    updateSelectAlmacenAAtender(obj,event){
-        let idValor = event.target.value;
-        // let textValor = event.target.options[event.target.selectedIndex].textContent;
-        let indiceSelected = event.target.dataset.indice;
-        itemsParaAtenderConAlmacenList.forEach((element, index) => {
-            if (index == indiceSelected) {
-                itemsParaAtenderConAlmacenList[index].id_almacen_reserva = parseInt(idValor);
-            }
-        });
-        // console.log(itemsParaAtenderConAlmacenList);
-    }
+    guardarAtendidoConAlmacen(newItemsParaAtenderConAlmacenList,itemsBaseList){
+        console.log('controll');
+        return this.requerimientoPendienteModel.guardarAtendidoConAlmacen({'lista_items_reservar':newItemsParaAtenderConAlmacenList,'lista_items_base':itemsBaseList});
 
-    updateObjCantidadAAtender(indice, valor){
-        itemsParaAtenderConAlmacenList.forEach((element, index) => {
-            if (index == indice) {
-                itemsParaAtenderConAlmacenList[index].cantidad_a_atender = valor;
-            }
-        });
-    }
-
-    updateInputCantidadAAtender(obj,event){
-        let nuevoValor = event.target.value;
-        let indiceSelected = event.target.dataset.indice;
-        let cantidad = event.target.parentNode.parentNode.children[5].textContent;
-        if(parseInt(nuevoValor) > parseInt(cantidad) || parseInt(nuevoValor) <= 0 ){
-    
-            obj.parentNode.parentNode.querySelector("input[name='cantidad_a_atender']").value= cantidad;
-            itemsParaAtenderConAlmacenList.forEach((element, index) => {
-                if (index == indiceSelected) {
-                    itemsParaAtenderConAlmacenList[index].cantidad_a_atender = cantidad;
-                }
-            });
-        }else{
-            itemsParaAtenderConAlmacenList.forEach((element, index) => {
-                if (index == indiceSelected) {
-                    itemsParaAtenderConAlmacenList[index].cantidad_a_atender = nuevoValor;
-                }
-            });
-        }
-    }
-
-    guardarAtendidoConAlmacen(){
-        var newItemsParaAtenderConAlmacenList = [];
-        var itemsBaseList = [];
-        itemsBaseList = itemsParaAtenderConAlmacenList.filter(function( obj ) {
-            return (obj.tiene_transformacion ==false);
-        });
-        
-        newItemsParaAtenderConAlmacenList = itemsParaAtenderConAlmacenList.filter(function( obj ) {
-            return (obj.id_almacen_reserva >0) && (obj.cantidad_a_atender >0);
-        });
-        var hasCantidadNoPermitida = false;
-        newItemsParaAtenderConAlmacenList.forEach(element => {
-        
-            if(parseInt(element.cantidad_a_atender) > parseInt(element.cantidad)){
-                alert("No puede reservar una 'cantidad a atender' mayor a la 'cantidad' ");
-                hasCantidadNoPermitida=true;
-            } 
-        });
-        
-        if(hasCantidadNoPermitida== false){
-            if(newItemsParaAtenderConAlmacenList.length >0){
-                return requerimientoPendienteModel.guardarAtendidoConAlmacen({'lista_items_reservar':newItemsParaAtenderConAlmacenList,'lista_items_base':itemsBaseList});
-
-            }else{
-                alert("seleccione un almacén y especifique una cantidad a atender mayor a cero.");
-            }
-    
-        }
 
     }
 
     getDataItemsRequerimientoParaAtenderConAlmacen(id_requerimiento){
-        return requerimientoPendienteModel.getDataItemsRequerimientoParaAtenderConAlmacen(id_requerimiento);
+        return this.requerimientoPendienteModel.getDataItemsRequerimientoParaAtenderConAlmacen(id_requerimiento);
 
     }
 
@@ -188,7 +129,7 @@ class RequerimientoPendienteCtrl{
         reqTrueList=[id_requerimiento];
         itemsParaCompraList=[];
         
-        return requerimientoPendienteModel.tieneItemsParaCompra(reqTrueList).then(function(res) {
+        return this.requerimientoPendienteModel.tieneItemsParaCompra(reqTrueList).then(function(res) {
             itemsParaCompraList= res.data;
             if(itemsParaCompraList.length >0){
                 //validar y habilitar boton guardar
@@ -655,8 +596,9 @@ class RequerimientoPendienteCtrl{
         console.log(reqTrueList);
         sessionStorage.setItem('reqCheckedList', JSON.stringify(reqTrueList));
         sessionStorage.setItem('tipoOrden', 'COMPRA');
+        sessionStorage.setItem('action', 'register');
         let url ="/logistica/gestion-logistica/compras/ordenes/elaborar/index";
-        var win = window.location.replace(url);
+        var win = location.href=url;
     }
     // Crear orden servicio por requerimiento
     crearOrdenServicioPorRequerimiento(obj){
@@ -664,7 +606,7 @@ class RequerimientoPendienteCtrl{
         sessionStorage.setItem('reqCheckedList', JSON.stringify(reqTrueList));
         sessionStorage.setItem('tipoOrden', 'SERVICIO');
         let url ="/logistica/gestion-logistica/compras/ordenes/elaborar/index";
-        var win = window.location.replace(url);
+        var win = location.href=url;
     }
 
     crearOrdenCompra(){
@@ -685,53 +627,10 @@ class RequerimientoPendienteCtrl{
     }
 
 
-
-    verDetalleRequerimientoListaRequerimientosPendientes(obj) {
-        let tr = obj.closest('tr');
-        var row = tablaListaRequerimientosPendientes.row(tr);
-        var id = obj.dataset.idRequerimiento;
-        if (row.child.isShown()) {
-            //  This row is already open - close it
-            row.child.hide();
-            tr.classList.remove('shown');
-        }
-        else {
-            // Open this row
-            //    row.child( format(iTableCounter, id) ).show();
-            requerimientoPendienteCtrl.buildFormatListaRequerimientosPendientes(iTableCounter, id, row);
-            tr.classList.add('shown');
-            // try datatable stuff
-            oInnerTable = $('#listaRequerimientosPendientes_' + iTableCounter).dataTable({
-                //    data: sections, 
-                autoWidth: true,
-                deferRender: true,
-                info: false,
-                lengthChange: false,
-                ordering: false,
-                paging: false,
-                scrollX: false,
-                scrollY: false,
-                searching: false,
-                columns: [
-                ]
-            });
-            iTableCounter = iTableCounter + 1;
-        }
+    obtenerDetalleRequerimientos(id){
+        return requerimientoPendienteModel.obtenerDetalleRequerimientos(id);
     }
 
-    buildFormatListaRequerimientosPendientes(table_id, id, row) {
-        requerimientoPendienteModel.obtenerDetalleRequerimientos(id).then(function(res) {
-            requerimientoPendienteView.construirDetalleRequerimientoListaRequerimientosPendientes(table_id,row,res);
-        }).catch(function(err) {
-            console.log(err)
-        })
-    }
 
 
 }
-
-const requerimientoPendienteCtrl = new RequerimientoPendienteCtrl(requerimientoPendienteView);
-
-window.onload = function() {
-    requerimientoPendienteCtrl.init();
-};

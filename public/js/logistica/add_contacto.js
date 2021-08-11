@@ -27,7 +27,14 @@ function guardar_contacto(){
         dataType: 'JSON',
         success: function(response){
             // console.log(response);
-                alert('Contacto registrado con éxito');
+                Lobibox.notify('success', {
+                    title:false,
+                    size: 'mini',
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    msg: 'Contacto registrado con éxito'
+                });
                 $('[name=id_contacto]').html('');
                 var html = '<option value="0" disabled>Elija una opción</option>'+response;
                 $('[name=id_contacto]').html(html);
@@ -41,6 +48,11 @@ function guardar_contacto(){
             
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
+        Swal.fire(
+            '',
+            'Hubo un problema al intentar guardar el contacto. '+ errorThrown,
+            'error'
+        );
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);

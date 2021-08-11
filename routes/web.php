@@ -605,6 +605,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 					Route::get('index', 'Logistica\RequerimientoController@index')->name('index');
 					Route::get('tipo-cambio-compra/{fecha}', 'Almacen\Reporte\SaldosController@tipo_cambio_compra');
+					Route::get('lista-divisiones', 'Logistica\RequerimientoController@listaDivisiones');
 					Route::get('mostrar-partidas/{idGrupo?}/{idProyecto?}', 'Logistica\RequerimientoController@mostrarPartidas')->name('mostrar-partidas');
 					Route::get('mostrar-centro-costos', 'Finanzas\CentroCosto\CentroCostoController@mostrarCentroCostosSegunGrupoUsuario')->name('mostrar-centro-costos');
 					Route::get('mostrar-categoria-adjunto', 'Logistica\RequerimientoController@mostrarCategoriaAdjunto')->name('mostrar-categoria-adjunto');
@@ -712,6 +713,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('observar-documento', 'Logistica\RequerimientoController@observarDocumento')->name('observar-documento');
 					Route::post('anular-documento', 'Logistica\RequerimientoController@anularDocumento')->name('anular-documento');
 					Route::get('listar-sedes-por-empresa/{id?}', 'Logistica\RequerimientoController@listarSedesPorEmpresa')->name('listar-sedes-por-empresa');
+					Route::get('imprimir-requerimiento-pdf/{id}/{codigo}', 'Logistica\RequerimientoController@generar_requerimiento_pdf');
 				});
 				Route::group(['as' => 'mapeo.', 'prefix' => 'mapeo'], function () {
 
@@ -777,7 +779,7 @@ Route::group(['middleware' => ['auth']], function () {
 						Route::get('tipo-cambio-compra/{fecha}', 'Almacen\Reporte\SaldosController@tipo_cambio_compra');
 						Route::get('requerimientos-pendientes/{id_empresa?}/{id_sede?}', 'ComprasPendientesController@listarRequerimientosPendientes')->name('requerimientos-pendientes');
 						Route::get('detalle-requerimiento/{idRequerimiento?}', 'Logistica\RequerimientoController@detalleRequerimiento')->name('detalle-requerimientos');
-						Route::get('listar-cuentas-bancarias-contribuyente/{idContribuyente?}', 'OrdenController@listarCuentasBancariasContribuyente')->name('listar-cuentas-bancarias-contribuyente');
+						Route::get('listar-cuentas-bancarias-proveedor/{idProveedor?}', 'OrdenController@listarCuentasBancariasProveedor')->name('listar-cuentas-bancarias-proveedor');
 						Route::post('guardar-cuenta-bancaria-proveedor', 'OrdenController@guardarCuentaBancariaProveedor');
 					});
 					Route::group(['as' => 'listado.', 'prefix' => 'listado'], function () {
@@ -1134,6 +1136,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('transferencia/{id}', 'Almacen\Movimiento\OrdenesPendientesController@transferencia');
 				Route::post('obtenerGuiaSeleccionadas', 'Almacen\Movimiento\OrdenesPendientesController@obtenerGuiaSeleccionadas');
 				Route::get('anular_doc_com/{id}', 'Almacen\Movimiento\OrdenesPendientesController@anular_doc_com');
+
+				Route::post('obtenerArchivosOc', 'Tesoreria\Facturacion\PendientesFacturacionController@obtenerArchivosOc')->name('obtener-archivos-oc');
 			});
 
 			Route::group(['as' => 'pendientes-salida.', 'prefix' => 'pendientes-salida'], function () {

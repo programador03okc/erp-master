@@ -1,6 +1,11 @@
 class TrazabilidadRequerimiento{
+    constructor(requerimientoCtrl) {
+        this.requerimientoCtrl = requerimientoCtrl;
+        this.initializeEventHandler();
 
-    verTrazabilidadRequerimientoModal(idRequerimiento){
+    }
+    verTrazabilidadRequerimientoModal(data,that){
+        let idRequerimiento = data.id_requerimiento;
 
         $('#modal-trazabilidad-requerimiento').modal({
             show: true
@@ -8,12 +13,20 @@ class TrazabilidadRequerimiento{
         this.mostrarRequerimiento(idRequerimiento);
         this.mostrarHistorialAprobacion(idRequerimiento);
         this.mostrarTrazabilidadDetalleRequerimiento(idRequerimiento);
-
     }
-    
+    initializeEventHandler(){
+
+        $('#listaTrazabilidadDetalleRequerimiento tbody').on("click","label.handleClickAbrirOrden", (e)=>{
+            console.log(e.currentTarget.dataset.idOrden);
+            this.abrirOrden(e.currentTarget.dataset.idOrden);
+        });
+        $('#listaTrazabilidadDetalleRequerimiento tbody').on("click","label.handleClickAbrirIngreso", (e)=>{
+            this.abrirIngreso(e.currentTarget.dataset.idMovimientoAlmacen);
+        });
+    }
 
     mostrarRequerimiento(idRequerimiento){
-        requerimientoCtrl.getCabeceraRequerimiento(idRequerimiento).then(function (res) {
+        this.requerimientoCtrl.getCabeceraRequerimiento(idRequerimiento).then( (res)=> {
             document.querySelector("div[id='modal-trazabilidad-requerimiento'] ul[id='head_requerimiento'] span[id='codigo_requerimiento']").textContent= res.codigo;
             document.querySelector("div[id='modal-trazabilidad-requerimiento'] ul[id='head_requerimiento'] span[id='requerimiento_creado_por']").textContent= res.nombre_completo_usuario;
             document.querySelector("div[id='modal-trazabilidad-requerimiento'] ul[id='head_requerimiento'] span[id='fecha_registro_requerimiento']").textContent= res.fecha_registro;
@@ -24,7 +37,7 @@ class TrazabilidadRequerimiento{
     }
 
     mostrarHistorialAprobacion(idRequerimiento){
-        requerimientoCtrl.getHistorialAprobacion(idRequerimiento).then(function (res) {
+        this.requerimientoCtrl.getHistorialAprobacion(idRequerimiento).then((res) =>{
             let html ='';
             if(res.length >0){
                 res.forEach(element => {
@@ -51,6 +64,17 @@ class TrazabilidadRequerimiento{
                 $(function () {
                     $('[data-toggle="popover"]').popover()
                   })
+            }else{
+                html +=`
+                <div class="stepper-item ">
+                    <div class="step-counter" tabindex="0" data-container="body" data-toggle="popover" data-trigger="focus"  data-html="true" data-placement="bottom">
+ 
+                    </div>
+                    <div class="step-name">Sin historial de aprobación</div>
+                </div>
+                `;       
+                
+                document.querySelector("div[class='stepper-wrapper']").innerHTML=html;
             }
 
         }).catch(function (err) {
@@ -59,8 +83,8 @@ class TrazabilidadRequerimiento{
     }
 
     mostrarTrazabilidadDetalleRequerimiento(idRequerimiento){
-        requerimientoCtrl.getTrazabilidadDetalleRequerimiento(idRequerimiento).then(function (res) {
-            trazabilidadRequerimientoView.construirTablaTrazabilidadDetalleRequerimiento(res);
+        this.requerimientoCtrl.getTrazabilidadDetalleRequerimiento(idRequerimiento).then( (res)=> {
+            this.construirTablaTrazabilidadDetalleRequerimiento(res);
         }).catch(function (err) {
             console.log(err)
         })
@@ -120,7 +144,7 @@ class TrazabilidadRequerimiento{
                     'render': function (data, type, row) {
                         let labelOrdenes='';
                         (row['ordenes_compra']).forEach(element => {
-                            labelOrdenes += `<label class="lbl-codigo" title="Abrir orden" onclick="trazabilidadRequerimientoView.abrirOrden(${element.id_orden_compra})">${element.codigo}</label>`;
+                            labelOrdenes += `<label class="lbl-codigo handleClickAbrirOrden" title="Abrir orden" data-id-orden="${element.id_orden_compra}" >${element.codigo}</label>`;
                         });
                         return labelOrdenes;
                         
@@ -130,7 +154,7 @@ class TrazabilidadRequerimiento{
                     'render': function (data, type, row) {
                         let labelGuiaIngreso='';
                         (row['guias_ingreso']).forEach(element => {
-                            labelGuiaIngreso += `<label class="lbl-codigo" title="Abrir Guia Ingreso" onclick="trazabilidadRequerimientoView.abrirIngreso(${element.id_mov_alm})">${element.codigo}</label>`;
+                            labelGuiaIngreso += `<label class="lbl-codigo handleClickAbrirIngreso" title="Abrir Guia Ingreso" data-id-movimiento-almacen="${element.id_mov_alm}">${element.codigo}</label>`;
                         });
                         return labelGuiaIngreso;
                         
@@ -169,6 +193,5 @@ class TrazabilidadRequerimiento{
     }
 }
 
-const trazabilidadRequerimientoView = new TrazabilidadRequerimiento();
 
 

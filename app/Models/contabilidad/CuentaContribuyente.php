@@ -11,7 +11,7 @@ class CuentaContribuyente extends Model
     protected $primaryKey = 'id_cuenta_contribuyente';
     public $timestamps = false;
 
-    public static function mostrarCuentasContribuyente($idContribuyente)
+    public static function mostrarCuentasProveedor($idContribuyente)
     {
         $data = CuentaContribuyente::with('banco','banco.contribuyente','tipoCuenta','moneda')->where('adm_cta_contri.id_contribuyente', '=', $idContribuyente);
         return $data;

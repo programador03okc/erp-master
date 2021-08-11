@@ -13,7 +13,7 @@
                         </div>
     
                         <div class="col-md-12">
-                            <input class="oculto" name="id_contribuyente">
+                            <input class="oculto" name="id_proveedor">
                             <h5>Banco</h5>
                             <select class="form-control group-elemento" name="banco" 
                                 style="text-align:center;">

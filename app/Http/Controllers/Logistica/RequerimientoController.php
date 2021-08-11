@@ -82,6 +82,10 @@ class RequerimientoController extends Controller
         return view('logistica/requerimientos/gestionar_requerimiento', compact('idTrabajador', 'nombreUsuario', 'categoria_adjunto', 'grupos', 'sis_identidad', 'tipo_requerimiento', 'monedas', 'prioridades', 'empresas', 'unidadesMedida', 'roles', 'periodos', 'bancos', 'tipos_cuenta', 'clasificaciones', 'subcategorias', 'categorias', 'unidades', 'proyectos_activos', 'fuentes', 'divisiones'));
     }
 
+    public function listaDivisiones()
+    {
+        return DivisionArea::all();
+    }
     public function mostrarPartidas($idGrupo, $idProyecto = null)
     {
         return Presupuesto::mostrarPartidas($idGrupo, $idProyecto);
@@ -107,6 +111,8 @@ class RequerimientoController extends Controller
             ->select(
                 'alm_req.codigo as codigo_requerimiento',
                 'alm_det_req.*',
+                'sis_moneda.simbolo as moneda_simbolo',
+                'sis_moneda.descripcion as moneda_descripcion',
                 'adm_estado_doc.estado_doc',
                 'adm_estado_doc.bootstrap_color',
                 'alm_prod.descripcion as producto_descripcion',
@@ -118,6 +124,7 @@ class RequerimientoController extends Controller
             ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_det_req.id_unidad_medida')
             ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'alm_det_req.estado')
             ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+            ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'alm_det_req.id_moneda')
             // ->leftJoin('almacen.alm_almacen as almacen_reserva','almacen_reserva.id_almacen','=','alm_det_req.id_almacen_reserva')
             ->where([
                 ['alm_det_req.id_requerimiento', '=', $id_requerimiento],
@@ -424,8 +431,8 @@ class RequerimientoController extends Controller
                             trans_detalle.estado != 7) AS suma_transferencias")
                 )
                 ->where([
-                    ['alm_det_req.id_requerimiento', '=', $requerimiento[0]['id_requerimiento']],
-                    ['alm_det_req.estado', '!=', 7]
+                    ['alm_det_req.id_requerimiento', '=', $requerimiento[0]['id_requerimiento']]
+                   
                 ])
                 ->orderBy('alm_item.id_item', 'asc')
                 ->get();
@@ -564,23 +571,23 @@ class RequerimientoController extends Controller
             $requerimiento->codigo =  Requerimiento::crearCodigo($request->tipo_requerimiento, $request->id_grupo);
             $requerimiento->id_tipo_requerimiento = $request->tipo_requerimiento;
             $requerimiento->id_usuario = Auth::user()->id_usuario;
-            $requerimiento->id_rol = $request->id_rol;
-            $requerimiento->fecha_requerimiento = $request->fecha_requerimiento;
+            $requerimiento->id_rol = $request->id_rol>0?$request->id_rol:null;
+            $requerimiento->fecha_requerimiento = $request->fecha_requerimiento? $request->fecha_requerimiento:new Carbon();
             $requerimiento->id_periodo = $request->periodo;
             $requerimiento->concepto = strtoupper($request->concepto);
-            $requerimiento->id_moneda = $request->moneda;
-            $requerimiento->id_proyecto = $request->id_proyecto;
+            $requerimiento->id_moneda = $request->moneda>0?$request->moneda:null;
+            $requerimiento->id_proyecto = $request->id_proyecto>0?$request->id_proyecto:null;
             $requerimiento->observacion = $request->observacion;
-            $requerimiento->id_grupo = $request->id_grupo;
-            $requerimiento->id_area = $request->id_area;
+            $requerimiento->id_grupo = $request->id_grupo>0?$request->id_grupo:null;
+            $requerimiento->id_area = $request->id_area>0?$request->id_area:null;
             $requerimiento->id_prioridad = $request->prioridad;
             $requerimiento->fecha_registro = new Carbon();
             $requerimiento->estado = 1;
-            $requerimiento->id_empresa = $request->empresa;
-            $requerimiento->id_sede = $request->sede;
-            $requerimiento->tipo_cliente = $request->tipo_cliente;
-            $requerimiento->id_cliente = $request->id_cliente;
-            $requerimiento->id_persona = $request->id_persona;
+            $requerimiento->id_empresa = $request->empresa?$request->empresa:null;
+            $requerimiento->id_sede = $request->sede>0?$request->sede:null;
+            $requerimiento->tipo_cliente = $request->tipo_cliente >0 ?$request->tipo_cliente:null;
+            $requerimiento->id_cliente = $request->id_cliente>0?$request->id_cliente:null;
+            $requerimiento->id_persona = $request->id_persona>0?$request->id_persona:null;
             $requerimiento->direccion_entrega = $request->direccion_entrega;
             $requerimiento->id_cuenta = $request->id_cuenta;
             $requerimiento->nro_cuenta = $request->nro_cuenta;
@@ -588,7 +595,7 @@ class RequerimientoController extends Controller
             $requerimiento->telefono = $request->telefono;
             $requerimiento->email = $request->email;
             $requerimiento->id_ubigeo_entrega = $request->id_ubigeo_entrega;
-            $requerimiento->id_almacen = $request->id_almacen;
+            $requerimiento->id_almacen = $request->id_almacen>0?$request->id_almacen:null;
             $requerimiento->confirmacion_pago = ($request->tipo_requerimiento == 2 ? ($request->fuente == 2 ? true : false) : true);
             $requerimiento->monto = $request->monto;
             $requerimiento->fecha_entrega = $request->fecha_entrega;
@@ -629,7 +636,6 @@ class RequerimientoController extends Controller
                 $detalleArray[] = $detalle;
                 $montoTotal += $detalle->cantidad * $detalle->precio_unitario;
             }
-
 
             $documento = new Documento();
             $documento->id_tp_documento = 1;
@@ -1252,21 +1258,19 @@ class RequerimientoController extends Controller
             })
             ->when((intval($idPrioridad) > 0), function ($query)  use ($idPrioridad) {
                 return $query->whereRaw('alm_req.id_prioridad = ' . $idPrioridad);
-            })
-            ->orderBy("alm_req.fecha_registro", "desc");
-
+            });
+ 
         return datatables($requerimientos)
             ->filterColumn('nombre_usuario', function ($query, $keyword) {
                 $keywords = trim(strtoupper($keyword));
                 $query->whereRaw("UPPER(CONCAT(pers.nombres,' ',pers.apellido_paterno,' ',pers.apellido_materno)) LIKE ?", ["%{$keywords}%"]);
             })
-            ->filterColumn('monto_total', function ($query, $keyword) {
-                $keywords = trim($keyword);
-                $query->whereRaw("(SELECT SUM(alm_det_req.cantidad * alm_det_req.precio_unitario) 
-            FROM almacen.alm_det_req 
-            WHERE   alm_det_req.id_requerimiento = alm_req.id_requerimiento AND
-            alm_det_req.estado != 7) LIKE ?", ["%{$keywords}%"]);
-            })
+            // ->filterColumn('monto_total', function ($query, $keyword) {
+            //     $query->whereRaw("(SELECT SUM(alm_det_req.cantidad * alm_det_req.precio_unitario) 
+            // FROM almacen.alm_det_req 
+            // WHERE   alm_det_req.id_requerimiento = alm_req.id_requerimiento AND
+            // alm_det_req.estado != 7)");
+            // })
             ->rawColumns(['termometro'])->toJson();
     }
 
@@ -1390,7 +1394,7 @@ class RequerimientoController extends Controller
                 'alm_req.observacion',
                 'alm_tp_req.descripcion AS tipo_requerimiento',
                 'alm_req.id_usuario',
-                DB::raw("CONCAT(rrhh_perso.nombres, ' ',rrhh_perso.apellido_paterno, ' ', rrhh_perso.apellido_materno)  AS persona"),
+                DB::raw("CONCAT(rrhh_perso.nombres, ' ',rrhh_perso.apellido_paterno, ' ', rrhh_perso.apellido_materno)  AS nombre_usuario"),
                 'sis_usua.usuario',
                 'alm_req.id_rol',
                 'sis_rol.descripcion as descripcion_rol',
@@ -1576,7 +1580,7 @@ class RequerimientoController extends Controller
                                 'id_rol' => $element->id_rol,
                                 'descripcion_rol' => $element->descripcion_rol,
                                 'usuario' => $element->usuario,
-                                'persona' => $element->persona,
+                                'nombre_usuario' => $element->nombre_usuario,
                                 'id_almacen' => $element->id_almacen,
                                 'descripcion_almacen' => $element->descripcion_almacen,
                                 'cantidad_aprobados_total_flujo' => ($cantidadAprobacionesRealizadas) . '/' . ($tamañoFlujo),
@@ -1627,7 +1631,7 @@ class RequerimientoController extends Controller
                             'id_rol' => $element->id_rol,
                             'descripcion_rol' => $element->descripcion_rol,
                             'usuario' => $element->usuario,
-                            'persona' => $element->persona,
+                            'nombre_usuario' => $element->nombre_usuario,
                             'id_almacen' => $element->id_almacen,
                             'descripcion_almacen' => $element->descripcion_almacen,
                             'cantidad_aprobados_total_flujo' => ($cantidadAprobacionesRealizadas) . '/' . ($tamañoFlujo),
@@ -1671,8 +1675,10 @@ class RequerimientoController extends Controller
             // $idRolAprobante = $request->idRolAprobante;
             // $idFlujo = $request->idFlujo;
             // $aprobacionFinalOPendiente = $request->aprobacionFinalOPendiente;
-
+ 
             $nombreCompletoUsuarioRevisaAprueba = Usuario::find($request->idUsuario)->trabajador->postulante->persona->nombre_completo;
+
+            // Debugbar::info($nombreCompletoUsuarioRevisaAprueba);
 
 
             if ($request->aprobacionFinalOPendiente == 'PENDIENTE') {
@@ -1878,7 +1884,7 @@ class RequerimientoController extends Controller
                 // Debugbar::info($payload);
 
                 if (count($destinatarios) > 0) {
-                    NotificacionesController::enviarEmail($payload);
+                    // NotificacionesController::enviarEmail($payload);
                 }
             }
             if ($accion == 1) {
@@ -1886,7 +1892,8 @@ class RequerimientoController extends Controller
                 // TO-DO NOTIFICAR AL USUARIO QUE SU REQUERIMIENTO FUE APROBADO
             }
 
-
+            $aprobacion->id_aprobacion=123;
+            $seNotificaraporEmail= true;
             DB::commit();
             return response()->json(['id_aprobacion' => $aprobacion->id_aprobacion, 'notificacion_por_emial' => $seNotificaraporEmail]);
         } catch (Exception $e) {

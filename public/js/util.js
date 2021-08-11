@@ -243,4 +243,13 @@ viewBox="0 0 100 100" enable-background="new 0 0 0 0" xml:space="preserve">
 </circle>
 </svg>`;
     }
+
+    static objectifyForm(formArray) {
+        //serialize data function
+        var returnArray = {};
+        for (var i = 0; i < formArray.length; i++){
+            returnArray[formArray[i]['name']] = formArray[i]['value'];
+        }
+        return returnArray;
+    }
 }

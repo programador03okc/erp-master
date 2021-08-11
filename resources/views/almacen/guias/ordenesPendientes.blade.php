@@ -38,25 +38,24 @@ Pendientes de Ingreso
                                         <thead>
                                             <tr>
                                                 <th hidden></th>
-                                                <th></th>
-                                                <th>Orden SoftLink</th>
-                                                <th>Cod.Orden</th>
-                                                <th>Creado por</th>
-                                                <th>Días para que llegue</th>
-                                                <th>Sede Orden</th>
-                                                <th>Proveedor</th>
-                                                <th>Fecha Emisión</th>
-                                                <th>Responsable</th>
-                                                <th>Estado</th>
-                                                <th width="80px"></th>
+                                                <th width="3%"></th>
+                                                <th width="10%">Orden SoftLink</th>
+                                                <th width="10%">Cod.Orden</th>
+                                                <th width="5%">Creado por</th>
+                                                <th width="13%">Días para que llegue</th>
+                                                <th width="8%">Sede Orden</th>
+                                                <th width="20%">Proveedor</th>
+                                                <th width="12%">Fecha Emisión</th>
+                                                <th width="8%">Responsable</th>
+                                                <th width="5%">Estado</th>
+                                                <th width="6%"></th>
                                             </tr>
                                         </thead>
                                         <tbody></tbody>
                                         <tfoot></tfoot>
                                     </table>
                                     @if(Auth::user()->tieneAccion(83))
-                                    <button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" 
-                                    title="Ingresar Guía de Compra" onClick="open_guia_create_seleccionadas();">Ingresar Guía</button>
+                                    <button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Ingresar Guía de Compra" onClick="open_guia_create_seleccionadas();">Ingresar Guía</button>
                                     @endif
                                 </div>
                             </div>
@@ -104,7 +103,7 @@ Pendientes de Ingreso
                                     </div>
                                 </div>
                             </div> -->
-                                
+
                             <div class="row">
                                 <div class="col-md-12">
                                     <table class="mytable table table-condensed table-bordered table-okc-view" id="listaIngresosAlmacen">
@@ -129,8 +128,7 @@ Pendientes de Ingreso
                                         <tbody></tbody>
                                         <tfoot></tfoot>
                                     </table>
-                                    <button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" 
-                                    title="Ingresar Factura/Boleta" onClick="open_doc_create_seleccionadas();">Ingresar Comprobante</button>
+                                    <button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Ingresar Factura/Boleta" onClick="open_doc_create_seleccionadas();">Ingresar Comprobante</button>
                                 </div>
                             </div>
                         </form>
@@ -153,6 +151,7 @@ Pendientes de Ingreso
 @include('almacen.guias.ordenesGuias')
 @include('almacen.guias.guia_com_ver')
 @include('almacen.producto.productoModal')
+@include('tesoreria.facturacion.archivos_oc_mgcp')
 
 @endsection
 
@@ -184,6 +183,7 @@ Pendientes de Ingreso
 <script src="{{ asset('js/almacen/documentos/doc_com_ver.js')}}"></script>
 <script src="{{ asset('js/almacen/transferencias/transferenciaCreate.js')}}"></script>
 <script src="{{ asset('js/almacen/producto/productoModal.js')}}"></script>
+<script src="{{ asset('js/tesoreria/facturacion/archivosMgcp.js')}}"></script>
 
 <script>
     $(document).ready(function() {

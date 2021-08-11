@@ -60,5 +60,5 @@ Iniciar sesión
 @endsection
 
 @section('scripts')
-<script src="{{ asset('js/app.js')}}"></script>
+<script src="{{ asset('js/login.js')}}"></script>
 @endsection

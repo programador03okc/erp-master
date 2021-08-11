@@ -21,6 +21,7 @@
                             <th>Dirección Destino</th>
                             <th>Ubigeo Destino</th>
                             <th>Estado</th>
+                            <th>Acción</th>
                         </tr>
                     </thead>
                     <tbody>

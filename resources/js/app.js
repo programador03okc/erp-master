@@ -1,5 +1,5 @@
 
-require('./login');
+// require('./login');
 // require('./bootstrap');
 // import React, {Component} from 'react';
 // import ReactDOM from 'react-dom';

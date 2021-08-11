@@ -275,14 +275,6 @@ function listarTablaReq(id_empresa = null, id_sede = null, id_grupo = null, id_p
         resizeSide();
     });
 
-    $('#ListaReq tbody').on('click', 'tr', function () {
-        if ($(this).hasClass('eventClick')) {
-            $(this).removeClass('eventClick');
-        } else {
-            $('#ListaReq').dataTable().$('tr.eventClick').removeClass('eventClick');
-            $(this).addClass('eventClick');
-        }
-    });
 }
 
 // function check(cbx){

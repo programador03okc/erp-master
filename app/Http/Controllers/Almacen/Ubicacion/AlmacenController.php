@@ -34,7 +34,7 @@ class AlmacenController extends Controller
             ->leftjoin('administracion.sis_sede','sis_sede.id_sede','=','alm_almacen.id_sede')
             ->join('almacen.alm_tp_almacen','alm_tp_almacen.id_tipo_almacen','=','alm_almacen.id_tipo_almacen')
             ->where([['alm_almacen.estado', '=', 1]])
-                ->orderBy('id_almacen')
+                ->orderBy('id_empresa', 'asc')
                 ->get();
         $output['data'] = $data;
         return response()->json($output);

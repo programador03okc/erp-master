@@ -100,11 +100,20 @@ function guardar_proveedor(){
                         $('[name=razon_social]').val(response['razon_social']);
                     }
                 } else {
-                    alert('Ya se encuentra registrado un Proveedor con dicho Nro de Documento!');
+                    Swal.fire(
+                        '',
+                        'Ya exíste un Proveedor con el mismo número de documento',
+                        'warning'
+                    );
                     $("#submitProveedor").removeAttr("disabled");
                 }
             }
         }).fail( function( jqXHR, textStatus, errorThrown ){
+            Swal.fire(
+                '',
+                'Hubo un problema al intentar registrar el proveedor.'+ errorThrown,
+                'error'
+            );
             console.log(jqXHR);
             console.log(textStatus);
             console.log(errorThrown);

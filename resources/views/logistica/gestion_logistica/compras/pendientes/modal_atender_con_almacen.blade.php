@@ -31,7 +31,8 @@
             <div class="modal-footer">
                 <div class="col-md-12 btn-group right" role="group" style="margin-bottom: 5px;">
                     <span id='group-inputGuardarAtendidoConAlmacen'>
-                        <button class="btn btn-success" type="button" id="btnGuardarAtendidoConAlmacen" onClick="requerimientoPendienteView.guardarAtendidoConAlmacen();">
+                        <button class="btn btn-sm btn-primary" class="close" data-dismiss="modal" >Cancelar</button>
+                        <button class="btn btn-sm btn-success handleClickGuardarAtendidoConAlmacen" type="button" id="btnGuardarAtendidoConAlmacen">
                             <i class="fas fa-save"></i> Guardar
                         </button>
                     </span>

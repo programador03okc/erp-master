@@ -50,12 +50,9 @@ function format(table_id, id, row) {
                 response.forEach(function(element) {
                     html += `<tr>
                     <td style="border: none;">${
-                        element.orden_am !== null
-                            ? element.orden_am +
-                              ` <a href="https://apps1.perucompras.gob.pe//OrdenCompra/obtenerPdfOrdenPublico?ID_OrdenCompra=${element.id_oc_propia}&ImprimirCompleto=1">
-                    <span class="label label-success">Ver O.E.</span></a>
-                <a href="${element.url_oc_fisica}">
-                    <span class="label label-warning">Ver O.F.</span></a>`
+                        element.nro_orden !== null
+                            ? ` <a href="#" class="archivos" data-id="${element.id_oc_propia}" data-tipo="${element.tipo}">
+                            ${element.nro_orden}</a>`
                             : ""
                     } 
                     </td>
@@ -65,13 +62,14 @@ function format(table_id, id, row) {
                             : ""
                     }</td>
                     <td style="border: none;">${
-                        element.oportunidad !== null ? element.oportunidad : ""
+                        element.razon_social !== null
+                            ? element.razon_social
+                            : ""
                     }</td>
                     <td style="border: none;">${
-                        element.nombre !== null ? element.nombre : ""
-                    }</td>
-                    <td style="border: none;">${
-                        element.user_name !== null ? element.user_name : ""
+                        element.nombre_corto !== null
+                            ? element.nombre_corto
+                            : ""
                     }</td>
                     <td style="border: none;"><label class="lbl-codigo" title="Abrir Requerimiento" onClick="abrir_requerimiento(${
                         element.id_requerimiento
@@ -104,11 +102,10 @@ function format(table_id, id, row) {
                 id="detalle_${table_id}">
                 <thead style="color: black;background-color: #c7cacc;">
                     <tr>
-                        <th style="border: none;">Orden Elec.</th>
-                        <th style="border: none;">Cod.CC</th>
-                        <th style="border: none;">Oportunidad</th>
-                        <th style="border: none;">Entidad</th>
-                        <th style="border: none;">Corporativo</th>
+                        <th style="border: none;">O/C</th>
+                        <th style="border: none;">C.P.</th>
+                        <th style="border: none;">Cliente</th>
+                        <th style="border: none;">Responsable</th>
                         <th style="border: none;">Cod.Req.</th>
                         <th style="border: none;">Código</th>
                         <th style="border: none;">PartNumber</th>
@@ -139,6 +136,13 @@ function format(table_id, id, row) {
         console.log(errorThrown);
     });
 }
+
+$("#ordenesPendientes tbody").on("click", "a.archivos", function(e) {
+    $(e.preventDefault());
+    var id = $(this).data("id");
+    var tipo = $(this).data("tipo");
+    obtenerArchivosMgcp(id, tipo);
+});
 
 function abrir_requerimiento(id_requerimiento) {
     // Abrir nuevo tab

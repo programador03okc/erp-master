@@ -8,7 +8,7 @@
             <div class="modal-body">
                 <div class="row" id="group-action-upload-file">
                     <div class="col-md-12">
-                        <input type="file" class="filestyle" data-input="false" name="nombre_archivo" onchange="requerimientoView.agregarAdjuntoItem(event);" />
+                        <input type="file" class="filestyle handleChangeAgregarAdjuntoItem" data-input="false" name="nombre_archivo" />
                     </div>
 
                 </div>

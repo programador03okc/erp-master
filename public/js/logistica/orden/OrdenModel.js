@@ -64,6 +64,21 @@ class OrdenModel {
                 });
             });
     }
+    anularOrden(id){
+        return new Promise(function(resolve, reject) {
+            $.ajax({
+                type: 'GET',
+                url:`anular/${id}`,
+                dataType: 'JSON',
+                success(response) {
+                    resolve(response);
+                },
+                error: function(err) {
+                reject(err)
+                }
+                });
+            });
+    }
 
 
 

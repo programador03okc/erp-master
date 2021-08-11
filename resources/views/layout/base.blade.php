@@ -14,7 +14,7 @@
 		<link rel="stylesheet" href="{{ asset('css/app.css')}}">
 		<link rel="stylesheet" href="{{ asset('css/skin-okc.css')}}">
 		<link rel="stylesheet" href="{{ asset('template/plugins/lobibox/dist/css/lobibox.min.css')}}">
-
+		<link rel="stylesheet" href="{{ asset('template/plugins/sweetalert2/sweetalert2.min.css')}}">
 		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 		@yield('estilos')
 	</head>
@@ -91,7 +91,7 @@
 	<script src="{{ asset('js/function.js')}}"></script>
 	<script src="{{ asset('/js/publico/animation.js')}}"></script>
 
-	<script src="{{ asset('template/plugins/sweetalert/sweetalert2@8.js') }}"></script>
+	<script src="{{ asset('template/plugins/sweetalert2/sweetalert2.all.min.js') }}"></script>
 	<script src="{{ asset('template/plugins/bootstrap_filestyle/bootstrap-filestyle.min.js') }}"></script>
 	<script src="{{ asset('template/plugins/pace/pace.js') }}"></script>
 	<script src="{{asset('js/publico/notificaciones_sin_leer.js')}}"></script>

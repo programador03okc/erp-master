@@ -87,7 +87,6 @@ function selectProveedor(obj){
     let ubigeoDescripcion= obj.dataset.ubigeoDescripcion?obj.dataset.ubigeoDescripcion:"";
     let ubigeo= obj.dataset.ubigeo?obj.dataset.ubigeo:"";
 
-    console.log(direccionFiscal);
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_proveedor']").value =idProveedor;
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_contrib']").value =idContribuyente;
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='razon_social']").value =razonSocial;

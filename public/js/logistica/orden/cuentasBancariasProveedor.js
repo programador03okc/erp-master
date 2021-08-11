@@ -6,7 +6,7 @@ $(function(){
 });
 
 function guardarCuentaBancariaProveedor(){
-    let idContribuyente =document.querySelector("form[id='form-agregar-cuenta-bancaria-proveedor'] input[name='id_contribuyente']").value;
+    let idProveedor =document.querySelector("form[id='form-agregar-cuenta-bancaria-proveedor'] input[name='id_proveedor']").value;
     let banco = document.querySelector("form[id='form-agregar-cuenta-bancaria-proveedor'] select[name='banco']").value;
     let idMoneda = document.querySelector("form[id='form-agregar-cuenta-bancaria-proveedor'] select[name='moneda']").value;
     let tipoCuenta = document.querySelector("form[id='form-agregar-cuenta-bancaria-proveedor'] select[name='tipo_cuenta_banco']").value;
@@ -33,7 +33,7 @@ function guardarCuentaBancariaProveedor(){
             type: 'POST',
             url: 'guardar-cuenta-bancaria-proveedor',
             data: {
-                'id_contribuyente':idContribuyente,
+                'id_proveedor':idProveedor,
                 'id_banco':banco,
                 'id_moneda':idMoneda,
                 'id_tipo_cuenta':tipoCuenta,
@@ -61,28 +61,22 @@ function guardarCuentaBancariaProveedor(){
 
 
                 }else{
-                    Lobibox.notify('error', {
-                        title:false,
-                        size: 'normal',
-                        rounded: true,
-                        sound: false,
-                        delayIndicator: false,
-                        msg: 'Hubo un error al intentar guardar el contacto, por favor intente nuevamente, si el problema persiste notifique a soporte.'
-                    });
+                    Swal.fire(
+                        '',
+                        'Hubo un error al intentar guardar la cuenta bancaria del proveedor, por favor intente nuevamente',
+                        'error'
+                    );
                 }
 
                     
                 
             }
         }).fail( function( jqXHR, textStatus, errorThrown ){
-            Lobibox.notify('error', {
-                title:false,
-                size: 'normal',
-                rounded: true,
-                sound: false,
-                delayIndicator: false,
-                msg: 'Hubo un error al intentar guardar el contacto. '+ errorThrown
-            });
+            Swal.fire(
+                '',
+                'Hubo un error al intentar guardar la cuenta bancaria del proveedor. '+ errorThrown,
+                'error'
+            );
             console.log(jqXHR);
             console.log(textStatus);
             console.log(errorThrown);
@@ -95,16 +89,21 @@ function guardarCuentaBancariaProveedor(){
 
 function agregar_cuenta_proveedor(){
     let razonSocialProveedor = document.querySelector("div[type='crear-orden-requerimiento'] input[name='razon_social']").value;
-    let idContribuyente = document.querySelector("div[type='crear-orden-requerimiento'] input[name='id_contrib']").value;
-    if(idContribuyente >0){
+    let idProveedor = document.querySelector("div[type='crear-orden-requerimiento'] input[name='id_proveedor']").value;
+
+    if(idProveedor >0){
         $('#modal-agregar-cuenta-bancaria-proveedor').modal({
             show: true
         });
         document.querySelector("div[id='modal-agregar-cuenta-bancaria-proveedor'] span[id='razon_social_proveedor']").textContent= razonSocialProveedor;
-        document.querySelector("div[id='modal-agregar-cuenta-bancaria-proveedor'] input[name='id_contribuyente']").value= idContribuyente;
+        document.querySelector("div[id='modal-agregar-cuenta-bancaria-proveedor'] input[name='id_proveedor']").value= idProveedor;
 
     }else{
-        alert("Debe seleccionar un proveedor");
+        Swal.fire(
+            '',
+            'Debe seleccionar un proveedor',
+            'warning'
+        );
     }
 
 }
@@ -112,25 +111,36 @@ function agregar_cuenta_proveedor(){
 
 function cuentasBancariasModal(){
     let razonSocialProveedor = document.querySelector("div[type='crear-orden-requerimiento'] input[name='razon_social']").value;
-    let idContribuyente = document.querySelector("div[type='crear-orden-requerimiento'] input[name='id_contrib']").value;
-    if(idContribuyente >0){
+    let idProveedor = document.querySelector("div[type='crear-orden-requerimiento'] input[name='id_proveedor']").value;
+    if(idProveedor >0){
         $('#modal-cuentas-bancarias-proveedor').modal({
             show: true
         });
         document.querySelector("div[id='modal-cuentas-bancarias-proveedor'] span[id='razon_social_proveedor']").textContent= razonSocialProveedor;
-        listarCuentasBancariasContribuyente(idContribuyente);
+        listarCuentasBancariasContribuyente(idProveedor);
 
     }else{
-        alert("Debe seleccionar un proveedor");
+        Swal.fire(
+            '',
+            'Debe seleccionar un proveedor',
+            'warning'
+        );
     }
 }
 
 
-function listarCuentasBancariasContribuyente(idContribuyente){
+function listarCuentasBancariasContribuyente(idProveedor){
 
-    getCuentasBancariasContribuyente(idContribuyente).then(function (res) {
-        ConstruirTablalistaCuentasBancariasProveedor(res);
+    getCuentasBancarias(idProveedor).then(function (res) {
+        if(res[0].cuenta_contribuyente){
+            ConstruirTablalistaCuentasBancariasProveedor(res);
+        }
     }).catch(function (err) {
+        Swal.fire(
+            '',
+            'Hubo un problema al intentar obtener la lista de cuentas bancarias, por favor vuelva a intentarlo',
+            'error'
+        );
         console.log(err)
     })
 
@@ -139,11 +149,11 @@ function listarCuentasBancariasContribuyente(idContribuyente){
 
 }
 
-function getCuentasBancariasContribuyente(idContribuyente){
+function getCuentasBancarias(idProveedor){
     return new Promise(function(resolve, reject) {
         $.ajax({
             type: 'GET',
-            url:`listar-cuentas-bancarias-contribuyente/${idContribuyente}`,
+            url:`listar-cuentas-bancarias-proveedor/${idProveedor}`,
             dataType: 'JSON',
             success(response) {
                 resolve(response);
@@ -168,32 +178,32 @@ function ConstruirTablalistaCuentasBancariasProveedor(data){
         'columns': [
 
             { render: function (data, type, row) {   
-                return `${row.banco.contribuyente.razon_social?row.banco.contribuyente.razon_social:''}`;
+                return `${row.cuenta_contribuyente.banco.contribuyente.razon_social?row.cuenta_contribuyente.banco.contribuyente.razon_social:''}`;
                 }
             },
             { render: function (data, type, row) {   
-                return `${row.tipo_cuenta.descripcion?row.tipo_cuenta.descripcion:''}`;
+                return `${row.cuenta_contribuyente.tipo_cuenta.descripcion?row.cuenta_contribuyente.tipo_cuenta.descripcion:''}`;
                 }
             },
             { render: function (data, type, row) {   
-                return `${row.nro_cuenta?row.nro_cuenta:''}`;
+                return `${row.cuenta_contribuyente.nro_cuenta?row.cuenta_contribuyente.nro_cuenta:''}`;
                 }
             },
             { render: function (data, type, row) {   
-                return `${row.nro_cuenta_interbancaria?row.nro_cuenta_interbancaria:''}`;
+                return `${row.cuenta_contribuyente.nro_cuenta_interbancaria?row.cuenta_contribuyente.nro_cuenta_interbancaria:''}`;
                 }
             }, 
             { render: function (data, type, row) {   
-                return `${row.moneda.descripcion?row.moneda.descripcion:''}`;
+                return `${row.cuenta_contribuyente.moneda.descripcion?row.cuenta_contribuyente.moneda.descripcion:''}`;
                 }
             }, 
             { render: function (data, type, row) {   
-                return `${row.swift?row.swift:''}`;
+                return `${row.cuenta_contribuyente.swift?row.cuenta_contribuyente.swift:''}`;
                 }
             }, 
             { render: function (data, type, row) {                     
                     return `
-                        <button type="button" class="btn btn-primary btn-xs" name="btnSeleccionarCuenta" title="Seleccionar cuenta"  data-id-cuenta="${row.id_cuenta_contribuyente}" data-nro-cuenta="${row.nro_cuenta}" onclick="seleccionarCuentaContribuyente(this);">Seleccionar</button>`;
+                        <button type="button" class="btn btn-primary btn-xs" name="btnSeleccionarCuenta" title="Seleccionar cuenta"  data-id-cuenta="${row.cuenta_contribuyente.id_cuenta_contribuyente}" data-nro-cuenta="${row.cuenta_contribuyente.nro_cuenta}" onclick="seleccionarCuentaContribuyente(this);">Seleccionar</button>`;
                 }   
             }   
         ],

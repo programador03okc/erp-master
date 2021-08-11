@@ -11,7 +11,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-primary" class="close" data-dismiss="modal" >Cancelar</button>
+                <button class="btn btn-sm btn-primary" class="close" data-dismiss="modal" >Cancelar</button>
                 <label style="display: none;" id="id_partida"></label>
                 <label style="display: none;" id="indice"></label>
             </div>

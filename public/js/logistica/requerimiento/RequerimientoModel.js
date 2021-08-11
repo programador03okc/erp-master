@@ -2,6 +2,21 @@ class RequerimientoModel {
     constructor () {
     }
 
+    getDivisiones(){
+        return new Promise(function(resolve, reject) {
+            $.ajax({
+                type: 'GET',
+                url:`lista-divisiones`,
+                dataType: 'JSON',
+                success(response) {
+                    resolve(response);
+                },
+                error: function(err) {
+                reject(err) // Reject the promise and go to catch()
+                }
+                });
+            }); 
+    }
     getTipoCambioCompra(fecha){
         return new Promise(function(resolve, reject) {
             $.ajax({
@@ -189,81 +204,46 @@ class RequerimientoModel {
     }
 
     guardarRespuesta(payload){
-        return new Promise(function(resolve, reject) {
-        $.ajax({
+        
+        return $.ajax({
             type: 'POST',
             url:`guardar-respuesta`,
             dataType: 'JSON',
-            data:payload,
-            beforeSend: function (data) { 
-            var customElement = $("<div>", {
-                "css": {
-                    "font-size": "24px",
-                    "text-align": "center",
-                    "padding": "0px",
-                    "margin-top": "-400px"
-                },
-                "class": "your-custom-class",
-                "text": "Registrando respuesta..."
+            data:payload
             });
-
-            $('#modal-requerimiento div.modal-body').LoadingOverlay("show", {
-                imageAutoResize: true,
-                progress: true,
-                custom: customElement,
-                imageColor: "#3c8dbc"
-            });
-            },
-            success(response) {
-                resolve(response);
-            },
-            fail: function (jqXHR, textStatus, errorThrown) {
-                $('#modal-requerimiento div.modal-body').LoadingOverlay("hide", true);
-                alert("Hubo un problema al registrar la respuesta. Por favor actualice la página e intente de nuevo");
-                console.log(jqXHR);
-                console.log(textStatus);
-                console.log(errorThrown);
-            }
-            });
-        });
     }
 
     getRequerimiento(idRequerimiento){
-        return new Promise(function(resolve, reject) {
-            $.ajax({
+        return  $.ajax({
                 type: 'GET',
                 url:`mostrar-requerimiento/${idRequerimiento}/null`,
-                dataType: 'JSON',
-                beforeSend: function (data) { 
-                    var customElement = $("<div>", {
-                        "css": {
-                            "font-size": "24px",
-                            "text-align": "center",
-                            "padding": "0px",
-                            "margin-top": "-400px"
-                        },
-                        "class": "your-custom-class"
-                    });
-        
-                    $('#modal-requerimiento div.modal-body').LoadingOverlay("show", {
-                        imageAutoResize: true,
-                        progress: true,
-                        custom: customElement,
-                        imageColor: "#3c8dbc"
-                    });
-                    },
-                success(response) {
-                    resolve(response);
-                },
-                fail: function (jqXHR, textStatus, errorThrown) {
-                    $('#modal-requerimiento div.modal-body').LoadingOverlay("hide", true);
-                    alert("Hubo un problema al registrar la respuesta. Por favor actualice la página e intente de nuevo");
-                    console.log(jqXHR);
-                    console.log(textStatus);
-                    console.log(errorThrown);
-                }
+                dataType: 'JSON'
                 });
-            });
+        
+        // return new Promise(function(resolve, reject) {
+        //     $.ajax({
+        //         type: 'GET',
+        //         url:`mostrar-requerimiento/${idRequerimiento}/null`,
+        //         dataType: 'JSON',
+        //         beforeSend: function (data) { 
+
+        //             },
+        //         success(response) {
+        //             resolve(response);
+        //         },
+        //         error: function (jqXHR, textStatus, errorThrown) {
+        //             $('#modal-requerimiento div.modal-body').LoadingOverlay("hide", true);
+        //             Swal.fire(
+        //                 '',
+        //                 'Hubo un problema al registrar la respuesta. Por favor actualice la página e intente de nuevo',
+        //                 'error'
+        //             );
+        //             console.log(jqXHR);
+        //             console.log(textStatus);
+        //             console.log(errorThrown);
+        //         }
+        //         });
+        //     });
     }
 
     // listado 

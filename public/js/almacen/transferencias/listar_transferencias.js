@@ -9,10 +9,7 @@ function inicializar(_rutaLista) {
 }
 
 function iniciar(permiso, usuario) {
-    // clearDataTable();
     $("#tab-transferencias section:first form").attr("form", "formulario");
-    // $('[name=id_almacen_origen]').val(1);
-    // $('[name=id_almacen_destino]').val(1);
     valor_permiso = permiso;
     usuario_session = usuario;
 

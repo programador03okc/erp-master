@@ -2,18 +2,94 @@
 // ============== View =========================
 var vardataTables = funcDatatables();
 
+var itemsParaCompraList=[]
+var reqTrueList=[]
+var listCheckReq=[]
+var infoStateInput = [];
+var tempDetalleItemsParaCompraCC = [];
+
+var tablaListaRequerimientosPendientes;
+var iTableCounter = 1;
+var oInnerTable;
 class RequerimientoPendienteView {
-    init() {
-        this.renderRequerimientoPendienteListModule(null, null);
+    constructor(requerimientoPendienteCtrl){
+        this.requerimientoPendienteCtrl = requerimientoPendienteCtrl;
+    }
+
+    initializeEventHandler(){
+        $('#modal-atender-con-almacen').on("click","button.handleClickGuardarAtendidoConAlmacen", ()=>{
+            this.guardarAtendidoConAlmacen();
+        });
+
+        $('#requerimientos_pendientes').on("click","button.handleClickCrearOrdenCompra", ()=>{
+            this.crearOrdenCompra();
+        });
+
+        $('#listaRequerimientosPendientes tbody').on("click","label.handleClickAbrirRequerimiento",(e)=>{
+            this.abrirRequerimiento(e.currentTarget.dataset.idRequerimiento);
+        });
+        // $('#listaRequerimientosPendientes tbody').on("click","button.handleClickObservarRequerimientoLogistica",(e)=>{
+        //     this.observarRequerimientoLogistica(e.currentTarget.dataset.idRequerimiento);
+        // });
+        // $('#form-observar-requerimiento-logistica').on("click","button.handleClickRegistrarObservaciónRequerimientoLogistica",()=>{
+        //     this.registrarObservaciónRequerimientoLogistica();
+        // });
+
+        $('#listaRequerimientosPendientes tbody').on("click","button.handleClickVerDetalleRequerimiento",(e)=>{
+            // var data = $('#listaRequerimientosPendientes').DataTable().row($(this).parents("tr")).data();
+            this.verDetalleRequerimiento(e.currentTarget);
+        });
+
+        $('#listaRequerimientosPendientes tbody').on("click","button.handleClickAtenderConAlmacen",(e)=>{
+            this.atenderConAlmacen(e.currentTarget);
+        });
+
+        $('#listaRequerimientosPendientes tbody').on("click","button.handleClickOpenModalCuadroCostos",(e)=>{
+            this.openModalCuadroCostos(e.currentTarget);
+        });
+
+        $('#listaRequerimientosPendientes tbody').on("click","button.handleClickCrearOrdenCompraPorRequerimiento",(e)=>{
+            this.crearOrdenCompraPorRequerimiento(e.currentTarget);
+        });
+        $('#listaRequerimientosPendientes tbody').on("click","button.handleClickCrearOrdenServicioPorRequerimiento",(e)=>{
+            this.crearOrdenServicioPorRequerimiento(e.currentTarget);
+        });
+
+        $('#listaItemsRequerimientoParaAtenderConAlmacen tbody').on("change","select.handleChangeUpdateSelectAlmacenAAtender",(e)=>{
+            this.updateSelectAlmacenAAtender(e.currentTarget);
+        });
+
+        $('#listaItemsRequerimientoParaAtenderConAlmacen tbody').on("blur","input.handleBlurUpdateInputCantidadAAtender", (e)=>{
+            this.updateInputCantidadAAtender(e.currentTarget);
+        });
+
+        
     }
 
     renderRequerimientoPendienteListModule(id_empresa = null, id_sede = null) {
-        requerimientoPendienteCtrl.getRequerimientosPendientes(id_empresa, id_sede).then(function (res) {
-            requerimientoPendienteView.construirTablaListaRequerimientosPendientes(res);
-        }).catch(function (err) {
+        this.requerimientoPendienteCtrl.getRequerimientosPendientes(id_empresa, id_sede).then( (res) =>{
+            this.construirTablaListaRequerimientosPendientes(res);
+        }).catch( (err) =>{
             console.log(err)
         })
     }
+
+    // observarRequerimientoLogistica(idRequerimiento){
+    //     $('#modal-observar-requerimiento-logistica').modal({
+    //         show: true
+    //     });
+    // }
+    // registrarObservaciónRequerimientoLogistica(){
+    //         Lobibox.notify('success', {
+    //             title:false,
+    //             size: 'mini',
+    //             rounded: true,
+    //             sound: false,
+    //             delayIndicator: false,
+    //             msg: `Observación registrada`
+    //         });
+    // }
+
 
     abrirRequerimiento(idRequerimiento){
         // Abrir nuevo tab
@@ -26,6 +102,7 @@ class RequerimientoPendienteView {
 
     construirTablaListaRequerimientosPendientes(data) {
         // requerimientoPendienteCtrl.limpiarTabla('listaRequerimientosPendientes');
+        let that =this;
 
         vista_extendida();
         tablaListaRequerimientosPendientes= $('#listaRequerimientosPendientes').DataTable({
@@ -46,12 +123,12 @@ class RequerimientoPendienteView {
                 },
                 {
                     render: function (data, type, row) {
-                        return `<div class="text-center"><input type="checkbox" data-id-requerimiento="${row.id_requerimiento}" /></div>`;
+                        return `<div class="text-center"><input type="checkbox" data-mapeos-pendientes="${row.count_pendientes}" data-id-requerimiento="${row.id_requerimiento}" /></div>`;
                     }
                 },
                 {
                     render: function (data, type, row) {
-                        return `<label class="lbl-codigo" title="Abrir Requerimiento" onClick="requerimientoPendienteView.abrirRequerimiento(${row.id_requerimiento})">${row.codigo}</label>`;
+                        return `<label class="lbl-codigo handleClickAbrirRequerimiento" title="Abrir Requerimiento" data-id-requerimiento="${row.id_requerimiento}">${row.codigo}</label>`;
                     }
                 },
 
@@ -70,8 +147,32 @@ class RequerimientoPendienteView {
                     }
                 },
                 { 'data': 'empresa_sede' },
-                { 'data': 'usuario' },
-                { 'data': 'estado_doc' },
+                { 'data': 'nombre_usuario' },
+                {'render':
+                    function (data, type, row){
+                        switch (row['estado']) {
+                            case 1:
+                                return '<span class="label label-default">' + row['estado_doc'] + '</span>';
+                                break;
+                            case 2:
+                                return '<span class="label label-success">' + row['estado_doc'] + '</span>';
+                                break;
+                            case 3:
+                                return '<span class="label label-warning">' + row['estado_doc'] + '</span>';
+                                break;
+                            case 5:
+                                return '<span class="label label-primary">' + row['estado_doc'] + '</span>';
+                                break;
+                            case 7:
+                                return '<span class="label label-danger">' + row['estado_doc'] + '</span>';
+                                break;
+                            default:
+                                return '<span class="label label-default">' + row['estado_doc'] + '</span>';
+                                break;
+
+                        }
+                    }
+                },
                 {
                     render: function (data, type, row) {
 
@@ -89,19 +190,21 @@ class RequerimientoPendienteView {
                                 '</div>');
                         } else {
                             let openDiv = '<div class="btn-group" role="group">';
-                            let btnVerDetalleRequerimiento= '<button type="button" class="btn btn-default btn-xs" name="btnVerDetalleRequerimiento" title="Ver detalle requerimiento" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.verDetalleRequerimiento(this);"><i class="fas fa-chevron-down fa-sm"></i></button>';
+                            let btnVerDetalleRequerimiento= '<button type="button" class="btn btn-default btn-xs handleClickVerDetalleRequerimiento" name="btnVerDetalleRequerimiento" title="Ver detalle requerimiento" data-id-requerimiento="' + row.id_requerimiento + '" ><i class="fas fa-chevron-down fa-sm"></i></button>';
+                            // let btnObservarRequerimientoLogistica= '<button type="button" class="btn btn-default btn-xs handleClickObservarRequerimientoLogistica" name="btnObservarRequerimientoLogistica" title="Observar requerimiento" data-id-requerimiento="' + row.id_requerimiento + '" style="background: gold;" ><i class="fas fa-exclamation-triangle fa-sm"></i></button>';
 
-                            let btnAtenderAlmacen = '<button type="button" class="btn btn-primary btn-xs" name="btnOpenModalAtenderConAlmacen" title="Atender con almacén" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.atenderConAlmacen(this);"><i class="fas fa-dolly fa-sm"></i></button>';
                             // let btnAgregarItemBase = '<button type="button" class="btn btn-success btn-xs" name="btnAgregarItemBase" title="Mapear productos" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.openModalAgregarItemBase(this);"  ><i class="fas fa-sign-out-alt"></i></button>';
                             let btnMapearProductos = '<button type="button" class="mapeo btn btn-success btn-xs" title="Mapear productos" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo="' + row.codigo + '"  ><i class="fas fa-sign-out-alt"></i></button>';
+                            let btnAtenderAlmacen='';
                             let btnCrearOrdenCompra = '';
                                 if(row.count_pendientes ==0){
-                                    btnCrearOrdenCompra = '<button type="button" class="btn btn-warning btn-xs" name="btnCrearOrdenCompraPorRequerimiento" title="Crear Orden de Compra" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.crearOrdenCompraPorRequerimiento(this);"><i class="fas fa-file-invoice"></i></button>';
+                                    btnAtenderAlmacen = '<button type="button" class="btn btn-primary btn-xs handleClickAtenderConAlmacen" name="btnOpenModalAtenderConAlmacen" title="Atender con almacén" data-id-requerimiento="' + row.id_requerimiento + '"><i class="fas fa-dolly fa-sm"></i></button>';
+                                    btnCrearOrdenCompra = '<button type="button" class="btn btn-warning btn-xs handleClickCrearOrdenCompraPorRequerimiento" name="btnCrearOrdenCompraPorRequerimiento" title="Crear Orden de Compra" data-id-requerimiento="' + row.id_requerimiento + '"  ><i class="fas fa-file-invoice"></i></button>';
                                 }
-                            let btnCrearOrdenServicio = '<button type="button" class="btn btn-danger btn-xs" name="btnCrearOrdenServicioPorRequerimiento" title="Crear Orden de Servicio" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.crearOrdenServicioPorRequerimiento(this);"><i class="fas fa-file-invoice fa-sm"></i></button>';
+                            let btnCrearOrdenServicio = '<button type="button" class="btn btn-danger btn-xs handleClickCrearOrdenServicioPorRequerimiento" name="btnCrearOrdenServicioPorRequerimiento" title="Crear Orden de Servicio" data-id-requerimiento="' + row.id_requerimiento + '"  ><i class="fas fa-file-invoice fa-sm"></i></button>';
                             let btnVercuadroCostos ='';
                             if(row.id_tipo_requerimiento ==1){
-                                btnVercuadroCostos= '<button type="button" class="btn btn-info btn-xs" name="btnVercuadroCostos" title="Ver Cuadro Costos" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.openModalCuadroCostos(this);"><i class="fas fa-eye fa-sm"></i></button>';
+                                btnVercuadroCostos= '<button type="button" class="btn btn-info btn-xs handleClickOpenModalCuadroCostos" name="btnVercuadroCostos" title="Ver Cuadro Costos" data-id-requerimiento="' + row.id_requerimiento + '" ><i class="fas fa-eye fa-sm"></i></button>';
                             }
 
                             let closeDiv = '</div>';
@@ -122,11 +225,9 @@ class RequerimientoPendienteView {
                 }
             ],
             'initComplete': function () {
-
                 var trs = this.$('tr');
-           
                 for (let i = 0; i < trs.length; i++) {
-                    trs[i].addEventListener('click', handleTrClick);
+                    trs[i].childNodes[1].childNodes[0].childNodes[0].addEventListener('click', handleTrClick);
                 }
                 function handleTrClick() {
                     if (this.classList.contains('eventClick')) {
@@ -138,19 +239,39 @@ class RequerimientoPendienteView {
                         });
                         this.classList.add('eventClick');
                     }
-                    let id = this.childNodes[1].childNodes[0].childNodes[0].dataset.idRequerimiento
-                    let stateCheck = this.childNodes[1].childNodes[0].childNodes[0].checked
-                    requerimientoPendienteCtrl.controlListCheckReq(id, stateCheck);
+                    if(this.dataset.mapeosPendientes > 0){
+                        this.checked=false;
+                        Swal.fire(
+                            '',
+                            'No puede generar una orden si tiene aun productos sin mapear',
+                            'warning'
+                        );
+                    }else{
+                        let id = this.dataset.idRequerimiento
+                        let stateCheck = this.checked
+                        that.requerimientoPendienteCtrl.controlListCheckReq(id, stateCheck);
+
+                    }
                 }
 
                 let listaRequerimientosPendientes_filter = document.querySelector("div[id='listaRequerimientosPendientes_filter']");
-                var buttonFiler = document.createElement("button");
-                buttonFiler.type = "button";
-                buttonFiler.className = "btn btn-default pull-left";
-                buttonFiler.style = "margin-right: 30px;";
-                buttonFiler.innerHTML = "<i class='fas fa-filter'></i> Filtros";
-                buttonFiler.addEventListener('click', requerimientoPendienteView.abrirModalFiltrosRequerimientosPendientes, false);
-                listaRequerimientosPendientes_filter.appendChild(buttonFiler);
+                // let buttonFiler = document.createElement("button");
+                // buttonFiler.type = "button";
+                // buttonFiler.className = "btn btn-default pull-left";
+                // buttonFiler.style = "margin-right: 30px;";
+                // buttonFiler.innerHTML = "<i class='fas fa-filter'></i> Filtros";
+                // buttonFiler.addEventListener('click', that.abrirModalFiltrosRequerimientosPendientes, false);
+                // listaRequerimientosPendientes_filter.appendChild(buttonFiler);
+
+                let buttonCrearOrden = document.createElement("button");
+                buttonCrearOrden.type = "button";
+                buttonCrearOrden.id = "btnCrearOrdenCompra";
+                buttonCrearOrden.className = "btn btn-warning pull-left";
+                buttonCrearOrden.style = "margin-right: 30px;";
+                buttonCrearOrden.disabled = true;
+                buttonCrearOrden.innerHTML = "<i class='fas fa-file-invoice'></i> Crear orden";
+                buttonCrearOrden.addEventListener('click', that.crearOrdenCompra.bind(that), false);
+                listaRequerimientosPendientes_filter.appendChild(buttonCrearOrden);
 
             },
             'columnDefs': [
@@ -158,13 +279,13 @@ class RequerimientoPendienteView {
                 { 'aTargets': [1], 'sWidth': '3%' },
                 { 'aTargets': [2], 'sWidth': '5%' },
                 { 'aTargets': [3], 'sWidth': '20%' },
-                { 'aTargets': [4], 'sWidth': '5%' },
-                { 'aTargets': [5], 'sWidth': '5%' },
+                { 'aTargets': [4], 'sWidth': '5%', 'className': 'text-center'},
+                { 'aTargets': [5], 'sWidth': '5%', 'className': 'text-center' },
                 { 'aTargets': [6], 'sWidth': '10%' },
-                { 'aTargets': [7], 'sWidth': '6%' },
+                { 'aTargets': [7], 'sWidth': '7%', 'className': 'text-center' },
                 { 'aTargets': [8], 'sWidth': '5%' },
-                { 'aTargets': [9], 'sWidth': '5%' },
-                { 'aTargets': [10], 'sWidth': '8%' }
+                { 'aTargets': [9], 'sWidth': '5%', 'className': 'text-center' },
+                { 'aTargets': [10], 'sWidth': '5%', 'className': 'text-left' }
             ],
             "createdRow": function (row, data, dataIndex) {
                 if (data.tiene_transformacion == true) {
@@ -195,8 +316,44 @@ class RequerimientoPendienteView {
     }
 
     verDetalleRequerimiento(obj){
-        requerimientoPendienteCtrl.verDetalleRequerimientoListaRequerimientosPendientes(obj);
+        let tr = obj.closest('tr');
+        var row = tablaListaRequerimientosPendientes.row(tr);
+        var id = obj.dataset.idRequerimiento;
+        if (row.child.isShown()) {
+            //  This row is already open - close it
+            row.child.hide();
+            tr.classList.remove('shown');
+        }
+        else {
+            // Open this row
+            //    row.child( format(iTableCounter, id) ).show();
+            this.buildFormatListaRequerimientosPendientes(iTableCounter, id, row);
+            tr.classList.add('shown');
+            // try datatable stuff
+            oInnerTable = $('#listaRequerimientosPendientes_' + iTableCounter).dataTable({
+                //    data: sections, 
+                autoWidth: true,
+                deferRender: true,
+                info: false,
+                lengthChange: false,
+                ordering: false,
+                paging: false,
+                scrollX: false,
+                scrollY: false,
+                searching: false,
+                columns: [
+                ]
+            });
+            iTableCounter = iTableCounter + 1;
+        }
+    }
 
+    buildFormatListaRequerimientosPendientes(table_id, id, row) {
+        this.requerimientoPendienteCtrl.obtenerDetalleRequerimientos(id).then((res) =>{
+            this.construirDetalleRequerimientoListaRequerimientosPendientes(table_id,row,res);
+        }).catch((err)=> {
+            console.log(err)
+        })
     }
 
     construirDetalleRequerimientoListaRequerimientosPendientes(table_id,row,response){
@@ -208,8 +365,8 @@ class RequerimientoPendienteView {
                     <td style="border: none; text-align:left;">${element.producto_descripcion != null ? element.producto_descripcion : (element.descripcion?element.descripcion:'')}</td>
                     <td style="border: none; text-align:center;">${element.abreviatura != null ? element.abreviatura : ''}</td>
                     <td style="border: none; text-align:center;">${element.cantidad >0 ? element.cantidad : ''}</td>
-                    <td style="border: none; text-align:center;">${element.precio_unitario >0 ? element.precio_unitario : ''}</td>
-                    <td style="border: none; text-align:center;">${parseFloat(element.subtotal) > 0 ?Util.formatoNumero(element.subtotal,2) :Util.formatoNumero((element.cantidad * element.precio_unitario),2)}</td>
+                    <td style="border: none; text-align:center;">${(element.moneda_simbolo?element.moneda_simbolo:'')+(element.precio_unitario >0 ? Util.formatoNumero(element.precio_unitario,2) : '')}</td>
+                    <td style="border: none; text-align:center;">${(element.moneda_simbolo?element.moneda_simbolo:'')+(parseFloat(element.subtotal) > 0 ?Util.formatoNumero(element.subtotal,2) :Util.formatoNumero((element.cantidad * element.precio_unitario),2))}</td>
                     <td style="border: none; text-align:center;">${element.motivo != null ? element.motivo : ''}</td>
                     <td style="border: none; text-align:center;">${element.observacion != null ? element.observacion : ''}</td>
                     <td style="border: none; text-align:center;">${element.estado_doc != null ? element.estado_doc : ''}</td>
@@ -222,11 +379,11 @@ class RequerimientoPendienteView {
                         <th style="border: none; text-align:center;">Part number</th>
                         <th style="border: none; text-align:center;">Descripcion</th>
                         <th style="border: none; text-align:center;">Unidad medida</th>
-                        <th style="border: none; text-align:center;">cantidad</th>
-                        <th style="border: none; text-align:center;">precio_unitario</th>
-                        <th style="border: none; text-align:center;">subtotal</th>
-                        <th style="border: none; text-align:center;">motivo</th>
-                        <th style="border: none; text-align:center;">observacion</th>
+                        <th style="border: none; text-align:center;">Cantidad</th>
+                        <th style="border: none; text-align:center;">Precio unitario</th>
+                        <th style="border: none; text-align:center;">Subtotal</th>
+                        <th style="border: none; text-align:center;">Motivo</th>
+                        <th style="border: none; text-align:center;">Observacion</th>
                         <th style="border: none; text-align:center;">Estado</th>
                     </tr>
                 </thead>
@@ -323,41 +480,26 @@ class RequerimientoPendienteView {
 
     }
 
-    statusBtnGenerarOrden() {
-        let countStateCheckTrue = 0;
 
-        listCheckReq.map(value => {
-            if (value.stateCheck == true) {
-                countStateCheckTrue += 1;
-            }
-        })
-
-
-        if (countStateCheckTrue > 0) {
-            document
-                .getElementById('btnCrearOrdenCompra')
-                .removeAttribute('disabled')
-        } else {
-            document
-                .getElementById('btnCrearOrdenCompra')
-                .setAttribute('disabled', true)
-        }
-    }
 
 
 
 
     // atender con almacen
     atenderConAlmacen(obj) {
-        requerimientoPendienteCtrl.openModalAtenderConAlmacen(obj).then(function (res) {
-            requerimientoPendienteView.construirTablaListaItemsRequerimientoParaAtenderConAlmacen(res);
+        $('#modal-atender-con-almacen').modal({
+            show: true,
+            backdrop: 'true'
+        });
+        this.requerimientoPendienteCtrl.openModalAtenderConAlmacen(obj).then((res)=> {
+            this.construirTablaListaItemsRequerimientoParaAtenderConAlmacen(res);
         }).catch(function (err) {
             console.log(err)
         })
     }
 
     construirTablaListaItemsRequerimientoParaAtenderConAlmacen(data) { // data.almacenes, data.detalle_requerimiento
-        console.log(data);
+        let that =this;
         let data_detalle_requerimiento = data.detalle_requerimiento;
         let data_almacenes = data.almacenes;
         $('#listaItemsRequerimientoParaAtenderConAlmacen').dataTable({
@@ -417,7 +559,7 @@ class RequerimientoPendienteView {
                         function (data, type, row, meta) {
                             let select = '';
                             if (row.tiene_transformacion == false) {
-                                select = `<select class="form-control" data-indice="${meta.row}" onChange="requerimientoPendienteCtrl.updateSelectAlmacenAAtender(this,event)" >`;
+                                select = `<select class="form-control handleChangeUpdateSelectAlmacenAAtender" data-indice="${meta.row}" >`;
                                 select += `<option value ="0">Sin selección</option>`;
                                 data_almacenes.forEach(element => {
                                     if (row.id_almacen_reserva == element.id_almacen) {
@@ -439,15 +581,19 @@ class RequerimientoPendienteView {
                         function (data, type, row, meta) {
                             let action = '';
                             if (row.tiene_transformacion == false) {
-                                action = `<input type="text" name="cantidad_a_atender" class="form-control" style="width: 70px;" data-indice="${meta.row}" onkeyup="requerimientoPendienteCtrl.updateInputCantidadAAtender(this,event);" value="${parseInt(row.stock_comprometido ? row.stock_comprometido : 0)}" />`;
+                                action = `<input type="text" name="cantidad_a_atender" class="form-control handleBlurUpdateInputCantidadAAtender"  data-cantidad="${row.cantidad}" style="width: 70px;" data-indice="${meta.row}" value="${parseInt(row.stock_comprometido ? row.stock_comprometido : 0)}" />`;
 
-                                requerimientoPendienteView.updateObjCantidadAAtender(meta.row, row.stock_comprometido);
+                                that.updateObjCantidadAAtender(meta.row, row.stock_comprometido);
 
                             }
                             return action;
                         }
                 }
             ],
+            'initComplete': function () {
+
+
+            },
             "createdRow": function (row, data, dataIndex) {
 
                 // $(row.childNodes[7]).css('background-color', '#586c86');  
@@ -466,41 +612,151 @@ class RequerimientoPendienteView {
         tablelistaitem.childNodes[0].childNodes[0].hidden = true;
     }
 
+    updateSelectAlmacenAAtender(obj){
+        let idValor = obj.value;
+        let indiceSelected = obj.dataset.indice;
+        itemsParaAtenderConAlmacenList.forEach((element, index) => {
+            if (index == indiceSelected) {
+                itemsParaAtenderConAlmacenList[index].id_almacen_reserva = parseInt(idValor);
+            }
+        });
+        // console.log(itemsParaAtenderConAlmacenList);
+    }
 
+
+    updateInputCantidadAAtender(obj){
+        let nuevoValor = obj.value;
+        let indiceSelected = obj.dataset.indice;
+        let cantidad = obj.dataset.cantidad;
+        if(parseInt(nuevoValor) > parseInt(cantidad) || parseInt(nuevoValor) < 0 ){
+    
+            itemsParaAtenderConAlmacenList.forEach((element, index) => {
+                if (index == indiceSelected) {
+                    Lobibox.notify('info', {
+                        title:false,
+                        size: 'mini',
+                        rounded: true,
+                        sound: false,
+                        delayIndicator: false,
+                        msg: `El valor ingresado desborda a la cantidad solicitada`
+                    });
+           
+                    itemsParaAtenderConAlmacenList[index].cantidad_a_atender = 0;
+                    obj.value=0;
+                }
+            });
+        }else{
+            itemsParaAtenderConAlmacenList.forEach((element, index) => {
+                if (index == indiceSelected) {
+                    itemsParaAtenderConAlmacenList[index].cantidad_a_atender = nuevoValor;
+                }
+            });
+        }
+    }
+
+ 
     updateObjCantidadAAtender(indice, valor) {
-        requerimientoPendienteCtrl.updateObjCantidadAAtender(indice, valor);
+        itemsParaAtenderConAlmacenList.forEach((element, index) => {
+            if (index == indice) {
+                itemsParaAtenderConAlmacenList[index].cantidad_a_atender = valor;
+            }
+        });
     }
 
 
     guardarAtendidoConAlmacen() {
-        requerimientoPendienteCtrl.guardarAtendidoConAlmacen().then(function(res) {
-            if (res.update_det_req > 0) {
-                alert("Se realizo con éxito la reserva");
-                requerimientoPendienteCtrl.getDataItemsRequerimientoParaAtenderConAlmacen(res.id_requerimiento).then(function (res) {
-                    requerimientoPendienteView.construirTablaListaItemsRequerimientoParaAtenderConAlmacen(res);
+        // console.log('accion guardarAtendidoConAlmacen');
+        var newItemsParaAtenderConAlmacenList = [];
+        var itemsBaseList = [];
+        itemsBaseList = itemsParaAtenderConAlmacenList.filter(function( obj ) {
+            return (obj.tiene_transformacion ==false);
+        });
+        let almacenEstablecidoSinCantidadAAtender=0;
+        let cantidadAAtenderEstablecidoSinAlmacen=0;
+        itemsParaAtenderConAlmacenList.forEach(element => {
+            if(element.id_almacen_reserva >0 && !element.cantidad_a_atender>0){
+                almacenEstablecidoSinCantidadAAtender ++;
+            }
+            if(!element.id_almacen_reserva >0 && element.cantidad_a_atender>0){
+                cantidadAAtenderEstablecidoSinAlmacen ++;
+            }
+        });
+
+        if(almacenEstablecidoSinCantidadAAtender >0){
+            Lobibox.notify('info', {
+                title:false,
+                size: 'mini',
+                rounded: true,
+                sound: false,
+                delayIndicator: false,
+                msg: `selecciono un almacén pero no especificó la cantidad a antender, se omitirá esa reserva`
+            });
+        }
+        if(cantidadAAtenderEstablecidoSinAlmacen >0){
+            Lobibox.notify('info', {
+                title:false,
+                size: 'mini',
+                rounded: true,
+                sound: false,
+                delayIndicator: false,
+                msg: `Especificó una cantidad pero no seleccionó un almacén, se omitirá esa reserva`
+            });
+        }
+
+        
+        newItemsParaAtenderConAlmacenList = itemsParaAtenderConAlmacenList.filter(function( obj ) {
+            return (obj.id_almacen_reserva >0) && (obj.cantidad_a_atender >0);
+        });
+
+
+            if(newItemsParaAtenderConAlmacenList.length >0){
+                this.requerimientoPendienteCtrl.guardarAtendidoConAlmacen(newItemsParaAtenderConAlmacenList,itemsBaseList).then((res) =>{
+                    if (res.update_det_req > 0) {
+                        Lobibox.notify('success', {
+                            title:false,
+                            size: 'mini',
+                            rounded: true,
+                            sound: false,
+                            delayIndicator: false,
+                            msg: `Se actualizo la reserva para ${newItemsParaAtenderConAlmacenList.length} productos`
+                        });
+                        this.requerimientoPendienteCtrl.getDataItemsRequerimientoParaAtenderConAlmacen(res.id_requerimiento).then( (res)=> {
+                            this.construirTablaListaItemsRequerimientoParaAtenderConAlmacen(res);
+                        }).catch(function (err) {
+                            console.log(err)
+                            Swal.fire(
+                                '',
+                                'Hubo un problema al intentar actualizar la tabla',
+                                'error'
+                            );
+                        })
+        
+                        this.renderRequerimientoPendienteListModule(null,null);
+        
+                    } else {
+                        Swal.fire(
+                            '',
+                            'Hubo un problema al intentar guardar la reserva, por favor vuelva a intentarlo',
+                            'error'
+                        );
+                    }
                 }).catch(function (err) {
                     console.log(err)
                 })
-
-                requerimientoPendienteView.renderRequerimientoPendienteListModule(null,null);
-
-            } else {
-                alert("Ocurrio un problema al intentar guardar la reserva");
+            }else{
+                Swal.fire(
+                    '',
+                    'seleccione un almacén y especifique una cantidad a atender mayor a cero.',
+                    'warning'
+                );
             }
-        }).catch(function (err) {
-            console.log(err)
-        })
+    
+        
+
+
     }
 
-    // Agregar item base
-    // openModalAgregarItemBase(obj) {
-    //     requerimientoPendienteCtrl.openModalAgregarItemBase();
-    //     requerimientoPendienteCtrl.tieneItemsParaCompra(obj);
-    //     requerimientoPendienteCtrl.getDataListaItemsCuadroCostosPorIdRequerimiento();
-    //     requerimientoPendienteCtrl.getDataListaItemsCuadroCostosPorIdRequerimientoPendienteCompra();
-    //     requerimientoPendienteCtrl.validarObjItemsParaCompra();
-
-    // }
+ 
 
 
 
@@ -559,33 +815,33 @@ class RequerimientoPendienteView {
 
 
     updateInputCategoriaModalItemsParaCompra(event) {
-        requerimientoPendienteCtrl.updateInputCategoriaModalItemsParaCompra(event)
+        this.requerimientoPendienteCtrl.updateInputCategoriaModalItemsParaCompra(event)
     }
     updateInputSubcategoriaModalItemsParaCompra(event) {
-        requerimientoPendienteCtrl.updateInputSubcategoriaModalItemsParaCompra(event);
+        this.requerimientoPendienteCtrl.updateInputSubcategoriaModalItemsParaCompra(event);
     }
     updateInputClasificacionModalItemsParaCompra(event) {
-        requerimientoPendienteCtrl.updateInputClasificacionModalItemsParaCompra(event)
+        this.requerimientoPendienteCtrl.updateInputClasificacionModalItemsParaCompra(event)
     }
     updateInputUnidadMedidaModalItemsParaCompra(event) {
-        requerimientoPendienteCtrl.updateInputUnidadMedidaModalItemsParaCompra(event);
+        this.requerimientoPendienteCtrl.updateInputUnidadMedidaModalItemsParaCompra(event);
     }
 
     updateInputCantidadModalItemsParaCompra(event) {
-        requerimientoPendienteCtrl.updateInputCantidadModalItemsParaCompra(event);
+        this.requerimientoPendienteCtrl.updateInputCantidadModalItemsParaCompra(event);
     }
     updateInputPartNumberModalItemsParaCompra(event) {
-        requerimientoPendienteCtrl.updateInputPartNumberModalItemsParaCompra(event);
+        this.requerimientoPendienteCtrl.updateInputPartNumberModalItemsParaCompra(event);
     }
 
     guardarItemParaCompraEnCatalogo(obj, indice) {
-        requerimientoPendienteCtrl.guardarItemParaCompraEnCatalogo(obj, indice);
+        this.requerimientoPendienteCtrl.guardarItemParaCompraEnCatalogo(obj, indice);
 
     }
     eliminarItemDeListadoParaCompra(obj, indice) {
         let id = obj.dataset.id;
         let tr = obj.parentNode.parentNode.parentNode;
-        requerimientoPendienteCtrl.eliminarItemDeListadoParaCompra(indice)
+        this.requerimientoPendienteCtrl.eliminarItemDeListadoParaCompra(indice)
         this.retornarItemAlDetalleCC(id);
         tr.remove(tr);
         this.actualizarIndicesDeTabla();
@@ -603,8 +859,7 @@ class RequerimientoPendienteView {
         //         trs[0].remove();
         //     }
         // }
-        // requerimientoPendienteCtrl.limpiarTabla('ListaModalDetalleCuadroCostos');
-
+ 
         if (trs.length > 1) {
             trs.forEach(tr => {
                 idItemDetCCList.push(tr.children[9].children[0].dataset.id)
@@ -794,7 +1049,7 @@ class RequerimientoPendienteView {
     }
 
     guardarItemsEnDetalleRequerimiento() {
-        requerimientoPendienteCtrl.guardarItemsEnDetalleRequerimiento();
+        this.requerimientoPendienteCtrl.guardarItemsEnDetalleRequerimiento();
 
     }
 
@@ -833,10 +1088,10 @@ class RequerimientoPendienteView {
 
     // ver detalle cuadro de costos
     openModalCuadroCostos(obj) {
-        requerimientoPendienteCtrl.openModalCuadroCostos(obj).then(function (res) {
+        this.requerimientoPendienteCtrl.openModalCuadroCostos(obj).then((res) =>{
             if (res.status == 200) {
-                requerimientoPendienteView.llenarCabeceraModalDetalleCuadroCostos(res.head)
-                requerimientoPendienteView.construirTablaListaDetalleCuadroCostos(res.detalle);
+                this.llenarCabeceraModalDetalleCuadroCostos(res.head)
+                this.construirTablaListaDetalleCuadroCostos(res.detalle);
             }
         }).catch(function (err) {
             console.log(err)
@@ -871,7 +1126,7 @@ class RequerimientoPendienteView {
                 },
                 {
                     'render': function (data, type, row) {
-                        return `${row['pvu_oc']}`;
+                        return `${row['pvu_oc']>0? 'S/'+row['pvu_oc']:''}`;
                     }
                 },
                 {
@@ -903,7 +1158,7 @@ class RequerimientoPendienteView {
                     'render': function (data, type, row) {
                         let simboloMoneda=( row.moneda_costo_unitario_proveedor == 's')?'S/':(row.moneda_costo_unitario_proveedor=='d')?'$':row.moneda_costo_unitario_proveedor;
 
-                        return `${simboloMoneda} ${row['costo_unitario_proveedor'] ? row['costo_unitario_proveedor'] : ''}`;
+                        return `${simboloMoneda}${row['costo_unitario_proveedor'] ? Util.formatoNumero(row['costo_unitario_proveedor'],2) : ''}`;
                     }
                 },
                 {
@@ -913,7 +1168,7 @@ class RequerimientoPendienteView {
                 },
                 {
                     'render': function (data, type, row) {
-                        return `${row['flete_proveedor'] ? row['flete_proveedor'] : ''}`;
+                        return `S/${row['flete_proveedor'] ? Util.formatoNumero(row['flete_proveedor'],2) : ''}`;
                     }
                 },
                 {
@@ -925,45 +1180,40 @@ class RequerimientoPendienteView {
                     'render': function (data, type, row) {
                         let simboloMoneda=( row.moneda_costo_unitario_proveedor == 's')?'S/':(row.moneda_costo_unitario_proveedor=='d')?'$':row.moneda_costo_unitario_proveedor;
 
-                       let costoUnitario = (Math.round((row.cantidad*row.costo_unitario_proveedor) * 100) / 100).toFixed(2);
-                        return `${simboloMoneda} ${costoUnitario}`;
+                    //    let costoUnitario = (Math.round((row.cantidad*row.costo_unitario_proveedor) * 100) / 100).toFixed(2);
+                       let costoUnitario = Util.formatoNumero((row.cantidad*row.costo_unitario_proveedor),2);
+                        return `${simboloMoneda}${costoUnitario}`;
                     }
                 },
                 {
                     'render': function (data, type, row) {
-                        let costoUnitario = (Math.round((row.cantidad*row.costo_unitario_proveedor) * 100) / 100).toFixed(2);
+                        // let costoUnitario = (Math.round((row.cantidad*row.costo_unitario_proveedor) * 100) / 100).toFixed(2);
+                        let costoUnitario = row.cantidad*row.costo_unitario_proveedor;
                         let tipoCambio = row.tipo_cambio;
                         let costoUnitarioSoles = costoUnitario * tipoCambio;
-                        return `S/${costoUnitarioSoles}`;
+                        return `S/${Util.formatoNumero(costoUnitarioSoles,2)}`;
                     }
                 },
                 {
                     'render': function (data, type, row) {
 
-                        let totalFleteProveedor= (Math.round((row.cantidad*row.flete_proveedor) * 100) / 100).toFixed(2);
+                        // let totalFleteProveedor= (Math.round((row.cantidad*row.flete_proveedor) * 100) / 100).toFixed(2);
+                        let totalFleteProveedor= Util.formatoNumero((row.cantidad*row.flete_proveedor),2);
                         return `S/${(totalFleteProveedor)}`;
                     }
                 },
                 {
                     'render': function (data, type, row) {
-                        let simboloMoneda=( row.moneda_costo_unitario_proveedor == 's')?'S/':(row.moneda_costo_unitario_proveedor=='d')?'$':row.moneda_costo_unitario_proveedor;
+                        // let simboloMoneda=( row.moneda_costo_unitario_proveedor == 's')?'S/':(row.moneda_costo_unitario_proveedor=='d')?'$':row.moneda_costo_unitario_proveedor;
 
-                        let totalFleteProveedor= (Math.round((row.cantidad*row.flete_proveedor) * 100) / 100).toFixed(2);
-                        let costoUnitario = (Math.round((row.cantidad*row.costo_unitario_proveedor) * 100) / 100).toFixed(2);
+                        // let totalFleteProveedor= (Math.round((row.cantidad*row.flete_proveedor) * 100) / 100).toFixed(2);
+                        let totalFleteProveedor=  row.cantidad*row.flete_proveedor;
+                        // let costoUnitario = (Math.round((row.cantidad*row.costo_unitario_proveedor) * 100) / 100).toFixed(2);
+                        let costoUnitario = row.cantidad*row.costo_unitario_proveedor;
                         let tipoCambio = row.tipo_cambio;
                         let costoUnitarioSoles = costoUnitario * tipoCambio;
                         let costoCompraMasFlete = costoUnitarioSoles + totalFleteProveedor;
-                        return `S/${costoCompraMasFlete}`;
-                    }
-                },
-                {
-                    'render': function (data, type, row) {
-                        return ``;
-                    }
-                },
-                {
-                    'render': function (data, type, row) {
-                        return ``;
+                        return `S/${Util.formatoNumero(costoCompraMasFlete,2)}`;
                     }
                 },
                 {
@@ -976,7 +1226,27 @@ class RequerimientoPendienteView {
                         return `${row['fecha_creacion']}`;
                     }
                 }
-            ]
+            ],
+            'columnDefs': [
+                { 'aTargets': [0],'className': "text-center" },
+                { 'aTargets': [1],'className': "text-left" },
+                { 'aTargets': [2],'className': "text-right" },
+                { 'aTargets': [3],'className': "text-right" },
+                { 'aTargets': [4],'className': "text-center" },
+                { 'aTargets': [5],'className': "text-center" },
+                { 'aTargets': [6],'className': "text-center" },
+                { 'aTargets': [7],'className': "text-center" },
+                { 'aTargets': [8],'className': "text-left" },
+                { 'aTargets': [9],'className': "text-right" },
+                { 'aTargets': [10],'className': "text-center" },
+                { 'aTargets': [11],'className': "text-right" },
+                { 'aTargets': [12],'className': "text-right" },
+                { 'aTargets': [13],'className': "text-right" },
+                { 'aTargets': [14],'className': "text-right" },
+                { 'aTargets': [15],'className': "text-right" },
+                { 'aTargets': [16],'className': "text-center" },
+                { 'aTargets': [17],'className': "text-center" }
+            ],
         });
 
         document.querySelector("table[id='listaModalVerCuadroCostos']").tHead.style.fontSize = '11px',
@@ -988,19 +1258,18 @@ class RequerimientoPendienteView {
 
     // Crear orden por requerimiento
     crearOrdenCompraPorRequerimiento(obj) {
-        requerimientoPendienteCtrl.crearOrdenCompraPorRequerimiento(obj);
+        this.requerimientoPendienteCtrl.crearOrdenCompraPorRequerimiento(obj);
 
     }
     // Crear orden de servicio por requerimiento
     crearOrdenServicioPorRequerimiento(obj) {
-        requerimientoPendienteCtrl.crearOrdenServicioPorRequerimiento(obj);
+        this.requerimientoPendienteCtrl.crearOrdenServicioPorRequerimiento(obj);
 
     }
 
     crearOrdenCompra() {
-        requerimientoPendienteCtrl.crearOrdenCompra();
+        this.requerimientoPendienteCtrl.crearOrdenCompra();
 
     }
 }
 
-const requerimientoPendienteView = new RequerimientoPendienteView();

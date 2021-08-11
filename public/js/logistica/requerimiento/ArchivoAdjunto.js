@@ -1,7 +1,16 @@
 class ArchivoAdjunto {
 
-    constructor(file) {
+    constructor(file,requerimientoView) {
         this.file = file[0];
+        this.requerimientoCtrl =requerimientoView.requerimientoCtrl;
+    }
+    makeId() {
+        let ID = "";
+        let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        for (let i = 0; i < 12; i++) {
+            ID += characters.charAt(Math.floor(Math.random() * 36));
+        }
+        return ID;
     }
 
     getType() {
@@ -44,9 +53,11 @@ class ArchivoAdjunto {
         }
     }
 
-    addToTablaArchivosRequerimiento(id, nameFile) {
 
-        requerimientoCtrl.getcategoriaAdjunto().then((res) => {
+    addToTablaArchivosRequerimiento(id, nameFile) {
+        // this.requerimientoModel = new RequerimientoModel();
+        // this.requerimientoCtrl = new RequerimientoCtrl(requerimientoModel);
+        this.requerimientoCtrl.getcategoriaAdjunto().then((res) => {
             this.construirRegistroEnTablaAdjuntosRequerimiento(id, nameFile, res);
 
         }).catch(function (err) {
@@ -167,7 +178,7 @@ class ArchivoAdjunto {
             const nameFile = this.getName();
             const typeFile = this.getType();
             const sizeFile = this.getSize();
-            const id = requerimientoView.makeId();
+            const id = this.makeId();
             tempArchivoAdjuntoRequerimientoList.push({
                 id: id,
                 category: 1, //default
@@ -192,7 +203,7 @@ class ArchivoAdjunto {
             const nameFile = this.getName();
             const typeFile = this.getType();
             const sizeFile = this.getSize();
-            const id = requerimientoView.makeId();
+            const id = this.makeId();
 
             tempArchivoAdjuntoItemList.push({
                 id: id,

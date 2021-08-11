@@ -6,7 +6,7 @@
                 <h3 class="modal-title">Detalle del requerimiento</h3>
             </div>
             <div class="modal-body">
-                <button type="button" name="btn-imprimir-requerimento-pdf" class="btn btn-info btn-sm" onclick="requerimientoView.imprimirRequerimientoPdf();" ><i class="fas fa-print"></i> Imprimir</button>
+                <button type="button" name="btn-imprimir-requerimento-pdf" class="btn btn-info btn-sm handleClickImprimirRequerimientoPdf"  ><i class="fas fa-print"></i> Imprimir</button>
                 <input type="hidden" name="id_requerimiento">
                 <fieldset class="group-importes">
                     <legend>Datos generales</legend>
@@ -116,7 +116,7 @@
                         <div class="form-group">
                             <label class="col-sm-5 control-label">Acción a realizar</label>
                             <div class="col-sm-4">
-                                <select class="form-control" id="accion" onChange="aprobarRequerimientoView.updateAccion(this)">
+                                <select class="form-control handleChangeUpdateAccion" id="accion">
                                     <option value="0">Seleccione una acción</option>
                                     <option value="1">Aprobar Requerimiento</option>
                                     <option value="2">Rechazar Requerimiento</option>
@@ -134,8 +134,8 @@
                 </fieldset>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-success" id="btnRegistrarRespuesta" onClick="aprobarRequerimientoView.registrarRespuesta();" >Registrar respuesta</button>
-                <button class="btn btn-danger" class="close" data-dismiss="modal">Cancelar</button>
+                <button class="btn btn-primary" class="close" data-dismiss="modal">Cerrar</button>
+                <button class="btn btn-success handleClickRegistrarRespuesta" id="btnRegistrarRespuesta" >Registrar respuesta</button>
             </div>
         </div>
     </div>

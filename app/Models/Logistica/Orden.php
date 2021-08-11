@@ -5,7 +5,6 @@ namespace App\Models\Logistica;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
-use PhpParser\Node\Expr\New_;
 use Debugbar;
 
 class Orden extends Model {
@@ -16,6 +15,18 @@ class Orden extends Model {
 
     public $timestamps = false;
 
+    public function getFechaAttribute(){
+        $fecha= new Carbon($this->attributes['fecha']);
+        return $fecha->format('d-m-Y');
+    }
+    public function getFechaRegistroRequerimientoAttribute(){
+        $fecha= new Carbon($this->attributes['fecha_registro_requerimiento']);
+        return $fecha->format('d-m-Y');
+    }
+    public function getFechaIngresoAlmacenAttribute(){
+        $fecha= new Carbon($this->attributes['fecha_ingreso_almacen']);
+        return $fecha->format('d-m-Y');
+    }
 
     public function mostrar()
     {
@@ -27,8 +38,8 @@ class Orden extends Model {
 
     public function getRequerimientosAttribute(){
 
-        $requerimientos=OrdenCompraDetalle::join('almacen.alm_det_req','log_det_ord_compra.id_detalle_requerimiento','alm_det_req.id_detalle_requerimiento')
-        ->join('almacen.alm_req','alm_req.id_requerimiento','alm_det_req.id_requerimiento')
+        $requerimientos=OrdenCompraDetalle::Join('almacen.alm_det_req','log_det_ord_compra.id_detalle_requerimiento','alm_det_req.id_detalle_requerimiento')
+        ->Join('almacen.alm_req','alm_req.id_requerimiento','alm_det_req.id_requerimiento')
         ->where('log_det_ord_compra.id_orden_compra',$this->attributes['id_orden_compra'])
         ->select(['alm_req.id_requerimiento','alm_req.codigo'])->distinct()->get(); 
         return $requerimientos;

@@ -25,7 +25,7 @@ Listado de requerimientos
                 <form id="form-requerimientosElaborados" type="register">
                     <div class="row">
                         <div class="col-md-2">
-                            <h5>Mostar</h5>
+                            <h5>Elaborado por</h5>
                             <div style="display:flex;">
                                 <select class="form-control" name="mostrar_me_all" onChange="listarRequerimientoView.handleChangeFiltroListado();">
                                     <option value="ALL">Todos</option>
@@ -155,7 +155,7 @@ Listado de requerimientos
 
 <script src="{{ asset('js/logistica/requerimiento/ArchivoAdjunto.js')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/TrazabilidadRequerimientoView.js')}}"></script>
-<script src="{{ asset('js/logistica/requerimiento/AprobarRequerimientoView.js')}}"></script>
+<!-- <script src="{{ asset('js/logistica/requerimiento/AprobarRequerimientoView.js')}}"></script> -->
 <script src="{{ asset('js/logistica/requerimiento/ListarRequerimientoView.js')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/RequerimientoView.js')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/RequerimientoController.js')}}"></script>
@@ -171,12 +171,20 @@ Listado de requerimientos
 
     $(document).ready(function() {
         seleccionarMenu(window.location);
+        const requerimientoModel = new RequerimientoModel();
+        const requerimientoController = new RequerimientoCtrl(requerimientoModel);
+        const listarRequerimientoView = new ListarRequerimientoView(requerimientoController);
+        
+        listarRequerimientoView.mostrar('ALL');
+        
+        listarRequerimientoView.initializeEventHandler();
  
     });
 
-    window.onload = function() {
-        listarRequerimientoView.mostrar('ALL');
-    };
+
+    // window.onload = function() {
+    //     listarRequerimientoView.mostrar('ALL');
+    // };
 
 </script>
 @endsection

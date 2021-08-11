@@ -30,7 +30,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                     <button type="button" onclick="requerimientoPendienteView.updateEstadoDetalleOrdenCompra();" class="btn btn-sm btn-success">Actualizar</button>
+                    <button class="btn btn-sm btn-primary" class="close" data-dismiss="modal" >Cancelar</button>
+                    <button type="button" class="btn btn-sm btn-success handleClickUpdateEstadoDetalleOrdenCompra">Actualizar</button>
                 </div>
             </form>
         </div>

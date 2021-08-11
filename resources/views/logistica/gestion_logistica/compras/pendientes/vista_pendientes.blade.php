@@ -38,26 +38,22 @@ Requerimientos pendientes
                                                 <thead>
                                                     <tr>
                                                         <th hidden>Id</th>
-                                                        <th>Selec.</th>
-                                                        <th>Código</th>
-                                                        <th>Concepto</th>
-                                                        <th>Fecha creación</th>
-                                                        <th>Tipo Req.</th>
-                                                        <th>Proveedor/Entidad</th>
-                                                        <th>Empresa - Sede</th>
-                                                        <th>Autor</th>
-                                                        <th>Estado</th>
-                                                        <th>Acción</th>
+                                                        <th style="text-align:center;">Selec.</th>
+                                                        <th style="text-align:center;">Código</th>
+                                                        <th style="text-align:center;">Concepto</th>
+                                                        <th style="text-align:center;">Fecha creación</th>
+                                                        <th style="text-align:center;">Tipo Req.</th>
+                                                        <th style="text-align:center;">Proveedor/Entidad</th>
+                                                        <th style="text-align:center;">Empresa - Sede</th>
+                                                        <th style="text-align:center;">Creado por</th>
+                                                        <th style="text-align:center;">Estado</th>
+                                                        <th style="text-align:center;">Acción</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody></tbody>
                                             </table>
                                             <div class="row">
                                                 <div class="col-md-12 right">
-                                                    <button class="btn btn-warning" type="button" id="btnCrearOrdenCompra" onClick="requerimientoPendienteView.crearOrdenCompra();" disabled>
-                                                        Crear Orden <i class="fas fa-file-invoice"></i>
-                                                    </button>
-
                                                 </div>
                                             </div>
                                         </form>
@@ -82,6 +78,7 @@ Requerimientos pendientes
 @include('logistica.requerimientos.mapeo.mapeoItemsRequerimiento')
 @include('logistica.requerimientos.mapeo.mapeoAsignarProducto')
 
+@include('logistica.gestion_logistica.compras.pendientes.modal_observar_requerimiento_logistica')
 @include('logistica.gestion_logistica.compras.pendientes.modal_filtro_requerimientos_pendientes')
 @include('logistica.gestion_logistica.compras.pendientes.modal_ver_cuadro_costos')
 @include('logistica.gestion_logistica.compras.pendientes.modal_agregar_items_requerimiento')
@@ -110,18 +107,26 @@ Requerimientos pendientes
 <script src="{{ asset('js/logistica/mapeo/mapeoAsignarProducto.js')}}"></script>
 
 <script>
+
     $(document).ready(function() {
         seleccionarMenu(window.location);
 
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
             let tab = $(e.target).attr("href") // activated tab
-            console.log('tab: '+tab);
+            // console.log('tab: '+tab);
 
             if (tab=='#seleccionar'){
                 $('#productosSugeridos').DataTable().ajax.reload();
                 $('#productosCatalogo').DataTable().ajax.reload();
             }
-         });
+        });
+
+        const requerimientoPendienteModel = new RequerimientoPendienteModel();
+        const requerimientoPendienteController = new RequerimientoPendienteCtrl(requerimientoPendienteModel);
+        const requerimientoPendienteView = new RequerimientoPendienteView(requerimientoPendienteController);
+
+        requerimientoPendienteView.renderRequerimientoPendienteListModule(null, null);
+        requerimientoPendienteView.initializeEventHandler();
 
     });
 </script>
