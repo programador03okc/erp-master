@@ -44,7 +44,7 @@ class TransferenciaController extends Controller
                 ->select(
                     'trans.id_guia_ven',
                     'guia_ven.fecha_emision as fecha_guia',
-                    DB::raw("(guia_ven.serie) || ' ' || (guia_ven.numero) as guia_ven"),
+                    DB::raw("(guia_ven.serie) || '-' || (guia_ven.numero) as guia_ven"),
                     'trans.id_almacen_destino',
                     'trans.id_almacen_origen',
                     'alm_origen.descripcion as alm_origen_descripcion',
@@ -110,8 +110,8 @@ class TransferenciaController extends Controller
                 ->select(
                     'trans.*',
                     'guia_ven.fecha_emision as fecha_guia',
-                    DB::raw("(guia_ven.serie) || ' ' || (guia_ven.numero) as guia_ven"),
-                    DB::raw("(guia_com.serie) || ' ' || (guia_com.numero) as guia_com"),
+                    DB::raw("(guia_ven.serie) || '-' || (guia_ven.numero) as guia_ven"),
+                    DB::raw("(guia_com.serie) || '-' || (guia_com.numero) as guia_com"),
                     'alm_origen.descripcion as alm_origen_descripcion',
                     'alm_destino.descripcion as alm_destino_descripcion',
                     'usu_origen.nombre_corto as nombre_origen',
@@ -158,8 +158,8 @@ class TransferenciaController extends Controller
                 ->select(
                     'trans.*',
                     'guia_ven.fecha_emision as fecha_guia',
-                    DB::raw("(guia_ven.serie) || ' ' || (guia_ven.numero) as guia_ven"),
-                    DB::raw("(guia_com.serie) || ' ' || (guia_com.numero) as guia_com"),
+                    DB::raw("(guia_ven.serie) || '-' || (guia_ven.numero) as guia_ven"),
+                    DB::raw("(guia_com.serie) || '-' || (guia_com.numero) as guia_com"),
                     'alm_origen.descripcion as alm_origen_descripcion',
                     'alm_destino.descripcion as alm_destino_descripcion',
                     'usu_origen.nombre_corto as nombre_origen',
@@ -886,13 +886,17 @@ class TransferenciaController extends Controller
                     'trans.*',
                     'alm_req.codigo as cod_req',
                     'alm_req.concepto',
+                    'sede_solicita.id_empresa as id_empresa_destino',
+                    'sede_almacen.id_empresa as id_empresa_origen',
                     'sede_solicita.id_sede as id_sede_destino',
-                    'sede_solicita.descripcion as sede_descripcion',
-                    'origen.descripcion as alm_origen_descripcion',
-                    'sis_usua.nombre_corto',
                     'sede_almacen.id_sede as id_sede_origen',
+                    'sede_solicita.descripcion as sede_descripcion',
                     'sede_almacen.descripcion as sede_almacen_descripcion',
-                    'destino.descripcion as alm_destino_descripcion'
+                    'origen.descripcion as alm_origen_descripcion',
+                    'destino.descripcion as alm_destino_descripcion',
+                    'origen.ubicacion as alm_origen_direccion',
+                    'destino.ubicacion as alm_destino_direccion',
+                    'sis_usua.nombre_corto',
                 )
                 ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'trans.id_requerimiento')
                 ->join('administracion.sis_sede as sede_solicita', 'sede_solicita.id_sede', '=', 'alm_req.id_sede')
@@ -950,7 +954,6 @@ class TransferenciaController extends Controller
                 ->select('adm_empresa.id_empresa', 'com_cliente.id_cliente')
                 ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_almacen.id_sede')
                 ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
-                // ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','adm_empresa.id_contribuyente')
                 ->leftjoin('comercial.com_cliente', 'com_cliente.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
                 ->where('id_almacen', $request->id_almacen_destino)
                 ->first();
@@ -972,6 +975,12 @@ class TransferenciaController extends Controller
                     'fecha_emision' => $request->fecha_emision,
                     'fecha_almacen' => $request->fecha_almacen,
                     'id_almacen' => $request->id_almacen_origen,
+                    'transportista' => $request->id_transportista,
+                    'tra_serie' => $request->tra_serie,
+                    'tra_numero' => $request->tra_numero,
+                    'placa' => $request->placa,
+                    'punto_partida' => $request->punto_partida,
+                    'punto_llegada' => $request->punto_llegada,
                     'id_cliente' => ($destino_emp->id_cliente !== null ? $destino_emp->id_cliente : null),
                     'usuario' => $usuario,
                     'estado' => 1,
@@ -1944,7 +1953,7 @@ class TransferenciaController extends Controller
                         'part_number' => $det->part_number,
                         'descripcion' => $det->descripcion,
                         'abreviatura' => $det->abreviatura,
-                        'cantidad' => (floatval($det->cantidad) - floatval($det->cantidad_transferida)),
+                        'cantidad' => (floatval($det->stock_comprometido) - floatval($det->cantidad_transferida)),
                         'id_almacen_reserva' => $det->id_almacen_reserva,
                         'series' => $series
                     ];

@@ -107,6 +107,8 @@
 let detalle = [];
 
 function ver_requerimiento(id_requerimiento) {
+    $("#detalleRequerimiento tbody").html("");
+    detalle = [];
     $.ajax({
         type: "GET",
         url: "verRequerimiento/" + id_requerimiento,

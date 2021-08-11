@@ -184,7 +184,7 @@ Gestión de Transferencias
 @include('almacen.transferencias.transferenciaEnviar')
 @include('almacen.transferencias.transferenciaDetalle')
 @include('almacen.transferencias.ver_series')
-<!-- @include('almacen.transferencias.requerimientoModal') -->
+@include('almacen.transferencias.transportistaModal')
 @include('almacen.guias.guia_com_obs')
 @include('almacen.guias.guia_ven_obs')
 @include('almacen.guias.guia_ven_series')
@@ -210,7 +210,7 @@ Gestión de Transferencias
 <script src="{{ asset('js/almacen/transferencias/listar_transferencias.js')}}"></script>
 <script src="{{ asset('js/almacen/transferencias/transferenciaRecibir.js')}}"></script>
 <script src="{{ asset('js/almacen/transferencias/transferenciaEnviar.js')}}"></script>
-<!-- <script src="{{ asset('js/almacen/transferencias/requerimientoModal.js')}}"></script> -->
+<script src="{{ asset('js/almacen/transferencias/transportistaModal.js')}}"></script>
 <!-- <script src="{{ asset('js/logistica/requerimiento/historial.js')}}"></script> -->
 <!-- <script src="{{ asset('js/almacen/guia/guia_compraModal.js')}}"></script> -->
 <script src="{{ asset('js/almacen/transferencias/transferenciaCreate.js')}}"></script>

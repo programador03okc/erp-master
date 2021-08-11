@@ -2164,14 +2164,9 @@ class DistribucionController extends Controller
 
     public function mostrar_transportistas()
     {
-        $data = DB::table('logistica.log_prove')
-            ->select('log_prove.id_proveedor', 'adm_contri.id_contribuyente', 'adm_contri.nro_documento', 'adm_contri.razon_social', 'adm_contri.telefono')
-            ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
-            ->where([
-                ['log_prove.estado', '=', 1],
-                ['adm_contri.transportista', '=', true]
-            ])
-            ->orderBy('adm_contri.nro_documento')
+        $data = DB::table('contabilidad.transportistas')
+            ->select('adm_contri.id_contribuyente', 'adm_contri.nro_documento', 'adm_contri.razon_social')
+            ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'transportistas.id_contribuyente')
             ->get();
         $output['data'] = $data;
         return response()->json($output);

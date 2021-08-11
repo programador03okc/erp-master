@@ -65,7 +65,19 @@ function listarRequerimientosPendientes() {
         ajax: "listarRequerimientos",
         columns: [
             { data: "id_requerimiento" },
-            { data: "codigo", className: "text-center" },
+            // { data: "codigo", className: "text-center" },
+            {
+                render: function(data, type, row) {
+                    return (
+                        '<a href="#" class="verRequerimiento" data-id="' +
+                        row["id_requerimiento"] +
+                        '" >' +
+                        row["codigo"] +
+                        "</a>"
+                    );
+                },
+                className: "text-center"
+            },
             { data: "concepto" },
             {
                 data: "sede_descripcion",
@@ -115,6 +127,15 @@ function listarRequerimientosPendientes() {
     });
     // }
 }
+
+$("#listaRequerimientos tbody").on("click", "a.verRequerimiento", function(e) {
+    $(e.preventDefault());
+    var id = $(this).data("id");
+    localStorage.setItem("idRequerimiento", id);
+    let url = "/logistica/gestion-logistica/requerimiento/elaboracion/index";
+    var win = window.open(url, "_blank");
+    win.focus();
+});
 
 $("#listaRequerimientos tbody").on("click", "a.archivos", function(e) {
     $(e.preventDefault());
