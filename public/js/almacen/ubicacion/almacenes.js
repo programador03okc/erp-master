@@ -31,22 +31,16 @@ function listar_almacenes() {
             { data: "codigo" },
             { data: "descripcion" },
             { data: "tp_almacen" }
-            // {'render':
-            //     function (data, type, row){
-            //         return ((row['estado'] == 1) ? 'Activo' : 'Inactivo');
-            //     }
-            // }
         ],
-        order: [[2, "asc"]],
-        columnDefs: [{ aTargets: [0], sClass: "invisible" }]
+        order: [[0, "asc"]]
+        // columnDefs: [{ aTargets: [0], sClass: "invisible" }]
     });
 }
 function mostrar_almacen(id) {
-    baseUrl = "mostrar_almacen/" + id;
     $("#listaAlmacenUsuarios tbody").html("");
     $.ajax({
         type: "GET",
-        url: baseUrl,
+        url: "mostrar_almacen/" + id,
         dataType: "JSON",
         success: function(response) {
             $("[name=id_almacen]").val(response[0].id_almacen);
@@ -60,7 +54,6 @@ function mostrar_almacen(id) {
             } else {
                 $("[name=name_ubigeo]").val("");
             }
-
             obtenerUsuarios(id);
         }
     }).fail(function(jqXHR, textStatus, errorThrown) {
