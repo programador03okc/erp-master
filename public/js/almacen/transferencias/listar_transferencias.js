@@ -36,7 +36,7 @@ function iniciar(permiso, usuario) {
         if (activeForm == "form-requerimientos") {
             listarRequerimientosPendientes();
         } else if (activeForm == "form-pendientes") {
-            listarTransferenciasPendientes();
+            listarTransferenciasPorRecibir();
         } else if (activeForm == "form-porEnviar") {
             listarTransferenciasPorEnviar();
         } else if (activeForm == "form-recibidas") {
@@ -155,23 +155,33 @@ function listarTransferenciasPorEnviar() {
         },
         columns: [
             { data: "id_transferencia" },
-            { data: "codigo" },
-            { data: "fecha_registro" },
+            { data: "codigo", className: "text-center" },
+            // { data: "fecha_registro" },
             { data: "alm_origen_descripcion", name: "origen.descripcion" },
             { data: "alm_destino_descripcion", name: "destino.descripcion" },
-            { data: "cod_req", name: "alm_req.codigo" },
+            {
+                data: "cod_req",
+                name: "alm_req.codigo",
+                className: "text-center"
+            },
             { data: "concepto", name: "alm_req.concepto" },
-            { data: "sede_descripcion", name: "sis_sede.descripcion" },
+            {
+                data: "sede_descripcion",
+                name: "sis_sede.descripcion",
+                className: "text-center"
+            },
             { data: "nombre_corto", name: "sis_usua.nombre_corto" },
             {
                 render: function(data, type, row) {
                     if (valor_permiso == "1") {
-                        return `<button type="button" class="guia btn btn-primary boton" data-toggle="tooltip" 
+                        return `<div style="display: flex;text-align:center;">
+                        <button type="button" class="guia btn btn-primary boton btn-flat" data-toggle="tooltip" 
                             data-placement="bottom" data-id="${row["id_transferencia"]}" data-cod="${row["id_requerimiento"]}" title="Generar Guía" >
                             <i class="fas fa-sign-in-alt"></i></button>
-                        <button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" 
+                        <button type="button" class="anular btn btn-danger boton btn-flat" data-toggle="tooltip" 
                             data-placement="bottom" data-id="${row["id_transferencia"]}" data-cod="${row["id_requerimiento"]}" title="Anular Transferencia" >
-                            <i class="fas fa-trash"></i></button>`;
+                            <i class="fas fa-trash"></i></button>
+                        <div/>`;
                     }
                 }
             }
@@ -276,7 +286,7 @@ $("#listaTransferenciasPorEnviar tbody").on(
     }
 );
 
-function listarTransferenciasPendientes() {
+function listarTransferenciasPorRecibir() {
     var alm_destino = $("[name=id_almacen_destino_lista]").val();
 
     if (alm_destino !== "" && alm_destino !== "") {
@@ -421,7 +431,7 @@ function anular_transferencia_salida(data) {
             } else {
                 alert("Salida por Transferencia anulada con éxito");
                 $("#modal-guia_ven_obs").modal("hide");
-                listarTransferenciasPendientes();
+                listarTransferenciasPorRecibir();
             }
         }
     }).fail(function(jqXHR, textStatus, errorThrown) {
@@ -683,23 +693,23 @@ function anular_transferencia_ingreso(data) {
     });
 }
 
-function abrir_guia_venta(id_guia_venta) {
-    // Abrir nuevo tab
-    localStorage.setItem("id_guia_ven", id_guia_venta);
-    let url = "/logistica/almacen/movimientos/guias-venta/index";
-    var win = window.open(url, "_blank");
-    // Cambiar el foco al nuevo tab (punto opcional)
-    win.focus();
-}
+// function abrir_guia_venta(id_guia_venta) {
+//     // Abrir nuevo tab
+//     localStorage.setItem("id_guia_ven", id_guia_venta);
+//     let url = "/logistica/almacen/movimientos/guias-venta/index";
+//     var win = window.open(url, "_blank");
+//     // Cambiar el foco al nuevo tab (punto opcional)
+//     win.focus();
+// }
 
-function abrir_guia_compra(id_guia_compra) {
-    // Abrir nuevo tab
-    localStorage.setItem("id_guia_com", id_guia_compra);
-    let url = "/logistica/almacen/movimientos/guias-compra/index";
-    var win = window.open(url, "_blank");
-    // Cambiar el foco al nuevo tab (punto opcional)
-    win.focus();
-}
+// function abrir_guia_compra(id_guia_compra) {
+//     // Abrir nuevo tab
+//     localStorage.setItem("id_guia_com", id_guia_compra);
+//     let url = "/logistica/almacen/movimientos/guias-compra/index";
+//     var win = window.open(url, "_blank");
+//     // Cambiar el foco al nuevo tab (punto opcional)
+//     win.focus();
+// }
 
 function abrir_requerimiento(id_requerimiento) {
     // Abrir nuevo tab

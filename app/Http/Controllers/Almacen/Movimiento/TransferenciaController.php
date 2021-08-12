@@ -1802,31 +1802,11 @@ class TransferenciaController extends Controller
             ->where([['alm_det_req.id_requerimiento', '=', $id]])
             ->get();
 
-        // $items_base = [];
-        // $items_transf = [];
         $items = [];
-
-        // $transformacion = false;
-        // $transformaciones = 0;
-        // $todas_transformaciones = 0;
-
-        // if ($req->tiene_transformacion) {
-        //     foreach ($req_detalle as $det) {
-        //         if ($det->tiene_transformacion) {
-        //             $todas_transformaciones++;
-        //             if ($det->stock_comprometido !== null && $det->stock_comprometido > 0) {
-        //                 $transformaciones++;
-        //             }
-        //         }
-        //     }
-        //     if ($todas_transformaciones == $transformaciones) {
-        //         $transformacion = true;
-        //     }
-        // }
 
         foreach ($req_detalle as $det) {
 
-            if ($det->cantidad_transferida < $det->cantidad) {
+            if ($det->cantidad_transferida < $det->stock_comprometido) {
 
                 if ($det->id_guia_com_det !== null) {
                     $series = DB::table('almacen.alm_prod_serie')
@@ -1851,7 +1831,7 @@ class TransferenciaController extends Controller
                         'part_number' => $det->part_number,
                         'descripcion' => $det->descripcion,
                         'abreviatura' => $det->abreviatura,
-                        'cantidad' => (floatval($det->stock_comprometido) - floatval($det->cantidad_transferida)),
+                        'cantidad' => floatval($det->stock_comprometido),
                         'id_almacen_reserva' => $det->id_almacen_reserva,
                         'series' => $series
                     ];
@@ -1866,17 +1846,6 @@ class TransferenciaController extends Controller
                     if (!$exist) {
                         array_push($items, $item_det);
                     }
-                    // } else {
-                    //     $exist = false;
-                    //     foreach ($items_base as $item) {
-                    //         if ($item['id_detalle_requerimiento'] == $det->id_detalle_requerimiento) {
-                    //             $exist = true;
-                    //         }
-                    //     }
-                    //     if (!$exist) {
-                    //         array_push($items_base, $item_det);
-                    //     }
-                    // }
                 }
             }
         }
@@ -1885,11 +1854,6 @@ class TransferenciaController extends Controller
             // 'items_transf' => $items_transf, 'items_base' => $items_base,
             // 'transformaciones' => $transformaciones, 'todas_transformaciones' => $todas_transformaciones
         ]);
-        // return response()->json([
-        //     'requerimiento' => $req, 'detalle' => ($transformacion ? $items_transf : $items_base),
-        //     'items_transf' => $items_transf, 'items_base' => $items_base,
-        //     'transformaciones' => $transformaciones, 'todas_transformaciones' => $todas_transformaciones
-        // ]);
     }
 
 
