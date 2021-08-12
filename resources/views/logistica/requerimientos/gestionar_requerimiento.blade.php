@@ -651,7 +651,7 @@ Crear / editar requerimiento
 <script src="{{ asset('js/logistica/requerimiento/mostrar.js') }}"></script>
 <script src="{{ asset('js/logistica/requerimiento/tipo_formulario.js') }}"></script>
 <script src="{{ asset('js/logistica/requerimiento/cabecera_detalle.js') }}"></script>
-<script src="{{ asset('js/logistica/requerimiento/inicializar.js') }}"></script>
+<!-- <script src="{{ asset('js/logistica/requerimiento/inicializar.js') }}"></script> -->
 <script src="{{ asset('js/logistica/requerimiento/modal_almacen_reserva.js')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/modal_motivo_detalle_requerimiento.js')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/modal_seleccionar_crear_proveedor.js')}}"></script>
@@ -705,23 +705,23 @@ Crear / editar requerimiento
         document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value = id_grupo;
 
 
-        inicializar(
+        // inicializar(
 
-            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.mostrar-requerimiento')}}",
-            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.guardar')}}",
-            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.actualizar')}}",
-            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.anular-requerimiento')}}",
-            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.copiar-requerimiento')}}",
-            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.telefonos-cliente')}}",
-            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.direcciones-cliente')}}",
-            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.emails-cliente')}}",
-            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.cuentas-cliente')}}",
-            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.guardar-cuentas-cliente')}}",
-            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.cuadro-costos')}}",
-            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.detalle-cuadro-costos')}}",
-            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.obtener-construir-cliente')}}",
-            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.grupo-select-item-para-compra')}}"
-        );
+        //     "{{route('logistica.gestion-logistica.requerimiento.elaboracion.mostrar-requerimiento')}}",
+        //     "{{route('logistica.gestion-logistica.requerimiento.elaboracion.guardar')}}",
+        //     "{{route('logistica.gestion-logistica.requerimiento.elaboracion.actualizar')}}",
+        //     "{{route('logistica.gestion-logistica.requerimiento.elaboracion.anular-requerimiento')}}",
+        //     "{{route('logistica.gestion-logistica.requerimiento.elaboracion.copiar-requerimiento')}}",
+        //     "{{route('logistica.gestion-logistica.requerimiento.elaboracion.telefonos-cliente')}}",
+        //     "{{route('logistica.gestion-logistica.requerimiento.elaboracion.direcciones-cliente')}}",
+        //     "{{route('logistica.gestion-logistica.requerimiento.elaboracion.emails-cliente')}}",
+        //     "{{route('logistica.gestion-logistica.requerimiento.elaboracion.cuentas-cliente')}}",
+        //     "{{route('logistica.gestion-logistica.requerimiento.elaboracion.guardar-cuentas-cliente')}}",
+        //     "{{route('logistica.gestion-logistica.requerimiento.elaboracion.cuadro-costos')}}",
+        //     "{{route('logistica.gestion-logistica.requerimiento.elaboracion.detalle-cuadro-costos')}}",
+        //     "{{route('logistica.gestion-logistica.requerimiento.elaboracion.obtener-construir-cliente')}}",
+        //     "{{route('logistica.gestion-logistica.requerimiento.elaboracion.grupo-select-item-para-compra')}}"
+        // );
         
         const requerimientoModel = new RequerimientoModel();
         const requerimientoController = new RequerimientoCtrl(requerimientoModel);
