@@ -1632,6 +1632,7 @@ Route::group(['middleware' => ['auth']], function () {
 	});
 
 
+	Route::get('listarUsu', 'Almacen\Movimiento\TransferenciaController@listarUsu');
 
 	Route::get('migrar_venta_directa/{id}', 'MigrateSoftLinkController@migrar_venta_directa');
 	Route::get('prue/{id}', 'OrdenesPendientesController@prue');

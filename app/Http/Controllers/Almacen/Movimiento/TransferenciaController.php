@@ -2180,8 +2180,27 @@ class TransferenciaController extends Controller
         }
     }
 
+    function almacenesPorUsuario()
+    {
+        $id_usuario = Auth::user()->id_usuario;
+        $almacenes = DB::table('almacen.alm_almacen_usuario')
+            ->select('alm_almacen_usuario.id_almacen')
+            ->where('id_usuario', $id_usuario)
+            ->where('estado', 1)
+            ->get();
+
+        $array_almacen = [];
+        foreach ($almacenes as $alm) {
+            $array_almacen[] = [$alm->id_almacen];
+        }
+
+        return $array_almacen;
+    }
+
     function listarRequerimientos()
     {
+        $array_almacen = $this->almacenesPorUsuario();
+
         $data = DB::table('almacen.alm_det_req')
             ->select(
                 'alm_req.*',
@@ -2202,20 +2221,14 @@ class TransferenciaController extends Controller
             })
             ->join('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'alm_req.id_cliente')
             ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
-            ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_req.id_sede')
+            ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_req.id_sede')
             ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
             ->leftJoin('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'cc.id_oportunidad')
-            ->leftjoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'alm_req.id_usuario')
+            ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'alm_req.id_usuario')
             ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'alm_req.estado')
-            // ->leftJoin('almacen.alm_det_req', function ($join) {
-            // $join->on('alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento');
-            //     $join->on('alm_det_req.id_almacen_reserva', '!=', 'alm_req.id_almacen');
-            //     $join->where('alm_det_req.estado', '!=', 7);
-            //     $join->where('alm_det_req.id_almacen_reserva', '!=', null);
-            // })
+            ->whereIn('alm_det_req.id_almacen_reserva', $array_almacen)
             ->where([
                 ['alm_det_req.estado', '!=', 7],
-                // ['alm_det_req.id_almacen_reserva', '!=', 'alm_req.id_almacen'],
                 ['alm_req.estado', '!=', 7]
             ])
             ->distinct()->get();
