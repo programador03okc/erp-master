@@ -57,12 +57,10 @@ function listarRequerimientosPendientes() {
         dom: vardataTables[1],
         buttons: vardataTables[2],
         language: vardataTables[0],
-        // "scrollX": true,
         destroy: true,
         ajax: "listarRequerimientos",
         columns: [
             { data: "id_requerimiento" },
-            // { data: "codigo", className: "text-center" },
             {
                 render: function(data, type, row) {
                     return (
@@ -104,13 +102,9 @@ function listarRequerimientosPendientes() {
             },
             {
                 render: function(data, type, row) {
-                    // if (valor_permiso == "1") {
                     return `<button type="button" class="transferencia btn btn-success boton" data-toggle="tooltip"
                             data-placement="bottom" data-id="${row["id_requerimiento"]}" title="Crear Transferencia(s)" >
                             <i class="fas fa-exchange-alt"></i></button>`;
-                    // } else {
-                    // return "";
-                    // }
                 },
                 className: "text-center"
             }
@@ -155,7 +149,6 @@ function listarTransferenciasPorEnviar() {
         language: vardataTables[0],
         destroy: true,
         serverSide: true,
-        // "scrollX": true,
         ajax: {
             url: "listarTransferenciasPorEnviar/" + alm_origen,
             type: "POST"
@@ -292,12 +285,10 @@ function listarTransferenciasPendientes() {
             dom: vardataTables[1],
             buttons: vardataTables[2],
             language: vardataTables[0],
-            // "scrollX": true,
             destroy: true,
             ajax: "listarTransferenciasPorRecibir/" + alm_destino,
             columns: [
                 { data: "id_guia_ven" },
-                // {'data': 'codigo_transferencia'},
                 {
                     render: function(data, type, row) {
                         if (row["id_guia_ven"] !== null) {
