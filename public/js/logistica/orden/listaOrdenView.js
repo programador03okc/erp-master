@@ -361,6 +361,7 @@ class ListaOrdenView {
     }
 
     aplicarFiltrosVistaCabeceraOrden(){
+        cantidadFiltrosActivosCabecera=0;
         let chkTipoOrden =document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] input[name='chkTipoOrden']").checked;
         let chkVinculadoPor = document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] input[name='chkVinculadoPor']").checked;
         let chkEmpresa = document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] input[name='chkEmpresa']").checked;
@@ -728,7 +729,7 @@ class ListaOrdenView {
     }
 
     construirDetalleOrdenElaboradas(table_id,row,response){
-        console.log(response);
+        // console.log(response);
         var html = '';
         if (response.length > 0) {
             response.forEach(function (element) {
@@ -1276,39 +1277,51 @@ class ListaOrdenView {
     anularOrden(obj){
         let codigoOrden = obj.dataset.codigoOrden;
         let id = obj.dataset.idOrdenCompra;
-        console.log(id);
-        var ask = confirm('¿Desea anular la orden '+codigoOrden+'?');
-        if (ask == true){
-            this.listaOrdenCtrl.anularOrden(id).then((res)=> {
-                if (res.status == 200) {
-                    Lobibox.notify('success', {
-                        title:false,
-                        size: 'mini',
-                        rounded: true,
-                        sound: false,
-                        delayIndicator: false,
-                        msg: 'Orden anulada'
-                    });
-                    // let url = "/logistica/gestion-logistica/compras/ordenes/listado/index";
-                    location.reload();
-                } else {
+        Swal.fire({
+            title: 'Esta seguro que desea anular la orden '+codigoOrden+'?',
+            text: "No podrás revertir esto.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: 'Cancelar',
+            confirmButtonText: 'Si, anular'
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.listaOrdenCtrl.anularOrden(id).then((res)=> {
+                    if (res.status == 200) {
+                        Lobibox.notify('success', {
+                            title:false,
+                            size: 'mini',
+                            rounded: true,
+                            sound: false,
+                            delayIndicator: false,
+                            msg: 'Orden anulada'
+                        });
+                        // location.reload();
+                        obj.closest('tr').remove();
+
+                    } else {
+                        Swal.fire(
+                            '',
+                            'Lo sentimos hubo un error en el servidor al intentar anular la orden, por favor vuelva a intentarlo',
+                            'error'
+                        );
+                        console.log(res);
+                    }
+                }).catch( (err)=> {
+                    console.log(err)
                     Swal.fire(
                         '',
-                        'Lo sentimos hubo un error en el servidor al intentar anular la orden, por favor vuelva a intentarlo',
+                        'Lo sentimos hubo un error en el servidor, por favor vuelva a intentarlo',
                         'error'
                     );
-                    console.log(res);
-                }
-            }).catch( (err)=> {
-                console.log(err)
-                Swal.fire(
-                    '',
-                    'Lo sentimos hubo un error en el servidor, por favor vuelva a intentarlo',
-                    'error'
-                );
-            });
-        }
+                });
 
+
+            }
+        })
 
     }
 

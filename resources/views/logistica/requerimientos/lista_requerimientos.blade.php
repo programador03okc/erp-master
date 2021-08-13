@@ -23,7 +23,7 @@ Listado de requerimientos
             <fieldset class="group-table">
 
                 <form id="form-requerimientosElaborados" type="register">
-                    <div class="row">
+                    <div class="row" hidden>
                         <div class="col-md-2">
                             <h5>Elaborado por</h5>
                             <div style="display:flex;">

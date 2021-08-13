@@ -217,7 +217,7 @@ $(document).ready(function(){
 				}
 				else if (page == 'crear-orden-requerimiento'){
 					var reqTrueList = JSON.parse(sessionStorage.getItem('reqCheckedList'));
-
+					cancelarOrden()
 					if (reqTrueList !=null && (reqTrueList.length > 0)) {
 						window.location.reload();
 

@@ -24,7 +24,11 @@ Elaborar orden
 
         <div class="row">
             <div class="col-md-12">
-                <h4 style="display:flex;justify-content: space-between;">General &nbsp;<span style="color:blue;" name="codigo_orden_interno"></span> </h4>
+                <h4 style="display:flex;justify-content: space-between;">General &nbsp;<span style="color:blue;" name="codigo_orden_interno"></span> 
+                    <div>
+                        <button type="button" name="btn-imprimir-orden-pdf" class="btn btn-info btn-sm handleClickImprimirOrdenPdf" title="Imprimir orden en .pdf" disabled><i class="fas fa-print"></i> Imprimir</button>
+                    </div>
+                </h4>
                 <fieldset class="group-table">
                     <div class="row">
                         <div class="col-md-2" id="group-tipo_orden">

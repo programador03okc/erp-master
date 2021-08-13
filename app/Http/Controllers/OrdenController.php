@@ -1891,7 +1891,7 @@ class OrdenController extends Controller
     public function imprimir_orden_por_requerimiento_pdf($id_orden_compra)
     {
         $ordenArray = $this->get_orden_por_requerimiento($id_orden_compra);
-        // return $ordenArray;
+        // return dd($ordenArray);
         $sizeOrdenHeader=count($ordenArray['head']);
         
         if($sizeOrdenHeader == 0){
@@ -2078,10 +2078,10 @@ class OrdenController extends Controller
             $html .= '<td>' . $data['part_number'] . '</td>';
             if($data['descripcion_adicional'] != null && strlen($data['descripcion_adicional']) > 0){
 
-                $html .= '<td>' . ($data['codigo_item'] ? $data['codigo_item'] : '0') . ' - ' . ($data['descripcion_adicional'] ? $data['descripcion_adicional'] : $data['descripcion_adicional']) . '</td>';
+                $html .= '<td>' . ($data['descripcion_adicional'] ? $data['descripcion_adicional'] : $data['descripcion_adicional']) . '</td>';
 
             }else{
-                $html .= '<td>' . ($data['codigo_item'] ? $data['codigo_item'] : '0') . ' - ' . ($data['descripcion_producto'] ? $data['descripcion_producto'] : $data['descripcion_adicional']) . '</td>';
+                $html .= '<td>' . ($data['descripcion_producto'] ? $data['descripcion_producto'] : $data['descripcion_adicional']) . '</td>';
             }
             $html .= '<td>' . $data['unidad_medida'] . '</td>';
             $html .= '<td style="text-align:center">' . $data['cantidad'] . '</td>';

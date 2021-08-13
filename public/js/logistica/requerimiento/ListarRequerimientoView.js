@@ -97,22 +97,22 @@ class ListarRequerimientoView {
                     'render': function (data, type, row) {
                         switch (row['estado']) {
                             case 1:
-                                return '<span class="label label-default">' + row['estado_doc'] + '</span>';
+                                return '<span class="labelEstado label label-default">' + row['estado_doc'] + '</span>';
                                 break;
                             case 2:
-                                return '<span class="label label-success">' + row['estado_doc'] + '</span>';
+                                return '<span class="labelEstado label label-success">' + row['estado_doc'] + '</span>';
                                 break;
                             case 3:
-                                return '<span class="label label-warning">' + row['estado_doc'] + '</span>';
+                                return '<span class="labelEstado label label-warning">' + row['estado_doc'] + '</span>';
                                 break;
                             case 5:
-                                return '<span class="label label-primary">' + row['estado_doc'] + '</span>';
+                                return '<span class="labelEstado label label-primary">' + row['estado_doc'] + '</span>';
                                 break;
                             case 7:
-                                return '<span class="label label-danger">' + row['estado_doc'] + '</span>';
+                                return '<span class="labelEstado label label-danger">' + row['estado_doc'] + '</span>';
                                 break;
                             default:
-                                return '<span class="label label-default">' + row['estado_doc'] + '</span>';
+                                return '<span class="labelEstado label label-default">' + row['estado_doc'] + '</span>';
                                 break;
 
                         }
@@ -134,14 +134,14 @@ class ListarRequerimientoView {
                         let btnEditar = '';
                         let btnAnular = '';
                         // let btnMandarAPago = '';
-                        let btnDetalleRapido = '<button type="button" class="btn btn-xs btn-info handleClickVerDetalleRequerimientoSoloLectura" data-id-requerimiento="' + row['id_requerimiento'] + '" title="Ver detalle" ><i class="fas fa-eye fa-xs"></i></button>';
-                        let btnTrazabilidad = '<button type="button" class="btn btn-xs btn-primary handleClickVerTrazabilidadRequerimiento" title="Trazabilidad"><i class="fas fa-route fa-xs"></i></button>';
+                        let btnDetalleRapido = '<button type="button" class="btn btn-xs btn-info btnVerDetalle handleClickVerDetalleRequerimientoSoloLectura" data-id-requerimiento="' + row['id_requerimiento'] + '" title="Ver detalle" ><i class="fas fa-eye fa-xs"></i></button>';
+                        let btnTrazabilidad = '<button type="button" class="btn btn-xs btn-primary btnVerTrazabilidad handleClickVerTrazabilidadRequerimiento" title="Trazabilidad"><i class="fas fa-route fa-xs"></i></button>';
                         // if(row.estado ==2){
                         //         btnMandarAPago = '<button type="button" class="btn btn-xs btn-success" title="Mandar a pago" onClick="listarRequerimientoView.requerimientoAPago(' + row['id_requerimiento'] + ');"><i class="fas fa-hand-holding-usd fa-xs"></i></button>';
                         //     }
                         if (row.id_usuario == auth_user.id_usuario && (row.estado == 1 || row.estado == 3)) {
-                            btnEditar = '<button type="button" class="btn btn-xs btn-warning handleClickAbrirRequerimiento" title="Editar" ><i class="fas fa-edit fa-xs"></i></button>';
-                            btnAnular = '<button type="button" class="btn btn-xs btn-danger handleClickAnularRequerimiento" title="Anular" ><i class="fas fa-times fa-xs"></i></button>';
+                            btnEditar = '<button type="button" class="btn btn-xs btn-warning btnEditarRequerimiento handleClickAbrirRequerimiento" title="Editar" ><i class="fas fa-edit fa-xs"></i></button>';
+                            btnAnular = '<button type="button" class="btn btn-xs btn-danger btnAnularRequerimiento handleClickAnularRequerimiento" title="Anular" ><i class="fas fa-times fa-xs"></i></button>';
                         }
 
 
@@ -174,7 +174,7 @@ class ListarRequerimientoView {
                 });
                 $('#ListaRequerimientosElaborados tbody').on("click", "button.handleClickAnularRequerimiento", function () {
                     let data = $('#ListaRequerimientosElaborados').DataTable().row($(this).parents("tr")).data();
-                    that.anularRequerimiento($(this),data.id_requerimiento,data.codigo);
+                    that.anularRequerimiento(this,data.id_requerimiento,data.codigo);
                 });
 
                 $('#ListaRequerimientosElaborados tbody').on("click", "button.handleClickVerTrazabilidadRequerimiento", function () {
@@ -429,12 +429,16 @@ class ListarRequerimientoView {
 
         }).then((result) => {
             if (result.isConfirmed) {
+
+
                 this.requerimientoCtrl.anularRequerimiento(idRequerimiento).then(function (res) {
                     if (res.estado == 7) {
                         $('#wrapper-okc').LoadingOverlay("hide", true);
-                        obj.closest('tr').fadeOut(500,function(){
-                            $(this).remove();
-                        });
+                        obj.closest('tr').querySelector("span[class~='labelEstado']").setAttribute('class','labelEstado label label-danger');
+                        obj.closest('tr').querySelector("span[class~='labelEstado']").textContent= 'Anulado';
+                        obj.closest('tr').querySelector("span[class~='labelEstado']").setAttribute('class','labelEstado label label-danger');
+                        obj.closest('tr').querySelector("button[class~='btnEditarRequerimiento']").remove();
+                        obj.closest('tr').querySelector("button[class~='btnAnularRequerimiento']").remove();
                         Swal.fire(
                             'Anulado',
                             res.mensaje,

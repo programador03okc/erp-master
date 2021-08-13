@@ -1,3 +1,4 @@
+
 // ============== View =========================
 var vardataTables = funcDatatables();
 var simboloMoneda = '';
@@ -41,6 +42,7 @@ class OrdenView {
                 case 'register':
                     changeStateButton('nuevo');
                     changeStateInput('form-crear-orden-requerimiento', false);
+
                     break;
                 case 'edition':
                     changeStateButton('editar');
@@ -66,6 +68,9 @@ class OrdenView {
             this.eliminarVinculoReq();
         });
 
+        $('#form-crear-orden-requerimiento').on("click","button.handleClickImprimirOrdenPdf", ()=>{
+            this.imprimirOrdenPDF();
+        });
         $('#form-crear-orden-requerimiento').on("change","select.handleChangeSede", (e)=>{
             this.changeSede(e.currentTarget);
         });
@@ -121,13 +126,29 @@ class OrdenView {
         });
     }
 
-    limpiarTabla(identificador){
-        let nodeTbody = document.querySelector("table[id='" + identificador + "'] tbody");
+    limpiarTabla(idElement){
+        let nodeTbody = document.querySelector("table[id='" + idElement + "'] tbody");
+        if(nodeTbody!=null){
+            while (nodeTbody.children.length > 0) {
+                nodeTbody.removeChild(nodeTbody.lastChild);
+            }
 
-        for(var i = nodeTbody.rows.length - 1; i > 0; i--)
-        {
-            nodeTbody.deleteRow(i);
-        }   
+        }
+    }
+
+    imprimirOrdenPDF(){
+        let idOrden= document.querySelector("input[name='id_orden']").value;
+        if(parseInt(idOrden)>0){
+            window.open("generar-orden-pdf/"+idOrden, '_blank');
+
+        }else{
+            Swal.fire(
+                '',
+                'Lo sentimos no se encontro una orden vinculada para imprimir',
+                'warning'
+            );
+        }
+
     }
 
     obtenerRequerimiento(reqTrueList,tipoOrden){
@@ -231,7 +252,7 @@ class OrdenView {
             simboloMoneda = selectMoneda.options[selectMoneda.selectedIndex].dataset.simboloMoneda;
 
         }
-        let simboloMonedaAll = document.querySelectorAll("span[name='simboloMoneda']");
+        let simboloMonedaAll = document.querySelectorAll("[name='simboloMoneda']");
         simboloMonedaAll.forEach((element, indice) => {
             simboloMonedaAll[indice].textContent = simboloMoneda;
         });
@@ -328,7 +349,7 @@ class OrdenView {
                     <td>${(data[i].cantidad ? data[i].cantidad :'')}</td>
                     <td>
                         <div class="input-group">
-                            <div class="input-group-addon" style="background:lightgray;">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</div>
+                            <div class="input-group-addon" style="background:lightgray;" name="simboloMoneda">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</div>
                             <input class="form-control precio input-sm text-right ${(data[i].estado_guia_com_det>0 && data[i].estado_guia_com_det !=7?'':'activation')} handleBlurUpdateInputPrecio handleBurUpdateSubtotal" data-id-tipo-item="1" data-producto-regalo="${(data[i].producto_regalo?data[i].producto_regalo:false)}" type="number" min="0" name="precioUnitario[]"  placeholder="" value="${data[i].precio_unitario?data[i].precio_unitario:0}" disabled>
                         </div>
                     </td>
@@ -351,7 +372,7 @@ class OrdenView {
                     <td>${(data[i].cantidad ? data[i].cantidad :'')}</td>
                     <td>
                         <div class="input-group">
-                            <div class="input-group-addon" style="background:lightgray;">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</div>
+                            <div class="input-group-addon" style="background:lightgray;" name="simboloMoneda">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</div>
                             <input class="form-control precio input-sm text-right activation  handleBurUpdateSubtotal" data-id-tipo-item="2" type="number" min="0" name="precioUnitario[]"  placeholder="" value="${data[i].precio_unitario?data[i].precio_unitario:0}" disabled>
                         </div>
                     </td>
@@ -390,36 +411,28 @@ class OrdenView {
     calcularMontosTotales() {
         let TableTBody = document.querySelector("tbody[id='body_detalle_orden']");
         let childrenTableTbody = TableTBody.children;
-        let totalNetoProductos = 0;
-        let totalNetoServicio = 0;
+
+        let totalNeto = 0;
         for (let index = 0; index < childrenTableTbody.length; index++) {
-            let tipoItem = childrenTableTbody[index].querySelector("input[class~='cantidad_a_comprar']").dataset.idTipoItem;
-            if(tipoItem==1){
-                let cantidad = parseFloat(childrenTableTbody[index].querySelector("input[class~='cantidad_a_comprar']").value ? childrenTableTbody[index].querySelector("input[class~='cantidad_a_comprar']").value : 0);
-                let precioUnitario = parseFloat(childrenTableTbody[index].querySelector("input[class~='precio']").value ? childrenTableTbody[index].querySelector("input[class~='precio']").value : 0);
-                totalNetoProductos += (cantidad * precioUnitario);
-            }else{
-                let cantidad = parseFloat(childrenTableTbody[index].querySelector("input[class~='cantidad_a_comprar']").value ? childrenTableTbody[index].querySelector("input[class~='cantidad_a_comprar']").value : 0);
-                let precioUnitario = parseFloat(childrenTableTbody[index].querySelector("input[class~='precio']").value ? childrenTableTbody[index].querySelector("input[class~='precio']").value : 0);
-                totalNetoServicio += (cantidad * precioUnitario);
-            }
+            let cantidad = parseFloat(childrenTableTbody[index].querySelector("input[class~='cantidad_a_comprar']").value ? childrenTableTbody[index].querySelector("input[class~='cantidad_a_comprar']").value : 0);
+            let precioUnitario = parseFloat(childrenTableTbody[index].querySelector("input[class~='precio']").value ? childrenTableTbody[index].querySelector("input[class~='precio']").value : 0);
+            totalNeto += (cantidad * precioUnitario);
         }
  
         this.updateSimboloMoneda();
-        document.querySelector("label[name='montoNeto']").textContent = Util.formatoNumero((totalNetoProductos+totalNetoServicio), 2);
+        document.querySelector("label[name='montoNeto']").textContent = $.number((totalNeto), 2);
 
         let incluyeIGV= document.querySelector("input[name='incluye_igv']").checked;
         if(incluyeIGV==true){
-            let igv = (Math.round((totalNetoProductos*0.18) * 100) / 100).toFixed(2);
-            let montoTotalProducto= (Math.round((parseFloat(totalNetoProductos)+parseFloat(igv)) * 100) / 100).toFixed(2)
+            let igv = (Math.round((totalNeto*0.18) * 100) / 100).toFixed(2);
+            let MontoTotal= (Math.round((parseFloat(totalNeto)+parseFloat(igv)) * 100) / 100).toFixed(2)
             document.querySelector("label[name='igv']").textContent= igv;
-            let MontoTotal =parseFloat(montoTotalProducto) + parseFloat(totalNetoServicio);
-            document.querySelector("label[name='montoTotal']").textContent= Util.formatoNumero(MontoTotal,2);
+            document.querySelector("label[name='montoTotal']").textContent= $.number(MontoTotal,2);
 
         }else{
-            let MontoTotal =parseFloat(totalNetoProductos) + parseFloat(totalNetoServicio);
-            document.querySelector("label[name='igv']").textContent= Util.formatoNumero(0,2);
-            document.querySelector("label[name='montoTotal']").textContent= Util.formatoNumero(MontoTotal,2);
+            let MontoTotal =parseFloat(totalNeto);
+            document.querySelector("label[name='igv']").textContent= $.number(0,2);
+            document.querySelector("label[name='montoTotal']").textContent= $.number(MontoTotal,2);
         }
 
     }
@@ -691,7 +704,7 @@ class OrdenView {
         <td>${(data[0].cantidad ? data[0].cantidad :'')}</td>
         <td>
             <div class="input-group">
-                <div class="input-group-addon" style="background:lightgray;">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</div>
+                <div class="input-group-addon" style="background:lightgray;" name="simboloMoneda">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</div>
                 <input class="form-control precio input-sm text-right ${(data[0].estado_guia_com_det>0 && data[0].estado_guia_com_det !=7?'':'activation')} handleBlurUpdateInputPrecio handleBurUpdateSubtotal" data-id-tipo-item="1" data-producto-regalo="${(data[0].producto_regalo?data[0].producto_regalo:false)}" type="number" min="0" name="precioUnitario[]"  placeholder="" value="${data[0].precio_unitario?data[0].precio_unitario:0}" >
             </div>
         </td>
@@ -718,7 +731,7 @@ class OrdenView {
         <td></td>
         <td>
             <div class="input-group">
-                <div class="input-group-addon" style="background:lightgray;">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</div>
+                <div class="input-group-addon" style="background:lightgray;" name="simboloMoneda">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</div>
                 <input class="form-control precio input-sm text-right activation handleBurUpdatePrecio handleBurUpdateSubtotal" data-id-tipo-item="2" type="number" min="0" name="precioUnitario[]"  placeholder="" value="0" >
             </div>
         </td>
@@ -1146,8 +1159,11 @@ class OrdenView {
     
                             sessionStorage.removeItem('reqCheckedList');
                             sessionStorage.removeItem('tipoOrden');
-                            window.open("generar-orden-pdf/"+response.id_orden_compra, '_blank');
-    
+                            // window.open("generar-orden-pdf/"+response.id_orden_compra, '_blank');
+                            document.querySelector("span[name='codigo_orden_interno']").textContent=response.codigo;
+                            document.querySelector("input[name='id_orden']").value=response.id_orden_compra;
+                            document.querySelector("button[name='btn-imprimir-orden-pdf']").removeAttribute("disabled");
+
                         }else{
                             Swal.fire(
                                 '',
@@ -1219,31 +1235,7 @@ class OrdenView {
     
 
     nuevaOrden() {
-        $('#form-crear-orden-requerimiento')[0].reset();
-        this.fechaHoy();
-
-        // document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_proveedor']").value = '';
-        // document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_contrib']").value = '';
-        // document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='direccion_proveedor']").value = '';
-        // document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='ubigeo_proveedor']").value = '';
-        // document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='ubigeo_proveedor_descripcion']").value = '';
-        // document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_contacto_proveedor']").value = '';
-        // document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='contacto_proveedor_nombre']").value = '';
-        // document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='contacto_proveedor_telefono']").value = '';
-        // document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='cdc_req']").value = '';
-        // document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='ejecutivo_responsable']").value = '';
-        // document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_ubigeo_destino']").value = '';
-        // document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='ubigeo_destino']").value = '';
-        // document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='personal_autorizado_1']").value = '';
-        // document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='personal_autorizado_2']").value = '';
-        // document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='nombre_persona_autorizado_1']").value = '';
-        // document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='nombre_persona_autorizado_2']").value = '';
-        // document.querySelector("form[id='form-crear-orden-requerimiento'] span[name='codigo_orden_interno']").textContent = '';
-        // document.querySelector("form[id='form-crear-orden-requerimiento'] textarea[name='observacion']").value = '';
-        // document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='incluye_igv']").checked = true;
-    
-    
-        this.limpiarTabla('listaDetalleOrden');
+        this.restablecerFormularioOrden();
     }
 
 
@@ -1393,6 +1385,8 @@ class OrdenView {
         document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='nombre_persona_autorizado_1']").value=data.nombre_personal_autorizado_1?data.nombre_personal_autorizado_1:'';
         document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='nombre_persona_autorizado_2']").value=data.nombre_personal_autorizado_2?data.nombre_personal_autorizado_2:'';
         document.querySelector("form[id='form-crear-orden-requerimiento'] textarea[name='observacion']").value=data.observacion?data.observacion:'';
+
+        document.querySelector("button[name='btn-imprimir-orden-pdf']").removeAttribute("disabled");
     }
 
 
@@ -1407,8 +1401,6 @@ class OrdenView {
                     delayIndicator: false,
                     msg: 'Orden anulada'
                 });
-                let url = "/logistica/gestion-logistica/compras/ordenes/listado/index";
-                window.location.replace(url);
             } else {
                 Swal.fire(
                     '',
@@ -1426,5 +1418,25 @@ class OrdenView {
             );
         });
     }
+
+    restablecerFormularioOrden(){
+        $('#form-crear-orden-requerimiento')[0].reset();
+        this.limpiarTabla("listaDetalleOrden");
+        this.calcularMontosTotales();
+        this.fechaHoy();
+        document.querySelector("span[name='codigo_orden_interno']").textContent='';
+        document.querySelector("button[name='btn-imprimir-orden-pdf']").setAttribute("disabled",true);
+        sessionStorage.removeItem('reqCheckedList');
+        sessionStorage.removeItem('tipoOrden');
+        sessionStorage.removeItem('action');
+    }
 }
 
+
+function cancelarOrden() {
+    const ordenModel = new OrdenModel();
+    const ordenController = new OrdenCtrl(ordenModel);
+    const ordenView = new OrdenView(ordenController);
+    ordenView.restablecerFormularioOrden();   
+
+}

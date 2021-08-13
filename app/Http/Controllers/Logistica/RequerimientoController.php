@@ -117,6 +117,7 @@ class RequerimientoController extends Controller
                 'adm_estado_doc.bootstrap_color',
                 'alm_prod.descripcion as producto_descripcion',
                 'alm_prod.codigo as producto_codigo',
+                'alm_prod.codigo as producto_part_number',
                 'alm_und_medida.abreviatura',
                 'alm_prod.part_number'
             )

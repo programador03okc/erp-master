@@ -24,6 +24,7 @@ class ListOrdenesHeadExport implements FromCollection, WithHeadings
             "Cuadro costos",
             "Proveedor", 
             "Nro. orden", 
+            "Cod. softlink", 
             "Req/Cuadro comp.",
             "Estado",
             "Fecha vencimiento",

@@ -67,7 +67,7 @@ class OrdenModel {
     anularOrden(id){
         return new Promise(function(resolve, reject) {
             $.ajax({
-                type: 'GET',
+                type: 'PUT',
                 url:`anular/${id}`,
                 dataType: 'JSON',
                 success(response) {

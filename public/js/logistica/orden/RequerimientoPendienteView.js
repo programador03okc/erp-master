@@ -95,7 +95,8 @@ class RequerimientoPendienteView {
         // Abrir nuevo tab
         localStorage.setItem('idRequerimiento', idRequerimiento);
         let url ="/logistica/gestion-logistica/requerimiento/elaboracion/index";
-        var win = window.open(url, '_blank');
+        // var win = window.open(url, '_blank');
+        var win = location.href=url;
         // Cambiar el foco al nuevo tab (punto opcional)
         win.focus();
     }
@@ -361,12 +362,12 @@ class RequerimientoPendienteView {
         if (response.length > 0) {
             response.forEach(function (element) {
                 html += `<tr>
-                    <td style="border: none; text-align:center;">${(element.part_number != null ? element.part_number :'')}</td>
+                    <td style="border: none; text-align:center;">${(element.producto_part_number != null ? (element.producto_part_number?element.part_number:element.part_number) :'')} ${element.tiene_transformacion ==true?'<span class="label label-default">Con Transformación</span>':''}</td>
                     <td style="border: none; text-align:left;">${element.producto_descripcion != null ? element.producto_descripcion : (element.descripcion?element.descripcion:'')}</td>
                     <td style="border: none; text-align:center;">${element.abreviatura != null ? element.abreviatura : ''}</td>
                     <td style="border: none; text-align:center;">${element.cantidad >0 ? element.cantidad : ''}</td>
-                    <td style="border: none; text-align:center;">${(element.moneda_simbolo?element.moneda_simbolo:'')+(element.precio_unitario >0 ? Util.formatoNumero(element.precio_unitario,2) : '')}</td>
-                    <td style="border: none; text-align:center;">${(element.moneda_simbolo?element.moneda_simbolo:'')+(parseFloat(element.subtotal) > 0 ?Util.formatoNumero(element.subtotal,2) :Util.formatoNumero((element.cantidad * element.precio_unitario),2))}</td>
+                    <td style="border: none; text-align:center;">${(element.precio_unitario >0 ? ((element.moneda_simbolo?element.moneda_simbolo:((element.moneda_simbolo?element.moneda_simbolo:'')+'0.00')) + $.number(element.precio_unitario,2)) : (element.moneda_simbolo?element.moneda_simbolo:'')+'0.00')}</td>
+                    <td style="border: none; text-align:center;">${(parseFloat(element.subtotal) > 0 ? ((element.moneda_simbolo?element.moneda_simbolo:'') + $.number(element.subtotal,2)) :((element.moneda_simbolo?element.moneda_simbolo:'')+$.number((element.cantidad * element.precio_unitario),2)))}</td>
                     <td style="border: none; text-align:center;">${element.motivo != null ? element.motivo : ''}</td>
                     <td style="border: none; text-align:center;">${element.observacion != null ? element.observacion : ''}</td>
                     <td style="border: none; text-align:center;">${element.estado_doc != null ? element.estado_doc : ''}</td>
@@ -1158,7 +1159,7 @@ class RequerimientoPendienteView {
                     'render': function (data, type, row) {
                         let simboloMoneda=( row.moneda_costo_unitario_proveedor == 's')?'S/':(row.moneda_costo_unitario_proveedor=='d')?'$':row.moneda_costo_unitario_proveedor;
 
-                        return `${simboloMoneda}${row['costo_unitario_proveedor'] ? Util.formatoNumero(row['costo_unitario_proveedor'],2) : ''}`;
+                        return `${simboloMoneda}${row['costo_unitario_proveedor'] ? $.number(row['costo_unitario_proveedor'],2) : ''}`;
                     }
                 },
                 {
@@ -1168,7 +1169,7 @@ class RequerimientoPendienteView {
                 },
                 {
                     'render': function (data, type, row) {
-                        return `S/${row['flete_proveedor'] ? Util.formatoNumero(row['flete_proveedor'],2) : ''}`;
+                        return `S/${row['flete_proveedor'] ? $.number(row['flete_proveedor'],2) : ''}`;
                     }
                 },
                 {
@@ -1181,7 +1182,7 @@ class RequerimientoPendienteView {
                         let simboloMoneda=( row.moneda_costo_unitario_proveedor == 's')?'S/':(row.moneda_costo_unitario_proveedor=='d')?'$':row.moneda_costo_unitario_proveedor;
 
                     //    let costoUnitario = (Math.round((row.cantidad*row.costo_unitario_proveedor) * 100) / 100).toFixed(2);
-                       let costoUnitario = Util.formatoNumero((row.cantidad*row.costo_unitario_proveedor),2);
+                       let costoUnitario = $.number((row.cantidad*row.costo_unitario_proveedor),2);
                         return `${simboloMoneda}${costoUnitario}`;
                     }
                 },
@@ -1191,14 +1192,14 @@ class RequerimientoPendienteView {
                         let costoUnitario = row.cantidad*row.costo_unitario_proveedor;
                         let tipoCambio = row.tipo_cambio;
                         let costoUnitarioSoles = costoUnitario * tipoCambio;
-                        return `S/${Util.formatoNumero(costoUnitarioSoles,2)}`;
+                        return `S/${$.number(costoUnitarioSoles,2)}`;
                     }
                 },
                 {
                     'render': function (data, type, row) {
 
                         // let totalFleteProveedor= (Math.round((row.cantidad*row.flete_proveedor) * 100) / 100).toFixed(2);
-                        let totalFleteProveedor= Util.formatoNumero((row.cantidad*row.flete_proveedor),2);
+                        let totalFleteProveedor= $.number((row.cantidad*row.flete_proveedor),2);
                         return `S/${(totalFleteProveedor)}`;
                     }
                 },
@@ -1213,7 +1214,7 @@ class RequerimientoPendienteView {
                         let tipoCambio = row.tipo_cambio;
                         let costoUnitarioSoles = costoUnitario * tipoCambio;
                         let costoCompraMasFlete = costoUnitarioSoles + totalFleteProveedor;
-                        return `S/${Util.formatoNumero(costoCompraMasFlete,2)}`;
+                        return `S/${$.number(costoCompraMasFlete,2)}`;
                     }
                 },
                 {

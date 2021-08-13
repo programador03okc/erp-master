@@ -622,6 +622,7 @@ class RequerimientoPendienteCtrl{
         // console.log(reqTrueList);
         sessionStorage.setItem('reqCheckedList', JSON.stringify(reqTrueList));
         sessionStorage.setItem('tipoOrden', 'COMPRA');
+        sessionStorage.setItem('action', 'edition');
         let url ="/logistica/gestion-logistica/compras/ordenes/elaborar/index";
         var win = window.location.replace(url);
     }
