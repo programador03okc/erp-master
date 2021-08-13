@@ -234,10 +234,10 @@ $("#form-ver_requerimiento").on("submit", function(e) {
         detalle: listaItemsDetalle
     };
     console.log(data);
-    generar_transferencia_requerimiento(data);
+    generarTransferenciaRequerimiento(data);
 });
 
-function generar_transferencia_requerimiento(data) {
+function generarTransferenciaRequerimiento(data) {
     $.ajax({
         type: "POST",
         url: "generarTransferenciaRequerimiento",
@@ -245,7 +245,15 @@ function generar_transferencia_requerimiento(data) {
         dataType: "JSON",
         success: function(response) {
             console.log(response);
-            alert(response);
+            // alert(response);
+            Lobibox.notify("success", {
+                title: false,
+                size: "mini",
+                rounded: true,
+                sound: false,
+                delayIndicator: false,
+                msg: response
+            });
             $("#modal-ver_requerimiento").modal("hide");
             listarRequerimientosPendientes();
         }

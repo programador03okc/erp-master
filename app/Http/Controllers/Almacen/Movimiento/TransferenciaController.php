@@ -23,7 +23,7 @@ class TransferenciaController extends Controller
         $almacenes = $this->almacenesPorUsuario();
         $usuarios = GenericoAlmacenController::select_usuarios();
         $motivos_anu = GenericoAlmacenController::select_motivo_anu();
-        return view('almacen/transferencias/listar_transferencias', compact('clasificaciones', 'almacenes', 'usuarios', 'motivos_anu'));
+        return view('almacen/transferencias/listarTransferencias', compact('clasificaciones', 'almacenes', 'usuarios', 'motivos_anu'));
     }
 
     public function listarTransferenciasPorRecibir($destino)
@@ -1523,7 +1523,7 @@ class TransferenciaController extends Controller
                 $codigo = TransferenciaController::transferencia_nextId($alm);
 
                 if ($msj == '') {
-                    $msj = 'Se generó transferencia. ' . $codigo;
+                    $msj = 'Se ha creado la(s) transferencia(s): ' . $codigo . ' exitosamente.';
                 } else {
                     $msj .= ', ' . $codigo;
                 }

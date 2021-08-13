@@ -137,7 +137,7 @@ Gestión de Transferencias
                                 <div class="col-md-2"><label>Almacén Destino:</label></div>
                                 <div class="col-md-4">
                                     <select class="form-control" name="id_almacen_dest_recibida" onChange="listarTransferenciasRecibidas();">
-                                        <option value="0" selected>Elija una opción</option>
+                                        <option value="0" selected>Mostrar todos</option>
                                         @foreach ($almacenes as $alm)
                                         <option value="{{$alm->id_almacen}}">{{$alm->descripcion}}</option>
                                         @endforeach
