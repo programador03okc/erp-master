@@ -39,13 +39,13 @@ Gestión de Transferencias
                                         <thead>
                                             <tr>
                                                 <th hidden></th>
-                                                <th>Código</th>
-                                                <th>Concepto</th>
-                                                <th>Sede Req</th>
-                                                <th>Entidad/Cliente</th>
-                                                <th>Responsable</th>
-                                                <th>OCAM</th>
-                                                <th>C.P.</th>
+                                                <th width="10%">Código</th>
+                                                <th width="20%">Concepto</th>
+                                                <th width="10%">Sede Req</th>
+                                                <th width="25%">Entidad/Cliente</th>
+                                                <th width="10%">Responsable</th>
+                                                <th width="15%">OCAM</th>
+                                                <th width="5%">C.P.</th>
                                                 <th width="5%">Acción</th>
                                             </tr>
                                         </thead>
@@ -76,21 +76,21 @@ Gestión de Transferencias
                                             <tr>
                                                 <th hidden></th>
                                                 <th></th>
-                                                <th>Código</th>
-                                                <th>Fecha Registro</th>
-                                                <th>Almacén Origen</th>
-                                                <th>Almacén Destino</th>
-                                                <th>Codigo Req.</th>
-                                                <th>Concepto</th>
-                                                <th>Sede que Solicita</th>
-                                                <th>Elaborado Por</th>
-                                                <th width="10%">Acción</th>
+                                                <th width="10%">Código</th>
+                                                <!-- <th width="10%">Fecha Registro</th> -->
+                                                <th width="15%">Almacén Origen</th>
+                                                <th width="15%">Almacén Destino</th>
+                                                <th width="10%">Codigo Req.</th>
+                                                <th width="25%">Concepto</th>
+                                                <th width="10%">Sede Req.</th>
+                                                <th width="10%">Elaborado Por</th>
+                                                <th width="6%">Acción</th>
                                             </tr>
                                         </thead>
                                         <tbody></tbody>
                                     </table>
                                     @if(Auth::user()->tieneAccion(91))
-                                    <button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Crear Guía / Salida" onClick="open_guia_transferencia_create();">Generar Guía</button>
+                                    <button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Crear Guía / Salida" onClick="openGuiaTransferenciaCreate();">Generar Guía</button>
                                     @endif
                                 </div>
                             </div>
@@ -101,9 +101,8 @@ Gestión de Transferencias
                             <div class="row">
                                 <div class="col-md-2"><label>Almacén Destino:</label></div>
                                 <div class="col-md-4">
-                                    <!-- <h5>Almacén Destino</h5> -->
-                                    <select class="form-control" name="id_almacen_destino_lista" onChange="listarTransferenciasPendientes();">
-                                        <option value="0" selected>Elija una opción</option>
+                                    <select class="form-control" name="id_almacen_destino_lista" onChange="listarTransferenciasPorRecibir();">
+                                        <option value="0" selected>Mostrar todos</option>
                                         @foreach ($almacenes as $alm)
                                         <option value="{{$alm->id_almacen}}">{{$alm->descripcion}}</option>
                                         @endforeach
@@ -137,9 +136,8 @@ Gestión de Transferencias
                             <div class="row">
                                 <div class="col-md-2"><label>Almacén Destino:</label></div>
                                 <div class="col-md-4">
-                                    <!-- <h5>Almacén Destino</h5> -->
                                     <select class="form-control" name="id_almacen_dest_recibida" onChange="listarTransferenciasRecibidas();">
-                                        <option value="0" selected>Elija una opción</option>
+                                        <option value="0" selected>Mostrar todos</option>
                                         @foreach ($almacenes as $alm)
                                         <option value="{{$alm->id_almacen}}">{{$alm->descripcion}}</option>
                                         @endforeach
@@ -177,7 +175,6 @@ Gestión de Transferencias
         </div>
     </div>
 </div>
-<!-- @include('almacen.guias.guia_compraModal') -->
 @include('almacen.guias.guia_com_ver')
 @include('almacen.transferencias.transferenciaCreate')
 @include('almacen.transferencias.transferenciaRecibir')
@@ -207,13 +204,12 @@ Gestión de Transferencias
 <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
 <script src="{{ asset('template/plugins/jquery-datatables-checkboxes/js/dataTables.checkboxes.min.js') }}"></script>
 
-<script src="{{ asset('js/almacen/transferencias/listar_transferencias.js')}}"></script>
+<script src="{{ asset('js/almacen/transferencias/listarTransferencias.js')}}"></script>
+<script src="{{ asset('js/almacen/transferencias/transferenciaCreate.js')}}"></script>
 <script src="{{ asset('js/almacen/transferencias/transferenciaRecibir.js')}}"></script>
 <script src="{{ asset('js/almacen/transferencias/transferenciaEnviar.js')}}"></script>
 <script src="{{ asset('js/almacen/transferencias/transportistaModal.js')}}"></script>
 <!-- <script src="{{ asset('js/logistica/requerimiento/historial.js')}}"></script> -->
-<!-- <script src="{{ asset('js/almacen/guia/guia_compraModal.js')}}"></script> -->
-<script src="{{ asset('js/almacen/transferencias/transferenciaCreate.js')}}"></script>
 <!-- <script src="{{ asset('js/almacen/guia/guia_com_det_series.js')}}"></script> -->
 <script src="{{ asset('js/almacen/guia/guia_ven_series.js')}}"></script>
 <script src="{{ asset('js/tesoreria/facturacion/archivosMgcp.js')}}"></script>

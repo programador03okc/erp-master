@@ -2162,7 +2162,7 @@ class DistribucionController extends Controller
         }
     }
 
-    public function mostrar_transportistas()
+    public function mostrarTransportistas()
     {
         $data = DB::table('contabilidad.transportistas')
             ->select('adm_contri.id_contribuyente', 'adm_contri.nro_documento', 'adm_contri.razon_social')
