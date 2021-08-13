@@ -328,15 +328,17 @@ function listarTransferenciasPorRecibir() {
                     render: function(data, type, row) {
                         if (valor_permiso == "1") {
                             return row["id_guia_ven"] !== null
-                                ? `<button type="button" class="atender btn btn-success boton" data-toggle="tooltip" 
-                            data-placement="bottom" title="Recibir" >
-                            <i class="fas fa-share"></i></button>
-                            <button type="button" class="salida btn btn-primary boton" data-toggle="tooltip" 
-                            data-placement="bottom" data-id-salida="${row["id_salida"]}" title="Imprimir Salida" >
-                            <i class="fas fa-file-alt"></i></button>
-                            <button type="button" class="anularSalida btn btn-danger boton" data-toggle="tooltip" 
-                            data-placement="bottom" data-id="${row["id_guia_ven"]}" data-id-salida="${row["id_salida"]}" title="Anular Salida" >
-                            <i class="fas fa-trash"></i></button>`
+                                ? `<div style="display: flex;text-align:center;">
+                                <button type="button" class="atender btn btn-success boton btn-flat" data-toggle="tooltip" 
+                                data-placement="bottom" title="Recibir" >
+                                <i class="fas fa-share"></i></button>
+                                <button type="button" class="salida btn btn-primary boton btn-flat" data-toggle="tooltip" 
+                                data-placement="bottom" data-id-salida="${row["id_salida"]}" title="Imprimir Salida" >
+                                <i class="fas fa-file-alt"></i></button>
+                                <button type="button" class="anularSalida btn btn-danger boton btn-flat" data-toggle="tooltip" 
+                                data-placement="bottom" data-id="${row["id_guia_ven"]}" data-id-salida="${row["id_salida"]}" title="Anular Salida" >
+                                <i class="fas fa-trash"></i></button>
+                            </div>`
                                 : "";
                         } else {
                             return "";
@@ -414,14 +416,14 @@ $("#form-guia_ven_obs").on("submit", function(e) {
     e.preventDefault();
     var data = $(this).serialize();
     console.log(data);
-    anular_transferencia_salida(data);
+    anularTransferenciaSalida(data);
 });
 
-function anular_transferencia_salida(data) {
+function anularTransferenciaSalida(data) {
     $("#submitGuiaVenObs").attr("disabled", "true");
     $.ajax({
         type: "POST",
-        url: "anular_transferencia_salida",
+        url: "anularTransferenciaSalida",
         data: data,
         dataType: "JSON",
         success: function(response) {
@@ -452,7 +454,7 @@ function listarTransferenciasRecibidas() {
             language: vardataTables[0],
             // "scrollX": true,
             destroy: true,
-            ajax: "listar_transferencias_recibidas/" + destino,
+            ajax: "listarTransferenciasRecibidas/" + destino,
             // 'ajax': {
             //     url:'listar_transferencias_pendientes/'+alm_origen+'/'+alm_destino,
             //     dataSrc:''
@@ -486,7 +488,7 @@ function listarTransferenciasRecibidas() {
                     render: function(data, type, row) {
                         if (row["codigo_req"] !== null) {
                             return (
-                                '<label class="lbl-codigo" title="Abrir Guía" onClick="abrir_requerimiento(' +
+                                '<label class="lbl-codigo" title="Abrir Guía" onClick="abrirRequerimiento(' +
                                 row["id_requerimiento"] +
                                 ')">' +
                                 row["codigo_req"] +
@@ -494,7 +496,7 @@ function listarTransferenciasRecibidas() {
                             );
                         } else if (row["codigo_req_directo"] !== null) {
                             return (
-                                '<label class="lbl-codigo" title="Abrir Guía" onClick="abrir_requerimiento(' +
+                                '<label class="lbl-codigo" title="Abrir Guía" onClick="abrirRequerimiento(' +
                                 row["id_requerimiento"] +
                                 ')">' +
                                 row["codigo_req_directo"] +
@@ -519,19 +521,21 @@ function listarTransferenciasRecibidas() {
                 {
                     render: function(data, type, row) {
                         if (valor_permiso == "1") {
-                            return `<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
+                            return `<div style="display: flex;text-align:center;">
+                            <button type="button" class="detalle btn btn-primary boton btn-flat" data-toggle="tooltip" 
                                 data-placement="bottom" title="Ver Detalle" data-id="${row["id_transferencia"]}" 
                                 data-cod="${row["codigo"]}" data-guia="${row["guia_com"]}" 
                                 data-origen="${row["alm_origen_descripcion"]}" data-destino="${row["alm_destino_descripcion"]}">
                                 <i class="fas fa-list-ul"></i></button>
-                            <button type="button" class="ingreso btn btn-warning boton" data-toggle="tooltip" 
+                            <button type="button" class="ingreso btn btn-warning boton btn-flat" data-toggle="tooltip" 
                                 data-placement="bottom" data-id-ingreso="${row["id_ingreso"]}" title="Ver Ingreso" >
                                 <i class="fas fa-file-alt"></i></button>
-                            <button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" 
+                            <button type="button" class="anular btn btn-danger boton btn-flat" data-toggle="tooltip" 
                                 data-placement="bottom" data-id="${row["id_transferencia"]}" data-guia="${row["id_guia_com"]}" data-ing="${row["id_ingreso"]}" title="Anular" >
-                                <i class="fas fa-trash"></i></button>`;
+                                <i class="fas fa-trash"></i></button>
+                            </div>`;
                         } else {
-                            return `<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
+                            return `<button type="button" class="detalle btn btn-primary boton btn-flat" data-toggle="tooltip" 
                             data-placement="bottom" title="Ver Detalle" data-id="${row["id_transferencia"]}" 
                             data-cod="${row["codigo"]}" data-guia="${row["guia_com"]}" 
                             data-origen="${row["alm_origen_descripcion"]}" data-destino="${row["alm_destino_descripcion"]}">
@@ -585,7 +589,7 @@ $("#listaTransferenciasRecibidas tbody").on(
 function detalle_transferencia(id_transferencia) {
     $.ajax({
         type: "GET",
-        url: "listar_transferencia_detalle/" + id_transferencia,
+        url: "listarTransferenciaDetalle/" + id_transferencia,
         dataType: "JSON",
         success: function(response) {
             console.log(response);
@@ -664,14 +668,14 @@ $("#form-obs").on("submit", function(e) {
     e.preventDefault();
     var data = $(this).serialize();
     console.log(data);
-    anular_transferencia_ingreso(data);
+    anularTransferenciaIngreso(data);
 });
 
-function anular_transferencia_ingreso(data) {
+function anularTransferenciaIngreso(data) {
     $("#submitGuiaObs").attr("disabled", "true");
     $.ajax({
         type: "POST",
-        url: "anular_transferencia_ingreso",
+        url: "anularTransferenciaIngreso",
         data: data,
         dataType: "JSON",
         success: function(response) {
@@ -693,25 +697,7 @@ function anular_transferencia_ingreso(data) {
     });
 }
 
-// function abrir_guia_venta(id_guia_venta) {
-//     // Abrir nuevo tab
-//     localStorage.setItem("id_guia_ven", id_guia_venta);
-//     let url = "/logistica/almacen/movimientos/guias-venta/index";
-//     var win = window.open(url, "_blank");
-//     // Cambiar el foco al nuevo tab (punto opcional)
-//     win.focus();
-// }
-
-// function abrir_guia_compra(id_guia_compra) {
-//     // Abrir nuevo tab
-//     localStorage.setItem("id_guia_com", id_guia_compra);
-//     let url = "/logistica/almacen/movimientos/guias-compra/index";
-//     var win = window.open(url, "_blank");
-//     // Cambiar el foco al nuevo tab (punto opcional)
-//     win.focus();
-// }
-
-function abrir_requerimiento(id_requerimiento) {
+function abrirRequerimiento(id_requerimiento) {
     // Abrir nuevo tab
     localStorage.setItem("idRequerimiento", id_requerimiento);
     let url = "/logistica/gestion-logistica/requerimiento/elaboracion/index";

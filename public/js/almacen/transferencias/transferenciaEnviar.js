@@ -30,17 +30,13 @@ function openGenerarGuia(data) {
     } else {
         $("[name=operacion]").val("SALIDA POR TRANSFERENCIA");
     }
-    // cargar_almacenes(data.id_sede_destino, 'id_almacen_destino');
-    // if (data.id_almacen_destino !== null){
-    //     $('[name=id_almacen_destino]').val(data.id_almacen_destino);
-    // }
     listarDetalleTransferencia(data.id_transferencia);
     id_trans_seleccionadas.push(data.id_transferencia);
     // var tp_doc_almacen = 2;//guia venta
     // next_serie_numero(data.sede_orden,tp_doc_almacen);
 }
 
-function open_guia_transferencia_create() {
+function openGuiaTransferenciaCreate() {
     var alm_origen = null;
     var alm_destino = null;
     var alm_origen_des = null;
@@ -118,6 +114,8 @@ function listarDetalleTransferencia(id_transferencia) {
                 mostrarDetalleTransferencia();
             }
         }).fail(function(jqXHR, textStatus, errorThrown) {
+            //alert("Hubo un probe")
+            //alert("Fail");
             console.log(jqXHR);
             console.log(textStatus);
             console.log(errorThrown);
@@ -218,31 +216,31 @@ function mostrarDetalleTransferencia() {
 //     });
 // }
 
-function next_serie_numero(id_sede, id_tp_doc) {
-    if (id_sede !== null && id_tp_doc !== null) {
-        $.ajax({
-            type: "GET",
-            url: "next_serie_numero_guia/" + id_sede + "/" + id_tp_doc,
-            dataType: "JSON",
-            success: function(response) {
-                console.log(response);
-                if (response !== "") {
-                    $("[name=serie]").val(response.serie);
-                    $("[name=numero]").val(response.numero);
-                    $("[name=id_serie_numero]").val(response.id_serie_numero);
-                } else {
-                    $("[name=serie]").val("");
-                    $("[name=numero]").val("");
-                    $("[name=id_serie_numero]").val("");
-                }
-            }
-        }).fail(function(jqXHR, textStatus, errorThrown) {
-            console.log(jqXHR);
-            console.log(textStatus);
-            console.log(errorThrown);
-        });
-    }
-}
+// function next_serie_numero(id_sede, id_tp_doc) {
+//     if (id_sede !== null && id_tp_doc !== null) {
+//         $.ajax({
+//             type: "GET",
+//             url: "next_serie_numero_guia/" + id_sede + "/" + id_tp_doc,
+//             dataType: "JSON",
+//             success: function(response) {
+//                 console.log(response);
+//                 if (response !== "") {
+//                     $("[name=serie]").val(response.serie);
+//                     $("[name=numero]").val(response.numero);
+//                     $("[name=id_serie_numero]").val(response.id_serie_numero);
+//                 } else {
+//                     $("[name=serie]").val("");
+//                     $("[name=numero]").val("");
+//                     $("[name=id_serie_numero]").val("");
+//                 }
+//             }
+//         }).fail(function(jqXHR, textStatus, errorThrown) {
+//             console.log(jqXHR);
+//             console.log(textStatus);
+//             console.log(errorThrown);
+//         });
+//     }
+// }
 
 $("#form-transferenciaGuia").on("submit", function(e) {
     console.log("submit_transferencia");
@@ -308,7 +306,7 @@ function salida_transferencia(data) {
         $("#submit_transferencia").attr("disabled", "true");
         $.ajax({
             type: "POST",
-            url: "guardar_salida_transferencia",
+            url: "guardarSalidaTransferencia",
             data: data,
             dataType: "JSON",
             success: function(response) {

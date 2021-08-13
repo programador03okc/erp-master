@@ -1,7 +1,7 @@
 @section('sidebar')
 <ul class="sidebar-menu" data-widget="tree">
     <li><a href="{{route('almacen.index')}}"><i class="fas fa-tachometer-alt"></i> <span>Almacén</span></a></li>
-    
+
     @if(Auth::user()->tieneSubModulo(6))
     <li class="treeview">
         <a href="#">
@@ -48,7 +48,7 @@
     </li>
     @endif
     <!-- @if(Auth::user()->tieneSubModulo(20)) -->
-            <!-- <li class="treeview">
+    <!-- <li class="treeview">
                 <a href="#"><i class="fab fa-stack-overflow"></i> Control de Stock
                     <span class="pull-right-container">
                     <i class="fa fa-angle-left pull-right"></i>
@@ -63,7 +63,7 @@
                 @endif
                 </ul>
             </li> -->
-            <!-- @endif -->
+    <!-- @endif -->
     @if(Auth::user()->tieneSubModulo(21))
     <li class="treeview">
         <a href="#">
@@ -77,19 +77,13 @@
             <li><a href="{{route('almacen.movimientos.pendientes-salida.index')}}"> Pendientes de Salida </a></li>
             @endif
             <li><a href="{{route('almacen.movimientos.prorrateo.index')}}"> Prorrateo de Costos </a></li>
-            <!-- @if(Auth::user()->tieneAplicacion(84))
-            <li><a href="{{route('almacen.movimientos.guias-compra.index')}}"> Compras - Ingresos </a></li>
-            @endif
-            @if(Auth::user()->tieneAplicacion(85))
-            <li><a href="{{route('almacen.movimientos.guias-venta.index')}}"> Ventas - Salidas </a></li>
-            @endif -->
         </ul>
     </li>
     @endif
     @if(Auth::user()->tieneSubModulo(40))
     <li class="treeview">
         <a href="#">
-        <i class="fas fa-exchange-alt"></i> <span>Transferencias</span> <i class="fa fa-angle-left pull-right"></i>
+            <i class="fas fa-exchange-alt"></i> <span>Transferencias</span> <i class="fa fa-angle-left pull-right"></i>
         </a>
         <ul class="treeview-menu">
             @if(Auth::user()->tieneAplicacion(86))
@@ -101,7 +95,7 @@
     @if(Auth::user()->tieneSubModulo(41))
     <li class="treeview">
         <a href="#">
-        <i class="fas fa-code-branch"></i> <span>Transformación</span> <i class="fa fa-angle-left pull-right"></i>
+            <i class="fas fa-code-branch"></i> <span>Transformación</span> <i class="fa fa-angle-left pull-right"></i>
         </a>
         <ul class="treeview-menu">
             @if(Auth::user()->tieneAplicacion(87))

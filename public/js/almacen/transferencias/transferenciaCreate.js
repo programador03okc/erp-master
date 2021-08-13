@@ -246,8 +246,8 @@ function generar_transferencia_requerimiento(data) {
         success: function(response) {
             console.log(response);
             alert(response);
-            // listarTransferenciasPorEnviar();
             $("#modal-ver_requerimiento").modal("hide");
+            listarRequerimientosPendientes();
         }
     }).fail(function(jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);

@@ -90,7 +90,7 @@ Gestión de Transferencias
                                         <tbody></tbody>
                                     </table>
                                     @if(Auth::user()->tieneAccion(91))
-                                    <button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Crear Guía / Salida" onClick="open_guia_transferencia_create();">Generar Guía</button>
+                                    <button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Crear Guía / Salida" onClick="openGuiaTransferenciaCreate();">Generar Guía</button>
                                     @endif
                                 </div>
                             </div>
@@ -101,8 +101,8 @@ Gestión de Transferencias
                             <div class="row">
                                 <div class="col-md-2"><label>Almacén Destino:</label></div>
                                 <div class="col-md-4">
-                                    <select class="form-control" name="id_almacen_destino_lista" onChange="listarTransferenciasPendientes();">
-                                        <option value="0" selected>Elija una opción</option>
+                                    <select class="form-control" name="id_almacen_destino_lista" onChange="listarTransferenciasPorRecibir();">
+                                        <option value="0" selected>Mostrar todos</option>
                                         @foreach ($almacenes as $alm)
                                         <option value="{{$alm->id_almacen}}">{{$alm->descripcion}}</option>
                                         @endforeach
@@ -204,7 +204,7 @@ Gestión de Transferencias
 <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
 <script src="{{ asset('template/plugins/jquery-datatables-checkboxes/js/dataTables.checkboxes.min.js') }}"></script>
 
-<script src="{{ asset('js/almacen/transferencias/listar_transferencias.js')}}"></script>
+<script src="{{ asset('js/almacen/transferencias/listarTransferencias.js')}}"></script>
 <script src="{{ asset('js/almacen/transferencias/transferenciaCreate.js')}}"></script>
 <script src="{{ asset('js/almacen/transferencias/transferenciaRecibir.js')}}"></script>
 <script src="{{ asset('js/almacen/transferencias/transferenciaEnviar.js')}}"></script>

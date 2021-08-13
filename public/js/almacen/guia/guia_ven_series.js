@@ -37,7 +37,7 @@ function listarSeries(id_producto) {
     console.log("id_producto" + id_producto);
     $.ajax({
         type: "GET",
-        url: "listar_series_guia_ven/" + id_producto,
+        url: "listarSeriesGuiaVen/" + id_producto,
         dataType: "JSON",
         success: function(response) {
             console.log(response);
