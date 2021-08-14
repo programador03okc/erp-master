@@ -215,26 +215,40 @@ $("#detalleRequerimiento tbody").on("click", ".quitar", function() {
 
 $("#form-ver_requerimiento").on("submit", function(e) {
     e.preventDefault();
-    var data = $(this).serialize();
-    console.log(data);
-    var id = $("[name=id_requerimiento]").val();
-    var listaItemsDetalle = [];
 
-    detalle.forEach(element => {
-        nuevo = {
-            id_detalle_requerimiento: element.id_detalle_requerimiento,
-            id_producto: element.id_producto,
-            cantidad: element.cantidad,
-            id_almacen_reserva: element.id_almacen_reserva
-        };
-        listaItemsDetalle.push(nuevo);
+    Swal.fire({
+        title: "Esta seguro que desea guardar la transferencia ?",
+        // text: "No podrás revertir esto.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#00a65a", //"#3085d6",
+        cancelButtonColor: "#d33",
+        cancelButtonText: "Cancelar",
+        confirmButtonText: "Si, Guardar"
+    }).then(result => {
+        if (result.isConfirmed) {
+            var data = $(this).serialize();
+            console.log(data);
+            var id = $("[name=id_requerimiento]").val();
+            var listaItemsDetalle = [];
+
+            detalle.forEach(element => {
+                nuevo = {
+                    id_detalle_requerimiento: element.id_detalle_requerimiento,
+                    id_producto: element.id_producto,
+                    cantidad: element.cantidad,
+                    id_almacen_reserva: element.id_almacen_reserva
+                };
+                listaItemsDetalle.push(nuevo);
+            });
+            var data = {
+                id_requerimiento: id,
+                detalle: listaItemsDetalle
+            };
+            console.log(data);
+            generarTransferenciaRequerimiento(data);
+        }
     });
-    var data = {
-        id_requerimiento: id,
-        detalle: listaItemsDetalle
-    };
-    console.log(data);
-    generarTransferenciaRequerimiento(data);
 });
 
 function generarTransferenciaRequerimiento(data) {
