@@ -203,6 +203,7 @@ Gestión de Transferencias
 <script src="{{ asset('template/plugins/iCheck/icheck.min.js') }}"></script>
 <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
 <script src="{{ asset('template/plugins/jquery-datatables-checkboxes/js/dataTables.checkboxes.min.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
 
 <script src="{{ asset('js/almacen/transferencias/listarTransferencias.js')}}"></script>
 <script src="{{ asset('js/almacen/transferencias/transferenciaCreate.js')}}"></script>

@@ -252,6 +252,7 @@ function generarTransferenciaRequerimiento(data) {
                 rounded: true,
                 sound: false,
                 delayIndicator: false,
+                // width: 500,
                 msg: response
             });
             $("#modal-ver_requerimiento").modal("hide");

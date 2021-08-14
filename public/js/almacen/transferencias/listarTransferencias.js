@@ -58,7 +58,33 @@ function listarRequerimientosPendientes() {
         buttons: vardataTables[2],
         language: vardataTables[0],
         destroy: true,
-        ajax: "listarRequerimientos",
+        // ajax: "listarRequerimientos",
+        ajax: {
+            url: "listarRequerimientos",
+            type: "GET",
+            beforeSend: data => {
+                var customElement = $("<div>", {
+                    css: {
+                        "font-size": "16px",
+                        "text-align": "center",
+                        padding: "0px",
+                        "margin-top": "50%"
+                    },
+                    class: "your-custom-class",
+                    text: "Cargando Requerimientos..."
+                });
+
+                $("#listaRequerimientos").LoadingOverlay("show", {
+                    imageAutoResize: true,
+                    progress: true,
+                    custom: customElement,
+                    imageColor: "#3c8dbc"
+                });
+            }
+        },
+        initComplete: function(settings, json) {
+            $("#listaRequerimientos").LoadingOverlay("hide", true);
+        },
         columns: [
             { data: "id_requerimiento" },
             {
@@ -264,25 +290,41 @@ $("#listaTransferenciasPorEnviar tbody").on(
     "button.anular",
     function() {
         var id = $(this).data("id");
-        var rspta = confirm(
-            "¿Está seguro que desea anular ésta transferencia?"
-        );
 
-        if (rspta) {
-            $.ajax({
-                type: "GET",
-                url: "anular_transferencia/" + id,
-                dataType: "JSON",
-                success: function(response) {
-                    alert("Transferencia anulada con éxito");
-                    listarTransferenciasPorEnviar();
-                }
-            }).fail(function(jqXHR, textStatus, errorThrown) {
-                console.log(jqXHR);
-                console.log(textStatus);
-                console.log(errorThrown);
-            });
-        }
+        Swal.fire({
+            title: "¿Está seguro que desea anular ésta transferencia?",
+            text: "No podrás revertir esto.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            cancelButtonText: "Cancelar",
+            confirmButtonText: "Si, anular"
+        }).then(result => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: "GET",
+                    url: "anular_transferencia/" + id,
+                    dataType: "JSON",
+                    success: function(response) {
+                        Lobibox.notify("success", {
+                            title: false,
+                            size: "mini",
+                            rounded: true,
+                            sound: false,
+                            delayIndicator: false,
+                            // width: 500,
+                            msg: "Transferencia anulada con éxito."
+                        });
+                        listarTransferenciasPorEnviar();
+                    }
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                });
+            }
+        });
     }
 );
 
@@ -392,21 +434,30 @@ $("#listaTransferenciasPorRecibir tbody").on(
         var idGuia = $(this).data("id");
         console.log(idSalida);
         if (idSalida !== "") {
-            var c = confirm(
-                "¿Está seguro que desea anular la salida por transferencia?"
-            );
-            if (c) {
-                $("#modal-guia_ven_obs").modal({
-                    show: true
-                });
+            Swal.fire({
+                title:
+                    "Esta seguro que desea anular la salida por transferencia?",
+                text: "No podrás revertir esto.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                cancelButtonText: "Cancelar",
+                confirmButtonText: "Si, anular"
+            }).then(result => {
+                if (result.isConfirmed) {
+                    $("#modal-guia_ven_obs").modal({
+                        show: true
+                    });
 
-                $("[name=id_salida]").val(idSalida);
-                // $('[name=id_transferencia]').val('');
-                $("[name=id_guia_ven]").val(idGuia);
-                $("[name=observacion_guia_ven]").val("");
+                    $("[name=id_salida]").val(idSalida);
+                    // $('[name=id_transferencia]').val('');
+                    $("[name=id_guia_ven]").val(idGuia);
+                    $("[name=observacion_guia_ven]").val("");
 
-                $("#submitGuiaVenObs").removeAttr("disabled");
-            }
+                    $("#submitGuiaVenObs").removeAttr("disabled");
+                }
+            });
         }
     }
 );
@@ -428,10 +479,28 @@ function anularTransferenciaSalida(data) {
         dataType: "JSON",
         success: function(response) {
             if (response.length > 0) {
-                alert(response);
+                // alert(response);
+                Lobibox.notify("warning", {
+                    title: false,
+                    size: "mini",
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    // width: 500,
+                    msg: response
+                });
                 $("#modal-guia_ven_obs").modal("hide");
             } else {
-                alert("Salida por Transferencia anulada con éxito");
+                Lobibox.notify("success", {
+                    title: false,
+                    size: "mini",
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    // width: 500,
+                    msg:
+                        "Salida anulada con éxito. La transferencia ha regresado a la lista de pendientes de envío."
+                });
                 $("#modal-guia_ven_obs").modal("hide");
                 listarTransferenciasPorRecibir();
             }
@@ -646,19 +715,30 @@ $("#listaTransferenciasRecibidas tbody").on(
             id_mov_alm !== null &&
             id_guia !== null
         ) {
-            var c = confirm("¿Está seguro que desea anular la transferencia?");
-            if (c) {
-                $("#modal-guia_com_obs").modal({
-                    show: true
-                });
+            Swal.fire({
+                title:
+                    "¿Está seguro que desea anular el ingreso por transferencia?",
+                text: "No podrás revertir esto.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                cancelButtonText: "Cancelar",
+                confirmButtonText: "Si, anular"
+            }).then(result => {
+                if (result.isConfirmed) {
+                    $("#modal-guia_com_obs").modal({
+                        show: true
+                    });
 
-                $("[name=id_mov_alm]").val(id_mov_alm);
-                $("[name=id_transferencia]").val(id_transferencia);
-                $("[name=id_guia_com]").val(id_guia);
-                $("[name=observacion]").val("");
+                    $("[name=id_mov_alm]").val(id_mov_alm);
+                    $("[name=id_transferencia]").val(id_transferencia);
+                    $("[name=id_guia_com]").val(id_guia);
+                    $("[name=observacion]").val("");
 
-                $("#submitGuiaObs").removeAttr("disabled");
-            }
+                    $("#submitGuiaObs").removeAttr("disabled");
+                }
+            });
         }
     }
 );
@@ -680,10 +760,27 @@ function anularTransferenciaIngreso(data) {
         dataType: "JSON",
         success: function(response) {
             if (response.length > 0) {
-                alert(response);
+                Lobibox.notify("warning", {
+                    title: false,
+                    size: "mini",
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    // width: 500,
+                    msg: response
+                });
                 $("#modal-guia_com_obs").modal("hide");
             } else {
-                alert("Ingreso por Transferencia anulado con éxito");
+                Lobibox.notify("success", {
+                    title: false,
+                    size: "mini",
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    // width: 500,
+                    msg:
+                        "Ingreso anulado con éxito. La transferencia ha regresado a la lista de pendientes de recepción."
+                });
                 $("#modal-guia_com_obs").modal("hide");
                 $("#listaTransferenciasRecibidas")
                     .DataTable()

@@ -143,26 +143,49 @@ function recibir() {
             "&detalle=" +
             JSON.stringify(detalle);
         console.log(data);
-        $("#submit_transferencia").attr("disabled", "true");
-        $.ajax({
-            type: "POST",
-            url: "guardarIngresoTransferencia",
-            data: data,
-            dataType: "JSON",
-            success: function(response) {
-                console.log(response);
-                if (response > 0) {
-                    alert("Ingreso generado con éxito");
-                    $("#modal-transferencia_detalle").modal("hide");
-                    listarTransferenciasPorRecibir();
-                    // var id = encode5t(response);
-                    // window.open('imprimir_ingreso/'+id);
-                }
+
+        Swal.fire({
+            title: "Esta seguro que desea guardar la guía de ingreso ?",
+            // text: "No podrás revertir esto.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#00a65a", //"#3085d6",
+            cancelButtonColor: "#d33",
+            cancelButtonText: "Cancelar",
+            confirmButtonText: "Si, Guardar"
+        }).then(result => {
+            if (result.isConfirmed) {
+                $("#submit_transferencia").attr("disabled", "true");
+                $.ajax({
+                    type: "POST",
+                    url: "guardarIngresoTransferencia",
+                    data: data,
+                    dataType: "JSON",
+                    success: function(response) {
+                        console.log(response);
+                        if (response > 0) {
+                            // alert("Ingreso generado con éxito");
+                            Lobibox.notify("success", {
+                                title: false,
+                                size: "mini",
+                                rounded: true,
+                                sound: false,
+                                delayIndicator: false,
+                                // width: 500,
+                                msg: "Ingreso a almacén generado con éxito."
+                            });
+                            $("#modal-transferencia_detalle").modal("hide");
+                            listarTransferenciasPorRecibir();
+                            // var id = encode5t(response);
+                            // window.open('imprimir_ingreso/'+id);
+                        }
+                    }
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                });
             }
-        }).fail(function(jqXHR, textStatus, errorThrown) {
-            console.log(jqXHR);
-            console.log(textStatus);
-            console.log(errorThrown);
         });
     } else {
         $("#modal-transferencia_detalle").modal("hide");
