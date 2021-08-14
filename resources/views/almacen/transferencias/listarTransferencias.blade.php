@@ -71,6 +71,12 @@ Gestión de Transferencias
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
+                                    <div style="display: flex;justify-content: flex-end;">
+                                        @if(Auth::user()->tieneAccion(91))
+                                        <button type="button" class="btn btn-success btn-flat" data-toggle="tooltip" data-placement="bottom" title="Crear Guía con varias transferencias" onClick="openGuiaTransferenciaCreate();">
+                                            Generar Guía</button>
+                                        @endif
+                                    </div>
                                     <table class="mytable table table-condensed table-bordered table-okc-view" id="listaTransferenciasPorEnviar">
                                         <thead>
                                             <tr>
@@ -89,9 +95,7 @@ Gestión de Transferencias
                                         </thead>
                                         <tbody></tbody>
                                     </table>
-                                    @if(Auth::user()->tieneAccion(91))
-                                    <button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Crear Guía / Salida" onClick="openGuiaTransferenciaCreate();">Generar Guía</button>
-                                    @endif
+
                                 </div>
                             </div>
                         </form>
@@ -115,14 +119,14 @@ Gestión de Transferencias
                                         <thead>
                                             <tr>
                                                 <th hidden></th>
-                                                <th>Fecha Guía</th>
-                                                <th>Guía Venta</th>
-                                                <th>Almacén Origen</th>
-                                                <th>Almacén Destino</th>
-                                                <th>Responsable Origen</th>
-                                                <th>Responsable Destino</th>
-                                                <th>Estado</th>
-                                                <th width="10%">Acción</th>
+                                                <th width="10%">Fecha Guía</th>
+                                                <th width="10%">Guía Venta</th>
+                                                <th width="20%">Almacén Origen</th>
+                                                <th width="20%">Almacén Destino</th>
+                                                <th width="14%">Responsable Origen</th>
+                                                <th width="14%">Responsable Destino</th>
+                                                <th width="8%">Estado</th>
+                                                <th width="8%">Acción</th>
                                             </tr>
                                         </thead>
                                         <tbody></tbody>

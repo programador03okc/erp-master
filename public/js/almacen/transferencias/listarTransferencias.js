@@ -59,6 +59,7 @@ function listarRequerimientosPendientes() {
         language: vardataTables[0],
         destroy: true,
         // ajax: "listarRequerimientos",
+        pageLength: 25,
         ajax: {
             url: "listarRequerimientos",
             type: "GET",
@@ -173,6 +174,8 @@ function listarTransferenciasPorEnviar() {
         dom: vardataTables[1],
         buttons: vardataTables[2],
         language: vardataTables[0],
+        lengthChange: false,
+        pageLength: 25,
         destroy: true,
         serverSide: true,
         ajax: {
@@ -209,7 +212,8 @@ function listarTransferenciasPorEnviar() {
                             <i class="fas fa-trash"></i></button>
                         <div/>`;
                     }
-                }
+                },
+                className: "text-center"
             }
         ],
         drawCallback: function() {
@@ -337,6 +341,8 @@ function listarTransferenciasPorRecibir() {
             dom: vardataTables[1],
             buttons: vardataTables[2],
             language: vardataTables[0],
+            lengthChange: false,
+            pageLength: 25,
             destroy: true,
             ajax: "listarTransferenciasPorRecibir/" + alm_destino,
             columns: [
@@ -385,7 +391,8 @@ function listarTransferenciasPorRecibir() {
                         } else {
                             return "";
                         }
-                    }
+                    },
+                    className: "text-center"
                 }
             ],
             columnDefs: [
@@ -521,7 +528,7 @@ function listarTransferenciasRecibidas() {
             dom: vardataTables[1],
             buttons: vardataTables[2],
             language: vardataTables[0],
-            // "scrollX": true,
+            pageLength: 25,
             destroy: true,
             ajax: "listarTransferenciasRecibidas/" + destino,
             // 'ajax': {
@@ -610,7 +617,8 @@ function listarTransferenciasRecibidas() {
                             data-origen="${row["alm_origen_descripcion"]}" data-destino="${row["alm_destino_descripcion"]}">
                             <i class="fas fa-list-ul"></i></button>`;
                         }
-                    }
+                    },
+                    className: "text-center"
                 }
             ],
             columnDefs: [{ aTargets: [0], sClass: "invisible" }],
