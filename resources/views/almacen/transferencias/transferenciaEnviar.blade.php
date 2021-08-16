@@ -15,13 +15,17 @@
                     <input type="text" class="oculto" name="id_transferencia">
                     <div class="row">
                         <div class="col-md-3">
+                            <!-- <div class="form-group"> -->
                             <h5>Serie-Número</h5>
                             <input type="text" class="oculto" name="id_serie_numero">
                             <div class="input-group">
-                                <input type="text" class="form-control activation" name="trans_serie" placeholder="0000" onBlur="ceros_numero_trans('serie','transferencia');">
+                                <div class="form-group">
+                                    <input type="text" class="form-control activation handleChangeSerie" name="trans_serie" placeholder="0000" onBlur="ceros_numero_trans('serie','transferencia');">
+                                </div>
                                 <span class="input-group-addon">-</span>
-                                <input type="text" class="form-control activation" name="trans_numero" placeholder="0000000" onBlur="ceros_numero_trans('numero','transferencia');">
+                                <input type="text" class="form-control activation handleChangeNumero" name="trans_numero" placeholder="0000000" onBlur="ceros_numero_trans('numero','transferencia');">
                             </div>
+                            <!-- </div> -->
                         </div>
                         <div class="col-md-3">
                             <h5>Fecha de Emisión</h5>

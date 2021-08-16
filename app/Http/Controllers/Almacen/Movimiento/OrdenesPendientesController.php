@@ -765,6 +765,7 @@ class OrdenesPendientesController extends Controller
                         ->select(
                             'log_det_ord_compra.*',
                             'alm_prod.id_producto',
+                            'alm_det_req.stock_comprometido',
                             'alm_req.id_sede',
                             'alm_req.id_requerimiento',
                             'alm_req.id_almacen as id_almacen_destino'
@@ -824,7 +825,7 @@ class OrdenesPendientesController extends Controller
                             );
                         }
                         //Guardo los items del ingreso
-                        $id_det = DB::table('almacen.mov_alm_det')->insertGetId(
+                        DB::table('almacen.mov_alm_det')->insertGetId(
                             [
                                 'id_mov_alm' => $id_ingreso,
                                 'id_producto' => $det->id_producto,
@@ -885,7 +886,7 @@ class OrdenesPendientesController extends Controller
                                             ->where('id_detalle_requerimiento', $det->id_detalle_requerimiento)
                                             ->update([
                                                 'estado' => 28, //en almacen total
-                                                'stock_comprometido' => $cantidad,
+                                                'stock_comprometido' => floatval($det->stock_comprometido) + floatval($cantidad),
                                                 'id_almacen_reserva' => $request->id_almacen
                                             ]);
                                     } else {
@@ -893,7 +894,7 @@ class OrdenesPendientesController extends Controller
                                             ->where('id_detalle_requerimiento', $det->id_detalle_requerimiento)
                                             ->update([
                                                 'estado' => 27, //en almacen parcial
-                                                'stock_comprometido' => $cantidad,
+                                                'stock_comprometido' => floatval($det->stock_comprometido) + floatval($cantidad),
                                                 'id_almacen_reserva' => $request->id_almacen
                                             ]);
                                     }
@@ -910,7 +911,7 @@ class OrdenesPendientesController extends Controller
                                     ->where('id_detalle_requerimiento', $det->id_detalle_requerimiento)
                                     ->update([
                                         'estado' => 27, //en almacen parcial
-                                        'stock_comprometido' => $cantidad,
+                                        'stock_comprometido' => floatval($det->stock_comprometido) + floatval($cantidad),
                                         'id_almacen_reserva' => $request->id_almacen
                                     ]);
                             }

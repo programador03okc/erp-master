@@ -24,14 +24,14 @@ $(function() {
     });
 });
 
-function listar_transportistas() {
+function listarTransportistas() {
     var vardataTables = funcDatatables();
     $("#listaTransportistas").dataTable({
         dom: vardataTables[1],
         buttons: vardataTables[2],
         language: vardataTables[0],
         bDestroy: true,
-        ajax: "mostrar_transportistas",
+        ajax: "mostrarTransportistas",
         columns: [
             { data: "id_contribuyente" },
             { data: "nro_documento" },
@@ -46,5 +46,5 @@ function openTransportistaModal() {
     $("#modal-transportistas").modal({
         show: true
     });
-    listar_transportistas();
+    listarTransportistas();
 }

@@ -868,7 +868,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('despacho_anular_requerimiento', 'DistribucionController@anular_requerimiento');
 				Route::get('anular_orden_despacho/{id}', 'DistribucionController@anular_orden_despacho');
 				Route::get('mostrar_proveedores', 'LogisticaController@mostrar_proveedores');
-				Route::get('mostrar_transportistas', 'DistribucionController@mostrar_transportistas');
+				Route::get('mostrarTransportistas', 'DistribucionController@mostrarTransportistas');
 				Route::get('listarGruposDespachados', 'DistribucionController@listarGruposDespachados');
 				Route::get('listarGruposDespachadosPendientesCargo', 'DistribucionController@listarGruposDespachadosPendientesCargo');
 				Route::get('verDetalleGrupoDespacho/{id}', 'DistribucionController@verDetalleGrupoDespacho');
@@ -1156,7 +1156,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('verDetalleDespacho/{id}', 'Almacen\Movimiento\SalidasPendientesController@verDetalleDespacho');
 				Route::get('imprimir_salida/{id}', 'Almacen\Movimiento\SalidasPendientesController@imprimir_salida');
 				Route::get('anular_orden_despacho/{id}', 'Almacen\Movimiento\SalidasPendientesController@anular_orden_despacho');
-				Route::get('listar_series_guia_ven/{id}', 'Almacen\Movimiento\SalidasPendientesController@listar_series_guia_ven');
+				Route::get('listarSeriesGuiaVen/{id}', 'Almacen\Movimiento\SalidasPendientesController@listarSeriesGuiaVen');
 			});
 
 			Route::group(['as' => 'prorrateo.', 'prefix' => 'prorrateo'], function () {
@@ -1172,103 +1172,6 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('listar_guia_detalle/{id}', 'Almacen\Movimiento\ProrrateoCostosController@listar_guia_detalle');
 				Route::post('guardarProrrateo', 'Almacen\Movimiento\ProrrateoCostosController@guardarProrrateo');
 				Route::post('updateProrrateo', 'Almacen\Movimiento\ProrrateoCostosController@updateProrrateo');
-			});
-
-			Route::group(['as' => 'guias-compra.', 'prefix' => 'guias-compra'], function () {
-				//Guia de Compra
-				Route::get('index', 'AlmacenController@view_guia_compra')->name('index');
-				Route::get('mostrar_guia_compra/{id}', 'AlmacenController@mostrar_guia_compra');
-				Route::post('guardar_guia_compra', 'AlmacenController@guardar_guia_compra');
-				Route::post('actualizar_guia_compra', 'AlmacenController@update_guia_compra');
-				Route::post('anular_guia_compra', 'AlmacenController@anular_guia_compra');
-				Route::get('generar_ingreso/{id}', 'AlmacenController@generar_ingreso');
-				Route::get('id_ingreso/{id}', 'AlmacenController@id_ingreso');
-				Route::get('imprimir_ingreso/{id}', 'AlmacenController@imprimir_ingreso');
-				Route::get('direccion_almacen/{id}', 'AlmacenController@direccion_almacen');
-				Route::get('mostrar_guia_detalle/{id}/{pro}', 'AlmacenController@mostrar_guia_detalle');
-
-				Route::get('listar_guias_compra', 'AlmacenController@listar_guias_compra');
-				Route::get('listar_guias_proveedor/{id}', 'AlmacenController@listar_guias_proveedor');
-				//Prorrateo
-				Route::post('guardar_prorrateo', 'AlmacenController@guardar_prorrateo');
-				Route::post('guardar_prorrateo_detalle', 'AlmacenController@guardar_prorrateo_detalle');
-				Route::get('listar_docs_prorrateo/{id}', 'AlmacenController@listar_docs_prorrateo');
-				Route::get('listar_guia_detalle_prorrateo/{id}/{total}', 'AlmacenController@listar_guia_detalle_prorrateo');
-				Route::get('eliminar_doc_prorrateo/{id}/{id_doc}', 'AlmacenController@eliminar_doc_prorrateo');
-				Route::post('update_doc_prorrateo', 'AlmacenController@update_doc_prorrateo');
-				Route::get('tipo_cambio_compra/{fecha}', 'AlmacenController@tipo_cambio_compra');
-				Route::post('update_guia_detalle_adic', 'AlmacenController@update_guia_detalle_adic');
-				Route::get('guardar_tipo_prorrateo/{nombre}', 'AlmacenController@guardar_tipo_prorrateo');
-				// Route::get('listar_guia_transportista/{guia}', 'AlmacenController@mostrar_transportistas');
-				// Route::get('mostrar_transportista/{id}', 'AlmacenController@mostrar_transportista');
-				// Route::post('guardar_transportista', 'AlmacenController@guardar_transportista');
-				// Route::post('actualizar_transportista', 'AlmacenController@update_transportista');
-				// Route::get('anular_transportista/{id}', 'AlmacenController@anular_transportista');
-				Route::get('listar_guia_detalle/{guia}', 'AlmacenController@listar_guia_detalle');
-				Route::get('anular_detalle/{id}', 'AlmacenController@anular_detalle');
-				Route::post('update_guia_detalle', 'AlmacenController@update_guia_detalle');
-				Route::post('guardar_guia_detalle', 'AlmacenController@guardar_guia_detalle');
-
-				Route::get('listar_oc_det/{id}/{alm}', 'AlmacenController@listar_oc_det');
-				Route::get('guia_ocs/{id}', 'AlmacenController@guia_ocs');
-				Route::get('anular_oc/{id}/{guia}', 'AlmacenController@anular_oc');
-				Route::post('guardar_detalle_oc', 'AlmacenController@guardar_detalle_oc');
-
-				Route::get('listar_series/{id}', 'AlmacenController@listar_series');
-				Route::post('guardar_series', 'AlmacenController@guardar_series');
-				Route::get('mostrar_prods', 'Almacen\Catalogo\ProductoController@mostrar_prods');
-				Route::get('mostrar_proveedores', 'LogisticaController@mostrar_proveedores');
-
-				Route::get('mostrar_detalle/{id}', 'AlmacenController@mostrar_detalle');
-				Route::get('listar_ocs', 'AlmacenController@listar_ocs');
-				Route::get('listar_ordenes/{id}', 'AlmacenController@listar_ordenes');
-				Route::get('listar_series_almacen/{prod}/{alm}', 'AlmacenController@listar_series_almacen');
-				Route::get('listar_series_guia_ven/{id}', 'AlmacenController@listar_series_guia_ven');
-				Route::get('buscar_serie/{serie}', 'AlmacenController@buscar_serie');
-				Route::get('listar_ordenes_proveedor/{id}', 'LogisticaController@listar_ordenes_proveedor');
-			});
-
-			Route::group(['as' => 'guias-venta.', 'prefix' => 'guias-venta'], function () {
-				//Guia Venta
-				Route::get('index', 'AlmacenController@view_guia_venta')->name('index');
-				Route::get('mostrar_guia_venta/{id}', 'AlmacenController@mostrar_guia_venta');
-				Route::post('guardar_guia_venta', 'AlmacenController@guardar_guia_venta');
-				Route::post('actualizar_guia_venta', 'AlmacenController@update_guia_venta');
-				Route::post('anular_guia_venta', 'AlmacenController@anular_guia_venta');
-				Route::get('generar_salida_guia/{id}', 'AlmacenController@generar_salida_guia');
-				Route::get('id_salida/{id}', 'AlmacenController@id_salida');
-				Route::get('direccion_almacen/{id}', 'AlmacenController@direccion_almacen');
-				Route::get('cargar_almacenes/{id}', 'AlmacenController@cargar_almacenes');
-				Route::get('next_serie_numero_guia/{id}/{tp}', 'AlmacenController@next_serie_numero_guia');
-
-				Route::get('listar_guias_almacen/{id}', 'AlmacenController@listar_guias_almacen');
-				Route::get('listar_req/{id}', 'AlmacenController@listar_req');
-				Route::get('listar_doc_ven/{emp}/{cli}', 'AlmacenController@listar_doc_ven');
-				Route::get('listar_detalle_doc/{id}/{tp}/{alm}', 'AlmacenController@listar_detalle_doc');
-				Route::post('guardar_detalle_ing', 'AlmacenController@guardar_detalle_ing');
-				Route::get('listar_guia_ven_det/{id}', 'AlmacenController@listar_guia_ven_det');
-				Route::post('guardar_guia_ven_detalle', 'AlmacenController@guardar_guia_ven_detalle');
-				Route::post('update_guia_ven_detalle', 'AlmacenController@update_guia_ven_detalle');
-				Route::get('anular_guia_ven_detalle/{id}', 'AlmacenController@anular_guia_ven_detalle');
-				Route::get('listar_guias_venta', 'AlmacenController@listar_guias_venta');
-
-				Route::get('listar_series_guia_ven/{id}', 'AlmacenController@listar_series_guia_ven');
-				Route::get('buscar_serie/{serie}', 'AlmacenController@buscar_serie');
-				Route::post('update_series', 'AlmacenController@update_series');
-				Route::post('guardar_transferencia', 'AlmacenController@guardar_transferencia');
-				Route::get('listar_series_almacen/{prod}/{alm}', 'AlmacenController@listar_series_almacen');
-				Route::get('cargar_almacenes_contrib/{id}', 'AlmacenController@cargar_almacenes_contrib');
-				Route::get('mostrar_prods', 'Almacen\Catalogo\ProductoController@mostrar_prods');
-				Route::get('mostrar_prods_almacen/{id}', 'AlmacenController@mostrar_prods_almacen');
-
-				Route::get('mostrar_clientes', 'Comercial\ClienteController@mostrar_clientes');
-				Route::get('mostrar_clientes_empresa', 'Comercial\ClienteController@mostrar_clientes_empresa');
-				Route::post('save_cliente', 'LogisticaController@save_cliente');
-				Route::get('imprimir_salida/{id}', 'AlmacenController@imprimir_salida');
-				// Route::get('anular_guia/{doc}/{guia}', 'AlmacenController@anular_guia');
-				// Route::get('next_correlativo_prod/{subcat}/{clas}', 'AlmacenController@next_correlativo_prod');
-				// Route::get('proveedor/{id}', 'AlmacenController@proveedor');
-
 			});
 		});
 
@@ -1310,22 +1213,22 @@ Route::group(['middleware' => ['auth']], function () {
 				//Transferencias
 				Route::get('index', 'Almacen\Movimiento\TransferenciaController@view_listar_transferencias')->name('index');
 				Route::get('listarRequerimientos', 'Almacen\Movimiento\TransferenciaController@listarRequerimientos');
-				Route::get('listar_transferencias_recibidas/{ori}', 'Almacen\Movimiento\TransferenciaController@listar_transferencias_recibidas');
-				Route::get('listar_transferencia_detalle/{id}', 'Almacen\Movimiento\TransferenciaController@listar_transferencia_detalle');
-				Route::post('guardar_ingreso_transferencia', 'Almacen\Movimiento\TransferenciaController@guardar_ingreso_transferencia');
-				Route::post('guardar_salida_transferencia', 'Almacen\Movimiento\TransferenciaController@guardar_salida_transferencia');
-				Route::post('anular_transferencia_ingreso', 'Almacen\Movimiento\TransferenciaController@anular_transferencia_ingreso');
+				Route::get('listarTransferenciasRecibidas/{ori}', 'Almacen\Movimiento\TransferenciaController@listarTransferenciasRecibidas');
+				Route::get('listarTransferenciaDetalle/{id}', 'Almacen\Movimiento\TransferenciaController@listarTransferenciaDetalle');
+				Route::post('guardarIngresoTransferencia', 'Almacen\Movimiento\TransferenciaController@guardarIngresoTransferencia');
+				Route::post('guardarSalidaTransferencia', 'Almacen\Movimiento\TransferenciaController@guardarSalidaTransferencia');
+				Route::post('anularTransferenciaIngreso', 'Almacen\Movimiento\TransferenciaController@anularTransferenciaIngreso');
 				Route::get('ingreso_transferencia/{id}', 'Almacen\Movimiento\TransferenciaController@ingreso_transferencia');
-				Route::get('transferencia_nextId/{id}', 'Almacen\Movimiento\TransferenciaController@transferencia_nextId');
-				Route::post('anular_transferencia_salida', 'Almacen\Movimiento\TransferenciaController@anular_transferencia_salida');
+				// Route::get('transferencia_nextId/{id}', 'Almacen\Movimiento\TransferenciaController@transferencia_nextId');
+				Route::post('anularTransferenciaSalida', 'Almacen\Movimiento\TransferenciaController@anularTransferenciaSalida');
 				Route::get('imprimir_ingreso/{id}', 'Almacen\Movimiento\OrdenesPendientesController@imprimir_ingreso');
 				Route::get('imprimir_salida/{id}', 'Almacen\Movimiento\SalidasPendientesController@imprimir_salida');
 				Route::post('listarTransferenciasPorEnviar/{id}', 'Almacen\Movimiento\TransferenciaController@listarTransferenciasPorEnviar');
 				Route::get('listarTransferenciasPorRecibir/{id}', 'Almacen\Movimiento\TransferenciaController@listarTransferenciasPorRecibir');
-				Route::get('cargar_almacenes/{id}', 'Almacen\Ubicacion\AlmacenController@cargar_almacenes');
+				// Route::get('cargar_almacenes/{id}', 'Almacen\Ubicacion\AlmacenController@cargar_almacenes');
 				Route::get('listarDetalleTransferencia/{id}', 'Almacen\Movimiento\TransferenciaController@listarDetalleTransferencia');
 				Route::post('listarDetalleTransferenciasSeleccionadas', 'Almacen\Movimiento\TransferenciaController@listarDetalleTransferenciasSeleccionadas');
-				Route::get('listar_guia_transferencia_detalle/{id}', 'Almacen\Movimiento\TransferenciaController@listar_guia_transferencia_detalle');
+				Route::get('listarGuiaTransferenciaDetalle/{id}', 'Almacen\Movimiento\TransferenciaController@listarGuiaTransferenciaDetalle');
 				Route::get('listarSeries/{id}', 'Almacen\Movimiento\TransferenciaController@listarSeries');
 				Route::get('listarSeriesVen/{id}', 'Almacen\Movimiento\TransferenciaController@listarSeriesVen');
 				Route::get('anular_transferencia/{id}', 'Almacen\Movimiento\TransferenciaController@anular_transferencia');
@@ -1334,9 +1237,9 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('verGuiaCompraTransferencia/{id}', 'Almacen\Movimiento\TransferenciaController@verGuiaCompraTransferencia');
 				Route::get('verRequerimiento/{id}', 'Almacen\Movimiento\TransferenciaController@verRequerimiento');
 				Route::post('generarTransferenciaRequerimiento', 'Almacen\Movimiento\TransferenciaController@generarTransferenciaRequerimiento');
-				Route::get('listar_series_guia_ven/{id}', 'Almacen\Movimiento\SalidasPendientesController@listar_series_guia_ven');
+				Route::get('listarSeriesGuiaVen/{id}', 'Almacen\Movimiento\SalidasPendientesController@listarSeriesGuiaVen');
 				Route::post('obtenerArchivosOc', 'Tesoreria\Facturacion\PendientesFacturacionController@obtenerArchivosOc')->name('obtener-archivos-oc');
-				Route::get('mostrar_transportistas', 'DistribucionController@mostrar_transportistas');
+				Route::get('mostrarTransportistas', 'DistribucionController@mostrarTransportistas');
 			});
 		});
 

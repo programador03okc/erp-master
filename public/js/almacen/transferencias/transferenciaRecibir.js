@@ -21,16 +21,16 @@ function open_transferencia_detalle(data) {
         } else {
             $("#submit_transferencia").text("Recibir");
         }
-        listar_guia_transferencia_detalle(data.id_guia_ven);
+        listarGuiaTransferenciaDetalle(data.id_guia_ven);
     }
 }
 
-function listar_guia_transferencia_detalle(id_guia_ven) {
+function listarGuiaTransferenciaDetalle(id_guia_ven) {
     console.log(id_guia_ven);
     $("#listaTransferenciaDetalleRecibir tbody").html("");
     $.ajax({
         type: "GET",
-        url: "listar_guia_transferencia_detalle/" + id_guia_ven,
+        url: "listarGuiaTransferenciaDetalle/" + id_guia_ven,
         dataType: "JSON",
         success: function(response) {
             console.log(response);
@@ -143,26 +143,49 @@ function recibir() {
             "&detalle=" +
             JSON.stringify(detalle);
         console.log(data);
-        $("#submit_transferencia").attr("disabled", "true");
-        $.ajax({
-            type: "POST",
-            url: "guardar_ingreso_transferencia",
-            data: data,
-            dataType: "JSON",
-            success: function(response) {
-                console.log(response);
-                if (response > 0) {
-                    alert("Ingreso generado con éxito");
-                    // var id = encode5t(response);
-                    // window.open('imprimir_ingreso/'+id);
-                    $("#modal-transferencia_detalle").modal("hide");
-                    listarTransferenciasPendientes();
-                }
+
+        Swal.fire({
+            title: "Esta seguro que desea guardar la guía de ingreso ?",
+            // text: "No podrás revertir esto.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#00a65a", //"#3085d6",
+            cancelButtonColor: "#d33",
+            cancelButtonText: "Cancelar",
+            confirmButtonText: "Si, Guardar"
+        }).then(result => {
+            if (result.isConfirmed) {
+                $("#submit_transferencia").attr("disabled", "true");
+                $.ajax({
+                    type: "POST",
+                    url: "guardarIngresoTransferencia",
+                    data: data,
+                    dataType: "JSON",
+                    success: function(response) {
+                        console.log(response);
+                        if (response > 0) {
+                            // alert("Ingreso generado con éxito");
+                            Lobibox.notify("success", {
+                                title: false,
+                                size: "mini",
+                                rounded: true,
+                                sound: false,
+                                delayIndicator: false,
+                                // width: 500,
+                                msg: "Ingreso a almacén generado con éxito."
+                            });
+                            $("#modal-transferencia_detalle").modal("hide");
+                            listarTransferenciasPorRecibir();
+                            // var id = encode5t(response);
+                            // window.open('imprimir_ingreso/'+id);
+                        }
+                    }
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                });
             }
-        }).fail(function(jqXHR, textStatus, errorThrown) {
-            console.log(jqXHR);
-            console.log(textStatus);
-            console.log(errorThrown);
         });
     } else {
         $("#modal-transferencia_detalle").modal("hide");

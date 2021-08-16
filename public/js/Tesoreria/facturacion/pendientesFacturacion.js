@@ -175,13 +175,6 @@ class Facturacion {
                             '">' +
                             row["nro_orden"] +
                             "</a>"
-                            // row["orden_am"] !== null
-                            //     ? row["nro_orden"] +
-                            //           `<br><a href="https://apps1.perucompras.gob.pe//OrdenCompra/obtenerPdfOrdenPublico?ID_OrdenCompra=${row["id_oc_propia"]}&ImprimirCompleto=1">
-                            // <span class="label label-success">Ver O.E.</span></a>
-                            // <a href="${row["url_oc_fisica"]}">
-                            // <span class="label label-warning">Ver O.F.</span></a>`
-                            //     : ""
                         );
                     },
                     className: "text-center"
