@@ -100,7 +100,7 @@
 </div>
 
 
-
+@include('tesoreria.facturacion.archivos_oc_mgcp')
 @include('logistica.gestion_logistica.compras.ordenes.listado.modal_filtro_lista_ordenes_elaboradas')
 @include('logistica.gestion_logistica.compras.ordenes.listado.modal_filtro_lista_items_orden_elaboradas')
 @include('logistica.gestion_logistica.compras.ordenes.listado.modal_aprobar_orden')
@@ -121,7 +121,7 @@
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
     <!-- <script src="{{('/js/logistica/orden/listar_ordenes.js')}}"></script> -->
     <!-- <script src="{{('/js/logistica/orden/orden_ver_detalle.js')}}"></script> -->
-
+    <script src="{{ asset('js/tesoreria/facturacion/archivosMgcp.js')}}"></script>
     <script src="{{('/js/logistica/orden/listaOrdenView.js')}}"></script>
     <script src="{{('/js/logistica/orden/listaOrdenController.js')}}"></script>
     <script src="{{('/js/logistica/orden/listaOrdenModel.js')}}"></script>

@@ -47,6 +47,10 @@ class ListaOrdenView {
         $('#listaOrdenes tbody').on("click","button.handleClickAnularOrden",(e)=>{
             this.anularOrden(e.currentTarget);
         });
+        
+        $('#listaOrdenes tbody').on("click","a.handleClickObtenerArchivos",(e)=>{
+            this.obtenerArchivos(e.currentTarget.dataset.id, e.currentTarget.dataset.tipo);
+        });
     
 
 
@@ -729,19 +733,14 @@ class ListaOrdenView {
     }
 
     construirDetalleOrdenElaboradas(table_id,row,response){
-        // console.log(response);
         var html = '';
         if (response.length > 0) {
             response.forEach(function (element) {
                 html += `<tr>
-                    <td style="border: none;">${(element.orden_am !== null ? element.orden_am + ` <a href="https://apps1.perucompras.gob.pe//OrdenCompra/obtenerPdfOrdenPublico?ID_OrdenCompra=${element.id_oc_propia}&ImprimirCompleto=1">
-                    <span class="label label-success">Ver O.E.</span></a>
-                    <a href="${element.url_oc_fisica}">
-                    <span class="label label-warning">Ver O.F.</span></a>`:'')}</td>
+                    <td style="border: none;">${(element.nro_orden !== null ? `<a  style="cursor:pointer;" class="handleClickObtenerArchivos" data-id="${element.id_oc_propia}" data-tipo="${element.tipo_oc_propia}">${element.nro_orden}</a>`:'')}</td>
                     <td style="border: none;">${element.codigo_oportunidad !== null ? element.codigo_oportunidad : ''}</td>
-                    <td style="border: none;">${element.oportunidad !== null ? element.oportunidad : ''}</td>
-                    <td style="border: none;">${element.nombre !== null ? element.nombre : ''}</td>
-                    <td style="border: none;">${element.user_name !== null ? element.user_name : ''}</td>
+                    <td style="border: none;">${element.nombre_entidad !== null ? element.nombre_entidad : ''}</td>
+                    <td style="border: none;">${element.nombre_corto_responsable !== null ? element.nombre_corto_responsable : ''}</td>
                     <td style="border: none;"><label class="lbl-codigo handleClickAbrirRequerimiento" title="Abrir Requerimiento" data-id-requerimiento="${element.id_requerimiento}">${element.codigo_req}</label> ${element.sede_req}</td>
                     <td style="border: none;">${element.codigo}</td>
                     <td style="border: none;">${element.part_number !== null ? element.part_number : ''}</td>
@@ -756,11 +755,10 @@ class ListaOrdenView {
                 id="detalle_${table_id}">
                 <thead style="color: black;background-color: #c7cacc;">
                     <tr>
-                        <th style="border: none;">Orden Elec.</th>
+                        <th style="border: none;">O/C</th>
                         <th style="border: none;">Cod.CDP</th>
-                        <th style="border: none;">Oportunidad</th>
-                        <th style="border: none;">Entidad</th>
-                        <th style="border: none;">Corporativo</th>
+                        <th style="border: none;">Cliente</th>
+                        <th style="border: none;">Responsable</th>
                         <th style="border: none;">Cod.Req.</th>
                         <th style="border: none;">Código</th>
                         <th style="border: none;">PartNumber</th>
@@ -782,6 +780,11 @@ class ListaOrdenView {
                 </table>`;
             }
             row.child(tabla).show();
+    }
+
+    obtenerArchivos(id,tipo){
+        obtenerArchivosMgcp(id, tipo);
+
     }
 
     abrirRequerimientoPDF(idRequerimiento){

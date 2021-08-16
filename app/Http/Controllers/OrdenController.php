@@ -1155,9 +1155,15 @@ class OrdenController extends Controller
             'alm_subcat.descripcion as subcategoria','alm_req.id_requerimiento',
             'alm_prod.descripcion','alm_und_medida.abreviatura','alm_req.codigo as codigo_req',
             'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color','sis_sede.descripcion as sede_req',
-            'oc_propias.orden_am','oportunidades.oportunidad','oportunidades.codigo_oportunidad',
-            'entidades.nombre','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica',
-            'users.name as user_name'
+            'oc_propias_view.nro_orden',
+            'oc_propias_view.codigo_oportunidad',
+            'oportunidades.oportunidad',
+            'oc_propias_view.descripcion_larga_am',
+            'oc_propias_view.nombre_entidad',
+            'oc_propias_view.id as id_oc_propia',
+            'oc_propias_view.tipo as tipo_oc_propia',
+            'oc_propias_view.moneda_oc',
+            'oc_propias_view.nombre_corto_responsable'
         )
         ->leftjoin('logistica.log_ord_compra', 'log_ord_compra.id_orden_compra', '=', 'log_det_ord_compra.id_orden_compra')
         ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'log_ord_compra.id_moneda')
@@ -1167,13 +1173,14 @@ class OrdenController extends Controller
         ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'log_det_ord_compra.id_unidad_medida')
         ->leftjoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
         ->leftjoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+        ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'log_det_ord_compra.estado')
         ->leftjoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_req.id_sede')
         ->leftjoin('mgcp_cuadro_costos.cc','cc.id','=','alm_req.id_cc')
-        ->leftjoin('mgcp_oportunidades.oportunidades','oportunidades.id','=','cc.id_oportunidad')
-        ->leftjoin('mgcp_usuarios.users','users.id','=','oportunidades.id_responsable')
-        ->leftjoin('mgcp_acuerdo_marco.oc_propias','oc_propias.id_oportunidad','=','oportunidades.id')
-        ->leftjoin('mgcp_acuerdo_marco.entidades','entidades.id','=','oportunidades.id_entidad')
-        ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'log_det_ord_compra.estado')
+        ->leftJoin('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'cc.id_oportunidad')
+        ->leftjoin('mgcp_oportunidades.oportunidades','oportunidades.id','=','oc_propias_view.id_oportunidad')
+
+  
+
         ->where([
             ['log_det_ord_compra.id_orden_compra', '=', $idOrden]
         ])

@@ -790,6 +790,7 @@ Route::group(['middleware' => ['auth']], function () {
 						//nivel cabecera 
 						Route::get('listar-ordenes/{tipoOrden?}/{vinculadoPor?}/{empresa?}/{sede?}/{tipoProveedor?}/{enAlmacen?}/{signoOrden?}/{montoOrden?}/{estado?}', 'OrdenController@listarOrdenes');
 						Route::get('detalle-orden/{id_orden}', 'OrdenController@detalleOrden');
+						Route::post('obtenerArchivosOc', 'Tesoreria\Facturacion\PendientesFacturacionController@obtenerArchivosOc')->name('obtener-archivos-oc');
 						// Route::get('generar_orden_pdf/{id}', 'OrdenController@generar_orden_pdf'); // PDF
 						Route::get('verSession', 'LogisticaController@verSession');
 						// Route::get('explorar-orden/{id_orden}', 'LogisticaController@explorar_orden'); 
