@@ -945,30 +945,11 @@ class OrdenController extends Controller
             INNER JOIN almacen.alm_det_req on alm_det_req.id_detalle_requerimiento = log_det_ord_compra.id_detalle_requerimiento
             INNER JOIN almacen.alm_req on alm_req.id_requerimiento = alm_det_req.id_requerimiento
             INNER JOIN mgcp_cuadro_costos.cc on cc.id = alm_req.id_cc
-            INNER JOIN mgcp_oportunidades.oportunidades on oportunidades.id = cc.id_oportunidad
-
+            INNER JOIN mgcp_ordenes_compra.oc_propias_view on oc_propias_view.id_oportunidad = cc.id_oportunidad
+            INNER JOIN mgcp_oportunidades.oportunidades on oportunidades.id = oc_propias_view.id_oportunidad
+    
             WHERE log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra AND
-             logistica.log_det_ord_compra.estado != 7 LIMIT 1) AS monto_total_presup")
-            // DB::raw("(SELECT  coalesce(sum((cc_am_filas.cantidad * cc_am_filas.pvu_oc))*1.18 ,0) AS monto_total_presup
-            // FROM logistica.log_det_ord_compra 
-            // LEFT JOIN almacen.alm_det_req on alm_det_req.id_detalle_requerimiento = log_det_ord_compra.id_detalle_requerimiento
-            // LEFT JOIN mgcp_cuadro_costos.cc_am_filas on cc_am_filas.id = alm_det_req.id_cc_am_filas
-
-            // WHERE log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra AND
-            //  logistica.log_det_ord_compra.estado != 7) AS monto_total_presup")
-            // DB::raw("( 
-            
-            //     SELECT array_agg(concat(doc_com.serie, '-', doc_com.numero)) AS facturas
-            //     FROM logistica.log_det_ord_compra
-            //     INNER JOIN almacen.guia_com_det on guia_com_det.id_oc_det = log_det_ord_compra.id_detalle_orden
-            //     INNER JOIN almacen.doc_com_det on doc_com_det.id_guia_com_det = guia_com_det.id_guia_com_det
-            //     INNER JOIN almacen.doc_com on doc_com.id_doc_com = doc_com_det.id_doc
-            //     WHERE 
-            //     log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra 
-            //     AND log_det_ord_compra.id_detalle_orden = guia_com_det.id_oc_det 
-            //     AND log_det_ord_compra.estado != 7 
-            //     LIMIT 1 ) as facturas
-            //     ")
+            logistica.log_det_ord_compra.estado != 7 LIMIT 1) AS monto_total_presup")
         )
         ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'log_ord_compra.id_sede')
         ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
@@ -980,7 +961,6 @@ class OrdenController extends Controller
         ->leftjoin('contabilidad.adm_cta_contri as cta_detra','cta_detra.id_cuenta_contribuyente','=','log_ord_compra.id_cta_detraccion')
         ->leftjoin('logistica.estados_compra','estados_compra.id_estado','=','log_ord_compra.estado')
         ->leftjoin('logistica.log_ord_compra_pago','log_ord_compra_pago.id_orden_compra','=','log_ord_compra.id_orden_compra')
-
 
         ->where([
             // ['log_ord_compra.codigo', '=', 'OC-21070121'],
@@ -1071,37 +1051,32 @@ class OrdenController extends Controller
             }
         }
 
-        // $detalle_orden = Orden::select(
-            $detalle_orden = DB::table('logistica.log_ord_compra')->select(
+            $detalle_orden = Orden::select(
             'log_ord_compra.id_orden_compra',
             'log_det_ord_compra.id_detalle_orden',
             'alm_req.id_requerimiento',
             'alm_req.codigo as codigo_requerimiento',
             'alm_req.fecha_registro as fecha_registro_requerimiento',
-            'oportunidades.codigo_oportunidad',
-            'oc_propias.fecha_entrega',
+            'oc_propias_view.codigo_oportunidad',
+            'oc_propias_view.fecha_entrega',
             'guia_com_det.fecha_registro as fecha_ingreso_almacen',
-            'oc_propias.fecha_estado',
-            'cc.estado_aprobacion',
-            'estados_aprobacion.estado as estado_aprobacion'
+            'oc_propias_view.fecha_estado',
+            'cc_view.estado_aprobacion'
             )
         ->leftJoin('logistica.log_det_ord_compra', 'log_det_ord_compra.id_orden_compra', '=', 'log_ord_compra.id_orden_compra')
         ->leftJoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
         ->leftJoin('almacen.guia_com_det', 'guia_com_det.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden')
         ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
         ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
-        ->leftJoin('mgcp_cuadro_costos.estados_aprobacion', 'estados_aprobacion.id', '=', 'cc.estado_aprobacion')
-        ->leftJoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
-        ->leftJoin('mgcp_acuerdo_marco.oc_propias', 'oc_propias.id_oportunidad', '=', 'oportunidades.id')
+        ->leftJoin('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'cc.id_oportunidad')
+        ->leftjoin('mgcp_oportunidades.oportunidades','oportunidades.id','=','oc_propias_view.id_oportunidad')
+        ->leftJoin('mgcp_cuadro_costos.cc_view', 'cc_view.id_oportunidad', '=', 'oportunidades.id')
         ->where([
-            // ['log_ord_compra.codigo', '=', 'OC-21070121'],
             ['log_ord_compra.estado', '!=', 7]
-
         ])
         ->orderBy('log_ord_compra.fecha','desc')
         ->get();
 
-         
         $data_detalle_orden=[];
         if(count($ord_compra)>0){
             foreach($detalle_orden as $element){
@@ -1146,8 +1121,7 @@ class OrdenController extends Controller
     }
 
     public function detalleOrden($idOrden){
-        $detalle = DB::table('logistica.log_det_ord_compra')
-        ->select(
+        $detalle = OrdenCompraDetalle::select(
             'log_det_ord_compra.*','alm_prod.codigo', 
             'sis_moneda.simbolo as moneda_simbolo',
             'sis_moneda.descripcion as moneda_descripcion',
