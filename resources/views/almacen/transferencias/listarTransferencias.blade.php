@@ -9,6 +9,8 @@ Gestión de Transferencias
 <link rel="stylesheet" href="{{ asset('template/plugins/iCheck/all.css') }}">
 <link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
 <link rel="stylesheet" href="{{ asset('template/plugins/jquery-datatables-checkboxes/css/dataTables.checkboxes.css') }}">
+<link rel="stylesheet" href="{{ asset('datatables/Datatables/css/dataTables.bootstrap.min.css') }}">
+<link rel="stylesheet" href="{{ asset('datatables/Buttons/css/buttons.dataTables.min.css') }}">
 @endsection
 
 @section('breadcrumb')
@@ -71,12 +73,12 @@ Gestión de Transferencias
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <div style="display: flex;justify-content: flex-end;">
+                                    <!-- <div style="display: flex;">
                                         @if(Auth::user()->tieneAccion(91))
                                         <button type="button" class="btn btn-success btn-flat" data-toggle="tooltip" data-placement="bottom" title="Crear Guía con varias transferencias" onClick="openGuiaTransferenciaCreate();">
                                             Generar Guía</button>
                                         @endif
-                                    </div>
+                                    </div> -->
                                     <table class="mytable table table-condensed table-bordered table-okc-view" id="listaTransferenciasPorEnviar">
                                         <thead>
                                             <tr>
@@ -196,10 +198,10 @@ Gestión de Transferencias
 @section('scripts')
 <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
-<!-- <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
-    <script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
-    <script src="{{ asset('datatables/Buttons/js/buttons.print.min.js') }}"></script>
-    <script src="{{ asset('datatables/Buttons/js/buttons.html5.min.js') }}"></script>
+<script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
+<script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
+<script src="{{ asset('datatables/Buttons/js/buttons.print.min.js') }}"></script>
+<!-- <script src="{{ asset('datatables/Buttons/js/buttons.html5.min.js') }}"></script>
     <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script> -->
@@ -222,10 +224,10 @@ Gestión de Transferencias
 <script>
     $(document).ready(function() {
         seleccionarMenu(window.location);
+        $.fn.dataTable.Buttons.defaults.dom.button.className = 'btn';
         iniciar('{{Auth::user()->tieneAccion(91)}}', '{{Auth::user()->id_usuario}}');
-        inicializar(
-            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.elaborados')}}"
-        );
+        //listarRequerimientosPendientes();
+
     });
 </script>
 @endsection

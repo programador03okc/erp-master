@@ -1212,7 +1212,7 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::group(['as' => 'gestion-transferencias.', 'prefix' => 'gestion-transferencias'], function () {
 				//Transferencias
 				Route::get('index', 'Almacen\Movimiento\TransferenciaController@view_listar_transferencias')->name('index');
-				Route::get('listarRequerimientos', 'Almacen\Movimiento\TransferenciaController@listarRequerimientos');
+				Route::post('listarRequerimientos', 'Almacen\Movimiento\TransferenciaController@listarRequerimientos');
 				Route::get('listarTransferenciasRecibidas/{ori}', 'Almacen\Movimiento\TransferenciaController@listarTransferenciasRecibidas');
 				Route::get('listarTransferenciaDetalle/{id}', 'Almacen\Movimiento\TransferenciaController@listarTransferenciaDetalle');
 				Route::post('guardarIngresoTransferencia', 'Almacen\Movimiento\TransferenciaController@guardarIngresoTransferencia');

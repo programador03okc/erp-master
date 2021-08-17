@@ -10,7 +10,7 @@ function iniciar(permiso) {
     listarOrdenesPendientes();
     oc_seleccionadas = [];
 
-    $("ul.nav-tabs li a").on("click", function() {
+    $("ul.nav-tabs li a").on("click", function () {
         $("ul.nav-tabs li").removeClass("active");
         $(this)
             .parent()
@@ -43,18 +43,27 @@ var table;
 
 function listarOrdenesPendientes() {
     var vardataTables = funcDatatables();
+    let botones = [];
+    if (acceso == '1') {
+        botones.push({
+            text: ' Ingresar Guía',
+            action: function () {
+                open_guia_create_seleccionadas();
+            }, className: 'btn-success'
+        });
+    }
     table = $("#ordenesPendientes").DataTable({
-        dom: vardataTables[1],
-        buttons: vardataTables[2],
+        dom: 'Bfrtip',
+        // buttons: vardataTables[2],
         language: vardataTables[0],
         bDestroy: true,
         serverSide: true,
-        // "scrollX": true,
-        initComplete: function(settings, json) {
+        pageLength: 50,
+        initComplete: function (settings, json) {
             const $filter = $("#ordenesPendientes_filter");
             const $input = $filter.find("input");
             $filter.append(
-                '<button id="btnBuscar" class="btn btn-default btn-sm" type="button"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>'
+                '<button id="btnBuscar" class="btn btn-default btn-sm btn-flat" type="button"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>'
             );
             $input.off();
             $input.on("keyup", e => {
@@ -66,7 +75,7 @@ function listarOrdenesPendientes() {
                 table.search($input.val()).draw();
             });
         },
-        drawCallback: function(settings) {
+        drawCallback: function (settings) {
             $("#ordenesPendientes_filter input").prop("disabled", false);
             $("#btnBuscar")
                 .html(
@@ -89,7 +98,7 @@ function listarOrdenesPendientes() {
             { data: "codigo" },
             { data: "nombre_corto", name: "sis_usua.nombre_corto" },
             {
-                render: function(data, type, row) {
+                render: function (data, type, row) {
                     var dias_restantes = restarFechas(
                         fecha_actual(),
                         sumaFecha(row["plazo_entrega"], row["fecha"])
@@ -102,13 +111,12 @@ function listarOrdenesPendientes() {
                         porc > 50
                             ? "success"
                             : porc <= 50 && porc > 20
-                            ? "warning"
-                            : "danger";
+                                ? "warning"
+                                : "danger";
                     return `<div class="progress-group">
                             <span class="progress-text">Nro días Restantes</span>
-                            <span class="float-right"><b> ${
-                                dias_restantes < 0 ? "0" : dias_restantes
-                            }</b> / ${row["plazo_entrega"]}</span>
+                            <span class="float-right"><b> ${dias_restantes < 0 ? "0" : dias_restantes
+                        }</b> / ${row["plazo_entrega"]}</span>
                             <div class="progress progress-sm">
                                 <div class="progress-bar bg-${color}" style="width: ${porc}%"></div>
                             </div>
@@ -119,13 +127,13 @@ function listarOrdenesPendientes() {
             { data: "razon_social", name: "adm_contri.razon_social" },
             // {'data': 'fecha'},
             {
-                render: function(data, type, row) {
+                render: function (data, type, row) {
                     return formatDateHour(row["fecha"]);
                 }
             },
             { data: "nombre_corto", name: "sis_usua.nombre_corto" },
             {
-                render: function(data, type, row) {
+                render: function (data, type, row) {
                     return (
                         '<span class="label label-' +
                         (row["estado_doc"] == "Enviado"
@@ -146,10 +154,10 @@ function listarOrdenesPendientes() {
                 className: "dt-body-center",
                 checkboxes: {
                     selectRow: true,
-                    selectCallback: function(nodes, selected) {
+                    selectCallback: function (nodes, selected) {
                         $('input[type="checkbox"]', nodes).iCheck("update");
                     },
-                    selectAllCallback: function(
+                    selectAllCallback: function (
                         nodes,
                         selected,
                         indeterminate
@@ -159,15 +167,17 @@ function listarOrdenesPendientes() {
                 }
             },
             {
-                render: function(data, type, row) {
+                render: function (data, type, row) {
                     if (acceso == "1") {
-                        return `<button type="button" class="ver-detalle btn btn-primary boton" data-toggle="tooltip" 
+                        return `<div style="display:flex;">
+                        <button type="button" class="ver-detalle btn btn-primary boton btn-flat" data-toggle="tooltip" 
                             data-placement="bottom" title="Ver Detalle" data-id="${row["id_orden_compra"]}">
                             <i class="fas fa-chevron-down"></i></button>
                             
-                        <button type="button" class="guia btn btn-info boton" data-toggle="tooltip" 
+                        <button type="button" class="guia btn btn-info boton btn-flat" data-toggle="tooltip" 
                             data-placement="bottom" title="Generar Guía" >
-                            <i class="fas fa-sign-in-alt"></i></button>`;
+                            <i class="fas fa-sign-in-alt"></i></button>
+                            </div>`;
                     } else {
                         return (
                             '<button type="button" class="ver-detalle btn btn-primary boton" data-toggle="tooltip" ' +
@@ -181,6 +191,7 @@ function listarOrdenesPendientes() {
                 targets: 10
             }
         ],
+        buttons: botones,
         order: [[6, "desc"]]
     });
 
@@ -189,7 +200,7 @@ function listarOrdenesPendientes() {
             .DataTable()
             .table()
             .container()
-    ).on("ifChanged", ".dt-checkboxes", function(event) {
+    ).on("ifChanged", ".dt-checkboxes", function (event) {
         var cell = $("#ordenesPendientes")
             .DataTable()
             .cell($(this).closest("td"));
@@ -205,7 +216,7 @@ function listarOrdenesPendientes() {
             if (this.checked) {
                 oc_seleccionadas.push(data);
             } else {
-                var index = oc_seleccionadas.findIndex(function(item, i) {
+                var index = oc_seleccionadas.findIndex(function (item, i) {
                     return item.id_orden_compra == data.id_orden_compra;
                 });
                 if (index !== null) {
@@ -217,7 +228,7 @@ function listarOrdenesPendientes() {
 }
 
 // botones('#ordenesPendientes tbody',$('#ordenesPendientes').DataTable());
-$("#ordenesPendientes tbody").on("click", "button.detalle", function() {
+$("#ordenesPendientes tbody").on("click", "button.detalle", function () {
     var data = $("#ordenesPendientes")
         .DataTable()
         .row($(this).parents("tr"))
@@ -227,376 +238,13 @@ $("#ordenesPendientes tbody").on("click", "button.detalle", function() {
     open_detalle(data);
 });
 
-$("#ordenesPendientes tbody").on("click", "button.guia", function() {
+$("#ordenesPendientes tbody").on("click", "button.guia", function () {
     var data = $("#ordenesPendientes")
         .DataTable()
         .row($(this).parents("tr"))
         .data();
     console.log("data.id_orden_compra" + data.id_orden_compra);
     open_guia_create(data, $(this).closest("tr"));
-});
-
-function listarTransformaciones() {
-    var vardataTables = funcDatatables();
-    $("#listaTransformaciones").DataTable({
-        dom: vardataTables[1],
-        buttons: vardataTables[2],
-        language: vardataTables[0],
-        bDestroy: true,
-        serverSide: true,
-        // "scrollX": true,
-        ajax: {
-            url: "listarTransformacionesProcesadas",
-            type: "POST"
-        },
-        columns: [
-            { data: "id_transformacion" },
-            { data: "orden_am", name: "oc_propias.orden_am" },
-            {
-                data: "codigo_oportunidad",
-                name: "oportunidades.codigo_oportunidad"
-            },
-            { data: "oportunidad", name: "oportunidades.oportunidad" },
-            { data: "nombre", name: "entidades.nombre" },
-            { data: "codigo" },
-            {
-                data: "fecha_transformacion",
-                name: "transformacion.fecha_transformacion"
-            },
-            { data: "almacen_descripcion", name: "alm_almacen.descripcion" },
-            { data: "nombre_responsable", name: "sis_usua.nombre_corto" },
-            { data: "cod_od", name: "orden_despacho.codigo" },
-            { data: "cod_req", name: "alm_req.codigo" },
-            {
-                render: function(data, type, row) {
-                    return row["serie"] !== null
-                        ? row["serie"] + "-" + row["numero"]
-                        : "";
-                }
-            },
-            { data: "observacion", name: "transformacion.observacion" },
-            {
-                render: function(data, type, row) {
-                    if (acceso == "1") {
-                        return (
-                            '<button type="button" class="guia btn btn-info boton" data-toggle="tooltip" ' +
-                            'data-placement="bottom" title="Ingresar Guía" >' +
-                            '<i class="fas fa-sign-in-alt"></i></button>'
-                        );
-
-                        // '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
-                        // 'data-placement="bottom" title="Ver Detalle" >'+
-                        // '<i class="fas fa-list-ul"></i></button>';
-                    } else {
-                        // return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
-                        //     'data-placement="bottom" title="Ver Detalle" >'+
-                        //     '<i class="fas fa-list-ul"></i></button>';
-                    }
-                }
-            }
-        ],
-        columnDefs: [{ aTargets: [0], sClass: "invisible" }],
-        order: [[0, "desc"]]
-    });
-}
-
-$("#listaTransformaciones tbody").on("click", "button.guia", function() {
-    var data = $("#listaTransformaciones")
-        .DataTable()
-        .row($(this).parents("tr"))
-        .data();
-    open_transformacion_guia_create(data);
-});
-
-function listarIngresos() {
-    var vardataTables = funcDatatables();
-    $("#listaIngresosAlmacen").DataTable({
-        bDestroy: true,
-        dom: vardataTables[1],
-        buttons: vardataTables[2],
-        language: vardataTables[0],
-        serverSide: true,
-        pageLength: 50,
-        // 'ajax': {
-        //     url:'listarIngresos',
-        //     dataSrc:''
-        // },
-        ajax: {
-            url: "listarIngresos",
-            type: "POST"
-        },
-        columns: [
-            { data: "id_mov_alm" },
-            { data: "fecha_emision" },
-            {
-                data: "numero",
-                name: "guia_com.numero",
-                render: function(data, type, row) {
-                    return row["serie"] + "-" + row["numero"];
-                }
-            },
-            { data: "nro_documento", name: "adm_contri.nro_documento" },
-            { data: "razon_social", name: "adm_contri.razon_social" },
-            {
-                data: "codigo",
-                render: function(data, type, row) {
-                    return row["codigo"] !== null
-                        ? '<label class="lbl-codigo" title="Abrir Ingreso" onClick="abrir_ingreso(' +
-                              row["id_mov_alm"] +
-                              ')">' +
-                              row["codigo"] +
-                              "</label>"
-                        : "";
-                }
-            },
-            { data: "operacion_descripcion", name: "tp_ope.descripcion" },
-            { data: "almacen_descripcion", name: "alm_almacen.descripcion" },
-            { data: "nombre_corto", name: "sis_usua.nombre_corto" },
-            { data: "id_mov_alm" },
-            { data: "id_mov_alm" },
-            { data: "id_guia_com" },
-            { data: "id_mov_alm", searchable: false }
-        ],
-        drawCallback: function() {
-            $(
-                '#listaIngresosAlmacen tbody tr td input[type="checkbox"]'
-            ).iCheck({
-                checkboxClass: "icheckbox_flat-blue"
-            });
-        },
-        columnDefs: [
-            {
-                targets: 0,
-                searchable: false,
-                orderable: false,
-                className: "dt-body-center",
-                checkboxes: {
-                    selectRow: true,
-                    selectCallback: function(nodes, selected) {
-                        $('input[type="checkbox"]', nodes).iCheck("update");
-                    },
-                    selectAllCallback: function(
-                        nodes,
-                        selected,
-                        indeterminate
-                    ) {
-                        $('input[type="checkbox"]', nodes).iCheck("update");
-                    }
-                }
-            },
-            {
-                render: function(data, type, row) {
-                    return row.ordenes_compra;
-                },
-                targets: 9
-            },
-            {
-                render: function(data, type, row) {
-                    return row.ordenes_soft_link;
-                },
-                targets: 10
-            },
-            {
-                render: function(data, type, row) {
-                    return row.comprobantes;
-                },
-                targets: 11
-            },
-            {
-                render: function(data, type, row) {
-                    if (acceso == "1") {
-                        return (
-                            '<button type="button" class="detalle btn btn-primary btn-xs " data-toggle="tooltip" ' +
-                            'data-placement="bottom" title="Ver Detalle" data-id="' +
-                            row["id_guia_com"] +
-                            '" data-cod="' +
-                            row["codigo"] +
-                            '">' +
-                            '<i class="fas fa-list-ul"></i></button>' +
-                            // '<button type="button" class="ingreso btn btn-warning boton" data-toggle="tooltip" '+
-                            //     'data-placement="bottom" title="Ver Ingreso" data-id="'+row['id_mov_alm']+'">'+
-                            //     '<i class="fas fa-file-alt"></i></button>'+
-                            (row["id_operacion"] == 21
-                                ? ""
-                                : `<button type="button" class="cambio btn btn-warning btn-xs" data-toggle="tooltip" 
-                            data-placement="bottom" title="Cambiar Serie-Número" data-id="${row["id_mov_alm"]}" 
-                            data-guia="${row["id_guia_com"]}"><i class="fas fa-sync-alt"></i></button>`) +
-                            `${
-                                row["count_sedes_diferentes"] > 0 ||
-                                row["count_sedes_diferentes_od"] > 0
-                                    ? row["count_transferencias"] == 0
-                                        ? `<button type="button" class="transferencia btn btn-success btn-xs" data-toggle="tooltip" 
-                                data-placement="bottom" title="Generar Transferencia" data-guia="${row["id_guia_com"]}">
-                                <i class="fas fa-exchange-alt"></i></button>
-                            <button type="button" class="anular btn btn-danger btn-xs " data-toggle="tooltip" 
-                                data-placement="bottom" title="Anular Ingreso" data-id="${row["id_mov_alm"]}" 
-                                data-guia="${row["id_guia_com"]}" data-oc="${row["id_orden_compra"]}">
-                                <i class="fas fa-trash"></i></button>`
-                                        : ""
-                                    : row["id_operacion"] == 21
-                                    ? ""
-                                    : //falta verificar si ya se creo orden de despacho
-                                    row["count_despachos_oc"] > 0
-                                    ? ""
-                                    : row["count_facturas"] > 0
-                                    ? ""
-                                    : `<button type="button" class="anular btn btn-danger btn-xs " data-toggle="tooltip" 
-                                        data-placement="bottom" title="Anular Ingreso" data-id="${row["id_mov_alm"]}" 
-                                        data-guia="${row["id_guia_com"]}" data-oc="${row["id_orden_compra"]}">
-                                        <i class="fas fa-trash"></i></button>`
-                            }` +
-                            (row["id_operacion"] == 2
-                                ? `<button type="button" class="${
-                                      row["count_facturas"] > 0
-                                          ? "ver_doc"
-                                          : "doc"
-                                  } btn btn-${
-                                      row["count_facturas"] > 0
-                                          ? "info"
-                                          : "default"
-                                  } btn-xs" data-toggle="tooltip" 
-                            data-placement="bottom" title="Generar Factura" data-guia="${
-                                row["id_guia_com"]
-                            }" data-doc="${row["id_doc_com"]}">
-                            <i class="fas fa-file-medical"></i></button>`
-                                : "")
-                        );
-                    } else {
-                        return (
-                            '<button type="button" class="detalle btn btn-primary btn-xs" data-toggle="tooltip" ' +
-                            'data-placement="bottom" title="Ver Detalle" data-id="' +
-                            row["id_mov_alm"] +
-                            '" data-cod="' +
-                            row["codigo"] +
-                            '">' +
-                            '<i class="fas fa-list-ul"></i></button>' +
-                            '<button type="button" class="ingreso btn btn-warning btn-xs" data-toggle="tooltip" ' +
-                            'data-placement="bottom" title="Ver Ingreso" data-id="' +
-                            row["id_mov_alm"] +
-                            '">' +
-                            '<i class="fas fa-file-alt"></i></button>'
-                        );
-                    }
-                },
-                targets: 12
-            }
-        ],
-        select: "multi",
-        order: [[0, "desc"]]
-    });
-
-    $(
-        $("#listaIngresosAlmacen")
-            .DataTable()
-            .table()
-            .container()
-    ).on("ifChanged", ".dt-checkboxes", function(event) {
-        var cell = $("#listaIngresosAlmacen")
-            .DataTable()
-            .cell($(this).closest("td"));
-        cell.checkboxes.select(this.checked);
-
-        var data = $("#listaIngresosAlmacen")
-            .DataTable()
-            .row($(this).parents("tr"))
-            .data();
-        console.log(this.checked);
-
-        if (data !== null && data !== undefined) {
-            if (this.checked) {
-                ingresos_seleccionados.push(data);
-            } else {
-                var index = ingresos_seleccionados.findIndex(function(item, i) {
-                    return item.id_guia_com == data.id_guia_com;
-                });
-                if (index !== null) {
-                    ingresos_seleccionados.splice(index, 1);
-                }
-            }
-        }
-    });
-}
-
-$("#listaIngresosAlmacen tbody").on(
-    "click",
-    "button.transferencia",
-    function() {
-        var id_guia_com = $(this).data("guia");
-        // console.log(data);
-        ver_transferencia(id_guia_com);
-    }
-);
-
-$("#listaIngresosAlmacen tbody").on("click", "button.detalle", function() {
-    var id_guia_com = $(this).data("id");
-    var codigo = $(this).data("cod");
-    // console.log(data);
-    open_detalle_movimiento(id_guia_com, codigo);
-});
-
-function abrir_ingreso(id_mov_alm) {
-    var id = encode5t(id_mov_alm);
-    window.open("imprimir_ingreso/" + id);
-}
-
-$("#listaIngresosAlmacen tbody").on("click", "button.anular", function() {
-    var id_mov_alm = $(this).data("id");
-    var id_guia = $(this).data("guia");
-    var id_oc = $(this).data("oc");
-
-    $("#modal-guia_com_obs").modal({
-        show: true
-    });
-
-    $("[name=id_mov_alm]").val(id_mov_alm);
-    $("[name=id_guia_com]").val(id_guia);
-    $("[name=id_oc]").val(id_oc);
-    $("[name=observacion]").val("");
-
-    $("#submitGuiaObs").removeAttr("disabled");
-});
-
-$("#listaIngresosAlmacen tbody").on("click", "button.cambio", function() {
-    var id_mov_alm = $(this).data("id");
-    var id_guia = $(this).data("guia");
-
-    $("#modal-guia_com_cambio").modal({
-        show: true
-    });
-
-    $("[name=id_ingreso]").val(id_mov_alm);
-    $("[name=id_guia_com]").val(id_guia);
-    $("[name=serie_nuevo]").val("");
-    $("[name=numero_nuevo]").val("");
-
-    $("#submit_guia_com_cambio").removeAttr("disabled");
-});
-
-$("#listaIngresosAlmacen tbody").on("click", "button.anular_sal", function() {
-    var id_mov_alm = $(this).data("id");
-    var id_guia = $(this).data("guia");
-    var id_trans = $(this).data("trans");
-
-    $("#modal-guia_ven_obs").modal({
-        show: true
-    });
-
-    $("[name=id_salida]").val(id_mov_alm);
-    $("[name=id_guia_ven]").val(id_guia);
-    $("[name=id_trans]").val(id_trans);
-    $("[name=observacion_guia_ven]").val("");
-
-    $("#submitGuiaVenObs").removeAttr("disabled");
-});
-
-$("#listaIngresosAlmacen tbody").on("click", "button.doc", function() {
-    var id_guia = $(this).data("guia");
-    open_doc_create(id_guia, "ing");
-});
-
-$("#listaIngresosAlmacen tbody").on("click", "button.ver_doc", function() {
-    var id_doc = $(this).data("doc");
-    documentosVer(id_doc);
 });
 
 function open_detalle(data) {
@@ -613,41 +261,26 @@ function cargar_almacenes(sede) {
             type: "GET",
             url: "cargar_almacenes/" + sede,
             dataType: "JSON",
-            success: function(response) {
+            success: function (response) {
                 console.log(response);
                 var option = "";
                 for (var i = 0; i < response.length; i++) {
                     if (response.length == 1) {
                         option +=
-                            '<option data-id-sede="' +
-                            response[i].id_sede +
-                            '" data-id-empresa="' +
-                            response[i].id_empresa +
-                            '" value="' +
-                            response[i].id_almacen +
-                            '" selected>' +
-                            response[i].codigo +
-                            " - " +
-                            response[i].descripcion +
+                            '<option data-id-sede="' + response[i].id_sede + '" data-id-empresa="' +
+                            response[i].id_empresa + '" value="' + response[i].id_almacen +
+                            '" selected>' + response[i].codigo + " - " + response[i].descripcion +
                             "</option>";
                     } else {
                         option +=
-                            '<option data-id-sede="' +
-                            response[i].id_sede +
-                            '" data-id-empresa="' +
-                            response[i].id_empresa +
-                            '" value="' +
-                            response[i].id_almacen +
-                            '">' +
-                            response[i].codigo +
-                            " - " +
-                            response[i].descripcion +
-                            "</option>";
+                            '<option data-id-sede="' + response[i].id_sede + '" data-id-empresa="' +
+                            response[i].id_empresa + '" value="' + response[i].id_almacen + '">' +
+                            response[i].codigo + " - " + response[i].descripcion + "</option>";
                     }
                 }
                 $("[name=id_almacen]").html(option);
             }
-        }).fail(function(jqXHR, textStatus, errorThrown) {
+        }).fail(function (jqXHR, textStatus, errorThrown) {
             console.log(jqXHR);
             console.log(textStatus);
             console.log(errorThrown);
@@ -660,12 +293,8 @@ function open_guias(data) {
         show: true
     });
     $("#cabecera_orden").text(
-        data.codigo_orden +
-            " - " +
-            data.razon_social +
-            " - Total: " +
-            data.simbolo +
-            data.monto_total
+        data.codigo_orden + " - " + data.razon_social +
+        " - Total: " + data.simbolo + data.monto_total
     );
     listar_guias_orden(data.id_orden_compra);
 }
@@ -676,55 +305,35 @@ function listar_detalle_orden(id_orden) {
         type: "GET",
         url: "detalleOrden/" + id_orden,
         dataType: "JSON",
-        success: function(response) {
+        success: function (response) {
             console.log(response);
             var html = "";
             var i = 1;
             response.forEach(element => {
                 html +=
-                    '<tr id="' +
-                    element.id_detalle_orden +
-                    '">' +
-                    "<td>" +
-                    i +
-                    "</td>" +
-                    "<td>" +
-                    element.codigo +
-                    "</td>" +
-                    "<td>" +
-                    element.part_number +
-                    "</td>" +
-                    "<td>" +
-                    element.categoria +
-                    "</td>" +
-                    "<td>" +
-                    element.subcategoria +
-                    "</td>" +
-                    "<td>" +
-                    element.descripcion +
-                    "</td>" +
-                    "<td>" +
-                    element.cantidad +
-                    "</td>" +
-                    "<td>" +
-                    element.abreviatura +
-                    "</td>" +
+                    '<tr id="' + element.id_detalle_orden + '">' +
+                    "<td>" + i + "</td>" +
+                    "<td>" + element.codigo + "</td>" +
+                    "<td>" + element.part_number + "</td>" +
+                    "<td>" + element.categoria + "</td>" +
+                    "<td>" + element.subcategoria + "</td>" +
+                    "<td>" + element.descripcion + "</td>" +
+                    "<td>" + element.cantidad + "</td>" +
+                    "<td>" + element.abreviatura + "</td>" +
                     "<td>" +
                     (element.cantidad_ingresada !== null
                         ? element.cantidad_ingresada
                         : "0") +
                     "</td>" +
                     '<td><span class="label label-' +
-                    element.bootstrap_color +
-                    '">' +
-                    element.estado_doc +
-                    "</span></td>" +
+                    element.bootstrap_color + '">' +
+                    element.estado_doc + "</span></td>" +
                     "</tr>";
                 i++;
             });
             $("#detalleOrden tbody").html(html);
         }
-    }).fail(function(jqXHR, textStatus, errorThrown) {
+    }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
@@ -736,7 +345,7 @@ function listar_guias_orden(id_orden) {
         type: "GET",
         url: "verGuiasOrden/" + id_orden,
         dataType: "JSON",
-        success: function(response) {
+        success: function (response) {
             console.log(response);
             var html = "";
             var i = 1;
@@ -780,7 +389,7 @@ function listar_guias_orden(id_orden) {
             });
             $("#guiasOrden tbody").html(html);
         }
-    }).fail(function(jqXHR, textStatus, errorThrown) {
+    }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
@@ -801,41 +410,6 @@ function ceros_numero(numero) {
         var num = $("[name=serie]").val();
         $("[name=serie]").val(leftZero(4, num));
     }
-}
-
-$("#form-obs").on("submit", function(e) {
-    console.log("submit");
-    e.preventDefault();
-    var data = $(this).serialize();
-    console.log(data);
-    anular_ingreso(data);
-});
-
-function anular_ingreso(data) {
-    $("#submitGuiaObs").attr("disabled", "true");
-    $.ajax({
-        type: "POST",
-        url: "anular_ingreso",
-        data: data,
-        dataType: "JSON",
-        success: function(response) {
-            console.log(response);
-            if (response.length > 0) {
-                alert(response);
-                $("#modal-guia_com_obs").modal("hide");
-            } else {
-                alert("Ingreso Almacén anulado con éxito");
-                $("#modal-guia_com_obs").modal("hide");
-                $("#listaIngresosAlmacen")
-                    .DataTable()
-                    .ajax.reload();
-            }
-        }
-    }).fail(function(jqXHR, textStatus, errorThrown) {
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    });
 }
 
 function abrirProducto() {

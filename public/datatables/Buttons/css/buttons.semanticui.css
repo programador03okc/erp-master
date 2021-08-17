@@ -1,4 +1,3 @@
-@charset "UTF-8";
 @keyframes dtb-spinner {
   100% {
     transform: rotate(360deg);
@@ -59,19 +58,18 @@ div.dt-button-collection-title {
   font-size: 0.9em;
 }
 
+div.dt-button-collection-title:empty {
+  display: none;
+}
+
 div.dt-button-collection {
   position: absolute;
   top: 0;
   left: 0;
-  width: 150px;
+  min-width: 200px;
   margin-top: 3px !important;
   z-index: 2002;
   background: white;
-  -webkit-column-gap: 8px;
-  -moz-column-gap: 8px;
-  -ms-column-gap: 8px;
-  -o-column-gap: 8px;
-  column-gap: 8px;
 }
 div.dt-button-collection.fixed {
   position: fixed;
@@ -81,7 +79,7 @@ div.dt-button-collection.fixed {
   border-radius: 0;
 }
 div.dt-button-collection.fixed.two-column {
-  margin-left: -150px;
+  margin-left: -200px;
 }
 div.dt-button-collection.fixed.three-column {
   margin-left: -225px;
@@ -89,12 +87,22 @@ div.dt-button-collection.fixed.three-column {
 div.dt-button-collection.fixed.four-column {
   margin-left: -300px;
 }
-div.dt-button-collection > * {
+div.dt-button-collection > :last-child {
+  display: block !important;
+  -webkit-column-gap: 8px;
+  -moz-column-gap: 8px;
+  -ms-column-gap: 8px;
+  -o-column-gap: 8px;
+  column-gap: 8px;
+}
+div.dt-button-collection > :last-child > * {
   -webkit-column-break-inside: avoid;
   break-inside: avoid;
 }
 div.dt-button-collection.two-column {
-  width: 300px;
+  width: 400px;
+}
+div.dt-button-collection.two-column > :last-child {
   padding-bottom: 1px;
   -webkit-column-count: 2;
   -moz-column-count: 2;
@@ -104,6 +112,8 @@ div.dt-button-collection.two-column {
 }
 div.dt-button-collection.three-column {
   width: 450px;
+}
+div.dt-button-collection.three-column > :last-child {
   padding-bottom: 1px;
   -webkit-column-count: 3;
   -moz-column-count: 3;
@@ -113,6 +123,8 @@ div.dt-button-collection.three-column {
 }
 div.dt-button-collection.four-column {
   width: 600px;
+}
+div.dt-button-collection.four-column > :last-child {
   padding-bottom: 1px;
   -webkit-column-count: 4;
   -moz-column-count: 4;
@@ -167,7 +179,7 @@ div.dt-buttons a.button.processing:after {
   margin: -8px 0 0 -8px;
   box-sizing: border-box;
   display: block;
-  content: ' ';
+  content: " ";
   border: 2px solid #282828;
   border-radius: 50%;
   border-left-color: transparent;

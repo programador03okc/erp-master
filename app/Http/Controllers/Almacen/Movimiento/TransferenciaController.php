@@ -1927,9 +1927,10 @@ class TransferenciaController extends Controller
                 // ['alm_det_req.id_almacen_reserva', '!=', 'alm_req.id_almacen'],
             ])
             // ->whereNotNull('alm_det_req.id_almacen_reserva')
-            ->distinct()->get();
+            ->distinct();
 
-        $output['data'] = $data;
-        return response()->json($output);
+        // $output['data'] = $data;
+        // return response()->json($output);
+        return datatables($data)->toJson();
     }
 }

@@ -42,11 +42,11 @@ var DataTable = $.fn.dataTable;
 var collection = DataTable.ext.foundationVersion === 6 ?
 	{
 		tag: 'div',
-		className: 'dt-button-collection dropdown-pane is-open button-group stacked'
+		className: 'dropdown-pane is-open button-group stacked'
 	} :
 	{
 		tag: 'ul',
-		className: 'dt-button-collection f-dropdown open dropdown-pane is-open',
+		className: 'f-dropdown open dropdown-pane is-open',
 		button: {
 			tag: 'li',
 			className: 'small',
@@ -81,8 +81,19 @@ $.extend( true, DataTable.Buttons.defaults, {
 } );
 
 
-DataTable.ext.buttons.collection.className = 'buttons-collection dropdown';
+DataTable.ext.buttons.collection.className = 'dropdown';
 
+$(document).on('buttons-popover.dt', function () {
+	var notButton = false;
+	$('.dtsp-panesContainer').each(function() {
+		if(!$(this).is('button')){
+			notButton = true;
+		}
+	});
+	if(notButton){
+		$('.dtsp-panesContainer').removeClass('button-group stacked')
+	}
+});
 
 return DataTable.Buttons;
 }));
