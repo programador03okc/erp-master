@@ -93,7 +93,11 @@ function open_doc_create_seleccionadas() {
     if (dif_emp > 0) text += 'Debe seleccionar Guías emitidas para la misma empresa';
 
     if ((dif_prov + dif_emp) > 0) {
-        alert(text);
+        // alert(text);
+        Swal.fire({
+            title: text,
+            icon: "warning",
+        });
     } else {
 
         $('#modal-doc_create').modal({
