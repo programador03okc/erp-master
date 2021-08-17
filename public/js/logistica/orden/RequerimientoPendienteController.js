@@ -594,6 +594,7 @@ class RequerimientoPendienteCtrl{
     crearOrdenCompraPorRequerimiento(obj){
         reqTrueList.push(obj.dataset.idRequerimiento)
         console.log(reqTrueList);
+        sessionStorage.removeItem('idOrden');
         sessionStorage.setItem('reqCheckedList', JSON.stringify(reqTrueList));
         sessionStorage.setItem('tipoOrden', 'COMPRA');
         sessionStorage.setItem('action', 'register');
@@ -603,6 +604,7 @@ class RequerimientoPendienteCtrl{
     // Crear orden servicio por requerimiento
     crearOrdenServicioPorRequerimiento(obj){
         reqTrueList.push(obj.dataset.idRequerimiento)
+        sessionStorage.removeItem('idOrden');
         sessionStorage.setItem('reqCheckedList', JSON.stringify(reqTrueList));
         sessionStorage.setItem('tipoOrden', 'SERVICIO');
         let url ="/logistica/gestion-logistica/compras/ordenes/elaborar/index";
@@ -620,6 +622,7 @@ class RequerimientoPendienteCtrl{
             
         });
         // console.log(reqTrueList);
+        sessionStorage.removeItem('idOrden');
         sessionStorage.setItem('reqCheckedList', JSON.stringify(reqTrueList));
         sessionStorage.setItem('tipoOrden', 'COMPRA');
         sessionStorage.setItem('action', 'edition');

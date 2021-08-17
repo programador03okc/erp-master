@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use App\Models\Presupuestos\CentroCosto;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class CentroCostoController extends Controller
 {
@@ -41,14 +42,20 @@ class CentroCostoController extends Controller
             $idGrupoList[]=$grupo->id_grupo;
         }
 
-        $centro_costos = CentroCosto::orderBy('codigo','asc')
+        // $centro_costos = CentroCosto::orderBy('codigo','asc')
+        // ->where('estado',1)
+        // ->whereIn('id_grupo',$idGrupoList)
+        // ->whereRaw('centro_costo.version = (select max("version") from finanzas.centro_costo)')
+        // ->select(['*'])
+        // ->get();
+        $centroCostos = CentroCosto::orderBy('codigo','asc')
         ->where('estado',1)
         ->whereIn('id_grupo',$idGrupoList)
         ->whereRaw('centro_costo.version = (select max("version") from finanzas.centro_costo)')
-        ->select(['*'])
-        ->get();
-        
-        return response()->json($centro_costos);
+        ->select(['*',DB::raw("CASE WHEN (SELECT cc.codigo FROM finanzas.centro_costo AS cc WHERE centro_costo.codigo!=cc.codigo AND cc.codigo LIKE centro_costo.codigo || '.%' 
+        AND cc.version=centro_costo.version LIMIT 1) IS NULL THEN true ELSE false END AS seleccionable")])->get();
+
+        return response()->json($centroCostos);
     }
 
     public function store()

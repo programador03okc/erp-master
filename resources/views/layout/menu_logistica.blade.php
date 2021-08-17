@@ -77,7 +77,6 @@
             </li>
             @endif
 
-            @if(Auth::user()->tieneSubModulo(27))
             <li class="treeview">
                 <a href="#"><i class="fas fa-user-tie"></i> Proveedores
                     <span class="pull-right-container">
@@ -85,12 +84,9 @@
                     </span>
                 </a>
                 <ul class="treeview-menu" >
-                    @if(Auth::user()->tieneAplicacion(117))
                     <li><a href="/gestionar_proveedores"><i class="far fa-circle fa-xs"></i> Gestionar Proveedores</a></li>
-                    @endif
                 </ul>
             </li>
-            @endif
             @if(Auth::user()->tieneSubModulo(28))
             <li class="treeview">
                 <a href="#"><i class="fas fa-people-carry"></i> Servicios

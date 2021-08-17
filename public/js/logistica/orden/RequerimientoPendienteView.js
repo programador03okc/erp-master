@@ -195,7 +195,7 @@ class RequerimientoPendienteView {
                             // let btnObservarRequerimientoLogistica= '<button type="button" class="btn btn-default btn-xs handleClickObservarRequerimientoLogistica" name="btnObservarRequerimientoLogistica" title="Observar requerimiento" data-id-requerimiento="' + row.id_requerimiento + '" style="background: gold;" ><i class="fas fa-exclamation-triangle fa-sm"></i></button>';
 
                             // let btnAgregarItemBase = '<button type="button" class="btn btn-success btn-xs" name="btnAgregarItemBase" title="Mapear productos" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.openModalAgregarItemBase(this);"  ><i class="fas fa-sign-out-alt"></i></button>';
-                            let btnMapearProductos = '<button type="button" class="mapeo btn btn-success btn-xs" title="Mapear productos" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo="' + row.codigo + '"  ><i class="fas fa-sign-out-alt"></i></button>';
+                            let btnMapearProductos = '<button type="button" class="mapeo btn btn-success btn-xs" title="Mapear productos" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo="' + row.codigo + '"  ><i class="fas fa-sign-out-alt"></i> <span class="badge" title="Cantidad items sin mapear" name="cantidadAdjuntosRequerimiento" style="position:absolute;border: solid 0.1px;z-index: 9;top: -9px;left: 0px;font-size: 0.9rem;">'+row.count_pendientes+'</span></button>';
                             let btnAtenderAlmacen='';
                             let btnCrearOrdenCompra = '';
                                 if(row.count_pendientes ==0){
@@ -286,7 +286,7 @@ class RequerimientoPendienteView {
                 { 'aTargets': [7], 'sWidth': '7%', 'className': 'text-center' },
                 { 'aTargets': [8], 'sWidth': '5%' },
                 { 'aTargets': [9], 'sWidth': '5%', 'className': 'text-center' },
-                { 'aTargets': [10], 'sWidth': '5%', 'className': 'text-left' }
+                { 'aTargets': [10], 'sWidth': '5%', 'className': 'text-center' }
             ],
             "createdRow": function (row, data, dataIndex) {
                 if (data.tiene_transformacion == true) {

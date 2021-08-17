@@ -525,16 +525,20 @@ class ListaOrdenView {
     }
 
     construirTablaListaOrdenesElaboradas(data){
+        console.log(data);
         let that=this;
         tablaListaOrdenes = $('#listaOrdenes').DataTable({
             'processing':true,
             'destroy':true,
             'language' : vardataTables[0],
             'data': data,
+            "order": [[ 0, "desc" ]],
+
             // "dataSrc":'',
             'dom': 'Bfrtip',
             'scrollX': false,
             'columns': [
+                {'data': 'id_orden_compra'},
                 {'render':
                 function (data, type, row, meta){
                     return `${(row.codigo_oportunidad ?? '')}`;
@@ -678,8 +682,10 @@ class ListaOrdenView {
                 }
                 
             ],
-            'columnDefs': [{ className: "text-right", 'aTargets': [0]},
-            {className: "text-right", 'aTargets': [18]}
+            'columnDefs': [
+                { 'aTargets': [0], 'visible': false, 'searchable': false},
+                { 'aTargets': [1], 'className': "text-right" },
+                { 'aTargets': [19], 'className': "text-right"}
             ]
             ,"initComplete": function() {
 
@@ -741,12 +747,12 @@ class ListaOrdenView {
                     <td style="border: none;">${element.codigo_oportunidad !== null ? element.codigo_oportunidad : ''}</td>
                     <td style="border: none;">${element.nombre_entidad !== null ? element.nombre_entidad : ''}</td>
                     <td style="border: none;">${element.nombre_corto_responsable !== null ? element.nombre_corto_responsable : ''}</td>
-                    <td style="border: none;"><label class="lbl-codigo handleClickAbrirRequerimiento" title="Abrir Requerimiento" data-id-requerimiento="${element.id_requerimiento}">${element.codigo_req}</label> ${element.sede_req}</td>
-                    <td style="border: none;">${element.codigo}</td>
-                    <td style="border: none;">${element.part_number !== null ? element.part_number : ''}</td>
-                    <td style="border: none;">${element.descripcion}</td>
-                    <td style="border: none;">${element.cantidad}</td>
-                    <td style="border: none;">${element.abreviatura}</td>
+                    <td style="border: none;"><label class="lbl-codigo handleClickAbrirRequerimiento" title="Abrir Requerimiento" data-id-requerimiento="${element.id_requerimiento}">${element.codigo_req??''}</label></td>
+                    <td style="border: none;">${element.codigo??''}</td>
+                    <td style="border: none;">${element.part_number??''}</td>
+                    <td style="border: none;">${element.descripcion? element.descripcion:(element.descripcion_adicional?element.descripcion_adicional:'')}</td>
+                    <td style="border: none;">${element.cantidad?element.cantidad:''}</td>
+                    <td style="border: none;">${element.abreviatura?element.abreviatura:''}</td>
                     <td style="border: none;">${element.moneda_simbolo}${$.number(element.precio,2)}</td>
                     <td style="border: none;">${element.moneda_simbolo}${$.number((element.cantidad*element.precio),2)}</td>
                     </tr>`;
@@ -800,8 +806,11 @@ class ListaOrdenView {
     }
 
     abrirOrden(idOrden){
+        sessionStorage.removeItem('reqCheckedList');
+        sessionStorage.removeItem('tipoOrden');
         sessionStorage.setItem("idOrden",idOrden);
         sessionStorage.setItem("action",'historial');
+
         let url ="/logistica/gestion-logistica/compras/ordenes/elaborar/index";
         var win = window.open(url, '_blank');
         win.focus();

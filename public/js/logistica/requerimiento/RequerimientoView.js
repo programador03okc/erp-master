@@ -1317,7 +1317,7 @@ class RequerimientoView {
                                         <tr id="com-${hijo3.id_centro_costo}">
                                             <td>${hijo3.codigo}</td>
                                             <td>${hijo3.descripcion}</td>
-                                            <td style="width:5%; text-align:center;"><button class="btn btn-success btn-xs handleClickSelectCentroCosto" data-id-centro-costo="${hijo3.id_centro_costo}" data-codigo="${hijo3.codigo}" data-descripcion-centro-costo="${hijo3.descripcion}" >Seleccionar</button></td>
+                                            <td style="width:5%; text-align:center;">${hijo3.seleccionable ?`<button class="btn btn-success btn-xs handleClickSelectCentroCosto" data-id-centro-costo="${hijo3.id_centro_costo}" data-codigo="${hijo3.codigo}" data-descripcion-centro-costo="${hijo3.descripcion}" >Seleccionar</button>`:'' }</td>
                                         </tr> `;
                                     }
                                 }
@@ -1330,7 +1330,7 @@ class RequerimientoView {
                                                 <tr id="com-${hijo4.id_centro_costo}">
                                                     <td>${hijo4.codigo}</td>
                                                     <td>${hijo4.descripcion}</td>
-                                                    <td style="width:5%; text-align:center;"><button class="btn btn-success btn-xs handleClickSelectCentroCosto" data-id-centro-costo="${hijo4.id_centro_costo}" data-codigo="${hijo4.codigo}" data-descripcion-centro-costo="${hijo4.descripcion}">Seleccionar</button></td>
+                                                    <td style="width:5%; text-align:center;">${hijo4.seleccionable?`<button class="btn btn-success btn-xs handleClickSelectCentroCosto" data-id-centro-costo="${hijo4.id_centro_costo}" data-codigo="${hijo4.codigo}" data-descripcion-centro-costo="${hijo4.descripcion}">Seleccionar</button>`:''}</td>
                                                 </tr> `;
                                             }
                                         }

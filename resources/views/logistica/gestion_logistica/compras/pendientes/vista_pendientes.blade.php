@@ -100,7 +100,7 @@ Requerimientos pendientes
 <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
  
 <script src="{{('/js/logistica/orden/RequerimientoPendienteModel.js')}}"></script>
-<script src="{{('/js/logistica/orden/RequerimientoPendienteView.js')}}"></script>
+<script src="{{('/js/logistica/orden/RequerimientoPendienteView.js?v=3')}}"></script>
 <script src="{{('/js/logistica/orden/RequerimientoPendienteController.js')}}"></script>
 
 <script src="{{ asset('js/logistica/mapeo/mapeoItemsRequerimiento.js')}}"></script>

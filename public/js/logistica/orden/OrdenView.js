@@ -100,9 +100,6 @@ class OrdenView {
         });
 
 
-        $('#listaDetalleOrden tbody').on("blur","input.handleBlurUpdateInputPrecio", (e)=>{
-            this.updateInputPrecio(e);
-        });
 
         $('#listaDetalleOrden tbody').on("blur","input.handleBlurUpdateInputCantidadAComprar", (e)=>{
             this.updateInputCantidadAComprar(e);
@@ -350,7 +347,7 @@ class OrdenView {
                     <td>
                         <div class="input-group">
                             <div class="input-group-addon" style="background:lightgray;" name="simboloMoneda">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</div>
-                            <input class="form-control precio input-sm text-right ${(data[i].estado_guia_com_det>0 && data[i].estado_guia_com_det !=7?'':'activation')} handleBlurUpdateInputPrecio handleBurUpdateSubtotal" data-id-tipo-item="1" data-producto-regalo="${(data[i].producto_regalo?data[i].producto_regalo:false)}" type="number" min="0" name="precioUnitario[]"  placeholder="" value="${data[i].precio_unitario?data[i].precio_unitario:0}" disabled>
+                            <input class="form-control precio input-sm text-right ${(data[i].estado_guia_com_det>0 && data[i].estado_guia_com_det !=7?'':'activation')}  handleBurUpdateSubtotal" data-id-tipo-item="1" data-producto-regalo="${(data[i].producto_regalo?data[i].producto_regalo:false)}" type="number" min="0" name="precioUnitario[]"  placeholder="" value="${data[i].precio_unitario?data[i].precio_unitario:0}" disabled>
                         </div>
                     </td>
                     <td>
@@ -401,9 +398,24 @@ class OrdenView {
     
     updateSubtotal(obj){
         let tr = obj.closest("tr");
+        let isGift =(tr.querySelector("input[class~='precio']").dataset.productoRegalo);
         let cantidad = parseFloat(tr.querySelector("input[class~='cantidad_a_comprar']").value);
         let precioUnitario = parseFloat(tr.querySelector("input[class~='precio']").value);
         let subtotal = (cantidad * precioUnitario);
+
+        if(isGift =='true'){
+            if(subtotal>10){
+                Swal.fire(
+                    '',
+                    'El precio fijado para un obsequio no puede ser mayor a 10.00',
+                    'info'
+                );
+                tr.querySelector("input[class~='precio']").value=0;
+                tr.querySelector("input[class~='cantidad_a_comprar']").value=0;
+                subtotal=0;
+            } 
+        }
+
         tr.querySelector("span[class='subtotal']").textContent = Util.formatoNumero(subtotal, 2);
         this.calcularMontosTotales();
     }
@@ -572,30 +584,6 @@ class OrdenView {
         listaItems_filter.querySelector("input[type='search']").style.width = '100%';
     }
 
- 
- 
-
- 
-
-    updateInputPrecio(event){
-        let nuevoValor =event.target.value;
-        let id = event.target.dataset.id;
-        let isGift =(event.target.dataset.productoRegalo);
-        if(isGift =='true'){
-            if(nuevoValor>10){
-                Swal.fire(
-                    '',
-                    'El precio fijado para un producto de regalo no puede ser mayor a 10.00',
-                    'info'
-                );
-                event.target.value='';
-            } 
-        }
-
-    }
-
- 
-
 
     calcTotalDetalleRequerimiento(id){
         let simbolo_moneda_selected = document.querySelector("select[name='id_moneda']")[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda;
@@ -645,7 +633,7 @@ class OrdenView {
         var idServ = tr.children[2].innerHTML;
         var idEqui = tr.children[3].innerHTML;
         var codigo = tr.children[4].innerHTML;
-        var partNum = (tr.children[5].innerHTML)+'<br><span class="label label-default">Producto de regalo</span>';
+        var partNum = (tr.children[5].innerHTML)+'<br><span class="label label-default">Obsequio</span>';
         var categoria = tr.children[6].innerHTML;
         var subcategoria = tr.children[7].innerHTML;
         var descri = tr.children[8].innerHTML;
@@ -705,7 +693,7 @@ class OrdenView {
         <td>
             <div class="input-group">
                 <div class="input-group-addon" style="background:lightgray;" name="simboloMoneda">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</div>
-                <input class="form-control precio input-sm text-right ${(data[0].estado_guia_com_det>0 && data[0].estado_guia_com_det !=7?'':'activation')} handleBlurUpdateInputPrecio handleBurUpdateSubtotal" data-id-tipo-item="1" data-producto-regalo="${(data[0].producto_regalo?data[0].producto_regalo:false)}" type="number" min="0" name="precioUnitario[]"  placeholder="" value="${data[0].precio_unitario?data[0].precio_unitario:0}" >
+                <input class="form-control precio input-sm text-right ${(data[0].estado_guia_com_det>0 && data[0].estado_guia_com_det !=7?'':'activation')}  handleBurUpdateSubtotal" data-id-tipo-item="1" data-producto-regalo="${(data[0].producto_regalo?data[0].producto_regalo:false)}" type="number" min="0" name="precioUnitario[]"  placeholder="" value="${data[0].precio_unitario?data[0].precio_unitario:0}" >
             </div>
         </td>
         <td>

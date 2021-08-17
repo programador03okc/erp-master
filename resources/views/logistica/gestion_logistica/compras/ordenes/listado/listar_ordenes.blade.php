@@ -39,6 +39,7 @@
             <table class="mytable table table-condensed table-bordered table-okc-view" id="listaOrdenes" style="font-size: 9px;">
                 <thead>
                     <tr>
+                        <th></th>
                         <th>Cuadro de presupuesto</th>
                         <th>Proveedor</th>
                         <th>Nro.orden</th>

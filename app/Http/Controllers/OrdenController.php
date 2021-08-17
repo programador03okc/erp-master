@@ -940,13 +940,12 @@ class OrdenController extends Controller
             FROM logistica.log_det_ord_compra 
             WHERE   log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra AND
                     log_det_ord_compra.estado != 7) AS monto_total_orden"),
-            DB::raw("(SELECT  coalesce(oportunidades.importe) AS monto_total_presup
+            DB::raw("(SELECT  coalesce(oc_propias_view.monto_soles) AS monto_total_presup
             FROM logistica.log_det_ord_compra 
             INNER JOIN almacen.alm_det_req on alm_det_req.id_detalle_requerimiento = log_det_ord_compra.id_detalle_requerimiento
             INNER JOIN almacen.alm_req on alm_req.id_requerimiento = alm_det_req.id_requerimiento
             INNER JOIN mgcp_cuadro_costos.cc on cc.id = alm_req.id_cc
             INNER JOIN mgcp_ordenes_compra.oc_propias_view on oc_propias_view.id_oportunidad = cc.id_oportunidad
-            INNER JOIN mgcp_oportunidades.oportunidades on oportunidades.id = oc_propias_view.id_oportunidad
     
             WHERE log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra AND
             logistica.log_det_ord_compra.estado != 7 LIMIT 1) AS monto_total_presup")
@@ -963,7 +962,7 @@ class OrdenController extends Controller
         ->leftjoin('logistica.log_ord_compra_pago','log_ord_compra_pago.id_orden_compra','=','log_ord_compra.id_orden_compra')
 
         ->where([
-            // ['log_ord_compra.codigo', '=', 'OC-21070121'],
+            // ['log_ord_compra.codigo', '=', 'OC-21060042'],
             ['log_ord_compra.estado', '!=', 7],
             ['log_ord_compra.id_grupo_cotizacion', '=', null],
             $tipoOrden >0 ? ['log_ord_compra.id_tp_documento',$tipoOrden]:[null],
@@ -1057,11 +1056,11 @@ class OrdenController extends Controller
             'alm_req.id_requerimiento',
             'alm_req.codigo as codigo_requerimiento',
             'alm_req.fecha_registro as fecha_registro_requerimiento',
-            'oc_propias_view.codigo_oportunidad',
+            'cc_view.codigo_oportunidad',
             'oc_propias_view.fecha_entrega',
             'guia_com_det.fecha_registro as fecha_ingreso_almacen',
             'oc_propias_view.fecha_estado',
-            'cc_view.estado_aprobacion'
+            'oc_propias_view.estado_aprobacion_cuadro'
             )
         ->leftJoin('logistica.log_det_ord_compra', 'log_det_ord_compra.id_orden_compra', '=', 'log_ord_compra.id_orden_compra')
         ->leftJoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
@@ -1069,10 +1068,10 @@ class OrdenController extends Controller
         ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
         ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
         ->leftJoin('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'cc.id_oportunidad')
-        ->leftjoin('mgcp_oportunidades.oportunidades','oportunidades.id','=','oc_propias_view.id_oportunidad')
-        ->leftJoin('mgcp_cuadro_costos.cc_view', 'cc_view.id_oportunidad', '=', 'oportunidades.id')
+        ->leftJoin('mgcp_cuadro_costos.cc_view', 'cc_view.id_oportunidad', '=', 'cc.id_oportunidad')
         ->where([
-            ['log_ord_compra.estado', '!=', 7]
+            ['log_ord_compra.estado', '!=', 7],
+            ['log_det_ord_compra.id_detalle_requerimiento', '>', 0]
         ])
         ->orderBy('log_ord_compra.fecha','desc')
         ->get();
@@ -1089,7 +1088,7 @@ class OrdenController extends Controller
                     'codigo_oportunidad'=> $element->codigo_oportunidad,
                     'fecha_entrega'=> $element->fecha_entrega,
                     'fecha_ingreso_almacen'=> $element->fecha_ingreso_almacen,
-                    'estado_aprobacion'=> $element->estado_aprobacion,
+                    'estado_aprobacion'=> $element->estado_aprobacion_cuadro,
                     'fecha_estado'=> $element->fecha_estado,
                     'fecha_registro_requerimiento'=> $element->fecha_registro_requerimiento
                 ];
@@ -1694,6 +1693,8 @@ class OrdenController extends Controller
             ['log_det_ord_compra.id_orden_compra', '=', $id_orden_compra],
             ['log_det_ord_compra.estado', '!=', 7]
         ])
+        ->orderby('log_det_ord_compra.id_detalle_orden','asc')
+
         ->get();
 
 
@@ -1897,7 +1898,9 @@ class OrdenController extends Controller
                     padding:10px;
                 }
                 table{
-                    width:100%;
+
+                    width:560px;
+                    height:auto;
                     border-collapse: collapse;
                 }
                 .tablePDF thead{
@@ -2019,17 +2022,17 @@ class OrdenController extends Controller
 
                 $html.='<br>
 
-                <table width="100%" class="tablePDF" border="0" style="font-size:8px;">
+                <table class="tablePDF" style="border:0; font-size:8px;">
                 <thead>
                     <tr class="subtitle">
-                        <td style="width:3%; color:white; text-align:center;">Código</td>
-                        <td style="width:3%; color:white; text-align:center;">Part Number</td>
-                        <td style="width:20%; color:white; text-align:center;">Descripción</td>
-                        <td style="width:3%; color:white; text-align:center;">Und</td>
-                        <td style="width:3%; color:white; text-align:center;">Cant.</td>
-                        <td style="width:3%; color:white; text-align:center;">Precio</td>
-                        <td style="width:3%; color:white; text-align:center;">Descuento</td>
-                        <td style="width:5%; color:white; text-align:center;">Total</td>
+                        <td style="width:5px; color:white; text-align:center;">Código</td>
+                        <td style="width:5px; color:white; text-align:center;">Part Number</td>
+                        <td style="width:280px; color:white; text-align:center;">Descripción</td>
+                        <td style="width:15px; color:white; text-align:center;">Und</td>
+                        <td style="width:5px; color:white; text-align:center;">Cant.</td>
+                        <td style="width:15px; color:white; text-align:center;">Precio</td>
+                        <td style="width:5px; color:white; text-align:center;">Descuento</td>
+                        <td style="width:15px; color:white; text-align:center;">Total</td>
                     </tr>   
                 </thead>';
 
@@ -2111,8 +2114,7 @@ class OrdenController extends Controller
                 <tr>
                     <td width="15%" class="verticalTop subtitle">-CDC / Req.: </td>
                     <td class="verticalTop">' . ($ordenArray['head']['codigo_cc']?$ordenArray['head']['codigo_cc']:$ordenArray['head']['codigo_requerimiento']) . '</td
-                    <td nowrap width="15%" class="verticalTop subtitle">-Ejecutivo Responsable: </td>
-                    <td class="verticalTop ">' . ($ordenArray['head']['nombre_responsable_cc']) . '</td
+        
                 </tr>
                 </table>
                 <br>
@@ -2945,7 +2947,6 @@ class OrdenController extends Controller
             $orden = Orden::where("id_orden_compra", $request->id_orden)->first();
             $orden->id_grupo_cotizacion = $request->id_grupo_cotizacion?$request->id_grupo_cotizacion:null;
             $orden->id_tp_documento = ($request->id_tp_documento !== null ? $request->id_tp_documento : 2);
-            $orden->fecha = new Carbon();
             $orden->id_usuario = Auth::user()->id_usuario;
             $orden->id_moneda = $request->id_moneda?$request->id_moneda:null;
             $orden->incluye_igv = isset($request->incluye_igv)?$request->incluye_igv:true;

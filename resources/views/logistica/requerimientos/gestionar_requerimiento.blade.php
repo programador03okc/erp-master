@@ -672,7 +672,7 @@ Crear / editar requerimiento
 
 <script src="{{ asset('js/logistica/requerimiento/ArchivoAdjunto.js')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/TrazabilidadRequerimientoView.js')}}"></script>
-<script src="{{ asset('js/logistica/requerimiento/RequerimientoView.js')}}"></script>
+<script src="{{ asset('js/logistica/requerimiento/RequerimientoView.js?v=2')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/RequerimientoController.js')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/RequerimientoModel.js')}}"></script>
 
