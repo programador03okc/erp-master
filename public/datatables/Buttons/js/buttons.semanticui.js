@@ -47,10 +47,22 @@ $.extend( true, DataTable.Buttons.defaults, {
 		},
 		collection: {
 			tag: 'div',
-			className: 'dt-button-collection ui basic vertical buttons'
+			className: 'ui basic vertical buttons'
 		}
 	}
 } );
+
+$(document).on('buttons-popover.dt', function () {
+	var notButton = false;
+	$('.dtsp-panesContainer').each(function() {
+		if(!$(this).is('button')){
+			notButton = true;
+		}
+	});
+	if(notButton){
+		$('.dtsp-panesContainer').removeClass('vertical buttons')
+	}
+});
 
 
 return DataTable.Buttons;

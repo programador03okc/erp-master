@@ -29,6 +29,9 @@ class OrdenesPendientesController extends Controller
     }
     function view_ordenesPendientes()
     {
+        if (!Auth::user()->tieneAccion(83)) {
+            return 'No autorizado';
+        }
         $almacenes = AlmacenController::mostrar_almacenes_cbo();
         $tp_doc = GenericoAlmacenController::mostrar_tp_doc_cbo();
         $tp_operacion = GenericoAlmacenController::tp_operacion_cbo_ing();

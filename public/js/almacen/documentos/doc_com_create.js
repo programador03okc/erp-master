@@ -2,7 +2,7 @@ let listaItems = [];
 let totales = {};
 let origenDoc = null;
 
-function open_doc_create(id_guia, oc_ing){
+function open_doc_create(id_guia, oc_ing) {
     console.log('open_doc_create');
     origenDoc = oc_ing;
 
@@ -16,20 +16,20 @@ function open_doc_create(id_guia, oc_ing){
     $('[name=numero_doc]').val("");
     $('[name=moneda]').val(1);
     $('[name=simbolo]').val("S/");
-    
+
     totales.simbolo = "S/";
     obtenerGuía(id_guia);
 }
 
-function obtenerGuía(id){
+function obtenerGuía(id) {
     $.ajax({
         type: 'GET',
-        url: 'obtenerGuia/'+id,
+        url: 'obtenerGuia/' + id,
         dataType: 'JSON',
-        success: function(response){
+        success: function (response) {
             console.log(response);
 
-            if (response['guia'] !== null){
+            if (response['guia'] !== null) {
                 $('[name=id_proveedor]').val(response['guia'].id_proveedor);
                 $('[name=proveedor_razon_social]').val(response['guia'].razon_social);
                 $('[name=id_guia]').val(response['guia'].id_guia);
@@ -37,8 +37,8 @@ function obtenerGuía(id){
                 $('[name=numero_guia]').val(response['guia'].numero);
                 $('[name=id_almacen_doc]').val(response['guia'].id_almacen);
             }
-            
-            if (response['detalle'].length > 0){
+
+            if (response['detalle'].length > 0) {
                 listaItems = response['detalle'];
                 $('[name=id_condicion]').val(listaItems[0].id_condicion);
                 $('[name=credito_dias]').val(listaItems[0].plazo_dias);
@@ -46,21 +46,21 @@ function obtenerGuía(id){
                 $('[name=moneda]').val(listaItems[0].id_moneda);
                 $('[name=simbolo]').val(listaItems[0].simbolo);
                 $('[name=id_cta_principal]').val(listaItems[0].id_cta_principal);
-    
-                totales = {'porcentaje_igv' : parseFloat(response['igv'])};
-                
+
+                totales = { 'porcentaje_igv': parseFloat(response['igv']) };
+
                 totales.simbolo = listaItems[0].simbolo;
                 mostrarListaItems();
             }
         }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
+    }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
     });
 }
 
-function open_doc_create_seleccionadas(){
+function open_doc_create_seleccionadas() {
     console.log(ingresos_seleccionados);
     origenDoc = 'ing';
     var id_ingresos_seleccionadas = [];
@@ -73,26 +73,26 @@ function open_doc_create_seleccionadas(){
     ingresos_seleccionados.forEach(element => {
         id_ingresos_seleccionadas.push(element.id_guia_com);
 
-        if (prov == null){
+        if (prov == null) {
             prov = element.razon_social;
             id_prov = element.id_proveedor;
-        } 
-        else if (element.razon_social !== prov){
+        }
+        else if (element.razon_social !== prov) {
             dif_prov++;
         }
-        if (emp == null){
+        if (emp == null) {
             emp = element.id_empresa;
-        } 
-        else if (element.id_empresa !== emp){
+        }
+        else if (element.id_empresa !== emp) {
             dif_emp++;
         }
     });
 
     var text = '';
-    if (dif_prov > 0) text+='Debe seleccionar Guías del mismo proveedor\n';
-    if (dif_emp > 0) text+='Debe seleccionar Guías emitidas para la misma empresa';
+    if (dif_prov > 0) text += 'Debe seleccionar Guías del mismo proveedor\n';
+    if (dif_emp > 0) text += 'Debe seleccionar Guías emitidas para la misma empresa';
 
-    if ((dif_prov + dif_emp) > 0){
+    if ((dif_prov + dif_emp) > 0) {
         alert(text);
     } else {
 
@@ -106,31 +106,31 @@ function open_doc_create_seleccionadas(){
         $('[name=numero_doc]').val("");
         $('[name=moneda]').val(1);
         $('[name=simbolo]').val("S/");
-        
+
         totales.simbolo = "S/";
         obtenerGuíaSeleccionadas(id_ingresos_seleccionadas, prov, id_prov);
     }
 }
 
-function obtenerGuíaSeleccionadas(id_ingresos_seleccionadas, prov, id_prov){
-    var data = 'id_ingresos_seleccionados='+JSON.stringify(id_ingresos_seleccionadas);
+function obtenerGuíaSeleccionadas(id_ingresos_seleccionadas, prov, id_prov) {
+    var data = 'id_ingresos_seleccionados=' + JSON.stringify(id_ingresos_seleccionadas);
     $.ajax({
         type: 'POST',
         url: 'obtenerGuiaSeleccionadas',
         data: data,
         dataType: 'JSON',
-        success: function(response){
+        success: function (response) {
             console.log(response);
 
             // if (response['guia'] !== null){
-                $('[name=id_proveedor]').val(id_prov);
-                $('[name=proveedor_razon_social]').val(prov);
-                $('[name=id_guia]').val('');
-                $('[name=serie_guia]').val('');
-                $('[name=numero_guia]').val('');
+            $('[name=id_proveedor]').val(id_prov);
+            $('[name=proveedor_razon_social]').val(prov);
+            $('[name=id_guia]').val('');
+            $('[name=serie_guia]').val('');
+            $('[name=numero_guia]').val('');
             // }
-            
-            if (response['detalle'].length > 0){
+
+            if (response['detalle'].length > 0) {
                 listaItems = response['detalle'];
                 $('[name=id_condicion]').val(listaItems[0].id_condicion);
                 $('[name=credito_dias]').val(listaItems[0].plazo_dias);
@@ -139,21 +139,21 @@ function obtenerGuíaSeleccionadas(id_ingresos_seleccionadas, prov, id_prov){
                 $('[name=simbolo]').val(listaItems[0].simbolo);
                 $('[name=id_almacen_doc]').val(listaItems[0].id_almacen);
                 $('[name=id_cta_principal]').val(listaItems[0].id_cta_principal);
-    
+
                 totales.simbolo = listaItems[0].simbolo;
 
-                totales = {'porcentaje_igv' : parseFloat(response['igv'])};
+                totales = { 'porcentaje_igv': parseFloat(response['igv']) };
                 mostrarListaItems();
             }
         }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
+    }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
     });
 }
 
-function mostrarListaItems(){
+function mostrarListaItems() {
     var html = ''
     var i = 1;
     var sub_total = 0;
@@ -167,21 +167,21 @@ function mostrarListaItems(){
         element.total = (element.sub_total - element.total_dscto);
         sub_total += element.total;
 
-        html+=`<tr>
+        html += `<tr>
         <td>${i}</td>
-        <td>${(element.serie!==undefined ? (element.serie+'-'+element.numero) : (element.cod_orden!==null?element.cod_orden:''))}</td>
-        <td>${element.codigo!==null?element.codigo:''}</td>
-        <td>${element.part_number!==null?element.part_number:''}</td>
-        <td>${element.id_producto==null
-            ?`<input type="text" class="form-control descripcion" value="${element.descripcion}" data-id="${element.id_guia_com_det}"/>`
-            :element.descripcion}</td>
+        <td>${(element.serie !== undefined ? (element.serie + '-' + element.numero) : (element.cod_orden !== null ? element.cod_orden : ''))}</td>
+        <td>${element.codigo !== null ? element.codigo : ''}</td>
+        <td>${element.part_number !== null ? element.part_number : ''}</td>
+        <td>${element.id_producto == null
+                ? `<input type="text" class="form-control descripcion" value="${element.descripcion}" data-id="${element.id_guia_com_det}"/>`
+                : element.descripcion}</td>
         <td>${element.cantidad}</td>
         <td>${element.abreviatura}</td>
         <td>
             <input type="number" class="form-control right unitario" value="${element.precio}" 
             data-id="${element.id_guia_com_det}" min="0" step="0.0001"/>
         </td>
-        <td class="right">${formatNumber.decimal(element.sub_total,'',-4)}</td>
+        <td class="right">${formatNumber.decimal(element.sub_total, '', -4)}</td>
         <td>
             <input type="number" class="form-control right porcentaje_dscto" value="${element.porcentaje_dscto}" 
             data-id="${element.id_guia_com_det}" min="0" step="0.0001"/>
@@ -190,7 +190,7 @@ function mostrarListaItems(){
             <input type="number" class="form-control right total_dscto" value="${element.total_dscto}" 
             data-id="${element.id_guia_com_det}" min="0" step="0.0001"/>
         </td>
-        <td class="right">${formatNumber.decimal(element.total,'',-4)}</td>
+        <td class="right">${formatNumber.decimal(element.total, '', -4)}</td>
         </tr>`;
         i++;
     });
@@ -198,34 +198,34 @@ function mostrarListaItems(){
     $('#detalleItems tbody').html(html);
 
     totales.sub_total = sub_total;
-    totales.igv = (totales.porcentaje_igv * sub_total /100);
+    totales.igv = (totales.porcentaje_igv * sub_total / 100);
     totales.total = sub_total + totales.igv;
     totales.simbolo = $('select[name="moneda"] option:selected').data('sim');
 
-    var html_foot=`<tr>
+    var html_foot = `<tr>
         <th colSpan="11" class="text-right">Sub Total <label name="sim">${totales.simbolo}</label></th>
-        <th class="right">${formatNumber.decimal(totales.sub_total,'',-2)}</th>
+        <th class="right">${formatNumber.decimal(totales.sub_total, '', -2)}</th>
     </tr>
     <tr>
         <th colSpan="11" class="text-right">IGV ${totales.porcentaje_igv}% <label name="sim">${totales.simbolo}</label></th>
-        <th class="right">${formatNumber.decimal(totales.igv,'',-2)}</th>
+        <th class="right">${formatNumber.decimal(totales.igv, '', -2)}</th>
     </tr>
     <tr>
         <th colSpan="11" class="text-right"> Total <label name="sim">${totales.simbolo}</label></th>
-        <th class="right">${formatNumber.decimal(totales.total,'',-2)}</th>
+        <th class="right">${formatNumber.decimal(totales.total, '', -2)}</th>
     </tr>
     `;
     $('#detalleItems tfoot').html(html_foot);
-    $('[name=importe]').val(formatNumber.decimal(totales.total,'',-2));
+    $('[name=importe]').val(formatNumber.decimal(totales.total, '', -2));
 }
 
-$('#detalleItems tbody').on("change", ".descripcion", function(){
-    
+$('#detalleItems tbody').on("change", ".descripcion", function () {
+
     let id_guia_com_det = $(this).data('id');
     let descripcion = $(this).val();
-    console.log('descripcion: '+descripcion);
+    console.log('descripcion: ' + descripcion);
     listaItems.forEach(element => {
-        if (element.id_guia_com_det == id_guia_com_det){
+        if (element.id_guia_com_det == id_guia_com_det) {
             element.descripcion = descripcion;
             console.log(element);
         }
@@ -233,14 +233,14 @@ $('#detalleItems tbody').on("change", ".descripcion", function(){
     mostrarListaItems();
 });
 
-$('#detalleItems tbody').on("change", ".unitario", function(){
-    
+$('#detalleItems tbody').on("change", ".unitario", function () {
+
     let id_guia_com_det = $(this).data('id');
     let unitario = parseFloat($(this).val());
-    console.log('unitario: '+unitario);
+    console.log('unitario: ' + unitario);
     // let item = listaItems.find(element => element.id_guia_com_det == id_guia_com_det);
     listaItems.forEach(element => {
-        if (element.id_guia_com_det == id_guia_com_det){
+        if (element.id_guia_com_det == id_guia_com_det) {
             element.precio = unitario;
             element.sub_total = (unitario * parseFloat(element.cantidad));
             element.total = (element.sub_total - element.total_dscto);
@@ -250,15 +250,15 @@ $('#detalleItems tbody').on("change", ".unitario", function(){
     mostrarListaItems();
 });
 
-$('#detalleItems tbody').on("change", ".porcentaje_dscto", function(){
-    
+$('#detalleItems tbody').on("change", ".porcentaje_dscto", function () {
+
     let id_guia_com_det = $(this).data('id');
     let porcentaje_dscto = parseFloat($(this).val());
     let unitario = 0;
-    console.log('porcentaje_dscto: '+porcentaje_dscto);
+    console.log('porcentaje_dscto: ' + porcentaje_dscto);
     // let item = listaItems.find(element => element.id_guia_com_det == id_guia_com_det);
     listaItems.forEach(element => {
-        if (element.id_guia_com_det == id_guia_com_det){
+        if (element.id_guia_com_det == id_guia_com_det) {
 
             element.porcentaje_dscto = porcentaje_dscto;
             element.total_dscto = (porcentaje_dscto * element.sub_total / 100);
@@ -269,14 +269,14 @@ $('#detalleItems tbody').on("change", ".porcentaje_dscto", function(){
     mostrarListaItems();
 });
 
-$('#detalleItems tbody').on("change", ".total_dscto", function(){
-    
+$('#detalleItems tbody').on("change", ".total_dscto", function () {
+
     let id_guia_com_det = $(this).data('id');
     let total_dscto = parseFloat($(this).val());
-    console.log('total_dscto: '+total_dscto);
+    console.log('total_dscto: ' + total_dscto);
     // let item = listaItems.find(element => element.id_guia_com_det == id_guia_com_det);
     listaItems.forEach(element => {
-        if (element.id_guia_com_det == id_guia_com_det){
+        if (element.id_guia_com_det == id_guia_com_det) {
             element.porcentaje_dscto = 0;
             element.total_dscto = total_dscto;
             element.total = (element.sub_total - total_dscto);
@@ -286,72 +286,93 @@ $('#detalleItems tbody').on("change", ".total_dscto", function(){
     mostrarListaItems();
 });
 
-$("#form-doc_create").on("submit", function(e){
+$("#form-doc_create").on("submit", function (e) {
     e.preventDefault();
-    var id_doc_com = $('[name=id_doc_com]').val();
-    var serial = $(this).serialize();
-    var listaItemsDetalle = [];
-    var nuevo = null;
 
-    listaItems.forEach(element => {
-        nuevo = {
-            'id_guia_com_det'   : element.id_guia_com_det,
-            'id_producto'       : element.id_producto,
-            'descripcion'       : (element.id_producto == null ? element.descripcion : ''),
-            'cantidad'          : element.cantidad,
-            'id_unid_med'       : element.id_unid_med,
-            'precio'            : element.precio,
-            'sub_total'         : element.sub_total,
-            'porcentaje_dscto'  : element.porcentaje_dscto,
-            'total_dscto'       : element.total_dscto,
-            'total'             : element.total,
+    Swal.fire({
+        title: "¿Está seguro que desea guardar éste Documento de compra?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#00a65a", //"#3085d6",
+        cancelButtonColor: "#d33",
+        cancelButtonText: "Cancelar",
+        confirmButtonText: "Si, Guardar"
+    }).then(result => {
+        if (result.isConfirmed) {
+
+            var id_doc_com = $('[name=id_doc_com]').val();
+            var serial = $(this).serialize();
+            var listaItemsDetalle = [];
+            var nuevo = null;
+
+            listaItems.forEach(element => {
+                nuevo = {
+                    'id_guia_com_det': element.id_guia_com_det,
+                    'id_producto': element.id_producto,
+                    'descripcion': (element.id_producto == null ? element.descripcion : ''),
+                    'cantidad': element.cantidad,
+                    'id_unid_med': element.id_unid_med,
+                    'precio': element.precio,
+                    'sub_total': element.sub_total,
+                    'porcentaje_dscto': element.porcentaje_dscto,
+                    'total_dscto': element.total_dscto,
+                    'total': element.total,
+                }
+                listaItemsDetalle.push(nuevo);
+            });
+
+            var data = serial +
+                '&sub_total=' + totales.sub_total +
+                '&porcentaje_igv=' + totales.porcentaje_igv +
+                '&igv=' + totales.igv +
+                '&total=' + totales.total +
+                '&detalle_items=' + JSON.stringify(listaItemsDetalle);
+            console.log(data);
+            guardar_doc_create(data);
         }
-        listaItemsDetalle.push(nuevo);
     });
-    
-    var data =  serial+
-                '&sub_total='+totales.sub_total+
-                '&porcentaje_igv='+totales.porcentaje_igv+
-                '&igv='+totales.igv+
-                '&total='+totales.total+
-                '&detalle_items='+JSON.stringify(listaItemsDetalle);
-    console.log(data);
-    guardar_doc_create(data);
-    
 });
 
-function guardar_doc_create(data){
+function guardar_doc_create(data) {
     $.ajax({
         type: 'POST',
         url: 'guardar_doc_compra',
         data: data,
         dataType: 'JSON',
-        success: function(response){
-            console.log('response'+response);
-            if (response > 0){
-                alert('Comprobante registrado con éxito');
+        success: function (response) {
+            console.log('response' + response);
+            if (response > 0) {
+                // alert('Comprobante registrado con éxito');
+                Lobibox.notify("success", {
+                    title: false,
+                    size: "mini",
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    msg: 'Comprobante registrado con éxito.'
+                });
                 $('#modal-doc_create').modal('hide');
-                if (origenDoc=='ing'){
+                if (origenDoc == 'ing') {
                     listarIngresos();
                     // $('#listaIngresosAlmacen').DataTable().ajax.reload();
                 }
             }
         }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
+    }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
     });
 }
 
-function ceros_numero_doc(){
+function ceros_numero_doc() {
     var num = $('[name=numero_doc]').val();
-    $('[name=numero_doc]').val(leftZero(6,num));
+    $('[name=numero_doc]').val(leftZero(6, num));
 }
 
-function changeMoneda(){
+function changeMoneda() {
     var simbolo = $('select[name="moneda"] option:selected').data('sim');
-    if (simbolo.length > 0){
+    if (simbolo.length > 0) {
         console.log(simbolo);
         $('[name=simbolo]').val(simbolo);
         $('[name=sim]').text(simbolo);
@@ -361,10 +382,10 @@ function changeMoneda(){
     }
 }
 
-function agregarServicio(){
+function agregarServicio() {
     let count = $('#detalleItems tbody tr').length + 1;
     console.log(count);
-    
+
     nuevo = {
         'abreviatura': "SER",
         'cantidad': "1",

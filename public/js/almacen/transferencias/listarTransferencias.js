@@ -2,12 +2,6 @@ let valor_permiso = null;
 let usuario_session = null;
 let trans_seleccionadas = [];
 
-var rutaListaRequerimientoModal;
-
-function inicializar(_rutaLista) {
-    rutaListaRequerimientoModal = _rutaLista;
-}
-
 function iniciar(permiso, usuario) {
     $("#tab-transferencias section:first form").attr("form", "formulario");
     valor_permiso = permiso;
@@ -16,7 +10,7 @@ function iniciar(permiso, usuario) {
     listarRequerimientosPendientes();
     console.log(permiso);
 
-    $("ul.nav-tabs li a").click(function() {
+    $("ul.nav-tabs li a").on('click', function () {
         $("ul.nav-tabs li").removeClass("active");
         $(this)
             .parent()
@@ -28,11 +22,10 @@ function iniciar(permiso, usuario) {
         var activeTab = $(this).attr("type");
         var activeForm = "form-" + activeTab.substring(1);
 
-        $("#" + activeForm).attr("type", "register");
+        $("#" + activeForm).prop("type", "register");
         $("#" + activeForm).attr("form", "formulario");
         changeStateInput(activeForm, true);
 
-        // clearDataTable();
         if (activeForm == "form-requerimientos") {
             listarRequerimientosPendientes();
         } else if (activeForm == "form-pendientes") {
@@ -42,65 +35,65 @@ function iniciar(permiso, usuario) {
         } else if (activeForm == "form-recibidas") {
             listarTransferenciasRecibidas();
         }
-        $(activeTab).attr("hidden", false); //inicio botones (estados)
+        $(activeTab).attr("hidden", false);
     });
     vista_extendida();
 }
 
 function listarRequerimientosPendientes() {
-    // var alm_destino = $("[name=id_almacen_destino_lista]").val();
-
-    // if (alm_destino !== "" && alm_destino !== "") {
     var vardataTables = funcDatatables();
 
-    $("#listaRequerimientos").DataTable({
-        dom: vardataTables[1],
-        buttons: vardataTables[2],
+    const $tableRequerimientos = $("#listaRequerimientos").DataTable({
+        // dom: 'Bfrtip',
         language: vardataTables[0],
         destroy: true,
-        // ajax: "listarRequerimientos",
+        //processing: true,
         pageLength: 25,
+        serverSide: true,
         ajax: {
             url: "listarRequerimientos",
-            type: "GET",
+            type: "POST",
             beforeSend: data => {
-                var customElement = $("<div>", {
-                    css: {
-                        "font-size": "16px",
-                        "text-align": "center",
-                        padding: "0px",
-                        "margin-top": "50%"
-                    },
-                    class: "your-custom-class",
-                    text: "Cargando Requerimientos..."
-                });
-
                 $("#listaRequerimientos").LoadingOverlay("show", {
                     imageAutoResize: true,
                     progress: true,
-                    custom: customElement,
+                    // custom: customElement,
                     imageColor: "#3c8dbc"
                 });
             }
         },
-        initComplete: function(settings, json) {
+        initComplete: function (settings, json) {
+            const $filter = $("#listaRequerimientos_filter");
+            const $input = $filter.find("input");
+            $filter.append(
+                '<button id="btnBuscar" class="btn btn-default btn-flat btn-sm" type="button"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>'
+            );
+            $input.off();
+            $input.on("keyup", e => {
+                if (e.key == "Enter") {
+                    $("#btnBuscar").trigger("click");
+                }
+            });
+            $("#btnBuscar").on("click", e => {
+                $tableRequerimientos.search($input.val()).draw();
+            });
+        },
+        drawCallback: function (settings, json) {
             $("#listaRequerimientos").LoadingOverlay("hide", true);
+
+            $("#listaRequerimientos_filter input").prop("disabled", false);
+            $("#btnBuscar").html('<span class="glyphicon glyphicon-search" aria-hidden="true"></span>')
+                .prop("disabled", false);
+            $("#listaRequerimientos").find('tbody tr td input[type="checkbox"]')
+                .iCheck({
+                    checkboxClass: "icheckbox_flat-blue"
+                });
+            $("#listaRequerimientos_filter input").trigger("focus");
         },
         columns: [
-            { data: "id_requerimiento" },
-            {
-                render: function(data, type, row) {
-                    return (
-                        '<a href="#" class="verRequerimiento" data-id="' +
-                        row["id_requerimiento"] +
-                        '" >' +
-                        row["codigo"] +
-                        "</a>"
-                    );
-                },
-                className: "text-center"
-            },
-            { data: "concepto" },
+            { data: "id_requerimiento", name: "alm_req.id_requerimiento" },
+            { data: "codigo", name: "alm_req.codigo", className: "text-center" },
+            { data: "concepto", name: "alm_req.concepto" },
             {
                 data: "sede_descripcion",
                 name: "sis_sede.descripcion",
@@ -109,7 +102,7 @@ function listarRequerimientosPendientes() {
             { data: "razon_social", name: "adm_contri.razon_social" },
             { data: "nombre_corto", name: "sis_usua.nombre_corto" },
             {
-                render: function(data, type, row) {
+                render: function (data, type, row) {
                     return (
                         '<a href="#" class="archivos" data-id="' +
                         row["id_oc_propia"] +
@@ -128,25 +121,51 @@ function listarRequerimientosPendientes() {
                 className: "text-center"
             },
             {
-                render: function(data, type, row) {
+                render: function (data, type, row) {
                     return `<button type="button" class="transferencia btn btn-success boton" data-toggle="tooltip"
                             data-placement="bottom" data-id="${row["id_requerimiento"]}" title="Crear Transferencia(s)" >
                             <i class="fas fa-exchange-alt"></i></button>`;
                 },
-                className: "text-center"
+                className: "text-center", orderable: false
             }
         ],
         columnDefs: [
             {
                 aTargets: [0],
                 sClass: "invisible"
-            }
+            },
+            {
+                render: function (data, type, row) {
+                    return (
+                        '<a href="#" class="verRequerimiento" data-id="' + row["id_requerimiento"] + '" >' + row["codigo"] + "</a>"
+                    );
+                }, targets: 1
+
+            },
         ]
     });
-    // }
+
+    $tableRequerimientos.on('search.dt', function () {
+        $('#listaRequerimientos_filter input').prop('disabled', true);
+        $('#btnBuscar').html('<span class="glyphicon glyphicon-time" aria-hidden="true"></span>').prop('disabled', true);
+    });
+
+    $tableRequerimientos.on('processing.dt', function (e, settings, processing) {
+        if (processing) {
+            console.log("trabajando")
+            $(e.currentTarget).LoadingOverlay("show", {
+                imageAutoResize: true,
+                progress: true,
+                imageColor: "#3c8dbc"
+            });
+        } else {
+            $(e.currentTarget).LoadingOverlay("hide", true);
+        }
+    });
+
 }
 
-$("#listaRequerimientos tbody").on("click", "a.verRequerimiento", function(e) {
+$("#listaRequerimientos tbody").on("click", "a.verRequerimiento", function (e) {
     $(e.preventDefault());
     var id = $(this).data("id");
     localStorage.setItem("idRequerimiento", id);
@@ -155,14 +174,14 @@ $("#listaRequerimientos tbody").on("click", "a.verRequerimiento", function(e) {
     win.focus();
 });
 
-$("#listaRequerimientos tbody").on("click", "a.archivos", function(e) {
+$("#listaRequerimientos tbody").on("click", "a.archivos", function (e) {
     $(e.preventDefault());
     var id = $(this).data("id");
     var tipo = $(this).data("tipo");
     obtenerArchivosMgcp(id, tipo);
 });
 
-$("#listaRequerimientos tbody").on("click", "button.transferencia", function() {
+$("#listaRequerimientos tbody").on("click", "button.transferencia", function () {
     var id = $(this).data("id");
     ver_requerimiento(id);
 });
@@ -170,9 +189,19 @@ $("#listaRequerimientos tbody").on("click", "button.transferencia", function() {
 function listarTransferenciasPorEnviar() {
     var alm_origen = $("[name=id_almacen_origen_lista]").val();
     var vardataTables = funcDatatables();
+    let botones = [];
+    if (valor_permiso == '1') {
+        botones.push({
+            text: ' Ingresar Guía',
+            toolbar: 'Seleccione varias transferencias para una Guía.',
+            action: function () {
+                openGuiaTransferenciaCreate();
+            }, className: 'btn-success'
+        });
+    }
     $("#listaTransferenciasPorEnviar").DataTable({
-        dom: vardataTables[1],
-        buttons: vardataTables[2],
+        dom: 'Bfrtip',
+        buttons: botones,
         language: vardataTables[0],
         lengthChange: false,
         pageLength: 25,
@@ -201,7 +230,7 @@ function listarTransferenciasPorEnviar() {
             },
             { data: "nombre_corto", name: "sis_usua.nombre_corto" },
             {
-                render: function(data, type, row) {
+                render: function (data, type, row) {
                     if (valor_permiso == "1") {
                         return `<div style="display: flex;text-align:center;">
                         <button type="button" class="guia btn btn-primary boton btn-flat" data-toggle="tooltip" 
@@ -216,7 +245,7 @@ function listarTransferenciasPorEnviar() {
                 className: "text-center"
             }
         ],
-        drawCallback: function() {
+        drawCallback: function () {
             $(
                 '#listaTransferenciasPorEnviar tbody tr td input[type="checkbox"]'
             ).iCheck({
@@ -231,10 +260,10 @@ function listarTransferenciasPorEnviar() {
                 className: "dt-body-center",
                 checkboxes: {
                     selectRow: true,
-                    selectCallback: function(nodes, selected) {
+                    selectCallback: function (nodes, selected) {
                         $('input[type="checkbox"]', nodes).iCheck("update");
                     },
-                    selectAllCallback: function(
+                    selectAllCallback: function (
                         nodes,
                         selected,
                         indeterminate
@@ -253,7 +282,7 @@ function listarTransferenciasPorEnviar() {
             .DataTable()
             .table()
             .container()
-    ).on("ifChanged", ".dt-checkboxes", function(event) {
+    ).on("ifChanged", ".dt-checkboxes", function (event) {
         var cell = $("#listaTransferenciasPorEnviar")
             .DataTable()
             .cell($(this).closest("td"));
@@ -269,7 +298,7 @@ function listarTransferenciasPorEnviar() {
             if (this.checked) {
                 trans_seleccionadas.push(data);
             } else {
-                var index = trans_seleccionadas.findIndex(function(item, i) {
+                var index = trans_seleccionadas.findIndex(function (item, i) {
                     return item.id_transferencia == data.id_transferencia;
                 });
                 if (index !== null) {
@@ -280,7 +309,7 @@ function listarTransferenciasPorEnviar() {
     });
 }
 
-$("#listaTransferenciasPorEnviar tbody").on("click", "button.guia", function() {
+$("#listaTransferenciasPorEnviar tbody").on("click", "button.guia", function () {
     var data = $("#listaTransferenciasPorEnviar")
         .DataTable()
         .row($(this).parents("tr"))
@@ -292,7 +321,7 @@ $("#listaTransferenciasPorEnviar tbody").on("click", "button.guia", function() {
 $("#listaTransferenciasPorEnviar tbody").on(
     "click",
     "button.anular",
-    function() {
+    function () {
         var id = $(this).data("id");
 
         Swal.fire({
@@ -310,7 +339,7 @@ $("#listaTransferenciasPorEnviar tbody").on(
                     type: "GET",
                     url: "anular_transferencia/" + id,
                     dataType: "JSON",
-                    success: function(response) {
+                    success: function (response) {
                         Lobibox.notify("success", {
                             title: false,
                             size: "mini",
@@ -322,7 +351,7 @@ $("#listaTransferenciasPorEnviar tbody").on(
                         });
                         listarTransferenciasPorEnviar();
                     }
-                }).fail(function(jqXHR, textStatus, errorThrown) {
+                }).fail(function (jqXHR, textStatus, errorThrown) {
                     console.log(jqXHR);
                     console.log(textStatus);
                     console.log(errorThrown);
@@ -338,8 +367,8 @@ function listarTransferenciasPorRecibir() {
     if (alm_destino !== "" && alm_destino !== "") {
         var vardataTables = funcDatatables();
         $("#listaTransferenciasPorRecibir").DataTable({
-            dom: vardataTables[1],
-            buttons: vardataTables[2],
+            // dom: 'Bfrtip',
+            // buttons: vardataTables[2],
             language: vardataTables[0],
             lengthChange: false,
             pageLength: 25,
@@ -348,7 +377,7 @@ function listarTransferenciasPorRecibir() {
             columns: [
                 { data: "id_guia_ven" },
                 {
-                    render: function(data, type, row) {
+                    render: function (data, type, row) {
                         if (row["id_guia_ven"] !== null) {
                             return formatDate(row["fecha_guia"]);
                         } else {
@@ -362,7 +391,7 @@ function listarTransferenciasPorRecibir() {
                 { data: "nombre_origen" },
                 { data: "nombre_destino" },
                 {
-                    render: function(data, type, row) {
+                    render: function (data, type, row) {
                         return (
                             '<span class="label label-' +
                             row["bootstrap_color"] +
@@ -373,7 +402,7 @@ function listarTransferenciasPorRecibir() {
                     }
                 },
                 {
-                    render: function(data, type, row) {
+                    render: function (data, type, row) {
                         if (valor_permiso == "1") {
                             return row["id_guia_ven"] !== null
                                 ? `<div style="display: flex;text-align:center;">
@@ -408,7 +437,7 @@ function listarTransferenciasPorRecibir() {
 $("#listaTransferenciasPorRecibir tbody").on(
     "click",
     "button.atender",
-    function() {
+    function () {
         var data = $("#listaTransferenciasPorRecibir")
             .DataTable()
             .row($(this).parents("tr"))
@@ -423,7 +452,7 @@ $("#listaTransferenciasPorRecibir tbody").on(
 $("#listaTransferenciasPorRecibir tbody").on(
     "click",
     "button.salida",
-    function() {
+    function () {
         var idSalida = $(this).data("idSalida");
         console.log(idSalida);
         if (idSalida !== "") {
@@ -436,7 +465,7 @@ $("#listaTransferenciasPorRecibir tbody").on(
 $("#listaTransferenciasPorRecibir tbody").on(
     "click",
     "button.anularSalida",
-    function() {
+    function () {
         var idSalida = $(this).data("idSalida");
         var idGuia = $(this).data("id");
         console.log(idSalida);
@@ -469,7 +498,7 @@ $("#listaTransferenciasPorRecibir tbody").on(
     }
 );
 
-$("#form-guia_ven_obs").on("submit", function(e) {
+$("#form-guia_ven_obs").on("submit", function (e) {
     console.log("submit");
     e.preventDefault();
     var data = $(this).serialize();
@@ -484,7 +513,7 @@ function anularTransferenciaSalida(data) {
         url: "anularTransferenciaSalida",
         data: data,
         dataType: "JSON",
-        success: function(response) {
+        success: function (response) {
             if (response.length > 0) {
                 // alert(response);
                 Lobibox.notify("warning", {
@@ -512,7 +541,7 @@ function anularTransferenciaSalida(data) {
                 listarTransferenciasPorRecibir();
             }
         }
-    }).fail(function(jqXHR, textStatus, errorThrown) {
+    }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
@@ -525,8 +554,8 @@ function listarTransferenciasRecibidas() {
     if (destino !== null && destino !== "") {
         var vardataTables = funcDatatables();
         $("#listaTransferenciasRecibidas").DataTable({
-            dom: vardataTables[1],
-            buttons: vardataTables[2],
+            // dom: 'Bfrtip',
+            // buttons: vardataTables[2],
             language: vardataTables[0],
             pageLength: 25,
             destroy: true,
@@ -538,7 +567,7 @@ function listarTransferenciasRecibidas() {
             columns: [
                 { data: "id_transferencia" },
                 {
-                    render: function(data, type, row) {
+                    render: function (data, type, row) {
                         return formatDate(row["fecha_transferencia"]);
                     }
                 },
@@ -550,7 +579,7 @@ function listarTransferenciasRecibidas() {
                 { data: "nombre_origen" },
                 { data: "nombre_destino" },
                 {
-                    render: function(data, type, row) {
+                    render: function (data, type, row) {
                         return (
                             '<span class="label label-' +
                             row["bootstrap_color"] +
@@ -561,7 +590,7 @@ function listarTransferenciasRecibidas() {
                     }
                 },
                 {
-                    render: function(data, type, row) {
+                    render: function (data, type, row) {
                         if (row["codigo_req"] !== null) {
                             return (
                                 '<label class="lbl-codigo" title="Abrir Guía" onClick="abrirRequerimiento(' +
@@ -584,7 +613,7 @@ function listarTransferenciasRecibidas() {
                     }
                 },
                 {
-                    render: function(data, type, row) {
+                    render: function (data, type, row) {
                         if (row["concepto_req"] !== null) {
                             return row["concepto_req"];
                         } else if (row["concepto_req_directo"] !== null) {
@@ -595,7 +624,7 @@ function listarTransferenciasRecibidas() {
                     }
                 },
                 {
-                    render: function(data, type, row) {
+                    render: function (data, type, row) {
                         if (valor_permiso == "1") {
                             return `<div style="display: flex;text-align:center;">
                             <button type="button" class="detalle btn btn-primary boton btn-flat" data-toggle="tooltip" 
@@ -630,7 +659,7 @@ function listarTransferenciasRecibidas() {
 $("#listaTransferenciasRecibidas tbody").on(
     "click",
     "button.ingreso",
-    function() {
+    function () {
         var idIngreso = $(this).data("idIngreso");
         if (idIngreso !== "") {
             var id = encode5t(idIngreso);
@@ -642,7 +671,7 @@ $("#listaTransferenciasRecibidas tbody").on(
 $("#listaTransferenciasRecibidas tbody").on(
     "click",
     "button.detalle",
-    function() {
+    function () {
         var id_transferencia = $(this).data("id");
         var codigo = $(this).data("cod");
         var guia = $(this).data("guia");
@@ -668,7 +697,7 @@ function detalle_transferencia(id_transferencia) {
         type: "GET",
         url: "listarTransferenciaDetalle/" + id_transferencia,
         dataType: "JSON",
-        success: function(response) {
+        success: function (response) {
             console.log(response);
             var html = "";
             var i = 1;
@@ -676,34 +705,29 @@ function detalle_transferencia(id_transferencia) {
                 html += `<tr>
                 <td>${i}</td>
                 <td>${element.codigo}</td>
-                <td style="background-color: LightCyan;">${
-                    element.part_number !== null ? element.part_number : ""
-                }</td>
-                <td style="background-color: LightCyan;">${
-                    element.descripcion
-                }</td>
+                <td style="background-color: LightCyan;">${element.part_number !== null ? element.part_number : ""
+                    }</td>
+                <td style="background-color: LightCyan;">${element.descripcion
+                    }</td>
                 <td>${element.cantidad}</td>
                 <td>${element.abreviatura}</td>
-                <td>${
-                    element.serie !== null
+                <td>${element.serie !== null
                         ? element.serie + "-" + element.numero
                         : ""
-                }</td>
-                <td><span class="label label-${element.bootstrap_color}">${
-                    element.estado_doc
-                }</span></td>
-                <td>${
-                    element.series
+                    }</td>
+                <td><span class="label label-${element.bootstrap_color}">${element.estado_doc
+                    }</span></td>
+                <td>${element.series
                         ? `<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" 
                     title="Ver Series" onClick="listarSeries(${element.id_guia_com_det});"></i>`
                         : ""
-                }</td>
+                    }</td>
                 </tr>`;
                 i++;
             });
             $("#listaTransferenciaDetalle tbody").html(html);
         }
-    }).fail(function(jqXHR, textStatus, errorThrown) {
+    }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
@@ -713,7 +737,7 @@ function detalle_transferencia(id_transferencia) {
 $("#listaTransferenciasRecibidas tbody").on(
     "click",
     "button.anular",
-    function() {
+    function () {
         var id_transferencia = $(this).data("id");
         var id_mov_alm = $(this).data("ing");
         var id_guia = $(this).data("guia");
@@ -751,7 +775,7 @@ $("#listaTransferenciasRecibidas tbody").on(
     }
 );
 
-$("#form-obs").on("submit", function(e) {
+$("#form-obs").on("submit", function (e) {
     console.log("submit");
     e.preventDefault();
     var data = $(this).serialize();
@@ -766,7 +790,7 @@ function anularTransferenciaIngreso(data) {
         url: "anularTransferenciaIngreso",
         data: data,
         dataType: "JSON",
-        success: function(response) {
+        success: function (response) {
             if (response.length > 0) {
                 Lobibox.notify("warning", {
                     title: false,
@@ -795,7 +819,7 @@ function anularTransferenciaIngreso(data) {
                     .ajax.reload();
             }
         }
-    }).fail(function(jqXHR, textStatus, errorThrown) {
+    }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);

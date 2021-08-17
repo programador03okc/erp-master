@@ -9,6 +9,8 @@ Pendientes de Ingreso
 <link rel="stylesheet" href="{{ asset('template/plugins/iCheck/all.css') }}">
 <link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
 <link rel="stylesheet" href="{{ asset('template/plugins/jquery-datatables-checkboxes/css/dataTables.checkboxes.css') }}">
+<link rel="stylesheet" href="{{ asset('datatables/Datatables/css/dataTables.bootstrap.min.css') }}">
+<link rel="stylesheet" href="{{ asset('datatables/Buttons/css/buttons.dataTables.min.css') }}">
 @endsection
 
 @section('breadcrumb')
@@ -34,6 +36,11 @@ Pendientes de Ingreso
                         <form id="form-pendientes" type="register">
                             <div class="row">
                                 <div class="col-md-12">
+                                    <div style="display: flex;">
+                                        <!-- @if(Auth::user()->tieneAccion(83))
+                                        <button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Seleccione varias ordenes para ingresar la Guía de Compra" onClick="open_guia_create_seleccionadas();">Ingresar Guía</button>
+                                        @endif -->
+                                    </div>
                                     <table class="mytable table table-condensed table-bordered table-okc-view" id="ordenesPendientes" style="width:100px;">
                                         <thead>
                                             <tr>
@@ -54,9 +61,6 @@ Pendientes de Ingreso
                                         <tbody></tbody>
                                         <tfoot></tfoot>
                                     </table>
-                                    @if(Auth::user()->tieneAccion(83))
-                                    <button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Ingresar Guía de Compra" onClick="open_guia_create_seleccionadas();">Ingresar Guía</button>
-                                    @endif
                                 </div>
                             </div>
                         </form>
@@ -106,6 +110,7 @@ Pendientes de Ingreso
 
                             <div class="row">
                                 <div class="col-md-12">
+                                    <!-- <button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Seleccione varias guias para ingresar un comprobante" onClick="open_doc_create_seleccionadas();">Ingresar Comprobante</button> -->
                                     <table class="mytable table table-condensed table-bordered table-okc-view" id="listaIngresosAlmacen">
                                         <thead>
                                             <tr>
@@ -128,7 +133,6 @@ Pendientes de Ingreso
                                         <tbody></tbody>
                                         <tfoot></tfoot>
                                     </table>
-                                    <button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Ingresar Factura/Boleta" onClick="open_doc_create_seleccionadas();">Ingresar Comprobante</button>
                                 </div>
                             </div>
                         </form>
@@ -158,9 +162,9 @@ Pendientes de Ingreso
 @section('scripts')
 <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
-<!-- <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
+<script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
 <script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
-<script src="{{ asset('datatables/Buttons/js/buttons.print.min.js') }}"></script>
+<!-- <script src="{{ asset('datatables/Buttons/js/buttons.print.min.js') }}"></script>
 <script src="{{ asset('datatables/Buttons/js/buttons.html5.min.js') }}"></script>
 <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
 <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
@@ -173,6 +177,8 @@ Pendientes de Ingreso
 <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
 <script src="{{ asset('js/almacen/guia/ordenesPendientes.js')}}"></script>
+<script src="{{ asset('js/almacen/guia/transformacionesPendientes.js')}}"></script>
+<script src="{{ asset('js/almacen/guia/ingresosProcesados.js')}}"></script>
 <script src="{{ asset('js/almacen/guia/ordenes_ver_detalle.js')}}"></script>
 <script src="{{ asset('js/almacen/guia/movimientoDetalle.js')}}"></script>
 <script src="{{ asset('js/almacen/guia/guia_com_create.js')}}"></script>
@@ -188,8 +194,8 @@ Pendientes de Ingreso
 <script>
     $(document).ready(function() {
         seleccionarMenu(window.location);
+        $.fn.dataTable.Buttons.defaults.dom.button.className = 'btn';
         iniciar('{{Auth::user()->tieneAccion(83)}}');
-
     });
 </script>
 @endsection

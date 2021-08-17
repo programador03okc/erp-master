@@ -8,7 +8,7 @@ $.ajaxSetup({
 	}
 });
 
-$(document).ready(function(){
+$(document).ready(function () {
 	$(":file").filestyle();
 	$('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
 		checkboxClass: 'icheckbox_flat-green',
@@ -16,235 +16,235 @@ $(document).ready(function(){
 	});
 	// $('.js-example-basic-single').select2();
 
-    page = $('.page-main').attr('type');
+	page = $('.page-main').attr('type');
 	var form = $('.page-main form[type=register]').attr('id');
-	if (page == 'asistencia'){
+	if (page == 'asistencia') {
 		$('.sidebar-mini').addClass('sidebar-collapse');
-	}else if (page == 'datos_rrhh'){
+	} else if (page == 'datos_rrhh') {
 		$('.sidebar-mini').addClass('sidebar-collapse');
-	}else if (page == 'planilla'){
+	} else if (page == 'planilla') {
 		$('.sidebar-mini').addClass('sidebar-collapse');
 	}
 
 	// Para los tabs
 	$('.page-main section form').removeAttr('type');
-	$("#tab-"+page+" section:first").attr('hidden', false);
-	$("#tab-"+page+" section:first form").attr('type', 'register');
-    
+	$("#tab-" + page + " section:first").attr('hidden', false);
+	$("#tab-" + page + " section:first form").attr('type', 'register');
+
 	$('.mytable').css('width', '100%');
 
-    changeStateInput(form, true);
+	changeStateInput(form, true);
 	changeStateButton('inicio');
-	
-    $('.btn-okc').on('click', function(){
+
+	$('.btn-okc').on('click', function () {
 		var forms = $('.page-main form[form=formulario]').attr('id');
 		var frm_active = $('.page-main form[type=register]').attr('id');
-		if (frm_active == undefined){
+		if (frm_active == undefined) {
 			var frm_active = $('.page-main form[type=edition]').attr('id');
 		}
 		var element = $(this).attr('id');
-        
-        switch (element){
-            case 'btnNuevo':
-				if (page !== 'ubicacion'){
+
+		switch (element) {
+			case 'btnNuevo':
+				if (page !== 'ubicacion') {
 					clearForm(forms);
 				}
 				changeStateInput(forms, false);
 				changeStateButton('nuevo');
-				if (page == 'guia_compra'){
+				if (page == 'guia_compra') {
 					nuevo_guia_compra();
 				}
-				else if (page == 'guia_venta'){
+				else if (page == 'guia_venta') {
 					nuevo_guia_venta();
 				}
-				else if (page == 'doc_compra'){
+				else if (page == 'doc_compra') {
 					nuevo_doc_compra();
 				}
-				else if (page == 'doc_venta'){
+				else if (page == 'doc_venta') {
 					nuevo_doc_venta();
 				}
-				else if (page == 'transformacion'){
+				else if (page == 'transformacion') {
 					nuevo_transformacion();
 				}
 				// else if (page == 'producto'){
 				// 	console.log('page:'+page);
 				// 	nuevo_producto();
 				// }
-				else if (page == 'tp_combustible'){
+				else if (page == 'tp_combustible') {
 					nuevo_tp_combustible();
 				}
-				else if (page == 'equi_sol'){
+				else if (page == 'equi_sol') {
 					nuevo_equi_sol();
 				}
-				else if (page == 'crear-orden-requerimiento'){
+				else if (page == 'crear-orden-requerimiento') {
 					const ordenModel = new OrdenModel();
 					const ordenController = new OrdenCtrl(ordenModel);
 					const ordenView = new OrdenView(ordenController);
 					ordenView.nuevaOrden();
 
 				}
-				else if (page == 'requerimiento'){
+				else if (page == 'requerimiento') {
 					nuevo_req();
 				}
-				else if (page == 'proveedores'){
+				else if (page == 'proveedores') {
 					nuevo(forms);
 				}
-				else if (page == 'categoria'){
-					$('[name=id_tipo_producto]').attr('disabled',false);
+				else if (page == 'categoria') {
+					$('[name=id_tipo_producto]').attr('disabled', false);
 				}
-				else if (page == 'presint'){
+				else if (page == 'presint') {
 					nuevo_presint();
 				}
-				else if (page == 'cronoint'){
+				else if (page == 'cronoint') {
 					nuevo_cronoint();
 				}
-				else if (page == 'cronovalint'){
+				else if (page == 'cronovalint') {
 					nuevo_cronovalint();
 				}
-				else if (page == 'preseje'){
+				else if (page == 'preseje') {
 					nuevo_preseje();
 				}
-				else if (page == 'cronoeje'){
+				else if (page == 'cronoeje') {
 					nuevo_cronoeje();
 				}
-				else if (page == 'cronopro'){
+				else if (page == 'cronopro') {
 					nuevo_cronopro();
 				}
-				else if (page == 'cronoval'){
+				else if (page == 'cronoval') {
 					nuevo_cronoval();
 				}
-				else if (page == 'cronovaleje'){
+				else if (page == 'cronovaleje') {
 					nuevo_cronovaleje();
 				}
-				else if (page == 'cronovalpro'){
+				else if (page == 'cronovalpro') {
 					nuevo_cronovalpro();
 				}
-				else if (page == 'valorizacion'){
+				else if (page == 'valorizacion') {
 					nueva_valorizacion();
 				}
-				else if (page == 'presEstructura'){
+				else if (page == 'presEstructura') {
 					nuevo_presEstructura();
 				}
-				else if (page == 'propuesta'){
+				else if (page == 'propuesta') {
 					nuevo_propuesta();
 				}
-				else if (page == 'prorrateo'){
+				else if (page == 'prorrateo') {
 					nuevo_prorrateo();
 				}
-				
-            break;
-            case 'btnGuardar':
-				var data = $("#"+forms).serialize();
-				var action = $("#"+forms).attr('type');
+
+				break;
+			case 'btnGuardar':
+				var data = $("#" + forms).serialize();
+				var action = $("#" + forms).attr('type');
 				// console.log('forms '+forms);
 				// console.log('frm_active '+frm_active);
 				eventRegister(page, data, action, frm_active);
 
-				if (forms!=="form-equi_cat" && forms!=="form-equi_sol" && forms!=="form-equi_tipo"
-				 && forms!=="form-mtto" && forms!=="form-tp_combustible" && forms!=="form-almacenes"
-				 && forms!=="form-tipo" && forms!=="form-categoria" && forms!=="form-clasificacion" 
-				 && forms!=="form-producto" && forms!=="form-requerimiento" && forms!=="form-crear-orden-requerimiento" && forms!=="form-general"
-				 && forms!=="form-doc_venta" && forms!=="form-presint" && forms!=="form-preseje"
-				 && forms!=="form-cronopro" && forms!=="form-cronoeje" && forms!=="form-cronoint" 
-				 && forms!=="form-cronovalint" && forms!=="form-cronovaleje"){
+				if (forms !== "form-equi_cat" && forms !== "form-equi_sol" && forms !== "form-equi_tipo"
+					&& forms !== "form-mtto" && forms !== "form-tp_combustible" && forms !== "form-almacenes"
+					&& forms !== "form-tipo" && forms !== "form-categoria" && forms !== "form-clasificacion"
+					&& forms !== "form-producto" && forms !== "form-requerimiento" && forms !== "form-crear-orden-requerimiento" && forms !== "form-general"
+					&& forms !== "form-doc_venta" && forms !== "form-presint" && forms !== "form-preseje"
+					&& forms !== "form-cronopro" && forms !== "form-cronoeje" && forms !== "form-cronoint"
+					&& forms !== "form-cronovalint" && forms !== "form-cronovaleje") {
 					changeStateButton('guardar');
-					$('#'+forms).attr('type', 'register');
+					$('#' + forms).attr('type', 'register');
 					changeStateInput(frm_active, true);
 				}
-            break;
-            case 'btnEditar':
-                if (page == 'equi_sol'){
+				break;
+			case 'btnEditar':
+				if (page == 'equi_sol') {
 					edit_equi_sol();
-				} 
+				}
 				else {
 					changeStateInput(frm_active, false);
 					changeStateButton('editar');
-					$('#'+forms).attr('type', 'edition');
+					$('#' + forms).attr('type', 'edition');
 					// console.log(page);
-					
-					if (page == 'requerimiento'){
+
+					if (page == 'requerimiento') {
 						const requerimientoModel = new RequerimientoModel();
 						const requerimientoController = new RequerimientoCtrl(requerimientoModel);
 						const requerimientoView = new RequerimientoView(requerimientoController);
 						requerimientoView.editRequerimiento();
 					}
-					else if (page == 'cuadro_comparativo'){
+					else if (page == 'cuadro_comparativo') {
 						editValorizaciones();
 					}
-					else if (page == 'categoria'){
-						$('[name=id_tipo_producto]').attr('disabled',true);
+					else if (page == 'categoria') {
+						$('[name=id_tipo_producto]').attr('disabled', true);
 					}
-					else if (page == 'guia_venta'){
+					else if (page == 'guia_venta') {
 						$('[name=modo]').val('edicion');
 					}
-					else if (page == 'doc_compra'){
+					else if (page == 'doc_compra') {
 						editar_doc_compra();
 					}
 				}
-            break;
+				break;
 			case 'btnAnular':
-				var ids = $("#"+forms+' input[primary="ids"]').val();
-                var ask = confirm('¿Esta seguro que desea anular?');
-            	if (ask){
-					if (ids == undefined){
-						ids = $("#"+frm_active+' input[primary="ids"]').val();
+				var ids = $("#" + forms + ' input[primary="ids"]').val();
+				var ask = confirm('¿Esta seguro que desea anular?');
+				if (ask) {
+					if (ids == undefined) {
+						ids = $("#" + frm_active + ' input[primary="ids"]').val();
 					}
 					anularRegister(page, ids, frm_active);
 					changeStateInput(frm_active, true);
-            	}
-            break;
-            case 'btnHistorial':
+				}
+				break;
+			case 'btnHistorial':
 				changeStateButton('historial');
 				openModal(page, frm_active);
-            break;
-            case 'btnCancelar':
-                $('#'+forms).attr('type', 'register');
+				break;
+			case 'btnCancelar':
+				$('#' + forms).attr('type', 'register');
 				changeStateInput(forms, true);
 				changeStateButton('cancelar');
 				clearForm(forms);
-				if (page == 'requerimiento'){
+				if (page == 'requerimiento') {
 					cancelarRequerimiento();
 				}
-				else if (page == 'cotizacion'){
-					document.getElementById('btnNuevo').setAttribute("disabled","true");
-					document.getElementById('btnGuardar').setAttribute("disabled","true");
+				else if (page == 'cotizacion') {
+					document.getElementById('btnNuevo').setAttribute("disabled", "true");
+					document.getElementById('btnGuardar').setAttribute("disabled", "true");
 				}
-				else if (page == 'proveedores'){
-					
+				else if (page == 'proveedores') {
+
 				}
-				else if (page == 'categoria'){
-					$('[name=id_tipo_producto]').attr('disabled',true);
+				else if (page == 'categoria') {
+					$('[name=id_tipo_producto]').attr('disabled', true);
 				}
-				else if (page == 'crear-orden-requerimiento'){
+				else if (page == 'crear-orden-requerimiento') {
 					var reqTrueList = JSON.parse(sessionStorage.getItem('reqCheckedList'));
 					cancelarOrden()
-					if (reqTrueList !=null && (reqTrueList.length > 0)) {
+					if (reqTrueList != null && (reqTrueList.length > 0)) {
 						window.location.reload();
 
 					}
 				}
-            break;
+				break;
 			case 'btnCopiar':
 				// console.log('copiar'+page);
-				if (page == 'requerimiento'){
+				if (page == 'requerimiento') {
 					copiarDocumento();
 				}
-				else if (page == 'presint'){
+				else if (page == 'presint') {
 					presintCopiaModal();
 				}
-				else if (page == 'propuesta'){
+				else if (page == 'propuesta') {
 					copiar_partidas_presint();
 				}
 				break;
 		}
-    });
+	});
 });
 
-function resizeSide(){
+function resizeSide() {
 	var wrapper = document.getElementById("wrapper-okc");
 	var altura;
-	if (page == 'guia_compra' || page == 'guia_venta' || 
-		page == 'doc_compra' || page == 'doc_venta'){
+	if (page == 'guia_compra' || page == 'guia_venta' ||
+		page == 'doc_compra' || page == 'doc_venta') {
 		altura = wrapper.offsetHeight + 400;
 		// console.log(altura);
 	} else {
@@ -254,78 +254,78 @@ function resizeSide(){
 	$('.sidebar').css('min-height', altura + 'px');
 }
 
-function changeStateInput(element, state){
-		var evalu = $("#"+element).attr('type');
-    if(evalu == 'register'){
-		$("#"+element+" .activation").attr('disabled', state);
-    }
+function changeStateInput(element, state) {
+	var evalu = $("#" + element).attr('type');
+	if (evalu == 'register') {
+		$("#" + element + " .activation").attr('disabled', state);
+	}
 }
 
-function changeStateButton(type){
-	switch(type){
+function changeStateButton(type) {
+	switch (type) {
 		case 'nuevo':
 			$('#btnNuevo').attr('disabled', true);
-		    $('#btnGuardar').attr('disabled', false);
-		    $('#btnEditar').attr('disabled', true);
-		    $('#btnAnular').attr('disabled', true);
-		    $('#btnHistorial').attr('disabled', true);
-		    $('#btnCancelar').attr('disabled', false);
-		break;
+			$('#btnGuardar').attr('disabled', false);
+			$('#btnEditar').attr('disabled', true);
+			$('#btnAnular').attr('disabled', true);
+			$('#btnHistorial').attr('disabled', true);
+			$('#btnCancelar').attr('disabled', false);
+			break;
 		case 'guardar':
 			$('#btnNuevo').attr('disabled', false);
-		    $('#btnGuardar').attr('disabled', true);
-		    $('#btnEditar').attr('disabled', false);
-		    $('#btnAnular').attr('disabled', false);
-		    $('#btnHistorial').attr('disabled', false);
-		    $('#btnCancelar').attr('disabled', true);
-		break;
+			$('#btnGuardar').attr('disabled', true);
+			$('#btnEditar').attr('disabled', false);
+			$('#btnAnular').attr('disabled', false);
+			$('#btnHistorial').attr('disabled', false);
+			$('#btnCancelar').attr('disabled', true);
+			break;
 		case 'editar':
 			$('#btnNuevo').attr('disabled', true);
-		    $('#btnGuardar').attr('disabled', false);
-		    $('#btnEditar').attr('disabled', true);
-		    $('#btnAnular').attr('disabled', true);
-		    $('#btnHistorial').attr('disabled', true);
-		    $('#btnCancelar').attr('disabled', false);
-		break;
+			$('#btnGuardar').attr('disabled', false);
+			$('#btnEditar').attr('disabled', true);
+			$('#btnAnular').attr('disabled', true);
+			$('#btnHistorial').attr('disabled', true);
+			$('#btnCancelar').attr('disabled', false);
+			break;
 		case 'anular':
 			$('#btnNuevo').attr('disabled', false);
-		    $('#btnGuardar').attr('disabled', true);
-		    $('#btnEditar').attr('disabled', true);
-		    $('#btnAnular').attr('disabled', true);
-		    $('#btnHistorial').attr('disabled', false);
-		    $('#btnCancelar').attr('disabled', true);
-		break;
+			$('#btnGuardar').attr('disabled', true);
+			$('#btnEditar').attr('disabled', true);
+			$('#btnAnular').attr('disabled', true);
+			$('#btnHistorial').attr('disabled', false);
+			$('#btnCancelar').attr('disabled', true);
+			break;
 		case 'historial':
 			$('#btnNuevo').attr('disabled', false);
-		    $('#btnGuardar').attr('disabled', true);
-		    $('#btnEditar').attr('disabled', false);
-		    $('#btnAnular').attr('disabled', false);
-		    $('#btnHistorial').attr('disabled', false);
-		    $('#btnCancelar').attr('disabled', true);
-		break;
+			$('#btnGuardar').attr('disabled', true);
+			$('#btnEditar').attr('disabled', false);
+			$('#btnAnular').attr('disabled', false);
+			$('#btnHistorial').attr('disabled', false);
+			$('#btnCancelar').attr('disabled', true);
+			break;
 		case 'cancelar':
 			$('#btnNuevo').attr('disabled', false);
-		    $('#btnGuardar').attr('disabled', true);
-		    $('#btnEditar').attr('disabled', true);
-		    $('#btnAnular').attr('disabled', true);
-		    $('#btnHistorial').attr('disabled', false);
-		    $('#btnCancelar').attr('disabled', true);
-		break;
+			$('#btnGuardar').attr('disabled', true);
+			$('#btnEditar').attr('disabled', true);
+			$('#btnAnular').attr('disabled', true);
+			$('#btnHistorial').attr('disabled', false);
+			$('#btnCancelar').attr('disabled', true);
+			break;
 		case 'inicio':
 			$('#btnNuevo').attr('disabled', false);
-		    $('#btnGuardar').attr('disabled', true);
-		    $('#btnEditar').attr('disabled', true);
-		    $('#btnAnular').attr('disabled', true);
-		    $('#btnHistorial').attr('disabled', false);
-		    $('#btnCancelar').attr('disabled', true);
-		break;
+			$('#btnGuardar').attr('disabled', true);
+			$('#btnEditar').attr('disabled', true);
+			$('#btnAnular').attr('disabled', true);
+			$('#btnHistorial').attr('disabled', false);
+			$('#btnCancelar').attr('disabled', true);
+			break;
 		default:
 			$('#btnNuevo').attr('disabled', true);
-		    $('#btnGuardar').attr('disabled', true);
-		    $('#btnEditar').attr('disabled', true);
-		    $('#btnAnular').attr('disabled', true);
-		    $('#btnHistorial').attr('disabled', true);
-		    $('#btnCancelar').attr('disabled', true);
-		break;
+			$('#btnGuardar').attr('disabled', true);
+			$('#btnEditar').attr('disabled', true);
+			$('#btnAnular').attr('disabled', true);
+			$('#btnHistorial').attr('disabled', true);
+			$('#btnCancelar').attr('disabled', true);
+			break;
 	}
 }
