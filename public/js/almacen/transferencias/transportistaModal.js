@@ -1,6 +1,6 @@
-$(function() {
+$(function () {
     /* Seleccionar valor del DataTable */
-    $("#listaTransportistas tbody").on("click", "tr", function() {
+    $("#listaTransportistas tbody").on("click", "tr", function () {
         if ($(this).hasClass("eventClick")) {
             $(this).removeClass("eventClick");
         } else {
@@ -28,7 +28,7 @@ function listarTransportistas() {
     var vardataTables = funcDatatables();
     $("#listaTransportistas").dataTable({
         dom: vardataTables[1],
-        buttons: vardataTables[2],
+        buttons: [],
         language: vardataTables[0],
         bDestroy: true,
         ajax: "mostrarTransportistas",

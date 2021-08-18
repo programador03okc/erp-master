@@ -188,6 +188,9 @@ class TransferenciaController extends Controller
             ])
             ->get();
 
+        $motivos_perdida = DB::table('almacen.trans_motivo_perdida')
+            ->where('estado', 1)->get();
+
         $lista_detalle = [];
 
         foreach ($detalle as $det) {
@@ -209,7 +212,7 @@ class TransferenciaController extends Controller
                 'series' => $series
             ]);
         }
-        return response()->json($lista_detalle);
+        return response()->json(['detalleTransferencia' => $lista_detalle, 'motivos' => $motivos_perdida]);
     }
 
     public function anular_transferencia($id_transferencia)
@@ -1906,7 +1909,6 @@ class TransferenciaController extends Controller
                 'oc_propias_view.id as id_oc_propia',
                 'oc_propias_view.tipo'
             )
-            // ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
             ->join('almacen.alm_req', function ($join) {
                 $join->on('alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento');
                 $join->on('alm_req.id_almacen', '!=', 'alm_det_req.id_almacen_reserva');

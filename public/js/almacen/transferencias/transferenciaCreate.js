@@ -4,7 +4,7 @@ function ver_transferencia(id_guia) {
         type: "GET",
         url: "verGuiaCompraTransferencia/" + id_guia,
         dataType: "JSON",
-        success: function(response) {
+        success: function (response) {
             console.log(response);
             $("#modal-guia_com_ver").modal({
                 show: true
@@ -35,23 +35,19 @@ function ver_transferencia(id_guia) {
 
                 html += `<tr>
                 <td>${i}</td>
-                <td>${
-                    element.codigo_orden !== null
+                <td>${element.codigo_orden !== null
                         ? element.codigo_orden
                         : element.codigo_transfor !== null
-                        ? element.codigo_transfor
-                        : ""
-                }</td>
-                <td>${
-                    element.codigo_req !== null ? element.codigo_req : ""
-                }</td>
-                <td><strong>${
-                    element.sede_req !== null ? element.sede_req : ""
-                }</strong></td>
+                            ? element.codigo_transfor
+                            : ""
+                    }</td>
+                <td>${element.codigo_req !== null ? element.codigo_req : ""
+                    }</td>
+                <td><strong>${element.sede_req !== null ? element.sede_req : ""
+                    }</strong></td>
                 <td>${element.codigo}</td>
-                <td>${
-                    element.part_number !== null ? element.part_number : ""
-                }</td>
+                <td>${element.part_number !== null ? element.part_number : ""
+                    }</td>
                 <td>${element.descripcion} <strong>${html_serie}</strong></td>
                 <td>${element.cantidad}</td>
                 <td>${element.abreviatura}</td>
@@ -60,14 +56,14 @@ function ver_transferencia(id_guia) {
             });
             $("#detalleGuiaCompra tbody").html(html);
         }
-    }).fail(function(jqXHR, textStatus, errorThrown) {
+    }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
     });
 }
 
-$("#form-guia_com_ver").on("submit", function(e) {
+$("#form-guia_com_ver").on("submit", function (e) {
     e.preventDefault();
     var data = $(this).serialize();
     console.log(data);
@@ -81,7 +77,7 @@ function generar_transferencia() {
         type: "GET",
         url: "transferencia/" + id_guia,
         dataType: "JSON",
-        success: function(response) {
+        success: function (response) {
             console.log(response);
             alert(response);
             $("#modal-guia_com_ver").modal("hide");
@@ -97,7 +93,7 @@ function generar_transferencia() {
                     .ajax.reload();
             }
         }
-    }).fail(function(jqXHR, textStatus, errorThrown) {
+    }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
@@ -113,7 +109,7 @@ function ver_requerimiento(id_requerimiento) {
         type: "GET",
         url: "verRequerimiento/" + id_requerimiento,
         dataType: "JSON",
-        success: function(response) {
+        success: function (response) {
             console.log(response);
             $("#modal-ver_requerimiento").modal({
                 show: true
@@ -141,7 +137,7 @@ function ver_requerimiento(id_requerimiento) {
             // detalle = response["detalle"];
             mostrarDetalleRequerimiento();
         }
-    }).fail(function(jqXHR, textStatus, errorThrown) {
+    }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
@@ -166,13 +162,12 @@ function mostrarDetalleRequerimiento() {
 
             html += `<tr>
             <td>${i}</td>
-            <td>${
-                element.codigo_orden !== null
+            <td>${element.codigo_orden !== null
                     ? element.codigo_orden
                     : element.guia !== null
-                    ? element.guia
-                    : ""
-            }</td>
+                        ? element.guia
+                        : ""
+                }</td>
             <td>${element.sede}</td>
             <td>${element.codigo +
                 (element.tiene_transformacion
@@ -182,14 +177,13 @@ function mostrarDetalleRequerimiento() {
             <td>${element.descripcion} <strong>${html_serie}</strong></td>
             <td>${element.cantidad}</td>
             <td>${element.abreviatura}</td>
-            <td>${
-                element.sede !== ""
+            <td>${element.sede !== ""
                     ? `<button type="button" class="quitar btn btn-danger btn-xs" data-toggle="tooltip" 
                         data-placement="bottom" title="Quitar item" 
                         data-id="${element.id_detalle_requerimiento}">
                         <i class="fas fa-minus"></i></button>`
                     : ""
-            }
+                }
             <td/>
             </tr>`;
             i++;
@@ -203,21 +197,21 @@ function mostrarDetalleRequerimiento() {
     $("#detalleRequerimiento tbody").html(html);
 }
 
-$("#detalleRequerimiento tbody").on("click", ".quitar", function() {
+$("#detalleRequerimiento tbody").on("click", ".quitar", function () {
     let id = $(this).data("id");
     console.log(id);
-    let index = detalle.findIndex(function(item, i) {
+    let index = detalle.findIndex(function (item, i) {
         return item.id_detalle_requerimiento == id;
     });
     detalle.splice(index, 1);
     mostrarDetalleRequerimiento();
 });
 
-$("#form-ver_requerimiento").on("submit", function(e) {
+$("#form-ver_requerimiento").on("submit", function (e) {
     e.preventDefault();
 
     Swal.fire({
-        title: "Esta seguro que desea guardar la transferencia ?",
+        title: "¿Está seguro que desea guardar la transferencia?",
         // text: "No podrás revertir esto.",
         icon: "warning",
         showCancelButton: true,
@@ -257,22 +251,21 @@ function generarTransferenciaRequerimiento(data) {
         url: "generarTransferenciaRequerimiento",
         data: data,
         dataType: "JSON",
-        success: function(response) {
+        success: function (response) {
             console.log(response);
-            // alert(response);
+            $("#modal-ver_requerimiento").modal("hide");
+            $("#listaRequerimientos").DataTable().ajax.reload();
+
             Lobibox.notify("success", {
                 title: false,
                 size: "mini",
                 rounded: true,
                 sound: false,
                 delayIndicator: false,
-                // width: 500,
                 msg: response
             });
-            $("#modal-ver_requerimiento").modal("hide");
-            listarRequerimientosPendientes();
         }
-    }).fail(function(jqXHR, textStatus, errorThrown) {
+    }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);

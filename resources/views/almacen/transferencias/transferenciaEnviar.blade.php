@@ -1,5 +1,5 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-transferenciaGuia" style="overflow-y: scroll;">
-    <div class="modal-dialog" style="width:1100px;">
+    <div class="modal-dialog" style="width:90%;">
         <div class="modal-content">
             <form id="form-transferenciaGuia">
                 <div class="modal-header">

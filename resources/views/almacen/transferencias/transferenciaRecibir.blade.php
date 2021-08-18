@@ -1,5 +1,5 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-transferencia_detalle">
-    <div class="modal-dialog" style="width:80%;">
+    <div class="modal-dialog" style="width:90%;">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
@@ -35,17 +35,17 @@
                 <table class="mytable table table-striped table-condensed table-bordered table-okc-view" id="listaTransferenciaDetalleRecibir">
                     <thead>
                         <tr>
-                            <td width="3%"></td>
                             <td width="6%">Código Trans.</td>
-                            <td width="6%">Código Req.</td>
+                            <!-- <td width="6%">Código Req.</td> -->
                             <!-- <td width="6%">Concepto</td> -->
-                            <td width="10%">Código</td>
+                            <td width="6%">Código</td>
                             <td>PartNumber</td>
                             <td>Descripción</td>
-                            <td>Cant.Recibida</td>
+                            <td>Cant. Enviada</td>
+                            <td>Cant. Recibida</td>
                             <td>Und</td>
+                            <td width="10%">Motivo de pérdida</td>
                             <td width="10%">Observación</td>
-                            <td>Series</td>
                         </tr>
                     </thead>
                     <tbody></tbody>
