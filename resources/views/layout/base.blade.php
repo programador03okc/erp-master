@@ -17,6 +17,8 @@
 	<link rel="stylesheet" href="{{ asset('template/plugins/lobibox/dist/css/lobibox.min.css')}}">
 	<link rel="stylesheet" href="{{ asset('template/plugins/sweetalert2/sweetalert2.min.css')}}">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+	<link rel="stylesheet" href="{{ asset('datatables/Datatables/css/dataTables.bootstrap.min.css') }}">
+	<link rel="stylesheet" href="{{ asset('datatables/Buttons/css/buttons.dataTables.min.css') }}">
 	@yield('estilos')
 </head>
 
@@ -96,7 +98,7 @@
 
 	<script src="{{ asset('template/plugins/sweetalert2/sweetalert2.all.min.js') }}"></script>
 	<script src="{{ asset('template/plugins/bootstrap_filestyle/bootstrap-filestyle.min.js') }}"></script>
-	<script src="{{ asset('template/plugins/pace/pace.js') }}"></script>
+	<!-- <script src="{{ asset('template/plugins/pace/pace.js') }}"></script> -->
 	<script src="{{asset('js/publico/notificaciones_sin_leer.js')}}"></script>
 
 	<script>

@@ -11,7 +11,7 @@ function listarIngresos() {
         });
     }
     let tableIngresos = $("#listaIngresosAlmacen").DataTable({
-        dom: 'Bfrtip',
+        dom: vardataTables[1],
         buttons: botones,
         language: vardataTables[0],
         bDestroy: true,

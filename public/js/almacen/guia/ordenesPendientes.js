@@ -53,8 +53,8 @@ function listarOrdenesPendientes() {
         });
     }
     table = $("#ordenesPendientes").DataTable({
-        dom: 'Bfrtip',
-        // buttons: vardataTables[2],
+        dom: vardataTables[1],
+        buttons: botones,
         language: vardataTables[0],
         bDestroy: true,
         serverSide: true,
@@ -181,7 +181,6 @@ function listarOrdenesPendientes() {
                 targets: 11
             }
         ],
-        buttons: botones,
         order: [[0, "desc"]]
     });
 

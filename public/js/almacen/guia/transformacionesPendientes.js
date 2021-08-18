@@ -2,8 +2,8 @@
 function listarTransformaciones() {
     var vardataTables = funcDatatables();
     $("#listaTransformaciones").DataTable({
-        // dom: 'Bfrtip',
-        // buttons: vardataTables[2],
+        dom: vardataTables[1],
+        buttons: [],
         language: vardataTables[0],
         bDestroy: true,
         serverSide: true,

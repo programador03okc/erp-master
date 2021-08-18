@@ -1,8 +1,8 @@
-function iniciar(permiso){
+function iniciar(permiso) {
     $("#tab-ordenes section:first form").attr('form', 'formulario');
     listarDespachosPendientes(permiso);
 
-    $('ul.nav-tabs li a').on('click',function(){
+    $('ul.nav-tabs li a').on('click', function () {
         $('ul.nav-tabs li').removeClass('active');
         $(this).parent().addClass('active');
         $('.content-tabs section').attr('hidden', true);
@@ -10,17 +10,17 @@ function iniciar(permiso){
         $('.content-tabs section form').removeAttr('form');
 
         var activeTab = $(this).attr('type');
-        var activeForm = "form-"+activeTab.substring(1);
-        
-        $("#"+activeForm).attr('type', 'register');
-        $("#"+activeForm).attr('form', 'formulario');
+        var activeForm = "form-" + activeTab.substring(1);
+
+        $("#" + activeForm).attr('type', 'register');
+        $("#" + activeForm).attr('form', 'formulario');
         changeStateInput(activeForm, true);
 
         // clearDataTable();
-        if (activeForm == "form-pendientes"){
+        if (activeForm == "form-pendientes") {
             listarDespachosPendientes(permiso);
-        } 
-        else if (activeForm == "form-salidas"){
+        }
+        else if (activeForm == "form-salidas") {
             listarDespachosEntregados(permiso);
         }
         $(activeTab).attr('hidden', false);//inicio botones (estados)
@@ -28,14 +28,15 @@ function iniciar(permiso){
     vista_extendida();
 }
 
-function listarDespachosPendientes(permiso){
+function listarDespachosPendientes(permiso) {
     var vardataTables = funcDatatables();
     $('#despachosPendientes').DataTable({
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
-        'language' : vardataTables[0],
-        'destroy' : true,
-        'ajax' : 'listarOrdenesDespachoPendientes',
+        'language': vardataTables[0],
+        'destroy': true,
+        pageLength: false,
+        'ajax': 'listarOrdenesDespachoPendientes',
         // 'serverSide' : true,
         // "scrollX": true,
         // 'ajax': {
@@ -44,182 +45,192 @@ function listarDespachosPendientes(permiso){
         //     // type: 'POST'
         // },
         'columns': [
-            {'data': 'id_od'},
-            {'render': 
-                function (data, type, row){
-                    if (row['aplica_cambios']){
-                        return '<span class="label label-danger">Despacho Interno</span>';
-                    } else {
-                        return '<span class="label label-primary">Despacho Externo</span>';
+            { 'data': 'id_od' },
+            {
+                'render':
+                    function (data, type, row) {
+                        if (row['aplica_cambios']) {
+                            return '<span class="label label-danger">Despacho Interno</span>';
+                        } else {
+                            return '<span class="label label-primary">Despacho Externo</span>';
+                        }
                     }
-                }
             },
-            {'data': 'fecha_despacho'},
-            {'data': 'hora_despacho'},
-            {'data': 'codigo'},
-            {'render': 
-                function (data, type, row){
-                    if (row['razon_social'] !== null){
-                        return row['razon_social'];
-                    } else if (row['nombre_persona'] !== null){
-                        return row['nombre_persona'];
+            { 'data': 'fecha_despacho' },
+            { 'data': 'hora_despacho' },
+            { 'data': 'codigo' },
+            {
+                'render':
+                    function (data, type, row) {
+                        if (row['razon_social'] !== null) {
+                            return row['razon_social'];
+                        } else if (row['nombre_persona'] !== null) {
+                            return row['nombre_persona'];
+                        }
                     }
-                }
             },
             // {'data': 'razon_social', 'name': 'adm_contri.razon_social'},
-            {'data': 'codigo_req', 'name': 'alm_req.codigo'},
-            {'data': 'concepto', 'name': 'alm_req.concepto'},
-            {'data': 'almacen_descripcion', 'name': 'alm_almacen.descripcion'},
-            {'data': 'fecha_despacho'},
-            {'data': 'nombre_corto', 'name': 'sis_usua.nombre_corto'}
+            { 'data': 'codigo_req', 'name': 'alm_req.codigo' },
+            { 'data': 'concepto', 'name': 'alm_req.concepto' },
+            { 'data': 'almacen_descripcion', 'name': 'alm_almacen.descripcion' },
+            { 'data': 'fecha_despacho' },
+            { 'data': 'nombre_corto', 'name': 'sis_usua.nombre_corto' }
         ],
-        'order': [[ 2, "desc" ],[ 3, "desc" ]],
+        'order': [[2, "desc"], [3, "desc"]],
         'columnDefs': [
-            {'aTargets': [0], 'sClass': 'invisible'},
-            {'render': function (data, type, row){
-                if (permiso == '1') {
-                    return `<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
+            { 'aTargets': [0], 'sClass': 'invisible' },
+            {
+                'render': function (data, type, row) {
+                    if (permiso == '1') {
+                        return `<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
                         data-placement="bottom" title="Ver Detalle" >
                         <i class="fas fa-list-ul"></i></button>`+
-                    (row['estado'] == 1 ? 
-                    (`<button type="button" class="guia btn btn-warning boton" data-toggle="tooltip" 
+                            (row['estado'] == 1 ?
+                                (`<button type="button" class="guia btn btn-warning boton" data-toggle="tooltip" 
                         data-placement="bottom" title="Generar Guía" >
                         <i class="fas fa-sign-in-alt"></i></button>
                     <button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" 
                         data-placement="bottom" title="Anular Orden de Despacho" data-id="${row['id_od']}">
                         <i class="fas fa-trash"></i></button>`) : '');
-                } else {
-                    return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
-                    'data-placement="bottom" title="Ver Detalle" >'+
-                    '<i class="fas fa-list-ul"></i></button>'
-                }
+                    } else {
+                        return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" ' +
+                            'data-placement="bottom" title="Ver Detalle" >' +
+                            '<i class="fas fa-list-ul"></i></button>'
+                    }
                 }, targets: 11
             }
         ],
     });
 }
 
-$('#despachosPendientes tbody').on("click","button.detalle", function(){
+$('#despachosPendientes tbody').on("click", "button.detalle", function () {
     var data = $('#despachosPendientes').DataTable().row($(this).parents("tr")).data();
-    console.log('data.id_od'+data.id_od);
+    console.log('data.id_od' + data.id_od);
     // var data = $(this).data('id');
     open_detalle_despacho(data);
 });
 
-$('#despachosPendientes tbody').on("click","button.guia", function(){
+$('#despachosPendientes tbody').on("click", "button.guia", function () {
     var data = $('#despachosPendientes').DataTable().row($(this).parents("tr")).data();
-    console.log('data.id_od'+data.id_od);
+    console.log('data.id_od' + data.id_od);
     open_guia_create(data);
 });
 
-$('#despachosPendientes tbody').on("click","button.anular", function(){
+$('#despachosPendientes tbody').on("click", "button.anular", function () {
     var id = $(this).data('id');
     var msj = confirm('¿Está seguro que desea anular la Orden de Despacho ?');
-    if (msj){
+    if (msj) {
         anularOrdenDespacho(id);
     }
 });
 
-function anularOrdenDespacho(id){
+function anularOrdenDespacho(id) {
     $.ajax({
         type: 'GET',
-        url: 'anular_orden_despacho/'+id,
+        url: 'anular_orden_despacho/' + id,
         dataType: 'JSON',
-        success: function(response){
+        success: function (response) {
             console.log(response);
-            if (response > 0){
+            if (response > 0) {
                 $('#despachosPendientes').DataTable().ajax.reload();
             }
         }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
+    }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
     });
 }
 
-function listarDespachosEntregados(permiso){
+function listarDespachosEntregados(permiso) {
     var vardataTables = funcDatatables();
     $('#despachosEntregados').DataTable({
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
-        'language' : vardataTables[0],
-        'destroy' : true,
-        'serverSide' : true,
+        'language': vardataTables[0],
+        'destroy': true,
+        'serverSide': true,
         // "scrollX": true,
         'ajax': {
             url: 'listarSalidasDespacho',
             type: 'POST'
         },
         'columns': [
-            {'data': 'id_mov_alm'},
-            {'render': 
-                function (data, type, row){
-                    if (row['codigo_od']!==null){
-                        if (row['aplica_cambios']){
-                            return '<span class="label label-danger">'+row['codigo_od']+'</span>';
+            { 'data': 'id_mov_alm' },
+            {
+                'render':
+                    function (data, type, row) {
+                        if (row['codigo_od'] !== null) {
+                            if (row['aplica_cambios']) {
+                                return '<span class="label label-danger">' + row['codigo_od'] + '</span>';
+                            } else {
+                                return '<span class="label label-primary">' + row['codigo_od'] + '</span>';
+                            }
                         } else {
-                            return '<span class="label label-primary">'+row['codigo_od']+'</span>';
+                            return '<span class="label label-success">' + row['codigo_trans'] + '</span>';
                         }
-                    } else {
-                        return '<span class="label label-success">'+row['codigo_trans']+'</span>';
                     }
-                }
             },
-            {'data': 'fecha_emision'},
-            {'data': 'almacen_descripcion', 'name': 'alm_almacen.descripcion'},
+            { 'data': 'fecha_emision' },
+            { 'data': 'almacen_descripcion', 'name': 'alm_almacen.descripcion' },
             // {'data': 'codigo'},
-            {'render': function (data, type, row){
-                    return (row['codigo'] !== null ? 
-                    ('<label class="lbl-codigo" title="Abrir Salida" onClick="abrir_salida('+row['id_mov_alm']+')">'+row['codigo']+'</label>')
-                    : '');
+            {
+                'render': function (data, type, row) {
+                    return (row['codigo'] !== null ?
+                        ('<label class="lbl-codigo" title="Abrir Salida" onClick="abrir_salida(' + row['id_mov_alm'] + ')">' + row['codigo'] + '</label>')
+                        : '');
                 }
             },
-            {'render': function (data, type, row){
-                    return row['serie']+'-'+row['numero'];
+            {
+                'render': function (data, type, row) {
+                    return row['serie'] + '-' + row['numero'];
                 }
             },
-            {'data': 'operacion'},
+            { 'data': 'operacion' },
             // {'data': 'codigo_requerimiento', 'name': 'alm_req.codigo'},
-            {'render': function (data, type, row){
-                    if (row['codigo_requerimiento']!==null){
+            {
+                'render': function (data, type, row) {
+                    if (row['codigo_requerimiento'] !== null) {
                         return row['codigo_requerimiento'];
-                    } 
-                    else if (row['codigo_req_trans']!==null){
+                    }
+                    else if (row['codigo_req_trans'] !== null) {
                         return row['codigo_req_trans'];
                     }
                 }
             },
-            {'render': 
-                function (data, type, row){
-                    if (row['razon_social'] !== null){
-                        return row['razon_social'];
-                    } else if (row['nombre_persona'] !== null){
-                        return row['nombre_persona'];
-                    } else {
-                        return '';
+            {
+                'render':
+                    function (data, type, row) {
+                        if (row['razon_social'] !== null) {
+                            return row['razon_social'];
+                        } else if (row['nombre_persona'] !== null) {
+                            return row['nombre_persona'];
+                        } else {
+                            return '';
+                        }
                     }
-                }
             },
             // {'data': 'concepto', 'name': 'alm_req.concepto'},
-            {'render': function (data, type, row){
-                    if (row['concepto']!==null){
+            {
+                'render': function (data, type, row) {
+                    if (row['concepto'] !== null) {
                         return row['concepto'];
-                    } 
-                    else if (row['concepto_trans']!==null){
+                    }
+                    else if (row['concepto_trans'] !== null) {
                         return row['concepto_trans'];
                     }
                 }
             },
-            {'data': 'nombre_corto', 'name': 'sis_usua.nombre_corto'}
+            { 'data': 'nombre_corto', 'name': 'sis_usua.nombre_corto' }
         ],
-        'order': [[ 0, "desc" ]],
+        'order': [[0, "desc"]],
         'columnDefs': [
-            {'aTargets': [0], 'sClass': 'invisible'},
-            {'render': function (data, type, row){
+            { 'aTargets': [0], 'sClass': 'invisible' },
+            {
+                'render': function (data, type, row) {
                     if (permiso == '1') {
-                        return  row['id_operacion']==11 ? '' : 
-                                `<button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" 
+                        return row['id_operacion'] == 11 ? '' :
+                            `<button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" 
                                 data-placement="bottom" title="Anular Salida" data-id="${row['id_mov_alm']}" data-guia="${row['id_guia_ven']}"
                                 data-od="${row['id_od']}"><i class="fas fa-trash"></i></button>
                                 
@@ -243,12 +254,12 @@ function listarDespachosEntregados(permiso){
 //     window.open('imprimir_salida/'+id);
 // });
 
-function abrir_salida(id_mov_alm){
+function abrir_salida(id_mov_alm) {
     var id = encode5t(id_mov_alm);
-    window.open('imprimir_salida/'+id);
+    window.open('imprimir_salida/' + id);
 }
 
-$('#despachosEntregados tbody').on("click","button.anular", function(){
+$('#despachosEntregados tbody').on("click", "button.anular", function () {
     var id_mov_alm = $(this).data('id');
     var id_guia = $(this).data('guia');
     var id_od = $(this).data('od');
@@ -265,7 +276,7 @@ $('#despachosEntregados tbody').on("click","button.anular", function(){
     $("#submitGuiaVenObs").removeAttr("disabled");
 });
 
-$("#form-guia_ven_obs").on("submit", function(e){
+$("#form-guia_ven_obs").on("submit", function (e) {
     console.log('submit');
     e.preventDefault();
     var data = $(this).serialize();
@@ -273,16 +284,16 @@ $("#form-guia_ven_obs").on("submit", function(e){
     anular_salida(data);
 });
 
-function anular_salida(data){
-    $("#submitGuiaVenObs").attr('disabled','true');
+function anular_salida(data) {
+    $("#submitGuiaVenObs").attr('disabled', 'true');
     $.ajax({
         type: 'POST',
         url: 'anular_salida',
         data: data,
         dataType: 'JSON',
-        success: function(response){
+        success: function (response) {
             console.log(response);
-            if (response.length > 0){
+            if (response.length > 0) {
                 alert(response);
                 $('#modal-guia_ven_obs').modal('hide');
             } else {
@@ -291,14 +302,14 @@ function anular_salida(data){
                 $('#despachosEntregados').DataTable().ajax.reload();
             }
         }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
+    }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
     });
 }
 
-$('#despachosEntregados tbody').on("click","button.cambio", function(){
+$('#despachosEntregados tbody').on("click", "button.cambio", function () {
     var id_mov_alm = $(this).data('id');
     var id_guia = $(this).data('guia');
     var id_od = $(this).data('od');
@@ -312,6 +323,6 @@ $('#despachosEntregados tbody').on("click","button.cambio", function(){
     $('[name=id_od]').val(id_od);
     $('[name=serie_nuevo]').val('');
     $('[name=numero_nuevo]').val('');
-    
+
     $("#submit_guia_ven_cambio").removeAttr("disabled");
 });

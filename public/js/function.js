@@ -761,7 +761,7 @@ function changePassword() {
         show: true,
         backdrop: "static"
     });
-    $("#modal-settings").on("shown.bs.modal", function() {
+    $("#modal-settings").on("shown.bs.modal", function () {
         $("[name=pass_old]").focus();
     });
 }
@@ -783,7 +783,7 @@ function execSetting() {
                 url: baseUrl,
                 data: data,
                 dataType: "JSON",
-                success: function(response) {
+                success: function (response) {
                     console.log(response);
                     $(".loading").remove();
                     if (response > 0) {
@@ -862,10 +862,10 @@ function sumaFecha(d, fecha) {
     var sFecha =
         fecha ||
         Fecha.getFullYear() +
-            "/" +
-            (Fecha.getMonth() + 1) +
-            "/" +
-            Fecha.getDate();
+        "/" +
+        (Fecha.getMonth() + 1) +
+        "/" +
+        Fecha.getDate();
     var sep = sFecha.indexOf("/") != -1 ? "/" : "-";
     var aFecha = sFecha.split(sep);
     var fecha = aFecha[0] + "/" + aFecha[1] + "/" + aFecha[2];
@@ -989,7 +989,7 @@ function formatDecimalDigitos(number, digitos) {
 var formatNumber = {
     separador: ",", // separador para los miles
     sepDecimal: ".", // separador para los decimales
-    formatear: function(num, digitos) {
+    formatear: function (num, digitos) {
         num += "";
         var splitStr = num.split(".");
 
@@ -1018,19 +1018,19 @@ var formatNumber = {
 
         return this.simbol + splitLeft + splitRight + ceros;
     },
-    new: function(num, simbol, digitos) {
+    new: function (num, simbol, digitos) {
         //agrega string (puede ser la moneda) delante del nro
         this.simbol = simbol || "";
         return this.formatear(num, digitos);
     },
-    decimal: function(num, simbol, digitos) {
+    decimal: function (num, simbol, digitos) {
         var nro = Math.round10(num, digitos);
         return this.new(nro, simbol, digitos);
     }
 };
 
 //Math.round10(55.55, -1);   // 55.6
-Math.round10 = function(value, exp) {
+Math.round10 = function (value, exp) {
     return decimalAdjust("round", value, exp);
 };
 
@@ -1159,7 +1159,7 @@ function funcDatatables() {
                 ": Activar para ordenar la columna de manera descendente"
         }
     };
-    var dtdom = "lBfrtip"; //l=lenght / B=button / f=filter / rt=read table
+    var dtdom = "Bfrtip"; //l=lenght / B=button / f=filter / rt=read table
     var dtbuttons = [
         { extend: "copy", text: '<i class="fas fa-copy"></i>' },
         { extend: "excel", text: '<i class="fas fa-file-excel"></i>' },
