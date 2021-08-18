@@ -278,16 +278,16 @@ function cargar_almacenes(sede) {
     }
 }
 
-function open_guias(data) {
-    $("#modal-guias").modal({
-        show: true
-    });
-    $("#cabecera_orden").text(
-        data.codigo_orden + " - " + data.razon_social +
-        " - Total: " + data.simbolo + data.monto_total
-    );
-    listar_guias_orden(data.id_orden_compra);
-}
+// function open_guias(data) {
+//     $("#modal-guias").modal({
+//         show: true
+//     });
+//     $("#cabecera_orden").text(
+//         data.codigo_orden + " - " + data.razon_social +
+//         " - Total: " + data.simbolo + data.monto_total
+//     );
+//     listar_guias_orden(data.id_orden_compra);
+// }
 
 function listar_detalle_orden(id_orden) {
     console.log("id_orden", id_orden);
@@ -330,61 +330,61 @@ function listar_detalle_orden(id_orden) {
     });
 }
 
-function listar_guias_orden(id_orden) {
-    $.ajax({
-        type: "GET",
-        url: "verGuiasOrden/" + id_orden,
-        dataType: "JSON",
-        success: function (response) {
-            console.log(response);
-            var html = "";
-            var i = 1;
-            response.forEach(element => {
-                html +=
-                    '<tr id="' +
-                    element.id_guia_com_oc +
-                    '">' +
-                    "<td>" +
-                    i +
-                    "</td>" +
-                    '<td><label class="lbl-codigo" title="Abrir Guía" onClick="abrir_guia_compra(' +
-                    element.id_guia_com +
-                    ')">' +
-                    element.serie +
-                    "-" +
-                    element.numero +
-                    "</label></td>" +
-                    "<td>" +
-                    element.fecha_emision +
-                    "</td>" +
-                    "<td>" +
-                    element.almacen +
-                    "</td>" +
-                    "<td>" +
-                    element.operacion +
-                    "</td>" +
-                    "<td>" +
-                    element.nombre_responsable +
-                    "</td>" +
-                    "<td>" +
-                    element.nombre_registrado_por +
-                    "</td>" +
-                    '<td><span class="label label-' +
-                    element.bootstrap_color +
-                    '">' +
-                    element.estado_doc +
-                    "</span></td>" +
-                    "</tr>";
-                i++;
-            });
-            $("#guiasOrden tbody").html(html);
-        }
-    }).fail(function (jqXHR, textStatus, errorThrown) {
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    });
-}
+// function listar_guias_orden(id_orden) {
+//     $.ajax({
+//         type: "GET",
+//         url: "verGuiasOrden/" + id_orden,
+//         dataType: "JSON",
+//         success: function (response) {
+//             console.log(response);
+//             var html = "";
+//             var i = 1;
+//             response.forEach(element => {
+//                 html +=
+//                     '<tr id="' +
+//                     element.id_guia_com_oc +
+//                     '">' +
+//                     "<td>" +
+//                     i +
+//                     "</td>" +
+//                     '<td><label class="lbl-codigo" title="Abrir Guía" onClick="abrir_guia_compra(' +
+//                     element.id_guia_com +
+//                     ')">' +
+//                     element.serie +
+//                     "-" +
+//                     element.numero +
+//                     "</label></td>" +
+//                     "<td>" +
+//                     element.fecha_emision +
+//                     "</td>" +
+//                     "<td>" +
+//                     element.almacen +
+//                     "</td>" +
+//                     "<td>" +
+//                     element.operacion +
+//                     "</td>" +
+//                     "<td>" +
+//                     element.nombre_responsable +
+//                     "</td>" +
+//                     "<td>" +
+//                     element.nombre_registrado_por +
+//                     "</td>" +
+//                     '<td><span class="label label-' +
+//                     element.bootstrap_color +
+//                     '">' +
+//                     element.estado_doc +
+//                     "</span></td>" +
+//                     "</tr>";
+//                 i++;
+//             });
+//             $("#guiasOrden tbody").html(html);
+//         }
+//     }).fail(function (jqXHR, textStatus, errorThrown) {
+//         console.log(jqXHR);
+//         console.log(textStatus);
+//         console.log(errorThrown);
+//     });
+// }
 
 function abrir_guia_compra(id_guia_compra) {
     console.log("abrir_guia_compra()");
