@@ -1912,12 +1912,6 @@ table thead th {
   background-color: #8e1c1c;
 }
 
-.dataTables_filter {
-  width: 50%;
-  float: right;
-  text-align: right;
-}
-
 /*!
  * Font Awesome Free 5.2.0 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License)
