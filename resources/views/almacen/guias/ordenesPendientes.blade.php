@@ -41,7 +41,7 @@ Pendientes de Ingreso
                                         <button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Seleccione varias ordenes para ingresar la Guía de Compra" onClick="open_guia_create_seleccionadas();">Ingresar Guía</button>
                                         @endif -->
                                     </div>
-                                    <table class="mytable table table-condensed table-bordered table-okc-view" id="ordenesPendientes" style="width:100px;">
+                                    <table class="mytable table table-condensed table-bordered table-okc-view" id="ordenesPendientes" style="width:100%;">
                                         <thead>
                                             <tr>
                                                 <th hidden></th>

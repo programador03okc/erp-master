@@ -9,6 +9,7 @@ function open_guia_create(data, $fila) {
     $('[name=id_operacion]').val(2).trigger('change.select2');
     $('[name=id_guia_clas]').val(1);
     $('[name=id_proveedor]').val(data.id_proveedor);
+    $('[name=razon_social_proveedor]').val(data.razon_social);
     $('[name=id_sede]').val(data.id_sede);
     $('[name=id_orden_compra]').val(data.id_orden_compra);
     $('[name=id_od]').val('');
@@ -495,4 +496,20 @@ function abrirProducto(id_producto) {
     localStorage.setItem("id_producto", id_producto);
     var win = window.open("/almacen/catalogos/productos/index", '_blank');
     win.focus();
+}
+
+// function abrirProducto() {
+//     let url = "/almacen/catalogos/productos/index";
+//     var win = window.open(url, "_blank");
+//     win.focus();
+// }
+
+function ceros_numero(numero) {
+    if (numero == "numero") {
+        var num = $("[name=numero]").val();
+        $("[name=numero]").val(leftZero(7, num));
+    } else if (numero == "serie") {
+        var num = $("[name=serie]").val();
+        $("[name=serie]").val(leftZero(4, num));
+    }
 }

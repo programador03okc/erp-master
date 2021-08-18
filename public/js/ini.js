@@ -1,7 +1,7 @@
 let page;
-$(document).ajaxStart(function () {
-	Pace.restart();
-});
+// $(document).ajaxStart(function () {
+// 	Pace.restart();
+// });
 $.ajaxSetup({
 	headers: {
 		'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

@@ -27,7 +27,9 @@ function iniciar(permiso, usuario) {
         changeStateInput(activeForm, true);
 
         if (activeForm == "form-requerimientos") {
-            listarRequerimientosPendientes();
+            //listarRequerimientosPendientes();
+            $("#listaRequerimientos").DataTable().ajax.reload();
+
         } else if (activeForm == "form-pendientes") {
             listarTransferenciasPorRecibir();
         } else if (activeForm == "form-porEnviar") {
@@ -43,25 +45,29 @@ function iniciar(permiso, usuario) {
 function listarRequerimientosPendientes() {
     var vardataTables = funcDatatables();
 
+    $("#listaRequerimientos").on('search.dt', function () {
+        $('#listaRequerimientos_filter input').prop('disabled', true);
+        $('#btnBuscar').html('<span class="glyphicon glyphicon-time" aria-hidden="true"></span>').prop('disabled', true);
+    });
+
+    $("#listaRequerimientos").on('processing.dt', function (e, settings, processing) {
+        if (processing) {
+            $(e.currentTarget).LoadingOverlay("show", {
+                imageAutoResize: true,
+                progress: true,
+                imageColor: "#3c8dbc"
+            });
+        } else {
+            $(e.currentTarget).LoadingOverlay("hide", true);
+        }
+    });
     const $tableRequerimientos = $("#listaRequerimientos").DataTable({
-        // dom: 'Bfrtip',
+        dom: vardataTables[1],
+        buttons: [],
         language: vardataTables[0],
-        destroy: true,
-        //processing: true,
-        pageLength: 25,
+        pageLength: 20,
         serverSide: true,
-        ajax: {
-            url: "listarRequerimientos",
-            type: "POST",
-            beforeSend: data => {
-                $("#listaRequerimientos").LoadingOverlay("show", {
-                    imageAutoResize: true,
-                    progress: true,
-                    // custom: customElement,
-                    imageColor: "#3c8dbc"
-                });
-            }
-        },
+
         initComplete: function (settings, json) {
             const $filter = $("#listaRequerimientos_filter");
             const $input = $filter.find("input");
@@ -79,8 +85,6 @@ function listarRequerimientosPendientes() {
             });
         },
         drawCallback: function (settings, json) {
-            $("#listaRequerimientos").LoadingOverlay("hide", true);
-
             $("#listaRequerimientos_filter input").prop("disabled", false);
             $("#btnBuscar").html('<span class="glyphicon glyphicon-search" aria-hidden="true"></span>')
                 .prop("disabled", false);
@@ -89,6 +93,10 @@ function listarRequerimientosPendientes() {
                     checkboxClass: "icheckbox_flat-blue"
                 });
             $("#listaRequerimientos_filter input").trigger("focus");
+        },
+        ajax: {
+            url: "listarRequerimientos",
+            type: "POST"
         },
         columns: [
             { data: "id_requerimiento", name: "alm_req.id_requerimiento" },
@@ -145,23 +153,8 @@ function listarRequerimientosPendientes() {
         ]
     });
 
-    $tableRequerimientos.on('search.dt', function () {
-        $('#listaRequerimientos_filter input').prop('disabled', true);
-        $('#btnBuscar').html('<span class="glyphicon glyphicon-time" aria-hidden="true"></span>').prop('disabled', true);
-    });
 
-    $tableRequerimientos.on('processing.dt', function (e, settings, processing) {
-        if (processing) {
-            console.log("trabajando")
-            $(e.currentTarget).LoadingOverlay("show", {
-                imageAutoResize: true,
-                progress: true,
-                imageColor: "#3c8dbc"
-            });
-        } else {
-            $(e.currentTarget).LoadingOverlay("hide", true);
-        }
-    });
+
 
 }
 

@@ -11,7 +11,7 @@ function listarIngresos() {
         });
     }
     let tableIngresos = $("#listaIngresosAlmacen").DataTable({
-        dom: 'Bfrtip',
+        dom: vardataTables[1],
         buttons: botones,
         language: vardataTables[0],
         bDestroy: true,
@@ -38,6 +38,7 @@ function listarIngresos() {
             });
         },
         columns: [
+            { data: "id_mov_alm" },
             { data: "id_mov_alm" },
             { data: "fecha_emision" },
             {
@@ -77,8 +78,9 @@ function listarIngresos() {
             });
         },
         columnDefs: [
+            { targets: [0], className: "invisible" },
             {
-                targets: 0,
+                targets: 1,
                 searchable: false,
                 orderable: false,
                 className: "dt-body-center",
@@ -100,19 +102,19 @@ function listarIngresos() {
                 render: function (data, type, row) {
                     return row.ordenes_compra;
                 },
-                targets: 9
+                targets: 10
             },
             {
                 render: function (data, type, row) {
                     return row.ordenes_soft_link;
                 },
-                targets: 10
+                targets: 11
             },
             {
                 render: function (data, type, row) {
                     return row.comprobantes;
                 },
-                targets: 11
+                targets: 12
             },
             {
                 render: function (data, type, row) {
@@ -176,7 +178,7 @@ function listarIngresos() {
                         );
                     }
                 },
-                targets: 12
+                targets: 13
             }
         ],
         select: "multi",
