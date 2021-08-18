@@ -898,7 +898,7 @@ function suma_fecha(d, fecha) {
 
 /* Formato para las fechas dd/mm/YY */
 function formatDate(myfecha) {
-    var nuevo = moment(myfecha).format("DD/MM/YYYY");
+    var nuevo = moment(myfecha).format("DD-MM-YYYY");
     /*var fecha = new Date(myfecha);
     var dd = fecha.getDate();
     var mm = fecha.getMonth() + 1;
@@ -935,7 +935,6 @@ function formatDateHour(myfecha) {
     var yy = fecha.getFullYear();
     var hour = fecha.getHours();
     var min = fecha.getMinutes();
-    var seg = fecha.getSeconds();
 
     if (dd < 10) {
         dd = "0" + dd;
@@ -949,11 +948,8 @@ function formatDateHour(myfecha) {
     if (min < 10) {
         min = "0" + min;
     }
-    if (seg < 10) {
-        seg = "0" + seg;
-    }
 
-    var nuevo = dd + "/" + mm + "/" + yy + " " + hour + ":" + min + ":" + seg;
+    var nuevo = dd + "-" + mm + "-" + yy + " " + hour + ":" + min;
     return nuevo;
 }
 /* nueva funcion */

@@ -924,10 +924,6 @@ span.select2-selection {
   font-size: 12px;
 }
 
-.right {
-  text-align: right;
-}
-
 .icon-tabla {
   font-size: 20px;
   width: 23px;
@@ -1910,12 +1906,6 @@ table thead th {
 
 #btnVolverArriba:hover {
   background-color: #8e1c1c;
-}
-
-.dataTables_filter {
-  width: 50%;
-  float: right;
-  text-align: right;
 }
 
 /*!
