@@ -65,9 +65,10 @@ class RequerimientoPendienteModel {
                         });
                         requerimientoPendienteModel.getAlmacenes().then(function (res) {
                             // Run this when your request was successful
+                        
                             let data_almacenes= res.data;
                             if (data_almacenes.length > 0) {
-                                resolve({'detalle_requerimiento':response.det_req,'almacenes':data_almacenes}); // Resolve promise and go to then() 
+                                resolve({'detalle_requerimiento':(response.det_req).filter(item => item.tiene_transformacion == false ),'almacenes':data_almacenes}); // Resolve promise and go to then() 
                             } else {
                             
                             }

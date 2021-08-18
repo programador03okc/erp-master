@@ -84,7 +84,7 @@
                     </span>
                 </a>
                 <ul class="treeview-menu" >
-                    <li><a href="/gestionar_proveedores"><i class="far fa-circle fa-xs"></i> Gestionar Proveedores</a></li>
+                    <li><a href="/listar-proveedores"><i class="far fa-circle fa-xs"></i> Listado</a></li>
                 </ul>
             </li>
             @if(Auth::user()->tieneSubModulo(28))

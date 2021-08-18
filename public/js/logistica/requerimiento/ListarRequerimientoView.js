@@ -44,7 +44,7 @@ class ListarRequerimientoView {
         let that = this;
         vista_extendida();
         var vardataTables = funcDatatables();
-        $('#ListaRequerimientosElaborados').DataTable({
+        let $tablaListaRequerimientosElaborados= $('#ListaRequerimientosElaborados').DataTable({
             'dom': vardataTables[1],
             'buttons': vardataTables[2],
             'language': vardataTables[0],
@@ -55,6 +55,14 @@ class ListarRequerimientoView {
             'ajax': {
                 'url': 'elaborados',
                 'type': 'POST',
+                beforeSend: data => {
+    
+                    $("#ListaRequerimientosElaborados").LoadingOverlay("show", {
+                        imageAutoResize: true,
+                        progress: true,
+                        imageColor: "#3c8dbc"
+                    });
+                },
                 data: function (params) {
                     return Object.assign(params, Util.objectifyForm($('#form-requerimientosElaborados').serializeArray()))
                 }
@@ -65,6 +73,7 @@ class ListarRequerimientoView {
                 { 'data': 'priori', 'name': 'adm_prioridad.descripcion', 'className': 'text-center' },
                 { 'data': 'codigo', 'name': 'codigo', 'className': 'text-center' },
                 { 'data': 'concepto', 'name': 'concepto' },
+                { 'data': 'fecha_registro', 'name': 'alm_req.fecha_registro', 'className': 'text-center' },
                 { 'data': 'fecha_entrega', 'name': 'fecha_entrega', 'className': 'text-center' },
                 { 'data': 'tipo_requerimiento', 'name': 'alm_tp_req.descripcion', 'className': 'text-center' },
                 { 'data': 'razon_social', 'name': 'adm_contri.razon_social', 'className': 'text-center' },
@@ -73,7 +82,6 @@ class ListarRequerimientoView {
                 { 'data': 'monto_total', 'name': 'monto_total', 'className': 'text-right', 'searchable': false },
                 { 'data': 'nombre_usuario', 'name': 'nombre_usuario' },
                 { 'data': 'estado_doc', 'name': 'adm_estado_doc.estado_doc' },
-                { 'data': 'fecha_registro', 'name': 'alm_req.fecha_registro', 'className': 'text-center' },
                 { 'data': 'id_requerimiento' }
             ],
             'columnDefs': [
@@ -91,7 +99,7 @@ class ListarRequerimientoView {
                 {
                     'render': function (data, type, row) {
                         return (row['simbolo_moneda']) + (Util.formatoNumero(row['monto_total'], 2));
-                    }, targets: 9
+                    }, targets: 10
                 },
                 {
                     'render': function (data, type, row) {
@@ -116,7 +124,7 @@ class ListarRequerimientoView {
                                 break;
 
                         }
-                    }, targets: 11, className: 'text-center'
+                    }, targets: 12, className: 'text-center'
                 },
                 {
                     'render': function (data, type, row) {
@@ -186,6 +194,9 @@ class ListarRequerimientoView {
                     let data = $('#ListaRequerimientosElaborados').DataTable().row($(this).parents("tr")).data();
                     that.verDetalleRequerimientoSoloLectura(data, that);
                 });
+            },
+            "drawCallback": function( settings ) {
+                $("#ListaRequerimientosElaborados").LoadingOverlay("hide", true);
             }
         });
 
