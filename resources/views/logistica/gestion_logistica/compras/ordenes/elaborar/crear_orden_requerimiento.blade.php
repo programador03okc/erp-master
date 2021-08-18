@@ -301,7 +301,7 @@ Elaborar orden
                                     <th>Item</th>
                                     <th style="width: 8%">Unidad</th>
                                     <th style="width: 5%">Cantidad Solicitada</th>
-                                    <th style="width: 10%">Costo</th>
+                                    <th style="width: 10%">Precio</th>
                                     <th style="width: 8%">Cantidad a comprar / requerir</th>
                                     <th style="width: 6%">Total</th>
                                     <th style="width: 5%">Acción</th>
@@ -387,7 +387,7 @@ Elaborar orden
 <script src="{{('/js/logistica/orden/cuentasBancariasProveedor.js')}}"></script>
 <script src="{{ asset('js/publico/consulta_sunat.js')}}"></script>
 <script src="{{('/js/logistica/orden/OrdenModel.js')}}"></script>
-<script src="{{('/js/logistica/orden/OrdenView.js')}}"></script>
+<script src="{{('/js/logistica/orden/OrdenView.js?v=2')}}"></script>
 <script src="{{('/js/logistica/orden/OrdenController.js')}}"></script>
 
 

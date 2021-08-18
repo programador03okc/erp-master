@@ -21,7 +21,8 @@ class OrdenView {
             this.obtenerRequerimiento(reqTrueList, tipoOrden);
             let btnVinculoAReq = `<span class="text-info" id="text-info-req-vinculado" > <a onClick="window.location.reload();" style="cursor:pointer;" title="Recargar con Valores Iniciales del Requerimiento">(vinculado a un Requerimiento)</a> <span class="badge label-danger handleClickEliminarVinculoReq" style="position: absolute;margin-top: -5px;margin-left: 5px; cursor:pointer" title="Eliminar vínculo">×</span></span>`;
             document.querySelector("section[class='content-header']").children[0].innerHTML += btnVinculoAReq;
-
+            sessionStorage.removeItem('reqCheckedList');
+            sessionStorage.removeItem('tipoOrden');
         }
         var idOrden = sessionStorage.getItem('idOrden');
         actionPage = sessionStorage.getItem('action');
@@ -29,6 +30,8 @@ class OrdenView {
 
         if (idOrden > 0) {
             this.mostrarOrden(idOrden);
+            sessionStorage.removeItem('idOrden');
+            sessionStorage.removeItem('action');
         }
 
         this.getTipoCambioCompra();
@@ -120,6 +123,13 @@ class OrdenView {
 
         $('#listaOrdenesElaboradas tbody').on("click","button.handleClickSelectOrden", (e)=>{
             this.selectOrden(e.currentTarget.dataset.idOrden);
+        });
+
+        $('#listaRequerimientosParaVincular tbody').on("click","button.handleClickVerDetalleRequerimientoModalVincularRequerimiento",(e)=>{
+            this.verDetalleRequerimientoModalVincularRequerimiento(e.currentTarget);
+        });
+        $('#listaRequerimientosParaVincular tbody').on("click","button.handleClickVincularRequerimiento",(e)=>{
+            this.vincularRequerimiento(e.currentTarget.dataset.idRequerimiento);
         });
     }
 
@@ -765,7 +775,6 @@ class OrdenView {
     }
 
     ConstruirlistarRequerimientosPendientesParaVincularConOrden(data) {
-        const that = this;
         tablaListaRequerimientosParaVincular= $('#listaRequerimientosParaVincular').DataTable({
             'serverSide': false,
             'processing': false,
@@ -795,7 +804,7 @@ class OrdenView {
                         function (data, type, row) {
                             let containerOpenBrackets = `<div class="btn-group" role="group" style="display: flex;flex-direction: row;flex-wrap: nowrap;">`;
                             let btnVerDetalle = `<button type="button" class="ver-detalle btn btn-default boton handleClickVerDetalleRequerimientoModalVincularRequerimiento" data-id-requerimiento="${row.id_requerimiento}"  data-toggle="tooltip" data-placement="bottom" title="Ver detalle requerimiento" data-id="${row.id_orden_compra}"> <i class="fas fa-chevron-down fa-sm"></i> </button>`;
-                            let btnSeleccionar = `<button type="button" class="ver-detalle btn btn-success boton handleClickVincularRequerimiento" data-toggle="tooltip" data-placement="bottom" title="Seleccionar" data-id="${row.id_orden_compra}"> Seleccionar </button>`;
+                            let btnSeleccionar = `<button type="button" class="ver-detalle btn btn-success boton handleClickVincularRequerimiento" data-toggle="tooltip" data-placement="bottom" title="Seleccionar" data-id-requerimiento="${row.id_requerimiento}" data-id="${row.id_orden_compra}"> Seleccionar </button>`;
                             let containerCloseBrackets = `</div>`;
                             return (containerOpenBrackets + btnVerDetalle + btnSeleccionar + containerCloseBrackets);
                         }
@@ -803,13 +812,7 @@ class OrdenView {
 
             ],
             'initComplete': function () {
-                $('#listaRequerimientosParaVincular tbody').on("click","button.handleClickVerDetalleRequerimientoModalVincularRequerimiento",function(e){
-                    that.verDetalleRequerimientoModalVincularRequerimiento(e.currentTarget);
-                });
-                $('#listaRequerimientosParaVincular tbody').on("click","button.handleClickVincularRequerimiento",function(e){
-                    var data = $('#listaRequerimientosParaVincular').DataTable().row($(this).parents("tr")).data();
-                    that.vincularRequerimiento(data.id_requerimiento);
-                });
+  
             },
             'columnDefs': [
                 { 'aTargets': [0],'className': "text-left", 'sWidth': '5%' },
@@ -874,17 +877,19 @@ class OrdenView {
         var html = '';
         if (response.length > 0) {
             response.forEach( (element)=> {
-                html += `<tr>
-                    <td style="border: none; text-align:center;">${(element.part_number != null ? element.part_number :'')}</td>
-                    <td style="border: none; text-align:left;">${element.producto_descripcion != null ? element.producto_descripcion : (element.descripcion?element.descripcion:'')}</td>
-                    <td style="border: none; text-align:center;">${element.abreviatura != null ? element.abreviatura : ''}</td>
-                    <td style="border: none; text-align:center;">${element.cantidad >0 ? element.cantidad : ''}</td>
-                    <td style="border: none; text-align:center;">${element.precio_unitario >0 ? element.precio_unitario : ''}</td>
-                    <td style="border: none; text-align:center;">${parseFloat(element.subtotal) > 0 ?Util.formatoNumero(element.subtotal,2) :Util.formatoNumero((element.cantidad * element.precio_unitario),2)}</td>
-                    <td style="border: none; text-align:center;">${element.motivo != null ? element.motivo : ''}</td>
-                    <td style="border: none; text-align:center;">${element.observacion != null ? element.observacion : ''}</td>
-                    <td style="border: none; text-align:center;">${element.estado_doc != null ? element.estado_doc : ''}</td>
-                    </tr>`;
+                if(element.tiene_transformacion ==false){
+                    html += `<tr>
+                        <td style="border: none; text-align:center;">${(element.part_number != null ? element.part_number :'')}</td>
+                        <td style="border: none; text-align:left;">${element.producto_descripcion != null ? element.producto_descripcion : (element.descripcion?element.descripcion:'')}</td>
+                        <td style="border: none; text-align:center;">${element.abreviatura != null ? element.abreviatura : ''}</td>
+                        <td style="border: none; text-align:center;">${element.cantidad >0 ? element.cantidad : ''}</td>
+                        <td style="border: none; text-align:center;">${element.precio_unitario >0 ? element.precio_unitario : ''}</td>
+                        <td style="border: none; text-align:center;">${parseFloat(element.subtotal) > 0 ?Util.formatoNumero(element.subtotal,2) :Util.formatoNumero((element.cantidad * element.precio_unitario),2)}</td>
+                        <td style="border: none; text-align:center;">${element.motivo != null ? element.motivo : ''}</td>
+                        <td style="border: none; text-align:center;">${element.observacion != null ? element.observacion : ''}</td>
+                        <td style="border: none; text-align:center;">${element.estado_doc != null ? element.estado_doc : ''}</td>
+                        </tr>`;
+                    }   
                 });
                 var tabla = `<table class="table table-condensed table-bordered" 
                 id="detalle_${table_id}">
@@ -918,35 +923,38 @@ class OrdenView {
         let i=0;
         this.ordenCtrl.obtenerDetalleRequerimientos(idRequerimiento).then((res)=> {
             res.forEach((element) => {
-                i++;
-                this.agregarProducto([{
-                    'id': this.makeId(),
-                    'cantidad': 1,
-                    'cantidad_a_comprar': 1,
-                    'codigo_item': null,
-                    'codigo_producto': element.producto_codigo,
-                    'codigo_requerimiento': element.codigo_requerimiento,
-                    'descripcion_adicional': null,
-                    'descripcion_producto': element.producto_descripcion !=null? element.producto_descripcion: element.descripcion,
-                    'estado': 0,
-                    'garantia': null,
-                    'id_detalle_orden': null,
-                    'id_detalle_requerimiento': element.id_detalle_requerimiento,
-                    'id_item':null,
-                    'id_tipo_item':1,
-                    'id_producto': element.id_producto,
-                    'id_requerimiento': element.id_requerimiento,
-                    'id_unidad_medida': element.id_unidad_medida,
-                    'lugar_despacho': null,
-                    'part_number':(!element.id_producto>0 ?'(Sin mapear)':(element.part_number?element.part_number:'')),
-                    'precio_unitario': 0,
-                    'id_moneda': 1,
-                    'stock_comprometido': null,
-                    'subtotal': 0,
-                    'producto_regalo': false,
-                    'tiene_transformacion': false,
-                    'unidad_medida': element.abreviatura
-                    }]);
+                if(element.tiene_transformacion ==false){
+                    i++;
+                    this.agregarProducto([{
+                        'id': this.makeId(),
+                        'cantidad': 1,
+                        'cantidad_a_comprar': 1,
+                        'codigo_item': null,
+                        'codigo_producto': element.producto_codigo,
+                        'codigo_requerimiento': element.codigo_requerimiento,
+                        'descripcion_adicional': null,
+                        'descripcion_producto': element.producto_descripcion !=null? element.producto_descripcion: element.descripcion,
+                        'estado': 0,
+                        'garantia': null,
+                        'id_detalle_orden': null,
+                        'id_detalle_requerimiento': element.id_detalle_requerimiento,
+                        'id_item':null,
+                        'id_tipo_item':1,
+                        'id_producto': element.id_producto,
+                        'id_requerimiento': element.id_requerimiento,
+                        'id_unidad_medida': element.id_unidad_medida,
+                        'lugar_despacho': null,
+                        'part_number':(!element.id_producto>0 ?'(Sin mapear)':(element.part_number?element.part_number:'')),
+                        'precio_unitario': 0,
+                        'id_moneda': 1,
+                        'stock_comprometido': null,
+                        'subtotal': 0,
+                        'producto_regalo': false,
+                        'tiene_transformacion': false,
+                        'unidad_medida': element.abreviatura
+                        }]);
+
+                }
         });
 
         if(i>0){
@@ -980,7 +988,6 @@ class OrdenView {
 
     // mostrar info si esta vinculado con un requerimiento
     eliminarVinculoReq() {
-        console.log('remove sessionStorage');
         sessionStorage.removeItem('reqCheckedList');
         sessionStorage.removeItem('tipoOrden');
         window.location.reload();
@@ -1315,7 +1322,7 @@ class OrdenView {
                 this.listarDetalleOrdeRequerimiento(response.detalle);
                 detalleOrdenList= response.detalle;
                 // console.log(sessionStorage.getItem('action'));
-                sessionStorage.removeItem('idOrden');
+                // sessionStorage.removeItem('idOrden');
                 this.setStatusPage();
             }
         }).fail(( jqXHR, textStatus, errorThrown )=>{
@@ -1324,7 +1331,7 @@ class OrdenView {
                 'Hubo un problema al intentar mostrar la orden, por favor vuelva a intentarlo.',
                 'error'
             );
-            sessionStorage.removeItem('idOrden');
+            // sessionStorage.removeItem('idOrden');
             console.log(jqXHR);
             console.log(textStatus);
             console.log(errorThrown);

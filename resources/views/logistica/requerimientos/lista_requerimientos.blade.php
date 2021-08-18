@@ -92,6 +92,7 @@ Listado de requerimientos
                                 <th class="text-center" style="width:2%">Prio.</th>
                                 <th class="text-center" style="width:8%">Código</th>
                                 <th class="text-center" style="width:20%">Concepto</th>
+                                <th class="text-center" style="width:8%">Fecha registro</th>
                                 <th class="text-center">Fecha entrega</th>
                                 <th class="text-center">Tipo</th>
                                 <th class="text-center" style="width:10%">Empresa</th>
@@ -100,7 +101,6 @@ Listado de requerimientos
                                 <th class="text-center">Monto Total</th>
                                 <th class="text-center">Creado por</th>
                                 <th class="text-center" style="width:5%;">Estado</th>
-                                <th class="text-center" style="width:8%">Creado</th>
                                 <th class="text-center" style="width:8%">Ordenes</th>
                                 <th class="text-center" style="width:8%">Acción</th>
                             </tr>

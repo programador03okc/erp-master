@@ -651,7 +651,6 @@ class OrdenController extends Controller
 
             $alm_det_req = DB::table('almacen.alm_det_req')
                 ->leftJoin('almacen.alm_prod', 'alm_det_req.id_producto', '=', 'alm_prod.id_producto')
-                ->leftJoin('almacen.alm_item', 'alm_prod.id_producto', '=', 'alm_item.id_producto')
                 ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
                 ->leftJoin('almacen.alm_und_medida as und_medida_det_req', 'alm_det_req.id_unidad_medida', '=', 'und_medida_det_req.id_unidad_medida')
                 ->leftJoin('almacen.alm_det_req_adjuntos', 'alm_det_req_adjuntos.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento')
@@ -677,10 +676,7 @@ class OrdenController extends Controller
                     
                     
                     
-                    'alm_item.id_item',
                     'alm_det_req.id_producto',
-                    'alm_item.codigo AS codigo_item',
-                    'alm_item.fecha_registro AS alm_item_fecha_registro',
                     'alm_prod.codigo AS alm_prod_codigo',
                     'alm_prod.part_number',
                     'alm_prod.descripcion AS alm_prod_descripcion',
@@ -694,7 +690,7 @@ class OrdenController extends Controller
                 ->whereIn('alm_req.id_requerimiento', $requerimientoList)
                 ->whereIn('alm_det_req.tiene_transformacion',[false])
                 ->whereNotIn('alm_det_req.estado', [7])
-                ->orderBy('alm_item.id_item', 'asc')
+                ->orderBy('alm_prod.id_producto', 'asc')
                 ->get();
 
             // archivos adjuntos de items
@@ -727,7 +723,6 @@ class OrdenController extends Controller
                             'id_detalle_requerimiento'  => $data->id_detalle_requerimiento,
                             'id_requerimiento'          => $data->id_requerimiento,
                             'codigo_requerimiento'      => $data->codigo_requerimiento,
-                            'id_item'                   => $data->id_item,
                             'cantidad'                  => $data->cantidad - ($data->stock_comprometido?$data->stock_comprometido:0) - ($this->cantidadCompradaDetalleOrden($data->id_detalle_requerimiento)),
                             'id_unidad_medida'          => $data->id_unidad_medida,
                             'unidad_medida'             => $data->unidad_medida,
@@ -737,7 +732,6 @@ class OrdenController extends Controller
                             'lugar_entrega'             => $data->lugar_entrega,
                             'fecha_registro'            => $data->fecha_registro_alm_det_req,
                             'estado'                    => $data->estado,
-                            'codigo_item'               => $data->codigo_item,
                             'id_tipo_item'              => $data->id_tipo_item,
                             'id_producto'               => $data->id_producto,
                             'alm_prod_codigo'           => $data->alm_prod_codigo,
@@ -2757,7 +2751,7 @@ class OrdenController extends Controller
     function obtenerItemAtendidoParcialOSinAtender($itemBaseList){
         $ItemAtendidoParcialOSinAtenderList=[];
         foreach ($itemBaseList as $value) {
-            if($value['estado'] ==1 || $value['estado'] ==15){
+            if($value['estado'] ==1 || $value['estado'] ==15 || $value['estado'] ==27){
                 $ItemAtendidoParcialOSinAtenderList[]=$value;
             }
         }
@@ -2901,12 +2895,12 @@ class OrdenController extends Controller
         $detalleOrdenGeneradaList= $this->obtenerDetalleOrdenGenerada($idOrden);
         $itemAtendidoParcialOSinAtender= $this->obtenerItemAtendidoParcialOSinAtender($itemBaseList);
 
-            // Debugbar::info($idRequerimientoList);
-            // Debugbar::info($detalleRequerimiento);
-            // Debugbar::info($itemBaseList);
-            // Debugbar::info($itemBaseEnOtrasOrdenesGeneradasList);
-            // Debugbar::info($detalleOrdenGeneradaList);
-            // Debugbar::info($itemAtendidoParcialOSinAtender);
+            Debugbar::info($idRequerimientoList);
+            Debugbar::info($detalleRequerimiento);
+            Debugbar::info($itemBaseList);
+            Debugbar::info($itemBaseEnOtrasOrdenesGeneradasList);
+            Debugbar::info($detalleOrdenGeneradaList);
+            Debugbar::info($itemAtendidoParcialOSinAtender);
 
         $nuevoEstadoDetalleRequerimiento = $this->obtenerNuevoEstadoDetalleRequerimiento($itemBaseList,$itemBaseEnOtrasOrdenesGeneradasList,$detalleOrdenGeneradaList,$itemAtendidoParcialOSinAtender);
         Debugbar::info($nuevoEstadoDetalleRequerimiento);

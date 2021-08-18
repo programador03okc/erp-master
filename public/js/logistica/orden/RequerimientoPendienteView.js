@@ -110,18 +110,14 @@ class RequerimientoPendienteView {
             'dom': vardataTables[1],
             'buttons': [],
             'language': vardataTables[0],
-            'order': [[10, 'desc']],
+            'order': [[0, 'desc']],
             'destroy': true,
             "bInfo": true,
             "bLengthChange": false,
 
             'data': data,
             'columns': [
-                {
-                    render: function (data, type, row) {
-                        return `${row.id_requerimiento}">`;
-                    }
-                },
+                { 'data': 'id_requerimiento' },
                 {
                     render: function (data, type, row) {
                         return `<div class="text-center"><input type="checkbox" data-mapeos-pendientes="${row.count_pendientes}" data-id-requerimiento="${row.id_requerimiento}" /></div>`;
@@ -199,7 +195,7 @@ class RequerimientoPendienteView {
                             let btnAtenderAlmacen='';
                             let btnCrearOrdenCompra = '';
                                 if(row.count_pendientes ==0){
-                                    btnAtenderAlmacen = '<button type="button" class="btn btn-primary btn-xs handleClickAtenderConAlmacen" name="btnOpenModalAtenderConAlmacen" title="Atender con almacén" data-id-requerimiento="' + row.id_requerimiento + '"><i class="fas fa-dolly fa-sm"></i></button>';
+                                    btnAtenderAlmacen = '<button type="button" class="btn btn-primary btn-xs handleClickAtenderConAlmacen" name="btnOpenModalAtenderConAlmacen" title="Reserva en almacén" data-id-requerimiento="' + row.id_requerimiento + '"><i class="fas fa-dolly fa-sm"></i></button>';
                                     btnCrearOrdenCompra = '<button type="button" class="btn btn-warning btn-xs handleClickCrearOrdenCompraPorRequerimiento" name="btnCrearOrdenCompraPorRequerimiento" title="Crear Orden de Compra" data-id-requerimiento="' + row.id_requerimiento + '"  ><i class="fas fa-file-invoice"></i></button>';
                                 }
                             let btnCrearOrdenServicio = '<button type="button" class="btn btn-danger btn-xs handleClickCrearOrdenServicioPorRequerimiento" name="btnCrearOrdenServicioPorRequerimiento" title="Crear Orden de Servicio" data-id-requerimiento="' + row.id_requerimiento + '"  ><i class="fas fa-file-invoice fa-sm"></i></button>';
@@ -361,17 +357,19 @@ class RequerimientoPendienteView {
         var html = '';
         if (response.length > 0) {
             response.forEach(function (element) {
-                html += `<tr>
-                    <td style="border: none; text-align:center;">${(element.producto_part_number != null ? (element.producto_part_number?element.part_number:element.part_number) :'')} ${element.tiene_transformacion ==true?'<span class="label label-default">Con Transformación</span>':''}</td>
-                    <td style="border: none; text-align:left;">${element.producto_descripcion != null ? element.producto_descripcion : (element.descripcion?element.descripcion:'')}</td>
-                    <td style="border: none; text-align:center;">${element.abreviatura != null ? element.abreviatura : ''}</td>
-                    <td style="border: none; text-align:center;">${element.cantidad >0 ? element.cantidad : ''}</td>
-                    <td style="border: none; text-align:center;">${(element.precio_unitario >0 ? ((element.moneda_simbolo?element.moneda_simbolo:((element.moneda_simbolo?element.moneda_simbolo:'')+'0.00')) + $.number(element.precio_unitario,2)) : (element.moneda_simbolo?element.moneda_simbolo:'')+'0.00')}</td>
-                    <td style="border: none; text-align:center;">${(parseFloat(element.subtotal) > 0 ? ((element.moneda_simbolo?element.moneda_simbolo:'') + $.number(element.subtotal,2)) :((element.moneda_simbolo?element.moneda_simbolo:'')+$.number((element.cantidad * element.precio_unitario),2)))}</td>
-                    <td style="border: none; text-align:center;">${element.motivo != null ? element.motivo : ''}</td>
-                    <td style="border: none; text-align:center;">${element.observacion != null ? element.observacion : ''}</td>
-                    <td style="border: none; text-align:center;">${element.estado_doc != null ? element.estado_doc : ''}</td>
-                    </tr>`;
+                // if(element.tiene_transformacion==false){
+                    html += `<tr>
+                        <td style="border: none; text-align:center;">${(element.producto_part_number != null ? (element.producto_part_number?element.part_number:element.part_number) :'')} ${element.tiene_transformacion ==true?'<span class="label label-default">Con Transformación</span>':''}</td>
+                        <td style="border: none; text-align:left;">${element.producto_descripcion != null ? element.producto_descripcion : (element.descripcion?element.descripcion:'')}</td>
+                        <td style="border: none; text-align:center;">${element.abreviatura != null ? element.abreviatura : ''}</td>
+                        <td style="border: none; text-align:center;">${element.cantidad >0 ? element.cantidad : ''}</td>
+                        <td style="border: none; text-align:center;">${(element.precio_unitario >0 ? ((element.moneda_simbolo?element.moneda_simbolo:((element.moneda_simbolo?element.moneda_simbolo:'')+'0.00')) + $.number(element.precio_unitario,2)) : (element.moneda_simbolo?element.moneda_simbolo:'')+'0.00')}</td>
+                        <td style="border: none; text-align:center;">${(parseFloat(element.subtotal) > 0 ? ((element.moneda_simbolo?element.moneda_simbolo:'') + $.number(element.subtotal,2)) :((element.moneda_simbolo?element.moneda_simbolo:'')+$.number((element.cantidad * element.precio_unitario),2)))}</td>
+                        <td style="border: none; text-align:center;">${element.motivo != null ? element.motivo : ''}</td>
+                        <td style="border: none; text-align:center;">${element.observacion != null ? element.observacion : ''}</td>
+                        <td style="border: none; text-align:center;">${element.estado_doc != null && element.tiene_transformacion ==false ? element.estado_doc : ''}</td>
+                        </tr>`;
+                    // }
                 });
                 var tabla = `<table class="table table-condensed table-bordered" 
                 id="detalle_${table_id}">

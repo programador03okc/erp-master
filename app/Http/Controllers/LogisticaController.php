@@ -91,7 +91,7 @@ class LogisticaController extends Controller
         // $tipo_cuenta_banco = $this->select_tipos_cuenta();
         // $contactos = $this->contacto_list();
 
-        return view('logistica/proveedores/gestionar_proveedores',compact('paises'));
+        return view('logistica/proveedores/listar_proveedores',compact('paises'));
     }
     function view_listar_ordenes()
     {
