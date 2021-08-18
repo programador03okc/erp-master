@@ -497,3 +497,19 @@ function abrirProducto(id_producto) {
     var win = window.open("/almacen/catalogos/productos/index", '_blank');
     win.focus();
 }
+
+// function abrirProducto() {
+//     let url = "/almacen/catalogos/productos/index";
+//     var win = window.open(url, "_blank");
+//     win.focus();
+// }
+
+function ceros_numero(numero) {
+    if (numero == "numero") {
+        var num = $("[name=numero]").val();
+        $("[name=numero]").val(leftZero(7, num));
+    } else if (numero == "serie") {
+        var num = $("[name=serie]").val();
+        $("[name=serie]").val(leftZero(4, num));
+    }
+}

@@ -218,15 +218,15 @@ function listarOrdenesPendientes() {
 }
 
 // botones('#ordenesPendientes tbody',$('#ordenesPendientes').DataTable());
-$("#ordenesPendientes tbody").on("click", "button.detalle", function () {
-    var data = $("#ordenesPendientes")
-        .DataTable()
-        .row($(this).parents("tr"))
-        .data();
-    console.log("data.id_orden_compra" + data.id_orden_compra);
-    // var data = $(this).data('id');
-    open_detalle(data);
-});
+// $("#ordenesPendientes tbody").on("click", "button.detalle", function () {
+//     var data = $("#ordenesPendientes")
+//         .DataTable()
+//         .row($(this).parents("tr"))
+//         .data();
+//     console.log("data.id_orden_compra" + data.id_orden_compra);
+//     // var data = $(this).data('id');
+//     open_detalle(data);
+// });
 
 $("#ordenesPendientes tbody").on("click", "button.guia", function () {
     var data = $("#ordenesPendientes")
@@ -237,13 +237,13 @@ $("#ordenesPendientes tbody").on("click", "button.guia", function () {
     open_guia_create(data, $(this).closest("tr"));
 });
 
-function open_detalle(data) {
-    $("#modal-ordenDetalle").modal({
-        show: true
-    });
-    $("#cabecera_orden").text(data.codigo_orden + " - " + data.razon_social);
-    listar_detalle_orden(data.id_orden_compra);
-}
+// function open_detalle(data) {
+//     $("#modal-ordenDetalle").modal({
+//         show: true
+//     });
+//     $("#cabecera_orden").text(data.codigo_orden + " - " + data.razon_social);
+//     listar_detalle_orden(data.id_orden_compra);
+// }
 
 function cargar_almacenes(sede) {
     if (sede !== "") {
@@ -289,46 +289,46 @@ function cargar_almacenes(sede) {
 //     listar_guias_orden(data.id_orden_compra);
 // }
 
-function listar_detalle_orden(id_orden) {
-    console.log("id_orden", id_orden);
-    $.ajax({
-        type: "GET",
-        url: "detalleOrden/" + id_orden,
-        dataType: "JSON",
-        success: function (response) {
-            console.log(response);
-            var html = "";
-            var i = 1;
-            response.forEach(element => {
-                html +=
-                    '<tr id="' + element.id_detalle_orden + '">' +
-                    "<td>" + i + "</td>" +
-                    "<td>" + element.codigo + "</td>" +
-                    "<td>" + element.part_number + "</td>" +
-                    "<td>" + element.categoria + "</td>" +
-                    "<td>" + element.subcategoria + "</td>" +
-                    "<td>" + element.descripcion + "</td>" +
-                    "<td>" + element.cantidad + "</td>" +
-                    "<td>" + element.abreviatura + "</td>" +
-                    "<td>" +
-                    (element.cantidad_ingresada !== null
-                        ? element.cantidad_ingresada
-                        : "0") +
-                    "</td>" +
-                    '<td><span class="label label-' +
-                    element.bootstrap_color + '">' +
-                    element.estado_doc + "</span></td>" +
-                    "</tr>";
-                i++;
-            });
-            $("#detalleOrden tbody").html(html);
-        }
-    }).fail(function (jqXHR, textStatus, errorThrown) {
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    });
-}
+// function listar_detalle_orden(id_orden) {
+//     console.log("id_orden", id_orden);
+//     $.ajax({
+//         type: "GET",
+//         url: "detalleOrden/" + id_orden,
+//         dataType: "JSON",
+//         success: function (response) {
+//             console.log(response);
+//             var html = "";
+//             var i = 1;
+//             response.forEach(element => {
+//                 html +=
+//                     '<tr id="' + element.id_detalle_orden + '">' +
+//                     "<td>" + i + "</td>" +
+//                     "<td>" + element.codigo + "</td>" +
+//                     "<td>" + element.part_number + "</td>" +
+//                     "<td>" + element.categoria + "</td>" +
+//                     "<td>" + element.subcategoria + "</td>" +
+//                     "<td>" + element.descripcion + "</td>" +
+//                     "<td>" + element.cantidad + "</td>" +
+//                     "<td>" + element.abreviatura + "</td>" +
+//                     "<td>" +
+//                     (element.cantidad_ingresada !== null
+//                         ? element.cantidad_ingresada
+//                         : "0") +
+//                     "</td>" +
+//                     '<td><span class="label label-' +
+//                     element.bootstrap_color + '">' +
+//                     element.estado_doc + "</span></td>" +
+//                     "</tr>";
+//                 i++;
+//             });
+//             $("#detalleOrden tbody").html(html);
+//         }
+//     }).fail(function (jqXHR, textStatus, errorThrown) {
+//         console.log(jqXHR);
+//         console.log(textStatus);
+//         console.log(errorThrown);
+//     });
+// }
 
 // function listar_guias_orden(id_orden) {
 //     $.ajax({
@@ -386,26 +386,8 @@ function listar_detalle_orden(id_orden) {
 //     });
 // }
 
-function abrir_guia_compra(id_guia_compra) {
-    console.log("abrir_guia_compra()");
-    localStorage.setItem("id_guia_com", id_guia_compra);
-    location.assign("guia_compra");
-}
-
-function ceros_numero(numero) {
-    if (numero == "numero") {
-        var num = $("[name=numero]").val();
-        $("[name=numero]").val(leftZero(7, num));
-    } else if (numero == "serie") {
-        var num = $("[name=serie]").val();
-        $("[name=serie]").val(leftZero(4, num));
-    }
-}
-
-function abrirProducto() {
-    // Abrir nuevo tab
-    let url = "/almacen/catalogos/productos/index";
-    var win = window.open(url, "_blank");
-    // Cambiar el foco al nuevo tab (punto opcional)
-    win.focus();
-}
+// function abrir_guia_compra(id_guia_compra) {
+//     console.log("abrir_guia_compra()");
+//     localStorage.setItem("id_guia_com", id_guia_compra);
+//     location.assign("guia_compra");
+// }
