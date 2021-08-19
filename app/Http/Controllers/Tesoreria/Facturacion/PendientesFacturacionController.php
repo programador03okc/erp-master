@@ -117,6 +117,7 @@ class PendientesFacturacionController extends Controller
             ->join('logistica.log_cdn_pago', 'log_cdn_pago.id_condicion_pago', '=', 'doc_ven.id_condicion')
             ->where('guia_ven.id_guia_ven', $id_guia)
             ->where([['doc_ven.estado', '!=', 7]])
+            ->distinct()
             ->get();
         return response()->json($data);
     }

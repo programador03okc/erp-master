@@ -94,50 +94,58 @@ function openGuiaTransferenciaCreate() {
         $("[name=id_transferencia]").val("");
         $("#submit_transferencia").removeAttr("disabled");
 
-        var data =
-            "trans_seleccionadas=" + JSON.stringify(id_trans_seleccionadas);
+        var data = { 'id_trans_seleccionadas': id_trans_seleccionadas };
         listarDetalleTransferenciaSeleccionadas(data);
     }
 }
 
 let listaDetalle = [];
 
-function listarDetalleTransferencia(id_transferencia) {
-    if (id_transferencia !== "") {
-        $.ajax({
-            type: "GET",
-            url: "listarDetalleTransferencia/" + id_transferencia,
-            dataType: "JSON",
-            success: function(response) {
-                console.log(response);
-                listaDetalle = response;
-                mostrarDetalleTransferencia();
-            }
-        }).fail(function(jqXHR, textStatus, errorThrown) {
-            //alert("Hubo un probe")
-            //alert("Fail");
-            console.log(jqXHR);
-            console.log(textStatus);
-            console.log(errorThrown);
-        });
-    }
-}
-
-function listarDetalleTransferenciaSeleccionadas(data) {
+function listarDetalleTransferenciaPrincipal(type, id = 0, data = null) {
     $.ajax({
         type: "POST",
-        url: "listarDetalleTransferenciasSeleccionadas",
-        data: data,
+        url: "listarDetalleTransferencia",
+        data: {
+            type: type,
+            id: id,
+            data: data,
+        },
         dataType: "JSON",
-        success: function(response) {
+        success: function (response) {
+            console.log(response);
             listaDetalle = response;
             mostrarDetalleTransferencia();
         }
-    }).fail(function(jqXHR, textStatus, errorThrown) {
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        //alert("Hubo un probe")
+        //alert("Fail");
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
     });
+
+}
+function listarDetalleTransferencia(id) {
+    listarDetalleTransferenciaPrincipal(1, id, null);
+}
+
+function listarDetalleTransferenciaSeleccionadas(data) {
+    listarDetalleTransferenciaPrincipal(2, 0, data);
+
+    // $.ajax({
+    //     type: "POST",
+    //     url: "listarDetalleTransferenciasSeleccionadas",
+    //     data: data,
+    //     dataType: "JSON",
+    //     success: function(response) {
+    //         listaDetalle = response;
+    //         mostrarDetalleTransferencia();
+    //     }
+    // }).fail(function(jqXHR, textStatus, errorThrown) {
+    //     console.log(jqXHR);
+    //     console.log(textStatus);
+    //     console.log(errorThrown);
+    // });
 }
 
 function mostrarDetalleTransferencia() {
@@ -160,13 +168,11 @@ function mostrarDetalleTransferencia() {
         html += `<tr>
         <td>${i}</td>
         <td style="background-color: LightCyan;">${element.codigo_trans}</td>
-        <td style="background-color: LightCyan;">${
-            element.codigo_req !== null ? element.codigo_req : ""
-        }</td>
+        <td style="background-color: LightCyan;">${element.codigo_req !== null ? element.codigo_req : ""
+            }</td>
         <td>${element.codigo}</td>
-        <td style="background-color: navajowhite;">${
-            element.part_number !== null ? element.part_number : ""
-        }</td>
+        <td style="background-color: navajowhite;">${element.part_number !== null ? element.part_number : ""
+            }</td>
         <td style="background-color: navajowhite;">${element.descripcion}</td>
         <td>${element.cantidad}</td>
         <td>${element.abreviatura}</td>
@@ -242,7 +248,7 @@ function mostrarDetalleTransferencia() {
 //     }
 // }
 
-$("#form-transferenciaGuia").on("submit", function(e) {
+$("#form-transferenciaGuia").on("submit", function (e) {
     console.log("submit_transferencia");
     e.preventDefault();
     let data = $(this).serialize();
@@ -320,7 +326,7 @@ function salidaTransferencia(data) {
                     url: "guardarSalidaTransferencia",
                     data: data,
                     dataType: "JSON",
-                    success: function(response) {
+                    success: function (response) {
                         console.log(response);
                         if (response > 0) {
                             Lobibox.notify("success", {
@@ -340,7 +346,7 @@ function salidaTransferencia(data) {
                             // window.open('imprimir_salida/'+id);
                         }
                     }
-                }).fail(function(jqXHR, textStatus, errorThrown) {
+                }).fail(function (jqXHR, textStatus, errorThrown) {
                     console.log(jqXHR);
                     console.log(textStatus);
                     console.log(errorThrown);
@@ -377,7 +383,7 @@ function validaCampos() {
     return text;
 }
 
-$(".handleChangeSerie").on("keyup", function(e) {
+$(".handleChangeSerie").on("keyup", function (e) {
     if (e.target.value.length > 0) {
         e.target.closest("div").classList.remove("has-error");
         if (e.target.closest("div").querySelector("span")) {

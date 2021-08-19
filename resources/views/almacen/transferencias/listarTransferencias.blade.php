@@ -84,8 +84,8 @@ Gestión de Transferencias
                                             <tr>
                                                 <th hidden></th>
                                                 <th></th>
+                                                <th width="10%">Tipo</th>
                                                 <th width="10%">Código</th>
-                                                <!-- <th width="10%">Fecha Registro</th> -->
                                                 <th width="15%">Almacén Origen</th>
                                                 <th width="15%">Almacén Destino</th>
                                                 <th width="10%">Codigo Req.</th>
@@ -121,6 +121,7 @@ Gestión de Transferencias
                                         <thead>
                                             <tr>
                                                 <th hidden></th>
+                                                <th width="10%">Tipo</th>
                                                 <th width="10%">Fecha Guía</th>
                                                 <th width="10%">Guía Venta</th>
                                                 <th width="20%">Almacén Origen</th>
@@ -156,18 +157,18 @@ Gestión de Transferencias
                                         <thead>
                                             <tr>
                                                 <th hidden></th>
-                                                <th>Fecha Trans.</th>
-                                                <th>Nro.Trans.</th>
-                                                <th>Guía Venta</th>
-                                                <th>Guía Compra</th>
-                                                <th>Almacén Origen</th>
-                                                <th>Almacén Destino</th>
-                                                <th>Responsable Origen</th>
-                                                <th>Responsable Destino</th>
-                                                <th>Estado</th>
-                                                <th>Req.</th>
-                                                <th>Concepto</th>
-                                                <th width="7%">Acción</th>
+                                                <th width="5%">Tipo</th>
+                                                <th width="5%">Trans.</th>
+                                                <th width="8%">Guía Venta</th>
+                                                <th width="8%">Guía Compra</th>
+                                                <th width="8%">Doc Venta</th>
+                                                <th width="8%">Doc Compra</th>
+                                                <th width="10%">Almacén Origen</th>
+                                                <th width="10%">Almacén Destino</th>
+                                                <th width="8%">Estado</th>
+                                                <th width="8%">Req.</th>
+                                                <th width="15%">Concepto</th>
+                                                <th width="10%">Acción</th>
                                             </tr>
                                         </thead>
                                         <tbody></tbody>
@@ -212,6 +213,7 @@ Gestión de Transferencias
 <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
 
 <script src="{{ asset('js/almacen/transferencias/listarTransferencias.js')}}"></script>
+<script src="{{ asset('js/almacen/transferencias/transferenciasRecibidas.js')}}"></script>
 <script src="{{ asset('js/almacen/transferencias/transferenciaCreate.js')}}"></script>
 <script src="{{ asset('js/almacen/transferencias/transferenciaRecibir.js')}}"></script>
 <script src="{{ asset('js/almacen/transferencias/transferenciaEnviar.js')}}"></script>

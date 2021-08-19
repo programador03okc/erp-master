@@ -1226,8 +1226,9 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('listarTransferenciasPorEnviar/{id}', 'Almacen\Movimiento\TransferenciaController@listarTransferenciasPorEnviar');
 				Route::get('listarTransferenciasPorRecibir/{id}', 'Almacen\Movimiento\TransferenciaController@listarTransferenciasPorRecibir');
 				// Route::get('cargar_almacenes/{id}', 'Almacen\Ubicacion\AlmacenController@cargar_almacenes');
-				Route::get('listarDetalleTransferencia/{id}', 'Almacen\Movimiento\TransferenciaController@listarDetalleTransferencia');
-				Route::post('listarDetalleTransferenciasSeleccionadas', 'Almacen\Movimiento\TransferenciaController@listarDetalleTransferenciasSeleccionadas');
+				Route::post('listarDetalleTransferencia', 'Almacen\Movimiento\TransferenciaController@listarDetalleTransferencia');
+				// Route::get('listarDetalleTransferencia/{id}', 'Almacen\Movimiento\TransferenciaController@listarDetalleTransferencia');
+				// Route::post('listarDetalleTransferenciasSeleccionadas', 'Almacen\Movimiento\TransferenciaController@listarDetalleTransferenciasSeleccionadas');
 				Route::get('listarGuiaTransferenciaDetalle/{id}', 'Almacen\Movimiento\TransferenciaController@listarGuiaTransferenciaDetalle');
 				Route::get('listarSeries/{id}', 'Almacen\Movimiento\TransferenciaController@listarSeries');
 				Route::get('listarSeriesVen/{id}', 'Almacen\Movimiento\TransferenciaController@listarSeriesVen');
@@ -1240,6 +1241,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('listarSeriesGuiaVen/{id}', 'Almacen\Movimiento\SalidasPendientesController@listarSeriesGuiaVen');
 				Route::post('obtenerArchivosOc', 'Tesoreria\Facturacion\PendientesFacturacionController@obtenerArchivosOc')->name('obtener-archivos-oc');
 				Route::get('mostrarTransportistas', 'DistribucionController@mostrarTransportistas');
+
+				Route::get('autogenerarDocumentosCompra/{id}', 'Tesoreria\Facturacion\VentasInternasController@autogenerarDocumentosCompra')->name('autogenerarDocumentosCompra');
 			});
 		});
 
@@ -1532,6 +1535,8 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::get('detalleFacturasGuias/{id}', 'Tesoreria\Facturacion\PendientesFacturacionController@detalleFacturasGuias')->name('detalle-facturas-guia');
 			Route::get('detalleFacturasRequerimientos/{id}', 'Tesoreria\Facturacion\PendientesFacturacionController@detalleFacturasRequerimientos')->name('detalle-facturas-guia');
 			Route::post('obtenerArchivosOc', 'Tesoreria\Facturacion\PendientesFacturacionController@obtenerArchivosOc')->name('obtener-archivos-oc');
+
+			Route::get('autogenerarDocumentosCompra/{id}', 'Tesoreria\Facturacion\VentasInternasController@autogenerarDocumentosCompra')->name('autogenerarDocumentosCompra');
 		});
 	});
 

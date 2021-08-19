@@ -22,14 +22,15 @@ class Facturacion {
             },
             columns: [
                 { data: "id_guia_ven" },
+                { data: "id_guia_ven" },
                 {
-                    render: function(data, type, row) {
+                    render: function (data, type, row) {
                         return row["serie"] + "-" + row["numero"];
                     },
                     className: "text-center"
                 },
                 {
-                    render: function(data, type, row) {
+                    render: function (data, type, row) {
                         return formatDate(row["fecha_emision"]);
                     },
                     className: "text-center"
@@ -41,7 +42,7 @@ class Facturacion {
                 },
                 { data: "razon_social", name: "adm_contri.razon_social" },
                 {
-                    render: function(data, type, row) {
+                    render: function (data, type, row) {
                         if (row["nombre_corto_trans"] !== null) {
                             return row["nombre_corto_trans"];
                         } else {
@@ -52,46 +53,44 @@ class Facturacion {
                 },
                 { data: "codigo_trans", name: "trans.codigo" },
                 {
-                    render: function(data, type, row) {
+                    render: function (data, type, row) {
                         return `<div style="display: flex;">
-                        ${
-                            row["items_restantes"] > 0
+                        ${row["items_restantes"] > 0
                                 ? `<button type="button" class="doc btn btn-success btn-xs btn-flat" data-toggle="tooltip" 
                             data-placement="bottom" title="Generar Factura" 
                             data-guia="${row["id_guia_ven"]}"
                             data-doc="${row["id_doc_ven"]}">
                             <i class="fas fa-plus"></i></button>`
                                 : ""
-                        }
-                        ${
-                            row["count_facturas"] > 0
+                            }
+                        ${row["count_facturas"] > 0
                                 ? `<button type="button" class="detalle btn btn-primary btn-xs btn-flat" data-toggle="tooltip" 
                                 data-placement="bottom" data-id="${row["id_guia_ven"]}" title="Ver Detalle" >
                                 <i class="fas fa-chevron-down"></i></button>`
                                 : ""
-                        }<div/>`;
+                            }<div/>`;
                     },
                     className: "text-center"
                 }
             ],
-            drawCallback: function() {
+            drawCallback: function () {
                 $('#listaGuias tbody tr td input[type="checkbox"]').iCheck({
                     checkboxClass: "icheckbox_flat-blue"
                 });
             },
             columnDefs: [
-                // { aTargets: [0], sClass: "invisible" },
+                { aTargets: [0], sClass: "invisible" },
                 {
-                    targets: 0,
+                    targets: 1,
                     searchable: false,
                     orderable: false,
                     className: "dt-body-center",
                     checkboxes: {
                         selectRow: true,
-                        selectCallback: function(nodes, selected) {
+                        selectCallback: function (nodes, selected) {
                             $('input[type="checkbox"]', nodes).iCheck("update");
                         },
-                        selectAllCallback: function(
+                        selectAllCallback: function (
                             nodes,
                             selected,
                             indeterminate
@@ -109,7 +108,7 @@ class Facturacion {
                 .DataTable()
                 .table()
                 .container()
-        ).on("ifChanged", ".dt-checkboxes", function(event) {
+        ).on("ifChanged", ".dt-checkboxes", function (event) {
             var cell = $("#listaGuias")
                 .DataTable()
                 .cell($(this).closest("td"));
@@ -125,7 +124,7 @@ class Facturacion {
                 if (this.checked) {
                     guias_seleccionadas.push(data);
                 } else {
-                    var index = guias_seleccionadas.findIndex(function(
+                    var index = guias_seleccionadas.findIndex(function (
                         item,
                         i
                     ) {
@@ -166,7 +165,7 @@ class Facturacion {
                 { data: "razon_social", name: "adm_contri.razon_social" },
                 { data: "nombre_corto", name: "sis_usua.nombre_corto" },
                 {
-                    render: function(data, type, row) {
+                    render: function (data, type, row) {
                         return (
                             '<a href="#" class="archivos" data-id="' +
                             row["id_oc_propia"] +
@@ -185,22 +184,20 @@ class Facturacion {
                     className: "text-center"
                 },
                 {
-                    render: function(data, type, row) {
-                        return `<div style="display: flex;">${
-                            row["items_restantes"] > 0
-                                ? `<button type="button" class="doc btn btn-success btn-xs btn-flat" data-toggle="tooltip" 
+                    render: function (data, type, row) {
+                        return `<div style="display: flex;">${row["items_restantes"] > 0
+                            ? `<button type="button" class="doc btn btn-success btn-xs btn-flat" data-toggle="tooltip" 
                             data-placement="bottom" title="Generar Factura" 
                             data-req="${row["id_requerimiento"]}"
                             data-doc="${row["id_doc_ven"]}">
                             <i class="fas fa-plus"></i></button>`
-                                : ""
-                        }
-                            ${
-                                row["count_facturas"] > 0
-                                    ? `<button type="button" class="detalle btn btn-primary btn-xs btn-flat" data-toggle="tooltip" 
+                            : ""
+                            }
+                            ${row["count_facturas"] > 0
+                                ? `<button type="button" class="detalle btn btn-primary btn-xs btn-flat" data-toggle="tooltip" 
                                     data-placement="bottom" data-id="${row["id_requerimiento"]}" title="Ver Detalle" >
                                     <i class="fas fa-chevron-down"></i></button>`
-                                    : ""
+                                : ""
                             }<div/>`;
                     },
                     className: "text-center"
@@ -211,17 +208,17 @@ class Facturacion {
     }
 }
 
-$("#listaGuias tbody").on("click", "button.doc", function() {
+$("#listaGuias tbody").on("click", "button.doc", function () {
     var id_guia = $(this).data("guia");
     open_doc_ven_create(id_guia);
 });
 
-$("#listaRequerimientos tbody").on("click", "button.doc", function() {
+$("#listaRequerimientos tbody").on("click", "button.doc", function () {
     var id_req = $(this).data("req");
     open_doc_ven_requerimiento_create(id_req);
 });
 
-$("#listaRequerimientos tbody").on("click", "a.archivos", function(e) {
+$("#listaRequerimientos tbody").on("click", "a.archivos", function (e) {
     $(e.preventDefault());
     var id = $(this).data("id");
     var tipo = $(this).data("tipo");

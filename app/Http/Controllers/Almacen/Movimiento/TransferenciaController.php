@@ -42,6 +42,8 @@ class TransferenciaController extends Controller
                 'trans.id_almacen_origen',
                 'alm_origen.descripcion as alm_origen_descripcion',
                 'alm_destino.descripcion as alm_destino_descripcion',
+                'sede_origen.id_empresa as id_empresa_origen',
+                'sede_destino.id_empresa as id_empresa_destino',
                 'usu_origen.nombre_corto as nombre_origen',
                 'usu_destino.nombre_corto as nombre_destino',
                 'adm_estado_doc.estado_doc',
@@ -51,7 +53,9 @@ class TransferenciaController extends Controller
             ->leftJoin('almacen.mov_alm', 'mov_alm.id_guia_ven', '=', 'trans.id_guia_ven')
             ->leftJoin('almacen.guia_ven', 'guia_ven.id_guia_ven', '=', 'trans.id_guia_ven')
             ->join('almacen.alm_almacen as alm_origen', 'alm_origen.id_almacen', '=', 'trans.id_almacen_origen')
-            ->leftJoin('almacen.alm_almacen as alm_destino', 'alm_destino.id_almacen', '=', 'trans.id_almacen_destino')
+            ->join('almacen.alm_almacen as alm_destino', 'alm_destino.id_almacen', '=', 'trans.id_almacen_destino')
+            ->join('administracion.sis_sede as sede_origen', 'sede_origen.id_sede', '=', 'alm_origen.id_sede')
+            ->join('administracion.sis_sede as sede_destino', 'sede_destino.id_sede', '=', 'alm_destino.id_sede')
             ->leftJoin('configuracion.sis_usua as usu_origen', 'usu_origen.id_usuario', '=', 'trans.responsable_origen')
             ->leftJoin('configuracion.sis_usua as usu_destino', 'usu_destino.id_usuario', '=', 'trans.responsable_destino')
             ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'trans.estado')
@@ -74,53 +78,55 @@ class TransferenciaController extends Controller
             $array_almacen[] = [$destino];
         }
         //USAR CONCAT
-        $data = DB::table('almacen.trans')
+        $data = DB::table('almacen.trans_detalle')
             ->select(
                 'trans.*',
                 'guia_ven.fecha_emision as fecha_guia',
-                DB::raw("(guia_ven.serie) || '-' || (guia_ven.numero) as guia_ven"),
-                DB::raw("(guia_com.serie) || '-' || (guia_com.numero) as guia_com"),
+                DB::raw("CONCAT(guia_ven.serie,'-',guia_ven.numero) as guia_ven"),
+                DB::raw("CONCAT(guia_com.serie,'-',guia_com.numero) as guia_com"),
+                DB::raw("CONCAT(doc_ven.serie,'-',doc_ven.numero) as doc_ven"),
+                DB::raw("CONCAT(doc_com.serie,'-',doc_com.numero) as doc_com"),
                 'alm_origen.descripcion as alm_origen_descripcion',
                 'alm_destino.descripcion as alm_destino_descripcion',
+                'sede_origen.id_empresa as id_empresa_destino',
+                'sede_destino.id_empresa as id_empresa_destino',
                 'usu_origen.nombre_corto as nombre_origen',
                 'usu_destino.nombre_corto as nombre_destino',
                 'usu_registro.nombre_corto as nombre_registro',
                 'adm_estado_doc.estado_doc',
                 'adm_estado_doc.bootstrap_color',
-                'guia_ven.id_guia_com as guia_ingreso_compra',
                 'ingreso.id_mov_alm as id_ingreso',
                 'salida.id_mov_alm as id_salida',
-                'log_ord_compra.codigo as codigo_orden',
                 'alm_req.codigo as codigo_req',
                 'alm_req.concepto as concepto_req',
-                'req_directo.codigo as codigo_req_directo',
-                'req_directo.concepto as concepto_req_directo'
+                'doc_ven.id_doc_ven'
             )
-            ->leftJoin('almacen.mov_alm as ingreso', 'ingreso.id_guia_com', '=', 'trans.id_guia_com')
-            ->leftJoin('almacen.mov_alm as salida', 'salida.id_guia_ven', '=', 'trans.id_guia_ven')
-            ->leftJoin('almacen.guia_ven', 'guia_ven.id_guia_ven', '=', 'trans.id_guia_ven')
-            ->leftJoin('almacen.guia_com as guia_compra', 'guia_compra.id_guia', '=', 'guia_ven.id_guia_com')
-            ->leftJoin('logistica.log_ord_compra', function ($join) {
-                $join->on('log_ord_compra.id_orden_compra', '=', 'guia_compra.id_oc');
-                $join->where('log_ord_compra.estado', '!=', 7);
-            })
+            ->join('almacen.trans', 'trans.id_transferencia', '=', 'trans_detalle.id_transferencia')
+            ->join('almacen.mov_alm as ingreso', 'ingreso.id_guia_com', '=', 'trans.id_guia_com')
+            ->join('almacen.mov_alm as salida', 'salida.id_guia_ven', '=', 'trans.id_guia_ven')
+            ->join('almacen.guia_ven', 'guia_ven.id_guia_ven', '=', 'trans.id_guia_ven')
+            ->join('almacen.guia_com', 'guia_com.id_guia', '=', 'trans.id_guia_com')
             ->leftJoin('almacen.alm_req', function ($join) {
-                $join->on('alm_req.id_requerimiento', '=', 'log_ord_compra.id_requerimiento');
+                $join->on('alm_req.id_requerimiento', '=', 'trans.id_requerimiento');
                 $join->where('alm_req.estado', '!=', 7);
             })
-            ->leftJoin('almacen.alm_req as req_directo', function ($join) {
-                $join->on('req_directo.id_requerimiento', '=', 'trans.id_requerimiento');
-                $join->where('req_directo.estado', '!=', 7);
-            })
-            ->leftJoin('almacen.guia_com', 'guia_com.id_guia', '=', 'trans.id_guia_com')
             ->join('almacen.alm_almacen as alm_origen', 'alm_origen.id_almacen', '=', 'trans.id_almacen_origen')
-            ->leftJoin('almacen.alm_almacen as alm_destino', 'alm_destino.id_almacen', '=', 'trans.id_almacen_destino')
+            ->join('almacen.alm_almacen as alm_destino', 'alm_destino.id_almacen', '=', 'trans.id_almacen_destino')
+            ->join('administracion.sis_sede as sede_origen', 'sede_origen.id_sede', '=', 'alm_origen.id_sede')
+            ->join('administracion.sis_sede as sede_destino', 'sede_destino.id_sede', '=', 'alm_destino.id_sede')
             ->leftJoin('configuracion.sis_usua as usu_origen', 'usu_origen.id_usuario', '=', 'trans.responsable_origen')
             ->leftJoin('configuracion.sis_usua as usu_destino', 'usu_destino.id_usuario', '=', 'trans.responsable_destino')
             ->join('configuracion.sis_usua as usu_registro', 'usu_registro.id_usuario', '=', 'trans.registrado_por')
             ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'trans.estado')
+            ->join('almacen.guia_ven_det', 'guia_ven_det.id_trans_det', '=', 'trans_detalle.id_trans_detalle')
+            ->leftJoin('almacen.doc_ven_det', 'doc_ven_det.id_guia_ven_det', '=', 'guia_ven_det.id_guia_ven_det')
+            ->leftJoin('almacen.doc_ven', 'doc_ven.id_doc_ven', '=', 'doc_ven_det.id_doc')
+            ->join('almacen.guia_com_det', 'guia_com_det.id_trans_detalle', '=', 'trans_detalle.id_trans_detalle')
+            ->leftJoin('almacen.doc_com_det', 'doc_com_det.id_guia_com_det', '=', 'guia_com_det.id_guia_com_det')
+            ->leftJoin('almacen.doc_com', 'doc_com.id_doc_com', '=', 'doc_com_det.id_doc')
             ->whereIn('trans.id_almacen_destino', $array_almacen)
             ->where('trans.estado', 14)
+            ->distinct()
             ->get();
 
         $output['data'] = $data;
@@ -1195,9 +1201,8 @@ class TransferenciaController extends Controller
         return json_encode($html);
     }
 
-    public function listarDetalleTransferencia($id_trans)
+    public function listarDetalleTransferencia(Request $request)
     {
-        //$a = 5 / 0;
         $detalle = DB::table('almacen.trans_detalle')
             ->select(
                 'trans_detalle.*',
@@ -1233,15 +1238,17 @@ class TransferenciaController extends Controller
                 $join->on('guia_com_det.id_guia_com_det', '=', 'trans_detalle.id_guia_com_det');
                 $join->where('guia_com_det.estado', '!=', 7);
             })
-            ->where([
-                ['trans_detalle.id_transferencia', '=', $id_trans],
-                ['trans_detalle.estado', '!=', 7]
-            ])
-            ->get();
+            ->where([['trans_detalle.estado', '!=', 7]]);
+
+        if ($request->type == 1) {
+            $query = $detalle->where('trans_detalle.id_transferencia', $request->id)->get();
+        } else {
+            $query = $detalle->whereIn('trans_detalle.id_transferencia', $request->data)->get();
+        }
 
         $lista_detalle = [];
 
-        foreach ($detalle as $det) {
+        foreach ($query as $det) {
 
             if ($det->id_guia_oc_det !== null) {
                 $series = DB::table('almacen.alm_prod_serie')
@@ -1274,81 +1281,160 @@ class TransferenciaController extends Controller
         return response()->json($lista_detalle);
     }
 
-    public function listarDetalleTransferenciasSeleccionadas(Request $request)
-    {
-        $transferencias = json_decode($request->trans_seleccionadas);
-        $detalle = DB::table('almacen.trans_detalle')
-            ->select(
-                'trans_detalle.*',
-                'alm_req.codigo as codigo_req',
-                'alm_req.concepto',
-                'alm_prod.codigo',
-                'alm_prod.part_number',
-                'alm_prod.series',
-                'alm_cat_prod.descripcion as categoria',
-                'alm_subcat.descripcion as subcategoria',
-                'alm_prod.descripcion',
-                'alm_und_medida.abreviatura',
-                'trans.codigo as codigo_trans',
-                'guia_com_det.id_guia_com_det',
-                'guia_oc.id_guia_com_det as id_guia_oc_det'
-            )
-            ->join('almacen.trans', 'trans.id_transferencia', '=', 'trans_detalle.id_transferencia')
-            ->leftjoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'trans_detalle.id_producto')
-            ->leftjoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
-            ->leftjoin('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
-            ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
-            ->join('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'trans_detalle.id_requerimiento_detalle')
-            ->leftJoin('logistica.log_det_ord_compra', function ($join) {
-                $join->on('log_det_ord_compra.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento');
-                $join->where('log_det_ord_compra.estado', '!=', 7);
-            })
-            ->leftJoin('almacen.guia_com_det as guia_oc', function ($join) {
-                $join->on('guia_oc.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden');
-                $join->where('guia_oc.estado', '!=', 7);
-            })
-            ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
-            ->leftJoin('almacen.guia_com_det', function ($join) {
-                $join->on('guia_com_det.id_guia_com_det', '=', 'trans_detalle.id_guia_com_det');
-                $join->where('guia_com_det.estado', '!=', 7);
-            })
-            ->where('trans_detalle.estado', 1)
-            ->whereIn('trans_detalle.id_transferencia', $transferencias)
-            ->get();
+    // public function listarDetalleTransferencia($id_trans)
+    // {
+    //     //$a = 5 / 0;
+    //     $detalle = DB::table('almacen.trans_detalle')
+    //         ->select(
+    //             'trans_detalle.*',
+    //             'alm_prod.codigo',
+    //             'alm_prod.descripcion',
+    //             'alm_prod.series',
+    //             'alm_cat_prod.descripcion as categoria',
+    //             'alm_subcat.descripcion as subcategoria',
+    //             'alm_prod.part_number',
+    //             'alm_und_medida.abreviatura',
+    //             'trans.codigo as codigo_trans',
+    //             'alm_req.codigo as codigo_req',
+    //             'alm_req.concepto',
+    //             'guia_com_det.id_guia_com_det',
+    //             'guia_oc.id_guia_com_det as id_guia_oc_det'
+    //         )
+    //         ->join('almacen.trans', 'trans.id_transferencia', '=', 'trans_detalle.id_transferencia')
+    //         ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'trans_detalle.id_producto')
+    //         ->join('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
+    //         ->join('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
+    //         ->join('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
+    //         ->join('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'trans_detalle.id_requerimiento_detalle')
+    //         ->leftJoin('logistica.log_det_ord_compra', function ($join) {
+    //             $join->on('log_det_ord_compra.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento');
+    //             $join->where('log_det_ord_compra.estado', '!=', 7);
+    //         })
+    //         ->leftJoin('almacen.guia_com_det as guia_oc', function ($join) {
+    //             $join->on('guia_oc.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden');
+    //             $join->where('guia_oc.estado', '!=', 7);
+    //         })
+    //         ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+    //         ->leftJoin('almacen.guia_com_det', function ($join) {
+    //             $join->on('guia_com_det.id_guia_com_det', '=', 'trans_detalle.id_guia_com_det');
+    //             $join->where('guia_com_det.estado', '!=', 7);
+    //         })
+    //         ->where([
+    //             ['trans_detalle.id_transferencia', '=', $id_trans],
+    //             ['trans_detalle.estado', '!=', 7]
+    //         ])
+    //         ->get();
 
-        $lista_detalle = [];
+    //     $lista_detalle = [];
 
-        foreach ($detalle as $det) {
+    //     foreach ($detalle as $det) {
 
-            if ($det->id_guia_oc_det !== null) {
-                $series = DB::table('almacen.alm_prod_serie')
-                    ->where('id_guia_com_det', $det->id_guia_oc_det)
-                    ->get();
-            } else if ($det->id_guia_com_det !== null) {
-                $series = DB::table('almacen.alm_prod_serie')
-                    ->where('id_guia_com_det', $det->id_guia_com_det)
-                    ->get();
-            } else {
-                $series = [];
-            }
+    //         if ($det->id_guia_oc_det !== null) {
+    //             $series = DB::table('almacen.alm_prod_serie')
+    //                 ->where('id_guia_com_det', $det->id_guia_oc_det)
+    //                 ->get();
+    //         } else if ($det->id_guia_com_det !== null) {
+    //             $series = DB::table('almacen.alm_prod_serie')
+    //                 ->where('id_guia_com_det', $det->id_guia_com_det)
+    //                 ->get();
+    //         } else {
+    //             $series = [];
+    //         }
 
-            array_push($lista_detalle, [
-                'id_guia_com_det' => $det->id_guia_com_det,
-                'id_trans_detalle' => $det->id_trans_detalle,
-                'id_producto' => $det->id_producto,
-                'codigo_trans' => $det->codigo_trans,
-                'codigo_req' => $det->codigo_req,
-                'concepto' => $det->concepto,
-                'codigo' => $det->codigo,
-                'part_number' => $det->part_number,
-                'descripcion' => $det->descripcion,
-                'cantidad' => $det->cantidad,
-                'abreviatura' => $det->abreviatura,
-                'series' => $series
-            ]);
-        }
-        return response()->json($lista_detalle);
-    }
+    //         array_push($lista_detalle, [
+    //             'id_guia_com_det' => $det->id_guia_com_det,
+    //             'id_trans_detalle' => $det->id_trans_detalle,
+    //             'id_producto' => $det->id_producto,
+    //             'codigo_trans' => $det->codigo_trans,
+    //             'codigo_req' => $det->codigo_req,
+    //             'concepto' => $det->concepto,
+    //             'codigo' => $det->codigo,
+    //             'part_number' => $det->part_number,
+    //             'descripcion' => $det->descripcion,
+    //             'cantidad' => $det->cantidad,
+    //             'abreviatura' => $det->abreviatura,
+    //             'series' => $series
+    //         ]);
+    //     }
+
+    //     return response()->json($lista_detalle);
+    // }
+
+    // public function listarDetalleTransferenciasSeleccionadas(Request $request)
+    // {
+    //     $transferencias = json_decode($request->trans_seleccionadas);
+    //     $detalle = DB::table('almacen.trans_detalle')
+    //         ->select(
+    //             'trans_detalle.*',
+    //             'alm_req.codigo as codigo_req',
+    //             'alm_req.concepto',
+    //             'alm_prod.codigo',
+    //             'alm_prod.part_number',
+    //             'alm_prod.series',
+    //             'alm_cat_prod.descripcion as categoria',
+    //             'alm_subcat.descripcion as subcategoria',
+    //             'alm_prod.descripcion',
+    //             'alm_und_medida.abreviatura',
+    //             'trans.codigo as codigo_trans',
+    //             'guia_com_det.id_guia_com_det',
+    //             'guia_oc.id_guia_com_det as id_guia_oc_det'
+    //         )
+    //         ->join('almacen.trans', 'trans.id_transferencia', '=', 'trans_detalle.id_transferencia')
+    //         ->leftjoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'trans_detalle.id_producto')
+    //         ->leftjoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
+    //         ->leftjoin('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
+    //         ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
+    //         ->join('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'trans_detalle.id_requerimiento_detalle')
+    //         ->leftJoin('logistica.log_det_ord_compra', function ($join) {
+    //             $join->on('log_det_ord_compra.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento');
+    //             $join->where('log_det_ord_compra.estado', '!=', 7);
+    //         })
+    //         ->leftJoin('almacen.guia_com_det as guia_oc', function ($join) {
+    //             $join->on('guia_oc.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden');
+    //             $join->where('guia_oc.estado', '!=', 7);
+    //         })
+    //         ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+    //         ->leftJoin('almacen.guia_com_det', function ($join) {
+    //             $join->on('guia_com_det.id_guia_com_det', '=', 'trans_detalle.id_guia_com_det');
+    //             $join->where('guia_com_det.estado', '!=', 7);
+    //         })
+    //         ->where('trans_detalle.estado', 1)
+    //         ->whereIn('trans_detalle.id_transferencia', $transferencias)
+    //         ->get();
+
+    //     $lista_detalle = [];
+
+    //     foreach ($detalle as $det) {
+
+    //         if ($det->id_guia_oc_det !== null) {
+    //             $series = DB::table('almacen.alm_prod_serie')
+    //                 ->where('id_guia_com_det', $det->id_guia_oc_det)
+    //                 ->get();
+    //         } else if ($det->id_guia_com_det !== null) {
+    //             $series = DB::table('almacen.alm_prod_serie')
+    //                 ->where('id_guia_com_det', $det->id_guia_com_det)
+    //                 ->get();
+    //         } else {
+    //             $series = [];
+    //         }
+
+    //         array_push($lista_detalle, [
+    //             'id_guia_com_det' => $det->id_guia_com_det,
+    //             'id_trans_detalle' => $det->id_trans_detalle,
+    //             'id_producto' => $det->id_producto,
+    //             'codigo_trans' => $det->codigo_trans,
+    //             'codigo_req' => $det->codigo_req,
+    //             'concepto' => $det->concepto,
+    //             'codigo' => $det->codigo,
+    //             'part_number' => $det->part_number,
+    //             'descripcion' => $det->descripcion,
+    //             'cantidad' => $det->cantidad,
+    //             'abreviatura' => $det->abreviatura,
+    //             'series' => $series
+    //         ]);
+    //     }
+    //     return response()->json($lista_detalle);
+    // }
 
     public function listarSeries($id_guia_com_det)
     {
