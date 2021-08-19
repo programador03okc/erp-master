@@ -1969,7 +1969,7 @@ Route::group(['middleware' => ['auth']], function () {
 	// Route::get('logistica/cargar_almacenes/{id_sede}', 'LogisticaController@cargar_almacenes');
 
 	// logistica proveedores
-	Route::get('gestionar_proveedores', 'LogisticaController@view_lista_proveedores');
+	Route::get('listar-proveedores', 'LogisticaController@view_lista_proveedores');
 	Route::get('logistica/listar_proveedores', 'LogisticaController@listar_proveedores');
 	Route::get('mostrar_proveedor/{id_proveedor}', 'LogisticaController@mostrar_proveedor');
 

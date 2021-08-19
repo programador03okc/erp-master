@@ -14,10 +14,7 @@ class Moneda extends Model
     public static function mostrar()
     {
         $data =  Moneda::select(
-                'sis_moneda.id_moneda',
-                'sis_moneda.descripcion',
-                'sis_moneda.simbolo',
-                'sis_moneda.estado',
+                'sis_moneda.*',
                 DB::raw("(CASE WHEN configuracion.sis_moneda.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc")
             )
             ->where([

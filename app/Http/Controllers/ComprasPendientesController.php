@@ -179,6 +179,7 @@ class ComprasPendientesController extends Controller
                 'alm_req.codigo',
                 'alm_req.concepto',
                 'alm_req.id_moneda',
+                'alm_req.fecha_entrega',
                 'sis_moneda.simbolo as simbolo_moneda',
                 'sis_moneda.descripcion as moneda',
                 'alm_req.fecha_requerimiento',
@@ -218,6 +219,9 @@ class ComprasPendientesController extends Controller
                 DB::raw("(CASE WHEN alm_req.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc"),
                 DB::raw("(SELECT  COUNT(alm_det_req.id_detalle_requerimiento) FROM almacen.alm_det_req
             WHERE alm_det_req.id_requerimiento = alm_req.id_requerimiento and alm_det_req.tiene_transformacion=false)::integer as cantidad_items_base"),
+            DB::raw("(SELECT json_agg(DISTINCT cc.descripcion) FROM almacen.alm_det_req dr
+            INNER JOIN finanzas.centro_costo cc ON dr.centro_costo_id = cc.id_centro_costo
+            WHERE dr.id_requerimiento = almacen.alm_req.id_requerimiento and dr.tiene_transformacion=false ) as division"),
                 DB::raw("(SELECT COUNT(*) FROM almacen.alm_det_req AS det
             WHERE det.id_requerimiento = alm_req.id_requerimiento AND det.id_tipo_item =1
               AND det.id_producto is null) AS count_pendientes")
@@ -249,6 +253,7 @@ class ComprasPendientesController extends Controller
                 'concepto' => $data->concepto,
                 'id_moneda' => $data->id_moneda,
                 'moneda' => $data->moneda,
+                'fecha_entrega' => $data->fecha_entrega,
                 'simbolo_moneda' => $data->simbolo_moneda,
                 'fecha_requerimiento' => $data->fecha_requerimiento,
                 'id_tipo_requerimiento' => $data->id_tipo_requerimiento,
@@ -282,6 +287,7 @@ class ComprasPendientesController extends Controller
                 'estado_doc' => $data->estado_doc,
                 'bootstrap_color' => $data->bootstrap_color,
                 'detalle' => [],
+                'division'=>json_decode($data->division,true),
                 'count_pendientes' => $data->count_pendientes,
             ];
         }

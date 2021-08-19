@@ -117,9 +117,8 @@ class RequerimientoController extends Controller
                 'adm_estado_doc.bootstrap_color',
                 'alm_prod.descripcion as producto_descripcion',
                 'alm_prod.codigo as producto_codigo',
-                'alm_prod.codigo as producto_part_number',
-                'alm_und_medida.abreviatura',
-                'alm_prod.part_number'
+                'alm_prod.part_number as producto_part_number',
+                'alm_und_medida.abreviatura'
             )
             ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_det_req.id_producto')
             ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_det_req.id_unidad_medida')

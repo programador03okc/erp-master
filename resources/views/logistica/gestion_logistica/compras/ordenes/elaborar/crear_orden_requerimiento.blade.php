@@ -131,7 +131,7 @@ Elaborar orden
                             <div style="display:flex;">
                                 <input class="oculto" name="id_cuenta_principal_proveedor">
                                 <input type="text" class="form-control" name="nro_cuenta_principal_proveedor" readOnly>
-                                <button type="button" class="group-text" id="basic-addon1" onClick="cuentasBancariasModal();">
+                                <button type="button" class="group-text" onClick="cuentasBancariasModal();">
                                     <i class="fa fa-search"></i>
                                 </button>
                                 <button type="button" class="btn-primary" title="Agregar cuenta bancaria" onClick="agregar_cuenta_proveedor();"><i class="fas fa-plus"></i></button>
@@ -143,7 +143,7 @@ Elaborar orden
                             <div style="display:flex;">
                                 <input class="oculto" name="id_contacto_proveedor">
                                 <input type="text" class="form-control" name="contacto_proveedor_nombre" readOnly>
-                                <button type="button" class="group-text" id="basic-addon1" onClick="contactoModal();">
+                                <button type="button" class="group-text" onClick="contactoModal();">
                                     <i class="fa fa-search"></i>
                                 </button>
                                 <button type="button" class="btn-primary" title="Agregar Contacto" onClick="agregar_contacto();"><i class="fas fa-plus"></i></button>
@@ -301,7 +301,7 @@ Elaborar orden
                                     <th>Item</th>
                                     <th style="width: 8%">Unidad</th>
                                     <th style="width: 5%">Cantidad Solicitada</th>
-                                    <th style="width: 10%">Costo</th>
+                                    <th style="width: 10%">Precio</th>
                                     <th style="width: 8%">Cantidad a comprar / requerir</th>
                                     <th style="width: 6%">Total</th>
                                     <th style="width: 5%">Acción</th>
@@ -387,7 +387,7 @@ Elaborar orden
 <script src="{{('/js/logistica/orden/cuentasBancariasProveedor.js')}}"></script>
 <script src="{{ asset('js/publico/consulta_sunat.js')}}"></script>
 <script src="{{('/js/logistica/orden/OrdenModel.js')}}"></script>
-<script src="{{('/js/logistica/orden/OrdenView.js')}}"></script>
+<script src="{{('/js/logistica/orden/OrdenView.js?v=2')}}"></script>
 <script src="{{('/js/logistica/orden/OrdenController.js')}}"></script>
 
 

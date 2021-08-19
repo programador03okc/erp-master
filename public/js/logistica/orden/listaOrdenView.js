@@ -26,9 +26,9 @@ class ListaOrdenView {
             this.updateEstadoDetalleOrdenCompra();
         });
 
-        $('#modal-ver-orden').on("click","span.handleClickEditarEstadoOrden", (e)=>{
-            this.editarEstadoOrden(e.currentTarget);
-        });
+        // $('#modal-ver-orden').on("click","span.handleClickEditarEstadoOrden", (e)=>{
+        //     this.editarEstadoOrden(e.currentTarget);
+        // });
         $('#listaOrdenes tbody').on("click","label.handleClickAbrirOrden",(e)=>{
             this.abrirOrden(e.currentTarget.dataset.idOrden);
         });
@@ -50,6 +50,9 @@ class ListaOrdenView {
         
         $('#listaOrdenes tbody').on("click","a.handleClickObtenerArchivos",(e)=>{
             this.obtenerArchivos(e.currentTarget.dataset.id, e.currentTarget.dataset.tipo);
+        });
+        $('#listaOrdenes').on("click","span.handleClickEditarEstadoOrden", (e)=>{
+            this.editarEstadoOrden(e.currentTarget);
         });
     
 
@@ -567,7 +570,13 @@ class ListaOrdenView {
 
                 {'render':
                     function (data, type, row, meta){
-                    return '<center><span class="label label-default">'+row.estado_doc+'</span></center>';
+                        let estadoDetalleOrdenHabilitadasActualizar=[1,2,3,4,5,6,15];
+                        if(estadoDetalleOrdenHabilitadasActualizar.includes(row.estado) ==true){
+                            return `<center><span class="label label-success handleClickEditarEstadoOrden" data-id-estado-orden-compra="${row.estado}" data-id-orden-compra="${row.id_orden_compra}" style="cursor:pointer;">${row.estado_doc}</span></center>`;
+                        }else{
+                            return `<center><span class="label label-default" data-id-estado-orden-compra="${row.estado}" data-id-orden-compra="${row.id_orden_compra}" >${row.estado_doc}</span></center>`;
+
+                        }
                     }
                 },
                 {'render':
@@ -972,7 +981,7 @@ class ListaOrdenView {
                 { render: function (data, type, row) {    
                     let estadoDetalleOrdenHabilitadasActualizar=[1,2,3,4,5,6,15];
                     if(estadoDetalleOrdenHabilitadasActualizar.includes(row.id_detalle_orden_estado) ==true){
-                        return `<span class="label label-default handleClickEditarEstadoItemOrden" data-id-estado-detalle-orden-compra="${row.id_detalle_orden_estado}" data-id-orden-compra="${row.detalle_orden_id_orden_compra}" data-id-detalle-orden-compra="${row.detalle_orden_id_detalle_orden}" data-codigo-item="${row.alm_prod_codigo}" style="cursor: pointer;" title="Cambiar Estado de Item">${row.detalle_orden_estado}</span>`;
+                        return `<span class="label label-success handleClickEditarEstadoItemOrden" data-id-estado-detalle-orden-compra="${row.id_detalle_orden_estado}" data-id-orden-compra="${row.detalle_orden_id_orden_compra}" data-id-detalle-orden-compra="${row.detalle_orden_id_detalle_orden}" data-codigo-item="${row.alm_prod_codigo}" style="cursor: pointer;" title="Cambiar Estado de Item">${row.detalle_orden_estado}</span>`;
                     }else{
                         return `<span class="label label-default" data-id-estado-detalle-orden-compra="${row.id_detalle_orden_estado}" data-id-orden-compra="${row.detalle_orden_id_orden_compra}" data-id-detalle-orden-compra="${row.detalle_orden_id_detalle_orden}" data-codigo-item="${row.alm_prod_codigo}" style="cursor: default;">${row.detalle_orden_estado}</span>`;
                     }
@@ -1097,13 +1106,15 @@ class ListaOrdenView {
                 },
                 {'render':
                     function (data, type, row, meta){
-                        let estadoDetalleOrdenHabilitadasActualizar=[1,2,3,4,5,6,15];
+
+                        return row.estado_detalle_orden??'';
+                        // let estadoDetalleOrdenHabilitadasActualizar=[1,2,3,4,5,6,15];
     
-                        if(estadoDetalleOrdenHabilitadasActualizar.includes(row.id_estado_detalle_orden)==true){
-                            return `<span class="label label-default handleClickEditarEstadoItemOrden" data-id-estado-detalle-orden-compra="${row.id_estado_detalle_orden}" data-id-orden-compra="${row.id_orden_compra}" data-id-detalle-orden-compra="${row.id_detalle_orden}" data-codigo-item="${row.codigo_item}" style="cursor: pointer;" title="Cambiar Estado de Item">${row.estado_detalle_orden}</span>`;
-                        }else{
-                            return `<span class="label label-default" data-id-estado-detalle-orden-compra="${row.id_estado_detalle_orden}" data-id-orden-compra="${row.id_orden_compra}" data-id-detalle-orden-compra="${row.id_detalle_orden}" data-codigo-item="${row.codigo_item}" style="cursor: default;" >${row.estado_detalle_orden}</span>`;
-                        }
+                        // if(estadoDetalleOrdenHabilitadasActualizar.includes(row.id_estado_detalle_orden)==true){
+                        //     return `<span class="label label-default handleClickEditarEstadoItemOrden" data-id-estado-detalle-orden-compra="${row.id_estado_detalle_orden}" data-id-orden-compra="${row.id_orden_compra}" data-id-detalle-orden-compra="${row.id_detalle_orden}" data-codigo-item="${row.codigo_item}" style="cursor: pointer;" title="Cambiar Estado de Item">${row.estado_detalle_orden}</span>`;
+                        // }else{
+                        //     return `<span class="label label-default" data-id-estado-detalle-orden-compra="${row.id_estado_detalle_orden}" data-id-orden-compra="${row.id_orden_compra}" data-id-detalle-orden-compra="${row.id_detalle_orden}" data-codigo-item="${row.codigo_item}" style="cursor: default;" >${row.estado_detalle_orden}</span>`;
+                        // }
                     }
                 },
             ],
@@ -1141,13 +1152,8 @@ class ListaOrdenView {
         document.querySelector("p[id='inputCondicion']").textContent = data.condicion+' '+data.plazo_dias+' días';
         document.querySelector("p[id='inputPlazoEntrega']").textContent = data.plazo_entrega;
         document.querySelector("p[id='inputCodigoSoftlink']").textContent = data.codigo_softlink;
-        let estadoOrdenHabilitadasActualizar=[1,2,3,4,5,6,15];
-    
-        if(estadoOrdenHabilitadasActualizar.includes(data.id_estado)==true){
-            document.querySelector("p[id='inputEstado']").innerHTML = `<span class="label label-default handleClickEditarEstadoOrden" id="estado_orden" data-id-estado-orden-compra="${data.id_estado}" data-id-orden-compra="${data.id_orden_compra}" data-codigo-orden-compra="${data.codigo_softlink}" style="cursor: pointer;" title="Cambiar Estado de Orden">${data.estado_doc}</span>`
-        }else{
-            document.querySelector("p[id='inputEstado']").innerHTML = `<span class="label label-default" id="estado_orden" data-id-estado-orden-compra="${data.id_estado}" data-id-orden-compra="${data.id_orden_compra}" data-codigo-orden-compra="${data.codigo_softlink}" style="cursor: default;">${data.estado_doc}</span>`
-        }
+        document.querySelector("p[id='inputEstado']").textContent = data.estado_doc;
+   
     }
 
     editarEstadoOrden(obj){
@@ -1190,7 +1196,7 @@ class ListaOrdenView {
         let estado_orden_selected = document.querySelector("div[id='modal-editar-estado-orden'] select[name='estado_orden'")[document.querySelector("div[id='modal-editar-estado-orden'] select[name='estado_orden'").selectedIndex].textContent;
 
         this.listaOrdenCtrl.actualizarEstadoOrdenPorRequerimiento(id_orden_compra,id_estado_orden_selected).then((res)=>{
-            this.tipoVistaPorItem();
+            this.tipoVistaPorCabecera();
 
             if(res ==1){
                 Lobibox.notify('success', {
@@ -1199,9 +1205,9 @@ class ListaOrdenView {
                     rounded: true,
                     sound: false,
                     delayIndicator: false,
-                    msg: `El estado del item fue actualizado`
+                    msg: `El estado de orden actualizado`
                 });
-                document.querySelector("span[id='estado_orden']").textContent = estado_orden_selected;
+                // document.querySelector("span[id='estado_orden']").textContent = estado_orden_selected;
                 $('#modal-editar-estado-orden').modal('hide');
             }else{
                 Swal.fire(

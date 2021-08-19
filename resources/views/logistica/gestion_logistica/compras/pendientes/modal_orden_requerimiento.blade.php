@@ -97,7 +97,7 @@
                                 <input class="oculto" name="id_contrib"/>
                                 <input type="text" class="form-control" name="razon_social" disabled
                                     aria-describedby="basic-addon1" required>
-                                <button type="button" class="group-text" id="basic-addon1" onClick="proveedorModal();">
+                                <button type="button" class="group-text" onClick="proveedorModal();">
                                     <i class="fa fa-search"></i>
                                 </button> 
                                 <button type="button" class="btn-primary activation" title="Agregar Proveedor" onClick="agregar_proveedor();"><i class="fas fa-plus"></i></button>
@@ -109,7 +109,7 @@
                                 <input class="oculto" name="id_contacto"/>
                                 <input type="text" class="form-control" name="razon_social" disabled
                                     aria-describedby="basic-addon1" required>
-                                <button type="button" class="group-text" id="basic-addon1" onClick="contactoModal();">
+                                <button type="button" class="group-text" onClick="contactoModal();">
                                     <i class="fa fa-search"></i>
                                 </button> 
                                 <button type="button" class="btn-primary activation" title="Agregar Contacto" onClick="agregar_contacto();"><i class="fas fa-plus"></i></button>
