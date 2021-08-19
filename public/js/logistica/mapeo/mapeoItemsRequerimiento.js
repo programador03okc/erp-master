@@ -185,23 +185,27 @@ $("#form-mapeoItemsRequerimiento").on("submit", function (e) {
                             let divBtnGroup = objBtnMapeo.closest("div");
                             let idRequerimiento = document.querySelector("form[id='form-mapeoItemsRequerimiento'] input[name='id_requerimiento']").value;
 
-                            let btnOpenModalAtenderConAlmacen = document.createElement("button");
-                            btnOpenModalAtenderConAlmacen.type = "button";
-                            btnOpenModalAtenderConAlmacen.name = "btnOpenModalAtenderConAlmacen";
-                            btnOpenModalAtenderConAlmacen.className = "btn btn-primary btn-xs handleClickAtenderConAlmacen";
-                            btnOpenModalAtenderConAlmacen.title = "Reserva en almacén";
-                            btnOpenModalAtenderConAlmacen.dataset.idRequerimiento = idRequerimiento;
-                            btnOpenModalAtenderConAlmacen.innerHTML = "<i class='fas fa-dolly fa-sm'></i>";
-                            divBtnGroup.appendChild(btnOpenModalAtenderConAlmacen);
-
-                            let btnCrearOrdenCompraPorRequerimiento = document.createElement("button");
-                            btnCrearOrdenCompraPorRequerimiento.type = "button";
-                            btnCrearOrdenCompraPorRequerimiento.name = "btnCrearOrdenCompraPorRequerimiento";
-                            btnCrearOrdenCompraPorRequerimiento.className = "btn btn-warning btn-xs handleClickCrearOrdenCompraPorRequerimiento";
-                            btnCrearOrdenCompraPorRequerimiento.title = "Crear Orden de Compra";
-                            btnCrearOrdenCompraPorRequerimiento.dataset.idRequerimiento = idRequerimiento;
-                            btnCrearOrdenCompraPorRequerimiento.innerHTML = "<i class='fas fa-file-invoice'></i>";
-                            divBtnGroup.appendChild(btnCrearOrdenCompraPorRequerimiento);
+                            if( divBtnGroup.querySelector("button[name='btnOpenModalAtenderConAlmacen']") == null){
+                                let btnOpenModalAtenderConAlmacen = document.createElement("button");
+                                btnOpenModalAtenderConAlmacen.type = "button";
+                                btnOpenModalAtenderConAlmacen.name = "btnOpenModalAtenderConAlmacen";
+                                btnOpenModalAtenderConAlmacen.className = "btn btn-primary btn-xs handleClickAtenderConAlmacen";
+                                btnOpenModalAtenderConAlmacen.title = "Reserva en almacén";
+                                btnOpenModalAtenderConAlmacen.dataset.idRequerimiento = idRequerimiento;
+                                btnOpenModalAtenderConAlmacen.innerHTML = "<i class='fas fa-dolly fa-sm'></i>";
+                                divBtnGroup.appendChild(btnOpenModalAtenderConAlmacen);
+                            }
+                            if( divBtnGroup.querySelector("button[name='btnCrearOrdenCompraPorRequerimiento']")== null){
+                                let btnCrearOrdenCompraPorRequerimiento = document.createElement("button");
+                                btnCrearOrdenCompraPorRequerimiento.type = "button";
+                                btnCrearOrdenCompraPorRequerimiento.name = "btnCrearOrdenCompraPorRequerimiento";
+                                btnCrearOrdenCompraPorRequerimiento.className = "btn btn-warning btn-xs handleClickCrearOrdenCompraPorRequerimiento";
+                                btnCrearOrdenCompraPorRequerimiento.title = "Crear Orden de Compra";
+                                btnCrearOrdenCompraPorRequerimiento.dataset.idRequerimiento = idRequerimiento;
+                                btnCrearOrdenCompraPorRequerimiento.innerHTML = "<i class='fas fa-file-invoice'></i>";
+                                divBtnGroup.appendChild(btnCrearOrdenCompraPorRequerimiento);
+                                
+                            }
 
                             // actualizar cantidad de items por mapear 
                             objBtnMapeo.querySelector("span[class='badge']").textContent = cantidadPorMapear;
