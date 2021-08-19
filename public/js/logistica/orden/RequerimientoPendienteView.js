@@ -11,6 +11,8 @@ var tempDetalleItemsParaCompraCC = [];
 var tablaListaRequerimientosPendientes;
 var iTableCounter = 1;
 var oInnerTable;
+
+var objBtnMapeo;
 class RequerimientoPendienteView {
     constructor(requerimientoPendienteCtrl){
         this.requerimientoPendienteCtrl = requerimientoPendienteCtrl;
@@ -123,15 +125,22 @@ class RequerimientoPendienteView {
                         return `<div class="text-center"><input type="checkbox" data-mapeos-pendientes="${row.count_pendientes}" data-id-requerimiento="${row.id_requerimiento}" /></div>`;
                     }
                 },
+                { 'data': 'empresa_sede' },
                 {
                     render: function (data, type, row) {
                         return `<label class="lbl-codigo handleClickAbrirRequerimiento" title="Abrir Requerimiento" data-id-requerimiento="${row.id_requerimiento}">${row.codigo}</label>`;
                     }
                 },
 
-                { 'data': 'concepto' },
                 { 'data': 'fecha_registro' },
+                { 'data': 'fecha_entrega' },
+                { 'data': 'concepto' },
                 { 'data': 'tipo_req_desc' },
+                {
+                    render: function (data, type, row) {
+                        return row.division;
+                    }
+                },
                 {
                     render: function (data, type, row) {
                         let entidad = '';
@@ -143,7 +152,6 @@ class RequerimientoPendienteView {
                         return entidad;
                     }
                 },
-                { 'data': 'empresa_sede' },
                 { 'data': 'nombre_usuario' },
                 {'render':
                     function (data, type, row){
@@ -275,31 +283,35 @@ class RequerimientoPendienteView {
                 { 'aTargets': [0], 'sClass': 'invisible','sWidth': '0%' },
                 { 'aTargets': [1], 'sWidth': '3%' },
                 { 'aTargets': [2], 'sWidth': '5%' },
-                { 'aTargets': [3], 'sWidth': '20%' },
-                { 'aTargets': [4], 'sWidth': '5%', 'className': 'text-center'},
+                { 'aTargets': [3], 'sWidth': '5%' },
+                { 'aTargets': [4], 'sWidth': '5%', 'className': 'text-center' },
                 { 'aTargets': [5], 'sWidth': '5%', 'className': 'text-center' },
-                { 'aTargets': [6], 'sWidth': '10%' },
-                { 'aTargets': [7], 'sWidth': '7%', 'className': 'text-center' },
-                { 'aTargets': [8], 'sWidth': '5%' },
-                { 'aTargets': [9], 'sWidth': '5%', 'className': 'text-center' },
-                { 'aTargets': [10], 'sWidth': '5%', 'className': 'text-center' }
+                { 'aTargets': [6], 'sWidth': '20%', 'className': 'text-left' },
+                { 'aTargets': [7], 'sWidth': '5%', 'className': 'text-center'},
+                { 'aTargets': [8], 'sWidth': '5%', 'className': 'text-center' },
+                { 'aTargets': [9], 'sWidth': '10%','className': 'text-left' },
+                { 'aTargets': [10], 'sWidth': '5%','className': 'text-center' },
+                { 'aTargets': [11], 'sWidth': '5%', 'className': 'text-center' },
+                { 'aTargets': [12], 'sWidth': '5%', 'className': 'text-center' }
             ],
             "createdRow": function (row, data, dataIndex) {
                 if (data.tiene_transformacion == true) {
-                    $(row.childNodes[2]).css('background-color', '#d8c74ab8');
-                    $(row.childNodes[2]).css('font-weight', 'bold');
+                    $(row.childNodes[3]).css('background-color', '#d8c74ab8');
+                    $(row.childNodes[3]).css('font-weight', 'bold');
                 }
                 else if (data.tiene_transformacion == false) {
-                    $(row.childNodes[2]).css('background-color', '#b498d0');
-                    $(row.childNodes[2]).css('font-weight', 'bold');
+                    $(row.childNodes[3]).css('background-color', '#b498d0');
+                    $(row.childNodes[3]).css('font-weight', 'bold');
                 }
 
             }
         });
         
-        $('#listaRequerimientosPendientes tbody').on("click","button.mapeo", function(){
+        $('#listaRequerimientosPendientes tbody').on("click","button.mapeo", function(e){
             var id_requerimiento = $(this).data('idRequerimiento');
             var codigo = $(this).data('codigo');
+            objBtnMapeo= e.currentTarget;
+            // console.log(objBtnMapeo);
             
             $('#modal-mapeoItemsRequerimiento').modal({
                 show: true
@@ -355,11 +367,12 @@ class RequerimientoPendienteView {
 
     construirDetalleRequerimientoListaRequerimientosPendientes(table_id,row,response){
         var html = '';
+        // console.log(response);
         if (response.length > 0) {
             response.forEach(function (element) {
                 // if(element.tiene_transformacion==false){
                     html += `<tr>
-                        <td style="border: none; text-align:center;">${(element.producto_part_number != null ? (element.producto_part_number?element.part_number:element.part_number) :'')} ${element.tiene_transformacion ==true?'<span class="label label-default">Con Transformación</span>':''}</td>
+                        <td style="border: none; text-align:center;" data-part-number="${element.part_number}" data-producto-part-number="${element.producto_part_number}">${(element.producto_part_number != null ? element.producto_part_number :(element.part_number !=null ?element.part_number:''))} ${element.tiene_transformacion ==true?'<span class="label label-default">Con Transformación</span>':''}</td>
                         <td style="border: none; text-align:left;">${element.producto_descripcion != null ? element.producto_descripcion : (element.descripcion?element.descripcion:'')}</td>
                         <td style="border: none; text-align:center;">${element.abreviatura != null ? element.abreviatura : ''}</td>
                         <td style="border: none; text-align:center;">${element.cantidad >0 ? element.cantidad : ''}</td>
@@ -499,7 +512,8 @@ class RequerimientoPendienteView {
 
     construirTablaListaItemsRequerimientoParaAtenderConAlmacen(data) { // data.almacenes, data.detalle_requerimiento
         let that =this;
-        let data_detalle_requerimiento = data.detalle_requerimiento;
+        let data_detalle_requerimiento = data.detalle_requerimiento.filter(function( obj ) {
+            return (obj.id_producto >0); });
         let data_almacenes = data.almacenes;
         $('#listaItemsRequerimientoParaAtenderConAlmacen').dataTable({
             'scrollY': '50vh',
@@ -1087,6 +1101,10 @@ class RequerimientoPendienteView {
 
     // ver detalle cuadro de costos
     openModalCuadroCostos(obj) {
+        $('#modal-ver-cuadro-costos').modal({
+            show: true,
+            backdrop: 'true'
+        });
         this.requerimientoPendienteCtrl.openModalCuadroCostos(obj).then((res) =>{
             if (res.status == 200) {
                 this.llenarCabeceraModalDetalleCuadroCostos(res.head)

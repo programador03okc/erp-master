@@ -581,10 +581,6 @@ class RequerimientoPendienteCtrl{
     // ver detalle cuadro de costos
     openModalCuadroCostos(obj){
         let id_requerimiento_seleccionado = obj.dataset.idRequerimiento;
-        $('#modal-ver-cuadro-costos').modal({
-            show: true,
-            backdrop: 'true'
-        });
         return requerimientoPendienteModel.getDataListaItemsCuadroCostosPorIdRequerimiento([id_requerimiento_seleccionado]);
         
 
