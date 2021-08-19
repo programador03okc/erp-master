@@ -39,12 +39,14 @@ Requerimientos pendientes
                                                     <tr>
                                                         <th hidden>Id</th>
                                                         <th style="text-align:center;">Selec.</th>
-                                                        <th style="text-align:center;">Código</th>
-                                                        <th style="text-align:center;">Concepto</th>
-                                                        <th style="text-align:center;">Fecha creación</th>
-                                                        <th style="text-align:center;">Tipo Req.</th>
-                                                        <th style="text-align:center;">Proveedor/Entidad</th>
                                                         <th style="text-align:center;">Empresa - Sede</th>
+                                                        <th style="text-align:center;">Código</th>
+                                                        <th style="text-align:center;">Fecha creación</th>
+                                                        <th style="text-align:center;">Fecha limite</th>
+                                                        <th style="text-align:center;">Concepto</th>
+                                                        <th style="text-align:center;">Tipo Req.</th>
+                                                        <th style="text-align:center;">División</th>
+                                                        <th style="text-align:center;">Atender a</th>
                                                         <th style="text-align:center;">Creado por</th>
                                                         <th style="text-align:center;">Estado</th>
                                                         <th style="text-align:center;">Acción</th>
@@ -100,7 +102,7 @@ Requerimientos pendientes
 <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
  
 <script src="{{('/js/logistica/orden/RequerimientoPendienteModel.js')}}"></script>
-<script src="{{('/js/logistica/orden/RequerimientoPendienteView.js?v=3')}}"></script>
+<script src="{{('/js/logistica/orden/RequerimientoPendienteView.js?v=4')}}"></script>
 <script src="{{('/js/logistica/orden/RequerimientoPendienteController.js')}}"></script>
 
 <script src="{{ asset('js/logistica/mapeo/mapeoItemsRequerimiento.js')}}"></script>

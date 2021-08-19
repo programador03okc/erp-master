@@ -131,7 +131,7 @@ Elaborar orden
                             <div style="display:flex;">
                                 <input class="oculto" name="id_cuenta_principal_proveedor">
                                 <input type="text" class="form-control" name="nro_cuenta_principal_proveedor" readOnly>
-                                <button type="button" class="group-text" id="basic-addon1" onClick="cuentasBancariasModal();">
+                                <button type="button" class="group-text" onClick="cuentasBancariasModal();">
                                     <i class="fa fa-search"></i>
                                 </button>
                                 <button type="button" class="btn-primary" title="Agregar cuenta bancaria" onClick="agregar_cuenta_proveedor();"><i class="fas fa-plus"></i></button>
@@ -143,7 +143,7 @@ Elaborar orden
                             <div style="display:flex;">
                                 <input class="oculto" name="id_contacto_proveedor">
                                 <input type="text" class="form-control" name="contacto_proveedor_nombre" readOnly>
-                                <button type="button" class="group-text" id="basic-addon1" onClick="contactoModal();">
+                                <button type="button" class="group-text" onClick="contactoModal();">
                                     <i class="fa fa-search"></i>
                                 </button>
                                 <button type="button" class="btn-primary" title="Agregar Contacto" onClick="agregar_contacto();"><i class="fas fa-plus"></i></button>
