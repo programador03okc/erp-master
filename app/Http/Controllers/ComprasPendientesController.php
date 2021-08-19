@@ -171,9 +171,14 @@ class ComprasPendientesController extends Controller
             ->leftJoin('rrhh.rrhh_perso as perso_natural', 'alm_req.id_persona', '=', 'perso_natural.id_persona')
             ->leftJoin('configuracion.sis_moneda', 'alm_req.id_moneda', '=', 'sis_moneda.id_moneda')
 
+            ->leftJoin('rrhh.rrhh_trab as trab_solicitado_por', 'alm_req.trabajador_id', '=', 'trab_solicitado_por.id_trabajador')
+            ->leftJoin('rrhh.rrhh_postu as postu_solicitado_por', 'postu_solicitado_por.id_postulante', '=', 'trab_solicitado_por.id_postulante')
+            ->leftJoin('rrhh.rrhh_perso as perso_solicitado_por', 'perso_solicitado_por.id_persona', '=', 'postu_solicitado_por.id_persona')
             // ->leftJoin('logistica.log_detalle_grupo_cotizacion', 'log_detalle_grupo_cotizacion.id_requerimiento', '=', 'alm_req.id_requerimiento')
             // ->leftJoin('logistica.log_ord_compra', 'log_ord_compra.id_grupo_cotizacion', '=', 'log_detalle_grupo_cotizacion.id_grupo_cotizacion')
             // ->leftJoin('almacen.guia_com_oc', 'guia_com_oc.id_oc', '=', 'log_ord_compra.id_orden_compra')
+            ->leftJoin('mgcp_cuadro_costos.cc_view', 'cc_view.id', '=', 'alm_req.id_cc')
+
             ->select(
                 'alm_req.id_requerimiento',
                 'alm_req.codigo',
@@ -206,9 +211,12 @@ class ComprasPendientesController extends Controller
                 'contri_cliente.razon_social as cliente_razon_social',
                 'alm_req.id_persona',
                 'perso_natural.nro_documento as dni_persona',
-                DB::raw("(perso_natural.nombres) || ' ' || (perso_natural.apellido_paterno) || ' ' || (perso_natural.apellido_materno)  AS nombre_persona"),
+                DB::raw("CONCAT(perso_natural.nombres,' ', perso_natural.apellido_paterno,' ', perso_natural.apellido_materno)  AS nombre_persona"),
                 'alm_req.id_prioridad',
                 'alm_req.fecha_registro',
+                'alm_req.trabajador_id',
+                DB::raw("CONCAT(perso_solicitado_por.nombres,' ', perso_solicitado_por.apellido_paterno,' ', perso_solicitado_por.apellido_materno)  AS solicitado_por"),
+                'cc_view.name as cc_solicitado_por',
                 'alm_req.estado',
                 'alm_req.id_empresa',
                 'alm_req.id_sede',
@@ -219,8 +227,8 @@ class ComprasPendientesController extends Controller
                 DB::raw("(CASE WHEN alm_req.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc"),
                 DB::raw("(SELECT  COUNT(alm_det_req.id_detalle_requerimiento) FROM almacen.alm_det_req
             WHERE alm_det_req.id_requerimiento = alm_req.id_requerimiento and alm_det_req.tiene_transformacion=false)::integer as cantidad_items_base"),
-            DB::raw("(SELECT json_agg(DISTINCT cc.descripcion) FROM almacen.alm_det_req dr
-            INNER JOIN finanzas.centro_costo cc ON dr.centro_costo_id = cc.id_centro_costo
+            DB::raw("(SELECT json_agg(DISTINCT nivel.unidad) FROM almacen.alm_det_req dr
+            INNER JOIN finanzas.cc_niveles_view nivel ON dr.centro_costo_id = nivel.id_centro_costo
             WHERE dr.id_requerimiento = almacen.alm_req.id_requerimiento and dr.tiene_transformacion=false ) as division"),
                 DB::raw("(SELECT COUNT(*) FROM almacen.alm_det_req AS det
             WHERE det.id_requerimiento = alm_req.id_requerimiento AND det.id_tipo_item =1
@@ -262,6 +270,8 @@ class ComprasPendientesController extends Controller
                 'tipo_cliente_desc' => $data->tipo_cliente_desc,
                 'usuario' => $data->usuario,
                 'nombre_usuario' => $data->nombre_usuario,
+                'solicitado_por' => $data->solicitado_por,
+                'cc_solicitado_por' => $data->cc_solicitado_por,
                 'id_area' => $data->id_area,
                 'area_desc' => $data->area_desc,
                 'id_rol' => $data->id_rol,

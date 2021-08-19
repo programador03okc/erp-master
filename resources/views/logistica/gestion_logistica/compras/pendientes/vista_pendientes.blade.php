@@ -46,8 +46,7 @@ Requerimientos pendientes
                                                         <th style="text-align:center;">Concepto</th>
                                                         <th style="text-align:center;">Tipo Req.</th>
                                                         <th style="text-align:center;">División</th>
-                                                        <th style="text-align:center;">Atender a</th>
-                                                        <th style="text-align:center;">Creado por</th>
+                                                        <th style="text-align:center;">Solicitado por</th>
                                                         <th style="text-align:center;">Estado</th>
                                                         <th style="text-align:center;">Acción</th>
                                                     </tr>
@@ -102,10 +101,10 @@ Requerimientos pendientes
 <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
  
 <script src="{{('/js/logistica/orden/RequerimientoPendienteModel.js?v=2')}}"></script>
-<script src="{{('/js/logistica/orden/RequerimientoPendienteView.js?v=5')}}"></script>
+<script src="{{('/js/logistica/orden/RequerimientoPendienteView.js?v=6')}}"></script>
 <script src="{{('/js/logistica/orden/RequerimientoPendienteController.js?v=2')}}"></script>
 
-<script src="{{ asset('js/logistica/mapeo/mapeoItemsRequerimiento.js?v=2')}}"></script>
+<script src="{{ asset('js/logistica/mapeo/mapeoItemsRequerimiento.js?v=3')}}"></script>
 <script src="{{ asset('js/logistica/mapeo/mapeoAsignarProducto.js')}}"></script>
 
 <script>

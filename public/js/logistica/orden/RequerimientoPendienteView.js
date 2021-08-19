@@ -143,16 +143,9 @@ class RequerimientoPendienteView {
                 },
                 {
                     render: function (data, type, row) {
-                        let entidad = '';
-                        if (row.id_cliente > 0) {
-                            entidad = `${row.cliente_razon_social} ${row.cliente_ruc == null ? '' : ('RUC: ' + row.cliente_ruc)}`;
-                        } else if (row.id_persona > 0) {
-                            entidad = `${row.nombre_persona}`;
-                        }
-                        return entidad;
+                        return row.cc_solicitado_por!=null?row.cc_solicitado_por:(row.solicitado_por!=null?row.solicitado_por:'');
                     }
                 },
-                { 'data': 'nombre_usuario' },
                 {'render':
                     function (data, type, row){
                         switch (row['estado']) {
@@ -291,8 +284,7 @@ class RequerimientoPendienteView {
                 { 'aTargets': [8], 'sWidth': '5%', 'className': 'text-center' },
                 { 'aTargets': [9], 'sWidth': '10%','className': 'text-left' },
                 { 'aTargets': [10], 'sWidth': '5%','className': 'text-center' },
-                { 'aTargets': [11], 'sWidth': '5%', 'className': 'text-center' },
-                { 'aTargets': [12], 'sWidth': '5%', 'className': 'text-center' }
+                { 'aTargets': [11], 'sWidth': '5%', 'className': 'text-center' }
             ],
             "createdRow": function (row, data, dataIndex) {
                 if (data.tiene_transformacion == true) {
