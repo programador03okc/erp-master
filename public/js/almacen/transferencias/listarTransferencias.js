@@ -154,9 +154,6 @@ function listarRequerimientosPendientes() {
         ]
     });
 
-
-
-
 }
 
 $("#listaRequerimientos tbody").on("click", "a.verRequerimiento", function (e) {
@@ -194,11 +191,11 @@ function listarTransferenciasPorEnviar() {
         });
     }
     $("#listaTransferenciasPorEnviar").DataTable({
-        dom: 'Bfrtip',
+        dom: vardataTables[1],
         buttons: botones,
         language: vardataTables[0],
         lengthChange: false,
-        pageLength: 25,
+        pageLength: 20,
         destroy: true,
         serverSide: true,
         ajax: {
@@ -282,12 +279,7 @@ function listarTransferenciasPorEnviar() {
         order: [[2, "desc"]]
     });
 
-    $(
-        $("#listaTransferenciasPorEnviar")
-            .DataTable()
-            .table()
-            .container()
-    ).on("ifChanged", ".dt-checkboxes", function (event) {
+    $($("#listaTransferenciasPorEnviar").DataTable().table().container()).on("ifChanged", ".dt-checkboxes", function (event) {
         var cell = $("#listaTransferenciasPorEnviar")
             .DataTable()
             .cell($(this).closest("td"));

@@ -38,10 +38,10 @@ Facturación
                         <form id="form-guias" type="register">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <div style="display: flex;justify-content: flex-end;">
+                                    <!-- <div style="display: flex;justify-content: flex-end;">
                                         <button type="button" class="btn btn-success btn-flat" data-toggle="tooltip" data-placement="bottom" title="Seleccione varias Guias para ingresar Factura" onClick="open_doc_ven_create_guias_seleccionadas();">
                                             Ingresar Factura</button>
-                                    </div>
+                                    </div> -->
                                     <table class="mytable table table-condensed table-bordered table-okc-view" id="listaGuias">
                                         <thead>
                                             <tr>
@@ -106,9 +106,9 @@ Facturación
 @section('scripts')
 <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
-<!-- <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
-    <script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
-    <script src="{{ asset('datatables/Buttons/js/buttons.print.min.js') }}"></script>
+<script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
+<script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
+<!--<script src="{{ asset('datatables/Buttons/js/buttons.print.min.js') }}"></script>
     <script src="{{ asset('datatables/Buttons/js/buttons.html5.min.js') }}"></script>
     <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
@@ -128,7 +128,7 @@ Facturación
     $(document).ready(function() {
         seleccionarMenu(window.location);
         vista_extendida();
-
+        $.fn.dataTable.Buttons.defaults.dom.button.className = 'btn';
         // let facturacion = new Facturacion('{{Auth::user()->tieneAccion(78)}}');
         let facturacion = new Facturacion();
         facturacion.listarGuias();

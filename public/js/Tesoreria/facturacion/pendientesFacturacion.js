@@ -7,10 +7,19 @@ class Facturacion {
 
     listarGuias() {
         var vardataTables = funcDatatables();
+        let botonesGuia = [];
+        // if (valor_permiso == '1') {
+        botonesGuia.push({
+            text: 'Ingresar Factura',
+            action: function () {
+                open_doc_ven_create_guias_seleccionadas();
+            }, className: 'btn-success'
+        });
+        // }
         // console.time();
         tableGuias = $("#listaGuias").DataTable({
             dom: vardataTables[1],
-            buttons: vardataTables[2],
+            buttons: botonesGuia,
             language: vardataTables[0],
             destroy: true,
             pageLength: 20,
@@ -143,7 +152,7 @@ class Facturacion {
         // console.time();
         tableRequerimientos = $("#listaRequerimientos").DataTable({
             dom: vardataTables[1],
-            buttons: vardataTables[2],
+            buttons: [],
             language: vardataTables[0],
             destroy: true,
             pageLength: 20,
