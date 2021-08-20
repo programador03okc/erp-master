@@ -81,13 +81,14 @@ function detalleFacturasGuia(table_id, id, row) {
                                     data-placement="bottom" title="Ver Factura"
                                     onClick="verDocumentoVenta(${element.id_doc_ven}, 'guia')" >
                                     <i class="fas fa-file-alt"></i></button>
-                                <button type="button" class="autogenerar btn btn-success boton btn-flat" data-toggle="tooltip" 
-                                    data-placement="bottom" title="Autogenerar Docs de Compra" 
-                                    onClick="autogenerarDocsCompra(${element.id_doc_ven})" >
-                                    <i class="fas fa-sync-alt"></i></button>
+                                
                             <div/>
                         </td>
                         </tr>`;
+                    // <button type="button" class="autogenerar btn btn-success boton btn-flat" data-toggle="tooltip" 
+                    //     data-placement="bottom" title="Autogenerar Docs de Compra" 
+                    //     onClick="autogenerarDocsCompra(${element.id_doc_ven})" >
+                    //     <i class="fas fa-sync-alt"></i></button>
                     i++;
                 });
                 var tabla = `<table class="table table-sm" style="border: none;" 
