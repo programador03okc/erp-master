@@ -87,10 +87,11 @@ function listarTransferenciasRecibidas() {
                                 data-placement="bottom" data-id-ingreso="${row["id_ingreso"]}" title="Ver Ingreso" >
                                 <i class="fas fa-file-alt"></i></button>
 
-                            <button type="button" class="anular btn btn-danger boton btn-flat" data-toggle="tooltip" 
+                            ${(row['doc_ven'] == '-') ?
+                                    `<button type="button" class="anular btn btn-danger boton btn-flat" data-toggle="tooltip" 
                                 data-placement="bottom" data-id="${row["id_transferencia"]}" data-guia="${row["id_guia_com"]}" data-ing="${row["id_ingreso"]}" title="Anular" >
-                                <i class="fas fa-trash"></i></button>
-
+                                <i class="fas fa-trash"></i></button>`: ''}
+                            
                             <button type="button" class="autogenerar btn btn-success boton btn-flat" data-toggle="tooltip" 
                                 data-placement="bottom" data-id="${row["id_doc_ven"]}" data-dc="${row["doc_com"]}" title="Autogenerar Docs de Compra" >
                                 <i class="fas fa-sync-alt"></i></button>
