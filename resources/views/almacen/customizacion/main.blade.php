@@ -20,7 +20,7 @@ Dashboard Servicios CAS
             </div>
             <div class="inner">
                 <h3>0</h3>
-                <p style="font-size:15px;display:flex;width:20px;">Confirmaciones pendientes</p>
+                <p style="font-size:15px;display:flex;width:20px;">Transformaciones pendientes</p>
             </div>
             <a href="{{route('cas.customizacion.gestion-customizaciones.index')}}" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
         </div>

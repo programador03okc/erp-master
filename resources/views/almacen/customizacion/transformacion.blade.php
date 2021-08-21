@@ -313,4 +313,9 @@ Hoja de Transformación
 <script src="{{('/js/almacen/customizacion/transfor_sobrante.js')}}"></script>
 <script src="{{('/js/almacen/customizacion/transfor_transformado.js')}}"></script>
 <script src="{{('/js/logistica/servicioModal.js')}}"></script>
+<script>
+    $(document).ready(function() {
+        seleccionarMenu(window.location);
+    });
+</script>
 @endsection
