@@ -149,6 +149,10 @@ class SalidasPendientesController extends Controller
                             'id_guia_ven_det'
                         );
 
+                        DB::table('almacen.doc_ven_det')
+                            ->where('id_detalle_requerimiento', $det->id_detalle_requerimiento)
+                            ->update(['id_guia_ven_det' => $id_guia_ven_det]);
+
                         if (count($det->series) > 0) {
 
                             foreach ($det->series as $s) {
@@ -165,7 +169,7 @@ class SalidasPendientesController extends Controller
                             ])
                             ->first();
                         //Guardo los items de la salida
-                        $id_det = DB::table('almacen.mov_alm_det')->insertGetId(
+                        DB::table('almacen.mov_alm_det')->insertGetId(
                             [
                                 'id_mov_alm' => $id_salida,
                                 'id_producto' => $det->id_producto,
