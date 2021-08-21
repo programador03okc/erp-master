@@ -1,95 +1,96 @@
-class GestionCustomizacion
-{
-    constructor(permiso)
-    {
+class GestionCustomizacion {
+    constructor(permiso) {
         this.permiso = permiso;
         this.listarTransformacionesPendientes();
         this.listarTransformaciones();
     }
-/*
-    listarCuadrosCostos() {
-        const permiso = this.permiso;
-        var vardataTables = funcDatatables();
-        var tabla = $('#listaCuadrosCostos').DataTable({
-            'dom': vardataTables[1],
-            'buttons': vardataTables[2],
-            'language' : vardataTables[0],
-            'destroy' : true,
-            'serverSide' : true,
-            'ajax': {
-                url: 'listarCuadrosCostos',
-                type: 'POST'
-            },
-            'columns': [
-                {'data': 'id'},
-                {'data': 'codigo_oportunidad', 'name': 'oportunidades.codigo_oportunidad'},
-                {'data': 'oportunidad', 'name': 'oportunidades.oportunidad'},
-                {'data': 'nombre', 'name': 'entidades.nombre'},
-                {'data': 'estado', 'name': 'estados_aprobacion.estado'},
-                {'data': 'prioridad'},
-                {'data': 'fecha_entrega'},
-                {'render': function (data, type, row){
-                        return row['tipo_cuadro'] == 1 ? 'Acuerdo Marco' : 'Venta Directa';
-                    }
+    /*
+        listarCuadrosCostos() {
+            const permiso = this.permiso;
+            var vardataTables = funcDatatables();
+            var tabla = $('#listaCuadrosCostos').DataTable({
+                'dom': vardataTables[1],
+                'buttons': vardataTables[2],
+                'language' : vardataTables[0],
+                'destroy' : true,
+                'serverSide' : true,
+                'ajax': {
+                    url: 'listarCuadrosCostos',
+                    type: 'POST'
                 },
-                {'data': 'name', 'name': 'users.name'}
-            ],
-            'columnDefs': [
-                {'aTargets': [0], 'sClass': 'invisible'},
-                {'render': function (data, type, row){
-                            return `<button type="button" class="generar_transformacion btn btn-success btn-sm " data-toggle="tooltip"
-                            data-placement="bottom" data-id="${row['id']}" data-tipo="${row['tipo_cuadro']}" data-oportunidad="${row['oportunidad']}" 
-                            title="Generar Hoja de Transformación"><i class="fas fa-angle-double-right"></i></button>`;
-                        
-                    }, targets: 9
-                }
-            ],
-        });
-        generar("#listaCuadrosCostos tbody", tabla);
-    }
-*/
-    listarTransformacionesPendientes(){
+                'columns': [
+                    {'data': 'id'},
+                    {'data': 'codigo_oportunidad', 'name': 'oportunidades.codigo_oportunidad'},
+                    {'data': 'oportunidad', 'name': 'oportunidades.oportunidad'},
+                    {'data': 'nombre', 'name': 'entidades.nombre'},
+                    {'data': 'estado', 'name': 'estados_aprobacion.estado'},
+                    {'data': 'prioridad'},
+                    {'data': 'fecha_entrega'},
+                    {'render': function (data, type, row){
+                            return row['tipo_cuadro'] == 1 ? 'Acuerdo Marco' : 'Venta Directa';
+                        }
+                    },
+                    {'data': 'name', 'name': 'users.name'}
+                ],
+                'columnDefs': [
+                    {'aTargets': [0], 'sClass': 'invisible'},
+                    {'render': function (data, type, row){
+                                return `<button type="button" class="generar_transformacion btn btn-success btn-sm " data-toggle="tooltip"
+                                data-placement="bottom" data-id="${row['id']}" data-tipo="${row['tipo_cuadro']}" data-oportunidad="${row['oportunidad']}" 
+                                title="Generar Hoja de Transformación"><i class="fas fa-angle-double-right"></i></button>`;
+                            
+                        }, targets: 9
+                    }
+                ],
+            });
+            generar("#listaCuadrosCostos tbody", tabla);
+        }
+    */
+    listarTransformacionesPendientes() {
         var vardataTables = funcDatatables();
         var tabla = $('#listaTransformacionesPendientes').DataTable({
             'dom': vardataTables[1],
             'buttons': vardataTables[2],
-            'language' : vardataTables[0],
-            'destroy':true,
-            'ajax' : 'listar_transformaciones_pendientes',
+            'language': vardataTables[0],
+            'destroy': true,
+            'ajax': 'listar_transformaciones_pendientes',
             'columns': [
-                {'data': 'id_transformacion'},
-                {'render':
-                    function (data, type, row){
-                        return (row['estado'] == 21 ? (row['conformidad'] ? 
-                        `<button type="button" class="conformidad btn btn-success boton" data-toggle="tooltip" 
+                { 'data': 'id_transformacion' },
+                {
+                    'render':
+                        function (data, type, row) {
+                            return (row['estado'] == 21 ? (row['conformidad'] ?
+                                `<button type="button" class="conformidad btn btn-success boton" data-toggle="tooltip" 
                         data-placement="bottom" data-id="${row['id_transformacion']}" title="Cambiar a No Conforme" >
-                        <i class="fas fa-check"></i></button>` : 
+                        <i class="fas fa-check"></i></button>` :
 
-                        `<button type="button" class="noconformidad btn btn-danger boton" data-toggle="tooltip" 
+                                `<button type="button" class="noconformidad btn btn-danger boton" data-toggle="tooltip" 
                         data-placement="bottom" data-id="${row['id_transformacion']}" title="Cambiar a Recibido Conforme" >
-                        <i class="fas fa-times"></i></button>`) : 
-                        
-                        row['estado'] == 24 ? '<i class="fas fa-check green" style="font-size: 15px;"></i>'
-                        : (row['estado'] == 1 ? '' : '<i class="fas fa-check-double blue"  style="font-size: 15px;"></i>'));
-                    }
+                        <i class="fas fa-times"></i></button>`) :
+
+                                row['estado'] == 24 ? '<i class="fas fa-check green" style="font-size: 15px;"></i>'
+                                    : (row['estado'] == 1 ? '' : '<i class="fas fa-check-double blue"  style="font-size: 15px;"></i>'));
+                        }
                 },
-                {'render':
-                    function (data, type, row){
-                        return ('<label class="lbl-codigo" title="Abrir Transformación" onClick="abrir_transformacion('+row['id_transformacion']+')">'+row['codigo']+'</label>');
-                    }
+                {
+                    'render':
+                        function (data, type, row) {
+                            return ('<label class="lbl-codigo" title="Abrir Transformación" onClick="abrir_transformacion(' + row['id_transformacion'] + ')">' + row['codigo'] + '</label>');
+                        }
                 },
-                {'data': 'fecha_entrega_req'},
-                {'data': 'orden_am', 'name': 'oc_propias.orden_am'},
+                { 'data': 'fecha_entrega_req' },
+                { 'data': 'orden_am', 'name': 'oc_propias.orden_am' },
                 // {'data': 'codigo_oportunidad', 'name': 'oportunidades.codigo_oportunidad'},
                 // {'data': 'oportunidad', 'name': 'oportunidades.oportunidad'},
-                {'data': 'nombre', 'name': 'entidades.nombre'},
-                {'data': 'codigo_req'},
-                {'render':
-                    function (data, type, row){
-                        return (formatDateHour(row['fecha_registro']));
-                    }
+                { 'data': 'nombre', 'name': 'entidades.nombre' },
+                { 'data': 'codigo_req' },
+                {
+                    'render':
+                        function (data, type, row) {
+                            return (formatDateHour(row['fecha_registro']));
+                        }
                 },
-                {'data': 'fecha_inicio'},
+                { 'data': 'fecha_inicio' },
                 // {'data': 'fecha_transformacion'},
                 // {'render':
                 //     function (data, type, row){
@@ -97,114 +98,118 @@ class GestionCustomizacion
                 //     }
                 // },
                 // {'data': 'codigo_oportunidad'},
-                {'data': 'descripcion'},
+                { 'data': 'descripcion' },
                 // {'data': 'nombre_registrado'},
-                {'render':
-                    function (data, type, row){
-                        return ('<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>');
-                    }
+                {
+                    'render':
+                        function (data, type, row) {
+                            return ('<span class="label label-' + row['bootstrap_color'] + '">' + row['estado_doc'] + '</span>');
+                        }
                 },
-                {'render':
-                    function (data, type, row){
-                        return (`<button type="button" class="imprimir btn btn-info boton" data-toggle="tooltip" 
+                {
+                    'render':
+                        function (data, type, row) {
+                            return (`<button type="button" class="imprimir btn btn-info boton" data-toggle="tooltip" 
                                     data-placement="bottom" title="Imprimir Hoja de Transformación" data-id="${row['id_transformacion']}">
                                     <i class="fas fa-print"></i></button>`+
                                 (row['estado'] == 21 ? //entregado
-                                `<button type="button" class="iniciar btn btn-primary boton" data-toggle="tooltip" 
+                                    `<button type="button" class="iniciar btn btn-primary boton" data-toggle="tooltip" 
                                     data-placement="bottom" title="Iniciar Transformación" data-id="${row['id_transformacion']}"
                                     data-estado="${row['estado']}">
-                                    <i class="fas fa-step-forward"></i></button>`: '' )
-                                );
-                    }
+                                    <i class="fas fa-step-forward"></i></button>`: '')
+                            );
+                        }
                 },
             ],
-            'order': [[ 0, "desc" ]],
-            'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
+            'order': [[0, "desc"]],
+            'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible' }],
         });
     }
 
-    listarTransformaciones(){
+    listarTransformaciones() {
         var vardataTables = funcDatatables();
         var tabla = $('#listaTransformaciones').DataTable({
             'dom': vardataTables[1],
             'buttons': vardataTables[2],
-            'language' : vardataTables[0],
-            'destroy':true,
-            'ajax' : 'listar_todas_transformaciones',
+            'language': vardataTables[0],
+            'destroy': true,
+            'ajax': 'listar_todas_transformaciones',
             // 'ajax': {
             //     url:'listar_transferencias_pendientes/'+alm_origen+'/'+alm_destino,
             //     dataSrc:''
             // },
             'columns': [
-                {'data': 'id_transformacion'},
-                {'render':
-                    function (data, type, row){
-                        return ('<label class="lbl-codigo" title="Abrir Transformación" onClick="abrir_transformacion('+row['id_transformacion']+')">'+row['codigo']+'</label>');
-                    }
+                { 'data': 'id_transformacion' },
+                {
+                    'render':
+                        function (data, type, row) {
+                            return ('<label class="lbl-codigo" title="Abrir Transformación" onClick="abrir_transformacion(' + row['id_transformacion'] + ')">' + row['codigo'] + '</label>');
+                        }
                 },
-                {'data': 'fecha_entrega_req'},
-                
-                {'data': 'orden_am', 'name': 'oc_propias.orden_am'},
+                { 'data': 'fecha_entrega_req' },
+
+                { 'data': 'orden_am', 'name': 'oc_propias.orden_am' },
                 // {'data': 'codigo_oportunidad', 'name': 'oportunidades.codigo_oportunidad'},
                 // {'data': 'oportunidad', 'name': 'oportunidades.oportunidad'},
-                {'data': 'nombre', 'name': 'entidades.nombre'},
+                { 'data': 'nombre', 'name': 'entidades.nombre' },
                 // {'render':
                 //     function (data, type, row){
                 //         return (formatDate(row['fecha_registro']));
                 //     }
                 // },
-                {'data': 'codigo_req'},
-                {'data': 'fecha_registro'},
-                {'data': 'fecha_inicio'},
-                {'data': 'fecha_transformacion'},
+                { 'data': 'codigo_req' },
+                { 'data': 'fecha_registro' },
+                { 'data': 'fecha_inicio' },
+                { 'data': 'fecha_transformacion' },
                 // {'render':
                 //     function (data, type, row){
                 //         return (formatDate(row['fecha_transformacion']));
                 //     }
                 // },
                 // {'data': 'codigo_oportunidad'},
-                {'data': 'descripcion'},
-                {'data': 'nombre_responsable'},
-                {'data': 'observacion'},
+                { 'data': 'descripcion' },
+                { 'data': 'nombre_responsable' },
+                { 'data': 'observacion' },
                 // {'data': 'nombre_registrado'},
                 // {'render':
                 //     function (data, type, row){
                 //         return ('<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>');
                 //     }
                 // },
-                {'render':
-                    function (data, type, row){
-                        return ('<button type="button" class="salida btn btn-success boton" data-toggle="tooltip" '+
-                                    'data-placement="bottom" title="Ver Salida" data-id="'+row['id_transformacion']+'">'+
-                                    '<i class="fas fa-sign-out-alt"></i></button>'+
-                                    
-                                '<button type="button" class="ingreso btn btn-primary boton" data-toggle="tooltip" '+
-                                    'data-placement="bottom" title="Ver Ingreso" data-id="'+row['id_transformacion']+'">'+
-                                    '<i class="fas fa-sign-in-alt"></i></button>');
-                    }
+                {
+                    'render':
+                        function (data, type, row) {
+                            return ('<button type="button" class="salida btn btn-success boton" data-toggle="tooltip" ' +
+                                'data-placement="bottom" title="Ver Salida" data-id="' + row['id_transformacion'] + '">' +
+                                '<i class="fas fa-sign-out-alt"></i></button>' +
+
+                                '<button type="button" class="ingreso btn btn-primary boton" data-toggle="tooltip" ' +
+                                'data-placement="bottom" title="Ver Ingreso" data-id="' + row['id_transformacion'] + '">' +
+                                '<i class="fas fa-sign-in-alt"></i></button>');
+                        }
                 },
             ],
-            'order': [[ 0, "desc" ]],
-            'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
+            'order': [[0, "desc"]],
+            'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible' }],
         });
     }
 }
 
-$('#listaTransformacionesPendientes tbody').on("click","button.imprimir", function(){
+$('#listaTransformacionesPendientes tbody').on("click", "button.imprimir", function () {
     var id = $(this).data('id');
-    if (id !== null && id !== ''){
-        window.open('imprimir_transformacion/'+id);
+    if (id !== null && id !== '') {
+        window.open('imprimir_transformacion/' + id);
     } else {
         alert('Debe seleccionar una Hoja de Transformación.');
     }
 });
 
-$('#listaTransformacionesPendientes tbody').on("click","button.iniciar", function(){
+$('#listaTransformacionesPendientes tbody').on("click", "button.iniciar", function () {
     var id = $(this).data('id');
     var estado = $(this).data('estado');
 
-    if (id !== null && id !== ''){
-        openIniciar(id,estado);
+    if (id !== null && id !== '') {
+        openIniciar(id, estado);
     } else {
         alert('Debe seleccionar una Hoja de Transformación.');
     }
@@ -218,17 +223,17 @@ $('#listaTransformacionesPendientes tbody').on("click","button.iniciar", functio
 //     $(this).find('i.fas').addClass('fa-check');
 // });
 
-$('#listaTransformacionesPendientes tbody').on("click","button.conformidad", function(){
+$('#listaTransformacionesPendientes tbody').on("click", "button.conformidad", function () {
     var id = $(this).data('id');
     $.ajax({
         type: 'GET',
-        url: 'no_conforme_transformacion/'+id,
+        url: 'no_conforme_transformacion/' + id,
         dataType: 'JSON',
-        success: function(response){
+        success: function (response) {
             console.log(response);
             $('#listaTransformacionesPendientes').DataTable().ajax.reload();
         }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
+    }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
@@ -244,79 +249,79 @@ $('#listaTransformacionesPendientes tbody').on("click","button.conformidad", fun
 //     $(this).find('i.fas').addClass('fa-times');
 // });
 
-$('#listaTransformacionesPendientes tbody').on("click","button.noconformidad", function(){
+$('#listaTransformacionesPendientes tbody').on("click", "button.noconformidad", function () {
     var id = $(this).data('id');
     $.ajax({
         type: 'GET',
-        url: 'recibido_conforme_transformacion/'+id,
+        url: 'recibido_conforme_transformacion/' + id,
         dataType: 'JSON',
-        success: function(response){
+        success: function (response) {
             console.log(response);
             $('#listaTransformacionesPendientes').DataTable().ajax.reload();
         }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
+    }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
     });
 });
 
-function openIniciar(id_transformacion,est){
-    if (est == '1'){
+function openIniciar(id_transformacion, est) {
+    if (est == '1') {
         alert('A la espera de que Almacén genere la salida de los productos.');
     }
-    else if (est == '9'){
+    else if (est == '9') {
         alert('La transformación ya fue procesada.');
-    } 
-    else if (est == '7'){
+    }
+    else if (est == '7') {
         alert('No puede procesar. La transformación esta Anulada.');
     }
-    else if (est == '24'){
+    else if (est == '24') {
         alert('Ésta Transformación ya fue iniciada.');
-    } 
-    else if (est == '21'){
+    }
+    else if (est == '21') {
         $.ajax({
             type: 'GET',
-            url: 'iniciar_transformacion/'+id_transformacion,
+            url: 'iniciar_transformacion/' + id_transformacion,
             dataType: 'JSON',
-            success: function(response){
+            success: function (response) {
                 console.log(response);
                 $('#listaTransformacionesPendientes').DataTable().ajax.reload();
             }
-        }).fail( function( jqXHR, textStatus, errorThrown ){
+        }).fail(function (jqXHR, textStatus, errorThrown) {
             console.log(jqXHR);
             console.log(textStatus);
             console.log(errorThrown);
         });
-    } 
+    }
 }
 
-$('#listaTransformaciones tbody').on("click","button.ingreso", function(){
+$('#listaTransformaciones tbody').on("click", "button.ingreso", function () {
     var id = $(this).data('id');
     abrir_ingreso(id);
 });
 
-$('#listaTransformaciones tbody').on("click","button.salida", function(){
+$('#listaTransformaciones tbody').on("click", "button.salida", function () {
     var id = $(this).data('id');
     abrir_salida(id);
 });
 
-function abrir_salida(id_transformacion){
-    if (id_transformacion != ''){
+function abrir_salida(id_transformacion) {
+    if (id_transformacion != '') {
         $.ajax({
             type: 'GET',
-            url: 'id_salida_transformacion/'+id_transformacion,
+            url: 'id_salida_transformacion/' + id_transformacion,
             dataType: 'JSON',
-            success: function(id_salida){
-                if (id_salida > 0){
+            success: function (id_salida) {
+                if (id_salida > 0) {
                     console.log(id_salida);
                     var id = encode5t(id_salida);
-                    window.open('imprimir_salida/'+id);
+                    window.open('imprimir_salida/' + id);
                 } else {
                     alert('Esta Transformación no tiene Salida');
                 }
             }
-        }).fail( function( jqXHR, textStatus, errorThrown ){
+        }).fail(function (jqXHR, textStatus, errorThrown) {
             console.log(jqXHR);
             console.log(textStatus);
             console.log(errorThrown);
@@ -326,22 +331,22 @@ function abrir_salida(id_transformacion){
     }
 }
 
-function abrir_ingreso(id_transformacion){
-    if (id_transformacion != ''){
+function abrir_ingreso(id_transformacion) {
+    if (id_transformacion != '') {
         $.ajax({
             type: 'GET',
-            url: 'id_ingreso_transformacion/'+id_transformacion,
+            url: 'id_ingreso_transformacion/' + id_transformacion,
             dataType: 'JSON',
-            success: function(id_ingreso){
-                if (id_ingreso > 0){
+            success: function (id_ingreso) {
+                if (id_ingreso > 0) {
                     console.log(id_ingreso);
                     var id = encode5t(id_ingreso);
-                    window.open('imprimir_ingreso/'+id);
+                    window.open('imprimir_ingreso/' + id);
                 } else {
                     alert('Esta Transformación no tiene Ingreso');
                 }
             }
-        }).fail( function( jqXHR, textStatus, errorThrown ){
+        }).fail(function (jqXHR, textStatus, errorThrown) {
             console.log(jqXHR);
             console.log(textStatus);
             console.log(errorThrown);
@@ -361,9 +366,9 @@ let lista_servicios = [];
 let lista_sobrantes = [];
 let lista_transformados = [];
 
-function generar(tbody, tabla){
+function generar(tbody, tabla) {
     console.log("ver");
-    $(tbody).on("click","button.generar_transformacion", function(){
+    $(tbody).on("click", "button.generar_transformacion", function () {
         id_cc = $(this).data('id');
         tipo = $(this).data('tipo');
         oportunidad = $(this).data('oportunidad');
@@ -378,19 +383,19 @@ function generar(tbody, tabla){
         lista_servicios = [];
         lista_sobrantes = [];
         lista_transformados = [];
-        obtenerCuadro(id_cc,tipo);
+        obtenerCuadro(id_cc, tipo);
     });
 }
 
-function obtenerCuadro(id_cc,tipo){
+function obtenerCuadro(id_cc, tipo) {
     $.ajax({
         type: 'GET',
-        url: 'obtenerCuadro/'+id_cc+'/'+tipo,
+        url: 'obtenerCuadro/' + id_cc + '/' + tipo,
         dataType: 'JSON',
-        success: function(response){
+        success: function (response) {
             console.log(response);
             response['materias_primas'].forEach(
-                function(element) {
+                function (element) {
                     var materia = {
                         'part_no': element.part_no,
                         'descripcion': element.descripcion,
@@ -402,8 +407,8 @@ function obtenerCuadro(id_cc,tipo){
                 }
             );
             response['servicios'].forEach(
-                function(element) {
-                    if (element.part_no !== null && element.part_no !== 'NULL'){
+                function (element) {
+                    if (element.part_no !== null && element.part_no !== 'NULL') {
                         var gasto = {
                             'descripcion': element.descripcion,
                             'total': element.costo
@@ -422,7 +427,7 @@ function obtenerCuadro(id_cc,tipo){
                 }
             );
             response['gastos'].forEach(
-                function(element) {
+                function (element) {
                     var gasto = {
                         'descripcion': element.descripcion,
                         'total': element.costo
@@ -432,16 +437,16 @@ function obtenerCuadro(id_cc,tipo){
             );
             mostrarCuadros();
         }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
+    }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
     });
 }
-function mostrarCuadros(){
+function mostrarCuadros() {
     var html_materia = '';
     var i = 1;
-    lista_materias.forEach(function(element) {
+    lista_materias.forEach(function (element) {
         html_materia += `<tr id="${i}">
             <td>${element.part_no}</td>
             <td>${element.descripcion}</td>
@@ -449,13 +454,13 @@ function mostrarCuadros(){
             <td>${element.unitario}</td>
             <td>${element.total}</td>
             </tr>`;
-            i++;
-        });
+        i++;
+    });
     $('#listaMateriasPrimas tbody').html(html_materia);
 
     var html_servicio = '';
     i = 1;
-    lista_servicios.forEach(function(element) {
+    lista_servicios.forEach(function (element) {
         html_servicio += `<tr id="${i}">
             <td>${element.descripcion}</td>
             <td>${element.total}</td>
@@ -470,19 +475,19 @@ function mostrarCuadros(){
 
 }
 
-$("#form-transformacion_create").on("submit", function(e){
+$("#form-transformacion_create").on("submit", function (e) {
     e.preventDefault();
     var alm = $('[name=id_almacen]').val();
 
-    if (alm !== '0'){
+    if (alm !== '0') {
         var serial = $(this).serialize();
-        var data = serial+
-        '&lista_materias='+JSON.stringify(lista_materias)+
-        '&lista_servicios='+JSON.stringify(lista_servicios)+
-        '&lista_sobrantes='+JSON.stringify(lista_sobrantes)+
-        '&lista_transformados='+JSON.stringify(lista_transformados);
+        var data = serial +
+            '&lista_materias=' + JSON.stringify(lista_materias) +
+            '&lista_servicios=' + JSON.stringify(lista_servicios) +
+            '&lista_sobrantes=' + JSON.stringify(lista_sobrantes) +
+            '&lista_transformados=' + JSON.stringify(lista_transformados);
 
-        $('#submit_transformacion').attr('disabled','true');
+        $('#submit_transformacion').attr('disabled', 'true');
         generarTransformacion(data);
         $('#modal-transformacion_create').modal('hide');
     } else {
@@ -490,7 +495,7 @@ $("#form-transformacion_create").on("submit", function(e){
     }
 });
 
-function generarTransformacion(data){
+function generarTransformacion(data) {
     // var data =  'id_cc='+id_cc+
     //             '&tipo='+tipo+
     //             '&oportunidad='+oportunidad+
@@ -505,20 +510,20 @@ function generarTransformacion(data){
         url: 'generarTransformacion',
         data: data,
         dataType: 'JSON',
-        success: function(response){
+        success: function (response) {
             console.log(response);
             alert(response);
         }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
+    }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
     });
 }
 
-function ver(tbody, tabla){
+function ver(tbody, tabla) {
     console.log("ver");
-    $(tbody).on("click","button.ver", function(){
+    $(tbody).on("click", "button.ver", function () {
         var data = tabla.row($(this).parents("tr")).data();
         console.log(data);
         // if (data !== undefined && data.id_guia_com !== null){
@@ -526,9 +531,9 @@ function ver(tbody, tabla){
         // }
     });
 }
-function atender(tbody, tabla){
+function atender(tbody, tabla) {
     console.log("atender");
-    $(tbody).on("click","button.atender", function(){
+    $(tbody).on("click", "button.atender", function () {
         var data = tabla.row($(this).parents("tr")).data();
         console.log(data);
         // if (data !== undefined){
@@ -536,9 +541,9 @@ function atender(tbody, tabla){
         // }
     });
 }
-function anular(tbody, tabla){
+function anular(tbody, tabla) {
     console.log("anular");
-    $(tbody).on("click","button.anular", function(){
+    $(tbody).on("click", "button.anular", function () {
         var data = tabla.row($(this).parents("tr")).data();
         console.log(data);
         // if (data !== undefined){
@@ -563,11 +568,11 @@ function anular(tbody, tabla){
         // }
     });
 }
-function abrir_transformacion(id_transformacion){
-    console.log('abrir_transformacio'+id_transformacion);
-    localStorage.setItem("id_transfor",id_transformacion);
+function abrir_transformacion(id_transformacion) {
+    console.log('abrir_transformacio' + id_transformacion);
+    localStorage.setItem("id_transfor", id_transformacion);
     // location.assign("/logistica/almacen/customizacion/hoja-transformacion/index");
-    var win = window.open("/almacen/customizacion/hoja-transformacion/index", '_blank');
+    var win = window.open("/cas/customizacion/hoja-transformacion/index", '_blank');
     // Cambiar el foco al nuevo tab (punto opcional)
     win.focus();
 }

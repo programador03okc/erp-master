@@ -1,5 +1,5 @@
 @extends('layout.main')
-@include('layout.menu_almacen')
+@include('layout.menu_cas')
 
 @section('cabecera')
 Gestión de Transformaciones
@@ -7,9 +7,9 @@ Gestión de Transformaciones
 
 @section('breadcrumb')
 <ol class="breadcrumb">
-  <li><a href="{{route('almacen.index')}}"><i class="fas fa-tachometer-alt"></i> Almacenes</a></li>
-  <li>Transformación</li>
-  <li class="active">@yield('cabecera')</li>
+    <li><a href="{{route('cas.index')}}"><i class="fas fa-tachometer-alt"></i> Servicios CAS</a></li>
+    <li>Transformación</li>
+    <li class="active">@yield('cabecera')</li>
 </ol>
 @endsection
 
@@ -33,8 +33,7 @@ Gestión de Transformaciones
                             <div class="row">
                                 <div class="col-md-12">
 
-                                    <table class="mytable table table-condensed table-bordered table-okc-view" 
-                                        id="listaTransformacionesPendientes">
+                                    <table class="mytable table table-condensed table-bordered table-okc-view" id="listaTransformacionesPendientes">
                                         <thead>
                                             <tr>
                                                 <th hidden></th>
@@ -65,8 +64,7 @@ Gestión de Transformaciones
                         <form id="form-htm" type="register">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <table class="mytable table table-condensed table-bordered table-okc-view" 
-                                        id="listaTransformaciones">
+                                    <table class="mytable table table-condensed table-bordered table-okc-view" id="listaTransformaciones">
                                         <thead>
                                             <tr>
                                                 <th hidden></th>
@@ -93,7 +91,7 @@ Gestión de Transformaciones
                             </div>
                         </form>
                     </div>
-                    
+
                 </div>
             </div>
         </div>
@@ -105,47 +103,44 @@ Gestión de Transformaciones
 @endsection
 
 @section('scripts')
-    <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
-    <!-- <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
+<script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
+<!-- <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
     <script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
     <script src="{{ asset('datatables/Buttons/js/buttons.print.min.js') }}"></script>
     <script src="{{ asset('datatables/Buttons/js/buttons.html5.min.js') }}"></script>
     <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script> -->
-    <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
+<script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
-    <script src="{{ asset('js/almacen/customizacion/listar_transformaciones.js')}}"></script>
-    <script src="{{ asset('js/almacen/customizacion/transformacionCreate.js')}}"></script>
-    <script src="{{ asset('js/almacen/ubicacion/almacenModal.js')}}"></script>
-    <script src="{{ asset('/js/almacen/producto/productoModal.js')}}"></script>
-    <script src="{{ asset('/js/logistica/servicioModal.js')}}"></script>
-    <script>
-    $(document).ready(function(){
+<script src="{{ asset('js/almacen/customizacion/listar_transformaciones.js')}}"></script>
+<script src="{{ asset('js/almacen/customizacion/transformacionCreate.js')}}"></script>
+<script src="{{ asset('js/almacen/ubicacion/almacenModal.js')}}"></script>
+<script src="{{ asset('/js/almacen/producto/productoModal.js')}}"></script>
+<script src="{{ asset('/js/logistica/servicioModal.js')}}"></script>
+<script>
+    $(document).ready(function() {
         seleccionarMenu(window.location);
 
         let gestionCustomizacion = new GestionCustomizacion('{{Auth::user()->tieneAccion(125)}}');
 
-        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
             let tab = $(e.target).attr("href") // activated tab
-            if (tab=='#htp')
-            {
-                if ($('#listaTransformacionesPendientes tbody tr').length > 0){
+            if (tab == '#htp') {
+                if ($('#listaTransformacionesPendientes tbody tr').length > 0) {
                     $('#listaTransformacionesPendientes').DataTable().ajax.reload();
                 } else {
                     gestionCustomizacion.listarTransformacionesPendientes();
                 }
-            }
-            else if (tab=='#htm')
-            {
-                if ($('#listaTransformacionesMadres tbody tr').length > 0){
+            } else if (tab == '#htm') {
+                if ($('#listaTransformacionesMadres tbody tr').length > 0) {
                     $('#listaTransformacionesMadres').DataTable().ajax.reload();
                 } else {
                     gestionCustomizacion.listarTransformaciones();
                 }
             }
-         });
+        });
     });
-    </script>
+</script>
 @endsection

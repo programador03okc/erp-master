@@ -1246,70 +1246,6 @@ Route::group(['middleware' => ['auth']], function () {
 			});
 		});
 
-		Route::group(['as' => 'customizacion.', 'prefix' => 'customizacion'], function () {
-
-			Route::group(['as' => 'gestion-customizaciones.', 'prefix' => 'gestion-customizaciones'], function () {
-				//Transformaciones
-				Route::get('index', 'Almacen\Movimiento\TransformacionController@view_listar_transformaciones')->name('index');
-				Route::get('listar_todas_transformaciones', 'Almacen\Movimiento\TransformacionController@listar_todas_transformaciones');
-				Route::get('listar_transformaciones_pendientes', 'Almacen\Movimiento\TransformacionController@listar_transformaciones_pendientes');
-				Route::post('listarCuadrosCostos', 'Almacen\Movimiento\TransformacionController@listarCuadrosCostos');
-				Route::post('generarTransformacion', 'Almacen\Movimiento\TransformacionController@generarTransformacion');
-				// Route::get('listar_almacenes', 'AlmacenController@mostrar_almacenes');
-				Route::get('obtenerCuadro/{id}/{tipo}', 'Almacen\Movimiento\TransformacionController@obtenerCuadro');
-				// Route::get('listar_servicio', 'AlmacenController@mostrar_servicios');
-				Route::get('mostrar_prods', 'Almacen\Catalogo\ProductoController@mostrar_prods');
-				Route::get('id_ingreso_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@id_ingreso_transformacion');
-				Route::get('id_salida_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@id_salida_transformacion');
-				Route::get('imprimir_ingreso/{id}', 'Almacen\Movimiento\OrdenesPendientesController@imprimir_ingreso');
-				Route::get('imprimir_salida/{id}', 'Almacen\Movimiento\SalidasPendientesController@imprimir_salida');
-				Route::get('imprimir_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@imprimir_transformacion');
-				Route::get('recibido_conforme_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@recibido_conforme_transformacion');
-				Route::get('no_conforme_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@no_conforme_transformacion');
-				Route::get('iniciar_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@iniciar_transformacion');
-			});
-
-			Route::group(['as' => 'hoja-transformacion.', 'prefix' => 'hoja-transformacion'], function () {
-				//Transformaciones
-				Route::get('index', 'Almacen\Movimiento\TransformacionController@view_transformacion')->name('index');
-				Route::post('guardar_transformacion', 'Almacen\Movimiento\TransformacionController@guardar_transformacion');
-				Route::post('update_transformacion', 'Almacen\Movimiento\TransformacionController@update_transformacion');
-				Route::get('listar_transformaciones', 'Almacen\Movimiento\TransformacionController@listar_transformaciones');
-				Route::get('mostrar_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@mostrar_transformacion');
-				Route::get('anular_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@anular_transformacion');
-				Route::get('listar_materias/{id}', 'Almacen\Movimiento\TransformacionController@listar_materias');
-				Route::get('listar_directos/{id}', 'Almacen\Movimiento\TransformacionController@listar_directos');
-				Route::get('listar_indirectos/{id}', 'Almacen\Movimiento\TransformacionController@listar_indirectos');
-				Route::get('listar_sobrantes/{id}', 'Almacen\Movimiento\TransformacionController@listar_sobrantes');
-				Route::get('listar_transformados/{id}', 'Almacen\Movimiento\TransformacionController@listar_transformados');
-				Route::get('iniciar_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@iniciar_transformacion');
-				Route::post('procesar_transformacion', 'Almacen\Movimiento\TransformacionController@procesar_transformacion');
-				Route::post('guardar_materia', 'Almacen\Movimiento\TransformacionController@guardar_materia');
-				Route::post('guardar_directo', 'Almacen\Movimiento\TransformacionController@guardar_directo');
-				Route::post('guardar_indirecto', 'Almacen\Movimiento\TransformacionController@guardar_indirecto');
-				Route::post('guardar_sobrante', 'Almacen\Movimiento\TransformacionController@guardar_sobrante');
-				Route::post('guardar_transformado', 'Almacen\Movimiento\TransformacionController@guardar_transformado');
-				Route::post('update_materia', 'Almacen\Movimiento\TransformacionController@update_materia');
-				Route::post('update_directo', 'Almacen\Movimiento\TransformacionController@update_directo');
-				Route::post('update_indirecto', 'Almacen\Movimiento\TransformacionController@update_indirecto');
-				Route::post('update_sobrante', 'Almacen\Movimiento\TransformacionController@update_sobrante');
-				Route::post('update_transformado', 'Almacen\Movimiento\TransformacionController@update_transformado');
-				Route::get('id_ingreso_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@id_ingreso_transformacion');
-				Route::get('id_salida_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@id_salida_transformacion');
-				Route::get('anular_materia/{id}', 'Almacen\Movimiento\TransformacionController@anular_materia');
-				Route::get('anular_directo/{id}', 'Almacen\Movimiento\TransformacionController@anular_directo');
-				Route::get('anular_indirecto/{id}', 'Almacen\Movimiento\TransformacionController@anular_indirecto');
-				Route::get('anular_sobrante/{id}', 'Almacen\Movimiento\TransformacionController@anular_sobrante');
-				Route::get('anular_transformado/{id}', 'Almacen\Movimiento\TransformacionController@anular_transformado');
-				// Route::get('listar_servicio', 'AlmacenController@mostrar_servicios');
-				Route::get('mostrar_prods', 'Almacen\Catalogo\ProductoController@mostrar_prods');
-				Route::get('imprimir_ingreso/{id}', 'Almacen\Movimiento\OrdenesPendientesController@imprimir_ingreso');
-				Route::get('imprimir_salida/{id}', 'Almacen\Movimiento\SalidasPendientesController@imprimir_salida');
-				Route::post('guardar_producto', 'Almacen\Catalogo\ProductoController@guardar_producto');
-				Route::get('imprimir_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@imprimir_transformacion');
-			});
-		});
-
 		Route::group(['as' => 'reportes.', 'prefix' => 'reportes'], function () {
 
 			Route::group(['as' => 'saldos.', 'prefix' => 'saldos'], function () {
@@ -1448,6 +1384,72 @@ Route::group(['middleware' => ['auth']], function () {
 		});
 	});
 
+	Route::group(['as' => 'cas.', 'prefix' => 'cas'], function () {
+
+		Route::get('index', 'Almacen\Movimiento\TransformacionController@view_main_cas')->name('index');
+
+		Route::group(['as' => 'customizacion.', 'prefix' => 'customizacion'], function () {
+
+			Route::group(['as' => 'gestion-customizaciones.', 'prefix' => 'gestion-customizaciones'], function () {
+				//Transformaciones
+				Route::get('index', 'Almacen\Movimiento\TransformacionController@view_listar_transformaciones')->name('index');
+				Route::get('listar_todas_transformaciones', 'Almacen\Movimiento\TransformacionController@listar_todas_transformaciones');
+				Route::get('listar_transformaciones_pendientes', 'Almacen\Movimiento\TransformacionController@listar_transformaciones_pendientes');
+				Route::post('listarCuadrosCostos', 'Almacen\Movimiento\TransformacionController@listarCuadrosCostos');
+				Route::post('generarTransformacion', 'Almacen\Movimiento\TransformacionController@generarTransformacion');
+				Route::get('obtenerCuadro/{id}/{tipo}', 'Almacen\Movimiento\TransformacionController@obtenerCuadro');
+				Route::get('mostrar_prods', 'Almacen\Catalogo\ProductoController@mostrar_prods');
+				Route::get('id_ingreso_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@id_ingreso_transformacion');
+				Route::get('id_salida_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@id_salida_transformacion');
+				Route::get('imprimir_ingreso/{id}', 'Almacen\Movimiento\OrdenesPendientesController@imprimir_ingreso');
+				Route::get('imprimir_salida/{id}', 'Almacen\Movimiento\SalidasPendientesController@imprimir_salida');
+				Route::get('imprimir_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@imprimir_transformacion');
+				Route::get('recibido_conforme_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@recibido_conforme_transformacion');
+				Route::get('no_conforme_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@no_conforme_transformacion');
+				Route::get('iniciar_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@iniciar_transformacion');
+			});
+
+			Route::group(['as' => 'hoja-transformacion.', 'prefix' => 'hoja-transformacion'], function () {
+				//Transformaciones
+				Route::get('index', 'Almacen\Movimiento\TransformacionController@view_transformacion')->name('index');
+				Route::post('guardar_transformacion', 'Almacen\Movimiento\TransformacionController@guardar_transformacion');
+				Route::post('update_transformacion', 'Almacen\Movimiento\TransformacionController@update_transformacion');
+				Route::get('listar_transformaciones', 'Almacen\Movimiento\TransformacionController@listar_transformaciones');
+				Route::get('mostrar_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@mostrar_transformacion');
+				Route::get('anular_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@anular_transformacion');
+				Route::get('listar_materias/{id}', 'Almacen\Movimiento\TransformacionController@listar_materias');
+				Route::get('listar_directos/{id}', 'Almacen\Movimiento\TransformacionController@listar_directos');
+				Route::get('listar_indirectos/{id}', 'Almacen\Movimiento\TransformacionController@listar_indirectos');
+				Route::get('listar_sobrantes/{id}', 'Almacen\Movimiento\TransformacionController@listar_sobrantes');
+				Route::get('listar_transformados/{id}', 'Almacen\Movimiento\TransformacionController@listar_transformados');
+				Route::get('iniciar_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@iniciar_transformacion');
+				Route::post('procesar_transformacion', 'Almacen\Movimiento\TransformacionController@procesar_transformacion');
+				Route::post('guardar_materia', 'Almacen\Movimiento\TransformacionController@guardar_materia');
+				Route::post('guardar_directo', 'Almacen\Movimiento\TransformacionController@guardar_directo');
+				Route::post('guardar_indirecto', 'Almacen\Movimiento\TransformacionController@guardar_indirecto');
+				Route::post('guardar_sobrante', 'Almacen\Movimiento\TransformacionController@guardar_sobrante');
+				Route::post('guardar_transformado', 'Almacen\Movimiento\TransformacionController@guardar_transformado');
+				Route::post('update_materia', 'Almacen\Movimiento\TransformacionController@update_materia');
+				Route::post('update_directo', 'Almacen\Movimiento\TransformacionController@update_directo');
+				Route::post('update_indirecto', 'Almacen\Movimiento\TransformacionController@update_indirecto');
+				Route::post('update_sobrante', 'Almacen\Movimiento\TransformacionController@update_sobrante');
+				Route::post('update_transformado', 'Almacen\Movimiento\TransformacionController@update_transformado');
+				Route::get('id_ingreso_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@id_ingreso_transformacion');
+				Route::get('id_salida_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@id_salida_transformacion');
+				Route::get('anular_materia/{id}', 'Almacen\Movimiento\TransformacionController@anular_materia');
+				Route::get('anular_directo/{id}', 'Almacen\Movimiento\TransformacionController@anular_directo');
+				Route::get('anular_indirecto/{id}', 'Almacen\Movimiento\TransformacionController@anular_indirecto');
+				Route::get('anular_sobrante/{id}', 'Almacen\Movimiento\TransformacionController@anular_sobrante');
+				Route::get('anular_transformado/{id}', 'Almacen\Movimiento\TransformacionController@anular_transformado');
+				// Route::get('listar_servicio', 'AlmacenController@mostrar_servicios');
+				Route::get('mostrar_prods', 'Almacen\Catalogo\ProductoController@mostrar_prods');
+				Route::get('imprimir_ingreso/{id}', 'Almacen\Movimiento\OrdenesPendientesController@imprimir_ingreso');
+				Route::get('imprimir_salida/{id}', 'Almacen\Movimiento\SalidasPendientesController@imprimir_salida');
+				Route::post('guardar_producto', 'Almacen\Catalogo\ProductoController@guardar_producto');
+				Route::get('imprimir_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@imprimir_transformacion');
+			});
+		});
+	});
 
 	Route::group(['as' => 'finanzas.', 'prefix' => 'finanzas'], function () {
 		// Finanzas

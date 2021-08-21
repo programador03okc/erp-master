@@ -92,21 +92,7 @@
         </ul>
     </li>
     @endif
-    @if(Auth::user()->tieneSubModulo(41))
-    <li class="treeview">
-        <a href="#">
-            <i class="fas fa-code-branch"></i> <span>Transformación</span> <i class="fa fa-angle-left pull-right"></i>
-        </a>
-        <ul class="treeview-menu">
-            @if(Auth::user()->tieneAplicacion(87))
-            <li><a href="{{route('almacen.customizacion.gestion-customizaciones.index')}}"> Transformaciones </a></li>
-            @endif
-            @if(Auth::user()->tieneAplicacion(88))
-            <li><a href="{{route('almacen.customizacion.hoja-transformacion.index')}}"> Hoja de Transformación </a></li>
-            @endif
-        </ul>
-    </li>
-    @endif
+
     @if(Auth::user()->tieneSubModulo(42))
     <li class="treeview">
         <a href="#">

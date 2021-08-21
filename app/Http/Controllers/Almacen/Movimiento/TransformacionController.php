@@ -17,6 +17,10 @@ date_default_timezone_set('America/Lima');
 
 class TransformacionController extends Controller
 {
+    function view_main_cas()
+    {
+        return view('almacen/customizacion/main');
+    }
     function view_transformacion()
     {
         $almacenes = AlmacenController::mostrar_almacenes_cbo();
