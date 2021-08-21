@@ -125,7 +125,7 @@ class OrdenesPendientesController extends Controller
                     INNER JOIN almacen.doc_com_det AS doc on(
                         doc.id_guia_com_det = guia.id_guia_com_det and
                         doc.estado != 7)
-                    WHERE d.id_doc_com = doc.id_doc) AS id_doc_com"),
+                    WHERE d.id_doc_com = doc.id_doc LIMIT 1) AS id_doc_com"),
 
             DB::raw("(SELECT COUNT(*) FROM almacen.trans_detalle 
                     inner join almacen.mov_alm_det on(

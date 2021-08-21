@@ -7,6 +7,7 @@ let acceso = null;
 function iniciar(permiso) {
     $("#tab-ordenes section:first form").attr("form", "formulario");
     acceso = permiso;
+    listarIngresos();
     listarOrdenesPendientes();
     oc_seleccionadas = [];
 
@@ -28,11 +29,13 @@ function iniciar(permiso) {
 
         // clearDataTable();
         if (activeForm == "form-pendientes") {
-            listarOrdenesPendientes();
+            // listarOrdenesPendientes();
+            $("#ordenesPendientes").DataTable().ajax.reload();
         } else if (activeForm == "form-transformaciones") {
             listarTransformaciones();
         } else if (activeForm == "form-ingresadas") {
-            listarIngresos();
+            // listarIngresos();
+            $("#listaIngresosAlmacen").DataTable().ajax.reload();
         }
         $(activeTab).attr("hidden", false); //inicio botones (estados)
     });
@@ -43,6 +46,7 @@ var table;
 
 function listarOrdenesPendientes() {
     var vardataTables = funcDatatables();
+
     let botones = [];
     if (acceso == '1') {
         botones.push({
@@ -52,11 +56,30 @@ function listarOrdenesPendientes() {
             }, className: 'btn-success'
         });
     }
+
+    $("#ordenesPendientes").on('search.dt', function () {
+        $('#ordenesPendientes_filter input').prop('disabled', true);
+        $('#btnBuscar').html('<span class="glyphicon glyphicon-time" aria-hidden="true"></span>').prop('disabled', true);
+    });
+
+    $("#ordenesPendientes").on('processing.dt', function (e, settings, processing) {
+        if (processing) {
+            $(e.currentTarget).LoadingOverlay("show", {
+                imageAutoResize: true,
+                progress: true,
+                zIndex: 10,
+                imageColor: "#3c8dbc"
+            });
+        } else {
+            $(e.currentTarget).LoadingOverlay("hide", true);
+        }
+    });
+
     table = $("#ordenesPendientes").DataTable({
         dom: vardataTables[1],
         buttons: botones,
         language: vardataTables[0],
-        bDestroy: true,
+        // bDestroy: true,
         serverSide: true,
         pageLength: 50,
         initComplete: function (settings, json) {
@@ -77,11 +100,8 @@ function listarOrdenesPendientes() {
         },
         drawCallback: function (settings) {
             $("#ordenesPendientes_filter input").prop("disabled", false);
-            $("#btnBuscar")
-                .html(
-                    '<span class="glyphicon glyphicon-search" aria-hidden="true"></span>'
-                )
-                .prop("disabled", false);
+            $("#btnBuscar").html('<span class="glyphicon glyphicon-search" aria-hidden="true"></span>'
+            ).prop("disabled", false);
             //$('#spanCantFiltros').html($('#modalFiltros').find('input[type=checkbox]:checked').length);
             $('#ordenesPendientes tbody tr td input[type="checkbox"]').iCheck({
                 checkboxClass: "icheckbox_flat-blue"

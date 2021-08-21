@@ -49,7 +49,7 @@ Pendientes de Ingreso
                                                 <th width="10%">Orden SoftLink</th>
                                                 <th width="10%">Cod.Orden</th>
                                                 <th width="5%">Creado por</th>
-                                                <th width="13%">Días para que llegue</th>
+                                                <th width="15%">Días para que llegue</th>
                                                 <th width="8%">Sede Orden</th>
                                                 <th width="20%">Proveedor</th>
                                                 <th width="12%">Fecha Emisión</th>
@@ -175,6 +175,7 @@ Pendientes de Ingreso
 <script src="{{ asset('template/plugins/jquery-datatables-checkboxes/js/dataTables.checkboxes.min.js') }}"></script>
 <script src="{{ asset('template/plugins/js-xlsx/xlsx.full.min.js') }}"></script>
 <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
 
 <script src="{{ asset('js/almacen/guia/ordenesPendientes.js')}}"></script>
 <script src="{{ asset('js/almacen/guia/transformacionesPendientes.js')}}"></script>

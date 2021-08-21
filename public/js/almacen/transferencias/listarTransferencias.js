@@ -68,7 +68,6 @@ function listarRequerimientosPendientes() {
         language: vardataTables[0],
         pageLength: 20,
         serverSide: true,
-
         initComplete: function (settings, json) {
             const $filter = $("#listaRequerimientos_filter");
             const $input = $filter.find("input");

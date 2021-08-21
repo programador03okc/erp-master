@@ -10,17 +10,32 @@ function listarIngresos() {
             }, className: 'btn-success'
         });
     }
+
+    $("#listaIngresosAlmacen").on('search.dt', function () {
+        $('#listaIngresosAlmacen_filter input').prop('disabled', true);
+        $('#btnBuscarIngreso').html('<span class="glyphicon glyphicon-time" aria-hidden="true"></span>').prop('disabled', true);
+    });
+
+    $("#listaIngresosAlmacen").on('processing.dt', function (e, settings, processing) {
+        if (processing) {
+            $(e.currentTarget).LoadingOverlay("show", {
+                imageAutoResize: true,
+                progress: true,
+                zIndex: 10,
+                imageColor: "#3c8dbc"
+            });
+        } else {
+            $(e.currentTarget).LoadingOverlay("hide", true);
+        }
+    });
+
     let tableIngresos = $("#listaIngresosAlmacen").DataTable({
         dom: vardataTables[1],
         buttons: botones,
         language: vardataTables[0],
-        bDestroy: true,
+        // bDestroy: true,
         serverSide: true,
         pageLength: 50,
-        ajax: {
-            url: "listarIngresos",
-            type: "POST"
-        },
         initComplete: function (settings, json) {
             const $filter = $("#listaIngresosAlmacen_filter");
             const $input = $filter.find("input");
@@ -36,6 +51,24 @@ function listarIngresos() {
             $("#btnBuscarIngreso").on("click", e => {
                 tableIngresos.search($input.val()).draw();
             });
+        },
+        // drawCallback: function () {
+        //     $('#listaIngresosAlmacen tbody tr td input[type="checkbox"]').iCheck({
+        //         checkboxClass: "icheckbox_flat-blue"
+        //     });
+        // },
+        drawCallback: function (settings, json) {
+            $("#listaIngresosAlmacen_filter input").prop("disabled", false);
+            $("#btnBuscarIngreso").html('<span class="glyphicon glyphicon-search" aria-hidden="true"></span>')
+                .prop("disabled", false);
+            $("#listaIngresosAlmacen").find('tbody tr td input[type="checkbox"]').iCheck({
+                checkboxClass: "icheckbox_flat-blue"
+            });
+            $("#listaIngresosAlmacen_filter input").trigger("focus");
+        },
+        ajax: {
+            url: "listarIngresos",
+            type: "POST"
         },
         columns: [
             { data: "id_mov_alm" },
@@ -70,13 +103,6 @@ function listarIngresos() {
             { data: "id_guia_com" },
             { data: "id_mov_alm", searchable: false }
         ],
-        drawCallback: function () {
-            $(
-                '#listaIngresosAlmacen tbody tr td input[type="checkbox"]'
-            ).iCheck({
-                checkboxClass: "icheckbox_flat-blue"
-            });
-        },
         columnDefs: [
             { targets: [0], className: "invisible" },
             {

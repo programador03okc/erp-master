@@ -357,8 +357,8 @@ function guardar_doc_create(data) {
                 });
                 $('#modal-doc_create').modal('hide');
                 if (origenDoc == 'ing') {
-                    listarIngresos();
-                    // $('#listaIngresosAlmacen').DataTable().ajax.reload();
+                    // listarIngresos();
+                    $('#listaIngresosAlmacen').DataTable().ajax.reload();
                 }
             }
         }

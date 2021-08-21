@@ -88,9 +88,7 @@ function generar_transferencia() {
             if (formName == "transferencias") {
                 listarTransferenciasPorEnviar();
             } else if (formName == "ordenesPendientes") {
-                $("#listaIngresosAlmacen")
-                    .DataTable()
-                    .ajax.reload();
+                $("#listaIngresosAlmacen").DataTable().ajax.reload();
             }
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {

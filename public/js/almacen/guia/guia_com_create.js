@@ -442,7 +442,8 @@ function guardar_guia_create(data) {
                             open_doc_create(response['id_guia'], 'oc');
                         }
                     });
-                    listarOrdenesPendientes();
+                    // listarOrdenesPendientes();
+                    $("#ordenesPendientes").DataTable().ajax.reload();
                 }
                 $('#modal-guia_create').modal('hide');
             }
