@@ -51,7 +51,7 @@ class ListarRequerimientoView {
             'order': [[0, 'desc']],
             'bLengthChange': false,
             'serverSide': true,
-            'destroy': true,
+            // 'destroy': true,
             'ajax': {
                 'url': 'elaborados',
                 'type': 'POST',
@@ -63,9 +63,9 @@ class ListarRequerimientoView {
                         imageColor: "#3c8dbc"
                     });
                 },
-                data: function (params) {
-                    return Object.assign(params, Util.objectifyForm($('#form-requerimientosElaborados').serializeArray()))
-                }
+                // data: function (params) {
+                //     return Object.assign(params, Util.objectifyForm($('#form-requerimientosElaborados').serializeArray()))
+                // }
 
             },
             'columns': [
@@ -74,7 +74,7 @@ class ListarRequerimientoView {
                 { 'data': 'codigo', 'name': 'codigo', 'className': 'text-center' },
                 { 'data': 'concepto', 'name': 'concepto' },
                 { 'data': 'fecha_registro', 'name': 'alm_req.fecha_registro', 'className': 'text-center' },
-                { 'data': 'fecha_entrega', 'name': 'fecha_entrega', 'className': 'text-center' },
+                { 'data': 'fecha_entrega', 'name': 'alm_req.fecha_entrega', 'className': 'text-center' },
                 { 'data': 'tipo_requerimiento', 'name': 'alm_tp_req.descripcion', 'className': 'text-center' },
                 { 'data': 'razon_social', 'name': 'adm_contri.razon_social', 'className': 'text-center' },
                 { 'data': 'grupo', 'name': 'sis_grupo.descripcion', 'className': 'text-center' },
@@ -159,24 +159,26 @@ class ListarRequerimientoView {
 
             ],
             'initComplete': function () {
-
-                // var table = document.querySelector("table[id='ListaRequerimientosElaborados'] tbody")
-                // var buttons = table.querySelectorAll(".handleClickVerDetalleRequerimientoSoloLectura");
-                // var i = 0, length = buttons.length;
-                // for (i; i < length; i++) {
-                //         buttons[i].addEventListener("click", that.verDetalleRequerimientoSoloLectura.bind(this,that), false);
-                // }
-
+                //Boton de busqueda
+                const $filter = $('#ListaRequerimientosElaborados_filter');
+                const $input = $filter.find('input');
+                $filter.append('<button id="btnBuscar" class="btn btn-default btn-sm pull-right" type="button"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>');
+                $input.off();
+                $input.on('keyup', (e) => {
+                    if (e.key == 'Enter') {
+                        $('#btnBuscar').trigger('click');
+                    }
+                });
+                $('#btnBuscar').on('click', (e) => {
+                    $tablaListaRequerimientosElaborados.search($input.val()).draw();
+                })
+                //Fin boton de busqueda
                 $('#ListaRequerimientosElaborados tbody').on("click", "label.handleClickAbrirOrden", function () {
                     let idOrdenCompra = $('#ListaRequerimientosElaborados').DataTable().row($(this).parents("tr")).node().querySelector("label[class~='handleClickAbrirOrden']").dataset.idOrdenCompra;
                     // console.log(idOrdenCompra);
                     that.trazabilidadRequerimiento.abrirOrden(idOrdenCompra);
                 });
-                $('#ListaRequerimientosElaborados tbody').on("click", "label.handleClickAbrirRequerimiento", function () {
-                    let data = $('#ListaRequerimientosElaborados').DataTable().row($(this).parents("tr")).data();
-                    that.abrirRequerimiento(data.id_requerimiento);
-                });
-                $('#ListaRequerimientosElaborados tbody').on("click", "button.handleClickAbrirRequerimiento", function () {
+                $('#ListaRequerimientosElaborados tbody').on("click", ".handleClickAbrirRequerimiento", function () {
                     let data = $('#ListaRequerimientosElaborados').DataTable().row($(this).parents("tr")).data();
                     that.abrirRequerimiento(data.id_requerimiento);
                 });
@@ -196,8 +198,18 @@ class ListarRequerimientoView {
                 });
             },
             "drawCallback": function( settings ) {
+                //Botón de búsqueda
+                $('#ListaRequerimientosElaborados_filter input').prop('disabled', false);
+                $('#btnBuscar').html('<span class="glyphicon glyphicon-search" aria-hidden="true"></span>').prop('disabled', false);
+                $('#ListaRequerimientosElaborados_filter input').trigger('focus');
+                //fin botón búsqueda
                 $("#ListaRequerimientosElaborados").LoadingOverlay("hide", true);
             }
+        });
+        //Desactiva el buscador del DataTable al realizar una busqueda
+        $tablaListaRequerimientosElaborados.on('search.dt', function () {
+            $('#tableDatos_filter input').prop('disabled', true);
+            $('#btnBuscar').html('<span class="glyphicon glyphicon-time" aria-hidden="true"></span>').attr('disabled', true);
         });
 
         $('#ListaReq').DataTable().on("draw", function () {
@@ -341,7 +353,7 @@ class ListarRequerimientoView {
                 <td>${i + 1}</td>
                 <td>${data[i].descripcion_partida ? data[i].descripcion_partida : ''}</td>
                 <td>${data[i].descripcion_centro_costo ? data[i].descripcion_centro_costo : ''}</td>
-                <td>${data[i].id_tipo_item == 1 ? (data[i].producto_part_number ? data[i].producto_part_number : data[i].part_number) : '(Servicio)'}</td>
+                <td>${data[i].id_tipo_item == 1 ? (data[i].producto_part_number ? data[i].producto_part_number : data[i].part_number) : '(Servicio)'}${data[i].tiene_transformacion==true?'<br><span class="label label-default">Con Transformación</span>':''} </td>
                 <td>${data[i].producto_descripcion ? data[i].producto_descripcion : (data[i].descripcion ? data[i].descripcion : '')} </td>
                 <td>${data[i].unidad_medida}</td>
                 <td style="text-align:center;">${data[i].cantidad}</td>

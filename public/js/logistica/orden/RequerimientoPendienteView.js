@@ -13,6 +13,7 @@ var iTableCounter = 1;
 var oInnerTable;
 
 var objBtnMapeo;
+var trRequerimientosPendientes;
 class RequerimientoPendienteView {
     constructor(requerimientoPendienteCtrl){
         this.requerimientoPendienteCtrl = requerimientoPendienteCtrl;
@@ -57,9 +58,9 @@ class RequerimientoPendienteView {
             this.crearOrdenServicioPorRequerimiento(e.currentTarget);
         });
 
-        $('#listaItemsRequerimientoParaAtenderConAlmacen tbody').on("change","select.handleChangeUpdateSelectAlmacenAAtender",(e)=>{
-            this.updateSelectAlmacenAAtender(e.currentTarget);
-        });
+        // $('#listaItemsRequerimientoParaAtenderConAlmacen tbody').on("change","select.handleChangeUpdateSelectAlmacenAAtender",(e)=>{
+        //     this.updateSelectAlmacenAAtender(e.currentTarget);
+        // });
 
         $('#listaItemsRequerimientoParaAtenderConAlmacen tbody').on("blur","input.handleBlurUpdateInputCantidadAAtender", (e)=>{
             this.updateInputCantidadAAtender(e.currentTarget);
@@ -148,27 +149,8 @@ class RequerimientoPendienteView {
                 },
                 {'render':
                     function (data, type, row){
-                        switch (row['estado']) {
-                            case 1:
-                                return '<span class="label label-default">' + row['estado_doc'] + '</span>';
-                                break;
-                            case 2:
-                                return '<span class="label label-success">' + row['estado_doc'] + '</span>';
-                                break;
-                            case 3:
-                                return '<span class="label label-warning">' + row['estado_doc'] + '</span>';
-                                break;
-                            case 5:
-                                return '<span class="label label-primary">' + row['estado_doc'] + '</span>';
-                                break;
-                            case 7:
-                                return '<span class="label label-danger">' + row['estado_doc'] + '</span>';
-                                break;
-                            default:
-                                return '<span class="label label-default">' + row['estado_doc'] + '</span>';
-                                break;
+                        return '<span class="label label-default estadoRequerimiento">' + row['estado_doc'] + '</span>';
 
-                        }
                     }
                 },
                 {
@@ -495,6 +477,11 @@ class RequerimientoPendienteView {
             show: true,
             backdrop: 'true'
         });
+        
+        trRequerimientosPendientes= obj.closest("tr");
+
+        document.querySelector("form[id='form-reserva-almacen'] input[name='id_requerimiento']").value= obj.dataset.idRequerimiento;
+
         this.requerimientoPendienteCtrl.openModalAtenderConAlmacen(obj).then((res)=> {
             this.construirTablaListaItemsRequerimientoParaAtenderConAlmacen(res);
         }).catch(function (err) {
@@ -502,7 +489,10 @@ class RequerimientoPendienteView {
         })
     }
 
-    construirTablaListaItemsRequerimientoParaAtenderConAlmacen(data) { // data.almacenes, data.detalle_requerimiento
+    construirTablaListaItemsRequerimientoParaAtenderConAlmacen(data) { 
+        // console.log(data);
+        document.querySelector("span[id='codigo_requerimiento']").textContent= data.codigo_requerimiento;
+        // data.almacenes, data.detalle_requerimiento
         let that =this;
         let data_detalle_requerimiento = data.detalle_requerimiento.filter(function( obj ) {
             return (obj.id_producto >0); });
@@ -564,7 +554,7 @@ class RequerimientoPendienteView {
                         function (data, type, row, meta) {
                             let select = '';
                             if (row.tiene_transformacion == false) {
-                                select = `<select class="form-control handleChangeUpdateSelectAlmacenAAtender" data-indice="${meta.row}" >`;
+                                select = `<input type="hidden" name="idDetalleRequerimiento[]" value="${row.id_detalle_requerimiento}"><select class="form-control selectAlmacenReserva" name="almacenReserva[]" >`;
                                 select += `<option value ="0">Sin selección</option>`;
                                 data_almacenes.forEach(element => {
                                     if (row.id_almacen_reserva == element.id_almacen) {
@@ -586,7 +576,7 @@ class RequerimientoPendienteView {
                         function (data, type, row, meta) {
                             let action = '';
                             if (row.tiene_transformacion == false) {
-                                action = `<input type="text" name="cantidad_a_atender" class="form-control handleBlurUpdateInputCantidadAAtender"  data-cantidad="${row.cantidad}" style="width: 70px;" data-indice="${meta.row}" value="${parseInt(row.stock_comprometido ? row.stock_comprometido : 0)}" />`;
+                                action = `<input type="number" min="0" name="cantidadReserva[]" class="form-control inputCantidadArReservar handleBlurUpdateInputCantidadAAtender"  data-cantidad="${row.cantidad}" style="width: 70px;" data-indice="${meta.row}" value="${parseInt(row.stock_comprometido ? row.stock_comprometido : 0)}" />`;
 
                                 that.updateObjCantidadAAtender(meta.row, row.stock_comprometido);
 
@@ -617,45 +607,32 @@ class RequerimientoPendienteView {
         tablelistaitem.childNodes[0].childNodes[0].hidden = true;
     }
 
-    updateSelectAlmacenAAtender(obj){
-        let idValor = obj.value;
-        let indiceSelected = obj.dataset.indice;
-        itemsParaAtenderConAlmacenList.forEach((element, index) => {
-            if (index == indiceSelected) {
-                itemsParaAtenderConAlmacenList[index].id_almacen_reserva = parseInt(idValor);
-            }
-        });
-        // console.log(itemsParaAtenderConAlmacenList);
-    }
+    // updateSelectAlmacenAAtender(obj){
+    //     let idValor = obj.value;
+    //     let indiceSelected = obj.dataset.indice;
+    //     itemsParaAtenderConAlmacenList.forEach((element, index) => {
+    //         if (index == indiceSelected) {
+    //             itemsParaAtenderConAlmacenList[index].id_almacen_reserva = parseInt(idValor);
+    //         }
+    //     });
+    //     // console.log(itemsParaAtenderConAlmacenList);
+    // }
 
 
     updateInputCantidadAAtender(obj){
         let nuevoValor = obj.value;
-        let indiceSelected = obj.dataset.indice;
         let cantidad = obj.dataset.cantidad;
         if(parseInt(nuevoValor) > parseInt(cantidad) || parseInt(nuevoValor) < 0 ){
     
-            itemsParaAtenderConAlmacenList.forEach((element, index) => {
-                if (index == indiceSelected) {
-                    Lobibox.notify('info', {
-                        title:false,
-                        size: 'mini',
-                        rounded: true,
-                        sound: false,
-                        delayIndicator: false,
-                        msg: `El valor ingresado desborda a la cantidad solicitada`
-                    });
-           
-                    itemsParaAtenderConAlmacenList[index].cantidad_a_atender = 0;
-                    obj.value=0;
-                }
+            Lobibox.notify('warning', {
+                title:false,
+                size: 'mini',
+                rounded: true,
+                sound: false,
+                delayIndicator: false,
+                msg: `El valor ingresado desborda a la cantidad`
             });
-        }else{
-            itemsParaAtenderConAlmacenList.forEach((element, index) => {
-                if (index == indiceSelected) {
-                    itemsParaAtenderConAlmacenList[index].cantidad_a_atender = nuevoValor;
-                }
-            });
+            obj.value=cantidad;
         }
     }
 
@@ -668,101 +645,115 @@ class RequerimientoPendienteView {
         });
     }
 
+    validarFormularioReservaAlmacen(){
+        let cantidadReservaSinAlmacenSeleccionado=0;
+        let almacenSeleccionadoSinCantidadAReservar=0;
+        let sinAlmacenSeleccionadoSinCantidadAReservar=0;
+        let trs =document.querySelectorAll("form[id='form-reserva-almacen'] table[id='listaItemsRequerimientoParaAtenderConAlmacen'] tbody tr");
+        if(trs.length >0){
+            for (let i = 0; i < trs.length; i++) {
+                if(trs[i].querySelector("select[class~='selectAlmacenReserva']").value >0){
+                    if(trs[i].querySelector("input[class~='inputCantidadArReservar']").value <=0){
+                        almacenSeleccionadoSinCantidadAReservar++;
+                    }
+                }
+                if(trs[i].querySelector("select[class~='selectAlmacenReserva']").value ==0){
+                    if(trs[i].querySelector("input[class~='inputCantidadArReservar']").value >0){
+                        cantidadReservaSinAlmacenSeleccionado++;
+                    }
+                }
+                if(trs[i].querySelector("select[class~='selectAlmacenReserva']").value ==0){
+                    if(trs[i].querySelector("input[class~='inputCantidadArReservar']").value ==0){
+                        sinAlmacenSeleccionadoSinCantidadAReservar++;
+                    }
+                }
+                
+            }
+
+            if(sinAlmacenSeleccionadoSinCantidadAReservar ==trs.length ){
+                Lobibox.notify('warning', {
+                    title:false,
+                    size: 'mini',
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    msg: `No selecciono un almacén ni especificó la cantidad a antender`
+                });
+            }
+
+            if(almacenSeleccionadoSinCantidadAReservar>0){
+                Lobibox.notify('warning', {
+                    title:false,
+                    size: 'mini',
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    msg: `selecciono un almacén pero no especificó la cantidad a antender, se omitirá esta reserva`
+                });
+            }
+
+            if(cantidadReservaSinAlmacenSeleccionado>0){
+                Lobibox.notify('warning', {
+                    title:false,
+                    size: 'mini',
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    msg: `Especificó la cantidad a antender pero no seleccionó un almacén, se omitirá esta reserva`
+                });
+            }
+        }
+
+        return (almacenSeleccionadoSinCantidadAReservar+cantidadReservaSinAlmacenSeleccionado);
+    }   
 
     guardarAtendidoConAlmacen() {
-        // console.log('accion guardarAtendidoConAlmacen');
-        var newItemsParaAtenderConAlmacenList = [];
-        var itemsBaseList = [];
-        itemsBaseList = itemsParaAtenderConAlmacenList.filter(function( obj ) {
-            return (obj.tiene_transformacion ==false);
-        });
-        let almacenEstablecidoSinCantidadAAtender=0;
-        let cantidadAAtenderEstablecidoSinAlmacen=0;
-        itemsParaAtenderConAlmacenList.forEach(element => {
-            if(element.id_almacen_reserva >0 && !element.cantidad_a_atender>0){
-                almacenEstablecidoSinCantidadAAtender ++;
-            }
-            if(!element.id_almacen_reserva >0 && element.cantidad_a_atender>0){
-                cantidadAAtenderEstablecidoSinAlmacen ++;
-            }
-        });
-
-        if(almacenEstablecidoSinCantidadAAtender >0){
-            Lobibox.notify('info', {
-                title:false,
-                size: 'mini',
-                rounded: true,
-                sound: false,
-                delayIndicator: false,
-                msg: `selecciono un almacén pero no especificó la cantidad a antender, se omitirá esa reserva`
-            });
-        }
-        if(cantidadAAtenderEstablecidoSinAlmacen >0){
-            Lobibox.notify('info', {
-                title:false,
-                size: 'mini',
-                rounded: true,
-                sound: false,
-                delayIndicator: false,
-                msg: `Especificó una cantidad pero no seleccionó un almacén, se omitirá esa reserva`
-            });
-        }
-
+            if(this.validarFormularioReservaAlmacen() ==0){
+                let formData = new FormData($('#form-reserva-almacen')[0]);
+                this.requerimientoPendienteCtrl.guardarAtendidoConAlmacen(formData).then((res) =>{
+                    if (res.cantidad_items_actualizados>0) {
+                        // console.log(res.nuevo_estado_requerimiento);
+                        // console.log(trRequerimientosPendientes);
+                        if(res.nuevo_estado_requerimiento.id == 28){
+                            trRequerimientosPendientes.remove();
+                            console.log('remover');
+                        }else{
+                            trRequerimientosPendientes.querySelector("span[class~='estadoRequerimiento']").textContent=res.nuevo_estado_requerimiento.descripcion;
+                            console.log('actualizar');
+                        }
         
-        newItemsParaAtenderConAlmacenList = itemsParaAtenderConAlmacenList.filter(function( obj ) {
-            return (obj.id_almacen_reserva >0) && (obj.cantidad_a_atender >0);
-        });
-
-
-            if(newItemsParaAtenderConAlmacenList.length >0){
-                this.requerimientoPendienteCtrl.guardarAtendidoConAlmacen(newItemsParaAtenderConAlmacenList,itemsBaseList).then((res) =>{
-                    if (res.update_det_req > 0) {
+                        $('#modal-atender-con-almacen .modal-content').LoadingOverlay("hide", true);
+                        $('#modal-atender-con-almacen').modal('hide');
+        
                         Lobibox.notify('success', {
                             title:false,
                             size: 'mini',
                             rounded: true,
                             sound: false,
                             delayIndicator: false,
-                            msg: `Se actualizo la reserva para ${newItemsParaAtenderConAlmacenList.length} productos`
+                            msg: `Reserva guardada`
                         });
-                        this.requerimientoPendienteCtrl.getDataItemsRequerimientoParaAtenderConAlmacen(res.id_requerimiento).then( (res)=> {
-                            this.construirTablaListaItemsRequerimientoParaAtenderConAlmacen(res);
-                        }).catch(function (err) {
-                            console.log(err)
-                            Swal.fire(
-                                '',
-                                'Hubo un problema al intentar actualizar la tabla',
-                                'error'
-                            );
-                        })
-        
-                        this.renderRequerimientoPendienteListModule(null,null);
         
                     } else {
+                        $('#modal-atender-con-almacen .modal-content').LoadingOverlay("hide", true);
+                        console.log(res);
                         Swal.fire(
                             '',
-                            'Hubo un problema al intentar guardar la reserva, por favor vuelva a intentarlo',
+                            'Lo sentimos hubo un error en el servidor al intentar guardar la reserva, por favor vuelva a intentarlo',
                             'error'
                         );
                     }
                 }).catch(function (err) {
-                    console.log(err)
+                    console.log(err);
+                    Swal.fire(
+                        '',
+                        'Hubo un problema al intentar guardar la reserva, por favor vuelva a intentarlo',
+                        'error'
+                    );
                 })
-            }else{
-                Swal.fire(
-                    '',
-                    'seleccione un almacén y especifique una cantidad a atender mayor a cero.',
-                    'warning'
-                );
+                
             }
-    
-        
-
-
     }
-
- 
-
 
 
     componerTdItemsParaCompra(data, selectCategoria, selectSubCategoria, selectClasCategoria, selectMoneda, selectUnidadMedida) {

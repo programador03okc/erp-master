@@ -3,9 +3,13 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal-atender-con-almacen" onClick="$('#modal-atender-con-almacen').modal('hide');"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title">Reserva en almacén</h3>
+                <h3 class="modal-title">Reserva en almacén <span id="codigo_requerimiento"></span></h3>
+                
             </div>
             <div class="modal-body">
+            <form id="form-reserva-almacen" type="register" form="formulario">
+            <input type="hidden" name="id_requerimiento">
+
                 <div class="row">
                     <div class="col-md-12">
                         <table class="mytable table table-condensed table-bordered table-okc-view" id="listaItemsRequerimientoParaAtenderConAlmacen" style="margin-bottom: 0px; width:100%;">
@@ -26,7 +30,7 @@
                         </table>
                     </div>
                 </div>
-
+            </form>
             </div>
             <div class="modal-footer">
                 <div class="col-md-12 btn-group right" role="group" style="margin-bottom: 5px;">
