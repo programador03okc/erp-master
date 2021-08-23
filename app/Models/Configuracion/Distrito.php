@@ -18,4 +18,13 @@ class Distrito extends Model
         ->first();
         return ($data!==null ? $data->id_dis : 0);
     }
+
+    public function provincia()
+    {
+        return $this->hasOne('App\Models\Configuracion\Provincia','id_prov','id_prov')->withDefault([
+            'id_prov' => null,
+            'descripcion' => null,
+            'estado' => null
+        ]);
+    }
 }

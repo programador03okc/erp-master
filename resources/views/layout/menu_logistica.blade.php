@@ -76,17 +76,6 @@
                 </ul>
             </li>
             @endif
-
-            <li class="treeview">
-                <a href="#"><i class="fas fa-user-tie"></i> Proveedores
-                    <span class="pull-right-container">
-                    <i class="fa fa-angle-left pull-right"></i>
-                    </span>
-                </a>
-                <ul class="treeview-menu" >
-                    <li><a href="/listar-proveedores"><i class="far fa-circle fa-xs"></i> Listado</a></li>
-                </ul>
-            </li>
             @if(Auth::user()->tieneSubModulo(28))
             <li class="treeview">
                 <a href="#"><i class="fas fa-people-carry"></i> Servicios
@@ -139,6 +128,21 @@
         </ul>
     </li>
     @endif
+
+    @if(Auth::user()->tieneSubModuloPadre(48))
+    <li class=" treeview ">
+        <a href="#">
+            <i class="fas fa-truck-loading"></i> <span>Proveedores</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li><a href="{{route('logistica.gestion-logistica.proveedores.listado.index')}}"><i class="far fa-circle fa-xs"></i> Listado</a></li>
+        </ul>
+    </li>
+    @endif
+
     @if(Auth::user()->tieneSubModulo(20))
     <li class="treeview">
         <a href="#"><i class="fas fa-truck"></i> <span> Distribución</span>

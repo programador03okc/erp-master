@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Almacen\DetalleRequerimiento;
 use App\Models\Almacen\Requerimiento;
 use App\Models\Almacen\UnidadMedida;
 use App\Models\Configuracion\Moneda;
@@ -594,48 +595,40 @@ class ComprasPendientesController extends Controller
 
         try {
             DB::beginTransaction();
-            $estado = 27;
-            $lista_items_reservar = $request->lista_items_reservar;
-            $total_lista_items_reservar = count($lista_items_reservar);
-            $lista_items_base = $request->lista_items_base;
-            $total_lista_items_base = count($lista_items_base);
-            $id_requerimiento = $lista_items_reservar[0]['id_requerimiento'];
-            $id_sede = $lista_items_reservar[0]['id_sede'];
-            $updateDetReq = 0;
 
-            if ($total_lista_items_reservar == $total_lista_items_base) {
+            $request->idDetalleRequerimiento;
+            $request->almacenReserva;
+            $request->cantidadReserva;
 
-                $estado = 28; // Almacén Total
-            } else {
-                $estado = 27; // Almacén Parcial
-            }
-            foreach ($lista_items_reservar as $det) {
-                if ($det['cantidad_a_atender'] == $det['cantidad']) {
-                    $estado = 28; // Almacén Total
-                } elseif ($det['cantidad_a_atender'] < $det['cantidad']) {
-                    $estado = 27; // Almacén Parcial
+            
+            $cantidadActualizados=0;
+            $count = count($request->almacenReserva);
+            for ($i = 0; $i < $count; $i++) {
+                // if($request->almacenReserva[$i] > 0 && $request->cantidadReserva[$i] > 0){
 
-                }
-                $updateDetReq += DB::table('almacen.alm_det_req')
-                    ->where('id_detalle_requerimiento', $det['id_detalle_requerimiento'])
-                    ->update([
-                        'stock_comprometido' => $det['cantidad_a_atender'] >0 ? $det['cantidad_a_atender']:null,
-                        'id_almacen_reserva' => $det['id_almacen_reserva'] > 0 ? $det['id_almacen_reserva'] : null,
-                        'estado' => $estado
-                    ]);
+                    $cantidadActualizados=+1;
+                    $detalle = DetalleRequerimiento::where("id_detalle_requerimiento", $request->idDetalleRequerimiento[$i])->first();
+                    $detalle->stock_comprometido = $request->cantidadReserva[$i]>0?$request->cantidadReserva[$i]:null;
+                    $detalle->id_almacen_reserva = $request->almacenReserva[$i]>0?$request->almacenReserva[$i]:null;
+                    if($request->cantidadReserva[$i] == $detalle->cantidad){
+                        $detalle->estado = 28;
+                    }else{
+                        $detalle->estado = 27;
+                        
+                    }
+                    $detalle->save();
+                // }
             }
 
-            (new LogisticaController)->actualizarEstadoRequerimientoAtendido([$id_requerimiento]);
+ 
+
+           $nuevoEstadoRequerimiento= (new LogisticaController)->actualizarEstadoRequerimientoAtendido([$request->id_requerimiento]);
             // (new LogisticaController)->generarTransferenciaRequerimiento($id_requerimiento, $id_sede, $data);
 
-            $output = [
-                'id_requerimiento' => $id_requerimiento,
-                'update_det_req' => $updateDetReq
-            ];
 
             DB::commit();
 
-            return response()->json($output);
+            return response()->json(['nuevo_estado_requerimiento'=>$nuevoEstadoRequerimiento,'cantidad_items_actualizados'=>$cantidadActualizados]);
         } catch (\PDOException $e) {
             DB::rollBack();
         }

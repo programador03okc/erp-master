@@ -101,9 +101,8 @@ class RequerimientoPendienteCtrl{
         return requerimientoPendienteModel.getDataItemsRequerimientoParaAtenderConAlmacen(obj.dataset.idRequerimiento);
     }
 
-    guardarAtendidoConAlmacen(newItemsParaAtenderConAlmacenList,itemsBaseList){
-        console.log('controll');
-        return this.requerimientoPendienteModel.guardarAtendidoConAlmacen({'lista_items_reservar':newItemsParaAtenderConAlmacenList,'lista_items_base':itemsBaseList});
+    guardarAtendidoConAlmacen(data){
+        return this.requerimientoPendienteModel.guardarAtendidoConAlmacen(data);
 
 
     }

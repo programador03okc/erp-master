@@ -812,6 +812,19 @@ Route::group(['middleware' => ['auth']], function () {
 				});
 			});
 
+			Route::group(['as' => 'proveedores.', 'prefix' => 'proveedores'], function () {
+				Route::group(['as' => 'listado.', 'prefix' => 'listado'], function () {
+					Route::get('index', 'Logistica\ProveedoresController@viewLista')->name('index');
+					Route::post('lista-proveedores', 'Logistica\ProveedoresController@listaProveedores');
+					Route::get('listar_ubigeos', 'AlmacenController@listar_ubigeos');
+
+					// Route::get('logistica/listar_proveedores', 'LogisticaController@listar_proveedores');
+					// Route::get('mostrar_proveedor/{id_proveedor}', 'LogisticaController@mostrar_proveedor');
+				});
+
+ 
+			});
+
 			Route::group(['as' => 'cotizacion.', 'prefix' => 'cotizacion'], function () {
 				Route::group(['as' => 'gestionar.', 'prefix' => 'gestionar'], function () {
 					Route::get('index', 'LogisticaController@view_gestionar_cotizaciones')->name('index');
@@ -1970,10 +1983,6 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::put('update_adjunto_proveedor', 'LogisticaController@update_adjunto_proveedor');
 	// Route::get('logistica/cargar_almacenes/{id_sede}', 'LogisticaController@cargar_almacenes');
 
-	// logistica proveedores
-	Route::get('listar-proveedores', 'LogisticaController@view_lista_proveedores');
-	Route::get('logistica/listar_proveedores', 'LogisticaController@listar_proveedores');
-	Route::get('mostrar_proveedor/{id_proveedor}', 'LogisticaController@mostrar_proveedor');
 
 
 
