@@ -46,7 +46,7 @@ class Proveedor extends Model
         return $this->belongsTo('App\Models\Contabilidad\CuentaContribuyente','id_contribuyente','id_contribuyente');
     }
     public function estadoProveedor(){
-        return $this->hasOne('App\Models\Logistica\EstadoProveedor','id_estado','id_estado')->withDefault([
+        return $this->hasOne('App\Models\Logistica\EstadoProveedor','id_estado','estado')->withDefault([
             'id_estado' => null,
             'descripcion' => null,
             'estado' => null

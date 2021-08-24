@@ -233,6 +233,9 @@ class ComprasPendientesController extends Controller
             WHERE dr.id_requerimiento = almacen.alm_req.id_requerimiento and dr.tiene_transformacion=false ) as division"),
                 DB::raw("(SELECT COUNT(*) FROM almacen.alm_det_req AS det
             WHERE det.id_requerimiento = alm_req.id_requerimiento AND det.id_tipo_item =1
+              AND det.id_producto >0 and det.estado != 7 and det.tiene_transformacion =false) AS count_mapeados"),
+                DB::raw("(SELECT COUNT(*) FROM almacen.alm_det_req AS det
+            WHERE det.id_requerimiento = alm_req.id_requerimiento AND det.id_tipo_item =1
               AND det.id_producto is null) AS count_pendientes")
 
                 //         DB::raw("(SELECT  COUNT(log_ord_compra.id_orden_compra) FROM logistica.log_ord_compra
@@ -299,7 +302,8 @@ class ComprasPendientesController extends Controller
                 'bootstrap_color' => $data->bootstrap_color,
                 'detalle' => [],
                 'division'=>json_decode($data->division,true),
-                'count_pendientes' => $data->count_pendientes,
+                'count_mapeados' => $data->count_mapeados,
+                'count_pendientes' => $data->count_pendientes
             ];
         }
 

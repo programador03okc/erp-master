@@ -103,10 +103,10 @@ Requerimientos pendientes
 <script src="{{ asset('template/plugins/datetime-moment.js') }}"></script>
 
 <script src="{{('/js/logistica/orden/RequerimientoPendienteModel.js?v=2')}}"></script>
-<script src="{{('/js/logistica/orden/RequerimientoPendienteView.js?v=6')}}"></script>
+<script src="{{('/js/logistica/orden/RequerimientoPendienteView.js?v=7')}}"></script>
 <script src="{{('/js/logistica/orden/RequerimientoPendienteController.js?v=2')}}"></script>
 
-<script src="{{ asset('js/logistica/mapeo/mapeoItemsRequerimiento.js?v=3')}}"></script>
+<script src="{{ asset('js/logistica/mapeo/mapeoItemsRequerimiento.js?v=4')}}"></script>
 <script src="{{ asset('js/logistica/mapeo/mapeoAsignarProducto.js')}}"></script>
 
 <script>

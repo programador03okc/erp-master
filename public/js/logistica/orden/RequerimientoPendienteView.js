@@ -123,7 +123,7 @@ class RequerimientoPendienteView {
                 { 'data': 'id_requerimiento' },
                 {
                     render: function (data, type, row) {
-                        return `<div class="text-center"><input type="checkbox" data-mapeos-pendientes="${row.count_pendientes}" data-id-requerimiento="${row.id_requerimiento}" /></div>`;
+                        return `<div class="text-center"><input type="checkbox" data-mapeos-pendientes="${row.count_pendientes}" data-mapeados="${row.count_mapeados}" data-id-requerimiento="${row.id_requerimiento}" /></div>`;
                     }
                 },
                 { 'data': 'empresa_sede' },
@@ -177,7 +177,8 @@ class RequerimientoPendienteView {
                             let btnMapearProductos = '<button type="button" class="mapeo btn btn-success btn-xs" title="Mapear productos" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo="' + row.codigo + '"  ><i class="fas fa-sign-out-alt"></i> <span class="badge" title="Cantidad items sin mapear" name="cantidadAdjuntosRequerimiento" style="position:absolute;border: solid 0.1px;z-index: 9;top: -9px;left: 0px;font-size: 0.9rem;">'+row.count_pendientes+'</span></button>';
                             let btnAtenderAlmacen='';
                             let btnCrearOrdenCompra = '';
-                                if(row.count_pendientes ==0){
+                                // if(row.count_pendientes ==0){
+                                if(row.count_mapeados > 0){
                                     btnAtenderAlmacen = '<button type="button" class="btn btn-primary btn-xs handleClickAtenderConAlmacen" name="btnOpenModalAtenderConAlmacen" title="Reserva en almacén" data-id-requerimiento="' + row.id_requerimiento + '"><i class="fas fa-dolly fa-sm"></i></button>';
                                     btnCrearOrdenCompra = '<button type="button" class="btn btn-warning btn-xs handleClickCrearOrdenCompraPorRequerimiento" name="btnCrearOrdenCompraPorRequerimiento" title="Crear Orden de Compra" data-id-requerimiento="' + row.id_requerimiento + '"  ><i class="fas fa-file-invoice"></i></button>';
                                 }
@@ -219,7 +220,7 @@ class RequerimientoPendienteView {
                         });
                         this.classList.add('eventClick');
                     }
-                    if(this.dataset.mapeosPendientes > 0){
+                    if(this.dataset.mapeados == 0){
                         this.checked=false;
                         Swal.fire(
                             '',

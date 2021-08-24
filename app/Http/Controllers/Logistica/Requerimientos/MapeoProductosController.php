@@ -115,5 +115,21 @@ class MapeoProductosController extends Controller
         }
         return response()->json(array('response' => $rpta), 200);
     }
+    public function anular_item(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $rpta='null';
+            if($request->idDetalleRequerimiento >0){
+                $det = DB::table('almacen.alm_det_req')->where('id_detalle_requerimiento', $request->idDetalleRequerimiento)->update(['estado' => 7]); // estado anulado
+                $rpta='ok';
+            }           
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            $rpta = 'null';
+        }
+        return response()->json(array('response' => $rpta), 200);
+    }
 
 }
