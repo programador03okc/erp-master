@@ -17,6 +17,8 @@ var trRequerimientosPendientes;
 class RequerimientoPendienteView {
     constructor(requerimientoPendienteCtrl){
         this.requerimientoPendienteCtrl = requerimientoPendienteCtrl;
+        vista_extendida();
+
     }
 
     initializeEventHandler(){
@@ -66,15 +68,69 @@ class RequerimientoPendienteView {
             this.updateInputCantidadAAtender(e.currentTarget);
         });
 
-        
+        $('#modal-filtro-requerimientos-pendientes').on("click","button.handleClickLimpiarFiltroRequerimientosPendientes",()=>{
+            this.limpiarFiltroRequerimientosPendientes();
+        });
+        $('#modal-filtro-requerimientos-pendientes').on("click","button.handleClickAplicarFiltroRequerimientosPendientes",()=>{
+            this.aplicarFiltroRequerimientosPendientes();
+        });
+        $('#modal-filtro-requerimientos-pendientes').on("change","select.handleChangeFiltroEmpresa",(e)=>{
+            this.getDataSelectSede(e.currentTarget.value);
+        });
     }
 
-    renderRequerimientoPendienteListModule(id_empresa = null, id_sede = null) {
-        this.requerimientoPendienteCtrl.getRequerimientosPendientes(id_empresa, id_sede).then( (res) =>{
-            this.construirTablaListaRequerimientosPendientes(res);
+    renderRequerimientoPendienteList(empresa,sede,fechaRegistroDesde,fechaRegistroHasta, reserva, orden) {
+        this.requerimientoPendienteCtrl.getRequerimientosPendientes(empresa,sede,fechaRegistroDesde,fechaRegistroHasta, reserva, orden).then( (res) =>{
+            if(res.length){
+                this.construirTablaListaRequerimientosPendientes(res);
+                $('#requerimientos_pendientes').LoadingOverlay("hide", true);
+            } else {
+                $('#requerimientos_pendientes').LoadingOverlay("hide", true);
+                console.log(res);
+                Swal.fire(
+                    '',
+                    'Lo sentimos hubo un error en el servidor al intentar traer la lista de requerimientos pendientes, por favor vuelva a intentarlo',
+                    'error'
+                );
+            }
         }).catch( (err) =>{
             console.log(err)
         })
+    }
+
+    getDataSelectSede(idEmpresa){
+        if (idEmpresa > 0) {
+            this.requerimientoPendienteCtrl.obtenerSede(idEmpresa).then((res)=> {
+                this.llenarSelectFiltroSede(res);
+            }).catch(function (err) {
+                console.log(err)
+            })
+        }
+        return false;
+    }
+
+    llenarSelectFiltroSede(array) {
+        let selectElement = document.querySelector("div[id='modal-filtro-requerimientos-pendientes'] select[name='sede']");
+        if (selectElement.options.length > 0) {
+            let i, L = selectElement.options.length - 1;
+            for (i = L; i >= 0; i--) {
+                selectElement.remove(i);
+            }
+        }
+        array.forEach(element => {
+            let option = document.createElement("option");
+            option.text = element.descripcion;
+            option.value = element.id_sede;
+            option.setAttribute('data-ubigeo', element.id_ubigeo);
+            option.setAttribute('data-name-ubigeo', element.ubigeo_descripcion);
+            if (element.codigo == 'LIMA' || element.codigo == 'Lima') { // default sede lima
+                option.selected=true;
+
+            }
+
+            selectElement.add(option);
+        });
+
     }
 
     // observarRequerimientoLogistica(idRequerimiento){
@@ -105,10 +161,9 @@ class RequerimientoPendienteView {
     }
 
     construirTablaListaRequerimientosPendientes(data) {
-        // requerimientoPendienteCtrl.limpiarTabla('listaRequerimientosPendientes');
         let that =this;
+        that.requerimientoPendienteCtrl.limpiarTabla('listaRequerimientosPendientes');
 
-        vista_extendida();
         tablaListaRequerimientosPendientes= $('#listaRequerimientosPendientes').DataTable({
             'dom': vardataTables[1],
             'buttons': [],
@@ -139,7 +194,7 @@ class RequerimientoPendienteView {
                 { 'data': 'tipo_req_desc' },
                 {
                     render: function (data, type, row) {
-                        return row.division;
+                        return row.division !=null?eval(row.division).join():'';
                     }
                 },
                 {
@@ -190,13 +245,7 @@ class RequerimientoPendienteView {
 
                             let closeDiv = '</div>';
 
-                            let cantidadItemTipoServicio = 0;
-                            row.detalle.forEach(element => {
-                                if (element.id_tipo_item == 2) {
-                                    cantidadItemTipoServicio += 1;
-                                }
-                            });
-                            if (cantidadItemTipoServicio >= 1) {
+                            if (row.cantidad_tipo_servicio > 0) {
                                 return (openDiv + btnVerDetalleRequerimiento + btnAtenderAlmacen + btnMapearProductos + btnCrearOrdenCompra + btnCrearOrdenServicio + btnVercuadroCostos + closeDiv);
                             } else {
                                 return (openDiv + btnVerDetalleRequerimiento + btnAtenderAlmacen + btnMapearProductos + btnCrearOrdenCompra + btnVercuadroCostos + closeDiv);
@@ -236,13 +285,6 @@ class RequerimientoPendienteView {
                 }
 
                 let listaRequerimientosPendientes_filter = document.querySelector("div[id='listaRequerimientosPendientes_filter']");
-                // let buttonFiler = document.createElement("button");
-                // buttonFiler.type = "button";
-                // buttonFiler.className = "btn btn-default pull-left";
-                // buttonFiler.style = "margin-right: 30px;";
-                // buttonFiler.innerHTML = "<i class='fas fa-filter'></i> Filtros";
-                // buttonFiler.addEventListener('click', that.abrirModalFiltrosRequerimientosPendientes, false);
-                // listaRequerimientosPendientes_filter.appendChild(buttonFiler);
 
                 let buttonCrearOrden = document.createElement("button");
                 buttonCrearOrden.type = "button";
@@ -253,6 +295,14 @@ class RequerimientoPendienteView {
                 buttonCrearOrden.innerHTML = "<i class='fas fa-file-invoice'></i> Crear orden";
                 buttonCrearOrden.addEventListener('click', that.crearOrdenCompra.bind(that), false);
                 listaRequerimientosPendientes_filter.appendChild(buttonCrearOrden);
+
+                let buttonFiler = document.createElement("button");
+                buttonFiler.type = "button";
+                buttonFiler.className = "btn btn-default pull-left";
+                buttonFiler.style = "margin-right: 30px;";
+                buttonFiler.innerHTML = "<i class='fas fa-filter'></i> Filtros";
+                buttonFiler.addEventListener('click', that.abrirModalFiltrosRequerimientosPendientes, false);
+                listaRequerimientosPendientes_filter.appendChild(buttonFiler);
 
             },
             'columnDefs': [
@@ -297,6 +347,38 @@ class RequerimientoPendienteView {
             
             $('#submit_mapeoItemsRequerimiento').removeAttr('disabled');
         });
+    }
+    limpiarFiltroRequerimientosPendientes(){
+        let allSelectFiltroRequerimientosPendientes= document.querySelectorAll("div[id='formFiltroListaRequerimientosPendientes'] select");
+        allSelectFiltroRequerimientosPendientes.forEach(element => {
+            element.value='SIN_FILTRO';
+        });
+        
+        let allInputFiltroRequerimientosPendientes= document.querySelectorAll("div[id='formFiltroListaRequerimientosPendientes'] input");
+        allInputFiltroRequerimientosPendientes.forEach(element => {
+            element.value='';
+        });
+
+        let selectElement = document.querySelector("div[id='modal-filtro-requerimientos-pendientes'] select[name='sede']");
+        if (selectElement.options.length > 0) {
+            let i, L = selectElement.options.length - 1;
+            for (i = L; i >= 0; i--) {
+                selectElement.remove(i);
+            }
+        }
+    }
+
+    aplicarFiltroRequerimientosPendientes(){
+            let empresa = document.querySelector("div[id='modal-filtro-requerimientos-pendientes'] select[name='empresa']").value;
+            let sede = document.querySelector("div[id='modal-filtro-requerimientos-pendientes'] select[name='sede']").value;
+            let fechaRegistroDesde = document.querySelector("div[id='modal-filtro-requerimientos-pendientes'] input[name='fechaRegistroDesde']").value;
+            let fechaRegistroHasta = document.querySelector("div[id='modal-filtro-requerimientos-pendientes'] input[name='fechaRegistroHasta']").value;
+            let reserva = document.querySelector("div[id='modal-filtro-requerimientos-pendientes'] select[name='reserva']").value;
+            let orden = document.querySelector("div[id='modal-filtro-requerimientos-pendientes'] select[name='orden']").value;
+ 
+            this.renderRequerimientoPendienteList(empresa,sede,(fechaRegistroDesde==''?'SIN_FILTRO':fechaRegistroDesde),(fechaRegistroHasta==''?'SIN_FILTRO':fechaRegistroHasta),reserva,orden);
+            $('#modal-filtro-requerimientos-pendientes').modal('hide');
+
     }
 
     verDetalleRequerimiento(obj){
@@ -354,7 +436,7 @@ class RequerimientoPendienteView {
                         <td style="border: none; text-align:center;">${(element.precio_unitario >0 ? ((element.moneda_simbolo?element.moneda_simbolo:((element.moneda_simbolo?element.moneda_simbolo:'')+'0.00')) + $.number(element.precio_unitario,2)) : (element.moneda_simbolo?element.moneda_simbolo:'')+'0.00')}</td>
                         <td style="border: none; text-align:center;">${(parseFloat(element.subtotal) > 0 ? ((element.moneda_simbolo?element.moneda_simbolo:'') + $.number(element.subtotal,2)) :((element.moneda_simbolo?element.moneda_simbolo:'')+$.number((element.cantidad * element.precio_unitario),2)))}</td>
                         <td style="border: none; text-align:center;">${element.motivo != null ? element.motivo : ''}</td>
-                        <td style="border: none; text-align:center;">${element.observacion != null ? element.observacion : ''}</td>
+                        <td style="border: none; text-align:center;">${element.stock_comprometido != null ? element.stock_comprometido : ''}</td>
                         <td style="border: none; text-align:center;">${element.estado_doc != null && element.tiene_transformacion ==false ? element.estado_doc : ''}</td>
                         </tr>`;
                     // }
@@ -370,7 +452,7 @@ class RequerimientoPendienteView {
                         <th style="border: none; text-align:center;">Precio unitario</th>
                         <th style="border: none; text-align:center;">Subtotal</th>
                         <th style="border: none; text-align:center;">Motivo</th>
-                        <th style="border: none; text-align:center;">Observacion</th>
+                        <th style="border: none; text-align:center;">Stock comprometido</th>
                         <th style="border: none; text-align:center;">Estado</th>
                     </tr>
                 </thead>
@@ -396,37 +478,37 @@ class RequerimientoPendienteView {
         });
     }
 
-    chkEmpresa(e) {
+    // chkEmpresa(e) {
 
-        if (e.target.checked == true) {
-            document.querySelector("form[id='formFiltroListaRequerimientosPendientes'] select[name='empresa']").removeAttribute('readOnly');
+    //     if (e.target.checked == true) {
+    //         document.querySelector("form[id='formFiltroListaRequerimientosPendientes'] select[name='empresa']").removeAttribute('readOnly');
 
-        } else {
-            document.querySelector("form[id='formFiltroListaRequerimientosPendientes'] select[name='empresa']").setAttribute('readOnly', true);
+    //     } else {
+    //         document.querySelector("form[id='formFiltroListaRequerimientosPendientes'] select[name='empresa']").setAttribute('readOnly', true);
 
-        }
-    }
+    //     }
+    // }
 
-    chkSede(e) {
+    // chkSede(e) {
 
-        if (e.target.checked == true) {
-            document.querySelector("form[id='formFiltroListaRequerimientosPendientes'] select[name='sede']").removeAttribute('readOnly');
-        } else {
-            document.querySelector("form[id='formFiltroListaRequerimientosPendientes'] select[name='sede']").setAttribute('readOnly', true);
+    //     if (e.target.checked == true) {
+    //         document.querySelector("form[id='formFiltroListaRequerimientosPendientes'] select[name='sede']").removeAttribute('readOnly');
+    //     } else {
+    //         document.querySelector("form[id='formFiltroListaRequerimientosPendientes'] select[name='sede']").setAttribute('readOnly', true);
 
-        }
-    }
+    //     }
+    // }
 
 
-    handleChangeFilterReqByEmpresa(event) {
-        let id_empresa = event.target.value;
-        requerimientoPendienteCtrl.getDataSelectSede(id_empresa).then(function (res) {
-            requerimientoPendienteView.llenarSelectSede(res);
-        }).catch(function (err) {
-            console.log(err)
-        })
+    // handleChangeFilterReqByEmpresa(event) {
+    //     let id_empresa = event.target.value;
+    //     requerimientoPendienteCtrl.getDataSelectSede(id_empresa).then(function (res) {
+    //         requerimientoPendienteView.llenarSelectSede(res);
+    //     }).catch(function (err) {
+    //         console.log(err)
+    //     })
 
-    }
+    // }
 
     llenarSelectSede(array) {
         let selectElement = document.querySelector("select[name='sede']");
@@ -446,26 +528,26 @@ class RequerimientoPendienteView {
         });
     }
 
-    aplicarFiltros() {
-        let idEmpresa = null;
-        let idSede = null;
+    // aplicarFiltros() {
+    //     let idEmpresa = null;
+    //     let idSede = null;
 
-        let chkEmpresa = document.querySelector("form[id='formFiltroListaRequerimientosPendientes'] input[name='chkEmpresa']").checked;
-        let chkSede = document.querySelector("form[id='formFiltroListaRequerimientosPendientes'] input[name='chkSede']").checked;
+    //     let chkEmpresa = document.querySelector("form[id='formFiltroListaRequerimientosPendientes'] input[name='chkEmpresa']").checked;
+    //     let chkSede = document.querySelector("form[id='formFiltroListaRequerimientosPendientes'] input[name='chkSede']").checked;
 
-        if (chkEmpresa == true) {
-            idEmpresa = document.querySelector("form[id='formFiltroListaRequerimientosPendientes'] select[name='empresa']").value;
+    //     if (chkEmpresa == true) {
+    //         idEmpresa = document.querySelector("form[id='formFiltroListaRequerimientosPendientes'] select[name='empresa']").value;
 
-        }
-        if (chkSede == true) {
-            idSede = document.querySelector("form[id='formFiltroListaRequerimientosPendientes'] select[name='sede']").value;
-        }
+    //     }
+    //     if (chkSede == true) {
+    //         idSede = document.querySelector("form[id='formFiltroListaRequerimientosPendientes'] select[name='sede']").value;
+    //     }
 
-        $('#modal-filtro-requerimientos-pendientes').modal('hide');
+    //     $('#modal-filtro-requerimientos-pendientes').modal('hide');
 
-        this.renderRequerimientoPendienteListModule(idEmpresa > 0 ? idEmpresa : null, idSede > 0 ? idSede : null);
+    //     this.renderRequerimientoPendienteListModule(idEmpresa > 0 ? idEmpresa : null, idSede > 0 ? idSede : null);
 
-    }
+    // }
 
 
 
@@ -1050,17 +1132,17 @@ class RequerimientoPendienteView {
 
     }
 
-    agregarItemsBaseParaCompraFinalizado(response) {
+    // agregarItemsBaseParaCompraFinalizado(response) {
 
-        if (response.status == 200) {
-            alert(response.mensaje);
-            $('#modal-agregar-items-para-compra').modal('hide');
-            requerimientoPendienteView.renderRequerimientoPendienteListModule(null, null);
-        } else {
-            alert(response.mensaje);
-        }
+    //     if (response.status == 200) {
+    //         alert(response.mensaje);
+    //         $('#modal-agregar-items-para-compra').modal('hide');
+    //         requerimientoPendienteView.renderRequerimientoPendienteList(null, null);
+    //     } else {
+    //         alert(response.mensaje);
+    //     }
 
-    }
+    // }
 
     totalItemsAgregadosParaCompraCompletada() {
 

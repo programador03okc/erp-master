@@ -734,7 +734,7 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::group(['as' => 'compras.', 'prefix' => 'compras'], function () {
 				Route::group(['as' => 'pendientes.', 'prefix' => 'pendientes'], function () {
 					Route::get('index', 'ComprasPendientesController@viewComprasPendientes')->name('index');
-					Route::get('requerimientos-pendientes/{id_empresa?}/{id_sede?}', 'ComprasPendientesController@listarRequerimientosPendientes')->name('requerimientos-pendientes');
+					Route::get('requerimientos-pendientes/{empresa?}/{sede?}/{fechaDesde?}/{fechaHasta?}/{reserva?}/{orden?}', 'ComprasPendientesController@listarRequerimientosPendientes')->name('requerimientos-pendientes');
 					Route::post('lista_items-cuadro-costos-por-requerimiento-pendiente-compra', 'ComprasPendientesController@get_lista_items_cuadro_costos_por_id_requerimiento_pendiente_compra')->name('lista_items-cuadro-costos-por-requerimiento-pendiente-compra');
 					Route::post('tiene-items-para-compra', 'ComprasPendientesController@tieneItemsParaCompra')->name('tiene-items-para-compra');
 					Route::post('lista_items-cuadro-costos-por-requerimiento', 'ComprasPendientesController@get_lista_items_cuadro_costos_por_id_requerimiento')->name('lista_items-cuadro-costos-por-requerimiento');
@@ -780,7 +780,7 @@ Route::group(['middleware' => ['auth']], function () {
 						Route::get('mostrar-orden/{id_orden?}', 'OrdenController@mostrarOrden');
 						Route::put('anular/{id_orden?}', 'OrdenController@anularOrden')->name('anular');
 						Route::get('tipo-cambio-compra/{fecha}', 'Almacen\Reporte\SaldosController@tipo_cambio_compra');
-						Route::get('requerimientos-pendientes/{id_empresa?}/{id_sede?}', 'ComprasPendientesController@listarRequerimientosPendientes')->name('requerimientos-pendientes');
+						Route::get('requerimientos-pendientes/{empresa?}/{sede?}/{fechaDesde?}/{fechaHasta?}/{reserva?}/{orden?}', 'ComprasPendientesController@listarRequerimientosPendientes')->name('requerimientos-pendientes');
 						Route::get('detalle-requerimiento/{idRequerimiento?}', 'Logistica\RequerimientoController@detalleRequerimiento')->name('detalle-requerimientos');
 						Route::get('listar-cuentas-bancarias-proveedor/{idProveedor?}', 'OrdenController@listarCuentasBancariasProveedor')->name('listar-cuentas-bancarias-proveedor');
 						Route::post('guardar-cuenta-bancaria-proveedor', 'OrdenController@guardarCuentaBancariaProveedor');

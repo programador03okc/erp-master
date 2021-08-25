@@ -8,14 +8,70 @@ use App\Models\Logistica\OrdenCompraDetalle;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Debugbar;
+use Illuminate\Database\Eloquent\Scope;
 
-class Requerimiento extends Model
+class Requerimiento extends Model 
 {
     protected $table = 'almacen.alm_req';
     protected $primaryKey = 'id_requerimiento';
-    protected $appends = ['termometro','nombre_estado','nombre_completo_usuario','ordenes_compra'];
+    protected $appends = ['termometro','nombre_estado','nombre_completo_usuario','ordenes_compra','cantidad_tipo_producto','cantidad_tipo_servicio'];
     public $timestamps = false;
 
+
+    public function scopeFiltroEmpresa($query, $name)
+    {
+        if ($name>0) {
+            return $query->where('alm_req.id_empresa', '=', $name);
+        }
+        return $query;
+    }
+    public function scopeFiltroSede($query, $name)
+    {
+        if ($name>0) {
+            return $query->where('alm_req.id_sede', '=', $name);
+        }
+        return $query;
+    }
+    public function scopeFiltroRangoFechas($query, $desde, $hasta)
+    {
+        if (($desde!='SIN_FILTRO' && $desde!='') && ($hasta!='SIN_FILTRO' && $hasta!='')) {
+            return $query->whereBetween('alm_req.fecha_registro', [$desde, $hasta]);
+        }
+        if (($desde!='SIN_FILTRO') && ($desde!='')) {
+            return $query->where('alm_req.fecha_registro','>', $desde);
+        }
+        if (($hasta !='SIN_FILTRO' && ($hasta!=''))) {
+            return $query->where('alm_req.fecha_registro','<', $hasta);
+        }
+        return $query;
+    }
+    public function scopeFiltroReserva($query, $name)
+    {
+            if($name=='SIN_RESERVA'){
+                $query->leftJoin('almacen.alm_det_req', 'almacen.alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento');
+                return $query->whereNull('almacen.alm_det_req.stock_comprometido');
+            }elseif($name=='CON_RESERVA'){
+                $query->leftJoin('almacen.alm_det_req', 'almacen.alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento');
+                return $query->whereRaw('almacen.alm_det_req.stock_comprometido > 0'); 
+            }
+        
+        return $query;
+    }
+    public function scopeFiltroOrden($query, $name)
+    {
+        if($name=='CON_ORDEN'){
+            $query->Join('almacen.alm_det_req', 'alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento');
+            $query->Join('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento');            
+            return $query->whereRaw('log_det_ord_compra.id_detalle_requerimiento > 0'); 
+
+        }elseif($name=='SIN_ORDEN'){
+            $query->Join('almacen.alm_det_req', 'alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento');
+            $query->Join('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento');
+            return $query->rightJoin('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento');
+        }
+        return $query;
+    }
 
     public function getFechaEntregaAttribute(){
         $fecha= new Carbon($this->attributes['fecha_entrega']);
@@ -48,6 +104,30 @@ class Requerimiento extends Model
         }
     }
 
+    // public function getDivisionAttribute(){
+    
+
+    //     $division = Requerimiento::with('detalle')
+    //     ->where([
+    //         ['alm_req.id_requerimiento',$this->attributes['id_requerimiento']]
+    //         // ['alm_det_req.tiene_transformacion',false]
+    //     ])
+    //     ->first();
+    //             Debugbar::info($division->detalle);
+    //     return '';
+    //     // return json_decode($division,true);
+    // }
+
+    // public function getCantidadStockComprometidoAttribute(){
+    //     $cantidadStockComprometido = DetalleRequerimiento::join('almacen.alm_req', 'alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento')
+    //     ->where([['alm_req.id_requerimiento',$this->attributes['id_requerimiento']],
+    //     ['alm_det_req.id_tipo_item',1],
+    //     ['alm_det_req.stock_comprometido','>',0]
+    //     ])->count();
+    //     return $cantidadStockComprometido;
+    // }
+
+
     public function getNombreEstadoAttribute(){
         $estado=Estado::join('almacen.alm_req', 'adm_estado_doc.id_estado_doc', '=', 'alm_req.estado')
         ->where('alm_req.id_requerimiento',$this->attributes['id_requerimiento'])
@@ -74,6 +154,26 @@ class Requerimiento extends Model
         ->select(['log_ord_compra.id_orden_compra','log_ord_compra.codigo'])->distinct()->get(); 
 
         return $ordenes;
+    }
+    public function getCantidadTipoProductoAttribute(){
+
+        $cantidadTipoProducto=DetalleRequerimiento::where([
+            ['alm_det_req.id_requerimiento',$this->attributes['id_requerimiento']],
+            ['alm_det_req.estado','!=',7],
+            ['alm_det_req.id_tipo_item','=',1]
+            ])
+        ->count();
+        return $cantidadTipoProducto;
+    }
+    public function getCantidadTipoServicioAttribute(){
+
+        $cantidadTipoServicio=DetalleRequerimiento::where([
+            ['alm_det_req.id_requerimiento',$this->attributes['id_requerimiento']],
+            ['alm_det_req.estado','!=',7],
+            ['alm_det_req.id_tipo_item','=',2]
+            ])
+        ->count();
+        return $cantidadTipoServicio;
     }
  
 

@@ -2,7 +2,9 @@
 
 namespace App\Models\Almacen;
 
+use App\Models\Finanzas\CentroCostosView;
 use App\Models\Logistica\OrdenCompraDetalle;
+use App\Models\Presupuestos\CentroCosto;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
@@ -60,5 +62,31 @@ class DetalleRequerimiento extends Model
         return $facturas;
     }
 
+
+    // public function getCentroCostosAttribute(){
+    //     // $centroCostos = CentroCostosView::join('almacen.alm_det_req','cc_niveles_view.id_centro_costo','alm_det_req.centro_costo_id')
+    //     $centroCostos = CentroCosto::join('almacen.alm_det_req','centro_costo.id_centro_costo','alm_det_req.centro_costo_id')
+    //     ->select('centro_costo.*')
+    //     ->where(
+    //         'alm_det_req.id_detalle_requerimiento',$this->attributes['id_detalle_requerimiento']
+    //     )
+    //     ->get();
+    //     return $centroCostos;
+    // }
+
+
+    // public function centroCostos(){
+    //     return $this->belongsTo('App\Models\Finanzas\CentroCostosView','centro_costo_id','id_centro_costo')->withDefault(
+    //         [
+    //             'id_centro_costo' => null,
+    //             'codigo' => null,
+    //             'descripcion' => null,
+    //             'grupo' => null,
+    //             'unidad' => null,
+    //             'division' => null,
+    //             'segmento' => null
+    //         ]
+    //     );
+    // }
 }
 

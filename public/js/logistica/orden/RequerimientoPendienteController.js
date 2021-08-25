@@ -5,8 +5,9 @@ class RequerimientoPendienteCtrl{
         this.requerimientoPendienteModel = requerimientoPendienteModel;
     }
 
-    getRequerimientosPendientes(id_empresa=null,id_sede=null) {
-        return requerimientoPendienteModel.getRequerimientosPendientes(id_empresa,id_sede);
+    getRequerimientosPendientes(empresa,sede,fechaRegistroDesde,fechaRegistroHasta, reserva, orden) {
+        console.log(empresa,sede,fechaRegistroDesde,fechaRegistroHasta, reserva, orden);
+        return requerimientoPendienteModel.getRequerimientosPendientes(empresa,sede,fechaRegistroDesde,fechaRegistroHasta, reserva, orden);
         // return ordenesData;
     }
 
@@ -39,6 +40,11 @@ class RequerimientoPendienteCtrl{
     }
     // check
 
+    obtenerSede(idEmpresa){
+        return this.requerimientoPendienteModel.obtenerSede(idEmpresa);
+
+    }
+    
     statusBtnGenerarOrden() {
         let countStateCheckTrue = 0;
 
