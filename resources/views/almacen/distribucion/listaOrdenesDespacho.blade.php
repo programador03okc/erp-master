@@ -7,9 +7,9 @@ Requerimientos pendientes de Transformación
 
 @section('breadcrumb')
 <ol class="breadcrumb">
-  <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> Logística</a></li>
-  <li>Distribución</li>
-  <li class="active">@yield('cabecera')</li>
+    <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> Logística</a></li>
+    <li>Distribución</li>
+    <li class="active">@yield('cabecera')</li>
 </ol>
 @endsection
 
@@ -21,8 +21,7 @@ Requerimientos pendientes de Transformación
 
                 <div class="row">
                     <div class="col-md-12">
-                        <table class="mytable table table-condensed table-bordered table-okc-view" 
-                            id="requerimientosEnProceso">
+                        <table class="mytable table table-condensed table-bordered table-okc-view" id="requerimientosEnProceso">
                             <thead>
                                 <tr>
                                     <th hidden></th>
@@ -46,31 +45,31 @@ Requerimientos pendientes de Transformación
                         </table>
                     </div>
                 </div>
-                
+
             </div>
         </div>
     </div>
 </div>
 @include('almacen.distribucion.transferenciasDetalle')
-@include('almacen.distribucion.ordenDespachoCreate')
+@include('almacen.distribucion.ordenDespachoInternoCreate')
 @include('almacen.distribucion.ordenDespachoTransformacion')
 
 @endsection
 
 @section('scripts')
-    <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
-    <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
+<script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
+<script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
-    <script src="{{ asset('js/almacen/distribucion/listaOrdenesDespacho.js')}}"></script>
-    <script src="{{ asset('js/almacen/distribucion/verDetalleRequerimiento.js')}}"></script>
-    <script src="{{ asset('js/almacen/distribucion/ordenDespachoCreate.js')}}"></script>
-    <script src="{{ asset('js/almacen/distribucion/ordenDespachoTransformacion.js')}}"></script>
+<script src="{{ asset('js/almacen/distribucion/listaOrdenesDespacho.js')}}"></script>
+<script src="{{ asset('js/almacen/distribucion/verDetalleRequerimiento.js')}}"></script>
+<script src="{{ asset('js/almacen/distribucion/ordenDespachoInternoCreate.js')}}"></script>
+<script src="{{ asset('js/almacen/distribucion/ordenDespachoTransformacion.js')}}"></script>
 
-    <script>
-    $(document).ready(function(){
+<script>
+    $(document).ready(function() {
         seleccionarMenu(window.location);
         listarRequerimientosPendientes();
     });
-    </script>
+</script>
 @endsection

@@ -924,7 +924,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('index', 'Logistica\Distribucion\ListaOrdenesDespachoController@view_ordenes_despacho')->name('index');
 				Route::get('listarRequerimientosEnProceso', 'Logistica\Distribucion\ListaOrdenesDespachoController@listarRequerimientosEnProceso');
 				Route::get('listarDetalleTransferencias/{id}', 'TransferenciaController@listarDetalleTransferencias');
-				Route::get('verDetalleRequerimiento/{id}', 'DistribucionController@verDetalleRequerimiento');
+				Route::get('verDetalleRequerimientoDI/{id}', 'DistribucionController@verDetalleRequerimientoDI');
 				Route::post('guardar_orden_despacho', 'DistribucionController@guardar_orden_despacho');
 				Route::get('verDetalleInstrucciones/{id}', 'DistribucionController@verDetalleInstrucciones');
 			});
