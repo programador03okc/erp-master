@@ -1316,19 +1316,13 @@ class TransformacionController extends Controller
                     font-size:10px;
                     padding: 4px;
                 }
-                .right{
-                    text-align: right;
-                }
-                .sup{
-                    vertical-align:top;
-                }
                 </style>
             </head>
             <body>
-                <table width="100%">
+                <table width="100%" style="margin-bottom: 0px">
                     <tr>
                         <td>
-                            <img src=".' . $result->logo_empresa . '" height="50px">
+                            <img src=".' . $result->logo_empresa . '" height="40px">
                         </td>
                     </tr>
                 </table>
@@ -1407,13 +1401,13 @@ class TransformacionController extends Controller
                                 <th colSpan="4" style="background-color: #bce8f1;"><center>' . $i . '. Producto a transformar</center></th>
                             </tr>
                             <tr>
-                                <td colSpan="4"><strong>Producto Base:</strong></td>
+                                <td colSpan="4" style="background-color: #ededed;"><strong>Producto Base:</strong></td>
                             </tr>
                             <tr>
-                                <th>Part Number</th>
-                                <th>Marca</th>
-                                <th width="60%">Descripción</th>
-                                <th>Cant.</th>
+                                <th style="border-bottom: 1px solid #cfcfcf">Part Number</th>
+                                <th style="border-bottom: 1px solid #cfcfcf">Marca</th>
+                                <th style="border-bottom: 1px solid #cfcfcf" width="60%">Descripción</th>
+                                <th style="border-bottom: 1px solid #cfcfcf">Cant.</th>
                             </tr>
                             <tr>
                                 <td style="text-align:center;">' . $det->part_no . '</td>
@@ -1422,13 +1416,13 @@ class TransformacionController extends Controller
                                 <td style="text-align:center;">' . $det->cantidad . '</td>
                             </tr>
                             <tr>
-                                <td colSpan="4"><strong>Producto Transformado:</strong></td>
+                                <td colSpan="4" style="background-color: #ededed;"><strong>Producto Transformado:</strong></td>
                             </tr>
                             <tr>
-                                <th>Part Number</th>
-                                <th>Marca</th>
-                                <th width="40%">Descripción</th>
-                                <th>Cant.</th>
+                                <th style="border-bottom: 1px solid #cfcfcf">Part Number</th>
+                                <th style="border-bottom: 1px solid #cfcfcf">Marca</th>
+                                <th style="border-bottom: 1px solid #cfcfcf" width="40%">Descripción</th>
+                                <th style="border-bottom: 1px solid #cfcfcf">Cant.</th>
                             </tr>
                             <tr>
                                 <td style="text-align:center;">' . $det->part_no_producto_transformado . '</td>
@@ -1440,9 +1434,9 @@ class TransformacionController extends Controller
                 $html .= '
                             <tr>
                                 <td colSpan="4">' . ($det->etiquetado_producto_transformado ? '  Etiquetado: <strong>Si</strong>  ' : '  Etiquetado: <strong>No</strong>  ') .
-                    ($det->bios_producto_transformado ? '  BIOS: <strong>Si</strong>  ' : '  BIOS: <strong>No</strong>  ') .
-                    ($det->office_preinstalado_producto_transformado ? '  Office Preinstalado: <strong>Si</strong>  ' : '  Office Preinstalado: <strong>No</strong>  ') .
-                    ($det->office_activado_producto_transformado ? '  Office Activado: <strong>Si</strong>  ' : '  Office Activado: <strong>No</strong>  ') . '</td>
+                    ($det->bios_producto_transformado ? ',  BIOS: <strong>Si</strong>  ' : ',  BIOS: <strong>No</strong>  ') .
+                    ($det->office_preinstalado_producto_transformado ? ',  Office Preinstalado: <strong>Si</strong>  ' : ',  Office Preinstalado: <strong>No</strong>  ') .
+                    ($det->office_activado_producto_transformado ? ',  Office Activado: <strong>Si</strong>  ' : ',  Office Activado: <strong>No</strong>  ') . '</td>
                             </tr>';
 
                 $ingresaSale = DB::table('mgcp_cuadro_costos.cc_fila_movimientos_transformacion')
@@ -1458,9 +1452,12 @@ class TransformacionController extends Controller
                 if (count($ingresaSale) > 0) {
                     $html .= '
                             <tr>
-                                <th colSpan="2">Ingresa</th>
-                                <th>Sale</th>
-                                <th>Comentario</th>
+                                <td colSpan="4" style="background-color: #ededed;"><strong>Ingresos y salidas:</strong></td>
+                            </tr>
+                            <tr>
+                                <th style="border-bottom: 1px solid #cfcfcf" colSpan="2">Ingresa</th>
+                                <th style="border-bottom: 1px solid #cfcfcf">Sale</th>
+                                <th style="border-bottom: 1px solid #cfcfcf">Comentario</th>
                             </tr>';
                     foreach ($ingresaSale as $val) {
                         $html .= '
@@ -1546,8 +1543,8 @@ class TransformacionController extends Controller
                 
                 
                 <footer style="position:absolute;bottom:0px;right:0px;">
-                    <p style="text-align:right;font-size:10px;margin-bottom:0px;">Emitido por: ' . $result->nombre_corto . ' - Impreso el: ' . $fecha_actual . ' ' . $hora_actual . '</p>
-                    <p style="text-align:right;font-size:10px;margin-top:0px;"><strong>SYSTEM AGILE v2.1</strong></p>
+                    <p style="text-align:right;font-size:10px;margin-bottom:0px;">Emitido por: ' . $result->nombre_corto . ' - Impreso el: ' . (new Carbon($fecha_actual))->format('d-m-Y') . ' ' . $hora_actual . '</p>
+                    <p style="text-align:right;font-size:10px;margin-top:0px;"><strong>' . config('global.nombreSistema') . ' '  . config('global.version') . '</strong></p>
                 </footer>
             </body>
         </html>';

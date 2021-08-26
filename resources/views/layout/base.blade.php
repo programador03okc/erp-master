@@ -4,7 +4,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>@yield('cabecera') - System Agile</title>
+	<title>@yield('cabecera') - {{config('global.nombreSistema')}} {{config('global.version')}}</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 	<meta http-equiv="Cache-control" content="no-cache">
 	<meta name="csrf-token" content="{{csrf_token()}}">
