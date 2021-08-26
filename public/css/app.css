@@ -1030,7 +1030,7 @@ span.select2-selection {
 #kardexGeneral tbody td:nth-last-child(12),
 #listaMttoPendientes tbody td:nth-last-child(5),
 #listaMttoPendientes tbody td:last-child,
-#listaSaldos tbody td:nth-last-child(3),
+#listaSaldos tbody td:nth-last-child(2),
 #listaTransferenciasPorRecibir tbody td:nth-last-child(3),
 #listaTransferenciasPorRecibir tbody td:nth-last-child(4),
 #listaTransferenciasRecibidas tbody td:nth-last-child(8),

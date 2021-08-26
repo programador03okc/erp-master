@@ -32,7 +32,7 @@ function listarSaldos(almacen) {
             { 'data': 'part_number' },
             { 'data': 'descripcion' },
             { 'data': 'abreviatura' },
-            { 'data': 'stock', 'class': 'right' },
+            { 'data': 'stock', 'class': 'text-center' },
             // {'data': 'cantidad_reserva', 'class': 'right'},
             {
                 'render':
@@ -41,13 +41,17 @@ function listarSaldos(almacen) {
                             return `<h5 style="margin-top: 0px;margin-bottom: 0px; cursor:pointer;">
                                     <span class="ver label label-danger" data-id="${row['id_producto']}" data-almacen="${row['id_almacen']}" >
                                     ${row['cantidad_reserva']} </span></h5>`;
-                            // return '<button type="button" class="ver btn btn-info boton" data-toggle="tooltip" '+
-                            // 'data-placement="bottom" title="Ver Requerimientos" '+
-                            // '<i class="fas fa-list-ul"></i></button>';
                         } else {
                             return '';
                         }
-                    }
+                    }, 'class': 'text-center'
+            },
+            {
+                'render':
+                    function (data, type, row) {
+                        let reserva = (row['cantidad_reserva'] !== null ? row['cantidad_reserva'] : 0);
+                        return parseFloat(row['stock']) - parseFloat(reserva);
+                    }, 'class': 'text-center'
             },
             { 'data': 'almacen_descripcion' },
         ],
