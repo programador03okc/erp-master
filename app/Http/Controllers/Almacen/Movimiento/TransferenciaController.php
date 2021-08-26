@@ -492,7 +492,6 @@ class TransferenciaController extends Controller
 
     public function guardarIngresoTransferencia(Request $request)
     {
-
         try {
             DB::beginTransaction();
 
@@ -699,13 +698,25 @@ class TransferenciaController extends Controller
                         ->where('id_trans_detalle', $d->id_trans_detalle)
                         ->first();
 
-                    DB::table('almacen.alm_det_req')
-                        ->where('id_detalle_requerimiento', $trans_det->id_requerimiento_detalle)
-                        ->update([
-                            'estado' => 28, //En Almacen Total
-                            //'estado'=>14,//Recibido
+                    // DB::table('almacen.alm_det_req')
+                    //     ->where('id_detalle_requerimiento', $trans_det->id_requerimiento_detalle)
+                    //     ->update([
+                    //         'estado' => 28, //reservado
+                    //         // 'id_almacen_reserva' => $request->id_almacen_destino,
+                    //         // 'stock_comprometido' => $d->cantidad_recibida
+                    //     ]);
+
+                    DB::table('almacen.alm_reserva')
+                        ->insert([
+                            'codigo' => $this->reservaNextCodigo($request->id_almacen_destino),
+                            'id_producto' => $det->id_producto,
+                            'stock_comprometido' => $d->cantidad_recibida,
                             'id_almacen_reserva' => $request->id_almacen_destino,
-                            'stock_comprometido' => $d->cantidad_recibida
+                            'id_detalle_requerimiento' =>  $trans_det->id_requerimiento_detalle,
+                            'id_trans_detalle' => $d->id_trans_detalle,
+                            'estado' => 1,
+                            'usuario_registro' => $usuario->id_usuario,
+                            'fecha_registro' => date('Y-m-d H:i:s'),
                         ]);
                 }
             }
@@ -717,38 +728,38 @@ class TransferenciaController extends Controller
                 ->get();
 
             foreach ($reqs as $r) {
-                DB::table('almacen.trans')
-                    ->where('id_transferencia', $r->id_transferencia)
-                    ->update([
-                        'estado' => 14, //Recibido
-                        'id_guia_com' => $id_guia_com
-                    ]);
+                // DB::table('almacen.trans')
+                //     ->where('id_transferencia', $r->id_transferencia)
+                //     ->update([
+                //         'estado' => 14, //Recibido
+                //         'id_guia_com' => $id_guia_com
+                //     ]);
 
-                $count_recibido = DB::table('almacen.alm_det_req')
-                    ->where([
-                        ['id_requerimiento', '=', $r->id_requerimiento],
-                        ['estado', '=', 28]
-                    ]) //en almacen total
-                    // ['estado','=',14]
-                    ->count();
+                // $count_recibido = DB::table('almacen.alm_det_req')
+                //     ->where([
+                //         ['id_requerimiento', '=', $r->id_requerimiento],
+                //         ['estado', '=', 28]
+                //     ]) //en almacen total
+                //     // ['estado','=',14]
+                //     ->count();
 
-                $count_todo = DB::table('almacen.alm_det_req')
-                    ->where([
-                        ['id_requerimiento', '=', $r->id_requerimiento],
-                        // ['tiene_transformacion','=',false],
-                        ['estado', '!=', 7]
-                    ])
-                    ->count();
+                // $count_todo = DB::table('almacen.alm_det_req')
+                //     ->where([
+                //         ['id_requerimiento', '=', $r->id_requerimiento],
+                //         // ['tiene_transformacion','=',false],
+                //         ['estado', '!=', 7]
+                //     ])
+                //     ->count();
 
-                if ($count_recibido == $count_todo) {
-                    DB::table('almacen.alm_req')
-                        ->where('id_requerimiento', $r->id_requerimiento)
-                        ->update(['estado' => 28]); //en atencion total
-                    // } else {
-                    //     DB::table('almacen.alm_req')
-                    //     ->where('id_requerimiento',$r->id_requerimiento)
-                    //     ->update(['estado'=>27]);//en atencion parcial
-                }
+                // if ($count_recibido == $count_todo) {
+                //     DB::table('almacen.alm_req')
+                //         ->where('id_requerimiento', $r->id_requerimiento)
+                //         ->update(['estado' => 28]); //en atencion total
+                //     // } else {
+                //     //     DB::table('almacen.alm_req')
+                //     //     ->where('id_requerimiento',$r->id_requerimiento)
+                //     //     ->update(['estado'=>27]);//en atencion parcial
+                // }
 
                 //Agrega accion en requerimiento
                 DB::table('almacen.alm_req_obs')
@@ -760,47 +771,6 @@ class TransferenciaController extends Controller
                         'fecha_registro' => $fecha
                     ]);
             }
-            // if ($r->id_requerimiento !== null) {
-            //     $accion = '';
-
-            //     if (($r->id_tipo_requerimiento == 1 && $r->tipo_cliente !== 3) ||
-            //         ($r->id_tipo_requerimiento == 2) ||
-            //         ($r->id_tipo_requerimiento == 3 && $r->tipo_cliente == 4)){
-
-            //         $accion = 'Reservado';
-            //         DB::table('almacen.alm_req')
-            //         ->where('id_requerimiento',$r->id_requerimiento)
-            //         ->update(['estado'=>19]);//Reservdo
-
-            //         $trans_det = DB::table('almacen.trans_detalle')
-            //         ->where('id_transferencia',$r->id_transferencia)
-            //         ->get();
-
-            //         foreach ($trans_det as $det) {
-            //             DB::table('almacen.alm_det_req')
-            //             ->where('id_detalle_requerimiento',$det->id_requerimiento_detalle)
-            //             ->update(['estado'=>19,
-            //                       'id_almacen_reserva'=>$request->id_almacen_destino]);//Reservado
-            //         }
-            //     } 
-            //     else {
-            //         $accion = 'Procesado';
-            //         DB::table('almacen.alm_req')
-            //         ->where('id_requerimiento',$r->id_requerimiento)
-            //         ->update(['estado'=>9]);//Procesado
-
-            //         $trans_det = DB::table('almacen.trans_detalle')
-            //         ->where('id_transferencia',$r->id_transferencia)
-            //         ->get();
-
-            //         foreach ($trans_det as $det) {
-            //             DB::table('almacen.alm_det_req')
-            //             ->where('id_detalle_requerimiento',$det->id_requerimiento_detalle)
-            //             ->update(['estado'=>9,
-            //                       'id_almacen_reserva'=>null]);//Procesado
-            //         }
-            //     }
-
             DB::commit();
             return response()->json($id_ingreso);
         } catch (\PDOException $e) {
@@ -808,7 +778,21 @@ class TransferenciaController extends Controller
             DB::rollBack();
         }
     }
+    public function reservaNextCodigo($id_almacen)
+    {
+        $yyyy = date('Y', strtotime(date('Y-m-d H:i:s')));
+        $anio = date('y', strtotime(date('Y-m-d H:i:s')));
 
+        $cantidad = DB::table('almacen.alm_reserva')
+            ->where('id_almacen_reserva', $id_almacen)
+            ->whereYear('fecha_registro', '=', $yyyy)
+            ->get()->count();
+
+        $val = GenericoAlmacenController::leftZero(4, ($cantidad + 1));
+        $nextId = "RE-" . $id_almacen . "-" . $anio . $val;
+
+        return $nextId;
+    }
     public function listarTransferenciasPorEnviar($alm_origen)
     {
         if ($alm_origen == '0') {
@@ -1472,14 +1456,17 @@ class TransferenciaController extends Controller
 
     public static function transferencia_nextId($id_alm_origen)
     {
+        $yyyy = date('Y', strtotime(date('Y-m-d H:i:s')));
+        $anio = date('y', strtotime(date('Y-m-d H:i:s')));
+
         $cantidad = DB::table('almacen.trans')
-            ->where([
-                ['id_almacen_origen', '=', $id_alm_origen],
-                ['estado', '!=', 7]
-            ])
+            ->where('id_almacen_origen', $id_alm_origen)
+            ->whereYear('fecha_registro', '=', $yyyy)
             ->get()->count();
+
         $val = GenericoAlmacenController::leftZero(3, ($cantidad + 1));
-        $nextId = "TR-" . $id_alm_origen . "-" . $val;
+        $nextId = "TR-" . $id_alm_origen . "-" . $anio . $val;
+
         return $nextId;
     }
 

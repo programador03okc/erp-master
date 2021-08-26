@@ -28,12 +28,16 @@ class SaldosController extends Controller
                 'alm_prod.id_unidad_medida',
                 'alm_almacen.descripcion as almacen_descripcion',
                 DB::raw("(SELECT SUM(alm_reserva.stock_comprometido) FROM almacen.alm_reserva 
-                INNER JOIN almacen.alm_det_req ON(
-                    alm_reserva.id_detalle_requerimiento = alm_det_req.id_detalle_requerimiento
-                    AND alm_det_req.id_producto = alm_prod_ubi.id_producto 
-                ) 
-                WHERE alm_reserva.id_almacen_reserva = alm_prod_ubi.id_almacen
+                WHERE alm_reserva.id_producto = alm_prod_ubi.id_producto
+                AND alm_reserva.id_almacen_reserva = alm_prod_ubi.id_almacen
                 AND alm_reserva.estado = 1 ) as cantidad_reserva")
+                // DB::raw("(SELECT SUM(alm_reserva.stock_comprometido) FROM almacen.alm_reserva 
+                // INNER JOIN almacen.alm_det_req ON(
+                //     alm_reserva.id_detalle_requerimiento = alm_det_req.id_detalle_requerimiento
+                //     AND alm_det_req.id_producto = alm_prod_ubi.id_producto 
+                // ) 
+                // WHERE alm_reserva.id_almacen_reserva = alm_prod_ubi.id_almacen
+                // AND alm_reserva.estado = 1 ) as cantidad_reserva")
                 // DB::raw("(SELECT SUM(alm_det_req.cantidad) FROM almacen.alm_det_req 
                 // WHERE ( alm_det_req.estado=19 or alm_det_req.estado=28 or alm_det_req.estado=27
                 //         or alm_det_req.estado=22)
@@ -106,18 +110,23 @@ class SaldosController extends Controller
     {
         $detalles = DB::table('almacen.alm_reserva')
             ->select(
-                'alm_det_req.*',
+                'alm_reserva.stock_comprometido',
+                'alm_req.id_requerimiento',
                 'alm_req.codigo',
                 'alm_req.concepto',
                 'sis_usua.nombre_corto',
-                'alm_almacen.descripcion as almacen_descripcion'
+                'alm_almacen.descripcion as almacen_descripcion',
+                'guia_com.serie',
+                'guia_com.numero',
             )
-            ->join('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'alm_reserva.id_detalle_requerimiento')
-            ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
-            ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'alm_req.id_usuario')
-            ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_det_req.id_almacen_reserva')
+            ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_reserva.id_almacen_reserva')
+            ->leftjoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'alm_reserva.id_detalle_requerimiento')
+            ->leftjoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+            ->leftjoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'alm_req.id_usuario')
+            ->leftjoin('almacen.guia_com_det', 'guia_com_det.id_guia_com_det', '=', 'alm_reserva.id_guia_com_det')
+            ->leftjoin('almacen.guia_com', 'guia_com.id_guia', '=', 'guia_com_det.id_guia_com')
             ->where([
-                ['alm_det_req.id_producto', '=', $id],
+                ['alm_reserva.id_producto', '=', $id],
                 ['alm_reserva.id_almacen_reserva', '=', $almacen],
                 ['alm_reserva.estado', '=', 1],
             ])
