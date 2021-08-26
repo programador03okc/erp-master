@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\App;
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 
 date_default_timezone_set('America/Lima');
 
@@ -261,7 +262,7 @@ class TransformacionController extends Controller
             ->get()->count();
 
         $val = GenericoAlmacenController::leftZero(3, ($cantidad + 1));
-        $nextId = "HT-" . $almacen->codigo . "-" . $val;
+        $nextId = "OT-" . $almacen->codigo . "-" . $val;
 
         return $nextId;
     }
@@ -1249,12 +1250,13 @@ class TransformacionController extends Controller
                 'alm_prod.descripcion',
                 'alm_prod.part_number',
                 'alm_und_medida.abreviatura',
-                'orden_despacho_det.part_number_transformado',
-                'orden_despacho_det.descripcion_transformado',
-                'orden_despacho_det.comentario_transformado',
-                'orden_despacho_det.cantidad_transformado',
+                'cc_am_filas.part_no',
+                'cc_am_filas.marca',
+                'cc_am_filas.descripcion',
                 'cc_am_filas.part_no_producto_transformado',
+                'cc_am_filas.marca_producto_transformado',
                 'cc_am_filas.descripcion_producto_transformado',
+                'cc_am_filas.comentario_producto_transformado',
                 'cc_am_filas.etiquetado_producto_transformado',
                 'cc_am_filas.bios_producto_transformado',
                 'cc_am_filas.office_preinstalado_producto_transformado',
@@ -1303,7 +1305,7 @@ class TransformacionController extends Controller
                 }
                 table{
                     width:100%;
-                    font-size:11px;
+                    font-size:10px;
                 }
                 #detalle thead{
                     padding: 4px;
@@ -1326,17 +1328,17 @@ class TransformacionController extends Controller
                 <table width="100%">
                     <tr>
                         <td>
-                            <img src=".' . $result->logo_empresa . '" height="75px">
+                            <img src=".' . $result->logo_empresa . '" height="50px">
                         </td>
                     </tr>
                 </table>
-                <h3 style="margin:0px; padding:0px;"><center>HOJA DE TRANSFORMACIÓN</center></h3>
-                <h3 style="margin:0px; padding:0px;"><center>' . $result->codigo . '</center></h3>
-                <h5><center>' . $result->almacen_descripcion . '</center></h5>
+                <h4 style="margin:0px; padding:0px;"><center>ORDEN DE TRANSFORMACIÓN</center></h4>
+                <h4 style="margin:0px; padding:0px;"><center>' . $result->codigo . '</center></h4>
+                <label><center>' . $result->almacen_descripcion . '</center></label>
                 
                 <table border="0">
                     <tr>
-                        <td width=100px>Requerimiento</td>
+                        <td width="100px">Requerimiento</td>
                         <td width=5px>:</td>
                         <td width=320px>' . $result->codigo_req . '</td>
                         <td>Guía Remisión</td>
@@ -1344,20 +1346,20 @@ class TransformacionController extends Controller
                         <td>' . $result->serie . '-' . $result->numero . '</td>
                     </tr>
                     <tr>
-                        <td width=100px>Nro OCAM</td>
+                        <td width="100px">Nro OC (MGC)</td>
                         <td width=5px>:</td>
                         <td width=320px>' . $result->orden_am . '</td>
                         <td>Fecha Despacho</td>
                         <td width=5px>:</td>
-                        <td width=150px>' . $result->fecha_despacho . '</td>
+                        <td width=150px>' . (new Carbon($result->fecha_despacho))->format('d-m-Y H:i') . '</td>
                     </tr>
                     <tr>
-                        <td width=100px>Codigo CC</td>
+                        <td width=100px>Código CDP</td>
                         <td width=5px>:</td>
                         <td width=320px>' . $result->codigo_oportunidad . '</td>
                         <td>Fecha Almacén</td>
                         <td width=5px>:</td>
-                        <td>' . $result->fecha_almacen . '</td>
+                        <td>' . (new Carbon($result->fecha_almacen))->format('d-m-Y') . '</td>
                     </tr>
                     <tr>
                         <td width=100px>Entidad/Cliente</td>
@@ -1365,88 +1367,112 @@ class TransformacionController extends Controller
                         <td width=320px>' . $result->nombre . '</td>
                         <td>Fecha Entrega</td>
                         <td width=5px>:</td>
-                        <td>' . $result->fecha_entrega . '</td>
+                        <td>' . (new Carbon($result->fecha_entrega))->format('d-m-Y') . '</td>
                     </tr>
                     <tr>
-                        <td width=100px>Instrucciones Generales</td>
+                        <td width=100px>Observación</td>
                         <td width=5px>:</td>
                         <td colSpan2"4">' . $result->descripcion_sobrantes . '</td>
                     </tr>
                 </table>
-                <br/>
                 <table id="detalle">
-                    <thead style="background-color: #bce8f1;">
+                    <thead>
                         <tr>
-                            <th colSpan="6"><center>Productos Base</center></th>
-                        </tr>
-                        <tr>
-                            <th>#</th>
-                            <th>Código</th>
-                            <th>Part Number</th>
-                            <th width="40%">Descripción</th>
-                            <th>Cant.</th>
-                            <th>Unid.</th>
+                            <th colSpan="4"><center>Productos que requieren transformación</center></th>
                         </tr>
                     </thead>
                     <tbody>';
         $i = 1;
 
         foreach ($detalle as $det) {
-            $html .= '
-                        <tr>
-                            <td class="right">' . $i . '</td>
-                            <td>' . $det->codigo . '</td>
-                            <td>' . $det->part_number . '</td>
-                            <td>' . $det->descripcion . '</td>
-                            <td class="right">' . $det->cantidad . '</td>
-                            <td>' . $det->abreviatura . '</td>
-                        </tr>';
+            // $html .= '
+            //             <tr>
+            //                 <td class="right">' . $i . '</td>
+            //                 <td>' . $det->codigo . '</td>
+            //                 <td>' . $det->part_number . '</td>
+            //                 <td>' . $det->descripcion . '</td>
+            //                 <td class="right">' . $det->cantidad . '</td>
+            //                 <td>' . $det->abreviatura . '</td>
+            //             </tr>';
+            // <tr>
+            //                     <th></th>
+            //                     <th colSpan="5" style="background-color: #c0f7c0;"><center>Item Transformado</center></th>
+            //                 </tr>
 
-            if ($det->descripcion_producto_transformado !== null) {
-                $html .= '
-                            <tr>
-                                <th></th>
-                                <th colSpan="5" style="background-color: #c0f7c0;"><center>Item Transformado</center></th>
+            if (
+                $det->descripcion_producto_transformado !== null || $det->part_no_producto_transformado !== null ||
+                $det->comentario_producto_transformado !== null
+            ) {
+                $html .= '  <tr>
+                                <th colSpan="4" style="background-color: #bce8f1;"><center>' . $i . '. Producto a transformar</center></th>
                             </tr>
                             <tr>
-                                <td></td>
-                                <td>' . $det->part_no_producto_transformado . '</td>
-                                <td colSpan="4">' . $det->descripcion_producto_transformado . '</td>
+                                <td colSpan="4"><strong>Producto Base:</strong></td>
+                            </tr>
+                            <tr>
+                                <th>Part Number</th>
+                                <th>Marca</th>
+                                <th width="60%">Descripción</th>
+                                <th>Cant.</th>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center;">' . $det->part_no . '</td>
+                                <td style="text-align:center;">' . $det->marca . '</td>
+                                <td>' . $det->descripcion . '</td>
+                                <td style="text-align:center;">' . $det->cantidad . '</td>
+                            </tr>
+                            <tr>
+                                <td colSpan="4"><strong>Producto Transformado:</strong></td>
+                            </tr>
+                            <tr>
+                                <th>Part Number</th>
+                                <th>Marca</th>
+                                <th width="40%">Descripción</th>
+                                <th>Cant.</th>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center;">' . $det->part_no_producto_transformado . '</td>
+                                <td style="text-align:center;">' . $det->marca_producto_transformado . '</td>
+                                <td>' . $det->descripcion_producto_transformado . '</td>
+                                <td style="text-align:center;">' . $det->cantidad . '</td>
                             </tr>';
 
                 $html .= '
                             <tr>
-                                <td></td>
-                                <td colSpan="5">' . ($det->etiquetado_producto_transformado ? '  Etiquetado: <strong>Si</strong>  ' : '  Etiquetado: <strong>No</strong>  ') .
+                                <td colSpan="4">' . ($det->etiquetado_producto_transformado ? '  Etiquetado: <strong>Si</strong>  ' : '  Etiquetado: <strong>No</strong>  ') .
                     ($det->bios_producto_transformado ? '  BIOS: <strong>Si</strong>  ' : '  BIOS: <strong>No</strong>  ') .
                     ($det->office_preinstalado_producto_transformado ? '  Office Preinstalado: <strong>Si</strong>  ' : '  Office Preinstalado: <strong>No</strong>  ') .
                     ($det->office_activado_producto_transformado ? '  Office Activado: <strong>Si</strong>  ' : '  Office Activado: <strong>No</strong>  ') . '</td>
                             </tr>';
 
                 $ingresaSale = DB::table('mgcp_cuadro_costos.cc_fila_movimientos_transformacion')
-                    ->select('cc_am_filas.descripcion as ingresa', 'cc_fila_movimientos_transformacion.sale')
+                    ->select(
+                        'cc_am_filas.descripcion as ingresa',
+                        'cc_fila_movimientos_transformacion.sale',
+                        'cc_fila_movimientos_transformacion.comentario'
+                    )
                     ->leftjoin('mgcp_cuadro_costos.cc_am_filas', 'cc_am_filas.id', '=', 'cc_fila_movimientos_transformacion.id_fila_ingresa')
                     ->where('cc_fila_movimientos_transformacion.id_fila_base', $det->id)
                     ->get();
 
                 if (count($ingresaSale) > 0) {
                     $html .= '
-                                    <tr>
-                                        <td></td>
-                                        <td colSpan="2" style="background-color: #c0f7c0;"><strong>Ingresa</strong></td>
-                                        <td colSpan="3" style="background-color: #c0f7c0;"><strong>Sale</strong></td>
-                                    </tr>';
+                            <tr>
+                                <th colSpan="2">Ingresa</th>
+                                <th>Sale</th>
+                                <th>Comentario</th>
+                            </tr>';
                     foreach ($ingresaSale as $val) {
                         $html .= '
-                                    <tr>
-                                        <td></td>
-                                        <td colSpan="2">' . ($val->ingresa !== null ? $val->ingresa : '-') . '</td>
-                                        <td colSpan="3">' . ($val->sale !== null ? $val->sale : '-') . '</td>
-                                    </tr>';
+                            <tr>
+                                <td colSpan="2">' . ($val->ingresa !== null ? $val->ingresa : '') . '</td>
+                                <td>' . ($val->sale !== null ? $val->sale : '') . '</td>
+                                <td>' . ($val->comentario !== null ? $val->comentario : '') . '</td>
+                            </tr>';
                     }
                 }
+                $i++;
             }
-            $i++;
         }
         $html .= '</tbody></table>';
 
@@ -1520,7 +1546,7 @@ class TransformacionController extends Controller
                 
                 
                 <footer style="position:absolute;bottom:0px;right:0px;">
-                    <p style="text-align:right;font-size:10px;margin-bottom:0px;">Elaborado por: ' . $result->nombre_corto . ' - Impreso el: ' . $fecha_actual . ' ' . $hora_actual . '</p>
+                    <p style="text-align:right;font-size:10px;margin-bottom:0px;">Emitido por: ' . $result->nombre_corto . ' - Impreso el: ' . $fecha_actual . ' ' . $hora_actual . '</p>
                     <p style="text-align:right;font-size:10px;margin-top:0px;"><strong>SYSTEM AGILE v2.1</strong></p>
                 </footer>
             </body>
