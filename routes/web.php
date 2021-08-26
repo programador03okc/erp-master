@@ -821,8 +821,6 @@ Route::group(['middleware' => ['auth']], function () {
 					// Route::get('logistica/listar_proveedores', 'LogisticaController@listar_proveedores');
 					// Route::get('mostrar_proveedor/{id_proveedor}', 'LogisticaController@mostrar_proveedor');
 				});
-
- 
 			});
 
 			Route::group(['as' => 'cotizacion.', 'prefix' => 'cotizacion'], function () {
@@ -1265,7 +1263,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 				Route::get('index', 'Almacen\Reporte\SaldosController@view_saldos')->name('index');
 				Route::get('listar_saldos/{id}', 'Almacen\Reporte\SaldosController@listar_saldos');
-				Route::get('listar_saldos_todo', 'Almacen\Reporte\SaldosController@listar_saldos_todo');
+				// Route::get('listar_saldos_todo', 'Almacen\Reporte\SaldosController@listar_saldos_todo');
 				Route::get('verRequerimientosReservados/{id}/{alm}', 'Almacen\Reporte\SaldosController@verRequerimientosReservados');
 				Route::get('tipo_cambio_compra/{fecha}', 'Almacen\Reporte\SaldosController@tipo_cambio_compra');
 				// Route::get('listar-saldos-por-almacen', 'Almacen\ReportesController@listar_saldos_por_almacen');

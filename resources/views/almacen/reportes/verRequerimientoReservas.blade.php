@@ -2,8 +2,7 @@
     <div class="modal-dialog" style="width: 800px;">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" 
-                aria-label="close"><span aria-hidden="true">&times;</span></button>
+                <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
                 <h3 class="modal-title">Detalle de Requerimientos</h3>
             </div>
             <div class="modal-body">
@@ -20,16 +19,17 @@
                                         <th>Código</th>
                                         <th>Concepto</th>
                                         <th>Almacén</th>
-                                        <th>Cantidad</th>
+                                        <th>Stock Comprometido</th>
                                         <th>RegistradoPor</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
+                                <tfoot></tfoot>
                             </table>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>  
+    </div>
 </div>
