@@ -22,7 +22,6 @@ Listado de requerimientos
         <div class="col-md-12">
             <fieldset class="group-table">
 
-                <form id="form-requerimientosElaborados" type="register">
                     <div class="row" hidden>
                         <div class="col-md-2">
                             <h5>Elaborado por</h5>
@@ -106,7 +105,7 @@ Listado de requerimientos
                             </tr>
                         </thead>
                     </table>
-                </form>
+
 
             </fieldset>
         </div>
@@ -156,7 +155,7 @@ Listado de requerimientos
 <script src="{{ asset('js/logistica/requerimiento/ArchivoAdjunto.js')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/TrazabilidadRequerimientoView.js')}}"></script>
 <!-- <script src="{{ asset('js/logistica/requerimiento/AprobarRequerimientoView.js')}}"></script> -->
-<script src="{{ asset('js/logistica/requerimiento/ListarRequerimientoView.js')}}"></script>
+<script src="{{ asset('js/logistica/requerimiento/ListarRequerimientoView.js?v=2')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/RequerimientoView.js')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/RequerimientoController.js')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/RequerimientoModel.js')}}"></script>

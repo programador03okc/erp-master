@@ -658,6 +658,7 @@ class OrdenController extends Controller
                 ->select(
                     'alm_det_req.id_detalle_requerimiento',
                     'alm_req.id_requerimiento',
+                    'alm_req.id_moneda',
                     'alm_req.codigo AS codigo_requerimiento',
                     'alm_det_req.id_requerimiento',
                     'alm_det_req.id_item AS id_item_alm_det_req',
@@ -724,6 +725,7 @@ class OrdenController extends Controller
                             'id_requerimiento'          => $data->id_requerimiento,
                             'codigo_requerimiento'      => $data->codigo_requerimiento,
                             'cantidad'                  => $data->cantidad - ($data->stock_comprometido?$data->stock_comprometido:0) - ($this->cantidadCompradaDetalleOrden($data->id_detalle_requerimiento)),
+                            'id_moneda'                 => $data->id_moneda,
                             'id_unidad_medida'          => $data->id_unidad_medida,
                             'unidad_medida'             => $data->unidad_medida,
                             'precio_unitario'           => $data->precio_unitario,

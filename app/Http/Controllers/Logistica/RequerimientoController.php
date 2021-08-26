@@ -1265,6 +1265,21 @@ class RequerimientoController extends Controller
                 $keywords = trim(strtoupper($keyword));
                 $query->whereRaw("UPPER(CONCAT(pers.nombres,' ',pers.apellido_paterno,' ',pers.apellido_materno)) LIKE ?", ["%{$keywords}%"]);
             })
+            ->filterColumn('alm_req.fecha_entrega', function ($query, $keyword) {
+                try {
+                    $keywords = Carbon::createFromFormat('d-m-Y',trim($keyword));
+                    $query->where('alm_req.fecha_entrega',$keywords);
+                } catch (\Throwable $th) {
+                }
+            })
+            ->filterColumn('alm_req.fecha_registro', function ($query, $keyword) {
+                try {
+                    $desde = Carbon::createFromFormat('d-m-Y',trim($keyword))->hour(0)->minute(0)->second(0);
+                    $hasta = Carbon::createFromFormat('d-m-Y',trim($keyword));
+                    $query->whereBetween('alm_req.fecha_registro',[$desde,$hasta->addDay()->addSeconds(-1)]);
+                } catch (\Throwable $th) {
+                }
+            })
             // ->filterColumn('monto_total', function ($query, $keyword) {
             //     $query->whereRaw("(SELECT SUM(alm_det_req.cantidad * alm_det_req.precio_unitario) 
             // FROM almacen.alm_det_req 

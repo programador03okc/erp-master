@@ -189,6 +189,7 @@ class OrdenView {
                                 'id_tipo_item': element.id_tipo_item,
                                 'id_requerimiento':element.id_requerimiento,
                                 'codigo_requerimiento': element.codigo_requerimiento,
+                                'id_moneda': element.id_moneda,
                                 'cantidad': element.cantidad,
                                 'cantidad_a_comprar': element.cantidad_a_comprar?element.cantidad_a_comprar:element.cantidad,
                                 'descripcion_producto':element.descripcion,
@@ -335,6 +336,7 @@ class OrdenView {
         document.querySelector("input[name='id_ubigeo_destino']").value = data.id_ubigeo_empresa_sede ? data.id_ubigeo_empresa_sede : '';
         document.querySelector("input[name='ubigeo_destino']").value = data.ubigeo_empresa_sede ? data.ubigeo_empresa_sede : '';
         document.querySelector("select[name='id_sede']").value = data.id_sede ? data.id_sede : '';
+        document.querySelector("select[name='id_moneda']").value = data.id_moneda ? data.id_moneda : 1;
         document.querySelector("input[name='id_cc']").value = data.id_cc ? data.id_cc : '';
         document.querySelector("textarea[name='observacion']").value = data.observacion ? data.observacion : '';
 
@@ -426,7 +428,7 @@ class OrdenView {
             } 
         }
 
-        tr.querySelector("span[class='subtotal']").textContent = Util.formatoNumero(subtotal, 2);
+        tr.querySelector("span[class='subtotal']").textContent = $.number(subtotal, 2);
         this.calcularMontosTotales();
     }
 
@@ -448,7 +450,7 @@ class OrdenView {
         if(incluyeIGV==true){
             let igv = (Math.round((totalNeto*0.18) * 100) / 100).toFixed(2);
             let MontoTotal= (Math.round((parseFloat(totalNeto)+parseFloat(igv)) * 100) / 100).toFixed(2)
-            document.querySelector("label[name='igv']").textContent= igv;
+            document.querySelector("label[name='igv']").textContent= $.number(igv,2);
             document.querySelector("label[name='montoTotal']").textContent= $.number(MontoTotal,2);
 
         }else{
@@ -621,9 +623,9 @@ class OrdenView {
         let igv = (total*0.18);
         let montoTotal=  parseFloat(montoNeto)+parseFloat(igv);
         document.querySelector("tfoot span[name='simboloMoneda']").textContent= simbolo_moneda_selected;
-        document.querySelector("label[name='montoNeto']").textContent=Util.formatoNumero(montoNeto, 2);
-        document.querySelector("label[name='igv']").textContent= Util.formatoNumero(igv, 3);
-        document.querySelector("label[name='montoTotal']").textContent= Util.formatoNumero(montoTotal, 2);
+        document.querySelector("label[name='montoNeto']").textContent=$.number(montoNeto, 2);
+        document.querySelector("label[name='igv']").textContent= $.number(igv, 2);
+        document.querySelector("label[name='montoTotal']").textContent= $.number(montoTotal, 2);
     }
 
     updateInObjSubtotal(id,valor){
@@ -884,7 +886,7 @@ class OrdenView {
                         <td style="border: none; text-align:center;">${element.abreviatura != null ? element.abreviatura : ''}</td>
                         <td style="border: none; text-align:center;">${element.cantidad >0 ? element.cantidad : ''}</td>
                         <td style="border: none; text-align:center;">${element.precio_unitario >0 ? element.precio_unitario : ''}</td>
-                        <td style="border: none; text-align:center;">${parseFloat(element.subtotal) > 0 ?Util.formatoNumero(element.subtotal,2) :Util.formatoNumero((element.cantidad * element.precio_unitario),2)}</td>
+                        <td style="border: none; text-align:center;">${parseFloat(element.subtotal) > 0 ?$.number(element.subtotal,2) :$.number((element.cantidad * element.precio_unitario),2)}</td>
                         <td style="border: none; text-align:center;">${element.motivo != null ? element.motivo : ''}</td>
                         <td style="border: none; text-align:center;">${element.observacion != null ? element.observacion : ''}</td>
                         <td style="border: none; text-align:center;">${element.estado_doc != null ? element.estado_doc : ''}</td>

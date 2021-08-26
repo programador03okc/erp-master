@@ -11,6 +11,24 @@ class Proveedor extends Model
     public $timestamps = false;
     protected $guarded = ['id_proveedor'];
 
+
+    public static function listado(){
+        $data = Proveedor::with('contribuyente.tipoContribuyente',
+        'contribuyente.tipoDocumentoIdentidad',
+        'cuentaContribuyente.banco',
+        'cuentaContribuyente.banco.contribuyente',
+        'cuentaContribuyente.tipoCuenta',
+        'cuentaContribuyente.moneda',
+        'contribuyente.pais',
+        'contribuyente.distrito',
+        // 'contribuyente.distrito.provincia',
+        // 'contribuyente.distrito.provincia.departamento',
+        'estadoProveedor');
+        // ->where('log_prove.id_contribuyente','=',1912);
+        return $data;
+
+    }
+
     public static function mostrarCuentasProveedor($idProveedor)
     {
 
@@ -20,10 +38,18 @@ class Proveedor extends Model
     }
 
 
+
     public function contribuyente(){
-        return $this->belongsTo('App\Models\Contabilidad\Contribuyente','id_contribuyente','id_contribuyente');
+        return $this->hasOne('App\Models\Contabilidad\Contribuyente','id_contribuyente','id_contribuyente');
     }
     public function cuentaContribuyente(){
         return $this->belongsTo('App\Models\Contabilidad\CuentaContribuyente','id_contribuyente','id_contribuyente');
+    }
+    public function estadoProveedor(){
+        return $this->hasOne('App\Models\Logistica\EstadoProveedor','id_estado','id_estado')->withDefault([
+            'id_estado' => null,
+            'descripcion' => null,
+            'estado' => null
+        ]);
     }
 }

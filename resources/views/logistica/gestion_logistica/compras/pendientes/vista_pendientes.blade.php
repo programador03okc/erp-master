@@ -95,11 +95,13 @@ Requerimientos pendientes
 
 @section('scripts')
 <script src="{{ asset('js/util.js')}}"></script>
+<script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
 <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
 <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
 <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
- 
+<script src="{{ asset('template/plugins/datetime-moment.js') }}"></script>
+
 <script src="{{('/js/logistica/orden/RequerimientoPendienteModel.js?v=2')}}"></script>
 <script src="{{('/js/logistica/orden/RequerimientoPendienteView.js?v=6')}}"></script>
 <script src="{{('/js/logistica/orden/RequerimientoPendienteController.js?v=2')}}"></script>
@@ -110,6 +112,10 @@ Requerimientos pendientes
 <script>
 
     $(document).ready(function() {
+
+        $.fn.dataTable.moment('DD-MM-YYYY HH:mm');
+        $.fn.dataTable.moment('DD-MM-YYYY');
+
         seleccionarMenu(window.location);
 
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
