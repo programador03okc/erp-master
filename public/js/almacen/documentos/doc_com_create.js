@@ -70,49 +70,57 @@ function open_doc_create_seleccionadas() {
     var dif_prov = 0;
     var dif_emp = 0;
 
-    ingresos_seleccionados.forEach(element => {
-        id_ingresos_seleccionadas.push(element.id_guia_com);
+    if (ingresos_seleccionados.length > 1) {
 
-        if (prov == null) {
-            prov = element.razon_social;
-            id_prov = element.id_proveedor;
-        }
-        else if (element.razon_social !== prov) {
-            dif_prov++;
-        }
-        if (emp == null) {
-            emp = element.id_empresa;
-        }
-        else if (element.id_empresa !== emp) {
-            dif_emp++;
-        }
-    });
+        ingresos_seleccionados.forEach(element => {
+            id_ingresos_seleccionadas.push(element.id_guia_com);
 
-    var text = '';
-    if (dif_prov > 0) text += 'Debe seleccionar Guías del mismo proveedor\n';
-    if (dif_emp > 0) text += 'Debe seleccionar Guías emitidas para la misma empresa';
+            if (prov == null) {
+                prov = element.razon_social;
+                id_prov = element.id_proveedor;
+            }
+            else if (element.razon_social !== prov) {
+                dif_prov++;
+            }
+            if (emp == null) {
+                emp = element.id_empresa;
+            }
+            else if (element.id_empresa !== emp) {
+                dif_emp++;
+            }
+        });
 
-    if ((dif_prov + dif_emp) > 0) {
-        // alert(text);
+        var text = '';
+        if (dif_prov > 0) text += 'Debe seleccionar Guías del mismo proveedor\n';
+        if (dif_emp > 0) text += 'Debe seleccionar Guías emitidas para la misma empresa';
+
+        if ((dif_prov + dif_emp) > 0) {
+            // alert(text);
+            Swal.fire({
+                title: text,
+                icon: "warning",
+            });
+        } else {
+
+            $('#modal-doc_create').modal({
+                show: true
+            });
+            var id_tp_doc = 2;
+            $('[name=id_tp_doc]').val(id_tp_doc).trigger('change.select2');
+            $('[name=fecha_emision_doc]').val(fecha_actual());
+            $('[name=serie_doc]').val("");
+            $('[name=numero_doc]').val("");
+            $('[name=moneda]').val(1);
+            $('[name=simbolo]').val("S/");
+
+            totales.simbolo = "S/";
+            obtenerGuíaSeleccionadas(id_ingresos_seleccionadas, prov, id_prov);
+        }
+    } else {
         Swal.fire({
-            title: text,
+            title: "Debe seleccionar varias guías",
             icon: "warning",
         });
-    } else {
-
-        $('#modal-doc_create').modal({
-            show: true
-        });
-        var id_tp_doc = 2;
-        $('[name=id_tp_doc]').val(id_tp_doc).trigger('change.select2');
-        $('[name=fecha_emision_doc]').val(fecha_actual());
-        $('[name=serie_doc]').val("");
-        $('[name=numero_doc]').val("");
-        $('[name=moneda]').val(1);
-        $('[name=simbolo]').val("S/");
-
-        totales.simbolo = "S/";
-        obtenerGuíaSeleccionadas(id_ingresos_seleccionadas, prov, id_prov);
     }
 }
 

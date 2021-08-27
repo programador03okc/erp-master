@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Models\Almacen\Movimiento;
 use App\Models\Almacen\MovimientoDetalle;
+use App\Models\almacen\Reserva;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
@@ -298,6 +299,7 @@ class OrdenesPendientesController extends Controller
                 'alm_und_medida.abreviatura',
                 'log_ord_compra.codigo as codigo_oc',
                 'alm_prod.id_categoria',
+                'sis_moneda.simbolo',
                 DB::raw('(SELECT SUM(guia_com_det.cantidad) FROM almacen.guia_com_det
                           WHERE guia_com_det.id_oc_det = log_det_ord_compra.id_detalle_orden 
                             AND guia_com_det.estado != 7) 
@@ -309,6 +311,7 @@ class OrdenesPendientesController extends Controller
             ->leftjoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
             ->leftjoin('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
             ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'log_det_ord_compra.id_unidad_medida')
+            ->leftjoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'log_ord_compra.id_moneda')
             ->whereIn('log_det_ord_compra.id_orden_compra', $ordenes)
             ->where([
                 ['log_det_ord_compra.estado', '!=', 7],
@@ -978,7 +981,7 @@ class OrdenesPendientesController extends Controller
                     }
                     DB::table('almacen.alm_reserva')
                         ->insert([
-                            'codigo' => $this->reservaNextCodigo($id_almacen),
+                            'codigo' => Reserva::nextCodigo($id_almacen),
                             'id_producto' => $det->id_producto,
                             'stock_comprometido' => $cantidad,
                             'id_almacen_reserva' => $id_almacen,
@@ -1006,7 +1009,7 @@ class OrdenesPendientesController extends Controller
                     ]);
                 DB::table('almacen.alm_reserva')
                     ->insert([
-                        'codigo' => $this->reservaNextCodigo($id_almacen),
+                        'codigo' => Reserva::nextCodigo($id_almacen),
                         'id_producto' => $det->id_producto,
                         'stock_comprometido' => $cantidad,
                         'id_almacen_reserva' => $id_almacen,
@@ -1018,22 +1021,6 @@ class OrdenesPendientesController extends Controller
                     ]);
             }
         }
-    }
-
-    public function reservaNextCodigo($id_almacen)
-    {
-        $yyyy = date('Y', strtotime(date('Y-m-d H:i:s')));
-        $anio = date('y', strtotime(date('Y-m-d H:i:s')));
-
-        $cantidad = DB::table('almacen.alm_reserva')
-            ->where('id_almacen_reserva', $id_almacen)
-            ->whereYear('fecha_registro', '=', $yyyy)
-            ->get()->count();
-
-        $val = GenericoAlmacenController::leftZero(4, ($cantidad + 1));
-        $nextId = "RE-" . $id_almacen . "-" . $anio . $val;
-
-        return $nextId;
     }
 
     public function transferencia($id_guia_com)

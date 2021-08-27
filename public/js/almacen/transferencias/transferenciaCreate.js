@@ -112,20 +112,12 @@ function ver_requerimiento(id_requerimiento) {
             $("#modal-ver_requerimiento").modal({
                 show: true
             });
-            $("[name=id_requerimiento]").val(
-                response["requerimiento"].id_requerimiento
-            );
+            $("[name=id_requerimiento]").val(response["requerimiento"].id_requerimiento);
             $("[name=codigo_req]").text(response["requerimiento"].codigo);
             $("[name=concepto]").text(response["requerimiento"].concepto);
-            $("[name=fecha_requerimiento]").text(
-                response["requerimiento"].fecha_requerimiento
-            );
-            $("[name=sede_requerimiento]").text(
-                response["requerimiento"].sede_requerimiento
-            );
-            $("[name=estado_requerimiento]").text(
-                response["requerimiento"].estado_doc
-            );
+            $("[name=fecha_requerimiento]").text(response["requerimiento"].fecha_requerimiento);
+            $("[name=sede_requerimiento]").text(response["requerimiento"].sede_requerimiento);
+            $("[name=estado_requerimiento]").text(response["requerimiento"].estado_doc);
 
             response["detalle"].forEach(element => {
                 if (element.sede !== "") {
@@ -158,7 +150,7 @@ function mostrarDetalleRequerimiento() {
                 }
             });
 
-            html += `<tr>
+            html += `<tr id="${element.id_reserva}">
             <td>${i}</td>
             <td>${element.codigo_orden !== null
                     ? element.codigo_orden
@@ -167,21 +159,18 @@ function mostrarDetalleRequerimiento() {
                         : ""
                 }</td>
             <td>${element.sede}</td>
-            <td>${element.codigo +
-                (element.tiene_transformacion
+            <td>${element.codigo + (element.tiene_transformacion
                     ? ' <span class="badge badge-secondary">Transformado</span> '
                     : "")}</td>
             <td>${element.part_number !== null ? element.part_number : ""}</td>
             <td>${element.descripcion} <strong>${html_serie}</strong></td>
-            <td>${element.cantidad}</td>
+            <td>${element.stock_comprometido}</td>
             <td>${element.abreviatura}</td>
             <td>${element.sede !== ""
                     ? `<button type="button" class="quitar btn btn-danger btn-xs" data-toggle="tooltip" 
                         data-placement="bottom" title="Quitar item" 
                         data-id="${element.id_detalle_requerimiento}">
-                        <i class="fas fa-minus"></i></button>`
-                    : ""
-                }
+                        <i class="fas fa-minus"></i></button>` : ""}
             <td/>
             </tr>`;
             i++;
@@ -226,9 +215,10 @@ $("#form-ver_requerimiento").on("submit", function (e) {
 
             detalle.forEach(element => {
                 nuevo = {
+                    id_reserva: element.id_reserva,
                     id_detalle_requerimiento: element.id_detalle_requerimiento,
                     id_producto: element.id_producto,
-                    cantidad: element.cantidad,
+                    stock_comprometido: element.stock_comprometido,
                     id_almacen_reserva: element.id_almacen_reserva
                 };
                 listaItemsDetalle.push(nuevo);

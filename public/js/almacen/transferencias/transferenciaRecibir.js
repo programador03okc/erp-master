@@ -139,6 +139,7 @@ function recibir() {
             var nuevo = {
                 id_guia_ven_det: element.id_guia_ven_det,
                 id_trans_detalle: element.id_trans_detalle,
+                id_detalle_requerimiento: element.id_detalle_requerimiento,
                 cantidad_recibida: element.cantidad_recibida,
                 observacion: element.observacion,
                 id_motivo_perdida: element.id_motivo

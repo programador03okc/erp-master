@@ -117,7 +117,13 @@ function listarOrdenesPendientes() {
             { data: "id_orden_compra" },
             { data: "codigo_softlink" },
             { data: "codigo" },
-            { data: "nombre_corto", name: "sis_usua.nombre_corto" },
+            { data: "razon_social", name: "adm_contri.razon_social" },
+            {
+                data: "fecha",
+                render: function (data, type, row) {
+                    return formatDateHour(row["fecha"]);
+                }
+            },
             {
                 render: function (data, type, row) {
                     var dias_restantes = restarFechas(
@@ -138,13 +144,6 @@ function listarOrdenesPendientes() {
                 }
             },
             { data: "sede_descripcion", name: "sis_sede.descripcion" },
-            { data: "razon_social", name: "adm_contri.razon_social" },
-            {
-                data: "fecha",
-                render: function (data, type, row) {
-                    return formatDateHour(row["fecha"]);
-                }
-            },
             { data: "nombre_corto", name: "sis_usua.nombre_corto" },
             {
                 data: "estado_doc", name: "estados_compra.descripcion",
@@ -198,7 +197,7 @@ function listarOrdenesPendientes() {
                         );
                     }
                 },
-                targets: 11
+                targets: 10
             }
         ],
         order: [[0, "desc"]]

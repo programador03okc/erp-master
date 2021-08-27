@@ -31,63 +31,74 @@ function open_guia_create(data, $fila) {
 
 function open_guia_create_seleccionadas() {
     var id_prov = null;
+    var proveedor = null;
     var sede = null;
     var dif_prov = 0;
     var dif_sede = 0;
     var id_oc_seleccionadas = [];
 
-    oc_seleccionadas.forEach(element => {
-        id_oc_seleccionadas.push(element.id_orden_compra);
+    if (oc_seleccionadas.length > 1) {
 
-        if (id_prov == null) {
-            id_prov = element.id_proveedor;
-        }
-        else if (element.id_proveedor !== id_prov) {
-            dif_prov++;
-        }
-        if (sede == null) {
-            sede = element.id_sede;
-        }
-        else if (element.id_sede !== sede) {
-            dif_sede++;
-        }
-    });
+        oc_seleccionadas.forEach(element => {
+            id_oc_seleccionadas.push(element.id_orden_compra);
 
-    var text = '';
-    if (dif_prov > 0) text += 'Debe seleccionar OCs del mismo proveedor\n';
-    if (dif_sede > 0) text += 'Debe seleccionar OCs de la misma sede';
+            if (id_prov == null) {
+                id_prov = element.id_proveedor;
+                proveedor = element.razon_social;
+            }
+            else if (element.id_proveedor !== id_prov) {
+                dif_prov++;
+            }
+            if (sede == null) {
+                sede = element.id_sede;
+            }
+            else if (element.id_sede !== sede) {
+                dif_sede++;
+            }
+        });
 
-    if ((dif_sede + dif_prov) > 0) {
-        // alert(text);
+        var text = '';
+        if (dif_prov > 0) text += 'Debe seleccionar OCs del mismo proveedor\n';
+        if (dif_sede > 0) text += 'Debe seleccionar OCs de la misma sede';
+
+        if ((dif_sede + dif_prov) > 0) {
+            // alert(text);
+            Swal.fire({
+                title: text,
+                icon: "warning",
+            });
+        } else {
+            $('#modal-guia_create').modal({
+                show: true
+            });
+            $("#submit_guia").removeAttr("disabled");
+            $('[name=id_operacion]').val(2).trigger('change.select2');
+            $('[name=id_guia_clas]').val(1);
+            $('[name=id_proveedor]').val(id_prov);
+            $('[name=razon_social_proveedor]').val(proveedor);
+            $('[name=id_sede]').val(sede);
+            $('[name=id_transformacion]').val('');
+            $('[name=id_requerimiento]').val('');
+            $('[name=id_od]').val('');
+            $('[name=serie]').val('');
+            $('[name=numero]').val('');
+            $('[name=fecha_emision]').val(fecha_actual());
+            $('[name=fecha_almacen]').val(fecha_actual());
+
+            $('#detalleOrdenSeleccionadas tbody').html('');
+            $('.agregarSobrante').hide();
+
+            $('#serie').text('');
+            $('#numero').text('');
+            cargar_almacenes(sede, 'id_almacen');
+            var data = 'oc_seleccionadas=' + JSON.stringify(id_oc_seleccionadas);
+            listar_detalle_ordenes_seleccionadas(data);
+        }
+    } else {
         Swal.fire({
-            title: text,
+            title: "Debe seleccionar varias ordenes",
             icon: "warning",
         });
-    } else {
-        $('#modal-guia_create').modal({
-            show: true
-        });
-        $("#submit_guia").removeAttr("disabled");
-        $('[name=id_operacion]').val(2).trigger('change.select2');
-        $('[name=id_guia_clas]').val(1);
-        $('[name=id_proveedor]').val(id_prov);
-        $('[name=id_sede]').val(sede);
-        $('[name=id_transformacion]').val('');
-        $('[name=id_requerimiento]').val('');
-        $('[name=id_od]').val('');
-        $('[name=serie]').val('');
-        $('[name=numero]').val('');
-        $('[name=fecha_emision]').val(fecha_actual());
-        $('[name=fecha_almacen]').val(fecha_actual());
-
-        $('#detalleOrdenSeleccionadas tbody').html('');
-        $('.agregarSobrante').hide();
-
-        $('#serie').text('');
-        $('#numero').text('');
-        cargar_almacenes(sede, 'id_almacen');
-        var data = 'oc_seleccionadas=' + JSON.stringify(id_oc_seleccionadas);
-        listar_detalle_ordenes_seleccionadas(data);
     }
 }
 
@@ -270,6 +281,7 @@ function listar_detalle_ordenes_seleccionadas(data) {
                     'cantidad': cant,
                     'id_unid_med': element.id_unidad_medida,
                     'abreviatura': element.abreviatura,
+                    'simbolo': element.simbolo,
                     'precio': element.precio,
                     'subtotal': (element.cantidad * element.precio),
                     'series': []
@@ -308,8 +320,8 @@ function mostrar_ordenes_seleccionadas() {
             <td><input class="right" type="number" id="${element.id_oc_det !== null ? element.id_oc_det : 'p' + element.id_producto}cantidad" value="${element.cantidad}" 
                 min="1" ${element.id_oc_det !== null ? `max="${element.cantidad}"` : ''} style="width:80px;"/></td>
             <td>${element.abreviatura}</td>
-            <td class="right">${element.precio}</td>
-            <td class="right">${formatNumber.decimal((element.cantidad * element.precio), '', -4)}</td>
+            <td class="text-right">${formatNumber.decimal(element.precio, element.simbolo + ' ', -4)}</td>
+            <td class="text-right">${formatNumber.decimal((element.cantidad * element.precio), element.simbolo + ' ', -4)}</td>
             <td>
                 <input type="text" class="oculto" id="series" value="${element.series}" 
                 data-partnumber="${element.part_number !== null ? element.part_number : element.codigo}"/>

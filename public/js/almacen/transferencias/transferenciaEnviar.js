@@ -131,21 +131,6 @@ function listarDetalleTransferencia(id) {
 
 function listarDetalleTransferenciaSeleccionadas(data) {
     listarDetalleTransferenciaPrincipal(2, 0, data);
-
-    // $.ajax({
-    //     type: "POST",
-    //     url: "listarDetalleTransferenciasSeleccionadas",
-    //     data: data,
-    //     dataType: "JSON",
-    //     success: function(response) {
-    //         listaDetalle = response;
-    //         mostrarDetalleTransferencia();
-    //     }
-    // }).fail(function(jqXHR, textStatus, errorThrown) {
-    //     console.log(jqXHR);
-    //     console.log(textStatus);
-    //     console.log(errorThrown);
-    // });
 }
 
 function mostrarDetalleTransferencia() {
@@ -182,46 +167,10 @@ function mostrarDetalleTransferencia() {
             </strong>
         </td>
         </tr>`;
-
-        // <td style="background-color: LightCyan;">${
-        //     element.concepto !== null ? element.concepto : ""
-        // }</td>
         i++;
     });
     $("#detalleTransferencia tbody").html(html);
 }
-
-// function listarSeries(id_guia_com_det){
-//     $('#modal-ver_series').modal({
-//         show: true
-//     });
-//     $.ajax({
-//         type: 'GET',
-//         url: 'listarSeries/'+id_guia_com_det,
-//         dataType: 'JSON',
-//         success: function(response){
-//             console.log(response);
-//             var tr = '';
-//             var i = 1;
-//             response.forEach(element => {
-//                 tr+=`<tr id="${element.id_prod_serie}">
-//                         <td class="numero">${i}</td>
-//                         <td class="serie">${element.serie}</td>
-//                         <td>${element.guia_com}</td>
-//                         </tr>`;
-//                     });
-//                     // <td><i class="btn btn-danger fas fa-trash fa-lg" ></i>
-//             // onClick="eliminar_serie('+"'"+response[i].id_prod_serie+"'"+');"
-//             $('#listaSeries tbody').html(tr);
-//             $('[name=serie_prod]').focus();
-//         }
-//     }).fail( function( jqXHR, textStatus, errorThrown ){
-//         console.log(jqXHR);
-//         console.log(textStatus);
-//         console.log(errorThrown);
-//     });
-// }
-
 // function next_serie_numero(id_sede, id_tp_doc) {
 //     if (id_sede !== null && id_tp_doc !== null) {
 //         $.ajax({
@@ -262,47 +211,11 @@ $("#form-transferenciaGuia").on("submit", function (e) {
         });
     });
 
-    // if (origen == 'transferencia_por_orden'){
-    //     guardar_transferencia(data);
-    // }
-    // else if (origen == 'transferencia_por_requerimiento'){
-    data +=
-        "&trans_seleccionadas=" +
-        JSON.stringify(id_trans_seleccionadas) +
-        "&detalle=" +
-        JSON.stringify(detalle);
+    data += "&trans_seleccionadas=" + JSON.stringify(id_trans_seleccionadas) +
+        "&detalle=" + JSON.stringify(detalle);
     salidaTransferencia(data);
-    // }
-});
 
-// function guardar_transferencia(data){
-//     var msj = validaCampos();
-//     if (msj.length > 0){
-//         alert(msj);
-//     } else {
-//         $("#submit_transferencia").attr('disabled','true');
-//         $.ajax({
-//             type: 'POST',
-//             url: 'guardar_guia_transferencia',
-//             data: data,
-//             dataType: 'JSON',
-//             success: function(response){
-//                 console.log(response);
-//                 if (response > 0){
-//                     alert('Salida Almacén generada con éxito');
-//                     $('#modal-transferenciaGuia').modal('hide');
-//                     $('#ordenesEntregadas').DataTable().ajax.reload();
-//                     // var id = encode5t(response);
-//                     // window.open('imprimir_salida/'+id);
-//                 }
-//             }
-//         }).fail( function( jqXHR, textStatus, errorThrown ){
-//             console.log(jqXHR);
-//             console.log(textStatus);
-//             console.log(errorThrown);
-//         });
-//     }
-// }
+});
 
 function salidaTransferencia(data) {
     var msj = validaCampos();
@@ -387,10 +300,7 @@ $(".handleChangeSerie").on("keyup", function (e) {
     if (e.target.value.length > 0) {
         e.target.closest("div").classList.remove("has-error");
         if (e.target.closest("div").querySelector("span")) {
-            e.target
-                .closest("div")
-                .querySelector("span")
-                .remove();
+            e.target.closest("div").querySelector("span").remove();
         }
     } else {
         e.target.closest("div").classList.add("has-error");
