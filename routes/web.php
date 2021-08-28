@@ -739,7 +739,8 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('tiene-items-para-compra', 'ComprasPendientesController@tieneItemsParaCompra')->name('tiene-items-para-compra');
 					Route::post('lista_items-cuadro-costos-por-requerimiento', 'ComprasPendientesController@get_lista_items_cuadro_costos_por_id_requerimiento')->name('lista_items-cuadro-costos-por-requerimiento');
 					Route::get('grupo-select-item-para-compra', 'ComprasPendientesController@getGrupoSelectItemParaCompra')->name('grupo-select-item-para-compra');
-					Route::post('guardar-atencion-con-almacen', 'ComprasPendientesController@guardarAtencionConAlmacen')->name('guardar-atencion-con-almacen');
+					Route::post('guardar-reserva-almacen', 'ComprasPendientesController@guardarReservaAlmacen')->name('guardar-reserva-almacen');
+					Route::post('anular-reserva-almacen', 'ComprasPendientesController@anularReservaAlmacen')->name('anular-reserva-almacen');
 					Route::post('buscar-item-catalogo', 'ComprasPendientesController@buscarItemCatalogo')->name('buscar-item-catalogo');
 					Route::post('guardar-items-detalle-requerimiento', 'ComprasPendientesController@guardarItemsEnDetalleRequerimiento')->name('guardar-items-detalle-requerimiento');
 					Route::get('listar-almacenes', 'Almacen\Ubicacion\AlmacenController@mostrar_almacenes')->name('listar-almacenes');
@@ -756,6 +757,9 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('anular_item', 'Logistica\Requerimientos\MapeoProductosController@anular_item')->name('anular-item');
 					Route::get('mostrar_categorias_tipo/{id}', 'Almacen\Catalogo\ProductoController@mostrar_categorias_tipo');
 					Route::get('detalle-requerimiento/{idRequerimiento?}', 'Logistica\RequerimientoController@detalleRequerimiento')->name('detalle-requerimientos');
+					Route::get('detalle-requeriento-para-reserva/{idDetalleRequerimiento?}', 'Logistica\RequerimientoController@detalleRequerimientoParaReserva')->name('detalle-requerimiento-para-reserva');
+					Route::get('historial-reserva-producto/{idDetalleRequerimiento?}', 'Logistica\RequerimientoController@historialReservaProducto')->name('historial-reserva-producto');
+					Route::get('todo-detalle-requeriento/{idRequerimiento?}/{transformadosONoTransformados?}', 'Logistica\RequerimientoController@todoDetalleRequerimiento')->name('todo-detalle-requerimiento');
 				});
 
 				Route::group(['as' => 'ordenes.', 'prefix' => 'ordenes'], function () {

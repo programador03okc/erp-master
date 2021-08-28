@@ -226,6 +226,77 @@ class Requerimiento extends Model
 
     }
 
+    public static function actualizarEstadoRequerimientoAtendido($id_requerimiento_list){
+
+        $id_requerimiento_unique_list =  array_unique($id_requerimiento_list);
+
+        $estadoActual=['id'=>2,'descripcion'=>'Aprobado'];
+
+        if(count($id_requerimiento_unique_list)>0){
+            foreach ($id_requerimiento_unique_list as  $idRequerimiento) {
+                $total_items= 0;
+                $total_estado_elaborado= 0;
+                $total_estado_atentido_total= 0;
+                $total_estado_atentido_parcial= 0;
+                $alm_det_req = DB::table('almacen.alm_det_req')
+                ->select(
+                    'alm_det_req.*'
+                    )
+                ->where('alm_det_req.tiene_transformacion',false)
+                ->where('alm_det_req.id_requerimiento',$idRequerimiento)
+                ->get();
+        
+                
+                foreach($alm_det_req as $data){
+                    $total_items+=1;
+                }
+        
+        
+                foreach($alm_det_req as $det_req){
+                        if($det_req->estado == '1' ){
+                            $total_estado_elaborado +=1;
+                        }
+                        if($det_req->estado == '5' ){
+                            $total_estado_atentido_total +=1;
+                        }
+                        if($det_req->estado == '15' ){
+                            $total_estado_atentido_parcial +=1;
+                        }
+                }
+                if($total_estado_elaborado >0){
+                    DB::table('almacen.alm_req')
+                    ->where('alm_req.id_requerimiento',$idRequerimiento)
+                    ->update(
+                        [
+                            'estado' => 2 // aprobado
+                        ]);
+                    $estadoActual=['id'=>2,'descripcion'=>'Aprobado'];
+                }
+                elseif($total_estado_elaborado ==0 && $total_estado_atentido_parcial > 0){
+                    DB::table('almacen.alm_req')
+                    ->where('alm_req.id_requerimiento',$idRequerimiento)
+                    ->update(
+                        [ 
+                            'estado' => 15 // atendido parcial
+                        ]);
+                        $estadoActual=['id'=>15,'descripcion'=>'Atendido parcial'];
+        
+                }
+                elseif($total_estado_elaborado ==0 && $total_estado_atentido_parcial == 0 && $total_estado_atentido_total >0 ){
+                    DB::table('almacen.alm_req')
+                    ->where('alm_req.id_requerimiento',$idRequerimiento)
+                    ->update(
+                        [
+                            'estado' => 5 // atendido total
+                        ]);
+                        $estadoActual=['id'=>5,'descripcion'=>'Atendido total'];
+        
+                }
+            }
+        }
+        return $estadoActual;
+    }
+
     public function detalle(){
         return $this->hasMany('App\Models\Almacen\DetalleRequerimiento','id_requerimiento','id_requerimiento');
     }

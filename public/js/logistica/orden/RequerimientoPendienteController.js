@@ -6,7 +6,6 @@ class RequerimientoPendienteCtrl{
     }
 
     getRequerimientosPendientes(empresa,sede,fechaRegistroDesde,fechaRegistroHasta, reserva, orden) {
-        console.log(empresa,sede,fechaRegistroDesde,fechaRegistroHasta, reserva, orden);
         return requerimientoPendienteModel.getRequerimientosPendientes(empresa,sede,fechaRegistroDesde,fechaRegistroHasta, reserva, orden);
         // return ordenesData;
     }
@@ -17,13 +16,14 @@ class RequerimientoPendienteCtrl{
     }
 
     // limpiar tabla
-    limpiarTabla(identificador){
-        let nodeTbody = document.querySelector("table[id='" + identificador + "'] tbody");
+    limpiarTabla(idElement){
+        let nodeTbody = document.querySelector("table[id='" + idElement + "'] tbody");
+        if(nodeTbody!=null){
+            while (nodeTbody.children.length > 0) {
+                nodeTbody.removeChild(nodeTbody.lastChild);
+            }
 
-        for(var i = nodeTbody.rows.length - 1; i > 0; i--)
-        {
-            nodeTbody.deleteRow(i);
-        }   
+        }
     }
 
     //clean character
@@ -102,19 +102,34 @@ class RequerimientoPendienteCtrl{
 
     // atender con almacén
 
-    openModalAtenderConAlmacen(obj){
+    getAlmacenes(){
 
-        return requerimientoPendienteModel.getDataItemsRequerimientoParaAtenderConAlmacen(obj.dataset.idRequerimiento);
+        return requerimientoPendienteModel.getAlmacenes();
+    }
+    
+    openModalAtenderConAlmacen(idRequerimiento){
+
+        return requerimientoPendienteModel.getAllDataDetalleRequerimiento(idRequerimiento);
     }
 
-    guardarAtendidoConAlmacen(data){
-        return this.requerimientoPendienteModel.guardarAtendidoConAlmacen(data);
+    // guardarAtendidoConAlmacen(data){
+    //     return this.requerimientoPendienteModel.guardarAtendidoConAlmacen(data);
 
 
-    }
+    // }
 
     getDataItemsRequerimientoParaAtenderConAlmacen(id_requerimiento){
         return this.requerimientoPendienteModel.getDataItemsRequerimientoParaAtenderConAlmacen(id_requerimiento);
+
+    }
+
+    obtenerDetalleRequerimientoParaReserva(idDetalleRequerimiento){
+        return this.requerimientoPendienteModel.obtenerDetalleRequerimientoParaReserva(idDetalleRequerimiento);
+
+    }
+
+    obtenerHistorialDetalleRequerimientoParaReserva(idDetalleRequerimiento){
+        return this.requerimientoPendienteModel.obtenerHistorialDetalleRequerimientoParaReserva(idDetalleRequerimiento);
 
     }
 
