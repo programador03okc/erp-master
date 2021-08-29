@@ -28,6 +28,23 @@ class Proveedor extends Model
         return $data;
 
     }
+    public static function mostrar($idProveedor){
+        $data = Proveedor::with('contribuyente.tipoContribuyente',
+        'contribuyente.tipoDocumentoIdentidad',
+        'cuentaContribuyente.banco',
+        'cuentaContribuyente.banco.contribuyente',
+        'cuentaContribuyente.tipoCuenta',
+        'cuentaContribuyente.moneda',
+        'contribuyente.pais',
+        'contribuyente.distrito',
+        'contactoContribuyente',
+        // 'contribuyente.distrito.provincia',
+        // 'contribuyente.distrito.provincia.departamento',
+        'estadoProveedor')->where('id_proveedor',$idProveedor)->first();
+        // ->where('log_prove.id_contribuyente','=',1912);
+        return $data;
+
+    }
 
     public static function mostrarCuentasProveedor($idProveedor)
     {
@@ -43,7 +60,10 @@ class Proveedor extends Model
         return $this->hasOne('App\Models\Contabilidad\Contribuyente','id_contribuyente','id_contribuyente');
     }
     public function cuentaContribuyente(){
-        return $this->belongsTo('App\Models\Contabilidad\CuentaContribuyente','id_contribuyente','id_contribuyente');
+        return $this->hasMany('App\Models\Contabilidad\CuentaContribuyente','id_contribuyente','id_contribuyente');
+    }
+    public function contactoContribuyente(){
+        return $this->hasMany('App\Models\Contabilidad\ContactoContribuyente','id_contribuyente','id_contribuyente');
     }
     public function estadoProveedor(){
         return $this->hasOne('App\Models\Logistica\EstadoProveedor','id_estado','estado')->withDefault([

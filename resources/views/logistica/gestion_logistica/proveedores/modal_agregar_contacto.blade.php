@@ -11,54 +11,55 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <h5>Nombre</h5>
-                                <input type="text" class="form-control activation handleChangeUpdateConcepto" name="nombre">
+                                <input type="text" class="form-control" name="nombreContacto">
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="form-group">
                                 <h5>Cargo</h5>
-                                <input type="text" class="form-control activation handleChangeUpdateConcepto" name="cargo">
+                                <input type="text" class="form-control" name="cargoContacto">
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="form-group">
                                 <h5>Telefono</h5>
-                                <input type="text" class="form-control activation handleChangeUpdateConcepto" name="telefono">
+                                <input type="text" class="form-control handleKeyUpTelefono" name="telefonoContacto">
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <h5>Ubigeo</h5>
                                 <div style="display:flex;">
-                                    <input type="text" class="oculto" name="ubigeo">
-                                    <input type="text" class="form-control" name="name_ubigeo" readOnly>
-                                    <button type="button" title="Seleccionar Ubigeo" class="btn-primary" onClick="ubigeoModal();"><i class="far fa-compass"></i></button>
+                                    <input type="text" class="oculto" name="ubigeoContactoProveedor">
+                                    <input type="text" class="form-control" name="descripcionUbigeoContactoProveedor" readOnly>
+                                    <button type="button" title="Seleccionar Ubigeo" class="btn-primary handleClickOpenModalUbigeoContacto" onClick="ubigeoModal();"><i class="far fa-compass"></i></button>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <h5>Dirección</h5>
-                                <input type="text" class="form-control activation handleChangeUpdateConcepto" name="direccion">
+                                <input type="text" class="form-control" name="direccionContacto">
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <h5>Horario</h5>
-                                <input type="text" class="form-control activation handleChangeUpdateConcepto" name="horario">
+                                <input type="text" class="form-control" name="horarioContacto">
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <h5>Email</h5>
-                                <input type="text" class="form-control activation handleChangeUpdateConcepto" name="email">
+                                <input type="email" class="form-control" name="emailContacto">
                             </div>
                         </div>
                     </div>
 
                 </div>
                 <div class="modal-footer">
-                    <input type="submit" class="btn btn-success boton" value="Agregar"/>
+                    <button class="btn btn-sm btn-primary" class="close" data-dismiss="modal" >Cerrar</button>
+                    <button type="button" class="btn btn-sm btn-success handleClickAgregarContacto" >Agregar</button>
                 </div>
             </form>
         </div>

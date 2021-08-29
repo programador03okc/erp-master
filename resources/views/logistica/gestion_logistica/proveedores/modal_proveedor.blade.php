@@ -1,7 +1,7 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-proveedor">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <form id="form-proveedor" method="post">
+            <form id="form-proveedor" method="post" type="register">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
                     <h3 class="modal-title">Agregar Proveedor</h3>
@@ -22,12 +22,17 @@
                             <div role="tabpanel" class="tab-pane active" id="principal">
                                 <fieldset class="group-table">
                                     <div class="row">
+                                    <input type="text" class="oculto" name="idProveedor">
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <h5>Tipo contribuyente</h5>
-                                                <select class="form-control activation handleChangeUpdateMoneda" name="tipoContribuyente">
+                                                <select class="form-control activation handleChangeTipoContribuyente" name="tipoContribuyente">
                                                     @foreach ($tipoContribuyentes as $tipo)
+                                                        @if($tipo->id_tipo_contribuyente ==7)
+                                                        <option value="{{$tipo->id_tipo_contribuyente}}" selected>{{$tipo->descripcion}}</option>
+                                                        @else
                                                         <option value="{{$tipo->id_tipo_contribuyente}}">{{$tipo->descripcion}}</option>
+                                                        @endif
                                                     @endforeach                                              
                                                 </select>
                                             </div>
@@ -35,7 +40,7 @@
                                         <div class="col-md-2">
                                             <div class="form-group">
                                                 <h5>Tipo documento</h5>
-                                                <select class="form-control activation handleChangeUpdateMoneda" name="tipoDocumentoIdentidad">
+                                                <select class="form-control activation handleChangeTipoDocumentoIdentidad" name="tipoDocumentoIdentidad">
                                                     @foreach ($tipoDocumentos as $tipo)
                                                         @if($tipo->id_doc_identidad ==2)
                                                         <option value="{{$tipo->id_doc_identidad}}" selected>{{$tipo->descripcion}}</option>
@@ -49,26 +54,26 @@
                                         <div class="col-md-2">
                                             <div class="form-group">
                                                 <h5>Nro documento</h5>
-                                                <input type="text" class="form-control activation handleChangeUpdateConcepto" name="nroDocumento">
+                                                <input type="text" class="form-control activation handleKeyUpNroDocumento"  name="nroDocumento">
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <h5>Razon social</h5>
-                                                <input type="text" class="form-control activation handleChangeUpdateConcepto" name="razonSocial">
+                                                <h5>Razón social</h5>
+                                                <input type="text" class="form-control activation handleKeyUpRazonSocial" name="razonSocial">
                                             </div>
                                         </div>
 
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <h5>Dirección</h5>
-                                                <input type="text" class="form-control activation handleChangeUpdateConcepto" name="direccion">
+                                                <input type="text" class="form-control activation" name="direccion">
                                             </div>
                                         </div>
                                         <div class="col-md-2">
                                             <div class="form-group">
                                                 <h5>Pais</h5>
-                                                <select class="form-control activation handleChangeUpdateMoneda" name="pais">
+                                                <select class="form-control activation handleChangePais" name="pais">
                                                     @foreach ($paises as $pais)
                                                         @if($pais->id_pais ==170)
                                                         <option value="{{$pais->id_pais}}" selected>{{$pais->descripcion}}</option>
@@ -84,28 +89,28 @@
                                             <div class="form-group">
                                                 <h5>Ubigeo</h5>
                                                 <div style="display:flex;">
-                                                    <input type="text" class="oculto" name="ubigeo">
-                                                    <input type="text" class="form-control" name="name_ubigeo" readOnly>
-                                                    <button type="button" title="Seleccionar Ubigeo" class="btn-primary" onClick="ubigeoModal();"><i class="far fa-compass"></i></button>
+                                                    <input type="text" class="oculto" name="ubigeoProveedor">
+                                                    <input type="text" class="form-control" name="descripcionUbigeoProveedor" readOnly>
+                                                    <button type="button" title="Seleccionar Ubigeo" class="btn-primary handleClickUbigeoSoloNacional handleClickOpenModalUbigeoProveedor" onClick="ubigeoModal();"><i class="far fa-compass"></i></button>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-md-2">
                                             <div class="form-group">
                                                 <h5>Teléfono</h5>
-                                                <input type="text" class="form-control activation handleChangeUpdateConcepto" name="telefono">
+                                                <input type="text" class="form-control activation handleKeyUpTelefono" name="telefono">
                                             </div>
                                         </div>
                                         <div class="col-md-2">
                                             <div class="form-group">
                                                 <h5>Celular</h5>
-                                                <input type="text" class="form-control activation handleChangeUpdateConcepto" name="celular">
+                                                <input type="text" class="form-control activation handleKeyUpCelular" name="celular">
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <h5>Email</h5>
-                                                <input type="text" class="form-control activation handleChangeUpdateConcepto" name="email">
+                                                <input type="email" class="form-control activation" name="email">
                                             </div>
                                         </div>
                                     </div>
@@ -127,6 +132,7 @@
                                                 <th class="text-center" style="width:8%">Acción</th>
                                             </tr>
                                         </thead>
+                                        <tbody id="bodylistaContactoProveedor"></tbody>
                                     </table>
                                 </fieldset>
                             </div>
@@ -145,6 +151,7 @@
                                                 <th class="text-center" style="width:8%">Acción</th>
                                             </tr>
                                         </thead>
+                                        <tbody id="bodylistaCuentasBancariasProveedor"></tbody>
                                     </table>
                                 </fieldset>
                             </div>
@@ -172,6 +179,7 @@
                                                     <th class="text-center" style="width:8%">Acción</th>
                                                 </tr>
                                             </thead>
+                                            <tbody id="bodylistaAdjuntosProveedor"></tbody>
                                         </table>
                                 </fieldset>
                             </div>
@@ -181,7 +189,9 @@
 
                 </div>
                 <div class="modal-footer">
-                    <input type="submit" class="btn btn-success boton" value="Guardar" />
+                    <button class="btn btn-sm btn-primary" class="close" data-dismiss="modal" >Cerrar</button>
+                    <button type="button" class="btn btn-sm btn-success handleClickActualizarProveedor oculto" id="btnActualizarProveedor" >Actualizar</button>
+                    <button type="button" class="btn btn-sm btn-success handleClickGuardarProveedor" id="btnGuardarProveedor" >Guardar</button>
                 </div>
             </form>
         </div>

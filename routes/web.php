@@ -824,6 +824,9 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('index', 'Logistica\ProveedoresController@viewLista')->name('index');
 					Route::post('lista-proveedores', 'Logistica\ProveedoresController@listaProveedores');
 					Route::get('listar_ubigeos', 'AlmacenController@listar_ubigeos');
+					Route::post('guardar-proveedor', 'Logistica\ProveedoresController@guardarProveedor');
+					Route::get('mostrar-proveedor/{idProveedor?}', 'Logistica\ProveedoresController@mostrarProveedor');
+					Route::post('actualizar-proveedor', 'Logistica\ProveedoresController@actualizarProveedor');
 
 					// Route::get('logistica/listar_proveedores', 'LogisticaController@listar_proveedores');
 					// Route::get('mostrar_proveedor/{id_proveedor}', 'LogisticaController@mostrar_proveedor');
