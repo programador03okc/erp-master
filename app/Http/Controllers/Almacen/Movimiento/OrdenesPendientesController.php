@@ -669,40 +669,8 @@ class OrdenesPendientesController extends Controller
                             ],
                             'id_mov_alm_det'
                         );
-
                         OrdenesPendientesController::actualiza_prod_ubi($det->id_producto, $request->id_almacen);
-
-                        // if ($det->tipo == 'sobrante'){
-
-                        //     if ($id_od == null){
-                        //         $sob = DB::table('almacen.transfor_sobrante')
-                        //         ->select('orden_despacho.id_od','orden_despacho.id_requerimiento')
-                        //         ->join('almacen.transformacion','transformacion.id_transformacion','=','transfor_sobrante.id_transformacion')
-                        //         ->join('almacen.orden_despacho','orden_despacho.id_od','=','transformacion.id_od')
-                        //         ->where('transfor_sobrante.id_sobrante',$det->id)->first();
-
-                        //         $id_od = ($sob !== null ? $sob->id_od : null);
-                        //         $id_requerimiento = ($sob !== null ? $sob->id_requerimiento : null);
-                        //     }
-                        // }
-                        // else 
-                        // if ($det->tipo == 'transformado'){
-
-                        // $tra = DB::table('almacen.transfor_transformado')
-                        // ->select('orden_despacho.id_od','orden_despacho.id_requerimiento','transfor_transformado.id_producto',
-                        // 'transfor_transformado.cantidad','transformacion.id_almacen')
-                        // ->join('almacen.transformacion','transformacion.id_transformacion','=','transfor_transformado.id_transformacion')
-                        // ->join('almacen.orden_despacho','orden_despacho.id_od','=','transformacion.id_od')
-                        // ->where('transfor_transformado.id_transformado',$det->id)->first();
-
-                        // $id_od = ($tra !== null ? $tra->id_od : null);
-                        // $id_requerimiento = ($tra !== null ? $tra->id_requerimiento : null);
-
-
-                        // }
-
                     }
-
 
                     $od_detalles = DB::table('almacen.orden_despacho_det')
                         ->where('id_od', $id_od)
@@ -1162,7 +1130,7 @@ class OrdenesPendientesController extends Controller
                     $id_almacen_destino == $padre['id_almacen_destino']
                 ) {
 
-                    DB::table('almacen.trans_detalle')->insertGetId(
+                    $id_trans_detalle = DB::table('almacen.trans_detalle')->insertGetId(
                         [
                             'id_transferencia' => $id_trans,
                             'id_producto' => $item->id_producto,
@@ -1174,34 +1142,16 @@ class OrdenesPendientesController extends Controller
                         ],
                         'id_trans_detalle'
                     );
-
-                    // DB::table('almacen.guia_com_det')
-                    // ->where('id_guia_com_det', $item->id_guia_com_det)
-                    // ->update(['id_trans_detalle' => $id_trans_det]);
+                    //envia la reserva
+                    DB::table('almacen.alm_reserva')
+                        ->where('id_guia_com_det', $item->id_guia_com_det)
+                        ->update([
+                            'estado' => 17,
+                            'id_trans_detalle' => $id_trans_detalle
+                        ]);
                 }
             }
         }
-
-        // if ($id_trans !== null){
-
-        //     foreach ($array_items as $item) {
-        //         if ($item->id_detalle_requerimiento == null){
-        //             $id_trans_det = DB::table('almacen.trans_detalle')->insertGetId(
-        //                 [
-        //                     'id_transferencia' => $id_trans,
-        //                     'id_producto' => $item->id_producto,
-        //                     'cantidad' => $item->cantidad,
-        //                     'estado' => 1,
-        //                     'fecha_registro' => $fecha,
-        //                     'id_requerimiento_detalle' => null
-        //                 ]);
-
-        //             DB::table('almacen.guia_com_det')
-        //             ->where('id_guia_com_det', $item->id_guia_com_det)
-        //             ->update(['id_trans_detalle' => $id_trans_det]);
-        //         }
-        //     }
-        // }
         return $msj;
     }
 

@@ -28,11 +28,6 @@ function listarTransferenciasRecibidas() {
                     },
                     className: "text-center"
                 },
-                // {
-                //     render: function (data, type, row) {
-                //         return formatDate(row["fecha_guia"]);
-                //     }
-                // },
                 { data: "codigo" },
                 { data: "guia_ven" },
                 { data: "guia_com" },
@@ -40,8 +35,6 @@ function listarTransferenciasRecibidas() {
                 { data: "doc_com" },
                 { data: "alm_origen_descripcion" },
                 { data: "alm_destino_descripcion" },
-                // { data: "nombre_origen" },
-                // { data: "nombre_destino" },
                 {
                     render: function (data, type, row) {
                         return (

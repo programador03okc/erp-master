@@ -91,9 +91,8 @@ class TransferenciaController extends Controller
                 'alm_destino.descripcion as alm_destino_descripcion',
                 'sede_origen.id_empresa as id_empresa_destino',
                 'sede_destino.id_empresa as id_empresa_destino',
-                'usu_origen.nombre_corto as nombre_origen',
-                'usu_destino.nombre_corto as nombre_destino',
-                'usu_registro.nombre_corto as nombre_registro',
+                // 'usu_origen.nombre_corto as nombre_origen',
+                // 'usu_destino.nombre_corto as nombre_destino',
                 'adm_estado_doc.estado_doc',
                 'adm_estado_doc.bootstrap_color',
                 'ingreso.id_mov_alm as id_ingreso',
@@ -115,9 +114,9 @@ class TransferenciaController extends Controller
             ->join('almacen.alm_almacen as alm_destino', 'alm_destino.id_almacen', '=', 'trans.id_almacen_destino')
             ->join('administracion.sis_sede as sede_origen', 'sede_origen.id_sede', '=', 'alm_origen.id_sede')
             ->join('administracion.sis_sede as sede_destino', 'sede_destino.id_sede', '=', 'alm_destino.id_sede')
-            ->leftJoin('configuracion.sis_usua as usu_origen', 'usu_origen.id_usuario', '=', 'trans.responsable_origen')
-            ->leftJoin('configuracion.sis_usua as usu_destino', 'usu_destino.id_usuario', '=', 'trans.responsable_destino')
-            ->join('configuracion.sis_usua as usu_registro', 'usu_registro.id_usuario', '=', 'trans.registrado_por')
+            // ->leftJoin('configuracion.sis_usua as usu_origen', 'usu_origen.id_usuario', '=', 'trans.responsable_origen')
+            // ->leftJoin('configuracion.sis_usua as usu_destino', 'usu_destino.id_usuario', '=', 'trans.responsable_destino')
+            // ->join('configuracion.sis_usua as usu_registro', 'usu_registro.id_usuario', '=', 'trans.registrado_por')
             ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'trans.estado')
             ->join('almacen.guia_ven_det', 'guia_ven_det.id_trans_det', '=', 'trans_detalle.id_trans_detalle')
             ->leftJoin('almacen.doc_ven_det', 'doc_ven_det.id_guia_ven_det', '=', 'guia_ven_det.id_guia_ven_det')
@@ -126,7 +125,12 @@ class TransferenciaController extends Controller
             ->leftJoin('almacen.doc_com_det', 'doc_com_det.id_guia_com_det', '=', 'guia_com_det.id_guia_com_det')
             ->leftJoin('almacen.doc_com', 'doc_com.id_doc_com', '=', 'doc_com_det.id_doc')
             ->whereIn('trans.id_almacen_destino', $array_almacen)
-            ->where('trans.estado', 14)
+            ->where([
+                ['trans.estado', '=', 14],
+                ['trans_detalle.estado', '!=', 7],
+                ['guia_ven_det.estado', '!=', 7],
+                ['guia_com_det.estado', '!=', 7],
+            ])
             ->distinct()
             ->get();
 
@@ -824,6 +828,7 @@ class TransferenciaController extends Controller
         } catch (\PDOException $e) {
             // Woopsy
             DB::rollBack();
+            return response()->json("Ha ocurrido un error. " . $e . ". Intente nuevamente.");
         }
     }
     // public function reservaNextCodigo($id_almacen)

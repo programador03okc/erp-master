@@ -32,10 +32,10 @@ function listarDespachosPendientes(permiso) {
     var vardataTables = funcDatatables();
     $('#despachosPendientes').DataTable({
         'dom': vardataTables[1],
-        'buttons': vardataTables[2],
+        'buttons': [],
         'language': vardataTables[0],
         'destroy': true,
-        pageLength: false,
+        pageLength: 50,
         'ajax': 'listarOrdenesDespachoPendientes',
         // 'serverSide' : true,
         // "scrollX": true,
@@ -76,7 +76,7 @@ function listarDespachosPendientes(permiso) {
             { 'data': 'fecha_despacho' },
             { 'data': 'nombre_corto', 'name': 'sis_usua.nombre_corto' }
         ],
-        'order': [[2, "desc"], [3, "desc"]],
+        // 'order': [[2, "desc"], [3, "desc"]],
         'columnDefs': [
             { 'aTargets': [0], 'sClass': 'invisible' },
             {

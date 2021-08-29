@@ -30,7 +30,7 @@ class SaldosController extends Controller
                 DB::raw("(SELECT SUM(alm_reserva.stock_comprometido) FROM almacen.alm_reserva 
                 WHERE alm_reserva.id_producto = alm_prod_ubi.id_producto
                 AND alm_reserva.id_almacen_reserva = alm_prod_ubi.id_almacen
-                AND alm_reserva.estado = 1 ) as cantidad_reserva")
+                AND (alm_reserva.estado = 1 OR alm_reserva.estado = 17) ) as cantidad_reserva")
                 // DB::raw("(SELECT SUM(alm_reserva.stock_comprometido) FROM almacen.alm_reserva 
                 // INNER JOIN almacen.alm_det_req ON(
                 //     alm_reserva.id_detalle_requerimiento = alm_det_req.id_detalle_requerimiento
@@ -128,7 +128,8 @@ class SaldosController extends Controller
             ->where([
                 ['alm_reserva.id_producto', '=', $id],
                 ['alm_reserva.id_almacen_reserva', '=', $almacen],
-                ['alm_reserva.estado', '=', 1],
+                ['alm_reserva.estado', '!=', 7],
+                ['alm_reserva.estado', '!=', 5],
             ])
             ->get();
         return response()->json($detalles);

@@ -951,6 +951,8 @@ class DistribucionController extends Controller
                 'cc_am_filas.part_no_producto_transformado as cc_pn',
                 'cc_am_filas.descripcion_producto_transformado as cc_des',
                 'cc_am_filas.comentario_producto_transformado as cc_com',
+                'alm_reserva.id_almacen_reserva',
+                'alm_reserva.stock_comprometido'
             )
             // ->leftJoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_det_req.id_almacen_reserva')
             ->leftJoin('mgcp_cuadro_costos.cc_am_filas', 'cc_am_filas.id', '=', 'alm_det_req.id_cc_am_filas')
@@ -974,7 +976,8 @@ class DistribucionController extends Controller
             // ->leftJoin('almacen.guia_com_det','guia_com_det.id_oc_det','=','log_det_ord_compra.id_detalle_orden')
             ->leftJoin('almacen.guia_com', 'guia_com.id_guia', '=', 'guia_com_det.id_guia_com')
             ->leftJoin('almacen.alm_almacen as almacen_guia', 'almacen_guia.id_almacen', '=', 'guia_com.id_almacen')
-            ->leftJoin('almacen.alm_almacen as almacen_reserva', 'almacen_reserva.id_almacen', '=', 'alm_det_req.id_almacen_reserva')
+            ->leftJoin('almacen.alm_reserva', 'alm_reserva.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento')
+            ->leftJoin('almacen.alm_almacen as almacen_reserva', 'almacen_reserva.id_almacen', '=', 'alm_reserva.id_almacen_reserva')
             ->where([
                 ['alm_det_req.id_requerimiento', '=', $id_requerimiento],
                 ['alm_det_req.estado', '!=', 7],

@@ -81,10 +81,10 @@ function open_despacho_create(data) {
                     'suma_despachos': element.suma_despachos_internos,
                     'stock_comprometido': element.stock_comprometido,
                     'valorizacion': element.valorizacion,
-                    'part_number_transformado': null,
-                    'descripcion_transformado': null,
-                    'comentario_transformado': null,
-                    'cantidad_transformado': null,
+                    // 'part_number_transformado': null,
+                    // 'descripcion_transformado': null,
+                    // 'comentario_transformado': null,
+                    // 'cantidad_transformado': null,
                 });
 
                 if (element.id_almacen_reserva !== null) {

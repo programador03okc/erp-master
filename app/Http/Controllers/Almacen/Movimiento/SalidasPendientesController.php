@@ -36,11 +36,11 @@ class SalidasPendientesController extends Controller
                 DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_persona"),
                 'alm_almacen.descripcion as almacen_descripcion'
             )
-            ->leftjoin('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'orden_despacho.id_cliente')
-            ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
-            ->leftjoin('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'orden_despacho.id_persona')
-            ->leftjoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'orden_despacho.id_almacen')
             ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'orden_despacho.id_requerimiento')
+            ->leftjoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_req.id_almacen')
+            ->leftjoin('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'alm_req.id_cliente')
+            ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
+            ->leftjoin('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'alm_req.id_persona')
             ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'orden_despacho.registrado_por')
             ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'orden_despacho.estado')
             ->where('orden_despacho.estado', 1)
