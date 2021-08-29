@@ -613,9 +613,22 @@ class OrdenesPendientesController extends Controller
                                 DB::table('almacen.alm_det_req')
                                     ->where('id_detalle_requerimiento', $det_req->id_detalle_requerimiento)
                                     ->update([
-                                        'id_almacen_reserva' => $request->id_almacen, //$tra->id_almacen,
-                                        'stock_comprometido' => $det->cantidad,
+                                        // 'id_almacen_reserva' => $request->id_almacen, //$tra->id_almacen,
+                                        // 'stock_comprometido' => $det->cantidad,
                                         'estado' => 10
+                                    ]);
+
+                                DB::table('almacen.alm_reserva')
+                                    ->insert([
+                                        'codigo' => Reserva::nextCodigo($request->id_almacen),
+                                        'id_producto' => $det->id_producto,
+                                        'stock_comprometido' => $det->cantidad,
+                                        'id_almacen_reserva' => $request->id_almacen,
+                                        'id_detalle_requerimiento' => $det_req->id_detalle_requerimiento,
+                                        'id_transformado' => $det->id,
+                                        'estado' => 1,
+                                        'usuario_registro' => $id_usuario,
+                                        'fecha_registro' => date('Y-m-d H:i:s'),
                                     ]);
                             }
                         }
