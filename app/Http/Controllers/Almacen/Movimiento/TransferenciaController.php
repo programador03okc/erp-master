@@ -882,8 +882,10 @@ class TransferenciaController extends Controller
                 ['trans.id_guia_ven', '=', null],
                 ['alm_req.confirmacion_pago', '=', true],
                 ['trans.estado', '!=', 7]
-            ]);
-        return datatables($lista)->toJson();
+            ])->get();
+        // return datatables($lista)->toJson();
+        $output['data'] = $lista;
+        return response()->json($output);
     }
 
     public function guardarSalidaTransferencia(Request $request)

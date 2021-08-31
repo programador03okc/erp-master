@@ -727,7 +727,6 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('guardar_mapeo_productos', 'Logistica\Requerimientos\MapeoProductosController@guardar_mapeo_productos')->name('guardar-mapeo-productos');
 					Route::get('mostrar_categorias_tipo/{id}', 'Almacen\Catalogo\ProductoController@mostrar_categorias_tipo');
 					Route::post('anular_item', 'Logistica\Requerimientos\MapeoProductosController@anular_item')->name('anular-item');
-
 				});
 			});
 
@@ -1245,7 +1244,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('anularTransferenciaSalida', 'Almacen\Movimiento\TransferenciaController@anularTransferenciaSalida');
 				Route::get('imprimir_ingreso/{id}', 'Almacen\Movimiento\OrdenesPendientesController@imprimir_ingreso');
 				Route::get('imprimir_salida/{id}', 'Almacen\Movimiento\SalidasPendientesController@imprimir_salida');
-				Route::post('listarTransferenciasPorEnviar/{id}', 'Almacen\Movimiento\TransferenciaController@listarTransferenciasPorEnviar');
+				Route::get('listarTransferenciasPorEnviar/{id}', 'Almacen\Movimiento\TransferenciaController@listarTransferenciasPorEnviar');
 				Route::get('listarTransferenciasPorRecibir/{id}', 'Almacen\Movimiento\TransferenciaController@listarTransferenciasPorRecibir');
 				// Route::get('cargar_almacenes/{id}', 'Almacen\Ubicacion\AlmacenController@cargar_almacenes');
 				Route::post('listarDetalleTransferencia', 'Almacen\Movimiento\TransferenciaController@listarDetalleTransferencia');

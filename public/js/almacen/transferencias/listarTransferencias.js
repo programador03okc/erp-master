@@ -196,11 +196,12 @@ function listarTransferenciasPorEnviar() {
         lengthChange: false,
         pageLength: 20,
         destroy: true,
-        serverSide: true,
-        ajax: {
-            url: "listarTransferenciasPorEnviar/" + alm_origen,
-            type: "POST"
-        },
+        // serverSide: true,
+        ajax: "listarTransferenciasPorEnviar/" + alm_origen,
+        // ajax: {
+        //     url: "listarTransferenciasPorEnviar/" + alm_origen,
+        //     type: "POST"
+        // },
         columns: [
             { data: "id_transferencia" },
             {
