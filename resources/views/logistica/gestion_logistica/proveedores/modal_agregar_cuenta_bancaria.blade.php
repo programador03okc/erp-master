@@ -15,7 +15,7 @@
                         <div class="col-md-12">
                             <input class="oculto" name="id_proveedor">
                             <h5>Banco</h5>
-                            <select class="form-control group-elemento" name="banco" 
+                            <select class="form-control group-elemento" name="idBanco" 
                                 style="text-align:center;">
                                 <option value="0" disabled>Elija una opción</option>
                                 @foreach ($bancos as $banco)
@@ -25,7 +25,7 @@
                         </div>
                         <div class="col-md-12">
                             <h5>Tipo de Cuenta</h5>
-                            <select class="form-control group-elemento" name="tipo_cuenta_banco" 
+                            <select class="form-control group-elemento" name="idTipoCuenta" 
                                 style="text-align:center;">
                                 <option value="0" disabled>Elija una opción</option>
                                 @foreach ($tipo_cuenta as $tipo)
@@ -35,7 +35,7 @@
                         </div>
                         <div class="col-md-12">
                             <h5>Moneda</h5>
-                            <select class="form-control group-elemento" name="moneda" 
+                            <select class="form-control group-elemento" name="idMoneda" 
                                 style="text-align:center;">
                                 @foreach ($monedas as $moneda)
                                     <option value="{{$moneda->id_moneda}}">{{$moneda->descripcion}}</option>
@@ -44,11 +44,11 @@
                         </div>
                         <div class="col-md-12">
                             <h5>N° Cuenta</h5>
-                            <input type="text" class="form-control icd-okc" name="nro_cuenta" />
+                            <input type="text" class="form-control icd-okc" name="nroCuenta" />
                         </div>
                         <div class="col-md-12">
                             <h5>N° Cuenta Interbancaria</h5>
-                            <input type="text" class="form-control icd-okc" name="nro_cuenta_interbancaria" />
+                            <input type="text" class="form-control icd-okc" name="nroCuentaInterbancaria" />
                         </div>
                         <div class="col-md-12">
                             <h5>SWIFT</h5>
@@ -58,7 +58,8 @@
 
                 </div>
                 <div class="modal-footer">
-                    <input type="submit" class="btn btn-success boton" value="Guardar"/>
+                    <button class="btn btn-sm btn-primary" class="close" data-dismiss="modal" >Cerrar</button>
+                    <button type="button" class="btn btn-sm btn-success handleClickAgregarCuentaBancaria" >Agregar</button>
                 </div>
             </form>
         </div>

@@ -64,6 +64,12 @@ function selectUbigeo(obj){
     }else if(modalPage =='modal-seleccionar_crear_proveedor'){
         $('[name=ubigeo_prov]').val(idUbigeo);    
         $('[name=name_ubigeo_prov]').val(ubigeoDescripcion);  
+    }else if(modalPage =='modal-proveedor'){
+        $('[name=ubigeoProveedor]').val(idUbigeo);    
+        $('[name=descripcionUbigeoProveedor]').val(ubigeoDescripcion);  
+    }else if(modalPage =='modal-contacto-proveedor'){
+        $('[name=ubigeoContactoProveedor]').val(idUbigeo);    
+        $('[name=descripcionUbigeoContactoProveedor]').val(ubigeoDescripcion);  
     }else{
         $('[name=ubigeo]').val(idUbigeo);    
         $('[name=name_ubigeo]').val(ubigeoDescripcion);    

@@ -90,6 +90,8 @@ Requerimientos pendientes
 @include('logistica.cotizaciones.add_proveedor')
 @include('logistica.gestion_logistica.compras.pendientes.ordenesModal')
 @include('logistica.requerimientos.modal_vincular_item_requerimiento')
+@include('logistica.gestion_logistica.compras.pendientes.modal_nueva_reserva')
+@include('logistica.gestion_logistica.compras.pendientes.modal_historial_reserva')
 
 @endsection
 
@@ -103,10 +105,10 @@ Requerimientos pendientes
 <script src="{{ asset('template/plugins/datetime-moment.js') }}"></script>
 
 <script src="{{('/js/logistica/orden/RequerimientoPendienteModel.js?v=2')}}"></script>
-<script src="{{('/js/logistica/orden/RequerimientoPendienteView.js?v=6')}}"></script>
+<script src="{{('/js/logistica/orden/RequerimientoPendienteView.js?v=8')}}"></script>
 <script src="{{('/js/logistica/orden/RequerimientoPendienteController.js?v=2')}}"></script>
 
-<script src="{{ asset('js/logistica/mapeo/mapeoItemsRequerimiento.js?v=3')}}"></script>
+<script src="{{ asset('js/logistica/mapeo/mapeoItemsRequerimiento.js?v=4')}}"></script>
 <script src="{{ asset('js/logistica/mapeo/mapeoAsignarProducto.js')}}"></script>
 
 <script>
@@ -132,7 +134,7 @@ Requerimientos pendientes
         const requerimientoPendienteController = new RequerimientoPendienteCtrl(requerimientoPendienteModel);
         const requerimientoPendienteView = new RequerimientoPendienteView(requerimientoPendienteController);
 
-        requerimientoPendienteView.renderRequerimientoPendienteListModule(null, null);
+        requerimientoPendienteView.renderRequerimientoPendienteList('SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO');
         requerimientoPendienteView.initializeEventHandler();
 
     });

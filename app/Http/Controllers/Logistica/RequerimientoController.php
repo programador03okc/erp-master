@@ -124,7 +124,7 @@ class RequerimientoController extends Controller
             ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_det_req.id_unidad_medida')
             ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'alm_det_req.estado')
             ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
-            ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'alm_det_req.id_moneda')
+            ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'alm_req.id_moneda')
             // ->leftJoin('almacen.alm_almacen as almacen_reserva','almacen_reserva.id_almacen','=','alm_det_req.id_almacen_reserva')
             ->where([
                 ['alm_det_req.id_requerimiento', '=', $id_requerimiento],
@@ -3328,7 +3328,7 @@ class RequerimientoController extends Controller
         return $historialAprobacion;
     }
     public function mostrarTrazabilidadDetalleRequerimiento($idRequerimiento){
-
+        
         $detalleRequerimiento = DetalleRequerimiento::where("id_requerimiento", $idRequerimiento)
         ->select('alm_det_req.*','alm_prod.codigo as codigo_producto','alm_prod.part_number as part_number_producto','alm_prod.descripcion as descripcion_producto','alm_und_medida.descripcion as unidad_medida','adm_estado_doc.estado_doc as nombre_estado')
         ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_det_req.id_producto')
@@ -3337,8 +3337,56 @@ class RequerimientoController extends Controller
         ->get();
         return datatables($detalleRequerimiento)->toJson();
     }
+    
+    public function detalleRequerimientoParaReserva($idDetalleRequerimiento){
+        $detalleRequerimiento = DetalleRequerimiento::where("id_detalle_requerimiento",$idDetalleRequerimiento)
+        ->with(['unidadMedida','producto','reserva' => function($q){
+            $q->where('alm_reserva.estado', '=', 1);
+        },'reserva.almacen', 'reserva.usuario', 'reserva.usuario.trabajador.postulante.persona','reserva.estado','estado'])
+        
+        ->first();
+        if($detalleRequerimiento){
+            return ['data'=>$detalleRequerimiento,'status'=>200];            
+        }else{
+            return ['data'=>[],'status'=>204];
 
+        }
+        
+    }
+    public function historialReservaProducto($idDetalleRequerimiento){
+        $detalleRequerimiento = DetalleRequerimiento::where("id_detalle_requerimiento",$idDetalleRequerimiento)
+        ->with(['unidadMedida','producto','reserva','reserva.almacen', 'reserva.usuario', 'reserva.usuario.trabajador.postulante.persona','reserva.estado','estado'])
+        ->first();
+        if($detalleRequerimiento){
+            return ['data'=>$detalleRequerimiento,'status'=>200];            
+        }else{
+            return ['data'=>[],'status'=>204];
 
+        }
+        
+    }
+    public function todoDetalleRequerimiento($idRequerimiento,$opcion){
+        $detalleRequerimiento = DetalleRequerimiento::where("id_requerimiento",$idRequerimiento)
+        ->when(($opcion === 'SIN_TRANSFORMACION'), function ($query) {
+            return $query->where('tiene_transformacion', false);
+        })
+        ->when(($opcion === 'CON_TRANSFORMACION'), function ($query) {
+            return $query->where('tiene_transformacion',true);
+        })
+        ->with(['unidadMedida','producto','reserva' => function($q){
+            $q->where('alm_reserva.estado', '=', 1);
+        },'reserva.almacen', 'reserva.usuario', 'reserva.usuario.trabajador.postulante.persona','reserva.estado','estado'])
+
+        ->get();
+        
+        if($detalleRequerimiento){
+            return ['data'=>$detalleRequerimiento,'status'=>200];            
+        }else{
+            return ['data'=>[],'status'=>204];
+
+        }
+        
+    }
     
 
 }

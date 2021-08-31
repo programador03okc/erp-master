@@ -9,17 +9,33 @@ class RequerimientoPendienteModel {
     //     return this.getRequerimientosPendientes();
     // }
     // Método
-    getRequerimientosPendientes(id_empresa=null,id_sede=null) {
+    getRequerimientosPendientes(empresa,sede,fechaRegistroDesde,fechaRegistroHasta, reserva, orden) {
             return new Promise(function(resolve, reject) {
                 $.ajax({
                     type: 'GET',
-                    url:`requerimientos-pendientes/${id_empresa}/${id_sede}`,
+                    url:`requerimientos-pendientes/${empresa}/${sede}/${fechaRegistroDesde}/${fechaRegistroHasta}/${reserva}/${orden}`,
                     dataType: 'JSON',
+                    beforeSend:  (data)=> { // Are not working with dataType:'jsonp'
+    
+                    $('#requerimientos_pendientes').LoadingOverlay("show", {
+                        imageAutoResize: true,
+                        progress: true,
+                        imageColor: "#3c8dbc"
+                    });
+                },
                     success(response) {
                         resolve(response.data) // Resolve promise and go to then() 
                     },
-                    error: function(err) {
-                    reject(err) // Reject the promise and go to catch()
+                    fail:  (jqXHR, textStatus, errorThrown) =>{
+                        $('#requerimientos_pendientes').LoadingOverlay("hide", true);
+                        Swal.fire(
+                            '',
+                            'Lo sentimos hubo un error en el servidor al intentar cargar la lista de requerimientos pendientes, por favor vuelva a intentarlo',
+                            'error'
+                        );
+                        console.log(jqXHR);
+                        console.log(textStatus);
+                        console.log(errorThrown);
                     }
                     });
                 });
@@ -48,43 +64,32 @@ class RequerimientoPendienteModel {
          
     } 
 
-    // atender con almacén
-
-    getDataItemsRequerimientoParaAtenderConAlmacen(id_requerimiento){
-        let codigoRequerimiento='';
+    obtenerSede(idEmpresa){
         return new Promise(function(resolve, reject) {
             $.ajax({
                 type: 'GET',
-                url:`/logistica/gestion-logistica/requerimiento/elaboracion/mostrar-requerimiento/${id_requerimiento}/0`,
+                url:`listar-sedes-por-empresa/${idEmpresa}`,
                 dataType: 'JSON',
                 success(response) {
-                    if(response.det_req !=undefined && response.det_req.length >0){
+                    resolve(response);
+                },
+                error: function(err) {
+                    reject(err) 
+                }
+                });
+            });
+    }
 
-                        codigoRequerimiento=response.requerimiento[0].codigo;
-                        itemsParaAtenderConAlmacenList=response.det_req;
-                        itemsParaAtenderConAlmacenList.forEach((element,index) => {
-                            itemsParaAtenderConAlmacenList[index].cantidad_a_atender =0;
-                            
-                        });
-                        requerimientoPendienteModel.getAlmacenes().then(function (res) {
-                            // Run this when your request was successful
-                        
-                            let data_almacenes= res.data;
-                            if (data_almacenes.length > 0) {
-                                resolve({'codigo_requerimiento':codigoRequerimiento,'detalle_requerimiento':(response.det_req).filter(item => item.tiene_transformacion == false ),'almacenes':data_almacenes}); // Resolve promise and go to then() 
-                            } else {
-                            
-                            }
-                    
-                        }).catch(function (err) {
-                            // Run this when promise was rejected via reject()
-                            console.log(err)
-                        })
+    // atender con almacén
 
-                    }else{
-                        alert("Hubo un error, no se puedo cargar la data del requerimiento.");
-                    }
-
+    getAllDataDetalleRequerimiento(idRequerimiento){
+        return new Promise(function(resolve, reject) {
+            $.ajax({
+                type: 'GET',
+                url:`todo-detalle-requeriento/${idRequerimiento}/SIN_TRANSFORMACION`,
+                dataType: 'JSON',
+                success(response) {
+                    resolve(response)
                 },
                 error: function(err) {
                 reject(err) // Reject the promise and go to catch()
@@ -109,18 +114,51 @@ class RequerimientoPendienteModel {
             });
         }
 
-    guardarAtendidoConAlmacen(payload){
+    // guardarAtendidoConAlmacen(payload){
+    //     return new Promise(function(resolve, reject) {
+    //         $.ajax({
+    //             type: 'POST',
+    //             url: 'guardar-atencion-con-almacen',
+    //             data: payload,
+    //             processData: false,
+    //             contentType: false,
+    //             dataType: 'JSON',
+    //             beforeSend:  (data)=> { // Are not working with dataType:'jsonp'
+    
+    //                 $('#modal-atender-con-almacen .modal-content').LoadingOverlay("show", {
+    //                     imageAutoResize: true,
+    //                     progress: true,
+    //                     imageColor: "#3c8dbc"
+    //                 });
+    //             },
+    //             success: (response) =>{
+    //                 resolve(response);
+    //             },
+    //             fail:  (jqXHR, textStatus, errorThrown) =>{
+    //                 $('#modal-atender-con-almacen .modal-content').LoadingOverlay("hide", true);
+    //                 Swal.fire(
+    //                     '',
+    //                     'Lo sentimos hubo un error en el servidor al intentar guardar la reserva, por favor vuelva a intentarlo',
+    //                     'error'
+    //                 );
+    //                 console.log(jqXHR);
+    //                 console.log(textStatus);
+    //                 console.log(errorThrown);
+    //             }
+    //         });
+    //         });
+    // }
+    obtenerDetalleRequerimientoParaReserva(idDetalleRequerimiento){
         return new Promise(function(resolve, reject) {
             $.ajax({
-                type: 'POST',
-                url: 'guardar-atencion-con-almacen',
-                data: payload,
+                type: 'GET',
+                url: 'detalle-requeriento-para-reserva/'+idDetalleRequerimiento,
                 processData: false,
                 contentType: false,
                 dataType: 'JSON',
                 beforeSend:  (data)=> { // Are not working with dataType:'jsonp'
     
-                    $('#modal-atender-con-almacen .modal-content').LoadingOverlay("show", {
+                    $('#modal-nueva-reserva .modal-content').LoadingOverlay("show", {
                         imageAutoResize: true,
                         progress: true,
                         imageColor: "#3c8dbc"
@@ -130,10 +168,10 @@ class RequerimientoPendienteModel {
                     resolve(response);
                 },
                 fail:  (jqXHR, textStatus, errorThrown) =>{
-                    $('#modal-atender-con-almacen .modal-content').LoadingOverlay("hide", true);
+                    $('#modal-nueva-reserva .modal-content').LoadingOverlay("hide", true);
                     Swal.fire(
                         '',
-                        'Lo sentimos hubo un error en el servidor al intentar guardar la reserva, por favor vuelva a intentarlo',
+                        'Lo sentimos hubo un error en el servidor al intentar obtener la data, por favor vuelva a intentarlo',
                         'error'
                     );
                     console.log(jqXHR);
@@ -143,7 +181,39 @@ class RequerimientoPendienteModel {
             });
             });
     }
-        
+    obtenerHistorialDetalleRequerimientoParaReserva(idDetalleRequerimiento){
+        return new Promise(function(resolve, reject) {
+            $.ajax({
+                type: 'GET',
+                url: 'historial-reserva-producto/'+idDetalleRequerimiento,
+                processData: false,
+                contentType: false,
+                dataType: 'JSON',
+                beforeSend:  (data)=> { // Are not working with dataType:'jsonp'
+    
+                    $('#modal-historial-reserva .modal-content').LoadingOverlay("show", {
+                        imageAutoResize: true,
+                        progress: true,
+                        imageColor: "#3c8dbc"
+                    });
+                },
+                success: (response) =>{
+                    resolve(response);
+                },
+                fail:  (jqXHR, textStatus, errorThrown) =>{
+                    $('#modal-historial-reserva .modal-content').LoadingOverlay("hide", true);
+                    Swal.fire(
+                        '',
+                        'Lo sentimos hubo un error en el servidor al intentar obtener la data, por favor vuelva a intentarlo',
+                        'error'
+                    );
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                }
+            });
+            });
+    }
 
     // Agregar item base 
     tieneItemsParaCompra(reqTrueList){

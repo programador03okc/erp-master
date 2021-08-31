@@ -350,28 +350,31 @@ class OrdenView {
 
         for(let i = 0; i < data.length; i++) {
             if (data[i].id_tipo_item == 1) { // producto
-                document.querySelector("tbody[id='body_detalle_orden']").insertAdjacentHTML('beforeend', `<tr style="text-align:center; background-color:${data[i].estado ==7?'#f5e4e4':''}; ">
-                    <td class="text-center">${data[i].codigo_requerimiento?data[i].codigo_requerimiento:''} <input type="hidden"  name="idRegister[]" value="${data[i].id_detalle_orden?data[i].id_detalle_orden:this.makeId()}"> <input type="hidden"  name="idDetalleRequerimiento[]" value="${data[i].id_detalle_requerimiento?data[i].id_detalle_requerimiento:''}">  <input type="hidden"  name="idTipoItem[]" value="1"></td>
-                    <td class="text-center">${data[i].part_number?data[i].part_number:''} <input type="hidden"  name="idProducto[]" value="${(data[i].id_producto ? data[i].id_producto : data[i].id_producto)} "></td>
-                    <td class="text-left">${(data[i].descripcion_producto ? data[i].descripcion_producto : data[i].descripcion_adicional)} <input type="hidden"  name="descripcion[]" value="${(data[i].descripcion_producto ? data[i].descripcion_producto : data[i].descripcion_adicional)} "></td>
-                    <td><select name="unidad[]" class="form-control ${(data[i].estado_guia_com_det>0 && data[i].estado_guia_com_det !=7?'':'activation')} input-sm" value="${data[i].id_unidad_medida}" disabled>${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
-                    <td>${(data[i].cantidad ? data[i].cantidad :'')}</td>
-                    <td>
-                        <div class="input-group">
-                            <div class="input-group-addon" style="background:lightgray;" name="simboloMoneda">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</div>
-                            <input class="form-control precio input-sm text-right ${(data[i].estado_guia_com_det>0 && data[i].estado_guia_com_det !=7?'':'activation')}  handleBurUpdateSubtotal" data-id-tipo-item="1" data-producto-regalo="${(data[i].producto_regalo?data[i].producto_regalo:false)}" type="number" min="0" name="precioUnitario[]"  placeholder="" value="${data[i].precio_unitario?data[i].precio_unitario:0}" disabled>
-                        </div>
-                    </td>
-                    <td>
-                        <input class="form-control cantidad_a_comprar input-sm text-right ${(data[i].estado_guia_com_det>0 && data[i].estado_guia_com_det !=7?'':'activation')}  handleBurUpdateSubtotal"  data-id-tipo-item="1" type="number" min="0" name="cantidadAComprarRequerida[]"  placeholder="" value="${data[i].cantidad_a_comprar?data[i].cantidad_a_comprar:''}" disabled>
-                    </td>
-                    <td style="text-align:right;"><span class="moneda" name="simboloMoneda">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</span><span class="subtotal" name="subtotal[]">0.00</span></td>
-                    <td>
-                        <button type="button" class="btn btn-danger btn-sm ${(data[i].estado_guia_com_det>0 && data[i].estado_guia_com_det !=7?'':'activation')} handleClickOpenModalEliminarItemOrden" name="btnOpenModalEliminarItemOrden" title="Eliminar Item" disabled>
-                        <i class="fas fa-trash fa-sm"></i>
-                        </button>
-                    </td>
-                 </tr>`);
+                if(data[i].id_producto>0){
+                    document.querySelector("tbody[id='body_detalle_orden']").insertAdjacentHTML('beforeend', `<tr style="text-align:center; background-color:${data[i].estado ==7?'#f5e4e4':''}; ">
+                        <td class="text-center">${data[i].codigo_requerimiento?data[i].codigo_requerimiento:''} <input type="hidden"  name="idRegister[]" value="${data[i].id_detalle_orden?data[i].id_detalle_orden:this.makeId()}"> <input type="hidden"  name="idDetalleRequerimiento[]" value="${data[i].id_detalle_requerimiento?data[i].id_detalle_requerimiento:''}">  <input type="hidden"  name="idTipoItem[]" value="1"></td>
+                        <td class="text-center">${data[i].part_number?data[i].part_number:''} <input type="hidden"  name="idProducto[]" value="${(data[i].id_producto ? data[i].id_producto : data[i].id_producto)} "></td>
+                        <td class="text-left">${(data[i].descripcion_producto ? data[i].descripcion_producto : (data[i].descripcion_adicional!=null?data[i].descripcion_adicional:''))} <input type="hidden"  name="descripcion[]" value="${(data[i].descripcion_producto ? data[i].descripcion_producto : data[i].descripcion_adicional)} "></td>
+                        <td><select name="unidad[]" class="form-control ${(data[i].estado_guia_com_det>0 && data[i].estado_guia_com_det !=7?'':'activation')} input-sm" value="${data[i].id_unidad_medida}" disabled>${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
+                        <td>${(data[i].cantidad ? data[i].cantidad :'')}</td>
+                        <td>
+                            <div class="input-group">
+                                <div class="input-group-addon" style="background:lightgray;" name="simboloMoneda">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</div>
+                                <input class="form-control precio input-sm text-right ${(data[i].estado_guia_com_det>0 && data[i].estado_guia_com_det !=7?'':'activation')}  handleBurUpdateSubtotal" data-id-tipo-item="1" data-producto-regalo="${(data[i].producto_regalo?data[i].producto_regalo:false)}" type="number" min="0" name="precioUnitario[]"  placeholder="" value="${data[i].precio_unitario?data[i].precio_unitario:0}" disabled>
+                            </div>
+                        </td>
+                        <td>
+                            <input class="form-control cantidad_a_comprar input-sm text-right ${(data[i].estado_guia_com_det>0 && data[i].estado_guia_com_det !=7?'':'activation')}  handleBurUpdateSubtotal"  data-id-tipo-item="1" type="number" min="0" name="cantidadAComprarRequerida[]"  placeholder="" value="${data[i].cantidad_a_comprar?data[i].cantidad_a_comprar:''}" disabled>
+                        </td>
+                        <td style="text-align:right;"><span class="moneda" name="simboloMoneda">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</span><span class="subtotal" name="subtotal[]">0.00</span></td>
+                        <td>
+                            <button type="button" class="btn btn-danger btn-sm ${(data[i].estado_guia_com_det>0 && data[i].estado_guia_com_det !=7?'':'activation')} handleClickOpenModalEliminarItemOrden" name="btnOpenModalEliminarItemOrden" title="Eliminar Item" disabled>
+                            <i class="fas fa-trash fa-sm"></i>
+                            </button>
+                        </td>
+                     </tr>`);
+
+                }
             }else{ //servicio
                 document.querySelector("tbody[id='body_detalle_orden']").insertAdjacentHTML('beforeend', `<tr style="text-align:center; background-color:${data[i].estado ==7?'#f5e4e4':''}; ">
                     <td>${data[i].codigo_requerimiento?data[i].codigo_requerimiento:''} <input type="hidden"  name="idRegister[]" value="${data[i].id_detalle_orden?data[i].id_detalle_orden:this.makeId()}"> <input type="hidden"  name="idDetalleRequerimiento[]" value="${data[i].id_detalle_requerimiento?data[i].id_detalle_requerimiento:''}"> <input type="hidden"  name="idTipoItem[]" value="1"></td>

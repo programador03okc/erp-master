@@ -3,52 +3,101 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title">Filtros</h3>
+                <h3 class="modal-title" style="font-weight:bold;">Filtros</h3>
             </div>
             <div class="modal-body">
-                <form class="form-horizontal" id="formFiltroListaRequerimientosPendientes">
+                <div class="form-horizontal" id="formFiltroListaRequerimientosPendientes">
                     <div class="row">
                         <div class="col-md-12">
-                            <small>Seleccione los filtros que desee aplicar y haga clic en aceptar para ejecutar los filtros marcados con check</small>
+                            <small>Seleccione alguna de las opciones con valor que desee y luego haga clic en aplicar.</small>
                         </div>
                     </div>
-                    <br>
                     <div class="container-filter" style="margin: 0 auto;">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <label title="Empresa">
-                                    <input type="checkbox" name="chkEmpresa" onclick="requerimientoPendienteView.chkEmpresa(event)">&nbsp; Empresa
-                                </label> 
+
+                        <h5 style="display:flex;justify-content: space-between;  font-weight:bold;">Nivel cabecera</h5>
+                        <fieldset class="group-table">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label title="Empresa">
+                                        Empresa
+                                    </label> 
+                                </div>
+                                <div class="col-md-8">
+                                    <select class="form-control input-sm handleChangeFiltroEmpresa" name="empresa" >
+                                        <option value="SIN_FILTRO">-----------------</option>
+                                        @foreach ($empresas as $emp)
+                                        <option value="{{$emp->id_empresa}}" data-url-logo="{{$emp->logo_empresa}}">{{$emp->razon_social}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
-                            <div class="col-md-8">
-                                <select class="form-control input-sm" name="empresa" onChange="requerimientoPendienteView.handleChangeFilterReqByEmpresa(event);" readOnly>
-                                    <option value=null>Todas las Empresas</option>
-                                    @foreach ($empresas as $emp)
-                                    <option value="{{$emp->id_empresa}}" data-url-logo="{{$emp->logo_empresa}}">{{$emp->razon_social}}</option>
-                                    @endforeach
-                                </select>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label title="Sede">
+                                        Sede
+                                    </label> 
+                                </div>
+                                <div class="col-md-8">
+                                    <select class="form-control input-sm" name="sede" >
+                                        <option value="SIN_FILTRO">-----------------</option>
+                                    </select>
+                                </div>
                             </div>
-                        </div>
-                        <br>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <label title="Sede">
-                                    <input type="checkbox" name="chkSede" onclick="requerimientoPendienteView.chkSede(event);">&nbsp; Sede
-                                </label> 
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label title="Sede">
+                                        Fecha registro
+                                    </label> 
+                                </div>
+                                <div class="col-md-8">
+                                    <div style="display:flex;">
+                                        <input type="date" class="form-control input-sm" name="fechaRegistroDesde" >
+                                        <input type="date" class="form-control input-sm" name="fechaRegistroHasta" >
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-8">
-                                <select class="form-control input-sm" name="sede" readOnly>
-                                    <option>Lima</option>
-                                    <option>Ilo</option>
-                                </select>
+                        </fieldset>
+                        <h5 style="display:flex;justify-content: space-between; font-weight:bold;">Nivel Item </h5> 
+                        <fieldset class="group-table">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label title="Empresa">
+                                        Reserva almacén
+                                    </label> 
+                                </div>
+                                <div class="col-md-8">
+                                    <select class="form-control input-sm" name="reserva" >
+                                        <option value="SIN_FILTRO">-----------------</option>
+                                        <option value="SIN_RESERVA">Sin reservas</option>
+                                        <option value="CON_RESERVA">Con reservas</option>
+                                    </select>
+                                </div>
                             </div>
-                        </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label title="Empresa">
+                                        Orden
+                                    </label> 
+                                </div>
+                                <div class="col-md-8">
+                                    <select class="form-control input-sm" name="orden" >
+                                        <option value="SIN_FILTRO">-----------------</option>
+                                        <option value="SIN_ORDEN">Sin orden</option>
+                                        <option value="CON_ORDEN">Con orden</option>
+                                    </select>
+                                </div>
+                            </div>
+
+
+                        </fieldset>
+
 
                     </div>
-                </form> 
+                </div> 
             </div>
             <div class="modal-footer">
-                <button class="btn btn-sm btn-success" onClick="requerimientoPendienteView.aplicarFiltros();">Aplicar</button>
+                <button class="btn btn-sm btn-default handleClickLimpiarFiltroRequerimientosPendientes">Limpiar filtros</button>
+                <button class="btn btn-sm btn-success handleClickAplicarFiltroRequerimientosPendientes">Aplicar</button>
             </div>
         </div>
     </div>

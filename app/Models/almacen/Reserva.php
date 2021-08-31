@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Models\almacen;
+namespace App\Models\Almacen;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Reserva extends Model
 {
@@ -10,17 +11,28 @@ class Reserva extends Model
     protected $primaryKey = 'id_reserva';
     public $timestamps = false;
 
-    public static function nextCodigo($id_almacen)
-    {
-        $yyyy = date('Y', strtotime(date('Y-m-d H:i:s')));
-        $anio = date('y', strtotime(date('Y-m-d H:i:s')));
+    public static function crearCodigo(){
+        $num = Reserva::obtenerCantidadRegistros();
+        $yy = date('y', strtotime("now"));
+        $correlativo= sprintf('%04d', ($num + 1));
 
-        $cantidad = Reserva::where('id_almacen_reserva', $id_almacen)
-            ->whereYear('fecha_registro', '=', $yyyy)
-            ->get()->count();
-        // $val = GenericoAlmacenController::leftZero(4, ($cantidad + 1));
-        $val = sprintf('%04d', ($cantidad + 1));
+        return "RE-{$yy}{$correlativo}";
 
-        return "RE-" . $id_almacen . "-" . $anio . $val;
+    }
+    public static function obtenerCantidadRegistros(){
+        $yyyy = date('Y', strtotime("now"));
+        $num = Reserva::whereYear('fecha_registro', '=', $yyyy)->count();
+        return $num;
+
+    }
+
+    public function almacen(){
+        return $this->hasone('App\Models\Almacen\Almacen','id_almacen','id_almacen_reserva');
+    }
+    public function usuario(){
+        return $this->hasone('App\Models\Configuracion\Usuario','id_usuario','usuario_registro');
+    }
+    public function estado(){
+        return $this->hasone('App\Models\Administracion\Estado','id_estado_doc','estado');
     }
 }

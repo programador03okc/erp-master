@@ -23,7 +23,29 @@ class Proveedor extends Model
         'contribuyente.distrito',
         // 'contribuyente.distrito.provincia',
         // 'contribuyente.distrito.provincia.departamento',
-        'estadoProveedor');
+        'estadoProveedor')
+        ->where('log_prove.estado','=',1);
+        return $data;
+
+    }
+    public static function mostrar($idProveedor){
+        $data = Proveedor::with(['contribuyente.tipoContribuyente',
+        'contribuyente.tipoDocumentoIdentidad',
+        'cuentaContribuyente'=> function($q){
+            $q->where('adm_cta_contri.estado', '=', 1);
+        },
+        'cuentaContribuyente.banco',
+        'cuentaContribuyente.banco.contribuyente',
+        'cuentaContribuyente.tipoCuenta',
+        'cuentaContribuyente.moneda',
+        'contribuyente.pais',
+        'contribuyente.distrito',
+        'contactoContribuyente' => function($q){
+            $q->where('adm_ctb_contac.estado', '=', 1);
+        },
+        // 'contribuyente.distrito.provincia',
+        // 'contribuyente.distrito.provincia.departamento',
+        'estadoProveedor'])->where('id_proveedor',$idProveedor)->first();
         // ->where('log_prove.id_contribuyente','=',1912);
         return $data;
 
@@ -43,10 +65,13 @@ class Proveedor extends Model
         return $this->hasOne('App\Models\Contabilidad\Contribuyente','id_contribuyente','id_contribuyente');
     }
     public function cuentaContribuyente(){
-        return $this->belongsTo('App\Models\Contabilidad\CuentaContribuyente','id_contribuyente','id_contribuyente');
+        return $this->hasMany('App\Models\Contabilidad\CuentaContribuyente','id_contribuyente','id_contribuyente');
+    }
+    public function contactoContribuyente(){
+        return $this->hasMany('App\Models\Contabilidad\ContactoContribuyente','id_contribuyente','id_contribuyente');
     }
     public function estadoProveedor(){
-        return $this->hasOne('App\Models\Logistica\EstadoProveedor','id_estado','id_estado')->withDefault([
+        return $this->hasOne('App\Models\Logistica\EstadoProveedor','id_estado','estado')->withDefault([
             'id_estado' => null,
             'descripcion' => null,
             'estado' => null

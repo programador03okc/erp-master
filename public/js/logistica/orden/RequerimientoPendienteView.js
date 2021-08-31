@@ -17,12 +17,14 @@ var trRequerimientosPendientes;
 class RequerimientoPendienteView {
     constructor(requerimientoPendienteCtrl){
         this.requerimientoPendienteCtrl = requerimientoPendienteCtrl;
+        vista_extendida();
+
     }
 
     initializeEventHandler(){
-        $('#modal-atender-con-almacen').on("click","button.handleClickGuardarAtendidoConAlmacen", ()=>{
-            this.guardarAtendidoConAlmacen();
-        });
+        // $('#modal-atender-con-almacen').on("click","button.handleClickGuardarAtendidoConAlmacen", ()=>{
+        //     this.guardarAtendidoConAlmacen();
+        // });
 
         $('#requerimientos_pendientes').on("click","button.handleClickCrearOrdenCompra", ()=>{
             this.crearOrdenCompra();
@@ -62,19 +64,104 @@ class RequerimientoPendienteView {
         //     this.updateSelectAlmacenAAtender(e.currentTarget);
         // });
 
-        $('#listaItemsRequerimientoParaAtenderConAlmacen tbody').on("blur","input.handleBlurUpdateInputCantidadAAtender", (e)=>{
-            this.updateInputCantidadAAtender(e.currentTarget);
+        // $('#listaItemsRequerimientoParaAtenderConAlmacen tbody').on("blur","input.handleBlurUpdateInputCantidadAAtender", (e)=>{
+        //     this.updateInputCantidadAAtender(e.currentTarget);
+        // });
+
+        $('#modal-filtro-requerimientos-pendientes').on("click","button.handleClickLimpiarFiltroRequerimientosPendientes",()=>{
+            this.limpiarFiltroRequerimientosPendientes();
+        });
+        $('#modal-filtro-requerimientos-pendientes').on("click","button.handleClickAplicarFiltroRequerimientosPendientes",()=>{
+            this.aplicarFiltroRequerimientosPendientes();
+        });
+        $('#modal-filtro-requerimientos-pendientes').on("change","select.handleChangeFiltroEmpresa",(e)=>{
+            this.getDataSelectSede(e.currentTarget.value);
+        });
+
+
+        $('#listaItemsRequerimientoParaAtenderConAlmacen tbody').on("click","button.handleClickAbrirModalNuevaReserva", (e)=>{
+            this.abrirModalNuevaReserva(e.currentTarget);
+        });
+        $('#listaItemsRequerimientoParaAtenderConAlmacen tbody').on("click","button.handleClickAbrirModaHistorialReserva", (e)=>{
+            this.abrirModalHistorialReserva(e.currentTarget);
+        });
+        $('#modal-nueva-reserva').on("click","button.handleClickAgregarReserva", (e)=>{
+            e.currentTarget.setAttribute("disabled",true);
+            this.agregarReserva(e.currentTarget);
+        });
+        $('#modal-nueva-reserva').on("click","button.handleClickAnularReserva", (e)=>{
+            this.anularReserva(e.currentTarget);
         });
 
         
     }
 
-    renderRequerimientoPendienteListModule(id_empresa = null, id_sede = null) {
-        this.requerimientoPendienteCtrl.getRequerimientosPendientes(id_empresa, id_sede).then( (res) =>{
-            this.construirTablaListaRequerimientosPendientes(res);
+    renderRequerimientoPendienteList(empresa,sede,fechaRegistroDesde,fechaRegistroHasta, reserva, orden) {
+        this.requerimientoPendienteCtrl.getRequerimientosPendientes(empresa,sede,fechaRegistroDesde,fechaRegistroHasta, reserva, orden).then( (res) =>{
+            if(res.length){
+                this.construirTablaListaRequerimientosPendientes(res);
+                $('#requerimientos_pendientes').LoadingOverlay("hide", true);
+            } else {
+                $('#requerimientos_pendientes').LoadingOverlay("hide", true);
+                console.log(res);
+                Swal.fire(
+                    '',
+                    'Lo sentimos hubo un error en el servidor al intentar traer la lista de requerimientos pendientes, por favor vuelva a intentarlo',
+                    'error'
+                );
+            }
         }).catch( (err) =>{
             console.log(err)
         })
+    }
+
+    getDataSelectSede(idEmpresa){
+
+        if (idEmpresa > 0) {
+            this.requerimientoPendienteCtrl.obtenerSede(idEmpresa).then((res)=> {
+                this.llenarSelectFiltroSede(res);
+            }).catch(function (err) {
+                console.log(err)
+            })
+        }else{
+            let selectElement = document.querySelector("div[id='modal-filtro-requerimientos-pendientes'] select[name='sede']");
+            if (selectElement.options.length > 0) {
+                let i, L = selectElement.options.length - 1;
+                for (i = L; i >= 0; i--) {
+                    selectElement.remove(i);
+                }
+                let option = document.createElement("option");
+    
+                option.value='SIN_FILTRO';
+                option.text='-----------------';
+                selectElement.add(option);
+            }
+        }
+        return false;
+    }
+
+    llenarSelectFiltroSede(array) {
+        let selectElement = document.querySelector("div[id='modal-filtro-requerimientos-pendientes'] select[name='sede']");
+        if (selectElement.options.length > 0) {
+            let i, L = selectElement.options.length - 1;
+            for (i = L; i >= 0; i--) {
+                selectElement.remove(i);
+            }
+        }
+        array.forEach(element => {
+            let option = document.createElement("option");
+            option.text = element.descripcion;
+            option.value = element.id_sede;
+            option.setAttribute('data-ubigeo', element.id_ubigeo);
+            option.setAttribute('data-name-ubigeo', element.ubigeo_descripcion);
+            if (element.codigo == 'LIMA' || element.codigo == 'Lima') { // default sede lima
+                option.selected=true;
+
+            }
+
+            selectElement.add(option);
+        });
+
     }
 
     // observarRequerimientoLogistica(idRequerimiento){
@@ -94,6 +181,8 @@ class RequerimientoPendienteView {
     // }
 
 
+
+
     abrirRequerimiento(idRequerimiento){
         // Abrir nuevo tab
         localStorage.setItem('idRequerimiento', idRequerimiento);
@@ -105,10 +194,9 @@ class RequerimientoPendienteView {
     }
 
     construirTablaListaRequerimientosPendientes(data) {
-        // requerimientoPendienteCtrl.limpiarTabla('listaRequerimientosPendientes');
         let that =this;
+        that.requerimientoPendienteCtrl.limpiarTabla('listaRequerimientosPendientes');
 
-        vista_extendida();
         tablaListaRequerimientosPendientes= $('#listaRequerimientosPendientes').DataTable({
             'dom': vardataTables[1],
             'buttons': [],
@@ -123,7 +211,7 @@ class RequerimientoPendienteView {
                 { 'data': 'id_requerimiento' },
                 {
                     render: function (data, type, row) {
-                        return `<div class="text-center"><input type="checkbox" data-mapeos-pendientes="${row.count_pendientes}" data-id-requerimiento="${row.id_requerimiento}" /></div>`;
+                        return `<div class="text-center"><input type="checkbox" data-mapeos-pendientes="${row.count_pendientes}" data-mapeados="${row.count_mapeados}" data-id-requerimiento="${row.id_requerimiento}" /></div>`;
                     }
                 },
                 { 'data': 'empresa_sede' },
@@ -139,7 +227,7 @@ class RequerimientoPendienteView {
                 { 'data': 'tipo_req_desc' },
                 {
                     render: function (data, type, row) {
-                        return row.division;
+                        return row.division !=null?eval(row.division).join():'';
                     }
                 },
                 {
@@ -177,8 +265,9 @@ class RequerimientoPendienteView {
                             let btnMapearProductos = '<button type="button" class="mapeo btn btn-success btn-xs" title="Mapear productos" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo="' + row.codigo + '"  ><i class="fas fa-sign-out-alt"></i> <span class="badge" title="Cantidad items sin mapear" name="cantidadAdjuntosRequerimiento" style="position:absolute;border: solid 0.1px;z-index: 9;top: -9px;left: 0px;font-size: 0.9rem;">'+row.count_pendientes+'</span></button>';
                             let btnAtenderAlmacen='';
                             let btnCrearOrdenCompra = '';
-                                if(row.count_pendientes ==0){
-                                    btnAtenderAlmacen = '<button type="button" class="btn btn-primary btn-xs handleClickAtenderConAlmacen" name="btnOpenModalAtenderConAlmacen" title="Reserva en almacén" data-id-requerimiento="' + row.id_requerimiento + '"><i class="fas fa-dolly fa-sm"></i></button>';
+                                // if(row.count_pendientes ==0){
+                                if(row.count_mapeados > 0){
+                                    btnAtenderAlmacen = '<button type="button" class="btn btn-primary btn-xs handleClickAtenderConAlmacen" name="btnOpenModalAtenderConAlmacen" title="Reserva en almacén" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo-requerimiento="' + row.codigo + '"><i class="fas fa-dolly fa-sm"></i></button>';
                                     btnCrearOrdenCompra = '<button type="button" class="btn btn-warning btn-xs handleClickCrearOrdenCompraPorRequerimiento" name="btnCrearOrdenCompraPorRequerimiento" title="Crear Orden de Compra" data-id-requerimiento="' + row.id_requerimiento + '"  ><i class="fas fa-file-invoice"></i></button>';
                                 }
                             let btnCrearOrdenServicio = '<button type="button" class="btn btn-danger btn-xs handleClickCrearOrdenServicioPorRequerimiento" name="btnCrearOrdenServicioPorRequerimiento" title="Crear Orden de Servicio" data-id-requerimiento="' + row.id_requerimiento + '"  ><i class="fas fa-file-invoice fa-sm"></i></button>';
@@ -189,13 +278,7 @@ class RequerimientoPendienteView {
 
                             let closeDiv = '</div>';
 
-                            let cantidadItemTipoServicio = 0;
-                            row.detalle.forEach(element => {
-                                if (element.id_tipo_item == 2) {
-                                    cantidadItemTipoServicio += 1;
-                                }
-                            });
-                            if (cantidadItemTipoServicio >= 1) {
+                            if (row.cantidad_tipo_servicio > 0) {
                                 return (openDiv + btnVerDetalleRequerimiento + btnAtenderAlmacen + btnMapearProductos + btnCrearOrdenCompra + btnCrearOrdenServicio + btnVercuadroCostos + closeDiv);
                             } else {
                                 return (openDiv + btnVerDetalleRequerimiento + btnAtenderAlmacen + btnMapearProductos + btnCrearOrdenCompra + btnVercuadroCostos + closeDiv);
@@ -219,7 +302,7 @@ class RequerimientoPendienteView {
                         });
                         this.classList.add('eventClick');
                     }
-                    if(this.dataset.mapeosPendientes > 0){
+                    if(this.dataset.mapeados == 0){
                         this.checked=false;
                         Swal.fire(
                             '',
@@ -235,13 +318,6 @@ class RequerimientoPendienteView {
                 }
 
                 let listaRequerimientosPendientes_filter = document.querySelector("div[id='listaRequerimientosPendientes_filter']");
-                // let buttonFiler = document.createElement("button");
-                // buttonFiler.type = "button";
-                // buttonFiler.className = "btn btn-default pull-left";
-                // buttonFiler.style = "margin-right: 30px;";
-                // buttonFiler.innerHTML = "<i class='fas fa-filter'></i> Filtros";
-                // buttonFiler.addEventListener('click', that.abrirModalFiltrosRequerimientosPendientes, false);
-                // listaRequerimientosPendientes_filter.appendChild(buttonFiler);
 
                 let buttonCrearOrden = document.createElement("button");
                 buttonCrearOrden.type = "button";
@@ -252,6 +328,14 @@ class RequerimientoPendienteView {
                 buttonCrearOrden.innerHTML = "<i class='fas fa-file-invoice'></i> Crear orden";
                 buttonCrearOrden.addEventListener('click', that.crearOrdenCompra.bind(that), false);
                 listaRequerimientosPendientes_filter.appendChild(buttonCrearOrden);
+
+                let buttonFiler = document.createElement("button");
+                buttonFiler.type = "button";
+                buttonFiler.className = "btn btn-default pull-left";
+                buttonFiler.style = "margin-right: 30px;";
+                buttonFiler.innerHTML = "<i class='fas fa-filter'></i> Filtros";
+                buttonFiler.addEventListener('click', that.abrirModalFiltrosRequerimientosPendientes, false);
+                listaRequerimientosPendientes_filter.appendChild(buttonFiler);
 
             },
             'columnDefs': [
@@ -296,6 +380,43 @@ class RequerimientoPendienteView {
             
             $('#submit_mapeoItemsRequerimiento').removeAttr('disabled');
         });
+    }
+    limpiarFiltroRequerimientosPendientes(){
+        let allSelectFiltroRequerimientosPendientes= document.querySelectorAll("div[id='formFiltroListaRequerimientosPendientes'] select");
+        allSelectFiltroRequerimientosPendientes.forEach(element => {
+            element.value='SIN_FILTRO';
+        });
+        
+        let allInputFiltroRequerimientosPendientes= document.querySelectorAll("div[id='formFiltroListaRequerimientosPendientes'] input");
+        allInputFiltroRequerimientosPendientes.forEach(element => {
+            element.value='';
+        });
+
+        let selectElement = document.querySelector("div[id='modal-filtro-requerimientos-pendientes'] select[name='sede']");
+        if (selectElement.options.length > 0) {
+            let i, L = selectElement.options.length - 1;
+            for (i = L; i >= 0; i--) {
+                selectElement.remove(i);
+            }
+            let option = document.createElement("option");
+
+            option.value='SIN_FILTRO';
+            option.text='-----------------';
+            selectElement.add(option);
+        }
+    }
+
+    aplicarFiltroRequerimientosPendientes(){
+            let empresa = document.querySelector("div[id='modal-filtro-requerimientos-pendientes'] select[name='empresa']").value;
+            let sede = document.querySelector("div[id='modal-filtro-requerimientos-pendientes'] select[name='sede']").value;
+            let fechaRegistroDesde = document.querySelector("div[id='modal-filtro-requerimientos-pendientes'] input[name='fechaRegistroDesde']").value;
+            let fechaRegistroHasta = document.querySelector("div[id='modal-filtro-requerimientos-pendientes'] input[name='fechaRegistroHasta']").value;
+            let reserva = document.querySelector("div[id='modal-filtro-requerimientos-pendientes'] select[name='reserva']").value;
+            let orden = document.querySelector("div[id='modal-filtro-requerimientos-pendientes'] select[name='orden']").value;
+ 
+            this.renderRequerimientoPendienteList(empresa,sede,(fechaRegistroDesde==''?'SIN_FILTRO':fechaRegistroDesde),(fechaRegistroHasta==''?'SIN_FILTRO':fechaRegistroHasta),reserva,orden);
+            $('#modal-filtro-requerimientos-pendientes').modal('hide');
+
     }
 
     verDetalleRequerimiento(obj){
@@ -353,7 +474,7 @@ class RequerimientoPendienteView {
                         <td style="border: none; text-align:center;">${(element.precio_unitario >0 ? ((element.moneda_simbolo?element.moneda_simbolo:((element.moneda_simbolo?element.moneda_simbolo:'')+'0.00')) + $.number(element.precio_unitario,2)) : (element.moneda_simbolo?element.moneda_simbolo:'')+'0.00')}</td>
                         <td style="border: none; text-align:center;">${(parseFloat(element.subtotal) > 0 ? ((element.moneda_simbolo?element.moneda_simbolo:'') + $.number(element.subtotal,2)) :((element.moneda_simbolo?element.moneda_simbolo:'')+$.number((element.cantidad * element.precio_unitario),2)))}</td>
                         <td style="border: none; text-align:center;">${element.motivo != null ? element.motivo : ''}</td>
-                        <td style="border: none; text-align:center;">${element.observacion != null ? element.observacion : ''}</td>
+                        <td style="border: none; text-align:center;">${element.stock_comprometido != null ? element.stock_comprometido : ''}</td>
                         <td style="border: none; text-align:center;">${element.estado_doc != null && element.tiene_transformacion ==false ? element.estado_doc : ''}</td>
                         </tr>`;
                     // }
@@ -369,7 +490,7 @@ class RequerimientoPendienteView {
                         <th style="border: none; text-align:center;">Precio unitario</th>
                         <th style="border: none; text-align:center;">Subtotal</th>
                         <th style="border: none; text-align:center;">Motivo</th>
-                        <th style="border: none; text-align:center;">Observacion</th>
+                        <th style="border: none; text-align:center;">Stock comprometido</th>
                         <th style="border: none; text-align:center;">Estado</th>
                     </tr>
                 </thead>
@@ -395,37 +516,37 @@ class RequerimientoPendienteView {
         });
     }
 
-    chkEmpresa(e) {
+    // chkEmpresa(e) {
 
-        if (e.target.checked == true) {
-            document.querySelector("form[id='formFiltroListaRequerimientosPendientes'] select[name='empresa']").removeAttribute('readOnly');
+    //     if (e.target.checked == true) {
+    //         document.querySelector("form[id='formFiltroListaRequerimientosPendientes'] select[name='empresa']").removeAttribute('readOnly');
 
-        } else {
-            document.querySelector("form[id='formFiltroListaRequerimientosPendientes'] select[name='empresa']").setAttribute('readOnly', true);
+    //     } else {
+    //         document.querySelector("form[id='formFiltroListaRequerimientosPendientes'] select[name='empresa']").setAttribute('readOnly', true);
 
-        }
-    }
+    //     }
+    // }
 
-    chkSede(e) {
+    // chkSede(e) {
 
-        if (e.target.checked == true) {
-            document.querySelector("form[id='formFiltroListaRequerimientosPendientes'] select[name='sede']").removeAttribute('readOnly');
-        } else {
-            document.querySelector("form[id='formFiltroListaRequerimientosPendientes'] select[name='sede']").setAttribute('readOnly', true);
+    //     if (e.target.checked == true) {
+    //         document.querySelector("form[id='formFiltroListaRequerimientosPendientes'] select[name='sede']").removeAttribute('readOnly');
+    //     } else {
+    //         document.querySelector("form[id='formFiltroListaRequerimientosPendientes'] select[name='sede']").setAttribute('readOnly', true);
 
-        }
-    }
+    //     }
+    // }
 
 
-    handleChangeFilterReqByEmpresa(event) {
-        let id_empresa = event.target.value;
-        requerimientoPendienteCtrl.getDataSelectSede(id_empresa).then(function (res) {
-            requerimientoPendienteView.llenarSelectSede(res);
-        }).catch(function (err) {
-            console.log(err)
-        })
+    // handleChangeFilterReqByEmpresa(event) {
+    //     let id_empresa = event.target.value;
+    //     requerimientoPendienteCtrl.getDataSelectSede(id_empresa).then(function (res) {
+    //         requerimientoPendienteView.llenarSelectSede(res);
+    //     }).catch(function (err) {
+    //         console.log(err)
+    //     })
 
-    }
+    // }
 
     llenarSelectSede(array) {
         let selectElement = document.querySelector("select[name='sede']");
@@ -445,26 +566,26 @@ class RequerimientoPendienteView {
         });
     }
 
-    aplicarFiltros() {
-        let idEmpresa = null;
-        let idSede = null;
+    // aplicarFiltros() {
+    //     let idEmpresa = null;
+    //     let idSede = null;
 
-        let chkEmpresa = document.querySelector("form[id='formFiltroListaRequerimientosPendientes'] input[name='chkEmpresa']").checked;
-        let chkSede = document.querySelector("form[id='formFiltroListaRequerimientosPendientes'] input[name='chkSede']").checked;
+    //     let chkEmpresa = document.querySelector("form[id='formFiltroListaRequerimientosPendientes'] input[name='chkEmpresa']").checked;
+    //     let chkSede = document.querySelector("form[id='formFiltroListaRequerimientosPendientes'] input[name='chkSede']").checked;
 
-        if (chkEmpresa == true) {
-            idEmpresa = document.querySelector("form[id='formFiltroListaRequerimientosPendientes'] select[name='empresa']").value;
+    //     if (chkEmpresa == true) {
+    //         idEmpresa = document.querySelector("form[id='formFiltroListaRequerimientosPendientes'] select[name='empresa']").value;
 
-        }
-        if (chkSede == true) {
-            idSede = document.querySelector("form[id='formFiltroListaRequerimientosPendientes'] select[name='sede']").value;
-        }
+    //     }
+    //     if (chkSede == true) {
+    //         idSede = document.querySelector("form[id='formFiltroListaRequerimientosPendientes'] select[name='sede']").value;
+    //     }
 
-        $('#modal-filtro-requerimientos-pendientes').modal('hide');
+    //     $('#modal-filtro-requerimientos-pendientes').modal('hide');
 
-        this.renderRequerimientoPendienteListModule(idEmpresa > 0 ? idEmpresa : null, idSede > 0 ? idSede : null);
+    //     this.renderRequerimientoPendienteListModule(idEmpresa > 0 ? idEmpresa : null, idSede > 0 ? idSede : null);
 
-    }
+    // }
 
 
 
@@ -481,115 +602,171 @@ class RequerimientoPendienteView {
         trRequerimientosPendientes= obj.closest("tr");
 
         document.querySelector("form[id='form-reserva-almacen'] input[name='id_requerimiento']").value= obj.dataset.idRequerimiento;
+        // let codigoRequerimiento =obj.dataset.codigo;
+        document.querySelector("span[id='codigo_requerimiento']").textContent=obj.dataset.codigoRequerimiento;
+        this.llenarTablaModalAtenderConAlmacen(obj.dataset.idRequerimiento);
 
-        this.requerimientoPendienteCtrl.openModalAtenderConAlmacen(obj).then((res)=> {
-            this.construirTablaListaItemsRequerimientoParaAtenderConAlmacen(res);
+    }
+
+    llenarTablaModalAtenderConAlmacen(idRequerimiento){
+        this.requerimientoPendienteCtrl.openModalAtenderConAlmacen(idRequerimiento).then((res)=> {
+            this.construirTablaListaItemsRequerimientoParaAtenderConAlmacen(res.data);
         }).catch(function (err) {
             console.log(err)
         })
     }
 
     construirTablaListaItemsRequerimientoParaAtenderConAlmacen(data) { 
-        // console.log(data);
-        document.querySelector("span[id='codigo_requerimiento']").textContent= data.codigo_requerimiento;
-        // data.almacenes, data.detalle_requerimiento
-        let that =this;
-        let data_detalle_requerimiento = data.detalle_requerimiento.filter(function( obj ) {
-            return (obj.id_producto >0); });
-        let data_almacenes = data.almacenes;
         $('#listaItemsRequerimientoParaAtenderConAlmacen').dataTable({
-            'scrollY': '50vh',
-            'info': false,
-            'searching': false,
-            'paging': false,
-            'scrollCollapse': true,
+            'dom': vardataTables[1],
+            'buttons': [],
             'language': vardataTables[0],
-            'processing': true,
             "bDestroy": true,
-            "scrollX": true,
-            'data': data_detalle_requerimiento,
+            "bInfo": false,
+            // 'paging': true,
+            "bLengthChange": false,
+            // "pageLength": 3,
+            'data': data,
+          
+            // 'order': [[0, 'desc']],
+            // "scrollY": 200,
+            // "scrollX": true,
+
+            // 'searching': false,
+            // 'scrollCollapse': true,
+            // 'processing': true,
             'columns': [
          
                 {
                     render: function (data, type, row) {
-                        return (row.codigo_producto?row.codigo_producto:'');
+                        return (row.producto != null?row.producto.codigo:'');
                     }
                 },
                 {
                     render: function (data, type, row) {
-                        return (row.part_number?row.part_number:row.producto_part_number);
+                        return (row.producto!= null?row.producto.part_number:'');
                     }
                 },
                 {
                     render: function (data, type, row) {
-                        return (row.descripcion?row.descripcion:row.producto_descripcion);
+                        return ((row.descripcion!= null && row.descripcion!= '')?row.descripcion:(row.producto.descripcion !=null?row.producto.descripcion:''));
                     }
                 },
-                { 'data': 'unidad_medida' },
                 {
                     render: function (data, type, row) {
-                        // return  parseInt(row.cantidad - row.suma_transferencias);
-                        return parseInt(row.cantidad);
+                        return row.unidad_medida !=null?row.unidad_medida.descripcion:'';
                     }
                 },
-                { 'data': 'razon_social_proveedor_seleccionado' },
                 {
                     render: function (data, type, row) {
-                        let estado = '';
-                        if (row.suma_transferencias > 0) {
-                            estado = row.estado_doc + '<br><span class="label label-info">Con Transferencia</span>';
-                        } else {
-                            estado = row.estado_doc;
-                        }
-
-                        if (row.tiene_transformacion == true) {
-                            estado += '<br><span class="label label-default">Producto Transformado</span>';
-                        }
-
-                        return estado;
+                        return row.cantidad != null?row.cantidad:'';
                     }
                 },
                 {
-                    'render':
-                        function (data, type, row, meta) {
-                            let select = '';
-                            if (row.tiene_transformacion == false) {
-                                select = `<input type="hidden" name="idDetalleRequerimiento[]" value="${row.id_detalle_requerimiento}"><select class="form-control selectAlmacenReserva" name="almacenReserva[]" >`;
-                                select += `<option value ="0">Sin selección</option>`;
-                                data_almacenes.forEach(element => {
-                                    if (row.id_almacen_reserva == element.id_almacen) {
-                                        select += `<option value="${element.id_almacen}" data-id-empresa="${element.id_empresa}" selected>${element.descripcion}</option> `;
-
-                                    } else {
-                                        select += `<option value="${element.id_almacen}" data-id-empresa="${element.id_empresa}">${element.descripcion}</option> `;
-                                    }
-                                });
-                                select += `</select>`;
-                            }
-
-
-                            return select;
-                        }
+                    render: function (data, type, row) {
+                        return row.proveedor_seleccionado != null?row.proveedor_seleccionado:'';
+                    }
                 },
                 {
-                    'render':
-                        function (data, type, row, meta) {
-                            let action = '';
-                            if (row.tiene_transformacion == false) {
-                                action = `<input type="number" min="0" name="cantidadReserva[]" class="form-control inputCantidadArReservar handleBlurUpdateInputCantidadAAtender"  data-cantidad="${row.cantidad}" style="width: 70px;" data-indice="${meta.row}" value="${parseInt(row.stock_comprometido ? row.stock_comprometido : 0)}" />`;
-
-                                that.updateObjCantidadAAtender(meta.row, row.stock_comprometido);
-
-                            }
-                            return action;
+                    render: function (data, type, row) {
+                        let estado =(row.estado.estado_doc != null?row.estado.estado_doc:'');
+                        let productoTransformado =row.tiene_transformacion == true?'<br><span class="label label-default">Producto Transformado</span>':'';
+                        return (estado+productoTransformado);
+                    }
+                },
+                {
+                    render: function (data, type, row) {
+                        let cantidadReservada = 0;
+                        if(row.reserva !=null){
+                            (row.reserva).forEach(element => {
+                                cantidadReservada+=element.stock_comprometido;
+                            });
                         }
-                }
+                        return cantidadReservada; //cantidad reservada
+                    }
+                },
+                {
+                    render: function (data, type, row) {
+                        let codigoReserva=[];
+                        if(row.reserva !=null){
+                            (row.reserva).forEach(element => {
+                                codigoReserva.push(element.codigo?element.codigo:(element.id_reserva?element.id_reserva:''));
+                            });
+                        }
+                        return codigoReserva.length>0?codigoReserva:'(Sin reserva)'; //codigo o id reservada
+                    }
+                },
+                {
+                    render: function (data, type, row) {
+                        return `<center><div class="btn-group" role="group" style="margin-bottom: 5px;">
+                        <button type="button" class="btn btn-xs btn-success btnNuevaReserva handleClickAbrirModalNuevaReserva" 
+                            data-codigo-requerimiento="${document.querySelector("span[id='codigo_requerimiento']").textContent}" 
+                            data-id-detalle-requerimiento="${row.id_detalle_requerimiento}" 
+                            title="Nueva reserva" ><i class="fas fa-box fa-xs"></i></button>
+                        <button type="button" class="btn btn-xs btn-info btnHistorialReserva handleClickAbrirModaHistorialReserva" 
+                            data-codigo-requerimiento="${document.querySelector("span[id='codigo_requerimiento']").textContent}" 
+                            data-id-detalle-requerimiento="${row.id_detalle_requerimiento}" 
+                            title="Historial reserva" ><i class="fas fa-eye fa-xs"></i></button>
+                        </div></center>`;  
+                    }
+                },
+           
+                // {
+                //     'render':
+                //         function (data, type, row, meta) {
+                //             let select = '';
+                //             if (row.tiene_transformacion == false) {
+                //                 select = `<input type="hidden" name="idDetalleRequerimiento[]" value="${row.id_detalle_requerimiento}"><select class="form-control selectAlmacenReserva" name="almacenReserva[]" >`;
+                //                 select += `<option value ="0">Sin selección</option>`;
+                //                 data_almacenes.forEach(element => {
+                //                     if (row.id_almacen_reserva == element.id_almacen) {
+                //                         select += `<option value="${element.id_almacen}" data-id-empresa="${element.id_empresa}" selected>${element.descripcion}</option> `;
+
+                //                     } else {
+                //                         select += `<option value="${element.id_almacen}" data-id-empresa="${element.id_empresa}">${element.descripcion}</option> `;
+                //                     }
+                //                 });
+                //                 select += `</select>`;
+                //             }
+
+
+                //             return select;
+                //         }
+                // },
+                // {
+                //     'render':
+                //         function (data, type, row, meta) {
+                //             let action = '';
+                //             if (row.tiene_transformacion == false) {
+                //                 action = `<input type="number" min="0" name="cantidadReserva[]" class="form-control inputCantidadArReservar handleBlurUpdateInputCantidadAAtender"  data-cantidad="${row.cantidad}" style="width: 70px;" data-indice="${meta.row}" value="${parseInt(row.stock_comprometido ? row.stock_comprometido : 0)}" />`;
+
+                //                 that.updateObjCantidadAAtender(meta.row, row.stock_comprometido);
+
+                //             }
+                //             return action;
+                //         }
+                // }
+            ],
+
+            'columnDefs': [
+                { 'targets': 0,'className': "text-center" },
+                { 'targets': 1,'className': "text-center" },
+                { 'targets': 2,'className': "text-left", "width": "280px"},
+                { 'targets': 3,'className': "text-center" },
+                { 'targets': 4,'className': "text-center" },
+                { 'targets': 5,'className': "text-left" },
+                { 'targets': 6,'className': "text-center" },
+                { 'targets': 7,'className': "text-center" },
+                { 'targets': 8,'className': "text-center" },
+                { 'targets': 9,'className': "text-center" }
+           
             ],
             'initComplete': function () {
 
 
             },
             "createdRow": function (row, data, dataIndex) {
+                $(row.childNodes[2]).css('width', '280px');  
 
                 // $(row.childNodes[7]).css('background-color', '#586c86');  
                 // $(row.childNodes[7]).css('font-weight', 'bold');
@@ -597,15 +774,344 @@ class RequerimientoPendienteView {
                 // $(row.childNodes[8]).css('font-weight', 'bold');
 
             }
-            // 'order': [
-            //     [0, 'asc']
-            // ]
         });
-        let tablelistaitem = document.getElementById(
-            'listaItemsRequerimientoParaAtenderConAlmacen_wrapper'
-        )
-        tablelistaitem.childNodes[0].childNodes[0].hidden = true;
     }
+
+    abrirModalHistorialReserva(obj){
+        $('#modal-historial-reserva').modal({
+            show: true,
+            backdrop: 'true'
+        });
+
+        if(parseInt(obj.dataset.idDetalleRequerimiento) >0){
+            this.requerimientoPendienteCtrl.obtenerHistorialDetalleRequerimientoParaReserva(obj.dataset.idDetalleRequerimiento).then((res) =>{
+                $('#modal-historial-reserva .modal-content').LoadingOverlay("hide", true);                
+                if (res.status == 200) {
+                    this.llenarModalHistorialReserva(res.data);
+                }
+            }).catch(function (err) {
+                Swal.fire(
+                    '',
+                    'Hubo un problema al intentar obtener la data del producto',
+                    'error'
+                );
+            })
+
+        }
+    }
+
+    llenarModalHistorialReserva(data){
+        if(data.id_producto>0){
+            document.querySelector("div[id='modal-historial-reserva'] label[id='partNumber']").textContent= data.producto.part_number !=null?data.producto.part_number:(data.part_number!=null?data.part_number:'');
+            document.querySelector("div[id='modal-historial-reserva'] label[id='descripcion']").textContent= data.producto.descripcion !=null?data.producto.descripcion:(data.descripcion!=null?data.descripcion:'');
+            document.querySelector("div[id='modal-historial-reserva'] label[id='cantidad']").textContent= data.cantidad;
+            document.querySelector("div[id='modal-historial-reserva'] label[id='unidadMedida']").textContent= data.unidad_medida.descripcion;
+            this.listarTablaHistorialReservaProducto(data.reserva);
+        }else{
+            $('#modal-historial-reserva').modal('hide');
+            Swal.fire(
+                '',
+                'Lo sentimos no se encontro que el producto seleccionado este mapeado, debe mapear el producto antes de realizar una reseva',
+                'warning'
+            );
+            
+        }
+    }
+
+    listarTablaHistorialReservaProducto(data){
+        this.requerimientoPendienteCtrl.limpiarTabla('listaHistorialReserva');
+        // let cantidadTotalStockComprometido=0;
+        if(data.length >0){
+            (data).forEach(element => {
+                // cantidadTotalStockComprometido+= element.stock_comprometido;
+                document.querySelector("tbody[id='bodyListaHistorialReservaProducto']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
+                <td>${(element.codigo !=null && element.codigo !='')?element.codigo:(element.id_reserva)}</td>
+                <td>${element.almacen.descripcion}</td>
+                <td>${element.stock_comprometido}</td>
+                <td>${element.usuario.trabajador.postulante.persona.nombres.concat(' ', element.usuario.trabajador.postulante.persona.apellido_paterno??'')}</td>
+                <td>${element.estado.estado_doc}</td>
+                </tr>`);
+            });
+            // document.querySelector("table[id='listaHistorialReserva'] label[name='totalReservado']").textContent=cantidadTotalStockComprometido;
+        }else{
+            document.querySelector("tbody[id='bodyListaHistorialReservaProducto']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
+            <td colspan="5" style="text-align:center;">(Sin reservas)</td>
+    
+            </tr>`);
+        }
+    }
+
+    abrirModalNuevaReserva(obj){
+
+        this.limpiarModalNuevaReserva();
+        $('#modal-nueva-reserva').modal({
+            show: true,
+            backdrop: 'true'
+        });
+        document.querySelector("div[id='modal-nueva-reserva'] span[id='codigoRequerimiento']").textContent=obj.dataset.codigoRequerimiento;
+        // console.log(obj);
+        if(parseInt(obj.dataset.idDetalleRequerimiento) >0){
+            this.requerimientoPendienteCtrl.obtenerDetalleRequerimientoParaReserva(obj.dataset.idDetalleRequerimiento).then((res) =>{
+                $('#modal-nueva-reserva .modal-content').LoadingOverlay("hide", true);                
+                if (res.status == 200) {
+                    this.llenarModalNuevaReserva(res.data)
+                }
+            }).catch(function (err) {
+                Swal.fire(
+                    '',
+                    'Hubo un problema al  intentarobtener la data del producto',
+                    'error'
+                );
+            })
+
+        }
+    }
+
+    llenarModalNuevaReserva(data){
+        if(data.id_producto>0){
+            document.querySelector("form[id='form-nueva-reserva'] input[name='idProducto']").value= data.id_producto;
+            document.querySelector("form[id='form-nueva-reserva'] input[name='idRequerimiento']").value= data.id_requerimiento;
+            document.querySelector("form[id='form-nueva-reserva'] input[name='idDetalleRequerimiento']").value= data.id_detalle_requerimiento;
+            document.querySelector("form[id='form-nueva-reserva'] label[id='partNumber']").textContent= data.producto.part_number !=null?data.producto.part_number:(data.part_number!=null?data.part_number:'');
+            document.querySelector("form[id='form-nueva-reserva'] label[id='descripcion']").textContent= data.producto.descripcion !=null?data.producto.descripcion:(data.descripcion!=null?data.descripcion:'');
+            document.querySelector("form[id='form-nueva-reserva'] label[id='cantidad']").textContent= data.cantidad;
+            document.querySelector("form[id='form-nueva-reserva'] label[id='unidadMedida']").textContent= data.unidad_medida.descripcion;
+            this.listarTablaListaConReserva(data.reserva);
+        }else{
+            $('#modal-nueva-reserva').modal('hide');
+            Swal.fire(
+                '',
+                'Lo sentimos no se encontro que el producto seleccionado este mapeado, debe mapear el producto antes de realizar una reseva',
+                'warning'
+            );
+            
+        }
+
+    }
+
+    listarTablaListaConReserva(data){
+        this.requerimientoPendienteCtrl.limpiarTabla('listaConReserva');
+        let cantidadTotalStockComprometido=0;
+        if(data.length >0){
+            (data).forEach(element => {
+                cantidadTotalStockComprometido+= element.stock_comprometido;
+                document.querySelector("tbody[id='bodyListaConReserva']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
+                <td>${(element.codigo !=null && element.codigo !='')?element.codigo:(element.id_reserva)}</td>
+                <td>${element.almacen.descripcion}</td>
+                <td>${element.stock_comprometido}</td>
+                <td>${element.usuario.trabajador.postulante.persona.nombres.concat(' ', element.usuario.trabajador.postulante.persona.apellido_paterno??'')}</td>
+                <td>${element.estado.estado_doc}</td>
+                <td><button type="button" class="btn btn-xs btn-danger btnAnularReserva handleClickAnularReserva" data-codigo-reserva="${element.codigo}" data-id-reserva="${element.id_reserva}"  data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" title="Anular"><i class="fas fa-times fa-xs"></i></button></td>
+                </tr>`);
+            });
+            document.querySelector("table[id='listaConReserva'] label[name='totalReservado']").textContent=cantidadTotalStockComprometido;
+        }else{
+            document.querySelector("tbody[id='bodyListaConReserva']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
+            <td colspan="5" style="text-align:center;">(Sin reservas)</td>
+    
+            </tr>`);
+        }
+    }
+
+    limpiarModalNuevaReserva(){
+        document.querySelector("form[id='form-nueva-reserva'] input[name='idProducto']").value= '';
+        document.querySelector("form[id='form-nueva-reserva'] input[name='idDetalleRequerimiento']").value= '';
+        document.querySelector("form[id='form-nueva-reserva'] label[id='partNumber']").textContent='';
+        document.querySelector("form[id='form-nueva-reserva'] label[id='descripcion']").textContent='';
+        document.querySelector("form[id='form-nueva-reserva'] label[id='cantidad']").textContent='';
+        document.querySelector("form[id='form-nueva-reserva'] label[id='unidadMedida']").textContent='';
+        document.querySelector("form[id='form-nueva-reserva'] input[name='cantidadReserva']").value= '';
+        document.querySelector("form[id='form-nueva-reserva'] select[name='almacenReserva']").value= 0;
+        this.requerimientoPendienteCtrl.limpiarTabla('listaConReserva');
+        // document.querySelector("form[id='form-nueva-reserva'] label[id='totalCantidadAtendidoConOrden']").textContent='';
+        // document.querySelector("form[id='form-nueva-reserva'] label[id='totalCantidadConReserva']").textContent='';
+        // document.querySelector("form[id='form-nueva-reserva'] label[id='total']").textContent='';
+    }
+
+    validarModalNuevaReserva(){
+        let mensaje='';
+        let idProducto = document.querySelector("form[id='form-nueva-reserva'] input[name='idProducto']").value;
+        let idDetalleRequerimiento = document.querySelector("form[id='form-nueva-reserva'] input[name='idDetalleRequerimiento']").value;
+        let cantidadReserva = document.querySelector("form[id='form-nueva-reserva'] input[name='cantidadReserva']").value;
+        let almacenReserva = document.querySelector("form[id='form-nueva-reserva'] select[name='almacenReserva']").value;
+        if(!idProducto,!idDetalleRequerimiento >0 ){
+            mensaje+='<li style="text-align: left;">El producto / item de requerimiento no tiene un ID valido.</li>';
+        }
+        if(!cantidadReserva>0){
+            mensaje+='<li style="text-align: left;">Debe ingresar una cantidad a reservar mayor a cero.</li>';
+        }
+        if((parseInt(cantidadReserva)+ parseInt(document.querySelector("form[id='form-nueva-reserva'] label[name='totalReservado']").textContent)) > parseInt(document.querySelector("form[id='form-nueva-reserva'] label[id='cantidad']").textContent)){
+            mensaje+='<li style="text-align: left;">La cantidad a reservar con la cantidad total reservada supera la cantidad solicitada, debe Ingresar un valor menor.</li>';
+        }
+        if(!parseInt(almacenReserva)>0){
+            mensaje+='<li style="text-align: left;">Debe seleccionar un almacén.</li>';
+        }
+        return mensaje;
+    }
+
+    anularReserva(obj){
+        Swal.fire({
+            title: 'Esta seguro que desea anular la reserva '+(obj.dataset.codigoReserva!=''?obj.dataset.codigoReserva:obj.dataset.idReserva)+'?',
+            text: "No podrás revertir esto.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: 'Cancelar',
+            confirmButtonText: 'Si, anular'
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                let formData = new FormData();
+                formData.append(`idReserva`, obj.dataset.idReserva);
+                formData.append(`idDetalleRequerimiento`, obj.dataset.idDetalleRequerimiento);
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'anular-reserva-almacen',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    dataType: 'JSON',
+                    beforeSend:  (data)=> { // Are not working with dataType:'jsonp'
+    
+                        $('#modal-nueva-reserva .modal-content').LoadingOverlay("show", {
+                            imageAutoResize: true,
+                            progress: true,
+                            imageColor: "#3c8dbc"
+                        });
+                    },
+                    success: (response) =>{
+                        // console.log(response);
+                        if (response.status == 200) {
+                            $('#modal-nueva-reserva .modal-content').LoadingOverlay("hide", true);
+    
+                            Lobibox.notify('success', {
+                                title:false,
+                                size: 'mini',
+                                rounded: true,
+                                sound: false,
+                                delayIndicator: false,
+                                msg: `Reserva anulada`
+                            });
+    
+                            this.listarTablaListaConReserva(response.data)
+                            this.llenarTablaModalAtenderConAlmacen(document.querySelector("form[id='form-nueva-reserva'] input[name='idRequerimiento']").value);
+    
+                            
+                        } else {
+                            $('#modal-nueva-reserva .modal-content').LoadingOverlay("hide", true);
+                            console.log(response);
+                            Swal.fire(
+                                '',
+                                'Lo sentimos hubo un problema al intentar anular la reserva, por favor vuelva a intentarlo',
+                                'error'
+                            );
+                        }
+                    },
+                    fail:  (jqXHR, textStatus, errorThrown) =>{
+                        $('#modal-nueva-reserva .modal-content').LoadingOverlay("hide", true);
+                        Swal.fire(
+                            '',
+                            'Lo sentimos hubo un problema en el servidor al intentar anular la reserva, por favor vuelva a intentarlo',
+                            'error'
+                        );    
+                        console.log(jqXHR);
+                        console.log(textStatus);
+                        console.log(errorThrown);
+                    }
+                });
+            }
+        })
+
+    }
+
+    agregarReserva(obj){
+        // console.log(obj);
+        let mensajeValidacion = this.validarModalNuevaReserva();
+        if(mensajeValidacion.length >0){
+            Swal.fire({
+                title:'',
+                html:'<ol>'+mensajeValidacion+'</ol>',
+                icon:'warning'}
+            );
+            obj.removeAttribute("disabled");
+
+        }else{
+            let formData = new FormData($('#form-nueva-reserva')[0]);
+            $.ajax({
+                type: 'POST',
+                url: 'guardar-reserva-almacen',
+                data: formData,
+                processData: false,
+                contentType: false,
+                dataType: 'JSON',
+                beforeSend:  (data)=> { // Are not working with dataType:'jsonp'
+
+                    $('#modal-nueva-reserva .modal-content').LoadingOverlay("show", {
+                        imageAutoResize: true,
+                        progress: true,
+                        imageColor: "#3c8dbc"
+                    });
+                },
+                success: (response) =>{
+                    // console.log(response);
+                    if (response.id_reserva > 0) {
+                        $('#modal-nueva-reserva .modal-content').LoadingOverlay("hide", true);
+
+                        Lobibox.notify('success', {
+                            title:false,
+                            size: 'mini',
+                            rounded: true,
+                            sound: false,
+                            delayIndicator: false,
+                            msg: `${response.mensaje}`
+                        });
+                        obj.removeAttribute("disabled");
+
+                        this.listarTablaListaConReserva(response.data)
+                        this.llenarTablaModalAtenderConAlmacen(document.querySelector("form[id='form-nueva-reserva'] input[name='idRequerimiento']").value);
+
+                        
+                    } else {
+                        $('#modal-nueva-reserva .modal-content').LoadingOverlay("hide", true);
+                        console.log(response);
+                        if(response.mensaje.length >0){
+                            Swal.fire(
+                                '',
+                                response.mensaje,
+                                'warning'
+                            );
+                        }else{
+                            Swal.fire(
+                                '',
+                                'Lo sentimos hubo un problema en el servidor al intentar guardar la reserva, por favor vuelva a intentarlo',
+                                'error'
+                            );
+                        }
+                        obj.removeAttribute("disabled");
+
+                    }
+                },
+                fail:  (jqXHR, textStatus, errorThrown) =>{
+                    $('#modal-nueva-reserva .modal-content').LoadingOverlay("hide", true);
+                    Swal.fire(
+                        '',
+                        'Lo sentimos hubo un error en el servidor al intentar guardar la reserva, por favor vuelva a intentarlo',
+                        'error'
+                    );
+                    obj.removeAttribute("disabled");
+
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                }
+            });
+        }
+    }
+
+
+
 
     // updateSelectAlmacenAAtender(obj){
     //     let idValor = obj.value;
@@ -619,22 +1125,22 @@ class RequerimientoPendienteView {
     // }
 
 
-    updateInputCantidadAAtender(obj){
-        let nuevoValor = obj.value;
-        let cantidad = obj.dataset.cantidad;
-        if(parseInt(nuevoValor) > parseInt(cantidad) || parseInt(nuevoValor) < 0 ){
+    // updateInputCantidadAAtender(obj){
+    //     let nuevoValor = obj.value;
+    //     let cantidad = obj.dataset.cantidad;
+    //     if(parseInt(nuevoValor) > parseInt(cantidad) || parseInt(nuevoValor) < 0 ){
     
-            Lobibox.notify('warning', {
-                title:false,
-                size: 'mini',
-                rounded: true,
-                sound: false,
-                delayIndicator: false,
-                msg: `El valor ingresado desborda a la cantidad`
-            });
-            obj.value=cantidad;
-        }
-    }
+    //         Lobibox.notify('warning', {
+    //             title:false,
+    //             size: 'mini',
+    //             rounded: true,
+    //             sound: false,
+    //             delayIndicator: false,
+    //             msg: `El valor ingresado desborda a la cantidad`
+    //         });
+    //         obj.value=cantidad;
+    //     }
+    // }
 
  
     updateObjCantidadAAtender(indice, valor) {
@@ -645,115 +1151,115 @@ class RequerimientoPendienteView {
         });
     }
 
-    validarFormularioReservaAlmacen(){
-        let cantidadReservaSinAlmacenSeleccionado=0;
-        let almacenSeleccionadoSinCantidadAReservar=0;
-        let sinAlmacenSeleccionadoSinCantidadAReservar=0;
-        let trs =document.querySelectorAll("form[id='form-reserva-almacen'] table[id='listaItemsRequerimientoParaAtenderConAlmacen'] tbody tr");
-        if(trs.length >0){
-            for (let i = 0; i < trs.length; i++) {
-                if(trs[i].querySelector("select[class~='selectAlmacenReserva']").value >0){
-                    if(trs[i].querySelector("input[class~='inputCantidadArReservar']").value <=0){
-                        almacenSeleccionadoSinCantidadAReservar++;
-                    }
-                }
-                if(trs[i].querySelector("select[class~='selectAlmacenReserva']").value ==0){
-                    if(trs[i].querySelector("input[class~='inputCantidadArReservar']").value >0){
-                        cantidadReservaSinAlmacenSeleccionado++;
-                    }
-                }
-                if(trs[i].querySelector("select[class~='selectAlmacenReserva']").value ==0){
-                    if(trs[i].querySelector("input[class~='inputCantidadArReservar']").value ==0){
-                        sinAlmacenSeleccionadoSinCantidadAReservar++;
-                    }
-                }
+    // validarFormularioReservaAlmacen(){
+    //     let cantidadReservaSinAlmacenSeleccionado=0;
+    //     let almacenSeleccionadoSinCantidadAReservar=0;
+    //     let sinAlmacenSeleccionadoSinCantidadAReservar=0;
+    //     let trs =document.querySelectorAll("form[id='form-reserva-almacen'] table[id='listaItemsRequerimientoParaAtenderConAlmacen'] tbody tr");
+    //     if(trs.length >0){
+    //         for (let i = 0; i < trs.length; i++) {
+    //             if(trs[i].querySelector("select[class~='selectAlmacenReserva']").value >0){
+    //                 if(trs[i].querySelector("input[class~='inputCantidadArReservar']").value <=0){
+    //                     almacenSeleccionadoSinCantidadAReservar++;
+    //                 }
+    //             }
+    //             if(trs[i].querySelector("select[class~='selectAlmacenReserva']").value ==0){
+    //                 if(trs[i].querySelector("input[class~='inputCantidadArReservar']").value >0){
+    //                     cantidadReservaSinAlmacenSeleccionado++;
+    //                 }
+    //             }
+    //             if(trs[i].querySelector("select[class~='selectAlmacenReserva']").value ==0){
+    //                 if(trs[i].querySelector("input[class~='inputCantidadArReservar']").value ==0){
+    //                     sinAlmacenSeleccionadoSinCantidadAReservar++;
+    //                 }
+    //             }
                 
-            }
+    //         }
 
-            if(sinAlmacenSeleccionadoSinCantidadAReservar ==trs.length ){
-                Lobibox.notify('warning', {
-                    title:false,
-                    size: 'mini',
-                    rounded: true,
-                    sound: false,
-                    delayIndicator: false,
-                    msg: `No selecciono un almacén ni especificó la cantidad a antender`
-                });
-            }
+    //         if(sinAlmacenSeleccionadoSinCantidadAReservar ==trs.length ){
+    //             Lobibox.notify('warning', {
+    //                 title:false,
+    //                 size: 'mini',
+    //                 rounded: true,
+    //                 sound: false,
+    //                 delayIndicator: false,
+    //                 msg: `No selecciono un almacén ni especificó la cantidad a antender`
+    //             });
+    //         }
 
-            if(almacenSeleccionadoSinCantidadAReservar>0){
-                Lobibox.notify('warning', {
-                    title:false,
-                    size: 'mini',
-                    rounded: true,
-                    sound: false,
-                    delayIndicator: false,
-                    msg: `selecciono un almacén pero no especificó la cantidad a antender, se omitirá esta reserva`
-                });
-            }
+    //         if(almacenSeleccionadoSinCantidadAReservar>0){
+    //             Lobibox.notify('warning', {
+    //                 title:false,
+    //                 size: 'mini',
+    //                 rounded: true,
+    //                 sound: false,
+    //                 delayIndicator: false,
+    //                 msg: `selecciono un almacén pero no especificó la cantidad a antender, se omitirá esta reserva`
+    //             });
+    //         }
 
-            if(cantidadReservaSinAlmacenSeleccionado>0){
-                Lobibox.notify('warning', {
-                    title:false,
-                    size: 'mini',
-                    rounded: true,
-                    sound: false,
-                    delayIndicator: false,
-                    msg: `Especificó la cantidad a antender pero no seleccionó un almacén, se omitirá esta reserva`
-                });
-            }
-        }
+    //         if(cantidadReservaSinAlmacenSeleccionado>0){
+    //             Lobibox.notify('warning', {
+    //                 title:false,
+    //                 size: 'mini',
+    //                 rounded: true,
+    //                 sound: false,
+    //                 delayIndicator: false,
+    //                 msg: `Especificó la cantidad a antender pero no seleccionó un almacén, se omitirá esta reserva`
+    //             });
+    //         }
+    //     }
 
-        return (almacenSeleccionadoSinCantidadAReservar+cantidadReservaSinAlmacenSeleccionado);
-    }   
+    //     return (almacenSeleccionadoSinCantidadAReservar+cantidadReservaSinAlmacenSeleccionado);
+    // }   
 
-    guardarAtendidoConAlmacen() {
-            if(this.validarFormularioReservaAlmacen() ==0){
-                let formData = new FormData($('#form-reserva-almacen')[0]);
-                this.requerimientoPendienteCtrl.guardarAtendidoConAlmacen(formData).then((res) =>{
-                    if (res.cantidad_items_actualizados>0) {
-                        // console.log(res.nuevo_estado_requerimiento);
-                        // console.log(trRequerimientosPendientes);
-                        if(res.nuevo_estado_requerimiento.id == 28){
-                            trRequerimientosPendientes.remove();
-                            console.log('remover');
-                        }else{
-                            trRequerimientosPendientes.querySelector("span[class~='estadoRequerimiento']").textContent=res.nuevo_estado_requerimiento.descripcion;
-                            console.log('actualizar');
-                        }
+    // guardarAtendidoConAlmacen() {
+            // if(this.validarFormularioReservaAlmacen() ==0){
+            //     let formData = new FormData($('#form-reserva-almacen')[0]);
+            //     this.requerimientoPendienteCtrl.guardarAtendidoConAlmacen(formData).then((res) =>{
+            //         if (res.cantidad_items_actualizados>0) {
+            //             // console.log(res.nuevo_estado_requerimiento);
+            //             // console.log(trRequerimientosPendientes);
+            //             if(res.nuevo_estado_requerimiento.id == 28){
+            //                 trRequerimientosPendientes.remove();
+            //                 console.log('remover');
+            //             }else{
+            //                 trRequerimientosPendientes.querySelector("span[class~='estadoRequerimiento']").textContent=res.nuevo_estado_requerimiento.descripcion;
+            //                 console.log('actualizar');
+            //             }
         
-                        $('#modal-atender-con-almacen .modal-content').LoadingOverlay("hide", true);
-                        $('#modal-atender-con-almacen').modal('hide');
+            //             $('#modal-atender-con-almacen .modal-content').LoadingOverlay("hide", true);
+            //             $('#modal-atender-con-almacen').modal('hide');
         
-                        Lobibox.notify('success', {
-                            title:false,
-                            size: 'mini',
-                            rounded: true,
-                            sound: false,
-                            delayIndicator: false,
-                            msg: `Reserva guardada`
-                        });
+            //             Lobibox.notify('success', {
+            //                 title:false,
+            //                 size: 'mini',
+            //                 rounded: true,
+            //                 sound: false,
+            //                 delayIndicator: false,
+            //                 msg: `Reserva guardada`
+            //             });
         
-                    } else {
-                        $('#modal-atender-con-almacen .modal-content').LoadingOverlay("hide", true);
-                        console.log(res);
-                        Swal.fire(
-                            '',
-                            'Lo sentimos hubo un error en el servidor al intentar guardar la reserva, por favor vuelva a intentarlo',
-                            'error'
-                        );
-                    }
-                }).catch(function (err) {
-                    console.log(err);
-                    Swal.fire(
-                        '',
-                        'Hubo un problema al intentar guardar la reserva, por favor vuelva a intentarlo',
-                        'error'
-                    );
-                })
+            //         } else {
+            //             $('#modal-atender-con-almacen .modal-content').LoadingOverlay("hide", true);
+            //             console.log(res);
+            //             Swal.fire(
+            //                 '',
+            //                 'Lo sentimos hubo un error en el servidor al intentar guardar la reserva, por favor vuelva a intentarlo',
+            //                 'error'
+            //             );
+            //         }
+            //     }).catch(function (err) {
+            //         console.log(err);
+            //         Swal.fire(
+            //             '',
+            //             'Hubo un problema al intentar guardar la reserva, por favor vuelva a intentarlo',
+            //             'error'
+            //         );
+            //     })
                 
-            }
-    }
+            // }
+    // }
 
 
     componerTdItemsParaCompra(data, selectCategoria, selectSubCategoria, selectClasCategoria, selectMoneda, selectUnidadMedida) {
@@ -1049,17 +1555,17 @@ class RequerimientoPendienteView {
 
     }
 
-    agregarItemsBaseParaCompraFinalizado(response) {
+    // agregarItemsBaseParaCompraFinalizado(response) {
 
-        if (response.status == 200) {
-            alert(response.mensaje);
-            $('#modal-agregar-items-para-compra').modal('hide');
-            requerimientoPendienteView.renderRequerimientoPendienteListModule(null, null);
-        } else {
-            alert(response.mensaje);
-        }
+    //     if (response.status == 200) {
+    //         alert(response.mensaje);
+    //         $('#modal-agregar-items-para-compra').modal('hide');
+    //         requerimientoPendienteView.renderRequerimientoPendienteList(null, null);
+    //     } else {
+    //         alert(response.mensaje);
+    //     }
 
-    }
+    // }
 
     totalItemsAgregadosParaCompraCompletada() {
 

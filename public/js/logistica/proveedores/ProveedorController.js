@@ -7,4 +7,8 @@ class ProveedorCtrl{
         return this.proveedorModel.getListaProveedores();
 
     }
+    getProveedor(idProveedor){
+        return this.proveedorModel.getProveedor(idProveedor);
+
+    }
 }

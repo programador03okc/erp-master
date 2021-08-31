@@ -353,7 +353,7 @@ class ListarRequerimientoView {
                 <td>${i + 1}</td>
                 <td>${data[i].descripcion_partida ? data[i].descripcion_partida : ''}</td>
                 <td>${data[i].descripcion_centro_costo ? data[i].descripcion_centro_costo : ''}</td>
-                <td>${data[i].id_tipo_item == 1 ? (data[i].producto_part_number ? data[i].producto_part_number : data[i].part_number) : '(Servicio)'}${data[i].tiene_transformacion==true?'<br><span class="label label-default">Con Transformación</span>':''} </td>
+                <td>${data[i].id_tipo_item == 1 ? (data[i].producto_part_number ? data[i].producto_part_number : data[i].part_number) : '(Servicio)'}${data[i].tiene_transformacion==true?'<br><span class="label label-default">Transformado</span>':''} </td>
                 <td>${data[i].producto_descripcion ? data[i].producto_descripcion : (data[i].descripcion ? data[i].descripcion : '')} </td>
                 <td>${data[i].unidad_medida}</td>
                 <td style="text-align:center;">${data[i].cantidad}</td>
