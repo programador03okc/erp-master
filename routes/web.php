@@ -827,6 +827,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('guardar-proveedor', 'Logistica\ProveedoresController@guardarProveedor');
 					Route::get('mostrar-proveedor/{idProveedor?}', 'Logistica\ProveedoresController@mostrarProveedor');
 					Route::post('actualizar-proveedor', 'Logistica\ProveedoresController@actualizarProveedor');
+					Route::post('anular-proveedor', 'Logistica\ProveedoresController@anularProveedor');
 
 					// Route::get('logistica/listar_proveedores', 'LogisticaController@listar_proveedores');
 					// Route::get('mostrar_proveedor/{id_proveedor}', 'LogisticaController@mostrar_proveedor');

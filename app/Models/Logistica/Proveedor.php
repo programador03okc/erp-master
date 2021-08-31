@@ -23,24 +23,29 @@ class Proveedor extends Model
         'contribuyente.distrito',
         // 'contribuyente.distrito.provincia',
         // 'contribuyente.distrito.provincia.departamento',
-        'estadoProveedor');
-        // ->where('log_prove.id_contribuyente','=',1912);
+        'estadoProveedor')
+        ->where('log_prove.estado','=',1);
         return $data;
 
     }
     public static function mostrar($idProveedor){
-        $data = Proveedor::with('contribuyente.tipoContribuyente',
+        $data = Proveedor::with(['contribuyente.tipoContribuyente',
         'contribuyente.tipoDocumentoIdentidad',
+        'cuentaContribuyente'=> function($q){
+            $q->where('adm_cta_contri.estado', '=', 1);
+        },
         'cuentaContribuyente.banco',
         'cuentaContribuyente.banco.contribuyente',
         'cuentaContribuyente.tipoCuenta',
         'cuentaContribuyente.moneda',
         'contribuyente.pais',
         'contribuyente.distrito',
-        'contactoContribuyente',
+        'contactoContribuyente' => function($q){
+            $q->where('adm_ctb_contac.estado', '=', 1);
+        },
         // 'contribuyente.distrito.provincia',
         // 'contribuyente.distrito.provincia.departamento',
-        'estadoProveedor')->where('id_proveedor',$idProveedor)->first();
+        'estadoProveedor'])->where('id_proveedor',$idProveedor)->first();
         // ->where('log_prove.id_contribuyente','=',1912);
         return $data;
 

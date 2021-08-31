@@ -14,7 +14,7 @@
                             <li role="presentation"><a href="#contacto" aria-controls="contacto" role="tab" data-toggle="tab">Contacto</a></li>
                             <li role="presentation"><a href="#cuentas_bancarias" aria-controls="cuentas_bancarias" role="tab" data-toggle="tab">Cuentas bancarias</a></li>
                             <li role="presentation"><a href="#observaciones" aria-controls="observaciones" role="tab" data-toggle="tab">Observaciones</a></li>
-                            <li role="presentation"><a href="#adjuntos" aria-controls="adjuntos" role="tab" data-toggle="tab">Adjuntos</a></li>
+                            <li role="presentation" class="oculto"><a href="#adjuntos" aria-controls="adjuntos" role="tab" data-toggle="tab">Adjuntos</a></li>
                         </ul>
 
                         <!-- Tab panes -->

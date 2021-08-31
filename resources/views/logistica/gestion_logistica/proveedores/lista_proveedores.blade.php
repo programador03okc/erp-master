@@ -44,6 +44,7 @@
 </div>
 
 
+@include('logistica.gestion_logistica.proveedores.modal_ver_proveedor')
 @include('logistica.gestion_logistica.proveedores.modal_proveedor')
 @include('logistica.gestion_logistica.proveedores.modal_agregar_cuenta_bancaria')
 @include('logistica.gestion_logistica.proveedores.modal_agregar_adjunto_proveedor')
