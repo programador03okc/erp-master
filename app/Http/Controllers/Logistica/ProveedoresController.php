@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 
-// use Debugbar;
+use Debugbar;
 
 
 class ProveedoresController extends Controller
@@ -60,19 +60,28 @@ class ProveedoresController extends Controller
         
             $mensaje='';
             $status='';
-            
+            $idProveedor= 0;
+            $crearProveedor=false;
             
             // buscar proveedor si existe el ruc o razon social
             $contribuyenteExistente = Contribuyente::where("razon_social",'like', $request->razonSocial."%")->orwhere("nro_documento", $request->nroDocumento)->first();
-            $proveedorExistente= Proveedor::where('id_contribuyente',$contribuyenteExistente->id_contribuyente)->first();
-            $idProveedor= 0;
-
-            if($proveedorExistente->id_proveedor>0){
+            if(isset($contribuyenteExistente)){
                 $mensaje='Ya se encuentra registrado un proveedor con la misma razón social / número de documento.';
-                $status='warning';
+                $status='warning'; 
+                $proveedorExistente= Proveedor::where('id_contribuyente',$contribuyenteExistente->id_contribuyente)->first();
+                if(isset($proveedorExistente) && $proveedorExistente->id_proveedor>0){
+                    $mensaje='Ya se encuentra registrado un contribuyente con la misma razón social / número de documento.';
+                    $status='warning';
+                }else{
+                    $crearProveedor=true;
 
+                }
             }else{
+                $crearProveedor=true;
 
+            }
+
+            if($crearProveedor==true){
                 $contribuyente = new Contribuyente();
                 $contribuyente->id_tipo_contribuyente = $request->tipoContribuyente; 
                 $contribuyente->id_doc_identidad = $request->tipoDocumentoIdentidad>0?$request->tipoDocumentoIdentidad:null; 
@@ -97,39 +106,44 @@ class ProveedoresController extends Controller
                 $proveedor->save();
                 $idProveedor= $proveedor->id_proveedor;
 
-                $countContacto = count($request->idContacto);
-                for ($i = 0; $i < $countContacto; $i++) {
-                    if($request->estadoContacto[$i]==1){
-                        $contactoProveedor = new ContactoContribuyente(); 
-                        $contactoProveedor->id_contribuyente= $contribuyente->id_contribuyente; 
-                        $contactoProveedor->nombre = $request->nombreContacto[$i]; 
-                        $contactoProveedor->telefono = $request->telefonoContacto[$i]; 
-                        $contactoProveedor->email = $request->emailContacto[$i]; 
-                        $contactoProveedor->cargo = $request->cargoContacto[$i]; 
-                        $contactoProveedor->fecha_registro = new Carbon(); 
-                        $contactoProveedor->direccion = $request->direccionContacto[$i]; 
-                        $contactoProveedor->horario = $request->horarioContacto[$i]; 
-                        $contactoProveedor->ubigeo = $request->ubigeoContactoProveedor[$i]>0?$request->ubigeoContactoProveedor[$i]:null; 
-                        $contactoProveedor->save();
+                if(isset($request->idContacto)){
+                    $countContacto = count($request->idContacto);
+
+                    for ($i = 0; $i < $countContacto; $i++) {
+                        if($request->estadoContacto[$i]==1){
+                            $contactoProveedor = new ContactoContribuyente(); 
+                            $contactoProveedor->id_contribuyente= $contribuyente->id_contribuyente; 
+                            $contactoProveedor->nombre = $request->nombreContacto[$i]; 
+                            $contactoProveedor->telefono = $request->telefonoContacto[$i]; 
+                            $contactoProveedor->email = $request->emailContacto[$i]; 
+                            $contactoProveedor->cargo = $request->cargoContacto[$i]; 
+                            $contactoProveedor->fecha_registro = new Carbon(); 
+                            $contactoProveedor->direccion = $request->direccionContacto[$i]; 
+                            $contactoProveedor->horario = $request->horarioContacto[$i]; 
+                            $contactoProveedor->ubigeo = $request->ubigeoContactoProveedor[$i]>0?$request->ubigeoContactoProveedor[$i]:null; 
+                            $contactoProveedor->save();
+                        }
+                    }
+                }
+                if(isset($request->idCuenta)){
+                    $countCuenta = count($request->idCuenta);
+                    for ($i = 0; $i < $countCuenta; $i++) {
+                        if($request->estadoCuenta[$i]==1){
+                            $cuentaBancariaProveedor = new CuentaContribuyente(); 
+                            $cuentaBancariaProveedor->id_contribuyente  = $contribuyente->id_contribuyente; 
+                            $cuentaBancariaProveedor->id_banco  = $request->idBanco[$i]; 
+                            $cuentaBancariaProveedor->id_tipo_cuenta  = $request->idTipoCuenta[$i]>0?$request->idTipoCuenta[$i]:null; 
+                            $cuentaBancariaProveedor->id_moneda  = $request->idMoneda[$i]>0?$request->idMoneda[$i]:null; 
+                            $cuentaBancariaProveedor->nro_cuenta  =  $request->nroCuenta[$i]; 
+                            $cuentaBancariaProveedor->nro_cuenta_interbancaria  = $request->nroCuentaInterbancaria[$i]; 
+                            $cuentaBancariaProveedor->swift  = $request->swift[$i];
+                            $cuentaBancariaProveedor->estado  = 1; 
+                            $cuentaBancariaProveedor->fecha_registro  = new Carbon();
+                            $cuentaBancariaProveedor->save();
+                            }
                     }
                 }
     
-                $countCuenta = count($request->idBanco);
-                for ($i = 0; $i < $countCuenta; $i++) {
-                    if($request->estadoCuenta[$i]==1){
-                        $cuentaBancariaProveedor = new CuentaContribuyente(); 
-                        $cuentaBancariaProveedor->id_contribuyente  = $contribuyente->id_contribuyente; 
-                        $cuentaBancariaProveedor->id_banco  = $request->idBanco[$i]; 
-                        $cuentaBancariaProveedor->id_tipo_cuenta  = $request->idTipoCuenta[$i]>0?$request->idTipoCuenta[$i]:null; 
-                        $cuentaBancariaProveedor->id_moneda  = $request->idMoneda[$i]>0?$request->idMoneda[$i]:null; 
-                        $cuentaBancariaProveedor->nro_cuenta  =  $request->nroCuenta[$i]; 
-                        $cuentaBancariaProveedor->nro_cuenta_interbancaria  = $request->nroCuentaInterbancaria[$i]; 
-                        $cuentaBancariaProveedor->swift  = $request->swift[$i];
-                        $cuentaBancariaProveedor->estado  = 1; 
-                        $cuentaBancariaProveedor->fecha_registro  = new Carbon();
-                        $cuentaBancariaProveedor->save();
-                        }
-                }
                 $status='success';
             }
 
@@ -180,63 +194,68 @@ class ProveedoresController extends Controller
             $proveedor->observacion= $request->observacion;
             $proveedor->save();
 
-            $countContacto = count($request->idContacto);
-            for ($i = 0; $i < $countContacto; $i++) {
-                if($request->estadoContacto[$i]==1 && $request->idContacto[$i] >0){
-                    $contactoProveedor->nombre = $request->nombreContacto[$i]; 
-                    $contactoProveedor->telefono = $request->telefonoContacto[$i]; 
-                    $contactoProveedor->email = $request->emailContacto[$i]; 
-                    $contactoProveedor->cargo = $request->cargoContacto[$i]; 
-                    $contactoProveedor->direccion = $request->direccionContacto[$i]; 
-                    $contactoProveedor->horario = $request->horarioContacto[$i]; 
-                    $contactoProveedor->ubigeo = $request->ubigeoContactoProveedor[$i]>0?$request->ubigeoContactoProveedor[$i]:null; 
-                    $contactoProveedor->save();
-                }elseif($request->estadoContacto[$i]==7 && $request->idContacto[$i] >0 ){
-                    $contactoProveedor->estado=7;
-                    $contactoProveedor->save();
-                }elseif($request->estadoContacto[$i]==1 && ($request->idContacto[$i] =='' || $request->idContacto[$i] == null) ){
-                    $nuevoContactoProveedor = new ContactoContribuyente(); 
-                    $nuevoContactoProveedor->id_contribuyente= $contribuyente->id_contribuyente; 
-                    $nuevoContactoProveedor->nombre = $request->nombreContacto[$i]; 
-                    $nuevoContactoProveedor->telefono = $request->telefonoContacto[$i]; 
-                    $nuevoContactoProveedor->email = $request->emailContacto[$i]; 
-                    $nuevoContactoProveedor->cargo = $request->cargoContacto[$i]; 
-                    $nuevoContactoProveedor->fecha_registro = new Carbon(); 
-                    $nuevoContactoProveedor->direccion = $request->direccionContacto[$i]; 
-                    $nuevoContactoProveedor->horario = $request->horarioContacto[$i]; 
-                    $nuevoContactoProveedor->ubigeo = $request->ubigeoContactoProveedor[$i]>0?$request->ubigeoContactoProveedor[$i]:null; 
-                    $nuevoContactoProveedor->save();
+            if(isset($request->idContacto)){
+                $countContacto = count($request->idContacto);
+                for ($i = 0; $i < $countContacto; $i++) {
+                    if($request->estadoContacto[$i]==1 && $request->idContacto[$i] >0){
+                        $contactoProveedor->nombre = $request->nombreContacto[$i]; 
+                        $contactoProveedor->telefono = $request->telefonoContacto[$i]; 
+                        $contactoProveedor->email = $request->emailContacto[$i]; 
+                        $contactoProveedor->cargo = $request->cargoContacto[$i]; 
+                        $contactoProveedor->direccion = $request->direccionContacto[$i]; 
+                        $contactoProveedor->horario = $request->horarioContacto[$i]; 
+                        $contactoProveedor->ubigeo = $request->ubigeoContactoProveedor[$i]>0?$request->ubigeoContactoProveedor[$i]:null; 
+                        $contactoProveedor->save();
+                    }elseif($request->estadoContacto[$i]==7 && $request->idContacto[$i] >0 ){
+                        $contactoProveedor->estado=7;
+                        $contactoProveedor->save();
+                    }elseif($request->estadoContacto[$i]==1 && ($request->idContacto[$i] =='' || $request->idContacto[$i] == null) ){
+                        $nuevoContactoProveedor = new ContactoContribuyente(); 
+                        $nuevoContactoProveedor->id_contribuyente= $contribuyente->id_contribuyente; 
+                        $nuevoContactoProveedor->nombre = $request->nombreContacto[$i]; 
+                        $nuevoContactoProveedor->telefono = $request->telefonoContacto[$i]; 
+                        $nuevoContactoProveedor->email = $request->emailContacto[$i]; 
+                        $nuevoContactoProveedor->cargo = $request->cargoContacto[$i]; 
+                        $nuevoContactoProveedor->fecha_registro = new Carbon(); 
+                        $nuevoContactoProveedor->direccion = $request->direccionContacto[$i]; 
+                        $nuevoContactoProveedor->horario = $request->horarioContacto[$i]; 
+                        $nuevoContactoProveedor->ubigeo = $request->ubigeoContactoProveedor[$i]>0?$request->ubigeoContactoProveedor[$i]:null; 
+                        $nuevoContactoProveedor->save();
+                    }
                 }
             }
 
-            $countCuenta = count($request->idCuenta);
-            for ($i = 0; $i < $countCuenta; $i++) {
-                if($request->estadoCuenta[$i]==1 && $request->idCuenta[$i]>0){
-                    $cuentaBancariaProveedor->id_banco  = $request->idBanco[$i]; 
-                    $cuentaBancariaProveedor->id_tipo_cuenta  = $request->idTipoCuenta[$i]>0?$request->idTipoCuenta[$i]:null; 
-                    $cuentaBancariaProveedor->id_moneda  = $request->idMoneda[$i]>0?$request->idMoneda[$i]:null; 
-                    $cuentaBancariaProveedor->nro_cuenta  =  $request->nroCuenta[$i]; 
-                    $cuentaBancariaProveedor->nro_cuenta_interbancaria  = $request->nroCuentaInterbancaria[$i]; 
-                    $cuentaBancariaProveedor->swift  = $request->swift[$i];
-                    $cuentaBancariaProveedor->save();
-                }elseif($request->estadoCuenta[$i]==7 && $request->idCuenta[$i] >0 ){
-                    $cuentaBancariaProveedor->estado  = 7;
-                    $cuentaBancariaProveedor->save();
-
-                }elseif($request->estadoCuenta[$i]==1 && ($request->idCuenta[$i] =='' || $request->idCuenta[$i] == null) ){
-                    $cuentaBancariaProveedor = new CuentaContribuyente(); 
-                    $cuentaBancariaProveedor->id_contribuyente  = $contribuyente->id_contribuyente; 
-                    $cuentaBancariaProveedor->id_banco  = $request->idBanco[$i]; 
-                    $cuentaBancariaProveedor->id_tipo_cuenta  = $request->idTipoCuenta[$i]>0?$request->idTipoCuenta[$i]:null; 
-                    $cuentaBancariaProveedor->id_moneda  = $request->idMoneda[$i]>0?$request->idMoneda[$i]:null; 
-                    $cuentaBancariaProveedor->nro_cuenta  =  $request->nroCuenta[$i]; 
-                    $cuentaBancariaProveedor->nro_cuenta_interbancaria  = $request->nroCuentaInterbancaria[$i]; 
-                    $cuentaBancariaProveedor->swift  = $request->swift[$i];
-                    $cuentaBancariaProveedor->estado  = 1; 
-                    $cuentaBancariaProveedor->fecha_registro  = new Carbon();
-                    $cuentaBancariaProveedor->save();
+            if(isset($request->idCuenta)){
+                $countCuenta = count($request->idCuenta);
+                for ($i = 0; $i < $countCuenta; $i++) {
+                    if($request->estadoCuenta[$i]==1 && $request->idCuenta[$i]>0){
+                        $cuentaBancariaProveedor->id_banco  = $request->idBanco[$i]; 
+                        $cuentaBancariaProveedor->id_tipo_cuenta  = $request->idTipoCuenta[$i]>0?$request->idTipoCuenta[$i]:null; 
+                        $cuentaBancariaProveedor->id_moneda  = $request->idMoneda[$i]>0?$request->idMoneda[$i]:null; 
+                        $cuentaBancariaProveedor->nro_cuenta  =  $request->nroCuenta[$i]; 
+                        $cuentaBancariaProveedor->nro_cuenta_interbancaria  = $request->nroCuentaInterbancaria[$i]; 
+                        $cuentaBancariaProveedor->swift  = $request->swift[$i];
+                        $cuentaBancariaProveedor->save();
+                    }elseif($request->estadoCuenta[$i]==7 && $request->idCuenta[$i] >0 ){
+                        $cuentaBancariaProveedor->estado  = 7;
+                        $cuentaBancariaProveedor->save();
+    
+                    }elseif($request->estadoCuenta[$i]==1 && ($request->idCuenta[$i] =='' || $request->idCuenta[$i] == null) ){
+                        $cuentaBancariaProveedor = new CuentaContribuyente(); 
+                        $cuentaBancariaProveedor->id_contribuyente  = $contribuyente->id_contribuyente; 
+                        $cuentaBancariaProveedor->id_banco  = $request->idBanco[$i]; 
+                        $cuentaBancariaProveedor->id_tipo_cuenta  = $request->idTipoCuenta[$i]>0?$request->idTipoCuenta[$i]:null; 
+                        $cuentaBancariaProveedor->id_moneda  = $request->idMoneda[$i]>0?$request->idMoneda[$i]:null; 
+                        $cuentaBancariaProveedor->nro_cuenta  =  $request->nroCuenta[$i]; 
+                        $cuentaBancariaProveedor->nro_cuenta_interbancaria  = $request->nroCuentaInterbancaria[$i]; 
+                        $cuentaBancariaProveedor->swift  = $request->swift[$i];
+                        $cuentaBancariaProveedor->estado  = 1; 
+                        $cuentaBancariaProveedor->fecha_registro  = new Carbon();
+                        $cuentaBancariaProveedor->save();
+                    }
+    
                 }
-
+            
             }
 
             $dataProveedor= Proveedor::mostrar($request->idProveedor);

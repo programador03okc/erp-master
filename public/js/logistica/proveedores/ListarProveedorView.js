@@ -228,7 +228,10 @@ class ListarProveedorView {
             show: true,
             backdrop: 'true'
         });
+        $("#form-agregar-cuenta-bancaria-proveedor")[0].reset();
+
     }
+    
     agregarAdjuntoProveedor() {
         $('#modal-agregar-adjunto-proveedor').modal({
             show: true,
@@ -352,7 +355,7 @@ class ListarProveedorView {
         if (data.length > 0) {
             (data).forEach(element => {
                 document.querySelector("tbody[id='bodylistaContactoProveedor']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
-                    <td><input type="hidden" name="idContacto[]" value="${(element.idContacto != null && element.idContacto != '') ? element.idContacto : ''}"><input type="hidden" name="nombreContacto[]" value="${(element.nombreContacto != null && element.nombreContacto != '') ? element.nombreContacto : ''}"> ${(element.nombreContacto != null && element.nombreContacto != '') ? element.nombreContacto : ''}</td>
+                    <td><input type="hidden" name="idContacto[]" value="0"><input type="hidden" name="nombreContacto[]" value="${(element.nombreContacto != null && element.nombreContacto != '') ? element.nombreContacto : ''}"> ${(element.nombreContacto != null && element.nombreContacto != '') ? element.nombreContacto : ''}</td>
                     <td><input type="hidden" name="cargoContacto[]" value="${(element.cargoContacto != null && element.cargoContacto != '') ? element.cargoContacto : ''}">${(element.cargoContacto != null && element.cargoContacto != '') ? element.cargoContacto : ''}</td>
                     <td><input type="hidden" name="telefonoContacto[]" value="${(element.telefonoContacto != null && element.telefonoContacto != '') ? element.telefonoContacto : ''}">${(element.telefonoContacto != null && element.telefonoContacto != '') ? element.telefonoContacto : ''}</td>
                     <td><input type="hidden" name="emailContacto[]" value="${(element.emailContacto != null && element.emailContacto != '') ? element.emailContacto : ''}">${(element.emailContacto != null && element.emailContacto != '') ? element.emailContacto : ''}</td>
@@ -464,7 +467,7 @@ class ListarProveedorView {
             (data).forEach(element => {
                 document.querySelector("tbody[id='bodylistaCuentasBancariasProveedor']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
                     <td> 
-                        <input type="hidden" name="idCuenta[]" value="${(element.idCuenta != null && element.idCuenta != '') ? element.idCuenta : ''}">
+                        <input type="hidden" name="idCuenta[]" value="0">
                         <input type="hidden" name="idBanco[]" value="${(element.idBanco != null && element.idBanco != '') ? element.idBanco : ''}"><input type="hidden" name="nombreBanco[]" value="${(element.nombreBanco != null && element.nombreBanco != '') ? element.nombreBanco : ''}"> ${(element.nombreBanco != null && element.nombreBanco != '') ? element.nombreBanco : ''}</td>
                     <td><input type="hidden" name="idTipoCuenta[]" value="${(element.idTipoCuenta != null && element.idTipoCuenta != '') ? element.idTipoCuenta : ''}">${(element.nombreTipoCuenta != null && element.nombreTipoCuenta != '') ? element.nombreTipoCuenta : ''}</td>
                     <td><input type="hidden" name="idMoneda[]" value="${(element.idMoneda != null && element.idMoneda != '') ? element.idMoneda : ''}">${(element.nombreMoneda != null && element.nombreMoneda != '') ? element.nombreMoneda : ''}</td>
@@ -602,6 +605,8 @@ class ListarProveedorView {
                         });
                         obj.removeAttribute("disabled");
                         $("#form-proveedor")[0].reset();
+                        this.limpiarTabla('listaContactoProveedor');
+                        this.limpiarTabla('listaCuentaBancariasProveedor');
                         $('#modal-proveedor').modal('hide');
 
 
