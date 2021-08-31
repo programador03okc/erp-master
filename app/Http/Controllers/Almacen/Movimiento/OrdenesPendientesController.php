@@ -620,7 +620,7 @@ class OrdenesPendientesController extends Controller
 
                                 DB::table('almacen.alm_reserva')
                                     ->insert([
-                                        'codigo' => Reserva::nextCodigo($request->id_almacen),
+                                        'codigo' => $this->reservaNextCodigo($request->id_almacen),
                                         'id_producto' => $det->id_producto,
                                         'stock_comprometido' => $det->cantidad,
                                         'id_almacen_reserva' => $request->id_almacen,
@@ -962,7 +962,7 @@ class OrdenesPendientesController extends Controller
                     }
                     DB::table('almacen.alm_reserva')
                         ->insert([
-                            'codigo' => Reserva::nextCodigo($id_almacen),
+                            'codigo' => $this->reservaNextCodigo($id_almacen),
                             'id_producto' => $det->id_producto,
                             'stock_comprometido' => $cantidad,
                             'id_almacen_reserva' => $id_almacen,
@@ -990,7 +990,7 @@ class OrdenesPendientesController extends Controller
                     ]);
                 DB::table('almacen.alm_reserva')
                     ->insert([
-                        'codigo' => Reserva::nextCodigo($id_almacen),
+                        'codigo' => $this->reservaNextCodigo($id_almacen),
                         'id_producto' => $det->id_producto,
                         'stock_comprometido' => $cantidad,
                         'id_almacen_reserva' => $id_almacen,
@@ -1003,7 +1003,21 @@ class OrdenesPendientesController extends Controller
             }
         }
     }
+    public function reservaNextCodigo($id_almacen)
+    {
+        $yyyy = date('Y', strtotime(date('Y-m-d H:i:s')));
+        $anio = date('y', strtotime(date('Y-m-d H:i:s')));
 
+        $cantidad = DB::table('almacen.alm_reserva')
+            ->where('id_almacen_reserva', $id_almacen)
+            ->whereYear('fecha_registro', '=', $yyyy)
+            ->get()->count();
+
+        $val = GenericoAlmacenController::leftZero(4, ($cantidad + 1));
+        $nextId = "RE-" . $id_almacen . "-" . $anio . $val;
+
+        return $nextId;
+    }
     public function transferencia($id_guia_com)
     {
 
