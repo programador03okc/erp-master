@@ -751,7 +751,8 @@ class TransferenciaController extends Controller
 
                     DB::table('almacen.alm_reserva')
                         ->insert([
-                            'codigo' => Reserva::nextCodigo($request->id_almacen_destino),
+                            'codigo' => $this->reservaNextCodigo($request->id_almacen_destino),
+                            // 'codigo' => 'prueba',
                             'id_producto' => $det->id_producto,
                             'stock_comprometido' => $d->cantidad_recibida,
                             'id_almacen_reserva' => $request->id_almacen_destino,
@@ -831,21 +832,21 @@ class TransferenciaController extends Controller
             return response()->json("Ha ocurrido un error. " . $e . ". Intente nuevamente.");
         }
     }
-    // public function reservaNextCodigo($id_almacen)
-    // {
-    //     $yyyy = date('Y', strtotime(date('Y-m-d H:i:s')));
-    //     $anio = date('y', strtotime(date('Y-m-d H:i:s')));
+    public function reservaNextCodigo($id_almacen)
+    {
+        $yyyy = date('Y', strtotime(date('Y-m-d H:i:s')));
+        $anio = date('y', strtotime(date('Y-m-d H:i:s')));
 
-    //     $cantidad = DB::table('almacen.alm_reserva')
-    //         ->where('id_almacen_reserva', $id_almacen)
-    //         ->whereYear('fecha_registro', '=', $yyyy)
-    //         ->get()->count();
+        $cantidad = DB::table('almacen.alm_reserva')
+            ->where('id_almacen_reserva', $id_almacen)
+            ->whereYear('fecha_registro', '=', $yyyy)
+            ->get()->count();
 
-    //     $val = GenericoAlmacenController::leftZero(4, ($cantidad + 1));
-    //     $nextId = "RE-" . $id_almacen . "-" . $anio . $val;
+        $val = GenericoAlmacenController::leftZero(4, ($cantidad + 1));
+        $nextId = "RE-" . $id_almacen . "-" . $anio . $val;
 
-    //     return $nextId;
-    // }
+        return $nextId;
+    }
     public function listarTransferenciasPorEnviar($alm_origen)
     {
         if ($alm_origen == '0') {
