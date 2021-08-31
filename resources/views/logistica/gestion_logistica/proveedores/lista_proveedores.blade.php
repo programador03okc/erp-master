@@ -62,10 +62,10 @@
     <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
-    <script src="{{('/js/logistica/proveedores/listarProveedorView.js')}}"></script>
+    <script src="{{('/js/logistica/proveedores/listarProveedorView.js?v=2')}}"></script>
     <script src="{{('/js/logistica/proveedores/ProveedorController.js')}}"></script>
     <script src="{{('/js/logistica/proveedores/ProveedorModel.js')}}"></script>
-    <script src="{{ asset('js/publico/ubigeoModal.js')}}"></script>
+    <script src="{{ asset('js/publico/ubigeoModal.js?v=2')}}"></script>
 
 
 

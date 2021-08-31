@@ -207,13 +207,13 @@ class ListarProveedorView {
         document.getElementById("btnGuardarProveedor").removeAttribute("disabled");
         if (((document.querySelector("form[id='form-proveedor'] input[name='razonSocial']").value).trim().length > 0) || (document.querySelector("form[id='form-proveedor'] input[name='nroDocumento']").value).trim().length > 0) {
             Swal.fire({
-                title: 'Se encontro un ingreso de razon social / numero de documento en el formulario, desea limpiar el formulario ?',
+                title: 'Se encontro un ingreso de razón social / número de documento en el formulario, desea limpiar el formulario ?',
                 text: "No podrás revertir esto. Si acepta se perdera la data registrada en el formulario",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                cancelButtonText: 'No, mantener',
+                cancelButtonText: 'No',
                 confirmButtonText: 'Si, limpiar'
 
             }).then((result) => {
