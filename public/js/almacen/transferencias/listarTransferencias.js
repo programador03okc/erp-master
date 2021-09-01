@@ -112,13 +112,8 @@ function listarRequerimientosPendientes() {
             {
                 render: function (data, type, row) {
                     return (
-                        '<a href="#" class="archivos" data-id="' +
-                        row["id_oc_propia"] +
-                        '" data-tipo="' +
-                        row["tipo"] +
-                        '">' +
-                        row["nro_orden"] +
-                        "</a>"
+                        '<a href="#" class="archivos" data-id="' + row["id_oc_propia"] + '" data-tipo="' + row["tipo"] + '">' +
+                        row["nro_orden"] + "</a>"
                     );
                 },
                 className: "text-center"

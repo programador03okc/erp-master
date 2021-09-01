@@ -23,6 +23,7 @@
                 <label id="unid_med" style="display: none;"></label>
                 <label id="abreviatura" style="display: none;"></label>
                 <label id="posicion" style="display: none;"></label>
+                <label id="series" style="display: none;"></label>
                 <button class="btn btn-sm btn-success" onClick="selectProducto();">Aceptar</button>
             </div>
         </div>

@@ -260,6 +260,8 @@ function listar_detalle_ordenes_seleccionadas(data) {
     console.log(oc_seleccionadas);
     console.log(data);
     oc_det_seleccionadas = [];
+    $('#detalleOrdenSeleccionadas tbody').html('');
+
     $.ajax({
         type: 'POST',
         url: 'detalleOrdenesSeleccionadas',
@@ -284,6 +286,7 @@ function listar_detalle_ordenes_seleccionadas(data) {
                     'simbolo': element.simbolo,
                     'precio': element.precio,
                     'subtotal': (element.cantidad * element.precio),
+                    'control_series': element.series,
                     'series': []
                 });
             });
@@ -300,22 +303,23 @@ function mostrar_ordenes_seleccionadas() {
     var html = '';
     var html_ser = '';
     var i = 1;
+    $('#detalleOrdenSeleccionadas tbody').html('');
 
     oc_det_seleccionadas.forEach(function (element) {
         html_ser = '';
         element.series.forEach(function (serie) {
-            html_ser += '<br>' + serie;
+            html_ser += (html_ser == '' ? '' : ', ') + serie;
         });
         html += `<tr>
             <td><input type="checkbox" data-tipo="${element.id_oc_det !== null ? 'orden' : 'producto'}" 
                 value="${element.id_oc_det !== null ? element.id_oc_det : element.id_producto}" checked/></td>
             <td>${element.codigo_oc !== null ? element.codigo_oc : ''}</td>
-            <td>${element.codigo}</td>
+            <td><a href="#" class="verProducto" data-id="${element.id_producto}" >${element.codigo}</a></td>
             <td>${element.part_number !== null ? element.part_number : ''}</td>
             <td>${(element.id_categoria == 117 ?
                 `<i class="fas fa-exclamation-triangle orange" style="cursor:pointer;" onClick="abrirProducto(${element.id_producto});" 
                 title="El producto fue creado con Categoría = Por definir"></i>`: '')
-            + element.descripcion + ' <strong>' + html_ser + '</strong>'}
+            + element.descripcion + ' <br><strong>' + html_ser + '</strong>'}
             </td>
             <td><input class="right" type="number" id="${element.id_oc_det !== null ? element.id_oc_det : 'p' + element.id_producto}cantidad" value="${element.cantidad}" 
                 min="1" ${element.id_oc_det !== null ? `max="${element.cantidad}"` : ''} style="width:80px;"/></td>
@@ -325,8 +329,11 @@ function mostrar_ordenes_seleccionadas() {
             <td>
                 <input type="text" class="oculto" id="series" value="${element.series}" 
                 data-partnumber="${element.part_number !== null ? element.part_number : element.codigo}"/>
-                <i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series" 
-                onClick="${element.id_oc_det !== null ? `agrega_series(${element.id_oc_det});` : `agrega_series_producto(${element.id_producto});`}"></i>
+                ${element.control_series ?
+                `<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series" 
+                    onClick="${element.id_oc_det !== null ? `agrega_series(${element.id_oc_det});` : `agrega_series_producto(${element.id_producto});`}"></i>`
+                : ''}
+                
             </td>
         </tr>`;
         i++;
@@ -334,76 +341,86 @@ function mostrar_ordenes_seleccionadas() {
     $('#detalleOrdenSeleccionadas tbody').html(html);
 }
 
+$("#detalleOrdenSeleccionadas tbody").on("click", "a.verProducto", function (e) {
+    $(e.preventDefault());
+    var id = $(this).data("id");
+    abrirProducto(id);
+});
+
 $("#form-guia_create").on("submit", function (e) {
     console.log('submit');
     e.preventDefault();
 
-    Swal.fire({
-        title: "¿Está seguro que desea guardar ésta Guía?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#00a65a", //"#3085d6",
-        cancelButtonColor: "#d33",
-        cancelButtonText: "Cancelar",
-        confirmButtonText: "Si, Guardar"
-    }).then(result => {
-        if (result.isConfirmed) {
+    var data = $(this).serialize();
+    var detalle = [];
+    var validaCampos = '';
+    var ope = $('[name=id_operacion]').val();
 
-            var data = $(this).serialize();
+    if (ope == 26) {
+        series_transformacion.forEach(function (element) {
+            detalle.push({
+                'id': element.id_detalle,
+                'tipo': element.tipo,
+                'id_producto': element.id_producto,
+                'cantidad': element.cantidad,
+                'unitario': element.valor_unitario,
+                'series': element.series
+            });
+        });
+    } else {
+        $("#detalleOrdenSeleccionadas input[type=checkbox]:checked").each(function () {
+            var id = $(this).val();
+            var tipo = $(this).data('tipo');
+            var json = null;
 
-            var detalle = [];
-            var validaCampos = '';
-            var ope = $('[name=id_operacion]').val();
-
-            if (ope == 26) {
-                series_transformacion.forEach(function (element) {
-                    detalle.push({
-                        'id': element.id_detalle,
-                        'tipo': element.tipo,
-                        'id_producto': element.id_producto,
-                        'cantidad': element.cantidad,
-                        'unitario': element.valor_unitario,
-                        'series': element.series
-                    });
-                });
-            } else {
-                $("#detalleOrdenSeleccionadas input[type=checkbox]:checked").each(function () {
-                    var id = $(this).val();
-                    var tipo = $(this).data('tipo');
-                    var json = null;
-
-                    if (tipo == 'orden') {
-                        json = oc_det_seleccionadas.find(element => element.id_oc_det == id);
-                    }
-                    else if (tipo == 'producto') {
-                        json = oc_det_seleccionadas.find(element => element.id_producto == id);
-                    }
-                    var series = (json !== null ? json.series : []);
-                    var cantidad = $(this).parent().parent().find('td input[id=' + (tipo == 'producto' ? 'p' : '') + id + 'cantidad]').val();
-
-                    if (series.length > 0 && series.length < parseFloat(cantidad)) {
-                        var part_number = $(this).parent().parent().find('td input[id=series]').data('partnumber');
-                        validaCampos += 'El producto ' + part_number + ' requiere que se complete las Series.\n';
-                    }
-                    detalle.push({
-                        'id_detalle_orden': (tipo == 'orden' ? id : null),
-                        'cantidad': cantidad,
-                        'id_producto': (tipo == 'producto' ? id : null),
-                        'id_unid_med': json.id_unid_med,
-                        'series': series
-                    });
-                });
+            if (tipo == 'orden') {
+                json = oc_det_seleccionadas.find(element => element.id_oc_det == id);
             }
-            if (validaCampos.length > 0) {
-                alert(validaCampos);
-            } else {
+            else if (tipo == 'producto') {
+                json = oc_det_seleccionadas.find(element => element.id_producto == id);
+            }
+            var series = (json !== null ? json.series : []);
+            var cantidad = $(this).parent().parent().find('td input[id=' + (tipo == 'producto' ? 'p' : '') + id + 'cantidad]').val();
+
+            if (json.control_series) {
+                var part_number = $(this).parent().parent().find('td input[id=series]').data('partnumber');
+                if (series.length == 0) {
+                    validaCampos += 'Es necesario que agregue series al producto ' + part_number + '.\n';
+                }
+                else if (series.length > 0 && series.length < parseFloat(cantidad)) {
+                    var dif = parseFloat(cantidad) - series.length;
+                    validaCampos += 'El producto ' + part_number + ' requiere que se agreguen ' + dif + ' series.\n';
+                }
+            }
+            detalle.push({
+                'id_detalle_orden': (tipo == 'orden' ? id : null),
+                'cantidad': cantidad,
+                'id_producto': (tipo == 'producto' ? id : null),
+                'id_unid_med': json.id_unid_med,
+                'series': series
+            });
+        });
+    }
+
+    if (validaCampos.length > 0) {
+        Swal.fire(validaCampos, "", "warning");
+    } else {
+        Swal.fire({
+            title: "¿Está seguro que desea guardar ésta Guía?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#00a65a", //"#3085d6",
+            cancelButtonColor: "#d33",
+            cancelButtonText: "Cancelar",
+            confirmButtonText: "Sí, Guardar"
+        }).then(result => {
+            if (result.isConfirmed) {
                 data += '&detalle=' + JSON.stringify(detalle);
                 console.log(data);
                 guardar_guia_create(data);
             }
-            // }
-        }
-    });
+        });
+    }
 });
 
 function guardar_guia_create(data) {
@@ -422,8 +439,7 @@ function guardar_guia_create(data) {
                     icon: "error",
                 }).then(result => {
                     $("#submit_guia").removeAttr("disabled");
-                }
-                );
+                });
             } else {
                 Lobibox.notify("success", {
                     title: false,
@@ -438,8 +454,6 @@ function guardar_guia_create(data) {
                 if (tra !== '') {
                     listarTransformaciones();
                 } else {
-                    // var rspta = confirm('¿Desea ingresar ahora el documento de compra?')
-
                     Swal.fire({
                         title: "¿Desea ingresar ahora el documento de compra?",
                         icon: "info",
@@ -450,12 +464,11 @@ function guardar_guia_create(data) {
                         confirmButtonText: "Si, Ingresar"
                     }).then(result => {
                         if (result.isConfirmed) {
-                            // if (rspta) {
                             open_doc_create(response['id_guia'], 'oc');
                         }
                     });
                     // listarOrdenesPendientes();
-                    $("#ordenesPendientes").DataTable().ajax.reload();
+                    $("#ordenesPendientes").DataTable().ajax.reload(null, false);
                 }
                 $('#modal-guia_create').modal('hide');
             }
@@ -497,6 +510,7 @@ function agregarProducto(producto) {
             'part_number': producto.part_number,
             'descripcion': producto.descripcion,
             'abreviatura': producto.abreviatura,
+            'control_series': producto.control_series,
             'valor_unitario': 0.01,
             'valor_total': 0.01
         });

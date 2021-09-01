@@ -194,21 +194,10 @@ class ProductoController extends Controller
         return response()->json($data);
     }
 
-    // public function next_correlativo_prod()
-    // {
-    //     $cantidad = DB::table('almacen.alm_prod')
-    //         ->where([['estado','!=',7]])
-    //         ->get()->count();
-
-    //     $nextId = AlmacenController::leftZero(7, ($cantidad + 1));
-    //     return $nextId;
-    // }
-
     public function guardar_producto(Request $request)
     {
         $fecha = date('Y-m-d H:i:s');
         $id_usuario = Auth::user()->id_usuario;
-        // $codigo = $this->next_correlativo_prod();
         $msj = '';
         $des = strtoupper(trim($request->descripcion));
         $pn = trim($request->part_number);
@@ -226,7 +215,6 @@ class ProductoController extends Controller
         if ($count == 0) {
             $id_producto = DB::table('almacen.alm_prod')->insertGetId(
                 [
-                    // 'codigo' => $codigo,
                     'codigo_anexo' => ($request->codigo_anexo !== null ? $request->codigo_anexo : null),
                     'part_number' => $pn,
                     'id_clasif' => $request->id_clasif,
