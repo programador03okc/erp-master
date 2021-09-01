@@ -12,6 +12,7 @@
                         <div class="col-md-3">
                             <ul class="nav nav-pills nav-stacked" role="tablist">
                                 <li role="presentation" class="active"><a href="#principalSoloLectura" aria-controls="principalSoloLectura" role="tab" data-toggle="tab">Datos principales</a></li>
+                                <li role="presentation"><a href="#establecimientoSoloLectura" aria-controls="establecimientoSoloLectura" role="tab" data-toggle="tab">Establecimientos</a></li>
                                 <li role="presentation"><a href="#contactoSoloLectura" aria-controls="contactoSoloLectura" role="tab" data-toggle="tab">Contacto</a></li>
                                 <li role="presentation"><a href="#cuentasBancariasSoloLectura" aria-controls="cuentasBancariasSoloLectura" role="tab" data-toggle="tab">Cuentas bancarias</a></li>
                                 <li role="presentation"><a href="#observacionesSoloLectura" aria-controls="observacionesSoloLectura" role="tab" data-toggle="tab">Observaciones</a></li>
@@ -53,6 +54,20 @@
                                             </dl>
                                         </div>
                                     </div>
+                                    </fieldset>
+                                </div>
+                                <div role="tabpanel" class="tab-pane" id="establecimientoSoloLectura">
+                                    <fieldset class="group-table">
+                                        <table class="mytable table table-hover table-condensed table-bordered table-okc-view" id="listaEstablecimientoProveedorSoloLectura" width="100%">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center" style="width:10%">Dirección</th>
+                                                    <th class="text-center" style="width:8%">Ubigeo</th>
+                                                    <th class="text-center" style="width:8%">Horario atención</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="bodylistaEstablecimientoProveedorSoloLectura"></tbody>
+                                        </table>
                                     </fieldset>
                                 </div>
                                 <div role="tabpanel" class="tab-pane" id="contactoSoloLectura">

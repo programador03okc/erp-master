@@ -104,12 +104,12 @@ Requerimientos pendientes
 <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 <script src="{{ asset('template/plugins/datetime-moment.js') }}"></script>
 
-<script src="{{('/js/logistica/orden/RequerimientoPendienteModel.js?v=2')}}"></script>
-<script src="{{('/js/logistica/orden/RequerimientoPendienteView.js?v=8')}}"></script>
-<script src="{{('/js/logistica/orden/RequerimientoPendienteController.js?v=2')}}"></script>
+<script src="{{('/js/logistica/orden/RequerimientoPendienteModel.js?v=9')}}"></script>
+<script src="{{('/js/logistica/orden/RequerimientoPendienteView.js?v=9')}}"></script>
+<script src="{{('/js/logistica/orden/RequerimientoPendienteController.js?v=9')}}"></script>
 
-<script src="{{ asset('js/logistica/mapeo/mapeoItemsRequerimiento.js?v=4')}}"></script>
-<script src="{{ asset('js/logistica/mapeo/mapeoAsignarProducto.js')}}"></script>
+<script src="{{ asset('js/logistica/mapeo/mapeoItemsRequerimiento.js?v=9')}}"></script>
+<script src="{{ asset('js/logistica/mapeo/mapeoAsignarProducto.js?v=9')}}"></script>
 
 <script>
 
