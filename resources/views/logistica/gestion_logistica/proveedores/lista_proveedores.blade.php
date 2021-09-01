@@ -21,7 +21,7 @@
             <fieldset class="group-table">
                 <div id="form-listaProveedores">
                     <button type="button" id="btnCrearProveedor" class="btn btn-sm btn-success pull-right handleClickNuevoProveedor"  style="margin-left:5px;" ><i class="fas fa-new"></i>Nuevo</button>
-                    <table class="mytable table table-hover table-condensed table-bordered table-okc-view" id="listaProveedores" width="100%">
+                    <table class="mytable table table-hover table-condensed table-striped table-bordered table-okc-view" id="listaProveedores" width="100%">
                         <thead>
                             <tr>
                                 <th class="text-center" style="width:5%">Tipo doc.</th>

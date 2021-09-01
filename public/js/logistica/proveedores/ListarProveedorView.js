@@ -167,7 +167,7 @@ class ListarProveedorView {
                 { 'data': 'contribuyente.direccion_fiscal', 'name': 'contribuyente.direccion_fiscal', 'className': 'text-left direccion' },
                 { 'data': 'contribuyente.telefono', 'name': 'contribuyente.telefono', 'className': 'text-center telefono' },
                 { 'data': 'estado_proveedor.descripcion', 'name': 'estadoProveedor.descripcion', 'className': 'text-center estado' },
-                { 'data': 'id_proveedor', 'name': 'id_proveedor', 'className': 'text-center', 'searchable': false },
+                { 'data': 'id_proveedor', 'name': 'id_proveedor', 'className': 'text-center', 'searchable': false, 'orderable': false },
             ],
             'columnDefs': [
                 {
@@ -183,7 +183,7 @@ class ListarProveedorView {
                             <button type="button" class="btn btn-xs btn-warning btnEditarProveedor handleClickEditarProveedor" data-id-proveedor="${row.id_proveedor}" title="Editar" ><i class="fas fa-edit fa-xs"></i></button>
                             <button type="button" class="btn btn-xs btn-danger btnAnularProveedor handleClickAnularProveedor" data-id-proveedor="${row.id_proveedor}" title="Anular" ><i class="fas fa-times fa-xs"></i></button>
                         </div></center>`;
-                    }, targets: 9,
+                    }, targets: 9
                 },
 
             ],
@@ -242,7 +242,7 @@ class ListarProveedorView {
 
             document.querySelector("form[id='form-proveedor']").setAttribute("type", "register");
         }
-        document.querySelector("h3[class='modal-title']").textContent = 'Nuevo Proveedor';
+        document.querySelector("div[id='modal-proveedor'] h3[class='modal-title']").textContent = 'Nuevo Proveedor';
         document.querySelector("button[id='btnGuardarProveedor']").classList.remove("oculto");
         document.querySelector("button[id='btnActualizarProveedor']").classList.add("oculto");
         document.getElementById("btnGuardarProveedor").removeAttribute("disabled");
@@ -269,6 +269,10 @@ class ListarProveedorView {
             show: true,
             backdrop: 'true'
         });
+
+        document.querySelector("div[id='modal-agregar-cuenta-bancaria'] button[class~='btnAgregarCuentaBancaria']").classList.remove("oculto");
+        document.querySelector("div[id='modal-agregar-cuenta-bancaria'] button[class~='btnActualizarCuentaBancaria']").classList.add("oculto");
+
         $("#form-agregar-cuenta-bancaria-proveedor")[0].reset();
 
     }
@@ -876,6 +880,8 @@ class ListarProveedorView {
                 icon: 'warning'
             }
             );
+            obj.removeAttribute("disabled");
+
         } else {
             let formData = new FormData($('#form-proveedor')[0]);
             $.ajax({
@@ -1021,6 +1027,9 @@ class ListarProveedorView {
     editarProveedor(obj) {
         let idProveedor = obj.dataset.idProveedor;
         this.objectBtnEdition = obj;
+        this.limpiarTabla('listaCuentaBancariasProveedor');
+        this.limpiarTabla('listaContactoProveedor');
+        this.limpiarTabla('listaEstablecimientoProveedor');
         $('#modal-proveedor').modal({
             show: true,
             backdrop: 'true'
@@ -1029,7 +1038,10 @@ class ListarProveedorView {
             $("#form-proveedor")[0].reset();
             document.querySelector("form[id='form-proveedor']").setAttribute("type", "edition");
         }
-        document.querySelector("h3[class='modal-title']").textContent = 'Editar Proveedor';
+        console.log(document.querySelector("div[id='modal-proveedor'] h3[class='modal-title']"));
+        document.querySelector("div[id='modal-proveedor'] h3[class='modal-title']").textContent = 'Editar Proveedor';
+        // document.querySelector("div[id='modal-proveedor'] span[id='tituloAdicional']")?document.querySelector("div[id='modal-proveedor'] span[id='tituloAdicional']").textContent = res.contribuyente.razon_social:null;
+
         document.querySelector("button[id='btnGuardarProveedor']").classList.add("oculto");
         document.querySelector("button[id='btnActualizarProveedor']").classList.remove("oculto");
 
@@ -1251,6 +1263,9 @@ class ListarProveedorView {
 
 
     verProveedor(obj) {
+        this.limpiarTabla('listaContactoProveedorSoloLectura');
+        this.limpiarTabla('listaCuentaBancariasProveedorSoloLectura');
+        this.limpiarTabla('listaEstablecimientoProveedorSoloLectura');
         $('#modal-ver-proveedor').modal({
             show: true,
             backdrop: 'true'

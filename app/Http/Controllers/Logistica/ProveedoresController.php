@@ -136,6 +136,7 @@ class ProveedoresController extends Controller
                             $contactoProveedor->cargo = $request->cargoContacto[$i]; 
                             $contactoProveedor->fecha_registro = new Carbon(); 
                             $contactoProveedor->direccion = $request->direccionContacto[$i]; 
+                            $contactoProveedor->estado = 1; 
                             $contactoProveedor->horario = $request->horarioContacto[$i]; 
                             $contactoProveedor->ubigeo = $request->ubigeoContactoProveedor[$i]>0?$request->ubigeoContactoProveedor[$i]:null; 
                             $contactoProveedor->save();
@@ -292,9 +293,9 @@ class ProveedoresController extends Controller
                         $cuentaBancariaProveedor->id_banco  = $request->idBanco[$i]; 
                         $cuentaBancariaProveedor->id_tipo_cuenta  = $request->idTipoCuenta[$i]>0?$request->idTipoCuenta[$i]:null; 
                         $cuentaBancariaProveedor->id_moneda  = $request->idMoneda[$i]>0?$request->idMoneda[$i]:null; 
-                        $cuentaBancariaProveedor->nro_cuenta  =  $request->nroCuenta[$i]; 
-                        $cuentaBancariaProveedor->nro_cuenta_interbancaria  = $request->nroCuentaInterbancaria[$i]; 
-                        $cuentaBancariaProveedor->swift  = $request->swift[$i];
+                        $cuentaBancariaProveedor->nro_cuenta  =  $request->nroCuenta[$i]??null; 
+                        $cuentaBancariaProveedor->nro_cuenta_interbancaria  = $request->nroCuentaInterbancaria[$i]??null; 
+                        $cuentaBancariaProveedor->swift  = $request->swift[$i]??null;
                         $cuentaBancariaProveedor->estado  = 1; 
                         $cuentaBancariaProveedor->fecha_registro  = new Carbon();
                         $cuentaBancariaProveedor->save();
