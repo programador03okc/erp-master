@@ -88,7 +88,7 @@ function generar_transferencia() {
             if (formName == "transferencias") {
                 listarTransferenciasPorEnviar();
             } else if (formName == "ordenesPendientes") {
-                $("#listaIngresosAlmacen").DataTable().ajax.reload();
+                $("#listaIngresosAlmacen").DataTable().ajax.reload(null, false);//no reiniciar paginacion
             }
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {
@@ -242,7 +242,7 @@ function generarTransferenciaRequerimiento(data) {
         success: function (response) {
             console.log(response);
             $("#modal-ver_requerimiento").modal("hide");
-            $("#listaRequerimientos").DataTable().ajax.reload();
+            $("#listaRequerimientos").DataTable().ajax.reload(null, false);
 
             Lobibox.notify("success", {
                 title: false,

@@ -620,7 +620,7 @@ class OrdenesPendientesController extends Controller
 
                                 DB::table('almacen.alm_reserva')
                                     ->insert([
-                                        'codigo' => $this->reservaNextCodigo($request->id_almacen),
+                                        'codigo' => Reserva::crearCodigo($request->id_almacen),
                                         'id_producto' => $det->id_producto,
                                         'stock_comprometido' => $det->cantidad,
                                         'id_almacen_reserva' => $request->id_almacen,
@@ -962,7 +962,7 @@ class OrdenesPendientesController extends Controller
                     }
                     DB::table('almacen.alm_reserva')
                         ->insert([
-                            'codigo' => $this->reservaNextCodigo($id_almacen),
+                            'codigo' => Reserva::crearCodigo($id_almacen),
                             'id_producto' => $det->id_producto,
                             'stock_comprometido' => $cantidad,
                             'id_almacen_reserva' => $id_almacen,
@@ -990,7 +990,7 @@ class OrdenesPendientesController extends Controller
                     ]);
                 DB::table('almacen.alm_reserva')
                     ->insert([
-                        'codigo' => $this->reservaNextCodigo($id_almacen),
+                        'codigo' => Reserva::crearCodigo($id_almacen),
                         'id_producto' => $det->id_producto,
                         'stock_comprometido' => $cantidad,
                         'id_almacen_reserva' => $id_almacen,

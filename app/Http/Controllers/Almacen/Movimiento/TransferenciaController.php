@@ -751,7 +751,7 @@ class TransferenciaController extends Controller
 
                     DB::table('almacen.alm_reserva')
                         ->insert([
-                            'codigo' => $this->reservaNextCodigo($request->id_almacen_destino),
+                            'codigo' => Reserva::crearCodigo($request->id_almacen_destino),
                             // 'codigo' => 'prueba',
                             'id_producto' => $det->id_producto,
                             'stock_comprometido' => $d->cantidad_recibida,
@@ -764,7 +764,7 @@ class TransferenciaController extends Controller
                             'fecha_registro' => date('Y-m-d H:i:s'),
                         ]);
                     /*$reserva= new Reserva();
-                        $reserva->codigo=Reserva::nextCodigo($request->id_almacen_destino);
+                        $reserva->codigo=Reserva::crearCodigo($request->id_almacen_destino);
                         $reserva->id_producto = $det->id_producto;
                         $reserva->save();
                         echo $reserva->id_reserva;*/
