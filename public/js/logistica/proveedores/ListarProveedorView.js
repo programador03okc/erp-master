@@ -1213,6 +1213,10 @@ class ListarProveedorView {
 
                         obj.removeAttribute("disabled");
                         $("#form-proveedor")[0].reset();
+                        this.limpiarTabla('listaCuentaBancariasProveedor');
+                        this.limpiarTabla('listaContactoProveedor');
+                        this.limpiarTabla('listaEstablecimientoProveedor');
+
                         $('#modal-proveedor').modal('hide');
 
 
