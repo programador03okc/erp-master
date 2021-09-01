@@ -21,6 +21,7 @@ class Proveedor extends Model
         'cuentaContribuyente.moneda',
         'contribuyente.pais',
         'contribuyente.distrito',
+        'establecimientoProveedor',
         // 'contribuyente.distrito.provincia',
         // 'contribuyente.distrito.provincia.departamento',
         'estadoProveedor')
@@ -45,7 +46,12 @@ class Proveedor extends Model
         },
         // 'contribuyente.distrito.provincia',
         // 'contribuyente.distrito.provincia.departamento',
-        'estadoProveedor'])->where('id_proveedor',$idProveedor)->first();
+        'establecimientoProveedor' => function($q){
+            $q->where('establecimiento_proveedor.estado', '=', 1);
+        },
+        'establecimientoProveedor.estadoEstablecimiento',
+        'estadoProveedor'
+        ])->where('id_proveedor',$idProveedor)->first();
         // ->where('log_prove.id_contribuyente','=',1912);
         return $data;
 
@@ -69,6 +75,9 @@ class Proveedor extends Model
     }
     public function contactoContribuyente(){
         return $this->hasMany('App\Models\Contabilidad\ContactoContribuyente','id_contribuyente','id_contribuyente');
+    }
+    public function establecimientoProveedor(){
+        return $this->hasMany('App\Models\Logistica\EstablecimientoProveedor','id_proveedor','id_proveedor');
     }
     public function estadoProveedor(){
         return $this->hasOne('App\Models\Logistica\EstadoProveedor','id_estado','estado')->withDefault([

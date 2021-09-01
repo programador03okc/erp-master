@@ -107,8 +107,7 @@ class RequerimientoController extends Controller
     
     public function detalleRequerimiento($id_requerimiento)
     {
-        $detalles = DB::table('almacen.alm_det_req')
-            ->select(
+        $detalles = DetalleRequerimiento::select(
                 'alm_req.codigo as codigo_requerimiento',
                 'alm_det_req.*',
                 'sis_moneda.simbolo as moneda_simbolo',

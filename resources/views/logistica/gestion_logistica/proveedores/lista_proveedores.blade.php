@@ -49,6 +49,7 @@
 @include('logistica.gestion_logistica.proveedores.modal_agregar_cuenta_bancaria')
 @include('logistica.gestion_logistica.proveedores.modal_agregar_adjunto_proveedor')
 @include('logistica.gestion_logistica.proveedores.modal_agregar_contacto')
+@include('logistica.gestion_logistica.proveedores.modal_agregar_establecimiento')
 @include('publico.ubigeoModal')
 
 
@@ -62,10 +63,10 @@
     <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
-    <script src="{{('/js/logistica/proveedores/listarProveedorView.js?v=2')}}"></script>
-    <script src="{{('/js/logistica/proveedores/ProveedorController.js')}}"></script>
-    <script src="{{('/js/logistica/proveedores/ProveedorModel.js')}}"></script>
-    <script src="{{ asset('js/publico/ubigeoModal.js?v=2')}}"></script>
+    <script src="{{('/js/logistica/proveedores/listarProveedorView.js?v=3')}}"></script>
+    <script src="{{('/js/logistica/proveedores/ProveedorController.js?v=3')}}"></script>
+    <script src="{{('/js/logistica/proveedores/ProveedorModel.js?v=3')}}"></script>
+    <script src="{{ asset('js/publico/ubigeoModal.js?v=3')}}"></script>
 
 
 

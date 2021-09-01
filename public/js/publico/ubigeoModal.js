@@ -70,6 +70,9 @@ function selectUbigeo(obj){
     }else if(modalPage =='modal-contacto-proveedor'){
         $('[name=ubigeoContactoProveedor]').val(idUbigeo);    
         $('[name=descripcionUbigeoContactoProveedor]').val(ubigeoDescripcion);  
+    }else if(modalPage =='modal-establecimiento-proveedor'){
+        $('[name=ubigeoEstablecimiento]').val(idUbigeo);    
+        $('[name=descripcionUbigeoEstablecimiento]').val(ubigeoDescripcion);  
     }else{
         $('[name=ubigeo]').val(idUbigeo);    
         $('[name=name_ubigeo]').val(ubigeoDescripcion);    
