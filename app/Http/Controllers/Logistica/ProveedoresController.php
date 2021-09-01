@@ -12,6 +12,7 @@ use App\Models\Contabilidad\CuentaContribuyente;
 use App\Models\Contabilidad\TipoContribuyente;
 use App\Models\Contabilidad\TipoCuenta;
 use App\Models\Contabilidad\TipoDocumentoIdentidad;
+use App\Models\Logistica\EstablecimientoProveedor;
 use App\Models\Logistica\Proveedor;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -106,6 +107,22 @@ class ProveedoresController extends Controller
                 $proveedor->save();
                 $idProveedor= $proveedor->id_proveedor;
 
+                if(isset($request->idEstablecimiento)){
+                    $countEstablecimiento = count($request->idEstablecimiento);
+                    for ($i = 0; $i < $countEstablecimiento; $i++) {
+                        if($request->estadoEstablecimiento[$i]==1){
+                            $establecimientoProveedor = new EstablecimientoProveedor(); 
+                            $establecimientoProveedor->id_proveedor= $proveedor->id_proveedor; 
+                            $establecimientoProveedor->direccion = $request->direccionEstablecimiento[$i]; 
+                            $establecimientoProveedor->horario = $request->horarioEstablecimiento[$i]; 
+                            $establecimientoProveedor->ubigeo = $request->ubigeoEstablecimiento[$i]>0?$request->ubigeoEstablecimiento[$i]:null; 
+                            $establecimientoProveedor->estado = 1; 
+                            $establecimientoProveedor->fecha_registro = new Carbon(); 
+                            $establecimientoProveedor->save();
+                        }
+                    }
+                }
+
                 if(isset($request->idContacto)){
                     $countContacto = count($request->idContacto);
 
@@ -176,6 +193,7 @@ class ProveedoresController extends Controller
             $contribuyente = Contribuyente::where("id_contribuyente", $proveedor->id_contribuyente)->first();
             $contactoProveedor = ContactoContribuyente::where("id_contribuyente", $proveedor->id_contribuyente)->first();
             $cuentaBancariaProveedor = CuentaContribuyente::where("id_contribuyente", $proveedor->id_contribuyente)->first(); 
+            $establecimientoProveedor = EstablecimientoProveedor::where("id_proveedor", $proveedor->id_proveedor)->first(); 
 
             $contribuyente->id_tipo_contribuyente = $request->tipoContribuyente; 
             $contribuyente->id_doc_identidad = $request->tipoDocumentoIdentidad>0?$request->tipoDocumentoIdentidad:null; 
@@ -194,9 +212,36 @@ class ProveedoresController extends Controller
             $proveedor->observacion= $request->observacion;
             $proveedor->save();
 
+            if(isset($request->idEstablecimiento)){
+                $countEstablecimiento = count($request->idEstablecimiento);
+                for ($i = 0; $i < $countEstablecimiento; $i++) {
+                    if($request->estadoEstablecimiento[$i]==1 && $request->idEstablecimiento[$i] >0){
+                        $establecimientoProveedor->direccion = $request->direccionEstablecimiento[$i]; 
+                        $establecimientoProveedor->horario = $request->horarioEstablecimiento[$i]; 
+                        $establecimientoProveedor->ubigeo = $request->ubigeoEstablecimiento[$i]>0?$request->ubigeoEstablecimiento[$i]:null; 
+                        $establecimientoProveedor->save();
+                    }elseif($request->estadoEstablecimiento[$i]==7 && $request->idEstablecimiento[$i] >0 ){
+                        $establecimientoProveedor->estado=7;
+                        $establecimientoProveedor->save();
+                    }elseif($request->estadoEstablecimiento[$i]==1 && ($request->idEstablecimiento[$i] =='' || $request->idEstablecimiento[$i] == null || $request->idEstablecimiento[$i] == 0) ){
+                        $nuevoEstablecimientoProveedor = new EstablecimientoProveedor(); 
+                        $nuevoEstablecimientoProveedor->id_proveedor= $proveedor->id_proveedor; 
+                        $nuevoEstablecimientoProveedor->fecha_registro = new Carbon(); 
+                        $nuevoEstablecimientoProveedor->estado = 1; 
+                        $nuevoEstablecimientoProveedor->direccion = $request->direccionEstablecimiento[$i]; 
+                        $nuevoEstablecimientoProveedor->horario = $request->horarioEstablecimiento[$i]; 
+                        $nuevoEstablecimientoProveedor->ubigeo = $request->ubigeoEstablecimiento[$i]>0?$request->ubigeoEstablecimiento[$i]:null; 
+                        $nuevoEstablecimientoProveedor->save();
+                    }
+                }
+            }
+            Debugbar::info(isset($request->idContacto));
+            Debugbar::info($request->idContacto);
             if(isset($request->idContacto)){
                 $countContacto = count($request->idContacto);
+
                 for ($i = 0; $i < $countContacto; $i++) {
+
                     if($request->estadoContacto[$i]==1 && $request->idContacto[$i] >0){
                         $contactoProveedor->nombre = $request->nombreContacto[$i]; 
                         $contactoProveedor->telefono = $request->telefonoContacto[$i]; 
@@ -209,7 +254,7 @@ class ProveedoresController extends Controller
                     }elseif($request->estadoContacto[$i]==7 && $request->idContacto[$i] >0 ){
                         $contactoProveedor->estado=7;
                         $contactoProveedor->save();
-                    }elseif($request->estadoContacto[$i]==1 && ($request->idContacto[$i] =='' || $request->idContacto[$i] == null) ){
+                    }elseif($request->estadoContacto[$i]==1 && ($request->idContacto[$i] =='' || $request->idContacto[$i] == null || $request->idContacto[$i] == 0) ){
                         $nuevoContactoProveedor = new ContactoContribuyente(); 
                         $nuevoContactoProveedor->id_contribuyente= $contribuyente->id_contribuyente; 
                         $nuevoContactoProveedor->nombre = $request->nombreContacto[$i]; 
@@ -220,6 +265,7 @@ class ProveedoresController extends Controller
                         $nuevoContactoProveedor->direccion = $request->direccionContacto[$i]; 
                         $nuevoContactoProveedor->horario = $request->horarioContacto[$i]; 
                         $nuevoContactoProveedor->ubigeo = $request->ubigeoContactoProveedor[$i]>0?$request->ubigeoContactoProveedor[$i]:null; 
+                        $nuevoContactoProveedor->estado = 1; 
                         $nuevoContactoProveedor->save();
                     }
                 }
@@ -240,7 +286,7 @@ class ProveedoresController extends Controller
                         $cuentaBancariaProveedor->estado  = 7;
                         $cuentaBancariaProveedor->save();
     
-                    }elseif($request->estadoCuenta[$i]==1 && ($request->idCuenta[$i] =='' || $request->idCuenta[$i] == null) ){
+                    }elseif($request->estadoCuenta[$i]==1 && ($request->idCuenta[$i] =='' || $request->idCuenta[$i] == null || $request->idCuenta[$i] == 0) ){
                         $cuentaBancariaProveedor = new CuentaContribuyente(); 
                         $cuentaBancariaProveedor->id_contribuyente  = $contribuyente->id_contribuyente; 
                         $cuentaBancariaProveedor->id_banco  = $request->idBanco[$i]; 

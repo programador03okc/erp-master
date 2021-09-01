@@ -910,6 +910,8 @@ class RequerimientoPendienteView {
             <td colspan="5" style="text-align:center;">(Sin reservas)</td>
     
             </tr>`);
+            document.querySelector("table[id='listaConReserva'] label[name='totalReservado']").textContent=0;
+
         }
     }
 

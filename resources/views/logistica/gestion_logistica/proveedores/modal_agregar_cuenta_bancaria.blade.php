@@ -59,7 +59,9 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-sm btn-primary" class="close" data-dismiss="modal" >Cerrar</button>
-                    <button type="button" class="btn btn-sm btn-success handleClickAgregarCuentaBancaria" >Agregar</button>
+                    <button type="button" class="btn btn-sm btn-success btnAgregarCuentaBancaria handleClickAgregarCuentaBancaria" >Agregar</button>
+                    <button type="button" class="btn btn-sm btn-success btnActualizarCuentaBancaria handleClickActualizarCuentaBancaria oculto" >Actualizar</button>
+
                 </div>
             </form>
         </div>

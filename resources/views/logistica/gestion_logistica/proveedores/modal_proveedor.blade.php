@@ -11,6 +11,7 @@
                         <!-- Nav tabs -->
                         <ul class="nav nav-tabs nav-justified" role="tablist">
                             <li role="presentation" class="active"><a href="#principal" aria-controls="principal" role="tab" data-toggle="tab">Datos principales</a></li>
+                            <li role="presentation"><a href="#establecimiento" aria-controls="establecimiento" role="tab" data-toggle="tab">Establecimientos</a></li>
                             <li role="presentation"><a href="#contacto" aria-controls="contacto" role="tab" data-toggle="tab">Contacto</a></li>
                             <li role="presentation"><a href="#cuentas_bancarias" aria-controls="cuentas_bancarias" role="tab" data-toggle="tab">Cuentas bancarias</a></li>
                             <li role="presentation"><a href="#observaciones" aria-controls="observaciones" role="tab" data-toggle="tab">Observaciones</a></li>
@@ -114,6 +115,22 @@
                                             </div>
                                         </div>
                                     </div>
+                                </fieldset>
+                            </div>
+                            <div role="tabpanel" class="tab-pane" id="establecimiento">
+                                <fieldset class="group-table">
+                                    <button type="button" id="btnNuevoEstablecimiento" class="btn btn-sm btn-primary pull-right handleClickNuevoEstablecimiento" style="margin-left:5px;"><i class="fas fa-new"></i>Agregar establecimiento</button>
+                                    <table class="mytable table table-hover table-condensed table-bordered table-okc-view" id="listaEstablecimientoProveedor" width="100%">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center" style="width:20%">Dirección</th>
+                                                <th class="text-center" style="width:8%">Ubigeo</th>
+                                                <th class="text-center" style="width:8%">Horario atención</th>
+                                                <th class="text-center" style="width:8%">Acción</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="bodylistaEstablecimientoProveedor"></tbody>
+                                    </table>
                                 </fieldset>
                             </div>
                             <div role="tabpanel" class="tab-pane" id="contacto">

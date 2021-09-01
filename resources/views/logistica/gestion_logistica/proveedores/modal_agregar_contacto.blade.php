@@ -59,7 +59,8 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-sm btn-primary" class="close" data-dismiss="modal" >Cerrar</button>
-                    <button type="button" class="btn btn-sm btn-success handleClickAgregarContacto" >Agregar</button>
+                    <button type="button" class="btn btn-sm btn-success btnAgregarContacto handleClickAgregarContacto" >Agregar</button>
+                    <button type="button" class="btn btn-sm btn-success btnActualizarContacto handleClickActualizarContacto oculto" >Actualizar</button>
                 </div>
             </form>
         </div>
