@@ -8,6 +8,9 @@
             <i class="fas fa-book"></i> <span>Catálogos</span> <i class="fa fa-angle-left pull-right"></i>
         </a>
         <ul class="treeview-menu">
+            @if(Auth::user()->tieneAplicacion(75))
+            <li><a href="{{route('almacen.catalogos.catalogo-productos.index')}}"> Catálogo de Productos</a></li>
+            @endif
             @if(Auth::user()->tieneAplicacion(70))
             <li><a href="{{route('almacen.catalogos.tipos.index')}}"> Categoría </a></li>
             @endif
@@ -23,9 +26,7 @@
             @if(Auth::user()->tieneAplicacion(74))
             <li><a href="{{route('almacen.catalogos.productos.index')}}"> Producto</a></li>
             @endif
-            @if(Auth::user()->tieneAplicacion(75))
-            <li><a href="{{route('almacen.catalogos.catalogo-productos.index')}}"> Catálogo de Productos</a></li>
-            @endif
+
         </ul>
     </li>
     @endif
