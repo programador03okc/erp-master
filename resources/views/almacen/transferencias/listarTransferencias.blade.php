@@ -84,14 +84,15 @@ Gestión de Transferencias
                                             <tr>
                                                 <th hidden></th>
                                                 <th></th>
-                                                <th width="10%">Tipo</th>
-                                                <th width="10%">Código</th>
-                                                <th width="15%">Almacén Origen</th>
-                                                <th width="15%">Almacén Destino</th>
+                                                <th width="8%">Tipo</th>
+                                                <th width="8%">Código</th>
+                                                <th width="12%">Almacén Origen</th>
+                                                <th width="12%">Almacén Destino</th>
                                                 <th width="10%">Codigo Req.</th>
-                                                <th width="25%">Concepto</th>
-                                                <th width="10%">Sede Req.</th>
+                                                <th width="20%">Concepto</th>
                                                 <th width="10%">Elaborado Por</th>
+                                                <th width="10%">Guía Venta</th>
+                                                <th width="6%">Estado</th>
                                                 <th width="6%">Acción</th>
                                             </tr>
                                         </thead>
@@ -121,15 +122,16 @@ Gestión de Transferencias
                                         <thead>
                                             <tr>
                                                 <th hidden></th>
-                                                <th width="10%">Tipo</th>
-                                                <th width="10%">Fecha Guía</th>
+                                                <th width="8%">Tipo</th>
+                                                <th width="8%">Código</th>
                                                 <th width="10%">Guía Venta</th>
-                                                <th width="20%">Almacén Origen</th>
-                                                <th width="20%">Almacén Destino</th>
-                                                <th width="14%">Responsable Origen</th>
-                                                <th width="14%">Responsable Destino</th>
+                                                <th width="8%">Requerimiento</th>
+                                                <th width="15%">Almacén Origen</th>
+                                                <th width="15%">Almacén Destino</th>
+                                                <th width="10%">Responsable Origen</th>
+                                                <th width="10%">Responsable Destino</th>
                                                 <th width="8%">Estado</th>
-                                                <th width="8%">Acción</th>
+                                                <th width="5%">Acción</th>
                                             </tr>
                                         </thead>
                                         <tbody></tbody>
@@ -158,7 +160,7 @@ Gestión de Transferencias
                                             <tr>
                                                 <th hidden></th>
                                                 <th width="5%">Tipo</th>
-                                                <th width="5%">Trans.</th>
+                                                <th width="8%">Trans.</th>
                                                 <th width="8%">Guía Venta</th>
                                                 <th width="8%">Guía Compra</th>
                                                 <th width="8%">Doc Venta</th>
