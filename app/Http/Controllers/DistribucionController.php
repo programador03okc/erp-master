@@ -275,8 +275,8 @@ class DistribucionController extends Controller
                 $join->where('orden_despacho.aplica_cambios', '=', false);
                 $join->where('orden_despacho.estado', '!=', 7);
             })
-            ->where('alm_req.estado', 17)
-            ->orWhere('alm_req.estado', 27)
+            // ->where('alm_req.estado', 17)
+            ->where('alm_req.estado', 27)
             ->orWhere('alm_req.estado', 28)
             ->orWhere([['alm_req.estado', '=', 19], ['alm_req.confirmacion_pago', '=', true]])
             ->orderBy('alm_req.fecha_entrega', 'desc')
@@ -1135,10 +1135,6 @@ class DistribucionController extends Controller
                                 'id_detalle_requerimiento' => $i->id_detalle_requerimiento,
                                 'cantidad' => $i->cantidad,
                                 'transformado' => false,
-                                // 'part_number_transformado'=>($i->part_number_transformado ? $i->part_number_transformado : null),
-                                // 'descripcion_transformado'=>($i->descripcion_transformado ? $i->descripcion_transformado : null),
-                                // 'comentario_transformado'=>($i->comentario_transformado ? $i->comentario_transformado : null),
-                                // 'cantidad_transformado'=>($i->cantidad_transformado ? $i->cantidad_transformado : null),
                                 'estado' => 1,
                                 'fecha_registro' => date('Y-m-d H:i:s')
                             ],
@@ -1147,8 +1143,8 @@ class DistribucionController extends Controller
 
                     $val = ($i->valorizacion !== null ? $i->valorizacion : AlmacenController::valorizacion_almacen($i->id_producto, $request->id_almacen));
 
-                    DB::table('almacen.transfor_materia')
-                        ->insert([
+                    $id_materia = DB::table('almacen.transfor_materia')
+                        ->insertGetId([
                             'id_transformacion' => $id_transformacion,
                             'id_producto' => $i->id_producto,
                             'cantidad' => $i->cantidad,
@@ -1157,7 +1153,8 @@ class DistribucionController extends Controller
                             'valor_total' => $val,
                             'estado' => 1,
                             'fecha_registro' => date('Y-m-d H:i:s')
-                        ]);
+                        ], 'id_materia');
+
 
                     $detreq = DB::table('almacen.alm_det_req')
                         ->where('id_detalle_requerimiento', $i->id_detalle_requerimiento)
@@ -1477,10 +1474,6 @@ class DistribucionController extends Controller
                             'id_detalle_requerimiento' => $i->id_detalle_requerimiento,
                             'cantidad' => $i->cantidad,
                             'transformado' => false,
-                            // 'part_number_transformado'=>($i->part_number_transformado ? $i->part_number_transformado : null),
-                            // 'descripcion_transformado'=>($i->descripcion_transformado ? $i->descripcion_transformado : null),
-                            // 'comentario_transformado'=>($i->comentario_transformado ? $i->comentario_transformado : null),
-                            // 'cantidad_transformado'=>($i->cantidad_transformado ? $i->cantidad_transformado : null),
                             'estado' => 1,
                             'fecha_registro' => date('Y-m-d H:i:s')
                         ],
@@ -1489,8 +1482,8 @@ class DistribucionController extends Controller
 
                 $val = ($i->valorizacion !== null ? $i->valorizacion : AlmacenController::valorizacion_almacen($i->id_producto, $request->id_almacen));
 
-                DB::table('almacen.transfor_materia')
-                    ->insert([
+                $id_materia = DB::table('almacen.transfor_materia')
+                    ->insertGetId([
                         'id_transformacion' => $id_transformacion,
                         'id_producto' => $i->id_producto,
                         'cantidad' => $i->cantidad,
@@ -1499,6 +1492,15 @@ class DistribucionController extends Controller
                         'valor_total' => $val,
                         'estado' => 1,
                         'fecha_registro' => date('Y-m-d H:i:s')
+                    ], 'id_materia');
+
+                //envia la reserva
+                DB::table('almacen.alm_reserva')
+                    ->where('id_detalle_requerimiento', $i->id_detalle_requerimiento)
+                    ->where('id_almacen_reserva', $request->id_almacen)
+                    ->update([
+                        'estado' => 17,
+                        'id_materia' => $id_materia
                     ]);
 
                 $detreq = DB::table('almacen.alm_det_req')
@@ -1510,6 +1512,7 @@ class DistribucionController extends Controller
                     ->join('almacen.orden_despacho', 'orden_despacho.id_od', '=', 'orden_despacho_det.id_od')
                     ->where([
                         ['orden_despacho_det.id_detalle_requerimiento', '=', $i->id_detalle_requerimiento],
+                        ['orden_despacho_det.estado', '!=', 7],
                         ['orden_despacho.estado', '!=', 7],
                         ['orden_despacho.aplica_cambios', '=', true]
                     ])

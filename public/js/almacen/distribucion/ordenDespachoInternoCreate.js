@@ -73,7 +73,7 @@ function open_despacho_create(data) {
                         despachos_pendientes++;
                     }
                 }
-                detalle_requerimiento.push({
+                detalle_ingresa.push({
                     'id_detalle_requerimiento': element.id_detalle_requerimiento,
                     'id_producto': element.id_producto,
                     'cantidad': element.cantidad,
@@ -81,10 +81,6 @@ function open_despacho_create(data) {
                     'suma_despachos': element.suma_despachos_internos,
                     'stock_comprometido': element.stock_comprometido,
                     'valorizacion': element.valorizacion,
-                    // 'part_number_transformado': null,
-                    // 'descripcion_transformado': null,
-                    // 'comentario_transformado': null,
-                    // 'cantidad_transformado': null,
                 });
 
                 if (element.id_almacen_reserva !== null) {
@@ -137,8 +133,8 @@ function open_despacho_create(data) {
                 if (almacenes.length == 1) {
                     $('[name=id_almacen]').val(almacenes[0]);
                     $('[name=almacen_descripcion]').val(almacenes_des[0]);
-                    $('[name=aplica_cambios]').prop('checked', true);
-                    on();
+                    // $('[name=aplica_cambios]').prop('checked', true);
+                    // on();
                 }
                 else if (almacenes.length == 0) {
                     alert('Es necesario que los productos esten en almacen.');
@@ -157,9 +153,9 @@ function open_despacho_create(data) {
                         if (parseInt(almacenes_ext[0]) !== parseInt(id_alm)) {//revisar
                             alert('El almacén es diferente. Debe realizar una transferencia. ' + almacenes_ext_des[0]);
                             $('#modal-orden_despacho_create').modal('hide');
-                        } else {
-                            $('[name=aplica_cambios]').prop('checked', false);
-                            off();
+                            // } else {
+                            //     $('[name=aplica_cambios]').prop('checked', false);
+                            //     off();
                         }
                     }
                     else if (almacenes_ext.length == 0) {
@@ -272,38 +268,33 @@ $("#form-orden_despacho").on("submit", function (e) {
     }
     else {
         var serial = $(this).serialize();
-        var doc = $('input[name=optionsRadios]:checked').val();
+        // var doc = $('input[name=optionsRadios]:checked').val();
 
-        $("#detalleRequerimientoOD input[type=checkbox]:checked").each(function () {
-            var id_detalle_requerimiento = $(this).val();
-            var json = detalle_ingresa.find(element => element.id_detalle_requerimiento == id_detalle_requerimiento);
+        // $("#detalleRequerimientoOD input[type=checkbox]:checked").each(function () {
+        //     var id_detalle_requerimiento = $(this).val();
+        //     var json = detalle_ingresa.find(element => element.id_detalle_requerimiento == id_detalle_requerimiento);
 
 
-            json_detalle_ingresa.push({
-                'cantidad': $(this).parent().parent().find('td input[id=' + id_detalle_requerimiento + 'cantidad]').val(),
-                'id_detalle_requerimiento': json.id_detalle_requerimiento,
-                'id_producto': json.id_producto,
-                'valorizacion': json.valorizacion,
-                // 'descripcion'   : json.descripcion_adicional,
-                // 'part_number_transformado'   : json.part_number_transformado,
-                // 'descripcion_transformado'   : json.descripcion_transformado,
-                // 'comentario_transformado'   : json.comentario_transformado,
-                // 'cantidad_transformado'   : json.cantidad_transformado,
-            });
-        });
+        //     json_detalle_ingresa.push({
+        //         'cantidad': $(this).parent().parent().find('td input[id=' + id_detalle_requerimiento + 'cantidad]').val(),
+        //         'id_detalle_requerimiento': json.id_detalle_requerimiento,
+        //         'id_producto': json.id_producto,
+        //         'valorizacion': json.valorizacion,
+        //     });
+        // });
 
-        $("#detalleSale tbody tr").each(function () {
-            var id_producto = $(this)[0].id;
-            var json = detalle_sale.find(element => element.id_producto == id_producto);
-            var cant = $(this).parent().parent().find('td input[type=number]').val();
+        detalle_sale.forEach(element => {
+            // var id_producto = $(this)[0].id;
+            // var json = detalle_sale.find(element => element.id_producto == id_producto);
+            // var cant = $(this).parent().parent().find('td input[type=number]').val();
 
-            if (cant == '' || cant == null) {
-                validaCampos += 'El producto ' + json.descripcion + ' requiere que cantidad.\n';
-            }
+            // if (cant == '' || cant == null) {
+            //     validaCampos += 'El producto ' + json.descripcion + ' requiere que cantidad.\n';
+            // }
             json_detalle_sale.push({
-                'id_detalle_requerimiento': json.id_detalle_requerimiento,
-                'cantidad': cant,
-                'id_producto': json.id_producto
+                'id_detalle_requerimiento': element.id_detalle_requerimiento,
+                'cantidad': element.cantidad,
+                'id_producto': element.id_producto
             });
         });
 
@@ -313,30 +304,28 @@ $("#form-orden_despacho").on("submit", function (e) {
         if (validaCampos.length > 0) {
             alert(validaCampos);
         } else {
-            var ac = $('[name=aplica_cambios_valor]').val();
-            var m = '';
-            if (ac == 'si') {
-                if (json_detalle_ingresa.length == 0) {
-                    m = 'No ha seleccionado items para despachar.';
-                }
-                if (json_detalle_sale.length == 0) {
-                    m += '\nNo ha ingresado items transformados.';
-                }
-            } else {
-                if (detalle_requerimiento.length == 0) {
-                    m = 'No hay items para despachar.';
-                }
-            }
-            if (m == '') {
-                var data = serial + '&documento=' + doc +
-                    '&detalle_ingresa=' + JSON.stringify(json_detalle_ingresa) +
-                    '&detalle_requerimiento=' + JSON.stringify(detalle_requerimiento) +
-                    '&detalle_sale=' + JSON.stringify(json_detalle_sale);
-                console.log(data);
-                guardar_orden_despacho(data);
-            } else {
-                alert(m);
-            }
+            // var ac = $('[name=aplica_cambios_valor]').val();
+            // var m = '';
+            // if (ac == 'si') {
+            //     if (json_detalle_ingresa.length == 0) {
+            //         m = 'No ha seleccionado items para despachar.';
+            //     }
+            //     if (json_detalle_sale.length == 0) {
+            //         m += '\nNo ha ingresado items transformados.';
+            //     }
+            // } else {
+            //     if (detalle_requerimiento.length == 0) {
+            //         m = 'No hay items para despachar.';
+            //     }
+            // }
+            // if (m == '') {
+            var data = serial + '&detalle_ingresa=' + JSON.stringify(detalle_ingresa) +
+                '&detalle_sale=' + JSON.stringify(json_detalle_sale);
+            console.log(data);
+            guardar_orden_despacho(data);
+            // } else {
+            //     alert(m);
+            // }
         }
     }
 });
@@ -346,7 +335,7 @@ function guardar_orden_despacho(data) {
 
     $.ajax({
         type: 'POST',
-        url: 'guardar_orden_despacho',
+        url: 'guardarOrdenDespachoInterno',
         data: data,
         dataType: 'JSON',
         success: function (response) {
@@ -383,35 +372,27 @@ function validaOrdenDespacho() {
     var ubig = $('[name=ubigeo]').val();
     var dir = $('[name=direccion_destino]').val();
     var telf = $('[name=telefono_cliente]').val();
-    // var mail = $('[name=correo_cliente]').val();
-    var hora = $('[name=hora_despacho]').val();
-    var aplica = $('[name=aplica_cambios_valor]').val();
     var msj = '';
 
-    if (aplica == 'no') {
+    if (tpcli == 1) {
+        if (perso == '') {
+            msj += '\n Es necesario que ingrese los datos del Cliente';
+        }
+    } else if (tpcli == 2) {
+        if (clie == '') {
+            msj += '\n Es necesario que ingrese los datos del Cliente';
+        }
+    }
+    if (ubig == '') {
+        msj += '\n Es necesario que ingrese un Ubigeo Destino';
+    }
+    if (dir == '') {
+        msj += '\n Es necesario que ingrese una Dirección Destino';
+    }
+    if (telf == '') {
+        msj += '\n Es necesario que ingrese un Teléfono';
+    }
 
-        if (tpcli == 1) {
-            if (perso == '') {
-                msj += '\n Es necesario que ingrese los datos del Cliente';
-            }
-        } else if (tpcli == 2) {
-            if (clie == '') {
-                msj += '\n Es necesario que ingrese los datos del Cliente';
-            }
-        }
-        if (ubig == '') {
-            msj += '\n Es necesario que ingrese un Ubigeo Destino';
-        }
-        if (dir == '') {
-            msj += '\n Es necesario que ingrese una Dirección Destino';
-        }
-        if (telf == '') {
-            msj += '\n Es necesario que ingrese un Teléfono';
-        }
-    }
-    if (hora == '') {
-        msj += '\n Es necesario que ingrese una Hora';
-    }
     return msj;
 }
 
