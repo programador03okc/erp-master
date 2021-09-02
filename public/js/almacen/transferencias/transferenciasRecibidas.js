@@ -70,16 +70,6 @@ function listarTransferenciasRecibidas() {
                     render: function (data, type, row) {
                         if (valor_permiso == "1") {
                             return `<div style="display: flex;text-align:center;">
-                            <button type="button" class="detalle btn btn-primary boton btn-flat" data-toggle="tooltip" 
-                                data-placement="bottom" title="Ver Detalle" data-id="${row["id_transferencia"]}" 
-                                data-cod="${row["codigo"]}" data-guia="${row["guia_com"]}" 
-                                data-origen="${row["alm_origen_descripcion"]}" data-destino="${row["alm_destino_descripcion"]}">
-                                <i class="fas fa-list-ul"></i></button>
-
-                            <button type="button" class="ingreso btn btn-warning boton btn-flat" data-toggle="tooltip" 
-                                data-placement="bottom" data-id-ingreso="${row["id_ingreso"]}" title="Ver Ingreso" >
-                                <i class="fas fa-file-alt"></i></button>
-
                             ${(row['doc_ven'] == '-') ?
                                     `<button type="button" class="anular btn btn-danger boton btn-flat" data-toggle="tooltip" 
                                 data-placement="bottom" data-id="${row["id_transferencia"]}" data-guia="${row["id_guia_com"]}" data-ing="${row["id_ingreso"]}" title="Anular" >
@@ -89,24 +79,60 @@ function listarTransferenciasRecibidas() {
                                 data-placement="bottom" data-id="${row["id_doc_ven"]}" data-dc="${row["doc_com"]}" title="Autogenerar Docs de Compra" >
                                 <i class="fas fa-sync-alt"></i></button>
                             </div>`;
-                        } else {
-                            return `<button type="button" class="detalle btn btn-primary boton btn-flat" data-toggle="tooltip" 
-                            data-placement="bottom" title="Ver Detalle" data-id="${row["id_transferencia"]}" 
-                            data-cod="${row["codigo"]}" data-guia="${row["guia_com"]}" 
-                            data-origen="${row["alm_origen_descripcion"]}" data-destino="${row["alm_destino_descripcion"]}">
-                            <i class="fas fa-list-ul"></i></button>`;
+                            // } else {
+                            //     return `<button type="button" class="detalle btn btn-primary boton btn-flat" data-toggle="tooltip" 
+                            //     data-placement="bottom" title="Ver Detalle" data-id="${row["id_transferencia"]}" 
+                            //     data-cod="${row["codigo"]}" data-guia="${row["guia_com"]}" 
+                            //     data-origen="${row["alm_origen_descripcion"]}" data-destino="${row["alm_destino_descripcion"]}">
+                            //     <i class="fas fa-list-ul"></i></button>`;
                         }
                     },
                     className: "text-center"
                 }
             ],
-            columnDefs: [{ aTargets: [0], sClass: "invisible" }],
+            columnDefs: [
+                { aTargets: [0], sClass: "invisible" },
+                {
+                    render: function (data, type, row) {
+                        return (row["guia_ven"] == '-' ? row["guia_ven"]
+                            : `<a href="#" class="detalle" title="Ver Detalle" data-id="${row["id_transferencia"]}" 
+                            data-cod="${row["codigo"]}" data-guia="${row["guia_com"]}" 
+                            data-origen="${row["alm_origen_descripcion"]}" data-destino="${row["alm_destino_descripcion"]}">
+                            ${row["codigo"]} </a>`
+                        );
+                    }, targets: 2, className: "text-center"
+                },
+                {
+                    render: function (data, type, row) {
+                        return (row["guia_ven"] == '-' ? row["guia_ven"]
+                            : '<a href="#" class="salida" data-id-salida="' + row["id_salida"] + '" title="Ver Salida">' + row["guia_ven"] + "</a>"
+                        );
+                    }, targets: 3, className: "text-center"
+                },
+                {
+                    render: function (data, type, row) {
+                        return (row["guia_com"] == '-' ? row["guia_com"]
+                            : '<a href="#" class="ingreso" data-id-ingreso="' + row["id_ingreso"] + '" title="Ver Ingreso">' + row["guia_com"] + "</a>"
+                        );
+                    }, targets: 4, className: "text-center"
+                },
+            ],
             order: [[0, "desc"]]
         });
     }
 }
 
-$("#listaTransferenciasRecibidas tbody").on("click", "button.ingreso", function () {
+$("#listaTransferenciasRecibidas tbody").on("click", "a.salida", function () {
+    var idSalida = $(this).data("idSalida");
+    console.log(idSalida);
+    if (idSalida !== "") {
+        var id = encode5t(idSalida);
+        window.open("imprimir_salida/" + id);
+    }
+}
+);
+
+$("#listaTransferenciasRecibidas tbody").on("click", "a.ingreso", function () {
     var idIngreso = $(this).data("idIngreso");
     if (idIngreso !== "") {
         var id = encode5t(idIngreso);
@@ -114,7 +140,7 @@ $("#listaTransferenciasRecibidas tbody").on("click", "button.ingreso", function 
     }
 });
 
-$("#listaTransferenciasRecibidas tbody").on("click", "button.detalle", function () {
+$("#listaTransferenciasRecibidas tbody").on("click", "a.detalle", function () {
     var id_transferencia = $(this).data("id");
     var codigo = $(this).data("cod");
     var guia = $(this).data("guia");

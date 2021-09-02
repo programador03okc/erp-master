@@ -1,7 +1,7 @@
 let json_series = [];
 let cant_items = null;
 
-function agrega_series(id_oc_det){
+function agrega_series(id_oc_det) {
     $('#modal-guia_com_barras').modal({
         show: true
     });
@@ -10,15 +10,15 @@ function agrega_series(id_oc_det){
 
     var json = oc_det_seleccionadas.find(element => element.id_oc_det == id_oc_det);
     console.log(json);
-    
-    if (json !== null){
-        if (json.series.length > 0){
+
+    if (json !== null) {
+        if (json.series.length > 0) {
             json_series = json.series;
             cargar_series();
         }
     }
 
-    cant_items = $("#"+id_oc_det+"cantidad").val();
+    cant_items = $("#" + id_oc_det + "cantidad").val();
 
     $('[name=id_guia_com_det]').val('');
     $('[name=id_oc_det]').val(id_oc_det);
@@ -29,7 +29,7 @@ function agrega_series(id_oc_det){
     $('.cabecera').show();
 }
 
-function agrega_series_transformacion(id){
+function agrega_series_transformacion(id) {
     console.log('agrega_series_transformacion');
     $('#modal-guia_com_barras').modal({
         show: true
@@ -39,9 +39,9 @@ function agrega_series_transformacion(id){
 
     var json = series_transformacion.find(element => element.id == id);
     console.log(json);
-    
-    if (json !== null){
-        if (json.series.length > 0){
+
+    if (json !== null) {
+        if (json.series.length > 0) {
             json_series = json.series;
             cargar_series();
         }
@@ -57,8 +57,8 @@ function agrega_series_transformacion(id){
     $('.cabecera').show();
 }
 
-function agrega_series_producto(id){
-    console.log('agrega_series_producto'+id);
+function agrega_series_producto(id) {
+    console.log('agrega_series_producto' + id);
     $('#modal-guia_com_barras').modal({
         show: true
     });
@@ -67,16 +67,16 @@ function agrega_series_producto(id){
 
     var json = oc_det_seleccionadas.find(element => element.id_producto == id);
     console.log(json);
-    
-    if (json !== null){
-        
-        if (json.series.length > 0){
+
+    if (json !== null) {
+
+        if (json.series.length > 0) {
             json_series = json.series;
             cargar_series();
         }
     }
 
-    cant_items = $("#p"+id+"cantidad").val();
+    cant_items = $("#p" + id + "cantidad").val();
 
     $('[name=id_guia_com_det]').val('');
     $('[name=id_oc_det]').val('');
@@ -87,7 +87,7 @@ function agrega_series_producto(id){
     $('.cabecera').show();
 }
 
-function agrega_series_guia(id_guia_com_det, cantidad, id_producto, id_almacen){
+function agrega_series_guia(id_guia_com_det, cantidad, id_producto, id_almacen) {
     $('#modal-guia_com_barras').modal({
         show: true
     });
@@ -96,9 +96,9 @@ function agrega_series_guia(id_guia_com_det, cantidad, id_producto, id_almacen){
 
     var json = guia_detalle.find(element => element.id_guia_com_det == id_guia_com_det);
     console.log(json);
-    
-    if (json !== null){
-        if (json.series.length > 0){
+
+    if (json !== null) {
+        if (json.series.length > 0) {
             json.series.forEach(element => {
                 json_series.push(element.serie);
             });
@@ -128,7 +128,7 @@ function agrega_series_guia(id_guia_com_det, cantidad, id_producto, id_almacen){
 
 //     var json = listaDetalle.find(element => element.id_trans_detalle == id_trans_detalle);
 //     console.log(json);
-    
+
 //     if (json !== null){
 //         if (json.series.length > 0){
 //             json.series.forEach(element => {
@@ -151,13 +151,13 @@ function agrega_series_guia(id_guia_com_det, cantidad, id_producto, id_almacen){
 //     $('.cabecera').show();
 // }
 
-function cargar_series(){
+function cargar_series() {
     var tr = '';
     var i = 1;
-    
+
     json_series.forEach(serie => {
         console.log(serie.serie);
-        tr +=`<tr id="reg-${serie}">
+        tr += `<tr id="reg-${serie}">
             <td hidden>0</td>
             <td class="numero">${i}</td>
             <td><input type="text" class="oculto" name="series" value="${serie}"/>${serie}</td>
@@ -170,84 +170,92 @@ function cargar_series(){
     $('[name=serie_prod]').focus();
 }
 
-function handleKeyPress(event){
-    var exeptuados = ['/','"',"'",'*','+','#','$','%','&','(',')','=','?','¿','¡','!','.','¨','^','´','`','_',',',';','>','<','|','°','¬'];
+function handleKeyPress(event) {
+    var exeptuados = ['/', '"', "'", '*', '+', '#', '$', '%', '&', '(', ')', '=', '?', '¿', '¡', '!', '.', '¨', '^', '´', '`', '_', ',', ';', '>', '<', '|', '°', '¬'];
 
     if (event.which == 13) {
         agregar_serie();
-    } 
-    else if (exeptuados.includes(event.key)){
+    }
+    else if (exeptuados.includes(event.key)) {
         var valor = $('[name=serie_prod]').val();
-        valor = valor.substring(0,valor.length-1);
+        valor = valor.substring(0, valor.length - 1);
 
         $('[name=serie_prod]').val(valor);
         // event.returnValue = false;
-        alert('Valor No Permitido: '+valor);
+        Swal.fire('Valor No Permitido: ' + valor, "", "warning");
+
     }
 }
 
-function agregar_serie(){
+function agregar_serie() {
     var serie = $('[name=serie_prod]').val().trim();
-    
-    if (serie !== '') {
-        
-        var agrega = false;
 
-        if (json_series.length > 0){
+    if (serie !== '') {
+        var agrega = false;
+        if (json_series.length > 0) {
             const found = json_series.find(element => element == serie);
 
-            if (found == undefined){
+            if (found == undefined) {
                 agrega = true;
             }
         } else {
             agrega = true;
         }
-            
-        if (agrega){
+
+        if (agrega) {
             var cant = $('#listaBarras tbody tr').length + 1;
-            var td = '<tr id="reg-'+serie+'"><td hidden>0</td><td class="numero">'+cant+'</td><td><input type="text" class="oculto" name="series" value="'+serie+'"/>'+serie+'</td><td><i class="btn btn-danger fas fa-trash fa-lg" onClick="eliminar_serie('+"'"+serie+"'"+');"></i></td></tr>';
-            console.log('cant:'+cant+' items:'+cant_items);
-            
-            if (cant <= cant_items){
+            var td = '<tr id="reg-' + serie + '"><td hidden>0</td><td class="numero">' + cant + '</td><td><input type="text" class="oculto" name="series" value="' + serie + '"/>' + serie + '</td><td><i class="btn btn-danger fas fa-trash fa-lg" onClick="eliminar_serie(' + "'" + serie + "'" + ');"></i></td></tr>';
+            console.log('cant:' + cant + ' items:' + cant_items);
+
+            if (cant <= cant_items) {
                 $('#listaBarras tbody').append(td);
                 $('[name=serie_prod]').val('');
                 // var id_oc_det = $('[name=id_oc_det]').val();
                 json_series.push(serie);
             } else {
-                alert('Ha superado la cantidad del producto!\nYa no puede agregar mas series.');
+                Swal.fire('Ha superado la cantidad del producto!\nYa no puede agregar mas series.', "", "warning");
             }
         } else {
             $('[name=serie_prod]').val('');
         }
     } else {
-        alert('El campo serie esta vacío!');
+        Swal.fire('El campo serie esta vacío!', "", "warning");
     }
 }
 
-function eliminar_serie(serie){
-    var elimina = confirm("¿Esta seguro que desea eliminar la serie "+serie);
-    if (elimina){
-        var index = json_series.findIndex(function(item, i){
-            return item == serie;
-        });
-        console.log(json_series);
-        json_series.splice(index,1);
-        cargar_series();
-    }
+function eliminar_serie(serie) {
+    Swal.fire({
+        title: "¿Esta seguro que desea eliminar la serie " + serie,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#00a65a", //"#3085d6",
+        cancelButtonColor: "#d33",
+        cancelButtonText: "Cancelar",
+        confirmButtonText: "Sí, Eliminar"
+    }).then(result => {
+        if (result.isConfirmed) {
+            var index = json_series.findIndex(function (item, i) {
+                return item == serie;
+            });
+            console.log(json_series);
+            json_series.splice(index, 1);
+            cargar_series();
+        }
+    });
 }
 
-function guardar_series(){
+function guardar_series() {
     var id_guia_com_det = $('[name=id_guia_com_det]').val();
     var id_oc_det = $('[name=id_oc_det]').val();
-    var id_trans_detalle = $('[name=id_trans_detalle]').val();
+    // var id_trans_detalle = $('[name=id_trans_detalle]').val();
     // var id_producto = $('[name=id_producto]').val();
     var id_detalle_transformacion = $('[name=id_detalle_transformacion]').val();
     var edit = $('[name=edit]').val();
-    
-    if (id_oc_det !== ''){
+
+    if (id_oc_det !== '') {
         var json = oc_det_seleccionadas.find(element => element.id_oc_det == id_oc_det);
-        
-        if (json !== null){
+
+        if (json !== null) {
             json.series = json_series;
         }
         console.log(json);
@@ -255,10 +263,10 @@ function guardar_series(){
         mostrar_ordenes_seleccionadas();
         $('#modal-guia_com_barras').modal('hide');
     }
-    else if (id_detalle_transformacion !== ''){
+    else if (id_detalle_transformacion !== '') {
         var json = series_transformacion.find(element => element.id == id_detalle_transformacion);
-        
-        if (json !== null){
+
+        if (json !== null) {
             json.series = json_series;
         }
         console.log(json);
@@ -285,7 +293,7 @@ function guardar_series(){
     // }
     // else if (id_producto !== ''){
     //     var json = oc_det_seleccionadas.find(element => element.id_producto == id_producto);
-        
+
     //     if (json !== null){
     //         json.series = json_series;
     //     }
@@ -293,80 +301,99 @@ function guardar_series(){
     //     console.log(oc_det_seleccionadas);
     //     mostrar_ordenes_seleccionadas();
     // }
-    else if (id_guia_com_det !== '' && edit == 'true'){
+    else if (id_guia_com_det !== '' && edit == 'true') {
         let series = [];
         let repetidos = 0;
+        let vacios = 0;
 
-        $('#listaBarras tbody tr').each(function(index) {
+        $('#listaBarras tbody tr').each(function (index) {
             let serie = $(this).find('[name=series]').val();
             let id = $(this)[0].id;
-            var json = series.find(element => element.serie == serie);
-            
+            var json = series.find(element => element.serie.trim() == serie.trim());
+            $(this).find('[name=series]').val(serie.trim());
             console.log(json);
 
-            if (json !== undefined){
+            if (json !== undefined) {
                 repetidos++;
                 $(this).find('[name=series]').addClass('resaltar');
             } else {
-                series.push({
-                    'id_guia_com_det':id_guia_com_det,
-                    'id_prod_serie':id,
-                    'serie':serie
-                });
-                $(this).find('[name=series]').removeClass('resaltar');
+                if (serie.trim() == '') {
+                    vacios++;
+                    $(this).find('[name=series]').addClass('resaltar');
+                } else {
+                    series.push({
+                        'id_guia_com_det': id_guia_com_det,
+                        'id_prod_serie': id,
+                        'serie': serie.trim()
+                    });
+                    $(this).find('[name=series]').removeClass('resaltar');
+                }
             }
         });
-        
-        if (repetidos > 0){
-            alert('Hay '+repetidos+' repetidos. Revise las series ingresadas!');
-            
+
+        if (repetidos > 0 || vacios > 0) {
+            Swal.fire(`${(repetidos > 0 ? 'Hay ' + repetidos + ' repetido(s).' : '') + (vacios > 0 ? ' Hay ' + vacios + ' vacio(s)' : '')} Revise las series ingresadas!`, "", "warning");
         } else {
-            var data = 'series='+JSON.stringify(series);
+            var data = 'series=' + JSON.stringify(series);
             console.log(data);
-            
+
             $.ajax({
                 type: 'POST',
                 url: 'actualizar_series',
                 data: data,
                 dataType: 'JSON',
-                success: function(response){
+                success: function (response) {
                     console.log(response);
                     var id = $('[name=id_guia_com_detalle]').val();
                     listar_detalle_movimiento(id);
-                    alert('Se actualizaron las series con éxito.');
+                    Lobibox.notify("success", {
+                        title: false,
+                        size: "mini",
+                        rounded: true,
+                        sound: false,
+                        delayIndicator: false,
+                        msg: "Se actualizaron las series con éxito."
+                    });
                     $('#modal-guia_com_barras').modal('hide');
                 }
-            }).fail( function( jqXHR, textStatus, errorThrown ){
+            }).fail(function (jqXHR, textStatus, errorThrown) {
                 console.log(jqXHR);
                 console.log(textStatus);
                 console.log(errorThrown);
             });
         }
     }
-    else if (id_guia_com_det !== '' && edit == 'false'){
+    else if (id_guia_com_det !== '' && edit == 'false') {
 
         var id_producto = $('[name=id_producto]').val();
         var id_almacen = $('[name=id_almacen_detalle]').val();
 
-        var data =  'id_guia_com_det='+id_guia_com_det+
-                    '&id_producto='+id_producto+
-                    '&id_almacen='+id_almacen+
-                    '&series='+JSON.stringify(json_series);
-        
+        var data = 'id_guia_com_det=' + id_guia_com_det +
+            '&id_producto=' + id_producto +
+            '&id_almacen=' + id_almacen +
+            '&series=' + JSON.stringify(json_series);
+
         console.log(data);
         $.ajax({
             type: 'POST',
             url: 'guardar_series',
             data: data,
             dataType: 'JSON',
-            success: function(response){
+            success: function (response) {
                 console.log(response);
                 var id = $('[name=id_guia_com_detalle]').val();
                 listar_detalle_movimiento(id);
-                alert('Se guardaron las series con éxito.');
+                Lobibox.notify("success", {
+                    title: false,
+                    size: "mini",
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    msg: "Se guardaron las series con éxito."
+                });
                 $('#modal-guia_com_barras').modal('hide');
             }
-        }).fail( function( jqXHR, textStatus, errorThrown ){
+        }).fail(function (jqXHR, textStatus, errorThrown) {
             console.log(jqXHR);
             console.log(textStatus);
             console.log(errorThrown);
@@ -374,9 +401,9 @@ function guardar_series(){
     }
 }
 
-$(document).ready(function(){
-    document.getElementById('importar').addEventListener("change", function(e) {
-        var files = e.target.files,file;
+$(document).ready(function () {
+    document.getElementById('importar').addEventListener("change", function (e) {
+        var files = e.target.files, file;
         if (!files || files.length == 0) return;
         file = files[0];
         var fileReader = new FileReader();
@@ -390,12 +417,12 @@ $(document).ready(function(){
                 binary += String.fromCharCode(bytes[i]);
             }
             // call 'xlsx' to read the file
-            var oFile = XLSX.read(binary, {type: 'binary', cellDates:true, cellStyles:true});
+            var oFile = XLSX.read(binary, { type: 'binary', cellDates: true, cellStyles: true });
             var result = {};
-            oFile.SheetNames.forEach(function(sheetName) {
+            oFile.SheetNames.forEach(function (sheetName) {
                 var roa = XLS.utils.sheet_to_row_object_array(oFile.Sheets[sheetName]);
-                if(roa.length > 0){
-                result[sheetName] = roa;
+                if (roa.length > 0) {
+                    result[sheetName] = roa;
                 }
             });
             var td = '';
@@ -404,35 +431,45 @@ $(document).ready(function(){
             var cant = $('#listaBarras tbody tr').length;
             var msj = false;
             var imp = cant + result.Hoja1.length;
-            console.log('items'+items+' imp'+imp+' length'+result.Hoja1.length);
+            console.log('items' + items + ' imp' + imp + ' length' + result.Hoja1.length);
             console.log(result.Hoja1);
             var rspta = true;
 
-            if (imp > items){
-                rspta = confirm('Las series importadas superan la cantidad. Solo se agregaran hasta que complete la cantidad de '+cant_items+'. ¿Desea continuar?');
-                // rspta = confirm('Las series importadas superan la cantidad. ¿Desea agregarlas de todos modos?');
+            if (imp > items) {
+                Swal.fire({
+                    title: "Las series importadas superan la cantidad. Solo se agregaran hasta que complete la cantidad de " + cant_items + ". ¿Desea continuar?",
+                    // text: "No podrás revertir esto.",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#00a65a", //"#3085d6",
+                    cancelButtonColor: "#d33",
+                    cancelButtonText: "Cancelar",
+                    confirmButtonText: "Sí, Continuar"
+                }).then(result => {
+                    rspta = result.isConfirmed;
+                });
             }
-            if (rspta){
-                for(i=0; i<result.Hoja1.length; i++){
+            if (rspta) {
+                for (i = 0; i < result.Hoja1.length; i++) {
                     console.log(result.Hoja1[i].serie);
                     var serie = result.Hoja1[i].serie;
                     var agrega = false;
 
-                    if (json_series.length > 0){
+                    if (json_series.length > 0) {
                         const found = json_series.find(element => element == serie);
-                        console.log('found'+found);
-                        
-                        if (found == undefined){
+                        console.log('found' + found);
+
+                        if (found == undefined) {
                             agrega = true;
                         }
                     } else {
                         agrega = true;
                     }
 
-                    if (agrega){
+                    if (agrega) {
                         cant++;
-                        td = '<tr id="reg-'+serie+'"><td hidden>0</td><td class="numero">'+cant+'</td><td><input type="text" class="oculto" name="series" value="'+serie+'"/>'+serie+'</td><td><i class="btn btn-danger fas fa-trash fa-lg " onClick="eliminar_serie('+serie+');"></i></td></tr>';
-                        if (cant <= items){
+                        td = '<tr id="reg-' + serie + '"><td hidden>0</td><td class="numero">' + cant + '</td><td><input type="text" class="oculto" name="series" value="' + serie + '"/>' + serie + '</td><td><i class="btn btn-danger fas fa-trash fa-lg " onClick="eliminar_serie(' + serie + ');"></i></td></tr>';
+                        if (cant <= items) {
                             $('#listaBarras tbody').append(td);
                             json_series.push(serie);
                         } else {
@@ -440,8 +477,16 @@ $(document).ready(function(){
                         }
                     }
                 }
-                if (msj){
-                    alert('No se cargaron todas las series porque superan a la cantidad del producto.');
+                if (msj) {
+                    Lobibox.notify("success", {
+                        title: false,
+                        size: "mini",
+                        rounded: true,
+                        sound: false,
+                        delayIndicator: false,
+                        // width: 500,
+                        msg: 'No se cargaron todas las series porque superan a la cantidad del producto.'
+                    });
                 }
             }
         };

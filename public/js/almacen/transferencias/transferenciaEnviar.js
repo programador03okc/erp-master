@@ -252,9 +252,7 @@ function salidaTransferencia(data) {
                                 msg: "Salida de almacén generada con éxito."
                             });
                             $("#modal-transferenciaGuia").modal("hide");
-                            $("#listaTransferenciasPorEnviar")
-                                .DataTable()
-                                .ajax.reload();
+                            $("#listaTransferenciasPorEnviar").DataTable().ajax.reload(null, false);
                             // var id = encode5t(response);
                             // window.open('imprimir_salida/'+id);
                         }

@@ -6,6 +6,7 @@ use App\Http\Controllers\AlmacenController as GenericoAlmacenController;
 use App\Http\Controllers\AlmacenController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -689,12 +690,12 @@ class SalidasPendientesController extends Controller
                         <td>
                             <p style="text-align:left;font-size:10px;margin:0px;">' . $salida->ruc_empresa . '</p>
                             <p style="text-align:left;font-size:10px;margin:0px;">' . $salida->empresa_razon_social . '</p>
-                            <p style="text-align:left;font-size:10px;margin:0px;"><strong>SYSTEM AGILE v1.3</strong></p>
+                            <p style="text-align:left;font-size:10px;margin:0px;"><strong>' . strtoupper(config('global.nombreSistema')) . ' '  . config('global.version') . '</strong></p>
                         </td>
                     </tr>
                 </table>
                 <h3 style="margin:0px;"><center>SALIDA DE ALMACÉN</center></h3>
-                <h5><center>' . $salida->id_almacen . ' - ' . $salida->des_almacen . '</center></h5>
+                <h5><center>' . $salida->des_almacen . '</center></h5>
                 
                 <table border="0">
                     <tr>
@@ -703,7 +704,7 @@ class SalidasPendientesController extends Controller
                         <td width=280px>' . $salida->codigo . '</td>
                         <td>Fecha Salida</td>
                         <td width=10px>:</td>
-                        <td>' . $salida->fecha_emision . '</td>
+                        <td>' . (new Carbon($salida->fecha_emision))->format('d-m-Y') . '</td>
                     </tr>';
 
         if ($salida->guia !== null) {
@@ -713,7 +714,7 @@ class SalidasPendientesController extends Controller
                                 <td>' . $salida->guia . '</td>
                                 <td>Fecha Guía</td>
                                 <td width=10px>:</td>
-                                <td>' . $salida->fecha_guia . '</td>
+                                <td>' . (new Carbon($salida->fecha_guia))->format('d-m-Y') . '</td>
                             </tr>';
         }
         if ($salida->fecha_transformacion !== null) {
@@ -723,7 +724,7 @@ class SalidasPendientesController extends Controller
                                 <td width=250px>' . $salida->cod_transformacion . '</td>
                                 <td width=150px>Fecha Transformación</td>
                                 <td width=10px>:</td>
-                                <td>' . $salida->fecha_transformacion . '</td>
+                                <td>' . (new Carbon($salida->fecha_transformacion))->format('d-m-Y') . '</td>
                             </tr>';
         }
         if ($salida->doc !== null) {
@@ -743,7 +744,7 @@ class SalidasPendientesController extends Controller
                                 <td>' . $salida->cod_trans . '</td>
                                 <td>Fecha Transferencia</td>
                                 <td>:</td>
-                                <td>' . $salida->fecha_transferencia . '</td>
+                                <td>' . (new Carbon($salida->fecha_transferencia))->format('d-m-Y') . '</td>
                             </tr>
                             <tr>
                                 <td>Almacén Destino</td>
@@ -815,7 +816,7 @@ class SalidasPendientesController extends Controller
         }
         $html .= '</tbody>
                 </table>
-                <p style="text-align:right;font-size:11px;">Elaborado por: ' . $salida->nom_usuario . ' ' . $salida->fecha_registro . '</p>
+                <p style="text-align:right;font-size:11px;">Elaborado por: ' . $salida->nom_usuario . ' ' . (new Carbon($salida->fecha_registro))->format('d-m-Y H:i') . '</p>
 
             </body>
         </html>';

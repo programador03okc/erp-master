@@ -16,6 +16,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Almacen\Movimiento;
 use App\Models\Almacen\MovimientoDetalle;
 use App\Models\almacen\Reserva;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
@@ -1841,12 +1842,12 @@ class OrdenesPendientesController extends Controller
                         <td>
                             <p style="text-align:left;font-size:10px;margin:0px;">' . $ingreso->ruc_empresa . '</p>
                             <p style="text-align:left;font-size:10px;margin:0px;">' . $ingreso->empresa_razon_social . '</p>
-                            <p style="text-align:left;font-size:10px;margin:0px;"><strong>SYSTEM AGILE v1.3</strong></p>
+                            <p style="text-align:left;font-size:10px;margin:0px;"><strong>' . strtoupper(config('global.nombreSistema')) . ' '  . config('global.version') . '</strong></p>
                         </td>
                     </tr>
                 </table>
                 <h3 style="margin:0px; padding:0px;"><center>INGRESO A ALMACÉN</center></h3>
-                <h5><center>' . $ingreso->id_almacen . ' - ' . $ingreso->des_almacen . '</center></h5>
+                <h5><center>' . $ingreso->des_almacen . '</center></h5>
                 
                 <table border="0">
                     <tr>
@@ -1855,7 +1856,7 @@ class OrdenesPendientesController extends Controller
                         <td width=250px>' . $ingreso->codigo . '</td>
                         <td>Fecha Ingreso</td>
                         <td width=10px>:</td>
-                        <td>' . $ingreso->fecha_emision . '</td>
+                        <td>' . (new Carbon($ingreso->fecha_emision))->format('d-m-Y') . '</td>
                     </tr>
                 ';
         if ($ingreso->guia !== null) {
@@ -1866,7 +1867,7 @@ class OrdenesPendientesController extends Controller
                         <td>' . $ingreso->guia . '</td>
                         <td>Fecha Guía</td>
                         <td width=10px>:</td>
-                        <td>' . $ingreso->fecha_guia . '</td>
+                        <td>' . (new Carbon($ingreso->fecha_guia))->format('d-m-Y') . '</td>
                     </tr>';
         }
         if ($ingreso->doc !== null) {
@@ -1876,7 +1877,7 @@ class OrdenesPendientesController extends Controller
                         <td>' . $ingreso->doc . '</td>
                         <td width=120px>Fecha Documento</td>
                         <td width=10px>:</td>
-                        <td>' . $ingreso->doc_fecha_emision . '</td>
+                        <td>' . (new Carbon($ingreso->doc_fecha_emision))->format('d-m-Y') . '</td>
                     </tr>';
         }
         if ($ingreso->cod_transformacion !== null) {
@@ -1886,7 +1887,7 @@ class OrdenesPendientesController extends Controller
                         <td width=300px>' . $ingreso->cod_transformacion . '</td>
                         <td width=150px>Fecha Transformación</td>
                         <td width=10px>:</td>
-                        <td>' . $ingreso->fecha_transformacion . '</td>
+                        <td>' . (new Carbon($ingreso->fecha_transformacion))->format('d-m-Y') . '</td>
                     </tr>';
         }
         if ($ingreso->trans_codigo !== null) {
@@ -1976,7 +1977,7 @@ class OrdenesPendientesController extends Controller
         }
         $html .= '</tbody>
                 </table>
-                <p style="text-align:right;font-size:11px;">Elaborado por: ' . $ingreso->nom_usuario . ' ' . $ingreso->fecha_registro . '</p>
+                <p style="text-align:right;font-size:11px;">Elaborado por: ' . $ingreso->nom_usuario . ' ' . (new Carbon($ingreso->fecha_registro))->format('d-m-Y H:i') . '</p>
                 
             </body>
         </html>';
