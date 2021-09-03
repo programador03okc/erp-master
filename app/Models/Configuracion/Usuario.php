@@ -146,10 +146,8 @@ class Usuario extends Authenticatable
 		->where([['sis_acceso.id_rol',$idRol],['estado',1]])
 		->get();
 
-		if(count($accesos)>0){
-			foreach ($accesos as $value) {
-				$idUsuarioList[]=$value->id_usuario;
-			}
+		foreach ($accesos as $value) {
+			$idUsuarioList[]=$value->id_usuario;
 		}
 		return $idUsuarioList;
 	}

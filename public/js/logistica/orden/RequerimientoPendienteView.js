@@ -939,6 +939,7 @@ class RequerimientoPendienteView {
         if(!idProducto,!idDetalleRequerimiento >0 ){
             mensaje+='<li style="text-align: left;">El producto / item de requerimiento no tiene un ID valido.</li>';
         }
+        // console.log(cantidadReserva);
         if(!cantidadReserva>0){
             mensaje+='<li style="text-align: left;">Debe ingresar una cantidad a reservar mayor a cero.</li>';
         }

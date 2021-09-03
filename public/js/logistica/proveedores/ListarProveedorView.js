@@ -122,7 +122,11 @@ class ListarProveedorView {
             this.actualizarProveedor(e.currentTarget);
         });
 
-
+        $('#form-proveedor').on("keypress",  (e)=> {
+            if (e.which == 13){
+                this.guardarProveedor(e.currentTarget);
+            };
+        });
     }
     // limpiar tabla
     limpiarTabla(idElement) {

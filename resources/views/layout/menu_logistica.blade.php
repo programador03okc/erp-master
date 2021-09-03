@@ -132,7 +132,7 @@
     @if(Auth::user()->tieneSubModuloPadre(48))
     <li class=" treeview ">
         <a href="#">
-            <i class="fas fa-truck-loading"></i> <span>Proveedores</span>
+            <i class="fas fa-address-book"></i> <span>Proveedores</span>
             <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
             </span>
