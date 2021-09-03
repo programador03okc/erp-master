@@ -7,7 +7,7 @@ function listarIngresos() {
             text: ' Ingresar Comprobante',
             action: function () {
                 open_doc_create_seleccionadas();
-            }, className: 'btn-success'
+            } //, className: 'btn-success'
         });
     }
 

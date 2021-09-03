@@ -471,10 +471,6 @@ class TransformacionController extends Controller
                 'abreviatura' => $det->abreviatura,
                 'valor_unitario' => $det->valor_unitario,
                 'valor_total' => $det->valor_total,
-                // 'part_number_transformado' => $det->part_number_transformado,
-                // 'descripcion_transformado' => $det->descripcion_transformado,
-                // 'cantidad_transformado' => $det->cantidad_transformado,
-                // 'comentario_transformado' => $det->comentario_transformado,
                 'series' => $series
             ]);
         }

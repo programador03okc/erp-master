@@ -53,7 +53,7 @@ function listarOrdenesPendientes() {
             text: ' Ingresar Guía',
             action: function () {
                 open_guia_create_seleccionadas();
-            }, className: 'btn-success'
+            }, className: 'btn-success disabled btnIngresarGuia'
         });
     }
 
@@ -203,32 +203,24 @@ function listarOrdenesPendientes() {
         order: [[0, "desc"]]
     });
 
-    $(
-        $("#ordenesPendientes")
-            .DataTable()
-            .table()
-            .container()
-    ).on("ifChanged", ".dt-checkboxes", function (event) {
-        var cell = $("#ordenesPendientes")
-            .DataTable()
-            .cell($(this).closest("td"));
+    $($("#ordenesPendientes").DataTable().table().container()).on("ifChanged", ".dt-checkboxes", function (event) {
+        var cell = $("#ordenesPendientes").DataTable().cell($(this).closest("td"));
         cell.checkboxes.select(this.checked);
 
-        var data = $("#ordenesPendientes")
-            .DataTable()
-            .row($(this).parents("tr"))
-            .data();
+        var data = $("#ordenesPendientes").DataTable().row($(this).parents("tr")).data();
         console.log(this.checked);
 
         if (data !== null && data !== undefined) {
             if (this.checked) {
                 oc_seleccionadas.push(data);
+                $('.btnIngresarGuia').removeClass('disabled');
             } else {
                 var index = oc_seleccionadas.findIndex(function (item, i) {
                     return item.id_orden_compra == data.id_orden_compra;
                 });
                 if (index !== null) {
                     oc_seleccionadas.splice(index, 1);
+                    $('.btnIngresarGuia').addClass('disabled');
                 }
             }
         }

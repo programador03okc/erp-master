@@ -138,7 +138,7 @@ class VentasInternasController extends Controller
                         'fecha_registro' => $fecha,
                     ]);
 
-                    $id_det_req = DB::table('almacen.alm_det_req')->insert([
+                    $id_det_req = DB::table('almacen.alm_det_req')->insertGetId([
                         'id_requerimiento' => $id_requerimiento,
                         'cantidad' => $item->cantidad,
                         'id_tipo_item' => 1,
@@ -149,7 +149,7 @@ class VentasInternasController extends Controller
                         'precio_unitario' => $item->precio_unitario,
                         'estado' => 1,
                         'fecha_registro' => $fecha,
-                    ]);
+                    ], 'id_detalle_requerimiento');
 
                     $id_oc_det = DB::table('logistica.log_det_ord_compra')->insert([
                         'id_orden_compra' => $id_orden_compra,
