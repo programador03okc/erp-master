@@ -1888,6 +1888,8 @@ class RequerimientoView {
 
     RestablecerFormularioRequerimiento(){
         $('#form-requerimiento')[0].reset();
+        document.querySelector("span[id='codigo_requerimiento']").textContent='';
+        document.querySelector("span[id='estado_doc']").textContent='';
         this.limpiarTabla('ListaDetalleRequerimiento');
         this.limpiarTabla('listaArchivosRequerimiento');
         this.limpiarTabla('listaArchivos');

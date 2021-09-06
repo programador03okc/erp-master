@@ -641,7 +641,6 @@ Crear / editar requerimiento
 <script src="{{ asset('js/logistica/requerimiento/historial.js') }}"></script>
 <script src="{{ asset('js/logistica/requerimiento/editar.js') }}"></script>
 <script src="{{ asset('js/logistica/requerimiento/cancelar.js') }}"></script>
-<script src="{{ asset('js/logistica/requerimiento/anular.js') }}"></script>
 <!-- <script src="{{ asset('js/logistica/requerimiento/guardar.js') }}"></script> -->
 <!-- <script src="{{ asset('js/logistica/requerimiento/adjuntos.js') }}"></script> -->
 <script src="{{ asset('js/logistica/requerimiento/scrollToTheTopOfDocument.js') }}"></script>
