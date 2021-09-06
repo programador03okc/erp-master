@@ -679,7 +679,7 @@ class RequerimientoPendienteView {
                         let cantidadReservada = 0;
                         if(row.reserva !=null){
                             (row.reserva).forEach(element => {
-                                cantidadReservada+=element.stock_comprometido;
+                                cantidadReservada+=parseFloat(element.stock_comprometido);
                             });
                         }
                         return cantidadReservada; //cantidad reservada
@@ -894,7 +894,7 @@ class RequerimientoPendienteView {
         let cantidadTotalStockComprometido=0;
         if(data.length >0){
             (data).forEach(element => {
-                cantidadTotalStockComprometido+= element.stock_comprometido;
+                cantidadTotalStockComprometido+= parseFloat(element.stock_comprometido);
                 document.querySelector("tbody[id='bodyListaConReserva']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
                 <td>${(element.codigo !=null && element.codigo !='')?element.codigo:(element.id_reserva)}</td>
                 <td>${element.almacen.descripcion}</td>
@@ -939,15 +939,17 @@ class RequerimientoPendienteView {
         if(!idProducto,!idDetalleRequerimiento >0 ){
             mensaje+='<li style="text-align: left;">El producto / item de requerimiento no tiene un ID valido.</li>';
         }
-        if(!cantidadReserva>0){
+        console.log(cantidadReserva);
+        if(!parseFloat(cantidadReserva)>0 || parseFloat(cantidadReserva)<0){
             mensaje+='<li style="text-align: left;">Debe ingresar una cantidad a reservar mayor a cero.</li>';
         }
-        if((parseInt(cantidadReserva)+ parseInt(document.querySelector("form[id='form-nueva-reserva'] label[name='totalReservado']").textContent)) > parseInt(document.querySelector("form[id='form-nueva-reserva'] label[id='cantidad']").textContent)){
+        if((parseFloat(cantidadReserva)+ parseFloat(document.querySelector("form[id='form-nueva-reserva'] label[name='totalReservado']").textContent)) > parseFloat(document.querySelector("form[id='form-nueva-reserva'] label[id='cantidad']").textContent)){
             mensaje+='<li style="text-align: left;">La cantidad a reservar con la cantidad total reservada supera la cantidad solicitada, debe Ingresar un valor menor.</li>';
         }
-        if(!parseInt(almacenReserva)>0){
+        if(!parseFloat(almacenReserva)>0){
             mensaje+='<li style="text-align: left;">Debe seleccionar un almacén.</li>';
         }
+        console.log(mensaje);
         return mensaje;
     }
 
@@ -1031,7 +1033,9 @@ class RequerimientoPendienteView {
     agregarReserva(obj){
         // console.log(obj);
         let mensajeValidacion = this.validarModalNuevaReserva();
-        if(mensajeValidacion.length >0){
+        console.log(mensajeValidacion.length);
+        console.log((mensajeValidacion.length >0));
+        if((mensajeValidacion.length >0)){
             Swal.fire({
                 title:'',
                 html:'<ol>'+mensajeValidacion+'</ol>',

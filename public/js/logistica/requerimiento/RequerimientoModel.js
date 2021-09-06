@@ -108,20 +108,10 @@ class RequerimientoModel {
                 url:`mostrar-centro-costos`,
                 dataType: 'JSON',
                 beforeSend: function (data) { 
-                    var customElement = $("<div>", {
-                        "css": {
-                            "font-size": "24px",
-                            "text-align": "center",
-                            "padding": "0px",
-                            "margin-top": "-400px"
-                        },
-                        "class": "your-custom-class"
-                    });
         
-                    $('#modal-centro-costos div.modal-body').LoadingOverlay("show", {
+                    $('#modal-centro-costos .modal-content').LoadingOverlay("show", {
                         imageAutoResize: true,
                         progress: true,
-                        custom: customElement,
                         imageColor: "#3c8dbc"
                     });
                     },
@@ -129,7 +119,7 @@ class RequerimientoModel {
                     resolve(response);
                 },
                 fail: function (jqXHR, textStatus, errorThrown) {
-                    $('#modal-centro-costos div.modal-body').LoadingOverlay("hide", true);
+                    $('#modal-centro-costos .modal-content').LoadingOverlay("hide", true);
                     alert("Hubo un problema al cargar los centro de costo. Por favor actualice la página e intente de nuevo");
                     console.log(jqXHR);
                     console.log(textStatus);
