@@ -1574,6 +1574,17 @@ class RequerimientoView {
             }
 
         }
+        if (document.querySelector("select[name='division']").value == 0) {
+            continuar = false;
+            if (document.querySelector("select[name='division']").closest('div').querySelector("span") == null) {
+                let newSpanInfo = document.createElement("span");
+                newSpanInfo.classList.add('text-danger');
+                newSpanInfo.textContent = '(Seleccione una división)';
+                document.querySelector("select[name='division']").closest('div').querySelector("h5").appendChild(newSpanInfo);
+                document.querySelector("select[name='division']").closest('div').classList.add('has-error');
+            }
+
+        }
 
         let tbodyChildren = document.querySelector("tbody[id='body_detalle_requerimiento']").children;
         for (let index = 0; index < tbodyChildren.length; index++) {
