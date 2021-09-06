@@ -61,7 +61,7 @@ Requerimientos pendientes de Transformación
 <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
 <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
-<script src="{{ asset('js/almacen/distribucion/listaOrdenesDespacho.js')}}"></script>
+<script src="{{ asset('js/almacen/distribucion/ordenesTransformacion.js')}}"></script>
 <script src="{{ asset('js/almacen/distribucion/verDetalleRequerimiento.js')}}"></script>
 <script src="{{ asset('js/almacen/distribucion/ordenDespachoInternoCreate.js')}}"></script>
 <script src="{{ asset('js/almacen/distribucion/ordenDespachoTransformacion.js')}}"></script>

@@ -940,14 +940,14 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('imprimir_despacho/{id}', 'DistribucionController@imprimir_despacho');
 			});
 
-			Route::group(['as' => 'lista-ordenes-despacho.', 'prefix' => 'lista-ordenes-despacho'], function () {
+			Route::group(['as' => 'ordenes-transformacion.', 'prefix' => 'ordenes-transformacion'], function () {
 
-				Route::get('index', 'Logistica\Distribucion\ListaOrdenesDespachoController@view_ordenes_despacho')->name('index');
-				Route::get('listarRequerimientosEnProceso', 'Logistica\Distribucion\ListaOrdenesDespachoController@listarRequerimientosEnProceso');
+				Route::get('index', 'Logistica\Distribucion\OrdenesTransformacionController@view_ordenes_transformacion')->name('index');
+				Route::get('listarRequerimientosEnProceso', 'Logistica\Distribucion\OrdenesTransformacionController@listarRequerimientosEnProceso');
 				Route::get('listarDetalleTransferencias/{id}', 'TransferenciaController@listarDetalleTransferencias');
-				Route::get('verDetalleRequerimientoDI/{id}', 'DistribucionController@verDetalleRequerimientoDI');
-				Route::post('guardarOrdenDespachoInterno', 'DistribucionController@guardarOrdenDespachoInterno');
-				Route::get('verDetalleInstrucciones/{id}', 'DistribucionController@verDetalleInstrucciones');
+				Route::get('verDetalleRequerimientoDI/{id}', 'Logistica\Distribucion\OrdenesTransformacionController@verDetalleRequerimientoDI');
+				Route::post('guardarOrdenDespachoInterno', 'Logistica\Distribucion\OrdenesTransformacionController@guardarOrdenDespachoInterno');
+				Route::get('verDetalleInstrucciones/{id}', 'Logistica\Distribucion\OrdenesTransformacionController@verDetalleInstrucciones');
 			});
 		});
 

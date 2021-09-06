@@ -10,16 +10,16 @@
             </span>
         </a>
         <ul class="treeview-menu">
-        @if(Auth::user()->tieneAplicacion(102))
+            @if(Auth::user()->tieneAplicacion(102))
             <!-- <li><a href="{{route('logistica.gestion-logistica.ocam.index')}}"><i class="far fa-circle fa-xs"></i> Listado OCAM</a></li> -->
             <li><a href="{{route('logistica.gestion-logistica.requerimiento.elaboracion.index')}}"><i class="far fa-circle fa-xs"></i> Crear / editar</a></li>
-        @endif
-        @if(Auth::user()->tieneAplicacion(103))
+            @endif
+            @if(Auth::user()->tieneAplicacion(103))
             <li><a href="{{route('logistica.gestion-logistica.requerimiento.listado.index')}}"><i class="far fa-circle fa-xs"></i> Listado</a></li>
-        @endif
-        @if(Auth::user()->tieneAplicacion(103))
+            @endif
+            @if(Auth::user()->tieneAplicacion(103))
             <li><a href="{{route('logistica.gestion-logistica.requerimiento.aprobar.index')}}"><i class="far fa-circle fa-xs"></i> Revisar / aprobar</a></li>
-        @endif
+            @endif
         </ul>
     </li>
     @endif
@@ -33,9 +33,9 @@
         </a>
         <ul class="treeview-menu">
             @if(Auth::user()->tieneSubModulo(25))
-                    @if(Auth::user()->tieneAplicacion(108))
-                    <li><a href="{{route('logistica.gestion-logistica.compras.pendientes.index')}}"><i class="far fa-circle fa-xs"></i> Pendientes</a></li>
-                    @endif
+            @if(Auth::user()->tieneAplicacion(108))
+            <li><a href="{{route('logistica.gestion-logistica.compras.pendientes.index')}}"><i class="far fa-circle fa-xs"></i> Pendientes</a></li>
+            @endif
             @endif
             <!-- @if(Auth::user()->tieneSubModulo(24))
             <li class="treeview" >
@@ -63,10 +63,10 @@
             <li class="treeview">
                 <a href="#"><i class="fas fa-file-invoice"></i> Órdenes
                     <span class="pull-right-container">
-                    <i class="fa fa-angle-left pull-right"></i>
+                        <i class="fa fa-angle-left pull-right"></i>
                     </span>
                 </a>
-                <ul class="treeview-menu" >
+                <ul class="treeview-menu">
                     @if(Auth::user()->tieneAplicacion(108))
                     <li><a href="{{route('logistica.gestion-logistica.compras.ordenes.elaborar.index')}}"><i class="far fa-circle fa-xs"></i> Elaborar</a></li>
                     @endif
@@ -80,10 +80,10 @@
             <li class="treeview">
                 <a href="#"><i class="fas fa-people-carry"></i> Servicios
                     <span class="pull-right-container">
-                    <i class="fa fa-angle-left pull-right"></i>
+                        <i class="fa fa-angle-left pull-right"></i>
                     </span>
                 </a>
-                <ul class="treeview-menu" >
+                <ul class="treeview-menu">
                     @if(Auth::user()->tieneAplicacion(118))
                     <li><a href="tipoServ"><i class="far fa-circle fa-xs"></i> Tipo de Servicio</a></li>
                     @endif
@@ -97,10 +97,10 @@
             <li class="treeview">
                 <a href="#"><i class="fas fa-chart-bar"></i> Reportes
                     <span class="pull-right-container">
-                    <i class="fa fa-angle-left pull-right"></i>
+                        <i class="fa fa-angle-left pull-right"></i>
                     </span>
                 </a>
-                <ul class="treeview-menu" >
+                <ul class="treeview-menu">
                     @if(Auth::user()->tieneAplicacion(110))
                     <li><a href="/logistica/reportes/productos_comprados"><i class="far fa-circle fa-xs"></i> Productos Comprados</a></li>
                     @endif
@@ -147,20 +147,20 @@
     <li class="treeview">
         <a href="#"><i class="fas fa-truck"></i> <span> Distribución</span>
             <span class="pull-right-container">
-            <i class="fa fa-angle-left pull-right"></i>
+                <i class="fa fa-angle-left pull-right"></i>
             </span>
         </a>
         <ul class="treeview-menu">
-        <li><a href="{{route('logistica.distribucion.lista-ordenes-despacho.index')}}"><i class="far fa-circle fa-xs"></i> Orden de Transformación </a></li>
-        @if(Auth::user()->tieneAplicacion(80))
-        <li><a href="{{route('logistica.distribucion.despachos.index')}}"><i class="far fa-circle fa-xs"></i> Panel de Control </a></li>
-        @endif
-        @if(Auth::user()->tieneAplicacion(81))
-        <li><a href="{{route('logistica.distribucion.trazabilidad-requerimientos.index')}}"><i class="far fa-circle fa-xs"></i> Trazabilidad de Requerimientos </a></li>
-        @endif
-        @if(Auth::user()->tieneAplicacion(81))
-        <li><a href="{{route('logistica.distribucion.guias-transportistas.index')}}"><i class="far fa-circle fa-xs"></i> Reporte de Despachos </a></li>
-        @endif
+            <li><a href="{{route('logistica.distribucion.ordenes-transformacion.index')}}"><i class="far fa-circle fa-xs"></i> Orden de Transformación </a></li>
+            @if(Auth::user()->tieneAplicacion(80))
+            <li><a href="{{route('logistica.distribucion.despachos.index')}}"><i class="far fa-circle fa-xs"></i> Panel de Control </a></li>
+            @endif
+            @if(Auth::user()->tieneAplicacion(81))
+            <li><a href="{{route('logistica.distribucion.trazabilidad-requerimientos.index')}}"><i class="far fa-circle fa-xs"></i> Trazabilidad de Requerimientos </a></li>
+            @endif
+            @if(Auth::user()->tieneAplicacion(81))
+            <li><a href="{{route('logistica.distribucion.guias-transportistas.index')}}"><i class="far fa-circle fa-xs"></i> Reporte de Despachos </a></li>
+            @endif
         </ul>
     </li>
     @endif
@@ -168,7 +168,7 @@
     <li class="treeview">
         <a href="#"><i class="fas fa-boxes"></i> Activos
             <span class="pull-right-container">
-            <i class="fa fa-angle-left pull-right"></i>
+                <i class="fa fa-angle-left pull-right"></i>
             </span>
         </a>
         <ul class="treeview-menu">
@@ -176,7 +176,7 @@
             <li class="treeview" style="height: auto;">
                 <a href="#"><i class="fas fa-id-card-alt"></i> Solicitudes / Asignaciones
                     <span class="pull-right-container">
-                    <i class="fa fa-angle-left pull-right"></i>
+                        <i class="fa fa-angle-left pull-right"></i>
                     </span>
                 </a>
                 <ul class="treeview-menu">
@@ -193,10 +193,10 @@
             </li>
             @endif
             @if(Auth::user()->tieneSubModulo(46))
-            <li class="treeview" >
+            <li class="treeview">
                 <a href="#"><i class="fas fa-book"></i> Catálogos
                     <span class="pull-right-container">
-                    <i class="fa fa-angle-left pull-right"></i>
+                        <i class="fa fa-angle-left pull-right"></i>
                     </span>
                 </a>
                 <ul class="treeview-menu">
@@ -216,10 +216,10 @@
             <li class="treeview">
                 <a href="#"><i class="fas fa-wrench"></i> Mantenimientos
                     <span class="pull-right-container">
-                    <i class="fa fa-angle-left pull-right"></i>
+                        <i class="fa fa-angle-left pull-right"></i>
                     </span>
                 </a>
-                <ul class="treeview-menu" >
+                <ul class="treeview-menu">
                     @if(Auth::user()->tieneAplicacion(127))
                     <li><a href="/mtto"><i class="far fa-circle fa-xs"></i> Mantenimiento de Equipo</a></li>
                     @endif
@@ -233,10 +233,10 @@
             <li class="treeview">
                 <a href="#"><i class="fas fa-chart-bar"></i> Reportes
                     <span class="pull-right-container">
-                    <i class="fa fa-angle-left pull-right"></i>
+                        <i class="fa fa-angle-left pull-right"></i>
                     </span>
                 </a>
-                <ul class="treeview-menu" >
+                <ul class="treeview-menu">
                     @if(Auth::user()->tieneAplicacion(129))
                     <li><a href="/sol_todas"><i class="far fa-circle fa-xs"></i> Listado Solicitudes </a></li>
                     @endif

@@ -138,30 +138,36 @@ class VentasInternasController extends Controller
                         'fecha_registro' => $fecha,
                     ]);
 
-                    $id_det_req = DB::table('almacen.alm_det_req')->insertGetId([
-                        'id_requerimiento' => $id_requerimiento,
-                        'cantidad' => $item->cantidad,
-                        'id_tipo_item' => 1,
-                        'id_unidad_medida' => $item->id_unidad_medida,
-                        'id_producto' => $item->id_item,
-                        'id_moneda' => $doc_ven->moneda,
-                        'tiene_transformacion' => false,
-                        'precio_unitario' => $item->precio_unitario,
-                        'estado' => 1,
-                        'fecha_registro' => $fecha,
-                    ], 'id_detalle_requerimiento');
+                    $id_det_req = DB::table('almacen.alm_det_req')->insertGetId(
+                        [
+                            'id_requerimiento' => $id_requerimiento,
+                            'cantidad' => $item->cantidad,
+                            'id_tipo_item' => 1,
+                            'id_unidad_medida' => $item->id_unidad_medida,
+                            'id_producto' => $item->id_item,
+                            'id_moneda' => $doc_ven->moneda,
+                            'tiene_transformacion' => false,
+                            'precio_unitario' => $item->precio_unitario,
+                            'estado' => 1,
+                            'fecha_registro' => $fecha,
+                        ],
+                        'id_detalle_requerimiento'
+                    );
 
-                    $id_oc_det = DB::table('logistica.log_det_ord_compra')->insert([
-                        'id_orden_compra' => $id_orden_compra,
-                        'cantidad' => $item->cantidad,
-                        'precio' => $item->precio_unitario,
-                        'id_unidad_medida' => $item->id_unidad_medida,
-                        'subtotal' => $item->sub_total,
-                        'id_producto' => $item->id_item,
-                        'id_detalle_requerimiento' => $id_det_req,
-                        'tipo_item_id' => 1,
-                        'estado' => 1
-                    ]);
+                    $id_oc_det = DB::table('logistica.log_det_ord_compra')->insertGetId(
+                        [
+                            'id_orden_compra' => $id_orden_compra,
+                            'cantidad' => $item->cantidad,
+                            'precio' => $item->precio_unitario,
+                            'id_unidad_medida' => $item->id_unidad_medida,
+                            'subtotal' => $item->sub_total,
+                            'id_producto' => $item->id_item,
+                            'id_detalle_requerimiento' => $id_det_req,
+                            'tipo_item_id' => 1,
+                            'estado' => 1
+                        ],
+                        'id_detalle_orden'
+                    );
 
                     DB::table('almacen.guia_com_det')
                         ->where('id_guia_com_det', $item->id_guia_com_det)

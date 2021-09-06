@@ -140,7 +140,8 @@ function listarRequerimientosPendientes() {
             {
                 render: function (data, type, row) {
                     return (
-                        '<a href="#" class="verRequerimiento" data-id="' + row["id_requerimiento"] + '" >' + row["codigo"] + "</a>"
+                        '<a href="#" class="verRequerimiento" data-id="' + row["id_requerimiento"] + '" >' + row["codigo"] + "</a>" +
+                        (row['tiene_transformacion'] ? ' <i class="fas fa-random red"></i>' : '')
                     );
                 }, targets: 1
 

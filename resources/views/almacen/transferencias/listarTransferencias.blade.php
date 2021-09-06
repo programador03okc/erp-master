@@ -43,7 +43,7 @@ Gestión de Transferencias
                                                 <th hidden></th>
                                                 <th width="10%">Código</th>
                                                 <th width="20%">Concepto</th>
-                                                <th width="10%">Sede Req</th>
+                                                <th width="10%">Sede Destino</th>
                                                 <th width="25%">Entidad/Cliente</th>
                                                 <th width="10%">Responsable</th>
                                                 <th width="15%">OCAM</th>
