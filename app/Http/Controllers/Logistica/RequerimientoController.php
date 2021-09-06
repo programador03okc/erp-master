@@ -1164,6 +1164,7 @@ class RequerimientoController extends Controller
         try {
             $requerimiento = Requerimiento::find($idRequerimiento);
             $todoDetalleRequerimiento = DetalleRequerimiento::where("id_requerimiento", $requerimiento->id_requerimiento)->get();
+            $tipoMensaje= 'info';
 
             $transferencia = Transferencia::where("id_requerimiento", $idRequerimiento)->first();
 
@@ -1182,9 +1183,12 @@ class RequerimientoController extends Controller
                         $detalle->save();
                     }
 
-                    $mensaje = 'Se anulo el requerimiento con código ' . $requerimiento->codigo . ' y su transferencia fue anulada';
+                    $mensaje = 'Se anulo el requerimiento ' . $requerimiento->codigo . ' y su transferencia fue anulada';
+                    $tipoMensaje= 'success';
                 } else { // no se puede anular un requerimiento con transferencia procesada
-                    $mensaje = 'No es posible anulr el requerimiento con código ' . $requerimiento->codigo . ' tiene una transferencia procesada';
+                    $mensaje = 'No es posible anulr el requerimiento ' . $requerimiento->codigo . ' tiene una transferencia procesada';
+                    $tipoMensaje= 'warning';
+
                 }
             } else {
                 // anular requerimiento
@@ -1196,14 +1200,16 @@ class RequerimientoController extends Controller
                     $detalle->estado = 7;
                     $detalle->save();
                 }
-                $mensaje = 'Se anulo el requerimiento con código ' . $requerimiento->codigo;
+                $mensaje = 'Se anulo el requerimiento ' . $requerimiento->codigo;
+                $tipoMensaje= 'success';
+
             }
 
-            DB::commit();
-            return response()->json(['estado' => $requerimiento->estado, 'mensaje' => $mensaje]);
+            // DB::commit();
+            return response()->json(['estado' => $requerimiento->estado, 'mensaje' => $mensaje,'tipo_mensaje'=>$tipoMensaje]);
         } catch (Exception $e) {
             DB::rollBack();
-            return response()->json(['estado' => 0, 'mensaje' => 'Hubo un problema al anular el requerimiento. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
+            return response()->json(['estado' => 0, 'mensaje' => 'Hubo un problema al anular el requerimiento. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage(),'tipo_mensaje'=>$tipoMensaje]);
         }
     }
 
