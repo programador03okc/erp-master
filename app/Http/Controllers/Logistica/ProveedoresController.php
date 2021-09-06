@@ -82,7 +82,7 @@ class ProveedoresController extends Controller
 
             }
 
-            if($crearProveedor==true){
+            if($crearProveedor){
                 $contribuyente = new Contribuyente();
                 $contribuyente->id_tipo_contribuyente = $request->tipoContribuyente; 
                 $contribuyente->id_doc_identidad = $request->tipoDocumentoIdentidad>0?$request->tipoDocumentoIdentidad:null; 
@@ -190,8 +190,8 @@ class ProveedoresController extends Controller
         
             $mensaje='';
 
-            $proveedor = Proveedor::where("id_proveedor", $request->idProveedor)->first();
-            $contribuyente = Contribuyente::where("id_contribuyente", $proveedor->id_contribuyente)->first();
+            $proveedor = Proveedor::find($request->idProveedor); //Proveedor::where("id_proveedor", $request->idProveedor)->first();
+            $contribuyente = Contribuyente::find($proveedor->id_contribuyente); //where("id_contribuyente", $proveedor->id_contribuyente)->first();
             $contactoProveedor = ContactoContribuyente::where("id_contribuyente", $proveedor->id_contribuyente)->first();
             $cuentaBancariaProveedor = CuentaContribuyente::where("id_contribuyente", $proveedor->id_contribuyente)->first(); 
             $establecimientoProveedor = EstablecimientoProveedor::where("id_proveedor", $proveedor->id_proveedor)->first(); 
@@ -227,9 +227,9 @@ class ProveedoresController extends Controller
                     }elseif($request->estadoEstablecimiento[$i]==7 && $request->idEstablecimiento[$i] >0 ){
                         $establecimientoSeleccionado= EstablecimientoProveedor::where("id_establecimiento", $request->idEstablecimiento[$i])->first();
                         if($establecimientoSeleccionado){
-                              Debugbar::info($establecimientoSeleccionado->id_establecimiento);
-                              $establecimientoSeleccionado->estado=7;
-                              $establecimientoSeleccionado->save();
+                            // Debugbar::info($establecimientoSeleccionado->id_establecimiento);
+                            $establecimientoSeleccionado->estado=7;
+                            $establecimientoSeleccionado->save();
                         }
 
                     }elseif($request->estadoEstablecimiento[$i]==1 && ($request->idEstablecimiento[$i] =='' || $request->idEstablecimiento[$i] == null || $request->idEstablecimiento[$i] == 0) ){

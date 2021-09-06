@@ -19,7 +19,7 @@ use PDF;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
-date_default_timezone_set('America/Lima');
+//date_default_timezone_set('America/Lima');
 
 use Debugbar;
 
@@ -540,8 +540,9 @@ class ComprasPendientesController extends Controller
                     $crearNuevaReserva=false;
                     $mensaje.='No puede generar una reserva que actualmente existe con mismo almacén y misma cantidad a reservar';
                 }
-                if($value->id_almacen_reserva == $request->almacenReserva && $value->stock_comprometido != $request->cantidadReserva){
-                    $reservaMismoAlmacen = Reserva::where([['id_detalle_requerimiento',$request->idDetalleRequerimiento],
+                // if($value->id_almacen_reserva == $request->almacenReserva && $value->stock_comprometido != $request->cantidadReserva){
+                if($value->id_almacen_reserva == $request->almacenReserva){
+                    $reservaMismoAlmacen = Reserva::where([['id_detalle_requerimiento',$request->idDetalleRequerimiento],['estado',1],
                     ['id_almacen_reserva',$request->almacenReserva]])->first();
                     $reservaMismoAlmacen->estado=7;
                     $reservaMismoAlmacen->save();

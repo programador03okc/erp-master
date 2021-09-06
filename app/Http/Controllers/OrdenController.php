@@ -2896,13 +2896,15 @@ class OrdenController extends Controller
         $itemBaseEnOtrasOrdenesGeneradasList= $this->obtenerItemBaseEnOtrasOrdenesGeneradas($idOrden, $itemBaseList);
         $detalleOrdenGeneradaList= $this->obtenerDetalleOrdenGenerada($idOrden);
         $itemAtendidoParcialOSinAtender= $this->obtenerItemAtendidoParcialOSinAtender($itemBaseList);
-
-            Debugbar::info($idRequerimientoList);
-            Debugbar::info($detalleRequerimiento);
-            Debugbar::info($itemBaseList);
-            Debugbar::info($itemBaseEnOtrasOrdenesGeneradasList);
-            Debugbar::info($detalleOrdenGeneradaList);
-            Debugbar::info($itemAtendidoParcialOSinAtender);
+        // if(config('app.debug')){
+        //     Debugbar::info($idRequerimientoList);
+        //     Debugbar::info($detalleRequerimiento);
+        //     Debugbar::info($itemBaseList);
+        //     Debugbar::info($itemBaseEnOtrasOrdenesGeneradasList);
+        //     Debugbar::info($detalleOrdenGeneradaList);
+        //     Debugbar::info($itemAtendidoParcialOSinAtender);
+        // }
+           
 
         $nuevoEstadoDetalleRequerimiento = $this->obtenerNuevoEstadoDetalleRequerimiento($itemBaseList,$itemBaseEnOtrasOrdenesGeneradasList,$detalleOrdenGeneradaList,$itemAtendidoParcialOSinAtender);
         Debugbar::info($nuevoEstadoDetalleRequerimiento);
