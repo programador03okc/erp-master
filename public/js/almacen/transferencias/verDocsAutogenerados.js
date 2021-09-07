@@ -1,5 +1,5 @@
 function verDocumentosAutogenerados(id_doc_com) {
-
+    $('#docs').html('');
     $.ajax({
         type: "GET",
         url: "verDocumentosAutogenerados/" + id_doc_com,

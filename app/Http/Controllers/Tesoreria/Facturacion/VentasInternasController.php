@@ -6,6 +6,7 @@ use App\Http\Controllers\Almacen\Movimiento\OrdenesPendientesController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Almacen\Requerimiento;
+use App\Models\Logistica\Orden;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -101,6 +102,8 @@ class VentasInternasController extends Controller
                     'id_requerimiento'
                 );
 
+                $codigo_oc = Orden::nextCodigoOrden(2);
+
                 $id_orden_compra = DB::table('logistica.log_ord_compra')->insertGetId(
                     [
                         'id_tp_documento' => 2,
@@ -108,7 +111,7 @@ class VentasInternasController extends Controller
                         'id_usuario' => $id_usuario,
                         'id_moneda' => 1,
                         'id_proveedor' => $doc_ven->id_proveedor,
-                        'codigo' => $codigo,
+                        'codigo' => $codigo_oc,
                         'id_condicion' => $doc_ven->id_condicion,
                         'plazo_dias' => $doc_ven->credito_dias,
                         'plazo_entrega' => 0,
