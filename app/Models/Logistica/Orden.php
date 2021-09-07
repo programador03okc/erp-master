@@ -40,6 +40,37 @@ class Orden extends Model {
 		return $data;
     }
 
+
+    public static function leftZero($lenght, $number)
+    {
+        $nLen = strlen($number);
+        $zeros = '';
+        for ($i = 0; $i < ($lenght - $nLen); $i++) {
+            $zeros = $zeros . '0';
+        }
+        return $zeros . $number;
+    }
+
+    public static function nextCodigoOrden($id_tp_docum)
+    {
+        $mes = date('m', strtotime("now"));
+        $anio = date('y', strtotime("now"));
+
+        $num = DB::table('logistica.log_ord_compra')
+            ->where('id_tp_documento', $id_tp_docum)->count();
+
+        $correlativo = Orden::leftZero(4, ($num + 1));
+
+        if ($id_tp_docum == 2) {
+            $codigoOrden = "OC-{$anio}{$mes}{$correlativo}";
+        } else if ($id_tp_docum == 3) {
+            $codigoOrden = "OS-{$anio}{$mes}{$correlativo}";
+        } else {
+            $codigoOrden = "-{$anio}{$mes}{$correlativo}";
+        }
+        return $codigoOrden;
+    }
+
     public function getRequerimientosAttribute(){
 
         $requerimientos=OrdenCompraDetalle::Join('almacen.alm_det_req','log_det_ord_compra.id_detalle_requerimiento','alm_det_req.id_detalle_requerimiento')

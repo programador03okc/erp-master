@@ -138,6 +138,11 @@
                                                         @endforeach
                                                     </select>
                                                 </div>
+                                                <div class="col-md-6">
+                                                    <h5></h5>
+                                                    <input type="checkbox" class="flat-red" name="series"  style="padding-left: 0px;"/>
+                                                    Control de series
+                                                </div>
                                             </div>
                                             <div class="row">
                                                 <div class="col-md-12">

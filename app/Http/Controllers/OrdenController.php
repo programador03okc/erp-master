@@ -2503,35 +2503,7 @@ class OrdenController extends Controller
     //     return $html;
     // }
 
-    public function leftZero($lenght, $number)
-    {
-        $nLen = strlen($number);
-        $zeros = '';
-        for ($i = 0; $i < ($lenght - $nLen); $i++) {
-            $zeros = $zeros . '0';
-        }
-        return $zeros . $number;
-    }
 
-    public function nextCodigoOrden($id_tp_docum)
-    {
-        $mes = date('m', strtotime("now"));
-        $anio = date('y', strtotime("now"));
-
-        $num = DB::table('logistica.log_ord_compra')
-            ->where('id_tp_documento', $id_tp_docum)->count();
-
-        $correlativo = $this->leftZero(4, ($num + 1));
-
-        if ($id_tp_docum == 2) {
-            $codigoOrden = "OC-{$anio}{$mes}{$correlativo}";
-        } else if ($id_tp_docum == 3) {
-            $codigoOrden = "OS-{$anio}{$mes}{$correlativo}";
-        } else {
-            $codigoOrden = "-{$anio}{$mes}{$correlativo}";
-        }
-        return $codigoOrden;
-    }
 
     function cambioElEstadoActualDetalleReq($id_detalle_requerimiento){
             $alm_det_req = DB::table('almacen.alm_det_req')
@@ -2573,7 +2545,7 @@ class OrdenController extends Controller
 
             $orden = new Orden();
             $tp_doc = ($request->id_tp_documento !== null ? $request->id_tp_documento : 2);
-            $orden->codigo =  $this->nextCodigoOrden($tp_doc);
+            $orden->codigo =  Orden::nextCodigoOrden($tp_doc);
             $orden->id_grupo_cotizacion = $request->id_grupo_cotizacion?$request->id_grupo_cotizacion:null;
             $orden->id_tp_documento = $tp_doc;
             $orden->fecha = new Carbon();
@@ -2896,13 +2868,15 @@ class OrdenController extends Controller
         $itemBaseEnOtrasOrdenesGeneradasList= $this->obtenerItemBaseEnOtrasOrdenesGeneradas($idOrden, $itemBaseList);
         $detalleOrdenGeneradaList= $this->obtenerDetalleOrdenGenerada($idOrden);
         $itemAtendidoParcialOSinAtender= $this->obtenerItemAtendidoParcialOSinAtender($itemBaseList);
-
-            Debugbar::info($idRequerimientoList);
-            Debugbar::info($detalleRequerimiento);
-            Debugbar::info($itemBaseList);
-            Debugbar::info($itemBaseEnOtrasOrdenesGeneradasList);
-            Debugbar::info($detalleOrdenGeneradaList);
-            Debugbar::info($itemAtendidoParcialOSinAtender);
+        // if(config('app.debug')){
+        //     Debugbar::info($idRequerimientoList);
+        //     Debugbar::info($detalleRequerimiento);
+        //     Debugbar::info($itemBaseList);
+        //     Debugbar::info($itemBaseEnOtrasOrdenesGeneradasList);
+        //     Debugbar::info($detalleOrdenGeneradaList);
+        //     Debugbar::info($itemAtendidoParcialOSinAtender);
+        // }
+           
 
         $nuevoEstadoDetalleRequerimiento = $this->obtenerNuevoEstadoDetalleRequerimiento($itemBaseList,$itemBaseEnOtrasOrdenesGeneradasList,$detalleOrdenGeneradaList,$itemAtendidoParcialOSinAtender);
         Debugbar::info($nuevoEstadoDetalleRequerimiento);

@@ -20,9 +20,9 @@ class TrazabilidadRequerimiento{
             console.log(e.currentTarget.dataset.idOrden);
             this.abrirOrden(e.currentTarget.dataset.idOrden);
         });
-        $('#listaTrazabilidadDetalleRequerimiento tbody').on("click","label.handleClickAbrirIngreso", (e)=>{
-            this.abrirIngreso(e.currentTarget.dataset.idMovimientoAlmacen);
-        });
+        // $('#listaTrazabilidadDetalleRequerimiento tbody').on("click","label.handleClickAbrirIngreso", (e)=>{
+        //     this.abrirIngreso(e.currentTarget.dataset.idGuia);
+        // });
     }
 
     mostrarRequerimiento(idRequerimiento){
@@ -154,7 +154,8 @@ class TrazabilidadRequerimiento{
                     'render': function (data, type, row) {
                         let labelGuiaIngreso='';
                         (row['guias_ingreso']).forEach(element => {
-                            labelGuiaIngreso += `<label class="lbl-codigo handleClickAbrirIngreso" title="Abrir Guia Ingreso" data-id-movimiento-almacen="${element.id_mov_alm}">${element.codigo}</label>`;
+                            // labelGuiaIngreso += `<label class="lbl-codigo handleClickAbrirIngreso" title="Abrir Guia Ingreso" data-id-guia="${element.id_guia}">${element.codigo_guia}</label>`;
+                            labelGuiaIngreso += `<label class="" title="Guia Ingreso" data-id-guia="${element.id_guia}">${element.codigo_guia}</label>`;
                         });
                         return labelGuiaIngreso;
                         

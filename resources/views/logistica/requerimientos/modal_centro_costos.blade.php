@@ -15,7 +15,7 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-			<button class="btn btn-primary" class="close" data-dismiss="modal" >Cancelar</button>
+			<button class="btn btn-primary" class="close" data-dismiss="modal" >Cerrar</button>
 			</div>
 		</div>
 	</div>

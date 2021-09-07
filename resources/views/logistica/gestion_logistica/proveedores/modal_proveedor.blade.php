@@ -206,9 +206,9 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-sm btn-primary" class="close" data-dismiss="modal" >Cerrar</button>
-                    <button type="button" class="btn btn-sm btn-success handleClickActualizarProveedor oculto" id="btnActualizarProveedor" >Actualizar</button>
+                    <button type="button" class="btn btn-sm btn-primary" class="close" data-dismiss="modal" >Cerrar</button>
                     <button type="button" class="btn btn-sm btn-success handleClickGuardarProveedor" id="btnGuardarProveedor" >Guardar</button>
+                    <button type="button" class="btn btn-sm btn-success handleClickActualizarProveedor oculto" id="btnActualizarProveedor" >Actualizar</button>
                 </div>
             </form>
         </div>

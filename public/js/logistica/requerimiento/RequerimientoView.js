@@ -225,6 +225,7 @@ class RequerimientoView {
 
 
     mostrarRequerimiento(data) {
+        let hasDisabledInput='disabled';
         if (data.hasOwnProperty('requerimiento')) {
             document.querySelector("input[name='nombre_archivo']").removeAttribute("disabled");
             this.RestablecerFormularioRequerimiento();
@@ -262,7 +263,7 @@ class RequerimientoView {
                     $("#form-requerimiento .activation").attr('disabled', true);
 
                 }else if(data['requerimiento'][0].estado ==1  && data['requerimiento'][0].id_usuario == auth_user.id_usuario){
-                    
+
                     document.querySelector("form[id='form-requerimiento']").setAttribute('type','edition');
                     changeStateButton('historial'); //init.js
 
@@ -274,6 +275,7 @@ class RequerimientoView {
                     $("#form-requerimiento .activation").attr('disabled', true);
 
                 }else if((data['requerimiento'][0].estado ==1 || data['requerimiento'][0].estado ==3)  && data['requerimiento'][0].id_usuario == auth_user.id_usuario){
+                    hasDisabledInput='';
                     document.querySelector("div[id='group-historial-revisiones']").removeAttribute('hidden');
                     this.mostrarHistorialRevisionAprobacion(data['historial_aprobacion']);
                     document.querySelector("form[id='form-requerimiento']").setAttribute('type','edition');
@@ -297,7 +299,7 @@ class RequerimientoView {
 
 
                 }
-                this.mostrarDetalleRequerimiento(data['det_req'],data['requerimiento'][0]['estado']);
+                this.mostrarDetalleRequerimiento(data['det_req'],hasDisabledInput);
             }
 
         } else {
@@ -406,11 +408,8 @@ class RequerimientoView {
     }
 
 
-    mostrarDetalleRequerimiento(data,estado) {
-        let hasDisabledInput= 'disabled';
-        if(estado == 3){
-            hasDisabledInput= '';
-        }
+    mostrarDetalleRequerimiento(data,hasDisabledInput) {
+    //    console.log(hasDisabledInput);
 
         this.limpiarTabla('ListaDetalleRequerimiento');
         vista_extendida();
@@ -1354,7 +1353,7 @@ class RequerimientoView {
 
     
  
-        $('#modal-centro-costos div.modal-body').LoadingOverlay("hide", true);
+        $('#modal-centro-costos .modal-content').LoadingOverlay("hide", true);
 
     }
 
@@ -1574,6 +1573,17 @@ class RequerimientoView {
             }
 
         }
+        if (document.querySelector("select[name='division']").value == 0) {
+            continuar = false;
+            if (document.querySelector("select[name='division']").closest('div').querySelector("span") == null) {
+                let newSpanInfo = document.createElement("span");
+                newSpanInfo.classList.add('text-danger');
+                newSpanInfo.textContent = '(Seleccione una división)';
+                document.querySelector("select[name='division']").closest('div').querySelector("h5").appendChild(newSpanInfo);
+                document.querySelector("select[name='division']").closest('div').classList.add('has-error');
+            }
+
+        }
 
         let tbodyChildren = document.querySelector("tbody[id='body_detalle_requerimiento']").children;
         for (let index = 0; index < tbodyChildren.length; index++) {
@@ -1718,7 +1728,7 @@ class RequerimientoView {
                             this.RestablecerFormularioRequerimiento();
                         } else {
                             $('#wrapper-okc').LoadingOverlay("hide", true);
-                            console.log(response.mensaje,);
+                            console.log(response);
                             Swal.fire(
                                 '',
                                 'Lo sentimos hubo un error en el servidor al intentar guardar el requerimiento, por favor vuelva a intentarlo',
@@ -1817,8 +1827,68 @@ class RequerimientoView {
         }
     }
 
+    anularRequerimiento(idRequerimiento){
+        if(idRequerimiento > 0){
+            $.ajax({
+                type: 'PUT',
+                url: 'anular-requerimiento/'+idRequerimiento,
+                dataType: 'JSON',
+                beforeSend: function (data) {
+                    var customElement = $("<div>", {
+                        "css": {
+                            "font-size": "24px",
+                            "text-align": "center",
+                            "padding": "0px",
+                            "margin-top": "-400px"
+                        },
+                        "class": "your-custom-class",
+                        "text": "Anulando requerimiento..."
+                    });
+    
+                    $('#wrapper-okc').LoadingOverlay("show", {
+                        imageAutoResize: true,
+                        progress: true,
+                        custom: customElement,
+                        imageColor: "#3c8dbc"
+                    });
+                },
+                success: (response)=>{
+                    // console.log(response);
+                    $('#wrapper-okc').LoadingOverlay("hide", true);
+                    if(response.estado ==7){
+                        Lobibox.notify(response.tipo_mensaje, {
+                            title:false,
+                            size: 'mini',
+                            rounded: true,
+                            sound: false,
+                            delayIndicator: false,
+                            msg: `${response.mensaje}`
+                        });
+                        // location.reload();
+                        this.RestablecerFormularioRequerimiento();
+    
+                    }
+                },
+                fail: function (jqXHR, textStatus, errorThrown) {
+                    $('#wrapper-okc').LoadingOverlay("hide", true);
+                    Swal.fire(
+                        '',
+                        'Hubo un problema al anular el requerimiento. Por favor actualice la página e intente de nuevo',
+                        'error'
+                    );
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                }
+            });
+        }
+    }
+
+
     RestablecerFormularioRequerimiento(){
         $('#form-requerimiento')[0].reset();
+        document.querySelector("span[id='codigo_requerimiento']").textContent='';
+        document.querySelector("span[id='estado_doc']").textContent='';
         this.limpiarTabla('ListaDetalleRequerimiento');
         this.limpiarTabla('listaArchivosRequerimiento');
         this.limpiarTabla('listaArchivos');

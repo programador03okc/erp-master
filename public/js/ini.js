@@ -184,14 +184,25 @@ $(document).ready(function () {
 				break;
 			case 'btnAnular':
 				var ids = $("#" + forms + ' input[primary="ids"]').val();
-				var ask = confirm('¿Esta seguro que desea anular?');
-				if (ask) {
-					if (ids == undefined) {
-						ids = $("#" + frm_active + ' input[primary="ids"]').val();
+				Swal.fire({
+					title: '¿Esta seguro que desea anular?',
+					text: "No podrás revertir esto.",
+					icon: 'warning',
+					showCancelButton: true,
+					confirmButtonColor: '#3085d6',
+					cancelButtonColor: '#d33',
+					cancelButtonText: 'Cancelar',
+					confirmButtonText: 'Si, anular'
+		
+				}).then((result) => {
+					if (result.isConfirmed) {
+						if (ids == undefined) {
+							ids = $("#" + frm_active + ' input[primary="ids"]').val();
+						}
+						anularRegister(page, ids, frm_active);
+						changeStateInput(frm_active, true);
 					}
-					anularRegister(page, ids, frm_active);
-					changeStateInput(frm_active, true);
-				}
+				});
 				break;
 			case 'btnHistorial':
 				changeStateButton('historial');

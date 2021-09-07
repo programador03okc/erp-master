@@ -713,7 +713,10 @@ function anularRegister(type, ids, active) {
             break;
         //Logistica
         case "requerimiento":
-            anular_requerimiento(ids);
+            const requerimientoModel = new RequerimientoModel();
+            const requerimientoController = new RequerimientoCtrl(requerimientoModel);
+            const requerimientoView = new RequerimientoView(requerimientoController);
+            requerimientoView.anularRequerimiento(ids);
             break;
         case "crear-orden-requerimiento":
             const ordenModel = new OrdenModel();
