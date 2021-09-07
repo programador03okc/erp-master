@@ -137,6 +137,7 @@ $("#form-crear").on("submit", function(e){
     let partnumber = $('[name=part_number]').val();
     let descripcion = $('[name=descripcion]').val();
     let id_detalle = $('[name=id_detalle_requerimiento]').val();
+    let serie = $('[name=series]').is(':checked');
 
     let det = detalle.find(element => element.id_detalle_requerimiento==id_detalle);
     console.log(det);
@@ -148,6 +149,7 @@ $("#form-crear").on("submit", function(e){
     det.id_subcategoria = id_subcat;
     det.id_clasif = id_clasif;
     det.id_unidad_medida = id_unid;
+    det.series = serie;
 
     $('#modal-mapeoAsignarProducto').modal('hide');
     mostrar_detalle();

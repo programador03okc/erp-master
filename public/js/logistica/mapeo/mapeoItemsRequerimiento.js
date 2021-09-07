@@ -237,6 +237,7 @@ $("#form-mapeoItemsRequerimiento").on("submit", function (e) {
                     'id_clasif': element.id_clasif,
                     'id_subcategoria': element.id_subcategoria,
                     'id_unidad_medida': element.id_unidad_medida,
+                    'series': element.series
                 });
                 // }
             });

@@ -8,6 +8,10 @@
 Requerimientos pendientes
 @endsection
 
+@section('estilos')
+<link rel="stylesheet" href="{{ asset('template/plugins/iCheck/all.css') }}">
+@endsection
+
 @section('breadcrumb')
 <ol class="breadcrumb">
     <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> Logística</a></li>
@@ -103,6 +107,7 @@ Requerimientos pendientes
 <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
 <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 <script src="{{ asset('template/plugins/datetime-moment.js') }}"></script>
+<script src="{{ asset('template/plugins/iCheck/icheck.min.js') }}"></script>
 
 <script src="{{('/js/logistica/orden/RequerimientoPendienteModel.js?v=9')}}"></script>
 <script src="{{('/js/logistica/orden/RequerimientoPendienteView.js?v=9')}}"></script>
@@ -110,6 +115,7 @@ Requerimientos pendientes
 
 <script src="{{ asset('js/logistica/mapeo/mapeoItemsRequerimiento.js?v=9')}}"></script>
 <script src="{{ asset('js/logistica/mapeo/mapeoAsignarProducto.js?v=9')}}"></script>
+
 
 <script>
 
