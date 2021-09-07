@@ -190,4 +190,31 @@ class VentasInternasController extends Controller
         }
         return response()->json($rpta);
     }
+
+    public function verDocumentosAutogenerados($id_doc_com)
+    {
+        $detalle = DB::table('almacen.doc_com_det')
+            ->select(
+                DB::raw("CONCAT(guia_com.serie, '-', guia_com.numero) as guia_com"),
+                DB::raw("CONCAT(doc_com.serie, '-', doc_com.numero) as doc_com"),
+                'mov_alm.id_mov_alm as id_ingreso',
+                'log_ord_compra.codigo as codigo_oc',
+                'log_ord_compra.id_orden_compra',
+                'alm_req.codigo as codigo_req',
+                'alm_req.id_requerimiento',
+            )
+            ->join('almacen.guia_com_det', 'guia_com_det.id_guia_com_det', '=', 'doc_com_det.id_guia_com_det')
+            ->join('almacen.mov_alm_det', 'mov_alm_det.id_guia_com_det', '=', 'guia_com_det.id_guia_com_det')
+            ->join('almacen.mov_alm', 'mov_alm.id_mov_alm', '=', 'mov_alm_det.id_mov_alm')
+            ->join('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_orden', '=', 'guia_com_det.id_oc_det')
+            ->join('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
+            ->join('almacen.guia_com', 'guia_com.id_guia', '=', 'guia_com_det.id_guia_com')
+            ->join('logistica.log_ord_compra', 'log_ord_compra.id_orden_compra', '=', 'log_det_ord_compra.id_orden_compra')
+            ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+            ->join('almacen.doc_com', 'doc_com.id_doc_com', '=', 'doc_com_det.id_doc')
+            ->where('doc_com_det.id_doc', $id_doc_com)
+            ->distinct()
+            ->get();
+        return response()->json($detalle);
+    }
 }
