@@ -18,7 +18,7 @@ class RequerimientoView {
         // $('[name=periodo]').val(today.getFullYear());
         this.getTipoCambioCompra();
         let idRequerimiento = localStorage.getItem("idRequerimiento");
-        console.log(idRequerimiento);
+        // console.log(idRequerimiento);
         if (idRequerimiento !== null){
             this.cargarRequerimiento(idRequerimiento)
             localStorage.removeItem("idRequerimiento");
@@ -455,7 +455,7 @@ class RequerimientoView {
                     <div class="btn-group" role="group">
                         <input type="hidden" class="tipoItem" name="tipoItem[]" value="1">
                         <input type="hidden" class="idRegister" name="idRegister[]" value="${data[i].id_detalle_requerimiento}">
-                        <button type="button" class="btn btn-warning btn-xs handleClickAdjuntarArchivoItem" name="btnAdjuntarArchivoItem[]" title="Adjuntos" >
+                        <button type="button" class="btn btn-warning btn-xs activation handleClickAdjuntarArchivoItem" name="btnAdjuntarArchivoItem[]" title="Adjuntos" ${hasDisabledInput} >
                             <i class="fas fa-paperclip"></i>
                             <span class="badge" name="cantidadAdjuntosItem" style="position:absolute; top:-10px; left:-10px; border: solid 0.1px;">0</span>    
                         </button> 
@@ -498,7 +498,7 @@ class RequerimientoView {
                         <div class="btn-group" role="group">
                             <input type="hidden" class="tipoItem" name="tipoItem[]" value="1">
                             <input type="hidden" class="idRegister" name="idRegister[]" value="${data[i].id_detalle_requerimiento}">
-                            <button type="button" class="btn btn-warning btn-xs handleClickAdjuntarArchivoItem" name="btnAdjuntarArchivoItem[]" title="Adjuntos" >
+                            <button type="button" class="btn btn-warning btn-xs activation handleClickAdjuntarArchivoItem" name="btnAdjuntarArchivoItem[]" title="Adjuntos" ${hasDisabledInput}>
                                 <i class="fas fa-paperclip"></i>
                                 <span class="badge" name="cantidadAdjuntosItem" style="position:absolute; top:-10px; left:-10px; border: solid 0.1px;">0</span>    
                             </button> 
@@ -1909,13 +1909,10 @@ class RequerimientoView {
         document.querySelector("span[name='cantidadAdjuntosRequerimiento']").textContent=0;
         disabledControl(document.getElementsByName("btn-imprimir-requerimento-pdf"), true);
         disabledControl(document.getElementsByName("btn-adjuntos-requerimiento"), true);
-
-    
     }
 
     cancelarRequerimiento() {
         this.RestablecerFormularioRequerimiento();
-        document.getElementsByName("btn-adjuntos-requerimiento")[0].setAttribute('disabled',true);
 
     }
 
