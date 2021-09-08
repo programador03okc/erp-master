@@ -202,7 +202,7 @@ Producto
                                             <h5></h5>
                                             <div class="icheckbox_flat-blue">
                                                 <label style="display:flex;">
-                                                    <input type="checkbox" class="flat-red" name="series" value="0">
+                                                    <input type="checkbox" class="flat-red activation" name="series" value="0">
                                                 </label>
                                             </div> Control de Series
 

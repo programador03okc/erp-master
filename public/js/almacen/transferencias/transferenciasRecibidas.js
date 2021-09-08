@@ -31,7 +31,7 @@ function listarTransferenciasRecibidas() {
                 { data: "codigo" },
                 { data: "guia_ven" },
                 { data: "guia_com" },
-                { data: "doc_ven" },
+                { data: "doc_ven", className: "text-center" },
                 { data: "doc_com" },
                 { data: "alm_origen_descripcion" },
                 { data: "alm_destino_descripcion" },
@@ -116,6 +116,15 @@ function listarTransferenciasRecibidas() {
                         );
                     }, targets: 4, className: "text-center"
                 },
+                {
+                    render: function (data, type, row) {
+                        return (
+                            row["doc_com"] + (row["doc_com"] !== '-' ? ` <i class="fas fa-info-circle blue verDocsAutogenerados" data-id-doc-compra="${row["id_doc_com"]}"
+                            style="cursor: pointer;" title="Ver documentos autogenerados"></i>`: '')
+                        );
+                    }, targets: 6, className: "text-center"
+
+                },
             ],
             order: [[0, "desc"]]
         });
@@ -199,6 +208,15 @@ $("#listaTransferenciasRecibidas tbody").on("click", "button.autogenerar", funct
             msg: "No existe un documento de venta."
         });
     }
+});
+
+$("#listaTransferenciasRecibidas tbody").on("click", "i.verDocsAutogenerados", function () {
+    var id = $(this).data("idDocCompra");
+    console.log('prueba: ' + id);
+    $("#modal-verDocsAutogenerados").modal({
+        show: true
+    });
+    verDocumentosAutogenerados(id);
 });
 
 function autogenerarDocsCompra(id_doc_ven) {

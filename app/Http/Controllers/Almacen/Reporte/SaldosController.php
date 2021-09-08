@@ -60,25 +60,25 @@ class SaldosController extends Controller
         $nueva_data = [];
 
         foreach ($query as $d) {
-            if ($d->stock !== '0') {
-                $nuevo = [
-                    'id_prod_ubi' => $d->id_prod_ubi,
-                    'id_producto' => $d->id_producto,
-                    'id_almacen' => $d->id_almacen,
-                    'codigo' => $d->codigo,
-                    'part_number' => $d->part_number,
-                    'descripcion' => $d->descripcion,
-                    'abreviatura' => $d->abreviatura,
-                    'id_unidad_medida' => $d->id_unidad_medida,
-                    'stock' => $d->stock,
-                    'simbolo' => $d->simbolo,
-                    'id_moneda' => $d->id_moneda,
-                    'costo_promedio' => round($d->costo_promedio, 4, PHP_ROUND_HALF_UP),
-                    'cantidad_reserva' => $d->cantidad_reserva,
-                    'almacen_descripcion' => $d->almacen_descripcion,
-                ];
-                array_push($nueva_data, $nuevo);
-            }
+            // if ($d->stock !== '0') {
+            $nuevo = [
+                'id_prod_ubi' => $d->id_prod_ubi,
+                'id_producto' => $d->id_producto,
+                'id_almacen' => $d->id_almacen,
+                'codigo' => $d->codigo,
+                'part_number' => $d->part_number,
+                'descripcion' => $d->descripcion,
+                'abreviatura' => $d->abreviatura,
+                'id_unidad_medida' => $d->id_unidad_medida,
+                'stock' => $d->stock,
+                'simbolo' => $d->simbolo,
+                'id_moneda' => $d->id_moneda,
+                'costo_promedio' => round($d->costo_promedio, 4, PHP_ROUND_HALF_UP),
+                'cantidad_reserva' => $d->cantidad_reserva,
+                'almacen_descripcion' => $d->almacen_descripcion,
+            ];
+            array_push($nueva_data, $nuevo);
+            // }
         }
         $output['data'] = $nueva_data;
         return response()->json($output);
@@ -116,8 +116,10 @@ class SaldosController extends Controller
                 'alm_req.concepto',
                 'sis_usua.nombre_corto',
                 'alm_almacen.descripcion as almacen_descripcion',
-                'guia_com.serie',
-                'guia_com.numero',
+                DB::raw("CONCAT(guia_com.serie,'-',guia_com.numero) as guia_com"),
+                'trans.codigo as codigo_trans',
+                'transformacion.codigo as codigo_transfor_materia',
+                'transformado.codigo as codigo_transfor_transformado',
             )
             ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_reserva.id_almacen_reserva')
             ->leftjoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'alm_reserva.id_detalle_requerimiento')
@@ -125,6 +127,12 @@ class SaldosController extends Controller
             ->leftjoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'alm_req.id_usuario')
             ->leftjoin('almacen.guia_com_det', 'guia_com_det.id_guia_com_det', '=', 'alm_reserva.id_guia_com_det')
             ->leftjoin('almacen.guia_com', 'guia_com.id_guia', '=', 'guia_com_det.id_guia_com')
+            ->leftjoin('almacen.trans_detalle', 'trans_detalle.id_trans_detalle', '=', 'alm_reserva.id_trans_detalle')
+            ->leftjoin('almacen.trans', 'trans.id_transferencia', '=', 'trans_detalle.id_transferencia')
+            ->leftjoin('almacen.transfor_materia', 'transfor_materia.id_materia', '=', 'alm_reserva.id_materia')
+            ->leftjoin('almacen.transformacion', 'transformacion.id_transformacion', '=', 'transfor_materia.id_transformacion')
+            ->leftjoin('almacen.transfor_transformado', 'transfor_transformado.id_transformado', '=', 'alm_reserva.id_transformado')
+            ->leftjoin('almacen.transformacion as transformado', 'transformado.id_transformacion', '=', 'transfor_transformado.id_transformacion')
             ->where([
                 ['alm_reserva.id_producto', '=', $id],
                 ['alm_reserva.id_almacen_reserva', '=', $almacen],

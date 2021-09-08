@@ -1,5 +1,5 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-verRequerimientoEstado" style="overflow-y:scroll;">
-    <div class="modal-dialog" style="width: 800px;">
+    <div class="modal-dialog" style="width: 90%;">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
@@ -21,6 +21,9 @@
                                         <th>Almacén</th>
                                         <th>Stock Comprometido</th>
                                         <th>RegistradoPor</th>
+                                        <th>Guía Compra</th>
+                                        <th>Transferencia</th>
+                                        <th>Transformación</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>

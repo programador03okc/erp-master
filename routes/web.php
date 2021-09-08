@@ -1264,6 +1264,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('mostrarTransportistas', 'DistribucionController@mostrarTransportistas');
 
 				Route::get('autogenerarDocumentosCompra/{id}', 'Tesoreria\Facturacion\VentasInternasController@autogenerarDocumentosCompra')->name('autogenerarDocumentosCompra');
+				Route::get('verDocumentosAutogenerados/{id}', 'Tesoreria\Facturacion\VentasInternasController@verDocumentosAutogenerados');
 			});
 		});
 

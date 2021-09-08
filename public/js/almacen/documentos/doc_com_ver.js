@@ -6,7 +6,7 @@ function documentosVer(id) {
         type: "GET",
         url: "documentos_ver/" + id,
         dataType: "JSON",
-        success: function(response) {
+        success: function (response) {
             console.log(response);
             let html = "";
             $("[name=id_doc_com]").val();
@@ -15,20 +15,19 @@ function documentosVer(id) {
                 <tr>
                     <td colSpan="14">
                         <button type="button" class="btn btn-danger btn-xs " data-toggle="tooltip" 
-                        data-placement="bottom" title="Anular Documento" onClick="anularDocCompra(${
-                            element.id_doc_com
-                        });">
+                        data-placement="bottom" title="Anular Documento" onClick="anularDocCompra(${element.id_doc_com
+                    });">
                         <i class="fas fa-trash"></i> Anular Documento</button>
                     </td>
                 </tr>
                 <tr>
                     <th colSpan="2">Documento: </th>
                     <td colSpan="2">${element.tp_doc +
-                        " " +
-                        element.serie +
-                        "-" +
-                        element.numero}</td>
-                    <th >Tipo de Cambio: S/ ${element.tipo_cambio}</td>
+                    " " +
+                    element.serie +
+                    "-" +
+                    element.numero}</td>
+                    <th >Tipo de Cambio: S/ ${(element.tipo_cambio !== null ? element.tipo_cambio : '')}</td>
                     <th colSpan="2">Empresa-Sede: </th>
                     <td colSpan="3">${element.sede_descripcion}</td>
                 </tr>
@@ -37,8 +36,8 @@ function documentosVer(id) {
                     <td colSpan="3">${(element.nro_documento !== null
                         ? element.nro_documento
                         : "") +
-                        " - " +
-                        element.razon_social}</td>
+                    " - " +
+                    element.razon_social}</td>
                     <th colSpan="2">Importe: </th>
                     <td colSpan="2">${formatNumber.decimal(
                         element.total_a_pagar,
@@ -47,9 +46,9 @@ function documentosVer(id) {
                     )}</td>
                     <th colSpan="2">Condición: </th>
                     <td colSpan="3">${element.condicion_descripcion +
-                        (element.credito_dias !== null
-                            ? element.credito_dias + " días"
-                            : "")}</td>
+                    (element.credito_dias !== null
+                        ? element.credito_dias + " días"
+                        : "")}</td>
                 </tr>
                 <tr><td colSpan="12"></td></tr>
                 <tr style="background-color: Gainsboro;">
@@ -75,19 +74,16 @@ function documentosVer(id) {
                 detalles.forEach(item => {
                     html += `<tr>
                         <td>${i}</td>
-                        <td>${
-                            item.serie !== null
-                                ? item.serie + "-" + item.numero
-                                : ""
+                        <td>${item.serie !== null
+                            ? item.serie + "-" + item.numero
+                            : ""
                         }</td>
                         <td>${item.codigo !== null ? item.codigo : ""}</td>
-                        <td>${
-                            item.part_number !== null ? item.part_number : ""
+                        <td>${item.part_number !== null ? item.part_number : ""
                         }</td>
-                        <td>${
-                            item.descripcion !== null
-                                ? item.descripcion
-                                : item.servicio_descripcion
+                        <td>${item.descripcion !== null
+                            ? item.descripcion
+                            : item.servicio_descripcion
                         }</td>
                         <td class="right">${item.cantidad}</td>
                         <td>${item.abreviatura}</td>
@@ -104,34 +100,34 @@ function documentosVer(id) {
                     i++;
                 });
                 html += `<tr>
-                    <td colSpan="11" class="right">SubTotal</td>
+                    <td colSpan="11" class="text-right">SubTotal</td>
                     <th class="right">${formatNumber.decimal(
-                        element.sub_total,
-                        element.simbolo,
-                        -2
-                    )}</th>
+                    element.sub_total,
+                    element.simbolo,
+                    -2
+                )}</th>
                 </tr>
                 <tr>
-                    <td colSpan="11" class="right">IGV</td>
+                    <td colSpan="11" class="text-right">IGV</td>
                     <th class="right">${formatNumber.decimal(
-                        element.total_igv,
-                        element.simbolo,
-                        -2
-                    )}</th>
+                    element.total_igv,
+                    element.simbolo,
+                    -2
+                )}</th>
                 </tr>
                 <tr>
-                    <td colSpan="11" class="right">Total</td>
+                    <td colSpan="11" class="text-right">Total</td>
                     <th class="right">${formatNumber.decimal(
-                        element.total_a_pagar,
-                        element.simbolo,
-                        -2
-                    )}</th>
+                    element.total_a_pagar,
+                    element.simbolo,
+                    -2
+                )}</th>
                 </tr>
                 <tr><td colSpan="12"></td></tr>`;
             });
             $("#documentos tbody").html(html);
         }
-    }).fail(function(jqXHR, textStatus, errorThrown) {
+    }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
@@ -148,13 +144,13 @@ function anularDocCompra(id) {
             type: "GET",
             url: "anular_doc_com/" + id,
             dataType: "JSON",
-            success: function(response) {
+            success: function (response) {
                 console.log(response);
                 alert("Se annulo correctamente el documento.");
                 listarIngresos();
                 $("#modal-doc_ver").modal("hide");
             }
-        }).fail(function(jqXHR, textStatus, errorThrown) {
+        }).fail(function (jqXHR, textStatus, errorThrown) {
             console.log(jqXHR);
             console.log(textStatus);
             console.log(errorThrown);

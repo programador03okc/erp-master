@@ -94,6 +94,10 @@ function verRequerimientosReservados(id_producto, id_almacen) {
                     <td class="text-center">${element.almacen_descripcion}</td>
                     <td class="text-center">${(element.stock_comprometido !== null ? element.stock_comprometido : 0)}</td>
                     <td class="text-center">${(element.nombre_corto !== null ? element.nombre_corto : '')}</td>
+                    <td class="text-center">${(element.guia_com !== null ? element.guia_com : '')}</td>
+                    <td class="text-center">${(element.codigo_trans !== null ? element.codigo_trans : '')}</td>
+                    <td class="text-center">${(element.codigo_transfor_materia !== null ? element.codigo_transfor_materia :
+                        (element.codigo_transfor_transformado !== null ? element.codigo_transfor_transformado : ''))}</td>
                     </tr>`;
                 i++;
             });

@@ -89,6 +89,7 @@ class TransferenciaController extends Controller
                 DB::raw("CONCAT(guia_com.serie,'-',guia_com.numero) as guia_com"),
                 DB::raw("CONCAT(doc_ven.serie,'-',doc_ven.numero) as doc_ven"),
                 DB::raw("CONCAT(doc_com.serie,'-',doc_com.numero) as doc_com"),
+                'doc_com.id_doc_com',
                 'alm_origen.descripcion as alm_origen_descripcion',
                 'alm_destino.descripcion as alm_destino_descripcion',
                 'sede_origen.id_empresa as id_empresa_destino',

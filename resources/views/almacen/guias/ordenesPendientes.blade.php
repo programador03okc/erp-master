@@ -109,7 +109,7 @@ Pendientes de Ingreso
 
                             <div class="row">
                                 <div class="col-md-12">
-                                    <!-- <button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Seleccione varias guias para ingresar un comprobante" onClick="open_doc_create_seleccionadas();">Ingresar Comprobante</button> -->
+
                                     <table class="mytable table table-condensed table-bordered table-okc-view" id="listaIngresosAlmacen">
                                         <thead>
                                             <tr>
