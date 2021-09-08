@@ -1,34 +1,34 @@
-function nuevo_req(){
-    // console.log('nuevo');
-    document.querySelector("div[id='group-historial-revisiones']").setAttribute('hidden',true);
+// function nuevo_req(){
+//     console.log('nuevo');
+//     document.querySelector("div[id='group-historial-revisiones']").setAttribute('hidden',true);
 
-    data_item=[];
-    data=[];
-    adjuntos=[];
-    adjuntosRequerimiento=[];
-    onlyAdjuntosRequerimiento=[];
-    $('#form-requerimiento')[0].reset();
-    limpiarSelectFuenteDet();
-    // autoSelectTipoRequerimientoPorUsuarioEnSesion();
-    autoSelectTipoRequerimientoPorDefecto(); //tipo_formulario.js
-    document.querySelector("form[id='form-requerimiento'] div[id='input-group-fuente_det']").setAttribute('hidden',true);
+//     data_item=[];
+//     data=[];
+//     adjuntos=[];
+//     adjuntosRequerimiento=[];
+//     onlyAdjuntosRequerimiento=[];
+//     $('#form-requerimiento')[0].reset();
+//     limpiarSelectFuenteDet();
+//     // autoSelectTipoRequerimientoPorUsuarioEnSesion();
+//     autoSelectTipoRequerimientoPorDefecto(); //tipo_formulario.js
+//     document.querySelector("form[id='form-requerimiento'] div[id='input-group-fuente_det']").setAttribute('hidden',true);
 
-    // $('#body_detalle_requerimiento').html('<tr id="default_tr"><td></td><td colspan="12"> No hay datos registrados</td></tr>');
-    $('#body_adjuntos_requerimiento').html('<tr id="default_tr"><td></td><td colspan="3"> No hay datos registrados</td></tr>');
-    $('#body_lista_trazabilidad_requerimiento').html('<tr id="default_tr"><td></td><td colspan="5"> No hay datos registrados</td></tr>');
-    $('#estado_doc').text('');
-    $('[name=id_usuario_req]').val('');
-    $('[name=id_estado_doc]').val('');
-    $('[name=id_requerimiento]').val('');
-    // vista_extendida();
-    var btnImprimirRequerimiento = document.getElementsByName("btn-imprimir-requerimento-pdf");
-    disabledControl(btnImprimirRequerimiento,true);
-    var btnAdjuntosRequerimiento = document.getElementsByName("btn-adjuntos-requerimiento");
-    disabledControl(btnAdjuntosRequerimiento,false);
-    var btnTrazabilidadRequerimiento = document.getElementsByName("btn-ver-trazabilidad-requerimiento");
-    disabledControl(btnTrazabilidadRequerimiento,true);
+//     // $('#body_detalle_requerimiento').html('<tr id="default_tr"><td></td><td colspan="12"> No hay datos registrados</td></tr>');
+//     $('#body_adjuntos_requerimiento').html('<tr id="default_tr"><td></td><td colspan="3"> No hay datos registrados</td></tr>');
+//     $('#body_lista_trazabilidad_requerimiento').html('<tr id="default_tr"><td></td><td colspan="5"> No hay datos registrados</td></tr>');
+//     $('#estado_doc').text('');
+//     $('[name=id_usuario_req]').val('');
+//     $('[name=id_estado_doc]').val('');
+//     $('[name=id_requerimiento]').val('');
+//     // vista_extendida();
+//     var btnImprimirRequerimiento = document.getElementsByName("btn-imprimir-requerimento-pdf");
+//     disabledControl(btnImprimirRequerimiento,true);
+//     var btnAdjuntosRequerimiento = document.getElementsByName("btn-adjuntos-requerimiento");
+//     disabledControl(btnAdjuntosRequerimiento,false);
+//     var btnTrazabilidadRequerimiento = document.getElementsByName("btn-ver-trazabilidad-requerimiento");
+//     disabledControl(btnTrazabilidadRequerimiento,true);
 
-}
+// }
 
 function llenarTablaCuadroCostosComercial(data){
     var vardataTables = funcDatatables();

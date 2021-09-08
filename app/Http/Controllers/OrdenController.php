@@ -1539,7 +1539,7 @@ class OrdenController extends Controller
                 'adm_tp_docum.descripcion AS tipo_documento',
                 'log_ord_compra.fecha',
                 'log_ord_compra.id_usuario',
-                DB::raw("concat(pers.nombres,' - ',pers.apellido_paterno,' - ',pers.apellido_materno) as nombre_usuario"),
+                DB::raw("concat(pers.nombres,' ',pers.apellido_paterno,' ',pers.apellido_materno) as nombre_usuario"),
                 'log_ord_compra.id_moneda',
                 'sis_moneda.simbolo as moneda_simbolo',
                 'log_ord_compra.incluye_igv',
@@ -1889,19 +1889,20 @@ class OrdenController extends Controller
                 body{
                     background-color: #fff;
                     font-family: "DejaVu Sans";
-                    font-size: 9px;
+                    font-size: 10px;
                     box-sizing: border-box;
                     padding:10px;
                 }
                 table{
 
-                    width:560px;
+                    width:95%;
                     height:auto;
                     border-collapse: collapse;
                 }
                 .tablePDF thead{
                     padding:4px;
                     background-color:#d04f46;
+                    color:white;
                 }
                 .bgColorRed{
                 
@@ -2021,14 +2022,14 @@ class OrdenController extends Controller
                 <table class="tablePDF" style="border:0; font-size:8px;">
                 <thead>
                     <tr class="subtitle">
-                        <td style="width:5px; color:white; text-align:center;">Código</td>
-                        <td style="width:5px; color:white; text-align:center;">Part Number</td>
-                        <td style="width:280px; color:white; text-align:center;">Descripción</td>
-                        <td style="width:15px; color:white; text-align:center;">Und</td>
-                        <td style="width:5px; color:white; text-align:center;">Cant.</td>
-                        <td style="width:15px; color:white; text-align:center;">Precio</td>
-                        <td style="width:5px; color:white; text-align:center;">Descuento</td>
-                        <td style="width:15px; color:white; text-align:center;">Total</td>
+                        <td style="width:5px; text-align:center;">Código</td>
+                        <td style="width:5px; text-align:center;">Part Number</td>
+                        <td style="width:280px; text-align:center;">Descripción</td>
+                        <td style="width:15px; text-align:center;">Und</td>
+                        <td style="width:5px; text-align:center;">Cant.</td>
+                        <td style="width:15px; text-align:center;">Precio</td>
+                        <td style="width:5px; text-align:center;">Descuento</td>
+                        <td style="width:15px; text-align:center;">Total</td>
                     </tr>   
                 </thead>';
 
@@ -2162,8 +2163,8 @@ class OrdenController extends Controller
         $html.= '<br>
 
                     <footer>
-                        <p style="font-size:7px; " class="pie_de_pagina">GENERADO POR:' . $ordenArray['head']['nombre_usuario'] .  '</p>
-                        <p style="font-size:7px; " class="pie_de_pagina">' . $ordenArray['head']['fecha_registro'] .  '</p>
+                        <p style="font-size:9px; " class="pie_de_pagina">GENERADO POR: ' . $ordenArray['head']['nombre_usuario'] .  '</p>
+                        <p style="font-size:9px; " class="pie_de_pagina">' . $ordenArray['head']['fecha_registro'] .  '</p>
                     </footer>
                 
             </body>

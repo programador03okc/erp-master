@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Almacen\Movimiento\OrdenesPendientesController;
 use App\Models\Almacen\Almacen;
 use App\Models\Almacen\DetalleRequerimiento;
 use App\Models\Almacen\Requerimiento;
@@ -568,7 +569,7 @@ class ComprasPendientesController extends Controller
             
             if($reserva->id_reserva > 0){
                 $mensaje.=' Se creo nueva reserva '.$reserva->codigo;
-
+                OrdenesPendientesController::validaProdUbi($request->idProducto, $request->almacenReserva);
                 if(strlen($codigoOIdReservaAnulada)>0){
                     $mensaje.=' en remplazo por la reserva '.$codigoOIdReservaAnulada;
                 }

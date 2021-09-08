@@ -40,7 +40,7 @@ class RequerimientoView {
         document.querySelector("input[class~='handleChangeFechaLimite']").addEventListener("change", this.updateFechaLimite.bind(this), false);
 
         $('#modal-adjuntar-archivos-requerimiento').one("change","input.handleChangeAgregarAdjuntoRequerimiento", (e)=>{
-            this.agregarAdjuntoRequerimiento(e.target);
+            this.agregarAdjuntoRequerimiento(e.currentTarget);
         });
 
         $('#ListaDetalleRequerimiento tbody').on("click","button.handleClickCargarModalPartidas", (e)=>{
@@ -84,7 +84,7 @@ class RequerimientoView {
             this.updatePrecioItem(e.target);
         });
         $('#ListaDetalleRequerimiento tbody').on("click","button.handleClickAdjuntarArchivoItem", (e)=>{
-            this.adjuntarArchivoItem(e.target);
+            this.adjuntarArchivoItem(e.currentTarget);
         });
         $('#ListaDetalleRequerimiento tbody').on("click","button.handleClickEliminarItem", (e)=>{
             this.eliminarItem(e);
@@ -94,6 +94,8 @@ class RequerimientoView {
     editRequerimiento(){
         if(parseInt(document.querySelector("input[name='id_requerimiento']").value) > 0){
             $("#form-requerimiento .activation").attr('disabled', false);
+            document.getElementsByName("btn-adjuntos-requerimiento")[0].removeAttribute('disabled');
+
         }
     }
 
@@ -108,6 +110,7 @@ class RequerimientoView {
 
         this.requerimientoCtrl.getListadoElaborados("ME", null, null, null, null, null).then((res)=> {
             this.construirTablaHistorialRequerimientosElaborados(res['data']);
+
         }).catch(function (err) {
             console.log(err)
         })
@@ -217,6 +220,7 @@ class RequerimientoView {
         const objecto= this;
         this.requerimientoCtrl.getRequerimiento(idRequerimiento).then((res)=> {
             objecto.mostrarRequerimiento(res);
+            document.getElementsByName("btn-adjuntos-requerimiento")[0].setAttribute('disabled',true);
 
         }).catch(function (err) {
             console.log(err)
@@ -1442,6 +1446,7 @@ class RequerimientoView {
     }
 
     agregarAdjuntoRequerimiento(event) {
+        console.log(event);
         let archivoAdjunto = new ArchivoAdjunto(event.files,this);
         archivoAdjunto.addFileLevelRequerimiento();
     }
@@ -1906,6 +1911,12 @@ class RequerimientoView {
         disabledControl(document.getElementsByName("btn-adjuntos-requerimiento"), true);
 
     
+    }
+
+    cancelarRequerimiento() {
+        this.RestablecerFormularioRequerimiento();
+        document.getElementsByName("btn-adjuntos-requerimiento")[0].setAttribute('disabled',true);
+
     }
 
     limpiarMesajesValidacion(){

@@ -84,7 +84,12 @@ $(document).ready(function () {
 
 				}
 				else if (page == 'requerimiento') {
-					nuevo_req();
+					const requerimientoModel = new RequerimientoModel();
+					const requerimientoController = new RequerimientoCtrl(requerimientoModel);
+					const requerimientoView = new RequerimientoView(requerimientoController);
+					requerimientoView.RestablecerFormularioRequerimiento();
+					document.getElementsByName("btn-adjuntos-requerimiento")[0].removeAttribute('disabled');
+
 				}
 				else if (page == 'proveedores') {
 					nuevo(forms);
@@ -214,7 +219,11 @@ $(document).ready(function () {
 				changeStateButton('cancelar');
 				clearForm(forms);
 				if (page == 'requerimiento') {
-					cancelarRequerimiento();
+					const requerimientoModel = new RequerimientoModel();
+					const requerimientoController = new RequerimientoCtrl(requerimientoModel);
+					const requerimientoView = new RequerimientoView(requerimientoController);
+					requerimientoView.cancelarRequerimiento();
+
 				}
 				else if (page == 'cotizacion') {
 					document.getElementById('btnNuevo').setAttribute("disabled", "true");
