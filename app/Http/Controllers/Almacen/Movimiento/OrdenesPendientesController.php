@@ -1210,7 +1210,7 @@ class OrdenesPendientesController extends Controller
         $valor = GenericoAlmacenController::valorizacion_almacen($id_producto, $id_almacen);
         $cprom = ($saldo > 0 ? $valor / $saldo : 0);
         //guardo saldos actualizados
-        if ($ubi !== null) { //si no existe -> creo la ubicacion
+        if ($ubi !== null) {
             DB::table('almacen.alm_prod_ubi')
                 ->where('id_prod_ubi', $ubi->id_prod_ubi)
                 ->update([
@@ -1218,13 +1218,36 @@ class OrdenesPendientesController extends Controller
                     'valorizacion' => $valor,
                     'costo_promedio' => $cprom
                 ]);
-        } else {
+        } else { //si no existe -> creo la ubicacion
             DB::table('almacen.alm_prod_ubi')->insert([
                 'id_producto' => $id_producto,
                 'id_almacen' => $id_almacen,
                 'stock' => $saldo,
                 'valorizacion' => $valor,
                 'costo_promedio' => $cprom,
+                'estado' => 1,
+                'fecha_registro' => date('Y-m-d H:i:s')
+            ]);
+        }
+    }
+
+    public static function validaProdUbi($id_producto, $id_almacen)
+    {
+        //Obtengo el registro de saldos
+        $ubi = DB::table('almacen.alm_prod_ubi')
+            ->where([
+                ['id_producto', '=', $id_producto],
+                ['id_almacen', '=', $id_almacen]
+            ])
+            ->first();
+        //si no existe -> creo la ubicacion
+        if ($ubi == null) {
+            DB::table('almacen.alm_prod_ubi')->insert([
+                'id_producto' => $id_producto,
+                'id_almacen' => $id_almacen,
+                'stock' => 0,
+                'valorizacion' => 0,
+                'costo_promedio' => 0,
                 'estado' => 1,
                 'fecha_registro' => date('Y-m-d H:i:s')
             ]);
