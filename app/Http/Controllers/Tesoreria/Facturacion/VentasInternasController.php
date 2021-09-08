@@ -51,6 +51,7 @@ class VentasInternasController extends Controller
                     [
                         'serie' => strtoupper($doc_ven->serie),
                         'numero' => $doc_ven->numero,
+                        'id_sede' => $detalle->first()->id_sede,
                         'id_tp_doc' => $doc_ven->id_tp_doc,
                         'id_proveedor' => $doc_ven->id_proveedor,
                         'fecha_emision' => $doc_ven->fecha_emision,

@@ -493,3 +493,56 @@ $(document).ready(function () {
         fileReader.readAsArrayBuffer(file);
     });
 });
+
+function autogenerar() {
+    Swal.fire({
+        title: "Ingrese un prefijo para autogenerar las series:",
+        input: "text",
+        // type: "input",
+        icon: "info",
+        // text: "xx",
+        // closeOnConfirm: false,
+        showCancelButton: true,
+        confirmButtonText: "Autogenerar",
+        cancelButtonText: "Cancelar",
+        showLoaderOnConfirm: true,
+        preConfirm: (login) => {
+            return fetch(`//api.github.com/users/${login}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(response.statusText)
+                    }
+                    return response.json()
+                })
+                .catch(error => {
+                    Swal.showValidationMessage(
+                        `Request failed: ${error}`
+                    )
+                })
+        },
+        inputValidator: nombre => {
+            // Si el valor es válido, debes regresar undefined. Si no, una cadena
+            if (!nombre) {
+                return "Por favor ingrese un prefijo";
+            } else {
+                return undefined;
+            }
+        },
+        // preConfirm: function () {
+        //     return new Promise(function (resolve) {
+        //         resolve([
+        //             $('#swal-input1').val(),
+        //             $('#swal-input2').val()
+        //         ])
+        //     })
+        // },
+        // onOpen: function () {
+        //     $('#swal-input1').focus()
+        // }
+    }).then(resultado => {
+        if (resultado.value) {
+            let nombre = resultado.value;
+            console.log("Hola, " + nombre);
+        }
+    });
+}
