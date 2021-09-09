@@ -204,36 +204,38 @@ class RequerimientoModel {
     }
 
     getRequerimiento(idRequerimiento){
-        return  $.ajax({
-                type: 'GET',
-                url:`mostrar-requerimiento/${idRequerimiento}/null`,
-                dataType: 'JSON'
-                });
-        
-        // return new Promise(function(resolve, reject) {
-        //     $.ajax({
+        // return  $.ajax({
         //         type: 'GET',
         //         url:`mostrar-requerimiento/${idRequerimiento}/null`,
-        //         dataType: 'JSON',
-        //         beforeSend: function (data) { 
-
-        //             },
-        //         success(response) {
-        //             resolve(response);
-        //         },
-        //         error: function (jqXHR, textStatus, errorThrown) {
-        //             $('#modal-requerimiento div.modal-body').LoadingOverlay("hide", true);
-        //             Swal.fire(
-        //                 '',
-        //                 'Hubo un problema al registrar la respuesta. Por favor actualice la página e intente de nuevo',
-        //                 'error'
-        //             );
-        //             console.log(jqXHR);
-        //             console.log(textStatus);
-        //             console.log(errorThrown);
-        //         }
+        //         dataType: 'JSON'
         //         });
-        //     });
+        
+        return new Promise(function(resolve, reject) {
+            $.ajax({
+                type: 'GET',
+                url:`mostrar-requerimiento/${idRequerimiento}/null`,
+                dataType: 'JSON',
+                beforeSend: function (data) { 
+        
+                    $('#modal-requerimiento .modal-content').LoadingOverlay("show", {
+                        imageAutoResize: true,
+                        progress: true,
+                        imageColor: "#3c8dbc"
+                    });
+                    },
+                success(response) {
+                    resolve(response);
+                    $('#modal-requerimiento .modal-content').LoadingOverlay("hide", true);
+
+                },
+                fail: function (jqXHR, textStatus, errorThrown) {
+                    $('#modal-requerimiento .modal-content').LoadingOverlay("hide", true);
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                }
+                });
+            });
     }
 
     // listado 
@@ -330,11 +332,24 @@ class RequerimientoModel {
                 type: 'GET',
                 url:`trazabilidad-detalle-requerimiento/${idRequerimiento}`,
                 dataType: 'JSON',
+                beforeSend: function (data) { 
+        
+                    $('#modal-trazabilidad-requerimiento .modal-content').LoadingOverlay("show", {
+                        imageAutoResize: true,
+                        progress: true,
+                        imageColor: "#3c8dbc"
+                    });
+                    },
                 success(response) {
                     resolve(response.data);
+                    $('#modal-trazabilidad-requerimiento .modal-content').LoadingOverlay("hide", true);
+
                 },
-                error: function(err) {
-                    reject(err) 
+                fail: function (jqXHR, textStatus, errorThrown) {
+                    $('#modal-trazabilidad-requerimiento .modal-content').LoadingOverlay("hide", true);
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
                 }
                 });
             });
