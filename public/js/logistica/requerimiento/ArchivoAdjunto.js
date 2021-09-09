@@ -174,7 +174,6 @@ class ArchivoAdjunto {
 
     addFileLevelRequerimiento() {
         if (this.isAllowedFile() == true) {
-
             const nameFile = this.getName();
             const typeFile = this.getType();
             const sizeFile = this.getSize();
@@ -192,7 +191,11 @@ class ArchivoAdjunto {
             this.addToTablaArchivosRequerimiento(id, nameFile);
 
         } else {
-            alert(`La extensión del archivo .${typeFile} no esta permitido`);
+            Swal.fire(
+                '',
+                'Este tipo de archivo no esta permitido adjuntar',
+                'warning'
+            );
         }
         return false;
     }
@@ -218,7 +221,11 @@ class ArchivoAdjunto {
             this.addToTablaArchivosItem(id, nameFile)
 
         } else {
-            alert(`La extensión del archivo .${typeFile} no esta permitido`);
+            Swal.fire(
+                '',
+                'Este tipo de archivo no esta permitido adjuntar',
+                'warning'
+            );
         }
         return false;
     }

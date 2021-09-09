@@ -1079,7 +1079,7 @@ class RequerimientoController extends Controller
             foreach ($request->archivoAdjuntoRequerimientoToDelete as $id) {
                 if (preg_match('/^[0-9]+$/', $id)) {
                     AdjuntoRequerimiento::where('id_adjunto', '=', $id)
-                        ->update(['estado' => 7]);
+                    ->update(['estado' => 7]);
                 }
             }
         }
@@ -1087,7 +1087,7 @@ class RequerimientoController extends Controller
             foreach ($request->archivoAdjuntoItemToDelete as $id) {
                 if (preg_match('/^[0-9]+$/', $id)) {
                     AdjuntoDetalleRequerimiento::where('id_adjunto', '=', $id)
-                        ->update(['estado' => 7]);
+                    ->update(['estado' => 7]);
                 }
             }
         }

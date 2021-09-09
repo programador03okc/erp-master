@@ -39,8 +39,12 @@ class RequerimientoView {
         document.querySelector("select[class~='handleChangeUpdateSede']").addEventListener("change", this.updateSede.bind(this), false);
         document.querySelector("input[class~='handleChangeFechaLimite']").addEventListener("change", this.updateFechaLimite.bind(this), false);
 
-        $('#modal-adjuntar-archivos-requerimiento').one("change","input.handleChangeAgregarAdjuntoRequerimiento", (e)=>{
+        $('#modal-adjuntar-archivos-requerimiento').on("change","input.handleChangeAgregarAdjuntoRequerimiento", (e)=>{
             this.agregarAdjuntoRequerimiento(e.currentTarget);
+        });
+
+        $('#modal-adjuntar-archivos-detalle-requerimiento').on("change","input.handleChangeAgregarAdjuntoItem", (e)=>{
+            this.agregarAdjuntoItem(e);
         });
 
         $('#ListaDetalleRequerimiento tbody').on("click","button.handleClickCargarModalPartidas", (e)=>{
@@ -230,6 +234,8 @@ class RequerimientoView {
 
     mostrarRequerimiento(data) {
         let hasDisabledInput='disabled';
+        tempArchivoAdjuntoRequerimientoToDeleteList=[];
+        tempArchivoAdjuntoItemToDeleteList=[];
         if (data.hasOwnProperty('requerimiento')) {
             document.querySelector("input[name='nombre_archivo']").removeAttribute("disabled");
             this.RestablecerFormularioRequerimiento();
@@ -1413,7 +1419,7 @@ class RequerimientoView {
         let html = '';
         let hasDisableBtnEliminarArchivoRequerimiento= '';
         let estadoActualRequerimiento = document.querySelector("input[name='estado']").value;
-        if( estadoActualRequerimiento !=1 && estadoActualRequerimiento !=3){
+        if( estadoActualRequerimiento !=1 && estadoActualRequerimiento !=3 && estadoActualRequerimiento !=''){
             hasDisableBtnEliminarArchivoRequerimiento = 'disabled';
         }
         data.forEach(element => {
@@ -1446,7 +1452,6 @@ class RequerimientoView {
     }
 
     agregarAdjuntoRequerimiento(event) {
-        console.log(event);
         let archivoAdjunto = new ArchivoAdjunto(event.files,this);
         archivoAdjunto.addFileLevelRequerimiento();
     }
@@ -1470,9 +1475,7 @@ class RequerimientoView {
         this.limpiarTabla('listaArchivos');
         this.listarAdjuntosDeItem();
         
-        $('#modal-adjuntar-archivos-detalle-requerimiento').one("change","input.handleChangeAgregarAdjuntoItem", (e)=>{
-            this.agregarAdjuntoItem(e);
-        });
+
 
     }
 
@@ -1480,7 +1483,7 @@ class RequerimientoView {
         let html = '';
         let hasDisableBtnEliminarArchivoRequerimiento= '';
         let estadoActualRequerimiento = document.querySelector("input[name='estado']").value;
-        if( estadoActualRequerimiento !=1 && estadoActualRequerimiento !=3){
+        if( estadoActualRequerimiento !=1 && estadoActualRequerimiento !=3 && estadoActualRequerimiento !=''){
             hasDisableBtnEliminarArchivoRequerimiento = 'disabled';
         }
         tempArchivoAdjuntoItemList.forEach(element => {
@@ -1673,7 +1676,10 @@ class RequerimientoView {
 
             }
 
-            formData.append(`archivoAdjuntoItemToDelete[]`, tempArchivoAdjuntoItemToDeleteList);
+            tempArchivoAdjuntoItemToDeleteList.forEach((element,index) => {
+                formData.append(`archivoAdjuntoItemToDelete[${index}]`, element);
+            });
+            
 
 
             if (tempArchivoAdjuntoRequerimientoList.length > 0) {
@@ -1683,7 +1689,10 @@ class RequerimientoView {
 
             }
 
-            formData.append(`archivoAdjuntoRequerimientoToDelete[]`, tempArchivoAdjuntoRequerimientoToDeleteList);
+            tempArchivoAdjuntoRequerimientoToDeleteList.forEach((element,index) => {
+                
+                formData.append(`archivoAdjuntoRequerimientoToDelete[${index}]`, element);
+            });
 
 
             let typeActionForm = document.querySelector("form[id='form-requerimiento']").getAttribute("type"); //  register | edition
@@ -1901,6 +1910,8 @@ class RequerimientoView {
         this.limpiarMesajesValidacion();
         tempArchivoAdjuntoItemList = [];
         tempArchivoAdjuntoRequerimientoList = [];
+        tempArchivoAdjuntoRequerimientoToDeleteList=[];
+        tempArchivoAdjuntoItemToDeleteList=[];
         tempCentroCostoSelected=null;
         tempIdRegisterActive=null
         this.restaurarTotalMonedaDefault();
