@@ -15,7 +15,7 @@ function limpiarTabla(idElement){
 }
 
 function disabledControl(element,value){   
-    // console.log("disable control"); 
+    // console.log(element,value); 
     var i;
     for (i = 0; i < element.length; i++) {
         if(value === false){

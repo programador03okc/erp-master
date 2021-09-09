@@ -224,7 +224,6 @@ class RequerimientoView {
         const objecto= this;
         this.requerimientoCtrl.getRequerimiento(idRequerimiento).then((res)=> {
             objecto.mostrarRequerimiento(res);
-            document.getElementsByName("btn-adjuntos-requerimiento")[0].setAttribute('disabled',true);
 
         }).catch(function (err) {
             console.log(err)
@@ -237,11 +236,11 @@ class RequerimientoView {
         tempArchivoAdjuntoRequerimientoToDeleteList=[];
         tempArchivoAdjuntoItemToDeleteList=[];
         if (data.hasOwnProperty('requerimiento')) {
-            document.querySelector("input[name='nombre_archivo']").removeAttribute("disabled");
+        
             this.RestablecerFormularioRequerimiento();
             var btnImprimirRequerimiento = document.getElementsByName("btn-imprimir-requerimento-pdf");
             var btnAdjuntosRequerimiento = document.getElementsByName("btn-adjuntos-requerimiento");
-            let allButtonAdjuntarNuevo = document.querySelectorAll("input[name='nombre_archivo']");
+            // let allButtonAdjuntarNuevo = document.querySelectorAll("input[name='nombre_archivo']");
 
             disabledControl(btnImprimirRequerimiento, false);
             disabledControl(btnAdjuntosRequerimiento, false);
@@ -276,10 +275,9 @@ class RequerimientoView {
 
                     document.querySelector("form[id='form-requerimiento']").setAttribute('type','edition');
                     changeStateButton('historial'); //init.js
-
-                    allButtonAdjuntarNuevo.forEach(element => {
-                        element.removeAttribute("disabled");
-                    });
+                    // allButtonAdjuntarNuevo.forEach(element => {
+                    //     element.removeAttribute("disabled");
+                    // });
 
 
                     $("#form-requerimiento .activation").attr('disabled', true);
@@ -292,10 +290,9 @@ class RequerimientoView {
                     changeStateButton('editar'); //init.js
                     disabledControl(btnAdjuntosRequerimiento, false);
 
-
-                    allButtonAdjuntarNuevo.forEach(element => {
-                        element.removeAttribute("disabled");
-                    });
+                    // allButtonAdjuntarNuevo.forEach(element => {
+                    //     element.removeAttribute("disabled");
+                    // });
 
                     $("#form-requerimiento .activation").attr('disabled', false);
 
@@ -303,9 +300,10 @@ class RequerimientoView {
 
                 }else{
                     document.querySelector("div[id='group-historial-revisiones']").setAttribute('hidden',true);
-                    allButtonAdjuntarNuevo.forEach(element => {
-                        element.setAttribute("disabled",true);
-                    });
+
+                    // allButtonAdjuntarNuevo.forEach(element => {
+                    //     element.setAttribute("disabled",true);
+                    // });
 
 
                 }
@@ -461,7 +459,7 @@ class RequerimientoView {
                     <div class="btn-group" role="group">
                         <input type="hidden" class="tipoItem" name="tipoItem[]" value="1">
                         <input type="hidden" class="idRegister" name="idRegister[]" value="${data[i].id_detalle_requerimiento}">
-                        <button type="button" class="btn btn-warning btn-xs activation handleClickAdjuntarArchivoItem" name="btnAdjuntarArchivoItem[]" title="Adjuntos" ${hasDisabledInput} >
+                        <button type="button" class="btn btn-warning btn-xs  handleClickAdjuntarArchivoItem" name="btnAdjuntarArchivoItem[]" title="Adjuntos" >
                             <i class="fas fa-paperclip"></i>
                             <span class="badge" name="cantidadAdjuntosItem" style="position:absolute; top:-10px; left:-10px; border: solid 0.1px;">0</span>    
                         </button> 
@@ -504,7 +502,7 @@ class RequerimientoView {
                         <div class="btn-group" role="group">
                             <input type="hidden" class="tipoItem" name="tipoItem[]" value="1">
                             <input type="hidden" class="idRegister" name="idRegister[]" value="${data[i].id_detalle_requerimiento}">
-                            <button type="button" class="btn btn-warning btn-xs activation handleClickAdjuntarArchivoItem" name="btnAdjuntarArchivoItem[]" title="Adjuntos" ${hasDisabledInput}>
+                            <button type="button" class="btn btn-warning btn-xs  handleClickAdjuntarArchivoItem" name="btnAdjuntarArchivoItem[]" title="Adjuntos">
                                 <i class="fas fa-paperclip"></i>
                                 <span class="badge" name="cantidadAdjuntosItem" style="position:absolute; top:-10px; left:-10px; border: solid 0.1px;">0</span>    
                             </button> 
@@ -1404,6 +1402,36 @@ class RequerimientoView {
         this.limpiarTabla('listaArchivosRequerimiento');
 
         this.listarAdjuntosDeCabecera();
+        this.actualizarEstadoBotonAdjuntarNuevoCabeceraRequerimiento();
+    }
+    
+    actualizarEstadoBotonAdjuntarNuevoCabeceraRequerimiento(){
+        switch (document.querySelector("input[name='estado']").value) {
+            case '1':
+                if(document.querySelector("input[name='id_usuario_req']").value == auth_user.id_usuario){ //usuario en sesion == usuario requerimiento
+                    document.querySelector("div[id='modal-adjuntar-archivos-requerimiento'] div[id='group-action-upload-file']").classList.remove('oculto');
+                }else{
+                    document.querySelector("div[id='modal-adjuntar-archivos-requerimiento'] div[id='group-action-upload-file']").classList.add('oculto');
+                }
+                break;
+        
+            case '2':
+                document.querySelector("div[id='modal-adjuntar-archivos-requerimiento'] div[id='group-action-upload-file']").classList.add('oculto');
+                break;
+        
+            case '3':
+                if(document.querySelector("input[name='id_usuario_req']").value == auth_user.id_usuario){ //usuario en sesion == usuario requerimiento
+                    document.querySelector("div[id='modal-adjuntar-archivos-requerimiento'] div[id='group-action-upload-file']").classList.remove('oculto');
+                }else{
+                    document.querySelector("div[id='modal-adjuntar-archivos-requerimiento'] div[id='group-action-upload-file']").classList.add('oculto');
+                }
+                
+                break;
+        
+            default:
+                document.querySelector("div[id='modal-adjuntar-archivos-requerimiento'] div[id='group-action-upload-file']").classList.add('oculto');
+                break;
+        }
     }
 
     listarAdjuntosDeCabecera() {
@@ -1419,9 +1447,15 @@ class RequerimientoView {
         let html = '';
         let hasDisableBtnEliminarArchivoRequerimiento= '';
         let estadoActualRequerimiento = document.querySelector("input[name='estado']").value;
-        if( estadoActualRequerimiento !=1 && estadoActualRequerimiento !=3 && estadoActualRequerimiento !=''){
-            hasDisableBtnEliminarArchivoRequerimiento = 'disabled';
+        
+        if( estadoActualRequerimiento ==1 || estadoActualRequerimiento ==3 || estadoActualRequerimiento ==''){
+            if(document.querySelector("input[name='id_usuario_req']").value == auth_user.id_usuario){ //usuario en sesion == usuario requerimiento
+                hasDisableBtnEliminarArchivoRequerimiento = '';
+            }else{
+                hasDisableBtnEliminarArchivoRequerimiento = 'disabled';
+            }
         }
+
         data.forEach(element => {
             html += `<tr id="${element.id}" style="text-align:center">
         <td style="text-align:left;">${element.nameFile}</td>
@@ -1474,17 +1508,49 @@ class RequerimientoView {
 
         this.limpiarTabla('listaArchivos');
         this.listarAdjuntosDeItem();
+        this.actualizarEstadoBotonAdjuntarNuevoDetalleRequerimiento();
+    }
+
+    actualizarEstadoBotonAdjuntarNuevoDetalleRequerimiento(){
+        console.log(document.querySelector("input[name='estado']").value);
+        switch (document.querySelector("input[name='estado']").value) {
+            case '1':
+                if(document.querySelector("input[name='id_usuario_req']").value == auth_user.id_usuario){ //usuario en sesion == usuario requerimiento
+                    document.querySelector("div[id='modal-adjuntar-archivos-detalle-requerimiento'] div[id='group-action-upload-file']").classList.remove('oculto');
+                }else{
+                    document.querySelector("div[id='modal-adjuntar-archivos-detalle-requerimiento'] div[id='group-action-upload-file']").classList.add('oculto');
+                }
+                break;
         
-
-
+            case '2':
+                document.querySelector("div[id='modal-adjuntar-archivos-detalle-requerimiento'] div[id='group-action-upload-file']").classList.add('oculto');
+                break;
+        
+            case '3':
+                if(document.querySelector("input[name='id_usuario_req']").value == auth_user.id_usuario){ //usuario en sesion == usuario requerimiento
+                    document.querySelector("div[id='modal-adjuntar-archivos-detalle-requerimiento'] div[id='group-action-upload-file']").classList.remove('oculto');
+                }else{
+                    document.querySelector("div[id='modal-adjuntar-archivos-detalle-requerimiento'] div[id='group-action-upload-file']").classList.add('oculto');
+                }
+                
+                break;
+        
+            default:
+                document.querySelector("div[id='modal-adjuntar-archivos-detalle-requerimiento'] div[id='group-action-upload-file']").classList.add('oculto');
+                break;
+        }
     }
 
     listarAdjuntosDeItem() {
         let html = '';
         let hasDisableBtnEliminarArchivoRequerimiento= '';
         let estadoActualRequerimiento = document.querySelector("input[name='estado']").value;
-        if( estadoActualRequerimiento !=1 && estadoActualRequerimiento !=3 && estadoActualRequerimiento !=''){
-            hasDisableBtnEliminarArchivoRequerimiento = 'disabled';
+        if( estadoActualRequerimiento ==1 || estadoActualRequerimiento ==3 || estadoActualRequerimiento ==''){
+            if(document.querySelector("input[name='id_usuario_req']").value == auth_user.id_usuario){ //usuario en sesion == usuario requerimiento
+                hasDisableBtnEliminarArchivoRequerimiento = '';
+            }else{
+                hasDisableBtnEliminarArchivoRequerimiento = 'disabled';
+            }
         }
         tempArchivoAdjuntoItemList.forEach(element => {
             if (tempIdRegisterActive == element.idRegister) {
