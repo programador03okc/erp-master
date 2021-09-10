@@ -137,12 +137,18 @@ function open_despacho_create(data) {
                     // on();
                 }
                 else if (almacenes.length == 0) {
-                    alert('Es necesario que los productos esten en almacen.');
+                    Swal.fire({
+                        title: "Es necesario que los productos estén en almacén",
+                        icon: "warning"
+                    });
                     $('#modal-orden_despacho_create').modal('hide');
                 }
                 else {
                     console.log(almacenes_des);
-                    alert('Los productos no pueden estar en más de un Almacén: \n' + almacenes_des);
+                    Swal.fire({
+                        title: 'Los productos no pueden estar en más de un Almacén: \n' + almacenes_des,
+                        icon: "warning"
+                    });
                     $('#modal-orden_despacho_create').modal('hide');
                 }
             } else {
@@ -151,20 +157,26 @@ function open_despacho_create(data) {
                         var id_alm = $('[name=id_almacen]').val();
 
                         if (parseInt(almacenes_ext[0]) !== parseInt(id_alm)) {//revisar
-                            alert('El almacén es diferente. Debe realizar una transferencia. ' + almacenes_ext_des[0]);
+                            Swal.fire({
+                                title: 'El almacén es diferente. Debe realizar una transferencia. ' + almacenes_ext_des[0],
+                                icon: "warning"
+                            });
                             $('#modal-orden_despacho_create').modal('hide');
-                            // } else {
-                            //     $('[name=aplica_cambios]').prop('checked', false);
-                            //     off();
                         }
                     }
                     else if (almacenes_ext.length == 0) {
-                        alert('Es necesario que los productos transformados esten en Almacén.');
+                        Swal.fire({
+                            title: 'Es necesario que los productos transformados esten en almacén.',
+                            icon: "warning"
+                        });
                         $('#modal-orden_despacho_create').modal('hide');
                     }
                     else {
                         console.log(almacenes_ext_des);
-                        alert('Los productos transformados no pueden estar en más de un Almacén: \n' + almacenes_ext_des);
+                        Swal.fire({
+                            title: 'Los productos transformados no pueden estar en más de un Almacén: \n' + almacenes_ext_des,
+                            icon: "warning"
+                        });
                         $('#modal-orden_despacho_create').modal('hide');
                     }
                 }
@@ -264,7 +276,10 @@ $("#form-orden_despacho").on("submit", function (e) {
     var validaCampos = '';
 
     if (msj.length > 0) {
-        alert(msj);
+        Swal.fire({
+            title: msj,
+            icon: "warning"
+        });
     }
     else {
         var serial = $(this).serialize();
@@ -302,7 +317,10 @@ $("#form-orden_despacho").on("submit", function (e) {
         console.log(json_detalle_sale);
 
         if (validaCampos.length > 0) {
-            alert(validaCampos);
+            Swal.fire({
+                title: validaCampos,
+                icon: "warning"
+            });
         } else {
             // var ac = $('[name=aplica_cambios_valor]').val();
             // var m = '';
@@ -319,10 +337,24 @@ $("#form-orden_despacho").on("submit", function (e) {
             //     }
             // }
             // if (m == '') {
-            var data = serial + '&detalle_ingresa=' + JSON.stringify(detalle_ingresa) +
-                '&detalle_sale=' + JSON.stringify(json_detalle_sale);
-            console.log(data);
-            guardar_orden_despacho(data);
+
+            Swal.fire({
+                title: "¿Está seguro que desea guardar ésta Orden de Transformación?",
+                text: "No podrás revertir esto.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#00a65a", //"#3085d6",
+                cancelButtonColor: "#d33",
+                cancelButtonText: "Cancelar",
+                confirmButtonText: "Sí. Guardar"
+            }).then(result => {
+                if (result.isConfirmed) {
+                    var data = serial + '&detalle_ingresa=' + JSON.stringify(detalle_ingresa) +
+                        '&detalle_sale=' + JSON.stringify(json_detalle_sale);
+                    console.log(data);
+                    guardar_orden_despacho(data);
+                }
+            });
             // } else {
             //     alert(m);
             // }
@@ -340,7 +372,15 @@ function guardar_orden_despacho(data) {
         dataType: 'JSON',
         success: function (response) {
             console.log(response);
-            alert('Orden de Despacho guardada con éxito.');
+            Lobibox.notify("success", {
+                title: false,
+                size: "mini",
+                rounded: true,
+                sound: false,
+                delayIndicator: false,
+                // width: 500,
+                msg: 'Orden de Despacho guardada con éxito.'
+            });
             $('#modal-orden_despacho_interno_create').modal('hide');
             listarRequerimientosPendientes();
         }

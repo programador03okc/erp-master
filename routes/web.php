@@ -948,6 +948,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('verDetalleRequerimientoDI/{id}', 'Logistica\Distribucion\OrdenesTransformacionController@verDetalleRequerimientoDI');
 				Route::post('guardarOrdenDespachoInterno', 'Logistica\Distribucion\OrdenesTransformacionController@guardarOrdenDespachoInterno');
 				Route::get('verDetalleInstrucciones/{id}', 'Logistica\Distribucion\OrdenesTransformacionController@verDetalleInstrucciones');
+				Route::get('anular_orden_despacho/{id}', 'Almacen\Movimiento\SalidasPendientesController@anular_orden_despacho');
 			});
 		});
 

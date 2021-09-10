@@ -86,9 +86,9 @@ function listarRequerimientosPendientes() {
                     else if (row['id_tipo_requerimiento'] !== 1 && row['estado'] == 19 && row['id_od'] == null) {
                         return 'Pendiente de que <strong>Distribución</strong> genere la OD';
                     }
-                    // else if (row['estado'] == 22){
-                    //     return 'Pendiente de que <strong>Customización</strong> realice la transformación';
-                    // }
+                    else if (row['estado'] == 22) {
+                        return 'Pendiente de que <strong>Customización</strong> realice la transformación';
+                    }
                     // else if (row['estado'] == 10){
                     //     return 'Pendiente de que <strong>Distribución</strong> realice el Despacho Externo';
                     // }
@@ -119,45 +119,46 @@ function listarRequerimientosPendientes() {
             {
                 'render': function (data, type, row) {
                     // if (permiso == '1') {
-                    return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" ' +
-                        'data-placement="bottom" title="Ver Detalle" data-id="' + row['id_requerimiento'] + '">' +
-                        '<i class="fas fa-chevron-down"></i></button>' +
-                        ((row['estado'] == 19 && row['id_tipo_requerimiento'] == 2 && row['id_od'] == null && row['confirmacion_pago'] == false) ?
-                            '<button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" ' +
-                            'data-placement="bottom" data-id="' + row['id_requerimiento'] + '" data-cod="' + row['codigo'] + '" title="Anular Requerimiento" >' +
-                            '<i class="fas fa-trash"></i></button>' : '') +
+                    console.log('estado: ' + row['estado_od']);
+                    return `<div style="display:flex;">
+                        <button type="button" class="detalle btn btn-primary btn-flat boton" data-toggle="tooltip"
+                        data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}">
+                        <i class="fas fa-chevron-down"></i></button>`+
                         ((
-                            //     (row['estado'] == 19 && row['id_tipo_requerimiento'] == 1 && row['sede_requerimiento'] == row['sede_orden'] && row['id_od'] == null) || //compra 
+                            // (row['estado'] == 19 && row['id_tipo_requerimiento'] == 1 && row['sede_requerimiento'] == row['sede_orden'] && row['id_od'] == null) || //compra 
                             // (row['estado'] == 19 && row['id_tipo_requerimiento'] == 1 && row['sede_requerimiento'] !== row['sede_orden'] && row['id_transferencia'] !== null && row['id_od'] == null) || //compra con transferencia
                             (row['estado'] == 19 && row['confirmacion_pago'] == true && /*row['id_od'] == null &&*/ row['count_transferencia'] == 0) || //venta directa
                             // (row['estado'] == 10) || (row['estado'] == 22) ||
                             (row['estado'] == 28) || //(row['estado'] == 27) ||
                             (row['estado'] == 19 && row['id_tipo_requerimiento'] !== 1) ||
                             (row['estado'] == 19 && row['confirmacion_pago'] == true && /*row['id_od'] == null &&*/ row['count_transferencia'] > 0 && row['count_transferencia'] == row['count_transferencia_recibida'])) ? //venta directa con transferencia
-                            ('<button type="button" class="despacho btn btn-success boton" data-toggle="tooltip" ' +
+                            ('<button type="button" class="despacho btn btn-success btn-flat boton" data-toggle="tooltip" ' +
                                 'data-placement="bottom" title="Generar Orden de Despacho" >' +
                                 '<i class="fas fa-sign-in-alt"></i></button>') :
-                            (row['id_od'] !== null && row['estado_od'] == 1) ?
-                                `<button type="button" class="adjuntar btn btn-${row['count_despacho_adjuntos'] > 0 ? 'warning' : 'default'} boton" data-toggle="tooltip" 
-                            data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Adjuntar Boleta/Factura" >
-                            <i class="fas fa-paperclip"></i></button>
-                        <button type="button" class="anular_od btn btn-danger boton" data-toggle="tooltip" 
-                            data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Anular Orden Despacho" >
-                            <i class="fas fa-trash"></i></button>` : '')
-                    // (row['estado'] == 9 ? 
-                    // `<button type="button" class="adjuntar btn btn-${row['count_despacho_adjuntos']>0 ? 'warning' : 'default' } boton" data-toggle="tooltip" 
-                    //     data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Adjuntar Boleta/Factura" >
-                    //     <i class="fas fa-paperclip"></i></button>` : '')
-                    // } else {
-                    //     return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
-                    //     'data-placement="bottom" title="Ver Detalle" data-id="'+row['id_requerimiento']+'">'+
-                    //     '<i class="fas fa-chevron-down"></i></button>'
-                    // }
+                            (
+                                row['id_od'] !== null && row['estado_od'] == '1') ?
+                                `<button type="button" class="adjuntar btn btn-flat btn-${row['count_despacho_adjuntos'] > 0 ? 'warning' : 'default'} boton" data-toggle="tooltip" 
+                                    data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Adjuntar Boleta/Factura" >
+                                    <i class="fas fa-paperclip"></i></button>
+                                <button type="button" class="anular_od btn btn-flat btn-danger boton" data-toggle="tooltip" 
+                                    data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Anular Orden Despacho" >
+                                    <i class="fas fa-trash"></i></button>` : '')
+                        // (row['estado'] == 9 ? 
+                        // `<button type="button" class="adjuntar btn btn-${row['count_despacho_adjuntos']>0 ? 'warning' : 'default' } boton" data-toggle="tooltip" 
+                        //     data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Adjuntar Boleta/Factura" >
+                        //     <i class="fas fa-paperclip"></i></button>` : '')
+                        // } else {
+                        //     return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
+                        //     'data-placement="bottom" title="Ver Detalle" data-id="'+row['id_requerimiento']+'">'+
+                        //     '<i class="fas fa-chevron-down"></i></button>'
+                        // }
+                        + '</div>'
+
                 }, targets: 13
             }
         ],
     });
-
+    vista_extendida();
 }
 
 $('#requerimientosEnProceso tbody').on("click", "button.detalle_trans", function () {
@@ -196,13 +197,23 @@ $('#requerimientosEnProceso tbody').on("click", "button.despacho", function () {
 $('#requerimientosEnProceso tbody').on("click", "button.anular_od", function () {
     var id = $(this).data('id');
     var cod = $(this).data('cod');
-    var msj = confirm('¿Está seguro que desea anular la ' + cod + ' ?');
-    if (msj) {
-        anularOrdenDespacho(id, 'enProceso');
-    }
+    Swal.fire({
+        title: "¿Está seguro que desea anular la Orden de Transformación " + cod + "?",
+        text: "No podrás revertir esto.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        cancelButtonText: "Cancelar",
+        confirmButtonText: "Si, anular"
+    }).then(result => {
+        if (result.isConfirmed) {
+            anularOrdenDespacho(id);
+        }
+    });
 });
 
-function anularOrdenDespacho(id, proviene) {
+function anularOrdenDespacho(id) {
     $.ajax({
         type: 'GET',
         url: 'anular_orden_despacho/' + id,
@@ -210,9 +221,15 @@ function anularOrdenDespacho(id, proviene) {
         success: function (response) {
             console.log(response);
             if (response > 0) {
-                if (proviene == 'enProceso') {
-                    $('#requerimientosEnProceso').DataTable().ajax.reload();
-                }
+                Lobibox.notify("success", {
+                    title: false,
+                    size: "mini",
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    msg: "Orden de Transformación anulada con éxito."
+                });
+                $('#requerimientosEnProceso').DataTable().ajax.reload(null, false);
             }
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {

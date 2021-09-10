@@ -87,11 +87,8 @@ function listarDespachosPendientes(permiso) {
                         <i class="fas fa-list-ul"></i></button>`+
                             (row['estado'] == 1 ?
                                 (`<button type="button" class="guia btn btn-warning boton" data-toggle="tooltip" 
-                        data-placement="bottom" title="Generar Guía" >
-                        <i class="fas fa-sign-in-alt"></i></button>
-                    <button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" 
-                        data-placement="bottom" title="Anular Orden de Despacho" data-id="${row['id_od']}">
-                        <i class="fas fa-trash"></i></button>`) : '');
+                                data-placement="bottom" title="Generar Guía" >
+                                <i class="fas fa-sign-in-alt"></i></button>`) : '');
                     } else {
                         return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" ' +
                             'data-placement="bottom" title="Ver Detalle" >' +

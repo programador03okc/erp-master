@@ -60,7 +60,6 @@ class OrdenesTransformacionController extends Controller
                 'oportunidades.codigo_oportunidad',
                 'entidades.id as id_entidad',
                 'entidades.nombre',
-                'orden_despacho.id_od',
                 'oc_propias.id as id_oc_propia',
                 'oc_propias.url_oc_fisica',
                 'oc_propias.monto_total',
@@ -92,12 +91,12 @@ class OrdenesTransformacionController extends Controller
             ->leftJoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
             ->leftJoin('almacen.orden_despacho', function ($join) {
                 $join->on('orden_despacho.id_requerimiento', '=', 'alm_req.id_requerimiento');
-                $join->where('orden_despacho.aplica_cambios', '=', false);
+                $join->where('orden_despacho.aplica_cambios', '=', true);
                 $join->where('orden_despacho.estado', '!=', 7);
             })
             // ->where([['alm_req.tiene_transformacion','=',true],['alm_req.estado','=',17]])
             ->where('alm_req.tiene_transformacion', true)
-            ->whereIn('alm_req.estado', [17, 27, 28])
+            ->whereIn('alm_req.estado', [17, 22, 27, 28])
             // ->orWhere('alm_req.estado',29)
             // ->orWhere('alm_req.estado',27)
             // ->orWhere('alm_req.estado',28)
@@ -189,6 +188,24 @@ class OrdenesTransformacionController extends Controller
         return response()->json($detalles);
     }
 
+    public function ODnextId($fecha_despacho, $id_almacen, $aplica_cambios)
+    {
+        $yyyy = date('Y', strtotime($fecha_despacho));
+        $yy = date('y', strtotime($fecha_despacho));
+
+        $cantidad = DB::table('almacen.orden_despacho')
+            ->whereYear('fecha_despacho', '=', $yyyy)
+            ->where([
+                ['id_almacen', '=', $id_almacen],
+                ['aplica_cambios', '=', $aplica_cambios],
+                ['estado', '!=', 7]
+            ])
+            ->get()->count();
+
+        $val = AlmacenController::leftZero(3, ($cantidad + 1));
+        $nextId = "OD" . ($aplica_cambios ? "I-" : "E-") . $id_almacen . "-" . $yy . $val;
+        return $nextId;
+    }
 
     public function guardarOrdenDespachoInterno(Request $request)
     {
