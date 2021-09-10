@@ -82,15 +82,15 @@ function listarDespachosPendientes(permiso) {
             {
                 'render': function (data, type, row) {
                     if (permiso == '1') {
-                        return `<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
+                        return `<button type="button" class="detalle btn btn-primary btn-flat boton" data-toggle="tooltip" 
                         data-placement="bottom" title="Ver Detalle" >
                         <i class="fas fa-list-ul"></i></button>`+
                             (row['estado'] == 1 ?
-                                (`<button type="button" class="guia btn btn-warning boton" data-toggle="tooltip" 
+                                (`<button type="button" class="guia btn btn-warning btn-flat boton" data-toggle="tooltip" 
                                 data-placement="bottom" title="Generar Guía" >
                                 <i class="fas fa-sign-in-alt"></i></button>`) : '');
                     } else {
-                        return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" ' +
+                        return '<button type="button" class="detalle btn btn-primary btn-flat boton" data-toggle="tooltip" ' +
                             'data-placement="bottom" title="Ver Detalle" >' +
                             '<i class="fas fa-list-ul"></i></button>'
                     }
@@ -227,14 +227,15 @@ function listarDespachosEntregados(permiso) {
                 'render': function (data, type, row) {
                     if (permiso == '1') {
                         return row['id_operacion'] == 11 ? '' :
-                            `<button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" 
+                            `<div style="display:flex;">
+                                <button type="button" class="anular btn btn-danger btn-flat boton" data-toggle="tooltip" 
                                 data-placement="bottom" title="Anular Salida" data-id="${row['id_mov_alm']}" data-guia="${row['id_guia_ven']}"
                                 data-od="${row['id_od']}"><i class="fas fa-trash"></i></button>
                                 
-                                <button type="button" class="cambio btn btn-warning boton" data-toggle="tooltip" 
+                                <button type="button" class="cambio btn btn-warning btn-flat boton" data-toggle="tooltip" 
                                 data-placement="bottom" title="Cambiar Serie-Número" data-id="${row['id_mov_alm']}" data-guia="${row['id_guia_ven']}"
                                 data-od="${row['id_od']}"><i class="fas fa-sync-alt"></i></button>
-                                `;
+                            </div>`;
                     }
                 }, targets: 11
                 // '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
