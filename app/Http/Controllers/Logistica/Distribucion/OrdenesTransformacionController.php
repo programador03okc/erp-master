@@ -207,6 +207,21 @@ class OrdenesTransformacionController extends Controller
         return $nextId;
     }
 
+    public function transformacion_nextId($fecha_transformacion)
+    {
+        $yyyy = date('Y', strtotime($fecha_transformacion));
+        $yy = date('y', strtotime($fecha_transformacion));
+
+        $cantidad = DB::table('almacen.transformacion')
+            ->whereYear('fecha_registro', '=', $yyyy)
+            ->where([['estado', '!=', 7]])
+            ->get()->count();
+
+        $val = AlmacenController::leftZero(3, ($cantidad + 1));
+        $nextId = "OT-" . $yy . $val;
+        return $nextId;
+    }
+
     public function guardarOrdenDespachoInterno(Request $request)
     {
         try {
