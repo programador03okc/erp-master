@@ -602,8 +602,10 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::group(['as' => 'requerimiento.', 'prefix' => 'requerimiento'], function () {
 
 				Route::group(['as' => 'elaboracion.', 'prefix' => 'elaboracion'], function () {
-
 					Route::get('index', 'Logistica\RequerimientoController@index')->name('index');
+					Route::get('mostrar/{idRequerimiento?}', 'Logistica\RequerimientoController@mostrar')->name('mostrar');
+					// Route::get('index/{idRequerimiento?}', 'Logistica\RequerimientoController@index')->name('index');
+
 					Route::get('tipo-cambio-compra/{fecha}', 'Almacen\Reporte\SaldosController@tipo_cambio_compra');
 					Route::get('lista-divisiones', 'Logistica\RequerimientoController@listaDivisiones');
 					Route::get('mostrar-partidas/{idGrupo?}/{idProyecto?}', 'Logistica\RequerimientoController@mostrarPartidas')->name('mostrar-partidas');

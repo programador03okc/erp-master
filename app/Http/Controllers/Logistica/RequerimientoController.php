@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Logistica;
 
 use App\Helpers\NotificacionHelper;
+use App\Http\Controllers\Almacen\Reporte\SaldosController;
 use App\Http\Controllers\AlmacenController;
 use App\Http\Controllers\ConfiguracionController;
 use Illuminate\Http\Request;
@@ -64,8 +65,6 @@ class RequerimientoController extends Controller
         $unidadesMedida = UnidadMedida::mostrar();
         $periodos = Periodo::mostrar();
         $roles = Auth::user()->getAllRol(); //Usuario::getAllRol(Auth::user()->id_usuario);
-        //var_dump($roles);
-        //die("FIN");
         $sis_identidad = Identidad::mostrar();
         $bancos = Banco::mostrar();
         $tipos_cuenta = TipoCuenta::mostrar();
@@ -75,12 +74,19 @@ class RequerimientoController extends Controller
         $unidades = (new AlmacenController)->mostrar_unidades_cbo();
         $proyectos_activos = (new ProyectosController)->listar_proyectos_activos();
         $fuentes = Fuente::mostrar();
-        // $aprobantes = Division::mostrarFlujoAprobacion();
         $divisiones = Division::mostrar();
         $categoria_adjunto = CategoriaAdjunto::mostrar();
+        $tipo_cambio = (new SaldosController)->tipo_cambio_compra(new Carbon());
 
-        return view('logistica/requerimientos/gestionar_requerimiento', compact('idTrabajador', 'nombreUsuario', 'categoria_adjunto', 'grupos', 'sis_identidad', 'tipo_requerimiento', 'monedas', 'prioridades', 'empresas', 'unidadesMedida', 'roles', 'periodos', 'bancos', 'tipos_cuenta', 'clasificaciones', 'subcategorias', 'categorias', 'unidades', 'proyectos_activos', 'fuentes', 'divisiones'));
+        return view('logistica/requerimientos/gestionar_requerimiento', compact('tipo_cambio','idTrabajador', 'nombreUsuario', 'categoria_adjunto', 'grupos', 'sis_identidad', 'tipo_requerimiento', 'monedas', 'prioridades', 'empresas', 'unidadesMedida', 'roles', 'periodos', 'bancos', 'tipos_cuenta', 'clasificaciones', 'subcategorias', 'categorias', 'unidades', 'proyectos_activos', 'fuentes', 'divisiones'));
     }
+
+    
+    public function mostrar($idRequerimiento){
+        return redirect()->route('logistica.gestion-logistica.requerimiento.elaboracion.index', ['id' => $idRequerimiento]);
+
+    }
+
 
     public function listaDivisiones()
     {

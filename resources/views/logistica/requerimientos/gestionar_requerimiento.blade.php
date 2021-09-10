@@ -75,7 +75,7 @@ Crear / editar requerimiento
                 <h4 style="display:flex;justify-content: space-between;">General
                     <div>
                         <span class="label label-default" id="codigo_requerimiento"></span>
-                        <small>Tipo cambio($): <span id="tipo_cambio_compra">0.00</span></small> 
+                        <small>Tipo cambio($): <span id="tipo_cambio_compra">{{$tipo_cambio}}</span></small> 
                         <span class="label label-default" id="estado_doc"></span>
                         <button type="button" name="btn-imprimir-requerimento-pdf" class="btn btn-info btn-sm handleClickImprimirRequerimientoPdf" title="Imprimir requerimiento en .pdf" disabled><i class="fas fa-print"></i> Imprimir</button>
                         <button type="button" name="btn-adjuntos-requerimiento" class="btn btn-sm btn-warning handleClickAdjuntarArchivoRequerimiento" title="Archivos adjuntos"  disabled><i class="fas fa-file-archive"></i>

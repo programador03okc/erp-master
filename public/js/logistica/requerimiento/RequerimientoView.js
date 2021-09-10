@@ -16,7 +16,7 @@ class RequerimientoView {
         this.agregarFilaEvent();
         this.initializeEventHandler();
         // $('[name=periodo]').val(today.getFullYear());
-        this.getTipoCambioCompra();
+        // this.getTipoCambioCompra();
         let idRequerimiento = localStorage.getItem("idRequerimiento");
         // console.log(idRequerimiento);
         if (idRequerimiento !== null){
@@ -24,6 +24,13 @@ class RequerimientoView {
             localStorage.removeItem("idRequerimiento");
             vista_extendida();
         }
+        let idRequerimientoByURL =parseInt(location.search.split('id=')[1]);
+
+        if(idRequerimientoByURL > 0){
+            this.cargarRequerimiento(idRequerimientoByURL)
+            vista_extendida();
+        }
+
 
     }
 
@@ -539,17 +546,17 @@ class RequerimientoView {
 
     }
 
-    getTipoCambioCompra(){
-        const now = new Date();
-        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-        let fechaHoy =now.toISOString().slice(0, 10)
+    // getTipoCambioCompra(){
+    //     const now = new Date();
+    //     now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+    //     let fechaHoy =now.toISOString().slice(0, 10)
         
-        this.requerimientoCtrl.getTipoCambioCompra(fechaHoy).then((tipoCambioCompra)=> {
-                document.querySelector("span[id='tipo_cambio_compra']").textContent= tipoCambioCompra;
-        }).catch(function(err) {
-            console.log(err)
-        })
-    }
+    //     this.requerimientoCtrl.getTipoCambioCompra(fechaHoy).then((tipoCambioCompra)=> {
+    //             document.querySelector("span[id='tipo_cambio_compra']").textContent= tipoCambioCompra;
+    //     }).catch(function(err) {
+    //         console.log(err)
+    //     })
+    // }
 
     imprimirRequerimientoPdf(){
         var id = document.getElementsByName("id_requerimiento")[0].value;
@@ -1742,9 +1749,15 @@ class RequerimientoView {
 
             }
 
-            tempArchivoAdjuntoItemToDeleteList.forEach((element,index) => {
-                formData.append(`archivoAdjuntoItemToDelete[${index}]`, element);
-            });
+            if(tempArchivoAdjuntoItemToDeleteList.length >0){
+                tempArchivoAdjuntoItemToDeleteList.forEach((element,index) => {
+                    formData.append(`archivoAdjuntoItemToDelete[${index}]`, element);
+                });
+                
+            }else{
+                formData.append(`archivoAdjuntoItemToDelete[]`, []);
+
+            }
             
 
 
@@ -1754,11 +1767,16 @@ class RequerimientoView {
                 });
 
             }
+            if(tempArchivoAdjuntoRequerimientoToDeleteList.length >0){
 
-            tempArchivoAdjuntoRequerimientoToDeleteList.forEach((element,index) => {
-                
-                formData.append(`archivoAdjuntoRequerimientoToDelete[${index}]`, element);
-            });
+                tempArchivoAdjuntoRequerimientoToDeleteList.forEach((element,index) => {
+                    
+                    formData.append(`archivoAdjuntoRequerimientoToDelete[${index}]`, element);
+                });
+            }else{
+                formData.append(`archivoAdjuntoRequerimientoToDelete[]`, []);
+
+            }
 
 
             let typeActionForm = document.querySelector("form[id='form-requerimiento']").getAttribute("type"); //  register | edition
