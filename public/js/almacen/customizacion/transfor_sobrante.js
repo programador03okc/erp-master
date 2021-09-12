@@ -1,17 +1,15 @@
-let sel_producto_sobrante = null;
 //Sobrantes
-function agregar_producto_sobrante(sel){
-    sel_producto_sobrante = sel;
- 
-    console.log(sel);
+function agregar_producto_sobrante() {
+    $(this).attr("disabled", "disabled");
+
     var row = `<tr>
-        <td>${sel.codigo}</td>
-        <td>${sel.part_number!==null?sel.part_number:''}</td>
-        <td>${sel.descripcion}</td>
-        <td><input type="number" class="form-control calcula" name="cantidad" id="cantidad"></td>
-        <td>${sel.unid_med}</td>
-        <td><input type="number" class="form-control calcula" name="unitario" id="unitario"></td>
-        <td><input type="number" class="form-control" name="total" readOnly id="total"></td>
+        <td></td>
+        <td><input type="text" class="form-control" name="part_number" ></td>
+        <td><input type="text" class="form-control" name="descripcion" ></td>
+        <td><input type="number" class="form-control calcula" name="cantidad" ></td>
+        <td></td>
+        <td><input type="number" class="form-control calcula" name="unitario" ></td>
+        <td><input type="number" class="form-control" name="total" readOnly></td>
         <td>
         <i class="fas fa-check icon-tabla blue boton add" 
             data-toggle="tooltip" data-placement="bottom" title="Agregar" ></i>
@@ -22,116 +20,123 @@ function agregar_producto_sobrante(sel){
     $("#listaSobrantes").append(row);
 }
 // Calcula total
-$('#listaSobrantes tbody').on("change", ".calcula", function(){
+$('#listaSobrantes tbody').on("change", ".calcula", function () {
     var cantidad = $(this).parents("tr").find('input[name=cantidad]').val();
     var unitario = $(this).parents("tr").find('input[name=unitario]').val();
-    console.log('cantidad'+cantidad+' unitario'+unitario);
-    if (cantidad !== '' && unitario !== ''){
+    console.log('cantidad' + cantidad + ' unitario' + unitario);
+    if (cantidad !== '' && unitario !== '') {
         $(this).parents("tr").find('input[name=total]').val(parseFloat(cantidad) * parseFloat(unitario));
     } else {
         $(this).parents("tr").find('input[name=total]').val(0);
     }
 });
 // Add row on add button click
-$('#listaSobrantes tbody').on("click", ".add", function(){
+$('#listaSobrantes tbody').on("click", ".add", function () {
     var empty = false;
     var input = $(this).parents("tr").find('input');
-    input.each(function(){
-        if(!$(this).val()){
+    input.each(function () {
+        if (!$(this).val()) {
             $(this).addClass("error");
             empty = true;
-        } else{
+        } else {
             $(this).removeClass("error");
         }
     });
     $(this).parents("tr").find(".error").first().focus();
-    if(!empty){
+    if (!empty) {
         var cantidad = 0;
         var unitario = 0;
+        var part_number = '';
+        var descripcion = '';
 
-        input.each(function(){
-            if ($(this)[0].name == 'cantidad'){
+        input.each(function () {
+            if ($(this)[0].name == 'cantidad') {
                 cantidad = parseFloat($(this).val());
             }
-            else if ($(this)[0].name == 'unitario'){
+            else if ($(this)[0].name == 'unitario') {
                 unitario = parseFloat($(this).val());
+            }
+            else if ($(this)[0].name == 'part_number') {
+                part_number = $(this).val();
+            }
+            else if ($(this)[0].name == 'descripcion') {
+                descripcion = $(this).val();
             }
             $(this).parent("td").html($(this).val());
         });
         $(this).addClass("hidden");
 
         var id_trans = $('[name=id_transformacion]').val();
-        var data = 'id_producto='+sel_producto_sobrante.id_producto+
-                '&id_transformacion='+id_trans+
-                '&part_number='+sel_producto_sobrante.part_number+
-                '&descripcion='+sel_producto_sobrante.descripcion+
-                '&cantidad='+cantidad+
-                '&valor_unitario='+unitario+
-                '&valor_total='+(cantidad * unitario);
+        var data = 'id_transformacion=' + id_trans +
+            '&part_number=' + part_number +
+            '&descripcion=' + descripcion +
+            '&cantidad=' + cantidad +
+            '&valor_unitario=' + unitario +
+            '&valor_total=' + (cantidad * unitario);
         guardar_sobrante(data);
-    }		
+    }
 });
 
-function guardar_sobrante(data){
+function guardar_sobrante(data) {
     console.log(data);
     $.ajax({
         type: 'POST',
         url: 'guardar_sobrante',
         data: data,
         dataType: 'JSON',
-        success: function(response){
+        success: function (response) {
             console.log(response);
-            if (response > 0){
+            if (response > 0) {
                 alert('Item guardado con éxito');
                 var id_trans = $('[name=id_transformacion]').val();
                 listar_sobrantes(id_trans);
             }
         }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
+    }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
     });
 }
 
-function listar_sobrantes(id_transformacion){
+function listar_sobrantes(id_transformacion) {
     $('#listaSobrantes tbody').html('');
     $.ajax({
         type: 'GET',
-        url: 'listar_sobrantes/'+id_transformacion,
+        url: 'listar_sobrantes/' + id_transformacion,
         dataType: 'JSON',
-        success: function(response){
+        success: function (response) {
             var html = '';
             var suma_sobrante = 0;
             var est = $('[name=id_estado]').val();
 
-            if (response.length > 0){
+            if (response.length > 0) {
 
                 response.forEach(element => {
                     suma_sobrante += parseFloat(element.valor_total);
                     html += `<tr id="${element.id_sobrante}">
                         <td>${element.codigo !== null ? element.codigo : ''}</td>
-                        <td>${element.part_number_prod !== null ? element.part_number_prod : (element.part_number!==null?element.part_number:'')}</td>
-                        <td>${element.descripcion_prod !== null ? element.descripcion_prod : (element.descripcion!==null?element.descripcion:'')}</td>
+                        <td>${element.part_number_prod !== null ? element.part_number_prod : (element.part_number !== null ? element.part_number : '')}</td>
+                        <td>${element.descripcion_prod !== null ? element.descripcion_prod : (element.descripcion !== null ? element.descripcion : '')}</td>
                         <td>${element.cantidad}</td>
                         <td>${element.abreviatura !== null ? element.abreviatura : ''}</td>
                         <td>${element.valor_unitario}</td>
                         <td>${element.valor_total}</td>
                         <td style="padding:0px;">
                             ${(est == 24) ? `<i class="fas fa-trash icon-tabla red boton delete" 
-                            data-toggle="tooltip" data-placement="bottom" title="Eliminar" ></i>` : ''}
+                            data-toggle="tooltip" data-placement="bottom" title="Eliminar" ></i>`: ''}
                         </td>
                     </tr>`;
                 });
                 $('#listaSobrantes tbody').html(html);
-                $('[name=total_sobrantes]').text(formatDecimalDigitos(suma_sobrante,2));
+                $('[name=total_sobrantes]').text(formatDecimalDigitos(suma_sobrante, 2));
                 // var costo_primo = parseFloat($('[name=costo_primo]').text());
                 // var total_indirectos = parseFloat($('[name=total_indirectos]').text());
                 // $('[name=costo_transformacion]').text(formatDecimalDigitos((costo_primo + total_indirectos - suma_sobrante),2));
                 actualizaTotales();
             }
         }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
+    }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
@@ -180,32 +185,32 @@ function listar_sobrantes(id_transformacion){
 //     });
 // }
 // Delete row on delete button click
-$('#listaSobrantes tbody').on("click", ".delete", function(){
+$('#listaSobrantes tbody').on("click", ".delete", function () {
     var anula = confirm("¿Esta seguro que desea anular éste item?");
-    
-    if (anula){
+
+    if (anula) {
         var idx = $(this).parents("tr")[0].id;
         $(this).parents("tr").remove();
-        console.log('idx'+idx);
-        if (idx !== ''){
+        console.log('idx' + idx);
+        if (idx !== '') {
             anular_sobrante(idx);
         }
     }
 });
-function anular_sobrante(id){
+function anular_sobrante(id) {
     $.ajax({
         type: 'GET',
-        url: 'anular_sobrante/'+id,
+        url: 'anular_sobrante/' + id,
         dataType: 'JSON',
-        success: function(response){
+        success: function (response) {
             console.log(response);
-            if (response > 0){
+            if (response > 0) {
                 // alert('Item anulado con éxito');
                 var id_trans = $('[name=id_transformacion]').val();
                 listar_sobrantes(id_trans);
             }
         }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
+    }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);

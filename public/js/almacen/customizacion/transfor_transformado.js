@@ -1,12 +1,12 @@
 let sel_producto_transformado = null;
 //Transformados
-function agregar_producto_transformado(sel){
+function agregar_producto_transformado(sel) {
     sel_producto_transformado = sel;
 
     console.log(sel);
     var row = `<tr>
         <td>${sel.codigo}</td>
-        <td>${sel.part_number!==null?sel.part_number:''}</td>
+        <td>${sel.part_number !== null ? sel.part_number : ''}</td>
         <td>${sel.descripcion}</td>
         <td><input type="number" class="form-control calcula" name="cantidad" id="cantidad"></td>
         <td>${sel.unid_med}</td>
@@ -22,38 +22,38 @@ function agregar_producto_transformado(sel){
     $("#listaProductoTransformado").append(row);
 }
 // Calcula total
-$('#listaProductoTransformado tbody').on("change", ".calcula", function(){
+$('#listaProductoTransformado tbody').on("change", ".calcula", function () {
     var cantidad = $(this).parents("tr").find('input[name=cantidad]').val();
     var unitario = $(this).parents("tr").find('input[name=unitario]').val();
-    console.log('cantidad'+cantidad+' unitario'+unitario);
-    if (cantidad !== '' && unitario !== ''){
+    console.log('cantidad' + cantidad + ' unitario' + unitario);
+    if (cantidad !== '' && unitario !== '') {
         $(this).parents("tr").find('input[name=total]').val(parseFloat(cantidad) * parseFloat(unitario));
     } else {
         $(this).parents("tr").find('input[name=total]').val(0);
     }
 });
 // Add row on add button click
-$('#listaProductoTransformado tbody').on("click", ".add", function(){
+$('#listaProductoTransformado tbody').on("click", ".add", function () {
     var empty = false;
     var input = $(this).parents("tr").find('input');
-    input.each(function(){
-        if(!$(this).val()){
+    input.each(function () {
+        if (!$(this).val()) {
             $(this).addClass("error");
             empty = true;
-        } else{
+        } else {
             $(this).removeClass("error");
         }
     });
     $(this).parents("tr").find(".error").first().focus();
-    if(!empty){
+    if (!empty) {
         var cantidad = 0;
         var unitario = 0;
 
-        input.each(function(){
-            if ($(this)[0].name == 'cantidad'){
+        input.each(function () {
+            if ($(this)[0].name == 'cantidad') {
                 cantidad = parseFloat($(this).val());
             }
-            else if ($(this)[0].name == 'unitario'){
+            else if ($(this)[0].name == 'unitario') {
                 unitario = parseFloat($(this).val());
             }
             $(this).parent("td").html($(this).val());
@@ -61,71 +61,71 @@ $('#listaProductoTransformado tbody').on("click", ".add", function(){
         $(this).addClass("hidden");
 
         var id_trans = $('[name=id_transformacion]').val();
-        var data = 'id_producto='+sel_producto_transformado.id_producto+
-                '&id_transformacion='+id_trans+
-                '&part_number='+sel_producto_transformado.part_number+
-                '&descripcion='+sel_producto_transformado.descripcion+
-                '&cantidad='+cantidad+
-                '&valor_unitario='+unitario+
-                '&valor_total='+(cantidad * unitario);
+        var data = 'id_producto=' + sel_producto_transformado.id_producto +
+            '&id_transformacion=' + id_trans +
+            '&part_number=' + sel_producto_transformado.part_number +
+            '&descripcion=' + sel_producto_transformado.descripcion +
+            '&cantidad=' + cantidad +
+            '&valor_unitario=' + unitario +
+            '&valor_total=' + (cantidad * unitario);
         guardar_transformado(data);
-    }		
+    }
 });
 
-function guardar_transformado(data){
+function guardar_transformado(data) {
     console.log(data);
     $.ajax({
         type: 'POST',
         url: 'guardar_transformado',
         data: data,
         dataType: 'JSON',
-        success: function(response){
+        success: function (response) {
             console.log(response);
-            if (response > 0){
+            if (response > 0) {
                 alert('Item guardado con éxito');
                 var id_trans = $('[name=id_transformacion]').val();
                 listar_transformados(id_trans);
             }
         }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
+    }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
     });
 }
 
-function listar_transformados(id_transformacion){
+function listar_transformados(id_transformacion) {
     $('#listaProductoTransformado tbody').html('');
     $.ajax({
         type: 'GET',
-        url: 'listar_transformados/'+id_transformacion,
+        url: 'listar_transformados/' + id_transformacion,
         dataType: 'JSON',
-        success: function(response){
+        success: function (response) {
             var html = '';
             var est = $('[name=id_estado]').val();
 
-            if (response.length > 0){
+            if (response.length > 0) {
 
                 response.forEach(element => {
                     html += `<tr id="${element.id_transformado}">
                         <td>${element.codigo}</td>
-                        <td>${element.part_number!==null?element.part_number:''}</td>
+                        <td>${element.part_number !== null ? element.part_number : ''}</td>
                         <td>${element.descripcion}</td>
                         <td>${element.cantidad}</td>
                         <td>${element.abreviatura}</td>
                         <td>${element.valor_unitario}</td>
                         <td>${element.valor_total}</td>
-                        <td style="padding:0px;">
-                            ${(est !== 9 && est !== 7) ? `<i class="fas fa-trash icon-tabla red boton delete" 
-                            data-toggle="tooltip" data-placement="bottom" title="Eliminar" ></i>` : ''}
-                        </td>
                     </tr>`;
                 });
                 $('#listaProductoTransformado tbody').html(html);
             }
             // total_transformado();
+            //     <td style="padding:0px;">
+            //     ${(est == 24) ? `<i class="fas fa-trash icon-tabla red boton delete" 
+            //     data-toggle="tooltip" data-placement="bottom" title="Eliminar" ></i>` : ''}
+            // </td>
         }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
+    }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
@@ -174,24 +174,24 @@ function listar_transformados(id_transformacion){
 //     });
 // }
 // Delete row on delete button click
-$('#listaProductoTransformado tbody').on("click", ".delete", function(){
+$('#listaProductoTransformado tbody').on("click", ".delete", function () {
     var anula = confirm("¿Esta seguro que desea anular éste item?");
-    
-    if (anula){
+
+    if (anula) {
         var idx = $(this).parents("tr")[0].id;
         $(this).parents("tr").remove();
         console.log(idx);
-        if (idx !== ''){
+        if (idx !== '') {
             anular_transformado(idx);
         }
     }
 });
-function anular_transformado(id){
+function anular_transformado(id) {
     $.ajax({
         type: 'GET',
-        url: 'anular_transformado/'+id,
+        url: 'anular_transformado/' + id,
         dataType: 'JSON',
-        success: function(response){
+        success: function (response) {
             console.log(response);
             var id_trans = $('[name=id_transformacion]').val();
             listar_transformados(id_trans);
@@ -199,7 +199,7 @@ function anular_transformado(id){
             //     alert('Item anulado con éxito');
             // }
         }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
+    }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);

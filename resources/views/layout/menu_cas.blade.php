@@ -12,7 +12,7 @@
             <li><a href="{{route('cas.customizacion.gestion-customizaciones.index')}}"> Gestión de Transformaciones </a></li>
             @endif
             @if(Auth::user()->tieneAplicacion(88))
-            <li><a href="{{route('cas.customizacion.hoja-transformacion.index')}}"> Hoja de Transformación </a></li>
+            <li><a href="{{route('cas.customizacion.hoja-transformacion.index')}}"> Orden de Transformación </a></li>
             @endif
         </ul>
     </li>

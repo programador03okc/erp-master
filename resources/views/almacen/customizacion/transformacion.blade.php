@@ -6,7 +6,7 @@
 @endsection
 
 @section('cabecera')
-Hoja de Transformación
+Orden de Transformación
 @endsection
 
 @section('estilos')
@@ -190,6 +190,76 @@ Hoja de Transformación
         <div class="col-md-1"></div>
     </div>
     <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-danger" style="margin-bottom: 0px;">
+                <div class="panel-heading"><strong>Productos Sobrantes</strong></div>
+                <table id="listaSobrantes" class="table">
+                    <thead>
+                        <tr style="background: lightcoral;">
+                            <th>Código</th>
+                            <th>Part Number</th>
+                            <th width='40%'>Descripción</th>
+                            <th>Cant.</th>
+                            <th>Unid.</th>
+                            <th>Unit.</th>
+                            <th>Total</th>
+                            <th width='8%' style="padding:0px;">
+                                <i class="fas fa-plus-square icon-tabla green boton add-new-sobrante" id="addSobrante" data-toggle="tooltip" data-placement="bottom" title="Agregar Producto" onClick="agregar_producto_sobrante();"></i>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-success" style="margin-bottom: 0px;">
+                <div class="panel-heading"><strong>Productos Transformados</strong></div>
+                <table id="listaProductoTransformado" class="table">
+                    <thead>
+                        <tr style="background: palegreen;">
+                            <th>Código</th>
+                            <th>Part Number</th>
+                            <th width='40%'>Descripción</th>
+                            <th>Cant.</th>
+                            <th>Unid.</th>
+                            <th>Unit.</th>
+                            <th>Total</th>
+                            <!-- <th width='8%' style="padding:0px;">
+                                <i class="fas fa-plus-square icon-tabla green boton add-new-transformado" id="addTransformado" data-toggle="tooltip" data-placement="bottom" title="Agregar Producto" onClick="openProductoTransformadoModal();"></i>
+                            </th> -->
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-danger" style="margin-bottom: 0px;">
+                <div class="panel-heading"><strong>Productos Sobrantes</strong></div>
+                <table id="listaSobrantes" class="table">
+                    <thead>
+                        <tr style="background: lightcoral;">
+                            <th>Código</th>
+                            <th>Part Number</th>
+                            <th width='40%'>Descripción</th>
+                            <th>Cant.</th>
+                            <th>Unid.</th>
+                            <th>Unit.</th>
+                            <th>Total</th>
+                            <th width='8%' style="padding:0px;">
+                                <i class="fas fa-plus-square icon-tabla green boton add-new-sobrante" id="addSobrante" data-toggle="tooltip" data-placement="bottom" title="Agregar Producto" onClick="agregar_producto_sobrante();"></i>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div> -->
+    <!-- <div class="row">
         <div class="col-md-12">
             <div class="panel panel-success" style="margin-bottom: 0px;">
                 <div class="panel-heading"><strong>Productos Transformados</strong></div>
@@ -212,33 +282,9 @@ Hoja de Transformación
                 </table>
             </div>
         </div>
-    </div>
+    </div> -->
     <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-danger" style="margin-bottom: 0px;">
-                <div class="panel-heading"><strong>Productos Sobrantes</strong></div>
-                <table id="listaSobrantes" class="table">
-                    <thead>
-                        <tr style="background: lightcoral;">
-                            <th>Código</th>
-                            <th>Part Number</th>
-                            <th width='40%'>Descripción</th>
-                            <th>Cant.</th>
-                            <th>Unid.</th>
-                            <th>Unit.</th>
-                            <th>Total</th>
-                            <th width='8%' style="padding:0px;">
-                                <i class="fas fa-plus-square icon-tabla green boton add-new-sobrante" id="addSobrante" data-toggle="tooltip" data-placement="bottom" title="Agregar Producto" onClick="openProductoSobranteModal();"></i>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-6">
             <div class="panel panel-default" style="margin-bottom: 0px;">
                 <div class="panel-heading"><strong>Servicios Directos</strong></div>
                 <table id="listaServiciosDirectos" class="table">
@@ -258,9 +304,7 @@ Hoja de Transformación
                 </table>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-6">
             <div class="panel panel-warning" style="margin-bottom: 0px;">
                 <div class="panel-heading"><strong>Costos Indirectos</strong></div>
                 <table id="listaCostosIndirectos" class="table">

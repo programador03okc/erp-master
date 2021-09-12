@@ -590,10 +590,12 @@ class TransformacionController extends Controller
         $id_sobrante = DB::table('almacen.transfor_sobrante')->insertGetId(
             [
                 'id_transformacion' => $request->id_transformacion,
-                'id_producto' => $request->id_producto,
+                // 'id_producto' => $request->id_producto,
+                'part_number' => strtoupper($request->part_number),
+                'descripcion' => strtoupper($request->descripcion),
                 'cantidad' => $request->cantidad,
                 'valor_unitario' => $request->valor_unitario,
-                'valor_total' => round($request->valor_total, 2, PHP_ROUND_HALF_UP),
+                'valor_total' => round($request->valor_total, 4, PHP_ROUND_HALF_UP),
                 'estado' => 1,
                 'fecha_registro' => $fecha,
             ],

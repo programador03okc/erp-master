@@ -1,9 +1,9 @@
-function nuevo_transformacion(){
+function nuevo_transformacion() {
     $('#form-transformacion')[0].reset();
-    console.log('nuevo_transformacion:'+auth_user.id_usuario);
+    console.log('nuevo_transformacion:' + auth_user.id_usuario);
     limpiarCampos();
 }
-function limpiarCampos(){
+function limpiarCampos() {
     $('[name=id_transformacion]').val('');
     $('[name=codigo]').val('');
     $('[name=almacen_descripcion]').val('');
@@ -25,22 +25,22 @@ function limpiarCampos(){
     $('#listaProductoTransformado tbody').html('');
 
 }
-$(function(){
+$(function () {
     var id_transformacion = localStorage.getItem("id_transfor");
-    console.log('id_transfor'+id_transformacion);
-    if (id_transformacion !== null && id_transformacion !== undefined){
+    console.log('id_transfor' + id_transformacion);
+    if (id_transformacion !== null && id_transformacion !== undefined) {
         mostrar_transformacion(id_transformacion);
         localStorage.removeItem("id_transfor");
         changeStateButton('historial');
     }
 });
 
-function mostrar_transformacion(id){
+function mostrar_transformacion(id) {
     $.ajax({
         type: 'GET',
-        url: 'mostrar_transformacion/'+id,
+        url: 'mostrar_transformacion/' + id,
         dataType: 'JSON',
-        success: function(response){
+        success: function (response) {
             console.log(response);
             $('[name=id_transformacion]').val(response.id_transformacion);
             $('#codigo_oportunidad').text(response.codigo_oportunidad);
@@ -59,15 +59,15 @@ function mostrar_transformacion(id){
             $('#codigo').text(response.codigo);
             $('#codigo_od').text(response.cod_od);
             $('#codigo_req').text(response.codigo_req);
-            $('#serie-numero').text(response.serie+'-'+response.numero);
+            $('#serie-numero').text(response.serie !== null ? (response.serie + '-' + response.numero) : '');
             // $('#fecha_registro label').text('');
-            $('#fecha_transformacion').text(response.fecha_transformacion!==null?formatDateHour(response.fecha_transformacion):'');
-            $('#fecha_inicio').text(response.fecha_inicio!==null?formatDateHour(response.fecha_inicio):'');
+            $('#fecha_transformacion').text(response.fecha_transformacion !== null ? formatDateHour(response.fecha_transformacion) : '');
+            $('#fecha_inicio').text(response.fecha_inicio !== null ? formatDateHour(response.fecha_inicio) : '');
             $('#nombre_responsable').text(response.nombre_corto);
             $('#observacion').text(response.observacion);
             $('#descripcion_sobrantes').text(response.descripcion_sobrantes);
-            
-            if (response.estado == 24){
+
+            if (response.estado == 24) {
                 $('#addCostoIndirecto').show();
                 $('#addServicio').show();
                 $('#addTransformado').show();
@@ -80,31 +80,31 @@ function mostrar_transformacion(id){
                 $('#addSobrante').hide();
                 $('#addMateriaPrima').hide();
             }
-            
+
             $('[name=id_estado]').val(response.estado);
             $('#estado_doc').text(response.estado_doc);
             $('#estado_doc').removeClass();
-            $('#estado_doc').addClass("label label-"+response.bootstrap_color);
-            
+            $('#estado_doc').addClass("label label-" + response.bootstrap_color);
+
             listar_materias(response.id_transformacion);
             listar_directos(response.id_transformacion);
             listar_indirectos(response.id_transformacion);
             listar_sobrantes(response.id_transformacion);
             listar_transformados(response.id_transformacion);
-            
+
             // calcula_totales();
         }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
+    }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
     });
 }
 
-function save_transformacion(data, action){
-    if (action == 'register'){
+function save_transformacion(data, action) {
+    if (action == 'register') {
         baseUrl = 'guardar_transformacion';
-    } else if (action == 'edition'){
+    } else if (action == 'edition') {
         baseUrl = 'actualizar_transformacion';
     }
     $.ajax({
@@ -113,9 +113,9 @@ function save_transformacion(data, action){
         url: baseUrl,
         data: data,
         dataType: 'JSON',
-        success: function(response){
+        success: function (response) {
             console.log(response);
-            if (response['id_transformacion'] > 0){
+            if (response['id_transformacion'] > 0) {
                 alert('Transformación registrada con éxito');
 
                 changeStateButton('guardar');
@@ -123,32 +123,32 @@ function save_transformacion(data, action){
                 changeStateInput('form-transformacion', true);
 
                 mostrar_transformacion(response['id_transformacion']);
-                $('.boton').removeClass('desactiva');    
+                $('.boton').removeClass('desactiva');
                 // var id = $('[name=id_transformacion]').val();
                 // listar_materias(id);
             }
         }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
+    }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
     });
 }
-function ceros_numero(numero){
-    if (numero == 'numero'){
+function ceros_numero(numero) {
+    if (numero == 'numero') {
         var num = $('[name=numero]').val();
-        $('[name=numero]').val(leftZero(7,num));
+        $('[name=numero]').val(leftZero(7, num));
     }
 }
 
-$("#form-procesarTransformacion").on("submit", function(e){
+$("#form-procesarTransformacion").on("submit", function (e) {
     console.log('submit');
     e.preventDefault();
     var data = $(this).serialize();
     console.log(data);
     var res = $('[name=responsable]').val();
-    
-    if (res !== "0"){
+
+    if (res !== "0") {
         procesar_transformacion(data);
     }
     else {
@@ -156,44 +156,44 @@ $("#form-procesarTransformacion").on("submit", function(e){
     }
 });
 
-function procesar_transformacion(data){
+function procesar_transformacion(data) {
     $.ajax({
         type: 'POST',
         url: 'procesar_transformacion',
         data: data,
         dataType: 'JSON',
-        success: function(response){
+        success: function (response) {
             console.log(response);
             $('#modal-procesarTransformacion').modal('hide');
             alert('Transformación procesada con éxito');
             var id_trans = $('[name=id_transformacion]').val();
             mostrar_transformacion(id_trans);
         }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
+    }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
     });
 }
 
-function openProcesar(){
+function openProcesar() {
     var id_trans = $('[name=id_transformacion]').val();
 
-    if (id_trans !== ''){
+    if (id_trans !== '') {
         var est = $('[name=id_estado]').val();
-        if (est == '9'){
+        if (est == '9') {
             alert('La transformación ya fue procesada.');
-        } 
-        else if (est == '7'){
+        }
+        else if (est == '7') {
             alert('No puede procesar. La transformación esta Anulada.');
-        } 
-        else if (est == '1'){
+        }
+        else if (est == '1') {
             alert('A la espera de que Almacén genere la salida de los productos.');
-        } 
-        else if (est == '21'){
+        }
+        else if (est == '21') {
             alert('Es necesario que inicie la transformación.');
-        } 
-        else if (est == '24'){
+        }
+        else if (est == '24') {
             $('#modal-procesarTransformacion').modal({
                 show: true
             });
@@ -205,56 +205,56 @@ function openProcesar(){
     }
 }
 
-function openIniciar(){
+function openIniciar() {
     var id_transformacion = $('[name=id_transformacion]').val();
     var est = $('[name=id_estado]').val();
-    if (est == '1'){
+    if (est == '1') {
         alert('A la espera de que Almacén genere la salida de los productos.');
     }
-    else if (est == '9'){
+    else if (est == '9') {
         alert('La transformación ya fue procesada.');
-    } 
-    else if (est == '7'){
+    }
+    else if (est == '7') {
         alert('No puede procesar. La transformación esta Anulada.');
     }
-    else if (est == '24'){
+    else if (est == '24') {
         alert('Ésta Transformación ya fue iniciada.');
-    } 
-    else if (est == '21'){
+    }
+    else if (est == '21') {
         $.ajax({
             type: 'GET',
-            url: 'iniciar_transformacion/'+id_transformacion,
+            url: 'iniciar_transformacion/' + id_transformacion,
             dataType: 'JSON',
-            success: function(response){
+            success: function (response) {
                 console.log(response);
                 mostrar_transformacion(id_transformacion);
             }
-        }).fail( function( jqXHR, textStatus, errorThrown ){
+        }).fail(function (jqXHR, textStatus, errorThrown) {
             console.log(jqXHR);
             console.log(textStatus);
             console.log(errorThrown);
         });
-    } 
+    }
 }
 
-function abrir_salida(){
+function abrir_salida() {
     var id_transformacion = $('[name=id_transformacion]').val();
     console.log(id_transformacion);
-    if (id_transformacion != ''){
+    if (id_transformacion != '') {
         $.ajax({
             type: 'GET',
-            url: 'id_salida_transformacion/'+id_transformacion,
+            url: 'id_salida_transformacion/' + id_transformacion,
             dataType: 'JSON',
-            success: function(id_salida){
-                if (id_salida > 0){
+            success: function (id_salida) {
+                if (id_salida > 0) {
                     console.log(id_salida);
                     var id = encode5t(id_salida);
-                    window.open('imprimir_salida/'+id);
+                    window.open('imprimir_salida/' + id);
                 } else {
                     alert('Esta Transformación no tiene Salida');
                 }
             }
-        }).fail( function( jqXHR, textStatus, errorThrown ){
+        }).fail(function (jqXHR, textStatus, errorThrown) {
             console.log(jqXHR);
             console.log(textStatus);
             console.log(errorThrown);
@@ -263,24 +263,24 @@ function abrir_salida(){
         alert('Debe seleccionar una Transformación!');
     }
 }
-function abrir_ingreso(){
+function abrir_ingreso() {
     var id_transformacion = $('[name=id_transformacion]').val();
     console.log(id_transformacion);
-    if (id_transformacion != ''){
+    if (id_transformacion != '') {
         $.ajax({
             type: 'GET',
-            url: 'id_ingreso_transformacion/'+id_transformacion,
+            url: 'id_ingreso_transformacion/' + id_transformacion,
             dataType: 'JSON',
-            success: function(id_ingreso){
-                if (id_ingreso > 0){
+            success: function (id_ingreso) {
+                if (id_ingreso > 0) {
                     console.log(id_ingreso);
                     var id = encode5t(id_ingreso);
-                    window.open('imprimir_ingreso/'+id);
+                    window.open('imprimir_ingreso/' + id);
                 } else {
                     alert('Esta Transformación no tiene Ingreso');
                 }
             }
-        }).fail( function( jqXHR, textStatus, errorThrown ){
+        }).fail(function (jqXHR, textStatus, errorThrown) {
             console.log(jqXHR);
             console.log(textStatus);
             console.log(errorThrown);
@@ -289,20 +289,20 @@ function abrir_ingreso(){
         alert('Debe seleccionar una Transformación!');
     }
 }
-function anular_transformacion(ids){
+function anular_transformacion(ids) {
     $.ajax({
         type: 'GET',
-        url: 'anular_transformacion/'+ids,
+        url: 'anular_transformacion/' + ids,
         dataType: 'JSON',
-        success: function(response){
-            if (response.length > 0){
+        success: function (response) {
+            if (response.length > 0) {
                 alert(response);
                 changeStateButton('anular');
                 mostrar_transformacion(ids);
                 // clearForm('form-guia_compra');
             }
         }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
+    }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
@@ -310,34 +310,34 @@ function anular_transformacion(ids){
 }
 
 let origen = null;
-function openProductoMateriaModal(){
+function openProductoMateriaModal() {
     origen = 'materia';
     productoModal();
 }
-function openProductoTransformadoModal(){
+function openProductoTransformadoModal() {
     origen = 'transformado';
     productoModal();
 }
-function openProductoSobranteModal(){
+function openProductoSobranteModal() {
     origen = 'sobrante';
     productoModal();
 }
 // Calcula total
-function actualizaTotales(){
+function actualizaTotales() {
     var total_materias = parseFloat($('[name=total_materias]').text());
     var total_directos = parseFloat($('[name=total_directos]').text());
     var total_indirectos = parseFloat($('[name=total_indirectos]').text());
     var total_sobrantes = parseFloat($('[name=total_sobrantes]').text());
     console.log('actualiza');
-    $('[name=costo_primo]').text(formatDecimalDigitos((total_materias + total_directos),2));
-    $('[name=costo_transformacion]').text(formatDecimalDigitos((total_materias + total_directos + total_indirectos - total_sobrantes),2));
+    $('[name=costo_primo]').text(formatDecimalDigitos((total_materias + total_directos), 2));
+    $('[name=costo_transformacion]').text(formatDecimalDigitos((total_materias + total_directos + total_indirectos - total_sobrantes), 2));
 
 }
 
-function imprimirTransformacion(){
+function imprimirTransformacion() {
     var id = $('[name=id_transformacion]').val();
-    if (id !== null && id !== ''){
-        window.open('imprimir_transformacion/'+id);
+    if (id !== null && id !== '') {
+        window.open('imprimir_transformacion/' + id);
     } else {
         alert('Debe seleccionar una Hoja de Transformación.');
     }
