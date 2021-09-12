@@ -233,6 +233,20 @@ class OrdenesPendientesController extends Controller
                 WHERE   CONCAT(UPPER(doc_com.serie), UPPER(doc_com.numero)) LIKE ? )
                 ";
             $query->whereRaw($sql_dc, ['%' . strtoupper($keyword) . '%']);
+        })->filterColumn('id_mov_alm', function ($query, $keyword) {
+            $sql_req = "id_mov_alm IN (
+                SELECT mov_alm_det.id_mov_alm FROM almacen.mov_alm_det 
+                INNER JOIN almacen.guia_com_det ON 
+                    guia_com_det.id_guia_com_det=mov_alm_det.id_guia_com_det 
+                INNER JOIN logistica.log_det_ord_compra ON 
+                    log_det_ord_compra.id_detalle_orden=guia_com_det.id_oc_det
+                INNER JOIN almacen.alm_det_req ON 
+                    alm_det_req.id_detalle_requerimiento=log_det_ord_compra.id_detalle_requerimiento
+                INNER JOIN almacen.alm_req ON 
+                    alm_req.id_requerimiento=alm_det_req.id_requerimiento
+                WHERE   UPPER(alm_req.codigo) LIKE ? )
+                ";
+            $query->whereRaw($sql_req, ['%' . strtoupper($keyword) . '%']);
         })->toJson();
     }
 

@@ -101,6 +101,7 @@ function listarIngresos() {
             { data: "id_mov_alm" },
             { data: "id_mov_alm" },
             { data: "id_guia_com" },
+            { data: "fecha_registro" },
             { data: "id_mov_alm", searchable: false }
         ],
         columnDefs: [
@@ -141,6 +142,12 @@ function listarIngresos() {
                     return row.comprobantes;
                 },
                 targets: 12
+            },
+            {
+                render: function (data, type, row) {
+                    return row.requerimientos;
+                },
+                targets: 13
             },
             {
                 render: function (data, type, row) {
@@ -198,7 +205,7 @@ function listarIngresos() {
                         );
                     }
                 },
-                targets: 13
+                targets: 14
             }
         ],
         select: "multi",

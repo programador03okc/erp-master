@@ -126,6 +126,7 @@ Pendientes de Ingreso
                                                 <th>Ordenes</th>
                                                 <th>OC SoftLink</th>
                                                 <th>Facturas</th>
+                                                <th>Requerimientos</th>
                                                 <th width="140px"></th>
                                             </tr>
                                         </thead>
