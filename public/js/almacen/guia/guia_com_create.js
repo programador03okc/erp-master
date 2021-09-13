@@ -82,6 +82,7 @@ function open_guia_create_seleccionadas() {
             $('[name=id_od]').val('');
             $('[name=serie]').val('');
             $('[name=numero]').val('');
+            $('[name=id_orden_compra]').val('');
             $('[name=fecha_emision]').val(fecha_actual());
             $('[name=fecha_almacen]').val(fecha_actual());
 
@@ -525,11 +526,20 @@ function abrirProducto(id_producto) {
     win.focus();
 }
 
-// function abrirProducto() {
-//     let url = "/almacen/catalogos/productos/index";
-//     var win = window.open(url, "_blank");
-//     win.focus();
-// }
+function actualizarDetalle() {
+    var id_oc = $('[name=id_orden_compra]').val();
+    if (id_oc == '') {
+        var id_oc_seleccionadas = [];
+        oc_seleccionadas.forEach(element => {
+            id_oc_seleccionadas.push(element.id_orden_compra);
+        });
+        var data = 'oc_seleccionadas=' + JSON.stringify(id_oc_seleccionadas);
+        listar_detalle_ordenes_seleccionadas(data);
+    } else {
+        var data = 'oc_seleccionadas=' + JSON.stringify([id_oc]);
+        listar_detalle_ordenes_seleccionadas(data);
+    }
+}
 
 function ceros_numero(numero) {
     if (numero == "numero") {

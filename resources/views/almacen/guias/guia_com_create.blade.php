@@ -81,6 +81,7 @@
                                         <th>Total</th>
                                         <th width="5%">
                                             <i class="fas fa-plus-circle icon-tabla green boton agregarSobrante" data-toggle="tooltip" data-placement="bottom" title="Agregar Sobrante" onClick="productoModal();"></i>
+                                            <i class="fas fa-sync-alt" style="cursor:pointer;" title="Actualizar lista de items" onClick="actualizarDetalle();"></i>
                                         </th>
                                     </tr>
                                 </thead>
