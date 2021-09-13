@@ -125,7 +125,12 @@ class ListarProveedorView {
 
         $('#form-proveedor').on("keypress",  (e)=> {
             if (e.which == 13){
-                this.guardarProveedor(e.currentTarget);
+                if(document.querySelector("form[id='form-proveedor']").getAttribute("type")=='register'){
+                    this.guardarProveedor(e.currentTarget);
+                }else{
+                    this.actualizarProveedor(e.currentTarget);
+                }
+
             };
         });
 
