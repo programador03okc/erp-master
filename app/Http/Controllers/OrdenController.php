@@ -3470,5 +3470,11 @@ class OrdenController extends Controller
  
         return json_encode($output);
     }
+    public function obtenerContactoProveedor($idProveedor){
+
+        $output = Proveedor::find($idProveedor)->contactoContribuyente;
+ 
+        return json_encode($output);
+    }
 
 }

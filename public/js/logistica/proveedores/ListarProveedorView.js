@@ -7,6 +7,7 @@ class ListarProveedorView {
         this.objectBtnEditionContacto;
         this.objectBtnEditionCuenta;
         this.objectBtnEditionEstablecimiento;
+
     }
 
     initializeEventHandler() {
@@ -127,6 +128,12 @@ class ListarProveedorView {
                 this.guardarProveedor(e.currentTarget);
             };
         });
+
+        let optionByURL =location.search.split('accion=')[1];
+        if(optionByURL == 'nuevo'){
+            document.getElementById("btnCrearProveedor").click();
+        }
+
     }
     // limpiar tabla
     limpiarTabla(idElement) {

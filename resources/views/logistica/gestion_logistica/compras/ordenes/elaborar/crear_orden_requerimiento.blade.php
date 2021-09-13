@@ -98,7 +98,7 @@ Elaborar orden
                 <h4>Datos del proveedor</h4>
                 <fieldset class="group-table">
                     <div class="row">
-                        <div class="col-md-6" id="group-nombre_proveedor">
+                        <div class="col-md-4" id="group-nombre_proveedor">
                             <h5>Proveedor</h5>
                             <div style="display:flex;">
                                 <input class="oculto" name="id_proveedor">
@@ -107,17 +107,17 @@ Elaborar orden
                                 <button type="button" class="group-text" onClick="proveedorModal();">
                                     <i class="fa fa-search"></i>
                                 </button>
-                                <button type="button" class="btn-primary" title="Agregar Proveedor" onClick="agregar_proveedor();"><i class="fas fa-plus"></i></button>
+                                <!-- <button type="button" class="btn-primary" title="Agregar Proveedor" onClick="agregar_proveedor();"><i class="fas fa-plus"></i></button> -->
                             </div>
                         </div>
-                        <div class="col-md-6" id="group-direccion_proveedor">
+                        <div class="col-md-3" id="group-direccion_proveedor">
                             <h5>Dirección de proveedor</h5>
                             <div style="display:flex;">
                                 <input type="text" class="form-control" name="direccion_proveedor" readOnly>
                             </div>
                         </div>
 
-                        <div class="col-md-3" id="group-ubigeo_proveedor">
+                        <div class="col-md-3" id="group-ubigeo_proveedor" hidden>
                             <h5>Ubigeo de proveedor</h5>
                             <div style="display:flex;">
                                 <input class="oculto" name="ubigeo_proveedor">
@@ -126,7 +126,7 @@ Elaborar orden
                             </div>
                         </div>
 
-                        <div class="col-md-3" id="group-cuenta_bancaria_proveedor">
+                        <div class="col-md-3" id="group-cuenta_bancaria_proveedor" hidden>
                             <h5>Cuenta bancaria</h5>
                             <div style="display:flex;">
                                 <input class="oculto" name="id_cuenta_principal_proveedor">
@@ -146,11 +146,11 @@ Elaborar orden
                                 <button type="button" class="group-text" onClick="contactoModal();">
                                     <i class="fa fa-search"></i>
                                 </button>
-                                <button type="button" class="btn-primary" title="Agregar Contacto" onClick="agregar_contacto();"><i class="fas fa-plus"></i></button>
+                                <!-- <button type="button" class="btn-primary" title="Agregar Contacto" onClick="agregar_contacto();"><i class="fas fa-plus"></i></button> -->
                             </div>
                         </div>
 
-                        <div class="col-md-3" id="group-contacto_proveedor_telefono">
+                        <div class="col-md-2" id="group-contacto_proveedor_telefono">
                             <h5>Telefono de contacto</h5>
                             <div style="display:flex;">
                                 <input type="text" class="form-control" name="contacto_proveedor_telefono" readOnly>

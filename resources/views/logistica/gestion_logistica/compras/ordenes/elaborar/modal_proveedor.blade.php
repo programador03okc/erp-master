@@ -6,6 +6,7 @@
                 <h3 class="modal-title">Lista de Proveedores</h3>
             </div>
             <div class="modal-body">
+                <button type="button" class="btn btn-primary btn-sm handleClickCrearProveedor" title="Agregar Proveedor" ><i class="fas fa-plus"></i> Crear nuevo</button>
                 <table class="mytable table table-condensed table-bordered table-okc-view" 
                 id="listaProveedor">
                     <thead>

@@ -67,8 +67,8 @@ class OrdenView {
 
     initializeEventHandler(){
 
-        $('.content-header').on("click","span.handleClickEliminarVinculoReq", ()=>{
-            this.eliminarVinculoReq();
+        $('#modal-proveedores').on("click","button.handleClickCrearProveedor", ()=>{
+            this.irACrearProveedor();
         });
 
         $('#form-crear-orden-requerimiento').on("click","button.handleClickImprimirOrdenPdf", ()=>{
@@ -141,6 +141,11 @@ class OrdenView {
             }
 
         }
+    }
+
+    irACrearProveedor(){
+        let url ="/logistica/gestion-logistica/proveedores/listado/index?accion=nuevo";
+        var win = window.open(url,'_blank');
     }
 
     imprimirOrdenPDF(){
