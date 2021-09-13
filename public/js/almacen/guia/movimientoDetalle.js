@@ -4,6 +4,7 @@ function open_detalle_movimiento(data) {
     });
     $('#cabecera').text(data.codigo);
     $('[name=id_guia_com_detalle]').val(data.id_guia_com);
+    $('[name=id_mov_alm]').val(data.id_mov_alm);
     $('#guia_com').text(data.serie + '-' + data.numero);
     $('#almacen_descripcion').text(data.almacen_descripcion);
     $('#prov_razon_social').text(data.razon_social);
@@ -17,6 +18,10 @@ function open_detalle_movimiento(data) {
     listar_detalle_movimiento(data.id_guia_com);
 }
 
+function abrirIngreso() {
+    var id = encode5t($('[name=id_mov_alm]').val());
+    window.open("imprimir_ingreso/" + id);
+}
 let guia_detalle = [];
 
 function listar_detalle_movimiento(id_guia_com_detalle) {

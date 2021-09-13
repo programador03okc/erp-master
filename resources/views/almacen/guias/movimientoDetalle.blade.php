@@ -3,15 +3,17 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title">Detalle del Ingreso</h3>
+                <h3 class="modal-title">Ingreso a almacén</h3>
             </div>
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-12">
                         <input type="text" name="id_guia_com_detalle" class="oculto" />
+                        <input type="text" name="id_mov_alm" class="oculto" />
                         <div class="panel panel-default">
-                            <div class="panel-heading" id="cabecera">Detalle xxx
-
+                            <div class="panel-heading">
+                                <label class="lbl-codigo" title="Abrir Ingreso" onClick="abrirIngreso()" id="cabecera">
+                                </label>
                             </div>
                             <div class="panel-body">
                                 <table width="100%">
