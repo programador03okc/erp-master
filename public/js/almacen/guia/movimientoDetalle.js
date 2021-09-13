@@ -1,10 +1,20 @@
-function open_detalle_movimiento(id, codigo) {
+function open_detalle_movimiento(data) {
     $('#modal-movAlmDetalle').modal({
         show: true
     });
-    $('#cabecera').text(codigo);
-    $('[name=id_guia_com_detalle]').val(id);
-    listar_detalle_movimiento(id);
+    $('#cabecera').text(data.codigo);
+    $('[name=id_guia_com_detalle]').val(data.id_guia_com);
+    $('#guia_com').text(data.serie + '-' + data.numero);
+    $('#almacen_descripcion').text(data.almacen_descripcion);
+    $('#prov_razon_social').text(data.razon_social);
+    $('#operacion_descripcion').text(data.operacion_descripcion);
+    $('#fecha_emision').text(data.fecha_emision);
+    $('#ordenes_compra').text(data.ordenes_compra);
+    $('#responsable_nombre').text(data.nombre_corto);
+    $('#requerimientos').text(data.requerimientos);
+    $('#ordenes_soft_link').text(data.ordenes_soft_link);
+
+    listar_detalle_movimiento(data.id_guia_com);
 }
 
 let guia_detalle = [];

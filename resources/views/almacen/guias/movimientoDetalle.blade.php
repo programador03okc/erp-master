@@ -2,20 +2,47 @@
     <div class="modal-dialog" style="width: 1200px;">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" 
-                aria-label="close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title">Ver Detalle Ingreso</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
+                <h3 class="modal-title">Detalle del Ingreso</h3>
             </div>
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-12">
-                        <input type="text" name="id_guia_com_detalle" class="oculto"/>
+                        <input type="text" name="id_guia_com_detalle" class="oculto" />
                         <div class="panel panel-default">
-                            <div class="panel-heading" id="cabecera">Detalle
+                            <div class="panel-heading" id="cabecera">Detalle xxx
+
                             </div>
                             <div class="panel-body">
-                                <table class="mytable table table-condensed table-bordered table-okc-view" width="100%" 
-                                    id="detalleMovimiento"  style="margin-top:10px;">
+                                <table width="100%">
+                                    <tbody>
+                                        <tr>
+                                            <th colSpan="2">Guía de compra: </th>
+                                            <td colSpan="3"><span id="guia_com"></span></td>
+                                            <th colSpan="2">Almacén: </th>
+                                            <td colSpan="2"><span id="almacen_descripcion"></span></td>
+                                            <th colSpan="2">Fecha emisión: </th>
+                                            <td colSpan="3"><span id="fecha_emision"></span></td>
+                                        </tr>
+                                        <tr>
+                                            <th colSpan="2">Proveedor: </th>
+                                            <td colSpan="3"><span id="prov_razon_social"></span></td>
+                                            <th colSpan="2">Tipo de Operación: </th>
+                                            <td colSpan="2"><span id="operacion_descripcion"></span></td>
+                                            <th colSpan="2">Ordenes de Compra: </th>
+                                            <td colSpan="3"><span id="ordenes_compra"></span></td>
+                                        </tr>
+                                        <tr>
+                                            <th colSpan="2">Responsable: </th>
+                                            <td colSpan="3"><span id="responsable_nombre"></span></td>
+                                            <th colSpan="2">Requerimientos: </th>
+                                            <td colSpan="2"><span id="requerimientos"></span></td>
+                                            <th colSpan="2">Ordenes SoftLink: </th>
+                                            <td colSpan="3"><span id="ordenes_soft_link"></span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <table class="mytable table table-condensed table-bordered table-okc-view" width="100%" id="detalleMovimiento" style="margin-top:10px;">
                                     <thead>
                                         <tr>
                                             <th>#</th>
@@ -40,5 +67,5 @@
                 </div>
             </div>
         </div>
-    </div>  
+    </div>
 </div>

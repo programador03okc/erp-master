@@ -239,21 +239,19 @@ function listarIngresos() {
     });
 }
 
-$("#listaIngresosAlmacen tbody").on(
-    "click",
-    "button.transferencia",
-    function () {
-        var id_guia_com = $(this).data("guia");
-        // console.log(data);
-        ver_transferencia(id_guia_com);
-    }
+$("#listaIngresosAlmacen tbody").on("click", "button.transferencia", function () {
+    var id_guia_com = $(this).data("guia");
+    // console.log(data);
+    ver_transferencia(id_guia_com);
+}
 );
 
 $("#listaIngresosAlmacen tbody").on("click", "button.detalle", function () {
-    var id_guia_com = $(this).data("id");
-    var codigo = $(this).data("cod");
-    // console.log(data);
-    open_detalle_movimiento(id_guia_com, codigo);
+    // var id_guia_com = $(this).data("id");
+    // var codigo = $(this).data("cod");
+    var data = $("#listaIngresosAlmacen").DataTable().row($(this).parents("tr")).data();
+    console.log(data);
+    open_detalle_movimiento(data);
 });
 
 function abrir_ingreso(id_mov_alm) {
