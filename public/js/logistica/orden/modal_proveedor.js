@@ -111,9 +111,24 @@ function obtenerContactoPorDefecto(idProveedor){
                 document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='contacto_proveedor_telefono']").value =response[0].telefono;
 
 
+            }else{
+                Lobibox.notify('info', {
+                    title:false,
+                    size: 'mini',
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    msg: `Proveedor seleccionado sin contactos, para agregarlo ingrese al módulo de proveedores.`,
+                });
             }
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
+
+        Swal.fire(
+            '',
+            'Hubo un problema al intentar  obtener el contacto del proveedor seleccionado, por favor vuelva a intentarlo',
+            'error'
+        );
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
