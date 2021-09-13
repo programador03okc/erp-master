@@ -25,7 +25,7 @@
                             <table class="mytable table table-condensed table-bordered table-okc-view" id="listaTrazabilidadDetalleRequerimiento" width="100%">
                                 <thead>
                                     <tr>
-                                        <th>#</th>
+                                        <th>Código producto</th>
                                         <th>Part number</th>
                                         <th>Descripción</th>
                                         <th>Cantidad</th>

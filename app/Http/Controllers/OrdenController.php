@@ -2880,9 +2880,9 @@ class OrdenController extends Controller
            
 
         $nuevoEstadoDetalleRequerimiento = $this->obtenerNuevoEstadoDetalleRequerimiento($itemBaseList,$itemBaseEnOtrasOrdenesGeneradasList,$detalleOrdenGeneradaList,$itemAtendidoParcialOSinAtender);
-        Debugbar::info($nuevoEstadoDetalleRequerimiento);
+        // Debugbar::info($nuevoEstadoDetalleRequerimiento);
         $nuevoEstadoCabeceraRequerimiento = $this->obtenerNuevoEstadoCabeceraRequerimiento($idRequerimientoList,$nuevoEstadoDetalleRequerimiento);
-        Debugbar::info($nuevoEstadoCabeceraRequerimiento);
+        // Debugbar::info($nuevoEstadoCabeceraRequerimiento);
 
 
         // actualizar cabecera requerimiento
@@ -3467,6 +3467,12 @@ class OrdenController extends Controller
         }
 
         $output = ['status'=>$status,'id_cuenta_contribuyente'=>$idCuentaContribuyente];
+ 
+        return json_encode($output);
+    }
+    public function obtenerContactoProveedor($idProveedor){
+
+        $output = Proveedor::find($idProveedor)->contactoContribuyente;
  
         return json_encode($output);
     }

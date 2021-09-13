@@ -45,6 +45,10 @@ class RequerimientoCtrl{
         return this.requerimientoModel.getRequerimiento(idRequerimiento);
 
     }
+    getHistorialRequerimiento(idRequerimiento){
+        return this.requerimientoModel.getHistorialRequerimiento(idRequerimiento);
+
+    }
     // listado 
     getListadoElaborados(meOrAll,idEmpresa, idSede, idGrupo, division ,idPrioridad){
         return this.requerimientoModel.getListadoElaborados(meOrAll,idEmpresa, idSede, idGrupo, division, idPrioridad);

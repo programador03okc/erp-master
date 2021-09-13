@@ -602,8 +602,10 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::group(['as' => 'requerimiento.', 'prefix' => 'requerimiento'], function () {
 
 				Route::group(['as' => 'elaboracion.', 'prefix' => 'elaboracion'], function () {
-
 					Route::get('index', 'Logistica\RequerimientoController@index')->name('index');
+					Route::get('mostrar/{idRequerimiento?}', 'Logistica\RequerimientoController@mostrar')->name('mostrar');
+					// Route::get('index/{idRequerimiento?}', 'Logistica\RequerimientoController@index')->name('index');
+
 					Route::get('tipo-cambio-compra/{fecha}', 'Almacen\Reporte\SaldosController@tipo_cambio_compra');
 					Route::get('lista-divisiones', 'Logistica\RequerimientoController@listaDivisiones');
 					Route::get('mostrar-partidas/{idGrupo?}/{idProyecto?}', 'Logistica\RequerimientoController@mostrarPartidas')->name('mostrar-partidas');
@@ -768,6 +770,7 @@ Route::group(['middleware' => ['auth']], function () {
 						Route::post('guardar', 'OrdenController@guardar_orden_por_requerimiento')->name('guardar');
 						Route::post('actualizar', 'OrdenController@actualizar_orden_por_requerimiento')->name('actualizar');
 						Route::get('mostrar_proveedores', 'LogisticaController@mostrar_proveedores');
+						Route::get('contacto-proveedor/{idProveedor?}', 'OrdenController@obtenerContactoProveedor');
 						Route::post('guardar_proveedor', 'LogisticaController@guardar_proveedor');
 						Route::put('actualizar-estado-detalle-requerimiento/{id_detalle_req?}/{estado?}', 'OrdenController@update_estado_detalle_requerimiento')->name('actualizar-estado-detalle-requerimiento');
 						Route::post('guardar-producto', 'AlmacenController@guardar_producto')->name('guardar-producto');

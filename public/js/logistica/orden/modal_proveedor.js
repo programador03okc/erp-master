@@ -95,8 +95,44 @@ function selectProveedor(obj){
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='ubigeo_proveedor']").value =ubigeo;
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='ubigeo_proveedor_descripcion']").value =ubigeoDescripcion;
  
-
+    obtenerContactoPorDefecto(idProveedor)
     $('#modal-proveedores').modal('hide');
+}
+
+function obtenerContactoPorDefecto(idProveedor){
+    $.ajax({
+        type: 'GET',
+        url: 'contacto-proveedor/'+idProveedor,
+        dataType: 'JSON',
+        success: function(response){
+            if(response.length >0){                    
+                document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_contacto_proveedor']").value =response[0].id_datos_contacto;
+                document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='contacto_proveedor_nombre']").value =response[0].nombre;
+                document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='contacto_proveedor_telefono']").value =response[0].telefono;
+
+
+            }else{
+                Lobibox.notify('info', {
+                    title:false,
+                    size: 'mini',
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    msg: `Proveedor seleccionado sin contactos, para agregarlo ingrese al módulo de proveedores.`,
+                });
+            }
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+
+        Swal.fire(
+            '',
+            'Hubo un problema al intentar  obtener el contacto del proveedor seleccionado, por favor vuelva a intentarlo',
+            'error'
+        );
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
 }
 
 

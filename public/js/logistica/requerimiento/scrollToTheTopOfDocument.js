@@ -3,9 +3,9 @@ window.onscroll = function () { scrollFunction() };
 
 function scrollFunction() {
     if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-        document.getElementById("btnVolverArriba").style.display = "block";
+        document.getElementById("btnVolverArriba")?document.getElementById("btnVolverArriba").style.display = "block":null;
     } else {
-        document.getElementById("btnVolverArriba").style.display = "none";
+        document.getElementById("btnVolverArriba")?document.getElementById("btnVolverArriba").style.display = "none":null;
     }
 
 }

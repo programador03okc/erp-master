@@ -79,7 +79,7 @@ class ListarRequerimientoView {
                 { 'data': 'razon_social', 'name': 'adm_contri.razon_social', 'className': 'text-center' },
                 { 'data': 'grupo', 'name': 'sis_grupo.descripcion', 'className': 'text-center' },
                 { 'data': 'division', 'name': 'division.descripcion', 'className': 'text-center' },
-                { 'data': 'monto_total', 'name': 'monto_total', 'className': 'text-right', 'searchable': false },
+                { 'data': 'monto_total', 'name': 'monto_total', 'className': 'text-right' },
                 { 'data': 'nombre_usuario', 'name': 'nombre_usuario' },
                 { 'data': 'estado_doc', 'name': 'adm_estado_doc.estado_doc' },
                 { 'data': 'id_requerimiento' }
@@ -93,7 +93,8 @@ class ListarRequerimientoView {
                 },
                 {
                     'render': function (data, type, row) {
-                        return `<label class="lbl-codigo handleClickAbrirRequerimiento" title="Abrir Requerimiento">${row.codigo}</label>`;
+                        // return `<label class="lbl-codigo handleClickAbrirRequerimiento" title="Abrir Requerimiento">${row.codigo}</label>`;
+                        return `<a href="/logistica/gestion-logistica/requerimiento/elaboracion/index?id=${row.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${row.codigo}</a>`;
                     }, targets: 2
                 },
                 {

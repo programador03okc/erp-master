@@ -204,12 +204,16 @@ class RequerimientoModel {
     }
 
     getRequerimiento(idRequerimiento){
-        // return  $.ajax({
-        //         type: 'GET',
-        //         url:`mostrar-requerimiento/${idRequerimiento}/null`,
-        //         dataType: 'JSON'
-        //         });
-        
+        return  $.ajax({
+                type: 'GET',
+                url:`mostrar-requerimiento/${idRequerimiento}/null`,
+                dataType: 'JSON',
+                });
+
+    
+    }
+    getHistorialRequerimiento(idRequerimiento){
+
         return new Promise(function(resolve, reject) {
             $.ajax({
                 type: 'GET',
