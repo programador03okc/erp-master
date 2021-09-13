@@ -4,6 +4,17 @@ class TrazabilidadRequerimiento{
         this.initializeEventHandler();
 
     }
+
+    limpiarTabla(idElement) {
+        let nodeTbody = document.querySelector("table[id='" + idElement + "'] tbody");
+        if(nodeTbody!=null){
+            while (nodeTbody.children.length > 0) {
+                nodeTbody.removeChild(nodeTbody.lastChild);
+            }
+
+        }
+    }
+
     verTrazabilidadRequerimientoModal(data,that){
         let idRequerimiento = data.id_requerimiento;
 
@@ -91,92 +102,39 @@ class TrazabilidadRequerimiento{
     }
     
     construirTablaTrazabilidadDetalleRequerimiento(data){
-        var vardataTables = funcDatatables();
-        $('#listaTrazabilidadDetalleRequerimiento').DataTable({
-            'dom': vardataTables[1],
-            'buttons': [],
-            'bDestroy': true,
-            'info':     false,
-            'paging':   false,
-            'searching': false,
-            'language': vardataTables[0],
-            'order': [[2, 'asc']],
-            'bLengthChange': false,
-            'serverSide': false,
-            'destroy': true,
-            'data': data,
-            'columns': [
 
-                {
-                    'render': function (data, type, row, meta) {
-                        return  meta.row +1;
-                    },'className': 'text-center'
-                },
-                {
-                    'render': function (data, type, row) {
-                        if(row.id_tipo_item ==1){
-                            return row.part_number_producto?row.part_number_producto:(row.part_number?row.part_number:'');
-                        }else{
-                            return "(Servicio)";
-                        }
+        this.limpiarTabla('listaTrazabilidadDetalleRequerimiento');
+        data.forEach(element => { 
+            let labelOrdenes='';
+            (element.ordenes_compra).forEach(value => {
+                labelOrdenes += `<label class="lbl-codigo handleClickAbrirOrden" title="Abrir orden" data-id-orden="${value.id_orden_compra}" >${value.codigo}</label>`;
+            });
 
-                    },'className': 'text-center' 
-                },
-                {
-                    'render': function (data, type, row) {
-                        return  row.descripcion_producto?row.descripcion_producto:(row.descripcion?row.descripcion:'');
-                    },'className': 'text-left',
-                },
-                { 'data': 'cantidad', 'className': 'text-center'},
-                { 'data': 'unidad_medida','className': 'text-center' },
-                { 'data': 'id_detalle_requerimiento' },
-                { 'data': 'id_detalle_requerimiento' },
-                { 'data': 'id_detalle_requerimiento' },
-                { 'data': 'nombre_estado' }
-            ],
-            'columnDefs': [
-                { width: '5px', targets: 0, sWidth: '3%' },
-                { width: '10px', targets: 1, sWidth: '8%' },
-                { width: '100px', targets: 2, sWidth: '40%' },
-                { width: '10px', targets: 3, sWidth: '8%' },
-                { width: '10px', targets: 4, sWidth: '8%' },
-                {
-                    'render': function (data, type, row) {
-                        let labelOrdenes='';
-                        (row['ordenes_compra']).forEach(element => {
-                            labelOrdenes += `<label class="lbl-codigo handleClickAbrirOrden" title="Abrir orden" data-id-orden="${element.id_orden_compra}" >${element.codigo}</label>`;
-                        });
-                        return labelOrdenes;
-                        
-                    }, targets: 5, width: '10px',sWidth: '5%'
-                },
-                {
-                    'render': function (data, type, row) {
-                        let labelGuiaIngreso='';
-                        (row['guias_ingreso']).forEach(element => {
-                            // labelGuiaIngreso += `<label class="lbl-codigo handleClickAbrirIngreso" title="Abrir Guia Ingreso" data-id-guia="${element.id_guia}">${element.codigo_guia}</label>`;
-                            labelGuiaIngreso += `<label class="" title="Guia Ingreso" data-id-guia="${element.id_guia}">${element.codigo_guia}</label>`;
-                        });
-                        return labelGuiaIngreso;
-                        
-                    }, targets: 6, width: '10px',sWidth: '5%'
-                },
-                {
-                    'render': function (data, type, row) {
-                        let labelFacturas='';
-                        (row['facturas']).forEach(element => {
-                            labelFacturas += `<label>${element.codigo_factura}</label>`;
-                        });
-                        return labelFacturas;
-                        
-                    }, targets: 7, width: '10px',sWidth: '5%'
-                },
-                { width: '10px', targets: 8, sWidth: '8%' },
+            let labelGuiaIngreso='';
+            (element.guias_ingreso).forEach(item => {
+                labelGuiaIngreso += `<label class="" title="Guia Ingreso" data-id-guia="${item.id_guia}">${item.codigo_guia}</label>`;
+            });
 
-  
-    
-            ]
+            let labelFacturas='';
+            (element.facturas).forEach(item => {
+                labelFacturas += `<label>${item.codigo_factura}</label>`;
+            });
+
+            document.querySelector("tbody[id='body_lista_trazabilidad_requerimiento']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
+                <td style="text-align:center;">${element.codigo_producto??''}</td>
+                <td style="text-align:center;">${(element.id_tipo_item ==1)?(element.part_number_producto?element.part_number_producto:(element.part_number?element.part_number:'')):'servicio'}</td>
+                <td style="text-align:left;">${element.descripcion_producto?element.descripcion_producto:(element.descripcion?element.descripcion:'')}</td>
+                <td style="text-align:center;">${element.cantidad??''}</td>
+                <td style="text-align:center;">${element.unidad_medida??''}</td>
+                <td style="text-align:center;">${labelOrdenes}</td>
+                <td style="text-align:center;">${labelGuiaIngreso}</td>
+                <td style="text-align:center;">${labelFacturas}</td>
+                <td style="text-align:center;">${element.nombre_estado??''}</td>
+ 
+            </tr>`);
+
         });
+
     }
 
     abrirOrden(idOrden){

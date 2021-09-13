@@ -112,7 +112,9 @@
                     <input type="hidden" name="idUsuario">
                     <input type="hidden" name="idRolAprobante">
                     <input type="hidden" name="idFlujo">
+                    <input type="hidden" name="idOperacion">
                     <input type="hidden" name="aprobacionFinalOPendiente">
+                    <input type="hidden" name="tieneRolConSiguienteAprobacion">
                         <div class="form-group">
                             <label class="col-sm-5 control-label">Acción a realizar</label>
                             <div class="col-sm-4">

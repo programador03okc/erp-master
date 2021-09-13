@@ -31,8 +31,8 @@ class Operacion extends Model
             return $query->whereRaw('adm_operacion.prioridad_id = '.$idPrioridad);
         })
         ->get();
-        Debugbar::info(count($adm_operacion));
-        Debugbar::info($adm_operacion);
+        // Debugbar::info(count($adm_operacion));
+        // Debugbar::info($adm_operacion);
 
         if(count($adm_operacion)==0){
             $adm_operacion = Operacion::where([
@@ -54,9 +54,9 @@ class Operacion extends Model
     
             ->get();
         }   
-        Debugbar::info(count($adm_operacion));
+        // Debugbar::info(count($adm_operacion));
 
-        Debugbar::info($adm_operacion);
+        // Debugbar::info($adm_operacion);
 
         if(count($adm_operacion)==0){
             $adm_operacion = Operacion::where([

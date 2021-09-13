@@ -46,6 +46,11 @@ class RequerimientoView {
         document.querySelector("select[class~='handleChangeUpdateSede']").addEventListener("change", this.updateSede.bind(this), false);
         document.querySelector("input[class~='handleChangeFechaLimite']").addEventListener("change", this.updateFechaLimite.bind(this), false);
 
+
+        $('#listaRequerimiento tbody').on("click","button.handleClickCargarRequerimiento", (e)=>{
+            this.cargarRequerimiento(e.target.dataset.idRequerimiento);
+        });
+
         $('#modal-adjuntar-archivos-requerimiento').on("change","input.handleChangeAgregarAdjuntoRequerimiento", (e)=>{
             this.agregarAdjuntoRequerimiento(e.currentTarget);
         });
@@ -119,28 +124,39 @@ class RequerimientoView {
             backdrop: 'true'
         });
 
-        this.requerimientoCtrl.getListadoElaborados("ME", null, null, null, null, null).then((res)=> {
-            this.construirTablaHistorialRequerimientosElaborados(res['data']);
+        this.construirTablaHistorialRequerimientosElaborados({"meOrAll":"ME"});
+        // this.requerimientoCtrl.getListadoElaborados().then((res)=> {
 
-        }).catch(function (err) {
-            console.log(err)
-        })
+        // }).catch(function (err) {
+        //     console.log(err)
+        // })
     }
 
-    construirTablaHistorialRequerimientosElaborados(data) {
+    construirTablaHistorialRequerimientosElaborados(parametros) {
         // console.log(data);
-        let that = this;
 
         var vardataTables = funcDatatables();
-        $('#listaRequerimiento').DataTable({
+        let $tablaListaRequerimiento = $('#listaRequerimiento').DataTable({
             'dom': vardataTables[1],
-            'buttons': [],
+            'buttons': vardataTables[2],
             'language': vardataTables[0],
+            'buttons': [],
             'order': [[10, 'desc']],
-            'bLengthChange': false,
-            'serverSide': false,
+             'serverSide': true,
             'destroy': true,
-            'data': data,
+            'ajax': {
+                'url': 'elaborados',
+                'type': 'POST',
+                'data':JSON.stringify(parametros),
+                beforeSend: data => {
+    
+                    $("#listaRequerimiento").LoadingOverlay("show", {
+                        imageAutoResize: true,
+                        progress: true,
+                        imageColor: "#3c8dbc"
+                    });
+                },
+            },
             'columns': [
                 { 'data': 'priori', 'name': 'adm_prioridad.descripcion', 'className': 'text-center' },
                 { 'data': 'codigo', 'name': 'codigo', 'className': 'text-center' },
@@ -175,29 +191,21 @@ class RequerimientoView {
                         }
                     }
                 },
-                { 'data': 'fecha_registro', 'name': 'alm_req.fecha_registro' }
+                { 'data': 'fecha_registro', 'name': 'alm_req.fecha_registro', 'className': 'text-center' },
+                { 'data': 'id_requerimiento' }
+
             ],
             'columnDefs': [
                 {
                     'render': function (data, type, row) {
                         return row['termometro'];
-
-                        // if (row['priori'] == 'Normal') {
-                        //     return '<center> <i class="fas fa-thermometer-empty green"  data-toggle="tooltip" data-placement="right" title="Normal" ></i></center>';
-                        // } else if (row['priori'] == 'Media') {
-                        //     return '<center> <i class="fas fa-thermometer-half orange"  data-toggle="tooltip" data-placement="right" title="Alta"  ></i></center>';
-                        // } else if (row['priori']=='Alta') {
-                        //     return '<center> <i class="fas fa-thermometer-full red"  data-toggle="tooltip" data-placement="right" title="Crítico"  ></i></center>';
-                        // } else {
-                        //     return '';
-                        // }
                     }, targets: 0
                 },
                 {
                     'render': function (data, type, row) {
                         let containerOpenBrackets = '<center><div class="btn-group" role="group" style="margin-bottom: 5px;">';
                         let containerCloseBrackets = '</div></center>';
-                        let btnSeleccionar = '<button type="button" class="btn btn-xs btn-success handleClickCargarRequerimiento" title="Seleccionar" >Seleccionar</button>';
+                        let btnSeleccionar = '<button type="button" class="btn btn-xs btn-success handleClickCargarRequerimiento" title="Seleccionar" data-id-requerimiento="'+row.id_requerimiento+'" >Seleccionar</button>';
                         return containerOpenBrackets + btnSeleccionar + containerCloseBrackets;
                     }, targets: 10
                 },
@@ -214,22 +222,37 @@ class RequerimientoView {
                 }
             },
             'initComplete': function () {
-                $('#listaRequerimiento tbody').on("click","button.handleClickCargarRequerimiento", function(){
-                    var data = $('#listaRequerimiento').DataTable().row($(this).parents("tr")).data();
-                    that.cargarRequerimiento(data.id_requerimiento);
+                //Boton de busqueda
+                const $filter = $('#listaRequerimiento_filter');
+                const $input = $filter.find('input');
+                $filter.append('<button id="btnBuscar" class="btn btn-default btn-sm pull-right" type="button"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>');
+                $input.off();
+                $input.on('keyup', (e) => {
+                    if (e.key == 'Enter') {
+                        $('#btnBuscar').trigger('click');
+                    }
                 });
+                $('#btnBuscar').on('click', (e) => {
+                    $tablaListaRequerimiento.search($input.val()).draw();
+                })
+                //Fin boton de busqueda
+            },
+            "drawCallback": function( settings ) {
+                //Botón de búsqueda
+                $('#listaRequerimiento_filter input').prop('disabled', false);
+                $('#btnBuscar').html('<span class="glyphicon glyphicon-search" aria-hidden="true"></span>').prop('disabled', false);
+                $('#listaRequerimiento_filter input').trigger('focus');
+                //fin botón búsqueda
+                $("#listaRequerimiento").LoadingOverlay("hide", true);
             }
         });
 
-        $('#ListaReq').DataTable().on("draw", function () {
-            resizeSide();
-        });
     }
 
     cargarRequerimiento(idRequerimiento) {
         $('#modal-historial-requerimiento').modal('hide');
         const objecto= this;
-        this.requerimientoCtrl.getRequerimiento(idRequerimiento).then((res)=> {
+        this.requerimientoCtrl.getHistorialRequerimiento(idRequerimiento).then((res)=> {
             objecto.mostrarRequerimiento(res);
 
         }).catch(function (err) {
@@ -1435,6 +1458,10 @@ class RequerimientoView {
                 
                 break;
         
+            case '':
+                document.querySelector("div[id='modal-adjuntar-archivos-requerimiento'] div[id='group-action-upload-file']").classList.remove('oculto');
+                break;
+        
             default:
                 document.querySelector("div[id='modal-adjuntar-archivos-requerimiento'] div[id='group-action-upload-file']").classList.add('oculto');
                 break;
@@ -1542,6 +1569,10 @@ class RequerimientoView {
                 
                 break;
         
+            case '':
+                document.querySelector("div[id='modal-adjuntar-archivos-detalle-requerimiento'] div[id='group-action-upload-file']").classList.remove('oculto');
+                break;
+
             default:
                 document.querySelector("div[id='modal-adjuntar-archivos-detalle-requerimiento'] div[id='group-action-upload-file']").classList.add('oculto');
                 break;
@@ -1822,7 +1853,6 @@ class RequerimientoView {
                                 delayIndicator: false,
                                 msg: `Se ha creado el requerimiento ${response.codigo}`
                             });
-                            // location.reload();
                             this.RestablecerFormularioRequerimiento();
                         } else {
                             $('#wrapper-okc').LoadingOverlay("hide", true);
@@ -2003,7 +2033,8 @@ class RequerimientoView {
         document.querySelector("div[id='group-historial-revisiones']").setAttribute("hidden",true);
         document.querySelector("span[name='cantidadAdjuntosRequerimiento']").textContent=0;
         disabledControl(document.getElementsByName("btn-imprimir-requerimento-pdf"), true);
-        disabledControl(document.getElementsByName("btn-adjuntos-requerimiento"), true);
+        this.actualizarEstadoBotonAdjuntarNuevoCabeceraRequerimiento();
+        this.actualizarEstadoBotonAdjuntarNuevoDetalleRequerimiento();
     }
 
     cancelarRequerimiento() {

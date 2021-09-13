@@ -2880,9 +2880,9 @@ class OrdenController extends Controller
            
 
         $nuevoEstadoDetalleRequerimiento = $this->obtenerNuevoEstadoDetalleRequerimiento($itemBaseList,$itemBaseEnOtrasOrdenesGeneradasList,$detalleOrdenGeneradaList,$itemAtendidoParcialOSinAtender);
-        Debugbar::info($nuevoEstadoDetalleRequerimiento);
+        // Debugbar::info($nuevoEstadoDetalleRequerimiento);
         $nuevoEstadoCabeceraRequerimiento = $this->obtenerNuevoEstadoCabeceraRequerimiento($idRequerimientoList,$nuevoEstadoDetalleRequerimiento);
-        Debugbar::info($nuevoEstadoCabeceraRequerimiento);
+        // Debugbar::info($nuevoEstadoCabeceraRequerimiento);
 
 
         // actualizar cabecera requerimiento

@@ -240,6 +240,8 @@ class AprobarRequerimientoView {
                                         data-id-rol-aprobante="${row['id_rol_aprobante']}"
                                         data-id-flujo="${row['id_flujo']}"
                                         data-aprobacion-final-o-pendiente="${row['aprobacion_final_o_pendiente']}"
+                                        data-id-operacion="${row['idOperacion']}"
+                                        data-tiene-rol-con-siguiente-aprobacion="${row['tieneRolConSiguienteAprobacion']}"
                                         >
                                         <i class="fas fa-eye fa-xs"></i>
                                     </button>
@@ -311,6 +313,8 @@ class AprobarRequerimientoView {
                 $modalRequerimiento.find("input[name='idRolAprobante']").val(event.currentTarget.dataset.idRolAprobante);
                 $modalRequerimiento.find("input[name='idFlujo']").val(event.currentTarget.dataset.idFlujo);
                 $modalRequerimiento.find("input[name='aprobacionFinalOPendiente']").val(event.currentTarget.dataset.aprobacionFinalOPendiente);
+                $modalRequerimiento.find("input[name='idOperacion']").val(event.currentTarget.dataset.idOperacion);
+                $modalRequerimiento.find("input[name='tieneRolConSiguienteAprobacion']").val(event.currentTarget.dataset.tieneRolConSiguienteAprobacion);
                 $modalRequerimiento.find("textarea[id='comentario']").val('');
                 $modalRequerimiento.find("select[id='accion']").val(0);
 
@@ -331,7 +335,6 @@ class AprobarRequerimientoView {
                     custom: customElement,
                     imageColor: "#3c8dbc"
                 });
-
 
                 this.requerimientoCtrl.getRequerimiento(event.currentTarget.dataset.idRequerimiento).done( (res)=> {
                     this.construirSeccionDatosGenerales(res['requerimiento'][0]);
@@ -575,8 +578,11 @@ class AprobarRequerimientoView {
                 'idUsuario': document.querySelector("div[id='modal-requerimiento'] input[name='idUsuario']").value,
                 'idRolAprobante': document.querySelector("div[id='modal-requerimiento'] input[name='idRolAprobante']").value,
                 'idFlujo': document.querySelector("div[id='modal-requerimiento'] input[name='idFlujo']").value,
-                'aprobacionFinalOPendiente': document.querySelector("div[id='modal-requerimiento'] input[name='aprobacionFinalOPendiente']").value
+                'aprobacionFinalOPendiente': document.querySelector("div[id='modal-requerimiento'] input[name='aprobacionFinalOPendiente']").value,
+                'idOperacion': document.querySelector("div[id='modal-requerimiento'] input[name='idOperacion']").value,
+                'tieneRolConSiguienteAprobacion': document.querySelector("div[id='modal-requerimiento'] input[name='tieneRolConSiguienteAprobacion']").value,
             };
+            $('#modal-requerimiento').animate({ scrollTop: 0 }, 'slow')
 
             // loading
             var customElement = $("<div>", {
