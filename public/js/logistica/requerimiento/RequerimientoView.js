@@ -147,7 +147,7 @@ class RequerimientoView {
             'ajax': {
                 'url': 'elaborados',
                 'type': 'POST',
-                'data':JSON.stringify(parametros),
+                'data':(parametros),
                 beforeSend: data => {
     
                     $("#listaRequerimiento").LoadingOverlay("show", {
