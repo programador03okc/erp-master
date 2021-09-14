@@ -822,18 +822,13 @@ Route::group(['middleware' => ['auth']], function () {
 			});
 
 			Route::group(['as' => 'proveedores.', 'prefix' => 'proveedores'], function () {
-				Route::group(['as' => 'listado.', 'prefix' => 'listado'], function () {
-					Route::get('index', 'Logistica\ProveedoresController@viewLista')->name('index');
-					Route::post('lista-proveedores', 'Logistica\ProveedoresController@listaProveedores');
-					Route::get('listar_ubigeos', 'AlmacenController@listar_ubigeos');
-					Route::post('guardar-proveedor', 'Logistica\ProveedoresController@guardarProveedor');
-					Route::get('mostrar-proveedor/{idProveedor?}', 'Logistica\ProveedoresController@mostrarProveedor');
-					Route::post('actualizar-proveedor', 'Logistica\ProveedoresController@actualizarProveedor');
-					Route::post('anular-proveedor', 'Logistica\ProveedoresController@anularProveedor');
-
-					// Route::get('logistica/listar_proveedores', 'LogisticaController@listar_proveedores');
-					// Route::get('mostrar_proveedor/{id_proveedor}', 'LogisticaController@mostrar_proveedor');
-				});
+				Route::post('guardar', 'Logistica\ProveedoresController@guardar')->name('guardar');
+				Route::get('mostrar/{idProveedor?}', 'Logistica\ProveedoresController@mostrar')->name('mostrar');
+				Route::post('actualizar', 'Logistica\ProveedoresController@actualizar')->name('actualizar');
+				Route::post('anular', 'Logistica\ProveedoresController@anular')->name('anular');
+				Route::get('index', 'Logistica\ProveedoresController@index')->name('index');
+				Route::post('obtener-data-listado', 'Logistica\ProveedoresController@obtenerDataListado')->name('obtenerDataListado');
+				Route::get('listar_ubigeos', 'AlmacenController@listar_ubigeos')->name('listarUbigeos');
 			});
 
 			Route::group(['as' => 'cotizacion.', 'prefix' => 'cotizacion'], function () {

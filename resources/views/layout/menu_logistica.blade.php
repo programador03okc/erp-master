@@ -138,7 +138,7 @@
             </span>
         </a>
         <ul class="treeview-menu">
-            <li><a href="{{route('logistica.gestion-logistica.proveedores.listado.index')}}"><i class="far fa-circle fa-xs"></i> Listado</a></li>
+            <li><a href="{{route('logistica.gestion-logistica.proveedores.index')}}"><i class="far fa-circle fa-xs"></i> Listado</a></li>
         </ul>
     </li>
     @endif

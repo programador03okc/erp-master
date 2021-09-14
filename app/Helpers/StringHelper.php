@@ -12,4 +12,12 @@ class StringHelper
         }
         return $zeros.$number;
     }
+    
+    public static function encode5t($str){
+        for($i=0; $i<5;$i++){
+            $str=strrev(base64_encode($str));
+        }
+        return $str;
+    }
+    
 }

@@ -27,7 +27,7 @@ use Debugbar;
 
 class ProveedoresController extends Controller
 {
-    public function viewLista()
+    public function index()
     {   
         $tipoDocumentos = TipoDocumentoIdentidad::mostrar();
         $tipoContribuyentes = TipoContribuyente::mostrar();
@@ -41,7 +41,7 @@ class ProveedoresController extends Controller
 
     }
 
-    public function listaProveedores(){
+    public function obtenerDataListado(){
         return datatables(Proveedor::listado())
         // ->filterColumn('ubigeo_completo', function ($query, $keyword) {
         //     try {
@@ -54,7 +54,7 @@ class ProveedoresController extends Controller
         ->rawColumns(['ubigeo_completo'])->toJson();
     }
 
-    public function guardarProveedor(Request $request){
+    public function guardar(Request $request){
 
         DB::beginTransaction();
         try {
@@ -173,17 +173,16 @@ class ProveedoresController extends Controller
             return response()->json(['status'=>'error','id_proveedor' => 0, 'mensaje' => 'Hubo un problema al guardar el proveedor. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
         }
     }
-   
 
 
-    public function mostrarProveedor($idProveedor){
+    public function mostrar($idProveedor){
 
         return Proveedor::mostrar($idProveedor);
 
     }
 
 
-    public function actualizarProveedor(Request $request){
+    public function actualizar(Request $request){
 
         DB::beginTransaction();
         try {
@@ -337,7 +336,7 @@ class ProveedoresController extends Controller
         }
     }
 
-    public function anularProveedor(Request $request){
+    public function anular(Request $request){
 
         DB::beginTransaction();
         try {

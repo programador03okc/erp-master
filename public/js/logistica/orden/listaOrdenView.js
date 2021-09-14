@@ -528,7 +528,7 @@ class ListaOrdenView {
     }
 
     construirTablaListaOrdenesElaboradas(data){
-        console.log(data);
+        // console.log(data);
         let that=this;
         tablaListaOrdenes = $('#listaOrdenes').DataTable({
             'processing':true,
@@ -560,10 +560,15 @@ class ListaOrdenView {
                 {
                     'render': function (data, type, row) {
                         let labelRequerimiento='';
-                        (row['requerimientos']).forEach(element => {
-                            labelRequerimiento += `<label class="lbl-codigo handleClickAbrirRequerimiento" title="Ir a requerimiento"  data-id-requerimiento="${element.id_requerimiento}" >${(element.codigo??'')}</label>`;
-                        });
-                        return labelRequerimiento;
+                        if(row.requerimientos != undefined && row.requerimientos.length>0){
+                            (row.requerimientos).forEach(element => {
+                                labelRequerimiento += `<label class="lbl-codigo handleClickAbrirRequerimiento" title="Ir a requerimiento"  data-id-requerimiento="${element.id_requerimiento}" >${(element.codigo??'')}</label>`;
+                            });
+                            return labelRequerimiento;
+
+                        }else{
+                            return '';
+                        }
                         
                     }
                 },
