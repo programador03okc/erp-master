@@ -25,20 +25,21 @@ Requerimientos pendientes de Transformación
                             <thead>
                                 <tr>
                                     <th hidden></th>
-                                    <th>Orden Elec.</th>
-                                    <th>Cod.CC</th>
-                                    <th>Monto</th>
-                                    <th>Entidad</th>
+                                    <th width="8%">Cod.Req.</th>
                                     <th>Fecha Entrega</th>
-                                    <th>Cod.Req.</th>
-                                    <th>Fecha Req.</th>
-                                    <th>Corporativo</th>
+                                    <th>Orden Elec.</th>
+                                    <th>Cod.CP</th>
+                                    <!-- <th>Monto</th> -->
+                                    <th>Cliente/Entidad</th>
+                                    <!-- <th>Fecha Req.</th> -->
+                                    <!-- <th>Corporativo</th> -->
                                     <th>Generado por</th>
+                                    <th>Sede Req.</th>
                                     <th>Estado</th>
                                     <th>Transf.</th>
                                     <!-- <th>O.Despacho</th> -->
-                                    <th>Motivo</th>
-                                    <th width="90px">Acción</th>
+                                    <!-- <th>Motivo</th> -->
+                                    <th width="60px">Acción</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
@@ -53,6 +54,7 @@ Requerimientos pendientes de Transformación
 @include('almacen.distribucion.transferenciasDetalle')
 @include('almacen.distribucion.ordenDespachoInternoCreate')
 @include('almacen.distribucion.ordenDespachoTransformacion')
+@include('tesoreria.facturacion.archivos_oc_mgcp')
 
 @endsection
 
@@ -65,6 +67,7 @@ Requerimientos pendientes de Transformación
 <script src="{{ asset('js/almacen/distribucion/verDetalleRequerimiento.js')}}"></script>
 <script src="{{ asset('js/almacen/distribucion/ordenDespachoInternoCreate.js')}}"></script>
 <script src="{{ asset('js/almacen/distribucion/ordenDespachoTransformacion.js')}}"></script>
+<script src="{{ asset('js/tesoreria/facturacion/archivosMgcp.js')}}"></script>
 
 <script>
     $(document).ready(function() {

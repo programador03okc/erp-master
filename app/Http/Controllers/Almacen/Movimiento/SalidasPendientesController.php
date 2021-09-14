@@ -829,27 +829,41 @@ class SalidasPendientesController extends Controller
     }
 
 
-    function anular_orden_despacho($id_od)
+    function anular_orden_despacho($id_od, $tipo)
     {
         try {
             DB::beginTransaction();
 
-            $update = DB::table('almacen.orden_despacho')
+            DB::table('almacen.orden_despacho')
                 ->where('id_od', $id_od)
                 ->update(['estado' => 7]);
 
             $detalle = DB::table('almacen.orden_despacho_det')
-                ->where('id_od', $id_od)->get();
+                ->select('orden_despacho_det.*', 'orden_despacho.id_almacen')
+                ->join('almacen.orden_despacho', 'orden_despacho.id_od', '=', 'orden_despacho_det.id_od')
+                ->where([
+                    ['orden_despacho_det.id_od', '=', $id_od],
+                    ['orden_despacho_det.transformado', '=', ($tipo == 'interno' ? false : true)]
+                ])->get();
+
+            DB::table('almacen.orden_despacho_det')
+                ->where('id_od', $id_od)
+                ->update(['estado' => 7]);
 
             foreach ($detalle as $det) {
 
-                $update = DB::table('almacen.orden_despacho_det')
-                    ->where('id_od_detalle', $det->id_od_detalle)
-                    ->update(['estado' => 7]);
-
-                $detreq = DB::table('almacen.alm_det_req')
+                DB::table('almacen.alm_det_req')
                     ->where('id_detalle_requerimiento', $det->id_detalle_requerimiento)
-                    ->update(['estado' => 19]);
+                    ->update(['estado' => 28]);
+
+                //envia la reserva
+                DB::table('almacen.alm_reserva')
+                    ->where('id_detalle_requerimiento', $det->id_detalle_requerimiento)
+                    ->where('id_almacen_reserva', $det->id_almacen)
+                    ->update([
+                        'estado' => 1,
+                        'id_materia' => null
+                    ]);
             }
 
             $od = DB::table('almacen.orden_despacho')

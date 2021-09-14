@@ -124,25 +124,25 @@ function listarOrdenesPendientes() {
                     return formatDateHour(row["fecha"]);
                 }
             },
-            {
-                render: function (data, type, row) {
-                    var dias_restantes = restarFechas(
-                        fecha_actual(),
-                        sumaFecha(row["plazo_entrega"], row["fecha"])
-                    );
-                    var porc = (dias_restantes * 100) / parseFloat(row["plazo_entrega"]);
-                    var color = porc > 50 ? "success" : porc <= 50 && porc > 20
-                        ? "warning" : "danger";
-                    return `<div class="progress-group">
-                            <span class="progress-text">Nro días Restantes</span>
-                            <span class="float-right"><b> ${dias_restantes < 0 ? "0" : dias_restantes
-                        }</b> / ${row["plazo_entrega"]}</span>
-                            <div class="progress progress-sm">
-                                <div class="progress-bar bg-${color}" style="width: ${porc}%"></div>
-                            </div>
-                        </div>`;
-                }
-            },
+            // {
+            //     render: function (data, type, row) {
+            //         var dias_restantes = restarFechas(
+            //             fecha_actual(),
+            //             sumaFecha(row["plazo_entrega"], row["fecha"])
+            //         );
+            //         var porc = (dias_restantes * 100) / parseFloat(row["plazo_entrega"]);
+            //         var color = porc > 50 ? "success" : porc <= 50 && porc > 20
+            //             ? "warning" : "danger";
+            //         return `<div class="progress-group">
+            //                 <span class="progress-text">Nro días Restantes</span>
+            //                 <span class="float-right"><b> ${dias_restantes < 0 ? "0" : dias_restantes
+            //             }</b> / ${row["plazo_entrega"]}</span>
+            //                 <div class="progress progress-sm">
+            //                     <div class="progress-bar bg-${color}" style="width: ${porc}%"></div>
+            //                 </div>
+            //             </div>`;
+            //     }
+            // },
             { data: "sede_descripcion", name: "sis_sede.descripcion" },
             { data: "nombre_corto", name: "sis_usua.nombre_corto" },
             {
@@ -179,7 +179,7 @@ function listarOrdenesPendientes() {
                 render: function (data, type, row) {
                     if (acceso == "1") {
                         return `<div style="display:flex;">
-                        <button type="button" class="ver-detalle btn btn-primary boton btn-flat" data-toggle="tooltip" 
+                        <button type="button" class="ver-detalle btn btn-default boton btn-flat" data-toggle="tooltip" 
                             data-placement="bottom" title="Ver Detalle" data-id="${row["id_orden_compra"]}">
                             <i class="fas fa-chevron-down"></i></button>
                             
@@ -189,7 +189,7 @@ function listarOrdenesPendientes() {
                             </div>`;
                     } else {
                         return (
-                            '<button type="button" class="ver-detalle btn btn-primary boton" data-toggle="tooltip" ' +
+                            '<button type="button" class="ver-detalle btn btn-default boton" data-toggle="tooltip" ' +
                             'data-placement="bottom" title="Ver Detalle" data-id="' +
                             row["id_orden_compra"] +
                             '">' +
@@ -197,7 +197,7 @@ function listarOrdenesPendientes() {
                         );
                     }
                 },
-                targets: 10
+                targets: 9
             }
         ],
         order: [[0, "desc"]]

@@ -890,7 +890,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('verDetalleDespacho/{id}', 'DistribucionController@verDetalleDespacho');
 				Route::post('guardar_grupo_despacho', 'DistribucionController@guardar_grupo_despacho');
 				Route::post('despacho_anular_requerimiento', 'DistribucionController@anular_requerimiento');
-				Route::get('anular_orden_despacho/{id}', 'DistribucionController@anular_orden_despacho');
+				Route::get('anular_orden_despacho/{id}/{tp}', 'DistribucionController@anular_orden_despacho');
 				Route::get('mostrar_proveedores', 'LogisticaController@mostrar_proveedores');
 				Route::get('mostrarTransportistas', 'DistribucionController@mostrarTransportistas');
 				Route::get('listarGruposDespachados', 'DistribucionController@listarGruposDespachados');
@@ -947,11 +947,12 @@ Route::group(['middleware' => ['auth']], function () {
 
 				Route::get('index', 'Logistica\Distribucion\OrdenesTransformacionController@view_ordenes_transformacion')->name('index');
 				Route::get('listarRequerimientosEnProceso', 'Logistica\Distribucion\OrdenesTransformacionController@listarRequerimientosEnProceso');
-				Route::get('listarDetalleTransferencias/{id}', 'TransferenciaController@listarDetalleTransferencias');
+				Route::get('listarDetalleTransferencias/{id}', 'Almacen\Movimiento\TransferenciaController@listarDetalleTransferencias');
 				Route::get('verDetalleRequerimientoDI/{id}', 'Logistica\Distribucion\OrdenesTransformacionController@verDetalleRequerimientoDI');
 				Route::post('guardarOrdenDespachoInterno', 'Logistica\Distribucion\OrdenesTransformacionController@guardarOrdenDespachoInterno');
 				Route::get('verDetalleInstrucciones/{id}', 'Logistica\Distribucion\OrdenesTransformacionController@verDetalleInstrucciones');
-				Route::get('anular_orden_despacho/{id}', 'Almacen\Movimiento\SalidasPendientesController@anular_orden_despacho');
+				Route::get('anular_orden_despacho/{id}/{tp}', 'Almacen\Movimiento\SalidasPendientesController@anular_orden_despacho');
+				Route::post('obtenerArchivosOc', 'Tesoreria\Facturacion\PendientesFacturacionController@obtenerArchivosOc')->name('obtener-archivos-oc');
 			});
 		});
 
@@ -1180,7 +1181,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('cambio_serie_numero', 'Almacen\Movimiento\SalidasPendientesController@cambio_serie_numero');
 				Route::get('verDetalleDespacho/{id}', 'Almacen\Movimiento\SalidasPendientesController@verDetalleDespacho');
 				Route::get('imprimir_salida/{id}', 'Almacen\Movimiento\SalidasPendientesController@imprimir_salida');
-				Route::get('anular_orden_despacho/{id}', 'Almacen\Movimiento\SalidasPendientesController@anular_orden_despacho');
+				// Route::get('anular_orden_despacho/{id}', 'Almacen\Movimiento\SalidasPendientesController@anular_orden_despacho');
 				Route::get('listarSeriesGuiaVen/{id}', 'Almacen\Movimiento\SalidasPendientesController@listarSeriesGuiaVen');
 			});
 

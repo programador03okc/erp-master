@@ -7,6 +7,7 @@ function listarRequerimientosPendientes() {
         'buttons': vardataTables[2],
         'language': vardataTables[0],
         'bDestroy': true,
+        pageLength: 20,
         // 'serverSide' : true,
         'ajax': 'listarRequerimientosEnProceso',
         // 'ajax': {
@@ -15,40 +16,48 @@ function listarRequerimientosPendientes() {
         // },
         'columns': [
             { 'data': 'id_requerimiento' },
-            {
-                'render': function (data, type, row) {
-                    return (row['orden_am'] !== null ? row['orden_am'] + `<a href="https://apps1.perucompras.gob.pe//OrdenCompra/obtenerPdfOrdenPublico?ID_OrdenCompra=${row['id_oc_propia']}&ImprimirCompleto=1">
-                <span class="label label-success">Ver O.E.</span></a>
-                <a href="${row['url_oc_fisica']}">
-                <span class="label label-warning">Ver O.F.</span></a>` : '');
-                }
-            },
-            { 'data': 'codigo_oportunidad', 'name': 'oportunidades.codigo_oportunidad' },
-            {
-                'render': function (data, type, row) {
-                    return formatNumber.decimal(row['monto_total'], 'S/', 2);
-                }
-            },
-            { 'data': 'nombre', 'name': 'entidades.nombre' },
+            { 'data': 'codigo', className: "text-center" },
             {
                 'render': function (data, type, row) {
                     return (row['fecha_entrega'] !== null ? formatDate(row['fecha_entrega']) : '');
                 }
             },
+            {
+                render: function (data, type, row) {
+                    if (row["nro_orden"] == null) {
+                        return '';
+                    } else {
+                        return (
+                            '<a href="#" class="archivos" data-id="' + row["id_oc_propia"] + '" data-tipo="' + row["tipo"] + '">' +
+                            row["nro_orden"] + "</a>"
+                        );
+                    }
+                }, className: "text-center"
+            },
+            // {
+            //     'render': function (data, type, row) {
+            //         return (row['orden_am'] !== null ? row['orden_am'] + `<a href="https://apps1.perucompras.gob.pe//OrdenCompra/obtenerPdfOrdenPublico?ID_OrdenCompra=${row['id_oc_propia']}&ImprimirCompleto=1">
+            //     <span class="label label-success">Ver O.E.</span></a>
+            //     <a href="${row['url_oc_fisica']}">
+            //     <span class="label label-warning">Ver O.F.</span></a>` : '');
+            //     }
+            // },
+            { 'data': 'codigo_oportunidad', 'name': 'oc_propias_view.codigo_oportunidad' },
+            // {
+            //     'render': function (data, type, row) {
+            //         return formatNumber.decimal(row['monto_total'], 'S/', 2);
+            //     }
+            // },
+            { 'data': 'cliente_razon_social', 'name': 'adm_contri.razon_social' },
             // {'data': 'codigo'},
-            {
-                'render': function (data, type, row) {
-                    return ('<label class="lbl-codigo" title="Abrir Requerimiento" onClick="abrir_requerimiento(' + row['id_requerimiento'] + ')">' + row['codigo'] + '</label>' +
-                        ' <strong>' + row['sede_descripcion_req'] + '</strong>' + (row['tiene_transformacion'] ? '<br><i class="fas fa-random red"></i>' : ''));
-                }
-            },
-            {
-                'render': function (data, type, row) {
-                    return (row['fecha_requerimiento'] !== null ? formatDate(row['fecha_requerimiento']) : '');
-                }
-            },
-            { 'data': 'user_name', 'name': 'users.name' },
+            // {
+            //     'render': function (data, type, row) {
+            //         return (row['fecha_requerimiento'] !== null ? formatDate(row['fecha_requerimiento']) : '');
+            //     }
+            // },
+            // { 'data': 'user_name', 'name': 'users.name' },
             { 'data': 'responsable', 'name': 'sis_usua.nombre_corto' },
+            { 'data': 'sede_descripcion_req', name: 'sede_req.descripcion', className: "text-center" },
             {
                 'render': function (data, type, row) {
                     return '<span class="label label-' + row['bootstrap_color'] + '">' + row['estado_doc'] + '</span>'
@@ -67,44 +76,44 @@ function listarRequerimientosPendientes() {
             //             (row['codigo_od'] !== null ? ('<span class="label label-primary">'+row['codigo_od']+'</span>') : '');
             //     }
             // },
-            {
-                'render': function (data, type, row) {
-                    if (row['estado'] == 17) {
-                        return 'Pendiente de que <strong>Almacén</strong> recepcione la Transferencia';
-                    }
-                    else if (row['estado'] == 19 && row['count_transferencia'] > 0 &&
-                        row['count_transferencia'] !== row['count_transferencia_recibida']) {
-                        return 'Pendiente de que <strong>Almacén</strong> envíe la Transferencia';
-                    }
-                    else if (row['estado'] == 19 && row['id_od'] == null &&
-                        row['count_transferencia'] == row['count_transferencia_recibida']) {
-                        return 'Pendiente de que <strong>Distribución</strong> genere la OD';
-                    }
-                    else if (row['estado'] == 19 && row['id_od'] !== null) {
-                        return 'Pendiente de que <strong>Almacén</strong> genere la Salida';
-                    }
-                    else if (row['id_tipo_requerimiento'] !== 1 && row['estado'] == 19 && row['id_od'] == null) {
-                        return 'Pendiente de que <strong>Distribución</strong> genere la OD';
-                    }
-                    else if (row['estado'] == 22) {
-                        return 'Pendiente de que <strong>Customización</strong> realice la transformación';
-                    }
-                    // else if (row['estado'] == 10){
-                    //     return 'Pendiente de que <strong>Distribución</strong> realice el Despacho Externo';
-                    // }
-                    else if (row['estado'] == 27) {
-                        return 'Pendiente de que <strong>Almacén</strong> complete los ingresos';
-                    }
-                    else if (row['estado'] == 28) {
-                        return 'Pendiente de que <strong>Compras</strong> genere la Orden de Despacho';
-                    }
-                    // else if (row['estado'] == 29){
-                    //     return 'Pendiente de que <strong>Almacén</strong> genere la Salida';
-                    // }
-                }
-            }
+            // {
+            //     'render': function (data, type, row) {
+            //         if (row['estado'] == 17) {
+            //             return 'Pendiente de que <strong>Almacén</strong> recepcione la Transferencia';
+            //         }
+            //         else if (row['estado'] == 19 && row['count_transferencia'] > 0 &&
+            //             row['count_transferencia'] !== row['count_transferencia_recibida']) {
+            //             return 'Pendiente de que <strong>Almacén</strong> envíe la Transferencia';
+            //         }
+            //         else if (row['estado'] == 19 && row['id_od'] == null &&
+            //             row['count_transferencia'] == row['count_transferencia_recibida']) {
+            //             return 'Pendiente de que <strong>Distribución</strong> genere la OD';
+            //         }
+            //         else if (row['estado'] == 19 && row['id_od'] !== null) {
+            //             return 'Pendiente de que <strong>Almacén</strong> genere la Salida';
+            //         }
+            //         else if (row['id_tipo_requerimiento'] !== 1 && row['estado'] == 19 && row['id_od'] == null) {
+            //             return 'Pendiente de que <strong>Distribución</strong> genere la OD';
+            //         }
+            //         else if (row['estado'] == 22) {
+            //             return 'Pendiente de que <strong>Customización</strong> realice la transformación';
+            //         }
+            //         // else if (row['estado'] == 10){
+            //         //     return 'Pendiente de que <strong>Distribución</strong> realice el Despacho Externo';
+            //         // }
+            //         else if (row['estado'] == 27) {
+            //             return 'Pendiente de que <strong>Almacén</strong> complete los ingresos';
+            //         }
+            //         else if (row['estado'] == 28) {
+            //             return 'Pendiente de que <strong>Compras</strong> genere la Orden de Despacho';
+            //         }
+            //         // else if (row['estado'] == 29){
+            //         //     return 'Pendiente de que <strong>Almacén</strong> genere la Salida';
+            //         // }
+            //     }
+            // }
         ],
-        'order': [[5, "asc"]],
+        'order': [[0, "desc"]],
         // "createdRow": function( row, data, dataIndex){
         //     if(data.estado == 28){
         //         $(row).css('background-color', '#FACABF');
@@ -117,11 +126,18 @@ function listarRequerimientosPendientes() {
         'columnDefs': [
             { 'aTargets': [0], 'sClass': 'invisible' },
             {
+                render: function (data, type, row) {
+                    return (
+                        '<a href="#" class="verRequerimiento" data-id="' + row["id_requerimiento"] + '" >' + row["codigo"] + "</a>"
+                    );
+                }, targets: 1
+            },
+            {
                 'render': function (data, type, row) {
                     // if (permiso == '1') {
-                    console.log('estado: ' + row['estado_od']);
+                    // console.log('estado: ' + row['estado_od']);
                     return `<div style="display:flex;">
-                        <button type="button" class="detalle btn btn-primary btn-flat boton" data-toggle="tooltip"
+                        <button type="button" class="detalle btn btn-default btn-flat boton" data-toggle="tooltip"
                         data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}">
                         <i class="fas fa-chevron-down"></i></button>`+
                         ((
@@ -137,10 +153,7 @@ function listarRequerimientosPendientes() {
                                 '<i class="fas fa-sign-in-alt"></i></button>') :
                             (
                                 row['id_od'] !== null && row['estado_od'] == '1') ?
-                                `<button type="button" class="adjuntar btn btn-flat btn-${row['count_despacho_adjuntos'] > 0 ? 'warning' : 'default'} boton" data-toggle="tooltip" 
-                                    data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Adjuntar Boleta/Factura" >
-                                    <i class="fas fa-paperclip"></i></button>
-                                <button type="button" class="anular_od btn btn-flat btn-danger boton" data-toggle="tooltip" 
+                                `<button type="button" class="anular_od btn btn-flat btn-danger boton" data-toggle="tooltip" 
                                     data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Anular Orden Despacho" >
                                     <i class="fas fa-trash"></i></button>` : '')
                         // (row['estado'] == 9 ? 
@@ -154,12 +167,28 @@ function listarRequerimientosPendientes() {
                         // }
                         + '</div>'
 
-                }, targets: 13
+                }, targets: 10
             }
         ],
     });
     vista_extendida();
 }
+
+$("#requerimientosEnProceso tbody").on("click", "a.verRequerimiento", function (e) {
+    $(e.preventDefault());
+    var id = $(this).data("id");
+    localStorage.setItem("idRequerimiento", id);
+    let url = "/logistica/gestion-logistica/requerimiento/elaboracion/index";
+    var win = window.open(url, "_blank");
+    win.focus();
+});
+
+$("#requerimientosEnProceso tbody").on("click", "a.archivos", function (e) {
+    $(e.preventDefault());
+    var id = $(this).data("id");
+    var tipo = $(this).data("tipo");
+    obtenerArchivosMgcp(id, tipo);
+});
 
 $('#requerimientosEnProceso tbody').on("click", "button.detalle_trans", function () {
     var id = $(this).data('id');
@@ -216,7 +245,7 @@ $('#requerimientosEnProceso tbody').on("click", "button.anular_od", function () 
 function anularOrdenDespacho(id) {
     $.ajax({
         type: 'GET',
-        url: 'anular_orden_despacho/' + id,
+        url: 'anular_orden_despacho/' + id + '/interno',
         dataType: 'JSON',
         success: function (response) {
             console.log(response);

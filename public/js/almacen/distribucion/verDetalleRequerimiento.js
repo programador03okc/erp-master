@@ -13,18 +13,18 @@ function format(table_id, id, row) {
                 response.forEach(element => {
                     html += '<tr ' + (element.tiene_transformacion ? ' style="background-color: gainsboro;" ' : '') + ' id="' + element.id_detalle_requerimiento + '">' +
                         '<td style="border: none;">' + i + '</td>' +
-                        '<td style="border: none;">' + (element.producto_codigo !== null ? element.producto_codigo : '') + (element.tiene_transformacion ? ' <span class="badge badge-secondary">Transformado</span> ' : '') + '</td>' +
-                        '<td style="border: none;">' + (element.part_number !== null ? element.part_number : '') + '</td>' +
+                        '<td style="border: none;text-align:center">' + (element.producto_codigo !== null ? element.producto_codigo : '') + (element.tiene_transformacion ? ' <span class="badge badge-secondary">Transformado</span> ' : '') + '</td>' +
+                        '<td style="border: none;text-align:center">' + (element.part_number !== null ? element.part_number : '') + '</td>' +
                         '<td style="border: none;">' + (element.producto_descripcion !== null ? element.producto_descripcion : element.descripcion_adicional) + '</td>' +
-                        '<td style="border: none;">' + element.cantidad + '</td>' +
+                        '<td style="border: none;text-align:center">' + element.cantidad + '</td>' +
+                        '<td style="border: none;text-align:center">' + (element.abreviatura !== null ? element.abreviatura : '') + '</td>' +
                         // '<td style="border: none;">'+(element.suma_transferencias!==null?element.suma_transferencias:'')+'</td>'+
-                        '<td style="border: none;">' + (element.almacen_guia_com_descripcion !== null ? element.almacen_guia_com_descripcion : '') + '</td>' +
-                        '<td style="border: none;">' + (element.suma_ingresos !== null ? element.suma_ingresos : '0') + '</td>' +
-                        '<td style="border: none;">' + (element.almacen_reserva_descripcion !== null ? element.almacen_reserva_descripcion : '') + '</td>' +
-                        '<td style="border: none;">' + (element.stock_comprometido !== null ? element.stock_comprometido : '0') + '</td>' +
-                        '<td style="border: none;">' + (element.suma_despachos_internos !== null ? element.suma_despachos_internos : '0') + '</td>' +
-                        '<td style="border: none;">' + (element.suma_despachos_externos !== null ? element.suma_despachos_externos : '0') + '</td>' +
-                        '<td style="border: none;">' + (element.abreviatura !== null ? element.abreviatura : '') + '</td>' +
+                        // '<td style="border: none;">' + (element.almacen_guia_com_descripcion !== null ? element.almacen_guia_com_descripcion : '') + '</td>' +
+                        // '<td style="border: none;">' + (element.suma_ingresos !== null ? element.suma_ingresos : '0') + '</td>' +
+                        '<td style="border: none;text-align:center">' + (element.almacen_reserva_descripcion !== null ? element.almacen_reserva_descripcion : '') + '</td>' +
+                        '<td style="border: none;text-align:center">' + (element.stock_comprometido !== null ? element.stock_comprometido : '0') + '</td>' +
+                        '<td style="border: none;text-align:center">' + (element.suma_despachos_internos !== null ? element.suma_despachos_internos : '0') + '</td>' +
+                        // '<td style="border: none;">' + (element.suma_despachos_externos !== null ? element.suma_despachos_externos : '0') + '</td>' +
                         '<td style="border: none;"><span class="label label-' + element.bootstrap_color + '">' + element.estado_doc + '</span></td>' +
                         '</tr>';
                     i++;
@@ -38,13 +38,10 @@ function format(table_id, id, row) {
                         <th style="border: none;">PartNumber</th>
                         <th style="border: none;">Descripción</th>
                         <th style="border: none;">Cantidad</th>
-                        <th style="border: none;">Alm.Ingreso</th>
-                        <th style="border: none;">Ingresado</th>
-                        <th style="border: none;">Alm.Reserva</th>
-                        <th style="border: none;">Stock Alm.</th>
-                        <th style="border: none;">Transformación</th>
-                        <th style="border: none;">Despachado</th>
                         <th style="border: none;">Unid.</th>
+                        <th style="border: none;">Alm.Reserva</th>
+                        <th style="border: none;">Stock Res.</th>
+                        <th style="border: none;">Transformación</th>
                         <th style="border: none;">Estado</th>
                     </tr>
                 </thead>

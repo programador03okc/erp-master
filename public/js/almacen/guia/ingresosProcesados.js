@@ -190,17 +190,13 @@ function listarIngresos() {
                         );
                     } else {
                         return (
-                            '<button type="button" class="detalle btn btn-primary btn-xs btn-flat" data-toggle="tooltip" ' +
+                            '<button type="button" class="detalle btn btn-default btn-xs btn-flat" data-toggle="tooltip" ' +
                             'data-placement="bottom" title="Ver Detalle" data-id="' +
-                            row["id_mov_alm"] +
-                            '" data-cod="' +
-                            row["codigo"] +
-                            '">' +
+                            row["id_mov_alm"] + '" data-cod="' + row["codigo"] + '">' +
                             '<i class="fas fa-list-ul"></i></button>' +
                             '<button type="button" class="ingreso btn btn-warning btn-xs btn-flat" data-toggle="tooltip" ' +
                             'data-placement="bottom" title="Ver Ingreso" data-id="' +
-                            row["id_mov_alm"] +
-                            '">' +
+                            row["id_mov_alm"] + '">' +
                             '<i class="fas fa-file-alt"></i></button>'
                         );
                     }
