@@ -125,7 +125,12 @@ class ListarProveedorView {
 
         $('#form-proveedor').on("keypress",  (e)=> {
             if (e.which == 13){
-                this.guardarProveedor(e.currentTarget);
+                if(document.querySelector("form[id='form-proveedor']").getAttribute("type")=='register'){
+                    this.guardarProveedor(e.currentTarget);
+                }else{
+                    this.actualizarProveedor(e.currentTarget);
+                }
+
             };
         });
 
@@ -156,7 +161,7 @@ class ListarProveedorView {
             'bLengthChange': false,
             'serverSide': true,
             'ajax': {
-                'url': 'lista-proveedores',
+                'url': 'obtener-data-listado',
                 'type': 'POST',
                 beforeSend: data => {
 
@@ -897,7 +902,7 @@ class ListarProveedorView {
             let formData = new FormData($('#form-proveedor')[0]);
             $.ajax({
                 type: 'POST',
-                url: 'guardar-proveedor',
+                url: 'guardar',
                 data: formData,
                 processData: false,
                 contentType: false,
@@ -979,7 +984,7 @@ class ListarProveedorView {
                 formData.append(`idProveedor`, idProveedor);
                 $.ajax({
                     type: 'POST',
-                    url: 'anular-proveedor',
+                    url: 'anular',
                     data: formData,
                     processData: false,
                     contentType: false,
@@ -1197,7 +1202,7 @@ class ListarProveedorView {
             let formData = new FormData($('#form-proveedor')[0]);
             $.ajax({
                 type: 'POST',
-                url: 'actualizar-proveedor',
+                url: 'actualizar',
                 data: formData,
                 processData: false,
                 contentType: false,

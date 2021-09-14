@@ -1,8 +1,8 @@
 <?php
  
 namespace App\Libs\CustomHash;
- 
-use App\Http\Controllers\ConfiguracionController;
+
+use App\Helpers\StringHelper;
 use Illuminate\Contracts\Hashing\Hasher as HasherContract;
  
 class CustomHasher implements HasherContract {
@@ -18,7 +18,7 @@ class CustomHasher implements HasherContract {
 		//I have custom encoding / encryption here//
 		//Define your custom hashing logic here//
         //return base64_encode(base64_encode($value));
-		return ConfiguracionController::encode5t($value);
+		return  StringHelper::encode5t($value);
     }
  
     /**

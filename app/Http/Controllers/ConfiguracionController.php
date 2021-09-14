@@ -1,5 +1,7 @@
 <?php
 namespace App\Http\Controllers;
+
+use App\Helpers\StringHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\DB;
@@ -350,8 +352,8 @@ class ConfiguracionController extends Controller{
     }
 /* PASSWORDS */
     function cambiar_clave(Request $request){
-        $p1 = $this->encode5t(addslashes($request->pass_old));
-        $p2 = $this->encode5t(addslashes($request->pass_new));
+        $p1 = StringHelper::encode5t(addslashes($request->pass_old));
+        $p2 = StringHelper::encode5t(addslashes($request->pass_new));
         $user = Auth::user()->id_usuario;
         
         $sql = DB::table('configuracion.sis_usua')->where([['clave', '=', $p1], ['id_usuario', '=', $user], ['estado', '=', 1]])->first();
@@ -589,7 +591,7 @@ class ConfiguracionController extends Controller{
         $apellido_materno = $request->apellido_materno;
         $nombre_corto = $request->nombre_corto;
         $usuario = $request->usuario;
-        $contraseña =  $this->encode5t($request->contraseña);
+        $contraseña =  StringHelper::encode5t($request->contraseña);
         $email = $request->email;
         $rol = $request->rol;
 
@@ -736,7 +738,7 @@ class ConfiguracionController extends Controller{
                 [
                     'id_trabajador'     => $request->id_trabajador,
                     'usuario'           => $request->usuario,
-                    'clave'             => $this->encode5t($request->clave),
+                    'clave'             => StringHelper::encode5t($request->clave),
                     'estado'            => 1,
                     'fecha_registro'    => date('Y-m-d H:i:s')
                     
@@ -1629,12 +1631,6 @@ public function anular_configuracion_socket($id){
 			$zeros = $zeros.'0';
 		}
 		return $zeros.$number;
-    }
-    public static function encode5t($str){
-        for($i=0; $i<5;$i++){
-            $str=strrev(base64_encode($str));
-        }
-        return $str;
     }
     
 
