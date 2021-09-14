@@ -179,7 +179,7 @@ Pendientes de Ingreso
 
 <script src="{{ asset('js/almacen/guia/ordenesPendientes.js?v=3')}}"></script>
 <script src="{{ asset('js/almacen/guia/transformacionesPendientes.js')}}"></script>
-<script src="{{ asset('js/almacen/guia/ingresosProcesados.js')}}"></script>
+<script src="{{ asset('js/almacen/guia/ingresosProcesados.js?v=3')}}"></script>
 <script src="{{ asset('js/almacen/guia/ordenes_ver_detalle.js')}}"></script>
 <script src="{{ asset('js/almacen/guia/movimientoDetalle.js?v=2')}}"></script>
 <script src="{{ asset('js/almacen/guia/guia_com_create.js')}}"></script>

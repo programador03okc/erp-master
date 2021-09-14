@@ -35,7 +35,7 @@ function listarIngresos() {
         language: vardataTables[0],
         // bDestroy: true,
         serverSide: true,
-        pageLength: 50,
+        pageLength: 20,
         initComplete: function (settings, json) {
             const $filter = $("#listaIngresosAlmacen_filter");
             const $input = $filter.find("input");
