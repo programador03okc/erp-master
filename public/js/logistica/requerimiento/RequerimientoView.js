@@ -116,8 +116,6 @@ class RequerimientoView {
     }
 
     mostrarHistorial() {
-        changeStateButton('inicio');
-
 
         $('#modal-historial-requerimiento').modal({
             show: true,
@@ -1546,7 +1544,7 @@ class RequerimientoView {
     }
 
     actualizarEstadoBotonAdjuntarNuevoDetalleRequerimiento(){
-        console.log(document.querySelector("input[name='estado']").value);
+        // console.log(document.querySelector("input[name='estado']").value);
         switch (document.querySelector("input[name='estado']").value) {
             case '1':
                 if(document.querySelector("input[name='id_usuario_req']").value == auth_user.id_usuario){ //usuario en sesion == usuario requerimiento
