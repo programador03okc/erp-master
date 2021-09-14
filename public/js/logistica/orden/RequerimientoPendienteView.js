@@ -698,16 +698,21 @@ class RequerimientoPendienteView {
                 },
                 {
                     render: function (data, type, row) {
-                        return `<center><div class="btn-group" role="group" style="margin-bottom: 5px;">
-                        <button type="button" class="btn btn-xs btn-success btnNuevaReserva handleClickAbrirModalNuevaReserva" 
-                            data-codigo-requerimiento="${document.querySelector("span[id='codigo_requerimiento']").textContent}" 
-                            data-id-detalle-requerimiento="${row.id_detalle_requerimiento}" 
-                            title="Nueva reserva" ><i class="fas fa-box fa-xs"></i></button>
-                        <button type="button" class="btn btn-xs btn-info btnHistorialReserva handleClickAbrirModaHistorialReserva" 
-                            data-codigo-requerimiento="${document.querySelector("span[id='codigo_requerimiento']").textContent}" 
-                            data-id-detalle-requerimiento="${row.id_detalle_requerimiento}" 
-                            title="Historial reserva" ><i class="fas fa-eye fa-xs"></i></button>
-                        </div></center>`;  
+                        if(row.id_producto >0){
+                            return `<center><div class="btn-group" role="group" style="margin-bottom: 5px;">
+                            <button type="button" class="btn btn-xs btn-success btnNuevaReserva handleClickAbrirModalNuevaReserva" 
+                                data-codigo-requerimiento="${document.querySelector("span[id='codigo_requerimiento']").textContent}" 
+                                data-id-detalle-requerimiento="${row.id_detalle_requerimiento}" 
+                                title="Nueva reserva" ><i class="fas fa-box fa-xs"></i></button>
+                            <button type="button" class="btn btn-xs btn-info btnHistorialReserva handleClickAbrirModaHistorialReserva" 
+                                data-codigo-requerimiento="${document.querySelector("span[id='codigo_requerimiento']").textContent}" 
+                                data-id-detalle-requerimiento="${row.id_detalle_requerimiento}" 
+                                title="Historial reserva" ><i class="fas fa-eye fa-xs"></i></button>
+                            </div></center>`;  
+
+                        }else{
+                            return '(Sin mapear)';
+                        }
                     }
                 },
            
