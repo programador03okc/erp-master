@@ -109,7 +109,7 @@ class RequerimientoModel {
                 dataType: 'JSON',
                 beforeSend: function (data) { 
         
-                    $('#modal-centro-costos .modal-content').LoadingOverlay("show", {
+                    $('#modal-centro-costos div.modal-body').LoadingOverlay("show", {
                         imageAutoResize: true,
                         progress: true,
                         imageColor: "#3c8dbc"
@@ -119,7 +119,7 @@ class RequerimientoModel {
                     resolve(response);
                 },
                 fail: function (jqXHR, textStatus, errorThrown) {
-                    $('#modal-centro-costos .modal-content').LoadingOverlay("hide", true);
+                    $('#modal-centro-costos div.modal-body').LoadingOverlay("hide", true);
                     alert("Hubo un problema al cargar los centro de costo. Por favor actualice la página e intente de nuevo");
                     console.log(jqXHR);
                     console.log(textStatus);

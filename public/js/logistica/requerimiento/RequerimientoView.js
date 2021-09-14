@@ -1391,7 +1391,7 @@ class RequerimientoView {
 
     
  
-        $('#modal-centro-costos .modal-content').LoadingOverlay("hide", true);
+        $('#modal-centro-costos div.modal-body').LoadingOverlay("hide", true);
 
     }
 
