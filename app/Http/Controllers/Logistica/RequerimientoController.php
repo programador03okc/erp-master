@@ -3428,13 +3428,13 @@ class RequerimientoController extends Controller
             return ['data' => [], 'status' => 204];
         }
     }
-    public function todoDetalleRequerimiento($idRequerimiento, $opcion)
+    public function todoDetalleRequerimiento($idRequerimiento, $transformadosONoTransformados)
     {
         $detalleRequerimiento = DetalleRequerimiento::where("id_requerimiento", $idRequerimiento)
-            ->when(($opcion === 'SIN_TRANSFORMACION'), function ($query) {
+            ->when(($transformadosONoTransformados === 'SIN_TRANSFORMACION'), function ($query) {
                 return $query->where('tiene_transformacion', false);
             })
-            ->when(($opcion === 'CON_TRANSFORMACION'), function ($query) {
+            ->when(($transformadosONoTransformados === 'CON_TRANSFORMACION'), function ($query) {
                 return $query->where('tiene_transformacion', true);
             })
             ->with(['unidadMedida', 'producto', 'reserva' => function ($q) {
