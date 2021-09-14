@@ -65,7 +65,8 @@ class ProveedoresController extends Controller
             $crearProveedor=false;
             
             // buscar proveedor si existe el ruc o razon social
-            $contribuyenteExistente = Contribuyente::where("razon_social",'like', $request->razonSocial."%")->orwhere("nro_documento", $request->nroDocumento)->first();
+            $contribuyenteExistente = Contribuyente::where([["estado", 1],["nro_documento", $request->nroDocumento]])->orwhere([["estado", 1],["razon_social",'like', $request->razonSocial."%"]])->first();
+
             if(isset($contribuyenteExistente)){
                 // $mensaje='Ya se encuentra registrado un contribuyente con la misma razón social / número de documento.';
                 // $status='warning'; 
@@ -73,6 +74,8 @@ class ProveedoresController extends Controller
                 if(isset($proveedorExistente) && $proveedorExistente->id_proveedor>0){
                     $mensaje='Ya se encuentra registrado un proveedor con la misma razón social / número de documento.';
                     $status='warning';
+                    $crearProveedor=false;
+
                 }else{
                     $crearProveedor=true;
 
