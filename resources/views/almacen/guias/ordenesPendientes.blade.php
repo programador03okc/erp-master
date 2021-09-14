@@ -177,7 +177,7 @@ Pendientes de Ingreso
 <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
 
-<script src="{{ asset('js/almacen/guia/ordenesPendientes.js?v=2')}}"></script>
+<script src="{{ asset('js/almacen/guia/ordenesPendientes.js?v=3')}}"></script>
 <script src="{{ asset('js/almacen/guia/transformacionesPendientes.js')}}"></script>
 <script src="{{ asset('js/almacen/guia/ingresosProcesados.js')}}"></script>
 <script src="{{ asset('js/almacen/guia/ordenes_ver_detalle.js')}}"></script>

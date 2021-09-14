@@ -81,7 +81,7 @@ function listarOrdenesPendientes() {
         language: vardataTables[0],
         // bDestroy: true,
         serverSide: true,
-        pageLength: 50,
+        pageLength: 20,
         initComplete: function (settings, json) {
             const $filter = $("#ordenesPendientes_filter");
             const $input = $filter.find("input");
@@ -116,7 +116,16 @@ function listarOrdenesPendientes() {
             { data: "id_orden_compra" },
             { data: "id_orden_compra" },
             { data: "codigo_softlink" },
-            { data: "codigo" },
+            {
+                data: "codigo",
+                render: function (data, type, row) {
+                    return (
+                        '<a href="#" class="verOrden" data-id="' + row["id_orden_compra"] + '" >' +
+                        row["codigo"] + "</a>"
+                    );
+                },
+                className: "text-center"
+            },
             { data: "razon_social", name: "adm_contri.razon_social" },
             {
                 data: "fecha",
@@ -237,6 +246,15 @@ function listarOrdenesPendientes() {
 //     // var data = $(this).data('id');
 //     open_detalle(data);
 // });
+$("#ordenesPendientes tbody").on("click", "a.verOrden", function (e) {
+    $(e.preventDefault());
+    var id = $(this).data("id");
+    if (id !== "") {
+        let url = `/logistica/gestion-logistica/compras/ordenes/listado/generar-orden-pdf/${id}`;
+        var win = window.open(url, "_blank");
+        win.focus();
+    }
+});
 
 $("#ordenesPendientes tbody").on("click", "button.guia", function () {
     var data = $("#ordenesPendientes")
