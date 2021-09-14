@@ -5,7 +5,7 @@ class ProveedorModel {
         return new Promise(function(resolve, reject) {
             $.ajax({
                 type: 'GET',
-                url:`lista-proveedores`,
+                url:`obtener-data-listado`,
                 dataType: 'JSON',
                 success(response) {
                     resolve(response);
@@ -20,7 +20,7 @@ class ProveedorModel {
         return new Promise(function(resolve, reject) {
             $.ajax({
                 type: 'GET',
-                url:`mostrar-proveedor/${idProveedor}`,
+                url:`mostrar/${idProveedor}`,
                 dataType: 'JSON',
                 success(response) {
                     resolve(response);
