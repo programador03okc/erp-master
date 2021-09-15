@@ -54,7 +54,7 @@ class OrdenesTransformacionController extends Controller
             ->join('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'alm_reserva.id_detalle_requerimiento')
             ->join('almacen.alm_req', function ($join) {
                 $join->on('alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento');
-                $join->on('alm_req.id_almacen', '!=', 'alm_reserva.id_almacen_reserva');
+                $join->on('alm_req.id_almacen', '=', 'alm_reserva.id_almacen_reserva');
                 $join->whereNotNull('alm_reserva.id_almacen_reserva');
             })
             ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')

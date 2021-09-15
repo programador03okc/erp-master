@@ -53,8 +53,14 @@ function listarOrdenesPendientes() {
             text: ' Ingresar Guía',
             action: function () {
                 open_guia_create_seleccionadas();
-            }, className: 'btn-success disabled btnIngresarGuia'
-        });
+            }, className: 'btn-primary disabled btnIngresarGuia'
+        },
+            {
+                text: ' Exportar Excel',
+                action: function () {
+                    // open_guia_create_seleccionadas();
+                }, className: 'btn-success disabled btnExportarOrdenesPendientes'
+            });
     }
 
     $("#ordenesPendientes").on('search.dt', function () {
@@ -97,6 +103,17 @@ function listarOrdenesPendientes() {
             $("#btnBuscar").on("click", e => {
                 table.search($input.val()).draw();
             });
+            $('#ordenesPendientes_wrapper .dt-buttons').append(
+                `<div style="display:flex">
+                    <input type="date" class="form-control" id="fecha_inicio"/>
+                    <input type="date" class="form-control" id="fecha_fin"/>
+                    <select class="form-control" name="id_almacen_ordenes">
+                        <option value="0" selected>Mostrar Todos</option>
+                    </select>
+                </div>`
+            );
+            $('#fecha_inicio').val(suma_fecha(-60, fecha_actual()));
+            $('#fecha_fin').val(fecha_actual());
         },
         drawCallback: function (settings) {
             $("#ordenesPendientes_filter input").prop("disabled", false);

@@ -81,7 +81,7 @@ function listarIngresos() {
                     return row["serie"] + "-" + row["numero"];
                 }
             },
-            { data: "nro_documento", name: "adm_contri.nro_documento" },
+            // { data: "nro_documento", name: "adm_contri.nro_documento" },
             { data: "razon_social", name: "adm_contri.razon_social" },
             {
                 data: "codigo",
@@ -129,25 +129,25 @@ function listarIngresos() {
                 render: function (data, type, row) {
                     return row.ordenes_compra;
                 },
-                targets: 10
+                targets: 9
             },
             {
                 render: function (data, type, row) {
                     return row.ordenes_soft_link;
                 },
-                targets: 11
+                targets: 10
             },
             {
                 render: function (data, type, row) {
                     return row.comprobantes;
                 },
-                targets: 12
+                targets: 11
             },
             {
                 render: function (data, type, row) {
                     return row.requerimientos;
                 },
-                targets: 13
+                targets: 12
             },
             {
                 render: function (data, type, row) {
@@ -201,7 +201,7 @@ function listarIngresos() {
                         );
                     }
                 },
-                targets: 14
+                targets: 13
             }
         ],
         select: "multi",

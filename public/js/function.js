@@ -890,12 +890,14 @@ function sumaFecha(d, fecha) {
 /* Sumar dias a una fecha dada */
 function suma_fecha(d, fecha) {
     var fechaFin = null;
+    console.log(d);
     if (d > 0) {
         fechaFin = moment(fecha).add(d, "days");
     } else {
-        fechaFin = moment(fecha).subtract(d, "days");
+        fechaFin = moment(fecha).subtract(-d, "days");
     }
     var fechaFinal = moment(fechaFin).format("YYYY-MM-DD");
+    console.log(fechaFinal);
     return fechaFinal;
 }
 

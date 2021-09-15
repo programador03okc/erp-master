@@ -44,6 +44,7 @@ function listarProductos() {
         '<th>Descripción</th>' +
         '<th hidden>unid</th>' +
         '<th hidden>abrev</th>' +
+        '<th hidden>series</th>' +
         '</tr>';
     $('#listaProducto thead').html(html);
     $('.nuevo').show();

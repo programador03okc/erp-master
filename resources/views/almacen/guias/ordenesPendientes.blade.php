@@ -117,17 +117,17 @@ Pendientes de Ingreso
                                                 <th></th>
                                                 <th>Fecha Ingreso</th>
                                                 <th>Guía Compra</th>
-                                                <th>R.U.C.</th>
+                                                <!-- <th>R.U.C.</th> -->
                                                 <th>Razon Social</th>
                                                 <th>Ingreso</th>
                                                 <th>Operación</th>
-                                                <th>Almacén</th>
+                                                <th width="70px">Almacén</th>
                                                 <th>Responsable</th>
                                                 <th>Ordenes</th>
                                                 <th>OC SoftLink</th>
                                                 <th>Facturas</th>
-                                                <th>Requerimientos</th>
-                                                <th width="140px"></th>
+                                                <th>Requerim.</th>
+                                                <th width="100px"></th>
                                             </tr>
                                         </thead>
                                         <tbody></tbody>
