@@ -121,10 +121,16 @@ class MapeoProductosController extends Controller
         DB::beginTransaction();
         try {
             $rpta='null';
-            if($request->idDetalleRequerimiento >0){
-                $det = DB::table('almacen.alm_det_req')->where('id_detalle_requerimiento', $request->idDetalleRequerimiento)->update(['estado' => 7]); // estado anulado
+            if(count($request->detalleRequerimiento)>0){
+                foreach($request->detalleRequerimiento as $det){
+                    if($det['id_detalle_requerimiento'] >0 && $det['estado'] =='7'){
+                        $det = DB::table('almacen.alm_det_req')->where('id_detalle_requerimiento', $det['id_detalle_requerimiento'])->update(['estado' => 7]); // estado anulado
+                    }           
+                    
+                }
+                
                 $rpta='ok';
-            }           
+            }
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();

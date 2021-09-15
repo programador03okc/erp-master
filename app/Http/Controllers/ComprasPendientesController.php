@@ -238,10 +238,11 @@ class ComprasPendientesController extends Controller
                 AND det.id_producto >0 and det.estado != 7 and det.tiene_transformacion =false) AS count_mapeados"),
                 DB::raw("(SELECT COUNT(*) FROM almacen.alm_det_req AS det
                 WHERE det.id_requerimiento = alm_req.id_requerimiento AND det.id_tipo_item =1
-                AND det.id_producto is null) AS count_pendientes"),
+                AND det.id_producto is null and det.estado !=7) AS count_pendientes"),
                 DB::raw("(SELECT COUNT(*) FROM almacen.alm_det_req AS det
-                WHERE det.id_requerimiento = alm_req.id_requerimiento AND det.id_tipo_item =1
-                AND det.stock_comprometido > 0) AS count_stock_comprometido")
+                INNER JOIN almacen.alm_reserva ON det.id_detalle_requerimiento = alm_reserva.id_detalle_requerimiento
+                WHERE det.id_requerimiento = alm_req.id_requerimiento AND alm_reserva.estado = 1
+                AND det.estado != 7) AS count_stock_comprometido")
             )
             // ->when(($empresa >0), function ($query) use($empresa) {
             //     return $query->where('alm_req.id_empresa','=',$empresa); 
@@ -271,8 +272,7 @@ class ComprasPendientesController extends Controller
             ->FiltroRangoFechas($fechaRegistroDesde, $fechaRegistroHasta)
             ->FiltroReserva($reserva)
             ->FiltroOrden($orden)
-            ->where([['alm_req.confirmacion_pago', true]])
-            // ->whereIn('alm_req.id_tipo_requerimiento', [1,3,4,5,6,7])
+            ->where('alm_req.confirmacion_pago', true)
             ->whereIn('alm_req.estado', [2,15,27])
             ->orderBy('alm_req.id_requerimiento', 'desc')
             ->get();
@@ -280,193 +280,6 @@ class ComprasPendientesController extends Controller
             return response()->json(["data" => $alm_req]);
     }
 
-    public function get_lista_items_cuadro_costos_por_id_requerimiento_pendiente_compra(Request $request)
-    {
-        $requerimientoList = $request->requerimientoList;
-        $temp_data = [];
-        $data = [];
-        $totalItemsAgregadosADetalleRequerimiento = null;
-
-        if (count($requerimientoList) > 0) {
-
-            $alm_req = DB::table('almacen.alm_req')
-                ->select('alm_req.id_cc')
-                ->whereIn('alm_req.id_requerimiento', $requerimientoList)
-                ->orderBy('alm_req.id_requerimiento', 'desc')
-                ->get();
-
-            $alm_det_req = DB::table('almacen.alm_det_req')
-                ->select('alm_det_req.stock_comprometido', 'alm_det_req.tiene_transformacion', 'alm_det_req.id_almacen_reserva', 'alm_det_req.id_cc_am_filas', 'alm_det_req.id_cc_venta_filas')
-                // ->where('alm_det_req.tiene_transformacion', false)
-                ->whereIn('alm_det_req.id_requerimiento', $requerimientoList)
-                ->orderBy('alm_det_req.id_detalle_requerimiento', 'desc')
-                ->get();
-
-
-            $cantidadItemsRequerimiento = count($alm_det_req);
-
-            foreach ($alm_req as $element) {
-                $temp_data[] = ((new RequerimientoController)->get_detalle_cuadro_costos($element->id_cc)['detalle']);
-            }
-            $cantidadItemsDetalleCuadroCosto = count($temp_data[0]);
-            // Debugbar::info($alm_det_req);
-            // Debugbar::info($temp_data[0]);
-
-            $idAgregadosList = [];
-            if (count($temp_data) > 0) {
-                foreach ($temp_data as $arr) {
-                    foreach ($arr as $value) {
-                        foreach ($alm_det_req as $det_req) {
-                            if (($value->id == $det_req->id_cc_am_filas) && ($det_req->tiene_transformacion == false)) {
-                                $idAgregadosList[] = $value->id;
-                                if (($value->cantidad > ($det_req->stock_comprometido >= 0 ? $det_req->stock_comprometido : 0)) && ($det_req->id_almacen_reserva > 0)) {
-                                    $data[] = [
-                                        'id' => $value->id,
-                                        'id_cc_am' => $value->id_cc_am,
-                                        'id_cc_am_filas' => $value->id_cc_am_filas,
-                                        'cantidad' => ($value->cantidad - ($det_req->stock_comprometido > 0 ? $det_req->stock_comprometido : 0)),
-                                        'comentario_producto_transformado' => $value->comentario_producto_transformado,
-                                        'descripcion' => $value->descripcion,
-                                        'descripcion_producto_transformado' => $value->descripcion_producto_transformado,
-                                        'fecha_creacion' => $value->fecha_creacion,
-                                        'flete_oc' => $value->flete_oc,
-                                        'garantia' => $value->garantia,
-                                        'id_autor' => $value->id_autor,
-                                        'nombre_autor' => $value->nombre_autor,
-                                        'part_no' => $value->part_no,
-                                        'part_no_producto_transformado' => $value->part_no_producto_transformado,
-                                        'proveedor_seleccionado' => $value->proveedor_seleccionado,
-                                        'pvu_oc' => $value->pvu_oc,
-                                        'razon_social_proveedor' => $value->razon_social_proveedor,
-                                        'ruc_proveedor' => $value->ruc_proveedor
-                                    ];
-                                }
-                            }
-                        }
-                    }
-                }
-
-                // Debugbar::info($idAgregadosList);
-
-                foreach ($temp_data as $arr) {
-                    foreach ($arr as $value) {
-
-                        foreach ($alm_det_req as $det_req) {
-                            if (($value->id == $det_req->id_cc_am_filas)) {
-
-                                if (in_array($value->id, $idAgregadosList, true) == false) {
-
-                                    $data[] = [
-                                        'id' => $value->id,
-                                        'id_cc_am' => $value->id_cc_am,
-                                        'id_cc_am_filas' => $value->id_cc_am_filas,
-                                        'cantidad' => ($value->cantidad - ($det_req->stock_comprometido > 0 ? $det_req->stock_comprometido : 0)),
-                                        'comentario_producto_transformado' => $value->comentario_producto_transformado,
-                                        'descripcion' => $value->descripcion,
-                                        'descripcion_producto_transformado' => $value->descripcion_producto_transformado,
-                                        'fecha_creacion' => $value->fecha_creacion,
-                                        'flete_oc' => $value->flete_oc,
-                                        'garantia' => $value->garantia,
-                                        'id_autor' => $value->id_autor,
-                                        'nombre_autor' => $value->nombre_autor,
-                                        'part_no' => $value->part_no,
-                                        'part_no_producto_transformado' => $value->part_no_producto_transformado,
-                                        'proveedor_seleccionado' => $value->proveedor_seleccionado,
-                                        'pvu_oc' => $value->pvu_oc,
-                                        'razon_social_proveedor' => $value->razon_social_proveedor,
-                                        'ruc_proveedor' => $value->ruc_proveedor
-                                    ];
-                                }
-                            }
-                        }
-                    }
-                }
-                $status = 200;
-            } else {
-                $status = 204;
-            }
-            // Debugbar::info($cantidadItemsRequerimiento);
-            // Debugbar::info($cantidadItemsDetalleCuadroCosto);
-            if ($cantidadItemsRequerimiento == $cantidadItemsDetalleCuadroCosto) {
-                $totalItemsAgregadosADetalleRequerimiento = true;
-            } else {
-                $totalItemsAgregadosADetalleRequerimiento = false;
-            }
-        }
-
-        $output = ['status' => $status, 'data' => $data, 'tiene_total_items_agregados' => $totalItemsAgregadosADetalleRequerimiento];
-
-        return response()->json($output);
-    }
-
-    public function tieneItemsParaCompra(Request $request)
-    {
-        $requerimientoList = $request->requerimientoList;
-        $tieneItems = false;
-        $totalItemsAgregadosADetalleRequerimiento = null;
-
-        $alm_det_req = DB::table('almacen.alm_det_req')
-            ->leftJoin('almacen.alm_prod', 'alm_det_req.id_producto', '=', 'alm_prod.id_producto')
-            ->leftJoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
-            ->leftJoin('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
-            ->leftJoin('almacen.alm_clasif', 'alm_clasif.id_clasificacion', '=', 'alm_prod.id_clasif')
-            ->leftJoin('almacen.alm_und_medida', 'alm_det_req.id_unidad_medida', '=', 'alm_und_medida.id_unidad_medida')
-            ->select(
-                'alm_det_req.*',
-                DB::raw("(CASE 
-        WHEN alm_det_req.id_cc_am_filas isNUll THEN alm_det_req.id_cc_venta_filas 
-        WHEN alm_det_req.id_cc_venta_filas isNUll THEN alm_det_req.id_cc_am_filas 
-        ELSE null END) AS id"),
-                'alm_cat_prod.id_categoria',
-                'alm_cat_prod.descripcion as categoria',
-                'alm_subcat.id_subcategoria',
-                'alm_subcat.descripcion as subcategoria',
-                'alm_clasif.id_clasificacion as id_clasif',
-                'alm_clasif.descripcion as clasificacion',
-                'alm_prod.codigo AS alm_prod_codigo',
-                'alm_prod.part_number',
-                'alm_prod.descripcion AS descripcion',
-                'alm_und_medida.descripcion AS unidad_medida'
-
-            )
-            ->where([['alm_det_req.tiene_transformacion', false], ['alm_det_req.id_almacen_reserva', null]])
-            ->whereIn('alm_det_req.id_requerimiento', $requerimientoList)
-            ->get();
-
-
-        $alm_req = DB::table('almacen.alm_req')
-            ->select('alm_req.id_cc')
-            ->whereIn('alm_req.id_requerimiento', $requerimientoList)
-            ->orderBy('alm_req.id_requerimiento', 'desc')
-            ->get();
-
-        $alm_det_req_agregados = DB::table('almacen.alm_det_req')
-            ->select('alm_det_req.stock_comprometido', 'alm_det_req.id_almacen_reserva', 'alm_det_req.id_cc_am_filas', 'alm_det_req.id_cc_venta_filas')
-            ->where('alm_det_req.tiene_transformacion', false)
-            ->whereIn('alm_det_req.id_requerimiento', $requerimientoList)
-            ->orderBy('alm_det_req.id_detalle_requerimiento', 'desc')
-            ->get();
-
-        $cantidadItemsRequerimiento = count($alm_det_req_agregados);
-
-        foreach ($alm_req as $element) {
-            $temp_data[] = ((new RequerimientoController)->get_detalle_cuadro_costos($element->id_cc)['detalle']);
-        }
-        $cantidadItemsDetalleCuadroCosto = count($temp_data[0]);
-
-        if ($cantidadItemsRequerimiento == $cantidadItemsDetalleCuadroCosto) {
-            $totalItemsAgregadosADetalleRequerimiento = true;
-        } else {
-            $totalItemsAgregadosADetalleRequerimiento = false;
-        }
-
-        // if(count($alm_det_req)>0){
-        //     $tieneItems=true;
-        // }
-        $output = ['det_req' => $alm_det_req, 'tiene_total_items_agregados' => $totalItemsAgregadosADetalleRequerimiento];
-
-        return response()->json($output);
-    }
 
     public function get_lista_items_cuadro_costos_por_id_requerimiento(Request $request)
     {
@@ -580,8 +393,8 @@ class ComprasPendientesController extends Controller
 
             DetalleRequerimiento::actualizarEstadoDetalleRequerimientoAtendido($request->idDetalleRequerimiento);
             // actualizar estado de requerimiento
-            // $Requerimiento = DetalleRequerimiento::where('id_detalle_requerimiento',$request->idDetalleRequerimiento)->first();
-            // $nuevoEstadoRequerimiento= Requerimiento::actualizarEstadoRequerimientoAtendido([$Requerimiento->id_requerimiento]);
+            $Requerimiento = DetalleRequerimiento::where('id_detalle_requerimiento',$request->idDetalleRequerimiento)->first();
+            Requerimiento::actualizarEstadoRequerimientoAtendido([$Requerimiento->id_requerimiento]);
  
             DB::commit();
 

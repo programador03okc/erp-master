@@ -18,6 +18,14 @@ class Requerimiento extends Model
     protected $appends = ['termometro','nombre_estado','nombre_completo_usuario','ordenes_compra','cantidad_tipo_producto','cantidad_tipo_servicio'];
     public $timestamps = false;
 
+    // public function getMontoTotalAttribute(){
+    //     $detalle= DetalleRequerimiento::where('id_requerimiento',$this->attributes['id_requerimiento'])->get();
+    //     $total= 0;
+    //     foreach ($detalle as $key => $value) {
+    //         $total += $value['cantidad'] * $value['precio_unitario'];
+    //     }
+    //     return $total;
+    // }
 
     public function scopeFiltroEmpresa($query, $name)
     {
@@ -311,5 +319,11 @@ class Requerimiento extends Model
     }
     public function moneda(){
         return $this->belongsTo('App\Models\Configuracion\Moneda','id_moneda','id_moneda');
+    }
+    public function empresa(){
+        return $this->hasOne('App\Models\Administracion\Empresa','id_empresa','id_empresa');
+    }
+    public function sede(){
+        return $this->hasOne('App\Models\Administracion\Sede','id_sede','id_sede');
     }
 }

@@ -189,13 +189,13 @@ Elaborar orden
                         </div>
 
                         <div class="col-md-2" id="group-condicion_compra-cdc_req">
-                            <h5>CDC / Req.</h5>
+                            <h5>Req.</h5>
                             <div style="display:flex;">
                                 <input class="oculto" name="id_cc">
                                 <input type="text" name="cdc_req" class="form-control group-elemento" readOnly>
                             </div>
                         </div>
-                        <div class="col-md-2" id="group-condicion_compra-ejecutivo_responsable">
+                        <div class="col-md-2" id="group-condicion_compra-ejecutivo_responsable" hidden>
                             <h5>Ejecutivo responsable</h5>
                             <div style="display:flex;">
                                 <input type="text" name="ejecutivo_responsable" class="form-control group-elemento" readOnly>
@@ -300,7 +300,9 @@ Elaborar orden
                                     <th style="width: 5%">Part number</th>
                                     <th>Item</th>
                                     <th style="width: 8%">Unidad</th>
-                                    <th style="width: 5%">Cantidad Solicitada</th>
+                                    <th style="width: 5%">Cantidad solicitada</th>
+                                    <th style="width: 5%">Cantidad atendido almacén</th>
+                                    <th style="width: 5%">Cantidad atendido orden</th>
                                     <th style="width: 10%">Precio</th>
                                     <th style="width: 8%">Cantidad a comprar / requerir</th>
                                     <th style="width: 6%">Total</th>

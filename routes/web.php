@@ -736,8 +736,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::group(['as' => 'pendientes.', 'prefix' => 'pendientes'], function () {
 					Route::get('index', 'ComprasPendientesController@viewComprasPendientes')->name('index');
 					Route::get('requerimientos-pendientes/{empresa?}/{sede?}/{fechaDesde?}/{fechaHasta?}/{reserva?}/{orden?}', 'ComprasPendientesController@listarRequerimientosPendientes')->name('requerimientos-pendientes');
-					Route::post('lista_items-cuadro-costos-por-requerimiento-pendiente-compra', 'ComprasPendientesController@get_lista_items_cuadro_costos_por_id_requerimiento_pendiente_compra')->name('lista_items-cuadro-costos-por-requerimiento-pendiente-compra');
-					Route::post('tiene-items-para-compra', 'ComprasPendientesController@tieneItemsParaCompra')->name('tiene-items-para-compra');
+					// Route::post('lista_items-cuadro-costos-por-requerimiento-pendiente-compra', 'ComprasPendientesController@get_lista_items_cuadro_costos_por_id_requerimiento_pendiente_compra')->name('lista_items-cuadro-costos-por-requerimiento-pendiente-compra');
+					// Route::post('tiene-items-para-compra', 'ComprasPendientesController@tieneItemsParaCompra')->name('tiene-items-para-compra');
 					Route::post('lista_items-cuadro-costos-por-requerimiento', 'ComprasPendientesController@get_lista_items_cuadro_costos_por_id_requerimiento')->name('lista_items-cuadro-costos-por-requerimiento');
 					Route::get('grupo-select-item-para-compra', 'ComprasPendientesController@getGrupoSelectItemParaCompra')->name('grupo-select-item-para-compra');
 					Route::post('guardar-reserva-almacen', 'ComprasPendientesController@guardarReservaAlmacen')->name('guardar-reserva-almacen');
@@ -766,6 +766,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::group(['as' => 'ordenes.', 'prefix' => 'ordenes'], function () {
 					Route::group(['as' => 'elaborar.', 'prefix' => 'elaborar'], function () {
 						Route::get('index', 'OrdenController@view_crear_orden_requerimiento')->name('index');
+						Route::post('requerimiento-detallado', 'OrdenController@ObtenerRequerimientoDetallado')->name('requerimiento-detallado');
 						Route::post('detalle-requerimiento-orden', 'OrdenController@get_detalle_requerimiento_orden')->name('detalle-requerimiento-orden');
 						Route::post('guardar', 'OrdenController@guardar_orden_por_requerimiento')->name('guardar');
 						Route::post('actualizar', 'OrdenController@actualizar_orden_por_requerimiento')->name('actualizar');

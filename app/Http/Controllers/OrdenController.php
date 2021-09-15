@@ -14,6 +14,8 @@ use Debugbar;
 use PDO;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ListOrdenesHeadExport;
+use App\Models\Almacen\DetalleRequerimiento;
+use App\Models\Almacen\Requerimiento;
 use App\Models\Almacen\UnidadMedida;
 use App\Models\Configuracion\Moneda;
 use App\Models\Contabilidad\Banco;
@@ -24,6 +26,7 @@ use App\Models\Logistica\OrdenCompraDetalle;
 use App\Models\Logistica\Proveedor;
 use Carbon\Carbon;
 use Exception;
+use Mockery\Undefined;
 
 class OrdenController extends Controller
 {
@@ -481,14 +484,34 @@ class OrdenController extends Controller
     }
 
 
+    public function ObtenerRequerimientoDetallado(Request $request ){
+    // public function ObtenerRequerimientoDetallado($requerimientoList ){
+        $requerimientoList = $request->requerimientoList;
+
+        $data= Requerimiento::with([
+        'empresa',
+        'sede',
+        'moneda',
+        'detalle' => function ($q) {
+            $q->where('alm_det_req.estado', '!=', 7);
+        },'detalle.estado',
+        'detalle.producto',
+        'detalle.unidadMedida',
+        'detalle.reserva' => function ($q) {
+            $q->where('alm_reserva.estado', '=', 1);
+        }])->whereIn('id_requerimiento',$requerimientoList)->get();
+
+        return $data;
+    }
 
 
 
-
-    public function get_detalle_requerimiento_orden(Request $request )
+    // public function get_detalle_requerimiento_orden(Request $request )
+    public function get_detalle_requerimiento_orden($id)
     {
 
-        $requerimientoList = $request->requerimientoList;
+        // $requerimientoList = $request->requerimientoList;
+        $requerimientoList = $id;
         // return $requerimientoList;
         // return response()->json($output);
 
@@ -582,7 +605,7 @@ class OrdenController extends Controller
                 'alm_req.id_cc',
                 DB::raw("(CASE WHEN alm_req.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc")
             )
-            ->whereIn('alm_req.id_requerimiento', $requerimientoList)
+            ->whereIn('alm_req.id_requerimiento', [$requerimientoList])
             // ->WhereIn('alm_req.tiene_transformacion',[true,1])
             ->orderBy('alm_req.id_requerimiento', 'desc')
             ->get();
@@ -672,7 +695,7 @@ class OrdenController extends Controller
                     'alm_det_req.descripcion_adicional',
                     'alm_det_req.id_tipo_item',
                     'alm_det_req.estado',
-                    'alm_det_req.stock_comprometido',
+                    // 'alm_det_req.stock_comprometido',
                     'alm_det_req.observacion',
                     
                     
@@ -688,7 +711,7 @@ class OrdenController extends Controller
                     'alm_det_req_adjuntos.fecha_registro AS adjunto_fecha_registro',
                     'alm_det_req_adjuntos.id_detalle_requerimiento AS adjunto_id_detalle_requerimiento'
                 )
-                ->whereIn('alm_req.id_requerimiento', $requerimientoList)
+                ->whereIn('alm_req.id_requerimiento', [$requerimientoList])
                 ->whereIn('alm_det_req.tiene_transformacion',[false])
                 ->whereNotIn('alm_det_req.estado', [7])
                 ->orderBy('alm_prod.id_producto', 'asc')
@@ -724,7 +747,7 @@ class OrdenController extends Controller
                             'id_detalle_requerimiento'  => $data->id_detalle_requerimiento,
                             'id_requerimiento'          => $data->id_requerimiento,
                             'codigo_requerimiento'      => $data->codigo_requerimiento,
-                            'cantidad'                  => $data->cantidad - ($data->stock_comprometido?$data->stock_comprometido:0) - ($this->cantidadCompradaDetalleOrden($data->id_detalle_requerimiento)),
+                            'cantidad'                  => $data->cantidad - (isset($data->stock_comprometido)?$data->stock_comprometido:0) - ($this->cantidadCompradaDetalleOrden($data->id_detalle_requerimiento)),
                             'id_moneda'                 => $data->id_moneda,
                             'id_unidad_medida'          => $data->id_unidad_medida,
                             'unidad_medida'             => $data->unidad_medida,
@@ -739,7 +762,7 @@ class OrdenController extends Controller
                             'alm_prod_codigo'           => $data->alm_prod_codigo,
                             'part_number'               => $data->part_number,
                             'descripcion'               => $data->alm_prod_descripcion,
-                            'stock_comprometido'        => $data->stock_comprometido,
+                            // 'stock_comprometido'        => $data->stock_comprometido,
                             'observacion'               => $data->observacion,
                             'cantidad_a_comprar'        => 0,
                             'subtotal'               =>  $subtotal,
@@ -2648,12 +2671,13 @@ class OrdenController extends Controller
     }
 
     function obtenerDetalleRequerimiento($idRequerimientoList){
-        $alm_det_req = DB::table('almacen.alm_det_req')
-        ->select('alm_det_req.*')
+        $alm_det_req = DetalleRequerimiento::with(['reserva'=> function ($q) {
+            $q->where('alm_reserva.estado', '=', 1);
+        }])
         ->where('alm_det_req.estado','!=',7)
         ->whereIn('alm_det_req.id_requerimiento',$idRequerimientoList)
         ->get();
-        
+
         return $alm_det_req;
     }
 
@@ -2661,11 +2685,18 @@ class OrdenController extends Controller
         $itemBase=[];
         foreach ($detalleRequerimiento as $key => $value) {
             if($value->tiene_transformacion == false){
+                $stock_comprometido=0;
+                if(count($value->reserva)>0){
+                    foreach ($value->reserva as $value) {
+                        $stock_comprometido+=$value->stock_comprometido;
+                    }
+                }
+                
                 $itemBase[]=[  
                     'id_detalle_requerimiento' =>$value->id_detalle_requerimiento,
                     'id_requerimiento' =>$value->id_requerimiento,
                     'cantidad' =>$value->cantidad,
-                    'stock_comprometido' =>$value->stock_comprometido,
+                    'stock_comprometido' =>$stock_comprometido,
                     'estado' =>$value->estado,
                     'cantidad_atendida' =>0,
                     'update' =>false,

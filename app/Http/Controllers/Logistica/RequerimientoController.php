@@ -113,7 +113,7 @@ class RequerimientoController extends Controller
 
     public function detalleRequerimiento($id_requerimiento)
     {
-        $detalles = DetalleRequerimiento::select(
+        $detalles = DetalleRequerimiento::with('reserva')->select(
             'alm_req.codigo as codigo_requerimiento',
             'alm_det_req.*',
             'sis_moneda.simbolo as moneda_simbolo',
@@ -130,7 +130,6 @@ class RequerimientoController extends Controller
             ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'alm_det_req.estado')
             ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
             ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'alm_req.id_moneda')
-            // ->leftJoin('almacen.alm_almacen as almacen_reserva','almacen_reserva.id_almacen','=','alm_det_req.id_almacen_reserva')
             ->where([
                 ['alm_det_req.id_requerimiento', '=', $id_requerimiento],
                 ['alm_det_req.estado', '!=', 7]
@@ -356,7 +355,7 @@ class RequerimientoController extends Controller
                 ->leftJoin('almacen.alm_item', 'alm_item.id_producto', '=', 'alm_prod.id_producto')
                 ->leftJoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
                 ->leftJoin('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
-                ->leftJoin('almacen.alm_almacen', 'alm_det_req.id_almacen_reserva', '=', 'alm_almacen.id_almacen')
+                // ->leftJoin('almacen.alm_almacen', 'alm_det_req.id_almacen_reserva', '=', 'alm_almacen.id_almacen')
                 ->leftJoin('almacen.alm_und_medida', 'alm_det_req.id_unidad_medida', '=', 'alm_und_medida.id_unidad_medida')
                 ->leftJoin('almacen.alm_und_medida as und_medida_det_req', 'alm_det_req.id_unidad_medida', '=', 'und_medida_det_req.id_unidad_medida')
                 ->leftJoin('logistica.equipo', 'alm_item.id_equipo', '=', 'equipo.id_equipo')
@@ -385,7 +384,6 @@ class RequerimientoController extends Controller
                     'alm_det_req.precio_unitario',
                     'alm_det_req.subtotal',
                     'alm_det_req.cantidad',
-                    'alm_det_req.stock_comprometido',
                     'alm_det_req.id_unidad_medida',
                     'und_medida_det_req.descripcion AS unidad_medida',
                     'alm_det_req.observacion',
@@ -411,8 +409,6 @@ class RequerimientoController extends Controller
                     'alm_det_req.id_producto',
                     'alm_cat_prod.descripcion as categoria',
                     'alm_subcat.descripcion as subcategoria',
-                    'alm_det_req.id_almacen_reserva',
-                    'alm_almacen.descripcion as almacen_reserva',
                     'alm_item.codigo AS codigo_item',
                     'alm_item.fecha_registro AS alm_item_fecha_registro',
                     'alm_prod.codigo AS alm_prod_codigo',
@@ -465,10 +461,7 @@ class RequerimientoController extends Controller
                             'id_item'                   => $data->id_item_alm_det_req,
                             'categoria'                 => $data->categoria,
                             'subcategoria'              => $data->subcategoria,
-                            'id_almacen_reserva'        => $data->id_almacen_reserva,
-                            'almacen_reserva'           => $data->almacen_reserva,
                             'cantidad'                  => $data->cantidad,
-                            'stock_comprometido'        => $data->stock_comprometido,
                             'suma_transferencias'       => $data->suma_transferencias,
                             'id_unidad_medida'          => $data->id_unidad_medida,
                             'unidad_medida'             => $data->unidad_medida,
@@ -1230,7 +1223,7 @@ class RequerimientoController extends Controller
         // $req     = array();
         // $det_req = array();
 
-        $requerimientos = Requerimiento::leftJoin('administracion.adm_documentos_aprob', 'alm_req.id_requerimiento', '=', 'adm_documentos_aprob.id_doc')
+        $requerimientos = Requerimiento::with('detalle')->leftJoin('administracion.adm_documentos_aprob', 'alm_req.id_requerimiento', '=', 'adm_documentos_aprob.id_doc')
             ->leftJoin('administracion.adm_estado_doc', 'alm_req.estado', '=', 'adm_estado_doc.id_estado_doc')
             ->leftJoin('almacen.alm_tp_req', 'alm_req.id_tipo_requerimiento', '=', 'alm_tp_req.id_tipo_requerimiento')
             ->leftJoin('administracion.adm_prioridad', 'alm_req.id_prioridad', '=', 'adm_prioridad.id_prioridad')
@@ -1275,6 +1268,7 @@ class RequerimientoController extends Controller
                 'alm_req.id_prioridad',
                 'alm_req.id_presupuesto',
                 'alm_req.id_moneda',
+                'alm_req.*',
                 'adm_estado_doc.estado_doc',
                 'alm_tp_req.descripcion AS tipo_requerimiento',
                 'adm_prioridad.descripcion AS priori',
