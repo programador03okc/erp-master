@@ -923,19 +923,18 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('index', 'DistribucionController@view_trazabilidad_requerimientos')->name('index');
 				Route::post('listarRequerimientosTrazabilidad', 'DistribucionController@listarRequerimientosTrazabilidad');
 				Route::get('verTrazabilidadRequerimiento/{id}', 'DistribucionController@verTrazabilidadRequerimiento');
-				Route::get('verDetalleRequerimiento/{id}', 'DistribucionController@verDetalleRequerimiento');
+				Route::get('verDetalleRequerimientoDI/{id}', 'Logistica\Distribucion\OrdenesTransformacionController@verDetalleRequerimientoDI');
 				Route::get('imprimir_despacho/{id}', 'DistribucionController@imprimir_despacho');
 				Route::get('listarAdjuntosOrdenDespacho/{id}', 'DistribucionController@listarAdjuntosOrdenDespacho');
 				Route::post('guardar_od_adjunto', 'DistribucionController@guardar_od_adjunto');
 				Route::get('anular_od_adjunto/{id}', 'DistribucionController@anular_od_adjunto');
-				Route::get('verDetalleRequerimiento/{id}', 'DistribucionController@verDetalleRequerimiento');
 			});
 
 			Route::group(['as' => 'guias-transportistas.', 'prefix' => 'guias-transportistas'], function () {
 
 				Route::get('index', 'DistribucionController@view_guias_transportistas')->name('index');
 				Route::get('listarGuiasTransportistas', 'DistribucionController@listarGuiasTransportistas');
-				Route::get('verDetalleRequerimiento/{id}', 'DistribucionController@verDetalleRequerimiento');
+				Route::get('verDetalleRequerimientoDI/{id}', 'Logistica\Distribucion\OrdenesTransformacionController@verDetalleRequerimientoDI');
 				Route::get('imprimir_despacho/{id}', 'DistribucionController@imprimir_despacho');
 			});
 

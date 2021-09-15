@@ -33,6 +33,7 @@ $(function () {
         localStorage.removeItem("id_transfor");
         changeStateButton('historial');
     }
+    vista_extendida();
 });
 
 function mostrar_transformacion(id) {

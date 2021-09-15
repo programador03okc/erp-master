@@ -56,7 +56,6 @@ function format(table_id, id, row) {
                 </tbody>
                 </table>`;
             }
-            console.log(tabla);
             row.child(tabla).show();
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {

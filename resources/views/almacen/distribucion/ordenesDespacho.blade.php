@@ -13,9 +13,9 @@ Panel de Control de Despachos
 
 @section('breadcrumb')
 <ol class="breadcrumb">
-  <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> Logística y Almacenes</a></li>
-  <li>Distribución</li>
-  <li class="active">@yield('cabecera')</li>
+    <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> Logística y Almacenes</a></li>
+    <li>Distribución</li>
+    <li class="active">@yield('cabecera')</li>
 </ol>
 @endsection
 
@@ -39,7 +39,7 @@ Panel de Control de Despachos
                     </table>
                 </div>
             </div> -->
-            
+
             <div class="col-md-12" id="tab-reqPendientes" style="padding-left:0px;padding-right:0px;">
                 <ul class="nav nav-tabs" id="myTab">
                     <li class="active"><a type="#elaborados">Requerimientos Pendientes <span id="selaborados" class="badge badge-info"></span></a></li>
@@ -51,12 +51,11 @@ Panel de Control de Despachos
                     <li class=""><a type="#retornoCargo">Pendientes de Retorno de Cargo <span id="sretornoCargo" class="badge badge-info"></span></a></li>
                 </ul>
                 <div class="content-tabs">
-                    <section id="elaborados" >
+                    <section id="elaborados">
                         <form id="form-elaborados" type="register">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <table class="mytable table table-condensed table-bordered table-okc-view" 
-                                        id="requerimientosElaborados">
+                                    <table class="mytable table table-condensed table-bordered table-okc-view" id="requerimientosElaborados">
                                         <thead>
                                             <tr>
                                                 <th hidden></th>
@@ -87,8 +86,7 @@ Panel de Control de Despachos
                         <form id="form-confirmados" type="register">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <table class="mytable table table-condensed table-bordered table-okc-view" 
-                                        id="requerimientosConfirmados">
+                                    <table class="mytable table table-condensed table-bordered table-okc-view" id="requerimientosConfirmados">
                                         <thead>
                                             <tr>
                                                 <th hidden></th>
@@ -119,8 +117,7 @@ Panel de Control de Despachos
                         <form id="form-pendientes" type="register">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <table class="mytable table table-condensed table-bordered table-okc-view" 
-                                        id="requerimientosEnProceso">
+                                    <table class="mytable table table-condensed table-bordered table-okc-view" id="requerimientosEnProceso">
                                         <thead>
                                             <tr>
                                                 <th hidden></th>
@@ -150,8 +147,7 @@ Panel de Control de Despachos
                         <form id="form-transformados" type="register">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <table class="mytable table table-condensed table-bordered table-okc-view" 
-                                        id="requerimientosEnTransformacion">
+                                    <table class="mytable table table-condensed table-bordered table-okc-view" id="requerimientosEnTransformacion">
                                         <thead>
                                             <tr>
                                                 <th hidden></th>
@@ -181,8 +177,7 @@ Panel de Control de Despachos
                         <form id="form-despachos" type="register">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <table class="mytable table table-condensed table-bordered table-okc-view" 
-                                        id="ordenesDespacho">
+                                    <table class="mytable table table-condensed table-bordered table-okc-view" id="ordenesDespacho">
                                         <thead>
                                             <tr>
                                                 <th hidden></th>
@@ -210,8 +205,7 @@ Panel de Control de Despachos
                                         <tbody></tbody>
                                     </table>
                                     @if(Auth::user()->tieneAccion(80))
-                                    <button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" 
-                                    title="Crear Despacho" onClick="crear_grupo_orden_despacho();">Generar Despacho</button>
+                                    <button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Crear Despacho" onClick="crear_grupo_orden_despacho();">Generar Despacho</button>
                                     @endif
                                 </div>
                             </div>
@@ -221,8 +215,7 @@ Panel de Control de Despachos
                         <form id="form-sinTransporte" type="register">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <table class="mytable table table-condensed table-bordered table-okc-view" 
-                                        id="gruposDespachados">
+                                    <table class="mytable table table-condensed table-bordered table-okc-view" id="gruposDespachados">
                                         <thead>
                                             <tr>
                                                 <th hidden></th>
@@ -258,8 +251,7 @@ Panel de Control de Despachos
                         <form id="form-retornoCargo" type="register">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <table class="mytable table table-condensed table-bordered table-okc-view" 
-                                        id="pendientesRetornoCargo">
+                                    <table class="mytable table table-condensed table-bordered table-okc-view" id="pendientesRetornoCargo">
                                         <thead>
                                             <tr>
                                                 <th hidden></th>
@@ -306,7 +298,6 @@ Panel de Control de Despachos
 @include('almacen.distribucion.requerimientoObs')
 @include('almacen.distribucion.ordenDespachoAdjuntos')
 @include('almacen.distribucion.ordenDespachoEstados')
-<!-- @include('almacen.distribucion.ordenDespachoTransformacion') -->
 @include('almacen.producto.productoModal')
 @include('almacen.producto.productoCreate')
 @include('almacen.transferencias.ver_series')
@@ -320,45 +311,45 @@ Panel de Control de Despachos
 @endsection
 
 @section('scripts')
-    <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
-    <!-- <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
+<script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
+<!-- <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
     <script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
     <script src="{{ asset('datatables/Buttons/js/buttons.print.min.js') }}"></script>
     <script src="{{ asset('datatables/Buttons/js/buttons.html5.min.js') }}"></script>
     <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script> -->
-    <script src="{{ asset('template/plugins/iCheck/icheck.min.js') }}"></script>
-    <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
-    <script src="{{ asset('template/plugins/jquery-datatables-checkboxes/js/dataTables.checkboxes.min.js') }}"></script>
-    <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
+<script src="{{ asset('template/plugins/iCheck/icheck.min.js') }}"></script>
+<script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
+<script src="{{ asset('template/plugins/jquery-datatables-checkboxes/js/dataTables.checkboxes.min.js') }}"></script>
+<script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
-    <script src="{{ asset('js/almacen/distribucion/ordenesDespacho.js')}}"></script>
-    <script src="{{ asset('js/almacen/distribucion/ordenDespachoCreate.js')}}"></script>
-    <script src="{{ asset('js/almacen/distribucion/grupoDespachoCreate.js')}}"></script>
-    <script src="{{ asset('js/almacen/distribucion/ordenDespachoAdjuntos.js')}}"></script>
-    <script src="{{ asset('js/almacen/distribucion/despachoDetalle.js')}}"></script>
-    <script src="{{ asset('js/almacen/distribucion/requerimientoDetalle.js')}}"></script>
-    <script src="{{ asset('js/almacen/distribucion/requerimientoObs.js')}}"></script>
-    <script src="{{ asset('js/almacen/distribucion/requerimientoVerDetalle.js')}}"></script>
-    <script src="{{ asset('js/almacen/distribucion/verDetalleRequerimiento.js')}}"></script>
-    <script src="{{ asset('js/almacen/distribucion/ordenDespachoTransportista.js')}}"></script>
-    <script src="{{ asset('js/almacen/distribucion/ordenDespachoEstado.js')}}"></script>
-    <script src="{{ asset('js/almacen/producto/productoModal.js')}}"></script>
-    <script src="{{ asset('js/almacen/producto/productoCreate.js')}}"></script>
-    <script src="{{ asset('js/logistica/clienteModal.js')}}"></script>
-    <script src="{{ asset('js/logistica/proveedorModal.js')}}"></script>
-    <script src="{{ asset('js/logistica/add_proveedor.js')}}"></script>
-    <script src="{{ asset('js/logistica/add_cliente.js')}}"></script>
-    <script src="{{ asset('js/publico/hiddenElement.js')}}"></script>
-    <script src="{{ asset('js/publico/ubigeoModal.js')}}"></script>
-    <script src="{{ asset('js/publico/personaModal.js')}}"></script>
+<script src="{{ asset('js/almacen/distribucion/ordenesDespacho.js')}}"></script>
+<script src="{{ asset('js/almacen/distribucion/ordenDespachoCreate.js')}}"></script>
+<script src="{{ asset('js/almacen/distribucion/grupoDespachoCreate.js')}}"></script>
+<script src="{{ asset('js/almacen/distribucion/ordenDespachoAdjuntos.js')}}"></script>
+<script src="{{ asset('js/almacen/distribucion/despachoDetalle.js')}}"></script>
+<script src="{{ asset('js/almacen/distribucion/requerimientoDetalle.js')}}"></script>
+<script src="{{ asset('js/almacen/distribucion/requerimientoObs.js')}}"></script>
+<script src="{{ asset('js/almacen/distribucion/requerimientoVerDetalle.js')}}"></script>
+<script src="{{ asset('js/almacen/distribucion/verDetalleRequerimiento.js')}}"></script>
+<script src="{{ asset('js/almacen/distribucion/ordenDespachoTransportista.js')}}"></script>
+<script src="{{ asset('js/almacen/distribucion/ordenDespachoEstado.js')}}"></script>
+<script src="{{ asset('js/almacen/producto/productoModal.js')}}"></script>
+<script src="{{ asset('js/almacen/producto/productoCreate.js')}}"></script>
+<script src="{{ asset('js/logistica/clienteModal.js')}}"></script>
+<script src="{{ asset('js/logistica/proveedorModal.js')}}"></script>
+<script src="{{ asset('js/logistica/add_proveedor.js')}}"></script>
+<script src="{{ asset('js/logistica/add_cliente.js')}}"></script>
+<script src="{{ asset('js/publico/hiddenElement.js')}}"></script>
+<script src="{{ asset('js/publico/ubigeoModal.js')}}"></script>
+<script src="{{ asset('js/publico/personaModal.js')}}"></script>
 
-    <script>
-    $(document).ready(function(){
+<script>
+    $(document).ready(function() {
         seleccionarMenu(window.location);
         iniciar('{{Auth::user()->tieneAccion(80)}}');
     });
-    </script>
+</script>
 @endsection
