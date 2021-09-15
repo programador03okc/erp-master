@@ -389,7 +389,7 @@ Elaborar orden
 <script src="{{('/js/logistica/orden/cuentasBancariasProveedor.js')}}"></script>
 <script src="{{ asset('js/publico/consulta_sunat.js')}}"></script>
 <script src="{{('/js/logistica/orden/OrdenModel.js?v=2')}}"></script>
-<script src="{{('/js/logistica/orden/OrdenView.js?v=4')}}"></script>
+<script src="{{('/js/logistica/orden/OrdenView.js?v=5')}}"></script>
 <script src="{{('/js/logistica/orden/OrdenController.js?v=3')}}"></script>
 
 
