@@ -474,7 +474,7 @@ class RequerimientoPendienteView {
                 });
 
                     html += `<tr>
-                        <td style="border: none; text-align:center;" data-part-number="${element.part_number}" data-producto-part-number="${element.producto_part_number}">${(element.producto_part_number != null ? element.producto_part_number :(element.part_number !=null ?element.part_number:''))} ${element.tiene_transformacion ==true?'<span class="label label-default">Con Transformación</span>':''}</td>
+                        <td style="border: none; text-align:center;" data-part-number="${element.part_number}" data-producto-part-number="${element.producto_part_number}">${(element.producto_part_number != null ? element.producto_part_number :(element.part_number !=null ?element.part_number:''))} ${element.tiene_transformacion ==true?'<span class="label label-default">Transformado</span>':''}</td>
                         <td style="border: none; text-align:left;">${element.producto_descripcion != null ? element.producto_descripcion : (element.descripcion?element.descripcion:'')}</td>
                         <td style="border: none; text-align:center;">${element.abreviatura != null ? element.abreviatura : ''}</td>
                         <td style="border: none; text-align:center;">${element.cantidad >0 ? element.cantidad : ''}</td>
