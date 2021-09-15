@@ -666,11 +666,11 @@ Crear / editar requerimiento
 <script src="{{ asset('js/publico/consulta_sunat.js')}}"></script>
 <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
-<script src="{{ asset('js/logistica/requerimiento/ArchivoAdjunto.js?v=2')}}"></script>
-<script src="{{ asset('js/logistica/requerimiento/TrazabilidadRequerimientoView.js?v=2')}}"></script>
-<script src="{{ asset('js/logistica/requerimiento/RequerimientoView.js?v=5')}}"></script>
-<script src="{{ asset('js/logistica/requerimiento/RequerimientoController.js?v=2')}}"></script>
-<script src="{{ asset('js/logistica/requerimiento/RequerimientoModel.js?v=2')}}"></script>
+<script src="{{ asset('js/logistica/requerimiento/ArchivoAdjunto.js?v=3')}}"></script>
+<script src="{{ asset('js/logistica/requerimiento/TrazabilidadRequerimientoView.js?v=3')}}"></script>
+<script src="{{ asset('js/logistica/requerimiento/RequerimientoView.js?v=6')}}"></script>
+<script src="{{ asset('js/logistica/requerimiento/RequerimientoController.js?v=3')}}"></script>
+<script src="{{ asset('js/logistica/requerimiento/RequerimientoModel.js?v=3')}}"></script>
 
 <script>
     var grupos = JSON.parse('{!!$grupos!!}');

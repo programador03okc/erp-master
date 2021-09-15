@@ -63,10 +63,10 @@
     <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
-    <script src="{{('/js/logistica/proveedores/listarProveedorView.js?v=3')}}"></script>
-    <script src="{{('/js/logistica/proveedores/ProveedorController.js?v=3')}}"></script>
-    <script src="{{('/js/logistica/proveedores/ProveedorModel.js?v=3')}}"></script>
-    <script src="{{ asset('js/publico/ubigeoModal.js?v=3')}}"></script>
+    <script src="{{('/js/logistica/proveedores/listarProveedorView.js?v=4')}}"></script>
+    <script src="{{('/js/logistica/proveedores/ProveedorController.js?v=4')}}"></script>
+    <script src="{{('/js/logistica/proveedores/ProveedorModel.js?v=4')}}"></script>
+    <script src="{{ asset('js/publico/ubigeoModal.js?v=4')}}"></script>
 
 
 

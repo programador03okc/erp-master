@@ -109,12 +109,12 @@ Requerimientos pendientes
 <script src="{{ asset('template/plugins/datetime-moment.js') }}"></script>
 <script src="{{ asset('template/plugins/iCheck/icheck.min.js') }}"></script>
 
-<script src="{{('/js/logistica/orden/RequerimientoPendienteModel.js?v=9')}}"></script>
-<script src="{{('/js/logistica/orden/RequerimientoPendienteView.js?v=9')}}"></script>
-<script src="{{('/js/logistica/orden/RequerimientoPendienteController.js?v=9')}}"></script>
+<script src="{{('/js/logistica/orden/RequerimientoPendienteModel.js?v=10')}}"></script>
+<script src="{{('/js/logistica/orden/RequerimientoPendienteView.js?v=10')}}"></script>
+<script src="{{('/js/logistica/orden/RequerimientoPendienteController.js?v=10')}}"></script>
 
-<script src="{{ asset('js/logistica/mapeo/mapeoItemsRequerimiento.js?v=9')}}"></script>
-<script src="{{ asset('js/logistica/mapeo/mapeoAsignarProducto.js?v=9')}}"></script>
+<script src="{{ asset('js/logistica/mapeo/mapeoItemsRequerimiento.js?v=10')}}"></script>
+<script src="{{ asset('js/logistica/mapeo/mapeoAsignarProducto.js?v=10')}}"></script>
 
 
 <script>

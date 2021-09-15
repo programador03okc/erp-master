@@ -378,7 +378,7 @@ Elaborar orden
 <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
 <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
 <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
-<script src="{{('/js/logistica/orden/modal_proveedor.js?v=3')}}"></script>
+<script src="{{('/js/logistica/orden/modal_proveedor.js?v=4')}}"></script>
 <script src="{{('/js/logistica/add_proveedor.js')}}"></script>
 <script src="{{ asset('js/publico/ubigeoModal.js')}}"></script>
 <script src="{{('/js/logistica/orden/proveedorContactoModal.js')}}"></script>
@@ -386,9 +386,9 @@ Elaborar orden
 <script src="{{('/js/logistica/orden/agregarContacto.js')}}"></script>
 <script src="{{('/js/logistica/orden/cuentasBancariasProveedor.js')}}"></script>
 <script src="{{ asset('js/publico/consulta_sunat.js')}}"></script>
-<script src="{{('/js/logistica/orden/OrdenModel.js?v=1')}}"></script>
-<script src="{{('/js/logistica/orden/OrdenView.js?v=3')}}"></script>
-<script src="{{('/js/logistica/orden/OrdenController.js?v=1')}}"></script>
+<script src="{{('/js/logistica/orden/OrdenModel.js?v=2')}}"></script>
+<script src="{{('/js/logistica/orden/OrdenView.js?v=4')}}"></script>
+<script src="{{('/js/logistica/orden/OrdenController.js?v=3')}}"></script>
 
 
 <script>
