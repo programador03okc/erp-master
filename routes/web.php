@@ -879,7 +879,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('index', 'DistribucionController@view_ordenesDespacho')->name('index');
 				Route::get('listarRequerimientosEnProceso', 'DistribucionController@listarRequerimientosEnProceso');
 				Route::get('listarRequerimientosEnTransformacion', 'DistribucionController@listarRequerimientosEnTransformacion');
-				Route::get('verDetalleRequerimiento/{id}', 'DistribucionController@verDetalleRequerimiento');
+				Route::get('verDetalleRequerimientoDI/{id}', 'Logistica\Distribucion\OrdenesTransformacionController@verDetalleRequerimientoDI');
 				Route::get('verDetalleIngreso/{id}', 'DistribucionController@verDetalleIngreso');
 				Route::post('guardar_orden_despacho', 'DistribucionController@guardar_orden_despacho');
 				Route::get('listarOrdenesDespacho', 'DistribucionController@listarOrdenesDespacho');
@@ -1525,7 +1525,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('listarRequerimientosConfirmadosPagos', 'DistribucionController@listarRequerimientosConfirmadosPagos');
 				Route::post('pago_confirmado', 'DistribucionController@pago_confirmado');
 				Route::post('pago_no_confirmado', 'DistribucionController@pago_no_confirmado');
-				Route::get('verDetalleRequerimiento/{id}', 'DistribucionController@verDetalleRequerimiento');
+				Route::get('verDetalleRequerimientoDI/{id}', 'Logistica\Distribucion\OrdenesTransformacionController@verDetalleRequerimientoDI');
 				Route::get('verRequerimientoAdjuntos/{id}', 'DistribucionController@verRequerimientoAdjuntos');
 			});
 
