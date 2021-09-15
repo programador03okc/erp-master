@@ -740,17 +740,11 @@ class TransferenciaController extends Controller
                         ->where('id_trans_detalle', $d->id_trans_detalle)
                         ->update(['estado' => 14]); //recepcionada
 
-                    // $trans_det = DB::table('almacen.trans_detalle')
-                    //     ->where('id_trans_detalle', $d->id_trans_detalle)
-                    //     ->first();
-
-                    // DB::table('almacen.alm_det_req')
-                    //     ->where('id_detalle_requerimiento', $trans_det->id_requerimiento_detalle)
-                    //     ->update([
-                    //         'estado' => 28, //reservado
-                    //         // 'id_almacen_reserva' => $request->id_almacen_destino,
-                    //         // 'stock_comprometido' => $d->cantidad_recibida
-                    //     ]);
+                    DB::table('almacen.alm_det_req')
+                        ->where('id_detalle_requerimiento', $d->id_detalle_requerimiento)
+                        ->update([
+                            'estado' => 28, //en almacen total
+                        ]);
 
                     DB::table('almacen.alm_reserva')
                         ->insert([
@@ -791,31 +785,26 @@ class TransferenciaController extends Controller
                         'id_guia_com' => $id_guia_com
                     ]);
 
-                // $count_recibido = DB::table('almacen.alm_det_req')
-                //     ->where([
-                //         ['id_requerimiento', '=', $r->id_requerimiento],
-                //         ['estado', '=', 28]
-                //     ]) //en almacen total
-                //     // ['estado','=',14]
-                //     ->count();
+                $count_recibido = DB::table('almacen.alm_det_req')
+                    ->where([
+                        ['id_requerimiento', '=', $r->id_requerimiento],
+                        ['estado', '=', 28] //en almacen total
+                    ])
+                    ->count();
 
-                // $count_todo = DB::table('almacen.alm_det_req')
-                //     ->where([
-                //         ['id_requerimiento', '=', $r->id_requerimiento],
-                //         // ['tiene_transformacion','=',false],
-                //         ['estado', '!=', 7]
-                //     ])
-                //     ->count();
+                $count_todo = DB::table('almacen.alm_det_req')
+                    ->where([
+                        ['id_requerimiento', '=', $r->id_requerimiento],
+                        ['tiene_transformacion', '=', false],
+                        ['estado', '!=', 7]
+                    ])
+                    ->count();
 
-                // if ($count_recibido == $count_todo) {
-                //     DB::table('almacen.alm_req')
-                //         ->where('id_requerimiento', $r->id_requerimiento)
-                //         ->update(['estado' => 28]); //en atencion total
-                //     // } else {
-                //     //     DB::table('almacen.alm_req')
-                //     //     ->where('id_requerimiento',$r->id_requerimiento)
-                //     //     ->update(['estado'=>27]);//en atencion parcial
-                // }
+                if ($count_recibido == $count_todo) {
+                    DB::table('almacen.alm_req')
+                        ->where('id_requerimiento', $r->id_requerimiento)
+                        ->update(['estado' => 28]); //en atencion total
+                }
 
                 //Agrega accion en requerimiento
                 DB::table('almacen.alm_req_obs')
