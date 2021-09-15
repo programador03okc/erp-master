@@ -178,41 +178,56 @@ class OrdenView {
         detalleOrdenList=[];
         $.ajax({
             type: 'POST',
-            url: 'detalle-requerimiento-orden',
+            url: 'requerimiento-detallado',
             data:{'requerimientoList':reqTrueList},
             dataType: 'JSON',
             success: (response)=>{
-                response.det_req.forEach(element => {
-                    if(element.cantidad >0 && (![28,5].includes(element.estado)) && element.id_tipo_item==idTipoItem){
-                        detalleOrdenList.push(
-                            {
-                                'id': element.id,
-                                'id_detalle_requerimiento': element.id_detalle_requerimiento,
-                                'codigo_item': element.codigo_item,
-                                'id_producto':element.id_producto,
-                                'id_item': element.id_item,
-                                'id_tipo_item': element.id_tipo_item,
-                                'id_requerimiento':element.id_requerimiento,
-                                'codigo_requerimiento': element.codigo_requerimiento,
-                                'id_moneda': element.id_moneda,
-                                'cantidad': element.cantidad,
-                                'cantidad_a_comprar': element.cantidad_a_comprar?element.cantidad_a_comprar:element.cantidad,
-                                'descripcion_producto':element.descripcion,
-                                'descripcion_adicional':element.descripcion_adicional,
-                                'estado': element.estado,
-                                'fecha_registro':element.fecha_registro,
-                                'id_unidad_medida':element.id_unidad_medida,
-                                'lugar_entrega': element.lugar_entrega,
-                                'observacion': element.observacion,
-                                'part_number': element.part_number,
-                                'precio_unitario':element.precio_unitario,
-                                'stock_comprometido':element.stock_comprometido,
-                                'subtotal':element.subtotal,
-                                'unidad_medida':element.unidad_medida
+                
+                response.forEach(req => {
+                    req.detalle.forEach(det => {
+                        if(det.cantidad >0 && (![28,5].includes(det.estado)) && det.id_tipo_item==idTipoItem){
+                            let cantidad_atendido_almacen=0;
+                            if(det.reserva.length >0){
+                                (det.reserva).forEach(reserva => {
+                                    cantidad_atendido_almacen+=parseFloat(reserva.stock_comprometido);
+                                });
                             }
-                        );
+                            let cantidad_atendido_orden=0;
+                            if(det.ordenes_compra.length >0){
+                                (det.ordenes_compra).forEach(orden => {
+                                    cantidad_atendido_orden+=parseFloat(orden.cantidad);
+                                });
+                            }
+                            detalleOrdenList.push(
+                                {
+                                    'id': det.id,
+                                    'id_detalle_requerimiento': det.id_detalle_requerimiento,
+                                    'id_producto':det.id_producto,
+                                    'id_tipo_item': det.id_tipo_item,
+                                    'id_requerimiento':det.id_requerimiento,
+                                    'codigo_requerimiento': req.codigo,
+                                    'id_moneda': req.id_moneda,
+                                    'cantidad': det.cantidad,
+                                    'cantidad_a_comprar': (det.cantidad - cantidad_atendido_almacen>0?cantidad_atendido_almacen:0)>0?(det.cantidad - cantidad_atendido_almacen):0,
+                                    'cantidad_atendido_almacen': cantidad_atendido_almacen,
+                                    'cantidad_atendido_orden': cantidad_atendido_orden,
+                                    'descripcion_producto':det.descripcion,
+                                    'descripcion_adicional':det.descripcion_adicional,
+                                    'estado': det.estado.id_estado_doc,
+                                    'fecha_registro':det.fecha_registro,
+                                    'id_unidad_medida':det.id_unidad_medida,
+                                    'lugar_entrega': det.lugar_entrega,
+                                    'observacion': det.observacion,
+                                    'part_number': det.part_number,
+                                    'precio_unitario':det.precio_unitario,
+                                    'stock_comprometido':cantidad_atendido_almacen,
+                                    'subtotal':det.subtotal,
+                                    'unidad_medida':det.unidad_medida.descripcion
+                                }
+                            );
 
-                    }
+                        }
+                    });
                 });
                 if(detalleOrdenList.length ==0){
                     Swal.fire(
@@ -222,7 +237,7 @@ class OrdenView {
                     );
 
                 }else{
-                    this.loadHeadRequerimiento(response.requerimiento[0],idTipoOrden);
+                    this.loadHeadRequerimiento(response,idTipoOrden);
                     this.listarDetalleOrdeRequerimiento(detalleOrdenList);
                     this.setStatusPage();
                  
@@ -333,17 +348,23 @@ class OrdenView {
         if (idTipoOrden == 3) { // orden de servicio
             this.ocultarBtnCrearProducto();
         }
+        let codigoRequerimiento=[];
+        data.forEach(element => {
+            codigoRequerimiento.push(element.codigo);
+        });
+  
+
         document.querySelector("select[name='id_tp_documento']").value = idTipoOrden;
-        document.querySelector("img[id='logo_empresa']").setAttribute("src", data.logo_empresa);
-        document.querySelector("input[name='cdc_req']").value = data.codigo_oportunidad ? data.codigo_oportunidad : data.codigo;
-        document.querySelector("input[name='ejecutivo_responsable']").value = data.nombre_ejecutivo_responsable ? data.nombre_ejecutivo_responsable : '';
-        document.querySelector("input[name='direccion_destino']").value = data.direccion_fiscal_empresa_sede ? data.direccion_fiscal_empresa_sede : '';
-        document.querySelector("input[name='id_ubigeo_destino']").value = data.id_ubigeo_empresa_sede ? data.id_ubigeo_empresa_sede : '';
-        document.querySelector("input[name='ubigeo_destino']").value = data.ubigeo_empresa_sede ? data.ubigeo_empresa_sede : '';
-        document.querySelector("select[name='id_sede']").value = data.id_sede ? data.id_sede : '';
-        document.querySelector("select[name='id_moneda']").value = data.id_moneda ? data.id_moneda : 1;
-        document.querySelector("input[name='id_cc']").value = data.id_cc ? data.id_cc : '';
-        document.querySelector("textarea[name='observacion']").value = data.observacion ? data.observacion : '';
+        document.querySelector("img[id='logo_empresa']").setAttribute("src", data[0].empresa.logo_empresa);
+        document.querySelector("input[name='cdc_req']").value = codigoRequerimiento.length>0 ?codigoRequerimiento : '';
+        document.querySelector("input[name='ejecutivo_responsable']").value = '';
+        document.querySelector("input[name='direccion_destino']").value = data[0].sede ? data[0].sede.direccion : '';
+        document.querySelector("input[name='id_ubigeo_destino']").value = data[0].sede ? data[0].sede.id_ubigeo : '';
+        document.querySelector("input[name='ubigeo_destino']").value = data[0].sede ? data[0].sede.ubigeo_completo : '';
+        document.querySelector("select[name='id_sede']").value = data[0].id_sede ? data[0].id_sede : '';
+        document.querySelector("select[name='id_moneda']").value = data[0].id_moneda ? data[0].id_moneda : 1;
+        document.querySelector("input[name='id_cc']").value = '';
+        document.querySelector("textarea[name='observacion']").value = '';
 
         this.updateAllSimboloMoneda();
 
@@ -362,6 +383,8 @@ class OrdenView {
                         <td class="text-left">${(data[i].descripcion_producto ? data[i].descripcion_producto : (data[i].descripcion_adicional!=null?data[i].descripcion_adicional:''))} <input type="hidden"  name="descripcion[]" value="${(data[i].descripcion_producto ? data[i].descripcion_producto : data[i].descripcion_adicional)} "></td>
                         <td><select name="unidad[]" class="form-control ${(data[i].estado_guia_com_det>0 && data[i].estado_guia_com_det !=7?'':'activation')} input-sm" value="${data[i].id_unidad_medida}" disabled>${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
                         <td>${(data[i].cantidad ? data[i].cantidad :'')}</td>
+                        <td>${(data[i].cantidad_atendido_almacen ? data[i].cantidad_atendido_almacen :'')}</td>
+                        <td>${(data[i].cantidad_atendido_orden ? data[i].cantidad_atendido_orden :'')}</td>
                         <td>
                             <div class="input-group">
                                 <div class="input-group-addon" style="background:lightgray;" name="simboloMoneda">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</div>
@@ -369,7 +392,7 @@ class OrdenView {
                             </div>
                         </td>
                         <td>
-                            <input class="form-control cantidad_a_comprar input-sm text-right ${(data[i].estado_guia_com_det>0 && data[i].estado_guia_com_det !=7?'':'activation')}  handleBurUpdateSubtotal"  data-id-tipo-item="1" type="number" min="0" name="cantidadAComprarRequerida[]"  placeholder="" value="${data[i].cantidad_a_comprar?data[i].cantidad_a_comprar:''}" disabled>
+                            <input class="form-control cantidad_a_comprar input-sm text-right ${(data[i].estado_guia_com_det>0 && data[i].estado_guia_com_det !=7?'':'activation')}  handleBurUpdateSubtotal"  data-id-tipo-item="1" type="number" min="0" name="cantidadAComprarRequerida[]"  placeholder="" value="${data[i].cantidad_a_comprar?data[i].cantidad_a_comprar:0}" disabled>
                         </td>
                         <td style="text-align:right;"><span class="moneda" name="simboloMoneda">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</span><span class="subtotal" name="subtotal[]">0.00</span></td>
                         <td>
@@ -377,7 +400,7 @@ class OrdenView {
                             <i class="fas fa-trash fa-sm"></i>
                             </button>
                         </td>
-                     </tr>`);
+                    </tr>`);
 
                 }
             }else{ //servicio
@@ -387,6 +410,8 @@ class OrdenView {
                     <td><textarea name="descripcion[]" placeholder="Descripción" class="form-control activation" value="${(data[i].descripcion_adicional ? data[i].descripcion_adicional : '')}" style="width:100%;height: 60px;overflow: scroll;"> </textarea> </td>
                     <td><select name="unidad[]" class="form-control activation input-sm" value="${data[i].id_unidad_medida}" disabled>${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
                     <td>${(data[i].cantidad ? data[i].cantidad :'')}</td>
+                    <td></td>
+                    <td></td>
                     <td>
                         <div class="input-group">
                             <div class="input-group-addon" style="background:lightgray;" name="simboloMoneda">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</div>

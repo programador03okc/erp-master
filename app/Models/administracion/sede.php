@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Models\administracion;
+namespace App\Models\Administracion;
 
+use App\Models\Configuracion\Distrito;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
@@ -10,6 +11,22 @@ class Sede extends Model
   protected $table = 'administracion.sis_sede';
   protected $primaryKey = 'id_sede';
   public $timestamps = false;
+  protected $appends = ['ubigeo_completo'];
+
+
+  public function getUbigeoCompletoAttribute(){
+    $dis= $this->attributes['id_ubigeo'];
+    if($dis>0){
+        $ubigeo=Distrito::with('provincia.departamento')->where('id_dis',$dis)->first();
+        $dist= $ubigeo->descripcion;
+        $prov= $ubigeo->provincia->descripcion;
+        $dpto= $ubigeo->provincia->departamento->descripcion;
+        return ($dist.' - '.$prov.' - '.$dpto);
+    }else{
+        return '';
+    }
+
+}
 
   public static function listarSedesPorEmpresa($idEmpresa)
   {

@@ -466,6 +466,13 @@ class RequerimientoPendienteView {
         if (response.length > 0) {
             response.forEach(function (element) {
                 // if(element.tiene_transformacion==false){
+                let stock_comprometido = 0;
+                (element.reserva).forEach(reserva => {
+                    if(reserva.estado ==1){
+                        stock_comprometido+= parseFloat(reserva.stock_comprometido);
+                    }
+                });
+
                     html += `<tr>
                         <td style="border: none; text-align:center;" data-part-number="${element.part_number}" data-producto-part-number="${element.producto_part_number}">${(element.producto_part_number != null ? element.producto_part_number :(element.part_number !=null ?element.part_number:''))} ${element.tiene_transformacion ==true?'<span class="label label-default">Con Transformación</span>':''}</td>
                         <td style="border: none; text-align:left;">${element.producto_descripcion != null ? element.producto_descripcion : (element.descripcion?element.descripcion:'')}</td>
@@ -474,7 +481,7 @@ class RequerimientoPendienteView {
                         <td style="border: none; text-align:center;">${(element.precio_unitario >0 ? ((element.moneda_simbolo?element.moneda_simbolo:((element.moneda_simbolo?element.moneda_simbolo:'')+'0.00')) + $.number(element.precio_unitario,2)) : (element.moneda_simbolo?element.moneda_simbolo:'')+'0.00')}</td>
                         <td style="border: none; text-align:center;">${(parseFloat(element.subtotal) > 0 ? ((element.moneda_simbolo?element.moneda_simbolo:'') + $.number(element.subtotal,2)) :((element.moneda_simbolo?element.moneda_simbolo:'')+$.number((element.cantidad * element.precio_unitario),2)))}</td>
                         <td style="border: none; text-align:center;">${element.motivo != null ? element.motivo : ''}</td>
-                        <td style="border: none; text-align:center;">${element.stock_comprometido != null ? element.stock_comprometido : ''}</td>
+                        <td style="border: none; text-align:center;">${stock_comprometido != null ? stock_comprometido : ''}</td>
                         <td style="border: none; text-align:center;">${element.estado_doc != null && element.tiene_transformacion ==false ? element.estado_doc : ''}</td>
                         </tr>`;
                     // }
@@ -1578,25 +1585,25 @@ class RequerimientoPendienteView {
 
     // }
 
-    totalItemsAgregadosParaCompraCompletada() {
+    // totalItemsAgregadosParaCompraCompletada() {
 
-        alert('Ya fueron agregados todos los items disponibles del Cuadro de Costos al Requerimiento');
-        document.querySelector("div[id='modal-agregar-items-para-compra'] button[id='btnIrAGuardarItemsEnDetalleRequerimiento']").setAttribute('disabled', true);
-        let btnEliminarItem = document.querySelectorAll("div[id='modal-agregar-items-para-compra'] button[name='btnEliminarItem']");
-        for (var i = 0; i < btnEliminarItem.length; i++) {
-            btnEliminarItem[i].setAttribute('disabled', true);
-        }
+    //     alert('Ya fueron agregados todos los items disponibles del Cuadro de Costos al Requerimiento');
+    //     document.querySelector("div[id='modal-agregar-items-para-compra'] button[id='btnIrAGuardarItemsEnDetalleRequerimiento']").setAttribute('disabled', true);
+    //     let btnEliminarItem = document.querySelectorAll("div[id='modal-agregar-items-para-compra'] button[name='btnEliminarItem']");
+    //     for (var i = 0; i < btnEliminarItem.length; i++) {
+    //         btnEliminarItem[i].setAttribute('disabled', true);
+    //     }
 
-    }
-    totalItemsAgregadosParaCompraPendiente() {
+    // }
+    // totalItemsAgregadosParaCompraPendiente() {
 
-        document.querySelector("div[id='modal-agregar-items-para-compra'] button[id='btnIrAGuardarItemsEnDetalleRequerimiento']").removeAttribute('disabled');
-        let btnEliminarItem = document.querySelectorAll("div[id='modal-agregar-items-para-compra'] button[name='btnEliminarItem']");
-        for (var i = 0; i < btnEliminarItem.length; i++) {
-            btnEliminarItem[i].removeAttribute('disabled');
-        }
+    //     document.querySelector("div[id='modal-agregar-items-para-compra'] button[id='btnIrAGuardarItemsEnDetalleRequerimiento']").removeAttribute('disabled');
+    //     let btnEliminarItem = document.querySelectorAll("div[id='modal-agregar-items-para-compra'] button[name='btnEliminarItem']");
+    //     for (var i = 0; i < btnEliminarItem.length; i++) {
+    //         btnEliminarItem[i].removeAttribute('disabled');
+    //     }
 
-    }
+    // }
 
 
     // ver detalle cuadro de costos

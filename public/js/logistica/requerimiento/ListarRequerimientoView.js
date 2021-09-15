@@ -99,8 +99,14 @@ class ListarRequerimientoView {
                 },
                 {
                     'render': function (data, type, row) {
-                        return (row['simbolo_moneda']) + (Util.formatoNumero(row['monto_total'], 2));
-                    }, targets: 10
+                    let sumTotal=0;
+                        if(row.detalle != undefined && row.detalle.length >0){
+                            (row.detalle).forEach(element => {
+                                sumTotal=+( parseFloat(element.cantidad) * parseFloat(element.precio_unitario) );
+                            });
+                            return (row['simbolo_moneda']) + (Util.formatoNumero(sumTotal, 2));
+                        }
+                    }, targets: 10,orderable:false, searchable:false
                 },
                 {
                     'render': function (data, type, row) {

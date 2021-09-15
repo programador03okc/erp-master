@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\administracion;
+namespace App\Models\Administracion;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,15 +10,6 @@ class Empresa extends Model
   protected $primaryKey = 'id_empresa';
   public $timestamps = false;
 
-  protected $fillable = [
-    'id_empresa',
-    'id_contribuyente',
-    'codigo',
-    'estado',
-    'fecha_registro',
-    'logo_empresa'
-
-  ];
 
   public static function mostrar()
   {

@@ -216,86 +216,86 @@ class RequerimientoPendienteModel {
     }
 
     // Agregar item base 
-    tieneItemsParaCompra(reqTrueList){
-        return new Promise(function (resolve, reject) {
-            $.ajax({
-                type: 'POST',
-                data:{'requerimientoList':reqTrueList},
-                url:  `tiene-items-para-compra`,
-                dataType: 'JSON',
-                success(response) {
+    // tieneItemsParaCompra(reqTrueList){
+    //     return new Promise(function (resolve, reject) {
+    //         $.ajax({
+    //             type: 'POST',
+    //             data:{'requerimientoList':reqTrueList},
+    //             url:  `tiene-items-para-compra`,
+    //             dataType: 'JSON',
+    //             success(response) {
 
-                    if (dataSelect.length > 0) {
-                        resolve({'data':response.det_req,
-                                'tiene_total_items_agregados':response.tiene_total_items_agregados,
-                                'categoria':dataSelect[0].categoria,
-                                'subcategoria':dataSelect[0].subcategoria,
-                                'clasificacion': dataSelect[0].clasificacion,
-                                'monedad':dataSelect[0].moneda,
-                                'unidad_medida':dataSelect[0].unidad_medida});
+    //                 if (dataSelect.length > 0) {
+    //                     resolve({'data':response.det_req,
+    //                             'tiene_total_items_agregados':response.tiene_total_items_agregados,
+    //                             'categoria':dataSelect[0].categoria,
+    //                             'subcategoria':dataSelect[0].subcategoria,
+    //                             'clasificacion': dataSelect[0].clasificacion,
+    //                             'monedad':dataSelect[0].moneda,
+    //                             'unidad_medida':dataSelect[0].unidad_medida});
                 
-                    } else {
-                        requerimientoPendienteModel.getDataAllSelect().then(function (res) {
-                            if (res.length > 0) {
-                                dataSelect = res;
+    //                 } else {
+    //                     requerimientoPendienteModel.getDataAllSelect().then(function (res) {
+    //                         if (res.length > 0) {
+    //                             dataSelect = res;
                 
-                                resolve({'data':response.det_req,
-                                'tiene_total_items_agregados':response.tiene_total_items_agregados,
-                                'categoria':res[0].categoria,
-                                'subcategoria':res[0].subcategoria,
-                                'clasificacion': res[0].clasificacion,
-                                'monedad':res[0].moneda,
-                                'unidad_medida':res[0].unidad_medida});
-                            } else {
-                                alert('No se pudo obtener data de select de item');
-                            }
+    //                             resolve({'data':response.det_req,
+    //                             'tiene_total_items_agregados':response.tiene_total_items_agregados,
+    //                             'categoria':res[0].categoria,
+    //                             'subcategoria':res[0].subcategoria,
+    //                             'clasificacion': res[0].clasificacion,
+    //                             'monedad':res[0].moneda,
+    //                             'unidad_medida':res[0].unidad_medida});
+    //                         } else {
+    //                             alert('No se pudo obtener data de select de item');
+    //                         }
                 
-                        }).catch(function (err) {
-                            // Run this when promise was rejected via reject()
-                            console.log(err)
-                        })
+    //                     }).catch(function (err) {
+    //                         // Run this when promise was rejected via reject()
+    //                         console.log(err)
+    //                     })
                 
-                    }
-                    // resolve(response) // Resolve promise and go to then() 
-                },
-                error: function (err) {
-                    reject(err) // Reject the promise and go to catch()
-                }
-            });
-        });
-    }
+    //                 }
+    //                 // resolve(response) // Resolve promise and go to then() 
+    //             },
+    //             error: function (err) {
+    //                 reject(err) // Reject the promise and go to catch()
+    //             }
+    //         });
+    //     });
+    // }
 
-    getDataAllSelect(){
-        return new Promise(function (resolve, reject) {
-            $.ajax({
-                type: 'GET',
-                url: `grupo-select-item-para-compra`,
-                dataType: 'JSON',
-                success(response) {
-                    resolve(response) // Resolve promise and go to then() 
-                },
-                error: function (err) {
-                    reject(err) // Reject the promise and go to catch()
-                }
-            });
-        });
-    }
-    getDataListaItemsCuadroCostosPorIdRequerimientoPendienteCompra(reqTrueList){
-        return new Promise(function (resolve, reject) {
-            $.ajax({
-                type: 'POST',
-                url: `lista_items-cuadro-costos-por-requerimiento-pendiente-compra`,
-                data: { 'requerimientoList': reqTrueList },
-                dataType: 'JSON',
-                success(response) {
-                    resolve(response) // Resolve promise and go to then() 
-                },
-                error: function (err) {
-                    reject(err) // Reject the promise and go to catch()
-                }
-            });
-        });
-    }
+    // getDataAllSelect(){
+    //     return new Promise(function (resolve, reject) {
+    //         $.ajax({
+    //             type: 'GET',
+    //             url: `grupo-select-item-para-compra`,
+    //             dataType: 'JSON',
+    //             success(response) {
+    //                 resolve(response) // Resolve promise and go to then() 
+    //             },
+    //             error: function (err) {
+    //                 reject(err) // Reject the promise and go to catch()
+    //             }
+    //         });
+    //     });
+    // }
+    // getDataListaItemsCuadroCostosPorIdRequerimientoPendienteCompra(reqTrueList){
+    //     return new Promise(function (resolve, reject) {
+    //         $.ajax({
+    //             type: 'POST',
+    //             url: `lista_items-cuadro-costos-por-requerimiento-pendiente-compra`,
+    //             data: { 'requerimientoList': reqTrueList },
+    //             dataType: 'JSON',
+    //             success(response) {
+    //                 resolve(response) // Resolve promise and go to then() 
+    //             },
+    //             error: function (err) {
+    //                 reject(err) // Reject the promise and go to catch()
+    //             }
+    //         });
+    //     });
+    // }
 
     guardarMasItemsAlDetalleRequerimiento(id_requerimiento_list,item_list){
         return new Promise(function (resolve, reject) {

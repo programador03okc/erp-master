@@ -144,30 +144,30 @@ class RequerimientoPendienteCtrl{
 
     }
 
-    tieneItemsParaCompra(obj){
-        let id_requerimiento = obj.dataset.idRequerimiento;
-        reqTrueList=[id_requerimiento];
-        itemsParaCompraList=[];
+    // tieneItemsParaCompra(obj){
+    //     let id_requerimiento = obj.dataset.idRequerimiento;
+    //     reqTrueList=[id_requerimiento];
+    //     itemsParaCompraList=[];
         
-        return this.requerimientoPendienteModel.tieneItemsParaCompra(reqTrueList).then(function(res) {
-            itemsParaCompraList= res.data;
-            if(itemsParaCompraList.length >0){
-                //validar y habilitar boton guardar
-                // requerimientoPendienteCtrl.validarObjItemsParaCompra();
+    //     return this.requerimientoPendienteModel.tieneItemsParaCompra(reqTrueList).then(function(res) {
+    //         itemsParaCompraList= res.data;
+    //         if(itemsParaCompraList.length >0){
+    //             //validar y habilitar boton guardar
+    //             // requerimientoPendienteCtrl.validarObjItemsParaCompra();
 
-            }
-            requerimientoPendienteView.componerTdItemsParaCompra(res.data,res.categoria,res.subcategoria,res.clasificacion,res.moneda,res.unidad_medida);
-            // console.log(res);
-            if(res.tiene_total_items_agregados==true){
-                requerimientoPendienteView.totalItemsAgregadosParaCompraCompletada();
-            }else{
-                requerimientoPendienteView.totalItemsAgregadosParaCompraPendiente();
-            }
+    //         }
+    //         requerimientoPendienteView.componerTdItemsParaCompra(res.data,res.categoria,res.subcategoria,res.clasificacion,res.moneda,res.unidad_medida);
+    //         // console.log(res);
+    //         if(res.tiene_total_items_agregados==true){
+    //             requerimientoPendienteView.totalItemsAgregadosParaCompraCompletada();
+    //         }else{
+    //             requerimientoPendienteView.totalItemsAgregadosParaCompraPendiente();
+    //         }
 
-        }).catch(function(err) {
-            console.log(err)
-        })
-    }
+    //     }).catch(function(err) {
+    //         console.log(err)
+    //     })
+    // }
 
     updateInputCategoriaModalItemsParaCompra(event){
         let idValor = event.target.value;
