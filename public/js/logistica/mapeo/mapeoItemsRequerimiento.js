@@ -8,7 +8,6 @@ function listarItemsRequerimientoMapeo(id_requerimiento) {
         url: 'itemsRequerimiento/' + id_requerimiento,
         dataType: 'JSON',
         success: function (response) {
-            // console.log(response);
             response.forEach(element => {
                 if (element.id_tipo_item == 1) {
                     detalle.push({
@@ -23,6 +22,7 @@ function listarItemsRequerimientoMapeo(id_requerimiento) {
                         'id_categoria': null,
                         'id_clasif': null,
                         'id_subcategoria': null,
+                        'estado':element.estado
                     });
                 }
 
@@ -71,14 +71,14 @@ function mostrar_detalle() {
             <td>${element.abreviatura !== null ? element.abreviatura : ''}</td>
             <td style="display:flex;">
                 <button type="button" style="padding-left:8px;padding-right:7px;" 
-                    class="asignar btn btn-info boton" data-toggle="tooltip" 
+                    class="asignar btn btn-xs btn-info boton" data-toggle="tooltip" 
                     data-placement="bottom" data-partnumber="${element.part_number}" 
                     data-desc="${encodeURIComponent(element.descripcion)}" data-id="${element.id_detalle_requerimiento}"
                     title="Asignar producto" >
                     <i class="fas fa-angle-double-right"></i>
                 </button>
                 <button type="button" style="padding-left:8px;padding-right:7px;" 
-                    class="anular btn btn-danger boton" data-toggle="tooltip" 
+                    class="anular btn btn-xs btn-danger boton" data-toggle="tooltip" 
                     data-placement="bottom" data-partnumber="${element.part_number}" 
                     data-desc="${encodeURIComponent(element.descripcion)}" data-id="${element.id_detalle_requerimiento}"
                     title="Anular" >
@@ -108,74 +108,56 @@ $('#detalleItemsRequerimiento tbody').on("click", "button.anular", function(e) {
 });
 
 function anularProducto(partnumber, desc, id, obj){
-    Swal.fire({
-        title: 'Esta seguro que desea anular este item?',
-        text: (partnumber!=undefined && partnumber!=null && partnumber.length >0 ?(partnumber+' - '):'')+(decodeURIComponent(desc)),
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        cancelButtonText: 'Cancelar',
-        confirmButtonText: 'Si, anular'
-
-    }).then((result) => {
-        if (result.isConfirmed) {
-            $.ajax({
-                type: 'POST',
-                url: 'anular_item',
-                data: {
-                    idDetalleRequerimiento: id
-                },
-                dataType: 'JSON',
-                success: function (response) {
-                    if (response.response == 'ok') {
-                        // console.log(response);
-                        Lobibox.notify('success', {
-                            title: false,
-                            size: 'mini',
-                            rounded: true,
-                            sound: false,
-                            delayIndicator: false,
-                            msg: `Item anulado con éxito`
-                        });
-
-                        // actualizar array detalle quitando el item anulado de la variable
-                        detalle.forEach((element,index) => { 
-                            if(element.id_detalle_requerimiento == id){
-                                detalle.splice(index,1);
-                            }
-                        });
-                        
-                        // remover fila de item anulado
-                        obj.closest('tr').remove(); 
-
-                        // calcular cantidad por mapear
-                        let cantidadPorMapear=0;
-                        detalle.forEach((element)=>{
-                            if(!element.id_producto >0){
-                                cantidadPorMapear++;
-                            }
-                        });
-
-                        // actualizar cantidad de items por mapear en TR
-                        objBtnMapeo.querySelector("span[class='badge']").textContent = cantidadPorMapear;
-                        objBtnMapeo.closest("tr").querySelector("input[type='checkbox']").dataset.mapeosPendientes = cantidadPorMapear;
-
-                        
-                    }
-                }
-            }).fail(function (jqXHR, textStatus, errorThrown) {
-                console.log(jqXHR);
-                Swal.fire(
-                    '',
-                    'Lo sentimos hubo un error en el servidor al intentar anular el item, por favor vuelva a intentarlo',
-                    'error'
-                );
-                console.log(textStatus);
-                console.log(errorThrown);
+    detalle.forEach((element,index) => {
+        if(element.id_detalle_requerimiento ==id){
+            detalle[index].estado =7;
+            Lobibox.notify('success', {
+                title: false,
+                size: 'mini',
+                rounded: true,
+                sound: false,
+                delayIndicator: false,
+                msg: `Item anulado. Haga click en guardar para grabar los cambios.`
             });
         }
     });
+    obj.closest("tr").classList.add('bg-danger');
+    obj.closest("td").querySelector("button[class~='anular']").classList.add("oculto")
+
+    let tdBotoneraAccionMapeo = obj.closest("td");
+    if (tdBotoneraAccionMapeo.querySelector("button[class~='restablecer']") == null) {
+        let buttonRestablecerItem = document.createElement("button");
+        buttonRestablecerItem.type = "button";
+        buttonRestablecerItem.title = "Restablecer";
+        buttonRestablecerItem.className = "restablecer btn-xs btn btn-primary";
+        buttonRestablecerItem.innerHTML = "<i class='fas fa-undo'></i>";
+        buttonRestablecerItem.addEventListener('click', function () {
+
+            detalle.forEach((element,index) => {
+                if(element.id_detalle_requerimiento ==id){
+                    detalle[index].estado =1;
+                    Lobibox.notify('info', {
+                        title: false,
+                        size: 'mini',
+                        rounded: true,
+                        sound: false,
+                        delayIndicator: false,
+                        msg: `Item restablecido`
+                    });
+                }
+            });
+
+            obj.closest("td").querySelector("button[class~='anular']").classList.remove("oculto")
+            obj.closest("td").querySelector("button[class~='restablecer']").classList.add("oculto")
+            obj.closest("tr").classList.remove('bg-danger');
+
+
+        }, false);
+        tdBotoneraAccionMapeo.appendChild(buttonRestablecerItem);
+    }else{
+        obj.closest("td").querySelector("button[class~='restablecer']").classList.remove("oculto")
+
+    }
 
 }
 
@@ -315,7 +297,60 @@ $("#form-mapeoItemsRequerimiento").on("submit", function (e) {
                 console.log(errorThrown);
             });
 
+            let cantidadItemAnulados=0;
+            detalle.forEach(element => {
+                if(element.estado ==7){
+                    cantidadItemAnulados++;
+                }
+            });
+            if(cantidadItemAnulados>0){
+                $.ajax({
+                    type: 'POST',
+                    url: 'anular_item',
+                    data: {
+                        detalleRequerimiento: detalle
+                    },
+                    dataType: 'JSON',
+                    success: function (response) {
+                        if (response.response == 'ok') {
+                            // console.log(response);
+                            Lobibox.notify('success', {
+                                title: false,
+                                size: 'mini',
+                                rounded: true,
+                                sound: false,
+                                delayIndicator: false,
+                                msg: `Se guardo los item(s) anulados con éxito`
+                            });
+    
 
+    
+                            // calcular cantidad por mapear
+                            let cantidadPorMapear=0;
+                            detalle.forEach((element)=>{
+                                if(!element.id_producto >0 && element.estado ==1){
+                                    cantidadPorMapear++;
+                                }
+                            });
+    
+                            // actualizar cantidad de items por mapear en TR
+                            objBtnMapeo.querySelector("span[class='badge']").textContent = cantidadPorMapear;
+                            objBtnMapeo.closest("tr").querySelector("input[type='checkbox']").dataset.mapeosPendientes = cantidadPorMapear;
+    
+                            
+                        }
+                    }
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    console.log(jqXHR);
+                    Swal.fire(
+                        '',
+                        'Lo sentimos hubo un error en el servidor al intentar anular el item, por favor vuelva a intentarlo',
+                        'error'
+                    );
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                });
+            }
         }
     })
 });

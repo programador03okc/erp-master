@@ -238,7 +238,7 @@ class ComprasPendientesController extends Controller
                 AND det.id_producto >0 and det.estado != 7 and det.tiene_transformacion =false) AS count_mapeados"),
                 DB::raw("(SELECT COUNT(*) FROM almacen.alm_det_req AS det
                 WHERE det.id_requerimiento = alm_req.id_requerimiento AND det.id_tipo_item =1
-                AND det.id_producto is null) AS count_pendientes"),
+                AND det.id_producto is null and det.estado !=7) AS count_pendientes"),
                 DB::raw("(SELECT COUNT(*) FROM almacen.alm_det_req AS det
                 INNER JOIN almacen.alm_reserva ON det.id_detalle_requerimiento = alm_reserva.id_detalle_requerimiento
                 WHERE det.id_requerimiento = alm_req.id_requerimiento AND alm_reserva.estado = 1
