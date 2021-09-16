@@ -431,7 +431,7 @@ class RequerimientoPendienteView {
         else {
             // Open this row
             //    row.child( format(iTableCounter, id) ).show();
-            this.buildFormatListaRequerimientosPendientes(iTableCounter, id, row);
+            this.buildFormatListaRequerimientosPendientes(obj,iTableCounter, id, row);
             tr.classList.add('shown');
             // try datatable stuff
             oInnerTable = $('#listaRequerimientosPendientes_' + iTableCounter).dataTable({
@@ -452,8 +452,18 @@ class RequerimientoPendienteView {
         }
     }
 
-    buildFormatListaRequerimientosPendientes(table_id, id, row) {
+    buildFormatListaRequerimientosPendientes(obj,table_id, id, row) {
+        obj.setAttribute('disabled',true);
+        
+        $(obj).LoadingOverlay("show", {
+            imageAutoResize: true,
+            progress: true,
+            imageColor: "#3c8dbc"
+        });
         this.requerimientoPendienteCtrl.obtenerDetalleRequerimientos(id).then((res) =>{
+            obj.removeAttribute('disabled');
+            $(obj).LoadingOverlay("hide", true);
+
             this.construirDetalleRequerimientoListaRequerimientosPendientes(table_id,row,res);
         }).catch((err)=> {
             console.log(err)
