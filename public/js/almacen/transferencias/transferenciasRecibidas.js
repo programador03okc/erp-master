@@ -348,7 +348,7 @@ function anularTransferenciaIngreso(data) {
         dataType: "JSON",
         success: function (response) {
             if (response.length > 0) {
-                Lobibox.notify("warning", {
+                Lobibox.notify("error", {
                     title: false,
                     size: "mini",
                     rounded: true,

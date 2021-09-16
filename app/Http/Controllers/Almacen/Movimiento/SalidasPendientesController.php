@@ -858,8 +858,11 @@ class SalidasPendientesController extends Controller
 
                 //envia la reserva
                 DB::table('almacen.alm_reserva')
-                    ->where('id_detalle_requerimiento', $det->id_detalle_requerimiento)
-                    ->where('id_almacen_reserva', $det->id_almacen)
+                    ->where([
+                        ['id_detalle_requerimiento', $det->id_detalle_requerimiento],
+                        ['id_almacen_reserva', '=', $det->id_almacen],
+                        ['estado', '!=', 7]
+                    ])
                     ->update([
                         'estado' => 1,
                         'id_materia' => null

@@ -957,8 +957,14 @@ class OrdenesPendientesController extends Controller
                     ->orWhere('estado', 10) //culminado
                     ->first();
 
+                $stock = DB::table('almacen.alm_reserva')
+                    ->select(DB::raw('SUM(stock_comprometido) AS suma_stock'))
+                    ->where('id_detalle_requerimiento', $det->id_detalle_requerimiento)
+                    ->whereNull('id_guia_com_det', 'id_trans_detalle', 'id_transformado', 'id_materia')
+                    ->first();
+
                 if ($dreq !== null) {
-                    if ($dreq->cantidad == $ant_oc->suma_cantidad) {
+                    if ($dreq->cantidad <= ($ant_oc->suma_cantidad + $stock->suma_stock)) {
                         DB::table('almacen.alm_det_req')
                             ->where('id_detalle_requerimiento', $det->id_detalle_requerimiento)
                             ->update([

@@ -24,7 +24,26 @@ Orden de Transformación
 @section('content')
 
 <div class="page-main" type="transformacion">
-    <!-- <div class="row"> -->
+
+    <div class="row">
+        <div class="col-md-12" class="thumbnail">
+            <h4 style="display:flex;justify-content: space-between;">
+                <div>
+                    <span id="codigo"></span>
+                    <span id="estado_doc"></span>
+                </div>
+                <div style="display:flex;padding-right: 0px;">
+                    <button type="button" class="btn btn-info btn-sm btn-flat" onClick="imprimirTransformacion();" data-toggle="tooltip" data-placement="bottom" title="Imprimir Transformación">
+                        <i class="fas fa-print"></i> </button>
+                    <button type="button" class="btn btn-warning btn-sm btn-flat" onClick="openIniciar();" data-toggle="tooltip" data-placement="bottom" title="Iniciar Transformación">
+                        Iniciar <i class="fas fa-step-forward"></i> </button>
+                    <button type="button" class="btn btn-success btn-sm btn-flat" onClick="openProcesar();" data-toggle="tooltip" data-placement="bottom" title="Procesar Transformación">
+                        Procesar <i class="fas fa-step-forward"></i> </button>
+                </div>
+            </h4>
+        </div>
+    </div>
+
     <form id="form-transformacion" type="register" form="formulario">
         <div class="thumbnail" style="padding-left: 10px;padding-right: 10px;">
 
@@ -34,79 +53,70 @@ Orden de Transformación
                     <input type="hidden" name="id_transformacion" primary="ids">
 
                     <div class="row">
-                        <div class="col-md-1">
-                            <h5>Código</h5>
+                        <!-- <div class="col-md-1">
+                            <h5><label>Código</label></h5>
                             <span id="codigo"></span>
-                        </div>
+                        </div> -->
                         <div class="col-md-2">
-                            <h5>Almacén</h5>
+                            <label>Almacén: </label>
                             <span id="almacen_descripcion"></span>
                         </div>
                         <div class="col-md-2">
-                            <h5>OCAM</h5>
+                            <label>OCAM:</label>
                             <span id="orden_am"></span>
                         </div>
                         <div class="col-md-2">
-                            <h5>Cuadro Costos</h5>
+                            <label>Cuadro Costos:</label>
                             <span id="codigo_oportunidad"></span>
                         </div>
                         <div class="col-md-2">
-                            <h5>Orden Despacho</h5>
+                            <label>Orden Despacho:</label>
                             <span id="codigo_od"></span>
                         </div>
-                        <div class="col-md-1">
-                            <h5>Requerimiento</h5>
+                        <div class="col-md-2">
+                            <label>Requerimiento:</label>
                             <span id="codigo_req"></span>
                         </div>
                         <div class="col-md-2">
-                            <h5>Guía Remisión</h5>
+                            <label>Guía Remisión:</label>
                             <span id="serie-numero"></span>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="row" style="padding-left: 10px;padding-right: 10px;margin-top: 0px;">
-                <div class="col-md-1">
-                    <h5>Estado</h5>
-                    <input name="id_estado" style="display:none" />
+                <!-- <div class="col-md-1">
+                    <h5><label>Estado</label></h5>
                     <span id="estado_doc"></span>
-                </div>
+                </div> -->
                 <div class="col-md-2">
-                    <h5>Fecha Inicio</h5>
+                    <label>Fecha Inicio:</label>
                     <span id="fecha_inicio"></span>
                 </div>
                 <div class="col-md-2">
-                    <h5>Fecha Proceso</h5>
+                    <label>Fecha Proceso:</label>
                     <span id="fecha_transformacion"></span>
                 </div>
                 <div class="col-md-2">
-                    <h5>Responsable</h5>
+                    <label>Responsable:</label>
                     <span id="nombre_responsable"></span>
                 </div>
                 <div class="col-md-2">
-                    <h5>Observación</h5>
+                    <label>Observación:</label>
                     <span id="observacion"></span>
                 </div>
-                <div class="col-md-3" style="padding-left: 10px;padding-right: 0px;padding-top: 15px;">
-                    <!-- <div class="col-md-10" style="text-align:right;"> -->
-                    <button type="button" class="btn btn-info btn-sm" onClick="imprimirTransformacion();" data-toggle="tooltip" data-placement="bottom" title="Imprimir Transformación">
+                <!-- <div class="col-md-3" style="display:flex;padding-left: 10px;padding-right: 0px;padding-top: 15px;">
+                    <button type="button" class="btn btn-info btn-sm btn-flat" onClick="imprimirTransformacion();" data-toggle="tooltip" data-placement="bottom" title="Imprimir Transformación">
                         <i class="fas fa-print"></i> </button>
-                    <button type="button" class="btn btn-warning btn-sm" onClick="openIniciar();" data-toggle="tooltip" data-placement="bottom" title="Iniciar Transformación">
+                    <button type="button" class="btn btn-warning btn-sm btn-flat" onClick="openIniciar();" data-toggle="tooltip" data-placement="bottom" title="Iniciar Transformación">
                         Iniciar <i class="fas fa-step-forward"></i> </button>
-                    <button type="button" class="btn btn-success btn-sm" onClick="openProcesar();" data-toggle="tooltip" data-placement="bottom" title="Procesar Transformación">
+                    <button type="button" class="btn btn-success btn-sm btn-flat" onClick="openProcesar();" data-toggle="tooltip" data-placement="bottom" title="Procesar Transformación">
                         Procesar <i class="fas fa-step-forward"></i> </button>
-                    <!-- <button type="button" class="btn btn-warning btn-sm" data-toggle="tooltip" 
-                            data-placement="bottom" title="Ver Salida de Almacén" 
-                            onClick="abrir_salida();">S</button>
-                        <button type="button" class="btn btn-info btn-sm" data-toggle="tooltip" 
-                            data-placement="bottom" title="Ver Ingreso a Almacén" 
-                            onClick="abrir_ingreso();">I</button> -->
-                    <!-- </div> -->
-                </div>
+                </div> -->
             </div>
             <div class="row" style="padding-left: 10px;padding-right: 10px;margin-top: 0px;">
                 <div class="col-md-12">
-                    <h5>Instrucciones Generales:</h5>
+                    <label>Instrucciones Generales:</label>
                     <input name="id_estado" style="display:none" />
                     <label id="descripcion_sobrantes"></label>
                 </div>
@@ -140,79 +150,82 @@ Orden de Transformación
                     </thead>
                     <tbody></tbody>
                 </table>
+                <table id="totales_transformacion" class="table table-condensed table-small" style="margin-bottom: 0px;" width="100%">
+                    <tbody>
+                        <tr>
+                            <td width="90%" style="text-align: right;">Total Materias Primas</td>
+                            <td width="5%"></td>
+                            <td style="text-align: right;"><label name="total_materias">0.00</label></td>
+                            <td width="5%"></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: right;">Total Servicios Directos</td>
+                            <td width="5%"></td>
+                            <td style="text-align: right;"><label name="total_directos">0.00</label></td>
+                            <td width="5%"></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: right;"><strong>Costo Primo</strong></td>
+                            <td width="5%"></td>
+                            <td style="text-align: right;"><label name="costo_primo">0.00</label></td>
+                            <td width="5%"></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: right;">Total Costos Indirectos</td>
+                            <td width="5%"></td>
+                            <td style="text-align: right;"><label name="total_indirectos">0.00</label></td>
+                            <td width="5%"></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: right;">Total Sobrantes</td>
+                            <td width="5%"></td>
+                            <td style="text-align: right;"><label name="total_sobrantes">0.00</label></td>
+                            <td width="5%"></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: right;"><strong>Costo de Transformación</strong></td>
+                            <td width="5%"></td>
+                            <td style="text-align: right;"><label name="costo_transformacion">0.00</label></td>
+                            <td width="5%"></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
-    <div class="row">
+    <!-- <div class="row">
         <div class="col-md-8"></div>
         <div class="col-md-3">
-            <table id="totales_transformacion" class="table table-condensed table-small" style="margin-bottom: 0px;" width="100%">
-                <tbody>
-                    <tr>
-                        <td width="60%" style="text-align: right;">Total Materias Primas</td>
-                        <td width="10%"></td>
-                        <td style="text-align: right;"><label name="total_materias">0.00</label></td>
-
-                    </tr>
-                    <tr>
-                        <td style="text-align: right;">Total Servicios Directos</td>
-                        <td width="10%"></td>
-                        <td style="text-align: right;"><label name="total_directos">0.00</label></td>
-
-                    </tr>
-                    <tr>
-                        <td style="text-align: right;"><strong>Costo Primo</strong></td>
-                        <td width="10%"></td>
-                        <td style="text-align: right;"><label name="costo_primo">0.00</label></td>
-
-                    </tr>
-                    <tr>
-                        <td style="text-align: right;">Total Costos Indirectos</td>
-                        <td width="10%"></td>
-                        <td style="text-align: right;"><label name="total_indirectos">0.00</label></td>
-
-                    </tr>
-                    <tr>
-                        <td style="text-align: right;">Total Sobrantes</td>
-                        <td width="10%"></td>
-                        <td style="text-align: right;"><label name="total_sobrantes">0.00</label></td>
-
-                    </tr>
-                    <tr>
-                        <td style="text-align: right;"><strong>Costo de Transformación</strong></td>
-                        <td width="10%"></td>
-                        <td style="text-align: right;"><label name="costo_transformacion">0.00</label></td>
-
-                    </tr>
-                </tbody>
-            </table>
+            
         </div>
         <div class="col-md-1"></div>
+    </div> -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-danger" style="margin-bottom: 0px;">
+                <div class="panel-heading"><strong>Productos Sobrantes</strong></div>
+                <table id="listaSobrantes" class="table">
+                    <thead>
+                        <tr style="background: lightcoral;">
+                            <th>Código</th>
+                            <th>Part Number</th>
+                            <th width='40%'>Descripción</th>
+                            <th>Cant.</th>
+                            <th>Unid.</th>
+                            <th>Unit.</th>
+                            <th>Total</th>
+                            <th width='8%' style="padding:0px;">
+                                <i class="fas fa-plus-square icon-tabla green boton add-new-sobrante" id="addSobrante" data-toggle="tooltip" data-placement="bottom" title="Agregar Producto" onClick="agregar_producto_sobrante();"></i>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
     </div>
     <div class="row">
-        <div class="col-md-6">
-            <div class="panel panel-danger" style="margin-bottom: 0px;">
-                <div class="panel-heading"><strong>Productos Sobrantes</strong></div>
-                <table id="listaSobrantes" class="table">
-                    <thead>
-                        <tr style="background: lightcoral;">
-                            <th>Código</th>
-                            <th>Part Number</th>
-                            <th width='40%'>Descripción</th>
-                            <th>Cant.</th>
-                            <th>Unid.</th>
-                            <th>Unit.</th>
-                            <th>Total</th>
-                            <th width='8%' style="padding:0px;">
-                                <i class="fas fa-plus-square icon-tabla green boton add-new-sobrante" id="addSobrante" data-toggle="tooltip" data-placement="bottom" title="Agregar Producto" onClick="agregar_producto_sobrante();"></i>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-        </div>
-        <div class="col-md-6">
+        <div class="col-md-12">
             <div class="panel panel-success" style="margin-bottom: 0px;">
                 <div class="panel-heading"><strong>Productos Transformados</strong></div>
                 <table id="listaProductoTransformado" class="table">
@@ -225,9 +238,6 @@ Orden de Transformación
                             <th>Unid.</th>
                             <th>Unit.</th>
                             <th>Total</th>
-                            <!-- <th width='8%' style="padding:0px;">
-                                <i class="fas fa-plus-square icon-tabla green boton add-new-transformado" id="addTransformado" data-toggle="tooltip" data-placement="bottom" title="Agregar Producto" onClick="openProductoTransformadoModal();"></i>
-                            </th> -->
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -235,54 +245,6 @@ Orden de Transformación
             </div>
         </div>
     </div>
-    <!-- <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-danger" style="margin-bottom: 0px;">
-                <div class="panel-heading"><strong>Productos Sobrantes</strong></div>
-                <table id="listaSobrantes" class="table">
-                    <thead>
-                        <tr style="background: lightcoral;">
-                            <th>Código</th>
-                            <th>Part Number</th>
-                            <th width='40%'>Descripción</th>
-                            <th>Cant.</th>
-                            <th>Unid.</th>
-                            <th>Unit.</th>
-                            <th>Total</th>
-                            <th width='8%' style="padding:0px;">
-                                <i class="fas fa-plus-square icon-tabla green boton add-new-sobrante" id="addSobrante" data-toggle="tooltip" data-placement="bottom" title="Agregar Producto" onClick="agregar_producto_sobrante();"></i>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-        </div>
-    </div> -->
-    <!-- <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-success" style="margin-bottom: 0px;">
-                <div class="panel-heading"><strong>Productos Transformados</strong></div>
-                <table id="listaProductoTransformado" class="table">
-                    <thead>
-                        <tr style="background: palegreen;">
-                            <th>Código</th>
-                            <th>Part Number</th>
-                            <th width='40%'>Descripción</th>
-                            <th>Cant.</th>
-                            <th>Unid.</th>
-                            <th>Unit.</th>
-                            <th>Total</th>
-                            <th width='8%' style="padding:0px;">
-                                <i class="fas fa-plus-square icon-tabla green boton add-new-transformado" id="addTransformado" data-toggle="tooltip" data-placement="bottom" title="Agregar Producto" onClick="openProductoTransformadoModal();"></i>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-        </div>
-    </div> -->
     <div class="row">
         <div class="col-md-6">
             <div class="panel panel-default" style="margin-bottom: 0px;">

@@ -158,7 +158,7 @@ function mostrarDetalleRequerimiento() {
                         ? element.guia
                         : ""
                 }</td>
-            <td>${element.sede}</td>
+            <td>${element.almacen_descripcion}</td>
             <td>${element.codigo + (element.tiene_transformacion
                     ? ' <span class="badge badge-secondary">Transformado</span> '
                     : "")}</td>

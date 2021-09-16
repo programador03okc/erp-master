@@ -74,6 +74,7 @@ function open_despacho_create(data) {
                     }
                 }
                 detalle_ingresa.push({
+                    'id_reserva': element.id_reserva,
                     'id_detalle_requerimiento': element.id_detalle_requerimiento,
                     'id_producto': element.id_producto,
                     'cantidad': element.cantidad,

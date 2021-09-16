@@ -54,7 +54,7 @@ class TransferenciaController extends Controller
             'mov_alm.id_mov_alm as id_salida'
         )
             ->leftJoin('almacen.mov_alm', 'mov_alm.id_guia_ven', '=', 'trans.id_guia_ven')
-            ->leftJoin('almacen.guia_ven', 'guia_ven.id_guia_ven', '=', 'trans.id_guia_ven')
+            ->join('almacen.guia_ven', 'guia_ven.id_guia_ven', '=', 'trans.id_guia_ven')
             ->join('almacen.alm_almacen as alm_origen', 'alm_origen.id_almacen', '=', 'trans.id_almacen_origen')
             ->join('almacen.alm_almacen as alm_destino', 'alm_destino.id_almacen', '=', 'trans.id_almacen_destino')
             ->join('administracion.sis_sede as sede_origen', 'sede_origen.id_sede', '=', 'alm_origen.id_sede')
@@ -289,7 +289,7 @@ class TransferenciaController extends Controller
                     )
                     ->leftJoin('almacen.orden_despacho', function ($join) {
                         $join->on('orden_despacho.id_requerimiento', '=', 'trans.id_requerimiento');
-                        $join->where('orden_despacho.estado', '!=', 7);
+                        $join->where('orden_despacho.estado', '=', 1);
                     })
                     ->where([['trans.id_guia_com', '=', $ing->id_guia_com], ['trans.estado', '!=', 7]])
                     ->get();
@@ -338,7 +338,7 @@ class TransferenciaController extends Controller
 
                     foreach ($detalle as $det) {
                         DB::table('almacen.alm_prod_serie')
-                            ->where('id_guia_com_det', '=', $det->id_guia_com_det)
+                            ->where('id_guia_com_det', $det->id_guia_com_det)
                             ->update([
                                 'id_guia_com_det' => null,
                                 'estado' => 7
@@ -378,10 +378,10 @@ class TransferenciaController extends Controller
                             ]);
                     }
                 } else {
-                    $msj = 'Ya se generó una Orden de Despacho.';
+                    $msj = 'No es posible anular. Ya se generó una Orden de Despacho.';
                 }
             } else {
-                $msj = 'El ingreso ya fue revisado por el Jefe de Almacén.';
+                $msj = 'No es posible anular. El ingreso ya fue revisado por el Jefe de Almacén.';
             }
 
             DB::commit();
@@ -760,11 +760,6 @@ class TransferenciaController extends Controller
                             'usuario_registro' => $usuario->id_usuario,
                             'fecha_registro' => date('Y-m-d H:i:s'),
                         ]);
-                    /*$reserva= new Reserva();
-                        $reserva->codigo=Reserva::crearCodigo($request->id_almacen_destino);
-                        $reserva->id_producto = $det->id_producto;
-                        $reserva->save();
-                        echo $reserva->id_reserva;*/
                 }
             }
 
@@ -788,6 +783,7 @@ class TransferenciaController extends Controller
                 $count_recibido = DB::table('almacen.alm_det_req')
                     ->where([
                         ['id_requerimiento', '=', $r->id_requerimiento],
+                        ['tiene_transformacion', '=', false],
                         ['estado', '=', 28] //en almacen total
                     ])
                     ->count();
@@ -1530,6 +1526,7 @@ class TransferenciaController extends Controller
                 'alm_det_req.*',
                 'alm_reserva.id_reserva',
                 'alm_reserva.id_almacen_reserva',
+                'alm_almacen.descripcion as almacen_descripcion',
                 'sis_sede.id_sede as id_sede_reserva',
                 'almacen_guia.id_almacen as id_almacen_guia',
                 'sede_guia.id_sede as id_sede_guia',
@@ -1604,6 +1601,7 @@ class TransferenciaController extends Controller
                         'stock_comprometido' => floatval($det->stock_comprometido),
                         'id_reserva' => $det->id_reserva,
                         'id_almacen_reserva' => $det->id_almacen_reserva,
+                        'almacen_descripcion' => $det->almacen_descripcion,
                         'series' => $series
                     ];
 

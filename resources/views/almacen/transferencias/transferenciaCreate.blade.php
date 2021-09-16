@@ -1,5 +1,5 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-ver_requerimiento" style="overflow-y: scroll;">
-    <div class="modal-dialog" style="width:1100px;">
+    <div class="modal-dialog" style="width:90%;">
         <div class="modal-content">
             <form id="form-ver_requerimiento">
                 <div class="modal-header">
@@ -19,7 +19,7 @@
                             <!-- <input type="date" class="form-control" name="fecha_emision"> -->
                         </div>
                         <div class="col-md-2">
-                            <h5>Sede que solicita</h5>
+                            <h5>Sede Destino</h5>
                             <label name="sede_requerimiento"></label>
                             <!-- <input type="date" class="form-control" name="fecha_almacen"> -->
                         </div>
@@ -36,7 +36,7 @@
                                     <tr>
                                         <th>#</th>
                                         <th>O.C.</th>
-                                        <th>Sede</th>
+                                        <th>Almacen Origen</th>
                                         <th>Código</th>
                                         <th>PartNumber</th>
                                         <th>Descripción</th>

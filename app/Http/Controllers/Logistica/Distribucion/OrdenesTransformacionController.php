@@ -77,8 +77,8 @@ class OrdenesTransformacionController extends Controller
                 ['alm_reserva.estado', '!=', 5],
                 ['alm_reserva.stock_comprometido', '>', 0]
             ])
-            ->whereIn('alm_req.estado', [17, 22, 27, 28])
-            ->orWhere([['alm_req.estado', '=', 19], ['alm_req.confirmacion_pago', '=', true]])
+            // ->whereIn('alm_req.estado', [17, 22, 27, 28])
+            // ->orWhere([['alm_req.estado', '=', 19], ['alm_req.confirmacion_pago', '=', true]])
             ->distinct();
 
         return datatables($data)->toJson();
@@ -127,6 +127,7 @@ class OrdenesTransformacionController extends Controller
                 'cc_am_filas.part_no_producto_transformado as cc_pn',
                 'cc_am_filas.descripcion_producto_transformado as cc_des',
                 'cc_am_filas.comentario_producto_transformado as cc_com',
+                'alm_reserva.id_reserva',
                 'alm_reserva.id_almacen_reserva',
                 'alm_reserva.stock_comprometido'
             )
@@ -136,26 +137,15 @@ class OrdenesTransformacionController extends Controller
             ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_det_req.id_unidad_medida')
             ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'alm_det_req.estado')
             ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
-            // ->leftJoin('logistica.log_det_ord_compra', function ($join) {
-            //     $join->on('log_det_ord_compra.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento');
-            //     $join->where('log_det_ord_compra.estado', '!=', 7);
-            // })
-            // ->leftJoin('almacen.guia_com_det', function ($join) {
-            //     $join->on('guia_com_det.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden');
-            //     $join->where('guia_com_det.estado', '!=', 7);
-            // })
-            // ->leftJoin('almacen.mov_alm_det', function ($join) {
-            //     $join->on('mov_alm_det.id_guia_com_det', '=', 'guia_com_det.id_guia_com_det');
-            //     $join->where('mov_alm_det.estado', '!=', 7);
-            // })
             // ->leftJoin('almacen.guia_com', 'guia_com.id_guia', '=', 'guia_com_det.id_guia_com')
             // ->leftJoin('almacen.alm_almacen as almacen_guia', 'almacen_guia.id_almacen', '=', 'guia_com.id_almacen')
             // ->leftJoin('almacen.alm_reserva', 'alm_reserva.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento')
             ->leftJoin('almacen.alm_reserva', function ($join) {
                 $join->on('alm_reserva.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento');
-                $join->on('alm_reserva.id_almacen_reserva', '=', 'alm_req.id_almacen');
-                $join->whereNotNull('alm_reserva.id_almacen_reserva');
-                $join->where('alm_reserva.estado', '=', 1);
+                // $join->on('alm_reserva.id_almacen_reserva', '=', 'alm_req.id_almacen');
+                // $join->whereNotNull('alm_reserva.id_almacen_reserva');
+                $join->where('alm_reserva.estado', '!=', 7);
+                $join->where('alm_reserva.estado', '!=', 5);
             })
             ->leftJoin('almacen.alm_almacen as almacen_reserva', 'almacen_reserva.id_almacen', '=', 'alm_reserva.id_almacen_reserva')
             ->where([
@@ -225,16 +215,6 @@ class OrdenesTransformacionController extends Controller
                         'registrado_por' => $usuario,
                         'fecha_registro' => date('Y-m-d H:i:s'),
                         'estado' => 1,
-                        // 'id_cliente' => $request->id_cliente,
-                        // 'id_persona' => ($request->id_persona > 0 ? $request->id_persona : null),
-                        // 'telefono' => $request->telefono_cliente,
-                        // 'ubigeo_destino' => $request->ubigeo,
-                        // 'direccion_destino' => $request->direccion_destino,
-                        // 'correo_cliente' => $request->correo_cliente,
-                        // 'fecha_entrega' => $request->fecha_entrega,
-                        // 'tipo_entrega' => $request->tipo_entrega,
-                        // 'documento' => $request->documento,
-                        // 'tipo_cliente' => $request->tipo_cliente
                     ],
                     'id_od'
                 );
@@ -313,8 +293,7 @@ class OrdenesTransformacionController extends Controller
 
                 //envia la reserva
                 DB::table('almacen.alm_reserva')
-                    ->where('id_detalle_requerimiento', $i->id_detalle_requerimiento)
-                    ->where('id_almacen_reserva', $request->id_almacen)
+                    ->where('id_reserva', $i->id_reserva)
                     ->update([
                         'estado' => 17,
                         'id_materia' => $id_materia
