@@ -523,11 +523,14 @@ class OrdenView {
                 let tr = obj.closest("tr");
                 tr.remove();
                 this.calcularMontosTotales();
-            Swal.fire(
-                'Eliminado',
-                'El item fue eliminado.',
-                'success'
-            ) 
+                Lobibox.notify('success', {
+                    title:false,
+                    size: 'mini',
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    msg: 'El item fue eliminado'
+                });
             }
         })
 
@@ -540,6 +543,7 @@ class OrdenView {
 
     // modal agregar producto en orden 
     catalogoProductosModal() {
+        document.querySelector("div[id='modal-catalogo-items'] h3[class='modal-title']").textContent="Lista de productos para obsequio";
         $('#modal-catalogo-items').modal({
             show: true,
             backdrop: 'true',
@@ -1303,7 +1307,7 @@ class OrdenView {
                     {'data': 'codigo'},
                     {'data': 'nro_documento'},
                     {'data': 'razon_social'},
-                    {'data': 'moneda_simbolo'},
+                    {'data': 'moneda_descripcion'},
                     {'data': 'condicion'},
                     {'data': 'plazo_entrega'},
                     {'data': 'descripcion_sede_empresa'},
@@ -1324,7 +1328,20 @@ class OrdenView {
                 'initComplete':  ()=> {
 
                 },
-                'columnDefs': [{ className: "text-right", 'aTargets': [0], 'sClass': 'invisible'}]
+                'columnDefs': [
+                    { className: "text-right", 'aTargets': [0], 'sClass': 'invisible'},
+                    { className: "text-center", 'aTargets': [1]},
+                    { className: "text-center", 'aTargets': [2]},
+                    { className: "text-center", 'aTargets': [3]},
+                    { className: "text-left", 'aTargets': [4]},
+                    { className: "text-center", 'aTargets': [5]},
+                    { className: "text-center", 'aTargets': [6]},
+                    { className: "text-center", 'aTargets': [7]},
+                    { className: "text-left", 'aTargets': [8]},
+                    { className: "text-left", 'aTargets': [9]},
+                    { className: "text-center", 'aTargets': [10]},
+                    { className: "text-center", 'aTargets': [11]},
+            ]
             });
         
     }

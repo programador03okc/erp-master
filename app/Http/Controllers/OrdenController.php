@@ -505,7 +505,6 @@ class OrdenController extends Controller
     }
 
 
-
     // public function get_detalle_requerimiento_orden(Request $request )
     public function get_detalle_requerimiento_orden($id)
     {
@@ -1181,8 +1180,7 @@ class OrdenController extends Controller
     }
 
     public function listaHistorialOrdenes(){
-        $data = DB::table('logistica.log_ord_compra')
-        ->select(
+        $data = Orden::select(
             'log_ord_compra.*',
             'sis_sede.descripcion as descripcion_sede_empresa',
             DB::raw("CONCAT(dis_destino.descripcion,' - ',prov_destino.descripcion, ' - ', dpto_destino.descripcion)  AS ubigeo_destino"),
@@ -3381,10 +3379,17 @@ class OrdenController extends Controller
                     ->whereIn('id_requerimiento',$id_requerimiento_list)
                     ->update(['estado'=>2]);
             
-                    DB::table('almacen.alm_det_req')
-                    ->whereIn('id_requerimiento',$id_requerimiento_list)
-                    ->where('id_almacen_reserva',null)
-                    ->update(['estado'=>1]);
+                   $detalleRequerimiento = DetalleRequerimiento::with(['reserva'=> function ($q) {
+                    $q->where('alm_reserva.estado', '=', 1);
+                    }])->whereIn('id_requerimiento',$id_requerimiento_list)->get();
+
+                    foreach ($detalleRequerimiento as $value) {
+                        if(count($value->reserva) ==0){
+                            $det = DetalleRequerimiento::find($value->id_detalle_requerimiento);
+                            $det->estado =1;
+                            $det->save();
+                        }
+                    }
                     $status = 200;
                     $msj[]='se restableció el estado del requerimiento';
 
@@ -3412,8 +3417,8 @@ class OrdenController extends Controller
 }
 
     public function anularOrden($id_orden){
-        try {
-            DB::beginTransaction();
+        // try {
+        //     DB::beginTransaction();
             $status = 0;
             $msj = [];
             $output = [];
@@ -3452,12 +3457,12 @@ class OrdenController extends Controller
 
             $output=['status'=>$status, 'mensaje'=>$msj];
 
-            DB::commit();
+            // DB::commit();
             return response()->json($output);
 
-        } catch (\PDOException $e) {
-            DB::rollBack();
-        }
+        // } catch (\PDOException $e) {
+        //     DB::rollBack();
+        // }
     }
 
 
