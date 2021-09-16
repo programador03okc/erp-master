@@ -555,6 +555,7 @@ class OrdenView {
             keyboard: true
 
         });
+        this.limpiarTabla('listaItems');
         this.ocultarBtnCrearProducto();
         this.ordenCtrl.getcatalogoProductos().then((res) => {
             this.listarItems(res);
@@ -741,9 +742,11 @@ class OrdenView {
         document.querySelector("tbody[id='body_detalle_orden']").insertAdjacentHTML('beforeend', `<tr style="text-align:center;">
         <td class="text-center">${data[0].codigo_requerimiento ? data[0].codigo_requerimiento : ''} <input type="hidden"  name="idRegister[]" value="${data[0].id_detalle_orden ? data[0].id_detalle_orden : this.makeId()}"> <input type="hidden"  name="idDetalleRequerimiento[]" value="${data[0].id_detalle_requerimiento ? data[0].id_detalle_requerimiento : ''}"> <input type="hidden"  name="idTipoItem[]" value="1"> </td>
         <td class="text-center">${data[0].part_number ? data[0].part_number : ''} <input type="hidden"  name="idProducto[]" value="${(data[0].id_producto ? data[0].id_producto : data[0].id_producto)} "> </td>
-        <td class="text-left">${(data[0].descripcion_producto ? data[0].descripcion_producto : data[0].descripcion_adicional)}  <input type="hidden"  name="descripcion[]" value="${(data[0].descripcion_producto ? data[0].descripcion_producto : data[0].descripcion_adicional)} "></td>
+        <td class="text-left">${(data[0].descripcion_producto ? data[0].descripcion_producto : (data[0].descripcion_adicional?data[0].descripcion_adicional:''))}  <input type="hidden"  name="descripcion[]" value="${(data[0].descripcion_producto ? data[0].descripcion_producto : data[0].descripcion_adicional)} "></td>
         <td><select name="unidad[]" class="form-control ${(data[0].estado_guia_com_det > 0 && data[0].estado_guia_com_det != 7 ? '' : 'activation')} input-sm" value="${data[0].id_unidad_medida}" >${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
         <td>${(data[0].cantidad ? data[0].cantidad : '')}</td>
+        <td></td>
+        <td></td>
         <td>
             <div class="input-group">
                 <div class="input-group-addon" style="background:lightgray;" name="simboloMoneda">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</div>
@@ -922,6 +925,12 @@ class OrdenView {
         if (response.length > 0) {
             response.forEach((element) => {
                 if (element.tiene_transformacion == false) {
+                    let stock_comprometido = 0;
+                    (element.reserva).forEach(reserva => {
+                        if(reserva.estado ==1){
+                            stock_comprometido+= parseFloat(reserva.stock_comprometido);
+                        }
+                    });
                     html += `<tr>
                         <td style="border: none; text-align:center;">${(element.part_number != null ? element.part_number : '')}</td>
                         <td style="border: none; text-align:left;">${element.producto_descripcion != null ? element.producto_descripcion : (element.descripcion ? element.descripcion : '')}</td>
@@ -930,7 +939,7 @@ class OrdenView {
                         <td style="border: none; text-align:center;">${element.precio_unitario > 0 ? element.precio_unitario : ''}</td>
                         <td style="border: none; text-align:center;">${parseFloat(element.subtotal) > 0 ? $.number(element.subtotal, 2) : $.number((element.cantidad * element.precio_unitario), 2)}</td>
                         <td style="border: none; text-align:center;">${element.motivo != null ? element.motivo : ''}</td>
-                        <td style="border: none; text-align:center;">${element.observacion != null ? element.observacion : ''}</td>
+                        <td style="border: none; text-align:center;">${stock_comprometido != null ? stock_comprometido : ''}</td>
                         <td style="border: none; text-align:center;">${element.estado_doc != null ? element.estado_doc : ''}</td>
                         </tr>`;
                 }
@@ -946,7 +955,7 @@ class OrdenView {
                         <th style="border: none; text-align:center;">precio_unitario</th>
                         <th style="border: none; text-align:center;">subtotal</th>
                         <th style="border: none; text-align:center;">motivo</th>
-                        <th style="border: none; text-align:center;">observacion</th>
+                        <th style="border: none; text-align:center;">Stock comprometido</th>
                         <th style="border: none; text-align:center;">Estado</th>
                     </tr>
                 </thead>

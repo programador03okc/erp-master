@@ -9,16 +9,16 @@
                 <table class="table table-condensed table-bordered table-okc-view" id="listaRequerimientosParaVincular" width="100%">
                     <thead>
                         <tr>
-                            <th style="width: 5%">Código</th>
-                            <th style="width: 40%">Concepto</th>
-                            <th style="width: 5%">Fecha creación</th>
-                            <th style="width: 5%">Tipo Req.</th>
-                            <th style="width: 5%">Moneda.</th>
-                            <th style="width: 8%">Proveedor/Entidad</th>
-                            <th style="width: 8%">Empresa - Sede</th>
-                            <th style="width: 5%">Autor</th>
-                            <th style="width: 5%">Estado</th>
-                            <th style="width: 5%">Acción</th>
+                            <th style="width: 5%; text-align:center;">Código</th>
+                            <th style="width: 40%; text-align:center;">Concepto</th>
+                            <th style="width: 5%; text-align:center;">Fecha creación</th>
+                            <th style="width: 5%; text-align:center;">Tipo Req.</th>
+                            <th style="width: 5%; text-align:center;">Moneda.</th>
+                            <th style="width: 8%; text-align:center;">Proveedor/Entidad</th>
+                            <th style="width: 8%; text-align:center;">Empresa - Sede</th>
+                            <th style="width: 5%; text-align:center;">Autor</th>
+                            <th style="width: 5%; text-align:center;">Estado</th>
+                            <th style="width: 5%; text-align:center;">Acción</th>
                         </tr>
                     </thead>
                     <tbody></tbody>

@@ -23,12 +23,27 @@ class OrdenModel {
                 type: 'GET',
                 url:`/logistica/mostrar_items`,
                 dataType: 'JSON',
+                beforeSend: data => {
+    
+                    $("#modal-catalogo-items .modal-body").LoadingOverlay("show", {
+                        imageAutoResize: true,
+                        progress: true,
+                        imageColor: "#3c8dbc"
+                    });
+                },
                 success(response) {
                     resolve(response.data);
+                    $("#modal-catalogo-items .modal-body").LoadingOverlay("hide", true);
+
                 },
                 error: function(err) {
                 reject(err) // Reject the promise and go to catch()
-                }
+                $("#modal-catalogo-items .modal-body").LoadingOverlay("hide", true);
+
+                },
+                "drawCallback": function( settings ) {
+                    $("#modal-catalogo-items .modal-body").LoadingOverlay("hide", true);
+                },
                 });
             });
     }
@@ -37,14 +52,28 @@ class OrdenModel {
         return new Promise(function(resolve, reject) {
             $.ajax({
                 type: 'GET',
-                url:`requerimientos-pendientes/${id_empresa}/${id_sede}`,
+                url:`requerimientos-pendientes/${id_empresa}/${id_sede}/SIN_FILTRO/SIN_FILTRO/SIN_FILTRO/SIN_FILTRO`,
                 dataType: 'JSON',
+                beforeSend:  (data)=> { // Are not working with dataType:'jsonp'
+    
+                $('#modal-vincular-requerimiento-orden .modal-body').LoadingOverlay("show", {
+                    imageAutoResize: true,
+                    progress: true,
+                    imageColor: "#3c8dbc"
+                });
+            },
                 success(response) {
                     resolve(response.data) // Resolve promise and go to then() 
+                    $('#modal-vincular-requerimiento-orden .modal-body').LoadingOverlay("hide", true);
+
                 },
                 error: function(err) {
+                    $('#modal-vincular-requerimiento-orden .modal-body').LoadingOverlay("hide", true);
                 reject(err) // Reject the promise and go to catch()
-                }
+                },
+                "drawCallback": function( settings ) {
+                    $('#modal-vincular-requerimiento-orden .modal-body').LoadingOverlay("hide", true);
+                },
                 });
             });
     }
