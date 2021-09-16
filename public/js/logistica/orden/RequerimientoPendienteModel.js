@@ -88,8 +88,21 @@ class RequerimientoPendienteModel {
                 type: 'GET',
                 url:`todo-detalle-requeriento/${idRequerimiento}/SIN_TRANSFORMACION`,
                 dataType: 'JSON',
+                beforeSend: data => {
+    
+                    $("#modal-atender-con-almacen .modal-body").LoadingOverlay("show", {
+                        imageAutoResize: true,
+                        progress: true,
+                        imageColor: "#3c8dbc"
+                    });
+                },
                 success(response) {
-                    resolve(response)
+                    resolve(response);
+                    $("#modal-atender-con-almacen .modal-body").LoadingOverlay("hide", true);
+
+                },
+                "drawCallback": function( settings ) {
+                    $("#modal-atender-con-almacen .modal-body").LoadingOverlay("hide", true);
                 },
                 error: function(err) {
                 reject(err) // Reject the promise and go to catch()

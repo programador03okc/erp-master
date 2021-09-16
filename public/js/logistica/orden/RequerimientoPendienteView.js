@@ -626,6 +626,7 @@ class RequerimientoPendienteView {
     }
 
     llenarTablaModalAtenderConAlmacen(idRequerimiento){
+        this.requerimientoPendienteCtrl.limpiarTabla('listaItemsRequerimientoParaAtenderConAlmacen');
         this.requerimientoPendienteCtrl.openModalAtenderConAlmacen(idRequerimiento).then((res)=> {
             this.construirTablaListaItemsRequerimientoParaAtenderConAlmacen(res.data);
         }).catch(function (err) {
