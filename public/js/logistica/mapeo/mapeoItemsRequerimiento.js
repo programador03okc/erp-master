@@ -1,12 +1,30 @@
 let detalle = [];
+function limpiarTabla(idElement){
+    let nodeTbody = document.querySelector("table[id='" + idElement + "'] tbody");
+    if(nodeTbody!=null){
+        while (nodeTbody.children.length > 0) {
+            nodeTbody.removeChild(nodeTbody.lastChild);
+        }
+
+    }
+}
 
 function listarItemsRequerimientoMapeo(id_requerimiento) {
+    limpiarTabla('detalleItemsRequerimiento');
     detalle = [];
 
     $.ajax({
         type: 'GET',
         url: 'itemsRequerimiento/' + id_requerimiento,
         dataType: 'JSON',
+        beforeSend: data => {
+    
+            $("#modal-mapeoItemsRequerimiento .modal-body").LoadingOverlay("show", {
+                imageAutoResize: true,
+                progress: true,
+                imageColor: "#3c8dbc"
+            });
+        },
         success: function (response) {
             response.forEach(element => {
                 if (element.id_tipo_item == 1) {
@@ -28,7 +46,12 @@ function listarItemsRequerimientoMapeo(id_requerimiento) {
 
             });
             mostrar_detalle();
-        }
+            $("#modal-mapeoItemsRequerimiento .modal-body").LoadingOverlay("hide", true);
+
+        },
+        "drawCallback": function( settings ) {
+            $("#modal-mapeoItemsRequerimiento .modal-body").LoadingOverlay("hide", true);
+        },
     }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
