@@ -3288,7 +3288,7 @@ class OrdenController extends Controller
             ->where('guia_com_det.estado',1)
             ->get();
             if(count($guia_com_det)>0){
-                $status = 200;
+                $status = 401;
                 $msj[]='La orden tiene items ingresados a almacén';
                 $data=true;
     

@@ -71,6 +71,9 @@ class OrdenView {
             this.irACrearProveedor();
         });
 
+        $('#form-crear-orden-requerimiento').on("click", "button.handleClickFechaHoy", () => {
+            this.fechaHoy();
+        });
         $('#form-crear-orden-requerimiento').on("click", "button.handleClickImprimirOrdenPdf", () => {
             this.imprimirOrdenPDF();
         });
@@ -1111,10 +1114,15 @@ class OrdenView {
 
     validaOrdenRequerimiento() {
         var codigo_orden = $('[name=codigo_orden]').val();
+        var codigo_orden = $('[name=codigo_orden]').val();
         var id_proveedor = $('[name=id_proveedor]').val();
         var plazo_entrega = $('[name=plazo_entrega]').val();
         var id_tp_documento = $('[name=id_tp_documento]').val();
         var msj = '';
+
+        if (id_tp_documento == 0) {
+            msj += 'Es necesario que seleccione un tipo de orden.<br>';
+        }
         if (codigo_orden == '') {
             msj += 'Es necesario que ingrese un código de orden Softlink.<br>';
         }
@@ -1426,6 +1434,7 @@ class OrdenView {
     anularOrden(id) {
         this.ordenCtrl.anularOrden(id).then((res) => {
             if (res.status == 200) {
+                this.restablecerFormularioOrden();
                 Lobibox.notify('success', {
                     title: false,
                     size: 'mini',
@@ -1437,7 +1446,7 @@ class OrdenView {
             } else {
                 Swal.fire(
                     '',
-                    'Lo sentimos hubo un error en el servidor al intentar anular la orden, por favor vuelva a intentarlo',
+                    res.mensaje.toString(),
                     'error'
                 );
                 console.log(res);

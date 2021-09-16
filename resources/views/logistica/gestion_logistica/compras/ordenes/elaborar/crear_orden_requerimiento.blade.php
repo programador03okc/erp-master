@@ -62,7 +62,7 @@ Elaborar orden
                             <h5>Fecha emisión</h5>
                             <div style="display:flex">
                                 <input class="form-control activation" name="fecha_emision" type="datetime-local" value={{ date('Y-m-d\TH:i') }}>
-                                <button type="button" class="group-text" onClick="fechaHoy();">
+                                <button type="button" class="group-text handleClickFechaHoy">
                                     HOY
                                 </button>
                             </div>
