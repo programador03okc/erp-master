@@ -147,7 +147,7 @@ class OrdenView {
     }
 
     irACrearProveedor() {
-        let url = "/logistica/gestion-logistica/proveedores/listado/index?accion=nuevo";
+        let url = "/logistica/gestion-logistica/proveedores/index?accion=nuevo";
         var win = window.open(url, '_blank');
     }
 
