@@ -525,11 +525,14 @@ class OrdenView {
                 let tr = obj.closest("tr");
                 tr.remove();
                 this.calcularMontosTotales();
-                Swal.fire(
-                    'Eliminado',
-                    'El item fue eliminado.',
-                    'success'
-                )
+                Lobibox.notify('success', {
+                    title:false,
+                    size: 'mini',
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    msg: 'El item fue eliminado'
+                });
             }
         })
 
@@ -542,6 +545,7 @@ class OrdenView {
 
     // modal agregar producto en orden 
     catalogoProductosModal() {
+        document.querySelector("div[id='modal-catalogo-items'] h3[class='modal-title']").textContent="Lista de productos para obsequio";
         $('#modal-catalogo-items').modal({
             show: true,
             backdrop: 'true',
@@ -1285,63 +1289,60 @@ class OrdenView {
         this.listarOrdenesElaboradas();
 
     }
-
-    listarOrdenesElaboradas() {
+    
+    listarOrdenesElaboradas(){
         let that = this;
         var vardataTables = funcDatatables();
         var tabla = $('#listaOrdenesElaboradas').DataTable({
-            'processing': true,
-            'destroy': true,
+            'processing':true,
+            'destroy':true,
             'dom': vardataTables[1],
             'buttons': vardataTables[2],
-            'language': vardataTables[0],
+            'language' : vardataTables[0],
             'ajax': 'listar-historial-ordenes-elaboradas',
             // "dataSrc":'',
-            'order': [[1, 'desc']],
+            'order': [[1,'desc']],
             'scrollX': false,
             'columns': [
-                { 'data': 'id_orden_compra' },
-                { 'data': 'fecha' },
-                { 'data': 'codigo' },
-                { 'data': 'nro_documento' },
-                { 'data': 'razon_social' },
-                { 'data': 'moneda_simbolo' },
-                { 'data': 'condicion' },
-                { 'data': 'plazo_entrega' },
-                { 'data': 'descripcion_sede_empresa' },
-                { 'data': 'direccion_destino' },
-                { 'data': 'ubigeo_destino' },
-                { 'data': 'estado_doc' },
+                {'data': 'id_orden_compra'},
+                {'data': 'fecha'},
+                {'data': 'codigo'},
+                {'data': 'nro_documento'},
+                {'data': 'razon_social'},
+                {'data': 'moneda_descripcion'},
+                {'data': 'condicion'},
+                {'data': 'plazo_entrega'},
+                {'data': 'descripcion_sede_empresa'},
+                {'data': 'direccion_destino'},
+                {'data': 'ubigeo_destino'},
+                {'data': 'estado_doc'},
                 {
-                    'render': (data, type, row) => {
+                    'render': (data, type, row)=> {
 
                         return `<center><div class="btn-group" role="group" style="margin-bottom: 5px;">
-                            <button type="button" class="btn btn-xs btn-success handleClickSelectOrden" data-id-orden="${row.id_orden_compra}" title="Seleccionar" >Seleccionar</button>
-                            </div></center>
-                            `;
-                    }
-                },
-
-            ],
-            'initComplete': () => {
-
+                        <button type="button" class="btn btn-xs btn-success handleClickSelectOrden" data-id-orden="${row.id_orden_compra}" title="Seleccionar" >Seleccionar</button>
+                        </div></center>
+                        `;
+                }
             },
-            'columnDefs': [{ className: "text-right", 'aTargets': [0], 'sClass': 'invisible' }]
+            ],
+            'columnDefs': [
+                { className: "text-right", 'aTargets': [0], 'sClass': 'invisible'},
+                { className: "text-center", 'aTargets': [1]},
+                { className: "text-center", 'aTargets': [2]},
+                { className: "text-center", 'aTargets': [3]},
+                { className: "text-left", 'aTargets': [4]},
+                { className: "text-center", 'aTargets': [5]},
+                { className: "text-center", 'aTargets': [6]},
+                { className: "text-center", 'aTargets': [7]},
+                { className: "text-left", 'aTargets': [8]},
+                { className: "text-left", 'aTargets': [9]},
+                { className: "text-center", 'aTargets': [10]},
+                { className: "text-center", 'aTargets': [11]}
+            ]
         });
-
-    }
-
-    // $('#listaOrdenesElaboradas tbody').on('click', 'tr', function(){
-    //     if ($(this).hasClass('eventClick')){
-    //         $(this).removeClass('eventClick');
-    //     } else {
-    //         $('#listaOrdenesElaboradas').dataTable().$('tr.eventClick').removeClass('eventClick');
-    //         $(this).addClass('eventClick');
-    //     }
-    //     var idTr = $(this)[0].firstChild.innerHTML;
-    //     $('.modal-footer #id_orden').text(idTr);
-
-    // });
+    
+}
 
     selectOrden(idOrden) {
         this.mostrarOrden(idOrden);

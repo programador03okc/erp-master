@@ -286,7 +286,7 @@ Elaborar orden
                             <h6>Item's de requerimiento</h6>
                         </legend>
                         <div class="btn-group" role="group" aria-label="...">
-                            <button type="button" class="btn btn-xs btn-success activation handleClickCatalogoProductosModal" id="btnAgregarProducto" data-toggle="tooltip" data-placement="bottom" title="Agregar producto de regalo"><i class="fas fa-plus"></i> Producto
+                            <button type="button" class="btn btn-xs btn-success activation handleClickCatalogoProductosModal" id="btnAgregarProducto" data-toggle="tooltip" data-placement="bottom" title="Agregar producto para obsequio"><i class="fas fa-plus"></i> Productos para obsequio 
                             </button>
                             <button type="button" class="btn btn-xs btn-primary activation handleClickAgregarServicio" id="btnAgregarServicio" data-toggle="tooltip" data-placement="bottom" title="Agregar servicio"><i class="fas fa-plus"></i> Servicio
                             </button>
