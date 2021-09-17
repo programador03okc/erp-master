@@ -48,6 +48,8 @@ class OrdenesPendientesController extends Controller
         $condiciones = GenericoAlmacenController::mostrar_condiciones_cbo();
         $sedes = GenericoAlmacenController::mostrar_sedes_cbo();
 
+        $tipos = GenericoAlmacenController::mostrar_tipos_cbo();
+
         return view('almacen/guias/ordenesPendientes', compact(
             'almacenes',
             'tp_doc',
@@ -56,6 +58,7 @@ class OrdenesPendientesController extends Controller
             'usuarios',
             'motivos_anu',
             'monedas',
+            'tipos',
             'categorias',
             'subcategorias',
             'clasificaciones',

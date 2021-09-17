@@ -12,7 +12,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\App;
 use App\Http\Controllers\Controller;
+use App\Models\mgcp\Oportunidad\Oportunidad;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\View;
 
 date_default_timezone_set('America/Lima');
 
@@ -169,6 +171,8 @@ class TransformacionController extends Controller
             ->select(
                 'transfor_sobrante.id_sobrante',
                 'transfor_sobrante.id_producto',
+                'transfor_sobrante.part_number as part_number_sobrante',
+                'transfor_sobrante.descripcion as descripcion_sobrante',
                 'transfor_sobrante.cantidad',
                 'transfor_sobrante.valor_unitario',
                 'transfor_sobrante.valor_total',
@@ -180,8 +184,8 @@ class TransformacionController extends Controller
                 'alm_und_medida.abreviatura',
                 'transformacion.codigo'
             )
-            ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'transfor_sobrante.id_producto')
-            ->join('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
+            ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'transfor_sobrante.id_producto')
+            ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
             ->join('almacen.transformacion', 'transformacion.id_transformacion', '=', 'transfor_sobrante.id_transformacion')
             ->where('transfor_sobrante.id_transformacion', $id_transformacion)
             ->get();
@@ -1205,7 +1209,7 @@ class TransformacionController extends Controller
     public function imprimir_transformacion($id_transformacion)
     {
 
-        $result = DB::table('almacen.transformacion')
+        /*$result = DB::table('almacen.transformacion')
             ->select(
                 'transformacion.*',
                 'oc_propias.orden_am',
@@ -1377,19 +1381,6 @@ class TransformacionController extends Controller
         $i = 1;
 
         foreach ($detalle as $det) {
-            // $html .= '
-            //             <tr>
-            //                 <td class="right">' . $i . '</td>
-            //                 <td>' . $det->codigo . '</td>
-            //                 <td>' . $det->part_number . '</td>
-            //                 <td>' . $det->descripcion . '</td>
-            //                 <td class="right">' . $det->cantidad . '</td>
-            //                 <td>' . $det->abreviatura . '</td>
-            //             </tr>';
-            // <tr>
-            //                     <th></th>
-            //                     <th colSpan="5" style="background-color: #c0f7c0;"><center>Item Transformado</center></th>
-            //                 </tr>
 
             if (
                 $det->descripcion_producto_transformado !== null || $det->part_no_producto_transformado !== null ||
@@ -1471,39 +1462,6 @@ class TransformacionController extends Controller
         }
         $html .= '</tbody></table>';
 
-        // if (count($detalle_transfor)>0){
-        //     $html.='<br/>
-        //     <table id="detalle">
-        //     <thead style="background-color: #c0f7c0;">
-        //         <tr>
-        //             <th colSpan="6"><center>Productos Transformados</center></th>
-        //         </tr>
-        //         <tr>
-        //             <th>#</th>
-        //             <th>Código</th>
-        //             <th>Part Number</th>
-        //             <th>Descripción</th>
-        //             <th>Cant.</th>
-        //             <th>Unid.</th>
-        //         </tr>
-        //     </thead>
-        //     <tbody>';
-        //     $i = 1;
-
-        //     foreach($detalle_transfor as $det){
-        //         $html.='
-        //         <tr>
-        //             <td class="right">'.$i.'</td>
-        //             <td>'.$det->codigo.'</td>
-        //             <td>'.$det->part_number.'</td>
-        //             <td>'.$det->descripcion.'</td>
-        //             <td class="right">'.$det->cantidad.'</td>
-        //             <td>'.$det->abreviatura.'</td>
-        //         </tr>';
-        //         $i++;
-        //     }
-        //     $html.='</tbody></table>';
-        // }
         if (count($detalle_sobrante) > 0) {
             $html .= '<br/>
                         <table id="detalle">
@@ -1546,11 +1504,29 @@ class TransformacionController extends Controller
                 </footer>
             </body>
         </html>';
+*/
+        $transformacion = DB::table('almacen.transformacion')
+            ->select('transformacion.codigo', 'cc.id_oportunidad', 'adm_empresa.logo_empresa')
+            ->leftjoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'transformacion.id_cc')
+            ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'transformacion.id_almacen')
+            ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_almacen.id_sede')
+            ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
+            ->where('transformacion.id_transformacion', $id_transformacion)
+            ->first();
 
+        $oportunidad = Oportunidad::find($transformacion->id_oportunidad);
+        // $logo_empresa = $transformacion->logo_empresa;
+        $codigo = $transformacion->codigo;
+        $logo_empresa = ".$transformacion->logo_empresa";
+        //return view('almacen/customizacion/hoja-transformacion')->with(compact('oportunidad'));
+        $vista = View::make(
+            'almacen/customizacion/hoja-transformacion',
+            compact('oportunidad', 'logo_empresa', 'codigo')
+        )->render();
         $pdf = App::make('dompdf.wrapper');
-        $pdf->loadHTML($html);
+        $pdf->loadHTML($vista);
 
         return $pdf->stream();
-        return $pdf->download($result->codigo . '.pdf');
+        return $pdf->download($oportunidad->codigo_oportunidad . '.pdf');
     }
 }

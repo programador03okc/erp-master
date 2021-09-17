@@ -146,14 +146,15 @@ function listar_detalle_transformacion(id) {
                     'id': 's' + element.id_sobrante,
                     'id_detalle': element.id_sobrante,
                     'series': [],
+                    'control_series': element.series,
                     'tipo': 'sobrante',
                     'cantidad': element.cantidad,
-                    'id_producto': element.id_producto,
+                    'id_producto': null,//element.id_producto,
                     'codigo': element.codigo,
-                    'cod_prod': element.cod_prod,
-                    'part_number': element.part_number,
-                    'descripcion': element.descripcion,
-                    'abreviatura': element.abreviatura,
+                    'cod_prod': null,//element.cod_prod,
+                    'part_number': element.part_number_sobrante,
+                    'descripcion': element.descripcion_sobrante,
+                    'abreviatura': null,//element.abreviatura,
                     'valor_unitario': element.valor_unitario,
                     'valor_total': element.valor_total
                 });
@@ -163,6 +164,7 @@ function listar_detalle_transformacion(id) {
                     'id': 't' + element.id_transformado,
                     'id_detalle': element.id_transformado,
                     'series': [],
+                    'control_series': element.series,
                     'tipo': 'transformado',
                     'cantidad': element.cantidad,
                     'id_producto': element.id_producto,
@@ -197,25 +199,44 @@ function mostrar_detalle_transformacion() {
         html += `<tr>
             <td>${i}</td>
             <td>${element.codigo}</td>
-            <td>${element.cod_prod}</td>
+            <td>${element.cod_prod !== null ? (element.cod_prod == '' ? '<label>(por crear)</label>' : element.cod_prod) : '<label class="subtitulo_red">(sin mapear)</label>'}</td>
             <td>${element.part_number !== null ? element.part_number : ''}</td>
             <td>${element.descripcion + ' <strong>' + html_ser + '</strong>'}</td>
             <td>${element.tipo == 'sobrante' ?
                 `<input type="number" class="form-control cantidad" style="width:120px;" data-idprod="${element.id_producto}" step="0.001" 
                 value="${element.cantidad}"/>` : element.cantidad}
             </td>
-            <td>${element.abreviatura}</td>
+            <td>${element.abreviatura !== null ? element.abreviatura : ''}</td>
             <td><input type="number" class="form-control unitario" style="width:120px;" data-id="${element.tipo == 'sobrante' ? element.id_producto : element.id}" data-tipo="${element.tipo}" step="0.001" 
                 value="${element.valor_unitario}"/></td>
             <td>${formatNumber.decimal((element.cantidad * element.valor_unitario), '', -4)}</td>
-            ${`<td><input type="text" class="oculto" id="series" value="${element.series}" data-partnumber="${element.part_number}"/>
-                <i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series" 
-                onClick="agrega_series_transformacion(${"'" + element.id + "'"});"></i></td>`}
+            <td>
+                ${element.control_series ?
+                `<input type="text" class="oculto" id="series" value="${element.series}" data-partnumber="${element.part_number}"/>
+                    <i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series" 
+                    onClick="agrega_series_transformacion(${"'" + element.id + "'"});"></i>` : ''}
+                ${element.tipo == 'sobrante' ?
+                `<button type="button" style="padding-left:8px;padding-right:7px;" 
+                    class="asignar btn btn-xs btn-info boton" data-toggle="tooltip" 
+                    data-placement="bottom" data-partnumber="${element.part_number}" 
+                    data-desc="${encodeURIComponent(element.descripcion)}" data-id="${element.id}"
+                    title="Asignar producto" >
+                    <i class="fas fa-angle-double-right"></i>
+                </button>` : ''}
+            </td>
             </tr>`;
         i++;
     });
     $('#detalleOrdenSeleccionadas tbody').html(html);
 }
+
+$('#detalleOrdenSeleccionadas tbody').on("click", "button.asignar", function () {
+    var partnumber = $(this).data('partnumber');
+    var desc = $(this).data('desc');
+    var id = $(this).data('id');
+    console.log('openAsignarProducto');
+    openAsignarProducto(partnumber, desc, id, 0);
+});
 
 $('#detalleOrdenSeleccionadas tbody').on("change", ".unitario", function () {
 
@@ -363,6 +384,13 @@ $("#form-guia_create").on("submit", function (e) {
                 'id': element.id_detalle,
                 'tipo': element.tipo,
                 'id_producto': element.id_producto,
+                'part_number': (element.id_producto !== null ? '' : element.part_number),
+                'descripcion': (element.id_producto !== null ? '' : element.descripcion),
+                'id_categoria': element.id_categoria,
+                'id_clasif': element.id_clasif,
+                'id_subcategoria': element.id_subcategoria,
+                'id_unidad_medida': element.id_unidad_medida,
+                'control_series': element.control_series,
                 'cantidad': element.cantidad,
                 'unitario': element.valor_unitario,
                 'series': element.series

@@ -40,7 +40,7 @@ function listarItemsRequerimientoMapeo(id_requerimiento) {
                         'id_categoria': null,
                         'id_clasif': null,
                         'id_subcategoria': null,
-                        'estado':element.estado
+                        'estado': element.estado
                     });
                 }
 
@@ -123,17 +123,17 @@ $('#detalleItemsRequerimiento tbody').on("click", "button.asignar", function () 
     openAsignarProducto(partnumber, desc, id, 0);
 });
 
-$('#detalleItemsRequerimiento tbody').on("click", "button.anular", function(e) {
+$('#detalleItemsRequerimiento tbody').on("click", "button.anular", function (e) {
     var partnumber = $(this).data('partnumber');
     var desc = $(this).data('desc');
     var id = $(this).data('id');
     anularProducto(partnumber, desc, id, e.currentTarget);
 });
 
-function anularProducto(partnumber, desc, id, obj){
-    detalle.forEach((element,index) => {
-        if(element.id_detalle_requerimiento ==id){
-            detalle[index].estado =7;
+function anularProducto(partnumber, desc, id, obj) {
+    detalle.forEach((element, index) => {
+        if (element.id_detalle_requerimiento == id) {
+            detalle[index].estado = 7;
             Lobibox.notify('success', {
                 title: false,
                 size: 'mini',
@@ -156,9 +156,9 @@ function anularProducto(partnumber, desc, id, obj){
         buttonRestablecerItem.innerHTML = "<i class='fas fa-undo'></i>";
         buttonRestablecerItem.addEventListener('click', function () {
 
-            detalle.forEach((element,index) => {
-                if(element.id_detalle_requerimiento ==id){
-                    detalle[index].estado =1;
+            detalle.forEach((element, index) => {
+                if (element.id_detalle_requerimiento == id) {
+                    detalle[index].estado = 1;
                     Lobibox.notify('info', {
                         title: false,
                         size: 'mini',
@@ -177,7 +177,7 @@ function anularProducto(partnumber, desc, id, obj){
 
         }, false);
         tdBotoneraAccionMapeo.appendChild(buttonRestablecerItem);
-    }else{
+    } else {
         obj.closest("td").querySelector("button[class~='restablecer']").classList.remove("oculto")
 
     }
@@ -187,7 +187,7 @@ function anularProducto(partnumber, desc, id, obj){
 function openAsignarProducto(partnumber, desc, id, type) {
 
     $('#part_number').text(partnumber);
-    $('#descripcion').text(decodeURIComponent(desc));
+    $('#descripcion_producto').text(decodeURIComponent(desc));
     $('[name=id_detalle_requerimiento]').val(id);
     $('[name=part_number]').val(partnumber);
     $('[name=descripcion]').val(decodeURIComponent(desc));
@@ -274,11 +274,11 @@ $("#form-mapeoItemsRequerimiento").on("submit", function (e) {
                             // console.log(objBtnMapeo.closest("div"));
                             // console.log(cantidadTotalItem);
                             // console.log(contidadMapeado);
-                            if(contidadMapeado>0){
+                            if (contidadMapeado > 0) {
                                 let divBtnGroup = objBtnMapeo.closest("div");
                                 let idRequerimiento = document.querySelector("form[id='form-mapeoItemsRequerimiento'] input[name='id_requerimiento']").value;
-    
-                                if( divBtnGroup.querySelector("button[name='btnOpenModalAtenderConAlmacen']") == null){
+
+                                if (divBtnGroup.querySelector("button[name='btnOpenModalAtenderConAlmacen']") == null) {
                                     let btnOpenModalAtenderConAlmacen = document.createElement("button");
                                     btnOpenModalAtenderConAlmacen.type = "button";
                                     btnOpenModalAtenderConAlmacen.name = "btnOpenModalAtenderConAlmacen";
@@ -288,7 +288,7 @@ $("#form-mapeoItemsRequerimiento").on("submit", function (e) {
                                     btnOpenModalAtenderConAlmacen.innerHTML = "<i class='fas fa-dolly fa-sm'></i>";
                                     divBtnGroup.appendChild(btnOpenModalAtenderConAlmacen);
                                 }
-                                if( divBtnGroup.querySelector("button[name='btnCrearOrdenCompraPorRequerimiento']")== null){
+                                if (divBtnGroup.querySelector("button[name='btnCrearOrdenCompraPorRequerimiento']") == null) {
                                     let btnCrearOrdenCompraPorRequerimiento = document.createElement("button");
                                     btnCrearOrdenCompraPorRequerimiento.type = "button";
                                     btnCrearOrdenCompraPorRequerimiento.name = "btnCrearOrdenCompraPorRequerimiento";
@@ -297,9 +297,9 @@ $("#form-mapeoItemsRequerimiento").on("submit", function (e) {
                                     btnCrearOrdenCompraPorRequerimiento.dataset.idRequerimiento = idRequerimiento;
                                     btnCrearOrdenCompraPorRequerimiento.innerHTML = "<i class='fas fa-file-invoice'></i>";
                                     divBtnGroup.appendChild(btnCrearOrdenCompraPorRequerimiento);
-                                    
+
                                 }
-                            }                            
+                            }
 
                             // actualizar cantidad de items por mapear 
                             objBtnMapeo.querySelector("span[class='badge']").textContent = cantidadPorMapear;
@@ -320,13 +320,13 @@ $("#form-mapeoItemsRequerimiento").on("submit", function (e) {
                 console.log(errorThrown);
             });
 
-            let cantidadItemAnulados=0;
+            let cantidadItemAnulados = 0;
             detalle.forEach(element => {
-                if(element.estado ==7){
+                if (element.estado == 7) {
                     cantidadItemAnulados++;
                 }
             });
-            if(cantidadItemAnulados>0){
+            if (cantidadItemAnulados > 0) {
                 $.ajax({
                     type: 'POST',
                     url: 'anular_item',
@@ -345,22 +345,22 @@ $("#form-mapeoItemsRequerimiento").on("submit", function (e) {
                                 delayIndicator: false,
                                 msg: `Se guardo los item(s) anulados con éxito`
                             });
-    
 
-    
+
+
                             // calcular cantidad por mapear
-                            let cantidadPorMapear=0;
-                            detalle.forEach((element)=>{
-                                if(!element.id_producto >0 && element.estado ==1){
+                            let cantidadPorMapear = 0;
+                            detalle.forEach((element) => {
+                                if (!element.id_producto > 0 && element.estado == 1) {
                                     cantidadPorMapear++;
                                 }
                             });
-    
+
                             // actualizar cantidad de items por mapear en TR
                             objBtnMapeo.querySelector("span[class='badge']").textContent = cantidadPorMapear;
                             objBtnMapeo.closest("tr").querySelector("input[type='checkbox']").dataset.mapeosPendientes = cantidadPorMapear;
-    
-                            
+
+
                         }
                     }
                 }).fail(function (jqXHR, textStatus, errorThrown) {

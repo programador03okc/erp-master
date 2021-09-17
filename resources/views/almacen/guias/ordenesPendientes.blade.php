@@ -25,22 +25,20 @@ Pendientes de Ingreso
 <div class="box box-solid">
     <div class="box-body">
         <div class="page-main" type="ordenesPendientes">
-            <div class="col-md-12" id="tab-ordenes" style="padding-left:0px;padding-right:0px;">
-                <ul class="nav nav-tabs" id="myTab">
-                    <li class="active"><a type="#pendientes">Ordenes Pendientes de Ingreso</a></li>
-                    <li class=""><a type="#transformaciones">Transformaciones Pendientes de Ingreso</a></li>
-                    <li class=""><a type="#ingresadas">Ingresos Procesados</a></li>
+            <div class="col-md-12" id="tab-ordenes" style="padding-top:10px;padding-bottom:10px;">
+
+                <ul class="nav nav-tabs" id="myTabOrdenesPendientes">
+                    <li class="active"><a data-toggle="tab" href="#pendientes">Ordenes Pendientes de Ingreso</a></li>
+                    <li class=""><a data-toggle="tab" href="#transformaciones">Transformaciones Pendientes de Ingreso</a></li>
+                    <li class=""><a data-toggle="tab" href="#ingresadas">Ingresos Procesados</a></li>
                 </ul>
-                <div class="content-tabs">
-                    <section id="pendientes">
+
+                <div class="tab-content">
+                    <div id="pendientes" class="tab-pane fade in active">
+                        <br>
                         <form id="form-pendientes" type="register">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <div style="display: flex;">
-                                        <!-- @if(Auth::user()->tieneAccion(83))
-                                        <button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Seleccione varias ordenes para ingresar la Guía de Compra" onClick="open_guia_create_seleccionadas();">Ingresar Guía</button>
-                                        @endif -->
-                                    </div>
                                     <table class="mytable table table-condensed table-bordered table-okc-view" id="ordenesPendientes" style="width:100%;">
                                         <thead>
                                             <tr>
@@ -63,8 +61,9 @@ Pendientes de Ingreso
                                 </div>
                             </div>
                         </form>
-                    </section>
-                    <section id="transformaciones" hidden>
+                    </div>
+                    <div id="transformaciones" class="tab-pane fade ">
+                        <br>
                         <form id="form-transformaciones" type="register">
                             <div class="row">
                                 <div class="col-md-12">
@@ -93,19 +92,10 @@ Pendientes de Ingreso
                                 </div>
                             </div>
                         </form>
-                    </section>
-                    <section id="ingresadas" hidden>
+                    </div>
+                    <div id="ingresadas" class="tab-pane fade ">
+                        <br>
                         <form id="form-ingresadas" type="register">
-
-                            <!-- <div class="row">
-                                <div class="col-md-3">
-                                    <div class="input-group">
-                                        <div class="input-group-btn">
-                                            <button type="button" class="btn btn-default" id="btnExportarExcel" title="Exportar a Excel" onclick="listaOrdenView.tipoVistaPorCabecera();"><i class="fas fa-file-excel"></i> Exportar a Excel</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div> -->
 
                             <div class="row">
                                 <div class="col-md-12">
@@ -136,7 +126,7 @@ Pendientes de Ingreso
                                 </div>
                             </div>
                         </form>
-                    </section>
+                    </div>
                 </div>
             </div>
         </div>
@@ -154,8 +144,8 @@ Pendientes de Ingreso
 @include('almacen.documentos.doc_com_ver')
 @include('almacen.guias.ordenesGuias')
 @include('almacen.guias.guia_com_ver')
-@include('almacen.producto.productoModal')
 @include('tesoreria.facturacion.archivos_oc_mgcp')
+@include('logistica.requerimientos.mapeo.mapeoAsignarProducto')
 
 @endsection
 
@@ -177,9 +167,9 @@ Pendientes de Ingreso
 <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
 
-<script src="{{ asset('js/almacen/guia/ordenesPendientes.js?v=3')}}"></script>
+<script src="{{ asset('js/almacen/guia/ordenesPendientes.js?')}}"></script>
 <script src="{{ asset('js/almacen/guia/transformacionesPendientes.js')}}"></script>
-<script src="{{ asset('js/almacen/guia/ingresosProcesados.js?v=3')}}"></script>
+<script src="{{ asset('js/almacen/guia/ingresosProcesados.js')}}?v={{filemtime(public_path('js/almacen/guia/ingresosProcesados.js'))}}"></script>
 <script src="{{ asset('js/almacen/guia/ordenes_ver_detalle.js')}}"></script>
 <script src="{{ asset('js/almacen/guia/movimientoDetalle.js?v=2')}}"></script>
 <script src="{{ asset('js/almacen/guia/guia_com_create.js')}}"></script>
@@ -189,14 +179,17 @@ Pendientes de Ingreso
 <script src="{{ asset('js/almacen/documentos/doc_com_create.js')}}"></script>
 <script src="{{ asset('js/almacen/documentos/doc_com_ver.js')}}"></script>
 <script src="{{ asset('js/almacen/transferencias/transferenciaCreate.js')}}"></script>
-<script src="{{ asset('js/almacen/producto/productoModal.js')}}"></script>
+<!-- <script src="{{ asset('js/almacen/producto/productoModal.js')}}"></script> -->
 <script src="{{ asset('js/tesoreria/facturacion/archivosMgcp.js')}}"></script>
+<script src="{{ asset('js/logistica/mapeo/mapeoAsignarProducto.js')}}"></script>
+<script src="{{ asset('js/almacen/guia/guia_transformacion_mapeo.js')}}"></script>
 
 <script>
     $(document).ready(function() {
         seleccionarMenu(window.location);
         $.fn.dataTable.Buttons.defaults.dom.button.className = 'btn';
         iniciar('{{Auth::user()->tieneAccion(83)}}');
+        listarAlmacenes();
     });
 </script>
 @endsection
