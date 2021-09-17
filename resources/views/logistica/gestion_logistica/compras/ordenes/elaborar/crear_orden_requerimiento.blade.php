@@ -80,16 +80,6 @@ Elaborar orden
                             <img id="logo_empresa" src="/images/img-wide.png" alt="" style="height:56px;!important;width:100%;!important;margin-top:-20px;">
                         </div>
                     </div>
-
-                    <div class="row">
-                        <div class="col-md-2" id="group-datos_para_despacho-sede">
-                            <div class="checkbox">
-                                <label>
-                                    <input class="activation handleClickIncluyeIGV" type="checkbox" name="incluye_igv" checked> Incluye IGV?
-                                </label>
-                            </div>
-                        </div>
-                    </div>
                 </fieldset>
             </div>
         </div>
@@ -317,7 +307,9 @@ Elaborar orden
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td colspan="7" class="text-right"><strong>IGV:</strong></td>
+                                    <td colspan="7" class="text-right">
+                                    <input class="activation handleClickIncluyeIGV" type="checkbox" name="incluye_igv" checked> <strong>Incluye IGV</strong>
+                                    </td>
                                     <td class="text-right"><span name="simboloMoneda">S/</span><label name="igv"> 0.00</label></td>
                                     <td></td>
                                 </tr>

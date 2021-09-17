@@ -1199,11 +1199,11 @@ class OrdenView {
         let cantidadInconsistenteInputCantidadAComprar = 0;
         let inputCantidadAComprar = document.querySelectorAll("table[id='listaDetalleOrden'] input[class~='cantidad_a_comprar']");
         inputCantidadAComprar.forEach((element) => {
-            if (element.value == null || element.value == '' || element.value == 0) {
+            if (element.value == null || element.value == '' || element.value <= 0 ) {
                 cantidadInconsistenteInputCantidadAComprar++;
             }
         })
-        if (cantidadInconsistenteInputCantidadAComprar > 0) {
+        if (parseInt(cantidadInconsistenteInputCantidadAComprar) > 0) {
             msj += 'Debe ingresar una cantidad mayor a cero.<br>';
 
         }
@@ -1214,110 +1214,107 @@ class OrdenView {
     guardar_orden_requerimiento(action) {
         // console.log(action);
         let formData = new FormData($('#form-crear-orden-requerimiento')[0]);
-
-        if (action == 'register') {
-            var msj = this.validaOrdenRequerimiento();
-            if (msj.length > 0) {
-                Swal.fire({
-                    title: '',
-                    html: msj,
-                    icon: 'warning'
-                }
-                );
-                // changeStateButton('editar');
-                // changeStateButton('guardar');
-                // $('#form-crear-orden-requerimiento').attr('type', 'register');
-                // changeStateInput('form-crear-orden-requerimiento', false);
-            } else {
+        var msj = this.validaOrdenRequerimiento();
+        if (msj.length > 0) {
+            Swal.fire({
+                title: '',
+                html: msj,
+                icon: 'warning'
+            }
+            );
+        } else {
+            if (action == 'register') {
+                    $.ajax({
+                        type: 'POST',
+                        url: 'guardar',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        dataType: 'JSON',
+                        success: function (response) {
+                            console.log(response);
+                            if (response.id_orden_compra > 0) {
+                                Lobibox.notify('success', {
+                                    title: false,
+                                    size: 'mini',
+                                    rounded: true,
+                                    sound: false,
+                                    delayIndicator: false,
+                                    msg: `Orden ${response.codigo} creada.`
+                                });
+                                changeStateButton('guardar');
+                                $('#form-crear-orden-requerimiento').attr('type', 'register');
+                                changeStateInput('form-crear-orden-requerimiento', true);
+    
+                                sessionStorage.removeItem('reqCheckedList');
+                                sessionStorage.removeItem('tipoOrden');
+                                // window.open("generar-orden-pdf/"+response.id_orden_compra, '_blank');
+                                document.querySelector("span[name='codigo_orden_interno']").textContent = response.codigo;
+                                document.querySelector("input[name='id_orden']").value = response.id_orden_compra;
+                                document.querySelector("button[name='btn-imprimir-orden-pdf']").removeAttribute("disabled");
+    
+                            } else {
+                                Swal.fire(
+                                    '',
+                                    'Lo sentimos hubo un error en el servidor al intentar guardar la orden, por favor vuelva a intentarlo',
+                                    'error'
+                                );
+                            }
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        Swal.fire(
+                            '',
+                            'Hubo un problema al intentar guardar la orden, por favor vuelva a intentarlo',
+                            'error'
+                        );
+                        console.log(jqXHR);
+                        console.log(textStatus);
+                        console.log(errorThrown);
+                    });
+                
+    
+            } else if (action == 'edition') {
                 $.ajax({
                     type: 'POST',
-                    url: 'guardar',
+                    url: 'actualizar',
                     data: formData,
                     processData: false,
                     contentType: false,
                     dataType: 'JSON',
                     success: function (response) {
-                        console.log(response);
-                        if (response.id_orden_compra > 0) {
+                        // console.log(response);
+                        if (response > 0) {
                             Lobibox.notify('success', {
                                 title: false,
                                 size: 'mini',
                                 rounded: true,
                                 sound: false,
                                 delayIndicator: false,
-                                msg: `Orden ${response.codigo} creada.`
+                                msg: `Orden actualizada`
                             });
                             changeStateButton('guardar');
                             $('#form-crear-orden-requerimiento').attr('type', 'register');
                             changeStateInput('form-crear-orden-requerimiento', true);
-
-                            sessionStorage.removeItem('reqCheckedList');
-                            sessionStorage.removeItem('tipoOrden');
-                            // window.open("generar-orden-pdf/"+response.id_orden_compra, '_blank');
-                            document.querySelector("span[name='codigo_orden_interno']").textContent = response.codigo;
-                            document.querySelector("input[name='id_orden']").value = response.id_orden_compra;
-                            document.querySelector("button[name='btn-imprimir-orden-pdf']").removeAttribute("disabled");
-
-                        } else {
-                            Swal.fire(
-                                '',
-                                'Lo sentimos hubo un error en el servidor al intentar guardar la orden, por favor vuelva a intentarlo',
-                                'error'
-                            );
                         }
                     }
                 }).fail(function (jqXHR, textStatus, errorThrown) {
                     Swal.fire(
                         '',
-                        'Hubo un problema al intentar guardar la orden, por favor vuelva a intentarlo',
+                        'Hubo un problema al intentar actualizar la orden, por favor vuelva a intentarlo',
                         'error'
                     );
                     console.log(jqXHR);
                     console.log(textStatus);
                     console.log(errorThrown);
                 });
-            }
-
-        } else if (action == 'edition') {
-            $.ajax({
-                type: 'POST',
-                url: 'actualizar',
-                data: formData,
-                processData: false,
-                contentType: false,
-                dataType: 'JSON',
-                success: function (response) {
-                    // console.log(response);
-                    if (response > 0) {
-                        Lobibox.notify('success', {
-                            title: false,
-                            size: 'mini',
-                            rounded: true,
-                            sound: false,
-                            delayIndicator: false,
-                            msg: `Orden actualizada`
-                        });
-                        changeStateButton('guardar');
-                        $('#form-crear-orden-requerimiento').attr('type', 'register');
-                        changeStateInput('form-crear-orden-requerimiento', true);
-                    }
-                }
-            }).fail(function (jqXHR, textStatus, errorThrown) {
+            } else {
                 Swal.fire(
                     '',
-                    'Hubo un problema al intentar actualizar la orden, por favor vuelva a intentarlo',
+                    'Hubo un error en la acción de la botonera, el action no esta definido',
                     'error'
                 );
-                console.log(jqXHR);
-                console.log(textStatus);
-                console.log(errorThrown);
-            });
-        } else {
-            Swal.fire(
-                '',
-                'Hubo un error en la acción de la botonera, el action no esta definido',
-                'error'
-            );
+            }
+
         }
     }
 
@@ -1338,7 +1335,7 @@ class OrdenView {
     //  modal ordenes elaboradas 
 
     ordenesElaboradasModal() {
-        changeStateButton('inicio'); //init.js
+        // changeStateButton('inicio'); //init.js
 
         $('#modal-ordenes-elaboradas').modal({
             show: true,
