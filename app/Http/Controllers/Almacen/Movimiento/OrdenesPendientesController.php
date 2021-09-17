@@ -498,7 +498,6 @@ class OrdenesPendientesController extends Controller
 
     public function guardar_guia_com_oc(Request $request)
     {
-
         try {
             DB::beginTransaction();
             // database queries here
@@ -584,31 +583,54 @@ class OrdenesPendientesController extends Controller
 
                         if ($det->tipo == "sobrante") {
 
-                            if ($det->id == null) {
+                            if ($det->id_producto == null) {
 
-                                $id_sobrante = DB::table('almacen.transfor_sobrante')->insertGetId(
+                                $id_producto = DB::table('almacen.alm_prod')->insertGetId(
                                     [
-                                        'id_transformacion' => $request->id_transformacion,
-                                        'id_producto' => $det->id_producto,
-                                        'cantidad' => $det->cantidad,
-                                        'valor_unitario' => $det->unitario,
-                                        'valor_total' => (floatval($det->unitario) * floatval($det->cantidad)),
+                                        'part_number' => $det->part_number,
+                                        'id_categoria' => $det->id_categoria,
+                                        'id_subcategoria' => $det->id_subcategoria,
+                                        'id_clasif' => $det->id_clasif,
+                                        'descripcion' => strtoupper($det->descripcion),
+                                        'id_unidad_medida' => $det->id_unidad_medida,
+                                        'series' => $det->control_series,
+                                        'id_usuario' => $id_usuario,
                                         'estado' => 1,
-                                        'fecha_registro' => $fecha_registro,
+                                        'fecha_registro' => date('Y-m-d H:i:s')
                                     ],
-                                    'id_sobrante'
+                                    'id_producto'
                                 );
-                            } else {
-                                $id_sobrante = $det->id;
 
-                                DB::table('almacen.transfor_sobrante')
-                                    ->where('id_sobrante', $id_sobrante)
-                                    ->update([
-                                        'cantidad' => $det->cantidad,
-                                        'valor_unitario' => $det->unitario,
-                                        'valor_total' => (floatval($det->unitario) * floatval($det->cantidad))
-                                    ]);
+                                $codigo = GenericoAlmacenController::leftZero(7, $id_producto);
+
+                                DB::table('almacen.alm_prod')
+                                    ->where('id_producto', $id_producto)
+                                    ->update(['codigo' => $codigo]);
+
+                                // $id_sobrante = DB::table('almacen.transfor_sobrante')->insertGetId(
+                                //     [
+                                //         'id_transformacion' => $request->id_transformacion,
+                                //         'id_producto' => $det->id_producto,
+                                //         'cantidad' => $det->cantidad,
+                                //         'valor_unitario' => $det->unitario,
+                                //         'valor_total' => (floatval($det->unitario) * floatval($det->cantidad)),
+                                //         'estado' => 1,
+                                //         'fecha_registro' => $fecha_registro,
+                                //     ],
+                                //     'id_sobrante'
+                                // );
+                            } else {
+                                $id_producto = $det->id_producto;
                             }
+
+                            DB::table('almacen.transfor_sobrante')
+                                ->where('id_sobrante', $det->id)
+                                ->update([
+                                    'id_producto' => $id_producto,
+                                    'cantidad' => $det->cantidad,
+                                    'valor_unitario' => $det->unitario,
+                                    'valor_total' => (floatval($det->unitario) * floatval($det->cantidad))
+                                ]);
                         } else if ($det->tipo == "transformado") {
 
                             DB::table('almacen.transfor_transformado')
@@ -649,18 +671,19 @@ class OrdenesPendientesController extends Controller
                                         'fecha_registro' => date('Y-m-d H:i:s'),
                                     ]);
                             }
+                            $id_producto = $det->id_producto;
                         }
                         //Guardo los items de la guia
                         $id_guia_com_det = DB::table('almacen.guia_com_det')->insertGetId(
                             [
                                 "id_guia_com" => $id_guia,
-                                "id_producto" => $det->id_producto,
+                                "id_producto" => $id_producto,
                                 "cantidad" => $det->cantidad,
                                 // "id_unid_med" => $det->id_unidad_medida,
                                 "usuario" => $id_usuario,
                                 // "tipo_transfor" => $det->tipo,
                                 "id_transformado" => ($det->tipo == "transformado" ? $det->id : null),
-                                "id_sobrante" => ($det->tipo == "sobrante" ? $id_sobrante : null),
+                                "id_sobrante" => ($det->tipo == "sobrante" ? $det->id : null),
                                 "unitario" => $det->unitario,
                                 "total" => (floatval($det->unitario) * floatval($det->cantidad)),
                                 "unitario_adicional" => 0,
@@ -675,7 +698,7 @@ class OrdenesPendientesController extends Controller
                             foreach ($det->series as $serie) {
                                 DB::table('almacen.alm_prod_serie')->insert(
                                     [
-                                        'id_prod' => $det->id_producto,
+                                        'id_prod' => $id_producto,
                                         'id_almacen' => $request->id_almacen,
                                         'serie' => $serie,
                                         'estado' => 1,
@@ -689,7 +712,7 @@ class OrdenesPendientesController extends Controller
                         $id_det = DB::table('almacen.mov_alm_det')->insertGetId(
                             [
                                 'id_mov_alm' => $id_ingreso,
-                                'id_producto' => $det->id_producto,
+                                'id_producto' => $id_producto,
                                 // 'id_posicion' => $det->id_posicion,
                                 'cantidad' => $det->cantidad,
                                 'valorizacion' => (floatval($det->unitario) * floatval($det->cantidad)),
@@ -700,7 +723,7 @@ class OrdenesPendientesController extends Controller
                             ],
                             'id_mov_alm_det'
                         );
-                        OrdenesPendientesController::actualiza_prod_ubi($det->id_producto, $request->id_almacen);
+                        OrdenesPendientesController::actualiza_prod_ubi($id_producto, $request->id_almacen);
                     }
 
                     $od_detalles = DB::table('almacen.orden_despacho_det')
