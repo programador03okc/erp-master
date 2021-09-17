@@ -493,7 +493,7 @@ class OrdenController extends Controller
         'sede',
         'moneda',
         'detalle' => function ($q) {
-            $q->where('alm_det_req.estado', '!=', 7);
+            $q->whereNotIn('alm_det_req.estado', [7,5,28]);
         },'detalle.estado',
         'detalle.producto',
         'detalle.unidadMedida',
