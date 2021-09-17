@@ -21,14 +21,12 @@ function listarProductosCatalogo() {
                 'render':
                     function (data, type, row) {
                         return `
-                        <div class="btn-group btn-group-sm" role="group">
-                            <button type="button" class="btn btn-success btn-sm" name="btnSeleccionarUbigeo" title="Seleccionar Producto" 
-                            data-codigo="${row.codigo}" data-id="${row.id_producto}" 
-                            data-partnumber="${row.part_number}" data-descripcion="${encodeURIComponent(row.descripcion)}" 
-                            onclick="selectProductoAsignado(this);">
-                            <i class="fas fa-check"></i>
+                            <button type="button" class="btn btn-success btn-xs" name="btnSeleccionarUbigeo" title="Seleccionar Producto" 
+                                data-codigo="${row.codigo}" data-id="${row.id_producto}" 
+                                data-partnumber="${row.part_number}" data-descripcion="${encodeURIComponent(row.descripcion)}" 
+                                onclick="selectProductoAsignado(this);">
+                                <i class="fas fa-check"></i>
                             </button>
-                        </div>
                         `;
                     }
             }
@@ -60,7 +58,9 @@ function listarProductosSugeridos(part_number, descripcion, type) {
             ds = descripcion;
         }
     }
+    console.log(part_number, descripcion, type);
     if (part_number !== sPart || descripcion !== sDesc) {
+        console.log(pn, ds);
         $.ajax({
             type: 'POST',
             url: 'actualizarSugeridos',
@@ -69,7 +69,6 @@ function listarProductosSugeridos(part_number, descripcion, type) {
                 descripcion: ds
             },
             success: function (response) {
-                console.log(response);
                 if (response.response == 'ok') {
                     listarSugeridos();
                     sPart = part_number;
@@ -88,6 +87,7 @@ function listarSugeridos() {
         dataType: 'JSON',
         success: function (response) {
             console.log(response);
+            console.log(response.length);
             html = '';
             if (response.length > 0) {
                 response.forEach(function (element) {
@@ -98,14 +98,12 @@ function listarSugeridos() {
                     <td>${element.marca}</td>
                     <td>${element.descripcion}</td>
                     <td>
-                        <div class="btn-group btn-group-sm" role="group">
-                            <button type="button" class="btn btn-success btn-sm" title="Seleccionar Producto" 
+                        <button type="button" class="btn btn-success btn-xs" title="Seleccionar Producto" 
                             data-codigo="${element.codigo}" data-id="${element.id_producto}" 
                             data-partnumber="${element.part_number}" data-descripcion="${encodeURIComponent(element.descripcion)}" 
                             onclick="selectProductoAsignado(this);">
                             <i class="fas fa-check"></i>
-                            </button>
-                        </div>
+                        </button>
                     </td>
                     </tr>`;
                 });

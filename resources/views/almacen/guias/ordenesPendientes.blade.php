@@ -183,6 +183,7 @@ Pendientes de Ingreso
 <script src="{{ asset('js/tesoreria/facturacion/archivosMgcp.js')}}"></script>
 <script src="{{ asset('js/logistica/mapeo/mapeoAsignarProducto.js')}}"></script>
 <script src="{{ asset('js/almacen/guia/guia_transformacion_mapeo.js')}}"></script>
+<script src="{{ asset('js/almacen/guia/guia_com_create_transformacion.js')}}"></script>
 
 <script>
     $(document).ready(function() {
