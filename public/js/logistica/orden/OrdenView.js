@@ -192,7 +192,9 @@ class OrdenView {
                             let cantidad_atendido_almacen = 0;
                             if (det.reserva.length > 0) {
                                 (det.reserva).forEach(reserva => {
-                                    cantidad_atendido_almacen += parseFloat(reserva.stock_comprometido);
+                                    if(reserva.estado ==1){
+                                        cantidad_atendido_almacen += parseFloat(reserva.stock_comprometido);
+                                    }
                                 });
                             }
                             let cantidad_atendido_orden = 0;
@@ -745,8 +747,8 @@ class OrdenView {
         <td class="text-left">${(data[0].descripcion_producto ? data[0].descripcion_producto : (data[0].descripcion_adicional?data[0].descripcion_adicional:''))}  <input type="hidden"  name="descripcion[]" value="${(data[0].descripcion_producto ? data[0].descripcion_producto : data[0].descripcion_adicional)} "></td>
         <td><select name="unidad[]" class="form-control ${(data[0].estado_guia_com_det > 0 && data[0].estado_guia_com_det != 7 ? '' : 'activation')} input-sm" value="${data[0].id_unidad_medida}" >${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
         <td>${(data[0].cantidad ? data[0].cantidad : '')}</td>
-        <td></td>
-        <td></td>
+        <td>${(data[0].cantidad_atendido_almacen ? data[0].cantidad_atendido_almacen : '')}</td>
+        <td>${(data[0].cantidad_atendido_orden ? data[0].cantidad_atendido_orden : '')}</td>
         <td>
             <div class="input-group">
                 <div class="input-group-addon" style="background:lightgray;" name="simboloMoneda">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</div>
@@ -925,21 +927,24 @@ class OrdenView {
         if (response.length > 0) {
             response.forEach((element) => {
                 if (element.tiene_transformacion == false) {
-                    let stock_comprometido = 0;
-                    (element.reserva).forEach(reserva => {
+                    let cantidad_atendido_almacen = 0;
+                    if (element.reserva.length > 0) {
+                        (element.reserva).forEach(reserva => {
                         if(reserva.estado ==1){
-                            stock_comprometido+= parseFloat(reserva.stock_comprometido);
+                            cantidad_atendido_almacen += parseFloat(reserva.stock_comprometido);
                         }
-                    });
+                        });
+                    }
+ 
                     html += `<tr>
-                        <td style="border: none; text-align:center;">${(element.part_number != null ? element.part_number : '')}</td>
+                        <td style="border: none; text-align:center;">${(element.producto_part_number != null ? element.producto_part_number :(element.part_number !=null ?element.part_number:''))}</td>
                         <td style="border: none; text-align:left;">${element.producto_descripcion != null ? element.producto_descripcion : (element.descripcion ? element.descripcion : '')}</td>
                         <td style="border: none; text-align:center;">${element.abreviatura != null ? element.abreviatura : ''}</td>
                         <td style="border: none; text-align:center;">${element.cantidad > 0 ? element.cantidad : ''}</td>
                         <td style="border: none; text-align:center;">${element.precio_unitario > 0 ? element.precio_unitario : ''}</td>
                         <td style="border: none; text-align:center;">${parseFloat(element.subtotal) > 0 ? $.number(element.subtotal, 2) : $.number((element.cantidad * element.precio_unitario), 2)}</td>
                         <td style="border: none; text-align:center;">${element.motivo != null ? element.motivo : ''}</td>
-                        <td style="border: none; text-align:center;">${stock_comprometido != null ? stock_comprometido : ''}</td>
+                        <td style="border: none; text-align:center;">${cantidad_atendido_almacen != null ? cantidad_atendido_almacen : ''}</td>
                         <td style="border: none; text-align:center;">${element.estado_doc != null ? element.estado_doc : ''}</td>
                         </tr>`;
                 }
@@ -974,39 +979,62 @@ class OrdenView {
 
     vincularRequerimiento(idRequerimiento) {
         let i = 0;
+        let cantidadItemSinMapear =0;
         this.ordenCtrl.obtenerDetalleRequerimientos(idRequerimiento).then((res) => {
             res.forEach((element) => {
                 if (element.tiene_transformacion == false) {
-                    i++;
-                    this.agregarProducto([{
-                        'id': this.makeId(),
-                        'cantidad': 1,
-                        'cantidad_a_comprar': 1,
-                        'codigo_item': null,
-                        'codigo_producto': element.producto_codigo,
-                        'codigo_requerimiento': element.codigo_requerimiento,
-                        'descripcion_adicional': null,
-                        'descripcion_producto': element.producto_descripcion != null ? element.producto_descripcion : element.descripcion,
-                        'estado': 0,
-                        'garantia': null,
-                        'id_detalle_orden': null,
-                        'id_detalle_requerimiento': element.id_detalle_requerimiento,
-                        'id_item': null,
-                        'id_tipo_item': 1,
-                        'id_producto': element.id_producto,
-                        'id_requerimiento': element.id_requerimiento,
-                        'id_unidad_medida': element.id_unidad_medida,
-                        'lugar_despacho': null,
-                        'part_number': (!element.id_producto > 0 ? '(Sin mapear)' : (element.part_number ? element.part_number : '')),
-                        'precio_unitario': 0,
-                        'id_moneda': 1,
-                        'stock_comprometido': null,
-                        'subtotal': 0,
-                        'producto_regalo': false,
-                        'tiene_transformacion': false,
-                        'unidad_medida': element.abreviatura
-                    }]);
+                    if (element.id_producto > 0) {
+                        i++;
 
+                        let cantidad_atendido_almacen = 0;
+                        if (element.reserva.length > 0) {
+                            (element.reserva).forEach(reserva => {
+                                if(reserva.estado ==1){
+                                    cantidad_atendido_almacen += parseFloat(reserva.stock_comprometido);
+                                }
+                            });
+                        }
+                        let cantidad_atendido_orden = 0;
+                        if (element.ordenes_compra.length > 0) {
+                            (element.ordenes_compra).forEach(orden => {
+                                cantidad_atendido_orden += parseFloat(orden.cantidad);
+                            });
+                        }
+                        // console.log(element);
+                        this.agregarProducto([{
+                            'id': this.makeId(),
+                            'cantidad': 1,
+                            'cantidad_atendido_almacen':cantidad_atendido_almacen,
+                            'cantidad_atendido_orden':cantidad_atendido_orden,
+                            'cantidad_a_comprar': 1,
+                            'codigo_item': null,
+                            'codigo_producto': element.producto_codigo,
+                            'codigo_requerimiento': element.codigo_requerimiento,
+                            'descripcion_adicional': null,
+                            'descripcion_producto': element.producto_descripcion != null ? element.producto_descripcion : element.descripcion,
+                            'estado': 0,
+                            'garantia': null,
+                            'id_detalle_orden': null,
+                            'id_detalle_requerimiento': element.id_detalle_requerimiento,
+                            'id_item': null,
+                            'id_tipo_item': 1,
+                            'id_producto': element.id_producto,
+                            'id_requerimiento': element.id_requerimiento,
+                            'id_unidad_medida': element.id_unidad_medida,
+                            'lugar_despacho': null,
+                            'part_number': (!element.id_producto > 0 ? '(Sin mapear)' : ((element.producto_part_number != null ? element.producto_part_number :''))),
+                            'precio_unitario': 0,
+                            'id_moneda': 1,
+                            'stock_comprometido': null,
+                            'subtotal': 0,
+                            'producto_regalo': false,
+                            'tiene_transformacion': false,
+                            'unidad_medida': element.abreviatura
+                        }]);
+
+                    }else{
+                        cantidadItemSinMapear++;
+                    }
                 }
             });
 
@@ -1014,7 +1042,12 @@ class OrdenView {
                 this.estadoVinculoRequerimiento({ 'mensaje': `Se agregó ${i} Item(s) a la orden`, 'estado': '200' })
 
             } else {
-                this.estadoVinculoRequerimiento({ 'mensaje': `No se puedo agregar Item(s) a la orden`, 'estado': '204' })
+                if(cantidadItemSinMapear>0){
+                    this.estadoVinculoRequerimiento({ 'mensaje': `No se puede agregar item(s) a la orden, tiene ${cantidadItemSinMapear} items sin mapear`, 'estado': '204' })
+                }else{
+                    this.estadoVinculoRequerimiento({ 'mensaje': `No se puede agregar item(s) a la orden`, 'estado': '204' })
+
+                }
 
             }
 
@@ -1027,15 +1060,23 @@ class OrdenView {
     }
 
     estadoVinculoRequerimiento(resolve) {
+        let tipoMensaje='';
         if (resolve.estado == '200') {
-            alert(resolve.mensaje);
+            tipoMensaje= 'success'
             $('#modal-vincular-requerimiento-orden').modal('hide');
         } else {
-            alert(resolve.mensaje);
+            tipoMensaje= 'warning'
 
         }
 
-
+        Lobibox.notify(tipoMensaje, {
+            title:false,
+            size: 'mini',
+            rounded: true,
+            sound: false,
+            delayIndicator: false,
+            msg: resolve.mensaje
+        });
     }
 
 

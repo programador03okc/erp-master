@@ -980,7 +980,7 @@ class OrdenController extends Controller
         ->leftjoin('logistica.log_ord_compra_pago','log_ord_compra_pago.id_orden_compra','=','log_ord_compra.id_orden_compra')
 
         ->where([
-            // ['log_ord_compra.codigo', '=', 'OC-21060042'],
+            // ['log_ord_compra.codigo', '=', 'OC-21090191'],
             ['log_ord_compra.estado', '!=', 7],
             ['log_ord_compra.id_grupo_cotizacion', '=', null],
             $tipoOrden >0 ? ['log_ord_compra.id_tp_documento',$tipoOrden]:[null],
@@ -1062,7 +1062,7 @@ class OrdenController extends Controller
                     'monto_total_presup'=> $element->monto_total_presup,
                     'monto_total_orden'=> $element->monto_total_orden,
                     'facturas'=> $this->obtenerFacturas($element->id_orden_compra),
-                    'codigo_requerimiento'=> []
+                    'requerimientos'=> $element->requerimientos
                     
                 ];
             }
@@ -1119,15 +1119,15 @@ class OrdenController extends Controller
         foreach ($data_orden as $ordenKey => $ordenValue) {
             foreach ($data_detalle_orden as $detalleOrdnKey => $detalleOrdenValue) {
                 if($ordenValue['id_orden_compra'] == $detalleOrdenValue['id_orden_compra']){
-                    if(in_array($detalleOrdenValue['codigo_requerimiento'],$data_orden[$ordenKey]['codigo_requerimiento'])==false){
-                        $data_orden[$ordenKey]['requerimientos'][]=['id_requerimiento'=>$detalleOrdenValue['id_requerimiento'], 'codigo'=> $detalleOrdenValue['codigo_requerimiento']];
+                    // if(in_array($detalleOrdenValue['codigo_requerimiento'],$data_orden[$ordenKey]['codigo_requerimiento'])==false){
+                        // $data_orden[$ordenKey]['requerimientos'][]=['id_requerimiento'=>$detalleOrdenValue['id_requerimiento'], 'codigo'=> $detalleOrdenValue['codigo_requerimiento']];
                         $data_orden[$ordenKey]['codigo_oportunidad']=$detalleOrdenValue['codigo_oportunidad'];
                         $data_orden[$ordenKey]['fecha_vencimiento_ocam']=$detalleOrdenValue['fecha_entrega'];
                         $data_orden[$ordenKey]['fecha_ingreso_almacen']=$detalleOrdenValue['fecha_ingreso_almacen'];
                         $data_orden[$ordenKey]['estado_aprobacion_cc']=$detalleOrdenValue['estado_aprobacion'];
                         $data_orden[$ordenKey]['fecha_estado']=$detalleOrdenValue['fecha_estado'];
                         $data_orden[$ordenKey]['fecha_registro_requerimiento']=$detalleOrdenValue['fecha_registro_requerimiento'];
-                    }
+                    // }
                 }
             }
         }

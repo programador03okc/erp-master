@@ -20,7 +20,6 @@
         <div class="col-md-12">
             <fieldset class="group-table">
                 <div id="form-listaProveedores">
-                    <button type="button" id="btnCrearProveedor" class="btn btn-sm btn-success pull-right handleClickNuevoProveedor"  style="margin-left:5px;" ><i class="fas fa-new"></i>Nuevo</button>
                     <table class="mytable table table-hover table-condensed table-striped table-bordered table-okc-view" id="listaProveedores" width="100%">
                         <thead>
                             <tr>
@@ -59,20 +58,23 @@
     <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
     <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
  
     <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
-    <script src="{{('/js/logistica/proveedores/listarProveedorView.js?v=4')}}"></script>
-    <script src="{{('/js/logistica/proveedores/ProveedorController.js?v=4')}}"></script>
-    <script src="{{('/js/logistica/proveedores/ProveedorModel.js?v=4')}}"></script>
-    <script src="{{ asset('js/publico/ubigeoModal.js?v=4')}}"></script>
+    <script src="{{('/js/logistica/proveedores/listarProveedorView.js')}}?v={{filemtime(public_path('/js/logistica/proveedores/listarProveedorView.js'))}}"></script>
+    <script src="{{('/js/logistica/proveedores/ProveedorController.js')}}?v={{filemtime(public_path('/js/logistica/proveedores/ProveedorController.js'))}}"></script>
+    <script src="{{('/js/logistica/proveedores/ProveedorModel.js')}}?v={{filemtime(public_path('/js/logistica/proveedores/ProveedorModel.js'))}}"></script>
+    <script src="{{ asset('js/publico/ubigeoModal.js')}}?v={{filemtime(public_path('js/publico/ubigeoModal.js'))}}"></script>
 
 
 
     <script>
         $(document).ready(function() {
             seleccionarMenu(window.location);
+            
             const proveedorModel = new ProveedorModel();
             const proveedorController = new ProveedorCtrl(proveedorModel);
             const listarProveedorView = new ListarProveedorView(proveedorController);

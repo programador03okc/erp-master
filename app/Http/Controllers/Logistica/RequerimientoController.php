@@ -614,6 +614,10 @@ class RequerimientoController extends Controller
             $count = count($request->descripcion);
             $montoTotal = 0;
             for ($i = 0; $i < $count; $i++) {
+                if ($request->cantidad[$i]<=0) {
+                    return response()->json(['id_requerimiento' => 0, 'codigo' => '', 'mensaje' => 'La cantidad solicitada debe ser mayor a 0']);
+                }
+                
                 $detalle = new DetalleRequerimiento();
                 $detalle->id_requerimiento = $requerimiento->id_requerimiento;
                 $detalle->id_tipo_item = $request->tipoItem[$i];
@@ -708,10 +712,10 @@ class RequerimientoController extends Controller
 
             DB::commit();
             // TODO: ENVIAR CORREO AL APROBADOR DE ACUERDO AL MONTO SELECCIONADO DEL REQUERIMIENTO
-            return response()->json(['id_requerimiento' => $requerimiento->id_requerimiento, 'codigo' => $requerimiento->codigo]);
+            return response()->json(['id_requerimiento' => $requerimiento->id_requerimiento, 'mensaje' => 'Se guardó el requerimiento con código '.$requerimiento->codigo]);
         } catch (Exception $e) {
             DB::rollBack();
-            return response()->json(['id_requerimiento' => 0, 'codigo' => '', 'mensaje' => 'Hubo un problema al guardar el requerimiento. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
+            return response()->json(['id_requerimiento' => 0, 'mensaje' => 'Hubo un problema al guardar el requerimiento. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
         }
     }
 

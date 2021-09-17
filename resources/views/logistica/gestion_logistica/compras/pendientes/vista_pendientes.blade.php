@@ -108,13 +108,15 @@ Requerimientos pendientes
 <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 <script src="{{ asset('template/plugins/datetime-moment.js') }}"></script>
 <script src="{{ asset('template/plugins/iCheck/icheck.min.js') }}"></script>
+<script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
+<script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
 
-<script src="{{('/js/logistica/orden/RequerimientoPendienteModel.js?v=10')}}"></script>
-<script src="{{('/js/logistica/orden/RequerimientoPendienteView.js?v=11')}}"></script>
-<script src="{{('/js/logistica/orden/RequerimientoPendienteController.js?v=10')}}"></script>
+<script src="{{('/js/logistica/orden/RequerimientoPendienteModel.js')}}?v={{filemtime(public_path('/js/logistica/orden/RequerimientoPendienteModel.js'))}}"></script>
+<script src="{{('/js/logistica/orden/RequerimientoPendienteView.js')}}?v={{filemtime(public_path('/js/logistica/orden/RequerimientoPendienteView.js'))}}"></script>
+<script src="{{('/js/logistica/orden/RequerimientoPendienteController.js')}}?v={{filemtime(public_path('/js/logistica/orden/RequerimientoPendienteController.js'))}}"></script>
 
-<script src="{{ asset('js/logistica/mapeo/mapeoItemsRequerimiento.js?v=10')}}"></script>
-<script src="{{ asset('js/logistica/mapeo/mapeoAsignarProducto.js?v=10')}}"></script>
+<script src="{{ asset('js/logistica/mapeo/mapeoItemsRequerimiento.js')}}?v={{filemtime(public_path('js/logistica/mapeo/mapeoItemsRequerimiento.js'))}}"></script>
+<script src="{{ asset('js/logistica/mapeo/mapeoAsignarProducto.js')}}?v={{filemtime(public_path('js/logistica/mapeo/mapeoAsignarProducto.js'))}}"></script>
 
 
 <script>

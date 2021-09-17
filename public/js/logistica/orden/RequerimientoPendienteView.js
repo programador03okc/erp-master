@@ -17,14 +17,19 @@ var trRequerimientosPendientes;
 class RequerimientoPendienteView {
     constructor(requerimientoPendienteCtrl){
         this.requerimientoPendienteCtrl = requerimientoPendienteCtrl;
+        $.fn.dataTable.Buttons.defaults.dom.button.className = 'btn';
+        
         vista_extendida();
-
     }
 
     initializeEventHandler(){
         // $('#modal-atender-con-almacen').on("click","button.handleClickGuardarAtendidoConAlmacen", ()=>{
         //     this.guardarAtendidoConAlmacen();
         // });
+
+        $('#modal-filtro-requerimientos-pendientes').on("click","input[type=checkbox]", (e)=>{
+            this.estadoCheckFiltroRequerimientosPendientes(e);
+        });
 
         $('#requerimientos_pendientes').on("click","button.handleClickCrearOrdenCompra", ()=>{
             this.crearOrdenCompra();
@@ -94,6 +99,21 @@ class RequerimientoPendienteView {
         });
 
         
+    }
+
+    estadoCheckFiltroRequerimientosPendientes(e){
+        switch (e.currentTarget.getAttribute('name')) {
+            case 'chkEmpresa':
+                if(e.currentTarget.checked == true){
+                    document.querySelector("div[id='modal-filtro-requerimientos-pendientes'] select[name='empresa']").removeAttribute("disabled")
+                }else{
+                    document.querySelector("div[id='modal-filtro-requerimientos-pendientes'] select[name='empresa']").setAttribute("disabled",true)
+                }
+                break;
+        
+            default:
+                break;
+        }
     }
 
     renderRequerimientoPendienteList(empresa,sede,fechaRegistroDesde,fechaRegistroHasta, reserva, orden) {
@@ -199,7 +219,31 @@ class RequerimientoPendienteView {
 
         tablaListaRequerimientosPendientes= $('#listaRequerimientosPendientes').DataTable({
             'dom': vardataTables[1],
-            'buttons': [],
+            'buttons': [
+                {
+                    text: '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Nuevo',
+                    attr:  {
+                        disabled: true,
+                        id: 'btnCrearOrdenCompra'
+                    },
+                    action: ()=>{
+                        this.crearOrdenCompra();
+
+                    },
+                    className: 'btn-warning btn-sm'
+                },
+                {
+                    text: '<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : 0',
+                    attr:  {
+                        id: 'btnFiltrosRequerimientosPendientes'
+                    },
+                    action: ()=>{
+                        this.abrirModalFiltrosRequerimientosPendientes();
+
+                    },
+                    className: 'btn-default btn-sm'
+                }
+            ],
             'language': vardataTables[0],
             'order': [[0, 'desc']],
             'destroy': true,
@@ -316,26 +360,6 @@ class RequerimientoPendienteView {
 
                     }
                 }
-
-                let listaRequerimientosPendientes_filter = document.querySelector("div[id='listaRequerimientosPendientes_filter']");
-
-                let buttonCrearOrden = document.createElement("button");
-                buttonCrearOrden.type = "button";
-                buttonCrearOrden.id = "btnCrearOrdenCompra";
-                buttonCrearOrden.className = "btn btn-warning pull-left";
-                buttonCrearOrden.style = "margin-right: 30px;";
-                buttonCrearOrden.disabled = true;
-                buttonCrearOrden.innerHTML = "<i class='fas fa-file-invoice'></i> Crear orden";
-                buttonCrearOrden.addEventListener('click', that.crearOrdenCompra.bind(that), false);
-                listaRequerimientosPendientes_filter.appendChild(buttonCrearOrden);
-
-                let buttonFiler = document.createElement("button");
-                buttonFiler.type = "button";
-                buttonFiler.className = "btn btn-default pull-left";
-                buttonFiler.style = "margin-right: 30px;";
-                buttonFiler.innerHTML = "<i class='fas fa-filter'></i> Filtros";
-                buttonFiler.addEventListener('click', that.abrirModalFiltrosRequerimientosPendientes, false);
-                listaRequerimientosPendientes_filter.appendChild(buttonFiler);
 
             },
             'columnDefs': [

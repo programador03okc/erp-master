@@ -1849,7 +1849,7 @@ class RequerimientoView {
                                 rounded: true,
                                 sound: false,
                                 delayIndicator: false,
-                                msg: `Se ha creado el requerimiento ${response.codigo}`
+                                msg: response.mensaje
                             });
                             this.RestablecerFormularioRequerimiento();
                         } else {
@@ -1857,7 +1857,7 @@ class RequerimientoView {
                             console.log(response);
                             Swal.fire(
                                 '',
-                                'Lo sentimos hubo un error en el servidor al intentar guardar el requerimiento, por favor vuelva a intentarlo',
+                                response.mensaje,
                                 'error'
                             );
                         }

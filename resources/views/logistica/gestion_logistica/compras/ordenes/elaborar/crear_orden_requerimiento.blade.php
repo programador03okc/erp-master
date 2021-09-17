@@ -381,17 +381,17 @@ Elaborar orden
 <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
 <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
 <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
-<script src="{{('/js/logistica/orden/modal_proveedor.js?v=4')}}"></script>
-<script src="{{('/js/logistica/add_proveedor.js')}}"></script>
-<script src="{{ asset('js/publico/ubigeoModal.js')}}"></script>
-<script src="{{('/js/logistica/orden/proveedorContactoModal.js')}}"></script>
-<script src="{{('/js/logistica/orden/trabajadorModal.js')}}"></script>
-<script src="{{('/js/logistica/orden/agregarContacto.js')}}"></script>
-<script src="{{('/js/logistica/orden/cuentasBancariasProveedor.js')}}"></script>
-<script src="{{ asset('js/publico/consulta_sunat.js')}}"></script>
-<script src="{{('/js/logistica/orden/OrdenModel.js?v=2')}}"></script>
-<script src="{{('/js/logistica/orden/OrdenView.js?v=5')}}"></script>
-<script src="{{('/js/logistica/orden/OrdenController.js?v=3')}}"></script>
+<script src="{{('/js/logistica/orden/modal_proveedor.js')}}?v={{filemtime(public_path('/js/logistica/orden/modal_proveedor.js'))}}"></script>
+<script src="{{('/js/logistica/add_proveedor.js')}}?v={{filemtime(public_path('/js/logistica/add_proveedor.js'))}}"></script>
+<script src="{{ asset('js/publico/ubigeoModal.js')}}?v={{filemtime(public_path('js/publico/ubigeoModal.js'))}}"></script>
+<script src="{{('/js/logistica/orden/proveedorContactoModal.js')}}?v={{filemtime(public_path('/js/logistica/orden/proveedorContactoModal.js'))}}"></script>
+<script src="{{('/js/logistica/orden/trabajadorModal.js')}}?v={{filemtime(public_path('/js/logistica/orden/trabajadorModal.js'))}}"></script>
+<script src="{{('/js/logistica/orden/agregarContacto.js')}}?v={{filemtime(public_path('/js/logistica/orden/agregarContacto.js'))}}"></script>
+<script src="{{('/js/logistica/orden/cuentasBancariasProveedor.js')}}?v={{filemtime(public_path('/js/logistica/orden/cuentasBancariasProveedor.js'))}}"></script>
+<script src="{{ asset('js/publico/consulta_sunat.js')}}?v={{filemtime(public_path('js/publico/consulta_sunat.js'))}}"></script>
+<script src="{{('/js/logistica/orden/OrdenModel.js')}}?v={{filemtime(public_path('/js/logistica/orden/OrdenModel.js'))}}"></script>
+<script src="{{('/js/logistica/orden/OrdenView.js')}}?v={{filemtime(public_path('/js/logistica/orden/OrdenView.js'))}}"></script>
+<script src="{{('/js/logistica/orden/OrdenController.js')}}?v={{filemtime(public_path('/js/logistica/orden/OrdenController.js'))}}"></script>
 
 
 <script>

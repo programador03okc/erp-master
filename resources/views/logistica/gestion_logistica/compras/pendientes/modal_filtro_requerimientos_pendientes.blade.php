@@ -18,9 +18,9 @@
                         <fieldset class="group-table">
                             <div class="row">
                                 <div class="col-md-4">
-                                    <label title="Empresa">
-                                        Empresa
-                                    </label> 
+                                        <label>
+                                            <input type="hidden" name="chkEmpresa" style="margin-right: 3px;"> Empresa
+                                        </label>
                                 </div>
                                 <div class="col-md-8">
                                     <select class="form-control input-sm handleChangeFiltroEmpresa" name="empresa" >
@@ -33,26 +33,26 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-4">
-                                    <label title="Sede">
-                                        Sede
+                                    <label>
+                                        <input type="hidden" name="chkSede" style="margin-right: 3px;" > Sede
                                     </label> 
                                 </div>
                                 <div class="col-md-8">
-                                    <select class="form-control input-sm" name="sede" >
+                                    <select class="form-control input-sm" name="sede">
                                         <option value="SIN_FILTRO">-----------------</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-4">
-                                    <label title="Sede">
-                                        Fecha registro
+                                    <label>
+                                        <input type="hidden" name="chkFechaRegistro" style="margin-right: 3px;"> Fecha registro
                                     </label> 
                                 </div>
                                 <div class="col-md-8">
                                     <div style="display:flex;">
-                                        <input type="date" class="form-control input-sm" name="fechaRegistroDesde" >
-                                        <input type="date" class="form-control input-sm" name="fechaRegistroHasta" >
+                                        <input type="date" class="form-control input-sm" name="fechaRegistroDesde">
+                                        <input type="date" class="form-control input-sm" name="fechaRegistroHasta">
                                     </div>
                                 </div>
                             </div>
@@ -61,12 +61,12 @@
                         <fieldset class="group-table">
                             <div class="row">
                                 <div class="col-md-4">
-                                    <label title="Empresa">
-                                        Reserva almacén
+                                    <label>
+                                        <input type="hidden" name="chkReservaAlmacen" style="margin-right: 3px;"> Reserva almacén
                                     </label> 
                                 </div>
                                 <div class="col-md-8">
-                                    <select class="form-control input-sm" name="reserva" >
+                                    <select class="form-control input-sm" name="reserva">
                                         <option value="SIN_FILTRO">-----------------</option>
                                         <option value="SIN_RESERVA">Sin reservas</option>
                                         <option value="CON_RESERVA">Con reservas</option>
@@ -75,12 +75,12 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-4">
-                                    <label title="Empresa">
-                                        Orden
+                                    <label>
+                                        <input type="hidden" name="chkOrden" style="margin-right: 3px;"> Orden
                                     </label> 
                                 </div>
                                 <div class="col-md-8">
-                                    <select class="form-control input-sm" name="orden" >
+                                    <select class="form-control input-sm" name="orden">
                                         <option value="SIN_FILTRO">-----------------</option>
                                         <option value="SIN_ORDEN">Sin orden</option>
                                         <option value="CON_ORDEN">Con orden</option>

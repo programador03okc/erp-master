@@ -7,13 +7,12 @@ class ListarProveedorView {
         this.objectBtnEditionContacto;
         this.objectBtnEditionCuenta;
         this.objectBtnEditionEstablecimiento;
+        $.fn.dataTable.Buttons.defaults.dom.button.className = 'btn';
 
     }
 
     initializeEventHandler() {
-        $('#form-listaProveedores').on("click", "button.handleClickNuevoProveedor", () => {
-            this.nuevoProveedor();
-        });
+    
         // ver
         $('#form-listaProveedores').on("click", "button.handleClickVerDetalleProveedor", (e) => {
             this.verProveedor(e.currentTarget);
@@ -155,7 +154,30 @@ class ListarProveedorView {
         var vardataTables = funcDatatables();
         let $tablaListaProveedores = $('#listaProveedores').DataTable({
             'dom': vardataTables[1],
-            'buttons': vardataTables[2],
+            'buttons': [
+                {
+                    text: '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Nuevo',
+                    attr:  {
+                        id: 'btnCrearProveedor'
+                    },
+                    action: ()=>{
+                        this.nuevoProveedor();
+
+                    },
+                    className: 'btn-success btn-sm'
+                },
+                // {
+                //     text: '<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : 0',
+                //     attr:  {
+                //         id: 'btnFiltrosProveedor'
+                //     },
+                //     action: ()=>{
+                //         this.abrirFiltrosProveedor();
+
+                //     },
+                //     className: 'btn-default btn-sm'
+                // }
+            ],
             'language': vardataTables[0],
             'order': [[2, 'asc']],
             'bLengthChange': false,
