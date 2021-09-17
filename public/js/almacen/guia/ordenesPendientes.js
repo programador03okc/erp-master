@@ -98,6 +98,10 @@ function listarOrdenesPendientes() {
         }
     });
 
+    var fini = '';
+    var ffin = '';
+    var alma = '';
+
     table = $("#ordenesPendientes").DataTable({
         dom: vardataTables[1],
         buttons: botones,
@@ -124,13 +128,17 @@ function listarOrdenesPendientes() {
                 `<div style="display:flex">
                     <input type="date" class="form-control" id="fecha_inicio"/>
                     <input type="date" class="form-control" id="fecha_fin"/>
-                    <select class="form-control" name="id_almacen_ordenes">
+                    <select class="form-control" id="id_almacen_filtro_ordenes">
                         <option value="0" selected>Mostrar Todos</option>
                     </select>
                 </div>`
             );
             $('#fecha_inicio').val(suma_fecha(-60, fecha_actual()));
             $('#fecha_fin').val(fecha_actual());
+
+            fini = $('#fecha_inicio').val();
+            ffin = $('#fecha_fin').val();
+            alma = $('#id_almacen_filtro_ordenes').val();
         },
         drawCallback: function (settings) {
             $("#ordenesPendientes_filter input").prop("disabled", false);
@@ -144,7 +152,12 @@ function listarOrdenesPendientes() {
         },
         ajax: {
             url: "listarOrdenesPendientes",
-            type: "POST"
+            type: "POST",
+            data: {
+                fecha_inicio: fini,
+                fecha_fin: ffin,
+                id_almacen: alma
+            }
         },
         columns: [
             { data: "id_orden_compra" },
@@ -329,7 +342,17 @@ function listarAlmacenes() {
         dataType: "JSON",
         success: function (response) {
             console.log(response);
-
+            var option = '<option value="0">Todos los almacenes</option>';
+            response.forEach(element => {
+                if (response.length == 1) {
+                    option +=
+                        '<option value="' + element.id_almacen + '" selected>' + element.descripcion + "</option>";
+                } else {
+                    option +=
+                        '<option value="' + element.id_almacen + '">' + element.descripcion + "</option>";
+                }
+            });
+            $("[name=id_almacen_filtro_ordenes]").html(option);
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);

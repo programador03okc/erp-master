@@ -1720,6 +1720,7 @@ Route::group(['middleware' => ['auth']], function () {
 	});
 */
 
+	Route::get('pruebaR', 'Almacen\Movimiento\OrdenesPendientesController@pruebaR');
 	Route::get('documentos_ver/{id}', 'OrdenesPendientesController@documentos_ver');
 
 	Route::get('transformacion_nextId/{fec}/{id}', 'CustomizacionController@transformacion_nextId');

@@ -68,8 +68,13 @@ class OrdenesPendientesController extends Controller
         ));
     }
 
-    public function listarOrdenesPendientes()
+    public function listarOrdenesPendientes(Request $request)
     {
+        // if ($request->id_almacen == '0') {
+        //     $array_almacen = $this->almacenesPorUsuarioArray();
+        // } else {
+        //     $array_almacen[] = [$request->id_almacen];
+        // }
         $data = DB::table('logistica.log_ord_compra')
             ->select(
                 'log_ord_compra.*',
@@ -94,7 +99,10 @@ class OrdenesPendientesController extends Controller
                 ['log_ord_compra.estado', '!=', 7],
                 ['log_ord_compra.en_almacen', '=', false],
                 ['log_ord_compra.id_tp_documento', '=', 2]
-            ]); //Orden de Compra
+            ]);
+        // ->whereDate('log_ord_compra.fecha', '>=', $request->fecha_inicio)
+        // ->whereDate('log_ord_compra.fecha', '<=', $request->fecha_fin)
+        // ->whereIn('alm_req.id_almacen', $array_almacen);
 
         return datatables($data)->toJson();
     }
@@ -986,11 +994,14 @@ class OrdenesPendientesController extends Controller
                 $stock = DB::table('almacen.alm_reserva')
                     ->select(DB::raw('SUM(stock_comprometido) AS suma_stock'))
                     ->where('id_detalle_requerimiento', $det->id_detalle_requerimiento)
-                    ->whereNull('id_guia_com_det', 'id_trans_detalle', 'id_transformado', 'id_materia')
+                    ->whereNull('id_guia_com_det')
+                    ->whereNull('id_trans_detalle')
+                    ->whereNull('id_transformado')
+                    ->whereNull('id_materia')
                     ->first();
 
                 if ($dreq !== null) {
-                    if ($dreq->cantidad <= ($ant_oc->suma_cantidad + $stock->suma_stock)) {
+                    if ($dreq->cantidad <= (floatval($ant_oc->suma_cantidad) + floatval($stock !== null ? $stock->suma_stock : 0))) {
                         DB::table('almacen.alm_det_req')
                             ->where('id_detalle_requerimiento', $det->id_detalle_requerimiento)
                             ->update([
@@ -1049,6 +1060,18 @@ class OrdenesPendientesController extends Controller
                     ]);
             }
         }
+    }
+    public function pruebaR()
+    {
+        $stock = DB::table('almacen.alm_reserva')
+            ->select(DB::raw('SUM(stock_comprometido) AS suma_stock'))
+            ->where('id_detalle_requerimiento', 3184)
+            ->whereNull('id_guia_com_det')
+            ->whereNull('id_trans_detalle')
+            ->whereNull('id_transformado')
+            ->whereNull('id_materia')
+            ->first();
+        return response()->json($stock !== null ? $stock->suma_stock : 0);
     }
     public function reservaNextCodigo($id_almacen)
     {
