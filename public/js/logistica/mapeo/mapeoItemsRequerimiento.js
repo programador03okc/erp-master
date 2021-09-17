@@ -224,8 +224,14 @@ $("#form-mapeoItemsRequerimiento").on("submit", function (e) {
             $("#submit_orden_despacho").attr('disabled', 'true');
             let lista = [];
             let contidadMapeado = 0;
-            let cantidadTotalItem = detalle.length;
+            let cantidadTotalItemBase = 0;
             detalle.forEach(element => {
+                //cantidad item sin transformado 
+                if(element.tiene_transformacion ==false){
+                    cantidadTotalItemBase++;
+                }
+
+
                 if (element.id_producto != null) {
                     contidadMapeado++;
                 }
@@ -270,9 +276,9 @@ $("#form-mapeoItemsRequerimiento").on("submit", function (e) {
                         $('#modal-mapeoItemsRequerimiento').modal('hide');
 
                         if (objBtnMapeo != undefined) {
-                            let cantidadPorMapear = parseInt(cantidadTotalItem) - parseInt(contidadMapeado);
+                            let cantidadPorMapear = parseInt(cantidadTotalItemBase) - parseInt(contidadMapeado);
                             // console.log(objBtnMapeo.closest("div"));
-                            // console.log(cantidadTotalItem);
+                            // console.log(cantidadTotalItemBase);
                             // console.log(contidadMapeado);
                             if (contidadMapeado > 0) {
                                 let divBtnGroup = objBtnMapeo.closest("div");

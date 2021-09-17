@@ -3428,7 +3428,7 @@ class RequerimientoController extends Controller
     }
     public function todoDetalleRequerimiento($idRequerimiento, $transformadosONoTransformados)
     {
-        $detalleRequerimiento = DetalleRequerimiento::where("id_requerimiento", $idRequerimiento)
+        $detalleRequerimiento = DetalleRequerimiento::where([["id_requerimiento", $idRequerimiento],["estado",'!=',7]])
             ->when(($transformadosONoTransformados === 'SIN_TRANSFORMACION'), function ($query) {
                 return $query->where('tiene_transformacion', false);
             })
@@ -3438,7 +3438,6 @@ class RequerimientoController extends Controller
             ->with(['unidadMedida', 'producto', 'reserva' => function ($q) {
                 $q->where('alm_reserva.estado', '=', 1);
             }, 'reserva.almacen', 'reserva.usuario', 'reserva.usuario.trabajador.postulante.persona', 'reserva.estado', 'estado'])
-
             ->get();
 
         if ($detalleRequerimiento) {

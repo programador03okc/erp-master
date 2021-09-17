@@ -659,6 +659,7 @@ class RequerimientoPendienteView {
     }
 
     construirTablaListaItemsRequerimientoParaAtenderConAlmacen(data) { 
+        console.log(data);
         $('#listaItemsRequerimientoParaAtenderConAlmacen').dataTable({
             'dom': vardataTables[1],
             'buttons': [],
@@ -691,7 +692,7 @@ class RequerimientoPendienteView {
                 },
                 {
                     render: function (data, type, row) {
-                        return ((row.descripcion!= null && row.descripcion!= '')?row.descripcion:(row.producto.descripcion !=null?row.producto.descripcion:''));
+                        return ((row.producto && row.producto.descripcion!= null && row.producto.descripcion!= '')?row.producto.descripcion:(row.descripcion !=null?row.descripcion:''));
                     }
                 },
                 {
@@ -986,7 +987,6 @@ class RequerimientoPendienteView {
         if(!idProducto,!idDetalleRequerimiento >0 ){
             mensaje+='<li style="text-align: left;">El producto / item de requerimiento no tiene un ID valido.</li>';
         }
-        console.log(cantidadReserva);
         if(!parseFloat(cantidadReserva)>0 || parseFloat(cantidadReserva)<0){
             mensaje+='<li style="text-align: left;">Debe ingresar una cantidad a reservar mayor a cero.</li>';
         }
@@ -996,7 +996,6 @@ class RequerimientoPendienteView {
         if(!parseFloat(almacenReserva)>0){
             mensaje+='<li style="text-align: left;">Debe seleccionar un almacén.</li>';
         }
-        console.log(mensaje);
         return mensaje;
     }
 
@@ -1078,10 +1077,7 @@ class RequerimientoPendienteView {
     }
 
     agregarReserva(obj){
-        // console.log(obj);
         let mensajeValidacion = this.validarModalNuevaReserva();
-        console.log(mensajeValidacion.length);
-        console.log((mensajeValidacion.length >0));
         if((mensajeValidacion.length >0)){
             Swal.fire({
                 title:'',
@@ -1108,7 +1104,6 @@ class RequerimientoPendienteView {
                     });
                 },
                 success: (response) =>{
-                    // console.log(response);
                     if (response.id_reserva > 0) {
                         $('#modal-nueva-reserva .modal-content').LoadingOverlay("hide", true);
 
@@ -1163,38 +1158,6 @@ class RequerimientoPendienteView {
         }
     }
 
-
-
-
-    // updateSelectAlmacenAAtender(obj){
-    //     let idValor = obj.value;
-    //     let indiceSelected = obj.dataset.indice;
-    //     itemsParaAtenderConAlmacenList.forEach((element, index) => {
-    //         if (index == indiceSelected) {
-    //             itemsParaAtenderConAlmacenList[index].id_almacen_reserva = parseInt(idValor);
-    //         }
-    //     });
-    //     // console.log(itemsParaAtenderConAlmacenList);
-    // }
-
-
-    // updateInputCantidadAAtender(obj){
-    //     let nuevoValor = obj.value;
-    //     let cantidad = obj.dataset.cantidad;
-    //     if(parseInt(nuevoValor) > parseInt(cantidad) || parseInt(nuevoValor) < 0 ){
-    
-    //         Lobibox.notify('warning', {
-    //             title:false,
-    //             size: 'mini',
-    //             rounded: true,
-    //             sound: false,
-    //             delayIndicator: false,
-    //             msg: `El valor ingresado desborda a la cantidad`
-    //         });
-    //         obj.value=cantidad;
-    //     }
-    // }
-
  
     updateObjCantidadAAtender(indice, valor) {
         itemsParaAtenderConAlmacenList.forEach((element, index) => {
@@ -1203,116 +1166,6 @@ class RequerimientoPendienteView {
             }
         });
     }
-
-    // validarFormularioReservaAlmacen(){
-    //     let cantidadReservaSinAlmacenSeleccionado=0;
-    //     let almacenSeleccionadoSinCantidadAReservar=0;
-    //     let sinAlmacenSeleccionadoSinCantidadAReservar=0;
-    //     let trs =document.querySelectorAll("form[id='form-reserva-almacen'] table[id='listaItemsRequerimientoParaAtenderConAlmacen'] tbody tr");
-    //     if(trs.length >0){
-    //         for (let i = 0; i < trs.length; i++) {
-    //             if(trs[i].querySelector("select[class~='selectAlmacenReserva']").value >0){
-    //                 if(trs[i].querySelector("input[class~='inputCantidadArReservar']").value <=0){
-    //                     almacenSeleccionadoSinCantidadAReservar++;
-    //                 }
-    //             }
-    //             if(trs[i].querySelector("select[class~='selectAlmacenReserva']").value ==0){
-    //                 if(trs[i].querySelector("input[class~='inputCantidadArReservar']").value >0){
-    //                     cantidadReservaSinAlmacenSeleccionado++;
-    //                 }
-    //             }
-    //             if(trs[i].querySelector("select[class~='selectAlmacenReserva']").value ==0){
-    //                 if(trs[i].querySelector("input[class~='inputCantidadArReservar']").value ==0){
-    //                     sinAlmacenSeleccionadoSinCantidadAReservar++;
-    //                 }
-    //             }
-                
-    //         }
-
-    //         if(sinAlmacenSeleccionadoSinCantidadAReservar ==trs.length ){
-    //             Lobibox.notify('warning', {
-    //                 title:false,
-    //                 size: 'mini',
-    //                 rounded: true,
-    //                 sound: false,
-    //                 delayIndicator: false,
-    //                 msg: `No selecciono un almacén ni especificó la cantidad a antender`
-    //             });
-    //         }
-
-    //         if(almacenSeleccionadoSinCantidadAReservar>0){
-    //             Lobibox.notify('warning', {
-    //                 title:false,
-    //                 size: 'mini',
-    //                 rounded: true,
-    //                 sound: false,
-    //                 delayIndicator: false,
-    //                 msg: `selecciono un almacén pero no especificó la cantidad a antender, se omitirá esta reserva`
-    //             });
-    //         }
-
-    //         if(cantidadReservaSinAlmacenSeleccionado>0){
-    //             Lobibox.notify('warning', {
-    //                 title:false,
-    //                 size: 'mini',
-    //                 rounded: true,
-    //                 sound: false,
-    //                 delayIndicator: false,
-    //                 msg: `Especificó la cantidad a antender pero no seleccionó un almacén, se omitirá esta reserva`
-    //             });
-    //         }
-    //     }
-
-    //     return (almacenSeleccionadoSinCantidadAReservar+cantidadReservaSinAlmacenSeleccionado);
-    // }   
-
-    // guardarAtendidoConAlmacen() {
-            // if(this.validarFormularioReservaAlmacen() ==0){
-            //     let formData = new FormData($('#form-reserva-almacen')[0]);
-            //     this.requerimientoPendienteCtrl.guardarAtendidoConAlmacen(formData).then((res) =>{
-            //         if (res.cantidad_items_actualizados>0) {
-            //             // console.log(res.nuevo_estado_requerimiento);
-            //             // console.log(trRequerimientosPendientes);
-            //             if(res.nuevo_estado_requerimiento.id == 28){
-            //                 trRequerimientosPendientes.remove();
-            //                 console.log('remover');
-            //             }else{
-            //                 trRequerimientosPendientes.querySelector("span[class~='estadoRequerimiento']").textContent=res.nuevo_estado_requerimiento.descripcion;
-            //                 console.log('actualizar');
-            //             }
-        
-            //             $('#modal-atender-con-almacen .modal-content').LoadingOverlay("hide", true);
-            //             $('#modal-atender-con-almacen').modal('hide');
-        
-            //             Lobibox.notify('success', {
-            //                 title:false,
-            //                 size: 'mini',
-            //                 rounded: true,
-            //                 sound: false,
-            //                 delayIndicator: false,
-            //                 msg: `Reserva guardada`
-            //             });
-        
-            //         } else {
-            //             $('#modal-atender-con-almacen .modal-content').LoadingOverlay("hide", true);
-            //             console.log(res);
-            //             Swal.fire(
-            //                 '',
-            //                 'Lo sentimos hubo un error en el servidor al intentar guardar la reserva, por favor vuelva a intentarlo',
-            //                 'error'
-            //             );
-            //         }
-            //     }).catch(function (err) {
-            //         console.log(err);
-            //         Swal.fire(
-            //             '',
-            //             'Hubo un problema al intentar guardar la reserva, por favor vuelva a intentarlo',
-            //             'error'
-            //         );
-            //     })
-                
-            // }
-    // }
 
 
     componerTdItemsParaCompra(data, selectCategoria, selectSubCategoria, selectClasCategoria, selectMoneda, selectUnidadMedida) {
