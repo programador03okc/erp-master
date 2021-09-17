@@ -994,6 +994,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('actualizar_categoria', 'Almacen\Catalogo\CategoriaController@update_categoria');
 				Route::get('anular_categoria/{id}', 'Almacen\Catalogo\CategoriaController@anular_categoria');
 				Route::get('revisarCat/{id}', 'Almacen\Catalogo\CategoriaController@cat_revisar');
+				Route::get('mostrar_tipos_clasificacion/{id}', 'Almacen\Catalogo\TipoProductoController@mostrar_tipos_clasificacion');
 			});
 
 			Route::group(['as' => 'sub-categorias.', 'prefix' => 'sub-categorias'], function () {
@@ -1027,6 +1028,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('mostrar_prods_almacen/{id}', 'Almacen\Catalogo\ProductoController@mostrar_prods_almacen');
 				Route::get('mostrar_producto/{id}', 'Almacen\Catalogo\ProductoController@mostrar_producto');
 				Route::get('mostrar_categorias_tipo/{id}', 'Almacen\Catalogo\ProductoController@mostrar_categorias_tipo');
+				Route::get('mostrar_tipos_clasificacion/{id}', 'Almacen\Catalogo\TipoProductoController@mostrar_tipos_clasificacion');
 				Route::post('guardar_producto', 'Almacen\Catalogo\ProductoController@guardar_producto');
 				Route::post('actualizar_producto', 'Almacen\Catalogo\ProductoController@update_producto');
 				Route::get('anular_producto/{id}', 'Almacen\Catalogo\ProductoController@anular_producto');

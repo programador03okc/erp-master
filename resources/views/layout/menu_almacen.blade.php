@@ -11,6 +11,9 @@
             @if(Auth::user()->tieneAplicacion(75))
             <li><a href="{{route('almacen.catalogos.catalogo-productos.index')}}"> Catálogo de Productos</a></li>
             @endif
+            @if(Auth::user()->tieneAplicacion(73))
+            <li><a href="{{route('almacen.catalogos.clasificaciones.index')}}"> Clasificación</a></li>
+            @endif
             @if(Auth::user()->tieneAplicacion(70))
             <li><a href="{{route('almacen.catalogos.tipos.index')}}"> Categoría </a></li>
             @endif
@@ -19,9 +22,6 @@
             @endif
             @if(Auth::user()->tieneAplicacion(72))
             <li><a href="{{route('almacen.catalogos.sub-categorias.index')}}"> Marca</a></li>
-            @endif
-            @if(Auth::user()->tieneAplicacion(73))
-            <li><a href="{{route('almacen.catalogos.clasificaciones.index')}}"> Clasificación</a></li>
             @endif
             @if(Auth::user()->tieneAplicacion(74))
             <li><a href="{{route('almacen.catalogos.productos.index')}}"> Producto</a></li>
