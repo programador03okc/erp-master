@@ -2971,7 +2971,10 @@ class OrdenController extends Controller
 
             $TodoDetalleOrden = OrdenCompraDetalle::where("id_orden_compra", $orden->id_orden_compra)->get();
             $idDetalleProcesado = [];
-            $count = count($request->descripcion);
+ 
+            if(isset($request->cantidadAComprarRequerida)){
+
+            $count = count($request->cantidadAComprarRequerida);
             for ($i = 0; $i < $count; $i++) {
                 $id = $request->idRegister[$i];
                 if (preg_match('/[A-Za-z].*[0-9]|[0-9].*[A-Za-z]/', $id)) // es un id con numeros y letras => es nuevo, insertar
@@ -2990,20 +2993,21 @@ class OrdenController extends Controller
                     $detalle->save();
 
                 }else{ // es un id solo de numerico => actualiza
-                    $detalle = OrdenCompraDetalle::where("id_detalle_orden", $id)->first();
-                    $detalle->id_producto= $request->idProducto[$i];
-                    $detalle->id_detalle_requerimiento=$request->idDetalleRequerimiento[$i];
-                    $detalle->cantidad=$request->cantidadAComprarRequerida[$i];
-                    $detalle->id_unidad_medida=$request->unidad[$i];
-                    $detalle->precio=$request->precioUnitario[$i];
-                    $detalle->descripcion_adicional=$request->descripcion[$i];
-                    $detalle->subtotal= floatval($request->cantidadAComprarRequerida[$i] * $request->precioUnitario[$i]);
-                    $detalle->tipo_item_id=$request->idTipoItem[$i];
-                    $detalle->save();
-
-                    $idDetalleProcesado[] = $detalle->id_detalle_orden;
+                        $detalle = OrdenCompraDetalle::where("id_detalle_orden", $id)->first();
+                        $detalle->id_producto= $request->idProducto[$i];
+                        $detalle->id_detalle_requerimiento=$request->idDetalleRequerimiento[$i];
+                        $detalle->cantidad=$request->cantidadAComprarRequerida[$i];
+                        $detalle->id_unidad_medida=$request->unidad[$i];
+                        $detalle->precio=$request->precioUnitario[$i];
+                        $detalle->descripcion_adicional=$request->descripcion[$i];
+                        $detalle->subtotal= floatval($request->cantidadAComprarRequerida[$i] * $request->precioUnitario[$i]);
+                        $detalle->tipo_item_id=$request->idTipoItem[$i];
+                        $detalle->save();
+    
+                        $idDetalleProcesado[] = $detalle->id_detalle_orden;
 
                 }
+            }
             }
 
             foreach ($TodoDetalleOrden as $detalleOrden) {
