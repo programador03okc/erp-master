@@ -68,7 +68,7 @@ class ProductoController extends Controller
         return response()->json(array('response' => 'ok'), 200);
     }
 
-    public function listarProductosSugeridos(Request $request)
+    public function listarProductosSugeridos()
     {
         $data = [];
         if (session()->has('productFilter_partnumber')) {
@@ -96,8 +96,8 @@ class ProductoController extends Controller
                 ->where('alm_prod.descripcion', session()->get('productFilter_descripcion'))
                 ->get();
         }
-        $output['data'] = $data;
-        return response()->json($output);
+        // $output['data'] = $data;
+        return response()->json($data);
     }
 
     public function mostrar_prods_sugeridos($part_number, $descripcion)

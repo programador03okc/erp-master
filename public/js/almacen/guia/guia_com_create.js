@@ -380,17 +380,22 @@ function abrirProducto(id_producto) {
 }
 
 function actualizarDetalle() {
-    var id_oc = $('[name=id_orden_compra]').val();
-    if (id_oc == '') {
-        var id_oc_seleccionadas = [];
-        oc_seleccionadas.forEach(element => {
-            id_oc_seleccionadas.push(element.id_orden_compra);
-        });
-        var data = 'oc_seleccionadas=' + JSON.stringify(id_oc_seleccionadas);
-        listar_detalle_ordenes_seleccionadas(data);
+    var id_tr = $('[name=id_transformacion]').val();
+    if (id_tr !== '') {
+        listar_detalle_transformacion(id_tr);
     } else {
-        var data = 'oc_seleccionadas=' + JSON.stringify([id_oc]);
-        listar_detalle_ordenes_seleccionadas(data);
+        var id_oc = $('[name=id_orden_compra]').val();
+        if (id_oc == '') {
+            var id_oc_seleccionadas = [];
+            oc_seleccionadas.forEach(element => {
+                id_oc_seleccionadas.push(element.id_orden_compra);
+            });
+            var data = 'oc_seleccionadas=' + JSON.stringify(id_oc_seleccionadas);
+            listar_detalle_ordenes_seleccionadas(data);
+        } else {
+            var data = 'oc_seleccionadas=' + JSON.stringify([id_oc]);
+            listar_detalle_ordenes_seleccionadas(data);
+        }
     }
 }
 

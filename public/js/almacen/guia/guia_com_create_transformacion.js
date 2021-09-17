@@ -30,7 +30,7 @@ let series_transformacion = [];
 function listar_detalle_transformacion(id) {
     oc_det_seleccionadas = [];
     series_transformacion = [];
-
+    $('#detalleOrdenSeleccionadas tbody').html('');
     $.ajax({
         type: 'GET',
         url: 'listarDetalleTransformacion/' + id,

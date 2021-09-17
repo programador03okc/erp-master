@@ -43,7 +43,6 @@
                                                     <table class="mytable table table-condensed table-bordered table-okc-view" style="font-size:0.8em;" width="100%" id="productosSugeridos">
                                                         <thead>
                                                             <tr>
-                                                                <th>#</th>
                                                                 <th>Código</th>
                                                                 <th>PartNumber</th>
                                                                 <th>Marca</th>
