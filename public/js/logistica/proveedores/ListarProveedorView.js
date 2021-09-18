@@ -123,11 +123,41 @@ class ListarProveedorView {
         });
 
         $('#form-proveedor').on("keypress",  (e)=> {
-            if (e.which == 13){
+            if (e.key == 'Enter'){
                 if(document.querySelector("form[id='form-proveedor']").getAttribute("type")=='register'){
                     this.guardarProveedor(e.currentTarget);
                 }else{
                     this.actualizarProveedor(e.currentTarget);
+                }
+
+            };
+        });
+        $('#form-agregar-establecimiento').on("keypress",  (e)=> {
+            if (e.key == 'Enter'){
+                if(document.querySelector("form[id='form-proveedor']").getAttribute("type")=='register'){
+                    this.agregarEstablecimientoAProveedor();
+                }else{
+                    this.actualizarEstablecimiento();
+                }
+
+            };
+        });
+        $('#form-agregar-contacto').on("keypress",  (e)=> {
+            if (e.key == 'Enter'){
+                if(document.querySelector("form[id='form-proveedor']").getAttribute("type")=='register'){
+                    this.agregarContactoAProveedor();
+                }else{
+                    this.actualizarContactoProveedor();
+                }
+
+            };
+        });
+        $('#form-agregar-cuenta-bancaria-proveedor').on("keypress",  (e)=> {
+            if (e.key == 'Enter'){
+                if(document.querySelector("form[id='form-proveedor']").getAttribute("type")=='register'){
+                    this.agregarCuentaBancariaAProveedor();
+                }else{
+                    this.actualizarCuentaBancaria();
                 }
 
             };

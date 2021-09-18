@@ -1,7 +1,7 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-agregar-contacto">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <form id="form-agregar-contacto" method="post">
+            <form id="form-agregar-contacto" onsubmit="return false;">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
                     <h3 class="modal-title">Agregar contacto</h3>

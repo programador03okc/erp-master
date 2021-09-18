@@ -90,6 +90,7 @@ $(document).ready(function () {
 					requerimientoView.RestablecerFormularioRequerimiento();
 					document.getElementsByName("btn-adjuntos-requerimiento")[0].removeAttribute('disabled');
 
+
 				}
 				else if (page == 'proveedores') {
 					nuevo(forms);
@@ -276,7 +277,7 @@ function resizeSide() {
 
 function changeStateInput(element, state) {
 	var evalu = $("#" + element).attr('type');
-	if (evalu == 'register') {
+	if (evalu == 'register' || 'edition') {
 		$("#" + element + " .activation").attr('disabled', state);
 	}
 }
