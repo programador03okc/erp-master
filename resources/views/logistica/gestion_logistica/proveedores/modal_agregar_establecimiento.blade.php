@@ -1,7 +1,7 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-agregar-establecimiento">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
-            <form id="form-agregar-establecimiento" method="post">
+            <form id="form-agregar-establecimiento" onsubmit="return false;">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
                     <h3 class="modal-title">Agregar establecimiento</h3>

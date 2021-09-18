@@ -1,7 +1,7 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-agregar-cuenta-bancaria">
-    <div class="modal-dialog" style="width: 40%;">
+    <div class="modal-dialog modal-sm">
         <div class="modal-content">
-            <form id="form-agregar-cuenta-bancaria-proveedor" method="post">
+            <form id="form-agregar-cuenta-bancaria-proveedor" onsubmit="return false;">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
                     <h3 class="modal-title">Agregar cuenta bancaria</h3>

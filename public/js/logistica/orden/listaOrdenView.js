@@ -771,7 +771,7 @@ class ListaOrdenView {
                     <td style="border: none;">${element.moneda_simbolo}${$.number((element.cantidad*element.precio),2)}</td>
                     </tr>`;
                 });
-                var tabla = `<table class="table table-sm" style="border: none;" 
+                var tabla = `<table class="table table-sm" style="border: none; font-size:x-small;" 
                 id="detalle_${table_id}">
                 <thead style="color: black;background-color: #c7cacc;">
                     <tr>
