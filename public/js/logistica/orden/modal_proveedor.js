@@ -112,6 +112,11 @@ function obtenerContactoPorDefecto(idProveedor){
 
 
             }else{
+                document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_contacto_proveedor']").value ="";
+                document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='contacto_proveedor_nombre']").value ="";
+                document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='contacto_proveedor_telefono']").value ="";
+
+
                 Lobibox.notify('info', {
                     title:false,
                     size: 'mini',
