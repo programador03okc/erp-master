@@ -300,7 +300,6 @@ class RequerimientoView {
                     $("#form-requerimiento .activation").attr('disabled', true);
 
                 }else if(data['requerimiento'][0].estado ==1  && data['requerimiento'][0].id_usuario == auth_user.id_usuario){
-
                     document.querySelector("form[id='form-requerimiento']").setAttribute('type','edition');
                     changeStateButton('historial'); //init.js
                     // allButtonAdjuntarNuevo.forEach(element => {

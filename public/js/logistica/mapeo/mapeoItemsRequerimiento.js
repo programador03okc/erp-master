@@ -65,7 +65,7 @@ function mostrar_detalle() {
     var i = 1;
 
     detalle.forEach(element => {
-        var pn = element.part_number;
+        var pn = element.part_number??'';
         var dsc = encodeURIComponent(element.descripcion);
         var link_pn = '';
         var link_des = '';

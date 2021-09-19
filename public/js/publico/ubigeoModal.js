@@ -11,7 +11,7 @@ function listarUbigeos(){
     var vardataTables = funcDatatables();
     $('#listaUbigeos').dataTable({
         'dom': vardataTables[1],
-        'buttons': vardataTables[2],
+        'buttons': [],
         'language' : vardataTables[0],
         'bDestroy': true,
         'ajax': 'listar_ubigeos',

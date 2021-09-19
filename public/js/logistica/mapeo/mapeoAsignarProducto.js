@@ -2,6 +2,7 @@ function listarProductosCatalogo() {
     var vardataTables = funcDatatables();
     $('#productosCatalogo').dataTable({
         // 'dom': vardataTables[1],
+        'buttons':[],
         'language': vardataTables[0],
         "lengthChange": false,
         'bDestroy': true,
