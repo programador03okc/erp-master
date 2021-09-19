@@ -98,9 +98,9 @@ function listarOrdenesPendientes() {
         }
     });
 
-    var fini = '';
-    var ffin = '';
-    var alma = '';
+    var fini = $('#fecha_inicio').val();
+    var ffin = $('#fecha_fin').val();
+    var alma = $('#id_almacen_filtro_ordenes').val();
 
     table = $("#ordenesPendientes").DataTable({
         dom: vardataTables[1],
@@ -135,6 +135,7 @@ function listarOrdenesPendientes() {
             );
             $('#fecha_inicio').val(suma_fecha(-60, fecha_actual()));
             $('#fecha_fin').val(fecha_actual());
+            // listarAlmacenes();
 
             fini = $('#fecha_inicio').val();
             ffin = $('#fecha_fin').val();
@@ -153,11 +154,11 @@ function listarOrdenesPendientes() {
         ajax: {
             url: "listarOrdenesPendientes",
             type: "POST",
-            data: {
-                fecha_inicio: fini,
-                fecha_fin: ffin,
-                id_almacen: alma
-            }
+            // 'data': {
+            //     'fecha_inicio': fini,
+            //     'fecha_fin': ffin,
+            //     'id_almacen': alma,
+            // },
         },
         columns: [
             { data: "id_orden_compra" },
@@ -352,7 +353,7 @@ function listarAlmacenes() {
                         '<option value="' + element.id_almacen + '">' + element.descripcion + "</option>";
                 }
             });
-            $("[name=id_almacen_filtro_ordenes]").html(option);
+            $("#id_almacen_filtro_ordenes").html(option);
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);

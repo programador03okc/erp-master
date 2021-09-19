@@ -68,8 +68,32 @@ class OrdenesPendientesController extends Controller
         ));
     }
 
+    function almacenesPorUsuario()
+    {
+        return DB::table('almacen.alm_almacen_usuario')
+            ->select('alm_almacen.*')
+            ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_almacen_usuario.id_almacen')
+            ->where('alm_almacen_usuario.id_usuario', Auth::user()->id_usuario)
+            ->where('alm_almacen_usuario.estado', 1)
+            ->get();
+    }
+
+    function almacenesPorUsuarioArray()
+    {
+        $almacenes = $this->almacenesPorUsuario();
+
+        $array_almacen = [];
+        foreach ($almacenes as $alm) {
+            $array_almacen[] = [$alm->id_almacen];
+        }
+
+        return $array_almacen;
+    }
+
     public function listarOrdenesPendientes(Request $request)
     {
+        // DebugBar::info($request->id_almacen);
+        // exit();
         // if ($request->id_almacen == '0') {
         //     $array_almacen = $this->almacenesPorUsuarioArray();
         // } else {
@@ -87,6 +111,7 @@ class OrdenesPendientesController extends Controller
                 'sis_sede.descripcion as sede_descripcion',
                 'alm_req.codigo as codigo_requerimiento',
                 'alm_req.concepto',
+                'alm_req.id_almacen',
                 'sis_usua.nombre_corto'
             )
             ->join('logistica.estados_compra', 'estados_compra.id_estado', '=', 'log_ord_compra.estado')
@@ -101,7 +126,8 @@ class OrdenesPendientesController extends Controller
                 ['log_ord_compra.id_tp_documento', '=', 2]
             ]);
         // ->whereDate('log_ord_compra.fecha', '>=', $request->fecha_inicio)
-        // ->whereDate('log_ord_compra.fecha', '<=', $request->fecha_fin)
+        // ->whereDate('log_ord_compra.fecha', '<=', $request->fecha_fin);
+        // whereBetween('created_at', ['2018/11/10 12:00', '2018/11/11 10:30'])
         // ->whereIn('alm_req.id_almacen', $array_almacen);
 
         return datatables($data)->toJson();
@@ -823,6 +849,9 @@ class OrdenesPendientesController extends Controller
 
                         if (!in_array($det->id_orden_compra, $padres_oc)) {
                             array_push($padres_oc, $det->id_orden_compra);
+                        }
+                        if (!in_array($det->id_requerimiento, $padres_req)) {
+                            array_push($padres_req, $det->id_requerimiento);
                         }
                         $series = [];
                         foreach ($detalle_oc as $d) {
