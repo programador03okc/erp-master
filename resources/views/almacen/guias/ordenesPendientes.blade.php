@@ -165,7 +165,7 @@ Pendientes de Ingreso
 <script src="{{ asset('template/plugins/jquery-datatables-checkboxes/js/dataTables.checkboxes.min.js') }}"></script>
 <script src="{{ asset('template/plugins/js-xlsx/xlsx.full.min.js') }}"></script>
 <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
-<script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
+<script src="{{ asset('template/plugins/loadingoverlay.min.js') }}"></script>
 
 <script src="{{ asset('js/almacen/guia/ordenesPendientes.js?')}}"></script>
 <script src="{{ asset('js/almacen/guia/transformacionesPendientes.js')}}"></script>
