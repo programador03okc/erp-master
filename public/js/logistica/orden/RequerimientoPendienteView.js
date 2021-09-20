@@ -478,16 +478,9 @@ class RequerimientoPendienteView {
 
     buildFormatListaRequerimientosPendientes(obj,table_id, id, row) {
         obj.setAttribute('disabled',true);
-        
-        $(obj).LoadingOverlay("show", {
-            imageAutoResize: true,
-            progress: true,
-            imageColor: "#3c8dbc"
-        });
+    
         this.requerimientoPendienteCtrl.obtenerDetalleRequerimientos(id).then((res) =>{
             obj.removeAttribute('disabled');
-            $(obj).LoadingOverlay("hide", true);
-
             this.construirDetalleRequerimientoListaRequerimientosPendientes(table_id,row,res);
         }).catch((err)=> {
             console.log(err)
