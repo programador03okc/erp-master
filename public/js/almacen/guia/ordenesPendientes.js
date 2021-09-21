@@ -32,20 +32,20 @@ function iniciar(permiso) {
 
 let fini = suma_fecha(-90, fecha_actual());
 let ffin = fecha_actual();
-let alma = 0;
+let sede = 0;
 
 function actualizarFiltrosPendientes() {
 
     var sfini = $('#fecha_inicio').val();
     var sffin = $('#fecha_fin').val();
-    var salma = $('#id_almacen_filtro_ordenes').val();
+    var ssede = $('#id_sede_filtro_ordenes').val();
 
     if ((sfini !== undefined && fini !== sfini) ||
         (sffin !== undefined && ffin !== sffin) ||
-        (salma !== undefined && alma !== salma)) {
+        (ssede !== undefined && sede !== ssede)) {
         fini = sfini;
         ffin = sffin;
-        alma = salma;
+        sede = ssede;
     }
     $.ajax({
         type: 'POST',
@@ -53,7 +53,7 @@ function actualizarFiltrosPendientes() {
         data: {
             fecha_inicio: fini,
             fecha_fin: ffin,
-            id_almacen: alma
+            id_sede: sede
         },
         success: function (response) {
             console.log(response);
@@ -135,20 +135,20 @@ function listarOrdenesPendientes() {
                 `<div style="display:flex">
                     <input type="date" class="form-control" onChange="actualizarFiltrosPendientes();" id="fecha_inicio" value="${fini}"/>
                     <input type="date" class="form-control" onChange="actualizarFiltrosPendientes();" id="fecha_fin" value="${ffin}"/>
-                    <select class="form-control" onChange="actualizarFiltrosPendientes();" id="id_almacen_filtro_ordenes" value="${alma}">
+                    <select class="form-control" onChange="actualizarFiltrosPendientes();" id="id_sede_filtro_ordenes" value="${sede}">
                         <option value="0" selected>Mostrar Todos</option>
                     </select>
                 </div>`
             );
             // $('#fecha_inicio').val(suma_fecha(-60, fecha_actual()));
             // $('#fecha_fin').val(fecha_actual());
-            listarAlmacenes();
+            listarSedes();
 
             // fini = $('#fecha_inicio').val();
             // ffin = $('#fecha_fin').val();
-            // alma = $('#id_almacen_filtro_ordenes').val();
+            // alma = $('#id_sede_filtro_ordenes').val();
 
-            console.log('datatable ' + fini, ffin, alma);
+            console.log('datatable ' + fini, ffin, sede);
         },
         drawCallback: function (settings) {
             $("#ordenesPendientes_filter input").prop("disabled", false);
@@ -345,24 +345,50 @@ function cargar_almacenes(sede) {
     }
 }
 
-function listarAlmacenes() {
+// function listarAlmacenes() {
+//     $.ajax({
+//         type: "GET",
+//         url: "almacenesPorUsuario",
+//         dataType: "JSON",
+//         success: function (response) {
+//             console.log(response);
+//             var option = '<option value="0">Todos los almacenes</option>';
+//             response.forEach(element => {
+//                 if (response.length == 1) {
+//                     option +=
+//                         '<option value="' + element.id_almacen + '" selected>' + element.descripcion + "</option>";
+//                 } else {
+//                     option +=
+//                         '<option value="' + element.id_almacen + '">' + element.descripcion + "</option>";
+//                 }
+//             });
+//             $("#id_sede_filtro_ordenes").html(option);
+//         }
+//     }).fail(function (jqXHR, textStatus, errorThrown) {
+//         console.log(jqXHR);
+//         console.log(textStatus);
+//         console.log(errorThrown);
+//     });
+// }
+
+function listarSedes() {
     $.ajax({
         type: "GET",
-        url: "almacenesPorUsuario",
+        url: "sedesPorUsuario",
         dataType: "JSON",
         success: function (response) {
             console.log(response);
-            var option = '<option value="0">Todos los almacenes</option>';
+            var option = '<option value="0">Todos las sedes</option>';
             response.forEach(element => {
                 if (response.length == 1) {
                     option +=
-                        '<option value="' + element.id_almacen + '" selected>' + element.descripcion + "</option>";
+                        '<option value="' + element.id_sede + '" selected>' + element.descripcion + "</option>";
                 } else {
                     option +=
-                        '<option value="' + element.id_almacen + '">' + element.descripcion + "</option>";
+                        '<option value="' + element.id_sede + '">' + element.descripcion + "</option>";
                 }
             });
-            $("#id_almacen_filtro_ordenes").html(option);
+            $("#id_sede_filtro_ordenes").html(option);
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
@@ -370,7 +396,6 @@ function listarAlmacenes() {
         console.log(errorThrown);
     });
 }
-
 function exportarOrdenesPendientes() {
     window.location.href = 'ordenesPendientesExcel';
 }

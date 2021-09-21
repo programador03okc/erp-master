@@ -70,26 +70,29 @@ class OrdenesPendientesController extends Controller
         ));
     }
 
-    function almacenesPorUsuario()
+    function sedesPorUsuario()
     {
         return DB::table('almacen.alm_almacen_usuario')
-            ->select('alm_almacen.*')
+            ->select('sis_sede.*')
             ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_almacen_usuario.id_almacen')
+            ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_almacen.id_sede')
             ->where('alm_almacen_usuario.id_usuario', Auth::user()->id_usuario)
             ->where('alm_almacen_usuario.estado', 1)
             ->get();
     }
 
-    function almacenesPorUsuarioArray()
+    function sedesPorUsuarioArray()
     {
-        $almacenes = $this->almacenesPorUsuario();
+        $sedes = $this->sedesPorUsuario();
 
-        $array_almacen = [];
-        foreach ($almacenes as $alm) {
-            $array_almacen[] = [$alm->id_almacen];
+        $array_sedes = [];
+        foreach ($sedes as $sede) {
+            if (!array_key_exists($sede->id_sede, $array_sedes)) {
+                $array_sedes[] = [$sede->id_sede];
+            }
         }
 
-        return $array_almacen;
+        return $array_sedes;
     }
 
     public function actualizarFiltrosPendientes(Request $request)
@@ -106,10 +109,10 @@ class OrdenesPendientesController extends Controller
             $request->session()->forget('pendientesFilter_fechaFin');
         }
 
-        if ($request->id_almacen != null) {
-            $request->session()->put('pendientesFilter_idAlmacen', $request->id_almacen);
+        if ($request->id_sede != null) {
+            $request->session()->put('pendientesFilter_idSede', $request->id_sede);
         } else {
-            $request->session()->forget('pendientesFilter_idAlmacen');
+            $request->session()->forget('pendientesFilter_idSede');
         }
 
         return response()->json(
@@ -117,7 +120,7 @@ class OrdenesPendientesController extends Controller
                 'response' => 'ok',
                 'inicio' => session()->get('pendientesFilter_fechaInicio'),
                 'fin' => session()->get('pendientesFilter_fechaFin'),
-                'almacen' => session()->get('pendientesFilter_idAlmacen')
+                'sede' => session()->get('pendientesFilter_idSede')
             ),
             200
         );
@@ -154,20 +157,20 @@ class OrdenesPendientesController extends Controller
                 ['log_ord_compra.id_tp_documento', '=', 2]
             ]);
         // whereBetween('created_at', ['2018/11/10 12:00', '2018/11/11 10:30'])
-        $array_almacen = [];
+        $array_sedes = [];
         if (session()->has('pendientesFilter_fechaInicio')) {
             $query = $data->whereDate('log_ord_compra.fecha', '>=', session()->get('pendientesFilter_fechaInicio'));
         }
         if (session()->has('pendientesFilter_fechaFin')) {
             $query = $data->whereDate('log_ord_compra.fecha', '<=', session()->get('pendientesFilter_fechaFin'));
         }
-        if (session()->has('pendientesFilter_idAlmacen')) {
-            if (session()->get('pendientesFilter_idAlmacen') == 0) {
-                $array_almacen = $this->almacenesPorUsuarioArray();
+        if (session()->has('pendientesFilter_idSede')) {
+            if (session()->get('pendientesFilter_idSede') == 0) {
+                $array_sedes = $this->sedesPorUsuarioArray();
             } else {
-                $array_almacen[] = [session()->get('pendientesFilter_idAlmacen')];
+                $array_sedes[] = [session()->get('pendientesFilter_idSede')];
             }
-            $query = $data->whereIn('alm_req.id_almacen', $array_almacen);
+            $query = $data->whereIn('log_ord_compra.id_sede', $array_sedes);
         }
         $query->distinct();
 
