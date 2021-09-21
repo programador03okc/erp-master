@@ -60,7 +60,7 @@ function listarProductosSugeridos(part_number, descripcion, type) {
     }
     console.log(part_number, descripcion, type);
     if (part_number !== sPart || descripcion !== sDesc) {
-        console.log(pn, ds);
+        // console.log(pn, ds);
         $('#productosSugeridos tbody').html('');
         $.ajax({
             type: 'POST',
@@ -70,6 +70,7 @@ function listarProductosSugeridos(part_number, descripcion, type) {
                 descripcion: ds
             },
             success: function (response) {
+                console.log(response);
                 if (response.response == 'ok') {
                     listarSugeridos();
                     sPart = part_number;
@@ -88,16 +89,16 @@ function listarSugeridos() {
         dataType: 'JSON',
         success: function (response) {
             console.log(response);
-            console.log(response.length);
+            // console.log(response.length);
             html = '';
             if (response.length > 0) {
                 response.forEach(function (element) {
                     html += `
                     <tr>
-                    <td>${element.codigo}</td>
-                    <td>${element.part_number}</td>
-                    <td>${element.marca}</td>
-                    <td>${element.descripcion}</td>
+                    <td>${element.codigo??''}</td>
+                    <td>${element.part_number??''}</td>
+                    <td>${element.marca??''}</td>
+                    <td>${element.descripcion??''}</td>
                     <td>
                         <button type="button" class="btn btn-success btn-xs" title="Seleccionar Producto" 
                             data-codigo="${element.codigo}" data-id="${element.id_producto}" 
@@ -127,7 +128,7 @@ function selectProductoAsignado(obj) {
     let descripcion = obj.dataset.descripcion;
     let id_detalle = $('[name=id_detalle_requerimiento]').val();
 
-    console.log('selectProductoAsignado');
+    // console.log('selectProductoAsignado');
     var page = $('.page-main').attr('type');
 
     if (page == "ordenesPendientes") {
@@ -194,6 +195,7 @@ $("#form-crear").on("submit", function (e) {
 
         $('#modal-mapeoAsignarProducto').modal('hide');
         mostrar_detalle();
+        console.log(det);
     }
 
 });
@@ -209,7 +211,7 @@ $("[name=id_clasif]").on('change', function () {
         url: 'mostrar_tipos_clasificacion/' + id_clasificacion,
         dataType: 'JSON',
         success: function (response) {
-            console.log(response);
+            // console.log(response);
 
             if (response.length > 0) {
                 $('[name=id_tipo_producto]').html('');
@@ -229,13 +231,13 @@ $("[name=id_clasif]").on('change', function () {
 
 $("[name=id_tipo_producto]").on('change', function () {
     var id_tipo = $(this).val();
-    console.log(id_tipo);
+    // console.log(id_tipo);
     $.ajax({
         type: 'GET',
         url: 'mostrar_categorias_tipo/' + id_tipo,
         dataType: 'JSON',
         success: function (response) {
-            console.log(response);
+            // console.log(response);
 
             if (response.length > 0) {
                 $('[name=id_categoria]').html('');
