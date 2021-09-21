@@ -85,6 +85,15 @@
 
                                             <div class="row">
                                                 <div class="col-md-4">
+                                                    <h5>Clasificación</h5>
+                                                    <select class="form-control activation js-example-basic-single" name="id_clasif" required>
+                                                        <!-- <option value="0">Elija una opción</option> -->
+                                                        @foreach ($clasificaciones as $clasif)
+                                                        <option value="{{$clasif->id_clasificacion}}">{{$clasif->descripcion}}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-4">
                                                     <h5>Categoría</h5>
                                                     <select class="form-control activation js-example-basic-single" name="id_tipo_producto" required>
                                                         <!-- <option value="0">Elija una opción</option> -->
@@ -102,23 +111,14 @@
                                                         @endforeach
                                                     </select>
                                                 </div>
+                                            </div>
+                                            <div class="row">
                                                 <div class="col-md-4">
                                                     <h5>Marca</h5>
                                                     <select class="form-control activation js-example-basic-single" name="id_subcategoria" required>
                                                         <!-- <option value="0">Elija una opción</option> -->
                                                         @foreach ($subcategorias as $subcat)
                                                         <option value="{{$subcat->id_subcategoria}}">{{$subcat->descripcion}}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-4">
-                                                    <h5>Clasificación</h5>
-                                                    <select class="form-control activation js-example-basic-single" name="id_clasif" required>
-                                                        <!-- <option value="0">Elija una opción</option> -->
-                                                        @foreach ($clasificaciones as $clasif)
-                                                        <option value="{{$clasif->id_clasificacion}}">{{$clasif->descripcion}}</option>
                                                         @endforeach
                                                     </select>
                                                 </div>

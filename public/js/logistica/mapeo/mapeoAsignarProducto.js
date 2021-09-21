@@ -2,7 +2,7 @@ function listarProductosCatalogo() {
     var vardataTables = funcDatatables();
     $('#productosCatalogo').dataTable({
         // 'dom': vardataTables[1],
-        'buttons':[],
+        'buttons': [],
         'language': vardataTables[0],
         "lengthChange": false,
         'bDestroy': true,
@@ -41,7 +41,7 @@ let sPart = '';
 
 function listarProductosSugeridos(part_number, descripcion, type) {
     var pn = '', ds = '';
-
+    $('#productosSugeridos tbody').html('');
     if (type == 1) {
         pn = part_number;
         ds = null;
@@ -198,6 +198,34 @@ $("#form-crear").on("submit", function (e) {
 
 });
 
+$("[name=id_clasif]").on('change', function () {
+    var id_clasificacion = $(this).val();
+    console.log(id_clasificacion);
+    $('[name=id_tipo_producto]').html('');
+    $('[name=id_categoria]').html('');
+    $.ajax({
+        type: 'GET',
+        headers: { 'X-CSRF-TOKEN': token },
+        url: 'mostrar_tipos_clasificacion/' + id_clasificacion,
+        dataType: 'JSON',
+        success: function (response) {
+            console.log(response);
+
+            if (response.length > 0) {
+                $('[name=id_tipo_producto]').html('');
+                html = '<option value="0" >Elija una opción</option>';
+                response.forEach(element => {
+                    html += `<option value="${element.id_tipo_producto}" >${element.descripcion}</option>`;
+                });
+                $('[name=id_tipo_producto]').html(html);
+            }
+        }
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+});
 
 $("[name=id_tipo_producto]").on('change', function () {
     var id_tipo = $(this).val();
