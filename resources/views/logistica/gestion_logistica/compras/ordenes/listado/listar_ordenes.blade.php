@@ -127,6 +127,7 @@
     <script src="{{('/js/logistica/orden/listaOrdenController.js')}}"></script>
     <script src="{{('/js/logistica/orden/listaOrdenModel.js')}}"></script>
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/loadingoverlay.min.js') }}"></script>
 
     <script>
         

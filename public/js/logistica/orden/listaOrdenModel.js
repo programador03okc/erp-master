@@ -32,11 +32,24 @@ class ListaOrdenModel {
                 type: 'GET',
                 url:`listar-ordenes/${tipoOrden}/${vinculadoPor}/${empresa}/${sede}/${tipoProveedor}/${enAlmacen}/${signoTotalOrden}/${montoTotalOrden}/${estado}`,
                 dataType: 'JSON',
+                beforeSend:  (data)=> {
+    
+                $('#listaOrdenes').LoadingOverlay("show", {
+                    imageAutoResize: true,
+                    progress: true,
+                    imageColor: "#3c8dbc"
+                });
+            },
                 success(response) {
                     resolve(response.data);
+                    $('#listaOrdenes').LoadingOverlay("hide", true);
+
                 },
                 error: function(err) {
                 reject(err) // Reject the promise and go to catch()
+                },
+                "drawCallback": function( settings ) {
+                    $('#listaOrdenes').LoadingOverlay("hide", true);
                 }
                 });
             });
@@ -66,11 +79,24 @@ class ListaOrdenModel {
                 type: 'GET',
                 url:`listar-detalle-orden/${tipoOrden}/${vinculadoPor}/${empresa}/${sede}/${tipoProveedor}/${enAlmacen}/${signoSubtotal}/${subtotal}/${estado}`,
                 dataType: 'JSON',
+                beforeSend:  (data)=> {
+    
+                    $('#listaDetalleOrden').LoadingOverlay("show", {
+                        imageAutoResize: true,
+                        progress: true,
+                        imageColor: "#3c8dbc"
+                    });
+                },
                 success(response) {
                     resolve(response.data);
+                    $('#listaDetalleOrden').LoadingOverlay("hide", true);
+
                 },
                 error: function(err) {
                 reject(err) // Reject the promise and go to catch()
+                },
+                "drawCallback": function( settings ) {
+                    $('#listaDetalleOrden').LoadingOverlay("hide", true);
                 }
                 });
             });
