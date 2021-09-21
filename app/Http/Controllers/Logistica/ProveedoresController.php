@@ -71,11 +71,19 @@ class ProveedoresController extends Controller
             if(isset($contribuyenteExistente)){
                 // $mensaje='Ya se encuentra registrado un contribuyente con la misma razón social / número de documento.';
                 // $status='warning'; 
-                $proveedorExistente= Proveedor::where([['id_contribuyente',$contribuyenteExistente->id_contribuyente],['estado',1]])->first();
-                if(isset($proveedorExistente) && $proveedorExistente->id_proveedor>0){
-                    $mensaje='Ya se encuentra registrado un proveedor con la misma razón social / número de documento.';
-                    $status='warning';
-                    $crearProveedor=false;
+                $proveedorExistente= Proveedor::where([['id_contribuyente',$contribuyenteExistente->id_contribuyente]])->first();
+                if(isset($proveedorExistente) && ($proveedorExistente->id_proveedor>0)){
+                    if($proveedorExistente->estado ==1){
+                        $mensaje='Ya se encuentra registrado un proveedor con la misma razón social / número de documento.';
+                        $status='warning';
+                        $crearProveedor=false;
+                    }
+                    // elseif($proveedorExistente->estado ==7){
+                    //     $mensaje='Se encuentró coincidencia con un proveedor anuado. ¿Desea visualizar para una recuperación de información?';
+                    //     $status='warning';
+                    //     $crearProveedor=false;
+
+                    // }
 
                 }else{
                     $crearProveedor=true;

@@ -93,6 +93,7 @@ class AprobarRequerimientoView {
                 { 'data': 'codigo', 'name': 'codigo','className': 'text-center' },
                 { 'data': 'concepto', 'name': 'concepto' },
                 { 'data': 'tipo_requerimiento', 'name': 'tipo_requerimiento' ,'className': 'text-center'},
+                { 'data': 'fecha_registro', 'name': 'fecha_registro' ,'className': 'text-center'},
                 { 'data': 'fecha_entrega', 'name': 'fecha_entrega' ,'className': 'text-center'},
                 { 'data': 'razon_social_empresa', 'name': 'razon_social_empresa' ,'className': 'text-center'},
                 { 'data': 'division', 'name': 'division','className': 'text-center' },
