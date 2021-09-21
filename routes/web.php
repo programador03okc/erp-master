@@ -1173,6 +1173,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('listarProductosSugeridos', 'Almacen\Catalogo\ProductoController@listarProductosSugeridos');
 				Route::get('mostrar_prods_sugeridos/{part}/{desc}', 'Almacen\Catalogo\ProductoController@mostrar_prods_sugeridos');
 				Route::get('mostrar_categorias_tipo/{id}', 'Almacen\Catalogo\ProductoController@mostrar_categorias_tipo');
+				Route::get('mostrar_tipos_clasificacion/{id}', 'Almacen\Catalogo\TipoProductoController@mostrar_tipos_clasificacion');
 
 				Route::get('almacenesPorUsuario', 'Almacen\Movimiento\TransferenciaController@almacenesPorUsuario');
 				Route::post('actualizarFiltrosPendientes', 'Almacen\Movimiento\OrdenesPendientesController@actualizarFiltrosPendientes');

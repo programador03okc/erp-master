@@ -41,7 +41,6 @@ let sPart = '';
 
 function listarProductosSugeridos(part_number, descripcion, type) {
     var pn = '', ds = '';
-    $('#productosSugeridos tbody').html('');
     if (type == 1) {
         pn = part_number;
         ds = null;
@@ -62,6 +61,7 @@ function listarProductosSugeridos(part_number, descripcion, type) {
     console.log(part_number, descripcion, type);
     if (part_number !== sPart || descripcion !== sDesc) {
         console.log(pn, ds);
+        $('#productosSugeridos tbody').html('');
         $.ajax({
             type: 'POST',
             url: 'actualizarSugeridos',
@@ -205,7 +205,7 @@ $("[name=id_clasif]").on('change', function () {
     $('[name=id_categoria]').html('');
     $.ajax({
         type: 'GET',
-        headers: { 'X-CSRF-TOKEN': token },
+        // headers: { 'X-CSRF-TOKEN': token },
         url: 'mostrar_tipos_clasificacion/' + id_clasificacion,
         dataType: 'JSON',
         success: function (response) {
