@@ -84,7 +84,7 @@ function mostrar_detalle() {
             `+ decodeURIComponent(dsc) + `
             </a>`;
         }
-        html += `<tr>
+        html += `<tr ${element.estado ==7 ?'class="bg-danger"':''}>
             <td>${i}</td>
             <td>${(element.codigo !== null && element.codigo !== '') ? element.codigo :
                 ((element.id_categoria !== null && element.id_producto == null) ? '(Por crear)' : '')}</td>
@@ -99,7 +99,21 @@ function mostrar_detalle() {
                     data-desc="${encodeURIComponent(element.descripcion)}" data-id="${element.id_detalle_requerimiento}"
                     title="Asignar producto" >
                     <i class="fas fa-angle-double-right"></i>
+                </button>`;
+            if(element.estado ==7){
+                html+=`
+                <button type="button" style="padding-left:8px;padding-right:7px;" 
+                    class="anular btn btn-xs btn-danger boton oculto" data-toggle="tooltip" 
+                    data-placement="bottom" data-partnumber="${element.part_number}" 
+                    data-desc="${encodeURIComponent(element.descripcion)}" data-id="${element.id_detalle_requerimiento}"
+                    title="Anular" >
+                    <i class="fas fa-times"></i>
                 </button>
+                <button type="button" title="Restablecer" class="restablecer btn-xs btn btn-primary"><i class="fas fa-undo"></i></button>
+                `;
+
+            }else{
+                html+=`
                 <button type="button" style="padding-left:8px;padding-right:7px;" 
                     class="anular btn btn-xs btn-danger boton" data-toggle="tooltip" 
                     data-placement="bottom" data-partnumber="${element.part_number}" 
@@ -107,7 +121,12 @@ function mostrar_detalle() {
                     title="Anular" >
                     <i class="fas fa-times"></i>
                 </button>
-            </td>
+                <button type="button" title="Restablecer" class="restablecer btn-xs btn btn-primary oculto"><i class="fas fa-undo"></i></button>
+                `;
+
+            }
+
+            html+=`</td>
         </tr>`;
         i++;
     });
@@ -223,19 +242,8 @@ $("#form-mapeoItemsRequerimiento").on("submit", function (e) {
 
             $("#submit_orden_despacho").attr('disabled', 'true');
             let lista = [];
-            let contidadMapeado = 0;
-            let cantidadTotalItemBase = 0;
             detalle.forEach(element => {
-                //cantidad item sin transformado 
-                if(element.tiene_transformacion ==false){
-                    cantidadTotalItemBase++;
-                }
 
-
-                if (element.id_producto != null) {
-                    contidadMapeado++;
-                }
-                // if (element.id_categoria!==null){
                 lista.push({
                     'id_detalle_requerimiento': element.id_detalle_requerimiento,
                     'id_producto': element.id_producto,
@@ -248,83 +256,12 @@ $("#form-mapeoItemsRequerimiento").on("submit", function (e) {
                     'id_clasif': element.id_clasif,
                     'id_subcategoria': element.id_subcategoria,
                     'id_unidad_medida': element.id_unidad_medida,
-                    'series': element.series
+                    'series': element.series,
+                    'estado': element.estado
                 });
                 // }
             });
 
-            // let data = 'detalle='+JSON.stringify(lista);
-
-            $.ajax({
-                type: 'POST',
-                url: 'guardar_mapeo_productos',
-                data: {
-                    detalle: lista
-                },
-                dataType: 'JSON',
-                success: function (response) {
-                    if (response.response == 'ok') {
-                        // console.log(response);
-                        Lobibox.notify('success', {
-                            title: false,
-                            size: 'mini',
-                            rounded: true,
-                            sound: false,
-                            delayIndicator: false,
-                            msg: `Productos mapeados con éxito`
-                        });
-                        $('#modal-mapeoItemsRequerimiento').modal('hide');
-
-                        if (objBtnMapeo != undefined) {
-                            let cantidadPorMapear = parseInt(cantidadTotalItemBase) - parseInt(contidadMapeado);
-                            // console.log(objBtnMapeo.closest("div"));
-                            // console.log(cantidadTotalItemBase);
-                            // console.log(contidadMapeado);
-                            if (contidadMapeado > 0) {
-                                let divBtnGroup = objBtnMapeo.closest("div");
-                                let idRequerimiento = document.querySelector("form[id='form-mapeoItemsRequerimiento'] input[name='id_requerimiento']").value;
-
-                                if (divBtnGroup.querySelector("button[name='btnOpenModalAtenderConAlmacen']") == null) {
-                                    let btnOpenModalAtenderConAlmacen = document.createElement("button");
-                                    btnOpenModalAtenderConAlmacen.type = "button";
-                                    btnOpenModalAtenderConAlmacen.name = "btnOpenModalAtenderConAlmacen";
-                                    btnOpenModalAtenderConAlmacen.className = "btn btn-primary btn-xs handleClickAtenderConAlmacen";
-                                    btnOpenModalAtenderConAlmacen.title = "Reserva en almacén";
-                                    btnOpenModalAtenderConAlmacen.dataset.idRequerimiento = idRequerimiento;
-                                    btnOpenModalAtenderConAlmacen.innerHTML = "<i class='fas fa-dolly fa-sm'></i>";
-                                    divBtnGroup.appendChild(btnOpenModalAtenderConAlmacen);
-                                }
-                                if (divBtnGroup.querySelector("button[name='btnCrearOrdenCompraPorRequerimiento']") == null) {
-                                    let btnCrearOrdenCompraPorRequerimiento = document.createElement("button");
-                                    btnCrearOrdenCompraPorRequerimiento.type = "button";
-                                    btnCrearOrdenCompraPorRequerimiento.name = "btnCrearOrdenCompraPorRequerimiento";
-                                    btnCrearOrdenCompraPorRequerimiento.className = "btn btn-warning btn-xs handleClickCrearOrdenCompraPorRequerimiento";
-                                    btnCrearOrdenCompraPorRequerimiento.title = "Crear Orden de Compra";
-                                    btnCrearOrdenCompraPorRequerimiento.dataset.idRequerimiento = idRequerimiento;
-                                    btnCrearOrdenCompraPorRequerimiento.innerHTML = "<i class='fas fa-file-invoice'></i>";
-                                    divBtnGroup.appendChild(btnCrearOrdenCompraPorRequerimiento);
-
-                                }
-                            }
-
-                            // actualizar cantidad de items por mapear 
-                            objBtnMapeo.querySelector("span[class='badge']").textContent = cantidadPorMapear;
-                            objBtnMapeo.closest("tr").querySelector("input[type='checkbox']").dataset.mapeosPendientes = cantidadPorMapear;
-
-                        }
-
-                    }
-                }
-            }).fail(function (jqXHR, textStatus, errorThrown) {
-                console.log(jqXHR);
-                Swal.fire(
-                    '',
-                    'Lo sentimos hubo un error en el servidor al intentar guardar el mapeo de producto(s), por favor vuelva a intentarlo',
-                    'error'
-                );
-                console.log(textStatus);
-                console.log(errorThrown);
-            });
 
             let cantidadItemAnulados = 0;
             detalle.forEach(element => {
@@ -380,6 +317,80 @@ $("#form-mapeoItemsRequerimiento").on("submit", function (e) {
                     console.log(errorThrown);
                 });
             }
+            // let data = 'detalle='+JSON.stringify(lista);
+
+            $.ajax({
+                type: 'POST',
+                url: 'guardar_mapeo_productos',
+                data: {
+                    detalle: lista
+                },
+                dataType: 'JSON',
+                success: function (response) {
+                    if (response.response == 'ok') {
+                        // console.log(response);
+                        Lobibox.notify('success', {
+                            title: false,
+                            size: 'mini',
+                            rounded: true,
+                            sound: false,
+                            delayIndicator: false,
+                            msg: `Productos mapeados con éxito`
+                        });
+                        $('#modal-mapeoItemsRequerimiento').modal('hide');
+
+                        if (objBtnMapeo != undefined) {
+                            let cantidadPorMapear = parseInt(response.cantidad_total_items) - parseInt(response.cantidad_items_mapeados);
+                            // console.log(objBtnMapeo.closest("div"));
+                            // console.log(cantidadTotalItemBase);
+                            // console.log(contidadMapeado);
+                            if (response.cantidad_items_mapeados > 0) {
+                                let divBtnGroup = objBtnMapeo.closest("div");
+                                let idRequerimiento = document.querySelector("form[id='form-mapeoItemsRequerimiento'] input[name='id_requerimiento']").value;
+
+                                if (divBtnGroup.querySelector("button[name='btnOpenModalAtenderConAlmacen']") == null) {
+                                    let btnOpenModalAtenderConAlmacen = document.createElement("button");
+                                    btnOpenModalAtenderConAlmacen.type = "button";
+                                    btnOpenModalAtenderConAlmacen.name = "btnOpenModalAtenderConAlmacen";
+                                    btnOpenModalAtenderConAlmacen.className = "btn btn-primary btn-xs handleClickAtenderConAlmacen";
+                                    btnOpenModalAtenderConAlmacen.title = "Reserva en almacén";
+                                    btnOpenModalAtenderConAlmacen.dataset.idRequerimiento = idRequerimiento;
+                                    btnOpenModalAtenderConAlmacen.innerHTML = "<i class='fas fa-dolly fa-sm'></i>";
+                                    divBtnGroup.appendChild(btnOpenModalAtenderConAlmacen);
+                                }
+                                if (divBtnGroup.querySelector("button[name='btnCrearOrdenCompraPorRequerimiento']") == null) {
+                                    let btnCrearOrdenCompraPorRequerimiento = document.createElement("button");
+                                    btnCrearOrdenCompraPorRequerimiento.type = "button";
+                                    btnCrearOrdenCompraPorRequerimiento.name = "btnCrearOrdenCompraPorRequerimiento";
+                                    btnCrearOrdenCompraPorRequerimiento.className = "btn btn-warning btn-xs handleClickCrearOrdenCompraPorRequerimiento";
+                                    btnCrearOrdenCompraPorRequerimiento.title = "Crear Orden de Compra";
+                                    btnCrearOrdenCompraPorRequerimiento.dataset.idRequerimiento = idRequerimiento;
+                                    btnCrearOrdenCompraPorRequerimiento.innerHTML = "<i class='fas fa-file-invoice'></i>";
+                                    divBtnGroup.appendChild(btnCrearOrdenCompraPorRequerimiento);
+
+                                }
+                            }
+
+                            // actualizar cantidad de items por mapear 
+                            objBtnMapeo.querySelector("span[class='badge']").textContent = cantidadPorMapear;
+                            objBtnMapeo.closest("tr").querySelector("input[type='checkbox']").dataset.mapeosPendientes = cantidadPorMapear;
+
+                        }
+
+                    }
+                }
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR);
+                Swal.fire(
+                    '',
+                    'Lo sentimos hubo un error en el servidor al intentar guardar el mapeo de producto(s), por favor vuelva a intentarlo',
+                    'error'
+                );
+                console.log(textStatus);
+                console.log(errorThrown);
+            });
+
+
         }
     })
 });

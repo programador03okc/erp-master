@@ -29,7 +29,9 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                <input type="submit" id="submit_mapeoItemsRequerimiento" class="btn btn-success" value="Guardar"/>
+                    <button class="btn btn-sm btn-primary" class="close" data-dismiss="modal" >Cerrar</button>
+                    <input type="submit" id="submit_mapeoItemsRequerimiento" class="btn btn-sm btn-success" value="Guardar"/>
+
                     <!-- <label id="mid_doc_com" style="display: none;"></label>
                     <button class="btn btn-sm btn-success" onClick="guardar_mapeoItemsRequerimiento();">Guardar</button> -->
                 </div>

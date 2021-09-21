@@ -165,7 +165,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <input type="submit" id="submit_mapeoAsignarProducto" class="btn btn-primary" value="Cerrar" />
+                <button class="btn btn-sm btn-primary" class="close" data-dismiss="modal" >Cerrar</button>
             </div>
         </div>
     </div>

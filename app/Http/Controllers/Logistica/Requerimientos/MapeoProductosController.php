@@ -71,16 +71,25 @@ class MapeoProductosController extends Controller
             // }
             // dd($datax);
             // exit();
+            $cantidadItemsHabilitados=0;
+            foreach($request->detalle as $det){
+                if($det['estado']!=7){
+                    $cantidadItemsHabilitados++;
+                }
+            }
+            $cantidadItemsMapeados=0;
             foreach($request->detalle as $det){
     
                 if ($det['id_producto'] !== null){
+                    $cantidadItemsMapeados++;
                     DB::table('almacen.alm_det_req')
                     ->where('id_detalle_requerimiento',$det['id_detalle_requerimiento'])
                     ->update(['id_producto'=>$det['id_producto']]);
+
                 } 
                 else if ($det['id_categoria'] !== null && $det['id_subcategoria'] !== null
                         && $det['id_clasif'] !== null && $det['id_producto'] == null){
-                        
+                    $cantidadItemsMapeados++;
                     $id_producto = DB::table('almacen.alm_prod')->insertGetId(
                         [
                             'part_number' => $det['part_number'],
@@ -96,7 +105,6 @@ class MapeoProductosController extends Controller
                         ],
                             'id_producto'
                         );
-    
                     $codigo = AlmacenController::leftZero(7, $id_producto);
     
                     DB::table('almacen.alm_prod')
@@ -114,7 +122,7 @@ class MapeoProductosController extends Controller
             DB::rollBack();
             $rpta = 'null';
         }
-        return response()->json(array('response' => $rpta), 200);
+        return response()->json(array('response' => $rpta,'cantidad_items_mapeados'=>$cantidadItemsMapeados,'cantidad_total_items'=>$cantidadItemsHabilitados), 200);
     }
     public function anular_item(Request $request)
     {
