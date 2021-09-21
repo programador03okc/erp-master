@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Almacen\Movimiento;
 
+use App\Exports\OrdenesPendientesExport;
 use App\Http\Controllers\Almacen\Catalogo\CategoriaController;
 use App\Http\Controllers\Almacen\Catalogo\ClasificacionController;
 use App\Http\Controllers\Almacen\Catalogo\SubCategoriaController;
@@ -19,6 +20,7 @@ use App\Models\almacen\Reserva;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
 
 date_default_timezone_set('America/Lima');
@@ -90,16 +92,40 @@ class OrdenesPendientesController extends Controller
         return $array_almacen;
     }
 
-    public function listarOrdenesPendientes(Request $request)
+    public function actualizarFiltrosPendientes(Request $request)
     {
-        // DebugBar::info($request->id_almacen);
-        // exit();
-        // if ($request->id_almacen == '0') {
-        //     $array_almacen = $this->almacenesPorUsuarioArray();
-        // } else {
-        //     $array_almacen[] = [$request->id_almacen];
-        // }
-        $data = DB::table('logistica.log_ord_compra')
+        if ($request->fecha_inicio != null) {
+            $request->session()->put('pendientesFilter_fechaInicio', $request->fecha_inicio);
+        } else {
+            $request->session()->forget('pendientesFilter_fechaInicio');
+        }
+
+        if ($request->fecha_fin != null) {
+            $request->session()->put('pendientesFilter_fechaFin', $request->fecha_fin);
+        } else {
+            $request->session()->forget('pendientesFilter_fechaFin');
+        }
+
+        if ($request->id_almacen != null) {
+            $request->session()->put('pendientesFilter_idAlmacen', $request->id_almacen);
+        } else {
+            $request->session()->forget('pendientesFilter_idAlmacen');
+        }
+
+        return response()->json(
+            array(
+                'response' => 'ok',
+                'inicio' => session()->get('pendientesFilter_fechaInicio'),
+                'fin' => session()->get('pendientesFilter_fechaFin'),
+                'almacen' => session()->get('pendientesFilter_idAlmacen')
+            ),
+            200
+        );
+    }
+
+    public function ordenesPendientesLista()
+    {
+        $data = DB::table('logistica.log_det_ord_compra')
             ->select(
                 'log_ord_compra.*',
                 'log_ord_compra.codigo as codigo_orden',
@@ -114,23 +140,52 @@ class OrdenesPendientesController extends Controller
                 'alm_req.id_almacen',
                 'sis_usua.nombre_corto'
             )
+            ->join('logistica.log_ord_compra', 'log_ord_compra.id_orden_compra', '=', 'log_det_ord_compra.id_orden_compra')
             ->join('logistica.estados_compra', 'estados_compra.id_estado', '=', 'log_ord_compra.estado')
             ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
             ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
             ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'log_ord_compra.id_usuario')
-            ->leftjoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'log_ord_compra.id_requerimiento')
+            ->leftjoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
+            ->leftjoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
             ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'log_ord_compra.id_sede')
             ->where([
                 ['log_ord_compra.estado', '!=', 7],
                 ['log_ord_compra.en_almacen', '=', false],
                 ['log_ord_compra.id_tp_documento', '=', 2]
             ]);
-        // ->whereDate('log_ord_compra.fecha', '>=', $request->fecha_inicio)
-        // ->whereDate('log_ord_compra.fecha', '<=', $request->fecha_fin);
         // whereBetween('created_at', ['2018/11/10 12:00', '2018/11/11 10:30'])
-        // ->whereIn('alm_req.id_almacen', $array_almacen);
+        $array_almacen = [];
+        if (session()->has('pendientesFilter_fechaInicio')) {
+            $query = $data->whereDate('log_ord_compra.fecha', '>=', session()->get('pendientesFilter_fechaInicio'));
+        }
+        if (session()->has('pendientesFilter_fechaFin')) {
+            $query = $data->whereDate('log_ord_compra.fecha', '<=', session()->get('pendientesFilter_fechaFin'));
+        }
+        if (session()->has('pendientesFilter_idAlmacen')) {
+            if (session()->get('pendientesFilter_idAlmacen') == 0) {
+                $array_almacen = $this->almacenesPorUsuarioArray();
+            } else {
+                $array_almacen[] = [session()->get('pendientesFilter_idAlmacen')];
+            }
+            $query = $data->whereIn('alm_req.id_almacen', $array_almacen);
+        }
+        $query->distinct();
 
-        return datatables($data)->toJson();
+        return $query;
+    }
+
+    public function listarOrdenesPendientes()
+    {
+        $query = $this->ordenesPendientesLista();
+        return datatables($query)->toJson();
+    }
+
+    public function ordenesPendientesExcel()
+    {
+        $data = $this->ordenesPendientesLista();
+        // dd($data);
+        // exit();
+        return Excel::download(new OrdenesPendientesExport($data), 'ordenesPendientes.xlsx');
     }
 
     public function listarIngresos()

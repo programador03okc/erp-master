@@ -190,7 +190,7 @@ Pendientes de Ingreso
         seleccionarMenu(window.location);
         $.fn.dataTable.Buttons.defaults.dom.button.className = 'btn';
         iniciar('{{Auth::user()->tieneAccion(83)}}');
-        listarAlmacenes();
+        // listarAlmacenes();
     });
 </script>
 @endsection

@@ -97,7 +97,7 @@ class VentasInternasController extends Controller
                         'tiene_transformacion' => false,
                         'para_stock_almacen' => false,
                         'enviar_facturacion' => false,
-                        'estado' => 1,
+                        'estado' => 9,
                         'fecha_registro' => $fecha,
                     ],
                     'id_requerimiento'
@@ -121,7 +121,7 @@ class VentasInternasController extends Controller
                         'id_tp_doc' => 2,
                         'observacion' => 'Autogenerado por venta interna',
                         'incluye_igv' => true,
-                        'estado' => 1
+                        'estado' => 28
                     ],
                     'id_orden_compra'
                 );
@@ -152,7 +152,7 @@ class VentasInternasController extends Controller
                             'id_moneda' => $doc_ven->moneda,
                             'tiene_transformacion' => false,
                             'precio_unitario' => $item->precio_unitario,
-                            'estado' => 1,
+                            'estado' => 9,
                             'fecha_registro' => $fecha,
                         ],
                         'id_detalle_requerimiento'
@@ -168,7 +168,7 @@ class VentasInternasController extends Controller
                             'id_producto' => $item->id_item,
                             'id_detalle_requerimiento' => $id_det_req,
                             'tipo_item_id' => 1,
-                            'estado' => 1
+                            'estado' => 28
                         ],
                         'id_detalle_orden'
                     );

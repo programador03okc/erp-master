@@ -5,48 +5,19 @@ let ingresos_seleccionados = [];
 let acceso = null;
 
 function iniciar(permiso) {
-    // $("#tab-ordenes section:first form").attr("form", "formulario");
+
     acceso = permiso;
     listarIngresos();
-    listarOrdenesPendientes();
+    actualizarFiltrosPendientes();
+    // listarOrdenesPendientes();
     oc_seleccionadas = [];
 
-    // $("ul.nav-tabs li a").on("click", function () {
-    //     $("ul.nav-tabs li").removeClass("active");
-    //     $(this)
-    //         .parent()
-    //         .addClass("active");
-    //     $(".content-tabs section").attr("hidden", true);
-    //     $(".content-tabs section form").removeAttr("type");
-    //     $(".content-tabs section form").removeAttr("form");
-
-    //     var activeTab = $(this).attr("type");
-    //     var activeForm = "form-" + activeTab.substring(1);
-
-    //     $("#" + activeForm).attr("type", "register");
-    //     $("#" + activeForm).attr("form", "formulario");
-    //     changeStateInput(activeForm, true);
-
-    //     // clearDataTable();
-    //     if (activeForm == "form-pendientes") {
-    //         // listarOrdenesPendientes();
-    //         $("#ordenesPendientes").DataTable().ajax.reload();
-    //     } else if (activeForm == "form-transformaciones") {
-    //         listarTransformaciones();
-    //     } else if (activeForm == "form-ingresadas") {
-    //         // listarIngresos();
-    //         $("#listaIngresosAlmacen").DataTable().ajax.reload();
-    //     }
-    //     $(activeTab).attr("hidden", false); //inicio botones (estados)
-    // });
-
     $('#myTabOrdenesPendientes a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-        console.log(e.target);
         let tab = $(e.target).attr("href") // activated tab
-        console.log('tab: ' + tab);
 
         if (tab == '#pendientes') {
-            $("#ordenesPendientes").DataTable().ajax.reload(null, false);
+            // $("#ordenesPendientes").DataTable().ajax.reload(null, false);
+            actualizarFiltrosPendientes();
         }
         else if (tab == '#transformaciones') {
             listarTransformaciones();
@@ -57,6 +28,46 @@ function iniciar(permiso) {
     });
 
     vista_extendida();
+}
+
+let fini = suma_fecha(-90, fecha_actual());
+let ffin = fecha_actual();
+let alma = 0;
+
+function actualizarFiltrosPendientes() {
+
+    var sfini = $('#fecha_inicio').val();
+    var sffin = $('#fecha_fin').val();
+    var salma = $('#id_almacen_filtro_ordenes').val();
+
+    if ((sfini !== undefined && fini !== sfini) ||
+        (sffin !== undefined && ffin !== sffin) ||
+        (salma !== undefined && alma !== salma)) {
+        fini = sfini;
+        ffin = sffin;
+        alma = salma;
+    }
+    $.ajax({
+        type: 'POST',
+        url: 'actualizarFiltrosPendientes',
+        data: {
+            fecha_inicio: fini,
+            fecha_fin: ffin,
+            id_almacen: alma
+        },
+        success: function (response) {
+            console.log(response);
+            if (response.response == 'ok') {
+                console.log('length: ' + $("#ordenesPendientes tbody tr").length);
+
+                if ($("#ordenesPendientes tbody tr").length > 0) {
+                    $("#ordenesPendientes").DataTable().ajax.reload(null, false);
+                } else {
+                    listarOrdenesPendientes();
+                }
+            }
+        }
+    });
 }
 
 var table;
@@ -75,8 +86,8 @@ function listarOrdenesPendientes() {
             {
                 text: ' Exportar Excel',
                 action: function () {
-                    // open_guia_create_seleccionadas();
-                }, className: 'btn-success disabled btnExportarOrdenesPendientes'
+                    exportarOrdenesPendientes();
+                }, className: 'btn-success btnExportarOrdenesPendientes'
             });
     }
 
@@ -97,10 +108,6 @@ function listarOrdenesPendientes() {
             $(e.currentTarget).LoadingOverlay("hide", true);
         }
     });
-
-    var fini = $('#fecha_inicio').val();
-    var ffin = $('#fecha_fin').val();
-    var alma = $('#id_almacen_filtro_ordenes').val();
 
     table = $("#ordenesPendientes").DataTable({
         dom: vardataTables[1],
@@ -126,20 +133,22 @@ function listarOrdenesPendientes() {
             });
             $('#ordenesPendientes_wrapper .dt-buttons').append(
                 `<div style="display:flex">
-                    <input type="date" class="form-control" id="fecha_inicio"/>
-                    <input type="date" class="form-control" id="fecha_fin"/>
-                    <select class="form-control" id="id_almacen_filtro_ordenes">
+                    <input type="date" class="form-control" onChange="actualizarFiltrosPendientes();" id="fecha_inicio" value="${fini}"/>
+                    <input type="date" class="form-control" onChange="actualizarFiltrosPendientes();" id="fecha_fin" value="${ffin}"/>
+                    <select class="form-control" onChange="actualizarFiltrosPendientes();" id="id_almacen_filtro_ordenes" value="${alma}">
                         <option value="0" selected>Mostrar Todos</option>
                     </select>
                 </div>`
             );
-            $('#fecha_inicio').val(suma_fecha(-60, fecha_actual()));
-            $('#fecha_fin').val(fecha_actual());
-            // listarAlmacenes();
+            // $('#fecha_inicio').val(suma_fecha(-60, fecha_actual()));
+            // $('#fecha_fin').val(fecha_actual());
+            listarAlmacenes();
 
-            fini = $('#fecha_inicio').val();
-            ffin = $('#fecha_fin').val();
-            alma = $('#id_almacen_filtro_ordenes').val();
+            // fini = $('#fecha_inicio').val();
+            // ffin = $('#fecha_fin').val();
+            // alma = $('#id_almacen_filtro_ordenes').val();
+
+            console.log('datatable ' + fini, ffin, alma);
         },
         drawCallback: function (settings) {
             $("#ordenesPendientes_filter input").prop("disabled", false);
@@ -360,4 +369,8 @@ function listarAlmacenes() {
         console.log(textStatus);
         console.log(errorThrown);
     });
+}
+
+function exportarOrdenesPendientes() {
+    window.location.href = 'ordenesPendientesExcel';
 }

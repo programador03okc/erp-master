@@ -81,6 +81,7 @@ class OrdenesTransformacionController extends Controller
             // ->orWhere([['alm_req.estado', '=', 19], ['alm_req.confirmacion_pago', '=', true]])
             ->distinct();
 
+
         return datatables($data)->toJson();
     }
 
