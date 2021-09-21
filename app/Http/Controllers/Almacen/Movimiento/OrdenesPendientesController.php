@@ -185,7 +185,11 @@ class OrdenesPendientesController extends Controller
         $data = $this->ordenesPendientesLista();
         // dd($data);
         // exit();
-        return Excel::download(new OrdenesPendientesExport($data), 'ordenesPendientes.xlsx');
+        return Excel::download(new OrdenesPendientesExport(
+            $data,
+            session()->get('pendientesFilter_fechaInicio'),
+            session()->get('pendientesFilter_fechaFin')
+        ), 'ordenesPendientes.xlsx');
     }
 
     public function listarIngresos()
