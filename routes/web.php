@@ -791,6 +791,7 @@ Route::group(['middleware' => ['auth']], function () {
 						Route::get('tipo-cambio-compra/{fecha}', 'Almacen\Reporte\SaldosController@tipo_cambio_compra');
 						Route::get('requerimientos-pendientes/{empresa?}/{sede?}/{fechaDesde?}/{fechaHasta?}/{reserva?}/{orden?}', 'ComprasPendientesController@listarRequerimientosPendientes')->name('requerimientos-pendientes');
 						Route::get('detalle-requerimiento/{idRequerimiento?}', 'Logistica\RequerimientoController@detalleRequerimiento')->name('detalle-requerimientos');
+						Route::get('requerimiento/{idRequerimiento?}', 'Logistica\RequerimientoController@requerimiento')->name('requerimientos');
 						Route::get('listar-cuentas-bancarias-proveedor/{idProveedor?}', 'OrdenController@listarCuentasBancariasProveedor')->name('listar-cuentas-bancarias-proveedor');
 						Route::post('guardar-cuenta-bancaria-proveedor', 'OrdenController@guardarCuentaBancariaProveedor');
 					});

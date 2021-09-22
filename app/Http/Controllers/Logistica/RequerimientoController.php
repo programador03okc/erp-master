@@ -110,6 +110,21 @@ class RequerimientoController extends Controller
 
         return response()->json($req);
     }
+    
+    public function requerimiento($id_requerimiento)
+    {
+        $requerimiento = Requerimiento::with([
+            'tipo','moneda','division','creadoPor','empresa','sede',
+            'detalle'=> function($q){
+                $q->where([['alm_det_req.estado', '!=', 7]]);
+            },'detalle.producto','detalle.unidadMedida','detalle.estado','detalle.reserva'])
+            ->where([
+                ['alm_req.id_requerimiento', '=', $id_requerimiento]
+            ])
+            ->first();
+
+        return response()->json($requerimiento);
+    }
 
     public function detalleRequerimiento($id_requerimiento)
     {

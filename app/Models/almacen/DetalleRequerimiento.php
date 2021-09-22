@@ -14,10 +14,14 @@ class DetalleRequerimiento extends Model
     protected $table = 'almacen.alm_det_req';
     protected $primaryKey = 'id_detalle_requerimiento';
     public $timestamps = false;
-    protected $appends= ['ordenes_compra','guias_ingreso','facturas','proveedor_seleccionado'];
+    protected $appends= ['codigo_requerimiento','ordenes_compra','guias_ingreso','facturas','proveedor_seleccionado'];
 
     public function getPartNumberAttribute(){
         return $this->attributes['part_number'] ?? '';
+    }
+    public function getCodigoRequerimientoAttribute(){
+        $codigo= Requerimiento::find($this->attributes['id_requerimiento'])->codigo;
+        return $codigo ?? '';
     }
 
 

@@ -93,7 +93,9 @@ class OrdenCtrl{
 
     }
 
-
+    obtenerRequerimiento(id){
+        return ordenModel.obtenerRequerimiento(id);
+    }
 
 
 }

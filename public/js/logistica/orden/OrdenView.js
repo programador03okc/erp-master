@@ -10,6 +10,7 @@ var actionPage = null;
 class OrdenView {
     constructor(ordenCtrl) {
         this.ordenCtrl = ordenCtrl;
+        this.codigoRequerimientoList=[];
     }
 
     init() {
@@ -355,15 +356,19 @@ class OrdenView {
         if (idTipoOrden == 3) { // orden de servicio
             this.ocultarBtnCrearProducto();
         }
-        let codigoRequerimiento = [];
+        // let codigoRequerimiento = [];
         data.forEach(element => {
-            codigoRequerimiento.push(element.codigo);
-        });
+            let foundRequerimiento = this.codigoRequerimientoList.find(item => item == element.codigo);
+            if(foundRequerimiento== undefined){
 
+                this.codigoRequerimientoList.push(element.codigo);
+
+            }
+        });
 
         document.querySelector("select[name='id_tp_documento']").value = idTipoOrden;
         document.querySelector("img[id='logo_empresa']").setAttribute("src", data[0].empresa.logo_empresa);
-        document.querySelector("input[name='cdc_req']").value = codigoRequerimiento.length > 0 ? codigoRequerimiento : '';
+        document.querySelector("input[name='cdc_req']").value =  this.codigoRequerimientoList.length > 0 ?  this.codigoRequerimientoList : '';
         document.querySelector("input[name='ejecutivo_responsable']").value = '';
         document.querySelector("input[name='direccion_destino']").value = data[0].sede ? data[0].sede.direccion : '';
         document.querySelector("input[name='id_ubigeo_destino']").value = data[0].sede ? data[0].sede.id_ubigeo : '';
@@ -765,6 +770,9 @@ class OrdenView {
             </button>
         </td>
      </tr>`);
+
+     this.autoUpdateSubtotal();
+
     }
 
     agregarServicio() {
@@ -980,8 +988,10 @@ class OrdenView {
     vincularRequerimiento(idRequerimiento) {
         let i = 0;
         let cantidadItemSinMapear =0;
-        this.ordenCtrl.obtenerDetalleRequerimientos(idRequerimiento).then((res) => {
-            res.forEach((element) => {
+        this.ordenCtrl.obtenerRequerimiento(idRequerimiento).then((res) => {
+            this.loadHeadRequerimiento([res],2);
+
+            (res.detalle).forEach((element) => {
                 if (element.tiene_transformacion == false) {
                     if (element.id_producto > 0) {
                         i++;
@@ -1000,18 +1010,18 @@ class OrdenView {
                                 cantidad_atendido_orden += parseFloat(orden.cantidad);
                             });
                         }
-                        // console.log(element);
+                        let cantidad_a_comprar = parseFloat(element.cantidad >0?element.cantidad:0) -parseFloat(cantidad_atendido_almacen) -parseFloat(cantidad_atendido_orden);
                         this.agregarProducto([{
                             'id': this.makeId(),
-                            'cantidad': 1,
+                            'cantidad': element.cantidad??0,
                             'cantidad_atendido_almacen':cantidad_atendido_almacen,
                             'cantidad_atendido_orden':cantidad_atendido_orden,
-                            'cantidad_a_comprar': 1,
+                            'cantidad_a_comprar': !(parseFloat(cantidad_a_comprar)>=0)?'':cantidad_a_comprar,
                             'codigo_item': null,
-                            'codigo_producto': element.producto_codigo,
+                            'codigo_producto': element.producto.codigo !=null ?element.producto.codigo: '',
                             'codigo_requerimiento': element.codigo_requerimiento,
                             'descripcion_adicional': null,
-                            'descripcion_producto': element.producto_descripcion != null ? element.producto_descripcion : element.descripcion,
+                            'descripcion_producto': element.producto.descripcion != null ? element.producto.descripcion : '',
                             'estado': 0,
                             'garantia': null,
                             'id_detalle_orden': null,
@@ -1020,16 +1030,16 @@ class OrdenView {
                             'id_tipo_item': 1,
                             'id_producto': element.id_producto,
                             'id_requerimiento': element.id_requerimiento,
-                            'id_unidad_medida': element.id_unidad_medida,
+                            'id_unidad_medida': element.unidad_medida.id_unidad_medida,
                             'lugar_despacho': null,
-                            'part_number': (!element.id_producto > 0 ? '(Sin mapear)' : ((element.producto_part_number != null ? element.producto_part_number :''))),
-                            'precio_unitario': 0,
+                            'part_number': (!element.id_producto > 0 ? '(Sin mapear)' : ((element.producto.part_number != null ? element.producto.part_number :''))),
+                            'precio_unitario': element.precio_unitario??0,
                             'id_moneda': 1,
                             'stock_comprometido': null,
-                            'subtotal': 0,
+                            'subtotal': $.number(parseFloat(element.precio_unitario * element.cantidad),2),
                             'producto_regalo': false,
-                            'tiene_transformacion': false,
-                            'unidad_medida': element.abreviatura
+                            'tiene_transformacion': element.tiene_transformacion,
+                            'unidad_medida': element.unidad_medida.descripcion
                         }]);
 
                     }else{
@@ -1232,7 +1242,7 @@ class OrdenView {
                         contentType: false,
                         dataType: 'JSON',
                         success: function (response) {
-                            console.log(response);
+                            // console.log(response);
                             if (response.id_orden_compra > 0) {
                                 Lobibox.notify('success', {
                                     title: false,
