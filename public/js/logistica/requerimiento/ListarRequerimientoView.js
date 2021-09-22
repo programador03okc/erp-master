@@ -46,7 +46,7 @@ class ListarRequerimientoView {
         var vardataTables = funcDatatables();
         let $tablaListaRequerimientosElaborados= $('#ListaRequerimientosElaborados').DataTable({
             'dom': vardataTables[1],
-            'buttons': vardataTables[2],
+            'buttons': [],
             'language': vardataTables[0],
             'order': [[0, 'desc']],
             'bLengthChange': false,

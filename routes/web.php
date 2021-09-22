@@ -772,7 +772,7 @@ Route::group(['middleware' => ['auth']], function () {
 						Route::post('detalle-requerimiento-orden', 'OrdenController@get_detalle_requerimiento_orden')->name('detalle-requerimiento-orden');
 						Route::post('guardar', 'OrdenController@guardar_orden_por_requerimiento')->name('guardar');
 						Route::post('actualizar', 'OrdenController@actualizar_orden_por_requerimiento')->name('actualizar');
-						Route::get('mostrar_proveedores', 'LogisticaController@mostrar_proveedores');
+						Route::post('mostrar-proveedores', 'OrdenController@mostrarProveedores');
 						Route::get('contacto-proveedor/{idProveedor?}', 'OrdenController@obtenerContactoProveedor');
 						Route::post('guardar_proveedor', 'LogisticaController@guardar_proveedor');
 						Route::put('actualizar-estado-detalle-requerimiento/{id_detalle_req?}/{estado?}', 'OrdenController@update_estado_detalle_requerimiento')->name('actualizar-estado-detalle-requerimiento');
