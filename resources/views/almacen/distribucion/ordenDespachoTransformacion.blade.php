@@ -16,9 +16,9 @@
                             <table class="mytable table table-condensed table-bordered " width="100%" id="productoBase">
                                 <thead>
                                     <tr>
-                                        <th class="text-center" width="15%">Part Number</th>
-                                        <th class="text-center" width="15%">Marca</th>
-                                        <th>Descripción del producto</th>
+                                        <th style="background-color: #cccccc;" class="text-center" width="15%">Part Number</th>
+                                        <th style="background-color: #cccccc;" class="text-center" width="15%">Marca</th>
+                                        <th style="background-color: #cccccc;">Descripción del producto</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -33,10 +33,10 @@
                             <table class="mytable table table-condensed table-bordered " width="100%" id="productoTransformado">
                                 <thead>
                                     <tr>
-                                        <th class="text-center" width="15%">Part Number</th>
-                                        <th class="text-center" width="15%">Marca</th>
-                                        <th>Descripción del producto</th>
-                                        <th>Comentario</th>
+                                        <th style="background-color: #cccccc;"class="text-center" width="15%">Part Number</th>
+                                        <th style="background-color: #cccccc;"class="text-center" width="15%">Marca</th>
+                                        <th style="background-color: #cccccc;">Descripción del producto</th>
+                                        <th style="background-color: #cccccc;">Comentario</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -57,9 +57,9 @@
                             <table class="mytable table table-condensed table-bordered " width="100%" id="detalleTransformacion">
                                 <thead>
                                     <tr>
-                                        <th>Ingresa</th>
-                                        <th>Sale</th>
-                                        <th>Comentario</th>
+                                        <th style="background-color: #cccccc;">Ingresa</th>
+                                        <th style="background-color: #cccccc;">Sale</th>
+                                        <th style="background-color: #cccccc;">Comentario</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>

@@ -55,6 +55,7 @@ Requerimientos pendientes de Transformación
 @include('almacen.distribucion.ordenDespachoInternoCreate')
 @include('almacen.distribucion.ordenDespachoTransformacion')
 @include('tesoreria.facturacion.archivos_oc_mgcp')
+@include('almacen.transferencias.ver_series')
 
 @endsection
 

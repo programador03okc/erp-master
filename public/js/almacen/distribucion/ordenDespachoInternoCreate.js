@@ -66,13 +66,13 @@ function open_despacho_create(data) {
                         '<td><input type="number" id="' + element.id_detalle_requerimiento + 'cantidad" value="' + cant + '" max="' + cant + '" min="0" style="width: 80px;"/></td>' +
                         '<td><span class="label label-' + element.bootstrap_color + '">' + element.estado_doc + '</span></td>' +
                         '<td>' + (!partes ? '<i class="fas fa-exchange-alt boton btn btn-warning" data-toggle="tooltip" data-placement="bottom" title="Ver Instrucciones segun Mgc" onClick="verInstrucciones(' + element.id_detalle_requerimiento + ');"></i>' : '') +
-                        (element.series ? '<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Ver Series" onClick="verSeries(' + element.id_detalle_requerimiento + ');"></i>' : '') +
                         '</td></tr>';
                 } else {
                     if (element.estado !== 28 && element.estado !== 10) {//En Almacen Total o Culminado
                         despachos_pendientes++;
                     }
                 }
+                // (element.series ? '<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Ver Series" onClick="verSeries(' + element.id_detalle_requerimiento + ');"></i>' : '') +
                 detalle_ingresa.push({
                     'id_reserva': element.id_reserva,
                     'id_detalle_requerimiento': element.id_detalle_requerimiento,
@@ -142,15 +142,15 @@ function open_despacho_create(data) {
                         title: "Es necesario que los productos estén en almacén",
                         icon: "warning"
                     });
-                    $('#modal-orden_despacho_create').modal('hide');
+                    $('#modal-orden_despacho_interno_create').modal('hide');
                 }
                 else {
                     console.log(almacenes_des);
                     Swal.fire({
-                        title: 'Los productos no pueden estar en más de un Almacén: \n' + almacenes_des,
+                        title: 'Los productos no pueden estar en más de un Almacén: \n' + almacenes_des + '. Es necesario realizar una transferencia.',
                         icon: "warning"
                     });
-                    $('#modal-orden_despacho_create').modal('hide');
+                    $('#modal-orden_despacho_interno_create').modal('hide');
                 }
             } else {
                 if (despachos_ext_pendientes > 0) {
@@ -162,7 +162,7 @@ function open_despacho_create(data) {
                                 title: 'El almacén es diferente. Debe realizar una transferencia. ' + almacenes_ext_des[0],
                                 icon: "warning"
                             });
-                            $('#modal-orden_despacho_create').modal('hide');
+                            $('#modal-orden_despacho_interno_create').modal('hide');
                         }
                     }
                     else if (almacenes_ext.length == 0) {
@@ -170,15 +170,15 @@ function open_despacho_create(data) {
                             title: 'Es necesario que los productos transformados esten en almacén.',
                             icon: "warning"
                         });
-                        $('#modal-orden_despacho_create').modal('hide');
+                        $('#modal-orden_despacho_interno_create').modal('hide');
                     }
                     else {
                         console.log(almacenes_ext_des);
                         Swal.fire({
-                            title: 'Los productos transformados no pueden estar en más de un Almacén: \n' + almacenes_ext_des,
+                            title: 'Los productos transformados no pueden estar en más de un Almacén: \n' + almacenes_ext_des + ' es necesario realizar una transferencia.',
                             icon: "warning"
                         });
-                        $('#modal-orden_despacho_create').modal('hide');
+                        $('#modal-orden_despacho_interno_create').modal('hide');
                     }
                 }
             }
@@ -189,7 +189,7 @@ function open_despacho_create(data) {
 
             //             if (parseInt(almacenes[0]) !== parseInt(id_alm)) {
             //                 alert('El almacén es diferente. Debe realizar una transferencia. ' + almacenes_des[0]);
-            //                 $('#modal-orden_despacho_create').modal('hide');
+            //                 $('#modal-orden_despacho_interno_create').modal('hide');
             //             } else {
             //                 $('[name=aplica_cambios]').prop('checked', false);
             //                 off();
@@ -197,12 +197,12 @@ function open_despacho_create(data) {
             //         }
             //         else if (almacenes.length == 0) {
             //             alert('Es necesario que los productos esten en almacen.');
-            //             $('#modal-orden_despacho_create').modal('hide');
+            //             $('#modal-orden_despacho_interno_create').modal('hide');
             //         }
             //         else {
             //             console.log(almacenes_des);
             //             alert('Los productos no pueden estar en más de un Almacén: \n' + almacenes_des);
-            //             $('#modal-orden_despacho_create').modal('hide');
+            //             $('#modal-orden_despacho_interno_create').modal('hide');
             //         }
             //     }
         }

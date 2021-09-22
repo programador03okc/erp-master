@@ -1,5 +1,5 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-orden_despacho_interno_create" style="overflow-y:scroll;">
-    <div class="modal-dialog" style="width: 1000px;">
+    <div class="modal-dialog" style="width: 80%">
         <div class="modal-content">
             <form id="form-orden_despacho">
                 <div class="modal-header">
@@ -54,7 +54,7 @@
                                             <th>Descripción</th>
                                             <th>Cant.</th>
                                             <th>Unid</th>
-                                            <th>Ing/Stock</th>
+                                            <th>Reservado</th>
                                             <th>Despachado</th>
                                             <th>Cant.Despacho</th>
                                             <th>Estado</th>

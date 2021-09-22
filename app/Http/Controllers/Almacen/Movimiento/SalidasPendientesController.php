@@ -499,9 +499,10 @@ class SalidasPendientesController extends Controller
                 'orden_despacho_det.*',
                 'alm_prod.codigo',
                 'alm_prod.descripcion',
-                'alm_und_medida.abreviatura',
+                'alm_prod.series',
                 'alm_prod.part_number',
                 'alm_prod.id_unidad_medida',
+                'alm_und_medida.abreviatura',
                 'guia_oc.id_guia_com_det as id_guia_oc_det',
                 'guia_trans.id_guia_ven_det as id_guia_trans_det',
                 'orden_despacho.id_almacen',
@@ -583,6 +584,7 @@ class SalidasPendientesController extends Controller
                     'descripcion' => $det->descripcion,
                     'cantidad' => $det->cantidad,
                     'abreviatura' => $det->abreviatura,
+                    'control_series' => $det->series,
                     'series' => $series
                 ]);
             }

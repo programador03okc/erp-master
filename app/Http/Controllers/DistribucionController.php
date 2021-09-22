@@ -934,7 +934,10 @@ class DistribucionController extends Controller
             ->leftJoin('almacen.guia_ven_det', 'guia_ven_det.id_guia_ven_det', '=', 'alm_prod_serie.id_guia_ven_det')
             ->leftJoin('almacen.guia_ven', 'guia_ven.id_guia_ven', '=', 'guia_ven_det.id_guia_ven')
             ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'alm_det_req.estado')
-            ->where([['alm_det_req.estado', '!=', 7], ['alm_prod_serie.serie', '!=', null]])
+            ->where([
+                ['alm_det_req.estado', '!=', 7], ['alm_prod_serie.serie', '!=', null],
+                ['alm_det_req.id_detalle_requerimiento', '=', $id_detalle_requerimiento]
+            ])
             ->get();
         return response()->json($series);
     }

@@ -1,19 +1,27 @@
-function open_guia_create(data){
+function open_guia_create(data) {
     $('#modal-guia_ven_create').modal({
         show: true
     });
     $("#submit_guia").removeAttr("disabled");
-    if (data.aplica_cambios){
+    if (data.aplica_cambios) {
         $('[name=id_operacion]').val(27).trigger('change.select2');
+        $('#name_title').text('Despacho Interno');
+        $('#name_title').removeClass();
+        $('#name_title').addClass('red');
     } else {
         $('[name=id_operacion]').val(1).trigger('change.select2');
+        $('#name_title').text('Despacho Externo');
+        $('#name_title').removeClass();
+        $('#name_title').addClass('blue');
     }
+    console.log(data);
     $('[name=id_guia_clas]').val(1);
     $('[name=id_od]').val(data.id_od);
     $('[name=id_almacen]').val(data.id_almacen);
     $('[name=id_sede]').val(data.id_sede);
     $('[name=id_cliente]').val(data.id_cliente);
     $('[name=id_persona]').val(data.id_persona);
+    $('[name=razon_social_cliente]').val(data.razon_social);
     $('[name=id_requerimiento]').val(data.id_requerimiento);
     $('[name=almacen_descripcion]').val(data.almacen_descripcion);
     $('[name=serie]').val('');
@@ -29,54 +37,68 @@ function open_guia_create(data){
 
 let detalle = [];
 
-function listarDetalleOrdenDespacho(id_od){
+function listarDetalleOrdenDespacho(id_od) {
     detalle = [];
     $.ajax({
         type: 'GET',
-        url: 'verDetalleDespacho/'+id_od,
+        url: 'verDetalleDespacho/' + id_od,
         dataType: 'JSON',
-        success: function(response){
+        success: function (response) {
             console.log(response);
             detalle = response;
             mostrar_detalle();
         }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
+    }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
     });
 }
 
-function mostrar_detalle(){
+function mostrar_detalle() {
     var html = '';
     var html_series = '';
     var i = 1;
     detalle.forEach(element => {
         html_series = '';
         element.series.forEach(ser => {
-            if (html_series==''){
-                html_series+=ser.serie;
+            if (html_series == '') {
+                html_series += ser.serie;
             } else {
-                html_series+='<br>'+ser.serie;
+                html_series += '<br>' + ser.serie;
             }
         });
-        console.log('guia '+element.id_guia_com_det+' prod '+element.id_producto);
+        console.log('guia ' + element.id_guia_com_det + ' prod ' + element.id_producto);
         html += `<tr>
         <td>${i}</td>
-        <td>${element.codigo}</td>
-        <td>${element.part_number!==null ? element.part_number:''}</td>
+        <td><a href="#" class="verProducto" data-id="${element.id_producto}" >${element.codigo}</a></td>
+        <td>${element.part_number !== null ? element.part_number : ''}</td>
         <td>${element.descripcion}</td>
         <td>${element.cantidad}</td>
         <td>${element.abreviatura}</td>
         <td><strong>${html_series}</strong></td>
         <td>
-        <i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series" 
-        onClick="open_series(${element.id_producto},${element.id_od_detalle},${element.cantidad});"></i></td>
+        ${element.control_series ? `<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series" 
+        onClick="open_series(${element.id_producto},${element.id_od_detalle},${element.cantidad});"></i>` : ''}</td>
         </tr>`;
         i++;
     });
     $('#detalleGuiaVenta tbody').html(html);
 }
+
+$("#detalleGuiaVenta tbody").on("click", "a.verProducto", function (e) {
+    $(e.preventDefault());
+    var id = $(this).data("id");
+    abrirProducto(id);
+});
+
+function abrirProducto(id_producto) {
+    console.log('abrirProducto' + id_producto);
+    localStorage.setItem("id_producto", id_producto);
+    var win = window.open("/almacen/catalogos/productos/index", '_blank');
+    win.focus();
+}
+
 // function next_serie_numero(id_sede,id_tp_doc){
 //     if (id_sede !== null && id_tp_doc !== null){
 //         $.ajax({
@@ -103,62 +125,62 @@ function mostrar_detalle(){
 //     }
 // }
 
-$("#form-guia_ven_create").on("submit", function(e){
+$("#form-guia_ven_create").on("submit", function (e) {
     console.log('submit');
     e.preventDefault();
     var lista_detalle = [];
     detalle.forEach(element => {
         lista_detalle.push({
-            'id_od_detalle'             : element.id_od_detalle,
-            'id_producto'               : element.id_producto,
-            'cantidad'                  : element.cantidad,
-            'id_unidad_medida'          : element.id_unidad_medida,
-            'id_detalle_requerimiento'  : element.id_detalle_requerimiento,
-            'id_guia_com_det'           : element.id_guia_com_det,
+            'id_od_detalle': element.id_od_detalle,
+            'id_producto': element.id_producto,
+            'cantidad': element.cantidad,
+            'id_unidad_medida': element.id_unidad_medida,
+            'id_detalle_requerimiento': element.id_detalle_requerimiento,
+            'id_guia_com_det': element.id_guia_com_det,
             // 'codigo'                    : element.codigo,
             // 'part_number'               : element.part_number,
             // 'descripcion'               : element.descripcion,
             // 'abreviatura'               : element.abreviatura,
             // 'descripcion'               : encodeURIComponent(element.descripcion),
-            'series'                    : element.series
+            'series': element.series
         });
     });
     var ser = $(this).serialize();
-    var data = ser+'&detalle='+JSON.stringify(lista_detalle);
+    var data = ser + '&detalle=' + JSON.stringify(lista_detalle);
     console.log(data);
     guardar_guia_create(data);
 });
 
-function guardar_guia_create(data){
-    $("#submit_guia").attr('disabled','true');
+function guardar_guia_create(data) {
+    $("#submit_guia").attr('disabled', 'true');
 
     $.ajax({
         type: 'POST',
         url: 'guardar_guia_despacho',
         data: data,
         dataType: 'JSON',
-        success: function(id_salida){
+        success: function (id_salida) {
             console.log(id_salida);
 
-                alert('Salida de Almacén generada con éxito');
-                $('#modal-guia_ven_create').modal('hide');
-                $('#despachosPendientes').DataTable().ajax.reload();
-                // var id = encode5t(id_salida);
-                // window.open('imprimir_salida/'+id);                
+            alert('Salida de Almacén generada con éxito');
+            $('#modal-guia_ven_create').modal('hide');
+            $('#despachosPendientes').DataTable().ajax.reload();
+            // var id = encode5t(id_salida);
+            // window.open('imprimir_salida/'+id);                
         }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
+    }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
     });
 }
-function ceros_numero_ven(numero){
-    if (numero == 'numero'){
+function ceros_numero_ven(numero) {
+    if (numero == 'numero') {
         var num = $('[name=numero]').val();
-        $('[name=numero]').val(leftZero(7,num));
+        $('[name=numero]').val(leftZero(7, num));
     }
-    else if(numero == 'serie'){
+    else if (numero == 'serie') {
         var num = $('[name=serie]').val();
-        $('[name=serie]').val(leftZero(4,num));
+        $('[name=serie]').val(leftZero(4, num));
     }
 }

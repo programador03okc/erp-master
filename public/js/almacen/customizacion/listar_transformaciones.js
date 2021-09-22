@@ -109,11 +109,11 @@ class GestionCustomizacion {
                 {
                     'render':
                         function (data, type, row) {
-                            return (`<button type="button" class="imprimir btn btn-info boton" data-toggle="tooltip" 
+                            return (`<button type="button" class="imprimir btn btn-info btn-flat boton" data-toggle="tooltip" 
                                     data-placement="bottom" title="Imprimir Hoja de Transformación" data-id="${row['id_transformacion']}">
                                     <i class="fas fa-print"></i></button>`+
                                 (row['estado'] == 21 ? //entregado
-                                    `<button type="button" class="iniciar btn btn-primary boton" data-toggle="tooltip" 
+                                    `<button type="button" class="iniciar btn btn-primary btn-flat boton" data-toggle="tooltip" 
                                     data-placement="bottom" title="Iniciar Transformación" data-id="${row['id_transformacion']}"
                                     data-estado="${row['estado']}">
                                     <i class="fas fa-step-forward"></i></button>`: '')
@@ -179,11 +179,11 @@ class GestionCustomizacion {
                 {
                     'render':
                         function (data, type, row) {
-                            return ('<button type="button" class="salida btn btn-success boton" data-toggle="tooltip" ' +
+                            return ('<button type="button" class="salida btn btn-success btn-flat boton" data-toggle="tooltip" ' +
                                 'data-placement="bottom" title="Ver Salida" data-id="' + row['id_transformacion'] + '">' +
                                 '<i class="fas fa-sign-out-alt"></i></button>' +
 
-                                '<button type="button" class="ingreso btn btn-primary boton" data-toggle="tooltip" ' +
+                                '<button type="button" class="ingreso btn btn-primary btn-flat boton" data-toggle="tooltip" ' +
                                 'data-placement="bottom" title="Ver Ingreso" data-id="' + row['id_transformacion'] + '">' +
                                 '<i class="fas fa-sign-in-alt"></i></button>');
                         }

@@ -166,7 +166,15 @@ function procesar_transformacion(data) {
         success: function (response) {
             console.log(response);
             $('#modal-procesarTransformacion').modal('hide');
-            alert('Transformación procesada con éxito');
+            // alert('Transformación procesada con éxito');
+            Lobibox.notify("success", {
+                title: false,
+                size: "mini",
+                rounded: true,
+                sound: false,
+                delayIndicator: false,
+                msg: 'Transformación procesada con éxito.'
+            });
             var id_trans = $('[name=id_transformacion]').val();
             mostrar_transformacion(id_trans);
         }
@@ -183,16 +191,28 @@ function openProcesar() {
     if (id_trans !== '') {
         var est = $('[name=id_estado]').val();
         if (est == '9') {
-            alert('La transformación ya fue procesada.');
+            Swal.fire({
+                title: "La transformación ya fue procesada.",
+                icon: "error",
+            });
         }
         else if (est == '7') {
-            alert('No puede procesar. La transformación esta Anulada.');
+            Swal.fire({
+                title: "No puede procesar. La transformación esta Anulada.",
+                icon: "error",
+            });
         }
         else if (est == '1') {
-            alert('A la espera de que Almacén genere la salida de los productos.');
+            Swal.fire({
+                title: "A la espera de que Almacén genere la salida de los productos.",
+                icon: "error",
+            });
         }
         else if (est == '21') {
-            alert('Es necesario que inicie la transformación.');
+            Swal.fire({
+                title: "Es necesario que inicie la transformación.",
+                icon: "error",
+            });
         }
         else if (est == '24') {
             $('#modal-procesarTransformacion').modal({
@@ -202,7 +222,10 @@ function openProcesar() {
             $('[name=observacion]').val('');
         }
     } else {
-        alert('No ha seleccionado una Hoja de Transformación');
+        Swal.fire({
+            title: "No ha seleccionado una Hoja de Transformación!",
+            icon: "error",
+        });
     }
 }
 
@@ -210,16 +233,28 @@ function openIniciar() {
     var id_transformacion = $('[name=id_transformacion]').val();
     var est = $('[name=id_estado]').val();
     if (est == '1') {
-        alert('A la espera de que Almacén genere la salida de los productos.');
+        Swal.fire({
+            title: "A la espera de que Almacén genere la salida de los productos.",
+            icon: "error",
+        });
     }
     else if (est == '9') {
-        alert('La transformación ya fue procesada.');
+        Swal.fire({
+            title: "La transformación ya fue procesada.",
+            icon: "error",
+        });
     }
     else if (est == '7') {
-        alert('No puede procesar. La transformación esta Anulada.');
+        Swal.fire({
+            title: "No puede procesar. La transformación esta Anulada.",
+            icon: "error",
+        });
     }
     else if (est == '24') {
-        alert('Ésta Transformación ya fue iniciada.');
+        Swal.fire({
+            title: "Ésta Transformación ya fue iniciada.",
+            icon: "error",
+        });
     }
     else if (est == '21') {
         $.ajax({
@@ -252,7 +287,12 @@ function abrir_salida() {
                     var id = encode5t(id_salida);
                     window.open('imprimir_salida/' + id);
                 } else {
-                    alert('Esta Transformación no tiene Salida');
+                    // alert('Esta Transformación no tiene Salida');
+                    Swal.fire({
+                        title: "Esta Transformación no tiene Salida!",
+                        text: "Es necesario que almacén realice la salida.",
+                        icon: "error",
+                    });
                 }
             }
         }).fail(function (jqXHR, textStatus, errorThrown) {
@@ -340,6 +380,10 @@ function imprimirTransformacion() {
     if (id !== null && id !== '') {
         window.open('imprimir_transformacion/' + id);
     } else {
-        alert('Debe seleccionar una Hoja de Transformación.');
+        // alert('Debe seleccionar una Hoja de Transformación.');
+        Swal.fire({
+            title: "Debe seleccionar una Hoja de Transformación!",
+            icon: "error",
+        });
     }
 }

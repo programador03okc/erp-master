@@ -1,9 +1,9 @@
 @extends('layout.main')
 @include('layout.menu_cas')
 
-@section('option')
+{{-- @section('option')
 @include('layout.option')
-@endsection
+@endsection --}}
 
 @section('cabecera')
 Orden de Transformación
@@ -33,8 +33,10 @@ Orden de Transformación
                     <span id="estado_doc"></span>
                 </div>
                 <div style="display:flex;padding-right: 0px;">
+                    <button type="button" class="btn btn-default btn-sm btn-flat" onClick="transformacionModal();" data-toggle="tooltip" data-placement="bottom" title="Ver Historial de Ordenes de Transformación">
+                        <i class="fas fa-search"></i> Buscar</button>
                     <button type="button" class="btn btn-info btn-sm btn-flat" onClick="imprimirTransformacion();" data-toggle="tooltip" data-placement="bottom" title="Imprimir Transformación">
-                        <i class="fas fa-print"></i> </button>
+                        <i class="fas fa-print"></i> Imprimir</button>
                     <button type="button" class="btn btn-warning btn-sm btn-flat" onClick="openIniciar();" data-toggle="tooltip" data-placement="bottom" title="Iniciar Transformación">
                         Iniciar <i class="fas fa-step-forward"></i> </button>
                     <button type="button" class="btn btn-success btn-sm btn-flat" onClick="openProcesar();" data-toggle="tooltip" data-placement="bottom" title="Procesar Transformación">

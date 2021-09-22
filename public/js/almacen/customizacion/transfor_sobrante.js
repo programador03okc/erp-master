@@ -87,7 +87,14 @@ function guardar_sobrante(data) {
         success: function (response) {
             console.log(response);
             if (response > 0) {
-                alert('Item guardado con éxito');
+                Lobibox.notify("success", {
+                    title: false,
+                    size: "mini",
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    msg: 'Sobrante guardado con éxito.'
+                });
                 var id_trans = $('[name=id_transformacion]').val();
                 listar_sobrantes(id_trans);
             }
@@ -186,16 +193,24 @@ function listar_sobrantes(id_transformacion) {
 // }
 // Delete row on delete button click
 $('#listaSobrantes tbody').on("click", ".delete", function () {
-    var anula = confirm("¿Esta seguro que desea anular éste item?");
-
-    if (anula) {
-        var idx = $(this).parents("tr")[0].id;
-        $(this).parents("tr").remove();
-        console.log('idx' + idx);
-        if (idx !== '') {
-            anular_sobrante(idx);
+    Swal.fire({
+        title: "¿Esta seguro que desea anular éste item?",
+        icon: "info",
+        showCancelButton: true,
+        confirmButtonColor: "#00a65a", //"#3085d6"
+        cancelButtonColor: "#d33",
+        cancelButtonText: "Aún No.",
+        confirmButtonText: "Si, Anular"
+    }).then(result => {
+        if (result.isConfirmed) {
+            var idx = $(this).parents("tr")[0].id;
+            $(this).parents("tr").remove();
+            console.log('idx' + idx);
+            if (idx !== '') {
+                anular_sobrante(idx);
+            }
         }
-    }
+    });
 });
 function anular_sobrante(id) {
     $.ajax({
@@ -206,6 +221,14 @@ function anular_sobrante(id) {
             console.log(response);
             if (response > 0) {
                 // alert('Item anulado con éxito');
+                Lobibox.notify("error", {
+                    title: false,
+                    size: "mini",
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    msg: 'Sobrante anulado con éxito.'
+                });
                 var id_trans = $('[name=id_transformacion]').val();
                 listar_sobrantes(id_trans);
             }

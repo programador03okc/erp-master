@@ -1,10 +1,10 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-guia_ven_create" style="overflow-y: scroll;">
-    <div class="modal-dialog" style="width:1100px;">
+    <div class="modal-dialog" style="width:80%;">
         <div class="modal-content">
             <form id="form-guia_ven_create">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
-                    <h3 class="modal-title">Generar Guia de Venta</h3>
+                    <h3 class="modal-title">Generar Guia de Venta - <strong><span id="name_title"></span></strong></h3>
                 </div>
                 <div class="modal-body">
                     <input type="text" class="oculto" name="id_od">
@@ -35,6 +35,10 @@
                         </div>
                     </div>
                     <div class="row">
+                        <div class="col-md-4">
+                            <h5>Cliente</h5>
+                            <input type="text" class="form-control" name="razon_social_cliente" disabled>
+                        </div>
                         <div class="col-md-4">
                             <h5>Tipo de Operación</h5>
                             <select class="form-control js-example-basic-single" name="id_operacion" required readOnly>
