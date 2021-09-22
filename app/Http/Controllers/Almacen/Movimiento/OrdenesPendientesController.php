@@ -129,7 +129,7 @@ class OrdenesPendientesController extends Controller
         );*/
     }
 
-    public function ordenesPendientesLista()
+    public function ordenesPendientesLista(Request $request)
     {
         $data = DB::table('logistica.log_det_ord_compra')
             ->select(
@@ -161,17 +161,17 @@ class OrdenesPendientesController extends Controller
             ]);
         // whereBetween('created_at', ['2018/11/10 12:00', '2018/11/11 10:30'])
         $array_sedes = [];
-        if (session()->has('pendientesFilter_fechaInicio')) {
-            $data = $data->whereDate('log_ord_compra.fecha', '>=', session()->get('pendientesFilter_fechaInicio'));
+        if ($request->fecha_inicio !== null) {
+            $data = $data->whereDate('log_ord_compra.fecha', '>=', $request->fecha_inicio);
         }
-        if (session()->has('pendientesFilter_fechaFin')) {
-            $data = $data->whereDate('log_ord_compra.fecha', '<=', session()->get('pendientesFilter_fechaFin'));
+        if ($request->fecha_fin !== null) {
+            $data = $data->whereDate('log_ord_compra.fecha', '<=', $request->fecha_fin);
         }
-        if (session()->has('pendientesFilter_idSede')) {
-            if (session()->get('pendientesFilter_idSede') == 0) {
+        if ($request->id_sede !== null) {
+            if ($request->id_sede == 0) {
                 $array_sedes = $this->sedesPorUsuarioArray();
             } else {
-                $array_sedes[] = [session()->get('pendientesFilter_idSede')];
+                $array_sedes[] = [$request->id_sede];
             }
             $data = $data->whereIn('log_ord_compra.id_sede', $array_sedes);
         }
@@ -180,20 +180,17 @@ class OrdenesPendientesController extends Controller
 
     public function listarOrdenesPendientes(Request $request)
     {
-        $this->actualizarFiltrosPendientes($request);
-        $query = $this->ordenesPendientesLista();
+        $query = $this->ordenesPendientesLista($request);
         return datatables($query)->toJson();
     }
 
     public function ordenesPendientesExcel(Request $request)
     {
-        // die("Recibido" . $request->fecha_inicio);
-        $this->actualizarFiltrosPendientes($request);
-        $data = $this->ordenesPendientesLista();
+        $data = $this->ordenesPendientesLista($request);
         return Excel::download(new OrdenesPendientesExport(
             $data,
-            session()->get('pendientesFilter_fechaInicio'),
-            session()->get('pendientesFilter_fechaFin')
+            $request->fecha_inicio,
+            $request->fecha_fin
         ), 'ordenesPendientes.xlsx');
     }
 
