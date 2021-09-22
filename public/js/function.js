@@ -1197,3 +1197,21 @@ function cambiarVisibilidadBtn(name, estado) {
             .setAttribute("class", newclass);
     }
 }
+
+function objectifyForm(inp) {
+    let rObject = {};
+    for (let i = 0; i < inp.length; i++) {
+        if (inp[i]['name'].substr(inp[i]['name'].length - 2) == "[]") {
+            let tmp = inp[i]['name'].substr(0, inp[i]['name'].length - 2);
+            if (Array.isArray(rObject[tmp])) {
+                rObject[tmp].push(inp[i]['value']);
+            } else {
+                rObject[tmp] = [];
+                rObject[tmp].push(inp[i]['value']);
+            }
+        } else {
+            rObject[inp[i]['name']] = inp[i]['value'];
+        }
+    }
+    return rObject;
+}

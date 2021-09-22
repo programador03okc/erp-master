@@ -98,10 +98,11 @@ function listarIngresos() {
             { data: "operacion_descripcion", name: "tp_ope.descripcion" },
             { data: "almacen_descripcion", name: "alm_almacen.descripcion" },
             { data: "nombre_corto", name: "sis_usua.nombre_corto" },
-            { data: "id_mov_alm" },
-            { data: "id_mov_alm" },
-            { data: "id_guia_com" },
-            { data: "fecha_registro" },
+            { data: "ordenes", orderable: false },//Órdenes
+            { data: "ordenes", orderable: false },//dta
+            { data: "facturas", orderable: false },//dta
+            // { data: "id_guia_com" },
+            { data: "requerimientos", orderable: false },
             { data: "id_mov_alm", searchable: false }
         ],
         columnDefs: [

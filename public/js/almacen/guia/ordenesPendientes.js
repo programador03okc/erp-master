@@ -8,16 +8,16 @@ function iniciar(permiso) {
 
     acceso = permiso;
     listarIngresos();
-    actualizarFiltrosPendientes();
-    // listarOrdenesPendientes();
+    // actualizarFiltrosPendientes();
+    listarOrdenesPendientes();
     oc_seleccionadas = [];
 
     $('#myTabOrdenesPendientes a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
         let tab = $(e.target).attr("href") // activated tab
 
         if (tab == '#pendientes') {
-            // $("#ordenesPendientes").DataTable().ajax.reload(null, false);
-            actualizarFiltrosPendientes();
+            $("#ordenesPendientes").DataTable().ajax.reload(null, false);
+            // actualizarFiltrosPendientes();
         }
         else if (tab == '#transformaciones') {
             listarTransformaciones();
@@ -30,10 +30,11 @@ function iniciar(permiso) {
     vista_extendida();
 }
 
-let fini = suma_fecha(-90, fecha_actual());
-let ffin = fecha_actual();
-let sede = 0;
+/*let fini = $('[name=fecha_inicio]').val();
+let ffin = $('[name=fecha_fin]').val();
+let sede = $('[name=id_sede]').val();*/
 
+/*
 function actualizarFiltrosPendientes() {
 
     var sfini = $('#fecha_inicio').val();
@@ -69,7 +70,7 @@ function actualizarFiltrosPendientes() {
         }
     });
 }
-
+*/
 var table;
 
 function listarOrdenesPendientes() {
@@ -132,16 +133,17 @@ function listarOrdenesPendientes() {
                 table.search($input.val()).draw();
             });
 
+            const $form = $('#formFiltrosOrdenesPendientes');
             $('#ordenesPendientes_wrapper .dt-buttons').append(
                 `<div style="display:flex">
-                    <input type="text" class="form-control date-picker" size="10" id="fecha_inicio" value="${formatDate(fini)}"/>
-                    <input type="text" class="form-control date-picker" size="10" id="fecha_fin" value="${formatDate(ffin)}"/>
-                    <select class="form-control" id="id_sede_filtro_ordenes" value="${sede}">
+                    <input type="text" class="form-control date-picker" size="10" id="txtOrdenPendienteFechaInicio" 
+                        value="${$form.find('input[name=fecha_inicio]').val()}"/>
+                    <input type="text" class="form-control date-picker" size="10" id="txtOrdenPendienteFechaFin" 
+                        value="${$form.find('input[name=fecha_fin]').val()}"/>
+                    <select class="form-control" id="selectOrdenPendienteSede">
                         <option value="0" selected>Mostrar Todos</option>
                     </select>
-                    <button type="button" class="btn btn-warning btn-flat" data-toggle="tooltip" 
-                        data-placement="bottom" title="Actualizar tabla" onClick="actualizarFiltrosPendientes();">
-                        <i class="fas fa-sync-alt"></i></button>
+                    
                 </div>`
             );
             $('input.date-picker').datepicker({
@@ -152,7 +154,22 @@ function listarOrdenesPendientes() {
             });
             listarSedes();
 
-            console.log('datatable ' + fini, ffin, sede);
+            $("#txtOrdenPendienteFechaInicio").on("change", function (e) {
+                var ini = $(this).val();
+                $('#formFiltrosOrdenesPendientes').find('input[name=fecha_inicio]').val(ini);
+                $("#ordenesPendientes").DataTable().ajax.reload(null, false);
+            });
+            $("#txtOrdenPendienteFechaFin").on("change", function (e) {
+                // $(e.preventDefault());
+                var fin = $(this).val();
+                $('#formFiltrosOrdenesPendientes').find('input[name=fecha_fin]').val(fin);
+                $("#ordenesPendientes").DataTable().ajax.reload(null, false);
+            });
+            $("#selectOrdenPendienteSede").on("change", function (e) {
+                var sed = $(this).val();
+                $('#formFiltrosOrdenesPendientes').find('input[name=id_sede]').val(sed);
+                $("#ordenesPendientes").DataTable().ajax.reload(null, false);
+            });
         },
         drawCallback: function (settings) {
             $("#ordenesPendientes_filter input").prop("disabled", false);
@@ -166,7 +183,10 @@ function listarOrdenesPendientes() {
         },
         ajax: {
             url: "listarOrdenesPendientes",
-            type: "POST"
+            type: "POST",
+            data: function (params) {
+                return Object.assign(params, objectifyForm($('#formFiltrosOrdenesPendientes').serializeArray()))
+            }
         },
         columns: [
             { data: "id_orden_compra", name: "log_ord_compra.id_orden_compra" },
@@ -292,6 +312,7 @@ function listarOrdenesPendientes() {
     });
 }
 
+
 $("#ordenesPendientes tbody").on("click", "a.verOrden", function (e) {
     $(e.preventDefault());
     var id = $(this).data("id");
@@ -387,7 +408,7 @@ function listarSedes() {
                         '<option value="' + element.id_sede + '">' + element.descripcion + "</option>";
                 }
             });
-            $("#id_sede_filtro_ordenes").html(option);
+            $("#selectOrdenPendienteSede").html(option);
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
@@ -396,5 +417,7 @@ function listarSedes() {
     });
 }
 function exportarOrdenesPendientes() {
-    window.location.href = 'ordenesPendientesExcel';
+    // let fini = $form.find('input[name=fecha_inicio]').val();
+    $('#formFiltrosOrdenesPendientes').trigger('submit');
+    //window.location.href = 'ordenesPendientesExcel';
 }
