@@ -1,5 +1,5 @@
 <!-- Modal Centro costos -->
-<div class="modal fade" role="dialog" id="modal-centro-costos">
+<div class="modal fade" role="dialog" id="modal-centro-costos" style="overflow-y: scroll;">
 	<div class="modal-dialog" style="width: 40%;">
 		<div class="modal-content">
 			<div class="modal-header">

@@ -204,6 +204,7 @@ class OrdenView {
                                     cantidad_atendido_orden += parseFloat(orden.cantidad);
                                 });
                             }
+                            let cantidadAAtender = (parseFloat(det.cantidad) - cantidad_atendido_almacen -cantidad_atendido_orden);
                             if (det.tiene_transformacion == false) {
                                 detalleOrdenList.push(
                                     {
@@ -215,7 +216,7 @@ class OrdenView {
                                         'codigo_requerimiento': req.codigo,
                                         'id_moneda': req.id_moneda,
                                         'cantidad': det.cantidad,
-                                        'cantidad_a_comprar': (det.cantidad - cantidad_atendido_almacen > 0 ? cantidad_atendido_almacen : 0) > 0 ? (det.cantidad - cantidad_atendido_almacen) : 0,
+                                        'cantidad_a_comprar': !(cantidadAAtender >= 0) ? '' :cantidadAAtender,
                                         'cantidad_atendido_almacen': cantidad_atendido_almacen,
                                         'cantidad_atendido_orden': cantidad_atendido_orden,
                                         'descripcion_producto': det.descripcion,

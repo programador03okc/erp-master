@@ -1,4 +1,4 @@
-<div class="modal fade" tabindex="-1" role="dialog" id="modal-agregar-establecimiento">
+<div class="modal fade" tabindex="-1" role="dialog" id="modal-agregar-establecimiento" style="overflow-y: scroll;">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <form id="form-agregar-establecimiento" onsubmit="return false;">

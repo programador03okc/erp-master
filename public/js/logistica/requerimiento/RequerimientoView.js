@@ -617,17 +617,22 @@ class RequerimientoView {
 
     changeOptEmpresaSelect(obj) {
         this.getDataSelectSede(obj.target.value);
+ 
+
     }
 
     getDataSelectSede(idEmpresa = null) {
         if (idEmpresa > 0) {
             this.requerimientoCtrl.obtenerSede(idEmpresa).then((res)=> {
                 this.llenarSelectSede(res);
-                this.seleccionarAlmacen(res)
+                this.cargarAlmacenes($('[name=sede]').val());
+                this.seleccionarAlmacen();
                 this.llenarUbigeo();
             }).catch(function (err) {
                 console.log(err)
             })
+
+
         }
         return false;
     }
@@ -648,7 +653,7 @@ class RequerimientoView {
             option.text = element.descripcion;
             option.value = element.id_sede;
             if (element.codigo == 'LIMA' || element.codigo == 'Lima') { // default sede lima
-                option.setAttribute('selected', 'selected');
+                option.selected=true;
 
             }
             option.setAttribute('data-ubigeo', element.id_ubigeo);
@@ -662,7 +667,7 @@ class RequerimientoView {
 
     }
 
-    seleccionarAlmacen(data) {
+    seleccionarAlmacen() {
         // let firstSede = data[0].id_sede;
         let selectAlmacen = document.querySelector("div[id='input-group-almacen'] select[name='id_almacen']");
         if (selectAlmacen.options.length > 0) {
@@ -670,7 +675,7 @@ class RequerimientoView {
             for (i = L; i > 0; i--) {
                 if (selectAlmacen.options[i].dataset.idEmpresa == document.querySelector("select[id='empresa']").value) {
                     if ([4, 10, 11, 12, 13, 14].includes(parseInt(selectAlmacen.options[i].dataset.idSede)) == true) { ///default almacen lima
-                        selectAlmacen.options[i].setAttribute('selected', true);
+                        selectAlmacen.options[i].selected=true;
                     }
                 }
             }
@@ -695,8 +700,10 @@ class RequerimientoView {
     }
 
     cargarAlmacenes(sede) {
+        console.log(sede);
         if (sede !== '') {
             this.requerimientoCtrl.obtenerAlmacenes(sede).then((res)=> {
+                console.log(res);
                 let option = '';
                 for (let i = 0; i < res.length; i++) {
                     if (res.length == 1) {

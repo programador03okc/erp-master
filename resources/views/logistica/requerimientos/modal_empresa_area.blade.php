@@ -1,5 +1,5 @@
 <!-- modal -->
-<div class="modal fade" tabindex="-1" role="dialog" id="modal-empresa-area">
+<div class="modal fade" tabindex="-1" role="dialog" id="modal-empresa-area" style="overflow-y: scroll;">
     <div class="modal-dialog" style="width: 30%;">
         <div class="modal-content">
             <div class="modal-header">

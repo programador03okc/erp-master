@@ -80,15 +80,15 @@ class MapeoProductosController extends Controller
             $cantidadItemsMapeados=0;
             foreach($request->detalle as $det){
     
-                if ($det['id_producto'] !== null){
-                    $cantidadItemsMapeados++;
+                if ($det['id_producto'] !== null && $det['estado'] != 7){
                     DB::table('almacen.alm_det_req')
                     ->where('id_detalle_requerimiento',$det['id_detalle_requerimiento'])
                     ->update(['id_producto'=>$det['id_producto']]);
 
+                    $cantidadItemsMapeados++;
                 } 
                 else if ($det['id_categoria'] !== null && $det['id_subcategoria'] !== null
-                        && $det['id_clasif'] !== null && $det['id_producto'] == null){
+                        && $det['id_clasif'] !== null && $det['id_producto'] == null && $det['estado'] != 7){
                     $cantidadItemsMapeados++;
                     $id_producto = DB::table('almacen.alm_prod')->insertGetId(
                         [

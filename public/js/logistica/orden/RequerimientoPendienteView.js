@@ -652,7 +652,7 @@ class RequerimientoPendienteView {
     }
 
     construirTablaListaItemsRequerimientoParaAtenderConAlmacen(data) { 
-        console.log(data);
+        // console.log(data);
         $('#listaItemsRequerimientoParaAtenderConAlmacen').dataTable({
             'dom': vardataTables[1],
             'buttons': [],
@@ -1112,11 +1112,15 @@ class RequerimientoPendienteView {
 
                         this.listarTablaListaConReserva(response.data)
                         this.llenarTablaModalAtenderConAlmacen(document.querySelector("form[id='form-nueva-reserva'] input[name='idRequerimiento']").value);
-
+                        if(response.estado_requerimiento.hasOwnProperty('id')){
+                            if(response.estado_requerimiento.id==28 || response.estado_requerimiento.id==5){
+                                trRequerimientosPendientes.remove();
+                            }
+                        }
                         
                     } else {
                         $('#modal-nueva-reserva .modal-content').LoadingOverlay("hide", true);
-                        console.log(response);
+                        // console.log(response);
                         if(response.mensaje.length >0){
                             Swal.fire(
                                 '',
