@@ -7,19 +7,13 @@
             </div>
             <div class="modal-body">
                 <button type="button" class="btn btn-primary btn-sm handleClickCrearProveedor" title="Agregar Proveedor" ><i class="fas fa-plus"></i> Crear nuevo</button>
-                <table class="mytable table table-condensed table-bordered table-okc-view" 
-                id="listaProveedor">
+                <table class="mytable table table-hover table-condensed table-striped table-bordered table-okc-view" id="listaProveedor"  width="100%">
                     <thead>
                         <tr>
-                            <th hidden>Id</th>
-                            <th hidden></th>
-                            <th>RUC</th>
-                            <th>Razon social</th>
-                            <th>Telefono</th>
-                            <th>Dirección</th>
-                            <th>Ubigeo</th>
-                            <th>Ubigeo descripcion</th>
-                            <th>Acción</th>
+                            <th class="text-center" style="width:5%">RUC</th>
+                            <th class="text-center" style="width:50%">Razon social</th>
+                            <!-- <th>Ubigeo descripcion</th> -->
+                            <th class="text-center" style="width:5%">Acción</th>
                         </tr>
                     </thead>
                     <tbody></tbody>

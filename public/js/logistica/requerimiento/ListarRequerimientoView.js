@@ -46,7 +46,7 @@ class ListarRequerimientoView {
         var vardataTables = funcDatatables();
         let $tablaListaRequerimientosElaborados= $('#ListaRequerimientosElaborados').DataTable({
             'dom': vardataTables[1],
-            'buttons': vardataTables[2],
+            'buttons': [],
             'language': vardataTables[0],
             'order': [[0, 'desc']],
             'bLengthChange': false,
@@ -94,7 +94,7 @@ class ListarRequerimientoView {
                 {
                     'render': function (data, type, row) {
                         // return `<label class="lbl-codigo handleClickAbrirRequerimiento" title="Abrir Requerimiento">${row.codigo}</label>`;
-                        return `<a href="/logistica/gestion-logistica/requerimiento/elaboracion/index?id=${row.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${row.codigo}</a>`;
+                        return `${row.tiene_transformacion==true?'<i class="fas fa-random" title="Con transformación"></i>':''} <a href="/logistica/gestion-logistica/requerimiento/elaboracion/index?id=${row.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${row.codigo}</a>`;
                     }, targets: 2
                 },
                 {

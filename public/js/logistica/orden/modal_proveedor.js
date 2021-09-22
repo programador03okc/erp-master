@@ -4,43 +4,55 @@ function listar_proveedores(){
     var vardataTables = funcDatatables();
     $('#listaProveedor').dataTable({
         'dom': vardataTables[1],
-        'buttons': vardataTables[2],
+        'buttons': [],
         'language' : vardataTables[0],
-        'bDestroy' : true,
-        'ajax': 'mostrar_proveedores',
+        'serverSide': true,
+        'destroy': true,
+        'ajax': {
+            'url': 'mostrar-proveedores',
+            'type': 'POST',
+            // beforeSend: data => {
+
+            //     $("#listaProveedores").LoadingOverlay("show", {
+            //         imageAutoResize: true,
+            //         progress: true,
+            //         imageColor: "#3c8dbc"
+            //     });
+            // },
+
+        },
         'columns': [
-            {'data': 'id_proveedor'},
-            {'data': 'id_contribuyente'},
-            {'data': 'nro_documento'},
-            {'data': 'razon_social'},
-            {'data': 'direccion_fiscal'},
-            {'data': 'telefono'},
-            {'data': 'ubigeo'},
-            {'data': 'ubigeo_descripcion'},
-            {'render':
-                function (data, type, row){
-                    let action = `
-                        <div class="btn-group btn-group-sm" role="group">
-                            <button type="button" class="btn btn-success btn-sm" name="btnSeleccionarProveedor" title="Seleccionar proveedor" 
-                            data-id-proveedor="${row.id_proveedor}"
-                            data-id-contribuyente="${row.id_contribuyente}"
-                            data-razon-social="${row.razon_social?row.razon_social:''}"
-                            data-ruc="${row.nro_documento?row.nro_documento:''}"
-                            data-direccion-fiscal="${row.direccion_fiscal?row.direccion_fiscal:''}"
-                            data-telefono="${row.telefono?row.telefono:''}"
-                            data-ubigeo-descripcion="${row.ubigeo_descripcion?row.ubigeo_descripcion:''}"
-                            data-ubigeo="${row.ubigeo}"
-                            onclick="selectProveedor(this);">
-                            <i class="fas fa-check"></i>
-                            </button>
-                        </div>
-                        `;
-            
-                    return action;
-                }
-            }
+            { 'data': 'nro_documento', 'name': 'contribuyente.nro_documento', 'className': 'text-center'},
+            { 'data': 'razon_social', 'name': 'contribuyente.razon_social', 'className': 'text-center' },
+            // { 'data': 'contribuyente.ubigeo_completo', 'name': 'contribuyente.ubigeo_completo', 'className': 'text-center' ,'searchable': false},
+            { 'data': 'id_proveedor', 'name': 'id_proveedor', 'className': 'text-center' ,'searchable': false, 'orderable': false }
+
         ],
-        'columnDefs': [{ 'aTargets': [0,1,4,5,6,7], 'sClass': 'invisible'}],
+        'columnDefs': [
+            {'render':
+            function (data, type, row){
+                console.log(row);
+                let action = `
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button type="button" class="btn btn-success btn-sm" name="btnSeleccionarProveedor" title="Seleccionar proveedor" 
+                        data-id-proveedor="${row.id_proveedor}"
+                        data-id-contribuyente="${row.id_contribuyente}"
+                        data-razon-social="${row.contribuyente && row.contribuyente.razon_social!=null?row.contribuyente.razon_social:''}"
+                        data-ruc="${row.contribuyente && row.contribuyente.nro_documento !=null ?row.contribuyente.nro_documento:''}"
+                        data-direccion-fiscal="${row.contribuyente && row.contribuyente.direccion_fiscal!=null?row.contribuyente.direccion_fiscal:''}"
+                        data-telefono="${row.contribuyente && row.contribuyente.telefono!=null?row.contribuyente.telefono:''}"
+                        data-ubigeo-descripcion="${row.contribuyente && row.contribuyente.ubigeo_completo!=null?row.contribuyente.ubigeo_completo:''}"
+                        data-ubigeo="${row.contribuyente && row.contribuyente.ubigeo!=null?row.contribuyente.ubigeo:''}"
+                        onclick="selectProveedor(this);">
+                        <i class="fas fa-check"></i>
+                        </button>
+                    </div>
+                    `;
+        
+                return action;
+            },targets: 2
+        }
+    ],
     });
 }
 

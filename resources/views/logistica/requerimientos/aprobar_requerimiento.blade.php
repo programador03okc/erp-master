@@ -78,6 +78,7 @@ Revisar y aprobar requerimientos
                                         <th class="text-center" style="width:8%">Código</th>
                                         <th class="text-center" style="width:25%">Concepto</th>
                                         <th class="text-center">Tipo req.</th>
+                                        <th class="text-center">Fecha registro</th>
                                         <th class="text-center">Fecha entrega</th>
                                         <th class="text-center" style="width:10%">Empresa</th>
                                         <th class="text-center">División</th>
