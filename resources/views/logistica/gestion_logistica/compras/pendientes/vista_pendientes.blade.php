@@ -133,8 +133,8 @@ Requerimientos pendientes
             // console.log('tab: '+tab);
 
             if (tab=='#seleccionar'){
-                $('#productosSugeridos').DataTable().ajax.reload();
-                $('#productosCatalogo').DataTable().ajax.reload();
+                listarProductosSugeridos($('[name=part_number]').val(), decodeURIComponent( $('[name=descripcion]').val()), 0);
+                listarProductosCatalogo();
             }
         });
 
