@@ -131,22 +131,26 @@ function listarOrdenesPendientes() {
             $("#btnBuscar").on("click", e => {
                 table.search($input.val()).draw();
             });
+
             $('#ordenesPendientes_wrapper .dt-buttons').append(
                 `<div style="display:flex">
-                    <input type="date" class="form-control" onChange="actualizarFiltrosPendientes();" id="fecha_inicio" value="${fini}"/>
-                    <input type="date" class="form-control" onChange="actualizarFiltrosPendientes();" id="fecha_fin" value="${ffin}"/>
-                    <select class="form-control" onChange="actualizarFiltrosPendientes();" id="id_sede_filtro_ordenes" value="${sede}">
+                    <input type="text" class="form-control date-picker" size="10" id="fecha_inicio" value="${formatDate(fini)}"/>
+                    <input type="text" class="form-control date-picker" size="10" id="fecha_fin" value="${formatDate(ffin)}"/>
+                    <select class="form-control" id="id_sede_filtro_ordenes" value="${sede}">
                         <option value="0" selected>Mostrar Todos</option>
                     </select>
+                    <button type="button" class="btn btn-warning btn-flat" data-toggle="tooltip" 
+                        data-placement="bottom" title="Actualizar tabla" onClick="actualizarFiltrosPendientes();">
+                        <i class="fas fa-sync-alt"></i></button>
                 </div>`
             );
-            // $('#fecha_inicio').val(suma_fecha(-60, fecha_actual()));
-            // $('#fecha_fin').val(fecha_actual());
+            $('input.date-picker').datepicker({
+                language: "es",
+                orientation: "bottom auto",
+                format: 'dd-mm-yyyy',
+                autoclose: true
+            });
             listarSedes();
-
-            // fini = $('#fecha_inicio').val();
-            // ffin = $('#fecha_fin').val();
-            // alma = $('#id_sede_filtro_ordenes').val();
 
             console.log('datatable ' + fini, ffin, sede);
         },
@@ -162,19 +166,14 @@ function listarOrdenesPendientes() {
         },
         ajax: {
             url: "listarOrdenesPendientes",
-            type: "POST",
-            // 'data': {
-            //     'fecha_inicio': fini,
-            //     'fecha_fin': ffin,
-            //     'id_almacen': alma,
-            // },
+            type: "POST"
         },
         columns: [
-            { data: "id_orden_compra" },
-            { data: "id_orden_compra" },
-            { data: "codigo_softlink" },
+            { data: "id_orden_compra", name: "log_ord_compra.id_orden_compra" },
+            { data: "id_orden_compra", name: "log_ord_compra.id_orden_compra" },
+            { data: "codigo_softlink", name: "log_ord_compra.codigo_softlink" },
             {
-                data: "codigo",
+                data: "codigo", name: "log_ord_compra.codigo",
                 render: function (data, type, row) {
                     return (
                         '<a href="#" class="verOrden" data-id="' + row["id_orden_compra"] + '" >' +
@@ -185,7 +184,7 @@ function listarOrdenesPendientes() {
             },
             { data: "razon_social", name: "adm_contri.razon_social" },
             {
-                data: "fecha",
+                data: "fecha", name: "log_ord_compra.fecha",
                 render: function (data, type, row) {
                     return formatDateHour(row["fecha"]);
                 }

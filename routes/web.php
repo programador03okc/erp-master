@@ -1179,6 +1179,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('actualizarFiltrosPendientes', 'Almacen\Movimiento\OrdenesPendientesController@actualizarFiltrosPendientes');
 
 				Route::get('ordenesPendientesExcel', 'Almacen\Movimiento\OrdenesPendientesController@ordenesPendientesExcel');
+				Route::get('seriesExcel/{id}', 'Almacen\Movimiento\OrdenesPendientesController@seriesExcel');
 			});
 
 			Route::group(['as' => 'pendientes-salida.', 'prefix' => 'pendientes-salida'], function () {

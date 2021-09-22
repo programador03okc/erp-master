@@ -57,9 +57,11 @@ function listar_detalle_movimiento(id_guia_com_detalle) {
                 <td>${element.codigo_orden !== null ? element.codigo_orden : (element.codigo_transfor !== null ? element.codigo_transfor : (element.codigo_trans !== null ? element.codigo_trans : ''))}</td>
                 <td>${element.codigo_req !== null ? element.codigo_req : ''}</td>
                 <td><strong>${element.sede_req !== null ? element.sede_req : ''}</strong></td>
-                <td>
-                    <i class="fas fa-edit icon-tabla boton blue" data-toggle="tooltip" data-placement="bottom" 
+                <td>${html_ser == '' ? ''
+                        : `<i class="fas fa-edit icon-tabla boton blue" data-toggle="tooltip" data-placement="bottom" 
                     title="Editar Series" onClick="open_guia_series_edit(${element.id_guia_com_det});"></i>
+                    <i class="fas fa-file-excel icon-tabla boton green" data-toggle="tooltip" data-placement="bottom" 
+                    title="Exportar a Excel Series" onClick="exportarSeries(${element.id_guia_com_det});"></i>`}
                 </td>
                 </tr>`;
                 i++;
@@ -75,3 +77,6 @@ function listar_detalle_movimiento(id_guia_com_detalle) {
     });
 }
 
+function exportarSeries(id_guia_com_det) {
+    window.location.href = 'seriesExcel/' + id_guia_com_det;
+}

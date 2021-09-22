@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Almacen\Movimiento;
 
 use App\Exports\OrdenesPendientesExport;
+use App\Exports\SeriesGuiaCompraDetalleExport;
 use App\Http\Controllers\Almacen\Catalogo\CategoriaController;
 use App\Http\Controllers\Almacen\Catalogo\ClasificacionController;
 use App\Http\Controllers\Almacen\Catalogo\SubCategoriaController;
@@ -186,13 +187,21 @@ class OrdenesPendientesController extends Controller
     public function ordenesPendientesExcel()
     {
         $data = $this->ordenesPendientesLista();
-        // dd($data);
-        // exit();
         return Excel::download(new OrdenesPendientesExport(
             $data,
             session()->get('pendientesFilter_fechaInicio'),
             session()->get('pendientesFilter_fechaFin')
         ), 'ordenesPendientes.xlsx');
+    }
+    //aqui me quede....
+    public function seriesExcel($id_guia_com_det)
+    {
+        $data = $this->listaSeries($id_guia_com_det);
+        // dd($data);
+        // exit();
+        return Excel::download(new SeriesGuiaCompraDetalleExport(
+            $data
+        ), 'series-' . $id_guia_com_det . '.xlsx');
     }
 
     public function listarIngresos()
@@ -516,7 +525,7 @@ class OrdenesPendientesController extends Controller
         return response()->json($lista);
     }
 
-    public function mostrar_series($id_guia_com_det)
+    public function listaSeries($id_guia_com_det)
     {
         $series = DB::table('almacen.alm_prod_serie')
             ->select('alm_prod_serie.*')
@@ -525,6 +534,12 @@ class OrdenesPendientesController extends Controller
                 ['alm_prod_serie.estado', '=', 1]
             ])
             ->get();
+        return $series;
+    }
+
+    public function mostrar_series($id_guia_com_det)
+    {
+        $series = $this->listaSeries($id_guia_com_det);
         return response()->json($series);
     }
 

@@ -8,6 +8,7 @@ Pendientes de Ingreso
 @section('estilos')
 <link rel="stylesheet" href="{{ asset('template/plugins/iCheck/all.css') }}">
 <link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
+<link rel="stylesheet" href="{{ asset('template/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css') }}">
 <link rel="stylesheet" href="{{ asset('template/plugins/jquery-datatables-checkboxes/css/dataTables.checkboxes.css') }}">
 <link rel="stylesheet" href="{{ asset('datatables/Datatables/css/dataTables.bootstrap.min.css') }}">
 <link rel="stylesheet" href="{{ asset('datatables/Buttons/css/buttons.dataTables.min.css') }}">
@@ -36,7 +37,7 @@ Pendientes de Ingreso
                 <div class="tab-content">
                     <div id="pendientes" class="tab-pane fade in active">
                         <br>
-                        <form id="form-pendientes" type="register">
+                        {{-- <form id="form-pendientes" type="register"> --}}
                             <div class="row">
                                 <div class="col-md-12">
                                     <table class="mytable table table-condensed table-bordered table-okc-view" id="ordenesPendientes" style="width:100%;">
@@ -60,7 +61,7 @@ Pendientes de Ingreso
                                     </table>
                                 </div>
                             </div>
-                        </form>
+                        {{-- </form> --}}
                     </div>
                     <div id="transformaciones" class="tab-pane fade ">
                         <br>
@@ -166,6 +167,8 @@ Pendientes de Ingreso
 <script src="{{ asset('template/plugins/js-xlsx/xlsx.full.min.js') }}"></script>
 <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 <script src="{{ asset('template/plugins/loadingoverlay.min.js') }}"></script>
+<script src="{{ asset('template/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js') }}"></script>
+<script src="{{ asset('template/plugins/bootstrap-datepicker/locales/bootstrap-datepicker.es.min.js') }}"></script>
 
 <script src="{{ asset('js/almacen/guia/ordenesPendientes.js?')}}"></script>
 <script src="{{ asset('js/almacen/guia/transformacionesPendientes.js')}}"></script>
