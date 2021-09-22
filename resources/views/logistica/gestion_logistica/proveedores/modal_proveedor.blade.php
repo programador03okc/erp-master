@@ -1,4 +1,4 @@
-<div class="modal fade" tabindex="-1" role="dialog" id="modal-proveedor">
+<div class="modal fade" tabindex="-1" role="dialog" id="modal-proveedor" style="overflow-y: scroll;">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <form id="form-proveedor" method="post" type="register">

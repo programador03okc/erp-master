@@ -1,4 +1,4 @@
-<div class="modal fade" tabindex="-1" role="dialog" id="modal-agregar-fuente">
+<div class="modal fade" tabindex="-1" role="dialog" id="modal-agregar-fuente" style="overflow-y: scroll;">
     <div class="modal-dialog" style="width: 30%;">
         <div class="modal-content">
             <div class="modal-header">

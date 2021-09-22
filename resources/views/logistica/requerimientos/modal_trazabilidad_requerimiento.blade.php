@@ -1,6 +1,6 @@
 <link rel="stylesheet" href="{{ asset('css/stepper.css')}}">
 
-<div class="modal fade" tabindex="-1" role="dialog" id="modal-trazabilidad-requerimiento">
+<div class="modal fade" tabindex="-1" role="dialog" id="modal-trazabilidad-requerimiento" style="overflow-y: scroll;">
     <div class="modal-dialog" style="width: 80%;">
         <div class="modal-content">
             <div class="modal-header">

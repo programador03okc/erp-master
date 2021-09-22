@@ -1,4 +1,4 @@
-<div class="modal fade" tabindex="-1" role="dialog" id="modal-adjuntar-archivos-requerimiento">
+<div class="modal fade" tabindex="-1" role="dialog" id="modal-adjuntar-archivos-requerimiento" style="overflow-y: scroll;">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">

@@ -585,7 +585,7 @@ class RequerimientoController extends Controller
             $requerimiento->id_tipo_requerimiento = $request->tipo_requerimiento;
             $requerimiento->id_usuario = Auth::user()->id_usuario;
             $requerimiento->id_rol = $request->id_rol > 0 ? $request->id_rol : null;
-            $requerimiento->fecha_requerimiento = $request->fecha_requerimiento ? $request->fecha_requerimiento : new Carbon();
+            $requerimiento->fecha_requerimiento = $request->fecha_requerimiento !=null ? $request->fecha_requerimiento : new Carbon();
             $requerimiento->id_periodo = $request->periodo;
             $requerimiento->concepto = strtoupper($request->concepto);
             $requerimiento->id_moneda = $request->moneda > 0 ? $request->moneda : null;

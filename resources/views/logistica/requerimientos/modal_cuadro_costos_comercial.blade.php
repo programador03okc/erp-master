@@ -1,5 +1,5 @@
  
-<div class="modal fade" tabindex="-1" role="dialog" id="modal-cuadro_costos_comercial">
+<div class="modal fade" tabindex="-1" role="dialog" id="modal-cuadro_costos_comercial" style="overflow-y: scroll;">
     <div class="modal-dialog" style="width: 90%;">
         <div class="modal-content">
             <div class="modal-header">

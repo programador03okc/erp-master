@@ -1,4 +1,4 @@
-<div class="modal fade" tabindex="-1" role="dialog" id="modal-filtro-lista-ordenes-elaboradas">
+<div class="modal fade" tabindex="-1" role="dialog" id="modal-filtro-lista-ordenes-elaboradas" style="overflow-y: scroll;">
     <div class="modal-dialog" style="width: 38%;">
         <div class="modal-content">
             <div class="modal-header">

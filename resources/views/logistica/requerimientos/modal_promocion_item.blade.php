@@ -1,4 +1,4 @@
-<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" id="modal-promocion-item">
+<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" id="modal-promocion-item" style="overflow-y: scroll;">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header bg-warning">
