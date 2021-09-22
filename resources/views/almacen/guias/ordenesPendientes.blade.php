@@ -37,6 +37,12 @@ Pendientes de Ingreso
                 <div class="tab-content">
                     <div id="pendientes" class="tab-pane fade in active">
                         <br>
+                        <form id="formFiltrosOrdenesPendientes" method="POST" target="_blank" action="{{route('almacen.movimientos.pendientes-ingreso.ordenesPendientesExcel')}}">
+                            @csrf()
+                            <input type="hidden" name="fecha_fin" value="{{$fechaActual->format('d-m-Y')}}"/>
+                            <input type="hidden" name="fecha_inicio" value="{{$fechaActual->addMonths(-3)->format('d-m-Y')}}"/>
+                            <input type="hidden" name="id_sede" value="0">
+                        </form>
                         {{-- <form id="form-pendientes" type="register"> --}}
                             <div class="row">
                                 <div class="col-md-12">
@@ -65,7 +71,7 @@ Pendientes de Ingreso
                     </div>
                     <div id="transformaciones" class="tab-pane fade ">
                         <br>
-                        <form id="form-transformaciones" type="register">
+                        {{-- <form id="form-transformaciones" type="register"> --}}
                             <div class="row">
                                 <div class="col-md-12">
                                     <table class="mytable table table-condensed table-bordered table-okc-view" id="listaTransformaciones" style="width:100px;">
@@ -92,11 +98,11 @@ Pendientes de Ingreso
                                     </table>
                                 </div>
                             </div>
-                        </form>
+                        {{-- </form> --}}
                     </div>
                     <div id="ingresadas" class="tab-pane fade ">
                         <br>
-                        <form id="form-ingresadas" type="register">
+                        {{-- <form id="form-ingresadas" type="register"> --}}
 
                             <div class="row">
                                 <div class="col-md-12">
@@ -126,7 +132,7 @@ Pendientes de Ingreso
                                     </table>
                                 </div>
                             </div>
-                        </form>
+                        {{-- </form> --}}
                     </div>
                 </div>
             </div>

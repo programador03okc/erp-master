@@ -50,7 +50,7 @@ class OrdenesPendientesController extends Controller
         $unidades = GenericoAlmacenController::mostrar_unidades_cbo();
         $condiciones = GenericoAlmacenController::mostrar_condiciones_cbo();
         $sedes = GenericoAlmacenController::mostrar_sedes_cbo();
-
+        $fechaActual = new Carbon();
         $tipos = GenericoAlmacenController::mostrar_tipos_cbo();
 
         return view('almacen/guias/ordenesPendientes', compact(
@@ -67,7 +67,8 @@ class OrdenesPendientesController extends Controller
             'clasificaciones',
             'unidades',
             'condiciones',
-            'sedes'
+            'sedes',
+            'fechaActual'
         ));
     }
 
@@ -99,7 +100,8 @@ class OrdenesPendientesController extends Controller
     public function actualizarFiltrosPendientes(Request $request)
     {
         if ($request->fecha_inicio != null) {
-            $request->session()->put('pendientesFilter_fechaInicio', $request->fecha_inicio);
+            //$request->session()->put('pendientesFilter_fechaInicio', $request->fecha_inicio);
+            session(['pendientesFilter_fechaInicio' => $request->fecha_inicio]); //->put('pendientesFilter_fechaInicio', $request->fecha_inicio);
         } else {
             $request->session()->forget('pendientesFilter_fechaInicio');
         }
@@ -116,7 +118,7 @@ class OrdenesPendientesController extends Controller
             $request->session()->forget('pendientesFilter_idSede');
         }
 
-        return response()->json(
+        /*return response()->json(
             array(
                 'response' => 'ok',
                 'inicio' => session()->get('pendientesFilter_fechaInicio'),
@@ -124,10 +126,10 @@ class OrdenesPendientesController extends Controller
                 'sede' => session()->get('pendientesFilter_idSede')
             ),
             200
-        );
+        );*/
     }
 
-    public function ordenesPendientesLista()
+    public function ordenesPendientesLista(Request $request)
     {
         $data = DB::table('logistica.log_det_ord_compra')
             ->select(
@@ -159,49 +161,43 @@ class OrdenesPendientesController extends Controller
             ]);
         // whereBetween('created_at', ['2018/11/10 12:00', '2018/11/11 10:30'])
         $array_sedes = [];
-        if (session()->has('pendientesFilter_fechaInicio')) {
-            $query = $data->whereDate('log_ord_compra.fecha', '>=', session()->get('pendientesFilter_fechaInicio'));
+        if ($request->fecha_inicio !== null) {
+            $data = $data->whereDate('log_ord_compra.fecha', '>=', $request->fecha_inicio);
         }
-        if (session()->has('pendientesFilter_fechaFin')) {
-            $query = $data->whereDate('log_ord_compra.fecha', '<=', session()->get('pendientesFilter_fechaFin'));
+        if ($request->fecha_fin !== null) {
+            $data = $data->whereDate('log_ord_compra.fecha', '<=', $request->fecha_fin);
         }
-        if (session()->has('pendientesFilter_idSede')) {
-            if (session()->get('pendientesFilter_idSede') == 0) {
+        if ($request->id_sede !== null) {
+            if ($request->id_sede == 0) {
                 $array_sedes = $this->sedesPorUsuarioArray();
             } else {
-                $array_sedes[] = [session()->get('pendientesFilter_idSede')];
+                $array_sedes[] = [$request->id_sede];
             }
-            $query = $data->whereIn('log_ord_compra.id_sede', $array_sedes);
+            $data = $data->whereIn('log_ord_compra.id_sede', $array_sedes);
         }
-        $query->distinct();
-
-        return $query;
+        return $data->distinct();
     }
 
-    public function listarOrdenesPendientes()
+    public function listarOrdenesPendientes(Request $request)
     {
-        $query = $this->ordenesPendientesLista();
+        $query = $this->ordenesPendientesLista($request);
         return datatables($query)->toJson();
     }
 
-    public function ordenesPendientesExcel()
+    public function ordenesPendientesExcel(Request $request)
     {
-        $data = $this->ordenesPendientesLista();
+        $data = $this->ordenesPendientesLista($request);
         return Excel::download(new OrdenesPendientesExport(
             $data,
-            session()->get('pendientesFilter_fechaInicio'),
-            session()->get('pendientesFilter_fechaFin')
+            $request->fecha_inicio,
+            $request->fecha_fin
         ), 'ordenesPendientes.xlsx');
     }
-    //aqui me quede....
+
     public function seriesExcel($id_guia_com_det)
     {
         $data = $this->listaSeries($id_guia_com_det);
-        // dd($data);
-        // exit();
-        return Excel::download(new SeriesGuiaCompraDetalleExport(
-            $data
-        ), 'series-' . $id_guia_com_det . '.xlsx');
+        return Excel::download(new SeriesGuiaCompraDetalleExport($data), 'series-' . $id_guia_com_det . '.xlsx');
     }
 
     public function listarIngresos()
@@ -319,7 +315,7 @@ class OrdenesPendientesController extends Controller
         // ->orderBy('mov_alm.fecha_emision','desc');
         // ->get();
 
-        return DataTables::eloquent($data)->filterColumn('id_mov_alm', function ($query, $keyword) {
+        return DataTables::eloquent($data)->filterColumn('ordenes', function ($query, $keyword) {
             $sql_oc = "id_mov_alm IN (
                 SELECT mov_alm_det.id_mov_alm FROM almacen.mov_alm_det 
                 INNER JOIN almacen.guia_com_det ON 
@@ -331,7 +327,7 @@ class OrdenesPendientesController extends Controller
                 WHERE   CONCAT(UPPER(log_ord_compra.codigo), UPPER(log_ord_compra.codigo_softlink)) LIKE ? )
                 ";
             $query->whereRaw($sql_oc, ['%' . strtoupper($keyword) . '%']);
-        })->filterColumn('id_guia_com', function ($query, $keyword) {
+        })->filterColumn('facturas', function ($query, $keyword) {
             $sql_dc = "id_guia_com IN (
                 SELECT guia_com_det.id_guia_com FROM almacen.guia_com_det 
                 INNER JOIN almacen.doc_com_det ON 
@@ -341,7 +337,7 @@ class OrdenesPendientesController extends Controller
                 WHERE   CONCAT(UPPER(doc_com.serie), UPPER(doc_com.numero)) LIKE ? )
                 ";
             $query->whereRaw($sql_dc, ['%' . strtoupper($keyword) . '%']);
-        })->filterColumn('id_mov_alm', function ($query, $keyword) {
+        })->filterColumn('requerimientos', function ($query, $keyword) {
             $sql_req = "id_mov_alm IN (
                 SELECT mov_alm_det.id_mov_alm FROM almacen.mov_alm_det 
                 INNER JOIN almacen.guia_com_det ON 
