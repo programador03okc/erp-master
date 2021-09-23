@@ -30,47 +30,6 @@ function iniciar(permiso) {
     vista_extendida();
 }
 
-/*let fini = $('[name=fecha_inicio]').val();
-let ffin = $('[name=fecha_fin]').val();
-let sede = $('[name=id_sede]').val();*/
-
-/*
-function actualizarFiltrosPendientes() {
-
-    var sfini = $('#fecha_inicio').val();
-    var sffin = $('#fecha_fin').val();
-    var ssede = $('#id_sede_filtro_ordenes').val();
-
-    if ((sfini !== undefined && fini !== sfini) ||
-        (sffin !== undefined && ffin !== sffin) ||
-        (ssede !== undefined && sede !== ssede)) {
-        fini = sfini;
-        ffin = sffin;
-        sede = ssede;
-    }
-    $.ajax({
-        type: 'POST',
-        url: 'actualizarFiltrosPendientes',
-        data: {
-            fecha_inicio: fini,
-            fecha_fin: ffin,
-            id_sede: sede
-        },
-        success: function (response) {
-            console.log(response);
-            if (response.response == 'ok') {
-                console.log('length: ' + $("#ordenesPendientes tbody tr").length);
-
-                if ($("#ordenesPendientes tbody tr").length > 0) {
-                    $("#ordenesPendientes").DataTable().ajax.reload(null, false);
-                } else {
-                    listarOrdenesPendientes();
-                }
-            }
-        }
-    });
-}
-*/
 var table;
 
 function listarOrdenesPendientes() {
@@ -152,7 +111,7 @@ function listarOrdenesPendientes() {
                 format: 'dd-mm-yyyy',
                 autoclose: true
             });
-            listarSedes();
+            listarSedes('ordenes');
 
             $("#txtOrdenPendienteFechaInicio").on("change", function (e) {
                 var ini = $(this).val();
@@ -264,21 +223,19 @@ function listarOrdenesPendientes() {
                 render: function (data, type, row) {
                     if (acceso == "1") {
                         return `<div style="display:flex;">
-                        <button type="button" class="ver-detalle btn btn-default boton btn-flat" data-toggle="tooltip" 
-                            data-placement="bottom" title="Ver Detalle" data-id="${row["id_orden_compra"]}">
-                            <i class="fas fa-chevron-down"></i></button>
-                            
-                        <button type="button" class="guia btn btn-info boton btn-flat" data-toggle="tooltip" 
-                            data-placement="bottom" title="Generar Guía" >
-                            <i class="fas fa-sign-in-alt"></i></button>
+                            <button type="button" class="ver-detalle btn btn-default boton btn-flat" data-toggle="tooltip" 
+                                data-placement="bottom" title="Ver Detalle" data-id="${row["id_orden_compra"]}">
+                                <i class="fas fa-chevron-down"></i></button>
+                                
+                            <button type="button" class="guia btn btn-info boton btn-flat" data-toggle="tooltip" 
+                                data-placement="bottom" title="Generar Guía" >
+                                <i class="fas fa-sign-in-alt"></i></button>
                             </div>`;
                     } else {
                         return (
-                            '<button type="button" class="ver-detalle btn btn-default boton" data-toggle="tooltip" ' +
-                            'data-placement="bottom" title="Ver Detalle" data-id="' +
-                            row["id_orden_compra"] +
-                            '">' +
-                            '<i class="fas fa-chevron-down"></i></button>'
+                            `<button type="button" class="ver-detalle btn btn-default boton" data-toggle="tooltip"
+                            data-placement="bottom" title="Ver Detalle" data-id="${row["id_orden_compra"]}">
+                            <i class="fas fa-chevron-down"></i></button>`
                         );
                     }
                 },
@@ -391,7 +348,7 @@ function cargar_almacenes(sede) {
 //     });
 // }
 
-function listarSedes() {
+function listarSedes(origen) {
     $.ajax({
         type: "GET",
         url: "sedesPorUsuario",
@@ -408,7 +365,11 @@ function listarSedes() {
                         '<option value="' + element.id_sede + '">' + element.descripcion + "</option>";
                 }
             });
-            $("#selectOrdenPendienteSede").html(option);
+            if (origen == 'ordenes') {
+                $("#selectOrdenPendienteSede").html(option);
+            } else if (origen == 'ingresos') {
+                $("#selectIngresoProcesadoSede").html(option);
+            }
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
@@ -417,7 +378,5 @@ function listarSedes() {
     });
 }
 function exportarOrdenesPendientes() {
-    // let fini = $form.find('input[name=fecha_inicio]').val();
     $('#formFiltrosOrdenesPendientes').trigger('submit');
-    //window.location.href = 'ordenesPendientesExcel';
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Almacen\Movimiento;
 
+use App\Exports\IngresosProcesadosExport;
 use App\Exports\OrdenesPendientesExport;
 use App\Exports\SeriesGuiaCompraDetalleExport;
 use App\Http\Controllers\Almacen\Catalogo\CategoriaController;
@@ -51,6 +52,7 @@ class OrdenesPendientesController extends Controller
         $condiciones = GenericoAlmacenController::mostrar_condiciones_cbo();
         $sedes = GenericoAlmacenController::mostrar_sedes_cbo();
         $fechaActual = new Carbon();
+        $fechaActual2 = new Carbon();
         $tipos = GenericoAlmacenController::mostrar_tipos_cbo();
 
         return view('almacen/guias/ordenesPendientes', compact(
@@ -68,7 +70,8 @@ class OrdenesPendientesController extends Controller
             'unidades',
             'condiciones',
             'sedes',
-            'fechaActual'
+            'fechaActual',
+            'fechaActual2',
         ));
     }
 
@@ -200,9 +203,8 @@ class OrdenesPendientesController extends Controller
         return Excel::download(new SeriesGuiaCompraDetalleExport($data), 'series-' . $id_guia_com_det . '.xlsx');
     }
 
-    public function listarIngresos()
+    public function ingresosLista(Request $request)
     {
-        // Movimiento::select
         $data = Movimiento::select(
             'mov_alm.*',
             'guia_com.id_proveedor',
@@ -312,9 +314,30 @@ class OrdenesPendientesController extends Controller
             ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'mov_alm.usuario')
             ->join('almacen.tp_ope', 'tp_ope.id_operacion', '=', 'mov_alm.id_operacion')
             ->where([['mov_alm.estado', '!=', 7], ['mov_alm.id_tp_mov', '=', 1]]);
-        // ->orderBy('mov_alm.fecha_emision','desc');
-        // ->get();
 
+        $array_sedes = [];
+        if ($request->fecha_inicio !== null) {
+            $data = $data->whereDate('mov_alm.fecha_emision', '>=', $request->fecha_inicio);
+        }
+        if ($request->fecha_fin !== null) {
+            $data = $data->whereDate('mov_alm.fecha_emision', '<=', $request->fecha_fin);
+        }
+        if ($request->id_sede !== null) {
+            if ($request->id_sede == 0) {
+                $array_sedes = $this->sedesPorUsuarioArray();
+            } else {
+                $array_sedes[] = [$request->id_sede];
+            }
+            $data = $data->whereIn('alm_almacen.id_sede', $array_sedes);
+        }
+
+        return $data;
+    }
+
+    public function listarIngresos(Request $request)
+    {
+        $data = $this->ingresosLista($request);
+        // return datatables($query)->toJson();
         return DataTables::eloquent($data)->filterColumn('ordenes', function ($query, $keyword) {
             $sql_oc = "id_mov_alm IN (
                 SELECT mov_alm_det.id_mov_alm FROM almacen.mov_alm_det 
@@ -352,6 +375,16 @@ class OrdenesPendientesController extends Controller
                 ";
             $query->whereRaw($sql_req, ['%' . strtoupper($keyword) . '%']);
         })->toJson();
+    }
+
+    public function ingresosProcesadosExcel(Request $request)
+    {
+        $data = $this->ingresosLista($request);
+        return Excel::download(new IngresosProcesadosExport(
+            $data,
+            $request->fecha_inicio,
+            $request->fecha_fin
+        ), 'ingresosProcesados.xlsx');
     }
 
     public function detalleOrden($id_orden)

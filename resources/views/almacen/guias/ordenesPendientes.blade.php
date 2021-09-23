@@ -43,96 +43,94 @@ Pendientes de Ingreso
                             <input type="hidden" name="fecha_inicio" value="{{$fechaActual->addMonths(-3)->format('d-m-Y')}}"/>
                             <input type="hidden" name="id_sede" value="0">
                         </form>
-                        {{-- <form id="form-pendientes" type="register"> --}}
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <table class="mytable table table-condensed table-bordered table-okc-view" id="ordenesPendientes" style="width:100%;">
-                                        <thead>
-                                            <tr>
-                                                <th hidden></th>
-                                                <th width="3%"></th>
-                                                <th width="10%">Orden SoftLink</th>
-                                                <th width="10%">Cod.Orden</th>
-                                                <th width="20%">Proveedor</th>
-                                                <th width="12%">Fecha Emisión</th>
-                                                <!-- <th width="15%">Días para que llegue</th> -->
-                                                <th width="8%">Sede Orden</th>
-                                                <th width="8%">Creado por</th>
-                                                <th width="5%">Estado</th>
-                                                <th width="6%"></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody></tbody>
-                                        <tfoot></tfoot>
-                                    </table>
-                                </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <table class="mytable table table-condensed table-bordered table-okc-view" id="ordenesPendientes" style="width:100%;">
+                                    <thead>
+                                        <tr>
+                                            <th hidden></th>
+                                            <th width="3%"></th>
+                                            <th width="10%">Orden SoftLink</th>
+                                            <th width="10%">Cod.Orden</th>
+                                            <th width="20%">Proveedor</th>
+                                            <th width="12%">Fecha Emisión</th>
+                                            <th width="8%">Sede Orden</th>
+                                            <th width="8%">Creado por</th>
+                                            <th width="5%">Estado</th>
+                                            <th width="6%"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                    <tfoot></tfoot>
+                                </table>
                             </div>
-                        {{-- </form> --}}
+                        </div>
                     </div>
                     <div id="transformaciones" class="tab-pane fade ">
                         <br>
-                        {{-- <form id="form-transformaciones" type="register"> --}}
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <table class="mytable table table-condensed table-bordered table-okc-view" id="listaTransformaciones" style="width:100px;">
-                                        <thead>
-                                            <tr>
-                                                <th hidden></th>
-                                                <th>Orden Elec.</th>
-                                                <th>Cuadro Costo</th>
-                                                <th>Oportunidad</th>
-                                                <th>Entidad</th>
-                                                <th>Código</th>
-                                                <th>Fecha Transf</th>
-                                                <th>Almacén</th>
-                                                <th>Responsable</th>
-                                                <th>Orden Despacho</th>
-                                                <th>Requerimiento</th>
-                                                <th>Guía</th>
-                                                <th>Observación</th>
-                                                <th width="80px"></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody></tbody>
-                                        <tfoot></tfoot>
-                                    </table>
-                                </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <table class="mytable table table-condensed table-bordered table-okc-view" id="listaTransformaciones" style="width:100px;">
+                                    <thead>
+                                        <tr>
+                                            <th hidden></th>
+                                            <th>Orden Elec.</th>
+                                            <th>Cuadro Costo</th>
+                                            <th>Oportunidad</th>
+                                            <th>Entidad</th>
+                                            <th>Código</th>
+                                            <th>Fecha Transf</th>
+                                            <th>Almacén</th>
+                                            <th>Responsable</th>
+                                            <th>Orden Despacho</th>
+                                            <th>Requerimiento</th>
+                                            <th>Guía</th>
+                                            <th>Observación</th>
+                                            <th width="80px"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                    <tfoot></tfoot>
+                                </table>
                             </div>
-                        {{-- </form> --}}
+                        </div>
                     </div>
                     <div id="ingresadas" class="tab-pane fade ">
                         <br>
-                        {{-- <form id="form-ingresadas" type="register"> --}}
+                        <form id="formFiltrosIngresosProcesados" method="POST" target="_blank" action="{{route('almacen.movimientos.pendientes-ingreso.ingresosProcesadosExcel')}}">
+                            @csrf()
+                            <input type="hidden" name="fecha_fin" value="{{$fechaActual2->format('d-m-Y')}}"/>
+                            <input type="hidden" name="fecha_inicio" value="{{$fechaActual2->addMonths(-3)->format('d-m-Y')}}"/>
+                            <input type="hidden" name="id_sede" value="0">
+                        </form>
 
-                            <div class="row">
-                                <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-12">
 
-                                    <table class="mytable table table-condensed table-bordered table-okc-view" id="listaIngresosAlmacen">
-                                        <thead>
-                                            <tr>
-                                                <th hidden></th>
-                                                <th></th>
-                                                <th>Fecha Ingreso</th>
-                                                <th>Guía Compra</th>
-                                                <!-- <th>R.U.C.</th> -->
-                                                <th>Razon Social</th>
-                                                <th>Ingreso</th>
-                                                <th>Operación</th>
-                                                <th width="70px">Almacén</th>
-                                                <th>Responsable</th>
-                                                <th>Ordenes</th>
-                                                <th>OC SoftLink</th>
-                                                <th>Facturas</th>
-                                                <th>Requerim.</th>
-                                                <th width="100px"></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody></tbody>
-                                        <tfoot></tfoot>
-                                    </table>
-                                </div>
+                                <table class="mytable table table-condensed table-bordered table-okc-view" id="listaIngresosAlmacen">
+                                    <thead>
+                                        <tr>
+                                            <th hidden></th>
+                                            <th></th>
+                                            <th>Fecha Ingreso</th>
+                                            <th>Ingreso</th>
+                                            <th>Guía Compra</th>
+                                            <th>Razon Social</th>
+                                            <th>Operación</th>
+                                            <th width="70px">Almacén</th>
+                                            <th>Responsable</th>
+                                            <th>Ordenes</th>
+                                            <th>OC SoftLink</th>
+                                            <th>Facturas</th>
+                                            <th>Requerim.</th>
+                                            <th width="100px"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                    <tfoot></tfoot>
+                                </table>
                             </div>
-                        {{-- </form> --}}
+                        </div>
                     </div>
                 </div>
             </div>
