@@ -394,7 +394,7 @@ class OrdenView {
                         <td class="text-center">${data[i].codigo_requerimiento ? data[i].codigo_requerimiento : ''} <input type="hidden"  name="idRegister[]" value="${data[i].id_detalle_orden ? data[i].id_detalle_orden : this.makeId()}"> <input type="hidden"  name="idDetalleRequerimiento[]" value="${data[i].id_detalle_requerimiento ? data[i].id_detalle_requerimiento : ''}">  <input type="hidden"  name="idTipoItem[]" value="1"></td>
                         <td class="text-center">${data[i].part_number ? data[i].part_number : ''} <input type="hidden"  name="idProducto[]" value="${(data[i].id_producto ? data[i].id_producto : data[i].id_producto)} "></td>
                         <td class="text-left">${(data[i].descripcion_producto ? data[i].descripcion_producto : (data[i].descripcion_adicional != null ? data[i].descripcion_adicional : ''))} <input type="hidden"  name="descripcion[]" value="${(data[i].descripcion_producto ? data[i].descripcion_producto : data[i].descripcion_adicional)} "></td>
-                        <td><select name="unidad[]" class="form-control ${(data[i].estado_guia_com_det > 0 && data[i].estado_guia_com_det != 7 ? '' : 'activation')} input-sm" value="${data[i].id_unidad_medida}" disabled>${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
+                        <td><select name="unidad[]" class="form-control ${(data[i].estado_guia_com_det > 0 && data[i].estado_guia_com_det != 7 ? '' : 'activation')} input-sm unidadMedida" data-value="${data[i].id_unidad_medida}" disabled>${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
                         <td>${(data[i].cantidad ? data[i].cantidad : '')}</td>
                         <td>${(data[i].cantidad_atendido_almacen ? data[i].cantidad_atendido_almacen : '')}</td>
                         <td>${(data[i].cantidad_atendido_orden ? data[i].cantidad_atendido_orden : '')}</td>
@@ -445,6 +445,8 @@ class OrdenView {
 
         }
         this.autoUpdateSubtotal();
+        this.UpdateSelectUnidadMedida();
+
     }
 
     autoUpdateSubtotal() {
@@ -743,7 +745,13 @@ class OrdenView {
 
     }
 
-
+    UpdateSelectUnidadMedida(){
+    const AllTrTbodyListaDetalleOrden = document.querySelectorAll("table[id='listaDetalleOrden'] tbody tr");
+    AllTrTbodyListaDetalleOrden.forEach(fila => {
+            let valorUnidad = fila.querySelector("select[class~='unidadMedida']").dataset.value;
+            fila.querySelector("select[class~='unidadMedida']").value=valorUnidad;
+        });
+    }
 
     agregarProducto(data) {
         vista_extendida();
@@ -751,7 +759,7 @@ class OrdenView {
         <td class="text-center">${data[0].codigo_requerimiento ? data[0].codigo_requerimiento : ''} <input type="hidden"  name="idRegister[]" value="${data[0].id_detalle_orden ? data[0].id_detalle_orden : this.makeId()}"> <input type="hidden"  name="idDetalleRequerimiento[]" value="${data[0].id_detalle_requerimiento ? data[0].id_detalle_requerimiento : ''}"> <input type="hidden"  name="idTipoItem[]" value="1"> </td>
         <td class="text-center">${data[0].part_number ? data[0].part_number : ''} <input type="hidden"  name="idProducto[]" value="${(data[0].id_producto ? data[0].id_producto : data[0].id_producto)} "> </td>
         <td class="text-left">${(data[0].descripcion_producto ? data[0].descripcion_producto : (data[0].descripcion_adicional?data[0].descripcion_adicional:''))}  <input type="hidden"  name="descripcion[]" value="${(data[0].descripcion_producto ? data[0].descripcion_producto : data[0].descripcion_adicional)} "></td>
-        <td><select name="unidad[]" class="form-control ${(data[0].estado_guia_com_det > 0 && data[0].estado_guia_com_det != 7 ? '' : 'activation')} input-sm" value="${data[0].id_unidad_medida}" >${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
+        <td><select name="unidad[]" class="form-control ${(data[0].estado_guia_com_det > 0 && data[0].estado_guia_com_det != 7 ? '' : 'activation')} input-sm unidadMedida" data-value="${data[0].id_unidad_medida}" >${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
         <td>${(data[0].cantidad ? data[0].cantidad : '')}</td>
         <td>${(data[0].cantidad_atendido_almacen ? data[0].cantidad_atendido_almacen : '')}</td>
         <td>${(data[0].cantidad_atendido_orden ? data[0].cantidad_atendido_orden : '')}</td>
@@ -773,6 +781,7 @@ class OrdenView {
      </tr>`);
 
      this.autoUpdateSubtotal();
+     this.UpdateSelectUnidadMedida();
 
     }
 
@@ -1367,7 +1376,7 @@ class OrdenView {
             'language' : vardataTables[0],
             'ajax': 'listar-historial-ordenes-elaboradas',
             // "dataSrc":'',
-            'order': [[1,'desc']],
+            'order': [[0,'desc']],
             'scrollX': false,
             'columns': [
                 {'data': 'id_orden_compra'},
@@ -1491,22 +1500,29 @@ class OrdenView {
 
     anularOrden(id) {
         this.ordenCtrl.anularOrden(id).then((res) => {
+            // console.log(res);
             if (res.status == 200) {
                 this.restablecerFormularioOrden();
-                Lobibox.notify('success', {
+                // (res.mensaje).forEach(msj => {
+                    Lobibox.notify(res.status ==200?'success':'warning', {
+                        title: false,
+                        size: 'mini',
+                        rounded: true,
+                        sound: false,
+                        delayIndicator: false,
+                        msg: res.mensaje.toString()
+                    });
+                // });
+            } else {
+
+                Lobibox.notify('warning', {
                     title: false,
                     size: 'mini',
                     rounded: true,
                     sound: false,
                     delayIndicator: false,
-                    msg: 'Orden anulada'
+                    msg: res.mensaje.toString()
                 });
-            } else {
-                Swal.fire(
-                    '',
-                    res.mensaje.toString(),
-                    'error'
-                );
                 console.log(res);
             }
         }).catch((err) => {
@@ -1538,5 +1554,6 @@ function cancelarOrden() {
     const ordenController = new OrdenCtrl(ordenModel);
     const ordenView = new OrdenView(ordenController);
     ordenView.restablecerFormularioOrden();
+    document.querySelector("span[id='text-info-req-vinculado']")?document.querySelector("span[id='text-info-req-vinculado']").remove():false;
 
 }
