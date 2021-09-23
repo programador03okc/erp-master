@@ -54,7 +54,9 @@ function listar_detalle_movimiento(id_guia_com_detalle) {
                 <td>${element.cantidad}</td>
                 <td>${element.abreviatura}</td>
                 <td>${element.serie !== null ? (element.serie + '-' + element.numero) : ''}</td>
-                <td>${element.codigo_orden !== null ? element.codigo_orden : (element.codigo_transfor !== null ? element.codigo_transfor : (element.codigo_trans !== null ? element.codigo_trans : ''))}</td>
+                <td>${element.codigo_orden !== null ? element.codigo_orden :
+                        (element.codigo_transfor !== null ? element.codigo_transfor :
+                            (element.codigo_trans !== null ? element.codigo_trans : ''))}</td>
                 <td>${element.codigo_req !== null ? element.codigo_req : ''}</td>
                 <td><strong>${element.sede_req !== null ? element.sede_req : ''}</strong></td>
                 <td>${html_ser == '' ? ''

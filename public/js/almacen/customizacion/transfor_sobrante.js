@@ -122,14 +122,14 @@ function listar_sobrantes(id_transformacion) {
                 response.forEach(element => {
                     suma_sobrante += parseFloat(element.valor_total);
                     html += `<tr id="${element.id_sobrante}">
-                        <td>${element.codigo !== null ? element.codigo : ''}</td>
-                        <td>${element.part_number_prod !== null ? element.part_number_prod : (element.part_number !== null ? element.part_number : '')}</td>
+                        <td class="text-center">${element.codigo !== null ? element.codigo : ''}</td>
+                        <td class="text-center">${element.part_number_prod !== null ? element.part_number_prod : (element.part_number !== null ? element.part_number : '')}</td>
                         <td>${element.descripcion_prod !== null ? element.descripcion_prod : (element.descripcion !== null ? element.descripcion : '')}</td>
-                        <td>${element.cantidad}</td>
+                        <td class="text-right">${element.cantidad}</td>
                         <td>${element.abreviatura !== null ? element.abreviatura : ''}</td>
-                        <td>${element.valor_unitario}</td>
-                        <td>${element.valor_total}</td>
-                        <td style="padding:0px;">
+                        <td class="text-right">${element.valor_unitario}</td>
+                        <td class="text-right">${element.valor_total}</td>
+                        <td class="text-center" style="padding:0px;">
                             ${(est == 24) ? `<i class="fas fa-trash icon-tabla red boton delete" 
                             data-toggle="tooltip" data-placement="bottom" title="Eliminar" ></i>`: ''}
                         </td>

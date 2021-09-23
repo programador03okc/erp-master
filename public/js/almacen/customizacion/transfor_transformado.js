@@ -108,13 +108,13 @@ function listar_transformados(id_transformacion) {
 
                 response.forEach(element => {
                     html += `<tr id="${element.id_transformado}">
-                        <td>${element.codigo}</td>
-                        <td>${element.part_number !== null ? element.part_number : ''}</td>
+                        <td class="text-center">${element.codigo}</td>
+                        <td class="text-center">${element.part_number !== null ? element.part_number : ''}</td>
                         <td>${element.descripcion}</td>
-                        <td>${element.cantidad}</td>
+                        <td class="text-right">${element.cantidad}</td>
                         <td>${element.abreviatura}</td>
-                        <td>${element.valor_unitario}</td>
-                        <td>${element.valor_total}</td>
+                        <td class="text-right">${element.valor_unitario}</td>
+                        <td class="text-right">${element.valor_total}</td>
                     </tr>`;
                 });
                 $('#listaProductoTransformado tbody').html(html);

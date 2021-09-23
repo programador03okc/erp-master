@@ -8,6 +8,7 @@ function open_transformacion_guia_create(data) {
     $('[name=id_operacion]').val(26).trigger('change.select2');
     $('[name=id_guia_clas]').val(1);
     $('[name=id_proveedor]').val(data.id_proveedor);
+    $('[name=razon_social_proveedor]').val(data.razon_social);
     $('[name=id_sede]').val(data.id_sede);
     $('[name=id_transformacion]').val(data.id_transformacion);
     $('[name=id_orden_compra]').val('');
@@ -91,14 +92,21 @@ function mostrar_detalle_transformacion() {
     series_transformacion.forEach(function (element) {
         html_ser = '';
         element.series.forEach(function (serie) {
-            html_ser += '<br>' + serie;
+            if (html_ser == '') {
+                html_ser += serie;
+            } else {
+                html_ser += ', ' + serie;
+            }
         });
         html += `<tr>
             <td>${i}</td>
             <td>${element.codigo}</td>
-            <td>${element.cod_prod !== null ? (element.cod_prod == '' ? '<label>(por crear)</label>' : element.cod_prod) : '<label class="subtitulo_red">(sin mapear)</label>'}</td>
+            <td>${element.cod_prod !== null ?
+                (element.cod_prod == '' ? '<label>(por crear)</label>'
+                    : `<a href="#" class="verProducto" data-id="${element.id_producto}" >${element.cod_prod}</a>`)
+                : '<label class="subtitulo_red">(sin mapear)</label>'}</td>
             <td>${element.part_number !== null ? element.part_number : ''}</td>
-            <td>${element.descripcion + ' <strong>' + html_ser + '</strong>'}</td>
+            <td>${element.descripcion + ' <br><strong>' + html_ser + '</strong>'}</td>
             <td>${element.tipo == 'sobrante' ?
                 `<input type="number" class="form-control cantidad" style="width:120px;" data-idprod="${element.id_producto}" step="0.001" 
                 value="${element.cantidad}"/>` : element.cantidad}
@@ -107,11 +115,7 @@ function mostrar_detalle_transformacion() {
             <td><input type="number" class="form-control unitario" style="width:120px;" data-id="${element.tipo == 'sobrante' ? element.id_producto : element.id}" data-tipo="${element.tipo}" step="0.001" 
                 value="${element.valor_unitario}"/></td>
             <td>${formatNumber.decimal((element.cantidad * element.valor_unitario), '', -4)}</td>
-            <td>
-                ${element.control_series ?
-                `<input type="text" class="oculto" id="series" value="${element.series}" data-partnumber="${element.part_number}"/>
-                    <i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series" 
-                    onClick="agrega_series_transformacion(${"'" + element.id + "'"});"></i>` : ''}
+            <td width="8%">
                 ${element.tipo == 'sobrante' ?
                 `<button type="button" style="padding-left:8px;padding-right:7px;" 
                     class="asignar btn btn-xs btn-info boton" data-toggle="tooltip" 
@@ -120,7 +124,11 @@ function mostrar_detalle_transformacion() {
                     title="Asignar producto" >
                     <i class="fas fa-angle-double-right"></i>
                 </button>` : ''}
-            </td>
+                ${element.control_series ?
+                `<input type="text" class="oculto" id="series" value="${element.series}" data-partnumber="${element.part_number}"/>
+                        <i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series" 
+                        onClick="agrega_series_transformacion(${"'" + element.id + "'"});"></i>` : ''}
+                </td>
             </tr>`;
         i++;
     });

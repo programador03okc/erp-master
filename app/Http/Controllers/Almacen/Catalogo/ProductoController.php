@@ -70,31 +70,23 @@ class ProductoController extends Controller
 
     public function listarProductosSugeridos()
     {
-        $data = [];
+        $data = DB::table('almacen.alm_prod')
+            ->select(
+                'alm_prod.id_producto',
+                'alm_prod.codigo',
+                'alm_prod.descripcion',
+                'alm_prod.part_number',
+                'alm_prod.id_unidad_medida',
+                'alm_und_medida.abreviatura',
+                'alm_subcat.descripcion as marca'
+            )
+            ->leftjoin('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
+            ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida');
+
         if (session()->has('productFilter_partnumber')) {
-            $data = DB::table('almacen.alm_prod')
-                ->select(
-                    'alm_prod.id_producto',
-                    'alm_prod.codigo',
-                    'alm_prod.descripcion',
-                    'alm_prod.part_number',
-                    'alm_subcat.descripcion as marca'
-                )
-                ->leftjoin('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
-                ->where('alm_prod.part_number', session()->get('productFilter_partnumber'))
-                ->get();
+            $data = $data->where('alm_prod.part_number', session()->get('productFilter_partnumber'))->get();
         } else if (session()->has('productFilter_descripcion')) {
-            $data = DB::table('almacen.alm_prod')
-                ->select(
-                    'alm_prod.id_producto',
-                    'alm_prod.codigo',
-                    'alm_prod.descripcion',
-                    'alm_prod.part_number',
-                    'alm_subcat.descripcion as marca'
-                )
-                ->leftjoin('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
-                ->where('alm_prod.descripcion', session()->get('productFilter_descripcion'))
-                ->get();
+            $data = $data->where('alm_prod.descripcion', session()->get('productFilter_descripcion'))->get();
         }
         // $output['data'] = $data;
         return response()->json($data);

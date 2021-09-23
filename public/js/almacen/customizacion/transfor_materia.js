@@ -1,12 +1,12 @@
 let sel_producto_materia = null;
 //Materias Primas
-function agregar_producto_materia(sel){
+function agregar_producto_materia(sel) {
     sel_producto_materia = sel;
- 
+
     console.log(sel);
     var row = `<tr>
         <td>${sel.codigo}</td>
-        <td>${sel.part_number!==null?sel.part_number:''}</td>
+        <td>${sel.part_number !== null ? sel.part_number : ''}</td>
         <td>${sel.descripcion}</td>
         <td><input type="number" class="form-control calcula" name="cantidad" id="cantidad"></td>
         <td>${sel.unid_med}</td>
@@ -22,38 +22,38 @@ function agregar_producto_materia(sel){
     $("#listaMateriasPrimas").append(row);
 }
 // Calcula total
-$('#listaMateriasPrimas tbody').on("change", ".calcula", function(){
+$('#listaMateriasPrimas tbody').on("change", ".calcula", function () {
     var cantidad = $(this).parents("tr").find('input[name=cantidad]').val();
     var unitario = $(this).parents("tr").find('input[name=unitario]').val();
-    console.log('cantidad'+cantidad+' unitario'+unitario);
-    if (cantidad !== '' && unitario !== ''){
+    console.log('cantidad' + cantidad + ' unitario' + unitario);
+    if (cantidad !== '' && unitario !== '') {
         $(this).parents("tr").find('input[name=total]').val(parseFloat(cantidad) * parseFloat(unitario));
     } else {
         $(this).parents("tr").find('input[name=total]').val(0);
     }
 });
 // Add row on add button click
-$('#listaMateriasPrimas tbody').on("click", ".add", function(){
+$('#listaMateriasPrimas tbody').on("click", ".add", function () {
     var empty = false;
     var input = $(this).parents("tr").find('input');
-    input.each(function(){
-        if(!$(this).val()){
+    input.each(function () {
+        if (!$(this).val()) {
             $(this).addClass("error");
             empty = true;
-        } else{
+        } else {
             $(this).removeClass("error");
         }
     });
     $(this).parents("tr").find(".error").first().focus();
-    if(!empty){
+    if (!empty) {
         var cantidad = 0;
         var unitario = 0;
 
-        input.each(function(){
-            if ($(this)[0].name == 'cantidad'){
+        input.each(function () {
+            if ($(this)[0].name == 'cantidad') {
                 cantidad = parseFloat($(this).val());
             }
-            else if ($(this)[0].name == 'unitario'){
+            else if ($(this)[0].name == 'unitario') {
                 unitario = parseFloat($(this).val());
             }
             $(this).parent("td").html($(this).val());
@@ -61,45 +61,45 @@ $('#listaMateriasPrimas tbody').on("click", ".add", function(){
         $(this).addClass("hidden");
 
         var id_trans = $('[name=id_transformacion]').val();
-        var data = 'id_producto='+sel_producto_materia.id_producto+
-                '&id_transformacion='+id_trans+
-                '&part_number='+sel_producto_materia.part_number+
-                '&descripcion='+sel_producto_materia.descripcion+
-                '&cantidad='+cantidad+
-                '&valor_unitario='+unitario+
-                '&valor_total='+(cantidad * unitario);
+        var data = 'id_producto=' + sel_producto_materia.id_producto +
+            '&id_transformacion=' + id_trans +
+            '&part_number=' + sel_producto_materia.part_number +
+            '&descripcion=' + sel_producto_materia.descripcion +
+            '&cantidad=' + cantidad +
+            '&valor_unitario=' + unitario +
+            '&valor_total=' + (cantidad * unitario);
         guardar_materia(data);
-    }		
+    }
 });
 
-function guardar_materia(data){
+function guardar_materia(data) {
     console.log(data);
     $.ajax({
         type: 'POST',
         url: 'guardar_materia',
         data: data,
         dataType: 'JSON',
-        success: function(response){
+        success: function (response) {
             console.log(response);
-            if (response > 0){
+            if (response > 0) {
                 alert('Item guardado con éxito');
                 var id_trans = $('[name=id_transformacion]').val();
                 listar_materias(id_trans);
             }
         }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
+    }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
     });
 }
-function listar_materias(id_transformacion){
+function listar_materias(id_transformacion) {
     $('#listaMateriasPrimas tbody').html('');
     $.ajax({
         type: 'GET',
-        url: 'listar_materias/'+id_transformacion,
+        url: 'listar_materias/' + id_transformacion,
         dataType: 'JSON',
-        success: function(response){
+        success: function (response) {
             var html = '';
             var html_series = '';
             var suma_materias = 0;
@@ -108,21 +108,21 @@ function listar_materias(id_transformacion){
             response.forEach(element => {
                 html_series = '';
                 element.series.forEach(ser => {
-                    if (html_series==''){
-                        html_series+=ser.serie;
+                    if (html_series == '') {
+                        html_series += ser.serie;
                     } else {
-                        html_series+='<br>'+ser.serie;
+                        html_series += '<br>' + ser.serie;
                     }
                 });
                 suma_materias += parseFloat(element.valor_total);
                 html += `<tr id="${element.id_materia}">
-                    <td>${element.codigo !== null ? element.codigo : ''}</td>
-                    <td>${element.part_number !== null ? element.part_number : ''}</td>
+                    <td class="text-center">${element.codigo !== null ? element.codigo : ''}</td>
+                    <td class="text-center">${element.part_number !== null ? element.part_number : ''}</td>
                     <td>${element.descripcion !== null ? element.descripcion : ''}</td>
-                    <td>${element.cantidad}</td>
+                    <td class="text-right">${element.cantidad}</td>
                     <td>${element.abreviatura !== null ? element.abreviatura : ''}</td>
-                    <td>${element.valor_unitario}</td>
-                    <td>${element.valor_total}</td>
+                    <td class="text-right">${element.valor_unitario}</td>
+                    <td class="text-right">${element.valor_total}</td>
                     <td style="padding:0px;">
                         ${html_series}
                     </td>
@@ -131,11 +131,11 @@ function listar_materias(id_transformacion){
             // ${(est == 24) ? `<i class="fas fa-trash icon-tabla red boton delete" 
             // data-toggle="tooltip" data-placement="bottom" title="Eliminar" ></i>` : ''}
             $('#listaMateriasPrimas tbody').html(html);
-            $('[name=total_materias]').text(formatDecimalDigitos(suma_materias,2));
+            $('[name=total_materias]').text(formatDecimalDigitos(suma_materias, 2));
             actualizaTotales();
             // total_materia();
         }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
+    }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
@@ -184,32 +184,32 @@ function listar_materias(id_transformacion){
 //     });
 // }
 // Delete row on delete button click
-$('#listaMateriasPrimas tbody').on("click", ".delete", function(){
+$('#listaMateriasPrimas tbody').on("click", ".delete", function () {
     var anula = confirm("¿Esta seguro que desea anular éste item?");
-    
-    if (anula){
+
+    if (anula) {
         var idx = $(this).parents("tr")[0].id;
         $(this).parents("tr").remove();
         console.log(idx);
-        if (idx !== ''){
+        if (idx !== '') {
             anular_materia(idx);
         }
     }
 });
-function anular_materia(id){
+function anular_materia(id) {
     $.ajax({
         type: 'GET',
-        url: 'anular_materia/'+id,
+        url: 'anular_materia/' + id,
         dataType: 'JSON',
-        success: function(response){
+        success: function (response) {
             console.log(response);
-            if (response > 0){
+            if (response > 0) {
                 // alert('Item anulado con éxito');
                 var id_trans = $('[name=id_transformacion]').val();
                 listar_materias(id_trans);
             }
         }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
+    }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);

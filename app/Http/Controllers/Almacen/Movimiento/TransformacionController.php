@@ -139,6 +139,7 @@ class TransformacionController extends Controller
                 'adm_estado_doc.bootstrap_color',
                 'alm_req.id_requerimiento',
                 'log_prove.id_proveedor',
+                'adm_contri.razon_social',
                 'oc_propias.orden_am',
                 'oportunidades.oportunidad',
                 'oportunidades.codigo_oportunidad',
@@ -149,6 +150,7 @@ class TransformacionController extends Controller
             ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_almacen.id_sede')
             ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
             ->leftjoin('logistica.log_prove', 'log_prove.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
+            ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
             ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'orden_despacho.id_requerimiento')
             ->join('almacen.guia_ven', function ($join) {
                 $join->on('guia_ven.id_od', '=', 'transformacion.id_od');

@@ -25,7 +25,7 @@ function listarProductosCatalogo() {
                             <button type="button" class="btn btn-success btn-xs" name="btnSeleccionarUbigeo" title="Seleccionar Producto" 
                                 data-codigo="${row.codigo}" data-id="${row.id_producto}" 
                                 data-partnumber="${row.part_number}" data-descripcion="${encodeURIComponent(row.descripcion)}" 
-                                onclick="selectProductoAsignado(this);">
+                                data-abreviatura="${row.abreviatura}" onclick="selectProductoAsignado(this);">
                                 <i class="fas fa-check"></i>
                             </button>
                         `;
@@ -95,15 +95,15 @@ function listarSugeridos() {
                 response.forEach(function (element) {
                     html += `
                     <tr>
-                    <td>${element.codigo??''}</td>
-                    <td>${element.part_number??''}</td>
-                    <td>${element.marca??''}</td>
-                    <td>${element.descripcion??''}</td>
+                    <td>${element.codigo ?? ''}</td>
+                    <td>${element.part_number ?? ''}</td>
+                    <td>${element.marca ?? ''}</td>
+                    <td>${element.descripcion ?? ''}</td>
                     <td>
                         <button type="button" class="btn btn-success btn-xs" title="Seleccionar Producto" 
                             data-codigo="${element.codigo}" data-id="${element.id_producto}" 
                             data-partnumber="${element.part_number}" data-descripcion="${encodeURIComponent(element.descripcion)}" 
-                            onclick="selectProductoAsignado(this);">
+                            data-abreviatura="${element.abreviatura}" onclick="selectProductoAsignado(this);">
                             <i class="fas fa-check"></i>
                         </button>
                     </td>
@@ -126,6 +126,7 @@ function selectProductoAsignado(obj) {
     let codigo = obj.dataset.codigo;
     let partnumber = obj.dataset.partnumber;
     let descripcion = obj.dataset.descripcion;
+    let abreviatura = obj.dataset.abreviatura;
     let id_detalle = $('[name=id_detalle_requerimiento]').val();
 
     // console.log('selectProductoAsignado');
@@ -137,6 +138,7 @@ function selectProductoAsignado(obj) {
         det.cod_prod = codigo;
         det.part_number = partnumber;
         det.descripcion = decodeURIComponent(descripcion);
+        det.abreviatura = abreviatura;
         $('#modal-mapeoAsignarProducto').modal('hide');
         mostrar_detalle_transformacion();
     } else {
@@ -160,6 +162,7 @@ $("#form-crear").on("submit", function (e) {
     let id_subcat = $('[name=id_subcategoria]').val();
     let id_clasif = $('[name=id_clasif]').val();
     let id_unid = $('[name=id_unidad_medida]').val();
+    let abreviatura = $('select[name="id_unidad_medida"] option:selected').text();
     let partnumber = $('[name=part_number]').val();
     let descripcion = $('[name=descripcion]').val();
     let id_detalle = $('[name=id_detalle_requerimiento]').val();
@@ -177,6 +180,7 @@ $("#form-crear").on("submit", function (e) {
         det.id_subcategoria = id_subcat;
         det.id_clasif = id_clasif;
         det.id_unidad_medida = id_unid;
+        det.abreviatura = abreviatura;
         det.control_series = serie;
 
         $('#modal-mapeoAsignarProducto').modal('hide');

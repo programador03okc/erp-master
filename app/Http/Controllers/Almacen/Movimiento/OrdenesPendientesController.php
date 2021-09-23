@@ -459,6 +459,11 @@ class OrdenesPendientesController extends Controller
                 'req_od.codigo as codigo_req_od',
                 'transformacion.codigo as codigo_transfor',
                 'sede_req_od.descripcion as sede_req_od',
+
+                'req_sobrante.codigo as codigo_req_sobrante',
+                'tr_sobrante.codigo as codigo_tr_sobrante',
+                'sede_req_sobrante.descripcion as sede_req_sob',
+
                 'trans.codigo as codigo_trans',
                 'req_tra.codigo as codigo_req_trans',
                 'sede_tra.descripcion as sede_req_trans'
@@ -475,6 +480,12 @@ class OrdenesPendientesController extends Controller
             ->leftjoin('almacen.orden_despacho', 'orden_despacho.id_od', '=', 'transformacion.id_od')
             ->leftjoin('almacen.alm_req as req_od', 'req_od.id_requerimiento', '=', 'orden_despacho.id_requerimiento')
             ->leftjoin('administracion.sis_sede as sede_req_od', 'sede_req_od.id_sede', '=', 'req_od.id_sede')
+
+            ->leftjoin('almacen.transfor_sobrante', 'transfor_sobrante.id_sobrante', '=', 'guia_com_det.id_sobrante')
+            ->leftjoin('almacen.transformacion as tr_sobrante', 'tr_sobrante.id_transformacion', '=', 'transfor_sobrante.id_transformacion')
+            ->leftjoin('almacen.orden_despacho as od_sobrante', 'od_sobrante.id_od', '=', 'tr_sobrante.id_od')
+            ->leftjoin('almacen.alm_req as req_sobrante', 'req_sobrante.id_requerimiento', '=', 'od_sobrante.id_requerimiento')
+            ->leftjoin('administracion.sis_sede as sede_req_sobrante', 'sede_req_sobrante.id_sede', '=', 'req_sobrante.id_sede')
 
             ->leftjoin('almacen.trans_detalle', 'trans_detalle.id_trans_detalle', '=', 'guia_com_det.id_trans_detalle')
             ->leftjoin('almacen.trans', 'trans.id_transferencia', '=', 'trans_detalle.id_transferencia')
@@ -511,10 +522,10 @@ class OrdenesPendientesController extends Controller
                 'serie' => $det->serie,
                 'numero' => $det->numero,
                 'codigo_orden' => $det->codigo_orden,
-                'codigo_transfor' => $det->codigo_transfor,
+                'codigo_transfor' => ($det->codigo_transfor !== null ? $det->codigo_transfor : $det->codigo_tr_sobrante),
                 'codigo_trans' => $det->codigo_trans,
-                'codigo_req' => ($det->codigo_req !== null ? $det->codigo_req : ($det->codigo_req_od !== null ? $det->codigo_req_od : $det->codigo_req_trans)),
-                'sede_req' => ($det->sede_req !== null ? $det->sede_req : ($det->sede_req_od !== null ? $det->sede_req_od : $det->sede_req_trans)),
+                'codigo_req' => ($det->codigo_req !== null ? $det->codigo_req : ($det->codigo_req_od !== null ? $det->codigo_req_od : ($det->codigo_req_trans !== null ? $det->codigo_req_trans : $det->codigo_req_sobrante))),
+                'sede_req' => ($det->sede_req !== null ? $det->sede_req : ($det->sede_req_od !== null ? $det->sede_req_od : ($det->sede_req_trans !== null ? $det->sede_req_trans : $det->sede_req_sob))),
                 'series' => $series
             ]);
         }

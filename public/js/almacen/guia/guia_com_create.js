@@ -205,6 +205,20 @@ $("#form-guia_create").on("submit", function (e) {
 
     if (ope == 26) {
         series_transformacion.forEach(function (element) {
+            if (element.control_series) {
+                // var part_number = $(this).parent().parent().find('td input[id=series]').data('partnumber');
+                if (element.series.length == 0) {
+                    validaCampos += 'Es necesario que agregue series al producto ' + (element.part_number !== null ? element.part_number : element.descripcion) + '.\n';
+                }
+                else if (element.series.length > 0 && element.series.length < parseFloat(element.cantidad)) {
+                    var dif = parseFloat(element.cantidad) - element.series.length;
+                    validaCampos += 'El producto ' + (element.part_number !== null ? element.part_number : element.descripcion) + ' requiere que se agreguen ' + dif + ' series.\n';
+                }
+            }
+
+            if (element.id_producto == null && element.id_categoria == null && element.id_subcategoria == null) {
+                validaCampos += 'Falta mapear el producto ' + (element.part_number !== null ? element.part_number : element.descripcion) + '.\n';
+            }
             detalle.push({
                 'id': element.id_detalle,
                 'tipo': element.tipo,
