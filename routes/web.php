@@ -1253,7 +1253,6 @@ Route::group(['middleware' => ['auth']], function () {
 				//Transferencias
 				Route::get('index', 'Almacen\Movimiento\TransferenciaController@view_listar_transferencias')->name('index');
 				Route::post('listarRequerimientos', 'Almacen\Movimiento\TransferenciaController@listarRequerimientos');
-				Route::get('listarTransferenciasRecibidas/{ori}', 'Almacen\Movimiento\TransferenciaController@listarTransferenciasRecibidas');
 				Route::get('listarTransferenciaDetalle/{id}', 'Almacen\Movimiento\TransferenciaController@listarTransferenciaDetalle');
 				Route::post('guardarIngresoTransferencia', 'Almacen\Movimiento\TransferenciaController@guardarIngresoTransferencia');
 				Route::post('guardarSalidaTransferencia', 'Almacen\Movimiento\TransferenciaController@guardarSalidaTransferencia');
@@ -1263,8 +1262,9 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('anularTransferenciaSalida', 'Almacen\Movimiento\TransferenciaController@anularTransferenciaSalida');
 				Route::get('imprimir_ingreso/{id}', 'Almacen\Movimiento\OrdenesPendientesController@imprimir_ingreso');
 				Route::get('imprimir_salida/{id}', 'Almacen\Movimiento\SalidasPendientesController@imprimir_salida');
-				Route::get('listarTransferenciasPorEnviar/{id}', 'Almacen\Movimiento\TransferenciaController@listarTransferenciasPorEnviar');
-				Route::get('listarTransferenciasPorRecibir/{id}', 'Almacen\Movimiento\TransferenciaController@listarTransferenciasPorRecibir');
+				Route::post('listarTransferenciasPorEnviar', 'Almacen\Movimiento\TransferenciaController@listarTransferenciasPorEnviar');
+				Route::post('listarTransferenciasPorRecibir', 'Almacen\Movimiento\TransferenciaController@listarTransferenciasPorRecibir');
+				Route::post('listarTransferenciasRecibidas', 'Almacen\Movimiento\TransferenciaController@listarTransferenciasRecibidas');
 				// Route::get('cargar_almacenes/{id}', 'Almacen\Ubicacion\AlmacenController@cargar_almacenes');
 				Route::post('listarDetalleTransferencia', 'Almacen\Movimiento\TransferenciaController@listarDetalleTransferencia');
 				// Route::get('listarDetalleTransferencia/{id}', 'Almacen\Movimiento\TransferenciaController@listarDetalleTransferencia');
@@ -1284,6 +1284,8 @@ Route::group(['middleware' => ['auth']], function () {
 
 				Route::get('autogenerarDocumentosCompra/{id}', 'Tesoreria\Facturacion\VentasInternasController@autogenerarDocumentosCompra')->name('autogenerarDocumentosCompra');
 				Route::get('verDocumentosAutogenerados/{id}', 'Tesoreria\Facturacion\VentasInternasController@verDocumentosAutogenerados');
+				Route::get('verDetalleRequerimientoDI/{id}', 'Logistica\Distribucion\OrdenesTransformacionController@verDetalleRequerimientoDI');
+				Route::get('almacenesPorUsuario', 'Almacen\Movimiento\TransferenciaController@almacenesPorUsuario');
 			});
 		});
 

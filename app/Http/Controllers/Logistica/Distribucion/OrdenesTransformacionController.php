@@ -138,13 +138,8 @@ class OrdenesTransformacionController extends Controller
             ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_det_req.id_unidad_medida')
             ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'alm_det_req.estado')
             ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
-            // ->leftJoin('almacen.guia_com', 'guia_com.id_guia', '=', 'guia_com_det.id_guia_com')
-            // ->leftJoin('almacen.alm_almacen as almacen_guia', 'almacen_guia.id_almacen', '=', 'guia_com.id_almacen')
-            // ->leftJoin('almacen.alm_reserva', 'alm_reserva.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento')
             ->leftJoin('almacen.alm_reserva', function ($join) {
                 $join->on('alm_reserva.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento');
-                // $join->on('alm_reserva.id_almacen_reserva', '=', 'alm_req.id_almacen');
-                // $join->whereNotNull('alm_reserva.id_almacen_reserva');
                 $join->where('alm_reserva.estado', '!=', 7);
                 $join->where('alm_reserva.estado', '!=', 5);
             })
@@ -152,8 +147,6 @@ class OrdenesTransformacionController extends Controller
             ->where([
                 ['alm_det_req.id_requerimiento', '=', $id_requerimiento],
                 ['alm_det_req.estado', '!=', 7],
-                // ['alm_det_req.tiene_transformacion', '=', false]
-                // ['alm_det_req.entrega_cliente', '=', false]
             ])
             ->get();
 
