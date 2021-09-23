@@ -25,87 +25,86 @@ Gestión de Transferencias
 <div class="box box-solid">
     <div class="box-body">
         <div class="page-main" type="transferencias">
-            <div class="col-md-12" id="tab-transferencias" style="padding-left:0px;padding-right:0px;">
-                <ul class="nav nav-tabs" id="myTab">
-                    <li class="active"><a type="#requerimientos">Requerimientos Pendientes</a></li>
-                    <li class=""><a type="#porEnviar">Transferencias Pendientes de Enviar</a></li>
-                    <li class=""><a type="#pendientes">Transferencias Pendientes de Recibir</a></li>
-                    <li class=""><a type="#recibidas">Transferencias Recibidas</a></li>
-                </ul>
-                <div class="content-tabs">
-                    <section id="requerimientos">
-                        <form id="form-requerimientos" type="register">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <table class="mytable table table-condensed table-bordered table-okc-view" id="listaRequerimientos">
-                                        <thead>
-                                            <tr>
-                                                <th hidden></th>
-                                                <th width="10%">Código</th>
-                                                <th width="20%">Concepto</th>
-                                                <th width="10%">Sede Destino</th>
-                                                <th width="25%">Entidad/Cliente</th>
-                                                <th width="10%">Responsable</th>
-                                                <th width="15%">OCAM</th>
-                                                <th width="5%">C.P.</th>
-                                                <th width="5%">Acción</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody></tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </form>
-                    </section>
-                    <section id="porEnviar" hidden>
-                        <form id="form-porEnviar" type="register">
-                            <div class="row">
-                                <div class="col-md-2"><label>Almacén Origen:</label></div>
-                                <div class="col-md-4">
-                                    <!-- <label>Almacén Origen:</label> -->
-                                    <select class="form-control" name="id_almacen_origen_lista" onChange="listarTransferenciasPorEnviar();">
-                                        <option value="0" selected>Mostrar Todos</option>
-                                        @foreach ($almacenes as $alm)
-                                        <option value="{{$alm->id_almacen}}">{{$alm->descripcion}}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <!-- <div style="display: flex;">
-                                        @if(Auth::user()->tieneAccion(91))
-                                        <button type="button" class="btn btn-success btn-flat" data-toggle="tooltip" data-placement="bottom" title="Crear Guía con varias transferencias" onClick="openGuiaTransferenciaCreate();">
-                                            Generar Guía</button>
-                                        @endif
-                                    </div> -->
-                                    <table class="mytable table table-condensed table-bordered table-okc-view" id="listaTransferenciasPorEnviar">
-                                        <thead>
-                                            <tr>
-                                                <th hidden></th>
-                                                <th></th>
-                                                <th width="8%">Tipo</th>
-                                                <th width="8%">Código</th>
-                                                <th width="12%">Almacén Origen</th>
-                                                <th width="12%">Almacén Destino</th>
-                                                <th width="10%">Codigo Req.</th>
-                                                <th width="20%">Concepto</th>
-                                                <th width="10%">Elaborado Por</th>
-                                                <th width="10%">Guía Venta</th>
-                                                <th width="6%">Estado</th>
-                                                <th width="6%">Acción</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody></tbody>
-                                    </table>
+            <div class="col-md-12" id="tab-transferencias" style="padding-top:10px;padding-bottom:10px;">
 
-                                </div>
+                <ul class="nav nav-tabs" id="myTabTransferencias">
+                    <li class="active"><a data-toggle="tab" href="#requerimientos">Requerimientos Pendientes</a></li>
+                    <li class=""><a data-toggle="tab" href="#porEnviar">Transferencias Pendientes de Enviar</a></li>
+                    <li class=""><a data-toggle="tab" href="#pendientes">Transferencias Pendientes de Recibir</a></li>
+                    <li class=""><a data-toggle="tab" href="#recibidas">Transferencias Recibidas</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div id="requerimientos" class="tab-pane fade in active">
+                        
+                        <div class="row" style="padding-top:10px;">
+                            <div class="col-md-12">
+                                <table class="mytable table table-condensed table-bordered table-okc-view" id="listaRequerimientos">
+                                    <thead>
+                                        <tr>
+                                            <th hidden></th>
+                                            <th width="10%">Código</th>
+                                            <th width="20%">Concepto</th>
+                                            <th width="10%">Sede Destino</th>
+                                            <th width="25%">Entidad/Cliente</th>
+                                            <th width="10%">Responsable</th>
+                                            <th width="15%">OCAM</th>
+                                            <th width="5%">C.P.</th>
+                                            <th width="5%">Acción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
                             </div>
+                        </div>
+                        
+                    </div>
+                    <div id="porEnviar" class="tab-pane fade ">
+                        
+                        {{-- <div class="row">
+                            <div class="col-md-2"><label>Almacén Origen:</label></div>
+                            <div class="col-md-4">
+                                <select class="form-control" name="id_almacen_origen_lista" onChange="listarTransferenciasPorEnviar();">
+                                    <option value="0" selected>Mostrar Todos</option>
+                                    @foreach ($almacenes as $alm)
+                                    <option value="{{$alm->id_almacen}}">{{$alm->descripcion}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div> --}}
+                        
+                        <form id="formFiltrosPorEnviar" method="POST" >
+                            @csrf()
+                            <input type="hidden" name="id_almacen_origen" value="0">
                         </form>
-                    </section>
-                    <section id="pendientes" hidden>
-                        <form id="form-pendientes" type="register">
-                            <div class="row">
+                        <div class="row" style="padding-top:10px;">
+                            <div class="col-md-12">
+                                <table class="mytable table table-condensed table-bordered table-okc-view" id="listaTransferenciasPorEnviar">
+                                    <thead>
+                                        <tr>
+                                            <th hidden></th>
+                                            <th></th>
+                                            <th width="8%">Tipo</th>
+                                            <th width="8%">Código</th>
+                                            <th width="12%">Almacén Origen</th>
+                                            <th width="12%">Almacén Destino</th>
+                                            <th width="10%">Codigo Req.</th>
+                                            <th width="20%">Concepto</th>
+                                            <th width="10%">Elaborado Por</th>
+                                            <th width="10%">Guía Venta</th>
+                                            <th width="6%">Estado</th>
+                                            <th width="6%">Acción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div id="pendientes" class="tab-pane fade ">
+                        
+                            {{-- <div class="row">
                                 <div class="col-md-2"><label>Almacén Destino:</label></div>
                                 <div class="col-md-4">
                                     <select class="form-control" name="id_almacen_destino_lista" onChange="listarTransferenciasPorRecibir();">
@@ -115,8 +114,12 @@ Gestión de Transferencias
                                         @endforeach
                                     </select>
                                 </div>
-                            </div>
-                            <div class="row">
+                            </div> --}}
+                            <form id="formFiltrosPorRecibir" method="POST" >
+                                @csrf()
+                                <input type="hidden" name="id_almacen_destino" value="0">
+                            </form>
+                            <div class="row" style="padding-top:10px;">
                                 <div class="col-md-12">
                                     <table class="mytable table table-condensed table-bordered table-okc-view" id="listaTransferenciasPorRecibir">
                                         <thead>
@@ -138,11 +141,11 @@ Gestión de Transferencias
                                     </table>
                                 </div>
                             </div>
-                        </form>
-                    </section>
-                    <section id="recibidas" hidden>
-                        <form id="form-recibidas" type="register">
-                            <div class="row">
+                        
+                    </div>
+                    <div id="recibidas" class="tab-pane fade ">
+                        
+                            {{-- <div class="row">
                                 <div class="col-md-2"><label>Almacén Destino:</label></div>
                                 <div class="col-md-4">
                                     <select class="form-control" name="id_almacen_dest_recibida" onChange="listarTransferenciasRecibidas();">
@@ -152,8 +155,12 @@ Gestión de Transferencias
                                         @endforeach
                                     </select>
                                 </div>
-                            </div>
-                            <div class="row">
+                            </div> --}}
+                            <form id="formFiltrosRecibidas" method="POST" >
+                                @csrf()
+                                <input type="hidden" name="id_almacen_destino_recibida" value="0">
+                            </form>
+                            <div class="row" style="padding-top:10px;">
                                 <div class="col-md-12">
                                     <table class="mytable table table-condensed table-bordered table-okc-view" id="listaTransferenciasRecibidas">
                                         <thead>
@@ -169,16 +176,16 @@ Gestión de Transferencias
                                                 <th width="10%">Almacén Destino</th>
                                                 <th width="8%">Estado</th>
                                                 <th width="8%">Req.</th>
-                                                <th width="15%">Concepto</th>
-                                                <th width="10%">Acción</th>
+                                                <th width="25%">Concepto</th>
+                                                <th width="5%">Acción</th>
                                             </tr>
                                         </thead>
                                         <tbody></tbody>
                                     </table>
                                 </div>
                             </div>
-                        </form>
-                    </section>
+                        
+                    </div>
                 </div>
             </div>
         </div>
@@ -222,8 +229,7 @@ Gestión de Transferencias
 <script src="{{ asset('js/almacen/transferencias/transferenciaEnviar.js')}}"></script>
 <script src="{{ asset('js/almacen/transferencias/transportistaModal.js')}}"></script>
 <script src="{{ asset('js/almacen/transferencias/verDocsAutogenerados.js')}}"></script>
-<!-- <script src="{{ asset('js/logistica/requerimiento/historial.js')}}"></script> -->
-<!-- <script src="{{ asset('js/almacen/guia/guia_com_det_series.js')}}"></script> -->
+<script src="{{ asset('js/almacen/distribucion/verDetalleRequerimiento.js')}}"></script>
 <script src="{{ asset('js/almacen/guia/guia_ven_series.js')}}"></script>
 <script src="{{ asset('js/tesoreria/facturacion/archivosMgcp.js')}}"></script>
 

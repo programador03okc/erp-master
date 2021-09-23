@@ -40,7 +40,7 @@ function format(table_id, id, row) {
                         <th style="border: none;">Cantidad</th>
                         <th style="border: none;">Unid.</th>
                         <th style="border: none;">Alm.Reserva</th>
-                        <th style="border: none;">Stock Res.</th>
+                        <th style="border: none;">Reservado</th>
                         <th style="border: none;">Transformación</th>
                         <th style="border: none;">Estado</th>
                     </tr>

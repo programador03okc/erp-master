@@ -28,12 +28,59 @@ class TransferenciaController extends Controller
         return view('almacen/transferencias/listarTransferencias', compact('clasificaciones', 'almacenes', 'usuarios', 'motivos_anu'));
     }
 
-    public function listarTransferenciasPorRecibir($destino)
+    public function listarTransferenciasPorEnviar(Request $request)
     {
-        if ($destino == '0') {
+        if ($request->id_almacen_origen == '0') {
             $array_almacen = $this->almacenesPorUsuarioArray();
         } else {
-            $array_almacen[] = [$destino];
+            $array_almacen[] = [$request->id_almacen_origen];
+        }
+        $lista = DB::table('almacen.trans')
+            ->select(
+                'trans.*',
+                'alm_req.codigo as cod_req',
+                'alm_req.concepto',
+                DB::raw("CONCAT(guia_ven.serie, '-', guia_ven.numero) as guia_ven"),
+                'guia_ven.id_guia_ven',
+                'mov_alm.id_mov_alm as id_salida',
+                'sede_solicita.id_empresa as id_empresa_destino',
+                'sede_almacen.id_empresa as id_empresa_origen',
+                'sede_solicita.id_sede as id_sede_destino',
+                'sede_almacen.id_sede as id_sede_origen',
+                'sede_solicita.descripcion as sede_descripcion',
+                'sede_almacen.descripcion as sede_almacen_descripcion',
+                'origen.descripcion as alm_origen_descripcion',
+                'destino.descripcion as alm_destino_descripcion',
+                'origen.ubicacion as alm_origen_direccion',
+                'destino.ubicacion as alm_destino_direccion',
+                'sis_usua.nombre_corto',
+                'adm_estado_doc.bootstrap_color',
+                'adm_estado_doc.estado_doc',
+            )
+            ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'trans.id_requerimiento')
+            ->join('administracion.sis_sede as sede_solicita', 'sede_solicita.id_sede', '=', 'alm_req.id_sede')
+            ->join('almacen.alm_almacen as origen', 'origen.id_almacen', '=', 'trans.id_almacen_origen')
+            ->join('administracion.sis_sede as sede_almacen', 'sede_almacen.id_sede', '=', 'origen.id_sede')
+            ->join('almacen.alm_almacen as destino', 'destino.id_almacen', '=', 'trans.id_almacen_destino')
+            ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'alm_req.id_usuario')
+            ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'trans.estado')
+            ->leftJoin('almacen.guia_ven', 'guia_ven.id_guia_ven', '=', 'trans.id_guia_ven')
+            ->leftJoin('almacen.mov_alm', 'mov_alm.id_guia_ven', '=', 'trans.id_guia_ven')
+            ->whereIn('trans.id_almacen_origen', $array_almacen)
+            ->whereIn('trans.estado', [1, 17])
+            ->where([['alm_req.confirmacion_pago', '=', true]])->get();
+
+        return datatables($lista)->toJson();
+        // $output['data'] = $lista;
+        // return response()->json($output);
+    }
+
+    public function listarTransferenciasPorRecibir(Request $request)
+    {
+        if ($request->id_almacen_destino == '0') {
+            $array_almacen = $this->almacenesPorUsuarioArray();
+        } else {
+            $array_almacen[] = [$request->id_almacen_destino];
         }
         $data = Transferencia::select(
             'trans.id_transferencia',
@@ -69,16 +116,17 @@ class TransferenciaController extends Controller
             ])
             ->distinct()->get();
 
-        $output['data'] = $data;
-        return response()->json($output);
+        return datatables($data)->toJson();
+        // $output['data'] = $data;
+        // return response()->json($output);
     }
 
-    public function listarTransferenciasRecibidas($destino)
+    public function listarTransferenciasRecibidas(Request $request)
     {
-        if ($destino == '0') {
+        if ($request->id_almacen_destino_recibida == '0') {
             $array_almacen = $this->almacenesPorUsuarioArray();
         } else {
-            $array_almacen[] = [$destino];
+            $array_almacen[] = [$request->id_almacen_destino_recibida];
         }
         //USAR CONCAT
         $data = DB::table('almacen.trans_detalle')
@@ -117,9 +165,6 @@ class TransferenciaController extends Controller
             ->join('almacen.alm_almacen as alm_destino', 'alm_destino.id_almacen', '=', 'trans.id_almacen_destino')
             ->join('administracion.sis_sede as sede_origen', 'sede_origen.id_sede', '=', 'alm_origen.id_sede')
             ->join('administracion.sis_sede as sede_destino', 'sede_destino.id_sede', '=', 'alm_destino.id_sede')
-            // ->leftJoin('configuracion.sis_usua as usu_origen', 'usu_origen.id_usuario', '=', 'trans.responsable_origen')
-            // ->leftJoin('configuracion.sis_usua as usu_destino', 'usu_destino.id_usuario', '=', 'trans.responsable_destino')
-            // ->join('configuracion.sis_usua as usu_registro', 'usu_registro.id_usuario', '=', 'trans.registrado_por')
             ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'trans.estado')
             ->join('almacen.guia_ven_det', 'guia_ven_det.id_trans_det', '=', 'trans_detalle.id_trans_detalle')
             ->leftJoin('almacen.doc_ven_det', 'doc_ven_det.id_guia_ven_det', '=', 'guia_ven_det.id_guia_ven_det')
@@ -137,8 +182,9 @@ class TransferenciaController extends Controller
             ->distinct()
             ->get();
 
-        $output['data'] = $data;
-        return response()->json($output);
+        return datatables($data)->toJson();
+        // $output['data'] = $data;
+        // return response()->json($output);
     }
 
     public function listarTransferenciaDetalle($id_transferencia)
@@ -834,55 +880,6 @@ class TransferenciaController extends Controller
         $nextId = "RE-" . $id_almacen . "-" . $anio . $val;
 
         return $nextId;
-    }
-    public function listarTransferenciasPorEnviar($alm_origen)
-    {
-        if ($alm_origen == '0') {
-            $array_almacen = $this->almacenesPorUsuarioArray();
-        } else {
-            $array_almacen[] = [$alm_origen];
-        }
-        $lista = DB::table('almacen.trans')
-            ->select(
-                'trans.*',
-                'alm_req.codigo as cod_req',
-                'alm_req.concepto',
-                DB::raw("CONCAT(guia_ven.serie, '-', guia_ven.numero) as guia_ven"),
-                'guia_ven.id_guia_ven',
-                'mov_alm.id_mov_alm as id_salida',
-                'sede_solicita.id_empresa as id_empresa_destino',
-                'sede_almacen.id_empresa as id_empresa_origen',
-                'sede_solicita.id_sede as id_sede_destino',
-                'sede_almacen.id_sede as id_sede_origen',
-                'sede_solicita.descripcion as sede_descripcion',
-                'sede_almacen.descripcion as sede_almacen_descripcion',
-                'origen.descripcion as alm_origen_descripcion',
-                'destino.descripcion as alm_destino_descripcion',
-                'origen.ubicacion as alm_origen_direccion',
-                'destino.ubicacion as alm_destino_direccion',
-                'sis_usua.nombre_corto',
-                'adm_estado_doc.bootstrap_color',
-                'adm_estado_doc.estado_doc',
-            )
-            ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'trans.id_requerimiento')
-            ->join('administracion.sis_sede as sede_solicita', 'sede_solicita.id_sede', '=', 'alm_req.id_sede')
-            ->join('almacen.alm_almacen as origen', 'origen.id_almacen', '=', 'trans.id_almacen_origen')
-            ->join('administracion.sis_sede as sede_almacen', 'sede_almacen.id_sede', '=', 'origen.id_sede')
-            ->join('almacen.alm_almacen as destino', 'destino.id_almacen', '=', 'trans.id_almacen_destino')
-            ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'alm_req.id_usuario')
-            ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'trans.estado')
-            ->leftJoin('almacen.guia_ven', 'guia_ven.id_guia_ven', '=', 'trans.id_guia_ven')
-            ->leftJoin('almacen.mov_alm', 'mov_alm.id_guia_ven', '=', 'trans.id_guia_ven')
-            ->whereIn('trans.id_almacen_origen', $array_almacen)
-            ->whereIn('trans.estado', [1, 17])
-            ->where([
-                ['alm_req.confirmacion_pago', '=', true],
-                // ['trans.id_guia_ven', '=', null],
-                // ['trans.estado', '!=', 7]
-            ])->get();
-        // return datatables($lista)->toJson();
-        $output['data'] = $lista;
-        return response()->json($output);
     }
 
     public function guardarSalidaTransferencia(Request $request)

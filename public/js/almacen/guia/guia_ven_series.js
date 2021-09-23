@@ -1,3 +1,5 @@
+let json_series = [];
+
 function open_series(id_producto, id_od_detalle, cantidad) {
     $("#modal-guia_ven_series").modal({
         show: true
@@ -11,16 +13,12 @@ function open_series(id_producto, id_od_detalle, cantidad) {
     $("[name=seleccionar_todos]").prop("checked", false);
 }
 
-let json_series = [];
-
 function open_series_transferencia(id_trans_detalle, id_producto, cantidad) {
     $("#modal-guia_ven_series").modal({
         show: true
     });
 
-    let item = listaDetalle.find(
-        element => element.id_trans_detalle == id_trans_detalle
-    );
+    let item = listaDetalle.find(element => element.id_trans_detalle == id_trans_detalle);
     if (item !== undefined) {
         json_series = item.series;
     }
@@ -39,7 +37,7 @@ function listarSeries(id_producto) {
         type: "GET",
         url: "listarSeriesGuiaVen/" + id_producto,
         dataType: "JSON",
-        success: function(response) {
+        success: function (response) {
             console.log(response);
             var tr = "";
             var i = 1;
@@ -52,8 +50,7 @@ function listarSeries(id_producto) {
 
                 tr += `<tr>
                 <td>
-                    <input type="checkbox" data-serie="${
-                        element.serie
+                    <input type="checkbox" data-serie="${element.serie
                     }" value="${element.id_prod_serie}" 
                     ${value !== undefined ? "checked" : ""}/></td>
                 <td class="numero">${i}</td>
@@ -65,7 +62,7 @@ function listarSeries(id_producto) {
             });
             $("#listaSeriesVen tbody").html(tr);
         }
-    }).fail(function(jqXHR, textStatus, errorThrown) {
+    }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
@@ -80,7 +77,7 @@ function guardar_series() {
     let value = null;
     let obj = "";
 
-    $("#listaSeriesVen input[type=checkbox]:checked").each(function() {
+    $("#listaSeriesVen input[type=checkbox]:checked").each(function () {
         id_prod_serie = $(this).val();
         serie = $(this).data("serie");
         obj = { serie: serie, id_prod_serie: id_prod_serie, estado: 1 };
@@ -108,25 +105,33 @@ function guardar_series() {
     var rspta = false;
 
     if (json_series.length == 0) {
-        rspta = confirm("¿Está seguro que desea quitar las series?");
+
+        Swal.fire({
+            title: "¿Está seguro que desea quitar las series?",
+            icon: "info",
+            showCancelButton: true,
+            confirmButtonColor: "#00a65a", //"#3085d6", //
+            cancelButtonColor: "#d33",
+            cancelButtonText: "No",
+            confirmButtonText: "Si"
+        }).then(result => {
+            rspta = result.isConfirmed;
+        });
+
     } else if (parseInt(cant) == json_series.length) {
         rspta = true;
     } else if (parseInt(cant) > json_series.length) {
-        alert(
-            "La cantidad del item es de " +
-                cant +
-                ", aún le falta seleccionar " +
-                (parseInt(cant) - json_series.length) +
-                " serie(s)."
-        );
+        Swal.fire({
+            title: `Se espera ${cant} series, aún le falta seleccionar ${parseInt(cant) - json_series.length} serie(s).`,
+            text: "Seleccione las series.",
+            icon: "error",
+        });
     } else if (parseInt(cant) < json_series.length) {
-        alert(
-            "La cantidad del item es de " +
-                cant +
-                ", ud. ha seleccionado " +
-                (json_series.length - parseInt(cant)) +
-                " serie(s) de más."
-        );
+        Swal.fire({
+            title: `Se espera ${cant} series, ud. ha seleccionado ${json_series.length - parseInt(cant)} serie(s) adicionales.`,
+            text: "Quite las series restantes.",
+            icon: "error",
+        });
     }
 
     if (rspta && id_od_detalle !== "") {
@@ -154,15 +159,15 @@ function guardar_series() {
     }
 }
 
-$("[name=seleccionar_todos]").on("change", function() {
+$("[name=seleccionar_todos]").on("change", function () {
     if ($(this).is(":checked")) {
-        $("#listaSeriesVen tbody tr").each(function() {
+        $("#listaSeriesVen tbody tr").each(function () {
             $(this)
                 .find("td input[type=checkbox]")
                 .prop("checked", true);
         });
     } else {
-        $("#listaSeriesVen tbody tr").each(function() {
+        $("#listaSeriesVen tbody tr").each(function () {
             $(this)
                 .find("td input[type=checkbox]")
                 .prop("checked", false);

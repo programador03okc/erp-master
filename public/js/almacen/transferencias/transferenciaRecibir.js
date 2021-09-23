@@ -205,7 +205,8 @@ function recibir() {
                                 msg: "Ingreso a almacén generado con éxito."
                             });
                             $("#modal-transferencia_detalle").modal("hide");
-                            listarTransferenciasPorRecibir();
+                            // listarTransferenciasPorRecibir();
+                            $("#listaTransferenciasPorRecibir").DataTable().ajax.reload(null, false);
                         }
                     }
                 }).fail(function (jqXHR, textStatus, errorThrown) {

@@ -555,23 +555,23 @@ class SalidasPendientesController extends Controller
             if (!$exist) {
                 $id_guia_com_det = null;
 
-                if (
-                    $det->id_guia_oc_det !== null && $det->id_almacen_oc !== null &&
-                    $det->id_almacen_oc == $det->id_almacen
-                ) {
-                    $id_guia_com_det = $det->id_guia_oc_det;
-                    $series = DB::table('almacen.alm_prod_serie')
-                        ->where('id_guia_com_det', $det->id_guia_oc_det)
-                        ->get();
-                } else if (
-                    $det->id_guia_trans_det !== null && $det->id_almacen_tr !== null &&
-                    $det->id_almacen_tr == $det->id_almacen
-                ) {
-                    $id_guia_com_det = $det->id_guia_trans_det;
-                    $series = DB::table('almacen.alm_prod_serie')
-                        ->where('id_guia_com_det', $det->id_guia_trans_det)
-                        ->get();
-                }
+                // if (
+                //     $det->id_guia_oc_det !== null && $det->id_almacen_oc !== null &&
+                //     $det->id_almacen_oc == $det->id_almacen
+                // ) {
+                //     $id_guia_com_det = $det->id_guia_oc_det;
+                //     $series = DB::table('almacen.alm_prod_serie')
+                //         ->where('id_guia_com_det', $det->id_guia_oc_det)
+                //         ->get();
+                // } else if (
+                //     $det->id_guia_trans_det !== null && $det->id_almacen_tr !== null &&
+                //     $det->id_almacen_tr == $det->id_almacen
+                // ) {
+                //     $id_guia_com_det = $det->id_guia_trans_det;
+                //     $series = DB::table('almacen.alm_prod_serie')
+                //         ->where('id_guia_com_det', $det->id_guia_trans_det)
+                //         ->get();
+                // }
 
                 array_push($lista, [
                     'id_od_detalle' => $det->id_od_detalle,
@@ -585,7 +585,7 @@ class SalidasPendientesController extends Controller
                     'cantidad' => $det->cantidad,
                     'abreviatura' => $det->abreviatura,
                     'control_series' => $det->series,
-                    'series' => $series
+                    'series' => []
                 ]);
             }
         }

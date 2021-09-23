@@ -70,7 +70,6 @@
                                         <th>Cantidad</th>
                                         <th>Unid</th>
                                         <th>Series</th>
-                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>

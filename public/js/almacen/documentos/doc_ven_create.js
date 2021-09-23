@@ -303,15 +303,11 @@ function mostrarListaItems() {
     var cantidad = 0;
 
     listaItems.forEach(element => {
-        element.porcentaje_dscto =
-            element.porcentaje_dscto !== undefined
-                ? element.porcentaje_dscto
-                : 0;
-        element.total_dscto =
-            element.total_dscto !== undefined ? element.total_dscto : 0;
+        element.porcentaje_dscto = (element.porcentaje_dscto !== undefined && element.porcentaje_dscto !== null)
+            ? element.porcentaje_dscto : 0;
+        element.total_dscto = (element.total_dscto !== undefined && element.total_dscto !== null) ? element.total_dscto : 0;
         element.precio = element.precio !== undefined ? element.precio : 0.01;
-        element.sub_total =
-            parseFloat(element.cantidad_real) * parseFloat(element.precio);
+        element.sub_total = parseFloat(element.cantidad_real) * parseFloat(element.precio);
         element.total = element.sub_total - element.total_dscto;
         sub_total += element.total;
 
@@ -339,18 +335,13 @@ function mostrarListaItems() {
         </td>
         <td>${element.abreviatura}</td>
         <td>
-            <input type="number" class="form-control right unitario" value="${element.precio
-            }" 
+            <input type="number" class="form-control right unitario" value="${element.precio}" 
             data-id="${element.id_detalle_requerimiento !== undefined
                 ? element.id_detalle_requerimiento
                 : element.id_guia_ven_det
             }" min="0" step="0.0001"/>
         </td>
-        <td class="right">${formatNumber.decimal(
-                element.sub_total,
-                "",
-                -4
-            )}</td>
+        <td class="right">${formatNumber.decimal(element.sub_total, "", -4)}</td>
         <td>
             <input type="number" class="form-control right porcentaje_dscto" value="${element.porcentaje_dscto
             }" 
@@ -461,7 +452,7 @@ $("#detalleItems tbody").on("change", ".unitario", function () {
 
 $("#detalleItems tbody").on("change", ".porcentaje_dscto", function () {
     let id = $(this).data("id");
-    let porcentaje_dscto = parseFloat($(this).val());
+    let porcentaje_dscto = parseFloat($(this).val() !== '' ? $(this).val() : 0);
     let unitario = 0;
     console.log("porcentaje_dscto: " + porcentaje_dscto);
 
@@ -481,7 +472,7 @@ $("#detalleItems tbody").on("change", ".porcentaje_dscto", function () {
 
 $("#detalleItems tbody").on("change", ".total_dscto", function () {
     let id = $(this).data("id");
-    let total_dscto = parseFloat($(this).val());
+    let total_dscto = parseFloat($(this).val() !== '' ? $(this).val() : 0);
     console.log("total_dscto: " + total_dscto);
 
     listaItems.forEach(element => {

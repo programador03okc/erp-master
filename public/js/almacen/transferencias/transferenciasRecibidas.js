@@ -1,77 +1,114 @@
-
 function listarTransferenciasRecibidas() {
-    var destino = $("[name=id_almacen_dest_recibida]").val();
 
-    if (destino !== null && destino !== "") {
-        var vardataTables = funcDatatables();
-        $("#listaTransferenciasRecibidas").DataTable({
-            // dom: 'Bfrtip',
-            // buttons: vardataTables[2],
-            language: vardataTables[0],
-            pageLength: 25,
-            destroy: true,
-            ajax: "listarTransferenciasRecibidas/" + destino,
-            // 'ajax': {
-            //     url:'listar_transferencias_pendientes/'+alm_origen+'/'+alm_destino,
-            //     dataSrc:''
-            // },
-            columns: [
-                { data: "id_transferencia" },
-                {
-                    orderable: false, searchable: false,
-                    render: function (data, type, row) {
-                        if (row['id_empresa_origen'] !== row['id_empresa_destino']) {
-                            return `<span class="label label-primary">Venta Interna</span>`;
-                        } else {
-                            return `<span class="label label-success">Transferencia</span>`;
-                        }
-                    },
-                    className: "text-center"
-                },
-                { data: "codigo" },
-                { data: "guia_ven" },
-                { data: "guia_com" },
-                { data: "doc_ven", className: "text-center" },
-                { data: "doc_com" },
-                { data: "alm_origen_descripcion" },
-                { data: "alm_destino_descripcion" },
-                {
-                    render: function (data, type, row) {
-                        return (
-                            `<span class="label label-${row["bootstrap_color"]}">${row["estado_doc"]}</span>`
-                        );
+    $("#listaTransferenciasRecibidas").on('search.dt', function () {
+        $('#listaTransferenciasRecibidas_filter input').prop('disabled', true);
+        $('#btnBuscarRecibidas').html('<span class="glyphicon glyphicon-time" aria-hidden="true"></span>').prop('disabled', true);
+    });
+
+    $("#listaTransferenciasRecibidas").on('processing.dt', function (e, settings, processing) {
+        if (processing) {
+            $(e.currentTarget).LoadingOverlay("show", {
+                imageAutoResize: true,
+                progress: true,
+                zIndex: 10,
+                imageColor: "#3c8dbc"
+            });
+        } else {
+            $(e.currentTarget).LoadingOverlay("hide", true);
+        }
+    });
+
+    tableTransferenciasRecibidas = $("#listaTransferenciasRecibidas").DataTable({
+        dom: vardataTables[1],
+        buttons: [],
+        language: vardataTables[0],
+        lengthChange: false,
+        serverSide: true,
+        pageLength: 20,
+        initComplete: function (settings, json) {
+            const $filter = $("#listaTransferenciasRecibidas_filter");
+            const $input = $filter.find("input");
+            $filter.append(
+                '<button id="btnBuscarRecibidas" class="btn btn-default btn-sm btn-flat" type="button"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>'
+            );
+            $input.off();
+            $input.on("keyup", e => {
+                if (e.key == "Enter") {
+                    $("#btnBuscarRecibidas").trigger("click");
+                }
+            });
+            $("#btnBuscarRecibidas").on("click", e => {
+                tableTransferenciasRecibidas.search($input.val()).draw();
+            });
+
+            $('#listaTransferenciasRecibidas_wrapper .dt-buttons').append(
+                `<div class="col-md-5" style="text-align: center;margin-top: 7px;"><label>Almacén Destino:</label></div>
+                    <div class="col-md-4" style="display:flex">
+                        <select class="form-control" id="selectAlmacenDestinoRecibido" >
+                            <option value="0" selected>Todos los almacenes</option>
+                        </select>
+                    </div>`
+            );
+            mostrarAlmacenes('recibido');
+            $("#selectAlmacenDestinoRecibido").on("change", function (e) {
+                var alm = $(this).val();
+                $('input[name=id_almacen_destino_recibida]').val(alm);
+                $("#listaTransferenciasRecibidas").DataTable().ajax.reload(null, false);
+            });
+        },
+        drawCallback: function (settings) {
+            $("#listaTransferenciasRecibidas_filter input").prop("disabled", false);
+            $("#btnBuscarRecibidas").html('<span class="glyphicon glyphicon-search" aria-hidden="true"></span>'
+            ).prop("disabled", false);
+            $("#listaTransferenciasRecibidas_filter input").trigger("focus");
+        },
+        ajax: {
+            url: "listarTransferenciasRecibidas",
+            type: "POST",
+            data: function (params) {
+                return Object.assign(params, objectifyForm($('#formFiltrosRecibidas').serializeArray()))
+            }
+        },
+        columns: [
+            { data: "id_transferencia" },
+            {
+                orderable: false, searchable: false,
+                render: function (data, type, row) {
+                    if (row['id_empresa_origen'] !== row['id_empresa_destino']) {
+                        return `<span class="label label-primary">Venta Interna</span>`;
+                    } else {
+                        return `<span class="label label-success">Transferencia</span>`;
                     }
                 },
-                {
-                    render: function (data, type, row) {
-                        if (row["codigo_req"] !== null) {
-                            return (
-                                '<label class="lbl-codigo" title="Abrir Guía" onClick="abrirRequerimiento(' +
-                                row["id_requerimiento"] +
-                                ')">' +
-                                row["codigo_req"] +
-                                "</label>"
-                            );
-                        } else {
-                            return "";
-                        }
-                    }
-                },
-                {
-                    render: function (data, type, row) {
-                        if (row["concepto_req"] !== null) {
-                            return row["concepto_req"];
-                        } else {
-                            return "";
-                        }
-                    }
-                },
-                {
-                    render: function (data, type, row) {
-                        if (valor_permiso == "1") {
-                            return `<div style="display: flex;text-align:center;">
+                className: "text-center"
+            },
+            { data: "codigo" },
+            { data: "guia_ven" },
+            { data: "guia_com" },
+            { data: "doc_ven", className: "text-center" },
+            { data: "doc_com" },
+            { data: "alm_origen_descripcion", name: "alm_origen.descripcion" },
+            { data: "alm_destino_descripcion", name: "alm_destino.descripcion" },
+            {
+                data: "estado_doc", name: "adm_estado_doc.estado_doc",
+                render: function (data, type, row) {
+                    return (
+                        `<span class="label label-${row["bootstrap_color"]}">${row["estado_doc"]}</span>`
+                    );
+                }
+            },
+            { data: "codigo_req", name: "alm_req.codigo" },
+            { data: "concepto_req", name: "alm_req.concepto" },
+            {
+                orderable: false, searchable: false,
+                render: function (data, type, row) {
+                    if (valor_permiso == "1") {
+                        return `<div style="display: flex;text-align:center;">
+                            <button type="button" class="detalle btn btn-default btn-flat boton" data-toggle="tooltip"
+                                data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}">
+                                <i class="fas fa-chevron-down"></i></button>
                             ${(row['doc_ven'] == '-') ?
-                                    `<button type="button" class="anular btn btn-danger boton btn-flat" data-toggle="tooltip" 
+                                `<button type="button" class="anular btn btn-danger boton btn-flat" data-toggle="tooltip" 
                                 data-placement="bottom" data-id="${row["id_transferencia"]}" data-guia="${row["id_guia_com"]}" data-ing="${row["id_ingreso"]}" title="Anular" >
                                 <i class="fas fa-trash"></i></button>`: ''}
                             
@@ -79,57 +116,91 @@ function listarTransferenciasRecibidas() {
                                 data-placement="bottom" data-id="${row["id_doc_ven"]}" data-dc="${row["doc_com"]}" title="Autogenerar Docs de Compra" >
                                 <i class="fas fa-sync-alt"></i></button>
                             </div>`;
-                            // } else {
-                            //     return `<button type="button" class="detalle btn btn-primary boton btn-flat" data-toggle="tooltip" 
-                            //     data-placement="bottom" title="Ver Detalle" data-id="${row["id_transferencia"]}" 
-                            //     data-cod="${row["codigo"]}" data-guia="${row["guia_com"]}" 
-                            //     data-origen="${row["alm_origen_descripcion"]}" data-destino="${row["alm_destino_descripcion"]}">
-                            //     <i class="fas fa-list-ul"></i></button>`;
-                        }
-                    },
-                    className: "text-center"
-                }
-            ],
-            columnDefs: [
-                { aTargets: [0], sClass: "invisible" },
-                {
-                    render: function (data, type, row) {
-                        return (row["guia_ven"] == '-' ? row["guia_ven"]
-                            : `<a href="#" class="detalle" title="Ver Detalle" data-id="${row["id_transferencia"]}" 
+                    }
+                },
+                className: "text-center"
+            }
+        ],
+        columnDefs: [
+            { aTargets: [0], sClass: "invisible" },
+            {
+                render: function (data, type, row) {
+                    return (row["guia_ven"] == '-' ? row["guia_ven"]
+                        : `<a href="#" class="transferencia" title="Ver Detalle" data-id="${row["id_transferencia"]}" 
                             data-cod="${row["codigo"]}" data-guia="${row["guia_com"]}" 
                             data-origen="${row["alm_origen_descripcion"]}" data-destino="${row["alm_destino_descripcion"]}">
                             ${row["codigo"]} </a>`
-                        );
-                    }, targets: 2, className: "text-center"
-                },
-                {
-                    render: function (data, type, row) {
-                        return (row["guia_ven"] == '-' ? row["guia_ven"]
-                            : '<a href="#" class="salida" data-id-salida="' + row["id_salida"] + '" title="Ver Salida">' + row["guia_ven"] + "</a>"
-                        );
-                    }, targets: 3, className: "text-center"
-                },
-                {
-                    render: function (data, type, row) {
-                        return (row["guia_com"] == '-' ? row["guia_com"]
-                            : '<a href="#" class="ingreso" data-id-ingreso="' + row["id_ingreso"] + '" title="Ver Ingreso">' + row["guia_com"] + "</a>"
-                        );
-                    }, targets: 4, className: "text-center"
-                },
-                {
-                    render: function (data, type, row) {
-                        return (
-                            row["doc_com"] + (row["doc_com"] !== '-' ? ` <i class="fas fa-info-circle blue verDocsAutogenerados" data-id-doc-compra="${row["id_doc_com"]}"
+                    );
+                }, targets: 2, className: "text-center"
+            },
+            {
+                render: function (data, type, row) {
+                    return (row["guia_ven"] == '-' ? row["guia_ven"]
+                        : '<a href="#" class="salida" data-id-salida="' + row["id_salida"] + '" title="Ver Salida">' + row["guia_ven"] + "</a>"
+                    );
+                }, targets: 3, className: "text-center"
+            },
+            {
+                render: function (data, type, row) {
+                    return (row["guia_com"] == '-' ? row["guia_com"]
+                        : '<a href="#" class="ingreso" data-id-ingreso="' + row["id_ingreso"] + '" title="Ver Ingreso">' + row["guia_com"] + "</a>"
+                    );
+                }, targets: 4, className: "text-center"
+            },
+            {
+                render: function (data, type, row) {
+                    return (
+                        row["doc_com"] + (row["doc_com"] !== '-' ? ` <i class="fas fa-info-circle blue verDocsAutogenerados" data-id-doc-compra="${row["id_doc_com"]}"
                             style="cursor: pointer;" title="Ver documentos autogenerados"></i>`: '')
-                        );
-                    }, targets: 6, className: "text-center"
+                    );
+                }, targets: 6, className: "text-center"
 
-                },
-            ],
-            order: [[0, "desc"]]
-        });
-    }
+            },
+            {
+                render: function (data, type, row) {
+                    if (row["codigo_req"] !== null) {
+                        return (
+                            `<label class="lbl-codigo" title="Abrir Guía" onClick="abrirRequerimiento(${row["id_requerimiento"]})">
+                            ${row["codigo_req"]}</label>`
+                        );
+                    } else {
+                        return "";
+                    }
+                }, targets: 10, className: "text-center"
+
+            },
+        ],
+        order: [[0, "desc"]]
+    });
 }
+
+$('#listaTransferenciasRecibidas tbody').on('click', 'td button.detalle', function () {
+    var tr = $(this).closest('tr');
+    var row = tableTransferenciasRecibidas.row(tr);
+    var id = $(this).data('id');
+
+    if (row.child.isShown()) {
+        row.child.hide();
+        tr.removeClass('shown');
+    }
+    else {
+        format(iTableCounter, id, row);
+        tr.addClass('shown');
+        oInnerTable = $('#listaTransferenciasRecibidas_' + iTableCounter).dataTable({
+            autoWidth: true,
+            deferRender: true,
+            info: false,
+            lengthChange: false,
+            ordering: false,
+            paging: false,
+            scrollX: false,
+            scrollY: false,
+            searching: false,
+            columns: []
+        });
+        iTableCounter = iTableCounter + 1;
+    }
+});
 
 $("#listaTransferenciasRecibidas tbody").on("click", "a.salida", function () {
     var idSalida = $(this).data("idSalida");
@@ -149,7 +220,7 @@ $("#listaTransferenciasRecibidas tbody").on("click", "a.ingreso", function () {
     }
 });
 
-$("#listaTransferenciasRecibidas tbody").on("click", "a.detalle", function () {
+$("#listaTransferenciasRecibidas tbody").on("click", "a.transferencia", function () {
     var id_transferencia = $(this).data("id");
     var codigo = $(this).data("cod");
     var guia = $(this).data("guia");
