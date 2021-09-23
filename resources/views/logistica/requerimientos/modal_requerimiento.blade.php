@@ -69,6 +69,7 @@
                                 <th style="width: 8%">Precio U. <span name="simboloMoneda">S/</span></th>
                                 <th style="width: 8%">Subtotal</th>
                                 <th style="width: 20%">Motivo</th>
+                                <th style="width: 10%">Estado</th>
                                 <th style="width: 2%">Adjuntos</th>
                             </tr>
                         </thead>

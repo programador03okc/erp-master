@@ -1,6 +1,10 @@
 var tempArchivoAdjuntoRequerimientoList = [];
 var tempArchivoAdjuntoRequerimientoToDeleteList = [];
 var tempArchivoAdjuntoItemList = [];
+
+let $tablaListaRequerimientosElaborados;
+var iTableCounter = 1;
+var oInnerTable;
 class ListarRequerimientoView {
 
     constructor(requerimientoCtrl) {
@@ -44,7 +48,7 @@ class ListarRequerimientoView {
         let that = this;
         vista_extendida();
         var vardataTables = funcDatatables();
-        let $tablaListaRequerimientosElaborados= $('#ListaRequerimientosElaborados').DataTable({
+        $tablaListaRequerimientosElaborados= $('#ListaRequerimientosElaborados').DataTable({
             'dom': vardataTables[1],
             'buttons': [],
             'language': vardataTables[0],
@@ -94,7 +98,7 @@ class ListarRequerimientoView {
                 {
                     'render': function (data, type, row) {
                         // return `<label class="lbl-codigo handleClickAbrirRequerimiento" title="Abrir Requerimiento">${row.codigo}</label>`;
-                        return `${row.tiene_transformacion==true?'<i class="fas fa-random" title="Con transformación"></i>':''} <a href="/logistica/gestion-logistica/requerimiento/elaboracion/index?id=${row.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${row.codigo}</a>`;
+                        return `<a href="/logistica/gestion-logistica/requerimiento/elaboracion/index?id=${row.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${row.codigo}</a> ${row.tiene_transformacion==true?'<i class="fas fa-random text-danger" title="Con transformación"></i>':''} `;
                     }, targets: 2
                 },
                 {
@@ -150,7 +154,7 @@ class ListarRequerimientoView {
                         let btnAnular = '';
                         // let btnMandarAPago = '';
                         let btnDetalleRapido = '<button type="button" class="btn btn-xs btn-info btnVerDetalle handleClickVerDetalleRequerimientoSoloLectura" data-id-requerimiento="' + row['id_requerimiento'] + '" title="Ver detalle" ><i class="fas fa-eye fa-xs"></i></button>';
-                        let btnTrazabilidad = '<button type="button" class="btn btn-xs btn-primary btnVerTrazabilidad handleClickVerTrazabilidadRequerimiento" title="Trazabilidad"><i class="fas fa-route fa-xs"></i></button>';
+                        let btnTrazabilidad = '<button type="button" class="btn btn-xs btn-default btnVerTrazabilidad handleClickVerTrazabilidadRequerimiento" title="Trazabilidad"><i class="fas fa-route fa-xs"></i></button>';
                         // if(row.estado ==2){
                         //         btnMandarAPago = '<button type="button" class="btn btn-xs btn-success" title="Mandar a pago" onClick="listarRequerimientoView.requerimientoAPago(' + row['id_requerimiento'] + ');"><i class="fas fa-hand-holding-usd fa-xs"></i></button>';
                         //     }
@@ -158,9 +162,12 @@ class ListarRequerimientoView {
                             btnEditar = '<button type="button" class="btn btn-xs btn-warning btnEditarRequerimiento handleClickAbrirRequerimiento" title="Editar" ><i class="fas fa-edit fa-xs"></i></button>';
                             btnAnular = '<button type="button" class="btn btn-xs btn-danger btnAnularRequerimiento handleClickAnularRequerimiento" title="Anular" ><i class="fas fa-times fa-xs"></i></button>';
                         }
+                        let btnVerDetalle= `<button type="button" class="btn btn-xs btn-primary desplegar-detalle handleClickDesplegarDetalleRequerimiento" data-toggle="tooltip" data-placement="bottom" title="Ver Detalle" data-id="${row.id_requerimiento}">
+                        <i class="fas fa-chevron-down"></i>
+                        </button>`;
 
 
-                        return containerOpenBrackets + btnDetalleRapido + btnTrazabilidad + btnEditar + btnAnular + containerCloseBrackets;
+                        return containerOpenBrackets +btnVerDetalle+ btnDetalleRapido + btnTrazabilidad + btnEditar + btnAnular + containerCloseBrackets;
                     }, targets: 14
                 },
 
@@ -203,6 +210,11 @@ class ListarRequerimientoView {
                     let data = $('#ListaRequerimientosElaborados').DataTable().row($(this).parents("tr")).data();
                     that.verDetalleRequerimientoSoloLectura(data, that);
                 });
+                
+                $('#ListaRequerimientosElaborados tbody').on("click", "button.handleClickDesplegarDetalleRequerimiento", function(e) {
+                    that.desplegarDetalleRequerimiento(e.currentTarget);
+                });
+                
             },
             "drawCallback": function( settings ) {
                 //Botón de búsqueda
@@ -361,12 +373,13 @@ class ListarRequerimientoView {
                 <td>${data[i].descripcion_partida ? data[i].descripcion_partida : ''}</td>
                 <td>${data[i].descripcion_centro_costo ? data[i].descripcion_centro_costo : ''}</td>
                 <td>${data[i].id_tipo_item == 1 ? (data[i].producto_part_number ? data[i].producto_part_number : data[i].part_number) : '(Servicio)'}${data[i].tiene_transformacion==true?'<br><span class="label label-default">Transformado</span>':''} </td>
-                <td>${data[i].producto_descripcion ? data[i].producto_descripcion : (data[i].descripcion ? data[i].descripcion : '')} </td>
-                <td>${data[i].unidad_medida}</td>
-                <td style="text-align:center;">${data[i].cantidad}</td>
+                <td>${data[i].producto_descripcion !=null ? data[i].producto_descripcion : (data[i].descripcion ? data[i].descripcion : '')} </td>
+                <td>${data[i].unidad_medida !=null ?data[i].unidad_medida:''}</td>
+                <td style="text-align:center;">${data[i].cantidad>=0?data[i].cantidad:''}</td>
                 <td style="text-align:right;">${simboloMoneda}${Util.formatoNumero(data[i].precio_unitario, 2)}</td>
                 <td style="text-align:right;">${simboloMoneda}${(data[i].subtotal ? Util.formatoNumero(data[i].subtotal, 2) : (Util.formatoNumero((data[i].cantidad * data[i].precio_unitario), 2)))}</td>
-                <td>${data[i].motivo ? data[i].motivo : ''}</td>
+                <td>${data[i].motivo !=null ? data[i].motivo : ''}</td>
+                <td>${data[i].estado_doc !=null ? data[i].estado_doc : ''}</td>
                 <td style="text-align: center;"> 
                     ${cantidadAdjuntosItem > 0 ? '<a title="Ver archivos adjuntos de item" style="cursor:pointer;" class="handleClickVerAdjuntosItem' + i + '" >Ver (<span name="cantidadAdjuntosItem">' + cantidadAdjuntosItem + '</span>)</a>' : '-'}
                 </td>
@@ -539,6 +552,103 @@ class ListarRequerimientoView {
         document.querySelector('div[type="lista_requerimiento"] select[name="division_select"]').removeAttribute('disabled');
 
     }
-}
 
-// const listarRequerimientoView = new ListarRequerimientoView();
+
+    desplegarDetalleRequerimiento(obj){
+        let tr = obj.closest('tr');
+        var row = $tablaListaRequerimientosElaborados.row(tr);
+        var id = obj.dataset.id;
+        if (row.child.isShown()) {
+            //  This row is already open - close it
+            row.child.hide();
+            tr.classList.remove('shown');
+        }
+        else {
+            // Open this row
+            //    row.child( format(iTableCounter, id) ).show();
+            this.buildFormat(obj, iTableCounter, id, row);
+            tr.classList.add('shown');
+            // try datatable stuff
+            oInnerTable = $('#ListaRequerimientosElaborados_' + iTableCounter).dataTable({
+                //    data: sections, 
+                autoWidth: true,
+                deferRender: true,
+                info: false,
+                lengthChange: false,
+                ordering: false,
+                paging: false,
+                scrollX: false,
+                scrollY: false,
+                searching: false,
+                columns: [
+                ]
+            });
+            iTableCounter = iTableCounter + 1;
+        }
+    }
+
+    buildFormat(obj, table_id, id, row) {
+        obj.setAttribute('disabled', true);
+        this.requerimientoCtrl.obtenerDetalleRequerimientos(id).then((res) => {
+            // console.log(res);
+            obj.removeAttribute('disabled');
+            this.construirDesplegableDetalleRequerimientosElaboradas(table_id, row, res);
+        }).catch((err) => {
+            console.log(err)
+        })
+    }
+
+    construirDesplegableDetalleRequerimientosElaboradas(table_id, row, response){
+        var html = '';
+        // console.log(response);
+        if (response.length > 0) {
+            response.forEach(function (element) {
+                // if(element.tiene_transformacion==false){
+                let stock_comprometido = 0;
+                (element.reserva).forEach(reserva => {
+                    if(reserva.estado ==1){
+                        stock_comprometido+= parseFloat(reserva.stock_comprometido);
+                    }
+                });
+
+                    html += `<tr>
+                        <td style="border: none; text-align:center;" data-part-number="${element.part_number}" data-producto-part-number="${element.producto_part_number}">${(element.producto_part_number != null ? element.producto_part_number :(element.part_number !=null ?element.part_number:''))} ${element.tiene_transformacion ==true?'<span class="label label-default">Transformado</span>':''}</td>
+                        <td style="border: none; text-align:left;">${element.producto_descripcion != null ? element.producto_descripcion : (element.descripcion?element.descripcion:'')}</td>
+                        <td style="border: none; text-align:center;">${element.abreviatura != null ? element.abreviatura : ''}</td>
+                        <td style="border: none; text-align:center;">${element.cantidad >0 ? element.cantidad : ''}</td>
+                        <td style="border: none; text-align:center;">${(element.precio_unitario >0 ? ((element.moneda_simbolo?element.moneda_simbolo:((element.moneda_simbolo?element.moneda_simbolo:'')+'0.00')) + $.number(element.precio_unitario,2)) : (element.moneda_simbolo?element.moneda_simbolo:'')+'0.00')}</td>
+                        <td style="border: none; text-align:center;">${(parseFloat(element.subtotal) > 0 ? ((element.moneda_simbolo?element.moneda_simbolo:'') + $.number(element.subtotal,2)) :((element.moneda_simbolo?element.moneda_simbolo:'')+$.number((element.cantidad * element.precio_unitario),2)))}</td>
+                        <td style="border: none; text-align:center;">${element.motivo != null ? element.motivo : ''}</td>
+                        <td style="border: none; text-align:center;">${stock_comprometido != null ? stock_comprometido : ''}</td>
+                        <td style="border: none; text-align:center;">${element.estado_doc != null && element.tiene_transformacion ==false ? element.estado_doc : ''}</td>
+                        </tr>`;
+                    // }
+                });
+                var tabla = `<table class="table table-condensed table-bordered" 
+                id="detalle_${table_id}">
+                <thead style="color: black;background-color: #c7cacc;">
+                    <tr>
+                        <th style="border: none; text-align:center;">Part number</th>
+                        <th style="border: none; text-align:center;">Descripcion</th>
+                        <th style="border: none; text-align:center;">Unidad medida</th>
+                        <th style="border: none; text-align:center;">Cantidad</th>
+                        <th style="border: none; text-align:center;">Precio unitario</th>
+                        <th style="border: none; text-align:center;">Subtotal</th>
+                        <th style="border: none; text-align:center;">Motivo</th>
+                        <th style="border: none; text-align:center;">Reserva almacén</th>
+                        <th style="border: none; text-align:center;">Estado</th>
+                    </tr>
+                </thead>
+                <tbody style="background: #e7e8ea;">${html}</tbody>
+                </table>`;
+        }else{
+            var tabla = `<table class="table table-sm" style="border: none;" 
+                id="detalle_${table_id}">
+                <tbody>
+                    <tr><td>No hay registros para mostrar</td></tr>
+                </tbody>
+                </table>`;
+            }
+            row.child(tabla).show();
+    }
+}

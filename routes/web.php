@@ -683,6 +683,8 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('mostrar-divisiones/{idGrupo?}', 'Logistica\RequerimientoController@mostrarDivisionesDeGrupo')->name('mostrar-divisiones-de-grupo');
 
 					Route::get('requerimiento/{idRequerimiento?}', 'Logistica\RequerimientoController@mostrarCabeceraRequerimiento')->name('mostrar-cabecera-requerimiento');
+					Route::get('detalle-requerimiento/{idRequerimiento?}', 'Logistica\RequerimientoController@detalleRequerimiento')->name('detalle-requerimientos');
+
 					Route::get('historial-aprobacion/{idRequerimiento?}', 'Logistica\RequerimientoController@mostrarHistorialAprobacion')->name('mostrar-historial-aprobacion');
 					Route::get('trazabilidad-detalle-requerimiento/{id}', 'Logistica\RequerimientoController@mostrarTrazabilidadDetalleRequerimiento');
 

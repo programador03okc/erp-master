@@ -261,7 +261,7 @@ class RequerimientoPendienteView {
                 { 'data': 'empresa_sede' },
                 {
                     render: function (data, type, row) {
-                        return `<label class="lbl-codigo handleClickAbrirRequerimiento" title="Abrir Requerimiento" data-id-requerimiento="${row.id_requerimiento}">${row.codigo}</label>`;
+                        return `<label class="lbl-codigo handleClickAbrirRequerimiento" title="Abrir Requerimiento" data-id-requerimiento="${row.id_requerimiento}">${row.codigo} ${row.tiene_transformacion==true?'<i class="fas fa-random text-danger" title="Con transformación"></i>':''}</label>`;
                     }
                 },
 
@@ -377,14 +377,14 @@ class RequerimientoPendienteView {
                 { 'aTargets': [11], 'sWidth': '5%', 'className': 'text-center' }
             ],
             "createdRow": function (row, data, dataIndex) {
-                if (data.tiene_transformacion == true) {
-                    $(row.childNodes[3]).css('background-color', '#d8c74ab8');
-                    $(row.childNodes[3]).css('font-weight', 'bold');
-                }
-                else if (data.tiene_transformacion == false) {
-                    $(row.childNodes[3]).css('background-color', '#b498d0');
-                    $(row.childNodes[3]).css('font-weight', 'bold');
-                }
+                // if (data.tiene_transformacion == true) {
+                //     $(row.childNodes[3]).css('background-color', '#d8c74ab8');
+                //     $(row.childNodes[3]).css('font-weight', 'bold');
+                // }
+                // else if (data.tiene_transformacion == false) {
+                //     $(row.childNodes[3]).css('background-color', '#b498d0');
+                //     $(row.childNodes[3]).css('font-weight', 'bold');
+                // }
 
             }
         });
@@ -1517,6 +1517,7 @@ class RequerimientoPendienteView {
             'processing': false,
             'serverSide': false,
             'bDestroy': true,
+            'buttons': [],
             'bInfo': false,
             'dom': 'Bfrtip',
             'paging': false,
