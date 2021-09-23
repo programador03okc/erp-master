@@ -394,11 +394,11 @@ class ComprasPendientesController extends Controller
             DetalleRequerimiento::actualizarEstadoDetalleRequerimientoAtendido($request->idDetalleRequerimiento);
             // actualizar estado de requerimiento
             $Requerimiento = DetalleRequerimiento::where('id_detalle_requerimiento',$request->idDetalleRequerimiento)->first();
-            Requerimiento::actualizarEstadoRequerimientoAtendido([$Requerimiento->id_requerimiento]);
+            $nuevoEstadoRequerimiento=  Requerimiento::actualizarEstadoRequerimientoAtendido([$Requerimiento->id_requerimiento]);
  
             DB::commit();
 
-        return response()->json(['id_reserva'=>$reserva->id_reserva,'codigo'=>$reserva->codigo,'data'=>$ReservasProductoActualizadas, 'mensaje'=>$mensaje]);
+        return response()->json(['id_reserva'=>$reserva->id_reserva,'codigo'=>$reserva->codigo,'data'=>$ReservasProductoActualizadas,'estado_requerimiento'=>$nuevoEstadoRequerimiento ,'mensaje'=>$mensaje]);
         } catch (\PDOException $e) {
             DB::rollBack();
         }
@@ -428,7 +428,7 @@ class ComprasPendientesController extends Controller
         //     (new LogisticaController)->generarTransferenciaRequerimiento($id_requerimiento, $id_sede, $data);
             DB::commit();
 
-        return response()->json(['id_reserva'=>$reserva->id_reserva,'data'=>$ReservasProductoActualizadas, 'status'=>$status]);
+        return response()->json(['id_reserva'=>$reserva->id_reserva,'data'=>$ReservasProductoActualizadas, 'status'=>$status, 'estado_requerimiento'=>$nuevoEstadoRequerimiento]);
         } catch (\PDOException $e) {
             DB::rollBack();
         }

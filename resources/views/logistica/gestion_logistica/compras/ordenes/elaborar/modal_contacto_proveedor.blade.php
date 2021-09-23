@@ -1,4 +1,4 @@
-<div class="modal fade" tabindex="-1" role="dialog" id="modal-contacto-proveedor">
+<div class="modal fade" tabindex="-1" role="dialog" id="modal-contacto-proveedor" style="overflow-y: scroll;">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">

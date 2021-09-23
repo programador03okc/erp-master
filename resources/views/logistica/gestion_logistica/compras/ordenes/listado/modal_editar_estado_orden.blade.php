@@ -1,5 +1,5 @@
 <!-- modal -->
-<div class="modal fade" tabindex="-1" role="dialog" id="modal-editar-estado-orden">
+<div class="modal fade" tabindex="-1" role="dialog" id="modal-editar-estado-orden" style="overflow-y: scroll;">
     <div class="modal-dialog" style="width: 40%;">
         <div class="modal-content">
             <form id="form-editar_estado_orden">

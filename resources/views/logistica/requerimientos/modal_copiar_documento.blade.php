@@ -1,4 +1,4 @@
-<div class="modal fade" tabindex="-1" role="dialog" id="modal-copiar-documento">
+<div class="modal fade" tabindex="-1" role="dialog" id="modal-copiar-documento" style="overflow-y: scroll;">
     <div class="modal-dialog" style="width: 50%;">
         <div class="modal-content">
             <div class="modal-header">

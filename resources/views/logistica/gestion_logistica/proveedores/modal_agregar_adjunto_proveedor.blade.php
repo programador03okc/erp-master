@@ -1,4 +1,4 @@
-<div class="modal fade" tabindex="-1" role="dialog" id="modal-agregar-adjunto-proveedor">
+<div class="modal fade" tabindex="-1" role="dialog" id="modal-agregar-adjunto-proveedor" style="overflow-y: scroll;">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <form id="form-agregar-adjunto-proveedor" method="post">

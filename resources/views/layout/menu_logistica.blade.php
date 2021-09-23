@@ -57,7 +57,7 @@
                 </ul>
             </li>
             @endif -->
-            <li><a href="{{route('logistica.gestion-logistica.requerimiento.mapeo.index')}}"><i class="far fa-circle fa-xs"></i> Mapeo de productos</a></li>
+            <!-- <li><a href="{{route('logistica.gestion-logistica.requerimiento.mapeo.index')}}"><i class="far fa-circle fa-xs"></i> Mapeo de productos</a></li> -->
 
             @if(Auth::user()->tieneSubModulo(25))
             <li class="treeview">

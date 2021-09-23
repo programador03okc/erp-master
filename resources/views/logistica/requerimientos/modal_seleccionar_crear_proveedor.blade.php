@@ -1,4 +1,4 @@
-<div class="modal fade" tabindex="-1" role="dialog" id="modal-seleccionar_crear_proveedor">
+<div class="modal fade" tabindex="-1" role="dialog" id="modal-seleccionar_crear_proveedor" style="overflow-y: scroll;">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -81,8 +81,7 @@
                                                                 id="collapseListGroup1"
                                                                 aria-labelledby="collapseListGroupHeading1"
                                                                 aria-expanded="true"
-                                                                style=""
-                                                            >
+                                                                >
                                                                 <ul class="list-group">
                                                                     <li class="list-group-item"><h6><strong>Ruc:</strong> <span name="numero_ruc"></span></h6></li>
                                                                     <li class="list-group-item"><h6><strong>Fecha Actividad:</strong> <span name="fecha_actividad"></span></h6></li>

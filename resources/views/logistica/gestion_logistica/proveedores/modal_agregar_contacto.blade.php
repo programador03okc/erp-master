@@ -1,4 +1,4 @@
-<div class="modal fade" tabindex="-1" role="dialog" id="modal-agregar-contacto">
+<div class="modal fade" tabindex="-1" role="dialog" id="modal-agregar-contacto" style="overflow-y: scroll;">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <form id="form-agregar-contacto" onsubmit="return false;">

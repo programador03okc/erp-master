@@ -1,4 +1,4 @@
-<div class="modal fade" tabindex="-1" role="dialog" id="modal-direcciones-cliente">
+<div class="modal fade" tabindex="-1" role="dialog" id="modal-direcciones-cliente" style="overflow-y: scroll;">
     <div class="modal-dialog" style="width: 40%;">
         <div class="modal-content">
             <div class="modal-header">

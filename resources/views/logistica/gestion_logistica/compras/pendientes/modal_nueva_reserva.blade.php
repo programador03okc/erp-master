@@ -1,4 +1,4 @@
-<div class="modal fade" tabindex="-1" role="dialog" id="modal-nueva-reserva">
+<div class="modal fade" tabindex="-1" role="dialog" id="modal-nueva-reserva" style="overflow-y: scroll;">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
