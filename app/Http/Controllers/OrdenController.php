@@ -1138,7 +1138,9 @@ class OrdenController extends Controller
     }
 
     public function detalleOrden($idOrden){
-        $detalle = OrdenCompraDetalle::select(
+        $detalle = OrdenCompraDetalle::with(['reserva'=> function ($q) {
+            $q->where('alm_reserva.estado', '=', 1);
+        }])->select(
             'log_det_ord_compra.*','alm_prod.codigo', 
             'sis_moneda.simbolo as moneda_simbolo',
             'sis_moneda.descripcion as moneda_descripcion',
@@ -3293,12 +3295,12 @@ class OrdenController extends Controller
             ->get();
             if(count($guia_com_det)>0){
                 $status = 401;
-                $msj[]='La orden tiene items ingresados a almacén';
+                $msj[]='No se puede reverir. La orden tiene items ingresados a almacén';
                 $data=true;
     
             }else{
                 $status = 200;
-                $msj[]='La orden aun no tiene items ingresos al almacén';
+                $msj[]='La orden no tiene items ingresados a almacén';
                 $data=false;
             }
     
@@ -3343,7 +3345,7 @@ class OrdenController extends Controller
         }
         if($revertirDetalleOrden > 0){
             $status=200;
-            $msj[]='Detalle Orden Revertida';
+            // $msj[]='Detalle Orden Revertida';
         }else{
             $status=204;
             $msj[]='hubo un problema al tratar de revertir el detalle de la orden';

@@ -756,6 +756,13 @@ class ListaOrdenView {
         var html = '';
         if (response.length > 0) {
             response.forEach(function (element) {
+                let stock_comprometido = 0;
+                (element.reserva).forEach(reserva => {
+                    if(reserva.estado ==1){
+                        stock_comprometido+= parseFloat(reserva.stock_comprometido);
+                    }
+                });
+
                 html += `<tr>
                     <td style="border: none;">${(element.nro_orden !== null ? `<a  style="cursor:pointer;" class="handleClickObtenerArchivos" data-id="${element.id_oc_propia}" data-tipo="${element.tipo_oc_propia}">${element.nro_orden}</a>`:'')}</td>
                     <td style="border: none;">${element.codigo_oportunidad !== null ? element.codigo_oportunidad : ''}</td>
@@ -769,6 +776,8 @@ class ListaOrdenView {
                     <td style="border: none;">${element.abreviatura?element.abreviatura:''}</td>
                     <td style="border: none;">${element.moneda_simbolo}${$.number(element.precio,2)}</td>
                     <td style="border: none;">${element.moneda_simbolo}${$.number((element.cantidad*element.precio),2)}</td>
+                    <td style="border: none; text-align:center;">${stock_comprometido != null ? stock_comprometido : ''}</td>
+
                     </tr>`;
                 });
                 var tabla = `<table class="table table-sm" style="border: none; font-size:x-small;" 
@@ -781,12 +790,13 @@ class ListaOrdenView {
                         <th style="border: none;">Responsable</th>
                         <th style="border: none;">Cod.Req.</th>
                         <th style="border: none;">Código</th>
-                        <th style="border: none;">PartNumber</th>
+                        <th style="border: none;">Part number</th>
                         <th style="border: none;">Descripción</th>
                         <th style="border: none;">Cantidad</th>
                         <th style="border: none;">Und.Med</th>
                         <th style="border: none;">Prec.Unit.</th>
                         <th style="border: none;">Total</th>
+                        <th style="border: none;">Reserva almacén</th>
                     </tr>
                 </thead>
                 <tbody style="background: #e7e8ea;">${html}</tbody>
@@ -850,7 +860,7 @@ class ListaOrdenView {
         else {
             // Open this row
             //    row.child( format(iTableCounter, id) ).show();
-            this.buildFormat(iTableCounter, id, row);
+            this.buildFormat(obj,iTableCounter, id, row);
             tr.classList.add('shown');
             // try datatable stuff
             oInnerTable = $('#listaOrdenes_' + iTableCounter).dataTable({
@@ -871,8 +881,11 @@ class ListaOrdenView {
         }    }   
 
 
-        buildFormat(table_id, id, row) {
+        buildFormat(obj,table_id, id, row) {
+            obj.setAttribute('disabled',true);
             this.listaOrdenCtrl.obtenerDetalleOrdenElaboradas(id).then((res)=> {
+                console.log(res);
+                obj.removeAttribute('disabled');
                 this.construirDetalleOrdenElaboradas(table_id,row,res);
             }).catch((err)=> {
                 console.log(err)
