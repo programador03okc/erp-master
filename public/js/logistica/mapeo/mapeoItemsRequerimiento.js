@@ -1,7 +1,7 @@
 let detalle = [];
-function limpiarTabla(idElement){
+function limpiarTabla(idElement) {
     let nodeTbody = document.querySelector("table[id='" + idElement + "'] tbody");
-    if(nodeTbody!=null){
+    if (nodeTbody != null) {
         while (nodeTbody.children.length > 0) {
             nodeTbody.removeChild(nodeTbody.lastChild);
         }
@@ -18,7 +18,7 @@ function listarItemsRequerimientoMapeo(id_requerimiento) {
         url: 'itemsRequerimiento/' + id_requerimiento,
         dataType: 'JSON',
         beforeSend: data => {
-    
+
             $("#modal-mapeoItemsRequerimiento .modal-body").LoadingOverlay("show", {
                 imageAutoResize: true,
                 progress: true,
@@ -49,7 +49,7 @@ function listarItemsRequerimientoMapeo(id_requerimiento) {
             $("#modal-mapeoItemsRequerimiento .modal-body").LoadingOverlay("hide", true);
 
         },
-        "drawCallback": function( settings ) {
+        "drawCallback": function (settings) {
             $("#modal-mapeoItemsRequerimiento .modal-body").LoadingOverlay("hide", true);
         },
     }).fail(function (jqXHR, textStatus, errorThrown) {
@@ -65,7 +65,7 @@ function mostrar_detalle() {
     var i = 1;
 
     detalle.forEach(element => {
-        var pn = element.part_number??'';
+        var pn = element.part_number ?? '';
         var dsc = encodeURIComponent(element.descripcion);
         var link_pn = '';
         var link_des = '';
@@ -84,7 +84,7 @@ function mostrar_detalle() {
             `+ decodeURIComponent(dsc) + `
             </a>`;
         }
-        html += `<tr ${element.estado ==7 ?'class="bg-danger"':''}>
+        html += `<tr ${element.estado == 7 ? 'class="bg-danger"' : ''}>
             <td>${i}</td>
             <td>${(element.codigo !== null && element.codigo !== '') ? element.codigo :
                 ((element.id_categoria !== null && element.id_producto == null) ? '(Por crear)' : '')}</td>
@@ -100,8 +100,8 @@ function mostrar_detalle() {
                     title="Asignar producto" >
                     <i class="fas fa-angle-double-right"></i>
                 </button>`;
-            if(element.estado ==7){
-                html+=`
+        if (element.estado == 7) {
+            html += `
                 <button type="button" style="padding-left:8px;padding-right:7px;" 
                     class="anular btn btn-xs btn-danger boton oculto" data-toggle="tooltip" 
                     data-placement="bottom" data-partnumber="${element.part_number}" 
@@ -112,8 +112,8 @@ function mostrar_detalle() {
                 <button type="button" title="Restablecer" class="restablecer btn-xs btn btn-primary"><i class="fas fa-undo"></i></button>
                 `;
 
-            }else{
-                html+=`
+        } else {
+            html += `
                 <button type="button" style="padding-left:8px;padding-right:7px;" 
                     class="anular btn btn-xs btn-danger boton" data-toggle="tooltip" 
                     data-placement="bottom" data-partnumber="${element.part_number}" 
@@ -124,9 +124,9 @@ function mostrar_detalle() {
                 <button type="button" title="Restablecer" class="restablecer btn-xs btn btn-primary oculto"><i class="fas fa-undo"></i></button>
                 `;
 
-            }
+        }
 
-            html+=`</td>
+        html += `</td>
         </tr>`;
         i++;
     });
@@ -215,6 +215,7 @@ function openAsignarProducto(partnumber, desc, id, type) {
     $('[name=id_subcategoria]').val('');
     $('[name=id_clasif]').val(5);
     $('[name=id_unidad_medida]').val(1);
+    $('[name=series]').iCheck('uncheck');
 
     listarProductosCatalogo();
     listarProductosSugeridos(partnumber, decodeURIComponent(desc), type);

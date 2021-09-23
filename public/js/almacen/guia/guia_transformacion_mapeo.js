@@ -11,6 +11,7 @@ function openAsignarProducto(partnumber, desc, id, type) {
     $('[name=id_subcategoria]').val('');
     $('[name=id_clasif]').val(5);
     $('[name=id_unidad_medida]').val(1);
+    $('[name=series]').iCheck('uncheck');
 
     listarProductosCatalogo();
     listarProductosSugeridos(partnumber, decodeURIComponent(desc), type);
@@ -25,8 +26,10 @@ $('#tab-productos .tab-content a[data-toggle="tab"]').on('shown.bs.tab', functio
     console.log('tab: ' + tab);
 
     if (tab == '#seleccionar') {
-        $('#productosSugeridos').DataTable().ajax.reload();
-        $('#productosCatalogo').DataTable().ajax.reload();
+        if ($('#productosSugeridos').length == 0) {
+            $('#productosSugeridos').DataTable().ajax.reload();
+            $('#productosCatalogo').DataTable().ajax.reload();
+        }
     }
     else if (tab == '#crear') {
         // $('#listaComprobantes').DataTable().ajax.reload();

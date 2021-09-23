@@ -146,23 +146,22 @@ function mostrarDetalleTransferencia() {
                 if (html_series == "") {
                     html_series += ser.serie;
                 } else {
-                    html_series += "<br>" + ser.serie;
+                    html_series += ", " + ser.serie;
                 }
             }
         });
         html += `<tr>
         <td>${i}</td>
-        <td style="background-color: LightCyan;">${element.codigo_trans}</td>
-        <td style="background-color: LightCyan;">${element.codigo_req !== null ? element.codigo_req : ""
+        <td>${element.codigo_trans}</td>
+        <td>${element.codigo_req !== null ? element.codigo_req : ""
             }</td>
         <td>${element.codigo}</td>
         <td style="background-color: navajowhite;">${element.part_number !== null ? element.part_number : ""
             }</td>
-        <td style="background-color: navajowhite;">${element.descripcion}</td>
+        <td style="background-color: navajowhite;">${element.descripcion + '<br><strong>' + html_series + '</strong>'}</td>
         <td>${element.cantidad}</td>
         <td>${element.abreviatura}</td>
-        <td><strong>${html_series +
-            `<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" 
+        <td><strong>${`<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" 
                 title="Agregar Series" onClick="open_series_transferencia(${element.id_trans_detalle},${element.id_producto},${element.cantidad});"></i>`}
             </strong>
         </td>
@@ -171,6 +170,7 @@ function mostrarDetalleTransferencia() {
     });
     $("#detalleTransferencia tbody").html(html);
 }
+//  style="background-color: LightCyan;"
 // function next_serie_numero(id_sede, id_tp_doc) {
 //     if (id_sede !== null && id_tp_doc !== null) {
 //         $.ajax({

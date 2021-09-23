@@ -161,8 +161,14 @@ function guardar_guia_create(data) {
         dataType: 'JSON',
         success: function (id_salida) {
             console.log(id_salida);
-
-            alert('Salida de Almacén generada con éxito');
+            Lobibox.notify("success", {
+                title: false,
+                size: "mini",
+                rounded: true,
+                sound: false,
+                delayIndicator: false,
+                msg: 'Salida de Almacén generada con éxito.'
+            });
             $('#modal-guia_ven_create').modal('hide');
             $('#despachosPendientes').DataTable().ajax.reload();
             // var id = encode5t(id_salida);

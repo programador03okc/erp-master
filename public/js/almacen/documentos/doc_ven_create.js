@@ -123,7 +123,7 @@ function obtenerGuía(id) {
         type: "GET",
         url: "obtenerGuiaVenta/" + id,
         dataType: "JSON",
-        success: function(response) {
+        success: function (response) {
             console.log(response);
 
             if (response["guia"] !== null) {
@@ -164,7 +164,7 @@ function obtenerGuía(id) {
                 mostrarListaItems();
             }
         }
-    }).fail(function(jqXHR, textStatus, errorThrown) {
+    }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
@@ -187,7 +187,7 @@ function obtenerGuiaSeleccionadas(
             id_guias_seleccionadas: id_guias_seleccionadas
         },
         dataType: "JSON",
-        success: function(response) {
+        success: function (response) {
             console.log(response);
 
             $("[name=id_cliente]").val(id_cliente);
@@ -222,7 +222,7 @@ function obtenerGuiaSeleccionadas(
                 mostrarListaItems();
             }
         }
-    }).fail(function(jqXHR, textStatus, errorThrown) {
+    }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
@@ -234,7 +234,7 @@ function obtenerRequerimiento(id) {
         type: "GET",
         url: "obtenerRequerimiento/" + id,
         dataType: "JSON",
-        success: function(response) {
+        success: function (response) {
             console.log(response);
             let simbolo = "";
 
@@ -289,7 +289,7 @@ function obtenerRequerimiento(id) {
                 mostrarListaItems();
             }
         }
-    }).fail(function(jqXHR, textStatus, errorThrown) {
+    }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
@@ -317,74 +317,63 @@ function mostrarListaItems() {
 
         html += `<tr>
         <td>${i}</td>
-        <td>${
-            element.cod_req !== undefined
+        <td>${element.cod_req !== undefined
                 ? element.cod_req
                 : element.serie !== undefined
-                ? element.serie + "-" + element.numero
-                : ""
-        }</td>
+                    ? element.serie + "-" + element.numero
+                    : ""
+            }</td>
         <td>${element.codigo !== null ? element.codigo : ""}</td>
         <td>${element.part_number !== null ? element.part_number : ""}</td>
-        <td>${
-            element.id_producto == null
+        <td>${element.id_producto == null
                 ? `<input type="text" class="form-control descripcion" value="${element.descripcion}" data-id="${element.id_detalle_requerimiento}"/>`
                 : element.descripcion
-        }</td>
+            }</td>
         <td>
-            <input type="number" class="form-control right cantidad" style="width: 90px;" value="${
-                element.cantidad_real
+            <input type="number" class="form-control right cantidad" style="width: 90px;" value="${element.cantidad_real
             }" max="${element.cantidad_real}"
-            data-id="${
-                element.id_detalle_requerimiento !== undefined
-                    ? element.id_detalle_requerimiento
-                    : element.id_guia_ven_det
+            data-id="${element.id_detalle_requerimiento !== undefined
+                ? element.id_detalle_requerimiento
+                : element.id_guia_ven_det
             }" min="0" />
         </td>
         <td>${element.abreviatura}</td>
         <td>
-            <input type="number" class="form-control right unitario" value="${
-                element.precio
+            <input type="number" class="form-control right unitario" value="${element.precio
             }" 
-            data-id="${
-                element.id_detalle_requerimiento !== undefined
-                    ? element.id_detalle_requerimiento
-                    : element.id_guia_ven_det
+            data-id="${element.id_detalle_requerimiento !== undefined
+                ? element.id_detalle_requerimiento
+                : element.id_guia_ven_det
             }" min="0" step="0.0001"/>
         </td>
         <td class="right">${formatNumber.decimal(
-            element.sub_total,
-            "",
-            -4
-        )}</td>
+                element.sub_total,
+                "",
+                -4
+            )}</td>
         <td>
-            <input type="number" class="form-control right porcentaje_dscto" value="${
-                element.porcentaje_dscto
+            <input type="number" class="form-control right porcentaje_dscto" value="${element.porcentaje_dscto
             }" 
-            data-id="${
-                element.id_detalle_requerimiento !== undefined
-                    ? element.id_detalle_requerimiento
-                    : element.id_guia_ven_det
+            data-id="${element.id_detalle_requerimiento !== undefined
+                ? element.id_detalle_requerimiento
+                : element.id_guia_ven_det
             }" min="0" step="0.0001"/>
         </td>
         <td>
-            <input type="number" class="form-control right total_dscto" value="${
-                element.total_dscto
+            <input type="number" class="form-control right total_dscto" value="${element.total_dscto
             }" 
-            data-id="${
-                element.id_detalle_requerimiento !== undefined
-                    ? element.id_detalle_requerimiento
-                    : element.id_guia_ven_det
+            data-id="${element.id_detalle_requerimiento !== undefined
+                ? element.id_detalle_requerimiento
+                : element.id_guia_ven_det
             }" min="0" step="0.0001"/>
         </td>
         <td class="right">${formatNumber.decimal(element.total, "", -4)}</td>
         <td>
         <button type="button" class="quitar btn btn-danger btn-xs" data-toggle="tooltip" 
             data-placement="bottom" title="Quitar item" 
-            data-id="${
-                element.id_detalle_requerimiento !== undefined
-                    ? element.id_detalle_requerimiento
-                    : element.id_guia_ven_det
+            data-id="${element.id_detalle_requerimiento !== undefined
+                ? element.id_detalle_requerimiento
+                : element.id_guia_ven_det
             }">
             <i class="fas fa-minus"></i></button>
         </td>
@@ -400,8 +389,7 @@ function mostrarListaItems() {
     totales.simbolo = $('select[name="moneda"] option:selected').data("sim");
 
     var html_foot = `<tr>
-        <th colSpan="11" class="text-right">Sub Total <label name="sim">${
-            totales.simbolo
+        <th colSpan="11" class="text-right">Sub Total <label name="sim">${totales.simbolo
         }</label></th>
         <th class="text-right" colSpan="2">${formatNumber.decimal(
             totales.sub_total,
@@ -410,8 +398,7 @@ function mostrarListaItems() {
         )}</th>
     </tr>
     <tr>
-        <th colSpan="11" class="text-right">IGV ${
-            totales.porcentaje_igv
+        <th colSpan="11" class="text-right">IGV ${totales.porcentaje_igv
         }% <label name="sim">${totales.simbolo}</label></th>
         <th class="text-right" colSpan="2">${formatNumber.decimal(
             totales.igv,
@@ -420,8 +407,7 @@ function mostrarListaItems() {
         )}</th>
     </tr>
     <tr>
-        <th colSpan="11" class="text-right"> Total <label name="sim">${
-            totales.simbolo
+        <th colSpan="11" class="text-right"> Total <label name="sim">${totales.simbolo
         }</label></th>
         <th class="text-right" colSpan="2">${formatNumber.decimal(
             totales.total,
@@ -434,7 +420,7 @@ function mostrarListaItems() {
     $("[name=importe]").val(formatNumber.decimal(totales.total, "", -2));
 }
 
-$("#detalleItems tbody").on("change", ".cantidad", function() {
+$("#detalleItems tbody").on("change", ".cantidad", function () {
     let id = $(this).data("id");
     let cantidad = parseFloat($(this).val());
     let sub_total = 0;
@@ -454,7 +440,7 @@ $("#detalleItems tbody").on("change", ".cantidad", function() {
     mostrarListaItems();
 });
 
-$("#detalleItems tbody").on("change", ".unitario", function() {
+$("#detalleItems tbody").on("change", ".unitario", function () {
     let id = $(this).data("id");
     let unitario = parseFloat($(this).val());
     console.log("unitario: " + unitario);
@@ -473,7 +459,7 @@ $("#detalleItems tbody").on("change", ".unitario", function() {
     mostrarListaItems();
 });
 
-$("#detalleItems tbody").on("change", ".porcentaje_dscto", function() {
+$("#detalleItems tbody").on("change", ".porcentaje_dscto", function () {
     let id = $(this).data("id");
     let porcentaje_dscto = parseFloat($(this).val());
     let unitario = 0;
@@ -493,7 +479,7 @@ $("#detalleItems tbody").on("change", ".porcentaje_dscto", function() {
     mostrarListaItems();
 });
 
-$("#detalleItems tbody").on("change", ".total_dscto", function() {
+$("#detalleItems tbody").on("change", ".total_dscto", function () {
     let id = $(this).data("id");
     let total_dscto = parseFloat($(this).val());
     console.log("total_dscto: " + total_dscto);
@@ -512,10 +498,10 @@ $("#detalleItems tbody").on("change", ".total_dscto", function() {
     mostrarListaItems();
 });
 
-$("#detalleItems tbody").on("click", ".quitar", function() {
+$("#detalleItems tbody").on("click", ".quitar", function () {
     let id = $(this).data("id");
     console.log(id);
-    let index = listaItems.findIndex(function(item, i) {
+    let index = listaItems.findIndex(function (item, i) {
         return (
             item.id_detalle_requerimiento == id || item.id_guia_ven_det == id
         );
@@ -541,7 +527,7 @@ function changeMoneda() {
     }
 }
 
-$("#form-doc_create").on("submit", function(e) {
+$("#form-doc_create").on("submit", function (e) {
     e.preventDefault();
     // var id_doc_ven = $('[name=id_doc_ven]').val();
     var serial = $(this).serialize();
@@ -571,18 +557,12 @@ $("#form-doc_create").on("submit", function(e) {
         listaItemsDetalle.push(nuevo);
     });
 
-    var data =
-        serial +
-        "&sub_total=" +
-        totales.sub_total +
-        "&porcentaje_igv=" +
-        totales.porcentaje_igv +
-        "&igv=" +
-        totales.igv +
-        "&total=" +
-        totales.total +
-        "&detalle_items=" +
-        JSON.stringify(listaItemsDetalle);
+    var data = serial +
+        "&sub_total=" + totales.sub_total +
+        "&porcentaje_igv=" + totales.porcentaje_igv +
+        "&igv=" + totales.igv +
+        "&total=" + totales.total +
+        "&detalle_items=" + JSON.stringify(listaItemsDetalle);
     console.log(data);
     guardar_doc_create(data);
 });
@@ -593,10 +573,17 @@ function guardar_doc_create(data) {
         url: "guardar_doc_venta",
         data: data,
         dataType: "JSON",
-        success: function(response) {
+        success: function (response) {
             console.log("response" + response);
             if (response > 0) {
-                alert("Comprobante registrado con éxito");
+                Lobibox.notify("success", {
+                    title: false,
+                    size: "mini",
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    msg: 'Comprobante registrado con éxito'
+                });
                 $("#modal-doc_ven_create").modal("hide");
                 let facturacion = new Facturacion();
 
@@ -607,7 +594,7 @@ function guardar_doc_create(data) {
                 }
             }
         }
-    }).fail(function(jqXHR, textStatus, errorThrown) {
+    }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
