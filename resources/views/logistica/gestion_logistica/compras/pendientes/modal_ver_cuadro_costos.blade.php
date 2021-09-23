@@ -3,7 +3,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal-ver-cuadro-costos" onClick="$('#modal-ver-cuadro-costos').modal('hide');"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title">Cuadro Costos: <span id="codigo"></span></h3>
+                <h3 class="modal-title">Cuadro Costos <span id="codigo"></span></h3>
             </div>
             <div class="modal-body">
                 <div class="row">

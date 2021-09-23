@@ -209,9 +209,26 @@ class RequerimientoModel {
                 url:`mostrar-requerimiento/${idRequerimiento}/null`,
                 dataType: 'JSON',
                 });
+    }
 
     
+    obtenerDetalleRequerimientos(id){
+        return new Promise(function(resolve, reject) {
+            $.ajax({
+                type: 'GET',
+                url:`detalle-requerimiento/${id}`,
+                dataType: 'JSON',
+                success(response) {
+                    resolve(response);
+                },
+                error: function(err) {
+                reject(err)
+                }
+                });
+            });
     }
+
+
     getHistorialRequerimiento(idRequerimiento){
 
         return new Promise(function(resolve, reject) {

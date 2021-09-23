@@ -45,6 +45,11 @@ class RequerimientoCtrl{
         return this.requerimientoModel.getRequerimiento(idRequerimiento);
 
     }
+
+    obtenerDetalleRequerimientos(id){
+        return this.requerimientoModel.obtenerDetalleRequerimientos(id);
+    }
+
     getHistorialRequerimiento(idRequerimiento){
         return this.requerimientoModel.getHistorialRequerimiento(idRequerimiento);
 
