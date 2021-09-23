@@ -132,10 +132,7 @@ function listarRequerimientosPendientes() {
             }
         ],
         columnDefs: [
-            {
-                aTargets: [0],
-                sClass: "invisible"
-            },
+            { aTargets: [0], sClass: "invisible" },
             {
                 render: function (data, type, row) {
                     return (

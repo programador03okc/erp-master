@@ -25,7 +25,6 @@ function listarTransferenciasRecibidas() {
         lengthChange: false,
         serverSide: true,
         pageLength: 20,
-        // destroy: true,
         initComplete: function (settings, json) {
             const $filter = $("#listaTransferenciasRecibidas_filter");
             const $input = $filter.find("input");
@@ -173,7 +172,6 @@ function listarTransferenciasRecibidas() {
         ],
         order: [[0, "desc"]]
     });
-    // }
 }
 
 $('#listaTransferenciasRecibidas tbody').on('click', 'td button.detalle', function () {

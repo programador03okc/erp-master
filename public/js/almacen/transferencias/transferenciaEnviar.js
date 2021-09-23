@@ -161,9 +161,8 @@ function mostrarDetalleTransferencia() {
         <td style="background-color: navajowhite;">${element.descripcion + '<br><strong>' + html_series + '</strong>'}</td>
         <td>${element.cantidad}</td>
         <td>${element.abreviatura}</td>
-        <td><strong>${`<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" 
+        <td>${`<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" 
                 title="Agregar Series" onClick="open_series_transferencia(${element.id_trans_detalle},${element.id_producto},${element.cantidad});"></i>`}
-            </strong>
         </td>
         </tr>`;
         i++;

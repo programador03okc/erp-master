@@ -65,7 +65,7 @@ function mostrar_detalle() {
             if (html_series == '') {
                 html_series += ser.serie;
             } else {
-                html_series += '<br>' + ser.serie;
+                html_series += ', ' + ser.serie;
             }
         });
         console.log('guia ' + element.id_guia_com_det + ' prod ' + element.id_producto);
@@ -73,13 +73,13 @@ function mostrar_detalle() {
         <td>${i}</td>
         <td><a href="#" class="verProducto" data-id="${element.id_producto}" >${element.codigo}</a></td>
         <td>${element.part_number !== null ? element.part_number : ''}</td>
-        <td>${element.descripcion}</td>
+        <td>${element.descripcion}<br><strong>${html_series}</strong></td>
         <td>${element.cantidad}</td>
         <td>${element.abreviatura}</td>
-        <td><strong>${html_series}</strong></td>
         <td>
         ${element.control_series ? `<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series" 
-        onClick="open_series(${element.id_producto},${element.id_od_detalle},${element.cantidad});"></i>` : ''}</td>
+        onClick="open_series(${element.id_producto},${element.id_od_detalle},${element.cantidad});"></i>` : ''}
+        </td>
         </tr>`;
         i++;
     });
