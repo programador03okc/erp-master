@@ -812,8 +812,8 @@ Route::group(['middleware' => ['auth']], function () {
 						Route::get('listar-ordenes-excel', 'OrdenController@exportExcelListaOrdenes')->name('listar-ordenes-excel');
 
 						// nivel item
+						Route::get('mostrar-orden/{id_orden?}', 'OrdenController@mostrarOrden');
 						Route::get('listar-detalle-orden/{tipoOrden?}/{vinculadoPor?}/{empresa?}/{sede?}/{tipoProveedor?}/{enAlmacen?}/{signoSubtotal?}/{subtotal?}/{estado?}', 'OrdenController@listarDetalleOrden')->name('ordenes-en-proceso');
-						Route::get('ver-orden/{id_orden?}', 'OrdenController@ver_orden');
 						Route::post('actualizar-estado', 'OrdenController@update_estado_orden')->name('actualizar-estado-orden');
 						Route::post('actualizar-estado-detalle', 'OrdenController@update_estado_item_orden')->name('actualizar-estado-detalle-orden');
 						Route::put('anular/{id_orden?}', 'OrdenController@anularOrden')->name('anular');
