@@ -812,6 +812,16 @@ class OrdenController extends Controller
                 'estado' => $id_estado_orden_selected
             ]);
 
+         DB::table('logistica.log_det_ord_compra')
+        ->where([
+                ['id_orden_compra',$id_orden_compra],
+                ['estado','!=',7]
+                ])
+        ->update(
+            [
+                'estado' => $id_estado_orden_selected
+            ]);
+    
         return $update_log_ord_compra;
 
     }
@@ -820,16 +830,36 @@ class OrdenController extends Controller
         $id_detalle_orden_compra = $request->id_detalle_orden_compra;
         $id_estado_detalle_orden_selected = $request->id_estado_detalle_orden_selected;
         
-       $update_log_det_ord_compra = DB::table('logistica.log_det_ord_compra')
+        $update_log_det_ord_compra = DB::table('logistica.log_det_ord_compra')
         ->where([
                 ['id_detalle_orden',$id_detalle_orden_compra]])
         ->update(
             [
                 'estado' => $id_estado_detalle_orden_selected
             ]);
+        $detalleOrden= OrdenCompraDetalle::where('id_detalle_orden',$id_detalle_orden_compra)->first();
+
+        $this->evaluarActualizarEstadoOrdenYDetalle($detalleOrden->id_orden_compra, $id_estado_detalle_orden_selected);
 
         return $update_log_det_ord_compra;
 
+    }
+
+    function evaluarActualizarEstadoOrdenYDetalle($idOrden,$estadoReferencial){
+        $orden= Orden::find($idOrden);
+        $DetalleOrden= OrdenCompraDetalle::where([['id_orden_compra',$idOrden],['estado','!=',7]])->get();
+        $cantidadDetalleOrden = count($DetalleOrden);
+        $cantidadEstadoCoincidente=0;
+        foreach ($DetalleOrden as $detalle) {
+            if($detalle->estado ==$estadoReferencial ){
+                $cantidadEstadoCoincidente++;
+            }
+        }
+        if($cantidadEstadoCoincidente ==$cantidadDetalleOrden ){
+            // actualizar cabecera de orden 
+            $orden->estado =$estadoReferencial;
+            $orden->save();
+        }
     }
 
     function update_estado_detalle_requerimiento($id_detalle_requerimiento,$estado ){
@@ -1223,8 +1253,8 @@ class OrdenController extends Controller
     }
 
     public function mostrarOrden($id_orden){
-        $head_orden_compra = DB::table('logistica.log_ord_compra')
-        ->select(
+        $status=0;
+        $head_orden_compra = Orden::select(
             'log_ord_compra.id_orden_compra',
             'log_ord_compra.id_tp_documento',
             'log_ord_compra.codigo as codigo_orden',
@@ -1310,6 +1340,7 @@ class OrdenController extends Controller
 
         $head=[];
         if(count($head_orden_compra)>0){
+            $status=200;
             foreach ($head_orden_compra as $data) {
                 $head = [
                     'id_orden_compra' => $data->id_orden_compra,
@@ -1376,6 +1407,7 @@ class OrdenController extends Controller
         'alm_prod.part_number',
         'log_det_ord_compra.garantia',
         'log_det_ord_compra.estado',
+        'adm_estado_doc.estado_doc',
         'log_det_ord_compra.personal_autorizado',
         'log_det_ord_compra.lugar_despacho',
         'log_det_ord_compra.descripcion_adicional',
@@ -1385,7 +1417,6 @@ class OrdenController extends Controller
         'alm_und_medida.descripcion AS unidad_medida',
         'log_det_ord_compra.subtotal',
         'log_det_ord_compra.id_detalle_requerimiento',
-        'log_det_ord_compra.estado',
         'guia_com_det.id_guia_com',
         'guia_com_det.estado as estado_guia_com_det'
     )
@@ -1398,6 +1429,7 @@ class OrdenController extends Controller
     ->leftJoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
     ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
     ->leftJoin('almacen.guia_com_det', 'guia_com_det.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden')
+    ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','log_det_ord_compra.estado')
 
     ->where([
         ['log_det_ord_compra.id_orden_compra', '=', $id_orden]
@@ -1435,6 +1467,7 @@ class OrdenController extends Controller
                 'garantia' => $data->garantia,
                 'lugar_despacho' => $data->lugar_despacho,
                 'estado' => $data->estado,
+                'estado_detalle_orden' => $data->estado_doc,
                 'id_guia_com' => $data->id_guia_com,
                 'estado_guia_com_det' => $data->estado_guia_com_det
                 // 'nombre_personal_autorizado' => $data->nombre_personal_autorizado 
@@ -1485,7 +1518,8 @@ class OrdenController extends Controller
 
         $result = [
             'head' => $head,
-            'detalle' => $detalle 
+            'detalle' => $detalle, 
+            'status' => $status 
         ];
         
         $result['head']['codigo_requerimiento']=$codigoReqText;
@@ -3030,183 +3064,183 @@ class OrdenController extends Controller
     }
 
 
-    public function ver_orden($id_orden)
-    {
+    // public function ver_orden($id_orden)
+    // {
 
-        $log_ord_compra = DB::table('logistica.log_ord_compra')
-        ->select(
-            'log_ord_compra.*',
-            'adm_contri.id_contribuyente',
-            'adm_contri.razon_social',
-            'adm_contri.nro_documento',
-            'log_cdn_pago.descripcion as condicion',
-            'sis_moneda.simbolo as simbolo_moneda',
-            'sis_moneda.descripcion as descripcion_moneda',
-            'cta_prin.nro_cuenta as nro_cuenta_prin',
-            'cta_alter.nro_cuenta as nro_cuenta_alter',
-            'cta_detra.nro_cuenta as nro_cuenta_detra',
-            'estados_compra.descripcion as estado_doc',
-            'log_ord_compra_pago.id_pago',
-            'log_ord_compra_pago.detalle_pago',
-            'log_ord_compra_pago.archivo_adjunto'
-            )
-        ->leftjoin('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
-        ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
-        ->leftjoin('logistica.log_cdn_pago','log_cdn_pago.id_condicion_pago','=','log_ord_compra.id_condicion')
-        ->leftjoin('configuracion.sis_moneda','sis_moneda.id_moneda','=','log_ord_compra.id_moneda')
-        ->leftjoin('contabilidad.adm_cta_contri as cta_prin','cta_prin.id_cuenta_contribuyente','=','log_ord_compra.id_cta_principal')
-        ->leftjoin('contabilidad.adm_cta_contri as cta_alter','cta_alter.id_cuenta_contribuyente','=','log_ord_compra.id_cta_alternativa')
-        ->leftjoin('contabilidad.adm_cta_contri as cta_detra','cta_detra.id_cuenta_contribuyente','=','log_ord_compra.id_cta_detraccion')
-        ->leftjoin('logistica.estados_compra','estados_compra.id_estado','=','log_ord_compra.estado')
-        ->leftjoin('logistica.log_ord_compra_pago','log_ord_compra_pago.id_orden_compra','=','log_ord_compra.id_orden_compra')
-        ->where('log_ord_compra.id_orden_compra','=',$id_orden)
-        ->get();
+    //     $log_ord_compra = DB::table('logistica.log_ord_compra')
+    //     ->select(
+    //         'log_ord_compra.*',
+    //         'adm_contri.id_contribuyente',
+    //         'adm_contri.razon_social',
+    //         'adm_contri.nro_documento',
+    //         'log_cdn_pago.descripcion as condicion',
+    //         'sis_moneda.simbolo as simbolo_moneda',
+    //         'sis_moneda.descripcion as descripcion_moneda',
+    //         'cta_prin.nro_cuenta as nro_cuenta_prin',
+    //         'cta_alter.nro_cuenta as nro_cuenta_alter',
+    //         'cta_detra.nro_cuenta as nro_cuenta_detra',
+    //         'estados_compra.descripcion as estado_doc',
+    //         'log_ord_compra_pago.id_pago',
+    //         'log_ord_compra_pago.detalle_pago',
+    //         'log_ord_compra_pago.archivo_adjunto'
+    //         )
+    //     ->leftjoin('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
+    //     ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
+    //     ->leftjoin('logistica.log_cdn_pago','log_cdn_pago.id_condicion_pago','=','log_ord_compra.id_condicion')
+    //     ->leftjoin('configuracion.sis_moneda','sis_moneda.id_moneda','=','log_ord_compra.id_moneda')
+    //     ->leftjoin('contabilidad.adm_cta_contri as cta_prin','cta_prin.id_cuenta_contribuyente','=','log_ord_compra.id_cta_principal')
+    //     ->leftjoin('contabilidad.adm_cta_contri as cta_alter','cta_alter.id_cuenta_contribuyente','=','log_ord_compra.id_cta_alternativa')
+    //     ->leftjoin('contabilidad.adm_cta_contri as cta_detra','cta_detra.id_cuenta_contribuyente','=','log_ord_compra.id_cta_detraccion')
+    //     ->leftjoin('logistica.estados_compra','estados_compra.id_estado','=','log_ord_compra.estado')
+    //     ->leftjoin('logistica.log_ord_compra_pago','log_ord_compra_pago.id_orden_compra','=','log_ord_compra.id_orden_compra')
+    //     ->where('log_ord_compra.id_orden_compra','=',$id_orden)
+    //     ->get();
 
-        if (isset($log_ord_compra)) {
-            $orden = [];
-            foreach ($log_ord_compra as $data) {
-                    $orden = [
-                        'id_orden_compra' => $data->id_orden_compra,
-                        'codigo'         => $data->codigo,
-                        'fecha'          => $data->fecha,
-                        'codigo_softlink'=> $data->codigo_softlink,
-                        'incluye_igv'    => $data->incluye_igv,
-                        'razon_social'   => $data->razon_social,
-                        'nro_documento'  => $data->nro_documento,
-                        'condicion'      => $data->condicion,
-                        'descripcion_moneda' => $data->descripcion_moneda,
-                        'simbolo_moneda'        => $data->simbolo_moneda,
-                        'id_estado'     => $data->estado,
-                        'estado_doc'     => $data->estado_doc,
-                        'id_condicion'   => $data->id_condicion,
-                        'plazo_dias'     => $data->plazo_dias,
-                        'plazo_entrega'  => $data->plazo_entrega,
-                        'igv_porcentaje' => $data->igv_porcentaje,
-                        'monto_subtotal' => $data->monto_subtotal,
-                        'monto_igv'      => $data->monto_igv,
-                        'monto_total'    => $data->monto_total,
-                        'observacion'    => $data->observacion
-                    ];
-                }
+    //     if (isset($log_ord_compra)) {
+    //         $orden = [];
+    //         foreach ($log_ord_compra as $data) {
+    //                 $orden = [
+    //                     'id_orden_compra' => $data->id_orden_compra,
+    //                     'codigo'         => $data->codigo,
+    //                     'fecha'          => $data->fecha,
+    //                     'codigo_softlink'=> $data->codigo_softlink,
+    //                     'incluye_igv'    => $data->incluye_igv,
+    //                     'razon_social'   => $data->razon_social,
+    //                     'nro_documento'  => $data->nro_documento,
+    //                     'condicion'      => $data->condicion,
+    //                     'descripcion_moneda' => $data->descripcion_moneda,
+    //                     'simbolo_moneda'        => $data->simbolo_moneda,
+    //                     'id_estado'     => $data->estado,
+    //                     'estado_doc'     => $data->estado_doc,
+    //                     'id_condicion'   => $data->id_condicion,
+    //                     'plazo_dias'     => $data->plazo_dias,
+    //                     'plazo_entrega'  => $data->plazo_entrega,
+    //                     'igv_porcentaje' => $data->igv_porcentaje,
+    //                     'monto_subtotal' => $data->monto_subtotal,
+    //                     'monto_igv'      => $data->monto_igv,
+    //                     'monto_total'    => $data->monto_total,
+    //                     'observacion'    => $data->observacion
+    //                 ];
+    //             }
 
-        } else {
+    //     } else {
 
-            $orden = [];
-        }
+    //         $orden = [];
+    //     }
 
 
-        $log_det_ord_compra = DB::table('logistica.log_det_ord_compra')
-        ->leftjoin('logistica.log_ord_compra','log_ord_compra.id_orden_compra','=','log_det_ord_compra.id_orden_compra')
-        ->leftjoin('configuracion.sis_moneda','sis_moneda.id_moneda','=','log_ord_compra.id_moneda')
-        ->leftJoin('almacen.alm_prod', 'log_det_ord_compra.id_producto', '=', 'alm_prod.id_producto')
-        ->leftJoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
-        ->leftJoin('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
-        ->leftJoin('almacen.alm_det_req', 'log_det_ord_compra.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento')
-        ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
-        ->leftJoin('almacen.alm_und_medida as und_medida_det_req', 'alm_det_req.id_unidad_medida', '=', 'und_medida_det_req.id_unidad_medida')
-        // ->leftJoin('almacen.alm_det_req_adjuntos', 'alm_det_req_adjuntos.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento')
-        ->leftJoin('almacen.alm_almacen', 'alm_det_req.id_almacen_reserva', '=', 'alm_almacen.id_almacen')
-        ->leftjoin('logistica.estados_compra','estados_compra.id_estado','=','log_det_ord_compra.estado')
+    //     $log_det_ord_compra = DB::table('logistica.log_det_ord_compra')
+    //     ->leftjoin('logistica.log_ord_compra','log_ord_compra.id_orden_compra','=','log_det_ord_compra.id_orden_compra')
+    //     ->leftjoin('configuracion.sis_moneda','sis_moneda.id_moneda','=','log_ord_compra.id_moneda')
+    //     ->leftJoin('almacen.alm_prod', 'log_det_ord_compra.id_producto', '=', 'alm_prod.id_producto')
+    //     ->leftJoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
+    //     ->leftJoin('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
+    //     ->leftJoin('almacen.alm_det_req', 'log_det_ord_compra.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento')
+    //     ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+    //     ->leftJoin('almacen.alm_und_medida as und_medida_det_req', 'alm_det_req.id_unidad_medida', '=', 'und_medida_det_req.id_unidad_medida')
+    //     // ->leftJoin('almacen.alm_det_req_adjuntos', 'alm_det_req_adjuntos.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento')
+    //     ->leftJoin('almacen.alm_almacen', 'alm_det_req.id_almacen_reserva', '=', 'alm_almacen.id_almacen')
+    //     ->leftjoin('logistica.estados_compra','estados_compra.id_estado','=','log_det_ord_compra.estado')
 
-        ->select(
-            'log_det_ord_compra.id_detalle_orden',
-            'log_det_ord_compra.id_orden_compra',
-            'log_det_ord_compra.garantia',
-            'log_det_ord_compra.estado',
-            'log_det_ord_compra.personal_autorizado',
-            'log_det_ord_compra.lugar_despacho',
-            'log_det_ord_compra.descripcion_adicional',
-            'log_det_ord_compra.id_unidad_medida',
-            'sis_moneda.simbolo as simbolo_moneda',
-            'sis_moneda.descripcion as descripcion_moneda',
-            'log_det_ord_compra.precio',
-            'log_det_ord_compra.cantidad',
-            'log_det_ord_compra.estado as id_estado_detalle_orden',
-            'estados_compra.descripcion as estado_detalle_orden',
-            'alm_det_req.id_detalle_requerimiento',
-            'alm_req.id_requerimiento',
-            'alm_req.codigo AS codigo_requerimiento',
-            'alm_det_req.id_requerimiento',
-            'alm_det_req.precio_unitario',
-            // 'alm_det_req.cantidad',
-            // 'alm_det_req.id_unidad_medida',
-            'und_medida_det_req.descripcion AS unidad_medida',
-            'alm_det_req.fecha_registro AS fecha_registro_alm_det_req',
-            'alm_det_req.lugar_entrega',
-            'alm_det_req.descripcion_adicional',
-            'alm_det_req.id_tipo_item',
-            'alm_det_req.id_producto',
-            'alm_cat_prod.descripcion as categoria',
-            'alm_subcat.descripcion as subcategoria',
-            'alm_prod.codigo AS alm_prod_codigo',
-            'alm_prod.part_number',
-            'alm_prod.descripcion AS alm_prod_descripcion',
+    //     ->select(
+    //         'log_det_ord_compra.id_detalle_orden',
+    //         'log_det_ord_compra.id_orden_compra',
+    //         'log_det_ord_compra.garantia',
+    //         'log_det_ord_compra.estado',
+    //         'log_det_ord_compra.personal_autorizado',
+    //         'log_det_ord_compra.lugar_despacho',
+    //         'log_det_ord_compra.descripcion_adicional',
+    //         'log_det_ord_compra.id_unidad_medida',
+    //         'sis_moneda.simbolo as simbolo_moneda',
+    //         'sis_moneda.descripcion as descripcion_moneda',
+    //         'log_det_ord_compra.precio',
+    //         'log_det_ord_compra.cantidad',
+    //         'log_det_ord_compra.estado as id_estado_detalle_orden',
+    //         'estados_compra.descripcion as estado_detalle_orden',
+    //         'alm_det_req.id_detalle_requerimiento',
+    //         'alm_req.id_requerimiento',
+    //         'alm_req.codigo AS codigo_requerimiento',
+    //         'alm_det_req.id_requerimiento',
+    //         'alm_det_req.precio_unitario',
+    //         // 'alm_det_req.cantidad',
+    //         // 'alm_det_req.id_unidad_medida',
+    //         'und_medida_det_req.descripcion AS unidad_medida',
+    //         'alm_det_req.fecha_registro AS fecha_registro_alm_det_req',
+    //         'alm_det_req.lugar_entrega',
+    //         'alm_det_req.descripcion_adicional',
+    //         'alm_det_req.id_tipo_item',
+    //         'alm_det_req.id_producto',
+    //         'alm_cat_prod.descripcion as categoria',
+    //         'alm_subcat.descripcion as subcategoria',
+    //         'alm_prod.codigo AS alm_prod_codigo',
+    //         'alm_prod.part_number',
+    //         'alm_prod.descripcion AS alm_prod_descripcion',
 
-            'alm_det_req.id_almacen_reserva',
-            'alm_almacen.descripcion as almacen_reserva',
-         )
-        ->where([
-            ['log_det_ord_compra.id_orden_compra', '=', $id_orden],
-        ])
+    //         'alm_det_req.id_almacen_reserva',
+    //         'alm_almacen.descripcion as almacen_reserva',
+    //      )
+    //     ->where([
+    //         ['log_det_ord_compra.id_orden_compra', '=', $id_orden],
+    //     ])
 
-        ->orderBy('log_det_ord_compra.id_detalle_orden', 'desc')
-        ->get();
+    //     ->orderBy('log_det_ord_compra.id_detalle_orden', 'desc')
+    //     ->get();
 
-        // return $log_det_ord_compra;
-        $total = 0;
-        if (isset($log_det_ord_compra)) {
-            $lastId = "";
-            $detalle_orden = [];
-            foreach ($log_det_ord_compra as $data) {
-                if ($data->id_detalle_requerimiento !== $lastId) {
-                    $subtotal =+ $data->cantidad *  $data->precio_unitario;
-                    $total = $subtotal;
-                    $detalle_orden[] = [
-                        'id_detalle_orden'          => $data->id_detalle_orden,
-                        'id_orden_compra'          => $data->id_orden_compra,
-                        'id_detalle_requerimiento'  => $data->id_detalle_requerimiento,
-                        'id_requerimiento'          => $data->id_requerimiento,
-                        'codigo_requerimiento'      => $data->codigo_requerimiento,
-                        'cantidad'                  => $data->cantidad,
-                        'id_unidad_medida'          => $data->id_unidad_medida,
-                        'unidad_medida'             => $data->unidad_medida,
-                        'descripcion_moneda'        => $data->descripcion_moneda,
-                        'simbolo_moneda'            => $data->simbolo_moneda,
-                        'precio_unitario'           => $data->precio_unitario,
-                        'descripcion_adicional'     => $data->descripcion_adicional,
-                        'lugar_entrega'             => $data->lugar_entrega,
-                        'fecha_registro'            => $data->fecha_registro_alm_det_req,
-                        'estado'                    => $data->estado,
-                        'id_tipo_item'              => $data->id_tipo_item,
-                        'codigo_producto'           => $data->alm_prod_codigo,
-                        'id_producto'               => $data->id_producto,
-                        'categoria'                 => $data->categoria,
-                        'subcategoria'              => $data->subcategoria,
-                        'part_number'               => $data->part_number,
-                        'descripcion'               => $data->alm_prod_descripcion,
-                        'id_almacen'                => $data->id_almacen_reserva,
-                        'almacen_reserva'           => $data->almacen_reserva,
-                        'subtotal'                  =>  $subtotal,
-                        'id_estado_detalle_orden'   => $data->id_estado_detalle_orden,
-                        'estado_detalle_orden'      => $data->estado_detalle_orden
-                    ];
-                    $lastId = $data->id_detalle_requerimiento;
-                }
-            }
-
- 
-
-        } else {
-
-            $detalle_orden = [];
-        }
+    //     // return $log_det_ord_compra;
+    //     $total = 0;
+    //     if (isset($log_det_ord_compra)) {
+    //         $lastId = "";
+    //         $detalle_orden = [];
+    //         foreach ($log_det_ord_compra as $data) {
+    //             if ($data->id_detalle_requerimiento !== $lastId) {
+    //                 $subtotal =+ $data->cantidad *  $data->precio_unitario;
+    //                 $total = $subtotal;
+    //                 $detalle_orden[] = [
+    //                     'id_detalle_orden'          => $data->id_detalle_orden,
+    //                     'id_orden_compra'          => $data->id_orden_compra,
+    //                     'id_detalle_requerimiento'  => $data->id_detalle_requerimiento,
+    //                     'id_requerimiento'          => $data->id_requerimiento,
+    //                     'codigo_requerimiento'      => $data->codigo_requerimiento,
+    //                     'cantidad'                  => $data->cantidad,
+    //                     'id_unidad_medida'          => $data->id_unidad_medida,
+    //                     'unidad_medida'             => $data->unidad_medida,
+    //                     'descripcion_moneda'        => $data->descripcion_moneda,
+    //                     'simbolo_moneda'            => $data->simbolo_moneda,
+    //                     'precio_unitario'           => $data->precio_unitario,
+    //                     'descripcion_adicional'     => $data->descripcion_adicional,
+    //                     'lugar_entrega'             => $data->lugar_entrega,
+    //                     'fecha_registro'            => $data->fecha_registro_alm_det_req,
+    //                     'estado'                    => $data->estado,
+    //                     'id_tipo_item'              => $data->id_tipo_item,
+    //                     'codigo_producto'           => $data->alm_prod_codigo,
+    //                     'id_producto'               => $data->id_producto,
+    //                     'categoria'                 => $data->categoria,
+    //                     'subcategoria'              => $data->subcategoria,
+    //                     'part_number'               => $data->part_number,
+    //                     'descripcion'               => $data->alm_prod_descripcion,
+    //                     'id_almacen'                => $data->id_almacen_reserva,
+    //                     'almacen_reserva'           => $data->almacen_reserva,
+    //                     'subtotal'                  =>  $subtotal,
+    //                     'id_estado_detalle_orden'   => $data->id_estado_detalle_orden,
+    //                     'estado_detalle_orden'      => $data->estado_detalle_orden
+    //                 ];
+    //                 $lastId = $data->id_detalle_requerimiento;
+    //             }
+    //         }
 
  
-        $output=['status'=>200, 'data'=>['orden'=>$orden,'detalle_orden'=>$detalle_orden]];
+
+    //     } else {
+
+    //         $detalle_orden = [];
+    //     }
+
+ 
+    //     $output=['status'=>200, 'data'=>['orden'=>$orden,'detalle_orden'=>$detalle_orden]];
 
 
-        return response()->json($output);
-    }
+    //     return response()->json($output);
+    // }
 
 
     public function generar_orden_por_requerimiento_pdf($id_orden_compra)

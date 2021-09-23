@@ -89,7 +89,7 @@
                     <th style="width:15%">ETA</th>
                     <th >Sede - Empresa</th>
                     <th >Estado</th>
-                    <th style="width:20%">Acción</th>
+                    <th style="width:15%">Acción</th>
                     </tr>
                 </thead>
                 <tbody></tbody>

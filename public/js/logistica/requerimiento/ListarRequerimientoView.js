@@ -106,7 +106,7 @@ class ListarRequerimientoView {
                     let sumTotal=0;
                         if(row.detalle != undefined && row.detalle.length >0){
                             (row.detalle).forEach(element => {
-                                sumTotal=+( parseFloat(element.cantidad) * parseFloat(element.precio_unitario) );
+                                sumTotal+=( parseFloat(element.cantidad) * parseFloat(element.precio_unitario) );
                             });
                             return (row['simbolo_moneda']) + (Util.formatoNumero(sumTotal, 2));
                         }

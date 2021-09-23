@@ -16,14 +16,14 @@ class ListaOrdenView {
         $('#listar_ordenes').on("click", "button.handleClickTipoVistaPorCabecera", () => {
             this.tipoVistaPorCabecera();
         });
-        $('#modal-editar-estado-orden').on("click", "button.handleClickUpdateEstadoOrdenCompra", () => {
-            this.updateEstadoOrdenCompra();
+        $('#modal-editar-estado-orden').on("click", "button.handleClickUpdateEstadoOrdenCompra", (e) => {
+            this.updateEstadoOrdenCompra(e.currentTarget);
         });
         $('#listar_ordenes').on("click", "button.handleClickTipoVistaPorItem", () => {
             this.tipoVistaPorItem();
         });
-        $('#modal-editar-estado-detalle-orden').on("click", "button.handleClickUpdateEstadoDetalleOrdenCompra", () => {
-            this.updateEstadoDetalleOrdenCompra();
+        $('#modal-editar-estado-detalle-orden').on("click", "button.handleClickUpdateEstadoDetalleOrdenCompra", (e) => {
+            this.updateEstadoDetalleOrdenCompra(e.currentTarget);
         });
 
         // $('#modal-ver-orden').on("click","span.handleClickEditarEstadoOrden", (e)=>{
@@ -51,16 +51,16 @@ class ListaOrdenView {
         $('#listaOrdenes tbody').on("click", "a.handleClickObtenerArchivos", (e) => {
             this.obtenerArchivos(e.currentTarget.dataset.id, e.currentTarget.dataset.tipo);
         });
-        $('#listaOrdenes').on("click", "span.handleClickEditarEstadoOrden", (e) => {
+        $('#listaOrdenes').on("click", "a.handleClickEditarEstadoOrden", (e) => {
             this.editarEstadoOrden(e.currentTarget);
         });
 
 
 
-        $('#listaDetalleOrden tbody').on("click", "span.handleClickVerOrdenModal", (e) => {
+        $('#listaDetalleOrden tbody').on("click", "a.handleClickVerOrdenModal", (e) => {
             this.verOrdenModal(e.currentTarget);
         });
-        $('#listaDetalleOrden tbody').on("click", "span.handleClickEditarEstadoItemOrden", (e) => {
+        $('#listaDetalleOrden tbody').on("click", "a.handleClickEditarEstadoItemOrden", (e) => {
             this.editarEstadoItemOrden(e.currentTarget);
         });
 
@@ -581,7 +581,7 @@ class ListaOrdenView {
                         function (data, type, row, meta) {
                             let estadoDetalleOrdenHabilitadasActualizar = [1, 2, 3, 4, 5, 6, 15];
                             if (estadoDetalleOrdenHabilitadasActualizar.includes(row.estado) == true) {
-                                return `<center><span class="label label-success handleClickEditarEstadoOrden" data-id-estado-orden-compra="${row.estado}" data-id-orden-compra="${row.id_orden_compra}" style="cursor:pointer;">${row.estado_doc}</span></center>`;
+                                return `<center><a class="handleClickEditarEstadoOrden" data-id-estado-orden-compra="${row.estado}" data-id-orden-compra="${row.id_orden_compra}" style="cursor:pointer;">${row.estado_doc}</a></center>`;
                             } else {
                                 return `<center><span class="label label-default" data-id-estado-orden-compra="${row.estado}" data-id-orden-compra="${row.id_orden_compra}" >${row.estado_doc}</span></center>`;
 
@@ -696,13 +696,13 @@ class ListaOrdenView {
                 {
                     'render':
                         function (data, type, row, meta) {
-                            let containerOpenBrackets = '<div class="btn-group" role="group" style="margin-bottom: 5px;display: flex;flex-direction: row;flex-wrap: nowrap;">';
-                            let btnImprimirOrden = '<button type="button" class="btn btn-md btn-warning boton handleClickAbrirOrdenPDF" title="Abrir orden PDF"  data-toggle="tooltip" data-placement="bottom" data-id-orden-compra="' + row.id_orden_compra + '"  data-id-pago=""> <i class="fas fa-file-pdf"></i> </button>';
+                            let containerOpenBrackets = '<div class="btn-group btn-group-sm" role="group" style="margin-bottom: 5px;display: flex;flex-direction: row;flex-wrap: nowrap;">';
+                            let btnImprimirOrden = '<button type="button" class="btn btn-sm btn-warning boton handleClickAbrirOrdenPDF" title="Abrir orden PDF"  data-toggle="tooltip" data-placement="bottom" data-id-orden-compra="' + row.id_orden_compra + '"  data-id-pago=""> <i class="fas fa-file-pdf"></i> </button>';
                             let btnAnularOrden = '';
                             if (![6, 27, 28].includes(row.estado)) {
-                                btnAnularOrden = '<button type="button" class="btn btn-md btn-danger boton handleClickAnularOrden" name="btnAnularOrden" title="Anular orden" data-codigo-orden="' + row.codigo + '" data-id-orden-compra="' + row.id_orden_compra + '"><i class="fas fa-backspace fa-xs"></i></button>';
+                                btnAnularOrden = '<button type="button" class="btn btn-sm btn-danger boton handleClickAnularOrden" name="btnAnularOrden" title="Anular orden" data-codigo-orden="' + row.codigo + '" data-id-orden-compra="' + row.id_orden_compra + '"><i class="fas fa-backspace fa-xs"></i></button>';
                             }
-                            let btnVerDetalle = `<button type="button" class="ver-detalle btn btn-primary boton handleCliclVerDetalleOrden" data-toggle="tooltip" data-placement="bottom" title="Ver Detalle" data-id="${row.id_orden_compra}">
+                            let btnVerDetalle = `<button type="button" class="ver-detalle btn btn-sm btn-primary boton handleCliclVerDetalleOrden" data-toggle="tooltip" data-placement="bottom" title="Ver Detalle" data-id="${row.id_orden_compra}">
                         <i class="fas fa-chevron-down"></i>
                         </button>`;
                             let containerCloseBrackets = '</div>';
@@ -713,8 +713,24 @@ class ListaOrdenView {
             ],
             'columnDefs': [
                 { 'aTargets': [0], 'visible': false, 'searchable': false },
-                { 'aTargets': [1], 'className': "text-right" },
-                { 'aTargets': [19], 'className': "text-right" }
+                { 'aTargets': [1], 'className': "text-center" },
+                { 'aTargets': [3], 'className': "text-center" },
+                { 'aTargets': [4], 'className': "text-center" },
+                { 'aTargets': [5], 'className': "text-center" },
+                { 'aTargets': [6], 'className': "text-center" },
+                { 'aTargets': [7], 'className': "text-center" },
+                { 'aTargets': [8], 'className': "text-center" },
+                { 'aTargets': [9], 'className': "text-center" },
+                { 'aTargets': [10], 'className': "text-center" },
+                { 'aTargets': [12], 'className': "text-center" },
+                { 'aTargets': [13], 'className': "text-center" },
+                { 'aTargets': [14], 'className': "text-center" },
+                { 'aTargets': [15], 'className': "text-center" },
+                { 'aTargets': [16], 'className': "text-center" },
+                { 'aTargets': [17], 'className': "text-right" },
+                { 'aTargets': [18], 'className': "text-right" },
+                { 'aTargets': [19], 'className': "text-right" },
+                { 'aTargets': [20], 'className': "text-center" }
             ]
             , "initComplete": function () {
 
@@ -931,7 +947,7 @@ class ListaOrdenView {
             'columns': [
                 {
                     render: function (data, type, row) {
-                        return `<span class="label label-primary handleClickVerOrdenModal" data-id-estado-detalle-orden-compra="${row.id_detalle_orden_estado}" data-id-orden-compra="${row.id_orden_compra}" data-id-detalle-orden-compra="${row.detalle_orden_id_detalle_orden}"  data-codigo-requerimiento="${row.codigo_requerimiento}" data-id-requerimiento="${row.id_requerimiento}" data-codigo-item="${row.alm_prod_codigo}" style="cursor: pointer;" title="Ver Orden">${row.codigo}</span>`;
+                        return `<a class="handleClickVerOrdenModal" data-id-estado-detalle-orden-compra="${row.id_detalle_orden_estado}" data-id-orden-compra="${row.id_orden_compra}" data-id-detalle-orden-compra="${row.detalle_orden_id_detalle_orden}"  data-codigo-requerimiento="${row.codigo_requerimiento}" data-id-requerimiento="${row.id_requerimiento}" data-codigo-item="${row.alm_prod_codigo}" style="cursor: pointer;" title="Ver Orden">${row.codigo}</a>`;
                     }
                 },
                 {
@@ -992,7 +1008,8 @@ class ListaOrdenView {
                 },
                 {
                     render: function (data, type, row) {
-                        return `${row.fecha ? moment(row.fecha).format('YYYY-MM-DD') : ''}`;
+                        // return `${row.fecha ? moment(row.fecha).format('YYYY-MM-DD') : ''}`;
+                        return `${row.fecha ? row.fecha : ''}`;
                     }
                 },
                 {
@@ -1032,9 +1049,9 @@ class ListaOrdenView {
                     render: function (data, type, row) {
                         let estadoDetalleOrdenHabilitadasActualizar = [1, 2, 3, 4, 5, 6, 15];
                         if (estadoDetalleOrdenHabilitadasActualizar.includes(row.id_detalle_orden_estado) == true) {
-                            return `<span class="label label-success handleClickEditarEstadoItemOrden" data-id-estado-detalle-orden-compra="${row.id_detalle_orden_estado}" data-id-orden-compra="${row.detalle_orden_id_orden_compra}" data-id-detalle-orden-compra="${row.detalle_orden_id_detalle_orden}" data-codigo-item="${row.alm_prod_codigo}" style="cursor: pointer;" title="Cambiar Estado de Item">${row.detalle_orden_estado}</span>`;
+                            return `<a class="handleClickEditarEstadoItemOrden" data-id-estado-detalle-orden-compra="${row.id_detalle_orden_estado}" data-id-orden-compra="${row.detalle_orden_id_orden_compra}" data-id-detalle-orden-compra="${row.detalle_orden_id_detalle_orden}" data-codigo-item="${row.alm_prod_codigo}" style="cursor: pointer;" title="Cambiar Estado de Item">${row.detalle_orden_estado}</a>`;
                         } else {
-                            return `<span class="label label-default" data-id-estado-detalle-orden-compra="${row.id_detalle_orden_estado}" data-id-orden-compra="${row.detalle_orden_id_orden_compra}" data-id-detalle-orden-compra="${row.detalle_orden_id_detalle_orden}" data-codigo-item="${row.alm_prod_codigo}" style="cursor: default;">${row.detalle_orden_estado}</span>`;
+                            return `<span class="" data-id-estado-detalle-orden-compra="${row.id_detalle_orden_estado}" data-id-orden-compra="${row.detalle_orden_id_orden_compra}" data-id-detalle-orden-compra="${row.detalle_orden_id_detalle_orden}" data-codigo-item="${row.alm_prod_codigo}" style="cursor: default;">${row.detalle_orden_estado}</span>`;
                         }
 
                     }
@@ -1042,12 +1059,12 @@ class ListaOrdenView {
                 {
                     render: function (data, type, row) {
                         let containerOpenBrackets = '<div class="btn-group btn-group-sm" role="group" style="margin-bottom: 5px;display: flex;flex-direction: row;flex-wrap: nowrap;">';
-                        let btnImprimirOrden = '<button type="button" class="btn btn-md btn-warning boton handleClickAbrirOrdenPDF" name="btnGenerarOrdenRequerimientoPDF" title="Abrir orden PDF" data-id-requerimiento="' + row.id_requerimiento + '"  data-codigo-requerimiento="' + row.codigo_requerimiento + '" data-id-orden-compra="' + row.id_orden_compra + '"><i class="fas fa-file-download fa-xs"></i></button>';
+                        let btnImprimirOrden = '<button type="button" class="btn btn-sm btn-warning boton handleClickAbrirOrdenPDF" name="btnGenerarOrdenRequerimientoPDF" title="Abrir orden PDF" data-id-requerimiento="' + row.id_requerimiento + '"  data-codigo-requerimiento="' + row.codigo_requerimiento + '" data-id-orden-compra="' + row.id_orden_compra + '"><i class="fas fa-file-download fa-xs"></i></button>';
                         let btnAnularOrden = '';
                         if (![6, 27, 28].includes(row.orden_estado)) {
-                            btnAnularOrden = '<button type="button" class="btn btn-md btn-danger boton handleClickAnularOrden" name="btnAnularOrden" title="Anular orden" data-codigo-orden="' + row.codigo + '" data-id-orden-compra="' + row.id_orden_compra + '"><i class="fas fa-backspace fa-xs"></i></button>';
+                            btnAnularOrden = '<button type="button" class="btn btn-sm btn-danger boton handleClickAnularOrden" name="btnAnularOrden" title="Anular orden" data-codigo-orden="' + row.codigo + '" data-id-orden-compra="' + row.id_orden_compra + '"><i class="fas fa-backspace fa-xs"></i></button>';
                         }
-                        let btnDocumentosVinculados = '<button type="button" class="btn btn-md btn-primary boton handleClickDocumentosVinculados" name="btnDocumentosVinculados" title="Ver documentos vinculados" data-id-requerimiento="' + row.id_requerimiento + '"  data-codigo-requerimiento="' + row.codigo_requerimiento + '" data-id-orden-compra="' + row.id_orden_compra + '"><i class="fas fa-folder fa-xs"></i></button>';
+                        let btnDocumentosVinculados = '<button type="button" class="btn btn-sm btn-primary boton handleClickDocumentosVinculados" name="btnDocumentosVinculados" title="Ver documentos vinculados" data-id-requerimiento="' + row.id_requerimiento + '"  data-codigo-requerimiento="' + row.codigo_requerimiento + '" data-id-orden-compra="' + row.id_orden_compra + '"><i class="fas fa-folder fa-xs"></i></button>';
                         let containerCloseBrackets = '</div>';
                         return (containerOpenBrackets + btnImprimirOrden + btnDocumentosVinculados + btnAnularOrden + containerCloseBrackets);
 
@@ -1107,12 +1124,17 @@ class ListaOrdenView {
             show: true,
             backdrop: 'true'
         });
-        this.listaOrdenCtrl.ver_orden(id_orden).then((res) => {
+        this.listaOrdenCtrl.mostrarOrden(id_orden).then((res) => {
+            console.log(res);
             if (res.status == 200) {
-                this.llenarCabeceraOrden(res.data.orden);
-                this.llenarTablaItemsOrden(res.data.detalle_orden);
+                this.llenarCabeceraOrden(res.head);
+                this.llenarTablaItemsOrden(res.detalle);
             } else {
-                alert("sin data");
+                Swal.fire(
+                    '',
+                    'Sin data para mostrar',
+                    'info'
+                );
             }
         }).catch((err) => {
             console.log(err)
@@ -1142,8 +1164,6 @@ class ListaOrdenView {
 
                 { data: 'codigo_producto' },
                 { data: 'part_number' },
-                { data: 'categoria' },
-                { data: 'subcategoria' },
                 { data: 'descripcion' },
                 { data: 'unidad_medida' },
                 { data: 'cantidad' },
@@ -1178,14 +1198,12 @@ class ListaOrdenView {
                 { 'aTargets': [0], 'className': "text-center" },
                 { 'aTargets': [1], 'className': "text-center" },
                 { 'aTargets': [2], 'className': "text-center" },
-                { 'aTargets': [3], 'className': "text-center" },
+                { 'aTargets': [3], 'className': "text-left" },
                 { 'aTargets': [4], 'className': "text-center" },
-                { 'aTargets': [5], 'className': "text-left" },
-                { 'aTargets': [6], 'className': "text-center" },
-                { 'aTargets': [7], 'className': "text-center" },
-                { 'aTargets': [8], 'className': "text-right" },
-                { 'aTargets': [9], 'className': "text-right" },
-                { 'aTargets': [10], 'className': "text-center" }
+                { 'aTargets': [5], 'className': "text-center" },
+                { 'aTargets': [6], 'className': "text-right" },
+                { 'aTargets': [7], 'className': "text-right" },
+                { 'aTargets': [8], 'className': "text-center" }
             ],
             "initComplete": function () {
 
@@ -1201,11 +1219,11 @@ class ListaOrdenView {
 
     llenarCabeceraOrden(data) {
         // console.log(data);
-        document.querySelector("span[id='inputCodigo']").textContent = data.codigo;
+        document.querySelector("span[id='inputCodigo']").textContent = data.codigo_orden;
         document.querySelector("p[id='inputProveedor']").textContent = data.razon_social + ' RUC: ' + data.nro_documento;
         document.querySelector("p[id='inputFecha']").textContent = data.fecha;
-        document.querySelector("p[id='inputMoneda']").textContent = data.descripcion_moneda;
-        document.querySelector("p[id='inputCondicion']").textContent = data.condicion + ' ' + data.plazo_dias + ' días';
+        document.querySelector("p[id='inputMoneda']").textContent = data.moneda_descripcion;
+        document.querySelector("p[id='inputCondicion']").textContent = data.condicion;
         document.querySelector("p[id='inputPlazoEntrega']").textContent = data.plazo_entrega;
         document.querySelector("p[id='inputCodigoSoftlink']").textContent = data.codigo_softlink;
         document.querySelector("p[id='inputEstado']").textContent = data.estado_doc;
@@ -1246,12 +1264,14 @@ class ListaOrdenView {
 
     }
 
-    updateEstadoOrdenCompra() {
+    updateEstadoOrdenCompra(obj) {
         let id_orden_compra = document.querySelector("div[id='modal-editar-estado-orden'] input[name='id_orden_compra'").value;
         let id_estado_orden_selected = document.querySelector("div[id='modal-editar-estado-orden'] select[name='estado_orden'").value;
         let estado_orden_selected = document.querySelector("div[id='modal-editar-estado-orden'] select[name='estado_orden'")[document.querySelector("div[id='modal-editar-estado-orden'] select[name='estado_orden'").selectedIndex].textContent;
-
+        obj.setAttribute("disabled","true");
         this.listaOrdenCtrl.actualizarEstadoOrdenPorRequerimiento(id_orden_compra, id_estado_orden_selected).then((res) => {
+            obj.removeAttribute("disabled");
+
             this.tipoVistaPorCabecera();
 
             if (res == 1) {
@@ -1283,13 +1303,14 @@ class ListaOrdenView {
 
     }
 
-    updateEstadoDetalleOrdenCompra() {
+    updateEstadoDetalleOrdenCompra(obj) {
         let id_orden_compra = document.querySelector("div[id='modal-editar-estado-detalle-orden'] input[name='id_orden_compra'").value;
         let id_detalle_orden_compra = document.querySelector("div[id='modal-editar-estado-detalle-orden'] input[name='id_detalle_orden_compra'").value;
         let id_estado_detalle_orden_selected = document.querySelector("div[id='modal-editar-estado-detalle-orden'] select[name='estado_detalle_orden'").value;
         let estado_detalle_orden_selected = document.querySelector("div[id='modal-editar-estado-detalle-orden'] select[name='estado_detalle_orden'")[document.querySelector("div[id='modal-editar-estado-detalle-orden'] select[name='estado_detalle_orden'").selectedIndex].textContent;
-
+        obj.setAttribute("disabled",true);
         this.listaOrdenCtrl.actualizarEstadoDetalleOrdenPorRequerimiento(id_detalle_orden_compra, id_estado_detalle_orden_selected).then((res) => {
+            obj.removeAttribute("disabled");
             this.tipoVistaPorItem();
             if (res == 1) {
                 Lobibox.notify('success', {
@@ -1300,29 +1321,29 @@ class ListaOrdenView {
                     delayIndicator: false,
                     msg: `El estado del item fue actualizado`
                 });
-                this.listaOrdenCtrl.ver_orden(id_orden_compra).then((res) => {
-                    if (res.status == 200) {
-                        this.llenarCabeceraOrden(res.data.orden);
-                        this.llenarTablaItemsOrden(res.data.detalle_orden);
-                    } else {
-                        Lobibox.notify('info', {
-                            title: false,
-                            size: 'mini',
-                            rounded: true,
-                            sound: false,
-                            delayIndicator: false,
-                            msg: `sin data disponible para mostrar`
-                        });
+                // this.listaOrdenCtrl.mostrarOrden(id_orden_compra).then((res) => {
+                //     if (res.status == 200) {
+                //         this.llenarCabeceraOrden(res.head);
+                //         this.llenarTablaItemsOrden(res.detalle);
+                //     } else {
+                //         Lobibox.notify('info', {
+                //             title: false,
+                //             size: 'mini',
+                //             rounded: true,
+                //             sound: false,
+                //             delayIndicator: false,
+                //             msg: `sin data disponible para mostrar`
+                //         });
 
-                    }
-                }).catch((err) => {
-                    Swal.fire(
-                        '',
-                        'Lo sentimos hubo un problema en el servidor, por favor vuelva a intentarlo',
-                        'error'
-                    );
-                    console.log(err)
-                })
+                //     }
+                // }).catch((err) => {
+                //     Swal.fire(
+                //         '',
+                //         'Lo sentimos hubo un problema en el servidor, por favor vuelva a intentarlo',
+                //         'error'
+                //     );
+                //     console.log(err)
+                // })
                 $('#modal-editar-estado-detalle-orden').modal('hide');
             } else {
                 Swal.fire(
@@ -1376,6 +1397,10 @@ class ListaOrdenView {
                         // location.reload();
                         obj.closest('tr').remove();
 
+                        if(document.querySelector("button[id='btnTipoVistaPorItemPara']").classList.contains('active')){
+                            this.tipoVistaPorItem();
+                        }
+                        
                     } else {
                         Swal.fire(
                             '',
