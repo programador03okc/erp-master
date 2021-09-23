@@ -1138,7 +1138,9 @@ class OrdenController extends Controller
     }
 
     public function detalleOrden($idOrden){
-        $detalle = OrdenCompraDetalle::select(
+        $detalle = OrdenCompraDetalle::with(['reserva'=> function ($q) {
+            $q->where('alm_reserva.estado', '=', 1);
+        }])->select(
             'log_det_ord_compra.*','alm_prod.codigo', 
             'sis_moneda.simbolo as moneda_simbolo',
             'sis_moneda.descripcion as moneda_descripcion',

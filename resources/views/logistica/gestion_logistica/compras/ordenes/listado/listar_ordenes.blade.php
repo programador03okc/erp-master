@@ -122,10 +122,10 @@
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
     <!-- <script src="{{('/js/logistica/orden/listar_ordenes.js')}}"></script> -->
     <!-- <script src="{{('/js/logistica/orden/orden_ver_detalle.js')}}"></script> -->
-    <script src="{{ asset('js/tesoreria/facturacion/archivosMgcp.js')}}"></script>
-    <script src="{{('/js/logistica/orden/listaOrdenView.js')}}"></script>
-    <script src="{{('/js/logistica/orden/listaOrdenController.js')}}"></script>
-    <script src="{{('/js/logistica/orden/listaOrdenModel.js')}}"></script>
+    <script src="{{ asset('js/tesoreria/facturacion/archivosMgcp.js')}}?v={{filemtime(public_path('js/tesoreria/facturacion/archivosMgcp.js'))}}"></script>
+    <script src="{{('/js/logistica/orden/listaOrdenView.js')}}?v={{filemtime(public_path('/js/logistica/orden/listaOrdenView.js'))}}"></script>
+    <script src="{{('/js/logistica/orden/listaOrdenController.js')}}?v={{filemtime(public_path('/js/logistica/orden/listaOrdenController.js'))}}"></script>
+    <script src="{{('/js/logistica/orden/listaOrdenModel.js')}}?v={{filemtime(public_path('/js/logistica/orden/listaOrdenModel.js'))}}"></script>
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
     <script src="{{ asset('template/plugins/loadingoverlay.min.js') }}"></script>
 

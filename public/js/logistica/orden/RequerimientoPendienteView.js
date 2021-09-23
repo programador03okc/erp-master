@@ -524,7 +524,7 @@ class RequerimientoPendienteView {
                         <th style="border: none; text-align:center;">Precio unitario</th>
                         <th style="border: none; text-align:center;">Subtotal</th>
                         <th style="border: none; text-align:center;">Motivo</th>
-                        <th style="border: none; text-align:center;">Stock comprometido</th>
+                        <th style="border: none; text-align:center;">Reserva almacén</th>
                         <th style="border: none; text-align:center;">Estado</th>
                     </tr>
                 </thead>
