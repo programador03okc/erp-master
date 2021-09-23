@@ -1181,6 +1181,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('actualizarFiltrosPendientes', 'Almacen\Movimiento\OrdenesPendientesController@actualizarFiltrosPendientes');
 
 				Route::post('ordenesPendientesExcel', 'Almacen\Movimiento\OrdenesPendientesController@ordenesPendientesExcel')->name('ordenesPendientesExcel');
+				Route::post('ingresosProcesadosExcel', 'Almacen\Movimiento\OrdenesPendientesController@ingresosProcesadosExcel')->name('ingresosProcesadosExcel');
 				Route::get('seriesExcel/{id}', 'Almacen\Movimiento\OrdenesPendientesController@seriesExcel');
 			});
 

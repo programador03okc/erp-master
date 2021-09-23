@@ -7,8 +7,14 @@ function listarIngresos() {
             text: ' Ingresar Comprobante',
             action: function () {
                 open_doc_create_seleccionadas();
-            } //, className: 'btn-success'
-        });
+            }, className: 'btn-primary disabled btnIngresarComprobante'
+        },
+            {
+                text: ' Exportar Excel',
+                action: function () {
+                    exportarIngresosProcesados();
+                }, className: 'btn-success btnExportarIngresosProcesados'
+            });
     }
 
     $("#listaIngresosAlmacen").on('search.dt', function () {
@@ -51,12 +57,46 @@ function listarIngresos() {
             $("#btnBuscarIngreso").on("click", e => {
                 tableIngresos.search($input.val()).draw();
             });
+
+            const $form = $('#formFiltrosIngresosProcesados');
+            $('#listaIngresosAlmacen_wrapper .dt-buttons').append(
+                `<div style="display:flex">
+                    <input type="text" class="form-control date-picker" size="10" id="txtIngresoProcesadoFechaInicio" 
+                        value="${$form.find('input[name=fecha_inicio]').val()}"/>
+                    <input type="text" class="form-control date-picker" size="10" id="txtIngresoProcesadoFechaFin" 
+                        value="${$form.find('input[name=fecha_fin]').val()}"/>
+                    <select class="form-control" id="selectIngresoProcesadoSede">
+                        <option value="0" selected>Mostrar Todos</option>
+                    </select>
+                    
+                </div>`
+            );
+            $('input.date-picker').datepicker({
+                language: "es",
+                orientation: "bottom auto",
+                format: 'dd-mm-yyyy',
+                autoclose: true
+            });
+            listarSedes('ingresos');
+
+            $("#txtIngresoProcesadoFechaInicio").on("change", function (e) {
+                var ini = $(this).val();
+                $form.find('input[name=fecha_inicio]').val(ini);
+                $("#listaIngresosAlmacen").DataTable().ajax.reload(null, false);
+            });
+            $("#txtIngresoProcesadoFechaFin").on("change", function (e) {
+                // $(e.preventDefault());
+                var fin = $(this).val();
+                $form.find('input[name=fecha_fin]').val(fin);
+                $("#listaIngresosAlmacen").DataTable().ajax.reload(null, false);
+            });
+            $("#selectIngresoProcesadoSede").on("change", function (e) {
+                var sed = $(this).val();
+                $form.find('input[name=id_sede]').val(sed);
+                $("#listaIngresosAlmacen").DataTable().ajax.reload(null, false);
+            });
         },
-        // drawCallback: function () {
-        //     $('#listaIngresosAlmacen tbody tr td input[type="checkbox"]').iCheck({
-        //         checkboxClass: "icheckbox_flat-blue"
-        //     });
-        // },
+
         drawCallback: function (settings, json) {
             $("#listaIngresosAlmacen_filter input").prop("disabled", false);
             $("#btnBuscarIngreso").html('<span class="glyphicon glyphicon-search" aria-hidden="true"></span>')
@@ -68,21 +108,15 @@ function listarIngresos() {
         },
         ajax: {
             url: "listarIngresos",
-            type: "POST"
+            type: "POST",
+            data: function (params) {
+                return Object.assign(params, objectifyForm($('#formFiltrosIngresosProcesados').serializeArray()))
+            }
         },
         columns: [
             { data: "id_mov_alm" },
             { data: "id_mov_alm" },
             { data: "fecha_emision" },
-            {
-                data: "numero",
-                name: "guia_com.numero",
-                render: function (data, type, row) {
-                    return row["serie"] + "-" + row["numero"];
-                }
-            },
-            // { data: "nro_documento", name: "adm_contri.nro_documento" },
-            { data: "razon_social", name: "adm_contri.razon_social" },
             {
                 data: "codigo",
                 render: function (data, type, row) {
@@ -95,6 +129,15 @@ function listarIngresos() {
                         : "";
                 }
             },
+            {
+                data: "numero",
+                name: "guia_com.numero",
+                render: function (data, type, row) {
+                    return row["serie"] + "-" + row["numero"];
+                }
+            },
+            // { data: "nro_documento", name: "adm_contri.nro_documento" },
+            { data: "razon_social", name: "adm_contri.razon_social" },
             { data: "operacion_descripcion", name: "tp_ope.descripcion" },
             { data: "almacen_descripcion", name: "alm_almacen.descripcion" },
             { data: "nombre_corto", name: "sis_usua.nombre_corto" },
@@ -224,12 +267,14 @@ function listarIngresos() {
         if (data !== null && data !== undefined) {
             if (this.checked) {
                 ingresos_seleccionados.push(data);
+                $('.btnIngresarComprobante').removeClass('disabled');
             } else {
                 var index = ingresos_seleccionados.findIndex(function (item, i) {
                     return item.id_guia_com == data.id_guia_com;
                 });
                 if (index !== null) {
                     ingresos_seleccionados.splice(index, 1);
+                    $('.btnIngresarComprobante').addClass('disabled');
                 }
             }
         }
@@ -350,3 +395,6 @@ $("#listaIngresosAlmacen tbody").on("click", "button.ver_doc", function () {
     var id_doc = $(this).data("doc");
     documentosVer(id_doc);
 });
+function exportarIngresosProcesados() {
+    $('#formFiltrosIngresosProcesados').trigger('submit');
+}
