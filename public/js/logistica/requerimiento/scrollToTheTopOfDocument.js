@@ -12,6 +12,5 @@ function scrollFunction() {
 
 // When the user clicks on the button, scroll to the top of the document
 function scrollToTheTopOfDocument() {
-
     $('html, body').animate({ scrollTop: 0 }, 'slow');
 }
