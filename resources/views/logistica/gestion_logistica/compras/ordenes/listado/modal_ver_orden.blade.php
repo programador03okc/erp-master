@@ -47,15 +47,14 @@
                     </div>
                 </div>
                 <div class="row">
-                        <table class="mytable table table-responsive table-bordered table-okc-view" 
+                    <div class="col-md-12">
+                    <table class="mytable table table-responsive table-bordered table-okc-view" 
                             id="tablaItemOrdenCompra">
                             <thead>
                                 <tr>
                                     <th width="20">#</th>
                                     <th width="20">CODIGO.</th>
                                     <th width="30">PART NUMBER</th>
-                                    <th width="40">CATEGORÍA</th>
-                                    <th width="40">SUBCATEGORÍA</th>
                                     <th width="40">DESCRIPCIÓN</th>
                                     <th width="30">UNIDAD</th>
                                     <th width="30">CANTIDAD</th>
@@ -67,6 +66,7 @@
                             </thead>
                             <tbody></tbody>
                         </table>
+                    </div>
                 </div>
 
             </div>

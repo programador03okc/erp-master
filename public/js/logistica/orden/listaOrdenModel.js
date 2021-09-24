@@ -101,19 +101,25 @@ class ListaOrdenModel {
                 });
             });
     }
-
-    ver_orden(id_orden){
+ 
+    mostrarOrden(id_orden){
         return new Promise(function(resolve, reject) {
                 $.ajax({
                     type: 'GET',
-                    url: `ver-orden/${id_orden}`,
+                    url: `mostrar-orden/${id_orden}`,
                     dataType: 'JSON',
                     success(response) {
-                        resolve(response) // Resolve promise and go to then() 
+                        resolve(response)
                     },
                     error: function(err) {
-                    reject(err) // Reject the promise and go to catch()
-                    }
+                        Swal.fire(
+                            '',
+                            'Hubo un problema al intentar mostrar la orden, por favor vuelva a intentarlo.',
+                            'error'
+                        );
+                    reject(err)
+                    },
+                    
                     });
             });
     }

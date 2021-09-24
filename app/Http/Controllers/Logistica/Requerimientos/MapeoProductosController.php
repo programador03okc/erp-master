@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Logistica\Requerimientos;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\AlmacenController;
-
+use App\Models\Almacen\DetalleRequerimiento;
+use App\Models\Almacen\Requerimiento;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Exception;
 
 class MapeoProductosController extends Controller
 {
@@ -64,32 +66,27 @@ class MapeoProductosController extends Controller
         DB::beginTransaction();
         try {
             $id_usuario = Auth::user()->id_usuario;
-            // $datax = [];
-            // foreach($request->detalle as $det){
-            //     $id_prod = $det['id_producto'];
-            //     $datax[] = [$id_prod];
-            // }
-            // dd($datax);
-            // exit();
-            $cantidadItemsHabilitados=0;
-            foreach($request->detalle as $det){
-                if($det['estado']!=7){
-                    $cantidadItemsHabilitados++;
-                }
-            }
+
+            $cantidadAnulado=0;
             $cantidadItemsMapeados=0;
+            $cantidadItemsTotal=0;
+            $mensaje =[];
             foreach($request->detalle as $det){
     
+                // anular items si existe
+                if($det['id_detalle_requerimiento'] >0 && $det['estado'] =='7'){
+                     DB::table('almacen.alm_det_req')->where('id_detalle_requerimiento', $det['id_detalle_requerimiento'])->update(['estado' => 7]); // estado anulado
+                    $cantidadAnulado++;
+                }   
+
                 if ($det['id_producto'] !== null && $det['estado'] != 7){
                     DB::table('almacen.alm_det_req')
                     ->where('id_detalle_requerimiento',$det['id_detalle_requerimiento'])
                     ->update(['id_producto'=>$det['id_producto']]);
 
-                    $cantidadItemsMapeados++;
                 } 
                 else if ($det['id_categoria'] !== null && $det['id_subcategoria'] !== null
                         && $det['id_clasif'] !== null && $det['id_producto'] == null && $det['estado'] != 7){
-                    $cantidadItemsMapeados++;
                     $id_producto = DB::table('almacen.alm_prod')->insertGetId(
                         [
                             'part_number' => $det['part_number'],
@@ -116,41 +113,47 @@ class MapeoProductosController extends Controller
                     ->update(['id_producto'=>$id_producto]);
                 }
             }
-            DB::commit();
-            $rpta = 'ok';
-        } catch (\Throwable $th) {
-            DB::rollBack();
-            $rpta = 'null';
-        }
-        return response()->json(array('response' => $rpta,'cantidad_items_mapeados'=>$cantidadItemsMapeados,'cantidad_total_items'=>$cantidadItemsHabilitados), 200);
-    }
-    public function anular_item(Request $request)
-    {
-        DB::beginTransaction();
-        try {
-            $rpta='null';
-            $cantidadAnulado=0;
-            if(count($request->detalleRequerimiento)>0){
-                foreach($request->detalleRequerimiento as $det){
-                    if($det['id_detalle_requerimiento'] >0 && $det['estado'] =='7'){
-                        $det = DB::table('almacen.alm_det_req')->where('id_detalle_requerimiento', $det['id_detalle_requerimiento'])->update(['estado' => 7]); // estado anulado
-                        $cantidadAnulado++;
-                    }           
-                    
-                }
-                if($cantidadAnulado>0){
-                    $rpta='ok';
-                }else{
-                    $rpta='sin cambios';
-                }
+
+            $DetalleRequerimiento= DetalleRequerimiento::find($request->detalle[0]['id_detalle_requerimiento']);
+            $cantidades = $this->obtenerCantidadItemsMapeados($DetalleRequerimiento->id_requerimiento);
+            $cantidadItemsMapeados=$cantidades['cantidadMapeados'];
+            $cantidadItemsTotal=$cantidades['cantidadTotal'];
+
+          
+
+            if($cantidadItemsMapeados >0){
+                $mensaje[]='Productos mapeados con éxito';
+
             }
-            
+            if($cantidadAnulado >0){
+                $mensaje[]=' se anulo ('.$cantidadAnulado.') item(s)';
+            }
+    
+
+
             DB::commit();
-        } catch (\Throwable $th) {
+            return response()->json(array('response' => 'ok','mensaje'=>$mensaje,'cantidad_items_mapeados'=>$cantidadItemsMapeados,'cantidad_total_items'=>$cantidadItemsTotal), 200);
+
+        } catch (Exception $e) {
             DB::rollBack();
-            $rpta = 'null';
+            return response()->json(array('response' => 'null','mensaje'=>'Hubo un problema al guardar el mapeo de productos. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage(),'cantidad_items_mapeados'=>$cantidadItemsMapeados,'cantidad_total_items'=>$cantidadItemsTotal), 200);
         }
-        return response()->json(array('response' => $rpta), 200);
+    }
+
+    public function obtenerCantidadItemsMapeados($idRequerimiento){
+        $cantidadItemsTotal=0;
+        $cantidadItemsMapeados=0;
+
+        $todoDetalleRequerimiento = DetalleRequerimiento::where('id_requerimiento',$idRequerimiento)->where('estado','!=',7)->get();
+
+        $cantidadItemsTotal = count($todoDetalleRequerimiento);
+        foreach ($todoDetalleRequerimiento as $key => $value) {
+            if($value->id_producto >0){
+                $cantidadItemsMapeados++;
+            }
+        }
+
+        return ['cantidadTotal'=>$cantidadItemsTotal,'cantidadMapeados'=>$cantidadItemsMapeados];
     }
 
 }

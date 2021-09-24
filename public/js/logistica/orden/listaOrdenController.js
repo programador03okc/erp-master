@@ -48,8 +48,8 @@ class ListaOrdenCtrl {
         
     }
     
-    ver_orden(id){
-        return this.listaOrdenModel.ver_orden(id);
+    mostrarOrden(id){
+        return this.listaOrdenModel.mostrarOrden(id);
     }
     
     actualizarEstadoOrdenPorRequerimiento(id_orden_compra,id_estado_orden_selected){

@@ -109,7 +109,7 @@ function mostrar_detalle() {
                     title="Anular" >
                     <i class="fas fa-times"></i>
                 </button>
-                <button type="button" title="Restablecer" class="restablecer btn-xs btn btn-primary"><i class="fas fa-undo"></i></button>
+                <button type="button" title="Restablecer" data-id="${element.id_detalle_requerimiento}" class="restablecer btn-xs btn btn-primary"><i class="fas fa-undo"></i></button>
                 `;
 
         } else {
@@ -121,7 +121,6 @@ function mostrar_detalle() {
                     title="Anular" >
                     <i class="fas fa-times"></i>
                 </button>
-                <button type="button" title="Restablecer" class="restablecer btn-xs btn btn-primary oculto"><i class="fas fa-undo"></i></button>
                 `;
 
         }
@@ -148,6 +147,10 @@ $('#detalleItemsRequerimiento tbody').on("click", "button.anular", function (e) 
     var id = $(this).data('id');
     anularProducto(partnumber, desc, id, e.currentTarget);
 });
+$('#detalleItemsRequerimiento tbody').on("click", "button.restablecer", function (e) {
+    var id = $(this).data('id');
+    restablecerItemAnulado(id, e.currentTarget);
+});
 
 function anularProducto(partnumber, desc, id, obj) {
     detalle.forEach((element, index) => {
@@ -170,37 +173,61 @@ function anularProducto(partnumber, desc, id, obj) {
     if (tdBotoneraAccionMapeo.querySelector("button[class~='restablecer']") == null) {
         let buttonRestablecerItem = document.createElement("button");
         buttonRestablecerItem.type = "button";
+        buttonRestablecerItem.dataset.id = id;
         buttonRestablecerItem.title = "Restablecer";
         buttonRestablecerItem.className = "restablecer btn-xs btn btn-primary";
         buttonRestablecerItem.innerHTML = "<i class='fas fa-undo'></i>";
-        buttonRestablecerItem.addEventListener('click', function () {
+        // buttonRestablecerItem.addEventListener('click', function(){
+        //     restablecerItemAnulado(id,obj);
+        // });
+        // buttonRestablecerItem.addEventListener('click', function () {
 
-            detalle.forEach((element, index) => {
-                if (element.id_detalle_requerimiento == id) {
-                    detalle[index].estado = 1;
-                    Lobibox.notify('info', {
-                        title: false,
-                        size: 'mini',
-                        rounded: true,
-                        sound: false,
-                        delayIndicator: false,
-                        msg: `Item restablecido`
-                    });
-                }
-            });
+        //     detalle.forEach((element, index) => {
+        //         if (element.id_detalle_requerimiento == id) {
+        //             detalle[index].estado = 1;
+        //             Lobibox.notify('info', {
+        //                 title: false,
+        //                 size: 'mini',
+        //                 rounded: true,
+        //                 sound: false,
+        //                 delayIndicator: false,
+        //                 msg: `Item restablecido`
+        //             });
+        //         }
+        //     });
+        
+        //     obj.closest("td").querySelector("button[class~='anular']").classList.remove("oculto")
+        //     obj.closest("td").querySelector("button[class~='restablecer']").classList.add("oculto")
+        //     obj.closest("tr").classList.remove('bg-danger');
 
-            obj.closest("td").querySelector("button[class~='anular']").classList.remove("oculto")
-            obj.closest("td").querySelector("button[class~='restablecer']").classList.add("oculto")
-            obj.closest("tr").classList.remove('bg-danger');
-
-
-        }, false);
+        // }, false);
         tdBotoneraAccionMapeo.appendChild(buttonRestablecerItem);
     } else {
         obj.closest("td").querySelector("button[class~='restablecer']").classList.remove("oculto")
 
     }
 
+}
+
+function restablecerItemAnulado(id,obj){
+
+    detalle.forEach((element, index) => {
+        if (element.id_detalle_requerimiento == id) {
+            detalle[index].estado = 1;
+            Lobibox.notify('info', {
+                title: false,
+                size: 'mini',
+                rounded: true,
+                sound: false,
+                delayIndicator: false,
+                msg: `Item restablecido`
+            });
+        }
+    });
+
+    obj.closest("td").querySelector("button[class~='anular']").classList.remove("oculto")
+    obj.closest("td").querySelector("button[class~='restablecer']").classList.add("oculto")
+    obj.closest("tr").classList.remove('bg-danger');
 }
 
 function openAsignarProducto(partnumber, desc, id, type) {
@@ -263,63 +290,6 @@ $("#form-mapeoItemsRequerimiento").on("submit", function (e) {
                 // }
             });
 
-
-            let cantidadItemAnulados = 0;
-            detalle.forEach(element => {
-                if (element.estado == 7) {
-                    cantidadItemAnulados++;
-                }
-            });
-            if (cantidadItemAnulados > 0) {
-                $.ajax({
-                    type: 'POST',
-                    url: 'anular_item',
-                    data: {
-                        detalleRequerimiento: detalle
-                    },
-                    dataType: 'JSON',
-                    success: function (response) {
-                        if (response.response == 'ok') {
-                            // console.log(response);
-                            Lobibox.notify('success', {
-                                title: false,
-                                size: 'mini',
-                                rounded: true,
-                                sound: false,
-                                delayIndicator: false,
-                                msg: `Se guardo los item(s) anulados con éxito`
-                            });
-
-
-
-                            // calcular cantidad por mapear
-                            let cantidadPorMapear = 0;
-                            detalle.forEach((element) => {
-                                if (!element.id_producto > 0 && element.estado == 1) {
-                                    cantidadPorMapear++;
-                                }
-                            });
-
-                            // actualizar cantidad de items por mapear en TR
-                            objBtnMapeo.querySelector("span[class='badge']").textContent = cantidadPorMapear;
-                            objBtnMapeo.closest("tr").querySelector("input[type='checkbox']").dataset.mapeosPendientes = cantidadPorMapear;
-
-
-                        }
-                    }
-                }).fail(function (jqXHR, textStatus, errorThrown) {
-                    console.log(jqXHR);
-                    Swal.fire(
-                        '',
-                        'Lo sentimos hubo un error en el servidor al intentar anular el item, por favor vuelva a intentarlo',
-                        'error'
-                    );
-                    console.log(textStatus);
-                    console.log(errorThrown);
-                });
-            }
-            // let data = 'detalle='+JSON.stringify(lista);
-
             $.ajax({
                 type: 'POST',
                 url: 'guardar_mapeo_productos',
@@ -336,7 +306,7 @@ $("#form-mapeoItemsRequerimiento").on("submit", function (e) {
                             rounded: true,
                             sound: false,
                             delayIndicator: false,
-                            msg: `Productos mapeados con éxito`
+                            msg: response.mensaje.toString()
                         });
                         $('#modal-mapeoItemsRequerimiento').modal('hide');
 
