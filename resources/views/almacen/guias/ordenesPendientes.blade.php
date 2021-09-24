@@ -39,9 +39,9 @@ Pendientes de Ingreso
                         <br>
                         <form id="formFiltrosOrdenesPendientes" method="POST" target="_blank" action="{{route('almacen.movimientos.pendientes-ingreso.ordenesPendientesExcel')}}">
                             @csrf()
-                            <input type="hidden" name="fecha_fin" value="{{$fechaActual->format('d-m-Y')}}"/>
-                            <input type="hidden" name="fecha_inicio" value="{{$fechaActual->addMonths(-3)->format('d-m-Y')}}"/>
-                            <input type="hidden" name="id_sede" value="0">
+                            <input type="hidden" name="ordenes_fecha_fin" value="{{$fechaActual->format('d-m-Y')}}"/>
+                            <input type="hidden" name="ordenes_fecha_inicio" value="{{$fechaActual->addMonths(-3)->format('d-m-Y')}}"/>
+                            <input type="hidden" name="ordenes_id_sede" value="0">
                         </form>
                         <div class="row">
                             <div class="col-md-12">
@@ -99,9 +99,9 @@ Pendientes de Ingreso
                         <br>
                         <form id="formFiltrosIngresosProcesados" method="POST" target="_blank" action="{{route('almacen.movimientos.pendientes-ingreso.ingresosProcesadosExcel')}}">
                             @csrf()
-                            <input type="hidden" name="fecha_fin" value="{{$fechaActual2->format('d-m-Y')}}"/>
-                            <input type="hidden" name="fecha_inicio" value="{{$fechaActual2->addMonths(-3)->format('d-m-Y')}}"/>
-                            <input type="hidden" name="id_sede" value="0">
+                            <input type="hidden" name="ingreso_fecha_fin" value="{{$fechaActual2->format('d-m-Y')}}"/>
+                            <input type="hidden" name="ingreso_fecha_inicio" value="{{$fechaActual2->addMonths(-3)->format('d-m-Y')}}"/>
+                            <input type="hidden" name="ingreso_id_sede" value="0">
                         </form>
 
                         <div class="row">

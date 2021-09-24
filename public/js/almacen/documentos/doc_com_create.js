@@ -248,7 +248,7 @@ $('#detalleItems tbody').on("change", ".descripcion", function () {
 $('#detalleItems tbody').on("change", ".unitario", function () {
 
     let id_guia_com_det = $(this).data('id');
-    let unitario = parseFloat($(this).val());
+    let unitario = parseFloat($(this).val() !== '' ? $(this).val() : 0);
     console.log('unitario: ' + unitario);
     // let item = listaItems.find(element => element.id_guia_com_det == id_guia_com_det);
     listaItems.forEach(element => {
@@ -265,7 +265,7 @@ $('#detalleItems tbody').on("change", ".unitario", function () {
 $('#detalleItems tbody').on("change", ".porcentaje_dscto", function () {
 
     let id_guia_com_det = $(this).data('id');
-    let porcentaje_dscto = parseFloat($(this).val());
+    let porcentaje_dscto = parseFloat($(this).val() !== '' ? $(this).val() : 0);
     let unitario = 0;
     console.log('porcentaje_dscto: ' + porcentaje_dscto);
     // let item = listaItems.find(element => element.id_guia_com_det == id_guia_com_det);
@@ -284,7 +284,7 @@ $('#detalleItems tbody').on("change", ".porcentaje_dscto", function () {
 $('#detalleItems tbody').on("change", ".total_dscto", function () {
 
     let id_guia_com_det = $(this).data('id');
-    let total_dscto = parseFloat($(this).val());
+    let total_dscto = parseFloat($(this).val() !== '' ? $(this).val() : 0);
     console.log('total_dscto: ' + total_dscto);
     // let item = listaItems.find(element => element.id_guia_com_det == id_guia_com_det);
     listaItems.forEach(element => {
@@ -366,7 +366,7 @@ function guardar_doc_create(data) {
                 $('#modal-doc_create').modal('hide');
                 if (origenDoc == 'ing') {
                     // listarIngresos();
-                    $('#listaIngresosAlmacen').DataTable().ajax.reload();
+                    $("#listaIngresosAlmacen").DataTable().ajax.reload(null, false);
                 }
             }
         }

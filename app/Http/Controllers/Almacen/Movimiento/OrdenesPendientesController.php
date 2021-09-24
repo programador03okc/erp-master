@@ -164,17 +164,17 @@ class OrdenesPendientesController extends Controller
             ]);
         // whereBetween('created_at', ['2018/11/10 12:00', '2018/11/11 10:30'])
         $array_sedes = [];
-        if ($request->fecha_inicio !== null) {
-            $data = $data->whereDate('log_ord_compra.fecha', '>=', $request->fecha_inicio);
+        if ($request->ordenes_fecha_inicio !== null) {
+            $data = $data->whereDate('log_ord_compra.fecha', '>=', $request->ordenes_fecha_inicio);
         }
-        if ($request->fecha_fin !== null) {
-            $data = $data->whereDate('log_ord_compra.fecha', '<=', $request->fecha_fin);
+        if ($request->ordenes_fecha_fin !== null) {
+            $data = $data->whereDate('log_ord_compra.fecha', '<=', $request->ordenes_fecha_fin);
         }
-        if ($request->id_sede !== null) {
-            if ($request->id_sede == 0) {
+        if ($request->ordenes_id_sede !== null) {
+            if ($request->ordenes_id_sede == 0) {
                 $array_sedes = $this->sedesPorUsuarioArray();
             } else {
-                $array_sedes[] = [$request->id_sede];
+                $array_sedes[] = [$request->ordenes_id_sede];
             }
             $data = $data->whereIn('log_ord_compra.id_sede', $array_sedes);
         }
@@ -316,17 +316,17 @@ class OrdenesPendientesController extends Controller
             ->where([['mov_alm.estado', '!=', 7], ['mov_alm.id_tp_mov', '=', 1]]);
 
         $array_sedes = [];
-        if ($request->fecha_inicio !== null) {
-            $data = $data->whereDate('mov_alm.fecha_emision', '>=', $request->fecha_inicio);
+        if ($request->ingreso_fecha_inicio !== null) {
+            $data = $data->whereDate('mov_alm.fecha_emision', '>=', $request->ingreso_fecha_inicio);
         }
-        if ($request->fecha_fin !== null) {
-            $data = $data->whereDate('mov_alm.fecha_emision', '<=', $request->fecha_fin);
+        if ($request->ingreso_fecha_fin !== null) {
+            $data = $data->whereDate('mov_alm.fecha_emision', '<=', $request->ingreso_fecha_fin);
         }
-        if ($request->id_sede !== null) {
-            if ($request->id_sede == 0) {
+        if ($request->ingreso_id_sede !== null) {
+            if ($request->ingreso_id_sede == 0) {
                 $array_sedes = $this->sedesPorUsuarioArray();
             } else {
-                $array_sedes[] = [$request->id_sede];
+                $array_sedes[] = [$request->ingreso_id_sede];
             }
             $data = $data->whereIn('alm_almacen.id_sede', $array_sedes);
         }

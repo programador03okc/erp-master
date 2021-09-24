@@ -34,28 +34,8 @@ function listarRequerimientosPendientes() {
                     }
                 }, className: "text-center"
             },
-            // {
-            //     'render': function (data, type, row) {
-            //         return (row['orden_am'] !== null ? row['orden_am'] + `<a href="https://apps1.perucompras.gob.pe//OrdenCompra/obtenerPdfOrdenPublico?ID_OrdenCompra=${row['id_oc_propia']}&ImprimirCompleto=1">
-            //     <span class="label label-success">Ver O.E.</span></a>
-            //     <a href="${row['url_oc_fisica']}">
-            //     <span class="label label-warning">Ver O.F.</span></a>` : '');
-            //     }
-            // },
             { 'data': 'codigo_oportunidad', 'name': 'oc_propias_view.codigo_oportunidad' },
-            // {
-            //     'render': function (data, type, row) {
-            //         return formatNumber.decimal(row['monto_total'], 'S/', 2);
-            //     }
-            // },
             { 'data': 'cliente_razon_social', 'name': 'adm_contri.razon_social' },
-            // {'data': 'codigo'},
-            // {
-            //     'render': function (data, type, row) {
-            //         return (row['fecha_requerimiento'] !== null ? formatDate(row['fecha_requerimiento']) : '');
-            //     }
-            // },
-            // { 'data': 'user_name', 'name': 'users.name' },
             { 'data': 'responsable', 'name': 'sis_usua.nombre_corto' },
             { 'data': 'sede_descripcion_req', name: 'sede_req.descripcion', className: "text-center" },
             {
@@ -71,58 +51,8 @@ function listarRequerimientosPendientes() {
                         '<i class="fas fa-exchange-alt"></i></button>' : ''))
                 }
             },
-            // {'render': function (data, type, row){
-            //     return  (row['count_despachos_internos'] > 0 ? ('<span class="label label-danger">'+row['count_despachos_internos']+' </span>') : '')+
-            //             (row['codigo_od'] !== null ? ('<span class="label label-primary">'+row['codigo_od']+'</span>') : '');
-            //     }
-            // },
-            // {
-            //     'render': function (data, type, row) {
-            //         if (row['estado'] == 17) {
-            //             return 'Pendiente de que <strong>Almacén</strong> recepcione la Transferencia';
-            //         }
-            //         else if (row['estado'] == 19 && row['count_transferencia'] > 0 &&
-            //             row['count_transferencia'] !== row['count_transferencia_recibida']) {
-            //             return 'Pendiente de que <strong>Almacén</strong> envíe la Transferencia';
-            //         }
-            //         else if (row['estado'] == 19 && row['id_od'] == null &&
-            //             row['count_transferencia'] == row['count_transferencia_recibida']) {
-            //             return 'Pendiente de que <strong>Distribución</strong> genere la OD';
-            //         }
-            //         else if (row['estado'] == 19 && row['id_od'] !== null) {
-            //             return 'Pendiente de que <strong>Almacén</strong> genere la Salida';
-            //         }
-            //         else if (row['id_tipo_requerimiento'] !== 1 && row['estado'] == 19 && row['id_od'] == null) {
-            //             return 'Pendiente de que <strong>Distribución</strong> genere la OD';
-            //         }
-            //         else if (row['estado'] == 22) {
-            //             return 'Pendiente de que <strong>Customización</strong> realice la transformación';
-            //         }
-            //         // else if (row['estado'] == 10){
-            //         //     return 'Pendiente de que <strong>Distribución</strong> realice el Despacho Externo';
-            //         // }
-            //         else if (row['estado'] == 27) {
-            //             return 'Pendiente de que <strong>Almacén</strong> complete los ingresos';
-            //         }
-            //         else if (row['estado'] == 28) {
-            //             return 'Pendiente de que <strong>Compras</strong> genere la Orden de Despacho';
-            //         }
-            //         // else if (row['estado'] == 29){
-            //         //     return 'Pendiente de que <strong>Almacén</strong> genere la Salida';
-            //         // }
-            //     }
-            // }
         ],
         'order': [[0, "desc"]],
-        // "createdRow": function( row, data, dataIndex){
-        //     if(data.estado == 28){
-        //         $(row).css('background-color', '#FACABF');
-        //             // $(row.childNodes[1]).css('font-weight', 'bold');
-        //     }else if(data.estado == 27){
-        //         $(row).css('background-color', '#FCF699');
-
-        //     }
-        // },
         'columnDefs': [
             { 'aTargets': [0], 'sClass': 'invisible' },
             {
@@ -156,15 +86,6 @@ function listarRequerimientosPendientes() {
                                 `<button type="button" class="anular_od btn btn-flat btn-danger boton" data-toggle="tooltip" 
                                     data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Anular Orden Despacho" >
                                     <i class="fas fa-trash"></i></button>` : '')
-                        // (row['estado'] == 9 ? 
-                        // `<button type="button" class="adjuntar btn btn-${row['count_despacho_adjuntos']>0 ? 'warning' : 'default' } boton" data-toggle="tooltip" 
-                        //     data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Adjuntar Boleta/Factura" >
-                        //     <i class="fas fa-paperclip"></i></button>` : '')
-                        // } else {
-                        //     return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
-                        //     'data-placement="bottom" title="Ver Detalle" data-id="'+row['id_requerimiento']+'">'+
-                        //     '<i class="fas fa-chevron-down"></i></button>'
-                        // }
                         + '</div>'
 
                 }, targets: 10

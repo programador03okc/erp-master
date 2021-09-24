@@ -1,3 +1,4 @@
+let tableIngresos;
 
 function listarIngresos() {
     var vardataTables = funcDatatables();
@@ -35,7 +36,7 @@ function listarIngresos() {
         }
     });
 
-    let tableIngresos = $("#listaIngresosAlmacen").DataTable({
+    tableIngresos = $("#listaIngresosAlmacen").DataTable({
         dom: vardataTables[1],
         buttons: botones,
         language: vardataTables[0],
@@ -62,9 +63,9 @@ function listarIngresos() {
             $('#listaIngresosAlmacen_wrapper .dt-buttons').append(
                 `<div style="display:flex">
                     <input type="text" class="form-control date-picker" size="10" id="txtIngresoProcesadoFechaInicio" 
-                        value="${$form.find('input[name=fecha_inicio]').val()}"/>
+                        value="${$form.find('input[name=ingreso_fecha_inicio]').val()}"/>
                     <input type="text" class="form-control date-picker" size="10" id="txtIngresoProcesadoFechaFin" 
-                        value="${$form.find('input[name=fecha_fin]').val()}"/>
+                        value="${$form.find('input[name=ingreso_fecha_fin]').val()}"/>
                     <select class="form-control" id="selectIngresoProcesadoSede">
                         <option value="0" selected>Mostrar Todos</option>
                     </select>
@@ -81,18 +82,18 @@ function listarIngresos() {
 
             $("#txtIngresoProcesadoFechaInicio").on("change", function (e) {
                 var ini = $(this).val();
-                $form.find('input[name=fecha_inicio]').val(ini);
+                $form.find('input[name=ingreso_fecha_inicio]').val(ini);
                 $("#listaIngresosAlmacen").DataTable().ajax.reload(null, false);
             });
             $("#txtIngresoProcesadoFechaFin").on("change", function (e) {
                 // $(e.preventDefault());
                 var fin = $(this).val();
-                $form.find('input[name=fecha_fin]').val(fin);
+                $form.find('input[name=ingreso_fecha_fin]').val(fin);
                 $("#listaIngresosAlmacen").DataTable().ajax.reload(null, false);
             });
             $("#selectIngresoProcesadoSede").on("change", function (e) {
                 var sed = $(this).val();
-                $form.find('input[name=id_sede]').val(sed);
+                $form.find('input[name=ingreso_id_sede]').val(sed);
                 $("#listaIngresosAlmacen").DataTable().ajax.reload(null, false);
             });
         },

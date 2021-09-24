@@ -96,9 +96,9 @@ function listarOrdenesPendientes() {
             $('#ordenesPendientes_wrapper .dt-buttons').append(
                 `<div style="display:flex">
                     <input type="text" class="form-control date-picker" size="10" id="txtOrdenPendienteFechaInicio" 
-                        value="${$form.find('input[name=fecha_inicio]').val()}"/>
+                        value="${$form.find('input[name=ordenes_fecha_inicio]').val()}"/>
                     <input type="text" class="form-control date-picker" size="10" id="txtOrdenPendienteFechaFin" 
-                        value="${$form.find('input[name=fecha_fin]').val()}"/>
+                        value="${$form.find('input[name=ordenes_fecha_fin]').val()}"/>
                     <select class="form-control" id="selectOrdenPendienteSede">
                         <option value="0" selected>Mostrar Todos</option>
                     </select>
@@ -115,18 +115,18 @@ function listarOrdenesPendientes() {
 
             $("#txtOrdenPendienteFechaInicio").on("change", function (e) {
                 var ini = $(this).val();
-                $('#formFiltrosOrdenesPendientes').find('input[name=fecha_inicio]').val(ini);
+                $('#formFiltrosOrdenesPendientes').find('input[name=ordenes_fecha_inicio]').val(ini);
                 $("#ordenesPendientes").DataTable().ajax.reload(null, false);
             });
             $("#txtOrdenPendienteFechaFin").on("change", function (e) {
                 // $(e.preventDefault());
                 var fin = $(this).val();
-                $('#formFiltrosOrdenesPendientes').find('input[name=fecha_fin]').val(fin);
+                $('#formFiltrosOrdenesPendientes').find('input[name=ordenes_fecha_fin]').val(fin);
                 $("#ordenesPendientes").DataTable().ajax.reload(null, false);
             });
             $("#selectOrdenPendienteSede").on("change", function (e) {
                 var sed = $(this).val();
-                $('#formFiltrosOrdenesPendientes').find('input[name=id_sede]').val(sed);
+                $('#formFiltrosOrdenesPendientes').find('input[name=ordenes_id_sede]').val(sed);
                 $("#ordenesPendientes").DataTable().ajax.reload(null, false);
             });
         },

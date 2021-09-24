@@ -433,7 +433,7 @@ $("#detalleItems tbody").on("change", ".cantidad", function () {
 
 $("#detalleItems tbody").on("change", ".unitario", function () {
     let id = $(this).data("id");
-    let unitario = parseFloat($(this).val());
+    let unitario = parseFloat($(this).val() !== '' ? $(this).val() : 0);
     console.log("unitario: " + unitario);
 
     listaItems.forEach(element => {
