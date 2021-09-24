@@ -501,7 +501,7 @@ class RequerimientoController extends Controller
                     'fondos_proveedores.descripcion as fondo_proveedor',
                     'cc_am_filas.id_ultimo_usuario as id_autor',
                     'users.name as nombre_autor',
-                    'cc_am_filas.created_ad',
+                    'cc_am_filas.created_at',
                     'cc_am_filas.part_no_producto_transformado',
                     'cc_am_filas.descripcion_producto_transformado',
                     'cc_am_filas.comentario_producto_transformado'
