@@ -89,7 +89,7 @@ function proveedorModal(){
 }
 
 function selectProveedor(obj){
-
+    console.log(obj);
     let idProveedor= obj.dataset.idProveedor;
     let idContribuyente= obj.dataset.idContribuyente;
     let razonSocial= obj.dataset.razonSocial? obj.dataset.razonSocial:"";

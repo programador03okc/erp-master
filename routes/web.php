@@ -730,7 +730,6 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('mostrar_prods_sugeridos/{part}/{desc}', 'Almacen\Catalogo\ProductoController@mostrar_prods_sugeridos');
 					Route::post('guardar_mapeo_productos', 'Logistica\Requerimientos\MapeoProductosController@guardar_mapeo_productos')->name('guardar-mapeo-productos');
 					Route::get('mostrar_categorias_tipo/{id}', 'Almacen\Catalogo\ProductoController@mostrar_categorias_tipo');
-					Route::post('anular_item', 'Logistica\Requerimientos\MapeoProductosController@anular_item')->name('anular-item');
 				});
 			});
 
@@ -757,7 +756,6 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('listarProductosSugeridos', 'Almacen\Catalogo\ProductoController@listarProductosSugeridos');
 					Route::get('mostrar_prods_sugeridos/{part}/{desc}', 'Almacen\Catalogo\ProductoController@mostrar_prods_sugeridos');
 					Route::post('guardar_mapeo_productos', 'Logistica\Requerimientos\MapeoProductosController@guardar_mapeo_productos')->name('guardar-mapeo-productos');
-					Route::post('anular_item', 'Logistica\Requerimientos\MapeoProductosController@anular_item')->name('anular-item');
 					Route::get('mostrar_categorias_tipo/{id}', 'Almacen\Catalogo\ProductoController@mostrar_categorias_tipo');
 					Route::get('detalle-requerimiento/{idRequerimiento?}', 'Logistica\RequerimientoController@detalleRequerimiento')->name('detalle-requerimientos');
 					Route::get('detalle-requeriento-para-reserva/{idDetalleRequerimiento?}', 'Logistica\RequerimientoController@detalleRequerimientoParaReserva')->name('detalle-requerimiento-para-reserva');
