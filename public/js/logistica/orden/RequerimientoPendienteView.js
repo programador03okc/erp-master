@@ -1730,7 +1730,7 @@ class RequerimientoPendienteView {
                 },
                 {
                     'render': function (data, type, row) {
-                        return `${row['fecha_creacion']}`;
+                        return `${row['created_at']}`;
                     }
                 }
             ],
