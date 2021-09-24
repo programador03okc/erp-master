@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Almacen\Movimiento\OrdenesPendientesController;
 use App\Models\Almacen\Almacen;
 use App\Models\Almacen\DetalleRequerimiento;
+use App\Models\Almacen\ProductoUbicacion;
 use App\Models\Almacen\Requerimiento;
 use App\Models\Almacen\Reserva;
 use App\Models\Almacen\UnidadMedida;
@@ -349,6 +350,16 @@ class ComprasPendientesController extends Controller
             $ReservasProductoActivas = Reserva::where([['id_detalle_requerimiento',$request->idDetalleRequerimiento],
             ['estado',1]])->get();
             $codigoOIdReservaAnulada= '';
+
+            $hasStock=false;
+            $stock=0;
+            $saldo=0;
+            $productoUbicacion=ProductoUbicacion::where([['id_producto',$request->idProducto],['id_almacen',$request->almacenReserva],['estado',1]])->first();
+            if(!empty($productoUbicacion)){
+                $stock= $productoUbicacion->stock;
+                $hasStock=true;
+            }
+
             foreach ($ReservasProductoActivas as $value) {
                 if($value->id_almacen_reserva == $request->almacenReserva && $value->stock_comprometido == $request->cantidadReserva){
                     $crearNuevaReserva=false;
@@ -377,11 +388,19 @@ class ComprasPendientesController extends Controller
                 $reserva->estado = 1;
                 $reserva->save();
 
+                if($stock >0 ){
+                    $saldo = floatval($stock) - floatval($request->cantidadReserva);
+                }
+    
             }
 
             
             if($reserva->id_reserva > 0){
-                $mensaje.=' Se creo nueva reserva '.$reserva->codigo;
+                if($hasStock ==true){
+                    $mensaje.=' Se creo nueva reserva '.$reserva->codigo.', con un saldo actual de '.$saldo.' unidades';
+                }else{
+                    $mensaje.=' Se creo nueva reserva '.$reserva->codigo.', el producto no cuenta con stock';
+                }
                 OrdenesPendientesController::validaProdUbi($request->idProducto, $request->almacenReserva);
                 if(strlen($codigoOIdReservaAnulada)>0){
                     $mensaje.=' en remplazo por la reserva '.$codigoOIdReservaAnulada;
