@@ -399,7 +399,7 @@ class ComprasPendientesController extends Controller
                 if($hasStock ==true){
                     $mensaje.=' Se creo nueva reserva '.$reserva->codigo.', con un saldo actual de '.$saldo.' unidades';
                 }else{
-                    $mensaje.=' Se creo nueva reserva '.$reserva->codigo.', el producto no cuenta con stock';
+                    $mensaje.=' Se creo nueva reserva '.$reserva->codigo.', sin saldo (el producto no se encontro en el almacén seleccionado)';
                 }
                 OrdenesPendientesController::validaProdUbi($request->idProducto, $request->almacenReserva);
                 if(strlen($codigoOIdReservaAnulada)>0){
