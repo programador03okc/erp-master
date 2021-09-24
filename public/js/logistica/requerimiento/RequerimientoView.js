@@ -64,21 +64,21 @@ class RequerimientoView {
         });
 
         $('#modal-partidas').on("click","button.handleClickSelectPartida", (e)=>{
-            this.selectPartida(e.target.dataset.idPartida);
+            this.selectPartida(e.currentTarget.dataset.idPartida);
         });
 
         $('#modal-partidas').on("click","h5.handleClickapertura", (e)=>{
-            this.apertura(e.target.dataset.idPresup);
+            this.apertura(e.currentTarget.dataset.idPresup);
             this.changeBtnIcon(e);
         });
 
         $('#modal-centro-costos').on("click","h5.handleClickapertura", (e)=>{
-            this.apertura(e.target.dataset.idPresup);
+            this.apertura(e.currentTarget.dataset.idPresup);
             this.changeBtnIcon(e);
         });
 
         $('#modal-centro-costos').on("click","button.handleClickSelectCentroCosto", (e)=>{
-            this.selectCentroCosto(e.target.dataset.idCentroCosto,e.target.dataset.codigo,e.target.dataset.descripcionCentroCosto);
+            this.selectCentroCosto(e.currentTarget.dataset.idCentroCosto,e.currentTarget.dataset.codigo,e.currentTarget.dataset.descripcionCentroCosto);
         });
             
         $('#ListaDetalleRequerimiento tbody').on("click","button.handleClickCargarModalCentroCostos", (e)=>{

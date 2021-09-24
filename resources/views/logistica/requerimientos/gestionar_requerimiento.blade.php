@@ -467,7 +467,7 @@ Crear / editar requerimiento
                                     <th>Descripción de item</th>
                                     <th style="width: 10%">Unidad</th>
                                     <th style="width: 6%">Cantidad</th>
-                                    <th style="width: 8%">Precio U.<span name="simboloMoneda">S/</span> <em>(Sin IGV)</em></th>
+                                    <th style="width: 8%">Precio Unit.<span name="simboloMoneda">S/</span> <em>(Sin IGV)</em></th>
                                     <th style="width: 6%">Subtotal</th>
                                     <th style="width: 15%">Motivo</th>
                                     <th style="width: 7%">Acciones</th>
@@ -569,7 +569,7 @@ Crear / editar requerimiento
 
         <div class="row">
             <div class="col-md-12">
-                <button onclick="scrollToTheTopOfDocument()" id="btnVolverArriba" title="Volver Arriba"><i class="fas fa-arrow-circle-up"></i></button>
+                <button type="button" onclick="scrollToTheTopOfDocument()" id="btnVolverArriba" title="Volver Arriba"><i class="fas fa-arrow-circle-up"></i></button>
                 <!-- <button type="submit" class="btn-okc" id="btnGuardar"><i class="fas fa-save fa-lg"></i> Guardar</button> -->
             </div>
         </div>
