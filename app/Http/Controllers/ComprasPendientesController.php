@@ -397,7 +397,7 @@ class ComprasPendientesController extends Controller
             
             if($reserva->id_reserva > 0){
                 if($hasStock ==true){
-                    $mensaje.=' Se creo nueva reserva '.$reserva->codigo.', con un saldo actual de '.$saldo.' unidades';
+                    $mensaje.=' Se creo nueva reserva '.$reserva->codigo.', saldo actual '.$saldo.' unidades';
                 }else{
                     $mensaje.=' Se creo nueva reserva '.$reserva->codigo.', sin saldo (el producto no se encontró en el almacén seleccionado)';
                 }
