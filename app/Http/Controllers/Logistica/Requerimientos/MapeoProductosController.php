@@ -9,7 +9,6 @@ use App\Models\Almacen\DetalleRequerimiento;
 use App\Models\Almacen\Requerimiento;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use Debugbar;
 use Exception;
 
 class MapeoProductosController extends Controller

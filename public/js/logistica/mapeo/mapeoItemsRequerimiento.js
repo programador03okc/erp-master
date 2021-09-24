@@ -290,64 +290,6 @@ $("#form-mapeoItemsRequerimiento").on("submit", function (e) {
                 // }
             });
 
-
-            // let cantidadItemAnulados = 0;
-            // detalle.forEach(element => {
-            //     if (element.estado == 7) {
-            //         cantidadItemAnulados++;
-            //     }
-            // });
-            // if (cantidadItemAnulados > 0) {
-            //     $.ajax({
-            //         type: 'POST',
-            //         url: 'anular_item',
-            //         data: {
-            //             detalleRequerimiento: detalle
-            //         },
-            //         dataType: 'JSON',
-            //         success: function (response) {
-            //             if (response.response == 'ok') {
-            //                 // console.log(response);
-            //                 Lobibox.notify('success', {
-            //                     title: false,
-            //                     size: 'mini',
-            //                     rounded: true,
-            //                     sound: false,
-            //                     delayIndicator: false,
-            //                     msg: `Se guardo los item(s) anulados con éxito`
-            //                 });
-
-
-            //                 let cantidadPorMapear = parseInt(response.cantidad_total_items) - parseInt(response.cantidad_items_mapeados);
-
-            //                 // calcular cantidad por mapear
-            //                 // let cantidadPorMapear = 0;
-            //                 // detalle.forEach((element) => {
-            //                 //     if (!element.id_producto > 0 && element.estado == 1) {
-            //                 //         cantidadPorMapear++;
-            //                 //     }
-            //                 // });
-
-            //                 // actualizar cantidad de items por mapear en TR
-            //                 objBtnMapeo.querySelector("span[class='badge']").textContent = cantidadPorMapear;
-            //                 objBtnMapeo.closest("tr").querySelector("input[type='checkbox']").dataset.mapeosPendientes = cantidadPorMapear;
-
-
-            //             }
-            //         }
-            //     }).fail(function (jqXHR, textStatus, errorThrown) {
-            //         console.log(jqXHR);
-            //         Swal.fire(
-            //             '',
-            //             'Lo sentimos hubo un error en el servidor al intentar anular el item, por favor vuelva a intentarlo',
-            //             'error'
-            //         );
-            //         console.log(textStatus);
-            //         console.log(errorThrown);
-            //     });
-            // }
-            // let data = 'detalle='+JSON.stringify(lista);
-
             $.ajax({
                 type: 'POST',
                 url: 'guardar_mapeo_productos',
@@ -357,7 +299,7 @@ $("#form-mapeoItemsRequerimiento").on("submit", function (e) {
                 dataType: 'JSON',
                 success: function (response) {
                     if (response.response == 'ok') {
-                        console.log(response);
+                        // console.log(response);
                         Lobibox.notify('success', {
                             title: false,
                             size: 'mini',
