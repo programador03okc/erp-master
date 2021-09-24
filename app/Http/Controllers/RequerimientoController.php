@@ -499,7 +499,7 @@ class RequerimientoController extends Controller
                     'cc_am_proveedores.plazo as plazo_proveedor',
                     'cc_am_proveedores.flete as flete_proveedor',
                     'fondos_proveedores.descripcion as fondo_proveedor',
-                    'cc_am_filas.creado_por as id_autor',
+                    'cc_am_filas.id_ultimo_usuario as id_autor',
                     'users.name as nombre_autor',
                     'cc_am_filas.fecha_creacion',
                     'cc_am_filas.part_no_producto_transformado',
@@ -513,7 +513,7 @@ class RequerimientoController extends Controller
                 ->leftJoin('mgcp_cuadro_costos.cc_am_proveedores', 'cc_am_proveedores.id', '=', 'cc_am_filas.proveedor_seleccionado')
                 ->leftJoin('mgcp_cuadro_costos.proveedores', 'proveedores.id', '=', 'cc_am_proveedores.id_proveedor')
                 ->leftJoin('mgcp_cuadro_costos.fondos_proveedores', 'fondos_proveedores.id', '=', 'cc_am_proveedores.id_fondo_proveedor')
-                ->leftJoin('mgcp_usuarios.users', 'users.id', '=', 'cc_am_filas.creado_por')
+                ->leftJoin('mgcp_usuarios.users', 'users.id', '=', 'cc_am_filas.id_ultimo_usuario')
                 ->leftJoin('mgcp_cuadro_costos.origenes_costeo', 'origenes_costeo.id', '=', 'cc_am_filas.id_origen_costeo')
                 // ->leftJoin('mgcp_cuadro_costos.cc_am_proveedores', 'cc_am_proveedores.id_fila', '=', 'cc_am_filas.id')
  
