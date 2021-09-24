@@ -843,18 +843,6 @@ class DistribucionController extends Controller
                         WHERE odd.id_detalle_requerimiento = alm_det_req.id_detalle_requerimiento
                             and odd.estado != 7
                             and od.aplica_cambios = false) AS suma_despachos_externos"),
-                // DB::raw("(SELECT SUM(guia.cantidad) 
-                //     FROM almacen.guia_com_det AS guia
-                //     INNER JOIN logistica.log_det_ord_compra AS oc
-                //         on(guia.id_oc_det = oc.id_detalle_orden)
-                //     INNER JOIN almacen.alm_det_req AS req
-                //         on(oc.id_detalle_requerimiento = req.id_detalle_requerimiento)
-                //     INNER JOIN almacen.guia_com AS g
-                //         on(g.id_guia = guia.id_guia_com)
-                //     WHERE req.id_detalle_requerimiento = alm_det_req.id_detalle_requerimiento
-                //         and guia.estado != 7
-                //         and g.id_almacen = alm_req.id_almacen
-                //         and oc.estado != 7) AS suma_ingresos"),
                 DB::raw("(SELECT SUM(guia.cantidad) 
                         FROM almacen.guia_com_det AS guia
                         INNER JOIN logistica.log_det_ord_compra AS oc
@@ -864,14 +852,6 @@ class DistribucionController extends Controller
                         WHERE req.id_detalle_requerimiento = alm_det_req.id_detalle_requerimiento
                             and guia.estado != 7
                             and oc.estado != 7) AS suma_ingresos"),
-                // DB::raw("(SELECT SUM(trans_detalle.cantidad) 
-                //     FROM almacen.trans_detalle 
-                //     WHERE   trans_detalle.id_requerimiento_detalle = alm_det_req.id_detalle_requerimiento AND
-                //         trans_detalle.estado != 7) AS suma_transferencias"),
-                // DB::raw("(SELECT SUM(trans_detalle.cantidad) 
-                //     FROM almacen.trans_detalle 
-                //     WHERE   trans_detalle.id_requerimiento_detalle = alm_det_req.id_detalle_requerimiento AND
-                //         trans_detalle.estado = 14) AS suma_transferencias_recibidas")
                 'almacen_guia.id_almacen as id_almacen_guia_com',
                 'almacen_guia.descripcion as almacen_guia_com_descripcion',
                 'almacen_reserva.descripcion as almacen_reserva_descripcion',

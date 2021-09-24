@@ -26,9 +26,7 @@ function iniciar(permiso) {
 
     $("ul.nav-tabs li a").on("click", function () {
         $("ul.nav-tabs li").removeClass("active");
-        $(this)
-            .parent()
-            .addClass("active");
+        $(this).parent().addClass("active");
         $(".content-tabs section").attr("hidden", true);
         $(".content-tabs section form").removeAttr("type");
         $(".content-tabs section form").removeAttr("form");
@@ -1177,8 +1175,8 @@ function listarOrdenesPendientes() {
             {
                 render: function (data, type, row) {
                     return `<button type="button" class="adjuntar btn btn-${row["count_despacho_adjuntos"] > 0
-                            ? "warning"
-                            : "default"
+                        ? "warning"
+                        : "default"
                         } boton" data-toggle="tooltip" 
                                 data-placement="bottom" data-id="${row["id_od"]
                         }" data-cod="${row["codigo"]
