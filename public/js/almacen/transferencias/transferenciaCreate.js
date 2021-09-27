@@ -119,6 +119,8 @@ function ver_requerimiento(id_requerimiento) {
             $("[name=sede_requerimiento]").text(response["requerimiento"].sede_requerimiento);
             $("[name=estado_requerimiento]").text(response["requerimiento"].estado_doc);
 
+            $("#detalleRequerimiento tbody").html("");
+            detalle = [];
             response["detalle"].forEach(element => {
                 if (element.sede !== "") {
                     detalle.push(element);

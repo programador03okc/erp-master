@@ -62,18 +62,19 @@ function mostrarListaDetalleTransferencia() {
         });
         element.cantidad_recibida = (element.cantidad_recibida == undefined ?
             element.cantidad : element.cantidad_recibida);
-        element.id_motivo = (element.id_motivo == undefined ? 0 : element.id_motivo);
+        // element.id_motivo = (element.id_motivo == undefined ? 0 : element.id_motivo);
         element.observacion = (element.observacion == undefined ? '' : element.observacion);
 
-        var opt_motivos = `<option value="0" ${element.id_motivo == 0 ? 'selected' : ''}>Ninguno</option>`;
-        motivos.forEach(mot => {
-            if (element.id_motivo == mot.id_motivo) {
-                opt_motivos += `<option value="${mot.id_motivo}" selected>${mot.descripcion}</option>`;
-            } else {
-                opt_motivos += `<option value="${mot.id_motivo}">${mot.descripcion}</option>`;
-            }
-        });
-        html_motivos = `<select class="form-control motivo_perdida" data-id="${element.id_guia_ven_det}" >${opt_motivos}</select>`;
+        // var opt_motivos = `<option value="0" ${element.id_motivo == 0 ? 'selected' : ''}>Ninguno</option>`;
+        // motivos.forEach(mot => {
+        //     if (element.id_motivo == mot.id_motivo) {
+        //         opt_motivos += `<option value="${mot.id_motivo}" selected>${mot.descripcion}</option>`;
+        //     } else {
+        //         opt_motivos += `<option value="${mot.id_motivo}">${mot.descripcion}</option>`;
+        //     }
+        // });
+        // html_motivos = `<select class="form-control motivo_perdida" data-id="${element.id_guia_ven_det}" >${opt_motivos}</select>`;
+        // <td>${html_motivos}</td>
 
         html += `<tr id="${element.id_guia_ven_det}">
         <td>${element.codigo_trans}</td>
@@ -84,7 +85,6 @@ function mostrarListaDetalleTransferencia() {
         <td><input type="number" class="input-data right recibida" style="width:60px;" value="${element.cantidad_recibida}" 
             max="${element.cantidad}" data-id="${element.id_guia_ven_det}" data-idtra="${element.id_trans_detalle}" data-cantidad="${element.cantidad}"/></td>
         <td>${element.abreviatura}</td>
-        <td>${html_motivos}</td>
         <td><input type="text" class="input-data obs" value="${element.observacion}"/></td>
         </tr>`;
         i++;
@@ -132,20 +132,20 @@ function recibir() {
 
     listaDetalleTransferencia.forEach(element => {
 
-        if (parseFloat(element.cantidad) !== parseFloat(element.cantidad_recibida)
-            && element.id_motivo == "0") {
-            valida_cant++;
-        } else {
-            var nuevo = {
-                id_guia_ven_det: element.id_guia_ven_det,
-                id_trans_detalle: element.id_trans_detalle,
-                id_detalle_requerimiento: element.id_detalle_requerimiento,
-                cantidad_recibida: element.cantidad_recibida,
-                observacion: element.observacion,
-                id_motivo_perdida: element.id_motivo
-            };
-            detalle.push(nuevo);
-        }
+        // if (parseFloat(element.cantidad) !== parseFloat(element.cantidad_recibida)
+        //     && element.id_motivo == "0") {
+        //     valida_cant++;
+        // } else {
+        var nuevo = {
+            id_guia_ven_det: element.id_guia_ven_det,
+            id_trans_detalle: element.id_trans_detalle,
+            id_detalle_requerimiento: element.id_detalle_requerimiento,
+            cantidad_recibida: element.cantidad_recibida,
+            observacion: element.observacion,
+            // id_motivo_perdida: element.id_motivo
+        };
+        detalle.push(nuevo);
+        // }
     });
 
     if (valida_cant > 0) {
