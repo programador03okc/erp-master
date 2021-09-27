@@ -160,6 +160,7 @@ class ComprasPendientesController extends Controller
     {
  
 
+        Debugbar::info($fechaRegistroDesde);
 
         $alm_req = Requerimiento::join('almacen.alm_tp_req', 'alm_req.id_tipo_requerimiento', '=', 'alm_tp_req.id_tipo_requerimiento')
             ->leftJoin('almacen.tipo_cliente', 'tipo_cliente.id_tipo_cliente', '=', 'alm_req.tipo_cliente')
@@ -245,34 +246,41 @@ class ComprasPendientesController extends Controller
                 WHERE det.id_requerimiento = alm_req.id_requerimiento AND alm_reserva.estado = 1
                 AND det.estado != 7) AS count_stock_comprometido")
             )
-            // ->when(($empresa >0), function ($query) use($empresa) {
-            //     return $query->where('alm_req.id_empresa','=',$empresa); 
-            // })
-            // ->when(($sede >0), function ($query) use($sede) {
-            //     return $query->where('alm_req.id_sede','=',$sede); 
-            // })
-            // ->when(($reserva == 'SIN_RESERVA'), function ($query) {
-            //     $query->leftJoin('almacen.alm_det_req', 'alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento');
-            //     return $query->whereRaw('alm_det_req.stock_comprometido isNULL'); 
-            // })
-            // ->when(($reserva == 'CON_RESERVA'), function ($query) {
-            //     $query->leftJoin('almacen.alm_det_req', 'alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento');
-            //     return $query->whereRaw('alm_det_req.stock_comprometido > 0'); 
-            // })
-            // ->when(($orden == 'CON_ORDEN'), function ($query) {
-            //     $query->Join('almacen.alm_det_req', 'alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento');
-            //     $query->Join('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento');
-            //     return $query->whereRaw('log_det_ord_compra.id_detalle_requerimiento > 0'); 
-            // })
-            // ->when(($orden == 'SIN_ORDEN'), function ($query) {
-            //     $query->Join('almacen.alm_det_req', 'alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento');
-            //     return $query->rightJoin('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento');
-            // })
-            ->FiltroEmpresa($empresa)
-            ->FiltroSede($sede)
-            ->FiltroRangoFechas($fechaRegistroDesde, $fechaRegistroHasta)
-            ->FiltroReserva($reserva)
-            ->FiltroOrden($orden)
+            ->when(($empresa >0), function ($query) use($empresa) {
+                return $query->where('alm_req.id_empresa','=',$empresa); 
+            })
+            ->when(($sede >0), function ($query) use($sede) {
+                return $query->where('alm_req.id_sede','=',$sede); 
+            })
+            ->when(($reserva == 'SIN_RESERVA'), function ($query) {
+                $query->leftJoin('almacen.alm_det_req', 'alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento');
+                return $query->whereRaw('alm_det_req.stock_comprometido isNULL'); 
+            })
+            ->when(($reserva == 'CON_RESERVA'), function ($query) {
+                $query->leftJoin('almacen.alm_det_req', 'alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento');
+                $query->leftJoin('almacen.alm_reserva', 'alm_reserva.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento');
+                return $query->whereRaw('alm_reserva.stock_comprometido >0 and alm_reserva.estado !=7'); 
+            })
+            ->when(($orden == 'CON_ORDEN'), function ($query) {
+                $query->Join('almacen.alm_det_req', 'alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento');
+                $query->Join('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento');
+                return $query->whereRaw('log_det_ord_compra.id_detalle_requerimiento > 0 and log_det_ord_compra.estado !=7 '); 
+            })
+            ->when(($orden == 'SIN_ORDEN'), function ($query) {
+                $query->Join('almacen.alm_det_req', 'alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento');
+                return $query->rightJoin('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento');
+            })
+            
+            ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta == 'SIN_FILTRO')), function ($query) use($fechaRegistroDesde) {
+                return $query->where('alm_req.fecha_requerimiento' ,'>=',$fechaRegistroDesde); 
+            })
+            ->when((($fechaRegistroDesde == 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use($fechaRegistroHasta) {
+                return $query->where('alm_req.fecha_requerimiento' ,'<=',$fechaRegistroHasta); 
+            })
+            ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use($fechaRegistroDesde,$fechaRegistroHasta) {
+                return $query->whereBetween('alm_req.fecha_requerimiento' ,[$fechaRegistroDesde,$fechaRegistroHasta]); 
+            })
+
             ->where('alm_req.confirmacion_pago', true)
             ->whereIn('alm_req.estado', [2,15,27])
             ->orderBy('alm_req.id_requerimiento', 'desc')

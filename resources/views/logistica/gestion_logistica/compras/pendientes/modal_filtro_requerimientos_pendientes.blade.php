@@ -46,7 +46,7 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <label>
-                                        <input type="checkbox" name="chkFechaRegistro" style="margin-right: 3px;"> Fecha registro
+                                        <input type="checkbox" name="chkFechaRegistro" style="margin-right: 3px;"> Fecha creación
                                     </label> 
                                 </div>
                                 <div class="col-md-8">
