@@ -835,6 +835,7 @@ class OrdenesPendientesController extends Controller
                                 // "tipo_transfor" => $det->tipo,
                                 "id_transformado" => ($det->tipo == "transformado" ? $det->id : null),
                                 "id_sobrante" => ($det->tipo == "sobrante" ? $det->id : null),
+                                "id_moneda" => $det->id_moneda,
                                 "unitario" => $det->unitario,
                                 "total" => (floatval($det->unitario) * floatval($det->cantidad)),
                                 "unitario_adicional" => 0,
