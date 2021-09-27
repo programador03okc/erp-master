@@ -44,7 +44,7 @@
                             <td>Cant. Enviada</td>
                             <td>Cant. Recibida</td>
                             <td>Und</td>
-                            <td width="10%">Motivo de pérdida</td>
+                            {{-- <td width="10%">Motivo de pérdida</td> --}}
                             <td width="10%">Observación</td>
                         </tr>
                     </thead>
