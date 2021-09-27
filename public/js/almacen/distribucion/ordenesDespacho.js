@@ -165,17 +165,12 @@ function listarRequerimientosElaborados() {
             {
                 render: function (data, type, row) {
                     return (
-                        '<label class="lbl-codigo" title="Abrir Requerimiento" onClick="abrirRequerimiento(' +
-                        row["id_requerimiento"] +
-                        ')">' +
-                        row["codigo"] +
-                        "</label>" +
-                        " <strong>" +
-                        row["sede_descripcion_req"] +
-                        "</strong>" +
-                        (row["tiene_transformacion"]
-                            ? '<br><i class="fas fa-random red" title="Tiene Transformación"></i>'
-                            : "")
+                        `<label class="lbl-codigo" title="Abrir Requerimiento" onClick="abrirRequerimiento(
+                        ${row["id_requerimiento"]})">${row["codigo"]}</label><strong>
+                        ${row["sede_descripcion_req"]}</strong>`
+                            (row["tiene_transformacion"]
+                                ? '<br><i class="fas fa-random red" title="Tiene Transformación"></i>'
+                                : "")
                     );
                 }
             },

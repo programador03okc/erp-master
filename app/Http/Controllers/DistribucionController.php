@@ -984,303 +984,157 @@ class DistribucionController extends Controller
                     'id_od'
                 );
 
-            if ($request->aplica_cambios_valor == 'si') {
-                //Agrega accion en requerimiento
-                DB::table('almacen.alm_req_obs')
-                    ->insert([
-                        'id_requerimiento' => $request->id_requerimiento,
-                        'accion' => 'DESPACHO INTERNO',
-                        'descripcion' => 'Se generó la Orden de Despacho ' . $codigo,
-                        'id_usuario' => $usuario,
-                        'fecha_registro' => date('Y-m-d H:i:s')
-                    ]);
+            if ($request->id_requerimiento !== null) {
+                DB::table('almacen.alm_req')->where('id_requerimiento', $request->id_requerimiento)
+                    ->update(['enviar_facturacion', true]);
+            }
 
-                $fecha_actual = date('Y-m-d');
-                $codTrans = $this->transformacion_nextId($fecha_actual);
+            //Si es Despacho Externo
 
-                $id_transformacion = DB::table('almacen.transformacion')
-                    ->insertGetId(
-                        [
-                            // 'fecha_transformacion'=>$fecha_actual,
-                            'codigo' => $codTrans,
-                            // 'responsable'=>$usuario,
-                            'id_od' => $id_od,
-                            'id_cc' => $request->id_cc,
-                            'id_moneda' => 1,
-                            'id_almacen' => $request->id_almacen,
-                            'descripcion_sobrantes' => $request->descripcion_sobrantes,
-                            'total_materias' => 0,
-                            'total_directos' => 0,
-                            'costo_primo' => 0,
-                            'total_indirectos' => 0,
-                            'total_sobrantes' => 0,
-                            'costo_transformacion' => 0,
-                            'registrado_por' => $usuario,
-                            'conformidad' => false,
-                            'tipo_cambio' => 1,
-                            'fecha_registro' => date('Y-m-d H:i:s'),
-                            'estado' => 1,
-                            // 'observacion'=>'SALE: '.$request->sale
-                        ],
-                        'id_transformacion'
-                    );
+            //Agrega accion en requerimiento
+            DB::table('almacen.alm_req_obs')
+                ->insert([
+                    'id_requerimiento' => $request->id_requerimiento,
+                    'accion' => 'DESPACHO EXTERNO',
+                    'descripcion' => 'Se generó la Orden de Despacho ' . $codigo,
+                    'id_usuario' => $usuario,
+                    'fecha_registro' => date('Y-m-d H:i:s')
+                ]);
 
-                $ingresa = json_decode($request->detalle_ingresa);
+            if ($request->tiene_transformacion == 'si') {
+                $data = json_decode($request->detalle_sale);
 
-                foreach ($ingresa as $i) {
-
-                    $id_od_detalle = DB::table('almacen.orden_despacho_det')
-                        ->insertGetId(
-                            [
-                                'id_od' => $id_od,
-                                'id_producto' => $i->id_producto,
-                                'id_detalle_requerimiento' => $i->id_detalle_requerimiento,
-                                'cantidad' => $i->cantidad,
-                                'transformado' => false,
-                                'estado' => 1,
-                                'fecha_registro' => date('Y-m-d H:i:s')
-                            ],
-                            'id_od_detalle'
-                        );
-
-                    $val = ($i->valorizacion !== null ? $i->valorizacion : AlmacenController::valorizacion_almacen($i->id_producto, $request->id_almacen));
-
-                    $id_materia = DB::table('almacen.transfor_materia')
-                        ->insertGetId([
-                            'id_transformacion' => $id_transformacion,
-                            'id_producto' => $i->id_producto,
-                            'cantidad' => $i->cantidad,
-                            'id_od_detalle' => $id_od_detalle,
-                            'valor_unitario' => ($val / $i->cantidad),
-                            'valor_total' => $val,
-                            'estado' => 1,
-                            'fecha_registro' => date('Y-m-d H:i:s')
-                        ], 'id_materia');
-
-
-                    $detreq = DB::table('almacen.alm_det_req')
-                        ->where('id_detalle_requerimiento', $i->id_detalle_requerimiento)
-                        ->first();
-
-                    $detdes = DB::table('almacen.orden_despacho_det')
-                        ->select(DB::raw('SUM(cantidad) as suma_cantidad'))
-                        ->join('almacen.orden_despacho', 'orden_despacho.id_od', '=', 'orden_despacho_det.id_od')
-                        ->where([
-                            ['orden_despacho_det.id_detalle_requerimiento', '=', $i->id_detalle_requerimiento],
-                            ['orden_despacho.estado', '!=', 7],
-                            ['orden_despacho.aplica_cambios', '=', true]
-                        ])
-                        ->first();
-
-                    //orden de despacho detalle estado   procesado
-                    if ($detdes->suma_cantidad >= $detreq->cantidad) {
-                        DB::table('almacen.alm_det_req')
-                            ->where('id_detalle_requerimiento', $i->id_detalle_requerimiento)
-                            ->update(['estado' => 22]); //despacho interno
-                    }
-                }
-
-                $todo = DB::table('almacen.alm_det_req')
-                    ->where([
-                        ['id_requerimiento', '=', $request->id_requerimiento],
-                        ['tiene_transformacion', '=', false],
-                        ['estado', '!=', 7]
-                    ])
-                    ->count();
-
-                $desp = DB::table('almacen.alm_det_req')
-                    ->where([
-                        ['id_requerimiento', '=', $request->id_requerimiento],
-                        ['estado', '=', 22]
-                    ]) //despacho interno
-                    ->count();
-
-                if ($desp == $todo) {
-                    DB::table('almacen.alm_req')
-                        ->where('id_requerimiento', $request->id_requerimiento)
-                        ->update(['estado' => 22]); //despacho interno
-                }
-
-                $sale = json_decode($request->detalle_sale);
-
-                foreach ($sale as $s) {
-                    $id_od_detalle = DB::table('almacen.orden_despacho_det')
-                        ->insertGetId(
-                            [
-                                'id_od' => $id_od,
-                                'id_producto' => $s->id_producto,
-                                'id_detalle_requerimiento' => $s->id_detalle_requerimiento,
-                                'cantidad' => $s->cantidad,
-                                'transformado' => true,
-                                'estado' => 1,
-                                'fecha_registro' => date('Y-m-d H:i:s')
-                            ],
-                            'id_od_detalle'
-                        );
-
-                    DB::table('almacen.transfor_transformado')
+                foreach ($data as $d) {
+                    // $descripcion = ($d->producto_descripcion !== null ? $d->producto_descripcion : $d->descripcion_adicional);
+                    DB::table('almacen.orden_despacho_det')
                         ->insert([
-                            'id_transformacion' => $id_transformacion,
-                            'id_producto' => $s->id_producto,
-                            'id_od_detalle' => $id_od_detalle,
-                            'cantidad' => $s->cantidad,
-                            'valor_unitario' => 0,
-                            'valor_total' => 0,
+                            'id_od' => $id_od,
+                            'id_producto' => $d->id_producto,
+                            'id_detalle_requerimiento' => $d->id_detalle_requerimiento,
+                            'cantidad' => $d->cantidad,
                             'estado' => 1,
+                            'transformado' => false,
                             'fecha_registro' => date('Y-m-d H:i:s')
                         ]);
-                }
-            } //Si es Despacho Externo
-            else {
-                //Agrega accion en requerimiento
-                DB::table('almacen.alm_req_obs')
-                    ->insert([
-                        'id_requerimiento' => $request->id_requerimiento,
-                        'accion' => 'DESPACHO EXTERNO',
-                        'descripcion' => 'Se generó la Orden de Despacho ' . $codigo,
-                        'id_usuario' => $usuario,
-                        'fecha_registro' => date('Y-m-d H:i:s')
-                    ]);
 
-                if ($request->tiene_transformacion == 'si') {
-                    $data = json_decode($request->detalle_sale);
-
-                    foreach ($data as $d) {
-                        // $descripcion = ($d->producto_descripcion !== null ? $d->producto_descripcion : $d->descripcion_adicional);
-                        DB::table('almacen.orden_despacho_det')
-                            ->insert([
-                                'id_od' => $id_od,
-                                'id_producto' => $d->id_producto,
-                                'id_detalle_requerimiento' => $d->id_detalle_requerimiento,
-                                'cantidad' => $d->cantidad,
-                                'estado' => 1,
-                                'transformado' => false,
-                                'fecha_registro' => date('Y-m-d H:i:s')
-                            ]);
-
-                        if ($d->id_detalle_requerimiento !== null) {
-
-                            DB::table('almacen.alm_det_req')
-                                ->where('id_detalle_requerimiento', $d->id_detalle_requerimiento)
-                                ->update(['estado' => 29]); //por despachar
-                        }
-                    }
-                } else {
-
-                    $data = json_decode($request->detalle_requerimiento);
-
-                    foreach ($data as $d) {
-                        // $descripcion = ($d->producto_descripcion !== null ? $d->producto_descripcion : $d->descripcion_adicional);
-                        DB::table('almacen.orden_despacho_det')
-                            ->insert([
-                                'id_od' => $id_od,
-                                'id_producto' => $d->id_producto,
-                                'id_detalle_requerimiento' => $d->id_detalle_requerimiento,
-                                'cantidad' => $d->cantidad,
-                                'transformado' => false,
-                                'estado' => 1,
-                                'fecha_registro' => date('Y-m-d H:i:s')
-                            ]);
+                    if ($d->id_detalle_requerimiento !== null) {
 
                         DB::table('almacen.alm_det_req')
                             ->where('id_detalle_requerimiento', $d->id_detalle_requerimiento)
                             ->update(['estado' => 29]); //por despachar
                     }
                 }
-                DB::table('almacen.alm_req')
-                    ->where('id_requerimiento', $request->id_requerimiento)
-                    ->update(['estado' => 29]); //por despachar
+            } else {
+
+                $data = json_decode($request->detalle_requerimiento);
+
+                foreach ($data as $d) {
+                    // $descripcion = ($d->producto_descripcion !== null ? $d->producto_descripcion : $d->descripcion_adicional);
+                    DB::table('almacen.orden_despacho_det')
+                        ->insert([
+                            'id_od' => $id_od,
+                            'id_producto' => $d->id_producto,
+                            'id_detalle_requerimiento' => $d->id_detalle_requerimiento,
+                            'cantidad' => $d->cantidad,
+                            'transformado' => false,
+                            'estado' => 1,
+                            'fecha_registro' => date('Y-m-d H:i:s')
+                        ]);
+
+                    DB::table('almacen.alm_det_req')
+                        ->where('id_detalle_requerimiento', $d->id_detalle_requerimiento)
+                        ->update(['estado' => 29]); //por despachar
+                }
             }
+            DB::table('almacen.alm_req')
+                ->where('id_requerimiento', $request->id_requerimiento)
+                ->update(['estado' => 29]); //por despachar
 
-            if ($request->aplica_cambios_valor == 'no') {
 
-                $req = DB::table('almacen.alm_req')
-                    ->select(
-                        'alm_req.*',
-                        'oc_propias.id as id_oc_propia',
-                        'oc_propias.url_oc_fisica',
-                        'entidades.nombre',
-                        'adm_contri.razon_social',
-                        'oportunidades.codigo_oportunidad',
-                        'adm_empresa.codigo as codigo_empresa',
-                        'oc_propias.orden_am',
-                        'adm_empresa.id_empresa'
-                    )
-                    ->leftjoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
-                    ->leftjoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
-                    ->leftjoin('mgcp_acuerdo_marco.oc_propias', 'oc_propias.id_oportunidad', '=', 'oportunidades.id')
-                    ->leftjoin('mgcp_acuerdo_marco.entidades', 'entidades.id', '=', 'oportunidades.id_entidad')
-                    ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_req.id_sede')
-                    ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
-                    ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
-                    ->where('id_requerimiento', $request->id_requerimiento)
-                    ->first();
+            /*
+            $req = DB::table('almacen.alm_req')
+                ->select(
+                    'alm_req.*',
+                    'oc_propias.id as id_oc_propia',
+                    'oc_propias.url_oc_fisica',
+                    'entidades.nombre',
+                    'adm_contri.razon_social',
+                    'oportunidades.codigo_oportunidad',
+                    'adm_empresa.codigo as codigo_empresa',
+                    'oc_propias.orden_am',
+                    'adm_empresa.id_empresa'
+                )
+                ->leftjoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
+                ->leftjoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
+                ->leftjoin('mgcp_acuerdo_marco.oc_propias', 'oc_propias.id_oportunidad', '=', 'oportunidades.id')
+                ->leftjoin('mgcp_acuerdo_marco.entidades', 'entidades.id', '=', 'oportunidades.id_entidad')
+                ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_req.id_sede')
+                ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
+                ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
+                ->where('id_requerimiento', $request->id_requerimiento)
+                ->first();
+            
+            if ($req->id_tipo_requerimiento == 1) {
 
-                if ($req->id_tipo_requerimiento == 1) {
-
-                    $asunto_facturacion = $req->orden_am . ' | ' . $req->nombre . ' | ' . $req->codigo_oportunidad . ' | ' . $req->codigo_empresa;
-                    $contenido_facturacion = '
+                $asunto_facturacion = $req->orden_am . ' | ' . $req->nombre . ' | ' . $req->codigo_oportunidad . ' | ' . $req->codigo_empresa;
+                $contenido_facturacion = '
                     Favor de generar documentación: <br>- ' . ($request->documento == 'Factura' ? $request->documento . '<br>- Guía<br>- Certificado de Garantía<br>- CCI<br>' : '<br>') . ' 
                     <br>Requerimiento ' . $req->codigo . '
                     <br>Entidad: ' . $req->nombre . '
                     <br>Empresa: ' . $req->razon_social . '
                     <br>' . $request->contenido . '<br>
             <br>' . ($req->id_oc_propia !== null
-                        ? ('Ver Orden Física: ' . $req->url_oc_fisica . ' 
+                    ? ('Ver Orden Física: ' . $req->url_oc_fisica . ' 
             <br>Ver Orden Electrónica: https://apps1.perucompras.gob.pe//OrdenCompra/obtenerPdfOrdenPublico?ID_OrdenCompra=' . $req->id_oc_propia . '&ImprimirCompleto=1') : '') . '
             <br><br>
             Saludos,<br>
             Módulo de Despachos<br>
             SYSTEM AGILE';
 
-                    $msj = '';
-                    $email_destinatario[] = 'programador01@okcomputer.com.pe';
-                    // $email_destinatario[] = 'administracionventas@okcomputer.com.pe';
-                    // $email_destinatario[] = 'asistente.contable.lima@okcomputer.com.pe';
-                    // $email_destinatario[] = 'asistente.contable@okcomputer.com.pe';
-                    // $email_destinatario[] = 'administracionventas@okcomputer.com.pe';
-                    // $email_destinatario[] = 'asistente.almacenlima1@okcomputer.com.pe';
-                    // $email_destinatario[] = 'asistente.almacenlima2@okcomputer.com.pe';
-                    // $email_destinatario[] = 'asistente.almacenlima@okcomputer.com.pe';
-                    // $email_destinatario[] = 'logistica.lima@okcomputer.com.pe';
-                    // $email_destinatario[] = 'soporte.lima@okcomputer.com.pe';
-                    // $email_destinatario[] = 'contadorgeneral@okcomputer.com.pe';
-                    // $email_destinatario[] = 'infraestructura@okcomputer.com.pe';
-                    // $email_destinatario[] = 'lenovo@okcomputer.com.pe';
-                    // $email_destinatario[] = 'logistica@okcomputer.com.pe';
-                    // $email_destinatario[] = 'dapaza@okcomputer.com.pe';
-                    // $email_destinatario[] = 'asistente.logistica@okcomputer.com.pe';
-                    $payload = [
-                        'id_empresa' => $req->id_empresa,
-                        'email_destinatario' => $email_destinatario,
-                        'titulo' => $asunto_facturacion,
-                        'mensaje' => $contenido_facturacion
-                    ];
+                $msj = '';
+                $email_destinatario[] = 'programador01@okcomputer.com.pe';
+                // $email_destinatario[] = 'administracionventas@okcomputer.com.pe';
+                // $email_destinatario[] = 'asistente.contable.lima@okcomputer.com.pe';
+                // $email_destinatario[] = 'asistente.contable@okcomputer.com.pe';
+                // $email_destinatario[] = 'administracionventas@okcomputer.com.pe';
+                // $email_destinatario[] = 'asistente.almacenlima1@okcomputer.com.pe';
+                // $email_destinatario[] = 'asistente.almacenlima2@okcomputer.com.pe';
+                // $email_destinatario[] = 'asistente.almacenlima@okcomputer.com.pe';
+                // $email_destinatario[] = 'logistica.lima@okcomputer.com.pe';
+                // $email_destinatario[] = 'soporte.lima@okcomputer.com.pe';
+                // $email_destinatario[] = 'contadorgeneral@okcomputer.com.pe';
+                // $email_destinatario[] = 'infraestructura@okcomputer.com.pe';
+                // $email_destinatario[] = 'lenovo@okcomputer.com.pe';
+                // $email_destinatario[] = 'logistica@okcomputer.com.pe';
+                // $email_destinatario[] = 'dapaza@okcomputer.com.pe';
+                // $email_destinatario[] = 'asistente.logistica@okcomputer.com.pe';
+                $payload = [
+                    'id_empresa' => $req->id_empresa,
+                    'email_destinatario' => $email_destinatario,
+                    'titulo' => $asunto_facturacion,
+                    'mensaje' => $contenido_facturacion
+                ];
 
-                    $smpt_setting = [
-                        'smtp_server' => 'smtp.gmail.com',
-                        // 'smtp_server'=>'outlook.office365.com',
-                        'port' => 587,
-                        'encryption' => 'tls',
-                        'email' => 'webmaster@okcomputer.com.pe',
-                        'password' => 'MgcpPeru2020*'
-                        // 'email'=>'programador01@okcomputer.com.pe',
-                        // 'password'=>'Dafne0988eli@'
-                        // 'email'=>'administracionventas@okcomputer.com.pe',
-                        // 'password'=>'Logistica1505'
-                    ];
+                $smpt_setting = [
+                    'smtp_server' => 'smtp.gmail.com',
+                    // 'smtp_server'=>'outlook.office365.com',
+                    'port' => 587,
+                    'encryption' => 'tls',
+                    'email' => 'webmaster@okcomputer.com.pe',
+                    'password' => 'MgcpPeru2020*'
+                    // 'email'=>'programador01@okcomputer.com.pe',
+                    // 'password'=>'Dafne0988eli@'
+                    // 'email'=>'administracionventas@okcomputer.com.pe',
+                    // 'password'=>'Logistica1505'
+                ];
 
-                    if (count($email_destinatario) > 0) {
-                        $estado_envio = (new CorreoController)->enviar_correo_despacho($payload, $smpt_setting);
-                    }
-                } else {
-                    $msj = 'Se guardó existosamente la Orden de Despacho';
+                if (count($email_destinatario) > 0) {
+                    $estado_envio = (new CorreoController)->enviar_correo_despacho($payload, $smpt_setting);
                 }
             } else {
-                $msj = 'Se guardó existosamente la Orden de Despacho y Hoja de Transformación';
-            }
-            // $msj = 'Ok';
-
+                $msj = 'Se guardó existosamente la Orden de Despacho';
+            }*/
+            $msj = 'Se guardó existosamente la Orden de Despacho';
             DB::commit();
             return response()->json($msj);
         } catch (\PDOException $e) {
@@ -1695,7 +1549,7 @@ class DistribucionController extends Controller
                         </td>
                     </tr>
                 </table>
-                <h3 style="margin:0px;"><center>DESPACHO</center></h3>
+                <h3 style="margin:0px;"><center>REPARTO</center></h3>
                 <h5><center>' . ($despacho_grupo->trabajador_despacho !== null ? $despacho_grupo->trabajador_despacho : ($despacho_grupo->proveedor_despacho !== null ? $despacho_grupo->proveedor_despacho : $despacho_grupo->mov_entrega)) . '</center></h5>
                 <p>' . strtoupper($despacho_grupo->observaciones) . '</p>
                 ';
