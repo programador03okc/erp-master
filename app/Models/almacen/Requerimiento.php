@@ -27,59 +27,59 @@ class Requerimiento extends Model
     //     return $total;
     // }
 
-    public function scopeFiltroEmpresa($query, $name)
-    {
-        if ($name>0) {
-            return $query->where('alm_req.id_empresa', '=', $name);
-        }
-        return $query;
-    }
-    public function scopeFiltroSede($query, $name)
-    {
-        if ($name>0) {
-            return $query->where('alm_req.id_sede', '=', $name);
-        }
-        return $query;
-    }
-    public function scopeFiltroRangoFechas($query, $desde, $hasta)
-    {
-        if (($desde!='SIN_FILTRO' && $desde!='') && ($hasta!='SIN_FILTRO' && $hasta!='')) {
-            return $query->whereBetween('alm_req.fecha_registro', [$desde, $hasta]);
-        }
-        if (($desde!='SIN_FILTRO') && ($desde!='')) {
-            return $query->where('alm_req.fecha_registro','>', $desde);
-        }
-        if (($hasta !='SIN_FILTRO' && ($hasta!=''))) {
-            return $query->where('alm_req.fecha_registro','<', $hasta);
-        }
-        return $query;
-    }
-    public function scopeFiltroReserva($query, $name)
-    {
-            if($name=='SIN_RESERVA'){
-                $query->leftJoin('almacen.alm_det_req', 'almacen.alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento');
-                return $query->whereNull('almacen.alm_det_req.stock_comprometido');
-            }elseif($name=='CON_RESERVA'){
-                $query->leftJoin('almacen.alm_det_req', 'almacen.alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento');
-                return $query->whereRaw('almacen.alm_det_req.stock_comprometido > 0'); 
-            }
+    // public function scopeFiltroEmpresa($query, $name)
+    // {
+    //     if ($name>0) {
+    //         return $query->where('alm_req.id_empresa', '=', $name);
+    //     }
+    //     return $query;
+    // }
+    // public function scopeFiltroSede($query, $name)
+    // {
+    //     if ($name>0) {
+    //         return $query->where('alm_req.id_sede', '=', $name);
+    //     }
+    //     return $query;
+    // }
+    // public function scopeFiltroRangoFechas($query, $desde, $hasta)
+    // {
+    //     if (($desde!='SIN_FILTRO' && $desde!='') && ($hasta!='SIN_FILTRO' && $hasta!='')) {
+    //         return $query->whereBetween('alm_req.fecha_registro', [$desde, $hasta]);
+    //     }
+    //     if (($desde!='SIN_FILTRO') && ($desde!='')) {
+    //         return $query->where('alm_req.fecha_registro','>', $desde);
+    //     }
+    //     if (($hasta !='SIN_FILTRO' && ($hasta!=''))) {
+    //         return $query->where('alm_req.fecha_registro','<', $hasta);
+    //     }
+    //     return $query;
+    // }
+    // public function scopeFiltroReserva($query, $name)
+    // {
+    //         if($name=='SIN_RESERVA'){
+    //             $query->leftJoin('almacen.alm_det_req', 'almacen.alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento');
+    //             return $query->whereNull('almacen.alm_det_req.stock_comprometido');
+    //         }elseif($name=='CON_RESERVA'){
+    //             $query->leftJoin('almacen.alm_det_req', 'almacen.alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento');
+    //             return $query->whereRaw('almacen.alm_det_req.stock_comprometido > 0'); 
+    //         }
         
-        return $query;
-    }
-    public function scopeFiltroOrden($query, $name)
-    {
-        if($name=='CON_ORDEN'){
-            $query->Join('almacen.alm_det_req', 'alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento');
-            $query->Join('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento');            
-            return $query->whereRaw('log_det_ord_compra.id_detalle_requerimiento > 0'); 
+    //     return $query;
+    // }
+    // public function scopeFiltroOrden($query, $name)
+    // {
+    //     if($name=='CON_ORDEN'){
+    //         $query->Join('almacen.alm_det_req', 'alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento');
+    //         $query->Join('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento');            
+    //         return $query->whereRaw('log_det_ord_compra.id_detalle_requerimiento > 0'); 
 
-        }elseif($name=='SIN_ORDEN'){
-            $query->Join('almacen.alm_det_req', 'alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento');
-            $query->Join('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento');
-            return $query->rightJoin('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento');
-        }
-        return $query;
-    }
+    //     }elseif($name=='SIN_ORDEN'){
+    //         $query->Join('almacen.alm_det_req', 'alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento');
+    //         $query->Join('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento');
+    //         return $query->rightJoin('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento');
+    //     }
+    //     return $query;
+    // }
 
     public function getFechaEntregaAttribute(){
         $fecha= new Carbon($this->attributes['fecha_entrega']);

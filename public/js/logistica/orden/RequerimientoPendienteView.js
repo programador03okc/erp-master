@@ -104,12 +104,13 @@ class RequerimientoPendienteView {
         });
 
         $('#modal-filtro-requerimientos-pendientes').on('hidden.bs.modal', ()=> {
-            if(!(this.PrevParametroEmpresa == this.ActualParametroEmpresa)
+  
+            if (!((this.PrevParametroEmpresa == this.ActualParametroEmpresa)
                 && (this.PrevParametroSede == this.ActualParametroSede)
                 && (this.PrevParametroFechaDesde == this.ActualParametroFechaDesde)
                 && (this.PrevParametroFechaHasta == this.ActualParametroFechaHasta)
                 && (this.PrevParametroReserva == this.ActualParametroReserva)
-                && (this.PrevParametroOrden == this.ActualParametroOrden)){
+                && (this.PrevParametroOrden == this.ActualParametroOrden))){
 
                     this.PrevParametroEmpresa= this.ActualParametroEmpresa;
                     this.PrevParametroSede= this.ActualParametroSede;
@@ -167,7 +168,6 @@ class RequerimientoPendienteView {
         }
         
         this.updateValorFiltroRequerimientosPendientes();
-        this.updateContadorFiltroRequerimientosPendientes();
 
     }
 
@@ -180,7 +180,7 @@ class RequerimientoPendienteView {
                 contadorCheckActivo++;
             }
         });
-        document.querySelector("button[id='btnFiltrosRequerimientosPendientes'] span").innerHTML ='<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : '+contadorCheckActivo
+        // document.querySelector("button[id='btnFiltrosRequerimientosPendientes'] span").innerHTML ='<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : '+contadorCheckActivo
 
     }
 
@@ -196,10 +196,10 @@ class RequerimientoPendienteView {
             this.ActualParametroSede=modalRequerimientosPendientes.querySelector("select[name='sede']").value;
         }
         if(modalRequerimientosPendientes.querySelector("input[name='fechaRegistroDesde']").getAttribute("readonly") ==null){
-            this.ActualParametroFechaDesde=modalRequerimientosPendientes.querySelector("input[name='fechaRegistroDesde']").value;
+            this.ActualParametroFechaDesde=modalRequerimientosPendientes.querySelector("input[name='fechaRegistroDesde']").value.length>0?modalRequerimientosPendientes.querySelector("input[name='fechaRegistroDesde']").value:'SIN_FILTRO';
         }
         if(modalRequerimientosPendientes.querySelector("input[name='fechaRegistroHasta']").getAttribute("readonly") ==null){
-            this.ActualParametroFechaHasta=modalRequerimientosPendientes.querySelector("input[name='fechaRegistroHasta']").value;
+            this.ActualParametroFechaHasta=modalRequerimientosPendientes.querySelector("input[name='fechaRegistroHasta']").value.length>0?modalRequerimientosPendientes.querySelector("input[name='fechaRegistroHasta']").value:'SIN_FILTRO';
         }
         if(modalRequerimientosPendientes.querySelector("select[name='reserva']").getAttribute("readonly") ==null){
             this.ActualParametroReserva=modalRequerimientosPendientes.querySelector("select[name='reserva']").value;
@@ -207,26 +207,35 @@ class RequerimientoPendienteView {
         if(modalRequerimientosPendientes.querySelector("select[name='orden']").getAttribute("readonly") ==null){
             this.ActualParametroOrden=modalRequerimientosPendientes.querySelector("select[name='orden']").value;
         }
-        // console.log(this.ActualParametroEmpresa,this.ActualParametroSede,this.ActualParametroFechaDesde,this.ActualParametroFechaHasta,this.ActualParametroReserva,this.ActualParametroOrden);
+        console.log(this.ActualParametroEmpresa,this.ActualParametroSede,this.ActualParametroFechaDesde,this.ActualParametroFechaHasta,this.ActualParametroReserva,this.ActualParametroOrden);
 
     }
 
-    renderRequerimientoPendienteList(empresa, sede, fechaRegistroDesde, fechaRegistroHasta, reserva, orden) {
+    renderRequerimientoPendienteList(empresa='SIN_FILTRO', sede='SIN_FILTRO', fechaRegistroDesde='SIN_FILTRO', fechaRegistroHasta='SIN_FILTRO', reserva='SIN_FILTRO', orden='SIN_FILTRO') {
         this.requerimientoPendienteCtrl.getRequerimientosPendientes(empresa, sede, fechaRegistroDesde, fechaRegistroHasta, reserva, orden).then((res) => {
-            if (res.length) {
+            if (res.length>0) {
                 this.construirTablaListaRequerimientosPendientes(res);
                 $('#requerimientos_pendientes').LoadingOverlay("hide", true);
             } else {
                 $('#requerimientos_pendientes').LoadingOverlay("hide", true);
                 console.log(res);
-                Swal.fire(
-                    '',
-                    'Lo sentimos hubo un error en el servidor al intentar traer la lista de requerimientos pendientes, por favor vuelva a intentarlo',
-                    'error'
-                );
+                    Lobibox.notify('info', {
+                    title:false,
+                    size: 'mini',
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    msg: `No se encontro data disponible para mostrar`
+                    });
+       
             }
         }).catch((err) => {
             console.log(err)
+            Swal.fire(
+                '',
+                'Lo sentimos hubo un error en el servidor al intentar traer la lista de requerimientos pendientes, por favor vuelva a intentarlo',
+                'error'
+            );
         })
     }
 
@@ -428,6 +437,8 @@ class RequerimientoPendienteView {
                 }
             ],
             'initComplete': function () {
+                that.updateContadorFiltroRequerimientosPendientes();
+
                 var trs = this.$('tr');
                 for (let i = 0; i < trs.length; i++) {
                     trs[i].childNodes[1].childNodes[0].childNodes[0].addEventListener('click', handleTrClick);
