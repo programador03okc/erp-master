@@ -19,11 +19,11 @@
                             <div class="row">
                                 <div class="col-md-4">
                                         <label>
-                                            <input type="hidden" name="chkEmpresa" style="margin-right: 3px;"> Empresa
+                                            <input type="checkbox" name="chkEmpresa" style="margin-right: 3px;"> Empresa
                                         </label>
                                 </div>
                                 <div class="col-md-8">
-                                    <select class="form-control input-sm handleChangeFiltroEmpresa" name="empresa" >
+                                    <select class="form-control input-sm handleChangeFiltroEmpresa handleChangeUpdateValorFiltroRequerimientosPendientes" name="empresa" readOnly>
                                         <option value="SIN_FILTRO">-----------------</option>
                                         @foreach ($empresas as $emp)
                                         <option value="{{$emp->id_empresa}}" data-url-logo="{{$emp->logo_empresa}}">{{$emp->razon_social}}</option>
@@ -34,11 +34,11 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <label>
-                                        <input type="hidden" name="chkSede" style="margin-right: 3px;" > Sede
+                                        <input type="checkbox" name="chkSede" style="margin-right: 3px;" > Sede
                                     </label> 
                                 </div>
                                 <div class="col-md-8">
-                                    <select class="form-control input-sm" name="sede">
+                                    <select class="form-control input-sm handleChangeUpdateValorFiltroRequerimientosPendientes" name="sede" readOnly>
                                         <option value="SIN_FILTRO">-----------------</option>
                                     </select>
                                 </div>
@@ -46,13 +46,13 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <label>
-                                        <input type="hidden" name="chkFechaRegistro" style="margin-right: 3px;"> Fecha registro
+                                        <input type="checkbox" name="chkFechaRegistro" style="margin-right: 3px;"> Fecha registro
                                     </label> 
                                 </div>
                                 <div class="col-md-8">
                                     <div style="display:flex;">
-                                        <input type="date" class="form-control input-sm" name="fechaRegistroDesde">
-                                        <input type="date" class="form-control input-sm" name="fechaRegistroHasta">
+                                        <input type="date" class="form-control input-sm handleBlurUpdateValorFiltroRequerimientosPendientes" name="fechaRegistroDesde" readOnly>
+                                        <input type="date" class="form-control input-sm handleBlurUpdateValorFiltroRequerimientosPendientes" name="fechaRegistroHasta" readOnly>
                                     </div>
                                 </div>
                             </div>
@@ -62,11 +62,11 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <label>
-                                        <input type="hidden" name="chkReservaAlmacen" style="margin-right: 3px;"> Reserva almacén
+                                        <input type="checkbox" name="chkReservaAlmacen" style="margin-right: 3px;"> Reserva almacén
                                     </label> 
                                 </div>
                                 <div class="col-md-8">
-                                    <select class="form-control input-sm" name="reserva">
+                                    <select class="form-control input-sm handleChangeUpdateValorFiltroRequerimientosPendientes" name="reserva" readOnly>
                                         <option value="SIN_FILTRO">-----------------</option>
                                         <option value="SIN_RESERVA">Sin reservas</option>
                                         <option value="CON_RESERVA">Con reservas</option>
@@ -76,11 +76,11 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <label>
-                                        <input type="hidden" name="chkOrden" style="margin-right: 3px;"> Orden
+                                        <input type="checkbox" name="chkOrden" style="margin-right: 3px;"> Orden
                                     </label> 
                                 </div>
                                 <div class="col-md-8">
-                                    <select class="form-control input-sm" name="orden">
+                                    <select class="form-control input-sm handleChangeUpdateValorFiltroRequerimientosPendientes" name="orden" readOnly>
                                         <option value="SIN_FILTRO">-----------------</option>
                                         <option value="SIN_ORDEN">Sin orden</option>
                                         <option value="CON_ORDEN">Con orden</option>
@@ -96,8 +96,7 @@
                 </div> 
             </div>
             <div class="modal-footer">
-                <button class="btn btn-sm btn-default handleClickLimpiarFiltroRequerimientosPendientes">Limpiar filtros</button>
-                <button class="btn btn-sm btn-success handleClickAplicarFiltroRequerimientosPendientes">Aplicar</button>
+                <button type="button" class="btn btn-sm btn-primary" class="close" data-dismiss="modal" >Cerrar</button>
             </div>
         </div>
     </div>
