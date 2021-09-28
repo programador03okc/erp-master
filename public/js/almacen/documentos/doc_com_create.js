@@ -203,6 +203,12 @@ function mostrarListaItems() {
             data-id="${element.id_guia_com_det}" min="0" step="0.0001"/>
         </td>
         <td class="right">${formatNumber.decimal(element.total, '', -4)}</td>
+        <td class="right">
+            ${element.id_producto == null ?
+                `<button type="button" class="quitar btn btn-danger btn-xs" data-toggle="tooltip" 
+                data-placement="bottom" title="Quitar item" data-id="${element.id_guia_com_det}">
+                <i class="fas fa-minus"></i></button>`: ''}
+        </td>
         </tr>`;
         i++;
     });
@@ -231,6 +237,16 @@ function mostrarListaItems() {
     $('[name=importe]').val(formatNumber.decimal(totales.total, '', -2));
 }
 
+$("#detalleItems tbody").on("click", ".quitar", function () {
+    let id = $(this).data("id");
+    console.log(id);
+    let index = listaItems.findIndex(function (item, i) {
+        return item.id_guia_com_det == id;
+    });
+    listaItems.splice(index, 1);
+    mostrarListaItems();
+});
+
 $('#detalleItems tbody').on("change", ".descripcion", function () {
 
     let id_guia_com_det = $(this).data('id');
@@ -238,7 +254,7 @@ $('#detalleItems tbody').on("change", ".descripcion", function () {
     console.log('descripcion: ' + descripcion);
     listaItems.forEach(element => {
         if (element.id_guia_com_det == id_guia_com_det) {
-            element.descripcion = descripcion;
+            element.descripcion = descripcion.trim();
             console.log(element);
         }
     });
@@ -300,49 +316,59 @@ $('#detalleItems tbody').on("change", ".total_dscto", function () {
 
 $("#form-doc_create").on("submit", function (e) {
     e.preventDefault();
+    var valida = '';
 
-    Swal.fire({
-        title: "¿Está seguro que desea guardar éste Documento de compra?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#00a65a", //"#3085d6",
-        cancelButtonColor: "#d33",
-        cancelButtonText: "Cancelar",
-        confirmButtonText: "Si, Guardar"
-    }).then(result => {
-        if (result.isConfirmed) {
-
-            var id_doc_com = $('[name=id_doc_com]').val();
-            var serial = $(this).serialize();
-            var listaItemsDetalle = [];
-            var nuevo = null;
-
-            listaItems.forEach(element => {
-                nuevo = {
-                    'id_guia_com_det': element.id_guia_com_det,
-                    'id_producto': element.id_producto,
-                    'descripcion': (element.id_producto == null ? element.descripcion : ''),
-                    'cantidad': element.cantidad,
-                    'id_unid_med': element.id_unid_med,
-                    'precio': element.precio,
-                    'sub_total': element.sub_total,
-                    'porcentaje_dscto': element.porcentaje_dscto,
-                    'total_dscto': element.total_dscto,
-                    'total': element.total,
-                }
-                listaItemsDetalle.push(nuevo);
-            });
-
-            var data = serial +
-                '&sub_total=' + totales.sub_total +
-                '&porcentaje_igv=' + totales.porcentaje_igv +
-                '&igv=' + totales.igv +
-                '&total=' + totales.total +
-                '&detalle_items=' + JSON.stringify(listaItemsDetalle);
-            console.log(data);
-            guardar_doc_create(data);
-        }
+    listaItems.forEach(element => {
+        valida += (element.id_producto == null && element.descripcion == '' ? 'Debe ingresar un servicio!\n' : '');
+        valida += (element.total > 0 ? '' : 'Debe ingresar un precio unitario mayor a cero\n');
     });
+
+    if (valida !== '') {
+        Swal.fire(valida, "", "warning");
+    } else {
+        Swal.fire({
+            title: "¿Está seguro que desea guardar éste Documento de compra?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#00a65a", //"#3085d6",
+            cancelButtonColor: "#d33",
+            cancelButtonText: "Cancelar",
+            confirmButtonText: "Si, Guardar"
+        }).then(result => {
+            if (result.isConfirmed) {
+
+                var id_doc_com = $('[name=id_doc_com]').val();
+                var serial = $(this).serialize();
+                var listaItemsDetalle = [];
+                var nuevo = null;
+
+                listaItems.forEach(element => {
+                    nuevo = {
+                        'id_guia_com_det': element.id_guia_com_det,
+                        'id_producto': element.id_producto,
+                        'descripcion': (element.id_producto == null ? element.descripcion : ''),
+                        'cantidad': element.cantidad,
+                        'id_unid_med': element.id_unid_med,
+                        'precio': element.precio,
+                        'sub_total': element.sub_total,
+                        'porcentaje_dscto': element.porcentaje_dscto,
+                        'total_dscto': element.total_dscto,
+                        'total': element.total,
+                    }
+                    listaItemsDetalle.push(nuevo);
+                });
+
+                var data = serial +
+                    '&sub_total=' + totales.sub_total +
+                    '&porcentaje_igv=' + totales.porcentaje_igv +
+                    '&igv=' + totales.igv +
+                    '&total=' + totales.total +
+                    '&detalle_items=' + JSON.stringify(listaItemsDetalle);
+                console.log(data);
+                guardar_doc_create(data);
+            }
+        });
+    }
 });
 
 function guardar_doc_create(data) {

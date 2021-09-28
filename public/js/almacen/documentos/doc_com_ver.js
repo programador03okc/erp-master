@@ -147,7 +147,8 @@ function anularDocCompra(id) {
             success: function (response) {
                 console.log(response);
                 alert("Se annulo correctamente el documento.");
-                listarIngresos();
+                // listarIngresos();
+                $("#listaIngresosAlmacen").DataTable().ajax.reload(null, false);
                 $("#modal-doc_ver").modal("hide");
             }
         }).fail(function (jqXHR, textStatus, errorThrown) {
