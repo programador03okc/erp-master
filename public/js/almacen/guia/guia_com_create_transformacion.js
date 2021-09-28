@@ -48,12 +48,12 @@ function listar_detalle_transformacion(id) {
                     'control_series': element.series,
                     'tipo': 'sobrante',
                     'cantidad': element.cantidad,
-                    'id_producto': null,//element.id_producto,
+                    'id_producto': element.id_producto,
                     'codigo': element.codigo,
-                    'cod_prod': null,//element.cod_prod,
+                    'cod_prod': element.cod_prod,//element.cod_prod,
                     'part_number': element.part_number_sobrante,
                     'descripcion': element.descripcion_sobrante,
-                    'abreviatura': null,//element.abreviatura,
+                    'abreviatura': element.abreviatura,
                     'id_moneda': 1,
                     'valor_unitario': element.valor_unitario,
                     'valor_total': element.valor_total
@@ -107,7 +107,7 @@ function mostrar_detalle_transformacion() {
                 html_ser += ', ' + serie;
             }
         });
-        console.log(element.id_moneda);
+        console.log('cod_prod: ' + element.cod_prod);
         // var opt_monedas = `<option value="0" ${element.id_moneda == 0 ? 'selected' : ''}>Ninguno</option>`;
         var opt_monedas = ``;
         monedas.forEach(moneda => {

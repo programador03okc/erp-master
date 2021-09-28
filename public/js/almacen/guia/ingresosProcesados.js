@@ -337,14 +337,19 @@ function anular_ingreso(data) {
         success: function (response) {
             console.log(response);
             if (response.length > 0) {
-                alert(response);
+                Swal.fire(response, "", "warning");
                 $("#modal-guia_com_obs").modal("hide");
             } else {
-                alert("Ingreso Almacén anulado con éxito");
+                Lobibox.notify("success", {
+                    title: false,
+                    size: "mini",
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    msg: 'Ingreso Almacén anulado con éxito.'
+                });
                 $("#modal-guia_com_obs").modal("hide");
-                $("#listaIngresosAlmacen")
-                    .DataTable()
-                    .ajax.reload();
+                $("#listaIngresosAlmacen").DataTable().ajax.reload(null, false);
             }
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {
