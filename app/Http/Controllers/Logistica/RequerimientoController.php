@@ -32,6 +32,7 @@ use App\Models\Contabilidad\Banco;
 use App\Models\Contabilidad\Identidad;
 use App\Models\Contabilidad\TipoCuenta;
 use App\Models\Administracion\Empresa;
+use App\Models\Administracion\Estado;
 use App\Models\administracion\Sede;
 use App\Models\Almacen\AdjuntoDetalleRequerimiento;
 use App\Models\Almacen\AdjuntoRequerimiento;
@@ -1237,10 +1238,11 @@ class RequerimientoController extends Controller
         $idEmpresa = $request->idEmpresa;
         $idSede = $request->idSede;
         $idGrupo = $request->idGrupo;
-        $division = $request->division;
-        $idPrioridad = $request->idPrioridad;
-        // $req     = array();
-        // $det_req = array();
+        $division = $request->idDivision;
+        $fechaRegistroDesde = $request->fechaRegistroDesde;
+        $fechaRegistroHasta = $request->fechaRegistroHasta;
+        $idEstado = $request->idEstado;
+        // Debugbar::info($division);
 
         $requerimientos = Requerimiento::with('detalle')->leftJoin('administracion.adm_documentos_aprob', 'alm_req.id_requerimiento', '=', 'adm_documentos_aprob.id_doc')
             ->leftJoin('administracion.adm_estado_doc', 'alm_req.estado', '=', 'adm_estado_doc.id_estado_doc')
@@ -1308,11 +1310,13 @@ class RequerimientoController extends Controller
                 alm_det_req.estado != 7) AS monto_total")
 
             )
-            // ->where([['alm_req.estado', '!=', 7], ['sis_sede.estado', '=', 1]])
 
             ->when(($mostrar === 'ME'), function ($query) {
                 $idUsuario = Auth::user()->id_usuario;
                 return $query->whereRaw('alm_req.id_usuario = ' . $idUsuario);
+            })
+            ->when(($mostrar === 'ALL'), function ($query) {
+                return $query->whereRaw('alm_req.id_usuario > 0');
             })
             ->when(($mostrar === 'REVISADO_APROBADO'), function ($query) {
                 $idUsuario = Auth::user()->id_usuario;
@@ -1328,11 +1332,21 @@ class RequerimientoController extends Controller
             ->when((intval($idGrupo) > 0), function ($query)  use ($idGrupo) {
                 return $query->whereRaw('sis_grupo.id_grupo = ' . $idGrupo);
             })
-            ->when((($division != "0" && $division != "")), function ($query)  use ($division) {
+            ->when((intval($division) >0), function ($query)  use ($division) {
                 return $query->whereRaw('alm_req.division_id = ' . $division);
             })
-            ->when((intval($idPrioridad) > 0), function ($query)  use ($idPrioridad) {
-                return $query->whereRaw('alm_req.id_prioridad = ' . $idPrioridad);
+            ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta == 'SIN_FILTRO')), function ($query) use($fechaRegistroDesde) {
+                return $query->where('alm_req.fecha_requerimiento' ,'>=',$fechaRegistroDesde); 
+            })
+            ->when((($fechaRegistroDesde == 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use($fechaRegistroHasta) {
+                return $query->where('alm_req.fecha_requerimiento' ,'<=',$fechaRegistroHasta); 
+            })
+            ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use($fechaRegistroDesde,$fechaRegistroHasta) {
+                return $query->whereBetween('alm_req.fecha_requerimiento' ,[$fechaRegistroDesde,$fechaRegistroHasta]); 
+            })
+
+            ->when((intval($idEstado) > 0), function ($query)  use ($idEstado) {
+                return $query->whereRaw('alm_req.estado = ' . $idEstado);
             });
 
         return datatables($requerimientos)
@@ -1377,9 +1391,10 @@ class RequerimientoController extends Controller
         $empresas = Empresa::mostrar();
         $periodos = Periodo::mostrar();
         $prioridades = Prioridad::mostrar();
+        $estados = Estado::mostrar();
 
 
-        return view('logistica/requerimientos/lista_requerimientos', compact('periodos', 'gruposUsuario', 'grupos', 'roles', 'empresas', 'prioridades'));
+        return view('logistica/requerimientos/lista_requerimientos', compact('periodos', 'gruposUsuario', 'grupos', 'roles', 'empresas', 'prioridades','estados'));
     }
 
 

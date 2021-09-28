@@ -104,7 +104,8 @@ class RequerimientoPendienteView {
         });
 
         $('#modal-filtro-requerimientos-pendientes').on('hidden.bs.modal', ()=> {
-  
+            this.updateValorFiltroRequerimientosPendientes();
+
             if (!((this.PrevParametroEmpresa == this.ActualParametroEmpresa)
                 && (this.PrevParametroSede == this.ActualParametroSede)
                 && (this.PrevParametroFechaDesde == this.ActualParametroFechaDesde)
@@ -167,7 +168,6 @@ class RequerimientoPendienteView {
                 break;
         }
         
-        this.updateValorFiltroRequerimientosPendientes();
 
     }
 
@@ -180,7 +180,7 @@ class RequerimientoPendienteView {
                 contadorCheckActivo++;
             }
         });
-        // document.querySelector("button[id='btnFiltrosRequerimientosPendientes'] span").innerHTML ='<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : '+contadorCheckActivo
+        document.querySelector("button[id='btnFiltrosRequerimientosPendientes'] span").innerHTML ='<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : '+contadorCheckActivo
 
     }
 
@@ -207,17 +207,14 @@ class RequerimientoPendienteView {
         if(modalRequerimientosPendientes.querySelector("select[name='orden']").getAttribute("readonly") ==null){
             this.ActualParametroOrden=modalRequerimientosPendientes.querySelector("select[name='orden']").value;
         }
-        console.log(this.ActualParametroEmpresa,this.ActualParametroSede,this.ActualParametroFechaDesde,this.ActualParametroFechaHasta,this.ActualParametroReserva,this.ActualParametroOrden);
 
     }
 
     renderRequerimientoPendienteList(empresa='SIN_FILTRO', sede='SIN_FILTRO', fechaRegistroDesde='SIN_FILTRO', fechaRegistroHasta='SIN_FILTRO', reserva='SIN_FILTRO', orden='SIN_FILTRO') {
         this.requerimientoPendienteCtrl.getRequerimientosPendientes(empresa, sede, fechaRegistroDesde, fechaRegistroHasta, reserva, orden).then((res) => {
-            if (res.length>0) {
-                this.construirTablaListaRequerimientosPendientes(res);
-                $('#requerimientos_pendientes').LoadingOverlay("hide", true);
-            } else {
-                $('#requerimientos_pendientes').LoadingOverlay("hide", true);
+            this.construirTablaListaRequerimientosPendientes(res);
+            $('#requerimientos_pendientes').LoadingOverlay("hide", true);
+            if (res.length==0) {
                 console.log(res);
                     Lobibox.notify('info', {
                     title:false,
@@ -227,8 +224,8 @@ class RequerimientoPendienteView {
                     delayIndicator: false,
                     msg: `No se encontro data disponible para mostrar`
                     });
-       
-            }
+
+            } 
         }).catch((err) => {
             console.log(err)
             Swal.fire(

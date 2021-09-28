@@ -10,6 +10,23 @@ class ListarRequerimientoView {
     constructor(requerimientoCtrl) {
         this.requerimientoCtrl = requerimientoCtrl;
         this.trazabilidadRequerimiento = new TrazabilidadRequerimiento(requerimientoCtrl);
+        this.ActualParametroAllOrMe= 'SIN_FILTRO';
+        this.ActualParametroEmpresa= 'SIN_FILTRO';
+        this.ActualParametroSede= 'SIN_FILTRO';
+        this.ActualParametroGrupo= 'SIN_FILTRO';
+        this.ActualParametroDivision= 'SIN_FILTRO';
+        this.ActualParametroFechaDesde= 'SIN_FILTRO';
+        this.ActualParametroFechaHasta= 'SIN_FILTRO';
+        this.ActualParametroEstado= 'SIN_FILTRO';
+
+        this.PrevParametroAllOrMe= 'SIN_FILTRO';
+        this.PrevParametroEmpresa= 'SIN_FILTRO';
+        this.PrevParametroSede= 'SIN_FILTRO';
+        this.PrevParametroGrupo= 'SIN_FILTRO';
+        this.PrevParametroDivision= 'SIN_FILTRO';
+        this.PrevParametroFechaDesde= 'SIN_FILTRO';
+        this.PrevParametroFechaHasta= 'SIN_FILTRO';
+        this.PrevParametroEstado= 'SIN_FILTRO';
 
     }
 
@@ -26,8 +43,245 @@ class ListarRequerimientoView {
     initializeEventHandler() {
         document.querySelector("button[class~='handleClickImprimirRequerimientoPdf']").addEventListener("click", this.imprimirRequerimientoPdf.bind(this), false);
 
+        $('#modal-filtro-requerimientos-elaborados').on("change", "select.handleChangeUpdateValorFiltroRequerimientosElaborados", (e) => {
+            this.updateValorFiltroRequerimientosElaborados();
+        });
+
+        $('#modal-filtro-requerimientos-elaborados').on("click", "input[type=checkbox]", (e) => {
+            this.estadoCheckFiltroRequerimientosElaborados(e);
+        });
+
+        $('#modal-filtro-requerimientos-elaborados').on("change", "select.handleChangeFiltroEmpresa", (e) => {
+            this.getDataSelectSede(e.currentTarget.value);
+        });
+        $('#modal-filtro-requerimientos-elaborados').on("change", "select.handleChangeFiltroGrupo", (e) => {
+            this.getDataSelectDivision(e.currentTarget.value);
+        });
+
+
+
+        $('#modal-filtro-requerimientos-elaborados').on('hidden.bs.modal', ()=> {
+            this.updateValorFiltroRequerimientosElaborados();
+
+            if (!((this.PrevParametroAllOrMe == this.ActualParametroAllOrMe)
+                && (this.PrevParametroEmpresa == this.ActualParametroEmpresa)
+                && (this.PrevParametroSede == this.ActualParametroSede)
+                && (this.PrevParametroGrupo == this.ActualParametroGrupo)
+                && (this.PrevParametroDivision == this.ActualParametroDivision)
+                && (this.PrevParametroFechaDesde == this.ActualParametroFechaDesde)
+                && (this.PrevParametroFechaHasta == this.ActualParametroFechaHasta)
+                && (this.PrevParametroEstado == this.ActualParametroEstado))){
+
+                this.PrevParametroAllOrMe= this.ActualParametroAllOrMe;
+                this.PrevParametroEmpresa= this.ActualParametroEmpresa;
+                this.PrevParametroSede= this.ActualParametroSede;
+                this.PrevParametroGrupo= this.ActualParametroGrupo;
+                this.PrevParametroDivision= this.ActualParametroDivision;
+                this.PrevParametroFechaDesde= this.ActualParametroFechaDesde;
+                this.PrevParametroFechaHasta= this.ActualParametroFechaHasta;
+                this.PrevParametroEstado= this.ActualParametroEstado;
+
+                this.mostrar(this.ActualParametroAllOrMe,this.ActualParametroEmpresa,this.ActualParametroSede,this.ActualParametroGrupo,this.ActualParametroDivision,this.ActualParametroFechaDesde,this.ActualParametroFechaHasta,this.ActualParametroEstado);
+
+            }
+        });
+
     }
 
+    
+    estadoCheckFiltroRequerimientosElaborados(e) {
+        const modalFiltrosRequerimientosElaborados =document.querySelector("div[id='modal-filtro-requerimientos-elaborados']");
+        switch (e.currentTarget.getAttribute('name')) {
+            case 'chkElaborado':
+                if (e.currentTarget.checked == true) {
+                    modalFiltrosRequerimientosElaborados.querySelector("select[name='elaborado']").removeAttribute("readOnly")
+                } else {
+                    modalFiltrosRequerimientosElaborados.querySelector("select[name='elaborado']").setAttribute("readOnly", true)
+                }
+                break;
+            case 'chkEmpresa':
+                if (e.currentTarget.checked == true) {
+                    modalFiltrosRequerimientosElaborados.querySelector("select[name='empresa']").removeAttribute("readOnly")
+                } else {
+                    modalFiltrosRequerimientosElaborados.querySelector("select[name='empresa']").setAttribute("readOnly", true)
+                }
+                break;
+            case 'chkSede':
+                if (e.currentTarget.checked == true) {
+                    modalFiltrosRequerimientosElaborados.querySelector("select[name='sede']").removeAttribute("readOnly")
+                } else {
+                    modalFiltrosRequerimientosElaborados.querySelector("select[name='sede']").setAttribute("readOnly", true)
+                }
+                break;
+            case 'chkGrupo':
+                if (e.currentTarget.checked == true) {
+                    modalFiltrosRequerimientosElaborados.querySelector("select[name='grupo']").removeAttribute("readOnly")
+                } else {
+                    modalFiltrosRequerimientosElaborados.querySelector("select[name='grupo']").setAttribute("readOnly", true)
+                }
+                break;
+            case 'chkDivision':
+                if (e.currentTarget.checked == true) {
+                    modalFiltrosRequerimientosElaborados.querySelector("select[name='division']").removeAttribute("readOnly")
+                } else {
+                    modalFiltrosRequerimientosElaborados.querySelector("select[name='division']").setAttribute("readOnly", true)
+                }
+                break;
+            case 'chkFechaRegistro':
+                if (e.currentTarget.checked == true) {
+                    modalFiltrosRequerimientosElaborados.querySelector("input[name='fechaRegistroDesde']").removeAttribute("readOnly")
+                    modalFiltrosRequerimientosElaborados.querySelector("input[name='fechaRegistroHasta']").removeAttribute("readOnly")
+                } else {
+                    modalFiltrosRequerimientosElaborados.querySelector("input[name='fechaRegistroDesde']").setAttribute("readOnly", true)
+                    modalFiltrosRequerimientosElaborados.querySelector("input[name='fechaRegistroHasta']").setAttribute("readOnly", true)
+                }
+                break;
+            case 'chkEstado':
+                if (e.currentTarget.checked == true) {
+                    modalFiltrosRequerimientosElaborados.querySelector("select[name='estado']").removeAttribute("readOnly")
+                } else {
+                    modalFiltrosRequerimientosElaborados.querySelector("select[name='estado']").setAttribute("readOnly", true)
+                }
+                break;
+            default:
+                break;
+        }
+        
+    }
+
+    getDataSelectSede(idEmpresa) {
+
+        if (idEmpresa > 0) {
+            this.requerimientoCtrl.obtenerSede(idEmpresa).then((res) => {
+                this.llenarSelectFiltroSede(res);
+            }).catch(function (err) {
+                console.log(err)
+            })
+        } else {
+            let selectElement = document.querySelector("div[id='modal-filtro-requerimientos-elaborados'] select[name='sede']");
+            if (selectElement.options.length > 0) {
+                let i, L = selectElement.options.length - 1;
+                for (i = L; i >= 0; i--) {
+                    selectElement.remove(i);
+                }
+                let option = document.createElement("option");
+
+                option.value = 'SIN_FILTRO';
+                option.text = '-----------------';
+                selectElement.add(option);
+            }
+        }
+        return false;
+    }
+
+    llenarSelectFiltroSede(array) {
+        let selectElement = document.querySelector("div[id='modal-filtro-requerimientos-elaborados'] select[name='sede']");
+        if (selectElement.options.length > 0) {
+            let i, L = selectElement.options.length - 1;
+            for (i = L; i >= 0; i--) {
+                selectElement.remove(i);
+            }
+        }
+        array.forEach(element => {
+            let option = document.createElement("option");
+            option.text = element.descripcion;
+            option.value = element.id_sede;
+            option.setAttribute('data-ubigeo', element.id_ubigeo);
+            option.setAttribute('data-name-ubigeo', element.ubigeo_descripcion);
+            if (element.codigo == 'LIMA' || element.codigo == 'Lima') { // default sede lima
+                option.selected = true;
+
+            }
+
+            selectElement.add(option);
+        });
+
+    }
+
+    getDataSelectDivision(idGrupo){
+
+        if (idGrupo > 0) {
+            this.requerimientoCtrl.getListaDivisionesDeGrupo(idGrupo).then((res) => {
+                this.llenarSelectFiltroDivision(res);
+            }).catch(function (err) {
+                console.log(err)
+            })
+        } else {
+            let selectElement = document.querySelector("div[id='modal-filtro-requerimientos-elaborados'] select[name='division']");
+            if (selectElement.options.length > 0) {
+                let i, L = selectElement.options.length - 1;
+                for (i = L; i >= 0; i--) {
+                    selectElement.remove(i);
+                }
+                let option = document.createElement("option");
+
+                option.value = 'SIN_FILTRO';
+                option.text = '-----------------';
+                selectElement.add(option);
+            }
+        }
+        return false;
+    }
+
+
+    llenarSelectFiltroDivision(array){
+        // console.log(array);
+        let selectElement = document.querySelector("div[id='modal-filtro-requerimientos-elaborados'] select[name='division']");
+        if (selectElement.options.length > 0) {
+            let i, L = selectElement.options.length - 1;
+            for (i = L; i >= 0; i--) {
+                selectElement.remove(i);
+            }
+        }
+        array.forEach(element => {
+            let option = document.createElement("option");
+            option.text = element.descripcion;
+            option.value = element.id_division;
+            selectElement.add(option);
+        });
+    }
+
+
+    updateValorFiltroRequerimientosElaborados(){
+        const modalRequerimientosElaborados = document.querySelector("div[id='modal-filtro-requerimientos-elaborados']");
+        if(modalRequerimientosElaborados.querySelector("select[name='elaborado']").getAttribute("readonly") ==null){
+            this.ActualParametroAllOrMe=modalRequerimientosElaborados.querySelector("select[name='elaborado']").value;
+        }
+        if(modalRequerimientosElaborados.querySelector("select[name='empresa']").getAttribute("readonly") ==null){
+            this.ActualParametroEmpresa=modalRequerimientosElaborados.querySelector("select[name='empresa']").value;
+        }
+        if(modalRequerimientosElaborados.querySelector("select[name='sede']").getAttribute("readonly") ==null){
+            this.ActualParametroSede=modalRequerimientosElaborados.querySelector("select[name='sede']").value;
+        }
+        if(modalRequerimientosElaborados.querySelector("select[name='grupo']").getAttribute("readonly") ==null){
+            this.ActualParametroGrupo=modalRequerimientosElaborados.querySelector("select[name='grupo']").value;
+        }
+        if(modalRequerimientosElaborados.querySelector("select[name='division']").getAttribute("readonly") ==null){
+            this.ActualParametroDivision=modalRequerimientosElaborados.querySelector("select[name='division']").value;
+        }
+        if(modalRequerimientosElaborados.querySelector("input[name='fechaRegistroDesde']").getAttribute("readonly") ==null){
+            this.ActualParametroFechaDesde=modalRequerimientosElaborados.querySelector("input[name='fechaRegistroDesde']").value.length>0?modalRequerimientosElaborados.querySelector("input[name='fechaRegistroDesde']").value:'SIN_FILTRO';
+        }
+        if(modalRequerimientosElaborados.querySelector("input[name='fechaRegistroHasta']").getAttribute("readonly") ==null){
+            this.ActualParametroFechaHasta=modalRequerimientosElaborados.querySelector("input[name='fechaRegistroHasta']").value.length>0?modalRequerimientosElaborados.querySelector("input[name='fechaRegistroHasta']").value:'SIN_FILTRO';
+        }
+        if(modalRequerimientosElaborados.querySelector("select[name='estado']").getAttribute("readonly") ==null){
+            this.ActualParametroEstado=modalRequerimientosElaborados.querySelector("select[name='estado']").value;
+        }
+    }
+
+    updateContadorFiltroRequerimientosElaborados(){
+
+        let contadorCheckActivo= 0;
+        const allCheckBoxFiltroRequerimientosElaborados = document.querySelectorAll("div[id='modal-filtro-requerimientos-elaborados'] input[type='checkbox']");
+        allCheckBoxFiltroRequerimientosElaborados.forEach(element => {
+            if(element.checked==true){
+                contadorCheckActivo++;
+            }
+        });
+        document.querySelector("button[id='btnFiltrosListaRequerimientosElaborados'] span").innerHTML ='<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : '+contadorCheckActivo
+
+    }
 
     imprimirRequerimientoPdf() {
         var id = document.getElementsByName("id_requerimiento")[0].value;
@@ -44,21 +298,42 @@ class ListarRequerimientoView {
         }
     }
 
-    mostrar() {
+    abrirModalFiltrosRequerimientosElaborados() {
+        $('#modal-filtro-requerimientos-elaborados').modal({
+            show: true,
+            backdrop: 'static'
+        });
+    }
+
+    mostrar(meOrAll='SIN_FILTRO',idEmpresa='SIN_FILTRO',idSede='SIN_FILTRO',idGrupo='SIN_FILTRO',idDivision='SIN_FILTRO',fechaRegistroDesde='SIN_FILTRO',fechaRegistroHasta='SIN_FILTRO',idEstado='SIN_FILTRO') {
+        // console.log(meOrAll,idEmpresa,idSede,idGrupo,idDivision,fechaRegistroDesde,fechaRegistroHasta,idEstado);
         let that = this;
         vista_extendida();
         var vardataTables = funcDatatables();
         $tablaListaRequerimientosElaborados= $('#ListaRequerimientosElaborados').DataTable({
             'dom': vardataTables[1],
-            'buttons': [],
+            'buttons': [
+                {
+                    text: '<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : 0',
+                    attr: {
+                        id: 'btnFiltrosListaRequerimientosElaborados'
+                    },
+                    action: () => {
+                        this.abrirModalFiltrosRequerimientosElaborados();
+
+                    },
+                    className: 'btn-default btn-sm'
+                }
+            ],
             'language': vardataTables[0],
             'order': [[0, 'desc']],
             'bLengthChange': false,
             'serverSide': true,
-            // 'destroy': true,
+            'destroy': true,
             'ajax': {
                 'url': 'elaborados',
                 'type': 'POST',
+                'data':{'meOrAll':meOrAll,'idEmpresa':idEmpresa,'idSede':idSede,'idGrupo':idGrupo,'idDivision':idDivision,'fechaRegistroDesde':fechaRegistroDesde,'fechaRegistroHasta':fechaRegistroHasta,'idEstado':idEstado},
                 beforeSend: data => {
     
                     $("#ListaRequerimientosElaborados").LoadingOverlay("show", {
@@ -173,6 +448,8 @@ class ListarRequerimientoView {
 
             ],
             'initComplete': function () {
+                that.updateContadorFiltroRequerimientosElaborados();
+
                 //Boton de busqueda
                 const $filter = $('#ListaRequerimientosElaborados_filter');
                 const $input = $filter.find('input');
@@ -217,6 +494,16 @@ class ListarRequerimientoView {
                 
             },
             "drawCallback": function( settings ) {
+                if($tablaListaRequerimientosElaborados.rows().data().length==0){
+                    Lobibox.notify('info', {
+                        title:false,
+                        size: 'mini',
+                        rounded: true,
+                        sound: false,
+                        delayIndicator: false,
+                        msg: `No se encontro data disponible para mostrar`
+                        }); 
+                }
                 //Botón de búsqueda
                 $('#ListaRequerimientosElaborados_filter input').prop('disabled', false);
                 $('#btnBuscar').html('<span class="glyphicon glyphicon-search" aria-hidden="true"></span>').prop('disabled', false);

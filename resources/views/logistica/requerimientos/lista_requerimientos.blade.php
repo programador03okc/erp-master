@@ -141,7 +141,8 @@ Listado de requerimientos
 @include('logistica.requerimientos.modal_requerimiento')
 @include('logistica.requerimientos.modal_adjuntar_archivos_requerimiento')
 @include('logistica.requerimientos.modal_adjuntar_archivos_detalle_requerimiento')
- 
+@include('logistica.requerimientos.modal_filtro_requerimientos_elaborados')
+
 
 @endsection
 
@@ -150,7 +151,8 @@ Listado de requerimientos
 <script src="{{ asset('js/util.js')}}"></script>
 <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
- 
+<script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
+<script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
 
 <script src="{{ asset('js/logistica/requerimiento/ArchivoAdjunto.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/ArchivoAdjunto.js'))}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/TrazabilidadRequerimientoView.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/TrazabilidadRequerimientoView.js'))}}"></script>
