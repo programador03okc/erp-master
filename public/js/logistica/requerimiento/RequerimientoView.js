@@ -122,7 +122,7 @@ class RequerimientoView {
             backdrop: 'true'
         });
 
-        this.construirTablaHistorialRequerimientosElaborados({"meOrAll":"ME"});
+        this.construirTablaHistorialRequerimientosElaborados({'meOrAll':'ME','idEmpresa':'SIN_FILTRO','idSede':'SIN_FILTRO','idGrupo':'SIN_FILTRO','idDivision':'SIN_FILTRO','fechaRegistroDesde':'SIN_FILTRO','fechaRegistroHasta':'SIN_FILTRO','idEstado':'SIN_FILTRO'});
         // this.requerimientoCtrl.getListadoElaborados().then((res)=> {
 
         // }).catch(function (err) {
