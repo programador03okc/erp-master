@@ -231,6 +231,7 @@ $("#form-guia_create").on("submit", function (e) {
                 'id_unidad_medida': element.id_unidad_medida,
                 'control_series': element.control_series,
                 'cantidad': element.cantidad,
+                'id_moneda': element.id_moneda,
                 'unitario': element.valor_unitario,
                 'series': element.series
             });
