@@ -835,6 +835,7 @@ class OrdenesPendientesController extends Controller
                                 // "tipo_transfor" => $det->tipo,
                                 "id_transformado" => ($det->tipo == "transformado" ? $det->id : null),
                                 "id_sobrante" => ($det->tipo == "sobrante" ? $det->id : null),
+                                "id_moneda" => $det->id_moneda,
                                 "unitario" => $det->unitario,
                                 "total" => (floatval($det->unitario) * floatval($det->cantidad)),
                                 "unitario_adicional" => 0,
@@ -1497,7 +1498,8 @@ class OrdenesPendientesController extends Controller
                         'trans_detalle.id_trans_detalle',
                         'trans.id_transferencia',
                         'trans.estado as estado_trans',
-                        'orden_despacho.id_od'
+                        'orden_despacho.id_od',
+                        'guia_com_det.id_transformado'
                     )
                     ->join('almacen.guia_com_det', 'guia_com_det.id_guia_com_det', '=', 'mov_alm_det.id_guia_com_det')
                     ->leftjoin('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_orden', '=', 'guia_com_det.id_oc_det')
@@ -1527,11 +1529,11 @@ class OrdenesPendientesController extends Controller
 
                     if ($validado) {
                         //Anula ingreso
-                        $update = DB::table('almacen.mov_alm')
+                        DB::table('almacen.mov_alm')
                             ->where('id_mov_alm', $request->id_mov_alm)
                             ->update(['estado' => 7]);
                         //Anula el detalle
-                        $update = DB::table('almacen.mov_alm_det')
+                        DB::table('almacen.mov_alm_det')
                             ->where('id_mov_alm', $request->id_mov_alm)
                             ->update(['estado' => 7]);
                         //Agrega motivo anulacion a la guia
@@ -1545,11 +1547,11 @@ class OrdenesPendientesController extends Controller
                             ]
                         );
                         //Anula la Guia
-                        $update = DB::table('almacen.guia_com')
+                        DB::table('almacen.guia_com')
                             ->where('id_guia', $request->id_guia_com)
                             ->update(['estado' => 7]);
                         //Anula la Guia Detalle
-                        $update = DB::table('almacen.guia_com_det')
+                        DB::table('almacen.guia_com_det')
                             ->where('id_guia_com', $request->id_guia_com)
                             ->update(['estado' => 7]);
 
@@ -1573,9 +1575,15 @@ class OrdenesPendientesController extends Controller
                                 ->update(['estado' => 7]);
 
                             //Anula la reserva
-                            DB::table('almacen.alm_reserva')
-                                ->where('id_guia_com_det', $det->id_guia_com_det)
-                                ->update(['estado' => 7]);
+                            if ($det->id_transformado !== null) {
+                                DB::table('almacen.alm_reserva')
+                                    ->where('id_transformado', $det->id_transformado)
+                                    ->update(['estado' => 7]);
+                            } else {
+                                DB::table('almacen.alm_reserva')
+                                    ->where('id_guia_com_det', $det->id_guia_com_det)
+                                    ->update(['estado' => 7]);
+                            }
 
                             if ($det->id_detalle_orden !== null) {
                                 //Quita estado de la orden
@@ -1793,6 +1801,8 @@ class OrdenesPendientesController extends Controller
             );
 
             $items = json_decode($request->detalle_items);
+            $suma_total = 0;
+            $suma_servicio = 0;
 
             foreach ($items as $item) {
                 DB::table('almacen.doc_com_det')
@@ -1800,7 +1810,7 @@ class OrdenesPendientesController extends Controller
                         'id_doc' => $id_doc,
                         'id_guia_com_det' => ($item->id_producto == null ? null : $item->id_guia_com_det),
                         'id_item' => $item->id_producto,
-                        'servicio_descripcion' => $item->descripcion,
+                        'servicio_descripcion' => strtoupper($item->descripcion),
                         'cantidad' => $item->cantidad,
                         'id_unid_med' => $item->id_unid_med,
                         'precio_unitario' => $item->precio,
@@ -1812,17 +1822,45 @@ class OrdenesPendientesController extends Controller
                         'fecha_registro' => $fecha,
                     ]);
 
-                if ($request->moneda == 2) {
-                    $valor = $tc * $item->total;
+                // if ($request->moneda == 2) {
+                //     $valor = $tc * $item->total;
+                // } else {
+                //     $valor = $item->total;
+                // }
+
+                if ($item->id_producto !== null) {
+                    $suma_total += floatval($item->total);
                 } else {
-                    $valor = $item->total;
+                    $suma_servicio += floatval($item->total);
                 }
+            }
+            $factor = floatval(($suma_servicio !== '' && $suma_servicio !== null) ? $suma_servicio : 0) / ($suma_total > 0 ? $suma_total : 1);
 
-                DB::table('almacen.mov_alm_det')
-                    ->where('id_guia_com_det', $item->id_guia_com_det)
-                    ->update(['valorizacion' => $valor]);
+            foreach ($items as $item) {
 
-                OrdenesPendientesController::actualiza_prod_ubi($item->id_producto, $request->id_almacen_doc);
+                if ($item->id_producto !== null) {
+
+                    $adicional = floatval($item->total) * $factor;
+                    $nuevo_total = floatval($item->total) + $adicional;
+
+                    DB::table('almacen.guia_com_det')
+                        ->where('id_guia_com_det', $item->id_guia_com_det)
+                        ->update([
+                            'unitario_adicional' => $adicional,
+                            'id_moneda' => $request->moneda
+                        ]);
+
+                    if ($request->moneda == 2) {
+                        $valor = floatval($tc * $nuevo_total);
+                    } else {
+                        $valor = floatval($nuevo_total);
+                    }
+                    DB::table('almacen.mov_alm_det')
+                        ->where('id_guia_com_det', $item->id_guia_com_det)
+                        ->update(['valorizacion' => $valor]);
+
+                    OrdenesPendientesController::actualiza_prod_ubi($item->id_producto, $request->id_almacen_doc);
+                }
             }
 
             DB::commit();

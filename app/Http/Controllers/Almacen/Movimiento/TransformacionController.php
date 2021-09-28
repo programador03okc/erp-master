@@ -216,7 +216,9 @@ class TransformacionController extends Controller
             ->where('transfor_transformado.id_transformacion', $id_transformacion)
             ->get();
 
-        return response()->json(['sobrantes' => $sobrantes, 'transformados' => $transformados]);
+        $monedas = DB::table('configuracion.sis_moneda')->where('estado', 1)->get();
+
+        return response()->json(['sobrantes' => $sobrantes, 'transformados' => $transformados, 'monedas' => $monedas]);
     }
 
     public function mostrar_transformacion($id_transformacion)

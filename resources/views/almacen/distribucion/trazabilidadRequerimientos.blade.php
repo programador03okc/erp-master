@@ -75,6 +75,8 @@ Trazabilidad de Requerimientos
     <script>
     $(document).ready(function(){
         seleccionarMenu(window.location);
+        listarTrazabilidadRequerimientos();
+        vista_extendida();
     });
     </script>
 @endsection

@@ -102,8 +102,8 @@
                                         <th>Sub Total</th>
                                         <th width="110px">% Dscto</th>
                                         <th width="110px">Dcsto</th>
-                                        <th>Total
-                                            <i class="fas fa-plus-circle icon-tabla green boton agregarServicio" 
+                                        <th>Total</th>
+                                        <th><i class="fas fa-plus-circle icon-tabla green boton agregarServicio" 
                                             data-toggle="tooltip" data-placement="bottom" 
                                             title="Agregar Servicio" onClick="agregarServicio();"></i></th>
                                     </tr>

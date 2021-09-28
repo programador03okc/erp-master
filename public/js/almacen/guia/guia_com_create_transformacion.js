@@ -27,6 +27,7 @@ function open_transformacion_guia_create(data) {
 }
 
 let series_transformacion = [];
+let monedas = [];
 
 function listar_detalle_transformacion(id) {
     oc_det_seleccionadas = [];
@@ -41,18 +42,19 @@ function listar_detalle_transformacion(id) {
 
             response['sobrantes'].forEach(function (element) {
                 series_transformacion.push({
-                    'id': element.id_sobrante,//'s' + 
+                    'id': 's' + element.id_sobrante,//
                     'id_detalle': element.id_sobrante,
                     'series': [],
                     'control_series': element.series,
                     'tipo': 'sobrante',
                     'cantidad': element.cantidad,
-                    'id_producto': null,//element.id_producto,
+                    'id_producto': element.id_producto,
                     'codigo': element.codigo,
-                    'cod_prod': null,//element.cod_prod,
+                    'cod_prod': element.cod_prod,//element.cod_prod,
                     'part_number': element.part_number_sobrante,
                     'descripcion': element.descripcion_sobrante,
-                    'abreviatura': null,//element.abreviatura,
+                    'abreviatura': element.abreviatura,
+                    'id_moneda': 1,
                     'valor_unitario': element.valor_unitario,
                     'valor_total': element.valor_total
                 });
@@ -71,8 +73,15 @@ function listar_detalle_transformacion(id) {
                     'part_number': element.part_number,
                     'descripcion': element.descripcion,
                     'abreviatura': element.abreviatura,
+                    'id_moneda': 1,
                     'valor_unitario': (element.suma_materia / element.cantidad),
                     'valor_total': element.suma_materia
+                });
+            });
+            response['monedas'].forEach(function (element) {
+                monedas.push({
+                    'id_moneda': element.id_moneda,
+                    'simbolo': element.simbolo
                 });
             });
             mostrar_detalle_transformacion();
@@ -98,6 +107,18 @@ function mostrar_detalle_transformacion() {
                 html_ser += ', ' + serie;
             }
         });
+        console.log('cod_prod: ' + element.cod_prod);
+        // var opt_monedas = `<option value="0" ${element.id_moneda == 0 ? 'selected' : ''}>Ninguno</option>`;
+        var opt_monedas = ``;
+        monedas.forEach(moneda => {
+            if (element.id_moneda == moneda.id_moneda) {
+                opt_monedas += `<option value="${moneda.id_moneda}" selected>${moneda.simbolo}</option>`;
+            } else {
+                opt_monedas += `<option value="${moneda.id_moneda}" >${moneda.simbolo}</option>`;
+            }
+        });
+        html_monedas = `<select class="form-control moneda" style="width:70px" data-id="${element.id}">${opt_monedas}</select>`;
+
         html += `<tr>
             <td>${i}</td>
             <td>${element.codigo}</td>
@@ -107,13 +128,15 @@ function mostrar_detalle_transformacion() {
                 : '<label class="subtitulo_red">(sin mapear)</label>'}</td>
             <td>${element.part_number !== null ? element.part_number : ''}</td>
             <td>${element.descripcion + ' <br><strong>' + html_ser + '</strong>'}</td>
-            <td>${element.tipo == 'sobrante' ?
-                `<input type="number" class="form-control cantidad" style="width:120px;" data-idprod="${element.id_producto}" step="0.001" 
+            <td class="text-right">${element.tipo == 'sobrante' ?
+                `<input type="number" class="form-control cantidad" style="width:120px;text-align: right;" data-idprod="${element.id_producto}" step="0.001" 
                 value="${element.cantidad}"/>` : element.cantidad}
             </td>
             <td>${element.abreviatura !== null ? element.abreviatura : ''}</td>
-            <td><input type="number" class="form-control unitario" style="width:120px;" data-id="${element.tipo == 'sobrante' ? element.id_producto : element.id}" data-tipo="${element.tipo}" step="0.001" 
-                value="${element.valor_unitario}"/></td>
+            <td><div style="display:flex;width:160px;">${html_monedas}<input type="number" class="form-control unitario" style="text-align: right;"
+             data-id="${element.id}" data-tipo="${element.tipo}" step="0.001" 
+                value="${element.valor_unitario}" /></div>
+            </td>
             <td>${formatNumber.decimal((element.cantidad * element.valor_unitario), '', -4)}</td>
             <td width="8%">
                 ${element.tipo == 'sobrante' ?
@@ -151,21 +174,38 @@ $('#detalleOrdenSeleccionadas tbody').on("change", ".unitario", function () {
     console.log('unitario: ' + unitario);
 
     series_transformacion.forEach(element => {
-        if (tipo == 'sobrante') {
-            if (element.id_producto == id) {
-                element.valor_unitario = unitario;
-                element.valor_total = (unitario * parseFloat(element.cantidad));
-            }
-        } else {
-            if (element.id == id) {
-                element.valor_unitario = unitario;
-                element.valor_total = (unitario * parseFloat(element.cantidad));
-            }
+        // if (tipo == 'sobrante') {
+        //     if (element.id_producto == id) {
+        //         element.valor_unitario = unitario;
+        //         element.valor_total = (unitario * parseFloat(element.cantidad));
+        //     }
+        // } else {
+        if (element.id == id) {
+            element.valor_unitario = unitario;
+            element.valor_total = (unitario * parseFloat(element.cantidad));
+        }
+        // }
+    });
+    console.log(series_transformacion);
+    mostrar_detalle_transformacion();
+});
+
+$('#detalleOrdenSeleccionadas tbody').on("change", ".moneda", function () {
+
+    // let tipo = $(this).data('tipo');
+    let id = $(this).data('id');
+    let moneda = parseFloat($(this).val());
+    console.log('moneda: ' + moneda);
+
+    series_transformacion.forEach(element => {
+        if (element.id == id) {
+            element.id_moneda = moneda;
         }
     });
     console.log(series_transformacion);
     mostrar_detalle_transformacion();
 });
+
 
 $('#detalleOrdenSeleccionadas tbody').on("change", ".cantidad", function () {
 

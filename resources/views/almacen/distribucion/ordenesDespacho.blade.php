@@ -46,7 +46,7 @@ Panel de Control de Despachos
                     <li class=""><a type="#confirmados">En Compras <span id="sconfirmados" class="badge badge-info"></span></a></li>
                     <li class=""><a type="#pendientes">En Proceso <span id="spendientes" class="badge badge-info"></span></a></li>
                     <li class=""><a type="#transformados">En Transformación <span id="stransformados" class="badge badge-info"></span></a></li>
-                    <li class=""><a type="#despachos">Por Despachar <span id="sdespachos" class="badge badge-info"></span></a></li>
+                    <li class=""><a type="#despachos">Por Repartir <span id="sdespachos" class="badge badge-info"></span></a></li>
                     <li class=""><a type="#sinTransporte">Pendientes de Transporte <span id="ssinTransporte" class="badge badge-info"></span></a></li>
                     <li class=""><a type="#retornoCargo">Pendientes de Retorno de Cargo <span id="sretornoCargo" class="badge badge-info"></span></a></li>
                 </ul>
@@ -205,7 +205,8 @@ Panel de Control de Despachos
                                         <tbody></tbody>
                                     </table>
                                     @if(Auth::user()->tieneAccion(80))
-                                    <button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Crear Despacho" onClick="crear_grupo_orden_despacho();">Generar Despacho</button>
+                                    <button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" 
+                                        title="Crear Reparto" onClick="crear_grupo_orden_despacho();">Generar Reparto</button>
                                     @endif
                                 </div>
                             </div>
