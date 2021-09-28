@@ -59,60 +59,47 @@ Producto
                                                 <img id="img" src="{{ asset('images/product-default.png')}}">
                                             </div>
                                             <div class="row">
-                                                <input type="file" name="imagen" id="imagen" class="filestyle" data-buttonName="btn-primary" data-buttonText="Seleccionar imagen" data-size="sm" data-iconName="fa fa-folder-open" data-disabled="true">
+                                                {{-- <label for="files" class="btn">Select Image</label>
+                                                <input id="files" style="visibility:hidden;" type="file"> --}}
+                                                <input type="file" name="imagen" id="imagen" class="filestyle" data-buttonName="btn-primary" 
+                                                data-buttonText="Seleccionar imagen" data-size="sm" data-iconName="fa fa-folder-open" data-disabled="true">
                                             </div>
-                                            <!-- <div class="row" style="margin-bottom: 0;">
-                                                <div class="col-md-12"> -->
-
-                                            <!-- <div class="form-group">
-                                                        <h5></h5>
-                                                        <div class="icheckbox_flat-blue">
-                                                            <label style="display:flex;">
-                                                                <input type="checkbox" class="flat-red" name="afecto_igv" value="0">
-                                                            </label>
-                                                        </div> Afecto a I.G.V. (Gravado)
-                                                    </div> -->
-                                            <!-- </div>
-                                            </div> -->
-                                            <!-- <div class="row">
-                                                <fieldset class="group-importes" style="margin-top: 0px;"><legend><h6>Códigos Antiguos</h6></legend>
-                                                    <table id="antiguos" class="table-group">
-                                                        <tbody></tbody>
-                                                    </table>
-                                                </fieldset>
-                                            </div> -->
-
                                         </div>
                                     </div>
-                                    <fieldset class="group-importes">
-                                        <legend>
-                                            <h6>Unidad Equivalente</h6>
-                                        </legend>
-                                        <table id="unidad" class="table-group">
-                                            <tbody>
-                                                <tr>
-                                                    <td>Cantidad x Presentación:</td>
-                                                    <td>
-                                                        <div class="input-group">
-                                                            <input type="number" class="form-control activation" name="cant_pres" disabled="true" />
-                                                            <span class="input-group-addon" name="abr_id_unid_equi"></span>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Unidad Equivalente:</td>
-                                                    <td>
-                                                        <select class="form-control activation " style="font-size:12px;" name="id_unid_equi" disabled="true" onChange="unid_abrev('id_unid_equi');">
-                                                            <option value="0">Elija una opción</option>
-                                                            @foreach ($unidades as $unid)
-                                                            <option value="{{$unid->id_unidad_medida}}">{{$unid->descripcion}} - {{$unid->abreviatura}}</option>
-                                                            @endforeach
-                                                        </select>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </fieldset>
+                                    <div class="row">
+                                        <div class="col-md-12" style="padding-right: 0px; padding-left:0px;">
+
+                                            <fieldset class="group-importes" style="margin-top: 0px">
+                                                <legend>
+                                                    <h6>Unidad Equivalente</h6>
+                                                </legend>
+                                                <table id="unidad" class="table-group">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>Cantidad x Presentación:</td>
+                                                            <td>
+                                                                <div class="input-group">
+                                                                    <input type="number" class="form-control activation" name="cant_pres" disabled="true" />
+                                                                    <span class="input-group-addon" name="abr_id_unid_equi"></span>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Unidad Equivalente:</td>
+                                                            <td>
+                                                                <select class="form-control activation " style="font-size:12px;" name="id_unid_equi" disabled="true" onChange="unid_abrev('id_unid_equi');">
+                                                                    <option value="0">Elija una opción</option>
+                                                                    @foreach ($unidades as $unid)
+                                                                    <option value="{{$unid->id_unidad_medida}}">{{$unid->descripcion}} - {{$unid->abreviatura}}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </fieldset>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="col-md-9">
                                     <div class="row" style="margin-bottom: 0;margin-top: 0;">
@@ -188,6 +175,32 @@ Producto
                                             <h5>Código Anexo</h5>
                                             <input type="text" class="form-control activation" name="codigo_anexo" disabled="true">
                                         </div>               -->
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <h5>SUNAT UNSPSC</h5>
+                                            <input type="text" class="form-control activation" name="sunat_unsps" disabled="true">
+                                        </div>
+                                        <div class="col-md-2">
+                                            <h5>Código compuesto</h5>
+                                            <input type="text" class="form-control activation" name="codigo_compuesto" disabled="true">
+                                        </div>
+                                        <div class="col-md-2">
+                                            <h5>Peso</h5>
+                                            <input type="number" class="form-control activation" name="peso" disabled="true">
+                                        </div>
+                                        <div class="col-md-2">
+                                            <h5>Largo</h5>
+                                            <input type="number" class="form-control activation" name="largo" disabled="true">
+                                        </div>
+                                        <div class="col-md-2">
+                                            <h5>Ancho</h5>
+                                            <input type="number" class="form-control activation" name="ancho" disabled="true">
+                                        </div>
+                                        <div class="col-md-2">
+                                            <h5>Alto</h5>
+                                            <input type="number" class="form-control activation" name="alto" disabled="true">
+                                        </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-sm-4">

@@ -222,6 +222,12 @@ class ProductoController extends Controller
                     'id_moneda' => ($request->id_moneda !== null ? $request->id_moneda : null),
                     'notas' => ($request->notas !== null ? $request->notas : ''),
                     'id_usuario' => $id_usuario,
+                    'sunat_unsps' => $request->sunat_unsps,
+                    'codigo_compuesto' => $request->codigo_compuesto,
+                    'peso' => $request->peso,
+                    'largo' => $request->largo,
+                    'ancho' => $request->ancho,
+                    'alto' => $request->alto,
                     'estado' => 1,
                     'fecha_registro' => $fecha
                 ],
@@ -285,6 +291,12 @@ class ProductoController extends Controller
                     'afecto_igv' => ($request->afecto_igv == '1' ? true : false),
                     'id_moneda' => $request->id_moneda,
                     'notas' => $request->notas,
+                    'sunat_unsps' => $request->sunat_unsps,
+                    'codigo_compuesto' => $request->codigo_compuesto,
+                    'peso' => $request->peso,
+                    'largo' => $request->largo,
+                    'ancho' => $request->ancho,
+                    'alto' => $request->alto,
                 ]);
 
             $id_item = DB::table('almacen.alm_item')

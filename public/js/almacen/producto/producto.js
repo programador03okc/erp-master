@@ -102,6 +102,12 @@ function mostrar_producto(id) {
             $('#subcat_descripcion').text(response['producto'][0].subcat_descripcion);
             $('[name=subcat_descripcion]').val(response['producto'][0].subcat_descripcion);
             $('[name=id_unid_equi]').val(response['producto'][0].id_unid_equi);
+            $('[name=sunat_unsps]').val(response['producto'][0].sunat_unsps);
+            $('[name=codigo_compuesto]').val(response['producto'][0].codigo_compuesto);
+            $('[name=peso]').val(response['producto'][0].peso);
+            $('[name=largo]').val(response['producto'][0].largo);
+            $('[name=ancho]').val(response['producto'][0].ancho);
+            $('[name=alto]').val(response['producto'][0].alto);
             $('[name=cant_pres]').val(response['producto'][0].cant_pres);
             // $('[name=afecto_igv]').iCheck((response['producto'][0].afecto_igv) ? 'check' : 'uncheck');
             // $('[name=afecto_igv]').val((response['producto'][0].afecto_igv) ? '1' : '0');
