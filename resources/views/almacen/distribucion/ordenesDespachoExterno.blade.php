@@ -2,7 +2,7 @@
 @include('layout.menu_logistica')
 
 @section('cabecera')
-Requerimientos pendientes de Transformación
+Requerimientos pendientes de Despacho
 @endsection
 
 @section('breadcrumb')
@@ -14,7 +14,7 @@ Requerimientos pendientes de Transformación
 @endsection
 
 @section('content')
-<div class="page-main" type="listaOrdenesDespacho">
+<div class="page-main" type="listaOrdenesDespachoExterno">
     <div class="box box-solid">
         <div class="box-body">
             <div class="col-md-12" style="padding-top:10px;padding-bottom:10px;">
@@ -47,10 +47,9 @@ Requerimientos pendientes de Transformación
     </div>
 </div>
 @include('almacen.distribucion.transferenciasDetalle')
-@include('almacen.distribucion.ordenDespachoInternoCreate')
-@include('almacen.distribucion.ordenDespachoTransformacion')
+@include('almacen.distribucion.ordenDespachoCreate')
 @include('tesoreria.facturacion.archivos_oc_mgcp')
-@include('almacen.transferencias.ver_series')
+@include('publico.ubigeoModal')
 
 @endsection
 
@@ -59,11 +58,11 @@ Requerimientos pendientes de Transformación
 <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
 <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
-<script src="{{ asset('js/almacen/distribucion/ordenesTransformacion.js')}}"></script>
+<script src="{{ asset('js/almacen/distribucion/ordenesDespachoExterno.js')}}"></script>
+<script src="{{ asset('js/almacen/distribucion/ordenDespachoCreate.js')}}"></script>
 <script src="{{ asset('js/almacen/distribucion/verDetalleRequerimiento.js')}}"></script>
-<script src="{{ asset('js/almacen/distribucion/ordenDespachoInternoCreate.js')}}"></script>
-<script src="{{ asset('js/almacen/distribucion/ordenDespachoTransformacion.js')}}"></script>
 <script src="{{ asset('js/tesoreria/facturacion/archivosMgcp.js')}}"></script>
+<script src="{{ asset('js/publico/ubigeoModal.js')}}"></script>
 
 <script>
     $(document).ready(function() {
