@@ -2598,8 +2598,8 @@ class OrdenController extends Controller
 
     public function guardar_orden_por_requerimiento(Request $request){
 
-        // try {
-        //     DB::beginTransaction();
+        try {
+            DB::beginTransaction();
 
             $orden = new Orden();
             $tp_doc = ($request->id_tp_documento !== null ? $request->id_tp_documento : 2);
@@ -2654,14 +2654,14 @@ class OrdenController extends Controller
             }
             
 
-        // DB::commit();
+        DB::commit();
             return response()->json(['id_orden_compra' => $orden->id_orden_compra, 'codigo' => $orden->codigo]);
 
-        // } catch (Exception $e) {
-        //     DB::rollBack();
-        //     return response()->json(['id_orden_compra' => 0, 'codigo' => '', 'mensaje' => 'Hubo un problema al guardar la orden. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json(['id_orden_compra' => 0, 'codigo' => '', 'mensaje' => 'Hubo un problema al guardar la orden. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
 
-        // }
+        }
 
     }
 
@@ -2716,16 +2716,18 @@ class OrdenController extends Controller
     }
 
     function obtenerItemBase($detalleRequerimiento){
+
         $itemBase=[];
-        foreach ($detalleRequerimiento as $key => $value) {
+        foreach ($detalleRequerimiento as $value) {
+
             if($value->tiene_transformacion == false){
                 $stock_comprometido=0;
                 if(count($value->reserva)>0){
-                    foreach ($value->reserva as $value) {
-                        $stock_comprometido+=$value->stock_comprometido;
+                    foreach ($value->reserva as $reserva) {
+                        $stock_comprometido+=$reserva->stock_comprometido;
                     }
                 }
-                
+
                 $itemBase[]=[  
                     'id_detalle_requerimiento' =>$value->id_detalle_requerimiento,
                     'id_requerimiento' =>$value->id_requerimiento,
@@ -2891,6 +2893,8 @@ class OrdenController extends Controller
     }
 
     function obtenerNuevoEstadoCabeceraRequerimiento($idRequerimientoList,$nuevoEstadoDetalleRequerimiento){
+        // Debugbar::info($idRequerimientoList);
+        // Debugbar::info($nuevoEstadoDetalleRequerimiento);
 
         $estadoRequerimiento=[];
         foreach ($nuevoEstadoDetalleRequerimiento as $itemBase) {
@@ -2935,9 +2939,9 @@ class OrdenController extends Controller
         $detalleOrdenGeneradaList= $this->obtenerDetalleOrdenGenerada($idOrden);
         $itemAtendidoParcialOSinAtender= $this->obtenerItemAtendidoParcialOSinAtender($itemBaseList);
         // if(config('app.debug')){
-        //     Debugbar::info($idRequerimientoList);
-        //     Debugbar::info($detalleRequerimiento);
-        //     Debugbar::info($itemBaseList);
+            // Debugbar::info($idRequerimientoList);
+            // Debugbar::info($detalleRequerimiento);
+            // Debugbar::info($itemBaseList);
         //     Debugbar::info($itemBaseEnOtrasOrdenesGeneradasList);
         //     Debugbar::info($detalleOrdenGeneradaList);
         //     Debugbar::info($itemAtendidoParcialOSinAtender);
