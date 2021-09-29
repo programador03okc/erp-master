@@ -953,6 +953,18 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('obtenerArchivosOc', 'Tesoreria\Facturacion\PendientesFacturacionController@obtenerArchivosOc')->name('obtener-archivos-oc');
 				Route::get('verSeries/{id}', 'DistribucionController@verSeries');
 			});
+
+			Route::group(['as' => 'ordenes-despacho-externo.', 'prefix' => 'ordenes-despacho-externo'], function () {
+
+				Route::get('index', 'Logistica\Distribucion\OrdenesDespachoExternoController@view_ordenes_despacho_externo')->name('index');
+				Route::get('listarRequerimientosPendientesDespachoExterno', 'Logistica\Distribucion\OrdenesDespachoExternoController@listarRequerimientosPendientesDespachoExterno');
+				Route::post('obtenerArchivosOc', 'Tesoreria\Facturacion\PendientesFacturacionController@obtenerArchivosOc')->name('obtener-archivos-oc');
+				Route::get('listarDetalleTransferencias/{id}', 'Almacen\Movimiento\TransferenciaController@listarDetalleTransferencias');
+				Route::get('verDetalleRequerimientoDI/{id}', 'Logistica\Distribucion\OrdenesTransformacionController@verDetalleRequerimientoDI');
+				Route::get('listar_ubigeos', 'AlmacenController@listar_ubigeos');
+				Route::post('guardar_orden_despacho', 'DistribucionController@guardar_orden_despacho');
+				Route::get('anular_orden_despacho/{id}/{tp}', 'Almacen\Movimiento\SalidasPendientesController@anular_orden_despacho');
+			});
 		});
 
 		// });
