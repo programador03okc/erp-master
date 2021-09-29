@@ -243,23 +243,23 @@ class Orden extends Model {
             // $fechaRegistroRequerimiento = new Carbon($d['fecha_registro_requerimiento']);
             // $fechaRegistroAlmacen=  new Carbon($d['fecha_ingreso_almacen']);
 
-            $fechaRegistroRequerimiento = $d['fecha_registro_requerimiento'];
-            $fechaRegistroAlmacen = $d['fecha_ingreso_almacen'];
+            $fechaRegistroRequerimiento = $d['fecha_registro_requerimiento']??'';
+            $fechaRegistroAlmacen = $d['fecha_ingreso_almacen']??'';
 
 
             $tiempo_atencion_logistica =$fechaOrden->diffInDays($fechaRegistroRequerimiento);
             $tiempo_atencion_almacen = $fechaOrden->diffInDays($fechaRegistroAlmacen);
             $data[]=[
-                'codigo_cuadro_costos'=>$d['codigo_oportunidad'],
+                'codigo_cuadro_costos'=>$d['codigo_oportunidad']??'',
                 'proveedor'=>$d['razon_social'],
                 'codigo_orden'=>$d['codigo'],
                 'codigo_softlink'=>$d['codigo_softlink'],
                 'codigo_requerimiento_o_codigo_cuadro_comparativo'=>$d['codigo_requerimiento']?$d['codigo_requerimiento']:$d['codigo_cuadro_comparativo'],
                 'estado'=>$d['estado_doc'],
-                'fecha_vencimiento'=>$d['fecha_vencimiento_ocam'],
+                'fecha_vencimiento'=>$d['fecha_vencimiento_ocam']??'',
                 'fecha_llegada'=>$fechaRegistroAlmacen,
-                'estado_aprobacion_cc'=>$d['estado_aprobacion_cc'],
-                'fecha_estado'=>$d['fecha_estado'],
+                'estado_aprobacion_cc'=>$d['estado_aprobacion_cc']??'',
+                'fecha_estado'=>$d['fecha_estado']??'',
                 'fecha_registro_requerimiento'=>$fechaRegistroRequerimiento,
                 'leadtime'=>$fechaLlegada->toDateString().' (días restantes: '.$diasRestantes.')',
                 'empresa_sede'=>$d['descripcion_sede_empresa'],

@@ -46,7 +46,7 @@ class ListarRequerimientoView {
         $('#modal-filtro-requerimientos-elaborados').on("change", "select.handleChangeUpdateValorFiltroRequerimientosElaborados", (e) => {
             this.updateValorFiltroRequerimientosElaborados();
         });
-
+   
         $('#modal-filtro-requerimientos-elaborados').on("click", "input[type=checkbox]", (e) => {
             this.estadoCheckFiltroRequerimientosElaborados(e);
         });

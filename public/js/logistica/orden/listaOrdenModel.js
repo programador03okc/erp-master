@@ -26,12 +26,14 @@ class ListaOrdenModel {
     } 
     // 
 
-    obtenerListaOrdenesElaboradas(tipoOrden=null, vinculadoPor=null, empresa=null, sede=null, tipoProveedor=null, enAlmacen=null, signoTotalOrden=null, montoTotalOrden=null, estado=null){
+    obtenerListaOrdenesElaboradas(tipoOrden, idEmpresa, idSede, fechaRegistroDesde, fechaRegistroHasta, idEstado){
         return new Promise(function(resolve, reject) {
             $.ajax({
-                type: 'GET',
-                url:`listar-ordenes/${tipoOrden}/${vinculadoPor}/${empresa}/${sede}/${tipoProveedor}/${enAlmacen}/${signoTotalOrden}/${montoTotalOrden}/${estado}`,
+                type: 'POST',
+                url:`listar-ordenes`,
                 dataType: 'JSON',
+                data:{'tipoOrden':tipoOrden,'idEmpresa':idEmpresa,'idSede':idSede,'fechaRegistroDesde':fechaRegistroDesde,'fechaRegistroHasta':fechaRegistroHasta,'idEstado':idEstado},
+
                 beforeSend:  (data)=> {
     
                 $('#listaOrdenes').LoadingOverlay("show", {
@@ -73,12 +75,14 @@ class ListaOrdenModel {
 
     // lista por item
 
-    obtenerListaDetalleOrdenesElaboradas(tipoOrden=null, vinculadoPor=null, empresa=null, sede=null, tipoProveedor=null, enAlmacen=null, signoSubtotal=null, subtotal=null, estado=null){
+    obtenerListaDetalleOrdenesElaboradas(idEmpresa, idSede, fechaRegistroDesde, fechaRegistroHasta, idEstado){
         return new Promise(function(resolve, reject) {
             $.ajax({
-                type: 'GET',
-                url:`listar-detalle-orden/${tipoOrden}/${vinculadoPor}/${empresa}/${sede}/${tipoProveedor}/${enAlmacen}/${signoSubtotal}/${subtotal}/${estado}`,
+                type: 'POST',
+                url:`listar-detalle-orden`,
                 dataType: 'JSON',
+                data:{'idEmpresa':idEmpresa,'idSede':idSede,'fechaRegistroDesde':fechaRegistroDesde,'fechaRegistroHasta':fechaRegistroHasta,'idEstado':idEstado},
+
                 beforeSend:  (data)=> {
     
                     $('#listaDetalleOrden').LoadingOverlay("show", {

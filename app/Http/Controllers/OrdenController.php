@@ -14,13 +14,17 @@ use Debugbar;
 use PDO;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ListOrdenesHeadExport;
+use App\Models\Administracion\Empresa;
+use App\Models\Administracion\Estado;
 use App\Models\Almacen\DetalleRequerimiento;
 use App\Models\Almacen\Requerimiento;
 use App\Models\Almacen\UnidadMedida;
+use App\Models\Configuracion\Grupo;
 use App\Models\Configuracion\Moneda;
 use App\Models\Contabilidad\Banco;
 use App\Models\Contabilidad\CuentaContribuyente;
 use App\Models\Contabilidad\TipoCuenta;
+use App\Models\Logistica\EstadoCompra;
 use App\Models\Logistica\Orden;
 use App\Models\Logistica\OrdenCompraDetalle;
 use App\Models\Logistica\Proveedor;
@@ -222,44 +226,14 @@ class OrdenController extends Controller
 
    
 
-    public function listarDetalleOrden($tipoOrden, $vinculadoPor, $empresa, $sede, $tipoProveedor, $enAlmacen, $signoSubTotal, $subtotal, $estado){
+    public function listarDetalleOrden(Request $request){
 
-        switch ($signoSubTotal) {
-            case 'MAYOR':
-                $simboloSubtotal='>';
-
-                break;
-            
-            case 'MENOR':
-                $simboloSubtotal='<';
-
-                break;
-            
-            case 'IGUAL':
-                $simboloSubtotal='=';
-
-                break;
-            
-            case 'MAYOR_IGUAL':
-                $simboloSubtotal='>=';
-
-                break;
-            
-            case 'MENOR_IGUAL':
-                $simboloSubtotal='<=';
-                break;
-            
-            default:
-                $simboloSubtotal='>';
-
-                break;
-        }
-
-        $subtotal= $subtotal >0?$subtotal:'0';
-
-
-        $orden_list=[];
-        $detalle_orden_list=[];
+        $idEmpresa = $request->idEmpresa;
+        $idSede = $request->idSede;
+        $fechaRegistroDesde = $request->fechaRegistroDesde;
+        $fechaRegistroHasta = $request->fechaRegistroHasta;
+        $idEstado = $request->idEstado;
+     
 
         $orden_obj =Orden::select(
             'log_ord_compra.id_orden_compra as id_orden_compra',
@@ -343,39 +317,60 @@ class OrdenController extends Controller
         ->leftJoin('mgcp_cuadro_costos.cc_am_filas', 'cc_am_filas.id', '=', 'alm_det_req.id_cc_am_filas')
         ->leftJoin('mgcp_cuadro_costos.cc_am', 'cc_am_filas.id_cc_am', '=', 'cc_am.id_cc')
 
+        ->when(($idEmpresa > 0), function ($query) use($idEmpresa) {
+            return $query->whereRaw('sis_sede.id_empresa = ' . $idEmpresa);
+        })
+        ->when(($idSede > 0), function ($query) use($idSede) {
+            return $query->whereRaw('sis_sede.id_sede = ' . $idSede);
+        })
+
+        ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta == 'SIN_FILTRO')), function ($query) use($fechaRegistroDesde) {
+            return $query->where('log_ord_compra.fecha' ,'>=',$fechaRegistroDesde); 
+        })
+        ->when((($fechaRegistroDesde == 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use($fechaRegistroHasta) {
+            return $query->where('log_ord_compra.fecha' ,'<=',$fechaRegistroHasta); 
+        })
+        ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use($fechaRegistroDesde,$fechaRegistroHasta) {
+            return $query->whereBetween('log_ord_compra.fecha' ,[$fechaRegistroDesde,$fechaRegistroHasta]); 
+        })
+
+        ->when(($idEstado > 0), function ($query) use($idEstado) {
+            return $query->whereRaw('log_ord_compra.estado = ' . $idEstado);
+        })
+
         ->where([
             // ['log_ord_compra.codigo', '=', 'OC-21080176'],
             ['log_ord_compra.estado', '!=', 7],
-            $tipoOrden >0 ? ['log_ord_compra.id_tp_documento',$tipoOrden]:[null],
-            $empresa >0 ? ['sis_sede.id_empresa',$empresa]:[null],
-            $sede >0 ? ['sis_sede.id_sede',$sede]:[null],
-            ($tipoProveedor =='NACIONAL') ? ['adm_contri.id_pais','=','170']:($tipoProveedor =='EXTRANJERO' ? ['adm_contri.id_pais','=','170']:[null]),
-            $estado >0 ? ['log_ord_compra.estado',$estado]:[null]
+            // $tipoOrden >0 ? ['log_ord_compra.id_tp_documento',$tipoOrden]:[null],
+            // $empresa >0 ? ['sis_sede.id_empresa',$empresa]:[null],
+            // $sede >0 ? ['sis_sede.id_sede',$sede]:[null],
+            // ($tipoProveedor =='NACIONAL') ? ['adm_contri.id_pais','=','170']:($tipoProveedor =='EXTRANJERO' ? ['adm_contri.id_pais','=','170']:[null]),
+            // $estado >0 ? ['log_ord_compra.estado',$estado]:[null]
             ])
-        ->when(($vinculadoPor !='null'), function($query) use ($vinculadoPor)  {
-            if($vinculadoPor== 'REQUERIMIENTO'){
-                $whereVinculadoPor='log_det_ord_compra.id_detalle_requerimiento > 0';
-            }elseif($vinculadoPor == 'CUADRO_COMPARATIVO'){
-                $whereVinculadoPor='log_det_ord_compra.detalle_cuadro_comparativo_id > 0';
-            }
-            return $query->WhereIn('log_ord_compra.id_orden_compra', function($query) use ($whereVinculadoPor)
-            {
-                $query->select('log_det_ord_compra.id_orden_compra')
-                ->from('logistica.log_det_ord_compra')
-                ->whereRaw($whereVinculadoPor);
-            });
-        })
-        ->when(($enAlmacen =='true'), function($query)  {
-            return $query->WhereIn('log_ord_compra.id_orden_compra', function($query)
-            {
-                $query->select('log_det_ord_compra.id_orden_compra')
-                    ->from('logistica.log_det_ord_compra')
-                    ->leftjoin('almacen.guia_com_det', 'guia_com_det.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden')
-                    ->whereRaw('guia_com_det.id_guia_com_det > 0');
-            });
-        })
+        // ->when(($vinculadoPor !='null'), function($query) use ($vinculadoPor)  {
+        //     if($vinculadoPor== 'REQUERIMIENTO'){
+        //         $whereVinculadoPor='log_det_ord_compra.id_detalle_requerimiento > 0';
+        //     }elseif($vinculadoPor == 'CUADRO_COMPARATIVO'){
+        //         $whereVinculadoPor='log_det_ord_compra.detalle_cuadro_comparativo_id > 0';
+        //     }
+        //     return $query->WhereIn('log_ord_compra.id_orden_compra', function($query) use ($whereVinculadoPor)
+        //     {
+        //         $query->select('log_det_ord_compra.id_orden_compra')
+        //         ->from('logistica.log_det_ord_compra')
+        //         ->whereRaw($whereVinculadoPor);
+        //     });
+        // })
+        // ->when(($enAlmacen =='true'), function($query)  {
+        //     return $query->WhereIn('log_ord_compra.id_orden_compra', function($query)
+        //     {
+        //         $query->select('log_det_ord_compra.id_orden_compra')
+        //             ->from('logistica.log_det_ord_compra')
+        //             ->leftjoin('almacen.guia_com_det', 'guia_com_det.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden')
+        //             ->whereRaw('guia_com_det.id_guia_com_det > 0');
+        //     });
+        // })
         ->orderBy('log_ord_compra.fecha','desc')
-        ->whereRaw('coalesce((log_det_ord_compra.cantidad * log_det_ord_compra.precio) ,0) '.$simboloSubtotal.' '.$subtotal)
+        // ->whereRaw('coalesce((log_det_ord_compra.cantidad * log_det_ord_compra.precio) ,0) '.$simboloSubtotal.' '.$subtotal)
         ->get();
 
         // $orden_list = collect($orden_obj)->map(function($x){ return (array) $x; })->toArray(); 
@@ -886,10 +881,13 @@ class OrdenController extends Controller
 
     function view_listar_ordenes()
     {
-        $empresas = $this->select_mostrar_empresas();
-        $estados = $this->select_mostrar_estados_compra();
+        
+        $empresas = Empresa::mostrar();
+        $grupos = Grupo::mostrar();
+        $estados = EstadoCompra::mostrar();
 
-        return view('logistica/gestion_logistica/compras/ordenes/listado/listar_ordenes', compact('empresas','estados'));
+
+        return view('logistica/gestion_logistica/compras/ordenes/listado/listar_ordenes', compact('empresas','grupos','estados'));
     }
 
     function consult_doc_aprob($id_doc,$tp_doc)
@@ -922,43 +920,16 @@ class OrdenController extends Controller
         return array_values(array_unique($facturas));
     }
 
-    public function listarOrdenes($tipoOrden, $vinculadoPor, $empresa, $sede, $tipoProveedor, $enAlmacen, $signoOrden, $montoOrden, $estado){
+    public function listarOrdenes(Request $request){
        
-        switch ($signoOrden) {
-            case 'MAYOR':
-                $simboloMontoOrden='>';
-
-                break;
-            
-            case 'MENOR':
-                $simboloMontoOrden='<';
-
-                break;
-            
-            case 'IGUAL':
-                $simboloMontoOrden='=';
-
-                break;
-            
-            case 'MAYOR_IGUAL':
-                $simboloMontoOrden='>=';
-
-                break;
-            
-            case 'MENOR_IGUAL':
-                $simboloMontoOrden='<=';
-                break;
-            
-            default:
-                $simboloMontoOrden='>';
-
-                break;
-        }
-
-        $montoOrden= $montoOrden >0?$montoOrden:'0';
-
-
-
+        $tipoOrden = $request->tipoOrden;
+        $idEmpresa = $request->idEmpresa;
+        $idSede = $request->idSede;
+        // $idGrupo = $request->idGrupo;
+        // $division = $request->idDivision;
+        $fechaRegistroDesde = $request->fechaRegistroDesde;
+        $fechaRegistroHasta = $request->fechaRegistroHasta;
+        $idEstado = $request->idEstado;
      
 
         $ord_compra =Orden::select(
@@ -1009,49 +980,74 @@ class OrdenController extends Controller
         ->leftjoin('logistica.estados_compra','estados_compra.id_estado','=','log_ord_compra.estado')
         ->leftjoin('logistica.log_ord_compra_pago','log_ord_compra_pago.id_orden_compra','=','log_ord_compra.id_orden_compra')
 
+        ->when(($tipoOrden > 0), function ($query) use($tipoOrden) {
+            return $query->whereRaw('log_ord_compra.id_tp_documento = ' . $tipoOrden);
+        })
+        ->when(($idEmpresa > 0), function ($query) use($idEmpresa) {
+            return $query->whereRaw('sis_sede.id_empresa = ' . $idEmpresa);
+        })
+        ->when(($idSede > 0), function ($query) use($idSede) {
+            return $query->whereRaw('sis_sede.id_sede = ' . $idSede);
+        })
+
+        ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta == 'SIN_FILTRO')), function ($query) use($fechaRegistroDesde) {
+            return $query->where('log_ord_compra.fecha' ,'>=',$fechaRegistroDesde); 
+        })
+        ->when((($fechaRegistroDesde == 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use($fechaRegistroHasta) {
+            return $query->where('log_ord_compra.fecha' ,'<=',$fechaRegistroHasta); 
+        })
+        ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use($fechaRegistroDesde,$fechaRegistroHasta) {
+            return $query->whereBetween('log_ord_compra.fecha' ,[$fechaRegistroDesde,$fechaRegistroHasta]); 
+        })
+
+        ->when(($idEstado > 0), function ($query) use($idEstado) {
+            return $query->whereRaw('log_ord_compra.estado = ' . $idEstado);
+        })
+
+
         ->where([
             // ['log_ord_compra.codigo', '=', 'OC-21090191'],
             ['log_ord_compra.estado', '!=', 7],
-            ['log_ord_compra.id_grupo_cotizacion', '=', null],
-            $tipoOrden >0 ? ['log_ord_compra.id_tp_documento',$tipoOrden]:[null],
-            $empresa >0 ? ['sis_sede.id_empresa',$empresa]:[null],
-            $sede >0 ? ['sis_sede.id_sede',$sede]:[null],
-            ($tipoProveedor =='NACIONAL') ? ['adm_contri.id_pais','=','170']:($tipoProveedor =='EXTRANJERO' ? ['adm_contri.id_pais','=','170']:[null]),
-            $estado >0 ? ['log_ord_compra.estado',$estado]:[null]
+            // ['log_ord_compra.id_grupo_cotizacion', '=', null]
+            // $tipoOrden >0 ? ['log_ord_compra.id_tp_documento',$tipoOrden]:[null],
+            // $empresa >0 ? ['sis_sede.id_empresa',$empresa]:[null],
+            // $sede >0 ? ['sis_sede.id_sede',$sede]:[null],
+            // ($tipoProveedor =='NACIONAL') ? ['adm_contri.id_pais','=','170']:($tipoProveedor =='EXTRANJERO' ? ['adm_contri.id_pais','=','170']:[null]),
+            // $estado >0 ? ['log_ord_compra.estado',$estado]:[null]
             // $montoOrden >0 ? ['suma_subtotal','>',$montoOrden]:[null]
 
         ])
 
-        ->when(($vinculadoPor !='null' && $vinculadoPor !=null), function($query) use ($vinculadoPor)  {
-            if($vinculadoPor== 'REQUERIMIENTO'){
-                $whereVinculadoPor='log_det_ord_compra.id_detalle_requerimiento > 0';
-            }elseif($vinculadoPor == 'CUADRO_COMPARATIVO'){
-                $whereVinculadoPor='log_det_ord_compra.detalle_cuadro_comparativo_id > 0';
-            }
-            return $query->WhereIn('log_ord_compra.id_orden_compra', function($query) use ($whereVinculadoPor)
-            {
-                $query->select('log_det_ord_compra.id_orden_compra')
-                ->from('logistica.log_det_ord_compra')
-                ->whereRaw($whereVinculadoPor);
-            });
-        })
+        // ->when(($vinculadoPor !='null' && $vinculadoPor !=null), function($query) use ($vinculadoPor)  {
+        //     if($vinculadoPor== 'REQUERIMIENTO'){
+        //         $whereVinculadoPor='log_det_ord_compra.id_detalle_requerimiento > 0';
+        //     }elseif($vinculadoPor == 'CUADRO_COMPARATIVO'){
+        //         $whereVinculadoPor='log_det_ord_compra.detalle_cuadro_comparativo_id > 0';
+        //     }
+        //     return $query->WhereIn('log_ord_compra.id_orden_compra', function($query) use ($whereVinculadoPor)
+        //     {
+        //         $query->select('log_det_ord_compra.id_orden_compra')
+        //         ->from('logistica.log_det_ord_compra')
+        //         ->whereRaw($whereVinculadoPor);
+        //     });
+        // })
 
-        ->when(($enAlmacen =='true'), function($query)  {
-            return $query->WhereIn('log_ord_compra.id_orden_compra', function($query)
-            {
-                $query->select('log_det_ord_compra.id_orden_compra')
-                    ->from('logistica.log_det_ord_compra')
-                    ->leftjoin('almacen.guia_com_det', 'guia_com_det.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden')
-                    ->whereRaw('guia_com_det.id_guia_com_det > 0');
-            });
-        })
+        // ->when(($enAlmacen =='true'), function($query)  {
+        //     return $query->WhereIn('log_ord_compra.id_orden_compra', function($query)
+        //     {
+        //         $query->select('log_det_ord_compra.id_orden_compra')
+        //             ->from('logistica.log_det_ord_compra')
+        //             ->leftjoin('almacen.guia_com_det', 'guia_com_det.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden')
+        //             ->whereRaw('guia_com_det.id_guia_com_det > 0');
+        //     });
+        // })
 
             ->orderBy('log_ord_compra.fecha','desc')
 
-            ->whereRaw('(SELECT  coalesce(sum((log_det_ord_compra.cantidad * log_det_ord_compra.precio))*1.18 ,0)
-            FROM logistica.log_det_ord_compra 
-            WHERE   log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra AND
-                    log_det_ord_compra.estado != 7) '.$simboloMontoOrden.' '.$montoOrden)
+            // ->whereRaw('(SELECT  coalesce(sum((log_det_ord_compra.cantidad * log_det_ord_compra.precio))*1.18 ,0)
+            // FROM logistica.log_det_ord_compra 
+            // WHERE   log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra AND
+            //         log_det_ord_compra.estado != 7) '.$simboloMontoOrden.' '.$montoOrden)
         ->get();
 
 

@@ -93,8 +93,8 @@
                                 </div>
                                 <div class="col-md-8">
                                     <div style="display:flex;">
-                                        <input type="date" class="form-control input-sm handleBlurUpdateValorFiltroRequerimientosElaborados" name="fechaRegistroDesde" readOnly>
-                                        <input type="date" class="form-control input-sm handleBlurUpdateValorFiltroRequerimientosElaborados" name="fechaRegistroHasta" readOnly>
+                                        <input type="date" class="form-control input-sm handleChangeUpdateValorFiltroRequerimientosElaborados" name="fechaRegistroDesde" readOnly>
+                                        <input type="date" class="form-control input-sm handleChangeUpdateValorFiltroRequerimientosElaborados" name="fechaRegistroHasta" readOnly>
                                     </div>
                                 </div>
                             </div>
