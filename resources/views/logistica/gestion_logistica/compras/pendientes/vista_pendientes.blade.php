@@ -38,7 +38,7 @@ Requerimientos pendientes
                                 <div class="row">
                                     <div class="col-md-12">
                                         <form id="form-requerimientosPendientes" type="register">
-                                            <table class="mytable table table-condensed table-bordered table-okc-view" id="listaRequerimientosPendientes">
+                                            <table class="mytable table table-condensed table-striped table-hover table-bordered table-okc-view" id="listaRequerimientosPendientes">
                                                 <thead>
                                                     <tr>
                                                         <th hidden>Id</th>

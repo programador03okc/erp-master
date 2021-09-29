@@ -145,7 +145,8 @@ Revisar y aprobar requerimientos
 <!-- <script src="{{ asset('js/logistica/requerimiento/RequerimientoView.js')}}"></script> -->
 <script src="{{ asset('js/logistica/requerimiento/RequerimientoController.js')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/RequerimientoModel.js')}}"></script>
-
+<script src="{{ asset('template/plugins/moment.min.js') }}"></script>
+<script src="{{ asset('template/plugins/datetime-moment.js') }}"></script>
 <script>
 
 var roles = JSON.parse('{!!$roles!!}');
@@ -154,6 +155,9 @@ var grupos = JSON.parse('{!!$gruposUsuario!!}');
 
     $(document).ready(function() {
         seleccionarMenu(window.location);
+        
+        $.fn.dataTable.moment('DD-MM-YYYY HH:mm');
+        $.fn.dataTable.moment('DD-MM-YYYY');
 
         const requerimientoModel = new RequerimientoModel();
         const requerimientoController = new RequerimientoCtrl(requerimientoModel);

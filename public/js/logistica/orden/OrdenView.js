@@ -471,7 +471,6 @@ class OrdenView {
                     'info'
                 );
                 tr.querySelector("input[class~='precio']").value = 0;
-                tr.querySelector("input[class~='cantidad_a_comprar']").value = 0;
                 subtotal = 0;
             }
         }

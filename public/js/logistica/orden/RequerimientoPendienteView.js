@@ -322,7 +322,7 @@ class RequerimientoPendienteView {
             'dom': vardataTables[1],
             'buttons': [
                 {
-                    text: '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Nuevo',
+                    text: '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Nueva orden',
                     attr: {
                         disabled: true,
                         id: 'btnCrearOrdenCompra'
@@ -362,7 +362,8 @@ class RequerimientoPendienteView {
                 { 'data': 'empresa_sede' },
                 {
                     render: function (data, type, row) {
-                        return `<label class="lbl-codigo handleClickAbrirRequerimiento" title="Abrir Requerimiento" data-id-requerimiento="${row.id_requerimiento}">${row.codigo} ${row.tiene_transformacion == true ? '<i class="fas fa-random text-danger" title="Con transformación"></i>' : ''}</label>`;
+                        return `<a href="/logistica/gestion-logistica/requerimiento/elaboracion/index?id=${row.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${row.codigo}</a> ${row.tiene_transformacion==true?'<i class="fas fa-random text-danger" title="Con transformación"></i>':''} `;
+                        // return `<a class="lbl-codigo handleClickAbrirRequerimiento" title="Abrir Requerimiento" data-id-requerimiento="${row.id_requerimiento}">${row.codigo}</a> ${row.tiene_transformacion == true ? '<i class="fas fa-random text-danger" title="Con transformación"></i>' : ''}`;
                     }
                 },
 

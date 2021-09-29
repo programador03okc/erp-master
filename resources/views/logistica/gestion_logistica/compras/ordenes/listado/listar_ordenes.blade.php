@@ -129,11 +129,15 @@
     <script src="{{('/js/logistica/orden/listaOrdenController.js')}}?v={{filemtime(public_path('/js/logistica/orden/listaOrdenController.js'))}}"></script>
     <script src="{{('/js/logistica/orden/listaOrdenModel.js')}}?v={{filemtime(public_path('/js/logistica/orden/listaOrdenModel.js'))}}"></script>
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/datetime-moment.js') }}"></script>
     <script src="{{ asset('template/plugins/loadingoverlay.min.js') }}"></script>
 
     <script>
         
         window.onload = function () {
+
+                    $.fn.dataTable.moment('DD-MM-YYYY HH:mm');
+        $.fn.dataTable.moment('DD-MM-YYYY');
         const listaOrdenModel = new ListaOrdenModel();
         const listaOrdenCtrl = new ListaOrdenCtrl(listaOrdenModel);
         const listaOrdenView = new ListaOrdenView(listaOrdenCtrl);

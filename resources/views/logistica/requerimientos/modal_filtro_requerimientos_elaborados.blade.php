@@ -9,12 +9,10 @@
                 <div class="form-horizontal" id="formFiltroListaRequerimientosElaborados">
                     <div class="row">
                         <div class="col-md-12">
-                            <small>Seleccione alguna de las opciones con valor que desee y luego haga clic en aplicar.</small>
+                            <small>Seleccione los filtros que desee aplicar y cierre este cuadro para continuar</small>
                         </div>
                     </div>
                     <div class="container-filter" style="margin: 0 auto;">
-
-                        <h5 style="display:flex;justify-content: space-between;  font-weight:bold;">Nivel cabecera</h5>
                         <fieldset class="group-table">
                             <div class="row">
                                 <div class="col-md-4">
@@ -41,9 +39,10 @@
                                     <select class="form-control input-sm handleChangeFiltroEmpresa handleChangeUpdateValorFiltroRequerimientosElaborados" name="empresa" readOnly>
                                         <option value="SIN_FILTRO">-----------------</option>
                                         @foreach ($empresas as $emp)
-                                        <option value="{{$emp->id_empresa}}" data-url-logo="{{$emp->logo_empresa}}">{{$emp->razon_social}}</option>
+                                        <option value="{{$emp->id_empresa}}">{{$emp->razon_social}}</option>
                                         @endforeach
                                     </select>
+                                    <!-- <small class="help-block">Solo se muestra las empresas con requerimiento</small> -->
                                 </div>
                             </div>
                             <div class="row">

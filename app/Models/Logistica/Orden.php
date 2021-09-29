@@ -31,6 +31,14 @@ class Orden extends Model {
         $fecha= new Carbon($this->attributes['fecha_ingreso_almacen']);
         return $fecha->format('d-m-Y');
     }
+    // public function getFechaVencimientoOcamAttribute(){
+    //     $fecha= new Carbon($this->attributes['fecha_vencimiento_ocam']);
+    //     return $fecha->format('d-m-Y');
+    // }
+    public function getFechaEntregaAttribute(){
+        $fecha= new Carbon($this->attributes['fecha_entrega']);
+        return $fecha->format('d-m-Y');
+    }
 
     public function mostrar()
     {

@@ -45,6 +45,8 @@ class RequerimientoView {
         document.querySelector("select[class~='handleChangeOptUbigeo']").addEventListener("change", this.changeOptUbigeo.bind(this), false);
         document.querySelector("select[class~='handleChangeUpdateSede']").addEventListener("change", this.updateSede.bind(this), false);
         document.querySelector("input[class~='handleChangeFechaLimite']").addEventListener("change", this.updateFechaLimite.bind(this), false);
+        document.querySelector("select[class~='handleChangeDivision']").addEventListener("change", this.updateDivision.bind(this), false);
+        document.querySelector("select[class~='handleChangeTipoRequerimiento']").addEventListener("change", this.updateTipoRequerimiento.bind(this), false);
 
 
         $('#listaRequerimiento tbody').on("click","button.handleClickCargarRequerimiento", (e)=>{
@@ -785,7 +787,7 @@ class RequerimientoView {
     }
     updateEmpresa(obj) {
 
-        if (obj.target.value.length > 0) {
+        if (obj.target.value > 0) {
             obj.target.closest('div').classList.remove("has-error");
             if (obj.target.closest("div").querySelector("span")) {
                 obj.target.closest("div").querySelector("span").remove();
@@ -796,7 +798,7 @@ class RequerimientoView {
         }
     }
     updateSede(obj) {
-        if (obj.target.value.length > 0) {
+        if (obj.target.value > 0) {
             obj.target.closest('div').classList.remove("has-error");
             if (obj.target.closest("div").querySelector("span")) {
                 obj.target.closest("div").querySelector("span").remove();
@@ -806,7 +808,7 @@ class RequerimientoView {
         }
     }
     updateSedeByPassingElement(obj) {
-        if (obj.value.length > 0) {
+        if (obj.value > 0) {
             obj.closest('div').classList.remove("has-error");
             if (obj.closest("div").querySelector("span")) {
                 obj.closest("div").querySelector("span").remove();
@@ -817,6 +819,26 @@ class RequerimientoView {
     }
     updateFechaLimite(obj) {
         if (obj.target.value.length > 0) {
+            obj.target.closest('div').classList.remove("has-error");
+            if (obj.target.closest("div").querySelector("span")) {
+                obj.target.closest("div").querySelector("span").remove();
+            }
+        } else {
+            obj.target.closest('div').classList.add("has-error");
+        }
+    }
+    updateDivision(obj) {
+        if (obj.target.value > 0) {
+            obj.target.closest('div').classList.remove("has-error");
+            if (obj.target.closest("div").querySelector("span")) {
+                obj.target.closest("div").querySelector("span").remove();
+            }
+        } else {
+            obj.target.closest('div').classList.add("has-error");
+        }
+    }
+    updateTipoRequerimiento(obj) {
+        if (obj.target.value > 0) {
             obj.target.closest('div').classList.remove("has-error");
             if (obj.target.closest("div").querySelector("span")) {
                 obj.target.closest("div").querySelector("span").remove();

@@ -185,7 +185,7 @@ Crear / editar requerimiento
                         <div class="col-md-2" id="input-group-aprobante">
                             <div class="form-group">
                                 <h5>División</h5>
-                                <select name="division" class="form-control activation">
+                                <select name="division" class="form-control activation handleChangeDivision">
                                     <option value="0">Elija una opción</option>
                                     @foreach ($divisiones as $division)
                                     @if($division->id_division==4)
@@ -200,7 +200,7 @@ Crear / editar requerimiento
                         <div class="col-md-2" id="input-group-tipo-requerimiento">
                             <div class="form-group">
                                 <h5>Tipo Requerimiento</h5>
-                                <select class="form-control input-sm activation" name="tipo_requerimiento">
+                                <select class="form-control input-sm activation handleChangeTipoRequerimiento" name="tipo_requerimiento">
                                     <option value="0">Elija una opción</option>
                                     @foreach ($tipo_requerimiento as $tipo)
                                     <option value="{{$tipo->id_tipo_requerimiento}}">{{$tipo->descripcion}}</option>

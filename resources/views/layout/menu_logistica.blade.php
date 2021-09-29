@@ -34,7 +34,7 @@
         <ul class="treeview-menu">
             @if(Auth::user()->tieneSubModulo(25))
             @if(Auth::user()->tieneAplicacion(108))
-            <li><a href="{{route('logistica.gestion-logistica.compras.pendientes.index')}}"><i class="far fa-circle fa-xs"></i> Pendientes</a></li>
+            <li><a href="{{route('logistica.gestion-logistica.compras.pendientes.index')}}"><i class="far fa-circle fa-xs"></i> Req. Pendientes</a></li>
             @endif
             @endif
             <!-- @if(Auth::user()->tieneSubModulo(24))
