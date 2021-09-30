@@ -345,6 +345,7 @@ $("#form-mapeoItemsRequerimiento").on("submit", function (e) {
                             // actualizar cantidad de items por mapear 
                             objBtnMapeo.querySelector("span[class='badge']").textContent = cantidadPorMapear;
                             objBtnMapeo.closest("tr").querySelector("input[type='checkbox']").dataset.mapeosPendientes = cantidadPorMapear;
+                            objBtnMapeo.closest("tr").querySelector("input[type='checkbox']").dataset.mapeados = response.cantidad_items_mapeados;
 
                         }
 
