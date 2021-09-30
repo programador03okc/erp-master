@@ -78,7 +78,11 @@ function listarRequerimientosPendientes() {
                                 (row['id_od'] !== null && row['estado_od'] == '1') ?
                                     `<button type="button" class="anular_od btn btn-flat btn-danger boton" data-toggle="tooltip" 
                                     data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Anular Orden Despacho" >
-                                    <i class="fas fa-trash"></i></button>` : '')
+                                    <i class="fas fa-trash"></i></button>` : '') +
+                        `<button type="button" class="facturar btn btn-${row["enviar_facturacion"] ? "info" : "default"} 
+                        boton" data-toggle="tooltip" data-placement="bottom" title="Enviar a Facturación" 
+                        data-id="${row["id_requerimiento"]}" data-cod="${row["codigo"]}">
+                        <i class="fas fa-check"></i></button>`
                         + '</div>'
 
                 }, targets: 10
@@ -87,6 +91,18 @@ function listarRequerimientosPendientes() {
     });
     vista_extendida();
 }
+
+$("#requerimientosEnProceso tbody").on("click", "button.facturar", function () {
+    var id = $(this).data("id");
+    var cod = $(this).data("cod");
+    var rspta = confirm(
+        "¿Está seguro que desea mandar a facturar el " + cod + "?"
+    );
+
+    if (rspta) {
+        enviarFacturar(id, "enProceso");
+    }
+});
 
 $("#requerimientosEnProceso tbody").on("click", "a.verRequerimiento", function (e) {
     $(e.preventDefault());
@@ -155,6 +171,33 @@ $('#requerimientosEnProceso tbody').on("click", "button.anular_od", function () 
         }
     });
 });
+
+function enviarFacturar(id, proviene) {
+    $.ajax({
+        type: "GET",
+        url: "enviarFacturar/" + id,
+        dataType: "JSON",
+        success: function (response) {
+            console.log(response);
+            if (response > 0) {
+                if (proviene == "enProceso") {
+                    $("#requerimientosEnProceso")
+                        .DataTable()
+                        .ajax.reload();
+                } else if (proviene == "enTransformacion") {
+                    $("#requerimientosEnTransformacion")
+                        .DataTable()
+                        .ajax.reload();
+                }
+                actualizaCantidadDespachosTabs();
+            }
+        }
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
 
 function anularOrdenDespacho(id) {
     $.ajax({
