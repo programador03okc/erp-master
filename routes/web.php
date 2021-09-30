@@ -964,6 +964,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('listar_ubigeos', 'AlmacenController@listar_ubigeos');
 				Route::post('guardar_orden_despacho', 'DistribucionController@guardar_orden_despacho');
 				Route::get('anular_orden_despacho/{id}/{tp}', 'Almacen\Movimiento\SalidasPendientesController@anular_orden_despacho');
+				Route::get('enviarFacturar/{id}', 'DistribucionController@enviarFacturar');
 			});
 		});
 
