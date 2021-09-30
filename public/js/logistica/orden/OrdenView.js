@@ -793,6 +793,8 @@ class OrdenView {
         <td><textarea name="descripcion[]" placeholder="Descripción" class="form-control activation" value="" style="width:100%;height: 60px;overflow: scroll;"> </textarea>  </td>
         <td>Servicio<input type="hidden"  name="unidad[]" value="38"></td>
         <td></td>
+        <td></td>
+        <td></td>
         <td>
             <div class="input-group">
                 <div class="input-group-addon" style="background:lightgray;" name="simboloMoneda">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</div>
