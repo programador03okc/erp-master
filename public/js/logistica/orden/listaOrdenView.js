@@ -64,10 +64,11 @@ class ListaOrdenView {
         $('#listaOrdenes tbody').on("click", "button.handleClickAbrirOrdenPDF", (e) => {
             this.abrirOrdenPDF(e.currentTarget.dataset.idOrdenCompra);
         });
-        $('#listaOrdenes tbody').on("click", "label.handleClickAbrirRequerimiento", (e) => {
-            // var data = $('#listaOrdenes').DataTable().row($(this).parents("tr")).data();
-            this.abrirRequerimiento(e.currentTarget.dataset.idRequerimiento);
-        });
+        // $('#listaOrdenes tbody').on("click", "label.handleClickAbrirRequerimiento", (e) => {
+            
+        //     // var data = $('#listaOrdenes').DataTable().row($(this).parents("tr")).data();
+        //     this.abrirRequerimiento(e.currentTarget.dataset.idRequerimiento);
+        // });
         $('#listaOrdenes tbody').on("click", "button.handleCliclVerDetalleOrden", (e) => {
             this.verDetalleOrden(e.currentTarget);
         });
@@ -479,7 +480,9 @@ class ListaOrdenView {
                         let labelRequerimiento = '';
                         if (row.requerimientos != undefined && row.requerimientos.length > 0) {
                             (row.requerimientos).forEach(element => {
-                                labelRequerimiento += `<label class="lbl-codigo handleClickAbrirRequerimiento" title="Ir a requerimiento"  data-id-requerimiento="${element.id_requerimiento}" >${(element.codigo ?? '')}</label>`;
+                                labelRequerimiento += `<a href="/logistica/gestion-logistica/requerimiento/elaboracion/index?id=${element.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${element.codigo??''}</a>`;
+
+                                
                             });
                             return labelRequerimiento;
 
@@ -706,7 +709,7 @@ class ListaOrdenView {
                     <td style="border: none;">${element.codigo_oportunidad !== null ? element.codigo_oportunidad : ''}</td>
                     <td style="border: none;">${element.nombre_entidad !== null ? element.nombre_entidad : ''}</td>
                     <td style="border: none;">${element.nombre_corto_responsable !== null ? element.nombre_corto_responsable : ''}</td>
-                    <td style="border: none;"><label class="lbl-codigo handleClickAbrirRequerimiento" title="Abrir Requerimiento" data-id-requerimiento="${element.id_requerimiento}">${element.codigo_req ?? ''}</label></td>
+                    <td style="border: none;"><a href="/logistica/gestion-logistica/requerimiento/elaboracion/index?id=${element.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${element.codigo_req??''}</a></td>
                     <td style="border: none;">${element.codigo ?? ''}</td>
                     <td style="border: none;">${element.part_number ?? ''}</td>
                     <td style="border: none;">${element.descripcion ? element.descripcion : (element.descripcion_adicional ? element.descripcion_adicional : '')}</td>
