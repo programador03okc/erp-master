@@ -1454,13 +1454,13 @@ class OrdenView {
 
 
     loadHeadOrden(data) {
-        // console.log(data);
+
         document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_orden']").value = data.id_orden_compra ? data.id_orden_compra : '';
         document.querySelector("form[id='form-crear-orden-requerimiento'] select[name='id_tp_documento']").value = data.id_tp_documento ? data.id_tp_documento : '';
         document.querySelector("form[id='form-crear-orden-requerimiento'] select[name='id_moneda']").value = data.id_moneda ? data.id_moneda : '';
         document.querySelector("form[id='form-crear-orden-requerimiento'] span[name='codigo_orden_interno']").textContent = data.codigo_orden ? data.codigo_orden : '';
         document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='codigo_orden']").value = data.codigo_softlink ? data.codigo_softlink : '';
-        document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='fecha_emision']").value = data.fecha ? data.fecha.replace(" ", "T") : '';
+        document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='fecha_emision']").value = data.fecha ? moment(data.fecha, 'DD-MM-YYYY').format('YYYY-MM-DDThh:mm') : '';
         document.querySelector("form[id='form-crear-orden-requerimiento'] select[name='id_sede']").value = data.id_sede ? data.id_sede : '';
         document.querySelector("form[id='form-crear-orden-requerimiento'] img[id='logo_empresa']").setAttribute("src", data.logo_empresa);
         document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='incluye_igv']").checked = data.incluye_igv;
