@@ -1,4 +1,4 @@
-
+var $tablaListaProveedores;
 class ListarProveedorView {
 
     constructor(proveedorCtrl) {
@@ -182,7 +182,7 @@ class ListarProveedorView {
     mostrar() {
         vista_extendida();
         var vardataTables = funcDatatables();
-        let $tablaListaProveedores = $('#listaProveedores').DataTable({
+        $tablaListaProveedores = $('#listaProveedores').DataTable({
             'dom': vardataTables[1],
             'buttons': [
                 {
@@ -985,6 +985,7 @@ class ListarProveedorView {
                         this.limpiarTabla('listaContactoProveedor');
                         this.limpiarTabla('listaCuentaBancariasProveedor');
                         $('#modal-proveedor').modal('hide');
+                        $tablaListaProveedores.ajax.reload(null,false);                
 
 
                     } else {
