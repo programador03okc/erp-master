@@ -495,9 +495,9 @@ class ListaOrdenView {
                         function (data, type, row, meta) {
                             let estadoDetalleOrdenHabilitadasActualizar = [1, 2, 3, 4, 5, 6, 15];
                             if (estadoDetalleOrdenHabilitadasActualizar.includes(row.estado) == true) {
-                                return `<center><a class="handleClickEditarEstadoOrden" data-id-estado-orden-compra="${row.estado}" data-id-orden-compra="${row.id_orden_compra}" style="cursor:pointer;">${row.estado_doc}</a></center>`;
+                                return `<center><a class="handleClickEditarEstadoOrden" data-id-estado-orden-compra="${row.estado}" data-codigo-orden="${row.codigo}" data-id-orden-compra="${row.id_orden_compra}" style="cursor:pointer;">${row.estado_doc}</a></center>`;
                             } else {
-                                return `<center><span class="label label-default" data-id-estado-orden-compra="${row.estado}" data-id-orden-compra="${row.id_orden_compra}" >${row.estado_doc}</span></center>`;
+                                return `<center><span class="label label-default" data-id-estado-orden-compra="${row.estado}" data-codigo-orden="${row.codigo}" data-id-orden-compra="${row.id_orden_compra}" >${row.estado_doc}</span></center>`;
 
                             }
                         }
@@ -1139,7 +1139,7 @@ class ListaOrdenView {
     editarEstadoOrden(obj) {
         let id_orden = obj.dataset.idOrdenCompra;
         let id_estado_actual = obj.dataset.idEstadoOrdenCompra;
-        let codigo = obj.dataset.codigoOrdenCompra;
+        let codigo = obj.dataset.codigoOrden;
 
         $('#modal-editar-estado-orden').modal({
             show: true,
@@ -1147,7 +1147,8 @@ class ListaOrdenView {
         });
 
         document.querySelector("div[id='modal-editar-estado-orden'] input[name='id_orden_compra'").value = id_orden;
-        document.querySelector("div[id='modal-editar-estado-orden'] span[name='codigo_orden_compra'").textContent = codigo;
+        document.querySelector("div[id='modal-editar-estado-orden'] span[name='codigo_orden'").textContent = codigo;
+        document.querySelector("div[id='modal-editar-estado-orden'] select[name='estado_orden'").value = id_estado_actual;
 
     }
 
@@ -1155,7 +1156,7 @@ class ListaOrdenView {
         let id_orden_compra = obj.dataset.idOrdenCompra;
         let id_detalle_orden = obj.dataset.idDetalleOrdenCompra;
         let id_estado_actual = obj.dataset.idEstadoDetalleOrdenCompra;
-        let codigo_item = obj.dataset.codigoItem;
+        let codigoItem = obj.dataset.codigoItem;
 
         $('#modal-editar-estado-detalle-orden').modal({
             show: true,
@@ -1164,7 +1165,7 @@ class ListaOrdenView {
 
         document.querySelector("div[id='modal-editar-estado-detalle-orden'] input[name='id_orden_compra'").value = id_orden_compra;
         document.querySelector("div[id='modal-editar-estado-detalle-orden'] input[name='id_detalle_orden_compra'").value = id_detalle_orden;
-        document.querySelector("div[id='modal-editar-estado-detalle-orden'] span[name='codigo_item_orden_compra'").textContent = codigo_item;
+        document.querySelector("div[id='modal-editar-estado-detalle-orden'] span[name='codigo_item_orden_compra'").textContent = codigoItem;
 
         document.querySelector("select[name='estado_detalle_orden']").value = id_estado_actual;
 
