@@ -10,7 +10,7 @@ var actionPage = null;
 class OrdenView {
     constructor(ordenCtrl) {
         this.ordenCtrl = ordenCtrl;
-        this.codigoRequerimientoList=[];
+        this.codigoRequerimientoList = [];
     }
 
     init() {
@@ -193,7 +193,7 @@ class OrdenView {
                             let cantidad_atendido_almacen = 0;
                             if (det.reserva.length > 0) {
                                 (det.reserva).forEach(reserva => {
-                                    if(reserva.estado ==1){
+                                    if (reserva.estado == 1) {
                                         cantidad_atendido_almacen += parseFloat(reserva.stock_comprometido);
                                     }
                                 });
@@ -204,7 +204,7 @@ class OrdenView {
                                     cantidad_atendido_orden += parseFloat(orden.cantidad);
                                 });
                             }
-                            let cantidadAAtender = (parseFloat(det.cantidad) - cantidad_atendido_almacen -cantidad_atendido_orden);
+                            let cantidadAAtender = (parseFloat(det.cantidad) - cantidad_atendido_almacen - cantidad_atendido_orden);
                             if (det.tiene_transformacion == false) {
                                 detalleOrdenList.push(
                                     {
@@ -216,7 +216,7 @@ class OrdenView {
                                         'codigo_requerimiento': req.codigo,
                                         'id_moneda': req.id_moneda,
                                         'cantidad': det.cantidad,
-                                        'cantidad_a_comprar': !(cantidadAAtender >= 0) ? '' :cantidadAAtender,
+                                        'cantidad_a_comprar': !(cantidadAAtender >= 0) ? '' : cantidadAAtender,
                                         'cantidad_atendido_almacen': cantidad_atendido_almacen,
                                         'cantidad_atendido_orden': cantidad_atendido_orden,
                                         'descripcion_producto': det.descripcion,
@@ -360,7 +360,7 @@ class OrdenView {
         // let codigoRequerimiento = [];
         data.forEach(element => {
             let foundRequerimiento = this.codigoRequerimientoList.find(item => item == element.codigo);
-            if(foundRequerimiento== undefined){
+            if (foundRequerimiento == undefined) {
 
                 this.codigoRequerimientoList.push(element.codigo);
 
@@ -369,7 +369,7 @@ class OrdenView {
 
         document.querySelector("select[name='id_tp_documento']").value = idTipoOrden;
         document.querySelector("img[id='logo_empresa']").setAttribute("src", data[0].empresa.logo_empresa);
-        document.querySelector("input[name='cdc_req']").value =  this.codigoRequerimientoList.length > 0 ?  this.codigoRequerimientoList : '';
+        document.querySelector("input[name='cdc_req']").value = this.codigoRequerimientoList.length > 0 ? this.codigoRequerimientoList : '';
         document.querySelector("input[name='ejecutivo_responsable']").value = '';
         document.querySelector("input[name='direccion_destino']").value = data[0].sede ? data[0].sede.direccion : '';
         document.querySelector("input[name='id_ubigeo_destino']").value = data[0].sede ? data[0].sede.id_ubigeo : '';
@@ -394,7 +394,7 @@ class OrdenView {
                         <td class="text-center">${data[i].codigo_requerimiento ? data[i].codigo_requerimiento : ''} <input type="hidden"  name="idRegister[]" value="${data[i].id_detalle_orden ? data[i].id_detalle_orden : this.makeId()}"> <input type="hidden"  name="idDetalleRequerimiento[]" value="${data[i].id_detalle_requerimiento ? data[i].id_detalle_requerimiento : ''}">  <input type="hidden"  name="idTipoItem[]" value="1"></td>
                         <td class="text-center">${data[i].part_number ? data[i].part_number : ''} <input type="hidden"  name="idProducto[]" value="${(data[i].id_producto ? data[i].id_producto : data[i].id_producto)} "></td>
                         <td class="text-left">${(data[i].descripcion_producto ? data[i].descripcion_producto : (data[i].descripcion_adicional != null ? data[i].descripcion_adicional : ''))} <input type="hidden"  name="descripcion[]" value="${(data[i].descripcion_producto ? data[i].descripcion_producto : data[i].descripcion_adicional)} "></td>
-                        <td><select name="unidad[]" class="form-control ${(data[i].estado_guia_com_det > 0 && data[i].estado_guia_com_det != 7 ? '' : 'activation')} input-sm unidadMedida" data-value="${data[i].id_unidad_medida}" disabled>${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
+                        <td><select name="unidad[]" class="form-control ${(data[i].estado_guia_com_det > 0 && data[i].estado_guia_com_det != 7 ? '' : 'activation')} input-sm unidadMedida" data-valor="${data[i].id_unidad_medida}" disabled>${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
                         <td>${(data[i].cantidad ? data[i].cantidad : '')}</td>
                         <td>${(data[i].cantidad_atendido_almacen ? data[i].cantidad_atendido_almacen : '')}</td>
                         <td>${(data[i].cantidad_atendido_orden ? data[i].cantidad_atendido_orden : '')}</td>
@@ -538,7 +538,7 @@ class OrdenView {
                 tr.remove();
                 this.calcularMontosTotales();
                 Lobibox.notify('success', {
-                    title:false,
+                    title: false,
                     size: 'mini',
                     rounded: true,
                     sound: false,
@@ -557,7 +557,7 @@ class OrdenView {
 
     // modal agregar producto en orden 
     catalogoProductosModal() {
-        document.querySelector("div[id='modal-catalogo-items'] h3[class='modal-title']").textContent="Lista de productos para obsequio";
+        document.querySelector("div[id='modal-catalogo-items'] h3[class='modal-title']").textContent = "Lista de productos para obsequio";
         $('#modal-catalogo-items').modal({
             show: true,
             backdrop: 'true',
@@ -744,11 +744,12 @@ class OrdenView {
 
     }
 
-    UpdateSelectUnidadMedida(){
-    const AllTrTbodyListaDetalleOrden = document.querySelectorAll("table[id='listaDetalleOrden'] tbody tr");
-    AllTrTbodyListaDetalleOrden.forEach(fila => {
-            let valorUnidad = fila.querySelector("select[class~='unidadMedida']").dataset.value;
-            fila.querySelector("select[class~='unidadMedida']").value=valorUnidad;
+    UpdateSelectUnidadMedida() {
+        const AllTrTbodyListaDetalleOrden = document.querySelectorAll("table[id='listaDetalleOrden'] tbody tr");
+        AllTrTbodyListaDetalleOrden.forEach(fila => {
+            // console.log(fila.querySelector("select[class~='unidadMedida']"));
+            let valorUnidad = fila.querySelector("select[class~='unidadMedida']").dataset.valor;
+            fila.querySelector("select[class~='unidadMedida']").value = valorUnidad;
         });
     }
 
@@ -757,8 +758,8 @@ class OrdenView {
         document.querySelector("tbody[id='body_detalle_orden']").insertAdjacentHTML('beforeend', `<tr style="text-align:center;">
         <td class="text-center">${data[0].codigo_requerimiento ? data[0].codigo_requerimiento : ''} <input type="hidden"  name="idRegister[]" value="${data[0].id_detalle_orden ? data[0].id_detalle_orden : this.makeId()}"> <input type="hidden"  name="idDetalleRequerimiento[]" value="${data[0].id_detalle_requerimiento ? data[0].id_detalle_requerimiento : ''}"> <input type="hidden"  name="idTipoItem[]" value="1"> </td>
         <td class="text-center">${data[0].part_number ? data[0].part_number : ''} <input type="hidden"  name="idProducto[]" value="${(data[0].id_producto ? data[0].id_producto : data[0].id_producto)} "> </td>
-        <td class="text-left">${(data[0].descripcion_producto ? data[0].descripcion_producto : (data[0].descripcion_adicional?data[0].descripcion_adicional:''))}  <input type="hidden"  name="descripcion[]" value="${(data[0].descripcion_producto ? data[0].descripcion_producto : data[0].descripcion_adicional)} "></td>
-        <td><select name="unidad[]" class="form-control ${(data[0].estado_guia_com_det > 0 && data[0].estado_guia_com_det != 7 ? '' : 'activation')} input-sm unidadMedida" data-value="${data[0].id_unidad_medida}" >${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
+        <td class="text-left">${(data[0].descripcion_producto ? data[0].descripcion_producto : (data[0].descripcion_adicional ? data[0].descripcion_adicional : ''))}  <input type="hidden"  name="descripcion[]" value="${(data[0].descripcion_producto ? data[0].descripcion_producto : data[0].descripcion_adicional)} "></td>
+        <td><select name="unidad[]" class="form-control ${(data[0].estado_guia_com_det > 0 && data[0].estado_guia_com_det != 7 ? '' : 'activation')} input-sm unidadMedida" data-valor="${data[0].id_unidad_medida}" >${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
         <td>${(data[0].cantidad ? data[0].cantidad : '')}</td>
         <td>${(data[0].cantidad_atendido_almacen ? data[0].cantidad_atendido_almacen : '')}</td>
         <td>${(data[0].cantidad_atendido_orden ? data[0].cantidad_atendido_orden : '')}</td>
@@ -779,9 +780,19 @@ class OrdenView {
         </td>
      </tr>`);
 
-     this.autoUpdateSubtotal();
-     this.UpdateSelectUnidadMedida();
+        this.autoUpdateSubtotal();
+        this.UpdateSelectUnidadMedida();
+        if (data.length > 0) {
+            Lobibox.notify('success', {
+                title: false,
+                size: 'mini',
+                rounded: true,
+                sound: false,
+                delayIndicator: false,
+                msg: 'Producto para obsequio agregado'
+            });
 
+        }
     }
 
     agregarServicio() {
@@ -949,14 +960,14 @@ class OrdenView {
                     let cantidad_atendido_almacen = 0;
                     if (element.reserva.length > 0) {
                         (element.reserva).forEach(reserva => {
-                        if(reserva.estado ==1){
-                            cantidad_atendido_almacen += parseFloat(reserva.stock_comprometido);
-                        }
+                            if (reserva.estado == 1) {
+                                cantidad_atendido_almacen += parseFloat(reserva.stock_comprometido);
+                            }
                         });
                     }
- 
+
                     html += `<tr>
-                        <td style="border: none; text-align:center;">${(element.producto_part_number != null ? element.producto_part_number :(element.part_number !=null ?element.part_number:''))}</td>
+                        <td style="border: none; text-align:center;">${(element.producto_part_number != null ? element.producto_part_number : (element.part_number != null ? element.part_number : ''))}</td>
                         <td style="border: none; text-align:left;">${element.producto_descripcion != null ? element.producto_descripcion : (element.descripcion ? element.descripcion : '')}</td>
                         <td style="border: none; text-align:center;">${element.abreviatura != null ? element.abreviatura : ''}</td>
                         <td style="border: none; text-align:center;">${element.cantidad > 0 ? element.cantidad : ''}</td>
@@ -998,9 +1009,9 @@ class OrdenView {
 
     vincularRequerimiento(idRequerimiento) {
         let i = 0;
-        let cantidadItemSinMapear =0;
+        let cantidadItemSinMapear = 0;
         this.ordenCtrl.obtenerRequerimiento(idRequerimiento).then((res) => {
-            this.loadHeadRequerimiento([res],2);
+            this.loadHeadRequerimiento([res], 2);
 
             (res.detalle).forEach((element) => {
                 if (element.tiene_transformacion == false) {
@@ -1010,7 +1021,7 @@ class OrdenView {
                         let cantidad_atendido_almacen = 0;
                         if (element.reserva.length > 0) {
                             (element.reserva).forEach(reserva => {
-                                if(reserva.estado ==1){
+                                if (reserva.estado == 1) {
                                     cantidad_atendido_almacen += parseFloat(reserva.stock_comprometido);
                                 }
                             });
@@ -1021,15 +1032,15 @@ class OrdenView {
                                 cantidad_atendido_orden += parseFloat(orden.cantidad);
                             });
                         }
-                        let cantidad_a_comprar = parseFloat(element.cantidad >0?element.cantidad:0) -parseFloat(cantidad_atendido_almacen) -parseFloat(cantidad_atendido_orden);
+                        let cantidad_a_comprar = parseFloat(element.cantidad > 0 ? element.cantidad : 0) - parseFloat(cantidad_atendido_almacen) - parseFloat(cantidad_atendido_orden);
                         this.agregarProducto([{
                             'id': this.makeId(),
-                            'cantidad': element.cantidad??0,
-                            'cantidad_atendido_almacen':cantidad_atendido_almacen,
-                            'cantidad_atendido_orden':cantidad_atendido_orden,
-                            'cantidad_a_comprar': !(parseFloat(cantidad_a_comprar)>=0)?'':cantidad_a_comprar,
+                            'cantidad': element.cantidad ?? 0,
+                            'cantidad_atendido_almacen': cantidad_atendido_almacen,
+                            'cantidad_atendido_orden': cantidad_atendido_orden,
+                            'cantidad_a_comprar': !(parseFloat(cantidad_a_comprar) >= 0) ? '' : cantidad_a_comprar,
                             'codigo_item': null,
-                            'codigo_producto': element.producto.codigo !=null ?element.producto.codigo: '',
+                            'codigo_producto': element.producto.codigo != null ? element.producto.codigo : '',
                             'codigo_requerimiento': element.codigo_requerimiento,
                             'descripcion_adicional': null,
                             'descripcion_producto': element.producto.descripcion != null ? element.producto.descripcion : '',
@@ -1043,17 +1054,17 @@ class OrdenView {
                             'id_requerimiento': element.id_requerimiento,
                             'id_unidad_medida': element.unidad_medida.id_unidad_medida,
                             'lugar_despacho': null,
-                            'part_number': (!element.id_producto > 0 ? '(Sin mapear)' : ((element.producto.part_number != null ? element.producto.part_number :''))),
-                            'precio_unitario': element.precio_unitario??0,
+                            'part_number': (!element.id_producto > 0 ? '(Sin mapear)' : ((element.producto.part_number != null ? element.producto.part_number : ''))),
+                            'precio_unitario': element.precio_unitario ?? 0,
                             'id_moneda': 1,
                             'stock_comprometido': null,
-                            'subtotal': $.number(parseFloat(element.precio_unitario * element.cantidad),2),
+                            'subtotal': $.number(parseFloat(element.precio_unitario * element.cantidad), 2),
                             'producto_regalo': false,
                             'tiene_transformacion': element.tiene_transformacion,
                             'unidad_medida': element.unidad_medida.descripcion
                         }]);
 
-                    }else{
+                    } else {
                         cantidadItemSinMapear++;
                     }
                 }
@@ -1063,9 +1074,9 @@ class OrdenView {
                 this.estadoVinculoRequerimiento({ 'mensaje': `Se agregó ${i} Item(s) a la orden`, 'estado': '200' })
 
             } else {
-                if(cantidadItemSinMapear>0){
+                if (cantidadItemSinMapear > 0) {
                     this.estadoVinculoRequerimiento({ 'mensaje': `No se puede agregar item(s) a la orden, tiene ${cantidadItemSinMapear} items sin mapear`, 'estado': '204' })
-                }else{
+                } else {
                     this.estadoVinculoRequerimiento({ 'mensaje': `No se puede agregar item(s) a la orden`, 'estado': '204' })
 
                 }
@@ -1081,17 +1092,17 @@ class OrdenView {
     }
 
     estadoVinculoRequerimiento(resolve) {
-        let tipoMensaje='';
+        let tipoMensaje = '';
         if (resolve.estado == '200') {
-            tipoMensaje= 'success'
+            tipoMensaje = 'success'
             $('#modal-vincular-requerimiento-orden').modal('hide');
         } else {
-            tipoMensaje= 'warning'
+            tipoMensaje = 'warning'
 
         }
 
         Lobibox.notify(tipoMensaje, {
-            title:false,
+            title: false,
             size: 'mini',
             rounded: true,
             sound: false,
@@ -1220,7 +1231,7 @@ class OrdenView {
         let cantidadInconsistenteInputCantidadAComprar = 0;
         let inputCantidadAComprar = document.querySelectorAll("table[id='listaDetalleOrden'] input[class~='cantidad_a_comprar']");
         inputCantidadAComprar.forEach((element) => {
-            if (element.value == null || element.value == '' || element.value <= 0 ) {
+            if (element.value == null || element.value == '' || element.value <= 0) {
                 cantidadInconsistenteInputCantidadAComprar++;
             }
         })
@@ -1245,55 +1256,55 @@ class OrdenView {
             );
         } else {
             if (action == 'register') {
-                    $.ajax({
-                        type: 'POST',
-                        url: 'guardar',
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        dataType: 'JSON',
-                        success: function (response) {
-                            // console.log(response);
-                            if (response.id_orden_compra > 0) {
-                                Lobibox.notify('success', {
-                                    title: false,
-                                    size: 'mini',
-                                    rounded: true,
-                                    sound: false,
-                                    delayIndicator: false,
-                                    msg: `Orden ${response.codigo} creada.`
-                                });
-                                changeStateButton('guardar');
-                                $('#form-crear-orden-requerimiento').attr('type', 'register');
-                                changeStateInput('form-crear-orden-requerimiento', true);
-    
-                                sessionStorage.removeItem('reqCheckedList');
-                                sessionStorage.removeItem('tipoOrden');
-                                // window.open("generar-orden-pdf/"+response.id_orden_compra, '_blank');
-                                document.querySelector("span[name='codigo_orden_interno']").textContent = response.codigo;
-                                document.querySelector("input[name='id_orden']").value = response.id_orden_compra;
-                                document.querySelector("button[name='btn-imprimir-orden-pdf']").removeAttribute("disabled");
-    
-                            } else {
-                                Swal.fire(
-                                    '',
-                                    'Lo sentimos hubo un error en el servidor al intentar guardar la orden, por favor vuelva a intentarlo',
-                                    'error'
-                                );
-                            }
+                $.ajax({
+                    type: 'POST',
+                    url: 'guardar',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    dataType: 'JSON',
+                    success: function (response) {
+                        // console.log(response);
+                        if (response.id_orden_compra > 0) {
+                            Lobibox.notify('success', {
+                                title: false,
+                                size: 'mini',
+                                rounded: true,
+                                sound: false,
+                                delayIndicator: false,
+                                msg: `Orden ${response.codigo} creada.`
+                            });
+                            changeStateButton('guardar');
+                            $('#form-crear-orden-requerimiento').attr('type', 'register');
+                            changeStateInput('form-crear-orden-requerimiento', true);
+
+                            sessionStorage.removeItem('reqCheckedList');
+                            sessionStorage.removeItem('tipoOrden');
+                            // window.open("generar-orden-pdf/"+response.id_orden_compra, '_blank');
+                            document.querySelector("span[name='codigo_orden_interno']").textContent = response.codigo;
+                            document.querySelector("input[name='id_orden']").value = response.id_orden_compra;
+                            document.querySelector("button[name='btn-imprimir-orden-pdf']").removeAttribute("disabled");
+
+                        } else {
+                            Swal.fire(
+                                '',
+                                'Lo sentimos hubo un error en el servidor al intentar guardar la orden, por favor vuelva a intentarlo',
+                                'error'
+                            );
                         }
-                    }).fail(function (jqXHR, textStatus, errorThrown) {
-                        Swal.fire(
-                            '',
-                            'Hubo un problema al intentar guardar la orden, por favor vuelva a intentarlo',
-                            'error'
-                        );
-                        console.log(jqXHR);
-                        console.log(textStatus);
-                        console.log(errorThrown);
-                    });
-                
-    
+                    }
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    Swal.fire(
+                        '',
+                        'Hubo un problema al intentar guardar la orden, por favor vuelva a intentarlo',
+                        'error'
+                    );
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                });
+
+
             } else if (action == 'edition') {
                 $.ajax({
                     type: 'POST',
@@ -1365,60 +1376,60 @@ class OrdenView {
         this.listarOrdenesElaboradas();
 
     }
-    
-    listarOrdenesElaboradas(){
+
+    listarOrdenesElaboradas() {
         let that = this;
         var vardataTables = funcDatatables();
         var tabla = $('#listaOrdenesElaboradas').DataTable({
-            'processing':true,
-            'destroy':true,
+            'processing': true,
+            'destroy': true,
             'dom': vardataTables[1],
             'buttons': vardataTables[2],
-            'language' : vardataTables[0],
+            'language': vardataTables[0],
             'ajax': 'listar-historial-ordenes-elaboradas',
             // "dataSrc":'',
-            'order': [[0,'desc']],
+            'order': [[0, 'desc']],
             'scrollX': false,
             'columns': [
-                {'data': 'id_orden_compra'},
-                {'data': 'fecha'},
-                {'data': 'codigo'},
-                {'data': 'nro_documento'},
-                {'data': 'razon_social'},
-                {'data': 'moneda_descripcion'},
-                {'data': 'condicion'},
-                {'data': 'plazo_entrega'},
-                {'data': 'descripcion_sede_empresa'},
-                {'data': 'direccion_destino'},
-                {'data': 'ubigeo_destino'},
-                {'data': 'estado_doc'},
+                { 'data': 'id_orden_compra' },
+                { 'data': 'fecha' },
+                { 'data': 'codigo' },
+                { 'data': 'nro_documento' },
+                { 'data': 'razon_social' },
+                { 'data': 'moneda_descripcion' },
+                { 'data': 'condicion' },
+                { 'data': 'plazo_entrega' },
+                { 'data': 'descripcion_sede_empresa' },
+                { 'data': 'direccion_destino' },
+                { 'data': 'ubigeo_destino' },
+                { 'data': 'estado_doc' },
                 {
-                    'render': (data, type, row)=> {
+                    'render': (data, type, row) => {
 
                         return `<center><div class="btn-group" role="group" style="margin-bottom: 5px;">
                         <button type="button" class="btn btn-xs btn-success handleClickSelectOrden" data-id-orden="${row.id_orden_compra}" title="Seleccionar" >Seleccionar</button>
                         </div></center>
                         `;
-                }
-            },
+                    }
+                },
             ],
             'columnDefs': [
-                { className: "text-right", 'aTargets': [0], 'sClass': 'invisible'},
-                { className: "text-center", 'aTargets': [1]},
-                { className: "text-center", 'aTargets': [2]},
-                { className: "text-center", 'aTargets': [3]},
-                { className: "text-left", 'aTargets': [4]},
-                { className: "text-center", 'aTargets': [5]},
-                { className: "text-center", 'aTargets': [6]},
-                { className: "text-center", 'aTargets': [7]},
-                { className: "text-left", 'aTargets': [8]},
-                { className: "text-left", 'aTargets': [9]},
-                { className: "text-center", 'aTargets': [10]},
-                { className: "text-center", 'aTargets': [11]}
+                { className: "text-right", 'aTargets': [0], 'sClass': 'invisible' },
+                { className: "text-center", 'aTargets': [1] },
+                { className: "text-center", 'aTargets': [2] },
+                { className: "text-center", 'aTargets': [3] },
+                { className: "text-left", 'aTargets': [4] },
+                { className: "text-center", 'aTargets': [5] },
+                { className: "text-center", 'aTargets': [6] },
+                { className: "text-center", 'aTargets': [7] },
+                { className: "text-left", 'aTargets': [8] },
+                { className: "text-left", 'aTargets': [9] },
+                { className: "text-center", 'aTargets': [10] },
+                { className: "text-center", 'aTargets': [11] }
             ]
         });
-    
-}
+
+    }
 
     selectOrden(idOrden) {
         this.mostrarOrden(idOrden);
@@ -1505,14 +1516,14 @@ class OrdenView {
             if (res.status == 200) {
                 this.restablecerFormularioOrden();
                 // (res.mensaje).forEach(msj => {
-                    Lobibox.notify(res.status ==200?'success':'warning', {
-                        title: false,
-                        size: 'mini',
-                        rounded: true,
-                        sound: false,
-                        delayIndicator: false,
-                        msg: res.mensaje.toString()
-                    });
+                Lobibox.notify(res.status == 200 ? 'success' : 'warning', {
+                    title: false,
+                    size: 'mini',
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    msg: res.mensaje.toString()
+                });
                 // });
             } else {
 
@@ -1555,6 +1566,6 @@ function cancelarOrden() {
     const ordenController = new OrdenCtrl(ordenModel);
     const ordenView = new OrdenView(ordenController);
     ordenView.restablecerFormularioOrden();
-    document.querySelector("span[id='text-info-req-vinculado']")?document.querySelector("span[id='text-info-req-vinculado']").remove():false;
+    document.querySelector("span[id='text-info-req-vinculado']") ? document.querySelector("span[id='text-info-req-vinculado']").remove() : false;
 
 }
