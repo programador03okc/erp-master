@@ -150,6 +150,7 @@ function mostrarDetalleTransferencia() {
     var html = "";
     var html_series = "";
     var i = 1;
+    var id_almacen = parseInt($('[name=id_almacen_origen]').val());
 
     listaDetalle.forEach(element => {
         html_series = "";
@@ -175,7 +176,7 @@ function mostrarDetalleTransferencia() {
         <td>${element.cantidad}</td>
         <td>${element.abreviatura}</td>
         <td>${`<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" 
-                title="Agregar Series" onClick="open_series_transferencia(${element.id_trans_detalle},${element.id_producto},${element.cantidad});"></i>`}
+                title="Agregar Series" onClick="open_series_transferencia(${element.id_trans_detalle},${element.id_producto},${element.cantidad},${id_almacen});"></i>`}
         </td>
         </tr>`;
         i++;

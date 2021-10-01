@@ -942,7 +942,7 @@ class SalidasPendientesController extends Controller
         }
     }
 
-    public function listarSeriesGuiaVen($id_producto)
+    public function listarSeriesGuiaVen($id_producto, $id_almacen)
     {
         $series = DB::table('almacen.alm_prod_serie')
             ->select(
@@ -954,6 +954,7 @@ class SalidasPendientesController extends Controller
             ->join('almacen.tp_doc_almacen', 'tp_doc_almacen.id_tp_doc_almacen', '=', 'guia_com.id_tp_doc_almacen')
             ->where([
                 ['alm_prod_serie.id_prod', '=', $id_producto],
+                ['alm_prod_serie.id_almacen', '=', $id_almacen],
                 ['alm_prod_serie.id_guia_ven_det', '=', null],
                 ['alm_prod_serie.estado', '=', 1]
             ])

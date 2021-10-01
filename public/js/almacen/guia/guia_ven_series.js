@@ -1,10 +1,10 @@
 let json_series = [];
 
-function open_series(id_producto, id_od_detalle, cantidad) {
+function open_series(id_producto, id_od_detalle, cantidad, id_almacen) {
     $("#modal-guia_ven_series").modal({
         show: true
     });
-    listarSeries(id_producto);
+    listarSeries(id_producto, id_almacen);
     json_series = [];
     $("[name=id_od_detalle]").val(id_od_detalle);
     $("[name=id_trans_detalle]").val("");
@@ -13,7 +13,7 @@ function open_series(id_producto, id_od_detalle, cantidad) {
     $("[name=seleccionar_todos]").prop("checked", false);
 }
 
-function open_series_transferencia(id_trans_detalle, id_producto, cantidad) {
+function open_series_transferencia(id_trans_detalle, id_producto, cantidad, id_almacen) {
     $("#modal-guia_ven_series").modal({
         show: true
     });
@@ -22,7 +22,7 @@ function open_series_transferencia(id_trans_detalle, id_producto, cantidad) {
     if (item !== undefined) {
         json_series = item.series;
     }
-    listarSeries(id_producto);
+    listarSeries(id_producto, id_almacen);
 
     $("[name=id_od_detalle]").val("");
     $("[name=id_trans_detalle]").val(id_trans_detalle);
@@ -31,11 +31,11 @@ function open_series_transferencia(id_trans_detalle, id_producto, cantidad) {
     $("[name=seleccionar_todos]").prop("checked", false);
 }
 
-function listarSeries(id_producto) {
+function listarSeries(id_producto, id_almacen) {
     console.log("id_producto" + id_producto);
     $.ajax({
         type: "GET",
-        url: "listarSeriesGuiaVen/" + id_producto,
+        url: "listarSeriesGuiaVen/" + id_producto + "/" + id_almacen,
         dataType: "JSON",
         success: function (response) {
             console.log(response);

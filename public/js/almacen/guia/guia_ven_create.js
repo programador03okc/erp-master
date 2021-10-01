@@ -59,6 +59,8 @@ function mostrar_detalle() {
     var html = '';
     var html_series = '';
     var i = 1;
+    var id_almacen = parseInt($('[name=id_almacen]').val());
+
     detalle.forEach(element => {
         html_series = '';
         element.series.forEach(ser => {
@@ -80,7 +82,7 @@ function mostrar_detalle() {
         <td>${element.abreviatura}</td>
         <td>
         ${element.control_series ? `<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series" 
-        onClick="open_series(${element.id_producto},${element.id_od_detalle},${element.cantidad});"></i>` : ''}
+        onClick="open_series(${element.id_producto},${element.id_od_detalle},${element.cantidad},${id_almacen});"></i>` : ''}
         </td>
         </tr>`;
         i++;
