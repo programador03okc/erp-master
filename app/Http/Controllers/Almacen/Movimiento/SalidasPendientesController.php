@@ -157,9 +157,11 @@ class SalidasPendientesController extends Controller
                         if (count($det->series) > 0) {
 
                             foreach ($det->series as $s) {
-                                DB::table('almacen.alm_prod_serie')
-                                    ->where('id_prod_serie', $s->id_prod_serie)
-                                    ->update(['id_guia_ven_det' => $id_guia_ven_det]);
+                                if ($s->estado == 1) {
+                                    DB::table('almacen.alm_prod_serie')
+                                        ->where('id_prod_serie', $s->id_prod_serie)
+                                        ->update(['id_guia_ven_det' => $id_guia_ven_det]);
+                                }
                             }
                         }
                         //obtener costo promedio

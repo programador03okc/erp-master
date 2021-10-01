@@ -2,17 +2,21 @@ function open_detalle_movimiento(data) {
     $('#modal-movAlmDetalle').modal({
         show: true
     });
+    console.log(data);
     $('#cabecera').text(data.codigo);
     $('[name=id_guia_com_detalle]').val(data.id_guia_com);
     $('[name=id_mov_alm]').val(data.id_mov_alm);
     $('#guia_com').text(data.serie + '-' + data.numero);
-    $('#almacen_descripcion').text(data.almacen_descripcion);
-    $('#prov_razon_social').text(data.razon_social);
-    $('#operacion_descripcion').text(data.operacion_descripcion);
-    $('#fecha_emision').text(data.fecha_emision);
-    $('#ordenes_compra').text(data.ordenes_compra);
+    $('[name=ingreso_serie]').val(data.serie);
+    $('[name=ingreso_numero]').val(data.numero);
+    $('#almacen_descripcion').val(data.almacen_descripcion);
+    $('#prov_razon_social').val(data.razon_social);
+    $('#operacion_descripcion').val(data.operacion_descripcion);
+    $('[name=fecha_emision]').val(moment(data.fecha_emision_guia).format("YYYY-MM-DD"));
+    $('[name=fecha_almacen]').val(moment(data.fecha_emision).format("YYYY-MM-DD"));
+    $('#ordenes_compra').val(data.ordenes_compra);
     $('#responsable_nombre').text(data.nombre_corto);
-    $('#requerimientos').text(data.requerimientos);
+    $('#requerimientos').val(data.requerimientos);
     $('#ordenes_soft_link').text(data.ordenes_soft_link);
 
     listar_detalle_movimiento(data.id_guia_com);

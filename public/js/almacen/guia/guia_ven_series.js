@@ -103,8 +103,14 @@ function guardar_series() {
     var cant = $("[name=cant_items]").val();
 
     var rspta = false;
+    var count_series = 0;
 
-    if (json_series.length == 0) {
+    json_series.forEach(item => {
+        if (item.estado == 1)
+            count_series++
+    });
+
+    if (count_series == 0) {
 
         Swal.fire({
             title: "¿Está seguro que desea quitar las series?",
@@ -118,17 +124,17 @@ function guardar_series() {
             rspta = result.isConfirmed;
         });
 
-    } else if (parseInt(cant) == json_series.length) {
+    } else if (parseInt(cant) == count_series) {
         rspta = true;
-    } else if (parseInt(cant) > json_series.length) {
+    } else if (parseInt(cant) > count_series) {
         Swal.fire({
-            title: `Se espera ${cant} series, aún le falta seleccionar ${parseInt(cant) - json_series.length} serie(s).`,
+            title: `Se espera ${cant} series, aún le falta seleccionar ${parseInt(cant) - count_series} serie(s).`,
             text: "Seleccione las series.",
             icon: "error",
         });
-    } else if (parseInt(cant) < json_series.length) {
+    } else if (parseInt(cant) < count_series) {
         Swal.fire({
-            title: `Se espera ${cant} series, ud. ha seleccionado ${json_series.length - parseInt(cant)} serie(s) adicionales.`,
+            title: `Se espera ${cant} series, ud. ha seleccionado ${count_series - parseInt(cant)} serie(s) adicionales.`,
             text: "Quite las series restantes.",
             icon: "error",
         });

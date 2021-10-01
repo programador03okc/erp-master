@@ -3,7 +3,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title">Ingreso a almacén</h3>
+                <h3 class="modal-title">Ingreso a almacén Guía <span id="guia_com"></span></h3>
             </div>
             <div class="modal-body">
                 <div class="row">
@@ -12,38 +12,49 @@
                         <input type="text" name="id_mov_alm" class="oculto" />
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <label class="lbl-codigo" title="Abrir Ingreso" onClick="abrirIngreso()" id="cabecera">
-                                </label>
+                                <label class="lbl-codigo" title="Abrir Ingreso" onClick="abrirIngreso()" id="cabecera"></label>
                             </div>
                             <div class="panel-body">
-                                <table width="100%">
-                                    <tbody>
-                                        <tr>
-                                            <th colSpan="2">Guía de compra: </th>
-                                            <td colSpan="3"><span id="guia_com"></span></td>
-                                            <th colSpan="2">Almacén: </th>
-                                            <td colSpan="2"><span id="almacen_descripcion"></span></td>
-                                            <th colSpan="2">Fecha emisión: </th>
-                                            <td colSpan="3"><span id="fecha_emision"></span></td>
-                                        </tr>
-                                        <tr>
-                                            <th colSpan="2">Proveedor: </th>
-                                            <td colSpan="3"><span id="prov_razon_social"></span></td>
-                                            <th colSpan="2">Tipo de Operación: </th>
-                                            <td colSpan="2"><span id="operacion_descripcion"></span></td>
-                                            <th colSpan="2">Ordenes de Compra: </th>
-                                            <td colSpan="3"><span id="ordenes_compra"></span></td>
-                                        </tr>
-                                        <tr>
-                                            <th colSpan="2">Responsable: </th>
-                                            <td colSpan="3"><span id="responsable_nombre"></span></td>
-                                            <th colSpan="2">Requerimientos: </th>
-                                            <td colSpan="2"><span id="requerimientos"></span></td>
-                                            <th colSpan="2">Ordenes SoftLink: </th>
-                                            <td colSpan="3"><span id="ordenes_soft_link"></span></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <h5>Serie-Número</h5>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="ingreso_serie" placeholder="0000" required>
+                                            <span class="input-group-addon">-</span>
+                                            <input type="text" class="form-control" name="ingreso_numero" placeholder="0000000" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <h5>Proveedor</h5>
+                                        <input type="text" class="form-control" id="prov_razon_social" disabled>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <h5>Fecha de Emisión Guía</h5>
+                                        <input type="date" class="form-control" name="fecha_emision"  required>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <h5>Fecha de Ingreso</h5>
+                                        <input type="date" class="form-control" name="fecha_almacen"  required>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <h5>Almacén</h5>
+                                        <input type="text" class="form-control" id="almacen_descripcion" disabled>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <h5>Tipo de Operación</h5>
+                                        <input type="text" class="form-control" id="operacion_descripcion" disabled>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <h5>Ordenes Compra</h5>
+                                        <input type="text" class="form-control" id="ordenes_compra" disabled>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <h5>Requerimientos</h5>
+                                        <input type="text" class="form-control" id="requerimientos" disabled>
+                                    </div>
+                                </div>
                                 <table class="mytable table table-condensed table-bordered table-okc-view" width="100%" id="detalleMovimiento" style="margin-top:10px;">
                                     <thead>
                                         <tr>
@@ -63,6 +74,16 @@
                                     <tbody></tbody>
                                     <tfoot></tfoot>
                                 </table>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <label>Registrado por:</label>
+                                        <span id="responsable_nombre"></span>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>Ordenes SoftLink:</label>
+                                        <span id="ordenes_soft_link"></span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

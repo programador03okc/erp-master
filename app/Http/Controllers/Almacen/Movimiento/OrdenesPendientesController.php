@@ -217,6 +217,7 @@ class OrdenesPendientesController extends Controller
             'alm_almacen.id_sede',
             'guia_com.serie',
             'guia_com.numero',
+            'guia_com.fecha_emision as fecha_emision_guia',
             'tp_ope.descripcion as operacion_descripcion',
 
             DB::raw("(SELECT count(distinct id_doc_com) FROM almacen.doc_com AS d

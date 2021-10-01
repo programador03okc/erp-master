@@ -62,10 +62,12 @@ function mostrar_detalle() {
     detalle.forEach(element => {
         html_series = '';
         element.series.forEach(ser => {
-            if (html_series == '') {
-                html_series += ser.serie;
-            } else {
-                html_series += ', ' + ser.serie;
+            if (ser.estado == 1) {
+                if (html_series == '') {
+                    html_series += ser.serie;
+                } else {
+                    html_series += ', ' + ser.serie;
+                }
             }
         });
         console.log('guia ' + element.id_guia_com_det + ' prod ' + element.id_producto);
