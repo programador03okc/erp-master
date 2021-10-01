@@ -7,10 +7,10 @@ function grupoDespachoTransportistaModal() {
     proveedorModal();
 }
 
-function transportistaModal() {
-    origen_tr = "transportista";
-    proveedorModal();
-}
+// function transportistaModal() {
+//     origen_tr = "transportista";
+//     proveedorModal();
+// }
 
 function addProveedorModal() {
     origen_tr = "transportista";

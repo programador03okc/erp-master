@@ -25,6 +25,13 @@ function openGenerarGuia(data) {
     $("[name=id_transferencia]").val(data.id_transferencia);
     $("#submit_transferencia").removeAttr("disabled");
 
+    $("[name=tra_serie]").val("");
+    $("[name=tra_numero]").val("");
+    $("[name=id_transportista]").val('');
+    $("[name=transportista]").val('');
+    $("[name=placa]").val('');
+    $("[name=responsable_destino_trans]").val(usuario_session);
+
     if (data.id_empresa_origen !== data.id_empresa_destino) {
         $("[name=operacion]").val("VENTA NACIONAL");
     } else {
@@ -93,6 +100,12 @@ function openGuiaTransferenciaCreate() {
         $("[name=id_requerimiento]").val("");
         $("[name=id_transferencia]").val("");
         $("#submit_transferencia").removeAttr("disabled");
+
+        $("[name=tra_serie]").val("");
+        $("[name=tra_numero]").val("");
+        $("[name=id_transportista]").val('');
+        $("[name=transportista]").val('');
+        $("[name=placa]").val('');
 
         var data = { 'id_trans_seleccionadas': id_trans_seleccionadas };
         listarDetalleTransferenciaSeleccionadas(data);

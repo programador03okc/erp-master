@@ -294,6 +294,7 @@ Panel de Control de Despachos
 @include('almacen.distribucion.despachoDetalle')
 @include('almacen.distribucion.grupoDespachoDetalle')
 @include('almacen.distribucion.ordenDespachoTransportista')
+@include('almacen.transferencias.transportistaModal')
 @include('almacen.distribucion.ordenDespachoObs')
 @include('almacen.distribucion.requerimientoObs')
 @include('almacen.distribucion.ordenDespachoAdjuntos')
@@ -326,10 +327,11 @@ Panel de Control de Despachos
 <script src="{{ asset('js/almacen/distribucion/verDetalleRequerimiento.js')}}"></script>
 <script src="{{ asset('js/almacen/distribucion/ordenDespachoTransportista.js')}}"></script>
 <script src="{{ asset('js/almacen/distribucion/ordenDespachoEstado.js')}}"></script>
+<script src="{{ asset('js/almacen/transferencias/transportistaModal.js')}}"></script>
 {{-- <script src="{{ asset('js/almacen/producto/productoModal.js')}}"></script>
+<script src="{{ asset('js/almacen/transferencias/transportistaModal.js')}}"></script>
 <script src="{{ asset('js/almacen/producto/productoCreate.js')}}"></script>
 <script src="{{ asset('js/logistica/clienteModal.js')}}"></script>
-<script src="{{ asset('js/logistica/proveedorModal.js')}}"></script>
 <script src="{{ asset('js/logistica/add_proveedor.js')}}"></script>
 <script src="{{ asset('js/logistica/add_cliente.js')}}"></script>
 <script src="{{ asset('js/publico/hiddenElement.js')}}"></script>

@@ -1233,14 +1233,11 @@ class DistribucionController extends Controller
             DB::beginTransaction();
 
             $id_usuario = Auth::user()->id_usuario;
-            // $requerimiento = null;
-            // return $request;
-            // if ($request->tr_id_proveedor !== null){
+
             $data = DB::table('almacen.orden_despacho')
                 ->where('id_od', $request->id_od)
                 ->update([
                     'estado' => 2,
-                    // 'agencia'=>$request->agencia,
                     'id_transportista' => $request->tr_id_proveedor,
                     'serie' => $request->serie,
                     'numero' => $request->numero,
@@ -1260,27 +1257,7 @@ class DistribucionController extends Controller
                     'fecha_registro' => date('Y-m-d H:i:s')
                 ]);
 
-            // $requerimiento = $request->con_id_requerimiento;
-
-            // } else {
-            //     $data = DB::table('almacen.orden_despacho')
-            //     ->where('id_od',$request->id_od)
-            //     ->update(['estado'=>21]);
-            //     $requerimiento = $request->id_requerimiento;
-            // }
-
             if ($request->con_id_requerimiento !== null) {
-                // DB::table('almacen.alm_req')
-                // ->where('id_requerimiento',$request->con_id_requerimiento)
-                // ->update(['estado'=>25]);
-
-                // $req = DB::table('almacen.alm_req')
-                // ->where('id_requerimiento',$request->con_id_requerimiento)->first();
-
-                // DB::table('almacen.alm_det_req')
-                // ->where([['id_requerimiento','=',$request->con_id_requerimiento],
-                //         ['tiene_transformacion','=',$req->tiene_transformacion]])
-                // ->update(['estado'=>25]);
                 //Agrega accion en requerimiento
                 DB::table('almacen.alm_req_obs')
                     ->insert([
@@ -2149,5 +2126,20 @@ class DistribucionController extends Controller
             ->update(['enviar_facturacion' => true]);
 
         return response()->json($update);
+    }
+
+    public function mostrar_transportistas()
+    {
+        $data = DB::table('contabilidad.transportistas')
+            ->select(
+                'adm_contri.id_contribuyente',
+                'adm_contri.nro_documento',
+                'adm_contri.razon_social'
+            )
+            // ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'guia_com_tra.id_proveedor')
+            ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'transportistas.id_contribuyente')
+            ->get();
+        $output['data'] = $data;
+        return response()->json($output);
     }
 }

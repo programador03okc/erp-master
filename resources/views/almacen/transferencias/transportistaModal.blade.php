@@ -10,7 +10,6 @@
                     <thead>
                         <tr>
                             <th hidden>Id</th>
-                            <th hidden></th>
                             <th>RUC</th>
                             <th>Razon Social</th>
                         </tr>

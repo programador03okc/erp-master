@@ -1479,17 +1479,18 @@ class AlmacenController extends Controller
         return response()->json(['ingreso' => $ingreso, 'detalle' => $detalle]);
     }
     /**Guia Compra Transportista */
-    public function mostrar_transportistas($id)
-    {
-        $data = DB::table('almacen.guia_com_tra')
-            ->select('guia_com_tra.*', 'adm_contri.razon_social')
-            ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'guia_com_tra.id_proveedor')
-            ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
-            ->where([['guia_com_tra.id_guia', '=', $id]])
-            ->get();
-        $output['data'] = $data;
-        return response()->json($output);
-    }
+
+    // public function mostrar_transportistas($id)
+    // {
+    //     $data = DB::table('almacen.guia_com_tra')
+    //         ->select('guia_com_tra.*', 'adm_contri.razon_social')
+    //         ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'guia_com_tra.id_proveedor')
+    //         ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
+    //         ->where([['guia_com_tra.id_guia', '=', $id]])
+    //         ->get();
+    //     $output['data'] = $data;
+    //     return response()->json($output);
+    // }
     public function mostrar_transportista($id)
     {
         $data = DB::table('almacen.guia_com_tra')
@@ -3470,7 +3471,7 @@ class AlmacenController extends Controller
 
                 $guia = (isset($d->serie) ? ('GR-' . $d->serie . '-' . $d->numero) : '');
                 $unit = (isset($d->valorizacion) ? (floatval($d->valorizacion) / floatval($d->cantidad)) : (isset($posicion) ?
-                        $this->costo_promedio($d->id_producto, $posicion->id_posicion) : ''));
+                    $this->costo_promedio($d->id_producto, $posicion->id_posicion) : ''));
                 $total = (isset($d->valorizacion) ? $d->valorizacion : (floatval($d->cantidad) * floatval($unit)));
                 $html .= '
                     <tr>
