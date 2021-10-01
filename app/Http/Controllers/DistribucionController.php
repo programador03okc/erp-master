@@ -967,6 +967,7 @@ class DistribucionController extends Controller
                         'id_almacen' => $request->id_almacen,
                         'telefono' => $request->telefono_cliente,
                         'codigo' => $codigo,
+                        'persona_contacto' => $request->persona_contacto,
                         'ubigeo_destino' => $request->ubigeo,
                         'direccion_destino' => $request->direccion_destino,
                         'correo_cliente' => $request->correo_cliente,
