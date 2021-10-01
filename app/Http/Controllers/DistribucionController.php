@@ -953,7 +953,7 @@ class DistribucionController extends Controller
         try {
             DB::beginTransaction();
 
-            // $cambios = ($request->aplica_cambios_valor == 'si' ? true : false);
+            $tiene_transformacion = ($request->aplica_cambios_valor == 'si' ? true : false);
             $codigo = $this->ODnextId(date('Y-m-d'), $request->id_almacen, false);
             $usuario = Auth::user()->id_usuario;
 
@@ -1032,20 +1032,40 @@ class DistribucionController extends Controller
 
             foreach ($data as $d) {
                 // $descripcion = ($d->producto_descripcion !== null ? $d->producto_descripcion : $d->descripcion_adicional);
-                DB::table('almacen.orden_despacho_det')
-                    ->insert([
-                        'id_od' => $id_od,
-                        'id_producto' => $d->id_producto,
-                        'id_detalle_requerimiento' => $d->id_detalle_requerimiento,
-                        'cantidad' => $d->cantidad,
-                        'transformado' => false,
-                        'estado' => 1,
-                        'fecha_registro' => date('Y-m-d H:i:s')
-                    ]);
+                if ($tiene_transformacion) {
+                    if ($d->tiene_transformacion) {
 
-                DB::table('almacen.alm_det_req')
-                    ->where('id_detalle_requerimiento', $d->id_detalle_requerimiento)
-                    ->update(['estado' => 29]); //por despachar
+                        DB::table('almacen.orden_despacho_det')
+                            ->insert([
+                                'id_od' => $id_od,
+                                'id_producto' => $d->id_producto,
+                                'id_detalle_requerimiento' => $d->id_detalle_requerimiento,
+                                'cantidad' => $d->cantidad,
+                                'transformado' => false,
+                                'estado' => 1,
+                                'fecha_registro' => date('Y-m-d H:i:s')
+                            ]);
+
+                        DB::table('almacen.alm_det_req')
+                            ->where('id_detalle_requerimiento', $d->id_detalle_requerimiento)
+                            ->update(['estado' => 29]); //por despachar
+                    }
+                } else {
+                    DB::table('almacen.orden_despacho_det')
+                        ->insert([
+                            'id_od' => $id_od,
+                            'id_producto' => $d->id_producto,
+                            'id_detalle_requerimiento' => $d->id_detalle_requerimiento,
+                            'cantidad' => $d->cantidad,
+                            'transformado' => false,
+                            'estado' => 1,
+                            'fecha_registro' => date('Y-m-d H:i:s')
+                        ]);
+
+                    DB::table('almacen.alm_det_req')
+                        ->where('id_detalle_requerimiento', $d->id_detalle_requerimiento)
+                        ->update(['estado' => 29]); //por despachar
+                }
             }
             // }
             DB::table('almacen.alm_req')

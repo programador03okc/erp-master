@@ -119,16 +119,17 @@ function open_despacho_create(data) {
                 }
                 detalle_requerimiento.push({
                     'id_detalle_requerimiento': element.id_detalle_requerimiento,
+                    'tiene_transformacion': element.tiene_transformacion,
                     'id_producto': element.id_producto,
                     'cantidad': element.cantidad,
                     'suma_ingresos': element.suma_ingresos,
                     'suma_despachos': element.suma_despachos_internos,
                     'stock_comprometido': element.stock_comprometido,
                     'valorizacion': element.valorizacion,
-                    'part_number_transformado': null,
-                    'descripcion_transformado': null,
-                    'comentario_transformado': null,
-                    'cantidad_transformado': null,
+                    // 'part_number_transformado': null,
+                    // 'descripcion_transformado': null,
+                    // 'comentario_transformado': null,
+                    // 'cantidad_transformado': null,
                 });
 
                 if (element.id_almacen_reserva !== null) {
