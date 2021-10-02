@@ -1837,7 +1837,7 @@ class OrdenesPendientesController extends Controller
             }
             $factor = floatval(($suma_servicio !== '' && $suma_servicio !== null) ? $suma_servicio : 0) / ($suma_total > 0 ? $suma_total : 1);
 
-            $t = '';
+            // $t = '';
             foreach ($items as $item) {
 
                 if ($item->id_producto !== null) {
@@ -1845,13 +1845,13 @@ class OrdenesPendientesController extends Controller
                     $adicional = floatval($item->total) * $factor;
                     $nuevo_total = floatval($item->total) + $adicional;
 
-                    $t .= 'id_guia_com_det= ' . $item->id_guia_com_det . ', adicional= ' . $adicional . ', nuevo_total= ' . $nuevo_total;
+                    // $t .= 'id_guia_com_det= ' . $item->id_guia_com_det . ', adicional= ' . $adicional . ', nuevo_total= ' . $nuevo_total;
                     if ($request->moneda == 2) {
                         $valor = floatval($tc * $nuevo_total);
                     } else {
                         $valor = floatval($nuevo_total);
                     }
-                    $t .= ', valor= ' . $valor;
+                    // $t .= ', valor= ' . $valor;
 
                     DB::table('almacen.guia_com_det')
                         ->where('id_guia_com_det', $item->id_guia_com_det)
@@ -1867,7 +1867,7 @@ class OrdenesPendientesController extends Controller
                     OrdenesPendientesController::actualiza_prod_ubi($item->id_producto, $request->id_almacen_doc);
                 }
             }
-            dd($t);
+            // dd($t);
             // exit();
             DB::commit();
             return response()->json($id_doc);
