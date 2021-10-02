@@ -96,6 +96,9 @@ class RequerimientoPendienteView {
         $('#modal-nueva-reserva').on("click", "button.handleClickAnularReserva", (e) => {
             this.anularReserva(e.currentTarget);
         });
+        $('#modal-nueva-reserva').on("change", "select.handleChangeObtenerStockAlmacen", (e) => {
+            this.handleChangeObtenerStockAlmacen(e.currentTarget);
+        });
 
         $('#modal-filtro-requerimientos-pendientes').on('hidden.bs.modal', ()=> {
             this.updateValorFiltroRequerimientosPendientes();
@@ -108,6 +111,8 @@ class RequerimientoPendienteView {
 
 
         });
+
+        
     }
 
     // control de estado de check de filtro
@@ -1009,6 +1014,8 @@ class RequerimientoPendienteView {
             document.querySelector("form[id='form-nueva-reserva'] label[id='descripcion']").textContent = data.producto.descripcion != null ? data.producto.descripcion : (data.descripcion != null ? data.descripcion : '');
             document.querySelector("form[id='form-nueva-reserva'] label[id='cantidad']").textContent = data.cantidad;
             document.querySelector("form[id='form-nueva-reserva'] label[id='unidadMedida']").textContent = data.unidad_medida.descripcion;
+            document.querySelector("div[id='modal-nueva-reserva'] input[name='cantidadReserva']").value = parseFloat(document.querySelector("div[id='modal-nueva-reserva'] label[id='cantidad']").textContent)>0?document.querySelector("div[id='modal-nueva-reserva'] label[id='cantidad']").textContent:0; 
+
             this.listarTablaListaConReserva(data.reserva);
         } else {
             $('#modal-nueva-reserva').modal('hide');
@@ -1161,6 +1168,46 @@ class RequerimientoPendienteView {
 
     }
 
+    handleChangeObtenerStockAlmacen(obj){
+        if(obj.value>0){
+            const idProducto = document.querySelector("div[id='modal-nueva-reserva'] input[name='idProducto']").value;
+            const cantidadReserva = document.querySelector("div[id='modal-nueva-reserva'] input[name='cantidadReserva']").value >0?document.querySelector("div[id='modal-nueva-reserva'] input[name='cantidadReserva']").value:0;
+            $.ajax({
+                type: 'POST',
+                url: 'obtener-stock-almacen',
+                data: {'idAlmacen':obj.value,'idProducto':idProducto,'cantidadReserva':cantidadReserva},
+                dataType: 'JSON',
+                success: (response) => {
+                    Lobibox.notify('info', {
+                        title: 'Información de Stock',
+                        size: 'mini',
+                        rounded: true,
+                        sound: false,
+                        delay: 5000,
+                        delayIndicator: false,
+                        msg: `
+                        <ul>
+                            <li>Stock: ${response.stock} </li>
+                            <li>Saldo: ${response.saldo} </li>
+                        </ul>
+                        `
+                    });
+                },
+                fail: (jqXHR, textStatus, errorThrown) => {
+                    Swal.fire(
+                        '',
+                        'Lo sentimos hubo un error en el servidor al intentar consultar el stock del almacén seleccionado, por favor vuelva a intentarlo',
+                        'error'
+                    );
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                }
+            });
+        }
+ 
+
+    }
     agregarReserva(obj) {
         let mensajeValidacion = this.validarModalNuevaReserva();
         if ((mensajeValidacion.length > 0)) {

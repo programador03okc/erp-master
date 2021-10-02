@@ -52,10 +52,10 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="exampleInputName2">Almacén </label>
-                                    <select class="form-control activation " name="almacenReserva">
+                                    <select class="form-control activation handleChangeObtenerStockAlmacen" name="almacenReserva">
                                         <option value="0">Seleccione un Almacén</option>
                                         @foreach ($almacenes as $almacen)
-                                        <option value="{{$almacen->id_almacen}}" data-id-sede="{{$almacen->id_sede}}" >{{$almacen->descripcion}}</option>
+                                        <option value="{{$almacen->id_almacen}}" >{{$almacen->descripcion}}</option>
                                         @endforeach
                                     </select>
                                 </div>
