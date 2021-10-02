@@ -290,25 +290,16 @@ Panel de Control de Despachos
 </div>
 @include('almacen.distribucion.requerimientoDetalle')
 @include('almacen.distribucion.transferenciasDetalle')
-@include('almacen.distribucion.ordenDespachoCreate')
 @include('almacen.distribucion.grupoDespachoCreate')
 @include('almacen.distribucion.despachoDetalle')
 @include('almacen.distribucion.grupoDespachoDetalle')
 @include('almacen.distribucion.ordenDespachoTransportista')
+@include('almacen.transferencias.transportistaModal')
 @include('almacen.distribucion.ordenDespachoObs')
 @include('almacen.distribucion.requerimientoObs')
 @include('almacen.distribucion.ordenDespachoAdjuntos')
 @include('almacen.distribucion.ordenDespachoEstados')
-@include('almacen.producto.productoModal')
-@include('almacen.producto.productoCreate')
-@include('almacen.transferencias.ver_series')
 
-@include('logistica.cotizaciones.clienteModal')
-@include('logistica.cotizaciones.proveedorModal')
-@include('logistica.cotizaciones.add_cliente')
-@include('logistica.cotizaciones.add_proveedor')
-@include('publico.personaModal')
-@include('publico.ubigeoModal')
 @endsection
 
 @section('scripts')
@@ -327,7 +318,6 @@ Panel de Control de Despachos
 <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
 <script src="{{ asset('js/almacen/distribucion/ordenesDespacho.js')}}"></script>
-<script src="{{ asset('js/almacen/distribucion/ordenDespachoCreate.js')}}"></script>
 <script src="{{ asset('js/almacen/distribucion/grupoDespachoCreate.js')}}"></script>
 <script src="{{ asset('js/almacen/distribucion/ordenDespachoAdjuntos.js')}}"></script>
 <script src="{{ asset('js/almacen/distribucion/despachoDetalle.js')}}"></script>
@@ -337,15 +327,16 @@ Panel de Control de Despachos
 <script src="{{ asset('js/almacen/distribucion/verDetalleRequerimiento.js')}}"></script>
 <script src="{{ asset('js/almacen/distribucion/ordenDespachoTransportista.js')}}"></script>
 <script src="{{ asset('js/almacen/distribucion/ordenDespachoEstado.js')}}"></script>
-<script src="{{ asset('js/almacen/producto/productoModal.js')}}"></script>
+<script src="{{ asset('js/almacen/transferencias/transportistaModal.js')}}"></script>
+{{-- <script src="{{ asset('js/almacen/producto/productoModal.js')}}"></script>
+<script src="{{ asset('js/almacen/transferencias/transportistaModal.js')}}"></script>
 <script src="{{ asset('js/almacen/producto/productoCreate.js')}}"></script>
 <script src="{{ asset('js/logistica/clienteModal.js')}}"></script>
-<script src="{{ asset('js/logistica/proveedorModal.js')}}"></script>
 <script src="{{ asset('js/logistica/add_proveedor.js')}}"></script>
 <script src="{{ asset('js/logistica/add_cliente.js')}}"></script>
 <script src="{{ asset('js/publico/hiddenElement.js')}}"></script>
 <script src="{{ asset('js/publico/ubigeoModal.js')}}"></script>
-<script src="{{ asset('js/publico/personaModal.js')}}"></script>
+<script src="{{ asset('js/publico/personaModal.js')}}"></script> --}}
 
 <script>
     $(document).ready(function() {

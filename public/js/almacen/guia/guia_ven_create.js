@@ -59,13 +59,17 @@ function mostrar_detalle() {
     var html = '';
     var html_series = '';
     var i = 1;
+    var id_almacen = parseInt($('[name=id_almacen]').val());
+
     detalle.forEach(element => {
         html_series = '';
         element.series.forEach(ser => {
-            if (html_series == '') {
-                html_series += ser.serie;
-            } else {
-                html_series += ', ' + ser.serie;
+            if (ser.estado == 1) {
+                if (html_series == '') {
+                    html_series += ser.serie;
+                } else {
+                    html_series += ', ' + ser.serie;
+                }
             }
         });
         console.log('guia ' + element.id_guia_com_det + ' prod ' + element.id_producto);
@@ -78,7 +82,7 @@ function mostrar_detalle() {
         <td>${element.abreviatura}</td>
         <td>
         ${element.control_series ? `<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series" 
-        onClick="open_series(${element.id_producto},${element.id_od_detalle},${element.cantidad});"></i>` : ''}
+        onClick="open_series(${element.id_producto},${element.id_od_detalle},${element.cantidad},${id_almacen});"></i>` : ''}
         </td>
         </tr>`;
         i++;

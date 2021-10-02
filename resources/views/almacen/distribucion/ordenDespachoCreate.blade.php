@@ -29,18 +29,18 @@
                                 <input type="text" class="form-control" name="dni_persona" style="width: 130px;" readOnly>
                                 <input type="text" class="form-control" name="nombre_persona" readOnly>
 
-                                <button type="button" title="Seleccionar Cliente" name="btnCliente" 
+                                {{-- <button type="button" title="Seleccionar Cliente" name="btnCliente" 
                                 onClick="openCliente();" class="input-group-text btn-primary" >
                                 <i class="fas fa-user-tie"></i></button>
 
                                 <button type="button" class="btn-success" title="Agregar Cliente" name="btnAddCliente" 
                                 onClick="agregar_cliente();">
-                                <i class="fas fa-plus"></i></button>
+                                <i class="fas fa-plus"></i></button> --}}
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-2">
+                        {{-- <div class="col-md-2">
                             <h5>Tipo Cliente</h5>
                             <div class="input-group-okc">
                                 <select name="tipo_cliente" onChange="changeTipoCliente(event);"
@@ -49,10 +49,10 @@
                                     <option value="2">Persona Juridica</option>
                                 </select>
                             </div>
-                        </div>
-                        <div class="col-md-4">
+                        </div> --}}
+                        <div class="col-md-6">
                             <h5>Persona Contacto</h5>
-                            <input type="text" class="form-control" name="contacto_cliente" readOnly>
+                            <input type="text" class="form-control" name="persona_contacto" >
                         </div>
                         <div class="col-md-4">
                             <h5>Ubigeo Destino</h5>

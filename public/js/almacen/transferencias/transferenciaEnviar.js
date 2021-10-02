@@ -25,6 +25,13 @@ function openGenerarGuia(data) {
     $("[name=id_transferencia]").val(data.id_transferencia);
     $("#submit_transferencia").removeAttr("disabled");
 
+    $("[name=tra_serie]").val("");
+    $("[name=tra_numero]").val("");
+    $("[name=id_transportista]").val('');
+    $("[name=transportista]").val('');
+    $("[name=placa]").val('');
+    $("[name=responsable_destino_trans]").val(usuario_session);
+
     if (data.id_empresa_origen !== data.id_empresa_destino) {
         $("[name=operacion]").val("VENTA NACIONAL");
     } else {
@@ -94,6 +101,12 @@ function openGuiaTransferenciaCreate() {
         $("[name=id_transferencia]").val("");
         $("#submit_transferencia").removeAttr("disabled");
 
+        $("[name=tra_serie]").val("");
+        $("[name=tra_numero]").val("");
+        $("[name=id_transportista]").val('');
+        $("[name=transportista]").val('');
+        $("[name=placa]").val('');
+
         var data = { 'id_trans_seleccionadas': id_trans_seleccionadas };
         listarDetalleTransferenciaSeleccionadas(data);
     }
@@ -137,6 +150,7 @@ function mostrarDetalleTransferencia() {
     var html = "";
     var html_series = "";
     var i = 1;
+    var id_almacen = parseInt($('[name=id_almacen_origen]').val());
 
     listaDetalle.forEach(element => {
         html_series = "";
@@ -162,7 +176,7 @@ function mostrarDetalleTransferencia() {
         <td>${element.cantidad}</td>
         <td>${element.abreviatura}</td>
         <td>${`<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" 
-                title="Agregar Series" onClick="open_series_transferencia(${element.id_trans_detalle},${element.id_producto},${element.cantidad});"></i>`}
+                title="Agregar Series" onClick="open_series_transferencia(${element.id_trans_detalle},${element.id_producto},${element.cantidad},${id_almacen});"></i>`}
         </td>
         </tr>`;
         i++;

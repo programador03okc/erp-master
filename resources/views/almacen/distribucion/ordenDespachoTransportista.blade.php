@@ -22,11 +22,11 @@
                                 <input class="oculto" name="tr_id_proveedor"/>
                                 <input type="text" class="form-control" name="tr_razon_social" placeholder="Seleccione un proveedor..." 
                                     aria-describedby="basic-addon1" disabled="true" required>
-                                <button type="button" class="input-group-text activation" id="basic-addon1" onClick="transportistaModal();">
+                                <button type="button" class="input-group-text activation" id="basic-addon1" onClick="openTransportistaModal();">
                                     <i class="fa fa-search"></i>
                                 </button>
-                                <button type="button" class="btn-primary activation" title="Agregar Proveedor" onClick="addProveedorModal();">
-                                    <i class="fas fa-plus"></i></button>
+                                {{-- <button type="button" class="btn-primary activation" title="Agregar Proveedor" onClick="addProveedorModal();">
+                                    <i class="fas fa-plus"></i></button> --}}
                             </div>
                         </div>
                     </div>

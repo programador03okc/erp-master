@@ -953,7 +953,7 @@ class DistribucionController extends Controller
         try {
             DB::beginTransaction();
 
-            // $cambios = ($request->aplica_cambios_valor == 'si' ? true : false);
+            $tiene_transformacion = ($request->aplica_cambios_valor == 'si' ? true : false);
             $codigo = $this->ODnextId(date('Y-m-d'), $request->id_almacen, false);
             $usuario = Auth::user()->id_usuario;
 
@@ -967,6 +967,7 @@ class DistribucionController extends Controller
                         'id_almacen' => $request->id_almacen,
                         'telefono' => $request->telefono_cliente,
                         'codigo' => $codigo,
+                        'persona_contacto' => $request->persona_contacto,
                         'ubigeo_destino' => $request->ubigeo,
                         'direccion_destino' => $request->direccion_destino,
                         'correo_cliente' => $request->correo_cliente,
@@ -1031,20 +1032,40 @@ class DistribucionController extends Controller
 
             foreach ($data as $d) {
                 // $descripcion = ($d->producto_descripcion !== null ? $d->producto_descripcion : $d->descripcion_adicional);
-                DB::table('almacen.orden_despacho_det')
-                    ->insert([
-                        'id_od' => $id_od,
-                        'id_producto' => $d->id_producto,
-                        'id_detalle_requerimiento' => $d->id_detalle_requerimiento,
-                        'cantidad' => $d->cantidad,
-                        'transformado' => false,
-                        'estado' => 1,
-                        'fecha_registro' => date('Y-m-d H:i:s')
-                    ]);
+                if ($tiene_transformacion) {
+                    if ($d->tiene_transformacion) {
 
-                DB::table('almacen.alm_det_req')
-                    ->where('id_detalle_requerimiento', $d->id_detalle_requerimiento)
-                    ->update(['estado' => 29]); //por despachar
+                        DB::table('almacen.orden_despacho_det')
+                            ->insert([
+                                'id_od' => $id_od,
+                                'id_producto' => $d->id_producto,
+                                'id_detalle_requerimiento' => $d->id_detalle_requerimiento,
+                                'cantidad' => $d->cantidad,
+                                'transformado' => false,
+                                'estado' => 1,
+                                'fecha_registro' => date('Y-m-d H:i:s')
+                            ]);
+
+                        DB::table('almacen.alm_det_req')
+                            ->where('id_detalle_requerimiento', $d->id_detalle_requerimiento)
+                            ->update(['estado' => 29]); //por despachar
+                    }
+                } else {
+                    DB::table('almacen.orden_despacho_det')
+                        ->insert([
+                            'id_od' => $id_od,
+                            'id_producto' => $d->id_producto,
+                            'id_detalle_requerimiento' => $d->id_detalle_requerimiento,
+                            'cantidad' => $d->cantidad,
+                            'transformado' => false,
+                            'estado' => 1,
+                            'fecha_registro' => date('Y-m-d H:i:s')
+                        ]);
+
+                    DB::table('almacen.alm_det_req')
+                        ->where('id_detalle_requerimiento', $d->id_detalle_requerimiento)
+                        ->update(['estado' => 29]); //por despachar
+                }
             }
             // }
             DB::table('almacen.alm_req')
@@ -1233,14 +1254,11 @@ class DistribucionController extends Controller
             DB::beginTransaction();
 
             $id_usuario = Auth::user()->id_usuario;
-            // $requerimiento = null;
-            // return $request;
-            // if ($request->tr_id_proveedor !== null){
+
             $data = DB::table('almacen.orden_despacho')
                 ->where('id_od', $request->id_od)
                 ->update([
                     'estado' => 2,
-                    // 'agencia'=>$request->agencia,
                     'id_transportista' => $request->tr_id_proveedor,
                     'serie' => $request->serie,
                     'numero' => $request->numero,
@@ -1260,27 +1278,7 @@ class DistribucionController extends Controller
                     'fecha_registro' => date('Y-m-d H:i:s')
                 ]);
 
-            // $requerimiento = $request->con_id_requerimiento;
-
-            // } else {
-            //     $data = DB::table('almacen.orden_despacho')
-            //     ->where('id_od',$request->id_od)
-            //     ->update(['estado'=>21]);
-            //     $requerimiento = $request->id_requerimiento;
-            // }
-
             if ($request->con_id_requerimiento !== null) {
-                // DB::table('almacen.alm_req')
-                // ->where('id_requerimiento',$request->con_id_requerimiento)
-                // ->update(['estado'=>25]);
-
-                // $req = DB::table('almacen.alm_req')
-                // ->where('id_requerimiento',$request->con_id_requerimiento)->first();
-
-                // DB::table('almacen.alm_det_req')
-                // ->where([['id_requerimiento','=',$request->con_id_requerimiento],
-                //         ['tiene_transformacion','=',$req->tiene_transformacion]])
-                // ->update(['estado'=>25]);
                 //Agrega accion en requerimiento
                 DB::table('almacen.alm_req_obs')
                     ->insert([
@@ -2149,5 +2147,20 @@ class DistribucionController extends Controller
             ->update(['enviar_facturacion' => true]);
 
         return response()->json($update);
+    }
+
+    public function mostrar_transportistas()
+    {
+        $data = DB::table('contabilidad.transportistas')
+            ->select(
+                'adm_contri.id_contribuyente',
+                'adm_contri.nro_documento',
+                'adm_contri.razon_social'
+            )
+            // ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'guia_com_tra.id_proveedor')
+            ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'transportistas.id_contribuyente')
+            ->get();
+        $output['data'] = $data;
+        return response()->json($output);
     }
 }

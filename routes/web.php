@@ -919,6 +919,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('guardarEstadoTimeLine', 'DistribucionController@guardarEstadoTimeLine');
 				Route::post('mostrarEstados', 'DistribucionController@mostrarEstados');
 				Route::get('enviarFacturar/{id}', 'DistribucionController@enviarFacturar');
+				Route::get('mostrar_transportistas', 'DistribucionController@mostrar_transportistas');
 			});
 
 			Route::group(['as' => 'trazabilidad-requerimientos.', 'prefix' => 'trazabilidad-requerimientos'], function () {
@@ -964,6 +965,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('listar_ubigeos', 'AlmacenController@listar_ubigeos');
 				Route::post('guardar_orden_despacho', 'DistribucionController@guardar_orden_despacho');
 				Route::get('anular_orden_despacho/{id}/{tp}', 'Almacen\Movimiento\SalidasPendientesController@anular_orden_despacho');
+				Route::get('enviarFacturar/{id}', 'DistribucionController@enviarFacturar');
 			});
 		});
 
@@ -1208,7 +1210,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('verDetalleDespacho/{id}', 'Almacen\Movimiento\SalidasPendientesController@verDetalleDespacho');
 				Route::get('imprimir_salida/{id}', 'Almacen\Movimiento\SalidasPendientesController@imprimir_salida');
 				// Route::get('anular_orden_despacho/{id}', 'Almacen\Movimiento\SalidasPendientesController@anular_orden_despacho');
-				Route::get('listarSeriesGuiaVen/{id}', 'Almacen\Movimiento\SalidasPendientesController@listarSeriesGuiaVen');
+				Route::get('listarSeriesGuiaVen/{id}/{alm}', 'Almacen\Movimiento\SalidasPendientesController@listarSeriesGuiaVen');
 			});
 
 			Route::group(['as' => 'prorrateo.', 'prefix' => 'prorrateo'], function () {
@@ -1290,7 +1292,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('verGuiaCompraTransferencia/{id}', 'Almacen\Movimiento\TransferenciaController@verGuiaCompraTransferencia');
 				Route::get('verRequerimiento/{id}', 'Almacen\Movimiento\TransferenciaController@verRequerimiento');
 				Route::post('generarTransferenciaRequerimiento', 'Almacen\Movimiento\TransferenciaController@generarTransferenciaRequerimiento');
-				Route::get('listarSeriesGuiaVen/{id}', 'Almacen\Movimiento\SalidasPendientesController@listarSeriesGuiaVen');
+				Route::get('listarSeriesGuiaVen/{id}/{alm}', 'Almacen\Movimiento\SalidasPendientesController@listarSeriesGuiaVen');
 				Route::post('obtenerArchivosOc', 'Tesoreria\Facturacion\PendientesFacturacionController@obtenerArchivosOc')->name('obtener-archivos-oc');
 				Route::get('mostrarTransportistas', 'DistribucionController@mostrarTransportistas');
 

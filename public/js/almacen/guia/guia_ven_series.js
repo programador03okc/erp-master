@@ -1,10 +1,10 @@
 let json_series = [];
 
-function open_series(id_producto, id_od_detalle, cantidad) {
+function open_series(id_producto, id_od_detalle, cantidad, id_almacen) {
     $("#modal-guia_ven_series").modal({
         show: true
     });
-    listarSeries(id_producto);
+    listarSeries(id_producto, id_almacen);
     json_series = [];
     $("[name=id_od_detalle]").val(id_od_detalle);
     $("[name=id_trans_detalle]").val("");
@@ -13,7 +13,7 @@ function open_series(id_producto, id_od_detalle, cantidad) {
     $("[name=seleccionar_todos]").prop("checked", false);
 }
 
-function open_series_transferencia(id_trans_detalle, id_producto, cantidad) {
+function open_series_transferencia(id_trans_detalle, id_producto, cantidad, id_almacen) {
     $("#modal-guia_ven_series").modal({
         show: true
     });
@@ -22,7 +22,7 @@ function open_series_transferencia(id_trans_detalle, id_producto, cantidad) {
     if (item !== undefined) {
         json_series = item.series;
     }
-    listarSeries(id_producto);
+    listarSeries(id_producto, id_almacen);
 
     $("[name=id_od_detalle]").val("");
     $("[name=id_trans_detalle]").val(id_trans_detalle);
@@ -31,11 +31,11 @@ function open_series_transferencia(id_trans_detalle, id_producto, cantidad) {
     $("[name=seleccionar_todos]").prop("checked", false);
 }
 
-function listarSeries(id_producto) {
+function listarSeries(id_producto, id_almacen) {
     console.log("id_producto" + id_producto);
     $.ajax({
         type: "GET",
-        url: "listarSeriesGuiaVen/" + id_producto,
+        url: "listarSeriesGuiaVen/" + id_producto + "/" + id_almacen,
         dataType: "JSON",
         success: function (response) {
             console.log(response);
@@ -103,8 +103,14 @@ function guardar_series() {
     var cant = $("[name=cant_items]").val();
 
     var rspta = false;
+    var count_series = 0;
 
-    if (json_series.length == 0) {
+    json_series.forEach(item => {
+        if (item.estado == 1)
+            count_series++
+    });
+
+    if (count_series == 0) {
 
         Swal.fire({
             title: "¿Está seguro que desea quitar las series?",
@@ -118,17 +124,17 @@ function guardar_series() {
             rspta = result.isConfirmed;
         });
 
-    } else if (parseInt(cant) == json_series.length) {
+    } else if (parseInt(cant) == count_series) {
         rspta = true;
-    } else if (parseInt(cant) > json_series.length) {
+    } else if (parseInt(cant) > count_series) {
         Swal.fire({
-            title: `Se espera ${cant} series, aún le falta seleccionar ${parseInt(cant) - json_series.length} serie(s).`,
+            title: `Se espera ${cant} series, aún le falta seleccionar ${parseInt(cant) - count_series} serie(s).`,
             text: "Seleccione las series.",
             icon: "error",
         });
-    } else if (parseInt(cant) < json_series.length) {
+    } else if (parseInt(cant) < count_series) {
         Swal.fire({
-            title: `Se espera ${cant} series, ud. ha seleccionado ${json_series.length - parseInt(cant)} serie(s) adicionales.`,
+            title: `Se espera ${cant} series, ud. ha seleccionado ${count_series - parseInt(cant)} serie(s) adicionales.`,
             text: "Quite las series restantes.",
             icon: "error",
         });

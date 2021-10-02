@@ -186,19 +186,19 @@ Producto
                                             <input type="text" class="form-control activation" name="codigo_compuesto" disabled="true">
                                         </div>
                                         <div class="col-md-2">
-                                            <h5>Peso</h5>
+                                            <h5>Peso (Kg.)</h5>
                                             <input type="number" class="form-control activation" name="peso" disabled="true">
                                         </div>
                                         <div class="col-md-2">
-                                            <h5>Largo</h5>
+                                            <h5>Largo (cm.)</h5>
                                             <input type="number" class="form-control activation" name="largo" disabled="true">
                                         </div>
                                         <div class="col-md-2">
-                                            <h5>Ancho</h5>
+                                            <h5>Ancho (cm.)</h5>
                                             <input type="number" class="form-control activation" name="ancho" disabled="true">
                                         </div>
                                         <div class="col-md-2">
-                                            <h5>Alto</h5>
+                                            <h5>Alto (cm.)</h5>
                                             <input type="number" class="form-control activation" name="alto" disabled="true">
                                         </div>
                                     </div>

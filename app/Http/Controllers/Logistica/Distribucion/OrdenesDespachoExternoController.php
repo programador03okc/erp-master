@@ -31,9 +31,9 @@ class OrdenesDespachoExternoController extends Controller
                 'alm_almacen.descripcion as almacen_descripcion',
                 'alm_req.id_sede as sede_requerimiento',
                 'sede_req.descripcion as sede_descripcion_req',
-                'orden_despacho.id_od',
-                'orden_despacho.codigo as codigo_od',
-                'orden_despacho.estado as estado_od',
+                // 'orden_despacho.id_od',
+                // 'orden_despacho.codigo as codigo_od',
+                // 'orden_despacho.estado as estado_od',
                 'adm_contri.nro_documento as cliente_ruc',
                 'adm_contri.razon_social as cliente_razon_social',
                 DB::raw("(SELECT COUNT(*) FROM almacen.trans where
@@ -61,11 +61,11 @@ class OrdenesDespachoExternoController extends Controller
             ->leftJoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_req.id_almacen')
             ->leftJoin('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'alm_req.id_cliente')
             ->leftJoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
-            ->leftJoin('almacen.orden_despacho', function ($join) {
-                $join->on('orden_despacho.id_requerimiento', '=', 'alm_req.id_requerimiento');
-                $join->where('orden_despacho.aplica_cambios', '=', false);
-                $join->where('orden_despacho.estado', '!=', 7);
-            })
+            // ->leftJoin('almacen.orden_despacho', function ($join) {
+            //     $join->on('orden_despacho.id_requerimiento', '=', 'alm_req.id_requerimiento');
+            //     $join->where('orden_despacho.aplica_cambios', '=', false);
+            //     $join->where('orden_despacho.estado', '!=', 7);
+            // })
             ->where([
                 ['alm_det_req.estado', '!=', 7],
                 ['alm_reserva.estado', '!=', 7],
