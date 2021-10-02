@@ -27,12 +27,6 @@ class RequerimientoPendienteView {
         this.ActualParametroFechaHasta= 'SIN_FILTRO';
         this.ActualParametroReserva= 'SIN_FILTRO';
         this.ActualParametroOrden= 'SIN_FILTRO';
-        this.PrevParametroEmpresa= 'SIN_FILTRO';
-        this.PrevParametroSede= 'SIN_FILTRO';
-        this.PrevParametroFechaDesde= 'SIN_FILTRO';
-        this.PrevParametroFechaHasta= 'SIN_FILTRO';
-        this.PrevParametroReserva= 'SIN_FILTRO';
-        this.PrevParametroOrden= 'SIN_FILTRO';
     }
 
     initializeEventHandler() {
@@ -106,21 +100,13 @@ class RequerimientoPendienteView {
         $('#modal-filtro-requerimientos-pendientes').on('hidden.bs.modal', ()=> {
             this.updateValorFiltroRequerimientosPendientes();
 
-            if (!((this.PrevParametroEmpresa == this.ActualParametroEmpresa)
-                && (this.PrevParametroSede == this.ActualParametroSede)
-                && (this.PrevParametroFechaDesde == this.ActualParametroFechaDesde)
-                && (this.PrevParametroFechaHasta == this.ActualParametroFechaHasta)
-                && (this.PrevParametroReserva == this.ActualParametroReserva)
-                && (this.PrevParametroOrden == this.ActualParametroOrden))){
-
-                    this.PrevParametroEmpresa= this.ActualParametroEmpresa;
-                    this.PrevParametroSede= this.ActualParametroSede;
-                    this.PrevParametroFechaDesde= this.ActualParametroFechaDesde;
-                    this.PrevParametroFechaHasta= this.ActualParametroFechaHasta;
-                    this.PrevParametroReserva= this.ActualParametroReserva;
-                    this.PrevParametroOrden= this.ActualParametroOrden;
-                    this.renderRequerimientoPendienteList(this.ActualParametroEmpresa, this.ActualParametroSede, this.ActualParametroFechaDesde, this.ActualParametroFechaHasta, this.ActualParametroReserva, this.ActualParametroOrden);
+            if(this.updateContadorFiltroRequerimientosPendientes() ==0){
+                this.renderRequerimientoPendienteList('SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO');
+            }else{
+                this.renderRequerimientoPendienteList(this.ActualParametroEmpresa, this.ActualParametroSede, this.ActualParametroFechaDesde, this.ActualParametroFechaHasta, this.ActualParametroReserva, this.ActualParametroOrden);
             }
+
+
         });
     }
 
@@ -181,6 +167,7 @@ class RequerimientoPendienteView {
             }
         });
         document.querySelector("button[id='btnFiltrosRequerimientosPendientes'] span").innerHTML ='<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : '+contadorCheckActivo
+        return contadorCheckActivo;
 
     }
 

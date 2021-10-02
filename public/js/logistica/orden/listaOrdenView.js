@@ -13,26 +13,6 @@ class ListaOrdenView {
         this.ActualParametroFechaHasta= 'SIN_FILTRO';
         this.ActualParametroEstadoCabecera= 'SIN_FILTRO';
 
-        this.PrevParametroTipoOrdenCabecera= 'SIN_FILTRO';
-        this.PrevParametroEmpresaCabecera= 'SIN_FILTRO';
-        this.PrevParametroSedeCabecera= 'SIN_FILTRO';
-        this.PrevParametroFechaDesdeCabecera= 'SIN_FILTRO';
-        this.PrevParametroFechaHastaCabecera= 'SIN_FILTRO';
-        this.PrevParametroEstadoCabecera= 'SIN_FILTRO';
-
-        this.ActualParametroTipoOrdenDetalle= 'SIN_FILTRO';
-        this.ActualParametroEmpresaDetalle= 'SIN_FILTRO';
-        this.ActualParametroSedeDetalle= 'SIN_FILTRO';
-        this.ActualParametroFechaDesdeDetalle= 'SIN_FILTRO';
-        this.ActualParametroFechaHasta= 'SIN_FILTRO';
-        this.ActualParametroEstadoDetalle= 'SIN_FILTRO';
-
-        this.PrevParametroTipoOrdenDetalle= 'SIN_FILTRO';
-        this.PrevParametroEmpresaDetalle= 'SIN_FILTRO';
-        this.PrevParametroSedeDetalle= 'SIN_FILTRO';
-        this.PrevParametroFechaDesdeDetalle= 'SIN_FILTRO';
-        this.PrevParametroFechaHastaDetalle= 'SIN_FILTRO';
-        this.PrevParametroEstadoDetalle= 'SIN_FILTRO';
     }
 
     init() {
@@ -121,27 +101,10 @@ class ListaOrdenView {
 
         $('#modal-filtro-lista-ordenes-elaboradas').on('hidden.bs.modal', ()=> {
             this.updateValorFiltroOrdenesElaboradas();
-            if(this.updateContadorFiltroOrdenesElaboradas() >0){
-                if (!((this.PrevParametroTipoOrdenCabecera == this.ActualParametroTipoOrdenCabecera)
-                    && (this.PrevParametroEmpresaCabecera == this.ActualParametroEmpresaCabecera)
-                    && (this.PrevParametroSedeCabecera == this.ActualParametroSedeCabecera)
-                    && (this.PrevParametroFechaDesdeCabecera == this.ActualParametroFechaDesdeCabecera)
-                    && (this.PrevParametroFechaHastaCabecera == this.ActualParametroFechaHastaCabecera)
-                    && (this.PrevParametroEstadoCabecera == this.ActualParametroEstadoCabecera))){
-    
-                    this.PrevParametroTipoOrdenCabecera= this.ActualParametroTipoOrdenCabecera;
-                    this.PrevParametroEmpresaCabecera= this.ActualParametroEmpresaCabecera;
-                    this.PrevParametroSedeCabecera= this.ActualParametroSedeCabecera;
-                    this.PrevParametroFechaDesdeCabecera= this.ActualParametroFechaDesdeCabecera;
-                    this.PrevParametroFechaHastaCabecera= this.ActualParametroFechaHastaCabecera;
-                    this.PrevParametroEstadoCabecera= this.ActualParametroEstadoCabecera;
-    
-                    this.obtenerListaOrdenesElaboradas(this.ActualParametroTipoOrdenCabecera,this.ActualParametroEmpresaCabecera,this.ActualParametroSedeCabecera,this.ActualParametroFechaDesdeCabecera,this.this.ActualParametroFechaHastaCabecera,this.ActualParametroEstadoCabecera);
-                }
-
-            }else{
+            if(this.updateContadorFiltroOrdenesElaboradas() ==0){
                 this.obtenerListaOrdenesElaboradas('SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO');
-
+            }else{
+                this.obtenerListaOrdenesElaboradas(this.ActualParametroTipoOrdenCabecera,this.ActualParametroEmpresaCabecera,this.ActualParametroSedeCabecera,this.ActualParametroFechaDesdeCabecera,this.ActualParametroFechaHastaCabecera,this.ActualParametroEstadoCabecera);
             }
         });
 
@@ -154,27 +117,12 @@ class ListaOrdenView {
         });
         $('#modal-filtro-lista-items-orden-elaboradas').on('hidden.bs.modal', ()=> {
             this.updateValorFiltroDetalleOrdenesElaboradas();
-            if(this.updateContadorFiltroDetalleOrdenesElaboradas() >0){
-                if (!((this.PrevParametroTipoOrdenDetalle == this.ActualParametroTipoOrdenDetalle)
-                    && (this.PrevParametroEmpresaDetalle == this.ActualParametroEmpresaDetalle)
-                    && (this.PrevParametroSedeDetalle == this.ActualParametroSedeDetalle)
-                    && (this.PrevParametroFechaDesdeDetalle == this.ActualParametroFechaDesdeDetalle)
-                    && (this.PrevParametroFechaHastaDetalle == this.ActualParametroFechaHasta)
-                    && (this.PrevParametroEstadoDetalle == this.ActualParametroEstadoDetalle))){
-    
-                    this.PrevParametroTipoOrdenDetalle= this.ActualParametroTipoOrdenDetalle;
-                    this.PrevParametroEmpresaDetalle= this.ActualParametroEmpresaDetalle;
-                    this.PrevParametroSedeDetalle= this.ActualParametroSedeDetalle;
-                    this.PrevParametroFechaDesdeDetalle= this.ActualParametroFechaDesdeDetalle;
-                    this.PrevParametroFechaHastaDetalle= this.ActualParametroFechaHastaDetalle;
-                    this.PrevParametroEstadoDetalle= this.ActualParametroEstadoDetalle;
-    
-                    this.obtenerListaDetalleOrdenesElaboradas(this.ActualParametroEmpresaDetalle,this.ActualParametroSedeDetalle,this.ActualParametroFechaDesdeDetalle,this.ActualParametroFechaHastaDetalle,this.ActualParametroEstadoDetalle);
-                }
-
-            }else{
+            if(this.updateContadorFiltroDetalleOrdenesElaboradas() ==0){
                 this.obtenerListaDetalleOrdenesElaboradas('SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO');
-
+                
+            }else{
+                    this.obtenerListaDetalleOrdenesElaboradas(this.ActualParametroEmpresaDetalle,this.ActualParametroSedeDetalle,this.ActualParametroFechaDesdeDetalle,this.ActualParametroFechaHastaDetalle,this.ActualParametroEstadoDetalle);
+                
             }
         });
         

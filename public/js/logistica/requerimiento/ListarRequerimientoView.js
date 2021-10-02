@@ -19,15 +19,6 @@ class ListarRequerimientoView {
         this.ActualParametroFechaHasta= 'SIN_FILTRO';
         this.ActualParametroEstado= 'SIN_FILTRO';
 
-        this.PrevParametroAllOrMe= 'SIN_FILTRO';
-        this.PrevParametroEmpresa= 'SIN_FILTRO';
-        this.PrevParametroSede= 'SIN_FILTRO';
-        this.PrevParametroGrupo= 'SIN_FILTRO';
-        this.PrevParametroDivision= 'SIN_FILTRO';
-        this.PrevParametroFechaDesde= 'SIN_FILTRO';
-        this.PrevParametroFechaHasta= 'SIN_FILTRO';
-        this.PrevParametroEstado= 'SIN_FILTRO';
-
     }
 
     // mostrar(meOrAll, idEmpresa=null, idSede=null, idGrupo=null, division=null, idPrioridad=null) {
@@ -63,27 +54,16 @@ class ListarRequerimientoView {
         $('#modal-filtro-requerimientos-elaborados').on('hidden.bs.modal', ()=> {
             this.updateValorFiltroRequerimientosElaborados();
 
-            if (!((this.PrevParametroAllOrMe == this.ActualParametroAllOrMe)
-                && (this.PrevParametroEmpresa == this.ActualParametroEmpresa)
-                && (this.PrevParametroSede == this.ActualParametroSede)
-                && (this.PrevParametroGrupo == this.ActualParametroGrupo)
-                && (this.PrevParametroDivision == this.ActualParametroDivision)
-                && (this.PrevParametroFechaDesde == this.ActualParametroFechaDesde)
-                && (this.PrevParametroFechaHasta == this.ActualParametroFechaHasta)
-                && (this.PrevParametroEstado == this.ActualParametroEstado))){
-
-                this.PrevParametroAllOrMe= this.ActualParametroAllOrMe;
-                this.PrevParametroEmpresa= this.ActualParametroEmpresa;
-                this.PrevParametroSede= this.ActualParametroSede;
-                this.PrevParametroGrupo= this.ActualParametroGrupo;
-                this.PrevParametroDivision= this.ActualParametroDivision;
-                this.PrevParametroFechaDesde= this.ActualParametroFechaDesde;
-                this.PrevParametroFechaHasta= this.ActualParametroFechaHasta;
-                this.PrevParametroEstado= this.ActualParametroEstado;
-
+            if(this.updateContadorFiltroRequerimientosElaborados() ==0){
+                this.mostrar('SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO');
+            }else{
+    
                 this.mostrar(this.ActualParametroAllOrMe,this.ActualParametroEmpresa,this.ActualParametroSede,this.ActualParametroGrupo,this.ActualParametroDivision,this.ActualParametroFechaDesde,this.ActualParametroFechaHasta,this.ActualParametroEstado);
 
             }
+
+
+            
         });
 
     }
@@ -280,7 +260,7 @@ class ListarRequerimientoView {
             }
         });
         document.querySelector("button[id='btnFiltrosListaRequerimientosElaborados'] span").innerHTML ='<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : '+contadorCheckActivo
-
+        return contadorCheckActivo;
     }
 
     imprimirRequerimientoPdf() {

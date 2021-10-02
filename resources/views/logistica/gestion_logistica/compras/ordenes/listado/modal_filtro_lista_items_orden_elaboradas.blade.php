@@ -7,64 +7,76 @@
             </div>
             <div class="modal-body">
                 <div class="form-horizontal" id="formFiltroListaItemsOrdenElaboradas">
-                    <div class="row">
+                <div class="form-group">
                         <div class="col-md-12">
-                            <small>Seleccione alguna de las opciones con valor que desee y luego haga clic en aplicar.</small>
+                            <small>Seleccione los filtros que desee aplicar y cierre este cuadro para continuar</small>
                         </div>
                     </div>
                     <div class="container-filter" style="margin: 0 auto;">
 
                         <h5 style="display:flex;justify-content: space-between;  font-weight:bold;">Nivel detalle</h5>
                         <fieldset class="group-table">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <label>
-                                        <input type="checkbox" name="chkEmpresa" style="margin-right: 3px;"> Empresa
-                                    </label>
-                                </div>
-                                <div class="col-md-8">
+
+                        <div class="form-group">
+                                <label class="col-sm-4">
+                                    <div class="checkbox">
+                                        <label title="Empresa">
+                                            <input type="checkbox" name="chkEmpresa"> Empresa
+                                        </label>
+                                    </div>
+                                </label>
+                                <div class="col-sm-8">
                                     <select class="form-control input-sm handleChangeFiltroEmpresa handleChangeUpdateValorFiltroDetalleOrdenesElaboradas" name="empresa" readOnly>
-                                        <option value="SIN_FILTRO">-----------------</option>
                                         @foreach ($empresas as $emp)
-                                        <option value="{{$emp->id_empresa}}" data-url-logo="{{$emp->logo_empresa}}">{{$emp->razon_social}}</option>
+                                        <option value="{{$emp->id_empresa}}">{{$emp->razon_social}}</option>
                                         @endforeach
                                     </select>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <label>
-                                        <input type="checkbox" name="chkSede" style="margin-right: 3px;"> Sede
-                                    </label>
-                                </div>
-                                <div class="col-md-8">
+ 
+  
+                            <div class="form-group">
+                                <label class="col-sm-4">
+                                    <div class="checkbox">
+                                        <label title="Sede">
+                                            <input type="checkbox" name="chkSede"> Sede
+                                        </label>
+                                    </div>
+                                </label>
+                                <div class="col-sm-8">
                                     <select class="form-control input-sm handleChangeUpdateValorFiltroDetalleOrdenesElaboradas" name="sede" readOnly>
-                                        <option value="SIN_FILTRO">-----------------</option>
                                     </select>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <label>
-                                        <input type="checkbox" name="chkFechaRegistro" style="margin-right: 3px;"> Fecha creación
-                                    </label>
-                                </div>
-                                <div class="col-md-8">
-                                    <div style="display:flex;">
-                                        <input type="date" class="form-control input-sm handleBlurUpdateValorFiltroDetalleOrdenElaboradas" name="fechaRegistroDesde" readOnly>
-                                        <input type="date" class="form-control input-sm handleBlurUpdateValorFiltroDetalleOrdenElaboradas" name="fechaRegistroHasta" readOnly>
+                            <div class="form-group">
+                                <label class="col-sm-4">
+                                    <div class="checkbox">
+                                        <label title="Fecha de creación">
+                                            <input type="checkbox" name="chkFechaRegistro"> Fecha creación
+                                        </label>
                                     </div>
+                                </label>
+                                <div class="col-sm-4">
+                                    <input type="date" name="fechaRegistroDesde" class="form-control handleChangeUpdateValorFiltroDetalleOrdenesElaboradas" readOnly>
+                                    <small class="help-block">Desde (dd-mm-aaaa)</small>
+                                </div>
+                                <div class="col-sm-4">
+                                    <input type="date" name="fechaRegistroHasta" class="form-control handleChangeUpdateValorFiltroDetalleOrdenesElaboradas" readOnly>
+                                    <small class="help-block">Hasta (dd-mm-aaaa)</small>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <label>
-                                        <input type="checkbox" name="chkEstado" style="margin-right: 3px;"> Estado
-                                    </label>
-                                </div>
-                                <div class="col-md-8">
+
+                
+                            <div class="form-group">
+                                <label class="col-sm-4">
+                                    <div class="checkbox">
+                                        <label title="Estado">
+                                            <input type="checkbox" name="chkEstado"> Estado
+                                        </label>
+                                    </div>
+                                </label>
+                                <div class="col-sm-8">
                                     <select class="form-control input-sm handleChangeUpdateValorFiltroDetalleOrdenesElaboradas" name="estado" readOnly>
-                                        <option value="SIN_FILTRO">-----------------</option>
                                         @foreach ($estados as $estado)
                                         <option value="{{$estado->id_estado}}">{{$estado->descripcion}}</option>
                                         @endforeach
