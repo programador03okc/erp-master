@@ -160,7 +160,6 @@ class ComprasPendientesController extends Controller
     {
  
 
-        Debugbar::info($fechaRegistroDesde);
 
         $alm_req = Requerimiento::join('almacen.alm_tp_req', 'alm_req.id_tipo_requerimiento', '=', 'alm_tp_req.id_tipo_requerimiento')
             ->leftJoin('almacen.tipo_cliente', 'tipo_cliente.id_tipo_cliente', '=', 'alm_req.tipo_cliente')
@@ -359,21 +358,12 @@ class ComprasPendientesController extends Controller
             ['estado',1]])->get();
             $codigoOIdReservaAnulada= '';
 
-            $hasStock=false;
-            $stock=0;
-            $saldo=0;
-            $productoUbicacion=ProductoUbicacion::where([['id_producto',$request->idProducto],['id_almacen',$request->almacenReserva],['estado',1]])->first();
-            if(!empty($productoUbicacion)){
-                $stock= $productoUbicacion->stock;
-                $hasStock=true;
-            }
 
             foreach ($ReservasProductoActivas as $value) {
                 if($value->id_almacen_reserva == $request->almacenReserva && $value->stock_comprometido == $request->cantidadReserva){
                     $crearNuevaReserva=false;
                     $mensaje.='No puede generar una reserva que actualmente existe con mismo almacén y misma cantidad a reservar';
                 }
-                // if($value->id_almacen_reserva == $request->almacenReserva && $value->stock_comprometido != $request->cantidadReserva){
                 if($value->id_almacen_reserva == $request->almacenReserva){
                     $reservaMismoAlmacen = Reserva::where([['id_detalle_requerimiento',$request->idDetalleRequerimiento],['estado',1],
                     ['id_almacen_reserva',$request->almacenReserva]])->first();
@@ -396,19 +386,15 @@ class ComprasPendientesController extends Controller
                 $reserva->estado = 1;
                 $reserva->save();
 
-                if($stock >0 ){
-                    $saldo = floatval($stock) - floatval($request->cantidadReserva);
-                }
+    
     
             }
 
             
             if($reserva->id_reserva > 0){
-                if($hasStock ==true){
-                    $mensaje.=' Se creo nueva reserva '.$reserva->codigo.', saldo actual '.$saldo.' unidades';
-                }else{
-                    $mensaje.=' Se creo nueva reserva '.$reserva->codigo.', sin saldo (el producto no se encontró en el almacén seleccionado)';
-                }
+ 
+                    $mensaje.=' Se creo nueva reserva '.$reserva->codigo;
+            
                 OrdenesPendientesController::validaProdUbi($request->idProducto, $request->almacenReserva);
                 if(strlen($codigoOIdReservaAnulada)>0){
                     $mensaje.=' en remplazo por la reserva '.$codigoOIdReservaAnulada;
@@ -429,6 +415,24 @@ class ComprasPendientesController extends Controller
         } catch (\PDOException $e) {
             DB::rollBack();
         }
+    }
+
+    function obtenerStockAlmacen(Request $request){
+            $stock=0;
+            $saldo=0;
+            Debugbar::info($request->idProducto);
+            Debugbar::info($request->idAlmacen);
+            Debugbar::info($request->cantidadReserva);
+            $productoUbicacion=ProductoUbicacion::where([['id_producto',$request->idProducto],['id_almacen',$request->idAlmacen],['estado',1]])->first();
+            Debugbar::info($productoUbicacion);
+            
+            if(!empty($productoUbicacion)){
+                Debugbar::info($productoUbicacion->stock);
+                $stock= $productoUbicacion->stock;
+                $saldo = floatval($stock) - floatval($request->cantidadReserva);
+            }
+            return response()->json(['stock'=>$stock,'saldo'=>$saldo]);
+
     }
 
     function anularReservaAlmacen(Request $request)

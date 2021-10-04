@@ -7,117 +7,136 @@
             </div>
             <div class="modal-body">
                 <div class="form-horizontal" id="formFiltroListaRequerimientosElaborados">
-                    <div class="row">
+
+                    <div class="form-group">
                         <div class="col-md-12">
                             <small>Seleccione los filtros que desee aplicar y cierre este cuadro para continuar</small>
                         </div>
                     </div>
-                    <div class="container-filter" style="margin: 0 auto;">
+
+                    <div class="container-filter">
                         <fieldset class="group-table">
-                            <div class="row">
-                                <div class="col-md-4">
-                                        <label>
-                                            <input type="checkbox" name="chkElaborado" style="margin-right: 3px;"> Elaborados por
+                            <div class="form-group">
+                                <label class="col-sm-4">
+                                    <div class="checkbox">
+                                        <label title="Elaborados por">
+                                            <input type="checkbox" name="chkElaborado"> Elaborados por
                                         </label>
-                                </div>
-                                <div class="col-md-8">
+                                    </div>
+                                </label>
+                                <div class="col-sm-8">
                                     <select class="form-control input-sm handleChangeUpdateValorFiltroRequerimientosElaborados" name="elaborado" readOnly>
-                                        <option value="SIN_FILTRO">-----------------</option>
                                         <option value="ALL">Todos</option>
                                         <option value="ME">Por mi</option>
                                         <option value="REVISADO_APROBADO">Con revisados / aprobados por mi</option>
                                     </select>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                        <label>
-                                            <input type="checkbox" name="chkEmpresa" style="margin-right: 3px;"> Empresa
+
+                            <div class="form-group">
+                                <label class="col-sm-4">
+                                    <div class="checkbox">
+                                        <label title="Empresa">
+                                            <input type="checkbox" name="chkEmpresa"> Empresa
                                         </label>
-                                </div>
-                                <div class="col-md-8">
+                                    </div>
+                                </label>
+                                <div class="col-sm-8">
                                     <select class="form-control input-sm handleChangeFiltroEmpresa handleChangeUpdateValorFiltroRequerimientosElaborados" name="empresa" readOnly>
-                                        <option value="SIN_FILTRO">-----------------</option>
                                         @foreach ($empresas as $emp)
                                         <option value="{{$emp->id_empresa}}">{{$emp->razon_social}}</option>
                                         @endforeach
                                     </select>
-                                    <!-- <small class="help-block">Solo se muestra las empresas con requerimiento</small> -->
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <label>
-                                        <input type="checkbox" name="chkSede" style="margin-right: 3px;" > Sede
-                                    </label> 
-                                </div>
-                                <div class="col-md-8">
+
+                            <div class="form-group">
+                                <label class="col-sm-4">
+                                    <div class="checkbox">
+                                        <label title="Sede">
+                                            <input type="checkbox" name="chkSede"> Sede
+                                        </label>
+                                    </div>
+                                </label>
+                                <div class="col-sm-8">
                                     <select class="form-control input-sm handleChangeUpdateValorFiltroRequerimientosElaborados" name="sede" readOnly>
-                                        <option value="SIN_FILTRO">-----------------</option>
                                     </select>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <label>
-                                        <input type="checkbox" name="chkGrupo" style="margin-right: 3px;" > Grupo
-                                    </label> 
-                                </div>
-                                <div class="col-md-8">
+
+
+                            <div class="form-group">
+                                <label class="col-sm-4">
+                                    <div class="checkbox">
+                                        <label title="Grupo">
+                                            <input type="checkbox" name="chkGrupo"> Grupo
+                                        </label>
+                                    </div>
+                                </label>
+                                <div class="col-sm-8">
                                     <select class="form-control input-sm handleChangeFiltroGrupo handleChangeUpdateValorFiltroRequerimientosElaborados" name="grupo" readOnly>
-                                        <option value="SIN_FILTRO">-----------------</option>
                                         @foreach ($grupos as $grupo)
                                         <option value="{{$grupo->id_grupo}}">{{$grupo->descripcion}}</option>
                                         @endforeach
                                     </select>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <label>
-                                        <input type="checkbox" name="chkDivision" style="margin-right: 3px;" > División
-                                    </label> 
-                                </div>
-                                <div class="col-md-8">
+
+                            <div class="form-group">
+                                <label class="col-sm-4">
+                                    <div class="checkbox">
+                                        <label title="División">
+                                            <input type="checkbox" name="chkDivision"> División
+                                        </label>
+                                    </div>
+                                </label>
+                                <div class="col-sm-8">
                                     <select class="form-control input-sm handleChangeUpdateValorFiltroRequerimientosElaborados" name="division" readOnly>
-                                        <option value="SIN_FILTRO">-----------------</option>
                                     </select>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <label>
-                                        <input type="checkbox" name="chkFechaRegistro" style="margin-right: 3px;"> Fecha creación
-                                    </label> 
-                                </div>
-                                <div class="col-md-8">
-                                    <div style="display:flex;">
-                                        <input type="date" class="form-control input-sm handleChangeUpdateValorFiltroRequerimientosElaborados" name="fechaRegistroDesde" readOnly>
-                                        <input type="date" class="form-control input-sm handleChangeUpdateValorFiltroRequerimientosElaborados" name="fechaRegistroHasta" readOnly>
+
+                            <div class="form-group">
+                                <label class="col-sm-4">
+                                    <div class="checkbox">
+                                        <label title="Fecha de creación">
+                                            <input type="checkbox" name="chkFechaRegistro"> Fecha creación
+                                        </label>
                                     </div>
+                                </label>
+                                <div class="col-sm-4">
+                                    <input type="date" name="fechaRegistroDesde" class="form-control handleChangeUpdateValorFiltroRequerimientosElaborados" readOnly>
+                                    <small class="help-block">Desde (dd-mm-aaaa)</small>
+                                </div>
+                                <div class="col-sm-4">
+                                    <input type="date" name="fechaRegistroHasta" class="form-control handleChangeUpdateValorFiltroRequerimientosElaborados" readOnly>
+                                    <small class="help-block">Hasta (dd-mm-aaaa)</small>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <label>
-                                        <input type="checkbox" name="chkEstado" style="margin-right: 3px;" > Estado
-                                    </label> 
-                                </div>
-                                <div class="col-md-8">
+
+                            <div class="form-group">
+                                <label class="col-sm-4">
+                                    <div class="checkbox">
+                                        <label title="Estado">
+                                            <input type="checkbox" name="chkEstado"> Estado
+                                        </label>
+                                    </div>
+                                </label>
+                                <div class="col-sm-8">
                                     <select class="form-control input-sm handleChangeUpdateValorFiltroRequerimientosElaborados" name="estado" readOnly>
-                                        <option value="SIN_FILTRO">-----------------</option>
                                         @foreach ($estados as $estado)
                                         <option value="{{$estado->id_estado_doc}}">{{$estado->estado_doc}}</option>
                                         @endforeach
                                     </select>
                                 </div>
                             </div>
+
                         </fieldset>
                     </div>
-                </div> 
+                </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-sm btn-primary" class="close" data-dismiss="modal" >Cerrar</button>
+                <button type="button" class="btn btn-sm btn-primary" class="close" data-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>

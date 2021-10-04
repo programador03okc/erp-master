@@ -27,12 +27,6 @@ class RequerimientoPendienteView {
         this.ActualParametroFechaHasta= 'SIN_FILTRO';
         this.ActualParametroReserva= 'SIN_FILTRO';
         this.ActualParametroOrden= 'SIN_FILTRO';
-        this.PrevParametroEmpresa= 'SIN_FILTRO';
-        this.PrevParametroSede= 'SIN_FILTRO';
-        this.PrevParametroFechaDesde= 'SIN_FILTRO';
-        this.PrevParametroFechaHasta= 'SIN_FILTRO';
-        this.PrevParametroReserva= 'SIN_FILTRO';
-        this.PrevParametroOrden= 'SIN_FILTRO';
     }
 
     initializeEventHandler() {
@@ -102,26 +96,23 @@ class RequerimientoPendienteView {
         $('#modal-nueva-reserva').on("click", "button.handleClickAnularReserva", (e) => {
             this.anularReserva(e.currentTarget);
         });
+        $('#modal-nueva-reserva').on("change", "select.handleChangeObtenerStockAlmacen", (e) => {
+            this.handleChangeObtenerStockAlmacen(e.currentTarget);
+        });
 
         $('#modal-filtro-requerimientos-pendientes').on('hidden.bs.modal', ()=> {
             this.updateValorFiltroRequerimientosPendientes();
 
-            if (!((this.PrevParametroEmpresa == this.ActualParametroEmpresa)
-                && (this.PrevParametroSede == this.ActualParametroSede)
-                && (this.PrevParametroFechaDesde == this.ActualParametroFechaDesde)
-                && (this.PrevParametroFechaHasta == this.ActualParametroFechaHasta)
-                && (this.PrevParametroReserva == this.ActualParametroReserva)
-                && (this.PrevParametroOrden == this.ActualParametroOrden))){
-
-                    this.PrevParametroEmpresa= this.ActualParametroEmpresa;
-                    this.PrevParametroSede= this.ActualParametroSede;
-                    this.PrevParametroFechaDesde= this.ActualParametroFechaDesde;
-                    this.PrevParametroFechaHasta= this.ActualParametroFechaHasta;
-                    this.PrevParametroReserva= this.ActualParametroReserva;
-                    this.PrevParametroOrden= this.ActualParametroOrden;
-                    this.renderRequerimientoPendienteList(this.ActualParametroEmpresa, this.ActualParametroSede, this.ActualParametroFechaDesde, this.ActualParametroFechaHasta, this.ActualParametroReserva, this.ActualParametroOrden);
+            if(this.updateContadorFiltroRequerimientosPendientes() ==0){
+                this.renderRequerimientoPendienteList('SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO');
+            }else{
+                this.renderRequerimientoPendienteList(this.ActualParametroEmpresa, this.ActualParametroSede, this.ActualParametroFechaDesde, this.ActualParametroFechaHasta, this.ActualParametroReserva, this.ActualParametroOrden);
             }
+
+
         });
+
+        
     }
 
     // control de estado de check de filtro
@@ -181,6 +172,7 @@ class RequerimientoPendienteView {
             }
         });
         document.querySelector("button[id='btnFiltrosRequerimientosPendientes'] span").innerHTML ='<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : '+contadorCheckActivo
+        return contadorCheckActivo;
 
     }
 
@@ -1022,6 +1014,8 @@ class RequerimientoPendienteView {
             document.querySelector("form[id='form-nueva-reserva'] label[id='descripcion']").textContent = data.producto.descripcion != null ? data.producto.descripcion : (data.descripcion != null ? data.descripcion : '');
             document.querySelector("form[id='form-nueva-reserva'] label[id='cantidad']").textContent = data.cantidad;
             document.querySelector("form[id='form-nueva-reserva'] label[id='unidadMedida']").textContent = data.unidad_medida.descripcion;
+            document.querySelector("div[id='modal-nueva-reserva'] input[name='cantidadReserva']").value = parseFloat(document.querySelector("div[id='modal-nueva-reserva'] label[id='cantidad']").textContent)>0?document.querySelector("div[id='modal-nueva-reserva'] label[id='cantidad']").textContent:0; 
+
             this.listarTablaListaConReserva(data.reserva);
         } else {
             $('#modal-nueva-reserva').modal('hide');
@@ -1174,6 +1168,46 @@ class RequerimientoPendienteView {
 
     }
 
+    handleChangeObtenerStockAlmacen(obj){
+        if(obj.value>0){
+            const idProducto = document.querySelector("div[id='modal-nueva-reserva'] input[name='idProducto']").value;
+            const cantidadReserva = document.querySelector("div[id='modal-nueva-reserva'] input[name='cantidadReserva']").value >0?document.querySelector("div[id='modal-nueva-reserva'] input[name='cantidadReserva']").value:0;
+            $.ajax({
+                type: 'POST',
+                url: 'obtener-stock-almacen',
+                data: {'idAlmacen':obj.value,'idProducto':idProducto,'cantidadReserva':cantidadReserva},
+                dataType: 'JSON',
+                success: (response) => {
+                    Lobibox.notify('info', {
+                        title: 'Información de Stock',
+                        size: 'mini',
+                        rounded: true,
+                        sound: false,
+                        delay: 5000,
+                        delayIndicator: false,
+                        msg: `
+                        <ul>
+                            <li>Stock: ${response.stock} </li>
+                            <li>Saldo: ${response.saldo} </li>
+                        </ul>
+                        `
+                    });
+                },
+                fail: (jqXHR, textStatus, errorThrown) => {
+                    Swal.fire(
+                        '',
+                        'Lo sentimos hubo un error en el servidor al intentar consultar el stock del almacén seleccionado, por favor vuelva a intentarlo',
+                        'error'
+                    );
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                }
+            });
+        }
+ 
+
+    }
     agregarReserva(obj) {
         let mensajeValidacion = this.validarModalNuevaReserva();
         if ((mensajeValidacion.length > 0)) {
