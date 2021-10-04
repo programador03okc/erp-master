@@ -24,7 +24,10 @@ class Movimiento extends Model
             ->join('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_orden', 'guia_com_det.id_oc_det')
             ->join('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', 'log_det_ord_compra.id_detalle_requerimiento')
             ->join('almacen.alm_req', 'alm_req.id_requerimiento', 'alm_det_req.id_requerimiento')
-            ->where('mov_alm_det.id_mov_alm', $this->attributes['id_mov_alm'])
+            ->where([
+                ['mov_alm_det.id_mov_alm', '=', $this->attributes['id_mov_alm']],
+                ['alm_req.estado', '!=', 7]
+            ])
             ->select(['alm_req.codigo'])->distinct()->get();
 
         $resultado = [];
@@ -39,7 +42,10 @@ class Movimiento extends Model
         $ordenes = MovimientoDetalle::join('almacen.guia_com_det', 'guia_com_det.id_guia_com_det', 'mov_alm_det.id_guia_com_det')
             ->join('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_orden', 'guia_com_det.id_oc_det')
             ->join('logistica.log_ord_compra', 'log_ord_compra.id_orden_compra', 'log_det_ord_compra.id_orden_compra')
-            ->where('mov_alm_det.id_mov_alm', $this->attributes['id_mov_alm'])
+            ->where([
+                ['mov_alm_det.id_mov_alm', '=', $this->attributes['id_mov_alm']],
+                ['log_ord_compra.estado', '!=', 7]
+            ])
             ->select(['log_ord_compra.codigo'])->distinct()->get();
 
         $resultado = [];
@@ -54,7 +60,10 @@ class Movimiento extends Model
         $ordenes = MovimientoDetalle::join('almacen.guia_com_det', 'guia_com_det.id_guia_com_det', 'mov_alm_det.id_guia_com_det')
             ->join('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_orden', 'guia_com_det.id_oc_det')
             ->join('logistica.log_ord_compra', 'log_ord_compra.id_orden_compra', 'log_det_ord_compra.id_orden_compra')
-            ->where('mov_alm_det.id_mov_alm', $this->attributes['id_mov_alm'])
+            ->where([
+                ['mov_alm_det.id_mov_alm', '=', $this->attributes['id_mov_alm']],
+                ['log_ord_compra.estado', '!=', 7]
+            ])
             ->select(['log_ord_compra.codigo_softlink'])->distinct()->get();
 
         $resultado = [];
@@ -69,7 +78,10 @@ class Movimiento extends Model
         $comprobantes = MovimientoDetalle::join('almacen.guia_com_det', 'guia_com_det.id_guia_com_det', 'mov_alm_det.id_guia_com_det')
             ->join('almacen.doc_com_det', 'doc_com_det.id_guia_com_det', 'guia_com_det.id_guia_com_det')
             ->join('almacen.doc_com', 'doc_com.id_doc_com', 'doc_com_det.id_doc')
-            ->where('mov_alm_det.id_mov_alm', $this->attributes['id_mov_alm'])
+            ->where([
+                ['mov_alm_det.id_mov_alm', '=', $this->attributes['id_mov_alm']],
+                ['doc_com.estado', '!=', 7]
+            ])
             ->select(['doc_com.serie', 'doc_com.numero'])->distinct()->get();
 
         $resultado = [];
