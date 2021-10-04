@@ -46,7 +46,7 @@
                             <div class="col-md-2">
                                 <div class="form-group">
                                     <label for="exampleInputEmail2">Cantidad Reservar</label>
-                                    <input type="number" min="0" class="form-control" name="cantidadReserva">
+                                    <input type="number" min="0" class="form-control" name="cantidadReserva" autofocus>
                                 </div>
                             </div>
                             <div class="col-md-4">

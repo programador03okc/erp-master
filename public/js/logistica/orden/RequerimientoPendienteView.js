@@ -21,12 +21,12 @@ class RequerimientoPendienteView {
 
         vista_extendida();
 
-        this.ActualParametroEmpresa= 'SIN_FILTRO';
-        this.ActualParametroSede= 'SIN_FILTRO';
-        this.ActualParametroFechaDesde= 'SIN_FILTRO';
-        this.ActualParametroFechaHasta= 'SIN_FILTRO';
-        this.ActualParametroReserva= 'SIN_FILTRO';
-        this.ActualParametroOrden= 'SIN_FILTRO';
+        this.ActualParametroEmpresa = 'SIN_FILTRO';
+        this.ActualParametroSede = 'SIN_FILTRO';
+        this.ActualParametroFechaDesde = 'SIN_FILTRO';
+        this.ActualParametroFechaHasta = 'SIN_FILTRO';
+        this.ActualParametroReserva = 'SIN_FILTRO';
+        this.ActualParametroOrden = 'SIN_FILTRO';
     }
 
     initializeEventHandler() {
@@ -100,19 +100,19 @@ class RequerimientoPendienteView {
             this.handleChangeObtenerStockAlmacen(e.currentTarget);
         });
 
-        $('#modal-filtro-requerimientos-pendientes').on('hidden.bs.modal', ()=> {
+        $('#modal-filtro-requerimientos-pendientes').on('hidden.bs.modal', () => {
             this.updateValorFiltroRequerimientosPendientes();
 
-            if(this.updateContadorFiltroRequerimientosPendientes() ==0){
-                this.renderRequerimientoPendienteList('SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO');
-            }else{
+            if (this.updateContadorFiltroRequerimientosPendientes() == 0) {
+                this.renderRequerimientoPendienteList('SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO');
+            } else {
                 this.renderRequerimientoPendienteList(this.ActualParametroEmpresa, this.ActualParametroSede, this.ActualParametroFechaDesde, this.ActualParametroFechaHasta, this.ActualParametroReserva, this.ActualParametroOrden);
             }
 
 
         });
 
-        
+
     }
 
     // control de estado de check de filtro
@@ -158,66 +158,66 @@ class RequerimientoPendienteView {
             default:
                 break;
         }
-        
+
 
     }
 
-    updateContadorFiltroRequerimientosPendientes(){
+    updateContadorFiltroRequerimientosPendientes() {
 
-        let contadorCheckActivo= 0;
+        let contadorCheckActivo = 0;
         const allCheckBoxFiltroRequerimientosPendientes = document.querySelectorAll("div[id='modal-filtro-requerimientos-pendientes'] input[type='checkbox']");
         allCheckBoxFiltroRequerimientosPendientes.forEach(element => {
-            if(element.checked==true){
+            if (element.checked == true) {
                 contadorCheckActivo++;
             }
         });
-        document.querySelector("button[id='btnFiltrosRequerimientosPendientes'] span").innerHTML ='<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : '+contadorCheckActivo
+        document.querySelector("button[id='btnFiltrosRequerimientosPendientes'] span").innerHTML = '<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : ' + contadorCheckActivo
         return contadorCheckActivo;
 
     }
 
-    updateValorFiltroRequerimientosPendientes(){
+    updateValorFiltroRequerimientosPendientes() {
 
 
         const modalRequerimientosPendientes = document.querySelector("div[id='modal-filtro-requerimientos-pendientes']");
 
-        if(modalRequerimientosPendientes.querySelector("select[name='empresa']").getAttribute("readonly") ==null){
-            this.ActualParametroEmpresa=modalRequerimientosPendientes.querySelector("select[name='empresa']").value;
+        if (modalRequerimientosPendientes.querySelector("select[name='empresa']").getAttribute("readonly") == null) {
+            this.ActualParametroEmpresa = modalRequerimientosPendientes.querySelector("select[name='empresa']").value;
         }
-        if(modalRequerimientosPendientes.querySelector("select[name='sede']").getAttribute("readonly") ==null){
-            this.ActualParametroSede=modalRequerimientosPendientes.querySelector("select[name='sede']").value;
+        if (modalRequerimientosPendientes.querySelector("select[name='sede']").getAttribute("readonly") == null) {
+            this.ActualParametroSede = modalRequerimientosPendientes.querySelector("select[name='sede']").value;
         }
-        if(modalRequerimientosPendientes.querySelector("input[name='fechaRegistroDesde']").getAttribute("readonly") ==null){
-            this.ActualParametroFechaDesde=modalRequerimientosPendientes.querySelector("input[name='fechaRegistroDesde']").value.length>0?modalRequerimientosPendientes.querySelector("input[name='fechaRegistroDesde']").value:'SIN_FILTRO';
+        if (modalRequerimientosPendientes.querySelector("input[name='fechaRegistroDesde']").getAttribute("readonly") == null) {
+            this.ActualParametroFechaDesde = modalRequerimientosPendientes.querySelector("input[name='fechaRegistroDesde']").value.length > 0 ? modalRequerimientosPendientes.querySelector("input[name='fechaRegistroDesde']").value : 'SIN_FILTRO';
         }
-        if(modalRequerimientosPendientes.querySelector("input[name='fechaRegistroHasta']").getAttribute("readonly") ==null){
-            this.ActualParametroFechaHasta=modalRequerimientosPendientes.querySelector("input[name='fechaRegistroHasta']").value.length>0?modalRequerimientosPendientes.querySelector("input[name='fechaRegistroHasta']").value:'SIN_FILTRO';
+        if (modalRequerimientosPendientes.querySelector("input[name='fechaRegistroHasta']").getAttribute("readonly") == null) {
+            this.ActualParametroFechaHasta = modalRequerimientosPendientes.querySelector("input[name='fechaRegistroHasta']").value.length > 0 ? modalRequerimientosPendientes.querySelector("input[name='fechaRegistroHasta']").value : 'SIN_FILTRO';
         }
-        if(modalRequerimientosPendientes.querySelector("select[name='reserva']").getAttribute("readonly") ==null){
-            this.ActualParametroReserva=modalRequerimientosPendientes.querySelector("select[name='reserva']").value;
+        if (modalRequerimientosPendientes.querySelector("select[name='reserva']").getAttribute("readonly") == null) {
+            this.ActualParametroReserva = modalRequerimientosPendientes.querySelector("select[name='reserva']").value;
         }
-        if(modalRequerimientosPendientes.querySelector("select[name='orden']").getAttribute("readonly") ==null){
-            this.ActualParametroOrden=modalRequerimientosPendientes.querySelector("select[name='orden']").value;
+        if (modalRequerimientosPendientes.querySelector("select[name='orden']").getAttribute("readonly") == null) {
+            this.ActualParametroOrden = modalRequerimientosPendientes.querySelector("select[name='orden']").value;
         }
 
     }
 
-    renderRequerimientoPendienteList(empresa='SIN_FILTRO', sede='SIN_FILTRO', fechaRegistroDesde='SIN_FILTRO', fechaRegistroHasta='SIN_FILTRO', reserva='SIN_FILTRO', orden='SIN_FILTRO') {
+    renderRequerimientoPendienteList(empresa = 'SIN_FILTRO', sede = 'SIN_FILTRO', fechaRegistroDesde = 'SIN_FILTRO', fechaRegistroHasta = 'SIN_FILTRO', reserva = 'SIN_FILTRO', orden = 'SIN_FILTRO') {
         this.requerimientoPendienteCtrl.getRequerimientosPendientes(empresa, sede, fechaRegistroDesde, fechaRegistroHasta, reserva, orden).then((res) => {
             this.construirTablaListaRequerimientosPendientes(res);
             $('#requerimientos_pendientes').LoadingOverlay("hide", true);
-            if (res.length==0) {
+            if (res.length == 0) {
                 console.log(res);
-                    Lobibox.notify('info', {
-                    title:false,
+                Lobibox.notify('info', {
+                    title: false,
                     size: 'mini',
                     rounded: true,
                     sound: false,
                     delayIndicator: false,
                     msg: `No se encontro data disponible para mostrar`
-                    });
+                });
 
-            } 
+            }
         }).catch((err) => {
             console.log(err)
             Swal.fire(
@@ -354,7 +354,7 @@ class RequerimientoPendienteView {
                 { 'data': 'empresa_sede' },
                 {
                     render: function (data, type, row) {
-                        return `<a href="/logistica/gestion-logistica/requerimiento/elaboracion/index?id=${row.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${row.codigo}</a> ${row.tiene_transformacion==true?'<i class="fas fa-random text-danger" title="Con transformación"></i>':''} `;
+                        return `<a href="/logistica/gestion-logistica/requerimiento/elaboracion/index?id=${row.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${row.codigo}</a> ${row.tiene_transformacion == true ? '<i class="fas fa-random text-danger" title="Con transformación"></i>' : ''} `;
                         // return `<a class="lbl-codigo handleClickAbrirRequerimiento" title="Abrir Requerimiento" data-id-requerimiento="${row.id_requerimiento}">${row.codigo}</a> ${row.tiene_transformacion == true ? '<i class="fas fa-random text-danger" title="Con transformación"></i>' : ''}`;
                     }
                 },
@@ -1014,7 +1014,7 @@ class RequerimientoPendienteView {
             document.querySelector("form[id='form-nueva-reserva'] label[id='descripcion']").textContent = data.producto.descripcion != null ? data.producto.descripcion : (data.descripcion != null ? data.descripcion : '');
             document.querySelector("form[id='form-nueva-reserva'] label[id='cantidad']").textContent = data.cantidad;
             document.querySelector("form[id='form-nueva-reserva'] label[id='unidadMedida']").textContent = data.unidad_medida.descripcion;
-            document.querySelector("div[id='modal-nueva-reserva'] input[name='cantidadReserva']").value = parseFloat(document.querySelector("div[id='modal-nueva-reserva'] label[id='cantidad']").textContent)>0?document.querySelector("div[id='modal-nueva-reserva'] label[id='cantidad']").textContent:0; 
+            document.querySelector("div[id='modal-nueva-reserva'] input[name='cantidadReserva']").value = parseFloat(document.querySelector("div[id='modal-nueva-reserva'] label[id='cantidad']").textContent) > 0 ? document.querySelector("div[id='modal-nueva-reserva'] label[id='cantidad']").textContent : 0;
 
             this.listarTablaListaConReserva(data.reserva);
         } else {
@@ -1168,44 +1168,65 @@ class RequerimientoPendienteView {
 
     }
 
-    handleChangeObtenerStockAlmacen(obj){
-        if(obj.value>0){
-            const idProducto = document.querySelector("div[id='modal-nueva-reserva'] input[name='idProducto']").value;
-            const cantidadReserva = document.querySelector("div[id='modal-nueva-reserva'] input[name='cantidadReserva']").value >0?document.querySelector("div[id='modal-nueva-reserva'] input[name='cantidadReserva']").value:0;
-            $.ajax({
-                type: 'POST',
-                url: 'obtener-stock-almacen',
-                data: {'idAlmacen':obj.value,'idProducto':idProducto,'cantidadReserva':cantidadReserva},
-                dataType: 'JSON',
-                success: (response) => {
-                    Lobibox.notify('info', {
-                        title: 'Información de Stock',
-                        size: 'mini',
-                        rounded: true,
-                        sound: false,
-                        delay: 5000,
-                        delayIndicator: false,
-                        msg: `
-                        <ul>
-                            <li>Stock: ${response.stock} </li>
-                            <li>Saldo: ${response.saldo} </li>
-                        </ul>
-                        `
-                    });
-                },
-                fail: (jqXHR, textStatus, errorThrown) => {
-                    Swal.fire(
-                        '',
-                        'Lo sentimos hubo un error en el servidor al intentar consultar el stock del almacén seleccionado, por favor vuelva a intentarlo',
-                        'error'
-                    );
-                    console.log(jqXHR);
-                    console.log(textStatus);
-                    console.log(errorThrown);
-                }
-            });
-        }
- 
+    handleChangeObtenerStockAlmacen(obj) {
+
+        if (obj.value > 0) {
+            if(!document.getElementsByName("cantidadReserva")[0].value>0){
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Oops...',
+                    text: 'Primero debe ingresar una cantidad a reservar que sea mayor a cero',
+                });
+                    document.getElementsByName("cantidadReserva")[0].closest('div').classList.add('has-error');
+
+            }else{
+                document.getElementsByName("cantidadReserva")[0].closest('div').classList.remove('has-error');
+
+                const idProducto = document.querySelector("div[id='modal-nueva-reserva'] input[name='idProducto']").value;
+                const cantidadReserva = document.querySelector("div[id='modal-nueva-reserva'] input[name='cantidadReserva']").value > 0 ? document.querySelector("div[id='modal-nueva-reserva'] input[name='cantidadReserva']").value : 0;
+                $.ajax({
+                    type: 'POST',
+                    url: 'obtener-stock-almacen',
+                    data: { 'idAlmacen': obj.value, 'idProducto': idProducto, 'cantidadReserva': cantidadReserva },
+                    dataType: 'JSON',
+                    success: (response) => {
+    
+    
+                        Swal.fire({
+                            title: 'Información de Stock',
+                            html: `
+                                <h5 style="font-weight: bold; color:#356ed5;">Stock: ${response.stock} </h5>
+                                <h5 style="font-weight: bold; color:#d535c1;">Saldo: ${response.saldo} </h5>
+                            `,
+                            showDenyButton: false,
+                            showCancelButton: false,
+                            confirmButtonText: 'Ok',
+                            cancelButtonText: 'Cancelar',
+                            stopKeydownPropagation:true,
+                        }).then((result) => {
+                            /* Read more about isConfirmed, isDenied below */
+                            // if (!result.isConfirmed) {
+                            //     document.getElementsByName("cantidadReserva")[0].value='';
+                            // }else{
+                                
+                            // }
+                        })
+                    },
+                    fail: (jqXHR, textStatus, errorThrown) => {
+                        Swal.fire(
+                            '',
+                            'Lo sentimos hubo un error en el servidor al intentar consultar el stock del almacén seleccionado, por favor vuelva a intentarlo',
+                            'error'
+                        );
+                        console.log(jqXHR);
+                        console.log(textStatus);
+                        console.log(errorThrown);
+                    }
+                });
+            }
+
+            }
+
 
     }
     agregarReserva(obj) {

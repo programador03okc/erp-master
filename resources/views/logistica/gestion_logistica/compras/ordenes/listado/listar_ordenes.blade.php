@@ -23,7 +23,7 @@
 
     <fieldset class="group-table">
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-sm-3">
             <div class="input-group">
                 <div class="input-group-btn">
                     <button type="button" class="btn btn-default handleClickTipoVistaPorCabecera" id="btnTipoVistaPorCabecera" title="Ver tabla a nivel de cabecera"><i class="fas fa-columns"></i> Vista a nivel de Cabecera</button>
@@ -35,8 +35,8 @@
     </div>
 
     <div class="row" id="contenedor-tabla-nivel-cabecera">
-        <div class="col-md-12">
-            <table class="mytable table table-condensed table-bordered table-okc-view" id="listaOrdenes" style="font-size: 9px;">
+        <div class="col-sm-12">
+            <table class="mytable table table-condensed table-bordered table-okc-view" id="listaOrdenes" style="font-size: 0.9rem;">
                 <thead>
                     <tr>
                         <th></th>
@@ -68,8 +68,8 @@
     </div>
 
     <div class="row" id="contenedor-tabla-nivel-item">
-        <div class="col-md-12">
-            <table class="mytable table table-condensed table-bordered table-okc-view" id="listaDetalleOrden" style="font-size: 9px;">
+        <div class="col-sm-12">
+            <table class="mytable table table-condensed table-bordered table-okc-view" id="listaDetalleOrden" style="font-size: 0.9rem;">
                 <thead>
                     <tr>
                     <th >OC</th>
