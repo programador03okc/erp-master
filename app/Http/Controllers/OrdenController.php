@@ -2602,7 +2602,8 @@ class OrdenController extends Controller
             $orden->codigo =  Orden::nextCodigoOrden($tp_doc);
             $orden->id_grupo_cotizacion = $request->id_grupo_cotizacion?$request->id_grupo_cotizacion:null;
             $orden->id_tp_documento = $tp_doc;
-            $orden->fecha = new Carbon();
+            $orden->fecha = $request->fecha_emision?$request->fecha_emision:new Carbon();
+            $orden->fecha_registro = new Carbon();
             $orden->id_usuario = Auth::user()->id_usuario;
             $orden->id_moneda = $request->id_moneda?$request->id_moneda:null;
             $orden->incluye_igv = isset($request->incluye_igv)?$request->incluye_igv:true;
@@ -2985,6 +2986,7 @@ class OrdenController extends Controller
             $orden->id_tp_documento = ($request->id_tp_documento !== null ? $request->id_tp_documento : 2);
             $orden->id_usuario = Auth::user()->id_usuario;
             $orden->id_moneda = $request->id_moneda?$request->id_moneda:null;
+            $orden->fecha = $request->fecha_emision?$request->fecha_emision:new Carbon();
             $orden->incluye_igv = isset($request->incluye_igv)?$request->incluye_igv:true;
             $orden->id_proveedor = $request->id_proveedor;
             $orden->id_cta_principal = isset($request->id_cuenta_principal_proveedor)?$request->id_cuenta_principal_proveedor:null;
