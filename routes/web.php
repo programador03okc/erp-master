@@ -1198,6 +1198,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('ordenesPendientesExcel', 'Almacen\Movimiento\OrdenesPendientesController@ordenesPendientesExcel')->name('ordenesPendientesExcel');
 				Route::post('ingresosProcesadosExcel', 'Almacen\Movimiento\OrdenesPendientesController@ingresosProcesadosExcel')->name('ingresosProcesadosExcel');
 				Route::get('seriesExcel/{id}', 'Almacen\Movimiento\OrdenesPendientesController@seriesExcel');
+				Route::post('actualizarIngreso', 'Almacen\Movimiento\OrdenesPendientesController@actualizarIngreso');
 			});
 
 			Route::group(['as' => 'pendientes-salida.', 'prefix' => 'pendientes-salida'], function () {

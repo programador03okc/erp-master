@@ -2270,4 +2270,40 @@ class OrdenesPendientesController extends Controller
         return $pdf->stream();
         return $pdf->download('ingreso.pdf');
     }
+
+    public function actualizarIngreso(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            $id_usuario = Auth::user()->id_usuario;
+
+            DB::table('almacen.guia_com')->where('id_guia', $request->id_guia_com)
+                ->update(
+                    [
+                        'serie' => $request->ingreso_serie,
+                        'numero' => $request->ingreso_numero,
+                        'fecha_emision' => $request->ingreso_fecha_emision,
+                        'fecha_almacen' => $request->ingreso_fecha_almacen,
+                        // 'id_almacen' => $request->id_almacen
+                    ]
+                );
+
+            //Agrega motivo anulacion a la guia
+            DB::table('almacen.guia_com_obs')->insert(
+                [
+                    'id_guia_com' => $request->id_guia_com,
+                    'observacion' => $request->observacion,
+                    'registrado_por' => $id_usuario,
+                    'id_motivo_anu' => $request->id_motivo_cambio,
+                    'fecha_registro' => date('Y-m-d H:i:s')
+                ]
+            );
+            DB::commit();
+            return response()->json('ok');
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json('Algo salió mal. Inténtelo nuevamente.');
+        }
+    }
 }

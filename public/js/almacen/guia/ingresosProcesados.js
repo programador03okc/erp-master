@@ -199,21 +199,15 @@ function listarIngresos() {
                     if (acceso == "1") {
                         return (
                             '<div style="display:flex;"><button type="button" class="detalle btn btn-primary btn-xs btn-flat " data-toggle="tooltip" ' +
-                            'data-placement="bottom" title="Ver Detalle" data-id="' + row["id_guia_com"] + '" data-cod="' + row["codigo"] + '">' +
-                            '<i class="fas fa-list-ul"></i></button>' +
-                            // '<button type="button" class="ingreso btn btn-warning boton" data-toggle="tooltip" '+
-                            //     'data-placement="bottom" title="Ver Ingreso" data-id="'+row['id_mov_alm']+'">'+
-                            //     '<i class="fas fa-file-alt"></i></button>'+
-                            (row["id_operacion"] == 21 ? ""
-                                : `<button type="button" class="cambio btn btn-warning btn-xs btn-flat" data-toggle="tooltip" 
-                                    data-placement="bottom" title="Cambiar Serie-Número" data-id="${row["id_mov_alm"]}" 
-                                    data-guia="${row["id_guia_com"]}"><i class="fas fa-sync-alt"></i></button>`) +
+                            'data-placement="bottom" title="Ver Ingreso" data-id="' + row["id_guia_com"] + '" data-cod="' + row["codigo"] + '">' +
+                            '<i class="fas fa-eye"></i></button>' +
+                            // (row["id_operacion"] == 21 ? ""
+                            //     : `<button type="button" class="cambio btn btn-warning btn-xs btn-flat" data-toggle="tooltip" 
+                            //         data-placement="bottom" title="Cambiar Serie-Número" data-id="${row["id_mov_alm"]}" 
+                            //         data-guia="${row["id_guia_com"]}"><i class="fas fa-sync-alt"></i></button>`) +
                             `${row["count_sedes_diferentes"] > 0 || row["count_sedes_diferentes_od"] > 0
                                 ? row["count_transferencias"] == 0 //transferencia
                                     ?
-                                    // <button type="button" class="transferencia btn btn-success btn-xs btn-flat" data-toggle="tooltip" 
-                                    //         data-placement="bottom" title="Generar Transferencia" data-guia="${row["id_guia_com"]}">
-                                    //         <i class="fas fa-exchange-alt"></i></button>
                                     ` <button type="button" class="anular btn btn-danger btn-xs btn-flat " data-toggle="tooltip" 
                                                     data-placement="bottom" title="Anular Ingreso" data-id="${row["id_mov_alm"]}" 
                                                     data-guia="${row["id_guia_com"]}" data-oc="${row["id_orden_compra"]}">

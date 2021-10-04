@@ -4,7 +4,7 @@ function open_detalle_movimiento(data) {
     });
     console.log(data);
     $('#cabecera').text(data.codigo);
-    $('[name=id_guia_com_detalle]').val(data.id_guia_com);
+    $('[name=id_guia_com]').val(data.id_guia_com);
     $('[name=id_mov_alm]').val(data.id_mov_alm);
     $('#guia_com').text(data.serie + '-' + data.numero);
     $('[name=ingreso_serie]').val(data.serie);
@@ -12,13 +12,13 @@ function open_detalle_movimiento(data) {
     $('#almacen_descripcion').val(data.almacen_descripcion);
     $('#prov_razon_social').val(data.razon_social);
     $('#operacion_descripcion').val(data.operacion_descripcion);
-    $('[name=fecha_emision]').val(moment(data.fecha_emision_guia).format("YYYY-MM-DD"));
-    $('[name=fecha_almacen]').val(moment(data.fecha_emision).format("YYYY-MM-DD"));
-    $('#ordenes_compra').val(data.ordenes_compra);
+    $('[name=ingreso_fecha_emision]').val(moment(data.fecha_emision_guia).format("YYYY-MM-DD"));
+    $('[name=ingreso_fecha_almacen]').val(moment(data.fecha_emision).format("YYYY-MM-DD"));
+    $('#ordenes_compra').val(data.ordenes_compra + ' - SoftLink: ' + data.ordenes_soft_link);
     $('#responsable_nombre').text(data.nombre_corto);
     $('#requerimientos').val(data.requerimientos);
-    $('#ordenes_soft_link').text(data.ordenes_soft_link);
-
+    // $('#ordenes_soft_link').text(data.ordenes_soft_link);
+    $("#submit_ingreso").removeAttr("disabled");
     listar_detalle_movimiento(data.id_guia_com);
 }
 
@@ -83,6 +83,71 @@ function listar_detalle_movimiento(id_guia_com_detalle) {
     });
 }
 
+$("#form-ingreso").on("submit", function (e) {
+    console.log('submit');
+    e.preventDefault();
+
+    Swal.fire({
+        title: "¿Está seguro que desea actualizar éste Ingreso?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#00a65a", //"#3085d6",
+        cancelButtonColor: "#d33",
+        cancelButtonText: "Cancelar",
+        confirmButtonText: "Si, Actualizar"
+    }).then(result => {
+        if (result.isConfirmed) {
+
+            var data = $(this).serialize();
+            console.log(data);
+            $("#submit_ingreso").attr('disabled', 'true');
+
+            $.ajax({
+                type: 'POST',
+                url: 'actualizarIngreso',
+                data: data,
+                dataType: 'JSON',
+                success: function (response) {
+                    console.log(response);
+                    if (response == 'ok') {
+                        Lobibox.notify("success", {
+                            title: false,
+                            size: "mini",
+                            rounded: true,
+                            sound: false,
+                            delayIndicator: false,
+                            msg: 'Ingreso Almacén actualizado con éxito.'
+                        });
+                        $("#listaIngresosAlmacen").DataTable().ajax.reload(null, false);
+                        $('#modal-movAlmDetalle').modal('hide');
+                    } else {
+                        Swal.fire({
+                            title: response,
+                            icon: "error",
+                        }).then(result => {
+                            $("#submit_ingreso").removeAttr("disabled");
+                        });
+                    }
+                }
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            });
+        }
+    });
+});
+
 function exportarSeries(id_guia_com_det) {
     window.location.href = 'seriesExcel/' + id_guia_com_det;
+}
+
+function ingreso_ceros_numero(numero) {
+    if (numero == "numero") {
+        var num = $("[name=ingreso_numero]").val();
+        $("[name=ingreso_numero]").val(leftZero(7, num));
+    } else if (numero == "serie") {
+        var num = $("[name=ingreso_serie]").val();
+        $("[name=ingreso_serie]").val(leftZero(4, num));
+    }
 }
