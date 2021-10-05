@@ -747,9 +747,10 @@ class OrdenView {
     UpdateSelectUnidadMedida() {
         const AllTrTbodyListaDetalleOrden = document.querySelectorAll("table[id='listaDetalleOrden'] tbody tr");
         AllTrTbodyListaDetalleOrden.forEach(fila => {
-            // console.log(fila.querySelector("select[class~='unidadMedida']"));
-            let valorUnidad = fila.querySelector("select[class~='unidadMedida']").dataset.valor;
-            fila.querySelector("select[class~='unidadMedida']").value = valorUnidad;
+            if(fila.querySelector("select[class~='unidadMedida']")){
+                let valorUnidad = fila.querySelector("select[class~='unidadMedida']").dataset.valor;
+                fila.querySelector("select[class~='unidadMedida']").value = valorUnidad;
+            }
         });
     }
 
