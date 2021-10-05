@@ -4,7 +4,8 @@
             <form id="form-orden_despacho">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
-                    <h3 class="modal-title">Orden de Despacho Externo</h3>
+                    <h3 class="modal-title">Orden de Despacho Externo - <strong><span id="codigo_req"></span></strong> 
+                        </h3>
                 </div>
                 <div class="modal-body">
                     <input type="text" class="oculto" name="id_requerimiento">
@@ -12,6 +13,11 @@
                     <input type="text" class="oculto" name="id_cc"/>
                     <input type="text" class="oculto" name="tiene_transformacion"/>
                     <input type="date" class="oculto" name="fecha_entrega"/>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label>Concepto del Requerimiento:  </label> <span id="concepto"></span>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-6">
                             <h5>Almacén</h5>
@@ -98,7 +104,7 @@
                     
                 </div>
                 <div class="modal-footer">
-                    <input type="submit" id="submit_orden_despacho" class="btn btn-success" value="Guardar y Enviar"/>
+                    <input type="submit" id="submit_orden_despacho" class="btn btn-success" value="Guardar"/>
                 </div>
             </form>
         </div>

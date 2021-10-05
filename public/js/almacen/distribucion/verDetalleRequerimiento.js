@@ -15,7 +15,7 @@ function format(table_id, id, row) {
                         '<td style="border: none;">' + i + '</td>' +
                         '<td style="border: none;text-align:center">' + (element.producto_codigo !== null ? element.producto_codigo : '') + (element.tiene_transformacion ? ' <span class="badge badge-secondary">Transformado</span> ' : '') + '</td>' +
                         '<td style="border: none;text-align:center">' + (element.part_number !== null ? element.part_number : '') + '</td>' +
-                        '<td style="border: none;">' + (element.producto_descripcion !== null ? element.producto_descripcion : element.descripcion_adicional) + '</td>' +
+                        '<td style="border: none;">' + (element.producto_descripcion !== null ? element.producto_descripcion : (element.descripcion_adicional !== null ? element.descripcion_adicional : '(producto no mapeado)')) + '</td>' +
                         '<td style="border: none;text-align:center">' + element.cantidad + '</td>' +
                         '<td style="border: none;text-align:center">' + (element.abreviatura !== null ? element.abreviatura : '') + '</td>' +
                         // '<td style="border: none;">'+(element.suma_transferencias!==null?element.suma_transferencias:'')+'</td>'+

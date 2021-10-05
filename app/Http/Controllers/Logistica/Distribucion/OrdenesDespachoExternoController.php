@@ -43,7 +43,11 @@ class OrdenesDespachoExternoController extends Controller
                 'oc_propias_view.nro_orden',
                 'oc_propias_view.codigo_oportunidad',
                 'oc_propias_view.id as id_oc_propia',
-                'oc_propias_view.tipo'
+                'oc_propias_view.tipo',
+                DB::raw("(SELECT COUNT(*) FROM almacen.alm_det_req where
+                        alm_det_req.id_requerimiento = alm_req.id_requerimiento
+                        and alm_det_req.estado != 7
+                        and alm_det_req.id_producto is null) AS productos_no_mapeados")
             )
             // ->join('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'alm_reserva.id_detalle_requerimiento')
             // ->join('almacen.alm_req', function ($join) {
@@ -117,12 +121,12 @@ class OrdenesDespachoExternoController extends Controller
                         'id_cliente' => $request->id_cliente,
                         'id_persona' => ($request->id_persona > 0 ? $request->id_persona : null),
                         'id_almacen' => $request->id_almacen,
-                        'telefono' => $request->telefono_cliente,
+                        'telefono' => trim($request->telefono_cliente),
                         'codigo' => '-',
-                        'persona_contacto' => $request->persona_contacto,
+                        'persona_contacto' => trim($request->persona_contacto),
                         'ubigeo_destino' => $request->ubigeo,
-                        'direccion_destino' => $request->direccion_destino,
-                        'correo_cliente' => $request->correo_cliente,
+                        'direccion_destino' => trim($request->direccion_destino),
+                        'correo_cliente' => trim($request->correo_cliente),
                         'fecha_despacho' => date('Y-m-d'),
                         'hora_despacho' => date('H:i:s'),
                         'fecha_entrega' => $request->fecha_entrega,

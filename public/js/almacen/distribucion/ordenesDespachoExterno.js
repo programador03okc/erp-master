@@ -67,8 +67,12 @@ function listarRequerimientosPendientes() {
                     return `<div style="display:flex;">
                         <button type="button" class="detalle btn btn-default btn-flat boton" data-toggle="tooltip"
                         data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}">
-                        <i class="fas fa-chevron-down"></i></button>`+
-                        (row['id_od'] == null
+                        <i class="fas fa-chevron-down"></i></button>
+
+                        <button type="button" class="trazabilidad btn btn-warning btn-flat boton" data-toggle="tooltip"
+                        data-placement="bottom" title="Ver Trazabilidad de Docs" disabled data-id="${row['id_requerimiento']}">
+                        <i class="fas fa-route"></i></button>`+
+                        ((row['id_od'] == null && row['productos_no_mapeados'] == 0)
                             // ((row['tiene_transformacion'] && row['estado'] == 10) ||
                             //     (!row['tiene_transformacion'] && row['estado'] == 28))
                             ? //venta directa con transferencia
@@ -79,7 +83,7 @@ function listarRequerimientosPendientes() {
                             `<button type="button" class="anular_od btn btn-flat btn-danger boton" data-toggle="tooltip" 
                                     data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Anular Orden Despacho" >
                                     <i class="fas fa-trash"></i></button>` : '') +
-                        (row["nro_orden"] !== null
+                        (row["nro_orden"] !== null && row['productos_no_mapeados'] == 0
                             ? `<button type="button" class="facturar btn btn-${row["enviar_facturacion"] ? "info" : "default"} 
                                     boton" data-toggle="tooltip" data-placement="bottom" title="Enviar a Facturación" 
                                     data-id="${row["id_requerimiento"]}" data-cod="${row["codigo"]}">
@@ -172,6 +176,13 @@ $('#requerimientosEnProceso tbody').on("click", "button.anular_od", function () 
             anularOrdenDespacho(id);
         }
     });
+});
+
+$("#requerimientosEnProceso tbody").on("click", "button.trazabilidad", function () {
+    var id = $(this).data("id");
+    // $('#modal-trazabilidadDocs').modal({
+    //     show: true
+    // });
 });
 
 function enviarFacturar(id, proviene) {
