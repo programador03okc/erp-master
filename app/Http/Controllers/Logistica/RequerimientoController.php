@@ -582,7 +582,7 @@ class RequerimientoController extends Controller
         try {
 
             $requerimiento = new Requerimiento();
-            $requerimiento->codigo =  Requerimiento::crearCodigo($request->tipo_requerimiento, $request->id_grupo);
+            // $requerimiento->codigo =  Requerimiento::crearCodigo($request->tipo_requerimiento, $request->id_grupo);
             $requerimiento->id_tipo_requerimiento = $request->tipo_requerimiento;
             $requerimiento->id_usuario = Auth::user()->id_usuario;
             $requerimiento->id_rol = $request->id_rol > 0 ? $request->id_rol : null;
@@ -618,7 +618,6 @@ class RequerimientoController extends Controller
             $requerimiento->tiene_transformacion = $request->tiene_transformacion ? $request->tiene_transformacion : false;
             $requerimiento->fuente_id = $request->fuente;
             $requerimiento->fuente_det_id = $request->fuente_det;
-            // $requerimiento->para_stock_almacen = $request->para_stock_almacen;
             $requerimiento->division_id = $request->division;
             $requerimiento->trabajador_id = $request->id_trabajador;
             $requerimiento->save();
@@ -727,8 +726,13 @@ class RequerimientoController extends Controller
             }
 
             DB::commit();
-            // TODO: ENVIAR CORREO AL APROBADOR DE ACUERDO AL MONTO SELECCIONADO DEL REQUERIMIENTO
-            return response()->json(['id_requerimiento' => $requerimiento->id_requerimiento, 'mensaje' => 'Se guardó el requerimiento con código '.$requerimiento->codigo]);
+
+            $codigo= Requerimiento::crearCodigo($request->tipo_requerimiento,$request->id_grupo, $requerimiento->id_requerimiento);
+            $requerimiento = Requerimiento::find($requerimiento->id_requerimiento);
+            $requerimiento->codigo =$codigo;
+            $requerimiento->save();
+    
+            return response()->json(['id_requerimiento' => $requerimiento->id_requerimiento, 'mensaje' => 'Se guardó el requerimiento '.$codigo]);
         } catch (Exception $e) {
             DB::rollBack();
             return response()->json(['id_requerimiento' => 0, 'mensaje' => 'Hubo un problema al guardar el requerimiento. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
