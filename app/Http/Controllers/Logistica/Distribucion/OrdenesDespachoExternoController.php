@@ -79,7 +79,7 @@ class OrdenesDespachoExternoController extends Controller
         return datatables($data)->toJson();
     }
 
-    public function ODnextId($fecha_despacho, $id_almacen, $aplica_cambios, $id)
+    public static function ODnextId($fecha_despacho, $id_almacen, $aplica_cambios, $id)
     {
         $yyyy = date('Y', strtotime($fecha_despacho));
         $yy = date('y', strtotime($fecha_despacho));
@@ -293,7 +293,7 @@ class OrdenesDespachoExternoController extends Controller
             $msj = 'Se guardó existosamente la Orden de Despacho';
             DB::commit();
 
-            $codigo = $this->ODnextId(date('Y-m-d'), $request->id_almacen, false, $id_od);
+            $codigo = OrdenesDespachoExternoController::ODnextId(date('Y-m-d'), $request->id_almacen, false, $id_od);
 
             if ($codigo !== null) {
                 DB::table('almacen.orden_despacho')
