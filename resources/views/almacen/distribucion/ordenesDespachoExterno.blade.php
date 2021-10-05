@@ -2,7 +2,7 @@
 @include('layout.menu_logistica')
 
 @section('cabecera')
-Requerimientos pendientes de Despacho
+Gestión de Despachos
 @endsection
 
 @section('breadcrumb')

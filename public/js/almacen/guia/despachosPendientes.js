@@ -76,7 +76,6 @@ function listarDespachosPendientes(permiso) {
             { 'data': 'fecha_despacho' },
             { 'data': 'nombre_corto', 'name': 'sis_usua.nombre_corto' }
         ],
-        // 'order': [[2, "desc"], [3, "desc"]],
         'columnDefs': [
             { 'aTargets': [0], 'sClass': 'invisible' },
             {
@@ -97,6 +96,7 @@ function listarDespachosPendientes(permiso) {
                 }, targets: 11
             }
         ],
+        'order': [[0, "desc"]],
     });
 }
 

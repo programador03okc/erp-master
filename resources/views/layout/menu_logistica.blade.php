@@ -152,7 +152,7 @@
         </a>
         <ul class="treeview-menu">
             <li><a href="{{route('logistica.distribucion.ordenes-transformacion.index')}}"><i class="far fa-circle fa-xs"></i> Orden de Transformación </a></li>
-            <li><a href="{{route('logistica.distribucion.ordenes-despacho-externo.index')}}"><i class="far fa-circle fa-xs"></i> Orden de Despacho </a></li>
+            <li><a href="{{route('logistica.distribucion.ordenes-despacho-externo.index')}}"><i class="far fa-circle fa-xs"></i> Gestión de Despachos </a></li>
             @if(Auth::user()->tieneAplicacion(80))
             <li><a href="{{route('logistica.distribucion.despachos.index')}}"><i class="far fa-circle fa-xs"></i> Panel de Control </a></li>
             @endif

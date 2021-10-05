@@ -29,27 +29,10 @@
                                 <input type="text" class="form-control" name="dni_persona" style="width: 130px;" readOnly>
                                 <input type="text" class="form-control" name="nombre_persona" readOnly>
 
-                                {{-- <button type="button" title="Seleccionar Cliente" name="btnCliente" 
-                                onClick="openCliente();" class="input-group-text btn-primary" >
-                                <i class="fas fa-user-tie"></i></button>
-
-                                <button type="button" class="btn-success" title="Agregar Cliente" name="btnAddCliente" 
-                                onClick="agregar_cliente();">
-                                <i class="fas fa-plus"></i></button> --}}
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        {{-- <div class="col-md-2">
-                            <h5>Tipo Cliente</h5>
-                            <div class="input-group-okc">
-                                <select name="tipo_cliente" onChange="changeTipoCliente(event);"
-                                    class="form-control" style="width:100px" required>
-                                    <option value="1" default>Persona Natural</option>
-                                    <option value="2">Persona Juridica</option>
-                                </select>
-                            </div>
-                        </div> --}}
                         <div class="col-md-6">
                             <h5>Persona Contacto</h5>
                             <input type="text" class="form-control" name="persona_contacto" >
@@ -98,13 +81,6 @@
                                     <h5>Teléfono</h5>
                                     <input type="text" class="form-control" name="telefono_cliente" >
                                 </div>
-                                <!-- <div class="col-md-3">
-                                    <h5>Tipo de Entrega</h5>
-                                    <select class="form-control" name="tipo_entrega">
-                                        <option value="MISMA CIUDAD">MISMA CIUDAD</option>
-                                        <option value="OTRAS CIUDADES">OTRAS CIUDADES</option>
-                                    </select>
-                                </div> -->
                                 <input class="oculto" name="aplica_cambios_valor"/>
                                 <input class="oculto" type="checkbox" name="aplica_cambios" id="aplica_cambios" 
                                 style="margin-right: 10px; margin-left: 7px;"/> 

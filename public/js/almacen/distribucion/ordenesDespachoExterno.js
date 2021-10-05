@@ -68,21 +68,23 @@ function listarRequerimientosPendientes() {
                         <button type="button" class="detalle btn btn-default btn-flat boton" data-toggle="tooltip"
                         data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}">
                         <i class="fas fa-chevron-down"></i></button>`+
-                        (
-                            ((row['tiene_transformacion'] && row['estado'] == 10) ||
-                                (!row['tiene_transformacion'] && row['estado'] == 28))
-                                ? //venta directa con transferencia
-                                `<button type="button" class="despacho btn btn-success btn-flat boton" data-toggle="tooltip"
+                        (row['id_od'] == null
+                            // ((row['tiene_transformacion'] && row['estado'] == 10) ||
+                            //     (!row['tiene_transformacion'] && row['estado'] == 28))
+                            ? //venta directa con transferencia
+                            `<button type="button" class="despacho btn btn-success btn-flat boton" data-toggle="tooltip"
                                 data-placement="bottom" title="Generar Orden de Despacho" >
-                                <i class="fas fa-sign-in-alt"></i></button>` :
-                                (row['id_od'] !== null && row['estado_od'] == '1') ?
-                                    `<button type="button" class="anular_od btn btn-flat btn-danger boton" data-toggle="tooltip" 
+                                <i class="fas fa-sign-in-alt"></i></button>` : '') +
+                        ((row['id_od'] !== null && row['estado_od'] == '1') ?
+                            `<button type="button" class="anular_od btn btn-flat btn-danger boton" data-toggle="tooltip" 
                                     data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Anular Orden Despacho" >
                                     <i class="fas fa-trash"></i></button>` : '') +
-                        `<button type="button" class="facturar btn btn-${row["enviar_facturacion"] ? "info" : "default"} 
-                        boton" data-toggle="tooltip" data-placement="bottom" title="Enviar a Facturación" 
-                        data-id="${row["id_requerimiento"]}" data-cod="${row["codigo"]}">
-                        <i class="fas fa-check"></i></button>`
+                        (row["nro_orden"] !== null
+                            ? `<button type="button" class="facturar btn btn-${row["enviar_facturacion"] ? "info" : "default"} 
+                                    boton" data-toggle="tooltip" data-placement="bottom" title="Enviar a Facturación" 
+                                    data-id="${row["id_requerimiento"]}" data-cod="${row["codigo"]}">
+                                    <i class="fas fa-file-upload"></i></button>`
+                            : '')
                         + '</div>'
 
                 }, targets: 10

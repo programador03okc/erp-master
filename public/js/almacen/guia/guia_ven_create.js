@@ -15,6 +15,7 @@ function open_guia_create(data) {
         $('#name_title').addClass('blue');
     }
     console.log(data);
+    $('#codigo_req').text(data.codigo_req);
     $('[name=id_guia_clas]').val(1);
     $('[name=id_od]').val(data.id_od);
     $('[name=id_almacen]').val(data.id_almacen);
@@ -29,7 +30,7 @@ function open_guia_create(data) {
     // $('#serie').text('');
     // $('#numero').text('');
     detalle = [];
-    listarDetalleOrdenDespacho(data.id_od);
+    listarDetalleOrdenDespacho(data.id_od, data.tiene_transformacion);
     // cargar_almacenes(data.id_sede, 'id_almacen');
     // var tp_doc_almacen = 2;//guia venta
     // next_serie_numero(data.id_sede,tp_doc_almacen);
@@ -37,15 +38,31 @@ function open_guia_create(data) {
 
 let detalle = [];
 
-function listarDetalleOrdenDespacho(id_od) {
+function listarDetalleOrdenDespacho(id_od, tiene_transformacion) {
     detalle = [];
+    console.log('verDetalleDespacho/' + id_od + '/' + tiene_transformacion);
     $.ajax({
         type: 'GET',
-        url: 'verDetalleDespacho/' + id_od,
+        url: 'verDetalleDespacho/' + id_od + '/' + tiene_transformacion,
         dataType: 'JSON',
         success: function (response) {
             console.log(response);
-            detalle = response;
+            response.forEach(element => {
+                detalle.push({
+                    'id_od_detalle': element.id_od_detalle,
+                    'id_detalle_requerimiento': element.id_detalle_requerimiento,
+                    'id_producto': element.id_producto,
+                    'id_unidad_medida': element.id_unidad_medida,
+                    'codigo': element.codigo,
+                    'part_number': element.part_number,
+                    'descripcion': element.descripcion,
+                    'cantidad': element.cantidad,
+                    'abreviatura': element.abreviatura,
+                    'control_series': element.control_series,
+                    'series': []
+                })
+            });
+            // detalle = response;
             mostrar_detalle();
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {
@@ -72,7 +89,6 @@ function mostrar_detalle() {
                 }
             }
         });
-        console.log('guia ' + element.id_guia_com_det + ' prod ' + element.id_producto);
         html += `<tr>
         <td>${i}</td>
         <td><a href="#" class="verProducto" data-id="${element.id_producto}" >${element.codigo}</a></td>
