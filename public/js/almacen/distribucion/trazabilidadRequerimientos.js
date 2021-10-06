@@ -230,7 +230,7 @@ $('#listaRequerimientosTrazabilidad tbody').on('click', 'td button.detalle', fun
 function abrir_requerimiento(id_requerimiento) {
     // Abrir nuevo tab
     localStorage.setItem("id_requerimiento", id_requerimiento);
-    let url = "/logistica/gestion-logistica/requerimiento/elaboracion/index";
+    let url = "/necesidades/requerimiento/elaboracion/index";
     var win = window.open(url, '_blank');
     // Cambiar el foco al nuevo tab (punto opcional)
     win.focus();

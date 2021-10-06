@@ -1789,7 +1789,7 @@ function despacho_conforme(data) {
 function abrirRequerimiento(idRequerimiento) {
     // Abrir nuevo tab
     localStorage.setItem("idRequerimiento", idRequerimiento);
-    let url = "/logistica/gestion-logistica/requerimiento/elaboracion/index";
+    let url = "/necesidades/requerimiento/elaboracion/index";
     var win = window.open(url, "_blank");
     // Cambiar el foco al nuevo tab (punto opcional)
     win.focus();

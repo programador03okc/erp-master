@@ -353,7 +353,7 @@ class ListarRequerimientoView {
                 {
                     'render': function (data, type, row) {
                         // return `<label class="lbl-codigo handleClickAbrirRequerimiento" title="Abrir Requerimiento">${row.codigo}</label>`;
-                        return `<a href="/logistica/gestion-logistica/requerimiento/elaboracion/index?id=${row.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${row.codigo}</a> ${row.tiene_transformacion==true?'<i class="fas fa-random text-danger" title="Con transformación"></i>':''} `;
+                        return `<a href="/necesidades/requerimiento/elaboracion/index?id=${row.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${row.codigo}</a> ${row.tiene_transformacion==true?'<i class="fas fa-random text-danger" title="Con transformación"></i>':''} `;
                     }, targets: 2
                 },
                 {
@@ -720,7 +720,7 @@ class ListarRequerimientoView {
 
     abrirRequerimiento(idRequerimiento) {
         localStorage.setItem('idRequerimiento', idRequerimiento);
-        let url = "/logistica/gestion-logistica/requerimiento/elaboracion/index";
+        let url = "/necesidades/requerimiento/elaboracion/index";
         var win = window.open(url, "_self");
         win.focus();
     }

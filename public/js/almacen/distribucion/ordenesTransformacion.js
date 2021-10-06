@@ -99,7 +99,7 @@ $("#requerimientosEnProceso tbody").on("click", "a.verRequerimiento", function (
     $(e.preventDefault());
     var id = $(this).data("id");
     localStorage.setItem("idRequerimiento", id);
-    let url = "/logistica/gestion-logistica/requerimiento/elaboracion/index";
+    let url = "/necesidades/requerimiento/elaboracion/index";
     var win = window.open(url, "_blank");
     win.focus();
 });
@@ -249,7 +249,7 @@ $('#requerimientosEnProceso tbody').on('click', 'td button.detalle', function ()
 
 function abrir_requerimiento(id_requerimiento) {
     localStorage.setItem("id_requerimiento", id_requerimiento);
-    let url = "/logistica/gestion-logistica/requerimiento/elaboracion/index";
+    let url = "/necesidades/requerimiento/elaboracion/index";
     var win = window.open(url, '_blank');
     win.focus();
 }

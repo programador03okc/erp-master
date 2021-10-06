@@ -428,7 +428,7 @@ class ListaOrdenView {
                         let labelRequerimiento = '';
                         if (row.requerimientos != undefined && row.requerimientos.length > 0) {
                             (row.requerimientos).forEach(element => {
-                                labelRequerimiento += `<a href="/logistica/gestion-logistica/requerimiento/elaboracion/index?id=${element.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${element.codigo??''}</a>`;
+                                labelRequerimiento += `<a href="/necesidades/requerimiento/elaboracion/index?id=${element.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${element.codigo??''}</a>`;
 
                                 
                             });
@@ -657,7 +657,7 @@ class ListaOrdenView {
                     <td style="border: none;">${element.codigo_oportunidad !== null ? element.codigo_oportunidad : ''}</td>
                     <td style="border: none;">${element.nombre_entidad !== null ? element.nombre_entidad : ''}</td>
                     <td style="border: none;">${element.nombre_corto_responsable !== null ? element.nombre_corto_responsable : ''}</td>
-                    <td style="border: none;"><a href="/logistica/gestion-logistica/requerimiento/elaboracion/index?id=${element.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${element.codigo_req??''}</a></td>
+                    <td style="border: none;"><a href="/necesidades/requerimiento/elaboracion/index?id=${element.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${element.codigo_req??''}</a></td>
                     <td style="border: none;">${element.codigo ?? ''}</td>
                     <td style="border: none;">${element.part_number ?? ''}</td>
                     <td style="border: none;">${element.descripcion ? element.descripcion : (element.descripcion_adicional ? element.descripcion_adicional : '')}</td>
@@ -707,13 +707,13 @@ class ListaOrdenView {
     }
 
     abrirRequerimientoPDF(idRequerimiento) {
-        let url = `/logistica/gestion-logistica/requerimiento/elaboracion/imprimir-requerimiento-pdf/${idRequerimiento}/0`;
+        let url = `/necesidades/requerimiento/elaboracion/imprimir-requerimiento-pdf/${idRequerimiento}/0`;
         var win = window.open(url, "_blank");
         win.focus();
     }
     abrirRequerimiento(idRequerimiento) {
         localStorage.setItem('idRequerimiento', idRequerimiento);
-        let url = "/logistica/gestion-logistica/requerimiento/elaboracion/index";
+        let url = "/necesidades/requerimiento/elaboracion/index";
         var win = window.open(url, "_blank");
         win.focus();
     }
