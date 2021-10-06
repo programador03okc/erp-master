@@ -247,6 +247,7 @@ class Requerimiento extends Model
                 $total_estado_atentido_total= 0;
                 $total_estado_atentido_parcial= 0;
                 $total_estado_almacen_total= 0;
+                $total_estado_almacen_parcial= 0;
                 $alm_det_req = DB::table('almacen.alm_det_req')
                 ->select(
                     'alm_det_req.*'
@@ -274,6 +275,9 @@ class Requerimiento extends Model
                         if($det_req->estado == '28' ){
                             $total_estado_almacen_total +=1;
                         }
+                        if($det_req->estado == '27' ){
+                            $total_estado_almacen_parcial +=1;
+                        }
                 }
                 if($total_estado_elaborado >0){
                     DB::table('almacen.alm_req')
@@ -290,6 +294,16 @@ class Requerimiento extends Model
                     ->update(
                         [ 
                             'estado' => 15 // atendido parcial
+                        ]);
+                        $estadoActual=['id'=>15,'descripcion'=>'Atendido parcial'];
+        
+                }
+                elseif($total_estado_elaborado ==0 && $total_estado_almacen_parcial > 0){
+                    DB::table('almacen.alm_req')
+                    ->where('alm_req.id_requerimiento',$idRequerimiento)
+                    ->update(
+                        [ 
+                            'estado' => 27 // almacen parcial
                         ]);
                         $estadoActual=['id'=>15,'descripcion'=>'Atendido parcial'];
         
