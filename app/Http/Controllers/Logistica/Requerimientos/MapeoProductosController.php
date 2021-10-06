@@ -127,6 +127,8 @@ class MapeoProductosController extends Controller
             }
             if($cantidadAnulado >0){
                 $mensaje[]=' se anulo ('.$cantidadAnulado.') item(s)';
+                //TODO: revisar si actualizar estado de requerimiento
+                Requerimiento::actualizarEstadoRequerimientoAtendido([$DetalleRequerimiento->id_requerimiento]);
             }
     
 
