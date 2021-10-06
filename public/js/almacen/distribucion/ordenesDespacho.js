@@ -7,11 +7,6 @@ function grupoDespachoTransportistaModal() {
     proveedorModal();
 }
 
-// function transportistaModal() {
-//     origen_tr = "transportista";
-//     proveedorModal();
-// }
-
 function addProveedorModal() {
     origen_tr = "transportista";
     agregar_proveedor();
@@ -38,7 +33,6 @@ function iniciar(permiso) {
         $("#" + activeForm).attr("form", "formulario");
         changeStateInput(activeForm, true);
 
-        // clearDataTable();
         if (activeForm == "form-elaborados") {
             listarRequerimientosElaborados();
             od_seleccionadas = [];
@@ -81,34 +75,22 @@ function actualizaCantidadDespachosTabs() {
         success: function (response) {
             console.log(response);
             $("#selaborados").text(
-                response["count_pendientes"] > 0
-                    ? response["count_pendientes"]
-                    : ""
+                response["count_pendientes"] > 0 ? response["count_pendientes"] : ""
             );
             $("#sconfirmados").text(
-                response["count_confirmados"] > 0
-                    ? response["count_confirmados"]
-                    : ""
+                response["count_confirmados"] > 0 ? response["count_confirmados"] : ""
             );
             $("#spendientes").text(
-                response["count_en_proceso"] > 0
-                    ? response["count_en_proceso"]
-                    : ""
+                response["count_en_proceso"] > 0 ? response["count_en_proceso"] : ""
             );
             $("#stransformados").text(
-                response["count_en_transformacion"] > 0
-                    ? response["count_en_transformacion"]
-                    : ""
+                response["count_en_transformacion"] > 0 ? response["count_en_transformacion"] : ""
             );
             $("#sdespachos").text(
-                response["count_por_despachar"] > 0
-                    ? response["count_por_despachar"]
-                    : ""
+                response["count_por_despachar"] > 0 ? response["count_por_despachar"] : ""
             );
             $("#ssinTransporte").text(
-                response["count_despachados"] > 0
-                    ? response["count_despachados"]
-                    : ""
+                response["count_despachados"] > 0 ? response["count_despachados"] : ""
             );
             $("#sretornoCargo").text(
                 response["count_cargo"] > 0 ? response["count_cargo"] : ""
@@ -520,61 +502,43 @@ function listarRequerimientosPendientes(permiso) {
             { aTargets: [0], sClass: "invisible" },
             {
                 render: function (data, type, row) {
-                    // if (permiso == '1') {
                     return (
                         '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" ' +
                         'data-placement="bottom" title="Ver Detalle" data-id="' +
-                        row["id_requerimiento"] + '"><i class="fas fa-chevron-down"></i></button>' +
-                        // (row["estado"] == 19 &&
-                        //     row["id_tipo_requerimiento"] == 2 &&
-                        //     row["id_od"] == null &&
-                        //     row["confirmacion_pago"] == false
-                        //     ? '<button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" ' +
-                        //     'data-placement="bottom" data-id="' +
-                        //     row["id_requerimiento"] +
-                        //     '" data-cod="' +
-                        //     row["codigo"] +
-                        //     '" title="Anular Requerimiento" >' +
-                        //     '<i class="fas fa-trash"></i></button>'
-                        //     : "") + 
-                        ((row["estado"] == 28 && row["tiene_transformacion"] == false) ||
-                            (row["estado"] == 19 && row["id_tipo_requerimiento"] !== 1) ||
-                            (row["estado"] == 19 && row["confirmacion_pago"] == true && row["count_transferencia"] == 0) || //venta directa
-                            (row["estado"] == 19 && row["confirmacion_pago"] == true && row["count_transferencia"] > 0 &&
-                                row["count_transferencia"] == row["count_transferencia_recibida"]) //venta directa con transferencia
-                            ? '<button type="button" class="despacho btn btn-success boton" data-toggle="tooltip" ' +
-                            'data-placement="bottom" title="Generar Orden de Despacho" >' +
-                            '<i class="fas fa-sign-in-alt"></i></button>'
-                            : row["id_od"] !== null && row["estado_od"] == 1
-                                ? `<button type="button" class="adjuntar btn btn-${row["count_despacho_adjuntos"] > 0
-                                    ? "warning"
-                                    : "default"
-                                } boton" data-toggle="tooltip" 
-                                data-placement="bottom" data-id="${row["id_od"]
-                                }" data-cod="${row["codigo_od"]
-                                }" title="Adjuntar Boleta/Factura" >
-                                <i class="fas fa-paperclip"></i></button>
-                            <button type="button" class="anular_od btn btn-danger boton" data-toggle="tooltip" 
-                                data-placement="bottom" data-id="${row["id_od"]
-                                }" data-cod="${row["codigo_od"]
-                                }" title="Anular Orden Despacho" >
-                                <i class="fas fa-trash"></i></button>`
-                                : "") +
-                        (row["estado"] == 9
-                            ? `<button type="button" class="adjuntar btn btn-${row["count_despacho_adjuntos"] > 0
-                                ? "warning" : "default"} boton" data-toggle="tooltip" data-placement="bottom" data-id="${row["id_od"]}" 
-                                data-cod="${row["codigo_od"]}" title="Adjuntar Boleta/Factura" >
-                                <i class="fas fa-paperclip"></i></button>` : "") +
-                        `<button type="button" class="facturar btn btn-${row["enviar_facturacion"] ? "info" : "default"} 
-                        boton" data-toggle="tooltip" data-placement="bottom" title="Enviar a Facturación" 
-                        data-id="${row["id_requerimiento"]}" data-cod="${row["codigo"]}">
-                        <i class="fas fa-check"></i></button>`
+                        row["id_requerimiento"] + '"><i class="fas fa-chevron-down"></i></button>'
+                        // ((row["estado"] == 28 && row["tiene_transformacion"] == false) ||
+                        //     (row["estado"] == 19 && row["id_tipo_requerimiento"] !== 1) ||
+                        //     (row["estado"] == 19 && row["confirmacion_pago"] == true && row["count_transferencia"] == 0) || //venta directa
+                        //     (row["estado"] == 19 && row["confirmacion_pago"] == true && row["count_transferencia"] > 0 &&
+                        //         row["count_transferencia"] == row["count_transferencia_recibida"]) //venta directa con transferencia
+                        //     ? '<button type="button" class="despacho btn btn-success boton" data-toggle="tooltip" ' +
+                        //     'data-placement="bottom" title="Generar Orden de Despacho" >' +
+                        //     '<i class="fas fa-sign-in-alt"></i></button>'
+                        //     : row["id_od"] !== null && row["estado_od"] == 1
+                        //         ? `<button type="button" class="adjuntar btn btn-${row["count_despacho_adjuntos"] > 0
+                        //             ? "warning"
+                        //             : "default"
+                        //         } boton" data-toggle="tooltip" 
+                        //         data-placement="bottom" data-id="${row["id_od"]
+                        //         }" data-cod="${row["codigo_od"]
+                        //         }" title="Adjuntar Boleta/Factura" >
+                        //         <i class="fas fa-paperclip"></i></button>
+                        //     <button type="button" class="anular_od btn btn-danger boton" data-toggle="tooltip" 
+                        //         data-placement="bottom" data-id="${row["id_od"]
+                        //         }" data-cod="${row["codigo_od"]
+                        //         }" title="Anular Orden Despacho" >
+                        //         <i class="fas fa-trash"></i></button>`
+                        //         : "") +
+                        // (row["estado"] == 9
+                        //     ? `<button type="button" class="adjuntar btn btn-${row["count_despacho_adjuntos"] > 0
+                        //         ? "warning" : "default"} boton" data-toggle="tooltip" data-placement="bottom" data-id="${row["id_od"]}" 
+                        //         data-cod="${row["codigo_od"]}" title="Adjuntar Boleta/Factura" >
+                        //         <i class="fas fa-paperclip"></i></button>` : "") +
+                        // `<button type="button" class="facturar btn btn-${row["enviar_facturacion"] ? "info" : "default"} 
+                        // boton" data-toggle="tooltip" data-placement="bottom" title="Enviar a Facturación" 
+                        // data-id="${row["id_requerimiento"]}" data-cod="${row["codigo"]}">
+                        // <i class="fas fa-check"></i></button>`
                     );
-                    // } else {
-                    //     return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
-                    //     'data-placement="bottom" title="Ver Detalle" data-id="'+row['id_requerimiento']+'">'+
-                    //     '<i class="fas fa-chevron-down"></i></button>'
-                    // }
                 },
                 targets: 14
             }
@@ -582,17 +546,17 @@ function listarRequerimientosPendientes(permiso) {
     });
 }
 
-$("#requerimientosEnProceso tbody").on("click", "button.facturar", function () {
-    var id = $(this).data("id");
-    var cod = $(this).data("cod");
-    var rspta = confirm(
-        "¿Está seguro que desea mandar a facturar el " + cod + "?"
-    );
+// $("#requerimientosEnProceso tbody").on("click", "button.facturar", function () {
+//     var id = $(this).data("id");
+//     var cod = $(this).data("cod");
+//     var rspta = confirm(
+//         "¿Está seguro que desea mandar a facturar el " + cod + "?"
+//     );
 
-    if (rspta) {
-        enviarFacturar(id, "enProceso");
-    }
-});
+//     if (rspta) {
+//         enviarFacturar(id, "enProceso");
+//     }
+// });
 
 $("#requerimientosEnProceso tbody").on("click", "button.detalle_trans", function () {
     var id = $(this).data("id");
@@ -600,99 +564,99 @@ $("#requerimientosEnProceso tbody").on("click", "button.detalle_trans", function
 }
 );
 
-$("#requerimientosEnProceso tbody").on("click", "button.adjuntar", function () {
-    var id = $(this).data("id");
-    var cod = $(this).data("cod");
-    $("#modal-despachoAdjuntos").modal({
-        show: true
-    });
-    listarAdjuntos(id);
-    $("[name=id_od]").val(id);
-    $("[name=codigo_od]").val(cod);
-    $("[name=descripcion]").val("");
-    $("[name=archivo_adjunto]").val("");
-    $("[name=proviene_de]").val("enProceso");
-});
+// $("#requerimientosEnProceso tbody").on("click", "button.adjuntar", function () {
+//     var id = $(this).data("id");
+//     var cod = $(this).data("cod");
+//     $("#modal-despachoAdjuntos").modal({
+//         show: true
+//     });
+//     listarAdjuntos(id);
+//     $("[name=id_od]").val(id);
+//     $("[name=codigo_od]").val(cod);
+//     $("[name=descripcion]").val("");
+//     $("[name=archivo_adjunto]").val("");
+//     $("[name=proviene_de]").val("enProceso");
+// });
 
-$("#requerimientosEnProceso tbody").on("click", "button.anular", function () {
-    var id = $(this).data("id");
-    var cod = $(this).data("cod");
-    var origen = "despacho";
-    openRequerimientoObs(id, cod, origen);
-});
+// $("#requerimientosEnProceso tbody").on("click", "button.anular", function () {
+//     var id = $(this).data("id");
+//     var cod = $(this).data("cod");
+//     var origen = "despacho";
+//     openRequerimientoObs(id, cod, origen);
+// });
 
-$("#requerimientosEnProceso tbody").on("click", "button.despacho", function () {
-    var data = $("#requerimientosEnProceso")
-        .DataTable()
-        .row($(this).parents("tr"))
-        .data();
-    console.log(data);
-    tab_origen = "enProceso";
-    open_despacho_create(data);
-});
+// $("#requerimientosEnProceso tbody").on("click", "button.despacho", function () {
+//     var data = $("#requerimientosEnProceso")
+//         .DataTable()
+//         .row($(this).parents("tr"))
+//         .data();
+//     console.log(data);
+//     tab_origen = "enProceso";
+//     open_despacho_create(data);
+// });
 
-$("#requerimientosEnProceso tbody").on("click", "button.anular_od", function () {
-    var id = $(this).data("id");
-    var cod = $(this).data("cod");
-    var msj = confirm("¿Está seguro que desea anular la " + cod + " ?");
-    if (msj) {
-        anularOrdenDespacho(id, "enProceso");
-    }
-});
+// $("#requerimientosEnProceso tbody").on("click", "button.anular_od", function () {
+//     var id = $(this).data("id");
+//     var cod = $(this).data("cod");
+//     var msj = confirm("¿Está seguro que desea anular la " + cod + " ?");
+//     if (msj) {
+//         anularOrdenDespacho(id, "enProceso");
+//     }
+// });
 
-function anularOrdenDespacho(id, proviene) {
-    $.ajax({
-        type: "GET",
-        url: "anular_orden_despacho/" + id + '/externo',
-        dataType: "JSON",
-        success: function (response) {
-            console.log(response);
-            if (response > 0) {
-                if (proviene == "enProceso") {
-                    $("#requerimientosEnProceso")
-                        .DataTable()
-                        .ajax.reload();
-                } else if (proviene == "enTransformacion") {
-                    $("#requerimientosEnTransformacion")
-                        .DataTable()
-                        .ajax.reload();
-                }
-                actualizaCantidadDespachosTabs();
-            }
-        }
-    }).fail(function (jqXHR, textStatus, errorThrown) {
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    });
-}
+// function anularOrdenDespacho(id, proviene) {
+//     $.ajax({
+//         type: "GET",
+//         url: "anular_orden_despacho/" + id + '/externo',
+//         dataType: "JSON",
+//         success: function (response) {
+//             console.log(response);
+//             if (response > 0) {
+//                 if (proviene == "enProceso") {
+//                     $("#requerimientosEnProceso")
+//                         .DataTable()
+//                         .ajax.reload();
+//                 } else if (proviene == "enTransformacion") {
+//                     $("#requerimientosEnTransformacion")
+//                         .DataTable()
+//                         .ajax.reload();
+//                 }
+//                 actualizaCantidadDespachosTabs();
+//             }
+//         }
+//     }).fail(function (jqXHR, textStatus, errorThrown) {
+//         console.log(jqXHR);
+//         console.log(textStatus);
+//         console.log(errorThrown);
+//     });
+// }
 
-function enviarFacturar(id, proviene) {
-    $.ajax({
-        type: "GET",
-        url: "enviarFacturar/" + id,
-        dataType: "JSON",
-        success: function (response) {
-            console.log(response);
-            if (response > 0) {
-                if (proviene == "enProceso") {
-                    $("#requerimientosEnProceso")
-                        .DataTable()
-                        .ajax.reload();
-                } else if (proviene == "enTransformacion") {
-                    $("#requerimientosEnTransformacion")
-                        .DataTable()
-                        .ajax.reload();
-                }
-                actualizaCantidadDespachosTabs();
-            }
-        }
-    }).fail(function (jqXHR, textStatus, errorThrown) {
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    });
-}
+// function enviarFacturar(id, proviene) {
+//     $.ajax({
+//         type: "GET",
+//         url: "enviarFacturar/" + id,
+//         dataType: "JSON",
+//         success: function (response) {
+//             console.log(response);
+//             if (response > 0) {
+//                 if (proviene == "enProceso") {
+//                     $("#requerimientosEnProceso")
+//                         .DataTable()
+//                         .ajax.reload();
+//                 } else if (proviene == "enTransformacion") {
+//                     $("#requerimientosEnTransformacion")
+//                         .DataTable()
+//                         .ajax.reload();
+//                 }
+//                 actualizaCantidadDespachosTabs();
+//             }
+//         }
+//     }).fail(function (jqXHR, textStatus, errorThrown) {
+//         console.log(jqXHR);
+//         console.log(textStatus);
+//         console.log(errorThrown);
+//     });
+// }
 
 function open_detalle_transferencia(id) {
     $("#modal-detalleTransferencia").modal({
@@ -767,14 +731,8 @@ function listarRequerimientosEnTransformacion(permiso) {
             {
                 render: function (data, type, row) {
                     return (
-                        '<label class="lbl-codigo" title="Abrir Requerimiento" onClick="abrirRequerimiento(' +
-                        row["id_requerimiento"] +
-                        ')">' +
-                        row["codigo"] +
-                        "</label>" +
-                        " <strong>" +
-                        row["sede_descripcion_req"] +
-                        "</strong>" +
+                        '<label class="lbl-codigo" title="Abrir Requerimiento" onClick="abrirRequerimiento(' + row["id_requerimiento"] + ')">' +
+                        row["codigo"] + "</label><strong>" + row["sede_descripcion_req"] + "</strong>" +
                         (row["tiene_transformacion"]
                             ? '<br><i class="fas fa-random red" title="Tiene Transformación"></i>'
                             : "")
@@ -800,11 +758,8 @@ function listarRequerimientosEnTransformacion(permiso) {
             {
                 render: function (data, type, row) {
                     return (
-                        '<span class="label label-' +
-                        row["bootstrap_color"] +
-                        '">' +
-                        row["estado_doc"] +
-                        "</span>"
+                        '<span class="label label-' + row["bootstrap_color"] + '">' +
+                        row["estado_doc"] + "</span>"
                     );
                 }
             },
@@ -895,66 +850,43 @@ function listarRequerimientosEnTransformacion(permiso) {
                             '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" ' +
                             'data-placement="bottom" title="Ver Detalle" data-id="' +
                             row["id_requerimiento"] +
-                            '">' +
-                            '<i class="fas fa-chevron-down"></i></button>' +
-                            (row["estado"] == 19 &&
-                                row["id_tipo_requerimiento"] == 2 &&
-                                row["id_od"] == null &&
-                                row["confirmacion_pago"] == false
-                                ? '<button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" ' +
-                                'data-placement="bottom" data-id="' +
-                                row["id_requerimiento"] +
-                                '" data-cod="' +
-                                row["codigo"] +
-                                '" title="Anular Requerimiento" >' +
-                                '<i class="fas fa-trash"></i></button>'
-                                : "") + //     (row['estado'] == 19 && row['id_tipo_requerimiento'] == 1 && row['sede_requerimiento'] == row['sede_orden'] && row['id_od'] == null) || //compra
-                            // (row['estado'] == 19 && row['id_tipo_requerimiento'] == 1 && row['sede_requerimiento'] !== row['sede_orden'] && row['id_transferencia'] !== null && row['id_od'] == null) || //compra con transferencia
-                            ((row["estado"] == 19 &&
-                                row["confirmacion_pago"] == true &&
-                                /*row['id_od'] == null &&*/ row[
-                                "count_transferencia"
-                                ] == 0) || //venta directa
-                                row["estado"] == 10 || //(row['estado'] == 22) ||
-                                row["estado"] == 28 ||
-                                row["estado"] == 27 ||
-                                (row["estado"] == 19 &&
-                                    row["id_tipo_requerimiento"] !== 1) ||
-                                (row["estado"] == 19 &&
-                                    row["confirmacion_pago"] == true &&
-                                /*row['id_od'] == null &&*/ row[
-                                    "count_transferencia"
-                                    ] > 0 &&
-                                    row["count_transferencia"] ==
-                                    row["count_transferencia_recibida"]) //venta directa con transferencia
-                                ? '<button type="button" class="despacho btn btn-success boton" data-toggle="tooltip" ' +
-                                'data-placement="bottom" title="Generar Orden de Despacho" >' +
-                                '<i class="fas fa-sign-in-alt"></i></button>'
-                                : row["id_od"] !== null && row["estado_od"] == 1
-                                    ? `<button type="button" class="adjuntar btn btn-${row["count_despacho_adjuntos"] > 0
-                                        ? "warning"
-                                        : "default"
-                                    } boton" data-toggle="tooltip" 
-                            data-placement="bottom" data-id="${row["id_od"]
-                                    }" data-cod="${row["codigo_od"]
-                                    }" title="Adjuntar Boleta/Factura" >
-                            <i class="fas fa-paperclip"></i></button>
-                        <button type="button" class="anular_od btn btn-danger boton" data-toggle="tooltip" 
-                            data-placement="bottom" data-id="${row["id_od"]
-                                    }" data-cod="${row["codigo_od"]
-                                    }" title="Anular Orden Despacho" >
-                            <i class="fas fa-trash"></i></button>`
-                                    : "") +
-                            (row["estado"] == 9
-                                ? `<button type="button" class="adjuntar btn btn-${row["count_despacho_adjuntos"] > 0
-                                    ? "warning"
-                                    : "default"
-                                } boton" data-toggle="tooltip" 
-                            data-placement="bottom" data-id="${row["id_od"]
-                                }" data-cod="${row["codigo_od"]
-                                }" title="Adjuntar Boleta/Factura" >
-                            <i class="fas fa-paperclip"></i></button>`
-                                : "")
+                            '">' + '<i class="fas fa-chevron-down"></i></button>'
+                            //     ((row["estado"] == 19 &&
+                            //         row["confirmacion_pago"] == true &&
+                            //         row["count_transferencia"] == 0) || //venta directa
+                            //         row["estado"] == 10 ||
+                            //         row["estado"] == 28 ||
+                            //         row["estado"] == 27 ||
+                            //         (row["estado"] == 19 && row["id_tipo_requerimiento"] !== 1) ||
+                            //         (row["estado"] == 19 && row["confirmacion_pago"] == true &&
+                            //             row["count_transferencia"] > 0 &&
+                            //             row["count_transferencia"] == row["count_transferencia_recibida"]) //venta directa con transferencia
+                            //         ? '<button type="button" class="despacho btn btn-success boton" data-toggle="tooltip" ' +
+                            //         'data-placement="bottom" title="Generar Orden de Despacho" >' +
+                            //         '<i class="fas fa-sign-in-alt"></i></button>'
+                            //         : row["id_od"] !== null && row["estado_od"] == 1
+                            //             ? `<button type="button" class="adjuntar btn btn-${row["count_despacho_adjuntos"] > 0
+                            //                 ? "warning" : "default"} boton" data-toggle="tooltip" 
+                            //     data-placement="bottom" data-id="${row["id_od"]
+                            //             }" data-cod="${row["codigo_od"]
+                            //             }" title="Adjuntar Boleta/Factura" >
+                            //     <i class="fas fa-paperclip"></i></button>
+                            // <button type="button" class="anular_od btn btn-danger boton" data-toggle="tooltip" 
+                            //     data-placement="bottom" data-id="${row["id_od"]
+                            //             }" data-cod="${row["codigo_od"]
+                            //             }" title="Anular Orden Despacho" >
+                            //     <i class="fas fa-trash"></i></button>`
+                            //             : "") +
+                            // (row["estado"] == 9
+                            //     ? `<button type="button" class="adjuntar btn btn-${row["count_despacho_adjuntos"] > 0
+                            //         ? "warning"
+                            //         : "default"
+                            //     } boton" data-toggle="tooltip" 
+                            // data-placement="bottom" data-id="${row["id_od"]
+                            //     }" data-cod="${row["codigo_od"]
+                            //     }" title="Adjuntar Boleta/Factura" >
+                            // <i class="fas fa-paperclip"></i></button>`
+                            //     : "")
                         );
                     } else {
                         return (
@@ -972,32 +904,32 @@ function listarRequerimientosEnTransformacion(permiso) {
     });
 }
 
-$("#requerimientosEnTransformacion tbody").on(
-    "click",
-    "button.despacho",
-    function () {
-        var data = $("#requerimientosEnTransformacion")
-            .DataTable()
-            .row($(this).parents("tr"))
-            .data();
-        console.log(data);
-        tab_origen = "enTransformacion";
-        open_despacho_create(data);
-    }
-);
+// $("#requerimientosEnTransformacion tbody").on(
+//     "click",
+//     "button.despacho",
+//     function () {
+//         var data = $("#requerimientosEnTransformacion")
+//             .DataTable()
+//             .row($(this).parents("tr"))
+//             .data();
+//         console.log(data);
+//         tab_origen = "enTransformacion";
+//         open_despacho_create(data);
+//     }
+// );
 
-$("#requerimientosEnTransformacion tbody").on(
-    "click",
-    "button.anular_od",
-    function () {
-        var id = $(this).data("id");
-        var cod = $(this).data("cod");
-        var msj = confirm("¿Está seguro que desea anular la " + cod + " ?");
-        if (msj) {
-            anularOrdenDespacho(id, "enTransformacion");
-        }
-    }
-);
+// $("#requerimientosEnTransformacion tbody").on(
+//     "click",
+//     "button.anular_od",
+//     function () {
+//         var id = $(this).data("id");
+//         var cod = $(this).data("cod");
+//         var msj = confirm("¿Está seguro que desea anular la " + cod + " ?");
+//         if (msj) {
+//             anularOrdenDespacho(id, "enTransformacion");
+//         }
+//     }
+// );
 
 $("#requerimientosEnTransformacion tbody").on(
     "click",
@@ -1008,23 +940,23 @@ $("#requerimientosEnTransformacion tbody").on(
     }
 );
 
-$("#requerimientosEnTransformacion tbody").on(
-    "click",
-    "button.adjuntar",
-    function () {
-        var id = $(this).data("id");
-        var cod = $(this).data("cod");
-        $("#modal-despachoAdjuntos").modal({
-            show: true
-        });
-        listarAdjuntos(id);
-        $("[name=id_od]").val(id);
-        $("[name=codigo_od]").val(cod);
-        $("[name=descripcion]").val("");
-        $("[name=archivo_adjunto]").val("");
-        $("[name=proviene_de]").val("enProceso");
-    }
-);
+// $("#requerimientosEnTransformacion tbody").on(
+//     "click",
+//     "button.adjuntar",
+//     function () {
+//         var id = $(this).data("id");
+//         var cod = $(this).data("cod");
+//         $("#modal-despachoAdjuntos").modal({
+//             show: true
+//         });
+//         listarAdjuntos(id);
+//         $("[name=id_od]").val(id);
+//         $("[name=codigo_od]").val(cod);
+//         $("[name=descripcion]").val("");
+//         $("[name=archivo_adjunto]").val("");
+//         $("[name=proviene_de]").val("enProceso");
+//     }
+// );
 
 var tableDespachos;
 
@@ -1118,16 +1050,11 @@ function listarOrdenesPendientes() {
             {
                 render: function (data, type, row) {
                     return `<button type="button" class="adjuntar btn btn-${row["count_despacho_adjuntos"] > 0
-                        ? "warning"
-                        : "default"
-                        } boton" data-toggle="tooltip" 
-                                data-placement="bottom" data-id="${row["id_od"]
-                        }" data-cod="${row["codigo"]
-                        }" title="Adjuntar Boleta/Factura" >
+                        ? "warning" : "default"} boton" data-toggle="tooltip" data-placement="bottom" data-id="${row["id_od"]}" 
+                        data-cod="${row["codigo"]}" title="Adjuntar Boleta/Factura" >
                                 <i class="fas fa-paperclip"></i></button>
                             <button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
-                                data-placement="bottom" title="Ver Detalle" data-id="${row["id_requerimiento"]
-                        }">
+                                data-placement="bottom" title="Ver Detalle" data-id="${row["id_requerimiento"]}">
                                 <i class="fas fa-chevron-down"></i></button>`;
                 }
             }

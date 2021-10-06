@@ -398,6 +398,10 @@ body .login-box {
   padding: 4px;
 }
 
+label.btn-primary > span {
+  color: #fff;
+}
+
 .modal .input-group-text i {
   font-size: 16px;
   padding: 3px;
