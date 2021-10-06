@@ -23,7 +23,7 @@
                     <p style="font-size:15px;display:flex;width:20px;">Requerimientos Elaborados</p>
                 </div>
                 @if(Auth::user()->tieneAplicacion(102))
-                <a href="{{route('logistica.gestion-logistica.requerimiento.elaboracion.index')}}" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
+                <a href="{{route('necesidades.requerimiento.elaboracion.index')}}" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
                 @else
                 <a href="#" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
                 @endif
