@@ -1,5 +1,5 @@
 @extends('layout.main')
-@include('layout.menu_logistica')
+@include('layout.menu_necesidades')
 
 @section('option')
 @endsection
@@ -10,7 +10,7 @@ Listado de requerimientos
 
 @section('breadcrumb')
 <ol class="breadcrumb">
-    <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> Logística</a></li>
+    <li><a href="{{route('necesidades.index')}}"><i class="fas fa-tachometer-alt"></i> Necesidades</a></li>
     <li>Requerimientos</li>
     <li class="active">Listado</li>
 </ol>

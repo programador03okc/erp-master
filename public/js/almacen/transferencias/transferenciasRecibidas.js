@@ -451,7 +451,7 @@ function anularTransferenciaIngreso(data) {
 
 function abrirRequerimiento(id_requerimiento) {
     localStorage.setItem("idRequerimiento", id_requerimiento);
-    let url = "/logistica/gestion-logistica/requerimiento/elaboracion/index";
+    let url = "/necesidades/requerimiento/elaboracion/index";
     var win = window.open(url, "_blank");
     win.focus();
 }

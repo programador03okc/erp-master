@@ -32,7 +32,7 @@ class ListaOrdenCtrl {
 
     abrirRequerimiento(idRequerimiento) {
         localStorage.setItem("id_requerimiento", idRequerimiento);
-        let url = "/logistica/gestion-logistica/requerimiento/elaboracion/index";
+        let url = "/necesidades/requerimiento/elaboracion/index";
         var win = window.open(url, '_blank');
         // Cambiar el foco al nuevo tab (punto opcional)
         win.focus();

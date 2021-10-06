@@ -299,7 +299,7 @@ class RequerimientoPendienteView {
     abrirRequerimiento(idRequerimiento) {
         // Abrir nuevo tab
         localStorage.setItem('idRequerimiento', idRequerimiento);
-        let url = "/logistica/gestion-logistica/requerimiento/elaboracion/index";
+        let url = "/necesidades/requerimiento/elaboracion/index";
         // var win = window.open(url, '_blank');
         var win = location.href = url;
         // Cambiar el foco al nuevo tab (punto opcional)
@@ -354,7 +354,7 @@ class RequerimientoPendienteView {
                 { 'data': 'empresa_sede' },
                 {
                     render: function (data, type, row) {
-                        return `<a href="/logistica/gestion-logistica/requerimiento/elaboracion/index?id=${row.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${row.codigo}</a> ${row.tiene_transformacion == true ? '<i class="fas fa-random text-danger" title="Con transformación"></i>' : ''} `;
+                        return `<a href="/necesidades/requerimiento/elaboracion/index?id=${row.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${row.codigo}</a> ${row.tiene_transformacion == true ? '<i class="fas fa-random text-danger" title="Con transformación"></i>' : ''} `;
                         // return `<a class="lbl-codigo handleClickAbrirRequerimiento" title="Abrir Requerimiento" data-id-requerimiento="${row.id_requerimiento}">${row.codigo}</a> ${row.tiene_transformacion == true ? '<i class="fas fa-random text-danger" title="Con transformación"></i>' : ''}`;
                     }
                 },

@@ -230,7 +230,7 @@ function generarRequerimientoByOrdenCompraPropia(tipo_cuadro,id_cc,id_estado_apr
         };
         // console.log(data);
         sessionStorage.setItem('ordenP_Cuadroc', JSON.stringify(data));
-        let url ="/logistica/gestion-logistica/requerimiento/elaboracion/index";
+        let url ="/necesidades/requerimiento/elaboracion/index";
         var win = window.open(url, '_blank');
         win.focus();
     }
@@ -245,13 +245,13 @@ function guardarJustificacionGenerarRequerimiento(){
         contenido:document.querySelector("div[id='modal-justificar-generar-requerimiento'] textarea[id='motivo_generar_requerimiento']").value
     }
     sessionStorage.setItem('justificacion_generar_requerimiento', JSON.stringify(data));
-    window.location.href = '/logistica/gestion-logistica/requerimiento/elaboracion/index'; //using a named route
+    window.location.href = '/necesidades/requerimiento/elaboracion/index'; //using a named route
 }
 
 function irRequerimientoByOrdenCompraPropia(idRequerimiento){
 
     localStorage.setItem('id_requerimiento', idRequerimiento);
-    let url ="/logistica/gestion-logistica/requerimiento/elaboracion/index";
+    let url ="/necesidades/requerimiento/elaboracion/index";
     var win = window.open(url, '_blank');
     win.focus();
 
