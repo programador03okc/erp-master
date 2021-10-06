@@ -88,6 +88,7 @@
 	<script src="{{ asset('template/plugins/jQuery/jquery.min.js') }}"></script>
 	<script src="{{ asset('template/bootstrap/js/bootstrap.min.js') }}"></script>
 	<script src="{{ asset('template/adminlte/js/adminlte.min.js') }}"></script>
+	<script src="{{ asset('template/plugins/bootstrap_filestyle/bootstrap-filestyle.min.js') }}"></script>
 	<script src="{{ asset('template/plugins/iCheck/icheck.min.js') }}"></script>
 	<script src="{{ asset('template/plugins/lobibox/dist/js/lobibox.min.js') }}"></script>
 	<script src="{{ asset('template/plugins/jquery-number/jquery.number.min.js') }}"></script>
@@ -97,8 +98,6 @@
 	<script src="{{ asset('/js/publico/animation.js')}}"></script>
 
 	<script src="{{ asset('template/plugins/sweetalert2/sweetalert2.all.min.js') }}"></script>
-	<script src="{{ asset('template/plugins/bootstrap_filestyle/bootstrap-filestyle.min.js') }}"></script>
-	<!-- <script src="{{ asset('template/plugins/pace/pace.js') }}"></script> -->
 	<script src="{{asset('js/publico/notificaciones_sin_leer.js')}}"></script>
 
 	<script>

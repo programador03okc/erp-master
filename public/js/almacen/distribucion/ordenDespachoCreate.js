@@ -7,6 +7,8 @@ function open_despacho_create(data) {
     });
     $("#submit_orden_despacho").removeAttr("disabled");
     $('[name=tipo_entrega]').val('MISMA CIUDAD').trigger('change.select2');
+    $('#codigo_req').text(data.codigo);
+    $('#concepto').text(data.concepto);
     $('[name=id_requerimiento]').val(data.id_requerimiento);
     $('[name=tiene_transformacion]').val(data.tiene_transformacion ? 'si' : 'no');
     // $('[name=direccion_destino]').val(data.contacto_direccion !== null ? data.contacto_direccion : (data.entidad_direccion !== null ? data.entidad_direccion : data.direccion_entrega));
@@ -77,7 +79,10 @@ $("#form-orden_despacho").on("submit", function (e) {
     var msj = validaOrdenDespacho();
 
     if (msj.length > 0) {
-        alert(msj);
+        Swal.fire({
+            title: msj,
+            icon: "warning",
+        });
     }
     else {
         var serial = $(this).serialize();
@@ -139,6 +144,7 @@ function validaOrdenDespacho() {
     var dir = $('[name=direccion_destino]').val();
     var telf = $('[name=telefono_cliente]').val();
     var hora = $('[name=hora_despacho]').val();
+    var cont = $('[name=persona_contacto]').val();
     var msj = '';
 
 
@@ -154,13 +160,15 @@ function validaOrdenDespacho() {
     if (ubig == '') {
         msj += '\n Es necesario que ingrese un Ubigeo Destino';
     }
-    if (dir == '') {
+    if (dir.trim() == '') {
         msj += '\n Es necesario que ingrese una Dirección Destino';
     }
-    if (telf == '') {
+    if (telf.trim() == '') {
         msj += '\n Es necesario que ingrese un Teléfono';
     }
-
+    if (cont.trim() == '') {
+        msj += '\n Es necesario que ingrese una Persona de contacto';
+    }
     if (hora == '') {
         msj += '\n Es necesario que ingrese una Hora';
     }

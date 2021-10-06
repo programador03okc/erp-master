@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Tesoreria\Facturacion;
 use App\Http\Controllers\Almacen\Movimiento\OrdenesPendientesController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Logistica\Distribucion\OrdenesDespachoExternoController;
 use App\Models\Almacen\Requerimiento;
 use App\Models\Logistica\Orden;
 use Illuminate\Support\Facades\Auth;
@@ -73,11 +74,9 @@ class VentasInternasController extends Controller
                     'id_doc_com'
                 );
 
-                $codigo = Requerimiento::crearCodigo(7, 1);
-
                 $id_requerimiento = DB::table('almacen.alm_req')->insertGetId(
                     [
-                        'codigo' => $codigo,
+                        'codigo' => '-',
                         'id_tipo_requerimiento' => 7,
                         'id_usuario' => $id_usuario,
                         'fecha_requerimiento' => $fecha,
@@ -102,6 +101,39 @@ class VentasInternasController extends Controller
                     ],
                     'id_requerimiento'
                 );
+
+                $codigo = Requerimiento::crearCodigo(7, 1, $id_requerimiento);
+
+                DB::table('almacen.alm_req')
+                    ->where('id_requerimiento', $id_requerimiento)
+                    ->update(['codigo' => $codigo]);
+
+                $id_od = DB::table('almacen.orden_despacho')->insertGetId(
+                    [
+                        "id_requerimiento" => $id_requerimiento,
+                        "id_cliente" => $doc_ven->id_cliente,
+                        "codigo" => '-',
+                        "direccion_destino" => 'Entrega por venta interna',
+                        "fecha_despacho" => $fecha,
+                        "fecha_entrega" => $fecha,
+                        "aplica_cambios" => false,
+                        "registrado_por" => $id_usuario,
+                        "fecha_registro" => $fecha,
+                        "estado" => 9,
+                        "id_sede" => $detalle->first()->id_sede,
+                        "id_almacen" => $detalle->first()->id_almacen,
+                        "hora_despacho" => $fecha,
+                        "persona_contacto" => 'Creado de forma automática por venta interna'
+                    ],
+                    'id_od'
+                );
+                $codigo = OrdenesDespachoExternoController::ODnextId($fecha, $detalle->first()->id_almacen, false, $id_od);
+
+                if ($codigo !== null) {
+                    DB::table('almacen.orden_despacho')
+                        ->where('id_od', $id_od)
+                        ->update(['codigo' => $codigo]);
+                }
 
                 $codigo_oc = Orden::nextCodigoOrden(2);
 

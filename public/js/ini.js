@@ -199,7 +199,7 @@ $(document).ready(function () {
 					cancelButtonColor: '#d33',
 					cancelButtonText: 'Cancelar',
 					confirmButtonText: 'Si, anular'
-		
+
 				}).then((result) => {
 					if (result.isConfirmed) {
 						if (ids == undefined) {

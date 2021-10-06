@@ -59,10 +59,8 @@ Producto
                                                 <img id="img" src="{{ asset('images/product-default.png')}}">
                                             </div>
                                             <div class="row">
-                                                {{-- <label for="files" class="btn">Select Image</label>
-                                                <input id="files" style="visibility:hidden;" type="file"> --}}
                                                 <input type="file" name="imagen" id="imagen" class="filestyle" data-buttonName="btn-primary" 
-                                                data-buttonText="Seleccionar imagen" data-size="sm" data-iconName="fa fa-folder-open" data-disabled="true">
+                                                data-buttonText="Seleccionar imagen" data-size="sm" data-iconName="fa fa-folder-open">
                                             </div>
                                         </div>
                                     </div>
@@ -318,6 +316,7 @@ Producto
     <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script> -->
+{{-- <script src="{{ asset('template/plugins/bootstrap_filestyle/bootstrap-filestyle.min.js') }}"></script> --}}
 <script src="{{ asset('template/plugins/iCheck/icheck.min.js') }}"></script>
 <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
 
@@ -329,6 +328,7 @@ Producto
 <script>
     $(document).ready(function() {
         seleccionarMenu(window.location);
+        //$("#imagen").filestyle();
     });
 </script>
 @endsection
