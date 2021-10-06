@@ -116,18 +116,6 @@ Elaborar orden
                             </div>
                         </div>
 
-                        <div class="col-md-3" id="group-cuenta_bancaria_proveedor" hidden>
-                            <h5>Cuenta bancaria</h5>
-                            <div style="display:flex;">
-                                <input class="oculto" name="id_cuenta_principal_proveedor">
-                                <input type="text" class="form-control" name="nro_cuenta_principal_proveedor" readOnly>
-                                <button type="button" class="group-text" onClick="cuentasBancariasModal();">
-                                    <i class="fa fa-search"></i>
-                                </button>
-                                <button type="button" class="btn-primary" title="Agregar cuenta bancaria" onClick="agregar_cuenta_proveedor();"><i class="fas fa-plus"></i></button>
-                            </div>
-                        </div>
-
                         <div class="col-md-3" id="group-contacto_proveedor_nombre">
                             <h5>Nombre de contacto</h5>
                             <div style="display:flex;">
@@ -147,6 +135,17 @@ Elaborar orden
                             </div>
                         </div>
 
+                        <div class="col-md-4" id="group-cuenta_bancaria_proveedor">
+                            <h5>Cuenta bancaria</h5>
+                            <div style="display:flex;">
+                                <input class="oculto" name="id_cuenta_principal_proveedor">
+                                <input type="text" class="form-control" name="nro_cuenta_principal_proveedor" readOnly>
+                                <button type="button" class="group-text" onClick="cuentasBancariasModal();">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                                <button type="button" class="btn-primary" title="Agregar cuenta bancaria" onClick="agregar_cuenta_proveedor();"><i class="fas fa-plus"></i></button>
+                            </div>
+                        </div>
                     </div>
                 </fieldset>
             </div>

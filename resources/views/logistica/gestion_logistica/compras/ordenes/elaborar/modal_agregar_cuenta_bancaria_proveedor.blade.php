@@ -1,5 +1,5 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-agregar-cuenta-bancaria-proveedor" style="overflow-y: scroll;">
-    <div class="modal-dialog" style="width: 40%;">
+    <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <form id="form-agregar-cuenta-bancaria-proveedor" method="post">
                 <div class="modal-header">

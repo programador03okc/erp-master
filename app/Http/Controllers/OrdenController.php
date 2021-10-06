@@ -3557,7 +3557,9 @@ class OrdenController extends Controller
 
     public function mostrarProveedores()
     {
-        $proveedores = Proveedor::with(['estadoProveedor','contribuyente'=> function($q){
+        $proveedores = Proveedor::with(['estadoProveedor','cuentaContribuyente'=> function($q){
+            $q->where([['adm_cta_contri.estado', '=', 1]]);
+        },'contribuyente'=> function($q){
             $q->where([['adm_contri.estado', '=', 1],['adm_contri.transportista', '=', false]]);
         }])->where('log_prove.estado',1);
         return datatables($proveedores)->toJson();

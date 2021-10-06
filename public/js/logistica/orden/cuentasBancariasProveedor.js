@@ -49,7 +49,7 @@ function guardarCuentaBancariaProveedor(){
                     $('#modal-agregar-cuenta-bancaria-proveedor').modal('hide');
                     Lobibox.notify('success', {
                         title:false,
-                        size: 'normal',
+                        size: 'mini',
                         rounded: true,
                         sound: false,
                         delayIndicator: false,
@@ -133,7 +133,7 @@ function listarCuentasBancariasContribuyente(idProveedor){
 
     getCuentasBancarias(idProveedor).then(function (res) {
         if(res[0].cuenta_contribuyente){
-            ConstruirTablalistaCuentasBancariasProveedor(res);
+            ConstruirTablalistaCuentasBancariasProveedor(res[0].cuenta_contribuyente);
         }
     }).catch(function (err) {
         Swal.fire(
@@ -177,35 +177,34 @@ function ConstruirTablalistaCuentasBancariasProveedor(data){
         'data': data,
         'columns': [
 
-            { render: function (data, type, row) {   
-                return `${row.cuenta_contribuyente.banco.contribuyente.razon_social?row.cuenta_contribuyente.banco.contribuyente.razon_social:''}`;
+            { render: function (data, type, row) {  
+                return  row.banco.contribuyente.razon_social??'';
                 }
             },
             { render: function (data, type, row) {   
-                return `${row.cuenta_contribuyente.tipo_cuenta.descripcion?row.cuenta_contribuyente.tipo_cuenta.descripcion:''}`;
-                }
+                return row.tipo_cuenta.descripcion??'';
+                },'className':'text-center'
             },
             { render: function (data, type, row) {   
-                return `${row.cuenta_contribuyente.nro_cuenta?row.cuenta_contribuyente.nro_cuenta:''}`;
-                }
+                return row.nro_cuenta??'';
+                } ,'className':'text-center'
             },
             { render: function (data, type, row) {   
-                return `${row.cuenta_contribuyente.nro_cuenta_interbancaria?row.cuenta_contribuyente.nro_cuenta_interbancaria:''}`;
-                }
+                return row.nro_cuenta_interbancaria??'';
+                },'className':'text-center'
             }, 
             { render: function (data, type, row) {   
-                return `${row.cuenta_contribuyente.moneda.descripcion?row.cuenta_contribuyente.moneda.descripcion:''}`;
-                }
+                return row.moneda.descripcion??'';
+                } ,'className':'text-center'
             }, 
             { render: function (data, type, row) {   
-                return `${row.cuenta_contribuyente.swift?row.cuenta_contribuyente.swift:''}`;
-                }
-            }, 
-            { render: function (data, type, row) {                     
-                    return `
-                        <button type="button" class="btn btn-primary btn-xs" name="btnSeleccionarCuenta" title="Seleccionar cuenta"  data-id-cuenta="${row.cuenta_contribuyente.id_cuenta_contribuyente}" data-nro-cuenta="${row.cuenta_contribuyente.nro_cuenta}" onclick="seleccionarCuentaContribuyente(this);">Seleccionar</button>`;
-                }   
-            }   
+                return  row.swift??'';
+            } ,'className':'text-center'
+        }, 
+        { render: function (data, type, row) {                     
+                    return `<button type="button" class="btn btn-primary btn-xs" name="btnSeleccionarCuenta" title="Seleccionar cuenta"  data-id-cuenta="${(row.id_cuenta_contribuyente??'')}" data-nro-cuenta="${(row.nro_cuenta??'')}" onclick="seleccionarCuentaContribuyente(this);">Seleccionar</button>`;
+                }   ,'className':'text-center'
+            }
         ],
  
         'columnDefs': [

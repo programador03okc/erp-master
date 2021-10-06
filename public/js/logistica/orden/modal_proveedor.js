@@ -23,15 +23,13 @@ function listar_proveedores(){
         },
         'columns': [
             { 'data': 'nro_documento', 'name': 'contribuyente.nro_documento', 'className': 'text-center'},
-            { 'data': 'razon_social', 'name': 'contribuyente.razon_social', 'className': 'text-center' },
-            // { 'data': 'contribuyente.ubigeo_completo', 'name': 'contribuyente.ubigeo_completo', 'className': 'text-center' ,'searchable': false},
+            { 'data': 'razon_social', 'name': 'contribuyente.razon_social', 'className': 'text-left'},
             { 'data': 'id_proveedor', 'name': 'id_proveedor', 'className': 'text-center' ,'searchable': false, 'orderable': false }
 
         ],
         'columnDefs': [
             {'render':
             function (data, type, row){
-                console.log(row);
                 let action = `
                     <div class="btn-group btn-group-sm" role="group">
                         <button type="button" class="btn btn-success btn-sm" name="btnSeleccionarProveedor" title="Seleccionar proveedor" 
@@ -43,6 +41,8 @@ function listar_proveedores(){
                         data-telefono="${row.contribuyente && row.contribuyente.telefono!=null?row.contribuyente.telefono:''}"
                         data-ubigeo-descripcion="${row.contribuyente && row.contribuyente.ubigeo_completo!=null?row.contribuyente.ubigeo_completo:''}"
                         data-ubigeo="${row.contribuyente && row.contribuyente.ubigeo!=null?row.contribuyente.ubigeo:''}"
+                        data-id-cuenta-principal="${row.cuenta_contribuyente.length>0?row.cuenta_contribuyente[0].id_cuenta_contribuyente:''}"
+                        data-cuenta-principal="${row.cuenta_contribuyente.length>0?row.cuenta_contribuyente[0].nro_cuenta:''}"
                         onclick="selectProveedor(this);">
                         <i class="fas fa-check"></i>
                         </button>
@@ -50,7 +50,7 @@ function listar_proveedores(){
                     `;
         
                 return action;
-            },targets: 2
+            },targets: 2 
         }
     ],
     });
@@ -89,7 +89,6 @@ function proveedorModal(){
 }
 
 function selectProveedor(obj){
-    console.log(obj);
     let idProveedor= obj.dataset.idProveedor;
     let idContribuyente= obj.dataset.idContribuyente;
     let razonSocial= obj.dataset.razonSocial? obj.dataset.razonSocial:"";
@@ -98,6 +97,8 @@ function selectProveedor(obj){
     let telefono= obj.dataset.telefono?obj.dataset.telefono:"";
     let ubigeoDescripcion= obj.dataset.ubigeoDescripcion?obj.dataset.ubigeoDescripcion:"";
     let ubigeo= obj.dataset.ubigeo?obj.dataset.ubigeo:"";
+    let cuentaPrincipal= obj.dataset.cuentaPrincipal?obj.dataset.cuentaPrincipal:"";
+    let idCuentaPrincipal= obj.dataset.idCuentaPrincipal?obj.dataset.idCuentaPrincipal:"";
 
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_proveedor']").value =idProveedor;
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_contrib']").value =idContribuyente;
@@ -106,6 +107,8 @@ function selectProveedor(obj){
     // document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='telefono_proveedor']").value =telefono;
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='ubigeo_proveedor']").value =ubigeo;
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='ubigeo_proveedor_descripcion']").value =ubigeoDescripcion;
+    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_cuenta_principal_proveedor']").value =idCuentaPrincipal;
+    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='nro_cuenta_principal_proveedor']").value =cuentaPrincipal;
  
     obtenerContactoPorDefecto(idProveedor)
     $('#modal-proveedores').modal('hide');
