@@ -190,7 +190,15 @@ function openProcesar() {
 
     if (id_trans !== '') {
         var est = $('[name=id_estado]').val();
-        if (est == '9') {
+        var inputs = $('#listaSobrantes tbody').find('input').length;
+
+        if (inputs > 0) {
+            Swal.fire({
+                title: "Debe guardar o eliminar el sobrante agregado.",
+                icon: "error",
+            });
+        }
+        else if (est == '9') {
             Swal.fire({
                 title: "La transformación ya fue procesada.",
                 icon: "error",

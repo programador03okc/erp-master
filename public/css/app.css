@@ -1043,9 +1043,7 @@ span.select2-selection {
 #listaOpcionesTodo tbody td:nth-last-child(6),
 #listaOpcionesTodo tbody td:nth-last-child(7),
 #listaOpcionesTodo tbody td:nth-last-child(8),
-#listaOpcionesTodo tbody td:nth-last-child(9),
-#despachosPendientes tbody td:nth-last-child(10),
-#despachosPendientes tbody td:nth-last-child(9) {
+#listaOpcionesTodo tbody td:nth-last-child(9) {
   background: #ffffb0;
 }
 
@@ -1063,8 +1061,6 @@ span.select2-selection {
 #listaOpcionesTodo tbody td:nth-last-child(12),
 #listaDocsProrrateo tbody td:nth-last-child(12),
 #listaPromocion tbody td:nth-last-child(5),
-#despachosPendientes tbody td:nth-last-child(6),
-#despachosPendientes tbody td:nth-last-child(5),
 #listaGuiasTransportistas tbody td:nth-last-child(11),
 #listaGuiasTransportistas tbody td:nth-last-child(10),
 #listaGuiasTransportistas tbody td:nth-last-child(7),

@@ -28,9 +28,11 @@ function iniciar(permiso) {
     vista_extendida();
 }
 
+let $tableSalidas;
+
 function listarDespachosPendientes(permiso) {
     var vardataTables = funcDatatables();
-    $('#despachosPendientes').DataTable({
+    $tableSalidas = $('#despachosPendientes').DataTable({
         'dom': vardataTables[1],
         'buttons': [],
         'language': vardataTables[0],
@@ -81,9 +83,9 @@ function listarDespachosPendientes(permiso) {
             {
                 'render': function (data, type, row) {
                     if (permiso == '1') {
-                        return `<button type="button" class="detalle btn btn-primary btn-flat boton" data-toggle="tooltip" 
-                        data-placement="bottom" title="Ver Detalle" >
-                        <i class="fas fa-list-ul"></i></button>`+
+                        return `<button type="button" class="detalle btn btn-default btn-flat boton" data-toggle="tooltip"
+                                data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}">
+                                <i class="fas fa-chevron-down"></i></button>`+
                             (row['estado'] == 1 ?
                                 (`<button type="button" class="guia btn btn-warning btn-flat boton" data-toggle="tooltip" 
                                 data-placement="bottom" title="Generar Guía" >
@@ -100,12 +102,12 @@ function listarDespachosPendientes(permiso) {
     });
 }
 
-$('#despachosPendientes tbody').on("click", "button.detalle", function () {
-    var data = $('#despachosPendientes').DataTable().row($(this).parents("tr")).data();
-    console.log('data.id_od' + data.id_od);
-    // var data = $(this).data('id');
-    open_detalle_despacho(data);
-});
+// $('#despachosPendientes tbody').on("click", "button.detalle", function () {
+//     var data = $('#despachosPendientes').DataTable().row($(this).parents("tr")).data();
+//     console.log('data.id_od' + data.id_od);
+//     // var data = $(this).data('id');
+//     open_detalle_despacho(data);
+// });
 
 $('#despachosPendientes tbody').on("click", "button.guia", function () {
     var data = $('#despachosPendientes').DataTable().row($(this).parents("tr")).data();
@@ -138,6 +140,39 @@ function anularOrdenDespacho(id) {
         console.log(errorThrown);
     });
 }
+
+
+var iTableCounter = 1;
+var oInnerTable;
+
+$('#despachosPendientes tbody').on('click', 'td button.detalle', function () {
+    var tr = $(this).closest('tr');
+    var row = $tableSalidas.row(tr);
+    var id = $(this).data('id');
+
+    if (row.child.isShown()) {
+        row.child.hide();
+        tr.removeClass('shown');
+    }
+    else {
+        format(iTableCounter, id, row);
+        tr.addClass('shown');
+        oInnerTable = $('#despachosPendientes_' + iTableCounter).dataTable({
+            autoWidth: true,
+            deferRender: true,
+            info: false,
+            lengthChange: false,
+            ordering: false,
+            paging: false,
+            scrollX: false,
+            scrollY: false,
+            searching: false,
+            columns: []
+        });
+        iTableCounter = iTableCounter + 1;
+    }
+});
+
 
 function listarDespachosEntregados(permiso) {
     var vardataTables = funcDatatables();
