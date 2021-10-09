@@ -130,6 +130,9 @@ class DetalleRequerimiento extends Model
     public function estado(){
         return $this->hasone('App\Models\Administracion\Estado','id_estado_doc','estado');
     }
+    public function requerimiento(){
+        return $this->hasone('App\Models\Almacen\Requerimiento','id_requerimiento','id_requerimiento');
+    }
 
     // public function getCentroCostosAttribute(){
     //     // $centroCostos = CentroCostosView::join('almacen.alm_det_req','cc_niveles_view.id_centro_costo','alm_det_req.centro_costo_id')

@@ -11,7 +11,7 @@ class Orden extends Model {
 
     protected $table = 'logistica.log_ord_compra';
     protected $primaryKey = 'id_orden_compra';
-    protected $appends = ['requerimientos'];
+    protected $appends = ['requerimientos','cuadro_costo'];
 
     public $timestamps = false;
 
@@ -23,6 +23,7 @@ class Orden extends Model {
         $fecha= new Carbon($this->attributes['fecha_orden']);
         return $fecha->format('d-m-Y h:m');
     }
+
     public function getFechaRegistroRequerimientoAttribute(){
         $fecha= new Carbon($this->attributes['fecha_registro_requerimiento']);
         return $fecha->format('d-m-Y');
@@ -86,6 +87,24 @@ class Orden extends Model {
         ->where('log_det_ord_compra.id_orden_compra',$this->attributes['id_orden_compra'])
         ->select(['alm_req.id_requerimiento','alm_req.codigo'])->distinct()->get(); 
         return $requerimientos;
+    }
+
+    public function getCuadroCostoAttribute(){
+
+        $cc=OrdenCompraDetalle::leftJoin('almacen.alm_det_req','log_det_ord_compra.id_detalle_requerimiento','alm_det_req.id_detalle_requerimiento')
+        ->Join('almacen.alm_req','alm_req.id_requerimiento','alm_det_req.id_requerimiento')
+        ->leftJoin('mgcp_cuadro_costos.cc_view','alm_req.id_cc','cc_view.id')
+        ->leftJoin('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'cc_view.id_oportunidad')
+        ->where('log_det_ord_compra.id_orden_compra',$this->attributes['id_orden_compra'])
+        ->select(
+            'cc_view.codigo_oportunidad',
+            'cc_view.fecha_creacion',
+            'cc_view.fecha_limite',
+            'oc_propias_view.estado_aprobacion_cuadro',
+            'oc_propias_view.fecha_estado'
+            )
+        ->first(); 
+        return $cc;
     }
 
     public static function reporteListaOrdenes(){
@@ -307,4 +326,13 @@ class Orden extends Model {
     }
 
 
+    public function detalle(){
+        return $this->hasMany('App\Models\Logistica\OrdenCompraDetalle','id_orden_compra','id_orden_compra');
+    }
+    public function sede(){
+        return $this->hasOne('App\Models\Administracion\Sede','id_sede','id_sede');
+    }
+    public function estado(){
+        return $this->hasOne('App\Models\Logistica\EstadoCompra','id_estado','estado');
+    }
 }

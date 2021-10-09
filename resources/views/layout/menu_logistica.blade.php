@@ -17,14 +17,13 @@
             @endif
 
             @if(Auth::user()->tieneSubModulo(25))
-            <li class="treeview">
                 @if(Auth::user()->tieneAplicacion(108))
-                <a href="{{route('logistica.gestion-logistica.compras.ordenes.elaborar.index')}}"><i class="far fa-circle fa-xs"></i> Elaborar orden</a>
+                <li><a href="{{route('logistica.gestion-logistica.compras.ordenes.elaborar.index')}}"><i class="far fa-circle fa-xs"></i> Elaborar orden</a></li>
+            
                 @endif
                 @if(Auth::user()->tieneAplicacion(109))
-                <a href="{{route('logistica.gestion-logistica.compras.ordenes.listado.index')}}"><i class="far fa-circle fa-xs"></i> Gestión de estados</a>
+                    <li><a href="{{route('logistica.gestion-logistica.compras.ordenes.listado.index')}}"><i class="far fa-circle fa-xs"></i> Gestión de estados</a></li>
                 @endif
-            </li>
             @endif
             @if(Auth::user()->tieneSubModulo(28))
             <li class="treeview">
@@ -78,7 +77,6 @@
         </ul>
     </li>
     @endif
-
     @if(Auth::user()->tieneSubModuloPadre(48))
     <li class=" treeview ">
         <a href="#">
@@ -204,7 +202,23 @@
     </ul>
 </li>
 @endif
-@if(Auth::user()->tieneSubModuloPadre(5))
+
+@if(Auth::user()->tieneSubModuloPadre(48))
+<li class="treeview">
+    <a href="#">
+        <i class="fas fa-chart-bar"></i> <span>Reportes</span>
+        <span class="pull-right-container">
+            <i class="fa fa-angle-left pull-right"></i>
+        </span>
+    </a>
+    <ul class="treeview-menu">
+        <li><a href="{{route('logistica.gestion-logistica.reportes.ordenes-compra')}}"><i class="far fa-circle fa-xs"></i> Ordenes de compras</a></li>
+        <li><a href="{{route('logistica.gestion-logistica.reportes.transito-ordenes-compra')}}"><i class="far fa-circle fa-xs"></i> Transito de ordenes de compras</a></li>
+    </ul>
+</li>
+@endif
+
+<!-- @if(Auth::user()->tieneSubModuloPadre(5))
 <li class="treeview">
     <a href="#"><i class="fas fa-inbox"></i> <span>Notificaciones</span>
         <span class="pull-right-container">
@@ -217,6 +231,6 @@
         @endif
     </ul>
 </li>
-@endif
+@endif -->
 </ul>
 @endsection
