@@ -354,4 +354,7 @@ class Requerimiento extends Model
     public function sede(){
         return $this->hasOne('App\Models\Administracion\Sede','id_sede','id_sede');
     }
+    public function cuadroCostos(){
+        return $this->hasOne('App\Models\Comercial\CuadroCosto\CuadroCostosView','id','id_cc');
+    }
 }
