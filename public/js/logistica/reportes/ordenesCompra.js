@@ -21,6 +21,9 @@ class OrdenesCompra {
         $('#modal-filtro-reporte-ordenes-compra').on("click", "input[type=checkbox]", (e) => {
             this.estadoCheckFiltroOrdenesCompra(e);
         });
+        $('#modal-filtro-reporte-ordenes-compra').on("change", "select.handleUpdateValorFiltro", (e) => {
+            this.updateValorFiltro();
+        });
         $('#modal-filtro-reporte-ordenes-compra').on('hidden.bs.modal', ()=> {
             this.updateValorFiltro();
             if(this.updateContadorFiltro() ==0){

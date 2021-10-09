@@ -25,7 +25,7 @@
                                     </div>
                                 </label>
                                 <div class="col-sm-8">
-                                    <select class="form-control input-sm handleChangeFiltroEmpresa handleChangeUpdateValorFiltroOrdenesElaboradas" name="empresa" readOnly>
+                                    <select class="form-control input-sm handleChangeFiltroEmpresa handleUpdateValorFiltro" name="empresa" readOnly>
                                         @foreach ($empresas as $emp)
                                         <option value="{{$emp->id_empresa}}">{{$emp->razon_social}}</option>
                                         @endforeach
@@ -42,7 +42,7 @@
                                     </div>
                                 </label>
                                 <div class="col-sm-8">
-                                    <select class="form-control input-sm handleChangeUpdateValorFiltroOrdenesElaboradas" name="sede" readOnly>
+                                    <select class="form-control input-sm handleUpdateValorFiltro" name="sede" readOnly>
                                     </select>
                                 </div>
                             </div>
@@ -55,11 +55,11 @@
                                     </div>
                                 </label>
                                 <div class="col-sm-4">
-                                    <input type="date" name="fechaRegistroDesde" class="form-control handleChangeUpdateValorFiltroOrdenesElaboradas" readOnly>
+                                    <input type="date" name="fechaRegistroDesde" class="form-control handleUpdateValorFiltro" readOnly>
                                     <small class="help-block">Desde (dd-mm-aaaa)</small>
                                 </div>
                                 <div class="col-sm-4">
-                                    <input type="date" name="fechaRegistroHasta" class="form-control handleChangeUpdateValorFiltroOrdenesElaboradas" readOnly>
+                                    <input type="date" name="fechaRegistroHasta" class="form-control handleUpdateValorFiltro" readOnly>
                                     <small class="help-block">Hasta (dd-mm-aaaa)</small>
                                 </div>
                             </div>
