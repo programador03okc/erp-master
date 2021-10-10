@@ -28,15 +28,16 @@ Reportes de transito de ordenes de compra
                 <table class="mytable table table-condensed table-striped table-hover table-bordered table-okc-view" id="listaTransitoOrdenesCompra">
                     <thead>
                         <tr>
-                            <th style="text-align:center;">Cuadro presupuestp</th>
-                            <th style="text-align:center;">Proveedor</th>
-                            <th style="text-align:center;">Orden compra</th>
-                            <th style="text-align:center;">Empresa - Sede</th>
-                            <th style="text-align:center;">Monto (inc. IGV)</th>
-                            <th style="text-align:center;">Estado</th>
-                            <th style="text-align:center;">ETA</th>
-                            <th style="text-align:center;">Transformaciones</th>
-                            <th style="text-align:center;">Cantidad de equipos</th>
+                            <th style="text-align:center; width:8%;">Cuadro presupuestp</th>
+                            <th style="text-align:center; width:10%;">Proveedor</th>
+                            <th style="text-align:center; width:8%;">Orden compra</th>
+                            <th style="text-align:center; width:8%;">Fecha creación</th>
+                            <th style="text-align:center; width:8%;">Empresa - Sede</th>
+                            <th style="text-align:center; width:5%;">Monto (inc. IGV)</th>
+                            <th style="text-align:center; width:5%;">Estado</th>
+                            <th style="text-align:center; width:8%;">ETA</th>
+                            <th style="text-align:center; width:5%;">Transformaciones</th>
+                            <th style="text-align:center; width:40%;">Cantidad de equipos</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -64,12 +65,15 @@ Reportes de transito de ordenes de compra
 <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
 <script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
 
+<script src="{{('/js/logistica/reportes/transitoOrdenesCompra.js')}}?v={{filemtime(public_path('/js/logistica/reportes/transitoOrdenesCompra.js'))}}"></script>
 
 
 <script>
     $(document).ready(function() {
         seleccionarMenu(window.location);
-
+        const transitoOrdenesCompra = new TransitoOrdenesCompra();
+        transitoOrdenesCompra.mostrar();
+        transitoOrdenesCompra.initializeEventHandler();
     });
 </script>
 

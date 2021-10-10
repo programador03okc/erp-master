@@ -78,8 +78,6 @@ Reportes de ordenes compra
     $(document).ready(function() {
         seleccionarMenu(window.location);
         const ordenesCompra = new OrdenesCompra();
- 
-
         ordenesCompra.mostrar();
         ordenesCompra.initializeEventHandler();
     });

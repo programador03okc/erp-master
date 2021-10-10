@@ -11,7 +11,7 @@ class Orden extends Model {
 
     protected $table = 'logistica.log_ord_compra';
     protected $primaryKey = 'id_orden_compra';
-    protected $appends = ['requerimientos','cuadro_costo'];
+    protected $appends = ['monto','requerimientos','cuadro_costo','tiene_transformacion','cantidad_equipos'];
 
     public $timestamps = false;
 
@@ -79,6 +79,34 @@ class Orden extends Model {
         }
         return $codigoOrden;
     }
+
+    public function getTieneTransformacionAttribute(){
+
+        $requerimiento=OrdenCompraDetalle::where('log_det_ord_compra.id_orden_compra',$this->attributes['id_orden_compra'])
+        ->leftJoin('almacen.alm_det_req','log_det_ord_compra.id_detalle_requerimiento','alm_det_req.id_detalle_requerimiento')
+        ->Join('almacen.alm_req','alm_req.id_requerimiento','alm_det_req.id_requerimiento')
+        ->select('alm_req.tiene_transformacion')->get(); 
+        return $requerimiento->first()->tiene_transformacion;
+    }
+    public function getMontoAttribute(){
+
+        $Montototal=OrdenCompraDetalle::where('log_det_ord_compra.id_orden_compra',$this->attributes['id_orden_compra'])
+        ->select(DB::raw('sum(log_det_ord_compra.cantidad * log_det_ord_compra.precio) as total'))->first(); 
+        return $Montototal->total;
+    }
+
+    public function getCantidadEquiposAttribute(){
+
+        $equipos=OrdenCompraDetalle::where('log_det_ord_compra.id_orden_compra',$this->attributes['id_orden_compra'])
+        ->leftJoin('almacen.alm_prod','alm_prod.id_producto','log_det_ord_compra.id_producto')
+        ->select('alm_prod.descripcion','log_det_ord_compra.cantidad')->get(); 
+        $cantidadEquipoList=[];
+        foreach ($equipos as $equipo){
+            $cantidadEquipoList[]= '('.(floatval($equipo->cantidad) <10?('0'.$equipo->cantidad):$equipo->cantidad).' Ud.) '.$equipo->descripcion; 
+        }
+        return implode('<br>',$cantidadEquipoList);
+    }
+
 
     public function getRequerimientosAttribute(){
 
@@ -331,6 +359,12 @@ class Orden extends Model {
     }
     public function sede(){
         return $this->hasOne('App\Models\Administracion\Sede','id_sede','id_sede');
+    }
+    public function proveedor(){
+        return $this->hasOne('App\Models\Logistica\Proveedor','id_proveedor','id_proveedor');
+    }
+    public function moneda(){
+        return $this->belongsTo('App\Models\Configuracion\Moneda','id_moneda','id_moneda');
     }
     public function estado(){
         return $this->hasOne('App\Models\Logistica\EstadoCompra','id_estado','estado');

@@ -122,18 +122,18 @@ class OrdenesCompra {
         }
     }
     updateValorFiltro(){
-        const modalFiltroListaOrdenesElaboradas = document.querySelector("div[id='modal-filtro-reporte-ordenes-compra']");
-        if(modalFiltroListaOrdenesElaboradas.querySelector("select[name='empresa']").getAttribute("readonly") ==null){
-            this.ActualParametroEmpresa=modalFiltroListaOrdenesElaboradas.querySelector("select[name='empresa']").value;
+        const modalFiltro = document.querySelector("div[id='modal-filtro-reporte-ordenes-compra']");
+        if(modalFiltro.querySelector("select[name='empresa']").getAttribute("readonly") ==null){
+            this.ActualParametroEmpresa=modalFiltro.querySelector("select[name='empresa']").value;
         }
-        if(modalFiltroListaOrdenesElaboradas.querySelector("select[name='sede']").getAttribute("readonly") ==null){
-            this.ActualParametroSede=modalFiltroListaOrdenesElaboradas.querySelector("select[name='sede']").value;
+        if(modalFiltro.querySelector("select[name='sede']").getAttribute("readonly") ==null){
+            this.ActualParametroSede=modalFiltro.querySelector("select[name='sede']").value;
         }
-        if(modalFiltroListaOrdenesElaboradas.querySelector("input[name='fechaRegistroDesde']").getAttribute("readonly") ==null){
-            this.ActualParametroFechaDesde=modalFiltroListaOrdenesElaboradas.querySelector("input[name='fechaRegistroDesde']").value.length>0?modalFiltroListaOrdenesElaboradas.querySelector("input[name='fechaRegistroDesde']").value:'SIN_FILTRO';
+        if(modalFiltro.querySelector("input[name='fechaRegistroDesde']").getAttribute("readonly") ==null){
+            this.ActualParametroFechaDesde=modalFiltro.querySelector("input[name='fechaRegistroDesde']").value.length>0?modalFiltro.querySelector("input[name='fechaRegistroDesde']").value:'SIN_FILTRO';
         }
-        if(modalFiltroListaOrdenesElaboradas.querySelector("input[name='fechaRegistroHasta']").getAttribute("readonly") ==null){
-            this.ActualParametroFechaHasta=modalFiltroListaOrdenesElaboradas.querySelector("input[name='fechaRegistroHasta']").value.length>0?modalFiltroListaOrdenesElaboradas.querySelector("input[name='fechaRegistroHasta']").value:'SIN_FILTRO';
+        if(modalFiltro.querySelector("input[name='fechaRegistroHasta']").getAttribute("readonly") ==null){
+            this.ActualParametroFechaHasta=modalFiltro.querySelector("input[name='fechaRegistroHasta']").value.length>0?modalFiltro.querySelector("input[name='fechaRegistroHasta']").value:'SIN_FILTRO';
         }
     }
 
@@ -339,7 +339,7 @@ class OrdenesCompra {
             'initComplete': function () {
 
                 //Boton de busqueda
-                const $filter = $('#ListaRequerimientosElaborados_filter');
+                const $filter = $('#listaOrdenesCompra_filter');
                 const $input = $filter.find('input');
                 $filter.append('<button id="btnBuscar" class="btn btn-default btn-sm pull-right" type="button"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>');
                 $input.off();
