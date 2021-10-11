@@ -84,9 +84,9 @@ function listarRequerimientosPendientes() {
                                     data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Anular Orden Despacho" >
                                     <i class="fas fa-trash"></i></button>` : '') +
                         (row["nro_orden"] !== null && row['productos_no_mapeados'] == 0
-                            ? `<button type="button" class="facturar btn btn-${row["enviar_facturacion"] ? "info" : "default"} 
+                            ? `<button type="button" class="facturar btn btn-flat btn-${row["enviar_facturacion"] ? "info" : "default"} 
                                     boton" data-toggle="tooltip" data-placement="bottom" title="Enviar a Facturación" 
-                                    data-id="${row["id_requerimiento"]}" data-cod="${row["codigo"]}">
+                                    data-id="${row["id_requerimiento"]}" data-cod="${row["codigo"]}" data-envio="${row["enviar_facturacion"]}">
                                     <i class="fas fa-file-upload"></i></button>`
                             : '')
                         + '</div>'
@@ -101,14 +101,45 @@ function listarRequerimientosPendientes() {
 $("#requerimientosEnProceso tbody").on("click", "button.facturar", function () {
     var id = $(this).data("id");
     var cod = $(this).data("cod");
-    var rspta = confirm(
-        "¿Está seguro que desea mandar a facturar el " + cod + "?"
-    );
+    var envio = $(this).data("envio");
 
-    if (rspta) {
-        enviarFacturar(id, "enProceso");
+    if (envio) {
+        Lobibox.notify("warning", {
+            title: false,
+            size: "mini",
+            rounded: true,
+            sound: false,
+            delayIndicator: false,
+            msg: 'Ya se envió a facturación.'
+        });
+    } else {
+        Swal.fire({
+            title: "¿Está seguro que desea mandar a facturar el " + cod + "?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#00a65a", //"#3085d6",
+            cancelButtonColor: "#d33",
+            cancelButtonText: "Cancelar",
+            confirmButtonText: "Sí, Guardar"
+        }).then(result => {
+            if (result.isConfirmed) {
+                $('#modal-enviarFacturacion').modal({
+                    show: true
+                });
+                $('[name=id_requerimiento]').val(id);
+                $('#cod_req').text(cod);
+            }
+        });
     }
 });
+
+$("#form-enviarFacturacion").on("submit", function (e) {
+    console.log('submit');
+    e.preventDefault();
+    var data = $(this).serialize();
+    enviarFacturacion(data);
+});
+
 
 $("#requerimientosEnProceso tbody").on("click", "a.verRequerimiento", function (e) {
     $(e.preventDefault());
@@ -185,24 +216,16 @@ $("#requerimientosEnProceso tbody").on("click", "button.trazabilidad", function 
     // });
 });
 
-function enviarFacturar(id, proviene) {
+function enviarFacturacion(data) {
     $.ajax({
-        type: "GET",
-        url: "enviarFacturar/" + id,
+        type: "POST",
+        url: "enviarFacturacion",
+        data: data,
         dataType: "JSON",
         success: function (response) {
             console.log(response);
             if (response > 0) {
-                if (proviene == "enProceso") {
-                    $("#requerimientosEnProceso")
-                        .DataTable()
-                        .ajax.reload();
-                } else if (proviene == "enTransformacion") {
-                    $("#requerimientosEnTransformacion")
-                        .DataTable()
-                        .ajax.reload();
-                }
-                actualizaCantidadDespachosTabs();
+                $("#requerimientosEnProceso").DataTable().ajax.reload(null, false);
             }
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {

@@ -73,6 +73,8 @@ Facturación
                                         <thead>
                                             <tr>
                                                 <th hidden>#</th>
+                                                <th>Fecha Facturación Solicitada</th>
+                                                <th>Obs Facturación</th>
                                                 <th>Código</th>
                                                 <th>Concepto</th>
                                                 <th>Sede Req</th>

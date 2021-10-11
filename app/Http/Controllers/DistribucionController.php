@@ -1903,16 +1903,6 @@ class DistribucionController extends Controller
         return response()->json($id_obs);
     }
 
-    public function enviarFacturar($id)
-    {
-
-        $update = DB::table('almacen.alm_req')
-            ->where('id_requerimiento', $id)
-            ->update(['enviar_facturacion' => true]);
-
-        return response()->json($update);
-    }
-
     public function mostrar_transportistas()
     {
         $data = DB::table('contabilidad.transportistas')

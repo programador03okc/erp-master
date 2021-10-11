@@ -310,4 +310,17 @@ class OrdenesDespachoExternoController extends Controller
             DB::rollBack();
         }
     }
+
+    public function enviarFacturacion(Request $request)
+    {
+        $update = DB::table('almacen.alm_req')
+            ->where('id_requerimiento', $request->id_requerimiento)
+            ->update([
+                'enviar_facturacion' => true,
+                'fecha_facturacion' => $request->fecha_facturacion,
+                'obs_facturacion' => $request->obs_facturacion
+            ]);
+
+        return response()->json($update);
+    }
 }
