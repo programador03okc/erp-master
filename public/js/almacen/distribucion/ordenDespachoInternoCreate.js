@@ -19,9 +19,6 @@ function open_despacho_create(data) {
     $('[name=id_cc]').val(data.id_cc);
     $('[name=descripcion_sobrantes]').val('');
 
-    // $("#detalleItemsReq").hide();
-    // $("#despachoExterno").show();
-
     $('#detalleSale tbody').html('');
 
     detalle_requerimiento = [];
@@ -72,7 +69,6 @@ function open_despacho_create(data) {
                         despachos_pendientes++;
                     }
                 }
-                // (element.series ? '<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Ver Series" onClick="verSeries(' + element.id_detalle_requerimiento + ');"></i>' : '') +
                 detalle_ingresa.push({
                     'id_reserva': element.id_reserva,
                     'id_detalle_requerimiento': element.id_detalle_requerimiento,
@@ -84,27 +80,27 @@ function open_despacho_create(data) {
                     'valorizacion': element.valorizacion,
                 });
 
-                if (element.id_almacen_reserva !== null) {
-                    if (!almacenes.includes(element.id_almacen_reserva)) {
-                        almacenes.push(element.id_almacen_reserva);
-                        almacenes_des.push(element.almacen_reserva_descripcion);
-                    }
-                }
-                else if (element.id_almacen_guia_com !== null) {
-                    if (!almacenes.includes(element.id_almacen_guia_com)) {
-                        almacenes.push(element.id_almacen_guia_com);
-                        almacenes_des.push(element.almacen_guia_com_descripcion);
-                    }
-                }
+                // if (element.id_almacen_reserva !== null) {
+                //     if (!almacenes.includes(element.id_almacen_reserva)) {
+                //         almacenes.push(element.id_almacen_reserva);
+                //         almacenes_des.push(element.almacen_reserva_descripcion);
+                //     }
+                // }
+                // else if (element.id_almacen_guia_com !== null) {
+                //     if (!almacenes.includes(element.id_almacen_guia_com)) {
+                //         almacenes.push(element.id_almacen_guia_com);
+                //         almacenes_des.push(element.almacen_guia_com_descripcion);
+                //     }
+                // }
             }
             else {
-                if ((element.estado == 28 || element.estado == 19 || element.estado == 10) && element.id_almacen_reserva !== null) {
-                    if (!almacenes_ext.includes(element.id_almacen_reserva)) {
-                        almacenes_ext.push(element.id_almacen_reserva);
-                        almacenes_ext_des.push(element.almacen_reserva_descripcion);
-                    }
-                    despachos_ext_pendientes++;
-                }
+                // if ((element.estado == 28 || element.estado == 19 || element.estado == 10) && element.id_almacen_reserva !== null) {
+                //     if (!almacenes_ext.includes(element.id_almacen_reserva)) {
+                //         almacenes_ext.push(element.id_almacen_reserva);
+                //         almacenes_ext_des.push(element.almacen_reserva_descripcion);
+                //     }
+                //     despachos_ext_pendientes++;
+                // }
                 detalle_sale.push({
                     'id_detalle_requerimiento': element.id_detalle_requerimiento,
                     'id_producto': element.id_producto,
@@ -120,14 +116,15 @@ function open_despacho_create(data) {
 
         $('#detalleRequerimientoOD tbody').html(html);
         mostrarSale();
+        /*
         console.log(almacenes_des);
         console.log('despachos_pendientes: ' + despachos_pendientes);
-
+ 
         console.log(almacenes_ext);
         console.log(almacenes_ext_des);
         console.log('despachos_ext_pendientes: ' + despachos_ext_pendientes);
         console.log(data);
-
+ 
         if (data.tiene_transformacion) {
             // data.count_despachos_internos == 0
             if (despachos_pendientes > 0) {
@@ -156,7 +153,7 @@ function open_despacho_create(data) {
                 if (despachos_ext_pendientes > 0) {
                     if (almacenes_ext.length == 1) {
                         var id_alm = $('[name=id_almacen]').val();
-
+ 
                         if (parseInt(almacenes_ext[0]) !== parseInt(id_alm)) {//revisar
                             Swal.fire({
                                 title: 'El almacén es diferente. Debe realizar una transferencia. ' + almacenes_ext_des[0],
@@ -181,31 +178,31 @@ function open_despacho_create(data) {
                         $('#modal-orden_despacho_interno_create').modal('hide');
                     }
                 }
-            }
-            // } else {
-            //     if (despachos_pendientes > 0) {
-            //         if (almacenes.length == 1) {
-            //             var id_alm = $('[name=id_almacen]').val();
+            }*/
+        // } else {
+        //     if (despachos_pendientes > 0) {
+        //         if (almacenes.length == 1) {
+        //             var id_alm = $('[name=id_almacen]').val();
 
-            //             if (parseInt(almacenes[0]) !== parseInt(id_alm)) {
-            //                 alert('El almacén es diferente. Debe realizar una transferencia. ' + almacenes_des[0]);
-            //                 $('#modal-orden_despacho_interno_create').modal('hide');
-            //             } else {
-            //                 $('[name=aplica_cambios]').prop('checked', false);
-            //                 off();
-            //             }
-            //         }
-            //         else if (almacenes.length == 0) {
-            //             alert('Es necesario que los productos esten en almacen.');
-            //             $('#modal-orden_despacho_interno_create').modal('hide');
-            //         }
-            //         else {
-            //             console.log(almacenes_des);
-            //             alert('Los productos no pueden estar en más de un Almacén: \n' + almacenes_des);
-            //             $('#modal-orden_despacho_interno_create').modal('hide');
-            //         }
-            //     }
-        }
+        //             if (parseInt(almacenes[0]) !== parseInt(id_alm)) {
+        //                 alert('El almacén es diferente. Debe realizar una transferencia. ' + almacenes_des[0]);
+        //                 $('#modal-orden_despacho_interno_create').modal('hide');
+        //             } else {
+        //                 $('[name=aplica_cambios]').prop('checked', false);
+        //                 off();
+        //             }
+        //         }
+        //         else if (almacenes.length == 0) {
+        //             alert('Es necesario que los productos esten en almacen.');
+        //             $('#modal-orden_despacho_interno_create').modal('hide');
+        //         }
+        //         else {
+        //             console.log(almacenes_des);
+        //             alert('Los productos no pueden estar en más de un Almacén: \n' + almacenes_des);
+        //             $('#modal-orden_despacho_interno_create').modal('hide');
+        //         }
+        //     }
+        // }
 
     }).catch(function (err) {
         console.log(err)

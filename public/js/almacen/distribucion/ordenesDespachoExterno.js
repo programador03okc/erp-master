@@ -23,6 +23,7 @@ function listarRequerimientosPendientes() {
                 }
             },
             {
+                'data': 'nro_orden',
                 render: function (data, type, row) {
                     if (row["nro_orden"] == null) {
                         return '';
