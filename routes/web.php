@@ -841,9 +841,9 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::group(['as' => 'reportes.', 'prefix' => 'reportes'], function () {
 				Route::get('listar-sedes-por-empresa/{id?}', 'Logistica\RequerimientoController@listarSedesPorEmpresa')->name('listar-sedes-por-empresa');
 				Route::get('ordenes-compra', 'ReporteLogisticaController@viewReporteOrdenesCompra')->name('ordenes-compra');
-				Route::post('lista-ordenes-compra', 'ReporteLogisticaController@listaOrdenesCompra')->name('lista-ordenes-compra');				
+				Route::post('lista-ordenes-compra', 'ReporteLogisticaController@listaOrdenesCompra')->name('lista-ordenes-compra');
 				Route::get('transito-ordenes-compra', 'ReporteLogisticaController@viewReporteTransitoOrdenesCompra')->name('transito-ordenes-compra');
-				Route::post('lista-transito-ordenes-compra', 'ReporteLogisticaController@listaTransitoOrdenesCompra')->name('lista-transito-ordenes-compra');				
+				Route::post('lista-transito-ordenes-compra', 'ReporteLogisticaController@listaTransitoOrdenesCompra')->name('lista-transito-ordenes-compra');
 			});
 			Route::group(['as' => 'cotizacion.', 'prefix' => 'cotizacion'], function () {
 				Route::group(['as' => 'gestionar.', 'prefix' => 'gestionar'], function () {
@@ -976,6 +976,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('guardarOrdenDespachoExterno', 'Logistica\Distribucion\OrdenesDespachoExternoController@guardarOrdenDespachoExterno');
 				Route::get('anular_orden_despacho/{id}/{tp}', 'Almacen\Movimiento\SalidasPendientesController@anular_orden_despacho');
 				Route::post('enviarFacturacion', 'Logistica\Distribucion\OrdenesDespachoExternoController@enviarFacturacion');
+
+				Route::get('mostrarDocumentosByRequerimiento/{id}', 'Logistica\Requerimientos\TrazabilidadRequerimientoController@mostrarDocumentosByRequerimiento');
 			});
 		});
 
