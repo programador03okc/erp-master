@@ -8,6 +8,10 @@
 Listado de requerimientos
 @endsection
 
+@section('estilos')
+<link rel="stylesheet" href="{{ asset('css/stepper.css')}}">
+@endsection
+
 @section('breadcrumb')
 <ol class="breadcrumb">
     <li><a href="{{route('necesidades.index')}}"><i class="fas fa-tachometer-alt"></i> Necesidades</a></li>
@@ -136,6 +140,8 @@ Listado de requerimientos
         </div>
     </div>
 </div>
+
+@include('logistica.requerimientos.trazabilidad.modal_trazabilidad')
 
 @include('logistica.requerimientos.modal_trazabilidad_requerimiento')
 @include('logistica.requerimientos.modal_requerimiento')

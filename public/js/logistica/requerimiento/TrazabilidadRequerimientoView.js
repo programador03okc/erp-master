@@ -18,9 +18,12 @@ class TrazabilidadRequerimiento{
     verTrazabilidadRequerimientoModal(data,that){
         let idRequerimiento = data.id_requerimiento;
 
-        $('#modal-trazabilidad-requerimiento').modal({
+        $('#modal-trazabilidad').modal({
             show: true
         });
+        // $('#modal-trazabilidad-requerimiento').modal({
+        //     show: true
+        // });
         this.mostrarRequerimiento(idRequerimiento);
         this.mostrarHistorialAprobacion(idRequerimiento);
         this.mostrarTrazabilidadDetalleRequerimiento(idRequerimiento);
