@@ -164,6 +164,14 @@ class Facturacion {
             },
             columns: [
                 { data: "id_requerimiento" },
+                {
+                    data: "fecha_facturacion",
+                    render: function (data, type, row) {
+                        return (row["fecha_facturacion"] !== null ? formatDate(row["fecha_facturacion"]) : '');
+                    },
+                    className: "text-center"
+                },
+                { data: "obs_facturacion" },
                 { data: "codigo", className: "text-center" },
                 { data: "concepto" },
                 {
@@ -212,6 +220,7 @@ class Facturacion {
                     className: "text-center"
                 }
             ],
+            order: [[1, "desc"]],
             columnDefs: [{ aTargets: [0], sClass: "invisible" }]
         });
     }

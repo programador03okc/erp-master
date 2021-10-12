@@ -59,8 +59,13 @@ function listarDetalleOrdenDespacho(id_od, tiene_transformacion) {
                     'cantidad': element.cantidad,
                     'abreviatura': element.abreviatura,
                     'control_series': element.control_series,
+                    'suma_reservas': element.suma_reservas,
                     'series': []
-                })
+                });
+                if (element.suma_reservas !== element.cantidad) {
+                    $("#submit_guia").attr('disabled', 'true');
+                    $("#mensaje").text('*Aún no hay saldo de todos los productos, no es posible generar la salida.');
+                }
             });
             // detalle = response;
             mostrar_detalle();
@@ -95,6 +100,7 @@ function mostrar_detalle() {
         <td>${element.part_number !== null ? element.part_number : ''}</td>
         <td>${element.descripcion}<br><strong>${html_series}</strong></td>
         <td>${element.cantidad}</td>
+        <td>${element.suma_reservas !== null ? element.suma_reservas : ''}</td>
         <td>${element.abreviatura}</td>
         <td>
         ${element.control_series ? `<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series" 

@@ -48,6 +48,7 @@ Gestión de Despachos
 </div>
 @include('almacen.distribucion.transferenciasDetalle')
 @include('almacen.distribucion.ordenDespachoCreate')
+@include('almacen.distribucion.enviarFacturacion')
 @include('tesoreria.facturacion.archivos_oc_mgcp')
 @include('publico.ubigeoModal')
 

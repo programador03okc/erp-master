@@ -6,6 +6,7 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
                     <h3 class="modal-title">Generar Guia de Venta - <strong><span id="name_title"></span></strong> 
                         <strong><span id="codigo_req"></span></strong></h3>
+                        <span id="mensaje" class="red"></span>
                 </div>
                 <div class="modal-body">
                     <input type="text" class="oculto" name="id_od">
@@ -69,6 +70,7 @@
                                         <th>PartNumber</th>
                                         <th>Descripción</th>
                                         <th>Cantidad</th>
+                                        <th>Reserva</th>
                                         <th>Unid</th>
                                         <th>Series</th>
                                     </tr>

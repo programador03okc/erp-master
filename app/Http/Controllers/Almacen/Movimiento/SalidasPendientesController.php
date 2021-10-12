@@ -36,7 +36,19 @@ class SalidasPendientesController extends Controller
                 'adm_estado_doc.estado_doc',
                 'adm_estado_doc.bootstrap_color',
                 DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_persona"),
-                'alm_almacen.descripcion as almacen_descripcion'
+                'alm_almacen.descripcion as almacen_descripcion',
+                DB::raw("(SELECT SUM(reserva.stock_comprometido) 
+                        FROM almacen.alm_reserva AS reserva
+                        INNER JOIN almacen.orden_despacho_det AS despacho 
+                            ON(despacho.id_od = orden_despacho.id_od)
+                        WHERE reserva.id_detalle_requerimiento = despacho.id_detalle_requerimiento
+                            and reserva.estado != 7
+                            and reserva.estado != 5
+                            and reserva.id_almacen_reserva = orden_despacho.id_almacen) AS suma_reservas"),
+                DB::raw("(SELECT SUM(despacho.cantidad) 
+                        FROM  almacen.orden_despacho_det AS despacho 
+                        WHERE despacho.id_od = orden_despacho.id_od
+                          AND despacho.estado != 7) AS suma_cantidad")
             )
             ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'orden_despacho.id_requerimiento')
             ->leftjoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'orden_despacho.id_almacen')
@@ -509,8 +521,12 @@ class SalidasPendientesController extends Controller
                 // 'guia_oc.id_guia_com_det as id_guia_oc_det',
                 // 'guia_trans.id_guia_ven_det as id_guia_trans_det',
                 'orden_despacho.id_almacen',
-                // 'goc.id_almacen as id_almacen_oc',
-                // 'gtr.id_almacen as id_almacen_tr'
+                DB::raw("(SELECT SUM(reserva.stock_comprometido) 
+                        FROM almacen.alm_reserva AS reserva
+                        WHERE reserva.id_detalle_requerimiento = orden_despacho_det.id_detalle_requerimiento
+                            and reserva.estado != 7
+                            and reserva.estado != 5
+                            and reserva.id_almacen_reserva = orden_despacho.id_almacen) AS suma_reservas")
             )
 
             ->join('almacen.orden_despacho', 'orden_despacho.id_od', '=', 'orden_despacho_det.id_od')
