@@ -36,13 +36,12 @@ function construirModalTrazabilidad(data) {
                 <div class="timeline-badge danger"><i class="glyphicon glyphicon-check"></i></div>
                 <div class="timeline-panel border-danger">
                     <div class="timeline-heading">
-                        <h4 class="timeline-title">Requerimiento</h4>
+                        <h5 class="timeline-title">Requerimiento</h5>
                         <p><small class="text-muted"><i class="glyphicon glyphicon-calendar"></i> ${data.requerimiento.fecha_requerimiento}</small></p>
                     </div>
                     <div class="timeline-body">
                         <p>Nro.Documento: <a href="/necesidades/requerimiento/elaboracion/index?id=${data.requerimiento.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${data.requerimiento.codigo}</a></p>
-                        <p>Concepto: ${data.requerimiento.concepto}</p>
-                        <p>Estado: ${data.requerimiento.estado_descripcion}</p>
+\                        <p>Estado: ${data.requerimiento.estado_descripcion}</p>
                     </div>
                 </div>
             </li>`);
@@ -56,7 +55,7 @@ function construirModalTrazabilidad(data) {
             <div class="timeline-badge info"><i class="glyphicon glyphicon-check"></i></div>
             <div class="timeline-panel border-info">
                 <div class="timeline-heading">
-                    <h4 class="timeline-title">Gestion Logística</h4>
+                    <h5 class="timeline-title">Gestion Logística</h5>
                 </div>`;
                 (data.ordenes).forEach(element => {
                     enlacesOrdenes.push(`<a href="/necesidades/requerimiento/elaboracion/index?id=${element.id_orden_compra}" target="_blank" title="Abrir Requerimiento">${element.codigo}</a>`)
@@ -84,7 +83,7 @@ function construirModalTrazabilidad(data) {
         <div class="timeline-badge success"><i class="glyphicon glyphicon-check"></i></div>
         <div class="timeline-panel border-success">
             <div class="timeline-heading">
-                <h4 class="timeline-title">Ingresos Almacén</h4>
+                <h5 class="timeline-title">Ingresos Almacén</h5>
             </div>`;
             (data.ingresos).forEach(element => {
                 enlacesIngresosGC.push(`${element.serie_guia}-${element.numero_guia}`)
@@ -110,7 +109,7 @@ function construirModalTrazabilidad(data) {
         <div class="timeline-badge success"><i class="glyphicon glyphicon-check"></i></div>
         <div class="timeline-panel border-success">
             <div class="timeline-heading">
-                <h4 class="timeline-title">Transferencias</h4>
+                <h5 class="timeline-title">Transferencias</h5>
             </div>`;
             (data.transferencias).forEach(ingreso => {
                 enlacesTransferenciaGC.push(`${ingreso.serie_guia_com}-${ingreso.numero_guia_com}`)
@@ -135,7 +134,7 @@ function construirModalTrazabilidad(data) {
         <div class="timeline-badge success"><i class="glyphicon glyphicon-check"></i></div>
         <div class="timeline-panel border-success">
             <div class="timeline-heading">
-                <h4 class="timeline-title">Transformaciones</h4>
+                <h5 class="timeline-title">Transformaciones</h5>
             </div>`;
             (data.transformaciones).forEach(element => {
                 enlacesTransformacion.push(`${element.codigo}`);
@@ -159,7 +158,7 @@ function construirModalTrazabilidad(data) {
         <div class="timeline-badge warning"><i class="glyphicon glyphicon-check"></i></div>
         <div class="timeline-panel border-warning">
             <div class="timeline-heading">
-                <h4 class="timeline-title">Despacho</h4>
+                <h5 class="timeline-title">Despacho</h5>
                 <p><small class="text-muted"><i class="glyphicon glyphicon-calendar"></i> ${data.despacho.fecha_despacho}</small></p>
             </div> 
             <div class="timeline-body">
@@ -179,7 +178,7 @@ function construirModalTrazabilidad(data) {
         <div class="timeline-badge primary"><i class="glyphicon glyphicon-check"></i></div>
         <div class="timeline-panel border-primary">
             <div class="timeline-heading">
-                <h4 class="timeline-title">Reparto</h4>
+                <h5 class="timeline-title">Reparto</h5>
                 <p><small class="text-muted"><i class="glyphicon glyphicon-calendar"></i> </small></p>
             </div>`;
             (data.estados_envio).forEach(element => {

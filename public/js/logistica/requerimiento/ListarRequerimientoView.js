@@ -338,7 +338,7 @@ class ListarRequerimientoView {
                 { 'data': 'razon_social', 'name': 'adm_contri.razon_social', 'className': 'text-center' },
                 { 'data': 'grupo', 'name': 'sis_grupo.descripcion', 'className': 'text-center' },
                 { 'data': 'division', 'name': 'division.descripcion', 'className': 'text-center' },
-                { 'data': 'monto_total', 'name': 'monto_total', 'className': 'text-right' },
+                { 'data': 'monto_total', 'name': 'monto_total', 'defaultContent':'', 'className': 'text-right' },
                 { 'data': 'nombre_usuario', 'name': 'nombre_usuario' },
                 { 'data': 'estado_doc', 'name': 'adm_estado_doc.estado_doc' },
                 { 'data': 'id_requerimiento' }
