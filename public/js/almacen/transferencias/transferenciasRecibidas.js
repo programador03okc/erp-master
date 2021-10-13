@@ -222,22 +222,25 @@ $("#listaTransferenciasRecibidas tbody").on("click", "a.ingreso", function () {
 
 $("#listaTransferenciasRecibidas tbody").on("click", "a.transferencia", function () {
     var id_transferencia = $(this).data("id");
-    var codigo = $(this).data("cod");
-    var guia = $(this).data("guia");
-    var origen = $(this).data("origen");
-    var destino = $(this).data("destino");
-
     if (id_transferencia !== "") {
-        $("#modal-transferenciaDetalle").modal({
-            show: true
-        });
-        console.log(codigo);
-        $("#codigo_transferencia").text(codigo);
-        $("#nro_guia").text(guia);
-        $("[name=det_almacen_origen]").val(origen);
-        $("[name=det_almacen_destino]").val(destino);
-        detalle_transferencia(id_transferencia);
+        window.open("imprimir_transferencia/" + id_transferencia);
     }
+    // var codigo = $(this).data("cod");
+    // var guia = $(this).data("guia");
+    // var origen = $(this).data("origen");
+    // var destino = $(this).data("destino");
+
+    // if (id_transferencia !== "") {
+    //     $("#modal-transferenciaDetalle").modal({
+    //         show: true
+    //     });
+    //     console.log(codigo);
+    //     $("#codigo_transferencia").text(codigo);
+    //     $("#nro_guia").text(guia);
+    //     $("[name=det_almacen_origen]").val(origen);
+    //     $("[name=det_almacen_destino]").val(destino);
+    //     detalle_transferencia(id_transferencia);
+    // }
 });
 
 $("#listaTransferenciasRecibidas tbody").on("click", "button.autogenerar", function () {
