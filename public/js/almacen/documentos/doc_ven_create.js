@@ -326,7 +326,7 @@ function mostrarListaItems() {
                 : element.descripcion
             }</td>
         <td>
-            <input type="number" class="form-control right cantidad" style="width: 90px;" value="${element.cantidad_real
+            <input type="number"  style="text-align:right;width: 90px;" class="form-control  cantidad" value="${element.cantidad_real
             }" max="${element.cantidad_real}"
             data-id="${element.id_detalle_requerimiento !== undefined
                 ? element.id_detalle_requerimiento
@@ -335,15 +335,15 @@ function mostrarListaItems() {
         </td>
         <td>${element.abreviatura}</td>
         <td>
-            <input type="number" class="form-control right unitario" value="${element.precio}" 
+            <input type="number" style="text-align:right" class="form-control  unitario" value="${element.precio}" 
             data-id="${element.id_detalle_requerimiento !== undefined
                 ? element.id_detalle_requerimiento
                 : element.id_guia_ven_det
             }" min="0" step="0.0001"/>
         </td>
-        <td class="right">${formatNumber.decimal(element.sub_total, "", -4)}</td>
+        <td  style="text-align:right">${formatNumber.decimal(element.sub_total, "", -4)}</td>
         <td>
-            <input type="number" class="form-control right porcentaje_dscto" value="${element.porcentaje_dscto
+            <input type="number"  style="text-align:right" class="form-control  porcentaje_dscto" value="${element.porcentaje_dscto
             }" 
             data-id="${element.id_detalle_requerimiento !== undefined
                 ? element.id_detalle_requerimiento
@@ -351,14 +351,14 @@ function mostrarListaItems() {
             }" min="0" step="0.0001"/>
         </td>
         <td>
-            <input type="number" class="form-control right total_dscto" value="${element.total_dscto
+            <input type="number" style="text-align:right" class="form-control  total_dscto" value="${element.total_dscto
             }" 
             data-id="${element.id_detalle_requerimiento !== undefined
                 ? element.id_detalle_requerimiento
                 : element.id_guia_ven_det
             }" min="0" step="0.0001"/>
         </td>
-        <td class="right">${formatNumber.decimal(element.total, "", -4)}</td>
+        <td  style="text-align:right">${formatNumber.decimal(element.total, "", -4)}</td>
         <td>
         <button type="button" class="quitar btn btn-danger btn-xs" data-toggle="tooltip" 
             data-placement="bottom" title="Quitar item" 

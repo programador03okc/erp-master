@@ -127,8 +127,8 @@ class OrdenesDespachoExternoController extends Controller
                         'ubigeo_destino' => $request->ubigeo,
                         'direccion_destino' => trim($request->direccion_destino),
                         'correo_cliente' => trim($request->correo_cliente),
-                        'fecha_despacho' => date('Y-m-d'),
-                        'hora_despacho' => date('H:i:s'),
+                        'fecha_despacho' => $request->fecha_despacho,
+                        'hora_despacho' => $request->hora_despacho,
                         'fecha_entrega' => $request->fecha_entrega,
                         'aplica_cambios' => false,
                         'registrado_por' => $usuario,
@@ -144,7 +144,11 @@ class OrdenesDespachoExternoController extends Controller
             if ($request->id_requerimiento !== null) {
                 DB::table('almacen.alm_req')
                     ->where('id_requerimiento', $request->id_requerimiento)
-                    ->update(['enviar_facturacion' => true]);
+                    ->update([
+                        'enviar_facturacion' => true,
+                        'fecha_facturacion' => $request->fecha_facturacion,
+                        'obs_facturacion' => $request->obs_facturacion
+                    ]);
             }
 
             //Si es Despacho Externo

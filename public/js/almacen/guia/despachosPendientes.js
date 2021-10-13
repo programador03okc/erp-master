@@ -82,11 +82,12 @@ function listarDespachosPendientes(permiso) {
             { 'aTargets': [0], 'sClass': 'invisible' },
             {
                 'render': function (data, type, row) {
+
                     if (permiso == '1') {
                         return `<button type="button" class="detalle btn btn-default btn-flat boton" data-toggle="tooltip"
                                 data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}">
                                 <i class="fas fa-chevron-down"></i></button>`+
-                            (row['suma_reservas'] >= row['suma_cantidad'] ?
+                            (row['suma_reservas'] !== null && row['suma_cantidad'] !== null && row['suma_reservas'] >= row['suma_cantidad'] ?
                                 (`<button type="button" class="guia btn btn-warning btn-flat boton" data-toggle="tooltip" 
                                 data-placement="bottom" title="Generar Guía" >
                                 <i class="fas fa-sign-in-alt"></i></button>`) : '');

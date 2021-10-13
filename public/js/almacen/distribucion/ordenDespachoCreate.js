@@ -68,8 +68,10 @@ function open_despacho_create(data) {
 
     $('#detalleSale tbody').html('');
 
+    $('[name=fecha_facturacion]').val(formatDate(fecha_actual()));
     $('[name=fecha_despacho]').val(formatDate(fecha_actual()));
     $('[name=fecha_entrega]').val(data.fecha_entrega);
+    $('[name=obs_facturacion]').val('');
 
 }
 

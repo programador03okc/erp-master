@@ -40,7 +40,8 @@ class SalidasPendientesController extends Controller
                 DB::raw("(SELECT SUM(reserva.stock_comprometido) 
                         FROM almacen.alm_reserva AS reserva
                         INNER JOIN almacen.orden_despacho_det AS despacho 
-                            ON(despacho.id_od = orden_despacho.id_od)
+                            ON( despacho.id_od = orden_despacho.id_od  
+                            and despacho.transformado != orden_despacho.aplica_cambios)
                         WHERE reserva.id_detalle_requerimiento = despacho.id_detalle_requerimiento
                             and reserva.estado != 7
                             and reserva.estado != 5
@@ -48,6 +49,7 @@ class SalidasPendientesController extends Controller
                 DB::raw("(SELECT SUM(despacho.cantidad) 
                         FROM  almacen.orden_despacho_det AS despacho 
                         WHERE despacho.id_od = orden_despacho.id_od
+                          AND despacho.transformado != orden_despacho.aplica_cambios
                           AND despacho.estado != 7) AS suma_cantidad")
             )
             ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'orden_despacho.id_requerimiento')
@@ -554,7 +556,7 @@ class SalidasPendientesController extends Controller
             ->where([
                 ['orden_despacho_det.id_od', '=', $id_od],
                 ['orden_despacho_det.estado', '!=', 7],
-                ['orden_despacho_det.transformado', '=', ($tiene_transformacion == 'true' ? true : false)]
+                ['orden_despacho_det.transformado', '=', ($tiene_transformacion == 'si' ? false : true)]
             ])
             ->get();
 

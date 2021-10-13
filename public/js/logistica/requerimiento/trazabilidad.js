@@ -26,10 +26,10 @@ function getTrazabilidad(idRequerimiento) {
 }
 
 function construirModalTrazabilidad(data) {
-    document.querySelector("ul[id='stepperTrazabilidad']").innerHTML='';
+    document.querySelector("ul[id='stepperTrazabilidad']").innerHTML = '';
 
-    if(data.hasOwnProperty('requerimiento')){
-        if(data.requerimiento.codigo !=undefined){
+    if (data.hasOwnProperty('requerimiento')) {
+        if (data.requerimiento.codigo != undefined) {
             document.querySelector("ul[id='stepperTrazabilidad']").insertAdjacentHTML('beforeend', `
             
             <li class="timeline-item">
@@ -45,116 +45,116 @@ function construirModalTrazabilidad(data) {
                     </div>
                 </div>
             </li>`);
-            
-        }
-        let htmlGestionLogistica='';
-        let enlacesOrdenes=[];
-        if(data.ordenes.length >0){
 
-        htmlGestionLogistica= `<li class="timeline-item">
+        }
+        let htmlGestionLogistica = '';
+        let enlacesOrdenes = [];
+        if (data.ordenes.length > 0) {
+
+            htmlGestionLogistica = `<li class="timeline-item">
             <div class="timeline-badge info"><i class="glyphicon glyphicon-check"></i></div>
             <div class="timeline-panel border-info">
                 <div class="timeline-heading">
                     <h5 class="timeline-title">Gestion Logística</h5>
                 </div>`;
-                (data.ordenes).forEach(element => {
-                    enlacesOrdenes.push(`<a href="/necesidades/requerimiento/elaboracion/index?id=${element.id_orden_compra}" target="_blank" title="Abrir Requerimiento">${element.codigo}</a>`)
-                });
+            (data.ordenes).forEach(element => {
+                enlacesOrdenes.push(`<a href="/necesidades/requerimiento/elaboracion/index?id=${element.id_orden_compra}" target="_blank" title="Abrir Requerimiento">${element.codigo}</a>`)
+            });
 
-            htmlGestionLogistica+=`
+            htmlGestionLogistica += `
                 <div class="timeline-body">
                 <p>Ordenes C/S: ${enlacesOrdenes.join(',')}</p>
-                <p>Reservas almacén: ${data.reservado ==true?'Si':'No'} </p>
+                <p>Reservas almacén: ${data.reservado == true ? 'Si' : 'No'} </p>
 
                 </div>
             </div>
         </li>`;
-                document.querySelector("ul[id='stepperTrazabilidad']").insertAdjacentHTML('beforeend', htmlGestionLogistica);
-            
+            document.querySelector("ul[id='stepperTrazabilidad']").insertAdjacentHTML('beforeend', htmlGestionLogistica);
+
         }
     }
 
-    let htmlIngresosAlmacen='';
-    let enlacesIngresosGC=[];
-    let enlacesIngresosFC=[];
-    if(data.ingresos.length >0){
+    let htmlIngresosAlmacen = '';
+    let enlacesIngresosGC = [];
+    let enlacesIngresosFC = [];
+    if (data.ingresos.length > 0) {
 
-    htmlIngresosAlmacen= `<li class="timeline-item">
+        htmlIngresosAlmacen = `<li class="timeline-item">
         <div class="timeline-badge success"><i class="glyphicon glyphicon-check"></i></div>
         <div class="timeline-panel border-success">
             <div class="timeline-heading">
                 <h5 class="timeline-title">Ingresos Almacén</h5>
             </div>`;
-            (data.ingresos).forEach(element => {
-                enlacesIngresosGC.push(`${element.serie_guia}-${element.numero_guia}`)
-                enlacesIngresosFC.push(`${element.serie_doc}-${element.numero_doc}`)
-            });
+        (data.ingresos).forEach(element => {
+            enlacesIngresosGC.push(`${element.serie_guia}-${element.numero_guia}`)
+            enlacesIngresosFC.push(`${element.serie_doc}-${element.numero_doc}`)
+        });
 
-        htmlIngresosAlmacen+=`
+        htmlIngresosAlmacen += `
             <div class="timeline-body">
             <p>Guia compra: ${enlacesIngresosGC.join(',')}</p>
             <p>Factura compra: ${enlacesIngresosFC.join(',')}</p>
             </div>
         </div>
     </li>`;
-            document.querySelector("ul[id='stepperTrazabilidad']").insertAdjacentHTML('beforeend', htmlIngresosAlmacen);
-        
-    }
-    let htmlTransferencias='';
-    let enlacesTransferenciaGC=[];
-    let enlacesTransferenciaGV=[];
-    if(data.transferencias.length >0){
+        document.querySelector("ul[id='stepperTrazabilidad']").insertAdjacentHTML('beforeend', htmlIngresosAlmacen);
 
-    htmlTransferencias= `<li class="timeline-item">
+    }
+    let htmlTransferencias = '';
+    let enlacesTransferenciaGC = [];
+    let enlacesTransferenciaGV = [];
+    if (data.transferencias.length > 0) {
+
+        htmlTransferencias = `<li class="timeline-item">
         <div class="timeline-badge success"><i class="glyphicon glyphicon-check"></i></div>
         <div class="timeline-panel border-success">
             <div class="timeline-heading">
                 <h5 class="timeline-title">Transferencias</h5>
             </div>`;
-            (data.transferencias).forEach(ingreso => {
-                enlacesTransferenciaGC.push(`${ingreso.serie_guia_com}-${ingreso.numero_guia_com}`)
-                enlacesTransferenciaGV.push(`${ingreso.serie_guia_ven}-${ingreso.numero_guia_ven}`)
-            });
+        (data.transferencias).forEach(ingreso => {
+            enlacesTransferenciaGC.push(`${ingreso.serie_guia_com}-${ingreso.numero_guia_com}`)
+            enlacesTransferenciaGV.push(`${ingreso.serie_guia_ven}-${ingreso.numero_guia_ven}`)
+        });
 
-        htmlTransferencias+=`
+        htmlTransferencias += `
             <div class="timeline-body">
             <p>Guia compra: ${enlacesTransferenciaGC.join(',')}</p>
             <p>Guia venta: ${enlacesTransferenciaGV.join(',')}</p>
             </div>
         </div>
     </li>`;
-            document.querySelector("ul[id='stepperTrazabilidad']").insertAdjacentHTML('beforeend', htmlTransferencias);
+        document.querySelector("ul[id='stepperTrazabilidad']").insertAdjacentHTML('beforeend', htmlTransferencias);
     }
 
-    let htmlTransformaciones='';
-    let enlacesTransformacion=[];
-    if(data.transformaciones.length >0){
+    let htmlTransformaciones = '';
+    let enlacesTransformacion = [];
+    if (data.transformaciones.length > 0) {
 
-    htmlTransformaciones= `<li class="timeline-item">
+        htmlTransformaciones = `<li class="timeline-item">
         <div class="timeline-badge success"><i class="glyphicon glyphicon-check"></i></div>
         <div class="timeline-panel border-success">
             <div class="timeline-heading">
                 <h5 class="timeline-title">Transformaciones</h5>
             </div>`;
-            (data.transformaciones).forEach(element => {
-                enlacesTransformacion.push(`${element.codigo}`);
-            });
+        (data.transformaciones).forEach(element => {
+            enlacesTransformacion.push(`${element.codigo}`);
+        });
 
-        htmlTransformaciones+=`
+        htmlTransformaciones += `
             <div class="timeline-body">
             <p>Codigo tranformación: ${enlacesTransformacion.join(',')}</p>
             </div>
         </div>
     </li>`;
-            document.querySelector("ul[id='stepperTrazabilidad']").insertAdjacentHTML('beforeend', htmlTransformaciones);
+        document.querySelector("ul[id='stepperTrazabilidad']").insertAdjacentHTML('beforeend', htmlTransformaciones);
     }
 
 
 
-    let htmlDespacho='';
-    if(data.despacho != null){
+    let htmlDespacho = '';
+    if (data.despacho != null) {
 
-    htmlDespacho= `<li class="timeline-item">
+        htmlDespacho = `<li class="timeline-item">
         <div class="timeline-badge warning"><i class="glyphicon glyphicon-check"></i></div>
         <div class="timeline-panel border-warning">
             <div class="timeline-heading">
@@ -166,33 +166,33 @@ function construirModalTrazabilidad(data) {
             </div>
         </div>
     </li>`;
-            document.querySelector("ul[id='stepperTrazabilidad']").insertAdjacentHTML('beforeend', htmlDespacho);
-        
+        document.querySelector("ul[id='stepperTrazabilidad']").insertAdjacentHTML('beforeend', htmlDespacho);
+
     }
 
-    let htmlReparto='';
-    let accionReparto=[];
-    if(data.estados_envio.length >0){
+    let htmlReparto = '';
+    let accionReparto = [];
+    if (data.estados_envio.length > 0) {
 
-        htmlReparto= `<li class="timeline-item">
+        htmlReparto = `<li class="timeline-item">
         <div class="timeline-badge primary"><i class="glyphicon glyphicon-check"></i></div>
         <div class="timeline-panel border-primary">
             <div class="timeline-heading">
                 <h5 class="timeline-title">Reparto</h5>
                 <p><small class="text-muted"><i class="glyphicon glyphicon-calendar"></i> </small></p>
             </div>`;
-            (data.estados_envio).forEach(element => {
-                accionReparto.push(`${element.accion_descripcion}`);
-            });
+        (data.estados_envio).forEach(element => {
+            accionReparto.push(`${element.accion_descripcion}`);
+        });
 
-        htmlReparto+=`
-            <div class="timeline-body">
-            <p>Acciónes Reparto: ${accionReparto.join(',')}</p>
-            </div>
-        </div>
-    </li>`;
-            document.querySelector("ul[id='stepperTrazabilidad']").insertAdjacentHTML('beforeend', htmlReparto);
-        
+        htmlReparto += `
+                    <div class="timeline-body">
+                    <p>Acciónes Reparto: ${accionReparto.join(',')}</p>
+                    </div>
+                </div>
+            </li>`;
+        document.querySelector("ul[id='stepperTrazabilidad']").insertAdjacentHTML('beforeend', htmlReparto);
+
     }
 
 }
