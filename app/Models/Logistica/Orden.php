@@ -86,7 +86,12 @@ class Orden extends Model {
         ->leftJoin('almacen.alm_det_req','log_det_ord_compra.id_detalle_requerimiento','alm_det_req.id_detalle_requerimiento')
         ->Join('almacen.alm_req','alm_req.id_requerimiento','alm_det_req.id_requerimiento')
         ->select('alm_req.tiene_transformacion')->get(); 
-        return $requerimiento->first()->tiene_transformacion;
+        if(!empty ($requerimiento->first())){
+            return $requerimiento->first()->tiene_transformacion;
+
+        }else{
+            return 'NO APLICA';
+        }
     }
     public function getMontoAttribute(){
 

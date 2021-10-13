@@ -198,7 +198,7 @@ class TransitoOrdenesCompra {
                 { 'data': 'fecha', 'name': 'fecha', 'className': 'text-center' },
                 { 'data': 'sede.descripcion', 'name': 'sede.descripcion',  'defaultContent':'' ,'className': 'text-center' },
                 { 'data': 'id_orden_compra', 'name': 'id_orden_compra', 'className': 'text-right' },
-                { 'data': 'estado.descripcion', 'name': 'estados_compra.descripcion', 'className': 'text-center' },
+                { 'data': 'estado.descripcion', 'name': 'estado.descripcion', 'className': 'text-center' },
                 { 'data': 'id_orden_compra', 'name': 'id_orden_compra', 'className': 'text-center' },
                 { 'data': 'id_orden_compra', 'name': 'id_orden_compra', 'className': 'text-center' },
                 { 'data': 'id_orden_compra', 'name': 'id_orden_compra', 'className': 'text-left' }

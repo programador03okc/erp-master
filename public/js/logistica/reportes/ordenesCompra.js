@@ -195,7 +195,7 @@ class OrdenesCompra {
                 { 'data': 'id_orden_compra', 'name': 'id_orden_compra', 'className': 'text-center' },
                 { 'data': 'codigo', 'name': 'log_ord_compra.codigo', 'className': 'text-center' },
                 { 'data': 'sede.descripcion', 'name': 'sede.descripcion',  'defaultContent':'' ,'className': 'text-center' },
-                { 'data': 'estado.descripcion', 'name': 'estados_compra.descripcion', 'className': 'text-center' },
+                { 'data': 'estado.descripcion', 'name': 'estado.descripcion', 'className': 'text-center' },
                 { 'data': 'id_orden_compra', 'name': 'id_orden_compra', 'className': 'text-center' },
                 { 'data': 'id_orden_compra', 'name': 'id_orden_compra', 'className': 'text-center' },
                 { 'data': 'id_orden_compra', 'name': 'id_orden_compra', 'className': 'text-center' },
