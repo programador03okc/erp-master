@@ -102,6 +102,7 @@
 .timeline .timeline-item .timeline-panel .timeline-title {
   margin-top: 0;
   color: inherit;
+  font-weight: bold;
 }
 .timeline .timeline-item .timeline-panel .timeline-body > p,
 .timeline .timeline-item .timeline-panel .timeline-body > ul {
@@ -141,7 +142,7 @@
 .timeline-horizontal .timeline-item {
   display: table-cell;
   height: 280px;
-  width: auto;
+  width: 100px;
   min-width: 200px;
   float: none !important;
   padding-left: 0px;
@@ -156,7 +157,7 @@
   float: none !important;
   left: 0 !important;
   right: 0 !important;
-  width: auto;
+  width: 170px;
   margin-bottom: 20px;
 }
 .timeline-horizontal .timeline-item .timeline-panel:before {

@@ -40,15 +40,17 @@ function construirModalTrazabilidad(data) {
                         <p><small class="text-muted"><i class="glyphicon glyphicon-calendar"></i> ${data.requerimiento.fecha_requerimiento}</small></p>
                     </div>
                     <div class="timeline-body">
-                        <p>Nro.Documento: <a href="/necesidades/requerimiento/elaboracion/index?id=${data.requerimiento.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${data.requerimiento.codigo}</a></p>
-\                        <p>Estado: ${data.requerimiento.estado_descripcion}</p>
+                        <strong>Código: </strong>
+                        <p><a href="/necesidades/requerimiento/elaboracion/index?id=${data.requerimiento.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${data.requerimiento.codigo}</a></p>
+                        <strong>Estado: </strong>
+                         <p>${data.requerimiento.estado_descripcion}</p>
                     </div>
                 </div>
             </li>`);
             
         }
         let htmlGestionLogistica='';
-        let enlacesOrdenes=[];
+        let OrdenesCodigo=[];
         if(data.ordenes.length >0){
 
         htmlGestionLogistica= `<li class="timeline-item">
@@ -58,13 +60,15 @@ function construirModalTrazabilidad(data) {
                     <h5 class="timeline-title">Gestion Logística</h5>
                 </div>`;
                 (data.ordenes).forEach(element => {
-                    enlacesOrdenes.push(`<a href="/necesidades/requerimiento/elaboracion/index?id=${element.id_orden_compra}" target="_blank" title="Abrir Requerimiento">${element.codigo}</a>`)
+                    OrdenesCodigo.push(`<a href="/necesidades/requerimiento/elaboracion/index?id=${element.id_orden_compra}" target="_blank" title="Abrir Requerimiento">${element.codigo}</a>`)
                 });
 
             htmlGestionLogistica+=`
                 <div class="timeline-body">
-                <p>Ordenes C/S: ${enlacesOrdenes.join(',')}</p>
-                <p>Reservas almacén: ${data.reservado ==true?'Si':'No'} </p>
+                <strong>Ordenes C/S:</strong>
+                <p>${OrdenesCodigo.join(',')}</p>
+                <strong>Reservas almacén:</strong>
+                <p>${data.reservado ==true?'Si':'No'} </p>
 
                 </div>
             </div>
@@ -75,8 +79,9 @@ function construirModalTrazabilidad(data) {
     }
 
     let htmlIngresosAlmacen='';
-    let enlacesIngresosGC=[];
-    let enlacesIngresosFC=[];
+    let ingresosCodigo=[];
+    let ingresosGC=[];
+    let ingresosFC=[];
     if(data.ingresos.length >0){
 
     htmlIngresosAlmacen= `<li class="timeline-item">
@@ -86,14 +91,18 @@ function construirModalTrazabilidad(data) {
                 <h5 class="timeline-title">Ingresos Almacén</h5>
             </div>`;
             (data.ingresos).forEach(element => {
-                enlacesIngresosGC.push(`${element.serie_guia}-${element.numero_guia}`)
-                enlacesIngresosFC.push(`${element.serie_doc}-${element.numero_doc}`)
+                // ingresosCodigo.push(`<a onclick="abrirIngreso(${element.id_ingreso})" title="Abrir Ingreso">${element.codigo_ingreso}</a>`)
+                ingresosGC.push(`${element.serie_guia}-${element.numero_guia}`)
+                ingresosFC.push(`${element.serie_doc}-${element.numero_doc}`)
             });
 
         htmlIngresosAlmacen+=`
             <div class="timeline-body">
-            <p>Guia compra: ${enlacesIngresosGC.join(',')}</p>
-            <p>Factura compra: ${enlacesIngresosFC.join(',')}</p>
+            <strong>Código ingreso: </strong>
+            <strong>Guia compra: </strong>
+            <p>${ingresosGC.join(',')}</p>
+            <strong>Factura compra: </strong>
+            <p>${ingresosFC.join(',')}</p>
             </div>
         </div>
     </li>`;
@@ -101,8 +110,8 @@ function construirModalTrazabilidad(data) {
         
     }
     let htmlTransferencias='';
-    let enlacesTransferenciaGC=[];
-    let enlacesTransferenciaGV=[];
+    let transferenciaGC=[];
+    let transferenciaGV=[];
     if(data.transferencias.length >0){
 
     htmlTransferencias= `<li class="timeline-item">
@@ -112,14 +121,14 @@ function construirModalTrazabilidad(data) {
                 <h5 class="timeline-title">Transferencias</h5>
             </div>`;
             (data.transferencias).forEach(ingreso => {
-                enlacesTransferenciaGC.push(`${ingreso.serie_guia_com}-${ingreso.numero_guia_com}`)
-                enlacesTransferenciaGV.push(`${ingreso.serie_guia_ven}-${ingreso.numero_guia_ven}`)
+                transferenciaGC.push(`${ingreso.serie_guia_com}-${ingreso.numero_guia_com}`)
+                transferenciaGV.push(`${ingreso.serie_guia_ven}-${ingreso.numero_guia_ven}`)
             });
 
         htmlTransferencias+=`
             <div class="timeline-body">
-            <p>Guia compra: ${enlacesTransferenciaGC.join(',')}</p>
-            <p>Guia venta: ${enlacesTransferenciaGV.join(',')}</p>
+            <p>Guia compra: ${transferenciaGC.join(',')}</p>
+            <p>Guia venta: ${transferenciaGV.join(',')}</p>
             </div>
         </div>
     </li>`;
@@ -127,7 +136,7 @@ function construirModalTrazabilidad(data) {
     }
 
     let htmlTransformaciones='';
-    let enlacesTransformacion=[];
+    let transformacionCodigo=[];
     if(data.transformaciones.length >0){
 
     htmlTransformaciones= `<li class="timeline-item">
@@ -137,12 +146,12 @@ function construirModalTrazabilidad(data) {
                 <h5 class="timeline-title">Transformaciones</h5>
             </div>`;
             (data.transformaciones).forEach(element => {
-                enlacesTransformacion.push(`${element.codigo}`);
+                transformacionCodigo.push(`${element.codigo}`);
             });
 
         htmlTransformaciones+=`
             <div class="timeline-body">
-            <p>Codigo tranformación: ${enlacesTransformacion.join(',')}</p>
+            <p>Codigo tranformación: ${transformacionCodigo.join(',')}</p>
             </div>
         </div>
     </li>`;
@@ -171,7 +180,7 @@ function construirModalTrazabilidad(data) {
     }
 
     let htmlReparto='';
-    let accionReparto=[];
+    let repartoAccion=[];
     if(data.estados_envio.length >0){
 
         htmlReparto= `<li class="timeline-item">
@@ -182,12 +191,12 @@ function construirModalTrazabilidad(data) {
                 <p><small class="text-muted"><i class="glyphicon glyphicon-calendar"></i> </small></p>
             </div>`;
             (data.estados_envio).forEach(element => {
-                accionReparto.push(`${element.accion_descripcion}`);
+                repartoAccion.push(`${element.accion_descripcion}`);
             });
 
         htmlReparto+=`
             <div class="timeline-body">
-            <p>Acciónes Reparto: ${accionReparto.join(',')}</p>
+            <p>Acciónes Reparto: ${repartoAccion.join(',')}</p>
             </div>
         </div>
     </li>`;
@@ -210,3 +219,10 @@ function mostrarTrazabilidad(idRequerimiento) {
     })
 }
 
+
+function abrirIngreso(idIngreso){
+    if (idIngreso !== "") {
+        var id = encode5t(idIngreso);
+        window.open("imprimir_ingreso/" + id);
+    }
+}

@@ -1,6 +1,6 @@
 
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-trazabilidad" style="overflow-y: scroll;">
-    <div class="modal-dialog" style="width: 80%;">
+    <div class="modal-dialog" style="width: 95%;">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
