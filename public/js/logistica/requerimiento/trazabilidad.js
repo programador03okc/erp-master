@@ -66,7 +66,7 @@ function construirModalTrazabilidad(data) {
             htmlGestionLogistica += `
                 <div class="timeline-body">
                 <strong>Ordenes C/S:</strong>
-                <p>${OrdenesCodigo.join(',')}</p>
+                <p>${OrdenesCodigo.join(', ')}</p>
                 <strong>Reservas almacén:</strong>
                 <p>${data.reservado ==true?'Si':'No'} </p>
 
@@ -99,11 +99,11 @@ function construirModalTrazabilidad(data) {
         htmlIngresosAlmacen += `
             <div class="timeline-body">
             <strong>Código: </strong>
-            <p>${ingresosCodigo.join(',')}</p>
+            <p>${ingresosCodigo.join(', ')}</p>
             <strong>Guia compra: </strong>
-            <p>${ingresosGC.join(',')}</p>
+            <p>${ingresosGC.join(', ')}</p>
             <strong>Factura compra: </strong>
-            <p>${ingresosFC.join(',')}</p>
+            <p>${ingresosFC.join(', ')}</p>
             </div>
         </div>
     </li>`;
@@ -122,9 +122,9 @@ function construirModalTrazabilidad(data) {
 
         htmlTransferencias += `
             <div class="timeline-body">
-            <p>Código: ${transferenciaCodigo.join(',')}</p>
-            <p>Guia compra: ${transferenciaGC.join(',')}</p>
-            <p>Guia venta: ${transferenciaGV.join(',')}</p>
+            <p>Código: ${transferenciaCodigo.join(', ')}</p>
+            <p>Guia compra: ${transferenciaGC.join(', ')}</p>
+            <p>Guia venta: ${transferenciaGV.join(', ')}</p>
             </div>
         </div>
     </li>`;
@@ -147,7 +147,7 @@ function construirModalTrazabilidad(data) {
 
         htmlTransformaciones += `
             <div class="timeline-body">
-            <p>Codigo tranformación: ${transformacionCodigo.join(',')}</p>
+            <p>Codigo tranformación: ${transformacionCodigo.join(', ')}</p>
             </div>
         </div>
     </li>`;
@@ -192,7 +192,7 @@ function construirModalTrazabilidad(data) {
 
         htmlReparto+=`
             <div class="timeline-body">
-            <p>Acciónes Reparto: ${repartoAccion.join(',')}</p>
+            <p>Acciónes Reparto: ${repartoAccion.join(', ')}</p>
             </div>
         </div>
     </li>`;

@@ -10,7 +10,7 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-md-11">
-                                <div style="display:inline-block;width:100%;overflow-y:hidden; overflow-x:scroll;">
+                                <div style="display:inline-block;width:100%;overflow-y:hidden; overflow-x:scroll;padding: 10px;">
                                     <ul class="timeline timeline-horizontal" id="stepperTrazabilidad">
                                     </ul>
                                 </div>
