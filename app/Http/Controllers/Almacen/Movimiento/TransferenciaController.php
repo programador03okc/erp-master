@@ -8,8 +8,10 @@ use App\Http\Controllers\Controller;
 use App\Models\almacen\Reserva;
 use App\Models\Almacen\Transferencia;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\View;
 
 //date_default_timezone_set('America/Lima');
 
@@ -1174,7 +1176,10 @@ class TransferenciaController extends Controller
                 )
                 ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'trans_detalle.id_producto')
                 ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'trans_detalle.estado')
-                ->where('id_transferencia', $t->id_transferencia)
+                ->where([
+                    ['trans_detalle.id_transferencia', '=', $t->id_transferencia],
+                    ['trans_detalle.estado', '!=', 7]
+                ])
                 ->get();
 
             foreach ($detalle as $det) {
@@ -1877,5 +1882,64 @@ class TransferenciaController extends Controller
             ->distinct();
 
         return datatables($data)->toJson();
+    }
+
+    public function imprimir_transferencia($id_transferencia)
+    {
+        $transferencia = DB::table('almacen.trans')
+            ->select(
+                'trans.*',
+                'alm_req.codigo as codigo_req',
+                'almacen_origen.descripcion as almacen_origen',
+                'almacen_destino.descripcion as almacen_destino',
+                'adm_empresa.logo_empresa',
+                'usuario_origen.nombre_corto as responsable_origen',
+                'usuario_destino.nombre_corto as responsable_destino',
+                'usuario_registro.nombre_corto as registrado_por',
+                DB::raw("CONCAT(guia_com.serie, '-', guia_com.numero) as guia_com"),
+                DB::raw("CONCAT(guia_ven.serie, '-', guia_ven.numero) as guia_ven"),
+            )
+            ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'trans.id_requerimiento')
+            ->join('almacen.alm_almacen as almacen_origen', 'almacen_origen.id_almacen', '=', 'trans.id_almacen_origen')
+            ->join('almacen.alm_almacen as almacen_destino', 'almacen_destino.id_almacen', '=', 'trans.id_almacen_destino')
+            ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'almacen_origen.id_sede')
+            ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
+            ->join('configuracion.sis_usua as usuario_origen', 'usuario_origen.id_usuario', '=', 'trans.responsable_origen')
+            ->join('configuracion.sis_usua as usuario_destino', 'usuario_destino.id_usuario', '=', 'trans.responsable_destino')
+            ->join('configuracion.sis_usua as usuario_registro', 'usuario_registro.id_usuario', '=', 'trans.registrado_por')
+            ->leftJoin('almacen.guia_com', 'guia_com.id_guia', '=', 'trans.id_guia_com')
+            ->leftJoin('almacen.guia_ven', 'guia_ven.id_guia_ven', '=', 'trans.id_guia_ven')
+            ->where('trans.id_transferencia', $id_transferencia)
+            ->first();
+
+        $detalle = DB::table('almacen.trans_detalle')
+            ->select(
+                'alm_prod.codigo',
+                'alm_prod.part_number',
+                'alm_prod.descripcion',
+                'alm_und_medida.abreviatura',
+                'trans_detalle.cantidad'
+            )
+            ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'trans_detalle.id_producto')
+            ->join('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
+            ->where([
+                ['trans_detalle.id_transferencia', '=', $id_transferencia],
+                ['trans_detalle.estado', '!=', 7]
+            ])
+            ->get();
+
+        $logo_empresa = ".$transferencia->logo_empresa";
+        $fecha_actual =  (new Carbon($transferencia->fecha_registro))->format('d-m-Y');
+        $hora_actual = (new Carbon($transferencia->fecha_registro))->format('H:i:s');
+
+        $vista = View::make(
+            'almacen/transferencias/transferencia_pdf',
+            compact('transferencia', 'logo_empresa', 'detalle', 'fecha_actual', 'hora_actual')
+        )->render();
+        $pdf = App::make('dompdf.wrapper');
+        $pdf->loadHTML($vista);
+
+        return $pdf->stream();
+        return $pdf->download($transferencia->codigo . '.pdf');
     }
 }
