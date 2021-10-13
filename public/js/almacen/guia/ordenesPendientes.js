@@ -155,8 +155,8 @@ function listarOrdenesPendientes() {
                 data: "codigo", name: "log_ord_compra.codigo",
                 render: function (data, type, row) {
                     return (
-                        '<a href="#" class="verOrden" data-id="' + row["id_orden_compra"] + '" >' +
-                        row["codigo"] + "</a>"
+                        `<a href="#" class="verOrden" data-id="${row["id_orden_compra"]}" >
+                        ${row["codigo"]}</a>`
                     );
                 },
                 className: "text-center"

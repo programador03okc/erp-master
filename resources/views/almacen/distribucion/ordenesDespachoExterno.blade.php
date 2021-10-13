@@ -7,6 +7,7 @@ Gestión de Despachos
 
 @section('estilos')
 <link rel="stylesheet" href="{{ asset('template/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css') }}">
+<link rel="stylesheet" href="{{ asset('css/stepper.css')}}">
 @endsection
 
 @section('breadcrumb')
@@ -55,6 +56,7 @@ Gestión de Despachos
 @include('almacen.distribucion.enviarFacturacion')
 @include('tesoreria.facturacion.archivos_oc_mgcp')
 @include('publico.ubigeoModal')
+@include('logistica.requerimientos.trazabilidad.modal_trazabilidad')
 
 @endsection
 
@@ -68,6 +70,7 @@ Gestión de Despachos
 <script src="{{ asset('js/almacen/distribucion/ordenesDespachoExterno.js')}}"></script>
 <script src="{{ asset('js/almacen/distribucion/ordenDespachoCreate.js')}}"></script>
 <script src="{{ asset('js/almacen/distribucion/verDetalleRequerimiento.js')}}"></script>
+<script src="{{ asset('js/logistica/requerimiento/trazabilidad.js')}}"></script>
 <script src="{{ asset('js/tesoreria/facturacion/archivosMgcp.js')}}"></script>
 <script src="{{ asset('js/publico/ubigeoModal.js')}}"></script>
 

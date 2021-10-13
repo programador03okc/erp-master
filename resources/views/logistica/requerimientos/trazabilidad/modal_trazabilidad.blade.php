@@ -1,4 +1,3 @@
-
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-trazabilidad" style="overflow-y: scroll;">
     <div class="modal-dialog" style="width: 95%;">
         <div class="modal-content">
@@ -17,16 +16,10 @@
                                 </div>
                             </div>
                         </div>
-
-
-
-
-
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-primary" class="close" data-dismiss="modal">Cerrar</button>
-
                 </div>
             </div>
         </div>

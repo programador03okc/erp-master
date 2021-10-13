@@ -137,7 +137,7 @@ function mostrar_detalle_transformacion() {
              data-id="${element.id}" data-tipo="${element.tipo}" step="0.001" 
                 value="${element.valor_unitario}" /></div>
             </td>
-            <td>${formatNumber.decimal((element.cantidad * element.valor_unitario), '', -4)}</td>
+            <td  class="text-right">${formatNumber.decimal((element.cantidad * element.valor_unitario), '', -4)}</td>
             <td width="8%">
                 ${element.tipo == 'sobrante' ?
                 `<button type="button" style="padding-left:8px;padding-right:7px;" 

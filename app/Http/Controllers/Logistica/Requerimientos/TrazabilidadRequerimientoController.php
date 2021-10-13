@@ -11,7 +11,7 @@ class TrazabilidadRequerimientoController extends Controller
     public function mostrarDocumentosByRequerimiento($id_requerimiento)
     {
         $requerimiento = DB::table('almacen.alm_req')
-            ->select('alm_req.id_requerimiento','alm_req.codigo', 'alm_req.fecha_requerimiento', 'alm_req.concepto','alm_req.estado','adm_estado_doc.estado_doc AS estado_descripcion')
+            ->select('alm_req.id_requerimiento', 'alm_req.codigo', 'alm_req.fecha_requerimiento', 'alm_req.concepto', 'alm_req.estado', 'adm_estado_doc.estado_doc AS estado_descripcion')
             ->leftJoin('administracion.adm_estado_doc', 'alm_req.estado', '=', 'adm_estado_doc.id_estado_doc')
             ->where('id_requerimiento', $id_requerimiento)
             ->first();
@@ -44,6 +44,8 @@ class TrazabilidadRequerimientoController extends Controller
 
         $guias_docs = DB::table('almacen.alm_det_req')
             ->select(
+                'mov_alm.id_mov_alm as id_ingreso',
+                'mov_alm.codigo as codigo_ingreso',
                 'guia_com.id_guia',
                 'guia_com.serie as serie_guia',
                 'guia_com.numero as numero_guia',
@@ -55,6 +57,8 @@ class TrazabilidadRequerimientoController extends Controller
             ->join('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento')
             ->join('almacen.guia_com_det', 'guia_com_det.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden')
             ->join('almacen.guia_com', 'guia_com.id_guia', '=', 'guia_com_det.id_guia_com')
+            ->join('almacen.mov_alm_det', 'mov_alm_det.id_guia_com_det', '=', 'guia_com_det.id_guia_com_det')
+            ->join('almacen.mov_alm', 'mov_alm.id_mov_alm', '=', 'mov_alm_det.id_mov_alm')
             ->leftJoin('almacen.doc_com_det', 'doc_com_det.id_guia_com_det', '=', 'guia_com_det.id_guia_com_det')
             ->leftJoin('almacen.doc_com', 'doc_com.id_doc_com', '=', 'doc_com_det.id_doc')
             ->where([

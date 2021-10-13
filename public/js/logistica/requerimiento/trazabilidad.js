@@ -26,10 +26,10 @@ function getTrazabilidad(idRequerimiento) {
 }
 
 function construirModalTrazabilidad(data) {
-    document.querySelector("ul[id='stepperTrazabilidad']").innerHTML='';
+    document.querySelector("ul[id='stepperTrazabilidad']").innerHTML = '';
 
-    if(data.hasOwnProperty('requerimiento')){
-        if(data.requerimiento.codigo !=undefined){
+    if (data.hasOwnProperty('requerimiento')) {
+        if (data.requerimiento.codigo != undefined) {
             document.querySelector("ul[id='stepperTrazabilidad']").insertAdjacentHTML('beforeend', `
             
             <li class="timeline-item">
@@ -47,13 +47,13 @@ function construirModalTrazabilidad(data) {
                     </div>
                 </div>
             </li>`);
-            
+
         }
         let htmlGestionLogistica='';
         let OrdenesCodigo=[];
         if(data.ordenes.length >0){
 
-        htmlGestionLogistica= `<li class="timeline-item">
+            htmlGestionLogistica = `<li class="timeline-item">
             <div class="timeline-badge info"><i class="glyphicon glyphicon-check"></i></div>
             <div class="timeline-panel border-info">
                 <div class="timeline-heading">
@@ -63,7 +63,7 @@ function construirModalTrazabilidad(data) {
                     OrdenesCodigo.push(`<a href="/necesidades/requerimiento/elaboracion/index?id=${element.id_orden_compra}" target="_blank" title="Abrir Requerimiento">${element.codigo}</a>`)
                 });
 
-            htmlGestionLogistica+=`
+            htmlGestionLogistica += `
                 <div class="timeline-body">
                 <strong>Ordenes C/S:</strong>
                 <p>${OrdenesCodigo.join(',')}</p>
@@ -73,8 +73,8 @@ function construirModalTrazabilidad(data) {
                 </div>
             </div>
         </li>`;
-                document.querySelector("ul[id='stepperTrazabilidad']").insertAdjacentHTML('beforeend', htmlGestionLogistica);
-            
+            document.querySelector("ul[id='stepperTrazabilidad']").insertAdjacentHTML('beforeend', htmlGestionLogistica);
+
         }
     }
 
@@ -84,7 +84,7 @@ function construirModalTrazabilidad(data) {
     let ingresosFC=[];
     if(data.ingresos.length >0){
 
-    htmlIngresosAlmacen= `<li class="timeline-item">
+        htmlIngresosAlmacen = `<li class="timeline-item">
         <div class="timeline-badge success"><i class="glyphicon glyphicon-check"></i></div>
         <div class="timeline-panel border-success">
             <div class="timeline-heading">
@@ -96,7 +96,7 @@ function construirModalTrazabilidad(data) {
                 ingresosFC.push(`${element.serie_doc}-${element.numero_doc}`)
             });
 
-        htmlIngresosAlmacen+=`
+        htmlIngresosAlmacen += `
             <div class="timeline-body">
             <strong>Código ingreso: </strong>
             <strong>Guia compra: </strong>
@@ -106,40 +106,33 @@ function construirModalTrazabilidad(data) {
             </div>
         </div>
     </li>`;
-            document.querySelector("ul[id='stepperTrazabilidad']").insertAdjacentHTML('beforeend', htmlIngresosAlmacen);
-        
+        document.querySelector("ul[id='stepperTrazabilidad']").insertAdjacentHTML('beforeend', htmlIngresosAlmacen);
+
     }
-    let htmlTransferencias='';
     let transferenciaGC=[];
     let transferenciaGV=[];
     if(data.transferencias.length >0){
 
-    htmlTransferencias= `<li class="timeline-item">
-        <div class="timeline-badge success"><i class="glyphicon glyphicon-check"></i></div>
-        <div class="timeline-panel border-success">
-            <div class="timeline-heading">
-                <h5 class="timeline-title">Transferencias</h5>
-            </div>`;
             (data.transferencias).forEach(ingreso => {
                 transferenciaGC.push(`${ingreso.serie_guia_com}-${ingreso.numero_guia_com}`)
                 transferenciaGV.push(`${ingreso.serie_guia_ven}-${ingreso.numero_guia_ven}`)
             });
 
-        htmlTransferencias+=`
+        htmlTransferencias += `
             <div class="timeline-body">
             <p>Guia compra: ${transferenciaGC.join(',')}</p>
             <p>Guia venta: ${transferenciaGV.join(',')}</p>
             </div>
         </div>
     </li>`;
-            document.querySelector("ul[id='stepperTrazabilidad']").insertAdjacentHTML('beforeend', htmlTransferencias);
+        document.querySelector("ul[id='stepperTrazabilidad']").insertAdjacentHTML('beforeend', htmlTransferencias);
     }
 
     let htmlTransformaciones='';
     let transformacionCodigo=[];
     if(data.transformaciones.length >0){
 
-    htmlTransformaciones= `<li class="timeline-item">
+        htmlTransformaciones = `<li class="timeline-item">
         <div class="timeline-badge success"><i class="glyphicon glyphicon-check"></i></div>
         <div class="timeline-panel border-success">
             <div class="timeline-heading">
@@ -149,21 +142,21 @@ function construirModalTrazabilidad(data) {
                 transformacionCodigo.push(`${element.codigo}`);
             });
 
-        htmlTransformaciones+=`
+        htmlTransformaciones += `
             <div class="timeline-body">
             <p>Codigo tranformación: ${transformacionCodigo.join(',')}</p>
             </div>
         </div>
     </li>`;
-            document.querySelector("ul[id='stepperTrazabilidad']").insertAdjacentHTML('beforeend', htmlTransformaciones);
+        document.querySelector("ul[id='stepperTrazabilidad']").insertAdjacentHTML('beforeend', htmlTransformaciones);
     }
 
 
 
-    let htmlDespacho='';
-    if(data.despacho != null){
+    let htmlDespacho = '';
+    if (data.despacho != null) {
 
-    htmlDespacho= `<li class="timeline-item">
+        htmlDespacho = `<li class="timeline-item">
         <div class="timeline-badge warning"><i class="glyphicon glyphicon-check"></i></div>
         <div class="timeline-panel border-warning">
             <div class="timeline-heading">
@@ -175,15 +168,15 @@ function construirModalTrazabilidad(data) {
             </div>
         </div>
     </li>`;
-            document.querySelector("ul[id='stepperTrazabilidad']").insertAdjacentHTML('beforeend', htmlDespacho);
-        
+        document.querySelector("ul[id='stepperTrazabilidad']").insertAdjacentHTML('beforeend', htmlDespacho);
+
     }
 
     let htmlReparto='';
     let repartoAccion=[];
     if(data.estados_envio.length >0){
 
-        htmlReparto= `<li class="timeline-item">
+        htmlReparto = `<li class="timeline-item">
         <div class="timeline-badge primary"><i class="glyphicon glyphicon-check"></i></div>
         <div class="timeline-panel border-primary">
             <div class="timeline-heading">

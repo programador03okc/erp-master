@@ -20,11 +20,15 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
+                                        <h5>Fecha Facturación</h5>
+                                        <input type="text" class="form-control date-picker" style="font-size:16px;background-color:#d2fafa;" name="fecha_facturacion">
+                                    </div>
+                                    <div class="col-md-4">
                                         <h5>Fecha Despacho</h5>
                                         <input type="text" class="form-control date-picker" style="font-size:16px;background-color:#d2fafa;" name="fecha_despacho">
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <h5>Hora Despacho</h5>
                                         <input type="time" class="form-control" style="font-size:16px;background-color:#d2fafa;" name="hora_despacho">
                                     </div>
@@ -46,7 +50,12 @@
                                 
                             </div>
                         </div>
-                            
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h5>Comentario sobre la Facturación</h5>
+                                <input type="text" class="form-control" style="background-color:#d2fafa;" name="obs_facturacion">
+                            </div>
+                        </div>
                     </fieldset>
                     <h4  style="display:flex;justify-content: space-between;">Datos del Despacho</h4>
                     <fieldset class="group-table">

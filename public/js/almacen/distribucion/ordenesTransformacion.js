@@ -65,7 +65,7 @@ function listarRequerimientosPendientes() {
             {
                 'render': function (data, type, row) {
                     // if (permiso == '1') {
-                    // console.log('estado: ' + row['estado_od']);
+                    console.log(row['codigo'] + '  estado: ' + row['estado_od']);
                     return `<div style="display:flex;">
                         <button type="button" class="detalle btn btn-default btn-flat boton" data-toggle="tooltip"
                         data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}">
@@ -82,9 +82,9 @@ function listarRequerimientosPendientes() {
                                 'data-placement="bottom" title="Generar Orden de Despacho" >' +
                                 '<i class="fas fa-sign-in-alt"></i></button>') :
                             (
-                                row['id_od'] !== null && row['estado_od'] == '1') ?
+                                row['id_od'] !== null && parseInt(row['estado_od']) == 1) ?
                                 `<button type="button" class="anular_od btn btn-flat btn-danger boton" data-toggle="tooltip" 
-                                    data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Anular Orden Despacho" >
+                                    data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Anular Orden Despacho Interno" >
                                     <i class="fas fa-trash"></i></button>` : '')
                         + '</div>'
 

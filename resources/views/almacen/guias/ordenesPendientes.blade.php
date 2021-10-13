@@ -74,18 +74,18 @@ Pendientes de Ingreso
                                     <thead>
                                         <tr>
                                             <th hidden></th>
-                                            <th>Orden Elec.</th>
+                                            {{-- <th>Orden Elec.</th>
                                             <th>Cuadro Costo</th>
                                             <th>Oportunidad</th>
-                                            <th>Entidad</th>
+                                            <th>Entidad</th> --}}
                                             <th>Código</th>
-                                            <th>Fecha Transf</th>
+                                            <th>Fecha Proceso</th>
                                             <th>Almacén</th>
-                                            <th>Responsable</th>
-                                            <th>Orden Despacho</th>
-                                            <th>Requerimiento</th>
-                                            <th>Guía</th>
+                                            <th>Transformado por</th>
                                             <th>Observación</th>
+                                            <th>Requerimiento</th>
+                                            <th>Orden Despacho</th>
+                                            {{-- <th>Guía</th> --}}
                                             <th width="80px"></th>
                                         </tr>
                                     </thead>
