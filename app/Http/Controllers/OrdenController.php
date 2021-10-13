@@ -2218,7 +2218,7 @@ class OrdenController extends Controller
         $html.= '<br>
 
                     <footer>
-                        <p style="font-size:9px; " class="pie_de_pagina">Generado por: ' . $ordenArray['head']['nombre_usuario'] .  '<br>'
+                        <p style="font-size:9px; " class="pie_de_pagina">Generado por: ' . ucwords(strtolower($ordenArray['head']['nombre_usuario'])) .  '<br>'
                         .'Fecha registro: '.$ordenArray['head']['fecha_registro'].'<br>'
                         .'Versión del sistema: '.config('global.nombreSistema') . ' '  . config('global.version') . ' </p>
                     </footer>

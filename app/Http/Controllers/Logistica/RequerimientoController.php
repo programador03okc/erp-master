@@ -3399,7 +3399,7 @@ class RequerimientoController extends Controller
                 <br/>
                 <br/>
                 <footer>
-                    <p style="font-size:9px; " class="pie_de_pagina">Generado por: ' . $requerimiento['requerimiento'][0]['persona'] .  '<br>'
+                    <p style="font-size:9px; " class="pie_de_pagina">Generado por: ' . ucwords(strtolower($requerimiento['requerimiento'][0]['persona'])) .  '<br>'
                     .'Fecha registro: '.$requerimiento['requerimiento'][0]['fecha_registro'].'<br>'
                     .'Versión del sistema: '.config('global.nombreSistema') . ' '  . config('global.version') . ' </p>
 
