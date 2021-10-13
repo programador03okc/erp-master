@@ -122,11 +122,14 @@ function listarIngresos() {
                 data: "codigo",
                 render: function (data, type, row) {
                     return row["codigo"] !== null
-                        ? '<label class="lbl-codigo" title="Abrir Ingreso" onClick="abrir_ingreso(' +
-                        row["id_mov_alm"] +
-                        ')">' +
-                        row["codigo"] +
-                        "</label>"
+                        ?
+                        `<a href="#" class="verIngreso" data-id="${row["id_mov_alm"]}" >
+                        ${row["codigo"]}</a>`
+                        // '<label class="lbl-codigo" title="Abrir Ingreso" onClick="abrir_ingreso(' +
+                        // row["id_mov_alm"] +
+                        // ')">' +
+                        // row["codigo"] +
+                        // "</label>"
                         : "";
                 }
             },
@@ -291,10 +294,10 @@ $("#listaIngresosAlmacen tbody").on("click", "button.detalle", function () {
     open_detalle_movimiento(data);
 });
 
-function abrir_ingreso(id_mov_alm) {
-    var id = encode5t(id_mov_alm);
-    window.open("imprimir_ingreso/" + id);
-}
+// function abrir_ingreso(id_mov_alm) {
+//     var id = encode5t(id_mov_alm);
+//     window.open("imprimir_ingreso/" + id);
+// }
 
 $("#listaIngresosAlmacen tbody").on("click", "button.anular", function () {
     var id_mov_alm = $(this).data("id");
@@ -311,6 +314,15 @@ $("#listaIngresosAlmacen tbody").on("click", "button.anular", function () {
     $("[name=observacion]").val("");
 
     $("#submitGuiaObs").removeAttr("disabled");
+});
+
+$("#listaIngresosAlmacen tbody").on("click", "a.verIngreso", function (e) {
+    $(e.preventDefault());
+    var id_mov_alm = $(this).data("id");
+    if (id_mov_alm !== "") {
+        var id = encode5t(id_mov_alm);
+        window.open("imprimir_ingreso/" + id);
+    }
 });
 
 $("#form-obs").on("submit", function (e) {
