@@ -44,6 +44,7 @@ class TrazabilidadRequerimientoController extends Controller
 
         $guias_docs = DB::table('almacen.alm_det_req')
             ->select(
+                'mov_alm.id_mov_alm as id_ingreso',
                 'mov_alm.codigo as codigo_ingreso',
                 'guia_com.id_guia',
                 'guia_com.serie as serie_guia',
