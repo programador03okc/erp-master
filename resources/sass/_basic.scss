@@ -1011,9 +1011,9 @@ span.select2-selection {
 // #listaRequerimientosTrazabilidad tbody td:nth-last-child(12),
 // #listaRequerimientosTrazabilidad tbody td:nth-last-child(13),
 
-#listaTransformaciones tbody td:nth-last-child(7),
-#listaTransformaciones tbody td:nth-last-child(6),
-#listaTransformaciones tbody td:nth-last-child(5),
+// #listaTransformaciones tbody td:nth-last-child(7),
+// #listaTransformaciones tbody td:nth-last-child(6),
+// #listaTransformaciones tbody td:nth-last-child(5),
 #listaTransformacionesPendientes tbody td:nth-last-child(4),
 #listaTransformacionesPendientes tbody td:nth-last-child(5),
 // #listaIngresos tbody td:nth-last-child(15),
@@ -1059,7 +1059,7 @@ span.select2-selection {
 // #listaTransferenciasRecibidas tbody td:nth-last-child(9),
 // #listaRequerimientosTrazabilidad tbody td:nth-last-child(14),
 // #listaRequerimientosTrazabilidad tbody td:nth-last-child(15),
-#listaTransformaciones tbody td:nth-last-child(11),
+// #listaTransformaciones tbody td:nth-last-child(11),
 #listaTransformacionesPendientes tbody td:nth-last-child(9),
 
 // #listaIngresos tbody td:nth-last-child(20),
@@ -1726,8 +1726,6 @@ form .select2-container .select2-selection--single {
 .colordark {
     color: #3f3f3f !important;
 }
-
-
 
 .celestito {
     background-color: rgb(208, 246, 255);

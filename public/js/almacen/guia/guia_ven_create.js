@@ -3,6 +3,7 @@ function open_guia_create(data) {
         show: true
     });
     $("#submit_guia").removeAttr("disabled");
+    $("#mensaje").text('');
     if (data.aplica_cambios) {
         $('[name=id_operacion]').val(27).trigger('change.select2');
         $('#name_title').text('Despacho Interno');
@@ -30,7 +31,7 @@ function open_guia_create(data) {
     // $('#serie').text('');
     // $('#numero').text('');
     detalle = [];
-    listarDetalleOrdenDespacho(data.id_od, data.tiene_transformacion);
+    listarDetalleOrdenDespacho(data.id_od, (data.aplica_cambios ? 'si' : 'no'));
     // cargar_almacenes(data.id_sede, 'id_almacen');
     // var tp_doc_almacen = 2;//guia venta
     // next_serie_numero(data.id_sede,tp_doc_almacen);
@@ -62,7 +63,9 @@ function listarDetalleOrdenDespacho(id_od, tiene_transformacion) {
                     'suma_reservas': element.suma_reservas,
                     'series': []
                 });
-                if (element.suma_reservas !== element.cantidad) {
+                console.log(element.codigo + ': ' + element.suma_reservas + '!== ' + element.cantidad);
+
+                if (parseFloat(element.suma_reservas) !== parseFloat(element.cantidad)) {
                     $("#submit_guia").attr('disabled', 'true');
                     $("#mensaje").text('*Aún no hay saldo de todos los productos, no es posible generar la salida.');
                 }

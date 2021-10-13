@@ -65,13 +65,14 @@ function listarRequerimientosPendientes() {
             },
             {
                 'render': function (data, type, row) {
+                    console.log(row['codigo'] + '  estado: ' + row['estado_od']);
                     return `<div style="display:flex;">
                         <button type="button" class="detalle btn btn-default btn-flat boton" data-toggle="tooltip"
                         data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}">
                         <i class="fas fa-chevron-down"></i></button>
 
                         <button type="button" class="trazabilidad btn btn-warning btn-flat boton" data-toggle="tooltip"
-                        data-placement="bottom" title="Ver Trazabilidad de Docs" disabled data-id="${row['id_requerimiento']}">
+                        data-placement="bottom" title="Ver Trazabilidad de Docs"  data-id="${row['id_requerimiento']}">
                         <i class="fas fa-route"></i></button>`+
                         ((row['id_od'] == null && row['productos_no_mapeados'] == 0)
                             // ((row['tiene_transformacion'] && row['estado'] == 10) ||
@@ -80,9 +81,9 @@ function listarRequerimientosPendientes() {
                             `<button type="button" class="despacho btn btn-success btn-flat boton" data-toggle="tooltip"
                                 data-placement="bottom" title="Generar Orden de Despacho" >
                                 <i class="fas fa-sign-in-alt"></i></button>` : '') +
-                        ((row['id_od'] !== null && row['estado_od'] == '1') ?
+                        ((row['id_od'] !== null && parseInt(row['estado_od']) == 1) ?
                             `<button type="button" class="anular_od btn btn-flat btn-danger boton" data-toggle="tooltip" 
-                                    data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Anular Orden Despacho" >
+                                    data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Anular Orden Despacho Externo" >
                                     <i class="fas fa-trash"></i></button>` : '') +
                         (row["nro_orden"] !== null && row['productos_no_mapeados'] == 0
                             ? `<button type="button" class="facturar btn btn-flat btn-${row["enviar_facturacion"] ? "info" : "default"} 
@@ -212,9 +213,7 @@ $('#requerimientosEnProceso tbody').on("click", "button.anular_od", function () 
 
 $("#requerimientosEnProceso tbody").on("click", "button.trazabilidad", function () {
     var id = $(this).data("id");
-    // $('#modal-trazabilidadDocs').modal({
-    //     show: true
-    // });
+    mostrarTrazabilidad(id)
 });
 
 function enviarFacturacion(data) {

@@ -3,6 +3,8 @@ function open_detalle_movimiento(data) {
         show: true
     });
     console.log(data);
+    console.log(moment(data.fecha_emision).format("YYYY-MM-DD"));
+
     $('#cabecera').text(data.codigo);
     $('[name=id_guia_com]').val(data.id_guia_com);
     $('[name=id_mov_alm]').val(data.id_mov_alm);
@@ -13,7 +15,7 @@ function open_detalle_movimiento(data) {
     $('#prov_razon_social').val(data.razon_social);
     $('#operacion_descripcion').val(data.operacion_descripcion);
     $('[name=ingreso_fecha_emision]').val(moment(data.fecha_emision_guia).format("YYYY-MM-DD"));
-    $('[name=ingreso_fecha_almacen]').val(moment(data.fecha_emision).format("YYYY-MM-DD"));
+    $('[name=ingreso_fecha_almacen]').val(moment(data.fecha_almacen_guia).format("YYYY-MM-DD"));
     $('#ordenes_compra').val(data.ordenes_compra + ' - SoftLink: ' + data.ordenes_soft_link);
     $('#responsable_nombre').text(data.nombre_corto);
     $('#requerimientos').val(data.requerimientos);
