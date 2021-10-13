@@ -1,5 +1,7 @@
  
 :root {
+    --default-color: #212224;
+    --purple-color: #7e26b1;
     --primary-color: #1f9eba;
     --success-color: #59ba1f;
     --info-color: #5abfdd;
@@ -74,6 +76,12 @@
 }
 .timeline .timeline-item .timeline-badge.danger {
   background-color: var(--danger-color);
+}
+.timeline .timeline-item .timeline-badge.default {
+  background-color: var(--default-color);
+}
+.timeline .timeline-item .timeline-badge.purple {
+  background-color: var(--purple-color);
 }
 .timeline .timeline-item .timeline-panel {
   position: relative;

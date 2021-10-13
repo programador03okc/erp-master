@@ -134,8 +134,8 @@ function construirModalTrazabilidad(data) {
     if(data.transformaciones.length >0){
 
         htmlTransformaciones = `<li class="timeline-item">
-        <div class="timeline-badge success"><i class="glyphicon glyphicon-check"></i></div>
-        <div class="timeline-panel border-success">
+        <div class="timeline-badge default"><i class="glyphicon glyphicon-check"></i></div>
+        <div class="timeline-panel border-default">
             <div class="timeline-heading">
                 <h5 class="timeline-title">Transformaciones</h5>
             </div>`;
@@ -158,8 +158,8 @@ function construirModalTrazabilidad(data) {
     if (data.despacho != null) {
 
         htmlDespacho = `<li class="timeline-item">
-        <div class="timeline-badge warning"><i class="glyphicon glyphicon-check"></i></div>
-        <div class="timeline-panel border-warning">
+        <div class="timeline-badge purple"><i class="glyphicon glyphicon-check"></i></div>
+        <div class="timeline-panel border-purple">
             <div class="timeline-heading">
                 <h5 class="timeline-title">Despacho</h5>
                 <p><small class="text-muted"><i class="glyphicon glyphicon-calendar"></i> ${data.despacho.fecha_despacho}</small></p>
