@@ -22,11 +22,11 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <h5>Fecha Despacho</h5>
-                                        <input type="date" class="form-control" name="fecha_despacho">
+                                        <input type="text" class="form-control date-picker" style="font-size:16px;background-color:#d2fafa;" name="fecha_despacho">
                                     </div>
                                     <div class="col-md-6">
                                         <h5>Hora Despacho</h5>
-                                        <input type="time" class="form-control" name="hora_despacho">
+                                        <input type="time" class="form-control" style="font-size:16px;background-color:#d2fafa;" name="hora_despacho">
                                     </div>
                                 </div>
                             </div>

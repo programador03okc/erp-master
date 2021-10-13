@@ -5,6 +5,10 @@
 Gestión de Despachos
 @endsection
 
+@section('estilos')
+<link rel="stylesheet" href="{{ asset('template/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css') }}">
+@endsection
+
 @section('breadcrumb')
 <ol class="breadcrumb">
     <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> Logística</a></li>
@@ -58,6 +62,8 @@ Gestión de Despachos
 <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
 <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
+<script src="{{ asset('template/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js') }}"></script>
+<script src="{{ asset('template/plugins/bootstrap-datepicker/locales/bootstrap-datepicker.es.min.js') }}"></script>
 
 <script src="{{ asset('js/almacen/distribucion/ordenesDespachoExterno.js')}}"></script>
 <script src="{{ asset('js/almacen/distribucion/ordenDespachoCreate.js')}}"></script>
@@ -69,6 +75,13 @@ Gestión de Despachos
     $(document).ready(function() {
         seleccionarMenu(window.location);
         listarRequerimientosPendientes();
+        
+        $('input.date-picker').datepicker({
+            language: "es",
+            orientation: "bottom auto",
+            format: 'dd-mm-yyyy',
+            autoclose: true
+        });
     });
 </script>
 @endsection
