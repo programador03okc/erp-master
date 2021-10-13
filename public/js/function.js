@@ -678,6 +678,9 @@ function anularRegister(type, ids, active) {
                 anular_transportista(ids);
             }
             break;
+        case "prorrateo":
+            anular_doc_prorrateo(ids);
+            break;
         case "doc_compra":
             anular_doc_compra(ids);
             break;

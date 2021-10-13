@@ -31,7 +31,7 @@ Prorrateo de Costos
 
                 <form id="form-prorrateo" type="register"  form="formulario">
                     
-                    <input class="oculto" name="id_prorrateo"/>
+                    <input class="oculto" name="id_prorrateo" primary="ids"/>
                     <div class="row">
                         <div class="col-md-12">
 
