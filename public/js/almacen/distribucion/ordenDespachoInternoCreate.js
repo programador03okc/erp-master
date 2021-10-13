@@ -28,12 +28,12 @@ function open_despacho_create(data) {
     detalleRequerimiento(data.id_requerimiento).then(function (response) {
 
         var html = '';
-        var almacenes = [];
-        var almacenes_des = [];
-        var despachos_pendientes = 0;
-        var almacenes_ext = [];
-        var almacenes_ext_des = [];
-        var despachos_ext_pendientes = 0;
+        // var almacenes = [];
+        // var almacenes_des = [];
+        // var despachos_pendientes = 0;
+        // var almacenes_ext = [];
+        // var almacenes_ext_des = [];
+        // var despachos_ext_pendientes = 0;
 
         console.log(response);
         response.forEach(element => {
@@ -45,7 +45,7 @@ function open_despacho_create(data) {
             if (!element.tiene_transformacion) {
 
                 if (cant > 0) {
-                    despachos_pendientes++;
+                    // despachos_pendientes++;
                     var partes = (element.cc_pn == null && element.cc_des == null && element.cc_com == null) ? true : false;
 
                     html += '<tr id="' + element.id_detalle_requerimiento + '">' +
@@ -56,18 +56,19 @@ function open_despacho_create(data) {
                         '<td>' + (element.part_number !== null ? element.part_number : '') + '</td>' +
                         '<td>' + (element.producto_descripcion !== null ? element.producto_descripcion : element.descripcion_adicional) + '</td>' +
                         // '<td>'+(element.almacen_descripcion !== null ? element.almacen_descripcion : '')+'</td>'+
-                        '<td>' + element.cantidad + '</td>' +
-                        '<td>' + (element.abreviatura !== null ? element.abreviatura : '') + '</td>' +
-                        '<td>' + (stock) + '</td>' +
-                        '<td>' + (element.suma_despachos_internos !== null ? element.suma_despachos_internos : '0') + '</td>' +
-                        '<td><input type="number" id="' + element.id_detalle_requerimiento + 'cantidad" value="' + cant + '" max="' + cant + '" min="0" style="width: 80px;"/></td>' +
-                        '<td><span class="label label-' + element.bootstrap_color + '">' + element.estado_doc + '</span></td>' +
+                        '<td style="text-align:center;">' + element.cantidad + '</td>' +
+                        '<td style="text-align:center;">' + (element.abreviatura !== null ? element.abreviatura : '') + '</td>' +
+                        '<td style="text-align:center;">' + stock + '</td>' +
+                        '<td style="text-align:center;">' + (element.suma_despachos_internos !== null ? element.suma_despachos_internos : '0') + '</td>' +
+                        '<td style="background-color: navajowhite;text-align:center;">' + cant + '</td>' +
+                        // '<td><input type="number" id="' + element.id_detalle_requerimiento + 'cantidad" value="' + cant + '" max="' + cant + '" min="0" style="width: 80px;"/></td>' +
+                        // '<td><span class="label label-' + element.bootstrap_color + '">' + element.estado_doc + '</span></td>' +
                         '<td>' + (!partes ? '<i class="fas fa-exchange-alt boton btn btn-warning" data-toggle="tooltip" data-placement="bottom" title="Ver Instrucciones segun Mgc" onClick="verInstrucciones(' + element.id_detalle_requerimiento + ');"></i>' : '') +
                         '</td></tr>';
-                } else {
-                    if (element.estado !== 28 && element.estado !== 10) {//En Almacen Total o Culminado
-                        despachos_pendientes++;
-                    }
+                    // } else {
+                    //     if (element.estado !== 28 && element.estado !== 10) {//En Almacen Total o Culminado
+                    //         despachos_pendientes++;
+                    //     }
                 }
                 detalle_ingresa.push({
                     'id_reserva': element.id_reserva,
@@ -113,6 +114,7 @@ function open_despacho_create(data) {
                 });
             }
         });
+
 
         $('#detalleRequerimientoOD tbody').html(html);
         mostrarSale();
@@ -232,7 +234,7 @@ function detalleRequerimiento(id_requerimiento) {
         });
     });
 }
-
+/*
 function verSeries(id_detalle_requerimiento) {
     if (id_detalle_requerimiento !== null) {
         $.ajax({
@@ -264,7 +266,7 @@ function verSeries(id_detalle_requerimiento) {
         });
     }
 }
-
+*/
 $("#form-orden_despacho").on("submit", function (e) {
     console.log('submit');
     e.preventDefault();
@@ -338,7 +340,7 @@ $("#form-orden_despacho").on("submit", function (e) {
 
             Swal.fire({
                 title: "¿Está seguro que desea guardar ésta Orden de Transformación?",
-                text: "No podrás revertir esto.",
+                // text: "No podrás revertir esto.",
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#00a65a", //"#3085d6",
@@ -442,11 +444,12 @@ function mostrarSale() {
         <td>${(element.codigo !== null ? element.codigo : '')}</td>
         <td>${(element.part_number !== null ? element.part_number : '')}</td>
         <td>${element.descripcion}</td>
-        <td><input type="number" id="" value="${element.cantidad ? element.cantidad : '1'}" style="width: 80px;"/></td>
+        <td style="background-color: navajowhite;text-align:center;">${element.cantidad ? element.cantidad : ''}</td>
         <td>${(element.abreviatura !== null ? element.abreviatura : '')}</td>
         </tr>`;
         i++;
     });
+    // <td><input type="number" id="" value="${element.cantidad ? element.cantidad : '1'}" style="width: 80px;"/></td>
     $('#detalleSale tbody').html(html);
 }
 
