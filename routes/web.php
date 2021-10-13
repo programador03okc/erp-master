@@ -685,6 +685,7 @@ Route::group(['middleware' => ['auth']], function () {
 				// Route::get('empresa', 'LogisticaController@getIdEmpresa')->name('empresa');
 				Route::get('listar-sedes-por-empresa/{id?}', 'Logistica\RequerimientoController@listarSedesPorEmpresa')->name('listar-sedes-por-empresa');
 
+				Route::get('mostrarDocumentosByRequerimiento/{id}', 'Logistica\Requerimientos\TrazabilidadRequerimientoController@mostrarDocumentosByRequerimiento');
 
 				// Route::get('detalleRequerimiento/{id}', 'Logistica\RequerimientoController@detalleRequerimiento')->name('detalle-requerimiento');
 

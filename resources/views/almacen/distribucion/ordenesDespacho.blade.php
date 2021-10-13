@@ -9,6 +9,8 @@ Panel de Control de Despachos
 <link rel="stylesheet" href="{{ asset('template/plugins/iCheck/all.css') }}">
 <link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
 <link rel="stylesheet" href="{{ asset('template/plugins/jquery-datatables-checkboxes/css/dataTables.checkboxes.css') }}">
+<link rel="stylesheet" href="{{ asset('css/stepperHorizontal.css')}}">
+
 @endsection
 
 @section('breadcrumb')

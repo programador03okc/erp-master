@@ -18,6 +18,7 @@ class TrazabilidadRequerimiento{
     verTrazabilidadRequerimientoModal(data,that){
         let idRequerimiento = data.id_requerimiento;
 
+
         $('#modal-trazabilidad-requerimiento').modal({
             show: true
         });

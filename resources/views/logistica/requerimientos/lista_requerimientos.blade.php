@@ -8,6 +8,10 @@
 Listado de requerimientos
 @endsection
 
+@section('estilos')
+<link rel="stylesheet" href="{{ asset('css/stepper.css')}}">
+@endsection
+
 @section('breadcrumb')
 <ol class="breadcrumb">
     <li><a href="{{route('necesidades.index')}}"><i class="fas fa-tachometer-alt"></i> Necesidades</a></li>
@@ -137,12 +141,13 @@ Listado de requerimientos
     </div>
 </div>
 
-@include('logistica.requerimientos.modal_trazabilidad_requerimiento')
+
 @include('logistica.requerimientos.modal_requerimiento')
+
 @include('logistica.requerimientos.modal_adjuntar_archivos_requerimiento')
 @include('logistica.requerimientos.modal_adjuntar_archivos_detalle_requerimiento')
 @include('logistica.requerimientos.modal_filtro_requerimientos_elaborados')
-
+@include('logistica.requerimientos.trazabilidad.modal_trazabilidad')
 
 @endsection
 
@@ -155,12 +160,13 @@ Listado de requerimientos
 <script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
 
 <script src="{{ asset('js/logistica/requerimiento/ArchivoAdjunto.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/ArchivoAdjunto.js'))}}"></script>
-<script src="{{ asset('js/logistica/requerimiento/TrazabilidadRequerimientoView.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/TrazabilidadRequerimientoView.js'))}}"></script>
+<!-- <script src="{{ asset('js/logistica/requerimiento/TrazabilidadRequerimientoView.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/TrazabilidadRequerimientoView.js'))}}"></script> -->
 <!-- <script src="{{ asset('js/logistica/requerimiento/AprobarRequerimientoView.js')}}"></script> -->
 <script src="{{ asset('js/logistica/requerimiento/ListarRequerimientoView.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/ListarRequerimientoView.js'))}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/RequerimientoView.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/RequerimientoView.js'))}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/RequerimientoController.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/RequerimientoController.js'))}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/RequerimientoModel.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/RequerimientoModel.js'))}}"></script>
+<script src="{{ asset('js/logistica/requerimiento/trazabilidad.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/trazabilidad.js'))}}"></script>
 
 
 <script>

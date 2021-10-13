@@ -11,15 +11,18 @@ class TrazabilidadRequerimientoController extends Controller
     public function mostrarDocumentosByRequerimiento($id_requerimiento)
     {
         $requerimiento = DB::table('almacen.alm_req')
-            ->select('alm_req.codigo', 'alm_req.fecha_requerimiento', 'alm_req.concepto')
+            ->select('alm_req.id_requerimiento','alm_req.codigo', 'alm_req.fecha_requerimiento', 'alm_req.concepto','alm_req.estado','adm_estado_doc.estado_doc AS estado_descripcion')
+            ->leftJoin('administracion.adm_estado_doc', 'alm_req.estado', '=', 'adm_estado_doc.id_estado_doc')
             ->where('id_requerimiento', $id_requerimiento)
             ->first();
 
         $ordenes = DB::table('logistica.log_det_ord_compra')
-            ->select('log_ord_compra.*')
+            ->select('log_ord_compra.*', 'estados_compra.descripcion AS estado_descripcion')
             ->join('logistica.log_ord_compra', 'log_ord_compra.id_orden_compra', '=', 'log_det_ord_compra.id_orden_compra')
             ->join('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
             ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+            ->leftJoin('logistica.estados_compra', 'log_ord_compra.estado', '=', 'estados_compra.id_estado')
+
             ->where([
                 ['alm_req.id_requerimiento', '=', $id_requerimiento],
                 ['log_ord_compra.estado', '!=', 7]

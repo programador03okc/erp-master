@@ -9,7 +9,7 @@ class ListarRequerimientoView {
 
     constructor(requerimientoCtrl) {
         this.requerimientoCtrl = requerimientoCtrl;
-        this.trazabilidadRequerimiento = new TrazabilidadRequerimiento(requerimientoCtrl);
+        // this.trazabilidadRequerimiento = new TrazabilidadRequerimiento(requerimientoCtrl);
         this.ActualParametroAllOrMe= 'SIN_FILTRO';
         this.ActualParametroEmpresa= 'SIN_FILTRO';
         this.ActualParametroSede= 'SIN_FILTRO';
@@ -444,11 +444,10 @@ class ListarRequerimientoView {
                     $tablaListaRequerimientosElaborados.search($input.val()).draw();
                 })
                 //Fin boton de busqueda
-                $('#ListaRequerimientosElaborados tbody').on("click", "label.handleClickAbrirOrden", function () {
-                    let idOrdenCompra = $('#ListaRequerimientosElaborados').DataTable().row($(this).parents("tr")).node().querySelector("label[class~='handleClickAbrirOrden']").dataset.idOrdenCompra;
-                    // console.log(idOrdenCompra);
-                    that.trazabilidadRequerimiento.abrirOrden(idOrdenCompra);
-                });
+                // $('#ListaRequerimientosElaborados tbody').on("click", "label.handleClickAbrirOrden", function () {
+                //     let idOrdenCompra = $('#ListaRequerimientosElaborados').DataTable().row($(this).parents("tr")).node().querySelector("label[class~='handleClickAbrirOrden']").dataset.idOrdenCompra;
+                //     that.trazabilidadRequerimiento.abrirOrden(idOrdenCompra);
+                // });
                 $('#ListaRequerimientosElaborados tbody').on("click", ".handleClickAbrirRequerimiento", function () {
                     let data = $('#ListaRequerimientosElaborados').DataTable().row($(this).parents("tr")).data();
                     that.abrirRequerimiento(data.id_requerimiento);
@@ -460,7 +459,9 @@ class ListarRequerimientoView {
 
                 $('#ListaRequerimientosElaborados tbody').on("click", "button.handleClickVerTrazabilidadRequerimiento", function () {
                     let data = $('#ListaRequerimientosElaborados').DataTable().row($(this).parents("tr")).data();
-                    that.trazabilidadRequerimiento.verTrazabilidadRequerimientoModal(data, that);
+                    let idRequerimiento = data.id_requerimiento;
+                    mostrarTrazabilidad(idRequerimiento);
+                    // that.trazabilidadRequerimiento.verTrazabilidadRequerimientoModal(data, that);
                 });
 
                 $('#ListaRequerimientosElaborados tbody').on("click", "button.handleClickVerDetalleRequerimientoSoloLectura", function () {
