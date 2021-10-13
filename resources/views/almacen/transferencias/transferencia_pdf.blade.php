@@ -180,7 +180,7 @@
         {{'Registrado por: ' . $transferencia->registrado_por }}
         </p>
         <p style="text-align:right;font-size:10px;margin-bottom:0px;margin-top:0px;">
-            {{'Fecha registro: ' . $fecha_actual . ' ' . $hora_actual }}
+            {{'Fecha registro: ' . $fecha_registro . ' ' . $hora_registro }}
             </p>
         <p style="text-align:right;font-size:10px;margin-top:0px;">
             <strong>{{config('global.nombreSistema') . ' '  . config('global.version')}}</strong>

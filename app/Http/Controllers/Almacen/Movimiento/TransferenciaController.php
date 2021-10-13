@@ -1929,12 +1929,12 @@ class TransferenciaController extends Controller
             ->get();
 
         $logo_empresa = ".$transferencia->logo_empresa";
-        $fecha_actual =  (new Carbon($transferencia->fecha_registro))->format('d-m-Y');
-        $hora_actual = (new Carbon($transferencia->fecha_registro))->format('H:i:s');
+        $fecha_registro =  (new Carbon($transferencia->fecha_registro))->format('d-m-Y');
+        $hora_registro = (new Carbon($transferencia->fecha_registro))->format('H:i:s');
 
         $vista = View::make(
             'almacen/transferencias/transferencia_pdf',
-            compact('transferencia', 'logo_empresa', 'detalle', 'fecha_actual', 'hora_actual')
+            compact('transferencia', 'logo_empresa', 'detalle', 'fecha_registro', 'hora_registro')
         )->render();
         $pdf = App::make('dompdf.wrapper');
         $pdf->loadHTML($vista);
