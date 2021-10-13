@@ -41,7 +41,7 @@ function construirModalTrazabilidad(data) {
                     </div>
                     <div class="timeline-body">
                         <strong>Código: </strong>
-                        <p><a href="/necesidades/requerimiento/elaboracion/imprimir-requerimiento-pdf/${data.requerimiento.id_requerimiento}/0" target="_blank" title="Abrir Requerimiento">${data.requerimiento.codigo}</a></p>
+                        <p><a href="/necesidades/requerimiento/elaboracion/imprimir-requerimiento-pdf/${data.requerimiento.id_requerimiento}/0" target="_blank" title="Abrir requerimiento">${data.requerimiento.codigo}</a></p>
                         <strong>Estado: </strong>
                          <p>${data.requerimiento.estado_descripcion}</p>
                     </div>
@@ -60,7 +60,7 @@ function construirModalTrazabilidad(data) {
                     <h5 class="timeline-title">Gestion Logística</h5>
                 </div>`;
                 (data.ordenes).forEach(element => {
-                    OrdenesCodigo.push(`<a href="/logistica/gestion-logistica/compras/ordenes/listado/generar-orden-pdf/${element.id_orden_compra}" target="_blank" title="Abrir Requerimiento">${element.codigo}</a>`)
+                    OrdenesCodigo.push(`<a href="/logistica/gestion-logistica/compras/ordenes/listado/generar-orden-pdf/${element.id_orden_compra}" target="_blank" title="Abrir orden">${element.codigo}</a>`)
                 });
 
             htmlGestionLogistica += `
@@ -91,7 +91,7 @@ function construirModalTrazabilidad(data) {
                 <h5 class="timeline-title">Ingresos Almacén</h5>
             </div>`;
             (data.ingresos).forEach(element => {
-                ingresosCodigo.push(`<a href onclick="abrirIngreso(${element.id_ingreso})" title="Abrir Ingreso">${element.codigo_ingreso}</a>`)
+                ingresosCodigo.push(`<a href onclick="abrirIngresoPDF(${element.id_ingreso})" title="Abrir ingreso">${element.codigo_ingreso}</a>`)
                 ingresosGC.push(`${element.serie_guia}-${element.numero_guia}`)
                 ingresosFC.push(`${element.serie_doc}-${element.numero_doc}`)
             });
@@ -114,13 +114,15 @@ function construirModalTrazabilidad(data) {
     let transferenciaGV=[];
     if(data.transferencias.length >0){
 
-            (data.transferencias).forEach(ingreso => {
-                transferenciaGC.push(`${ingreso.serie_guia_com}-${ingreso.numero_guia_com}`)
-                transferenciaGV.push(`${ingreso.serie_guia_ven}-${ingreso.numero_guia_ven}`)
+            (data.transferencias).forEach(element => {
+                transferenciaCodigo.push(`<a href onclick="abrirTransferenciaPDF(${element.id_transferencia})" title="Abrir transferencia">${element.codigo}</a>`)
+                transferenciaGC.push(`${element.serie_guia_com}-${element.numero_guia_com}`)
+                transferenciaGV.push(`${element.serie_guia_ven}-${element.numero_guia_ven}`)
             });
 
         htmlTransferencias += `
             <div class="timeline-body">
+            <p>Código: ${transferenciaCodigo.join(',')}</p>
             <p>Guia compra: ${transferenciaGC.join(',')}</p>
             <p>Guia venta: ${transferenciaGV.join(',')}</p>
             </div>
@@ -214,9 +216,16 @@ function mostrarTrazabilidad(idRequerimiento) {
 }
 
 
-function abrirIngreso(idIngreso){
+function abrirIngresoPDF(idIngreso){
     if (idIngreso !== "") {
         var id = encode5t(idIngreso);
         window.open("imprimir_ingreso/" + id);
+    }
+}
+
+function abrirTransferenciaPDF(idTransferencia){
+    var idTransferencia = $(this).data("id");
+    if (idTransferencia !== "") {
+        window.open("imprimir_transferencia/" + idTransferencia);
     }
 }
