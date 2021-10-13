@@ -102,8 +102,9 @@ class TrazabilidadRequerimientoController extends Controller
             ->first();
 
         $estados_envio = DB::table('almacen.orden_despacho_obs')
-            ->select('orden_despacho_obs.*')
+            ->select('orden_despacho_obs.*', 'estado_envio.descripcion as accion_descripcion')
             ->join('almacen.orden_despacho', 'orden_despacho.id_od', '=', 'orden_despacho_obs.id_od')
+            ->join('almacen.estado_envio', 'estado_envio.id_estado', '=', 'orden_despacho_obs.accion')
             ->where([
                 ['orden_despacho.id_requerimiento', '=', $id_requerimiento],
                 ['orden_despacho.aplica_cambios', '=', false],

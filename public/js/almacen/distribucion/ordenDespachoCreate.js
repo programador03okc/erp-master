@@ -76,23 +76,36 @@ function open_despacho_create(data) {
 $("#form-orden_despacho").on("submit", function (e) {
     console.log('submit');
     e.preventDefault();
-    var msj = validaOrdenDespacho();
 
-    if (msj.length > 0) {
-        Swal.fire({
-            title: msj,
-            icon: "warning",
-        });
-    }
-    else {
-        var serial = $(this).serialize();
-        var doc = $('input[name=optionsRadios]:checked').val();
+    Swal.fire({
+        title: "¿Está seguro que desea guardar ésta Orden de Despacho?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#00a65a", //"#3085d6",
+        cancelButtonColor: "#d33",
+        cancelButtonText: "Cancelar",
+        confirmButtonText: "Sí, Guardar"
+    }).then(result => {
+        if (result.isConfirmed) {
+            var msj = validaOrdenDespacho();
 
-        var data = serial + '&documento=' + doc;
-        console.log(data);
-        guardar_orden_despacho(data);
+            if (msj.length > 0) {
+                Swal.fire({
+                    title: msj,
+                    icon: "warning",
+                });
+            }
+            else {
+                var serial = $(this).serialize();
+                var doc = $('input[name=optionsRadios]:checked').val();
 
-    }
+                var data = serial + '&documento=' + doc;
+                console.log(data);
+                guardar_orden_despacho(data);
+
+            }
+        }
+    });
 });
 
 function guardar_orden_despacho(data) {
