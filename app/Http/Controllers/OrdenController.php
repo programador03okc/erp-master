@@ -2015,6 +2015,8 @@ class OrdenController extends Controller
                     position: absolute;
                     bottom:0px;
                     right:0px;
+                    text-align:right;
+
                 }
 
             </style>
@@ -2216,8 +2218,9 @@ class OrdenController extends Controller
         $html.= '<br>
 
                     <footer>
-                        <p style="font-size:9px; " class="pie_de_pagina">GENERADO POR: ' . $ordenArray['head']['nombre_usuario'] .  '</p>
-                        <p style="font-size:9px; " class="pie_de_pagina">' . $ordenArray['head']['fecha_registro'] .  '</p>
+                        <p style="font-size:9px; " class="pie_de_pagina">Generado por: ' . $ordenArray['head']['nombre_usuario'] .  '<br>'
+                        .'Fecha registro: '.$ordenArray['head']['fecha_registro'].'<br>'
+                        .'Versión del sistema: '.config('global.nombreSistema') . ' '  . config('global.version') . ' </p>
                     </footer>
                 
             </body>

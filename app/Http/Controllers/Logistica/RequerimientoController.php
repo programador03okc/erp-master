@@ -3304,6 +3304,7 @@ class RequerimientoController extends Controller
                     position: absolute;
                     bottom:0px;
                     right:0px;
+                    text-align:right;
                 }
             </style>
             </head>
@@ -3398,8 +3399,10 @@ class RequerimientoController extends Controller
                 <br/>
                 <br/>
                 <footer>
-                    <p style="font-size:9px; " class="pie_de_pagina">GENERADO POR: ' . $requerimiento['requerimiento'][0]['persona'] .  '</p>
-                    <p style="font-size:9px; " class="pie_de_pagina">' . $requerimiento['requerimiento'][0]['fecha_registro'] .  '</p>
+                    <p style="font-size:9px; " class="pie_de_pagina">Generado por: ' . $requerimiento['requerimiento'][0]['persona'] .  '<br>'
+                    .'Fecha registro: '.$requerimiento['requerimiento'][0]['fecha_registro'].'<br>'
+                    .'Versión del sistema: '.config('global.nombreSistema') . ' '  . config('global.version') . ' </p>
+
                 </footer>
             </html>';
         return $html;

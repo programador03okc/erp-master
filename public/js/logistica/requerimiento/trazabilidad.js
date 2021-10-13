@@ -41,7 +41,7 @@ function construirModalTrazabilidad(data) {
                     </div>
                     <div class="timeline-body">
                         <strong>Código: </strong>
-                        <p><a href="/necesidades/requerimiento/elaboracion/index?id=${data.requerimiento.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${data.requerimiento.codigo}</a></p>
+                        <p><a href="/necesidades/requerimiento/elaboracion/imprimir-requerimiento-pdf/${data.requerimiento.id_requerimiento}/0" target="_blank" title="Abrir Requerimiento">${data.requerimiento.codigo}</a></p>
                         <strong>Estado: </strong>
                          <p>${data.requerimiento.estado_descripcion}</p>
                     </div>
@@ -60,7 +60,7 @@ function construirModalTrazabilidad(data) {
                     <h5 class="timeline-title">Gestion Logística</h5>
                 </div>`;
                 (data.ordenes).forEach(element => {
-                    OrdenesCodigo.push(`<a href="/necesidades/requerimiento/elaboracion/index?id=${element.id_orden_compra}" target="_blank" title="Abrir Requerimiento">${element.codigo}</a>`)
+                    OrdenesCodigo.push(`<a href="/logistica/gestion-logistica/compras/ordenes/listado/generar-orden-pdf/${element.id_orden_compra}" target="_blank" title="Abrir Requerimiento">${element.codigo}</a>`)
                 });
 
             htmlGestionLogistica += `
@@ -91,14 +91,15 @@ function construirModalTrazabilidad(data) {
                 <h5 class="timeline-title">Ingresos Almacén</h5>
             </div>`;
             (data.ingresos).forEach(element => {
-                // ingresosCodigo.push(`<a onclick="abrirIngreso(${element.id_ingreso})" title="Abrir Ingreso">${element.codigo_ingreso}</a>`)
+                ingresosCodigo.push(`<a href onclick="abrirIngreso(${element.id_ingreso})" title="Abrir Ingreso">${element.codigo_ingreso}</a>`)
                 ingresosGC.push(`${element.serie_guia}-${element.numero_guia}`)
                 ingresosFC.push(`${element.serie_doc}-${element.numero_doc}`)
             });
 
         htmlIngresosAlmacen += `
             <div class="timeline-body">
-            <strong>Código ingreso: </strong>
+            <strong>Código: </strong>
+            <p>${ingresosCodigo.join(',')}</p>
             <strong>Guia compra: </strong>
             <p>${ingresosGC.join(',')}</p>
             <strong>Factura compra: </strong>
