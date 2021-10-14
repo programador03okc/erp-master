@@ -166,7 +166,9 @@ function construirModalTrazabilidad(data) {
                 <h5 class="timeline-title">Transformaciones</h5>
             </div>`;
         (data.transformaciones).forEach(element => {
-            transformacionCodigo.push(`${element.codigo}`);
+            if(element.id_transformacion>0){
+                transformacionCodigo.push(`<a href onclick="abrirTransformacionPDF(${element.id_transformacion})" title="Abrir Orden de Transformación">${element.codigo??''}</a>`)
+            }
             transformacionCodigo.push(`${element.serie} - ${element.numero}`);
         });
 
@@ -260,5 +262,10 @@ function abrirTransferenciaPDF(idTransferencia) {
     var idTransferencia = $(this).data("id");
     if (idTransferencia !== "") {
         window.open("imprimir_transferencia/" + idTransferencia);
+    }
+}
+function abrirTransformacionPDF(idTransformacion) {
+    if (idTransformacion !== null && idTransformacion !== '') {
+        window.open('imprimir_transformacion/' + idTransformacion);
     }
 }
