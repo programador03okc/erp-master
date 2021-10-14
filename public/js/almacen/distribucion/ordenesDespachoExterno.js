@@ -65,7 +65,6 @@ function listarRequerimientosPendientes() {
             },
             {
                 'render': function (data, type, row) {
-                    console.log(row['codigo'] + '  estado: ' + row['estado_od']);
                     return `<div style="display:flex;">
                         <button type="button" class="detalle btn btn-default btn-flat boton" data-toggle="tooltip"
                         data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}">
