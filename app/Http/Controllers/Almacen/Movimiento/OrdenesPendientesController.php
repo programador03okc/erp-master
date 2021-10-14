@@ -319,10 +319,10 @@ class OrdenesPendientesController extends Controller
 
         $array_sedes = [];
         if ($request->ingreso_fecha_inicio !== null) {
-            $data = $data->whereDate('mov_alm.fecha_emision', '>=', $request->ingreso_fecha_inicio);
+            $data = $data->whereDate('mov_alm.fecha_emision', '>=', (new Carbon($request->ingreso_fecha_inicio))->format('Y-m-d'));
         }
         if ($request->ingreso_fecha_fin !== null) {
-            $data = $data->whereDate('mov_alm.fecha_emision', '<=', $request->ingreso_fecha_fin);
+            $data = $data->whereDate('mov_alm.fecha_emision', '<=', (new Carbon($request->ingreso_fecha_fin))->format('Y-m-d'));
         }
         if ($request->ingreso_id_sede !== null) {
             if ($request->ingreso_id_sede == 0) {
