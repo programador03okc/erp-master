@@ -847,6 +847,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('lista-ordenes-compra', 'ReporteLogisticaController@listaOrdenesCompra')->name('lista-ordenes-compra');
 				Route::get('transito-ordenes-compra', 'ReporteLogisticaController@viewReporteTransitoOrdenesCompra')->name('transito-ordenes-compra');
 				Route::post('lista-transito-ordenes-compra', 'ReporteLogisticaController@listaTransitoOrdenesCompra')->name('lista-transito-ordenes-compra');
+				Route::get('reporte-ordenes-compra-excel/{idEmpresa?}/{idSede?}/{fechaDesde?}/{fechaHasta?}', 'OrdenController@reporteOrdenesCompraExcel')->name('reporte-ordenes-compra-excel');
+
 			});
 			Route::group(['as' => 'cotizacion.', 'prefix' => 'cotizacion'], function () {
 				Route::group(['as' => 'gestionar.', 'prefix' => 'gestionar'], function () {

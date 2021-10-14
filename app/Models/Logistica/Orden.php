@@ -11,7 +11,7 @@ class Orden extends Model {
 
     protected $table = 'logistica.log_ord_compra';
     protected $primaryKey = 'id_orden_compra';
-    protected $appends = ['monto','requerimientos','cuadro_costo','tiene_transformacion','cantidad_equipos'];
+    protected $appends = ['monto','requerimientos','cuadro_costo','tiene_transformacion','cantidad_equipos','estado_orden'];
 
     public $timestamps = false;
 
@@ -31,6 +31,11 @@ class Orden extends Model {
     public function getFechaIngresoAlmacenAttribute(){
         $fecha= new Carbon($this->attributes['fecha_ingreso_almacen']);
         return $fecha->format('d-m-Y');
+    }
+    public function getEstadoOrdenAttribute(){
+        $estado= ($this->attributes['estado']);
+        $estado_descripcion= EstadoCompra::find($estado)->first()->descripcion;
+        return $estado_descripcion;
     }
     // public function getFechaVencimientoOcamAttribute(){
     //     $fecha= new Carbon($this->attributes['fecha_vencimiento_ocam']);
@@ -372,6 +377,9 @@ class Orden extends Model {
         return $this->belongsTo('App\Models\Configuracion\Moneda','id_moneda','id_moneda');
     }
     public function estado(){
+        return $this->hasOne('App\Models\Logistica\EstadoCompra','id_estado','estado');
+    }
+    public function estado_orden(){
         return $this->hasOne('App\Models\Logistica\EstadoCompra','id_estado','estado');
     }
 }

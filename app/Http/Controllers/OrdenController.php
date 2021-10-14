@@ -14,6 +14,7 @@ use Debugbar;
 use PDO;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ListOrdenesHeadExport;
+use App\Exports\ReporteOrdenesCompraExcel;
 use App\Models\Administracion\Empresa;
 use App\Models\Administracion\Estado;
 use App\Models\Almacen\DetalleRequerimiento;
@@ -3515,6 +3516,9 @@ class OrdenController extends Controller
     public function exportExcelListaOrdenes(){
         // return Orden::reporteListaOrdenes();
         return Excel::download(new ListOrdenesHeadExport, 'lista_ordenes.xlsx');
+    }
+    public function reporteOrdenesCompraExcel($idEmpresa,$idSede,$fechaRegistroDesde,$fechaRegistroHasta){
+        return Excel::download(new ReporteOrdenesCompraExcel($idEmpresa,$idSede,$fechaRegistroDesde,$fechaRegistroHasta), 'reporte_ordenes_compra.xlsx');
     }
 
 
