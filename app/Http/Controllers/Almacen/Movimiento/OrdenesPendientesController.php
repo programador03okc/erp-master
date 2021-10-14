@@ -1514,18 +1514,16 @@ class OrdenesPendientesController extends Controller
                             'trans_detalle.id_trans_detalle',
                             'trans.id_transferencia',
                             'trans.estado as estado_trans',
-                            'orden_despacho.id_od',
+                            // 'orden_despacho.id_od',
                             'guia_com_det.id_transformado'
                         )
                         ->join('almacen.guia_com_det', 'guia_com_det.id_guia_com_det', '=', 'mov_alm_det.id_guia_com_det')
                         ->leftjoin('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_orden', '=', 'guia_com_det.id_oc_det')
                         ->leftjoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
-                        // ->join('almacen.alm_req','alm_req.id_requerimiento','=','alm_det_req.id_requerimiento')
-                        // ->leftjoin('almacen.orden_despacho','orden_despacho.id_requerimiento','=','alm_det_req.id_requerimiento')
-                        ->leftJoin('almacen.orden_despacho', function ($join) {
-                            $join->on('orden_despacho.id_requerimiento', '=', 'alm_det_req.id_requerimiento');
-                            $join->where('orden_despacho.estado', '!=', 7);
-                        })
+                        // ->leftJoin('almacen.orden_despacho', function ($join) {
+                        //     $join->on('orden_despacho.id_requerimiento', '=', 'alm_det_req.id_requerimiento');
+                        //     $join->where('orden_despacho.estado', '!=', 7);
+                        // })
                         ->leftJoin('almacen.trans_detalle', function ($join) {
                             $join->on('trans_detalle.id_guia_com_det', '=', 'guia_com_det.id_guia_com_det');
                             $join->where('trans_detalle.estado', '!=', 7);
@@ -1538,7 +1536,7 @@ class OrdenesPendientesController extends Controller
 
                         $validado = true;
                         foreach ($detalle as $det) {
-                            if (($det->id_trans_detalle !== null && ($det->estado_trans == 17 || $det->estado_trans == 14)) || $det->id_od !== null) {
+                            if (($det->id_trans_detalle !== null && ($det->estado_trans == 17 || $det->estado_trans == 14))) {
                                 $validado = false;
                             }
                         }
@@ -1853,36 +1851,35 @@ class OrdenesPendientesController extends Controller
                     $suma_servicio += floatval($item->total);
                 }
             }
-            if($suma_servicio !=null && $suma_servicio >0){
+            if ($suma_servicio != null && $suma_servicio > 0) {
                 $factor = floatval(($suma_servicio !== '' && $suma_servicio !== null) ? $suma_servicio : 0) / ($suma_total > 0 ? $suma_total : 1);
                 foreach ($items as $item) {
-    
+
                     if ($item->id_producto !== null) {
-    
+
                         $adicional = floatval($item->total) * $factor;
                         $nuevo_total = floatval($item->total) + $adicional;
-    
+
                         if ($request->moneda == 2) {
                             $valor = floatval($tc * $nuevo_total);
                         } else {
                             $valor = floatval($nuevo_total);
                         }
-    
+
                         DB::table('almacen.guia_com_det')
                             ->where('id_guia_com_det', $item->id_guia_com_det)
                             ->update([
                                 'unitario_adicional' => $adicional,
                                 'id_moneda' => $request->moneda
                             ]);
-    
+
                         DB::table('almacen.mov_alm_det')
                             ->where('id_guia_com_det', $item->id_guia_com_det)
                             ->update(['valorizacion' => $valor]);
-    
+
                         OrdenesPendientesController::actualiza_prod_ubi($item->id_producto, $request->id_almacen_doc);
                     }
                 }
-
             }
             DB::commit();
             return response()->json(['id_doc' => $id_doc]);

@@ -174,7 +174,7 @@ Pendientes de Ingreso
 <script src="{{ asset('template/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js') }}"></script>
 <script src="{{ asset('template/plugins/bootstrap-datepicker/locales/bootstrap-datepicker.es.min.js') }}"></script>
 
-<script src="{{ asset('js/almacen/guia/ordenesPendientes.js?')}}"></script>
+<script src="{{ asset('js/almacen/guia/ordenesPendientes.js?')}}?v={{filemtime(public_path('js/almacen/guia/ordenesPendientes.js'))}}"></script>
 <script src="{{ asset('js/almacen/guia/transformacionesPendientes.js')}}"></script>
 <script src="{{ asset('js/almacen/guia/ingresosProcesados.js')}}?v={{filemtime(public_path('js/almacen/guia/ingresosProcesados.js'))}}"></script>
 <script src="{{ asset('js/almacen/guia/ordenes_ver_detalle.js')}}"></script>
