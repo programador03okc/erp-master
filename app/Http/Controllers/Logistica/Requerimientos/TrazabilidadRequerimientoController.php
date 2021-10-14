@@ -128,6 +128,21 @@ class TrazabilidadRequerimientoController extends Controller
             ])
             ->first();
 
+        $guia_transportista = DB::table('almacen.orden_despacho')
+            ->select(
+                'orden_despacho.serie',
+                'orden_despacho.numero',
+                'orden_despacho.fecha_transportista',
+                'orden_despacho.codigo_envio',
+                'orden_despacho.importe_flete'
+            )
+            ->where([
+                ['orden_despacho.id_requerimiento', '=', $id_requerimiento],
+                ['orden_despacho.aplica_cambios', '=', false],
+                ['orden_despacho.estado', '!=', 7]
+            ])
+            ->first();
+
         $estados_envio = DB::table('almacen.orden_despacho_obs')
             ->select('orden_despacho_obs.*', 'estado_envio.descripcion as accion_descripcion')
             ->join('almacen.orden_despacho', 'orden_despacho.id_od', '=', 'orden_despacho_obs.id_od')
@@ -150,6 +165,7 @@ class TrazabilidadRequerimientoController extends Controller
             'transformaciones' => $transformaciones,
             'despacho' => $despacho,
             'estados_envio' => $estados_envio,
+            'guia_transportista' => $guia_transportista,
         ]);
     }
 }
