@@ -1,7 +1,7 @@
 var iTableCounter = 1;
 var oInnerTable;
 
-$("#ordenesPendientes tbody").on("click", "td button.ver-detalle", function() {
+$("#ordenesPendientes tbody").on("click", "td button.ver-detalle", function () {
     var tr = $(this).closest("tr");
     var row = table.row(tr);
     var id = $(this).data("id");
@@ -42,60 +42,52 @@ function format(table_id, id, row) {
         type: "GET",
         url: "detalleOrden/" + id,
         dataType: "JSON",
-        success: function(response) {
-            console.log(response);
+        success: function (response) {
             var html = "";
 
             if (response.length > 0) {
-                response.forEach(function(element) {
+                response.forEach(function (element) {
                     html += `<tr>
-                    <td style="border: none;">${
-                        element.nro_orden !== null
+                    <td style="border: none;">${element.nro_orden !== null
                             ? ` <a href="#" class="archivos" data-id="${element.id_oc_propia}" data-tipo="${element.tipo}">
                             ${element.nro_orden}</a>`
                             : ""
-                    } 
+                        } 
                     </td>
-                    <td style="border: none;">${
-                        element.codigo_oportunidad !== null
+                    <td style="border: none;">${element.codigo_oportunidad !== null
                             ? element.codigo_oportunidad
                             : ""
-                    }</td>
-                    <td style="border: none;">${
-                        element.razon_social !== null
+                        }</td>
+                    <td style="border: none;">${element.razon_social !== null
                             ? element.razon_social
                             : ""
-                    }</td>
-                    <td style="border: none;">${
-                        element.nombre_corto !== null
+                        }</td>
+                    <td style="border: none;">${element.nombre_corto !== null
                             ? element.nombre_corto
                             : ""
-                    }</td>
-                    <td style="border: none;"><label class="lbl-codigo" title="Abrir Requerimiento" onClick="abrir_requerimiento(${
-                        element.id_requerimiento
-                    })">${element.codigo_req}</label> ${element.sede_req}</td>
+                        }</td>
+                    <td style="border: none;"><label class="lbl-codigo" title="Abrir Requerimiento" onClick="abrir_requerimiento(${element.id_requerimiento
+                        })">${element.codigo_req}</label>${(element.tiene_transformacion ? ' <i class="fas fa-random red"></i> ' : '')}<br> ${element.sede_req}</td>
                     <td style="border: none;">${element.codigo}</td>
-                    <td style="border: none;">${
-                        element.part_number !== null ? element.part_number : ""
-                    }</td>
+                    <td style="border: none;">${element.part_number !== null ? element.part_number : ""
+                        }</td>
                     <td style="border: none;">${element.descripcion}</td>
                     <td style="border: none;">${element.cantidad}</td>
                     <td style="border: none;">${element.abreviatura}</td>
-                    <td style="border: none;">${
-                        element.cantidad_ingresada !== null
+                    <td style="border: none;">${element.cantidad_ingresada !== null
                             ? element.cantidad_ingresada
                             : "0"
-                    }</td>
+                        }</td>
                     <td style="border: none;">${formatNumber.decimal(
-                        element.precio,
-                        "",
-                        -3
-                    )}</td>
+                            element.precio,
+                            "",
+                            -3
+                        )}</td>
                     <td style="border: none;">${formatNumber.decimal(
-                        element.precio * element.cantidad,
-                        "",
-                        -3
-                    )}</td>
+                            element.precio * element.cantidad,
+                            "",
+                            -3
+                        )}</td>
                     </tr>`;
                 });
                 var tabla = `<table class="table table-sm" style="border: none;" 
@@ -127,17 +119,16 @@ function format(table_id, id, row) {
                 </tbody>
                 </table>`;
             }
-            console.log(tabla);
             row.child(tabla).show();
         }
-    }).fail(function(jqXHR, textStatus, errorThrown) {
+    }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
     });
 }
 
-$("#ordenesPendientes tbody").on("click", "a.archivos", function(e) {
+$("#ordenesPendientes tbody").on("click", "a.archivos", function (e) {
     $(e.preventDefault());
     var id = $(this).data("id");
     var tipo = $(this).data("tipo");

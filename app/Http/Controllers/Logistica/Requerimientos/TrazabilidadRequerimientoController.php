@@ -47,11 +47,13 @@ class TrazabilidadRequerimientoController extends Controller
                 'mov_alm.id_mov_alm as id_ingreso',
                 'mov_alm.codigo as codigo_ingreso',
                 'guia_com.id_guia',
+                'guia_com.estado as estado_guia',
                 'guia_com.serie as serie_guia',
                 'guia_com.numero as numero_guia',
                 'doc_com.id_doc_com',
                 'doc_com.serie as serie_doc',
-                'doc_com.numero as numero_doc'
+                'doc_com.numero as numero_doc',
+                'doc_com.estado as estado_doc',
             )
             ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
             ->join('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento')
@@ -64,8 +66,9 @@ class TrazabilidadRequerimientoController extends Controller
             ->where([
                 ['alm_req.id_requerimiento', '=', $id_requerimiento],
                 ['log_det_ord_compra.estado', '!=', 7],
-                ['guia_com_det.estado', '!=', 7],
-                ['doc_com_det.estado', '!=', 7],
+                ['guia_com.estado', '!=', 7],
+                ['mov_alm.estado', '!=', 7],
+                ['doc_com.estado', '!=', 7],
             ])
             ->distinct()
             ->get();

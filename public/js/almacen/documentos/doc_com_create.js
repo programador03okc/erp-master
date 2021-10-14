@@ -378,8 +378,8 @@ function guardar_doc_create(data) {
         data: data,
         dataType: 'JSON',
         success: function (response) {
-            console.log('response' + response);
-            if (response > 0) {
+            console.log(response);
+            if (response.id_doc > 0) {
                 // alert('Comprobante registrado con éxito');
                 Lobibox.notify("success", {
                     title: false,
