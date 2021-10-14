@@ -144,6 +144,26 @@ class Orden extends Model {
         ->first(); 
         return $cc;
     }
+    // public function getCuadroCostoAttribute(){
+
+    //     if($this->attributes['id_occ'] != null){
+    //         $cc=CuadroCostosView::
+    //         leftJoin('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'cc_view.id_oportunidad')
+    //         ->where('cc_view.id',$this->attributes['id_occ'])
+    //         ->select(
+    //             'cc_view.codigo_oportunidad',
+    //             'cc_view.fecha_creacion',
+    //             'cc_view.fecha_limite',
+    //             'oc_propias_view.estado_aprobacion_cuadro',
+    //             'oc_propias_view.fecha_estado'
+    //             )
+    //         ->first(); 
+    //         return $cc;
+
+    //     }else{
+    //         return '';
+    //     }
+    // }
 
     public static function reporteListaOrdenes(){
         $ord_compra = Orden::select(

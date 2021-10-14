@@ -376,7 +376,7 @@ class OrdenView {
         document.querySelector("input[name='ubigeo_destino']").value = data[0].sede ? data[0].sede.ubigeo_completo : '';
         document.querySelector("select[name='id_sede']").value = data[0].id_sede ? data[0].id_sede : '';
         document.querySelector("select[name='id_moneda']").value = data[0].id_moneda ? data[0].id_moneda : 1;
-        document.querySelector("input[name='id_cc']").value = '';
+        document.querySelector("input[name='id_cc']").value = data[0].id_cc ? data[0].id_cc:'';
         document.querySelector("textarea[name='observacion']").value = '';
 
         this.updateAllSimboloMoneda();
