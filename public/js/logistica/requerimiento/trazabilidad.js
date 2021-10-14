@@ -180,7 +180,8 @@ function construirModalTrazabilidad(data) {
                 <p><small class="text-muted"><i class="glyphicon glyphicon-calendar"></i> ${data.despacho.fecha_despacho}</small></p>
             </div> 
             <div class="timeline-body">
-            <p>Codigo: ${data.despacho.codigo} </p> 
+            <strong>Codigo:</strong>
+            <p>${data.despacho.codigo}</p> 
             </div>
         </div>
     </li>`;
@@ -205,7 +206,8 @@ function construirModalTrazabilidad(data) {
 
         htmlReparto += `
             <div class="timeline-body">
-            <p>Acciónes Reparto: ${repartoAccion.join(', ')}</p>
+            <strong>Acciónes Reparto:</strong>
+            <p>${repartoAccion.join('<br>')}</p>
             </div>
         </div>
     </li>`;
