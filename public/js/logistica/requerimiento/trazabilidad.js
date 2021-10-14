@@ -257,7 +257,6 @@ function abrirIngresoPDF(idIngreso) {
 }
 
 function abrirTransferenciaPDF(idTransferencia) {
-    var idTransferencia = $(this).data("id");
     if (idTransferencia !== "") {
         window.open("imprimir_transferencia/" + idTransferencia);
     }
