@@ -89,16 +89,16 @@ function construirModalTrazabilidad(data) {
                 <h5 class="timeline-title">Ingresos Almacén</h5>
             </div>`;
         (data.ingresos).forEach(element => {
-            if(element.id_ingreso>0){
-                ingresosCodigo.push(`<a href onclick="abrirIngresoPDF(${element.id_ingreso})" title="Abrir ingreso">${element.codigo_ingreso??''}</a>`)
+            if (element.id_ingreso > 0) {
+                ingresosCodigo.push(`<a href onclick="abrirIngresoPDF(${element.id_ingreso})" title="Abrir ingreso">${element.codigo_ingreso ?? ''}</a>`)
             }
-            if(element.numero_guia !=null){
-                ingresosGC.push(`${element.serie_guia??''}-${element.numero_guia??''}`)
+            if (element.numero_guia != null) {
+                ingresosGC.push(`${element.serie_guia ?? ''}-${element.numero_guia ?? ''}`)
             }
         });
         (data.docs).forEach(element => {
-            if(element.numero_doc !=null){
-                ingresosFC.push(`${element.serie_doc??''}-${element.numero_doc??''}`)
+            if (element.numero_doc != null) {
+                ingresosFC.push(`${element.serie_doc ?? ''}-${element.numero_doc ?? ''}`)
             }
         });
 
@@ -130,14 +130,14 @@ function construirModalTrazabilidad(data) {
                 <h5 class="timeline-title">Transferencias</h5>
             </div>`;
         (data.transferencias).forEach(element => {
-            if(element.id_transferencia>0){
+            if (element.id_transferencia !== null) {
                 transferenciaCodigo.push(`<a href onclick="abrirTransferenciaPDF(${element.id_transferencia})" title="Abrir transferencia">${element.codigo}</a>`)
             }
-            if(element.numero_guia_com !=null){
-                transferenciaGC.push(`${element.serie_guia_com??''}-${element.numero_guia_com??''}`)
+            if (element.numero_guia_com != null) {
+                transferenciaGC.push(`${element.serie_guia_com ?? ''}-${element.numero_guia_com ?? ''}`)
             }
-            if(element.numero_guia_com !=null){
-                transferenciaGV.push(`${element.serie_guia_ven??''}-${element.numero_guia_ven??''}`)
+            if (element.numero_guia_com != null) {
+                transferenciaGV.push(`${element.serie_guia_ven ?? ''}-${element.numero_guia_ven ?? ''}`)
             }
         });
 
@@ -190,13 +190,13 @@ function construirModalTrazabilidad(data) {
         <div class="timeline-panel border-purple">
             <div class="timeline-heading">
                 <h5 class="timeline-title">Despacho</h5>
-                <p><small class="text-muted"><i class="glyphicon glyphicon-calendar"></i> ${data.despacho.fecha_despacho??''}</small></p>
+                <p><small class="text-muted"><i class="glyphicon glyphicon-calendar"></i> ${data.despacho.fecha_despacho ?? ''}</small></p>
             </div> 
             <div class="timeline-body">
             <strong>Codigo:</strong>
-            <p>${data.despacho.codigo??''}</p> 
+            <p>${data.despacho.codigo ?? ''}</p> 
             <strong>Guía venta:</strong>
-            <p>${data.despacho.serie?(data.despacho.serie+'-'+data.despacho.numero):''}</p> 
+            <p>${data.despacho.serie ? (data.despacho.serie + '-' + data.despacho.numero) : ''}</p> 
             </div>
         </div>
     </li>`;
@@ -215,14 +215,14 @@ function construirModalTrazabilidad(data) {
                 <h5 class="timeline-title">Reparto</h5>
             </div>`;
         (data.estados_envio).forEach(element => {
-            repartoAccion.push(`${element.accion_descripcion??''}`);
+            repartoAccion.push(`${element.accion_descripcion ?? ''}`);
         });
 
         htmlReparto += `
             <div class="timeline-body">
             <strong>Guía transportista:</strong>
-            <p>${ data.guia_transportista.serie?((data.guia_transportista.serie??'')+'-'+(data.guia_transportista.numero??'')):''}<br>
-            ${data.guia_transportista.fecha_transportista?data.guia_transportista.fecha_transportista:''}<br>
+            <p>${data.guia_transportista.serie ? ((data.guia_transportista.serie ?? '') + '-' + (data.guia_transportista.numero ?? '')) : ''}<br>
+            ${data.guia_transportista.fecha_transportista ? data.guia_transportista.fecha_transportista : ''}<br>
             ${data.guia_transportista.codigo_envio ? 'Cód. envio: ' + data.guia_transportista.codigo_envio : ''} ${data.guia_transportista.importe_flete ? 'S/' + data.guia_transportista.importe_flete : ''}</p>
             <strong>Acciónes Reparto:</strong>
             <p>${repartoAccion.join('<br>')}</p>
