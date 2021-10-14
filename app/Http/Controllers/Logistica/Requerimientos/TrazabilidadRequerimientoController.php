@@ -130,6 +130,7 @@ class TrazabilidadRequerimientoController extends Controller
 
         $despacho = DB::table('almacen.orden_despacho')
             ->select(
+                'mov_alm.id_mov_alm as id_salida',
                 'orden_despacho.codigo',
                 'orden_despacho.fecha_despacho',
                 'guia_ven.serie',
@@ -138,6 +139,10 @@ class TrazabilidadRequerimientoController extends Controller
             ->leftJoin('almacen.guia_ven', function ($join) {
                 $join->on('guia_ven.id_od', '=', 'orden_despacho.id_od');
                 $join->where('guia_ven.estado', '!=', 7);
+            })
+            ->leftJoin('almacen.mov_alm', function ($join) {
+                $join->on('mov_alm.id_mov_alm', '=', 'guia_ven.id_guia_ven');
+                $join->where('mov_alm.estado', '!=', 7);
             })
             ->where([
                 ['orden_despacho.id_requerimiento', '=', $id_requerimiento],
