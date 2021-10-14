@@ -1853,40 +1853,37 @@ class OrdenesPendientesController extends Controller
                     $suma_servicio += floatval($item->total);
                 }
             }
-            $factor = floatval(($suma_servicio !== '' && $suma_servicio !== null) ? $suma_servicio : 0) / ($suma_total > 0 ? $suma_total : 1);
-
-            // $t = '';
-            foreach ($items as $item) {
-
-                if ($item->id_producto !== null) {
-
-                    $adicional = floatval($item->total) * $factor;
-                    $nuevo_total = floatval($item->total) + $adicional;
-
-                    // $t .= 'id_guia_com_det= ' . $item->id_guia_com_det . ', adicional= ' . $adicional . ', nuevo_total= ' . $nuevo_total;
-                    if ($request->moneda == 2) {
-                        $valor = floatval($tc * $nuevo_total);
-                    } else {
-                        $valor = floatval($nuevo_total);
+            if($suma_servicio !=null && $suma_servicio >0){
+                $factor = floatval(($suma_servicio !== '' && $suma_servicio !== null) ? $suma_servicio : 0) / ($suma_total > 0 ? $suma_total : 1);
+                foreach ($items as $item) {
+    
+                    if ($item->id_producto !== null) {
+    
+                        $adicional = floatval($item->total) * $factor;
+                        $nuevo_total = floatval($item->total) + $adicional;
+    
+                        if ($request->moneda == 2) {
+                            $valor = floatval($tc * $nuevo_total);
+                        } else {
+                            $valor = floatval($nuevo_total);
+                        }
+    
+                        DB::table('almacen.guia_com_det')
+                            ->where('id_guia_com_det', $item->id_guia_com_det)
+                            ->update([
+                                'unitario_adicional' => $adicional,
+                                'id_moneda' => $request->moneda
+                            ]);
+    
+                        DB::table('almacen.mov_alm_det')
+                            ->where('id_guia_com_det', $item->id_guia_com_det)
+                            ->update(['valorizacion' => $valor]);
+    
+                        OrdenesPendientesController::actualiza_prod_ubi($item->id_producto, $request->id_almacen_doc);
                     }
-                    // $t .= ', valor= ' . $valor;
-
-                    DB::table('almacen.guia_com_det')
-                        ->where('id_guia_com_det', $item->id_guia_com_det)
-                        ->update([
-                            'unitario_adicional' => $adicional,
-                            'id_moneda' => $request->moneda
-                        ]);
-
-                    DB::table('almacen.mov_alm_det')
-                        ->where('id_guia_com_det', $item->id_guia_com_det)
-                        ->update(['valorizacion' => $valor]);
-
-                    OrdenesPendientesController::actualiza_prod_ubi($item->id_producto, $request->id_almacen_doc);
                 }
+
             }
-            // dd($t);
-            // exit();
             DB::commit();
             return response()->json(['id_doc' => $id_doc]);
         } catch (\PDOException $e) {
