@@ -116,12 +116,14 @@ function listarOrdenesPendientes() {
             $("#txtOrdenPendienteFechaInicio").on("change", function (e) {
                 var ini = $(this).val();
                 $('#formFiltrosOrdenesPendientes').find('input[name=ordenes_fecha_inicio]').val(ini);
+                console.log(ini);
                 $("#ordenesPendientes").DataTable().ajax.reload(null, false);
             });
             $("#txtOrdenPendienteFechaFin").on("change", function (e) {
                 // $(e.preventDefault());
                 var fin = $(this).val();
                 $('#formFiltrosOrdenesPendientes').find('input[name=ordenes_fecha_fin]').val(fin);
+                console.log(fin);
                 $("#ordenesPendientes").DataTable().ajax.reload(null, false);
             });
             $("#selectOrdenPendienteSede").on("change", function (e) {
