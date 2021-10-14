@@ -137,7 +137,7 @@ class TrazabilidadRequerimientoController extends Controller
             )
             ->leftJoin('almacen.guia_ven', function ($join) {
                 $join->on('guia_ven.id_od', '=', 'orden_despacho.id_od');
-                $join->where('orden_despacho.estado', '!=', 7);
+                $join->where('guia_ven.estado', '!=', 7);
             })
             ->where([
                 ['orden_despacho.id_requerimiento', '=', $id_requerimiento],
