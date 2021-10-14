@@ -155,6 +155,7 @@ function construirModalTrazabilidad(data) {
             </div>`;
         (data.transformaciones).forEach(element => {
             transformacionCodigo.push(`${element.codigo}`);
+            transformacionCodigo.push(`${element.serie} - ${element.numero}`);
         });
 
         htmlTransformaciones += `

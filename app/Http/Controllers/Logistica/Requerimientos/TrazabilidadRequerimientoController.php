@@ -110,8 +110,17 @@ class TrazabilidadRequerimientoController extends Controller
             ->get();
 
         $transformaciones = DB::table('almacen.transformacion')
-            ->select('transformacion.*')
+            ->select(
+                'transformacion.id_transformacion',
+                'transformacion.codigo',
+                'guia_ven.serie',
+                'guia_ven.numero'
+            )
             ->join('almacen.orden_despacho', 'orden_despacho.id_od', '=', 'transformacion.id_od')
+            ->leftJoin('almacen.guia_ven', function ($join) {
+                $join->on('guia_ven.id_od', '=', 'orden_despacho.id_od');
+                $join->where('orden_despacho.estado', '!=', 7);
+            })
             ->where([
                 ['orden_despacho.id_requerimiento', '=', $id_requerimiento],
                 ['orden_despacho.estado', '!=', 7],
@@ -120,7 +129,16 @@ class TrazabilidadRequerimientoController extends Controller
             ->get();
 
         $despacho = DB::table('almacen.orden_despacho')
-            ->select('orden_despacho.*')
+            ->select(
+                'orden_despacho.codigo',
+                'orden_despacho.fecha_despacho',
+                'guia_ven.serie',
+                'guia_ven.numero'
+            )
+            ->leftJoin('almacen.guia_ven', function ($join) {
+                $join->on('guia_ven.id_od', '=', 'orden_despacho.id_od');
+                $join->where('orden_despacho.estado', '!=', 7);
+            })
             ->where([
                 ['orden_despacho.id_requerimiento', '=', $id_requerimiento],
                 ['orden_despacho.aplica_cambios', '=', false],
