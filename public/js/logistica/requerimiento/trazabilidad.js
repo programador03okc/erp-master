@@ -42,8 +42,6 @@ function construirModalTrazabilidad(data) {
                     <div class="timeline-body">
                         <strong>Código: </strong>
                         <p><a href="/necesidades/requerimiento/elaboracion/imprimir-requerimiento-pdf/${data.requerimiento.id_requerimiento}/0" target="_blank" title="Abrir requerimiento">${data.requerimiento.codigo}</a></p>
-                        <strong>Estado: </strong>
-                         <p>${data.requerimiento.estado_descripcion}</p>
                     </div>
                 </div>
             </li>`);
@@ -66,7 +64,7 @@ function construirModalTrazabilidad(data) {
             htmlGestionLogistica += `
                 <div class="timeline-body">
                 <strong>Ordenes C/S:</strong>
-                <p>${OrdenesCodigo.join(', ')}</p>
+                <p>${OrdenesCodigo.join('<br>')}</p>
                 <strong>Reservas almacén:</strong>
                 <p>${data.reservado == true ? 'Si' : 'No'} </p>
 
@@ -91,19 +89,27 @@ function construirModalTrazabilidad(data) {
                 <h5 class="timeline-title">Ingresos Almacén</h5>
             </div>`;
         (data.ingresos).forEach(element => {
-            ingresosCodigo.push(`<a href onclick="abrirIngresoPDF(${element.id_ingreso})" title="Abrir ingreso">${element.codigo_ingreso}</a>`)
-            ingresosGC.push(`${element.serie_guia}-${element.numero_guia}`)
-            ingresosFC.push(`${element.serie_doc}-${element.numero_doc}`)
+            if(element.id_ingreso>0){
+                ingresosCodigo.push(`<a href onclick="abrirIngresoPDF(${element.id_ingreso})" title="Abrir ingreso">${element.codigo_ingreso??''}</a>`)
+            }
+            if(element.numero_guia !=null){
+                ingresosGC.push(`${element.serie_guia??''}-${element.numero_guia??''}`)
+            }
+        });
+        (data.docs).forEach(element => {
+            if(element.numero_doc !=null){
+                ingresosFC.push(`${element.serie_doc??''}-${element.numero_doc??''}`)
+            }
         });
 
         htmlIngresosAlmacen += `
             <div class="timeline-body">
             <strong>Código: </strong>
-            <p>${ingresosCodigo.join(', ')}</p>
+            <p>${ingresosCodigo.join('<br>')}</p>
             <strong>Guia compra: </strong>
-            <p>${ingresosGC.join(', ')}</p>
+            <p>${ingresosGC.join('<br>')}</p>
             <strong>Factura compra: </strong>
-            <p>${ingresosFC.join(', ')}</p>
+            <p>${ingresosFC.join('<br>')}</p>
             </div>
         </div>
     </li>`;
@@ -124,9 +130,12 @@ function construirModalTrazabilidad(data) {
 
         htmlTransferencias += `
             <div class="timeline-body">
-            <p>Código: ${transferenciaCodigo.join(', ')}</p>
-            <p>Guia compra: ${transferenciaGC.join(', ')}</p>
-            <p>Guia venta: ${transferenciaGV.join(', ')}</p>
+            <strong>Código:</strong>
+            <p> ${transferenciaCodigo.join('<br>')}</p>
+            <strong>Guia compra:</strong>
+            <p>${transferenciaGC.join('<br>')}</p>
+            <strong>Guia venta:</strong>
+            <p>${transferenciaGV.join('<br>')}</p>
             </div>
         </div>
     </li>`;
@@ -137,19 +146,23 @@ function construirModalTrazabilidad(data) {
     let transformacionCodigo = [];
     if (data.transformaciones.length > 0) {
 
-        htmlTransformaciones = `<li class="timeline-item">
-        <div class="timeline-badge default"><i class="glyphicon glyphicon-check"></i></div>
-        <div class="timeline-panel border-default">
+        htmlTransformaciones += `<li class="timeline-item">
+        <div class="timeline-badge warning"><i class="glyphicon glyphicon-check"></i></div>
+        <div class="timeline-panel border-warning">
             <div class="timeline-heading">
                 <h5 class="timeline-title">Transformaciones</h5>
             </div>`;
         (data.transformaciones).forEach(element => {
-            transformacionCodigo.push(`${element.codigo}`);
+            if(element.id_transformacion>0){
+                transformacionCodigo.push(`<a href onclick="abrirTransformacionPDF(${element.id_transformacion})" title="Abrir Orden de Transformación">${element.codigo??''}</a>`)
+            }
+            transformacionCodigo.push(`${element.serie} - ${element.numero}`);
         });
 
         htmlTransformaciones += `
             <div class="timeline-body">
-            <p>Codigo tranformación: ${transformacionCodigo.join(', ')}</p>
+            <strong>Codigo tranformación:</strong>
+            <p>${transformacionCodigo.join('<br>')}</p>
             </div>
         </div>
     </li>`;
@@ -161,15 +174,18 @@ function construirModalTrazabilidad(data) {
     let htmlDespacho = '';
     if (data.despacho != null) {
 
-        htmlDespacho = `<li class="timeline-item">
+        htmlDespacho += `<li class="timeline-item">
         <div class="timeline-badge purple"><i class="glyphicon glyphicon-check"></i></div>
         <div class="timeline-panel border-purple">
             <div class="timeline-heading">
                 <h5 class="timeline-title">Despacho</h5>
-                <p><small class="text-muted"><i class="glyphicon glyphicon-calendar"></i> ${data.despacho.fecha_despacho}</small></p>
+                <p><small class="text-muted"><i class="glyphicon glyphicon-calendar"></i> ${data.despacho.fecha_despacho??''}</small></p>
             </div> 
             <div class="timeline-body">
-            <p>Codigo: ${data.despacho.codigo} </p> 
+            <strong>Codigo:</strong>
+            <p>${data.despacho.codigo??''}</p> 
+            <strong>Guía venta:</strong>
+            <p>${data.despacho.serie?(data.despacho.serie+'-'+data.despacho.numero):''}</p> 
             </div>
         </div>
     </li>`;
@@ -181,20 +197,24 @@ function construirModalTrazabilidad(data) {
     let repartoAccion = [];
     if (data.estados_envio.length > 0) {
 
-        htmlReparto = `<li class="timeline-item">
+        htmlReparto += `<li class="timeline-item">
         <div class="timeline-badge primary"><i class="glyphicon glyphicon-check"></i></div>
         <div class="timeline-panel border-primary">
             <div class="timeline-heading">
                 <h5 class="timeline-title">Reparto</h5>
-                <p><small class="text-muted"><i class="glyphicon glyphicon-calendar"></i> </small></p>
             </div>`;
         (data.estados_envio).forEach(element => {
-            repartoAccion.push(`${element.accion_descripcion}`);
+            repartoAccion.push(`${element.accion_descripcion??''}`);
         });
 
         htmlReparto += `
             <div class="timeline-body">
-            <p>Acciónes Reparto: ${repartoAccion.join(', ')}</p>
+            <strong>Guía transportista:</strong>
+            <p>${ data.guia_transportista.serie?((data.guia_transportista.serie??'')+'-'+(data.guia_transportista.numero??'')):''}<br>
+            ${data.guia_transportista.fecha_transportista?data.guia_transportista.fecha_transportista:''}<br>
+            ${data.guia_transportista.codigo_envio ? 'Cód. envio: ' + data.guia_transportista.codigo_envio : ''} ${data.guia_transportista.importe_flete ? 'S/' + data.guia_transportista.importe_flete : ''}</p>
+            <strong>Acciónes Reparto:</strong>
+            <p>${repartoAccion.join('<br>')}</p>
             </div>
         </div>
     </li>`;
@@ -229,5 +249,10 @@ function abrirTransferenciaPDF(idTransferencia) {
     var idTransferencia = $(this).data("id");
     if (idTransferencia !== "") {
         window.open("imprimir_transferencia/" + idTransferencia);
+    }
+}
+function abrirTransformacionPDF(idTransformacion) {
+    if (idTransformacion !== null && idTransformacion !== '') {
+        window.open('imprimir_transformacion/' + idTransformacion);
     }
 }

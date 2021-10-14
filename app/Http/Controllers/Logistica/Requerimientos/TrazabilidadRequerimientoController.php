@@ -42,14 +42,32 @@ class TrazabilidadRequerimientoController extends Controller
             ->distinct()
             ->get();
 
-        $guias_docs = DB::table('almacen.alm_det_req')
+        $guias = DB::table('almacen.alm_det_req')
             ->select(
                 'mov_alm.id_mov_alm as id_ingreso',
                 'mov_alm.codigo as codigo_ingreso',
                 'guia_com.id_guia',
                 'guia_com.estado as estado_guia',
                 'guia_com.serie as serie_guia',
-                'guia_com.numero as numero_guia',
+                'guia_com.numero as numero_guia'
+            )
+            ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+            ->join('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento')
+            ->join('almacen.guia_com_det', 'guia_com_det.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden')
+            ->join('almacen.guia_com', 'guia_com.id_guia', '=', 'guia_com_det.id_guia_com')
+            ->join('almacen.mov_alm_det', 'mov_alm_det.id_guia_com_det', '=', 'guia_com_det.id_guia_com_det')
+            ->join('almacen.mov_alm', 'mov_alm.id_mov_alm', '=', 'mov_alm_det.id_mov_alm')
+            ->where([
+                ['alm_req.id_requerimiento', '=', $id_requerimiento],
+                ['log_det_ord_compra.estado', '!=', 7],
+                ['guia_com.estado', '!=', 7],
+                ['mov_alm.estado', '!=', 7],
+            ])
+            ->distinct()
+            ->get();
+
+        $docs = DB::table('almacen.alm_det_req')
+            ->select(
                 'doc_com.id_doc_com',
                 'doc_com.serie as serie_doc',
                 'doc_com.numero as numero_doc',
@@ -61,14 +79,16 @@ class TrazabilidadRequerimientoController extends Controller
             ->join('almacen.guia_com', 'guia_com.id_guia', '=', 'guia_com_det.id_guia_com')
             ->join('almacen.mov_alm_det', 'mov_alm_det.id_guia_com_det', '=', 'guia_com_det.id_guia_com_det')
             ->join('almacen.mov_alm', 'mov_alm.id_mov_alm', '=', 'mov_alm_det.id_mov_alm')
-            ->leftJoin('almacen.doc_com_det', 'doc_com_det.id_guia_com_det', '=', 'guia_com_det.id_guia_com_det')
-            ->leftJoin('almacen.doc_com', 'doc_com.id_doc_com', '=', 'doc_com_det.id_doc')
+            ->join('almacen.doc_com_det', 'doc_com_det.id_guia_com_det', '=', 'guia_com_det.id_guia_com_det')
+            ->join('almacen.doc_com', function ($join) {
+                $join->on('doc_com.id_doc_com', '=', 'doc_com_det.id_doc');
+                $join->where('doc_com.estado', '!=', 7);
+            })
             ->where([
                 ['alm_req.id_requerimiento', '=', $id_requerimiento],
                 ['log_det_ord_compra.estado', '!=', 7],
                 ['guia_com.estado', '!=', 7],
-                ['mov_alm.estado', '!=', 7],
-                ['doc_com.estado', '!=', 7],
+                ['mov_alm.estado', '!=', 7]
             ])
             ->distinct()
             ->get();
@@ -90,8 +110,17 @@ class TrazabilidadRequerimientoController extends Controller
             ->get();
 
         $transformaciones = DB::table('almacen.transformacion')
-            ->select('transformacion.*')
+            ->select(
+                'transformacion.id_transformacion',
+                'transformacion.codigo',
+                'guia_ven.serie',
+                'guia_ven.numero'
+            )
             ->join('almacen.orden_despacho', 'orden_despacho.id_od', '=', 'transformacion.id_od')
+            ->leftJoin('almacen.guia_ven', function ($join) {
+                $join->on('guia_ven.id_od', '=', 'orden_despacho.id_od');
+                $join->where('orden_despacho.estado', '!=', 7);
+            })
             ->where([
                 ['orden_despacho.id_requerimiento', '=', $id_requerimiento],
                 ['orden_despacho.estado', '!=', 7],
@@ -100,7 +129,36 @@ class TrazabilidadRequerimientoController extends Controller
             ->get();
 
         $despacho = DB::table('almacen.orden_despacho')
-            ->select('orden_despacho.*')
+            ->select(
+                'mov_alm.id_mov_alm as id_salida',
+                'orden_despacho.codigo',
+                'orden_despacho.fecha_despacho',
+                'guia_ven.serie',
+                'guia_ven.numero'
+            )
+            ->leftJoin('almacen.guia_ven', function ($join) {
+                $join->on('guia_ven.id_od', '=', 'orden_despacho.id_od');
+                $join->where('guia_ven.estado', '!=', 7);
+            })
+            ->leftJoin('almacen.mov_alm', function ($join) {
+                $join->on('mov_alm.id_mov_alm', '=', 'guia_ven.id_guia_ven');
+                $join->where('mov_alm.estado', '!=', 7);
+            })
+            ->where([
+                ['orden_despacho.id_requerimiento', '=', $id_requerimiento],
+                ['orden_despacho.aplica_cambios', '=', false],
+                ['orden_despacho.estado', '!=', 7]
+            ])
+            ->first();
+
+        $guia_transportista = DB::table('almacen.orden_despacho')
+            ->select(
+                'orden_despacho.serie',
+                'orden_despacho.numero',
+                'orden_despacho.fecha_transportista',
+                'orden_despacho.codigo_envio',
+                'orden_despacho.importe_flete'
+            )
             ->where([
                 ['orden_despacho.id_requerimiento', '=', $id_requerimiento],
                 ['orden_despacho.aplica_cambios', '=', false],
@@ -124,11 +182,13 @@ class TrazabilidadRequerimientoController extends Controller
             'ordenes' => $ordenes,
             'reservado' => (count($reservas) > 0 ? true : false),
             // 'reservas' => $reservas,
-            'ingresos' => $guias_docs,
+            'ingresos' => $guias,
+            'docs' => $docs,
             'transferencias' => $transferencias,
             'transformaciones' => $transformaciones,
             'despacho' => $despacho,
             'estados_envio' => $estados_envio,
+            'guia_transportista' => $guia_transportista,
         ]);
     }
 }
