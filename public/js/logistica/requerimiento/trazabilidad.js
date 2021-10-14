@@ -184,6 +184,7 @@ function construirModalTrazabilidad(data) {
 
     let htmlDespacho = '';
     if (data.despacho != null) {
+        var id = encode5t(data.despacho.id_salida);
 
         htmlDespacho += `<li class="timeline-item">
         <div class="timeline-badge purple"><i class="glyphicon glyphicon-check"></i></div>
@@ -196,7 +197,7 @@ function construirModalTrazabilidad(data) {
             <strong>Codigo:</strong>
             <p>${data.despacho.codigo ?? ''}</p> 
             <strong>Guía venta:</strong>
-            <p><a href onclick="abrirSalidaPDF(${data.despacho.id_salida})" target="_blank" title="Abrir Salida">${data.despacho.serie ? (data.despacho.serie + '-' + data.despacho.numero) : ''}</a></p> 
+            <p><a href='imprimir_salida/${id}' target="_blank" title="Abrir Salida">${data.despacho.serie ? (data.despacho.serie + '-' + data.despacho.numero) : ''}</a></p> 
             </div>
         </div>
     </li>`;
