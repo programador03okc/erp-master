@@ -41,6 +41,10 @@ class TransitoOrdenesCompra {
         });
     }
 
+    DescargarListaTransitoOrdenesCompra(){
+        console.log('DescargarListaTransitoOrdenesCompra');
+    }
+
     getDataSelectSede(id_empresa){
         
         return new Promise(function(resolve, reject) {
@@ -157,12 +161,23 @@ class TransitoOrdenesCompra {
             'dom': vardataTables[1],
             'buttons': [
                 {
-                    text: '<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : 0',
+                    text: '<i class="fas fa-filter"></i> Filtros : 0',
                     attr: {
                         id: 'btnFiltrosListaTransitoOrdenesCompra'
                     },
                     action: () => {
                         this.abrirModalFiltrosListaTransitoOrdenesCompra();
+
+                    },
+                    className: 'btn-default btn-sm'
+                },
+                {
+                    text: '<i class="far fa-file-excel"></i> Descargar',
+                    attr: {
+                        id: 'btnDescargarListaTransitoOrdenesCompra'
+                    },
+                    action: () => {
+                        this.DescargarListaTransitoOrdenesCompra();
 
                     },
                     className: 'btn-default btn-sm'

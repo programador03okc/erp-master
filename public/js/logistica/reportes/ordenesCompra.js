@@ -40,6 +40,23 @@ class OrdenesCompra {
             backdrop: 'true'
         });
     }
+    
+    descargarListaOrdenesCompra(){
+        window.open(`reporte-ordenes-compra-excel/${this.ActualParametroEmpresa}/${this.ActualParametroSede}/${this.ActualParametroFechaDesde}/${this.ActualParametroFechaHasta}`);
+        // $.ajax({
+        //     type: 'POST',
+        //     url: `reporte-ordenes-compra-excel`,
+        //     dataType: 'JSON',
+        //     data:{'idSede':1},
+        //     success(response) {
+        //         resolve(response) // Resolve promise and go to then() 
+        //     },
+        //     error: function(err) {
+        //     reject(err) // Reject the promise and go to catch()
+        //     }
+        //     });
+
+    }
 
     getDataSelectSede(id_empresa){
         
@@ -157,12 +174,23 @@ class OrdenesCompra {
             'dom': vardataTables[1],
             'buttons': [
                 {
-                    text: '<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : 0',
+                    text: '<i class="fas fa-filter"></i> Filtros : 0',
                     attr: {
                         id: 'btnFiltrosListaOrdenesCompra'
                     },
                     action: () => {
                         this.abrirModalFiltrosListaOrdenesCompra();
+
+                    },
+                    className: 'btn-default btn-sm'
+                },
+                {
+                    text: '<i class="far fa-file-excel"></i> Descargar',
+                    attr: {
+                        id: 'btnDescargarListaOrdenesCompra'
+                    },
+                    action: () => {
+                        this.descargarListaOrdenesCompra();
 
                     },
                     className: 'btn-default btn-sm'
