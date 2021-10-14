@@ -79,8 +79,8 @@ class TrazabilidadRequerimientoController extends Controller
             ->join('almacen.guia_com', 'guia_com.id_guia', '=', 'guia_com_det.id_guia_com')
             ->join('almacen.mov_alm_det', 'mov_alm_det.id_guia_com_det', '=', 'guia_com_det.id_guia_com_det')
             ->join('almacen.mov_alm', 'mov_alm.id_mov_alm', '=', 'mov_alm_det.id_mov_alm')
-            ->leftJoin('almacen.doc_com_det', 'doc_com_det.id_guia_com_det', '=', 'guia_com_det.id_guia_com_det')
-            ->leftJoin('almacen.doc_com', function ($join) {
+            ->join('almacen.doc_com_det', 'doc_com_det.id_guia_com_det', '=', 'guia_com_det.id_guia_com_det')
+            ->join('almacen.doc_com', function ($join) {
                 $join->on('doc_com.id_doc_com', '=', 'doc_com_det.id_doc');
                 $join->where('doc_com.estado', '!=', 7);
             })

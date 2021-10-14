@@ -42,8 +42,6 @@ function construirModalTrazabilidad(data) {
                     <div class="timeline-body">
                         <strong>Código: </strong>
                         <p><a href="/necesidades/requerimiento/elaboracion/imprimir-requerimiento-pdf/${data.requerimiento.id_requerimiento}/0" target="_blank" title="Abrir requerimiento">${data.requerimiento.codigo}</a></p>
-                        <strong>Estado: </strong>
-                         <p>${data.requerimiento.estado_descripcion}</p>
                     </div>
                 </div>
             </li>`);
@@ -66,7 +64,7 @@ function construirModalTrazabilidad(data) {
             htmlGestionLogistica += `
                 <div class="timeline-body">
                 <strong>Ordenes C/S:</strong>
-                <p>${OrdenesCodigo.join(', ')}</p>
+                <p>${OrdenesCodigo.join('<br>')}</p>
                 <strong>Reservas almacén:</strong>
                 <p>${data.reservado == true ? 'Si' : 'No'} </p>
 
@@ -93,17 +91,19 @@ function construirModalTrazabilidad(data) {
         (data.ingresos).forEach(element => {
             ingresosCodigo.push(`<a href onclick="abrirIngresoPDF(${element.id_ingreso})" title="Abrir ingreso">${element.codigo_ingreso}</a>`)
             ingresosGC.push(`${element.serie_guia}-${element.numero_guia}`)
+        });
+        (data.docs).forEach(element => {
             ingresosFC.push(`${element.serie_doc}-${element.numero_doc}`)
         });
 
         htmlIngresosAlmacen += `
             <div class="timeline-body">
             <strong>Código: </strong>
-            <p>${ingresosCodigo.join(', ')}</p>
+            <p>${ingresosCodigo.join('<br>')}</p>
             <strong>Guia compra: </strong>
-            <p>${ingresosGC.join(', ')}</p>
+            <p>${ingresosGC.join('<br>')}</p>
             <strong>Factura compra: </strong>
-            <p>${ingresosFC.join(', ')}</p>
+            <p>${ingresosFC.join('<br>')}</p>
             </div>
         </div>
     </li>`;
@@ -131,9 +131,12 @@ function construirModalTrazabilidad(data) {
 
         htmlTransferencias += `
             <div class="timeline-body">
-            <p>Código: ${transferenciaCodigo.join(', ')}</p>
-            <p>Guia compra: ${transferenciaGC.join(', ')}</p>
-            <p>Guia venta: ${transferenciaGV.join(', ')}</p>
+            <strong>Código:</strong>
+            <p> ${transferenciaCodigo.join('<br>')}</p>
+            <strong>Guia compra:</strong>
+            <p>${transferenciaGC.join('<br>')}</p>
+            <strong>Guia venta:</strong>
+            <p>${transferenciaGV.join('<br>')}</p>
             </div>
         </div>
     </li>`;
@@ -145,8 +148,8 @@ function construirModalTrazabilidad(data) {
     if (data.transformaciones.length > 0) {
 
         htmlTransformaciones += `<li class="timeline-item">
-        <div class="timeline-badge default"><i class="glyphicon glyphicon-check"></i></div>
-        <div class="timeline-panel border-default">
+        <div class="timeline-badge warning"><i class="glyphicon glyphicon-check"></i></div>
+        <div class="timeline-panel border-warning">
             <div class="timeline-heading">
                 <h5 class="timeline-title">Transformaciones</h5>
             </div>`;
@@ -156,7 +159,8 @@ function construirModalTrazabilidad(data) {
 
         htmlTransformaciones += `
             <div class="timeline-body">
-            <p>Codigo tranformación: ${transformacionCodigo.join(', ')}</p>
+            <strong>Codigo tranformación:</strong>
+            <p>${transformacionCodigo.join('<br>')}</p>
             </div>
         </div>
     </li>`;
