@@ -90,7 +90,7 @@ function construirModalTrazabilidad(data) {
             </div>`;
         (data.ingresos).forEach(element => {
             if (element.id_ingreso > 0) {
-                ingresosCodigo.push(`<a href onclick="abrirIngresoPDF(${element.id_ingreso})" title="Abrir ingreso">${element.codigo_ingreso ?? ''}</a>`)
+                ingresosCodigo.push(`<a href onclick="abrirIngresoPDF(${element.id_ingreso})" target="_blank" title="Abrir ingreso">${element.codigo_ingreso ?? ''}</a>`)
             }
             if (element.numero_guia != null) {
                 ingresosGC.push(`${element.serie_guia ?? ''}-${element.numero_guia ?? ''}`)
@@ -131,7 +131,7 @@ function construirModalTrazabilidad(data) {
             </div>`;
         (data.transferencias).forEach(element => {
             if (element.id_transferencia !== null) {
-                transferenciaCodigo.push(`<a href onclick="abrirTransferenciaPDF(${element.id_transferencia})" title="Abrir transferencia">${element.codigo}</a>`)
+                transferenciaCodigo.push(`<a href onclick="abrirTransferenciaPDF(${element.id_transferencia})" target="_blank" title="Abrir transferencia">${element.codigo}</a>`)
             }
             if (element.numero_guia_com != null) {
                 transferenciaGC.push(`${element.serie_guia_com ?? ''}-${element.numero_guia_com ?? ''}`)
