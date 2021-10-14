@@ -1888,7 +1888,7 @@ class OrdenesPendientesController extends Controller
             // dd($t);
             // exit();
             DB::commit();
-            return response()->json($id_doc);
+            return response()->json(['id_doc' => $id_doc]);
         } catch (\PDOException $e) {
             // Woopsy
             DB::rollBack();
