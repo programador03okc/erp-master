@@ -110,6 +110,8 @@ function construirModalTrazabilidad(data) {
         document.querySelector("ul[id='stepperTrazabilidad']").insertAdjacentHTML('beforeend', htmlIngresosAlmacen);
 
     }
+    let htmlTransferencias='';
+    let transferenciaCodigo=[];
     let transferenciaGC=[];
     let transferenciaGV=[];
     if(data.transferencias.length >0){
