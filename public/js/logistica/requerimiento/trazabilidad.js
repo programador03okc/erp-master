@@ -41,7 +41,7 @@ function construirModalTrazabilidad(data) {
                     </div>
                     <div class="timeline-body">
                         <strong>Código: </strong>
-                        <p><a href="/necesidades/requerimiento/elaboracion/imprimir-requerimiento-pdf/${data.requerimiento.id_requerimiento}/0" target="_blank" title="Abrir requerimiento">${data.requerimiento.codigo}</a></p>
+                        <p><a href="/necesidades/requerimiento/elaboracion/imprimir-requerimiento-pdf/${data.requerimiento.id_requerimiento}/0" target="_blank" title="Abrir Requerimiento">${data.requerimiento.codigo}</a></p>
                     </div>
                 </div>
             </li>`);
@@ -58,7 +58,7 @@ function construirModalTrazabilidad(data) {
                     <h5 class="timeline-title">Gestion Logística</h5>
                 </div>`;
             (data.ordenes).forEach(element => {
-                OrdenesCodigo.push(`<a href="/logistica/gestion-logistica/compras/ordenes/listado/generar-orden-pdf/${element.id_orden_compra}" target="_blank" title="Abrir orden">${element.codigo}</a>`)
+                OrdenesCodigo.push(`<a href="/logistica/gestion-logistica/compras/ordenes/listado/generar-orden-pdf/${element.id_orden_compra}" target="_blank" title="Abrir Orden">${element.codigo}</a>`)
             });
 
             htmlGestionLogistica += `
@@ -89,16 +89,16 @@ function construirModalTrazabilidad(data) {
                 <h5 class="timeline-title">Ingresos Almacén</h5>
             </div>`;
         (data.ingresos).forEach(element => {
-            if(element.id_ingreso>0){
-                ingresosCodigo.push(`<a href onclick="abrirIngresoPDF(${element.id_ingreso})" title="Abrir ingreso">${element.codigo_ingreso??''}</a>`)
+            if (element.id_ingreso > 0) {
+                ingresosCodigo.push(`<a href onclick="abrirIngresoPDF(${element.id_ingreso})" target="_blank" title="Abrir Ingreso">${element.codigo_ingreso ?? ''}</a>`)
             }
-            if(element.numero_guia !=null){
-                ingresosGC.push(`${element.serie_guia??''}-${element.numero_guia??''}`)
+            if (element.numero_guia != null) {
+                ingresosGC.push(`${element.serie_guia ?? ''}-${element.numero_guia ?? ''}`)
             }
         });
         (data.docs).forEach(element => {
-            if(element.numero_doc !=null){
-                ingresosFC.push(`${element.serie_doc??''}-${element.numero_doc??''}`)
+            if (element.numero_doc != null) {
+                ingresosFC.push(`${element.serie_doc ?? ''}-${element.numero_doc ?? ''}`)
             }
         });
 
@@ -116,17 +116,30 @@ function construirModalTrazabilidad(data) {
         document.querySelector("ul[id='stepperTrazabilidad']").insertAdjacentHTML('beforeend', htmlIngresosAlmacen);
 
     }
-    let htmlTransferencias='';
-    let transferenciaCodigo=[];
-    let transferenciaGC=[];
-    let transferenciaGV=[];
-    if(data.transferencias.length >0){
+    let transferenciaCodigo = [];
+    let transferenciaGC = [];
+    let transferenciaGV = [];
+    let htmlTransferencias = '';
+    console.log('trans: ' + data.transferencias.length);
+    if (data.transferencias.length > 0) {
 
-            (data.transferencias).forEach(element => {
-                transferenciaCodigo.push(`<a href onclick="abrirTransferenciaPDF(${element.id_transferencia})" title="Abrir transferencia">${element.codigo}</a>`)
-                transferenciaGC.push(`${element.serie_guia_com}-${element.numero_guia_com}`)
-                transferenciaGV.push(`${element.serie_guia_ven}-${element.numero_guia_ven}`)
-            });
+        htmlTransferencias += `<li class="timeline-item">
+        <div class="timeline-badge default"><i class="glyphicon glyphicon-check"></i></div>
+        <div class="timeline-panel border-default">
+            <div class="timeline-heading">
+                <h5 class="timeline-title">Transferencias</h5>
+            </div>`;
+        (data.transferencias).forEach(element => {
+            if (element.id_transferencia !== null) {
+                transferenciaCodigo.push(`<a href onclick="abrirTransferenciaPDF(${element.id_transferencia})" target="_blank" title="Abrir Transferencia">${element.codigo}</a>`)
+            }
+            if (element.numero_guia_com != null) {
+                transferenciaGC.push(`${element.serie_guia_com ?? ''}-${element.numero_guia_com ?? ''}`)
+            }
+            if (element.numero_guia_com != null) {
+                transferenciaGV.push(`${element.serie_guia_ven ?? ''}-${element.numero_guia_ven ?? ''}`)
+            }
+        });
 
         htmlTransferencias += `
             <div class="timeline-body">
@@ -153,9 +166,7 @@ function construirModalTrazabilidad(data) {
                 <h5 class="timeline-title">Transformaciones</h5>
             </div>`;
         (data.transformaciones).forEach(element => {
-            if(element.id_transformacion>0){
-                transformacionCodigo.push(`<a href onclick="abrirTransformacionPDF(${element.id_transformacion})" title="Abrir Orden de Transformación">${element.codigo??''}</a>`)
-            }
+            transformacionCodigo.push(`${element.codigo}`);
             transformacionCodigo.push(`${element.serie} - ${element.numero}`);
         });
 
@@ -179,13 +190,13 @@ function construirModalTrazabilidad(data) {
         <div class="timeline-panel border-purple">
             <div class="timeline-heading">
                 <h5 class="timeline-title">Despacho</h5>
-                <p><small class="text-muted"><i class="glyphicon glyphicon-calendar"></i> ${data.despacho.fecha_despacho??''}</small></p>
+                <p><small class="text-muted"><i class="glyphicon glyphicon-calendar"></i> ${data.despacho.fecha_despacho ?? ''}</small></p>
             </div> 
             <div class="timeline-body">
             <strong>Codigo:</strong>
-            <p>${data.despacho.codigo??''}</p> 
+            <p>${data.despacho.codigo ?? ''}</p> 
             <strong>Guía venta:</strong>
-            <p>${data.despacho.serie?(data.despacho.serie+'-'+data.despacho.numero):''}</p> 
+            <p><a href onclick="abrirSalidaPDF(${data.despacho.id_salida})" target="_blank" title="Abrir Salida">${data.despacho.serie ? (data.despacho.serie + '-' + data.despacho.numero) : ''}</a></p> 
             </div>
         </div>
     </li>`;
@@ -204,14 +215,14 @@ function construirModalTrazabilidad(data) {
                 <h5 class="timeline-title">Reparto</h5>
             </div>`;
         (data.estados_envio).forEach(element => {
-            repartoAccion.push(`${element.accion_descripcion??''}`);
+            repartoAccion.push(`${element.accion_descripcion ?? ''}`);
         });
 
         htmlReparto += `
             <div class="timeline-body">
             <strong>Guía transportista:</strong>
-            <p>${ data.guia_transportista.serie?((data.guia_transportista.serie??'')+'-'+(data.guia_transportista.numero??'')):''}<br>
-            ${data.guia_transportista.fecha_transportista?data.guia_transportista.fecha_transportista:''}<br>
+            <p>${data.guia_transportista.serie ? ((data.guia_transportista.serie ?? '') + '-' + (data.guia_transportista.numero ?? '')) : ''}<br>
+            ${data.guia_transportista.fecha_transportista ? data.guia_transportista.fecha_transportista : ''}<br>
             ${data.guia_transportista.codigo_envio ? 'Cód. envio: ' + data.guia_transportista.codigo_envio : ''} ${data.guia_transportista.importe_flete ? 'S/' + data.guia_transportista.importe_flete : ''}</p>
             <strong>Acciónes Reparto:</strong>
             <p>${repartoAccion.join('<br>')}</p>
@@ -246,13 +257,13 @@ function abrirIngresoPDF(idIngreso) {
 }
 
 function abrirTransferenciaPDF(idTransferencia) {
-    var idTransferencia = $(this).data("id");
     if (idTransferencia !== "") {
         window.open("imprimir_transferencia/" + idTransferencia);
     }
 }
-function abrirTransformacionPDF(idTransformacion) {
-    if (idTransformacion !== null && idTransformacion !== '') {
-        window.open('imprimir_transformacion/' + idTransformacion);
+function abrirSalidaPDF(idSalida) {
+    if (idSalida !== "") {
+        var id = encode5t(idSalida);
+        window.open("imprimir_salida/" + id);
     }
 }

@@ -95,14 +95,31 @@ class TrazabilidadRequerimientoController extends Controller
 
         $transferencias = DB::table('almacen.trans')
             ->select(
-                'trans.*',
+                'trans.id_transferencia',
+                'trans.codigo',
+                'ingreso.id_mov_alm as id_ingreso',
+                'salida.id_mov_alm as id_salida',
                 'guia_com.serie as serie_guia_com',
-                'guia_com.numero as numero_guia_com',
                 'guia_ven.serie as serie_guia_ven',
+                'guia_com.numero as numero_guia_com',
                 'guia_ven.numero as numero_guia_ven',
             )
-            ->join('almacen.guia_com', 'guia_com.id_guia', '=', 'trans.id_guia_com')
-            ->join('almacen.guia_ven', 'guia_ven.id_guia_ven', '=', 'trans.id_guia_ven')
+            ->leftJoin('almacen.guia_com', function ($join) {
+                $join->on('guia_com.id_guia', '=', 'trans.id_guia_com');
+                $join->where('guia_com.estado', '!=', 7);
+            })
+            ->leftJoin('almacen.mov_alm as ingreso', function ($join) {
+                $join->on('ingreso.id_guia_com', '=', 'guia_com.id_guia_com');
+                $join->where('ingreso.estado', '!=', 7);
+            })
+            ->leftJoin('almacen.guia_ven', function ($join) {
+                $join->on('guia_ven.id_guia_ven', '=', 'trans.id_guia_ven');
+                $join->where('guia_ven.estado', '!=', 7);
+            })
+            ->leftJoin('almacen.mov_alm as salida', function ($join) {
+                $join->on('salida.id_guia_ven', '=', 'guia_ven.id_guia_ven');
+                $join->where('salida.estado', '!=', 7);
+            })
             ->where([
                 ['trans.id_requerimiento', '=', $id_requerimiento],
                 ['trans.estado', '!=', 7]
