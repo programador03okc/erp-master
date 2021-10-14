@@ -198,7 +198,6 @@ function construirModalTrazabilidad(data) {
         <div class="timeline-panel border-primary">
             <div class="timeline-heading">
                 <h5 class="timeline-title">Reparto</h5>
-                <p><small class="text-muted"><i class="glyphicon glyphicon-calendar"></i> </small></p>
             </div>`;
         (data.estados_envio).forEach(element => {
             repartoAccion.push(`${element.accion_descripcion}`);
@@ -206,6 +205,10 @@ function construirModalTrazabilidad(data) {
 
         htmlReparto += `
             <div class="timeline-body">
+            <strong>Guía transportista:</strong>
+            <p>${data.guia_transportista.serie} - ${data.guia_transportista.numero}</p>
+            <p>${data.guia_transportista.fecha_transportista}</p>
+            <p>Cód. envio: ${data.guia_transportista.codigo_envio} S/ ${data.guia_transportista.importe_flete}</p>
             <strong>Acciónes Reparto:</strong>
             <p>${repartoAccion.join('<br>')}</p>
             </div>
