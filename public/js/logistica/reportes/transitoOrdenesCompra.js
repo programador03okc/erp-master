@@ -42,7 +42,8 @@ class TransitoOrdenesCompra {
     }
 
     DescargarListaTransitoOrdenesCompra(){
-        console.log('DescargarListaTransitoOrdenesCompra');
+        window.open(`reporte-transito-ordenes-compra-excel/${this.ActualParametroEmpresa}/${this.ActualParametroSede}/${this.ActualParametroFechaDesde}/${this.ActualParametroFechaHasta}`);
+
     }
 
     getDataSelectSede(id_empresa){
