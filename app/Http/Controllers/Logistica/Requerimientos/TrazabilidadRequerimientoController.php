@@ -109,7 +109,7 @@ class TrazabilidadRequerimientoController extends Controller
                 $join->where('guia_com.estado', '!=', 7);
             })
             ->leftJoin('almacen.mov_alm as ingreso', function ($join) {
-                $join->on('ingreso.id_guia_com', '=', 'guia_com.id_guia_com');
+                $join->on('ingreso.id_guia_com', '=', 'guia_com.id_guia');
                 $join->where('ingreso.estado', '!=', 7);
             })
             ->leftJoin('almacen.guia_ven', function ($join) {
