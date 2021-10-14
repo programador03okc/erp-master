@@ -49,6 +49,7 @@ Reportes de transito de ordenes de compra
 
 
 
+@include('logistica.reportes.modal_filtro_reporte_transito_ordenes_compra')
 
 
 @endsection

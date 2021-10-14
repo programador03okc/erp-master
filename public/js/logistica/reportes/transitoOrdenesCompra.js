@@ -150,7 +150,7 @@ class TransitoOrdenesCompra {
                 contadorCheckActivo++;
             }
         });
-        document.querySelector("button[id='btnFiltrosListaTransitoOrdenesCompra'] span")?document.querySelector("button[id='btnFiltrosListaTransitoOrdenesCompra'] span").innerHTML ='<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : '+contadorCheckActivo:false
+        document.querySelector("button[id='btnFiltrosListaTransitoOrdenesCompra'] span")?(document.querySelector("button[id='btnFiltrosListaTransitoOrdenesCompra'] span").innerHTML ='<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : '+contadorCheckActivo):false
         return contadorCheckActivo;
     }
 
@@ -256,6 +256,7 @@ class TransitoOrdenesCompra {
 
             ],
             'initComplete': function () {
+                that.updateContadorFiltro();
 
                 //Boton de busqueda
                 const $filter = $('#listaTransitoOrdenesCompra_filter');

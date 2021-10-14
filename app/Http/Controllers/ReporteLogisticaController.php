@@ -23,7 +23,9 @@ class ReporteLogisticaController extends Controller{
 	}
 	
     public function viewReporteTransitoOrdenesCompra(){
-		return view('logistica/reportes/transito_ordenes_compra');
+		$empresas = Empresa::mostrar();
+        $grupos = Grupo::mostrar();
+		return view('logistica/reportes/transito_ordenes_compra',compact('empresas','grupos'));
 	}
 	
 	public function listaOrdenesCompra(Request $request){

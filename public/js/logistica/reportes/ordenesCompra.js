@@ -365,7 +365,7 @@ class OrdenesCompra {
 
             ],
             'initComplete': function () {
-
+                that.updateContadorFiltro();
                 //Boton de busqueda
                 const $filter = $('#listaOrdenesCompra_filter');
                 const $input = $filter.find('input');
