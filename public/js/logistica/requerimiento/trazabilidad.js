@@ -116,7 +116,7 @@ function construirModalTrazabilidad(data) {
     let htmlTransferencias = '';
     console.log('trans: ' + data.transferencias.length);
     if (data.transferencias.length > 0) {
-        
+
         htmlTransferencias += `<li class="timeline-item">
         <div class="timeline-badge default"><i class="glyphicon glyphicon-check"></i></div>
         <div class="timeline-panel border-default">
@@ -206,9 +206,9 @@ function construirModalTrazabilidad(data) {
         htmlReparto += `
             <div class="timeline-body">
             <strong>Guía transportista:</strong>
-            <p>${data.guia_transportista.serie} - ${data.guia_transportista.numero}</p>
-            <p>${data.guia_transportista.fecha_transportista}</p>
-            <p>Cód. envio: ${data.guia_transportista.codigo_envio} S/ ${data.guia_transportista.importe_flete}</p>
+            <p>${data.guia_transportista.serie} - ${data.guia_transportista.numero}<br>
+            ${data.guia_transportista.fecha_transportista}<br>
+            ${data.guia_transportista.codigo_envio ? 'Cód. envio: ' + data.guia_transportista.codigo_envio : ''} ${data.guia_transportista.importe_flete ? 'S/' + data.guia_transportista.importe_flete : ''}</p>
             <strong>Acciónes Reparto:</strong>
             <p>${repartoAccion.join('<br>')}</p>
             </div>
