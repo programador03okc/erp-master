@@ -248,13 +248,3 @@ function mostrarTrazabilidad(idRequerimiento) {
         console.log(err)
     })
 }
-
-
-function abrirIngresoPDF(idIngreso) {
-    if (idIngreso !== "") {
-        var id = encode5t(idIngreso);
-        window.open("imprimir_ingreso/" + id);
-    }
-}
-
- 
