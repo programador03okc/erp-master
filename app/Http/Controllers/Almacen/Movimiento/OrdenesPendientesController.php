@@ -165,10 +165,10 @@ class OrdenesPendientesController extends Controller
         // whereBetween('created_at', ['2018/11/10 12:00', '2018/11/11 10:30'])
         $array_sedes = [];
         if ($request->ordenes_fecha_inicio !== null) {
-            $data = $data->whereDate('log_ord_compra.fecha', '>=', $request->ordenes_fecha_inicio);
+            $data = $data->whereDate('log_ord_compra.fecha', '>=', (new Carbon($request->ordenes_fecha_inicio))->format('Y-m-d'));
         }
         if ($request->ordenes_fecha_fin !== null) {
-            $data = $data->whereDate('log_ord_compra.fecha', '<=', $request->ordenes_fecha_fin);
+            $data = $data->whereDate('log_ord_compra.fecha', '<=', (new Carbon($request->ordenes_fecha_fin))->format('Y-m-d'));
         }
         if ($request->ordenes_id_sede !== null) {
             if ($request->ordenes_id_sede == 0) {
