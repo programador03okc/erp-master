@@ -64,8 +64,9 @@ class TrazabilidadRequerimientoController extends Controller
             ->where([
                 ['alm_req.id_requerimiento', '=', $id_requerimiento],
                 ['log_det_ord_compra.estado', '!=', 7],
-                ['guia_com_det.estado', '!=', 7],
-                ['doc_com_det.estado', '!=', 7],
+                ['guia_com.estado', '!=', 7],
+                ['mov_alm.estado', '!=', 7],
+                ['doc_com.estado', '!=', 7],
             ])
             ->distinct()
             ->get();
