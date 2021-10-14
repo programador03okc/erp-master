@@ -195,6 +195,8 @@ function construirModalTrazabilidad(data) {
             <div class="timeline-body">
             <strong>Codigo:</strong>
             <p>${data.despacho.codigo??''}</p> 
+            <strong>Guía venta:</strong>
+            <p>${data.despacho.serie?(data.despacho.serie+'-'+data.despacho.numero):''}</p> 
             </div>
         </div>
     </li>`;
