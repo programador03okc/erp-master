@@ -95,7 +95,8 @@ class TrazabilidadRequerimientoController extends Controller
 
         $transferencias = DB::table('almacen.trans')
             ->select(
-                'trans.*',
+                'trans.id_transferencia',
+                'trans.codigo',
                 'guia_com.serie as serie_guia_com',
                 'guia_com.numero as numero_guia_com',
                 'guia_ven.serie as serie_guia_ven',
