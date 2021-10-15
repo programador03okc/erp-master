@@ -186,9 +186,8 @@ Pendientes de Ingreso
 <script src="{{ asset('js/almacen/documentos/doc_com_create.js')}}"></script>
 <script src="{{ asset('js/almacen/documentos/doc_com_ver.js')}}"></script>
 <script src="{{ asset('js/almacen/transferencias/transferenciaCreate.js')}}"></script>
-<!-- <script src="{{ asset('js/almacen/producto/productoModal.js')}}"></script> -->
 <script src="{{ asset('js/tesoreria/facturacion/archivosMgcp.js')}}"></script>
-<script src="{{ asset('js/logistica/mapeo/mapeoAsignarProducto.js')}}"></script>
+<script src="{{ asset('js/logistica/mapeo/mapeoAsignarProducto.js')}}?v={{filemtime(public_path('js/logistica/mapeo/mapeoAsignarProducto.js'))}}"></script>
 <script src="{{ asset('js/almacen/guia/guia_transformacion_mapeo.js')}}"></script>
 <script src="{{ asset('js/almacen/guia/guia_com_create_transformacion.js')}}"></script>
 
