@@ -25,7 +25,8 @@ function listarProductosCatalogo() {
                             <button type="button" class="btn btn-success btn-xs" name="btnSeleccionarUbigeo" title="Seleccionar Producto" 
                                 data-codigo="${row.codigo}" data-id="${row.id_producto}" 
                                 data-partnumber="${row.part_number}" data-descripcion="${encodeURIComponent(row.descripcion)}" 
-                                data-abreviatura="${row.abreviatura}" onclick="selectProductoAsignado(this);">
+                                data-abreviatura="${row.abreviatura}" data-series="${row.series}"
+                                onclick="selectProductoAsignado(this);">
                                 <i class="fas fa-check"></i>
                             </button>
                         `;
@@ -103,7 +104,8 @@ function listarSugeridos() {
                         <button type="button" class="btn btn-success btn-xs" title="Seleccionar Producto" 
                             data-codigo="${element.codigo}" data-id="${element.id_producto}" 
                             data-partnumber="${element.part_number}" data-descripcion="${encodeURIComponent(element.descripcion)}" 
-                            data-abreviatura="${element.abreviatura}" onclick="selectProductoAsignado(this);">
+                            data-abreviatura="${element.abreviatura}" data-series="${element.series}"
+                            onclick="selectProductoAsignado(this);">
                             <i class="fas fa-check"></i>
                         </button>
                     </td>
@@ -122,11 +124,13 @@ function listarSugeridos() {
 }
 
 function selectProductoAsignado(obj) {
+    console.log(obj);
     let id = obj.dataset.id;
     let codigo = obj.dataset.codigo;
     let partnumber = obj.dataset.partnumber;
     let descripcion = obj.dataset.descripcion;
     let abreviatura = obj.dataset.abreviatura;
+    let series = obj.dataset.series;
     let id_detalle = $('[name=id_detalle_requerimiento]').val();
 
     // console.log('selectProductoAsignado');
@@ -139,6 +143,10 @@ function selectProductoAsignado(obj) {
         det.part_number = partnumber;
         det.descripcion = decodeURIComponent(descripcion);
         det.abreviatura = abreviatura;
+        det.control_series = series;
+        console.log('--------------');
+        console.log(det);
+        console.log(series_transformacion);
         $('#modal-mapeoAsignarProducto').modal('hide');
         mostrar_detalle_transformacion();
     } else {
@@ -195,6 +203,7 @@ $("#form-crear").on("submit", function (e) {
         det.id_subcategoria = id_subcat;
         det.id_clasif = id_clasif;
         det.id_unidad_medida = id_unid;
+        det.control_series = serie;
         det.series = serie;
 
         $('#modal-mapeoAsignarProducto').modal('hide');

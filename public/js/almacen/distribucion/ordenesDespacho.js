@@ -1624,19 +1624,21 @@ function listarGruposDespachadosPendientesCargo(permiso) {
                 render: function (data, type, row) {
                     if (permiso == "1") {
                         return `
-                            <button type="button" class="estados btn btn-primary boton" data-toggle="tooltip" 
+                        <div style="display:flex;">
+                            <button type="button" class="estados btn btn-primary btn-flat boton" data-toggle="tooltip" 
                             data-placement="bottom" title="Ver Detalle" data-id="${row["id_od"]}">
                             <i class="fas fa-chevron-down"></i></button>
 
-                            <button type="button" class="nuevo btn btn-info boton" data-toggle="tooltip" 
+                            <button type="button" class="nuevo btn btn-info btn-flat  boton" data-toggle="tooltip" 
                             data-placement="bottom" data-id="${row["id_od"]}" data-codod="${row["codigo_od"]}" 
                             data-idreq="${row["id_requerimiento"]}" data-estreq="${row["estado_od"]}" title="Nuevo Estado">
                             <i class="fas fa-map-marker-alt"></i></button>
                             
-                            <button type="button" class="no_conforme btn btn-danger boton" data-toggle="tooltip" 
+                            <button type="button" class="no_conforme btn btn-danger btn-flat  boton" data-toggle="tooltip" 
                             data-placement="bottom" data-id="${row["id_od_grupo_detalle"]}" data-od="${row["id_od"]}" 
                             data-idreq="${row["id_requerimiento"]}" data-cod-req="${row["codigo_req"]}" data-concepto="${row["concepto"]}" title="Revertir" >
-                            <i class="fas fa-backspace"></i></button>`;
+                            <i class="fas fa-backspace"></i></button>
+                        </div>`;
                     }
                 }
             }
@@ -1683,31 +1685,28 @@ $("#pendientesRetornoCargo tbody").on("click", "button.nuevo", function () {
 //     }
 // });
 
-$("#pendientesRetornoCargo tbody").on(
-    "click",
-    "button.no_conforme",
-    function () {
-        var id_od_grupo_detalle = $(this).data("id");
-        var id_od = $(this).data("od");
-        var id_req = $(this).data("idreq");
-        var cod_req = $(this).data("codReq");
-        var concepto = $(this).data("concepto");
+$("#pendientesRetornoCargo tbody").on("click", "button.no_conforme", function () {
+    var id_od_grupo_detalle = $(this).data("id");
+    var id_od = $(this).data("od");
+    var id_req = $(this).data("idreq");
+    var cod_req = $(this).data("codReq");
+    var concepto = $(this).data("concepto");
 
-        var rspta = confirm(
-            "¿Está seguro que desea revertir el " + cod_req + " " + concepto
-        );
+    var rspta = confirm(
+        "¿Está seguro que desea revertir el " + cod_req + " " + concepto
+    );
 
-        if (rspta) {
-            var data =
-                "id_od_grupo_detalle=" +
-                id_od_grupo_detalle +
-                "&id_od=" +
-                id_od +
-                "&id_requerimiento=" +
-                id_req;
-            despacho_no_conforme(data);
-        }
+    if (rspta) {
+        var data =
+            "id_od_grupo_detalle=" +
+            id_od_grupo_detalle +
+            "&id_od=" +
+            id_od +
+            "&id_requerimiento=" +
+            id_req;
+        despacho_no_conforme(data);
     }
+}
 );
 
 function despacho_no_conforme(data) {

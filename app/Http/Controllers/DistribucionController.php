@@ -539,7 +539,7 @@ class DistribucionController extends Controller
             ->leftjoin('mgcp_acuerdo_marco.entidades', 'entidades.id', '=', 'oportunidades.id_entidad')
             ->join('almacen.estado_envio', 'estado_envio.id_estado', '=', 'orden_despacho.estado')
             ->where('orden_despacho_grupo_det.estado', 1)
-            ->whereIn('orden_despacho.estado', [2, 3, 4, 5, 6, 7])
+            ->whereIn('orden_despacho.estado', [2, 3, 4, 5, 6, 7, 8, 9, 10])
             ->get();
         $output['data'] = $data;
         return response()->json($output);
@@ -1901,6 +1901,30 @@ class DistribucionController extends Controller
                 ->update(['adjunto' => $nombre]);
         }
         return response()->json($id_obs);
+    }
+
+    public function eliminarTrazabilidadEnvio($id)
+    {
+        try {
+            $obs = DB::table('almacen.orden_despacho_obs')
+                ->where('id_obs', $id)->first();
+
+            if ($obs !== null) {
+                DB::table('almacen.orden_despacho')
+                    ->where('id_od', $obs->id_od)
+                    ->update(['estado' => (intval($obs->accion) - 1)]);
+            }
+
+            DB::table('almacen.orden_despacho_obs')
+                ->where('id_obs', $id)
+                ->delete();
+
+            DB::commit();
+            return response()->json($obs);
+        } catch (\PDOException $e) {
+
+            DB::rollBack($e);
+        }
     }
 
     public function mostrar_transportistas()

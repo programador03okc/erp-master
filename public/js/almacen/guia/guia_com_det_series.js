@@ -2,9 +2,14 @@ let json_series = [];
 let cant_items = null;
 
 function agrega_series(id_oc_det) {
-    $('#modal-guia_com_barras').modal({
+    const $modal = $('#modal-guia_com_barras');
+    $modal.modal({
         show: true
     });
+    //Limpieza para seleccionar archivo
+    $modal.find('input[type=file]').val(null);
+    $modal.find('div.bootstrap-filestyle').find('input[type=text]').val('');
+
     $('#listaBarras tbody').html('');
     json_series = [];
 
@@ -30,10 +35,14 @@ function agrega_series(id_oc_det) {
 }
 
 function agrega_series_transformacion(id) {
-    console.log('agrega_series_transformacion');
-    $('#modal-guia_com_barras').modal({
+    const $modal = $('#modal-guia_com_barras');
+    $modal.modal({
         show: true
     });
+    //Limpieza para seleccionar archivo
+    $modal.find('input[type=file]').val(null);
+    $modal.find('div.bootstrap-filestyle').find('input[type=text]').val('');
+
     $('#listaBarras tbody').html('');
     json_series = [];
 

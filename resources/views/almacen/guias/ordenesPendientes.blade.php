@@ -178,10 +178,10 @@ Pendientes de Ingreso
 <script src="{{ asset('js/almacen/guia/transformacionesPendientes.js')}}"></script>
 <script src="{{ asset('js/almacen/guia/ingresosProcesados.js')}}?v={{filemtime(public_path('js/almacen/guia/ingresosProcesados.js'))}}"></script>
 <script src="{{ asset('js/almacen/guia/ordenes_ver_detalle.js')}}"></script>
-<script src="{{ asset('js/almacen/guia/movimientoDetalle.js?v=2')}}"></script>
+<script src="{{ asset('js/almacen/guia/movimientoDetalle.js')}}?v={{filemtime(public_path('js/almacen/guia/movimientoDetalle.js'))}}"></script>
 <script src="{{ asset('js/almacen/guia/guia_com_create.js')}}"></script>
 <script src="{{ asset('js/almacen/guia/guia_com_cambio.js')}}"></script>
-<script src="{{ asset('js/almacen/guia/guia_com_det_series.js')}}"></script>
+<script src="{{ asset('js/almacen/guia/guia_com_det_series.js')}}?v={{filemtime(public_path('js/almacen/guia/guia_com_det_series.js'))}}"></script>
 <script src="{{ asset('js/almacen/guia/guia_com_det_series_edit.js')}}"></script>
 <script src="{{ asset('js/almacen/documentos/doc_com_create.js')}}"></script>
 <script src="{{ asset('js/almacen/documentos/doc_com_ver.js')}}"></script>

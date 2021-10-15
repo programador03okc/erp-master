@@ -17,6 +17,8 @@ function open_detalle_movimiento(data) {
     $('[name=ingreso_fecha_emision]').val(moment(data.fecha_emision_guia).format("YYYY-MM-DD"));
     $('[name=ingreso_fecha_almacen]').val(moment(data.fecha_almacen_guia).format("YYYY-MM-DD"));
     $('#ordenes_compra').val(data.ordenes_compra + ' - SoftLink: ' + data.ordenes_soft_link);
+    $('[name=id_motivo_cambio]').val('');
+    $('[name=observacion]').val('');
     $('#responsable_nombre').text(data.nombre_corto);
     $('#requerimientos').val(data.requerimientos);
     // $('#ordenes_soft_link').text(data.ordenes_soft_link);

@@ -77,6 +77,7 @@ class ProductoController extends Controller
                 'alm_prod.descripcion',
                 'alm_prod.part_number',
                 'alm_prod.id_unidad_medida',
+                'alm_prod.series',
                 'alm_und_medida.abreviatura',
                 'alm_subcat.descripcion as marca'
             )

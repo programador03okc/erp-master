@@ -936,6 +936,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('mostrarEstados', 'DistribucionController@mostrarEstados');
 				// Route::get('enviarFacturar/{id}', 'Logistica\Distribucion\OrdenesDespachoExternoController@enviarFacturar');
 				Route::get('mostrar_transportistas', 'DistribucionController@mostrar_transportistas');
+				Route::get('eliminarTrazabilidadEnvio/{id}', 'DistribucionController@eliminarTrazabilidadEnvio');
 			});
 
 			Route::group(['as' => 'trazabilidad-requerimientos.', 'prefix' => 'trazabilidad-requerimientos'], function () {
