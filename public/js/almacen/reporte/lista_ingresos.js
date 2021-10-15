@@ -1,28 +1,156 @@
-function actualizarLista(){
-    $('#modal-filtros').modal('hide');
+var empresa;
+var sede;
+var almacenes;
+var condiciones;
+var fini;
+var ffin;
+var prov;
+var id_usuario;
+var moneda;
+var tra;
 
-    var almacenes = $('[name=almacen]').val();
-    // var documentos = $('[name=documento]').val();
-    var condiciones = $('[name=condicion]').val();
-    var fini = $('[name=fecha_inicio]').val();
-    var ffin = $('[name=fecha_fin]').val();
-    var id_proveedor = $('[name=id_proveedor]').val();
-    var id_proveedor_tra = $('[name=id_proveedor_tra]').val();
-    var id_usuario = $('[name=responsable]').val();
-    var moneda = $('[name=moneda_opcion]').val();
-    var prov = (id_proveedor !== '' ? id_proveedor : 0);
-    var tra = (id_proveedor_tra !== '' ? id_proveedor_tra : 0);
+function SetDefaultFiltroEmpresa(){
+    empresa=0
+}
+function SetDefaultFiltroSede(){
+    sede=0;
+}
+function SetDefaultFiltroAlmacenes(){
+    $('[name=almacen] option').each(function(){
+        $(this).prop("selected",true);
+    });
+
+    almacenes = $('[name=almacen]').val();
+
+}
+function SetDefaultFiltroCondiciones(){
+    $('[name=condicion] option').each(function(){
+        $(this).prop("selected",true);
+    });
+    condiciones = $('[name=condicion]').val();
+
+}
+function SetDefaultFiltroRangoFechaEmision(){
+    $('[name=fecha_inicio]').val(((new Date()).getFullYear())+'-01-01');
+    $('[name=fecha_fin]').val(((new Date()).getFullYear())+'-12-31');
+    fini = $('[name=fecha_inicio]').val();
+    ffin = $('[name=fecha_fin]').val();
+
+}
+
+function SetDefaultFiltroProveedor(){
+    prov = 0;
+
+}
+function SetDefaultFiltroMoneda(){
+    moneda = 0;
+
+}
+function SetDefaultFiltroTransportista(){
+    tra = 0;
+
+}
+function descargarIngresosExcel(){
+    window.open('listar-ingresos-excel/'+empresa+'/'+sede+'/'+almacenes+'/'+condiciones+'/'+fini+'/'+ffin+'/'+prov+'/'+id_usuario+'/'+moneda+'/'+tra );
+
+}
+function actualizarLista(option=null){
+    $('#modal-filtros').modal('hide');
+    if(option =='DEFAULT'){
+        SetDefaultFiltroEmpresa();
+        SetDefaultFiltroSede();
+        SetDefaultFiltroAlmacenes();
+        SetDefaultFiltroCondiciones();
+        SetDefaultFiltroRangoFechaEmision();
+        SetDefaultFiltroProveedor();
+        SetDefaultFiltroMoneda();
+        SetDefaultFiltroTransportista();
+
+    }else{
+        const modalFiltro = document.querySelector("div[id='modal-filtros']");
+        if(modalFiltro.querySelector("input[name='chkEmpresa']").checked){
+            empresa = $('[name=empresa]').val();
+        }else{
+            SetDefaultFiltroEmpresa();
+
+        }
+        if(modalFiltro.querySelector("input[name='chkSede']").checked){
+            sede = $('[name=sede]').val();
+        }else{
+            SetDefaultFiltroSede();
+
+        }
+        if(modalFiltro.querySelector("input[name='chkAlmacen']").checked){
+            almacenes = $('[name=almacen]').val();
+        }else{
+            SetDefaultFiltroAlmacenes();
+
+        }
+        if(modalFiltro.querySelector("input[name='chkCondicion']").checked){
+            condiciones = $('[name=condicion]').val();
+        }else{
+            SetDefaultFiltroCondiciones();
+        }
+        if(modalFiltro.querySelector("input[name='chkFechaRegistro']").checked){
+            fini = $('[name=fecha_inicio]').val();
+            ffin = $('[name=fecha_fin]').val();
+        }else{
+            SetDefaultFiltroRangoFechaEmision();
+        }
+        if(modalFiltro.querySelector("input[name='chkProveedor']").checked){
+            let id_proveedor = $('[name=id_proveedor]').val();
+            prov = (id_proveedor !== '' ? id_proveedor : 0);
+
+        }else{
+            SetDefaultFiltroProveedor();
+        }
+        if(modalFiltro.querySelector("input[name='chkMoneda']").checked){
+            moneda = $('[name=moneda]').val();
+        }else{
+            SetDefaultFiltroMoneda();
+        }
+    }
+
+        id_usuario = $('[name=responsable]').val();
+        let id_proveedor_tra = $('[name=id_proveedor_tra]').val();
+        tra = (id_proveedor_tra !== '' ? id_proveedor_tra : 0);
+
+     
+
     
     var vardataTables = funcDatatables();
     var tabla = $('#listaIngresos').DataTable({
         'destroy': true,
         'dom': vardataTables[1],
-        'buttons': vardataTables[2],
+        'buttons': [
+            {
+                text: '<i class="fas fa-filter"></i> Filtros : 0',
+                attr: {
+                    id: 'btnFiltros'
+                },
+                action: () => {
+                    open_filtros();
+
+                },
+                className: 'btn-default btn-sm'
+            },
+            {
+                text: '<i class="far fa-file-excel"></i> Descargar',
+                attr: {
+                    id: 'btnDescargarExcel'
+                },
+                action: () => {
+                    descargarIngresosExcel();
+
+                },
+                className: 'btn-default btn-sm'
+            }
+        ],
         'language' : vardataTables[0],
         // "scrollX": true,
         'pageLength': 50,
         'ajax': {
-            url:'listar_ingresos/'+almacenes+'/'+/*documentos+'/'+*/condiciones+'/'+fini+'/'+ffin+'/'+prov+'/'+id_usuario+'/'+moneda+'/'+tra,
+            url:'listar_ingresos/'+empresa+'/'+sede+'/'+almacenes+'/'+/*documentos+'/'+*/condiciones+'/'+fini+'/'+ffin+'/'+prov+'/'+id_usuario+'/'+moneda+'/'+tra,
             dataSrc:''
             // type: 'POST'
         },
@@ -146,6 +274,9 @@ function actualizarLista(){
             //         }, targets: 9
             // },
         ],
+        'initComplete': function () {
+            updateContadorFiltro();
+        },
         "order": [[2, "asc"],[5, "asc"]]
     });
     botones('#listaIngresos tbody',tabla);
