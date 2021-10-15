@@ -19,6 +19,9 @@ function nuevo_prorrateo() {
     $('#total_adicional_peso').text('');
     $('#total_costo').text('');
 
+    $('[name=total_comp_valor]').val('');
+    $('[name=total_comp_peso]').val('');
+
 }
 
 function mostrar_prorrateo(id_prorrateo) {
