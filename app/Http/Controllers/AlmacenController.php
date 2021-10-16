@@ -4911,42 +4911,11 @@ class AlmacenController extends Controller
 
     }
     
-    public function listar_ingresos_lista($idEmpresa,$idSede, $almacenes, $condiciones, $fecha_inicio, $fecha_fin, $id_proveedor, $id_usuario, $moneda, /*$referenciado,*/ $transportista)
+    public function listar_ingresos_lista($idEmpresa,$idSede, $almacenes, $condiciones, $fecha_inicio, $fecha_fin, $id_proveedor, $id_usuario, $idMoneda, /*$referenciado,*/ $transportista)
     {
         $alm_array = explode(',', $almacenes);
         // $doc_array = explode(',',$documentos);
         $con_array = explode(',', $condiciones);
-
-        // $hasWhere = [];
-        // if ($id_proveedor !== null && $id_proveedor > 0) {
-        //     $hasWhere[] = ['guia_com.id_proveedor', '=', $id_proveedor];
-        // }
-        // if ($id_usuario !== null && $id_usuario > 0) {
-        //     $hasWhere[] = ['guia_com.usuario', '=', $id_usuario];
-        // }
-        // if ($moneda == 1 || $moneda == 2) {
-        //     $hasWhere[] = ['doc_com.moneda', '=', $moneda];
-        // }
-        // if ($transportista !== null && $transportista > 0) {
-        //     $hasWhere[] = ['guia_com.transportista', '=', $transportista];
-        // }
-
-        // $count = count($doc_array);
-        // $docs = [];
-        // $alm = [];
-        // $oc = '';
-
-        // for ($i=0; $i<$count; $i++){
-        //     if ($doc_array[$i] > 100){ //Docs
-        //         $docs[] = [$doc_array[$i] - 100];
-        //     } 
-        //     else if ($doc_array[$i] < 100){ //Alm
-        //         $alm[] = [intval($doc_array[$i])];
-        //     }
-        //     else {
-        //         $oc = intval($doc_array[$i]);
-        //     }
-        // }
 
         $data = DB::table('almacen.mov_alm')
             ->select(
@@ -5021,8 +4990,8 @@ class AlmacenController extends Controller
             ->when(($id_usuario !=null && $id_usuario > 0), function ($query) use($id_usuario) {
                 return $query->where('guia_com.usuario',$id_usuario);
             })
-            ->when(($moneda == 1 || $moneda == 2), function ($query) use($moneda) {
-                return $query->where('doc_com.moneda',$moneda);
+            ->when(($idMoneda == 1 || $idMoneda == 2), function ($query) use($idMoneda) {
+                return $query->where('doc_com.moneda',$idMoneda);
             })
             ->when(($transportista !=null && $transportista > 0), function ($query) use($transportista) {
                 return $query->where('guia_com.transportista',$transportista);
@@ -5035,7 +5004,6 @@ class AlmacenController extends Controller
             // ->whereIn('mov_alm.id_operacion', $con_array)
             // ->whereBetween('mov_alm.fecha_emision', [$fecha_inicio, $fecha_fin])
             ->where([['mov_alm.estado', '!=', 7]])
-            // ->where($hasWhere)
             ->get();
 
         $nueva_data = [];
@@ -5102,7 +5070,6 @@ class AlmacenController extends Controller
                 $condicion = ($doc->des_condicion !== null ? $doc->des_condicion : '');
                 $credito_dias = ($doc->credito_dias !== null ? $doc->credito_dias : '');
             }
-
             $nuevo = [
                 'id_mov_alm' => $d->id_mov_alm,
                 'revisado' => $d->revisado,
