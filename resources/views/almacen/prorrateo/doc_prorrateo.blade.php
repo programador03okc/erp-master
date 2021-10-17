@@ -93,15 +93,17 @@ Prorrateo de Costos
                                         <tbody></tbody>
                                         <tfoot>
                                             <tr>
-                                                <td colSpan="9" class="right">
+                                                <td colSpan="7" class="right">
                                                     Registrado por: <label id="registrado_por"></label>
                                                 </td>
-                                                <td></td>
-                                                <td><label class="left" id="total_valor"></label></td>
-                                                <td><label class="left" id="total_peso"></label></td>
-                                                <td><label class="left" id="total_adicional_valor"></label></td>
-                                                <td><label class="left" id="total_adicional_peso"></label></td>
-                                                <td><label class="left" id="total_costo"></label></td>
+                                                <td style="text-align: right"><label id="moneda"></label></td>
+                                                <td style="text-align: right"><label id="total_valor_compra"></label></td>
+                                                <td style="text-align: right"><label id="soles"></label></td>
+                                                <td style="text-align: right"><label id="total_valor"></label></td>
+                                                <td style="text-align: right"><label id="total_peso"></label></td>
+                                                <td style="text-align: right"><label id="total_adicional_valor"></label></td>
+                                                <td style="text-align: right"><label id="total_adicional_peso"></label></td>
+                                                <td style="text-align: right"><label id="total_costo"></label></td>
                                                 <td></td>
                                             </tr>
                                         </tfoot>
