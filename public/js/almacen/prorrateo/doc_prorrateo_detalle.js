@@ -12,13 +12,17 @@ function listar_guia_detalle(id_guia) {
 
             if (response.length > 0) {
                 let id = null;
+                var unitario = 0;
+                var valor_compra = 0;
+
                 response.forEach(element => {
                     id = guias_detalle.find(guia => guia.id_guia_com_det == element.id_guia_com_det);
 
                     if (id == undefined || id == null) {
-                        var unitario = parseFloat(element.precio_unitario !== null
+                        unitario = parseFloat(element.precio_unitario !== null
                             ? element.precio_unitario
                             : element.unitario);
+                        valor_compra = ((unitario * parseFloat(element.cantidad)) + parseFloat(element.unitario_adicional));
 
                         guias_detalle.push({
                             'id_prorrateo_det': 0,
@@ -34,10 +38,10 @@ function listar_guia_detalle(id_guia) {
                             'abreviatura': element.abreviatura,
                             'fecha_emision': element.fecha_emision,
                             'tipo_cambio': element.tipo_cambio,
-                            'valor_compra': ((unitario * parseFloat(element.cantidad)) + parseFloat(element.unitario_adicional)),
+                            'valor_compra': valor_compra,
                             'valor_compra_soles': (element.moneda !== 1
-                                ? (unitario * parseFloat(element.cantidad) * parseFloat(element.tipo_cambio))
-                                : (unitario * parseFloat(element.cantidad))),
+                                ? (valor_compra * parseFloat(element.tipo_cambio))
+                                : (valor_compra)),
                             'adicional_valor': 0,
                             'adicional_peso': 0,
                             'total': (parseFloat(element.precio_unitario !== null ? element.precio_unitario : element.unitario) * parseFloat(element.cantidad)),
