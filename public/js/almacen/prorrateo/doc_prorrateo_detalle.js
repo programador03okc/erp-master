@@ -34,7 +34,7 @@ function listar_guia_detalle(id_guia) {
                             'abreviatura': element.abreviatura,
                             'fecha_emision': element.fecha_emision,
                             'tipo_cambio': element.tipo_cambio,
-                            'valor_compra': (unitario * parseFloat(element.cantidad)) + element.unitario_adicional,
+                            'valor_compra': ((unitario * parseFloat(element.cantidad)) + parseFloat(element.unitario_adicional)),
                             'valor_compra_soles': (element.moneda !== 1
                                 ? (unitario * parseFloat(element.cantidad) * parseFloat(element.tipo_cambio))
                                 : (unitario * parseFloat(element.cantidad))),
