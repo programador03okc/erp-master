@@ -85,13 +85,13 @@ function documentosVer(id) {
                             ? item.descripcion
                             : item.servicio_descripcion
                         }</td>
-                        <td class="right">${item.cantidad}</td>
+                        <td style="text-align:right">${item.cantidad}</td>
                         <td>${item.abreviatura}</td>
-                        <td class="right">${item.precio_unitario}</td>
-                        <td class="right">${item.sub_total}</td>
-                        <td class="right">${item.porcen_dscto}</td>
-                        <td class="right">${item.total_dscto}</td>
-                        <td class="right">${formatNumber.decimal(
+                        <td style="text-align:right">${item.precio_unitario}</td>
+                        <td style="text-align:right">${item.sub_total}</td>
+                        <td style="text-align:right">${item.porcen_dscto}</td>
+                        <td style="text-align:right">${item.total_dscto}</td>
+                        <td style="text-align:right">${formatNumber.decimal(
                             item.precio_total,
                             "",
                             -2
@@ -100,24 +100,24 @@ function documentosVer(id) {
                     i++;
                 });
                 html += `<tr>
-                    <td colSpan="11" class="text-right">SubTotal</td>
-                    <th class="right">${formatNumber.decimal(
+                    <td colSpan="11" style="text-align:right">SubTotal</td>
+                    <th style="text-align:right">${formatNumber.decimal(
                     element.sub_total,
                     element.simbolo,
                     -2
                 )}</th>
                 </tr>
                 <tr>
-                    <td colSpan="11" class="text-right">IGV</td>
-                    <th class="right">${formatNumber.decimal(
+                    <td colSpan="11" style="text-align:right">IGV</td>
+                    <th style="text-align:right">${formatNumber.decimal(
                     element.total_igv,
                     element.simbolo,
                     -2
                 )}</th>
                 </tr>
                 <tr>
-                    <td colSpan="11" class="text-right">Total</td>
-                    <th class="right">${formatNumber.decimal(
+                    <td colSpan="11" style="text-align:right">Total</td>
+                    <th style="text-align:right">${formatNumber.decimal(
                     element.total_a_pagar,
                     element.simbolo,
                     -2
