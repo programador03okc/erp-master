@@ -190,7 +190,7 @@ function mostrarListaItems() {
         <td>${element.cantidad}</td>
         <td>${element.abreviatura}</td>
         <td>
-            <input type="number"  style="text-align:right" class="form-control  unitario" value="${formatNumber.decimal(element.precio, '', -4)}" 
+            <input type="number"  style="text-align:right" class="form-control  unitario" value="${formatDecimalDigitos(element.precio, 4)}" 
             data-id="${element.id_guia_com_det}" min="0" step="0.0001"/>
         </td>
         <td style="text-align:right">${formatNumber.decimal(element.sub_total, '', -4)}</td>
@@ -221,16 +221,16 @@ function mostrarListaItems() {
     totales.simbolo = $('select[name="moneda"] option:selected').data('sim');
 
     var html_foot = `<tr>
-        <th colSpan="11" class="text-right">Sub Total <label name="sim">${totales.simbolo}</label></th>
-        <th class="right">${formatNumber.decimal(totales.sub_total, '', -2)}</th>
+        <th colSpan="11" style="text-align:right">Sub Total <label name="sim">${totales.simbolo}</label></th>
+        <th style="text-align:right">${formatNumber.decimal(totales.sub_total, '', -2)}</th>
     </tr>
     <tr>
-        <th colSpan="11" class="text-right">IGV ${totales.porcentaje_igv}% <label name="sim">${totales.simbolo}</label></th>
-        <th class="right">${formatNumber.decimal(totales.igv, '', -2)}</th>
+        <th colSpan="11" style="text-align:right">IGV ${totales.porcentaje_igv}% <label name="sim">${totales.simbolo}</label></th>
+        <th style="text-align:right">${formatNumber.decimal(totales.igv, '', -2)}</th>
     </tr>
     <tr>
-        <th colSpan="11" class="text-right"> Total <label name="sim">${totales.simbolo}</label></th>
-        <th class="right">${formatNumber.decimal(totales.total, '', -2)}</th>
+        <th colSpan="11" style="text-align:right"> Total <label name="sim">${totales.simbolo}</label></th>
+        <th style="text-align:right">${formatNumber.decimal(totales.total, '', -2)}</th>
     </tr>
     `;
     $('#detalleItems tfoot').html(html_foot);

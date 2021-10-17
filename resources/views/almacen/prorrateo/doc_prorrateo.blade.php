@@ -76,7 +76,7 @@ Prorrateo de Costos
                                                 <th>Valor Compra</th>
                                                 <th>Tipo Cambio</th>
                                                 <th>Valor Soles S/</th>
-                                                <th>Peso</th>
+                                                <th>Peso Volumen</th>
                                                 <th>Adicional Valor</th>
                                                 <th>Adicional Peso</th>
                                                 <th>Importe Prorrateado</th>

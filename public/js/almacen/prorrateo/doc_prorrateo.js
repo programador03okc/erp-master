@@ -13,6 +13,9 @@ function nuevo_prorrateo() {
     $('#estado_doc').text('');
 
     $('[name=total_ingreso]').val('');
+    $('#total_valor_compra').text('');
+    $('#moneda').text('');
+    $('#soles').text('');
     $('#total_valor').text('');
     $('#total_peso').text('');
     $('#total_adicional_valor').text('');

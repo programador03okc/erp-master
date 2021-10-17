@@ -202,8 +202,8 @@ function listarIngresos() {
                     if (acceso == "1") {
                         return (
                             '<div style="display:flex;"><button type="button" class="detalle btn btn-primary btn-xs btn-flat " data-toggle="tooltip" ' +
-                            'data-placement="bottom" title="Ver Ingreso" data-id="' + row["id_guia_com"] + '" data-cod="' + row["codigo"] + '">' +
-                            '<i class="fas fa-eye"></i></button>' +
+                            'data-placement="bottom" title="Editar Ingreso" data-id="' + row["id_guia_com"] + '" data-cod="' + row["codigo"] + '">' +
+                            '<i class="fas fa-edit"></i></button>' +
                             // (row["id_operacion"] == 21 ? ""
                             //     : `<button type="button" class="cambio btn btn-warning btn-xs btn-flat" data-toggle="tooltip" 
                             //         data-placement="bottom" title="Cambiar Serie-Número" data-id="${row["id_mov_alm"]}" 
