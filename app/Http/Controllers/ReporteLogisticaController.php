@@ -28,19 +28,27 @@ class ReporteLogisticaController extends Controller{
 		return view('logistica/reportes/transito_ordenes_compra',compact('empresas','grupos'));
 	}
 	
-	public function listaOrdenesCompra(Request $request){
-		
-		$idEmpresa = $request->idEmpresa;
-        $idSede = $request->idSede;
-		$fechaRegistroDesde = $request->fechaRegistroDesde;
-        $fechaRegistroHasta = $request->fechaRegistroHasta;
 
+	public function obtenerDataOrdenesCompra($idEmpresa,$idSede,$fechaRegistroDesde,$fechaRegistroHasta){
 		$data = Orden::with([
 			'sede'=> function($q){
 				$q->where([['sis_sede.estado', '!=', 7]]);
 			},
 			'estado'
 		])
+		->select('log_ord_compra.*',  DB::raw("(SELECT  array_to_json(array_agg(json_build_object( 
+            'codigo_oportunidad',cc_view.codigo_oportunidad ,
+			'fecha_creacion',cc_view.fecha_creacion,
+			'fecha_limite',cc_view.fecha_limite,
+			'estado_aprobacion_cuadro',oc_propias_view.estado_aprobacion_cuadro,
+			'fecha_estado',oc_propias_view.fecha_estado
+
+      		))) FROM logistica.log_det_ord_compra
+			INNER JOIN almacen.alm_det_req ON log_det_ord_compra.id_detalle_requerimiento = alm_det_req.id_detalle_requerimiento
+			INNER JOIN almacen.alm_req ON alm_req.id_requerimiento = alm_det_req.id_requerimiento
+			INNER JOIN mgcp_cuadro_costos.cc_view ON alm_req.id_cc = cc_view.id
+			INNER JOIN mgcp_ordenes_compra.oc_propias_view ON oc_propias_view.id_oportunidad = cc_view.id_oportunidad
+			WHERE log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra )  as cuadro_costo"))
 		// ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'log_ord_compra.id_sede')
 
 		->when(($idEmpresa > 0), function ($query) use($idEmpresa) {
@@ -65,18 +73,26 @@ class ReporteLogisticaController extends Controller{
             return $query->whereBetween('log_ord_compra.fecha' ,[$fechaRegistroDesde,$fechaRegistroHasta]); 
         })
 		->where([['log_ord_compra.id_tp_documento', '=', 2],['log_ord_compra.estado', '!=', 7]]);
-		
- 
-		return datatables($data)->rawColumns(['requerimientos','cuadro_costo'])->toJson();
 
+		return $data;
 	}
-	public function listaTransitoOrdenesCompra(Request $request){
+
+ 
+	public function listaOrdenesCompra(Request $request){
 		
 		$idEmpresa = $request->idEmpresa;
         $idSede = $request->idSede;
 		$fechaRegistroDesde = $request->fechaRegistroDesde;
         $fechaRegistroHasta = $request->fechaRegistroHasta;
 
+		$data = $this->obtenerDataOrdenesCompra($idEmpresa,$idSede,$fechaRegistroDesde,$fechaRegistroHasta);
+		
+		
+		return datatables($data)->rawColumns(['requerimientos','cuadro_costo'])->toJson();
+
+	}
+
+	public function obtenerDataTransitoOrdenesCompra($idEmpresa,$idSede,$fechaRegistroDesde,$fechaRegistroHasta){
 		$data = Orden::with([
 			'sede'=> function($q){
 				$q->where([['sis_sede.estado', '!=', 7]]);
@@ -112,6 +128,18 @@ class ReporteLogisticaController extends Controller{
         })
 		->where([['log_ord_compra.id_tp_documento', '=', 2],['log_ord_compra.estado', '!=', 7]]);
 		
+		return $data;
+	}
+	
+	public function listaTransitoOrdenesCompra(Request $request){
+		
+		$idEmpresa = $request->idEmpresa;
+        $idSede = $request->idSede;
+		$fechaRegistroDesde = $request->fechaRegistroDesde;
+        $fechaRegistroHasta = $request->fechaRegistroHasta;
+		$data = $this->obtenerDataTransitoOrdenesCompra($idEmpresa,$idSede,$fechaRegistroDesde,$fechaRegistroHasta);
+
+
  
 		return datatables($data)->rawColumns(['monto','requerimientos','cuadro_costo','tiene_transformacion','cantidad_equipos'])->toJson();
 
