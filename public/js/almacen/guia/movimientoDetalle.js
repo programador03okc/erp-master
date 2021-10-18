@@ -27,7 +27,7 @@ function open_detalle_movimiento(data) {
 }
 
 function abrirIngreso() {
-    var id = encode5t($('[name=id_mov_alm]').val());
+    var id = $('[name=id_mov_alm]').val();
     window.open("imprimir_ingreso/" + id);
 }
 let guia_detalle = [];
