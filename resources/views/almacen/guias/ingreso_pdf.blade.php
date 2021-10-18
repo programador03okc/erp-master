@@ -239,10 +239,10 @@
                 <td>{{$prod->descripcion}} <br><strong> {{$series}}</strong></td>
                 <td class="text-center">{{$prod->cantidad}}</td>
                 <td class="text-center">{{$prod->abreviatura}}</td>
-                <td class="text-center">{{$prod->moneda_doc!==null?$prod->moneda_doc:($prod->moneda_oc!==null?$prod->moneda_oc:'')}}</td>
-                <td class="text-center">{{round($valorizacion,2,PHP_ROUND_HALF_UP)}}</td>
-                <td class="text-center">{{round($adicional,2,PHP_ROUND_HALF_UP)}}</td>
-                <td class="text-center">{{round(($valorizacion + $adicional),2,PHP_ROUND_HALF_UP)}}</td>
+                <td class="text-right">{{$prod->moneda_doc!==null?$prod->moneda_doc:($prod->moneda_oc!==null?$prod->moneda_oc:'')}}</td>
+                <td class="text-right">{{round($valorizacion,2,PHP_ROUND_HALF_UP)}}</td>
+                <td class="text-right">{{round($adicional,2,PHP_ROUND_HALF_UP)}}</td>
+                <td class="text-right">{{round(($valorizacion + $adicional),2,PHP_ROUND_HALF_UP)}}</td>
             </tr>
             @endforeach
         </tbody>
