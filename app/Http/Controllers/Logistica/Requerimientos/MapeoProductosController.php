@@ -120,7 +120,7 @@ class MapeoProductosController extends Controller
             $cantidadItemsTotal=$cantidades['cantidadTotal'];
 
           
-
+            $estadoRequerimiento= null;
             if($cantidadItemsMapeados >0){
                 $mensaje[]='Productos mapeados con éxito';
 
@@ -128,17 +128,17 @@ class MapeoProductosController extends Controller
             if($cantidadAnulado >0){
                 $mensaje[]=' se anulo ('.$cantidadAnulado.') item(s)';
                 //TODO: revisar si actualizar estado de requerimiento
-                Requerimiento::actualizarEstadoRequerimientoAtendido([$DetalleRequerimiento->id_requerimiento]);
+                $estadoRequerimiento= Requerimiento::actualizarEstadoRequerimientoAtendido([$DetalleRequerimiento->id_requerimiento]);
             }
     
 
 
             DB::commit();
-            return response()->json(array('response' => 'ok','mensaje'=>$mensaje,'cantidad_items_mapeados'=>$cantidadItemsMapeados,'cantidad_total_items'=>$cantidadItemsTotal), 200);
+            return response()->json(array('response' => 'ok','mensaje'=>$mensaje,'estado_requerimiento'=>$estadoRequerimiento,'cantidad_items_mapeados'=>$cantidadItemsMapeados,'cantidad_total_items'=>$cantidadItemsTotal), 200);
 
         } catch (Exception $e) {
             DB::rollBack();
-            return response()->json(array('response' => 'null','mensaje'=>'Hubo un problema al guardar el mapeo de productos. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage(),'cantidad_items_mapeados'=>$cantidadItemsMapeados,'cantidad_total_items'=>$cantidadItemsTotal), 200);
+            return response()->json(array('response' => 'null','estado_requerimiento'=>'null','mensaje'=>'Hubo un problema al guardar el mapeo de productos. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage(),'cantidad_items_mapeados'=>$cantidadItemsMapeados,'cantidad_total_items'=>$cantidadItemsTotal), 200);
         }
     }
 
