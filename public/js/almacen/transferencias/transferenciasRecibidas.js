@@ -215,8 +215,8 @@ $("#listaTransferenciasRecibidas tbody").on("click", "a.salida", function () {
 $("#listaTransferenciasRecibidas tbody").on("click", "a.ingreso", function () {
     var idIngreso = $(this).data("idIngreso");
     if (idIngreso !== "") {
-        var id = encode5t(idIngreso);
-        window.open("imprimir_ingreso/" + id);
+        // var id = encode5t(idIngreso);
+        window.open("imprimir_ingreso/" + idIngreso);
     }
 });
 

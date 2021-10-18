@@ -108,7 +108,7 @@
         font-size: 22px;margin:0px; padding:0px;">Ingreso a Almacén</h4>
     <h4 class="text-center" style="margin:0px; padding:0px;border-bottom: 1px solid black;background-color: #acedf2;">
         Guía {{$ingreso->guia}}</h4>
-    <h5 class="text-center" style="margin:0px; padding:0px;">{{$ingreso->des_almacen}}</h5>
+    <h5 class="text-center" style="margin:0px; padding:0px;">{{$ingreso->cod_sunat}} - {{$ingreso->ope_descripcion}}</h5>
     <h5 class="text-center" style="margin:0px; padding:0px;">{{$ingreso->codigo}}</h5>
 
     <div class="seccion-hoja">
@@ -117,52 +117,52 @@
     <table>
         <thead>
             <tr>
-                <th style="width: 25%" class="text-right">Proveedor:</th>
-                <td style="width: 35%">{{$ingreso->nro_documento}} - {{$ingreso->razon_social}}</td>
-                <th style="width: 25%" class="text-right">Tipo de Movimiento:</th>
-                <td style="width: 35%">{{$ingreso->cod_sunat}} - {{$ingreso->ope_descripcion}}</td>
-            </tr>
-            <tr>
-                <th style="width: 25%" class="text-right">Fecha Emisión Guía:</th>
-                <td style="width: 35%">{{$ingreso->fecha_guia}}</td>
+                <th style="width: 20%" class="text-right">Almacén:</th>
+                <td style="width: 45%">{{$ingreso->des_almacen}}</td>
                 <th style="width: 25%" class="text-right">Fecha de Ingreso:</th>
                 <td style="width: 35%">{{$ingreso->fecha_emision}}</td>
             </tr>
+            <tr>
+                <th style="width: 20%" class="text-right">Proveedor:</th>
+                <td style="width: 45%">{{$ingreso->nro_documento}} - {{$ingreso->razon_social}}</td>
+                <th style="width: 25%" class="text-right">Fecha Emisión Guía:</th>
+                <td style="width: 35%">{{$ingreso->fecha_guia}}</td>
+            </tr>
             @if ($ocs!=='')
             <tr>
-                <th style="width: 25%" class="text-right">Orden(s) de compra:</th>
-                <td style="width: 35%">{{$ocs}}</td>
+                <th style="width: 20%" class="text-right">Orden(s) Compra:</th>
+                <td style="width: 45%">{{$ocs}}</td>
                 <th style="width: 25%" class="text-right">Orden(s) SoftLink:</th>
                 <td style="width: 35%">{{$softlink}}</td>
             </tr>
             @endif
             @if ($docs!=='')
             <tr>
-                <th style="width: 25%" class="text-right">Doc(s) de compra:</th>
-                <td style="width: 35%">{{$docs}}</td>
+                <th style="width: 20%" class="text-right">Doc(s) Compra:</th>
+                <td style="width: 45%">{{$docs}}</td>
                 <th style="width: 25%" class="text-right">Fecha(s) emisión Doc.:</th>
                 <td style="width: 35%">{{$docs_fecha}}</td>
             </tr>
             @endif
             @if ($ingreso->id_transferencia!==null)
             <tr>
-                <th style="width: 25%" class="text-right">Transferencia:</th>
-                <td style="width: 35%">{{$ingreso->trans_codigo}}</td>
+                <th style="width: 20%" class="text-right">Transferencia:</th>
+                <td style="width: 45%">{{$ingreso->trans_codigo}}</td>
                 <th style="width: 25%" class="text-right">Almacén Origen:</th>
                 <td style="width: 35%">{{$ingreso->trans_almacen_origen}}</td>
             </tr>
             @endif
             @if ($ingreso->id_transformacion!==null)
             <tr>
-                <th style="width: 25%" class="text-right">Transformación:</th>
-                <td style="width: 35%">{{$ingreso->cod_transformacion}}</td>
+                <th style="width: 20%" class="text-right">Transformación:</th>
+                <td style="width: 45%">{{$ingreso->cod_transformacion}}</td>
                 <th style="width: 25%" class="text-right">Fecha de proceso:</th>
                 <td style="width: 35%">{{$ingreso->fecha_transformacion}}</td>
             </tr>
             @endif
             <tr>
-                <th style="width: 25%" class="text-right">Responsable:</th>
-                <td style="width: 35%">{{$ingreso->nombre_corto}}</td>
+                <th style="width: 20%" class="text-right">Responsable:</th>
+                <td style="width: 45%">{{$ingreso->nombre_corto}}</td>
             </tr>
         </thead>
     </table>

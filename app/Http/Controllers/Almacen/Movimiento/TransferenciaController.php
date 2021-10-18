@@ -693,7 +693,7 @@ class TransferenciaController extends Controller
                     'fecha_emision' => $request->fecha_almacen,
                     'id_guia_com' => $id_guia_com,
                     'id_operacion' => $ope, //entrada por transferencia entre almacenes
-                    // 'id_transferencia' => $request->id_transferencia,
+                    'id_transferencia' => $request->id_transferencia,
                     'revisado' => 0,
                     'usuario' => $usuario->id_usuario,
                     'estado' => 1,

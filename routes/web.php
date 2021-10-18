@@ -1299,7 +1299,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('ingreso_transferencia/{id}', 'Almacen\Movimiento\TransferenciaController@ingreso_transferencia');
 				// Route::get('transferencia_nextId/{id}', 'Almacen\Movimiento\TransferenciaController@transferencia_nextId');
 				Route::post('anularTransferenciaSalida', 'Almacen\Movimiento\TransferenciaController@anularTransferenciaSalida');
-				Route::get('imprimir_ingreso/{id}', 'Almacen\Movimiento\OrdenesPendientesController@imprimir_ingreso');
+				Route::get('imprimir_ingreso/{id}', 'Almacen\Movimiento\IngresoPdfController@imprimir_ingreso');
 				Route::get('imprimir_salida/{id}', 'Almacen\Movimiento\SalidasPendientesController@imprimir_salida');
 				Route::post('listarTransferenciasPorEnviar', 'Almacen\Movimiento\TransferenciaController@listarTransferenciasPorEnviar');
 				Route::post('listarTransferenciasPorRecibir', 'Almacen\Movimiento\TransferenciaController@listarTransferenciasPorRecibir');
