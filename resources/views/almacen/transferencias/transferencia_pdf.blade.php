@@ -102,9 +102,11 @@
         </tr>
     </table>
     <h4 style="text-align: center;
-        
         padding-top: 5px;
         padding-bottom: 5px;
+        border-bottom: 1px solid black;
+        border-top: 1px solid black;
+        background-color: #acf2bf;
         font-size: 22px;margin:0px; padding:0px;">Transferencia entre Almacenes</h4>
     <h4 class="text-center" style="margin:0px; padding:0px;">Tipo: {{$transferencia->razon_social_origen==$transferencia->razon_social_destino?'Transferencia':'Venta Interna'}}</h4>
     <h5 class="text-center" style="margin:0px; padding:0px;">{{$transferencia->codigo}}</h5>
