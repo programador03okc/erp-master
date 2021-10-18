@@ -106,7 +106,7 @@
         padding-bottom: 5px;
         border-bottom: 1px solid black;
         font-size: 22px;margin:0px; padding:0px;">Salida de Almacén</h4>
-    <h4 class="text-center" style="margin:0px; padding:0px;border-bottom: 1px solid black;background-color: #f2d6ac;">
+    <h4 class="text-center" style="margin:0px; padding:0px;border-bottom: 1px solid black;background-color: #fce0a5;">
         Guía {{$salida->guia}}</h4>
     <h5 class="text-center" style="margin:0px; padding:0px;">{{$salida->cod_sunat}} - {{$salida->ope_descripcion}}</h5>
     <h5 class="text-center" style="margin:0px; padding:0px;">{{$salida->codigo}}</h5>

@@ -115,6 +115,8 @@ $ordenCompra = $oportunidad->ordenCompraPropia;
         background-color: #acf2bf;
         padding-top: 5px;
         padding-bottom: 5px;
+        border-bottom: 1px solid black;
+        border-top: 1px solid black;
         font-size: 22px;margin:0px; padding:0px;">Orden de Transformación</h4>
     <h4 class="text-center" style="margin:0px; padding:0px;">{{$codigo}}</h4>
 

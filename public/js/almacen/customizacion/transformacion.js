@@ -281,63 +281,6 @@ function openIniciar() {
     }
 }
 
-function abrir_salida() {
-    var id_transformacion = $('[name=id_transformacion]').val();
-    console.log(id_transformacion);
-    if (id_transformacion != '') {
-        $.ajax({
-            type: 'GET',
-            url: 'id_salida_transformacion/' + id_transformacion,
-            dataType: 'JSON',
-            success: function (id_salida) {
-                if (id_salida > 0) {
-                    console.log(id_salida);
-                    var id = encode5t(id_salida);
-                    window.open('imprimir_salida/' + id);
-                } else {
-                    // alert('Esta Transformación no tiene Salida');
-                    Swal.fire({
-                        title: "Esta Transformación no tiene Salida!",
-                        text: "Es necesario que almacén realice la salida.",
-                        icon: "error",
-                    });
-                }
-            }
-        }).fail(function (jqXHR, textStatus, errorThrown) {
-            console.log(jqXHR);
-            console.log(textStatus);
-            console.log(errorThrown);
-        });
-    } else {
-        alert('Debe seleccionar una Transformación!');
-    }
-}
-function abrir_ingreso() {
-    var id_transformacion = $('[name=id_transformacion]').val();
-    console.log(id_transformacion);
-    if (id_transformacion != '') {
-        $.ajax({
-            type: 'GET',
-            url: 'id_ingreso_transformacion/' + id_transformacion,
-            dataType: 'JSON',
-            success: function (id_ingreso) {
-                if (id_ingreso > 0) {
-                    console.log(id_ingreso);
-                    var id = encode5t(id_ingreso);
-                    window.open('imprimir_ingreso/' + id);
-                } else {
-                    alert('Esta Transformación no tiene Ingreso');
-                }
-            }
-        }).fail(function (jqXHR, textStatus, errorThrown) {
-            console.log(jqXHR);
-            console.log(textStatus);
-            console.log(errorThrown);
-        });
-    } else {
-        alert('Debe seleccionar una Transformación!');
-    }
-}
 function anular_transformacion(ids) {
     $.ajax({
         type: 'GET',

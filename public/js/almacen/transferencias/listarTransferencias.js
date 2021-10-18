@@ -436,8 +436,8 @@ $("#listaTransferenciasPorEnviar tbody").on("click", "a.salida",
         var idSalida = $(this).data("idSalida");
         console.log(idSalida);
         if (idSalida !== "") {
-            var id = encode5t(idSalida);
-            window.open("imprimir_salida/" + id);
+            // var id = encode5t(idSalida);
+            window.open("imprimir_salida/" + idSalida);
         }
     }
 );
@@ -687,8 +687,8 @@ $("#listaTransferenciasPorRecibir tbody").on("click", "a.salida",
         var idSalida = $(this).data("idSalida");
         console.log(idSalida);
         if (idSalida !== "") {
-            var id = encode5t(idSalida);
-            window.open("imprimir_salida/" + id);
+            // var id = encode5t(idSalida);
+            window.open("imprimir_salida/" + idSalida);
         }
     }
 );

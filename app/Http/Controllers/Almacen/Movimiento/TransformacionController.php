@@ -100,7 +100,9 @@ class TransformacionController extends Controller
                 'oportunidades.codigo_oportunidad',
                 'entidades.nombre',
                 'alm_req.codigo as codigo_req',
-                'alm_req.fecha_entrega as fecha_entrega_req'
+                'alm_req.fecha_entrega as fecha_entrega_req',
+                'ingreso.id_mov_alm as id_ingreso',
+                'salida.id_mov_alm as id_salida',
             )
             ->join('almacen.orden_despacho', 'orden_despacho.id_od', '=', 'transformacion.id_od')
             ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'orden_despacho.id_requerimiento')
@@ -115,6 +117,16 @@ class TransformacionController extends Controller
             ->leftjoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
             ->leftjoin('mgcp_acuerdo_marco.oc_propias', 'oc_propias.id_oportunidad', '=', 'oportunidades.id')
             ->leftjoin('mgcp_acuerdo_marco.entidades', 'entidades.id', '=', 'oportunidades.id_entidad')
+            ->leftjoin('almacen.mov_alm as ingreso', function ($join) {
+                $join->on('ingreso.id_transformacion', '=', 'transformacion.id_transformacion');
+                $join->where('ingreso.id_tp_mov', '=', 1);
+                $join->where('ingreso.estado', '!=', 7);
+            })
+            ->leftjoin('almacen.mov_alm as salida', function ($join) {
+                $join->on('salida.id_transformacion', '=', 'transformacion.id_transformacion');
+                $join->where('salida.id_tp_mov', '=', 2);
+                $join->where('salida.estado', '!=', 7);
+            })
             ->where([['transformacion.estado', '=', 10]])
             ->orderBy('fecha_registro', 'desc')
             ->get();

@@ -206,8 +206,8 @@ $("#listaTransferenciasRecibidas tbody").on("click", "a.salida", function () {
     var idSalida = $(this).data("idSalida");
     console.log(idSalida);
     if (idSalida !== "") {
-        var id = encode5t(idSalida);
-        window.open("imprimir_salida/" + id);
+        // var id = encode5t(idSalida);
+        window.open("imprimir_salida/" + idSalida);
     }
 }
 );

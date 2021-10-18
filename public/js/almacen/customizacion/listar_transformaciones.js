@@ -180,11 +180,11 @@ class GestionCustomizacion {
                     'render':
                         function (data, type, row) {
                             return ('<button type="button" class="salida btn btn-success btn-flat boton" data-toggle="tooltip" ' +
-                                'data-placement="bottom" title="Ver Salida" data-id="' + row['id_transformacion'] + '">' +
+                                'data-placement="bottom" title="Ver Salida" data-id="' + row['id_salida'] + '">' +
                                 '<i class="fas fa-sign-out-alt"></i></button>' +
 
                                 '<button type="button" class="ingreso btn btn-primary btn-flat boton" data-toggle="tooltip" ' +
-                                'data-placement="bottom" title="Ver Ingreso" data-id="' + row['id_transformacion'] + '">' +
+                                'data-placement="bottom" title="Ver Ingreso" data-id="' + row['id_ingreso'] + '">' +
                                 '<i class="fas fa-sign-in-alt"></i></button>');
                         }
                 },
@@ -212,6 +212,21 @@ $('#listaTransformacionesPendientes tbody').on("click", "button.iniciar", functi
         openIniciar(id, estado);
     } else {
         alert('Debe seleccionar una Hoja de Transformación.');
+    }
+});
+
+$('#listaTransformaciones tbody').on("click", "button.salida", function () {
+    var idSalida = $(this).data('id');
+    console.log(idSalida);
+    if (idSalida !== "") {
+        window.open("imprimir_salida/" + idSalida);
+    }
+});
+$('#listaTransformaciones tbody').on("click", "button.ingreso", function () {
+    var idIngreso = $(this).data('id');
+    console.log(idIngreso);
+    if (idIngreso !== "") {
+        window.open("imprimir_ingreso/" + idIngreso);
     }
 });
 // $('#listaTransformacionesPendientes tbody').on("mouseover","button.conformidad", function(){
@@ -296,65 +311,65 @@ function openIniciar(id_transformacion, est) {
     }
 }
 
-$('#listaTransformaciones tbody').on("click", "button.ingreso", function () {
-    var id = $(this).data('id');
-    abrir_ingreso(id);
-});
+// $('#listaTransformaciones tbody').on("click", "button.ingreso", function () {
+//     var id = $(this).data('id');
+//     abrir_ingreso(id);
+// });
 
-$('#listaTransformaciones tbody').on("click", "button.salida", function () {
-    var id = $(this).data('id');
-    abrir_salida(id);
-});
+// $('#listaTransformaciones tbody').on("click", "button.salida", function () {
+//     var id = $(this).data('id');
+//     abrir_salida(id);
+// });
 
-function abrir_salida(id_transformacion) {
-    if (id_transformacion != '') {
-        $.ajax({
-            type: 'GET',
-            url: 'id_salida_transformacion/' + id_transformacion,
-            dataType: 'JSON',
-            success: function (id_salida) {
-                if (id_salida > 0) {
-                    console.log(id_salida);
-                    var id = encode5t(id_salida);
-                    window.open('imprimir_salida/' + id);
-                } else {
-                    alert('Esta Transformación no tiene Salida');
-                }
-            }
-        }).fail(function (jqXHR, textStatus, errorThrown) {
-            console.log(jqXHR);
-            console.log(textStatus);
-            console.log(errorThrown);
-        });
-    } else {
-        alert('Debe seleccionar una Transformación!');
-    }
-}
+// function abrir_salida(id_transformacion) {
+//     if (id_transformacion != '') {
+//         $.ajax({
+//             type: 'GET',
+//             url: 'id_salida_transformacion/' + id_transformacion,
+//             dataType: 'JSON',
+//             success: function (id_salida) {
+//                 if (id_salida > 0) {
+//                     console.log(id_salida);
+//                     // var id = encode5t(id_salida);
+//                     window.open('imprimir_salida/' + id_salida);
+//                 } else {
+//                     alert('Esta Transformación no tiene Salida');
+//                 }
+//             }
+//         }).fail(function (jqXHR, textStatus, errorThrown) {
+//             console.log(jqXHR);
+//             console.log(textStatus);
+//             console.log(errorThrown);
+//         });
+//     } else {
+//         alert('Debe seleccionar una Transformación!');
+//     }
+// }
 
-function abrir_ingreso(id_transformacion) {
-    if (id_transformacion != '') {
-        $.ajax({
-            type: 'GET',
-            url: 'id_ingreso_transformacion/' + id_transformacion,
-            dataType: 'JSON',
-            success: function (id_ingreso) {
-                if (id_ingreso > 0) {
-                    console.log(id_ingreso);
-                    var id = encode5t(id_ingreso);
-                    window.open('imprimir_ingreso/' + id);
-                } else {
-                    alert('Esta Transformación no tiene Ingreso');
-                }
-            }
-        }).fail(function (jqXHR, textStatus, errorThrown) {
-            console.log(jqXHR);
-            console.log(textStatus);
-            console.log(errorThrown);
-        });
-    } else {
-        alert('Debe seleccionar una Transformación!');
-    }
-}
+// function abrir_ingreso(id_transformacion) {
+//     if (id_transformacion != '') {
+//         $.ajax({
+//             type: 'GET',
+//             url: 'id_ingreso_transformacion/' + id_transformacion,
+//             dataType: 'JSON',
+//             success: function (id_ingreso) {
+//                 if (id_ingreso > 0) {
+//                     console.log(id_ingreso);
+//                     // var id = encode5t(id_ingreso);
+//                     window.open('imprimir_ingreso/' + id_ingreso);
+//                 } else {
+//                     alert('Esta Transformación no tiene Ingreso');
+//                 }
+//             }
+//         }).fail(function (jqXHR, textStatus, errorThrown) {
+//             console.log(jqXHR);
+//             console.log(textStatus);
+//             console.log(errorThrown);
+//         });
+//     } else {
+//         alert('Debe seleccionar una Transformación!');
+//     }
+// }
 
 let id_cc = null;
 let tipo = null;
