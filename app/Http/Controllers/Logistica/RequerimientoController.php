@@ -3368,7 +3368,7 @@ class RequerimientoController extends Controller
                 <thead>
                     <tr class="subtitle">
                         <td width="12%" style="text-align:center;">Centro costo</td>
-                        <td width="12%" style="text-align:center; overflow:hidden;">Part.No</td>
+                        <td width="12%" style="text-align:center;">Part.No</td>
                         <td width="30%" style="text-align:center;">Descripcion</td>
                         <td width="5%" style="text-align:center;">Und.</td>
                         <td width="5%" style="text-align:center;">Cant.</td>

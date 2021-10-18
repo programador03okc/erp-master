@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use App\Http\Controllers\ReporteLogisticaController;
 use App\Models\Administracion\Sede;
 use App\Models\Logistica\Orden;
 use Illuminate\Contracts\View\View;
@@ -26,39 +27,9 @@ class ReporteTransitoOrdenesCompraExcel implements FromView
         $fechaRegistroDesde = $this->fechaRegistroDesde;
         $fechaRegistroHasta = $this->fechaRegistroHasta;
 
-		$ordenes = Orden::with([
-			'sede'=> function($q){
-				$q->where([['sis_sede.estado', '!=', 7]]);
-			},
-			'moneda',
-			'proveedor.contribuyente'
-		])
+		
+        $ordenes = (new ReporteLogisticaController)->obtenerDataTransitoOrdenesCompra($idEmpresa,$idSede,$fechaRegistroDesde,$fechaRegistroHasta)->orderBy('fecha','desc')->get();
 
-        ->when(($idEmpresa > 0), function ($query) use($idEmpresa) {
-			$sedes= Sede::where('id_empresa',$idEmpresa)->get();
-			$idSedeList=[];
-			foreach($sedes as $sede){
-				$idSedeList[]=$sede->id_sede;
-			}
-            return $query->whereIn('id_sede', $idSedeList);
-        })
-        ->when(($idSede > 0), function ($query) use($idSede) {
-            return $query->where('id_sede',$idSede);
-        })
-
-        ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta == 'SIN_FILTRO')), function ($query) use($fechaRegistroDesde) {
-            return $query->where('log_ord_compra.fecha' ,'>=',$fechaRegistroDesde); 
-        })
-        ->when((($fechaRegistroDesde == 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use($fechaRegistroHasta) {
-            return $query->where('log_ord_compra.fecha' ,'<=',$fechaRegistroHasta); 
-        })
-        ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use($fechaRegistroDesde,$fechaRegistroHasta) {
-            return $query->whereBetween('log_ord_compra.fecha' ,[$fechaRegistroDesde,$fechaRegistroHasta]); 
-        })
-		->where([['log_ord_compra.id_tp_documento', '=', 2],['log_ord_compra.estado', '!=', 7]])
-        // ->limit(50)
-        ->orderBy('fecha','desc')
-        ->get();
         $data=[];
         foreach($ordenes as $element){
 

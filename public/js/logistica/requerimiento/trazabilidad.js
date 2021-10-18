@@ -166,7 +166,7 @@ function construirModalTrazabilidad(data) {
                 <h5 class="timeline-title">Transformaciones</h5>
             </div>`;
         (data.transformaciones).forEach(element => {
-            transformacionCodigo.push(`${element.codigo}`);
+            transformacionCodigo.push(`<a href="imprimir_transformacion/${(element.id_transformacion)}" target="_blank" title="Abrir Salida">${element.codigo}</a>`);
             transformacionCodigo.push(`${element.serie} - ${element.numero}`);
         });
 
