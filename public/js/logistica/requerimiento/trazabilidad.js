@@ -90,7 +90,7 @@ function construirModalTrazabilidad(data) {
             </div>`;
         (data.ingresos).forEach(element => {
             if (element.id_ingreso > 0) {
-                ingresosCodigo.push(`<a href="imprimir_ingreso/${encode5t(element.id_ingreso)}" target="_blank" title="Abrir Ingreso">${element.codigo_ingreso ?? ''}</a>`)
+                ingresosCodigo.push(`<a href="imprimir_ingreso/${(element.id_ingreso)}" target="_blank" title="Abrir Ingreso">${element.codigo_ingreso ?? ''}</a>`)
             }
             if (element.numero_guia != null) {
                 ingresosGC.push(`${element.serie_guia ?? ''}-${element.numero_guia ?? ''}`)
@@ -134,10 +134,10 @@ function construirModalTrazabilidad(data) {
                 transferenciaCodigo.push(`<a href="imprimir_transferencia/${element.id_transferencia}" target="_blank" title="Abrir Transferencia">${element.codigo}</a>`)
             }
             if (element.numero_guia_com != null) {
-                transferenciaGC.push( `<a href="imprimir_ingreso/${encode5t(element.id_ingreso)}"  target="_blank" title="Abrir Ingreso">${element.serie_guia_com ?? ''}-${element.numero_guia_com ?? ''}</a>`)
+                transferenciaGC.push(`<a href="imprimir_ingreso/${element.id_ingreso}"  target="_blank" title="Abrir Ingreso">${element.serie_guia_com ?? ''}-${element.numero_guia_com ?? ''}</a>`)
             }
             if (element.numero_guia_ven != null) {
-                transferenciaGV.push(`<a href="imprimir_salida/${encode5t(element.id_salida)}" target="_blank" title="Abrir Salida">${element.serie_guia_ven ?? ''}-${element.numero_guia_ven ?? ''}</a>`)
+                transferenciaGV.push(`<a href="imprimir_salida/${element.id_salida}" target="_blank" title="Abrir Salida">${element.serie_guia_ven ?? ''}-${element.numero_guia_ven ?? ''}</a>`)
             }
         });
 
@@ -184,7 +184,6 @@ function construirModalTrazabilidad(data) {
 
     let htmlDespacho = '';
     if (data.despacho != null) {
-        var id = encode5t(data.despacho.id_salida);
 
         htmlDespacho += `<li class="timeline-item">
         <div class="timeline-badge purple"><i class="glyphicon glyphicon-check"></i></div>
@@ -197,7 +196,7 @@ function construirModalTrazabilidad(data) {
             <strong>Codigo:</strong>
             <p>${data.despacho.codigo ?? ''}</p> 
             <strong>Guía venta:</strong>
-            <p><a href='imprimir_salida/${id}' target="_blank" title="Abrir Salida">${data.despacho.serie ? (data.despacho.serie + '-' + data.despacho.numero) : ''}</a></p> 
+            <p><a href='imprimir_salida/${data.despacho.id_salida}' target="_blank" title="Abrir Salida">${data.despacho.serie ? (data.despacho.serie + '-' + data.despacho.numero) : ''}</a></p> 
             </div>
         </div>
     </li>`;
