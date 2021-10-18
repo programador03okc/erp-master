@@ -3238,9 +3238,7 @@ class RequerimientoController extends Controller
         <html>
             <head>
             <style type="text/css">
-                *{
-                    box-sizing: border-box;
-                }
+    
                 body{
                         background-color: #fff;
                         font-family: "DejaVu Sans";
@@ -3250,10 +3248,14 @@ class RequerimientoController extends Controller
                 }
                 
                 table{
-                width:100%;
+                width:90%;
                 height:auto;
                 border-collapse: collapse;
                 }
+                .tablePDF{
+                width:95%;
+                }
+    
                 .tablePDF thead{
                     padding:4px;
                     background-color:#d04f46;
@@ -3362,16 +3364,16 @@ class RequerimientoController extends Controller
                 <br>';
 
         $html .= '</div>
-                <table width="100%" class="tablePDF" border=0 style="font-size:10px">
+                <table class="tablePDF" border=0 style="font-size:10px">
                 <thead>
                     <tr class="subtitle">
-                        <td width="10%" style="text-align:center;">Centro costo</td>
-                        <td width="10%" style="text-align:center;">Part.No</td>
+                        <td width="12%" style="text-align:center;">Centro costo</td>
+                        <td width="12%" style="text-align:center; overflow:hidden;">Part.No</td>
                         <td width="30%" style="text-align:center;">Descripcion</td>
                         <td width="5%" style="text-align:center;">Und.</td>
                         <td width="5%" style="text-align:center;">Cant.</td>
-                        <td width="6%" style="text-align:center;">Precio ref.</td>
-                        <td width="7%" style="text-align:center;">Subtotal</td>
+                        <td width="8%" style="text-align:center;">Precio ref.</td>
+                        <td width="8%" style="text-align:center;">Subtotal</td>
                     </tr>   
                 </thead>';
         $total = 0;
@@ -3380,13 +3382,13 @@ class RequerimientoController extends Controller
         foreach ($requerimiento['det_req'] as $key => $data) {
 
             $html .= '<tr>';
-            $html .= '<td >' . $data['descripcion_centro_costo'] . '</td>';
-            $html .= '<td >' . ($data['id_tipo_item'] == 1 ? ($data['producto_part_number'] ? $data['producto_part_number'] : $data['part_number']) : '(Servicio)') . ($data['tiene_transformacion'] > 0 ? '<br><span style="display: inline-block; font-size: 8px; background:#ddd; color: #666; border-radius:8px; padding:2px 10px;">Transformado</span>' : '') . '</td>';
-            $html .= '<td >' . ($data['producto_descripcion'] ? $data['producto_descripcion'] : ($data['descripcion'] ? $data['descripcion'] : '')) . '</td>';
-            $html .= '<td style="text-align:center;">' . $data['unidad_medida'] . '</td>';
-            $html .= '<td class="right" style="text-align:center;">' . $data['cantidad'] . '</td>';
-            $html .= '<td class="right" style="text-align:right;">' . $simbolMonedaRequerimiento . number_format($data['precio_unitario'], 2) . '</td>';
-            $html .= '<td class="right" style="text-align:right;">' . $simbolMonedaRequerimiento . number_format($data['cantidad'] * $data['precio_unitario'], 2) . '</td>';
+            $html .= '<td width="10%">' . $data['descripcion_centro_costo'] . '</td>';
+            $html .= '<td width="12%" style="word-wrap: break-word">' . ($data['id_tipo_item'] == 1 ? ($data['producto_part_number'] ? $data['producto_part_number'] : $data['part_number']) : '(Servicio)') . ($data['tiene_transformacion'] > 0 ? '<br><span style="display: inline-block; font-size: 8px; background:#ddd; color: #666; border-radius:8px; padding:2px 10px;">Transformado</span>' : '') . '</td>';
+            $html .= '<td width="30%">' . ($data['producto_descripcion'] ? $data['producto_descripcion'] : ($data['descripcion'] ? $data['descripcion'] : '')) . '</td>';
+            $html .= '<td width="5%" style="text-align:center;">' . $data['unidad_medida'] . '</td>';
+            $html .= '<td width="8%" class="right" style="text-align:center;">' . $data['cantidad'] . '</td>';
+            $html .= '<td width="8%" class="right" style="text-align:right;">' . $simbolMonedaRequerimiento . number_format($data['precio_unitario'], 2) . '</td>';
+            $html .= '<td width="8%" class="right" style="text-align:right;">' . $simbolMonedaRequerimiento . number_format($data['cantidad'] * $data['precio_unitario'], 2) . '</td>';
             $html .= '</tr>';
             $total = $total + ($data['cantidad'] * $data['precio_unitario']);
         }
@@ -3396,8 +3398,7 @@ class RequerimientoController extends Controller
                 <td class="right">' . $simbolMonedaRequerimiento . number_format($total, 2) . '</td>
             </tr>
             </table>
-                <br/>
-                <br/>
+               
                 <footer>
                     <p style="font-size:9px; " class="pie_de_pagina">Generado por: ' . ucwords(strtolower($requerimiento['requerimiento'][0]['persona'])) .  '<br>'
                     .'Fecha registro: '.$requerimiento['requerimiento'][0]['fecha_registro'].'<br>'
