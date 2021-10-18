@@ -10,12 +10,12 @@ $(function(){
     $('[name=documento] option').each(function(){
         $(this).prop("selected",true);
     });
-    console.log($('[name=todos_documentos]').prop('checked'));
+    // console.log($('[name=todos_documentos]').prop('checked'));
     $('[name=todas_condiciones]').prop('checked', true);
     $('[name=condicion] option').each(function(){
         $(this).prop("selected",true);
     });
-    console.log($('[name=todas_condiciones]').prop('checked'));
+    // console.log($('[name=todas_condiciones]').prop('checked'));
 
     $('#modal-filtros').on("change", "select.handleChangeFiltroEmpresa", (e) => {
         handleChangeFiltroEmpresa(e);

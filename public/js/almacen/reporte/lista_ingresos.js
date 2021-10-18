@@ -340,7 +340,7 @@ function search(){
     tabla.column(1).search(valor,true,false).draw();
 }
 function botones(tbody, tabla){
-    console.log("change");
+    // console.log("change");
     $(tbody).on("change","select", function(){
         var data = tabla.row($(this).parents("tr")).data();
         var revisado = $(this).val();
