@@ -347,6 +347,11 @@ $("#form-mapeoItemsRequerimiento").on("submit", function (e) {
                             objBtnMapeo.closest("tr").querySelector("input[type='checkbox']").dataset.mapeosPendientes = cantidadPorMapear;
                             objBtnMapeo.closest("tr").querySelector("input[type='checkbox']").dataset.mapeados = response.cantidad_items_mapeados;
 
+                            if(response.estado_requerimiento!=null && response.estado_requerimiento.hasOwnProperty('descripcion')){
+                                objBtnMapeo.closest("tr").querySelector("span[class~='estadoRequerimiento']").textContent = response.estado_requerimiento.descripcion;
+
+                            }
+
                         }
 
                     }
