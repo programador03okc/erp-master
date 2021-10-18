@@ -289,8 +289,8 @@ function listarDespachosEntregados(permiso) {
 // });
 
 function abrir_salida(id_mov_alm) {
-    var id = encode5t(id_mov_alm);
-    window.open('imprimir_salida/' + id);
+    // var id = encode5t(id_mov_alm);
+    window.open('imprimir_salida/' + id_mov_alm);
 }
 
 $('#despachosEntregados tbody').on("click", "button.anular", function () {

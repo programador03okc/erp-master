@@ -1231,7 +1231,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('anular_salida', 'Almacen\Movimiento\SalidasPendientesController@anular_salida');
 				Route::post('cambio_serie_numero', 'Almacen\Movimiento\SalidasPendientesController@cambio_serie_numero');
 				Route::get('verDetalleDespacho/{id}/{tra}', 'Almacen\Movimiento\SalidasPendientesController@verDetalleDespacho');
-				Route::get('imprimir_salida/{id}', 'Almacen\Movimiento\SalidasPendientesController@imprimir_salida');
+				Route::get('imprimir_salida/{id}', 'Almacen\Movimiento\SalidaPdfController@imprimir_salida');
 				// Route::get('anular_orden_despacho/{id}', 'Almacen\Movimiento\SalidasPendientesController@anular_orden_despacho');
 				Route::get('listarSeriesGuiaVen/{id}/{alm}', 'Almacen\Movimiento\SalidasPendientesController@listarSeriesGuiaVen');
 				Route::get('verDetalleRequerimientoDI/{id}', 'Logistica\Distribucion\OrdenesTransformacionController@verDetalleRequerimientoDI');
