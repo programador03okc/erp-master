@@ -986,6 +986,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('enviarFacturacion', 'Logistica\Distribucion\OrdenesDespachoExternoController@enviarFacturacion');
 
 				Route::get('mostrarDocumentosByRequerimiento/{id}', 'Logistica\Requerimientos\TrazabilidadRequerimientoController@mostrarDocumentosByRequerimiento');
+				Route::get('imprimir_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@imprimir_transformacion');
 				Route::get('imprimir_transferencia/{id}', 'Almacen\Movimiento\TransferenciaController@imprimir_transferencia');
 				Route::get('imprimir_ingreso/{id}', 'Almacen\Movimiento\IngresoPdfController@imprimir_ingreso');
 				Route::get('imprimir_salida/{id}', 'Almacen\Movimiento\SalidaPdfController@imprimir_salida');
