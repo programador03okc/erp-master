@@ -320,8 +320,8 @@ $("#listaIngresosAlmacen tbody").on("click", "a.verIngreso", function (e) {
     $(e.preventDefault());
     var id_mov_alm = $(this).data("id");
     if (id_mov_alm !== "") {
-        var id = encode5t(id_mov_alm);
-        window.open("imprimir_ingreso/" + id);
+        // var id = encode5t(id_mov_alm);
+        window.open("imprimir_ingreso/" + id_mov_alm);
     }
 });
 

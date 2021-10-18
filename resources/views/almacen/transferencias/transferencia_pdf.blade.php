@@ -102,17 +102,24 @@
         </tr>
     </table>
     <h4 style="text-align: center;
-        background-color: #acf2bf;
+        
         padding-top: 5px;
         padding-bottom: 5px;
         font-size: 22px;margin:0px; padding:0px;">Transferencia entre Almacenes</h4>
-    <h4 class="text-center" style="margin:0px; padding:0px;">{{$transferencia->codigo}}</h4>
+    <h4 class="text-center" style="margin:0px; padding:0px;">Tipo: {{$transferencia->razon_social_origen==$transferencia->razon_social_destino?'Transferencia':'Venta Interna'}}</h4>
+    <h5 class="text-center" style="margin:0px; padding:0px;">{{$transferencia->codigo}}</h5>
 
     <div class="seccion-hoja">
         <h4 style="font-size: 14px;">Datos Generales</h4>
     </div>
     <table>
         <thead>
+            <tr>
+                <th style="width: 25%" class="text-right">Empresa Origen:</th>
+                <td style="width: 35%">{{$transferencia->razon_social_origen}}</td>
+                <th style="width: 25%" class="text-right">Empresa Destino:</th>
+                <td style="width: 35%">{{$transferencia->razon_social_destino}}</td>
+            </tr>
             <tr>
                 <th style="width: 25%" class="text-right">Almacén Origen:</th>
                 <td style="width: 35%">{{$transferencia->almacen_origen}}</td>
@@ -136,6 +143,10 @@
                 <td style="width: 35%">{{$transferencia->fecha_transferencia}}</td>
                 <th style="width: 25%" class="text-right">Requerimiento:</th>
                 <td style="width: 35%">{{$transferencia->codigo_req}}</td>
+            </tr>
+            <tr>
+                <th style="width: 25%" class="text-right">Concepto Requerimiento:</th>
+                <td style="width: 55%" colspan="3">{{$transferencia->concepto_req}}</td>
             </tr>
             {{-- <tr>
                 <th style="width: 15%" class="text-right">Fecha de Transferencia:</th>

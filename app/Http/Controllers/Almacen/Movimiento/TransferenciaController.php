@@ -1890,9 +1890,12 @@ class TransferenciaController extends Controller
             ->select(
                 'trans.*',
                 'alm_req.codigo as codigo_req',
+                'alm_req.concepto as concepto_req',
                 'almacen_origen.descripcion as almacen_origen',
                 'almacen_destino.descripcion as almacen_destino',
-                'adm_empresa.logo_empresa',
+                'empresa_origen.logo_empresa',
+                'contribuyente_origen.razon_social as razon_social_origen',
+                'contribuyente_destino.razon_social as razon_social_destino',
                 'usuario_origen.nombre_corto as responsable_origen',
                 'usuario_destino.nombre_corto as responsable_destino',
                 'usuario_registro.nombre_corto as registrado_por',
@@ -1902,8 +1905,12 @@ class TransferenciaController extends Controller
             ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'trans.id_requerimiento')
             ->join('almacen.alm_almacen as almacen_origen', 'almacen_origen.id_almacen', '=', 'trans.id_almacen_origen')
             ->join('almacen.alm_almacen as almacen_destino', 'almacen_destino.id_almacen', '=', 'trans.id_almacen_destino')
-            ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'almacen_origen.id_sede')
-            ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
+            ->join('administracion.sis_sede as sede_origen', 'sede_origen.id_sede', '=', 'almacen_origen.id_sede')
+            ->join('administracion.adm_empresa as empresa_origen', 'empresa_origen.id_empresa', '=', 'sede_origen.id_empresa')
+            ->join('contabilidad.adm_contri as contribuyente_origen', 'contribuyente_origen.id_contribuyente', '=', 'empresa_origen.id_contribuyente')
+            ->join('administracion.sis_sede as sede_destino', 'sede_destino.id_sede', '=', 'almacen_destino.id_sede')
+            ->join('administracion.adm_empresa as empresa_destino', 'empresa_destino.id_empresa', '=', 'sede_destino.id_empresa')
+            ->join('contabilidad.adm_contri as contribuyente_destino', 'contribuyente_destino.id_contribuyente', '=', 'empresa_destino.id_contribuyente')
             ->join('configuracion.sis_usua as usuario_origen', 'usuario_origen.id_usuario', '=', 'trans.responsable_origen')
             ->join('configuracion.sis_usua as usuario_destino', 'usuario_destino.id_usuario', '=', 'trans.responsable_destino')
             ->join('configuracion.sis_usua as usuario_registro', 'usuario_registro.id_usuario', '=', 'trans.registrado_por')

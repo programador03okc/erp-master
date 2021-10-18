@@ -1181,7 +1181,7 @@ Route::group(['middleware' => ['auth']], function () {
 				// Route::post('guardar_guia_transferencia', 'Almacen\Movimiento\OrdenesPendientesController@guardar_guia_transferencia');
 				Route::post('anular_ingreso', 'Almacen\Movimiento\OrdenesPendientesController@anular_ingreso');
 				Route::get('cargar_almacenes/{id}', 'Almacen\Ubicacion\AlmacenController@cargar_almacenes');
-				Route::get('imprimir_ingreso/{id}', 'Almacen\Movimiento\OrdenesPendientesController@imprimir_ingreso');
+				Route::get('imprimir_ingreso/{id}', 'Almacen\Movimiento\IngresoPdfController@imprimir_ingreso');
 
 				Route::post('detalleOrdenesSeleccionadas', 'Almacen\Movimiento\OrdenesPendientesController@detalleOrdenesSeleccionadas');
 				Route::get('detalleMovimiento/{id}', 'Almacen\Movimiento\OrdenesPendientesController@detalleMovimiento');
@@ -1352,7 +1352,6 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('listar_transportistas_com', 'AlmacenController@listar_transportistas_com');
 				Route::get('listar_transportistas_ven', 'AlmacenController@listar_transportistas_ven');
 				Route::get('listar-sedes-por-empresa/{id?}', 'Logistica\RequerimientoController@listarSedesPorEmpresa')->name('listar-sedes-por-empresa');
-
 			});
 
 			Route::group(['as' => 'lista-salidas.', 'prefix' => 'lista-salidas'], function () {
