@@ -27,4 +27,15 @@ class Almacen extends Model
         return $data;
     }
 
+    public function tipo_almacen(){
+        return $this->hasOne('App\Models\Almacen\TipoAlmacen','id_tipo_almacen','id_tipo_almacen');
+    }
+
+    public function sede(){
+        return $this->hasOne('App\Models\Administracion\Sede','id_sede','id_sede');
+    }
+
+    public function estado(){
+        return $this->hasone('App\Models\Administracion\Estado','id_estado_doc','estado');
+    }
 }

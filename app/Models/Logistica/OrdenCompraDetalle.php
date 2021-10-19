@@ -12,6 +12,9 @@ class OrdenCompraDetalle extends Model
     public $timestamps = false;
 
 
+    public function orden(){
+        return $this->hasOne('App\Models\Logistica\Orden','id_orden_compra','id_orden_compra');
+    }
     public function reserva(){
         return $this->hasMany('App\Models\Almacen\Reserva','id_detalle_requerimiento','id_detalle_requerimiento');
     }

@@ -1348,12 +1348,14 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('listar_ingresos/{empresa}/{sede}/{alm}/{cond}/{fini}/{ffin}/{prov}/{usu}/{mon}/{tra}', 'AlmacenController@listar_ingresos_lista');
 				Route::get('listar-ingresos-excel/{empresa}/{sede}/{alm}/{cond}/{fini}/{ffin}/{prov}/{usu}/{mon}/{tra}', 'AlmacenController@ExportarExcelListaIngresos');
 				Route::get('update_revisado/{id}/{rev}/{obs}', 'AlmacenController@update_revisado');
-
+				
 				Route::get('select_almacenes_empresa/{id}', 'AlmacenController@select_almacenes_empresa');
 				Route::get('mostrar_proveedores', 'LogisticaController@mostrar_proveedores');
 				Route::get('listar_transportistas_com', 'AlmacenController@listar_transportistas_com');
 				Route::get('listar_transportistas_ven', 'AlmacenController@listar_transportistas_ven');
 				Route::get('listar-sedes-por-empresa/{id?}', 'Logistica\RequerimientoController@listarSedesPorEmpresa')->name('listar-sedes-por-empresa');
+				// reportes
+				Route::get('listar-ingresos', 'Almacen\Reporte\ListaIngresosController@listarIngresos');
 			});
 
 			Route::group(['as' => 'lista-salidas.', 'prefix' => 'lista-salidas'], function () {
