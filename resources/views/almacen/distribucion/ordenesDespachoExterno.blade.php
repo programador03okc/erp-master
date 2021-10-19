@@ -2,7 +2,7 @@
 @include('layout.menu_logistica')
 
 @section('cabecera')
-Gestión de Despachos
+Gestión de Despacho Externo
 @endsection
 
 @section('estilos')
