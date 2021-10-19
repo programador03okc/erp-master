@@ -25,6 +25,8 @@
                     <li><a href="{{route('logistica.gestion-logistica.compras.ordenes.listado.index')}}"><i class="far fa-circle fa-xs"></i> Gestión de estados</a></li>
                 @endif
             @endif
+            <li><a href="{{route('logistica.distribucion.ordenes-transformacion.index')}}"><i class="far fa-circle fa-xs"></i> Envío de transformaciones </a></li>
+
             @if(Auth::user()->tieneSubModulo(28))
             <li class="treeview">
                 <a href="#"><i class="fas fa-people-carry"></i> Servicios
@@ -99,8 +101,8 @@
             </span>
         </a>
         <ul class="treeview-menu">
-            <li><a href="{{route('logistica.distribucion.ordenes-transformacion.index')}}"><i class="far fa-circle fa-xs"></i> Orden de Transformación </a></li>
-            <li><a href="{{route('logistica.distribucion.ordenes-despacho-externo.index')}}"><i class="far fa-circle fa-xs"></i> Gestión de Despachos </a></li>
+            <li><a href="{{route('logistica.distribucion.ordenes-transformacion.index')}}"><i class="far fa-circle fa-xs"></i> Despacho Interno </a></li>
+            <li><a href="{{route('logistica.distribucion.ordenes-despacho-externo.index')}}"><i class="far fa-circle fa-xs"></i> Despacho Externo </a></li>
             @if(Auth::user()->tieneAplicacion(80))
             <li><a href="{{route('logistica.distribucion.despachos.index')}}"><i class="far fa-circle fa-xs"></i> Panel de Control </a></li>
             @endif

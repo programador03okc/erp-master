@@ -113,8 +113,8 @@ function listar_transformados(id_transformacion) {
                         <td>${element.descripcion}</td>
                         <td class="text-right">${element.cantidad}</td>
                         <td>${element.abreviatura}</td>
-                        <td class="text-right">${element.valor_unitario}</td>
-                        <td class="text-right">${element.valor_total}</td>
+                        <td class="text-right">${formatNumber.decimal(element.valor_unitario, '', -2)}</td>
+                        <td class="text-right">${formatNumber.decimal(element.valor_total, '', -2)}</td>
                     </tr>`;
                 });
                 $('#listaProductoTransformado tbody').html(html);
