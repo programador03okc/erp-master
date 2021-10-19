@@ -50,12 +50,12 @@ function mostrar_transformacion(id) {
             // $('[name=serie]').val(response.serie);
             // $('[name=numero]').val(response.numero);
             $('#almacen_descripcion').text(response.almacen_descripcion);
-            $('[name=total_materias]').val(response.total_materias);
-            $('[name=total_directos]').val(response.total_directos);
-            $('[name=costo_primo]').val(response.costo_primo);
-            $('[name=total_indirectos]').val(response.total_indirectos);
-            $('[name=total_sobrantes]').val(response.total_sobrantes);
-            $('[name=costo_transformacion]').val(response.costo_transformacion);
+            $('[name=total_materias]').val(formatNumber.decimal(response.total_materias, '', -2));
+            $('[name=total_directos]').val(formatNumber.decimal(response.total_directos, '', -2));
+            $('[name=costo_primo]').val(formatNumber.decimal(response.costo_primo, '', -2));
+            $('[name=total_indirectos]').val(formatNumber.decimal(response.total_indirectos, '', -2));
+            $('[name=total_sobrantes]').val(formatNumber.decimal(response.total_sobrantes, '', -2));
+            $('[name=costo_transformacion]').val(formatNumber.decimal(response.costo_transformacion, '', -2));
             // $('[name=cod_estado]').val(response.estado);
             $('#codigo').text(response.codigo);
             $('#codigo_od').text(response.cod_od);
@@ -321,9 +321,8 @@ function actualizaTotales() {
     var total_indirectos = parseFloat($('[name=total_indirectos]').text());
     var total_sobrantes = parseFloat($('[name=total_sobrantes]').text());
     console.log('actualiza');
-    $('[name=costo_primo]').text(formatDecimalDigitos((total_materias + total_directos), 2));
-    $('[name=costo_transformacion]').text(formatDecimalDigitos((total_materias + total_directos + total_indirectos - total_sobrantes), 2));
-
+    $('[name=costo_primo]').text(formatNumber.decimal((total_materias + total_directos), '', -2));
+    $('[name=costo_transformacion]').text(formatNumber.decimal((total_materias + total_directos + total_indirectos - total_sobrantes), '', -2));
 }
 
 function imprimirTransformacion() {

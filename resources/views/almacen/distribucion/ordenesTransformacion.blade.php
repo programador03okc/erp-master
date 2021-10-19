@@ -2,7 +2,7 @@
 @include('layout.menu_logistica')
 
 @section('cabecera')
-Requerimientos pendientes de Transformación
+Envío de Transformaciones
 @endsection
 
 @section('breadcrumb')

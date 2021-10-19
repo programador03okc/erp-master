@@ -121,8 +121,8 @@ function listar_materias(id_transformacion) {
                     <td>${element.descripcion !== null ? element.descripcion : ''}</td>
                     <td class="text-right">${element.cantidad}</td>
                     <td>${element.abreviatura !== null ? element.abreviatura : ''}</td>
-                    <td class="text-right">${element.valor_unitario}</td>
-                    <td class="text-right">${element.valor_total}</td>
+                    <td class="text-right">${formatNumber.decimal(element.valor_unitario, '', -2)}</td>
+                    <td class="text-right">${formatNumber.decimal(element.valor_total, '', -2)}</td>
                     <td style="padding:0px;">
                         ${html_series}
                     </td>
