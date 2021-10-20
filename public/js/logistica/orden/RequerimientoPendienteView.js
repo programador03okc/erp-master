@@ -1183,11 +1183,11 @@ class RequerimientoPendienteView {
                 document.getElementsByName("cantidadReserva")[0].closest('div').classList.remove('has-error');
 
                 const idProducto = document.querySelector("div[id='modal-nueva-reserva'] input[name='idProducto']").value;
-                const cantidadReserva = document.querySelector("div[id='modal-nueva-reserva'] input[name='cantidadReserva']").value > 0 ? document.querySelector("div[id='modal-nueva-reserva'] input[name='cantidadReserva']").value : 0;
+                // const cantidadReserva = document.querySelector("div[id='modal-nueva-reserva'] input[name='cantidadReserva']").value > 0 ? document.querySelector("div[id='modal-nueva-reserva'] input[name='cantidadReserva']").value : 0;
                 $.ajax({
                     type: 'POST',
                     url: 'obtener-stock-almacen',
-                    data: { 'idAlmacen': obj.value, 'idProducto': idProducto, 'cantidadReserva': cantidadReserva },
+                    data: { 'idAlmacen': obj.value, 'idProducto': idProducto },
                     dataType: 'JSON',
                     success: (response) => {
     
@@ -1195,8 +1195,9 @@ class RequerimientoPendienteView {
                         Swal.fire({
                             title: 'Información de Stock',
                             html: `
-                                <h5 style="font-weight: bold; color:#356ed5;">Stock: ${response.stock} </h5>
-                                <h5 style="font-weight: bold; color:#d535c1;">Saldo: ${response.saldo} </h5>
+                                <h5 style="font-weight: bold; color:#356ed5;">Stock total en almacén: ${response.stock} </h5>
+                                <h5 style="font-weight: bold; color:#d535c1;">Reservas activas: ${response.reservas} </h5>
+                                <h5 style="font-weight: bold; color:#d535c1;">Saldo disponible: ${response.saldo} </h5>
                             `,
                             showDenyButton: false,
                             showCancelButton: false,

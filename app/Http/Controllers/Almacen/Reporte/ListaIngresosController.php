@@ -33,11 +33,11 @@ class ListaIngresosController extends Controller
         // $idMoneda= $request->idMoneda;
 
         $data = Movimiento::with(
-        'movimiento_detalle',
-        'movimiento_detalle.guia_compra_detalle.documento_compra_detalle.documento_compra.proveedor.contribuyente',
-        'movimiento_detalle.guia_compra_detalle.documento_compra_detalle.documento_compra.moneda',
-        'movimiento_detalle.guia_compra_detalle.documento_compra_detalle.documento_compra.condicion_pago',
-        'movimiento_detalle.guia_compra_detalle.orden_detalle.orden',
+        // 'movimiento_detalle',
+        // 'movimiento_detalle.guia_compra_detalle.documento_compra_detalle.documento_compra.proveedor.contribuyente',
+        // 'movimiento_detalle.guia_compra_detalle.documento_compra_detalle.documento_compra.moneda',
+        // 'movimiento_detalle.guia_compra_detalle.documento_compra_detalle.documento_compra.condicion_pago',
+        // 'movimiento_detalle.guia_compra_detalle.orden_detalle.orden',
         'estado',
         'almacen',
         'almacen.tipo_almacen',
@@ -53,7 +53,7 @@ class ListaIngresosController extends Controller
         'operacion',
         'operacion.estado',
         'usuario'
-        )->where('mov_alm.estado','!=',7)
+        )->where([['mov_alm.estado','!=',7],['mov_alm.id_mov_alm','=',112]])
         ->get();
         return $data;
     
