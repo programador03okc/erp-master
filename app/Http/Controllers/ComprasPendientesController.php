@@ -420,18 +420,18 @@ class ComprasPendientesController extends Controller
     function obtenerStockAlmacen(Request $request){
             $stock=0;
             $saldo=0;
-            Debugbar::info($request->idProducto);
-            Debugbar::info($request->idAlmacen);
-            Debugbar::info($request->cantidadReserva);
+
             $productoUbicacion=ProductoUbicacion::where([['id_producto',$request->idProducto],['id_almacen',$request->idAlmacen],['estado',1]])->first();
-            Debugbar::info($productoUbicacion);
-            
-            if(!empty($productoUbicacion)){
-                Debugbar::info($productoUbicacion->stock);
-                $stock= $productoUbicacion->stock;
-                $saldo = floatval($stock) - floatval($request->cantidadReserva);
+            $cantidadReservadas=0;
+            $reservasActivas = Reserva::where([['id_producto',$request->idProducto],['estado',1]])->get();
+            foreach ($reservasActivas as $value) {
+                $cantidadReservadas+=floatval($value->stock_comprometido);
             }
-            return response()->json(['stock'=>$stock,'saldo'=>$saldo]);
+            if(!empty($productoUbicacion)){
+                $stock= $productoUbicacion->stock;
+                $saldo = floatval($stock)  - floatval($cantidadReservadas);
+            }
+            return response()->json(['stock'=>$stock,'saldo'=>$saldo,'reservas'=>$cantidadReservadas]);
 
     }
 

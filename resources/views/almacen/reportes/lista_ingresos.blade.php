@@ -7,6 +7,7 @@ Lista de Ingresos
 
 @section('estilos')
 <link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
+<link rel="stylesheet" href="{{ asset('template/plugins/bootstrap-select/dist/css/bootstrap-select.min.css') }}">
 @endsection
 
 @section('breadcrumb')
@@ -159,7 +160,7 @@ Lista de Ingresos
                                     </div>
                                 </label>
                                 <div class="col-sm-8">
-                                    <select class="form-control input-sm handleUpdateValorFiltro" name="almacen" multiple readOnly>
+                                    <select class="form-control selectpicker input-sm handleUpdateValorFiltro" multiple data-actions-box="true" name="almacen" readOnly>
                                         @foreach ($almacenes as $alm)
                                         <option value="{{$alm->id_almacen}}">{{$alm->descripcion}}</option>
                                         @endforeach
@@ -176,7 +177,7 @@ Lista de Ingresos
                                     </div>
                                 </label>
                                 <div class="col-sm-8">
-                                <select class="form-control input-sm" name="condicion" multiple readOnly>
+                                <select class="form-control selectpicker input-sm" multiple data-actions-box="true" name="condicion" readOnly>
                                     @foreach ($tp_operacion as $alm)
                                     <option value="{{$alm->id_operacion}}">{{$alm->cod_sunat}} - {{$alm->descripcion}}</option>
                                     @endforeach
@@ -274,6 +275,8 @@ Lista de Ingresos
 <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
 <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
 <script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
+<script src="{{ asset('template/plugins/bootstrap-select/dist/js/bootstrap-select.min.js') }}"></script>
+<script src="{{ asset('template/plugins/bootstrap-select/dist/js/i18n/defaults-es_ES.min.js') }}"></script>
 
 <script src="{{ asset('js/almacen/reporte/lista_ingresos.js')}}"></script>
 <script src="{{ asset('js/almacen/reporte/filtros.js')}}"></script>

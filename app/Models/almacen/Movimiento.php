@@ -90,4 +90,26 @@ class Movimiento extends Model
         }
         return implode(', ', $resultado);
     }
+
+    public function almacen(){
+        return $this->hasOne('App\Models\Almacen\Almacen','id_almacen','id_almacen');
+    }
+    public function guia_compra(){
+        return $this->hasOne('App\Models\Almacen\GuiaCompra','id_guia','id_guia_com');
+    }
+    public function operacion(){
+        return $this->hasOne('App\Models\Almacen\TipoOperacion','id_operacion','id_operacion');
+    }
+    public function documento_compra(){
+        return $this->hasOne('App\Models\Almacen\DocumentoCompra','id_doc_com','id_doc_com');
+    }
+    public function usuario(){
+        return $this->hasOne('App\Models\Configuracion\Usuario','id_usuario','id_usuario');
+    }
+    public function estado(){
+        return $this->hasone('App\Models\Administracion\Estado','id_estado_doc','estado');
+    }
+    public function movimiento_detalle(){
+        return $this->hasMany('App\Models\Almacen\MovimientoDetalle','id_mov_alm','id_mov_alm');
+    }
 }
