@@ -640,7 +640,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('listar-saldos-por-almacen', 'AlmacenController@listar_saldos_por_almacen');
 				Route::get('listar-saldos-por-almacen/{id_producto}', 'AlmacenController@listar_saldos_por_almacen_producto');
 				Route::get('obtener-promociones/{id_producto}/{id_almacen}', 'LogisticaController@obtener_promociones');
-				Route::post('migrar_venta_directa', 'MigrateSoftLinkController@migrar_venta_directa');
+				Route::get('migrar_venta_directa/{id}', 'Migraciones\MigrateRequerimientoSoftLinkController@migrar_venta_directa');
 				Route::post('guardar-producto', 'AlmacenController@guardar_producto')->name('guardar-producto');
 
 				Route::get('cuadro-costos/{id_cc?}', 'RequerimientoController@cuadro_costos')->name('cuadro-costos');
@@ -1625,9 +1625,9 @@ Route::group(['middleware' => ['auth']], function () {
 
 	Route::get('listarUsu', 'Almacen\Movimiento\TransferenciaController@listarUsu');
 
-	Route::get('migrar_venta_directa/{id}', 'MigrateSoftLinkController@migrar_venta_directa');
+	Route::get('migrar_venta_directa/{id}', 'Migraciones\MigrateRequerimientoSoftLinkController@migrar_venta_directa');
+	Route::get('migrar_orden_compra/{id}', 'Migraciones\MigrateOrdenSoftLinkController@migrar_orden_compra');
 	Route::get('prue/{id}', 'OrdenesPendientesController@prue');
-	Route::get('prueba', 'MigrateSoftLinkController@prueba');
 	Route::get('anular_presup', 'ProyectosController@anular_presup');
 
 	Route::group(['as' => 'configuracion.', 'prefix' => 'configuracion'], function () {
@@ -1772,7 +1772,9 @@ Route::group(['middleware' => ['auth']], function () {
 	});
 */
 
-	Route::get('pruebaR', 'Almacen\Movimiento\OrdenesPendientesController@pruebaR');
+	Route::get('soft_tipos_cambio', 'Migraciones\MigrateRequerimientoSoftLinkController@soft_tipos_cambio');
+	Route::get('migrar_orden_compra/{id}', 'Migraciones\MigrateOrdenSoftLinkController@migrar_orden_compra');
+	Route::get('validaNegativosHistoricoKardex/{idp}/{ida}/{an}', 'Almacen\Movimiento\ValidaMovimientosController@validaNegativosHistoricoKardex');
 	Route::get('documentos_ver/{id}', 'OrdenesPendientesController@documentos_ver');
 
 	Route::get('transformacion_nextId/{fec}/{id}', 'CustomizacionController@transformacion_nextId');

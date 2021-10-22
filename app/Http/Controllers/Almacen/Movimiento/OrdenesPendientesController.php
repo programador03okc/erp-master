@@ -1212,6 +1212,7 @@ class OrdenesPendientesController extends Controller
             }
         }
     }
+
     public function pruebaR()
     {
         $stock = DB::table('almacen.alm_reserva')
@@ -2289,6 +2290,11 @@ class OrdenesPendientesController extends Controller
         try {
             DB::beginTransaction();
 
+            $ing = DB::table('almacen.guia_com')
+                ->select('guia_com.fecha_almacen', 'guia_com.id_almacen')
+                ->where('id_guia', $request->id_guia_com)
+                ->first();
+
             $id_usuario = Auth::user()->id_usuario;
 
             DB::table('almacen.guia_com')->where('id_guia', $request->id_guia_com)
@@ -2298,7 +2304,6 @@ class OrdenesPendientesController extends Controller
                         'numero' => $request->ingreso_numero,
                         'fecha_emision' => $request->ingreso_fecha_emision,
                         'fecha_almacen' => $request->ingreso_fecha_almacen,
-                        // 'id_almacen' => $request->id_almacen
                     ]
                 );
 
@@ -2312,8 +2317,68 @@ class OrdenesPendientesController extends Controller
                     'fecha_registro' => date('Y-m-d H:i:s')
                 ]
             );
+
+            $productos_en_negativo = '';
+
+            if ($ing->fecha_almacen !== $request->ingreso_fecha_almacen) {
+                DB::table('almacen.mov_alm')
+                    ->where([
+                        ['id_guia_com', '=', $request->id_guia_com],
+                        ['estado', '!=', 7]
+                    ])
+                    ->update(['fecha_emision' => $request->ingreso_fecha_almacen]);
+                // DB::commit();
+
+                //Validacion por cambio de fecha
+                if ($request->ingreso_fecha_almacen > $ing->fecha_almacen) {
+                    $productos = DB::table('almacen.guia_com_det')
+                        ->select('guia_com_det.id_producto', 'alm_prod.descripcion')
+                        ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'guia_com_det.id_producto')
+                        ->where([
+                            ['guia_com_det.id_guia_com', '=', $request->id_guia_com],
+                            ['guia_com_det.estado', '!=', 7]
+                        ])
+                        ->get();
+                    $anio = (new Carbon($request->ingreso_fecha_almacen))->format('Y');
+
+                    foreach ($productos as $prod) {
+                        $alerta_negativo = ValidaMovimientosController::validaNegativosHistoricoKardex(
+                            $prod->id_producto,
+                            $ing->id_almacen,
+                            $anio
+                        );
+
+                        if ($alerta_negativo > 0) {
+                            $productos_en_negativo .= $prod->descripcion . ' Genera ' . $alerta_negativo . ' movimientos negativos.\n';
+                        }
+                    }
+                }
+            } else {
+                // DB::commit();
+            }
+
+            $msj = '';
+            if ($productos_en_negativo !== '') {
+                // DB::beginTransaction();
+
+                DB::table('almacen.mov_alm')
+                    ->where([
+                        ['id_guia_com', '=', $request->id_guia_com],
+                        ['estado', '!=', 7]
+                    ])
+                    ->update(['fecha_emision' => $ing->fecha_almacen]);
+
+                DB::table('almacen.guia_com')->where('id_guia', $request->id_guia_com)
+                    ->update(['fecha_almacen' => $ing->fecha_almacen]);
+
+                // DB::commit();
+                $msj = 'No es posible realizar el cambio de fecha de ingreso porque genera negativos en el histórico del kardex.' . $productos_en_negativo;
+            } else {
+
+                $msj = 'ok';
+            }
             DB::commit();
-            return response()->json('ok');
+            return response()->json($msj);
         } catch (\PDOException $e) {
             DB::rollBack();
             return response()->json('Algo salió mal. Inténtelo nuevamente.');
