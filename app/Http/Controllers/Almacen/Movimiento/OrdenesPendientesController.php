@@ -2295,6 +2295,7 @@ class OrdenesPendientesController extends Controller
                 ->where('id_guia', $request->id_guia_com)
                 ->first();
 
+            $fecha_anterior = $ing->fecha_almacen;
             $id_usuario = Auth::user()->id_usuario;
 
             DB::table('almacen.guia_com')->where('id_guia', $request->id_guia_com)
@@ -2327,7 +2328,6 @@ class OrdenesPendientesController extends Controller
                         ['estado', '!=', 7]
                     ])
                     ->update(['fecha_emision' => $request->ingreso_fecha_almacen]);
-                // DB::commit();
 
                 //Validacion por cambio de fecha
                 if ($request->ingreso_fecha_almacen > $ing->fecha_almacen) {
@@ -2349,12 +2349,10 @@ class OrdenesPendientesController extends Controller
                         );
 
                         if ($alerta_negativo > 0) {
-                            $productos_en_negativo .= $prod->descripcion . ' Genera ' . $alerta_negativo . ' movimientos negativos.\n';
+                            $productos_en_negativo .= $prod->descripcion . ' Genera ' . $alerta_negativo . ' movimiento(s) negativo(s).<br>';
                         }
                     }
                 }
-            } else {
-                // DB::commit();
             }
 
             $msj = '';
@@ -2366,13 +2364,13 @@ class OrdenesPendientesController extends Controller
                         ['id_guia_com', '=', $request->id_guia_com],
                         ['estado', '!=', 7]
                     ])
-                    ->update(['fecha_emision' => $ing->fecha_almacen]);
+                    ->update(['fecha_emision' => $fecha_anterior]);
 
                 DB::table('almacen.guia_com')->where('id_guia', $request->id_guia_com)
-                    ->update(['fecha_almacen' => $ing->fecha_almacen]);
+                    ->update(['fecha_almacen' => $fecha_anterior]);
 
                 // DB::commit();
-                $msj = 'No es posible realizar el cambio de fecha de ingreso porque genera negativos en el histórico del kardex.' . $productos_en_negativo;
+                $msj = 'No es posible realizar el cambio de fecha de ingreso porque genera negativos en el histórico del kardex.<br>' . $productos_en_negativo;
             } else {
 
                 $msj = 'ok';
