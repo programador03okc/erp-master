@@ -859,7 +859,7 @@ class ListaOrdenView {
                 },
                 {
                     render: function (data, type, row) {
-                        return `${row.part_number ? row.part_number : ''}`;
+                        return `${row.part_number ? row.part_number : ''} ${row.tiene_transformacion ==true ?'<i class="fas fa-random text-danger" title="Con transformación"></i>':''}`;
                     }
                 },
                 {
