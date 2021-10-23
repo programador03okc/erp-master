@@ -48,8 +48,6 @@ Lista de Ingresos
                                     <th>Cod.Ing</th>
                                     <th>Fecha Guía</th>
                                     <th>Guía</th>
-                                    <th>Fecha Doc</th>
-                                    <!-- <th>Tp</th> -->
                                     <th>Serie-Número</th>
                                     <th>RUC</th>
                                     <th width="100px">Razon Social</th>
@@ -58,13 +56,10 @@ Lista de Ingresos
                                     <th>Valor Neto</th>
                                     <th>IGV</th>
                                     <th>Total</th>
-                                    <!-- <th>Saldo</th> -->
                                     <th>Condicion</th>
-                                    <!-- <th>Días</th> -->
                                     <th>Operación</th>
-                                    <!-- <th>Fecha Vcmto</th> -->
                                     <th>Responsable</th>
-                                    <!-- <th>T.Cambio</th> -->
+                                    <th>T. Cambio</th>
                                     <th>Almacén</th>
                                     <th>Fecha Registro</th>
                                 </tr>

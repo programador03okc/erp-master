@@ -9,6 +9,8 @@ var id_usuario;
 var moneda;
 var tra;
 
+var  $tablalistaIngresos;
+
 function SetDefaultFiltroEmpresa(){
     empresa=0
 }
@@ -119,7 +121,7 @@ function actualizarLista(option=null){
 
     
     var vardataTables = funcDatatables();
-    var tabla = $('#listaIngresos').DataTable({
+    $tablalistaIngresos = $('#listaIngresos').DataTable({
         'destroy': true,
         'dom': vardataTables[1],
         'buttons': [
@@ -148,138 +150,161 @@ function actualizarLista(option=null){
         ],
         'language' : vardataTables[0],
         // "scrollX": true,
-        'pageLength': 50,
+        // 'pageLength': 50,
+        'serverSide': true,
         'ajax': {
-            url:'listar_ingresos/'+empresa+'/'+sede+'/'+almacenes+'/'+/*documentos+'/'+*/condiciones+'/'+fini+'/'+ffin+'/'+prov+'/'+id_usuario+'/'+moneda+'/'+tra,
-            dataSrc:''
-            // type: 'POST'
+            url:'listar-ingresos',
+            type: 'POST',
+            data:{'idEmpresa':empresa,'idSede':sede,'idAlmacenList':almacenes,'idCondicionList':condiciones,'fechaInicio':fini,'fechaFin':ffin,'idProveedor':prov,'id_usuario':id_usuario,'idMoneda':moneda}
         },
         'columns': [
-            {'data': 'id_mov_alm'},
-            {'data': 'revisado'},
-            {'render': 
-                function(data, type, row){
-                    var html = '<select class="form-control '+
-                        ((row['revisado'] == 0) ? 'btn-danger' : 
-                        ((row['revisado'] == 1) ? 'btn-success' : 'btn-warning'))+
-                        ' " style="font-size:11px;width:85px;padding:3px 4px;" id="revisado">'+
-                            '<option value="0" '+(row['revisado'] == 0 ? 'selected' : '')+'>No Revisado</option>'+
-                            '<option value="1" '+(row['revisado'] == 1 ? 'selected' : '')+'>Revisado</option>'+
-                            '<option value="2" '+(row['revisado'] == 2 ? 'selected' : '')+'>Observado</option>'+
-                        '</select>';
-                    return (html);
-                }
-            },
-            {'data': 'fecha_emision'},
-            {'data': 'codigo'},
-            {'data': 'fecha_guia'},
-            {'data': 'guia'},
-            {'data': 'fecha_doc'},
-            // {'data': 'abreviatura'},
-            {'data': 'documentos'},
-            {'data': 'nro_documento'},
-            {'data': 'razon_social'},
-            {'data': 'ordenes'},
-            {'render': 
-                function(data, type, row){
-                    // if (moneda == 4){
-                    //     return 'S/';
-                    // } else if (moneda == 5){
-                    //     return 'US$';
-                    // } else {
-                        return row['simbolo'];
-                    // }
-                }
-            },
-            {'render': 
-                function(data, type, row){
-                    t = 0;
-                    // if (moneda == 4){//Convertir a Soles
-                    //     if (row['moneda'] == 1){//Soles
-                    //         t = row['total'];
-                    //     } else {
-                    //         t = row['total'] * row['tipo_cambio'];
-                    //     }
-                    // } else if (moneda == 5){//Convertir a Dolares
-                    //     if (row['moneda'] == 2){//Dolares
-                    //         t = row['total'];
-                    //     } else {
-                    //         t = row['total'] / row['tipo_cambio'];
-                    //     }
-                    // } else {
-                        t = row['total'];
-                    // }
-                    return formatDecimal(t);
-                }
-            },
-            {'render': 
-                function(data, type, row){
-                    // t = 0;
-                    // if (moneda == 4){//Convertir a Soles
-                    //     if (row['moneda'] == 1){//Soles
-                    //         t = row['total_igv'];
-                    //     } else {
-                    //         t = row['total_igv'] * row['tipo_cambio'];
-                    //     }
-                    // } else if (moneda == 5){//Convertir a Dolares
-                    //     if (row['moneda'] == 2){//Dolares
-                    //         t = row['total_igv'];
-                    //     } else {
-                    //         t = row['total_igv'] / row['tipo_cambio'];
-                    //     }
-                    // }
-                    return formatDecimal(row['total_igv']);
-                }
-            },
-            {'render': 
-                function(data, type, row){
-                    // t = 0;
-                    // if (moneda == 4){//Convertir a Soles
-                    //     if (row['moneda'] == 1){//Soles
-                    //         t = row['total_a_pagar'];
-                    //     } else {
-                    //         t = row['total_a_pagar'] * row['tipo_cambio'];
-                    //     }
-                    // } else if (moneda == 5){//Convertir a Dolares
-                    //     if (row['moneda'] == 2){//Dolares
-                    //         t = row['total_a_pagar'];
-                    //     } else {
-                    //         t = row['total_a_pagar'] / row['tipo_cambio'];
-                    //     }
-                    // }
-                    return formatDecimal(row['total_a_pagar']);
-                }
-            },
-            // {'render': 
-            //     function(data, type, row){
-            //         return 0;
-            //     }
-            // },
-            {'data': 'des_condicion'},
-            // {'data': 'credito_dias'},
-            {'data': 'des_operacion'},
-            // {'data': 'fecha_vcmto'},
-            {'data': 'nombre_trabajador'},
-            // {'data': 'tipo_cambio'},
-            {'data': 'des_almacen'},
-            {'data': 'fecha_registro'},
+            { 'data': 'id_mov_alm', 'name': 'mov_alm.id_mov_alm', 'className': 'text-center','visible':false, "searchable": false },
+            { 'data': 'revisado', 'name': 'revisado', 'className': 'text-center', "searchable": false },
+            { 'data': 'fecha_emision', 'name': 'mov_alm.fecha_emision', 'className': 'text-center', "searchable": false },
+            { 'data': 'codigo', 'name': 'codigo', 'className': 'text-center' },
+            { 'data': 'guia_compra.fecha_emision', 'name': 'guia_compra.fecha_emision', 'className': 'text-center'},
+            { 'data': 'guia_compra.id_guia', 'name': 'guia_compra.id_guia', 'className': 'text-center',"searchable": false },
+            { 'data': 'comprobantes', 'name': 'comprobantes', 'className': 'text-center', "searchable": false },
+            { 'data': 'guia_compra.proveedor.contribuyente.nro_documento', 'name': 'guia_compra.proveedor.contribuyente.nro_documento', 'className': 'text-center' ,"searchable": false},
+            { 'data': 'guia_compra.proveedor.contribuyente.razon_social', 'name': 'guia_compra.proveedor.contribuyente.razon_social', 'className': 'text-center' , "searchable": false},
+            { 'data': 'ordenes_compra', 'name': 'ordenes_compra', 'className': 'text-center',"searchable": false },
+            { 'data': 'id_mov_alm', 'name': 'id_mov_alm', 'className': 'text-center', "searchable": false }, // moneda
+            { 'data': 'id_mov_alm', 'name': 'id_mov_alm', 'className': 'text-center', "searchable": false }, // total
+            { 'data': 'id_mov_alm', 'name': 'id_mov_alm', 'className': 'text-center', "searchable": false }, // total_igv
+            { 'data': 'id_mov_alm', 'name': 'id_mov_alm', 'className': 'text-center', "searchable": false }, // total_a_pagar
+            { 'data': 'id_mov_alm', 'name': 'id_mov_alm', 'className': 'text-center', "searchable": false }, // des_condicion
+            { 'data': 'operacion.descripcion', 'name': 'operacion.descripcion', 'className': 'text-center' ,"searchable": false}, // des_condicion
+            { 'data': 'usuario.nombre_corto', 'name': 'usuario.nombre_corto', 'className': 'text-center',"searchable": false },
+            {'data': 'movimiento_detalle[0].guia_compra_detalle[0].documento_compra_detalle[0].documento_compra.tipo_cambio','name': 'movimiento_detalle[0].guia_compra_detalle[0].documento_compra_detalle[0].documento_compra.tipo_cambio', 'className': 'text-center', "searchable": false },
+            {'data': 'almacen.descripcion','name': 'almacen.descripcion', 'className': 'text-center' , "searchable": false},
+            { 'data': 'fecha_registro', 'name': 'fecha_registro', 'className': 'text-center', "searchable": false }
         ],
         'columnDefs': [
-            {   'aTargets': [0,1], 
-                'sClass': 'invisible'
+            {
+                'render': function (data, type, row) {
+                    return row['id_mov_alm'];
+                }, targets: 0
             },
-            // {   'render': 
-            //         function (data, type, row) {
-            //             return row.comprobantes;
-            //         }, targets: 9
-            // },
+            {
+                'render': function (data, type, row) {
+                    var html = '<select class="form-control '+
+                    ((row['revisado'] == 0) ? 'btn-danger' : 
+                    ((row['revisado'] == 1) ? 'btn-success' : 'btn-warning'))+
+                    ' " style="font-size:11px;width:85px;padding:3px 4px;" id="revisado">'+
+                        '<option value="0" '+(row['revisado'] == 0 ? 'selected' : '')+'>No Revisado</option>'+
+                        '<option value="1" '+(row['revisado'] == 1 ? 'selected' : '')+'>Revisado</option>'+
+                        '<option value="2" '+(row['revisado'] == 2 ? 'selected' : '')+'>Observado</option>'+
+                    '</select>';
+                return (html);
+                }, targets: 1
+            },
+            {
+                'render': function (data, type, row) {
+                return (row['guia_compra']['serie']+'-'+row['guia_compra']['numero']);
+                }, targets: 5
+            },
+            {
+                'render': function (data, type, row) {
+                    let moneda=''
+                    row.movimiento_detalle.forEach(md => {
+                        if(md.guia_compra_detalle.length >0){
+                            (md.guia_compra_detalle).forEach(element => {
+                                moneda=element.documento_compra_detalle[0].documento_compra.moneda.simbolo;
+                        });
+                    }                        
+                    });
+                return moneda;
+                }, targets: 10
+            },
+            {
+                'render': function (data, type, row) {
+                    let subTotal=0
+                    row.movimiento_detalle.forEach(md => {
+                        if(md.guia_compra_detalle.length >0){
+                            (md.guia_compra_detalle).forEach(element => {
+                            subTotal=$.number(element.documento_compra_detalle[0].documento_compra.sub_total,2);
+                        });
+                    }                        
+                    });
+                return subTotal;
+                }, targets: 11
+            },
+            {
+                'render': function (data, type, row) {
+                    let totalIGV=0
+                    row.movimiento_detalle.forEach(md => {
+                        if(md.guia_compra_detalle.length >0){
+                            (md.guia_compra_detalle).forEach(element => {
+                            totalIGV=$.number(element.documento_compra_detalle[0].documento_compra.total_igv,2);
+
+                        });
+                    }
+                        
+                    });
+                return totalIGV;
+                }, targets: 12
+            },
+            {
+                'render': function (data, type, row) {
+                    let totalAPagar=0
+                    row.movimiento_detalle.forEach(md => {
+                        if(md.guia_compra_detalle.length >0){
+                            (md.guia_compra_detalle).forEach(element => {
+                                totalAPagar=$.number(element.documento_compra_detalle[0].documento_compra.total_a_pagar,2);
+                        });
+                    }
+                        
+                    });
+                return totalAPagar;
+                }, targets: 13
+            },
+            {
+                'render': function (data, type, row) {
+                    let condicionPago=0
+                    row.movimiento_detalle.forEach(md => {
+                        if(md.guia_compra_detalle.length >0){
+                            (md.guia_compra_detalle).forEach(element => {
+                                condicionPago=element.documento_compra_detalle[0].documento_compra.condicion_pago.descripcion;
+                        });
+                    }                        
+                    });
+                return condicionPago;
+                }, targets: 14
+            },
+            {
+                'render': function (data, type, row) {
+                    let tipoCambio=0
+                    row.movimiento_detalle.forEach(md => {
+                        if(md.guia_compra_detalle.length >0){
+                            (md.guia_compra_detalle).forEach(element => {
+                                tipoCambio=$.number(element.documento_compra_detalle[0].documento_compra.tipo_cambio,2);
+                        });
+                    }                        
+                    });
+                return tipoCambio;
+                }, targets: 17
+            },
+ 
         ],
         'initComplete': function () {
             updateContadorFiltro();
+
+            const $filter = $('#listaIngresos_filter');
+            const $input = $filter.find('input');
+            $filter.append('<button id="btnBuscar" class="btn btn-default btn-sm pull-right" type="button"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>');
+            $input.off();
+            $input.on('keyup', (e) => {
+                if (e.key == 'Enter') {
+                    $('#btnBuscar').trigger('click');
+                }
+            });
+            $('#btnBuscar').on('click', (e) => {
+                $tablalistaIngresos.search($input.val()).draw();
+            })
         },
         "order": [[2, "asc"],[5, "asc"]]
     });
-    botones('#listaIngresos tbody',tabla);
+    botones('#listaIngresos tbody',$tablalistaIngresos);
     vista_extendida();
     // $('[name=no_revisado]').change(function(){
     //     if($(this).prop('checked') == true) {

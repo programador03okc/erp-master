@@ -140,6 +140,13 @@ function estadoCheckFiltroOrdenesCompra(e){
                 modalFiltro.querySelector("input[name='razon_social']").setAttribute("readOnly", true)
             }
             break;
+        case 'chkCliente':
+            if (e.currentTarget.checked == true) {
+                modalFiltro.querySelector("input[name='cliente_razon_social']").removeAttribute("readOnly")
+            } else {
+                modalFiltro.querySelector("input[name='cliente_razon_social']").setAttribute("readOnly", true)
+            }
+            break;
         case 'chkFechaRegistro':
             if (e.currentTarget.checked == true) {
                 modalFiltro.querySelector("input[name='fecha_inicio']").removeAttribute("readOnly")
@@ -163,7 +170,6 @@ function estadoCheckFiltroOrdenesCompra(e){
 
 
 function open_filtros(){
-    console.log('open_filtros');
     $('#modal-filtros').modal({
         show:true
     });
