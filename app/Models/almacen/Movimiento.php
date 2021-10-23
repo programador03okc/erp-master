@@ -97,14 +97,20 @@ class Movimiento extends Model
     public function guia_compra(){
         return $this->hasOne('App\Models\Almacen\GuiaCompra','id_guia','id_guia_com');
     }
+    public function guia_venta(){
+        return $this->hasOne('App\Models\Almacen\GuiaVenta','id_guia_ven','id_guia_ven');
+    }
     public function operacion(){
         return $this->hasOne('App\Models\Almacen\TipoOperacion','id_operacion','id_operacion');
     }
     public function documento_compra(){
         return $this->hasOne('App\Models\Almacen\DocumentoCompra','id_doc_com','id_doc_com');
     }
+    public function documento_venta(){
+        return $this->hasOne('App\Models\Almacen\DocumentoVenta','id_doc_ven','id_doc_ven');
+    }
     public function usuario(){
-        return $this->hasOne('App\Models\Configuracion\Usuario','id_usuario','id_usuario');
+        return $this->hasOne('App\Models\Configuracion\Usuario','id_usuario','usuario');
     }
     public function estado(){
         return $this->hasone('App\Models\Administracion\Estado','id_estado_doc','estado');

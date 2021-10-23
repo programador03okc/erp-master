@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ReporteIngresosExcel;
-
+use App\Exports\ReporteSalidasExcel;
 use Exception;
 
 date_default_timezone_set('America/Lima');
@@ -4910,6 +4910,7 @@ class AlmacenController extends Controller
         return Excel::download(new ReporteIngresosExcel($idEmpresa,$idSede, $almacenes, $condiciones, $fecha_inicio, $fecha_fin, $id_proveedor, $id_usuario, $moneda, $transportista), 'lista_ingresos.xlsx');
 
     }
+
     
     public function listar_ingresos_lista($idEmpresa,$idSede, $almacenes, $condiciones, $fecha_inicio, $fecha_fin, $id_proveedor, $id_usuario, $idMoneda, /*$referenciado,*/ $transportista)
     {
@@ -5104,6 +5105,13 @@ class AlmacenController extends Controller
         return response()->json($nueva_data);
         // return response()->json(['docs'=>$docs,'alm'=>$alm,'oc'=>$oc]);
     }
+
+
+    public function ExportarExcelListaSalidas($idEmpresa,$idSede, $almacenes, $condiciones, $fecha_inicio, $fecha_fin, $id_proveedor, $id_usuario, $moneda){
+        return Excel::download(new ReporteSalidasExcel($idEmpresa,$idSede, $almacenes, $condiciones, $fecha_inicio, $fecha_fin, $id_proveedor, $id_usuario, $moneda), 'lista_salidas.xlsx');
+
+    }
+
     public function listar_salidas($almacenes, $documentos, $condiciones, $fecha_inicio, $fecha_fin, $id_cliente, $id_usuario, $moneda, $referenciado)
     {
         $alm_array = explode(',', $almacenes);
