@@ -375,40 +375,16 @@ class TransformacionController extends Controller
                 'alm_prod.part_number',
                 'alm_und_medida.abreviatura',
                 'alm_prod.series',
-                // 'orden_despacho_det.part_number_transformado',
-                // 'orden_despacho_det.descripcion_transformado',
-                // 'orden_despacho_det.comentario_transformado',
-                // 'orden_despacho_det.cantidad_transformado',
-                // 'guia_oc.id_guia_com_det as id_guia_oc_det',
-                // 'guia_trans.id_guia_ven_det as id_guia_trans_det',
                 'transformacion.id_almacen',
-                // 'goc.id_almacen as id_almacen_oc',
-                // 'gtr.id_almacen as id_almacen_tr'
+                'alm_det_req.part_number as part_number_req',
+                'alm_det_req.descripcion as descripcion_req',
             )
 
-            ->leftjoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'transfor_materia.id_producto')
-            ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
-            ->leftjoin('almacen.orden_despacho_det', 'orden_despacho_det.id_od_detalle', '=', 'transfor_materia.id_od_detalle')
+            ->join('almacen.orden_despacho_det', 'orden_despacho_det.id_od_detalle', '=', 'transfor_materia.id_od_detalle')
+            ->join('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'orden_despacho_det.id_detalle_requerimiento')
+            ->leftjoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_det_req.id_producto')
+            ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_det_req.id_unidad_medida')
             ->leftjoin('almacen.transformacion', 'transformacion.id_transformacion', '=', 'transfor_materia.id_transformacion')
-            // ->leftJoin('logistica.log_det_ord_compra', function ($join) {
-            //     $join->on('log_det_ord_compra.id_detalle_requerimiento', '=', 'orden_despacho_det.id_detalle_requerimiento');
-            //     $join->where('log_det_ord_compra.estado', '!=', 7);
-            // })
-            // ->leftJoin('almacen.guia_com_det as guia_oc', function ($join) {
-            //     $join->on('guia_oc.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden');
-            //     $join->where('guia_oc.estado', '!=', 7);
-            // })
-            // ->leftjoin('almacen.guia_com as goc', 'goc.id_guia', '=', 'guia_oc.id_guia_com')
-            // ->leftjoin('almacen.trans_detalle', 'trans_detalle.id_requerimiento_detalle', '=', 'orden_despacho_det.id_detalle_requerimiento')
-            // ->leftJoin('almacen.guia_ven_det', function ($join) {
-            //     $join->on('guia_ven_det.id_trans_det', '=', 'trans_detalle.id_trans_detalle');
-            //     $join->where('guia_ven_det.estado', '!=', 7);
-            // })
-            // ->leftJoin('almacen.guia_com_det as guia_trans', function ($join) {
-            //     $join->on('guia_trans.id_guia_ven_det', '=', 'guia_ven_det.id_guia_ven_det');
-            //     $join->where('guia_trans.estado', '!=', 7);
-            // })
-            // ->leftjoin('almacen.guia_com as gtr', 'gtr.id_guia', '=', 'guia_trans.id_guia_com')
             ->where([
                 ['transfor_materia.id_transformacion', '=', $id_transformacion],
                 ['transfor_materia.estado', '!=', 7]
@@ -486,7 +462,9 @@ class TransformacionController extends Controller
                 'id_producto' => $det->id_producto,
                 'codigo' => $det->codigo,
                 'part_number' => $det->part_number,
+                'part_number_req' => $det->part_number_req,
                 'descripcion' => $det->descripcion,
+                'descripcion_req' => $det->descripcion_req,
                 'cantidad' => $det->cantidad,
                 'abreviatura' => $det->abreviatura,
                 'valor_unitario' => $det->valor_unitario,
@@ -721,10 +699,14 @@ class TransformacionController extends Controller
                 'alm_prod.descripcion',
                 'alm_prod.part_number',
                 'alm_und_medida.abreviatura',
-                'alm_prod.series'
+                'alm_prod.series',
+                'alm_det_req.part_number as part_number_req',
+                'alm_det_req.descripcion as descripcion_req',
             )
-            ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'transfor_transformado.id_producto')
-            ->join('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
+            ->join('almacen.orden_despacho_det', 'orden_despacho_det.id_od_detalle', '=', 'transfor_transformado.id_od_detalle')
+            ->join('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'orden_despacho_det.id_detalle_requerimiento')
+            ->leftjoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_det_req.id_producto')
+            ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_det_req.id_unidad_medida')
             ->where([
                 ['transfor_transformado.id_transformacion', '=', $id_transformacion],
                 ['transfor_transformado.estado', '=', 1]

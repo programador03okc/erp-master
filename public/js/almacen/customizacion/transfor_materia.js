@@ -104,7 +104,7 @@ function listar_materias(id_transformacion) {
             var html_series = '';
             var suma_materias = 0;
             // var est = $('[name=id_estado]').val();
-
+            console.log(response);
             response.forEach(element => {
                 html_series = '';
                 element.series.forEach(ser => {
@@ -117,8 +117,8 @@ function listar_materias(id_transformacion) {
                 suma_materias += parseFloat(element.valor_total);
                 html += `<tr id="${element.id_materia}">
                     <td class="text-center">${element.codigo !== null ? element.codigo : ''}</td>
-                    <td class="text-center">${element.part_number !== null ? element.part_number : ''}</td>
-                    <td>${element.descripcion !== null ? element.descripcion : ''}</td>
+                    <td class="text-center">${element.part_number !== null ? element.part_number : (element.part_number_req !== undefined ? element.part_number_req : '')}</td>
+                    <td>${element.descripcion !== null ? element.descripcion : (element.descripcion_req !== undefined ? element.descripcion_req : '')}</td>
                     <td class="text-right">${element.cantidad}</td>
                     <td>${element.abreviatura !== null ? element.abreviatura : ''}</td>
                     <td class="text-right">${formatNumber.decimal(element.valor_unitario, '', -2)}</td>

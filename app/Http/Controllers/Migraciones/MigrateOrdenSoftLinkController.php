@@ -75,7 +75,7 @@ class MigrateOrdenSoftLinkController extends Controller
                     }
                 }
                 $count = DB::connection('soft')->table('movimien')->count();
-                $mov_id = $this->leftZero(10, (intval($count) + 1));
+                $mov_id = $this->leftZero(10, (intval($count) + 1)); //codificar segun criterio x documento
                 $fecha = date('Y-m-d');
                 $yy = $this->leftZero(4, intval(date('y', strtotime($fecha))));
 

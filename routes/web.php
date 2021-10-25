@@ -991,6 +991,25 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('imprimir_ingreso/{id}', 'Almacen\Movimiento\IngresoPdfController@imprimir_ingreso');
 				Route::get('imprimir_salida/{id}', 'Almacen\Movimiento\SalidaPdfController@imprimir_salida');
 			});
+
+			Route::group(['as' => 'ordenes-despacho-interno.', 'prefix' => 'ordenes-despacho-interno'], function () {
+
+				Route::get('index', 'Logistica\Distribucion\OrdenesDespachoInternoController@view_ordenes_despacho_interno')->name('index');
+				Route::get('listarRequerimientosPendientesDespachoInterno', 'Logistica\Distribucion\OrdenesDespachoInternoController@listarRequerimientosPendientesDespachoInterno');
+				Route::post('obtenerArchivosOc', 'Tesoreria\Facturacion\PendientesFacturacionController@obtenerArchivosOc')->name('obtener-archivos-oc');
+				Route::get('listarDetalleTransferencias/{id}', 'Almacen\Movimiento\TransferenciaController@listarDetalleTransferencias');
+				Route::get('verDetalleRequerimientoDI/{id}', 'Logistica\Distribucion\OrdenesTransformacionController@verDetalleRequerimientoDI');
+				Route::get('listar_ubigeos', 'AlmacenController@listar_ubigeos');
+				Route::post('guardarOrdenDespachoExterno', 'Logistica\Distribucion\OrdenesDespachoExternoController@guardarOrdenDespachoExterno');
+				Route::get('anular_orden_despacho/{id}/{tp}', 'Almacen\Movimiento\SalidasPendientesController@anular_orden_despacho');
+				Route::post('enviarFacturacion', 'Logistica\Distribucion\OrdenesDespachoExternoController@enviarFacturacion');
+
+				Route::get('mostrarDocumentosByRequerimiento/{id}', 'Logistica\Requerimientos\TrazabilidadRequerimientoController@mostrarDocumentosByRequerimiento');
+				Route::get('imprimir_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@imprimir_transformacion');
+				Route::get('imprimir_transferencia/{id}', 'Almacen\Movimiento\TransferenciaController@imprimir_transferencia');
+				Route::get('imprimir_ingreso/{id}', 'Almacen\Movimiento\IngresoPdfController@imprimir_ingreso');
+				Route::get('imprimir_salida/{id}', 'Almacen\Movimiento\SalidaPdfController@imprimir_salida');
+			});
 		});
 
 		// });
@@ -1347,12 +1366,12 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('index', 'AlmacenController@view_ingresos')->name('index');
 				Route::get('listar_ingresos/{empresa}/{sede}/{alm}/{cond}/{fini}/{ffin}/{prov}/{usu}/{mon}/{tra}', 'AlmacenController@listar_ingresos_lista');
 				Route::get('update_revisado/{id}/{rev}/{obs}', 'AlmacenController@update_revisado');
-				
+
 				Route::get('select_almacenes_empresa/{id}', 'AlmacenController@select_almacenes_empresa');
 				Route::get('mostrar_proveedores', 'LogisticaController@mostrar_proveedores');
 				Route::get('listar_transportistas_com', 'AlmacenController@listar_transportistas_com');
 				Route::get('listar_transportistas_ven', 'AlmacenController@listar_transportistas_ven');
-				
+
 				Route::get('listar-ingresos-excel/{empresa}/{sede}/{alm}/{cond}/{fini}/{ffin}/{prov}/{usu}/{mon}/{tra}', 'AlmacenController@ExportarExcelListaIngresos');
 				// reportes con modelos
 				Route::get('listar-sedes-por-empresa/{id?}', 'Logistica\RequerimientoController@listarSedesPorEmpresa')->name('listar-sedes-por-empresa');
@@ -1375,7 +1394,6 @@ Route::group(['middleware' => ['auth']], function () {
 				// reportes con modelos
 				Route::get('listar-sedes-por-empresa/{id?}', 'Logistica\RequerimientoController@listarSedesPorEmpresa')->name('listar-sedes-por-empresa');
 				Route::post('listar-salidas', 'Almacen\Reporte\ListaSalidasController@listarSalidas');
-
 			});
 
 			Route::group(['as' => 'detalle-ingresos.', 'prefix' => 'detalle-ingresos'], function () {
@@ -1781,6 +1799,7 @@ Route::group(['middleware' => ['auth']], function () {
 	});
 */
 
+	Route::get('generarDespachoInternoMgcp/{id}', 'Logistica\Distribucion\OrdenesTransformacionController@generarDespachoInternoMgcp');
 	Route::get('soft_tipos_cambio', 'Migraciones\MigrateRequerimientoSoftLinkController@soft_tipos_cambio');
 	Route::get('migrar_orden_compra/{id}', 'Migraciones\MigrateOrdenSoftLinkController@migrar_orden_compra');
 	Route::get('validaNegativosHistoricoKardex/{idp}/{ida}/{an}', 'Almacen\Movimiento\ValidaMovimientosController@validaNegativosHistoricoKardex');

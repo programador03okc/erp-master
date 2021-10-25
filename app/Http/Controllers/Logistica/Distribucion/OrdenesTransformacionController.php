@@ -376,6 +376,141 @@ class OrdenesTransformacionController extends Controller
         }
     }
 
+
+    public function generarDespachoInternoMgcp($id_requerimiento)
+    {
+        try {
+            DB::beginTransaction();
+
+            $req = DB::table('almacen.alm_req')
+                ->where('id_requerimiento', $id_requerimiento)
+                ->first();
+
+            $codigo = $this->ODnextId(date('Y-m-d'), $req->id_almacen, true);
+            $usuario = Auth::user()->id_usuario;
+
+            $id_od = DB::table('almacen.orden_despacho')
+                ->insertGetId(
+                    [
+                        'id_sede' => $req->id_sede,
+                        'id_requerimiento' => $req->id_requerimiento,
+                        'id_almacen' => $req->id_almacen,
+                        'codigo' => $codigo,
+                        'fecha_despacho' => date('Y-m-d'),
+                        'hora_despacho' => date('H:i:s'),
+                        'aplica_cambios' => true,
+                        'registrado_por' => $usuario,
+                        'fecha_registro' => date('Y-m-d H:i:s'),
+                        'estado' => 1,
+                    ],
+                    'id_od'
+                );
+
+            //Agrega accion en requerimiento
+            DB::table('almacen.alm_req_obs')
+                ->insert([
+                    'id_requerimiento' => $req->id_requerimiento,
+                    'accion' => 'DESPACHO INTERNO',
+                    'descripcion' => 'Se generó la Orden de Despacho Interna ' . $codigo,
+                    'id_usuario' => $usuario,
+                    'fecha_registro' => date('Y-m-d H:i:s')
+                ]);
+
+            $fecha_actual = date('Y-m-d');
+            $codTrans = $this->transformacion_nextId($fecha_actual);
+
+            $id_transformacion = DB::table('almacen.transformacion')
+                ->insertGetId(
+                    [
+                        'codigo' => $codTrans,
+                        'id_od' => $id_od,
+                        'id_cc' => $req->id_cc,
+                        'id_moneda' => 1,
+                        'id_almacen' => $req->id_almacen,
+                        'descripcion_sobrantes' => '', //$req->descripcion_sobrantes,
+                        'total_materias' => 0,
+                        'total_directos' => 0,
+                        'costo_primo' => 0,
+                        'total_indirectos' => 0,
+                        'total_sobrantes' => 0,
+                        'costo_transformacion' => 0,
+                        'registrado_por' => $usuario,
+                        'conformidad' => false,
+                        'tipo_cambio' => 1,
+                        'fecha_registro' => date('Y-m-d H:i:s'),
+                        'estado' => 1,
+                    ],
+                    'id_transformacion'
+                );
+
+            $detalles = DB::table('almacen.alm_det_req')
+                ->where([
+                    ['id_requerimiento', '=', $id_requerimiento],
+                    ['estado', '!=', 7]
+                ])
+                ->get();
+
+            foreach ($detalles as $i) {
+
+                $id_od_detalle = DB::table('almacen.orden_despacho_det')
+                    ->insertGetId(
+                        [
+                            'id_od' => $id_od,
+                            // 'id_producto' => ($i->id_producto !== null ? $i->id_producto : null),
+                            // 'descripcion_producto' => $i->descripcion,
+                            'id_detalle_requerimiento' => $i->id_detalle_requerimiento,
+                            'cantidad' => $i->cantidad,
+                            'transformado' => $i->tiene_transformacion,
+                            'estado' => 1,
+                            'fecha_registro' => date('Y-m-d H:i:s')
+                        ],
+                        'id_od_detalle'
+                    );
+
+                if ($i->tiene_transformacion) {
+                    DB::table('almacen.transfor_transformado')
+                        ->insert([
+                            'id_transformacion' => $id_transformacion,
+                            // 'id_producto' => ($i->id_producto !== null ? $i->id_producto : null),
+                            'id_od_detalle' => $id_od_detalle,
+                            'cantidad' => $i->cantidad,
+                            'valor_unitario' => 0,
+                            'valor_total' => 0,
+                            'estado' => 1,
+                            'fecha_registro' => date('Y-m-d H:i:s')
+                        ]);
+                } else {
+                    DB::table('almacen.transfor_materia')
+                        ->insert([
+                            'id_transformacion' => $id_transformacion,
+                            // 'id_producto' => ($i->id_producto !== null ? $i->id_producto : null),
+                            'cantidad' => $i->cantidad,
+                            'id_od_detalle' => $id_od_detalle,
+                            'valor_unitario' => 0, //($val / $i->cantidad),
+                            'valor_total' => 0,
+                            'estado' => 1,
+                            'fecha_registro' => date('Y-m-d H:i:s')
+                        ]);
+                }
+
+                DB::table('almacen.alm_det_req')
+                    ->where('id_detalle_requerimiento', $i->id_detalle_requerimiento)
+                    ->update(['estado' => 22]); //despacho interno
+
+            }
+
+            DB::table('almacen.alm_req')
+                ->where('id_requerimiento', $id_requerimiento)
+                ->update(['estado' => 22]); //despacho interno
+
+            DB::commit();
+            return response()->json('Se guardo existosamente el Despacho Interno: ' . $codigo . ' y la Orden de Transformacion: ' . $codTrans);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json("Ha ocurrido un problema. Inténtelo nuevamente.");
+        }
+    }
+
     public function verDetalleInstrucciones($id_detalle_requerimiento)
     {
         $data = DB::table('almacen.alm_det_req')
