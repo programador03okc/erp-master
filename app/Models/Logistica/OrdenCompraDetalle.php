@@ -11,7 +11,15 @@ class OrdenCompraDetalle extends Model
     protected $primaryKey = 'id_detalle_orden';
     public $timestamps = false;
 
-
+    public function producto(){
+        return $this->hasone('App\Models\Almacen\Producto','id_producto','id_producto');
+    }
+    public function unidad_medida(){
+        return $this->hasone('App\Models\Almacen\UnidadMedida','id_unidad_medida','id_unidad_medida');
+    }
+    public function estado_orden(){
+        return $this->hasOne('App\Models\Logistica\EstadoCompra','id_estado','estado');
+    }
     public function orden(){
         return $this->hasOne('App\Models\Logistica\Orden','id_orden_compra','id_orden_compra');
     }

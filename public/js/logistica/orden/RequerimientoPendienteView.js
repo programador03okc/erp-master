@@ -77,6 +77,7 @@ class RequerimientoPendienteView {
         $('#listaRequerimientosPendientes tbody').on("click", "button.handleClickCrearOrdenServicioPorRequerimiento", (e) => {
             this.crearOrdenServicioPorRequerimiento(e.currentTarget);
         });
+ 
 
         $('#modal-filtro-requerimientos-pendientes').on("change", "select.handleChangeFiltroEmpresa", (e) => {
             this.getDataSelectSede(e.currentTarget.value);
@@ -112,8 +113,21 @@ class RequerimientoPendienteView {
 
         });
 
+        $('#modal-por-regularizar').on("click", "a.handleClickMapear", (e) => {
+          
+            $('#modal-mapeoItemsRequerimiento').modal({
+                show: true
+            });
+            $('[name=id_requerimiento]').val(e.currentTarget.dataset.idRequerimiento);
+            $('#cod_requerimiento').text(e.currentTarget.dataset.codigoRequerimiento);
+            listarItemsRequerimientoMapeo(e.currentTarget.dataset.idRequerimiento);
+
+            $('#submit_mapeoItemsRequerimiento').removeAttr('disabled');
+        });
 
     }
+
+
 
     // control de estado de check de filtro
     estadoCheckFiltroRequerimientosPendientes(e) {
@@ -354,7 +368,7 @@ class RequerimientoPendienteView {
                 { 'data': 'empresa_sede' },
                 {
                     render: function (data, type, row) {
-                        return `<a href="/necesidades/requerimiento/elaboracion/index?id=${row.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${row.codigo}</a> ${row.tiene_transformacion == true ? '<i class="fas fa-random text-danger" title="Con transformación"></i>' : ''} `;
+                        return `${row.cantidad_por_regularizar >0 ? '<i class="fas fa-exclamation-triangle orange handleClickAbrirModalPorRegularizar" style="cursor:pointer;" title="Por regularizar" data-id-requerimiento="'+row.id_requerimiento+'" ></i> &nbsp;' : ''}<a href="/necesidades/requerimiento/elaboracion/index?id=${row.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${row.codigo}</a> ${row.tiene_transformacion == true ? '<i class="fas fa-random text-danger" title="Con transformación"></i>' : ''} `;
                         // return `<a class="lbl-codigo handleClickAbrirRequerimiento" title="Abrir Requerimiento" data-id-requerimiento="${row.id_requerimiento}">${row.codigo}</a> ${row.tiene_transformacion == true ? '<i class="fas fa-random text-danger" title="Con transformación"></i>' : ''}`;
                     }
                 },
@@ -405,16 +419,17 @@ class RequerimientoPendienteView {
                             let btnAtenderAlmacen = '';
                             let btnCrearOrdenCompra = '';
                             // if(row.count_pendientes ==0){
-                            if (row.count_mapeados > 0) {
-                                btnAtenderAlmacen = '<button type="button" class="btn btn-primary btn-xs handleClickAtenderConAlmacen" name="btnOpenModalAtenderConAlmacen" title="Reserva en almacén" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo-requerimiento="' + row.codigo + '"><i class="fas fa-dolly fa-sm"></i></button>';
-                                btnCrearOrdenCompra = '<button type="button" class="btn btn-warning btn-xs handleClickCrearOrdenCompraPorRequerimiento" name="btnCrearOrdenCompraPorRequerimiento" title="Crear Orden de Compra" data-id-requerimiento="' + row.id_requerimiento + '"  ><i class="fas fa-file-invoice"></i></button>';
-                            }
-                            let btnCrearOrdenServicio = '<button type="button" class="btn btn-danger btn-xs handleClickCrearOrdenServicioPorRequerimiento" name="btnCrearOrdenServicioPorRequerimiento" title="Crear Orden de Servicio" data-id-requerimiento="' + row.id_requerimiento + '"  ><i class="fas fa-file-invoice fa-sm"></i></button>';
-                            let btnVercuadroCostos = '';
-                            if (row.id_tipo_requerimiento == 1) {
-                                btnVercuadroCostos = '<button type="button" class="btn btn-info btn-xs handleClickOpenModalCuadroCostos" name="btnVercuadroCostos" title="Ver Cuadro Costos" data-id-requerimiento="' + row.id_requerimiento + '" ><i class="fas fa-eye fa-sm"></i></button>';
-                            }
-
+                                if (row.count_mapeados > 0) {
+                                    btnAtenderAlmacen = '<button type="button" class="btn btn-primary btn-xs handleClickAtenderConAlmacen" name="btnOpenModalAtenderConAlmacen" title="Reserva en almacén" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo-requerimiento="' + row.codigo + '"><i class="fas fa-dolly fa-sm"></i></button>';
+                                    btnCrearOrdenCompra = '<button type="button" class="btn btn-warning btn-xs handleClickCrearOrdenCompraPorRequerimiento" name="btnCrearOrdenCompraPorRequerimiento" title="Crear Orden de Compra" data-id-requerimiento="' + row.id_requerimiento + '"  ><i class="fas fa-file-invoice"></i></button>';
+                                }
+                                let btnCrearOrdenServicio = '<button type="button" class="btn btn-danger btn-xs handleClickCrearOrdenServicioPorRequerimiento" name="btnCrearOrdenServicioPorRequerimiento" title="Crear Orden de Servicio" data-id-requerimiento="' + row.id_requerimiento + '"  ><i class="fas fa-file-invoice fa-sm"></i></button>';
+                                let btnVercuadroCostos = '';
+                                if (row.id_tipo_requerimiento == 1) {
+                                    btnVercuadroCostos = '<button type="button" class="btn btn-info btn-xs handleClickOpenModalCuadroCostos" name="btnVercuadroCostos" title="Ver Cuadro Costos" data-id-requerimiento="' + row.id_requerimiento + '" ><i class="fas fa-eye fa-sm"></i></button>';
+                                }
+  
+                                
                             let closeDiv = '</div>';
 
                             if (row.cantidad_tipo_servicio > 0) {
@@ -463,7 +478,7 @@ class RequerimientoPendienteView {
                 { 'aTargets': [0], 'sClass': 'invisible', 'sWidth': '0%' },
                 { 'aTargets': [1], 'sWidth': '3%' },
                 { 'aTargets': [2], 'sWidth': '5%' },
-                { 'aTargets': [3], 'sWidth': '5%' },
+                { 'aTargets': [3], 'sWidth': '8%' },
                 { 'aTargets': [4], 'sWidth': '5%', 'className': 'text-center' },
                 { 'aTargets': [5], 'sWidth': '5%', 'className': 'text-center' },
                 { 'aTargets': [6], 'sWidth': '20%', 'className': 'text-left' },
@@ -539,6 +554,7 @@ class RequerimientoPendienteView {
     //         $('#modal-filtro-requerimientos-pendientes').modal('hide');
 
     // }
+ 
 
     verDetalleRequerimiento(obj) {
         let tr = obj.closest('tr');

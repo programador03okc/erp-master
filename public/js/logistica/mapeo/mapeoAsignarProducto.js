@@ -59,7 +59,7 @@ function listarProductosSugeridos(part_number, descripcion, type) {
             ds = descripcion;
         }
     }
-    console.log(part_number, descripcion, type);
+    // console.log(part_number, descripcion, type);
     if (part_number !== sPart || descripcion !== sDesc) {
         // console.log(pn, ds);
         $('#productosSugeridos tbody').html('');
@@ -71,7 +71,7 @@ function listarProductosSugeridos(part_number, descripcion, type) {
                 descripcion: ds
             },
             success: function (response) {
-                console.log(response);
+                // console.log(response);
                 if (response.response == 'ok') {
                     listarSugeridos();
                     sPart = part_number;
@@ -89,7 +89,7 @@ function listarSugeridos() {
         url: 'listarProductosSugeridos',
         dataType: 'JSON',
         success: function (response) {
-            console.log(response);
+            // console.log(response);
             // console.log(response.length);
             html = '';
             if (response.length > 0) {
@@ -124,7 +124,7 @@ function listarSugeridos() {
 }
 
 function selectProductoAsignado(obj) {
-    console.log(obj);
+    // console.log(obj);
     let id = obj.dataset.id;
     let codigo = obj.dataset.codigo;
     let partnumber = obj.dataset.partnumber;
@@ -144,9 +144,9 @@ function selectProductoAsignado(obj) {
         det.descripcion = decodeURIComponent(descripcion);
         det.abreviatura = abreviatura;
         det.control_series = series;
-        console.log('--------------');
-        console.log(det);
-        console.log(series_transformacion);
+        // console.log('--------------');
+        // console.log(det);
+        // console.log(series_transformacion);
         $('#modal-mapeoAsignarProducto').modal('hide');
         mostrar_detalle_transformacion();
     } else {
@@ -215,7 +215,7 @@ $("#form-crear").on("submit", function (e) {
 
 $("[name=id_clasif]").on('change', function () {
     var id_clasificacion = $(this).val();
-    console.log(id_clasificacion);
+    // console.log(id_clasificacion);
     $('[name=id_tipo_producto]').html('');
     $('[name=id_categoria]').html('');
     $.ajax({

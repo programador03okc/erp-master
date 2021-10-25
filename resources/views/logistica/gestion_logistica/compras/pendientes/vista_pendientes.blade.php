@@ -80,8 +80,10 @@ Requerimientos pendientes
     </div>
 </div>
 
+@include('logistica.gestion_logistica.compras.pendientes.modal_por_regularizar')
 @include('logistica.requerimientos.mapeo.mapeoItemsRequerimiento')
 @include('logistica.requerimientos.mapeo.mapeoAsignarProducto')
+@include('logistica.gestion_logistica.compras.pendientes.modal_opciones_para_regularizar_item')
 
 @include('logistica.gestion_logistica.compras.pendientes.modal_observar_requerimiento_logistica')
 @include('logistica.gestion_logistica.compras.pendientes.modal_filtro_requerimientos_pendientes')
@@ -114,6 +116,7 @@ Requerimientos pendientes
 <script src="{{('/js/logistica/orden/RequerimientoPendienteModel.js')}}?v={{filemtime(public_path('/js/logistica/orden/RequerimientoPendienteModel.js'))}}"></script>
 <script src="{{('/js/logistica/orden/RequerimientoPendienteView.js')}}?v={{filemtime(public_path('/js/logistica/orden/RequerimientoPendienteView.js'))}}"></script>
 <script src="{{('/js/logistica/orden/RequerimientoPendienteController.js')}}?v={{filemtime(public_path('/js/logistica/orden/RequerimientoPendienteController.js'))}}"></script>
+<script src="{{('/js/logistica/orden/Regularizar.js')}}?v={{filemtime(public_path('/js/logistica/orden/Regularizar.js'))}}"></script>
 
 <script src="{{ asset('js/logistica/mapeo/mapeoItemsRequerimiento.js')}}?v={{filemtime(public_path('js/logistica/mapeo/mapeoItemsRequerimiento.js'))}}"></script>
 <script src="{{ asset('js/logistica/mapeo/mapeoAsignarProducto.js')}}?v={{filemtime(public_path('js/logistica/mapeo/mapeoAsignarProducto.js'))}}"></script>

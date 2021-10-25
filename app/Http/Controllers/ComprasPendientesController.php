@@ -10,6 +10,7 @@ use App\Models\Almacen\Requerimiento;
 use App\Models\Almacen\Reserva;
 use App\Models\Almacen\UnidadMedida;
 use App\Models\Configuracion\Moneda;
+use App\Models\Logistica\Orden;
 use App\Models\Logistica\OrdenCompraDetalle;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -24,7 +25,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 //date_default_timezone_set('America/Lima');
 
 use Debugbar;
-
+use Exception;
 
 class ComprasPendientesController extends Controller
 {
@@ -231,6 +232,8 @@ class ComprasPendientesController extends Controller
                 DB::raw("(CASE WHEN alm_req.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc"),
                 DB::raw("(SELECT  COUNT(alm_det_req.id_detalle_requerimiento) FROM almacen.alm_det_req
                 WHERE alm_det_req.id_requerimiento = alm_req.id_requerimiento and alm_det_req.tiene_transformacion=false)::integer as cantidad_items_base"),
+                DB::raw("(SELECT  COUNT(alm_det_req.id_detalle_requerimiento) FROM almacen.alm_det_req
+                WHERE alm_det_req.id_requerimiento = alm_req.id_requerimiento and alm_det_req.por_regularizar=true)::integer as cantidad_por_regularizar"),
                 DB::raw("(SELECT json_agg(DISTINCT nivel.unidad) FROM almacen.alm_det_req dr
                 INNER JOIN finanzas.cc_niveles_view nivel ON dr.centro_costo_id = nivel.id_centro_costo
                 WHERE dr.id_requerimiento = almacen.alm_req.id_requerimiento and dr.tiene_transformacion=false ) as division"),
@@ -586,5 +589,77 @@ class ComprasPendientesController extends Controller
         ];
 
         return response()->json($output);
+    }
+
+
+    function listarItemsPorRegularizar($idRequerimiento){
+        $data=  DetalleRequerimiento::where([['id_requerimiento',$idRequerimiento],['estado','!=',7]])->with('producto','reserva','unidadMedida')->get();
+        return $data;
+    }
+
+    function listaOrdenesConItemPorRegularizar($idDetalleRequerimiento){
+        $detalleRequerimiento = DetalleRequerimiento::find($idDetalleRequerimiento);
+        $detalleOrden=  OrdenCompraDetalle::where([['id_detalle_requerimiento',$idDetalleRequerimiento],['estado','!=',7]])
+        ->with('orden','producto','unidad_medida','estado_orden')
+        ->get();
+
+        $data=[];
+        
+        foreach ($detalleOrden as $value) {
+            if(($detalleRequerimiento->id_producto >0) && ($detalleRequerimiento->id_producto !=$value->id_producto)){
+                $data[]=$value;
+            }
+        }
+        return $data;
+    }
+
+    function realizarRemplazoDeProductoEnOrden(Request $request){
+        DB::beginTransaction();
+        try {
+        // $request->idOrden;
+        // $request->idDetalleRequerimiento;
+        $status=0;
+        if($request->idOrden > 0 && $request->idDetalleRequerimiento > 0){
+            $detalleRequerimiento = DetalleRequerimiento::find($request->idDetalleRequerimiento);
+            $ordenCompraDetalle = OrdenCompraDetalle::where([['id_detalle_requerimiento',$request->idDetalleRequerimiento],['id_orden_compra',$request->idOrden]])->first();
+            $ordenCompraDetalle->id_producto=$detalleRequerimiento->id_producto;
+            $ordenCompraDetalle->save();
+        }
+        DB::commit();
+
+        $od = OrdenCompraDetalle::where([['id_detalle_requerimiento',$request->idDetalleRequerimiento],['id_orden_compra',$request->idOrden]])->first();
+        $rd = DetalleRequerimiento::find($request->idDetalleRequerimiento);
+        if($od->id_producto == $rd->id_producto){
+            $status=200;
+        }else{
+            $status=201;
+        }
+
+        return response()->json(['status' => $status,'mensaje'=>'Remplazo realizado con éxito']);
+    } catch (Exception $e) {
+        DB::rollBack();
+        return response()->json(['status' => $status, 'mensaje' => 'Hubo un problema al remplazar el producto en la orden. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
+    }
+    }
+    function realizarLiberacionDeProductoEnOrden(Request $request){
+        DB::beginTransaction();
+        try {
+        // $request->idOrden;
+        // $request->idDetalleRequerimiento;
+        $status=0;
+        if($request->idOrden > 0 && $request->idDetalleRequerimiento > 0){
+            $ordenCompraDetalle = OrdenCompraDetalle::where([['id_detalle_requerimiento',$request->idDetalleRequerimiento],['id_orden_compra',$request->idOrden]])->first();
+            $ordenCompraDetalle->id_detalle_requerimiento= null;
+            $ordenCompraDetalle->save();
+            $status=200;
+        }
+        DB::commit();
+
+
+        return response()->json(['status' => $status,'mensaje'=>'Liberación realizada con éxito']);
+    } catch (Exception $e) {
+        DB::rollBack();
+        return response()->json(['status' => $status, 'mensaje' => 'Hubo un problema al remplazar liberar el item en la orden. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
+    }
     }
 }
