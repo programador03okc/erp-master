@@ -4,10 +4,10 @@ namespace App\Models\almacen;
 
 use Illuminate\Database\Eloquent\Model;
 
-class DocumentoCompra extends Model
+class DocumentoVenta extends Model
 {
-    protected $table = 'almacen.doc_com';
-    protected $primaryKey ='id_doc_com';
+    protected $table = 'almacen.doc_ven';
+    protected $primaryKey ='id_doc_ven';
     public $timestamps=false;
 
 
@@ -20,7 +20,10 @@ class DocumentoCompra extends Model
     public function condicion_pago(){
         return $this->hasOne('App\Models\Logistica\CondicionPago','id_condicion_pago','id_condicion');
     }
-    public function proveedor(){
-        return $this->hasOne('App\Models\Logistica\Proveedor','id_proveedor','id_proveedor');
+    public function cliente(){
+        return $this->hasOne('App\Models\Comercial\Cliente','id_cliente','id_cliente');
+    }
+    public function sede(){
+        return $this->hasOne('App\Models\Administracion\Sede','id_sede','id_sede');
     }
 }

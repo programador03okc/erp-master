@@ -1346,16 +1346,17 @@ Route::group(['middleware' => ['auth']], function () {
 
 				Route::get('index', 'AlmacenController@view_ingresos')->name('index');
 				Route::get('listar_ingresos/{empresa}/{sede}/{alm}/{cond}/{fini}/{ffin}/{prov}/{usu}/{mon}/{tra}', 'AlmacenController@listar_ingresos_lista');
-				Route::get('listar-ingresos-excel/{empresa}/{sede}/{alm}/{cond}/{fini}/{ffin}/{prov}/{usu}/{mon}/{tra}', 'AlmacenController@ExportarExcelListaIngresos');
 				Route::get('update_revisado/{id}/{rev}/{obs}', 'AlmacenController@update_revisado');
 				
 				Route::get('select_almacenes_empresa/{id}', 'AlmacenController@select_almacenes_empresa');
 				Route::get('mostrar_proveedores', 'LogisticaController@mostrar_proveedores');
 				Route::get('listar_transportistas_com', 'AlmacenController@listar_transportistas_com');
 				Route::get('listar_transportistas_ven', 'AlmacenController@listar_transportistas_ven');
+				
+				Route::get('listar-ingresos-excel/{empresa}/{sede}/{alm}/{cond}/{fini}/{ffin}/{prov}/{usu}/{mon}/{tra}', 'AlmacenController@ExportarExcelListaIngresos');
+				// reportes con modelos
 				Route::get('listar-sedes-por-empresa/{id?}', 'Logistica\RequerimientoController@listarSedesPorEmpresa')->name('listar-sedes-por-empresa');
-				// reportes
-				Route::get('listar-ingresos', 'Almacen\Reporte\ListaIngresosController@listarIngresos');
+				Route::post('listar-ingresos', 'Almacen\Reporte\ListaIngresosController@listarIngresos');
 			});
 
 			Route::group(['as' => 'lista-salidas.', 'prefix' => 'lista-salidas'], function () {
@@ -1369,6 +1370,12 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('mostrar_clientes_empresa', 'Comercial\ClienteController@mostrar_clientes_empresa');
 				Route::get('listar_transportistas_com', 'AlmacenController@listar_transportistas_com');
 				Route::get('listar_transportistas_ven', 'AlmacenController@listar_transportistas_ven');
+
+				Route::get('listar-salidas-excel/{empresa}/{sede}/{alm}/{cond}/{fini}/{ffin}/{prov}/{usu}/{mon}', 'AlmacenController@ExportarExcelListaSalidas');
+				// reportes con modelos
+				Route::get('listar-sedes-por-empresa/{id?}', 'Logistica\RequerimientoController@listarSedesPorEmpresa')->name('listar-sedes-por-empresa');
+				Route::post('listar-salidas', 'Almacen\Reporte\ListaSalidasController@listarSalidas');
+
 			});
 
 			Route::group(['as' => 'detalle-ingresos.', 'prefix' => 'detalle-ingresos'], function () {

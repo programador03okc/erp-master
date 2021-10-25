@@ -5,23 +5,22 @@ namespace App\Models\almacen;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
-class GuiaCompra extends Model
+class GuiaVenta extends Model
 {
-    protected $table = 'almacen.guia_com';
-    protected $primaryKey ='id_guia';
+    protected $table = 'almacen.guia_ven';
+    protected $primaryKey ='id_guia_ven';
     public $timestamps=false;
     protected $fillable = [
+        
         'serie',
         'numero',
-        'id_proveedor',
         'fecha_emision',
         'fecha_almacen',
         'id_almacen',
         'usuario',
         'estado',
         'fecha_registro',
-        'id_guia_clas',
-        'id_operacion',
+        'id_sede',
         'punto_partida',
         'punto_llegada',
         'transportista',
@@ -30,8 +29,13 @@ class GuiaCompra extends Model
         'tra_numero',
         'placa',
         'id_tp_doc_almacen',
+        'id_operacion',
+        'id_cliente',
         'registrado_por',
-        'prorratear_segun'
+        'id_guia_com',
+        'id_od',
+        'id_persona',
+        'id_transferencia'
     ];
     public function getFechaEmisionAttribute()
     {
@@ -42,8 +46,8 @@ class GuiaCompra extends Model
     public function tipo_documento_almacen(){
         return $this->hasOne('App\Models\Almacen\TipoDocumentoAlmacen','id_tp_doc_almacen','id_tp_doc_almacen');
     }
-    public function proveedor(){
-        return $this->hasOne('App\Models\Logistica\Proveedor','id_proveedor','id_proveedor');
+    public function cliente(){
+        return $this->hasOne('App\Models\Comercial\Cliente','id_cliente','id_cliente');
     }
     public function estado(){
         return $this->hasone('App\Models\Administracion\Estado','id_estado_doc','estado');
