@@ -47,7 +47,7 @@ function listarRequerimientosPendientes() {
             {
                 'render': function (data, type, row) {
                     return ((row['count_transferencia'] > 0 ?
-                        '<button type="button" class="detalle_trans btn btn-success boton" data-toggle="tooltip" ' +
+                        '<button type="button" class="detalle_trans btn btn-success btn-xs boton" data-toggle="tooltip" ' +
                         'data-placement="bottom" title="Ver Detalle de Transferencias" data-id="' + row['id_requerimiento'] + '">' +
                         '<i class="fas fa-exchange-alt"></i></button>' : ''))
                 }
@@ -66,26 +66,26 @@ function listarRequerimientosPendientes() {
             {
                 'render': function (data, type, row) {
                     return `<div style="display:flex;">
-                        <button type="button" class="detalle btn btn-default btn-flat boton" data-toggle="tooltip"
+                        <button type="button" class="detalle btn btn-default btn-flat btn-xs boton" data-toggle="tooltip"
                         data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}">
                         <i class="fas fa-chevron-down"></i></button>
 
-                        <button type="button" class="trazabilidad btn btn-warning btn-flat boton" data-toggle="tooltip"
+                        <button type="button" class="trazabilidad btn btn-warning btn-flat btn-xs boton" data-toggle="tooltip"
                         data-placement="bottom" title="Ver Trazabilidad de Docs"  data-id="${row['id_requerimiento']}">
                         <i class="fas fa-route"></i></button>`+
-                        ((row['id_od'] == null && row['productos_no_mapeados'] == 0)
+                        ((row['id_od'] == null /*&& row['productos_no_mapeados'] == 0*/)
                             // ((row['tiene_transformacion'] && row['estado'] == 10) ||
                             //     (!row['tiene_transformacion'] && row['estado'] == 28))
                             ? //venta directa con transferencia
-                            `<button type="button" class="despacho btn btn-success btn-flat boton" data-toggle="tooltip"
+                            `<button type="button" class="despacho btn btn-success btn-flat btn-xs boton" data-toggle="tooltip"
                                 data-placement="bottom" title="Generar Orden de Despacho" >
                                 <i class="fas fa-sign-in-alt"></i></button>` : '') +
                         ((row['id_od'] !== null && parseInt(row['estado_od']) == 1) ?
-                            `<button type="button" class="anular_od btn btn-flat btn-danger boton" data-toggle="tooltip" 
+                            `<button type="button" class="anular_od btn btn-flat btn-danger btn-xs boton" data-toggle="tooltip" 
                                     data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Anular Orden Despacho Externo" >
                                     <i class="fas fa-trash"></i></button>` : '') +
-                        (row["nro_orden"] !== null && row['productos_no_mapeados'] == 0
-                            ? `<button type="button" class="facturar btn btn-flat btn-${row["enviar_facturacion"] ? "info" : "default"} 
+                        (row["nro_orden"] !== null /*&& row['productos_no_mapeados'] == 0*/
+                            ? `<button type="button" class="facturar btn btn-flat btn-xs btn-${row["enviar_facturacion"] ? "info" : "default"} 
                                     boton" data-toggle="tooltip" data-placement="bottom" title="Enviar a Facturación" 
                                     data-id="${row["id_requerimiento"]}" data-cod="${row["codigo"]}" data-envio="${row["enviar_facturacion"]}">
                                     <i class="fas fa-file-upload"></i></button>`

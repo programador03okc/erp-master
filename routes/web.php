@@ -995,7 +995,8 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::group(['as' => 'ordenes-despacho-interno.', 'prefix' => 'ordenes-despacho-interno'], function () {
 
 				Route::get('index', 'Logistica\Distribucion\OrdenesDespachoInternoController@view_ordenes_despacho_interno')->name('index');
-				Route::get('listarRequerimientosPendientesDespachoInterno', 'Logistica\Distribucion\OrdenesDespachoInternoController@listarRequerimientosPendientesDespachoInterno');
+				Route::post('listarRequerimientosPendientesDespachoInterno', 'Logistica\Distribucion\OrdenesDespachoInternoController@listarRequerimientosPendientesDespachoInterno');
+				Route::post('priorizar', 'Logistica\Distribucion\OrdenesDespachoInternoController@priorizar')->name('obtener-archivos-oc');
 				Route::post('obtenerArchivosOc', 'Tesoreria\Facturacion\PendientesFacturacionController@obtenerArchivosOc')->name('obtener-archivos-oc');
 				Route::get('listarDetalleTransferencias/{id}', 'Almacen\Movimiento\TransferenciaController@listarDetalleTransferencias');
 				Route::get('verDetalleRequerimientoDI/{id}', 'Logistica\Distribucion\OrdenesTransformacionController@verDetalleRequerimientoDI');

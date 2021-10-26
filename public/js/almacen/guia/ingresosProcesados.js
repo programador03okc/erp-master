@@ -251,15 +251,10 @@ function listarIngresos() {
     });
 
     $($("#listaIngresosAlmacen").DataTable().table().container()).on("ifChanged", ".dt-checkboxes", function (event) {
-        var cell = $("#listaIngresosAlmacen")
-            .DataTable()
-            .cell($(this).closest("td"));
+        var cell = $("#listaIngresosAlmacen").DataTable().cell($(this).closest("td"));
         cell.checkboxes.select(this.checked);
 
-        var data = $("#listaIngresosAlmacen")
-            .DataTable()
-            .row($(this).parents("tr"))
-            .data();
+        var data = $("#listaIngresosAlmacen").DataTable().row($(this).parents("tr")).data();
         console.log(this.checked);
 
         if (data !== null && data !== undefined) {
