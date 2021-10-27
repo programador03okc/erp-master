@@ -771,6 +771,15 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('todo-detalle-requeriento/{idRequerimiento?}/{transformadosONoTransformados?}', 'Logistica\RequerimientoController@todoDetalleRequerimiento')->name('todo-detalle-requerimiento');
 
 					Route::get('mostrar_tipos_clasificacion/{id}', 'Almacen\Catalogo\TipoProductoController@mostrar_tipos_clasificacion');
+					Route::get('items-por-regularizar/{id}', 'ComprasPendientesController@listarItemsPorRegularizar');
+					Route::get('ordenes-con-item-por-regularizar/{id}', 'ComprasPendientesController@listaOrdenesConItemPorRegularizar');
+					Route::post('realizar-remplazo-de-producto-en-orden', 'ComprasPendientesController@realizarRemplazoDeProductoEnOrden');
+					Route::post('realizar-liberacion-de-producto-en-orden', 'ComprasPendientesController@realizarLiberacionDeProductoEnOrden');
+					Route::get('reservas-con-item-por-regularizar/{id}', 'ComprasPendientesController@listaReservasConItemPorRegularizar');
+					Route::post('realizar-remplazo-de-producto-en-reserva', 'ComprasPendientesController@realizarRemplazoDeProductoEnReserva');
+					Route::post('realizar-liberacion-de-producto-en-reserva', 'ComprasPendientesController@realizarLiberacionDeProductoEnReserva');
+					Route::put('anular-orden/{id_orden?}', 'OrdenController@anularOrden')->name('anular');
+
 				});
 
 				Route::group(['as' => 'ordenes.', 'prefix' => 'ordenes'], function () {

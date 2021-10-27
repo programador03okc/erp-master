@@ -45,7 +45,7 @@ class DetalleRequerimiento extends Model
         $guiasIngreso = OrdenCompraDetalle::join('almacen.guia_com_det', 'guia_com_det.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden')
         ->join('almacen.alm_det_req','log_det_ord_compra.id_detalle_requerimiento','alm_det_req.id_detalle_requerimiento')
         ->leftjoin('almacen.guia_com', 'guia_com.id_guia', '=', 'guia_com_det.id_guia_com')
-        ->select('guia_com.id_guia',DB::raw("concat(guia_com.serie, '-', guia_com.numero) AS codigo_guia"))
+        ->select('guia_com.id_guia',DB::raw("concat(guia_com.serie, '-', guia_com.numero) AS codigo_guia"),'log_det_ord_compra.id_orden_compra')
         ->where('alm_det_req.id_detalle_requerimiento',$this->attributes['id_detalle_requerimiento'])
 
         ->get();

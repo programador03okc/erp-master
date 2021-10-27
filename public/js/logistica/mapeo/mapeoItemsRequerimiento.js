@@ -354,6 +354,10 @@ $("#form-mapeoItemsRequerimiento").on("submit", function (e) {
 
                         }
 
+                        if(document.querySelector("div[id='modal-por-regularizar']").classList.contains('in')==true){
+                            construirTablaItemsPorRegularizar(document.querySelector("div[id='modal-mapeoItemsRequerimiento'] input[name='id_requerimiento']").value); // Regularizar.js
+                        }
+
                     }
                 }
             }).fail(function (jqXHR, textStatus, errorThrown) {

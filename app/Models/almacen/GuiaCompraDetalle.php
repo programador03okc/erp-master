@@ -11,6 +11,9 @@ class GuiaCompraDetalle extends Model
     public $timestamps=false;
 
 
+    public function guia_compra(){
+        return $this->hasOne('App\Models\Almacen\GuiaCompra','id_guia','id_guia_com');
+    }
     public function documento_compra_detalle(){
         return $this->hasMany('App\Models\Almacen\DocumentoCompraDetalle','id_guia_com_det','id_guia_com_det');
     }

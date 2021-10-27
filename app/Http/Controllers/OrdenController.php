@@ -3464,8 +3464,8 @@ class OrdenController extends Controller
 }
 
     public function anularOrden($id_orden){
-        // try {
-        //     DB::beginTransaction();
+        try {
+            DB::beginTransaction();
             $status = 0;
             $msj = [];
             $output = [];
@@ -3504,12 +3504,12 @@ class OrdenController extends Controller
 
             $output=['status'=>$status, 'mensaje'=>$msj];
 
-            // DB::commit();
+            DB::commit();
             return response()->json($output);
 
-        // } catch (\PDOException $e) {
-        //     DB::rollBack();
-        // }
+        } catch (\PDOException $e) {
+            DB::rollBack();
+        }
     }
 
 
