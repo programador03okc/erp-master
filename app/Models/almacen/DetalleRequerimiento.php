@@ -14,7 +14,7 @@ class DetalleRequerimiento extends Model
     protected $table = 'almacen.alm_det_req';
     protected $primaryKey = 'id_detalle_requerimiento';
     public $timestamps = false;
-    protected $appends= ['codigo_requerimiento','ordenes_compra','guias_ingreso','facturas','proveedor_seleccionado'];
+    protected $appends= ['codigo_requerimiento','ordenes_compra','facturas','proveedor_seleccionado'];
 
     public function getPartNumberAttribute(){
         return $this->attributes['part_number'] ?? '';
@@ -40,18 +40,18 @@ class DetalleRequerimiento extends Model
         // return $keyed;
         return $ordenes;
     }
-    public function getGuiasIngresoAttribute(){
+    // public function getGuiasIngresoAttribute(){
 
-        $guiasIngreso = OrdenCompraDetalle::join('almacen.guia_com_det', 'guia_com_det.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden')
-        ->join('almacen.alm_det_req','log_det_ord_compra.id_detalle_requerimiento','alm_det_req.id_detalle_requerimiento')
-        ->leftjoin('almacen.guia_com', 'guia_com.id_guia', '=', 'guia_com_det.id_guia_com')
-        ->select('guia_com.id_guia',DB::raw("concat(guia_com.serie, '-', guia_com.numero) AS codigo_guia"),'log_det_ord_compra.id_orden_compra')
-        ->where('alm_det_req.id_detalle_requerimiento',$this->attributes['id_detalle_requerimiento'])
+    //     $guiasIngreso = OrdenCompraDetalle::join('almacen.guia_com_det', 'guia_com_det.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden')
+    //     ->join('almacen.alm_det_req','log_det_ord_compra.id_detalle_requerimiento','alm_det_req.id_detalle_requerimiento')
+    //     ->leftjoin('almacen.guia_com', 'guia_com.id_guia', '=', 'guia_com_det.id_guia_com')
+    //     ->select('guia_com.id_guia',DB::raw("concat(guia_com.serie, '-', guia_com.numero) AS codigo_guia"),'log_det_ord_compra.id_orden_compra')
+    //     ->where('alm_det_req.id_detalle_requerimiento',$this->attributes['id_detalle_requerimiento'])
 
-        ->get();
+    //     ->get();
 
-        return $guiasIngreso;
-    }
+    //     return $guiasIngreso;
+    // }
     public function getFacturasAttribute(){
 
         $facturas = OrdenCompraDetalle::join('almacen.guia_com_det', 'guia_com_det.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden')
