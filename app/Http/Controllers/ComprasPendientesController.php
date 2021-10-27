@@ -594,8 +594,23 @@ class ComprasPendientesController extends Controller
     }
 
 
+    // function listarItemsPorRegularizar($idRequerimiento){
+    //     $data=  DetalleRequerimiento::where([['id_requerimiento',$idRequerimiento],['por_regularizar','=',true],['estado','!=',7]])->with('producto','reserva','unidadMedida')->get();
+    //     return $data;
+    // }
+
     function listarItemsPorRegularizar($idRequerimiento){
-        $data=  DetalleRequerimiento::where([['id_requerimiento',$idRequerimiento],['por_regularizar','=',true],['estado','!=',7]])->with('producto','reserva','unidadMedida')->get();
+        $detalleRequerimientoList=  DetalleRequerimiento::where([['id_requerimiento',$idRequerimiento],['por_regularizar','=',true],['estado','!=',7]])->with('producto','reserva','unidadMedida')->get();
+        $data=[];
+        foreach ($detalleRequerimientoList as $detalleRequerimiento) {
+            $guiasCompraDetalle = GuiaCompraDetalle::join('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_orden', '=', 'guia_com_det.id_oc_det')
+            ->join('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
+            ->where([['alm_det_req.id_detalle_requerimiento','=',$detalleRequerimiento->id_detalle_requerimiento],['log_det_ord_compra.estado','!=',7]])->get();
+            $detalleRequerimiento->setAttribute('detalle_guias_compra',$guiasCompraDetalle);
+            $data[]=$detalleRequerimiento;
+
+        }
+
         return $data;
     }
 

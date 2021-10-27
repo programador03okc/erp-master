@@ -78,7 +78,7 @@ function listarItemsPorRegularizar(data) {
             <td>${element.precio_unitario}</td>
             <td>${element.ordenes_compra != null && element.ordenes_compra.length > 0 ? 'SI' : 'NO'}</td>
             <td>${element.reservas != null && element.reservas.length > 0 ? 'SI' : 'NO'}</td>
-            <td>${element.guias_ingreso != null && element.guias_ingreso.length > 0 ? 'SI' : 'NO'}</td>
+            <td>${element.detalle_guias_compra != null && element.detalle_guias_compra.length > 0 ? 'SI' : 'NO'}</td>
             <td>${element.id_producto > 0 ? '<button type="button" class="btn btn-info btn-xs handleClickAbrirModalVerOpcionesParaRegunlarizarItem" name="btnVerOpcionesParaRegularizarItem" title="Ver opciones para regularizar" data-id-detalle-requerimiento="' + element.id_detalle_requerimiento + '" data-part-number="' + element.part_number + '" data-descripcion="' + element.descripcion + '" data-cantidad="' + element.cantidad + '" data-unidad-medida="' + element.unidad_medida.abreviatura + '" data-precio-unitario="' + element.precio_unitario + '"><i class="fas fa-magic fa-sm"></i></button>' : '(MAPEO REQUERIDO)'}</td>
             </tr>`);
         });
