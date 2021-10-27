@@ -6,7 +6,7 @@ function listarRequerimientosPendientes() {
     let botones = [];
     // if (acceso == '1') {
     botones.push({
-        text: ' Priorizar',
+        text: ' Priorizar seleccionados',
         action: function () {
             priorizar();
         }, className: 'btn-primary disabled btnPriorizar'

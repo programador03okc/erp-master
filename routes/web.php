@@ -976,7 +976,8 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::group(['as' => 'ordenes-despacho-externo.', 'prefix' => 'ordenes-despacho-externo'], function () {
 
 				Route::get('index', 'Logistica\Distribucion\OrdenesDespachoExternoController@view_ordenes_despacho_externo')->name('index');
-				Route::get('listarRequerimientosPendientesDespachoExterno', 'Logistica\Distribucion\OrdenesDespachoExternoController@listarRequerimientosPendientesDespachoExterno');
+				Route::post('listarRequerimientosPendientesDespachoExterno', 'Logistica\Distribucion\OrdenesDespachoExternoController@listarRequerimientosPendientesDespachoExterno');
+				Route::post('priorizar', 'Logistica\Distribucion\OrdenesDespachoExternoController@priorizar');
 				Route::post('obtenerArchivosOc', 'Tesoreria\Facturacion\PendientesFacturacionController@obtenerArchivosOc')->name('obtener-archivos-oc');
 				Route::get('listarDetalleTransferencias/{id}', 'Almacen\Movimiento\TransferenciaController@listarDetalleTransferencias');
 				Route::get('verDetalleRequerimientoDI/{id}', 'Logistica\Distribucion\OrdenesTransformacionController@verDetalleRequerimientoDI');
@@ -996,7 +997,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 				Route::get('index', 'Logistica\Distribucion\OrdenesDespachoInternoController@view_ordenes_despacho_interno')->name('index');
 				Route::post('listarRequerimientosPendientesDespachoInterno', 'Logistica\Distribucion\OrdenesDespachoInternoController@listarRequerimientosPendientesDespachoInterno');
-				Route::post('priorizar', 'Logistica\Distribucion\OrdenesDespachoInternoController@priorizar')->name('obtener-archivos-oc');
+				Route::post('priorizar', 'Logistica\Distribucion\OrdenesDespachoInternoController@priorizar');
 				Route::post('obtenerArchivosOc', 'Tesoreria\Facturacion\PendientesFacturacionController@obtenerArchivosOc')->name('obtener-archivos-oc');
 				Route::get('listarDetalleTransferencias/{id}', 'Almacen\Movimiento\TransferenciaController@listarDetalleTransferencias');
 				Route::get('verDetalleRequerimientoDI/{id}', 'Logistica\Distribucion\OrdenesTransformacionController@verDetalleRequerimientoDI');

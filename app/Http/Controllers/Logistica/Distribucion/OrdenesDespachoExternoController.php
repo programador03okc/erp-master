@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Logistica\Distribucion;
 use App\Http\Controllers\AlmacenController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -20,7 +21,7 @@ class OrdenesDespachoExternoController extends Controller
         return view('almacen/distribucion/ordenesDespachoExterno');
     }
 
-    public function listarRequerimientosPendientesDespachoExterno()
+    public function listarRequerimientosPendientesDespachoExterno(Request $request)
     {
         $data = DB::table('almacen.alm_req')
             ->select(
@@ -33,13 +34,14 @@ class OrdenesDespachoExternoController extends Controller
                 'alm_req.id_sede as sede_requerimiento',
                 'sede_req.descripcion as sede_descripcion_req',
                 'orden_despacho.id_od',
+                'orden_despacho.fecha_despacho',
                 'orden_despacho.codigo as codigo_od',
                 'orden_despacho.estado as estado_od',
                 'adm_contri.nro_documento as cliente_ruc',
                 'adm_contri.razon_social as cliente_razon_social',
-                DB::raw("(SELECT COUNT(*) FROM almacen.trans where
-                        trans.id_requerimiento = alm_req.id_requerimiento
-                        and trans.estado != 7) AS count_transferencia"),
+                // DB::raw("(SELECT COUNT(*) FROM almacen.trans where
+                //         trans.id_requerimiento = alm_req.id_requerimiento
+                //         and trans.estado != 7) AS count_transferencia"),
                 'oc_propias_view.nro_orden',
                 'oc_propias_view.codigo_oportunidad',
                 'oc_propias_view.id as id_oc_propia',
@@ -49,12 +51,6 @@ class OrdenesDespachoExternoController extends Controller
                         and alm_det_req.estado != 7
                         and alm_det_req.id_producto is null) AS productos_no_mapeados")
             )
-            // ->join('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'alm_reserva.id_detalle_requerimiento')
-            // ->join('almacen.alm_req', function ($join) {
-            //     $join->on('alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento');
-            // $join->on('alm_req.id_almacen', '=', 'alm_reserva.id_almacen_reserva');
-            // $join->whereNotNull('alm_reserva.id_almacen_reserva');
-            // })
             ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
             ->leftJoin('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'cc.id_oportunidad')
             ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'alm_req.id_usuario')
@@ -78,8 +74,11 @@ class OrdenesDespachoExternoController extends Controller
                 // ['alm_reserva.estado', '!=', 5],
                 // ['alm_reserva.stock_comprometido', '>', 0]
             ]);
-        // ->whereIn('alm_req.estado',[])
-        // ->distinct();
+        if ($request->select_mostrar == 1) {
+            $data->whereNotNull('orden_despacho.fecha_despacho');
+        } else if ($request->select_mostrar == 2) {
+            $data->whereDate('orden_despacho.fecha_despacho', (new Carbon())->format('Y-m-d'));
+        }
         return datatables($data)->toJson();
     }
 
@@ -112,6 +111,7 @@ class OrdenesDespachoExternoController extends Controller
             $tiene_transformacion = ($request->tiene_transformacion == 'si' ? true : false);
 
             $usuario = Auth::user()->id_usuario;
+            $fecha_registro = date('Y-m-d H:i:s');
 
             $id_od = DB::table('almacen.orden_despacho')
                 ->insertGetId(
@@ -127,29 +127,29 @@ class OrdenesDespachoExternoController extends Controller
                         'ubigeo_destino' => $request->ubigeo,
                         'direccion_destino' => trim($request->direccion_destino),
                         'correo_cliente' => trim($request->correo_cliente),
-                        'fecha_despacho' => $request->fecha_despacho,
-                        'hora_despacho' => $request->hora_despacho,
+                        // 'fecha_despacho' => $request->fecha_despacho,
+                        // 'hora_despacho' => $request->hora_despacho,
                         'fecha_entrega' => $request->fecha_entrega,
                         'aplica_cambios' => false,
                         'registrado_por' => $usuario,
                         'tipo_entrega' => $request->tipo_entrega,
-                        'fecha_registro' => date('Y-m-d H:i:s'),
+                        'fecha_registro' => $fecha_registro,
                         'documento' => $request->documento,
                         'estado' => 1,
-                        'tipo_cliente' => $request->tipo_cliente
+                        // 'tipo_cliente' => $request->tipo_cliente
                     ],
                     'id_od'
                 );
 
-            if ($request->id_requerimiento !== null) {
-                DB::table('almacen.alm_req')
-                    ->where('id_requerimiento', $request->id_requerimiento)
-                    ->update([
-                        'enviar_facturacion' => true,
-                        'fecha_facturacion' => $request->fecha_facturacion,
-                        'obs_facturacion' => $request->obs_facturacion
-                    ]);
-            }
+            // if ($request->id_requerimiento !== null) {
+            //     DB::table('almacen.alm_req')
+            //         ->where('id_requerimiento', $request->id_requerimiento)
+            //         ->update([
+            //             'enviar_facturacion' => true,
+            //             'fecha_facturacion' => $request->fecha_facturacion,
+            //             'obs_facturacion' => $request->obs_facturacion
+            //         ]);
+            // }
 
             //Si es Despacho Externo
 
@@ -160,7 +160,7 @@ class OrdenesDespachoExternoController extends Controller
                     'accion' => 'DESPACHO EXTERNO',
                     'descripcion' => 'Se generó la Orden de Despacho Externa',
                     'id_usuario' => $usuario,
-                    'fecha_registro' => date('Y-m-d H:i:s')
+                    'fecha_registro' => $fecha_registro
                 ]);
 
             // $data = json_decode($request->detalle_requerimiento);
@@ -173,46 +173,25 @@ class OrdenesDespachoExternoController extends Controller
                 ->get();
 
             foreach ($detalle as $d) {
-                // $descripcion = ($d->producto_descripcion !== null ? $d->producto_descripcion : $d->descripcion_adicional);
-                // if ($tiene_transformacion) {
-                //     if ($d->tiene_transformacion) {
-
                 DB::table('almacen.orden_despacho_det')
                     ->insert([
                         'id_od' => $id_od,
-                        'id_producto' => $d->id_producto,
+                        // 'id_producto' => $d->id_producto,
                         'id_detalle_requerimiento' => $d->id_detalle_requerimiento,
                         'cantidad' => $d->cantidad,
-                        'transformado' => $tiene_transformacion,
+                        'transformado' => $d->tiene_transformacion,
                         'estado' => 1,
-                        'fecha_registro' => date('Y-m-d H:i:s')
+                        'fecha_registro' => $fecha_registro
                     ]);
 
                 DB::table('almacen.alm_det_req')
                     ->where('id_detalle_requerimiento', $d->id_detalle_requerimiento)
-                    ->update(['estado' => 29]); //por despachar
-                // }
-                // } else {
-                //     DB::table('almacen.orden_despacho_det')
-                //         ->insert([
-                //             'id_od' => $id_od,
-                //             'id_producto' => $d->id_producto,
-                //             'id_detalle_requerimiento' => $d->id_detalle_requerimiento,
-                //             'cantidad' => $d->cantidad,
-                //             'transformado' => false,
-                //             'estado' => 1,
-                //             'fecha_registro' => date('Y-m-d H:i:s')
-                //         ]);
-
-                //     DB::table('almacen.alm_det_req')
-                //         ->where('id_detalle_requerimiento', $d->id_detalle_requerimiento)
-                //         ->update(['estado' => 29]); //por despachar
-                // }
+                    ->update(['estado' => 29]); //despacho externo
             }
-            // }
+
             DB::table('almacen.alm_req')
                 ->where('id_requerimiento', $request->id_requerimiento)
-                ->update(['estado' => 29]); //por despachar
+                ->update(['estado' => 29]); //despacho externo
 
 
             /*
@@ -298,8 +277,7 @@ class OrdenesDespachoExternoController extends Controller
             } else {
                 $msj = 'Se guardó existosamente la Orden de Despacho';
             }*/
-            $msj = 'Se guardó existosamente la Orden de Despacho';
-            DB::commit();
+            // DB::commit();
 
             $codigo = OrdenesDespachoExternoController::ODnextId(date('Y-m-d'), $request->id_almacen, false, $id_od);
 
@@ -308,10 +286,11 @@ class OrdenesDespachoExternoController extends Controller
                     ->where('id_od', $id_od)
                     ->update(['codigo' => $codigo]);
             }
-
-            return response()->json($msj);
+            DB::commit();
+            return response()->json('Se guardó existosamente la Orden de Despacho');
         } catch (\PDOException $e) {
             DB::rollBack();
+            return response()->json('Algo salio mal');
         }
     }
 
@@ -326,5 +305,24 @@ class OrdenesDespachoExternoController extends Controller
             ]);
 
         return response()->json($update);
+    }
+
+    public function priorizar(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            $despachos = json_decode($request->despachos_externos);
+
+            foreach ($despachos as $det) {
+                DB::table('almacen.orden_despacho')
+                    ->where('id_od', $det)
+                    ->update(['fecha_despacho' => $request->fecha_despacho]);
+            }
+            DB::commit();
+            return response()->json('ok');
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json(':(');
+        }
     }
 }

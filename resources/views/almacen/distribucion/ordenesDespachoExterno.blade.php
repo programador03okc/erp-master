@@ -7,6 +7,10 @@ Gestión de Despacho Externo
 
 @section('estilos')
 <link rel="stylesheet" href="{{ asset('template/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css') }}">
+<link rel="stylesheet" href="{{ asset('template/plugins/iCheck/all.css') }}">
+<link rel="stylesheet" href="{{ asset('template/plugins/jquery-datatables-checkboxes/css/dataTables.checkboxes.css') }}">
+<link rel="stylesheet" href="{{ asset('datatables/Datatables/css/dataTables.bootstrap.min.css') }}">
+<link rel="stylesheet" href="{{ asset('datatables/Buttons/css/buttons.dataTables.min.css') }}">
 <link rel="stylesheet" href="{{ asset('css/stepper.css')}}">
 @endsection
 
@@ -23,22 +27,26 @@ Gestión de Despacho Externo
     <div class="box box-solid">
         <div class="box-body">
             <div class="col-md-12" style="padding-top:10px;padding-bottom:10px;">
-
+                <form id="formFiltrosDespachoExterno" method="POST" target="_blank" action="{{route('almacen.movimientos.pendientes-ingreso.ordenesPendientesExcel')}}">
+                    @csrf()
+                    <input type="hidden" name="select_mostrar" value="0">
+                </form>
                 <div class="row">
                     <div class="col-md-12">
                         <table class="mytable table table-condensed table-bordered table-okc-view" id="requerimientosEnProceso">
                             <thead>
                                 <tr>
                                     <th hidden></th>
+                                    <th></th>
                                     <th width="8%">Cod.Req.</th>
                                     <th>Fecha Entrega</th>
+                                    <th>Fecha Despacho</th>
                                     <th>Orden Elec.</th>
                                     <th>Cod.CP</th>
                                     <th>Cliente/Entidad</th>
                                     <th>Generado por</th>
                                     <th>Sede Req.</th>
                                     <th>Estado</th>
-                                    <th>Transf.</th>
                                     <th width="60px">Acción</th>
                                 </tr>
                             </thead>
@@ -63,7 +71,13 @@ Gestión de Despacho Externo
 @section('scripts')
 <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
+<script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
+<script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
+<script src="{{ asset('template/plugins/iCheck/icheck.min.js') }}"></script>
 <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
+<script src="{{ asset('template/plugins/loadingoverlay.min.js') }}"></script>
+<script src="{{ asset('template/plugins/jquery-datatables-checkboxes/js/dataTables.checkboxes.min.js') }}"></script>
+<script src="{{ asset('template/plugins/js-xlsx/xlsx.full.min.js') }}"></script>
 <script src="{{ asset('template/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js') }}"></script>
 <script src="{{ asset('template/plugins/bootstrap-datepicker/locales/bootstrap-datepicker.es.min.js') }}"></script>
 
@@ -77,6 +91,7 @@ Gestión de Despacho Externo
 <script>
     $(document).ready(function() {
         seleccionarMenu(window.location);
+        $.fn.dataTable.Buttons.defaults.dom.button.className = 'btn';
         listarRequerimientosPendientes();
         
         $('input.date-picker').datepicker({

@@ -1,7 +1,8 @@
 ﻿
-let tab_origen = null;
+let modo = null;//guardar o actualizar
 
-function open_despacho_create(data) {
+function open_despacho_create(data, vmodo) {
+    modo = vmodo;
     $('#modal-orden_despacho_create').modal({
         show: true
     });
@@ -131,7 +132,7 @@ function guardar_orden_despacho(data) {
             });
             $('#modal-orden_despacho_create').modal('hide');
 
-            listarRequerimientosPendientes();
+            $("#requerimientosEnProceso").DataTable().ajax.reload(null, false);
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);

@@ -16,7 +16,6 @@ class OrdenesDespachoInternoController extends Controller
 
     public function listarRequerimientosPendientesDespachoInterno(Request $request)
     {
-
         $data = DB::table('almacen.orden_despacho')
             ->select(
                 'alm_req.*',
@@ -30,11 +29,11 @@ class OrdenesDespachoInternoController extends Controller
                 'orden_despacho.id_od',
                 'orden_despacho.fecha_despacho',
                 'est_od.estado_doc as estado_od',
+                'orden_despacho.codigo as codigo_od',
                 'transformacion.id_transformacion',
                 'transformacion.codigo as codigo_transformacion',
                 'est_trans.estado_doc as estado_transformacion',
                 'est_trans.bootstrap_color as estado_bootstrap_transformacion',
-                'orden_despacho.codigo as codigo_od',
                 // 'orden_despacho.estado as estado_od',
                 'adm_contri.nro_documento as cliente_ruc',
                 'adm_contri.razon_social as cliente_razon_social',

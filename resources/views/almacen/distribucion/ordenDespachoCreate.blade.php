@@ -14,7 +14,7 @@
                     <input type="text" class="oculto" name="tiene_transformacion"/>
                     <input type="date" class="oculto" name="fecha_entrega"/>
                     
-                    <h4  style="display:flex;justify-content: space-between;">Priorización de Despacho</h4>
+                    {{-- <h4  style="display:flex;justify-content: space-between;">Priorización de Despacho</h4>
                     <fieldset class="group-table">
                         
                         <div class="row">
@@ -56,8 +56,8 @@
                                 <input type="text" class="form-control" style="background-color:#d2fafa;" name="obs_facturacion">
                             </div>
                         </div>
-                    </fieldset>
-                    <h4  style="display:flex;justify-content: space-between;">Datos del Despacho</h4>
+                    </fieldset> --}}
+                    <h4  style="display:flex;justify-content: space-between;">Datos del Contacto</h4>
                     <fieldset class="group-table">
                         <div class="row">
                             <div class="col-md-6">
@@ -133,7 +133,7 @@
                             <div class="col-md-6">
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <h5>Agregar Contenido Adicional al Correo</h5>
+                                        <h5>Comentarios</h5>
                                         <textarea class="form-control" name="contenido" id="contenido" cols="73" rows="5"></textarea>
                                     </div>
                                 </div>
