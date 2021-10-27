@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Almacen\Movimiento\OrdenesPendientesController;
 use App\Models\Almacen\Almacen;
 use App\Models\Almacen\DetalleRequerimiento;
+use App\Models\almacen\GuiaCompraDetalle;
 use App\Models\Almacen\ProductoUbicacion;
 use App\Models\Almacen\Requerimiento;
 use App\Models\Almacen\Reserva;
@@ -26,6 +27,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 use Debugbar;
 use Exception;
+use Illuminate\Database\Eloquent\Builder;
 
 class ComprasPendientesController extends Controller
 {
@@ -593,24 +595,27 @@ class ComprasPendientesController extends Controller
 
 
     function listarItemsPorRegularizar($idRequerimiento){
-        $data=  DetalleRequerimiento::where([['id_requerimiento',$idRequerimiento],['estado','!=',7]])->with('producto','reserva','unidadMedida')->get();
+        $data=  DetalleRequerimiento::where([['id_requerimiento',$idRequerimiento],['por_regularizar','=',true],['estado','!=',7]])->with('producto','reserva','unidadMedida')->get();
         return $data;
     }
 
     function listaOrdenesConItemPorRegularizar($idDetalleRequerimiento){
+
         $detalleRequerimiento = DetalleRequerimiento::find($idDetalleRequerimiento);
-        $detalleOrden=  OrdenCompraDetalle::where([['id_detalle_requerimiento',$idDetalleRequerimiento],['estado','!=',7]])
-        ->with('orden','producto','unidad_medida','estado_orden')
+        $detalleOrdenesCompra = OrdenCompraDetalle::whereHas('orden', function (Builder $query) {
+            $query->where('estado', '!=', 7);
+        })->with('orden','producto','unidad_medida','estado_orden')
+        ->where([['log_det_ord_compra.id_detalle_requerimiento',$idDetalleRequerimiento],['log_det_ord_compra.estado','!=',7]])
         ->get();
 
-        $data=[];
-        
-        foreach ($detalleOrden as $value) {
-            if(($detalleRequerimiento->id_producto >0) && ($detalleRequerimiento->id_producto !=$value->id_producto)){
-                $data[]=$value;
-            }
+        foreach ($detalleOrdenesCompra as $detalleOrden) {
+            $guiasCompraDetalle = GuiaCompraDetalle::with('guia_compra')->where([['id_oc_det',$detalleOrden->id_detalle_orden],['estado','!=',7]])->get();
+            $detalleOrden->setAttribute('detalle_requerimiento',$detalleRequerimiento);
+            $detalleOrden->setAttribute('detalle_guias_compra',$guiasCompraDetalle);
         }
-        return $data;
+
+    return $detalleOrdenesCompra;
+
     }
 
     function realizarRemplazoDeProductoEnOrden(Request $request){
@@ -662,4 +667,81 @@ class ComprasPendientesController extends Controller
         return response()->json(['status' => $status, 'mensaje' => 'Hubo un problema al remplazar liberar el item en la orden. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
     }
     }
+
+    function listaReservasConItemPorRegularizar($idDetalleRequerimiento){
+
+        $detalleRequerimiento = DetalleRequerimiento::find($idDetalleRequerimiento);
+        $reservas = Reserva::whereHas('guia_compra_detalle.guia_compra', function (Builder $query) {
+            $query->where('estado', '!=', 7);
+        })->whereHas('transferencia_detalle.transferencia', function (Builder $query) {
+            $query->where('estado', '!=', 7);
+        })->where('id_detalle_requerimiento',$idDetalleRequerimiento)
+        ->with('producto', 'almacen','guia_compra_detalle.guia_compra','transferencia_detalle.transferencia'
+        )->get();
+        // $data=[];
+        
+        // foreach ($reservas as $value) {
+        //     if(($detalleRequerimiento->id_producto >0) && ($detalleRequerimiento->id_producto !=$value->id_producto)){
+        //         $data[]=$value;
+        //     }
+        // }
+        return $reservas;
+    }
+
+    
+    function realizarRemplazoDeProductoEnReserva(Request $request){
+        DB::beginTransaction();
+        try {
+        // $request->idReserva;
+        // $request->idDetalleRequerimiento;
+        $status=0;
+        if($request->idReserva > 0 && $request->idDetalleRequerimiento > 0){
+            $detalleRequerimiento = DetalleRequerimiento::find($request->idDetalleRequerimiento);
+            $reserva= Reserva::where([['id_detalle_requerimiento',$request->idDetalleRequerimiento],['id_reserva',$request->idReserva]])->first();
+            $reserva->id_producto=$detalleRequerimiento->id_producto;
+            $reserva->save();
+        }
+        DB::commit();
+
+        $re= Reserva::where([['id_detalle_requerimiento',$request->idDetalleRequerimiento],['id_reserva',$request->idReserva]])->first();
+        $rd = DetalleRequerimiento::find($request->idDetalleRequerimiento);
+        if($re->id_producto == $rd->id_producto){
+            $status=200;
+        }else{
+            $status=201;
+        }
+
+        return response()->json(['status' => $status,'mensaje'=>'Remplazo realizado con éxito']);
+    } catch (Exception $e) {
+        DB::rollBack();
+        return response()->json(['status' => $status, 'mensaje' => 'Hubo un problema al remplazar el producto en la reserva. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
+    }
+    }
+
+
+    function realizarLiberacionDeProductoEnReserva(Request $request){
+        DB::beginTransaction();
+        try {
+        // $request->idReserva;
+        // $request->idDetalleRequerimiento;
+        $status=0;
+        if($request->idReserva > 0 && $request->idDetalleRequerimiento > 0){
+            $reserva= Reserva::where([['id_detalle_requerimiento',$request->idDetalleRequerimiento],['id_reserva',$request->idReserva]])->first();
+            $reserva->id_detalle_requerimiento= null;
+            $reserva->save();
+            $status=200;
+        }
+        DB::commit();
+
+
+        return response()->json(['status' => $status,'mensaje'=>'Liberación realizada con éxito']);
+    } catch (Exception $e) {
+        DB::rollBack();
+        return response()->json(['status' => $status, 'mensaje' => 'Hubo un problema al remplazar liberar el item en la reserva. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
+    }
+    }
+
 }
+
+
+ 

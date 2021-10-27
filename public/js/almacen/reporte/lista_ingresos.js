@@ -160,13 +160,13 @@ function actualizarLista(option=null){
         'columns': [
             { 'data': 'id_mov_alm', 'name': 'mov_alm.id_mov_alm', 'className': 'text-center','visible':false, "searchable": false },
             { 'data': 'revisado', 'name': 'revisado', 'className': 'text-center', "searchable": false },
-            { 'data': 'fecha_emision', 'name': 'mov_alm.fecha_emision', 'className': 'text-center', "searchable": false },
+            { 'data': 'fecha_emision', 'name': 'mov_alm.fecha_emision', 'className': 'text-center' },
             { 'data': 'codigo', 'name': 'codigo', 'className': 'text-center' },
             { 'data': 'guia_compra.fecha_emision', 'name': 'guia_compra.fecha_emision', 'className': 'text-center'},
             { 'data': 'guia_compra.id_guia', 'name': 'guia_compra.id_guia', 'className': 'text-center',"searchable": false },
             { 'data': 'comprobantes', 'name': 'comprobantes', 'className': 'text-center', "searchable": false },
-            { 'data': 'guia_compra.proveedor.contribuyente.nro_documento', 'name': 'guia_compra.proveedor.contribuyente.nro_documento', 'className': 'text-center' ,"searchable": false},
-            { 'data': 'guia_compra.proveedor.contribuyente.razon_social', 'name': 'guia_compra.proveedor.contribuyente.razon_social', 'className': 'text-center' , "searchable": false},
+            { 'data': 'guia_compra.proveedor.contribuyente.nro_documento', 'name': 'guia_compra.proveedor.contribuyente.nro_documento', 'className': 'text-center'},
+            { 'data': 'guia_compra.proveedor.contribuyente.razon_social', 'name': 'guia_compra.proveedor.contribuyente.razon_social', 'className': 'text-center'},
             { 'data': 'ordenes_compra', 'name': 'ordenes_compra', 'className': 'text-center',"searchable": false },
             { 'data': 'id_mov_alm', 'name': 'id_mov_alm', 'className': 'text-center', "searchable": false }, // moneda
             { 'data': 'id_mov_alm', 'name': 'id_mov_alm', 'className': 'text-center', "searchable": false }, // total

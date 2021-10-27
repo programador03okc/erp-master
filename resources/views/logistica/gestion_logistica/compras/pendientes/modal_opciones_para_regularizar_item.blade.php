@@ -42,7 +42,7 @@
 
                     <div class="row">
                         <div class="col-md-12">
-                            <h4>Ordenes</h4>
+                            <h4>Ordenes <span class="label label-warning" id="cantidadDeIngresos"></span></h4>
                             <fieldset class="group-table" style="padding-top: 20px;">
                                 <table class="mytable table table-condensed table-bordered table-okc-view" id="listaOrdenesDeItem" style="margin-bottom: 0px; width:100%;">
                                     <thead>
@@ -50,10 +50,11 @@
                                             <th style="width: 10%; text-align:center;">Cód. orden</th>
                                             <th style="width: 10%; text-align:center;">Código</th>
                                             <th style="width: 10%; text-align:center;">Part number</th>
-                                            <th style="width: 40%; text-align:center;">Descripción</th>
+                                            <th style="width: 40%; text-align:left;">Descripción</th>
                                             <th style="width: 10%; text-align:center;">Cantidad</th>
                                             <th style="width: 10%; text-align:center;">Unidad m.</th>
                                             <th style="width: 10%; text-align:center;">Precio u.</th>
+                                            <th style="width: 10%; text-align:center;">Documento Vinculado</th>
                                             <th style="width: 8%; text-align:center;">Acción</th>
                                         </tr>
                                     </thead>
@@ -74,8 +75,10 @@
                                             <th style="width: 10%; text-align:center;">Cód. reserva</th>
                                             <th style="width: 10%; text-align:center;">Código</th>
                                             <th style="width: 10%; text-align:center;">Part number</th>
-                                            <th style="width: 40%; text-align:center;">Descripción</th>
+                                            <th style="width: 40%; text-align:left;">Descripción</th>
                                             <th style="width: 10%; text-align:center;">Cantidad reservada</th>
+                                            <th style="width: 10%; text-align:center;">Almacén</th>
+                                            <th style="width: 10%; text-align:center;">Documento Vinculado</th>
                                             <th style="width: 8%; text-align:center;">Acción</th>
                                         </tr>
                                     </thead>
