@@ -150,7 +150,7 @@ function actualizarLista(option=null){
         ],
         'language' : vardataTables[0],
         // "scrollX": true,
-        // 'pageLength': 50,
+        'pageLength': 50,
         'serverSide': true,
         'ajax': {
             url:'listar-ingresos',
@@ -159,25 +159,25 @@ function actualizarLista(option=null){
         },
         'columns': [
             { 'data': 'id_mov_alm', 'name': 'mov_alm.id_mov_alm', 'className': 'text-center','visible':false, "searchable": false },
-            { 'data': 'revisado', 'name': 'revisado', 'className': 'text-center', "searchable": false },
+            { 'data': 'revisado', 'name': 'mov_alm.revisado', 'className': 'text-center', "searchable": false },
             { 'data': 'fecha_emision', 'name': 'mov_alm.fecha_emision', 'className': 'text-center' },
-            { 'data': 'codigo', 'name': 'codigo', 'className': 'text-center' },
-            { 'data': 'guia_compra.fecha_emision', 'name': 'guia_compra.fecha_emision', 'className': 'text-center'},
-            { 'data': 'guia_compra.id_guia', 'name': 'guia_compra.id_guia', 'className': 'text-center',"searchable": false },
-            { 'data': 'comprobantes', 'name': 'comprobantes', 'className': 'text-center', "searchable": false },
-            { 'data': 'guia_compra.proveedor.contribuyente.nro_documento', 'name': 'guia_compra.proveedor.contribuyente.nro_documento', 'className': 'text-center'},
-            { 'data': 'guia_compra.proveedor.contribuyente.razon_social', 'name': 'guia_compra.proveedor.contribuyente.razon_social', 'className': 'text-center'},
-            { 'data': 'ordenes_compra', 'name': 'ordenes_compra', 'className': 'text-center',"searchable": false },
-            { 'data': 'id_mov_alm', 'name': 'id_mov_alm', 'className': 'text-center', "searchable": false }, // moneda
-            { 'data': 'id_mov_alm', 'name': 'id_mov_alm', 'className': 'text-center', "searchable": false }, // total
-            { 'data': 'id_mov_alm', 'name': 'id_mov_alm', 'className': 'text-center', "searchable": false }, // total_igv
-            { 'data': 'id_mov_alm', 'name': 'id_mov_alm', 'className': 'text-center', "searchable": false }, // total_a_pagar
-            { 'data': 'id_mov_alm', 'name': 'id_mov_alm', 'className': 'text-center', "searchable": false }, // des_condicion
-            { 'data': 'operacion.descripcion', 'name': 'operacion.descripcion', 'className': 'text-center' ,"searchable": false}, // des_condicion
-            { 'data': 'usuario.nombre_corto', 'name': 'usuario.nombre_corto', 'className': 'text-center',"searchable": false },
-            {'data': 'movimiento_detalle[0].guia_compra_detalle[0].documento_compra_detalle[0].documento_compra.tipo_cambio','name': 'movimiento_detalle[0].guia_compra_detalle[0].documento_compra_detalle[0].documento_compra.tipo_cambio', 'className': 'text-center', "searchable": false },
-            {'data': 'almacen.descripcion','name': 'almacen.descripcion', 'className': 'text-center' , "searchable": false},
-            { 'data': 'fecha_registro', 'name': 'fecha_registro', 'className': 'text-center', "searchable": false }
+            { 'data': 'codigo', 'name': 'mov_alm.codigo', 'className': 'text-center' },
+            { 'data': 'fecha_guia', 'name': 'guia_com.fecha_emision', 'className': 'text-center'},
+            { 'data': 'guia', 'name': 'guia', 'className': 'text-center' },
+            { 'data': 'comprobantes', 'name': 'comprobantes', 'className': 'text-center',"searchable": false }, //comprobantes
+            { 'data': 'nro_documento', 'name': 'adm_contri.nro_documento', 'className': 'text-center'},
+            { 'data': 'razon_social', 'name': 'adm_contri.razon_social', 'className': 'text-center'},
+            { 'data': 'ordenes_compra', 'name': 'ordenes_compra', 'className': 'text-center',"searchable": false }, // ordenes_compra
+            { 'data': 'moneda_comprobantes', 'name': 'moneda_comprobantes', 'className': 'text-center', "searchable": false }, 
+            { 'data': 'montos_comprobantes.sub_total', 'name': 'montos_comprobantes.sub_total', 'defaultContent':'', 'className': 'text-center', "searchable": false }, // total
+            { 'data': 'montos_comprobantes.total_igv', 'name': 'montos_comprobantes.total_igv', 'defaultContent':'', 'className': 'text-center', "searchable": false }, // total_igv
+            { 'data': 'montos_comprobantes.total_a_pagar', 'name': 'montos_comprobantes.total_a_pagar', 'defaultContent':'', 'className': 'text-center', "searchable": false }, // total_a_pagar
+            { 'data': 'condicion_comprobantes', 'name': 'condicion_comprobantes', 'className': 'text-center',"searchable": false }, // des_condicion
+            { 'data': 'des_operacion', 'name': 'tp_ope.descripcion', 'className': 'text-center' },
+            { 'data': 'nombre_trabajador', 'name': 'sis_usua.nombre_corto', 'className': 'text-center' },
+            { 'data': 'tipo_cambio','name': 'doc_com.tipo_cambio', 'className': 'text-center', "searchable": false },
+            { 'data': 'des_almacen','name': 'alm_almacen.descripcion', 'className': 'text-center'},
+            { 'data': 'fecha_registro', 'name': 'mov_alm.fecha_registro', 'className': 'text-center'}
         ],
         'columnDefs': [
             {
@@ -200,90 +200,24 @@ function actualizarLista(option=null){
             },
             {
                 'render': function (data, type, row) {
-                return (row['guia_compra']['serie']+'-'+row['guia_compra']['numero']);
+                return (row.guia);
                 }, targets: 5
             },
             {
                 'render': function (data, type, row) {
-                    let moneda=''
-                    row.movimiento_detalle.forEach(md => {
-                        if(md.guia_compra_detalle.length >0){
-                            (md.guia_compra_detalle).forEach(element => {
-                                moneda=element.documento_compra_detalle[0].documento_compra.moneda.simbolo;
-                        });
-                    }                        
-                    });
-                return moneda;
-                }, targets: 10
-            },
-            {
-                'render': function (data, type, row) {
-                    let subTotal=0
-                    row.movimiento_detalle.forEach(md => {
-                        if(md.guia_compra_detalle.length >0){
-                            (md.guia_compra_detalle).forEach(element => {
-                            subTotal=$.number(element.documento_compra_detalle[0].documento_compra.sub_total,2);
-                        });
-                    }                        
-                    });
-                return subTotal;
+                    return  $.number(row.montos_comprobantes.sub_total,2);
                 }, targets: 11
             },
             {
                 'render': function (data, type, row) {
-                    let totalIGV=0
-                    row.movimiento_detalle.forEach(md => {
-                        if(md.guia_compra_detalle.length >0){
-                            (md.guia_compra_detalle).forEach(element => {
-                            totalIGV=$.number(element.documento_compra_detalle[0].documento_compra.total_igv,2);
-
-                        });
-                    }
-                        
-                    });
-                return totalIGV;
+                    return  $.number(row.montos_comprobantes.total_igv,2);
                 }, targets: 12
             },
             {
                 'render': function (data, type, row) {
-                    let totalAPagar=0
-                    row.movimiento_detalle.forEach(md => {
-                        if(md.guia_compra_detalle.length >0){
-                            (md.guia_compra_detalle).forEach(element => {
-                                totalAPagar=$.number(element.documento_compra_detalle[0].documento_compra.total_a_pagar,2);
-                        });
-                    }
-                        
-                    });
-                return totalAPagar;
+                    return  $.number(row.montos_comprobantes.total_a_pagar,2);
                 }, targets: 13
-            },
-            {
-                'render': function (data, type, row) {
-                    let condicionPago=0
-                    row.movimiento_detalle.forEach(md => {
-                        if(md.guia_compra_detalle.length >0){
-                            (md.guia_compra_detalle).forEach(element => {
-                                condicionPago=element.documento_compra_detalle[0].documento_compra.condicion_pago.descripcion;
-                        });
-                    }                        
-                    });
-                return condicionPago;
-                }, targets: 14
-            },
-            {
-                'render': function (data, type, row) {
-                    let tipoCambio=0
-                    row.movimiento_detalle.forEach(md => {
-                        if(md.guia_compra_detalle.length >0){
-                            (md.guia_compra_detalle).forEach(element => {
-                                tipoCambio=$.number(element.documento_compra_detalle[0].documento_compra.tipo_cambio,2);
-                        });
-                    }                        
-                    });
-                return tipoCambio;
-                }, targets: 17
-            },
+            }
  
         ],
         'initComplete': function () {
