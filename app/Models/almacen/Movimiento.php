@@ -10,7 +10,7 @@ class Movimiento extends Model
     protected $table = 'almacen.mov_alm';
     protected $primaryKey = 'id_mov_alm';
     public $timestamps = false;
-    protected $appends = ['ordenes_compra', 'comprobantes','moneda_comprobantes','condicion_comprobantes','montos_comprobantes', 'ordenes_soft_link', 'requerimientos'];
+    protected $appends = ['ordenes_compra', 'comprobantes', 'ordenes_soft_link', 'requerimientos'];
 
     public function getFechaEmisionAttribute()
     {
@@ -78,79 +78,100 @@ class Movimiento extends Model
         $comprobantes = MovimientoDetalle::join('almacen.guia_com_det', 'guia_com_det.id_guia_com_det', 'mov_alm_det.id_guia_com_det')
             ->join('almacen.doc_com_det', 'doc_com_det.id_guia_com_det', 'guia_com_det.id_guia_com_det')
             ->join('almacen.doc_com', 'doc_com.id_doc_com', 'doc_com_det.id_doc')
-            ->where([
-                ['mov_alm_det.id_mov_alm', '=', $this->attributes['id_mov_alm']],
-                ['doc_com.estado', '!=', 7]
-            ])
-            ->select(['doc_com.serie', 'doc_com.numero'])->distinct()->get();
-
-        $resultado = [];
-        foreach ($comprobantes as $doc) {
-            array_push($resultado, $doc->serie . '-' . $doc->numero);
-        }
-        return implode(', ', $resultado);
-    }
-
-    public function getMonedaComprobantesAttribute()
-    {
-        $comprobantes = MovimientoDetalle::join('almacen.guia_com_det', 'guia_com_det.id_guia_com_det', 'mov_alm_det.id_guia_com_det')
-            ->join('almacen.doc_com_det', 'doc_com_det.id_guia_com_det', 'guia_com_det.id_guia_com_det')
-            ->join('almacen.doc_com', 'doc_com.id_doc_com', 'doc_com_det.id_doc')
             ->join('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'doc_com.moneda')
-
-            ->where([
-                ['mov_alm_det.id_mov_alm', '=', $this->attributes['id_mov_alm']],
-                ['doc_com.estado', '!=', 7]
-            ])
-            ->select(['sis_moneda.simbolo'])->distinct()->get();
-
-        $resultado = [];
-        foreach ($comprobantes as $doc) {
-            array_push($resultado, $doc->simbolo);
-        }
-        return implode(', ', $resultado);
-    }
-    public function getCondicionComprobantesAttribute()
-    {
-        $comprobantes = MovimientoDetalle::join('almacen.guia_com_det', 'guia_com_det.id_guia_com_det', 'mov_alm_det.id_guia_com_det')
-            ->join('almacen.doc_com_det', 'doc_com_det.id_guia_com_det', 'guia_com_det.id_guia_com_det')
-            ->join('almacen.doc_com', 'doc_com.id_doc_com', 'doc_com_det.id_doc')
             ->join('logistica.log_cdn_pago', 'log_cdn_pago.id_condicion_pago', '=', 'doc_com.id_condicion')
 
             ->where([
                 ['mov_alm_det.id_mov_alm', '=', $this->attributes['id_mov_alm']],
                 ['doc_com.estado', '!=', 7]
             ])
-            ->select(['log_cdn_pago.descripcion'])->distinct()->get();
+            ->select([
+                'doc_com.serie', 
+                'doc_com.numero',
+                'sis_moneda.simbolo',
+                'log_cdn_pago.descripcion as condicion_descripcion',
+                'doc_com.sub_total',
+                'doc_com.total_igv',
+                'doc_com.total_a_pagar'
+            ])->distinct()->get();
 
-        $resultado = [];
+        $codigoComprobanteList = [];
+        $montosList = [];
+        $monedaComprobante = '';
+        $condicionComprobante = '';
         foreach ($comprobantes as $doc) {
-            array_push($resultado, $doc->descripcion);
-        }
-        return implode(', ', $resultado);
-    }
-    public function getMontosComprobantesAttribute()
-    {
-        $comprobantes = MovimientoDetalle::join('almacen.guia_com_det', 'guia_com_det.id_guia_com_det', 'mov_alm_det.id_guia_com_det')
-            ->join('almacen.doc_com_det', 'doc_com_det.id_guia_com_det', 'guia_com_det.id_guia_com_det')
-            ->join('almacen.doc_com', 'doc_com.id_doc_com', 'doc_com_det.id_doc')
-
-            ->where([
-                ['mov_alm_det.id_mov_alm', '=', $this->attributes['id_mov_alm']],
-                ['doc_com.estado', '!=', 7]
-            ])
-            ->select(['doc_com.sub_total','doc_com.total_igv','doc_com.total_a_pagar'])->distinct()->get();
-
-        $resultado = [];
-        foreach ($comprobantes as $doc) {
-            $resultado=[
+            $codigoComprobanteList[]= ($doc->serie . '-' . $doc->numero);
+            $monedaComprobante= $doc->simbolo;
+            $condicionComprobante= $doc->condicion_descripcion;
+            $montosList=[
                 'sub_total'=>$doc->sub_total??0,
                 'total_igv'=>$doc->total_igv??0,
                 'total_a_pagar'=>$doc->total_a_pagar??0
             ];
         }
-        return $resultado;
+        return ['codigo'=>$codigoComprobanteList,'moneda'=>$monedaComprobante,'condicion'=>$condicionComprobante,'montos'=>$montosList];
     }
+
+    // public function getMonedaComprobantesAttribute()
+    // {
+    //     $comprobantes = MovimientoDetalle::join('almacen.guia_com_det', 'guia_com_det.id_guia_com_det', 'mov_alm_det.id_guia_com_det')
+    //         ->join('almacen.doc_com_det', 'doc_com_det.id_guia_com_det', 'guia_com_det.id_guia_com_det')
+    //         ->join('almacen.doc_com', 'doc_com.id_doc_com', 'doc_com_det.id_doc')
+    //         ->join('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'doc_com.moneda')
+
+    //         ->where([
+    //             ['mov_alm_det.id_mov_alm', '=', $this->attributes['id_mov_alm']],
+    //             ['doc_com.estado', '!=', 7]
+    //         ])
+    //         ->select(['sis_moneda.simbolo'])->distinct()->get();
+
+    //     $resultado = [];
+    //     foreach ($comprobantes as $doc) {
+    //         array_push($resultado, $doc->simbolo);
+    //     }
+    //     return implode(', ', $resultado);
+    // }
+    // public function getCondicionComprobantesAttribute()
+    // {
+    //     $comprobantes = MovimientoDetalle::join('almacen.guia_com_det', 'guia_com_det.id_guia_com_det', 'mov_alm_det.id_guia_com_det')
+    //         ->join('almacen.doc_com_det', 'doc_com_det.id_guia_com_det', 'guia_com_det.id_guia_com_det')
+    //         ->join('almacen.doc_com', 'doc_com.id_doc_com', 'doc_com_det.id_doc')
+    //         ->join('logistica.log_cdn_pago', 'log_cdn_pago.id_condicion_pago', '=', 'doc_com.id_condicion')
+
+    //         ->where([
+    //             ['mov_alm_det.id_mov_alm', '=', $this->attributes['id_mov_alm']],
+    //             ['doc_com.estado', '!=', 7]
+    //         ])
+    //         ->select(['log_cdn_pago.descripcion'])->distinct()->get();
+
+    //     $resultado = [];
+    //     foreach ($comprobantes as $doc) {
+    //         array_push($resultado, $doc->descripcion);
+    //     }
+    //     return implode(', ', $resultado);
+    // }
+    // public function getMontosComprobantesAttribute()
+    // {
+    //     $comprobantes = MovimientoDetalle::join('almacen.guia_com_det', 'guia_com_det.id_guia_com_det', 'mov_alm_det.id_guia_com_det')
+    //         ->join('almacen.doc_com_det', 'doc_com_det.id_guia_com_det', 'guia_com_det.id_guia_com_det')
+    //         ->join('almacen.doc_com', 'doc_com.id_doc_com', 'doc_com_det.id_doc')
+
+    //         ->where([
+    //             ['mov_alm_det.id_mov_alm', '=', $this->attributes['id_mov_alm']],
+    //             ['doc_com.estado', '!=', 7]
+    //         ])
+    //         ->select(['doc_com.sub_total','doc_com.total_igv','doc_com.total_a_pagar'])->distinct()->get();
+
+    //     $resultado = [];
+    //     foreach ($comprobantes as $doc) {
+    //         $resultado=[
+    //             'sub_total'=>$doc->sub_total??0,
+    //             'total_igv'=>$doc->total_igv??0,
+    //             'total_a_pagar'=>$doc->total_a_pagar??0
+    //         ];
+    //     }
+    //     return $resultado;
+    // }
 
     public function almacen(){
         return $this->hasOne('App\Models\Almacen\Almacen','id_almacen','id_almacen');

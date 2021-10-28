@@ -149,7 +149,6 @@ function actualizarLista(option=null){
             }
         ],
         'language' : vardataTables[0],
-        // "scrollX": true,
         'pageLength': 50,
         'serverSide': true,
         'ajax': {
@@ -164,15 +163,15 @@ function actualizarLista(option=null){
             { 'data': 'codigo', 'name': 'mov_alm.codigo', 'className': 'text-center' },
             { 'data': 'fecha_guia', 'name': 'guia_com.fecha_emision', 'className': 'text-center'},
             { 'data': 'guia', 'name': 'guia', 'className': 'text-center' },
-            { 'data': 'comprobantes', 'name': 'comprobantes', 'className': 'text-center',"searchable": false }, //comprobantes
+            { 'data': 'comprobantes.codigo', 'name': 'comprobantes.codigo', 'className': 'text-center',"searchable": false }, //comprobantes
             { 'data': 'nro_documento', 'name': 'adm_contri.nro_documento', 'className': 'text-center'},
             { 'data': 'razon_social', 'name': 'adm_contri.razon_social', 'className': 'text-center'},
             { 'data': 'ordenes_compra', 'name': 'ordenes_compra', 'className': 'text-center',"searchable": false }, // ordenes_compra
-            { 'data': 'moneda_comprobantes', 'name': 'moneda_comprobantes', 'className': 'text-center', "searchable": false }, 
-            { 'data': 'montos_comprobantes.sub_total', 'name': 'montos_comprobantes.sub_total', 'defaultContent':'', 'className': 'text-center', "searchable": false }, // total
-            { 'data': 'montos_comprobantes.total_igv', 'name': 'montos_comprobantes.total_igv', 'defaultContent':'', 'className': 'text-center', "searchable": false }, // total_igv
-            { 'data': 'montos_comprobantes.total_a_pagar', 'name': 'montos_comprobantes.total_a_pagar', 'defaultContent':'', 'className': 'text-center', "searchable": false }, // total_a_pagar
-            { 'data': 'condicion_comprobantes', 'name': 'condicion_comprobantes', 'className': 'text-center',"searchable": false }, // des_condicion
+            { 'data': 'comprobantes.moneda', 'name': 'comprobantes.moneda', 'className': 'text-center', "searchable": false }, 
+            { 'data': 'comprobantes.montos.sub_total', 'name': 'comprobantes.montos.sub_total', 'defaultContent':'', 'className': 'text-center', "searchable": false }, // total
+            { 'data': 'comprobantes.montos.total_igv', 'name': 'comprobantes.montos.total_igv', 'defaultContent':'', 'className': 'text-center', "searchable": false }, // total_igv
+            { 'data': 'comprobantes.montos.total_a_pagar', 'name': 'comprobantes.montos.total_a_pagar', 'defaultContent':'', 'className': 'text-center', "searchable": false }, // total_a_pagar
+            { 'data': 'comprobantes.condicion', 'name': 'comprobantes.condicion', 'className': 'text-center',"searchable": false }, // des_condicion
             { 'data': 'des_operacion', 'name': 'tp_ope.descripcion', 'className': 'text-center' },
             { 'data': 'nombre_trabajador', 'name': 'sis_usua.nombre_corto', 'className': 'text-center' },
             { 'data': 'tipo_cambio','name': 'doc_com.tipo_cambio', 'className': 'text-center', "searchable": false },
@@ -205,17 +204,17 @@ function actualizarLista(option=null){
             },
             {
                 'render': function (data, type, row) {
-                    return  $.number(row.montos_comprobantes.sub_total,2);
+                    return  $.number(row.comprobantes.montos.sub_total,2);
                 }, targets: 11
             },
             {
                 'render': function (data, type, row) {
-                    return  $.number(row.montos_comprobantes.total_igv,2);
+                    return  $.number(row.comprobantes.montos.total_igv,2);
                 }, targets: 12
             },
             {
                 'render': function (data, type, row) {
-                    return  $.number(row.montos_comprobantes.total_a_pagar,2);
+                    return  $.number(row.comprobantes.montos.total_a_pagar,2);
                 }, targets: 13
             }
  
@@ -236,7 +235,7 @@ function actualizarLista(option=null){
                 $tablalistaIngresos.search($input.val()).draw();
             })
         },
-        "order": [[2, "asc"],[5, "asc"]]
+        "order": [[2, "asc"],[4, "asc"]]
     });
     botones('#listaIngresos tbody',$tablalistaIngresos);
     vista_extendida();

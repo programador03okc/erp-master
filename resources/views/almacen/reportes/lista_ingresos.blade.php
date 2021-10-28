@@ -38,7 +38,7 @@ Lista de Ingresos
                 <div class="row">
                     <!-- <input type="hidden" name="_token" value="{{csrf_token()}}" id="token"> -->
                     <div class="col-md-12">
-                        <table class="mytable table table-condensed table-bordered table-okc-view" id="listaIngresos">
+                        <table class="mytable table table-condensed table-bordered table-okc-view" style="font-size: 0.9rem;" id="listaIngresos">
                             <thead>
                                 <tr>
                                     <th hidden></th>

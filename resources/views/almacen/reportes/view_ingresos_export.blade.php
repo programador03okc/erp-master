@@ -6,7 +6,6 @@
             <th>Cod.Ing</th>
             <th>Fecha Guía</th>
             <th>Guía</th>
-            <th>Fecha Doc</th>
             <th>Serie-Número</th>
             <th>RUC</th>
             <th>Razon Social</th>
@@ -30,7 +29,6 @@
             <td>{{ $ingreso["codigo"] }}</td>
             <td>{{ $ingreso["fecha_guia"] }}</td>
             <td>{{ $ingreso["guia"] }}</td>
-            <td>{{ $ingreso["fecha_doc"] }}</td>
             <td>{{ $ingreso["documentos"] }}</td>
             <td>{{ $ingreso["nro_documento"] }}</td>
             <td>{{ $ingreso["razon_social"] }}</td>

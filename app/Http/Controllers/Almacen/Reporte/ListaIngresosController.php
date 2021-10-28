@@ -29,18 +29,15 @@ class ListaIngresosController extends Controller
 
     // }
 
-    public function listarIngresos(Request $request){
-        $idEmpresa= $request->idEmpresa;
-        $idSede= $request->idSede;
-        $idAlmacenes= $request->idAlmacenList;
-        $idCondicioneList= $request->idCondicionList;
-        $fechaInicio= $request->fechaInicio;
-        $fechaFin= $request->fechaFin;
-        $idProveedor= $request->idProveedor;
-        $idUsuario= $request->idUsuario;
-        $idMoneda= $request->idMoneda;
-
-        $movimiento = Movimiento::join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'mov_alm.id_almacen')
+    public function obtenerDataListarIngresos($idEmpresa,$idSede,$idAlmacenes,$idCondicioneList,$fechaInicio,$fechaFin,$idProveedor,$idUsuario,$idMoneda){
+        if(gettype($idAlmacenes)=='string'){
+            $idAlmacenes=explode(",",$idAlmacenes);
+        }
+        if(gettype($idCondicioneList)=='string'){
+            $idCondicioneList=explode(",",$idCondicioneList);
+        }
+         
+        $data = Movimiento::join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'mov_alm.id_almacen')
         ->leftjoin('almacen.guia_com', 'guia_com.id_guia', '=', 'mov_alm.id_guia_com')
         ->leftjoin('logistica.log_prove', 'log_prove.id_proveedor', '=', 'guia_com.id_proveedor')
         ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
@@ -96,10 +93,11 @@ class ListaIngresosController extends Controller
             return $query->whereBetween('mov_alm.fecha_emision' ,[$fechaInicio,$fechaFin]); 
         })
 
-        ->when((count($idAlmacenes) > 0), function ($query) use($idAlmacenes) {
+        ->when($idAlmacenes!=null && (count($idAlmacenes) > 0), function ($query) use($idAlmacenes) {
+            
             return $query->whereIn('mov_alm.id_almacen',$idAlmacenes);
         })
-        ->when((count($idCondicioneList) > 0), function ($query) use($idCondicioneList) {
+        ->when($idCondicioneList !=null && (count($idCondicioneList) > 0), function ($query) use($idCondicioneList) {
             return $query->whereIn('mov_alm.id_operacion',$idCondicioneList);
         })
         ->when(($idProveedor !=null && $idProveedor > 0), function ($query) use($idProveedor) {
@@ -113,87 +111,30 @@ class ListaIngresosController extends Controller
         })
   
         ->where([['mov_alm.estado', '!=', 7]]);
-        
-        // foreach ($movimiento as $mov) {
-        //     $ordenes = MovimientoDetalle::join('almacen.guia_com_det', 'guia_com_det.id_guia_com_det', 'mov_alm_det.id_guia_com_det')
-        //         ->join('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_orden', 'guia_com_det.id_oc_det')
-        //         ->join('logistica.log_ord_compra', 'log_ord_compra.id_orden_compra', 'log_det_ord_compra.id_orden_compra')
-        //         ->where('mov_alm_det.id_mov_alm', $mov->id_mov_alm)
-        //         ->select(['log_ord_compra.codigo'])->distinct()->get();
+        return $data;
 
-        //         $ordenes_array = [];
-        //         foreach ($ordenes as $oc) {
-        //             array_push($ordenes_array, $oc->codigo);
-        //         }
+        }
 
-        //         $mov->setAttribute('ordenes',$ordenes_array);
+    public function listarIngresos(Request $request){
+        $idEmpresa= $request->idEmpresa;
+        $idSede= $request->idSede;
+        $idAlmacenes= $request->idAlmacenList;
+        $idCondicioneList= $request->idCondicionList;
+        $fechaInicio= $request->fechaInicio;
+        $fechaFin= $request->fechaFin;
+        $idProveedor= $request->idProveedor;
+        $idUsuario= $request->idUsuario;
+        $idMoneda= $request->idMoneda;
 
-        //         $comprobantes = MovimientoDetalle::join('almacen.guia_com_det', 'guia_com_det.id_guia_com_det', 'mov_alm_det.id_guia_com_det')
-        //         ->join('almacen.doc_com_det', 'doc_com_det.id_guia_com_det', 'guia_com_det.id_guia_com_det')
-        //         ->join('almacen.doc_com', 'doc_com.id_doc_com', 'doc_com_det.id_doc')
-        //         ->join('logistica.log_prove', 'log_prove.id_proveedor', 'doc_com.id_proveedor')
-        //         ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', 'log_prove.id_contribuyente')
-        //         ->join('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'doc_com.moneda')
-        //         ->join('logistica.log_cdn_pago', 'log_cdn_pago.id_condicion_pago', '=', 'doc_com.id_condicion')
-        //         ->where([
-        //             ['mov_alm_det.id_mov_alm', '=', $mov->id_mov_alm],
-        //             ['mov_alm_det.estado', '!=', 7],
-        //             ['guia_com_det.estado', '!=', 7],
-        //             ['doc_com_det.estado', '!=', 7]
-        //         ])
-        //         ->select([
-        //             'doc_com.serie', 'doc_com.numero', 'doc_com.fecha_emision', 'sis_moneda.simbolo', 'doc_com.moneda',
-        //             'adm_contri.nro_documento', 'adm_contri.razon_social', 'log_cdn_pago.descripcion as des_condicion',
-        //             'doc_com.credito_dias', 'doc_com.sub_total', 'doc_com.total_igv', 'doc_com.total_a_pagar'
-        //         ])
-        //         ->distinct()->get();
+        $data = $this->obtenerDataListarIngresos($idEmpresa,$idSede,$idAlmacenes,$idCondicioneList,$fechaInicio,$fechaFin,$idProveedor,$idUsuario,$idMoneda);
 
-        //         $comprobantes_array = [];
-        //         $doc_fecha_emision_array = [];
-        //         $ruc = '';
-        //         $razon_social = '';
-        //         $simbolo = '';
-        //         $moneda = '';
-        //         $total = '';
-        //         $total_igv = '';
-        //         $total_a_pagar = '';
-        //         $condicion = '';
-        //         $credito_dias = '';
-
-        //         foreach ($comprobantes as $doc) {
-        //             array_push($comprobantes_array, $doc->serie . '-' . $doc->numero);
-        //             array_push($doc_fecha_emision_array, $doc->fecha_emision);
-        //             $ruc = ($doc->nro_documento !== null ? $doc->nro_documento : '');
-        //             $razon_social = ($doc->razon_social !== null ? $doc->razon_social : '');
-        //             $simbolo = ($doc->simbolo !== null ? $doc->simbolo : '');
-        //             $moneda = ($doc->moneda !== null ? $doc->moneda : '');
-        //             $total = ($doc->sub_total !== null ? $doc->sub_total : '');
-        //             $total_igv = ($doc->total_igv !== null ? $doc->total_igv : '');
-        //             $total_a_pagar = ($doc->total_a_pagar !== null ? $doc->total_a_pagar : '');
-        //             $condicion = ($doc->des_condicion !== null ? $doc->des_condicion : '');
-        //             $credito_dias = ($doc->credito_dias !== null ? $doc->credito_dias : '');
-        //         }
-        //         $mov->setAttribute('documentos', $comprobantes_array);
-        //         $mov->setAttribute('fecha_doc', $doc_fecha_emision_array);
-        //         $mov->setAttribute('nro_documento',$ruc);
-        //         $mov->setAttribute('razon_social',$razon_social);
-        //         $mov->setAttribute('simbolo',$simbolo);
-        //         $mov->setAttribute('moneda',$moneda);
-        //         $mov->setAttribute('total',$total);
-        //         $mov->setAttribute('total_igv',$total_igv);
-        //         $mov->setAttribute('total_a_pagar',$total_a_pagar);
-        //         $mov->setAttribute('des_condicion',$condicion. ($credito_dias !== '' ? ' ' . $credito_dias . ' días' : ''));
-        //         $mov->setAttribute('credito_dias',$credito_dias);
-
-        // }
-
-        return datatables($movimiento)   
-        ->editColumn('fecha_guia', function($movimiento) {
-            $fecha =Carbon::parse($movimiento->fecha_guia)->format('d-m-Y');
+        return datatables($data)   
+        ->editColumn('fecha_guia', function($data) {
+            $fecha =Carbon::parse($data->fecha_guia)->format('d-m-Y');
             return $fecha;
         })
-        ->editColumn('fecha_registro', function($movimiento) {
-            $fecha =Carbon::parse($movimiento->fecha_registro)->format('d-m-Y H:i');
+        ->editColumn('fecha_registro', function($data) {
+            $fecha =Carbon::parse($data->fecha_registro)->format('d-m-Y H:i');
             return $fecha;
         })
 
