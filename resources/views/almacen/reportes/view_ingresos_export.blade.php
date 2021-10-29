@@ -10,6 +10,7 @@
             <th>RUC</th>
             <th>Razon Social</th>
             <th>Ordenes</th>
+            <th>Empresa-Sede</th>
             <th>Mn</th>
             <th>Valor Neto</th>
             <th>IGV</th>
@@ -33,6 +34,7 @@
             <td>{{ $ingreso["nro_documento"] }}</td>
             <td>{{ $ingreso["razon_social"] }}</td>
             <td>{{ $ingreso["ordenes"] }}</td>
+            <td>{{ $ingreso["empresa_sede"] }}</td>
             <td>{{ $ingreso["simbolo"] }}</td>
             <td>{{ $ingreso["total"] }}</td>
             <td>{{ $ingreso["total_igv"] }}</td>

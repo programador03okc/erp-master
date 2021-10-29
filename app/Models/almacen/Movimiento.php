@@ -80,6 +80,7 @@ class Movimiento extends Model
             ->join('almacen.doc_com', 'doc_com.id_doc_com', 'doc_com_det.id_doc')
             ->join('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'doc_com.moneda')
             ->join('logistica.log_cdn_pago', 'log_cdn_pago.id_condicion_pago', '=', 'doc_com.id_condicion')
+            ->leftJoin('administracion.sis_sede', 'doc_com.id_sede', '=', 'sis_sede.id_sede')
 
             ->where([
                 ['mov_alm_det.id_mov_alm', '=', $this->attributes['id_mov_alm']],
@@ -88,6 +89,7 @@ class Movimiento extends Model
             ->select([
                 'doc_com.serie', 
                 'doc_com.numero',
+                'sis_sede.descripcion as empresa_sede', 
                 'sis_moneda.simbolo',
                 'log_cdn_pago.descripcion as condicion_descripcion',
                 'doc_com.sub_total',
@@ -97,10 +99,12 @@ class Movimiento extends Model
 
         $codigoComprobanteList = [];
         $montosList = [];
+        $empresaSedeComprobante = '';
         $monedaComprobante = '';
         $condicionComprobante = '';
         foreach ($comprobantes as $doc) {
             $codigoComprobanteList[]= ($doc->serie . '-' . $doc->numero);
+            $empresaSedeComprobante= $doc->empresa_sede;
             $monedaComprobante= $doc->simbolo;
             $condicionComprobante= $doc->condicion_descripcion;
             $montosList=[
@@ -109,7 +113,7 @@ class Movimiento extends Model
                 'total_a_pagar'=>$doc->total_a_pagar??0
             ];
         }
-        return ['codigo'=>$codigoComprobanteList,'moneda'=>$monedaComprobante,'condicion'=>$condicionComprobante,'montos'=>$montosList];
+        return ['codigo'=>$codigoComprobanteList,'empresa_sede'=>$empresaSedeComprobante,'moneda'=>$monedaComprobante,'condicion'=>$condicionComprobante,'montos'=>$montosList];
     }
 
     // public function getMonedaComprobantesAttribute()

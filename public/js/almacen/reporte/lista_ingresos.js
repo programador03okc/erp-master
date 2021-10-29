@@ -170,6 +170,7 @@ function actualizarLista(option=null){
             { 'data': 'nro_documento', 'name': 'adm_contri.nro_documento', 'className': 'text-center'},
             { 'data': 'razon_social', 'name': 'adm_contri.razon_social', 'className': 'text-center'},
             { 'data': 'ordenes_compra', 'name': 'ordenes_compra', 'className': 'text-center',"searchable": false }, // ordenes_compra
+            { 'data': 'comprobantes.empresa_sede', 'name': 'comprobantes.empresa_sede', 'className': 'text-center', "searchable": false }, 
             { 'data': 'comprobantes.moneda', 'name': 'comprobantes.moneda', 'className': 'text-center', "searchable": false }, 
             { 'data': 'comprobantes.montos.sub_total', 'name': 'comprobantes.montos.sub_total', 'defaultContent':'', 'className': 'text-center', "searchable": false }, // total
             { 'data': 'comprobantes.montos.total_igv', 'name': 'comprobantes.montos.total_igv', 'defaultContent':'', 'className': 'text-center', "searchable": false }, // total_igv

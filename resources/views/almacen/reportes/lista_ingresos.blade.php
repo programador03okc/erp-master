@@ -56,6 +56,7 @@ Lista de Ingresos
                                     <th>RUC</th>
                                     <th width="100px">Razon Social</th>
                                     <th>Ordenes</th>
+                                    <th>Empresa-Sede</th>
                                     <th>Mn</th>
                                     <th>Valor Neto</th>
                                     <th>IGV</th>
