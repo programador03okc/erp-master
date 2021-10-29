@@ -209,17 +209,17 @@ function actualizarLista(option=null){
             {
                 'render': function (data, type, row) {
                     return  $.number(row.comprobantes.montos.sub_total,2);
-                }, targets: 11
-            },
-            {
-                'render': function (data, type, row) {
-                    return  $.number(row.comprobantes.montos.total_igv,2);
                 }, targets: 12
             },
             {
                 'render': function (data, type, row) {
-                    return  $.number(row.comprobantes.montos.total_a_pagar,2);
+                    return  $.number(row.comprobantes.montos.total_igv,2);
                 }, targets: 13
+            },
+            {
+                'render': function (data, type, row) {
+                    return  $.number(row.comprobantes.montos.total_a_pagar,2);
+                }, targets: 14
             }
  
         ],
