@@ -10,8 +10,8 @@ $('#modal-opciones-para-regularizar-item tbody').on("click", "button.handleClick
 $('#modal-opciones-para-regularizar-item tbody').on("click", "button.handleClickLiberarProductoOrden", (e) => {
     liberarProductoOrden(e.currentTarget);
 });
-$('#modal-opciones-para-regularizar-item tbody').on("click", "button.handleClickAnularOrden", (e) => {
-    anularOrden(e.currentTarget);
+$('#modal-opciones-para-regularizar-item tbody').on("click", "button.handleClickAnularItemDeOrden", (e) => {
+    anularItemDeOrden(e.currentTarget);
 });
 $('#modal-opciones-para-regularizar-item tbody').on("click", "button.handleClickRemplazarProductoEnReserva", (e) => {
     remplazarProductoEnReserva(e.currentTarget);
@@ -147,13 +147,17 @@ function obtenerDataListaOrdenesConItemPorRegularizar(idDetalleRequerimiento) {
 function listarOrdenesVinculadasAItemPorRegularizar(data) {
     let btnRemplazarProductoEnOrden = '';
     let btnLiberarProductoOrden = '';
-    let btnAnularOrden = '';
+    let btnAnularItemDeOrden = '';
     let documentoVinculadosList = [];
     let cantidadIngresos = 0;
     if (data.length > 0) {
         (data).forEach(element => {
             if (element.detalle_guias_compra.length > 0) {
-                cantidadIngresos++;
+                (element.detalle_guias_compra).forEach(dgi => {
+                    if(dgi.guia_compra.movimiento !=null && dgi.guia_compra.movimiento.estado !=7){
+                        cantidadIngresos++;
+                    }
+                });
             }
 
         });
@@ -162,7 +166,10 @@ function listarOrdenesVinculadasAItemPorRegularizar(data) {
 
             if (element.detalle_guias_compra.length > 0) {
                 (element.detalle_guias_compra).forEach(dgi => {
-                    documentoVinculadosList.push(dgi.guia_compra.serie + '-' + dgi.guia_compra.numero);
+                    if(dgi.guia_compra !=null && dgi.guia_compra.movimiento !=null ){
+                        documentoVinculadosList.push(dgi.guia_compra.movimiento.codigo);
+                    }
+                    
                 });
             }
 
@@ -170,12 +177,12 @@ function listarOrdenesVinculadasAItemPorRegularizar(data) {
                 // if(element.detalle_guias_compra.length ==0){
                 btnRemplazarProductoEnOrden = `<button type="button" class="btn btn-warning btn-xs handleClickRemplazarProductoEnOrden" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-id-orden="${element.id_orden_compra}" name="btnRemplazarProductoEnOrden" title="Remplazar producto en orden"><i class="fas fa-paint-roller fa-sm"></i></button>`;
                 btnLiberarProductoOrden = `<button type="button" class="btn btn-success btn-xs handleClickLiberarProductoOrden" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-id-orden="${element.id_orden_compra}" name="btnLiberarProductoOrden" title="Liberar producto"><i class="fas fa-dove fa-sm"></i></button>`;
-                btnAnularOrden = `<button type="button" class="btn btn-danger btn-xs handleClickAnularOrden" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-id-orden="${element.id_orden_compra}" name="btnAnularOrden" title="Anular Orden"><i class="fas fa-ban fa-sm"></i></button>`;
+                btnAnularItemDeOrden = `<button type="button" class="btn btn-danger btn-xs handleClickAnularItemDeOrden" data-codigo-producto="${element.producto.codigo}" data-part-number="${element.producto.part_number}" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-id-orden="${element.id_orden_compra}" data-codigo-orden="${element.orden.codigo}" name="btnAnularItemOrden" title="Anular Item de Orden"><i class="fas fa-ban fa-sm"></i></button>`;
             } else {
                 document.querySelector("span[id='cantidadDeIngresos']").textContent = ` Con ${cantidadIngresos} ingreso(s)`;
                 btnRemplazarProductoEnOrden = '';
                 btnLiberarProductoOrden = '';
-                btnAnularOrden = '';
+                btnAnularItemDeOrden = '';
             }
             document.querySelector("tbody[id='bodylistaOrdenesDeItem']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
                 <td><a href="/logistica/gestion-logistica/compras/ordenes/listado/generar-orden-pdf/${element.id_orden_compra}" target="_blank" title="Abrir Orden"> ${element.orden.codigo}</a></td>
@@ -186,7 +193,7 @@ function listarOrdenesVinculadasAItemPorRegularizar(data) {
                 <td>${element.unidad_medida.abreviatura}</td>
                 <td>${element.precio}</td>
                 <td>${documentoVinculadosList.join('<br>')}</td>
-                <td>${element.id_producto > 0 ? ('<div style="display:flex;">' + btnRemplazarProductoEnOrden + btnLiberarProductoOrden + btnAnularOrden + '</div>') : '(MAPEO REQUERIDO)'}</td>
+                <td>${element.id_producto > 0 ? ('<div style="display:flex;">' + btnRemplazarProductoEnOrden + btnLiberarProductoOrden + btnAnularItemDeOrden + '</div>') : '(MAPEO REQUERIDO)'}</td>
                 </tr>`);
             documentoVinculadosList = [];
 
@@ -585,10 +592,10 @@ function realizarLiberacionProductoReserva(idReserva, idDetalleRequerimiento) {
         });
     });
 }
-function anularOrden(obj) {
+function anularItemDeOrden(obj) {
     if (obj.dataset.idOrden > 0) {
         Swal.fire({
-            title: 'Esta seguro que desea anular la orden?',
+            title: `Esta seguro que desea anular el item ${obj.dataset.codigoProducto?obj.dataset.codigoProducto:obj.dataset.partNumber} de la orden ${obj.dataset.codigoOrden}?`,
             text: "No podrás revertir esto.",
             icon: 'warning',
             showCancelButton: true,
@@ -599,8 +606,8 @@ function anularOrden(obj) {
 
         }).then((result) => {
             if (result.isConfirmed) {
-                realizarAnularOrden(obj.dataset.idOrden).then((res) => {
-                    // console.log(res);
+                realizarAnularItemDeOrden(obj.dataset.idOrden,obj.dataset.idDetalleRequerimiento).then((res) => {
+                    console.log(res);
                     if (res.status == 200) {
                         Lobibox.notify('success', {
                             title: false,
@@ -633,13 +640,14 @@ function anularOrden(obj) {
     }
 }
 
-function realizarAnularOrden(idOrden) {
+function realizarAnularItemDeOrden(idOrden,idDetalleRequerimiento) {
 
     return new Promise(function (resolve, reject) {
         $.ajax({
-            type: 'PUT',
-            url: `anular-orden/${idOrden}`,
+            type: 'POST',
+            url: `anular-item-orden`,
             dataType: 'JSON',
+            data:{'idOrden':idOrden, 'idDetalleRequerimiento':idDetalleRequerimiento},
             success(response) {
                 resolve(response);
             },

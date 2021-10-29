@@ -624,7 +624,7 @@ class ComprasPendientesController extends Controller
         ->get();
 
         foreach ($detalleOrdenesCompra as $detalleOrden) {
-            $guiasCompraDetalle = GuiaCompraDetalle::with('guia_compra')->where([['id_oc_det',$detalleOrden->id_detalle_orden],['estado','!=',7]])->get();
+            $guiasCompraDetalle = GuiaCompraDetalle::with('guia_compra.movimiento')->where([['id_oc_det',$detalleOrden->id_detalle_orden],['estado','!=',7]])->get();
             $detalleOrden->setAttribute('detalle_requerimiento',$detalleRequerimiento);
             $detalleOrden->setAttribute('detalle_guias_compra',$guiasCompraDetalle);
         }

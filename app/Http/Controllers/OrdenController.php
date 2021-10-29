@@ -3462,6 +3462,27 @@ class OrdenController extends Controller
     return $output;
 
 }
+    function makeAnularItemOrdenByIdDetalleRequerimiento($idOrden,$idDetalleRequerimiento){
+        $status=0;
+        $msj=[];
+        $output=[];
+        if($idOrden >0 && $idDetalleRequerimiento>0){
+            $detalleOrdenes= OrdenCompraDetalle::where([['id_orden_compra',$idOrden],['id_detalle_requerimiento',$idDetalleRequerimiento]])->get();
+            foreach ($detalleOrdenes as $do) {
+                $do->estado=7;
+                $do->save();
+                
+            }
+            $status=200;
+            $msj[]='Item Anulado';
+        }else{
+            $status=204;
+            $msj[]='hubo un problema al tratar de anular el item de la orden, id(s) debe ser > 0';
+        }
+    $output=['status'=>$status, 'mensaje'=>$msj];
+    return $output;
+
+}
 
     public function anularOrden($id_orden){
         try {
@@ -3511,8 +3532,92 @@ class OrdenController extends Controller
             DB::rollBack();
         }
     }
+    public function anularItemOrden(Request $request){
+        // try {
+        //     DB::beginTransaction();
+            
+            $idOrden = $request->idOrden;
+            $idDetalleRequerimiento= $request->idDetalleRequerimiento;
+            
+            
+            $status = 0;
+            $msj = [];
+            $output = [];
+            $requerimientoIdList=[];
 
+            $hasIngreso = $this->TieneingresoAlmacen($idOrden);
+            if($hasIngreso['status'] == 200 && $hasIngreso['data'] == false){
+                $makeAnularItemOrdenByDetalleRequerimiento = $this->makeAnularItemOrdenByIdDetalleRequerimiento($idOrden,$idDetalleRequerimiento);
+                $status = $makeAnularItemOrdenByDetalleRequerimiento['status'];
+                $msj[] = $makeAnularItemOrdenByDetalleRequerimiento['mensaje'];
 
+                $detallesReq= DetalleRequerimiento::where('id_detalle_requerimiento',$idDetalleRequerimiento)->get();
+                foreach ($detallesReq as $dr) {
+                    $requerimiento= Requerimiento::find($dr->id_requerimiento);
+                    $requerimientoIdList[]= $requerimiento->id_requerimiento;
+                }
+
+                for ($i = 0; $i < count($requerimientoIdList); $i++) {
+                    DB::table('almacen.alm_req_obs')
+                    ->insert([  'id_requerimiento'=>$requerimientoIdList[$i],
+                                'accion'=>'ORDEN ANULADA',
+                                'descripcion'=>'Orden '.(Orden::find($idOrden)->codigo??"").' anulada',
+                                'id_usuario'=>Auth::user()->id_usuario,
+                                'fecha_registro'=>date('Y-m-d H:i:s')
+                    ]);
+                }
+            }
+            else{
+                $status= $hasIngreso['status'];
+                $msj[]= $hasIngreso['mensaje'];
+            }
+
+            // DB::commit();
+
+            if($status ==200){
+                $detOrdenes = OrdenCompraDetalle::where('id_orden_compra',$idOrden)->get();
+                $cantidadItemOrden=0;
+                $cantidadItemOrdenAnulados=0;
+                foreach ($detOrdenes as $d) {
+                    $cantidadItemOrden++;
+                    if($d->estado ==7){
+                        $cantidadItemOrdenAnulados++;
+                    }
+                }
+                if($cantidadItemOrden == $cantidadItemOrdenAnulados){
+                    $anularOrden =$this->makeAnularOrden($idOrden);
+                    $msj[] =$anularOrden['mensaje'];
+                }
+            }
+
+            return response()->json(['status'=>$status, 'mensaje'=>$msj]);
+
+        // } catch (\PDOException $e) {
+        //     DB::rollBack();
+        // }
+    }
+
+    function makeAnularOrden($idOrden){
+        $status=0;
+        $msj=[];
+
+        if($idOrden>0){
+
+            $orden= Orden::find($idOrden);
+            $orden->estado=7;
+            $orden->save();
+            $status=200;
+            $msj[]='Orden Anulado';
+            
+        }else{
+            $status=204;
+
+        }
+    
+        $output=['status'=>$status, 'mensaje'=>$msj];
+        return $output;
+
+}
 
     public function exportExcelListaOrdenes(){
         // return Orden::reporteListaOrdenes();

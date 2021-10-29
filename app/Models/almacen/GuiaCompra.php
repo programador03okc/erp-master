@@ -45,6 +45,9 @@ class GuiaCompra extends Model
     public function proveedor(){
         return $this->hasOne('App\Models\Logistica\Proveedor','id_proveedor','id_proveedor');
     }
+    public function movimiento(){
+        return $this->hasone('App\Models\Almacen\Movimiento','id_guia_com','id_guia');
+    }
     public function estado(){
         return $this->hasone('App\Models\Administracion\Estado','id_estado_doc','estado');
     }
