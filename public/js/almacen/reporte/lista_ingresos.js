@@ -149,7 +149,10 @@ function actualizarLista(option=null){
             }
         ],
         'language' : vardataTables[0],
-        'pageLength': 50,
+        // 'pageLength': 10,
+        "scrollX": true,
+      
+
         'serverSide': true,
         'ajax': {
             url:'listar-ingresos',

@@ -8,6 +8,11 @@ Lista de Ingresos
 @section('estilos')
 <link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
 <link rel="stylesheet" href="{{ asset('template/plugins/bootstrap-select/dist/css/bootstrap-select.min.css') }}">
+<style>
+    .dataTables_scrollBody thead tr[role="row"]{
+    visibility: collapse !important;
+}
+</style>
 @endsection
 
 @section('breadcrumb')
@@ -38,10 +43,9 @@ Lista de Ingresos
                 <div class="row">
                     <!-- <input type="hidden" name="_token" value="{{csrf_token()}}" id="token"> -->
                     <div class="col-md-12">
-                        <table class="mytable table table-condensed table-bordered table-okc-view" style="font-size: 0.9rem;" id="listaIngresos">
+                        <table class="mytable table table-condensed table-bordered table-okc-view" id="listaIngresos">
                             <thead>
                                 <tr>
-                                    <th hidden></th>
                                     <th hidden></th>
                                     <th></th>
                                     <th>Fecha Emisión</th>
