@@ -8,7 +8,11 @@ Lista de Salidas
 @section('estilos')
 <link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
 <link rel="stylesheet" href="{{ asset('template/plugins/bootstrap-select/dist/css/bootstrap-select.min.css') }}">
-
+<style>
+    .dataTables_scrollBody thead tr[role="row"]{
+    visibility: collapse !important;
+}
+</style>
 @endsection
 
 @section('breadcrumb')

@@ -151,40 +151,30 @@ function actualizarLista(option=null){
             { 'data': 'id_mov_alm', 'name': 'mov_alm.id_mov_alm', 'className': 'text-center','visible':false, "searchable": false },
             { 'data': 'revisado', 'name': 'mov_alm.revisado', 'className': 'text-center', 'visible':false,"searchable": false },
             { 'data': 'revisado', 'name': 'mov_alm.revisado', 'className': 'text-center',"searchable": false },
-            { 'data': 'fecha_emision', 'name': 'mov_alm.fecha_emision', 'className': 'text-center', "searchable": false },
+            { 'data': 'fecha_emision', 'name': 'mov_alm.fecha_emision', 'className': 'text-center' },
             { 'data': 'codigo', 'name': 'codigo', 'className': 'text-center' },
-            { 'data': 'guia_venta.fecha_emision', 'name': 'guia_venta.fecha_emision', 'className': 'text-center','defaultContent':''},
-            { 'data': 'guia_venta.id_guia', 'name': 'guia_venta.id_guia', 'className': 'text-center','defaultContent':'',"searchable": false },
-            { 'data': 'documento_venta.fecha_emision', 'name': 'documento_venta.fecha_emision', 'className': 'text-center','defaultContent':'',"searchable": false },
-            { 'data': 'documento_venta.tipo_documento.abreviatura', 'name': 'documento_venta.tipo_documento.abreviatura', 'className': 'text-center','defaultContent':'',"searchable": false },
-            { 'data': 'documento_venta.id_doc_ven', 'name': 'documento_venta.id_doc_ven', 'className': 'text-center','defaultContent':'',"searchable": false },
-            { 'data': 'guia_venta.cliente.contribuyente.nro_documento', 'name': 'documento_venta.cliente.contribuyente.nro_documento', 'className': 'text-center','defaultContent':'',"searchable": false },
-            { 'data': 'guia_venta.cliente.contribuyente.razon_social', 'name': 'documento_venta.cliente.contribuyente.razon_social', 'className': 'text-center','defaultContent':'',"searchable": false },
-            { 'data': 'documento_venta.moneda.simbolo', 'name': 'documento_venta.moneda.simbolo', 'className': 'text-center','defaultContent':'',"searchable": false },
-            { 'data': 'documento_venta.id_doc_ven', 'name': 'documento_venta.id_doc_ven', 'className': 'text-center','defaultContent':'' ,"searchable": false },
-            { 'data': 'documento_venta.id_doc_ven', 'name': 'documento_venta.id_doc_ven', 'className': 'text-center','defaultContent':'' ,"searchable": false },
-            { 'data': 'documento_venta.id_doc_ven', 'name': 'documento_venta.id_doc_ven', 'className': 'text-center','defaultContent':'' ,"searchable": false },
-            { 'data': 'documento_venta.id_doc_ven', 'name': 'documento_venta.id_doc_ven', 'className': 'text-center','defaultContent':'' ,"searchable": false },
-            { 'data': 'documento_venta.condicion_pago.descripcion', 'name': 'documento_venta.condicion_pago.descripcion', 'className': 'text-center','defaultContent':'',"searchable": false },
-            { 'data': 'documento_venta.credito_dias', 'name': 'documento_venta.credito_dias', 'className': 'text-center','defaultContent':'',"searchable": false },
-            { 'data': 'operacion.descripcion', 'name': 'operacion.descripcion', 'className': 'text-center','defaultContent':'',"searchable": false },
-            { 'data': 'documento_venta.fecha_vcmto', 'name': 'documento_venta.fecha_vcmto', 'className': 'text-center','defaultContent':'',"searchable": false },
-            { 'data': 'usuario.nombre_corto', 'name': 'usuario.nombre_corto', 'className': 'text-center','defaultContent':'',"searchable": false },
-            { 'data': 'documento_venta.tipo_cambio', 'name': 'documento_venta.tipo_cambio', 'className': 'text-center','defaultContent':'',"searchable": false },
-            { 'data': 'almacen.descripcion', 'name': 'almacen.descripcion', 'className': 'text-center','defaultContent':'',"searchable": false },
-            { 'data': 'fecha_registro', 'name': 'mov_alm.fecha_registro', 'className': 'text-center',"searchable": false },
+            { 'data': 'fecha_guia', 'name': 'guia_ven.fecha_emision', 'className': 'text-center','defaultContent':''},
+            { 'data': 'guia', 'name': 'guia', 'className': 'text-center','defaultContent':'' },
+            { 'data': 'fecha_doc', 'name': 'doc_ven.fecha_emision', 'className': 'text-center','defaultContent':''},
+            { 'data': 'abreviatura', 'name': 'abreviatura', 'className': 'text-center','defaultContent':'',"searchable": false },
+            { 'data': 'doc', 'name': 'doc', 'className': 'text-center','defaultContent':'',"searchable": false },
+            { 'data': 'nro_documento', 'name': 'adm_contri.nro_documento', 'className': 'text-center','defaultContent':'',"searchable": false },
+            { 'data': 'razon_social', 'name': 'adm_contri.razon_social', 'className': 'text-center','defaultContent':'',"searchable": false },
+            { 'data': 'simbolo', 'name': 'sis_moneda.simbolo', 'className': 'text-center','defaultContent':'',"searchable": false },
+            { 'data': 'total', 'name': 'doc_ven.total', 'className': 'text-center','defaultContent':'' ,"searchable": false },
+            { 'data': 'total_igv', 'name': 'doc_ven.total_igv', 'className': 'text-center','defaultContent':'' ,"searchable": false },
+            { 'data': 'total_a_pagar', 'name': 'doc_ven.total_a_pagar', 'className': 'text-center','defaultContent':'' ,"searchable": false },
+            { 'data': 'id_mov_alm', 'name': 'mov_alm.id_mov_alm', 'className': 'text-center',"searchable": false },
+            { 'data': 'des_condicion', 'name': 'log_cdn_pago.descripcion', 'className': 'text-center','defaultContent':'',"searchable": false },
+            { 'data': 'credito_dias', 'name': 'doc_ven.credito_dias', 'className': 'text-center','defaultContent':'',"searchable": false },
+            { 'data': 'des_operacion', 'name': 'tp_ope.descripcion', 'className': 'text-center','defaultContent':'' },
+            { 'data': 'fecha_vcmto', 'name': 'doc_ven.fecha_vcmto', 'className': 'text-center','defaultContent':'',"searchable": false },
+            { 'data': 'nombre_trabajador', 'name': 'sis_usua.nombre_corto', 'className': 'text-center','defaultContent':'' },
+            { 'data': 'tipo_cambio', 'name': 'doc_ven.tipo_cambio', 'className': 'text-center','defaultContent':'',"searchable": false },
+            { 'data': 'des_almacen', 'name': 'alm_almacen.descripcion', 'className': 'text-center','defaultContent':'' },
+            { 'data': 'fecha_registro', 'name': 'mov_alm.fecha_registro', 'className': 'text-center','defaultContent':'' }
         ],
         'columnDefs': [
-            {
-                'render': function (data, type, row) {
-                    return row['id_mov_alm'];
-                }, targets: 0
-            },
-            {
-                'render': function (data, type, row) {
-                    return row['revisado'];
-                }, targets: 1
-            },
             {'render': 
                 function(data, type, row){
                     var html = '<select class="form-control '+
@@ -198,93 +188,93 @@ function actualizarLista(option=null){
                     return (html);
                 }, targets: 2
             },
-            {
-                'render': function (data, type, row) {
-                    if(row['guia_venta']!=null){
-                        return (row['guia_venta']['serie']+'-'+row['guia_venta']['numero']);
-                    }else{
-                        return ''
+            // {
+            //     'render': function (data, type, row) {
+            //         if(row['guia_venta']!=null){
+            //             return (row['guia_venta']['serie']+'-'+row['guia_venta']['numero']);
+            //         }else{
+            //             return ''
+            //         }
+            //     }, targets: 6
+            // },
+            // {
+            //     'render': function (data, type, row) {
+            //         if(row['documento_venta']!=null){
+            //             return (row['documento_venta']['serie']+'-'+row['documento_venta']['numero']);
+            //         }else{
+            //             return ''
+            //         }
+            //     }, targets: 9
+            // },
+                {'render': 
+                function(data, type, row){
+                    if (moneda == 4){
+                        return 'S/';
+                    } else if (moneda == 5){
+                        return 'US$';
+                    } else {
+                        return row['simbolo'];
                     }
-                }, targets: 6
+                }, targets: 12
             },
             {
                 'render': function (data, type, row) {
-                    if(row['documento_venta']!=null){
-                        return (row['documento_venta']['serie']+'-'+row['documento_venta']['numero']);
-                    }else{
-                        return ''
-                    }
-                }, targets: 9
-            },
-            {
-                'render': function (data, type, row) {
-                if(row['documento_venta']!=null){
-                    let idMoneda = row['documento_venta']['moneda']['id_moneda'];
                     t = 0;
                     if (moneda == 4){//Convertir a Soles
-                        if (idMoneda == 1){//Soles
-                            t = row['documento_venta']['total'];
+                        if (row['moneda'] == 1){//Soles
+                            t = row['total'];
                         } else {
-                            t = row['documento_venta']['total'] * row['documento_venta']['tipo_cambio'];
+                            t = row['total'] * row['tipo_cambio'];
                         }
                     } else if (moneda == 5){//Convertir a Dolares
-                        if (idMoneda == 2){//Dolares
-                            t = row['documento_venta']['total'];
+                        if (row['moneda'] == 2){//Dolares
+                            t = row['total'];
                         } else {
-                            t = row['documento_venta']['total'] / row['documento_venta']['tipo_cambio'];
+                            t = row['total'] / row['tipo_cambio'];
                         }
                     } else {
-                        t = row['documento_venta']['total'];
+                        t = row['total'];
                     }
-
-                }
+                    return formatDecimal(t);
                 }, targets: 13
             },
             {
                 'render': function (data, type, row) {
-                    if(row['documento_venta']!=null){
-                        let idMoneda = row['documento_venta']['moneda']['id_moneda'];
-                        t = 0;
-                        if (moneda == 4){//Convertir a Soles
-                            if (idMoneda == 1){//Soles
-                                t = row['documento_venta']['total_igv'];
-                            } else {
-                                t = row['documento_venta']['total_igv'] * row['documento_venta']['tipo_cambio'];
-                            }
-                        } else if (moneda == 5){//Convertir a Dolares
-                            if (idMoneda == 2){//Dolares
-                                t = row['documento_venta']['total_igv'];
-                            } else {
-                                t = row['documento_venta']['total_igv'] / row['documento_venta']['tipo_cambio'];
-                            }
-                        } 
-                    }else{
-                        return '';
+                    t = 0;
+                    if (moneda == 4){//Convertir a Soles
+                        if (row['moneda'] == 1){//Soles
+                            t = row['total_igv'];
+                        } else {
+                            t = row['total_igv'] * row['tipo_cambio'];
+                        }
+                    } else if (moneda == 5){//Convertir a Dolares
+                        if (row['moneda'] == 2){//Dolares
+                            t = row['total_igv'];
+                        } else {
+                            t = row['total_igv'] / row['tipo_cambio'];
+                        }
                     }
+                    return formatDecimal(t);
+             
                 }, targets: 14
             },
             {
                 'render': function (data, type, row) {
-                    if(row['documento_venta']!=null){
-                // let simboloMoneda = row['documento_venta']['moneda']['simbolo'];
-                let idMoneda = row['documento_venta']['moneda']['id_moneda'];
-                t = 0;
-                if (moneda == 4){//Convertir a Soles
-                    if (idMoneda == 1){//Soles
-                        t = row['documento_venta']['total_a_pagar'];
-                    } else {
-                        t = row['documento_venta']['total_a_pagar'] * row['documento_venta']['tipo_cambio'];
+                    t = 0;
+                    if (moneda == 4){//Convertir a Soles
+                        if (row['moneda'] == 1){//Soles
+                            t = row['total_a_pagar'];
+                        } else {
+                            t = row['total_a_pagar'] * row['tipo_cambio'];
+                        }
+                    } else if (moneda == 5){//Convertir a Dolares
+                        if (row['moneda'] == 2){//Dolares
+                            t = row['total_a_pagar'];
+                        } else {
+                            t = row['total_a_pagar'] / row['tipo_cambio'];
+                        }
                     }
-                } else if (moneda == 5){//Convertir a Dolares
-                    if (idMoneda == 2){//Dolares
-                        t = row['documento_venta']['total_a_pagar'];
-                    } else {
-                        t = row['documento_venta']['total_a_pagar'] / row['documento_venta']['tipo_cambio'];
-                    }
-                } 
-                    }else{
-                        return '';
-                    }
+                    return formatDecimal(t);
 
 
                 }, targets: 15
