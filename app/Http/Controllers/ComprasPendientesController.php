@@ -235,7 +235,7 @@ class ComprasPendientesController extends Controller
                 DB::raw("(SELECT  COUNT(alm_det_req.id_detalle_requerimiento) FROM almacen.alm_det_req
                 WHERE alm_det_req.id_requerimiento = alm_req.id_requerimiento and alm_det_req.tiene_transformacion=false)::integer as cantidad_items_base"),
                 DB::raw("(SELECT  COUNT(alm_det_req.id_detalle_requerimiento) FROM almacen.alm_det_req
-                WHERE alm_det_req.id_requerimiento = alm_req.id_requerimiento and alm_det_req.por_regularizar=true)::integer as cantidad_por_regularizar"),
+                WHERE alm_det_req.id_requerimiento = alm_req.id_requerimiento and alm_det_req.estado=38)::integer as cantidad_por_regularizar"),
                 DB::raw("(SELECT json_agg(DISTINCT nivel.unidad) FROM almacen.alm_det_req dr
                 INNER JOIN finanzas.cc_niveles_view nivel ON dr.centro_costo_id = nivel.id_centro_costo
                 WHERE dr.id_requerimiento = almacen.alm_req.id_requerimiento and dr.tiene_transformacion=false ) as division"),
@@ -600,7 +600,7 @@ class ComprasPendientesController extends Controller
     // }
 
     function listarItemsPorRegularizar($idRequerimiento){
-        $detalleRequerimientoList=  DetalleRequerimiento::where([['id_requerimiento',$idRequerimiento],['por_regularizar','=',true],['estado','!=',7]])->with('producto','reserva','unidadMedida')->get();
+        $detalleRequerimientoList=  DetalleRequerimiento::where([['id_requerimiento',$idRequerimiento],['estado','=',38]])->with('producto','reserva','unidadMedida')->get();
         $data=[];
         foreach ($detalleRequerimientoList as $detalleRequerimiento) {
             $guiasCompraDetalle = GuiaCompraDetalle::join('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_orden', '=', 'guia_com_det.id_oc_det')
