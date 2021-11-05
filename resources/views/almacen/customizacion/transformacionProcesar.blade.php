@@ -8,6 +8,7 @@
                 </div>
                 <div class="modal-body">
                     <input style="display:none;" name="id_transformacion">
+                    <input style="display:none;" name="id_od">
                     <div class="row">
                         <div class="col-md-12">
                             <h5>Responsable</h5>

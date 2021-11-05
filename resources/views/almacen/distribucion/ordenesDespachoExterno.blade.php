@@ -7,6 +7,11 @@ Gestión de Despacho Externo
 
 @section('estilos')
 <link rel="stylesheet" href="{{ asset('template/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css') }}">
+<link rel="stylesheet" href="{{ asset('template/plugins/iCheck/all.css') }}">
+<link rel="stylesheet" href="{{ asset('template/plugins/jquery-datatables-checkboxes/css/dataTables.checkboxes.css') }}">
+<link rel="stylesheet" href="{{ asset('datatables/Datatables/css/dataTables.bootstrap.min.css') }}">
+<link rel="stylesheet" href="{{ asset('datatables/Buttons/css/buttons.dataTables.min.css') }}">
+<link rel="stylesheet" href="{{ asset('css/stepperHorizontal.css')}}">
 <link rel="stylesheet" href="{{ asset('css/stepper.css')}}">
 @endsection
 
@@ -23,22 +28,28 @@ Gestión de Despacho Externo
     <div class="box box-solid">
         <div class="box-body">
             <div class="col-md-12" style="padding-top:10px;padding-bottom:10px;">
-
+                <form id="formFiltrosDespachoExterno" method="POST" target="_blank" action="{{route('almacen.movimientos.pendientes-ingreso.ordenesPendientesExcel')}}">
+                    @csrf()
+                    <input type="hidden" name="select_mostrar" value="0">
+                </form>
                 <div class="row">
                     <div class="col-md-12">
-                        <table class="mytable table table-condensed table-bordered table-okc-view" id="requerimientosEnProceso">
+                        <table class="mytable table table-condensed table-bordered table-hover table-striped table-okc-view" id="requerimientosEnProceso">
                             <thead>
                                 <tr>
                                     <th hidden></th>
-                                    <th width="8%">Cod.Req.</th>
-                                    <th>Fecha Entrega</th>
+                                    <th></th>
+                                    <th>Cod.Req.</th>
+                                    <th>Fecha Fin Entrega</th>
                                     <th>Orden Elec.</th>
                                     <th>Cod.CP</th>
-                                    <th>Cliente/Entidad</th>
+                                    <th width="30%">Cliente/Entidad</th>
                                     <th>Generado por</th>
                                     <th>Sede Req.</th>
-                                    <th>Estado</th>
-                                    <th>Transf.</th>
+                                    <th>Fecha Despacho</th>
+                                    {{-- <th>Estado</th> --}}
+                                    <th>Cod. D.E.</th>
+                                    <th>Estado D.E.</th>
                                     <th width="60px">Acción</th>
                                 </tr>
                             </thead>
@@ -53,9 +64,12 @@ Gestión de Despacho Externo
 </div>
 @include('almacen.distribucion.transferenciasDetalle')
 @include('almacen.distribucion.ordenDespachoCreate')
+@include('almacen.distribucion.ordenDespachoTransportista')
 @include('almacen.distribucion.enviarFacturacion')
+@include('almacen.distribucion.ordenDespachoEnviar')
 @include('tesoreria.facturacion.archivos_oc_mgcp')
 @include('publico.ubigeoModal')
+@include('almacen.transferencias.transportistaModal')
 @include('logistica.requerimientos.trazabilidad.modal_trazabilidad')
 
 @endsection
@@ -63,20 +77,31 @@ Gestión de Despacho Externo
 @section('scripts')
 <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
+<script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
+<script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
+<script src="{{ asset('template/plugins/iCheck/icheck.min.js') }}"></script>
 <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
+<script src="{{ asset('template/plugins/loadingoverlay.min.js') }}"></script>
+<script src="{{ asset('template/plugins/jquery-datatables-checkboxes/js/dataTables.checkboxes.min.js') }}"></script>
+<script src="{{ asset('template/plugins/js-xlsx/xlsx.full.min.js') }}"></script>
 <script src="{{ asset('template/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js') }}"></script>
 <script src="{{ asset('template/plugins/bootstrap-datepicker/locales/bootstrap-datepicker.es.min.js') }}"></script>
 
 <script src="{{ asset('js/almacen/distribucion/ordenesDespachoExterno.js')}}"></script>
-<script src="{{ asset('js/almacen/distribucion/ordenDespachoCreate.js')}}"></script>
+{{-- <script src="{{ asset('js/almacen/distribucion/ordenDespachoCreate.js')}}"></script> --}}
+<script src="{{ asset('js/almacen/distribucion/actualizaContacto.js')}}"></script>
+<script src="{{ asset('js/almacen/distribucion/ordenDespachoEnviar.js')}}"></script>
 <script src="{{ asset('js/almacen/distribucion/verDetalleRequerimiento.js')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/trazabilidad.js')}}"></script>
+<script src="{{ asset('js/almacen/distribucion/ordenDespachoEstado.js')}}"></script>
+<script src="{{ asset('js/almacen/distribucion/ordenDespachoTransportista.js')}}"></script>
 <script src="{{ asset('js/tesoreria/facturacion/archivosMgcp.js')}}"></script>
 <script src="{{ asset('js/publico/ubigeoModal.js')}}"></script>
-
+<script src="{{ asset('js/almacen/transferencias/transportistaModal.js')}}"></script>
 <script>
     $(document).ready(function() {
         seleccionarMenu(window.location);
+        $.fn.dataTable.Buttons.defaults.dom.button.className = 'btn';
         listarRequerimientosPendientes();
         
         $('input.date-picker').datepicker({

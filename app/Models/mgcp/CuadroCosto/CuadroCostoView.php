@@ -40,7 +40,7 @@ class CuadroCostoView extends Model
         return CuadroCostoView::where($filtros)->select([
             'id', 'moneda', 'tipo_cambio', 'id_oportunidad', 'fecha_creacion',
             'codigo_oportunidad', 'descripcion_oportunidad', 'fecha_limite', 'nombre_entidad', 'name', 'tipo_cuadro',
-            'estado_aprobacion','nro_orden','responsable_aprobacion'
+            'estado_aprobacion','nro_orden','responsable_aprobacion','monto_gg_soles','monto_gg_dolares'
         ]);
     }
 

@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\DB;
 
 class Oportunidad extends Model
 {
-    //use HasFactory;
+    // use HasFactory;
     protected $table = 'mgcp_oportunidades.oportunidades';
     protected $appends = ['ultimo_status', 'monto', 'dias_diferencia'];
 

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Entidad extends Model
 {
-  //use HasFactory;
+  use HasFactory;
   protected $table = 'mgcp_acuerdo_marco.entidades';
   protected $appends = ['semaforo'];
   public $timestamps = false;

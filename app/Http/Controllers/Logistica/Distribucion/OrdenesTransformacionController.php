@@ -168,7 +168,7 @@ class OrdenesTransformacionController extends Controller
             ->get()->count();
 
         $val = AlmacenController::leftZero(3, ($cantidad + 1));
-        $nextId = "OD" . ($aplica_cambios ? "I-" : "E-") . $id_almacen . "-" . $yy . $val;
+        $nextId = "D" . ($aplica_cambios ? "I-" : "E-") . $id_almacen . "-" . $yy . $val;
         return $nextId;
     }
 
@@ -192,9 +192,9 @@ class OrdenesTransformacionController extends Controller
         try {
             DB::beginTransaction();
 
-            // $cambios = ($request->aplica_cambios_valor == 'si' ? true : false);
             $codigo = $this->ODnextId(date('Y-m-d'), $request->id_almacen, true);
             $usuario = Auth::user()->id_usuario;
+            $fecha_registro = date('Y-m-d H:i:s');
 
             $id_od = DB::table('almacen.orden_despacho')
                 ->insertGetId(
@@ -203,11 +203,11 @@ class OrdenesTransformacionController extends Controller
                         'id_requerimiento' => $request->id_requerimiento,
                         'id_almacen' => $request->id_almacen,
                         'codigo' => $codigo,
-                        'fecha_despacho' => date('Y-m-d'),
-                        'hora_despacho' => date('H:i:s'),
+                        // 'fecha_despacho' => date('Y-m-d'),
+                        // 'hora_despacho' => date('H:i:s'),
                         'aplica_cambios' => true,
                         'registrado_por' => $usuario,
-                        'fecha_registro' => date('Y-m-d H:i:s'),
+                        'fecha_registro' => $fecha_registro,
                         'estado' => 1,
                     ],
                     'id_od'
@@ -220,7 +220,7 @@ class OrdenesTransformacionController extends Controller
                     'accion' => 'DESPACHO INTERNO',
                     'descripcion' => 'Se generó la Orden de Despacho Interna ' . $codigo,
                     'id_usuario' => $usuario,
-                    'fecha_registro' => date('Y-m-d H:i:s')
+                    'fecha_registro' => $fecha_registro
                 ]);
 
             $fecha_actual = date('Y-m-d');
@@ -246,7 +246,7 @@ class OrdenesTransformacionController extends Controller
                         'registrado_por' => $usuario,
                         'conformidad' => false,
                         'tipo_cambio' => 1,
-                        'fecha_registro' => date('Y-m-d H:i:s'),
+                        'fecha_registro' => $fecha_registro,
                         'estado' => 1,
                         // 'observacion'=>'SALE: '.$request->sale
                     ],
@@ -266,7 +266,7 @@ class OrdenesTransformacionController extends Controller
                             'cantidad' => $i->cantidad,
                             'transformado' => false,
                             'estado' => 1,
-                            'fecha_registro' => date('Y-m-d H:i:s')
+                            'fecha_registro' => $fecha_registro
                         ],
                         'id_od_detalle'
                     );
@@ -282,7 +282,7 @@ class OrdenesTransformacionController extends Controller
                         'valor_unitario' => ($val / $i->cantidad),
                         'valor_total' => $val,
                         'estado' => 1,
-                        'fecha_registro' => date('Y-m-d H:i:s')
+                        'fecha_registro' => $fecha_registro
                     ], 'id_materia');
 
                 //envia la reserva
@@ -349,7 +349,7 @@ class OrdenesTransformacionController extends Controller
                             'cantidad' => $s->cantidad,
                             'transformado' => true,
                             'estado' => 1,
-                            'fecha_registro' => date('Y-m-d H:i:s')
+                            'fecha_registro' => $fecha_registro
                         ],
                         'id_od_detalle'
                     );
@@ -363,16 +363,15 @@ class OrdenesTransformacionController extends Controller
                         'valor_unitario' => 0,
                         'valor_total' => 0,
                         'estado' => 1,
-                        'fecha_registro' => date('Y-m-d H:i:s')
+                        'fecha_registro' => $fecha_registro
                     ]);
             }
 
-            $msj = 'Se guardó existosamente la Orden de Despacho Interna y Hoja de Transformación';
-
             DB::commit();
-            return response()->json($msj);
+            return response()->json('Se guardo existosamente el Despacho Interno: ' . $codigo . ' y la Orden de Transformacion: ' . $codTrans);
         } catch (\PDOException $e) {
             DB::rollBack();
+            return response()->json("Ha ocurrido un problema. Inténtelo nuevamente.");
         }
     }
 
@@ -388,6 +387,7 @@ class OrdenesTransformacionController extends Controller
 
             $codigo = $this->ODnextId(date('Y-m-d'), $req->id_almacen, true);
             $usuario = Auth::user()->id_usuario;
+            $fecha_registro = date('Y-m-d H:i:s');
 
             $id_od = DB::table('almacen.orden_despacho')
                 ->insertGetId(
@@ -396,11 +396,9 @@ class OrdenesTransformacionController extends Controller
                         'id_requerimiento' => $req->id_requerimiento,
                         'id_almacen' => $req->id_almacen,
                         'codigo' => $codigo,
-                        'fecha_despacho' => date('Y-m-d'),
-                        'hora_despacho' => date('H:i:s'),
                         'aplica_cambios' => true,
                         'registrado_por' => $usuario,
-                        'fecha_registro' => date('Y-m-d H:i:s'),
+                        'fecha_registro' => $fecha_registro,
                         'estado' => 1,
                     ],
                     'id_od'
@@ -413,7 +411,7 @@ class OrdenesTransformacionController extends Controller
                     'accion' => 'DESPACHO INTERNO',
                     'descripcion' => 'Se generó la Orden de Despacho Interna ' . $codigo,
                     'id_usuario' => $usuario,
-                    'fecha_registro' => date('Y-m-d H:i:s')
+                    'fecha_registro' => $fecha_registro
                 ]);
 
             $fecha_actual = date('Y-m-d');
@@ -437,7 +435,7 @@ class OrdenesTransformacionController extends Controller
                         'registrado_por' => $usuario,
                         'conformidad' => false,
                         'tipo_cambio' => 1,
-                        'fecha_registro' => date('Y-m-d H:i:s'),
+                        'fecha_registro' => $fecha_registro,
                         'estado' => 1,
                     ],
                     'id_transformacion'
@@ -462,7 +460,7 @@ class OrdenesTransformacionController extends Controller
                             'cantidad' => $i->cantidad,
                             'transformado' => $i->tiene_transformacion,
                             'estado' => 1,
-                            'fecha_registro' => date('Y-m-d H:i:s')
+                            'fecha_registro' => $fecha_registro
                         ],
                         'id_od_detalle'
                     );
@@ -477,7 +475,7 @@ class OrdenesTransformacionController extends Controller
                             'valor_unitario' => 0,
                             'valor_total' => 0,
                             'estado' => 1,
-                            'fecha_registro' => date('Y-m-d H:i:s')
+                            'fecha_registro' => $fecha_registro
                         ]);
                 } else {
                     DB::table('almacen.transfor_materia')
@@ -489,7 +487,7 @@ class OrdenesTransformacionController extends Controller
                             'valor_unitario' => 0, //($val / $i->cantidad),
                             'valor_total' => 0,
                             'estado' => 1,
-                            'fecha_registro' => date('Y-m-d H:i:s')
+                            'fecha_registro' => $fecha_registro
                         ]);
                 }
 

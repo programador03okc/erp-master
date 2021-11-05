@@ -4,12 +4,12 @@
             <form id="form-orden_despacho_transportista">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
-                    <h3 class="modal-title">Guía del Transportista</h3>
+                    <h3 class="modal-title">Datos del Transportista</h3>
                 </div>
                 <div class="modal-body">
                     <input type="text" class="oculto" name="id_od"/>
                     <input type="text" class="oculto" name="con_id_requerimiento">
-                    <input type="text" class="oculto" name="id_od_grupo_detalle">
+                    {{-- <input type="text" class="oculto" name="id_od_grupo_detalle"> --}}
                     <div class="row">
                         <!-- <div class="col-md-2">
                             <h5>Propia</h5>
@@ -19,7 +19,7 @@
                         <div id="agencia" class="col-md-12">
                             <h5>Agencia</h5>
                             <div style="display:flex;">
-                                <input class="oculto" name="tr_id_proveedor"/>
+                                <input class="oculto" name="tr_id_transportista"/>
                                 <input type="text" class="form-control" name="tr_razon_social" placeholder="Seleccione un proveedor..." 
                                     aria-describedby="basic-addon1" disabled="true" required>
                                 <button type="button" class="input-group-text activation" id="basic-addon1" onClick="openTransportistaModal();">
@@ -47,19 +47,20 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-2">
-                            <h5>Crédito</h5>
-                            <input type="checkbox" name="credito" id="credito" 
-                                    style="margin-right: 10px; margin-left: 7px;"/>
+                        <div class="col-md-6">
+                            <h5>Código de Envío</h5>
+                            <input type="text" name="codigo_envio" class="form-control"/>
                         </div>
                         <div class="col-md-4">
                             <h5>Monto Flete (S/)</h5>
                             <input type="number" class="form-control" name="importe_flete" step="any" required>
                         </div>
-                        <div class="col-md-4">
-                            <h5>Código de Envío</h5>
-                            <input type="text" name="codigo_envio" class="form-control"/>
+                        <div class="col-md-2">
+                            <h5>Crédito</h5>
+                            <input type="checkbox" name="credito" id="credito" 
+                                    style="margin-right: 10px; margin-left: 7px;"/>
                         </div>
+                        
                     </div>
                     <!-- <div class="row">
                         <div class="col-md-4">

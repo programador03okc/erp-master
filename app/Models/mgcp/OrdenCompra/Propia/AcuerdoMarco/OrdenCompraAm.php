@@ -6,10 +6,11 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class OrdenCompraAm extends Model {
-    use HasFactory;
+class OrdenCompraAm extends Model
+{
+    // use HasFactory;
     protected $table = 'mgcp_acuerdo_marco.oc_propias';
-    public $timestamps = false;
+    //public $timestamps = false;
 
     /*public function usuario() {
         return $this->belongsTo(User::class, 'id_usuario');

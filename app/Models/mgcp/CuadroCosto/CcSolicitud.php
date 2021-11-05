@@ -70,4 +70,9 @@ class CcSolicitud extends Model
     {
         return $this->belongsTo(CcTipoSolicitud::class, 'id_tipo');
     }
+
+    public function getMargenCuadroAttribute()
+    {
+        return $this->attributes['margen_cuadro'] ?? 0;
+    }
 }

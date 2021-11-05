@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
 
 class CuadroCosto extends Model
 {
-    //use HasFactory;
+    // use HasFactory;
     protected $table = 'mgcp_cuadro_costos.cc';
     protected $appends = ['fecha_creacion_format']; //['margen_ganancia', 'monto_ganancia', 'fecha_creacion_format', 'tiene_transformacion'];
     public $timestamps = false;
@@ -118,12 +118,20 @@ class CuadroCosto extends Model
 
     public function getTieneTransformacionAttribute()
     {
-        $resultado = DB::selectOne("SELECT CASE WHEN cc.tipo_cuadro=0 THEN 0
+        /*$resultado = DB::selectOne("SELECT CASE WHEN cc.tipo_cuadro=0 THEN 0
         ELSE 
         (SELECT COUNT(*) FROM mgcp_cuadro_costos.cc_am_filas WHERE cc_am_filas.id_cc_am=cc.id AND part_no_producto_transformado IS NOT NULL)
         END AS cantidad
-        FROM mgcp_cuadro_costos.cc where id=?", [$this->attributes['id']]);
-        return $resultado->cantidad > 0;
+        FROM mgcp_cuadro_costos.cc where id=?", [$this->attributes['id']]);*/
+        $tieneTransformacion = false;
+        $filas = CcAmFila::where('id_cc_am', $this->attributes['id'])->get();
+        foreach ($filas as $fila) {
+            if ($fila->tieneTransformacion()) {
+                $tieneTransformacion = true;
+                break;
+            }
+        }
+        return $tieneTransformacion;
     }
 
     public function getMontoGananciaAttribute()
@@ -146,7 +154,12 @@ class CuadroCosto extends Model
 
     public function getCantidadSolicitudesAttribute()
     {
-        return CcSolicitud::where('id_cc', $this->attributes['id'])->get()->count();
+        return CcSolicitud::where('id_cc', $this->attributes['id'])->count();
+    }
+
+    public function getCantidadAprobacionesAttribute()
+    {
+        return CcSolicitud::where('id_cc', $this->attributes['id'])->where('id_tipo', 1)->where('aprobada', true)->count();
     }
 
     public function nivelCentroCosto()

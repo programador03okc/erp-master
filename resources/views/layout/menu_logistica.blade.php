@@ -101,10 +101,10 @@
             </span>
         </a>
         <ul class="treeview-menu">
+            @if(Auth::user()->tieneAplicacion(80))
             <li><a href="{{route('logistica.distribucion.ordenes-despacho-interno.index')}}"><i class="far fa-circle fa-xs"></i> Despacho Interno </a></li>
             <li><a href="{{route('logistica.distribucion.ordenes-despacho-externo.index')}}"><i class="far fa-circle fa-xs"></i> Despacho Externo </a></li>
-            @if(Auth::user()->tieneAplicacion(80))
-            <li><a href="{{route('logistica.distribucion.despachos.index')}}"><i class="far fa-circle fa-xs"></i> Panel de Control </a></li>
+            {{-- <li><a href="{{route('logistica.distribucion.despachos.index')}}"><i class="far fa-circle fa-xs"></i> Panel de Control </a></li> --}}
             @endif
             {{-- @if(Auth::user()->tieneAplicacion(81))
             <li><a href="{{route('logistica.distribucion.trazabilidad-requerimientos.index')}}"><i class="far fa-circle fa-xs"></i> Trazabilidad de Requerimientos </a>

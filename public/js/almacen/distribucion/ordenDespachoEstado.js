@@ -108,77 +108,89 @@ function despacho_estado() {
 }
 
 function formatTimeLine(table_id, id, row) {
-
+    console.log(id);
     $.ajax({
         type: 'GET',
         url: 'getTimelineOrdenDespacho/' + id,
         dataType: 'JSON',
         success: function (response) {
-            console.log(response);
-            var html = `<div class="row">
-            <div class="col-md-12">
-            
-              <div style="display:inline-block;width:100%;">
-                <ul class="timeline timeline-horizontal">`;
-            var i = 1;
+            console.log(response.length);
 
-            response.forEach(element => {
+            if (response.length > 0) {
+                var html = `<div class="row">
+                <div class="col-md-12">
+                
+                  <div style="display:inline-block;width:100%;">
+                    <ul class="timeline timeline-horizontal">`;
+                var i = 1;
 
-                if (element.accion == 10) {
-                    html += `<li class="timeline-item">
-                    <div class="timeline-badge bgfuxia"><i class="glyphicon glyphicon-time"></i></div>
-                    <div class="timeline-panel borderfuxia">
-                        <div class="timeline-heading">
-                        <p><small class="text-muted colorfuxia">${element.fecha_despacho}<br>
-                        <strong>${element.estado_doc}</strong><br>
-                        ${element.mov_entrega}<br>${element.razon_social_despacho !== null ?
-                            element.razon_social_despacho :
-                            (element.responsable_despacho !== null ? element.responsable_despacho : '')}</small></p>
-                        </div>
-                    </div>
-                    </li>`;
-                }
-                else if (element.accion == 2) {
-                    html += `<li class="timeline-item">
-                    <div class="timeline-badge bggreendark"><i class="glyphicon glyphicon-time"></i></div>
-                    <div class="timeline-panel bordergreendark">
-                        <div class="timeline-heading">
-                        <p><small class="text-muted colorgreendark">${element.fecha_transportista}<br>
-                        <strong>${element.estado_doc}</strong><br>
-                        ${element.observacion !== null ? element.observacion : ''} 
-                        ${element.razon_social_transportista !== null ? element.razon_social_transportista : 'Propia'}
-                        ${element.codigo_envio !== null ? ('Cod.Envío:' + element.codigo_envio) : ''}</small><br></p>
-                        </div>
-                    </div>
-                    </li>`;
-                }
-                else {
-                    html += `<li class="timeline-item">
-                    <div class="timeline-badge ${element.accion == 3 ? 'bggreenlight' :
-                            ((element.accion == 4 || element.accion == 5) ? 'bgyellow' : 'bgdark')}">
-                    <i class="glyphicon glyphicon-time"></i></div>
-                    <div class="timeline-panel ${element.accion == 3 ? 'bordergreenlight' :
-                            ((element.accion == 4 || element.accion == 5) ? 'borderyellow' : 'borderdark')} ">
-                    
-                        <i class="fas fa-trash-alt red" style="cursor:pointer;" title="Eliminar estado"
-                            onClick="eliminarTrazabilidadEnvio(${element.id_obs});"></i>
+                response.forEach(element => {
 
-                        <div class="timeline-heading">
-                        <p><small class="text-muted ${element.accion == 3 ? 'colorgreenlight' :
-                            ((element.accion == 4 || element.accion == 5) ? 'coloryellow' : 'colordark')}">
-                        ${element.fecha_registro}<br>
-                        <strong>${element.estado_doc}</strong><br>
-                        ${element.observacion !== null ? element.observacion : ''}</small></p>
+                    if (element.accion == 10) {
+                        html += `<li class="timeline-item">
+                        <div class="timeline-badge bgfuxia"><i class="glyphicon glyphicon-time"></i></div>
+                        <div class="timeline-panel borderfuxia">
+                            <div class="timeline-heading">
+                            <p><small class="text-muted colorfuxia">${element.fecha_despacho}<br>
+                            <strong>${element.estado_doc}</strong><br>
+                            ${element.mov_entrega}<br>${element.razon_social_despacho !== null ?
+                                element.razon_social_despacho :
+                                (element.responsable_despacho !== null ? element.responsable_despacho : '')}</small></p>
+                            </div>
                         </div>
-                    </div>
-                    </li>`;
-                }
-            });
-            html += `</ul>
-            </div>
-            </div>
-            </div>`;
-            row.child(html).show();
+                        </li>`;
+                    }
+                    else if (element.accion == 2) {
+                        html += `<li class="timeline-item">
+                        <div class="timeline-badge bggreendark"><i class="glyphicon glyphicon-time"></i></div>
+                        <div class="timeline-panel bordergreendark">
+                            <div class="timeline-heading">
+                            <p><small class="text-muted colorgreendark">${element.fecha_transportista}<br>
+                            <strong>${element.estado_doc}</strong><br>
+                            ${element.observacion !== null ? element.observacion : ''} 
+                            ${element.razon_social_transportista !== null ? element.razon_social_transportista : 'Propia'}
+                            ${element.codigo_envio !== null ? ('Cod.Envío:' + element.codigo_envio) : ''}</small><br></p>
+                            </div>
+                        </div>
+                        </li>`;
+                    }
+                    else {
+                        html += `<li class="timeline-item">
+                        <div class="timeline-badge ${element.accion == 3 ? 'bggreenlight' :
+                                ((element.accion == 4 || element.accion == 5) ? 'bgyellow' : 'bgdark')}">
+                        <i class="glyphicon glyphicon-time"></i></div>
+                        <div class="timeline-panel ${element.accion == 3 ? 'bordergreenlight' :
+                                ((element.accion == 4 || element.accion == 5) ? 'borderyellow' : 'borderdark')} ">
+                        
+                            <i class="fas fa-trash-alt red" style="cursor:pointer;" title="Eliminar estado"
+                                onClick="eliminarTrazabilidadEnvio(${element.id_obs});"></i>
+    
+                            <div class="timeline-heading">
+                            <p><small class="text-muted ${element.accion == 3 ? 'colorgreenlight' :
+                                ((element.accion == 4 || element.accion == 5) ? 'coloryellow' : 'colordark')}">
+                            ${element.fecha_registro}<br>
+                            <strong>${element.estado_doc}</strong><br>
+                            ${element.observacion !== null ? element.observacion : ''}</small></p>
+                            </div>
+                        </div>
+                        </li>`;
+                    }
+                });
+                html += `</ul>
+                </div>
+                </div>
+                </div>`;
+                row.child(html).show();
+            } else {
+                Lobibox.notify("warning", {
+                    title: false,
+                    size: "mini",
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    msg: "Aún no hay estados de envío ingresados."
+                });
+            }
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);

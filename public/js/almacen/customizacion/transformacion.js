@@ -44,11 +44,9 @@ function mostrar_transformacion(id) {
         success: function (response) {
             console.log(response);
             $('[name=id_transformacion]').val(response.id_transformacion);
+            $('[name=id_od]').val(response.id_od);
             $('#codigo_oportunidad').text(response.codigo_oportunidad);
             $('#orden_am').text(response.orden_am);
-            // $('[name=id_empresa]').val(response.id_empresa).trigger('change.select2');
-            // $('[name=serie]').val(response.serie);
-            // $('[name=numero]').val(response.numero);
             $('#almacen_descripcion').text(response.almacen_descripcion);
             $('[name=total_materias]').val(formatNumber.decimal(response.total_materias, '', -2));
             $('[name=total_directos]').val(formatNumber.decimal(response.total_directos, '', -2));
@@ -56,12 +54,12 @@ function mostrar_transformacion(id) {
             $('[name=total_indirectos]').val(formatNumber.decimal(response.total_indirectos, '', -2));
             $('[name=total_sobrantes]').val(formatNumber.decimal(response.total_sobrantes, '', -2));
             $('[name=costo_transformacion]').val(formatNumber.decimal(response.costo_transformacion, '', -2));
-            // $('[name=cod_estado]').val(response.estado);
+
             $('#codigo').text(response.codigo);
             $('#codigo_od').text(response.cod_od);
             $('#codigo_req').text(response.codigo_req);
             $('#serie-numero').text(response.serie !== null ? (response.serie + '-' + response.numero) : '');
-            // $('#fecha_registro label').text('');
+
             $('#fecha_transformacion').text(response.fecha_transformacion !== null ? formatDateHour(response.fecha_transformacion) : '');
             $('#fecha_inicio').text(response.fecha_inicio !== null ? formatDateHour(response.fecha_inicio) : '');
             $('#nombre_responsable').text(response.nombre_corto);
@@ -165,18 +163,29 @@ function procesar_transformacion(data) {
         dataType: 'JSON',
         success: function (response) {
             console.log(response);
-            $('#modal-procesarTransformacion').modal('hide');
-            // alert('Transformación procesada con éxito');
-            Lobibox.notify("success", {
-                title: false,
-                size: "mini",
-                rounded: true,
-                sound: false,
-                delayIndicator: false,
-                msg: 'Transformación procesada con éxito.'
-            });
-            var id_trans = $('[name=id_transformacion]').val();
-            mostrar_transformacion(id_trans);
+            if (response == 'ok') {
+                $('#modal-procesarTransformacion').modal('hide');
+                // alert('Transformación procesada con éxito');
+                Lobibox.notify("success", {
+                    title: false,
+                    size: "mini",
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    msg: 'Transformación procesada con éxito.'
+                });
+                var id_trans = $('[name=id_transformacion]').val();
+                mostrar_transformacion(id_trans);
+            } else {
+                Lobibox.notify("error", {
+                    title: false,
+                    size: "mini",
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    msg: 'Algo salió mal. Inténtelo nuevamente.'
+                });
+            }
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
@@ -258,13 +267,13 @@ function openIniciar() {
             icon: "error",
         });
     }
-    else if (est == '24') {
-        Swal.fire({
-            title: "Ésta Transformación ya fue iniciada.",
-            icon: "error",
-        });
-    }
-    else if (est == '21') {
+    // else if (est == '24') {
+    //     Swal.fire({
+    //         title: "Ésta Transformación ya fue iniciada.",
+    //         icon: "error",
+    //     });
+    // }
+    else /*if (est == '21')*/ {
         $.ajax({
             type: 'GET',
             url: 'iniciar_transformacion/' + id_transformacion,

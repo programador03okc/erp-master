@@ -2,6 +2,7 @@
 
 namespace App\Models\mgcp\OrdenCompra\Propia;
 
+use App\Models\Gerencial\Penalidad;
 use App\Models\mgcp\AcuerdoMarco\Empresa;
 use App\Models\mgcp\AcuerdoMarco\Entidad\Contacto;
 use App\Models\mgcp\AcuerdoMarco\Entidad\Entidad;
@@ -21,16 +22,13 @@ class OrdenCompraPropiaView extends Model
 
     protected $table = 'mgcp_ordenes_compra.oc_propias_view';
     public $timestamps = false;
-    protected $appends = ['tiene_comentarios', 'fecha_estado_format', 'fecha_guia_format', 'fecha_entrega_format','inicio_entrega_format', 'fecha_publicacion_format', 'monto_total_format', 'fecha_aprobacion'];
+    protected $appends = ['tiene_comentarios', 'fecha_estado_format', 'fecha_guia_format', 'fecha_entrega_format', 'inicio_entrega_format', 'fecha_publicacion_format', 'monto_total_format', 'fecha_aprobacion'];
 
-    public static function listar($request,$incluirCc=false)
+    public static function listar($request, $incluirCc = false)
     {
-        if ($incluirCc)
-        {
-            $ordenes = OrdenCompraPropiaView::with(['entidad','oportunidad','oportunidad.cuadroCosto'])->select(['*']);
-        }
-        else
-        {
+        if ($incluirCc) {
+            $ordenes = OrdenCompraPropiaView::with(['entidad', 'oportunidad', 'oportunidad.cuadroCosto'])->select(['*']);
+        } else {
             $ordenes = OrdenCompraPropiaView::with('entidad')->select(['*']);
         }
         $valores = [];
@@ -52,7 +50,7 @@ class OrdenCompraPropiaView extends Model
         }
 
         if ($request->session()->has('ocFiltroTipo')) {
-            $valores['id_tipo'] = session('ocFiltroTipo')==0 ? null :session('ocFiltroTipo');
+            $valores['id_tipo'] = session('ocFiltroTipo') == 0 ? null : session('ocFiltroTipo');
         }
 
         if ($request->session()->has('ocFiltroEntidad')) {
@@ -67,7 +65,7 @@ class OrdenCompraPropiaView extends Model
             $valores['cobrado'] = session('ocFiltroCobrado');
         }
 
-        
+
 
         if (Auth::user()->tieneRol(48)) {
             $valores['id_responsable_oc'] = Auth::user()->id;
@@ -90,24 +88,24 @@ class OrdenCompraPropiaView extends Model
         }
 
         if ($request->session()->has('ocFiltroAm')) {
-            $ordenes = $ordenes->whereIn("oc_propias_view.id_acuerdo_marco",session('ocFiltroAm'));
+            $ordenes = $ordenes->whereIn("oc_propias_view.id_acuerdo_marco", session('ocFiltroAm'));
         }
 
         if ($request->session()->has('ocFiltroEmpresa')) {
-            $ordenes = $ordenes->whereIn("id_empresa",session('ocFiltroEmpresa'));
+            $ordenes = $ordenes->whereIn("id_empresa", session('ocFiltroEmpresa'));
         }
 
         if ($request->session()->has('ocFiltroMarca')) {
             $ordenes = $ordenes->whereRaw("oc_propias_view.id IN 
             (SELECT oc_propias.id FROM mgcp_acuerdo_marco.oc_propias 
             INNER JOIN mgcp_acuerdo_marco.oc_publica_detalles ON oc_publica_detalles.id_orden_compra=oc_propias.id
-            INNER JOIN mgcp_acuerdo_marco.productos_am ON productos_am.id=id_producto WHERE marca IN ('".implode("','", session('ocFiltroMarca'))."') )");
+            INNER JOIN mgcp_acuerdo_marco.productos_am ON productos_am.id=id_producto WHERE marca IN ('" . implode("','", session('ocFiltroMarca')) . "') )");
         }
-        
+
         if (count($valores) > 0) {
             $ordenes = $ordenes->where($valores);
         }
-        return $ordenes;//$ordenes->where($valores);
+        return $ordenes; //$ordenes->where($valores);
     }
 
     public function empresa()
@@ -184,12 +182,9 @@ class OrdenCompraPropiaView extends Model
         } else {
             //$orden = OrdenCompraDirecta::find($this->attributes['id']);
             $path = storage_path('app/mgcp/ordenes-compra/directas/' . $this->attributes['id']);
-            if (!is_dir($path))
-            {
+            if (!is_dir($path)) {
                 $archivos .= '<li style="margin-bottom: 5px">Sin archivos</li>';
-            }
-            else
-            {
+            } else {
                 $files = File::files($path);
                 foreach ($files as $file) {
                     $archivos .= '<li style="margin-bottom: 5px"><a target="_blank" href="' . route('mgcp.ordenes-compra.propias.directas.descargar-archivo', ['id' => $this->attributes['id'], 'archivo' => $file->getFilename()]) . '">' . $file->getFilename() . '</a></li>';
@@ -217,7 +212,7 @@ class OrdenCompraPropiaView extends Model
 
     public function getMontoTotalFormatAttribute()
     {
-        return ($this->attributes['moneda_oc'] =='s' ? 'S/ ' : '$ ') . number_format($this->attributes['monto_total'], 2, '.', ',');
+        return ($this->attributes['moneda_oc'] == 's' ? 'S/ ' : '$ ') . number_format($this->attributes['monto_total'], 2, '.', ',');
     }
 
     public function setOccAttribute($valor)
@@ -245,7 +240,7 @@ class OrdenCompraPropiaView extends Model
 
     public function getFechaAprobacionAttribute()
     {
-        return $this->attributes['fecha_aprobacion'] == null ? '' : (new Carbon($this->attributes['fecha_aprobacion']))->format('d-m-Y');//date_format(date_create($this->attributes['fecha_aprobacion']), 'd-m-Y H:i');
+        return $this->attributes['fecha_aprobacion'] == null ? '' : (new Carbon($this->attributes['fecha_aprobacion']))->format('d-m-Y'); //date_format(date_create($this->attributes['fecha_aprobacion']), 'd-m-Y H:i');
     }
 
     public function getFechaGuiaFormatAttribute()
@@ -280,6 +275,11 @@ class OrdenCompraPropiaView extends Model
         return ($this->attributes['fecha_publicacion'] == null ? null : date_format(date_create($this->attributes['fecha_publicacion']), 'd-m-Y'));
     }
 
+    /*public function penalidad() {
+        return Penalidad::join('tesoreria.cobranza','penalidad.id_cobranza','cobranza.id_cobranza')
+        ->where('tipo','PENALIDAD')->whereRaw("REPLACE(ocam,'OCAM-','') = ?",[str_replace('OCAM-','',$this->attributes['nro_orden'])])->first();
+    }*/
+
     public function setFechaGuiaAttribute($valor)
     {
         if ($valor == '' || $valor == null) {
@@ -287,5 +287,27 @@ class OrdenCompraPropiaView extends Model
         } else {
             $this->attributes['fecha_guia'] = Carbon::createFromFormat('d-m-Y', $valor)->toDateString();
         }
+    }
+
+    public static function actualizarEstadoCompra($ocPropiaView, $estado)
+    {
+        if (!is_null($ocPropiaView)) {
+            $ordenCompra = $ocPropiaView->tipo == 'directa' ? OrdenCompraDirecta::find($ocPropiaView->id) : OrdenCompraAm::find($ocPropiaView->id);
+            $ordenCompra->id_etapa = $estado;
+            $ordenCompra->save();
+        }
+    }
+
+    public static function obtenerMontoMensual($mes, $anio)
+    {
+        return OrdenCompraPropiaView::whereRaw("
+        (tipo='am' AND estado_oc='ACEPTADA' AND estado_entrega NOT LIKE 'RESUELTA%' AND EXTRACT(MONTH FROM fecha_estado)=? AND EXTRACT(YEAR FROM fecha_estado)=?)
+        OR
+        (tipo='directa' AND EXTRACT(MONTH FROM fecha_publicacion)=? AND EXTRACT(YEAR FROM fecha_publicacion)=?)
+        OR 
+        (tipo='am' AND estado_oc!='RESUELTA' AND 
+        id IN (SELECT id_oc FROM mgcp_acuerdo_marco.oc_propias_estados WHERE id_oc=oc_propias_view.id AND EXTRACT(MONTH FROM fecha)=? AND EXTRACT(YEAR FROM fecha)=? AND estado LIKE 'ACEPTADA%') AND
+        id NOT IN (SELECT id_oc FROM mgcp_acuerdo_marco.oc_propias_estados WHERE id_oc=oc_propias_view.id AND EXTRACT(MONTH FROM fecha)<? AND EXTRACT(YEAR FROM fecha)=? AND estado LIKE 'ACEPTADA%')
+        )", [$mes, $anio, $mes, $anio, $mes, $anio, $mes, $anio])->sum('monto_soles');
     }
 }

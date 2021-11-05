@@ -1,29 +1,117 @@
 var table;
+let despachos_seleccionados = [];
 
 function listarRequerimientosPendientes() {
     var vardataTables = funcDatatables();
+    let botones = [];
+    // if (acceso == '1') {
+    botones.push({
+        text: ' Priorizar seleccionados',
+        action: function () {
+            priorizar();
+        }, className: 'btn-primary disabled btnPriorizar'
+    });
+    // }
+
+    $("#requerimientosEnProceso").on('search.dt', function () {
+        $('#requerimientosEnProceso_filter input').prop('disabled', true);
+        $('#btnBuscar').html('<span class="glyphicon glyphicon-time" aria-hidden="true"></span>').prop('disabled', true);
+    });
+
+    $("#requerimientosEnProceso").on('processing.dt', function (e, settings, processing) {
+        if (processing) {
+            $(e.currentTarget).LoadingOverlay("show", {
+                imageAutoResize: true,
+                progress: true,
+                zIndex: 10,
+                imageColor: "#3c8dbc"
+            });
+        } else {
+            $(e.currentTarget).LoadingOverlay("hide", true);
+        }
+    });
+
     table = $('#requerimientosEnProceso').DataTable({
-        'dom': vardataTables[1],
-        'buttons': vardataTables[2],
-        'language': vardataTables[0],
-        'bDestroy': true,
+        dom: vardataTables[1],
+        buttons: botones,
+        language: vardataTables[0],
+        // 'bDestroy': true,
+        serverSide: true,
         pageLength: 20,
-        // 'serverSide' : true,
-        'ajax': 'listarRequerimientosPendientesDespachoInterno',
-        // 'ajax': {
-        //     url: 'listarRequerimientosEnProceso',
-        //     type: 'POST'
-        // },
-        'columns': [
-            { 'data': 'id_requerimiento' },
-            { 'data': 'codigo', className: "text-center" },
+        initComplete: function (settings, json) {
+            const $filter = $("#requerimientosEnProceso_filter");
+            const $input = $filter.find("input");
+            $filter.append(
+                '<button id="btnBuscar" class="btn btn-default btn-sm btn-flat" type="button"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>'
+            );
+            $input.off();
+            $input.on("keyup", e => {
+                if (e.key == "Enter") {
+                    $("#btnBuscar").trigger("click");
+                }
+            });
+            $("#btnBuscar").on("click", e => {
+                table.search($input.val()).draw();
+            });
+
+            const $form = $('#formFiltrosDespachoInterno');
+            const factual = fecha_actual();
+            $('#requerimientosEnProceso_wrapper .dt-buttons').append(
+                `<div style="display:flex">
+                    <input type="date" class="form-control " size="10" id="txtFechaPriorizacion" 
+                        style="background-color:#d2effa;" value="${factual}"/>
+                    <label style="text-align: center;margin-left: 20px;margin-top: 7px;margin-right: 10px;">Mostrar: </label>
+                    <select class="form-control" id="selectMostrar">
+                        <option value="0" selected>Todos</option>
+                        <option value="1" >Priorizados</option>
+                        <option value="2" >Los de Hoy</option>
+                    </select>
+                    
+                </div>`
+            );
+            // $('input.date-picker').datepicker({
+            //     language: "es",
+            //     orientation: "bottom auto",
+            //     format: 'dd-mm-yyyy',
+            //     autoclose: true
+            // });
+
+            $("#selectMostrar").on("change", function (e) {
+                var sed = $(this).val();
+                $('#formFiltrosDespachoInterno').find('input[name=select_mostrar]').val(sed);
+                $("#requerimientosEnProceso").DataTable().ajax.reload(null, false);
+            });
+        },
+        drawCallback: function (settings) {
+            $("#requerimientosEnProceso_filter input").prop("disabled", false);
+            $("#btnBuscar").html('<span class="glyphicon glyphicon-search" aria-hidden="true"></span>'
+            ).prop("disabled", false);
+            //$('#spanCantFiltros').html($('#modalFiltros').find('input[type=checkbox]:checked').length);
+            $('#requerimientosEnProceso tbody tr td input[type="checkbox"]').iCheck({
+                checkboxClass: "icheckbox_flat-blue"
+            });
+            $("#requerimientosEnProceso_filter input").trigger("focus");
+        },
+        // 'ajax': 'listarRequerimientosPendientesDespachoInterno',
+        ajax: {
+            url: 'listarRequerimientosPendientesDespachoInterno',
+            type: 'POST',
+            data: function (params) {
+                return Object.assign(params, objectifyForm($('#formFiltrosDespachoInterno').serializeArray()))
+            }
+        },
+        columns: [
+            { data: 'id_od' },
+            { data: 'id_requerimiento', name: 'alm_req.id_requerimiento' },
+            { data: 'codigo', name: 'alm_req.codigo', className: "text-center" },
             {
+                data: 'fecha_despacho', name: 'orden_despacho.fecha_despacho',
                 'render': function (data, type, row) {
-                    return (row['fecha_entrega'] !== null ? formatDate(row['fecha_entrega']) : '');
+                    return (row['fecha_despacho'] !== null ? formatDate(row['fecha_despacho']) : '');
                 }
             },
             {
-                'data': 'nro_orden',
+                data: 'nro_orden', name: 'oc_propias_view.nro_orden',
                 render: function (data, type, row) {
                     if (row["nro_orden"] == null) {
                         return '';
@@ -35,51 +123,113 @@ function listarRequerimientosPendientes() {
                     }
                 }, className: "text-center"
             },
-            { 'data': 'codigo_oportunidad', 'name': 'oc_propias_view.codigo_oportunidad' },
-            { 'data': 'cliente_razon_social', 'name': 'adm_contri.razon_social' },
-            { 'data': 'responsable', 'name': 'sis_usua.nombre_corto' },
-            { 'data': 'sede_descripcion_req', name: 'sede_req.descripcion', className: "text-center" },
+            { data: 'codigo_oportunidad', name: 'oc_propias_view.codigo_oportunidad' },
+            { data: 'cliente_razon_social', name: 'adm_contri.razon_social' },
+            { data: 'responsable', name: 'sis_usua.nombre_corto' },
+            { data: 'sede_descripcion_req', name: 'sede_req.descripcion', className: "text-center" },
+            // {
+            //     data: 'estado_doc', name: 'adm_estado_doc.estado_doc',
+            //     'render': function (data, type, row) {
+            //         return '<span class="label label-' + row['bootstrap_color'] + '">' + row['estado_doc'] + '</span>'
+            //     }
+            // },
+            { data: 'codigo_transformacion', name: 'transformacion.codigo' },
+            { data: 'codigo_od', name: 'orden_despacho.codigo' },
+            // {
+            //     'render': function (data, type, row) {
+            //         return '<span class="label label-' + row['estado_bootstrap_transformacion'] + '">' + row['estado_transformacion'] + '</span>'
+            //     }
+            // },
             {
+                data: 'estado_od', name: 'est_od.estado_doc',
                 'render': function (data, type, row) {
-                    return '<span class="label label-' + row['bootstrap_color'] + '">' + row['estado_doc'] + '</span>'
-                }
-            },
-            {
-                'render': function (data, type, row) {
-                    return ((row['count_transferencia'] > 0 ?
-                        '<button type="button" class="detalle_trans btn btn-success boton" data-toggle="tooltip" ' +
-                        'data-placement="bottom" title="Ver Detalle de Transferencias" data-id="' + row['id_requerimiento'] + '">' +
-                        '<i class="fas fa-exchange-alt"></i></button>' : ''))
+                    return '<span class="label label-' + row['estado_bootstrap_od'] + '">' + row['estado_od'] + '</span>'
                 }
             },
         ],
-        'order': [[0, "desc"]],
-        'columnDefs': [
-            { 'aTargets': [0], 'sClass': 'invisible' },
+        columnDefs: [
+            { targets: [0], className: "invisible" },
+            {
+                targets: 1,
+                searchable: false,
+                orderable: false,
+                className: "dt-body-center",
+                checkboxes: {
+                    selectRow: true,
+                    selectCallback: function (nodes, selected) {
+                        $('input[type="checkbox"]', nodes).iCheck("update");
+                    },
+                    selectAllCallback: function (
+                        nodes,
+                        selected,
+                        indeterminate
+                    ) {
+                        $('input[type="checkbox"]', nodes).iCheck("update");
+                    }
+                }
+            },
             {
                 render: function (data, type, row) {
                     return (
                         '<a href="#" class="verRequerimiento" data-id="' + row["id_requerimiento"] + '" >' + row["codigo"] + "</a>" + (row['tiene_transformacion'] ? ' <i class="fas fa-random red"></i>' : '')
                     );
-                }, targets: 1
+                }, targets: 2
+            },
+            {
+                render: function (data, type, row) {
+                    return ('<a href="#" class="verTransformacion" data-id="' + row["id_transformacion"] + '" >' + row["codigo_transformacion"] + "</a>");
+                }, targets: 9
             },
             {
                 'render': function (data, type, row) {
                     return `<div style="display:flex;">
-                        <button type="button" class="detalle btn btn-default btn-flat boton" data-toggle="tooltip"
-                        data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}">
-                        <i class="fas fa-chevron-down"></i></button>
+                        <button type="button" class="detalle btn btn-default btn-flat btn-xs boton" data-toggle="tooltip"
+                            data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}">
+                            <i class="fas fa-chevron-down"></i></button>
+                        
+                        </div>`
 
-                        <button type="button" class="trazabilidad btn btn-warning btn-flat boton" data-toggle="tooltip"
-                        data-placement="bottom" title="Ver Trazabilidad de Docs"  data-id="${row['id_requerimiento']}">
-                        <i class="fas fa-route"></i></button></div>`
-
-                }, targets: 10
+                    // <button type="button" class="trazabilidad btn btn-warning btn-flat btn-xs boton" data-toggle="tooltip"
+                    //     data-placement="bottom" title="Ver Trazabilidad de Docs"  data-id="${row['id_requerimiento']}">
+                    //     <i class="fas fa-route"></i></button>
+                }, targets: 12
             }
         ],
+        select: "multi",
+        order: [[0, "desc"]],
     });
     vista_extendida();
+
+    $($("#requerimientosEnProceso").DataTable().table().container()).on("ifChanged", ".dt-checkboxes", function (event) {
+        var cell = $("#requerimientosEnProceso").DataTable().cell($(this).closest("td"));
+        cell.checkboxes.select(this.checked);
+
+        var data = $("#requerimientosEnProceso").DataTable().row($(this).parents("tr")).data();
+
+        if (data !== null && data !== undefined) {
+            if (this.checked) {
+                despachos_seleccionados.push(data);
+                $('.btnPriorizar').removeClass('disabled');
+            } else {
+                var index = despachos_seleccionados.findIndex(function (item, i) {
+                    return item.id_od == data.id_od;
+                });
+                if (index !== null) {
+                    despachos_seleccionados.splice(index, 1);
+                    $('.btnPriorizar').addClass('disabled');
+                }
+            }
+        }
+    });
 }
+
+$("#requerimientosEnProceso tbody").on("click", "a.verTransformacion", function (e) {
+    $(e.preventDefault());
+    var id_transformacion = $(this).data("id");
+    // localStorage.setItem("id_transfor", id_transformacion);
+    var win = window.open("/cas/customizacion/hoja-transformacion/imprimir_transformacion/" + id_transformacion, '_blank');
+    win.focus();
+});
 
 $("#requerimientosEnProceso tbody").on("click", "a.verRequerimiento", function (e) {
     $(e.preventDefault());
@@ -102,94 +252,55 @@ $('#requerimientosEnProceso tbody').on("click", "button.detalle_trans", function
     open_detalle_transferencia(id);
 });
 
-// $('#requerimientosEnProceso tbody').on("click", "button.adjuntar", function () {
-//     var id = $(this).data('id');
-//     var cod = $(this).data('cod');
-//     $('#modal-despachoAdjuntos').modal({
-//         show: true
-//     });
-//     listarAdjuntos(id);
-//     $('[name=id_od]').val(id);
-//     $('[name=codigo_od]').val(cod);
-//     $('[name=descripcion]').val('');
-//     $('[name=archivo_adjunto]').val('');
-//     $('[name=proviene_de]').val('enProceso');
-// });
+function priorizar() {
+    let fecha = $('#txtFechaPriorizacion').val();
 
-$('#requerimientosEnProceso tbody').on("click", "button.anular", function () {
-    var id = $(this).data('id');
-    var cod = $(this).data('cod');
-    var origen = 'despacho';
-    openRequerimientoObs(id, cod, origen);
-});
-
-$('#requerimientosEnProceso tbody').on("click", "button.despacho", function () {
-    var data = $('#requerimientosEnProceso').DataTable().row($(this).parents("tr")).data();
-    console.log(data);
-    tab_origen = 'enProceso';
-    open_despacho_create(data);
-});
-
-$('#requerimientosEnProceso tbody').on("click", "button.anular_od", function () {
-    var id = $(this).data('id');
-    var cod = $(this).data('cod');
     Swal.fire({
-        title: "¿Está seguro que desea anular la Orden de Transformación " + cod + "?",
-        text: "No podrás revertir esto.",
+        title: "¿Está seguro que desea priorizar con la fecha: " + formatDate(fecha) + "?",
         icon: "warning",
         showCancelButton: true,
-        confirmButtonColor: "#3085d6",
+        confirmButtonColor: "#00a65a", //"#3085d6",
         cancelButtonColor: "#d33",
         cancelButtonText: "Cancelar",
-        confirmButtonText: "Si, anular"
+        confirmButtonText: "Sí, Guardar"
     }).then(result => {
+
         if (result.isConfirmed) {
-            anularOrdenDespacho(id);
+            var data = 'despachos_internos=' + JSON.stringify(despachos_seleccionados)
+                + '&fecha_despacho=' + fecha;
+            $.ajax({
+                type: 'POST',
+                url: 'priorizar',
+                data: data,
+                dataType: 'JSON',
+                success: function (response) {
+                    if (response == 'ok') {
+                        Lobibox.notify("success", {
+                            title: false,
+                            size: "mini",
+                            rounded: true,
+                            sound: false,
+                            delayIndicator: false,
+                            msg: 'Despachos Internos priorizados correctamente.'
+                        });
+                        $("#requerimientosEnProceso").DataTable().ajax.reload(null, false);
+                    } else {
+                        Lobibox.notify("error", {
+                            title: false,
+                            size: "mini",
+                            rounded: true,
+                            sound: false,
+                            delayIndicator: false,
+                            msg: 'Ha ocurrido un error interno. Inténtelo nuevamente.'
+                        });
+                    }
+                }
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            });
         }
-    });
-});
-
-function anularOrdenDespacho(id) {
-    $.ajax({
-        type: 'GET',
-        url: 'anular_orden_despacho/' + id + '/interno',
-        dataType: 'JSON',
-        success: function (response) {
-            console.log(response);
-            if (response > 0) {
-                Lobibox.notify("success", {
-                    title: false,
-                    size: "mini",
-                    rounded: true,
-                    sound: false,
-                    delayIndicator: false,
-                    msg: "Orden de Transformación anulada con éxito."
-                });
-                $('#requerimientosEnProceso').DataTable().ajax.reload(null, false);
-            }
-        }
-    }).fail(function (jqXHR, textStatus, errorThrown) {
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    });
-}
-
-function open_detalle_transferencia(id) {
-    $('#modal-detalleTransferencia').modal({
-        show: true
-    });
-    $.ajax({
-        type: 'GET',
-        url: 'listarDetalleTransferencias/' + id,
-        dataType: 'JSON',
-        success: function (response) {
-            $('#detalleTransferencias tbody').html(response);
-        }
-    }).fail(function (jqXHR, textStatus, errorThrown) {
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
     });
 }
 

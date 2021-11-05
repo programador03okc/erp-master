@@ -986,26 +986,36 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::group(['as' => 'ordenes-despacho-externo.', 'prefix' => 'ordenes-despacho-externo'], function () {
 
 				Route::get('index', 'Logistica\Distribucion\OrdenesDespachoExternoController@view_ordenes_despacho_externo')->name('index');
-				Route::get('listarRequerimientosPendientesDespachoExterno', 'Logistica\Distribucion\OrdenesDespachoExternoController@listarRequerimientosPendientesDespachoExterno');
+				Route::post('listarRequerimientosPendientesDespachoExterno', 'Logistica\Distribucion\OrdenesDespachoExternoController@listarRequerimientosPendientesDespachoExterno');
+				Route::post('priorizar', 'Logistica\Distribucion\OrdenesDespachoExternoController@priorizar');
 				Route::post('obtenerArchivosOc', 'Tesoreria\Facturacion\PendientesFacturacionController@obtenerArchivosOc')->name('obtener-archivos-oc');
 				Route::get('listarDetalleTransferencias/{id}', 'Almacen\Movimiento\TransferenciaController@listarDetalleTransferencias');
 				Route::get('verDetalleRequerimientoDI/{id}', 'Logistica\Distribucion\OrdenesTransformacionController@verDetalleRequerimientoDI');
 				Route::get('listar_ubigeos', 'AlmacenController@listar_ubigeos');
 				Route::post('guardarOrdenDespachoExterno', 'Logistica\Distribucion\OrdenesDespachoExternoController@guardarOrdenDespachoExterno');
+				// Route::get('guardarOrdenDespachoExterno/{id}', 'Logistica\Distribucion\OrdenesDespachoExternoController@guardarOrdenDespachoExterno');
+				Route::post('actualizarOrdenDespachoExterno', 'Logistica\Distribucion\OrdenesDespachoExternoController@actualizarOrdenDespachoExterno');
 				Route::get('anular_orden_despacho/{id}/{tp}', 'Almacen\Movimiento\SalidasPendientesController@anular_orden_despacho');
 				Route::post('enviarFacturacion', 'Logistica\Distribucion\OrdenesDespachoExternoController@enviarFacturacion');
+				Route::post('despacho_transportista', 'Logistica\Distribucion\OrdenesDespachoExternoController@despacho_transportista');
+				Route::get('mostrarTransportistas', 'DistribucionController@mostrarTransportistas');
+				Route::get('getTimelineOrdenDespacho/{id}', 'DistribucionController@getTimelineOrdenDespacho');
 
 				Route::get('mostrarDocumentosByRequerimiento/{id}', 'Logistica\Requerimientos\TrazabilidadRequerimientoController@mostrarDocumentosByRequerimiento');
 				Route::get('imprimir_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@imprimir_transformacion');
 				Route::get('imprimir_transferencia/{id}', 'Almacen\Movimiento\TransferenciaController@imprimir_transferencia');
 				Route::get('imprimir_ingreso/{id}', 'Almacen\Movimiento\IngresoPdfController@imprimir_ingreso');
 				Route::get('imprimir_salida/{id}', 'Almacen\Movimiento\SalidaPdfController@imprimir_salida');
+
+				Route::get('verDatosContacto/{id}', 'Logistica\Distribucion\OrdenesDespachoExternoController@verDatosContacto');
+				Route::post('actualizaDatosContacto', 'Logistica\Distribucion\OrdenesDespachoExternoController@actualizaDatosContacto');
 			});
 
 			Route::group(['as' => 'ordenes-despacho-interno.', 'prefix' => 'ordenes-despacho-interno'], function () {
 
 				Route::get('index', 'Logistica\Distribucion\OrdenesDespachoInternoController@view_ordenes_despacho_interno')->name('index');
-				Route::get('listarRequerimientosPendientesDespachoInterno', 'Logistica\Distribucion\OrdenesDespachoInternoController@listarRequerimientosPendientesDespachoInterno');
+				Route::post('listarRequerimientosPendientesDespachoInterno', 'Logistica\Distribucion\OrdenesDespachoInternoController@listarRequerimientosPendientesDespachoInterno');
+				Route::post('priorizar', 'Logistica\Distribucion\OrdenesDespachoInternoController@priorizar');
 				Route::post('obtenerArchivosOc', 'Tesoreria\Facturacion\PendientesFacturacionController@obtenerArchivosOc')->name('obtener-archivos-oc');
 				Route::get('listarDetalleTransferencias/{id}', 'Almacen\Movimiento\TransferenciaController@listarDetalleTransferencias');
 				Route::get('verDetalleRequerimientoDI/{id}', 'Logistica\Distribucion\OrdenesTransformacionController@verDetalleRequerimientoDI');
@@ -1256,16 +1266,18 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::group(['as' => 'pendientes-salida.', 'prefix' => 'pendientes-salida'], function () {
 				//Pendientes de Salida
 				Route::get('index', 'Almacen\Movimiento\SalidasPendientesController@view_despachosPendientes')->name('index');
-				Route::get('listarOrdenesDespachoPendientes', 'Almacen\Movimiento\SalidasPendientesController@listarOrdenesDespachoPendientes');
+				Route::post('listarOrdenesDespachoPendientes', 'Almacen\Movimiento\SalidasPendientesController@listarOrdenesDespachoPendientes');
 				Route::post('guardar_guia_despacho', 'Almacen\Movimiento\SalidasPendientesController@guardar_guia_despacho');
 				Route::post('listarSalidasDespacho', 'Almacen\Movimiento\SalidasPendientesController@listarSalidasDespacho');
 				Route::post('anular_salida', 'Almacen\Movimiento\SalidasPendientesController@anular_salida');
 				Route::post('cambio_serie_numero', 'Almacen\Movimiento\SalidasPendientesController@cambio_serie_numero');
 				Route::get('verDetalleDespacho/{id}/{tra}', 'Almacen\Movimiento\SalidasPendientesController@verDetalleDespacho');
+				Route::get('marcar_despachado/{id}/{tra}', 'Almacen\Movimiento\SalidasPendientesController@marcar_despachado');
 				Route::get('imprimir_salida/{id}', 'Almacen\Movimiento\SalidaPdfController@imprimir_salida');
 				// Route::get('anular_orden_despacho/{id}', 'Almacen\Movimiento\SalidasPendientesController@anular_orden_despacho');
 				Route::get('listarSeriesGuiaVen/{id}/{alm}', 'Almacen\Movimiento\SalidasPendientesController@listarSeriesGuiaVen');
 				Route::get('verDetalleRequerimientoDI/{id}', 'Logistica\Distribucion\OrdenesTransformacionController@verDetalleRequerimientoDI');
+				Route::post('obtenerArchivosOc', 'Tesoreria\Facturacion\PendientesFacturacionController@obtenerArchivosOc')->name('obtener-archivos-oc');
 			});
 
 			Route::group(['as' => 'prorrateo.', 'prefix' => 'prorrateo'], function () {
@@ -1516,7 +1528,7 @@ Route::group(['middleware' => ['auth']], function () {
 				//Transformaciones
 				Route::get('index', 'Almacen\Movimiento\TransformacionController@view_listar_transformaciones')->name('index');
 				Route::get('listar_todas_transformaciones', 'Almacen\Movimiento\TransformacionController@listar_todas_transformaciones');
-				Route::get('listar_transformaciones_pendientes', 'Almacen\Movimiento\TransformacionController@listar_transformaciones_pendientes');
+				Route::post('listar_transformaciones_pendientes', 'Almacen\Movimiento\TransformacionController@listar_transformaciones_pendientes');
 				Route::post('listarCuadrosCostos', 'Almacen\Movimiento\TransformacionController@listarCuadrosCostos');
 				Route::post('generarTransformacion', 'Almacen\Movimiento\TransformacionController@generarTransformacion');
 				Route::get('obtenerCuadro/{id}/{tipo}', 'Almacen\Movimiento\TransformacionController@obtenerCuadro');
@@ -1529,6 +1541,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('recibido_conforme_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@recibido_conforme_transformacion');
 				Route::get('no_conforme_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@no_conforme_transformacion');
 				Route::get('iniciar_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@iniciar_transformacion');
+				Route::post('obtenerArchivosOc', 'Tesoreria\Facturacion\PendientesFacturacionController@obtenerArchivosOc')->name('obtener-archivos-oc');
 			});
 
 			Route::group(['as' => 'hoja-transformacion.', 'prefix' => 'hoja-transformacion'], function () {
