@@ -127,19 +127,25 @@ function listarRequerimientosPendientes() {
             { data: 'cliente_razon_social', name: 'adm_contri.razon_social' },
             { data: 'responsable', name: 'sis_usua.nombre_corto' },
             { data: 'sede_descripcion_req', name: 'sede_req.descripcion', className: "text-center" },
-            {
-                data: 'estado_doc', name: 'adm_estado_doc.estado_doc',
-                'render': function (data, type, row) {
-                    return '<span class="label label-' + row['bootstrap_color'] + '">' + row['estado_doc'] + '</span>'
-                }
-            },
+            // {
+            //     data: 'estado_doc', name: 'adm_estado_doc.estado_doc',
+            //     'render': function (data, type, row) {
+            //         return '<span class="label label-' + row['bootstrap_color'] + '">' + row['estado_doc'] + '</span>'
+            //     }
+            // },
             { data: 'codigo_transformacion', name: 'transformacion.codigo' },
+            { data: 'codigo_od', name: 'orden_despacho.codigo' },
+            // {
+            //     'render': function (data, type, row) {
+            //         return '<span class="label label-' + row['estado_bootstrap_transformacion'] + '">' + row['estado_transformacion'] + '</span>'
+            //     }
+            // },
             {
+                data: 'estado_od', name: 'est_od.estado_doc',
                 'render': function (data, type, row) {
-                    return '<span class="label label-' + row['estado_bootstrap_transformacion'] + '">' + row['estado_transformacion'] + '</span>'
+                    return '<span class="label label-' + row['estado_bootstrap_od'] + '">' + row['estado_od'] + '</span>'
                 }
             },
-            { data: 'estado_od', name: 'est_od.estado_doc' },
         ],
         columnDefs: [
             { targets: [0], className: "invisible" },
@@ -172,7 +178,7 @@ function listarRequerimientosPendientes() {
             {
                 render: function (data, type, row) {
                     return ('<a href="#" class="verTransformacion" data-id="' + row["id_transformacion"] + '" >' + row["codigo_transformacion"] + "</a>");
-                }, targets: 10
+                }, targets: 9
             },
             {
                 'render': function (data, type, row) {
@@ -180,18 +186,17 @@ function listarRequerimientosPendientes() {
                         <button type="button" class="detalle btn btn-default btn-flat btn-xs boton" data-toggle="tooltip"
                             data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}">
                             <i class="fas fa-chevron-down"></i></button>
-
-                        <button type="button" class="trazabilidad btn btn-warning btn-flat btn-xs boton" data-toggle="tooltip"
-                            data-placement="bottom" title="Ver Trazabilidad de Docs"  data-id="${row['id_requerimiento']}">
-                            <i class="fas fa-route"></i></button>
                         
                         </div>`
 
-                }, targets: 13
+                    // <button type="button" class="trazabilidad btn btn-warning btn-flat btn-xs boton" data-toggle="tooltip"
+                    //     data-placement="bottom" title="Ver Trazabilidad de Docs"  data-id="${row['id_requerimiento']}">
+                    //     <i class="fas fa-route"></i></button>
+                }, targets: 12
             }
         ],
         select: "multi",
-        order: [[3, "asc"], [0, "desc"]],
+        order: [[0, "desc"]],
     });
     vista_extendida();
 
@@ -246,33 +251,6 @@ $('#requerimientosEnProceso tbody').on("click", "button.detalle_trans", function
     var id = $(this).data('id');
     open_detalle_transferencia(id);
 });
-
-// $('#requerimientosEnProceso tbody').on("click", "button.adjuntar", function () {
-//     var id = $(this).data('id');
-//     var cod = $(this).data('cod');
-//     $('#modal-despachoAdjuntos').modal({
-//         show: true
-//     });
-//     listarAdjuntos(id);
-//     $('[name=id_od]').val(id);
-//     $('[name=codigo_od]').val(cod);
-//     $('[name=descripcion]').val('');
-//     $('[name=archivo_adjunto]').val('');
-//     $('[name=proviene_de]').val('enProceso');
-// });
-
-// $('#requerimientosEnProceso tbody').on("click", "button.priorizar", function () {
-//     var data = $('#requerimientosEnProceso').DataTable().row($(this).parents("tr")).data();
-//     console.log(data);
-//     $('#modal-orden_despacho_priorizacion').modal({
-//         show: true
-//     });
-
-//     $("#submit_orden_despacho").removeAttr("disabled");
-//     $('#codigo_req').text(data.codigo);
-//     $('#concepto').text(data.concepto);
-//     $('[name=id_requerimiento]').val(data.id_requerimiento);
-// });
 
 function priorizar() {
     let fecha = $('#txtFechaPriorizacion').val();

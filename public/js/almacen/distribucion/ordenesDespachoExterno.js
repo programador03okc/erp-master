@@ -86,7 +86,6 @@ function listarRequerimientosPendientes() {
             });
             $("#requerimientosEnProceso_filter input").trigger("focus");
         },
-        // 'ajax': 'listarRequerimientosPendientesDespachoExterno',
         ajax: {
             url: 'listarRequerimientosPendientesDespachoExterno',
             type: 'POST',
@@ -102,12 +101,6 @@ function listarRequerimientosPendientes() {
                 data: 'fecha_entrega', name: 'alm_req.fecha_entrega',
                 'render': function (data, type, row) {
                     return (row['fecha_entrega'] !== null ? formatDate(row['fecha_entrega']) : '');
-                }
-            },
-            {
-                data: 'fecha_despacho', name: 'alm_req.fecha_despacho',
-                'render': function (data, type, row) {
-                    return (row['fecha_despacho'] !== null ? formatDate(row['fecha_despacho']) : '');
                 }
             },
             {
@@ -127,12 +120,24 @@ function listarRequerimientosPendientes() {
             { data: 'cliente_razon_social', name: 'adm_contri.razon_social' },
             { data: 'responsable', name: 'sis_usua.nombre_corto' },
             { data: 'sede_descripcion_req', name: 'sede_req.descripcion', className: "text-center" },
+            // {
+            //     data: 'estado_doc', name: 'adm_estado_doc.bootstrap_color',
+            //     'render': function (data, type, row) {
+            //         return '<span class="label label-' + row['bootstrap_color'] + '">' + row['estado_doc'] + '</span>'
+            //     }
+            // },
             {
+                data: 'fecha_despacho', name: 'orden_despacho.fecha_despacho',
                 'render': function (data, type, row) {
-                    return '<span class="label label-' + row['bootstrap_color'] + '">' + row['estado_doc'] + '</span>'
+                    return (row['fecha_despacho'] !== null ? formatDate(row['fecha_despacho']) : '');
                 }
             },
-
+            { data: 'codigo_od', name: 'orden_despacho.codigo', className: "text-center" },
+            {
+                'render': function (data, type, row) {
+                    return '<span class="label label-' + row['estado_bootstrap_od'] + '">' + row['estado_od'] + '</span>'
+                }
+            },
             { data: 'id_od', name: 'orden_despacho.id_od' },
         ],
         columnDefs: [
@@ -169,30 +174,40 @@ function listarRequerimientosPendientes() {
                         <button type="button" class="detalle btn btn-default btn-flat btn-xs boton" data-toggle="tooltip"
                         data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}">
                         <i class="fas fa-chevron-down"></i></button>
+                        
+                        <button type="button" class="envio_od btn btn-${row['id_od'] !== null ? 'warning' : 'default'} btn-flat btn-xs boton" data-toggle="tooltip"
+                        data-placement="bottom" title="Enviar Orden de Despacho" data-id="${row['id_requerimiento']}"
+                        data-fentrega="${row['fecha_entrega']}" data-cdp="${row['codigo_oportunidad']}">
+                        <i class="far fa-envelope"></i></button>`+
 
-                        <button type="button" class="trazabilidad btn btn-warning btn-flat btn-xs boton" data-toggle="tooltip"
-                            data-placement="bottom" title="Ver Trazabilidad de Docs"  data-id="${row['id_requerimiento']}">
-                            <i class="fas fa-route"></i></button>`+
+                        // <button type="button" class="trazabilidad btn btn-warning btn-flat btn-xs boton" data-toggle="tooltip"
+                        //     data-placement="bottom" title="Ver Trazabilidad de Docs"  data-id="${row['id_requerimiento']}">
+                        //     <i class="fas fa-route"></i></button>
+
                         /*(row['id_od'] == null && row['productos_no_mapeados'] == 0)*/
-                        `<button type="button" class="despacho btn btn-success btn-flat btn-xs boton" data-toggle="tooltip"
-                            data-placement="bottom" data-id="${row['id_od']}" title="Generar Orden de Despacho" >
+                        `<button type="button" class="despacho btn btn-${row['id_contacto'] !== null ? 'success' : 'default'} btn-flat btn-xs boton" 
+                            data-toggle="tooltip" data-placement="bottom" data-id="${row['id_od']}" title="Datos del contacto" >
                             <i class="fas fa-id-badge"></i></button>`+
                         (row['id_od'] !== null ?
-                            `<button type="button" class="despacho btn btn-info btn-flat btn-xs boton" data-toggle="tooltip"
-                            data-placement="bottom" data-id="${row['id_od']}" title="Agencia de transporte" >
-                            <i class="fas fa-truck"></i></button>`: '')
-                    // ((row['id_od'] !== null && parseInt(row['estado_od']) == 1) ?
-                    //     `<button type="button" class="anular_od btn btn-flat btn-danger btn-xs boton" data-toggle="tooltip" 
-                    //             data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Anular Orden Despacho Externo" >
-                    //             <i class="fas fa-trash"></i></button>` : '') +
-                    /*(row["nro_orden"] !== null && row['productos_no_mapeados'] == 0
-                       ? `<button type="button" class="facturar btn btn-flat btn-xs btn-${row["enviar_facturacion"] ? "info" : "default"} 
-                               boton" data-toggle="tooltip" data-placement="bottom" title="Enviar a Facturación" 
-                               data-id="${row["id_requerimiento"]}" data-cod="${row["codigo"]}" data-envio="${row["enviar_facturacion"]}">
-                               <i class="fas fa-file-upload"></i></button>`
-                       : '')*/
-                    '</div>'
-                }, targets: 11
+                            `<button type="button" class="transportista btn btn-${row['id_transportista'] !== null ? 'info' : 'default'} btn-flat btn-xs boton" data-toggle="tooltip"
+                            data-placement="bottom" data-od="${row['id_od']}" data-idreq="${row['id_requerimiento']}" title="Agencia de transporte" >
+                            <i class="fas fa-truck"></i></button>
+                            
+                            <button type="button" class="estados btn btn-${row["count_estados_envios"] > 0 ? 'primary' : 'default'} btn-flat boton" data-toggle="tooltip" 
+                            data-placement="bottom" title="Ver Trazabilidad de Envío" data-id="${row["id_od"]}">
+                            <i class="fas fa-route"></i></button>`: '') +
+                        // ((row['id_od'] !== null && parseInt(row['estado_od']) == 1) ?
+                        //     `<button type="button" class="anular_od btn btn-flat btn-danger btn-xs boton" data-toggle="tooltip" 
+                        //             data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Anular Orden Despacho Externo" >
+                        //             <i class="fas fa-trash"></i></button>` : '') +
+                        /*(row["nro_orden"] !== null && row['productos_no_mapeados'] == 0
+                           ? `<button type="button" class="facturar btn btn-flat btn-xs btn-${row["enviar_facturacion"] ? "info" : "default"} 
+                                   boton" data-toggle="tooltip" data-placement="bottom" title="Enviar a Facturación" 
+                                   data-id="${row["id_requerimiento"]}" data-cod="${row["codigo"]}" data-envio="${row["enviar_facturacion"]}">
+                                   <i class="fas fa-file-upload"></i></button>`
+                           : '')*/
+                        `</div>`
+                }, targets: 12
             }
         ],
         select: "multi",
@@ -297,24 +312,45 @@ $("#requerimientosEnProceso tbody").on("click", "a.archivos", function (e) {
     obtenerArchivosMgcp(id, tipo);
 });
 
-$('#requerimientosEnProceso tbody').on("click", "button.detalle_trans", function () {
+$('#requerimientosEnProceso tbody').on("click", "button.envio_od", function (e) {
+    $(e.preventDefault());
     var id = $(this).data('id');
-    open_detalle_transferencia(id);
-});
+    var fecha = $(this).data('fentrega');
+    var cdp = $(this).data('cdp');
 
-$('#requerimientosEnProceso tbody').on("click", "button.adjuntar", function () {
-    var id = $(this).data('id');
-    var cod = $(this).data('cod');
-    $('#modal-despachoAdjuntos').modal({
+    $('#modal-orden_despacho_enviar').modal({
         show: true
     });
-    listarAdjuntos(id);
-    $('[name=id_od]').val(id);
-    $('[name=codigo_od]').val(cod);
-    $('[name=descripcion]').val('');
-    $('[name=archivo_adjunto]').val('');
-    $('[name=proviene_de]').val('enProceso');
+
+    $("#submit_orden_despacho_enviar").removeAttr('disabled');
+    $('[name=id_requerimiento]').val(id);
+    $('#codigo_cdp').text(cdp);
+
+    var msj = "Por favor hacer seguimiento a este pedido. Vence: " + fecha +
+        "\nFECHA DE DESPACHO: \n" +
+        "\nFavor de generar documentación: " +
+        "\n• FACTURA " +
+        "\n• GUIA" +
+        "\n• CERTIFICADO DE GARANTIA " +
+        "\n• CCI" +
+        "\n\nSaludos, \nRocio Condori";
+    $('[name=mensaje]').val(msj);
 });
+
+
+// $('#requerimientosEnProceso tbody').on("click", "button.adjuntar", function () {
+//     var id = $(this).data('id');
+//     var cod = $(this).data('cod');
+//     $('#modal-despachoAdjuntos').modal({
+//         show: true
+//     });
+//     listarAdjuntos(id);
+//     $('[name=id_od]').val(id);
+//     $('[name=codigo_od]').val(cod);
+//     $('[name=descripcion]').val('');
+//     $('[name=archivo_adjunto]').val('');
+//     $('[name=proviene_de]').val('enProceso');
+// });
 
 $('#requerimientosEnProceso tbody').on("click", "button.anular", function () {
     var id = $(this).data('id');
@@ -353,6 +389,13 @@ $('#requerimientosEnProceso tbody').on("click", "button.anular_od", function () 
 $("#requerimientosEnProceso tbody").on("click", "button.trazabilidad", function () {
     var id = $(this).data("id");
     mostrarTrazabilidad(id)
+});
+
+$("#requerimientosEnProceso tbody").on("click", "button.transportista", function () {
+    // var id_od = $(this).data("od");
+    // var id_req = $(this).data("idreq");
+    var data = $('#requerimientosEnProceso').DataTable().row($(this).parents("tr")).data();
+    openAgenciaTransporte(data);
 });
 
 function priorizar() {
@@ -506,13 +549,9 @@ $('#requerimientosEnProceso tbody').on('click', 'td button.detalle', function ()
         tr.removeClass('shown');
     }
     else {
-        // Open this row
-        //    row.child( format(iTableCounter, id) ).show();
         format(iTableCounter, id, row);
         tr.addClass('shown');
-        // try datatable stuff
         oInnerTable = $('#requerimientosEnProceso_' + iTableCounter).dataTable({
-            //    data: sections, 
             autoWidth: true,
             deferRender: true,
             info: false,
@@ -522,13 +561,50 @@ $('#requerimientosEnProceso tbody').on('click', 'td button.detalle', function ()
             scrollX: false,
             scrollY: false,
             searching: false,
-            columns: [
-                //   { data:'refCount' },
-                //   { data:'section.codeRange.sNumber.sectionNumber' }, 
-                //   { data:'section.title' }
-            ]
+            columns: []
         });
         iTableCounter = iTableCounter + 1;
+    }
+});
+
+
+$("#requerimientosEnProceso tbody").on("click", "td button.estados", function () {
+    var tr = $(this).closest("tr");
+    var row = table.row(tr);
+    var id = $(this).data("id");
+
+    if (id !== null) {
+
+        if (row.child.isShown()) {
+            row.child.hide();
+            tr.removeClass("shown");
+        } else {
+            formatTimeLine(iTableCounter, id, row);
+            tr.addClass("shown");
+            oInnerTable = $("#requerimientosEnProceso_" + iTableCounter).dataTable({
+                //    data: sections,
+                autoWidth: true,
+                deferRender: true,
+                info: false,
+                lengthChange: false,
+                ordering: false,
+                paging: false,
+                scrollX: false,
+                scrollY: false,
+                searching: false,
+                columns: []
+            });
+            iTableCounter = iTableCounter + 1;
+        }
+    } else {
+        Lobibox.notify("error", {
+            title: false,
+            size: "mini",
+            rounded: true,
+            sound: false,
+            delayIndicator: false,
+            msg: "El requerimiento seleccionado no tiene un despacho externo."
+        });
     }
 });
 

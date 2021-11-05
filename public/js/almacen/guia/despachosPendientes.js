@@ -1,30 +1,40 @@
 function iniciar(permiso) {
-    $("#tab-ordenes section:first form").attr('form', 'formulario');
+    // $("#tab-ordenes section:first form").attr('form', 'formulario');
     listarDespachosPendientes(permiso);
 
-    $('ul.nav-tabs li a').on('click', function () {
-        $('ul.nav-tabs li').removeClass('active');
-        $(this).parent().addClass('active');
-        $('.content-tabs section').attr('hidden', true);
-        $('.content-tabs section form').removeAttr('type');
-        $('.content-tabs section form').removeAttr('form');
-
-        var activeTab = $(this).attr('type');
-        var activeForm = "form-" + activeTab.substring(1);
-
-        $("#" + activeForm).attr('type', 'register');
-        $("#" + activeForm).attr('form', 'formulario');
-        changeStateInput(activeForm, true);
-
-        // clearDataTable();
-        if (activeForm == "form-pendientes") {
-            listarDespachosPendientes(permiso);
+    $('#myTabDespachosPendientes a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        let tab = $(e.target).attr("href")
+        if (tab == '#pendientes') {
+            $("#despachosPendientes").DataTable().ajax.reload(null, false);
         }
-        else if (activeForm == "form-salidas") {
+        else if (tab == '#salidas') {
             listarDespachosEntregados(permiso);
         }
-        $(activeTab).attr('hidden', false);//inicio botones (estados)
     });
+    // $('ul.nav-tabs li a').on('click', function () {
+    //     $('ul.nav-tabs li').removeClass('active');
+    //     $(this).parent().addClass('active');
+    //     $('.content-tabs section').attr('hidden', true);
+    //     $('.content-tabs section form').removeAttr('type');
+    //     $('.content-tabs section form').removeAttr('form');
+
+    //     var activeTab = $(this).attr('type');
+    //     var activeForm = "form-" + activeTab.substring(1);
+
+    //     $("#" + activeForm).attr('type', 'register');
+    //     $("#" + activeForm).attr('form', 'formulario');
+    //     changeStateInput(activeForm, true);
+
+    //     // clearDataTable();
+    //     if (activeForm == "form-pendientes") {
+    //         listarDespachosPendientes(permiso);
+    //     }
+    //     else if (activeForm == "form-salidas") {
+    //         listarDespachosEntregados(permiso);
+    //     }
+    //     $(activeTab).attr('hidden', false);//inicio botones (estados)
+    // });
+
     vista_extendida();
 }
 
@@ -32,35 +42,115 @@ let $tableSalidas;
 
 function listarDespachosPendientes(permiso) {
     var vardataTables = funcDatatables();
+    let botones = [];
+    // if (acceso == '1') {
+    // botones.push({
+    //     text: ' Exportar a Excel',
+    //     action: function () {
+    //         priorizar();
+    //     }, className: 'btn-success btnExportarPendientes'
+    // });
+    // }
+
+    $("#despachosPendientes").on('search.dt', function () {
+        $('#despachosPendientes_filter input').prop('disabled', true);
+        $('#btnBuscar').html('<span class="glyphicon glyphicon-time" aria-hidden="true"></span>').prop('disabled', true);
+    });
+
+    $("#despachosPendientes").on('processing.dt', function (e, settings, processing) {
+        if (processing) {
+            $(e.currentTarget).LoadingOverlay("show", {
+                imageAutoResize: true,
+                progress: true,
+                zIndex: 10,
+                imageColor: "#3c8dbc"
+            });
+        } else {
+            $(e.currentTarget).LoadingOverlay("hide", true);
+        }
+    });
+
     $tableSalidas = $('#despachosPendientes').DataTable({
-        'dom': vardataTables[1],
-        'buttons': [],
-        'language': vardataTables[0],
-        'destroy': true,
+        dom: vardataTables[1],
+        buttons: botones,
+        language: vardataTables[0],
+        // destroy: true,
         pageLength: 50,
-        'ajax': 'listarOrdenesDespachoPendientes',
-        // 'serverSide' : true,
-        // "scrollX": true,
-        // 'ajax': {
-        //     url: 'listarOrdenesDespachoPendientes',
-        //     dataSrc:''
-        //     // type: 'POST'
-        // },
+        serverSide: true,
+        initComplete: function (settings, json) {
+            const $filter = $("#despachosPendientes_filter");
+            const $input = $filter.find("input");
+            $filter.append(
+                '<button id="btnBuscar" class="btn btn-default btn-sm btn-flat" type="button"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>'
+            );
+            $input.off();
+            $input.on("keyup", e => {
+                if (e.key == "Enter") {
+                    $("#btnBuscar").trigger("click");
+                }
+            });
+            $("#btnBuscar").on("click", e => {
+                table.search($input.val()).draw();
+            });
+
+            const $form = $('#formFiltrosSalidasPendientes');
+            $('#despachosPendientes_wrapper .dt-buttons').append(
+                `<div style="display:flex">
+                    <label style="text-align: center;margin-top: 7px;margin-left: 10px;margin-right: 10px;">Mostrar: </label>
+                    <select class="form-control" id="selectMostrarPendientes">
+                        <option value="0" >Todos</option>
+                        <option value="1" >Priorizados</option>
+                        <option value="2" selected>Los de Hoy</option>
+                    </select>
+                </div>`
+            );
+
+            $("#selectMostrarPendientes").on("change", function (e) {
+                var sed = $(this).val();
+                console.log('sel ' + sed);
+                $('#formFiltrosSalidasPendientes').find('input[name=select_mostrar_pendientes]').val(sed);
+                $("#despachosPendientes").DataTable().ajax.reload(null, false);
+            });
+        },
+        drawCallback: function (settings) {
+            $("#despachosPendientes_filter input").prop("disabled", false);
+            $("#btnBuscar").html('<span class="glyphicon glyphicon-search" aria-hidden="true"></span>').prop("disabled", false);
+            $("#despachosPendientes_filter input").trigger("focus");
+        },
+        ajax: {
+            url: 'listarOrdenesDespachoPendientes',
+            type: 'POST',
+            data: function (params) {
+                var x = $('[name=select_mostrar_pendientes]').val();
+                console.log(x);
+                return Object.assign(params, objectifyForm($('#formFiltrosSalidasPendientes').serializeArray()))
+            }
+        },
         'columns': [
             { 'data': 'id_od' },
             {
+                data: 'codigo', name: 'orden_despacho.codigo', className: "text-center",
                 'render':
                     function (data, type, row) {
-                        if (row['aplica_cambios']) {
-                            return '<span class="label label-danger">Despacho Interno</span>';
-                        } else {
-                            return '<span class="label label-primary">Despacho Externo</span>';
-                        }
+                        return `<span class="label label-${row['aplica_cambios'] ? 'danger' : 'primary'}">${row['codigo']}</span>`;
                     }
             },
-            { 'data': 'fecha_despacho' },
-            { 'data': 'hora_despacho' },
-            { 'data': 'codigo' },
+            { 'data': 'fecha_despacho', className: "text-center" },
+            // { 'data': 'hora_despacho' },
+            {
+                data: 'nro_orden', name: 'oc_propias_view.nro_orden',
+                render: function (data, type, row) {
+                    if (row["nro_orden"] == null) {
+                        return '';
+                    } else {
+                        return (
+                            `<a href="#" class="archivos" data-id="${row["id_oc_propia"]}" data-tipo="${row["tipo"]}">
+                            ${row["nro_orden"]}</a>`
+                        );
+                    }
+                }, className: "text-center"
+            },
+            { data: 'codigo_oportunidad', name: 'oc_propias_view.codigo_oportunidad', className: "text-center" },
             {
                 'render':
                     function (data, type, row) {
@@ -72,11 +162,17 @@ function listarDespachosPendientes(permiso) {
                     }
             },
             // {'data': 'razon_social', 'name': 'adm_contri.razon_social'},
-            { 'data': 'codigo_req', 'name': 'alm_req.codigo' },
-            { 'data': 'concepto', 'name': 'alm_req.concepto' },
+            // { 'data': 'concepto', 'name': 'alm_req.concepto' },
+            { 'data': 'codigo_req', 'name': 'alm_req.codigo', className: "text-center" },
             { 'data': 'almacen_descripcion', 'name': 'alm_almacen.descripcion' },
-            { 'data': 'fecha_despacho' },
-            { 'data': 'nombre_corto', 'name': 'sis_usua.nombre_corto' }
+            {
+                data: 'estado_doc', name: 'adm_estado_doc.bootstrap_color', className: "text-center",
+                'render': function (data, type, row) {
+                    return '<span class="label label-' + row['bootstrap_color'] + '">' + row['estado_doc'] + '</span>'
+                }
+            },
+            // { 'data': 'fecha_despacho' },
+            // { 'data': 'nombre_corto', 'name': 'sis_usua.nombre_corto' }
         ],
         'columnDefs': [
             { 'aTargets': [0], 'sClass': 'invisible' },
@@ -86,7 +182,8 @@ function listarDespachosPendientes(permiso) {
                     if (permiso == '1') {
                         return `<button type="button" class="detalle btn btn-default btn-flat boton" data-toggle="tooltip"
                                 data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}">
-                                <i class="fas fa-chevron-down"></i></button>`+
+                                <i class="fas fa-chevron-down"></i></button>` +
+
                             (row['suma_reservas'] !== null && row['suma_cantidad'] !== null && row['suma_reservas'] >= row['suma_cantidad'] ?
                                 (`<button type="button" class="guia btn btn-warning btn-flat boton" data-toggle="tooltip" 
                                 data-placement="bottom" title="Generar Guía" >
@@ -96,18 +193,37 @@ function listarDespachosPendientes(permiso) {
                             'data-placement="bottom" title="Ver Detalle" >' +
                             '<i class="fas fa-list-ul"></i></button>'
                     }
-                }, targets: 11
+                }, targets: 9
             }
         ],
         'order': [[0, "desc"]],
     });
 }
 
-// $('#despachosPendientes tbody').on("click", "button.detalle", function () {
+// ${row['estado_doc'] == 'Priorizado' ?
+//      `<button type="button" class="despachado btn btn-success btn-flat boton" data-toggle="tooltip"
+//      data-placement="bottom" title="Marcar como despachado" data-id="${row['id_requerimiento']}">
+//      <i class="fas fa-check"></i></button>`
+//      : ''}
+
+// $('#despachosPendientes tbody').on("click", "button.despachado", function () {
 //     var data = $('#despachosPendientes').DataTable().row($(this).parents("tr")).data();
-//     console.log('data.id_od' + data.id_od);
-//     // var data = $(this).data('id');
-//     open_detalle_despacho(data);
+//     console.log(data);
+//     $.ajax({
+//         type: 'GET',
+//         url: 'marcar_despachado/' + data.id_od + '/' + data.id_transformacion,
+//         dataType: 'JSON',
+//         success: function (response) {
+//             console.log(response);
+//             if (response == 'ok') {
+//                 $('#despachosPendientes').DataTable().ajax.reload();
+//             }
+//         }
+//     }).fail(function (jqXHR, textStatus, errorThrown) {
+//         console.log(jqXHR);
+//         console.log(textStatus);
+//         console.log(errorThrown);
+//     });
 // });
 
 $('#despachosPendientes tbody').on("click", "button.guia", function () {
@@ -116,31 +232,31 @@ $('#despachosPendientes tbody').on("click", "button.guia", function () {
     open_guia_create(data);
 });
 
-$('#despachosPendientes tbody').on("click", "button.anular", function () {
-    var id = $(this).data('id');
-    var msj = confirm('¿Está seguro que desea anular la Orden de Despacho ?');
-    if (msj) {
-        anularOrdenDespacho(id);
-    }
-});
+// $('#despachosPendientes tbody').on("click", "button.anular", function () {
+//     var id = $(this).data('id');
+//     var msj = confirm('¿Está seguro que desea anular la Orden de Despacho ?');
+//     if (msj) {
+//         anularOrdenDespacho(id);
+//     }
+// });
 
-function anularOrdenDespacho(id) {
-    $.ajax({
-        type: 'GET',
-        url: 'anular_orden_despacho/' + id,
-        dataType: 'JSON',
-        success: function (response) {
-            console.log(response);
-            if (response > 0) {
-                $('#despachosPendientes').DataTable().ajax.reload();
-            }
-        }
-    }).fail(function (jqXHR, textStatus, errorThrown) {
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    });
-}
+// function anularOrdenDespacho(id) {
+//     $.ajax({
+//         type: 'GET',
+//         url: 'anular_orden_despacho/' + id,
+//         dataType: 'JSON',
+//         success: function (response) {
+//             console.log(response);
+//             if (response > 0) {
+//                 $('#despachosPendientes').DataTable().ajax.reload();
+//             }
+//         }
+//     }).fail(function (jqXHR, textStatus, errorThrown) {
+//         console.log(jqXHR);
+//         console.log(textStatus);
+//         console.log(errorThrown);
+//     });
+// }
 
 
 var iTableCounter = 1;

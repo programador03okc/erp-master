@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\ConfiguracionController;
 use App\Http\Controllers\Controller;
-use App\Models\Tesoreria\Empresa;
+use App\Models\Administracion\Empresa;
 use App\Models\Tesoreria\Rol;
 use App\Models\Tesoreria\Usuario;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -16,7 +16,7 @@ use Illuminate\Validation\ValidationException;
 
 class LoginController extends Controller
 {
-    /*
+	/*
     |--------------------------------------------------------------------------
     | Login Controller
     |--------------------------------------------------------------------------
@@ -27,29 +27,31 @@ class LoginController extends Controller
     |
     */
 
-    use AuthenticatesUsers;
+	use AuthenticatesUsers;
 
-    /**
-     * Where to redirect users after login.
-     *
-     * @var string
-     */
-    // protected $redirectTo = '/tesoreria';
+	/**
+	 * Where to redirect users after login.
+	 *
+	 * @var string
+	 */
+	// protected $redirectTo = '/tesoreria';
 
-	public function username(){
+	public function username()
+	{
 		return 'usuario';
 	}
 
 
 	/**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct(){
+	 * Create a new controller instance.
+	 *
+	 * @return void
+	 */
+	public function __construct()
+	{
 
-        $this->middleware('guest')->except('logout');
-    }
+		$this->middleware('guest')->except('logout');
+	}
 
 	protected function validateLogin(Request $request)
 	{
@@ -60,13 +62,14 @@ class LoginController extends Controller
 		]);
 	}
 
-	public function notas_de_lanzamiento(){
+	public function notas_de_lanzamiento()
+	{
 		$data = DB::table('configuracion.nota_lanzamiento')
-		->select('nota_lanzamiento.*', 'detalle_nota_lanzamiento.*')
-		->join('configuracion.detalle_nota_lanzamiento', 'detalle_nota_lanzamiento.id_nota_lanzamiento', '=', 'nota_lanzamiento.id_nota_lanzamiento')
-        ->where([
-			['nota_lanzamiento.estado', '=', 1],
-			['nota_lanzamiento.version_actual', '=', true]
+			->select('nota_lanzamiento.*', 'detalle_nota_lanzamiento.*')
+			->join('configuracion.detalle_nota_lanzamiento', 'detalle_nota_lanzamiento.id_nota_lanzamiento', '=', 'nota_lanzamiento.id_nota_lanzamiento')
+			->where([
+				['nota_lanzamiento.estado', '=', 1],
+				['nota_lanzamiento.version_actual', '=', true]
 			])
 			->orderBy('detalle_nota_lanzamiento.fecha_detalle_nota_lanzamiento', 'desc')
 			->get();
@@ -74,21 +77,24 @@ class LoginController extends Controller
 	}
 
 
-	public function showLoginForm() {
+	public function showLoginForm()
+	{
 		$empresas = Empresa::all();
 		$notasLanzamiento = $this->notas_de_lanzamiento();
-    	return view('login')->with([
+		return view('login')->with([
 			'empresas' => $empresas,
-			'notasLanzamiento'=>$notasLanzamiento
+			'notasLanzamiento' => $notasLanzamiento
 		]);
 	}
-	protected function credentials(Request $request){
-		$credentials = $request->only($this->username(), 'password' );
+	protected function credentials(Request $request)
+	{
+		$credentials = $request->only($this->username(), 'password');
 		return $credentials;
 	}
 
 
-	public function login(Request $request){
+	public function login(Request $request)
+	{
 
 		// return ['login'=>$request];
 		$this->validateLogin($request);
@@ -115,14 +121,14 @@ class LoginController extends Controller
 	}
 
 
-	protected function sendLoginResponse(Request $request){
+	protected function sendLoginResponse(Request $request)
+	{
 		$request->session()->regenerate();
 		$this->clearLoginAttempts($request);
 		// session(['login_empresa' => $request->company]);
 		session(['login_rol' => 0]);
 
-		return $this->authenticated($request, $this->guard()->user()) ? :
-		response()->json(['success' => true, 'redirectto' => 'modulos']);
+		return $this->authenticated($request, $this->guard()->user()) ?:
+			response()->json(['success' => true, 'redirectto' => 'modulos']);
 	}
-
 }

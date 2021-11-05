@@ -276,6 +276,7 @@ $("#form-guia_create").on("submit", function (e) {
     } else {
         Swal.fire({
             title: "¿Está seguro que desea guardar ésta Guía?",
+            // text: "",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#00a65a", //"#3085d6",

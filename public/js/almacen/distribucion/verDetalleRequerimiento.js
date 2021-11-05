@@ -13,9 +13,9 @@ function format(table_id, id, row) {
                 response.forEach(element => {
                     html += '<tr ' + (element.tiene_transformacion ? ' style="background-color: gainsboro;" ' : '') + ' id="' + element.id_detalle_requerimiento + '">' +
                         '<td style="border: none;">' + i + '</td>' +
-                        '<td style="border: none;text-align:center">' + (element.producto_codigo !== null ? element.producto_codigo : '') + (element.tiene_transformacion ? ' <span class="badge badge-secondary">Transformado</span> ' : '') + '</td>' +
+                        '<td style="border: none;text-align:center">' + (element.producto_codigo !== null ? element.producto_codigo : '(producto no mapeado)') + (element.tiene_transformacion ? ' <span class="badge badge-secondary">Transformado</span> ' : '') + '</td>' +
                         '<td style="border: none;text-align:center">' + (element.part_number !== null ? element.part_number : '') + '</td>' +
-                        '<td style="border: none;">' + (element.producto_descripcion !== null ? element.producto_descripcion : (element.descripcion_adicional !== null ? element.descripcion_adicional : '(producto no mapeado)')) + '</td>' +
+                        '<td style="border: none;">' + (element.producto_descripcion !== null ? element.producto_descripcion : (element.descripcion !== null ? element.descripcion : '')) + '</td>' +
                         '<td style="border: none;text-align:center">' + element.cantidad + '</td>' +
                         '<td style="border: none;text-align:center">' + (element.abreviatura !== null ? element.abreviatura : '') + '</td>' +
                         // '<td style="border: none;">'+(element.suma_transferencias!==null?element.suma_transferencias:'')+'</td>'+
@@ -34,7 +34,7 @@ function format(table_id, id, row) {
                 <thead style="color: black;background-color: #c7cacc;">
                     <tr>
                         <th style="border: none;">#</th>
-                        <th style="border: none;">Código</th>
+                        <th style="border: none;">Cod.Prod.</th>
                         <th style="border: none;">PartNumber</th>
                         <th style="border: none;">Descripción</th>
                         <th style="border: none;">Cantidad</th>

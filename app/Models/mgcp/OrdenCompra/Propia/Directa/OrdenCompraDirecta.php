@@ -11,7 +11,7 @@ class OrdenCompraDirecta extends Model
 {
     use HasFactory;
     protected $table = 'mgcp_ordenes_compra.oc_directas';
-    public $timestamps = false;
+    //public $timestamps = false;
 
     public function setFechaPublicacionAttribute($valor)
     {

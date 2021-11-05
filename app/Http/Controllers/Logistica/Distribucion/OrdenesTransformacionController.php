@@ -168,7 +168,7 @@ class OrdenesTransformacionController extends Controller
             ->get()->count();
 
         $val = AlmacenController::leftZero(3, ($cantidad + 1));
-        $nextId = "OD" . ($aplica_cambios ? "I-" : "E-") . $id_almacen . "-" . $yy . $val;
+        $nextId = "D" . ($aplica_cambios ? "I-" : "E-") . $id_almacen . "-" . $yy . $val;
         return $nextId;
     }
 

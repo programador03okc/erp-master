@@ -29,6 +29,7 @@ class OrdenesDespachoInternoController extends Controller
                 'orden_despacho.id_od',
                 'orden_despacho.fecha_despacho',
                 'est_od.estado_doc as estado_od',
+                'est_od.bootstrap_color as estado_bootstrap_od',
                 'orden_despacho.codigo as codigo_od',
                 'transformacion.id_transformacion',
                 'transformacion.codigo as codigo_transformacion',
@@ -65,10 +66,12 @@ class OrdenesDespachoInternoController extends Controller
                 ['alm_req.estado', '!=', 7],
                 ['orden_despacho.aplica_cambios', '=', true],
                 ['orden_despacho.estado', '!=', 7],
+                ['orden_despacho.estado', '!=', 10],
             ]);
         if ($request->select_mostrar == 1) {
-            $data->whereNotNull('fecha_despacho');
+            $data->where('orden_despacho.estado', 25);
         } else if ($request->select_mostrar == 2) {
+            $data->where('orden_despacho.estado', 25);
             $data->whereDate('fecha_despacho', (new Carbon())->format('Y-m-d'));
         }
         return datatables($data)->toJson();
@@ -83,8 +86,16 @@ class OrdenesDespachoInternoController extends Controller
             foreach ($despachos as $det) {
                 DB::table('almacen.orden_despacho')
                     ->where('id_od', $det->id_od)
-                    ->update(['fecha_despacho' => $request->fecha_despacho]);
+                    ->update([
+                        'fecha_despacho' => $request->fecha_despacho,
+                        'estado' => 25 //priorizado
+                    ]);
+
+                DB::table('almacen.transformacion')
+                    ->where('id_transformacion', $det->id_transformacion)
+                    ->update(['estado' => 25]); //priorizado
             }
+
             DB::commit();
             return response()->json('ok');
         } catch (\PDOException $e) {

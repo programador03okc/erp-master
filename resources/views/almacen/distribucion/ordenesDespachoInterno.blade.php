@@ -47,11 +47,12 @@ Gestión de Despachos Internos
                                     <th>Cliente/Entidad</th>
                                     <th>Generado por</th>
                                     <th>Sede Req.</th>
-                                    <th>Estado</th>
+                                    {{-- <th>Estado</th> --}}
                                     <th>O.T.</th>
-                                    <th>Estado O.T.</th>
-                                    <th>Estado O.D.</th>
-                                    <th width="80px">Acción</th>
+                                    <th>D.I.</th>
+                                    {{-- <th>Estado O.T.</th> --}}
+                                    <th>Estado D.I.</th>
+                                    <th width="30px">Acción</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
@@ -63,7 +64,6 @@ Gestión de Despachos Internos
         </div>
     </div>
 </div>
-@include('almacen.distribucion.transferenciasDetalle')
 @include('tesoreria.facturacion.archivos_oc_mgcp')
 
 @endsection

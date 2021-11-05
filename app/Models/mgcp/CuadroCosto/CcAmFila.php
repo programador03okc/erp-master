@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class CcAmFila extends Model
 {
-    //use HasFactory;
+    use HasFactory;
     protected $table = 'mgcp_cuadro_costos.cc_am_filas';
     //public $timestamps = false;
 
@@ -115,6 +115,6 @@ class CcAmFila extends Model
 
     public function getEsIngresoTransformacionAttribute()
     {
-        return CcFilaMovimientoTransformacion::where('id_fila_ingresa', $this->attributes['id'])->count() > 0;
+        return CcFilaMovimientoTransformacion::where('id_fila_ingresa',$this->attributes['id'])->count()>0;
     }
 }

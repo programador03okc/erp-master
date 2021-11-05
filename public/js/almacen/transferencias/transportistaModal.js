@@ -19,8 +19,8 @@ $(function () {
             $("[name=id_transportista]").val(myId);
             $("[name=transportista]").val(des);
         }
-        else if (page == "ordenesDespacho") {
-            $("[name=tr_id_proveedor]").val(myId);
+        else if (page == "listaOrdenesDespachoExterno") {
+            $("[name=tr_id_transportista]").val(myId);
             $("[name=tr_razon_social]").val(des);
         }
 

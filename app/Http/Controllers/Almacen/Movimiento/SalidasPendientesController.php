@@ -22,7 +22,7 @@ class SalidasPendientesController extends Controller
         return view('almacen/guias/despachosPendientes', compact('tp_operacion', 'clasificaciones', 'usuarios', 'motivos_anu'));
     }
 
-    public function listarOrdenesDespachoPendientes()
+    public function listarOrdenesDespachoPendientes(Request $request)
     {
         $data = DB::table('almacen.orden_despacho')
             ->select(
@@ -32,10 +32,15 @@ class SalidasPendientesController extends Controller
                 'alm_req.codigo as codigo_req',
                 'alm_req.concepto',
                 'alm_req.tiene_transformacion',
-                'sis_usua.nombre_corto',
+                // 'sis_usua.nombre_corto',
                 'adm_estado_doc.estado_doc',
                 'adm_estado_doc.bootstrap_color',
-                DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_persona"),
+                'transformacion.id_transformacion',
+                'oc_propias_view.nro_orden',
+                'oc_propias_view.codigo_oportunidad',
+                'oc_propias_view.id as id_oc_propia',
+                'oc_propias_view.tipo',
+                // DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_persona"),
                 'alm_almacen.descripcion as almacen_descripcion',
                 DB::raw("(SELECT SUM(reserva.stock_comprometido) 
                         FROM almacen.alm_reserva AS reserva
@@ -53,17 +58,25 @@ class SalidasPendientesController extends Controller
                           AND despacho.estado != 7) AS suma_cantidad")
             )
             ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'orden_despacho.id_requerimiento')
+            ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
+            ->leftJoin('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'cc.id_oportunidad')
+            ->leftjoin('almacen.transformacion', 'transformacion.id_od', '=', 'orden_despacho.id_od')
             ->leftjoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'orden_despacho.id_almacen')
             ->leftjoin('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'alm_req.id_cliente')
             ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
-            ->leftjoin('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'alm_req.id_persona')
-            ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'orden_despacho.registrado_por')
-            ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'orden_despacho.estado')
-            ->where('orden_despacho.estado', 1)
-            ->get();
-        $output['data'] = $data;
-        return response()->json($output);
-        // return datatables($data)->toJson();
+            // ->leftjoin('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'alm_req.id_persona')
+            // ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'orden_despacho.registrado_por')
+            ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'orden_despacho.estado');
+
+        if ($request->select_mostrar_pendientes == 0) {
+            $data->whereIn('orden_despacho.estado', [1, 25]);
+        } else if ($request->select_mostrar_pendientes == 1) {
+            $data->where('orden_despacho.estado', 25);
+        } else if ($request->select_mostrar_pendientes == 2) {
+            $data->where('orden_despacho.estado', 25);
+            $data->whereDate('orden_despacho.fecha_despacho', (new Carbon())->format('Y-m-d'));
+        }
+        return datatables($data)->toJson();
     }
 
     public function guardar_guia_despacho(Request $request)
@@ -978,5 +991,42 @@ class SalidasPendientesController extends Controller
             ])
             ->get();
         return response()->json($series);
+    }
+
+    public function marcar_despachado($id_od, $id_transformacion)
+    {
+        try {
+            DB::beginTransaction();
+
+            $od = DB::table('almacen.orden_despacho')
+                ->where('id_od', $id_od)->first();
+
+            if ($od->aplica_cambios) {
+
+                DB::table('almacen.orden_despacho')
+                    ->where('id_od', $id_od)
+                    ->update(['estado' => 21]); //Entregado
+
+                if ($id_transformacion !== null) {
+                    DB::table('almacen.transformacion')
+                        ->where('id_transformacion', $id_transformacion)
+                        ->update(['estado' => 21]); //Entregado
+                }
+            } else {
+                DB::table('almacen.orden_despacho')
+                    ->where('id_od', $id_od)
+                    ->update(['estado' => 29]); //Despachado
+
+                DB::table('almacen.alm_req')
+                    ->where('id_requerimiento', $od->id_requerimiento)
+                    ->update(['estado' => 29]); //Despachado
+            }
+
+            DB::commit();
+            return response()->json('ok');
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json(':(');
+        }
     }
 }
