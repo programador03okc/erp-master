@@ -1,7 +1,9 @@
 var table;
 let despachos_seleccionados = [];
+let usuarioSesion;
 
-function listarRequerimientosPendientes() {
+function listarRequerimientosPendientes(usuario) {
+    usuarioSesion = usuario;
     var vardataTables = funcDatatables();
     let botones = [];
     // if (acceso == '1') {
@@ -333,7 +335,7 @@ $('#requerimientosEnProceso tbody').on("click", "button.envio_od", function (e) 
         "\n• GUIA" +
         "\n• CERTIFICADO DE GARANTIA " +
         "\n• CCI" +
-        "\n\nSaludos, \nRocio Condori";
+        "\n\nSaludos, \n" + usuarioSesion;
     $('[name=mensaje]').val(msj);
 });
 

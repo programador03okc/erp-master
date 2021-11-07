@@ -63,7 +63,7 @@ Gestión de Despacho Externo
     </div>
 </div>
 @include('almacen.distribucion.transferenciasDetalle')
-@include('almacen.distribucion.ordenDespachoCreate')
+@include('almacen.distribucion.ordenDespachoContacto')
 @include('almacen.distribucion.ordenDespachoTransportista')
 @include('almacen.distribucion.enviarFacturacion')
 @include('almacen.distribucion.ordenDespachoEnviar')
@@ -102,8 +102,11 @@ Gestión de Despacho Externo
     $(document).ready(function() {
         seleccionarMenu(window.location);
         $.fn.dataTable.Buttons.defaults.dom.button.className = 'btn';
-        listarRequerimientosPendientes();
         
+        let usuario = '{{Auth::user()->nombre_corto}}';
+        console.log(usuario);
+        listarRequerimientosPendientes(usuario);
+
         $('input.date-picker').datepicker({
             language: "es",
             orientation: "bottom auto",

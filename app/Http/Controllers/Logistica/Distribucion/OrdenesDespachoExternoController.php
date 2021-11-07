@@ -7,13 +7,16 @@ use App\Helpers\mgcp\OrdenCompraDirectaHelper;
 use App\Http\Controllers\AlmacenController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Mail\EmailOrdenDespacho;
 use App\Models\Almacen\Requerimiento;
+use App\Models\Configuracion\Usuario;
 use App\Models\Distribucion\OrdenDespacho;
 use App\Models\mgcp\CuadroCosto\CuadroCosto;
 use App\Models\mgcp\Oportunidad\Oportunidad;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class OrdenesDespachoExternoController extends Controller
@@ -381,11 +384,6 @@ class OrdenesDespachoExternoController extends Controller
     // }
     private function enviarOrdenDespacho(Request $request)
     {
-        /*Requerimiento::where('id_requerimiento', $request->id_requerimiento)
-            ->select('oc_propias_view.id')
-            ->join('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
-            ->join('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'cc.id_oportunidad')
-            ->first();*/
         $requerimiento = Requerimiento::find($request->id_requerimiento);
         $cuadro = CuadroCosto::find($requerimiento->id_cc);
         $oportunidad = Oportunidad::find($cuadro->id_oportunidad);
@@ -406,6 +404,18 @@ class OrdenesDespachoExternoController extends Controller
                 Storage::putFileAs('mgcp/ordenes-compra/temporal/', $archivo, $archivo->getClientOriginalName());
             }
             $archivosOc[] = storage_path('app/mgcp/ordenes-compra/temporal/') . $archivo->getClientOriginalName();
+        }
+
+        $idUsuarios = Usuario::getAllIdUsuariosPorRol(25);
+        $correos = [];
+        foreach ($idUsuarios as $id) {
+            $correos[] = Usuario::find($id)->email;
+        }
+
+        Mail::to($correos)->send(new EmailOrdenDespacho($oportunidad, $request->mensaje, $archivosOc));
+
+        foreach ($archivosOc as $archivo) {
+            unlink($archivo);
         }
     }
 
