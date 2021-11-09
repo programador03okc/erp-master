@@ -5,10 +5,10 @@ class RequerimientoPendienteCtrl{
         this.requerimientoPendienteModel = requerimientoPendienteModel;
     }
 
-    getRequerimientosPendientes(empresa,sede,fechaRegistroDesde,fechaRegistroHasta, reserva, orden) {
-        return requerimientoPendienteModel.getRequerimientosPendientes(empresa,sede,fechaRegistroDesde,fechaRegistroHasta, reserva, orden);
-        // return ordenesData;
-    }
+    // getRequerimientosPendientes(empresa,sede,fechaRegistroDesde,fechaRegistroHasta, reserva, orden) {
+    //     return requerimientoPendienteModel.getRequerimientosPendientes(empresa,sede,fechaRegistroDesde,fechaRegistroHasta, reserva, orden);
+    //     // return ordenesData;
+    // }
 
     // filtros
     getDataSelectSede(id_empresa = null){

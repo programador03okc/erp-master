@@ -163,9 +163,15 @@ class ComprasPendientesController extends Controller
     }
 
 
-    public function listarRequerimientosPendientes($empresa,$sede,$fechaRegistroDesde,$fechaRegistroHasta,$reserva,$orden)
+    public function listarRequerimientosPendientes(Request $request)
     {
- 
+
+        $empresa = $request->idEmpresa??'SIN_FILTRO';
+        $sede = $request->idSede??'SIN_FILTRO';
+        $fechaRegistroDesde = $request->fechaRegistroDesde??'SIN_FILTRO';
+        $fechaRegistroHasta = $request->fechaRegistroHasta??'SIN_FILTRO';
+        $reserva = $request->reserva??'SIN_FILTRO';
+        $orden = $request->orden??'SIN_FILTRO';
 
 
         $alm_req = Requerimiento::join('almacen.alm_tp_req', 'alm_req.id_tipo_requerimiento', '=', 'alm_tp_req.id_tipo_requerimiento')
@@ -290,11 +296,44 @@ class ComprasPendientesController extends Controller
             })
 
             ->where('alm_req.confirmacion_pago', true)
-            ->whereIn('alm_req.estado', [2,15,27,38])
-            ->orderBy('alm_req.id_requerimiento', 'desc')
-            ->get();
+            ->whereIn('alm_req.estado', [2,15,27,38]);
             
-            return response()->json(["data" => $alm_req]);
+            return datatables($alm_req)
+            ->filterColumn('alm_req.fecha_entrega', function ($query, $keyword) {
+                try {
+                    $keywords = Carbon::createFromFormat('d-m-Y', trim($keyword));
+                    $query->where('alm_req.fecha_entrega', $keywords);
+                } catch (\Throwable $th) {
+                }
+            })
+            ->filterColumn('alm_req.fecha_registro', function ($query, $keyword) {
+                try {
+                    $desde = Carbon::createFromFormat('d-m-Y', trim($keyword))->hour(0)->minute(0)->second(0);
+                    $hasta = Carbon::createFromFormat('d-m-Y', trim($keyword));
+                    $query->whereBetween('alm_req.fecha_registro', [$desde, $hasta->addDay()->addSeconds(-1)]);
+                } catch (\Throwable $th) {
+                }
+            })
+            // ->filterColumn('division', function ($query, $keyword) {
+            //     try {
+                    
+            //         $query->where('nivel.unidad', trim($keyword));
+            //     } catch (\Throwable $th) {
+            //     }
+            // })
+            ->filterColumn('cc_solicitado_por', function ($query, $keyword) {
+                try {
+                    $query->where('cc_view.name', trim($keyword));
+                } catch (\Throwable $th) {
+                }
+            })
+            ->filterColumn('estado_doc', function ($query, $keyword) {
+                try {
+                    $query->where('adm_estado_doc.estado_doc', trim($keyword));
+                } catch (\Throwable $th) {
+                }
+            })
+            ->toJson();
     }
 
 

@@ -9,37 +9,37 @@ class RequerimientoPendienteModel {
     //     return this.getRequerimientosPendientes();
     // }
     // Método
-    getRequerimientosPendientes(empresa,sede,fechaRegistroDesde,fechaRegistroHasta, reserva, orden) {
-            return new Promise(function(resolve, reject) {
-                $.ajax({
-                    type: 'GET',
-                    url:`requerimientos-pendientes/${empresa}/${sede}/${fechaRegistroDesde}/${fechaRegistroHasta}/${reserva}/${orden}`,
-                    dataType: 'JSON',
-                    beforeSend:  (data)=> { // Are not working with dataType:'jsonp'
+    // getRequerimientosPendientes(empresa,sede,fechaRegistroDesde,fechaRegistroHasta, reserva, orden) {
+    //         return new Promise(function(resolve, reject) {
+    //             $.ajax({
+    //                 type: 'GET',
+    //                 url:`requerimientos-pendientes/${empresa}/${sede}/${fechaRegistroDesde}/${fechaRegistroHasta}/${reserva}/${orden}`,
+    //                 dataType: 'JSON',
+    //                 beforeSend:  (data)=> { // Are not working with dataType:'jsonp'
     
-                    $('#requerimientos_pendientes').LoadingOverlay("show", {
-                        imageAutoResize: true,
-                        progress: true,
-                        imageColor: "#3c8dbc"
-                    });
-                },
-                    success(response) {
-                        resolve(response.data) // Resolve promise and go to then() 
-                    },
-                    fail:  (jqXHR, textStatus, errorThrown) =>{
-                        $('#requerimientos_pendientes').LoadingOverlay("hide", true);
-                        Swal.fire(
-                            '',
-                            'Lo sentimos hubo un error en el servidor al intentar cargar la lista de requerimientos pendientes, por favor vuelva a intentarlo',
-                            'error'
-                        );
-                        console.log(jqXHR);
-                        console.log(textStatus);
-                        console.log(errorThrown);
-                    }
-                    });
-                });
-    }
+    //                 $('#requerimientos_pendientes').LoadingOverlay("show", {
+    //                     imageAutoResize: true,
+    //                     progress: true,
+    //                     imageColor: "#3c8dbc"
+    //                 });
+    //             },
+    //                 success(response) {
+    //                     resolve(response.data) // Resolve promise and go to then() 
+    //                 },
+    //                 fail:  (jqXHR, textStatus, errorThrown) =>{
+    //                     $('#requerimientos_pendientes').LoadingOverlay("hide", true);
+    //                     Swal.fire(
+    //                         '',
+    //                         'Lo sentimos hubo un error en el servidor al intentar cargar la lista de requerimientos pendientes, por favor vuelva a intentarlo',
+    //                         'error'
+    //                     );
+    //                     console.log(jqXHR);
+    //                     console.log(textStatus);
+    //                     console.log(errorThrown);
+    //                 }
+    //                 });
+    //             });
+    // }
 
     // filtros 
     getDataSelectSede(id_empresa){
