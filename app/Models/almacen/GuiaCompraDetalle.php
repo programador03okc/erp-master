@@ -21,5 +21,8 @@ class GuiaCompraDetalle extends Model
     public function orden_detalle(){
         return $this->hasMany('App\Models\Logistica\OrdenCompraDetalle','id_detalle_orden','id_oc_det');
     }
+    public function movimiento_detalle(){
+        return $this->hasMany('App\Models\Almacen\MovimientoDetalle','id_guia_com_det','id_guia_com_det');
+    }
  
 }

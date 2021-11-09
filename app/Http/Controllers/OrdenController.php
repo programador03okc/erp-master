@@ -3560,12 +3560,16 @@ class OrdenController extends Controller
                 for ($i = 0; $i < count($requerimientoIdList); $i++) {
                     DB::table('almacen.alm_req_obs')
                     ->insert([  'id_requerimiento'=>$requerimientoIdList[$i],
-                                'accion'=>'ORDEN ANULADA',
+                                'accion'=>'UN ITEM DE ORDEN FUE ANULADA',
                                 'descripcion'=>'Orden '.(Orden::find($idOrden)->codigo??"").' anulada',
                                 'id_usuario'=>Auth::user()->id_usuario,
                                 'fecha_registro'=>date('Y-m-d H:i:s')
                     ]);
                 }
+                
+                (new ComprasPendientesController)->restablecerEstadoDetalleRequerimiento($idDetalleRequerimiento);
+
+ 
             }
             else{
                 $status= $hasIngreso['status'];

@@ -428,7 +428,7 @@ class ListaOrdenView {
                         let labelRequerimiento = '';
                         if (row.requerimientos != undefined && row.requerimientos.length > 0) {
                             (row.requerimientos).forEach(element => {
-                                labelRequerimiento += `<a href="/necesidades/requerimiento/elaboracion/index?id=${element.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${element.codigo??''}</a>`;
+                                labelRequerimiento += `${element.estado ==38?`<i class="fas fa-exclamation-triangle orange" title="Por regularizar" data-id-requerimiento="${element.id_requerimiento}"></i>`:''} <a href="/necesidades/requerimiento/elaboracion/index?id=${element.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${element.codigo??''}</a>`;
 
                                 
                             });
@@ -444,12 +444,25 @@ class ListaOrdenView {
                 {
                     'render':
                         function (data, type, row, meta) {
-                            let estadoDetalleOrdenHabilitadasActualizar = [1, 2, 3, 4, 5, 6, 15];
-                            if (estadoDetalleOrdenHabilitadasActualizar.includes(row.estado) == true) {
-                                return `<center><a class="handleClickEditarEstadoOrden" data-id-estado-orden-compra="${row.estado}" data-codigo-orden="${row.codigo}" data-id-orden-compra="${row.id_orden_compra}" style="cursor:pointer;">${row.estado_doc}</a></center>`;
-                            } else {
-                                return `<center><span class="label label-default" data-id-estado-orden-compra="${row.estado}" data-codigo-orden="${row.codigo}" data-id-orden-compra="${row.id_orden_compra}" >${row.estado_doc}</span></center>`;
+                            let cantidadRequerimientosConEstadosPorRegularizar=0;
+                            if (row.requerimientos != undefined && row.requerimientos.length > 0) {
+                                (row.requerimientos).forEach(element => {
+                                    if(element.estado ==38){
+                                        cantidadRequerimientosConEstadosPorRegularizar ++;
+                                    }
+                                });
+                            }
+                            if(cantidadRequerimientosConEstadosPorRegularizar>0){
+                                let estadoDetalleOrdenHabilitadasActualizar = [1, 2, 3, 4, 5, 6, 15];
+                                if (estadoDetalleOrdenHabilitadasActualizar.includes(row.estado) == true) {
+                                    return `<center><a class="handleClickEditarEstadoOrden" data-id-estado-orden-compra="${row.estado}" data-codigo-orden="${row.codigo}" data-id-orden-compra="${row.id_orden_compra}" style="cursor:pointer;">${row.estado_doc}</a></center>`;
+                                } else {
+                                    return `<center><span class="label label-default" data-id-estado-orden-compra="${row.estado}" data-codigo-orden="${row.codigo}" data-id-orden-compra="${row.id_orden_compra}" >${row.estado_doc}</span></center>`;
+    
+                                }
 
+                            }else{
+                                return `<center><span class="label label-default" data-id-estado-orden-compra="${row.estado}" data-codigo-orden="${row.codigo}" data-id-orden-compra="${row.id_orden_compra}" >${row.estado_doc}</span></center>`;
                             }
                         }
                 },
@@ -561,17 +574,34 @@ class ListaOrdenView {
                 {
                     'render':
                         function (data, type, row, meta) {
+
+                            let cantidadRequerimientosConEstadosPorRegularizar=0;
+                            if (row.requerimientos != undefined && row.requerimientos.length > 0) {
+                                (row.requerimientos).forEach(element => {
+                                    if(element.estado ==38){
+                                        cantidadRequerimientosConEstadosPorRegularizar ++;
+                                    }
+                                });
+                            }
+
                             let containerOpenBrackets = '<div class="btn-group btn-group-xs" role="group" style="margin-bottom: 5px;display: flex;flex-direction: row;flex-wrap: nowrap;">';
                             let btnImprimirOrden = '<button type="button" class="btn btn-sm btn-warning boton handleClickAbrirOrdenPDF" title="Abrir orden PDF"  data-toggle="tooltip" data-placement="bottom" data-id-orden-compra="' + row.id_orden_compra + '"  data-id-pago=""> <i class="fas fa-file-pdf"></i> </button>';
                             let btnAnularOrden = '';
                             if (![6, 27, 28].includes(row.estado)) {
-                                btnAnularOrden = '<button type="button" class="btn btn-sm btn-danger boton handleClickAnularOrden" name="btnAnularOrden" title="Anular orden" data-codigo-orden="' + row.codigo + '" data-id-orden-compra="' + row.id_orden_compra + '"><i class="fas fa-backspace fa-xs"></i></button>';
+                                if(cantidadRequerimientosConEstadosPorRegularizar >0){
+                                    btnAnularOrden = '<button type="button" class="btn btn-sm btn-danger boton handleClickAnularOrden" name="btnAnularOrden" title="Anular orden" data-codigo-orden="' + row.codigo + '" data-id-orden-compra="' + row.id_orden_compra + '" disabled ><i class="fas fa-backspace fa-xs"></i></button>';
+                                }else{
+                                    btnAnularOrden = '<button type="button" class="btn btn-sm btn-danger boton handleClickAnularOrden" name="btnAnularOrden" title="Anular orden" data-codigo-orden="' + row.codigo + '" data-id-orden-compra="' + row.id_orden_compra + '"><i class="fas fa-backspace fa-xs"></i></button>';
+
+                                }
                             }
                             let btnVerDetalle = `<button type="button" class="ver-detalle btn btn-sm btn-primary boton handleCliclVerDetalleOrden" data-toggle="tooltip" data-placement="bottom" title="Ver Detalle" data-id="${row.id_orden_compra}">
                         <i class="fas fa-chevron-down"></i>
                         </button>`;
                             let containerCloseBrackets = '</div>';
+ 
                             return (containerOpenBrackets + btnVerDetalle + btnImprimirOrden + btnAnularOrden + containerCloseBrackets);
+                            
                         }
                 }
 
@@ -918,26 +948,61 @@ class ListaOrdenView {
                 },
                 {
                     render: function (data, type, row) {
+                        let cantidadRequerimientosConEstadosPorRegularizar=0;
+                        if (row.requerimientos != undefined && row.requerimientos.length > 0) {
+                            (row.requerimientos).forEach(element => {
+                                if(element.estado ==38){
+                                    cantidadRequerimientosConEstadosPorRegularizar ++;
+                                }
+                            });
+                        }
+                        if(cantidadRequerimientosConEstadosPorRegularizar>0){
+
                         let estadoDetalleOrdenHabilitadasActualizar = [1, 2, 3, 4, 5, 6, 15];
                         if (estadoDetalleOrdenHabilitadasActualizar.includes(row.id_detalle_orden_estado) == true) {
                             return `<a class="handleClickEditarEstadoItemOrden" data-id-estado-detalle-orden-compra="${row.id_detalle_orden_estado}" data-id-orden-compra="${row.detalle_orden_id_orden_compra}" data-id-detalle-orden-compra="${row.detalle_orden_id_detalle_orden}" data-codigo-item="${row.alm_prod_codigo}" style="cursor: pointer;" title="Cambiar Estado de Item">${row.detalle_orden_estado}</a>`;
                         } else {
                             return `<span class="" data-id-estado-detalle-orden-compra="${row.id_detalle_orden_estado}" data-id-orden-compra="${row.detalle_orden_id_orden_compra}" data-id-detalle-orden-compra="${row.detalle_orden_id_detalle_orden}" data-codigo-item="${row.alm_prod_codigo}" style="cursor: default;">${row.detalle_orden_estado}</span>`;
                         }
+                    }else{
+                        return `<span class="" data-id-estado-detalle-orden-compra="${row.id_detalle_orden_estado}" data-id-orden-compra="${row.detalle_orden_id_orden_compra}" data-id-detalle-orden-compra="${row.detalle_orden_id_detalle_orden}" data-codigo-item="${row.alm_prod_codigo}" style="cursor: default;">${row.detalle_orden_estado}</span>`;
+
+                    }
 
                     }
                 },
                 {
                     render: function (data, type, row) {
+
+                        let cantidadRequerimientosConEstadosPorRegularizar=0;
+                        if (row.requerimientos != undefined && row.requerimientos.length > 0) {
+                            (row.requerimientos).forEach(element => {
+                                if(element.estado ==38){
+                                    cantidadRequerimientosConEstadosPorRegularizar ++;
+                                }
+                            });
+                        }
+
                         let containerOpenBrackets = '<div class="btn-group btn-group-sm" role="group" style="margin-bottom: 5px;display: flex;flex-direction: row;flex-wrap: nowrap;">';
                         let btnImprimirOrden = '<button type="button" class="btn btn-sm btn-warning boton handleClickAbrirOrdenPDF" name="btnGenerarOrdenRequerimientoPDF" title="Abrir orden PDF" data-id-requerimiento="' + row.id_requerimiento + '"  data-codigo-requerimiento="' + row.codigo_requerimiento + '" data-id-orden-compra="' + row.id_orden_compra + '"><i class="fas fa-file-download fa-xs"></i></button>';
                         let btnAnularOrden = '';
                         if (![6, 27, 28].includes(row.orden_estado)) {
-                            btnAnularOrden = '<button type="button" class="btn btn-sm btn-danger boton handleClickAnularOrden" name="btnAnularOrden" title="Anular orden" data-codigo-orden="' + row.codigo + '" data-id-orden-compra="' + row.id_orden_compra + '"><i class="fas fa-backspace fa-xs"></i></button>';
+                            if(cantidadRequerimientosConEstadosPorRegularizar>0){
+
+                                btnAnularOrden = '<button type="button" class="btn btn-sm btn-danger boton handleClickAnularOrden" name="btnAnularOrden" title="Anular orden" data-codigo-orden="' + row.codigo + '" data-id-orden-compra="' + row.id_orden_compra + '" disabled><i class="fas fa-backspace fa-xs"></i></button>';
+                            }else{
+                                btnAnularOrden = '<button type="button" class="btn btn-sm btn-danger boton handleClickAnularOrden" name="btnAnularOrden" title="Anular orden" data-codigo-orden="' + row.codigo + '" data-id-orden-compra="' + row.id_orden_compra + '"><i class="fas fa-backspace fa-xs"></i></button>';
+
+                            }
                         }
                         let btnDocumentosVinculados = '<button type="button" class="btn btn-sm btn-primary boton handleClickDocumentosVinculados" name="btnDocumentosVinculados" title="Ver documentos vinculados" data-id-requerimiento="' + row.id_requerimiento + '"  data-codigo-requerimiento="' + row.codigo_requerimiento + '" data-id-orden-compra="' + row.id_orden_compra + '"><i class="fas fa-folder fa-xs"></i></button>';
                         let containerCloseBrackets = '</div>';
-                        return (containerOpenBrackets + btnImprimirOrden + btnDocumentosVinculados + btnAnularOrden + containerCloseBrackets);
+
+
+                    
+                            return (containerOpenBrackets + btnImprimirOrden + btnDocumentosVinculados + btnAnularOrden + containerCloseBrackets);
+
+                    
 
                     }
                 }
