@@ -10,6 +10,9 @@ class MovimientoDetalle extends Model
     protected $primaryKey='id_mov_alm_det';
     public $timestamps=false;
 
+    public function movimiento(){
+        return $this->hasOne('App\Models\Almacen\Movimiento','id_mov_alm','id_mov_alm');
+    }
     public function guia_compra_detalle(){
         return $this->hasMany('App\Models\Almacen\GuiaCompraDetalle','id_guia_com_det','id_guia_com_det');
     }
