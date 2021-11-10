@@ -1,12 +1,12 @@
-function openOrdenDespachoEnviar(id, fecha, cdp) {
+function openOrdenDespachoEnviar(data) {
     $('#modal-orden_despacho_enviar').modal({
         show: true
     });
 
-    $('[name=id_requerimiento]').val(id);
-    $('#codigo_cdp').text(cdp);
+    $('[name=id_requerimiento]').val(data.id_requerimiento);
+    $('#codigo_cdp').text(data.codigo_oportunidad + ' - ' + data.codigo);
 
-    var msj = "Por favor hacer seguimiento a este pedido. Vence: " + fecha +
+    var msj = "Por favor hacer seguimiento a este pedido. Vence: " + data.fecha_entrega +
         "\nFECHA DE DESPACHO: \n" +
         "\nFavor de generar documentación: " +
         "\n• FACTURA " +

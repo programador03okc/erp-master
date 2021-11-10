@@ -8,9 +8,6 @@ function open_despacho_create(data) {
     $("#submit_orden_despacho").removeAttr("disabled");
     $('#codigo_req').text(data.codigo_oportunidad + ' - ' + data.codigo);
     $('.limpiar').text('');
-    // $('#concepto').text(data.concepto);
-    // $('#cliente_ruc').text(data.cliente_ruc);
-    // $('#cliente_razon_social').text(data.cliente_razon_social);
 
     console.log(data);
 
@@ -18,7 +15,6 @@ function open_despacho_create(data) {
     $('[name=id_contribuyente]').val(data.id_contribuyente ?? 0);
     $('[name=id_entidad]').val(data.id_entidad ?? '0');
     $('[name=id_contacto_od]').val(data.id_contacto ?? '');
-
 
 }
 
@@ -61,9 +57,7 @@ function verDatosContacto(id_requerimiento, id_entidad) {
     }).always(function () {
         $modal.find('div.modal-body').LoadingOverlay("hide", true);
 
-    }).fail(function () {
-        //console.log('fail');
-        // alert("error")
+    }).fail(function (jqXHR) {
         Lobibox.notify('error', {
             size: "mini",
             rounded: true,
@@ -97,10 +91,17 @@ function listarContactos(id_contribuyente, id_contacto) {
     }).always(function () {
         $('#fieldsetListaContactos').LoadingOverlay("hide", true);
 
-    }).fail(function () {
-        //console.log('fail');
-        alert("error")
+    }).fail(function (jqXHR) {
+        Lobibox.notify('error', {
+            size: "mini",
+            rounded: true,
+            sound: false,
+            delayIndicator: false,
+            msg: 'Hubo un problema. Por favor actualice la página e intente de nuevo.'
+        });
         //Cerrar el modal
+        $modal.modal('hide');
+        console.log('Error devuelto: ' + jqXHR.responseText);
     });
 }
 

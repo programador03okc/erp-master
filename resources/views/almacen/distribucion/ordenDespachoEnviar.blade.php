@@ -4,7 +4,7 @@
             
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
-                    <h3 class="modal-title">Enviar orden de despacho - <label id="codigo_cdp"></label></h3>
+                    <h3 class="modal-title">Enviar orden de despacho <label id="codigo_cdp"></label></h3>
                 </div>
                 <div class="modal-body">
                     <form id="form-orden_despacho_enviar" method="POST" enctype="multipart/form-data">

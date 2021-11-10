@@ -316,11 +316,11 @@ $("#requerimientosEnProceso tbody").on("click", "a.archivos", function (e) {
 
 $('#requerimientosEnProceso tbody').on("click", "button.envio_od", function (e) {
     $(e.preventDefault());
-    var id = $(this).data('id');
-    var fecha = $(this).data('fentrega');
-    var cdp = $(this).data('cdp');
-
-    openOrdenDespachoEnviar(id, fecha, cdp);
+    // var id = $(this).data('id');
+    // var fecha = $(this).data('fentrega');
+    // var cdp = $(this).data('cdp');
+    var data = $('#requerimientosEnProceso').DataTable().row($(this).parents("tr")).data();
+    openOrdenDespachoEnviar(data);
 });
 
 $('#requerimientosEnProceso tbody').on("click", "button.anular", function () {

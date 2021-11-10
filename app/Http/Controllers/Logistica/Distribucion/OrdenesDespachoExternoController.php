@@ -11,6 +11,7 @@ use App\Mail\EmailContactoDespacho;
 use App\Mail\EmailOrdenDespacho;
 use App\Models\Almacen\Requerimiento;
 use App\Models\Configuracion\Usuario;
+use App\Models\Contabilidad\ContactoContribuyente;
 use App\Models\Distribucion\OrdenDespacho;
 use App\Models\mgcp\CuadroCosto\CuadroCosto;
 use App\Models\mgcp\Oportunidad\Oportunidad;
@@ -505,14 +506,19 @@ class OrdenesDespachoExternoController extends Controller
 
     public function listarContactos($id_contribuyente)
     {
-        $listaContactos = DB::table('contabilidad.adm_ctb_contac')
-            ->where([
-                ['id_contribuyente', '=', $id_contribuyente],
-                ['estado', '!=', 7]
-            ])
-            ->orderBy('nombre')
-            ->get();
-        return response()->json($listaContactos);
+        try {
+            $listaContactos = ContactoContribuyente::where([
+                    ['id_contribuyente', '=', $id_contribuyente],
+                    ['estado', '!=', 7]
+                ])
+                ->orderBy('nombre')
+                ->get();
+
+            return response()->json(array('lista' => $listaContactos, 'tipo' => 'success'), 200);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json(array('tipo' => 'error', 'mensaje' => 'Hubo un problema. Por favor intente de nuevo', 'error' => $e->getMessage()), 200);
+        }
     }
 
     public function mostrarContacto($id_contacto)
