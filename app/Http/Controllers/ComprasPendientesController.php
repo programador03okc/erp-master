@@ -10,9 +10,13 @@ use App\Models\Almacen\ProductoUbicacion;
 use App\Models\Almacen\Requerimiento;
 use App\Models\Almacen\Reserva;
 use App\Models\Almacen\UnidadMedida;
+use App\Models\Comercial\CuadroCosto\CcAmFila;
+use App\Models\Comercial\CuadroCosto\CuadroCosto;
 use App\Models\Configuracion\Moneda;
 use App\Models\Logistica\Orden;
 use App\Models\Logistica\OrdenCompraDetalle;
+use App\Models\mgcp\CuadroCosto\CuadroCostoView;
+use App\Models\mgcp\Oportunidad\Oportunidad;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -159,9 +163,15 @@ class ComprasPendientesController extends Controller
     }
 
 
-    public function listarRequerimientosPendientes($empresa,$sede,$fechaRegistroDesde,$fechaRegistroHasta,$reserva,$orden)
+    public function listarRequerimientosPendientes(Request $request)
     {
- 
+
+        $empresa = $request->idEmpresa??'SIN_FILTRO';
+        $sede = $request->idSede??'SIN_FILTRO';
+        $fechaRegistroDesde = $request->fechaRegistroDesde??'SIN_FILTRO';
+        $fechaRegistroHasta = $request->fechaRegistroHasta??'SIN_FILTRO';
+        $reserva = $request->reserva??'SIN_FILTRO';
+        $orden = $request->orden??'SIN_FILTRO';
 
 
         $alm_req = Requerimiento::join('almacen.alm_tp_req', 'alm_req.id_tipo_requerimiento', '=', 'alm_tp_req.id_tipo_requerimiento')
@@ -234,8 +244,8 @@ class ComprasPendientesController extends Controller
                 DB::raw("(CASE WHEN alm_req.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc"),
                 DB::raw("(SELECT  COUNT(alm_det_req.id_detalle_requerimiento) FROM almacen.alm_det_req
                 WHERE alm_det_req.id_requerimiento = alm_req.id_requerimiento and alm_det_req.tiene_transformacion=false)::integer as cantidad_items_base"),
-                DB::raw("(SELECT  COUNT(alm_det_req.id_detalle_requerimiento) FROM almacen.alm_det_req
-                WHERE alm_det_req.id_requerimiento = alm_req.id_requerimiento and alm_det_req.estado=38)::integer as cantidad_por_regularizar"),
+                // DB::raw("(SELECT  COUNT(alm_det_req.id_detalle_requerimiento) FROM almacen.alm_det_req
+                // WHERE alm_det_req.id_requerimiento = alm_req.id_requerimiento and alm_det_req.estado=38)::integer as cantidad_por_regularizar"),
                 DB::raw("(SELECT json_agg(DISTINCT nivel.unidad) FROM almacen.alm_det_req dr
                 INNER JOIN finanzas.cc_niveles_view nivel ON dr.centro_costo_id = nivel.id_centro_costo
                 WHERE dr.id_requerimiento = almacen.alm_req.id_requerimiento and dr.tiene_transformacion=false ) as division"),
@@ -286,11 +296,44 @@ class ComprasPendientesController extends Controller
             })
 
             ->where('alm_req.confirmacion_pago', true)
-            ->whereIn('alm_req.estado', [2,15,27])
-            ->orderBy('alm_req.id_requerimiento', 'desc')
-            ->get();
+            ->whereIn('alm_req.estado', [2,15,27,38]);
             
-            return response()->json(["data" => $alm_req]);
+            return datatables($alm_req)
+            ->filterColumn('alm_req.fecha_entrega', function ($query, $keyword) {
+                try {
+                    $keywords = Carbon::createFromFormat('d-m-Y', trim($keyword));
+                    $query->where('alm_req.fecha_entrega', $keywords);
+                } catch (\Throwable $th) {
+                }
+            })
+            ->filterColumn('alm_req.fecha_registro', function ($query, $keyword) {
+                try {
+                    $desde = Carbon::createFromFormat('d-m-Y', trim($keyword))->hour(0)->minute(0)->second(0);
+                    $hasta = Carbon::createFromFormat('d-m-Y', trim($keyword));
+                    $query->whereBetween('alm_req.fecha_registro', [$desde, $hasta->addDay()->addSeconds(-1)]);
+                } catch (\Throwable $th) {
+                }
+            })
+            // ->filterColumn('division', function ($query, $keyword) {
+            //     try {
+                    
+            //         $query->where('nivel.unidad', trim($keyword));
+            //     } catch (\Throwable $th) {
+            //     }
+            // })
+            ->filterColumn('cc_solicitado_por', function ($query, $keyword) {
+                try {
+                    $query->where('cc_view.name', trim($keyword));
+                } catch (\Throwable $th) {
+                }
+            })
+            ->filterColumn('estado_doc', function ($query, $keyword) {
+                try {
+                    $query->where('adm_estado_doc.estado_doc', trim($keyword));
+                } catch (\Throwable $th) {
+                }
+            })
+            ->toJson();
     }
 
 
@@ -599,19 +642,24 @@ class ComprasPendientesController extends Controller
     //     return $data;
     // }
 
-    function listarItemsPorRegularizar($idRequerimiento){
-        $detalleRequerimientoList=  DetalleRequerimiento::where([['id_requerimiento',$idRequerimiento],['estado','=',38]])->with('producto','reserva','unidadMedida')->get();
-        $data=[];
+    function listarPorRegularizar($idRequerimiento){
+        $detalleRequerimientoList=  DetalleRequerimiento::where([['id_requerimiento',$idRequerimiento],['estado','!=',7]])->with('producto','detalle_orden.orden','detalle_orden.guia_compra_detalle.movimiento_detalle.movimiento','reserva','unidadMedida')->get();
+        $requerimiento=Requerimiento::find($idRequerimiento);
+        $cp= CuadroCosto::find($requerimiento->id_cc);
+        $oportunidad = Oportunidad::find($cp->id_oportunidad);
+        
+        $detalle=[];
         foreach ($detalleRequerimientoList as $detalleRequerimiento) {
-            $guiasCompraDetalle = GuiaCompraDetalle::join('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_orden', '=', 'guia_com_det.id_oc_det')
-            ->join('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
-            ->where([['alm_det_req.id_detalle_requerimiento','=',$detalleRequerimiento->id_detalle_requerimiento],['log_det_ord_compra.estado','!=',7]])->get();
-            $detalleRequerimiento->setAttribute('detalle_guias_compra',$guiasCompraDetalle);
-            $data[]=$detalleRequerimiento;
-
-        }
-
-        return $data;
+                $ccAmFila= CcAmFila::where([['id_cc_am',$requerimiento->id_cc],['id',$detalleRequerimiento->id_cc_am_filas]])->first();
+                $detalleRequerimiento->setAttribute('detalle_cc',$ccAmFila);
+                $detalle[]=$detalleRequerimiento;
+                
+                
+            }
+            
+        $cabecerra=['codigo_requerimiento'=>$requerimiento->codigo, 
+        'codigo_cuadro_presupuesto'=>$oportunidad->codigo_oportunidad];
+        return ['cabecera'=>$cabecerra,'detalle'=>$detalle];
     }
 
     function listaOrdenesConItemPorRegularizar($idDetalleRequerimiento){
@@ -633,6 +681,52 @@ class ComprasPendientesController extends Controller
 
     }
 
+    function restablecerEstadoDetalleRequerimiento($idDetalleRequerimiento){
+        $detalleRequerimiento = DetalleRequerimiento::find($idDetalleRequerimiento);
+        $ordenesCompraDetalle = OrdenCompraDetalle::where([['id_detalle_requerimiento',$idDetalleRequerimiento],['estado','!=',7]])->get();
+        $reservas = Reserva::where([['id_detalle_requerimiento',$idDetalleRequerimiento],['estado','!=',7]])->get();
+        $cantidadAtendidaOrden=0;
+        $cantidadAtendidaReserva=0;
+        $totalAtendido=0;
+        $estadoDetalle=1;
+        foreach ($ordenesCompraDetalle as $ocd) {
+            $cantidadAtendidaOrden+=$ocd->cantidad;
+            $totalAtendido+=$ocd->cantidad;
+            
+        }
+        foreach ($reservas as $r) {
+            $cantidadAtendidaReserva+=$r->stock_comprometido;
+            $totalAtendido+=$r->stock_comprometido;
+        }
+        if($cantidadAtendidaOrden >0 && $cantidadAtendidaReserva > 0){
+            // estado atendido parcial o atentido total
+        }
+        if($cantidadAtendidaOrden > 0 && $cantidadAtendidaReserva ==0){
+            // estado atendido parcial o atentido total
+
+        }
+        if($cantidadAtendidaOrden== 0 && $cantidadAtendidaReserva >0){
+            // estado atentido parcial o reserva total
+        }
+
+        if($totalAtendido == $detalleRequerimiento->cantidad){
+            if($cantidadAtendidaReserva ==$detalleRequerimiento->cantidad){
+                $estadoDetalle= 28; // almacen total
+            }
+            if($cantidadAtendidaOrden ==$detalleRequerimiento->cantidad){
+                $estadoDetalle= 5; // atendido total
+            }
+            if(($cantidadAtendidaOrden+$cantidadAtendidaReserva) ==$detalleRequerimiento->cantidad){
+                $estadoDetalle= 5; // atendido total
+            }
+        }else{
+            $estadoDetalle= 15; // atendido parcial
+        }
+
+        $detalleRequerimiento->estado = $estadoDetalle;
+        $detalleRequerimiento->save();
+    }
+
     function realizarRemplazoDeProductoEnOrden(Request $request){
         DB::beginTransaction();
         try {
@@ -641,8 +735,12 @@ class ComprasPendientesController extends Controller
         $status=0;
         if($request->idOrden > 0 && $request->idDetalleRequerimiento > 0){
             $detalleRequerimiento = DetalleRequerimiento::find($request->idDetalleRequerimiento);
-            $ordenCompraDetalle = OrdenCompraDetalle::where([['id_detalle_requerimiento',$request->idDetalleRequerimiento],['id_orden_compra',$request->idOrden]])->first();
+            $ordenCompraDetalle = OrdenCompraDetalle::where([['id_detalle_requerimiento',$request->idDetalleRequerimiento],['id_orden_compra',$request->idOrden],['estado','!=',7]])->first();
             $ordenCompraDetalle->id_producto=$detalleRequerimiento->id_producto;
+
+            $this->restablecerEstadoDetalleRequerimiento($request->idDetalleRequerimiento);
+
+
             $ordenCompraDetalle->save();
         }
         DB::commit();
@@ -671,6 +769,9 @@ class ComprasPendientesController extends Controller
             $ordenCompraDetalle = OrdenCompraDetalle::where([['id_detalle_requerimiento',$request->idDetalleRequerimiento],['id_orden_compra',$request->idOrden]])->first();
             $ordenCompraDetalle->id_detalle_requerimiento= null;
             $ordenCompraDetalle->save();
+
+            $this->restablecerEstadoDetalleRequerimiento($request->idDetalleRequerimiento);
+
             $status=200;
         }
         DB::commit();
@@ -685,12 +786,11 @@ class ComprasPendientesController extends Controller
 
     function listaReservasConItemPorRegularizar($idDetalleRequerimiento){
 
-        $detalleRequerimiento = DetalleRequerimiento::find($idDetalleRequerimiento);
-        $reservas = Reserva::whereHas('guia_compra_detalle.guia_compra', function (Builder $query) {
-            $query->where('estado', '!=', 7);
-        })->whereHas('transferencia_detalle.transferencia', function (Builder $query) {
-            $query->where('estado', '!=', 7);
-        })->where('id_detalle_requerimiento',$idDetalleRequerimiento)
+        // $detalleRequerimiento = DetalleRequerimiento::find($idDetalleRequerimiento);
+        $reservas = Reserva:: 
+        // })->whereHas('transferencia_detalle.transferencia', function (Builder $query) {
+        //     $query->where('estado', '!=', 7);
+        where('id_detalle_requerimiento',$idDetalleRequerimiento)
         ->with('producto', 'almacen','guia_compra_detalle.guia_compra','transferencia_detalle.transferencia'
         )->get();
         // $data=[];
@@ -710,11 +810,14 @@ class ComprasPendientesController extends Controller
         // $request->idReserva;
         // $request->idDetalleRequerimiento;
         $status=0;
+        $stockComprometidoReserva=0;
         if($request->idReserva > 0 && $request->idDetalleRequerimiento > 0){
             $detalleRequerimiento = DetalleRequerimiento::find($request->idDetalleRequerimiento);
-            $reserva= Reserva::where([['id_detalle_requerimiento',$request->idDetalleRequerimiento],['id_reserva',$request->idReserva]])->first();
+            $reserva = Reserva::where([['id_detalle_requerimiento',$request->idDetalleRequerimiento],['id_reserva',$request->idReserva]])->first();
             $reserva->id_producto=$detalleRequerimiento->id_producto;
             $reserva->save();
+
+            $this->restablecerEstadoDetalleRequerimiento($request->idDetalleRequerimiento);
         }
         DB::commit();
 
@@ -741,9 +844,14 @@ class ComprasPendientesController extends Controller
         // $request->idDetalleRequerimiento;
         $status=0;
         if($request->idReserva > 0 && $request->idDetalleRequerimiento > 0){
+            // $detalleRequerimiento = DetalleRequerimiento::find($request->idDetalleRequerimiento);
+
             $reserva= Reserva::where([['id_detalle_requerimiento',$request->idDetalleRequerimiento],['id_reserva',$request->idReserva]])->first();
             $reserva->id_detalle_requerimiento= null;
             $reserva->save();
+
+            $this->restablecerEstadoDetalleRequerimiento($request->idDetalleRequerimiento);
+
             $status=200;
         }
         DB::commit();
@@ -753,6 +861,53 @@ class ComprasPendientesController extends Controller
     } catch (Exception $e) {
         DB::rollBack();
         return response()->json(['status' => $status, 'mensaje' => 'Hubo un problema al remplazar liberar el item en la reserva. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
+    }
+    }
+    function finalizarRegularizacionRequerimiento(Request $request){
+        DB::beginTransaction();
+        try {
+        // $request->idRequerimiento;
+        
+        $status=0;
+        $cantidadItemPorRegularizar=0;
+       $data=[];
+        $cantidadItemPorRegularizar=0;
+        if($request->idRequerimiento > 0){
+            $detalleRequerimiento = DetalleRequerimiento::where([['id_requerimiento',$request->idRequerimiento],['estado','!=',7]])->get();
+            foreach ($detalleRequerimiento as $d) {
+                if($d->estado == 38){
+                    $cantidadItemPorRegularizar ++;
+                }
+            }
+            if($cantidadItemPorRegularizar >0){
+                $status=202;
+                $mensaje='Aun tiene item(s) por regularizar';
+            }else{
+                $nuevoEstadoRequerimiento=  Requerimiento::actualizarEstadoRequerimientoAtendido([$request->idRequerimiento]);
+                if($nuevoEstadoRequerimiento['id'] != 38){
+                    $data=['id_estado_requerimiento' =>$nuevoEstadoRequerimiento['id'] ,'descripcion_estado_requerimiento'=>$nuevoEstadoRequerimiento['descripcion']];
+                    $status=200;
+                    $mensaje='Finalización realizada con éxito';
+                }else{
+                    $status=201;
+                    $mensaje='Hubo un problema al intentar actualizar el requerimiento';
+
+                }
+
+            }
+
+        }else{
+            $status=201;
+            $mensaje='El id enviado no es valido';
+
+        }
+        DB::commit();
+
+
+        return response()->json(['status' => $status,'mensaje'=>$mensaje,'data'=>$data]);
+    } catch (Exception $e) {
+        DB::rollBack();
+        return response()->json(['status' => $status, 'mensaje' => 'Hubo un problema al intentar finalizar la regularización. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage(),'data'=>[]]);
     }
     }
 

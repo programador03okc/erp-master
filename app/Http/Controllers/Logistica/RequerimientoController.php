@@ -718,7 +718,7 @@ class RequerimientoController extends Controller
                 $idUsuariosList = Usuario::getAllIdUsuariosPorRol($idRolPrimerAprobante);
 
                 foreach ($idUsuariosList as $idUsuario) {
-                    $correoUsuario = Usuario::find($idUsuario)->trabajador->postulante->persona->email;
+                    $correoUsuario = Usuario::find($idUsuario)->email;
                     if (!empty($correoUsuario)) {
                         $this->enviarNotificacionPorCreacion($request, $correoUsuario, $requerimiento, $montoTotal);
                     }
@@ -757,13 +757,13 @@ class RequerimientoController extends Controller
 
         $seNotificaraporEmail = false;
             $correoUsuarioList = [];
-        $correoUsuarioList[] = Usuario::find($requerimiento->id_usuario)->trabajador->postulante->persona->email; // notificar a usuario
+        $correoUsuarioList[] = Usuario::find($requerimiento->id_usuario)->email; // notificar a usuario
         $usuariosList = Usuario::getAllIdUsuariosPorRol(4); // notificar al usuario  con rol = 'logistico compras'
 
         // Debugbar::info($usuariosList);
         if (count($usuariosList) > 0) {
             foreach ($usuariosList as $idUsuario) {
-                $correoUsuarioList[] = Usuario::find($idUsuario)->trabajador->postulante->persona->email;
+                $correoUsuarioList[] = Usuario::find($idUsuario)->email;
             }
 
             if (count($correoUsuarioList) > 0) {
@@ -792,7 +792,7 @@ class RequerimientoController extends Controller
 
     private function enviarNotificacionPorCreacion($request, $correoUsuario, $requerimiento, $montoTotal)
     {
-        $nombreCompletoUsuario = Auth::user()->trabajador->postulante->persona->nombre_completo;
+        $nombreCompletoUsuario = Auth::user()->nombre_corto??'';
         $payload = [
             'id_empresa' => $request->empresa,
             'email_destinatario' => $correoUsuario,
@@ -1146,7 +1146,7 @@ class RequerimientoController extends Controller
             if ($idRolPrimerAprobante > 0) {
                 $usuariosList = Usuario::getAllIdUsuariosPorRol($idRolPrimerAprobante);
                 foreach ($usuariosList as $idUsuario) {
-                    $correoUsuario = Usuario::find($idUsuario)->trabajador->postulante->persona->email;
+                    $correoUsuario = Usuario::find($idUsuario)->email;
                     if (!empty($correoUsuario)) {
                         $this->enviarNotificacionPorActualizacion($request, $correoUsuario, $requerimiento);
                     }
@@ -1160,7 +1160,7 @@ class RequerimientoController extends Controller
 
     private function enviarNotificacionPorActualizacion($request, $correoUsuario, $requerimiento)
     {
-        $nombreCompletoUsuario = Auth::user()->trabajador->postulante->persona->nombre_completo;
+        $nombreCompletoUsuario = Auth::user()->nombre_corto??'';
         $payload = [
             'id_empresa' => $request->empresa,
             'email_destinatario' => $correoUsuario,

@@ -743,7 +743,7 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::group(['as' => 'compras.', 'prefix' => 'compras'], function () {
 				Route::group(['as' => 'pendientes.', 'prefix' => 'pendientes'], function () {
 					Route::get('index', 'ComprasPendientesController@viewComprasPendientes')->name('index');
-					Route::get('requerimientos-pendientes/{empresa?}/{sede?}/{fechaDesde?}/{fechaHasta?}/{reserva?}/{orden?}', 'ComprasPendientesController@listarRequerimientosPendientes')->name('requerimientos-pendientes');
+					Route::post('requerimientos-pendientes', 'ComprasPendientesController@listarRequerimientosPendientes')->name('requerimientos-pendientes');
 					// Route::post('lista_items-cuadro-costos-por-requerimiento-pendiente-compra', 'ComprasPendientesController@get_lista_items_cuadro_costos_por_id_requerimiento_pendiente_compra')->name('lista_items-cuadro-costos-por-requerimiento-pendiente-compra');
 					// Route::post('tiene-items-para-compra', 'ComprasPendientesController@tieneItemsParaCompra')->name('tiene-items-para-compra');
 					Route::post('lista_items-cuadro-costos-por-requerimiento', 'ComprasPendientesController@get_lista_items_cuadro_costos_por_id_requerimiento')->name('lista_items-cuadro-costos-por-requerimiento');
@@ -771,15 +771,16 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('todo-detalle-requeriento/{idRequerimiento?}/{transformadosONoTransformados?}', 'Logistica\RequerimientoController@todoDetalleRequerimiento')->name('todo-detalle-requerimiento');
 
 					Route::get('mostrar_tipos_clasificacion/{id}', 'Almacen\Catalogo\TipoProductoController@mostrar_tipos_clasificacion');
-					Route::get('items-por-regularizar/{id}', 'ComprasPendientesController@listarItemsPorRegularizar');
+					Route::get('por-regularizar/{id}', 'ComprasPendientesController@listarPorRegularizar');
 					Route::get('ordenes-con-item-por-regularizar/{id}', 'ComprasPendientesController@listaOrdenesConItemPorRegularizar');
 					Route::post('realizar-remplazo-de-producto-en-orden', 'ComprasPendientesController@realizarRemplazoDeProductoEnOrden');
 					Route::post('realizar-liberacion-de-producto-en-orden', 'ComprasPendientesController@realizarLiberacionDeProductoEnOrden');
 					Route::get('reservas-con-item-por-regularizar/{id}', 'ComprasPendientesController@listaReservasConItemPorRegularizar');
 					Route::post('realizar-remplazo-de-producto-en-reserva', 'ComprasPendientesController@realizarRemplazoDeProductoEnReserva');
 					Route::post('realizar-liberacion-de-producto-en-reserva', 'ComprasPendientesController@realizarLiberacionDeProductoEnReserva');
-					// Route::put('anular-orden/{id_orden?}', 'OrdenController@anularOrden')->name('anular');
 					Route::post('anular-item-orden', 'OrdenController@anularItemOrden')->name('anular-item-orden');
+					Route::get('imprimir_ingreso/{id}', 'Almacen\Movimiento\IngresoPdfController@imprimir_ingreso');
+					Route::post('finalizar-regularizacion-de-requerimiento', 'ComprasPendientesController@finalizarRegularizacionRequerimiento')->name('finalizar-regularizacion-de-requerimiento');
 				});
 
 				Route::group(['as' => 'ordenes.', 'prefix' => 'ordenes'], function () {

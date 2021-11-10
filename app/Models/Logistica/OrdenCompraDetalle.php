@@ -26,6 +26,9 @@ class OrdenCompraDetalle extends Model
     public function reserva(){
         return $this->hasMany('App\Models\Almacen\Reserva','id_detalle_requerimiento','id_detalle_requerimiento');
     }
+    public function guia_compra_detalle(){
+        return $this->hasMany('App\Models\Almacen\GuiaCompraDetalle','id_oc_det','id_detalle_orden');
+    }
 
     public function detalleRequerimiento(){
         return $this->hasMany('App\Models\Almacen\DetalleRequerimiento','id_detalle_requerimiento','id_detalle_requerimiento');

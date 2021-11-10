@@ -702,10 +702,10 @@ class RequerimientoView {
     }
 
     cargarAlmacenes(sede) {
-        console.log(sede);
+        // console.log(sede);
         if (sede !== '') {
             this.requerimientoCtrl.obtenerAlmacenes(sede).then((res)=> {
-                console.log(res);
+                // console.log(res);
                 let option = '';
                 for (let i = 0; i < res.length; i++) {
                     if (res.length == 1) {
