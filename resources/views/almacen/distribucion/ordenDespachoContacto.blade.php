@@ -4,7 +4,7 @@
             <form id="form-orden_despacho_contacto">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
-                    <h3 class="modal-title">Datos de Contacto - <label id="codigo_req" ></label></h3>
+                    <h3 class="modal-title">Datos de Contacto <label id="codigo_req" ></label></h3>
                 </div>
                 <div class="modal-body">
                     <input type="text" class="oculto" name="id_requerimiento">
@@ -102,6 +102,15 @@
                                     </thead>
                                     <tbody></tbody>
                                 </table>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <br>
+                    <fieldset class="group-table" id="fieldsetCorreoLicencia">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h5>Correo para licencias</h5>
+                                <input type="text" class="form-control" name="correo_licencia">
                             </div>
                         </div>
                     </fieldset>

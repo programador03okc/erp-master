@@ -90,7 +90,7 @@ Gestión de Despacho Externo
 
 <script src="{{ asset('js/almacen/distribucion/ordenesDespachoExterno.js')}}"></script>
 {{-- <script src="{{ asset('js/almacen/distribucion/ordenDespachoCreate.js')}}"></script> --}}
-<script src="{{ asset('js/almacen/distribucion/actualizaContacto.js')}}"></script>
+<script src="{{ asset('js/almacen/distribucion/ordenDespachoContacto.js')}}"></script>
 <script src="{{ asset('js/almacen/distribucion/ordenDespachoEnviar.js')}}"></script>
 <script src="{{ asset('js/almacen/distribucion/verDetalleRequerimiento.js')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/trazabilidad.js')}}"></script>

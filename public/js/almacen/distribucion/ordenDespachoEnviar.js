@@ -65,7 +65,7 @@ function guardar_orden_despacho() {
     }).always(function () {
         $submit.prop('disabled', false);
         $submit.html('Enviar');
-    }).fail(function () {
+    }).fail(function (jqXHR) {
         Lobibox.notify('error', {
             size: "mini",
             rounded: true,

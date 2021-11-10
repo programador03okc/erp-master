@@ -6,7 +6,7 @@ function open_despacho_create(data) {
         show: true
     });
     $("#submit_orden_despacho").removeAttr("disabled");
-    $('#codigo_req').text(data.codigo);
+    $('#codigo_req').text(data.codigo_oportunidad + ' - ' + data.codigo);
     $('.limpiar').text('');
     // $('#concepto').text(data.concepto);
     // $('#cliente_ruc').text(data.cliente_ruc);
@@ -172,7 +172,7 @@ function enviarDatosContacto() {
     }).always(function () {
         $button.prop('disabled', false);
         $button.html('Enviar correo');
-    }).fail(function () {
+    }).fail(function (jqXHR) {
         Lobibox.notify('error', {
             size: "mini",
             rounded: true,

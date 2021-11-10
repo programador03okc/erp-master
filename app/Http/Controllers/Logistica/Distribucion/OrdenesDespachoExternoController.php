@@ -634,18 +634,18 @@ class OrdenesDespachoExternoController extends Controller
 
             $msj = '';
             $nombre_usuario = Auth::user()->nombre_corto;
-            if ($contacto !== null) {
-                $msj .= 'DATOS DE CONTACTO:
+            // if ($contacto !== null) {
+            //     $msj .= 'DATOS DE CONTACTO:
 
-                ENTIDAD / CLIENTE: ' . $contacto->razon_social . '
-                NOMBRE DEL CONTACTO: ' . $contacto->nombre . '
-                ' . (($contacto->cargo !== null && $contacto->cargo !== '') ? 'CARGO: ' . $contacto->cargo . '' : '') . '
-                ' . (($contacto->telefono !== null && $contacto->telefono !== '') ? 'TELEFONO: ' . $contacto->telefono . '' : '') . '
-                ' . (($contacto->horario !== null && $contacto->horario !== '') ? 'HORARIO DE ATENCION: ' . $contacto->horario . '' : '') . '
-                
-                Saludos,
-                ' . $nombre_usuario;
-            }
+            //     ENTIDAD / CLIENTE: ' . $contacto->razon_social . '
+            //     NOMBRE DEL CONTACTO: ' . $contacto->nombre . '
+            //     ' . (($contacto->cargo !== null && $contacto->cargo !== '') ? 'CARGO: ' . $contacto->cargo . '' : '') . '
+            //     ' . (($contacto->telefono !== null && $contacto->telefono !== '') ? 'TELEFONO: ' . $contacto->telefono . '' : '') . '
+            //     ' . (($contacto->horario !== null && $contacto->horario !== '') ? 'HORARIO DE ATENCION: ' . $contacto->horario . '' : '') . '
+
+            //     Saludos,
+            //     ' . $nombre_usuario;
+            // }
 
             $correos = [];
             if (config('app.debug')) {
@@ -657,7 +657,7 @@ class OrdenesDespachoExternoController extends Controller
                 }
             }
 
-            Mail::to($correos)->send(new EmailContactoDespacho($oportunidad, $msj));
+            Mail::to($correos)->send(new EmailContactoDespacho($oportunidad, $contacto, $nombre_usuario));
 
             DB::commit();
             return response()->json(
