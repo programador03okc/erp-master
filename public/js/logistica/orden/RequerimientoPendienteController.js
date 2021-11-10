@@ -45,60 +45,58 @@ class RequerimientoPendienteCtrl{
 
     }
     
-    statusBtnGenerarOrden() {
-        let countStateCheckTrue = 0;
+    // statusBtnGenerarOrden() {
+    //     let countStateCheckTrue = 0;
 
-        listCheckReq.map(value => {
-            if (value.stateCheck == true) {
-                countStateCheckTrue += 1;
-            }
-        })
+    //     listCheckReq.map(value => {
+    //         if (value.stateCheck == true) {
+    //             countStateCheckTrue += 1;
+    //         }
+    //     })
 
 
-        if (countStateCheckTrue > 0) {
-            document
-                .getElementById('btnCrearOrdenCompra')
-                .removeAttribute('disabled')
-        } else {
-            document
-                .getElementById('btnCrearOrdenCompra')
-                .setAttribute('disabled', true)
-        }
-    }
-    controlListCheckReq(id,stateCheck){
-        if (stateCheck.length == 0) {
-            let newCheckReq = {
-                id_req: id,
-                stateCheck: stateCheck,
-            };
-            listCheckReq.push(newCheckReq);
-            this.statusBtnGenerarOrden();
-        }else{
-            let arrIdReq=[];
-            let newCheckReq = {
-                id_req: id,
-                stateCheck: stateCheck,
-            };
+    //     if (countStateCheckTrue > 0) {
+            // document.getElementById('btnCrearOrdenCompra').removeAttribute('disabled')
+    //     } else {
+    //         document
+    //             .getElementById('btnCrearOrdenCompra')
+    //             .setAttribute('disabled', true)
+    //     }
+    // }
+    // controlListCheckReq(id,stateCheck){
+    //     if (stateCheck.length == 0) {
+    //         let newCheckReq = {
+    //             id_req: id,
+    //             stateCheck: stateCheck,
+    //         };
+    //         listCheckReq.push(newCheckReq);
+    //         this.statusBtnGenerarOrden();
+    //     }else{
+    //         let arrIdReq=[];
+    //         let newCheckReq = {
+    //             id_req: id,
+    //             stateCheck: stateCheck,
+    //         };
         
-            listCheckReq.map(value => {
-                    arrIdReq.push(value.id_req);
-            });
+    //         listCheckReq.map(value => {
+    //                 arrIdReq.push(value.id_req);
+    //         });
         
-            if (arrIdReq.includes(newCheckReq.id_req) == true) {
-                // actualiza
-                listCheckReq.map(value => {
-                    if (value.id_req == newCheckReq.id_req) {
-                        value.stateCheck = newCheckReq.stateCheck
-                        // console.log(newCheckReq.stateCheck);
-                    }
-                });
-            } else {
-                listCheckReq.push(newCheckReq)
-            }
+    //         if (arrIdReq.includes(newCheckReq.id_req) == true) {
+    //             // actualiza
+    //             listCheckReq.map(value => {
+    //                 if (value.id_req == newCheckReq.id_req) {
+    //                     value.stateCheck = newCheckReq.stateCheck
+    //                     // console.log(newCheckReq.stateCheck);
+    //                 }
+    //             });
+    //         } else {
+    //             listCheckReq.push(newCheckReq)
+    //         }
         
-            this.statusBtnGenerarOrden();
-        }
-    }
+    //         this.statusBtnGenerarOrden();
+    //     }
+    // }
 
     // atender con almacén
 
@@ -628,15 +626,15 @@ class RequerimientoPendienteCtrl{
     }
 
     crearOrdenCompra(){
-        reqTrueList=[];
-        listCheckReq = listCheckReq.filter(function( obj ) {
-            return (obj.stateCheck ==true);
-        });
+        // reqTrueList=[];
+        // listCheckReq = listCheckReq.filter(function( obj ) {
+        //     return (obj.stateCheck ==true);
+        // });
 
-        listCheckReq.forEach(element => {
-            reqTrueList.push(element.id_req);
+        // listCheckReq.forEach(element => {
+        //     reqTrueList.push(element.id_req);
             
-        });
+        // });
         // console.log(reqTrueList);
         sessionStorage.removeItem('idOrden');
         sessionStorage.setItem('reqCheckedList', JSON.stringify(reqTrueList));
