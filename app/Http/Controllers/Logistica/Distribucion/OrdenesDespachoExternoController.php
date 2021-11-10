@@ -81,7 +81,8 @@ class OrdenesDespachoExternoController extends Controller
                         orden_despacho_obs.id_od = orden_despacho.id_od
                         and orden_despacho.estado != 7) AS count_estados_envios"),
             'oc_propias_view.nro_orden',
-            'oc_propias_view.codigo_oportunidad',
+            // 'oc_propias_view.codigo_oportunidad',
+            'oportunidades.codigo_oportunidad',
             'oc_propias_view.id as id_oc_propia',
             'oc_propias_view.tipo',
             'oc_propias_view.id_entidad',
@@ -93,6 +94,7 @@ class OrdenesDespachoExternoController extends Controller
                         and alm_det_req.id_producto is null) AS productos_no_mapeados")
         )
             ->join('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
+            ->leftjoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
             ->leftJoin('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'cc.id_oportunidad')
             ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'alm_req.id_usuario')
             ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'alm_req.estado')
@@ -508,9 +510,9 @@ class OrdenesDespachoExternoController extends Controller
     {
         try {
             $listaContactos = ContactoContribuyente::where([
-                    ['id_contribuyente', '=', $id_contribuyente],
-                    ['estado', '!=', 7]
-                ])
+                ['id_contribuyente', '=', $id_contribuyente],
+                ['estado', '!=', 7]
+            ])
                 ->orderBy('nombre')
                 ->get();
 

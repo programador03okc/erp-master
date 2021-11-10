@@ -1848,7 +1848,8 @@ class TransferenciaController extends Controller
                 'adm_estado_doc.bootstrap_color',
                 'sis_sede.descripcion as sede_descripcion',
                 'oc_propias_view.nro_orden',
-                'oc_propias_view.codigo_oportunidad',
+                // 'oc_propias_view.codigo_oportunidad',
+                'oportunidades.codigo_oportunidad',
                 'oc_propias_view.id as id_oc_propia',
                 'oc_propias_view.tipo'
             )
@@ -1868,6 +1869,7 @@ class TransferenciaController extends Controller
             ->leftJoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
             ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_req.id_sede')
             ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
+            ->leftjoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
             ->leftJoin('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'cc.id_oportunidad')
             ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'alm_req.id_usuario')
             ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'alm_req.estado')

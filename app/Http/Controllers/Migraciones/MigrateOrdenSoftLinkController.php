@@ -53,11 +53,13 @@ class MigrateOrdenSoftLinkController extends Controller
 
 
             if ($oc !== null) {
+                //persona juridica x defecto
                 $doc_tipo = ($oc->id_tipo_contribuyente !== null
                     ? ($oc->id_tipo_contribuyente <= 2 ? 2 : 1)
-                    : 1); //persona juridica x defecto
-                $cod = ($oc->cod_di !== null ? $oc->cod_di : '06'); //por defecto ruc
-
+                    : 1);
+                //por defecto ruc
+                $cod = ($oc->cod_di !== null ? $oc->cod_di : '06');
+                //obtiene o crea el proveedor
                 $cod_auxi = $this->obtenerProveedor($oc->ruc, $oc->razon_social, $doc_tipo, $cod);
 
                 $empresas_soft = [
@@ -75,19 +77,23 @@ class MigrateOrdenSoftLinkController extends Controller
                     }
                 }
                 $count = DB::connection('soft')->table('movimien')->count();
-                $mov_id = $this->leftZero(10, (intval($count) + 1)); //codificar segun criterio x documento
+                //codificar segun criterio x documento
+                $mov_id = '_OC' . $this->leftZero(7, (intval($count) + 1));
                 $fecha = date('Y-m-d');
+                //obtiene el año a 2 digitos y le aumenta 2 ceros adelante
                 $yy = $this->leftZero(4, intval(date('y', strtotime($fecha))));
-
+                //busca segun oc de lima, las oc de ilo inician con P=>P021
                 $count_mov = DB::connection('soft')->table('movimien')
                     ->where([['num_docu', 'like', $yy . '%'], ['cod_docu', '=', 'OC']])
                     ->count();
+                //crea el correlativo del documento
                 $nro_mov = $this->leftZero(7, (intval($count_mov) + 1));
+                //anida el numero de documento
                 $num_docu = $yy . $nro_mov;
 
                 $mon_impto = (floatval($oc->total_precio) * 0.18);
 
-                $msj = 'Se migró correctamente. La OC ' . $yy . '-' . $nro_mov . ' con id ' . $mov_id;
+                // $msj = 'Se migró correctamente. La OC ' . $yy . '-' . $nro_mov . ' con id ' . $mov_id;
 
                 $fecha = date("Y-m-d", strtotime($oc->fecha));
                 // return response()->json(['oc' => $oc, 'cod_suc' => $cod_suc, 'cod_auxi' => $cod_auxi]);
@@ -212,7 +218,9 @@ class MigrateOrdenSoftLinkController extends Controller
 
                 foreach ($detalles as $det) {
                     $i++;
+                    //cuenta los registros
                     $count_det = DB::connection('soft')->table('detmov')->count();
+                    //aumenta uno y completa los 10 digitos
                     $mov_det_id = $this->leftZero(10, (intval($count_det) + 1));
                     //Obtiene y/o crea el producto
                     $cod_prod = $this->obtenerProducto($det);
@@ -275,10 +283,11 @@ class MigrateOrdenSoftLinkController extends Controller
             }
 
             DB::commit();
-            return response()->json($msj);
+            // return response()->json($msj);
+            return response()->json(array('tipo' => 'success', 'mensaje' => 'Se migró correctamente. La OC ' . $yy . '-' . $nro_mov . ' con id ' . $mov_id), 200);
         } catch (\PDOException $e) {
-            DB::rollBack($e);
-            return response()->json("Ha ocurrido un problema");
+            DB::rollBack();
+            return response()->json(array('tipo' => 'error', 'mensaje' => 'Hubo un problema al enviar la orden. Por favor intente de nuevo', 'error' => $e->getMessage()), 200);
         }
     }
 
