@@ -780,7 +780,6 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('realizar-liberacion-de-producto-en-reserva', 'ComprasPendientesController@realizarLiberacionDeProductoEnReserva');
 					// Route::put('anular-orden/{id_orden?}', 'OrdenController@anularOrden')->name('anular');
 					Route::post('anular-item-orden', 'OrdenController@anularItemOrden')->name('anular-item-orden');
-
 				});
 
 				Route::group(['as' => 'ordenes.', 'prefix' => 'ordenes'], function () {
@@ -1007,8 +1006,13 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('imprimir_ingreso/{id}', 'Almacen\Movimiento\IngresoPdfController@imprimir_ingreso');
 				Route::get('imprimir_salida/{id}', 'Almacen\Movimiento\SalidaPdfController@imprimir_salida');
 
-				Route::get('verDatosContacto/{id}', 'Logistica\Distribucion\OrdenesDespachoExternoController@verDatosContacto');
+				Route::post('verDatosContacto', 'Logistica\Distribucion\OrdenesDespachoExternoController@verDatosContacto');
+				Route::get('listarContactos/{id}', 'Logistica\Distribucion\OrdenesDespachoExternoController@listarContactos');
 				Route::post('actualizaDatosContacto', 'Logistica\Distribucion\OrdenesDespachoExternoController@actualizaDatosContacto');
+				Route::get('seleccionarContacto/{id}/{req}', 'Logistica\Distribucion\OrdenesDespachoExternoController@seleccionarContacto');
+				Route::get('mostrarContacto/{id}', 'Logistica\Distribucion\OrdenesDespachoExternoController@mostrarContacto');
+				Route::get('anularContacto/{id}', 'Logistica\Distribucion\OrdenesDespachoExternoController@anularContacto');
+				Route::post('enviarDatosContacto', 'Logistica\Distribucion\OrdenesDespachoExternoController@enviarDatosContacto');
 			});
 
 			Route::group(['as' => 'ordenes-despacho-interno.', 'prefix' => 'ordenes-despacho-interno'], function () {

@@ -101,9 +101,9 @@ function listarRequerimientosPendientes(usuario) {
             { data: 'codigo', name: 'alm_req.codigo', className: "text-center" },
             {
                 data: 'fecha_entrega', name: 'alm_req.fecha_entrega',
-                'render': function (data, type, row) {
-                    return (row['fecha_entrega'] !== null ? formatDate(row['fecha_entrega']) : '');
-                }
+                // 'render': function (data, type, row) {
+                //     return (row['fecha_entrega'] !== null ? formatDate(row['fecha_entrega']) : '');
+                // }
             },
             {
                 data: 'nro_orden', name: 'oc_propias_view.nro_orden',
@@ -320,39 +320,8 @@ $('#requerimientosEnProceso tbody').on("click", "button.envio_od", function (e) 
     var fecha = $(this).data('fentrega');
     var cdp = $(this).data('cdp');
 
-    $('#modal-orden_despacho_enviar').modal({
-        show: true
-    });
-
-    $("#submit_orden_despacho_enviar").removeAttr('disabled');
-    $('[name=id_requerimiento]').val(id);
-    $('#codigo_cdp').text(cdp);
-
-    var msj = "Por favor hacer seguimiento a este pedido. Vence: " + fecha +
-        "\nFECHA DE DESPACHO: \n" +
-        "\nFavor de generar documentación: " +
-        "\n• FACTURA " +
-        "\n• GUIA" +
-        "\n• CERTIFICADO DE GARANTIA " +
-        "\n• CCI" +
-        "\n\nSaludos, \n" + usuarioSesion;
-    $('[name=mensaje]').val(msj);
+    openOrdenDespachoEnviar(id, fecha, cdp);
 });
-
-
-// $('#requerimientosEnProceso tbody').on("click", "button.adjuntar", function () {
-//     var id = $(this).data('id');
-//     var cod = $(this).data('cod');
-//     $('#modal-despachoAdjuntos').modal({
-//         show: true
-//     });
-//     listarAdjuntos(id);
-//     $('[name=id_od]').val(id);
-//     $('[name=codigo_od]').val(cod);
-//     $('[name=descripcion]').val('');
-//     $('[name=archivo_adjunto]').val('');
-//     $('[name=proviene_de]').val('enProceso');
-// });
 
 $('#requerimientosEnProceso tbody').on("click", "button.anular", function () {
     var id = $(this).data('id');
@@ -399,6 +368,7 @@ $("#requerimientosEnProceso tbody").on("click", "button.transportista", function
     var data = $('#requerimientosEnProceso').DataTable().row($(this).parents("tr")).data();
     openAgenciaTransporte(data);
 });
+
 
 function priorizar() {
     var valida = 0;

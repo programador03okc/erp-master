@@ -7,6 +7,7 @@ use App\Helpers\mgcp\OrdenCompraDirectaHelper;
 use App\Http\Controllers\AlmacenController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Mail\EmailContactoDespacho;
 use App\Mail\EmailOrdenDespacho;
 use App\Models\Almacen\Requerimiento;
 use App\Models\Configuracion\Usuario;
@@ -33,62 +34,63 @@ class OrdenesDespachoExternoController extends Controller
 
     public function listarRequerimientosPendientesDespachoExterno(Request $request)
     {
-        $data = DB::table('almacen.alm_req')
-            ->select(
-                'alm_req.id_requerimiento',
-                'alm_req.codigo',
-                'alm_req.concepto',
-                'alm_req.fecha_entrega',
-                'alm_req.tiene_transformacion',
-                'alm_req.direccion_entrega',
-                'alm_req.id_ubigeo_entrega',
-                'alm_req.id_almacen',
-                'alm_req.id_sede as sede_requerimiento',
-                'alm_req.telefono',
-                'alm_req.email',
-                'alm_req.id_contacto',
-                'alm_req.id_cliente',
-                'sis_usua.nombre_corto as responsable',
-                'adm_estado_doc.estado_doc',
-                'adm_estado_doc.bootstrap_color',
-                // DB::raw("(ubi_dis.descripcion) || ' - ' || (ubi_prov.descripcion) || ' - ' || (ubi_dpto.descripcion) AS ubigeo_descripcion"),
-                'alm_almacen.descripcion as almacen_descripcion',
-                'sede_req.descripcion as sede_descripcion_req',
-                'adm_contri.id_contribuyente',
-                'adm_contri.nro_documento as cliente_ruc',
-                'adm_contri.razon_social as cliente_razon_social',
-                'orden_despacho.id_od',
-                'orden_despacho.fecha_despacho',
-                'orden_despacho.persona_contacto',
-                'orden_despacho.direccion_destino',
-                'orden_despacho.correo_cliente',
-                'orden_despacho.telefono as telefono_od',
-                'orden_despacho.ubigeo_destino',
-                'orden_despacho.codigo as codigo_od',
-                'orden_despacho.estado as estado_od',
-                'orden_despacho.serie as serie_tra',
-                'orden_despacho.numero as numero_tra',
-                'orden_despacho.codigo_envio',
-                'orden_despacho.importe_flete',
-                'orden_despacho.id_transportista',
-                'est_od.estado_doc as estado_od',
-                'est_od.bootstrap_color as estado_bootstrap_od',
-                // DB::raw("(od_dis.descripcion) || ' - ' || (od_prov.descripcion) || ' - ' || (od_dpto.descripcion) AS od_ubigeo_descripcion"),
-                'transportista.razon_social as transportista_razon_social',
-                DB::raw("(SELECT COUNT(*) FROM almacen.orden_despacho_obs where
+        $data = Requerimiento::select(
+            'alm_req.id_requerimiento',
+            'alm_req.codigo',
+            'alm_req.concepto',
+            'alm_req.fecha_entrega',
+            'alm_req.tiene_transformacion',
+            'alm_req.direccion_entrega',
+            'alm_req.id_ubigeo_entrega',
+            'alm_req.id_almacen',
+            'alm_req.id_sede as sede_requerimiento',
+            'alm_req.telefono',
+            'alm_req.email',
+            'alm_req.id_contacto',
+            'alm_req.id_cliente',
+            'alm_req.id_prioridad',
+            'sis_usua.nombre_corto as responsable',
+            'adm_estado_doc.estado_doc',
+            'adm_estado_doc.bootstrap_color',
+            // DB::raw("(ubi_dis.descripcion) || ' - ' || (ubi_prov.descripcion) || ' - ' || (ubi_dpto.descripcion) AS ubigeo_descripcion"),
+            'alm_almacen.descripcion as almacen_descripcion',
+            'sede_req.descripcion as sede_descripcion_req',
+            'adm_contri.id_contribuyente',
+            'adm_contri.nro_documento as cliente_ruc',
+            'adm_contri.razon_social as cliente_razon_social',
+            'orden_despacho.id_od',
+            'orden_despacho.fecha_despacho',
+            'orden_despacho.persona_contacto',
+            'orden_despacho.direccion_destino',
+            'orden_despacho.correo_cliente',
+            'orden_despacho.telefono as telefono_od',
+            'orden_despacho.ubigeo_destino',
+            'orden_despacho.codigo as codigo_od',
+            'orden_despacho.estado as estado_od',
+            'orden_despacho.serie as serie_tra',
+            'orden_despacho.numero as numero_tra',
+            'orden_despacho.codigo_envio',
+            'orden_despacho.importe_flete',
+            'orden_despacho.id_transportista',
+            'est_od.estado_doc as estado_od',
+            'est_od.bootstrap_color as estado_bootstrap_od',
+            // DB::raw("(od_dis.descripcion) || ' - ' || (od_prov.descripcion) || ' - ' || (od_dpto.descripcion) AS od_ubigeo_descripcion"),
+            'transportista.razon_social as transportista_razon_social',
+            DB::raw("(SELECT COUNT(*) FROM almacen.orden_despacho_obs where
                         orden_despacho_obs.id_od = orden_despacho.id_od
                         and orden_despacho.estado != 7) AS count_estados_envios"),
-                'oc_propias_view.nro_orden',
-                'oc_propias_view.codigo_oportunidad',
-                'oc_propias_view.id as id_oc_propia',
-                'oc_propias_view.tipo',
-                'oc_propias_view.estado_oc',
-                'oc_propias_view.estado_aprobacion_cuadro',
-                DB::raw("(SELECT COUNT(*) FROM almacen.alm_det_req where
+            'oc_propias_view.nro_orden',
+            'oc_propias_view.codigo_oportunidad',
+            'oc_propias_view.id as id_oc_propia',
+            'oc_propias_view.tipo',
+            'oc_propias_view.id_entidad',
+            'oc_propias_view.estado_oc',
+            'oc_propias_view.estado_aprobacion_cuadro',
+            DB::raw("(SELECT COUNT(*) FROM almacen.alm_det_req where
                         alm_det_req.id_requerimiento = alm_req.id_requerimiento
                         and alm_det_req.estado != 7
                         and alm_det_req.id_producto is null) AS productos_no_mapeados")
-            )
+        )
             ->join('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
             ->leftJoin('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'cc.id_oportunidad')
             ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'alm_req.id_usuario')
@@ -126,68 +128,6 @@ class OrdenesDespachoExternoController extends Controller
             $data->whereDate('orden_despacho.fecha_despacho', (new Carbon())->format('Y-m-d'));
         }
         return datatables($data)->toJson();
-    }
-
-
-
-    public function verDatosContacto($id_contacto)
-    {
-        $contacto = DB::table('contabilidad.adm_ctb_contac')
-            ->where('id_datos_contacto', $id_contacto)
-            ->first();
-        return response()->json($contacto);
-    }
-
-    public function actualizaDatosContacto(Request $request)
-    {
-        try {
-            DB::beginTransaction();
-
-            if ($request->id_contacto !== '' && $request->id_contacto !== null) {
-                $id_contacto = DB::table('contabilidad.adm_ctb_contac')
-                    ->where('id_datos_contacto', $request->id_contacto)
-                    ->first();
-
-                DB::table('contabilidad.adm_ctb_contac')
-                    ->where('id_datos_contacto', $request->id_contacto)
-                    ->update([
-                        'nombre' => trim($request->nombre),
-                        'telefono' => trim($request->telefono),
-                        'email' => trim($request->email),
-                        'cargo' => trim($request->cargo),
-                        'direccion' => trim($request->direccion),
-                        'horario' => trim($request->horario),
-                        'ubigeo' => $request->ubigeo
-                    ]);
-            } else {
-                $id_contacto = DB::table('contabilidad.adm_ctb_contac')
-                    ->insertGetId(
-                        [
-                            'id_contribuyente' => $request->id_contribuyente,
-                            'nombre' => trim($request->nombre),
-                            'telefono' => trim($request->telefono),
-                            'email' => trim($request->email),
-                            'cargo' => trim($request->cargo),
-                            'direccion' => trim($request->direccion),
-                            'horario' => trim($request->horario),
-                            'ubigeo' => $request->ubigeo,
-                            'fecha_registro' => date('Y-m-d H:i:s'),
-                            'estado' => 1
-                        ],
-                        'id_datos_contacto'
-                    );
-
-                DB::table('almacen.alm_req')
-                    ->where('id_requerimiento', $request->id_requerimiento)
-                    ->update(['id_contacto' => $id_contacto]);
-            }
-
-            DB::commit();
-            return response()->json('ok');
-        } catch (\PDOException $e) {
-            DB::rollBack();
-            return response()->json('Algo salio mal');
-        }
     }
 
     // public function guardarOrdenDespachoExterno(Request $request)
@@ -402,14 +342,17 @@ class OrdenesDespachoExternoController extends Controller
             $archivos = $request->file('archivos');
             foreach ($archivos as $archivo) {
                 Storage::putFileAs('mgcp/ordenes-compra/temporal/', $archivo, $archivo->getClientOriginalName());
+                $archivosOc[] = storage_path('app/mgcp/ordenes-compra/temporal/') . $archivo->getClientOriginalName();
             }
-            $archivosOc[] = storage_path('app/mgcp/ordenes-compra/temporal/') . $archivo->getClientOriginalName();
         }
-
-        $idUsuarios = Usuario::getAllIdUsuariosPorRol(25);
         $correos = [];
-        foreach ($idUsuarios as $id) {
-            $correos[] = Usuario::find($id)->email;
+        if (config('app.debug')) {
+            $correos[] = config('global.correoDebug1');
+        } else {
+            $idUsuarios = Usuario::getAllIdUsuariosPorRol(25);
+            foreach ($idUsuarios as $id) {
+                $correos[] = Usuario::find($id)->email;
+            }
         }
 
         Mail::to($correos)->send(new EmailOrdenDespacho($oportunidad, $request->mensaje, $archivosOc));
@@ -426,6 +369,7 @@ class OrdenesDespachoExternoController extends Controller
 
             $ordenDespacho = OrdenDespacho::where([
                 ['id_requerimiento', '=', $request->id_requerimiento],
+                ['aplica_cambios', '=', false],
                 ['estado', '!=', 7]
             ])->first();
 
@@ -447,24 +391,6 @@ class OrdenesDespachoExternoController extends Controller
                 $ordenDespacho->estado = 1;
                 $ordenDespacho->id_estado_envio = 1;
                 $ordenDespacho->save();
-                /*$id_od = DB::table('almacen.orden_despacho')
-                    ->insertGetId(
-                        [
-                            'id_sede' => $req->id_sede,
-                            'id_requerimiento' => $req->id_requerimiento,
-                            'id_cliente' => $req->id_cliente,
-                            'id_persona' => ($req->id_persona > 0 ? $req->id_persona : null),
-                            'id_almacen' => $req->id_almacen,
-                            'codigo' => '-',
-                            'aplica_cambios' => false,
-                            'registrado_por' => $usuario,
-                            'fecha_registro' => $fechaRegistro,
-                            'estado' => 1,
-                            'id_estado_envio' => 1,
-                        ],
-                        'id_od'
-                    );*/
-
                 //Agrega accion en requerimiento
                 DB::table('almacen.alm_req_obs')
                     ->insert([
@@ -524,6 +450,233 @@ class OrdenesDespachoExternoController extends Controller
             DB::rollBack();
             //return response()->json('Algo salió mal');
             return response()->json(array('tipo' => 'error', 'mensaje' => 'Hubo un problema al enviar la orden. Por favor intente de nuevo', 'error' => $e->getMessage()), 200);
+        }
+    }
+
+    public function verDatosContacto(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            // $contacto = null;
+            $entidad = null;
+            $listaContactos = [];
+
+            if ($request->id_requerimiento !== '0') {
+                $requerimiento = DB::table('almacen.alm_req')
+                    ->select('alm_req.id_contacto', 'adm_contri.id_contribuyente')
+                    ->join('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'alm_req.id_cliente')
+                    ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
+                    ->where('id_requerimiento', $request->id_requerimiento)
+                    ->first();
+
+
+                if ($requerimiento !== null) {
+                    $listaContactos = DB::table('contabilidad.adm_ctb_contac')
+                        ->where([
+                            ['id_contribuyente', '=', $requerimiento->id_contribuyente],
+                            ['estado', '!=', 7]
+                        ])
+                        ->orderBy('nombre')
+                        ->get();
+                }
+            }
+
+            if ($request->id_entidad !== '0') {
+                $entidad = DB::table('mgcp_acuerdo_marco.entidades')
+                    ->where('id', $request->id_entidad)
+                    ->first();
+            }
+
+            DB::commit();
+            return response()->json([
+                'entidad' => $entidad,
+                'id_contacto' => ($requerimiento !== null ? $requerimiento->id_contacto : ''),
+                'lista' => $listaContactos,
+                'tipo' => 'success'
+            ], 200);
+            // return response()->json(array('tipo' => 'success', 'mensaje' => 'Se envió la orden con código ' . $ordenDespacho->codigo), 200);
+
+        } catch (\PDOException $e) {
+            DB::rollBack();
+
+            return response()->json(array('tipo' => 'error', 'mensaje' => 'Hubo un problema al enviar la orden. Por favor intente de nuevo', 'error' => $e->getMessage()), 200);
+        }
+    }
+
+    public function listarContactos($id_contribuyente)
+    {
+        $listaContactos = DB::table('contabilidad.adm_ctb_contac')
+            ->where([
+                ['id_contribuyente', '=', $id_contribuyente],
+                ['estado', '!=', 7]
+            ])
+            ->orderBy('nombre')
+            ->get();
+        return response()->json($listaContactos);
+    }
+
+    public function mostrarContacto($id_contacto)
+    {
+        $contacto = DB::table('contabilidad.adm_ctb_contac')
+            ->select(
+                'adm_ctb_contac.*',
+                DB::raw("(ubi_dis.descripcion) || ' - ' || (ubi_prov.descripcion) || ' - ' || (ubi_dpto.descripcion) AS name_ubigeo")
+            )
+            ->where('adm_ctb_contac.id_datos_contacto', $id_contacto)
+            ->leftJoin('configuracion.ubi_dis', 'ubi_dis.id_dis', '=', 'adm_ctb_contac.ubigeo')
+            ->leftJoin('configuracion.ubi_prov', 'ubi_prov.id_prov', '=', 'ubi_dis.id_prov')
+            ->leftJoin('configuracion.ubi_dpto', 'ubi_dpto.id_dpto', '=', 'ubi_prov.id_dpto')
+            ->first();
+
+        return response()->json($contacto);
+    }
+
+    public function anularContacto($id_contacto)
+    {
+        $contacto = DB::table('contabilidad.adm_ctb_contac')
+            ->where('adm_ctb_contac.id_datos_contacto', $id_contacto)
+            ->update(['estado' => 7]);
+
+        return response()->json($contacto);
+    }
+
+    public function actualizaDatosContacto(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            $id_contacto = null;
+
+            if ($request->id_contacto !== '' && $request->id_contacto !== null) {
+                $id_contacto = $request->id_contacto;
+
+                DB::table('contabilidad.adm_ctb_contac')
+                    ->where('id_datos_contacto', $request->id_contacto)
+                    ->update([
+                        'nombre' => trim($request->nombre),
+                        'telefono' => trim($request->telefono),
+                        'email' => trim($request->email),
+                        'cargo' => trim($request->cargo),
+                        'direccion' => trim($request->direccion),
+                        'horario' => trim($request->horario),
+                        'ubigeo' => $request->ubigeo
+                    ]);
+            } else {
+                $id_contacto = DB::table('contabilidad.adm_ctb_contac')
+                    ->insertGetId(
+                        [
+                            'id_contribuyente' => $request->id_contribuyente_contacto,
+                            'nombre' => trim($request->nombre),
+                            'telefono' => trim($request->telefono),
+                            'email' => trim($request->email),
+                            'cargo' => trim($request->cargo),
+                            'direccion' => trim($request->direccion),
+                            'horario' => trim($request->horario),
+                            'ubigeo' => $request->ubigeo,
+                            'fecha_registro' => date('Y-m-d H:i:s'),
+                            'estado' => 1
+                        ],
+                        'id_datos_contacto'
+                    );
+            }
+
+            DB::table('almacen.alm_req')
+                ->where('id_requerimiento', $request->id_requerimiento)
+                ->update(['id_contacto' => $id_contacto]);
+
+            DB::commit();
+            return response()->json(
+                array(
+                    'tipo' => 'success',
+                    'mensaje' => 'Se guardó correctamente',
+                    'id_contacto' => $id_contacto
+                ),
+                200
+            );
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json(
+                array(
+                    'tipo' => 'error',
+                    'mensaje' => 'Hubo un problema al enviar el contacto. Por favor intente de nuevo',
+                    'error' => $e->getMessage()
+                ),
+                200
+            );
+        }
+    }
+
+    public function seleccionarContacto($id_contacto, $id_requerimiento)
+    {
+        DB::table('almacen.alm_req')
+            ->where('id_requerimiento', $id_requerimiento)
+            ->update(['id_contacto' => $id_contacto]);
+
+        return response()->json('ok');
+    }
+
+    public function enviarDatosContacto(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            $requerimiento = Requerimiento::find($request->id_requerimiento);
+            $cuadro = CuadroCosto::find($requerimiento->id_cc);
+            $oportunidad = Oportunidad::find($cuadro->id_oportunidad);
+            $ordenView = $oportunidad->ordenCompraPropia;
+
+            $contacto = DB::table('almacen.alm_req')
+                ->select('adm_ctb_contac.*', 'adm_contri.razon_social')
+                ->where('id_requerimiento', $request->id_requerimiento)
+                ->join('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'alm_req.id_cliente')
+                ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
+                ->join('contabilidad.adm_ctb_contac', 'adm_ctb_contac.id_datos_contacto', '=', 'alm_req.id_contacto')
+                ->first();
+
+            $msj = '';
+            $nombre_usuario = Auth::user()->nombre_corto;
+            if ($contacto !== null) {
+                $msj .= 'DATOS DE CONTACTO:
+
+                ENTIDAD / CLIENTE: ' . $contacto->razon_social . '
+                NOMBRE DEL CONTACTO: ' . $contacto->nombre . '
+                ' . (($contacto->cargo !== null && $contacto->cargo !== '') ? 'CARGO: ' . $contacto->cargo . '' : '') . '
+                ' . (($contacto->telefono !== null && $contacto->telefono !== '') ? 'TELEFONO: ' . $contacto->telefono . '' : '') . '
+                ' . (($contacto->horario !== null && $contacto->horario !== '') ? 'HORARIO DE ATENCION: ' . $contacto->horario . '' : '') . '
+                
+                Saludos,
+                ' . $nombre_usuario;
+            }
+
+            $correos = [];
+            if (config('app.debug')) {
+                $correos[] = config('global.correoDebug1');
+            } else {
+                $idUsuarios = Usuario::getAllIdUsuariosPorRol(25);
+                foreach ($idUsuarios as $id) {
+                    $correos[] = Usuario::find($id)->email;
+                }
+            }
+
+            Mail::to($correos)->send(new EmailContactoDespacho($oportunidad, $msj));
+
+            DB::commit();
+            return response()->json(
+                array(
+                    'tipo' => 'success',
+                    'mensaje' => 'Se envió los datos de contacto correctamente',
+                ),
+                200
+            );
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json(
+                array(
+                    'tipo' => 'error',
+                    'mensaje' => 'Hubo un problema al enviar el contacto. Por favor intente de nuevo',
+                    'error' => $e->getMessage()
+                ),
+                200
+            );
         }
     }
 
