@@ -59,7 +59,7 @@ function verDatosContacto(id_requerimiento, id_entidad) {
         $('#enviado').removeClass('label-success');
         $('#enviado').removeClass('label-default');
         $('#enviado').addClass(response['contacto'].enviar_contacto ? 'label-success' : 'label-default');
-        $('#enviado').text(response['contacto'].enviar_contacto ? 'ENVIADO' : 'NO ENVIADO');
+        $('#enviado').text(response['contacto'].enviar_contacto ? 'Enviado' : 'No Enviado');
 
         mostrarContactos();
 
@@ -118,11 +118,13 @@ function mostrarContactos() {
     $('#listaContactos tbody').html('');
     let id_contacto = $('[name=id_contacto_od]').val();
     var html = '';
-    console.log('id_contacto' + id_contacto)
+    console.log('id_contacto' + id_contacto);
+
     listaContactos.forEach(element => {
+        let sel = parseInt(element.id_datos_contacto) == parseInt(id_contacto);
+
         html += `<tr>
-            <td>${parseInt(element.id_datos_contacto) == parseInt(id_contacto)
-                ? '<i class="fas fa-check green" style="font-size: 15px;"></i>'
+            <td>${sel ? '<i class="fas fa-check green" style="font-size: 15px;"></i>'
                 : ''}</td>
             <td>${element.nombre}</td>
             <td>${element.telefono}</td>
@@ -132,7 +134,7 @@ function mostrarContactos() {
             <td>${element.horario}</td>
             <td>
                 <div style="display:flex;">
-                    <button type="button" class="seleccionar btn btn-success btn-flat btn-xs boton" 
+                    <button type="button" class="seleccionar btn btn-${sel ? 'success' : 'default'} btn-flat btn-xs boton" 
                         data-toggle="tooltip" data-placement="bottom" data-id="${element.id_datos_contacto}" title="Seleccionar contacto">
                         <i class="fas fa-check"></i></button>
                     <button type="button" class="editar btn btn-primary btn-flat btn-xs boton" 

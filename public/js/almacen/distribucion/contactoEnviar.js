@@ -52,9 +52,9 @@ function enviarDatosContacto() {
             msg: response.mensaje
         });
         if (response.tipo == 'success') {
+            $("#requerimientosEnProceso").DataTable().ajax.reload(null, false);
             $('#modal-contacto_enviar').modal('hide');
             $('#modal-orden_despacho_contacto').modal('hide');
-            // $("#requerimientosEnProceso").DataTable().ajax.reload(null, false);
         } else {
             console.log('Error devuelto: ' + response.error);
         }
