@@ -13,23 +13,33 @@
                     <input type="text" class="oculto" name="id_contacto_od"/>
                     
                     <fieldset class="group-table" id="fieldsetDetallesEntidad">
+                        
+                        <h5 style="display:flex;justify-content: space-between;">Datos de la Entidad / Cliente
+                            <div>
+                                <span class="label limpiar" id="enviado"></span>
+                            </div>
+                        </h5>
                         <div class="row">
                             <div class="col-sm-6">
-                                <fieldset style="margin-bottom: 10px;">
-                                    <h5>Detalles</h5>
+                                {{-- <fieldset style="margin-bottom: 10px;"> --}}
+                                <div class="form-horizontal">
+                                    <div class="form-group" style="margin-bottom:0px;">
+                                        <label class="col-sm-3 control-label">DNI/RUC</label>
+                                        <div class="col-sm-8">
+                                            <div class="form-control-static limpiar ruc"></div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group" style="margin-bottom:0px">
+                                        <label class="col-sm-3 control-label">Nombre</label>
+                                        <div class="col-sm-8">
+                                            <div class="form-control-static limpiar nombre"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
                                     <div class="form-horizontal">
-                                        <div class="form-group" style="margin-bottom:0px;">
-                                            <label class="col-sm-3 control-label">DNI/RUC</label>
-                                            <div class="col-sm-8">
-                                                <div class="form-control-static limpiar ruc"></div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group" style="margin-bottom:0px">
-                                            <label class="col-sm-3 control-label">Nombre</label>
-                                            <div class="col-sm-8">
-                                                <div class="form-control-static limpiar nombre"></div>
-                                            </div>
-                                        </div>
+                                        
                                         <div class="form-group" style="margin-bottom:0px">
                                             <label class="col-sm-3 control-label">Dirección</label>
                                             <div class="col-sm-8">
@@ -42,39 +52,10 @@
                                                 <div class="form-control-static limpiar ubigeo"></div>
                                             </div>
                                         </div>
-                                </fieldset>
-                            </div>
-                            <div class="col-sm-6">
-                                <fieldset>
-                                    <h5>Responsable</h5>
-                                    <div class="form-horizontal">
-                                        <div class="form-group" style="margin-bottom:0px">
-                                            <label class="col-sm-3 control-label">Nombre</label>
-                                            <div class="col-sm-8">
-                                                <div class="form-control-static limpiar responsable"></div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group" style="margin-bottom:0px">
-                                            <label class="col-sm-3 control-label">Cargo</label>
-                                            <div class="col-sm-8">
-                                                <div class="form-control-static limpiar cargo"></div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group" style="margin-bottom:0px">
-                                            <label class="col-sm-3 control-label">Teléfono</label>
-                                            <div class="col-sm-8">
-                                                <div class="form-control-static limpiar telefono"></div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group" style="margin-bottom:0px">
-                                            <label class="col-sm-3 control-label">Correo</label>
-                                            <div class="col-sm-8">
-                                                <div class="form-control-static limpiar correo"></div>
-                                            </div>
-                                        </div>
                                     </div>
-                                </fieldset>
+                                {{-- </fieldset> --}}
                             </div>
+                            
                         </div>
                     </fieldset>
                     <br>
@@ -110,15 +91,15 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <h5>Correo para licencias</h5>
-                                <input type="text" class="form-control" name="correo_licencia">
+                                <input type="text" class="form-control limpiar" name="correo_licencia">
                             </div>
                         </div>
                     </fieldset>
                 </div>
             </form>
             <div class="modal-footer">
-                <button id="btn_cerrar" class="btn btn-primary" onClick="cerrarContacto();">Cerrar</button>
-                <button id="btn_enviar_correo" class="btn btn-success" onClick="enviarDatosContacto();">Enviar correo</button>
+                <button id="btn_cerrar" class="btn btn-default" onClick="cerrarContacto();">Cerrar</button>
+                <button id="btn_enviar_correo" class="btn btn-success" onClick="abrirVistaPreviaCorreo();">Enviar correo</button>
                 {{-- <input type="submit" id="submit_enviar_correo" class="btn btn-success" value="Enviar correo"/> --}}
             </div>
         </div>

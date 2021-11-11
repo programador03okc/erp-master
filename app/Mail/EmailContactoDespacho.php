@@ -12,22 +12,19 @@ class EmailContactoDespacho extends Mailable
     use Queueable, SerializesModels;
 
     public $oportunidad;
-    public $contacto;
-    public $nombreUsuario;
+    public $mensaje;
 
-    public function __construct($oportunidad, $contacto, $nombreUsuario)
+    public function __construct($oportunidad, $mensaje)
     {
         $this->oportunidad = $oportunidad;
-        $this->contacto = $contacto;
-        $this->nombreUsuario = $nombreUsuario;
+        $this->mensaje = $mensaje;
     }
 
     public function build()
     {
         //Creación de asunto de correo
         $orden = $this->oportunidad->ordenCompraPropia;
-        $contacto = $this->contacto;
-        $usuario = $this->nombreUsuario;
+        $mensaje = $this->mensaje;
 
         $asunto = [];
         $asunto[] = 'O. SERVICIO';
@@ -44,7 +41,7 @@ class EmailContactoDespacho extends Mailable
         //Vista Email
         $vista = $this->view(
             'almacen.distribucion.email.envio-contacto',
-            compact('contacto', 'usuario')
+            compact('mensaje')
         )
             ->subject(implode(' | ', $asunto));
 

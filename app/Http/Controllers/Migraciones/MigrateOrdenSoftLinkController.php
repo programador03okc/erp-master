@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class MigrateOrdenSoftLinkController extends Controller
 {
-    public function migrar_orden_compra($id_orden_compra)
+    public function migrarOrdenCompra($id_orden_compra)
     {
         try {
             DB::beginTransaction();

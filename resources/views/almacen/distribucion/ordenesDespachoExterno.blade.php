@@ -68,6 +68,7 @@ Gestión de Despacho Externo
 @include('almacen.distribucion.enviarFacturacion')
 @include('almacen.distribucion.ordenDespachoEnviar')
 @include('almacen.distribucion.agregarContacto')
+@include('almacen.distribucion.contactoEnviar')
 @include('tesoreria.facturacion.archivos_oc_mgcp')
 @include('publico.ubigeoModal')
 @include('almacen.transferencias.transportistaModal')
@@ -97,6 +98,7 @@ Gestión de Despacho Externo
 <script src="{{ asset('js/almacen/distribucion/ordenDespachoEstado.js')}}"></script>
 <script src="{{ asset('js/almacen/distribucion/ordenDespachoTransportista.js')}}"></script>
 <script src="{{ asset('js/almacen/distribucion/contacto.js')}}"></script>
+<script src="{{ asset('js/almacen/distribucion/contactoEnviar.js')}}"></script>
 <script src="{{ asset('js/tesoreria/facturacion/archivosMgcp.js')}}"></script>
 <script src="{{ asset('js/publico/ubigeoModal.js')}}"></script>
 <script src="{{ asset('js/almacen/transferencias/transportistaModal.js')}}"></script>

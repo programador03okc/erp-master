@@ -7,7 +7,7 @@
 </head>
 
 <body>
-    <h5>DATOS DE CONTACTO</h5>
+    {{-- <h5>DATOS DE CONTACTO</h5>
     <ul>
         <li>Cliente/Entidad : {{$contacto->razon_social}}</li>
         <li>Nombre : {{$contacto->nombre}}</li>
@@ -22,8 +22,8 @@
         @endif
     </ul>
     Saludos,
-    <br>
-    {!! nl2br($usuario) !!}
+    <br> --}}
+    {!! nl2br($mensaje) !!}
     {{-- <hr>
     <br> --}}
     {{-- Para ver el cuadro de presupuesto, haga clic <a href="{{route('mgcp.cuadro-costos.detalles',['id' => $oportunidad->id])}}">aquí</a>. --}}

@@ -47,9 +47,10 @@ class OrdenesDespachoExternoController extends Controller
             'alm_req.id_sede as sede_requerimiento',
             'alm_req.telefono',
             'alm_req.email',
-            'alm_req.id_contacto',
             'alm_req.id_cliente',
             'alm_req.id_prioridad',
+            'alm_req.id_contacto',
+            'alm_req.enviar_contacto',
             'sis_usua.nombre_corto as responsable',
             'adm_estado_doc.estado_doc',
             'adm_estado_doc.bootstrap_color',
@@ -466,7 +467,7 @@ class OrdenesDespachoExternoController extends Controller
 
             if ($request->id_requerimiento !== '0') {
                 $requerimiento = DB::table('almacen.alm_req')
-                    ->select('alm_req.id_contacto', 'adm_contri.id_contribuyente')
+                    ->select('alm_req.id_contacto', 'alm_req.enviar_contacto', 'alm_req.correo_licencia', 'adm_contri.id_contribuyente')
                     ->join('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'alm_req.id_cliente')
                     ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
                     ->where('id_requerimiento', $request->id_requerimiento)
@@ -493,7 +494,7 @@ class OrdenesDespachoExternoController extends Controller
             DB::commit();
             return response()->json([
                 'entidad' => $entidad,
-                'id_contacto' => ($requerimiento !== null ? $requerimiento->id_contacto : ''),
+                'contacto' => ($requerimiento !== null ? $requerimiento : ''),
                 'lista' => $listaContactos,
                 'tipo' => 'success'
             ], 200);
@@ -630,30 +631,14 @@ class OrdenesDespachoExternoController extends Controller
             $requerimiento = Requerimiento::find($request->id_requerimiento);
             $cuadro = CuadroCosto::find($requerimiento->id_cc);
             $oportunidad = Oportunidad::find($cuadro->id_oportunidad);
-            $ordenView = $oportunidad->ordenCompraPropia;
+            // $ordenView = $oportunidad->ordenCompraPropia;
 
-            $contacto = DB::table('almacen.alm_req')
-                ->select('adm_ctb_contac.*', 'adm_contri.razon_social')
+            DB::table('almacen.alm_req')
                 ->where('id_requerimiento', $request->id_requerimiento)
-                ->join('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'alm_req.id_cliente')
-                ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
-                ->join('contabilidad.adm_ctb_contac', 'adm_ctb_contac.id_datos_contacto', '=', 'alm_req.id_contacto')
-                ->first();
-
-            $msj = '';
-            $nombre_usuario = Auth::user()->nombre_corto;
-            // if ($contacto !== null) {
-            //     $msj .= 'DATOS DE CONTACTO:
-
-            //     ENTIDAD / CLIENTE: ' . $contacto->razon_social . '
-            //     NOMBRE DEL CONTACTO: ' . $contacto->nombre . '
-            //     ' . (($contacto->cargo !== null && $contacto->cargo !== '') ? 'CARGO: ' . $contacto->cargo . '' : '') . '
-            //     ' . (($contacto->telefono !== null && $contacto->telefono !== '') ? 'TELEFONO: ' . $contacto->telefono . '' : '') . '
-            //     ' . (($contacto->horario !== null && $contacto->horario !== '') ? 'HORARIO DE ATENCION: ' . $contacto->horario . '' : '') . '
-
-            //     Saludos,
-            //     ' . $nombre_usuario;
-            // }
+                ->update([
+                    'enviar_contacto' => true,
+                    'correo_licencia' => $request->correo_licencia
+                ]);
 
             $correos = [];
             if (config('app.debug')) {
@@ -665,7 +650,7 @@ class OrdenesDespachoExternoController extends Controller
                 }
             }
 
-            Mail::to($correos)->send(new EmailContactoDespacho($oportunidad, $contacto, $nombre_usuario));
+            Mail::to($correos)->send(new EmailContactoDespacho($oportunidad, $request->mensaje));
 
             DB::commit();
             return response()->json(

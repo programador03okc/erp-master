@@ -812,6 +812,8 @@ Route::group(['middleware' => ['auth']], function () {
 						Route::get('requerimiento/{idRequerimiento?}', 'Logistica\RequerimientoController@requerimiento')->name('requerimientos');
 						Route::get('listar-cuentas-bancarias-proveedor/{idProveedor?}', 'OrdenController@listarCuentasBancariasProveedor')->name('listar-cuentas-bancarias-proveedor');
 						Route::post('guardar-cuenta-bancaria-proveedor', 'OrdenController@guardarCuentaBancariaProveedor');
+
+						Route::get('migrarOrdenCompra/{id}', 'Migraciones\MigrateOrdenSoftLinkController@migrarOrdenCompra');
 					});
 					Route::group(['as' => 'listado.', 'prefix' => 'listado'], function () {
 						Route::get('index', 'OrdenController@view_listar_ordenes')->name('index');

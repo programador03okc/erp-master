@@ -7,6 +7,7 @@ function open_despacho_create(data) {
     });
     $("#submit_orden_despacho").removeAttr("disabled");
     $('#codigo_req').text(data.codigo_oportunidad + ' - ' + data.codigo);
+
     $('.limpiar').text('');
 
     console.log(data);
@@ -43,16 +44,24 @@ function verDatosContacto(id_requerimiento, id_entidad) {
 
         if (response['entidad'] !== null) {
             $modal.find('.ruc').text(response['entidad'].ruc ?? '');
-            $('.nombre').text(response['entidad'].nombre ?? '');
-            $('.direccion').text(response['entidad'].direccion ?? '');
-            $('.ubigeo').text(response['entidad'].ubigeo ?? '');
-            $('.responsable').text(response['entidad'].responsable ?? '');
-            $('.cargo').text(response['entidad'].cargo ?? '');
-            $('.telefono').text(response['entidad'].telefono ?? '');
-            $('.correo').text(response['entidad'].correo ?? '');
+            $modal.find('.nombre').text(response['entidad'].nombre ?? '');
+            $modal.find('.direccion').text(response['entidad'].direccion ?? '');
+            $modal.find('.ubigeo').text(response['entidad'].ubigeo ?? '');
+            $modal.find('.responsable').text(response['entidad'].responsable ?? '');
+            $modal.find('.cargo').text(response['entidad'].cargo ?? '');
+            $modal.find('.telefono').text(response['entidad'].telefono ?? '');
+            $modal.find('.correo').text(response['entidad'].correo ?? '');
         }
         listaContactos = response['lista'];
-        mostrarContactos(response['id_contacto']);
+        $('[name=id_contacto_od]').val(response['contacto'].id_contacto);
+        $('[name=correo_licencia]').val(response['contacto'].correo_licencia);
+
+        $('#enviado').removeClass('label-success');
+        $('#enviado').removeClass('label-default');
+        $('#enviado').addClass(response['contacto'].enviar_contacto ? 'label-success' : 'label-default');
+        $('#enviado').text(response['contacto'].enviar_contacto ? 'ENVIADO' : 'NO ENVIADO');
+
+        mostrarContactos();
 
     }).always(function () {
         $modal.find('div.modal-body').LoadingOverlay("hide", true);
@@ -72,7 +81,7 @@ function verDatosContacto(id_requerimiento, id_entidad) {
 
 }
 
-function listarContactos(id_contribuyente, id_contacto) {
+function listarContactos(id_contribuyente) {
     $('#fieldsetListaContactos').LoadingOverlay("show", {
         imageAutoResize: true,
         imageColor: "#3c8dbc"
@@ -85,8 +94,8 @@ function listarContactos(id_contribuyente, id_contacto) {
     }).done(function (response) {
         console.log('listarContactos');
         console.log(response);
-        listaContactos = response;
-        mostrarContactos(id_contacto);
+        listaContactos = response['lista'];
+        mostrarContactos();
 
     }).always(function () {
         $('#fieldsetListaContactos').LoadingOverlay("hide", true);
@@ -105,8 +114,9 @@ function listarContactos(id_contribuyente, id_contacto) {
     });
 }
 
-function mostrarContactos(id_contacto) {
+function mostrarContactos() {
     $('#listaContactos tbody').html('');
+    let id_contacto = $('[name=id_contacto_od]').val();
     var html = '';
     console.log('id_contacto' + id_contacto)
     listaContactos.forEach(element => {
@@ -140,47 +150,4 @@ function mostrarContactos(id_contacto) {
 
 function cerrarContacto() {
     $('#modal-orden_despacho_contacto').modal('hide');
-}
-
-function enviarDatosContacto() {
-    let id_requerimiento = $('[name=id_requerimiento]').val();
-    let data = 'id_requerimiento=' + id_requerimiento;
-
-    const $button = $("#btn_enviar_correo");
-    $button.prop('disabled', 'true');
-    $button.html('Enviando...');
-
-    $.ajax({
-        type: 'POST',
-        url: 'enviarDatosContacto',
-        data: data,
-        dataType: 'JSON',
-    }).done(function (response) {
-        console.log(response);
-        Lobibox.notify(response.tipo, {
-            size: "mini",
-            rounded: true,
-            sound: false,
-            delayIndicator: false,
-            msg: response.mensaje
-        });
-        if (response.tipo == 'success') {
-            $('#modal-orden_despacho_contacto').modal('hide');
-            // $("#requerimientosEnProceso").DataTable().ajax.reload(null, false);
-        } else {
-            console.log('Error devuelto: ' + response.error);
-        }
-    }).always(function () {
-        $button.prop('disabled', false);
-        $button.html('Enviar correo');
-    }).fail(function (jqXHR) {
-        Lobibox.notify('error', {
-            size: "mini",
-            rounded: true,
-            sound: false,
-            delayIndicator: false,
-            msg: 'Hubo un problema. Por favor actualice la página e intente de nuevo.'
-        });
-        console.log('Error devuelto: ' + jqXHR.responseText);
-    });
 }

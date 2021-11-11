@@ -30,7 +30,8 @@ $('#listaContactos tbody').on("click", "button.seleccionar", function () {
         url: 'seleccionarContacto/' + id_contacto + '/' + id_requerimiento,
         dataType: 'JSON',
     }).done(function (response) {
-        mostrarContactos(id_contacto);
+        $('[name=id_contacto_od]').val(id_contacto);
+        mostrarContactos();
 
     }).always(function () {
         $boton.prop('disabled', false);
@@ -96,8 +97,8 @@ $('#listaContactos tbody').on("click", "button.anular", function () {
                 success: function (response) {
                     console.log(response);
                     var id_contribuyente = $('[name=id_contribuyente]').val();
-                    var id_contacto = $('[name=id_contacto_od]').val();
-                    listarContactos(id_contribuyente, id_contacto);
+                    // var id_contacto = $('[name=id_contacto_od]').val();
+                    listarContactos(id_contribuyente);
                 }
             }).fail(function (jqXHR, textStatus, errorThrown) {
                 console.log(jqXHR);
@@ -150,7 +151,8 @@ function actualizaContacto(data) {
             if (response.id_contacto !== null) {
                 $('#modal-agregar-contacto').modal('hide');
                 var id_contribuyente = $('[name=id_contribuyente_contacto]').val();
-                listarContactos(id_contribuyente, response.id_contacto);
+                $('[name=id_contacto_od]').val(response.id_contacto);
+                listarContactos(id_contribuyente);
             }
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {

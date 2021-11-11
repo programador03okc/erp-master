@@ -27,6 +27,7 @@ Elaborar orden
                 <h4 style="display:flex;justify-content: space-between;">General &nbsp;<span style="color:blue;" name="codigo_orden_interno"></span> 
                     <div>
                         <button type="button" name="btn-imprimir-orden-pdf" class="btn btn-info btn-sm handleClickImprimirOrdenPdf" title="Imprimir orden en .pdf" disabled><i class="fas fa-print"></i> Imprimir</button>
+                        <button type="button" name="btn-enviar-softlink" class="btn btn-success btn-sm" title="Enviar Orden a Softlink" onclick="enviarOrdenSoftlink();"><i class="fas fa-share"></i> Enviar a softlink</button>
                     </div>
                 </h4>
                 <fieldset class="group-table">
@@ -383,6 +384,7 @@ Elaborar orden
 <script src="{{('/js/logistica/orden/OrdenModel.js')}}?v={{filemtime(public_path('/js/logistica/orden/OrdenModel.js'))}}"></script>
 <script src="{{('/js/logistica/orden/OrdenView.js')}}?v={{filemtime(public_path('/js/logistica/orden/OrdenView.js'))}}"></script>
 <script src="{{('/js/logistica/orden/OrdenController.js')}}?v={{filemtime(public_path('/js/logistica/orden/OrdenController.js'))}}"></script>
+<script src="{{('/js/logistica/orden/enviarOrdenSoftlink.js')}}?v={{filemtime(public_path('/js/logistica/orden/enviarOrdenSoftlink.js'))}}"></script>
 
 
 <script>
