@@ -8,6 +8,24 @@ use Illuminate\Support\Facades\DB;
 
 class MigrateOrdenSoftLinkController extends Controller
 {
+    public function correlativo()
+    {
+        $num = DB::connection('soft')->table('movimien')
+            ->where([
+                ['num_docu', '>', '00210000000'],
+                ['num_docu', '<', '00219999999'],
+                ['cod_suc', '=', '1'],
+                ['tipo', '=', 1], //compra
+                ['cod_docu', '=', 'OC'],
+                // ['cod_alma', '=', $oc->codigo_almacen]
+            ])
+            ->orderBy('num_docu', 'desc')->first();
+
+        $num_ult_mov = substr($num->num_docu, 4);
+        $nro_mov = $this->leftZero(7, (intval($num_ult_mov) + 1));
+
+        return $nro_mov;
+    }
     public function migrarOrdenCompra($id_orden_compra)
     {
         try {
@@ -101,23 +119,25 @@ class MigrateOrdenSoftLinkController extends Controller
                     //obtiene el año a 2 digitos y le aumenta 2 ceros adelante
                     $yy = $this->leftZero(4, intval(date('y', strtotime($fecha))));
                     //busca segun oc de lima, las oc de ilo inician con P=>P021
-                    $count_mov = DB::connection('soft')->table('movimien')
+                    $ult_mov = DB::connection('soft')->table('movimien')
                         ->where([
-                            ['num_docu', 'like', $yy . '%'],
+                            ['num_docu', '>', $yy . '0000000'],
+                            ['num_docu', '<', $yy . '9999999'],
                             ['cod_suc', '=', $cod_suc],
                             ['tipo', '=', 1], //compra
                             ['cod_docu', '=', $cod_docu],
-                            ['cod_alma', '=', $oc->codigo_almacen]
+                            // ['cod_alma', '=', $oc->codigo_almacen]
                         ])
-                        ->count();
+                        ->orderBy('num_docu', 'desc')->first();
+
+                    $num_ult_mov = substr($ult_mov->num_docu, 4);
+
                     //crea el correlativo del documento
-                    $nro_mov = $this->leftZero(7, (intval($count_mov) + 1));
+                    $nro_mov = $this->leftZero(7, (intval($num_ult_mov) + 1));
                     //anida el numero de documento
                     $num_docu = $yy . $nro_mov;
 
                     $mon_impto = (floatval($oc->total_precio) * 0.18);
-
-                    // $msj = 'Se migró correctamente. La OC ' . $yy . '-' . $nro_mov . ' con id ' . $mov_id;
 
                     $fecha = date("Y-m-d", strtotime($oc->fecha));
                     // return response()->json(['oc' => $oc, 'cod_suc' => $cod_suc, 'cod_auxi' => $cod_auxi]);
@@ -164,7 +184,7 @@ class MigrateOrdenSoftLinkController extends Controller
                             'programa' => '',
                             'txt_nota' => '',
                             'tip_cambio' => '0.000', //Revisar
-                            'tdflags' => 'NSSNNSSNSN',
+                            'tdflags' => 'NSSNNSSNSS',
                             'numlet' => '',
                             'impdcto' => '0.0000',
                             'impanticipos' => '0.0000',
@@ -173,7 +193,7 @@ class MigrateOrdenSoftLinkController extends Controller
                             'numcanje' => '',
                             'cobrobco' => 0,
                             'ctabco' => '',
-                            'flg_qcont' => '',
+                            'flg_qcont' => 0,
                             'fec_anul' => '0000-00-00',
                             'audit' => '2',
                             'origen' => '',
@@ -188,7 +208,7 @@ class MigrateOrdenSoftLinkController extends Controller
                             'ndocu1' => '',
                             'ndocu2' => '',
                             'ndocu3' => $oc->id_orden_compra,
-                            'flg_logis' => 0,
+                            'flg_logis' => 1,
                             'cod_recep' => '',
                             'flg_aprueba' => 0,
                             'fec_aprueba' => '0000-00-00 00:00:00.000000',
@@ -312,11 +332,11 @@ class MigrateOrdenSoftLinkController extends Controller
                     //Actualiza la oc softlink
                     DB::table('logistica.log_ord_compra')
                         ->where('id_orden_compra', $id_orden_compra)
-                        ->update(['codigo_softlink' => $soc->cod_docu . ' ' . $soc->num_docu]);
+                        ->update(['codigo_softlink' => $soc->cod_docu . $soc->num_docu]);
 
                     $arrayRspta = array(
                         'tipo' => 'success',
-                        'mensaje' => 'Se migró correctamente la OC Nro. ' . $cod_docu . ' ' . $num_docu . ' con id ' . $mov_id,
+                        'mensaje' => 'Se migró correctamente la OC Nro. ' . $cod_docu . $num_docu . ' con id ' . $mov_id,
                         'ocSoftlink' => array('cabecera' => $soc, 'detalle' => $sdet),
                         'ocAgile' => array('cabecera' => $oc, 'detalle' => $detalles),
                     );
@@ -541,13 +561,23 @@ class MigrateOrdenSoftLinkController extends Controller
 
     public function obtenerProveedor($nro_documento, $razon_social, $doc_tipo, $cod_di)
     {
-        $proveedor = DB::connection('soft')->table('auxiliar')
-            ->select('cod_auxi')
-            ->where([
-                ['ruc_auxi', '=', $nro_documento],
-                ['tip_auxi', '=', 'P']
-            ])
-            ->first();
+        if ($nro_documento !== null) {
+            $proveedor = DB::connection('soft')->table('auxiliar')
+                ->select('cod_auxi')
+                ->where([
+                    ['ruc_auxi', '=', $nro_documento],
+                    ['tip_auxi', '=', 'P']
+                ])
+                ->first();
+        } else {
+            $proveedor = DB::connection('soft')->table('auxiliar')
+                ->select('cod_auxi')
+                ->where([
+                    ['nom_auxi', '=', $razon_social],
+                    ['tip_auxi', '=', 'P']
+                ])
+                ->first();
+        }
 
         $cod_auxi = null;
 

@@ -781,7 +781,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('anular-item-orden', 'OrdenController@anularItemOrden')->name('anular-item-orden');
 					Route::get('imprimir_ingreso/{id}', 'Almacen\Movimiento\IngresoPdfController@imprimir_ingreso');
 					Route::post('finalizar-regularizacion-de-requerimiento', 'ComprasPendientesController@finalizarRegularizacionRequerimiento')->name('finalizar-regularizacion-de-requerimiento');
-					
+
 					Route::get('finalizar-cuadro/{id}', 'OrdenController@finalizarCuadroPresupuesto');
 				});
 
@@ -1830,6 +1830,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('presupuesto/{area_id}', 'Tesoreria\AjaxController@getPresupuesto')->name('presupuesto');
 	});
 */
+	Route::get('correlativo', 'Migraciones\MigrateOrdenSoftLinkController@correlativo');
 
 	Route::get('generarDespachoInternoMgcp/{id}', 'Logistica\Distribucion\OrdenesTransformacionController@generarDespachoInternoMgcp');
 	Route::get('soft_tipos_cambio', 'Migraciones\MigrateRequerimientoSoftLinkController@soft_tipos_cambio');
