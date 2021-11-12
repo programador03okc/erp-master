@@ -3,6 +3,7 @@
 var vardataTables = funcDatatables();
 var simboloMoneda = '';
 var tablaListaRequerimientosParaVincular;
+var $tablaHistorialOrdenesElaboradas;
 var detalleOrdenList = [];
 var iTableCounter = 1;
 var oInnerTable;
@@ -1395,51 +1396,88 @@ class OrdenView {
     }
 
     listarOrdenesElaboradas() {
-        let that = this;
         var vardataTables = funcDatatables();
-        var tabla = $('#listaOrdenesElaboradas').DataTable({
-            'processing': true,
-            'destroy': true,
+        $tablaHistorialOrdenesElaboradas= $('#listaOrdenesElaboradas').DataTable({
             'dom': vardataTables[1],
-            'buttons': vardataTables[2],
+            'buttons': [],
             'language': vardataTables[0],
-            'ajax': 'listar-historial-ordenes-elaboradas',
-            // "dataSrc":'',
             'order': [[0, 'desc']],
-            'columns': [
-                { 'data': 'id_orden_compra' },
-                { 'data': 'fecha' },
-                { 'data': 'codigo' },
-                { 'data': 'codigo_softlink' },
-                { 'data': 'nro_documento' },
-                { 'data': 'razon_social' },
-                { 'data': 'moneda_descripcion' },
-                { 'data': 'descripcion_sede_empresa' },
-                { 'data': 'estado_doc' },
-                {
-                    'render': (data, type, row) => {
-
-                        return `<center><div class="btn-group" role="group" style="margin-bottom: 5px;">
-                        <button type="button" class="btn btn-xs btn-success handleClickSelectOrden" data-id-orden="${row.id_orden_compra}" title="Seleccionar" >Seleccionar</button>
-                        </div></center>
-                        `;
-                    }
+            'bLengthChange': false,
+            'serverSide': true,
+            'destroy': true,
+            'ajax': {
+                'url': 'listar-historial-ordenes-elaboradas',
+                'type': 'POST',
+                beforeSend: data => {
+    
+                    $("#listaOrdenesElaboradas").LoadingOverlay("show", {
+                        imageAutoResize: true,
+                        progress: true,
+                        imageColor: "#3c8dbc"
+                    });
                 },
+
+            },
+            'columns': [
+                { 'data': 'id_orden_compra', 'name': 'log_ord_compra.id_orden_compra', 'visible': false },
+                { 'data': 'fecha', 'name': 'log_ord_compra.fecha', 'className': 'text-center' },
+                { 'data': 'codigo', 'name': 'log_ord_compra.codigo', 'className': 'text-center' },
+                { 'data': 'codigo_softlink', 'name': 'log_ord_compra.codigo_softlink', 'className': 'text-center' },
+                { 'data': 'nro_documento', 'name': 'adm_contri.nro_documento', 'className': 'text-center' },
+                { 'data': 'razon_social', 'name': 'adm_contri.razon_social', 'className': 'text-center' },
+                { 'data': 'moneda_descripcion', 'name': 'sis_moneda.descripcion', 'className': 'text-center' },
+                { 'data': 'descripcion_sede_empresa', 'name': 'sis_sede.descripcion', 'className': 'text-center' },
+                { 'data': 'estado_doc', 'name': 'estados_compra.descripcion', 'className': 'text-center' },
+                { 'data': 'id_orden_compra' , 'name': 'log_ord_compra.id_orden_compra','className': 'text-center'}
             ],
             'columnDefs': [
-                { className: "text-right", 'aTargets': [0], 'sClass': 'invisible' },
-                { className: "text-center", 'aTargets': [1] },
-                { className: "text-center", 'aTargets': [2] },
-                { className: "text-center", 'aTargets': [3] },
-                { className: "text-left", 'aTargets': [4] },
-                { className: "text-center", 'aTargets': [5] },
-                { className: "text-center", 'aTargets': [6] },
-                { className: "text-center", 'aTargets': [7] },
-                { className: "text-left", 'aTargets': [8] }
-            ]
-        });
+                {
+                    'render': function (data, type, row) {
+                        return `<center><div class="btn-group" role="group" style="margin-bottom: 5px;">
+                        <button type="button" class="btn btn-xs btn-success handleClickSelectOrden" data-id-orden="${row.id_orden_compra}" title="Seleccionar" >Seleccionar</button>
+                        </div></center>`;
+                    }, targets: 9
+                },
 
+            ],
+            'initComplete': function () {
+                //Boton de busqueda
+                const $filter = $('#listaOrdenesElaboradas_filter');
+                const $input = $filter.find('input');
+                $filter.append('<button id="btnBuscar" class="btn btn-default btn-sm pull-right" type="button"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>');
+                $input.off();
+                $input.on('keyup', (e) => {
+                    if (e.key == 'Enter') {
+                        $('#btnBuscar').trigger('click');
+                    }
+                });
+                $('#btnBuscar').on('click', (e) => {
+                    $tablaHistorialOrdenesElaboradas.search($input.val()).draw();
+                })
+                //Fin boton de busqueda
+                
+            },
+            "drawCallback": function( settings ) {
+                if($tablaHistorialOrdenesElaboradas.rows().data().length==0){
+                    Lobibox.notify('info', {
+                        title:false,
+                        size: 'mini',
+                        rounded: true,
+                        sound: false,
+                        delayIndicator: false,
+                        msg: `No se encontro data disponible para mostrar`
+                        }); 
+                }
+                //Botón de búsqueda
+                $('#listaOrdenesElaboradas_filter input').prop('disabled', false);
+                $('#btnBuscar').html('<span class="glyphicon glyphicon-search" aria-hidden="true"></span>').prop('disabled', false);
+                $('#listaOrdenesElaboradas_filter input').trigger('focus');
+                //fin botón búsqueda
+                $("#listaOrdenesElaboradas").LoadingOverlay("hide", true);
+            }
+        });
     }
+
 
     selectOrden(idOrden) {
         this.mostrarOrden(idOrden);

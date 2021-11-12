@@ -1212,7 +1212,7 @@ class OrdenController extends Controller
     }
 
     public function listaHistorialOrdenes(){
-        $data = Orden::select(
+        $ordenes = Orden::select(
             'log_ord_compra.*',
             'sis_sede.descripcion as descripcion_sede_empresa',
             DB::raw("CONCAT(dis_destino.descripcion,' - ',prov_destino.descripcion, ' - ', dpto_destino.descripcion)  AS ubigeo_destino"),
@@ -1245,11 +1245,26 @@ class OrdenController extends Controller
 
         ->where([
             ['log_ord_compra.estado', '!=', 7]
-        ])
-        ->orderBy('log_ord_compra.fecha','desc')
-        ->get();
-        $output['data'] = $data;
-        return $output;
+        ]);
+        return datatables($ordenes)
+        ->filterColumn('log_ord_compra.fecha', function ($query, $keyword) {
+            try {
+                $desde = Carbon::createFromFormat('d-m-Y', trim($keyword))->hour(0)->minute(0)->second(0);
+                $hasta = Carbon::createFromFormat('d-m-Y', trim($keyword));
+                $query->whereBetween('log_ord_compra.fecha', [$desde, $hasta->addDay()->addSeconds(-1)]);
+            } catch (\Throwable $th) {
+            }
+        })
+        ->filterColumn('moneda_descripcion', function ($query, $keyword) {
+            $keywords = trim(strtoupper($keyword));
+            $query->whereRaw("sis_moneda.descripcion LIKE ?", ["%{$keywords}%"]);
+        })
+        ->filterColumn('estado_doc', function ($query, $keyword) {
+            $keywords = trim(strtoupper($keyword));
+            $query->whereRaw("estados_compra.descripcion LIKE ?", ["%{$keywords}%"]);
+        })
+        ->toJson();
+        
     }
 
     public function mostrarOrden($id_orden){
