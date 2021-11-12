@@ -1410,14 +1410,11 @@ class OrdenView {
                 { 'data': 'id_orden_compra' },
                 { 'data': 'fecha' },
                 { 'data': 'codigo' },
+                { 'data': 'codigo_softlink' },
                 { 'data': 'nro_documento' },
                 { 'data': 'razon_social' },
                 { 'data': 'moneda_descripcion' },
-                { 'data': 'condicion' },
-                { 'data': 'plazo_entrega' },
                 { 'data': 'descripcion_sede_empresa' },
-                { 'data': 'direccion_destino' },
-                { 'data': 'ubigeo_destino' },
                 { 'data': 'estado_doc' },
                 {
                     'render': (data, type, row) => {
@@ -1438,10 +1435,7 @@ class OrdenView {
                 { className: "text-center", 'aTargets': [5] },
                 { className: "text-center", 'aTargets': [6] },
                 { className: "text-center", 'aTargets': [7] },
-                { className: "text-left", 'aTargets': [8] },
-                { className: "text-left", 'aTargets': [9] },
-                { className: "text-center", 'aTargets': [10] },
-                { className: "text-center", 'aTargets': [11] }
+                { className: "text-left", 'aTargets': [8] }
             ]
         });
 
