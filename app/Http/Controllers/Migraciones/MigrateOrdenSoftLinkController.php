@@ -312,11 +312,11 @@ class MigrateOrdenSoftLinkController extends Controller
                     //Actualiza la oc softlink
                     DB::table('logistica.log_ord_compra')
                         ->where('id_orden_compra', $id_orden_compra)
-                        ->update(['codigo_softlink' => $soc->cod_docu . $soc->num_docu]);
+                        ->update(['codigo_softlink' => $soc->cod_docu . ' ' . $soc->num_docu]);
 
                     $arrayRspta = array(
                         'tipo' => 'success',
-                        'mensaje' => 'Se migró correctamente la OC Nro. ' . $cod_docu . $num_docu . ' con id ' . $mov_id,
+                        'mensaje' => 'Se migró correctamente la OC Nro. ' . $cod_docu . ' ' . $num_docu . ' con id ' . $mov_id,
                         'ocSoftlink' => array('cabecera' => $soc, 'detalle' => $sdet),
                         'ocAgile' => array('cabecera' => $oc, 'detalle' => $detalles),
                     );
