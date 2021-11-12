@@ -87,6 +87,20 @@ class RequerimientoPendienteView {
         });
 
 
+        $('#listaRequerimientosPendientes tbody').on("click", "button.mapeo", (e) => {
+            var id_requerimiento = e.currentTarget.dataset.idRequerimiento;
+            var codigo = e.currentTarget.dataset.codigo;
+            objBtnMapeo = e.currentTarget;
+            $('#modal-mapeoItemsRequerimiento').modal({
+                show: true
+            });
+            $('[name=id_requerimiento]').val(id_requerimiento);
+            $('#cod_requerimiento').text(codigo);
+            listarItemsRequerimientoMapeo(id_requerimiento);
+
+            $('#submit_mapeoItemsRequerimiento').removeAttr('disabled');       
+        });
+
         $('#listaItemsRequerimientoParaAtenderConAlmacen tbody').on("click", "button.handleClickAbrirModalNuevaReserva", (e) => {
             this.abrirModalNuevaReserva(e.currentTarget);
         });
@@ -1489,6 +1503,27 @@ class RequerimientoPendienteView {
                                 'error'
                             );
                         }
+
+                            if(response.lista_finalizados.length > 0){
+                                (response.lista_finalizados).forEach(element => {
+                                    Swal.fire({
+                                        title: '',
+                                        html: `Se finalizó el cuadro de presupuesto ${element.codigo_cuadro_presupuesto} del requerimiento ${element.codigo_requerimiento}`,
+                                        icon: 'info'
+                                    });
+                                });
+                            }
+
+                            if(response.lista_restablecidos.length > 0){
+                                (response.lista_restablecidos).forEach(element => {
+                                    Swal.fire({
+                                        title: '',
+                                        html: `Se restableció el cuadro de presupuesto ${element.codigo_cuadro_presupuesto} del requerimiento ${element.codigo_requerimiento}`,
+                                        icon: 'info'
+                                    });
+                                });
+                            }
+
                     },
                     fail: (jqXHR, textStatus, errorThrown) => {
                         $('#modal-nueva-reserva .modal-content').LoadingOverlay("hide", true);
@@ -1618,6 +1653,18 @@ class RequerimientoPendienteView {
                                 trRequerimientosPendientes.remove();
                             }
                         }
+
+                        // finalidados
+                        if(response.lista_finalizados.length > 0){
+                            response.lista_finalizados.forEach(element => {
+                                Swal.fire({
+                                    title: '',
+                                    html: `SE finalizó el cuadro de presupuesto ${element.codigo_cuadro_presupuesto} del requerimiento ${element.codigo_requerimiento}`,
+                                    icon: 'info'
+                                });
+                            });
+                        }
+                        
 
                     } else {
                         $('#modal-nueva-reserva .modal-content').LoadingOverlay("hide", true);

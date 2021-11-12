@@ -29,7 +29,7 @@ class DetalleRequerimiento extends Model
 
         $ordenes=OrdenCompraDetalle::join('almacen.alm_det_req','log_det_ord_compra.id_detalle_requerimiento','alm_det_req.id_detalle_requerimiento')
         ->join('logistica.log_ord_compra','log_ord_compra.id_orden_compra','log_det_ord_compra.id_orden_compra')
-        ->where([['alm_det_req.id_detalle_requerimiento',$this->attributes['id_detalle_requerimiento']],['log_ord_compra.estado','!=',7]])
+        ->where([['alm_det_req.id_detalle_requerimiento',$this->attributes['id_detalle_requerimiento']],['log_ord_compra.estado','!=',7],['log_det_ord_compra.estado','!=',7]])
         ->select(['log_ord_compra.id_orden_compra','log_ord_compra.codigo','log_det_ord_compra.cantidad','log_det_ord_compra.estado'])->distinct()->get(); 
 
         // $keyed = $ordenes->mapWithKeys(function ($item) {

@@ -781,7 +781,8 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('anular-item-orden', 'OrdenController@anularItemOrden')->name('anular-item-orden');
 					Route::get('imprimir_ingreso/{id}', 'Almacen\Movimiento\IngresoPdfController@imprimir_ingreso');
 					Route::post('finalizar-regularizacion-de-requerimiento', 'ComprasPendientesController@finalizarRegularizacionRequerimiento')->name('finalizar-regularizacion-de-requerimiento');
-
+					
+					Route::get('finalizar-cuadro/{id}', 'OrdenController@finalizarCuadroPresupuesto');
 				});
 
 				Route::group(['as' => 'ordenes.', 'prefix' => 'ordenes'], function () {
@@ -2133,9 +2134,9 @@ Route::group(['middleware' => ['auth']], function () {
 	/**Logistica Ordenes */
 	// Route::get('get_ord_list', 'LogisticaController@get_ord_list');
 	// Route::get('generar_orden', 'LogisticaController@view_generar_orden');
-	Route::get('detalle_cotizacion/{id}', 'LogisticaController@detalle_cotizacion');
-	Route::post('guardar_orden_compra', 'LogisticaController@guardar_orden_compra');
-	Route::post('update_orden_compra', 'LogisticaController@update_orden_compra');
+	// Route::get('detalle_cotizacion/{id}', 'LogisticaController@detalle_cotizacion');
+	// Route::post('guardar_orden_compra', 'LogisticaController@guardar_orden_compra');
+	// Route::post('update_orden_compra', 'LogisticaController@update_orden_compra');
 	// Route::get('anular_orden_compra/{id}', 'LogisticaController@anular_orden_compra');
 	Route::get('mostrar_cuentas_bco/{id}', 'LogisticaController@mostrar_cuentas_bco');
 	Route::get('listar_ordenes', 'LogisticaController@listar_ordenes');

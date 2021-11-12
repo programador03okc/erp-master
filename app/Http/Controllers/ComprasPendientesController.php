@@ -405,7 +405,7 @@ class ComprasPendientesController extends Controller
             $ReservasProductoActivas = Reserva::where([['id_detalle_requerimiento',$request->idDetalleRequerimiento],
             ['estado',1]])->get();
             $codigoOIdReservaAnulada= '';
-
+            $idRequerimientoList=[];
 
             foreach ($ReservasProductoActivas as $value) {
                 if($value->id_almacen_reserva == $request->almacenReserva && $value->stock_comprometido == $request->cantidadReserva){
@@ -434,7 +434,9 @@ class ComprasPendientesController extends Controller
                 $reserva->estado = 1;
                 $reserva->save();
 
-    
+                if($request->idDetalleRequerimiento > 0){
+                    $idRequerimientoList[]= DetalleRequerimiento::find($request->idDetalleRequerimiento)->first()->id_requerimiento;
+                }
     
             }
 
@@ -455,13 +457,16 @@ class ComprasPendientesController extends Controller
             DetalleRequerimiento::actualizarEstadoDetalleRequerimientoAtendido($request->idDetalleRequerimiento);
             // actualizar estado de requerimiento
             $Requerimiento = DetalleRequerimiento::where('id_detalle_requerimiento',$request->idDetalleRequerimiento)->first();
-            $nuevoEstadoRequerimiento=  Requerimiento::actualizarEstadoRequerimientoAtendido([$Requerimiento->id_requerimiento]);
+            $nuevoEstado=  Requerimiento::actualizarEstadoRequerimientoAtendido([$Requerimiento->id_requerimiento]);
  
             DB::commit();
 
-        return response()->json(['id_reserva'=>$reserva->id_reserva,'codigo'=>$reserva->codigo,'data'=>$ReservasProductoActualizadas,'estado_requerimiento'=>$nuevoEstadoRequerimiento ,'mensaje'=>$mensaje]);
+
+        return response()->json(['id_reserva'=>$reserva->id_reserva,'codigo'=>$reserva->codigo,'lista_finalizados'=>$nuevoEstado['lista_finalizados'],'data'=>$ReservasProductoActualizadas,'estado_requerimiento'=>$nuevoEstado['estado_actual'] ,'mensaje'=>$mensaje]);
         } catch (\PDOException $e) {
             DB::rollBack();
+            return response()->json(['id_reserva' => 0, 'codigo' => '','lista_finalizados'=>[], 'data'=>[],'estado_requerimiento'=>[] ,'mensaje' => 'Hubo un problema al guardar la reserva. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
+
         }
     }
 
@@ -502,12 +507,12 @@ class ComprasPendientesController extends Controller
             DetalleRequerimiento::actualizarEstadoDetalleRequerimientoAtendido($request->idDetalleRequerimiento);
             // actualizar estado de requerimiento
             $Requerimiento = DetalleRequerimiento::where('id_detalle_requerimiento',$request->idDetalleRequerimiento)->first();
-            $nuevoEstadoRequerimiento= Requerimiento::actualizarEstadoRequerimientoAtendido([$Requerimiento->id_requerimiento]);
+            $nuevoEstado= Requerimiento::actualizarEstadoRequerimientoAtendido([$Requerimiento->id_requerimiento]);
 
         //     (new LogisticaController)->generarTransferenciaRequerimiento($id_requerimiento, $id_sede, $data);
             DB::commit();
 
-        return response()->json(['id_reserva'=>$reserva->id_reserva,'data'=>$ReservasProductoActualizadas, 'status'=>$status, 'estado_requerimiento'=>$nuevoEstadoRequerimiento]);
+        return response()->json(['id_reserva'=>$reserva->id_reserva,'data'=>$ReservasProductoActualizadas, 'status'=>$status, 'estado_requerimiento'=>$nuevoEstado['estado_actual'],'lista_finalizados'=>$nuevoEstado['lista_finalizados'],'lista_restablecidos'=>$nuevoEstado['lista_restablecidos']]);
         } catch (\PDOException $e) {
             DB::rollBack();
         }
@@ -884,8 +889,12 @@ class ComprasPendientesController extends Controller
                 $mensaje='Aun tiene item(s) por regularizar';
             }else{
                 $nuevoEstadoRequerimiento=  Requerimiento::actualizarEstadoRequerimientoAtendido([$request->idRequerimiento]);
-                if($nuevoEstadoRequerimiento['id'] != 38){
-                    $data=['id_estado_requerimiento' =>$nuevoEstadoRequerimiento['id'] ,'descripcion_estado_requerimiento'=>$nuevoEstadoRequerimiento['descripcion']];
+                if($nuevoEstadoRequerimiento['estado_actual']['id'] != 38){
+                    $data=['id_estado_requerimiento' =>$nuevoEstadoRequerimiento['estado_actual']['id'] ,
+                            'descripcion_estado_requerimiento'=>$nuevoEstadoRequerimiento['estado_actual']['descripcion'],
+                            'lista_finalizados'=>$nuevoEstadoRequerimiento['lista_finalizados'],
+                            'lista_restablecidos'=>$nuevoEstadoRequerimiento['lista_restablecidos']
+                        ];
                     $status=200;
                     $mensaje='Finalización realizada con éxito';
                 }else{

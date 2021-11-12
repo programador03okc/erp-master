@@ -6962,79 +6962,79 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
 
 
 
-    public function guardar_orden_compra(Request $request)
-    {
-        $id_tp_documento =  $request->id_tp_documento;
-        $usuario = Auth::user()->id_usuario;
-        $codigo = $this->nextCodigoOrden($id_tp_documento);
-        $id_orden = DB::table('logistica.log_ord_compra')
-            ->insertGetId(
-                [
-                    'id_grupo_cotizacion' => $request->id_grupo_cotizacion,
-                    'id_tp_documento' => $id_tp_documento,
-                    'fecha' => date('Y-m-d H:i:s'),
-                    'id_usuario' => $usuario,
-                    'id_moneda' => $request->id_moneda,
-                    'id_proveedor' => $request->id_proveedor,
-                    'codigo' => $codigo,
-                    'monto_subtotal' => $request->monto_subtotal,
-                    'igv_porcentaje' => $request->igv_porcentaje,
-                    'monto_igv' => $request->monto_igv,
-                    'monto_total' => $request->monto_total,
-                    'plazo_entrega' => $request->plazo_entrega,
-                    'id_condicion' => $request->id_condicion,
-                    'plazo_dias' => $request->plazo_dias,
-                    'id_cotizacion' => $request->id_cotizacion,
-                    'id_cta_principal' => $request->id_cta_principal,
-                    'id_cta_alternativa' => $request->id_cta_alternativa,
-                    'id_cta_detraccion' => $request->id_cta_detraccion,
-                    'personal_responsable' => $request->contacto_responsable,
-                    'en_almacen' => false,
-                    'estado' => 1
-                ],
-                'id_orden_compra'
-            );
-        $id_val_array = explode(',', $request->id_val);
-        $id_item_array = explode(',', $request->id_item);
-        $count = count($id_val_array);
-        $id_val='';
-        for ($i = 0; $i < $count; $i++) {
-            $id_val = $id_val_array[$i];
-            $id_item = $id_item_array[$i];
+    // public function guardar_orden_compra(Request $request)
+    // {
+    //     $id_tp_documento =  $request->id_tp_documento;
+    //     $usuario = Auth::user()->id_usuario;
+    //     $codigo = $this->nextCodigoOrden($id_tp_documento);
+    //     $id_orden = DB::table('logistica.log_ord_compra')
+    //         ->insertGetId(
+    //             [
+    //                 'id_grupo_cotizacion' => $request->id_grupo_cotizacion,
+    //                 'id_tp_documento' => $id_tp_documento,
+    //                 'fecha' => date('Y-m-d H:i:s'),
+    //                 'id_usuario' => $usuario,
+    //                 'id_moneda' => $request->id_moneda,
+    //                 'id_proveedor' => $request->id_proveedor,
+    //                 'codigo' => $codigo,
+    //                 'monto_subtotal' => $request->monto_subtotal,
+    //                 'igv_porcentaje' => $request->igv_porcentaje,
+    //                 'monto_igv' => $request->monto_igv,
+    //                 'monto_total' => $request->monto_total,
+    //                 'plazo_entrega' => $request->plazo_entrega,
+    //                 'id_condicion' => $request->id_condicion,
+    //                 'plazo_dias' => $request->plazo_dias,
+    //                 'id_cotizacion' => $request->id_cotizacion,
+    //                 'id_cta_principal' => $request->id_cta_principal,
+    //                 'id_cta_alternativa' => $request->id_cta_alternativa,
+    //                 'id_cta_detraccion' => $request->id_cta_detraccion,
+    //                 'personal_responsable' => $request->contacto_responsable,
+    //                 'en_almacen' => false,
+    //                 'estado' => 1
+    //             ],
+    //             'id_orden_compra'
+    //         );
+    //     $id_val_array = explode(',', $request->id_val);
+    //     $id_item_array = explode(',', $request->id_item);
+    //     $count = count($id_val_array);
+    //     $id_val='';
+    //     for ($i = 0; $i < $count; $i++) {
+    //         $id_val = $id_val_array[$i];
+    //         $id_item = $id_item_array[$i];
 
-            DB::table('logistica.log_det_ord_compra')->insert([
-                'id_orden_compra' => $id_orden,
-                'id_item' => ($id_item ? $id_item : null),
-                'id_valorizacion_cotizacion' => $id_val,
-                'estado' => 1
-            ]);
+    //         DB::table('logistica.log_det_ord_compra')->insert([
+    //             'id_orden_compra' => $id_orden,
+    //             'id_item' => ($id_item ? $id_item : null),
+    //             'id_valorizacion_cotizacion' => $id_val,
+    //             'estado' => 1
+    //         ]);
 
-            DB::table('logistica.log_valorizacion_cotizacion')
-                ->where('id_valorizacion_cotizacion', $id_val)
-                ->update(['estado' => 5]); // estado Atendido ( con orden)
-        }
+    //         DB::table('logistica.log_valorizacion_cotizacion')
+    //             ->where('id_valorizacion_cotizacion', $id_val)
+    //             ->update(['estado' => 5]); // estado Atendido ( con orden)
+    //     }
 
 
-            // buscar id_req por id_cotizacion
-        $id_req = $this->get_id_req_by_id_coti($request->id_cotizacion);
-        if(isset($id_req) && $id_req > 0){
-            DB::table('almacen.alm_req') //requerimiento cambia su estado
-                ->where('id_requerimiento', $id_req)
-                ->update(['estado' => 5]); // estado Atendido ( con orden)            
-        }
+    //         // buscar id_req por id_cotizacion
+    //     $id_req = $this->get_id_req_by_id_coti($request->id_cotizacion);
+    //     if(isset($id_req) && $id_req > 0){
+    //         DB::table('almacen.alm_req') //requerimiento cambia su estado
+    //             ->where('id_requerimiento', $id_req)
+    //             ->update(['estado' => 5]); // estado Atendido ( con orden)            
+    //     }
 
-        $data_doc_aprob = DB::table('administracion.adm_documentos_aprob')->insertGetId(
-            [
-                'id_tp_documento' => $id_tp_documento,
-                'codigo_doc'      => $codigo,
-                'id_doc'          => $id_orden
+    //     $data_doc_aprob = DB::table('administracion.adm_documentos_aprob')->insertGetId(
+    //         [
+    //             'id_tp_documento' => $id_tp_documento,
+    //             'codigo_doc'      => $codigo,
+    //             'id_doc'          => $id_orden
 
-            ],
-            'id_doc_aprob'
-        );
+    //         ],
+    //         'id_doc_aprob'
+    //     );
 
-        return response()->json($id_orden);
-    }
+    //     return response()->json($id_orden);
+    // }
 
     public function get_id_req_by_id_coti($id_cotizacion){
         $output = DB::table('logistica.log_valorizacion_cotizacion')

@@ -1269,7 +1269,7 @@ class OrdenView {
                     contentType: false,
                     dataType: 'JSON',
                     success: function (response) {
-                        // console.log(response);
+                        console.log(response);
                         if (response.id_orden_compra > 0) {
                             Lobibox.notify('success', {
                                 title: false,
@@ -1289,6 +1289,17 @@ class OrdenView {
                             document.querySelector("span[name='codigo_orden_interno']").textContent = response.codigo;
                             document.querySelector("input[name='id_orden']").value = response.id_orden_compra;
                             document.querySelector("button[name='btn-imprimir-orden-pdf']").removeAttribute("disabled");
+
+                            // finalidados
+                            if(response.lista_finalizados.length > 0){
+                                response.lista_finalizados.forEach(element => {
+                                    Swal.fire({
+                                        title: '',
+                                        html: `SE finalizó el cuadro de presupuesto ${element.codigo_cuadro_presupuesto} del requerimiento ${element.codigo_requerimiento}`,
+                                        icon: 'info'
+                                    });
+                                });
+                            }
 
                         } else {
                             Swal.fire(

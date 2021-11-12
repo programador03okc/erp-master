@@ -181,7 +181,7 @@ function listarItemsPorRegularizar(data) {
             <td>${element.detalle_cc.part_no??''}</td>
             <td>${element.detalle_cc.descripcion??''}</td>
             <td>${element.detalle_cc.cantidad??''}</td>
-            <td>${element.detalle_cc.pvu_oc??''}</td>
+            <td style="border-right: dashed; border-right-color: #ccc;">${element.detalle_cc.pvu_oc??''}</td>
             <td>${element.part_number??''}</td>
             <td>${element.descripcion??''}</td>
             <td>${element.cantidad??''}</td>
@@ -412,7 +412,7 @@ function liberarProductoOrden(obj) {
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
             cancelButtonText: 'Cancelar',
-            confirmButtonText: 'Si, remplazar'
+            confirmButtonText: 'Si, liberar'
 
         }).then((result) => {
             if (result.isConfirmed) {
@@ -810,12 +810,16 @@ function finalizarRegularizacion(){
                             msg: res.mensaje.toString()
                         });
 
+                        $('#modal-por-regularizar').modal('hide');
+
                         if(trPorRegularizarSeleccionar){
                             trPorRegularizarSeleccionar.querySelector("input[type='checkbox']").setAttribute('data-estado',res.data['id_estado_requerimiento']);
-                            trPorRegularizarSeleccionar.querySelector("span[class~='estadoRequerimiento']").textContent('data-estado',res.data['descripcion_estado_requerimiento']);
+                            trPorRegularizarSeleccionar.querySelector("span[class~='estadoRequerimiento']").setAttribute('data-estado',res.data['descripcion_estado_requerimiento']);
                             trPorRegularizarSeleccionar.querySelector("button[name='btnOpenModalAtenderConAlmacen']")?trPorRegularizarSeleccionar.querySelector("button[name='btnOpenModalAtenderConAlmacen']").removeAttribute('disabled'):false;
                             trPorRegularizarSeleccionar.querySelector("button[name='btnOpenModalAtenderConAlmacen']")?trPorRegularizarSeleccionar.querySelector("button[name='btnCrearOrdenCompraPorRequerimiento']").removeAttribute('disabled'):false;
                         }
+
+                        $tablaListaRequerimientosPendientes.ajax.reload( null, false );
                         
                         // const requerimientoPendienteModel = new RequerimientoPendienteModel();
                         // const requerimientoPendienteController = new RequerimientoPendienteCtrl(requerimientoPendienteModel);

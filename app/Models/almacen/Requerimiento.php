@@ -2,6 +2,7 @@
 
 namespace App\Models\Almacen;
 
+use App\Http\Controllers\OrdenController;
 use App\Models\Administracion\Estado;
 use App\Models\Configuracion\Usuario;
 use App\Models\Logistica\OrdenCompraDetalle;
@@ -329,8 +330,12 @@ class Requerimiento extends Model
         
                 }
             }
+
+            $finalizadosORestablecido=(new OrdenController)->finalizarCuadroPresupuesto($id_requerimiento_unique_list);
+
         }
-        return $estadoActual;
+        return ['estado_actual'=>$estadoActual,'lista_finalizados'=>$finalizadosORestablecido['lista_finalizados'],'lista_restablecidos'=>$finalizadosORestablecido['lista_restablecidos']];
+
     }
 
     public function detalle(){
