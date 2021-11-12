@@ -10,8 +10,7 @@ function enviarOrdenSoftlink() {
         console.log(response);
         console.log('response');
         console.log(response.ocSoftlink.cabecera.cod_docu);
-        console.log(response.ocSoftlink.cabecera['cod_docu']);
-        $('[name=codigo_orden]').val(response.ocSoftlink.cabecera['cod_docu'] + response.ocSoftlink.cabecera['num_docu']);
+        $('[name=codigo_orden]').val(response.ocSoftlink.cabecera.cod_docu + ' ' + response.ocSoftlink.cabecera.num_docu);
         Lobibox.notify(response.tipo, {
             size: "mini",
             rounded: true,
