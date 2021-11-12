@@ -21,6 +21,8 @@ use App\Models\Administracion\Estado;
 use App\Models\Almacen\DetalleRequerimiento;
 use App\Models\Almacen\Requerimiento;
 use App\Models\Almacen\UnidadMedida;
+use App\Models\Comercial\CuadroCosto\CcAmFila;
+use App\Models\Comercial\CuadroCosto\CuadroCosto;
 use App\Models\Configuracion\Grupo;
 use App\Models\Configuracion\Moneda;
 use App\Models\Contabilidad\Banco;
@@ -2601,7 +2603,6 @@ class OrdenController extends Controller
 
         try {
             DB::beginTransaction();
-
             $orden = new Orden();
             $tp_doc = ($request->id_tp_documento !== null ? $request->id_tp_documento : 2);
             $orden->codigo =  Orden::nextCodigoOrden($tp_doc);
@@ -2634,6 +2635,9 @@ class OrdenController extends Controller
             $orden->save();
 
             $count = count($request->descripcion);
+
+            // $idRequerimientoList=[];
+
             for ($i = 0; $i < $count; $i++) {
             $detalle = new OrdenCompraDetalle();
             $detalle->id_orden_compra= $orden->id_orden_compra;
@@ -2648,20 +2652,33 @@ class OrdenController extends Controller
             $detalle->estado=1;
             // $detalle->fecha_registro = new Carbon();
             $detalle->save();
+
+            // if($request->idDetalleRequerimiento[$i]>0){
+            //     $idRequerimientoList[]= DetalleRequerimiento::find($request->idDetalleRequerimiento[$i])->first()->id_requerimiento;
+            // }
+
             }
+
+            $actualizarEstados=[];
+            
+            
+            DB::commit();
 
             if(isset($orden->id_orden_compra) and $orden->id_orden_compra >0){
-                $this->actualizarNuevoEstadoRequerimiento($orden->id_orden_compra,$orden->codigo);
-            
+                $actualizarEstados = $this->actualizarNuevoEstadoRequerimiento($orden->id_orden_compra,$orden->codigo);
             }
-            
 
-        DB::commit();
-            return response()->json(['id_orden_compra' => $orden->id_orden_compra, 'codigo' => $orden->codigo]);
+            return response()->json([
+                'id_orden_compra' => $orden->id_orden_compra, 
+                'codigo' => $orden->codigo,
+                'lista_estado_requerimiento'=>$actualizarEstados['lista_estado_requerimiento'],
+                'lista_finalizados'=>$actualizarEstados['lista_finalizados'],
+                'lista_restablecidos'=>$actualizarEstados['lista_restablecidos']
+            ]);
 
         } catch (Exception $e) {
             DB::rollBack();
-            return response()->json(['id_orden_compra' => 0, 'codigo' => '', 'mensaje' => 'Hubo un problema al guardar la orden. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
+            return response()->json(['id_orden_compra' => 0, 'codigo' => '','lista_finalizados'=>[], 'mensaje' => 'Hubo un problema al guardar la orden. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
 
         }
 
@@ -2927,8 +2944,69 @@ class OrdenController extends Controller
                 ];
             }
         }
-
         return $nuevoEstadoCabeceraRequerimiento;
+    }
+
+    function finalizarCuadroPresupuesto($listaRequerimientosParaFinalizar){
+        $listaFinalizados= [];
+        $listaRestablecidos=[];
+
+        foreach ($listaRequerimientosParaFinalizar as $idReq) {
+            $requerimiento =Requerimiento::find($idReq);
+            $detalleRequerimiento =DetalleRequerimiento::where('id_requerimiento',$idReq)->get();
+
+            if($detalleRequerimiento && count($detalleRequerimiento)>0){
+
+                foreach ($detalleRequerimiento as $dr) {
+
+                    if($dr->estado == 28 || $dr->estado == 5){
+                        if($dr->id_cc_am_filas>0){
+                            $ccAmFilas= CcAmFila::find($dr->id_cc_am_filas);
+                            $ccAmFilas->comprado= true;
+                            $ccAmFilas->save();
+                        }
+                    }else{
+                        if($dr->id_cc_am_filas>0){
+                            $ccAmFilas= CcAmFila::find($dr->id_cc_am_filas);
+                            $ccAmFilas->comprado= false;
+                            $ccAmFilas->save();
+                        }
+                    }
+                }
+            }
+
+            if($requerimiento->id_cc >0){
+
+                $cuadroPresupuesto = CuadroCosto::find($requerimiento->id_cc)->with('oportunidad')->first();
+
+                if($cuadroPresupuesto && $cuadroPresupuesto->id >0 && $cuadroPresupuesto->estado_aprobacion !=5){
+                    $cc=CuadroCosto::find($requerimiento->id_cc);
+
+                    if($requerimiento->estado== 28 || $requerimiento->estado== 5){
+                        $cc->estado_aprobacion =4;
+                        $cc->save();
+                        $listaFinalizados[]=[
+                            'id_requerimiento'=>$requerimiento->id_requerimiento,
+                            'codigo_requerimiento'=>$requerimiento->codigo,
+                            'codigo_cuadro_presupuesto'=>$cuadroPresupuesto->oportunidad->codigo_oportunidad
+                        ];
+                    }else{ // si el requerimiento no esta atentido total o reserva total 
+                        if($cc->estado_aprobacion ==4){ // verifica si el estado actual del cc es finalizado cuando el requerimiento no esta atentido 
+                            $cc->estado_aprobacion =3;
+                            $cc->save(); 
+                            $listaRestablecidos[]=[
+                                'id_requerimiento'=>$requerimiento->id_requerimiento,
+                                'codigo_requerimiento'=>$requerimiento->codigo,
+                                'codigo_cuadro_presupuesto'=>$cuadroPresupuesto->oportunidad->codigo_oportunidad
+                            ];
+                        }
+                    }
+                }
+
+            }
+        }
+
+        return ['lista_finalizados'=>$listaFinalizados,'lista_restablecidos'=>$listaRestablecidos];
     }
 
 
@@ -2975,8 +3053,10 @@ class OrdenController extends Controller
                 ); 
             }
         }
+        $finalizadosORestablecido= $this->finalizarCuadroPresupuesto($idRequerimientoList);
 
-        // return ['nuevoEstadoDetalleRequerimiento'=>$nuevoEstadoDetalleRequerimiento, 'nuevoEstadoCabeceraRequerimiento'=>$nuevoEstadoCabeceraRequerimiento];
+        return ['lista_estado_requerimiento'=>$nuevoEstadoCabeceraRequerimiento,'lista_finalizados'=>$finalizadosORestablecido['lista_finalizados'],'lista_restablecidos'=>$finalizadosORestablecido['lista_restablecidos']];
+
 
     }
 
@@ -3439,6 +3519,14 @@ class OrdenController extends Controller
                     }
                     $status = 200;
                     $msj[]='se restableció el estado del requerimiento';
+                    $finalizadosORestablecido= $this->finalizarCuadroPresupuesto($id_requerimiento_list);
+                    if($finalizadosORestablecido['lista_restablecido']  && count($finalizadosORestablecido['lista_restablecido'])>0){
+                        foreach ($finalizadosORestablecido['lista_restablecido'] as $lr) {
+                            
+                            $msj[]='Se actualizo el estado del cuadro de prespuesto '+$lr['codigo_cuadro_presupuesto'];
+                        }
+
+                    }
 
                 }else{
                     $status = 204;

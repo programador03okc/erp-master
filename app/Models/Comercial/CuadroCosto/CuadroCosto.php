@@ -8,4 +8,9 @@ class CuadroCosto extends Model
 {
     protected $table='mgcp_cuadro_costos.cc';
     public $timestamps=false;
+
+
+    public function oportunidad(){
+        return $this->hasOne('App\Models\Comercial\Oportunidad','id','id_oportunidad');
+    }
 }
