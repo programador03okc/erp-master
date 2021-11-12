@@ -1,5 +1,5 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-ordenes-elaboradas" style="overflow-y: scroll;">
-    <div class="modal-dialog" style="width: 90%;">
+    <div class="modal-dialog" style="width: 95%;">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
@@ -31,10 +31,10 @@
                     </tbody>
                 </table>
             </div>
-            <div class="modal-footer">
+            <!-- <div class="modal-footer">
                 <label style="display: none;" id="id_orden"></label>
                 <button class="btn btn-sm btn-success" onClick="selectOrden();">Aceptar</button>
-            </div>
+            </div> -->
         </div>
     </div>
 </div>

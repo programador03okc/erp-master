@@ -1289,6 +1289,7 @@ class OrdenView {
                             document.querySelector("span[name='codigo_orden_interno']").textContent = response.codigo;
                             document.querySelector("input[name='id_orden']").value = response.id_orden_compra;
                             document.querySelector("button[name='btn-imprimir-orden-pdf']").removeAttribute("disabled");
+                            document.querySelector("button[name='btn-enviar-softlink']").removeAttribute("disabled");
 
                             // finalidados
                             if(response.lista_finalizados.length > 0){
@@ -1405,7 +1406,6 @@ class OrdenView {
             'ajax': 'listar-historial-ordenes-elaboradas',
             // "dataSrc":'',
             'order': [[0, 'desc']],
-            'scrollX': false,
             'columns': [
                 { 'data': 'id_orden_compra' },
                 { 'data': 'fecha' },
@@ -1522,6 +1522,7 @@ class OrdenView {
         document.querySelector("form[id='form-crear-orden-requerimiento'] textarea[name='observacion']").value = data.observacion ? data.observacion : '';
 
         document.querySelector("button[name='btn-imprimir-orden-pdf']").removeAttribute("disabled");
+        document.querySelector("button[name='btn-enviar-softlink']").removeAttribute("disabled");
     }
 
 
@@ -1569,6 +1570,7 @@ class OrdenView {
         this.fechaHoy();
         document.querySelector("span[name='codigo_orden_interno']").textContent = '';
         document.querySelector("button[name='btn-imprimir-orden-pdf']").setAttribute("disabled", true);
+        document.querySelector("button[name='btn-enviar-softlink']").setAttribute("disabled", true);
         sessionStorage.removeItem('reqCheckedList');
         sessionStorage.removeItem('tipoOrden');
         sessionStorage.removeItem('action');
