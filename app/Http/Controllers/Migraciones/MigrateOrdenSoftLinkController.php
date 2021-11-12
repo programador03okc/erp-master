@@ -15,6 +15,7 @@ class MigrateOrdenSoftLinkController extends Controller
 
             $oc = DB::table('logistica.log_ord_compra')
                 ->select(
+                    'log_ord_compra.id_orden_compra',
                     'log_ord_compra.codigo',
                     'log_ord_compra.fecha',
                     'log_ord_compra.fecha_registro',
@@ -49,242 +50,287 @@ class MigrateOrdenSoftLinkController extends Controller
                 ->where('id_orden_compra', $id_orden_compra)
                 ->first();
 
-            $msj = '';
-
 
             if ($oc !== null) {
-                //persona juridica x defecto
-                $doc_tipo = ($oc->id_tipo_contribuyente !== null
-                    ? ($oc->id_tipo_contribuyente <= 2 ? 2 : 1)
-                    : 1);
-                //por defecto ruc
-                $cod = ($oc->cod_di !== null ? $oc->cod_di : '06');
-                //obtiene o crea el proveedor
-                $cod_auxi = $this->obtenerProveedor($oc->ruc, $oc->razon_social, $doc_tipo, $cod);
+                //pregunta si ya se ha migrado antes
+                $oc_exist = DB::connection('soft')->table('movimien')->where('ndocu3', $oc->id_orden_compra)->first();
+                $arrayRspta = [];
 
-                $empresas_soft = [
-                    ['id' => 1, 'nombre' => 'OKC'],
-                    ['id' => 2, 'nombre' => 'PYC'],
-                    ['id' => 3, 'nombre' => 'SVS'],
-                    ['id' => 4, 'nombre' => 'JEDR'],
-                    ['id' => 5, 'nombre' => 'RBDB'],
-                    ['id' => 6, 'nombre' => 'PTEC']
-                ];
-                $cod_suc = '';
-                foreach ($empresas_soft as $emp) {
-                    if ($emp['nombre'] == $oc->codigo_emp) {
-                        $cod_suc = $emp['id'];
+                if ($oc_exist !== null) {
+                    $arrayRspta = array(
+                        'tipo' => 'warning',
+                        'mensaje' => 'Ya existe ésta OC en softlink. Con Nro. ' . $oc_exist->cod_docu . $oc_exist->num_docu . ' con id ' . $oc_exist->mov_id,
+                        'ocSoftlink' => array('cabecera' => $oc_exist),
+                        'ocAgile' => array('cabecera' => $oc),
+                    );
+                    //Actualiza la oc softlink
+                    DB::table('logistica.log_ord_compra')
+                        ->where('id_orden_compra', $id_orden_compra)
+                        ->update(['codigo_softlink' => $oc_exist->cod_docu . $oc_exist->num_docu]);
+                } else {
+
+                    //persona juridica x defecto
+                    $doc_tipo = ($oc->id_tipo_contribuyente !== null
+                        ? ($oc->id_tipo_contribuyente <= 2 ? 2 : 1)
+                        : 1);
+                    //por defecto ruc
+                    $cod = ($oc->cod_di !== null ? $oc->cod_di : '06');
+                    //obtiene o crea el proveedor
+                    $cod_auxi = $this->obtenerProveedor($oc->ruc, $oc->razon_social, $doc_tipo, $cod);
+
+                    $empresas_soft = [
+                        ['id' => 1, 'nombre' => 'OKC', 'cod_docu' => 'OC'],
+                        ['id' => 2, 'nombre' => 'PYC', 'cod_docu' => 'O3'],
+                        ['id' => 3, 'nombre' => 'SVS', 'cod_docu' => 'O2'],
+                        ['id' => 4, 'nombre' => 'JEDR', 'cod_docu' => 'O5'],
+                        ['id' => 5, 'nombre' => 'RBDB', 'cod_docu' => 'O4'],
+                        ['id' => 6, 'nombre' => 'PTEC', 'cod_docu' => 'O6']
+                    ];
+                    $cod_suc = '';
+                    $cod_docu = '';
+                    foreach ($empresas_soft as $emp) {
+                        if ($emp['nombre'] == $oc->codigo_emp) {
+                            $cod_suc = $emp['id'];
+                            $cod_docu = $emp['cod_docu'];
+                        }
                     }
-                }
-                $count = DB::connection('soft')->table('movimien')->count();
-                //codificar segun criterio x documento
-                $mov_id = '_OC' . $this->leftZero(7, (intval($count) + 1));
-                $fecha = date('Y-m-d');
-                //obtiene el año a 2 digitos y le aumenta 2 ceros adelante
-                $yy = $this->leftZero(4, intval(date('y', strtotime($fecha))));
-                //busca segun oc de lima, las oc de ilo inician con P=>P021
-                $count_mov = DB::connection('soft')->table('movimien')
-                    ->where([['num_docu', 'like', $yy . '%'], ['cod_docu', '=', 'OC']])
-                    ->count();
-                //crea el correlativo del documento
-                $nro_mov = $this->leftZero(7, (intval($count_mov) + 1));
-                //anida el numero de documento
-                $num_docu = $yy . $nro_mov;
+                    $count = DB::connection('soft')->table('movimien')->count();
+                    //codificar segun criterio x documento
+                    $mov_id = $this->leftZero(10, (intval($count) + 1));
+                    $fecha = date('Y-m-d');
+                    //obtiene el año a 2 digitos y le aumenta 2 ceros adelante
+                    $yy = $this->leftZero(4, intval(date('y', strtotime($fecha))));
+                    //busca segun oc de lima, las oc de ilo inician con P=>P021
+                    $count_mov = DB::connection('soft')->table('movimien')
+                        ->where([
+                            ['num_docu', 'like', $yy . '%'],
+                            ['cod_suc', '=', $cod_suc],
+                            ['tipo', '=', 1], //compra
+                            ['cod_docu', '=', $cod_docu],
+                            ['cod_alma', '=', $oc->codigo_almacen]
+                        ])
+                        ->count();
+                    //crea el correlativo del documento
+                    $nro_mov = $this->leftZero(7, (intval($count_mov) + 1));
+                    //anida el numero de documento
+                    $num_docu = $yy . $nro_mov;
 
-                $mon_impto = (floatval($oc->total_precio) * 0.18);
+                    $mon_impto = (floatval($oc->total_precio) * 0.18);
 
-                // $msj = 'Se migró correctamente. La OC ' . $yy . '-' . $nro_mov . ' con id ' . $mov_id;
+                    // $msj = 'Se migró correctamente. La OC ' . $yy . '-' . $nro_mov . ' con id ' . $mov_id;
 
-                $fecha = date("Y-m-d", strtotime($oc->fecha));
-                // return response()->json(['oc' => $oc, 'cod_suc' => $cod_suc, 'cod_auxi' => $cod_auxi]);
+                    $fecha = date("Y-m-d", strtotime($oc->fecha));
+                    // return response()->json(['oc' => $oc, 'cod_suc' => $cod_suc, 'cod_auxi' => $cod_auxi]);
 
-                DB::connection('soft')->table('movimien')->insert(
-                    [
-                        'mov_id' => $mov_id,
-                        'tipo' => '1', //Compra 
-                        'cod_suc' => $cod_suc,
-                        'cod_alma' => $oc->codigo_almacen,
-                        'cod_docu' => 'OC',
-                        'num_docu' => $num_docu,
-                        'fec_docu' => $fecha,
-                        'fec_entre' => $fecha,
-                        'fec_vcto' => $fecha,
-                        'flg_sitpedido' => 0,
-                        'cod_pedi' => '',
-                        'num_pedi' => '',
-                        'cod_auxi' => $cod_auxi,
-                        'cod_trans' => '00000',
-                        'cod_vend' => $oc->codvend_softlink,
-                        'tip_mone' => $oc->id_moneda,
-                        'impto1' => '18.00',
-                        'impto2' => '0.00',
-                        'mon_bruto' => $oc->total_precio,
-                        'mon_impto1' => $mon_impto,
-                        'mon_impto2' => '0.00',
-                        'mon_gravado' => '0.00',
-                        'mon_inafec' => '0.00',
-                        'mon_exonera' => '0.00',
-                        'mon_gratis' => '0.00',
-                        'mon_total' => ($oc->total_precio + $mon_impto),
-                        'sal_docu' => '0.00',
-                        'tot_cargo' => '0.00',
-                        'tot_percep' => '0.00',
-                        'tip_codicion' => '02', //REvisar la condicion
-                        'txt_observa' => ($oc->observacion !== null ? $oc->observacion : ''),
-                        'flg_kardex' => 0,
-                        'flg_anulado' => 0,
-                        'flg_referen' => 0,
-                        'flg_percep' => 0,
-                        'cod_user' => $oc->codvend_softlink,
-                        'programa' => '',
-                        'txt_nota' => '',
-                        'tip_cambio' => '0.000', //Revisar
-                        'tdflags' => 'NSSNNSSNSN',
-                        'numlet' => '',
-                        'impdcto' => '0.0000',
-                        'impanticipos' => '0.0000',
-                        'registro' => date('Y-m-d H:i:s'),
-                        'tipo_canje' => '0',
-                        'numcanje' => '',
-                        'cobrobco' => 0,
-                        'ctabco' => '',
-                        'flg_qcont' => '',
-                        'fec_anul' => '0000-00-00',
-                        'audit' => '2',
-                        'origen' => '',
-                        'tip_cont' => '',
-                        'tip_fact' => '',
-                        'contrato' => '',
-                        'idcontrato' => '',
-                        'canje_fact' => 0,
-                        'aceptado' => 0,
-                        'reg_conta' => '0',
-                        'mov_pago' => '',
-                        'ndocu1' => '',
-                        'ndocu2' => '',
-                        'ndocu3' => $oc->codigo,
-                        'flg_logis' => 0,
-                        'cod_recep' => '',
-                        'flg_aprueba' => 0,
-                        'fec_aprueba' => '0000-00-00 00:00:00.000000',
-                        'flg_limite' => 0,
-                        'fecpago' => '0000-00-00',
-                        'imp_comi' => '0.00',
-                        'ptosbonus' => '0',
-                        'canjepedtran' => 0,
-                        'cod_clasi' => '',
-                        'doc_elec' => '',
-                        'cod_nota' => '',
-                        'hashcpe' => '',
-                        'flg_sunat_acep' => 0,
-                        'flg_sunat_anul' => 0,
-                        'flg_sunat_mail' => 0,
-                        'flg_sunat_webs' => 0,
-                        'mov_id_baja' => '',
-                        'mov_id_resu_bv' => '',
-                        'mov_id_resu_ci' => '',
-                        'flg_guia_traslado' => 0,
-                        'flg_anticipo_doc' => 0,
-                        'flg_anticipo_reg' => 0,
-                        'doc_anticipo_id' => '',
-                        'flg_emi_itinerante' => 0,
-                        'placa' => ''
-                    ]
-                );
 
-                $detalles = DB::table('logistica.log_det_ord_compra')
-                    ->select(
-                        'log_det_ord_compra.*',
-                        'alm_prod.part_number',
-                        'alm_prod.descripcion',
-                        'alm_und_medida.abreviatura',
-                        'alm_cat_prod.descripcion as categoria',
-                        'alm_subcat.descripcion as subcategoria',
-                        'alm_clasif.descripcion as clasificacion',
-                        'log_ord_compra.id_moneda',
-                        'alm_prod.series',
-                        'alm_prod.notas'
-                    )
-                    ->join('logistica.log_ord_compra', 'log_ord_compra.id_orden_compra', '=', 'log_det_ord_compra.id_orden_compra')
-                    ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'log_det_ord_compra.id_producto')
-                    ->join('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
-                    ->join('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
-                    ->join('almacen.alm_clasif', 'alm_clasif.id_clasificacion', '=', 'alm_prod.id_clasif')
-                    ->join('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
-                    ->where('log_det_ord_compra.id_orden_compra', $id_orden_compra)
-                    ->get();
-
-                $i = 0;
-
-                foreach ($detalles as $det) {
-                    $i++;
-                    //cuenta los registros
-                    $count_det = DB::connection('soft')->table('detmov')->count();
-                    //aumenta uno y completa los 10 digitos
-                    $mov_det_id = $this->leftZero(10, (intval($count_det) + 1));
-                    //Obtiene y/o crea el producto
-                    $cod_prod = $this->obtenerProducto($det);
-
-                    DB::connection('soft')->table('detmov')->insert(
+                    DB::connection('soft')->table('movimien')->insert(
                         [
-                            'unico' => $mov_det_id,
                             'mov_id' => $mov_id,
-                            'tipo' => '2', //Ventas 
-                            'cod_docu' => 'NP',
+                            'tipo' => '1', //Compra 
+                            'cod_suc' => $cod_suc,
+                            'cod_alma' => $oc->codigo_almacen,
+                            'cod_docu' => $cod_docu,
                             'num_docu' => $num_docu,
-                            'fec_pedi' => $fecha,
-                            'cod_auxi' => trim($det->abreviatura),
-                            'cod_prod' => $cod_prod,
-                            'nom_prod' => $det->descripcion,
-                            'can_pedi' => $det->cantidad,
-                            'sal_pedi' => '0.0000',
-                            'can_devo' => $i, //numeracion del item 
-                            'pre_prod' => ($det->precio !== null ? $det->precio : 0),
-                            'dscto_condi' => '0.000',
-                            'dscto_categ' => '0.000',
-                            'pre_neto' => ($det->precio !== null ? ($det->precio * $det->cantidad) : 0),
-                            'igv_inclu' => '0',
-                            'cod_igv' => '',
+                            'fec_docu' => $fecha,
+                            'fec_entre' => $fecha,
+                            'fec_vcto' => $fecha,
+                            'flg_sitpedido' => 0,
+                            'cod_pedi' => '',
+                            'num_pedi' => '',
+                            'cod_auxi' => $cod_auxi,
+                            'cod_trans' => '00000',
+                            'cod_vend' => $oc->codvend_softlink,
+                            'tip_mone' => $oc->id_moneda,
                             'impto1' => '18.00',
                             'impto2' => '0.00',
-                            'imp_item' => ($det->precio !== null ? ($det->precio * $det->cantidad) : 0),
-                            'pre_gratis' => '0.0000',
-                            'descargo' => '*',
-                            'trecord' => '',
-                            'cod_model' => '',
-                            'flg_serie' => '1',
-                            'series' => '',
-                            'entrega' => '0',
-                            'notas' => '',
-                            'flg_percep' => '0',
-                            'por_percep' => '0.000',
-                            'mon_percep' => '0.000',
-                            'ok_stk' => '1',
-                            'ok_serie' => ($det->series ? '1' : '0'),
-                            'lStock' => '0',
-                            'no_calc' => '0',
-                            'promo' => '1',
-                            'seriesprod' => '',
-                            'pre_anexa' => '0.0000',
-                            'dsctocompra' => '0.000',
-                            'cod_prov' => '',
-                            'costo_unit' => '0.000000',
-                            'margen' => '0.00',
-                            'gasto1' => '0.00',
-                            'gasto2' => '0.00',
-                            'flg_detrac' => '0',
-                            'por_detrac' => '0.000',
-                            'cod_detrac' => '',
-                            'mon_detrac' => '0.0000',
-                            'tipoprecio' => '8'
+                            'mon_bruto' => $oc->total_precio,
+                            'mon_impto1' => $mon_impto,
+                            'mon_impto2' => '0.00',
+                            'mon_gravado' => '0.00',
+                            'mon_inafec' => '0.00',
+                            'mon_exonera' => '0.00',
+                            'mon_gratis' => '0.00',
+                            'mon_total' => ($oc->total_precio + $mon_impto),
+                            'sal_docu' => '0.00',
+                            'tot_cargo' => '0.00',
+                            'tot_percep' => '0.00',
+                            'tip_codicion' => '02', //REvisar la condicion
+                            'txt_observa' => ($oc->observacion !== null ? $oc->observacion : ''),
+                            'flg_kardex' => 0,
+                            'flg_anulado' => 0,
+                            'flg_referen' => 0,
+                            'flg_percep' => 0,
+                            'cod_user' => $oc->codvend_softlink,
+                            'programa' => '',
+                            'txt_nota' => '',
+                            'tip_cambio' => '0.000', //Revisar
+                            'tdflags' => 'NSSNNSSNSN',
+                            'numlet' => '',
+                            'impdcto' => '0.0000',
+                            'impanticipos' => '0.0000',
+                            'registro' => date('Y-m-d H:i:s'),
+                            'tipo_canje' => '0',
+                            'numcanje' => '',
+                            'cobrobco' => 0,
+                            'ctabco' => '',
+                            'flg_qcont' => '',
+                            'fec_anul' => '0000-00-00',
+                            'audit' => '2',
+                            'origen' => '',
+                            'tip_cont' => '',
+                            'tip_fact' => '',
+                            'contrato' => '',
+                            'idcontrato' => '',
+                            'canje_fact' => 0,
+                            'aceptado' => 0,
+                            'reg_conta' => '0',
+                            'mov_pago' => '',
+                            'ndocu1' => '',
+                            'ndocu2' => '',
+                            'ndocu3' => $oc->id_orden_compra,
+                            'flg_logis' => 0,
+                            'cod_recep' => '',
+                            'flg_aprueba' => 0,
+                            'fec_aprueba' => '0000-00-00 00:00:00.000000',
+                            'flg_limite' => 0,
+                            'fecpago' => '0000-00-00',
+                            'imp_comi' => '0.00',
+                            'ptosbonus' => '0',
+                            'canjepedtran' => 0,
+                            'cod_clasi' => '',
+                            'doc_elec' => '',
+                            'cod_nota' => '',
+                            'hashcpe' => '',
+                            'flg_sunat_acep' => 0,
+                            'flg_sunat_anul' => 0,
+                            'flg_sunat_mail' => 0,
+                            'flg_sunat_webs' => 0,
+                            'mov_id_baja' => '',
+                            'mov_id_resu_bv' => '',
+                            'mov_id_resu_ci' => '',
+                            'flg_guia_traslado' => 0,
+                            'flg_anticipo_doc' => 0,
+                            'flg_anticipo_reg' => 0,
+                            'doc_anticipo_id' => '',
+                            'flg_emi_itinerante' => 0,
+                            'placa' => ''
                         ]
                     );
+
+                    $detalles = DB::table('logistica.log_det_ord_compra')
+                        ->select(
+                            'log_det_ord_compra.*',
+                            'alm_prod.part_number',
+                            'alm_prod.descripcion',
+                            'alm_und_medida.abreviatura',
+                            'alm_cat_prod.descripcion as categoria',
+                            'alm_subcat.descripcion as subcategoria',
+                            'alm_clasif.descripcion as clasificacion',
+                            'log_ord_compra.id_moneda',
+                            'alm_prod.series',
+                            'alm_prod.notas'
+                        )
+                        ->join('logistica.log_ord_compra', 'log_ord_compra.id_orden_compra', '=', 'log_det_ord_compra.id_orden_compra')
+                        ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'log_det_ord_compra.id_producto')
+                        ->join('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
+                        ->join('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
+                        ->join('almacen.alm_clasif', 'alm_clasif.id_clasificacion', '=', 'alm_prod.id_clasif')
+                        ->join('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
+                        ->where('log_det_ord_compra.id_orden_compra', $id_orden_compra)
+                        ->get();
+
+                    $i = 0;
+
+                    foreach ($detalles as $det) {
+                        $i++;
+                        //cuenta los registros
+                        $count_det = DB::connection('soft')->table('detmov')->count();
+                        //aumenta uno y completa los 10 digitos
+                        $mov_det_id = $this->leftZero(10, (intval($count_det) + 1));
+                        //Obtiene y/o crea el producto
+                        $cod_prod = $this->obtenerProducto($det);
+
+                        DB::connection('soft')->table('detmov')->insert(
+                            [
+                                'unico' => $mov_det_id,
+                                'mov_id' => $mov_id,
+                                'tipo' => '1', //Compra 
+                                'cod_docu' => $cod_docu,
+                                'num_docu' => $num_docu,
+                                'fec_pedi' => $fecha,
+                                'cod_auxi' => trim($det->abreviatura),
+                                'cod_prod' => $cod_prod,
+                                'nom_prod' => $det->descripcion,
+                                'can_pedi' => $det->cantidad,
+                                'sal_pedi' => '0.0000',
+                                'can_devo' => $i, //numeracion del item 
+                                'pre_prod' => ($det->precio !== null ? $det->precio : 0),
+                                'dscto_condi' => '0.000',
+                                'dscto_categ' => '0.000',
+                                'pre_neto' => ($det->precio !== null ? ($det->precio * $det->cantidad) : 0),
+                                'igv_inclu' => '0',
+                                'cod_igv' => '',
+                                'impto1' => '18.00',
+                                'impto2' => '0.00',
+                                'imp_item' => ($det->precio !== null ? ($det->precio * $det->cantidad) : 0),
+                                'pre_gratis' => '0.0000',
+                                'descargo' => '*',
+                                'trecord' => '',
+                                'cod_model' => '',
+                                'flg_serie' => '1',
+                                'series' => '',
+                                'entrega' => '0',
+                                'notas' => '',
+                                'flg_percep' => '0',
+                                'por_percep' => '0.000',
+                                'mon_percep' => '0.000',
+                                'ok_stk' => '1',
+                                'ok_serie' => ($det->series ? '1' : '0'),
+                                'lStock' => '0',
+                                'no_calc' => '0',
+                                'promo' => '1',
+                                'seriesprod' => '',
+                                'pre_anexa' => '0.0000',
+                                'dsctocompra' => '0.000',
+                                'cod_prov' => '',
+                                'costo_unit' => '0.000000',
+                                'margen' => '0.00',
+                                'gasto1' => '0.00',
+                                'gasto2' => '0.00',
+                                'flg_detrac' => '0',
+                                'por_detrac' => '0.000',
+                                'cod_detrac' => '',
+                                'mon_detrac' => '0.0000',
+                                'tipoprecio' => '8'
+                            ]
+                        );
+                    }
+
+                    $soc = DB::connection('soft')->table('movimien')->where('mov_id', $mov_id)->first();
+                    $sdet = DB::connection('soft')->table('detmov')->where('mov_id', $mov_id)->get();
+
+                    //Actualiza la oc softlink
+                    DB::table('logistica.log_ord_compra')
+                        ->where('id_orden_compra', $id_orden_compra)
+                        ->update(['codigo_softlink' => $soc->cod_docu . $soc->num_docu]);
+
+                    $arrayRspta = array(
+                        'tipo' => 'success',
+                        'mensaje' => 'Se migró correctamente la OC Nro. ' . $cod_docu . $num_docu . ' con id ' . $mov_id,
+                        'ocSoftlink' => array('cabecera' => $soc, 'detalle' => $sdet),
+                        'ocAgile' => array('cabecera' => $oc, 'detalle' => $detalles),
+                    );
                 }
+            } else {
+                $arrayRspta = array(
+                    'tipo' => 'warning',
+                    'mensaje' => 'No existe la OC seleccionada. Id: ' . $id_orden_compra
+                );
             }
 
             DB::commit();
             // return response()->json($msj);
-            return response()->json(array('tipo' => 'success', 'mensaje' => 'Se migró correctamente. La OC ' . $yy . '-' . $nro_mov . ' con id ' . $mov_id), 200);
+            return response()->json($arrayRspta, 200);
         } catch (\PDOException $e) {
             DB::rollBack();
             return response()->json(array('tipo' => 'error', 'mensaje' => 'Hubo un problema al enviar la orden. Por favor intente de nuevo', 'error' => $e->getMessage()), 200);
@@ -521,7 +567,7 @@ class MigrateOrdenSoftLinkController extends Controller
 
             DB::connection('soft')->table('auxiliar')->insert(
                 [
-                    'tip_auxi' => 'C',
+                    'tip_auxi' => 'P',
                     'cod_auxi' => $cod_auxi,
                     'nom_auxi' => $razon_social,
                     'nom_contac' => '',

@@ -1831,7 +1831,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 	Route::get('generarDespachoInternoMgcp/{id}', 'Logistica\Distribucion\OrdenesTransformacionController@generarDespachoInternoMgcp');
 	Route::get('soft_tipos_cambio', 'Migraciones\MigrateRequerimientoSoftLinkController@soft_tipos_cambio');
-	Route::get('migrar_orden_compra/{id}', 'Migraciones\MigrateOrdenSoftLinkController@migrar_orden_compra');
+	Route::get('migrarOrdenCompra/{id}', 'Migraciones\MigrateOrdenSoftLinkController@migrarOrdenCompra');
 	Route::get('validaNegativosHistoricoKardex/{idp}/{ida}/{an}', 'Almacen\Movimiento\ValidaMovimientosController@validaNegativosHistoricoKardex');
 	Route::get('documentos_ver/{id}', 'OrdenesPendientesController@documentos_ver');
 
