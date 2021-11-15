@@ -16,6 +16,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ListOrdenesHeadExport;
 use App\Exports\ReporteOrdenesCompraExcel;
 use App\Exports\ReporteTransitoOrdenesCompraExcel;
+use App\Helpers\CuadroPresupuestoHelper;
 use App\Models\Administracion\Empresa;
 use App\Models\Administracion\Estado;
 use App\Models\Almacen\DetalleRequerimiento;
@@ -2962,67 +2963,7 @@ class OrdenController extends Controller
         return $nuevoEstadoCabeceraRequerimiento;
     }
 
-    function finalizarCuadroPresupuesto($listaRequerimientosParaFinalizar){
-        $listaFinalizados= [];
-        $listaRestablecidos=[];
 
-        foreach ($listaRequerimientosParaFinalizar as $idReq) {
-            $requerimiento =Requerimiento::find($idReq);
-            $detalleRequerimiento =DetalleRequerimiento::where('id_requerimiento',$idReq)->get();
-
-            if($detalleRequerimiento && count($detalleRequerimiento)>0){
-
-                foreach ($detalleRequerimiento as $dr) {
-
-                    if($dr->estado == 28 || $dr->estado == 5){
-                        if($dr->id_cc_am_filas>0){
-                            $ccAmFilas= CcAmFila::find($dr->id_cc_am_filas);
-                            $ccAmFilas->comprado= true;
-                            $ccAmFilas->save();
-                        }
-                    }else{
-                        if($dr->id_cc_am_filas>0){
-                            $ccAmFilas= CcAmFila::find($dr->id_cc_am_filas);
-                            $ccAmFilas->comprado= false;
-                            $ccAmFilas->save();
-                        }
-                    }
-                }
-            }
-
-            if($requerimiento->id_cc >0){
-
-                $cuadroPresupuesto = CuadroCosto::find($requerimiento->id_cc)->with('oportunidad')->first();
-
-                if($cuadroPresupuesto && $cuadroPresupuesto->id >0 && $cuadroPresupuesto->estado_aprobacion !=5){
-                    $cc=CuadroCosto::find($requerimiento->id_cc);
-
-                    if($requerimiento->estado== 28 || $requerimiento->estado== 5){
-                        $cc->estado_aprobacion =4;
-                        $cc->save();
-                        $listaFinalizados[]=[
-                            'id_requerimiento'=>$requerimiento->id_requerimiento,
-                            'codigo_requerimiento'=>$requerimiento->codigo,
-                            'codigo_cuadro_presupuesto'=>$cuadroPresupuesto->oportunidad->codigo_oportunidad
-                        ];
-                    }else{ // si el requerimiento no esta atentido total o reserva total 
-                        if($cc->estado_aprobacion ==4){ // verifica si el estado actual del cc es finalizado cuando el requerimiento no esta atentido 
-                            $cc->estado_aprobacion =3;
-                            $cc->save(); 
-                            $listaRestablecidos[]=[
-                                'id_requerimiento'=>$requerimiento->id_requerimiento,
-                                'codigo_requerimiento'=>$requerimiento->codigo,
-                                'codigo_cuadro_presupuesto'=>$cuadroPresupuesto->oportunidad->codigo_oportunidad
-                            ];
-                        }
-                    }
-                }
-
-            }
-        }
-
-        return ['lista_finalizados'=>$listaFinalizados,'lista_restablecidos'=>$listaRestablecidos];
-    }
 
 
     function actualizarNuevoEstadoRequerimiento($idOrden,$codigo){
@@ -3068,10 +3009,19 @@ class OrdenController extends Controller
                 ); 
             }
         }
-        $finalizadosORestablecido= $this->finalizarCuadroPresupuesto($idRequerimientoList);
+        $finalizadosORestablecido = CuadroPresupuestoHelper::finalizar($idRequerimientoList);
+
 
         return ['lista_estado_requerimiento'=>$nuevoEstadoCabeceraRequerimiento,'lista_finalizados'=>$finalizadosORestablecido['lista_finalizados'],'lista_restablecidos'=>$finalizadosORestablecido['lista_restablecidos']];
 
+
+    }
+
+
+    public function enviarCorreoPrueba(){
+        $prueba = CuadroPresupuestoHelper::enviar_correo_prueba();
+
+        return $prueba;
 
     }
 
@@ -3534,7 +3484,7 @@ class OrdenController extends Controller
                     }
                     $status = 200;
                     $msj[]='se restableció el estado del requerimiento';
-                    $finalizadosORestablecido= $this->finalizarCuadroPresupuesto($id_requerimiento_list);
+                    $finalizadosORestablecido = CuadroPresupuestoHelper::finalizar($id_requerimiento_list);
                     if($finalizadosORestablecido['lista_restablecido']  && count($finalizadosORestablecido['lista_restablecido'])>0){
                         foreach ($finalizadosORestablecido['lista_restablecido'] as $lr) {
                             

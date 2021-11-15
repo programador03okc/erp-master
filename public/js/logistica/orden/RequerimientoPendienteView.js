@@ -98,7 +98,7 @@ class RequerimientoPendienteView {
             $('#cod_requerimiento').text(codigo);
             listarItemsRequerimientoMapeo(id_requerimiento);
 
-            $('#submit_mapeoItemsRequerimiento').removeAttr('disabled');       
+            $('#submit_mapeoItemsRequerimiento').removeAttr('disabled');
         });
 
         $('#listaItemsRequerimientoParaAtenderConAlmacen tbody').on("click", "button.handleClickAbrirModalNuevaReserva", (e) => {
@@ -159,22 +159,22 @@ class RequerimientoPendienteView {
             var index = $.inArray(rowId, reqTrueList);
 
 
-            if(idEstadoRequerimiento ==38){
+            if (idEstadoRequerimiento == 38) {
                 this.checked = false;
                 Swal.fire(
                     '',
                     'No puede generar una orden si el requerimiento esta por regularizar',
                     'warning'
-                ); 
+                );
             }
-                if (cantidadMapeados == 0) {
-                    this.checked = false;
-                    Swal.fire(
-                        '',
-                        'No puede generar una orden si tiene aun productos sin mapear',
-                        'warning'
-                    );
-                }
+            if (cantidadMapeados == 0) {
+                this.checked = false;
+                Swal.fire(
+                    '',
+                    'No puede generar una orden si tiene aun productos sin mapear',
+                    'warning'
+                );
+            }
 
             // If checkbox is checked and row ID is not in list of selected row IDs
             if (this.checked && index === -1) {
@@ -189,16 +189,16 @@ class RequerimientoPendienteView {
                 $row.addClass('selected');
                 document.getElementById('btnCrearOrdenCompra').removeAttribute('disabled');
 
-                
+
             } else {
                 $row.removeClass('selected');
-                document.getElementById('btnCrearOrdenCompra').setAttribute('disabled',true);
+                document.getElementById('btnCrearOrdenCompra').setAttribute('disabled', true);
 
             }
- 
 
 
-             e.stopPropagation();
+
+            e.stopPropagation();
         });
     }
 
@@ -1504,25 +1504,25 @@ class RequerimientoPendienteView {
                             );
                         }
 
-                            if(response.lista_finalizados.length > 0){
-                                (response.lista_finalizados).forEach(element => {
-                                    Swal.fire({
-                                        title: '',
-                                        html: `Se finalizó el cuadro de presupuesto ${element.codigo_cuadro_presupuesto} del requerimiento ${element.codigo_requerimiento}`,
-                                        icon: 'info'
-                                    });
+                        if (response.lista_finalizados.length > 0) {
+                            (response.lista_finalizados).forEach(element => {
+                                Swal.fire({
+                                    title: '',
+                                    html: `Se finalizó el cuadro de presupuesto ${element.codigo_cuadro_presupuesto} del requerimiento ${element.codigo_requerimiento}`,
+                                    icon: 'info'
                                 });
-                            }
+                            });
+                        }
 
-                            if(response.lista_restablecidos.length > 0){
-                                (response.lista_restablecidos).forEach(element => {
-                                    Swal.fire({
-                                        title: '',
-                                        html: `Se restableció el cuadro de presupuesto ${element.codigo_cuadro_presupuesto} del requerimiento ${element.codigo_requerimiento}`,
-                                        icon: 'info'
-                                    });
+                        if (response.lista_restablecidos.length > 0) {
+                            (response.lista_restablecidos).forEach(element => {
+                                Swal.fire({
+                                    title: '',
+                                    html: `Se restableció el cuadro de presupuesto ${element.codigo_cuadro_presupuesto} del requerimiento ${element.codigo_requerimiento}`,
+                                    icon: 'info'
                                 });
-                            }
+                            });
+                        }
 
                     },
                     fail: (jqXHR, textStatus, errorThrown) => {
@@ -1563,40 +1563,36 @@ class RequerimientoPendienteView {
                     url: 'obtener-stock-almacen',
                     data: { 'idAlmacen': obj.value, 'idProducto': idProducto },
                     dataType: 'JSON',
-                    success: (response) => {
+                }).done((response) => {
+                    Swal.fire({
+                        title: 'Información de Stock',
+                        html: `
+                            <h5 style="font-weight: bold; color:#356ed5;">Stock total en almacén: ${response.stock} </h5>
+                            <h5 style="font-weight: bold; color:#d535c1;">Reservas activas: ${response.reservas} </h5>
+                            <h5 style="font-weight: bold; color:#d535c1;">Saldo disponible: ${response.saldo} </h5>
+                        `,
+                        showDenyButton: false,
+                        showCancelButton: false,
+                        confirmButtonText: 'Ok',
+                        cancelButtonText: 'Cancelar',
+                        stopKeydownPropagation: true,
+                    }).then((result) => {
+                        /* Read more about isConfirmed, isDenied below */
+                        // if (!result.isConfirmed) {
+                        //     document.getElementsByName("cantidadReserva")[0].value='';
+                        // }else{
 
-
-                        Swal.fire({
-                            title: 'Información de Stock',
-                            html: `
-                                <h5 style="font-weight: bold; color:#356ed5;">Stock total en almacén: ${response.stock} </h5>
-                                <h5 style="font-weight: bold; color:#d535c1;">Reservas activas: ${response.reservas} </h5>
-                                <h5 style="font-weight: bold; color:#d535c1;">Saldo disponible: ${response.saldo} </h5>
-                            `,
-                            showDenyButton: false,
-                            showCancelButton: false,
-                            confirmButtonText: 'Ok',
-                            cancelButtonText: 'Cancelar',
-                            stopKeydownPropagation: true,
-                        }).then((result) => {
-                            /* Read more about isConfirmed, isDenied below */
-                            // if (!result.isConfirmed) {
-                            //     document.getElementsByName("cantidadReserva")[0].value='';
-                            // }else{
-
-                            // }
-                        })
-                    },
-                    fail: (jqXHR, textStatus, errorThrown) => {
-                        Swal.fire(
-                            '',
-                            'Lo sentimos hubo un error en el servidor al intentar consultar el stock del almacén seleccionado, por favor vuelva a intentarlo',
-                            'error'
-                        );
-                        console.log(jqXHR);
-                        console.log(textStatus);
-                        console.log(errorThrown);
-                    }
+                        // }
+                    })
+                }).fail((jqXHR, textStatus, errorThrown) => {
+                    Swal.fire(
+                        '',
+                        'Lo sentimos hubo un error en el servidor al intentar consultar el stock del almacén seleccionado, por favor vuelva a intentarlo',
+                        'error'
+                    );
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
                 });
             }
 
@@ -1655,16 +1651,16 @@ class RequerimientoPendienteView {
                         }
 
                         // finalidados
-                        if(response.lista_finalizados.length > 0){
+                        if (response.lista_finalizados.length > 0) {
                             response.lista_finalizados.forEach(element => {
                                 Swal.fire({
                                     title: '',
-                                    html: `SE finalizó el cuadro de presupuesto ${element.codigo_cuadro_presupuesto} del requerimiento ${element.codigo_requerimiento}`,
+                                    html: `Se finalizó el cuadro de presupuesto ${element.codigo_cuadro_presupuesto} del requerimiento ${element.codigo_requerimiento}`,
                                     icon: 'info'
                                 });
                             });
                         }
-                        
+
 
                     } else {
                         $('#modal-nueva-reserva .modal-content').LoadingOverlay("hide", true);

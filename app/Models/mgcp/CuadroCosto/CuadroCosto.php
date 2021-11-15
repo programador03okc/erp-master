@@ -7,6 +7,7 @@ use App\Models\mgcp\Oportunidad\Oportunidad;
 use App\Models\mgcp\CuadroCosto\Responsable;
 use App\Models\mgcp\CuadroCosto\EstadoAprobacion;
 use App\Helpers\mgcp\CuadroCosto\CuadroCostoHelper;
+use App\Models\Comercial\CuadroCosto\CcAmFila;
 use App\Models\Presupuestos\CentroCostoNivelView;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

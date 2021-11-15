@@ -783,6 +783,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('finalizar-regularizacion-de-requerimiento', 'ComprasPendientesController@finalizarRegularizacionRequerimiento')->name('finalizar-regularizacion-de-requerimiento');
 					
 					Route::get('finalizar-cuadro/{id}', 'OrdenController@finalizarCuadroPresupuesto');
+					Route::get('enviar_correo_prueba', 'OrdenController@enviarCorreoPrueba'); //BORRAR ESTO ES UNA PRUEBA
 				});
 
 				Route::group(['as' => 'ordenes.', 'prefix' => 'ordenes'], function () {

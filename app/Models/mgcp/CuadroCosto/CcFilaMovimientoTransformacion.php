@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class CcFilaMovimientoTransformacion extends Model
 {
-    use HasFactory;
+    // use HasFactory;
     protected $table = 'mgcp_cuadro_costos.cc_fila_movimientos_transformacion';
     public $timestamps = false;
 
