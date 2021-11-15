@@ -2,6 +2,7 @@
 
 namespace App\Models\Almacen;
 
+use App\Helpers\CuadroPresupuestoHelper;
 use App\Http\Controllers\OrdenController;
 use App\Models\Administracion\Estado;
 use App\Models\Configuracion\Usuario;
@@ -346,7 +347,7 @@ class Requerimiento extends Model
                 }
             }
 
-            $finalizadosORestablecido=(new OrdenController)->finalizarCuadroPresupuesto($id_requerimiento_unique_list);
+            $finalizadosORestablecido = CuadroPresupuestoHelper::finalizar($id_requerimiento_unique_list);
 
         }
         return ['estado_actual'=>$estadoActual,'lista_finalizados'=>$finalizadosORestablecido['lista_finalizados'],'lista_restablecidos'=>$finalizadosORestablecido['lista_restablecidos']];
