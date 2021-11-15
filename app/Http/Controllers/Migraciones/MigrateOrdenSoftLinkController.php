@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Migraciones;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class MigrateOrdenSoftLinkController extends Controller
@@ -118,7 +119,7 @@ class MigrateOrdenSoftLinkController extends Controller
                     $fecha = date('Y-m-d');
                     //obtiene el año a 2 digitos y le aumenta 2 ceros adelante
                     $yy = $this->leftZero(4, intval(date('y', strtotime($fecha))));
-                    //busca segun oc de lima, las oc de ilo inician con P=>P021
+                    //obtiene el ultimo registro
                     $ult_mov = DB::connection('soft')->table('movimien')
                         ->where([
                             ['num_docu', '>', $yy . '0000000'],
@@ -129,7 +130,7 @@ class MigrateOrdenSoftLinkController extends Controller
                             // ['cod_alma', '=', $oc->codigo_almacen]
                         ])
                         ->orderBy('num_docu', 'desc')->first();
-
+                    //obtiene el correlativo
                     $num_ult_mov = substr($ult_mov->num_docu, 4);
 
                     //crea el correlativo del documento
@@ -142,6 +143,11 @@ class MigrateOrdenSoftLinkController extends Controller
                     $fecha = date("Y-m-d", strtotime($oc->fecha));
                     // return response()->json(['oc' => $oc, 'cod_suc' => $cod_suc, 'cod_auxi' => $cod_auxi]);
 
+                    //obtiene el tipo de cambio
+                    $tp_cambio = DB::connection('soft')->table('tcambio')
+                        ->where([['dfecha', '<=', (new Carbon($oc->fecha))->format('Y-m-d')]])
+                        ->orderBy('dfecha', 'desc')
+                        ->first();
 
                     DB::connection('soft')->table('movimien')->insert(
                         [
@@ -183,7 +189,7 @@ class MigrateOrdenSoftLinkController extends Controller
                             'cod_user' => $oc->codvend_softlink,
                             'programa' => '',
                             'txt_nota' => '',
-                            'tip_cambio' => '0.000', //Revisar
+                            'tip_cambio' => $tp_cambio->cambio3, //tipo cambio venta
                             'tdflags' => 'NSSNNSSNSS',
                             'numlet' => '',
                             'impdcto' => '0.0000',
@@ -308,7 +314,7 @@ class MigrateOrdenSoftLinkController extends Controller
                                 'ok_serie' => ($det->series ? '1' : '0'),
                                 'lStock' => '0',
                                 'no_calc' => '0',
-                                'promo' => '1',
+                                'promo' => '0',
                                 'seriesprod' => '',
                                 'pre_anexa' => '0.0000',
                                 'dsctocompra' => '0.000',
@@ -321,7 +327,7 @@ class MigrateOrdenSoftLinkController extends Controller
                                 'por_detrac' => '0.000',
                                 'cod_detrac' => '',
                                 'mon_detrac' => '0.0000',
-                                'tipoprecio' => '8'
+                                'tipoprecio' => '6'
                             ]
                         );
                     }
