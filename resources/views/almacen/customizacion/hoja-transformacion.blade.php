@@ -117,8 +117,8 @@ $ordenCompra = $oportunidad->ordenCompraPropia;
         padding-bottom: 5px;
         border-bottom: 1px solid black;
         border-top: 1px solid black;
-        font-size: 22px;margin:0px; padding:0px;">Orden de Transformación</h4>
-    <h4 class="text-center" style="margin:0px; padding:0px;">{{$codigo}}</h4>
+        font-size: 22px;margin:0px; padding:0px;">{{is_null($codigo) ? 'Orden de Servicio' : 'Orden de Transformación'}}</h4>
+    <h4 class="text-center" style="margin:0px; padding:0px;">{{is_null($codigo) ? '' : $codigo}}</h4>
 
     <div class="seccion-hoja">
         <h4 style="font-size: 14px;">Detalles del cuadro</h4>

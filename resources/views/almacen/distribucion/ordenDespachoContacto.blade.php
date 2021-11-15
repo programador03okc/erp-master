@@ -4,7 +4,7 @@
             <form id="form-orden_despacho_contacto">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
-                    <h3 class="modal-title">Datos de Contacto <label id="codigo_req" ></label> <span class="label limpiar" id="enviado"></span></h3>
+                    <h4 class="modal-title">Datos de Contacto <label id="codigo_req" ></label> <span class="label limpiar" id="enviado"></span></h4>
                 </div>
                 <div class="modal-body">
                     <input type="text" class="oculto" name="id_requerimiento">
@@ -14,7 +14,7 @@
                     
                     <fieldset class="group-table" id="fieldsetDetallesEntidad">
                         
-                        <h5 style="display:flex;justify-content: space-between;">Datos de la Entidad / Cliente
+                        <h5 style="display:flex;justify-content: space-between;"><strong>Datos de la Entidad / Cliente</strong>
                             {{-- <div>
                                 <span class="label limpiar" id="enviado"></span>
                             </div> --}}

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class CcFilaMovimientoTransformacion extends Model
 {
-    use HasFactory;
+    // use HasFactory;
     protected $table = 'mgcp_cuadro_costos.cc_fila_movimientos_transformacion';
     public $timestamps = false;
 
@@ -33,6 +33,6 @@ class CcFilaMovimientoTransformacion extends Model
 
     public function filaCuadro()
     {
-        return $this->hasOne(CcAmFila::class,'id','id_fila_ingresa');
+        return $this->hasOne(CcAmFila::class, 'id', 'id_fila_ingresa');
     }
 }
