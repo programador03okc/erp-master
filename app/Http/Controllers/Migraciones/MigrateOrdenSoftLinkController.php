@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 
 class MigrateOrdenSoftLinkController extends Controller
 {
-    public function correlativo()
+    /*public function correlativo()//generarCorre
     {
         $num = DB::connection('soft')->table('movimien')
             ->where([
@@ -26,7 +26,8 @@ class MigrateOrdenSoftLinkController extends Controller
         $nro_mov = $this->leftZero(7, (intval($num_ult_mov) + 1));
 
         return $nro_mov;
-    }
+    }*/
+
     public function migrarOrdenCompra($id_orden_compra)
     {
         try {
@@ -88,6 +89,8 @@ class MigrateOrdenSoftLinkController extends Controller
                         ->update(['codigo_softlink' => $oc_exist->cod_docu . $oc_exist->num_docu]);
                 } else {
 
+                    //igv por defecto
+                    $igv = 18.00;
                     //persona juridica x defecto
                     $doc_tipo = ($oc->id_tipo_contribuyente !== null
                         ? ($oc->id_tipo_contribuyente <= 2 ? 2 : 1)
@@ -116,7 +119,7 @@ class MigrateOrdenSoftLinkController extends Controller
                     $count = DB::connection('soft')->table('movimien')->count();
                     //codificar segun criterio x documento
                     $mov_id = $this->leftZero(10, (intval($count) + 1));
-                    $fecha = date('Y-m-d');
+                    $fecha = date('Y-m-d'); //Carbon::now()
                     //obtiene el año a 2 digitos y le aumenta 2 ceros adelante
                     $yy = $this->leftZero(4, intval(date('y', strtotime($fecha))));
                     //obtiene el ultimo registro
@@ -138,14 +141,13 @@ class MigrateOrdenSoftLinkController extends Controller
                     //anida el numero de documento
                     $num_docu = $yy . $nro_mov;
 
-                    $mon_impto = (floatval($oc->total_precio) * 0.18);
+                    $mon_impto = (floatval($oc->total_precio) * ($igv / 100)); //Calcular IGV
 
                     $fecha = date("Y-m-d", strtotime($oc->fecha));
-                    // return response()->json(['oc' => $oc, 'cod_suc' => $cod_suc, 'cod_auxi' => $cod_auxi]);
 
                     //obtiene el tipo de cambio
                     $tp_cambio = DB::connection('soft')->table('tcambio')
-                        ->where([['dfecha', '<=', (new Carbon($oc->fecha))->format('Y-m-d')]])
+                        ->where([['dfecha', '<=', new Carbon($oc->fecha)]])
                         ->orderBy('dfecha', 'desc')
                         ->first();
 
@@ -167,7 +169,7 @@ class MigrateOrdenSoftLinkController extends Controller
                             'cod_trans' => '00000',
                             'cod_vend' => $oc->codvend_softlink,
                             'tip_mone' => $oc->id_moneda,
-                            'impto1' => '18.00',
+                            'impto1' => $igv,
                             'impto2' => '0.00',
                             'mon_bruto' => $oc->total_precio,
                             'mon_impto1' => $mon_impto,
@@ -194,7 +196,7 @@ class MigrateOrdenSoftLinkController extends Controller
                             'numlet' => '',
                             'impdcto' => '0.0000',
                             'impanticipos' => '0.0000',
-                            'registro' => date('Y-m-d H:i:s'),
+                            'registro' => new Carbon(), //date('Y-m-d H:i:s'),
                             'tipo_canje' => '0',
                             'numcanje' => '',
                             'cobrobco' => 0,
@@ -296,7 +298,7 @@ class MigrateOrdenSoftLinkController extends Controller
                                 'pre_neto' => ($det->precio !== null ? ($det->precio * $det->cantidad) : 0),
                                 'igv_inclu' => '0',
                                 'cod_igv' => '',
-                                'impto1' => '18.00',
+                                'impto1' => $igv,
                                 'impto2' => '0.00',
                                 'imp_item' => ($det->precio !== null ? ($det->precio * $det->cantidad) : 0),
                                 'pre_gratis' => '0.0000',
@@ -338,7 +340,10 @@ class MigrateOrdenSoftLinkController extends Controller
                     //Actualiza la oc softlink
                     DB::table('logistica.log_ord_compra')
                         ->where('id_orden_compra', $id_orden_compra)
-                        ->update(['codigo_softlink' => $soc->cod_docu . $soc->num_docu]);
+                        ->update(
+                            ['codigo_softlink' => $yy . '-' . $nro_mov],
+                            ['id_softlink' => $mov_id]
+                        );
 
                     $arrayRspta = array(
                         'tipo' => 'success',
@@ -359,7 +364,7 @@ class MigrateOrdenSoftLinkController extends Controller
             return response()->json($arrayRspta, 200);
         } catch (\PDOException $e) {
             DB::rollBack();
-            return response()->json(array('tipo' => 'error', 'mensaje' => 'Hubo un problema al enviar la orden. Por favor intente de nuevo', 'error' => $e->getMessage()), 200);
+            return response()->json(array('tipo' => 'error', 'mensaje' => 'Hubo un problema al enviar la orden. Por favor intente de nuevo', 'error' => $e->getMessage()));
         }
     }
 
@@ -367,15 +372,15 @@ class MigrateOrdenSoftLinkController extends Controller
     {
         //Verifica si esxiste el producto
         $prod = null;
-        if ($det->part_number !== null && $det->part_number !== '') {
+        if (!empty($det->part_number)) { //if ($det->part_number !== null && $det->part_number !== '') {
             $prod = DB::connection('soft')->table('sopprod')
                 ->select('cod_prod')
-                ->where('cod_espe', trim($det->part_number))
+                ->where('cod_espe', trim($det->part_number)) //agregar marca
                 ->first();
         } else if ($det->descripcion !== null && $det->descripcion !== '') {
             $prod = DB::connection('soft')->table('sopprod')
                 ->select('cod_prod')
-                ->where('nom_prod', trim($det->descripcion))
+                ->where('nom_prod', trim($det->descripcion)) //agregar marca
                 ->first();
         }
         $cod_prod = null;
@@ -392,105 +397,14 @@ class MigrateOrdenSoftLinkController extends Controller
                 ->first();
 
             $cod_prod = $this->leftZero(6, (intval($ultimo->cod_prod) + 1));
-            //verifica si tiene clasificacion
-            $clasif = DB::connection('soft')->table('soplinea')
-                ->select('cod_line')
-                ->where('nom_line', trim($det->clasificacion))
-                ->first();
 
-            $cod_clasi = null;
+            $cod_clasi = $this->obtenerClasificacion($det->clasificacion);
 
-            if ($clasif !== null) {
-                $cod_clasi = $clasif->cod_line;
-            } else {
-                $ultimo_line = DB::connection('soft')->table('soplinea')
-                    ->select('cod_line')->orderBy('cod_line', 'desc')->first();
+            $cod_cate = $this->obtenerCategoria($det->categoria);
 
-                $cod_clasi = $this->leftZero(2, (intval($ultimo_line->cod_line) + 1));
+            $cod_subc = $this->obtenerSubCategoria($det->subcategoria);
 
-                DB::connection('soft')->table('soplinea')->insert(
-                    [
-                        'cod_line' => $cod_clasi,
-                        'nom_line' => trim($det->clasificacion),
-                        'cod_sunat' => '',
-                        'cod_osce' => ''
-                    ]
-                );
-            }
-            //verifica si existe categoria
-            $cate = DB::connection('soft')->table('sopsub1')
-                ->select('cod_sub1')
-                ->where('nom_sub1', trim($det->categoria))
-                ->first();
-
-            $cod_cate = null;
-
-            if ($cate !== null) {
-                $cod_cate = $cate->cod_sub1;
-            } else {
-                $ultima_cate = DB::connection('soft')->table('sopsub1')
-                    ->select('cod_sub1')->orderBy('cod_sub1', 'desc')->first();
-
-                $cod_cate = $this->leftZero(3, (intval($ultima_cate->cod_sub1) + 1));
-
-                DB::connection('soft')->table('sopsub1')->insert(
-                    [
-                        'cod_sub1' => $cod_cate,
-                        'nom_sub1' => trim($det->categoria),
-                        'por_dcto' => '0.00',
-                        'num_corr' => '0'
-                    ]
-                );
-            }
-            //verifica si existe subcategoria
-            $subcate = DB::connection('soft')->table('sopsub2')
-                ->select('cod_sub2')
-                ->where('nom_sub2', trim($det->subcategoria))
-                ->first();
-
-            $cod_subc = null;
-
-            if ($subcate !== null) {
-                $cod_subc = $subcate->cod_sub2;
-            } else {
-                $ultima_subc = DB::connection('soft')->table('sopsub2')
-                    ->select('cod_sub2')->orderBy('cod_sub2', 'desc')->first();
-
-                $cod_subc = $this->leftZero(3, (intval($ultima_subc->cod_sub2) + 1));
-
-                DB::connection('soft')->table('sopsub2')->insert(
-                    [
-                        'cod_sub2' => $cod_subc,
-                        'nom_sub2' => trim($det->subcategoria),
-                        'por_adic' => '0.00',
-                        'cod_sub1' => '',
-                        'id_manufacturer' => '0'
-                    ]
-                );
-            }
-            //verifica si existe unidad medida
-            $unidad = DB::connection('soft')->table('unidades')
-                ->select('cod_unid')
-                ->where('nom_unid', trim($det->abreviatura))
-                ->first();
-
-            $cod_unid = null;
-
-            if ($unidad !== null) {
-                $cod_unid = $unidad->cod_unid;
-            } else {
-                $count_unid = DB::connection('soft')->table('unidades')->count();
-
-                $cod_unid = $this->leftZero(3, (intval($count_unid) + 1));
-
-                DB::connection('soft')->table('unidades')->insert(
-                    [
-                        'cod_unid' => $cod_unid,
-                        'nom_unid' => trim($det->abreviatura),
-                        'fac_unid' => '1'
-                    ]
-                );
-            }
+            $cod_unid = $this->obtenerUnidadMedida($det->abreviatura);
 
             DB::connection('soft')->table('sopprod')->insert(
                 [
@@ -563,6 +477,125 @@ class MigrateOrdenSoftLinkController extends Controller
             );
         }
         return $cod_prod;
+    }
+
+    public function obtenerClasificacion($clasificacion)
+    {
+        //verifica si tiene clasificacion
+        $clasif = DB::connection('soft')->table('soplinea')
+            ->select('cod_line')
+            ->where('nom_line', trim($clasificacion))
+            ->first();
+
+        $cod_clasi = null;
+
+        if ($clasif !== null) {
+            $cod_clasi = $clasif->cod_line;
+        } else {
+            $ultimo_line = DB::connection('soft')->table('soplinea')
+                ->select('cod_line')->orderBy('cod_line', 'desc')->first();
+
+            $cod_clasi = $this->leftZero(2, (intval($ultimo_line->cod_line) + 1));
+
+            DB::connection('soft')->table('soplinea')->insert(
+                [
+                    'cod_line' => $cod_clasi,
+                    'nom_line' => trim($clasificacion),
+                    'cod_sunat' => '',
+                    'cod_osce' => ''
+                ]
+            );
+        }
+        return $cod_clasi;
+    }
+
+    public function obtenerCategoria($categoria)
+    {
+        //verifica si existe categoria
+        $cate = DB::connection('soft')->table('sopsub1')
+            ->select('cod_sub1')
+            ->where('nom_sub1', trim($categoria))
+            ->first();
+
+        $cod_cate = null;
+
+        if ($cate !== null) {
+            $cod_cate = $cate->cod_sub1;
+        } else {
+            $ultima_cate = DB::connection('soft')->table('sopsub1')
+                ->select('cod_sub1')->orderBy('cod_sub1', 'desc')->first();
+
+            $cod_cate = $this->leftZero(3, (intval($ultima_cate->cod_sub1) + 1));
+
+            DB::connection('soft')->table('sopsub1')->insert(
+                [
+                    'cod_sub1' => $cod_cate,
+                    'nom_sub1' => trim($categoria),
+                    'por_dcto' => '0.00',
+                    'num_corr' => '0'
+                ]
+            );
+        }
+        return $cod_cate;
+    }
+
+    public function obtenerSubCategoria($subcategoria)
+    {
+        //verifica si existe subcategoria
+        $subcate = DB::connection('soft')->table('sopsub2')
+            ->select('cod_sub2')
+            ->where('nom_sub2', trim($subcategoria))
+            ->first();
+
+        $cod_subc = null;
+
+        if ($subcate !== null) {
+            $cod_subc = $subcate->cod_sub2;
+        } else {
+            $ultima_subc = DB::connection('soft')->table('sopsub2')
+                ->select('cod_sub2')->orderBy('cod_sub2', 'desc')->first();
+
+            $cod_subc = $this->leftZero(3, (intval($ultima_subc->cod_sub2) + 1));
+
+            DB::connection('soft')->table('sopsub2')->insert(
+                [
+                    'cod_sub2' => $cod_subc,
+                    'nom_sub2' => trim($subcategoria),
+                    'por_adic' => '0.00',
+                    'cod_sub1' => '',
+                    'id_manufacturer' => '0'
+                ]
+            );
+        }
+        return $cod_subc;
+    }
+
+    public function obtenerUnidadMedida($abreviatura)
+    {
+        //verifica si existe unidad medida
+        $unidad = DB::connection('soft')->table('unidades')
+            ->select('cod_unid')
+            ->where('nom_unid', trim($abreviatura))
+            ->first();
+
+        $cod_unid = null;
+
+        if ($unidad !== null) {
+            $cod_unid = $unidad->cod_unid;
+        } else {
+            $count_unid = DB::connection('soft')->table('unidades')->count();
+
+            $cod_unid = $this->leftZero(3, (intval($count_unid) + 1));
+
+            DB::connection('soft')->table('unidades')->insert(
+                [
+                    'cod_unid' => $cod_unid,
+                    'nom_unid' => trim($abreviatura),
+                    'fac_unid' => '1'
+                ]
+            );
+        }
+        return $cod_unid;
     }
 
     public function obtenerProveedor($nro_documento, $razon_social, $doc_tipo, $cod_di)
