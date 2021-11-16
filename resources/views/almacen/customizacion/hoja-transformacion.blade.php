@@ -107,7 +107,7 @@ $ordenCompra = $oportunidad->ordenCompraPropia;
     <table width="100%" style="margin-bottom: 0px">
         <tr>
             <td>
-                <img src="{{ $logo_empresa }}" height="50px">
+                <img src="{{ $logo_empresa??'' }}" height="50px">
             </td>
         </tr>
     </table>

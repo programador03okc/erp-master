@@ -2,13 +2,14 @@
 
 namespace App\Helpers;
 
-use App\Helpers\Almacen\TransformacionHelper;
-use App\Mail\EmailEstadoCuadroPresupuesto;
+use App\Mail\EmailFinalizacionCuadroPresupuesto;
+use App\Mail\EmailOrdenServicioOrdenTransformacion;
 use App\Models\Almacen\DetalleRequerimiento;
 use App\Models\Almacen\Requerimiento;
 use App\Models\Comercial\CuadroCosto\CcAmFila;
 use App\Models\Comercial\CuadroCosto\CuadroCosto;
 use App\Models\Configuracion\Usuario;
+use App\Models\mgcp\AcuerdoMarco\OrdenCompraPropia;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -55,11 +56,16 @@ class CuadroPresupuestoHelper
                         $cc = CuadroCosto::find($requerimiento->id_cc);
 
                         if ($requerimiento->estado == 28 || $requerimiento->estado == 5) {
-                            $cc->estado_aprobacion = 4;
+                            $cc->estado_aprobacion = 4;// finalizado
                             $cc->save();
+                            $ordenPropia= OrdenCompraPropia::where('id_oportunidad',$cc->id_oportunidad)->first();
+                            $ordenPropia->id_etapa= 2;// comprado 
+                            $ordenPropia->save();
+
                             $listaFinalizados[] = [
                                 'id_requerimiento' => $requerimiento->id_requerimiento,
                                 'codigo_requerimiento' => $requerimiento->codigo,
+                                'id_cuadro_presupuesto' => $cuadroPresupuesto->id,
                                 'codigo_cuadro_presupuesto' => $cuadroPresupuesto->oportunidad->codigo_oportunidad
                             ];
                         } else { // si el requerimiento no esta atentido total o reserva total 
@@ -69,6 +75,7 @@ class CuadroPresupuestoHelper
                                 $listaRestablecidos[] = [
                                     'id_requerimiento' => $requerimiento->id_requerimiento,
                                     'codigo_requerimiento' => $requerimiento->codigo,
+                                    'id_cuadro_presupuesto' => $cuadroPresupuesto->id,
                                     'codigo_cuadro_presupuesto' => $cuadroPresupuesto->oportunidad->codigo_oportunidad
                                 ];
                             }
@@ -103,7 +110,8 @@ class CuadroPresupuestoHelper
                                     $correos[] = Usuario::find($id)->email;
                                 }
                             }
-                            Mail::to(['programador03@okcomputer.com.pe'])->send(new EmailEstadoCuadroPresupuesto($listaFinalizados, $listaRestablecidos));
+                            Mail::to(['programador03@okcomputer.com.pe'])->send(new EmailFinalizacionCuadroPresupuesto($listaFinalizados, $listaRestablecidos));
+                            Mail::to(['programador03@okcomputer.com.pe'])->send(new EmailOrdenServicioOrdenTransformacion($listaFinalizados, $listaRestablecidos));
 
                         }
                         // fin preparar correo
@@ -125,12 +133,15 @@ class CuadroPresupuestoHelper
 
         $listaFinalizados[]=[
             'codigo_cuadro_presupuesto'=> "OKC2011021",
+            'id_cuadro_presupuesto'=> 3643,
             'codigo_requerimiento'=> "RM-211283",
             'id_requerimiento'=> 1368
 
         ];
         
-        Mail::to(['programador03@okcomputer.com.pe'])->send(new EmailEstadoCuadroPresupuesto($listaFinalizados, []));
+        // Mail::to(['programador03@okcomputer.com.pe'])->send(new EmailFinalizacionCuadroPresupuesto($listaFinalizados, []));
+        Mail::to(['programador03@okcomputer.com.pe'])->send(new EmailOrdenServicioOrdenTransformacion($listaFinalizados, []));
+
         // foreach ($archivosHT as $archivo) {
         //     unlink($archivo);
         // }
