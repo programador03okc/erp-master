@@ -6,12 +6,19 @@ function openAgenciaTransporte(data) {
     $("[name=id_od]").val(data.id_od);
     $("[name=con_id_requerimiento]").val(data.id_req);
     $("[name=tr_id_transportista]").val(data.id_transportista !== null ? data.id_transportista : '');
+
     $("[name=tr_razon_social]").val(data.transportista_razon_social !== null ? data.transportista_razon_social : '');
     $("[name=serie]").val(data.serie_tra !== null ? data.serie_tra : '');
     $("[name=numero]").val(data.numero_tra !== null ? data.numero_tra : '');
-    // $('[name=fecha_transportista]').val('');
-    $("[name=codigo_envio]").val(data.codigo_envio !== null ? data.codigo_envio : '');
+    $("[name=fecha_transportista]").val(data.fecha_transportista !== null ? data.fecha_transportista : '');
     $("[name=importe_flete]").val(data.importe_flete !== null ? data.importe_flete : '');
+    $("[name=codigo_envio]").val(data.codigo_envio !== null ? data.codigo_envio : '');
+
+    if (data.credito) {
+        $('[name=credito]').prop('checked', true);
+    } else {
+        $('[name=credito]').prop('checked', false);
+    }
     $("#submit_od_transportista").removeAttr("disabled");
 }
 
@@ -19,12 +26,20 @@ $("#form-orden_despacho_transportista").on("submit", function (e) {
     e.preventDefault();
     var data = $(this).serialize();
     console.log(data);
-    $('#submit_od_transportista').attr('disabled', 'true');
-    despacho_transportista(data);
-    $('#modal-orden_despacho_transportista').modal('hide');
+    let tr = $('[name=tr_id_transportista]').val();
+
+    if (tr == '') {
+        Swal.fire({
+            title: "Es necesario que seleccione por lo menos un transportista",
+            icon: "error",
+        });
+    } else {
+        despacho_transportista(data);
+    }
 });
 
 function despacho_transportista(data) {
+    $('#submit_od_transportista').attr('disabled', 'true');
     $.ajax({
         type: 'POST',
         url: 'despacho_transportista',
@@ -34,6 +49,7 @@ function despacho_transportista(data) {
             console.log(response);
             if (response > 0) {
                 $("#requerimientosEnProceso").DataTable().ajax.reload(null, false);
+                $('#modal-orden_despacho_transportista').modal('hide');
                 Lobibox.notify("success", {
                     title: false,
                     size: "mini",
@@ -50,12 +66,21 @@ function despacho_transportista(data) {
         console.log(errorThrown);
     });
 }
+
+function cerrarDespachoTransportista() {
+    $('#modal-orden_despacho_transportista').modal('hide');
+}
+
 function ceros_numero(numero) {
     if (numero == "numero") {
         var num = $("[name=numero]").val();
-        $("[name=numero]").val(leftZero(7, num));
+        if (num !== '') {
+            $("[name=numero]").val(leftZero(7, num));
+        }
     } else if (numero == "serie") {
         var num = $("[name=serie]").val();
-        $("[name=serie]").val(leftZero(4, num));
+        if (num !== '') {
+            $("[name=serie]").val(leftZero(4, num));
+        }
     }
 }

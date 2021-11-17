@@ -30,9 +30,18 @@ $(function () {
 
 function listarTransportistas() {
     var vardataTables = funcDatatables();
+
+    let botones = [];
+    botones.push({
+        text: 'Nuevo transportista',
+        action: function () {
+            agregarTransportista();
+        }, className: 'btn-primary'
+    });
+
     $("#listaTransportistas").dataTable({
         dom: vardataTables[1],
-        buttons: [],
+        buttons: botones,
         language: vardataTables[0],
         bDestroy: true,
         ajax: "mostrarTransportistas",

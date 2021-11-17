@@ -405,7 +405,9 @@ function guardar_doc_create(data) {
 
 function ceros_numero_doc() {
     var num = $('[name=numero_doc]').val();
-    $('[name=numero_doc]').val(leftZero(6, num));
+    if (num !== '') {
+        $('[name=numero_doc]').val(leftZero(6, num));
+    }
 }
 
 function changeMoneda() {

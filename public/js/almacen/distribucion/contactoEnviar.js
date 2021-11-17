@@ -1,17 +1,17 @@
 
 function abrirVistaPreviaCorreo() {
-    $('#modal-contacto_enviar').modal({
-        show: true
-    });
-
     let id_contacto = $('[name=id_contacto_od]').val();
     let contacto = listaContactos.find(element => element.id_datos_contacto == id_contacto);
     console.log(contacto);
 
-    let cliente = $('#modal-orden_despacho_contacto').find('.nombre').html();
-    let correo_licencia = ($('[name=correo_licencia]').val()).trim();
+    if (contacto !== undefined) {
+        $('#modal-contacto_enviar').modal({
+            show: true
+        });
 
-    if (contacto !== null) {
+        let cliente = $('#modal-orden_despacho_contacto').find('.nombre').html();
+        let correo_licencia = ($('[name=correo_licencia]').val()).trim();
+
         var msj = "DATOS DE CONTACTO \n" +
             "\n• Cliente/Entidad: " + cliente +
             "\n• Nombre: " + contacto.nombre +
@@ -21,6 +21,11 @@ function abrirVistaPreviaCorreo() {
             ((correo_licencia !== null && correo_licencia !== '') ? "\n\nENVIAR LICENCIAS AL\n• Correo: " + correo_licencia : '') +
             "\n\nSaludos, \n" + usuarioSesion;
         $('[name=mensaje_contacto]').val(msj);
+    } else {
+        Swal.fire({
+            title: "Es necesario que seleccione por lo menos un contacto",
+            icon: "error",
+        });
     }
 }
 

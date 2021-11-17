@@ -71,7 +71,9 @@ class OrdenesDespachoExternoController extends Controller
             'orden_despacho.estado as estado_od',
             'orden_despacho.serie as serie_tra',
             'orden_despacho.numero as numero_tra',
+            'orden_despacho.fecha_transportista',
             'orden_despacho.codigo_envio',
+            'orden_despacho.credito',
             'orden_despacho.importe_flete',
             'orden_despacho.id_transportista',
             'est_od.estado_doc as estado_od',
@@ -669,6 +671,50 @@ class OrdenesDespachoExternoController extends Controller
                     'error' => $e->getMessage()
                 ),
                 200
+            );
+        }
+    }
+
+    public function guardarTransportista(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            $id_contribuyente = DB::table('contabilidad.adm_contri')
+                ->insertGetId(
+                    [
+                        'nro_documento' => trim($request->nro_documento),
+                        'razon_social' => trim($request->razon_social),
+                        'telefono' => trim($request->telefono),
+                        'direccion_fiscal' => trim($request->direccion_fiscal),
+                        'fecha_registro' => date('Y-m-d H:i:s'),
+                        'estado' => 1,
+                        'transportista' => true
+                    ],
+                    'id_contribuyente'
+                );
+
+            DB::table('contabilidad.transportistas')
+                ->insert([
+                    'id_contribuyente' => $id_contribuyente
+                ]);
+
+            DB::commit();
+
+            return response()->json(
+                array(
+                    'tipo' => 'success',
+                    'mensaje' => 'Se guardó el transportista correctamente',
+                )
+            );
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json(
+                array(
+                    'tipo' => 'error',
+                    'mensaje' => 'Hubo un problema. Por favor intente de nuevo',
+                    'error' => $e->getMessage()
+                )
             );
         }
     }

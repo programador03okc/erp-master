@@ -62,7 +62,6 @@ Gestión de Despacho Externo
         </div>
     </div>
 </div>
-@include('almacen.distribucion.transferenciasDetalle')
 @include('almacen.distribucion.ordenDespachoContacto')
 @include('almacen.distribucion.ordenDespachoTransportista')
 @include('almacen.distribucion.enviarFacturacion')
@@ -72,6 +71,7 @@ Gestión de Despacho Externo
 @include('tesoreria.facturacion.archivos_oc_mgcp')
 @include('publico.ubigeoModal')
 @include('almacen.transferencias.transportistaModal')
+@include('almacen.distribucion.agregarTransportista')
 @include('logistica.requerimientos.trazabilidad.modal_trazabilidad')
 
 @endsection
@@ -99,6 +99,7 @@ Gestión de Despacho Externo
 <script src="{{ asset('js/almacen/distribucion/ordenDespachoTransportista.js')}}"></script>
 <script src="{{ asset('js/almacen/distribucion/contacto.js')}}"></script>
 <script src="{{ asset('js/almacen/distribucion/contactoEnviar.js')}}"></script>
+<script src="{{ asset('js/almacen/distribucion/agregarTransportista.js')}}"></script>
 <script src="{{ asset('js/tesoreria/facturacion/archivosMgcp.js')}}"></script>
 <script src="{{ asset('js/publico/ubigeoModal.js')}}"></script>
 <script src="{{ asset('js/almacen/transferencias/transportistaModal.js')}}"></script>

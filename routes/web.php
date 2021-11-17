@@ -1019,6 +1019,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('mostrarContacto/{id}', 'Logistica\Distribucion\OrdenesDespachoExternoController@mostrarContacto');
 				Route::get('anularContacto/{id}', 'Logistica\Distribucion\OrdenesDespachoExternoController@anularContacto');
 				Route::post('enviarDatosContacto', 'Logistica\Distribucion\OrdenesDespachoExternoController@enviarDatosContacto');
+
+				Route::post('guardarTransportista', 'Logistica\Distribucion\OrdenesDespachoExternoController@guardarTransportista');
 			});
 
 			Route::group(['as' => 'ordenes-despacho-interno.', 'prefix' => 'ordenes-despacho-interno'], function () {

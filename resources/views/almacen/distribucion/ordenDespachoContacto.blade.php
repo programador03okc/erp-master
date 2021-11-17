@@ -62,7 +62,7 @@
                     <fieldset class="group-table" id="fieldsetListaContactos">
                         <div class="row">
                             <div class="col-md-12">
-                                <h5>Contactos</h5>
+                                <h5><strong>Contactos</strong></h5>
                                 <table class="mytable table table-condensed table-bordered table-hover table-striped table-okc-view" 
                                     id="listaContactos">
                                     <thead>
@@ -90,7 +90,7 @@
                     <fieldset class="group-table" id="fieldsetCorreoLicencia">
                         <div class="row">
                             <div class="col-md-12">
-                                <h5>Correo para licencias</h5>
+                                <h5><strong>Correo para licencias</strong></h5>
                                 <input type="text" class="form-control limpiar" name="correo_licencia">
                             </div>
                         </div>
@@ -99,7 +99,7 @@
             </form>
             <div class="modal-footer">
                 <button id="btn_cerrar" class="btn btn-default" onClick="cerrarContacto();">Cerrar</button>
-                <button id="btn_enviar_correo" class="btn btn-success" onClick="abrirVistaPreviaCorreo();">Enviar correo</button>
+                <button id="btn_enviar_correo" class="btn btn-success" onClick="abrirVistaPreviaCorreo();">Enviar contacto</button>
                 {{-- <input type="submit" id="submit_enviar_correo" class="btn btn-success" value="Enviar correo"/> --}}
             </div>
         </div>

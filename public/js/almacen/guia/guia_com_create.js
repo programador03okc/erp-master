@@ -418,9 +418,13 @@ function actualizarDetalle() {
 function ceros_numero(numero) {
     if (numero == "numero") {
         var num = $("[name=numero]").val();
-        $("[name=numero]").val(leftZero(7, num));
+        if (num !== '') {
+            $("[name=numero]").val(leftZero(7, num));
+        }
     } else if (numero == "serie") {
         var num = $("[name=serie]").val();
-        $("[name=serie]").val(leftZero(4, num));
+        if (num !== '') {
+            $("[name=serie]").val(leftZero(4, num));
+        }
     }
 }
