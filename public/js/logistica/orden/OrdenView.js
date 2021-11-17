@@ -220,7 +220,8 @@ class OrdenView {
                                         'cantidad_a_comprar': !(cantidadAAtender >= 0) ? '' : cantidadAAtender,
                                         'cantidad_atendido_almacen': cantidad_atendido_almacen,
                                         'cantidad_atendido_orden': cantidad_atendido_orden,
-                                        'descripcion_producto': det.descripcion,
+                                        'descripcion_producto': det.producto.descripcion,
+                                        'codigo_producto': det.producto.codigo,
                                         'descripcion_adicional': det.descripcion_adicional,
                                         'estado': det.estado.id_estado_doc,
                                         'fecha_registro': det.fecha_registro,
@@ -393,6 +394,7 @@ class OrdenView {
                 if (data[i].id_producto > 0) {
                     document.querySelector("tbody[id='body_detalle_orden']").insertAdjacentHTML('beforeend', `<tr style="text-align:center; background-color:${data[i].estado == 7 ? '#f5e4e4' : ''}; ">
                         <td class="text-center">${data[i].codigo_requerimiento ? data[i].codigo_requerimiento : ''} <input type="hidden"  name="idRegister[]" value="${data[i].id_detalle_orden ? data[i].id_detalle_orden : this.makeId()}"> <input type="hidden"  name="idDetalleRequerimiento[]" value="${data[i].id_detalle_requerimiento ? data[i].id_detalle_requerimiento : ''}">  <input type="hidden"  name="idTipoItem[]" value="1"></td>
+                        <td class="text-center">${data[i].codigo_producto ? data[i].codigo_producto : ''} </td>
                         <td class="text-center">${data[i].part_number ? data[i].part_number : ''} <input type="hidden"  name="idProducto[]" value="${(data[i].id_producto ? data[i].id_producto : data[i].id_producto)} "></td>
                         <td class="text-left">${(data[i].descripcion_producto ? data[i].descripcion_producto : (data[i].descripcion_adicional != null ? data[i].descripcion_adicional : ''))} <input type="hidden"  name="descripcion[]" value="${(data[i].descripcion_producto ? data[i].descripcion_producto : data[i].descripcion_adicional)} "></td>
                         <td><select name="unidad[]" class="form-control ${(data[i].estado_guia_com_det > 0 && data[i].estado_guia_com_det != 7 ? '' : 'activation')} input-sm unidadMedida" data-valor="${data[i].id_unidad_medida}" disabled>${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
@@ -420,6 +422,7 @@ class OrdenView {
             } else { //servicio
                 document.querySelector("tbody[id='body_detalle_orden']").insertAdjacentHTML('beforeend', `<tr style="text-align:center; background-color:${data[i].estado == 7 ? '#f5e4e4' : ''}; ">
                     <td>${data[i].codigo_requerimiento ? data[i].codigo_requerimiento : ''} <input type="hidden"  name="idRegister[]" value="${data[i].id_detalle_orden ? data[i].id_detalle_orden : this.makeId()}"> <input type="hidden"  name="idDetalleRequerimiento[]" value="${data[i].id_detalle_requerimiento ? data[i].id_detalle_requerimiento : ''}"> <input type="hidden"  name="idTipoItem[]" value="1"></td>
+                    <td>(No aplica) <input type="hidden" value=""></td>
                     <td>(No aplica) <input type="hidden"  name="idProducto[]" value=""></td>
                     <td><textarea name="descripcion[]" placeholder="Descripción" class="form-control activation" value="${(data[i].descripcion_adicional ? data[i].descripcion_adicional : '')}" style="width:100%;height: 60px;overflow: scroll;"> </textarea> </td>
                     <td><select name="unidad[]" class="form-control activation input-sm" value="${data[i].id_unidad_medida}" disabled>${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
@@ -759,6 +762,7 @@ class OrdenView {
         vista_extendida();
         document.querySelector("tbody[id='body_detalle_orden']").insertAdjacentHTML('beforeend', `<tr style="text-align:center;">
         <td class="text-center">${data[0].codigo_requerimiento ? data[0].codigo_requerimiento : ''} <input type="hidden"  name="idRegister[]" value="${data[0].id_detalle_orden ? data[0].id_detalle_orden : this.makeId()}"> <input type="hidden"  name="idDetalleRequerimiento[]" value="${data[0].id_detalle_requerimiento ? data[0].id_detalle_requerimiento : ''}"> <input type="hidden"  name="idTipoItem[]" value="1"> </td>
+        <td class="text-center">${data[0].codigo_producto ? data[0].codigo_producto : ''} </td>
         <td class="text-center">${data[0].part_number ? data[0].part_number : ''} <input type="hidden"  name="idProducto[]" value="${(data[0].id_producto ? data[0].id_producto : data[0].id_producto)} "> </td>
         <td class="text-left">${(data[0].descripcion_producto ? data[0].descripcion_producto : (data[0].descripcion_adicional ? data[0].descripcion_adicional : ''))}  <input type="hidden"  name="descripcion[]" value="${(data[0].descripcion_producto ? data[0].descripcion_producto : data[0].descripcion_adicional)} "></td>
         <td><select name="unidad[]" class="form-control ${(data[0].estado_guia_com_det > 0 && data[0].estado_guia_com_det != 7 ? '' : 'activation')} input-sm unidadMedida" data-valor="${data[0].id_unidad_medida}" >${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
@@ -802,6 +806,7 @@ class OrdenView {
 
         document.querySelector("tbody[id='body_detalle_orden']").insertAdjacentHTML('beforeend', `<tr style="text-align:center;">
         <td><input type="hidden"  name="idRegister[]" value="${this.makeId()}"><input type="hidden"  name="idDetalleRequerimiento[]" value=""> <input type="hidden"  name="idTipoItem[]" value="2"></td>
+        <td>(No aplica) <input type="hidden"  name="idProducto[]" value=""></td>
         <td>(No aplica) <input type="hidden"  name="idProducto[]" value=""></td>
         <td><textarea name="descripcion[]" placeholder="Descripción" class="form-control activation" value="" style="width:100%;height: 60px;overflow: scroll;"> </textarea>  </td>
         <td>Servicio<input type="hidden"  name="unidad[]" value="38"></td>
