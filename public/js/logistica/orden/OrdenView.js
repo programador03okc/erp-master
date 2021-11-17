@@ -1197,8 +1197,6 @@ class OrdenView {
     }
 
     validaOrdenRequerimiento() {
-        var codigo_orden = $('[name=codigo_orden]').val();
-        var codigo_orden = $('[name=codigo_orden]').val();
         var id_proveedor = $('[name=id_proveedor]').val();
         var plazo_entrega = $('[name=plazo_entrega]').val();
         var id_tp_documento = $('[name=id_tp_documento]').val();
@@ -1207,9 +1205,6 @@ class OrdenView {
 
         if (!id_tp_documento > 0) {
             msj += 'Es necesario que seleccione un tipo de orden.<br>';
-        }
-        if (codigo_orden == '') {
-            msj += 'Es necesario que ingrese un código de orden Softlink.<br>';
         }
         if (!id_proveedor >0) {
             msj += 'Es necesario que seleccione un Proveedor.<br>';
