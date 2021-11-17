@@ -37,6 +37,7 @@ class MigrateOrdenSoftLinkController extends Controller
                 ->select(
                     'log_ord_compra.id_orden_compra',
                     'log_ord_compra.codigo',
+                    'log_ord_compra.id_softlink',
                     'log_ord_compra.fecha',
                     'log_ord_compra.fecha_registro',
                     'log_ord_compra.id_moneda',
@@ -72,23 +73,24 @@ class MigrateOrdenSoftLinkController extends Controller
 
 
             if ($oc !== null) {
-                //pregunta si ya se ha migrado antes
-                $oc_exist = DB::connection('soft')->table('movimien')->where('ndocu3', $oc->id_orden_compra)->first();
-                $arrayRspta = [];
+                //si existe un id_softlink
+                if (!empty($oc->id_softlink)) {
+                    //pregunta si ya se ha migrado antes
+                    $oc_softlink = DB::connection('soft')->table('movimien')->where('mov_id', $oc->id_softlink)->first();
+                    $arrayRspta = [];
 
-                if ($oc_exist !== null) {
                     $arrayRspta = array(
                         'tipo' => 'warning',
-                        'mensaje' => 'Ya existe ésta OC en softlink. Con Nro. ' . $oc_exist->cod_docu . $oc_exist->num_docu . ' con id ' . $oc_exist->mov_id,
-                        'ocSoftlink' => array('cabecera' => $oc_exist),
+                        'mensaje' => 'Ya existe ésta OC en softlink. Con Nro. ' . $oc_softlink->num_docu . ' con id ' . $oc_softlink->mov_id,
+                        'ocSoftlink' => array('cabecera' => $oc_softlink),
                         'ocAgile' => array('cabecera' => $oc),
                     );
                     //Actualiza la oc softlink
-                    DB::table('logistica.log_ord_compra')
-                        ->where('id_orden_compra', $id_orden_compra)
-                        ->update(['codigo_softlink' => $oc_exist->cod_docu . $oc_exist->num_docu]);
+                    // DB::table('logistica.log_ord_compra')
+                    //     ->where('id_orden_compra', $id_orden_compra)
+                    //     ->update(['codigo_softlink' => $oc_softlink->cod_docu . $oc_softlink->num_docu]);
+                    // }
                 } else {
-
                     //igv por defecto
                     $igv = 18.00;
                     //persona juridica x defecto
@@ -245,6 +247,14 @@ class MigrateOrdenSoftLinkController extends Controller
                         ]
                     );
 
+                    //Actualiza la oc softlink
+                    DB::table('logistica.log_ord_compra')
+                        ->where('id_orden_compra', $id_orden_compra)
+                        ->update([
+                            'codigo_softlink' => ($yy . '-' . $nro_mov),
+                            'id_softlink' => $mov_id
+                        ]);
+
                     $detalles = DB::table('logistica.log_det_ord_compra')
                         ->select(
                             'log_det_ord_compra.*',
@@ -290,7 +300,7 @@ class MigrateOrdenSoftLinkController extends Controller
                                 'cod_prod' => $cod_prod,
                                 'nom_prod' => $det->descripcion,
                                 'can_pedi' => $det->cantidad,
-                                'sal_pedi' => '0.0000',
+                                'sal_pedi' => $det->cantidad,
                                 'can_devo' => $i, //numeracion del item 
                                 'pre_prod' => ($det->precio !== null ? $det->precio : 0),
                                 'dscto_condi' => '0.000',
@@ -309,9 +319,9 @@ class MigrateOrdenSoftLinkController extends Controller
                                 'series' => '',
                                 'entrega' => '0',
                                 'notas' => '',
-                                'flg_percep' => '0',
-                                'por_percep' => '0.000',
-                                'mon_percep' => '0.000',
+                                'flg_percep' => 0,
+                                'por_percep' => 0,
+                                'mon_percep' => 0,
                                 'ok_stk' => '1',
                                 'ok_serie' => ($det->series ? '1' : '0'),
                                 'lStock' => '0',
@@ -325,29 +335,48 @@ class MigrateOrdenSoftLinkController extends Controller
                                 'margen' => '0.00',
                                 'gasto1' => '0.00',
                                 'gasto2' => '0.00',
-                                'flg_detrac' => '0',
-                                'por_detrac' => '0.000',
+                                'flg_detrac' => 0,
+                                'por_detrac' => 0,
                                 'cod_detrac' => '',
-                                'mon_detrac' => '0.0000',
+                                'mon_detrac' => 0,
                                 'tipoprecio' => '6'
                             ]
                         );
+                        //OBTIENE STOCK EN TRANSITO
+                        $stock = DB::connection('soft')->table('stocks')
+                            ->where([
+                                ['cod_alma', '=', $oc->codigo_almacen],
+                                ['cod_prod', '=', $cod_prod]
+                            ])->first();
+
+                        //ACTUALIZA STOCK EN TRANSITO
+                        DB::connection('soft')->table('stocks')
+                            ->update(['stock_ing' => (floatval($stock->stock_ing) + floatval($det->cantidad))]);
                     }
+
+                    $vendedor = DB::connection('soft')->table('vendedor')
+                        ->select('usuario')
+                        ->where('codvend', $oc->codvend_softlink)
+                        ->first();
+
+                    $count = DB::connection('soft')->table('audita')->count();
+
+                    //Agrega registro de auditoria
+                    DB::connection('soft')->table('audita')
+                        ->insert([
+                            'unico' => sprintf('%010d', $count + 1),
+                            'usuario' => $oc->codvend_softlink,
+                            'terminal' => $vendedor->usuario,
+                            'fecha_hora' => new Carbon(),
+                            'accion' => 'NUEVO : OC ' . $yy . '-' . $nro_mov
+                        ]);
 
                     $soc = DB::connection('soft')->table('movimien')->where('mov_id', $mov_id)->first();
                     $sdet = DB::connection('soft')->table('detmov')->where('mov_id', $mov_id)->get();
 
-                    //Actualiza la oc softlink
-                    DB::table('logistica.log_ord_compra')
-                        ->where('id_orden_compra', $id_orden_compra)
-                        ->update(
-                            ['codigo_softlink' => $yy . '-' . $nro_mov],
-                            ['id_softlink' => $mov_id]
-                        );
-
                     $arrayRspta = array(
                         'tipo' => 'success',
-                        'mensaje' => 'Se migró correctamente la OC Nro. ' . $cod_docu . $num_docu . ' con id ' . $mov_id,
+                        'mensaje' => 'Se migró correctamente la OC Nro. ' . $yy . '-' . $nro_mov . ' con id ' . $mov_id,
                         'ocSoftlink' => array('cabecera' => $soc, 'detalle' => $sdet),
                         'ocAgile' => array('cabecera' => $oc, 'detalle' => $detalles),
                     );
@@ -375,12 +404,20 @@ class MigrateOrdenSoftLinkController extends Controller
         if (!empty($det->part_number)) { //if ($det->part_number !== null && $det->part_number !== '') {
             $prod = DB::connection('soft')->table('sopprod')
                 ->select('cod_prod')
-                ->where('cod_espe', trim($det->part_number)) //agregar marca
+                ->join('sopsub2', 'sopsub2.cod_sub2', '=', 'sopprod.cod_subc')
+                ->where([
+                    ['sopprod.cod_espe', '=', trim($det->part_number)],
+                    ['sopsub2.nom_sub2', '=', $det->subcategoria]
+                ])
                 ->first();
         } else if ($det->descripcion !== null && $det->descripcion !== '') {
             $prod = DB::connection('soft')->table('sopprod')
                 ->select('cod_prod')
-                ->where('nom_prod', trim($det->descripcion)) //agregar marca
+                ->join('sopsub2', 'sopsub2.cod_sub2', '=', 'sopprod.cod_subc')
+                ->where([
+                    ['nom_prod', '=', trim($det->descripcion)],
+                    ['sopsub2.nom_sub2', '=', $det->subcategoria]
+                ])
                 ->first();
         }
         $cod_prod = null;
