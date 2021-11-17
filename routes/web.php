@@ -61,12 +61,19 @@ Route::get('cargar_usuarios/{user}', 'LoginController@mostrar_roles');
 Route::get('mostrar-version-actual', 'ConfiguracionController@mostrarVersionActual')->name('mostrar-version-actual');
 Route::get('socket_setting/{option}', 'ConfiguracionController@socket_setting');
 
+
 Auth::routes();
 
 Route::group(['middleware' => ['auth']], function () {
 
+	Route::group(['as' => 'mgcp.', 'prefix' => 'mgcp'], function () {
+		Route::name('cuadro-costos.')->prefix('cuadro-costos')->middleware('auth')->group(function () {
+			Route::get('detalles/{id?}', 'CuadroCostoController@detalles')->name('detalles'); 
+		});
+	});
+
 	Route::group(['as' => 'proyectos.', 'prefix' => 'proyectos'], function () {
-		// Proyetos
+	// Proyetos
 		Route::get('getProyectosActivos', 'ProyectosController@getProyectosActivos');
 
 		Route::get('index', function () {
@@ -784,6 +791,8 @@ Route::group(['middleware' => ['auth']], function () {
 
 					Route::get('finalizar-cuadro/{id}', 'OrdenController@finalizarCuadroPresupuesto');
 					Route::get('enviar_correo_prueba', 'OrdenController@enviarCorreoPrueba'); //BORRAR ESTO ES UNA PRUEBA
+					Route::get('prueba', 'OrdenController@prueba'); //BORRAR ESTO ES UNA PRUEBA
+					
 				});
 
 				Route::group(['as' => 'ordenes.', 'prefix' => 'ordenes'], function () {
