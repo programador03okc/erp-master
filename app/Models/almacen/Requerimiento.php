@@ -350,6 +350,7 @@ class Requerimiento extends Model
             $finalizadosORestablecido = CuadroPresupuestoHelper::finalizar($id_requerimiento_unique_list);
 
         }
+        // return ['estado_actual'=>$estadoActual,'lista_finalizados'=>[],'lista_restablecidos'=>[]];
         return ['estado_actual'=>$estadoActual,'lista_finalizados'=>$finalizadosORestablecido['lista_finalizados'],'lista_restablecidos'=>$finalizadosORestablecido['lista_restablecidos']];
 
     }

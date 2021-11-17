@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class CuadroCosto extends Model
 {
     protected $table='mgcp_cuadro_costos.cc';
+    protected $primaryKey = 'id';
     public $timestamps=false;
 
 

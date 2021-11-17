@@ -7,14 +7,21 @@
 </head>
 
 <body>
-    {!! nl2br($mensaje) !!}
-
-    <!-- {{-- Para ver el cuadro de presupuesto, haga clic <a href="{{route('mgcp.cuadro-costos.detalles',['id' => $oportunidad->id])}}">aquí</a>. --}} -->
-
-    @foreach($listaFinalizados as $lf)
-        Para ver el cuadro, haga clic <a href="/mgcp/public/mgcp/cuadro-costos/detalles/{{$lf['id_cuadro_presupuesto']}}">aquí</a>
-    @endforeach
     
+    <h3><strong>Cuadro de presupuesto finalizado</strong></h3>
+    <br>
+    <h4>Información de oportunidad:</h4>
+    <br>
+    <p>{{$nombreUsuarioEnSession}} ha finalizado el cuadro de presupuesto {!! $codigoOportunidad !!}</p>
+
+    @foreach($payload as $data)
+        <li>Oportunidad : {{$data['cuadro_presupuesto']->oportunidad->oportunidad}}</li>
+        <li>Responsable : {{$data['cuadro_presupuesto']->oportunidad->responsable->name}}</li>
+        <li>Fecha Limite : {{$data['cuadro_presupuesto']->oportunidad->fecha_limite}}</li>
+        <li>Cliente : {{$data['cuadro_presupuesto']->oportunidad->entidad->nombre}}</li>
+        <li>Tipo de negocio : {{$data['cuadro_presupuesto']->oportunidad->tipoNegocio->tipo}}</li>
+        <br>
+    @endforeach
     <br>
     <br>
     <hr>
