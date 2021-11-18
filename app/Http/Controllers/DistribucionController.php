@@ -1789,21 +1789,12 @@ class DistribucionController extends Controller
                 'orden_despacho.codigo_envio',
                 'orden_despacho.fecha_transportista',
                 'orden_despacho.importe_flete',
-                // 'orden_despacho_grupo.mov_entrega',
-                // 'adm_contri.razon_social as razon_social_despacho',
+                'orden_despacho.credito',
                 'sis_usua.nombre_corto',
-                // 'orden_despacho_grupo.fecha_despacho',
                 'estado_envio.descripcion as estado_doc'
             )
             ->join('almacen.orden_despacho', 'orden_despacho.id_od', '=', 'orden_despacho_obs.id_od')
             ->join('almacen.estado_envio', 'estado_envio.id_estado', '=', 'orden_despacho_obs.accion')
-            // ->join('almacen.orden_despacho_grupo_det', function ($join) {
-            //     $join->on('orden_despacho_grupo_det.id_od', '=', 'orden_despacho_obs.id_od');
-            //     $join->where('orden_despacho_grupo_det.estado', '!=', 7);
-            // })
-            // ->join('almacen.orden_despacho_grupo', 'orden_despacho_grupo.id_od_grupo', '=', 'orden_despacho_grupo_det.id_od_grupo')
-            // ->leftjoin('logistica.log_prove', 'log_prove.id_proveedor', '=', 'orden_despacho_grupo.id_proveedor')
-            // ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
             ->leftjoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'orden_despacho_obs.registrado_por')
             ->leftjoin('contabilidad.transportistas', 'transportistas.id_contribuyente', '=', 'orden_despacho.id_transportista')
             ->leftjoin('contabilidad.adm_contri as transportista', 'transportista.id_contribuyente', '=', 'transportistas.id_contribuyente')

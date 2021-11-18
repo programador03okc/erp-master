@@ -171,33 +171,35 @@ function listarRequerimientosPendientes(usuario) {
                 }, targets: 2
             },
             {
-                'render': function (data, type, row) {
-                    return `<div style="display:flex;">
-                        <button type="button" class="detalle btn btn-default btn-flat btn-xs boton" data-toggle="tooltip"
+                'render': function (data, type, row) {//
+                    return `<div>
+                    <div style="display:flex;"> 
+                        <button type="button" class="detalle btn btn-default btn-flat btn-xs " data-toggle="tooltip"
                         data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}">
                         <i class="fas fa-chevron-down"></i></button>
                         
-                        <button type="button" class="envio_od btn btn-${row['id_od'] !== null ? 'warning' : 'default'} btn-flat btn-xs boton" data-toggle="tooltip"
+                        <button type="button" class="envio_od btn btn-${row['id_od'] !== null ? 'warning' : 'default'} btn-flat btn-xs " data-toggle="tooltip"
                         data-placement="bottom" title="Enviar Orden de Despacho" data-id="${row['id_requerimiento']}"
                         data-fentrega="${row['fecha_entrega']}" data-cdp="${row['codigo_oportunidad']}">
                         <i class="far fa-envelope"></i></button>`+
 
-                        // <button type="button" class="trazabilidad btn btn-warning btn-flat btn-xs boton" data-toggle="tooltip"
+                        // <button type="button" class="trazabilidad btn btn-warning btn-flat btn-xs " data-toggle="tooltip"
                         //     data-placement="bottom" title="Ver Trazabilidad de Docs"  data-id="${row['id_requerimiento']}">
                         //     <i class="fas fa-route"></i></button>
 
                         /*(row['id_od'] == null && row['productos_no_mapeados'] == 0)*/
-                        `<button type="button" class="contacto btn btn-${(row['id_contacto'] !== null && row['enviar_contacto']) ? 'success' : 'default'} btn-flat btn-xs boton" 
+                        `<button type="button" class="contacto btn btn-${(row['id_contacto'] !== null && row['enviar_contacto']) ? 'success' : 'default'} btn-flat btn-xs " 
                             data-toggle="tooltip" data-placement="bottom" data-id="${row['id_od']}" title="Datos del contacto" >
-                            <i class="fas fa-id-badge"></i></button>`+
+                            <i class="fas fa-id-badge"></i></button></div>`+
                         (row['id_od'] !== null ?
-                            `<button type="button" class="transportista btn btn-${row['id_transportista'] !== null ? 'info' : 'default'} btn-flat btn-xs boton" data-toggle="tooltip"
+                            `<div style="display:flex;"> 
+                            <button type="button" class="transportista btn btn-${row['id_transportista'] !== null ? 'info' : 'default'} btn-flat btn-xs " data-toggle="tooltip"
                             data-placement="bottom" data-od="${row['id_od']}" data-idreq="${row['id_requerimiento']}" title="Agencia de transporte" >
                             <i class="fas fa-truck"></i></button>
                             
-                            <button type="button" class="estados btn btn-${row["count_estados_envios"] > 0 ? 'primary' : 'default'} btn-flat boton" data-toggle="tooltip" 
+                            <button type="button" class="estados btn btn-${row["count_estados_envios"] > 0 ? 'primary' : 'default'} btn-flat btn-xs" data-toggle="tooltip" 
                             data-placement="bottom" title="Ver Trazabilidad de Envío" data-id="${row["id_od"]}">
-                            <i class="fas fa-route"></i></button>`: '') +
+                            <i class="fas fa-route"></i></button></div>`: '') +
                         // ((row['id_od'] !== null && parseInt(row['estado_od']) == 1) ?
                         //     `<button type="button" class="anular_od btn btn-flat btn-danger btn-xs boton" data-toggle="tooltip" 
                         //             data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Anular Orden Despacho Externo" >

@@ -156,7 +156,7 @@ function formatTimeLine(table_id, id, row) {
                             ${element.fecha_transportista !== null ? formatDate(element.fecha_transportista) + '<br>' : ''}
                             ${element.razon_social_transportista !== null ? element.razon_social_transportista + '<br>' : 'Propia'}
                             ${element.codigo_envio !== null ? ('Cod.Envío: ' + element.codigo_envio + '<br>') : ''}
-                            ${element.importe_flete !== null ? ('<strong>Flete real: S/' + element.importe_flete + '</strong>') : ''}</small><br></p>
+                            ${element.importe_flete !== null ? ('<strong>Flete real: S/' + element.importe_flete + (element.credito ? ' (Crédito)' : '') + '</strong>') : ''}</small><br></p>
                             </div>
                         </div>
                         </li>`;
