@@ -375,7 +375,7 @@ class OrdenesTransformacionController extends Controller
         }
     }
 
-
+    /*
     public function generarDespachoInternoMgcp($id_requerimiento)
     {
         try {
@@ -507,7 +507,7 @@ class OrdenesTransformacionController extends Controller
             DB::rollBack();
             return response()->json("Ha ocurrido un problema. Inténtelo nuevamente.");
         }
-    }
+    }*/
 
     public function verDetalleInstrucciones($id_detalle_requerimiento)
     {

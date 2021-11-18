@@ -190,10 +190,9 @@ function listarRequerimientosPendientes(usuario) {
                         /*(row['id_od'] == null && row['productos_no_mapeados'] == 0)*/
                         `<button type="button" class="contacto btn btn-${(row['id_contacto'] !== null && row['enviar_contacto']) ? 'success' : 'default'} btn-flat btn-xs " 
                             data-toggle="tooltip" data-placement="bottom" data-id="${row['id_od']}" title="Datos del contacto" >
-                            <i class="fas fa-id-badge"></i></button></div>`+
+                            <i class="fas fa-id-badge"></i></button>`+
                         (row['id_od'] !== null ?
-                            `<div style="display:flex;"> 
-                            <button type="button" class="transportista btn btn-${row['id_transportista'] !== null ? 'info' : 'default'} btn-flat btn-xs " data-toggle="tooltip"
+                            `<button type="button" class="transportista btn btn-${row['id_transportista'] !== null ? 'info' : 'default'} btn-flat btn-xs " data-toggle="tooltip"
                             data-placement="bottom" data-od="${row['id_od']}" data-idreq="${row['id_requerimiento']}" title="Agencia de transporte" >
                             <i class="fas fa-truck"></i></button>
                             
