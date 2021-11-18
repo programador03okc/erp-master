@@ -454,12 +454,13 @@ class ComprasPendientesController extends Controller
             $ReservasProductoActualizadas = Reserva::with('almacen','usuario.trabajador.postulante.persona','estado')->where([['id_detalle_requerimiento',$request->idDetalleRequerimiento], ['estado',1]])->get();
 
 
+            
+            DB::commit();
+
             DetalleRequerimiento::actualizarEstadoDetalleRequerimientoAtendido($request->idDetalleRequerimiento);
             // actualizar estado de requerimiento
             $Requerimiento = DetalleRequerimiento::where('id_detalle_requerimiento',$request->idDetalleRequerimiento)->first();
             $nuevoEstado=  Requerimiento::actualizarEstadoRequerimientoAtendido([$Requerimiento->id_requerimiento]);
- 
-            DB::commit();
 
 
         return response()->json(['id_reserva'=>$reserva->id_reserva,'codigo'=>$reserva->codigo,'lista_finalizados'=>$nuevoEstado['lista_finalizados'],'data'=>$ReservasProductoActualizadas,'estado_requerimiento'=>$nuevoEstado['estado_actual'] ,'mensaje'=>$mensaje]);
@@ -469,6 +470,7 @@ class ComprasPendientesController extends Controller
 
         }
     }
+
 
     function obtenerStockAlmacen(Request $request){
             $stock=0;

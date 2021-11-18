@@ -287,6 +287,7 @@ Elaborar orden
                             <thead>
                                 <tr>
                                     <th style="width: 5%">Req.</th>
+                                    <th style="width: 5%">Cod. producto</th>
                                     <th style="width: 5%">Part number</th>
                                     <th>Item</th>
                                     <th style="width: 8%">Unidad</th>

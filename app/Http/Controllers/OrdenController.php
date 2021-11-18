@@ -23,7 +23,7 @@ use App\Models\Almacen\DetalleRequerimiento;
 use App\Models\Almacen\Requerimiento;
 use App\Models\Almacen\UnidadMedida;
 use App\Models\Comercial\CuadroCosto\CcAmFila;
-use App\Models\Comercial\CuadroCosto\CuadroCosto;
+
 use App\Models\Configuracion\Grupo;
 use App\Models\Configuracion\Moneda;
 use App\Models\Contabilidad\Banco;
@@ -33,6 +33,7 @@ use App\Models\Logistica\EstadoCompra;
 use App\Models\Logistica\Orden;
 use App\Models\Logistica\OrdenCompraDetalle;
 use App\Models\Logistica\Proveedor;
+use App\Models\mgcp\CuadroCosto\CuadroCosto;
 use Carbon\Carbon;
 use Exception;
 use Mockery\Undefined;
@@ -3015,6 +3016,11 @@ class OrdenController extends Controller
         return ['lista_estado_requerimiento'=>$nuevoEstadoCabeceraRequerimiento,'lista_finalizados'=>$finalizadosORestablecido['lista_finalizados'],'lista_restablecidos'=>$finalizadosORestablecido['lista_restablecidos']];
 
 
+    }
+
+    function prueba(){
+        $cc =  CuadroCosto::where('id',1382)->with('oportunidad','oportunidad.entidad','oportunidad.tipoNegocio','oportunidad.responsable','oportunidad.ordenCompraPropia')->first();
+        return $cc->oportunidad->ordenCompraPropia;
     }
 
 

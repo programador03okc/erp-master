@@ -6,13 +6,17 @@ use App\Models\mgcp\CuadroCosto\Ajuste\FondoProveedor;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\mgcp\CuadroCosto\CcAmFilaComentario;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Carbon\Carbon;
 
 class CcAmFila extends Model
 {
     // use HasFactory;
     protected $table = 'mgcp_cuadro_costos.cc_am_filas';
     //public $timestamps = false;
-
+    public function getFechaCreacionAttribute()
+    {
+        return (new Carbon($this->attributes['fecha_creacion']))->format('d-m-Y') ;
+    }
     public function amProveedor()
     {
         return $this->hasOne(CcAmProveedor::class, 'id', 'proveedor_seleccionado');

@@ -2,24 +2,32 @@
 
 namespace App\Helpers;
 
-use App\Helpers\Almacen\TransformacionHelper;
-use App\Mail\EmailEstadoCuadroPresupuesto;
+use App\Mail\EmailFinalizacionCuadroPresupuesto;
+use App\Mail\EmailOrdenServicioOrdenTransformacion;
 use App\Models\Almacen\DetalleRequerimiento;
 use App\Models\Almacen\Requerimiento;
-use App\Models\Comercial\CuadroCosto\CcAmFila;
-use App\Models\Comercial\CuadroCosto\CuadroCosto;
+use App\Models\almacen\Transformacion;
 use App\Models\Configuracion\Usuario;
+use App\Models\mgcp\AcuerdoMarco\OrdenCompraPropias;
+use App\Models\mgcp\CuadroCosto\CcAmFila;
+use App\Models\mgcp\CuadroCosto\CuadroCosto;
+use App\Models\mgcp\CuadroCosto\CuadroCostoView;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+
 
 class CuadroPresupuestoHelper
 {
 
     static public function finalizar($listaRequerimientosParaFinalizar)
     {
-        $listaFinalizados = [];
-        $listaRestablecidos = [];
+
+        $payload = [];
+        $codigoOportunidad='';
+        $destinatarios=[];
+        // $listaRestablecidos = [];
         $error = '';
         try {
 
@@ -49,61 +57,81 @@ class CuadroPresupuestoHelper
 
                 if ($requerimiento->id_cc > 0) {
 
-                    $cuadroPresupuesto = CuadroCosto::find($requerimiento->id_cc)->with('oportunidad')->first();
-
-                    if ($cuadroPresupuesto && $cuadroPresupuesto->id > 0 && $cuadroPresupuesto->estado_aprobacion != 5) { // cuando el estado aprobacion de cc pendiente por regularizar no se puede actualizar el estado del cc
+                    $cuadroPresupuesto = CuadroCosto::where('id',$requerimiento->id_cc)->with('oportunidad','oportunidad.entidad','oportunidad.tipoNegocio','oportunidad.responsable','oportunidad.ordenCompraPropia')->first();
+                    
+                    if ($cuadroPresupuesto !=null && $cuadroPresupuesto->id > 0 && $cuadroPresupuesto->estado_aprobacion != 5) { // cuando el estado aprobacion de cc pendiente por regularizar no se puede actualizar el estado del cc
                         $cc = CuadroCosto::find($requerimiento->id_cc);
 
                         if ($requerimiento->estado == 28 || $requerimiento->estado == 5) {
-                            $cc->estado_aprobacion = 4;
+                            $cc->estado_aprobacion = 4;// finalizado
                             $cc->save();
-                            $listaFinalizados[] = [
-                                'id_requerimiento' => $requerimiento->id_requerimiento,
-                                'codigo_requerimiento' => $requerimiento->codigo,
-                                'codigo_cuadro_presupuesto' => $cuadroPresupuesto->oportunidad->codigo_oportunidad
+                            $ordenPropia= OrdenCompraPropias::where('id_oportunidad',$cc->id_oportunidad)->first();
+                            $ordenPropia->id_etapa= 2;// comprado 
+                            $ordenPropia->save();
+
+                            $codigoOportunidad.=$cuadroPresupuesto->oportunidad->codigo_oportunidad;
+                            $payload[] = [
+                                'requerimiento' => $requerimiento,
+                                'cuadro_presupuesto' => $cuadroPresupuesto,
+                                'orden_compra_propia' => $ordenPropia,
+                                'oportunidad' => $cuadroPresupuesto->oportunidad
                             ];
+                            $destinatarios[]=$cuadroPresupuesto->oportunidad->responsable->email;
+
+
                         } else { // si el requerimiento no esta atentido total o reserva total 
-                            if ($cc->estado_aprobacion == 4) { // verifica si el estado actual del cc es finalizado cuando el requerimiento no esta atentido 
-                                $cc->estado_aprobacion = 3;
-                                $cc->save();
-                                $listaRestablecidos[] = [
-                                    'id_requerimiento' => $requerimiento->id_requerimiento,
-                                    'codigo_requerimiento' => $requerimiento->codigo,
-                                    'codigo_cuadro_presupuesto' => $cuadroPresupuesto->oportunidad->codigo_oportunidad
-                                ];
-                            }
+                            // if ($cc->estado_aprobacion == 4) { // verifica si el estado actual del cc es finalizado cuando el requerimiento no esta atentido 
+                            //     $cc->estado_aprobacion = 3;
+                            //     $cc->save();
+                            //     $listaRestablecidos[] = [
+                            //         'id_requerimiento' => $requerimiento->id_requerimiento,
+                            //         'codigo_requerimiento' => $requerimiento->codigo,
+                            //         'id_cuadro_presupuesto' => $cuadroPresupuesto->id,
+                            //         'id_oportunidad' => $cuadroPresupuesto->oportunidad->id,
+                            //         'codigo_cuadro_presupuesto' => $cuadroPresupuesto->oportunidad->codigo_oportunidad
+                            //     ];
+                            // }
                         }
                         // preparar correo
-                        if (count($listaFinalizados) > 0) {
-                            // $titulo = 'Se finalizo el cuadro de presupuesto' . implode(",",array_column($listaFinalizados, 'codigo_cuadro_presupuesto'));
-                            // $mensaje='<ul>';
-                            // foreach ($listaFinalizados as $lf) {
-                            //     $mensaje .=
-                            //     '<li> Código CP: ' . $lf['codigo_cuadro_presupuesto'] . ' correspondiente al requerimiento ' . $lf['codigo_requerimiento'] .  '</li>';
-                            // }
-                            // $mensaje .='</ul>';
-                            // // $destinatarios[] = 'programador03@okcomputer.com.pe'; // implementar
-                            // $mensaje .=   '<p> *Este correo es generado de manera automática, por favor no responder.</p> 
-                            // <br> Saludos <br> Módulo de Logística <br> SYSTEM AGILE';
-
-                            // $payload = [
-                            //     'id_empresa' => 1,
-                            //     'email_destinatario' => $destinatarios,
-                            //     'titulo' => $titulo,
-                            //     'mensaje' => $mensaje
-                            // ];
-
-                            // NotificacionHelper::enviarEmail($payload);
-                            $correos = [];
+ 
+                        if (count($payload) > 0) {
+ 
+                            $correosOrdenServicioTransformacion = [];
                             if (config('app.debug')) {
-                                $correos[] = config('global.correoDebug1');
+                                $correosOrdenServicioTransformacion[] = config('global.correoDebug2');
+                                $correoFinalizacionCuadroPresupuesto[]='programador03@okcomputer.com.pe';
+
                             } else {
                                 $idUsuarios = Usuario::getAllIdUsuariosPorRol(25);
                                 foreach ($idUsuarios as $id) {
-                                    $correos[] = Usuario::find($id)->email;
+                                    $correosOrdenServicioTransformacion[] = Usuario::find($id)->email;
                                 }
+
+                                $correoUsuarioEnSession=Auth::user()->email;
+                                $correoFinalizacionCuadroPresupuesto[]=$correoUsuarioEnSession;
                             }
-                            Mail::to(['programador03@okcomputer.com.pe'])->send(new EmailEstadoCuadroPresupuesto($listaFinalizados, $listaRestablecidos));
+
+                            $nombreUsuarioEnSession=Auth::user()->nombre_corto;
+                            $correoUsuarioEnSession=Auth::user()->email;
+                            $correoFinalizacionCuadroPresupuesto[]=$correoUsuarioEnSession;
+                            
+                            Mail::to(array_unique($correoFinalizacionCuadroPresupuesto))->send(new EmailFinalizacionCuadroPresupuesto($codigoOportunidad,$payload,$nombreUsuarioEnSession));
+
+
+                            foreach ($payload as $pl) { // enviar orde servicio / transformacion a multiples usuarios
+                                $transformacion =  Transformacion::select('transformacion.codigo', 'cc.id_oportunidad', 'adm_empresa.logo_empresa')
+                                ->leftjoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'transformacion.id_cc')
+                                ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'transformacion.id_almacen')
+                                ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_almacen.id_sede')
+                                ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
+                                ->where('cc.id', $pl['cuadro_presupuesto']->id)
+                                ->first();
+                                $logoEmpresa=empty($transformacion->logo_empresa)?null:$transformacion->logo_empresa;
+                                $codigoTransformacion=empty($transformacion->codigo)?null:$transformacion->codigo;
+    
+                                Mail::to($correosOrdenServicioTransformacion)->send(new EmailOrdenServicioOrdenTransformacion($pl['oportunidad'],$logoEmpresa,$codigoTransformacion));
+                            }
+
 
                         }
                         // fin preparar correo
@@ -113,26 +141,57 @@ class CuadroPresupuestoHelper
         } catch (Exception $ex) {
             $error = $ex->getMessage();
         }
-        return ['lista_finalizados' => $listaFinalizados, 'lista_restablecidos' => $listaRestablecidos, 'error' => $error];
+        return ['lista_finalizados' => $payload, 'lista_restablecidos' => [], 'error' => $error];
     }
 
     static public function enviar_correo_prueba(){ //BORRAR ESTO ES UNA PRUEBA
 
-        //Obtencion de archivos en carpeta temporal
-        // $archivosHT = TransformacionHelper::descargarArchivos(42);
-        //Guardar archivos subidos
-
-
-        $listaFinalizados[]=[
-            'codigo_cuadro_presupuesto'=> "OKC2011021",
-            'codigo_requerimiento'=> "RM-211283",
-            'id_requerimiento'=> 1368
+        $requerimiento = Requerimiento::find(1368);
+        $cuadroPresupuesto = CuadroCosto::where('id',1382)->with('oportunidad','oportunidad.entidad','oportunidad.tipoNegocio','oportunidad.responsable','oportunidad.ordenCompraPropia')->first();
+        $ordenPropia= OrdenCompraPropias::where('id_oportunidad',1382)->first();
+        $codigoOportunidad='';
+        $oportunidad = $cuadroPresupuesto->oportunidad;
+        $codigoOportunidad.= $cuadroPresupuesto->oportunidad->codigo_oportunidad;
+        // $cc=CuadroCostoView::find(1382);
+ 
+        $payload[]=[
+            'requerimiento' => $requerimiento,
+            'cuadro_presupuesto' => $cuadroPresupuesto,
+            'orden_compra_propia' => $ordenPropia,
+            'oportunidad' => $cuadroPresupuesto->oportunidad,
+            // 'cc'=>$cc
 
         ];
-        
-        Mail::to(['programador03@okcomputer.com.pe'])->send(new EmailEstadoCuadroPresupuesto($listaFinalizados, []));
-        // foreach ($archivosHT as $archivo) {
-        //     unlink($archivo);
-        // }
+        $nombreUsuarioEnSession=Auth::user()->nombre_corto;
+        $correoUsuarioEnSession=Auth::user()->email;
+        $destinatarios[]=$correoUsuarioEnSession;
+        $destinatarios[]=$cuadroPresupuesto->oportunidad->responsable->email;
+        // array_unique($destinatarios)
+        Mail::to(['programador03@okcomputer.com.pe'])->send(new EmailFinalizacionCuadroPresupuesto($codigoOportunidad,$payload,$nombreUsuarioEnSession,$destinatarios));
+
+ 
+        $correosOrdenServicio = [];
+        if (config('app.debug')) {
+            $correosOrdenServicio[] = config('global.correoDebug2');
+        } else {
+            $idUsuarios = Usuario::getAllIdUsuariosPorRol(25);
+            foreach ($idUsuarios as $id) {
+                $correosOrdenServicio[] = Usuario::find($id)->email;
+            }
+        }
+
+        $transformacion =  Transformacion::select('transformacion.codigo', 'cc.id_oportunidad', 'adm_empresa.logo_empresa')
+        ->leftjoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'transformacion.id_cc')
+        ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'transformacion.id_almacen')
+        ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_almacen.id_sede')
+        ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
+        ->where('cc.id', 1382)
+        ->first();
+        $logoEmpresa=empty($transformacion->logo_empresa)?null:$transformacion->logo_empresa;
+        $codigoTransformacion=empty($transformacion->codigo)?null:$transformacion->codigo;
+
+
+        Mail::to($correosOrdenServicio)->send(new EmailOrdenServicioOrdenTransformacion($oportunidad,$logoEmpresa,$codigoTransformacion));
+
     }
 }
