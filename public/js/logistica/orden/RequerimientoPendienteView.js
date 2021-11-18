@@ -1335,6 +1335,8 @@ class RequerimientoPendienteView {
     abrirModalNuevaReserva(obj) {
 
         this.limpiarModalNuevaReserva();
+        document.querySelector("div[id='modal-nueva-reserva'] div[id='contenedor-info-stock']").classList.add('oculto');
+
         $('#modal-nueva-reserva').modal({
             show: true,
             backdrop: 'true'
@@ -1564,26 +1566,31 @@ class RequerimientoPendienteView {
                     data: { 'idAlmacen': obj.value, 'idProducto': idProducto },
                     dataType: 'JSON',
                 }).done((response) => {
-                    Swal.fire({
-                        title: 'Información de Stock',
-                        html: `
-                            <h5 style="font-weight: bold; color:#356ed5;">Stock total en almacén: ${response.stock} </h5>
-                            <h5 style="font-weight: bold; color:#d535c1;">Reservas activas: ${response.reservas} </h5>
-                            <h5 style="font-weight: bold; color:#d535c1;">Saldo disponible: ${response.saldo} </h5>
-                        `,
-                        showDenyButton: false,
-                        showCancelButton: false,
-                        confirmButtonText: 'Ok',
-                        cancelButtonText: 'Cancelar',
-                        stopKeydownPropagation: true,
-                    }).then((result) => {
-                        /* Read more about isConfirmed, isDenied below */
-                        // if (!result.isConfirmed) {
-                        //     document.getElementsByName("cantidadReserva")[0].value='';
-                        // }else{
 
-                        // }
-                    })
+                    document.querySelector("div[id='modal-nueva-reserva'] div[id='contenedor-info-stock']").classList.remove('oculto');
+                    document.querySelector("div[id='modal-nueva-reserva'] div[id='contenedor-info-stock'] span[id='info-stock-almacen']").textContent=response.stock;
+                    document.querySelector("div[id='modal-nueva-reserva'] div[id='contenedor-info-stock'] span[id='info-reservas-activas']").textContent=response.reservas;
+                    document.querySelector("div[id='modal-nueva-reserva'] div[id='contenedor-info-stock'] span[id='info-saldo-disponible']").textContent=response.saldo;
+                    // Swal.fire({
+                    //     title: 'Información de Stock',
+                    //     html: `
+                    //         <h5 style="font-weight: bold; color:#356ed5;">Stock total en almacén: ${response.stock} </h5>
+                    //         <h5 style="font-weight: bold; color:#d535c1;">Reservas activas: ${response.reservas} </h5>
+                    //         <h5 style="font-weight: bold; color:#00a65a;">Saldo disponible: ${response.saldo} </h5>
+                    //     `,
+                    //     showDenyButton: false,
+                    //     showCancelButton: false,
+                    //     confirmButtonText: 'Ok',
+                    //     cancelButtonText: 'Cancelar',
+                    //     stopKeydownPropagation: true,
+                    // }).then((result) => {
+                    //     /* Read more about isConfirmed, isDenied below */
+                    //     // if (!result.isConfirmed) {
+                    //     //     document.getElementsByName("cantidadReserva")[0].value='';
+                    //     // }else{
+
+                    //     // }
+                    // })
                 }).fail((jqXHR, textStatus, errorThrown) => {
                     Swal.fire(
                         '',
@@ -1595,6 +1602,9 @@ class RequerimientoPendienteView {
                     console.log(errorThrown);
                 });
             }
+
+        }else{
+            document.querySelector("div[id='modal-nueva-reserva'] div[id='contenedor-info-stock']").classList.add('oculto');
 
         }
 

@@ -61,13 +61,23 @@
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                <div class="form-group" style="padding: 25px 0px;">
+                                <div class="form-group" style="margin-top: 25px;">
                                 <button class="btn btn-sm btn-success handleClickAgregarReserva" type="button" id="btnAgregarReserva">
                                         <i class="fas fa-plus"></i> Agregar y Guardar
                                     </button>
                                 </div>
                             </div>
+
+                            <div class="col-md-12 oculto" id="contenedor-info-stock">
+                                <ul class="list-inline">
+                                    <li style="font-weight: bold; color:#356ed5;">Stock total en almacén: <span id="info-stock-almacen"></span></li>
+                                    <li style="font-weight: bold; color:#d535c1;">Reservas activas: <span id="info-reservas-activas"></span</li>
+                                    <li style="font-weight: bold; color:#00a65a;">Saldo disponible: <span id="info-saldo-disponible"></span</li>
+                                </ul>
+                            </div>
                         </div>
+
+
 
                         </div>
                         <div class="row">
