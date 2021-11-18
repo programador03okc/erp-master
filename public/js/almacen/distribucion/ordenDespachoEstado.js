@@ -174,7 +174,7 @@ function formatTimeLine(table_id, id, row) {
                                         (element.accion == 7 ? 'borderorange' : 'borderdark')))} ">
 
                             ${element.accion !== 1 ?
-                                `<i class="fas fa-trash-alt red" style="cursor:pointer;" title="Eliminar estado"
+                                `<i class="fas fa-trash-alt red" style="cursor:pointer;" title="Eliminar estado de envío"
                                 onClick="eliminarTrazabilidadEnvio(${element.id_obs});"></i>`
                                 : ''}
     
