@@ -719,7 +719,11 @@ class DistribucionController extends Controller
     public function mostrarEstados(Request $request)
     {
         $estados = DB::table('almacen.estado_envio')
-            ->whereIn('id_estado', json_decode($request->estados))
+            ->where([
+                ['id_estado', '>=', 3],
+                ['id_estado', '<=', 8]
+            ])
+            // ->whereIn('id_estado', json_decode($request->estados))
             ->get();
         return response()->json($estados);
     }
@@ -1787,7 +1791,7 @@ class DistribucionController extends Controller
                 'orden_despacho.importe_flete',
                 // 'orden_despacho_grupo.mov_entrega',
                 // 'adm_contri.razon_social as razon_social_despacho',
-                // 'sis_usua.nombre_corto as responsable_despacho',
+                'sis_usua.nombre_corto',
                 // 'orden_despacho_grupo.fecha_despacho',
                 'estado_envio.descripcion as estado_doc'
             )
@@ -1800,51 +1804,77 @@ class DistribucionController extends Controller
             // ->join('almacen.orden_despacho_grupo', 'orden_despacho_grupo.id_od_grupo', '=', 'orden_despacho_grupo_det.id_od_grupo')
             // ->leftjoin('logistica.log_prove', 'log_prove.id_proveedor', '=', 'orden_despacho_grupo.id_proveedor')
             // ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
-            // ->leftjoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'orden_despacho_grupo.responsable')
-            ->leftjoin('logistica.log_prove as log_transportista', 'log_transportista.id_proveedor', '=', 'orden_despacho.id_transportista')
-            ->leftjoin('contabilidad.adm_contri as transportista', 'transportista.id_contribuyente', '=', 'log_transportista.id_contribuyente')
+            ->leftjoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'orden_despacho_obs.registrado_por')
+            ->leftjoin('contabilidad.transportistas', 'transportistas.id_contribuyente', '=', 'orden_despacho.id_transportista')
+            ->leftjoin('contabilidad.adm_contri as transportista', 'transportista.id_contribuyente', '=', 'transportistas.id_contribuyente')
             ->where('orden_despacho_obs.id_od', $id_od)
             ->orderBy('orden_despacho_obs.id_obs')
             ->get();
         return response()->json($obs);
     }
 
-    public function guardarEstadoTimeLine(Request $request)
+    public function guardarEstadoEnvio(Request $request)
     {
         $id_usuario = Auth::user()->id_usuario;
         $file = $request->file('adjunto');
+        $fechaRegistro = new Carbon();
+
+        $od = DB::table('almacen.orden_despacho')
+            ->select('id_requerimiento', 'codigo')
+            ->where('id_od', $request->id_od)->first();
 
         DB::table('almacen.orden_despacho')
             ->where('id_od', $request->id_od)
-            ->update(['estado' => $request->estado]);
+            ->update(['id_estado_envio' => $request->estado]);
 
         if ($request->estado == 8) {
             //Agrega accion en requerimiento
             DB::table('almacen.alm_req_obs')
                 ->insert([
-                    'id_requerimiento' => $request->id_requerimiento,
+                    'id_requerimiento' => $od->id_requerimiento,
                     'accion' => 'ENTREGADO',
                     'descripcion' => 'Entregado al cliente',
                     'id_usuario' => $id_usuario,
-                    'fecha_registro' => date('Y-m-d H:i:s')
+                    'fecha_registro' => $fechaRegistro
                 ]);
         }
 
-        $id_obs = DB::table('almacen.orden_despacho_obs')
-            ->insertGetId([
-                'id_od' => $request->id_od,
-                'accion' => $request->estado,
-                'observacion' => $request->observacion,
-                'registrado_por' => $id_usuario,
-                'gasto_extra' => $request->gasto_extra,
-                'plazo_excedido' => ((isset($request->plazo_excedido) && $request->plazo_excedido == 'on') ? true : false),
-                'fecha_registro' => date('Y-m-d H:i:s')
-            ], 'id_obs');
+        $obs = DB::table('almacen.orden_despacho_obs')
+            ->where([
+                ['id_od', '=', $request->id_od],
+                ['accion', '=', $request->estado]
+            ])
+            ->first();
+
+        if ($obs !== null) {
+            $id_obs = $obs->id_obs;
+            DB::table('almacen.orden_despacho_obs')
+                ->where('id_obs', $obs->id_obs)
+                ->update([
+                    'accion' => $request->estado,
+                    'observacion' => $request->observacion,
+                    'registrado_por' => $id_usuario,
+                    'gasto_extra' => $request->gasto_extra,
+                    'plazo_excedido' => ((isset($request->plazo_excedido) && $request->plazo_excedido == 'on') ? true : false),
+                    'fecha_registro' => $fechaRegistro
+                ]);
+        } else {
+            $id_obs = DB::table('almacen.orden_despacho_obs')
+                ->insertGetId([
+                    'id_od' => $request->id_od,
+                    'accion' => $request->estado,
+                    'observacion' => $request->observacion,
+                    'registrado_por' => $id_usuario,
+                    'gasto_extra' => $request->gasto_extra,
+                    'plazo_excedido' => ((isset($request->plazo_excedido) && $request->plazo_excedido == 'on') ? true : false),
+                    'fecha_registro' => $fechaRegistro
+                ], 'id_obs');
+        }
 
         if (isset($file)) {
             //obtenemos el nombre del archivo
             $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
-            $nombre = $id_obs . '.' . $extension;
+            $nombre = $od->codigo . ' ' . $id_obs . '.' . $extension;
             //indicamos que queremos guardar un nuevo archivo en el disco local
             File::delete(public_path('almacen/trazabilidad_envio/' . $nombre));
             Storage::disk('archivos')->put('almacen/trazabilidad_envio/' . $nombre, File::get($file));
@@ -1862,11 +1892,11 @@ class DistribucionController extends Controller
             $obs = DB::table('almacen.orden_despacho_obs')
                 ->where('id_obs', $id)->first();
 
-            if ($obs !== null) {
-                DB::table('almacen.orden_despacho')
-                    ->where('id_od', $obs->id_od)
-                    ->update(['estado' => (intval($obs->accion) - 1)]);
-            }
+            // if ($obs !== null) {
+            //     DB::table('almacen.orden_despacho')
+            //         ->where('id_od', $obs->id_od)
+            //         ->update(['estado' => (intval($obs->accion) - 1)]);
+            // }
 
             DB::table('almacen.orden_despacho_obs')
                 ->where('id_obs', $id)

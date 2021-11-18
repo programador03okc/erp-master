@@ -49,7 +49,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-6">
-                                <h5>Monto flete (S/)</h5>
+                                <h5>Monto flete</h5>
                                 <div class="input-group">
                                     <span class="input-group-addon" disabled>S/</span>
                                     {{-- <input type="text" class="form-control decimal" name="fleteReal" > --}}

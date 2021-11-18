@@ -561,7 +561,7 @@ $("#requerimientosEnProceso tbody").on("click", "td button.estados", function ()
                 lengthChange: false,
                 ordering: false,
                 paging: false,
-                scrollX: false,
+                scrollX: true,
                 scrollY: false,
                 searching: false,
                 columns: []

@@ -927,7 +927,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('listarGruposDespachados', 'DistribucionController@listarGruposDespachados');
 				Route::get('listarGruposDespachadosPendientesCargo', 'DistribucionController@listarGruposDespachadosPendientesCargo');
 				Route::get('verDetalleGrupoDespacho/{id}', 'DistribucionController@verDetalleGrupoDespacho');
-				Route::post('despacho_transportista', 'DistribucionController@despacho_transportista');
+				Route::post('despachoTransportista', 'DistribucionController@despachoTransportista');
 				Route::post('despacho_revertir_despacho', 'DistribucionController@despacho_revertir_despacho');
 				Route::post('despacho_conforme', 'DistribucionController@despacho_conforme');
 				Route::post('despacho_no_conforme', 'DistribucionController@despacho_no_conforme');
@@ -1002,9 +1002,11 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('actualizarOrdenDespachoExterno', 'Logistica\Distribucion\OrdenesDespachoExternoController@actualizarOrdenDespachoExterno');
 				Route::get('anular_orden_despacho/{id}/{tp}', 'Almacen\Movimiento\SalidasPendientesController@anular_orden_despacho');
 				Route::post('enviarFacturacion', 'Logistica\Distribucion\OrdenesDespachoExternoController@enviarFacturacion');
-				Route::post('despacho_transportista', 'Logistica\Distribucion\OrdenesDespachoExternoController@despacho_transportista');
+				Route::post('despachoTransportista', 'Logistica\Distribucion\OrdenesDespachoExternoController@despachoTransportista');
 				Route::get('mostrarTransportistas', 'DistribucionController@mostrarTransportistas');
 				Route::get('getTimelineOrdenDespacho/{id}', 'DistribucionController@getTimelineOrdenDespacho');
+				Route::post('guardarEstadoEnvio', 'DistribucionController@guardarEstadoEnvio');
+				Route::get('eliminarTrazabilidadEnvio/{id}', 'DistribucionController@eliminarTrazabilidadEnvio');
 
 				Route::get('mostrarDocumentosByRequerimiento/{id}', 'Logistica\Requerimientos\TrazabilidadRequerimientoController@mostrarDocumentosByRequerimiento');
 				Route::get('imprimir_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@imprimir_transformacion');

@@ -30,7 +30,13 @@ class OrdenesDespachoExternoController extends Controller
 
     function view_ordenes_despacho_externo()
     {
-        return view('almacen/distribucion/ordenesDespachoExterno');
+        $estados = DB::table('almacen.estado_envio')
+            ->where([
+                ['id_estado', '>=', 3],
+                ['id_estado', '<=', 8]
+            ])
+            ->get();
+        return view('almacen/distribucion/ordenesDespachoExterno', compact('estados'));
     }
 
     public function listarRequerimientosPendientesDespachoExterno(Request $request)
@@ -383,6 +389,7 @@ class OrdenesDespachoExternoController extends Controller
 
                 $usuario = Auth::user()->id_usuario;
                 $fechaRegistro = new Carbon(); //date('Y-m-d H:i:s');
+                $id_estado_envio = 1; //despacho elaborado
 
                 $req = Requerimiento::where('id_requerimiento', $request->id_requerimiento)->first();
                 $ordenDespacho = new OrdenDespacho();
@@ -395,7 +402,7 @@ class OrdenesDespachoExternoController extends Controller
                 $ordenDespacho->registrado_por = $usuario;
                 $ordenDespacho->fecha_registro = $fechaRegistro;
                 $ordenDespacho->estado = 1;
-                $ordenDespacho->id_estado_envio = 1;
+                $ordenDespacho->id_estado_envio = $id_estado_envio;
                 $ordenDespacho->save();
                 //Agrega accion en requerimiento
                 DB::table('almacen.alm_req_obs')
@@ -438,6 +445,36 @@ class OrdenesDespachoExternoController extends Controller
 
                 $ordenDespacho->codigo = OrdenDespacho::ODnextId($req->id_almacen, false, $ordenDespacho->id_od);
                 $ordenDespacho->save();
+
+                //Agrega primera trazabilidad de envio (la generacion de la Orden de despacho)
+                $obs = DB::table('almacen.orden_despacho_obs')
+                    ->where([
+                        ['id_od', '=', $ordenDespacho->id_od],
+                        ['accion', '=', $id_estado_envio]
+                    ])
+                    ->first();
+
+                $name_usuario = Auth::user()->nombre_corto;
+                //si ya existe, actualiza
+                if ($obs !== null) {
+                    DB::table('almacen.orden_despacho_obs')
+                        ->where('id_obs', $obs->id_obs)
+                        ->update([
+                            'observacion' => 'Fue despachado con ' . $ordenDespacho->codigo,
+                            'registrado_por' => $usuario,
+                            'fecha_registro' => $fechaRegistro
+                        ]);
+                } else {
+                    //si no existe, crea
+                    DB::table('almacen.orden_despacho_obs')
+                        ->insert([
+                            'id_od' => $ordenDespacho->id_od,
+                            'accion' => $id_estado_envio,
+                            'observacion' => 'Fue despachado por ' . $name_usuario . ' Nro. ' . $ordenDespacho->codigo,
+                            'registrado_por' => $usuario,
+                            'fecha_registro' => $fechaRegistro
+                        ]);
+                }
                 /*if ($codigo !== null) {
                     DB::table('almacen.orden_despacho')
                         ->where('id_od', $ordenDespacho->id_od)
@@ -768,65 +805,72 @@ class OrdenesDespachoExternoController extends Controller
         }
     }
 
-    public function despacho_transportista(Request $request)
+    public function despachoTransportista(Request $request)
     {
         try {
             DB::beginTransaction();
 
             $id_usuario = Auth::user()->id_usuario;
             $fecha_registro = date('Y-m-d H:i:s');
+            $id_estado_envio = 2; //transportandose (ag transp. lima)
 
             $data = DB::table('almacen.orden_despacho')
                 ->where('id_od', $request->id_od)
                 ->update([
-                    // 'estado' => 2,
                     'id_transportista' => $request->tr_id_transportista,
                     'serie' => $request->serie,
                     'numero' => $request->numero,
                     'fecha_transportista' => $request->fecha_transportista,
                     'codigo_envio' => $request->codigo_envio,
                     'importe_flete' => $request->importe_flete,
+                    'id_estado_envio' => $id_estado_envio,
                     // 'propia'=>((isset($request->transporte_propio)&&$request->transporte_propio=='on')?true:false),
                     'credito' => ((isset($request->credito) && $request->credito == 'on') ? true : false),
                 ]);
 
-            $obs = DB::table('almacen.orden_despacho_obs')
-                ->where([
-                    ['id_od', '=', $request->id_od],
-                    ['accion', '=', 2]
-                ])
-                ->first();
+            if (!empty($request->serie) && !empty($request->numero)) {
+                //si se ingreso serie y numero de la guia se agrega el nuevo estado envio
+                $obs = DB::table('almacen.orden_despacho_obs')
+                    ->where([
+                        ['id_od', '=', $request->id_od],
+                        ['accion', '=', $id_estado_envio]
+                    ])
+                    ->first();
 
-            if ($obs !== null) {
-                DB::table('almacen.orden_despacho_obs')
-                    ->where('id_obs', $obs->id_obs)
-                    ->update([
-                        'observacion' => 'Guía Transportista: ' . $request->serie . '-' . $request->numero,
-                        'registrado_por' => $id_usuario,
-                        'fecha_registro' => $fecha_registro
-                    ]);
-            } else {
-                DB::table('almacen.orden_despacho_obs')
-                    ->insert([
-                        'id_od' => $request->id_od,
-                        'accion' => 2,
-                        'observacion' => 'Guía Transportista: ' . $request->serie . '-' . $request->numero,
-                        'registrado_por' => $id_usuario,
-                        'fecha_registro' => $fecha_registro
-                    ]);
-            }
+                if ($obs !== null) {
+                    //si ya existe este estado lo actualiza
+                    DB::table('almacen.orden_despacho_obs')
+                        ->where('id_obs', $obs->id_obs)
+                        ->update([
+                            'observacion' => 'Guía N° ' . $request->serie . '-' . $request->numero,
+                            'registrado_por' => $id_usuario,
+                            'fecha_registro' => $fecha_registro
+                        ]);
+                } else {
+                    //si no existe este estado lo crea
+                    DB::table('almacen.orden_despacho_obs')
+                        ->insert([
+                            'id_od' => $request->id_od,
+                            'accion' => $id_estado_envio,
+                            'observacion' => 'Guía N° ' . $request->serie . '-' . $request->numero,
+                            'registrado_por' => $id_usuario,
+                            'fecha_registro' => $fecha_registro
+                        ]);
+                }
 
-            if ($request->con_id_requerimiento !== null) {
                 //Agrega accion en requerimiento
-                DB::table('almacen.alm_req_obs')
-                    ->insert([
-                        'id_requerimiento' => $request->con_id_requerimiento,
-                        'accion' => 'TRANSPORTANDOSE',
-                        'descripcion' => 'Se agrego los Datos del transportista. ' . $request->serie . '-' . $request->numero,
-                        'id_usuario' => $id_usuario,
-                        'fecha_registro' => $fecha_registro
-                    ]);
+                if ($request->con_id_requerimiento !== null) {
+                    DB::table('almacen.alm_req_obs')
+                        ->insert([
+                            'id_requerimiento' => $request->con_id_requerimiento,
+                            'accion' => 'TRANSPORTANDOSE',
+                            'descripcion' => 'Se agrego los Datos del transportista. ' . $request->serie . '-' . $request->numero,
+                            'id_usuario' => $id_usuario,
+                            'fecha_registro' => $fecha_registro
+                        ]);
+                }
             }
+
             DB::commit();
             return response()->json($data);
         } catch (\PDOException $e) {

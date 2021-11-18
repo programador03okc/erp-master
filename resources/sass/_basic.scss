@@ -1678,21 +1678,43 @@ form .select2-container .select2-selection--single {
 }
 
 /* Timeline */
+.timeline-item {
+    min-width: 170px !important;
+    height: 270px !important;
+}
+.timeline-horizontal {
+    padding: 0px !important;
+}
 
 .borderfuxia {
     border-color: #b22550 !important;
+    padding: 5px !important;
+    width: 140px !important;
 }
 .bordergreendark {
     border-color: #047480 !important;
+    padding: 5px !important;
+    width: 140px !important;
 }
 .bordergreenlight {
     border-color: #59ba1f !important;
+    padding: 5px !important;
+    width: 140px !important;
 }
 .borderyellow {
     border-color: #c2af03 !important;
+    padding: 5px !important;
+    width: 140px !important;
 }
 .borderdark {
     border-color: #3f3f3f !important;
+    padding: 5px !important;
+    width: 140px !important;
+}
+.borderorange {
+    border-color: #f55a12 !important;
+    padding: 5px !important;
+    width: 140px !important;
 }
 
 .bgfuxia {
@@ -1710,6 +1732,9 @@ form .select2-container .select2-selection--single {
 .bgdark {
     background-color: #3f3f3f !important;
 }
+.bgorange {
+    background-color: #f55a12 !important;
+}
 
 .colorfuxia {
     color: #b22550 !important;
@@ -1725,6 +1750,9 @@ form .select2-container .select2-selection--single {
 }
 .colordark {
     color: #3f3f3f !important;
+}
+.colororange {
+    color: #f55a12 !important;
 }
 
 .celestito {

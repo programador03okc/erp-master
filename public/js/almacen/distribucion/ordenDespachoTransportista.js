@@ -34,15 +34,15 @@ $("#form-orden_despacho_transportista").on("submit", function (e) {
             icon: "error",
         });
     } else {
-        despacho_transportista(data);
+        despachoTransportista(data);
     }
 });
 
-function despacho_transportista(data) {
+function despachoTransportista(data) {
     $('#submit_od_transportista').attr('disabled', 'true');
     $.ajax({
         type: 'POST',
-        url: 'despacho_transportista',
+        url: 'despachoTransportista',
         data: data,
         dataType: 'JSON',
         success: function (response) {

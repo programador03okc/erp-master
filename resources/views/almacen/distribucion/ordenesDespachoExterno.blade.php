@@ -68,11 +68,12 @@ Gestión de Despacho Externo
 @include('almacen.distribucion.ordenDespachoEnviar')
 @include('almacen.distribucion.agregarContacto')
 @include('almacen.distribucion.contactoEnviar')
+@include('almacen.distribucion.ordenDespachoEstados')
 @include('tesoreria.facturacion.archivos_oc_mgcp')
 @include('publico.ubigeoModal')
 @include('almacen.transferencias.transportistaModal')
 @include('almacen.distribucion.agregarTransportista')
-@include('logistica.requerimientos.trazabilidad.modal_trazabilidad')
+{{-- @include('logistica.requerimientos.trazabilidad.modal_trazabilidad') --}}
 
 @endsection
 
@@ -94,7 +95,7 @@ Gestión de Despacho Externo
 <script src="{{ asset('js/almacen/distribucion/ordenDespachoContacto.js')}}"></script>
 <script src="{{ asset('js/almacen/distribucion/ordenDespachoEnviar.js')}}"></script>
 <script src="{{ asset('js/almacen/distribucion/verDetalleRequerimiento.js')}}"></script>
-<script src="{{ asset('js/logistica/requerimiento/trazabilidad.js')}}"></script>
+{{-- <script src="{{ asset('js/logistica/requerimiento/trazabilidad.js')}}"></script> --}}
 <script src="{{ asset('js/almacen/distribucion/ordenDespachoEstado.js')}}"></script>
 <script src="{{ asset('js/almacen/distribucion/ordenDespachoTransportista.js')}}"></script>
 <script src="{{ asset('js/almacen/distribucion/contacto.js')}}"></script>
