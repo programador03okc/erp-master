@@ -718,7 +718,11 @@ class RequerimientoController extends Controller
                 $idUsuariosList = Usuario::getAllIdUsuariosPorRol($idRolPrimerAprobante);
 
                 foreach ($idUsuariosList as $idUsuario) {
-                    $correoUsuario = Usuario::find($idUsuario)->email;
+                    if (config('app.debug')) {
+                        $correoUsuario = config('global.correoDebug2');
+                    }else{
+                        $correoUsuario = Usuario::find($idUsuario)->email;
+                    }
                     if (!empty($correoUsuario)) {
                         $this->enviarNotificacionPorCreacion($request, $correoUsuario, $requerimiento, $montoTotal);
                     }
@@ -762,8 +766,12 @@ class RequerimientoController extends Controller
 
         // Debugbar::info($usuariosList);
         if (count($usuariosList) > 0) {
-            foreach ($usuariosList as $idUsuario) {
-                $correoUsuarioList[] = Usuario::find($idUsuario)->email;
+            if (config('app.debug')) {
+                $correoUsuarioList[] = config('global.correoDebug2');
+            }else{
+                foreach ($usuariosList as $idUsuario) {
+                    $correoUsuarioList[] = Usuario::find($idUsuario)->email;
+                }
             }
 
             if (count($correoUsuarioList) > 0) {
@@ -1144,12 +1152,22 @@ class RequerimientoController extends Controller
                 }
             }
             if ($idRolPrimerAprobante > 0) {
+
+
                 $usuariosList = Usuario::getAllIdUsuariosPorRol($idRolPrimerAprobante);
-                foreach ($usuariosList as $idUsuario) {
-                    $correoUsuario = Usuario::find($idUsuario)->email;
+                if (config('app.debug')) {
+                    $correoUsuario = config('global.correoDebug2');
                     if (!empty($correoUsuario)) {
                         $this->enviarNotificacionPorActualizacion($request, $correoUsuario, $requerimiento);
                     }
+                }else{
+                    foreach ($usuariosList as $idUsuario) {
+                        $correoUsuario = Usuario::find($idUsuario)->email;
+                        if (!empty($correoUsuario)) {
+                            $this->enviarNotificacionPorActualizacion($request, $correoUsuario, $requerimiento);
+                        }
+                    }
+
                 }
             }
         }
