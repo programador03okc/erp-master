@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class AprobadorTres extends Model
 {
-    use HasFactory;
+    // use HasFactory;
     protected $table = 'mgcp_cuadro_costos.aprobadores_tipo_tres';
     public $timestamps = false;
 

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class DetalleProceso extends Model
 {
-    use HasFactory;
+    // use HasFactory;
     protected $table = 'mgcp_cuadro_costos.detalles_proceso';
     public $timestamps = false;
 }

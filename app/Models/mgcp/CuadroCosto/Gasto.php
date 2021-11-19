@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Gasto extends Model
 {
-    use HasFactory;
+    // use HasFactory;
     protected $table = 'mgcp_cuadro_costos.gastos';
     public $timestamps = false;
 

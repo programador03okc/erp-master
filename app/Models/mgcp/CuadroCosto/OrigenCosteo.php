@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class OrigenCosteo extends Model
 {
-    use HasFactory;
+    // use HasFactory;
     protected $table = 'mgcp_cuadro_costos.origenes_costeo';
     public $timestamps = false;
 

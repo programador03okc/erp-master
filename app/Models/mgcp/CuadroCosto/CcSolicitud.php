@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class CcSolicitud extends Model
 {
-    use HasFactory;
+    // use HasFactory;
     protected $table = 'mgcp_cuadro_costos.cc_solicitudes';
     public $timestamps = false;
     protected $appends = ['fecha_solicitud', 'fecha_respuesta', 'aprobacion'];

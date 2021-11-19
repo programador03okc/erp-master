@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class HistorialPrecio extends Model
 {
-    use HasFactory;
+    // use HasFactory;
     protected $table = 'mgcp_cuadro_costos.historial_precios';
     public $timestamps = false;
     protected $appends = ['fecha_format'];

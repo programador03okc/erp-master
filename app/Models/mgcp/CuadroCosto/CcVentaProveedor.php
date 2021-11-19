@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class CcVentaProveedor extends Model
 {
-    use HasFactory;
+    // use HasFactory;
     protected $table = 'mgcp_cuadro_costos.cc_venta_proveedor';
     public $timestamps = false;
 
