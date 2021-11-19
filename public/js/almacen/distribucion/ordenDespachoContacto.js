@@ -2,14 +2,12 @@ let listaContactos = [];
 
 function open_despacho_create(data) {
 
-    $('#modal-orden_despacho_contacto').modal({
-        show: true
-    });
+    $('#modal-orden_despacho_contacto').modal('show');
     $("#submit_orden_despacho").removeAttr("disabled");
     $('#codigo_req').text(data.codigo_oportunidad + ' - ' + data.codigo);
 
     $('.limpiar').text('');
-
+    $('#listaContactos tbody').html('');
     console.log(data);
 
     $('[name=id_requerimiento]').val(data.id_requerimiento ?? 0);
@@ -24,7 +22,7 @@ $('#modal-orden_despacho_contacto').on('shown.bs.modal', function (e) {
 })
 
 function verDatosContacto(id_requerimiento, id_entidad) {
-    $('#listaContactos tbody').html('');
+
     const $modal = $('#modal-orden_despacho_contacto');
 
     $modal.find('div.modal-body').LoadingOverlay("show", {

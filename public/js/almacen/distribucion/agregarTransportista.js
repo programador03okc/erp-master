@@ -3,6 +3,7 @@ function agregarTransportista() {
     $("#modal-transportista").modal({
         show: true
     });
+    $('.limpiar').val('');
 }
 
 $("#form-transportista").on("submit", function (e) {
@@ -37,22 +38,22 @@ function guardarTransportista(data) {
         url: 'guardarTransportista',
         data: data,
         dataType: 'JSON',
-        success: function (response) {
-            console.log(response);
-            Lobibox.notify(response.tipo, {
-                size: "mini",
-                rounded: true,
-                sound: false,
-                delayIndicator: false,
-                msg: response.mensaje
-            });
-            if (response.tipo == 'success') {
-                $('#modal-transportista').modal('hide');
-                listarTransportistas();
-            } else {
-                console.log('Error devuelto: ' + response.error);
-            }
+    }).done(function (response) {
+        console.log(response);
+        Lobibox.notify(response.tipo, {
+            size: "mini",
+            rounded: true,
+            sound: false,
+            delayIndicator: false,
+            msg: response.mensaje
+        });
+        if (response.tipo == 'success') {
+            $('#modal-transportista').modal('hide');
+            listarTransportistas();
+        } else {
+            console.log('Error devuelto: ' + response.error);
         }
+
     }).always(function () {
         $button.prop('disabled', false);
         $button.html('Guardar');

@@ -14,6 +14,9 @@
                     </div>
                 </div>
             </form>
+            <div class="modal-footer">
+                <button id="btn_cerrar" class="btn btn-primary" onClick="cerrarVentanaArchivos();">Cerrar</button>
+            </div>
         </div>
     </div>
 </div>

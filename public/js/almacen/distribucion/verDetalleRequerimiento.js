@@ -1,5 +1,5 @@
 
-function format(table_id, id, row) {
+function format(table_id, id, row, $boton) {
     $.ajax({
         type: 'GET',
         url: 'verDetalleRequerimientoDI/' + id,
@@ -56,6 +56,7 @@ function format(table_id, id, row) {
                 </tbody>
                 </table>`;
             }
+            $boton.prop('disabled', false);
             row.child(tabla).show();
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {

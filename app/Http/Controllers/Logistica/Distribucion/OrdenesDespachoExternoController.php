@@ -593,9 +593,11 @@ class OrdenesDespachoExternoController extends Controller
         try {
             DB::beginTransaction();
             $id_contacto = null;
+            $texto = '';
 
             if ($request->id_contacto !== '' && $request->id_contacto !== null) {
                 $id_contacto = $request->id_contacto;
+                $texto = 'actualizado';
 
                 DB::table('contabilidad.adm_ctb_contac')
                     ->where('id_datos_contacto', $request->id_contacto)
@@ -609,6 +611,7 @@ class OrdenesDespachoExternoController extends Controller
                         'ubigeo' => $request->ubigeo
                     ]);
             } else {
+                $texto = 'guardado';
                 $id_contacto = DB::table('contabilidad.adm_ctb_contac')
                     ->insertGetId(
                         [
@@ -635,7 +638,7 @@ class OrdenesDespachoExternoController extends Controller
             return response()->json(
                 array(
                     'tipo' => 'success',
-                    'mensaje' => 'Se guardó correctamente',
+                    'mensaje' => 'Se ha ' . $texto . ' el contacto.',
                     'id_contacto' => $id_contacto
                 ),
                 200
@@ -645,7 +648,7 @@ class OrdenesDespachoExternoController extends Controller
             return response()->json(
                 array(
                     'tipo' => 'error',
-                    'mensaje' => 'Hubo un problema al enviar el contacto. Por favor intente de nuevo',
+                    'mensaje' => 'Hubo un problema al enviar el contacto. Por favor intente de nuevo.',
                     'error' => $e->getMessage()
                 ),
                 200
@@ -716,34 +719,44 @@ class OrdenesDespachoExternoController extends Controller
     {
         try {
             DB::beginTransaction();
+            $array = [];
 
-            $id_contribuyente = DB::table('contabilidad.adm_contri')
-                ->insertGetId(
-                    [
-                        'nro_documento' => trim($request->nro_documento),
-                        'razon_social' => trim($request->razon_social),
-                        'telefono' => trim($request->telefono),
-                        'direccion_fiscal' => trim($request->direccion_fiscal),
-                        'fecha_registro' => date('Y-m-d H:i:s'),
-                        'estado' => 1,
-                        'transportista' => true
-                    ],
-                    'id_contribuyente'
+            $contribuyente = DB::table('contabilidad.adm_contri')
+                ->where('nro_documento', trim($request->nro_documento))
+                ->first();
+
+            if ($contribuyente !== null) {
+                $array = array(
+                    'tipo' => 'warning',
+                    'mensaje' => 'Ya existe el RUC ingresado.',
                 );
+            } else {
+                $id_contribuyente = DB::table('contabilidad.adm_contri')
+                    ->insertGetId(
+                        [
+                            'nro_documento' => trim($request->nro_documento),
+                            'razon_social' => trim($request->razon_social),
+                            'telefono' => trim($request->telefono),
+                            'direccion_fiscal' => trim($request->direccion_fiscal),
+                            'fecha_registro' => date('Y-m-d H:i:s'),
+                            'estado' => 1,
+                            'transportista' => true
+                        ],
+                        'id_contribuyente'
+                    );
 
-            DB::table('contabilidad.transportistas')
-                ->insert([
-                    'id_contribuyente' => $id_contribuyente
-                ]);
+                DB::table('contabilidad.transportistas')
+                    ->insert([
+                        'id_contribuyente' => $id_contribuyente
+                    ]);
 
-            DB::commit();
-
-            return response()->json(
-                array(
+                $array = array(
                     'tipo' => 'success',
                     'mensaje' => 'Se guardó el transportista correctamente',
-                )
-            );
+                );
+            }
+            DB::commit();
+            return response()->json($array);
         } catch (\PDOException $e) {
             DB::rollBack();
             return response()->json(

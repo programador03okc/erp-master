@@ -12,25 +12,25 @@
                         <div class="row">
                             <div class="col-md-8">
                                 <h5>RUC *</h5>
-                                <input type="text" name="nro_documento" class="form-control" placeholder="Ingrese el ruc"/>
+                                <input type="text" name="nro_documento" class="form-control limpiar" placeholder="Ingrese el ruc"/>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-12">
                                 <h5>Razon social *</h5>
-                                <input type="text" name="razon_social" class="form-control" placeholder="Ingrese la razon social"/>
+                                <input type="text" name="razon_social" class="form-control limpiar" placeholder="Ingrese la razon social"/>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-8">
                                 <h5>Teléfono</h5>
-                                <input type="text" name="telefono" class="form-control" placeholder="Ingrese el teléfono"/>
+                                <input type="text" name="telefono" class="form-control limpiar" placeholder="Ingrese el teléfono"/>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-12">
                                 <h5>Dirección</h5>
-                                <input type="text" name="direccion_fiscal" class="form-control" placeholder="Ingrese la dirección fiscal"/>
+                                <input type="text" name="direccion_fiscal" class="form-control limpiar" placeholder="Ingrese la dirección fiscal"/>
                             </div>
                         </div>
                         <div class="row">

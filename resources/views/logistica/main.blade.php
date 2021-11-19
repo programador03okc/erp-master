@@ -57,7 +57,7 @@
                     <p style="font-size:15px;display:flex;width:20px;">Despachos Pendientes</p>
                 </div>
                 @if(Auth::user()->tieneAplicacion(80))
-                <a href="{{route('logistica.distribucion.despachos.index')}}" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
+                <a href="{{route('logistica.distribucion.ordenes-despacho-externo.index')}}" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
                 @else
                 <a href="#" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
                 @endif

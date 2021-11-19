@@ -516,14 +516,19 @@ $('#requerimientosEnProceso tbody').on('click', 'td button.detalle', function ()
     var row = table.row(tr);
     var id = $(this).data('id');
 
+    const $boton = $(this);
+    $boton.prop('disabled', true);
+
     if (row.child.isShown()) {
         //  This row is already open - close it
         row.child.hide();
         tr.removeClass('shown');
+        $boton.prop('disabled', false);
     }
     else {
-        format(iTableCounter, id, row);
+        format(iTableCounter, id, row, $boton);
         tr.addClass('shown');
+
         oInnerTable = $('#requerimientosEnProceso_' + iTableCounter).dataTable({
             autoWidth: true,
             deferRender: true,
@@ -537,6 +542,7 @@ $('#requerimientosEnProceso tbody').on('click', 'td button.detalle', function ()
             columns: []
         });
         iTableCounter = iTableCounter + 1;
+
     }
 });
 

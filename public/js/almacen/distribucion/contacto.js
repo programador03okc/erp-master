@@ -45,30 +45,35 @@ $('#listaContactos tbody').on("click", "button.seleccionar", function () {
 
 $('#listaContactos tbody').on("click", "button.editar", function () {
     var id_contacto = $(this).data('id');
+    const $boton = $(this);
+    $boton.prop('disabled', true);
     $.ajax({
         type: 'GET',
         url: 'mostrarContacto/' + id_contacto,
         dataType: 'JSON',
-        success: function (response) {
-            console.log(response);
+    }).done(function (response) {
+        console.log(response);
 
-            $('#modal-agregar-contacto').modal({
-                show: true
-            });
-            $('[name=id_contacto]').val(id_contacto);
-            $('[name=id_contribuyente_contacto]').val(response.id_contribuyente);
+        $('#modal-agregar-contacto').modal({
+            show: true
+        });
+        $('[name=id_contacto]').val(id_contacto);
+        $('[name=id_contribuyente_contacto]').val(response.id_contribuyente);
 
-            $('[name=direccion]').val(response.direccion);
-            $('[name=ubigeo]').val(response.ubigeo);
-            $('[name=name_ubigeo]').val(response.name_ubigeo);
-            $('[name=telefono]').val(response.telefono);
-            $('[name=email]').val(response.email);
-            $('[name=nombre]').val(response.nombre);
-            $('[name=cargo]').val(response.cargo);
-            $('[name=horario]').val(response.horario);
+        $('[name=direccion]').val(response.direccion);
+        $('[name=ubigeo]').val(response.ubigeo);
+        $('[name=name_ubigeo]').val(response.name_ubigeo);
+        $('[name=telefono]').val(response.telefono);
+        $('[name=email]').val(response.email);
+        $('[name=nombre]').val(response.nombre);
+        $('[name=cargo]').val(response.cargo);
+        $('[name=horario]').val(response.horario);
 
-            $("#submit_contacto").removeAttr("disabled");
-        }
+        $("#submit_contacto").removeAttr("disabled");
+
+    }).always(function () {
+        $boton.prop('disabled', false);
+
     }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
@@ -116,7 +121,7 @@ $("#form-contacto").on("submit", function (e) {
 
     if (msj.length > 0) {
         Swal.fire({
-            title: "Algunos campos estan en blanco!",
+            title: "Algunos campos están vacíos",
             text: msj,
             icon: "warning",
         });
