@@ -7,12 +7,20 @@ function listarRequerimientosPendientes(usuario) {
     var vardataTables = funcDatatables();
     let botones = [];
     // if (acceso == '1') {
-    botones.push({
-        text: ' Priorizar seleccionados',
-        action: function () {
-            priorizar();
-        }, className: 'btn-primary disabled btnPriorizar'
-    });
+    botones.push(
+        {
+            text: ' Priorizar seleccionados',
+            action: function () {
+                priorizar();
+            }, className: 'btn-primary disabled btnPriorizar'
+        },
+        {
+            text: ' Exportar Excel',
+            action: function () {
+                exportarDespachosExternos();
+            }, className: 'btn-success btnExportarDespachosExternos'
+        }
+    );
     // }
 
     $("#requerimientosEnProceso").on('search.dt', function () {
@@ -254,6 +262,10 @@ function listarRequerimientosPendientes(usuario) {
             }
         }
     });
+}
+
+function exportarDespachosExternos() {
+    $('#formFiltrosDespachoExterno').trigger('submit');
 }
 
 $("#requerimientosEnProceso tbody").on("click", "button.facturar", function () {

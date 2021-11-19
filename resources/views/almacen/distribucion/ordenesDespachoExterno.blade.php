@@ -28,7 +28,7 @@ Gestión de Despacho Externo
     <div class="box box-solid">
         <div class="box-body">
             <div class="col-md-12" style="padding-top:10px;padding-bottom:10px;">
-                <form id="formFiltrosDespachoExterno" method="POST" target="_blank" action="{{route('almacen.movimientos.pendientes-ingreso.ordenesPendientesExcel')}}">
+                <form id="formFiltrosDespachoExterno" method="POST" target="_blank" action="{{route('logistica.distribucion.ordenes-despacho-externo.despachosExternosExcel')}}">
                     @csrf()
                     <input type="hidden" name="select_mostrar" value="0">
                 </form>
@@ -47,7 +47,6 @@ Gestión de Despacho Externo
                                     <th>Generado por</th>
                                     <th>Sede Req.</th>
                                     <th>Fecha Despacho</th>
-                                    {{-- <th>Estado</th> --}}
                                     <th>Cod. D.E.</th>
                                     <th>Estado D.E.</th>
                                     <th width="60px">Acción</th>

@@ -4,8 +4,8 @@ function agregarEstadoEnvio(id) {
     });
     console.log('agregarEstadoEnvio');
     $('[name=id_od]').val(id);
-    // $('[name=id_requerimiento]').val(req);
     $('[name=estado]').val('');
+    $('[name=fecha_estado]').val('');
     $('[name=observacion]').val('');
     $('[name=adjunto]').val('');
     $('[name=gasto_extra]').val('');
@@ -150,10 +150,11 @@ function formatTimeLine(table_id, id, row) {
                         <div class="timeline-badge bggreendark"><i class="glyphicon glyphicon-time"></i></div>
                         <div class="timeline-panel bordergreendark">
                             <div class="timeline-heading">
-                            <p><small class="text-muted colorgreendark">${formatDateHour(element.fecha_registro)}<br>
+                            <p><small class="text-muted colorgreendark">${element.fecha_transportista !== null
+                                ? formatDate(element.fecha_transportista) + '<br>'
+                                : ''}
                             <strong>${element.estado_doc.toUpperCase()}</strong><br>
-                            ${element.observacion !== null ? element.observacion + '<br>' : ''} 
-                            ${element.fecha_transportista !== null ? formatDate(element.fecha_transportista) + '<br>' : ''}
+                            ${element.observacion !== null ? element.observacion + '<br>' : ''}
                             ${element.razon_social_transportista !== null ? element.razon_social_transportista + '<br>' : 'Propia'}
                             ${element.codigo_envio !== null ? ('Cod.Envío: ' + element.codigo_envio + '<br>') : ''}
                             ${element.importe_flete !== null ? ('<strong>Flete real: S/' + element.importe_flete + (element.credito ? ' (Crédito)' : '') + '</strong>') : ''}</small><br></p>
@@ -183,17 +184,20 @@ function formatTimeLine(table_id, id, row) {
                                 ((element.accion == 4 || element.accion == 5) ? 'coloryellow' :
                                     (element.accion == 6 ? 'colorfuxia' :
                                         (element.accion == 7 ? 'colororange' : 'colordark')))}">
-                            ${formatDateHour(element.fecha_registro)}<br>
+                            ${element.accion == 1 ?
+                                (element.fecha_despacho !== null ? formatDate(element.fecha_despacho) + '<br>' : '')
+                                : (element.fecha_estado !== null ? formatDate(element.fecha_estado) + '<br>' : '')}
                             <strong>${element.estado_doc.toUpperCase()}</strong><br>
-                            ${element.observacion !== null ? element.observacion : ''}<br>
+                            ${element.observacion !== null ? element.observacion + '<br>' : ''}
                             ${element.nombre_corto}<br>
                             ${element.gasto_extra !== null ? ('<strong>Gasto extra: S/' + element.gasto_extra + '</strong><br>') : ''}
-                            ${element.plazo_excedido ? '<strong class="red">PLAZO EXCEDIDO</strong><br>' : ''}</small></p>
+                            </small></p>
                             </div>
                         </div>
                         </li>`;
                     }
                 });
+                // ${element.plazo_excedido ? '<strong class="red">PLAZO EXCEDIDO</strong><br>' : ''}
                 html += `</ul>
                         </div>
                     </div>

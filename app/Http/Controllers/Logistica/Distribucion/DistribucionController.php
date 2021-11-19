@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\AlmacenController;
-
+use App\Models\Distribucion\OrdenDespacho;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
@@ -1743,7 +1743,7 @@ class DistribucionController extends Controller
                 'alm_req.tiene_transformacion',
                 'sis_sede.descripcion as sede_descripcion_req',
                 'orden_despacho_grupo_det.id_od_grupo',
-                'orden_despacho_obs.plazo_excedido',
+                // 'orden_despacho_obs.plazo_excedido',
                 'orden_despacho_obs.observacion',
                 'guia_ven.serie as serie_ven',
                 'guia_ven.numero as numero_ven',
@@ -1787,6 +1787,7 @@ class DistribucionController extends Controller
             ->select(
                 'orden_despacho_obs.*',
                 'transportista.razon_social as razon_social_transportista',
+                'orden_despacho.fecha_despacho',
                 'orden_despacho.codigo_envio',
                 'orden_despacho.fecha_transportista',
                 'orden_despacho.importe_flete',
@@ -1812,7 +1813,8 @@ class DistribucionController extends Controller
         $fechaRegistro = new Carbon();
 
         $od = DB::table('almacen.orden_despacho')
-            ->select('id_requerimiento', 'codigo')
+            ->select('alm_req.id_requerimiento', 'orden_despacho.codigo', 'alm_req.fecha_entrega')
+            ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'orden_despacho.id_requerimiento')
             ->where('id_od', $request->id_od)->first();
 
         DB::table('almacen.orden_despacho')
@@ -1838,6 +1840,21 @@ class DistribucionController extends Controller
             ])
             ->first();
 
+        if ($request->estado == 8) {
+
+            $estado = new Carbon($request->fecha_estado);
+            $entrega = new Carbon($od->fecha_entrega);
+
+            if ($estado->gt($entrega)) {
+                DB::table('almacen.orden_despacho')
+                    ->where('id_od', $request->id_od)
+                    ->update([
+                        'plazo_excedido' => true,
+                        'fecha_entregada' => $request->fecha_estado
+                    ]);
+            }
+        }
+
         if ($obs !== null) {
             $id_obs = $obs->id_obs;
             DB::table('almacen.orden_despacho_obs')
@@ -1845,9 +1862,10 @@ class DistribucionController extends Controller
                 ->update([
                     'accion' => $request->estado,
                     'observacion' => $request->observacion,
+                    'fecha_estado' => $request->fecha_estado,
                     'registrado_por' => $id_usuario,
                     'gasto_extra' => $request->gasto_extra,
-                    'plazo_excedido' => ((isset($request->plazo_excedido) && $request->plazo_excedido == 'on') ? true : false),
+                    // 'plazo_excedido' => ((isset($request->plazo_excedido) && $request->plazo_excedido == 'on') ? true : false),
                     'fecha_registro' => $fechaRegistro
                 ]);
         } else {
@@ -1856,9 +1874,9 @@ class DistribucionController extends Controller
                     'id_od' => $request->id_od,
                     'accion' => $request->estado,
                     'observacion' => $request->observacion,
+                    'fecha_estado' => $request->fecha_estado,
                     'registrado_por' => $id_usuario,
                     'gasto_extra' => $request->gasto_extra,
-                    'plazo_excedido' => ((isset($request->plazo_excedido) && $request->plazo_excedido == 'on') ? true : false),
                     'fecha_registro' => $fechaRegistro
                 ], 'id_obs');
         }
