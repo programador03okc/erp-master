@@ -11,6 +11,7 @@ function openAgenciaTransporte(data) {
     $("[name=serie]").val(data.serie_tra !== null ? data.serie_tra : '');
     $("[name=numero]").val(data.numero_tra !== null ? data.numero_tra : '');
     $("[name=fecha_transportista]").val(data.fecha_transportista !== null ? data.fecha_transportista : '');
+    $("[name=fecha_despacho_real]").val(data.fecha_despacho_real !== null ? data.fecha_despacho_real : '');
     $("[name=importe_flete]").val(data.importe_flete !== null ? data.importe_flete : '');
     $("[name=codigo_envio]").val(data.codigo_envio !== null ? data.codigo_envio : '');
 

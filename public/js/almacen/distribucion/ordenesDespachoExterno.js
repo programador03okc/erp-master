@@ -126,6 +126,8 @@ function listarRequerimientosPendientes(usuario) {
                     }
                 }, className: "text-center"
             },
+            { data: 'siaf', name: 'oc_propias_view.siaf' },
+            { data: 'occ', name: 'oc_propias_view.occ' },
             { data: 'codigo_oportunidad', name: 'oc_propias_view.codigo_oportunidad' },
             { data: 'cliente_razon_social', name: 'adm_contri.razon_social' },
             { data: 'responsable', name: 'sis_usua.nombre_corto' },
@@ -196,11 +198,18 @@ function listarRequerimientosPendientes(usuario) {
                         //     <i class="fas fa-route"></i></button>
 
                         /*(row['id_od'] == null && row['productos_no_mapeados'] == 0)*/
-                        `<button type="button" class="contacto btn btn-${(row['id_contacto'] !== null && row['enviar_contacto']) ? 'success' : 'default'} btn-flat btn-xs " 
+                        `<button type="button" class="comentarios btn btn-${row["count_estados_envios"] > 0 ? 'danger' : 'default'} btn-flat btn-xs" data-toggle="tooltip" 
+                            data-placement="bottom" title="Ver comentarios mgcp" data-id="${row["id_od"]}">
+                            <i class="fas fa-comment"></i></button>
+                        </div>
+                        <div style="display:flex;">
+                            <button type="button" class="contacto btn btn-${(row['id_contacto'] !== null && row['enviar_contacto']) ? 'success' : 'default'} btn-flat btn-xs " 
                             data-toggle="tooltip" data-placement="bottom" data-id="${row['id_od']}" title="Datos del contacto" >
-                            <i class="fas fa-id-badge"></i></button>`+
+                            <i class="fas fa-id-badge"></i></button>
+                        `+
                         (row['id_od'] !== null ?
-                            `<button type="button" class="transportista btn btn-${row['id_transportista'] !== null ? 'info' : 'default'} btn-flat btn-xs " data-toggle="tooltip"
+                            `
+                            <button type="button" class="transportista btn btn-${row['id_transportista'] !== null ? 'info' : 'default'} btn-flat btn-xs " data-toggle="tooltip"
                             data-placement="bottom" data-od="${row['id_od']}" data-idreq="${row['id_requerimiento']}" title="Agencia de transporte" >
                             <i class="fas fa-truck"></i></button>
                             
@@ -218,7 +227,7 @@ function listarRequerimientosPendientes(usuario) {
                                    <i class="fas fa-file-upload"></i></button>`
                            : '')*/
                         `</div>`
-                }, targets: 12
+                }, targets: 14
             }
         ],
         select: "multi",
@@ -329,11 +338,14 @@ $("#requerimientosEnProceso tbody").on("click", "a.archivos", function (e) {
 
 $('#requerimientosEnProceso tbody').on("click", "button.envio_od", function (e) {
     $(e.preventDefault());
-    // var id = $(this).data('id');
-    // var fecha = $(this).data('fentrega');
-    // var cdp = $(this).data('cdp');
     var data = $('#requerimientosEnProceso').DataTable().row($(this).parents("tr")).data();
     openOrdenDespachoEnviar(data);
+});
+
+$('#requerimientosEnProceso tbody').on("click", "button.comentarios", function (e) {//mgcp
+    $(e.preventDefault());
+    var data = $('#requerimientosEnProceso').DataTable().row($(this).parents("tr")).data();
+    openComentarios(data);
 });
 
 $('#requerimientosEnProceso tbody').on("click", "button.anular", function () {

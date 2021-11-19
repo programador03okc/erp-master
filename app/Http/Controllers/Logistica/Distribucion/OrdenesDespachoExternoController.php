@@ -86,6 +86,7 @@ class OrdenesDespachoExternoController extends Controller
             'orden_despacho.id_transportista',
             'orden_despacho.plazo_excedido',
             'orden_despacho.fecha_entregada',
+            'orden_despacho.fecha_despacho_real',
             'est_od.estado_doc as estado_od',
             'estado_envio.descripcion as estado_envio',
             'est_od.bootstrap_color as estado_bootstrap_od',
@@ -108,6 +109,8 @@ class OrdenesDespachoExternoController extends Controller
             'oc_propias_view.estado_oc',
             'oc_propias_view.fecha_publicacion',
             'oc_propias_view.estado_aprobacion_cuadro',
+            'oc_propias_view.siaf',
+            'oc_propias_view.occ',
             DB::raw("(SELECT COUNT(*) FROM almacen.alm_det_req where
                         alm_det_req.id_requerimiento = alm_req.id_requerimiento
                         and alm_det_req.estado != 7
@@ -500,7 +503,7 @@ class OrdenesDespachoExternoController extends Controller
                         ->insert([
                             'id_od' => $ordenDespacho->id_od,
                             'accion' => $id_estado_envio,
-                            'observacion' => 'Fue despachado por ' . $name_usuario . ' Nro. ' . $ordenDespacho->codigo,
+                            'observacion' => 'Fue despachado con ' . $ordenDespacho->codigo,
                             'registrado_por' => $usuario,
                             'fecha_registro' => $fechaRegistro
                         ]);
@@ -864,6 +867,7 @@ class OrdenesDespachoExternoController extends Controller
                     'serie' => $request->serie,
                     'numero' => $request->numero,
                     'fecha_transportista' => $request->fecha_transportista,
+                    'fecha_despacho_real' => $request->fecha_despacho_real,
                     'codigo_envio' => $request->codigo_envio,
                     'importe_flete' => $request->importe_flete,
                     'id_estado_envio' => $id_estado_envio,

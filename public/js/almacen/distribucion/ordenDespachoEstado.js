@@ -185,7 +185,8 @@ function formatTimeLine(table_id, id, row) {
                                     (element.accion == 6 ? 'colorfuxia' :
                                         (element.accion == 7 ? 'colororange' : 'colordark')))}">
                             ${element.accion == 1 ?
-                                (element.fecha_despacho !== null ? formatDate(element.fecha_despacho) + '<br>' : '')
+                                (element.fecha_despacho_real !== null ? formatDate(element.fecha_despacho_real) + '<br>' :
+                                    (element.fecha_despacho !== null ? formatDate(element.fecha_despacho) : ''))
                                 : (element.fecha_estado !== null ? formatDate(element.fecha_estado) + '<br>' : '')}
                             <strong>${element.estado_doc.toUpperCase()}</strong><br>
                             ${element.observacion !== null ? element.observacion + '<br>' : ''}

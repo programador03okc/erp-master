@@ -151,17 +151,17 @@ function listarDespachosPendientes(permiso) {
                 }, className: "text-center"
             },
             { data: 'codigo_oportunidad', name: 'oc_propias_view.codigo_oportunidad', className: "text-center" },
-            {
-                'render':
-                    function (data, type, row) {
-                        if (row['razon_social'] !== null) {
-                            return row['razon_social'];
-                        } else if (row['nombre_persona'] !== null) {
-                            return row['nombre_persona'];
-                        }
-                    }
-            },
-            // {'data': 'razon_social', 'name': 'adm_contri.razon_social'},
+            // {
+            //     'render':
+            //         function (data, type, row) {
+            //             if (row['razon_social'] !== null) {
+            //                 return row['razon_social'];
+            //             } else if (row['nombre_persona'] !== null) {
+            //                 return row['nombre_persona'];
+            //             }
+            //         }
+            // },
+            { 'data': 'razon_social', 'name': 'adm_contri.razon_social' },
             // { 'data': 'concepto', 'name': 'alm_req.concepto' },
             { 'data': 'codigo_req', 'name': 'alm_req.codigo', className: "text-center" },
             { 'data': 'almacen_descripcion', 'name': 'alm_almacen.descripcion' },

@@ -12,22 +12,6 @@ Dashboard Almacén
 @section('content')
 
 <div class="row">
-    <!-- <div class="col-md-3">
-            <div class="small-box bg-blue">
-                <div class="icon">
-                    <i class="fas fa-truck"></i>
-                    </div>
-                    <div class="inner">
-                        <h3>{{$cantidad_despachos_pendientes}}</h3>
-                        <p style="font-size:15px;display:flex;width:20px;">Despachos Pendientes</p>
-                    </div>
-                    @if(Auth::user()->tieneAplicacion(80))
-                    <a href="{{route('logistica.distribucion.despachos.index')}}" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
-                    @else
-                    <a href="#" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
-                    @endif
-            </div>
-        </div> -->
     <div class="col-md-3">
         <div class="small-box bg-orange">
             <div class="icon">
@@ -42,7 +26,6 @@ Dashboard Almacén
             @else
             <a href="#" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
             @endif
-            <!-- </div> -->
         </div>
     </div>
     <div class="col-md-3">
@@ -82,7 +65,7 @@ Dashboard Almacén
 </div>
 <div class="row">
     <div class="col-md-3">
-        <div style="display:flex;">
+        {{-- <div style="display:flex;">
             <p>Seleccione el Filtro: </p>
             <select name="filtro" onChange="mostrar_tabla();" class="form-control" style="width:200px" required>
                 <!-- <option value="0">Elija una opción</option> -->
@@ -94,14 +77,11 @@ Dashboard Almacén
         </div>
         <div class="panel panel-default">
             <div class="panel-heading">Requerimientos por Estado</div>
-            <!-- <div class="panel-body">
-                    <p>...</p>
-                </div> -->
             <table id="listaEstadosRequerimientos" class="table">
                 <thead></thead>
                 <tbody></tbody>
             </table>
-        </div>
+        </div> --}}
         <a href="{{route('almacen.reportes.saldos.index')}}">
             <button type="button" class="btn btn-success" style="display:block;">
                 <i class="fas fa-box-open"></i> Ver Saldos Actuales en Almacén</button>

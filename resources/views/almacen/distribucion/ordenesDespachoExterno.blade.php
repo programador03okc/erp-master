@@ -42,6 +42,8 @@ Gestión de Despacho Externo
                                     <th>Cod.Req.</th>
                                     <th>Fecha Fin Entrega</th>
                                     <th>Orden Elec.</th>
+                                    <th>Siaf</th>
+                                    <th>OCC</th>
                                     <th>Cod.CP</th>
                                     <th width="30%">Cliente/Entidad</th>
                                     <th>Generado por</th>

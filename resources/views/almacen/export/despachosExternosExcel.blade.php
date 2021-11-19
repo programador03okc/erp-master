@@ -49,7 +49,7 @@
                 <td>{{$d->sede_descripcion_req}}</td>
                 <td>{{$d->cliente_razon_social}}</td>
                 <td>{{$d->fecha_publicacion!==null ? date('d-m-Y', strtotime($d->fecha_publicacion)):''}}</td>
-                <td>{{$d->fecha_despacho!==null ? date('d-m-Y', strtotime($d->fecha_despacho)):''}}</td>
+                <td>{{$d->fecha_despacho_real!==null ? date('d-m-Y', strtotime($d->fecha_despacho_real)):''}}</td>
                 <td>{{$d->fecha_entrega!==null ? date('d-m-Y', strtotime($d->fecha_entrega)):''}}</td>
                 <td>{{$d->fecha_entregada!==null ? date('d-m-Y', strtotime($d->fecha_entregada)):''}}</td>
                 <td>{{$d->tiene_transformacion ? 'SI':'NO'}}</td>
@@ -66,7 +66,7 @@
                 </td>
                 <td>{{$d->importe_flete!==null ? $d->importe_flete :''}}</td>
                 <td></td>
-                <td>{{$d->gasto_extra!==null ? $d->gasto_extra :''}}</td>
+                <td>{{$d->gasto_extra!==null ? round($d->gasto_extra, 2, PHP_ROUND_HALF_UP) :''}}</td>
                 <td>{{$d->estado_envio!==null ? $d->estado_envio :''}}</td>
                 <td>{{$d->plazo_excedido!==null ? ($d->plazo_excedido ? 'PLAZO EXCEDIDO':'ENTREGA A TIEMPO') : ''}}</td>
                 <td></td>
