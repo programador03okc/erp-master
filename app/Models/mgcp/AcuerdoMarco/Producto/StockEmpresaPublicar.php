@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class StockEmpresaPublicar extends Model
 {
-    use HasFactory;
+    // use HasFactory;
     protected $table = 'mgcp_acuerdo_marco.stock_empresas_publicar';
     public $timestamps = false;
 

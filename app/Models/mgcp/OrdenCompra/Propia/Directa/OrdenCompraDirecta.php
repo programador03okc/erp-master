@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class OrdenCompraDirecta extends Model
 {
-    use HasFactory;
+    // use HasFactory;
     protected $table = 'mgcp_ordenes_compra.oc_directas';
     //public $timestamps = false;
 

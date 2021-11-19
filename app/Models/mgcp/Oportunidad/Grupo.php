@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Grupo extends Model
 {
-    use HasFactory;
+    // use HasFactory;
     protected $table = 'mgcp_oportunidades.grupos';
     public $timestamps = false;
 }

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class CcBsFila extends Model
 {
-    use HasFactory;
+    // use HasFactory;
     protected $table = 'mgcp_cuadro_costos.cc_bs_filas';
     public $timestamps = false;
 

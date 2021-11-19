@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class TipoCambio extends Model
 {
-    use HasFactory;
+    // use HasFactory;
     protected $table = 'mgcp_cuadro_costos.tipo_cambio';
     public $timestamps = false;
 }

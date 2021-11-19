@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class FondoProveedor extends Model {
 
-    use HasFactory;
+    // use HasFactory;
     protected $table = 'mgcp_cuadro_costos.fondos_proveedores';
     public $timestamps = false;
     protected $appends = ['valor_unitario_format'];

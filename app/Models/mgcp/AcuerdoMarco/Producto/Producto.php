@@ -7,7 +7,7 @@ use App\Models\mgcp\AcuerdoMarco\Producto\Categoria;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Producto extends Model {
-    use HasFactory;
+    // use HasFactory;
     protected $table = 'mgcp_acuerdo_marco.productos_am';
     public $timestamps = false;
 

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class CalculadoraProductoDetalle extends Model
 {
-    use HasFactory;
+    // use HasFactory;
     protected $table = 'mgcp_acuerdo_marco.calculadora_producto_detalles';
     public $timestamps = false;
 

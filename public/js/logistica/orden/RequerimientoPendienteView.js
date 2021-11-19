@@ -1510,21 +1510,21 @@ class RequerimientoPendienteView {
                             (response.lista_finalizados).forEach(element => {
                                 Swal.fire({
                                     title: '',
-                                    html: `Se finalizó el cuadro de presupuesto ${element.codigo_cuadro_presupuesto} del requerimiento ${element.codigo_requerimiento}`,
+                                    html: `Se finalizó el cuadro de presupuesto ${element.cuadro_presupuesto.oportunidad.codigo_oportunidad} del requerimiento ${element.requerimiento.codigo}`,
                                     icon: 'info'
                                 });
                             });
                         }
 
-                        if (response.lista_restablecidos.length > 0) {
-                            (response.lista_restablecidos).forEach(element => {
-                                Swal.fire({
-                                    title: '',
-                                    html: `Se restableció el cuadro de presupuesto ${element.codigo_cuadro_presupuesto} del requerimiento ${element.codigo_requerimiento}`,
-                                    icon: 'info'
-                                });
-                            });
-                        }
+                        // if (response.lista_restablecidos.length > 0) {
+                        //     (response.lista_restablecidos).forEach(element => {
+                        //         Swal.fire({
+                        //             title: '',
+                        //             html: `Se restableció el cuadro de presupuesto ${element.codigo_cuadro_presupuesto} del requerimiento ${element.codigo_requerimiento}`,
+                        //             icon: 'info'
+                        //         });
+                        //     });
+                        // }
 
                     },
                     fail: (jqXHR, textStatus, errorThrown) => {
@@ -1663,9 +1663,10 @@ class RequerimientoPendienteView {
                         // finalidados
                         if (response.lista_finalizados.length > 0) {
                             response.lista_finalizados.forEach(element => {
+                                console.log(element);
                                 Swal.fire({
                                     title: '',
-                                    html: `Se finalizó el cuadro de presupuesto ${element.codigo_cuadro_presupuesto} del requerimiento ${element.codigo_requerimiento}`,
+                                    html: `Se finalizó el cuadro de presupuesto ${element.cuadro_presupuesto.oportunidad.codigo_oportunidad} del requerimiento ${element.requerimiento.codigo}`,
                                     icon: 'info'
                                 });
                             });
