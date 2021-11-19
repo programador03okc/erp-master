@@ -10,8 +10,7 @@
 				<img src="{{asset('images/user2-160x160.jpg')}}" class="img-circle" alt="User Image">
 			</div>
 			<div class="pull-left info">
-				<p>{{ Auth::user()->nombre_corto }}</p>
-				<a href="#"><i class="fa fa-circle"></i> {{ Auth::user()->getRolesText() }}</a>
+				<p>Bienvenido(a)<br><br>{{ Auth::user()->nombre_corto }}</p>
 			</div>
 			</div>
 			@yield('sidebar')
