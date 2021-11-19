@@ -3010,26 +3010,17 @@ class OrdenController extends Controller
                 ); 
             }
         }
-        $finalizadosORestablecido = CuadroPresupuestoHelper::finalizar($idRequerimientoList);
 
+
+        $finalizadosORestablecido = CuadroPresupuestoHelper::finalizar(array_unique($idRequerimientoList));
+ 
 
         return ['lista_estado_requerimiento'=>$nuevoEstadoCabeceraRequerimiento,'lista_finalizados'=>$finalizadosORestablecido['lista_finalizados'],'lista_restablecidos'=>$finalizadosORestablecido['lista_restablecidos']];
 
 
     }
 
-    function prueba(){
-        $cc =  CuadroCosto::where('id',1382)->with('oportunidad','oportunidad.entidad','oportunidad.tipoNegocio','oportunidad.responsable','oportunidad.ordenCompraPropia')->first();
-        return $cc->oportunidad->ordenCompraPropia;
-    }
-
-
-    public function enviarCorreoPrueba(){
-        $prueba = CuadroPresupuestoHelper::enviar_correo_prueba();
-
-        return $prueba;
-
-    }
+ 
 
 
 

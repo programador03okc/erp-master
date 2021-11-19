@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ComentarioOcDirecta extends Model {
 
-    use HasFactory;
+    // use HasFactory;
     protected $table = 'mgcp_ordenes_compra.oc_directas_comentarios';
     public $timestamps = false;
 

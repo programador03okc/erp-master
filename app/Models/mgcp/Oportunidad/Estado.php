@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Estado extends Model
 {
-    use HasFactory;
+    // use HasFactory;
     protected $table = 'mgcp_oportunidades.estados';
     public $timestamps = false;
 

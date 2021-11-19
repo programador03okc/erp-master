@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class CcBs extends Model
 {
-    use HasFactory;
+    // use HasFactory;
     protected $table = 'mgcp_cuadro_costos.cc_bs';
     protected $primaryKey = 'id_cc';
     public $timestamps = false;

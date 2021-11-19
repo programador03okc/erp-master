@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class RolUsuario extends Model {
     
-    use HasFactory;
+    // use HasFactory;
     protected $table = 'mgcp_usuarios.roles_usuario';
     public $timestamps = false;
     

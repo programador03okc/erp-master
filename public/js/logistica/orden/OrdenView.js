@@ -1269,9 +1269,19 @@ class OrdenView {
                     processData: false,
                     contentType: false,
                     dataType: 'JSON',
+                    beforeSend: data => {
+    
+                        $("#wrapper-okc").LoadingOverlay("show", {
+                            imageAutoResize: true,
+                            progress: true,
+                            imageColor: "#3c8dbc"
+                        });
+                    },
                     success: function (response) {
-                        console.log(response);
+                        // console.log(response);
                         if (response.id_orden_compra > 0) {
+                            $("#wrapper-okc").LoadingOverlay("hide", true);
+
                             Lobibox.notify('success', {
                                 title: false,
                                 size: 'mini',
@@ -1297,13 +1307,14 @@ class OrdenView {
                                 response.lista_finalizados.forEach(element => {
                                     Swal.fire({
                                         title: '',
-                                        html: `SE finalizó el cuadro de presupuesto ${element.codigo_cuadro_presupuesto} del requerimiento ${element.codigo_requerimiento}`,
+                                        html: `Se finalizó el cuadro de presupuesto ${element.cuadro_presupuesto.oportunidad.codigo_oportunidad} del requerimiento ${element.requerimiento.codigo}`,
                                         icon: 'info'
                                     });
                                 });
                             }
 
                         } else {
+                            $("#wrapper-okc").LoadingOverlay("hide", true);
                             Swal.fire(
                                 '',
                                 'Lo sentimos hubo un error en el servidor al intentar guardar la orden, por favor vuelva a intentarlo',
@@ -1312,6 +1323,8 @@ class OrdenView {
                         }
                     }
                 }).fail(function (jqXHR, textStatus, errorThrown) {
+                    $("#wrapper-okc").LoadingOverlay("hide", true);
+
                     Swal.fire(
                         '',
                         'Hubo un problema al intentar guardar la orden, por favor vuelva a intentarlo',
@@ -1331,9 +1344,19 @@ class OrdenView {
                     processData: false,
                     contentType: false,
                     dataType: 'JSON',
+                    beforeSend: data => {
+    
+                        $("#wrapper-okc").LoadingOverlay("show", {
+                            imageAutoResize: true,
+                            progress: true,
+                            imageColor: "#3c8dbc"
+                        });
+                    },
                     success: function (response) {
                         // console.log(response);
                         if (response > 0) {
+                            $("#wrapper-okc").LoadingOverlay("hide", true);
+
                             Lobibox.notify('success', {
                                 title: false,
                                 size: 'mini',
@@ -1348,6 +1371,8 @@ class OrdenView {
                         }
                     }
                 }).fail(function (jqXHR, textStatus, errorThrown) {
+                    $("#wrapper-okc").LoadingOverlay("hide", true);
+
                     Swal.fire(
                         '',
                         'Hubo un problema al intentar actualizar la orden, por favor vuelva a intentarlo',
@@ -1358,6 +1383,8 @@ class OrdenView {
                     console.log(errorThrown);
                 });
             } else {
+                $("#wrapper-okc").LoadingOverlay("hide", true);
+
                 Swal.fire(
                     '',
                     'Hubo un error en la acción de la botonera, el action no esta definido',

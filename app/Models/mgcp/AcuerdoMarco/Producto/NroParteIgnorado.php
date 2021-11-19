@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class NroParteIgnorado extends Model
 {
-    use HasFactory;
+    // use HasFactory;
     protected $table = 'mgcp_acuerdo_marco.nros_parte_ignorados';
     protected $primaryKey = 'part_no';
     public $incrementing = false;

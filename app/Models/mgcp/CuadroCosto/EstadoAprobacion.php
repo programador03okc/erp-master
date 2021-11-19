@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class EstadoAprobacion extends Model
 {
-    use HasFactory;
+    // use HasFactory;
     protected $table = 'mgcp_cuadro_costos.estados_aprobacion';
     public $timestamps = false;
 }

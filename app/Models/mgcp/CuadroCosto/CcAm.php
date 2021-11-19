@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class CcAm extends Model
 {
-    use HasFactory;
+    // use HasFactory;
     protected $table = 'mgcp_cuadro_costos.cc_am';
     protected $primaryKey = 'id_cc';
     public $timestamps = false;
