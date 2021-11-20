@@ -28,7 +28,7 @@ Gestión de Despacho Externo
     <div class="box box-solid">
         <div class="box-body">
             <div class="col-md-12" style="padding-top:10px;padding-bottom:10px;">
-                <form id="formFiltrosDespachoExterno" method="POST" target="_blank" action="{{route('almacen.movimientos.pendientes-ingreso.ordenesPendientesExcel')}}">
+                <form id="formFiltrosDespachoExterno" method="POST" target="_blank" action="{{route('logistica.distribucion.ordenes-despacho-externo.despachosExternosExcel')}}">
                     @csrf()
                     <input type="hidden" name="select_mostrar" value="0">
                 </form>
@@ -42,12 +42,13 @@ Gestión de Despacho Externo
                                     <th>Cod.Req.</th>
                                     <th>Fecha Fin Entrega</th>
                                     <th>Orden Elec.</th>
-                                    <th>Cod.CP</th>
+                                    <th>Siaf</th>
+                                    <th>OCC</th>
+                                    <th>Cod.CDP</th>
                                     <th width="30%">Cliente/Entidad</th>
                                     <th>Generado por</th>
                                     <th>Sede Req.</th>
                                     <th>Fecha Despacho</th>
-                                    {{-- <th>Estado</th> --}}
                                     <th>Cod. D.E.</th>
                                     <th>Estado D.E.</th>
                                     <th width="60px">Acción</th>
@@ -69,6 +70,8 @@ Gestión de Despacho Externo
 @include('almacen.distribucion.agregarContacto')
 @include('almacen.distribucion.contactoEnviar')
 @include('almacen.distribucion.ordenDespachoEstados')
+@include('almacen.distribucion.comentarios_oc_mgcp')
+@include('almacen.distribucion.priorizarDespachoExterno')
 @include('tesoreria.facturacion.archivos_oc_mgcp')
 @include('publico.ubigeoModal')
 @include('almacen.transferencias.transportistaModal')

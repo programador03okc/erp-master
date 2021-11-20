@@ -7,12 +7,20 @@ function listarRequerimientosPendientes(usuario) {
     var vardataTables = funcDatatables();
     let botones = [];
     // if (acceso == '1') {
-    botones.push({
-        text: ' Priorizar seleccionados',
-        action: function () {
-            priorizar();
-        }, className: 'btn-primary disabled btnPriorizar'
-    });
+    botones.push(
+        {
+            text: ' Priorizar seleccionados',
+            action: function () {
+                priorizar();
+            }, className: 'btn-primary disabled btnPriorizar'
+        },
+        {
+            text: ' Exportar Excel',
+            action: function () {
+                exportarDespachosExternos();
+            }, className: 'btn-success btnExportarDespachosExternos'
+        }
+    );
     // }
 
     $("#requerimientosEnProceso").on('search.dt', function () {
@@ -117,8 +125,20 @@ function listarRequerimientosPendientes(usuario) {
                         );
                     }
                 }, className: "text-center"
+            },//
+            { data: 'siaf', name: 'oc_propias_view.siaf' },
+            { data: 'occ', name: 'oc_propias_view.occ' },
+            {
+                data: 'codigo_oportunidad', name: 'oc_propias_view.codigo_oportunidad',
+                render: function (data, type, row) {
+                    return (
+                        '<a target="_blank" href="https://mgcp.okccloud.com/mgcp/cuadro-costos/detalles/' + row['id_oportunidad'] + '">' +
+                        row["codigo_oportunidad"] + "</a>"
+                    );
+
+                }, className: "text-center"
             },
-            { data: 'codigo_oportunidad', name: 'oc_propias_view.codigo_oportunidad' },
+            // { data: 'codigo_oportunidad', name: 'oc_propias_view.codigo_oportunidad' },
             { data: 'cliente_razon_social', name: 'adm_contri.razon_social' },
             { data: 'responsable', name: 'sis_usua.nombre_corto' },
             { data: 'sede_descripcion_req', name: 'sede_req.descripcion', className: "text-center" },
@@ -188,11 +208,19 @@ function listarRequerimientosPendientes(usuario) {
                         //     <i class="fas fa-route"></i></button>
 
                         /*(row['id_od'] == null && row['productos_no_mapeados'] == 0)*/
-                        `<button type="button" class="contacto btn btn-${(row['id_contacto'] !== null && row['enviar_contacto']) ? 'success' : 'default'} btn-flat btn-xs " 
+                        `<button type="button" class="comentarios btn btn-${row["tiene_comentarios"] ? 'danger' : 'default'} btn-flat btn-xs" data-toggle="tooltip" 
+                            data-placement="bottom" title="Ver comentarios mgcp" data-oc="${row["id_oc_propia"]}" data-tp="${row["tipo"]}"
+                            data-nro="${row["nro_orden"]}">
+                            <i class="fas fa-comment"></i></button>
+                        </div>
+                        <div style="display:flex;">
+                            <button type="button" class="contacto btn btn-${(row['id_contacto'] !== null && row['enviar_contacto']) ? 'success' : 'default'} btn-flat btn-xs " 
                             data-toggle="tooltip" data-placement="bottom" data-id="${row['id_od']}" title="Datos del contacto" >
-                            <i class="fas fa-id-badge"></i></button>`+
+                            <i class="fas fa-id-badge"></i></button>
+                        `+
                         (row['id_od'] !== null ?
-                            `<button type="button" class="transportista btn btn-${row['id_transportista'] !== null ? 'info' : 'default'} btn-flat btn-xs " data-toggle="tooltip"
+                            `
+                            <button type="button" class="transportista btn btn-${row['id_transportista'] !== null ? 'info' : 'default'} btn-flat btn-xs " data-toggle="tooltip"
                             data-placement="bottom" data-od="${row['id_od']}" data-idreq="${row['id_requerimiento']}" title="Agencia de transporte" >
                             <i class="fas fa-truck"></i></button>
                             
@@ -210,7 +238,7 @@ function listarRequerimientosPendientes(usuario) {
                                    <i class="fas fa-file-upload"></i></button>`
                            : '')*/
                         `</div>`
-                }, targets: 12
+                }, targets: 14
             }
         ],
         select: "multi",
@@ -254,6 +282,10 @@ function listarRequerimientosPendientes(usuario) {
             }
         }
     });
+}
+
+function exportarDespachosExternos() {
+    $('#formFiltrosDespachoExterno').trigger('submit');
 }
 
 $("#requerimientosEnProceso tbody").on("click", "button.facturar", function () {
@@ -317,12 +349,49 @@ $("#requerimientosEnProceso tbody").on("click", "a.archivos", function (e) {
 
 $('#requerimientosEnProceso tbody').on("click", "button.envio_od", function (e) {
     $(e.preventDefault());
-    // var id = $(this).data('id');
-    // var fecha = $(this).data('fentrega');
-    // var cdp = $(this).data('cdp');
     var data = $('#requerimientosEnProceso').DataTable().row($(this).parents("tr")).data();
     openOrdenDespachoEnviar(data);
 });
+
+$('#requerimientosEnProceso tbody').on("click", "button.comentarios", function (e) {//mgcp
+    $(e.preventDefault());
+    var oc = $(this).data("oc");
+    var tipo = $(this).data("tp");
+    var nro = $(this).data("nro");
+
+    let data = 'idOc=' + oc + '&tipo=' + tipo;
+    console.log(data);
+    $('#modal-comentarios_oc_mgcp').modal('show');
+    $('#listaComentarios tbody').html('');
+    $('#nro_orden').text(nro);
+
+    $.ajax({
+        type: "POST",
+        url: "listarPorOc",
+        data: data,
+        dataType: "JSON",
+        success: function (response) {
+            console.log(response);
+            let html = '';
+            response['comentarios'].forEach(element => {
+                html += `<tr>
+                    <td>${element.usuario.name}</td>
+                    <td>${element.comentario}</td>
+                    <td>${element.fecha}</td>
+                </tr>`;
+            });
+            $('#listaComentarios tbody').html(html);
+        }
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+});
+
+function cerrarComentarios() {
+    $('#modal-comentarios_oc_mgcp').modal('hide');
+}
 
 $('#requerimientosEnProceso tbody').on("click", "button.anular", function () {
     var id = $(this).data('id');
@@ -392,8 +461,8 @@ function priorizar() {
         });
     }
     else {
-        let fecha = $('#txtFechaPriorizacion').val();
-
+        $('#modal-priorizarDespachoExterno').modal("show");
+        /*let fecha = $('#txtFechaPriorizacion').val();
         Swal.fire({
             title: "¿Está seguro que desea priorizar con la fecha: " + formatDate(fecha) + "?",
             icon: "warning",
@@ -441,7 +510,7 @@ function priorizar() {
                     console.log(errorThrown);
                 });
             }
-        });
+        });*/
     }
 }
 

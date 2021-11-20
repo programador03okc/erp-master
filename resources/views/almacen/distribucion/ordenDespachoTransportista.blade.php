@@ -57,22 +57,26 @@
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <h5>Código de envío</h5>
-                                <input type="text" name="codigo_envio" class="form-control" placeholder="Código de envío"/>
+                                <h5>Fecha despacho real</h5>
+                                <input type="date" name="fecha_despacho_real" class="form-control" />
                             </div>
                             
                         </div>
                         <div class="row">
-                            <div class="col-md-2">
+                            <div class="col-md-6" >
+                                <h5>Código de envío</h5>
+                                <input type="text" name="codigo_envio" class="form-control" placeholder="Código de envío"/>
+                            </div>
+                            <div class="col-md-2" style="margin-top: 30px;">
                                 <h5>Crédito</h5>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-2" style="margin-top: 30px;">
                                 <input type="checkbox" name="credito" id="credito" style="margin-top: 13px;"/>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-12">
-                                <h5>* Campos obligatorios</h5>
+                                <h5 style="font-size: 11px;">* Campos obligatorios</h5>
                             </div>
                         </div>
                     </fieldset>

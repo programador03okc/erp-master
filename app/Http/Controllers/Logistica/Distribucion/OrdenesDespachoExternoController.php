@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Logistica\Distribucion;
 
+use App\Exports\DespachosExternosExport;
 use App\Helpers\mgcp\OrdenCompraAmHelper;
 use App\Helpers\mgcp\OrdenCompraDirectaHelper;
 use App\Http\Controllers\AlmacenController;
@@ -20,6 +21,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
 
 class OrdenesDespachoExternoController extends Controller
 {
@@ -39,7 +41,7 @@ class OrdenesDespachoExternoController extends Controller
         return view('almacen/distribucion/ordenesDespachoExterno', compact('estados'));
     }
 
-    public function listarRequerimientosPendientesDespachoExterno(Request $request)
+    public function listarDespachosExternos(Request $request)
     {
         $data = Requerimiento::select(
             'alm_req.id_requerimiento',
@@ -82,21 +84,35 @@ class OrdenesDespachoExternoController extends Controller
             'orden_despacho.credito',
             'orden_despacho.importe_flete',
             'orden_despacho.id_transportista',
+            'orden_despacho.plazo_excedido',
+            'orden_despacho.fecha_entregada',
+            'orden_despacho.fecha_despacho_real',
             'est_od.estado_doc as estado_od',
+            'estado_envio.descripcion as estado_envio',
             'est_od.bootstrap_color as estado_bootstrap_od',
-            // DB::raw("(od_dis.descripcion) || ' - ' || (od_prov.descripcion) || ' - ' || (od_dpto.descripcion) AS od_ubigeo_descripcion"),
             'transportista.razon_social as transportista_razon_social',
+            'guia_ven.serie',
+            'guia_ven.numero',
+            // DB::raw("(od_dis.descripcion) || ' - ' || (od_prov.descripcion) || ' - ' || (od_dpto.descripcion) AS od_ubigeo_descripcion"),
             DB::raw("(SELECT COUNT(*) FROM almacen.orden_despacho_obs where
                         orden_despacho_obs.id_od = orden_despacho.id_od
                         and orden_despacho.estado != 7) AS count_estados_envios"),
-            'oc_propias_view.nro_orden',
+            DB::raw("(SELECT SUM(orden_despacho_obs.gasto_extra) FROM almacen.orden_despacho_obs where
+                        orden_despacho_obs.id_od = orden_despacho.id_od
+                        and orden_despacho.estado != 7) AS gasto_extra"),
             // 'oc_propias_view.codigo_oportunidad',
+            'oc_propias_view.nro_orden',
             'oportunidades.codigo_oportunidad',
+            'oportunidades.id as id_oportunidad',
             'oc_propias_view.id as id_oc_propia',
             'oc_propias_view.tipo',
             'oc_propias_view.id_entidad',
             'oc_propias_view.estado_oc',
+            'oc_propias_view.fecha_publicacion',
             'oc_propias_view.estado_aprobacion_cuadro',
+            'oc_propias_view.siaf',
+            'oc_propias_view.occ',
+            'oc_propias_view.tiene_comentarios',
             DB::raw("(SELECT COUNT(*) FROM almacen.alm_det_req where
                         alm_det_req.id_requerimiento = alm_req.id_requerimiento
                         and alm_det_req.estado != 7
@@ -124,6 +140,8 @@ class OrdenesDespachoExternoController extends Controller
             // ->leftJoin('configuracion.ubi_prov as od_prov', 'od_prov.id_prov', '=', 'od_dis.id_prov')
             // ->leftJoin('configuracion.ubi_dpto as od_dpto', 'od_dpto.id_dpto', '=', 'od_prov.id_dpto')
             ->leftJoin('administracion.adm_estado_doc as est_od', 'est_od.id_estado_doc', '=', 'orden_despacho.estado')
+            ->leftJoin('almacen.estado_envio', 'estado_envio.id_estado', '=', 'orden_despacho.id_estado_envio')
+            ->leftJoin('almacen.guia_ven', 'guia_ven.id_od', '=', 'orden_despacho.id_od')
             ->where([
                 ['alm_req.estado', '!=', 7],
                 // ['orden_despacho.estado', '!=', 7],
@@ -139,7 +157,23 @@ class OrdenesDespachoExternoController extends Controller
             $data->where('orden_despacho.estado', 25);
             $data->whereDate('orden_despacho.fecha_despacho', (new Carbon())->format('Y-m-d'));
         }
-        return datatables($data)->toJson();
+        return $data;
+        // return datatables($data)->toJson();
+    }
+
+    public function listarRequerimientosPendientesDespachoExterno(Request $request)
+    {
+        $query = $this->listarDespachosExternos($request);
+        return datatables($query)->toJson();
+    }
+
+    public function despachosExternosExcel(Request $request)
+    {
+        $data = $this->listarDespachosExternos($request);
+        return Excel::download(new DespachosExternosExport(
+            $data,
+            $request->select_mostrar
+        ), 'despachosExternos.xlsx');
     }
 
     // public function guardarOrdenDespachoExterno(Request $request)
@@ -400,6 +434,7 @@ class OrdenesDespachoExternoController extends Controller
                 $ordenDespacho->id_almacen = $req->id_almacen;
                 $ordenDespacho->aplica_cambios = false;
                 $ordenDespacho->registrado_por = $usuario;
+                $ordenDespacho->fecha_despacho = $fechaRegistro;
                 $ordenDespacho->fecha_registro = $fechaRegistro;
                 $ordenDespacho->estado = 1;
                 $ordenDespacho->id_estado_envio = $id_estado_envio;
@@ -470,7 +505,7 @@ class OrdenesDespachoExternoController extends Controller
                         ->insert([
                             'id_od' => $ordenDespacho->id_od,
                             'accion' => $id_estado_envio,
-                            'observacion' => 'Fue despachado por ' . $name_usuario . ' Nro. ' . $ordenDespacho->codigo,
+                            'observacion' => 'Fue despachado con ' . $ordenDespacho->codigo,
                             'registrado_por' => $usuario,
                             'fecha_registro' => $fechaRegistro
                         ]);
@@ -602,12 +637,12 @@ class OrdenesDespachoExternoController extends Controller
                 DB::table('contabilidad.adm_ctb_contac')
                     ->where('id_datos_contacto', $request->id_contacto)
                     ->update([
-                        'nombre' => trim($request->nombre),
+                        'nombre' => strtoupper(trim($request->nombre)),
                         'telefono' => trim($request->telefono),
                         'email' => trim($request->email),
-                        'cargo' => trim($request->cargo),
-                        'direccion' => trim($request->direccion),
-                        'horario' => trim($request->horario),
+                        'cargo' => strtoupper(trim($request->cargo)),
+                        'direccion' => strtoupper(trim($request->direccion)),
+                        'horario' => strtoupper(trim($request->horario)),
                         'ubigeo' => $request->ubigeo
                     ]);
             } else {
@@ -616,12 +651,12 @@ class OrdenesDespachoExternoController extends Controller
                     ->insertGetId(
                         [
                             'id_contribuyente' => $request->id_contribuyente_contacto,
-                            'nombre' => trim($request->nombre),
+                            'nombre' => strtoupper(trim($request->nombre)),
                             'telefono' => trim($request->telefono),
                             'email' => trim($request->email),
-                            'cargo' => trim($request->cargo),
-                            'direccion' => trim($request->direccion),
-                            'horario' => trim($request->horario),
+                            'cargo' => strtoupper(trim($request->cargo)),
+                            'direccion' => strtoupper(trim($request->direccion)),
+                            'horario' => strtoupper(trim($request->horario)),
                             'ubigeo' => $request->ubigeo,
                             'fecha_registro' => date('Y-m-d H:i:s'),
                             'estado' => 1
@@ -735,7 +770,7 @@ class OrdenesDespachoExternoController extends Controller
                     ->insertGetId(
                         [
                             'nro_documento' => trim($request->nro_documento),
-                            'razon_social' => trim($request->razon_social),
+                            'razon_social' => strtoupper(trim($request->razon_social)),
                             'telefono' => trim($request->telefono),
                             'direccion_fiscal' => trim($request->direccion_fiscal),
                             'fecha_registro' => date('Y-m-d H:i:s'),
@@ -834,6 +869,7 @@ class OrdenesDespachoExternoController extends Controller
                     'serie' => $request->serie,
                     'numero' => $request->numero,
                     'fecha_transportista' => $request->fecha_transportista,
+                    'fecha_despacho_real' => $request->fecha_despacho_real,
                     'codigo_envio' => $request->codigo_envio,
                     'importe_flete' => $request->importe_flete,
                     'id_estado_envio' => $id_estado_envio,

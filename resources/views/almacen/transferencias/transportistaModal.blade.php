@@ -10,8 +10,8 @@
                     <thead>
                         <tr>
                             <th hidden>Id</th>
-                            <th>RUC</th>
-                            <th>Razon Social</th>
+                            <th width="20%">RUC</th>
+                            <th width="80%">Razon Social</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
