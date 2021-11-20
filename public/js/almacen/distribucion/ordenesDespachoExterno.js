@@ -125,10 +125,20 @@ function listarRequerimientosPendientes(usuario) {
                         );
                     }
                 }, className: "text-center"
-            },
+            },//
             { data: 'siaf', name: 'oc_propias_view.siaf' },
             { data: 'occ', name: 'oc_propias_view.occ' },
-            { data: 'codigo_oportunidad', name: 'oc_propias_view.codigo_oportunidad' },
+            {
+                data: 'codigo_oportunidad', name: 'oc_propias_view.codigo_oportunidad',
+                render: function (data, type, row) {
+                    return (
+                        '<a target="_blank" href="https://mgcp.okccloud.com/mgcp/cuadro-costos/detalles/' + row['id_oportunidad'] + '">' +
+                        row["codigo_oportunidad"] + "</a>"
+                    );
+
+                }, className: "text-center"
+            },
+            // { data: 'codigo_oportunidad', name: 'oc_propias_view.codigo_oportunidad' },
             { data: 'cliente_razon_social', name: 'adm_contri.razon_social' },
             { data: 'responsable', name: 'sis_usua.nombre_corto' },
             { data: 'sede_descripcion_req', name: 'sede_req.descripcion', className: "text-center" },
@@ -198,8 +208,9 @@ function listarRequerimientosPendientes(usuario) {
                         //     <i class="fas fa-route"></i></button>
 
                         /*(row['id_od'] == null && row['productos_no_mapeados'] == 0)*/
-                        `<button type="button" class="comentarios btn btn-${row["count_estados_envios"] > 0 ? 'danger' : 'default'} btn-flat btn-xs" data-toggle="tooltip" 
-                            data-placement="bottom" title="Ver comentarios mgcp" data-id="${row["id_od"]}">
+                        `<button type="button" class="comentarios btn btn-${row["tiene_comentarios"] ? 'danger' : 'default'} btn-flat btn-xs" data-toggle="tooltip" 
+                            data-placement="bottom" title="Ver comentarios mgcp" data-oc="${row["id_oc_propia"]}" data-tp="${row["tipo"]}"
+                            data-nro="${row["nro_orden"]}">
                             <i class="fas fa-comment"></i></button>
                         </div>
                         <div style="display:flex;">
@@ -344,9 +355,43 @@ $('#requerimientosEnProceso tbody').on("click", "button.envio_od", function (e) 
 
 $('#requerimientosEnProceso tbody').on("click", "button.comentarios", function (e) {//mgcp
     $(e.preventDefault());
-    var data = $('#requerimientosEnProceso').DataTable().row($(this).parents("tr")).data();
-    openComentarios(data);
+    var oc = $(this).data("oc");
+    var tipo = $(this).data("tp");
+    var nro = $(this).data("nro");
+
+    let data = 'idOc=' + oc + '&tipo=' + tipo;
+    console.log(data);
+    $('#modal-comentarios_oc_mgcp').modal('show');
+    $('#listaComentarios tbody').html('');
+    $('#nro_orden').text(nro);
+
+    $.ajax({
+        type: "POST",
+        url: "listarPorOc",
+        data: data,
+        dataType: "JSON",
+        success: function (response) {
+            console.log(response);
+            let html = '';
+            response['comentarios'].forEach(element => {
+                html += `<tr>
+                    <td>${element.usuario.name}</td>
+                    <td>${element.comentario}</td>
+                    <td>${element.fecha}</td>
+                </tr>`;
+            });
+            $('#listaComentarios tbody').html(html);
+        }
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
 });
+
+function cerrarComentarios() {
+    $('#modal-comentarios_oc_mgcp').modal('hide');
+}
 
 $('#requerimientosEnProceso tbody').on("click", "button.anular", function () {
     var id = $(this).data('id');
@@ -416,8 +461,8 @@ function priorizar() {
         });
     }
     else {
-        let fecha = $('#txtFechaPriorizacion').val();
-
+        $('#modal-priorizarDespachoExterno').modal("show");
+        /*let fecha = $('#txtFechaPriorizacion').val();
         Swal.fire({
             title: "¿Está seguro que desea priorizar con la fecha: " + formatDate(fecha) + "?",
             icon: "warning",
@@ -465,7 +510,7 @@ function priorizar() {
                     console.log(errorThrown);
                 });
             }
-        });
+        });*/
     }
 }
 

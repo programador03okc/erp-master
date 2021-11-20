@@ -64,9 +64,9 @@
                         {{$d->serie_tra}}-{{$d->numero_tra}}
                     @endif
                 </td>
-                <td>{{$d->importe_flete!==null ? $d->importe_flete :''}}</td>
+                <td>{{$d->importe_flete!==null ? number_format(floatval($d->importe_flete), 2) :''}}</td>
                 <td></td>
-                <td>{{$d->gasto_extra!==null ? round($d->gasto_extra, 2, PHP_ROUND_HALF_UP) :''}}</td>
+                <td>{{$d->gasto_extra!==null ? number_format($d->gasto_extra, 2) :''}}</td>
                 <td>{{$d->estado_envio!==null ? $d->estado_envio :''}}</td>
                 <td>{{$d->plazo_excedido!==null ? ($d->plazo_excedido ? 'PLAZO EXCEDIDO':'ENTREGA A TIEMPO') : ''}}</td>
                 <td></td>

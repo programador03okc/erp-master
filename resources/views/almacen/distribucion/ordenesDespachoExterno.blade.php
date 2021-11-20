@@ -44,7 +44,7 @@ Gestión de Despacho Externo
                                     <th>Orden Elec.</th>
                                     <th>Siaf</th>
                                     <th>OCC</th>
-                                    <th>Cod.CP</th>
+                                    <th>Cod.CDP</th>
                                     <th width="30%">Cliente/Entidad</th>
                                     <th>Generado por</th>
                                     <th>Sede Req.</th>
@@ -70,6 +70,8 @@ Gestión de Despacho Externo
 @include('almacen.distribucion.agregarContacto')
 @include('almacen.distribucion.contactoEnviar')
 @include('almacen.distribucion.ordenDespachoEstados')
+@include('almacen.distribucion.comentarios_oc_mgcp')
+@include('almacen.distribucion.priorizarDespachoExterno')
 @include('tesoreria.facturacion.archivos_oc_mgcp')
 @include('publico.ubigeoModal')
 @include('almacen.transferencias.transportistaModal')

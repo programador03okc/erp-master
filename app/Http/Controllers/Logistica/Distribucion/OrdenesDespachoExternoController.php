@@ -111,6 +111,7 @@ class OrdenesDespachoExternoController extends Controller
             'oc_propias_view.estado_aprobacion_cuadro',
             'oc_propias_view.siaf',
             'oc_propias_view.occ',
+            'oc_propias_view.tiene_comentarios',
             DB::raw("(SELECT COUNT(*) FROM almacen.alm_det_req where
                         alm_det_req.id_requerimiento = alm_req.id_requerimiento
                         and alm_det_req.estado != 7
