@@ -103,6 +103,7 @@ class OrdenesDespachoExternoController extends Controller
             // 'oc_propias_view.codigo_oportunidad',
             'oc_propias_view.nro_orden',
             'oportunidades.codigo_oportunidad',
+            'oportunidades.id as id_oportunidad',
             'oc_propias_view.id as id_oc_propia',
             'oc_propias_view.tipo',
             'oc_propias_view.id_entidad',
