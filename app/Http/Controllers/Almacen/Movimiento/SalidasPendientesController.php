@@ -32,6 +32,7 @@ class SalidasPendientesController extends Controller
                 'alm_req.codigo as codigo_req',
                 'alm_req.concepto',
                 'alm_req.tiene_transformacion',
+                'alm_req.obs_facturacion',
                 // 'sis_usua.nombre_corto',
                 'adm_estado_doc.estado_doc',
                 'adm_estado_doc.bootstrap_color',

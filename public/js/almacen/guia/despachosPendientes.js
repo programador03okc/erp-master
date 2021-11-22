@@ -127,16 +127,16 @@ function listarDespachosPendientes(permiso) {
             }
         },
         'columns': [
-            { 'data': 'id_od' },
+            { data: 'id_od' },
             {
                 data: 'codigo', name: 'orden_despacho.codigo', className: "text-center",
-                'render':
+                render:
                     function (data, type, row) {
                         return `<span class="label label-${row['aplica_cambios'] ? 'danger' : 'primary'}">${row['codigo']}</span>`;
                     }
             },
-            { 'data': 'fecha_despacho', className: "text-center" },
-            // { 'data': 'hora_despacho' },
+            { data: 'fecha_despacho', className: "text-center" },
+            { data: 'obs_facturacion', name: 'alm_req.obs_facturacion', className: "text-center" },
             {
                 data: 'nro_orden', name: 'oc_propias_view.nro_orden',
                 render: function (data, type, row) {
@@ -151,18 +151,7 @@ function listarDespachosPendientes(permiso) {
                 }, className: "text-center"
             },
             { data: 'codigo_oportunidad', name: 'oc_propias_view.codigo_oportunidad', className: "text-center" },
-            // {
-            //     'render':
-            //         function (data, type, row) {
-            //             if (row['razon_social'] !== null) {
-            //                 return row['razon_social'];
-            //             } else if (row['nombre_persona'] !== null) {
-            //                 return row['nombre_persona'];
-            //             }
-            //         }
-            // },
             { 'data': 'razon_social', 'name': 'adm_contri.razon_social' },
-            // { 'data': 'concepto', 'name': 'alm_req.concepto' },
             { 'data': 'codigo_req', 'name': 'alm_req.codigo', className: "text-center" },
             { 'data': 'almacen_descripcion', 'name': 'alm_almacen.descripcion' },
             {
@@ -171,8 +160,6 @@ function listarDespachosPendientes(permiso) {
                     return '<span class="label label-' + row['bootstrap_color'] + '">' + row['estado_doc'] + '</span>'
                 }
             },
-            // { 'data': 'fecha_despacho' },
-            // { 'data': 'nombre_corto', 'name': 'sis_usua.nombre_corto' }
         ],
         'columnDefs': [
             { 'aTargets': [0], 'sClass': 'invisible' },

@@ -49,6 +49,7 @@ Pendientes de Salida
                                             <th hidden></th>
                                             <th>Despacho</th>
                                             <th>Fecha Despacho</th>
+                                            <th>Comentario</th>
                                             <th>OCAM</th>
                                             <th>CDP</th>
                                             <th>Cliente</th>
