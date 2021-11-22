@@ -242,7 +242,7 @@ function listarRequerimientosPendientes(usuario) {
             }
         ],
         select: "multi",
-        order: [[3, "asc"], [0, "desc"]],
+        order: [[3, "desc"], [0, "desc"]],
     });
     vista_extendida();
 
