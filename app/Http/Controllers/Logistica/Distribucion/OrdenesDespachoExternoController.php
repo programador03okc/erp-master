@@ -395,7 +395,8 @@ class OrdenesDespachoExternoController extends Controller
         if (config('app.debug')) {
             $correos[] = config('global.correoDebug1');
         } else {
-            $idUsuarios = Usuario::getAllIdUsuariosPorRol(25);
+            $idUsuarios = Usuario::getAllIdUsuariosPorRol(26);
+            $correos[] = Usuario::find($requerimiento->id_usuario)->email;
             foreach ($idUsuarios as $id) {
                 $correos[] = Usuario::find($id)->email;
             }
@@ -721,7 +722,8 @@ class OrdenesDespachoExternoController extends Controller
             if (config('app.debug')) {
                 $correos[] = config('global.correoDebug1');
             } else {
-                $idUsuarios = Usuario::getAllIdUsuariosPorRol(25);
+                $idUsuarios = Usuario::getAllIdUsuariosPorRol(26);
+                $correos[] = Usuario::find($requerimiento->id_usuario)->email;
                 foreach ($idUsuarios as $id) {
                     $correos[] = Usuario::find($id)->email;
                 }
@@ -839,10 +841,18 @@ class OrdenesDespachoExternoController extends Controller
 
             foreach ($despachos as $det) {
                 DB::table('almacen.orden_despacho')
-                    ->where('id_od', $det)
+                    ->where('id_od', $det->id_od)
                     ->update([
                         'fecha_despacho' => $request->fecha_despacho,
                         'estado' => 25 //priorizado
+                    ]);
+
+                DB::table('almacen.alm_req')
+                    ->where('id_requerimiento', $det->id_requerimiento)
+                    ->update([
+                        'enviar_facturacion' => true,
+                        'fecha_facturacion' => $request->fecha_facturacion,
+                        'obs_facturacion' => $request->comentario
                     ]);
             }
             DB::commit();

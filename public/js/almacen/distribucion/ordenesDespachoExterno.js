@@ -65,11 +65,13 @@ function listarRequerimientosPendientes(usuario) {
             });
 
             const $form = $('#formFiltrosDespachoExterno');
-            const factual = fecha_actual();
+            // const factual = fecha_actual();
+
+            // <input type="date" class="form-control " size="10" id="txtFechaPriorizacion" 
+            // style="background-color:#d2effa;" value="${factual}"/>
+
             $('#requerimientosEnProceso_wrapper .dt-buttons').append(
                 `<div style="display:flex">
-                    <input type="date" class="form-control " size="10" id="txtFechaPriorizacion" 
-                        style="background-color:#d2effa;" value="${factual}"/>
                     <label style="text-align: center;margin-left: 20px;margin-top: 7px;margin-right: 10px;">Mostrar: </label>
                     <select class="form-control" id="selectMostrar">
                         <option value="0" selected>Todos</option>
@@ -256,7 +258,10 @@ function listarRequerimientosPendientes(usuario) {
             console.log(data.id_od);
             if (data.id_od !== null) {
                 if (this.checked) {
-                    despachos_seleccionados.push(data.id_od);
+                    despachos_seleccionados.push({
+                        'id_od': data.id_od,
+                        'id_requerimiento': data.id_requerimiento
+                    });
                     $('.btnPriorizar').removeClass('disabled');
                 } else {
                     var index = despachos_seleccionados.findIndex(function (item, i) {
@@ -448,81 +453,6 @@ $("#requerimientosEnProceso tbody").on("click", "button.transportista", function
     var data = $('#requerimientosEnProceso').DataTable().row($(this).parents("tr")).data();
     openAgenciaTransporte(data);
 });
-
-
-function priorizar() {
-    var valida = 0;
-
-    despachos_seleccionados.forEach(element => {
-        console.log(element);
-        if (element == null) {
-            valida++;
-        }
-    });
-
-    if (valida > 0) {
-        Lobibox.notify("error", {
-            title: false,
-            size: "mini",
-            rounded: true,
-            sound: false,
-            delayIndicator: false,
-            msg: 'Hay ' + valida + ' requerimientos que no tienen Despacho Externo.'
-        });
-    }
-    else {
-        $('#modal-priorizarDespachoExterno').modal("show");
-        /*let fecha = $('#txtFechaPriorizacion').val();
-        Swal.fire({
-            title: "¿Está seguro que desea priorizar con la fecha: " + formatDate(fecha) + "?",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#00a65a", //"#3085d6",
-            cancelButtonColor: "#d33",
-            cancelButtonText: "Cancelar",
-            confirmButtonText: "Sí, Guardar"
-        }).then(result => {
-
-            if (result.isConfirmed) {
-                var data = 'despachos_externos=' + JSON.stringify(despachos_seleccionados)
-                    + '&fecha_despacho=' + fecha;
-                console.log(data);
-                $.ajax({
-                    type: 'POST',
-                    url: 'priorizar',
-                    data: data,
-                    dataType: 'JSON',
-                    success: function (response) {
-                        if (response == 'ok') {
-                            Lobibox.notify("success", {
-                                title: false,
-                                size: "mini",
-                                rounded: true,
-                                sound: false,
-                                delayIndicator: false,
-                                msg: 'Despachos Externos priorizados correctamente.'
-                            });
-                            $("#requerimientosEnProceso").DataTable().ajax.reload(null, false);
-                        } else {
-                            Lobibox.notify("error", {
-                                title: false,
-                                size: "mini",
-                                rounded: true,
-                                sound: false,
-                                delayIndicator: false,
-                                msg: 'Ha ocurrido un error interno. Inténtelo nuevamente.'
-                            });
-                        }
-                    }
-                }).fail(function (jqXHR, textStatus, errorThrown) {
-                    console.log(jqXHR);
-                    console.log(textStatus);
-                    console.log(errorThrown);
-                });
-            }
-        });*/
-    }
-}
 
 function enviarFacturacion(data) {
     $.ajax({

@@ -102,8 +102,9 @@ Gestión de Despacho Externo
 <script src="{{ asset('js/almacen/distribucion/contacto.js?')}}?v={{filemtime(public_path('js/almacen/distribucion/contacto.js'))}}"></script>
 <script src="{{ asset('js/almacen/distribucion/contactoEnviar.js?')}}?v={{filemtime(public_path('js/almacen/distribucion/contactoEnviar.js'))}}"></script>
 <script src="{{ asset('js/almacen/distribucion/agregarTransportista.js?')}}?v={{filemtime(public_path('js/almacen/distribucion/agregarTransportista.js'))}}"></script>
-{{-- <script src="{{ asset('js/logistica/requerimiento/trazabilidad.js')}}"></script> --}}
+<script src="{{ asset('js/almacen/distribucion/priorizarDespachoExterno.js?')}}?v={{filemtime(public_path('js/almacen/distribucion/priorizarDespachoExterno.js'))}}"></script>
 <script src="{{ asset('js/tesoreria/facturacion/archivosMgcp.js?')}}?v={{filemtime(public_path('js/tesoreria/facturacion/archivosMgcp.js'))}}"></script>
+{{-- <script src="{{ asset('js/logistica/requerimiento/trazabilidad.js')}}"></script> --}}
 
 <script src="{{ asset('js/publico/ubigeoModal.js?')}}?v={{filemtime(public_path('js/publico/ubigeoModal.js'))}}"></script>
 <script src="{{ asset('js/almacen/transferencias/transportistaModal.js?')}}?v={{filemtime(public_path('js/almacen/transferencias/transportistaModal.js'))}}"></script>
