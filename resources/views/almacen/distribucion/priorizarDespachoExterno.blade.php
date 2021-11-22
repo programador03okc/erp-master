@@ -16,7 +16,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-12">
+                            <div class="col-md-8">
                                 <h5>Fecha facturación</h5>
                                 <input type="date" name="fecha_facturación" class="form-control limpiar"/>
                             </div>

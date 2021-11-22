@@ -353,35 +353,34 @@ $('#requerimientosEnProceso tbody').on("click", "button.envio_od", function (e) 
     openOrdenDespachoEnviar(data);
 });
 
-$('#requerimientosEnProceso tbody').on("click", "button.comentarios", function (e) {//mgcp
-    $(e.preventDefault());
-    var oc = $(this).data("oc");
-    var tipo = $(this).data("tp");
-    var nro = $(this).data("nro");
+$('#modal-comentarios_oc_mgcp').on('shown.bs.modal', function (e) {
 
-    let data = 'idOc=' + oc + '&tipo=' + tipo;
-    console.log(data);
-    $('#modal-comentarios_oc_mgcp').modal('show');
-    $('#listaComentarios tbody').html('');
-    $('#nro_orden').text(nro);
+
+    $('#divComentarios').LoadingOverlay("show", {
+        imageAutoResize: true,
+        imageColor: "#3c8dbc"
+    });
 
     $.ajax({
         type: "POST",
         url: "listarPorOc",
-        data: data,
+        data: $('#hdnComentariosMgcpData').val(),
         dataType: "JSON",
-        success: function (response) {
-            console.log(response);
-            let html = '';
-            response['comentarios'].forEach(element => {
-                html += `<tr>
-                    <td>${element.usuario.name}</td>
-                    <td>${element.comentario}</td>
-                    <td>${element.fecha}</td>
-                </tr>`;
-            });
-            $('#listaComentarios tbody').html(html);
-        }
+    }).done(function (response) {
+        console.log(response);
+        let html = '';
+        response['comentarios'].forEach(element => {
+            html += `<tr>
+                <td>${element.usuario.name}</td>
+                <td>${element.comentario}</td>
+                <td>${element.fecha}</td>
+            </tr>`;
+        });
+        $('#listaComentarios tbody').html(html);
+
+    }).always(function () {
+        $('#divComentarios').LoadingOverlay("hide", true);
+
     }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
@@ -389,9 +388,20 @@ $('#requerimientosEnProceso tbody').on("click", "button.comentarios", function (
     });
 });
 
-function cerrarComentarios() {
-    $('#modal-comentarios_oc_mgcp').modal('hide');
-}
+$('#requerimientosEnProceso tbody').on("click", "button.comentarios", function (e) {//mgcp
+    //$(e.preventDefault());
+    var oc = $(this).data("oc");
+    var tipo = $(this).data("tp");
+    var nro = $(this).data("nro");
+    let data = 'idOc=' + oc + '&tipo=' + tipo;
+    $('#hdnComentariosMgcpData').val(data)
+    //console.log(data);
+    $('#modal-comentarios_oc_mgcp').modal('show');
+    $('#listaComentarios tbody').html('');
+    $('#nro_orden').text(nro);
+
+});
+
 
 $('#requerimientosEnProceso tbody').on("click", "button.anular", function () {
     var id = $(this).data('id');
