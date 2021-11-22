@@ -895,7 +895,7 @@ class RequerimientoPendienteView {
 
     verDetalleRequerimiento(obj) {
         let tr = obj.closest('tr');
-        var row = tablaListaRequerimientosPendientes.row(tr);
+        var row = $tablaListaRequerimientosPendientes.row(tr);
         var id = obj.dataset.idRequerimiento;
         if (row.child.isShown()) {
             //  This row is already open - close it
