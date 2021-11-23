@@ -1034,6 +1034,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('listarPorOc', 'mgcp\OrdenCompra\Propia\ComentarioController@listarPorOc')->name('listar-por-oc');
 
 				Route::get('migrarDespachos', 'Logistica\Distribucion\OrdenesDespachoExternoController@migrarDespachos')->name('migrarDespachos');
+				Route::get('pruebaDespacho', 'Logistica\Distribucion\OrdenesDespachoExternoController@pruebaDespacho')->name('pruebaDespacho');
 			});
 
 			Route::group(['as' => 'ordenes-despacho-interno.', 'prefix' => 'ordenes-despacho-interno'], function () {
