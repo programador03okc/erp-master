@@ -28,7 +28,9 @@ Gestión de Despacho Externo
     <div class="box box-solid">
         <div class="box-body">
             <div class="col-md-12" style="padding-top:10px;padding-bottom:10px;">
+                @if (Auth::user()->id_usuario == 3)
                 <button id="btn_cerrar" class="btn btn-default" onClick="migrarDespachos();">Migrar</button>
+                @endif
                 <form id="formFiltrosDespachoExterno" method="POST" target="_blank" action="{{route('logistica.distribucion.ordenes-despacho-externo.despachosExternosExcel')}}">
                     @csrf()
                     <input type="hidden" name="select_mostrar" value="0">
