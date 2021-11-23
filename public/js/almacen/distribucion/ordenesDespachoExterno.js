@@ -203,7 +203,14 @@ function listarRequerimientosPendientes(usuario) {
                         <button type="button" class="envio_od btn btn-${row['id_od'] !== null ? 'warning' : 'default'} btn-flat btn-xs " data-toggle="tooltip"
                         data-placement="bottom" title="Enviar Orden de Despacho" data-id="${row['id_requerimiento']}"
                         data-fentrega="${row['fecha_entrega']}" data-cdp="${row['codigo_oportunidad']}">
-                        <i class="far fa-envelope"></i></button>`+
+                        <i class="far fa-envelope"></i></button>
+                        
+                        ${usuarioSesion == 'Rocio.Condori' ?
+                            `<button type="button" class="envio btn btn-${row['id_od'] !== null ? 'success' : 'default'} btn-flat btn-xs " data-toggle="tooltip"
+                        data-placement="bottom" title="Enviar Orden de Despacho" data-id="${row['id_requerimiento']}"
+                        data-fentrega="${row['fecha_entrega']}" data-cdp="${row['codigo_oportunidad']}">
+                        <i class="far fa-envelope"></i></button>` : ''}
+                        `+
 
                         // <button type="button" class="trazabilidad btn btn-warning btn-flat btn-xs " data-toggle="tooltip"
                         //     data-placement="bottom" title="Ver Trazabilidad de Docs"  data-id="${row['id_requerimiento']}">
@@ -352,9 +359,20 @@ $("#requerimientosEnProceso tbody").on("click", "a.archivos", function (e) {
     obtenerArchivosMgcp(id, tipo);
 });
 
+// let od_envio = '';
 $('#requerimientosEnProceso tbody').on("click", "button.envio_od", function (e) {
     $(e.preventDefault());
     var data = $('#requerimientosEnProceso').DataTable().row($(this).parents("tr")).data();
+    // od_envio = '';
+    $('[name=envio]').val('envio');
+    openOrdenDespachoEnviar(data);
+});
+
+$('#requerimientosEnProceso tbody').on("click", "button.envio", function (e) {
+    $(e.preventDefault());
+    var data = $('#requerimientosEnProceso').DataTable().row($(this).parents("tr")).data();
+    // od_envio = 'envio';
+    $('[name=envio]').val('');
     openOrdenDespachoEnviar(data);
 });
 

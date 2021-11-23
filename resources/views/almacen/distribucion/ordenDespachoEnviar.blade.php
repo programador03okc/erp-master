@@ -10,6 +10,7 @@
                     <form id="form-orden_despacho_enviar" method="POST" enctype="multipart/form-data">
                         @csrf
                         <input type="hidden" name="id_requerimiento">
+                        <input type="hidden" name="envio">
                 
                         <div class="form-group">
                             <h5>Mensaje para la orden</h5>

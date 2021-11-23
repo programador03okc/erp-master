@@ -520,7 +520,9 @@ class OrdenesDespachoExternoController extends Controller
             } /*else {
                 $msj = '';
             }*/
-            $this->enviarOrdenDespacho($request);
+            if ($request->envio == 'envio') {
+                $this->enviarOrdenDespacho($request);
+            }
 
             DB::commit();
             return response()->json(array('tipo' => 'success', 'mensaje' => 'Se envió la orden con código ' . $ordenDespacho->codigo), 200);
@@ -886,6 +888,67 @@ class OrdenesDespachoExternoController extends Controller
                     // 'propia'=>((isset($request->transporte_propio)&&$request->transporte_propio=='on')?true:false),
                     'credito' => ((isset($request->credito) && $request->credito == 'on') ? true : false),
                 ]);
+
+            if ($request->fecha_despacho_real !== null || $request->tr_id_transportista !== null) {
+                $oc = DB::table('almacen.alm_req')
+                    ->select(
+                        'oc_propias_view.id',
+                        'oc_propias_view.tipo',
+                        'oc_directas.id_despacho as id_despacho_directa',
+                        'oc_propias.id_despacho as id_despacho_propia'
+                    )
+                    ->join('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
+                    ->join('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
+                    ->join('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'cc.id_oportunidad')
+                    ->leftJoin('mgcp_ordenes_compra.oc_directas', 'oc_directas.id', '=', 'oc_propias_view.id')
+                    ->leftJoin('mgcp_acuerdo_marco.oc_propias', 'oc_propias.id', '=', 'oc_propias_view.id')
+                    ->where('alm_req.id_requerimiento', $request->con_id_requerimiento)
+                    ->first();
+
+                //si existe una oc
+                if ($oc !== null) {
+                    //tiene un despacho
+                    $id_des = $oc->id_despacho_directa !== null ? $oc->id_despacho_directa : ($oc->id_despacho_propia !== null ? $oc->id_despacho_propia : null);
+                    //si ya existe un despacho
+                    if ($id_des !== null) {
+
+                        DB::table('mgcp_ordenes_compra.despachos')
+                            ->where('id', $id_des)
+                            ->update([
+                                'id_transportista' => $request->tr_id_transportista,
+                                'flete_real' => $request->importe_flete,
+                                'fecha_salida' => $request->fecha_despacho_real,
+                                // 'fecha_llegada'=>$request->tr_id_transportista,
+                            ]);
+                    } else {
+                        $id_despacho = DB::table('mgcp_ordenes_compra.despachos')
+                            ->insertGetId([
+                                'id_transportista' => $request->tr_id_transportista,
+                                'flete_real' => $request->importe_flete,
+                                'fecha_salida' => $request->fecha_despacho_real,
+                                'id_usuario' => $request->fecha_despacho_real,
+                                'fecha_registro' => new Carbon(),
+                                // 'fecha_llegada'=>$request->tr_id_transportista,
+                            ], 'id');
+
+                        if ($oc->tipo == 'am') {
+                            DB::table('mgcp_acuerdo_marco.oc_propias')
+                                ->where('oc_propias.id', $oc->id)
+                                ->update([
+                                    'despachada' => true,
+                                    'id_despacho' => $id_despacho
+                                ]);
+                        } else {
+                            DB::table('mgcp_ordenes_compra.oc_directas')
+                                ->where('oc_directas.id', $oc->id)
+                                ->update([
+                                    'despachada' => true,
+                                    'id_despacho' => $id_despacho
+                                ]);
+                        }
+                    }
+                }
+            }
 
             if (!empty($request->serie) && !empty($request->numero)) {
                 //si se ingreso serie y numero de la guia se agrega el nuevo estado envio

@@ -1831,6 +1831,39 @@ class DistribucionController extends Controller
                     'id_usuario' => $id_usuario,
                     'fecha_registro' => $fechaRegistro
                 ]);
+
+            $oc = DB::table('almacen.alm_req')
+                ->select(
+                    'oc_propias_view.id',
+                    'oc_propias_view.tipo',
+                    'oc_directas.id_despacho as id_despacho_directa',
+                    'oc_propias.id_despacho as id_despacho_propia'
+                )
+                ->join('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
+                ->join('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
+                ->join('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'cc.id_oportunidad')
+                ->leftJoin('mgcp_ordenes_compra.oc_directas', 'oc_directas.id', '=', 'oc_propias_view.id')
+                ->leftJoin('mgcp_acuerdo_marco.oc_propias', 'oc_propias.id', '=', 'oc_propias_view.id')
+                ->where('alm_req.id_requerimiento', $od->id_requerimiento)
+                ->first();
+
+            if ($oc !== null) {
+                if ($oc->id_despacho_directa !== null) {
+
+                    DB::table('mgcp_ordenes_compra.despachos')
+                        ->where('id', $oc->id_despacho_directa)
+                        ->update([
+                            'fecha_llegada' => $request->fecha_estado
+                        ]);
+                } else if ($oc->id_despacho_propia !== null) {
+
+                    DB::table('mgcp_ordenes_compra.despachos')
+                        ->where('id', $oc->id_despacho_propia)
+                        ->update([
+                            'fecha_llegada' => $request->fecha_estado
+                        ]);
+                }
+            }
         }
 
         $obs = DB::table('almacen.orden_despacho_obs')
