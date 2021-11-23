@@ -127,6 +127,9 @@ class DetalleRequerimiento extends Model
     public function reserva(){
         return $this->hasMany('App\Models\Almacen\Reserva','id_detalle_requerimiento','id_detalle_requerimiento');
     }
+    public function adjuntoDetalleRequerimiento(){
+        return $this->hasMany('App\Models\Almacen\AdjuntoDetalleRequerimiento','id_detalle_requerimiento','id_detalle_requerimiento');
+    }
     public function detalle_orden(){
         return $this->hasMany('App\Models\Logistica\OrdenCompraDetalle','id_detalle_requerimiento','id_detalle_requerimiento');
     }
