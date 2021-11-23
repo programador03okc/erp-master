@@ -23,15 +23,15 @@ class OrdenDespacho extends Model
 
         $cantidad = OrdenDespacho::whereYear('fecha_despacho', '=', Carbon::now()->format('Y'))
             ->where([
-                ['id_almacen', '=', $id_almacen],
+                // ['id_almacen', '=', $id_almacen],
                 ['aplica_cambios', '=', $aplica_cambios],
                 ['estado', '!=', 7],
                 // ['id_od', '<=', $id],
             ])
             ->get()->count();
 
-        $val = sprintf('%04d', $cantidad + 1); //AlmacenController::leftZero(4, $cantidad + 1);
-        $nextId = "OD" . ($aplica_cambios ? "-I-" : "-E-") . $id_almacen . "-" . Carbon::now()->format('y') . $val;
+        $val = sprintf('%04d', $cantidad + 1);
+        $nextId = "OD" . ($aplica_cambios ? "-I-" : "-E-") . Carbon::now()->format('y') . $val;
         return $nextId;
     }
 }

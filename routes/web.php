@@ -1032,6 +1032,8 @@ Route::group(['middleware' => ['auth']], function () {
 
 				Route::post('despachosExternosExcel', 'Logistica\Distribucion\OrdenesDespachoExternoController@despachosExternosExcel')->name('despachosExternosExcel');
 				Route::post('listarPorOc', 'mgcp\OrdenCompra\Propia\ComentarioController@listarPorOc')->name('listar-por-oc');
+
+				Route::get('migrarDespachos', 'Logistica\Distribucion\OrdenesDespachoExternoController@migrarDespachos')->name('migrarDespachos');
 			});
 
 			Route::group(['as' => 'ordenes-despacho-interno.', 'prefix' => 'ordenes-despacho-interno'], function () {

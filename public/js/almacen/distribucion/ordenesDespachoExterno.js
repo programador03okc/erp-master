@@ -499,6 +499,36 @@ function anularOrdenDespacho(id) {
     });
 }
 
+function migrarDespachos() {
+    console.log(usuarioSesion);
+
+    if (usuarioSesion == 'Rocio.Condori') {
+        $.ajax({
+            type: 'GET',
+            url: 'migrarDespachos',
+            dataType: 'JSON',
+            success: function (response) {
+                console.log(response);
+                if (response > 0) {
+                    Lobibox.notify("success", {
+                        title: false,
+                        size: "mini",
+                        rounded: true,
+                        sound: false,
+                        delayIndicator: false,
+                        msg: "Despachos migrados con exito."
+                    });
+                    $('#requerimientosEnProceso').DataTable().ajax.reload(null, false);
+                }
+            }
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        });
+    }
+}
+
 function open_detalle_transferencia(id) {
     $('#modal-detalleTransferencia').modal({
         show: true
