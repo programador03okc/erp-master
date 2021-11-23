@@ -970,7 +970,7 @@ class OrdenesDespachoExternoController extends Controller
                     ['estado', '!=', 7]
                 ])->first();
 
-                if ($ordenDespacho == null) {
+                if ($ordenDespacho == null && ($req->fecha_salida !== null || $req->id_transportista !== null)) {
 
                     $usuario = Auth::user()->id_usuario;
                     $fechaRegistro = new Carbon();
