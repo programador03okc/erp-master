@@ -790,6 +790,10 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('finalizar-regularizacion-de-requerimiento', 'ComprasPendientesController@finalizarRegularizacionRequerimiento')->name('finalizar-regularizacion-de-requerimiento');
 
 					Route::get('finalizar-cuadro/{id}', 'OrdenController@finalizarCuadroPresupuesto');
+
+					Route::get('mostrar-archivos-adjuntos-detalle-requerimiento/{id_detalle_requerimiento}', 'LogisticaController@mostrar_archivos_adjuntos');
+					// Route::get('mostrar-archivos-adjuntos-requerimiento/{id_requerimiento?}/{categoria?}', 'LogisticaController@mostrar_archivos_adjuntos_requerimiento');
+
 				});
 
 				Route::group(['as' => 'ordenes.', 'prefix' => 'ordenes'], function () {

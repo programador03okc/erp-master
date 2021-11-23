@@ -80,6 +80,12 @@ class RequerimientoPendienteView {
         $('#listaRequerimientosPendientes tbody').on("click", "button.handleClickCrearOrdenServicioPorRequerimiento", (e) => {
             this.crearOrdenServicioPorRequerimiento(e.currentTarget);
         });
+        $('#listaRequerimientosPendientes tbody').on("click", "button.handleClickVerAdjuntoDetalleRequerimiento", (e) => {
+            this.verAdjuntoDetalleRequerimiento(e.currentTarget);
+        });
+        $('#modal-adjuntos-detalle-requerimiento').on("click", "button.handleClickDescargarArchivoDetalleRequerimiento", (e) => {
+            this.descargarArchivoDetalleRequerimiento(e.currentTarget);
+        });
 
 
         $('#modal-filtro-requerimientos-pendientes').on("change", "select.handleChangeFiltroEmpresa", (e) => {
@@ -949,6 +955,12 @@ class RequerimientoPendienteView {
                         stock_comprometido += parseFloat(reserva.stock_comprometido);
                     }
                 });
+                let cantidadAdjuntosDetalleRequerimiento = 0;
+                (element.adjunto_detalle_requerimiento).forEach(adjuntoItem => {
+                    if (adjuntoItem.estado == 1) {
+                        cantidadAdjuntosDetalleRequerimiento ++;
+                    }
+                });
 
                 html += `<tr>
                         <td style="border: none; text-align:center;" data-part-number="${element.part_number}" data-producto-part-number="${element.producto_part_number}">${(element.producto_part_number != null ? element.producto_part_number : (element.part_number != null ? element.part_number : ''))} ${element.tiene_transformacion == true ? '<span class="label label-default">Transformado</span>' : ''}</td>
@@ -960,6 +972,7 @@ class RequerimientoPendienteView {
                         <td style="border: none; text-align:center;">${element.motivo != null ? element.motivo : ''}</td>
                         <td style="border: none; text-align:center;">${stock_comprometido != null ? stock_comprometido : ''}</td>
                         <td style="border: none; text-align:center;">${element.estado_doc != null && element.tiene_transformacion == false ? element.estado_doc : ''}</td>
+                        <td style="border: none; text-align:center;">${cantidadAdjuntosDetalleRequerimiento >0 ?`<button type="button" class="btn btn-default btn-xs handleClickVerAdjuntoDetalleRequerimiento" name="btnVerAdjuntoDetalleRequerimiento" title="Ver adjuntos" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-descripcion="${element.producto_descripcion != null ? element.producto_descripcion : (element.descripcion ? element.descripcion : '')}" ><i class="fas fa-file-archive"></i></button>`:''}</td>
                         </tr>`;
                 // }
             });
@@ -976,6 +989,7 @@ class RequerimientoPendienteView {
                         <th style="border: none; text-align:center;">Motivo</th>
                         <th style="border: none; text-align:center;">Reserva almacén</th>
                         <th style="border: none; text-align:center;">Estado</th>
+                        <th style="border: none; text-align:center;">Adjuntos</th>
                     </tr>
                 </thead>
                 <tbody style="background: #e7e8ea;">${html}</tbody>
@@ -2236,5 +2250,96 @@ class RequerimientoPendienteView {
         this.requerimientoPendienteCtrl.crearOrdenCompra();
 
     }
-}
 
+
+    verAdjuntoDetalleRequerimiento(obj){
+
+        $('#modal-adjuntos-detalle-requerimiento').modal({
+            show: true,
+            backdrop: 'true'
+        });
+
+        this.listarArchivosAdjuntosDetalleRequerimiento(obj.dataset.idDetalleRequerimiento);
+        document.querySelector("div[id='modal-adjuntos-detalle-requerimiento'] small[id='descripcion-item']").textContent = obj.dataset.descripcion;
+
+    }
+
+
+    listarArchivosAdjuntosDetalleRequerimiento(idDetalleRequerimiento){
+
+        $.ajax({
+            type: 'GET',
+            url: 'mostrar-archivos-adjuntos-detalle-requerimiento/' + idDetalleRequerimiento,
+            dataType: 'JSON',
+        }).done( (response)=> {
+            this.construirTablaAdjuntoDetalleRequerimiento(response);
+
+    
+        }).always( ()=> {
+    
+        }).fail((jqXHR)=> {
+            Swal.fire(
+                '',
+                'Hubo un problema al intentar mostrar la orden, por favor vuelva a intentarlo.',
+                'error'
+            );
+            console.log('Error devuelto: ' + jqXHR.responseText);
+        });
+
+    }
+
+
+    construirTablaAdjuntoDetalleRequerimiento(data){
+        // console.log(data);
+        $('#listaAdjuntosDetalleRequerimiento').dataTable({
+            'dom': vardataTables[1],
+            'buttons': [],
+            'language': vardataTables[0],
+            "bDestroy": true,
+            "bInfo": false,
+            // 'paging': true,
+            "bLengthChange": false,
+            // "pageLength": 3,
+            'data': data,
+            'order': [[0, 'desc']],
+ 
+            'columns': [
+
+                {
+                    render: function (data, type, row) {
+                        return (row.archivo != null ? row.archivo : '');
+                    }
+                },
+                {
+                    render: function (data, type, row) {
+                        return (row.fecha_registro != null ? row.fecha_registro : '');
+                    }
+                }, 
+                {
+                    render: function (data, type, row) {
+
+                        return `<button type="button" class="btn btn-info btn-sm handleClickDescargarArchivoDetalleRequerimiento" name="btnDescargarArchivoDetalleRequerimiento" title="Descargar"  data-id-adjunto="${row.id_adjunto}" data-archivo="${row.archivo}" ><i class="fas fa-file-archive"></i></button>`;
+                    }
+                } 
+            ],
+
+            'columnDefs': [
+                { 'targets': 0, 'className': "text-left" },
+                { 'targets': 1, 'className': "text-left" },
+                { 'targets': 2, 'className': "text-center" } 
+            ],
+            'initComplete': function () {
+
+
+            } 
+        });
+    }
+
+
+    descargarArchivoDetalleRequerimiento(obj){
+        if (obj.dataset.idAdjunto > 0) {
+            window.open("/files/logistica/detalle_requerimiento/" + obj.dataset.archivo);
+        }
+
+    }
+}
