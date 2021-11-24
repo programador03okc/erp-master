@@ -22,7 +22,7 @@ class OrdenCompraDirectaHelper
     {
         $archivos = [];
         // $carpetaDestino = storage_path('app/mgcp/ordenes-compra/temporal/');
-        $carpetaDestino = storage_path('app/mgcp/ordenes-compra/temporal/');
+        $carpetaDestino = 'C:\\xampp\\htdocs\\test-erp\\storage\\app\\mgcp\\ordenes-compra\\temporal\\';
         $carpetaOrigen = ('C:\\xampp\\htdocs\\mgcp\\storage\\app\\mgcp\\ordenes-compra\\directas' . $idOrden);
         // $carpetaOrigen = storage_path('app/mgcp/ordenes-compra/directas/' . $idOrden);
         if (is_dir($carpetaOrigen)) {
