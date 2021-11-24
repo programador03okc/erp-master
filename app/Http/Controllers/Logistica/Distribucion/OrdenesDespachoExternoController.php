@@ -114,6 +114,8 @@ class OrdenesDespachoExternoController extends Controller
                 'oc_propias_view.siaf',
                 'oc_propias_view.occ',
                 'oc_propias_view.tiene_comentarios',
+                'oc_propias_view.nombre_entidad',
+                'oc_propias_view.nombre_largo_responsable',
                 DB::raw("(SELECT COUNT(*) FROM almacen.alm_det_req where
                             alm_det_req.id_requerimiento = alm_req.id_requerimiento
                             and alm_det_req.estado != 7
@@ -144,10 +146,10 @@ class OrdenesDespachoExternoController extends Controller
             // ->leftJoin('configuracion.ubi_dpto as od_dpto', 'od_dpto.id_dpto', '=', 'od_prov.id_dpto')
             ->leftJoin('administracion.adm_estado_doc as est_od', 'est_od.id_estado_doc', '=', 'orden_despacho.estado')
             ->leftJoin('almacen.estado_envio', 'estado_envio.id_estado', '=', 'orden_despacho.id_estado_envio')
-            ->leftJoin('almacen.guia_ven', 'guia_ven.id_od', '=', 'orden_despacho.id_od')
-            ->where([
-                ['alm_req.estado', '!=', 7],
-            ]);
+            ->leftJoin('almacen.guia_ven', 'guia_ven.id_od', '=', 'orden_despacho.id_od');
+        // ->where([
+        //     ['alm_req.estado', '!=', 7],
+        // ]);
         if ($request->select_mostrar == 1) {
             // $data->whereNotNull('orden_despacho.fecha_despacho');
             $data->where('orden_despacho.estado', 25);

@@ -133,16 +133,38 @@ function listarRequerimientosPendientes(usuario) {
             {
                 data: 'codigo_oportunidad', name: 'oc_propias_view.codigo_oportunidad',
                 render: function (data, type, row) {
-                    return (
-                        '<a target="_blank" href="https://mgcp.okccloud.com/mgcp/cuadro-costos/detalles/' + row['id_oportunidad'] + '">' +
-                        row["codigo_oportunidad"] + "</a>"
-                    );
-
+                    if (row["codigo_oportunidad"] !== null) {
+                        return (
+                            '<a target="_blank" href="https://mgcp.okccloud.com/mgcp/cuadro-costos/detalles/' + row['id_oportunidad'] + '">' +
+                            row["codigo_oportunidad"] + "</a>"
+                        );
+                    } else {
+                        return '';
+                    }
                 }, className: "text-center"
             },
-            // { data: 'codigo_oportunidad', name: 'oc_propias_view.codigo_oportunidad' },
-            { data: 'cliente_razon_social', name: 'adm_contri.razon_social' },
-            { data: 'responsable', name: 'sis_usua.nombre_corto' },
+            // { data: 'cliente_razon_social', name: 'adm_contri.razon_social' },
+            {
+                data: 'cliente_razon_social', name: 'adm_contri.razon_social',
+                render: function (data, type, row) {
+                    if (row["cliente_razon_social"] !== null) {
+                        return row["cliente_razon_social"];
+                    } else {
+                        return row["nombre_entidad"];
+                    }
+                }
+            },
+            // { data: 'responsable', name: 'sis_usua.nombre_corto' },
+            {
+                data: 'responsable', name: 'sis_usua.nombre_corto',
+                render: function (data, type, row) {
+                    if (row["responsable"] !== null) {
+                        return row["responsable"];
+                    } else {
+                        return row["nombre_largo_responsable"];
+                    }
+                }
+            },
             { data: 'sede_descripcion_req', name: 'sede_req.descripcion', className: "text-center" },
             // {
             //     data: 'estado_doc', name: 'adm_estado_doc.bootstrap_color',
@@ -187,9 +209,13 @@ function listarRequerimientosPendientes(usuario) {
             },
             {
                 render: function (data, type, row) {
-                    return (
-                        '<a href="#" class="verRequerimiento" data-id="' + row["id_requerimiento"] + '" >' + row["codigo"] + "</a>" + (row['tiene_transformacion'] ? ' <i class="fas fa-random red"></i>' : '')
-                    );
+                    if (row["codigo"] !== null) {
+                        return (
+                            '<a href="#" class="verRequerimiento" data-id="' + row["id_requerimiento"] + '" >' + row["codigo"] + "</a>" + (row['tiene_transformacion'] ? ' <i class="fas fa-random red"></i>' : '')
+                        );
+                    } else {
+                        return '';
+                    }
                 }, targets: 2
             },
             {
