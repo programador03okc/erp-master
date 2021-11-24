@@ -3,10 +3,10 @@ function openOrdenDespachoEnviar(data) {
         show: true
     });
 
-    $('[name=id_requerimiento]').val(data.id_requerimiento);
-    $('#codigo_cdp').text(data.codigo_oportunidad + ' - ' + data.codigo);
+    $('[name=id_requerimiento]').val(data.id_requerimiento ?? '');
+    $('#codigo_cdp').text(data.codigo_oportunidad + ' - ' + (data.codigo ?? ''));
 
-    var msj = "Por favor hacer seguimiento a este pedido. Vence: " + data.fecha_entrega +
+    var msj = "Por favor hacer seguimiento a este pedido. Vence: " + (data.fecha_entrega ?? '') +
         "\nFECHA DE DESPACHO: \n" +
         "\nFavor de generar documentación: " +
         "\n• FACTURA " +

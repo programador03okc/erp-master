@@ -48,7 +48,7 @@ class OrdenesDespachoExternoController extends Controller
                 'alm_req.id_requerimiento',
                 'alm_req.codigo',
                 'alm_req.concepto',
-                'alm_req.fecha_entrega',
+                'oc_propias_view.fecha_entrega',
                 'alm_req.tiene_transformacion',
                 'alm_req.direccion_entrega',
                 'alm_req.id_ubigeo_entrega',
