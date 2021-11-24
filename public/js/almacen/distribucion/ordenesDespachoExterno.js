@@ -226,10 +226,12 @@ function listarRequerimientosPendientes(usuario) {
                         data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}">
                         <i class="fas fa-chevron-down"></i></button>
                         
-                        <button type="button" class="envio_od btn btn-${row['id_od'] !== null ? 'warning' : 'default'} btn-flat btn-xs " data-toggle="tooltip"
-                        data-placement="bottom" title="Enviar Orden de Despacho" data-id="${row['id_requerimiento']}"
-                        data-fentrega="${row['fecha_entrega']}" data-cdp="${row['codigo_oportunidad']}">
-                        <i class="far fa-envelope"></i></button>
+                        ${row['id_requerimiento'] !== null ?
+                            `<button type="button" class="envio_od btn btn-${row['id_od'] !== null ? 'warning' : 'default'} btn-flat btn-xs " data-toggle="tooltip"
+                            data-placement="bottom" title="Enviar Orden de Despacho" data-id="${row['id_requerimiento']}"
+                            data-fentrega="${row['fecha_entrega']}" data-cdp="${row['codigo_oportunidad']}">
+                            <i class="far fa-envelope"></i></button>`
+                            : ''}
                         
                         ${usuarioSesion == 'Rocio.Condori' ?
                             `<button type="button" class="envio btn btn-${row['id_od'] !== null ? 'success' : 'default'} btn-flat btn-xs " data-toggle="tooltip"
