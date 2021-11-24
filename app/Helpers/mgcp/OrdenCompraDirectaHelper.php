@@ -21,13 +21,14 @@ class OrdenCompraDirectaHelper
     public static function copiarArchivos($idOrden)
     {
         $archivos = [];
+        // $carpetaDestino = storage_path('app/mgcp/ordenes-compra/temporal/');
         $carpetaDestino = storage_path('app/mgcp/ordenes-compra/temporal/');
-        $carpetaOrigen = ('C://xampp//htdocs//mgcp//storage//app//mgcp//ordenes-compra//directas' . $idOrden);
+        $carpetaOrigen = ('C:\\xampp\\htdocs\\mgcp\\storage\\app\\mgcp\\ordenes-compra\\directas' . $idOrden);
         // $carpetaOrigen = storage_path('app/mgcp/ordenes-compra/directas/' . $idOrden);
         if (is_dir($carpetaOrigen)) {
             $files = File::files($carpetaOrigen);
             foreach ($files as $file) {
-                copy($carpetaOrigen . '//' . $file->getFilename(), $carpetaDestino . $file->getFilename());
+                copy($carpetaOrigen . '\\' . $file->getFilename(), $carpetaDestino . $file->getFilename());
                 $archivos[] = $carpetaDestino . $file->getFilename();
                 //$archivos .= '<li style="margin-bottom: 5px"><a target="_blank" href="' . route('mgcp.ordenes-compra.propias.directas.descargar-archivo', ['id' => $this->attributes['id'], 'archivo' => $file->getFilename()]) . '">' . $file->getFilename() . '</a></li>';
             }
