@@ -10,6 +10,7 @@
                     <form id="form-orden_despacho_enviar" method="POST" enctype="multipart/form-data">
                         @csrf
                         <input type="hidden" name="id_requerimiento">
+                        <input type="hidden" name="id_oportunidad">
                         <input type="hidden" name="envio">
                 
                         <div class="form-group">

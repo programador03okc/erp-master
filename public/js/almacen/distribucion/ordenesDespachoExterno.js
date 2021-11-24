@@ -110,10 +110,10 @@ function listarRequerimientosPendientes(usuario) {
             { data: 'id_od', name: 'orden_despacho.id_od' },
             { data: 'codigo', name: 'alm_req.codigo', className: "text-center" },
             {
-                data: 'fecha_entrega', name: 'alm_req.fecha_entrega',
-                // 'render': function (data, type, row) {
-                //     return (row['fecha_entrega'] !== null ? formatDate(row['fecha_entrega']) : '');
-                // }
+                data: 'fecha_entrega', name: 'oc_propias_view.fecha_entrega',
+                'render': function (data, type, row) {
+                    return (row['fecha_entrega'] !== null ? formatDate(row['fecha_entrega']) : '');
+                }
             },
             {
                 data: 'nro_orden', name: 'oc_propias_view.nro_orden',
@@ -277,7 +277,7 @@ function listarRequerimientosPendientes(usuario) {
             }
         ],
         select: "multi",
-        order: [[3, "desc"], [0, "desc"]],
+        order: [[3, "desc"]], //, [0, "desc"]
     });
     vista_extendida();
 
@@ -389,7 +389,7 @@ $("#requerimientosEnProceso tbody").on("click", "a.archivos", function (e) {
 $('#requerimientosEnProceso tbody').on("click", "button.envio_od", function (e) {
     $(e.preventDefault());
     var data = $('#requerimientosEnProceso').DataTable().row($(this).parents("tr")).data();
-    // od_envio = '';
+    console.log(data);
     $('[name=envio]').val('envio');
     openOrdenDespachoEnviar(data);
 });

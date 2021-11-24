@@ -10,12 +10,18 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Mail\EmailContactoDespacho;
 use App\Mail\EmailOrdenDespacho;
+use App\Models\Administracion\Periodo;
 use App\Models\Almacen\Requerimiento;
+use App\Models\Comercial\Cliente;
 use App\Models\Configuracion\Usuario;
 use App\Models\Contabilidad\ContactoContribuyente;
+use App\Models\Contabilidad\Contribuyente;
 use App\Models\Distribucion\OrdenDespacho;
+use App\Models\mgcp\AcuerdoMarco\Entidad\Entidad;
 use App\Models\mgcp\CuadroCosto\CuadroCosto;
 use App\Models\mgcp\Oportunidad\Oportunidad;
+use App\Models\mgcp\OrdenCompra\Propia\OrdenCompraPropiaView;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -25,10 +31,9 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class OrdenesDespachoExternoController extends Controller
 {
-    public function __construct()
-    {
-        // session_start();
-    }
+
+    const ID_DIVISION_UCORP = 1;
+    const ID_USUARIO_MGCP = 79;
 
     function view_ordenes_despacho_externo()
     {
@@ -104,9 +109,10 @@ class OrdenesDespachoExternoController extends Controller
                 // 'oc_propias_view.codigo_oportunidad',
                 'oc_propias_view.nro_orden',
                 'oportunidades.codigo_oportunidad',
-                'oportunidades.id as id_oportunidad',
+                // 'oportunidades.id as id_oportunidad',
                 'oc_propias_view.id as id_oc_propia',
                 'oc_propias_view.tipo',
+                'oc_propias_view.id_oportunidad',
                 'oc_propias_view.id_entidad',
                 'oc_propias_view.estado_oc',
                 'oc_propias_view.fecha_publicacion',
@@ -368,11 +374,11 @@ class OrdenesDespachoExternoController extends Controller
     //         return response()->json('Algo salio mal');
     //     }
     // }
-    private function enviarOrdenDespacho(Request $request)
+    private function enviarOrdenDespacho(Request $request, $oportunidad)
     {
-        $requerimiento = Requerimiento::find($request->id_requerimiento);
-        $cuadro = CuadroCosto::find($requerimiento->id_cc);
-        $oportunidad = Oportunidad::find($cuadro->id_oportunidad);
+        // $requerimiento = Requerimiento::find($request->id_requerimiento);
+        // $cuadro = CuadroCosto::find($requerimiento->id_cc);
+        // $oportunidad = Oportunidad::find($cuadro->id_oportunidad);
         $ordenView = $oportunidad->ordenCompraPropia;
         $archivosOc = [];
         //Obtencion de archivos en carpeta temporal
@@ -396,7 +402,11 @@ class OrdenesDespachoExternoController extends Controller
             $correos[] = config('global.correoDebug1');
         } else {
             $idUsuarios = Usuario::getAllIdUsuariosPorRol(26);
-            $correos[] = Usuario::find($requerimiento->id_usuario)->email;
+            $usuario = DB::table('mgcp_usuarios.users')
+                ->where('id', $oportunidad->id_responsable)->first();
+
+            $correos[] = $usuario->email;
+            // $correos[] = Usuario::find($requerimiento->id_usuario)->email;
             foreach ($idUsuarios as $id) {
                 $correos[] = Usuario::find($id)->email;
             }
@@ -413,123 +423,120 @@ class OrdenesDespachoExternoController extends Controller
     {
         try {
             DB::beginTransaction();
+            $ordenDespacho = null;
+            $cuadro = CuadroCosto::where('id_oportunidad', $request->id_oportunidad)->first();
+            $oportunidad = Oportunidad::find($cuadro->id_oportunidad);
 
-            $ordenDespacho = OrdenDespacho::where([
-                ['id_requerimiento', '=', $request->id_requerimiento],
-                ['aplica_cambios', '=', false],
-                ['estado', '!=', 7]
-            ])->first();
+            if ($request->id_requerimiento !== null) {
 
-            if ($ordenDespacho == null) {
+                $requerimiento = Requerimiento::where('id_requerimiento', $request->id_requerimiento)->first();
+                $ordenDespacho = OrdenDespacho::where([
+                    ['id_requerimiento', '=', $requerimiento->id_requerimiento],
+                    ['aplica_cambios', '=', false],
+                    ['estado', '!=', 7]
+                ])->first();
 
-                $usuario = Auth::user()->id_usuario;
-                $fechaRegistro = new Carbon(); //date('Y-m-d H:i:s');
-                $id_estado_envio = 1; //despacho elaborado
+                if ($ordenDespacho == null) {
 
-                $req = Requerimiento::where('id_requerimiento', $request->id_requerimiento)->first();
-                $ordenDespacho = new OrdenDespacho();
-                $ordenDespacho->id_sede = $req->id_sede;
-                $ordenDespacho->id_requerimiento = $req->id_requerimiento;
-                $ordenDespacho->id_cliente = $req->id_cliente;
-                $ordenDespacho->id_persona = $req->id_persona;
-                $ordenDespacho->id_almacen = $req->id_almacen;
-                $ordenDespacho->aplica_cambios = false;
-                $ordenDespacho->registrado_por = $usuario;
-                $ordenDespacho->fecha_despacho = $fechaRegistro;
-                $ordenDespacho->fecha_registro = $fechaRegistro;
-                $ordenDespacho->estado = 1;
-                $ordenDespacho->id_estado_envio = $id_estado_envio;
-                $ordenDespacho->save();
-                //Agrega accion en requerimiento
-                DB::table('almacen.alm_req_obs')
-                    ->insert([
-                        'id_requerimiento' => $request->id_requerimiento,
-                        'accion' => 'DESPACHO EXTERNO',
-                        'descripcion' => 'Se generó la Orden de Despacho Externa',
-                        'id_usuario' => $usuario,
-                        'fecha_registro' => $fechaRegistro
-                    ]);
+                    $usuario = Auth::user()->id_usuario;
+                    $fechaRegistro = new Carbon(); //date('Y-m-d H:i:s');
+                    $id_estado_envio = 1; //despacho elaborado
 
-                $detalle = DB::table('almacen.alm_det_req')
-                    ->where([
-                        ['id_requerimiento', '=', $request->id_requerimiento],
-                        ['tiene_transformacion', '=', $req->tiene_transformacion],
-                        ['estado', '!=', 7]
-                    ])
-                    ->get();
-
-                foreach ($detalle as $d) {
-                    DB::table('almacen.orden_despacho_det')
+                    $ordenDespacho = new OrdenDespacho();
+                    $ordenDespacho->id_sede = $requerimiento->id_sede;
+                    $ordenDespacho->id_requerimiento = $requerimiento->id_requerimiento;
+                    $ordenDespacho->id_cliente = $requerimiento->id_cliente;
+                    $ordenDespacho->id_persona = $requerimiento->id_persona;
+                    $ordenDespacho->id_almacen = $requerimiento->id_almacen;
+                    $ordenDespacho->aplica_cambios = false;
+                    $ordenDespacho->registrado_por = $usuario;
+                    $ordenDespacho->fecha_despacho = $fechaRegistro;
+                    $ordenDespacho->fecha_registro = $fechaRegistro;
+                    $ordenDespacho->estado = 1;
+                    $ordenDespacho->id_estado_envio = $id_estado_envio;
+                    $ordenDespacho->save();
+                    //Agrega accion en requerimiento
+                    DB::table('almacen.alm_req_obs')
                         ->insert([
-                            'id_od' => $ordenDespacho->id_od,
-                            // 'id_producto' => $d->id_producto,
-                            'id_detalle_requerimiento' => $d->id_detalle_requerimiento,
-                            'cantidad' => $d->cantidad,
-                            'transformado' => $d->tiene_transformacion,
-                            'estado' => 1,
+                            'id_requerimiento' => $requerimiento->id_requerimiento,
+                            'accion' => 'DESPACHO EXTERNO',
+                            'descripcion' => 'Se generó la Orden de Despacho Externa',
+                            'id_usuario' => $usuario,
                             'fecha_registro' => $fechaRegistro
                         ]);
 
-                    DB::table('almacen.alm_det_req')
-                        ->where('id_detalle_requerimiento', $d->id_detalle_requerimiento)
+                    $detalle = DB::table('almacen.alm_det_req')
+                        ->where([
+                            ['id_requerimiento', '=', $requerimiento->id_requerimiento],
+                            ['tiene_transformacion', '=', $requerimiento->tiene_transformacion],
+                            ['estado', '!=', 7]
+                        ])
+                        ->get();
+
+                    foreach ($detalle as $d) {
+                        DB::table('almacen.orden_despacho_det')
+                            ->insert([
+                                'id_od' => $ordenDespacho->id_od,
+                                // 'id_producto' => $d->id_producto,
+                                'id_detalle_requerimiento' => $d->id_detalle_requerimiento,
+                                'cantidad' => $d->cantidad,
+                                'transformado' => $d->tiene_transformacion,
+                                'estado' => 1,
+                                'fecha_registro' => $fechaRegistro
+                            ]);
+
+                        DB::table('almacen.alm_det_req')
+                            ->where('id_detalle_requerimiento', $d->id_detalle_requerimiento)
+                            ->update(['estado' => 23]); //despacho externo
+                    }
+
+                    DB::table('almacen.alm_req')
+                        ->where('id_requerimiento', $requerimiento->id_requerimiento)
                         ->update(['estado' => 23]); //despacho externo
+
+                    $ordenDespacho->codigo = OrdenDespacho::ODnextId($requerimiento->id_almacen, false, $ordenDespacho->id_od);
+                    $ordenDespacho->save();
+
+                    //Agrega primera trazabilidad de envio (la generacion de la Orden de despacho)
+                    $obs = DB::table('almacen.orden_despacho_obs')
+                        ->where([
+                            ['id_od', '=', $ordenDespacho->id_od],
+                            ['accion', '=', $id_estado_envio]
+                        ])
+                        ->first();
+
+                    $name_usuario = Auth::user()->nombre_corto;
+                    //si ya existe, actualiza
+                    if ($obs !== null) {
+                        DB::table('almacen.orden_despacho_obs')
+                            ->where('id_obs', $obs->id_obs)
+                            ->update([
+                                'observacion' => 'Fue despachado con ' . $ordenDespacho->codigo,
+                                'registrado_por' => $usuario,
+                                'fecha_registro' => $fechaRegistro
+                            ]);
+                    } else {
+                        //si no existe, crea
+                        DB::table('almacen.orden_despacho_obs')
+                            ->insert([
+                                'id_od' => $ordenDespacho->id_od,
+                                'accion' => $id_estado_envio,
+                                'observacion' => 'Fue despachado con ' . $ordenDespacho->codigo,
+                                'registrado_por' => $usuario,
+                                'fecha_registro' => $fechaRegistro
+                            ]);
+                    }
                 }
-
-                DB::table('almacen.alm_req')
-                    ->where('id_requerimiento', $request->id_requerimiento)
-                    ->update(['estado' => 23]); //despacho externo
-
-                $ordenDespacho->codigo = OrdenDespacho::ODnextId($req->id_almacen, false, $ordenDespacho->id_od);
-                $ordenDespacho->save();
-
-                //Agrega primera trazabilidad de envio (la generacion de la Orden de despacho)
-                $obs = DB::table('almacen.orden_despacho_obs')
-                    ->where([
-                        ['id_od', '=', $ordenDespacho->id_od],
-                        ['accion', '=', $id_estado_envio]
-                    ])
-                    ->first();
-
-                $name_usuario = Auth::user()->nombre_corto;
-                //si ya existe, actualiza
-                if ($obs !== null) {
-                    DB::table('almacen.orden_despacho_obs')
-                        ->where('id_obs', $obs->id_obs)
-                        ->update([
-                            'observacion' => 'Fue despachado con ' . $ordenDespacho->codigo,
-                            'registrado_por' => $usuario,
-                            'fecha_registro' => $fechaRegistro
-                        ]);
-                } else {
-                    //si no existe, crea
-                    DB::table('almacen.orden_despacho_obs')
-                        ->insert([
-                            'id_od' => $ordenDespacho->id_od,
-                            'accion' => $id_estado_envio,
-                            'observacion' => 'Fue despachado con ' . $ordenDespacho->codigo,
-                            'registrado_por' => $usuario,
-                            'fecha_registro' => $fechaRegistro
-                        ]);
-                }
-                /*if ($codigo !== null) {
-                    DB::table('almacen.orden_despacho')
-                        ->where('id_od', $ordenDespacho->id_od)
-                        ->update(['codigo' => $codigo]);
-                }*/
-                //$msj = 'Se guardó existosamente la Orden de Despacho';
-            } /*else {
-                $msj = '';
-            }*/
+            }
             if ($request->envio == 'envio') {
-                $this->enviarOrdenDespacho($request);
+                $this->enviarOrdenDespacho($request, $oportunidad);
             }
 
             DB::commit();
-            return response()->json(array('tipo' => 'success', 'mensaje' => 'Se envió la orden con código ' . $ordenDespacho->codigo), 200);
-            //return response()->json($msj);
+            return response()->json(array('tipo' => 'success', 'mensaje' => ($ordenDespacho !== null ? 'Se envió la orden con código ' . $ordenDespacho->codigo : 'Se envió sólo el correo')), 200);
         } catch (\PDOException $e) {
             DB::rollBack();
-            //return response()->json('Algo salió mal');
+
             return response()->json(array('tipo' => 'error', 'mensaje' => 'Hubo un problema al enviar la orden. Por favor intente de nuevo', 'error' => $e->getMessage()), 200);
         }
     }
@@ -1000,68 +1007,6 @@ class OrdenesDespachoExternoController extends Controller
         }
     }
 
-    public function pruebaDespacho()
-    {
-        $oc = DB::table('almacen.alm_req')
-            ->select(
-                'oc_propias_view.id',
-                'oc_propias_view.tipo',
-                'oc_directas.id_despacho as id_despacho_directa',
-                'oc_propias.id_despacho as id_despacho_propia'
-            )
-            ->join('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
-            ->join('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
-            ->join('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'cc.id_oportunidad')
-            ->leftJoin('mgcp_ordenes_compra.oc_directas', 'oc_directas.id', '=', 'oc_propias_view.id')
-            ->leftJoin('mgcp_acuerdo_marco.oc_propias', 'oc_propias.id', '=', 'oc_propias_view.id')
-            ->where('alm_req.id_requerimiento', 80)
-            ->first();
-        $id_despacho = null;
-        //si existe una oc
-        if ($oc !== null) {
-            //tiene un despacho
-            $id_despacho = $oc->id_despacho_directa !== null ? $oc->id_despacho_directa
-                : ($oc->id_despacho_propia !== null ? $oc->id_despacho_propia : null);
-
-            //si ya existe un despacho
-            if ($id_despacho !== null) {
-
-                DB::table('mgcp_ordenes_compra.despachos')
-                    ->where('id', $id_despacho)
-                    ->update([
-                        'id_transportista' => 16401,
-                        'flete_real' => 15,
-                        'fecha_salida' => new Carbon(),
-                    ]);
-            } else {
-                $id_despacho = DB::table('mgcp_ordenes_compra.despachos')
-                    ->insertGetId([
-                        'id_transportista' => 16401,
-                        'flete_real' => 15,
-                        'fecha_salida' => new Carbon(),
-                        // 'id_usuario' => $request->fecha_despacho_real,
-                        'fecha_registro' => new Carbon(),
-                    ], 'id');
-            }
-
-            if ($oc->tipo == 'am') {
-                DB::table('mgcp_acuerdo_marco.oc_propias')
-                    ->where('oc_propias.id', $oc->id)
-                    ->update([
-                        'despachada' => true,
-                        'id_despacho' => $id_despacho
-                    ]);
-            } else {
-                DB::table('mgcp_ordenes_compra.oc_directas')
-                    ->where('oc_directas.id', $oc->id)
-                    ->update([
-                        'despachada' => true,
-                        'id_despacho' => $id_despacho
-                    ]);
-            }
-        }
-        return response()->json(['oc' => $oc, 'id_despacho' => $id_despacho]);
-    }
     public function migrarDespachos()
     {
         try {
