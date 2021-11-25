@@ -85,6 +85,7 @@ Requerimientos pendientes
 @include('logistica.requerimientos.mapeo.mapeoAsignarProducto')
 @include('logistica.gestion_logistica.compras.pendientes.modal_opciones_para_regularizar_item')
 
+@include('logistica.gestion_logistica.compras.pendientes.modal_todo_adjuntos')
 @include('logistica.gestion_logistica.compras.pendientes.modal_adjuntos_detalle_requerimiento')
 @include('logistica.gestion_logistica.compras.pendientes.modal_observar_requerimiento_logistica')
 @include('logistica.gestion_logistica.compras.pendientes.modal_filtro_requerimientos_pendientes')
