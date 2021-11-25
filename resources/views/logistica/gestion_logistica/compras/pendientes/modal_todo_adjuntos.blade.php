@@ -30,10 +30,13 @@
                 <div class="col-md-12">
                 <fieldset class="group-table">
                 <h5 style="font-weight: bold;">A nivel de item's</h5>
-                <table class="table table-hover table-striped table-condensed table-bordered table-okc-view" id="listaAdjuntosDetalleRequerimiento" width="100%">
+                <table class="table table-hover table-striped table-condensed table-bordered table-okc-view" id="listaTodoAdjuntosDetalleRequerimiento" width="100%">
                     <thead>
                         <tr>
+                            <th>Código</th>
+                            <th>Part number</th>
                             <th>Descripción</th>
+                            <th>Archivo</th>
                             <th>Fecha registro</th>
                             <th>Acción</th>
                         </tr>

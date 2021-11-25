@@ -2348,6 +2348,70 @@ class RequerimientoPendienteView {
             } 
         });
     }
+    construirTablaTodoAdjuntoDetalleRequerimiento(data){
+        // console.log(data);
+        $('#listaTodoAdjuntosDetalleRequerimiento').dataTable({
+            'dom': vardataTables[1],
+            'buttons': [],
+            'language': vardataTables[0],
+            "bDestroy": true,
+            "bInfo": false,
+            // 'paging': true,
+            "bLengthChange": false,
+            // "pageLength": 3,
+            'data': data,
+            'order': [[0, 'desc']],
+ 
+            'columns': [
+
+                {
+                    render: function (data, type, row) {
+                        return (row.producto != null ? row.producto.codigo : '');
+                    }
+                },
+                {
+                    render: function (data, type, row) {
+                        return (row.producto != null ? row.producto.part_number : (row.detalle_requerimiento.part_number != null ? row.detalle_requerimiento.part_number : ''));
+                    }
+                },
+
+                {
+                    render: function (data, type, row) {
+                        return (row.producto != null ? row.producto.descripcion : (row.detalle_requerimiento.descripcion != null ? row.detalle_requerimiento.descripcion : ''));
+                    }
+                },
+                {
+                    render: function (data, type, row) {
+                        return (row.archivo != null ? row.archivo : '');
+                    }
+                },
+                {
+                    render: function (data, type, row) {
+                        return (row.fecha_registro != null ? row.fecha_registro : '');
+                    }
+                }, 
+                {
+                    render: function (data, type, row) {
+
+                        return `<button type="button" class="btn btn-success btn-sm handleClickDescargarArchivoDetalleRequerimiento" name="btnDescargarArchivoDetalleRequerimiento" title="Descargar"  data-id-adjunto="${row.id_adjunto}" data-archivo="${row.archivo}" >Descargar</button>`;
+                    }
+                } 
+            ],
+
+            'columnDefs': [
+                { 'targets': 0, 'className': "text-center","width": "10%" },
+                { 'targets': 1, 'className': "text-center","width": "10%" },
+                { 'targets': 2, 'className': "text-left","width": "40%" },
+                { 'targets': 3, 'className': "text-left","width": "20%" },
+                { 'targets': 4, 'className': "text-center","width": "10%" }, 
+                { 'targets': 5, 'className': "text-center","width": "10%" } 
+            ],
+            'initComplete': function () {
+
+
+            } 
+        });
+    }
     construirTablaAdjuntoRequerimiento(data){
         // console.log(data);
         $('#listaAdjuntosRequerimiento').dataTable({
@@ -2424,7 +2488,7 @@ class RequerimientoPendienteView {
         }).done( (response)=> {
             // console.log(response);
             this.construirTablaAdjuntoRequerimiento(response.adjunto_requerimiento);
-            this.construirTablaAdjuntoDetalleRequerimiento(response.adjuntos_detalle_requerimiento);
+            this.construirTablaTodoAdjuntoDetalleRequerimiento(response.adjuntos_detalle_requerimiento);
 
         }).always( ()=> {
     

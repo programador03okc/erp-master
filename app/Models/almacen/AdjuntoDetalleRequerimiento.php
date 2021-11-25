@@ -10,4 +10,9 @@ class AdjuntoDetalleRequerimiento extends Model
     protected $primaryKey = 'id_adjunto';
     public $timestamps = false;
 
+
+    public function detalleRequerimiento()
+    {
+        return $this->hasOne('App\Models\Almacen\DetalleRequerimiento', 'id_detalle_requerimiento', 'id_detalle_requerimiento');
+    }
 }

@@ -3562,7 +3562,10 @@ class RequerimientoController extends Controller
             $idDetalleRequerimientoList[]=$dr->id_detalle_requerimiento;
         }
 
-        $adjuntosDetalle= AdjuntoDetalleRequerimiento::whereIn('id_detalle_requerimiento',$idDetalleRequerimientoList)->where([['estado',1]])->get();
+        
+        $adjuntosDetalle= AdjuntoDetalleRequerimiento::whereIn('id_detalle_requerimiento',$idDetalleRequerimientoList)->where([['estado',1]])->with(['detalleRequerimiento'=>function ($q) {
+            $q->where('alm_det_req.estado', '=', 1);
+        },'detalleRequerimiento.producto'])->get();
 
 
 
