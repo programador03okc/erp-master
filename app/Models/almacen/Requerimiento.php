@@ -17,7 +17,7 @@ class Requerimiento extends Model
 {
     protected $table = 'almacen.alm_req';
     protected $primaryKey = 'id_requerimiento';
-    protected $appends = ['termometro', 'nombre_estado', 'nombre_completo_usuario', 'ordenes_compra', 'cantidad_tipo_producto', 'cantidad_tipo_servicio'];
+    protected $appends = ['termometro', 'nombre_estado', 'nombre_completo_usuario', 'ordenes_compra', 'cantidad_tipo_producto', 'cantidad_tipo_servicio','cantidad_adjuntos_activos'];
     public $timestamps = false;
 
     // public function getMontoTotalAttribute(){
@@ -119,6 +119,24 @@ class Requerimiento extends Model
                 return '';
                 break;
         }
+    }
+
+    public function getCantidadAdjuntosActivosAttribute()
+    {
+
+        $cantidadAdjuntosCabecera = AdjuntoRequerimiento::where([['id_requerimiento',$this->attributes['id_requerimiento']],['estado','!=',7]])->count();
+        $detalleRequerimiento = DetalleRequerimiento::where([['id_requerimiento',$this->attributes['id_requerimiento']],['estado','!=',7]])->get();
+        $idDetalleRequerimientoList=[];
+        $cantidadAdjuntosDetalle=0;
+        foreach ($detalleRequerimiento as $value) {
+            $idDetalleRequerimientoList[]=$value->id_detalle_requerimiento;
+        }
+
+        if(count($idDetalleRequerimientoList)>0){
+            $cantidadAdjuntosDetalle= AdjuntoDetalleRequerimiento::whereIn('id_detalle_requerimiento',$idDetalleRequerimientoList)->where([['estado',1]])->count();
+        }
+
+        return ['cabecera'=>$cantidadAdjuntosCabecera, 'detalle'=>$cantidadAdjuntosDetalle];
     }
 
     // public function getDivisionAttribute(){
@@ -358,6 +376,9 @@ class Requerimiento extends Model
     public function detalle()
     {
         return $this->hasMany('App\Models\Almacen\DetalleRequerimiento', 'id_requerimiento', 'id_requerimiento');
+    }
+    public function adjuntoRequerimiento(){
+        return $this->hasMany('App\Models\Almacen\AdjuntoRequerimiento','id_requerimiento','id_requerimiento');
     }
     public function tipo()
     {
