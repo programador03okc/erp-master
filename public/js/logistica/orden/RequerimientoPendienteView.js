@@ -530,6 +530,11 @@ class RequerimientoPendienteView {
                 // }
             },
             "drawCallback": function (settings) {
+                //Botón de búsqueda
+                $('#listaRequerimientosPendientes_filter input').prop('disabled', false);
+                $('#btnBuscar').html('<span class="glyphicon glyphicon-search" aria-hidden="true"></span>').prop('disabled', false);
+                $('#listaRequerimientosPendientes_filter input').trigger('focus');
+                //fin botón búsqueda
                 if ($tablaListaRequerimientosPendientes.rows().data().length == 0) {
                     Lobibox.notify('info', {
                         title: false,
@@ -546,7 +551,8 @@ class RequerimientoPendienteView {
                 $('#listaRequerimientosPendientes_filter input').trigger('focus');
                 //fin botón búsqueda
                 $("#listaRequerimientosPendientes").LoadingOverlay("hide", true);
-            }
+            },
+
         });
     }
 
