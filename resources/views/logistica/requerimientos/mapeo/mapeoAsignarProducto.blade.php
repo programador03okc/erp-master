@@ -131,7 +131,7 @@
                                                     <select class="form-control activation " name="id_unidad_medida" required>
                                                         <!-- <option value="0">Elija una opción</option> -->
                                                         @foreach ($unidades as $unid)
-                                                        <option value="{{$unid->id_unidad_medida}}">{{$unid->descripcion}}</option>
+                                                        <option value="{{$unid->id_unidad_medida}}">{{$unid->abreviatura}}</option>
                                                         @endforeach
                                                     </select>
                                                 </div>
