@@ -1205,7 +1205,7 @@ class OrdenView {
         var id_proveedor = $('[name=id_proveedor]').val();
         var plazo_entrega = $('[name=plazo_entrega]').val();
         var id_tp_documento = $('[name=id_tp_documento]').val();
-        var id_cuenta_principal_proveedor = $('[name=id_cuenta_principal_proveedor]').val();
+        // var id_cuenta_principal_proveedor = $('[name=id_cuenta_principal_proveedor]').val();
         var msj = '';
 
         if (!id_tp_documento > 0) {
@@ -1217,9 +1217,9 @@ class OrdenView {
         if (id_tp_documento != '3' && plazo_entrega == '') {
             msj += 'Es necesario que ingrese un plazo de entrega.<br>';
         }
-        if (!id_cuenta_principal_proveedor >0) {
-            msj += 'Es necesario que seleccione una cuenta bancaria del proveedor.<br>';
-        }
+        // if (!id_cuenta_principal_proveedor >0) {
+        //     msj += 'Es necesario que seleccione una cuenta bancaria del proveedor.<br>';
+        // }
         let cantidadInconsistenteInputPrecio = 0;
 
         let allInputPrecio = document.querySelectorAll("table[id='listaDetalleOrden'] input[class~='precio']");
