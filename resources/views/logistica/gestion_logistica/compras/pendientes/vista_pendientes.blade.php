@@ -37,7 +37,7 @@ Requerimientos pendientes
                             <div class="panel-body">
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <form id="form-requerimientosPendientes" type="register">
+                                        <div id="form-requerimientosPendientes" type="register">
                                             <table class="mytable table table-condensed table-striped table-hover table-bordered table-okc-view" id="listaRequerimientosPendientes">
                                                 <thead>
                                                     <tr>
@@ -61,7 +61,7 @@ Requerimientos pendientes
                                                 <div class="col-md-12 right">
                                                 </div>
                                             </div>
-                                        </form>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -85,6 +85,7 @@ Requerimientos pendientes
 @include('logistica.requerimientos.mapeo.mapeoAsignarProducto')
 @include('logistica.gestion_logistica.compras.pendientes.modal_opciones_para_regularizar_item')
 
+@include('logistica.gestion_logistica.compras.pendientes.modal_todo_adjuntos')
 @include('logistica.gestion_logistica.compras.pendientes.modal_adjuntos_detalle_requerimiento')
 @include('logistica.gestion_logistica.compras.pendientes.modal_observar_requerimiento_logistica')
 @include('logistica.gestion_logistica.compras.pendientes.modal_filtro_requerimientos_pendientes')

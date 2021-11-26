@@ -600,7 +600,7 @@ class ListarRequerimientoView {
                     <td style="text-align:left;">${element.categoria_adjunto}</td>
                     <td style="text-align:center;">
                         <div class="btn-group" role="group">`;
-                    html += `<button type="button" class="btn btn-info btn-md" name="btnDescargarArchivoItem" title="Descargar" onclick="ArchivoAdjunto.descargarArchivoRequerimiento('${element.id}');" ><i class="fas fa-file-archive"></i></button>`;
+                    html += `<button type="button" class="btn btn-info btn-md" name="btnDescargarArchivoItem" title="Descargar" onclick="ArchivoAdjunto.descargarArchivoRequerimiento('${element.id}');" ><i class="fas fa-paperclip"></i></button>`;
                     html += `</div>
                     </td>
                     </tr>`;
@@ -679,7 +679,7 @@ class ListarRequerimientoView {
                 <td style="text-align:center;">
                     <div class="btn-group" role="group">`;
                 if (Number.isInteger(element.id)) {
-                    html += `<button type="button" class="btn btn-info btn-md" name="btnDescargarArchivoItem" title="Descargar" onclick="ArchivoAdjunto.descargarArchivoItem('${element.id}');" ><i class="fas fa-file-archive"></i></button>`;
+                    html += `<button type="button" class="btn btn-info btn-md" name="btnDescargarArchivoItem" title="Descargar" onclick="ArchivoAdjunto.descargarArchivoItem('${element.id}');" ><i class="fas fa-paperclip"></i></button>`;
                 }
                 html += `</div>
                 </td>

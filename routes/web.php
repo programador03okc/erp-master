@@ -632,14 +632,14 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::put('eliminar-archivo-adjunto-detalle-requerimiento/{id_archivo}', 'LogisticaController@eliminar_archivo_adjunto_detalle_requerimiento');
 				Route::post('guardar-archivos-adjuntos-requerimiento', 'LogisticaController@guardar_archivos_adjuntos_requerimiento');
 				Route::put('eliminar-archivo-adjunto-requerimiento/{id_archivo}', 'LogisticaController@eliminar_archivo_adjunto_requerimiento');
-				Route::get('mostrar-archivos-adjuntos-requerimiento/{id_requerimiento?}/{categoria?}', 'LogisticaController@mostrar_archivos_adjuntos_requerimiento');
+				Route::get('mostrar-archivos-adjuntos-requerimiento/{id_requerimiento?}/{categoria?}', 'Logistica\RequerimientoController@mostrarArchivosAdjuntosRequerimiento');
 				Route::get('listar_almacenes', 'Almacen\Ubicacion\AlmacenController@mostrar_almacenes');
 				Route::get('mostrar-sede', 'ConfiguracionController@mostrarSede');
 				Route::get('mostrar_proveedores', 'LogisticaController@mostrar_proveedores');
 				Route::post('guardar_proveedor', 'LogisticaController@guardar_proveedor');
 				// Route::get('verTrazabilidadRequerimiento/{id}', 'DistribucionController@verTrazabilidadRequerimiento');
 				Route::get('getCodigoRequerimiento/{id}', 'LogisticaController@getCodigoRequerimiento');
-				Route::get('mostrar-archivos-adjuntos/{id_detalle_requerimiento}', 'LogisticaController@mostrar_archivos_adjuntos');
+				Route::get('mostrar-archivos-adjuntos/{id_detalle_requerimiento}', 'Logistica\RequerimientoController@mostrarArchivosAdjuntos');
 				Route::post('save_cliente', 'LogisticaController@save_cliente');
 				Route::get('listar_saldos/{id}', 'AlmacenController@listar_saldos');
 				Route::get('listar_opciones', 'ProyectosController@listar_opciones');
@@ -791,8 +791,11 @@ Route::group(['middleware' => ['auth']], function () {
 
 					Route::get('finalizar-cuadro/{id}', 'OrdenController@finalizarCuadroPresupuesto');
 
-					Route::get('mostrar-archivos-adjuntos-detalle-requerimiento/{id_detalle_requerimiento}', 'LogisticaController@mostrar_archivos_adjuntos');
-					// Route::get('mostrar-archivos-adjuntos-requerimiento/{id_requerimiento?}/{categoria?}', 'LogisticaController@mostrar_archivos_adjuntos_requerimiento');
+					Route::get('mostrar-archivos-adjuntos-detalle-requerimiento/{id_detalle_requerimiento}', 'Logistica\RequerimientoController@mostrarArchivosAdjuntos');
+					// Route::get('mostrar-archivos-adjuntos-requerimiento/{id_requerimiento?}/{categoria?}', 'Logistica\RequerimientoController@mostrarArchivosAdjuntosRequerimiento');
+					
+					Route::get('mostrar-todo-adjuntos-requerimiento/{id_requerimiento}', 'Logistica\RequerimientoController@mostrarTodoAdjuntos');
+					
 
 				});
 
@@ -905,7 +908,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('mostrar_grupo_cotizacion/{id}', 'LogisticaController@mostrar_grupo_cotizacion');
 					Route::get('mostrar_cotizacion/{id}', 'LogisticaController@mostrar_cotizacion');
 					Route::get('get_cotizacion/{id}', 'LogisticaController@get_cotizacion');
-					Route::get('mostrar-archivos-adjuntos/{id_detalle_requerimiento}', 'LogisticaController@mostrar_archivos_adjuntos');
+					Route::get('mostrar-archivos-adjuntos/{id_detalle_requerimiento}', 'Logistica\RequerimientoController@mostrarArchivosAdjuntos');
 					Route::post('guardar-archivos-adjuntos-detalle-requerimiento', 'LogisticaController@guardar_archivos_adjuntos_detalle_requerimiento');
 					Route::put('eliminar-archivo-adjunto-detalle-requerimiento/{id_archivo}', 'LogisticaController@eliminar_archivo_adjunto_detalle_requerimiento');
 					Route::put('descargar_olicitud_cotizacion_excel/{id_cotizacion}', 'LogisticaController@descargar_olicitud_cotizacion_excel');

@@ -3504,4 +3504,71 @@ class RequerimientoController extends Controller
             return ['data' => [], 'status' => 204];
         }
     }
+
+    public function mostrarArchivosAdjuntos($id_detalle_requerimiento)
+    {
+
+        $data = DB::table('almacen.alm_det_req_adjuntos')
+            ->select(
+                'alm_det_req_adjuntos.id_adjunto',
+                'alm_det_req_adjuntos.id_detalle_requerimiento',
+                'alm_det_req_adjuntos.id_valorizacion_cotizacion',
+                'alm_det_req_adjuntos.archivo',
+                'alm_det_req_adjuntos.estado',
+                'alm_det_req_adjuntos.fecha_registro',
+                DB::raw("(CASE WHEN almacen.alm_det_req_adjuntos.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc")
+            )
+            ->leftJoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'alm_det_req_adjuntos.id_detalle_requerimiento')
+
+            ->where([
+                ['alm_det_req_adjuntos.id_detalle_requerimiento','=', $id_detalle_requerimiento],
+                ['alm_det_req_adjuntos.estado','=', 1]
+                    ])
+            ->orderBy('alm_det_req_adjuntos.id_adjunto', 'asc')
+            ->get();
+
+        return response()->json($data);
+    }
+
+    public function mostrarArchivosAdjuntosRequerimiento($id, $tipo=null)
+    {
+        $data = DB::table('almacen.alm_req_adjuntos')
+            ->select(
+                'alm_req_adjuntos.*',
+                DB::raw("(CASE WHEN almacen.alm_req_adjuntos.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc")
+            )
+            ->when(($tipo >0), function($query) use ($tipo)  {
+                return $query->Where('alm_req_adjuntos.categoria_adjunto_id','=',$tipo);
+            })
+            ->where([
+                ['alm_req_adjuntos.id_requerimiento', $id],
+                ['alm_req_adjuntos.estado', 1]
+                ])
+            
+            ->orderBy('alm_req_adjuntos.fecha_registro', 'desc')
+            ->get();
+
+        return response()->json(['data'=>$data]);
+    }
+
+    public function mostrarTodoAdjuntos($idRequerimiento)
+    {
+
+        $adjuntosCabecera = AdjuntoRequerimiento::where([['id_requerimiento',$idRequerimiento],['estado','!=',7]])->get();
+
+        $detalleRequerimiento=DetalleRequerimiento::where('id_requerimiento',$idRequerimiento)->get();
+        $idDetalleRequerimientoList=[];
+        foreach ($detalleRequerimiento as $dr) {
+            $idDetalleRequerimientoList[]=$dr->id_detalle_requerimiento;
+        }
+
+        
+        $adjuntosDetalle= AdjuntoDetalleRequerimiento::whereIn('id_detalle_requerimiento',$idDetalleRequerimientoList)->where([['estado',1]])->with(['detalleRequerimiento'=>function ($q) {
+            $q->where('alm_det_req.estado', '=', 1);
+        },'detalleRequerimiento.producto'])->get();
+
+
+
+        return response()->json(['adjunto_requerimiento'=>$adjuntosCabecera,'adjuntos_detalle_requerimiento'=>$adjuntosDetalle]);
+    }
 }

@@ -1535,7 +1535,7 @@ class RequerimientoView {
         <td style="text-align:center;">
             <div class="btn-group" role="group">`;
             if (Number.isInteger(element.id)) {
-                html += `<button type="button" class="btn btn-info btn-md" name="btnDescargarArchivoRequerimiento" title="Descargar" onclick="ArchivoAdjunto.descargarArchivoRequerimiento('${element.id}');" ><i class="fas fa-file-archive"></i></button>`;
+                html += `<button type="button" class="btn btn-info btn-md" name="btnDescargarArchivoRequerimiento" title="Descargar" onclick="ArchivoAdjunto.descargarArchivoRequerimiento('${element.id}');" ><i class="fas fa-paperclip"></i></button>`;
             }
             html += `<button type="button" class="btn btn-danger btn-md" name="btnEliminarArchivoRequerimiento" title="Eliminar" onclick="ArchivoAdjunto.eliminarArchivoRequerimiento(this,'${element.id}');" ${hasDisableBtnEliminarArchivoRequerimiento} ><i class="fas fa-trash-alt"></i></button>
             </div>
@@ -1623,7 +1623,7 @@ class RequerimientoView {
                 <td style="text-align:center;">
                 <div class="btn-group" role="group">`;
                 if (Number.isInteger(element.id)) {
-                    html += `<button type="button" class="btn btn-info btn-md" name="btnDescargarArchivoItem" title="Descargar" onclick="ArchivoAdjunto.descargarArchivoItem('${element.id}');" ><i class="fas fa-file-archive"></i></button>`;
+                    html += `<button type="button" class="btn btn-info btn-md" name="btnDescargarArchivoItem" title="Descargar" onclick="ArchivoAdjunto.descargarArchivoItem('${element.id}');" ><i class="fas fa-paperclip"></i></button>`;
                 }
                 html += `<button type="button" class="btn btn-danger btn-md" name="btnEliminarArchivoItem" title="Eliminar" onclick="ArchivoAdjunto.eliminarArchivoItem(this,'${element.id}');" ${hasDisableBtnEliminarArchivoRequerimiento}><i class="fas fa-trash-alt"></i></button>`;
                 html += `</div>

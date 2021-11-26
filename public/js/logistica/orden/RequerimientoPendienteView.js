@@ -83,8 +83,17 @@ class RequerimientoPendienteView {
         $('#listaRequerimientosPendientes tbody').on("click", "button.handleClickVerAdjuntoDetalleRequerimiento", (e) => {
             this.verAdjuntoDetalleRequerimiento(e.currentTarget);
         });
+        $('#listaRequerimientosPendientes tbody').on("click", "button.handleClickVerTodoAdjuntos", (e) => {
+            this.verTodoAdjuntos(e.currentTarget);
+        });
         $('#modal-adjuntos-detalle-requerimiento').on("click", "button.handleClickDescargarArchivoDetalleRequerimiento", (e) => {
             this.descargarArchivoDetalleRequerimiento(e.currentTarget);
+        });
+        $('#modal-todo-adjuntos').on("click", "button.handleClickDescargarArchivoDetalleRequerimiento", (e) => {
+            this.descargarArchivoDetalleRequerimiento(e.currentTarget);
+        });
+        $('#modal-todo-adjuntos').on("click", "button.handleClickDescargarArchivoRequerimiento", (e) => {
+            this.descargarArchivoRequerimiento(e.currentTarget);
         });
 
 
@@ -410,11 +419,16 @@ class RequerimientoPendienteView {
 
                             // let btnAgregarItemBase = '<button type="button" class="btn btn-success btn-xs" name="btnAgregarItemBase" title="Mapear productos" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.openModalAgregarItemBase(this);"  ><i class="fas fa-sign-out-alt"></i></button>';
                             let btnMapearProductos = '<button type="button" class="mapeo btn btn-success btn-xs" title="Mapear productos" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo="' + row.codigo + '"  ><i class="fas fa-sign-out-alt"></i> <span class="badge" title="Cantidad items sin mapear" name="cantidadAdjuntosRequerimiento" style="position:absolute;border: solid 0.1px;z-index: 9;top: -9px;left: 0px;font-size: 0.9rem;">' + row.count_pendientes + '</span></button>';
+                            let btnVerAdjuntos = '';
                             let btnAtenderAlmacen = '';
                             let btnCrearOrdenCompra = '';
                             let btnCrearOrdenServicio = '';
+                            if(row.cantidad_adjuntos_activos.cabecera >0 || row.cantidad_adjuntos_activos.detalle>0){ 
+                                btnVerAdjuntos = '<button type="button" class="btn btn-default btn-xs handleClickVerTodoAdjuntos" title="Ver adjuntos" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo="' + row.codigo + '"  ><i class="fas fa-folder"></i></button>';
+
+                            }
                             // if(row.count_pendientes ==0){
-                            if (row.count_mapeados > 0) {
+                                if (row.count_mapeados > 0) {
                                 if (row.estado == 38) {
 
                                     btnAtenderAlmacen = '<button type="button" class="btn btn-primary btn-xs handleClickAtenderConAlmacen" name="btnOpenModalAtenderConAlmacen" title="Reserva en almacén" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo-requerimiento="' + row.codigo + '" disabled><i class="fas fa-dolly fa-sm"></i></button>';
@@ -439,9 +453,9 @@ class RequerimientoPendienteView {
                             let closeDiv = '</div>';
 
                             if (row.cantidad_tipo_servicio > 0) {
-                                return (openDiv + btnVerDetalleRequerimiento + btnAtenderAlmacen + btnMapearProductos + btnCrearOrdenCompra + btnCrearOrdenServicio + btnVercuadroCostos + closeDiv);
+                                return (openDiv + btnVerDetalleRequerimiento + btnAtenderAlmacen + btnMapearProductos + btnCrearOrdenCompra + btnCrearOrdenServicio + btnVercuadroCostos +btnVerAdjuntos+ closeDiv);
                             } else {
-                                return (openDiv + btnVerDetalleRequerimiento + btnAtenderAlmacen + btnMapearProductos + btnCrearOrdenCompra + btnVercuadroCostos + closeDiv);
+                                return (openDiv + btnVerDetalleRequerimiento + btnAtenderAlmacen + btnMapearProductos + btnCrearOrdenCompra + btnVercuadroCostos +btnVerAdjuntos+ closeDiv);
                             }
                         }
 
@@ -516,6 +530,11 @@ class RequerimientoPendienteView {
                 // }
             },
             "drawCallback": function (settings) {
+                //Botón de búsqueda
+                $('#listaRequerimientosPendientes_filter input').prop('disabled', false);
+                $('#btnBuscar').html('<span class="glyphicon glyphicon-search" aria-hidden="true"></span>').prop('disabled', false);
+                $('#listaRequerimientosPendientes_filter input').trigger('focus');
+                //fin botón búsqueda
                 if ($tablaListaRequerimientosPendientes.rows().data().length == 0) {
                     Lobibox.notify('info', {
                         title: false,
@@ -532,7 +551,8 @@ class RequerimientoPendienteView {
                 $('#listaRequerimientosPendientes_filter input').trigger('focus');
                 //fin botón búsqueda
                 $("#listaRequerimientosPendientes").LoadingOverlay("hide", true);
-            }
+            },
+
         });
     }
 
@@ -972,7 +992,7 @@ class RequerimientoPendienteView {
                         <td style="border: none; text-align:center;">${element.motivo != null ? element.motivo : ''}</td>
                         <td style="border: none; text-align:center;">${stock_comprometido != null ? stock_comprometido : ''}</td>
                         <td style="border: none; text-align:center;">${element.estado_doc != null && element.tiene_transformacion == false ? element.estado_doc : ''}</td>
-                        <td style="border: none; text-align:center;">${cantidadAdjuntosDetalleRequerimiento >0 ?`<button type="button" class="btn btn-default btn-xs handleClickVerAdjuntoDetalleRequerimiento" name="btnVerAdjuntoDetalleRequerimiento" title="Ver adjuntos" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-descripcion="${element.producto_descripcion != null ? element.producto_descripcion : (element.descripcion ? element.descripcion : '')}" ><i class="fas fa-file-archive"></i></button>`:''}</td>
+                        <td style="border: none; text-align:center;">${cantidadAdjuntosDetalleRequerimiento >0 ?`<button type="button" class="btn btn-default btn-xs handleClickVerAdjuntoDetalleRequerimiento" name="btnVerAdjuntoDetalleRequerimiento" title="Ver adjuntos" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-descripcion="${element.producto_descripcion != null ? element.producto_descripcion : (element.descripcion ? element.descripcion : '')}" ><i class="fas fa-paperclip"></i></button>`:''}</td>
                         </tr>`;
                 // }
             });
@@ -2280,7 +2300,7 @@ class RequerimientoPendienteView {
         }).fail((jqXHR)=> {
             Swal.fire(
                 '',
-                'Hubo un problema al intentar mostrar la orden, por favor vuelva a intentarlo.',
+                'Hubo un problema al intentar mostrar los adjuntos, por favor vuelva a intentarlo.',
                 'error'
             );
             console.log('Error devuelto: ' + jqXHR.responseText);
@@ -2318,15 +2338,124 @@ class RequerimientoPendienteView {
                 {
                     render: function (data, type, row) {
 
-                        return `<button type="button" class="btn btn-info btn-sm handleClickDescargarArchivoDetalleRequerimiento" name="btnDescargarArchivoDetalleRequerimiento" title="Descargar"  data-id-adjunto="${row.id_adjunto}" data-archivo="${row.archivo}" ><i class="fas fa-file-archive"></i></button>`;
+                        return `<button type="button" class="btn btn-success btn-sm handleClickDescargarArchivoDetalleRequerimiento" name="btnDescargarArchivoDetalleRequerimiento" title="Descargar"  data-id-adjunto="${row.id_adjunto}" data-archivo="${row.archivo}" >Descargar</button>`;
                     }
                 } 
             ],
 
             'columnDefs': [
-                { 'targets': 0, 'className': "text-left" },
-                { 'targets': 1, 'className': "text-left" },
-                { 'targets': 2, 'className': "text-center" } 
+                { 'targets': 0, 'className': "text-left","width": "70%" },
+                { 'targets': 1, 'className': "text-left","width": "15%" },
+                { 'targets': 2, 'className': "text-center","width": "15%" } 
+            ],
+            'initComplete': function () {
+
+
+            } 
+        });
+    }
+    construirTablaTodoAdjuntoDetalleRequerimiento(data){
+        // console.log(data);
+        $('#listaTodoAdjuntosDetalleRequerimiento').dataTable({
+            'dom': vardataTables[1],
+            'buttons': [],
+            'language': vardataTables[0],
+            "bDestroy": true,
+            "bInfo": false,
+            // 'paging': true,
+            "bLengthChange": false,
+            // "pageLength": 3,
+            'data': data,
+            'order': [[0, 'desc']],
+ 
+            'columns': [
+
+                {
+                    render: function (data, type, row) {
+                        return (row.producto != null ? row.producto.codigo : '');
+                    }
+                },
+                {
+                    render: function (data, type, row) {
+                        return (row.producto != null ? row.producto.part_number : (row.detalle_requerimiento.part_number != null ? row.detalle_requerimiento.part_number : ''));
+                    }
+                },
+
+                {
+                    render: function (data, type, row) {
+                        return (row.producto != null ? row.producto.descripcion : (row.detalle_requerimiento.descripcion != null ? row.detalle_requerimiento.descripcion : ''));
+                    }
+                },
+                {
+                    render: function (data, type, row) {
+                        return (row.archivo != null ? row.archivo : '');
+                    }
+                },
+                {
+                    render: function (data, type, row) {
+                        return (row.fecha_registro != null ? row.fecha_registro : '');
+                    }
+                }, 
+                {
+                    render: function (data, type, row) {
+
+                        return `<button type="button" class="btn btn-success btn-sm handleClickDescargarArchivoDetalleRequerimiento" name="btnDescargarArchivoDetalleRequerimiento" title="Descargar"  data-id-adjunto="${row.id_adjunto}" data-archivo="${row.archivo}" >Descargar</button>`;
+                    }
+                } 
+            ],
+
+            'columnDefs': [
+                { 'targets': 0, 'className': "text-center","width": "10%" },
+                { 'targets': 1, 'className': "text-center","width": "10%" },
+                { 'targets': 2, 'className': "text-left","width": "40%" },
+                { 'targets': 3, 'className': "text-left","width": "20%" },
+                { 'targets': 4, 'className': "text-center","width": "10%" }, 
+                { 'targets': 5, 'className': "text-center","width": "10%" } 
+            ],
+            'initComplete': function () {
+
+
+            } 
+        });
+    }
+    construirTablaAdjuntoRequerimiento(data){
+        // console.log(data);
+        $('#listaAdjuntosRequerimiento').dataTable({
+            'dom': vardataTables[1],
+            'buttons': [],
+            'language': vardataTables[0],
+            "bDestroy": true,
+            "bInfo": false,
+            // 'paging': true,
+            "bLengthChange": false,
+            // "pageLength": 3,
+            'data': data,
+            'order': [[0, 'desc']],
+ 
+            'columns': [
+
+                {
+                    render: function (data, type, row) {
+                        return (row.archivo != null ? row.archivo : '');
+                    }
+                },
+                {
+                    render: function (data, type, row) {
+                        return (row.fecha_registro != null ? row.fecha_registro : '');
+                    }
+                }, 
+                {
+                    render: function (data, type, row) {
+
+                        return `<button type="button" class="btn btn-success btn-sm handleClickDescargarArchivoRequerimiento" name="btnDescargarArchivoRequerimiento" title="Descargar"  data-id-adjunto="${row.id_adjunto}" data-archivo="${row.archivo}" >Descargar</button>`;
+                    }
+                } 
+            ],
+
+            'columnDefs': [
+                { 'targets': 0, 'className': "text-left","width": "70%" },
+                { 'targets': 1, 'className': "text-left","width": "15%" },
+                { 'targets': 2, 'className': "text-center","width": "15%" } 
             ],
             'initComplete': function () {
 
@@ -2339,6 +2468,48 @@ class RequerimientoPendienteView {
     descargarArchivoDetalleRequerimiento(obj){
         if (obj.dataset.idAdjunto > 0) {
             window.open("/files/logistica/detalle_requerimiento/" + obj.dataset.archivo);
+        }
+
+    }
+
+
+
+    verTodoAdjuntos(obj){
+
+        $('#modal-todo-adjuntos').modal({
+            show: true,
+            backdrop: 'true'
+        });
+
+        document.querySelector("div[id='modal-todo-adjuntos'] span[id='codigo-requerimiento']").textContent = obj.dataset.codigo;
+        this.listarTodoArchivosAdjuntos(obj.dataset.idRequerimiento);
+
+    }
+
+    listarTodoArchivosAdjuntos(idRequerimiento){
+        $.ajax({
+            type: 'GET',
+            url: 'mostrar-todo-adjuntos-requerimiento/' + idRequerimiento,
+            dataType: 'JSON',
+        }).done( (response)=> {
+            // console.log(response);
+            this.construirTablaAdjuntoRequerimiento(response.adjunto_requerimiento);
+            this.construirTablaTodoAdjuntoDetalleRequerimiento(response.adjuntos_detalle_requerimiento);
+
+        }).always( ()=> {
+    
+        }).fail((jqXHR)=> {
+            Swal.fire(
+                '',
+                'Hubo un problema al intentar mostrar los adjuntos, por favor vuelva a intentarlo.',
+                'error'
+            );
+            console.log('Error devuelto: ' + jqXHR.responseText);
+        });
+    }
+    descargarArchivoRequerimiento(obj){
+        if (obj.dataset.idAdjunto > 0) {
+            window.open("/files/logistica/requerimiento/" + obj.dataset.archivo);
         }
 
     }

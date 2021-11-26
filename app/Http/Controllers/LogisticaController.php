@@ -6,6 +6,8 @@ use App\Models\Administracion\Aprobacion;
 use App\Models\Administracion\Documento;
 use App\Models\Administracion\Periodo;
 use App\Models\Administracion\Prioridad;
+use App\Models\Almacen\AdjuntoDetalleRequerimiento;
+use App\Models\Almacen\DetalleRequerimiento;
 use App\Models\Contabilidad\Banco;
 use App\Models\Contabilidad\TipoCuenta;
 use Illuminate\Support\Facades\DB;
@@ -600,30 +602,8 @@ class LogisticaController extends Controller
         return response()->json($archivos);
     }
 
-    public function mostrar_archivos_adjuntos($id_detalle_requerimiento)
-    {
 
-        $data = DB::table('almacen.alm_det_req_adjuntos')
-            ->select(
-                'alm_det_req_adjuntos.id_adjunto',
-                'alm_det_req_adjuntos.id_detalle_requerimiento',
-                'alm_det_req_adjuntos.id_valorizacion_cotizacion',
-                'alm_det_req_adjuntos.archivo',
-                'alm_det_req_adjuntos.estado',
-                'alm_det_req_adjuntos.fecha_registro',
-                DB::raw("(CASE WHEN almacen.alm_det_req_adjuntos.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc")
-            )
-            ->leftJoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'alm_det_req_adjuntos.id_detalle_requerimiento')
 
-            ->where([
-                ['alm_det_req_adjuntos.id_detalle_requerimiento','=', $id_detalle_requerimiento],
-                ['alm_det_req_adjuntos.estado','=', 1]
-                    ])
-            ->orderBy('alm_det_req_adjuntos.id_adjunto', 'asc')
-            ->get();
-
-        return response()->json($data);
-    }
     public function mostrar_archivos_adjuntos_proveedor($id)
     {
 
@@ -644,26 +624,7 @@ class LogisticaController extends Controller
         return response()->json($data);
     }
 
-    public function mostrar_archivos_adjuntos_requerimiento($id, $tipo=null)
-    {
-        $data = DB::table('almacen.alm_req_adjuntos')
-            ->select(
-                'alm_req_adjuntos.*',
-                DB::raw("(CASE WHEN almacen.alm_req_adjuntos.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc")
-            )
-            ->when(($tipo >0), function($query) use ($tipo)  {
-                return $query->Where('alm_req_adjuntos.categoria_adjunto_id','=',$tipo);
-            })
-            ->where([
-                ['alm_req_adjuntos.id_requerimiento', $id],
-                ['alm_req_adjuntos.estado', 1]
-                ])
-            
-            ->orderBy('alm_req_adjuntos.fecha_registro', 'desc')
-            ->get();
 
-        return response()->json(['data'=>$data]);
-    }
 
     public function eliminar_archivo_adjunto_requerimiento($id_adjunto){
 
