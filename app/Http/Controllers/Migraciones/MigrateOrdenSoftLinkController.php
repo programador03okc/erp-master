@@ -355,7 +355,18 @@ class MigrateOrdenSoftLinkController extends Controller
                                 ->update(['stock_ing' => (floatval($stock->stock_ing) + floatval($det->cantidad))]);
                         } else {
                             //CREA
-
+                            DB::connection('soft')->table('stocks')
+                                ->insert([
+                                    'cod_suc' => $cod_suc,
+                                    'cod_alma' => $oc->codigo_almacen,
+                                    'cod_prod' => $cod_prod,
+                                    'stock_act' => 0,
+                                    'stock_ing' => $det->cantidad,
+                                    'stock_ped' => 0,
+                                    'stock_min' => 0,
+                                    'stock_max' => 0,
+                                    'cod_ubic' => '',
+                                ]);
                         }
                     }
 
