@@ -347,7 +347,7 @@ Elaborar orden
 <div class="hidden" id="divOculto">
     <select id="selectUnidadMedida">
         @foreach ($unidades_medida as $unidad)
-        <option value="{{$unidad->id_unidad_medida}}" {{$unidad->id_unidad_medida=='1' ? 'selected' : ''}}>{{$unidad->descripcion}}</option>
+        <option value="{{$unidad->id_unidad_medida}}" {{$unidad->id_unidad_medida=='1' ? 'selected' : ''}}>{{$unidad->abreviatura}}</option>
         @endforeach
     </select>
 </div>

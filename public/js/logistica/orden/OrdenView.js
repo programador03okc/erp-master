@@ -228,11 +228,11 @@ class OrdenView {
                                         'id_unidad_medida': det.id_unidad_medida,
                                         'lugar_entrega': det.lugar_entrega,
                                         'observacion': det.observacion,
-                                        'part_number': det.part_number,
+                                        'part_number': det.producto.part_number,
                                         'precio_unitario': det.precio_unitario,
                                         'stock_comprometido': cantidad_atendido_almacen,
                                         'subtotal': det.subtotal,
-                                        'unidad_medida': det.unidad_medida.descripcion
+                                        'unidad_medida': det.unidad_medida.abreviatura
                                     }
                                 );
                             }
