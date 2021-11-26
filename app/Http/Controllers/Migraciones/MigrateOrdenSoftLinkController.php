@@ -349,9 +349,14 @@ class MigrateOrdenSoftLinkController extends Controller
                                 ['cod_prod', '=', $cod_prod]
                             ])->first();
 
-                        //ACTUALIZA STOCK EN TRANSITO
-                        DB::connection('soft')->table('stocks')
-                            ->update(['stock_ing' => (floatval($stock->stock_ing) + floatval($det->cantidad))]);
+                        if ($stock !== null) {
+                            //ACTUALIZA STOCK EN TRANSITO
+                            DB::connection('soft')->table('stocks')
+                                ->update(['stock_ing' => (floatval($stock->stock_ing) + floatval($det->cantidad))]);
+                        } else {
+                            //CREA
+
+                        }
                     }
 
                     $vendedor = DB::connection('soft')->table('vendedor')

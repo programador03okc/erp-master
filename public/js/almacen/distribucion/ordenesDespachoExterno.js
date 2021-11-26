@@ -143,17 +143,17 @@ function listarRequerimientosPendientes(usuario) {
                     }
                 }, className: "text-center"
             },
-            // { data: 'cliente_razon_social', name: 'adm_contri.razon_social' },
-            {
-                data: 'cliente_razon_social', name: 'adm_contri.razon_social',
-                render: function (data, type, row) {
-                    if (row["cliente_razon_social"] !== null) {
-                        return row["cliente_razon_social"];
-                    } else {
-                        return row["nombre_entidad"];
-                    }
-                }
-            },
+            { data: 'nombre_entidad', name: 'oc_propias_view.nombre_entidad' },
+            // {
+            //     data: 'cliente_razon_social', name: 'adm_contri.razon_social',
+            //     render: function (data, type, row) {
+            //         if (row["cliente_razon_social"] !== null) {
+            //             return row["cliente_razon_social"];
+            //         } else {
+            //             return row["nombre_entidad"];
+            //         }
+            //     }
+            // },
             // { data: 'responsable', name: 'sis_usua.nombre_corto' },
             {
                 data: 'responsable', name: 'sis_usua.nombre_corto',
@@ -233,13 +233,13 @@ function listarRequerimientosPendientes(usuario) {
                             <i class="far fa-envelope"></i></button>`
                             : ''}
                         
-                        ${usuarioSesion == 'Rocio.Condori' ?
-                            `<button type="button" class="envio btn btn-${row['id_od'] !== null ? 'success' : 'default'} btn-flat btn-xs " data-toggle="tooltip"
-                        data-placement="bottom" title="Enviar Orden de Despacho" data-id="${row['id_requerimiento']}"
-                        data-fentrega="${row['fecha_entrega']}" data-cdp="${row['codigo_oportunidad']}">
-                        <i class="far fa-envelope"></i></button>` : ''}
                         `+
 
+                        // ${usuarioSesion == 'Rocio.Condori' ?
+                        //     `<button type="button" class="envio btn btn-${row['id_od'] !== null ? 'success' : 'default'} btn-flat btn-xs " data-toggle="tooltip"
+                        // data-placement="bottom" title="Enviar Orden de Despacho" data-id="${row['id_requerimiento']}"
+                        // data-fentrega="${row['fecha_entrega']}" data-cdp="${row['codigo_oportunidad']}">
+                        // <i class="far fa-envelope"></i></button>` : ''}
                         // <button type="button" class="trazabilidad btn btn-warning btn-flat btn-xs " data-toggle="tooltip"
                         //     data-placement="bottom" title="Ver Trazabilidad de Docs"  data-id="${row['id_requerimiento']}">
                         //     <i class="fas fa-route"></i></button>
