@@ -4,12 +4,18 @@ namespace App\Models\Logistica;
 use Carbon\Carbon;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class OrdenCompraDetalle extends Model
 {
     protected $table = 'logistica.log_det_ord_compra';
     protected $primaryKey = 'id_detalle_orden';
+    protected $appends = ['codigo_requerimiento'];
     public $timestamps = false;
+
+
+
+
 
     public function producto(){
         return $this->hasone('App\Models\Almacen\Producto','id_producto','id_producto');
@@ -43,7 +49,21 @@ class OrdenCompraDetalle extends Model
         return $fecha->format('d-m-Y h:m');
     }
     public function getFechaEstadoAttribute(){
-        $fecha= new Carbon($this->attributes['fecha_estado']);
+        $fecha= new Carbon($this->id_detalle_orden['fecha_estado']);
         return $fecha->format('d-m-Y h:m');
+    }
+
+    public function getCodigoRequerimientoAttribute(){
+        $codigoRequerimiento='';
+        if(($this->attributes['id_detalle_orden']??0) >0){
+            $codigoRequerimiento=OrdenCompraDetalle::leftJoin('almacen.alm_det_req','log_det_ord_compra.id_detalle_requerimiento','alm_det_req.id_detalle_requerimiento')
+            ->Join('almacen.alm_req','alm_req.id_requerimiento','alm_det_req.id_requerimiento')
+            ->where('log_det_ord_compra.id_detalle_orden',$this->attributes['id_detalle_orden'])
+            ->select('alm_req.codigo')->first()->codigo; 
+            
+
+        }
+        return $codigoRequerimiento;
+
     }
 }

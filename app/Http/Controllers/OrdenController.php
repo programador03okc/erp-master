@@ -1268,10 +1268,10 @@ class OrdenController extends Controller
         ->toJson();
         
     }
-
     public function mostrarOrden($id_orden){
-        $status=0;
-        $head_orden_compra = Orden::select(
+        
+      
+        $orden = Orden::select(
             'log_ord_compra.id_orden_compra',
             'log_ord_compra.id_tp_documento',
             'log_ord_compra.codigo as codigo_orden',
@@ -1349,206 +1349,20 @@ class OrdenController extends Controller
         ->leftJoin('rrhh.rrhh_postu as post_aut_2', 'post_aut_2.id_postulante', '=', 'trab_aut_2.id_postulante')
         ->leftJoin('rrhh.rrhh_perso as pers_aut_2', 'pers_aut_2.id_persona', '=', 'post_aut_2.id_persona')
         ->leftJoin('contabilidad.sis_identi as identi_aut_2', 'identi_aut_2.id_doc_identidad', '=', 'pers_aut_2.id_documento_identidad')
-
+        ->with(['detalle.guia_compra_detalle'=> function ($q) {
+            $q->where('guia_com_det.estado', '!=', 7);
+        },'detalle.producto','detalle.unidad_medida','detalle.estado_orden','detalle.reserva'])
         ->where([
             ['log_ord_compra.id_orden_compra', '=', $id_orden]
         ])
-        ->get();
+        ->first();
 
-        $head=[];
-        if(count($head_orden_compra)>0){
-            $status=200;
-            foreach ($head_orden_compra as $data) {
-                $head = [
-                    'id_orden_compra' => $data->id_orden_compra,
-                    'id_tp_documento' => $data->id_tp_documento,
-                    'id_moneda' => $data->id_moneda,
-                    'moneda_simbolo' => $data->moneda_simbolo,
-                    'moneda_descripcion' => $data->moneda_descripcion,
-                    'incluye_igv' => $data->incluye_igv,
-                    'codigo_orden' => $data->codigo_orden,
-                    'codigo_softlink' => $data->codigo_softlink,
-                    'fecha' => $data->fecha,
-                    'id_sede' => $data->id_sede,
-                    'id_empresa' => $data->id_empresa,
-                    'logo_empresa' => $data->logo_empresa,
-                    'codigo_sede_empresa' => $data->codigo_sede_empresa,
-                    'id_proveedor' => $data->id_proveedor,
-                    'id_contribuyente' => $data->id_contribuyente,
-                    'razon_social' => $data->razon_social,
-                    'nro_documento' => $data->nro_documento,
-                    'direccion_fiscal' => $data->direccion_fiscal,
-                    'ubigeo' => $data->ubigeo,
-                    'ubigeo_proveedor' => $data->ubigeo_proveedor,
-                    'id_cta_principal' => $data->id_cta_principal,
-                    'nro_cuenta' => $data->nro_cuenta,
-                    'id_contacto' => $data->id_contacto,
-                    'nombre_contacto' => $data->nombre_contacto,
-                    'telefono_contacto' => $data->telefono_contacto,
-                    'id_condicion' => $data->id_condicion,
-                    'condicion' => $data->condicion,
-                    'plazo_dias' => $data->plazo_dias,
-                    'plazo_entrega' => $data->plazo_entrega,
-                    'id_tp_doc' => $data->id_tp_doc,
-
-                    'direccion_destino' => $data->direccion_destino,
-                    'ubigeo_destino_id' => $data->ubigeo_destino_id,
-                    'ubigeo_destino' => $data->ubigeo_destino,
-                    'personal_autorizado_1' => $data->personal_autorizado_1,
-                    'nombre_personal_autorizado_1' => $data->nombre_personal_autorizado_1,
-                    'documento_idendidad_personal_autorizado_1' => $data->documento_idendidad_personal_autorizado_1,
-                    'nro_documento_personal_autorizado_1' => $data->nro_documento_personal_autorizado_1,
-                    'personal_autorizado_2' => $data->personal_autorizado_2,
-                    'nombre_personal_autorizado_2' => $data->nombre_personal_autorizado_2,
-                    'documento_idendidad_personal_autorizado_2' => $data->documento_idendidad_personal_autorizado_2,
-                    'nro_documento_personal_autorizado_2' => $data->nro_documento_personal_autorizado_2,
-                    'estado' => $data->estado,
-                    'estado_doc' => $data->estado_doc,
-                    'observacion' => $data->observacion
-
-                ];
-            }
-        }
-
-        $detalle_orden_compra = DB::table('logistica.log_det_ord_compra')
-        ->select(
-        'log_det_ord_compra.id_detalle_orden as id',
-        'log_det_ord_compra.id_detalle_orden',
-        'log_det_ord_compra.id_orden_compra',
-        'alm_req.id_requerimiento',
-        'alm_req.codigo as codigo_requerimiento',
-        'log_det_ord_compra.id_producto',
-        'log_det_ord_compra.id_item',
-        'alm_prod.descripcion AS descripcion_producto',
-        'alm_prod.codigo AS codigo_producto',
-        'alm_prod.part_number',
-        'log_det_ord_compra.garantia',
-        'log_det_ord_compra.estado',
-        'adm_estado_doc.estado_doc',
-        'log_det_ord_compra.personal_autorizado',
-        'log_det_ord_compra.lugar_despacho',
-        'log_det_ord_compra.descripcion_adicional',
-        'log_det_ord_compra.cantidad',
-        'log_det_ord_compra.precio',
-        'log_det_ord_compra.id_unidad_medida',
-        'alm_und_medida.descripcion AS unidad_medida',
-        'log_det_ord_compra.subtotal',
-        'log_det_ord_compra.id_detalle_requerimiento',
-        'guia_com_det.id_guia_com',
-        'guia_com_det.estado as estado_guia_com_det'
-    )
-    ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'log_det_ord_compra.id_unidad_medida')
-    ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'log_det_ord_compra.id_producto')
-    ->leftJoin('configuracion.sis_usua as sis_usua_aut', 'sis_usua_aut.id_usuario', '=', 'log_det_ord_compra.personal_autorizado')
-    ->leftJoin('rrhh.rrhh_trab as trab_aut', 'trab_aut.id_trabajador', '=', 'sis_usua_aut.id_trabajador')
-    ->leftJoin('rrhh.rrhh_postu as post_aut', 'post_aut.id_postulante', '=', 'trab_aut.id_postulante')
-    ->leftJoin('rrhh.rrhh_perso as pers_aut', 'pers_aut.id_persona', '=', 'post_aut.id_persona')
-    ->leftJoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
-    ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
-    ->leftJoin('almacen.guia_com_det', 'guia_com_det.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden')
-    ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','log_det_ord_compra.estado')
-
-    ->where([
-        ['log_det_ord_compra.id_orden_compra', '=', $id_orden]
-    ])
-    ->get();
-
-    $detalle = [];
-    $idDetalleReqList=[];
-    if(count($detalle_orden_compra)>0){
-        foreach ($detalle_orden_compra as $data) {
-            $detalle[] = [
-                'id' => $data->id,
-                'id_detalle_orden' => $data->id_detalle_orden,
-                'id_detalle_requerimiento' => $data->id_detalle_requerimiento,
-                'id_requerimiento' => $data->id_requerimiento,
-                'codigo_requerimiento' => $data->codigo_requerimiento,
-                'id_tipo_item' => 1,
-                'id_producto' => $data->id_producto,
-                'codigo_producto' => $data->codigo_producto,
-                'descripcion' => $data->descripcion_producto,
-                'descripcion_producto' => $data->descripcion_producto,
-                'part_number' => $data->part_number,
-                'descripcion_adicional' => $data->descripcion_adicional,
-                'cantidad' => $data->cantidad,
-                'cantidad_a_comprar' => $data->cantidad,
-                'id_unidad_medida' => $data->id_unidad_medida,
-                'unidad_medida' => $data->unidad_medida,
-                'precio_unitario' => $data->precio,
-                // 'flete' => $data->flete,
-                // 'porcentaje_descuento' => $data->porcentaje_descuento,
-                // 'monto_descuento' => $data->monto_descuento,
-                'subtotal' => $data->subtotal,
-                // 'plazo_entrega' => $data->plazo_entrega,
-                // 'incluye_igv' => $data->incluye_igv,
-                'garantia' => $data->garantia,
-                'lugar_despacho' => $data->lugar_despacho,
-                'estado' => $data->estado,
-                'estado_detalle_orden' => $data->estado_doc,
-                'id_guia_com' => $data->id_guia_com,
-                'estado_guia_com_det' => $data->estado_guia_com_det
-                // 'nombre_personal_autorizado' => $data->nombre_personal_autorizado 
-            ];
-            $idDetalleReqList[]=$data->id_detalle_requerimiento;
-        }
-    }
-
-    $codigoReqList=[];
-    $idCcList=[];
-    if(count($idDetalleReqList) > 0){
-        $req = DB::table('almacen.alm_det_req')
-        ->select(
-            'alm_req.id_requerimiento',
-            'alm_req.codigo',
-            'alm_req.concepto',
-            'alm_req.id_cc'
-            )
-        ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
-        ->whereIn('alm_det_req.id_detalle_requerimiento',$idDetalleReqList)
-        ->distinct()
-        ->get();
-
-        if(count($req) >0){
-            foreach($req as $data){
-                $codigoReqList[]=$data->codigo;
-                $idCcList[]=$data->id_cc;
-            }
-        }
-
-        $cdc = DB::table('mgcp_cuadro_costos.cc')
-        ->select(
-            'oportunidades.codigo_oportunidad',
-            'users.name as nombre_responsable'
-            )
-        ->join('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
-        ->LeftJoin('mgcp_cuadro_costos.responsables', 'responsables.id', '=', 'oportunidades.id_responsable')
-        ->LeftJoin('mgcp_usuarios.users', 'users.id', '=', 'oportunidades.id_responsable')
-        ->whereIn('cc.id',$idCcList)
-        ->distinct()
-        ->get();
-
-        $codigo_oportunidad=count($cdc)>0 ?$cdc->first()->codigo_oportunidad:'';
-        $nombre_responsable=count($cdc)>0 ?$cdc->first()->nombre_responsable:'';
-        }
-
-        $codigoReqText = implode(",", $codigoReqList);
-
-        $result = [
-            'head' => $head,
-            'detalle' => $detalle, 
-            'status' => $status 
-        ];
         
-        $result['head']['codigo_requerimiento']=$codigoReqText;
-        $result['head']['codigo_cc']= isset($codigo_oportunidad)?$codigo_oportunidad:'';
-        $result['head']['nombre_responsable_cc']=isset($nombre_responsable)?$nombre_responsable:'';
 
 
-        return response()->json($result);
+        return response()->json($orden);
 
     }
-
-
 
 
 

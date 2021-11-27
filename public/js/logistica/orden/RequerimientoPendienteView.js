@@ -429,7 +429,7 @@ class RequerimientoPendienteView {
                             }
                             // if(row.count_pendientes ==0){
                                 if (row.count_mapeados > 0) {
-                                if (row.estado == 38) {
+                                if (row.estado == 38 || row.estado ==39 ) { // estado por regularizar | estado  en pausa
 
                                     btnAtenderAlmacen = '<button type="button" class="btn btn-primary btn-xs handleClickAtenderConAlmacen" name="btnOpenModalAtenderConAlmacen" title="Reserva en almacén" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo-requerimiento="' + row.codigo + '" disabled><i class="fas fa-dolly fa-sm"></i></button>';
                                     btnCrearOrdenCompra = '<button type="button" class="btn btn-warning btn-xs handleClickCrearOrdenCompraPorRequerimiento" name="btnCrearOrdenCompraPorRequerimiento" title="Crear Orden de Compra" data-id-requerimiento="' + row.id_requerimiento + '"  disabled><i class="fas fa-file-invoice" ></i></button>';

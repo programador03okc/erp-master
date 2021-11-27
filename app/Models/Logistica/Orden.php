@@ -2,6 +2,8 @@
 
 
 namespace App\Models\Logistica;
+
+use App\Models\mgcp\CuadroCosto\CuadroCosto;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -11,7 +13,7 @@ class Orden extends Model {
 
     protected $table = 'logistica.log_ord_compra';
     protected $primaryKey = 'id_orden_compra';
-    protected $appends = ['monto','requerimientos','tiene_transformacion','cantidad_equipos','estado_orden'];
+    protected $appends = ['monto','requerimientos','oportunidad','tiene_transformacion','cantidad_equipos','estado_orden'];
 
     public $timestamps = false;
 
@@ -125,6 +127,30 @@ class Orden extends Model {
         ->where('log_det_ord_compra.id_orden_compra',$this->attributes['id_orden_compra'])
         ->select(['alm_req.id_requerimiento','alm_req.codigo','alm_req.estado'])->distinct()->get(); 
         return $requerimientos;
+    }
+
+    public function getOportunidadAttribute(){
+
+        $oportunidadList=[];
+
+        $requerimientos=OrdenCompraDetalle::leftJoin('almacen.alm_det_req','log_det_ord_compra.id_detalle_requerimiento','alm_det_req.id_detalle_requerimiento')
+        ->Join('almacen.alm_req','alm_req.id_requerimiento','alm_det_req.id_requerimiento')
+        ->where('log_det_ord_compra.id_orden_compra',$this->attributes['id_orden_compra'])
+        ->select(['alm_req.id_requerimiento','alm_req.id_cc'])->distinct()->get(); 
+
+        foreach ($requerimientos as $r) {
+            $cc= CuadroCosto::with('oportunidad','oportunidad.responsable')->where('cc.id',$r->id_cc)->first();
+            if($cc){
+                $oportunidadList[]=[
+                    'codigo_oportunidad'=>$cc->oportunidad->codigo_oportunidad,
+                    'responsable'=>$cc->oportunidad->responsable->name,
+                ];
+
+            }
+        }
+
+        return $oportunidadList;
+
     }
 
     // public function getCuadroCostoAttribute(){

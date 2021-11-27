@@ -296,7 +296,7 @@ class ComprasPendientesController extends Controller
             })
 
             ->where('alm_req.confirmacion_pago', true)
-            ->whereIn('alm_req.estado', [2,15,27,38]);
+            ->whereIn('alm_req.estado', [2,15,27,38,39]);
             
             return datatables($alm_req)
             ->filterColumn('alm_req.fecha_entrega', function ($query, $keyword) {

@@ -107,7 +107,6 @@
 @include('logistica.gestion_logistica.compras.ordenes.listado.modal_aprobar_orden')
 @include('logistica.gestion_logistica.compras.ordenes.listado.registrar_pago')
 
-@include('logistica.gestion_logistica.compras.ordenes.listado.modal_ver_orden')
 @include('logistica.gestion_logistica.compras.ordenes.listado.modal_editar_estado_orden')
 @include('logistica.gestion_logistica.compras.ordenes.listado.modal_editar_estado_detalle_orden')
 @include('logistica.gestion_logistica.compras.ordenes.listado.modal_documentos_vinculados')
