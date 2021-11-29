@@ -93,8 +93,8 @@
 	<script src="{{ asset('template/plugins/lobibox/dist/js/lobibox.min.js') }}"></script>
 	<script src="{{ asset('template/plugins/jquery-number/jquery.number.min.js') }}"></script>
 
-	<script src="{{ asset('js/ini.js')}}"></script>
-	<script src="{{ asset('js/function.js')}}"></script>
+	<script src="{{ asset('js/ini.js?')}}?v={{filemtime(public_path('js/ini.js'))}}"></script>
+	<script src="{{ asset('js/function.js?')}}?v={{filemtime(public_path('js/function.js'))}}"></script>
 	<script src="{{ asset('/js/publico/animation.js')}}"></script>
 
 	<script src="{{ asset('template/plugins/sweetalert2/sweetalert2.all.min.js') }}"></script>

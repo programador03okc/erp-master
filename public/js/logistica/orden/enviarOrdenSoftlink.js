@@ -31,7 +31,7 @@ function enviarOrdenSoftlink() {
             msg: 'Hubo un problema. Por favor actualice la página e intente de nuevo.'
         });
         //Cerrar el modal
-        $modal.modal('hide');
+        // $modal.modal('hide');
         console.log('Error devuelto: ' + jqXHR.responseText);
     });
 

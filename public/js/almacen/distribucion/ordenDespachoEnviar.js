@@ -1,7 +1,9 @@
 function openOrdenDespachoEnviar(data) {
-    $('#modal-orden_despacho_enviar').modal({
-        show: true
-    });
+    const $modal = $('#modal-orden_despacho_enviar');
+    $modal.modal('show');
+    //Limpieza para seleccionar archivo
+    $modal.find('input[type=file]').val(null);
+    $modal.find('div.bootstrap-filestyle').find('input[type=text]').val('');
 
     $('[name=id_requerimiento]').val(data.id_requerimiento ?? '');
     $('[name=id_oportunidad]').val(data.id_oportunidad ?? '');
