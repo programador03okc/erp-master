@@ -17,7 +17,7 @@ body {
 }
 
 body .login-box {
-  width: 85vw;
+  width: 32vw;
   height: auto;
 
 }
@@ -101,7 +101,8 @@ body .login-box {
 
 @media (max-width: 380px) {
   body .login-box {
-    width: 90%;
+    width: 85vw;
+  
   }
 
   .login-box-body {
@@ -1532,6 +1533,10 @@ form .select2-container .select2-selection--single {
 }
 
 @media (max-width: 768px) {
+  body .login-box {
+    width: 85vw;
+  
+  }
   .main-header > .navbar {
     border-top: 1px solid #ddd;
     border-bottom: 1px solid #ddd;
@@ -1550,6 +1555,10 @@ form .select2-container .select2-selection--single {
 }
 
 @media (min-width: 768px) {
+  body .login-box {
+    width: 85vw;
+  
+  }
   .sidebar-mini.sidebar-collapse .sidebar-menu > li > .treeview-menu {
     padding-top: 0px;
     padding-left: 0px;
