@@ -71,13 +71,13 @@ class MigrateOrdenSoftLinkController extends Controller
                 ->where('id_orden_compra', $id_orden_compra)
                 ->first();
 
+            $arrayRspta = [];
 
             if ($oc !== null) {
                 //si existe un id_softlink
                 if (!empty($oc->id_softlink)) {
                     //pregunta si ya se ha migrado antes
                     $oc_softlink = DB::connection('soft')->table('movimien')->where('mov_id', $oc->id_softlink)->first();
-                    $arrayRspta = [];
 
                     $arrayRspta = array(
                         'tipo' => 'warning',
@@ -85,11 +85,6 @@ class MigrateOrdenSoftLinkController extends Controller
                         'ocSoftlink' => array('cabecera' => $oc_softlink),
                         'ocAgile' => array('cabecera' => $oc),
                     );
-                    //Actualiza la oc softlink
-                    // DB::table('logistica.log_ord_compra')
-                    //     ->where('id_orden_compra', $id_orden_compra)
-                    //     ->update(['codigo_softlink' => $oc_softlink->cod_docu . $oc_softlink->num_docu]);
-                    // }
                 } else {
                     //igv por defecto
                     $igv = 18.00;
