@@ -17,7 +17,9 @@ body {
 }
 
 body .login-box {
-  width: 32%;
+  width: 85vw;
+  height: auto;
+
 }
 
 .login-page {
