@@ -101,7 +101,7 @@ body .login-box {
 
 @media (max-width: 380px) {
   body .login-box {
-    width: 85vw;
+    width: 90vw;
    
   }
 
@@ -1534,7 +1534,7 @@ form .select2-container .select2-selection--single {
 
 @media (max-width: 768px) {
   body .login-box {
-    width: 80vw;
+    width: 90vw;
    
   }
   .main-header > .navbar {
