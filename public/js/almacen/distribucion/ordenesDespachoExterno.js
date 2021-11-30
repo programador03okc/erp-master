@@ -172,13 +172,25 @@ function listarRequerimientosPendientes(usuario) {
             //         return '<span class="label label-' + row['bootstrap_color'] + '">' + row['estado_doc'] + '</span>'
             //     }
             // },
+            // {
+            //     data: 'fecha_despacho', name: 'orden_despacho.fecha_despacho',
+            //     'render': function (data, type, row) {
+            //         return (row['fecha_despacho'] !== null ? formatDate(row['fecha_despacho']) : '');
+            //     }
+            // },
+            { data: 'codigo_od', name: 'orden_despacho.codigo', className: "text-center" },
             {
-                data: 'fecha_despacho', name: 'orden_despacho.fecha_despacho',
+                data: 'fecha_despacho_real', name: 'orden_despacho.fecha_despacho_real',
                 'render': function (data, type, row) {
-                    return (row['fecha_despacho'] !== null ? formatDate(row['fecha_despacho']) : '');
+                    return (row['fecha_despacho_real'] !== null ? formatDate(row['fecha_despacho_real']) : '');
                 }
             },
-            { data: 'codigo_od', name: 'orden_despacho.codigo', className: "text-center" },
+            {
+                data: 'fecha_entregada', name: 'orden_despacho.fecha_entregada',
+                'render': function (data, type, row) {
+                    return (row['fecha_entregada'] !== null ? formatDate(row['fecha_entregada']) : '');
+                }
+            },
             {
                 'render': function (data, type, row) {
                     return '<span class="label label-' + row['estado_bootstrap_od'] + '">' + row['estado_od'] + '</span>'
@@ -275,7 +287,7 @@ function listarRequerimientosPendientes(usuario) {
                                    <i class="fas fa-file-upload"></i></button>`
                            : '')*/
                         `</div>`
-                }, targets: 14
+                }, targets: 15
             }
         ],
         select: "multi",
