@@ -292,7 +292,7 @@ class MigrateOrdenSoftLinkController extends Controller
                 'fec_docu' => $fecha,
                 'fec_entre' => $fecha,
                 'fec_vcto' => $fecha,
-                'flg_sitpedido' => 0,
+                'flg_sitpedido' => 0, //
                 'cod_pedi' => '',
                 'num_pedi' => '',
                 'cod_auxi' => $cod_auxi,
@@ -355,7 +355,7 @@ class MigrateOrdenSoftLinkController extends Controller
                 'imp_comi' => '0.00',
                 'ptosbonus' => '0',
                 'canjepedtran' => 0,
-                'cod_clasi' => 1,
+                'cod_clasi' => 1, //mercaderias
                 'doc_elec' => '',
                 'cod_nota' => '',
                 'hashcpe' => '',
@@ -849,5 +849,62 @@ class MigrateOrdenSoftLinkController extends Controller
             $zeros = $zeros . '0';
         }
         return $zeros . $number;
+    }
+
+    public function anularOrdenSoftlink($id_orden_compra)
+    {
+        try {
+            DB::beginTransaction();
+
+            $oc = DB::table('logistica.log_ord_compra')
+                ->where('id_orden_compra', $id_orden_compra)
+                ->first();
+            //si existe un id_softlink
+            if (!empty($oc->id_softlink)) {
+                //pregunta si ya se ha migrado antes
+                $oc_softlink = DB::connection('soft')->table('movimien')->where('mov_id', $oc->id_softlink)->first();
+
+                //verifica si ya fue referenciado
+                if ($oc_softlink->flg_referen == 1) {
+                    //Ya tiene ingreso a almacen
+                    $arrayRspta = array(
+                        'tipo' => 'warning',
+                        'mensaje' => 'Ésta orden ya fue referenciada en Softlink. Nro. OC ' . $oc_softlink->num_docu . ' id ' . $oc_softlink->mov_id,
+                        'ocSoftlink' => array('cabecera' => $oc_softlink),
+                        'ocAgile' => array('cabecera' => $oc),
+                    );
+                }
+                //verifica si fue anulado
+                else if ($oc_softlink->flg_anulado == 1) {
+                    //Ya tiene ingreso a almacen
+                    $arrayRspta = array(
+                        'tipo' => 'warning',
+                        'mensaje' => 'Ésta orden ya fue anulada en Softlink. Nro. OC ' . $oc_softlink->num_docu . ' id ' . $oc_softlink->mov_id,
+                        'ocSoftlink' => array('cabecera' => $oc_softlink),
+                        'ocAgile' => array('cabecera' => $oc),
+                    );
+                } else {
+                    //Anula orden en softlink
+                    DB::connection('soft')->table('movimien')->where('mov_id', $oc->id_softlink)
+                        ->update([
+                            'flg_anulado' => 1,
+                            'fec_anul' => new Carbon(),
+                        ]);
+
+                    $arrayRspta = array(
+                        'tipo' => 'success',
+                        'mensaje' => 'Ésta orden fue anulada con éxito en Softlink. Nro. OC ' . $oc_softlink->num_docu . ' id ' . $oc_softlink->mov_id,
+                        'ocSoftlink' => array('cabecera' => $oc_softlink),
+                        'ocAgile' => array('cabecera' => $oc),
+                    );
+                }
+            }
+
+            DB::commit();
+            return response()->json($arrayRspta, 200);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json(array('tipo' => 'error', 'mensaje' => 'Hubo un problema al anular la orden. Por favor intente de nuevo', 'error' => $e->getMessage()));
+        }
     }
 }
