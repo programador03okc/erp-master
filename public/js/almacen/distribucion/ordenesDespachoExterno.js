@@ -128,7 +128,13 @@ function listarRequerimientosPendientes(usuario) {
                     }
                 }, className: "text-center"
             },//
-            { data: 'siaf', name: 'oc_propias_view.siaf' },
+            // { data: 'siaf', name: 'oc_propias_view.siaf' },
+            {
+                data: 'orden_compra', name: 'oc_propias_view.orden_compra',
+                render: function (data, type, row) {
+                    return ((row['orden_compra'] !== null ? row['orden_compra'] : '') + (row['siaf'] !== null ? ' / ' + row['siaf'] : ''));
+                }, className: "text-center"
+            },
             { data: 'occ', name: 'oc_propias_view.occ' },
             {
                 data: 'codigo_oportunidad', name: 'oc_propias_view.codigo_oportunidad',

@@ -118,6 +118,7 @@ class OrdenesDespachoExternoController extends Controller
                 'oc_propias_view.fecha_publicacion',
                 'oc_propias_view.estado_aprobacion_cuadro',
                 'oc_propias_view.siaf',
+                'oc_propias_view.orden_compra',
                 'oc_propias_view.occ',
                 'oc_propias_view.tiene_comentarios',
                 'oc_propias_view.nombre_entidad',
