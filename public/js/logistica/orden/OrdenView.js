@@ -1278,7 +1278,7 @@ class OrdenView {
                         });
                     },
                     success: function (response) {
-                        // console.log(response);
+                        console.log(response);
                         if (response.id_orden_compra > 0) {
                             $("#wrapper-okc").LoadingOverlay("hide", true);
 
@@ -1290,6 +1290,21 @@ class OrdenView {
                                 delayIndicator: false,
                                 msg: `Orden ${response.codigo} creada.`
                             });
+                            
+                            if(response.status_migracion_softlink != null){
+                                
+                                $('[name=codigo_orden]').val(response.status_migracion_softlink.orden_softlink??"");
+
+                                Lobibox.notify(response.status_migracion_softlink.tipo, {
+                                    title: false,
+                                    size: 'mini',
+                                    rounded: true,
+                                    sound: false,
+                                    delayIndicator: false,
+                                    msg: response.status_migracion_softlink.mensaje
+                                });
+
+                            }
                             changeStateButton('guardar');
                             $('#form-crear-orden-requerimiento').attr('type', 'register');
                             changeStateInput('form-crear-orden-requerimiento', true);

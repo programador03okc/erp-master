@@ -17,6 +17,7 @@ use App\Exports\ListOrdenesHeadExport;
 use App\Exports\ReporteOrdenesCompraExcel;
 use App\Exports\ReporteTransitoOrdenesCompraExcel;
 use App\Helpers\CuadroPresupuestoHelper;
+use App\Http\Controllers\Migraciones\MigrateOrdenSoftLinkController;
 use App\Models\Administracion\Empresa;
 use App\Models\Administracion\Estado;
 use App\Models\Almacen\DetalleRequerimiento;
@@ -2499,12 +2500,16 @@ class OrdenController extends Controller
                 $actualizarEstados = $this->actualizarNuevoEstadoRequerimiento($orden->id_orden_compra,$orden->codigo);
             }
 
+            Debugbar::info($orden->id_orden_compra);
+
+
             return response()->json([
                 'id_orden_compra' => $orden->id_orden_compra, 
                 'codigo' => $orden->codigo,
                 'lista_estado_requerimiento'=>$actualizarEstados['lista_estado_requerimiento'],
                 'lista_finalizados'=>$actualizarEstados['lista_finalizados'],
-                'lista_restablecidos'=>$actualizarEstados['lista_restablecidos']
+                'status_migracion_softlink'=>(new MigrateOrdenSoftLinkController)->migrarOrdenCompra($orden->id_orden_compra)->original??null //tipo : success , warning, error, mensaje : ""
+
             ]);
 
         } catch (Exception $e) {

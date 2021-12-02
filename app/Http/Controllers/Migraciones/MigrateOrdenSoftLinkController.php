@@ -141,7 +141,7 @@ class MigrateOrdenSoftLinkController extends Controller
                 $mov_id_softlink = '';
 
                 //si existe un id_softlink
-                if (!empty($oc->id_softlink)) {
+                if ($oc->id_softlink!=null) {
                     //obtiene oc softlink
                     $oc_softlink = DB::connection('soft')->table('movimien')->where('mov_id', $oc->id_softlink)->first();
 
