@@ -44,7 +44,7 @@ Requerimientos pendientes
                                                         <th hidden>Id</th>
                                                         <th style="text-align:center;">Selec.</th>
                                                         <th style="text-align:center;">Empresa - Sede</th>
-                                                        <th style="text-align:center;">Código</th>
+                                                        <th style="text-align:center; width:10%;">Código</th>
                                                         <th style="text-align:center;">Fecha creación</th>
                                                         <th style="text-align:center;">Fecha limite</th>
                                                         <th style="text-align:center;">Concepto</th>

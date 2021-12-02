@@ -1,32 +1,46 @@
+var vardataTables = funcDatatables();
 
 var trPorRegularizarSeleccionar;
-
+var $listaItemsPorRegularizar;
+var iTableCounter = 1;
+var oInnerTable;
 $('#listaRequerimientosPendientes tbody').on("click", "i.handleClickAbrirModalPorRegularizar", (e) => {
     abrirModalPorRegularizar(e.currentTarget);
 });
-$('#modal-por-regularizar tbody').on("click", "button.handleClickAbrirModalVerOpcionesParaRegunlarizarItem", (e) => {
-    abrirModalVerOpcionesParaRegunlarizarItem(e.currentTarget);
-});
-$('#modal-opciones-para-regularizar-item tbody').on("click", "button.handleClickRemplazarProductoEnOrden", (e) => {
+
+$('#modal-por-regularizar').on("click", "button.handleClickRemplazarProductoEnOrden", (e) => {
     remplazarProductoEnOrden(e.currentTarget);
 });
-$('#modal-opciones-para-regularizar-item tbody').on("click", "button.handleClickLiberarProductoOrden", (e) => {
+$('#modal-por-regularizar').on("click", "button.handleClickLiberarProductoOrden", (e) => {
     liberarProductoOrden(e.currentTarget);
 });
-$('#modal-opciones-para-regularizar-item tbody').on("click", "button.handleClickAnularItemDeOrden", (e) => {
+$('#modal-por-regularizar').on("click", "button.handleClickAnularItemDeOrden", (e) => {
     anularItemDeOrden(e.currentTarget);
 });
-$('#modal-opciones-para-regularizar-item tbody').on("click", "button.handleClickRemplazarProductoEnReserva", (e) => {
-    remplazarProductoEnReserva(e.currentTarget);
-});
-$('#modal-opciones-para-regularizar-item tbody').on("click", "button.handleClickLiberarProductoReserva", (e) => {
-    liberarProductoReserva(e.currentTarget);
+
+$('#modal-por-regularizar').on("click", "button.handleClickAnularReserva", (e) => {
+    anularReserva(e.currentTarget);
 });
 
-$('#modal-por-regularizar').on("click", "button.handleClickFinalizarRegularizacion", (e) => {
-    finalizarRegularizacion(e.currentTarget);
+$('#modal-por-regularizar').on("click", "button.handleClickRemplazarProductoComprometidoEnTodaOrden", (e) => {
+    remplazarProductoComprometidoEnTodaOrden(e.currentTarget);
+});
+$('#modal-por-regularizar').on("click", "button.handleClickLiberarProductoComprometidoEnTodaOrden", (e) => {
+    liberarProductoComprometidoEnTodaOrden(e.currentTarget);
+});
+$('#modal-por-regularizar').on("click", "button.handleClickAnularItemComprometidoEnTodaOrdenYReservas", (e) => {
+    anularItemComprometidoEnTodaOrdenYReserva(e.currentTarget);
 });
 
+
+$('#modal-por-regularizar').on("click", "button.handleClickLevantarRegularizacion", (e) => {
+    levantarRegularizacion(e.currentTarget);
+});
+
+$('#modal-por-regularizar').on("click", "button.handleClickDesplegarVerDetalleOrdenReserva", (e) => {
+    // var data = $('#listaRequerimientosPendientes').DataTable().row($(this).parents("tr")).data();
+    this.desplegarVerDetalleOrdenReserva(e.currentTarget);
+});
 
 
 function limpiarTabla(idElement) {
@@ -44,9 +58,9 @@ function abrirModalPorRegularizar(obj) {
         show: true,
         backdrop: 'static'
     });
-    document.querySelector("div[id='modal-por-regularizar'] input[name='idRequerimiento']").value=obj.dataset.idRequerimiento;
-    trPorRegularizarSeleccionar =obj.closest('tr');
-     construirTablaPorRegularizar(obj.dataset.idRequerimiento);
+    document.querySelector("div[id='modal-por-regularizar'] input[name='idRequerimiento']").value = obj.dataset.idRequerimiento;
+    trPorRegularizarSeleccionar = obj.closest('tr');
+    construirTablaPorRegularizar(obj.dataset.idRequerimiento);
 }
 
 function construirTablaPorRegularizar(idRequerimiento) {
@@ -77,249 +91,180 @@ function obtenerDataPorRegularlizar(id) {
     });
 }
 
- 
+
 
 function listarItemsPorRegularizar(data) {
-    document.querySelector("div[id='modal-por-regularizar'] span[id='codigo_requerimiento']").textContent=data['cabecera'].codigo_requerimiento??'';
-    document.querySelector("div[id='modal-por-regularizar'] span[id='codigo_cuadro_presupuesto']").textContent=data['cabecera'].codigo_cuadro_presupuesto??'';
-    
-    let cantidadItemsPorRegularizar =0;
-
-    if (data['detalle'].length > 0) {
-        (data['detalle']).forEach(element => {
-
-            if(element.estado ==38){
-                cantidadItemsPorRegularizar++;
-            }
-            // let btnRemplazarProductoEnOrden = '';
-            // let btnLiberarProductoOrden = '';
-            // let btnAnularItemDeOrden = '';
-            // let btnRemplazarProductoEnReserva = '';
-            // let btnLiberarProductoReserva = '';
-            let ordenes =[];
-            let reservas =[];
-            let reservaHabilitada =[];
-
-            let ingresoAlmacenList =[];
-            
-
-            element.detalle_orden.map((detOrden, i)=>{
-                if(detOrden.estado != 7){
-                    ordenes.push('<a href="/logistica/gestion-logistica/compras/ordenes/listado/generar-orden-pdf/'+detOrden.orden.id_orden_compra+'" target="_blank" title="Abrir Orden" >'+detOrden.orden.codigo+'</a>');
-                   if(detOrden.guia_compra_detalle !=null && detOrden.guia_compra_detalle.length >0){
-                    (detOrden.guia_compra_detalle).forEach(gcd => {
-                        if(gcd.movimiento_detalle != null && gcd.movimiento_detalle.length >0){
-                            (gcd.movimiento_detalle).forEach(md => {
-                                if(md.estado !=7 && md.movimiento.estado !=7){
-                                    ingresoAlmacenList.push({
-                                        'id':md.movimiento.id_mov_alm, 
-                                        'codigo':md.movimiento.codigo,
-                                        'id_orden':detOrden.id_orden_compra,
-                                        'id_detalle_orden':detOrden.id_detalle_orden,
-                                        'id_detalle_requerimiento':detOrden.id_detalle_requerimiento
-                                    });
-                                }
-                            });
-                        }
-                        
-                    });
-                    }
-                }
-            });
-            (element.reserva).map((r, i)=>{
-                if(r.estado != 7){
-                    reservas.push('<a href="imprimir_ingreso/'+r.id_reserva+'"  target="_blank" title="Abrir Ingreeso">'+r.codigo+'</a>');
-                    if(r.estado ==1){
-                        reservaHabilitada.push(
-                            {
-                                'id':r.id_reserva,
-                                'id_detalle_requerimiento':r.id_detalle_requerimiento
-                            }
-                        )
-                    }
-                }
-            });
-
-            // if( (element.detalle_orden.length >0) && (ingresoAlmacenList.length==0  || ingresoAlmacenList.filter(ingreso => ingreso.id_detalle_requerimiento ==element.id_detalle_requerimiento).length ==0)){
-            //     btnRemplazarProductoEnOrden = `<button type="button" class="btn btn-warning btn-xs handleClickRemplazarProductoEnOrden" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-id-orden="${(element.detalle_orden.length >0 ?element.detalle_orden.id_orden_compra:'')}" name="btnRemplazarProductoEnOrden" title="Remplazar producto en orden"><i class="fas fa-paint-roller fa-sm"></i></button>`;
-            //     btnLiberarProductoOrden = `<button type="button" class="btn btn-success btn-xs handleClickLiberarProductoOrden" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-id-orden="${(element.detalle_orden.length >0 ?element.detalle_orden.id_orden_compra:'')}" name="btnLiberarProductoOrden" title="Liberar producto"><i class="fas fa-dove fa-sm"></i></button>`;
-            //     btnAnularItemDeOrden = `<button type="button" class="btn btn-danger btn-xs handleClickAnularItemDeOrden" data-codigo-producto="${element.producto.codigo}" data-part-number="${element.producto.part_number}" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-id-orden="${(element.detalle_orden.length >0 ?element.detalle_orden.id_orden_compra:'')}" data-codigo-orden="${(element.detalle_orden.length >0 ?element.detalle_orden.orden.codigo:'')}" name="btnAnularItemOrden" title="Anular Item de Orden"><i class="fas fa-ban fa-sm"></i></button>`;
-            // }else{
-            //     btnRemplazarProductoEnOrden='';
-            //     btnLiberarProductoOrden='';
-            //     btnAnularItemDeOrden='';
-            // }
-
-            // if (reservaHabilitada.length>0 || reservaHabilitada.filter(reserva => reserva.id_detalle_requerimiento ==element.id_detalle_requerimiento).length >0) {
-            //     btnRemplazarProductoEnReserva = `<button type="button" class="btn btn-warning btn-xs handleClickRemplazarProductoEnReserva" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-id-reserva="${element.id_reserva}" name="btnRemplazarProductoEnReserva" title="Remplazar producto en reserva"><i class="fas fa-paint-roller fa-sm"></i></button>`;
-            //     btnLiberarProductoReserva = `<button type="button" class="btn btn-success btn-xs handleClickLiberarProductoReserva" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-id-reserva="${element.id_reserva}" name="btnLiberarProductoReserva" title="Liberar producto"><i class="fas fa-dove fa-sm"></i></button>`;
-            // }else{
-            //     btnRemplazarProductoEnReserva='';
-            //     btnLiberarProductoReserva='';
-            // }
-
-            let mensaje=[];
-            if(element.id_producto == 0){
-                mensaje.push("Producto sin mapear");
-            }
-            // if(element.detalle_orden.length==0){
-                
-            //     mensaje.push("Sin Orden");
-            // }
-            if(ingresoAlmacenList.length>0){
-                
-                mensaje.push("Orden con ingreso almacén");
-            }
-            
-            if(reservaHabilitada.length > 0 ){
-                
-                mensaje.push("Con reserva procesada");
-            }
+    document.querySelector("div[id='modal-por-regularizar'] span[id='codigo_requerimiento']").textContent = data['cabecera'].codigo_requerimiento ?? '';
+    document.querySelector("div[id='modal-por-regularizar'] span[id='codigo_cuadro_presupuesto']").textContent = data['cabecera'].codigo_cuadro_presupuesto ?? '';
 
 
-            document.querySelector("tbody[id='bodylistaItemsPorRegularizar']").insertAdjacentHTML('beforeend', `<tr style="text-align:center; background:${element.estado ==38?'#f3e68d':''}">
-            <td>${element.detalle_cc.part_no??''}</td>
-            <td>${element.detalle_cc.descripcion??''}</td>
-            <td>${element.detalle_cc.cantidad??''}</td>
-            <td style="border-right: dashed; border-right-color: #ccc;">${element.detalle_cc.pvu_oc??''}</td>
-            <td>${element.part_number??''}</td>
-            <td>${element.descripcion??''}</td>
-            <td>${element.cantidad??''}</td>
-            <td>${element.precio_unitario??''}</td>
-            <td>${ordenes.length > 0 ?  ordenes: ''}</td>
-            <td>${reservas.length > 0 ?  reservas: ''}</td>
-            <td>${((ordenes.length!= 0 ||reservaHabilitada.length!=0) && (element.estado ==38) )? '<button type="button" class="btn btn-info btn-xs handleClickAbrirModalVerOpcionesParaRegunlarizarItem" name="btnVerOpcionesParaRegularizarItem" title="Ver opciones para regularizar" data-id-detalle-requerimiento="' + element.id_detalle_requerimiento + '" data-part-number="' + element.part_number + '" data-descripcion="' + element.descripcion + '" data-cantidad="' + element.cantidad + '" data-unidad-medida="' + element.unidad_medida.abreviatura + '" data-precio-unitario="' + element.precio_unitario + '"><i class="fas fa-magic fa-sm"></i></button>' : mensaje.toString()}</td>
-            </tr>`);
-        });
-        if(cantidadItemsPorRegularizar>0){
+    let that = this;
 
-            document.querySelector("div[id='modal-por-regularizar'] span[id='cantidadItemsPorRegularizar']").textContent= cantidadItemsPorRegularizar +" items por regularizar";
-        }
-    } else {
-        document.querySelector("tbody[id='bodylistaItemsPorRegularizar']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
-        <td colspan="8" style="text-align:center;">(Sin data)</td>
+    $listaItemsPorRegularizar = $('#listaItemsPorRegularizar').DataTable({
+        'dom': vardataTables[1],
+        'buttons': [],
+        'language': vardataTables[0],
+        'order': [[10, 'asc']],
+        'bLengthChange': false,
+        // 'serverSide': true,
+        'destroy': true,
+        'data': data['detalle'],
 
-        </tr>`);
-    }
-}
+        'columns': [
+            { 'data': 'detalle_cc.part_no', "searchable": false },
+            { 'data': 'detalle_cc.descripcion', "searchable": false },
+            { 'data': 'detalle_cc.cantidad', "searchable": false },
+            { 'data': 'detalle_cc.pvu_oc', "searchable": false },
+            { 'data': 'producto.part_number', "searchable": false },
+            { 'data': 'producto.descripcion', "searchable": false },
+            { 'data': 'cantidad', "searchable": false },
+            { 'data': 'precio_unitario', "searchable": false },
+            { 'data': 'detalle_orden', "searchable": false },
+            { 'data': 'reserva', "searchable": false },
+            { 'data': 'id_detalle_requerimiento', "searchable": false }
 
 
-function abrirModalVerOpcionesParaRegunlarizarItem(obj) {
-    $('#modal-opciones-para-regularizar-item').modal({
-        show: true,
-        backdrop: 'static'
-    });
+        ],
+        'columnDefs': [
 
-    document.querySelector("div[id='modal-opciones-para-regularizar-item'] label[id='partNumber']").textContent = obj.dataset.partNumber;
-    document.querySelector("div[id='modal-opciones-para-regularizar-item'] label[id='descripcion']").textContent = obj.dataset.descripcion;
-    document.querySelector("div[id='modal-opciones-para-regularizar-item'] label[id='cantidad']").textContent = obj.dataset.cantidad;
-    document.querySelector("div[id='modal-opciones-para-regularizar-item'] label[id='unidadMedida']").textContent = obj.dataset.unidadMedida;
-    document.querySelector("div[id='modal-opciones-para-regularizar-item'] label[id='precioUnitario']").textContent = obj.dataset.precioUnitario;
+            {
+                'render': function (data, type, row) {
 
-    construirTablaOpcionesParaRegularizarItem(obj.dataset.idDetalleRequerimiento);
-}
-
-function construirTablaOpcionesParaRegularizarItem(idDetalleRequerimiento) {
-
-    if (idDetalleRequerimiento > 0) {
-        limpiarTabla('listaOrdenesDeItem')
-        obtenerDataListaOrdenesConItemPorRegularizar(idDetalleRequerimiento).then((res) => {
-            listarOrdenesVinculadasAItemPorRegularizar(res);
-        }).catch((err) => {
-            console.log(err)
-        })
-
-        limpiarTabla('listaReservasDeItem')
-
-        obtenerDataListaReservasConItemPorRegularizar(idDetalleRequerimiento).then((res) => {
-            listarReservasVinculadasAItemPorRegularizar(res);
-        }).catch((err) => {
-            console.log(err)
-        })
-
-    }
-}
-
-function obtenerDataListaOrdenesConItemPorRegularizar(idDetalleRequerimiento) {
-    return new Promise(function (resolve, reject) {
-        $.ajax({
-            type: 'GET',
-            url: `ordenes-con-item-por-regularizar/${idDetalleRequerimiento}`,
-            dataType: 'JSON',
-            success(response) {
-                resolve(response);
+                    return `<div style="text-align:left; width: 100%; height: 80px; margin: 0; padding: 0; overflow-y: scroll;">
+                    ${row.detalle_cc.descripcion ?? '(Sin mapeado)'}
+                    </div>`;
+                }, targets: 1
             },
-            error: function (err) {
-                reject(err)
-            }
-        });
-    });
-}
+            {
+                'render': function (data, type, row) {
 
-function listarOrdenesVinculadasAItemPorRegularizar(data) {
-    let btnRemplazarProductoEnOrden = '';
-    let btnLiberarProductoOrden = '';
-    let btnAnularItemDeOrden = '';
-    let documentoVinculadosList = [];
-    let cantidadIngresos = 0;
-    if (data.length > 0) {
-        (data).forEach(element => {
-            if (element.detalle_guias_compra.length > 0) {
-                (element.detalle_guias_compra).forEach(dgi => {
-                    if(dgi.guia_compra.movimiento !=null && dgi.guia_compra.movimiento.estado !=7){
-                        cantidadIngresos++;
+                    return `<div style="text-align:left; width: 100%; height: 80px; margin: 0; padding: 0; overflow-y: scroll;">
+                    ${row.producto.descripcion ?? '(Sin mapeado)'}
+                    </div>`;
+                }, targets: 5
+            },
+            {
+                'render': function (data, type, row) {
+                    let ordenes = [];
+
+                    row.detalle_orden.map((detOrden, i) => {
+                        if (detOrden.estado != 7) {
+                            ordenes.push('<a href="/logistica/gestion-logistica/compras/ordenes/listado/generar-orden-pdf/' + detOrden.orden.id_orden_compra + '" target="_blank" title="Abrir Orden" >' + detOrden.orden.codigo + '</a>');
+                        }
+                    });
+                    return ordenes;
+                }, targets: 8
+            },
+            {
+                'render': function (data, type, row) {
+                    let reservas = [];
+
+                    (row.reserva).map((r, i) => {
+                        if (r.estado != 7) {
+                            reservas.push('<a href="imprimir_ingreso/' + r.id_reserva + '"  target="_blank" title="Abrir Ingreeso">' + r.codigo + '</a>');
+
+                        }
+                    });
+                    return reservas;
+                }, targets: 9
+            },
+            {
+                'render': function (data, type, row) {
+
+                    let reservaHabilitada = [];
+                    let ordenes = [];
+                    let ingresoAlmacenList = [];
+
+                    row.detalle_orden.map((detOrden, i) => {
+                        if (detOrden.estado != 7) {
+                            ordenes.push('<a href="/logistica/gestion-logistica/compras/ordenes/listado/generar-orden-pdf/' + detOrden.orden.id_orden_compra + '" target="_blank" title="Abrir Orden" >' + detOrden.orden.codigo + '</a>');
+                            if (detOrden.guia_compra_detalle != null && detOrden.guia_compra_detalle.length > 0) {
+                                (detOrden.guia_compra_detalle).forEach(gcd => {
+                                    if (gcd.movimiento_detalle != null && gcd.movimiento_detalle.length > 0) {
+                                        (gcd.movimiento_detalle).forEach(md => {
+                                            if (md.estado != 7 && md.movimiento.estado != 7) {
+                                                ingresoAlmacenList.push({
+                                                    'id': md.movimiento.id_mov_alm,
+                                                    'codigo': md.movimiento.codigo,
+                                                    'id_orden': detOrden.id_orden_compra,
+                                                    'id_detalle_orden': detOrden.id_detalle_orden,
+                                                    'id_detalle_requerimiento': detOrden.id_detalle_requerimiento
+                                                });
+                                            }
+                                        });
+                                    }
+
+                                });
+                            }
+                        }
+                    });
+                    (row.reserva).map((r, i) => {
+                        if (r.estado != 7) {
+                            if (r.estado == 1) {
+                                reservaHabilitada.push(
+                                    {
+                                        'id': r.id_reserva,
+                                        'id_detalle_requerimiento': r.id_detalle_requerimiento
+                                    }
+                                )
+                            }
+                        }
+                    });
+
+                    let mensaje = [];
+                    if (row.id_producto == 0) {
+                        mensaje.push("Producto sin mapear");
                     }
-                });
-            }
+                    if (ingresoAlmacenList.length > 0) {
 
-        });
+                        mensaje.push("Orden con ingreso almacén");
+                    }
 
-        (data).forEach(element => {
+                    // if(reservaHabilitada.length > 0 ){
 
-            if (element.detalle_guias_compra.length > 0) {
-                (element.detalle_guias_compra).forEach(dgi => {
-                    if(dgi.guia_compra !=null && dgi.guia_compra.movimiento !=null ){
-                        documentoVinculadosList.push(dgi.guia_compra.movimiento.codigo);
+                    //     mensaje.push("Con reserva procesada");
+                    // }
+                    let botoneraAccion= `<div class="btn-group" role="group">
+                    <button type="button" class="btn btn-default btn-xs handleClickDesplegarVerDetalleOrdenReserva" name="btnVerDetalleOrdenReserva" title="Ver detalle ordenes / reserva" data-id-detalle-requerimiento="${row.id_detalle_requerimiento}"><i class="fas fa-chevron-down fa-sm"></i></button>
+                    `;
+
+                    if ((ordenes.length != 0) && (row.estado == 38)) {
+                        botoneraAccion+= `
+                        <button type="button" class="btn btn-warning btn-xs handleClickRemplazarProductoComprometidoEnTodaOrden" data-id-detalle-requerimiento="${row.id_detalle_requerimiento}"  name="btnRemplazarTodoProductoComprometidoEnTodaOrden" title="Remplazar item en todas las ordenes"><i class="fas fa-paint-roller fa-sm"></i></button>
+                        <button type="button" class="btn btn-info btn-xs handleClickLiberarProductoComprometidoEnTodaOrden" data-id-detalle-requerimiento="${row.id_detalle_requerimiento}"  name="btnLiberarTodoProductoComprometidoEnTodaOrden" title="Liberar el item en todas las ordenes"><i class="fas fa-parachute-box fa-sm"></i></button>
+                        <button type="button" class="btn btn-danger btn-xs handleClickAnularItemComprometidoEnTodaOrdenYReservas"  data-id-detalle-requerimiento="${row.id_detalle_requerimiento}"  name="btnAnularTodoItemComprometidoEnTodaOrdenYReservas" title="Anular todas las ordenes y reservas comprometidas"><i class="fas fa-ban fa-sm"></i></button>
+                        `;
+                    }
+                    if ((ordenes.length == 0 && reservaHabilitada.length != 0) && (row.estado == 38)) {
+                        botoneraAccion+= `<button type="button" class="btn btn-danger btn-xs handleClickAnularItemComprometidoEnTodaOrdenYReservas" data-id-detalle-requerimiento="${row.id_detalle_requerimiento}" name="btnAnularTodoItemComprometidoEnTodaOrdenYReservas" title="Anular todas las reservas comprometidas"><i class="fas fa-ban fa-sm"></i></button>`;
                     }
                     
-                });
+                    botoneraAccion+=`</div>`
+
+                    return botoneraAccion;
+                }, targets: 10
             }
 
-            if (cantidadIngresos == 0) {
-                // if(element.detalle_guias_compra.length ==0){
-                btnRemplazarProductoEnOrden = `<button type="button" class="btn btn-warning btn-xs handleClickRemplazarProductoEnOrden" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-id-orden="${element.id_orden_compra}" name="btnRemplazarProductoEnOrden" title="Remplazar producto en orden"><i class="fas fa-paint-roller fa-sm"></i></button>`;
-                btnLiberarProductoOrden = `<button type="button" class="btn btn-success btn-xs handleClickLiberarProductoOrden" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-id-orden="${element.id_orden_compra}" name="btnLiberarProductoOrden" title="Liberar producto"><i class="fas fa-dove fa-sm"></i></button>`;
-                btnAnularItemDeOrden = `<button type="button" class="btn btn-danger btn-xs handleClickAnularItemDeOrden" data-codigo-producto="${element.producto.codigo}" data-part-number="${element.producto.part_number}" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-id-orden="${element.id_orden_compra}" data-codigo-orden="${element.orden.codigo}" name="btnAnularItemOrden" title="Anular Item de Orden"><i class="fas fa-ban fa-sm"></i></button>`;
-            } else {
-                document.querySelector("span[id='cantidadDeIngresos']").textContent = ` Con ${cantidadIngresos} ingreso(s)`;
-                btnRemplazarProductoEnOrden = '';
-                btnLiberarProductoOrden = '';
-                btnAnularItemDeOrden = '';
+        ],
+        'rowCallback': function (row, data, dataIndex) {
+
+        },
+        'initComplete': function () {
+
+        },
+        "drawCallback": function (settings) {
+
+        },
+        "createdRow": function (row, data, dataIndex) {
+            if (data.estado == 38) {
+                $(row.childNodes).css('background-color', '#f3e68d');
+                // $(row.childNodes).css('font-weight', 'bold');
             }
-            document.querySelector("tbody[id='bodylistaOrdenesDeItem']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
-                <td><a href="/logistica/gestion-logistica/compras/ordenes/listado/generar-orden-pdf/${element.id_orden_compra}" target="_blank" title="Abrir Orden"> ${element.orden.codigo}</a></td>
-                <td>${element.producto.codigo}</td>
-                <td>${element.producto.part_number}</td>
-                <td>${element.producto.descripcion}</td>
-                <td>${element.cantidad}</td>
-                <td>${element.unidad_medida.abreviatura}</td>
-                <td>${element.precio}</td>
-                <td>${documentoVinculadosList.join('<br>')}</td>
-                <td>${element.id_producto > 0 ? ('<div style="display:flex;">' + btnRemplazarProductoEnOrden + btnLiberarProductoOrden + btnAnularItemDeOrden + '</div>') : '(MAPEO REQUERIDO)'}</td>
-                </tr>`);
-            documentoVinculadosList = [];
 
-        });
+        }
 
-    } else {
-        document.querySelector("tbody[id='bodylistaOrdenesDeItem']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
-        <td colspan="8" style="text-align:center;">(Sin data)</td>
-
-        </tr>`);
-    }
-
+    });
 }
-
 
 function remplazarProductoEnOrden(obj) {
     // obj.dataset.idOrden
@@ -367,7 +312,7 @@ function remplazarProductoEnOrden(obj) {
 
 
     } else {
-        alert("el id de la orden no es un id correcto");
+        alert("El ID enviado no es correcto, contacte con el administrador");
     }
 }
 
@@ -447,7 +392,7 @@ function liberarProductoOrden(obj) {
 
 
     } else {
-        alert("el id de la orden no es un id correcto");
+        alert("El ID enviado no es correcto, contacte con el administrador");
     }
 }
 
@@ -482,165 +427,30 @@ function realizarLiberacionDeProductoEnOrden(idOrden, idDetalleRequerimiento) {
 }
 
 
-function obtenerDataListaReservasConItemPorRegularizar(idDetalleRequerimiento) {
-    return new Promise(function (resolve, reject) {
-        $.ajax({
-            type: 'GET',
-            url: `reservas-con-item-por-regularizar/${idDetalleRequerimiento}`,
-            dataType: 'JSON',
-            success(response) {
-                resolve(response);
-            },
-            error: function (err) {
-                reject(err)
-            }
-        });
-    });
-}
-
-
-function listarReservasVinculadasAItemPorRegularizar(data) {
-    let btnRemplazarProductoEnReserva = '';
-    let btnLiberarProductoReserva = '';
-    let documentoVinculadosList = [];
-    if (data.length > 0) {
-        (data).forEach(element => {
-
-
-            if (element.guia_compra_detalle != null && element.guia_compra_detalle.length > 0) {
-                (element.guia_compra_detalle).forEach(guiaDetalle => {
-                    documentoVinculadosList.push('GC' + guiaDetalle.guia_compra.serie + '-' + guiaDetalle.guia_compra.numero);
-                });
-            }
-            if (element.transferencia_detalle != null && element.transferencia_detalle.length > 0) {
-                (element.transferencia_detalle).forEach(transDetalle => {
-                    documentoVinculadosList.push(transDetalle.transferencia.codigo);
-                });
-            }
-
-            if (element.estado == 1) {
-                btnRemplazarProductoEnReserva = `<button type="button" class="btn btn-warning btn-xs handleClickRemplazarProductoEnReserva" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-id-reserva="${element.id_reserva}" name="btnRemplazarProductoEnReserva" title="Remplazar producto en reserva"><i class="fas fa-paint-roller fa-sm"></i></button>`;
-                btnLiberarProductoReserva = `<button type="button" class="btn btn-success btn-xs handleClickLiberarProductoReserva" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-id-reserva="${element.id_reserva}" name="btnLiberarProductoReserva" title="Liberar producto"><i class="fas fa-dove fa-sm"></i></button>`;
-            } else {
-                btnRemplazarProductoEnReserva = '';
-                btnLiberarProductoReserva = '';
-            }
 
 
 
-            document.querySelector("tbody[id='bodylistaReservasDeItem']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
-            <td>${element.codigo ?? '(Sin código generado)'}</td>
-            <td>${element.producto.codigo}</td>
-            <td>${element.producto.part_number}</td>
-            <td>${element.producto.descripcion}</td>
-            <td>${element.stock_comprometido}</td>
-            <td>${element.almacen.descripcion}</td>
-            <td>${documentoVinculadosList.join('<br>')}</td>
-            <td>${element.id_producto > 0 ? ('<div style="display:flex;">' + btnRemplazarProductoEnReserva + btnLiberarProductoReserva + '</div>') : '(MAPEO REQUERIDO)'}</td>
-            </tr>`);
-        });
-    } else {
-        document.querySelector("tbody[id='bodylistaReservasDeItem']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
-        <td colspan="6" style="text-align:center;">(Sin data)</td>
-
-        </tr>`);
-    }
-}
 
 
-function remplazarProductoEnReserva(obj) {
+
+
+
+
+function anularReserva(obj) {
     if (obj.dataset.idReserva > 0) {
         Swal.fire({
-            title: 'Esta seguro que desea remplazar el producto del requerimiento en el producto en la reserva?',
+            title: 'Esta seguro que desea anular la reserva?',
             text: "No podrás revertir esto.",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
             cancelButtonText: 'Cancelar',
-            confirmButtonText: 'Si, remplazar'
+            confirmButtonText: 'Si, anular'
 
         }).then((result) => {
             if (result.isConfirmed) {
-                realizarRemplazoDeProductoEnReserva(obj.dataset.idReserva, obj.dataset.idDetalleRequerimiento).then((res) => {
-                    // console.log(res);
-                    if (res.status == 200) {
-                        Lobibox.notify('success', {
-                            title: false,
-                            size: 'mini',
-                            rounded: true,
-                            sound: false,
-                            delayIndicator: false,
-                            msg: res.mensaje
-                        });
-                        obj.closest('tr').remove();
-                    } else {
-                        Lobibox.notify('warning', {
-                            title: false,
-                            size: 'large',
-                            rounded: true,
-                            sound: false,
-                            delayIndicator: false,
-                            msg: res.mensaje
-                        });
-                    }
-                }).catch((err) => {
-                    console.log(err)
-                })
-            }
-        })
-
-
-    } else {
-        alert("el id de la orden no es un id correcto");
-    }
-}
-
-
-function realizarRemplazoDeProductoEnReserva(idReserva, idDetalleRequerimiento) {
-    return new Promise(function (resolve, reject) {
-        $.ajax({
-            type: 'POST',
-            url: `realizar-remplazo-de-producto-en-reserva`,
-            dataType: 'JSON',
-            data: { 'idReserva': idReserva, 'idDetalleRequerimiento': idDetalleRequerimiento },
-            success(response) {
-                resolve(response);
-            },
-            fail: (jqXHR, textStatus, errorThrown) => {
-                console.log(jqXHR);
-                console.log(textStatus);
-                console.log(errorThrown);
-
-                Swal.fire(
-                    '',
-                    'Lo sentimos hubo un error en el servidor al intentar remplazar el producto, por favor vuelva a intentarlo',
-                    'error'
-                );
-            },
-            error: function (err) {
-                console.log(err);
-                reject(err)
-            }
-        });
-    });
-}
-
-function liberarProductoReserva(obj) {
-    if (obj.dataset.idReserva > 0) {
-        Swal.fire({
-            title: 'Esta seguro que desea liberar el producto de la reserva?',
-            text: "No podrás revertir esto.",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            cancelButtonText: 'Cancelar',
-            confirmButtonText: 'Si, liberar'
-
-        }).then((result) => {
-            if (result.isConfirmed) {
-                realizarLiberacionProductoReserva(obj.dataset.idReserva, obj.dataset.idDetalleRequerimiento).then((res) => {
+                realizarAnularReserva(obj.dataset.idReserva, obj.dataset.idDetalleRequerimiento).then((res) => {
                     // console.log(res);
                     if (res.status == 200) {
                         Lobibox.notify('success', {
@@ -671,16 +481,16 @@ function liberarProductoReserva(obj) {
 
 
     } else {
-        alert("el id de la reserva no es un id correcto");
+        alert("El ID enviado no es correcto, contacte con el administrador");
     }
 }
 
-function realizarLiberacionProductoReserva(idReserva, idDetalleRequerimiento) {
+function realizarAnularReserva(idReserva, idDetalleRequerimiento) {
 
     return new Promise(function (resolve, reject) {
         $.ajax({
             type: 'POST',
-            url: `realizar-liberacion-de-producto-en-reserva`,
+            url: `realizar-anular-reserva`,
             dataType: 'JSON',
             data: { 'idReserva': idReserva, 'idDetalleRequerimiento': idDetalleRequerimiento },
             success(response) {
@@ -707,7 +517,7 @@ function realizarLiberacionProductoReserva(idReserva, idDetalleRequerimiento) {
 function anularItemDeOrden(obj) {
     if (obj.dataset.idOrden > 0) {
         Swal.fire({
-            title: `Esta seguro que desea anular el item ${obj.dataset.codigoProducto?obj.dataset.codigoProducto:obj.dataset.partNumber} de la orden ${obj.dataset.codigoOrden}?`,
+            title: `Esta seguro que desea anular el item ${obj.dataset.codigoProducto ? obj.dataset.codigoProducto : obj.dataset.partNumber} de la orden ${obj.dataset.codigoOrden}?`,
             text: "No podrás revertir esto.",
             icon: 'warning',
             showCancelButton: true,
@@ -718,7 +528,7 @@ function anularItemDeOrden(obj) {
 
         }).then((result) => {
             if (result.isConfirmed) {
-                realizarAnularItemDeOrden(obj.dataset.idOrden,obj.dataset.idDetalleRequerimiento).then((res) => {
+                realizarAnularItemDeOrden(obj.dataset.idOrden, obj.dataset.idDetalleRequerimiento).then((res) => {
                     console.log(res);
                     if (res.status == 200) {
                         Lobibox.notify('success', {
@@ -748,18 +558,18 @@ function anularItemDeOrden(obj) {
 
 
     } else {
-        alert("El id de la orden no es valido");
+        alert("El ID enviado no es correcto, contacte con el administrador");
     }
 }
 
-function realizarAnularItemDeOrden(idOrden,idDetalleRequerimiento) {
+function realizarAnularItemDeOrden(idOrden, idDetalleRequerimiento) {
 
     return new Promise(function (resolve, reject) {
         $.ajax({
             type: 'POST',
             url: `anular-item-orden`,
             dataType: 'JSON',
-            data:{'idOrden':idOrden, 'idDetalleRequerimiento':idDetalleRequerimiento},
+            data: { 'idOrden': idOrden, 'idDetalleRequerimiento': idDetalleRequerimiento },
             success(response) {
                 resolve(response);
             },
@@ -783,23 +593,27 @@ function realizarAnularItemDeOrden(idOrden,idDetalleRequerimiento) {
 }
 
 
-function finalizarRegularizacion(){
-
-    if ( document.querySelector("div[id='modal-por-regularizar'] input[name='idRequerimiento']").value > 0) {
+function remplazarProductoComprometidoEnTodaOrden(obj) {
+    if (obj.dataset.idDetalleRequerimiento > 0) {
         Swal.fire({
-            title: `Esta seguro que desea finalizar la regularización del requerimiento?`,
+            title: 'Esta seguro que desea remplazar el producto en todas las ordenes?',
             text: "No podrás revertir esto.",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
             cancelButtonText: 'Cancelar',
-            confirmButtonText: 'Si, finalizar'
+            confirmButtonText: 'Si, remplazar'
 
         }).then((result) => {
             if (result.isConfirmed) {
-                realizarFinalizadoPorRegularizarRequerimiento( document.querySelector("div[id='modal-por-regularizar'] input[name='idRequerimiento']").value).then((res) => {
-                    console.log(res);
+                // let regularizacionConOrdenResueltoParaDetalleRequerimiento=JSON.parse(sessionStorage.getItem('regularizacionConOrdenResueltoParaDetalleRequerimiento'))
+                // regularizacionConOrdenResueltoParaDetalleRequerimiento.push(obj.dataset.idDetalleRequerimiento)
+                // sessionStorage.setItem('regularizacionConOrdenResueltoParaDetalleRequerimiento', JSON.stringify(regularizacionConOrdenResueltoParaDetalleRequerimiento));
+                // sessionStorage.removeItem('regularizacionConOrdenResueltoParaDetalleRequerimiento');
+
+                realizarRemplazarProductoComprometidoEnTodaOrden(obj.dataset.idDetalleRequerimiento).then((res) => {
+                    // console.log(res);
                     if (res.status == 200) {
                         Lobibox.notify('success', {
                             title: false,
@@ -807,35 +621,50 @@ function finalizarRegularizacion(){
                             rounded: true,
                             sound: false,
                             delayIndicator: false,
-                            msg: res.mensaje.toString()
+                            msg: res.mensaje
                         });
+                        construirTablaPorRegularizar(document.querySelector("div[id='modal-por-regularizar'] input[name='idRequerimiento']").value);
+                        // $("#listaItemsPorRegularizar").DataTable().ajax.reload(null, false);
 
-                        $('#modal-por-regularizar').modal('hide');
+                        if (res.cambiaEstadoRequerimiento == true) {
+                            // trPorRegularizarSeleccionar.querySelector("i[class~='fa-exclamation-triangle']").remove()
+                            $('#modal-por-regularizar').modal('hide');
 
-                        if(trPorRegularizarSeleccionar){
-                            trPorRegularizarSeleccionar.querySelector("input[type='checkbox']").setAttribute('data-estado',res.data['id_estado_requerimiento']);
-                            trPorRegularizarSeleccionar.querySelector("span[class~='estadoRequerimiento']").setAttribute('data-estado',res.data['descripcion_estado_requerimiento']);
-                            trPorRegularizarSeleccionar.querySelector("button[name='btnOpenModalAtenderConAlmacen']")?trPorRegularizarSeleccionar.querySelector("button[name='btnOpenModalAtenderConAlmacen']").removeAttribute('disabled'):false;
-                            trPorRegularizarSeleccionar.querySelector("button[name='btnOpenModalAtenderConAlmacen']")?trPorRegularizarSeleccionar.querySelector("button[name='btnCrearOrdenCompraPorRequerimiento']").removeAttribute('disabled'):false;
+                            let timerInterval
+                            Swal.fire({
+                                title: 'Regularización finalizada',
+                                html: '<h5>Se actualizará el listado en <br> <b></b> milisegundos. </h5>',
+                                timer: 3000,
+                                timerProgressBar: true,
+                                didOpen: () => {
+                                    Swal.showLoading()
+                                    const b = Swal.getHtmlContainer().querySelector('b')
+                                    timerInterval = setInterval(() => {
+                                        b.textContent = Swal.getTimerLeft()
+                                    }, 100)
+                                },
+                                willClose: () => {
+                                    clearInterval(timerInterval)
+                                }
+                            }).then((result) => {
+                                /* Read more about handling dismissals below */
+                                if (result.dismiss === Swal.DismissReason.timer) {
+                                    $("#listaRequerimientosPendientes").DataTable().ajax.reload(null, false);
+                                }
+                            })
+
                         }
 
-                        $tablaListaRequerimientosPendientes.ajax.reload( null, false );
-                        
-                        // const requerimientoPendienteModel = new RequerimientoPendienteModel();
-                        // const requerimientoPendienteController = new RequerimientoPendienteCtrl(requerimientoPendienteModel);
-                        // const requerimientoPendienteView = new RequerimientoPendienteView(requerimientoPendienteController);
-                        // requerimientoPendienteView.renderRequerimientoPendienteList('SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO');
-
+                        // obj.closest('tr').remove();
                     } else {
                         Lobibox.notify('warning', {
                             title: false,
-                            size: 'mini',
+                            size: 'large',
                             rounded: true,
                             sound: false,
                             delayIndicator: false,
-                            msg: res.mensaje.toString()
+                            msg: res.mensaje
                         });
-
                     }
                 }).catch((err) => {
                     console.log(err)
@@ -845,18 +674,16 @@ function finalizarRegularizacion(){
 
 
     } else {
-        alert("El id no es valido");
+        alert("El ID enviado no es correcto, contacte con el administrador");
     }
 }
-
-function realizarFinalizadoPorRegularizarRequerimiento(idRequerimiento) {
-
+function realizarRemplazarProductoComprometidoEnTodaOrden(idDetalleRequerimiento) {
     return new Promise(function (resolve, reject) {
         $.ajax({
             type: 'POST',
-            url: `finalizar-regularizacion-de-requerimiento`,
+            url: `realizar-remplazo-de-producto-comprometido-en-toda-orden`,
             dataType: 'JSON',
-            data:{'idRequerimiento':idRequerimiento},
+            data: { 'idDetalleRequerimiento': idDetalleRequerimiento },
             success(response) {
                 resolve(response);
             },
@@ -867,7 +694,7 @@ function realizarFinalizadoPorRegularizarRequerimiento(idRequerimiento) {
 
                 Swal.fire(
                     '',
-                    'Lo sentimos hubo un error en el servidor al intentar finalizar la regularización del requerimiento, por favor vuelva a intentarlo',
+                    'Lo sentimos hubo un error en el servidor al intentar remplazar todo los producto comprometidos, por favor vuelva a intentarlo',
                     'error'
                 );
             },
@@ -877,4 +704,327 @@ function realizarFinalizadoPorRegularizarRequerimiento(idRequerimiento) {
             }
         });
     });
+}
+
+function liberarProductoComprometidoEnTodaOrden(obj) {
+    if (obj.dataset.idDetalleRequerimiento > 0) {
+        Swal.fire({
+            title: 'Esta seguro que desea liberar el producto en todas las ordenes?',
+            text: "No podrás revertir esto.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: 'Cancelar',
+            confirmButtonText: 'Si, liberar'
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                realizarLiberarTodoProductoComprometidoEnTodaOrden(obj.dataset.idDetalleRequerimiento).then((res) => {
+                    // console.log(res);
+                    if (res.status == 200) {
+                        Lobibox.notify('success', {
+                            title: false,
+                            size: 'mini',
+                            rounded: true,
+                            sound: false,
+                            delayIndicator: false,
+                            msg: res.mensaje
+                        });
+                        construirTablaPorRegularizar(document.querySelector("div[id='modal-por-regularizar'] input[name='idRequerimiento']").value);
+                        if (res.cambiaEstadoRequerimiento == true) {
+                            // trPorRegularizarSeleccionar.querySelector("i[class~='fa-exclamation-triangle']").remove()
+                            $('#modal-por-regularizar').modal('hide');
+                            let timerInterval
+                            Swal.fire({
+                                title: 'Regularización finalizada',
+                                html: '<h5>Se actualizará el listado en <br> <b></b> milisegundos. </h5>',
+                                timer: 3000,
+                                timerProgressBar: true,
+                                didOpen: () => {
+                                    Swal.showLoading()
+                                    const b = Swal.getHtmlContainer().querySelector('b')
+                                    timerInterval = setInterval(() => {
+                                        b.textContent = Swal.getTimerLeft()
+                                    }, 100)
+                                },
+                                willClose: () => {
+                                    clearInterval(timerInterval)
+                                }
+                            }).then((result) => {
+                                /* Read more about handling dismissals below */
+                                if (result.dismiss === Swal.DismissReason.timer) {
+                                    $("#listaRequerimientosPendientes").DataTable().ajax.reload(null, false);
+                                }
+                            })
+                        }
+                    } else {
+                        Lobibox.notify('warning', {
+                            title: false,
+                            size: 'large',
+                            rounded: true,
+                            sound: false,
+                            delayIndicator: false,
+                            msg: res.mensaje
+                        });
+                    }
+                }).catch((err) => {
+                    console.log(err)
+                })
+            }
+        })
+
+
+    } else {
+        alert("El ID enviado no es correcto, contacte con el administrador");
+    }
+}
+function realizarLiberarTodoProductoComprometidoEnTodaOrden(idDetalleRequerimiento) {
+    return new Promise(function (resolve, reject) {
+        $.ajax({
+            type: 'POST',
+            url: `realizar-liberacion-de-producto-comprometido-en-toda-orden`,
+            dataType: 'JSON',
+            data: { 'idDetalleRequerimiento': idDetalleRequerimiento },
+            success(response) {
+                resolve(response);
+            },
+            fail: (jqXHR, textStatus, errorThrown) => {
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+
+                Swal.fire(
+                    '',
+                    'Lo sentimos hubo un error en el servidor al intentar liberar el item en todas la ordenes, por favor vuelva a intentarlo',
+                    'error'
+                );
+            },
+            error: function (err) {
+                console.log(err);
+                reject(err)
+            }
+        });
+    });
+}
+
+function anularItemComprometidoEnTodaOrdenYReserva(obj) {
+    if (obj.dataset.idDetalleRequerimiento > 0) {
+        Swal.fire({
+            title: 'Esta seguro que desea anular el producto en todas las ordenes y reservas?',
+            text: "No podrás revertir esto.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: 'Cancelar',
+            confirmButtonText: 'Si, anular'
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                realizarAnularProductoComprometidoEnTodaOrdenYReservas(obj.dataset.idDetalleRequerimiento).then((res) => {
+                    // console.log(res);
+                    if (res.status == 200) {
+                        Lobibox.notify('success', {
+                            title: false,
+                            size: 'mini',
+                            rounded: true,
+                            sound: false,
+                            delayIndicator: false,
+                            msg: res.mensaje
+                        });
+                        construirTablaPorRegularizar(document.querySelector("div[id='modal-por-regularizar'] input[name='idRequerimiento']").value);
+                        if (res.cambiaEstadoRequerimiento == true) {
+                            // trPorRegularizarSeleccionar.querySelector("i[class~='fa-exclamation-triangle']").remove()
+                            $('#modal-por-regularizar').modal('hide');
+
+                            let timerInterval
+                            Swal.fire({
+                                title: 'Regularización finalizada',
+                                html: '<h5>Se actualizará el listado en <br> <b></b> milisegundos. </h5>',
+                                timer: 3000,
+                                timerProgressBar: true,
+                                didOpen: () => {
+                                    Swal.showLoading()
+                                    const b = Swal.getHtmlContainer().querySelector('b')
+                                    timerInterval = setInterval(() => {
+                                        b.textContent = Swal.getTimerLeft()
+                                    }, 100)
+                                },
+                                willClose: () => {
+                                    clearInterval(timerInterval)
+                                }
+                            }).then((result) => {
+                                /* Read more about handling dismissals below */
+                                if (result.dismiss === Swal.DismissReason.timer) {
+                                    $("#listaRequerimientosPendientes").DataTable().ajax.reload(null, false);
+                                }
+                            })
+                        }
+                        // obj.closest('tr').remove();
+                    } else {
+                        Lobibox.notify('warning', {
+                            title: false,
+                            size: 'large',
+                            rounded: true,
+                            sound: false,
+                            delayIndicator: false,
+                            msg: res.mensaje
+                        });
+                    }
+                }).catch((err) => {
+                    console.log(err)
+                })
+            }
+        })
+
+
+    } else {
+        alert("El ID enviado no es correcto, contacte con el administrador");
+    }
+}
+function realizarAnularProductoComprometidoEnTodaOrdenYReservas(idDetalleRequerimiento) {
+    return new Promise(function (resolve, reject) {
+        $.ajax({
+            type: 'POST',
+            url: `realizar-anular-item-en-toda-orden-y-reservas`,
+            dataType: 'JSON',
+            data: { 'idDetalleRequerimiento': idDetalleRequerimiento },
+            success(response) {
+                resolve(response);
+            },
+            fail: (jqXHR, textStatus, errorThrown) => {
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+
+                Swal.fire(
+                    '',
+                    'Lo sentimos hubo un error en el servidor al intentar anular el item en todas la ordenes/reservas, por favor vuelva a intentarlo',
+                    'error'
+                );
+            },
+            error: function (err) {
+                console.log(err);
+                reject(err)
+            }
+        });
+    });
+}
+
+function desplegarVerDetalleOrdenReserva(obj) {
+    let tr = obj.closest('tr');
+    var row = $listaItemsPorRegularizar.row(tr);
+    var id = obj.dataset.idDetalleRequerimiento;
+    if (row.child.isShown()) {
+        //  This row is already open - close it
+        row.child.hide();
+        tr.classList.remove('shown');
+    }
+    else {
+        // Open this row
+        //    row.child( format(iTableCounter, id) ).show();
+        this.buildFormatListaItemsPorRegularizar(obj, iTableCounter, id, row);
+        tr.classList.add('shown');
+        // try datatable stuff
+        oInnerTable = $('#listaItemsPorRegularizar_' + iTableCounter).dataTable({
+            //    data: sections, 
+            autoWidth: true,
+            deferRender: true,
+            info: false,
+            lengthChange: false,
+            ordering: false,
+            paging: false,
+            scrollX: false,
+            scrollY: false,
+            searching: false,
+            columns: [
+            ]
+        });
+        iTableCounter = iTableCounter + 1;
+    }
+}
+
+function obtenerDetalleOrdenYReserva(idDetalleRequerimiento) {
+    return new Promise(function (resolve, reject) {
+        $.ajax({
+            type: 'GET',
+            url: `items-orden-items-reserva-por-detalle-requerimiento/${idDetalleRequerimiento}`,
+            dataType: 'JSON',
+            success(response) {
+                resolve(response.data);
+            },
+            error: function (err) {
+                reject(err)
+            }
+        });
+    });
+}
+
+function buildFormatListaItemsPorRegularizar(obj, table_id, id, row) {
+    obj.setAttribute('disabled', true);
+
+    obtenerDetalleOrdenYReserva(id).then((res) => {
+        obj.removeAttribute('disabled');
+        construirDetalleListaOrdenYReserva(table_id, row, res);
+    }).catch((err) => {
+        console.log(err)
+    })
+}
+
+function construirDetalleListaOrdenYReserva(table_id, row, response) {
+    var html = '';
+    // console.log(response);
+    if (response.length > 0) {
+
+        response.forEach(function (element) {
+            let botoneraDetalleFila = '';
+            if (element.id_detalle_orden > 0) {
+                botoneraDetalleFila += `<button type="button" class="btn btn-default btn-xs handleClickRemplazarProductoEnOrden" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-id-detalle-orden="${element.id_detalle_orden}" name="btnRemplazarProductoEnOrden" title="Remplazar producto en orden"><i class="fas fa-paint-roller fa-sm"></i></button>`;
+                botoneraDetalleFila += `<button type="button" class="btn btn-default btn-xs handleClickLiberarProductoOrden" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-id-detalle-orden="${element.id_detalle_orden}" name="btnLiberarProductoOrden" title="Liberar producto de orden"><i class="fas fa-parachute-box fa-sm"></i></button>`;
+                botoneraDetalleFila += `<button type="button" class="btn btn-default btn-xs handleClickAnularItemDeOrden"  data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-id-detalle-orden="${element.id_detalle_orden}" name="btnAnularItemOrden" title="Anular item de orden"><i class="fas fa-ban fa-sm"></i></button>`;
+            }
+            if (element.id_reserva > 0) {
+                botoneraDetalleFila = `<button type="button" class="btn btn-default btn-xs handleClickAnularReserva" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-id-reserva="${element.id_reserva}" name="btnAnularReserva" title="Anular reserva"><i class="far fa-times-circle fa-sm"></i></button>`;
+            }
+
+            html += `<tr>
+                    <td style="border: none; text-align:center;">${element.codigo_documento != null ? element.codigo_documento : ''}</td>
+                    <td style="border: none; text-align:left;">${element.part_number != null ? element.part_number : ''}</td>
+                    <td style="border: none; text-align:left;">${element.descripcion != null ? element.descripcion : ''}</td>
+                    <td style="border: none; text-align:center;">${element.unidad_medida != null ? element.unidad_medida : ''}</td>
+                    <td style="border: none; text-align:center;">${element.cantidad > 0 ? element.cantidad : ''}</td>
+                    <td style="border: none; text-align:center;">${element.estado != null ? element.estado : ''}</td>
+                    <td style="border: none; text-align:left;" data-id-detalle-orden="${element.id_detalle_orden}" data-id-reserva="${element.id_reserva}">
+                        <div class="btn-group">
+                            ${botoneraDetalleFila} 
+                        </div>
+                    </td>
+                    </tr>`;
+
+        });
+        var tabla = `<table class="table table-condensed table-bordered" 
+            id="detalle_${table_id}">
+            <thead style="color: black;background-color: #c7cacc;">
+                <tr>
+                    <th style="border: none; text-align:center;">Cod. documento</th>
+                    <th style="border: none; text-align:center;">Part number</th>
+                    <th style="border: none; text-align:center;">Descripcion</th>
+                    <th style="border: none; text-align:center;">Unidad medida</th>
+                    <th style="border: none; text-align:center;">Cantidad</th>
+                    <th style="border: none; text-align:center;">Estado</th>
+                    <th style="border: none; text-align:center;">Acción</th>
+                </tr>
+            </thead>
+            <tbody style="background: #e7e8ea;">${html}</tbody>
+            </table>`;
+    } else {
+        var tabla = `<table class="table table-sm" style="border: none;" 
+            id="detalle_${table_id}">
+            <tbody>
+                <tr><td>No hay registros para mostrar</td></tr>
+            </tbody>
+            </table>`;
+    }
+    row.child(tabla).show();
 }

@@ -10,6 +10,7 @@
                 <input type="hidden" name="idProducto">
                 <input type="hidden" name="idRequerimiento">
                 <input type="hidden" name="idDetalleRequerimiento">
+                <input type="hidden" name="idUnidadMedida">
                 <div class="row">
                     <div class="col-md-12">
                         <h4 style="display:flex;justify-content: space-between;">Producto</h4>

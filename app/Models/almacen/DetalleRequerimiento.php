@@ -107,7 +107,9 @@ class DetalleRequerimiento extends Model
 
         $detalleRequerimiento = DetalleRequerimiento::where('id_detalle_requerimiento',$idDetalleRequerimiento)->first();
         
-        if(($cantidadAtendidaConOrden==0) && ($cantidadAtendidaConAlmacen == $detalleRequerimiento->cantidad)){
+        if(($cantidadAtendidaConOrden==0) && ($cantidadAtendidaConAlmacen == 0)){
+            $detalleRequerimiento->estado=1; //elaborado
+        }elseif(($cantidadAtendidaConOrden==0) && ($cantidadAtendidaConAlmacen == $detalleRequerimiento->cantidad)){
             $detalleRequerimiento->estado=28; //almacen total
         }elseif($cantidadAtendidaConOrden + $cantidadAtendidaConAlmacen >= $detalleRequerimiento->cantidad){
             $detalleRequerimiento->estado=5; //antendido total

@@ -2,6 +2,7 @@
 
 namespace App\Models\Almacen;
 
+use App\Models\Administracion\Estado;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
@@ -10,6 +11,18 @@ class Reserva extends Model
     protected $table = 'almacen.alm_reserva';
     protected $primaryKey = 'id_reserva';
     public $timestamps = false;
+    protected $appends = ['nombre_estado'];
+
+
+
+    public function getNombreEstadoAttribute()
+    {
+        $estado = Estado::join('almacen.alm_reserva', 'adm_estado_doc.id_estado_doc', '=', 'alm_reserva.estado')
+        ->where('alm_reserva.id_reserva', $this->attributes['id_reserva'])
+        ->first()->estado_doc;
+        return $estado;
+     }
+    
 
     public static function crearCodigo(){
         $num = Reserva::obtenerCantidadRegistros();
@@ -26,6 +39,9 @@ class Reserva extends Model
 
     }
 
+    public function unidad_medida(){
+        return $this->hasone('App\Models\Almacen\UnidadMedida','id_unidad_medida','id_unidad_medida');
+    }
     public function almacen(){
         return $this->hasone('App\Models\Almacen\Almacen','id_almacen','id_almacen_reserva');
     }

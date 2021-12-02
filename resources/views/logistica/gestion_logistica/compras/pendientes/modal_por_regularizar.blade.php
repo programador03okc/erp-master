@@ -5,7 +5,7 @@
             <form id="form-por-regularizar">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
-                    <h3 class="modal-title">Por regularlizar</h3>
+                    <h3 class="modal-title">Por regularizar</h3>
                 </div>
                 <div class="modal-body">
                     <div class="row">
@@ -20,17 +20,17 @@
                                             <th style="text-align:center;" colspan="4">Requerimiento <span id="codigo_requerimiento"></span></th>
                                             <th style="text-align:center;" rowspan="2">Cod. Ordenes</th>
                                             <th style="text-align:center;" rowspan="2">Cod. Reservas</th>
-                                            <th style="text-align:center;" rowspan="2">Acción</th>
+                                            <th style="text-align:center; width: 5%;" rowspan="2">Acción</th>
                                         </tr>
                                         <tr style="background: grey;">
                                             <th style="width: 5%; text-align:center;">Part number</th>
-                                            <th style="width: 20%; text-align:center;">Descripción</th>
-                                            <th style="width: 10%; text-align:center;">Cantidad</th>
-                                            <th style="width: 10%; text-align:center; border-right: dashed; border-right-color: #ccc;">Precio U.</th>
+                                            <th style="width: 30%; text-align:left;">Descripción</th>
+                                            <th style="width: 5%; text-align:center;">Cantidad</th>
+                                            <th style="width: 5%; text-align:center; border-right: dashed; border-right-color: #ccc;">Precio U.</th>
                                             <th style="width: 5%; text-align:center;">Part number</th>
-                                            <th style="width: 20%; text-align:center;">Descripción</th>
-                                            <th style="width: 10%; text-align:center;">Cantidad</th>
-                                            <th style="width: 10%; text-align:center;">Precio U.</th>
+                                            <th style="width: 30%; text-align:left;">Descripción</th>
+                                            <th style="width: 5%; text-align:center;">Cantidad</th>
+                                            <th style="width: 5%; text-align:center;">Precio U.</th>
                                         </tr>
                                     </thead>
                                     <tbody id="bodylistaItemsPorRegularizar"></tbody>
@@ -42,7 +42,7 @@
                 <div class="modal-footer">
                     <div class="row">
                         <div class="col-md-12">
-                            <button type="button" class="btn btn-sm btn-success handleClickFinalizarRegularizacion" >Finalizar regularización</button>
+                            <button type="button" class="btn btn-sm btn-success handleClickLevantarRegularizacion" >Levantar regularización</button>
                             <button type="button" class="btn btn-sm btn-primary" aria-label="close" data-dismiss="modal">Cerrar</button>
 
                         </div>
