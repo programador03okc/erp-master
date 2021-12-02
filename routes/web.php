@@ -779,16 +779,16 @@ Route::group(['middleware' => ['auth']], function () {
 
 					Route::get('mostrar_tipos_clasificacion/{id}', 'Almacen\Catalogo\TipoProductoController@mostrar_tipos_clasificacion');
 					Route::get('por-regularizar/{id}', 'ComprasPendientesController@listarPorRegularizar');
-					Route::get('ordenes-con-item-por-regularizar/{id}', 'ComprasPendientesController@listaOrdenesConItemPorRegularizar');
+					Route::post('realizar-remplazo-de-producto-comprometido-en-toda-orden', 'ComprasPendientesController@realizarRemplazoDeProductoEnTodaOrden');
 					Route::post('realizar-remplazo-de-producto-en-orden', 'ComprasPendientesController@realizarRemplazoDeProductoEnOrden');
+					Route::post('realizar-liberacion-de-producto-comprometido-en-toda-orden', 'ComprasPendientesController@realizarLiberacionDeProductoEnTodaOrden');
 					Route::post('realizar-liberacion-de-producto-en-orden', 'ComprasPendientesController@realizarLiberacionDeProductoEnOrden');
-					Route::get('reservas-con-item-por-regularizar/{id}', 'ComprasPendientesController@listaReservasConItemPorRegularizar');
-					Route::post('realizar-remplazo-de-producto-en-reserva', 'ComprasPendientesController@realizarRemplazoDeProductoEnReserva');
-					Route::post('realizar-liberacion-de-producto-en-reserva', 'ComprasPendientesController@realizarLiberacionDeProductoEnReserva');
+					Route::post('realizar-anular-item-en-toda-orden-y-reservas', 'ComprasPendientesController@realizarAnularItemEnTodaOrdenYReservas');
 					Route::post('anular-item-orden', 'OrdenController@anularItemOrden')->name('anular-item-orden');
+					Route::post('realizar-anular-reserva', 'ComprasPendientesController@realizarAnularReserva');
 					Route::get('imprimir_ingreso/{id}', 'Almacen\Movimiento\IngresoPdfController@imprimir_ingreso');
-					Route::post('finalizar-regularizacion-de-requerimiento', 'ComprasPendientesController@finalizarRegularizacionRequerimiento')->name('finalizar-regularizacion-de-requerimiento');
-
+ 					Route::get('items-orden-items-reserva-por-detalle-requerimiento/{idDetalleRequerimiento}', 'ComprasPendientesController@itemsOrdenItemsReservaPorDetalleRequerimiento');
+					
 					Route::get('finalizar-cuadro/{id}', 'OrdenController@finalizarCuadroPresupuesto');
 
 					Route::get('mostrar-archivos-adjuntos-detalle-requerimiento/{id_detalle_requerimiento}', 'Logistica\RequerimientoController@mostrarArchivosAdjuntos');

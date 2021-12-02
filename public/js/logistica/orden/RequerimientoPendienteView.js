@@ -380,7 +380,7 @@ class RequerimientoPendienteView {
                 },
                 {
                     'render': function (data, type, row) {
-                        return `${row.estado == 38 ? '<i class="fas fa-exclamation-triangle orange handleClickAbrirModalPorRegularizar" style="cursor:pointer;" title="Por regularizar" data-id-requerimiento="' + row.id_requerimiento + '" ></i> &nbsp;' : ''}<a href="/necesidades/requerimiento/elaboracion/index?id=${row.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${row.codigo}</a> ${row.tiene_transformacion == true ? '<i class="fas fa-random text-danger" title="Con transformación"></i>' : ''} `;
+                        return `${row.estado == 38 ? '<i class="fas fa-exclamation-triangle '+(row.count_pendientes>0?'red':'orange')+' handleClickAbrirModalPorRegularizar" style="cursor:pointer;" title="Por regularizar'+(row.count_pendientes>0?'(Tiene '+row.count_pendientes+' item(s) pendientes por mapear)':'')+'" data-id-requerimiento="' + row.id_requerimiento + '" ></i> &nbsp;' : ''}<a href="/necesidades/requerimiento/elaboracion/index?id=${row.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${row.codigo}</a> ${row.tiene_transformacion == true ? '<i class="fas fa-random text-danger" title="Con transformación"></i>' : ''} `;
                     }, targets: 2
                 },
                 {
@@ -427,7 +427,6 @@ class RequerimientoPendienteView {
                                 btnVerAdjuntos = '<button type="button" class="btn btn-default btn-xs handleClickVerTodoAdjuntos" title="Ver adjuntos" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo="' + row.codigo + '"  ><i class="fas fa-folder"></i></button>';
 
                             }
-                            // if(row.count_pendientes ==0){
                                 if (row.count_mapeados > 0) {
                                 if (row.estado == 38 || row.estado ==39 ) { // estado por regularizar | estado  en pausa
 
@@ -1395,10 +1394,12 @@ class RequerimientoPendienteView {
     }
 
     llenarModalNuevaReserva(data) {
+        // console.log(data);
         if (data.id_producto > 0) {
             document.querySelector("form[id='form-nueva-reserva'] input[name='idProducto']").value = data.id_producto;
             document.querySelector("form[id='form-nueva-reserva'] input[name='idRequerimiento']").value = data.id_requerimiento;
             document.querySelector("form[id='form-nueva-reserva'] input[name='idDetalleRequerimiento']").value = data.id_detalle_requerimiento;
+            document.querySelector("form[id='form-nueva-reserva'] input[name='idUnidadMedida']").value = data.id_unidad_medida;
             document.querySelector("form[id='form-nueva-reserva'] label[id='partNumber']").textContent = data.producto.part_number != null ? data.producto.part_number : (data.part_number != null ? data.part_number : '');
             document.querySelector("form[id='form-nueva-reserva'] label[id='descripcion']").textContent = data.producto.descripcion != null ? data.producto.descripcion : (data.descripcion != null ? data.descripcion : '');
             document.querySelector("form[id='form-nueva-reserva'] label[id='cantidad']").textContent = data.cantidad;

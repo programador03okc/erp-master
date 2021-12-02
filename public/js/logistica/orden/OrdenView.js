@@ -1278,7 +1278,7 @@ class OrdenView {
                         });
                     },
                     success: function (response) {
-                        // console.log(response);
+                        console.log(response);
                         if (response.id_orden_compra > 0) {
                             $("#wrapper-okc").LoadingOverlay("hide", true);
 
@@ -1290,6 +1290,21 @@ class OrdenView {
                                 delayIndicator: false,
                                 msg: `Orden ${response.codigo} creada.`
                             });
+                            
+                            if(response.status_migracion_softlink != null){
+                                
+                                $('[name=codigo_orden]').val(response.status_migracion_softlink.orden_softlink??"");
+
+                                Lobibox.notify(response.status_migracion_softlink.tipo, {
+                                    title: false,
+                                    size: 'mini',
+                                    rounded: true,
+                                    sound: false,
+                                    delayIndicator: false,
+                                    msg: response.status_migracion_softlink.mensaje
+                                });
+
+                            }
                             changeStateButton('guardar');
                             $('#form-crear-orden-requerimiento').attr('type', 'register');
                             changeStateInput('form-crear-orden-requerimiento', true);
@@ -1353,8 +1368,8 @@ class OrdenView {
                         });
                     },
                     success: function (response) {
-                        // console.log(response);
-                        if (response > 0) {
+                        console.log(response);
+                        if (response.id_orden_compra > 0) {
                             $("#wrapper-okc").LoadingOverlay("hide", true);
 
                             Lobibox.notify('success', {
@@ -1363,11 +1378,51 @@ class OrdenView {
                                 rounded: true,
                                 sound: false,
                                 delayIndicator: false,
-                                msg: `Orden actualizada`
+                                msg: `Orden ${response.codigo} actualizada`
                             });
+
+                            if(response.status_migracion_softlink != null){
+                                
+                                $('[name=codigo_orden]').val(response.status_migracion_softlink.orden_softlink??"");
+
+                                Lobibox.notify(response.status_migracion_softlink.tipo, {
+                                    title: false,
+                                    size: 'mini',
+                                    rounded: true,
+                                    sound: false,
+                                    delayIndicator: false,
+                                    msg: response.status_migracion_softlink.mensaje
+                                });
+
+                            }
+                            
                             changeStateButton('guardar');
                             $('#form-crear-orden-requerimiento').attr('type', 'register');
                             changeStateInput('form-crear-orden-requerimiento', true);
+                        }else{
+                            $("#wrapper-okc").LoadingOverlay("hide", true);
+
+                            Lobibox.notify('danger', {
+                                title: false,
+                                size: 'mini',
+                                rounded: true,
+                                sound: false,
+                                delayIndicator: false,
+                                msg: `Orden no se puedo actualizada`
+                            });
+
+                            if(response.status_migracion_softlink != null){
+                                
+                                Lobibox.notify(response.status_migracion_softlink.tipo, {
+                                    title: false,
+                                    size: 'mini',
+                                    rounded: true,
+                                    sound: false,
+                                    delayIndicator: false,
+                                    msg: response.status_migracion_softlink.mensaje
+                                });
+
+                            }
                         }
                     }
                 }).fail(function (jqXHR, textStatus, errorThrown) {
@@ -1662,21 +1717,40 @@ class OrdenView {
 
 
     anularOrden(id) {
-        this.ordenCtrl.anularOrden(id).then((res) => {
+        this.ordenCtrl.anularOrden(id).then((response) => {
+            $("#wrapper-okc").LoadingOverlay("hide", true);
+
             // console.log(res);
-            if (res.status == 200) {
+            if (response.status == 200) {
                 this.restablecerFormularioOrden();
                 // (res.mensaje).forEach(msj => {
-                Lobibox.notify(res.status == 200 ? 'success' : 'warning', {
+                Lobibox.notify(response.status == 200 ? 'success' : 'warning', {
                     title: false,
                     size: 'mini',
                     rounded: true,
                     sound: false,
                     delayIndicator: false,
-                    msg: res.mensaje.toString()
+                    msg: response.mensaje.toString()
                 });
                 // });
+
+                if(response.status_migracion_softlink != null){
+                                
+                    $('[name=codigo_orden]').val(response.status_migracion_softlink.orden_softlink??"");
+
+                    Lobibox.notify(response.status_migracion_softlink.tipo, {
+                        title: false,
+                        size: 'mini',
+                        rounded: true,
+                        sound: false,
+                        delayIndicator: false,
+                        msg: response.status_migracion_softlink.mensaje
+                    });
+
+                }
+
             } else {
+                $("#wrapper-okc").LoadingOverlay("hide", true);
 
                 Lobibox.notify('warning', {
                     title: false,
@@ -1684,11 +1758,26 @@ class OrdenView {
                     rounded: true,
                     sound: false,
                     delayIndicator: false,
-                    msg: res.mensaje.toString()
+                    msg: response.mensaje.toString()
                 });
-                console.log(res);
+                console.log(response);
+
+                if(response.status_migracion_softlink != null){
+                                
+                    Lobibox.notify(response.status_migracion_softlink.tipo, {
+                        title: false,
+                        size: 'mini',
+                        rounded: true,
+                        sound: false,
+                        delayIndicator: false,
+                        msg: response.status_migracion_softlink.mensaje
+                    });
+
+                }
+
             }
         }).catch((err) => {
+            $("#wrapper-okc").LoadingOverlay("hide", true);
             console.log(err)
             Swal.fire(
                 '',

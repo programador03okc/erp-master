@@ -9,4 +9,8 @@ class Producto extends Model
     protected $table = 'almacen.alm_prod';
     protected $primaryKey = 'id_producto';
     public $timestamps = false;
+
+    public function subcategoria(){
+        return $this->hasOne('App\Models\Almacen\Catalogo\SubCategoria','id_subcategoria','id_subcategoria');
+    }
 }
