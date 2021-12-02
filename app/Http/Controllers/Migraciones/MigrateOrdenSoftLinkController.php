@@ -260,7 +260,7 @@ class MigrateOrdenSoftLinkController extends Controller
                     $num_docu = $yy . $nro_mov;
 
                     $orden_softlink = $num_docu;
-                    $this->agregarOrden($mov_id, $cod_suc, $oc, $cod_docu, $num_docu, $fecha, $cod_auxi, $igv, $mon_impto, $tp_cambio);
+                    $this->agregarOrden($mov_id, $cod_suc, $oc, $cod_docu, $num_docu, $fecha, $cod_auxi, $igv, $mon_impto, $tp_cambio, $id_orden_compra);
 
                     $i = 0;
                     foreach ($detalles as $det) {
@@ -275,14 +275,6 @@ class MigrateOrdenSoftLinkController extends Controller
                 $soc = DB::connection('soft')->table('movimien')->where('mov_id', $mov_id_softlink)->first();
                 $sdet = DB::connection('soft')->table('detmov')->where('mov_id', $mov_id_softlink)->get();
 
-                //Actualiza la oc softlink eb agile
-                DB::table('logistica.log_ord_compra')
-                    ->where('id_orden_compra', $id_orden_compra)
-                    ->update([
-                        'codigo_softlink' => $orden_softlink, //($yy . '-' . $nro_mov),
-                        'id_softlink' => $mov_id_softlink
-                    ]);
-
                 $arrayRspta = array(
                     'tipo' => 'success',
                     'mensaje' => 'Se ' . ($oc->id_softlink !== null ? 'actualizó' : 'migró') . ' correctamente la OC Nro. ' . $orden_softlink . ' con id ' . $mov_id_softlink,
@@ -290,7 +282,6 @@ class MigrateOrdenSoftLinkController extends Controller
                     'ocSoftlink' => array('cabecera' => $soc, 'detalle' => $sdet),
                     'ocAgile' => array('cabecera' => $oc, 'detalle' => $detalles),
                 );
-                // }
             } else {
                 $arrayRspta = array(
                     'tipo' => 'warning',
@@ -307,7 +298,7 @@ class MigrateOrdenSoftLinkController extends Controller
         }
     }
 
-    public function agregarOrden($mov_id, $cod_suc, $oc, $cod_docu, $num_docu, $fecha, $cod_auxi, $igv, $mon_impto, $tp_cambio)
+    public function agregarOrden($mov_id, $cod_suc, $oc, $cod_docu, $num_docu, $fecha, $cod_auxi, $igv, $mon_impto, $tp_cambio, $id_orden_compra)
     {
         DB::connection('soft')->table('movimien')->insert(
             [
@@ -402,6 +393,13 @@ class MigrateOrdenSoftLinkController extends Controller
                 'placa' => ''
             ]
         );
+        //Actualiza la oc softlink eb agile
+        DB::table('logistica.log_ord_compra')
+            ->where('id_orden_compra', $id_orden_compra)
+            ->update([
+                'codigo_softlink' => $num_docu, //($yy . '-' . $nro_mov),
+                'id_softlink' => $mov_id
+            ]);
     }
 
     public function agregarDetalleOrden($det, $mov_id, $cod_docu, $num_docu, $fecha, $igv, $i)
