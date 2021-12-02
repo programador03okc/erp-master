@@ -137,8 +137,6 @@ class MigrateOrdenSoftLinkController extends Controller
                     ->orderBy('dfecha', 'desc')
                     ->first();
 
-                $orden_softlink = '';
-                $mov_id_softlink = '';
                 //si existe un id_softlink
                 if ($oc->id_softlink !== null) {
                     //obtiene oc softlink
@@ -164,9 +162,6 @@ class MigrateOrdenSoftLinkController extends Controller
                             );
                         } else {
                             //actualiza orden
-                            $orden_softlink = $oc_softlink->num_docu;
-                            $mov_id_softlink = $oc_softlink->mov_id;
-
                             DB::connection('soft')->table('movimien')
                                 ->where('mov_id', $oc_softlink->mov_id)
                                 ->update(
@@ -236,7 +231,6 @@ class MigrateOrdenSoftLinkController extends Controller
                     $count = DB::connection('soft')->table('movimien')->count();
                     //codificar segun criterio x documento
                     $mov_id = $this->leftZero(10, (intval($count) + 1));
-                    $mov_id_softlink = $mov_id;
 
                     $hoy = date('Y-m-d'); //Carbon::now()
                     //obtiene el año a 2 digitos y le aumenta 2 ceros adelante
@@ -259,7 +253,6 @@ class MigrateOrdenSoftLinkController extends Controller
                     //anida el numero de documento
                     $num_docu = $yy . $nro_mov;
 
-                    $orden_softlink = $num_docu;
                     $this->agregarOrden($mov_id, $cod_suc, $oc, $cod_docu, $num_docu, $fecha, $cod_auxi, $igv, $mon_impto, $tp_cambio, $id_orden_compra);
 
                     $i = 0;
@@ -270,18 +263,18 @@ class MigrateOrdenSoftLinkController extends Controller
                         $this->actualizaStockEnTransito($oc, $cod_prod, $det, $cod_suc);
                     }
                     $this->agregarAudita($oc, $yy, $nro_mov);
+
+                    $soc = DB::connection('soft')->table('movimien')->where('mov_id', $mov_id)->first();
+                    $sdet = DB::connection('soft')->table('detmov')->where('mov_id', $mov_id)->get();
+
+                    $arrayRspta = array(
+                        'tipo' => 'success',
+                        'mensaje' => 'Se migró correctamente la OC Nro. ' . $num_docu . ' con id ' . $mov_id,
+                        'orden_softlink' => $num_docu, //($yy . '-' . $nro_mov),
+                        'ocSoftlink' => array('cabecera' => $soc, 'detalle' => $sdet),
+                        'ocAgile' => array('cabecera' => $oc, 'detalle' => $detalles),
+                    );
                 }
-
-                $soc = DB::connection('soft')->table('movimien')->where('mov_id', $mov_id_softlink)->first();
-                $sdet = DB::connection('soft')->table('detmov')->where('mov_id', $mov_id_softlink)->get();
-
-                $arrayRspta = array(
-                    'tipo' => 'success',
-                    'mensaje' => 'Se ' . ($oc->id_softlink !== null ? 'actualizó' : 'migró') . ' correctamente la OC Nro. ' . $orden_softlink . ' con id ' . $mov_id_softlink,
-                    'orden_softlink' => $orden_softlink, //($yy . '-' . $nro_mov),
-                    'ocSoftlink' => array('cabecera' => $soc, 'detalle' => $sdet),
-                    'ocAgile' => array('cabecera' => $oc, 'detalle' => $detalles),
-                );
             } else {
                 $arrayRspta = array(
                     'tipo' => 'warning',
