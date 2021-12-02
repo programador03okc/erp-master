@@ -1368,8 +1368,8 @@ class OrdenView {
                         });
                     },
                     success: function (response) {
-                        // console.log(response);
-                        if (response > 0) {
+                        console.log(response);
+                        if (response.id_orden_compra > 0) {
                             $("#wrapper-okc").LoadingOverlay("hide", true);
 
                             Lobibox.notify('success', {
@@ -1378,11 +1378,50 @@ class OrdenView {
                                 rounded: true,
                                 sound: false,
                                 delayIndicator: false,
-                                msg: `Orden actualizada`
+                                msg: `Orden ${response.codigo} actualizada`
                             });
+
+                            if(response.status_migracion_softlink != null){
+                                
+                                $('[name=codigo_orden]').val(response.status_migracion_softlink.orden_softlink??"");
+
+                                Lobibox.notify(response.status_migracion_softlink.tipo, {
+                                    title: false,
+                                    size: 'mini',
+                                    rounded: true,
+                                    sound: false,
+                                    delayIndicator: false,
+                                    msg: response.status_migracion_softlink.mensaje
+                                });
+
+                            }
+                            
                             changeStateButton('guardar');
                             $('#form-crear-orden-requerimiento').attr('type', 'register');
                             changeStateInput('form-crear-orden-requerimiento', true);
+                        }else{
+
+                            Lobibox.notify('danger', {
+                                title: false,
+                                size: 'mini',
+                                rounded: true,
+                                sound: false,
+                                delayIndicator: false,
+                                msg: `Orden no se puedo actualizada`
+                            });
+
+                            if(response.status_migracion_softlink != null){
+                                
+                                Lobibox.notify(response.status_migracion_softlink.tipo, {
+                                    title: false,
+                                    size: 'mini',
+                                    rounded: true,
+                                    sound: false,
+                                    delayIndicator: false,
+                                    msg: response.status_migracion_softlink.mensaje
+                                });
+
+                            }
                         }
                     }
                 }).fail(function (jqXHR, textStatus, errorThrown) {
