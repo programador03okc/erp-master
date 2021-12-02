@@ -44,15 +44,18 @@ Gestión de Despacho Externo
                                     <th></th>
                                     <th>Cod.Req.</th>
                                     <th>Fecha Fin Entrega</th>
-                                    <th>Orden Elec.</th>
-                                    <th>Siaf</th>
+                                    <th>Nro O/C</th>
+                                    <th>Estado O/C</th>
+                                    <th>Monto total</th>
+                                    <th>OC.fís/SIAF</th>
                                     <th>OCC</th>
                                     <th>Cod.CDP</th>
                                     <th width="30%">Cliente/Entidad</th>
                                     <th>Generado por</th>
                                     <th>Sede Req.</th>
-                                    <th>Fecha Despacho</th>
                                     <th>Cod. D.E.</th>
+                                    <th>Fecha Despacho Real</th>
+                                    <th>Fecha Llegada</th>
                                     <th>Estado D.E.</th>
                                     <th width="60px">Acción</th>
                                 </tr>

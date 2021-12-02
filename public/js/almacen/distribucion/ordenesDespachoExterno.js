@@ -128,7 +128,19 @@ function listarRequerimientosPendientes(usuario) {
                     }
                 }, className: "text-center"
             },//
-            { data: 'siaf', name: 'oc_propias_view.siaf' },
+            { data: 'estado_oc', name: 'oc_propias_view.estado_oc' },
+            {
+                data: 'monto_total', name: 'oc_propias_view.monto_total',
+                render: function (data, type, row) {
+                    return (row['monto_total'] !== null ? formatNumber.decimal(row['monto_total'], (row['moneda_oc'] == 's' ? 'S/' : '$'), '-2') : '');
+                }, className: "text-right"
+            },
+            {
+                data: 'orden_compra', name: 'oc_propias_view.orden_compra',
+                render: function (data, type, row) {
+                    return ((row['orden_compra'] !== null ? row['orden_compra'] : '') + (row['siaf'] !== null ? ' / ' + row['siaf'] : ''));
+                }, className: "text-center"
+            },
             { data: 'occ', name: 'oc_propias_view.occ' },
             {
                 data: 'codigo_oportunidad', name: 'oc_propias_view.codigo_oportunidad',
@@ -136,7 +148,7 @@ function listarRequerimientosPendientes(usuario) {
                     if (row["codigo_oportunidad"] !== null) {
                         return (
                             '<a target="_blank" href="https://mgcp.okccloud.com/mgcp/cuadro-costos/detalles/' + row['id_oportunidad'] + '">' +
-                            row["codigo_oportunidad"] + "</a>"
+                            row["codigo_oportunidad"] + "</a><br>" + row['estado_aprobacion_cuadro']
                         );
                     } else {
                         return '';
@@ -172,13 +184,25 @@ function listarRequerimientosPendientes(usuario) {
             //         return '<span class="label label-' + row['bootstrap_color'] + '">' + row['estado_doc'] + '</span>'
             //     }
             // },
+            // {
+            //     data: 'fecha_despacho', name: 'orden_despacho.fecha_despacho',
+            //     'render': function (data, type, row) {
+            //         return (row['fecha_despacho'] !== null ? formatDate(row['fecha_despacho']) : '');
+            //     }
+            // },
+            { data: 'codigo_od', name: 'orden_despacho.codigo', className: "text-center" },
             {
-                data: 'fecha_despacho', name: 'orden_despacho.fecha_despacho',
+                data: 'fecha_despacho_real', name: 'orden_despacho.fecha_despacho_real',
                 'render': function (data, type, row) {
-                    return (row['fecha_despacho'] !== null ? formatDate(row['fecha_despacho']) : '');
+                    return (row['fecha_despacho_real'] !== null ? formatDate(row['fecha_despacho_real']) : '');
                 }
             },
-            { data: 'codigo_od', name: 'orden_despacho.codigo', className: "text-center" },
+            {
+                data: 'fecha_entregada', name: 'orden_despacho.fecha_entregada',
+                'render': function (data, type, row) {
+                    return (row['fecha_entregada'] !== null ? formatDate(row['fecha_entregada']) : '');
+                }
+            },
             {
                 'render': function (data, type, row) {
                     return '<span class="label label-' + row['estado_bootstrap_od'] + '">' + row['estado_od'] + '</span>'
@@ -275,7 +299,7 @@ function listarRequerimientosPendientes(usuario) {
                                    <i class="fas fa-file-upload"></i></button>`
                            : '')*/
                         `</div>`
-                }, targets: 14
+                }, targets: 17
             }
         ],
         select: "multi",

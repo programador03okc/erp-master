@@ -10,54 +10,8 @@ function agregarEstadoEnvio(id) {
     $('[name=adjunto]').val('');
     $('[name=gasto_extra]').val('');
     $('[name=plazo_excedido]').prop('checked', false);
-
-    // console.log('est:' + est);
-    // var sel = [];
-    // switch (est) {
-    //     case 2:
-    //         sel = [3, 4, 5, 6, 7, 8];
-    //         break;
-    //     case 3:
-    //         sel = [4, 5, 6, 7, 8];
-    //         break;
-    //     case 4: case 5:
-    //         sel = [6, 7, 8];
-    //         break;
-    //     case 6:
-    //         sel = [7, 8];
-    //         break;
-    //     case 7:
-    //         sel = [8];
-    //         break;
-    //     default:
-    //         break;
-    // }
-    // mostrarEstados(sel);
     $('#submit_ordenDespachoEstados').removeAttr('disabled');
-
 }
-
-// function mostrarEstados(sel) {
-//     console.log(sel);
-//     $.ajax({
-//         type: 'GET',
-//         url: 'mostrarEstados',
-//         // data: 'estados=' + JSON.stringify(sel),
-//         dataType: 'JSON',
-//         success: function (response) {
-//             console.log(response);
-//             var html = '';
-//             response.forEach(element => {
-//                 html += `<option value="${element.id_estado}">${element.descripcion}</option>`
-//             });
-//             $('[name=estado]').html(html);
-//         }
-//     }).fail(function (jqXHR, textStatus, errorThrown) {
-//         console.log(jqXHR);
-//         console.log(textStatus);
-//         console.log(errorThrown);
-//     });
-// }
 
 $("#form-ordenDespachoEstados").on("submit", function (e) {
     e.preventDefault();
@@ -127,24 +81,8 @@ function formatTimeLine(table_id, id, row) {
                     <input type="button" id="btn_cerrar_transportista" class="btn btn-success" 
                         onClick="agregarEstadoEnvio(${id});" value="Agregar"/>`;
 
-
                 response.forEach(element => {
 
-                    // if (element.accion == 10) {
-                    //     html += `<li class="timeline-item">
-                    //     <div class="timeline-badge bgfuxia"><i class="glyphicon glyphicon-time"></i></div>
-                    //     <div class="timeline-panel borderfuxia">
-                    //         <div class="timeline-heading">
-                    //         <p><small class="text-muted colorfuxia">${element.fecha_despacho}<br>
-                    //         <strong>${element.estado_doc}</strong><br>
-                    //         ${element.mov_entrega}<br>${element.razon_social_despacho !== null ?
-                    //             element.razon_social_despacho :
-                    //             (element.responsable_despacho !== null ? element.responsable_despacho : '')}</small></p>
-                    //         </div>
-                    //     </div>
-                    //     </li>`;
-                    // }
-                    // else 
                     if (element.accion == 2) {
                         html += `<li class="timeline-item">
                         <div class="timeline-badge bggreendark"><i class="glyphicon glyphicon-time"></i></div>

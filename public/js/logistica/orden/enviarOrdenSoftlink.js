@@ -1,5 +1,8 @@
 function enviarOrdenSoftlink() {
     let id_orden = $('[name=id_orden]').val();
+    const $button = $("#btn-enviar-softlink");
+    $button.prop('disabled', 'true');
+    $button.html('Migrando...');
 
     $.ajax({
         type: 'GET',
@@ -8,9 +11,7 @@ function enviarOrdenSoftlink() {
         dataType: 'JSON',
     }).done(function (response) {
         console.log(response);
-        console.log('response');
-        console.log(response.ocSoftlink.cabecera.cod_docu);
-        $('[name=codigo_orden]').val(response.ocSoftlink.cabecera.cod_docu + ' ' + response.ocSoftlink.cabecera.num_docu);
+        $('[name=codigo_orden]').val(response.orden_softlink);
         Lobibox.notify(response.tipo, {
             size: "mini",
             rounded: true,
@@ -21,6 +22,8 @@ function enviarOrdenSoftlink() {
 
     }).always(function () {
         // $modal.find('div.modal-body').LoadingOverlay("hide", true);
+        $button.prop('disabled', false);
+        $button.html('Migrar a softlink');
 
     }).fail(function (jqXHR) {
         Lobibox.notify('error', {

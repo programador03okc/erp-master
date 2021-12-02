@@ -1877,15 +1877,14 @@ class DistribucionController extends Controller
 
             $estado = new Carbon($request->fecha_estado);
             $entrega = new Carbon($od->fecha_entrega);
+            $plazo_excedido = $estado->gt($entrega) ? true : false;
 
-            if ($estado->gt($entrega)) {
-                DB::table('almacen.orden_despacho')
-                    ->where('id_od', $request->id_od)
-                    ->update([
-                        'plazo_excedido' => true,
-                        'fecha_entregada' => $request->fecha_estado
-                    ]);
-            }
+            DB::table('almacen.orden_despacho')
+                ->where('id_od', $request->id_od)
+                ->update([
+                    'plazo_excedido' => $plazo_excedido,
+                    'fecha_entregada' => $request->fecha_estado
+                ]);
         }
 
         if ($obs !== null) {
