@@ -51,7 +51,7 @@
                 <td>{{$d->codigo_oportunidad!==null?$d->codigo_oportunidad:''}}</td>
                 <td>{{$d->codigo}}</td>
                 <td>{{$d->sede_descripcion_req}}</td>
-                <td>{{$d->cliente_razon_social}}</td>
+                <td>{{$d->nombre_entidad}}</td>
                 <td>{{$d->fecha_publicacion!==null ? date('d-m-Y', strtotime($d->fecha_publicacion)):''}}</td>
                 <td>{{$d->fecha_despacho_real!==null ? date('d-m-Y', strtotime($d->fecha_despacho_real)):''}}</td>
                 <td>{{$d->fecha_entrega!==null ? date('d-m-Y', strtotime($d->fecha_entrega)):''}}</td>
