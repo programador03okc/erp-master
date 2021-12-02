@@ -21,13 +21,15 @@
     <table>
         <thead>
             <tr>
-                <th style="background-color: #cccccc;" width="20"><b>Nro. O/C</b></th>
+                <th style="background-color: #cccccc;" width="25"><b>Nro. O/C</b></th>
+                <th style="background-color: #cccccc;" width="20"><b>Monto total O/C</b></th>
+                <th style="background-color: #cccccc;" width="20"><b>Nro. CDP</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Requerimiento</b></th>
                 <th style="background-color: #cccccc;" width="12"><b>Empresa</b></th>
                 <th style="background-color: #cccccc;" width="40"><b>Entidad/Cliente</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Fecha publicación</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Fecha despacho</b></th>
-                <th style="background-color: #cccccc;" width="18"><b>Fecha entrega</b></th>
+                <th style="background-color: #cccccc;" width="18"><b>Fecha fin entrega</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Fecha entregada</b></th>
                 <th style="background-color: #cccccc;" width="15"><b>Transformación</b></th>
                 <th style="background-color: #cccccc;" width="30"><b>Empresa de transporte</b></th>
@@ -45,6 +47,8 @@
             @foreach ($data as $d)
             <tr>
                 <td>{{$d->nro_orden!==null?$d->nro_orden:''}}</td>
+                <td>{{$d->moneda_oc=="s"?'S/':'$'}}{{$d->monto_total!==null?$d->monto_total:''}}</td>
+                <td>{{$d->codigo_oportunidad!==null?$d->codigo_oportunidad:''}}</td>
                 <td>{{$d->codigo}}</td>
                 <td>{{$d->sede_descripcion_req}}</td>
                 <td>{{$d->cliente_razon_social}}</td>

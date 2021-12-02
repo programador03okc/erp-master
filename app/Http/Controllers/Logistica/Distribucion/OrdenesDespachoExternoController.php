@@ -115,6 +115,8 @@ class OrdenesDespachoExternoController extends Controller
                 'oc_propias_view.id_oportunidad',
                 'oc_propias_view.id_entidad',
                 'oc_propias_view.estado_oc',
+                'oc_propias_view.moneda_oc',
+                'oc_propias_view.monto_total',
                 'oc_propias_view.fecha_publicacion',
                 'oc_propias_view.estado_aprobacion_cuadro',
                 'oc_propias_view.siaf',
@@ -164,6 +166,7 @@ class OrdenesDespachoExternoController extends Controller
             $data->where('orden_despacho.estado', 25);
             $data->whereDate('orden_despacho.fecha_despacho', (new Carbon())->format('Y-m-d'));
         }
+        $data->orderBy('oc_propias_view.fecha_entrega', 'desc');
         return $data;
         // return datatables($data)->toJson();
     }

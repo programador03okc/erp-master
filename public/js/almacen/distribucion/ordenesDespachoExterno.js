@@ -128,7 +128,13 @@ function listarRequerimientosPendientes(usuario) {
                     }
                 }, className: "text-center"
             },//
-            // { data: 'siaf', name: 'oc_propias_view.siaf' },
+            { data: 'estado_oc', name: 'oc_propias_view.estado_oc' },
+            {
+                data: 'monto_total', name: 'oc_propias_view.monto_total',
+                render: function (data, type, row) {
+                    return (row['monto_total'] !== null ? formatNumber.decimal(row['monto_total'], (row['moneda_oc'] == 's' ? 'S/' : '$'), '-2') : '');
+                }, className: "text-right"
+            },
             {
                 data: 'orden_compra', name: 'oc_propias_view.orden_compra',
                 render: function (data, type, row) {
@@ -293,7 +299,7 @@ function listarRequerimientosPendientes(usuario) {
                                    <i class="fas fa-file-upload"></i></button>`
                            : '')*/
                         `</div>`
-                }, targets: 15
+                }, targets: 17
             }
         ],
         select: "multi",
