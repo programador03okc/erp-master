@@ -1400,6 +1400,7 @@ class OrdenView {
                             $('#form-crear-orden-requerimiento').attr('type', 'register');
                             changeStateInput('form-crear-orden-requerimiento', true);
                         }else{
+                            $("#wrapper-okc").LoadingOverlay("hide", true);
 
                             Lobibox.notify('danger', {
                                 title: false,
@@ -1716,21 +1717,40 @@ class OrdenView {
 
 
     anularOrden(id) {
-        this.ordenCtrl.anularOrden(id).then((res) => {
+        this.ordenCtrl.anularOrden(id).then((response) => {
+            $("#wrapper-okc").LoadingOverlay("hide", true);
+
             // console.log(res);
-            if (res.status == 200) {
+            if (response.status == 200) {
                 this.restablecerFormularioOrden();
                 // (res.mensaje).forEach(msj => {
-                Lobibox.notify(res.status == 200 ? 'success' : 'warning', {
+                Lobibox.notify(response.status == 200 ? 'success' : 'warning', {
                     title: false,
                     size: 'mini',
                     rounded: true,
                     sound: false,
                     delayIndicator: false,
-                    msg: res.mensaje.toString()
+                    msg: response.mensaje.toString()
                 });
                 // });
+
+                if(response.status_migracion_softlink != null){
+                                
+                    $('[name=codigo_orden]').val(response.status_migracion_softlink.orden_softlink??"");
+
+                    Lobibox.notify(response.status_migracion_softlink.tipo, {
+                        title: false,
+                        size: 'mini',
+                        rounded: true,
+                        sound: false,
+                        delayIndicator: false,
+                        msg: response.status_migracion_softlink.mensaje
+                    });
+
+                }
+
             } else {
+                $("#wrapper-okc").LoadingOverlay("hide", true);
 
                 Lobibox.notify('warning', {
                     title: false,
@@ -1738,11 +1758,26 @@ class OrdenView {
                     rounded: true,
                     sound: false,
                     delayIndicator: false,
-                    msg: res.mensaje.toString()
+                    msg: response.mensaje.toString()
                 });
-                console.log(res);
+                console.log(response);
+
+                if(response.status_migracion_softlink != null){
+                                
+                    Lobibox.notify(response.status_migracion_softlink.tipo, {
+                        title: false,
+                        size: 'mini',
+                        rounded: true,
+                        sound: false,
+                        delayIndicator: false,
+                        msg: response.status_migracion_softlink.mensaje
+                    });
+
+                }
+
             }
         }).catch((err) => {
+            $("#wrapper-okc").LoadingOverlay("hide", true);
             console.log(err)
             Swal.fire(
                 '',

@@ -1312,6 +1312,8 @@ class ListaOrdenView {
             if (result.isConfirmed) {
                 this.listaOrdenCtrl.anularOrden(id).then((res) => {
                     if (res.status == 200) {
+                        $("#wrapper-okc").LoadingOverlay("hide", true);
+
                         Lobibox.notify('success', {
                             title: false,
                             size: 'mini',
@@ -1328,6 +1330,7 @@ class ListaOrdenView {
                         }
                         
                     } else {
+                        $("#wrapper-okc").LoadingOverlay("hide", true);
                         Swal.fire(
                             '',
                             'Lo sentimos hubo un error en el servidor al intentar anular la orden, por favor vuelva a intentarlo',
@@ -1336,6 +1339,7 @@ class ListaOrdenView {
                         console.log(res);
                     }
                 }).catch((err) => {
+                    $("#wrapper-okc").LoadingOverlay("hide", true);
                     console.log(err)
                     Swal.fire(
                         '',

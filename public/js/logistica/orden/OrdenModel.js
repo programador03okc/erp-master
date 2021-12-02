@@ -99,6 +99,14 @@ class OrdenModel {
                 type: 'PUT',
                 url:`anular/${id}`,
                 dataType: 'JSON',
+                beforeSend: data => {
+    
+                    $("#wrapper-okc").LoadingOverlay("show", {
+                        imageAutoResize: true,
+                        progress: true,
+                        imageColor: "#3c8dbc"
+                    });
+                },
                 success(response) {
                     resolve(response);
                 },

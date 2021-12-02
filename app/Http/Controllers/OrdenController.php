@@ -3322,8 +3322,8 @@ class OrdenController extends Controller
                     $status = 200;
                     $msj[]='se restableció el estado del requerimiento';
                     $finalizadosORestablecido = CuadroPresupuestoHelper::finalizar($id_requerimiento_list);
-                    if($finalizadosORestablecido['lista_restablecido']  && count($finalizadosORestablecido['lista_restablecido'])>0){
-                        foreach ($finalizadosORestablecido['lista_restablecido'] as $lr) {
+                    if($finalizadosORestablecido['lista_restablecidos']  && count($finalizadosORestablecido['lista_restablecidos'])>0){
+                        foreach ($finalizadosORestablecido['lista_restablecidos'] as $lr) {
                             
                             $msj[]='Se actualizo el estado del cuadro de prespuesto '+$lr['codigo_cuadro_presupuesto'];
                         }
@@ -3382,38 +3382,55 @@ class OrdenController extends Controller
             $output = [];
             $requerimientoIdList = [];
 
-            $hasIngreso = $this->TieneingresoAlmacen($id_orden);
-            if($hasIngreso['status'] == 200 && $hasIngreso['data'] == false){
-                $makeRevertirOrden = $this->makeRevertirOrden($id_orden);
-                $status = $makeRevertirOrden['status'];
-                $msj[] = $makeRevertirOrden['mensaje'];
-                $requerimientoIdList = $makeRevertirOrden['requerimientoIdList'];
-            }
-            else{
-                $status= $hasIngreso['status'];
-                $msj[]= $hasIngreso['mensaje'];
-            }
+            $migrarOrdenSoftlink= (new MigrateOrdenSoftLinkController)->anularOrdenSoftlink($id_orden)->original;
 
-            if($status ==200){
-                $orden = DB::table('logistica.log_ord_compra')
-                ->select(
-                    'log_ord_compra.codigo'
-                )
-                ->where('log_ord_compra.id_orden_compra',$id_orden)
-                ->first();
+            if($migrarOrdenSoftlink['tipo']=='success'){
 
-                for ($i = 0; $i < count($requerimientoIdList); $i++) {
-                    DB::table('almacen.alm_req_obs')
-                    ->insert([  'id_requerimiento'=>$requerimientoIdList[$i],
-                                'accion'=>'ORDEN ANULADA',
-                                'descripcion'=>'Orden '.($orden->codigo?$orden->codigo:"").' anulada',
-                                'id_usuario'=>Auth::user()->id_usuario,
-                                'fecha_registro'=>date('Y-m-d H:i:s')
-                    ]);
+                $hasIngreso = $this->TieneingresoAlmacen($id_orden);
+                if($hasIngreso['status'] == 200 && $hasIngreso['data'] == false){
+                    $makeRevertirOrden = $this->makeRevertirOrden($id_orden);
+                    $status = $makeRevertirOrden['status'];
+                    $msj[] = $makeRevertirOrden['mensaje'];
+                    $requerimientoIdList = $makeRevertirOrden['requerimientoIdList'];
                 }
-            }
+                else{
+                    $status= $hasIngreso['status'];
+                    $msj[]= $hasIngreso['mensaje'];
+                }
 
-            $output=['status'=>$status, 'mensaje'=>$msj];
+                if($status ==200){
+                    $orden = Orden::select(
+                        'log_ord_compra.codigo'
+                    )
+                    ->where('log_ord_compra.id_orden_compra',$id_orden)
+                    ->first();
+
+                    for ($i = 0; $i < count($requerimientoIdList); $i++) {
+                        DB::table('almacen.alm_req_obs')
+                        ->insert([  'id_requerimiento'=>$requerimientoIdList[$i],
+                                    'accion'=>'ORDEN ANULADA',
+                                    'descripcion'=>'Orden '.($orden->codigo?$orden->codigo:"").' anulada',
+                                    'id_usuario'=>Auth::user()->id_usuario,
+                                    'fecha_registro'=>date('Y-m-d H:i:s')
+                        ]);
+                    }
+                }
+                $output =[
+                    'id_orden_compra' => $id_orden, 
+                    'codigo' => $orden->codigo,
+                    'status' => $status,
+                    'mensaje'=>$msj,
+                    'status_migracion_softlink' => $migrarOrdenSoftlink,
+                ];
+            }else{
+                $output =[
+                    'id_orden_compra' => 0, 
+                    'codigo' => '',
+                    'status' => 204,
+                    'mensaje'=>'No se pudo anular la orden',
+                    'status_migracion_softlink' => $migrarOrdenSoftlink,
+                ];
+            }
 
             DB::commit();
             return response()->json($output);

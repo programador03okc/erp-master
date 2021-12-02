@@ -30,7 +30,7 @@ function listar_proveedores(){
         'columnDefs': [
             {'render':
             function (data, type, row){
-                console.log(row.contribuyente);
+                // console.log(row.contribuyente);
                 let action = `
                     <div class="btn-group btn-group-sm" role="group">
                         <button type="button" class="btn btn-success btn-sm" name="btnSeleccionarProveedor" title="Seleccionar proveedor" 
