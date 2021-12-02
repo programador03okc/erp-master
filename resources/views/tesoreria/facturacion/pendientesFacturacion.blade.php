@@ -29,6 +29,7 @@ Facturación
                 <ul class="nav nav-tabs" id="myTab">
                     <li class="active"><a data-toggle="tab" href="#guias">Ventas Internas</a></li>
                     <li class=""><a data-toggle="tab" href="#requerimientos">Ventas Externas</a></li>
+                    <li class=""><a data-toggle="tab" href="#individuales">Comprobantes Individuales</a></li>
                 </ul>
 
                 <div class="tab-content">
@@ -82,6 +83,35 @@ Facturación
                                                 <th>Responsable</th>
                                                 <th>OCAM</th>
                                                 <th>C.P.</th>
+                                                <th style="width:8%;">Acción</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div id="Individuales" class="tab-pane fade ">
+                        <br>
+                        <form id="form-Individuales" type="register">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <table class="mytable table table-condensed table-bordered table-okc-view" id="listaIndividuales">
+                                        <thead>
+                                            <tr>
+                                                <th hidden>#</th>
+                                                <th>Empresa</th>
+                                                <th>Tipo de Doc.</th>
+                                                <th>Serie-Numero</th>
+                                                <th>Fecha emisión</th>
+                                                <th>Fecha vcto</th>
+                                                <th>Mnd</th>
+                                                <th>Monto</th>
+                                                <th>Entidad/Cliente</th>
+                                                <th>Responsable</th>
+                                                <th>Estado</th>
                                                 <th style="width:8%;">Acción</th>
                                             </tr>
                                         </thead>

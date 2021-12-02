@@ -24,6 +24,7 @@
                 <th style="background-color: #cccccc;" width="25"><b>Nro. O/C</b></th>
                 <th style="background-color: #cccccc;" width="20"><b>Monto total O/C</b></th>
                 <th style="background-color: #cccccc;" width="20"><b>Nro. CDP</b></th>
+                <th style="background-color: #cccccc;" width="20"><b>OCC</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Requerimiento</b></th>
                 <th style="background-color: #cccccc;" width="12"><b>Empresa</b></th>
                 <th style="background-color: #cccccc;" width="40"><b>Entidad/Cliente</b></th>
@@ -49,6 +50,7 @@
                 <td>{{$d->nro_orden!==null?$d->nro_orden:''}}</td>
                 <td>{{$d->moneda_oc=="s"?'S/':'$'}}{{$d->monto_total!==null?$d->monto_total:''}}</td>
                 <td>{{$d->codigo_oportunidad!==null?$d->codigo_oportunidad:''}}</td>
+                <td>{{$d->occ!==null?$d->occ:''}}</td>
                 <td>{{$d->codigo}}</td>
                 <td>{{$d->sede_descripcion_req}}</td>
                 <td>{{$d->nombre_entidad}}</td>
