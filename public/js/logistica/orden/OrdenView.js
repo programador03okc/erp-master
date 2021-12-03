@@ -341,18 +341,30 @@ class OrdenView {
     }
 
     handleChangeCondicion() {
-        let condicion = document.getElementsByName('id_condicion')[0];
-        let text_condicion = condicion.options[condicion.selectedIndex].text;
 
-        if (text_condicion == 'CONTADO CASH' || text_condicion == 'Contado cash') {
-            document.getElementsByName('plazo_dias')[0].value = null;
-            document.getElementsByName('plazo_dias')[0].setAttribute('class', 'form-control activation group-elemento invisible');
-            document.getElementsByName('text_dias')[0].setAttribute('class', 'form-control group-elemento invisible');
-        } else if (text_condicion == 'CREDITO' || text_condicion == 'Crédito') {
-            document.getElementsByName('plazo_dias')[0].setAttribute('class', 'form-control activation group-elemento');
-            document.getElementsByName('text_dias')[0].setAttribute('class', 'form-control group-elemento');
+        let condicion_softlink = document.getElementsByName('id_condicion_softlink')[0];
+        // let descripcion_condicion_softlink = condicion_softlink.options[condicion_softlink.selectedIndex].text;
+        let dias_condicion_softlink = condicion_softlink.options[condicion_softlink.selectedIndex].dataset.dias;
+
+        if(dias_condicion_softlink>0){
+            document.getElementsByName('id_condicion')[0].value = 2;
+            document.getElementsByName('plazo_dias')[0].value = dias_condicion_softlink;
+
+        }else{
+            document.getElementsByName('id_condicion')[0].value = 1;
+            document.getElementsByName('plazo_dias')[0].value = 0;
 
         }
+
+        // if (text_condicion == 'CONTADO CASH' || text_condicion == 'Contado cash') {
+        //     document.getElementsByName('plazo_dias')[0].value = null;
+        //     document.getElementsByName('plazo_dias')[0].setAttribute('class', 'form-control activation group-elemento invisible');
+        //     document.getElementsByName('text_dias')[0].setAttribute('class', 'form-control group-elemento invisible');
+        // } else if (text_condicion == 'CREDITO' || text_condicion == 'Crédito') {
+        //     document.getElementsByName('plazo_dias')[0].setAttribute('class', 'form-control activation group-elemento');
+        //     document.getElementsByName('text_dias')[0].setAttribute('class', 'form-control group-elemento');
+
+        // }
     }
 
     loadHeadRequerimiento(data, idTipoOrden) {
@@ -1616,6 +1628,7 @@ class OrdenView {
         document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_cuenta_principal_proveedor']").value = data.id_cta_principal ? data.id_cta_principal : '';
         document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='nro_cuenta_principal_proveedor']").value = data.nro_cuenta ? data.nro_cuenta : '';
 
+        document.querySelector("form[id='form-crear-orden-requerimiento'] select[name='id_condicion_softlink']").value = data.id_condicion_softlink ? data.id_condicion_softlink : '';
         document.querySelector("form[id='form-crear-orden-requerimiento'] select[name='id_condicion']").value = data.id_condicion ? data.id_condicion : '';
         document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='plazo_dias']").value = data.plazo_dias ? data.plazo_dias : '';
         document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='plazo_entrega']").value = data.plazo_entrega ? data.plazo_entrega : '';

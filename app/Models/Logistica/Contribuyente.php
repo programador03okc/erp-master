@@ -14,20 +14,7 @@ class Contribuyente extends Model
     //Timesptamps
     public $timestamps = false;
 
-    protected $fillable = [
-        'id_contribuyente',
-        'id_tipo_contribuyente',
-        'id_doc_identidad',
-        'razon_social',
-        'telefono',
-        'celular',
-        'direccion_fiscal',
-        'ubigeo',
-        'id_pais',
-        'estado',
-        'fecha_registro'
-
-    ];
+ 
 
     public function empresa()
     {
