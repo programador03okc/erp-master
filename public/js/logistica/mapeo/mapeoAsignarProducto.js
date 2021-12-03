@@ -10,8 +10,8 @@ function listarProductosCatalogo() {
         initComplete: function (settings, json) {
             let lblTitulo = document.createElement("div");
             lblTitulo.innerHTML = '<label style="font-size:18px">Catálogo de productos</label>';
-            $('#productosCatalogo_wrapper .row ')[0].firstChild.remove();
-            $('#productosCatalogo_wrapper .row ')[0].firstChild.append(lblTitulo);
+            $('#productosCatalogo_wrapper .row ')[0]?$('#productosCatalogo_wrapper .row ')[0].firstChild.remove():false;
+            $('#productosCatalogo_wrapper .row ')[0]?$('#productosCatalogo_wrapper .row ')[0].firstChild.append(lblTitulo):false;
         },
         'columns': [
             { 'data': 'id_producto' },
