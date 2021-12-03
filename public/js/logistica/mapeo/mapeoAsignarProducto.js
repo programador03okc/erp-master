@@ -8,10 +8,14 @@ function listarProductosCatalogo() {
         'bDestroy': true,
         'ajax': 'mostrar_prods',
         initComplete: function (settings, json) {
-            let lblTitulo = document.createElement("div");
-            lblTitulo.innerHTML = '<label style="font-size:18px">Catálogo de productos</label>';
-            $('#productosCatalogo_wrapper .row ')[0].firstChild.remove();
-            $('#productosCatalogo_wrapper .row ')[0].firstChild.append(lblTitulo);
+            let wraper = $('#productosCatalogo_wrapper .row ')[0].firstChild;
+            wraper.innerHTML = '<label style="font-size:18px">Catálogo de productos</label>';
+            // $('#productosCatalogo_wrapper .row ')[0].firstChild.remove('div');
+            console.log(wraper);
+            // let lblTitulo;// = document.createElement("div");
+            // // lblTitulo.innerHTML = '<label style="font-size:18px">Catálogo de productos</label>';
+            // lblTitulo = document.createElement("label");'<label style="font-size:18px">Catálogo de productos</label>';
+            // $('#productosCatalogo_wrapper .row ')[0].firstChild.append(lblTitulo);
         },
         'columns': [
             { 'data': 'id_producto' },

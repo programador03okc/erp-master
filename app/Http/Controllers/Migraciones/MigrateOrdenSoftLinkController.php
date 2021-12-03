@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 
 class MigrateOrdenSoftLinkController extends Controller
 {
+    //Valida el estado de la orden en softlink
     public function validarOrdenSoftlink($id_orden_compra)
     {
         try {
@@ -61,7 +62,7 @@ class MigrateOrdenSoftLinkController extends Controller
             } else {
                 $arrayRspta = array(
                     'tipo' => 'warning',
-                    'mensaje' => 'No existe la OC seleccionada. Id: ' . $id_orden_compra
+                    'mensaje' => 'No existe un id_softlink en la OC seleccionada. Id: ' . $id_orden_compra
                 );
             }
             DB::commit();
@@ -72,6 +73,7 @@ class MigrateOrdenSoftLinkController extends Controller
         }
     }
 
+    //Envio de la orden a softlink
     public function migrarOrdenCompra($id_orden_compra)
     {
         try {
@@ -136,7 +138,10 @@ class MigrateOrdenSoftLinkController extends Controller
                 ->join('almacen.alm_tp_prod', 'alm_tp_prod.id_tipo_producto', '=', 'alm_cat_prod.id_tipo_producto')
                 ->join('almacen.alm_clasif', 'alm_clasif.id_clasificacion', '=', 'alm_tp_prod.id_clasificacion')
                 ->join('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
-                ->where('log_det_ord_compra.id_orden_compra', $id_orden_compra)
+                ->where([
+                    ['log_det_ord_compra.id_orden_compra', '=', $id_orden_compra],
+                    ['log_det_ord_compra.estado', '!=', 7]
+                ])
                 ->get();
 
             // return response()->json(['oc' => $oc, 'detalle' => $detalles]);
@@ -261,6 +266,7 @@ class MigrateOrdenSoftLinkController extends Controller
                             $arrayRspta = array(
                                 'tipo' => 'success',
                                 'mensaje' => 'Se actualizó ésta OC en softlink. Con Nro. ' . $oc_softlink->num_docu . ' con id ' . $oc_softlink->mov_id,
+                                'orden_softlink' => $oc_softlink->num_docu,
                                 'ocSoftlink' => array('cabecera' => $oc_softlink),
                                 'ocAgile' => array('cabecera' => $oc),
                             );

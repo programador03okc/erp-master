@@ -11,7 +11,9 @@ function enviarOrdenSoftlink() {
         dataType: 'JSON',
     }).done(function (response) {
         console.log(response);
-        $('[name=codigo_orden]').val(response.orden_softlink);
+        if (response.orden_softlink !== null) {
+            $('[name=codigo_orden]').val(response.orden_softlink);
+        }
         Lobibox.notify(response.tipo, {
             size: "mini",
             rounded: true,

@@ -18,7 +18,6 @@ function listarItemsRequerimientoMapeo(id_requerimiento) {
         url: 'itemsRequerimiento/' + id_requerimiento,
         dataType: 'JSON',
         beforeSend: data => {
-
             $("#modal-mapeoItemsRequerimiento .modal-body").LoadingOverlay("show", {
                 imageAutoResize: true,
                 progress: true,
@@ -195,7 +194,7 @@ function anularProducto(partnumber, desc, id, obj) {
         //             });
         //         }
         //     });
-        
+
         //     obj.closest("td").querySelector("button[class~='anular']").classList.remove("oculto")
         //     obj.closest("td").querySelector("button[class~='restablecer']").classList.add("oculto")
         //     obj.closest("tr").classList.remove('bg-danger');
@@ -209,7 +208,7 @@ function anularProducto(partnumber, desc, id, obj) {
 
 }
 
-function restablecerItemAnulado(id,obj){
+function restablecerItemAnulado(id, obj) {
 
     detalle.forEach((element, index) => {
         if (element.id_detalle_requerimiento == id) {
@@ -347,14 +346,14 @@ $("#form-mapeoItemsRequerimiento").on("submit", function (e) {
                             objBtnMapeo.closest("tr").querySelector("input[type='checkbox']").dataset.mapeosPendientes = cantidadPorMapear;
                             objBtnMapeo.closest("tr").querySelector("input[type='checkbox']").dataset.mapeados = response.cantidad_items_mapeados;
 
-                            if(response.estado_requerimiento!=null && response.estado_requerimiento.hasOwnProperty('descripcion')){
+                            if (response.estado_requerimiento != null && response.estado_requerimiento.hasOwnProperty('descripcion')) {
                                 objBtnMapeo.closest("tr").querySelector("span[class~='estadoRequerimiento']").textContent = response.estado_requerimiento.descripcion;
 
                             }
 
                         }
 
-                        if(document.querySelector("div[id='modal-por-regularizar']").classList.contains('in')==true){
+                        if (document.querySelector("div[id='modal-por-regularizar']").classList.contains('in') == true) {
                             construirTablaItemsPorRegularizar(document.querySelector("div[id='modal-mapeoItemsRequerimiento'] input[name='id_requerimiento']").value); // Regularizar.js
                         }
 
