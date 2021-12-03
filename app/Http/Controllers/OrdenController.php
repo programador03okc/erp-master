@@ -2855,52 +2855,61 @@ class OrdenController extends Controller
         try {
             DB::beginTransaction();
             $data=[];
+            $status=0;
             $ValidarOrdenSoftlink= (new MigrateOrdenSoftLinkController)->validarOrdenSoftlink($request->id_orden);
             if($ValidarOrdenSoftlink['tipo']=='success'){
-                
-                $migrarOrdenSoftlink= (new MigrateOrdenSoftLinkController)->migrarOrdenCompra($request->id_orden)->original;
-                // Debugbar::info($migrarOrdenSoftlink['tipo']);
-                if($migrarOrdenSoftlink['tipo']=='success'){
+                $orden = Orden::where("id_orden_compra", $request->id_orden)->first();
+                $orden->id_grupo_cotizacion = $request->id_grupo_cotizacion?$request->id_grupo_cotizacion:null;
+                $orden->id_tp_documento = ($request->id_tp_documento !== null ? $request->id_tp_documento : 2);
+                $orden->id_usuario = Auth::user()->id_usuario;
+                $orden->id_moneda = $request->id_moneda?$request->id_moneda:null;
+                $orden->fecha = $request->fecha_emision?$request->fecha_emision:new Carbon();
+                $orden->incluye_igv = isset($request->incluye_igv)?$request->incluye_igv:true;
+                $orden->id_proveedor = $request->id_proveedor;
+                $orden->id_cta_principal = isset($request->id_cuenta_principal_proveedor)?$request->id_cuenta_principal_proveedor:null;
+                $orden->id_contacto = isset($request->id_contacto_proveedor)?$request->id_contacto_proveedor:null;
+                $orden->plazo_entrega =  $request->plazo_entrega?$request->plazo_entrega:null;
+                $orden->id_condicion = $request->id_condicion?$request->id_condicion:null;
+                $orden->id_condicion_softlink = $request->id_condicion_softlink?$request->id_condicion_softlink:null;
+                $orden->plazo_dias = $request->plazo_dias?$request->plazo_dias:null;
+                $orden->id_cotizacion = $request->id_cotizacion?$request->id_cotizacion:null;
+                $orden->id_tp_doc = isset($request->id_tp_doc)?$request->id_tp_doc:null;
+                $orden->personal_autorizado_1 = $request->personal_autorizado_1?$request->personal_autorizado_1:null;
+                $orden->personal_autorizado_2 = $request->personal_autorizado_2?$request->personal_autorizado_2:null;
+                $orden->id_occ = $request->id_cc?$request->id_cc:null;
+                $orden->id_sede = $request->id_sede?$request->id_sede:null;
+                $orden->direccion_destino = $request->direccion_destino?$request->direccion_destino:null;
+                $orden->ubigeo_destino = isset($request->id_ubigeo_destino)?$request->id_ubigeo_destino:null;
+                $orden->codigo_softlink = $request->codigo_orden!==null ? $request->codigo_orden : '';
+                $orden->observacion = isset($request->observacion)?$request->observacion:null;
+                $orden->tipo_cambio_compra = isset($request->tipo_cambio_compra)?$request->tipo_cambio_compra:true;
+                $orden->save();
     
-                    $orden = Orden::where("id_orden_compra", $request->id_orden)->first();
-                    $orden->id_grupo_cotizacion = $request->id_grupo_cotizacion?$request->id_grupo_cotizacion:null;
-                    $orden->id_tp_documento = ($request->id_tp_documento !== null ? $request->id_tp_documento : 2);
-                    $orden->id_usuario = Auth::user()->id_usuario;
-                    $orden->id_moneda = $request->id_moneda?$request->id_moneda:null;
-                    $orden->fecha = $request->fecha_emision?$request->fecha_emision:new Carbon();
-                    $orden->incluye_igv = isset($request->incluye_igv)?$request->incluye_igv:true;
-                    $orden->id_proveedor = $request->id_proveedor;
-                    $orden->id_cta_principal = isset($request->id_cuenta_principal_proveedor)?$request->id_cuenta_principal_proveedor:null;
-                    $orden->id_contacto = isset($request->id_contacto_proveedor)?$request->id_contacto_proveedor:null;
-                    $orden->plazo_entrega =  $request->plazo_entrega?$request->plazo_entrega:null;
-                    $orden->id_condicion = $request->id_condicion?$request->id_condicion:null;
-                    $orden->id_condicion_softlink = $request->id_condicion_softlink?$request->id_condicion_softlink:null;
-                    $orden->plazo_dias = $request->plazo_dias?$request->plazo_dias:null;
-                    $orden->id_cotizacion = $request->id_cotizacion?$request->id_cotizacion:null;
-                    $orden->id_tp_doc = isset($request->id_tp_doc)?$request->id_tp_doc:null;
-                    $orden->personal_autorizado_1 = $request->personal_autorizado_1?$request->personal_autorizado_1:null;
-                    $orden->personal_autorizado_2 = $request->personal_autorizado_2?$request->personal_autorizado_2:null;
-                    $orden->id_occ = $request->id_cc?$request->id_cc:null;
-                    $orden->id_sede = $request->id_sede?$request->id_sede:null;
-                    $orden->direccion_destino = $request->direccion_destino?$request->direccion_destino:null;
-                    $orden->ubigeo_destino = isset($request->id_ubigeo_destino)?$request->id_ubigeo_destino:null;
-                    $orden->codigo_softlink = $request->codigo_orden!==null ? $request->codigo_orden : '';
-                    $orden->observacion = isset($request->observacion)?$request->observacion:null;
-                    $orden->tipo_cambio_compra = isset($request->tipo_cambio_compra)?$request->tipo_cambio_compra:true;
-                    $orden->save();
-        
-                    $TodoDetalleOrden = OrdenCompraDetalle::where("id_orden_compra", $orden->id_orden_compra)->get();
-                    $idDetalleProcesado = [];
-         
-                    if(isset($request->cantidadAComprarRequerida)){
-        
-                    $count = count($request->cantidadAComprarRequerida);
-                    for ($i = 0; $i < $count; $i++) {
-                        $id = $request->idRegister[$i];
-                        if (preg_match('/[A-Za-z].*[0-9]|[0-9].*[A-Za-z]/', $id)) // es un id con numeros y letras => es nuevo, insertar
-                        {
-                            $detalle = new OrdenCompraDetalle();
-                            $detalle->id_orden_compra= $orden->id_orden_compra;
+                $TodoDetalleOrden = OrdenCompraDetalle::where("id_orden_compra", $orden->id_orden_compra)->get();
+                $idDetalleProcesado = [];
+     
+                if(isset($request->cantidadAComprarRequerida)){
+    
+                $count = count($request->cantidadAComprarRequerida);
+                for ($i = 0; $i < $count; $i++) {
+                    $id = $request->idRegister[$i];
+                    if (preg_match('/[A-Za-z].*[0-9]|[0-9].*[A-Za-z]/', $id)) // es un id con numeros y letras => es nuevo, insertar
+                    {
+                        $detalle = new OrdenCompraDetalle();
+                        $detalle->id_orden_compra= $orden->id_orden_compra;
+                        $detalle->id_producto= $request->idProducto[$i];
+                        $detalle->id_detalle_requerimiento=$request->idDetalleRequerimiento[$i];
+                        $detalle->cantidad=$request->cantidadAComprarRequerida[$i];
+                        $detalle->id_unidad_medida=$request->unidad[$i];
+                        $detalle->precio=$request->precioUnitario[$i];
+                        $detalle->descripcion_adicional=$request->descripcion[$i];
+                        $detalle->subtotal= floatval($request->cantidadAComprarRequerida[$i] * $request->precioUnitario[$i]);
+                        $detalle->tipo_item_id=$request->idTipoItem[$i];
+                        $detalle->estado=1;
+                        $detalle->save();
+    
+                    }else{ // es un id solo de numerico => actualiza
+                            $detalle = OrdenCompraDetalle::where("id_detalle_orden", $id)->first();
                             $detalle->id_producto= $request->idProducto[$i];
                             $detalle->id_detalle_requerimiento=$request->idDetalleRequerimiento[$i];
                             $detalle->cantidad=$request->cantidadAComprarRequerida[$i];
@@ -2909,60 +2918,58 @@ class OrdenController extends Controller
                             $detalle->descripcion_adicional=$request->descripcion[$i];
                             $detalle->subtotal= floatval($request->cantidadAComprarRequerida[$i] * $request->precioUnitario[$i]);
                             $detalle->tipo_item_id=$request->idTipoItem[$i];
-                            $detalle->estado=1;
                             $detalle->save();
         
-                        }else{ // es un id solo de numerico => actualiza
-                                $detalle = OrdenCompraDetalle::where("id_detalle_orden", $id)->first();
-                                $detalle->id_producto= $request->idProducto[$i];
-                                $detalle->id_detalle_requerimiento=$request->idDetalleRequerimiento[$i];
-                                $detalle->cantidad=$request->cantidadAComprarRequerida[$i];
-                                $detalle->id_unidad_medida=$request->unidad[$i];
-                                $detalle->precio=$request->precioUnitario[$i];
-                                $detalle->descripcion_adicional=$request->descripcion[$i];
-                                $detalle->subtotal= floatval($request->cantidadAComprarRequerida[$i] * $request->precioUnitario[$i]);
-                                $detalle->tipo_item_id=$request->idTipoItem[$i];
-                                $detalle->save();
-            
-                                $idDetalleProcesado[] = $detalle->id_detalle_orden;
-        
-                        }
-                    }
-                    }
-        
-                    foreach ($TodoDetalleOrden as $detalleOrden) {
-                        if (!in_array($detalleOrden->id_detalle_orden, $idDetalleProcesado)) {
-                            $detalleConAnulidad = OrdenCompraDetalle::where("id_detalle_orden", $detalleOrden->id_detalle_orden)->first();
-                            $detalleConAnulidad->estado = 7;
-                            $detalleConAnulidad->save();
-                        }
-                    }
+                            $idDetalleProcesado[] = $detalle->id_detalle_orden;
     
-                    $data =[
-                        'id_orden_compra' => $orden->id_orden_compra, 
-                        'codigo' => $orden->codigo,
-                        'status_migracion_softlink' => $migrarOrdenSoftlink,
-                    ];
+                    }
+                }
+                }
     
-                } else{
+                foreach ($TodoDetalleOrden as $detalleOrden) {
+                    if (!in_array($detalleOrden->id_detalle_orden, $idDetalleProcesado)) {
+                        $detalleConAnulidad = OrdenCompraDetalle::where("id_detalle_orden", $detalleOrden->id_detalle_orden)->first();
+                        $detalleConAnulidad->estado = 7;
+                        $detalleConAnulidad->save();
+                    }
+                }
+
+                $data =[
+                    'id_orden_compra' => $orden->id_orden_compra, 
+                    'codigo' => $orden->codigo,
+                    'status_migracion_softlink' => $ValidarOrdenSoftlink,
+                ];
+
+                $status= 200;
+            }else{
                     $data =[
                         'id_orden_compra' => 0, 
                         'codigo' => '',
-                        'status_migracion_softlink' => $migrarOrdenSoftlink,
+                        'status_migracion_softlink' => $ValidarOrdenSoftlink,
                     ];
+                    $status= 204;
                 }
+                
 
+
+        DB::commit();
+        if($status == 200){
+            $migrarOrdenSoftlink= (new MigrateOrdenSoftLinkController)->migrarOrdenCompra($request->id_orden)->original;
+            if($migrarOrdenSoftlink['tipo']=='success'){
+                $data =[
+                    'id_orden_compra' => $orden->id_orden_compra, 
+                    'codigo' => $orden->codigo,
+                    'status_migracion_softlink' => $migrarOrdenSoftlink,
+                ];
             }else{
                 $data =[
                     'id_orden_compra' => 0, 
                     'codigo' => '',
-                    'status_migracion_softlink' => $ValidarOrdenSoftlink,
+                    'status_migracion_softlink' => $migrarOrdenSoftlink,
                 ];
             }
+        }
 
-
-
-        DB::commit();
         return response()->json($data);
  
         } catch (\PDOException $e) {
@@ -3406,9 +3413,6 @@ class OrdenController extends Controller
             $ValidarOrdenSoftlink= (new MigrateOrdenSoftLinkController)->validarOrdenSoftlink($id_orden);
             
             if($ValidarOrdenSoftlink['tipo']== 'success'){
-                $migrarOrdenSoftlink= (new MigrateOrdenSoftLinkController)->anularOrdenSoftlink($id_orden)->original;
-
-                if($migrarOrdenSoftlink['tipo']=='success'){
     
                     $hasIngreso = $this->TieneingresoAlmacen($id_orden);
                     if($hasIngreso['status'] == 200 && $hasIngreso['data'] == false){
@@ -3444,6 +3448,32 @@ class OrdenController extends Controller
                         'codigo' => $orden->codigo,
                         'status' => $status,
                         'mensaje'=>$msj,
+                        'status_migracion_softlink' => $ValidarOrdenSoftlink,
+                    ];
+                    $status= 200;
+                
+            }else{
+                $output =[
+                    'id_orden_compra' => 0, 
+                    'codigo' => '',
+                    'status' => 204,
+                    'mensaje'=>'No se pudo anular la orden',
+                    'status_migracion_softlink' => $ValidarOrdenSoftlink,
+                ];
+                $status= 204;
+            }
+
+
+            DB::commit();
+
+            if($status == 200){
+                $migrarOrdenSoftlink= (new MigrateOrdenSoftLinkController)->anularOrdenSoftlink($id_orden)->original;
+                if($migrarOrdenSoftlink['tipo']=='success'){
+                    $output =[
+                        'id_orden_compra' => $orden->id_orden_compra, 
+                        'codigo' => $orden->codigo,
+                        'status' => 200,
+                        'mensaje'=>$msj,
                         'status_migracion_softlink' => $migrarOrdenSoftlink,
                     ];
                 }else{
@@ -3455,18 +3485,7 @@ class OrdenController extends Controller
                         'status_migracion_softlink' => $migrarOrdenSoftlink,
                     ];
                 }
-            }else{
-                $output =[
-                    'id_orden_compra' => 0, 
-                    'codigo' => '',
-                    'status' => 204,
-                    'mensaje'=>'No se pudo anular la orden',
-                    'status_migracion_softlink' => $ValidarOrdenSoftlink,
-                ];
             }
-
-
-            DB::commit();
             return response()->json($output);
 
         } catch (\PDOException $e) {
