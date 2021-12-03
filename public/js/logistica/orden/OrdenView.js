@@ -1215,6 +1215,7 @@ class OrdenView {
 
     validaOrdenRequerimiento() {
         var id_proveedor = $('[name=id_proveedor]').val();
+        var id_condicion_softlink = $('[name=id_condicion_softlink]').val();
         var plazo_entrega = $('[name=plazo_entrega]').val();
         var id_tp_documento = $('[name=id_tp_documento]').val();
         // var id_cuenta_principal_proveedor = $('[name=id_cuenta_principal_proveedor]').val();
@@ -1222,6 +1223,9 @@ class OrdenView {
 
         if (!id_tp_documento > 0) {
             msj += 'Es necesario que seleccione un tipo de orden.<br>';
+        }
+        if (!id_condicion_softlink > 0) {
+            msj += 'Es necesario que seleccione una forma de pago.<br>';
         }
         if (!id_proveedor >0) {
             msj += 'Es necesario que seleccione un Proveedor.<br>';
