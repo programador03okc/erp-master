@@ -85,24 +85,6 @@
 
                                             <div class="row">
                                                 <div class="col-md-4">
-                                                    <h5>Clasificación</h5>
-                                                    <select class="form-control activation js-example-basic-single" name="id_clasif" required>
-                                                        <!-- <option value="0">Elija una opción</option> -->
-                                                        @foreach ($clasificaciones as $clasif)
-                                                        <option value="{{$clasif->id_clasificacion}}">{{$clasif->descripcion}}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <h5>Categoría</h5>
-                                                    <select class="form-control activation js-example-basic-single" name="id_tipo_producto" required>
-                                                        <!-- <option value="0">Elija una opción</option> -->
-                                                        @foreach ($tipos as $cat)
-                                                        <option value="{{$cat->id_tipo_producto}}">{{$cat->descripcion}}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                <div class="col-md-4">
                                                     <h5>SubCategoría</h5>
                                                     <select class="form-control activation js-example-basic-single" name="id_categoria" required>
                                                         <!-- <option value="0">Elija una opción</option> -->
@@ -111,9 +93,9 @@
                                                         @endforeach
                                                     </select>
                                                 </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-4">
+                                            
+                                           
+                                                <div class="col-md-3">
                                                     <h5>Marca</h5>
                                                     <select class="form-control activation js-example-basic-single" name="id_subcategoria" required>
                                                         <!-- <option value="0">Elija una opción</option> -->
@@ -122,11 +104,11 @@
                                                         @endforeach
                                                     </select>
                                                 </div>
-                                                <div class="col-md-4">
+                                                <div class="col-md-3">
                                                     <h5>Part Number</h5>
                                                     <input type="text" class="form-control activation" name="part_number">
                                                 </div>
-                                                <div class="col-md-4">
+                                                <div class="col-md-2">
                                                     <h5>Unidad Medida</h5>
                                                     <select class="form-control activation " name="id_unidad_medida" required>
                                                         <!-- <option value="0">Elija una opción</option> -->
@@ -135,10 +117,29 @@
                                                         @endforeach
                                                     </select>
                                                 </div>
-                                                <div class="col-md-6">
+                                                <div class="col-md-12">
                                                     <h5></h5>
                                                     <input type="checkbox" class="flat-red" name="series" style="padding-left: 0px;" />
                                                     Control de series
+                                                </div>
+
+                                                <div class="col-md-4" style="display:none;">
+                                                    <h5>Clasificación</h5>
+                                                    <select class="form-control activation js-example-basic-single" name="id_clasif" required>
+                                                        <!-- <option value="0">Elija una opción</option> -->
+                                                        @foreach ($clasificaciones as $clasif)
+                                                        <option value="{{$clasif->id_clasificacion}}">{{$clasif->descripcion}}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-4" style="display:none;">
+                                                    <h5>Categoría</h5>
+                                                    <select class="form-control activation js-example-basic-single" name="id_tipo_producto" required>
+                                                        <!-- <option value="0">Elija una opción</option> -->
+                                                        @foreach ($tipos as $cat)
+                                                        <option value="{{$cat->id_tipo_producto}}">{{$cat->descripcion}}</option>
+                                                        @endforeach
+                                                    </select>
                                                 </div>
                                             </div>
                                             <div class="row">
