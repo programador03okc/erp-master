@@ -2489,6 +2489,8 @@ class OrdenController extends Controller
             $detalle->subtotal= floatval($request->cantidadAComprarRequerida[$i] * $request->precioUnitario[$i]);
             $detalle->tipo_item_id=$request->idTipoItem[$i];
             $detalle->estado=1;
+            $detalle->fecha_registro = new Carbon();
+
             // $detalle->fecha_registro = new Carbon();
             $detalle->save();
 
