@@ -9,24 +9,68 @@ use Illuminate\Support\Facades\DB;
 
 class MigrateOrdenSoftLinkController extends Controller
 {
-    /*public function correlativo()//generarCorre
+    public function validarOrdenSoftlink($id_orden_compra)
     {
-        $num = DB::connection('soft')->table('movimien')
-            ->where([
-                ['num_docu', '>', '00210000000'],
-                ['num_docu', '<', '00219999999'],
-                ['cod_suc', '=', '1'],
-                ['tipo', '=', 1], //compra
-                ['cod_docu', '=', 'OC'],
-                // ['cod_alma', '=', $oc->codigo_almacen]
-            ])
-            ->orderBy('num_docu', 'desc')->first();
+        try {
+            DB::beginTransaction();
 
-        $num_ult_mov = substr($num->num_docu, 4);
-        $nro_mov = $this->leftZero(7, (intval($num_ult_mov) + 1));
+            $oc = DB::table('logistica.log_ord_compra')
+                ->where('id_orden_compra', $id_orden_compra)
+                ->first();
 
-        return $nro_mov;
-    }*/
+            $arrayRspta = [];
+            //si existe un id_softlink
+            if ($oc->id_softlink !== null) {
+                //obtiene oc softlink
+                $oc_softlink = DB::connection('soft')->table('movimien')->where('mov_id', $oc->id_softlink)->first();
+
+                if ($oc_softlink !== null) {
+                    //pregunta si fue referenciado
+                    if ($oc_softlink->flg_referen == 1) {
+                        $arrayRspta = array(
+                            'tipo' => 'warning',
+                            'mensaje' => 'Ésta orden ya fue referenciada en Softlink.',
+                            'ocSoftlink' => array('cabecera' => $oc_softlink),
+                            'ocAgile' => array('cabecera' => $oc),
+                        );
+                    }
+                    //pregunta si fue anulada en softlink
+                    else if ($oc_softlink->flg_anulado == 1) {
+                        $arrayRspta = array(
+                            'tipo' => 'warning',
+                            'mensaje' => 'Ésta orden ya fue anulada en Softlink.',
+                            'ocSoftlink' => array('cabecera' => $oc_softlink),
+                            'ocAgile' => array('cabecera' => $oc),
+                        );
+                    } else {
+                        $arrayRspta = array(
+                            'tipo' => 'success',
+                            'mensaje' => 'Se actualizó ésta OC en softlink. Con Nro. ' . $oc_softlink->num_docu . ' con id ' . $oc_softlink->mov_id,
+                            'ocSoftlink' => array('cabecera' => $oc_softlink),
+                            'ocAgile' => array('cabecera' => $oc),
+                        );
+                    }
+                } else {
+                    $arrayRspta = array(
+                        'tipo' => 'warning',
+                        'mensaje' => 'No existe dicho id en Softlink. Id: ' . $oc->id_softlink,
+                        'ocSoftlink' => array('cabecera' => $oc_softlink),
+                        'ocAgile' => array('cabecera' => $oc),
+                    );
+                }
+            } else {
+                $arrayRspta = array(
+                    'tipo' => 'warning',
+                    'mensaje' => 'No existe la OC seleccionada. Id: ' . $id_orden_compra
+                );
+            }
+            DB::commit();
+            return $arrayRspta;
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return array('tipo' => 'error', 'mensaje' => 'Hubo un problema al enviar la orden. Por favor intente de nuevo', 'error' => $e->getMessage());
+        }
+    }
 
     public function migrarOrdenCompra($id_orden_compra)
     {
@@ -42,6 +86,7 @@ class MigrateOrdenSoftLinkController extends Controller
                     'log_ord_compra.fecha_registro',
                     'log_ord_compra.id_moneda',
                     'log_ord_compra.id_sede',
+                    'log_ord_compra.id_condicion_softlink',
                     'alm_almacen.codigo as codigo_almacen',
                     'log_ord_compra.observacion',
                     'adm_contri.nro_documento as ruc',
@@ -174,6 +219,7 @@ class MigrateOrdenSoftLinkController extends Controller
                                         'cod_auxi' => $cod_auxi,
                                         'cod_vend' => $oc->codvend_softlink,
                                         'tip_mone' => $oc->id_moneda,
+                                        'tip_codicion' => $oc->id_condicion_softlink,
                                         'impto1' => $igv,
                                         'mon_bruto' => $oc->total_precio,
                                         'mon_impto1' => $mon_impto,
@@ -324,7 +370,7 @@ class MigrateOrdenSoftLinkController extends Controller
                 'sal_docu' => '0.00',
                 'tot_cargo' => '0.00',
                 'tot_percep' => '0.00',
-                'tip_codicion' => '02', //REvisar la condicion
+                'tip_codicion' => $oc->id_condicion_softlink,
                 'txt_observa' => ($oc->observacion !== null ? $oc->observacion : ''),
                 'flg_kardex' => 0,
                 'flg_anulado' => 0,
