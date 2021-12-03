@@ -160,7 +160,14 @@ Elaborar orden
                         <div class="col-md-3" id="group-condicion_compra-forma_pago">
                             <h5>Forma de pago</h5>
                             <div style="display:flex;">
-                                <select class="form-control group-elemento activation handleChangeCondicion" name="id_condicion" style="width:100%; text-align:center;">
+                                <select class="form-control activation handleChangeCondicion" name="id_condicion_softlink" style="width:100%; text-align:center;">
+                                    @foreach ($condiciones_softlink as $cond)
+                                    <option value="{{$cond->id_condicion_softlink}}" data-dias="{{$cond->dias}}">{{$cond->descripcion}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div style="display:none;">
+                                <select class="form-control group-elemento activation" name="id_condicion" style="width:100%; text-align:center;">
                                     @foreach ($condiciones as $cond)
                                     <option value="{{$cond->id_condicion_pago}}">{{$cond->descripcion}}</option>
                                     @endforeach

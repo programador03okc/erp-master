@@ -8,20 +8,6 @@ $('#listaRequerimientosPendientes tbody').on("click", "i.handleClickAbrirModalPo
     abrirModalPorRegularizar(e.currentTarget);
 });
 
-$('#modal-por-regularizar').on("click", "button.handleClickRemplazarProductoEnOrden", (e) => {
-    remplazarProductoEnOrden(e.currentTarget);
-});
-$('#modal-por-regularizar').on("click", "button.handleClickLiberarProductoOrden", (e) => {
-    liberarProductoOrden(e.currentTarget);
-});
-$('#modal-por-regularizar').on("click", "button.handleClickAnularItemDeOrden", (e) => {
-    anularItemDeOrden(e.currentTarget);
-});
-
-$('#modal-por-regularizar').on("click", "button.handleClickAnularReserva", (e) => {
-    anularReserva(e.currentTarget);
-});
-
 $('#modal-por-regularizar').on("click", "button.handleClickRemplazarProductoComprometidoEnTodaOrden", (e) => {
     remplazarProductoComprometidoEnTodaOrden(e.currentTarget);
 });
@@ -67,7 +53,9 @@ function construirTablaPorRegularizar(idRequerimiento) {
     if (idRequerimiento > 0) {
         limpiarTabla('listaItemsPorRegularizar')
         obtenerDataPorRegularlizar(idRequerimiento).then((res) => {
-            listarItemsPorRegularizar(res);
+            document.querySelector("div[id='modal-por-regularizar'] span[id='codigo_requerimiento']").textContent = res.codigo_requerimiento ?? '';
+            document.querySelector("div[id='modal-por-regularizar'] span[id='codigo_cuadro_presupuesto']").textContent = res.codigo_cuadro_presupuesto ?? '';
+            listarItemsPorRegularizar(idRequerimiento);
         }).catch((err) => {
             console.log(err)
         })
@@ -79,7 +67,7 @@ function obtenerDataPorRegularlizar(id) {
     return new Promise(function (resolve, reject) {
         $.ajax({
             type: 'GET',
-            url: `por-regularizar/${id}`,
+            url: `por-regularizar-cabecera/${id}`,
             dataType: 'JSON',
             success(response) {
                 resolve(response);
@@ -93,10 +81,7 @@ function obtenerDataPorRegularlizar(id) {
 
 
 
-function listarItemsPorRegularizar(data) {
-    document.querySelector("div[id='modal-por-regularizar'] span[id='codigo_requerimiento']").textContent = data['cabecera'].codigo_requerimiento ?? '';
-    document.querySelector("div[id='modal-por-regularizar'] span[id='codigo_cuadro_presupuesto']").textContent = data['cabecera'].codigo_cuadro_presupuesto ?? '';
-
+function listarItemsPorRegularizar(idRequerimiento) {
 
     let that = this;
 
@@ -108,8 +93,19 @@ function listarItemsPorRegularizar(data) {
         'bLengthChange': false,
         // 'serverSide': true,
         'destroy': true,
-        'data': data['detalle'],
+        'ajax': {
+            'url': 'por-regularizar-detalle/'+idRequerimiento,
+            'type': 'GET',
+            beforeSend: data => {
 
+                $("#listaItemsPorRegularizar").LoadingOverlay("show", {
+                    imageAutoResize: true,
+                    progress: true,
+                    imageColor: "#3c8dbc"
+                });
+            },
+
+        },
         'columns': [
             { 'data': 'detalle_cc.part_no', "searchable": false },
             { 'data': 'detalle_cc.descripcion', "searchable": false },
@@ -253,6 +249,7 @@ function listarItemsPorRegularizar(data) {
 
         },
         "drawCallback": function (settings) {
+            $("#listaItemsPorRegularizar").LoadingOverlay("hide", true);
 
         },
         "createdRow": function (row, data, dataIndex) {
@@ -263,332 +260,6 @@ function listarItemsPorRegularizar(data) {
 
         }
 
-    });
-}
-
-function remplazarProductoEnOrden(obj) {
-    // obj.dataset.idOrden
-    if (obj.dataset.idOrden > 0) {
-        Swal.fire({
-            title: 'Esta seguro que desea remplazar el producto del requerimiento en el producto de la orden?',
-            text: "No podrás revertir esto.",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            cancelButtonText: 'Cancelar',
-            confirmButtonText: 'Si, remplazar'
-
-        }).then((result) => {
-            if (result.isConfirmed) {
-                realizarRemplazoDeProductoEnOrden(obj.dataset.idOrden, obj.dataset.idDetalleRequerimiento).then((res) => {
-                    // console.log(res);
-                    if (res.status == 200) {
-                        Lobibox.notify('success', {
-                            title: false,
-                            size: 'mini',
-                            rounded: true,
-                            sound: false,
-                            delayIndicator: false,
-                            msg: res.mensaje
-                        });
-                        obj.closest('tr').remove();
-                        // console.log(obj.closest('tr'));
-                    } else {
-                        Lobibox.notify('warning', {
-                            title: false,
-                            size: 'large',
-                            rounded: true,
-                            sound: false,
-                            delayIndicator: false,
-                            msg: res.mensaje
-                        });
-                    }
-                }).catch((err) => {
-                    console.log(err)
-                })
-            }
-        })
-
-
-    } else {
-        alert("El ID enviado no es correcto, contacte con el administrador");
-    }
-}
-
-function realizarRemplazoDeProductoEnOrden(idOrden, idDetalleRequerimiento) {
-    return new Promise(function (resolve, reject) {
-        $.ajax({
-            type: 'POST',
-            url: `realizar-remplazo-de-producto-en-orden`,
-            dataType: 'JSON',
-            data: { 'idOrden': idOrden, 'idDetalleRequerimiento': idDetalleRequerimiento },
-            success(response) {
-                resolve(response);
-            },
-            fail: (jqXHR, textStatus, errorThrown) => {
-                console.log(jqXHR);
-                console.log(textStatus);
-                console.log(errorThrown);
-
-                Swal.fire(
-                    '',
-                    'Lo sentimos hubo un error en el servidor al intentar remplazar el producto, por favor vuelva a intentarlo',
-                    'error'
-                );
-            },
-            error: function (err) {
-                console.log(err);
-                reject(err)
-            }
-        });
-    });
-}
-
-
-function liberarProductoOrden(obj) {
-    // obj.dataset.idOrden
-    if (obj.dataset.idOrden > 0) {
-        Swal.fire({
-            title: 'Esta seguro que desea liberar el producto de la orden?',
-            text: "No podrás revertir esto.",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            cancelButtonText: 'Cancelar',
-            confirmButtonText: 'Si, liberar'
-
-        }).then((result) => {
-            if (result.isConfirmed) {
-                realizarLiberacionDeProductoEnOrden(obj.dataset.idOrden, obj.dataset.idDetalleRequerimiento).then((res) => {
-                    // console.log(res);
-                    if (res.status == 200) {
-                        Lobibox.notify('success', {
-                            title: false,
-                            size: 'mini',
-                            rounded: true,
-                            sound: false,
-                            delayIndicator: false,
-                            msg: res.mensaje
-                        });
-                        obj.closest('tr').remove();
-                        // console.log(obj.closest('tr'));
-                    } else {
-                        Lobibox.notify('warning', {
-                            title: false,
-                            size: 'large',
-                            rounded: true,
-                            sound: false,
-                            delayIndicator: false,
-                            msg: res.mensaje
-                        });
-                    }
-                }).catch((err) => {
-                    console.log(err)
-                })
-            }
-        })
-
-
-    } else {
-        alert("El ID enviado no es correcto, contacte con el administrador");
-    }
-}
-
-
-function realizarLiberacionDeProductoEnOrden(idOrden, idDetalleRequerimiento) {
-    return new Promise(function (resolve, reject) {
-        $.ajax({
-            type: 'POST',
-            url: `realizar-liberacion-de-producto-en-orden`,
-            dataType: 'JSON',
-            data: { 'idOrden': idOrden, 'idDetalleRequerimiento': idDetalleRequerimiento },
-            success(response) {
-                resolve(response);
-            },
-            fail: (jqXHR, textStatus, errorThrown) => {
-                console.log(jqXHR);
-                console.log(textStatus);
-                console.log(errorThrown);
-
-                Swal.fire(
-                    '',
-                    'Lo sentimos hubo un error en el servidor al intentar liberar el producto, por favor vuelva a intentarlo',
-                    'error'
-                );
-            },
-            error: function (err) {
-                console.log(err);
-                reject(err)
-            }
-        });
-    });
-}
-
-
-
-
-
-
-
-
-
-
-
-function anularReserva(obj) {
-    if (obj.dataset.idReserva > 0) {
-        Swal.fire({
-            title: 'Esta seguro que desea anular la reserva?',
-            text: "No podrás revertir esto.",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            cancelButtonText: 'Cancelar',
-            confirmButtonText: 'Si, anular'
-
-        }).then((result) => {
-            if (result.isConfirmed) {
-                realizarAnularReserva(obj.dataset.idReserva, obj.dataset.idDetalleRequerimiento).then((res) => {
-                    // console.log(res);
-                    if (res.status == 200) {
-                        Lobibox.notify('success', {
-                            title: false,
-                            size: 'mini',
-                            rounded: true,
-                            sound: false,
-                            delayIndicator: false,
-                            msg: res.mensaje
-                        });
-                        obj.closest('tr').remove();
-                        // console.log(obj.closest('tr'));
-                    } else {
-                        Lobibox.notify('warning', {
-                            title: false,
-                            size: 'large',
-                            rounded: true,
-                            sound: false,
-                            delayIndicator: false,
-                            msg: res.mensaje
-                        });
-                    }
-                }).catch((err) => {
-                    console.log(err)
-                })
-            }
-        })
-
-
-    } else {
-        alert("El ID enviado no es correcto, contacte con el administrador");
-    }
-}
-
-function realizarAnularReserva(idReserva, idDetalleRequerimiento) {
-
-    return new Promise(function (resolve, reject) {
-        $.ajax({
-            type: 'POST',
-            url: `realizar-anular-reserva`,
-            dataType: 'JSON',
-            data: { 'idReserva': idReserva, 'idDetalleRequerimiento': idDetalleRequerimiento },
-            success(response) {
-                resolve(response);
-            },
-            fail: (jqXHR, textStatus, errorThrown) => {
-                console.log(jqXHR);
-                console.log(textStatus);
-                console.log(errorThrown);
-
-                Swal.fire(
-                    '',
-                    'Lo sentimos hubo un error en el servidor al intentar liberar el producto, por favor vuelva a intentarlo',
-                    'error'
-                );
-            },
-            error: function (err) {
-                console.log(err);
-                reject(err)
-            }
-        });
-    });
-}
-function anularItemDeOrden(obj) {
-    if (obj.dataset.idOrden > 0) {
-        Swal.fire({
-            title: `Esta seguro que desea anular el item ${obj.dataset.codigoProducto ? obj.dataset.codigoProducto : obj.dataset.partNumber} de la orden ${obj.dataset.codigoOrden}?`,
-            text: "No podrás revertir esto.",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            cancelButtonText: 'Cancelar',
-            confirmButtonText: 'Si, anular'
-
-        }).then((result) => {
-            if (result.isConfirmed) {
-                realizarAnularItemDeOrden(obj.dataset.idOrden, obj.dataset.idDetalleRequerimiento).then((res) => {
-                    console.log(res);
-                    if (res.status == 200) {
-                        Lobibox.notify('success', {
-                            title: false,
-                            size: 'mini',
-                            rounded: true,
-                            sound: false,
-                            delayIndicator: false,
-                            msg: res.mensaje.toString()
-                        });
-                        obj.closest('tr').remove();
-                    } else {
-                        Lobibox.notify('warning', {
-                            title: false,
-                            size: 'large',
-                            rounded: true,
-                            sound: false,
-                            delayIndicator: false,
-                            msg: res.mensaje.toString()
-                        });
-                    }
-                }).catch((err) => {
-                    console.log(err)
-                })
-            }
-        })
-
-
-    } else {
-        alert("El ID enviado no es correcto, contacte con el administrador");
-    }
-}
-
-function realizarAnularItemDeOrden(idOrden, idDetalleRequerimiento) {
-
-    return new Promise(function (resolve, reject) {
-        $.ajax({
-            type: 'POST',
-            url: `anular-item-orden`,
-            dataType: 'JSON',
-            data: { 'idOrden': idOrden, 'idDetalleRequerimiento': idDetalleRequerimiento },
-            success(response) {
-                resolve(response);
-            },
-            fail: (jqXHR, textStatus, errorThrown) => {
-                console.log(jqXHR);
-                console.log(textStatus);
-                console.log(errorThrown);
-
-                Swal.fire(
-                    '',
-                    'Lo sentimos hubo un error en el servidor al intentar anular la orden, por favor vuelva a intentarlo',
-                    'error'
-                );
-            },
-            error: function (err) {
-                console.log(err);
-                reject(err)
-            }
-        });
     });
 }
 
@@ -623,8 +294,8 @@ function remplazarProductoComprometidoEnTodaOrden(obj) {
                             delayIndicator: false,
                             msg: res.mensaje
                         });
-                        construirTablaPorRegularizar(document.querySelector("div[id='modal-por-regularizar'] input[name='idRequerimiento']").value);
-                        // $("#listaItemsPorRegularizar").DataTable().ajax.reload(null, false);
+                        // construirTablaPorRegularizar(document.querySelector("div[id='modal-por-regularizar'] input[name='idRequerimiento']").value);
+                        $("#listaItemsPorRegularizar").DataTable().ajax.reload(null, false);
 
                         if (res.cambiaEstadoRequerimiento == true) {
                             // trPorRegularizarSeleccionar.querySelector("i[class~='fa-exclamation-triangle']").remove()
@@ -659,7 +330,7 @@ function remplazarProductoComprometidoEnTodaOrden(obj) {
                     } else {
                         Lobibox.notify('warning', {
                             title: false,
-                            size: 'large',
+                            size: 'mini',
                             rounded: true,
                             sound: false,
                             delayIndicator: false,
@@ -731,7 +402,10 @@ function liberarProductoComprometidoEnTodaOrden(obj) {
                             delayIndicator: false,
                             msg: res.mensaje
                         });
-                        construirTablaPorRegularizar(document.querySelector("div[id='modal-por-regularizar'] input[name='idRequerimiento']").value);
+                        // construirTablaPorRegularizar(document.querySelector("div[id='modal-por-regularizar'] input[name='idRequerimiento']").value);
+                        $("#listaItemsPorRegularizar").DataTable().ajax.reload(null, false);
+
+
                         if (res.cambiaEstadoRequerimiento == true) {
                             // trPorRegularizarSeleccionar.querySelector("i[class~='fa-exclamation-triangle']").remove()
                             $('#modal-por-regularizar').modal('hide');
@@ -761,7 +435,7 @@ function liberarProductoComprometidoEnTodaOrden(obj) {
                     } else {
                         Lobibox.notify('warning', {
                             title: false,
-                            size: 'large',
+                            size: 'mini',
                             rounded: true,
                             sound: false,
                             delayIndicator: false,
@@ -833,7 +507,10 @@ function anularItemComprometidoEnTodaOrdenYReserva(obj) {
                             delayIndicator: false,
                             msg: res.mensaje
                         });
-                        construirTablaPorRegularizar(document.querySelector("div[id='modal-por-regularizar'] input[name='idRequerimiento']").value);
+                        // construirTablaPorRegularizar(document.querySelector("div[id='modal-por-regularizar'] input[name='idRequerimiento']").value);
+                        $("#listaItemsPorRegularizar").DataTable().ajax.reload(null, false);
+
+
                         if (res.cambiaEstadoRequerimiento == true) {
                             // trPorRegularizarSeleccionar.querySelector("i[class~='fa-exclamation-triangle']").remove()
                             $('#modal-por-regularizar').modal('hide');
@@ -865,7 +542,7 @@ function anularItemComprometidoEnTodaOrdenYReserva(obj) {
                     } else {
                         Lobibox.notify('warning', {
                             title: false,
-                            size: 'large',
+                            size: 'mini',
                             rounded: true,
                             sound: false,
                             delayIndicator: false,
@@ -978,15 +655,15 @@ function construirDetalleListaOrdenYReserva(table_id, row, response) {
     if (response.length > 0) {
 
         response.forEach(function (element) {
-            let botoneraDetalleFila = '';
-            if (element.id_detalle_orden > 0) {
-                botoneraDetalleFila += `<button type="button" class="btn btn-default btn-xs handleClickRemplazarProductoEnOrden" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-id-detalle-orden="${element.id_detalle_orden}" name="btnRemplazarProductoEnOrden" title="Remplazar producto en orden"><i class="fas fa-paint-roller fa-sm"></i></button>`;
-                botoneraDetalleFila += `<button type="button" class="btn btn-default btn-xs handleClickLiberarProductoOrden" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-id-detalle-orden="${element.id_detalle_orden}" name="btnLiberarProductoOrden" title="Liberar producto de orden"><i class="fas fa-parachute-box fa-sm"></i></button>`;
-                botoneraDetalleFila += `<button type="button" class="btn btn-default btn-xs handleClickAnularItemDeOrden"  data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-id-detalle-orden="${element.id_detalle_orden}" name="btnAnularItemOrden" title="Anular item de orden"><i class="fas fa-ban fa-sm"></i></button>`;
-            }
-            if (element.id_reserva > 0) {
-                botoneraDetalleFila = `<button type="button" class="btn btn-default btn-xs handleClickAnularReserva" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-id-reserva="${element.id_reserva}" name="btnAnularReserva" title="Anular reserva"><i class="far fa-times-circle fa-sm"></i></button>`;
-            }
+            // let botoneraDetalleFila = '';
+            // if (element.id_detalle_orden > 0) {
+            //     botoneraDetalleFila += `<button type="button" class="btn btn-default btn-xs handleClickRemplazarProductoEnOrden" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-id-detalle-orden="${element.id_detalle_orden}" name="btnRemplazarProductoEnOrden" title="Remplazar producto en orden"><i class="fas fa-paint-roller fa-sm"></i></button>`;
+            //     botoneraDetalleFila += `<button type="button" class="btn btn-default btn-xs handleClickLiberarProductoOrden" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-id-detalle-orden="${element.id_detalle_orden}" name="btnLiberarProductoOrden" title="Liberar producto de orden"><i class="fas fa-parachute-box fa-sm"></i></button>`;
+            //     botoneraDetalleFila += `<button type="button" class="btn btn-default btn-xs handleClickAnularItemDeOrden"  data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-id-detalle-orden="${element.id_detalle_orden}" name="btnAnularItemOrden" title="Anular item de orden"><i class="fas fa-ban fa-sm"></i></button>`;
+            // }
+            // if (element.id_reserva > 0) {
+            //     botoneraDetalleFila = `<button type="button" class="btn btn-default btn-xs handleClickAnularReserva" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-id-reserva="${element.id_reserva}" name="btnAnularReserva" title="Anular reserva"><i class="fas fa-ban fa-sm"></i></button>`;
+            // }
 
             html += `<tr>
                     <td style="border: none; text-align:center;">${element.codigo_documento != null ? element.codigo_documento : ''}</td>
@@ -995,11 +672,6 @@ function construirDetalleListaOrdenYReserva(table_id, row, response) {
                     <td style="border: none; text-align:center;">${element.unidad_medida != null ? element.unidad_medida : ''}</td>
                     <td style="border: none; text-align:center;">${element.cantidad > 0 ? element.cantidad : ''}</td>
                     <td style="border: none; text-align:center;">${element.estado != null ? element.estado : ''}</td>
-                    <td style="border: none; text-align:left;" data-id-detalle-orden="${element.id_detalle_orden}" data-id-reserva="${element.id_reserva}">
-                        <div class="btn-group">
-                            ${botoneraDetalleFila} 
-                        </div>
-                    </td>
                     </tr>`;
 
         });
@@ -1013,7 +685,6 @@ function construirDetalleListaOrdenYReserva(table_id, row, response) {
                     <th style="border: none; text-align:center;">Unidad medida</th>
                     <th style="border: none; text-align:center;">Cantidad</th>
                     <th style="border: none; text-align:center;">Estado</th>
-                    <th style="border: none; text-align:center;">Acción</th>
                 </tr>
             </thead>
             <tbody style="background: #e7e8ea;">${html}</tbody>

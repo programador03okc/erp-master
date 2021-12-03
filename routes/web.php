@@ -776,24 +776,16 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('detalle-requeriento-para-reserva/{idDetalleRequerimiento?}', 'Logistica\RequerimientoController@detalleRequerimientoParaReserva')->name('detalle-requerimiento-para-reserva');
 					Route::get('historial-reserva-producto/{idDetalleRequerimiento?}', 'Logistica\RequerimientoController@historialReservaProducto')->name('historial-reserva-producto');
 					Route::get('todo-detalle-requeriento/{idRequerimiento?}/{transformadosONoTransformados?}', 'Logistica\RequerimientoController@todoDetalleRequerimiento')->name('todo-detalle-requerimiento');
-
 					Route::get('mostrar_tipos_clasificacion/{id}', 'Almacen\Catalogo\TipoProductoController@mostrar_tipos_clasificacion');
-					Route::get('por-regularizar/{id}', 'ComprasPendientesController@listarPorRegularizar');
+					Route::get('por-regularizar-cabecera/{id}', 'ComprasPendientesController@listarPorRegularizarCabecera');
+					Route::get('por-regularizar-detalle/{id}', 'ComprasPendientesController@listarPorRegularizarDetalle');
 					Route::post('realizar-remplazo-de-producto-comprometido-en-toda-orden', 'ComprasPendientesController@realizarRemplazoDeProductoEnTodaOrden');
-					Route::post('realizar-remplazo-de-producto-en-orden', 'ComprasPendientesController@realizarRemplazoDeProductoEnOrden');
 					Route::post('realizar-liberacion-de-producto-comprometido-en-toda-orden', 'ComprasPendientesController@realizarLiberacionDeProductoEnTodaOrden');
-					Route::post('realizar-liberacion-de-producto-en-orden', 'ComprasPendientesController@realizarLiberacionDeProductoEnOrden');
 					Route::post('realizar-anular-item-en-toda-orden-y-reservas', 'ComprasPendientesController@realizarAnularItemEnTodaOrdenYReservas');
-					Route::post('anular-item-orden', 'OrdenController@anularItemOrden')->name('anular-item-orden');
-					Route::post('realizar-anular-reserva', 'ComprasPendientesController@realizarAnularReserva');
 					Route::get('imprimir_ingreso/{id}', 'Almacen\Movimiento\IngresoPdfController@imprimir_ingreso');
  					Route::get('items-orden-items-reserva-por-detalle-requerimiento/{idDetalleRequerimiento}', 'ComprasPendientesController@itemsOrdenItemsReservaPorDetalleRequerimiento');
-					
 					Route::get('finalizar-cuadro/{id}', 'OrdenController@finalizarCuadroPresupuesto');
-
-					Route::get('mostrar-archivos-adjuntos-detalle-requerimiento/{id_detalle_requerimiento}', 'Logistica\RequerimientoController@mostrarArchivosAdjuntos');
-					// Route::get('mostrar-archivos-adjuntos-requerimiento/{id_requerimiento?}/{categoria?}', 'Logistica\RequerimientoController@mostrarArchivosAdjuntosRequerimiento');
-					
+					Route::get('mostrar-archivos-adjuntos-detalle-requerimiento/{id_detalle_requerimiento}', 'Logistica\RequerimientoController@mostrarArchivosAdjuntos');					
 					Route::get('mostrar-todo-adjuntos-requerimiento/{id_requerimiento}', 'Logistica\RequerimientoController@mostrarTodoAdjuntos');
 					
 

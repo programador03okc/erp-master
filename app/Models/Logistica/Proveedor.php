@@ -24,7 +24,9 @@ class Proveedor extends Model
         'establecimientoProveedor',
         // 'contribuyente.distrito.provincia',
         // 'contribuyente.distrito.provincia.departamento',
-        'estadoProveedor')
+        'estadoProveedor')->whereHas('contribuyente', function($q){
+            $q->where('estado', '=', 1);
+        })
         ->where('log_prove.estado','=',1);
         return $data;
 
@@ -51,7 +53,9 @@ class Proveedor extends Model
         },
         'establecimientoProveedor.estadoEstablecimiento',
         'estadoProveedor'
-        ])->where('id_proveedor',$idProveedor)->first();
+        ])->whereHas('contribuyente', function($q){
+            $q->where('estado', '=', 1);
+        })->where('id_proveedor',$idProveedor)->first();
         // ->where('log_prove.id_contribuyente','=',1912);
         return $data;
 

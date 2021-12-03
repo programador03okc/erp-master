@@ -30,6 +30,7 @@ use App\Models\Configuracion\Moneda;
 use App\Models\Contabilidad\Banco;
 use App\Models\Contabilidad\CuentaContribuyente;
 use App\Models\Contabilidad\TipoCuenta;
+use App\Models\Logistica\CondicionSoftlink;
 use App\Models\Logistica\EstadoCompra;
 use App\Models\Logistica\Orden;
 use App\Models\Logistica\OrdenCompraDetalle;
@@ -71,6 +72,8 @@ class OrdenController extends Controller
     function view_crear_orden_requerimiento()
     {
         $condiciones = $this->select_condiciones();
+        $condiciones_softlink = CondicionSoftlink::mostrar();
+
         $tp_moneda = $this->select_moneda();
         $tp_documento = $this->select_documento();
         $sis_identidad = $this->select_sis_identidad();
@@ -88,7 +91,7 @@ class OrdenController extends Controller
         // $sedes = Auth::user()->sedesAcceso();
         $bancos = Banco::mostrar();
         $tipo_cuenta = TipoCuenta::mostrar();
-        return view('logistica/gestion_logistica/compras/ordenes/elaborar/crear_orden_requerimiento', compact('bancos','tipo_cuenta','sedes','sis_identidad','tp_documento', 'tp_moneda','tp_doc','condiciones','clasificaciones','subcategorias','categorias','unidades','unidades_medida','monedas'));
+        return view('logistica/gestion_logistica/compras/ordenes/elaborar/crear_orden_requerimiento', compact('bancos','tipo_cuenta','sedes','sis_identidad','tp_documento', 'tp_moneda','tp_doc','condiciones','condiciones_softlink','clasificaciones','subcategorias','categorias','unidades','unidades_medida','monedas'));
     }
 
     function lista_contactos_proveedor($id_proveedor){
@@ -1298,6 +1301,7 @@ class OrdenController extends Controller
             'log_ord_compra.id_contacto',
             'adm_ctb_contac.nombre as nombre_contacto',
             'adm_ctb_contac.nombre as telefono_contacto',
+            'log_ord_compra.id_condicion_softlink',
             'log_ord_compra.id_condicion',
             DB::raw("(CASE 
             WHEN log_ord_compra.id_condicion = 1 THEN log_cdn_pago.descripcion 
@@ -1446,6 +1450,7 @@ class OrdenController extends Controller
                 'adm_contri.email AS email_proveedor',
                 DB::raw("(dis_prov.descripcion) || ' - ' || (prov_prov.descripcion) || ' - ' || (dpto_prov.descripcion)  AS ubigeo_proveedor"),
                 'log_ord_compra.codigo',
+                'log_ord_compra.id_condicion_softlink',
                 'log_ord_compra.id_condicion',
                 'log_cdn_pago.descripcion AS condicion_pago',
                 'log_ord_compra.plazo_dias',
@@ -1624,6 +1629,7 @@ class OrdenController extends Controller
                     ], 
                 
                     'condicion_compra'=>[
+                        'id_condicion_softlink' => $data->id_condicion_softlink,
                         'id_condicion' => $data->id_condicion,
                         'condicion_pago' => $data->condicion_pago,
                         'plazo_dias' => $data->plazo_dias,
@@ -2449,6 +2455,7 @@ class OrdenController extends Controller
             $orden->id_cta_principal = isset($request->id_cuenta_principal_proveedor)?$request->id_cuenta_principal_proveedor:null;
             $orden->id_contacto = isset($request->id_contacto_proveedor)?$request->id_contacto_proveedor:null;
             $orden->plazo_entrega =  $request->plazo_entrega?$request->plazo_entrega:null;
+            $orden->id_condicion_softlink = $request->id_condicion_softlink?$request->id_condicion_softlink:null;
             $orden->id_condicion = $request->id_condicion?$request->id_condicion:null;
             $orden->plazo_dias = $request->plazo_dias?$request->plazo_dias:null;
             $orden->id_cotizacion = $request->id_cotizacion?$request->id_cotizacion:null;
@@ -2863,6 +2870,7 @@ class OrdenController extends Controller
                 $orden->id_contacto = isset($request->id_contacto_proveedor)?$request->id_contacto_proveedor:null;
                 $orden->plazo_entrega =  $request->plazo_entrega?$request->plazo_entrega:null;
                 $orden->id_condicion = $request->id_condicion?$request->id_condicion:null;
+                $orden->id_condicion_softlink = $request->id_condicion_softlink?$request->id_condicion_softlink:null;
                 $orden->plazo_dias = $request->plazo_dias?$request->plazo_dias:null;
                 $orden->id_cotizacion = $request->id_cotizacion?$request->id_cotizacion:null;
                 $orden->id_tp_doc = isset($request->id_tp_doc)?$request->id_tp_doc:null;
@@ -3584,11 +3592,21 @@ class OrdenController extends Controller
 
     public function mostrarProveedores()
     {
-        $proveedores = Proveedor::with(['estadoProveedor','cuentaContribuyente'=> function($q){
-            $q->where([['adm_cta_contri.estado', '=', 1]]);
-        },'contribuyente'=> function($q){
-            $q->where([['adm_contri.estado', '=', 1],['adm_contri.transportista', '=', false]]);
-        }])->where('log_prove.estado',1);
+        // $proveedores = Proveedor::with(['estadoProveedor'=> function($q){
+        //     $q->where([['estado', '=', 1]]);
+        // },'cuentaContribuyente'=> function($q){
+        //     $q->where([['estado', '=', 1]]);
+        // },'contribuyente'=> function($q){
+        //     $q->where([['estado', '=', 1],['transportista', '=', false]]);
+        // }])->where('log_prove.estado','=',1);
+
+
+        $proveedores = Proveedor::with('contribuyente','estadoProveedor','cuentaContribuyente')->whereHas('contribuyente', function($q){
+            $q->where('estado', '=', 1);
+        })->where('log_prove.estado','=',1);
+
+ 
+
         return datatables($proveedores)->toJson();
     }
 
