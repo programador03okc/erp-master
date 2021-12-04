@@ -813,7 +813,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 						Route::post('listar-historial-ordenes-elaboradas', 'OrdenController@listaHistorialOrdenes');
 						Route::get('mostrar-orden/{id_orden?}', 'OrdenController@mostrarOrden');
-						Route::put('anular/{id_orden?}', 'OrdenController@anularOrden')->name('anular');
+						Route::post('anular', 'OrdenController@anularOrden')->name('anular');
 						Route::get('tipo-cambio-compra/{fecha}', 'Almacen\Reporte\SaldosController@tipo_cambio_compra');
 						Route::get('requerimientos-pendientes/{empresa?}/{sede?}/{fechaDesde?}/{fechaHasta?}/{reserva?}/{orden?}', 'ComprasPendientesController@listarRequerimientosPendientes')->name('requerimientos-pendientes');
 						Route::get('detalle-requerimiento/{idRequerimiento?}', 'Logistica\RequerimientoController@detalleRequerimiento')->name('detalle-requerimientos');
@@ -841,7 +841,7 @@ Route::group(['middleware' => ['auth']], function () {
 						Route::post('listar-detalle-orden', 'OrdenController@listarDetalleOrden')->name('ordenes-en-proceso');
 						Route::post('actualizar-estado', 'OrdenController@update_estado_orden')->name('actualizar-estado-orden');
 						Route::post('actualizar-estado-detalle', 'OrdenController@update_estado_item_orden')->name('actualizar-estado-detalle-orden');
-						Route::put('anular/{id_orden?}', 'OrdenController@anularOrden')->name('anular');
+						Route::post('anular', 'OrdenController@anularOrden')->name('anular');
 						Route::get('documentos-vinculados/{id_orden?}', 'OrdenController@documentosVinculadosOrden')->name('documentos-vinculados');
 
 

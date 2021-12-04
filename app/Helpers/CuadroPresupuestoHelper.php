@@ -28,6 +28,7 @@ class CuadroPresupuestoHelper
 
 
         $payload = [];
+        $payloadRestablecido=[];
         $codigoOportunidad=[];
         $destinatarios=[];
         // $listaRestablecidos = [];
@@ -80,21 +81,20 @@ class CuadroPresupuestoHelper
 
 
                         } else { // si el requerimiento no esta atentido total o reserva total 
-                            // if ($cc->estado_aprobacion == 4) { // verifica si el estado actual del cc es finalizado cuando el requerimiento no esta atentido 
-                            //     $cc->estado_aprobacion = 3;
-                            //     $cc->save();
-                            //     $listaRestablecidos[] = [
-                            //         'id_requerimiento' => $requerimiento->id_requerimiento,
-                            //         'codigo_requerimiento' => $requerimiento->codigo,
-                            //         'id_cuadro_presupuesto' => $cuadroPresupuesto->id,
-                            //         'id_oportunidad' => $cuadroPresupuesto->oportunidad->id,
-                            //         'codigo_cuadro_presupuesto' => $cuadroPresupuesto->oportunidad->codigo_oportunidad
-                            //     ];
-                            // }
+                            if ($cc->estado_aprobacion == 4) { // verifica si el estado actual del cc es finalizado cuando el requerimiento no esta atentido 
+                                $cc->estado_aprobacion = 3;
+                                $cc->save();
+                                $payloadRestablecido[] = [
+                                    'requerimiento' => $requerimiento,
+                                    'cuadro_presupuesto' => $cuadroPresupuesto,
+                                    'orden_compra_propia' => $cuadroPresupuesto->oportunidad->ordenCompraPropia,
+                                    'oportunidad' => $cuadroPresupuesto->oportunidad
+                                ];
+                            }
                         }
                         // preparar correo
  
-                        if (count($payload) > 0) {
+                        if (count($payload) > 0) {  // cuando tiene CDP finalizados
  
                             $correosOrdenServicioTransformacion = [];
                             $correoFinalizacionCuadroPresupuesto=[];
@@ -137,14 +137,31 @@ class CuadroPresupuestoHelper
 
 
                         }
-                        // fin preparar correo
+                        // fin preparar correo finalizados
+                        // if(count($payloadRestablecido)>0){
+                        
+                        //     $correosDesfinalizarCuadroPresupuesto = [];
+
+                        //     if (config('app.debug')) {
+                        //         $correosDesfinalizarCuadroPresupuesto[] = config('global.correoDebug2');
+
+                        //     } else {
+                        //         $idUsuarios = Usuario::getAllIdUsuariosPorRol(25); //Rol de usuario de despacho externo
+                        //         foreach ($idUsuarios as $id) {
+                        //             $correosDesfinalizarCuadroPresupuesto[] = Usuario::find($id)->email;
+                        //         }
+
+                        //         $correosDesfinalizarCuadroPresupuesto[]=Auth::user()->email; //usuario en sessión que genero la acción
+                        //         $correosDesfinalizarCuadroPresupuesto[]=Usuario::find($requerimiento->id_usuario)->email; // usuario dueño del requerimieto
+                        //     }
+                        // }
                     }
                 }
             }
         } catch (Exception $ex) {
             $error = $ex->getMessage();
         }
-        return ['lista_finalizados' => $payload, 'lista_restablecidos' => [], 'error' => $error];
+        return ['lista_finalizados' => $payload, 'lista_restablecidos' => $payloadRestablecido, 'error' => $error];
     }
 
 }

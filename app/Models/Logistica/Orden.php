@@ -124,8 +124,9 @@ class Orden extends Model {
 
         $requerimientos=OrdenCompraDetalle::leftJoin('almacen.alm_det_req','log_det_ord_compra.id_detalle_requerimiento','alm_det_req.id_detalle_requerimiento')
         ->Join('almacen.alm_req','alm_req.id_requerimiento','alm_det_req.id_requerimiento')
+        ->leftJoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'alm_req.id_usuario')
         ->where('log_det_ord_compra.id_orden_compra',$this->attributes['id_orden_compra'])
-        ->select(['alm_req.id_requerimiento','alm_req.codigo','alm_req.estado'])->distinct()->get(); 
+        ->select(['alm_req.id_requerimiento','alm_req.codigo','alm_req.estado','sis_usua.nombre_corto'])->distinct()->get(); 
         return $requerimientos;
     }
 

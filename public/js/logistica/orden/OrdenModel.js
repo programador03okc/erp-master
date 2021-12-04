@@ -93,11 +93,12 @@ class OrdenModel {
                 });
             });
     }
-    anularOrden(id){
+    anularOrden(id,sustento){
         return new Promise(function(resolve, reject) {
             $.ajax({
-                type: 'PUT',
-                url:`anular/${id}`,
+                type: 'POST',
+                url:`anular`,
+                data:{'idOrden':id,'sustento':sustento},
                 dataType: 'JSON',
                 beforeSend: data => {
     

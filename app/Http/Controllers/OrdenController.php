@@ -18,6 +18,7 @@ use App\Exports\ReporteOrdenesCompraExcel;
 use App\Exports\ReporteTransitoOrdenesCompraExcel;
 use App\Helpers\CuadroPresupuestoHelper;
 use App\Http\Controllers\Migraciones\MigrateOrdenSoftLinkController;
+use App\Mail\EmailOrdenAnulada;
 use App\Models\Administracion\Empresa;
 use App\Models\Administracion\Estado;
 use App\Models\Almacen\DetalleRequerimiento;
@@ -27,6 +28,7 @@ use App\Models\Comercial\CuadroCosto\CcAmFila;
 
 use App\Models\Configuracion\Grupo;
 use App\Models\Configuracion\Moneda;
+use App\Models\Configuracion\Usuario;
 use App\Models\Contabilidad\Banco;
 use App\Models\Contabilidad\CuentaContribuyente;
 use App\Models\Contabilidad\TipoCuenta;
@@ -38,6 +40,7 @@ use App\Models\Logistica\Proveedor;
 use App\Models\mgcp\CuadroCosto\CuadroCosto;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Support\Facades\Mail;
 use Mockery\Undefined;
 
 class OrdenController extends Controller
@@ -3265,11 +3268,12 @@ class OrdenController extends Controller
         return $output;  
     }
     
-    function makeRevertirOrden($id_orden){
+    function makeRevertirOrden($id_orden,$sustento){
         $status=0;
         $msj=[];
         $output=[];
         $id_requerimiento_list=[];
+        $id_usuario_list=[];
 
        $revertirOrden = DB::table('logistica.log_ord_compra') //revertir orden
         ->where([
@@ -3277,7 +3281,9 @@ class OrdenController extends Controller
         ->update(
             [
                 'estado' => 7,
-                'codigo_softlink' => null
+                'codigo_softlink' => null,
+                'fecha_anulacion' => new Carbon(),
+                'sustento_anulacion'=>$sustento
             ]);
 
        $revertirDetalleOrden = DB::table('logistica.log_det_ord_compra') // revertir detalle orden
@@ -3329,6 +3335,7 @@ class OrdenController extends Controller
             if(count($alm_req)>0){
                 foreach($alm_req as $data){
                     $id_requerimiento_list[]= $data->id_requerimiento;
+                    $id_usuario_list[]=$data->id_usuario;
                 }
 
                 if(count($id_requerimiento_list)>0){
@@ -3350,11 +3357,32 @@ class OrdenController extends Controller
                     $status = 200;
                     $msj[]='se restableció el estado del requerimiento';
                     $finalizadosORestablecido = CuadroPresupuestoHelper::finalizar($id_requerimiento_list);
+
                     if($finalizadosORestablecido['lista_restablecidos']  && count($finalizadosORestablecido['lista_restablecidos'])>0){
                         foreach ($finalizadosORestablecido['lista_restablecidos'] as $lr) {
-                            
-                            $msj[]='Se actualizo el estado del cuadro de prespuesto '+$lr['codigo_cuadro_presupuesto'];
+
+                            $msj[]='Se actualizo el estado del cuadro de prespuesto '.$lr['oportunidad']->codigo_oportunidad;
                         }
+                        // enviar correo de anulación de orden
+                        $correosAnulaciónOrden = [];
+
+                        if (config('app.debug')) {
+                            $correosAnulaciónOrden[] = config('global.correoDebug2');
+
+                        } else {
+
+                            $correosAnulaciónOrden[]=Auth::user()->email; //usuario en sessión que genero la acción
+                            
+                            foreach ($id_usuario_list as $idUsu) {
+                                $correosAnulaciónOrden[]=Usuario::find($idUsu)->email; // usuario dueño del requerimiento(s)
+                            }
+                        }
+                        $orden=Orden::with('sede')->find($id_orden);
+                        Mail::to($correosAnulaciónOrden)->send(new EmailOrdenAnulada($orden,$finalizadosORestablecido['lista_restablecidos'],Auth::user()->nombre_corto));
+
+
+                        // final de envio correo de anulación de orden
+
 
                     }
 
@@ -3380,6 +3408,8 @@ class OrdenController extends Controller
     return $output;
 
 }
+
+ 
     function makeAnularItemOrdenByIdDetalleRequerimiento($idOrden,$idDetalleRequerimiento){
         $status=0;
         $msj=[];
@@ -3402,21 +3432,25 @@ class OrdenController extends Controller
 
 }
 
-    public function anularOrden($id_orden){
+    public function anularOrden(Request $request){
         try {
             DB::beginTransaction();
+            
+            $idOrden= $request->idOrden;
+            $sustento=  $request->sustento??'sin sustento';
+            
             $status = 0;
             $msj = [];
             $output = [];
             $requerimientoIdList = [];
 
-            $ValidarOrdenSoftlink= (new MigrateOrdenSoftLinkController)->validarOrdenSoftlink($id_orden);
+            $ValidarOrdenSoftlink= (new MigrateOrdenSoftLinkController)->validarOrdenSoftlink($idOrden);
             
             if($ValidarOrdenSoftlink['tipo']== 'success'){
     
-                    $hasIngreso = $this->TieneingresoAlmacen($id_orden);
+                    $hasIngreso = $this->TieneingresoAlmacen($idOrden);
                     if($hasIngreso['status'] == 200 && $hasIngreso['data'] == false){
-                        $makeRevertirOrden = $this->makeRevertirOrden($id_orden);
+                        $makeRevertirOrden = $this->makeRevertirOrden($idOrden,$sustento);
                         $status = $makeRevertirOrden['status'];
                         $msj[] = $makeRevertirOrden['mensaje'];
                         $requerimientoIdList = $makeRevertirOrden['requerimientoIdList'];
@@ -3430,7 +3464,7 @@ class OrdenController extends Controller
                         $orden = Orden::select(
                             'log_ord_compra.codigo'
                         )
-                        ->where('log_ord_compra.id_orden_compra',$id_orden)
+                        ->where('log_ord_compra.id_orden_compra',$idOrden)
                         ->first();
     
                         for ($i = 0; $i < count($requerimientoIdList); $i++) {
@@ -3444,7 +3478,7 @@ class OrdenController extends Controller
                         }
                     }
                     $output =[
-                        'id_orden_compra' => $id_orden, 
+                        'id_orden_compra' => $idOrden, 
                         'codigo' => $orden->codigo,
                         'status' => $status,
                         'mensaje'=>$msj,
@@ -3467,7 +3501,7 @@ class OrdenController extends Controller
             DB::commit();
 
             if($status == 200){
-                $migrarOrdenSoftlink= (new MigrateOrdenSoftLinkController)->anularOrdenSoftlink($id_orden)->original;
+                $migrarOrdenSoftlink= (new MigrateOrdenSoftLinkController)->anularOrdenSoftlink($idOrden)->original;
                 if($migrarOrdenSoftlink['tipo']=='success'){
                     $output =[
                         'id_orden_compra' => $orden->id_orden_compra, 

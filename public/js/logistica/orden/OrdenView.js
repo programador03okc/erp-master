@@ -1734,74 +1734,94 @@ class OrdenView {
 
 
     anularOrden(id) {
-        this.ordenCtrl.anularOrden(id).then((response) => {
-            $("#wrapper-okc").LoadingOverlay("hide", true);
 
-            // console.log(res);
-            if (response.status == 200) {
-                this.restablecerFormularioOrden();
-                // (res.mensaje).forEach(msj => {
-                Lobibox.notify(response.status == 200 ? 'success' : 'warning', {
-                    title: false,
-                    size: 'mini',
-                    rounded: true,
-                    sound: false,
-                    delayIndicator: false,
-                    msg: response.mensaje.toString()
+        let sustentoAnularOrden='';
+        Swal.fire({
+            title: 'Sustente el movivo de la anulación de orden',
+            input: 'textarea',
+            inputAttributes: {
+                autocapitalize: 'off'
+            },
+            showCancelButton: true,
+            confirmButtonText: 'Registrar',
+      
+            allowOutsideClick: () => !Swal.isLoading()
+        }).then((result) => {
+            if (result.isConfirmed) {
+                sustentoAnularOrden =result.value;
+                // inicio enviar anular orden
+                this.ordenCtrl.anularOrden(id,sustentoAnularOrden).then((response) => {
+                    $("#wrapper-okc").LoadingOverlay("hide", true);
+        
+                    // console.log(res);
+                    if (response.status == 200) {
+                        this.restablecerFormularioOrden();
+                        Lobibox.notify(response.status == 200 ? 'success' : 'warning', {
+                            title: false,
+                            size: 'mini',
+                            rounded: true,
+                            sound: false,
+                            delayIndicator: false,
+                            msg: response.mensaje.toString()
+                        });
+                        
+        
+                        if(response.status_migracion_softlink != null){
+                                        
+                            $('[name=codigo_orden]').val(response.status_migracion_softlink.orden_softlink??"");
+        
+                            Lobibox.notify(response.status_migracion_softlink.tipo, {
+                                title: false,
+                                size: 'mini',
+                                rounded: true,
+                                sound: false,
+                                delayIndicator: false,
+                                msg: response.status_migracion_softlink.mensaje
+                            });
+        
+                        }
+        
+                    } else {
+                        $("#wrapper-okc").LoadingOverlay("hide", true);
+        
+                        Lobibox.notify('warning', {
+                            title: false,
+                            size: 'mini',
+                            rounded: true,
+                            sound: false,
+                            delayIndicator: false,
+                            msg: response.mensaje.toString()
+                        });
+                        console.log(response);
+        
+                        if(response.status_migracion_softlink != null){
+                                        
+                            Lobibox.notify(response.status_migracion_softlink.tipo, {
+                                title: false,
+                                size: 'mini',
+                                rounded: true,
+                                sound: false,
+                                delayIndicator: false,
+                                msg: response.status_migracion_softlink.mensaje
+                            });
+        
+                        }
+        
+                    }
+                }).catch((err) => {
+                    $("#wrapper-okc").LoadingOverlay("hide", true);
+                    console.log(err)
+                    Swal.fire(
+                        '',
+                        'Lo sentimos hubo un error en el servidor, por favor vuelva a intentarlo',
+                        'error'
+                    );
                 });
-                // });
-
-                if(response.status_migracion_softlink != null){
-                                
-                    $('[name=codigo_orden]').val(response.status_migracion_softlink.orden_softlink??"");
-
-                    Lobibox.notify(response.status_migracion_softlink.tipo, {
-                        title: false,
-                        size: 'mini',
-                        rounded: true,
-                        sound: false,
-                        delayIndicator: false,
-                        msg: response.status_migracion_softlink.mensaje
-                    });
-
-                }
-
-            } else {
-                $("#wrapper-okc").LoadingOverlay("hide", true);
-
-                Lobibox.notify('warning', {
-                    title: false,
-                    size: 'mini',
-                    rounded: true,
-                    sound: false,
-                    delayIndicator: false,
-                    msg: response.mensaje.toString()
-                });
-                console.log(response);
-
-                if(response.status_migracion_softlink != null){
-                                
-                    Lobibox.notify(response.status_migracion_softlink.tipo, {
-                        title: false,
-                        size: 'mini',
-                        rounded: true,
-                        sound: false,
-                        delayIndicator: false,
-                        msg: response.status_migracion_softlink.mensaje
-                    });
-
-                }
-
+                // fon enviar anular orden
             }
-        }).catch((err) => {
-            $("#wrapper-okc").LoadingOverlay("hide", true);
-            console.log(err)
-            Swal.fire(
-                '',
-                'Lo sentimos hubo un error en el servidor, por favor vuelva a intentarlo',
-                'error'
-            );
-        });
+        })
+        
+
     }
 
     restablecerFormularioOrden() {

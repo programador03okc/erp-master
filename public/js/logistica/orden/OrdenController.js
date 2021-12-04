@@ -88,8 +88,8 @@ class OrdenCtrl{
         return ordenModel.obtenerDetalleRequerimientos(idRequerimiento);
     }
 
-    anularOrden(id){
-        return ordenModel.anularOrden(id);
+    anularOrden(id,sustento){
+        return ordenModel.anularOrden(id,sustento);
 
     }
 

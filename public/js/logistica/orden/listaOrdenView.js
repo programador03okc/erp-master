@@ -6,12 +6,12 @@ class ListaOrdenView {
     constructor(listaOrdenCtrl) {
         this.listaOrdenCtrl = listaOrdenCtrl;
 
-        this.ActualParametroTipoOrdenCabecera= 'SIN_FILTRO';
-        this.ActualParametroEmpresaCabecera= 'SIN_FILTRO';
-        this.ActualParametroSedeCabecera= 'SIN_FILTRO';
-        this.ActualParametroFechaDesdeCabecera= 'SIN_FILTRO';
-        this.ActualParametroFechaHasta= 'SIN_FILTRO';
-        this.ActualParametroEstadoCabecera= 'SIN_FILTRO';
+        this.ActualParametroTipoOrdenCabecera = 'SIN_FILTRO';
+        this.ActualParametroEmpresaCabecera = 'SIN_FILTRO';
+        this.ActualParametroSedeCabecera = 'SIN_FILTRO';
+        this.ActualParametroFechaDesdeCabecera = 'SIN_FILTRO';
+        this.ActualParametroFechaHasta = 'SIN_FILTRO';
+        this.ActualParametroEstadoCabecera = 'SIN_FILTRO';
 
     }
 
@@ -48,7 +48,7 @@ class ListaOrdenView {
             this.abrirOrdenPDF(e.currentTarget.dataset.idOrdenCompra);
         });
         // $('#listaOrdenes tbody').on("click", "label.handleClickAbrirRequerimiento", (e) => {
-            
+
         //     // var data = $('#listaOrdenes').DataTable().row($(this).parents("tr")).data();
         //     this.abrirRequerimiento(e.currentTarget.dataset.idRequerimiento);
         // });
@@ -102,12 +102,12 @@ class ListaOrdenView {
             this.estadoCheckFiltroOrdenesElaboradasCabecera(e);
         });
 
-        $('#modal-filtro-lista-ordenes-elaboradas').on('hidden.bs.modal', ()=> {
+        $('#modal-filtro-lista-ordenes-elaboradas').on('hidden.bs.modal', () => {
             this.updateValorFiltroOrdenesElaboradas();
-            if(this.updateContadorFiltroOrdenesElaboradas() ==0){
-                this.obtenerListaOrdenesElaboradas('SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO');
-            }else{
-                this.obtenerListaOrdenesElaboradas(this.ActualParametroTipoOrdenCabecera,this.ActualParametroEmpresaCabecera,this.ActualParametroSedeCabecera,this.ActualParametroFechaDesdeCabecera,this.ActualParametroFechaHastaCabecera,this.ActualParametroEstadoCabecera);
+            if (this.updateContadorFiltroOrdenesElaboradas() == 0) {
+                this.obtenerListaOrdenesElaboradas('SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO');
+            } else {
+                this.obtenerListaOrdenesElaboradas(this.ActualParametroTipoOrdenCabecera, this.ActualParametroEmpresaCabecera, this.ActualParametroSedeCabecera, this.ActualParametroFechaDesdeCabecera, this.ActualParametroFechaHastaCabecera, this.ActualParametroEstadoCabecera);
             }
         });
 
@@ -118,17 +118,17 @@ class ListaOrdenView {
         $('#modal-filtro-lista-items-orden-elaboradas').on("click", "input[type=checkbox]", (e) => {
             this.estadoCheckFiltroOrdenesElaboradasDetalle(e);
         });
-        $('#modal-filtro-lista-items-orden-elaboradas').on('hidden.bs.modal', ()=> {
+        $('#modal-filtro-lista-items-orden-elaboradas').on('hidden.bs.modal', () => {
             this.updateValorFiltroDetalleOrdenesElaboradas();
-            if(this.updateContadorFiltroDetalleOrdenesElaboradas() ==0){
-                this.obtenerListaDetalleOrdenesElaboradas('SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO');
-                
-            }else{
-                    this.obtenerListaDetalleOrdenesElaboradas(this.ActualParametroEmpresaDetalle,this.ActualParametroSedeDetalle,this.ActualParametroFechaDesdeDetalle,this.ActualParametroFechaHastaDetalle,this.ActualParametroEstadoDetalle);
-                
+            if (this.updateContadorFiltroDetalleOrdenesElaboradas() == 0) {
+                this.obtenerListaDetalleOrdenesElaboradas('SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO');
+
+            } else {
+                this.obtenerListaDetalleOrdenesElaboradas(this.ActualParametroEmpresaDetalle, this.ActualParametroSedeDetalle, this.ActualParametroFechaDesdeDetalle, this.ActualParametroFechaHastaDetalle, this.ActualParametroEstadoDetalle);
+
             }
         });
-        
+
     }
 
 
@@ -145,8 +145,8 @@ class ListaOrdenView {
         document.querySelector("button[id='btnTipoVistaPorItemPara'").classList.remove('active');
         document.querySelector("div[id='contenedor-tabla-nivel-cabecera']").classList.remove('oculto');
         document.querySelector("div[id='contenedor-tabla-nivel-item']").classList.add('oculto');
-        if(this.updateContadorFiltroOrdenesElaboradas() ==0){
-            this.obtenerListaOrdenesElaboradas('SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO');
+        if (this.updateContadorFiltroOrdenesElaboradas() == 0) {
+            this.obtenerListaOrdenesElaboradas('SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO');
 
         }
     }
@@ -155,13 +155,13 @@ class ListaOrdenView {
         document.querySelector("button[id='btnTipoVistaPorCabecera'").classList.remove('active');
         document.querySelector("div[id='contenedor-tabla-nivel-cabecera']").classList.add('oculto');
         document.querySelector("div[id='contenedor-tabla-nivel-item']").classList.remove('oculto');
-        if(this.updateContadorFiltroDetalleOrdenesElaboradas() ==0){
-            this.obtenerListaDetalleOrdenesElaboradas('SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO');
+        if (this.updateContadorFiltroDetalleOrdenesElaboradas() == 0) {
+            this.obtenerListaDetalleOrdenesElaboradas('SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO');
         }
     }
 
     // filtros
- 
+
 
     exportTableToExcel() {
         this.listaOrdenCtrl.descargarListaOrdenesVistaCabecera();
@@ -183,7 +183,7 @@ class ListaOrdenView {
 
     getNameModalActive() {
 
-        if(document.querySelector("div[id='modal-filtro-lista-items-orden-elaboradas']").classList.contains("in") == true) {
+        if (document.querySelector("div[id='modal-filtro-lista-items-orden-elaboradas']").classList.contains("in") == true) {
             return document.querySelector("div[id='modal-filtro-lista-items-orden-elaboradas'] div.modal-body").firstElementChild.getAttribute('id');
         } else if (document.querySelector("div[id='modal-filtro-lista-ordenes-elaboradas']").classList.contains("in") == true) {
             return document.querySelector("div[id='modal-filtro-lista-ordenes-elaboradas'] div.modal-body").firstElementChild.getAttribute('id');
@@ -193,7 +193,7 @@ class ListaOrdenView {
 
     }
 
- 
+
 
     handleChangeFiltroEmpresa(event) {
         let id_empresa = event.target.value;
@@ -233,7 +233,7 @@ class ListaOrdenView {
     }
 
     estadoCheckFiltroOrdenesElaboradasCabecera(e) {
-        const modalFiltrosOrdenesElaboradas =document.querySelector("div[id='modal-filtro-lista-ordenes-elaboradas']");
+        const modalFiltrosOrdenesElaboradas = document.querySelector("div[id='modal-filtro-lista-ordenes-elaboradas']");
         switch (e.currentTarget.getAttribute('name')) {
             case 'chkTipoOrden':
                 if (e.currentTarget.checked == true) {
@@ -275,11 +275,11 @@ class ListaOrdenView {
             default:
                 break;
         }
-        
+
     }
 
     estadoCheckFiltroOrdenesElaboradasDetalle(e) {
-        const modalFiltrosDetalleOrdenesElaboradas =document.querySelector("div[id='modal-filtro-lista-items-orden-elaboradas']");
+        const modalFiltrosDetalleOrdenesElaboradas = document.querySelector("div[id='modal-filtro-lista-items-orden-elaboradas']");
         switch (e.currentTarget.getAttribute('name')) {
             case 'chkEmpresa':
                 if (e.currentTarget.checked == true) {
@@ -314,52 +314,52 @@ class ListaOrdenView {
             default:
                 break;
         }
-        
+
     }
 
 
-    updateValorFiltroOrdenesElaboradas(){
+    updateValorFiltroOrdenesElaboradas() {
         const modalFiltroListaOrdenesElaboradas = document.querySelector("div[id='modal-filtro-lista-ordenes-elaboradas']");
-        if(modalFiltroListaOrdenesElaboradas.querySelector("select[name='tipoOrden']").getAttribute("readonly") ==null){
-            this.ActualParametroTipoOrdenCabecera=modalFiltroListaOrdenesElaboradas.querySelector("select[name='tipoOrden']").value;
+        if (modalFiltroListaOrdenesElaboradas.querySelector("select[name='tipoOrden']").getAttribute("readonly") == null) {
+            this.ActualParametroTipoOrdenCabecera = modalFiltroListaOrdenesElaboradas.querySelector("select[name='tipoOrden']").value;
         }
-        if(modalFiltroListaOrdenesElaboradas.querySelector("select[name='empresa']").getAttribute("readonly") ==null){
-            this.ActualParametroEmpresaCabecera=modalFiltroListaOrdenesElaboradas.querySelector("select[name='empresa']").value;
+        if (modalFiltroListaOrdenesElaboradas.querySelector("select[name='empresa']").getAttribute("readonly") == null) {
+            this.ActualParametroEmpresaCabecera = modalFiltroListaOrdenesElaboradas.querySelector("select[name='empresa']").value;
         }
-        if(modalFiltroListaOrdenesElaboradas.querySelector("select[name='sede']").getAttribute("readonly") ==null){
-            this.ActualParametroSedeCabecera=modalFiltroListaOrdenesElaboradas.querySelector("select[name='sede']").value;
+        if (modalFiltroListaOrdenesElaboradas.querySelector("select[name='sede']").getAttribute("readonly") == null) {
+            this.ActualParametroSedeCabecera = modalFiltroListaOrdenesElaboradas.querySelector("select[name='sede']").value;
         }
-        if(modalFiltroListaOrdenesElaboradas.querySelector("input[name='fechaRegistroDesde']").getAttribute("readonly") ==null){
-            this.ActualParametroFechaDesdeCabecera=modalFiltroListaOrdenesElaboradas.querySelector("input[name='fechaRegistroDesde']").value.length>0?modalFiltroListaOrdenesElaboradas.querySelector("input[name='fechaRegistroDesde']").value:'SIN_FILTRO';
+        if (modalFiltroListaOrdenesElaboradas.querySelector("input[name='fechaRegistroDesde']").getAttribute("readonly") == null) {
+            this.ActualParametroFechaDesdeCabecera = modalFiltroListaOrdenesElaboradas.querySelector("input[name='fechaRegistroDesde']").value.length > 0 ? modalFiltroListaOrdenesElaboradas.querySelector("input[name='fechaRegistroDesde']").value : 'SIN_FILTRO';
         }
-        if(modalFiltroListaOrdenesElaboradas.querySelector("input[name='fechaRegistroHasta']").getAttribute("readonly") ==null){
-            this.ActualParametroFechaHastaCabecera=modalFiltroListaOrdenesElaboradas.querySelector("input[name='fechaRegistroHasta']").value.length>0?modalFiltroListaOrdenesElaboradas.querySelector("input[name='fechaRegistroHasta']").value:'SIN_FILTRO';
+        if (modalFiltroListaOrdenesElaboradas.querySelector("input[name='fechaRegistroHasta']").getAttribute("readonly") == null) {
+            this.ActualParametroFechaHastaCabecera = modalFiltroListaOrdenesElaboradas.querySelector("input[name='fechaRegistroHasta']").value.length > 0 ? modalFiltroListaOrdenesElaboradas.querySelector("input[name='fechaRegistroHasta']").value : 'SIN_FILTRO';
         }
-        if(modalFiltroListaOrdenesElaboradas.querySelector("select[name='estado']").getAttribute("readonly") ==null){
-            this.ActualParametroEstadoCabecera=modalFiltroListaOrdenesElaboradas.querySelector("select[name='estado']").value;
+        if (modalFiltroListaOrdenesElaboradas.querySelector("select[name='estado']").getAttribute("readonly") == null) {
+            this.ActualParametroEstadoCabecera = modalFiltroListaOrdenesElaboradas.querySelector("select[name='estado']").value;
         }
     }
-    updateValorFiltroDetalleOrdenesElaboradas(){
+    updateValorFiltroDetalleOrdenesElaboradas() {
         const modalFiltroListaDetalleOrdenesElaboradas = document.querySelector("div[id='modal-filtro-lista-items-orden-elaboradas']");
 
-        if(modalFiltroListaDetalleOrdenesElaboradas.querySelector("select[name='empresa']").getAttribute("readonly") ==null){
-            this.ActualParametroEmpresaDetalle=modalFiltroListaDetalleOrdenesElaboradas.querySelector("select[name='empresa']").value;
+        if (modalFiltroListaDetalleOrdenesElaboradas.querySelector("select[name='empresa']").getAttribute("readonly") == null) {
+            this.ActualParametroEmpresaDetalle = modalFiltroListaDetalleOrdenesElaboradas.querySelector("select[name='empresa']").value;
         }
-        if(modalFiltroListaDetalleOrdenesElaboradas.querySelector("select[name='sede']").getAttribute("readonly") ==null){
-            this.ActualParametroSedeDetalle=modalFiltroListaDetalleOrdenesElaboradas.querySelector("select[name='sede']").value;
+        if (modalFiltroListaDetalleOrdenesElaboradas.querySelector("select[name='sede']").getAttribute("readonly") == null) {
+            this.ActualParametroSedeDetalle = modalFiltroListaDetalleOrdenesElaboradas.querySelector("select[name='sede']").value;
         }
-        if(modalFiltroListaDetalleOrdenesElaboradas.querySelector("input[name='fechaRegistroDesde']").getAttribute("readonly") ==null){
-            this.ActualParametroFechaDesdeDetalle=modalFiltroListaDetalleOrdenesElaboradas.querySelector("input[name='fechaRegistroDesde']").value.length>0?modalFiltroListaDetalleOrdenesElaboradas.querySelector("input[name='fechaRegistroDesde']").value:'SIN_FILTRO';
+        if (modalFiltroListaDetalleOrdenesElaboradas.querySelector("input[name='fechaRegistroDesde']").getAttribute("readonly") == null) {
+            this.ActualParametroFechaDesdeDetalle = modalFiltroListaDetalleOrdenesElaboradas.querySelector("input[name='fechaRegistroDesde']").value.length > 0 ? modalFiltroListaDetalleOrdenesElaboradas.querySelector("input[name='fechaRegistroDesde']").value : 'SIN_FILTRO';
         }
-        if(modalFiltroListaDetalleOrdenesElaboradas.querySelector("input[name='fechaRegistroHasta']").getAttribute("readonly") ==null){
-            this.ActualParametroFechaHastaDetalle=modalFiltroListaDetalleOrdenesElaboradas.querySelector("input[name='fechaRegistroHasta']").value.length>0?modalFiltroListaDetalleOrdenesElaboradas.querySelector("input[name='fechaRegistroHasta']").value:'SIN_FILTRO';
+        if (modalFiltroListaDetalleOrdenesElaboradas.querySelector("input[name='fechaRegistroHasta']").getAttribute("readonly") == null) {
+            this.ActualParametroFechaHastaDetalle = modalFiltroListaDetalleOrdenesElaboradas.querySelector("input[name='fechaRegistroHasta']").value.length > 0 ? modalFiltroListaDetalleOrdenesElaboradas.querySelector("input[name='fechaRegistroHasta']").value : 'SIN_FILTRO';
         }
-        if(modalFiltroListaDetalleOrdenesElaboradas.querySelector("select[name='estado']").getAttribute("readonly") ==null){
-            this.ActualParametroEstadoDetalle=modalFiltroListaDetalleOrdenesElaboradas.querySelector("select[name='estado']").value;
+        if (modalFiltroListaDetalleOrdenesElaboradas.querySelector("select[name='estado']").getAttribute("readonly") == null) {
+            this.ActualParametroEstadoDetalle = modalFiltroListaDetalleOrdenesElaboradas.querySelector("select[name='estado']").value;
         }
     }
 
-    obtenerListaOrdenesElaboradas(tipoOrden = 'SIN_FILTRO', idEmpresa = 'SIN_FILTRO', idSede = 'SIN_FILTRO', fechaRegistroDesde='SIN_FILTRO',fechaRegistroHasta='SIN_FILTRO',idEstado='SIN_FILTRO') {
+    obtenerListaOrdenesElaboradas(tipoOrden = 'SIN_FILTRO', idEmpresa = 'SIN_FILTRO', idSede = 'SIN_FILTRO', fechaRegistroDesde = 'SIN_FILTRO', fechaRegistroHasta = 'SIN_FILTRO', idEstado = 'SIN_FILTRO') {
         this.listaOrdenCtrl.obtenerListaOrdenesElaboradas(tipoOrden, idEmpresa, idSede, fechaRegistroDesde, fechaRegistroHasta, idEstado).then((res) => {
             this.construirTablaListaOrdenesElaboradas(res);
         }).catch((err) => {
@@ -367,7 +367,7 @@ class ListaOrdenView {
         })
     }
 
- 
+
 
     construirTablaListaOrdenesElaboradas(data) {
         // console.log(data);
@@ -431,9 +431,9 @@ class ListaOrdenView {
                         let labelRequerimiento = '';
                         if (row.requerimientos != undefined && row.requerimientos.length > 0) {
                             (row.requerimientos).forEach(element => {
-                                labelRequerimiento += `${(element.estado ==38 || element.estado ==39) ?`<i class="fas fa-exclamation-triangle orange" title="${element.estado == 38?'Por regularizar':(element.estado == 38?'En pausa':'') }" data-id-requerimiento="${element.id_requerimiento}"></i>`:''} <a href="/necesidades/requerimiento/elaboracion/index?id=${element.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${element.codigo??''}</a>`;
+                                labelRequerimiento += `${(element.estado == 38 || element.estado == 39) ? `<i class="fas fa-exclamation-triangle orange" title="${element.estado == 38 ? 'Por regularizar' : (element.estado == 38 ? 'En pausa' : '')}" data-id-requerimiento="${element.id_requerimiento}"></i>` : ''} <a href="/necesidades/requerimiento/elaboracion/index?id=${element.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${element.codigo ?? ''}</a>`;
 
-                                
+
                             });
                             return labelRequerimiento;
 
@@ -447,24 +447,24 @@ class ListaOrdenView {
                 {
                     'render':
                         function (data, type, row, meta) {
-                            let cantidadRequerimientosConEstadosPorRegularizarOenPausa=0;
+                            let cantidadRequerimientosConEstadosPorRegularizarOenPausa = 0;
                             if (row.requerimientos != undefined && row.requerimientos.length > 0) {
                                 (row.requerimientos).forEach(element => {
-                                    if(element.estado ==38 || element.estado ==39){
-                                        cantidadRequerimientosConEstadosPorRegularizarOenPausa ++;
+                                    if (element.estado == 38 || element.estado == 39) {
+                                        cantidadRequerimientosConEstadosPorRegularizarOenPausa++;
                                     }
                                 });
                             }
-                            if(cantidadRequerimientosConEstadosPorRegularizarOenPausa>0){
+                            if (cantidadRequerimientosConEstadosPorRegularizarOenPausa > 0) {
                                 let estadoDetalleOrdenHabilitadasActualizar = [1, 2, 3, 4, 5, 6, 15];
                                 if (estadoDetalleOrdenHabilitadasActualizar.includes(row.estado) == true) {
                                     return `<center><a class="handleClickEditarEstadoOrden" data-id-estado-orden-compra="${row.estado}" data-codigo-orden="${row.codigo}" data-id-orden-compra="${row.id_orden_compra}" style="cursor:pointer;">${row.estado_doc}</a></center>`;
                                 } else {
                                     return `<center><span class="label label-default" data-id-estado-orden-compra="${row.estado}" data-codigo-orden="${row.codigo}" data-id-orden-compra="${row.id_orden_compra}" >${row.estado_doc}</span></center>`;
-    
+
                                 }
 
-                            }else{
+                            } else {
                                 return `<center><span class="label label-default" data-id-estado-orden-compra="${row.estado}" data-codigo-orden="${row.codigo}" data-id-orden-compra="${row.id_orden_compra}" >${row.estado_doc}</span></center>`;
                             }
                         }
@@ -578,11 +578,11 @@ class ListaOrdenView {
                     'render':
                         function (data, type, row, meta) {
 
-                            let cantidadRequerimientosConEstadosPorRegularizarOenPausa=0;
+                            let cantidadRequerimientosConEstadosPorRegularizarOenPausa = 0;
                             if (row.requerimientos != undefined && row.requerimientos.length > 0) {
                                 (row.requerimientos).forEach(element => {
-                                    if(element.estado ==38 || element.estado ==39){
-                                        cantidadRequerimientosConEstadosPorRegularizarOenPausa ++;
+                                    if (element.estado == 38 || element.estado == 39) {
+                                        cantidadRequerimientosConEstadosPorRegularizarOenPausa++;
                                     }
                                 });
                             }
@@ -591,9 +591,9 @@ class ListaOrdenView {
                             let btnImprimirOrden = '<button type="button" class="btn btn-sm btn-warning boton handleClickAbrirOrdenPDF" title="Abrir orden PDF"  data-toggle="tooltip" data-placement="bottom" data-id-orden-compra="' + row.id_orden_compra + '"  data-id-pago=""> <i class="fas fa-file-pdf"></i> </button>';
                             let btnAnularOrden = '';
                             if (![6, 27, 28].includes(row.estado)) {
-                                if(cantidadRequerimientosConEstadosPorRegularizarOenPausa >0){
+                                if (cantidadRequerimientosConEstadosPorRegularizarOenPausa > 0) {
                                     btnAnularOrden = '<button type="button" class="btn btn-sm btn-danger boton handleClickAnularOrden" name="btnAnularOrden" title="Anular orden" data-codigo-orden="' + row.codigo + '" data-id-orden-compra="' + row.id_orden_compra + '" disabled ><i class="fas fa-backspace fa-xs"></i></button>';
-                                }else{
+                                } else {
                                     btnAnularOrden = '<button type="button" class="btn btn-sm btn-danger boton handleClickAnularOrden" name="btnAnularOrden" title="Anular orden" data-codigo-orden="' + row.codigo + '" data-id-orden-compra="' + row.id_orden_compra + '"><i class="fas fa-backspace fa-xs"></i></button>';
 
                                 }
@@ -602,9 +602,9 @@ class ListaOrdenView {
                         <i class="fas fa-chevron-down"></i>
                         </button>`;
                             let containerCloseBrackets = '</div>';
- 
+
                             return (containerOpenBrackets + btnVerDetalle + btnImprimirOrden + btnAnularOrden + containerCloseBrackets);
-                            
+
                         }
                 }
 
@@ -650,27 +650,27 @@ class ListaOrdenView {
     }
 
 
-    updateContadorFiltroOrdenesElaboradas(){
-        let contadorCheckActivo= 0;
+    updateContadorFiltroOrdenesElaboradas() {
+        let contadorCheckActivo = 0;
         const allCheckBoxFiltroOrdenesElaboradasNivelCabecera = document.querySelectorAll("div[id='modal-filtro-lista-ordenes-elaboradas'] input[type='checkbox']");
         allCheckBoxFiltroOrdenesElaboradasNivelCabecera.forEach(element => {
-            if(element.checked==true){
+            if (element.checked == true) {
                 contadorCheckActivo++;
             }
         });
-        document.querySelector("button[id='btnFiltroListaOrdenCabecera'] span")?document.querySelector("button[id='btnFiltroListaOrdenCabecera'] span").innerHTML ='<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : '+contadorCheckActivo:false
+        document.querySelector("button[id='btnFiltroListaOrdenCabecera'] span") ? document.querySelector("button[id='btnFiltroListaOrdenCabecera'] span").innerHTML = '<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : ' + contadorCheckActivo : false
         return contadorCheckActivo;
     }
-    
-    updateContadorFiltroDetalleOrdenesElaboradas(){
-        let contadorCheckActivo= 0;
+
+    updateContadorFiltroDetalleOrdenesElaboradas() {
+        let contadorCheckActivo = 0;
         const allCheckBoxFiltroOrdenesElaboradasNivelDetalle = document.querySelectorAll("div[id='modal-filtro-lista-items-orden-elaboradas'] input[type='checkbox']");
         allCheckBoxFiltroOrdenesElaboradasNivelDetalle.forEach(element => {
-            if(element.checked==true){
+            if (element.checked == true) {
                 contadorCheckActivo++;
             }
         });
-        document.querySelector("button[id='btnFiltroListaOrdenDetalle'] span")?document.querySelector("button[id='btnFiltroListaOrdenDetalle'] span").innerHTML ='<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : '+contadorCheckActivo:false
+        document.querySelector("button[id='btnFiltroListaOrdenDetalle'] span") ? document.querySelector("button[id='btnFiltroListaOrdenDetalle'] span").innerHTML = '<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : ' + contadorCheckActivo : false
         return contadorCheckActivo;
     }
 
@@ -690,7 +690,7 @@ class ListaOrdenView {
                     <td style="border: none;">${element.codigo_oportunidad !== null ? element.codigo_oportunidad : ''}</td>
                     <td style="border: none;">${element.nombre_entidad !== null ? element.nombre_entidad : ''}</td>
                     <td style="border: none;">${element.nombre_corto_responsable !== null ? element.nombre_corto_responsable : ''}</td>
-                    <td style="border: none;"><a href="/necesidades/requerimiento/elaboracion/index?id=${element.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${element.codigo_req??''}</a></td>
+                    <td style="border: none;"><a href="/necesidades/requerimiento/elaboracion/index?id=${element.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${element.codigo_req ?? ''}</a></td>
                     <td style="border: none;">${element.codigo ?? ''}</td>
                     <td style="border: none;">${element.part_number ?? ''}</td>
                     <td style="border: none;">${element.descripcion ? element.descripcion : (element.descripcion_adicional ? element.descripcion_adicional : '')}</td>
@@ -817,7 +817,7 @@ class ListaOrdenView {
 
     // vista nivel de items
 
-    obtenerListaDetalleOrdenesElaboradas(idEmpresa='SIN_FILTRO', idSede='SIN_FILTRO', fechaRegistroDesde='SIN_FILTRO', fechaRegistroHasta='SIN_FILTRO', idEstado='SIN_FILTRO') {
+    obtenerListaDetalleOrdenesElaboradas(idEmpresa = 'SIN_FILTRO', idSede = 'SIN_FILTRO', fechaRegistroDesde = 'SIN_FILTRO', fechaRegistroHasta = 'SIN_FILTRO', idEstado = 'SIN_FILTRO') {
         this.listaOrdenCtrl.obtenerListaDetalleOrdenesElaboradas(idEmpresa, idSede, fechaRegistroDesde, fechaRegistroHasta, idEstado).then((res) => {
             this.construirTablaListaDetalleOrdenesElaboradas(res);
         }).catch((err) => {
@@ -892,7 +892,7 @@ class ListaOrdenView {
                 },
                 {
                     render: function (data, type, row) {
-                        return `${row.part_number ? row.part_number : ''} ${row.tiene_transformacion ==true ?'<i class="fas fa-random text-danger" title="Con transformación"></i>':''}`;
+                        return `${row.part_number ? row.part_number : ''} ${row.tiene_transformacion == true ? '<i class="fas fa-random text-danger" title="Con transformación"></i>' : ''}`;
                     }
                 },
                 {
@@ -951,37 +951,37 @@ class ListaOrdenView {
                 },
                 {
                     render: function (data, type, row) {
-                        let cantidadRequerimientosConEstadosPorRegularizarOenPausa=0;
+                        let cantidadRequerimientosConEstadosPorRegularizarOenPausa = 0;
                         if (row.requerimientos != undefined && row.requerimientos.length > 0) {
                             (row.requerimientos).forEach(element => {
-                                if(element.estado ==38 || element.estado ==39){
-                                    cantidadRequerimientosConEstadosPorRegularizarOenPausa ++;
+                                if (element.estado == 38 || element.estado == 39) {
+                                    cantidadRequerimientosConEstadosPorRegularizarOenPausa++;
                                 }
                             });
                         }
-                        if(cantidadRequerimientosConEstadosPorRegularizarOenPausa>0){
+                        if (cantidadRequerimientosConEstadosPorRegularizarOenPausa > 0) {
 
-                        let estadoDetalleOrdenHabilitadasActualizar = [1, 2, 3, 4, 5, 6, 15];
-                        if (estadoDetalleOrdenHabilitadasActualizar.includes(row.id_detalle_orden_estado) == true) {
-                            return `<a class="handleClickEditarEstadoItemOrden" data-id-estado-detalle-orden-compra="${row.id_detalle_orden_estado}" data-id-orden-compra="${row.detalle_orden_id_orden_compra}" data-id-detalle-orden-compra="${row.detalle_orden_id_detalle_orden}" data-codigo-item="${row.alm_prod_codigo}" style="cursor: pointer;" title="Cambiar Estado de Item">${row.detalle_orden_estado}</a>`;
+                            let estadoDetalleOrdenHabilitadasActualizar = [1, 2, 3, 4, 5, 6, 15];
+                            if (estadoDetalleOrdenHabilitadasActualizar.includes(row.id_detalle_orden_estado) == true) {
+                                return `<a class="handleClickEditarEstadoItemOrden" data-id-estado-detalle-orden-compra="${row.id_detalle_orden_estado}" data-id-orden-compra="${row.detalle_orden_id_orden_compra}" data-id-detalle-orden-compra="${row.detalle_orden_id_detalle_orden}" data-codigo-item="${row.alm_prod_codigo}" style="cursor: pointer;" title="Cambiar Estado de Item">${row.detalle_orden_estado}</a>`;
+                            } else {
+                                return `<span class="" data-id-estado-detalle-orden-compra="${row.id_detalle_orden_estado}" data-id-orden-compra="${row.detalle_orden_id_orden_compra}" data-id-detalle-orden-compra="${row.detalle_orden_id_detalle_orden}" data-codigo-item="${row.alm_prod_codigo}" style="cursor: default;">${row.detalle_orden_estado}</span>`;
+                            }
                         } else {
                             return `<span class="" data-id-estado-detalle-orden-compra="${row.id_detalle_orden_estado}" data-id-orden-compra="${row.detalle_orden_id_orden_compra}" data-id-detalle-orden-compra="${row.detalle_orden_id_detalle_orden}" data-codigo-item="${row.alm_prod_codigo}" style="cursor: default;">${row.detalle_orden_estado}</span>`;
-                        }
-                    }else{
-                        return `<span class="" data-id-estado-detalle-orden-compra="${row.id_detalle_orden_estado}" data-id-orden-compra="${row.detalle_orden_id_orden_compra}" data-id-detalle-orden-compra="${row.detalle_orden_id_detalle_orden}" data-codigo-item="${row.alm_prod_codigo}" style="cursor: default;">${row.detalle_orden_estado}</span>`;
 
-                    }
+                        }
 
                     }
                 },
                 {
                     render: function (data, type, row) {
 
-                        let cantidadRequerimientosConEstadosPorRegularizarOenPausa=0;
+                        let cantidadRequerimientosConEstadosPorRegularizarOenPausa = 0;
                         if (row.requerimientos != undefined && row.requerimientos.length > 0) {
                             (row.requerimientos).forEach(element => {
-                                if(element.estado ==38 || element.estado ==39){
-                                    cantidadRequerimientosConEstadosPorRegularizarOenPausa ++;
+                                if (element.estado == 38 || element.estado == 39) {
+                                    cantidadRequerimientosConEstadosPorRegularizarOenPausa++;
                                 }
                             });
                         }
@@ -990,10 +990,10 @@ class ListaOrdenView {
                         let btnImprimirOrden = '<button type="button" class="btn btn-sm btn-warning boton handleClickAbrirOrdenPDF" name="btnGenerarOrdenRequerimientoPDF" title="Abrir orden PDF" data-id-requerimiento="' + row.id_requerimiento + '"  data-codigo-requerimiento="' + row.codigo_requerimiento + '" data-id-orden-compra="' + row.id_orden_compra + '"><i class="fas fa-file-download fa-xs"></i></button>';
                         let btnAnularOrden = '';
                         if (![6, 27, 28].includes(row.orden_estado)) {
-                            if(cantidadRequerimientosConEstadosPorRegularizarOenPausa>0){
+                            if (cantidadRequerimientosConEstadosPorRegularizarOenPausa > 0) {
 
                                 btnAnularOrden = '<button type="button" class="btn btn-sm btn-danger boton handleClickAnularOrden" name="btnAnularOrden" title="Anular orden" data-codigo-orden="' + row.codigo + '" data-id-orden-compra="' + row.id_orden_compra + '" disabled><i class="fas fa-backspace fa-xs"></i></button>';
-                            }else{
+                            } else {
                                 btnAnularOrden = '<button type="button" class="btn btn-sm btn-danger boton handleClickAnularOrden" name="btnAnularOrden" title="Anular orden" data-codigo-orden="' + row.codigo + '" data-id-orden-compra="' + row.id_orden_compra + '"><i class="fas fa-backspace fa-xs"></i></button>';
 
                             }
@@ -1002,10 +1002,10 @@ class ListaOrdenView {
                         let containerCloseBrackets = '</div>';
 
 
-                    
-                            return (containerOpenBrackets + btnImprimirOrden + btnDocumentosVinculados + btnAnularOrden + containerCloseBrackets);
 
-                    
+                        return (containerOpenBrackets + btnImprimirOrden + btnDocumentosVinculados + btnAnularOrden + containerCloseBrackets);
+
+
 
                     }
                 }
@@ -1194,7 +1194,7 @@ class ListaOrdenView {
         let id_orden_compra = document.querySelector("div[id='modal-editar-estado-orden'] input[name='id_orden_compra'").value;
         let id_estado_orden_selected = document.querySelector("div[id='modal-editar-estado-orden'] select[name='estado_orden'").value;
         let estado_orden_selected = document.querySelector("div[id='modal-editar-estado-orden'] select[name='estado_orden'")[document.querySelector("div[id='modal-editar-estado-orden'] select[name='estado_orden'").selectedIndex].textContent;
-        obj.setAttribute("disabled","true");
+        obj.setAttribute("disabled", "true");
         this.listaOrdenCtrl.actualizarEstadoOrdenPorRequerimiento(id_orden_compra, id_estado_orden_selected).then((res) => {
             obj.removeAttribute("disabled");
 
@@ -1234,7 +1234,7 @@ class ListaOrdenView {
         let id_detalle_orden_compra = document.querySelector("div[id='modal-editar-estado-detalle-orden'] input[name='id_detalle_orden_compra'").value;
         let id_estado_detalle_orden_selected = document.querySelector("div[id='modal-editar-estado-detalle-orden'] select[name='estado_detalle_orden'").value;
         let estado_detalle_orden_selected = document.querySelector("div[id='modal-editar-estado-detalle-orden'] select[name='estado_detalle_orden'")[document.querySelector("div[id='modal-editar-estado-detalle-orden'] select[name='estado_detalle_orden'").selectedIndex].textContent;
-        obj.setAttribute("disabled",true);
+        obj.setAttribute("disabled", true);
         this.listaOrdenCtrl.actualizarEstadoDetalleOrdenPorRequerimiento(id_detalle_orden_compra, id_estado_detalle_orden_selected).then((res) => {
             obj.removeAttribute("disabled");
             this.tipoVistaPorItem();
@@ -1310,43 +1310,63 @@ class ListaOrdenView {
 
         }).then((result) => {
             if (result.isConfirmed) {
-                this.listaOrdenCtrl.anularOrden(id).then((res) => {
-                    if (res.status == 200) {
-                        $("#wrapper-okc").LoadingOverlay("hide", true);
+                // inicio  sustento
+                let sustentoAnularOrden = '';
+                Swal.fire({
+                    title: 'Sustente el movivo de la anulación de orden',
+                    input: 'textarea',
+                    inputAttributes: {
+                        autocapitalize: 'off'
+                    },
+                    showCancelButton: true,
+                    confirmButtonText: 'Registrar',
 
-                        Lobibox.notify('success', {
-                            title: false,
-                            size: 'mini',
-                            rounded: true,
-                            sound: false,
-                            delayIndicator: false,
-                            msg: 'Orden anulada'
+                    allowOutsideClick: () => !Swal.isLoading()
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        sustentoAnularOrden = result.value;
+                        // enviar anular orden
+                        this.listaOrdenCtrl.anularOrden(id, sustentoAnularOrden).then((res) => {
+                            if (res.status == 200) {
+                                $("#wrapper-okc").LoadingOverlay("hide", true);
+
+                                Lobibox.notify('success', {
+                                    title: false,
+                                    size: 'mini',
+                                    rounded: true,
+                                    sound: false,
+                                    delayIndicator: false,
+                                    msg: 'Orden anulada'
+                                });
+                                // location.reload();
+                                obj.closest('tr').remove();
+
+                                if (document.querySelector("button[id='btnTipoVistaPorItemPara']").classList.contains('active')) {
+                                    this.tipoVistaPorItem();
+                                }
+
+                            } else {
+                                $("#wrapper-okc").LoadingOverlay("hide", true);
+                                Swal.fire(
+                                    '',
+                                    'Lo sentimos hubo un error en el servidor al intentar anular la orden, por favor vuelva a intentarlo',
+                                    'error'
+                                );
+                                console.log(res);
+                            }
+                        }).catch((err) => {
+                            $("#wrapper-okc").LoadingOverlay("hide", true);
+                            console.log(err)
+                            Swal.fire(
+                                '',
+                                'Lo sentimos hubo un error en el servidor, por favor vuelva a intentarlo',
+                                'error'
+                            );
                         });
-                        // location.reload();
-                        obj.closest('tr').remove();
-
-                        if(document.querySelector("button[id='btnTipoVistaPorItemPara']").classList.contains('active')){
-                            this.tipoVistaPorItem();
-                        }
-                        
-                    } else {
-                        $("#wrapper-okc").LoadingOverlay("hide", true);
-                        Swal.fire(
-                            '',
-                            'Lo sentimos hubo un error en el servidor al intentar anular la orden, por favor vuelva a intentarlo',
-                            'error'
-                        );
-                        console.log(res);
+                        // fin envio anular orden
                     }
-                }).catch((err) => {
-                    $("#wrapper-okc").LoadingOverlay("hide", true);
-                    console.log(err)
-                    Swal.fire(
-                        '',
-                        'Lo sentimos hubo un error en el servidor, por favor vuelva a intentarlo',
-                        'error'
-                    );
-                });
+                })
+                // fin susntento
 
 
             }
