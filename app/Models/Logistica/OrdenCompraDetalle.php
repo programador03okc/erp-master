@@ -59,7 +59,7 @@ class OrdenCompraDetalle extends Model
             $codigoRequerimiento=OrdenCompraDetalle::leftJoin('almacen.alm_det_req','log_det_ord_compra.id_detalle_requerimiento','alm_det_req.id_detalle_requerimiento')
             ->Join('almacen.alm_req','alm_req.id_requerimiento','alm_det_req.id_requerimiento')
             ->where('log_det_ord_compra.id_detalle_orden',$this->attributes['id_detalle_orden'])
-            ->select('alm_req.codigo')->first()->codigo; 
+            ->select('alm_req.codigo')->first()->codigo??''; 
             
 
         }
