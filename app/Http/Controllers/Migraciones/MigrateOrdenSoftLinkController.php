@@ -805,7 +805,7 @@ class MigrateOrdenSoftLinkController extends Controller
 
     public function obtenerProveedor($nro_documento, $razon_social, $doc_tipo, $cod_di)
     {
-        if ($nro_documento !== null) {
+        if ($nro_documento !== null && $nro_documento !== '') {
             $proveedor = DB::connection('soft')->table('auxiliar')
                 ->select('cod_auxi')
                 ->where([
@@ -826,16 +826,16 @@ class MigrateOrdenSoftLinkController extends Controller
         $cod_auxi = null;
 
         if ($proveedor == null) {
-
+            //obtiene el codigo mayor
             $mayor = DB::connection('soft')->table('auxiliar')
                 ->select('cod_auxi')
                 ->where([
                     ['cod_auxi', '!=', 'TRANSF'],
-                    ['tip_auxi', '=', 'P']
+                    // ['tip_auxi', '=', 'P']
                 ])
                 ->orderBy('cod_auxi', 'desc')
                 ->first();
-
+            //le aumenta 1 al codigo mayor
             $cod_auxi = $this->leftZero(6, (intval($mayor->cod_auxi) + 1));
 
 
