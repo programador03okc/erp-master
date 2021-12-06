@@ -89,8 +89,11 @@ class MigrateOrdenSoftLinkController extends Controller
                     'log_ord_compra.id_moneda',
                     'log_ord_compra.id_sede',
                     'log_ord_compra.id_condicion_softlink',
-                    'alm_almacen.codigo as codigo_almacen',
                     'log_ord_compra.observacion',
+                    'log_ord_compra.plazo_entrega',
+                    'log_ord_compra.direccion_destino',
+                    DB::raw("(ubi_dis.descripcion) || ' - ' || (ubi_prov.descripcion) || ' - ' || (ubi_dpto.descripcion) AS ubigeo_destino"),
+                    'alm_almacen.codigo as codigo_almacen',
                     'adm_contri.nro_documento as ruc',
                     'adm_contri.razon_social',
                     'adm_contri.id_tipo_contribuyente',
@@ -104,7 +107,9 @@ class MigrateOrdenSoftLinkController extends Controller
                 )
                 ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
                 ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
-                // ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'log_ord_compra.id_sede')
+                ->leftJoin('configuracion.ubi_dis', 'ubi_dis.id_dis', '=', 'log_ord_compra.ubigeo_destino')
+                ->leftJoin('configuracion.ubi_prov', 'ubi_prov.id_prov', '=', 'ubi_dis.id_prov')
+                ->leftJoin('configuracion.ubi_dpto', 'ubi_dpto.id_dpto', '=', 'ubi_prov.id_dpto')
                 ->leftJoin('almacen.alm_almacen', function ($join) {
                     $join->on('alm_almacen.id_sede', '=', 'log_ord_compra.id_sede');
                     $join->where('alm_almacen.estado', '!=', 7);
@@ -129,22 +134,35 @@ class MigrateOrdenSoftLinkController extends Controller
                     'alm_clasif.descripcion as clasificacion',
                     'log_ord_compra.id_moneda',
                     'alm_prod.series',
-                    'alm_prod.notas'
+                    'alm_prod.notas',
+                    'oportunidades.codigo_oportunidad'
                 )
                 ->join('logistica.log_ord_compra', 'log_ord_compra.id_orden_compra', '=', 'log_det_ord_compra.id_orden_compra')
-                ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'log_det_ord_compra.id_producto')
-                ->join('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
-                ->join('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
-                ->join('almacen.alm_tp_prod', 'alm_tp_prod.id_tipo_producto', '=', 'alm_cat_prod.id_tipo_producto')
-                ->join('almacen.alm_clasif', 'alm_clasif.id_clasificacion', '=', 'alm_tp_prod.id_clasificacion')
-                ->join('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
+                ->leftjoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'log_det_ord_compra.id_producto')
+                ->leftjoin('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
+                ->leftjoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
+                ->leftjoin('almacen.alm_tp_prod', 'alm_tp_prod.id_tipo_producto', '=', 'alm_cat_prod.id_tipo_producto')
+                ->leftjoin('almacen.alm_clasif', 'alm_clasif.id_clasificacion', '=', 'alm_tp_prod.id_clasificacion')
+                ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
+                ->leftjoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
+                ->leftjoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+                ->leftjoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
+                ->leftjoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
                 ->where([
                     ['log_det_ord_compra.id_orden_compra', '=', $id_orden_compra],
                     ['log_det_ord_compra.estado', '!=', 7]
                 ])
                 ->get();
 
-            // return response()->json(['oc' => $oc, 'detalle' => $detalles]);
+            $cuadros = [];
+            foreach ($detalles as $det) {
+                if ($det->codigo_oportunidad !== null) {
+                    if (!in_array($det->codigo_oportunidad, $cuadros)) {
+                        array_push($cuadros, $det->codigo_oportunidad);
+                    }
+                }
+            }
+
             $arrayRspta = [];
 
             if ($oc !== null && count($detalles) > 0) {
@@ -232,16 +250,23 @@ class MigrateOrdenSoftLinkController extends Controller
                                         'txt_observa' => ($oc->observacion !== null ? $oc->observacion : ''),
                                         'cod_user' => $oc->codvend_softlink,
                                         'tip_cambio' => $tp_cambio->cambio3, //tipo cambio venta
+                                        'ndocu1' => ($oc->plazo_entrega !== null ? $oc->plazo_entrega . ' DIAS' : ''),
+                                        'ndocu2' => ($oc->direccion_destino !== null ? $oc->direccion_destino . ' ' . ($oc->ubigeo_destino !== null ? $oc->ubigeo_destino : '') : ''),
+                                        'ndocu3' => implode(', ', $cuadros)
                                     ]
                                 );
 
                             $i = 0;
                             foreach ($detalles as $det) {
                                 $i++;
+                                //Obtiene y/o crea el producto
+                                if ($det->id_producto !== null) {
+                                    $cod_prod = $this->obtenerProducto($det);
+                                } else {
+                                    $cod_prod = '005675'; //OTROS SERVICIOS - DEFAULT
+                                }
 
                                 if ($det->id_oc_det_softlink !== null) {
-                                    //Obtiene y/o crea el producto
-                                    $cod_prod = $this->obtenerProducto($det);
                                     //actualiza el detalle
                                     DB::connection('soft')->table('detmov')
                                         ->where('unico', $det->id_oc_det_softlink)
@@ -249,7 +274,7 @@ class MigrateOrdenSoftLinkController extends Controller
                                             'fec_pedi' => $fecha,
                                             'cod_auxi' => trim($det->abreviatura),
                                             'cod_prod' => $cod_prod,
-                                            'nom_prod' => $det->descripcion,
+                                            'nom_prod' => ($cod_prod == '005675' ? 'OTROS SERVICIOS - ' . $det->descripcion_adicional : $det->descripcion),
                                             'can_pedi' => $det->cantidad,
                                             'sal_pedi' => $det->cantidad,
                                             'can_devo' => $i, //numeracion del item 
@@ -257,10 +282,11 @@ class MigrateOrdenSoftLinkController extends Controller
                                             'pre_neto' => ($det->precio !== null ? ($det->precio * $det->cantidad) : 0),
                                             'impto1' => $igv,
                                             'imp_item' => ($det->precio !== null ? ($det->precio * $det->cantidad) : 0),
-                                            'ok_serie' => ($det->series ? '1' : '0'),
+                                            'flg_serie' => ($cod_prod == '005675' ? 0 : ($det->series ? 1 : 0)),
+                                            // 'ok_serie' => ($det->series ? '1' : '0'),
                                         ]);
                                 } else {
-                                    $this->agregarDetalleOrden($det, $oc->id_softlink, $oc_softlink->cod_docu, $oc_softlink->num_docu, $fecha, $igv, $i);
+                                    $this->agregarDetalleOrden($det, $oc->id_softlink, $cod_prod, $oc_softlink->cod_docu, $oc_softlink->num_docu, $fecha, $igv, $i);
                                 }
                             }
                             $arrayRspta = array(
@@ -305,13 +331,18 @@ class MigrateOrdenSoftLinkController extends Controller
                     //anida el numero de documento
                     $num_docu = $yy . $nro_mov;
 
-                    $this->agregarOrden($mov_id, $cod_suc, $oc, $cod_docu, $num_docu, $fecha, $cod_auxi, $igv, $mon_impto, $tp_cambio, $id_orden_compra);
+                    $this->agregarOrden($mov_id, $cod_suc, $oc, $cod_docu, $num_docu, $fecha, $cod_auxi, $igv, $mon_impto, $tp_cambio, $id_orden_compra, $cuadros);
 
                     $i = 0;
                     foreach ($detalles as $det) {
+                        $cod_prod = null;
                         //Obtiene y/o crea el producto
-                        $cod_prod = $this->obtenerProducto($det);
-                        $this->agregarDetalleOrden($det, $mov_id, $cod_docu, $num_docu, $fecha, $igv, $i);
+                        if ($det->id_producto !== null) {
+                            $cod_prod = $this->obtenerProducto($det);
+                        } else {
+                            $cod_prod = '005675'; //OTROS SERVICIOS - DEFAULT
+                        }
+                        $this->agregarDetalleOrden($det, $mov_id, $cod_prod, $cod_docu, $num_docu, $fecha, $igv, $i);
                         $this->actualizaStockEnTransito($oc, $cod_prod, $det, $cod_suc);
                     }
                     $this->agregarAudita($oc, $yy, $nro_mov);
@@ -343,7 +374,7 @@ class MigrateOrdenSoftLinkController extends Controller
         }
     }
 
-    public function agregarOrden($mov_id, $cod_suc, $oc, $cod_docu, $num_docu, $fecha, $cod_auxi, $igv, $mon_impto, $tp_cambio, $id_orden_compra)
+    public function agregarOrden($mov_id, $cod_suc, $oc, $cod_docu, $num_docu, $fecha, $cod_auxi, $igv, $mon_impto, $tp_cambio, $id_orden_compra, $cuadros)
     {
         DB::connection('soft')->table('movimien')->insert(
             [
@@ -407,9 +438,9 @@ class MigrateOrdenSoftLinkController extends Controller
                 'aceptado' => 0,
                 'reg_conta' => '0',
                 'mov_pago' => '',
-                'ndocu1' => '',
-                'ndocu2' => '',
-                'ndocu3' => '',
+                'ndocu1' => ($oc->plazo_entrega !== null ? $oc->plazo_entrega . ' DIAS' : ''),
+                'ndocu2' => ($oc->direccion_destino !== null ? $oc->direccion_destino . ' ' . ($oc->ubigeo_destino !== null ? $oc->ubigeo_destino : '') : ''),
+                'ndocu3' => implode(', ', $cuadros),
                 'flg_logis' => 1,
                 'cod_recep' => '',
                 'flg_aprueba' => 0,
@@ -447,14 +478,14 @@ class MigrateOrdenSoftLinkController extends Controller
             ]);
     }
 
-    public function agregarDetalleOrden($det, $mov_id, $cod_docu, $num_docu, $fecha, $igv, $i)
+    public function agregarDetalleOrden($det, $mov_id, $cod_prod, $cod_docu, $num_docu, $fecha, $igv, $i)
     {
         //cuenta los registros
         $count_det = DB::connection('soft')->table('detmov')->count();
         //aumenta uno y completa los 10 digitos
         $mov_det_id = $this->leftZero(10, (intval($count_det) + 1));
         //Obtiene y/o crea el producto
-        $cod_prod = $this->obtenerProducto($det);
+        // $cod_prod = $this->obtenerProducto($det);
 
         DB::connection('soft')->table('detmov')->insert(
             [
@@ -466,7 +497,8 @@ class MigrateOrdenSoftLinkController extends Controller
                 'fec_pedi' => $fecha,
                 'cod_auxi' => trim($det->abreviatura),
                 'cod_prod' => $cod_prod,
-                'nom_prod' => $det->descripcion,
+                // 'nom_prod' => $det->descripcion,
+                'nom_prod' => ($cod_prod == '005675' ? 'OTROS SERVICIOS - ' . $det->descripcion_adicional : $det->descripcion),
                 'can_pedi' => $det->cantidad,
                 'sal_pedi' => $det->cantidad,
                 'can_devo' => $i, //numeracion del item 
@@ -483,15 +515,15 @@ class MigrateOrdenSoftLinkController extends Controller
                 'descargo' => '*',
                 'trecord' => '',
                 'cod_model' => '',
-                'flg_serie' => '1',
+                'flg_serie' => ($cod_prod == '005675' ? 0 : ($det->series ? 1 : 0)),
                 'series' => '',
                 'entrega' => '0',
                 'notas' => '',
                 'flg_percep' => 0,
                 'por_percep' => 0,
                 'mon_percep' => 0,
-                'ok_stk' => '1',
-                'ok_serie' => ($det->series ? '1' : '0'),
+                'ok_stk' => 1,
+                'ok_serie' => 1,
                 'lStock' => '0',
                 'no_calc' => '0',
                 'promo' => '0',
