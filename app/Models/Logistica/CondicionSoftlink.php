@@ -3,6 +3,7 @@
 namespace App\Models\Logistica;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class CondicionSoftlink extends Model
 {
@@ -12,7 +13,7 @@ class CondicionSoftlink extends Model
 
     public static function mostrar()
     {
-        $data = CondicionSoftlink::orderBy('condicion_softlink.dias', 'asc') ->get();
+        $data = DB::table('logistica.condicion_softlink')->orderBy('condicion_softlink.dias', 'asc') ->get();
         return $data;
     }
 }
