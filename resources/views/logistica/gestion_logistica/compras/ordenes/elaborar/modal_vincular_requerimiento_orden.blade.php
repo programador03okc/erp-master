@@ -16,7 +16,7 @@
                             <th style="width: 5%; text-align:center;">Moneda.</th>
                             <th style="width: 8%; text-align:center;">Proveedor/Entidad</th>
                             <th style="width: 8%; text-align:center;">Empresa - Sede</th>
-                            <th style="width: 5%; text-align:center;">Autor</th>
+                            <th style="width: 5%; text-align:center;">Solicitado por</th>
                             <th style="width: 5%; text-align:center;">Estado</th>
                             <th style="width: 10%; text-align:center;">Acción</th>
                         </tr>

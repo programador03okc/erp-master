@@ -872,6 +872,7 @@ class OrdenView {
         tablaListaRequerimientosParaVincular = $('#listaRequerimientosParaVincular').DataTable({
             'dom': 'Bfrtip',
             'language': vardataTables[0],
+            'order': [[9, 'desc']],
             'serverSide': true,
             'processing': false,
             'destroy': true,
@@ -890,27 +891,16 @@ class OrdenView {
 
             },
             'columns': [
-                { 'data': 'codigo' },
-                { 'data': 'alm_req_concepto' },
-                { 'data': 'fecha_registro' },
-                { 'data': 'tipo_req_desc' },
-                { 'data': 'moneda' },
-                { 'data': 'cliente_razon_social' },
-                { 'data': 'empresa_sede' },
-                { 'data': 'usuario' },
-                { 'data': 'estado_doc' },
-                {
-                    'render':
-                        function (data, type, row) {
-                            let containerOpenBrackets = `<div class="btn-group" role="group" style="display: flex;flex-direction: row;flex-wrap: nowrap;">`;
-                            let btnVerDetalle = `<button type="button" class="ver-detalle btn btn-default boton handleClickVerDetalleRequerimientoModalVincularRequerimiento" data-id-requerimiento="${row.id_requerimiento}"  data-toggle="tooltip" data-placement="bottom" title="Ver detalle requerimiento" data-id="${row.id_orden_compra}"> <i class="fas fa-chevron-down fa-sm"></i> </button>`;
-                            let btnSeleccionar = `<button type="button" class="ver-detalle btn btn-${row.count_pendientes >0?'default':'success'} boton handleClickVincularRequerimiento" data-toggle="tooltip" data-placement="bottom" title="Seleccionar" data-id-requerimiento="${row.id_requerimiento}" data-id="${row.id_orden_compra}"> Seleccionar </button>`;
-                            let containerCloseBrackets = `</div>`;
-                            let infoPorMapear =`<small class="text-${row.count_pendientes >0?'danger':'success'}">${row.count_pendientes >0?('Mapeos pendientes: '+row.count_pendientes):''}</small>
-                            `;
-                            return (containerOpenBrackets + btnVerDetalle + btnSeleccionar + containerCloseBrackets+infoPorMapear);
-                        }
-                }
+                { 'data': 'codigo', 'name': 'alm_req.codigo', 'className': 'text-center' },
+                { 'data': 'concepto', 'name': 'alm_req.concepto', 'className': 'text-left' },
+                { 'data': 'fecha_registro', 'name': 'alm_req.fecha_registro', 'className': 'text-center' },
+                { 'data': 'tipo_req_desc', 'name': 'alm_tp_req.descripcion', 'className': 'text-center' },
+                { 'data': 'moneda','name':'sis_moneda.descripcion','className': 'text-center' },
+                { 'data': 'cliente_razon_social', 'name':'contri_cliente.razon_social','className': 'text-left' },
+                { 'data': 'empresa_sede', 'name': 'sis_sede.descripcion', 'className': 'text-center' },
+                { 'data': 'cc_solicitado_por', 'name': 'cc_view.name', 'className': 'text-center' },
+                { 'data': 'estado_doc', 'name': 'adm_estado_doc.estado_doc', 'className': 'text-center' },
+                { 'data': 'id_requerimiento', 'name': 'alm_req.id_requerimiento', "searchable": false }
 
             ],
             'initComplete': function () {
@@ -962,7 +952,18 @@ class OrdenView {
                 { 'aTargets': [6], 'className': "text-center", 'sWidth': '4%' },
                 { 'aTargets': [7], 'className': "text-center", 'sWidth': '4%' },
                 { 'aTargets': [8], 'className': "text-center", 'sWidth': '4%' },
-                { 'aTargets': [9], 'className': "text-center", 'sWidth': '10%' }
+                {
+                    'render':
+                    function (data, type, row) {
+                        let containerOpenBrackets = `<div class="btn-group" role="group" style="display: flex;flex-direction: row;flex-wrap: nowrap;">`;
+                        let btnVerDetalle = `<button type="button" class="ver-detalle btn btn-default boton handleClickVerDetalleRequerimientoModalVincularRequerimiento" data-id-requerimiento="${row.id_requerimiento}"  data-toggle="tooltip" data-placement="bottom" title="Ver detalle requerimiento" data-id="${row.id_orden_compra}"> <i class="fas fa-chevron-down fa-sm"></i> </button>`;
+                        let btnSeleccionar = `<button type="button" class="ver-detalle btn btn-${row.count_pendientes >0?'default':'success'} boton handleClickVincularRequerimiento" data-toggle="tooltip" data-placement="bottom" title="Seleccionar" data-id-requerimiento="${row.id_requerimiento}" data-id="${row.id_orden_compra}"> Seleccionar </button>`;
+                        let containerCloseBrackets = `</div>`;
+                        let infoPorMapear =`<small class="text-${row.count_pendientes >0?'danger':'success'}">${row.count_pendientes >0?('Mapeos pendientes: '+row.count_pendientes):''}</small>
+                        `;
+                        return (containerOpenBrackets + btnVerDetalle + btnSeleccionar + containerCloseBrackets+infoPorMapear);
+                    },targets: 9, className: "text-center", sWidth: '10%'
+                }
             ]
 
         });
