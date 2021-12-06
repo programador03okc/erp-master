@@ -186,6 +186,10 @@ $(document).ready(function () {
 					else if (page == 'doc_compra') {
 						editar_doc_compra();
 					}
+					else if (page == 'crear-orden-requerimiento') {
+					
+						document.querySelector("button[name='btn-enviar-softlink']").setAttribute("disabled", true);
+					}
 				}
 				break;
 			case 'btnAnular':

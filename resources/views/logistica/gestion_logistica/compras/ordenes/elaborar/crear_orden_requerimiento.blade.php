@@ -57,7 +57,7 @@ Elaborar orden
 
                         <div class="col-md-2" id="group-codigo_orden">
                             <h5>Código orden softlink</h5>
-                            <input class="form-control activation" name="codigo_orden" type="text" placeholder="">
+                            <input class="form-control activation" name="codigo_orden" type="text" placeholder="" readonly>
                         </div>
                         <div class="col-md-2" id="group-fecha_emision_orden">
                             <h5>Fecha emisión</h5>

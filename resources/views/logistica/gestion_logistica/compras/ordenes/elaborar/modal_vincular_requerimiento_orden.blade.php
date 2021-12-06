@@ -1,5 +1,5 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-vincular-requerimiento-orden" style="overflow-y: scroll;">
-    <div class="modal-dialog" style="width: 85%;">
+    <div class="modal-dialog" style="width: 90%;">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal-vincular-requerimiento-orden" onClick="$('#modal-vincular-requerimiento-orden').modal('hide');"><span aria-hidden="true">&times;</span></button>
@@ -16,9 +16,9 @@
                             <th style="width: 5%; text-align:center;">Moneda.</th>
                             <th style="width: 8%; text-align:center;">Proveedor/Entidad</th>
                             <th style="width: 8%; text-align:center;">Empresa - Sede</th>
-                            <th style="width: 5%; text-align:center;">Autor</th>
+                            <th style="width: 5%; text-align:center;">Solicitado por</th>
                             <th style="width: 5%; text-align:center;">Estado</th>
-                            <th style="width: 5%; text-align:center;">Acción</th>
+                            <th style="width: 10%; text-align:center;">Acción</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
