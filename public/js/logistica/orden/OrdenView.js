@@ -755,7 +755,7 @@ class OrdenView {
             'tiene_transformacion': false,
             'producto_regalo': true,
             'unidad_medida': unidad
-        }]);
+        }],'OBSEQUIO');
         $('#modal-catalogo-items').modal('hide');
 
     }
@@ -770,7 +770,7 @@ class OrdenView {
         });
     }
 
-    agregarProducto(data) {
+    agregarProducto(data, tipo) { // tipo puede ser OBSEQUIO, DETALLE_REQUERIMIENTO
         vista_extendida();
         document.querySelector("tbody[id='body_detalle_orden']").insertAdjacentHTML('beforeend', `<tr style="text-align:center;">
         <td class="text-center">${data[0].codigo_requerimiento ? data[0].codigo_requerimiento : ''} <input type="hidden"  name="idRegister[]" value="${data[0].id_detalle_orden ? data[0].id_detalle_orden : this.makeId()}"> <input type="hidden"  name="idDetalleRequerimiento[]" value="${data[0].id_detalle_requerimiento ? data[0].id_detalle_requerimiento : ''}"> <input type="hidden"  name="idTipoItem[]" value="1"> </td>
@@ -800,7 +800,7 @@ class OrdenView {
 
         this.autoUpdateSubtotal();
         this.UpdateSelectUnidadMedida();
-        if (data.length > 0) {
+        if (data.length > 0 && tipo =='OBSEQUIO') {
             Lobibox.notify('success', {
                 title: false,
                 size: 'mini',
@@ -863,37 +863,39 @@ class OrdenView {
 
         });
 
-        this.ordenCtrl.getRequerimientosPendientes(null, null).then((res) => {
-            this.ConstruirlistarRequerimientosPendientesParaVincularConOrden(res);
-
-        }).catch((err) => {
-            console.log(err)
-        })
+        this.ConstruirlistarRequerimientosPendientesParaVincularConOrden();
+  
 
     }
 
-    ConstruirlistarRequerimientosPendientesParaVincularConOrden(data) {
+    ConstruirlistarRequerimientosPendientesParaVincularConOrden() {
         tablaListaRequerimientosParaVincular = $('#listaRequerimientosParaVincular').DataTable({
-            'serverSide': false,
+            'dom': 'Bfrtip',
+            'language': vardataTables[0],
+            'serverSide': true,
             'processing': false,
             'destroy': true,
-            'language': vardataTables[0],
-            'data': data,
-            // "dataSrc":'',
-            'dom': 'Bfrtip',
-            'bDestroy': true,
+            'ajax': {
+                'url': 'requerimientos-pendientes',
+                'type': 'POST',
+                'data': { 'idEmpresa': 'SIN_FILTRO', 'idSede': 'SIN_FILTRO', 'fechaRegistroDesde': 'SIN_FILTRO', 'fechaRegistroHasta': 'SIN_FILTRO', 'reserva': 'SIN_FILTRO', 'orden': 'SIN_FILTRO' },
+                beforeSend: data => {
+
+                    $("#listaRequerimientosParaVincular").LoadingOverlay("show", {
+                        imageAutoResize: true,
+                        progress: true,
+                        imageColor: "#3c8dbc"
+                    });
+                }
+
+            },
             'columns': [
                 { 'data': 'codigo' },
                 { 'data': 'alm_req_concepto' },
                 { 'data': 'fecha_registro' },
                 { 'data': 'tipo_req_desc' },
                 { 'data': 'moneda' },
-                {
-                    'render':
-                        function (data, type, row) {
-                            return '';
-                        }
-                },
+                { 'data': 'cliente_razon_social' },
                 { 'data': 'empresa_sede' },
                 { 'data': 'usuario' },
                 { 'data': 'estado_doc' },
@@ -902,27 +904,65 @@ class OrdenView {
                         function (data, type, row) {
                             let containerOpenBrackets = `<div class="btn-group" role="group" style="display: flex;flex-direction: row;flex-wrap: nowrap;">`;
                             let btnVerDetalle = `<button type="button" class="ver-detalle btn btn-default boton handleClickVerDetalleRequerimientoModalVincularRequerimiento" data-id-requerimiento="${row.id_requerimiento}"  data-toggle="tooltip" data-placement="bottom" title="Ver detalle requerimiento" data-id="${row.id_orden_compra}"> <i class="fas fa-chevron-down fa-sm"></i> </button>`;
-                            let btnSeleccionar = `<button type="button" class="ver-detalle btn btn-success boton handleClickVincularRequerimiento" data-toggle="tooltip" data-placement="bottom" title="Seleccionar" data-id-requerimiento="${row.id_requerimiento}" data-id="${row.id_orden_compra}"> Seleccionar </button>`;
+                            let btnSeleccionar = `<button type="button" class="ver-detalle btn btn-${row.count_pendientes >0?'default':'success'} boton handleClickVincularRequerimiento" data-toggle="tooltip" data-placement="bottom" title="Seleccionar" data-id-requerimiento="${row.id_requerimiento}" data-id="${row.id_orden_compra}"> Seleccionar </button>`;
                             let containerCloseBrackets = `</div>`;
-                            return (containerOpenBrackets + btnVerDetalle + btnSeleccionar + containerCloseBrackets);
+                            let infoPorMapear =`<small class="text-${row.count_pendientes >0?'danger':'success'}">${row.count_pendientes >0?('Mapeos pendientes: '+row.count_pendientes):''}</small>
+                            `;
+                            return (containerOpenBrackets + btnVerDetalle + btnSeleccionar + containerCloseBrackets+infoPorMapear);
                         }
                 }
 
             ],
             'initComplete': function () {
-
+                //Boton de busqueda
+                const $filter = $('#listaRequerimientosParaVincular_filter');
+                const $input = $filter.find('input');
+                $filter.append('<button id="btnBuscar" class="btn btn-default btn-sm pull-right" type="button"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>');
+                $input.off();
+                $input.on('keyup', (e) => {
+                    if (e.key == 'Enter') {
+                        $('#btnBuscar').trigger('click');
+                    }
+                });
+                $('#btnBuscar').on('click', (e) => {
+                    tablaListaRequerimientosParaVincular.search($input.val()).draw();
+                })
+                //Fin boton de busqueda
+            },
+            "drawCallback": function (settings) {
+                //Botón de búsqueda
+                $('#listaRequerimientosParaVincular_filter input').prop('disabled', false);
+                $('#btnBuscar').html('<span class="glyphicon glyphicon-search" aria-hidden="true"></span>').prop('disabled', false);
+                $('#listaRequerimientosParaVincular_filter input').trigger('focus');
+                //fin botón búsqueda
+                if (tablaListaRequerimientosParaVincular.rows().data().length == 0) {
+                    Lobibox.notify('info', {
+                        title: false,
+                        size: 'mini',
+                        rounded: true,
+                        sound: false,
+                        delayIndicator: false,
+                        msg: `No se encontro data disponible para mostrar`
+                    });
+                }
+                //Botón de búsqueda
+                $('#listaRequerimientosParaVincular_filter input').prop('disabled', false);
+                $('#btnBuscar').html('<span class="glyphicon glyphicon-search" aria-hidden="true"></span>').prop('disabled', false);
+                $('#listaRequerimientosParaVincular_filter input').trigger('focus');
+                //fin botón búsqueda
+                $("#listaRequerimientosParaVincular").LoadingOverlay("hide", true);
             },
             'columnDefs': [
-                { 'aTargets': [0], 'className': "text-left", 'sWidth': '5%' },
-                { 'aTargets': [1], 'className': "text-left", 'sWidth': '40%' },
+                { 'aTargets': [0], 'className': "text-left", 'sWidth': '7%' },
+                { 'aTargets': [1], 'className': "text-left", 'sWidth': '30%' },
                 { 'aTargets': [2], 'className': "text-center", 'sWidth': '4%' },
                 { 'aTargets': [3], 'className': "text-center", 'sWidth': '4%' },
-                { 'aTargets': [4], 'className': "text-center", 'sWidth': '8%' },
-                { 'aTargets': [5], 'className': "text-center", 'sWidth': '8%' },
+                { 'aTargets': [4], 'className': "text-center", 'sWidth': '5%' },
+                { 'aTargets': [5], 'className': "text-left", 'sWidth': '8%' },
                 { 'aTargets': [6], 'className': "text-center", 'sWidth': '4%' },
                 { 'aTargets': [7], 'className': "text-center", 'sWidth': '4%' },
                 { 'aTargets': [8], 'className': "text-center", 'sWidth': '4%' },
-                { 'aTargets': [9], 'className': "text-center", 'sWidth': '5%' }
+                { 'aTargets': [9], 'className': "text-center", 'sWidth': '10%' }
             ]
 
         });
@@ -1081,7 +1121,7 @@ class OrdenView {
                             'producto_regalo': false,
                             'tiene_transformacion': element.tiene_transformacion,
                             'unidad_medida': element.unidad_medida.descripcion
-                        }]);
+                        }],'DETALLE_REQUERIMIENTO');
 
                     } else {
                         cantidadItemSinMapear++;

@@ -70,10 +70,7 @@ class OrdenCtrl{
     }
 
 
-    getRequerimientosPendientes(id_empresa=null,id_sede=null) {
-        return ordenModel.getRequerimientosPendientes(id_empresa,id_sede);
-        // return ordenesData;
-    }
+ 
 
 
     verDetalleRequerimientoModalVincularRequerimiento(obj) {

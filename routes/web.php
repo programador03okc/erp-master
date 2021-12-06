@@ -815,7 +815,7 @@ Route::group(['middleware' => ['auth']], function () {
 						Route::get('mostrar-orden/{id_orden?}', 'OrdenController@mostrarOrden');
 						Route::post('anular', 'OrdenController@anularOrden')->name('anular');
 						Route::get('tipo-cambio-compra/{fecha}', 'Almacen\Reporte\SaldosController@tipo_cambio_compra');
-						Route::get('requerimientos-pendientes/{empresa?}/{sede?}/{fechaDesde?}/{fechaHasta?}/{reserva?}/{orden?}', 'ComprasPendientesController@listarRequerimientosPendientes')->name('requerimientos-pendientes');
+						Route::post('requerimientos-pendientes', 'ComprasPendientesController@listarRequerimientosPendientes')->name('requerimientos-pendientes');
 						Route::get('detalle-requerimiento/{idRequerimiento?}', 'Logistica\RequerimientoController@detalleRequerimiento')->name('detalle-requerimientos');
 						Route::get('requerimiento/{idRequerimiento?}', 'Logistica\RequerimientoController@requerimiento')->name('requerimientos');
 						Route::get('listar-cuentas-bancarias-proveedor/{idProveedor?}', 'OrdenController@listarCuentasBancariasProveedor')->name('listar-cuentas-bancarias-proveedor');
