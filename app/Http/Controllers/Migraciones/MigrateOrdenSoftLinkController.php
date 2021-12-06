@@ -328,7 +328,7 @@ class MigrateOrdenSoftLinkController extends Controller
                     $num_ult_mov = substr($ult_mov->num_docu, 4);
                     //crea el correlativo del documento
                     $nro_mov = $this->leftZero(7, (intval($num_ult_mov) + 1));
-                    //anida el numero de documento
+                    //anida el anio con el numero de documento
                     $num_docu = $yy . $nro_mov;
 
                     $this->agregarOrden($mov_id, $cod_suc, $oc, $cod_docu, $num_docu, $fecha, $cod_auxi, $igv, $mon_impto, $tp_cambio, $id_orden_compra, $cuadros);
@@ -924,13 +924,13 @@ class MigrateOrdenSoftLinkController extends Controller
                     'cta4' => '',
                     'fec_llama' => '0000-00-00',
                     'asunto' => '0',
-                    'flg_percep' => '0',
-                    'flg_reten' => '',
+                    'flg_percep' => 0,
+                    'flg_reten' => 0,
                     'por_reten' => '0',
-                    'flg_baja' => '0',
+                    'flg_baja' => 0,
                     'fec_baja' => '0000-00-00',
-                    'dias_cred' => '0',
-                    'tipo_auxi' => '0',
+                    'dias_cred' => 0,
+                    'tipo_auxi' => 0,
                     'ult_edicion' => date('Y-m-d H:i:s'),
                     'ptosbonus' => '0',
                     'canje_bonus' => '0000-00-00',
