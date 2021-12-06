@@ -134,7 +134,7 @@ class OrdenView {
             this.verDetalleRequerimientoModalVincularRequerimiento(e.currentTarget);
         });
         $('#listaRequerimientosParaVincular tbody').on("click", "button.handleClickVincularRequerimiento", (e) => {
-            this.vincularRequerimiento(e.currentTarget.dataset.idRequerimiento);
+            this.vincularRequerimiento(e.currentTarget);
         });
     }
 
@@ -1067,11 +1067,14 @@ class OrdenView {
         row.child(tabla).show();
     }
 
-    vincularRequerimiento(idRequerimiento) {
+    vincularRequerimiento(obj) {
+        obj.setAttribute("disabled",true);
+        let idRequerimiento=obj.dataset.idRequerimiento;
         let i = 0;
         let cantidadItemSinMapear = 0;
         this.ordenCtrl.obtenerRequerimiento(idRequerimiento).then((res) => {
             this.loadHeadRequerimiento([res], 2);
+            obj.removeAttribute("disabled");
 
             (res.detalle).forEach((element) => {
                 if (element.tiene_transformacion == false) {
@@ -1147,6 +1150,7 @@ class OrdenView {
 
         }).catch(function (err) {
             console.log(err)
+
         })
 
     }
