@@ -2467,12 +2467,12 @@ class OrdenController extends Controller
             $orden->personal_autorizado_2 = $request->personal_autorizado_2?$request->personal_autorizado_2:null;
             $orden->id_occ = $request->id_cc?$request->id_cc:null;
             $orden->id_sede = $request->id_sede?$request->id_sede:null;
-            $orden->direccion_destino = $request->direccion_destino?$request->direccion_destino:null;
+            $orden->direccion_destino = isset($request->direccion_destino)?trim(strtoupper($request->direccion_destino)):null;
             $orden->ubigeo_destino = isset($request->id_ubigeo_destino)?$request->id_ubigeo_destino:null;
             $orden->en_almacen = false;
             $orden->estado = 1;
             $orden->codigo_softlink = $request->codigo_orden!==null ? $request->codigo_orden : '';
-            $orden->observacion = isset($request->observacion)?$request->observacion:null;
+            $orden->observacion = isset($request->observacion)?trim(strtoupper($request->observacion)):null;
             $orden->tipo_cambio_compra = isset($request->tipo_cambio_compra)?$request->tipo_cambio_compra:true;
             $orden->save();
 
@@ -2488,7 +2488,7 @@ class OrdenController extends Controller
             $detalle->cantidad=$request->cantidadAComprarRequerida[$i];
             $detalle->id_unidad_medida=$request->unidad[$i];
             $detalle->precio=$request->precioUnitario[$i];
-            $detalle->descripcion_adicional=($request->descripcion[$i]?$request->descripcion[$i]:null);
+            $detalle->descripcion_adicional= isset($request->descripcion[$i])?trim(strtoupper($request->descripcion[$i])):null;
             $detalle->subtotal= floatval($request->cantidadAComprarRequerida[$i] * $request->precioUnitario[$i]);
             $detalle->tipo_item_id=$request->idTipoItem[$i];
             $detalle->estado=1;
@@ -3437,7 +3437,7 @@ class OrdenController extends Controller
             DB::beginTransaction();
             
             $idOrden= $request->idOrden;
-            $sustento=  $request->sustento??'sin sustento';
+            $sustento=  isset($request->sustento)?trim(strtoupper($request->sustento)):null;
             
             $status = 0;
             $msj = [];

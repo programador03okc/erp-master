@@ -36,6 +36,7 @@ use App\Models\Administracion\Estado;
 use App\Models\administracion\Sede;
 use App\Models\Almacen\AdjuntoDetalleRequerimiento;
 use App\Models\Almacen\AdjuntoRequerimiento;
+use App\Models\Almacen\Producto;
 use App\Models\Almacen\Transferencia;
 use App\Models\Configuracion\Grupo;
 use App\Models\Presupuestos\Presupuesto;
@@ -138,6 +139,7 @@ class RequerimientoController extends Controller
             'adm_estado_doc.bootstrap_color',
             'alm_prod.descripcion as producto_descripcion',
             'alm_prod.codigo as producto_codigo',
+            'alm_prod.cod_softlink as producto_codigo_softlink',
             'alm_prod.part_number as producto_part_number',
             'alm_und_medida.abreviatura'
         )
@@ -3570,5 +3572,24 @@ class RequerimientoController extends Controller
 
 
         return response()->json(['adjunto_requerimiento'=>$adjuntosCabecera,'adjuntos_detalle_requerimiento'=>$adjuntosDetalle]);
+    }
+
+    public function mostrarCatalogoProductos(){
+        
+        $catalogo =Producto::leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
+        ->leftJoin('almacen.alm_clasif', 'alm_clasif.id_clasificacion', '=', 'alm_prod.id_clasif')
+        ->leftJoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
+        ->leftJoin('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
+        ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'alm_prod.estado')
+        ->select('alm_prod.*',
+                'alm_und_medida.abreviatura as abreviatura_unidad_medida',
+                'alm_clasif.descripcion as descripcion_clasificacion',
+                'alm_cat_prod.descripcion as descripcion_categoria',
+                'alm_subcat.descripcion as descripcion_subcategoria',
+                'adm_estado_doc.estado_doc as descripcion_estado'
+                )
+        ->where('alm_prod.estado','!=',7);
+
+        return datatables($catalogo)->toJson();
     }
 }

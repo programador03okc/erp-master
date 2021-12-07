@@ -820,8 +820,9 @@ Route::group(['middleware' => ['auth']], function () {
 						Route::get('requerimiento/{idRequerimiento?}', 'Logistica\RequerimientoController@requerimiento')->name('requerimientos');
 						Route::get('listar-cuentas-bancarias-proveedor/{idProveedor?}', 'OrdenController@listarCuentasBancariasProveedor')->name('listar-cuentas-bancarias-proveedor');
 						Route::post('guardar-cuenta-bancaria-proveedor', 'OrdenController@guardarCuentaBancariaProveedor');
-
 						Route::get('migrarOrdenCompra/{id}', 'Migraciones\MigrateOrdenSoftLinkController@migrarOrdenCompra');
+						Route::post('mostrar-catalogo-productos', 'Logistica\RequerimientoController@mostrarCatalogoProductos');
+
 					});
 					Route::group(['as' => 'listado.', 'prefix' => 'listado'], function () {
 						Route::get('index', 'OrdenController@view_listar_ordenes')->name('index');
@@ -2071,7 +2072,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 	// Route::get('logistica/sedes/{empresa_id}','LogisticaController@getSedes')->name('logistica_sedes');
 	// Route::get('logistica/areas/{sede_id}','LogisticaController@getGruposAreas')->name('logistica_areas');
-	Route::get('logistica/mostrar_items', 'LogisticaController@mostrar_items');
+	// Route::get('logistica/mostrar_items', 'LogisticaController@mostrar_items');
 	Route::get('logistica/mostrar_item/{id_item}', 'LogisticaController@mostrar_item');
 	Route::get('logistica/get_requerimiento/{id}/{doc}', 'LogisticaController@get_requerimiento');
 	Route::get('/mostrar_nombre_grupo/{id}', 'EquipoController@mostrar_nombre_grupo');

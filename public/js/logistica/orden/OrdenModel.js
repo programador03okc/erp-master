@@ -17,36 +17,7 @@ class OrdenModel {
             });  
     }
     // modal listar items catalogo
-    getlistarItems(){
-        return new Promise(function(resolve, reject) {
-            $.ajax({
-                type: 'GET',
-                url:`/logistica/mostrar_items`,
-                dataType: 'JSON',
-                beforeSend: data => {
-    
-                    $("#modal-catalogo-items .modal-body").LoadingOverlay("show", {
-                        imageAutoResize: true,
-                        progress: true,
-                        imageColor: "#3c8dbc"
-                    });
-                },
-                success(response) {
-                    resolve(response.data);
-                    $("#modal-catalogo-items .modal-body").LoadingOverlay("hide", true);
-
-                },
-                error: function(err) {
-                reject(err) // Reject the promise and go to catch()
-                $("#modal-catalogo-items .modal-body").LoadingOverlay("hide", true);
-
-                },
-                "drawCallback": function( settings ) {
-                    $("#modal-catalogo-items .modal-body").LoadingOverlay("hide", true);
-                },
-                });
-            });
-    }
+ 
 
 
     obtenerDetalleRequerimientos(id){

@@ -1,5 +1,5 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-catalogo-items" style="overflow-y: scroll;">
-    <div class="modal-dialog" style="width: 84%;">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal-catalogo-items" onClick="$('#modal-catalogo-items').modal('hide');"><span aria-hidden="true">&times;</span></button>
@@ -13,28 +13,21 @@
 
                 </div>
             </div>
-                <table class="table table-condensed table-bordered table-okc-view" id="listaItems" width="100%">
+                <table class="table table-condensed table-bordered table-okc-view" id="listaCatalogoProductos" width="100%">
                     <thead>
                         <tr>
-                            <th style="width: 0%"></th>
-                            <th style="width: 0%"></th>
-                            <th style="width: 0%"></th>
-                            <th style="width: 0%"></th>
-                            <th style="width: 3%">Código</th>
-                            <th style="width: 3%">Part number</th>
-                            <th style="width: 5%">Categoría</th>
-                            <th style="width: 5%">Subcategoría</th>
-                            <th style="width: 30%">Descripción</th>
+                            <th style="width: 5%">Cód. producto</th>
+                            <th style="width: 5%">Cód. Softlink</th>
+                            <th style="width: 5%">Part number</th>
+                            <th style="width: 40%">Descripción</th>
                             <th style="width: 5%">Unidad</th>
-                            <th style="width: 0%">id_unidad_medida</th>
-                            <th style="width: 3%"> Acción</th>
+                            <th style="width: 8%"> Acción</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
                 </table>
             </div>
             <div class="modal-footer">
-                <label style="display: none;" id="id_item"></label> 
                 <label style="display: none;" id="codigo"></label>
                 <label style="display: none;" id="part_number"></label>
                 <label style="display: none;" id="descripcion"></label>
