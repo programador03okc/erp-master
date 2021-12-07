@@ -166,7 +166,7 @@ class OrdenesDespachoExternoController extends Controller
             $data->where('orden_despacho.estado', 25);
             $data->whereDate('orden_despacho.fecha_despacho', (new Carbon())->format('Y-m-d'));
         }
-        $data->orderBy('oc_propias_view.fecha_entrega', 'desc');
+        // $data->orderBy('oc_propias_view.fecha_entrega', 'desc');
         return $data;
         // return datatables($data)->toJson();
     }
@@ -180,6 +180,7 @@ class OrdenesDespachoExternoController extends Controller
     public function despachosExternosExcel(Request $request)
     {
         $data = $this->listarDespachosExternos($request);
+        $data->orderBy('oc_propias_view.fecha_entrega', 'desc');
         return Excel::download(new DespachosExternosExport(
             $data,
             $request->select_mostrar
