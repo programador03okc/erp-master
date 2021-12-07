@@ -4,6 +4,7 @@ var vardataTables = funcDatatables();
 var simboloMoneda = '';
 var tablaListaRequerimientosParaVincular;
 var $tablaHistorialOrdenesElaboradas;
+var $tablaListaCatalogoProductos;
 var detalleOrdenList = [];
 var iTableCounter = 1;
 var oInnerTable;
@@ -102,9 +103,8 @@ class OrdenView {
         $('#form-crear-orden-requerimiento').on("click", "button.handleClickVincularRequerimientoAOrdenModal", () => {
             this.vincularRequerimientoAOrdenModal();
         });
-        $('#listaItems tbody').on("click", "button.handleClickSelectItem", (e) => {
-            // var data = $('#listaItems').DataTable().row($(this).parents("tr")).data();
-            this.selectItem(e.currentTarget, e.currentTarget.dataset.idProducto);
+        $('#listaCatalogoProductos tbody').on("click", "button.handleClickSelectObsequio", (e) => {
+            this.selectObsequio(e.currentTarget);
         });
 
 
@@ -187,7 +187,7 @@ class OrdenView {
             data: { 'requerimientoList': reqTrueList },
             dataType: 'JSON',
             success: (response) => {
-
+                console.log(response);
                 response.forEach(req => {
                     req.detalle.forEach(det => {
                         if (det.cantidad > 0 && (![28, 5].includes(det.estado)) && det.id_tipo_item == idTipoItem) {
@@ -220,15 +220,16 @@ class OrdenView {
                                         'cantidad_a_comprar': !(cantidadAAtender >= 0) ? '' : cantidadAAtender,
                                         'cantidad_atendido_almacen': cantidad_atendido_almacen,
                                         'cantidad_atendido_orden': cantidad_atendido_orden,
-                                        'descripcion_producto': det.producto.descripcion,
-                                        'codigo_producto': det.producto.codigo,
-                                        'descripcion_adicional': det.descripcion_adicional,
+                                        'descripcion_producto': det.producto !=null? det.producto.descripcion:'',
+                                        'codigo_producto': det.producto !=null? det.producto.codigo:'',
+                                        'part_number': det.producto !=null? det.producto.part_number:'',
+                                        'codigo_softlink': det.producto !=null? det.producto.cod_softlink:'',
+                                        'descripcion': det.descripcion,
                                         'estado': det.estado.id_estado_doc,
                                         'fecha_registro': det.fecha_registro,
                                         'id_unidad_medida': det.id_unidad_medida,
                                         'lugar_entrega': det.lugar_entrega,
                                         'observacion': det.observacion,
-                                        'part_number': det.producto.part_number,
                                         'precio_unitario': det.precio_unitario,
                                         'stock_comprometido': cantidad_atendido_almacen,
                                         'subtotal': det.subtotal,
@@ -407,8 +408,9 @@ class OrdenView {
                     document.querySelector("tbody[id='body_detalle_orden']").insertAdjacentHTML('beforeend', `<tr style="text-align:center; background-color:${data[i].estado == 7 ? '#f5e4e4' : ''};">
                         <td class="text-center">${data[i].codigo_requerimiento ? data[i].codigo_requerimiento : ''} <input type="hidden"  name="idRegister[]" value="${data[i].id_detalle_orden ? data[i].id_detalle_orden : this.makeId()}"> <input type="hidden"  name="idDetalleRequerimiento[]" value="${data[i].id_detalle_requerimiento ? data[i].id_detalle_requerimiento : ''}">  <input type="hidden"  name="idTipoItem[]" value="1"></td>
                         <td class="text-center">${data[i].codigo_producto ? data[i].codigo_producto : ''} </td>
+                        <td class="text-center">${data[i].codigo_softlink ? data[i].codigo_softlink : ''} </td>
                         <td class="text-center">${data[i].part_number ? data[i].part_number : ''} <input type="hidden"  name="idProducto[]" value="${(data[i].id_producto ? data[i].id_producto : data[i].id_producto)}"></td>
-                        <td class="text-left">${(data[i].descripcion_producto ? data[i].descripcion_producto : (data[i].descripcion_adicional != null ? data[i].descripcion_adicional : ''))} <input type="hidden"  name="descripcion[]" value="${(data[i].descripcion_producto ? data[i].descripcion_producto : data[i].descripcion_adicional)} "></td>
+                        <td class="text-left">${(data[i].descripcion_producto ? data[i].descripcion_producto : (data[i].descripcion != null ? data[i].descripcion : ''))} <input type="hidden"  name="descripcion[]" value="${(data[i].descripcion_producto ? data[i].descripcion_producto : data[i].descripcion)} "></td>
                         <td><select name="unidad[]" class="form-control ${(data[i].estado_guia_com_det > 0 && data[i].estado_guia_com_det != 7 ? '' : 'activation')} input-sm unidadMedida" data-valor="${data[i].id_unidad_medida}" disabled>${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
                         <td>${(data[i].cantidad ? data[i].cantidad : '')}</td>
                         <td>${(data[i].cantidad_atendido_almacen ? data[i].cantidad_atendido_almacen : '')}</td>
@@ -435,8 +437,9 @@ class OrdenView {
                 document.querySelector("tbody[id='body_detalle_orden']").insertAdjacentHTML('beforeend', `<tr style="text-align:center; background-color:${data[i].estado == 7 ? '#f5e4e4' : ''}; ">
                     <td>${data[i].codigo_requerimiento ? data[i].codigo_requerimiento : ''} <input type="hidden"  name="idRegister[]" value="${data[i].id_detalle_orden ? data[i].id_detalle_orden : this.makeId()}"> <input type="hidden"  name="idDetalleRequerimiento[]" value="${data[i].id_detalle_requerimiento ? data[i].id_detalle_requerimiento : ''}"> <input type="hidden"  name="idTipoItem[]" value="1"></td>
                     <td>(No aplica) <input type="hidden" value=""></td>
+                    <td>(No aplica) <input type="hidden" value=""></td>
                     <td>(No aplica) <input type="hidden"  name="idProducto[]" value=""></td>
-                    <td><textarea name="descripcion[]" placeholder="Descripción" class="form-control activation" value="${(data[i].descripcion_adicional ? data[i].descripcion_adicional : '')}" style="width:100%;height: 60px;overflow: scroll;"> </textarea> </td>
+                    <td><textarea name="descripcion[]" placeholder="Descripción" class="form-control descripcion_servicio activation" value="${(data[i].descripcion ? data[i].descripcion : '')}" style="width:100%;height: 60px;overflow: scroll;"> </textarea> </td>
                     <td><select name="unidad[]" class="form-control activation input-sm" value="${data[i].id_unidad_medida}" disabled>${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
                     <td>${(data[i].cantidad ? data[i].cantidad : '')}</td>
                     <td></td>
@@ -582,11 +585,8 @@ class OrdenView {
         });
         this.limpiarTabla('listaItems');
         this.ocultarBtnCrearProducto();
-        this.ordenCtrl.getcatalogoProductos().then((res) => {
-            this.listarItems(res);
-        }).catch(function (err) {
-            console.log(err)
-        })
+        this.listarCatalogoProductos();
+    
 
     }
 
@@ -594,75 +594,108 @@ class OrdenView {
         cambiarVisibilidadBtn("btn-crear-producto", "ocultar");
     }
 
-    listarItems(data) {
-        let that = this;
-        var tablaListaItems = $('#listaItems').dataTable({
+    listarCatalogoProductos(){
+        $tablaListaCatalogoProductos = $('#listaCatalogoProductos').DataTable({
+            'dom': 'Bfrtip',
             'language': vardataTables[0],
-            'processing': true,
-            "bDestroy": true,
-            // "scrollX": true,
-            'data': data,
-            'columns': [
-                { 'data': 'id_item' },
-                { 'data': 'id_producto' },
-                { 'data': 'id_servicio' },
-                { 'data': 'id_equipo' },
-                { 'data': 'codigo' },
-                { 'data': 'part_number' },
-                { 'data': 'categoria' },
-                { 'data': 'subcategoria' },
-                { 'data': 'descripcion' },
-                { 'data': 'unidad_medida_descripcion' },
-                { 'data': 'id_unidad_medida' },
-                {
-                    'render':
-                        function (data, type, row) {
-                            if (row.id_unidad_medida == 1) {
-                                let btnSeleccionar = `<button class="btn btn-success btn-xs handleClickSelectItem" data-id-producto="${row.id_producto}">Seleccionar</button>`;
-                                // let btnVerSaldo = `<button class="btn btn-sm btn-info" onClick="verSaldoProducto('${row.id_producto}');">Stock</button>')`;
-                                return btnSeleccionar;
+            'order': [[5, 'asc']],
+            'serverSide': true,
+            'processing': false,
+            'destroy': true,
+            'ajax': {
+                'url': 'mostrar-catalogo-productos',
+                'type': 'POST',
+                beforeSend: data => {
 
-                            } else {
-                                return '';
-                            }
-
-                        }
+                    $("#listaCatalogoProductos").LoadingOverlay("show", {
+                        imageAutoResize: true,
+                        progress: true,
+                        imageColor: "#3c8dbc"
+                    });
                 }
-            ],
-            'columnDefs': [
-                { 'aTargets': [0], 'sClass': 'invisible', 'sWidth': '0%' },
-                { 'aTargets': [1], 'sClass': 'invisible', 'sWidth': '0%' },
-                { 'aTargets': [2], 'sClass': 'invisible', 'sWidth': '0%' },
-                { 'aTargets': [3], 'sClass': 'invisible', 'sWidth': '0%' },
-                { 'aTargets': [4], 'sWidth': '3%' }, // codigo
-                { 'aTargets': [5], 'sWidth': '3%' }, // partnumber
-                { 'aTargets': [6], 'sWidth': '5%' }, // categoria
-                { 'aTargets': [7], 'sWidth': '5%' }, // subcategoria
-                { 'aTargets': [8], 'sWidth': '30%' }, // descripcion
-                { 'aTargets': [9], 'sWidth': '5%' }, // unidad medida
-                { 'aTargets': [10], 'sClass': 'invisible', 'sWidth': '0%' },
-                { 'aTargets': [11], 'sWidth': '4%', 'className': 'text-center' } // accion
-            ],
-            'initComplete': function () {
 
             },
-            'order': [
-                [8, 'asc']
+            'columns': [
+                { 'data': 'codigo', 'name': 'alm_prod.codigo' },
+                { 'data': 'cod_softlink', 'name': 'alm_prod.cod_softlink' },
+                { 'data': 'part_number', 'name': 'alm_prod.part_number' },
+                { 'data': 'descripcion', 'name':'alm_prod.descripcion' },
+                { 'data': 'abreviatura_unidad_medida', 'name': 'alm_und_medida.abreviatura' },
+                { 'data': 'id_producto', 'name': 'alm_prod.id_producto', "searchable": false }
+
+            ],
+            'initComplete': function () {
+                //Boton de busqueda
+                const $filter = $('#listaCatalogoProductos_filter');
+                const $input = $filter.find('input');
+                $filter.append('<button id="btnBuscar" class="btn btn-default btn-sm pull-right" type="button"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>');
+                $input.off();
+                $input.on('keyup', (e) => {
+                    if (e.key == 'Enter') {
+                        $('#btnBuscar').trigger('click');
+                    }
+                });
+                $('#btnBuscar').on('click', (e) => {
+                    $tablaListaCatalogoProductos.search($input.val()).draw();
+                })
+                //Fin boton de busqueda
+            },
+            "drawCallback": function (settings) {
+                //Botón de búsqueda
+                $('#listaCatalogoProductos_filter input').prop('disabled', false);
+                $('#btnBuscar').html('<span class="glyphicon glyphicon-search" aria-hidden="true"></span>').prop('disabled', false);
+                $('#listaCatalogoProductos_filter input').trigger('focus');
+                //fin botón búsqueda
+                if ($tablaListaCatalogoProductos.rows().data().length == 0) {
+                    Lobibox.notify('info', {
+                        title: false,
+                        size: 'mini',
+                        rounded: true,
+                        sound: false,
+                        delayIndicator: false,
+                        msg: `No se encontro data disponible para mostrar`
+                    });
+                }
+                //Botón de búsqueda
+                $('#listaCatalogoProductos_filter input').prop('disabled', false);
+                $('#btnBuscar').html('<span class="glyphicon glyphicon-search" aria-hidden="true"></span>').prop('disabled', false);
+                $('#listaCatalogoProductos_filter input').trigger('focus');
+                //fin botón búsqueda
+                $("#listaCatalogoProductos").LoadingOverlay("hide", true);
+            },
+            'columnDefs': [
+                { 'aTargets': [0], 'className': "text-center", 'sWidth': '5%' },
+                { 'aTargets': [1], 'className': "text-center", 'sWidth': '5%' },
+                { 'aTargets': [2], 'className': "text-center", 'sWidth': '5%' },
+                { 'aTargets': [3], 'className': "text-left", 'sWidth': '40%' },
+                { 'aTargets': [4], 'className': "text-center", 'sWidth': '5%' },
+                {
+                    'render':
+                    function (data, type, row) {
+                        if (row.id_unidad_medida == 1) {
+                        let btnSeleccionar = `<button class="btn btn-success btn-xs handleClickSelectObsequio" 
+                        data-id-producto="${row.id_producto}"
+                        data-codigo="${row.codigo}"
+                        data-codigo-softlink="${row.cod_softlink}"
+                        data-part-number="${row.part_number}"
+                        data-descripcion="${row.descripcion}"
+                        data-unidad-medida="${row.abreviatura_unidad_medida}"
+                        data-id-unidad-medida="${row.id_unidad_medida}"
+                        
+                        >Seleccionar</button>`;
+                        // let btnVerSaldo = `<button class="btn btn-sm btn-info" onClick="verSaldoProducto('${row.id_producto}');">Stock</button>')`;
+                        return btnSeleccionar;
+
+                        } else {
+                        return '';
+                        }
+                    },targets: 5, className: "text-center", sWidth: '8%'
+                }
             ]
+
         });
-
-
-
-        let tablelistaitem = document.getElementById(
-            'listaItems_wrapper'
-        )
-        tablelistaitem.childNodes[0].childNodes[0].hidden = true;
-
-        let listaItems_filter = document.getElementById(
-            'listaItems_filter'
-        )
-        listaItems_filter.querySelector("input[type='search']").style.width = '100%';
     }
+
 
 
     calcTotalDetalleRequerimiento(id) {
@@ -706,55 +739,35 @@ class OrdenView {
 
 
 
-    selectItem(obj, idProducto) {
+    selectObsequio(obj) {
         let tr = obj.closest('tr');
-        var idItem = tr.children[0].innerHTML;
-        var idProd = tr.children[1].innerHTML;
-        var idServ = tr.children[2].innerHTML;
-        var idEqui = tr.children[3].innerHTML;
-        var codigo = tr.children[4].innerHTML;
-        var partNum = (tr.children[5].innerHTML) + '<br><span class="label label-default">Obsequio</span>';
-        var categoria = tr.children[6].innerHTML;
-        var subcategoria = tr.children[7].innerHTML;
-        var descri = tr.children[8].innerHTML;
-        var unidad = tr.children[9].innerHTML;
-        var id_unidad = tr.children[10].innerHTML;
-        // document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_item']").textContent = idItem;
-        // document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='codigo']").textContent = codigo;
-        // document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='part_number']").textContent = partNum;
-        // document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='descripcion']").textContent = descri;
-        // document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_producto']").textContent = idProd;
-        // document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_servicio']").textContent = idServ;
-        // document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_equipo']").textContent = idEqui;
-        // document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='unidad_medida']").textContent = unidad;
-        // document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_unidad_medida']").textContent = id_unidad;
-        // document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='categoria']").textContent = categoria;
-        // document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='subcategoria']").textContent = subcategoria;
+
         this.agregarProducto([{
             'id': this.makeId(),
             'cantidad': null,
             'cantidad_a_comprar': 1,
-            'codigo_producto': codigo,
+            'codigo_producto': obj.dataset.codigo,
+            'codigo_softlink': obj.dataset.codigoSoftlink,
             'codigo_requerimiento': null,
-            'descripcion_adicional': null,
-            'descripcion_producto': descri,
+            'descripcion_producto': obj.dataset.descripcion,
+            'descripcion': null,
             'estado': 0,
             'garantia': null,
             'id_detalle_orden': null,
             'id_detalle_requerimiento': null,
             'id_tipo_item': 1,
-            'id_producto': idProd,
+            'id_producto': obj.dataset.idProducto,
             'id_requerimiento': null,
-            'id_unidad_medida': id_unidad,
+            'id_unidad_medida': obj.dataset.idUnidadMedida,
             'lugar_despacho': null,
-            'part_number': partNum,
+            'part_number': obj.dataset.partNumber+'<br><span class="label label-default">Obsequio</span>',
             'precio_unitario': 0,
             'id_moneda': 1,
             'stock_comprometido': null,
             'subtotal': 0,
             'tiene_transformacion': false,
             'producto_regalo': true,
-            'unidad_medida': unidad
+            'unidad_medida': obj.dataset.unidadMedida
         }],'OBSEQUIO');
         $('#modal-catalogo-items').modal('hide');
 
@@ -775,8 +788,9 @@ class OrdenView {
         document.querySelector("tbody[id='body_detalle_orden']").insertAdjacentHTML('beforeend', `<tr style="text-align:center;">
         <td class="text-center">${data[0].codigo_requerimiento ? data[0].codigo_requerimiento : ''} <input type="hidden"  name="idRegister[]" value="${data[0].id_detalle_orden ? data[0].id_detalle_orden : this.makeId()}"> <input type="hidden"  name="idDetalleRequerimiento[]" value="${data[0].id_detalle_requerimiento ? data[0].id_detalle_requerimiento : ''}"> <input type="hidden"  name="idTipoItem[]" value="1"> </td>
         <td class="text-center">${data[0].codigo_producto ? data[0].codigo_producto : ''} </td>
+        <td class="text-center">${data[0].codigo_softlink ? data[0].codigo_softlink : ''} </td>
         <td class="text-center">${data[0].part_number ? data[0].part_number : ''} <input type="hidden"  name="idProducto[]" value="${(data[0].id_producto ? data[0].id_producto : data[0].id_producto)}"> </td>
-        <td class="text-left">${(data[0].descripcion_producto ? data[0].descripcion_producto : (data[0].descripcion_adicional ? data[0].descripcion_adicional : ''))}  <input type="hidden"  name="descripcion[]" value="${(data[0].descripcion_producto ? data[0].descripcion_producto : data[0].descripcion_adicional)} "></td>
+        <td class="text-left">${(data[0].descripcion_producto ? data[0].descripcion_producto : (data[0].descripcion ? data[0].descripcion : ''))}  <input type="hidden"  name="descripcion[]" value="${(data[0].descripcion_producto ? data[0].descripcion_producto : data[0].descripcion)} "></td>
         <td><select name="unidad[]" class="form-control ${(data[0].estado_guia_com_det > 0 && data[0].estado_guia_com_det != 7 ? '' : 'activation')} input-sm unidadMedida" data-valor="${data[0].id_unidad_medida}" >${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
         <td>${(data[0].cantidad ? data[0].cantidad : '')}</td>
         <td>${(data[0].cantidad_atendido_almacen ? data[0].cantidad_atendido_almacen : '')}</td>
@@ -820,7 +834,8 @@ class OrdenView {
         <td><input type="hidden"  name="idRegister[]" value="${this.makeId()}"><input type="hidden"  name="idDetalleRequerimiento[]" value=""> <input type="hidden"  name="idTipoItem[]" value="2"></td>
         <td>(No aplica) <input type="hidden"  name="idProducto[]" value=""></td>
         <td>(No aplica) <input type="hidden"  name="idProducto[]" value=""></td>
-        <td><textarea name="descripcion[]" placeholder="Descripción" class="form-control activation" value="" style="width:100%;height: 60px;overflow: scroll;"> </textarea>  </td>
+        <td>(No aplica) <input type="hidden"  name="idProducto[]" value=""></td>
+        <td><textarea name="descripcion[]" placeholder="Descripción" class="form-control descripcion_servicio activation" value="" style="width:100%;height: 60px;overflow: scroll;"> </textarea>  </td>
         <td>Servicio<input type="hidden"  name="unidad[]" value="38"></td>
         <td></td>
         <td></td>
@@ -1027,7 +1042,9 @@ class OrdenView {
                     }
 
                     html += `<tr>
-                        <td style="border: none; text-align:center;">${(element.producto_part_number != null ? element.producto_part_number : (element.part_number != null ? element.part_number : ''))}</td>
+                        <td style="border: none; text-align:center;">${(element.producto_part_number != null ? element.producto_part_number :'')}</td>
+                        <td style="border: none; text-align:center;">${(element.producto_codigo != null ? element.producto_codigo : '')}</td>
+                        <td style="border: none; text-align:center;">${(element.producto_codigo_softlink != null ? element.producto_codigo_softlink : '')}</td>
                         <td style="border: none; text-align:left;">${element.producto_descripcion != null ? element.producto_descripcion : (element.descripcion ? element.descripcion : '')}</td>
                         <td style="border: none; text-align:center;">${element.abreviatura != null ? element.abreviatura : ''}</td>
                         <td style="border: none; text-align:center;">${element.cantidad > 0 ? element.cantidad : ''}</td>
@@ -1044,6 +1061,8 @@ class OrdenView {
                 <thead style="color: black;background-color: #c7cacc;">
                     <tr>
                         <th style="border: none; text-align:center;">Part number</th>
+                        <th style="border: none; text-align:center;">Código Producto</th>
+                        <th style="border: none; text-align:center;">Código Softlink</th>
                         <th style="border: none; text-align:center;">Descripcion</th>
                         <th style="border: none; text-align:center;">Unidad medida</th>
                         <th style="border: none; text-align:center;">cantidad</th>
@@ -1096,6 +1115,7 @@ class OrdenView {
                             });
                         }
                         let cantidad_a_comprar = parseFloat(element.cantidad > 0 ? element.cantidad : 0) - parseFloat(cantidad_atendido_almacen) - parseFloat(cantidad_atendido_orden);
+                        console.log(element);
                         this.agregarProducto([{
                             'id': this.makeId(),
                             'cantidad': element.cantidad ?? 0,
@@ -1104,8 +1124,9 @@ class OrdenView {
                             'cantidad_a_comprar': !(parseFloat(cantidad_a_comprar) >= 0) ? '' : cantidad_a_comprar,
                             'codigo_item': null,
                             'codigo_producto': element.producto.codigo != null ? element.producto.codigo : '',
+                            'codigo_softlink': element.producto.cod_softlink != null ? element.producto.cod_softlink : '',
                             'codigo_requerimiento': element.codigo_requerimiento,
-                            'descripcion_adicional': null,
+                            'descripcion': null,
                             'descripcion_producto': element.producto.descripcion != null ? element.producto.descripcion : '',
                             'estado': 0,
                             'garantia': null,
@@ -1304,6 +1325,18 @@ class OrdenView {
         })
         if (parseInt(cantidadInconsistenteInputCantidadAComprar) > 0) {
             msj += 'Debe ingresar una cantidad mayor a cero.<br>';
+
+        }
+
+        let servicioVacio = 0;
+        let inputServicio = document.querySelectorAll("table[id='listaDetalleOrden'] textarea[class~='descripcion_servicio']");
+        inputServicio.forEach((element) => {
+            if (element.value == null || element.value == '' || element.value <= 0) {
+                servicioVacio++;
+            }
+        })
+        if (parseInt(servicioVacio) > 0) {
+            msj += 'Debe ingresar una descripción al servicio.<br>';
 
         }
         return msj;
@@ -1718,9 +1751,10 @@ class OrdenView {
                 if (detalle[i].id_producto > 0) { // TO-DO  falta mostrar cantidad_atendido_almacen y cantidad_atendido_orden
                     document.querySelector("tbody[id='body_detalle_orden']").insertAdjacentHTML('beforeend', `<tr style="text-align:center; background-color:${detalle[i].estado == 7 ? '#f5e4e4' : ''}; ">
                         <td class="text-center">${detalle[i].codigo_requerimiento ? detalle[i].codigo_requerimiento : ''} <input type="hidden"  name="idRegister[]" value="${detalle[i].id_detalle_orden ? detalle[i].id_detalle_orden : this.makeId()}"> <input type="hidden"  name="idDetalleRequerimiento[]" value="${detalle[i].id_detalle_requerimiento ? detalle[i].id_detalle_requerimiento : ''}">  <input type="hidden"  name="idTipoItem[]" value="1"></td>
-                        <td class="text-center">${detalle[i].codigo_producto ? detalle[i].codigo_producto : ''} </td>
+                        <td class="text-center">${detalle[i].producto.codigo ? detalle[i].producto.codigo : ''} </td>
+                        <td class="text-center">${detalle[i].producto.cod_softlink ? detalle[i].producto.cod_softlink : ''} </td>
                         <td class="text-center">${detalle[i].producto.part_number ? detalle[i].producto.part_number : ''} <input type="hidden"  name="idProducto[]" value="${(detalle[i].id_producto ? detalle[i].id_producto : detalle[i].id_producto)} "></td>
-                        <td class="text-left">${(detalle[i].producto.descripcion ? detalle[i].producto.descripcion : (detalle[i].descripcion_adicional != null ? detalle[i].descripcion_adicional : ''))} <input type="hidden"  name="descripcion[]" value="${(detalle[i].producto.descripcion ? detalle[i].producto.descripcion : detalle[i].descripcion_adicional)} "></td>
+                        <td class="text-left">${(detalle[i].producto.descripcion ? detalle[i].producto.descripcion : (detalle[i].descripcion != null ? detalle[i].descripcion : ''))} <input type="hidden"  name="descripcion[]" value="${(detalle[i].producto.descripcion ? detalle[i].producto.descripcion : detalle[i].descripcion)} "></td>
                         <td><select name="unidad[]" class="form-control ${(detalle[i].guia_compra_detalle !=null && detalle[i].guia_compra_detalle.length > 0 ? '' : 'activation')} input-sm unidadMedida" data-valor="${detalle[i].id_unidad_medida}" disabled>${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
                         <td>${(detalle[i].cantidad ? detalle[i].cantidad : '')}</td>
                         <td>${(detalle[i].cantidad_atendido_almacen ? detalle[i].cantidad_atendido_almacen : '')}</td> 
@@ -1747,8 +1781,9 @@ class OrdenView {
                 document.querySelector("tbody[id='body_detalle_orden']").insertAdjacentHTML('beforeend', `<tr style="text-align:center; background-color:${detalle[i].estado == 7 ? '#f5e4e4' : ''}; ">
                     <td>${detalle[i].codigo_requerimiento ? detalle[i].codigo_requerimiento : ''} <input type="hidden"  name="idRegister[]" value="${detalle[i].id_detalle_orden ? detalle[i].id_detalle_orden : this.makeId()}"> <input type="hidden"  name="idDetalleRequerimiento[]" value="${detalle[i].id_detalle_requerimiento ? detalle[i].id_detalle_requerimiento : ''}"> <input type="hidden"  name="idTipoItem[]" value="1"></td>
                     <td>(No aplica) <input type="hidden" value=""></td>
+                    <td>(No aplica) <input type="hidden" value=""></td>
                     <td>(No aplica) <input type="hidden"  name="idProducto[]" value=""></td>
-                    <td><textarea name="descripcion[]" placeholder="Descripción" class="form-control activation" value="${(detalle[i].descripcion_adicional ? detalle[i].descripcion_adicional : '')}" style="width:100%;height: 60px;overflow: scroll;"> </textarea> </td>
+                    <td><textarea name="descripcion[]" placeholder="Descripción" class="form-control descripcion_servicio activation" value="${(detalle[i].descripcion ? detalle[i].descripcion : '')}" style="width:100%;height: 60px;overflow: scroll;"> </textarea> </td>
                     <td><select name="unidad[]" class="form-control activation input-sm" value="${detalle[i].id_unidad_medida}" disabled>${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
                     <td>${(detalle[i].cantidad ? detalle[i].cantidad : '')}</td>
                     <td></td>

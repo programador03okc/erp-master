@@ -63,11 +63,7 @@ class OrdenCtrl{
         }
     }
 
-    // agregar nuevo producto
-    getcatalogoProductos(){
-    
-        return ordenModel.getlistarItems();
-    }
+ 
 
 
  

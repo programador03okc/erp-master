@@ -2218,44 +2218,45 @@ class LogisticaController extends Controller
         return response()->json($data);
     }
 
-    public function mostrar_items()
-    {
-        $data = DB::table('almacen.alm_prod')
-            ->select(
-                'alm_item.id_item',
-                'alm_prod.codigo',
-                'alm_prod.id_producto',
-                'alm_item.id_servicio',
-                'alm_item.id_equipo',
-                DB::raw("(CASE 
-                            WHEN alm_item.id_servicio isNUll AND alm_item.id_equipo isNull THEN alm_prod.descripcion 
-                            WHEN alm_item.id_producto isNUll AND alm_item.id_equipo isNull THEN log_servi.descripcion 
-                            WHEN alm_item.id_servicio isNUll AND alm_item.id_producto isNull THEN equipo.descripcion 
-                            ELSE 'nulo' END) AS descripcion
-                            "),
-                DB::raw("(CASE 
-                            WHEN alm_item.id_servicio isNUll AND alm_item.id_equipo isNull THEN alm_und_medida.descripcion
-                            WHEN alm_item.id_producto isNUll AND alm_item.id_equipo isNull THEN 'Servicio' 
-                            WHEN alm_item.id_servicio isNUll AND alm_item.id_producto isNull THEN 'Equipo' 
-                            ELSE 'nulo' END) AS unidad_medida_descripcion
-                            "),
+    // public function mostrar_items()
+    // {
+    //     $data = DB::table('almacen.alm_prod')
+    //         ->select(
+    //             'alm_item.id_item',
+    //             'alm_prod.codigo',
+    //             'alm_prod.cod_softlink as codigo_softlink',
+    //             'alm_prod.id_producto',
+    //             'alm_item.id_servicio',
+    //             'alm_item.id_equipo',
+    //             DB::raw("(CASE 
+    //                         WHEN alm_item.id_servicio isNUll AND alm_item.id_equipo isNull THEN alm_prod.descripcion 
+    //                         WHEN alm_item.id_producto isNUll AND alm_item.id_equipo isNull THEN log_servi.descripcion 
+    //                         WHEN alm_item.id_servicio isNUll AND alm_item.id_producto isNull THEN equipo.descripcion 
+    //                         ELSE 'nulo' END) AS descripcion
+    //                         "),
+    //             DB::raw("(CASE 
+    //                         WHEN alm_item.id_servicio isNUll AND alm_item.id_equipo isNull THEN alm_und_medida.descripcion
+    //                         WHEN alm_item.id_producto isNUll AND alm_item.id_equipo isNull THEN 'Servicio' 
+    //                         WHEN alm_item.id_servicio isNUll AND alm_item.id_producto isNull THEN 'Equipo' 
+    //                         ELSE 'nulo' END) AS unidad_medida_descripcion
+    //                         "),
 
-                'alm_prod.part_number',
-                'alm_prod.id_unidad_medida',
-                'alm_cat_prod.descripcion as categoria',
-                'alm_subcat.descripcion as subcategoria'
+    //             'alm_prod.part_number',
+    //             'alm_prod.id_unidad_medida',
+    //             'alm_cat_prod.descripcion as categoria',
+    //             'alm_subcat.descripcion as subcategoria'
 
-            )
-            ->leftJoin('almacen.alm_item', 'alm_prod.id_producto', '=', 'alm_item.id_producto')
-            ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
-            ->leftJoin('logistica.log_servi', 'log_servi.id_servicio', '=', 'alm_item.id_servicio')
-            ->leftJoin('logistica.equipo', 'equipo.id_equipo', '=', 'alm_item.id_equipo')
-            ->leftJoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
-            ->leftJoin('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
-            ->where('alm_prod.estado',"=",1)
-            ->get();
-        return response()->json(["data" => $data]);
-    }
+    //         )
+    //         ->leftJoin('almacen.alm_item', 'alm_prod.id_producto', '=', 'alm_item.id_producto')
+    //         ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
+    //         ->leftJoin('logistica.log_servi', 'log_servi.id_servicio', '=', 'alm_item.id_servicio')
+    //         ->leftJoin('logistica.equipo', 'equipo.id_equipo', '=', 'alm_item.id_equipo')
+    //         ->leftJoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
+    //         ->leftJoin('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
+    //         ->where('alm_prod.estado',"=",1)
+    //         ->get();
+    //     return response()->json(["data" => $data]);
+    // }
 
     public function mostrar_item($id_item)
     {
