@@ -405,8 +405,8 @@ class OrdenView {
         for (let i = 0; i < data.length; i++) {
             if (data[i].id_tipo_item == 1) { // producto
                 if (data[i].id_producto > 0) {
-                    document.querySelector("tbody[id='body_detalle_orden']").insertAdjacentHTML('beforeend', `<tr style="text-align:center; background-color:${data[i].estado == 7 ? '#f5e4e4' : ''};">
-                        <td class="text-center">${data[i].codigo_requerimiento ? data[i].codigo_requerimiento : ''} <input type="hidden"  name="idRegister[]" value="${data[i].id_detalle_orden ? data[i].id_detalle_orden : this.makeId()}"> <input type="hidden"  name="idDetalleRequerimiento[]" value="${data[i].id_detalle_requerimiento ? data[i].id_detalle_requerimiento : ''}">  <input type="hidden"  name="idTipoItem[]" value="1"></td>
+                    document.querySelector("tbody[id='body_detalle_orden']").insertAdjacentHTML('beforeend', `<tr style="text-align:center;" class="${data[i].estado == 7 ? 'danger textRedStrikeHover' : ''};">
+                        <td class="text-center">${data[i].codigo_requerimiento ? data[i].codigo_requerimiento : ''} <input type="hidden"  name="idRegister[]" value="${data[i].id_detalle_orden ? data[i].id_detalle_orden : this.makeId()}"> <input type="hidden"  class="idEstado" name="idEstado[]"> <input type="hidden"  name="idDetalleRequerimiento[]" value="${data[i].id_detalle_requerimiento ? data[i].id_detalle_requerimiento : ''}">  <input type="hidden"  name="idTipoItem[]" value="1"></td>
                         <td class="text-center">${data[i].codigo_producto ? data[i].codigo_producto : ''} </td>
                         <td class="text-center">${data[i].codigo_softlink ? data[i].codigo_softlink : ''} </td>
                         <td class="text-center">${data[i].part_number ? data[i].part_number : ''} <input type="hidden"  name="idProducto[]" value="${(data[i].id_producto ? data[i].id_producto : data[i].id_producto)}"></td>
@@ -434,8 +434,8 @@ class OrdenView {
 
                 }
             } else { //servicio
-                document.querySelector("tbody[id='body_detalle_orden']").insertAdjacentHTML('beforeend', `<tr style="text-align:center; background-color:${data[i].estado == 7 ? '#f5e4e4' : ''}; ">
-                    <td>${data[i].codigo_requerimiento ? data[i].codigo_requerimiento : ''} <input type="hidden"  name="idRegister[]" value="${data[i].id_detalle_orden ? data[i].id_detalle_orden : this.makeId()}"> <input type="hidden"  name="idDetalleRequerimiento[]" value="${data[i].id_detalle_requerimiento ? data[i].id_detalle_requerimiento : ''}"> <input type="hidden"  name="idTipoItem[]" value="1"></td>
+                document.querySelector("tbody[id='body_detalle_orden']").insertAdjacentHTML('beforeend', `<tr style="text-align:center;" class="${data[i].estado == 7 ? 'danger textRedStrikeHover' : ''};">
+                    <td>${data[i].codigo_requerimiento ? data[i].codigo_requerimiento : ''} <input type="hidden"  name="idRegister[]" value="${data[i].id_detalle_orden ? data[i].id_detalle_orden : this.makeId()}"><input type="hidden"  class="idEstado" name="idEstado[]"> <input type="hidden"  name="idDetalleRequerimiento[]" value="${data[i].id_detalle_requerimiento ? data[i].id_detalle_requerimiento : ''}"> <input type="hidden"  name="idTipoItem[]" value="1"></td>
                     <td>(No aplica) <input type="hidden" value=""></td>
                     <td>(No aplica) <input type="hidden" value=""></td>
                     <td>(No aplica) <input type="hidden"  name="idProducto[]" value=""></td>
@@ -504,9 +504,13 @@ class OrdenView {
 
         let totalNeto = 0;
         for (let index = 0; index < childrenTableTbody.length; index++) {
-            let cantidad = parseFloat(childrenTableTbody[index].querySelector("input[class~='cantidad_a_comprar']").value ? childrenTableTbody[index].querySelector("input[class~='cantidad_a_comprar']").value : 0);
-            let precioUnitario = parseFloat(childrenTableTbody[index].querySelector("input[class~='precio']").value ? childrenTableTbody[index].querySelector("input[class~='precio']").value : 0);
-            totalNeto += (cantidad * precioUnitario);
+  
+            if(childrenTableTbody[index].classList.contains("danger") ==false){
+                
+                let cantidad = parseFloat(childrenTableTbody[index].querySelector("input[class~='cantidad_a_comprar']").value ? childrenTableTbody[index].querySelector("input[class~='cantidad_a_comprar']").value : 0);
+                let precioUnitario = parseFloat(childrenTableTbody[index].querySelector("input[class~='precio']").value ? childrenTableTbody[index].querySelector("input[class~='precio']").value : 0);
+                totalNeto += (cantidad * precioUnitario);
+            }
         }
 
         this.updateSimboloMoneda();
@@ -554,8 +558,20 @@ class OrdenView {
         }).then((result) => {
             if (result.isConfirmed) {
                 let tr = obj.closest("tr");
-                tr.remove();
-                this.calcularMontosTotales();
+                var regExp = /[a-zA-Z]/g;
+
+                console.log(tr.querySelector("input[name='idRegister[]']"));
+                if(regExp.test(tr.querySelector("input[name='idRegister[]']").value) ==true ){
+                    tr.remove();
+                    this.calcularMontosTotales();
+    
+                }else{
+                    tr.querySelector("input[class~='idEstado']").value=7;
+                    tr.classList.add("danger","textRedStrikeHover");
+                    tr.querySelector("button[name='btnOpenModalEliminarItemOrden']").setAttribute("disabled",true);
+                    this.calcularMontosTotales(); // considere las filas anuladas
+                }
+
                 Lobibox.notify('success', {
                     title: false,
                     size: 'mini',
@@ -786,7 +802,7 @@ class OrdenView {
     agregarProducto(data, tipo) { // tipo puede ser OBSEQUIO, DETALLE_REQUERIMIENTO
         vista_extendida();
         document.querySelector("tbody[id='body_detalle_orden']").insertAdjacentHTML('beforeend', `<tr style="text-align:center;">
-        <td class="text-center">${data[0].codigo_requerimiento ? data[0].codigo_requerimiento : ''} <input type="hidden"  name="idRegister[]" value="${data[0].id_detalle_orden ? data[0].id_detalle_orden : this.makeId()}"> <input type="hidden"  name="idDetalleRequerimiento[]" value="${data[0].id_detalle_requerimiento ? data[0].id_detalle_requerimiento : ''}"> <input type="hidden"  name="idTipoItem[]" value="1"> </td>
+        <td class="text-center">${data[0].codigo_requerimiento ? data[0].codigo_requerimiento : ''} <input type="hidden"  name="idRegister[]" value="${data[0].id_detalle_orden ? data[0].id_detalle_orden : this.makeId()}"> <input type="hidden"  class="idEstado" name="idEstado[]"> <input type="hidden"  name="idDetalleRequerimiento[]" value="${data[0].id_detalle_requerimiento ? data[0].id_detalle_requerimiento : ''}"> <input type="hidden"  name="idTipoItem[]" value="1"> </td>
         <td class="text-center">${data[0].codigo_producto ? data[0].codigo_producto : ''} </td>
         <td class="text-center">${data[0].codigo_softlink ? data[0].codigo_softlink : ''} </td>
         <td class="text-center">${data[0].part_number ? data[0].part_number : ''} <input type="hidden"  name="idProducto[]" value="${(data[0].id_producto ? data[0].id_producto : data[0].id_producto)}"> </td>
@@ -831,7 +847,7 @@ class OrdenView {
         vista_extendida();
 
         document.querySelector("tbody[id='body_detalle_orden']").insertAdjacentHTML('beforeend', `<tr style="text-align:center;">
-        <td><input type="hidden"  name="idRegister[]" value="${this.makeId()}"><input type="hidden"  name="idDetalleRequerimiento[]" value=""> <input type="hidden"  name="idTipoItem[]" value="2"></td>
+        <td><input type="hidden"  name="idRegister[]" value="${this.makeId()}"> <input type="hidden"  class="idEstado" name="idEstado[]"> <input type="hidden"  name="idDetalleRequerimiento[]" value=""> <input type="hidden"  name="idTipoItem[]" value="2"></td>
         <td>(No aplica) <input type="hidden"  name="idProducto[]" value=""></td>
         <td>(No aplica) <input type="hidden"  name="idProducto[]" value=""></td>
         <td>(No aplica) <input type="hidden"  name="idProducto[]" value=""></td>
@@ -1345,6 +1361,7 @@ class OrdenView {
 
     guardar_orden_requerimiento(action) {
         // console.log(action);
+        let that= this;
         let formData = new FormData($('#form-crear-orden-requerimiento')[0]);
         var msj = this.validaOrdenRequerimiento();
         if (msj.length > 0) {
@@ -1375,6 +1392,9 @@ class OrdenView {
                         console.log(response);
                         if (response.id_orden_compra > 0) {
                             $("#wrapper-okc").LoadingOverlay("hide", true);
+
+                            that.mostrarOrden(response.id_orden_compra);
+                            actionPage = 'historial';
 
                             Lobibox.notify('success', {
                                 title: false,
@@ -1464,7 +1484,11 @@ class OrdenView {
                     success: function (response) {
                         console.log(response);
                         if (response.id_orden_compra > 0) {
+
                             $("#wrapper-okc").LoadingOverlay("hide", true);
+
+                            that.mostrarOrden(response.id_orden_compra);
+                            actionPage = 'historial';
 
                             Lobibox.notify('success', {
                                 title: false,
@@ -1749,8 +1773,8 @@ class OrdenView {
 
             if (detalle[i].tipo_item_id == 1) { // producto
                 if (detalle[i].id_producto > 0) { // TO-DO  falta mostrar cantidad_atendido_almacen y cantidad_atendido_orden
-                    document.querySelector("tbody[id='body_detalle_orden']").insertAdjacentHTML('beforeend', `<tr style="text-align:center; background-color:${detalle[i].estado == 7 ? '#f5e4e4' : ''}; ">
-                        <td class="text-center">${detalle[i].codigo_requerimiento ? detalle[i].codigo_requerimiento : ''} <input type="hidden"  name="idRegister[]" value="${detalle[i].id_detalle_orden ? detalle[i].id_detalle_orden : this.makeId()}"> <input type="hidden"  name="idDetalleRequerimiento[]" value="${detalle[i].id_detalle_requerimiento ? detalle[i].id_detalle_requerimiento : ''}">  <input type="hidden"  name="idTipoItem[]" value="1"></td>
+                    document.querySelector("tbody[id='body_detalle_orden']").insertAdjacentHTML('beforeend', `<tr style="text-align:center;" class="${detalle[i].estado == 7 ? 'danger textRedStrikeHover' : ''}">
+                        <td class="text-center">${detalle[i].codigo_requerimiento ? detalle[i].codigo_requerimiento : ''} <input type="hidden"  name="idRegister[]" value="${detalle[i].id_detalle_orden ? detalle[i].id_detalle_orden : this.makeId()}"> <input type="hidden"  class="idEstado" name="idEstado[]"> <input type="hidden"  name="idDetalleRequerimiento[]" value="${detalle[i].id_detalle_requerimiento ? detalle[i].id_detalle_requerimiento : ''}">  <input type="hidden"  name="idTipoItem[]" value="1"></td>
                         <td class="text-center">${detalle[i].producto.codigo ? detalle[i].producto.codigo : ''} </td>
                         <td class="text-center">${detalle[i].producto.cod_softlink ? detalle[i].producto.cod_softlink : ''} </td>
                         <td class="text-center">${detalle[i].producto.part_number ? detalle[i].producto.part_number : ''} <input type="hidden"  name="idProducto[]" value="${(detalle[i].id_producto ? detalle[i].id_producto : detalle[i].id_producto)} "></td>
@@ -1778,12 +1802,12 @@ class OrdenView {
 
                 }
             } else { //servicio
-                document.querySelector("tbody[id='body_detalle_orden']").insertAdjacentHTML('beforeend', `<tr style="text-align:center; background-color:${detalle[i].estado == 7 ? '#f5e4e4' : ''}; ">
-                    <td>${detalle[i].codigo_requerimiento ? detalle[i].codigo_requerimiento : ''} <input type="hidden"  name="idRegister[]" value="${detalle[i].id_detalle_orden ? detalle[i].id_detalle_orden : this.makeId()}"> <input type="hidden"  name="idDetalleRequerimiento[]" value="${detalle[i].id_detalle_requerimiento ? detalle[i].id_detalle_requerimiento : ''}"> <input type="hidden"  name="idTipoItem[]" value="1"></td>
+                document.querySelector("tbody[id='body_detalle_orden']").insertAdjacentHTML('beforeend', `<tr style="text-align:center;" class="${detalle[i].estado == 7 ? 'danger textRedStrikeHover' : ''};">
+                    <td>${detalle[i].codigo_requerimiento ? detalle[i].codigo_requerimiento : ''} <input type="hidden"  name="idRegister[]" value="${detalle[i].id_detalle_orden ? detalle[i].id_detalle_orden : this.makeId()}"> <input type="hidden"  class="idEstado" name="idEstado[]"> <input type="hidden"  name="idDetalleRequerimiento[]" value="${detalle[i].id_detalle_requerimiento ? detalle[i].id_detalle_requerimiento : ''}"> <input type="hidden"  name="idTipoItem[]" value="2"></td>
                     <td>(No aplica) <input type="hidden" value=""></td>
                     <td>(No aplica) <input type="hidden" value=""></td>
                     <td>(No aplica) <input type="hidden"  name="idProducto[]" value=""></td>
-                    <td><textarea name="descripcion[]" placeholder="Descripción" class="form-control descripcion_servicio activation" value="${(detalle[i].descripcion ? detalle[i].descripcion : '')}" style="width:100%;height: 60px;overflow: scroll;"> </textarea> </td>
+                    <td><textarea name="descripcion[]" placeholder="Descripción" class="form-control descripcion_servicio activation" value="${(detalle[i].descripcion_adicional ? detalle[i].descripcion_adicional : '')}" style="width:100%;height: 60px;overflow: scroll;"> ${(detalle[i].descripcion_adicional ? detalle[i].descripcion_adicional : '')}</textarea> </td>
                     <td><select name="unidad[]" class="form-control activation input-sm" value="${detalle[i].id_unidad_medida}" disabled>${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
                     <td>${(detalle[i].cantidad ? detalle[i].cantidad : '')}</td>
                     <td></td>
