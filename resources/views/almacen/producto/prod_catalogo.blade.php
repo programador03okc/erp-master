@@ -14,13 +14,17 @@ Catálogo de Productos
                     <thead>
                         <tr>
                             <th></th>
-                            <th>Categoría</th>
-                            <th>Subcatgoría</th>
-                            <th>Marca</th>
                             <th>Clasificación</th>
-                            <th>Código</th>
+                            <th>Código Softlink</th>
+                            <th>Categoría</th>
+                            <th>Cód. Cat. Softlink</th>
+                            <th>Subcatgoría</th>
+                            <th>Cód. SubCat. Softlink</th>
+                            <th>Marca</th>
+                            <th>Código Agile</th>
                             <th>Part Number</th>
                             <th>Descripción</th>
+                            <th>Unid. Med.</th>
                         </tr>
                     </thead>
                     <tbody></tbody>

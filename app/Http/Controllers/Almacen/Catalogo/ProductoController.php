@@ -36,15 +36,20 @@ class ProductoController extends Controller
             ->select(
                 'alm_prod.id_producto',
                 'alm_prod.codigo',
+                'alm_prod.cod_softlink',
                 'alm_prod.descripcion',
                 'alm_prod.part_number',
                 'alm_prod.id_unidad_medida',
                 'alm_prod.series',
+                'alm_prod.estado',
+                'adm_estado_doc.estado_doc',
+                'adm_estado_doc.bootstrap_color',
                 'alm_subcat.descripcion as marca',
                 'alm_und_medida.abreviatura'
             )
             ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
             ->leftjoin('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
+            ->leftjoin('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'alm_prod.estado')
             ->get();
         $output['data'] = $prod;
         return response()->json($output);
@@ -162,12 +167,17 @@ class ProductoController extends Controller
                 'alm_cat_prod.descripcion as cat_descripcion',
                 'alm_tp_prod.descripcion as tipo_descripcion',
                 'alm_tp_prod.id_tipo_producto',
-                'sis_usua.nombre_corto'
+                'alm_tp_prod.id_clasificacion',
+                'sis_usua.nombre_corto',
+                'adm_estado_doc.estado_doc',
+                'adm_estado_doc.bootstrap_color',
             )
             ->leftjoin('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
             ->leftjoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
             ->leftjoin('almacen.alm_tp_prod', 'alm_tp_prod.id_tipo_producto', '=', 'alm_cat_prod.id_tipo_producto')
+            ->leftjoin('almacen.alm_clasif', 'alm_clasif.id_clasificacion', '=', 'alm_tp_prod.id_clasificacion')
             ->leftjoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'alm_prod.id_usuario')
+            ->leftjoin('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'alm_prod.estado')
             ->where([['alm_prod.id_producto', '=', $id]])
             ->get();
 
@@ -209,7 +219,6 @@ class ProductoController extends Controller
         if ($count == 0) {
             $id_producto = DB::table('almacen.alm_prod')->insertGetId(
                 [
-                    'codigo_anexo' => ($request->codigo_anexo !== null ? $request->codigo_anexo : null),
                     'part_number' => $pn,
                     'id_clasif' => $request->id_clasif,
                     'id_subcategoria' => $request->id_subcategoria,
@@ -278,8 +287,6 @@ class ProductoController extends Controller
             $data = DB::table('almacen.alm_prod')
                 ->where('id_producto', $id_producto)
                 ->update([
-                    // 'codigo' => $request->codigo,
-                    'codigo_anexo' => $request->codigo_anexo,
                     'part_number' => $request->part_number,
                     'id_subcategoria' => $request->id_subcategoria,
                     'id_categoria' => $request->id_categoria,
@@ -312,10 +319,41 @@ class ProductoController extends Controller
 
     public function anular_producto($id)
     {
-        $data = DB::table('almacen.alm_prod')
-            ->where('id_producto', $id)
-            ->update(['estado' => 7]);
-        return response()->json($data);
+        try {
+            DB::beginTransaction();
+
+            $relacionados = DB::table('almacen.alm_prod')
+                ->leftjoin('almacen.alm_det_req', 'alm_det_req.id_producto', '=', 'alm_prod.id_producto')
+                ->leftjoin('almacen.mov_alm_det', 'mov_alm_det.id_producto', '=', 'alm_prod.id_producto')
+                ->leftjoin('almacen.transfor_sobrante', 'transfor_sobrante.id_producto', '=', 'alm_prod.id_producto')
+                ->where([
+                    ['alm_prod.id_producto', '=', $id],
+                    ['alm_det_req.estado', '!=', 7]
+                ])
+                ->count();
+
+            if ($relacionados > 0) {
+                $arrayRspta = array(
+                    'tipo' => 'warning',
+                    'mensaje' => 'El producto ya fue relacionado con otros documentos! No es posible dar de baja',
+                );
+            } else {
+                DB::table('almacen.alm_prod')
+                    ->where('id_producto', $id)
+                    ->update(['estado' => 7]);
+
+                $arrayRspta = array(
+                    'tipo' => 'success',
+                    'mensaje' => 'El producto fue dado de baja.',
+                );
+            }
+
+            DB::commit();
+            return response()->json($arrayRspta, 200);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json(array('tipo' => 'error', 'mensaje' => 'Hubo un problema al anular la orden. Por favor intente de nuevo', 'error' => $e->getMessage()));
+        }
     }
 
 
@@ -540,10 +578,12 @@ class ProductoController extends Controller
                 'alm_prod.id_producto',
                 'alm_prod.part_number',
                 'alm_prod.codigo',
+                'alm_prod.cod_softlink',
                 'alm_prod.descripcion',
-                'alm_subcat.codigo as cod_sub_cat',
+                'alm_und_medida.abreviatura',
+                'alm_subcat.cod_softlink as cod_sub_cat',
                 'alm_subcat.descripcion as subcat_descripcion',
-                'alm_cat_prod.codigo as cod_cat',
+                'alm_cat_prod.cod_softlink as cod_cat',
                 'alm_cat_prod.descripcion as cat_descripcion',
                 'alm_tp_prod.id_tipo_producto',
                 'alm_tp_prod.descripcion as tipo_descripcion',
@@ -553,7 +593,8 @@ class ProductoController extends Controller
             ->join('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
             ->join('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
             ->join('almacen.alm_tp_prod', 'alm_tp_prod.id_tipo_producto', '=', 'alm_cat_prod.id_tipo_producto')
-            ->join('almacen.alm_clasif', 'alm_clasif.id_clasificacion', '=', 'alm_prod.id_clasif')
+            ->join('almacen.alm_clasif', 'alm_clasif.id_clasificacion', '=', 'alm_tp_prod.id_clasificacion')
+            ->join('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
             ->get();
         $output['data'] = $data;
         return response()->json($output);

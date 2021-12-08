@@ -103,10 +103,12 @@ Producto
                                     <div class="row" style="margin-bottom: 0;margin-top: 0;">
                                         <div class="col-md-12">
                                             <ol class="breadcrumb" style="padding-left: 20px;padding-right: 10px;margin-bottom:0px">
-                                                <li><label id="codigo"></label></li>
+                                                <li>Agile: <label id="codigo"></label></li>
+                                                <li>Softlink: <label id="codigo_softlink"></label></li>
                                                 <li><label id="tipo_descripcion"></label></li>
                                                 <li><label id="cat_descripcion"></label></li>
                                                 <li><label id="subcat_descripcion"></label></li>
+                                                <li><span id="estado" class="label "></span></li>
                                             </ol>
                                         </div>
                                         <div class="col-md-4">
@@ -156,7 +158,7 @@ Producto
                                             <select class="form-control activation " name="id_unidad_medida" disabled="true" onChange="unid_abrev('id_unidad_medida');">
                                                 <option value="0">Elija una opción</option>
                                                 @foreach ($unidades as $unid)
-                                                <option value="{{$unid->id_unidad_medida}}">{{$unid->descripcion}}</option>
+                                                <option value="{{$unid->id_unidad_medida}}">{{$unid->abreviatura}}</option>
                                                 @endforeach
                                             </select>
                                         </div>

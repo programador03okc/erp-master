@@ -11,11 +11,11 @@ $(function () {
         }
         var idTr = $(this)[0].firstChild.innerHTML;
         var code = $(this)[0].childNodes[1].innerHTML;
-        var part = $(this)[0].childNodes[2].innerHTML;
-        var desc = $(this)[0].childNodes[3].innerHTML;
-        var unid = $(this)[0].childNodes[4].innerHTML;
-        var abre = $(this)[0].childNodes[5].innerHTML;
-        var seri = $(this)[0].childNodes[6].innerHTML;
+        var part = $(this)[0].childNodes[3].innerHTML;
+        var desc = $(this)[0].childNodes[4].innerHTML;
+        var unid = $(this)[0].childNodes[6].innerHTML;
+        var abre = $(this)[0].childNodes[7].innerHTML;
+        var seri = $(this)[0].childNodes[8].innerHTML;
 
         $('#modal-producto .modal-footer #id_producto').text(idTr);
         $('#modal-producto .modal-footer #codigo').text(code);
@@ -40,8 +40,10 @@ function listarProductos() {
     var html = '<tr>' +
         '<th></th>' +
         '<th>Código</th>' +
+        '<th>Cód.Softlink</th>' +
         '<th>Part Number</th>' +
         '<th>Descripción</th>' +
+        '<th>Estado</th>' +
         '<th hidden>unid</th>' +
         '<th hidden>abrev</th>' +
         '<th hidden>series</th>' +
@@ -58,13 +60,20 @@ function listarProductos() {
         'columns': [
             { 'data': 'id_producto' },
             { 'data': 'codigo' },
+            { 'data': 'cod_softlink' },
             { 'data': 'part_number' },
             { 'data': 'descripcion' },
+            {
+                data: 'estado_doc',
+                'render': function (data, type, row) {
+                    return '<span class="label label-' + row['bootstrap_color'] + '">' + (row['estado'] == 7 ? 'Dado de baja' : row['estado_doc']) + '</span>'
+                }
+            },
             { 'data': 'id_unidad_medida' },
             { 'data': 'abreviatura' },
             { 'data': 'series' },
         ],
-        'columnDefs': [{ 'aTargets': [0, 4, 5, 6], 'sClass': 'invisible' }],
+        'columnDefs': [{ 'aTargets': [0, 6, 7, 8], 'sClass': 'invisible' }],
     });
 }
 function selectProducto() {

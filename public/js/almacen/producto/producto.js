@@ -87,8 +87,13 @@ function mostrar_producto(id) {
             console.log(response['producto'][0]);
             console.log(response);
             $('[name=id_producto]').val(response['producto'][0].id_producto);
-            // $('[name=codigo]').val(response['producto'][0].codigo);
+            $('#codigo_softlink').text(response['producto'][0].cod_softlink);
             $('#codigo').text(response['producto'][0].codigo);
+            $('#estado').text(response['producto'][0].estado == 7 ? 'Dado de baja' : response['producto'][0].estado_doc);
+            $('#estado').removeClass('label-danger');
+            $('#estado').removeClass('label-default');
+            $('#estado').addClass('label-' + response['producto'][0].bootstrap_color);
+
             $('[name=codigo_anexo]').val(response['producto'][0].codigo_anexo);
             $('[name=part_number]').val(response['producto'][0].part_number);
             $('[name=descripcion]').val(response['producto'][0].descripcion);
@@ -96,7 +101,7 @@ function mostrar_producto(id) {
             $('[name=id_subcategoria]').val(response['producto'][0].id_subcategoria).trigger('change.select2');
             $('[name=id_categoria]').val(response['producto'][0].id_categoria).trigger('change.select2');
             $('[name=id_tipo_producto]').val(response['producto'][0].id_tipo_producto).trigger('change.select2');
-            $('[name=id_clasif]').val(response['producto'][0].id_clasif).trigger('change.select2');
+            $('[name=id_clasif]').val(response['producto'][0].id_clasificacion).trigger('change.select2');
             $('#tipo_descripcion').text(response['producto'][0].tipo_descripcion);
             $('#cat_descripcion').text(response['producto'][0].cat_descripcion);
             $('#subcat_descripcion').text(response['producto'][0].subcat_descripcion);
@@ -285,15 +290,16 @@ function anular_producto(ids) {
         dataType: 'JSON',
         success: function (response) {
             console.log(response);
-            if (response > 0) {
-                Lobibox.notify("success", {
-                    title: false,
-                    size: "mini",
-                    rounded: true,
-                    sound: false,
-                    delayIndicator: false,
-                    msg: 'Producto anulado con exito'
-                });
+            Lobibox.notify(response.tipo, {
+                title: false,
+                size: "mini",
+                rounded: true,
+                sound: false,
+                delayIndicator: false,
+                msg: response.mensaje
+            });
+
+            if (response.tipo == 'success') {
                 changeStateButton('anular');
                 clearForm('form-producto');
             }

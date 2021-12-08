@@ -129,7 +129,9 @@ class MigrateOrdenSoftLinkController extends Controller
                     'alm_prod.part_number',
                     'alm_prod.descripcion',
                     'alm_und_medida.abreviatura',
+                    'alm_cat_prod.id_categoria',
                     'alm_cat_prod.descripcion as categoria',
+                    'alm_subcat.id_subcategoria',
                     'alm_subcat.descripcion as subcategoria',
                     'alm_clasif.descripcion as clasificacion',
                     'log_ord_compra.id_moneda',
@@ -637,9 +639,9 @@ class MigrateOrdenSoftLinkController extends Controller
 
             $cod_clasi = $this->obtenerClasificacion($det->clasificacion);
 
-            $cod_cate = $this->obtenerCategoria($det->categoria);
+            $cod_cate = $this->obtenerCategoria($det->categoria, $det->id_categoria);
 
-            $cod_subc = $this->obtenerSubCategoria($det->subcategoria);
+            $cod_subc = $this->obtenerSubCategoria($det->subcategoria, $det->id_subcategoria);
 
             $cod_unid = $this->obtenerUnidadMedida($det->abreviatura);
 
@@ -712,6 +714,10 @@ class MigrateOrdenSoftLinkController extends Controller
                     'costo_adicional' => '0.00'
                 ]
             );
+
+            DB::table('almacen.alm_prod')
+                ->where('id_producto', $det->id_producto)
+                ->update(['cod_softlink' => $cod_prod]);
         }
         return $cod_prod;
     }
@@ -746,7 +752,7 @@ class MigrateOrdenSoftLinkController extends Controller
         return $cod_clasi;
     }
 
-    public function obtenerCategoria($categoria)
+    public function obtenerCategoria($categoria, $id_categoria)
     {
         //verifica si existe categoria
         $cate = DB::connection('soft')->table('sopsub1')
@@ -769,14 +775,18 @@ class MigrateOrdenSoftLinkController extends Controller
                     'cod_sub1' => $cod_cate,
                     'nom_sub1' => trim($categoria),
                     'por_dcto' => '0.00',
-                    'num_corr' => '0'
+                    'num_corr' => 0
                 ]
             );
+
+            DB::table('almacen.alm_cat_prod')
+                ->where('id_categoria', $id_categoria)
+                ->update(['cod_softlink' => $cod_cate]);
         }
         return $cod_cate;
     }
 
-    public function obtenerSubCategoria($subcategoria)
+    public function obtenerSubCategoria($subcategoria, $id_subcategoria)
     {
         //verifica si existe subcategoria
         $subcate = DB::connection('soft')->table('sopsub2')
@@ -800,9 +810,13 @@ class MigrateOrdenSoftLinkController extends Controller
                     'nom_sub2' => trim($subcategoria),
                     'por_adic' => '0.00',
                     'cod_sub1' => '',
-                    'id_manufacturer' => '0'
+                    'id_manufacturer' => 0
                 ]
             );
+
+            DB::table('almacen.alm_subcat')
+                ->where('id_subcategoria', $id_subcategoria)
+                ->update(['cod_softlink' => $cod_subc]);
         }
         return $cod_subc;
     }
