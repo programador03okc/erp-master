@@ -1412,6 +1412,11 @@ form .select2-container .select2-selection--single {
   transition-duration: 3s, 3s;
 }
 
+.textRedStrikeHover{
+  color:#a52d1f;
+  text-decoration:line-through;
+}
+
 .transition {
   opacity: 0;
 }

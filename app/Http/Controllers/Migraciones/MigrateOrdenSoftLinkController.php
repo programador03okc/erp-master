@@ -27,7 +27,7 @@ class MigrateOrdenSoftLinkController extends Controller
 
                 if ($oc_softlink !== null) {
                     //pregunta si fue referenciado
-                    if ($oc_softlink->flg_referen == 1) {
+                    if ($oc_softlink->flg_referen > 0) {
                         $arrayRspta = array(
                             'tipo' => 'warning',
                             'mensaje' => 'Ésta orden ya fue referenciada en Softlink.',
@@ -36,7 +36,7 @@ class MigrateOrdenSoftLinkController extends Controller
                         );
                     }
                     //pregunta si fue anulada en softlink
-                    else if ($oc_softlink->flg_anulado == 1) {
+                    else if ($oc_softlink->flg_anulado > 0) {
                         $arrayRspta = array(
                             'tipo' => 'warning',
                             'mensaje' => 'Ésta orden ya fue anulada en Softlink.',

@@ -2888,7 +2888,7 @@ class OrdenController extends Controller
                 $orden->tipo_cambio_compra = isset($request->tipo_cambio_compra)?$request->tipo_cambio_compra:true;
                 $orden->save();
     
-                $TodoDetalleOrden = OrdenCompraDetalle::where("id_orden_compra", $orden->id_orden_compra)->get();
+                // $TodoDetalleOrden = OrdenCompraDetalle::where("id_orden_compra", $orden->id_orden_compra)->get();
                 $idDetalleProcesado = [];
      
                 if(isset($request->cantidadAComprarRequerida)){
@@ -2912,30 +2912,40 @@ class OrdenController extends Controller
                         $detalle->save();
     
                     }else{ // es un id solo de numerico => actualiza
-                            $detalle = OrdenCompraDetalle::where("id_detalle_orden", $id)->first();
-                            $detalle->id_producto= $request->idProducto[$i];
-                            $detalle->id_detalle_requerimiento=$request->idDetalleRequerimiento[$i];
-                            $detalle->cantidad=$request->cantidadAComprarRequerida[$i];
-                            $detalle->id_unidad_medida=$request->unidad[$i];
-                            $detalle->precio=$request->precioUnitario[$i];
-                            $detalle->descripcion_adicional=$request->descripcion[$i];
-                            $detalle->subtotal= floatval($request->cantidadAComprarRequerida[$i] * $request->precioUnitario[$i]);
-                            $detalle->tipo_item_id=$request->idTipoItem[$i];
-                            $detalle->save();
-        
-                            $idDetalleProcesado[] = $detalle->id_detalle_orden;
+                            if($request->idEstado[$i]==7){
+                                if(is_numeric($id)){ // si es un numero 
+                                    $detalle = OrdenCompraDetalle::where("id_detalle_orden", $id)->first();
+                                    $detalle->estado = 7;
+                                    $detalle->save();
+                                }
+
+                            }else{
+
+                                $detalle = OrdenCompraDetalle::where("id_detalle_orden", $id)->first();
+                                $detalle->id_producto= $request->idProducto[$i];
+                                $detalle->id_detalle_requerimiento=$request->idDetalleRequerimiento[$i];
+                                $detalle->cantidad=$request->cantidadAComprarRequerida[$i];
+                                $detalle->id_unidad_medida=$request->unidad[$i];
+                                $detalle->precio=$request->precioUnitario[$i];
+                                $detalle->descripcion_adicional= $request->descripcion[$i] !=null ?trim(strtoupper($request->descripcion[$i])):null;
+                                $detalle->subtotal= floatval($request->cantidadAComprarRequerida[$i] * $request->precioUnitario[$i]);
+                                $detalle->tipo_item_id=$request->idTipoItem[$i];
+                                $detalle->save();
+            
+                                $idDetalleProcesado[] = $detalle->id_detalle_orden;
+                            }
     
                     }
                 }
                 }
     
-                foreach ($TodoDetalleOrden as $detalleOrden) {
-                    if (!in_array($detalleOrden->id_detalle_orden, $idDetalleProcesado)) {
-                        $detalleConAnulidad = OrdenCompraDetalle::where("id_detalle_orden", $detalleOrden->id_detalle_orden)->first();
-                        $detalleConAnulidad->estado = 7;
-                        $detalleConAnulidad->save();
-                    }
-                }
+                // foreach ($TodoDetalleOrden as $detalleOrden) {
+                //     if (!in_array($detalleOrden->id_detalle_orden, $idDetalleProcesado)) {
+                //         $detalleConAnulidad = OrdenCompraDetalle::where("id_detalle_orden", $detalleOrden->id_detalle_orden)->first();
+                //         $detalleConAnulidad->estado = 7;
+                //         $detalleConAnulidad->save();
+                //     }
+                // }
 
                 $data =[
                     'id_orden_compra' => $orden->id_orden_compra, 
