@@ -24,7 +24,10 @@ Elaborar orden
 
         <div class="row">
             <div class="col-md-12">
-                <h4 style="display:flex;justify-content: space-between;">General &nbsp;<span style="color:blue;" name="codigo_orden_interno"></span> 
+                <h4 style="display:flex;justify-content: space-between;">General &nbsp;
+                    <div>
+                        <span style="color:blue;" name="codigo_orden_interno"></span> &nbsp; <span style="font-size:small;" name="estado_cuadro_costo"></span>
+                    </div>
                     <div>
                         <button type="button" name="btn-imprimir-orden-pdf" class="btn btn-info btn-sm handleClickImprimirOrdenPdf" title="Imprimir orden en .pdf" disabled><i class="fas fa-print"></i> Imprimir</button>
                         <button type="button" name="btn-enviar-softlink" id="btn-enviar-softlink" class="btn btn-success btn-sm" title="Enviar Orden a Softlink" onclick="enviarOrdenSoftlink();" disabled> Migrar a softlink</button>

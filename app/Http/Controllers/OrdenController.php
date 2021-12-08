@@ -1357,9 +1357,9 @@ class OrdenController extends Controller
         ->leftJoin('rrhh.rrhh_postu as post_aut_2', 'post_aut_2.id_postulante', '=', 'trab_aut_2.id_postulante')
         ->leftJoin('rrhh.rrhh_perso as pers_aut_2', 'pers_aut_2.id_persona', '=', 'post_aut_2.id_persona')
         ->leftJoin('contabilidad.sis_identi as identi_aut_2', 'identi_aut_2.id_doc_identidad', '=', 'pers_aut_2.id_documento_identidad')
-        ->with(['detalle.guia_compra_detalle'=> function ($q) {
+        ->with(['detalle.detalleRequerimiento.reserva','detalle.guia_compra_detalle'=> function ($q) {
             $q->where('guia_com_det.estado', '!=', 7);
-        },'detalle.producto','detalle.unidad_medida','detalle.estado_orden','detalle.reserva'])
+        },'detalle.producto','detalle.unidad_medida','detalle.estado_orden'])
         ->where([
             ['log_ord_compra.id_orden_compra', '=', $id_orden]
         ])
