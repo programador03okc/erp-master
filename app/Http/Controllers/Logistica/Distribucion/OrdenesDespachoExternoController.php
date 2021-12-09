@@ -76,6 +76,7 @@ class OrdenesDespachoExternoController extends Controller
                 'adm_contri.razon_social as cliente_razon_social',
                 'orden_despacho.id_od',
                 'orden_despacho.fecha_despacho',
+                'orden_despacho.nro_orden as numero_orden',
                 'orden_despacho.persona_contacto',
                 'orden_despacho.direccion_destino',
                 'orden_despacho.correo_cliente',
@@ -446,6 +447,7 @@ class OrdenesDespachoExternoController extends Controller
                     $usuario = Auth::user()->id_usuario;
                     $fechaRegistro = new Carbon(); //date('Y-m-d H:i:s');
                     $id_estado_envio = 1; //despacho elaborado
+                    $nro_orden = OrdenDespacho::where([['fecha_despacho', '=', $fechaRegistro]])->count();
 
                     $ordenDespacho = new OrdenDespacho();
                     $ordenDespacho->id_sede = $requerimiento->id_sede;
@@ -457,6 +459,7 @@ class OrdenesDespachoExternoController extends Controller
                     $ordenDespacho->registrado_por = $usuario;
                     $ordenDespacho->fecha_despacho = $fechaRegistro;
                     $ordenDespacho->fecha_registro = $fechaRegistro;
+                    $ordenDespacho->nro_orden = ($nro_orden + 1);
                     $ordenDespacho->estado = 1;
                     $ordenDespacho->id_estado_envio = $id_estado_envio;
                     $ordenDespacho->save();

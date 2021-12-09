@@ -192,6 +192,12 @@ function listarRequerimientosPendientes(usuario) {
             // },
             { data: 'codigo_od', name: 'orden_despacho.codigo', className: "text-center" },
             {
+                data: 'numero_orden', name: 'orden_despacho.nro_orden',
+                'render': function (data, type, row) {
+                    return (row['numero_orden'] !== null ? formatDate(row['fecha_despacho']) + '<br><span class="label label-default">' + row['numero_orden'] + '</span>' : '');
+                }
+            },
+            {
                 data: 'fecha_despacho_real', name: 'orden_despacho.fecha_despacho_real',
                 'render': function (data, type, row) {
                     return (row['fecha_despacho_real'] !== null ? formatDate(row['fecha_despacho_real']) : '');
@@ -299,7 +305,7 @@ function listarRequerimientosPendientes(usuario) {
                                    <i class="fas fa-file-upload"></i></button>`
                            : '')*/
                         `</div>`
-                }, targets: 17
+                }, targets: 18
             }
         ],
         select: "multi",

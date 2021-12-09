@@ -37,7 +37,8 @@ Gestión de Despacho Externo
                 </form>
                 <div class="row">
                     <div class="col-md-12">
-                        <table class="mytable table table-condensed table-bordered table-hover table-striped table-okc-view" id="requerimientosEnProceso">
+                        <table class="mytable table table-condensed table-bordered table-hover table-striped table-okc-view" 
+                            id="requerimientosEnProceso" style="font-size: 11px;">
                             <thead>
                                 <tr>
                                     <th hidden></th>
@@ -47,13 +48,14 @@ Gestión de Despacho Externo
                                     <th>Nro O/C</th>
                                     <th>Estado O/C</th>
                                     <th>Monto total</th>
-                                    <th>OC.fís/SIAF</th>
+                                    <th>OC.fís / SIAF</th>
                                     <th>OCC</th>
                                     <th>Cod.CDP</th>
                                     <th width="30%">Cliente/Entidad</th>
                                     <th>Generado por</th>
                                     <th>Sede Req.</th>
                                     <th>Cod. D.E.</th>
+                                    <th>Nro. Prio.</th>
                                     <th>Fecha Despacho Real</th>
                                     <th>Fecha Llegada</th>
                                     <th>Estado D.E.</th>
