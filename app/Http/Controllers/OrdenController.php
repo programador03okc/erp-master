@@ -2888,7 +2888,6 @@ class OrdenController extends Controller
                 $orden->tipo_cambio_compra = isset($request->tipo_cambio_compra)?$request->tipo_cambio_compra:true;
                 $orden->save();
     
-                // $TodoDetalleOrden = OrdenCompraDetalle::where("id_orden_compra", $orden->id_orden_compra)->get();
                 $idDetalleProcesado = [];
      
                 if(isset($request->cantidadAComprarRequerida)){
@@ -2905,7 +2904,7 @@ class OrdenController extends Controller
                         $detalle->cantidad=$request->cantidadAComprarRequerida[$i];
                         $detalle->id_unidad_medida=$request->unidad[$i];
                         $detalle->precio=$request->precioUnitario[$i];
-                        $detalle->descripcion_adicional=$request->descripcion[$i];
+                        $detalle->descripcion_adicional= $request->descripcion[$i] !=null ?trim(strtoupper($request->descripcion[$i])):null;
                         $detalle->subtotal= floatval($request->cantidadAComprarRequerida[$i] * $request->precioUnitario[$i]);
                         $detalle->tipo_item_id=$request->idTipoItem[$i];
                         $detalle->estado=1;
@@ -2939,13 +2938,6 @@ class OrdenController extends Controller
                 }
                 }
     
-                // foreach ($TodoDetalleOrden as $detalleOrden) {
-                //     if (!in_array($detalleOrden->id_detalle_orden, $idDetalleProcesado)) {
-                //         $detalleConAnulidad = OrdenCompraDetalle::where("id_detalle_orden", $detalleOrden->id_detalle_orden)->first();
-                //         $detalleConAnulidad->estado = 7;
-                //         $detalleConAnulidad->save();
-                //     }
-                // }
 
                 $data =[
                     'id_orden_compra' => $orden->id_orden_compra, 
