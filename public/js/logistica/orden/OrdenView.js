@@ -560,7 +560,6 @@ class OrdenView {
                 let tr = obj.closest("tr");
                 var regExp = /[a-zA-Z]/g;
 
-                console.log(tr.querySelector("input[name='idRegister[]']"));
                 if(regExp.test(tr.querySelector("input[name='idRegister[]']").value) ==true ){
                     tr.remove();
                     this.calcularMontosTotales();
@@ -1716,6 +1715,7 @@ class OrdenView {
         document.querySelector("form[id='form-crear-orden-requerimiento'] select[name='id_tp_documento']").value = data.id_tp_documento ? data.id_tp_documento : '';
         document.querySelector("form[id='form-crear-orden-requerimiento'] select[name='id_moneda']").value = data.id_moneda ? data.id_moneda : '';
         document.querySelector("form[id='form-crear-orden-requerimiento'] span[name='codigo_orden_interno']").textContent = data.codigo_orden ? data.codigo_orden : '';
+        document.querySelector("form[id='form-crear-orden-requerimiento'] span[name='estado_cuadro_costo']").textContent = data.cuadro_costo !=null && data.cuadro_costo.length>0 ? data.cuadro_costo.map(e => ('('+e.codigo+': '+e.estado_aprobacion+')')).join(",") : '';
         document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='codigo_orden']").value = data.codigo_softlink ? data.codigo_softlink : '';
         document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='fecha_emision']").value = data.fecha ? moment(data.fecha, 'DD-MM-YYYY h:m').format('YYYY-MM-DDThh:mm') : '';
         document.querySelector("form[id='form-crear-orden-requerimiento'] select[name='id_sede']").value = data.id_sede ? data.id_sede : '';
@@ -1760,16 +1760,25 @@ class OrdenView {
         this.limpiarTabla('listaDetalleOrden');
         vista_extendida();
         let detalle =data.detalle;
+
         for (let i = 0; i < detalle.length; i++) {
 
-            // let cantidad_atendido_almacen = 0;
-            // if (detalle.reserva.length > 0) {
-            //     (detalle.reserva).forEach(reserva => {
-            //         if (reserva.estado == 1) {
-            //             cantidad_atendido_almacen += parseFloat(reserva.stock_comprometido);
-            //         }
-            //     });
-            // }
+            let cantidad_atendido_almacen = 0;
+            if (detalle[i].detalle_requerimiento.reserva.length > 0) {
+                (detalle[i].detalle_requerimiento.reserva).forEach(reserva => {
+                    if (reserva.estado == 1) {
+                        cantidad_atendido_almacen += parseFloat(reserva.stock_comprometido);
+                    }
+                });
+            }
+            let cantidad_atendido_orden = 0;
+            if (detalle[i].detalle_requerimiento.ordenes_compra.length > 0) {
+                (detalle[i].detalle_requerimiento.ordenes_compra).forEach(orden => {
+                    if (orden.estado == 1) {
+                    cantidad_atendido_orden += parseFloat(orden.cantidad);
+                    }
+                });
+            }
 
             if (detalle[i].tipo_item_id == 1) { // producto
                 if (detalle[i].id_producto > 0) { // TO-DO  falta mostrar cantidad_atendido_almacen y cantidad_atendido_orden
@@ -1780,9 +1789,9 @@ class OrdenView {
                         <td class="text-center">${detalle[i].producto.part_number ? detalle[i].producto.part_number : ''} <input type="hidden"  name="idProducto[]" value="${(detalle[i].id_producto ? detalle[i].id_producto : detalle[i].id_producto)} "></td>
                         <td class="text-left">${(detalle[i].producto.descripcion ? detalle[i].producto.descripcion : (detalle[i].descripcion != null ? detalle[i].descripcion : ''))} <input type="hidden"  name="descripcion[]" value="${(detalle[i].producto.descripcion ? detalle[i].producto.descripcion : detalle[i].descripcion)} "></td>
                         <td><select name="unidad[]" class="form-control ${(detalle[i].guia_compra_detalle !=null && detalle[i].guia_compra_detalle.length > 0 ? '' : 'activation')} input-sm unidadMedida" data-valor="${detalle[i].id_unidad_medida}" disabled>${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
-                        <td>${(detalle[i].cantidad ? detalle[i].cantidad : '')}</td>
-                        <td>${(detalle[i].cantidad_atendido_almacen ? detalle[i].cantidad_atendido_almacen : '')}</td> 
-                        <td>${(detalle[i].cantidad_atendido_orden ? detalle[i].cantidad_atendido_orden : '')}</td>
+                        <td>${(detalle[i].detalle_requerimiento ? detalle[i].detalle_requerimiento.cantidad : '')}</td>
+                        <td>${(cantidad_atendido_almacen >0 ? cantidad_atendido_almacen : '')}</td> 
+                        <td>${(cantidad_atendido_orden >0 ? cantidad_atendido_orden : '')}</td>
                         <td>
                             <div class="input-group">
                                 <div class="input-group-addon" style="background:lightgray;" name="simboloMoneda">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</div>

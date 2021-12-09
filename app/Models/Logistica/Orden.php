@@ -3,17 +3,21 @@
 
 namespace App\Models\Logistica;
 
+use App\Models\Almacen\DetalleRequerimiento;
+use App\Models\Almacen\Requerimiento;
 use App\Models\mgcp\CuadroCosto\CuadroCosto;
+use App\Models\mgcp\CuadroCosto\CuadroCostoView;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Debugbar;
+use Illuminate\Validation\Rules\Unique;
 
 class Orden extends Model {
 
     protected $table = 'logistica.log_ord_compra';
     protected $primaryKey = 'id_orden_compra';
-    protected $appends = ['monto','requerimientos','oportunidad','tiene_transformacion','cantidad_equipos','estado_orden'];
+    protected $appends = ['cuadro_costo','monto','requerimientos','oportunidad','tiene_transformacion','cantidad_equipos','estado_orden'];
 
     public $timestamps = false;
 
@@ -46,6 +50,44 @@ class Orden extends Model {
     public function getFechaEntregaAttribute(){
         $fecha= new Carbon($this->attributes['fecha_entrega']);
         return $fecha->format('d-m-Y');
+    }
+    public function getCuadroCostoAttribute(){
+        $idCuadroCostoList=[];
+        $idReqList=[];
+        $data=[];
+        $detalleOrden = OrdenCompraDetalle::where([['id_orden_compra',$this->attributes['id_orden_compra']],['estado','!=',7]])->get();
+        foreach ($detalleOrden as $do) {
+            
+            if($do->id_detalle_requerimiento>0){
+                $detReq=DetalleRequerimiento::find($do->id_detalle_requerimiento);
+                $idReqList[]=$detReq->id_requerimiento;
+
+            }
+
+
+        }
+ 
+        $req= Requerimiento::whereIn('id_requerimiento',array_unique($idReqList))->get();
+        foreach ($req as $r) {
+            if($r->id_cc >0){
+                $idCuadroCostoList[]=$r->id_cc;
+            }
+        }
+
+        $ccVista= CuadroCostoView::whereIn('id',$idCuadroCostoList)->get();
+
+        foreach ($ccVista as $cc) {
+            
+            $data[]=[
+                'id'=>$cc->id,
+                'codigo'=>$cc->codigo_oportunidad,
+                'id_estado_aprobacion'=>$cc->id_estado_aprobacion,
+                'estado_aprobacion'=>$cc->estado_aprobacion
+            ];
+            
+        }
+
+        return $data;
     }
 
     public function mostrar()

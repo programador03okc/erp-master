@@ -16,7 +16,6 @@ class OrdenCompraDetalle extends Model
 
 
 
-
     public function producto(){
         return $this->hasone('App\Models\Almacen\Producto','id_producto','id_producto');
     }
@@ -37,7 +36,7 @@ class OrdenCompraDetalle extends Model
     }
 
     public function detalleRequerimiento(){
-        return $this->hasMany('App\Models\Almacen\DetalleRequerimiento','id_detalle_requerimiento','id_detalle_requerimiento');
+        return $this->hasOne('App\Models\Almacen\DetalleRequerimiento','id_detalle_requerimiento','id_detalle_requerimiento');
     }
 
     public function getFechaCreacionAttribute(){
