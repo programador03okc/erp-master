@@ -49,10 +49,8 @@ class ProductoController extends Controller
             )
             ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
             ->leftjoin('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
-            ->leftjoin('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'alm_prod.estado')
-            ->get();
-        $output['data'] = $prod;
-        return response()->json($output);
+            ->leftjoin('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'alm_prod.estado');
+        return datatables($prod)->toJson();
     }
 
     ////sugeridos
@@ -79,6 +77,7 @@ class ProductoController extends Controller
             ->select(
                 'alm_prod.id_producto',
                 'alm_prod.codigo',
+                'alm_prod.cod_softlink',
                 'alm_prod.descripcion',
                 'alm_prod.part_number',
                 'alm_prod.id_unidad_medida',
