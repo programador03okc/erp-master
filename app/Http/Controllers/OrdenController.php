@@ -3511,7 +3511,7 @@ class OrdenController extends Controller
                 $migrarOrdenSoftlink = (new MigrateOrdenSoftLinkController)->anularOrdenSoftlink($idOrden)->original;
                 if ($migrarOrdenSoftlink['tipo'] == 'success') {
                     $output = [
-                        'id_orden_compra' => $orden->id_orden_compra,
+                        'id_orden_compra' => $idOrden,
                         'codigo' => $orden->codigo,
                         'status' => 200,
                         'mensaje' => $msj,
