@@ -3310,17 +3310,17 @@ class OrdenController extends Controller
             );
         if ($revertirOrden > 0) {
             $status = 200;
-            $msj[] = 'Orden Revertida';
+            $msj[] = 'Orden Anulada';
         } else {
             $status = 204;
-            $msj[] = 'hubo un problema al tratar de revertir la orden';
+            $msj[] = 'hubo un problema al tratar de anular la orden';
         }
         if ($revertirDetalleOrden > 0) {
             $status = 200;
             // $msj[]='Detalle Orden Revertida';
         } else {
             $status = 204;
-            $msj[] = 'hubo un problema al tratar de revertir el detalle de la orden';
+            $msj[] = 'hubo un problema al tratar de anular el detalle de la orden';
         }
         // revertir requerimiento y detalle requerimiento ==>
         // buscar en detalle_orden los id_detalle_requerimiento
