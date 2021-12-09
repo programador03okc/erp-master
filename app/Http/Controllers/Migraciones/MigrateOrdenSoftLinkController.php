@@ -997,7 +997,14 @@ class MigrateOrdenSoftLinkController extends Controller
                 $oc_softlink = DB::connection('soft')->table('movimien')->where('mov_id', $oc->id_softlink)->first();
 
                 //verifica si ya fue referenciado
-                if ($oc_softlink->flg_referen == 1) {
+                $guia_referen = DB::connection('soft')->table('movimien')
+                    ->where([
+                        ['cod_pedi', '=', $oc_softlink->cod_docu],
+                        ['num_pedi', '=', $oc_softlink->num_docu],
+                        ['flg_anulado', '=', 0]
+                    ])
+                    ->first();
+                if ($guia_referen !== null) {
                     //Ya tiene ingreso a almacen
                     $arrayRspta = array(
                         'tipo' => 'warning',
