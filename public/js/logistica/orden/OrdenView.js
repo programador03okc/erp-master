@@ -1716,6 +1716,7 @@ class OrdenView {
         document.querySelector("form[id='form-crear-orden-requerimiento'] select[name='id_moneda']").value = data.id_moneda ? data.id_moneda : '';
         document.querySelector("form[id='form-crear-orden-requerimiento'] span[name='codigo_orden_interno']").textContent = data.codigo_orden ? data.codigo_orden : '';
         document.querySelector("form[id='form-crear-orden-requerimiento'] span[name='estado_cuadro_costo']").textContent = data.cuadro_costo !=null && data.cuadro_costo.length>0 ? data.cuadro_costo.map(e => ('('+e.codigo+': '+e.estado_aprobacion+')')).join(",") : '';
+
         document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='codigo_orden']").value = data.codigo_softlink ? data.codigo_softlink : '';
         document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='fecha_emision']").value = data.fecha ? moment(data.fecha, 'DD-MM-YYYY h:m').format('YYYY-MM-DDThh:mm') : '';
         document.querySelector("form[id='form-crear-orden-requerimiento'] select[name='id_sede']").value = data.id_sede ? data.id_sede : '';
@@ -1764,7 +1765,7 @@ class OrdenView {
         for (let i = 0; i < detalle.length; i++) {
 
             let cantidad_atendido_almacen = 0;
-            if (detalle[i].detalle_requerimiento.reserva.length > 0) {
+            if (detalle[i].detalle_requerimiento && detalle[i].detalle_requerimiento.reserva.length > 0) {
                 (detalle[i].detalle_requerimiento.reserva).forEach(reserva => {
                     if (reserva.estado == 1) {
                         cantidad_atendido_almacen += parseFloat(reserva.stock_comprometido);
@@ -1772,7 +1773,7 @@ class OrdenView {
                 });
             }
             let cantidad_atendido_orden = 0;
-            if (detalle[i].detalle_requerimiento.ordenes_compra.length > 0) {
+            if (detalle[i].detalle_requerimiento && detalle[i].detalle_requerimiento.ordenes_compra.length > 0) {
                 (detalle[i].detalle_requerimiento.ordenes_compra).forEach(orden => {
                     if (orden.estado == 1) {
                     cantidad_atendido_orden += parseFloat(orden.cantidad);
