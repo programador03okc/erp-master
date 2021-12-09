@@ -1,28 +1,42 @@
 function listarProductosCatalogo() {
     var vardataTables = funcDatatables();
-    $('#productosCatalogo').dataTable({
-        // 'dom': vardataTables[1],
+    $('#productosCatalogo').DataTable({
+        'dom': vardataTables[1],
         'buttons': [],
         'language': vardataTables[0],
         "lengthChange": false,
-        'bDestroy': true,
-        'ajax': 'mostrar_prods',
-        initComplete: function (settings, json) {
-            let wraper = $('#productosCatalogo_wrapper .row ')[0].firstChild;
-            wraper.innerHTML = '<label style="font-size:18px">Catálogo de productos</label>';
-            // $('#productosCatalogo_wrapper .row ')[0].firstChild.remove('div');
-            console.log(wraper);
-            // let lblTitulo;// = document.createElement("div");
-            // // lblTitulo.innerHTML = '<label style="font-size:18px">Catálogo de productos</label>';
-            // lblTitulo = document.createElement("label");'<label style="font-size:18px">Catálogo de productos</label>';
-            // $('#productosCatalogo_wrapper .row ')[0].firstChild.append(lblTitulo);
+        'order': [[5, 'asc']],
+        'serverSide': true,
+        'destroy': true,
+        'ajax': {
+            'url': 'mostrar_prods',
+            'type': 'GET',
+            beforeSend: data => {
+
+                $("#productosCatalogo").LoadingOverlay("show", {
+                    imageAutoResize: true,
+                    progress: true,
+                    imageColor: "#3c8dbc"
+                });
+            }
+
         },
         'columns': [
-            { 'data': 'id_producto' },
-            { 'data': 'codigo' },
-            { 'data': 'part_number' },
-            { 'data': 'marca' },
-            { 'data': 'descripcion' },
+            { 'data': 'id_producto', 'name': 'alm_prod.id_producto', "searchable": false },
+            { 'data': 'codigo', 'name': 'alm_prod.codigo'},
+            { 'data': 'cod_softlink', 'name': 'alm_prod.cod_softlink'},
+            { 'data': 'part_number', 'name': 'alm_prod.part_number'},
+            { 'data': 'marca', 'name': 'alm_subcat.descripcion'},
+            { 'data': 'descripcion', 'name': 'alm_prod.descripcion'},
+            { 'data': 'id_producto', 'name': 'alm_prod.id_producto', "searchable": false }
+        ],
+        'columnDefs': [
+            { 'aTargets': [0], 'sClass': 'invisible','sWidth': '5%' },
+            { 'aTargets': [1], 'className': "text-center", 'sWidth': '5%' },
+            { 'aTargets': [2], 'className': "text-center", 'sWidth': '5%' },
+            { 'aTargets': [3], 'className': "text-center", 'sWidth': '5%' },
+            { 'aTargets': [4], 'className': "text-center", 'sWidth': '5%' },
+            { 'aTargets': [5], 'className': "text-left", 'sWidth': '70%' },
             {
                 'render':
                     function (data, type, row) {
@@ -35,10 +49,23 @@ function listarProductosCatalogo() {
                                 <i class="fas fa-check"></i>
                             </button>
                         `;
-                    }
+                    },'aTargets': 6 ,'className': "text-center", 'sWidth': '5%'
             }
         ],
-        'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible' }],
+        initComplete: function (settings, json) {
+            // let wraper = $('#productosCatalogo_wrapper .row ')[0].firstChild;
+            // wraper.innerHTML = '<label style="font-size:18px">Catálogo de productos</label>';
+            // $('#productosCatalogo_wrapper .row ')[0].firstChild.remove('div');
+            // console.log(wraper);
+            // let lblTitulo;// = document.createElement("div");
+            // // lblTitulo.innerHTML = '<label style="font-size:18px">Catálogo de productos</label>';
+            // lblTitulo = document.createElement("label");'<label style="font-size:18px">Catálogo de productos</label>';
+            // $('#productosCatalogo_wrapper .row ')[0].firstChild.append(lblTitulo);
+        },
+        "drawCallback": function (settings) {
+ 
+            $("#productosCatalogo").LoadingOverlay("hide", true);
+        },
     });
 }
 
@@ -102,6 +129,7 @@ function listarSugeridos() {
                     html += `
                     <tr>
                     <td>${element.codigo ?? ''}</td>
+                    <td>${element.cod_softlink ?? ''}</td>
                     <td>${element.part_number ?? ''}</td>
                     <td>${element.marca ?? ''}</td>
                     <td>${element.descripcion ?? ''}</td>

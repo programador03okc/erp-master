@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
@@ -9,7 +10,9 @@ use Dompdf\Dompdf;
 use PDF;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 date_default_timezone_set('America/Lima');
+
 use Debugbar;
 use PDO;
 use Maatwebsite\Excel\Facades\Excel;
@@ -70,7 +73,7 @@ class OrdenController extends Controller
         $monedas = Moneda::mostrar();
         // $sedes = Auth::user()->sedesAcceso();
 
-        return view('logistica/ordenes/generar_orden_requerimiento', compact('sedes','empresas','sis_identidad','tp_documento', 'tp_moneda','tp_doc','condiciones','clasificaciones','subcategorias','categorias','unidades','unidades_medida','monedas'));
+        return view('logistica/ordenes/generar_orden_requerimiento', compact('sedes', 'empresas', 'sis_identidad', 'tp_documento', 'tp_moneda', 'tp_doc', 'condiciones', 'clasificaciones', 'subcategorias', 'categorias', 'unidades', 'unidades_medida', 'monedas'));
     }
     function view_crear_orden_requerimiento()
     {
@@ -94,36 +97,36 @@ class OrdenController extends Controller
         // $sedes = Auth::user()->sedesAcceso();
         $bancos = Banco::mostrar();
         $tipo_cuenta = TipoCuenta::mostrar();
-        return view('logistica/gestion_logistica/compras/ordenes/elaborar/crear_orden_requerimiento', compact('bancos','tipo_cuenta','sedes','sis_identidad','tp_documento', 'tp_moneda','tp_doc','condiciones','condiciones_softlink','clasificaciones','subcategorias','categorias','unidades','unidades_medida','monedas'));
+        return view('logistica/gestion_logistica/compras/ordenes/elaborar/crear_orden_requerimiento', compact('bancos', 'tipo_cuenta', 'sedes', 'sis_identidad', 'tp_documento', 'tp_moneda', 'tp_doc', 'condiciones', 'condiciones_softlink', 'clasificaciones', 'subcategorias', 'categorias', 'unidades', 'unidades_medida', 'monedas'));
     }
 
-    function lista_contactos_proveedor($id_proveedor){
-        
+    function lista_contactos_proveedor($id_proveedor)
+    {
+
         $data = DB::table('logistica.log_prove')
-        ->select(
-            'adm_ctb_contac.id_datos_contacto as id_contacto',
-            'adm_ctb_contac.nombre as nombre_contacto',
-            'adm_ctb_contac.cargo as cargo_contacto',
-            'adm_ctb_contac.email as email_contacto',
-            'adm_ctb_contac.telefono as telefono_contacto',
-            'adm_ctb_contac.direccion as direccion_contacto',
-            'adm_ctb_contac.ubigeo as ubigeo_contacto'
-        )
-        // ->leftJoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
-        ->join('contabilidad.adm_ctb_contac', 'adm_ctb_contac.id_contribuyente', '=', 'log_prove.id_contribuyente')
-        ->where('log_prove.id_proveedor',$id_proveedor)
-        ->orderby('adm_ctb_contac.nombre','asc')
-        ->get();
-        
-
-        return response()->json(['data'=>$data]);
+            ->select(
+                'adm_ctb_contac.id_datos_contacto as id_contacto',
+                'adm_ctb_contac.nombre as nombre_contacto',
+                'adm_ctb_contac.cargo as cargo_contacto',
+                'adm_ctb_contac.email as email_contacto',
+                'adm_ctb_contac.telefono as telefono_contacto',
+                'adm_ctb_contac.direccion as direccion_contacto',
+                'adm_ctb_contac.ubigeo as ubigeo_contacto'
+            )
+            // ->leftJoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
+            ->join('contabilidad.adm_ctb_contac', 'adm_ctb_contac.id_contribuyente', '=', 'log_prove.id_contribuyente')
+            ->where('log_prove.id_proveedor', $id_proveedor)
+            ->orderby('adm_ctb_contac.nombre', 'asc')
+            ->get();
 
 
+        return response()->json(['data' => $data]);
     }
 
-    public function select_moneda(){
+    public function select_moneda()
+    {
         $data = DB::table('configuracion.sis_moneda')
-            ->select('sis_moneda.id_moneda','sis_moneda.descripcion','sis_moneda.simbolo')
+            ->select('sis_moneda.id_moneda', 'sis_moneda.descripcion', 'sis_moneda.simbolo')
             ->where([
                 ['sis_moneda.estado', '=', 1]
             ])
@@ -131,7 +134,7 @@ class OrdenController extends Controller
             ->get();
         return $data;
     }
-    
+
     public function select_sedes()
     {
         $data = DB::table('administracion.sis_sede')
@@ -147,10 +150,11 @@ class OrdenController extends Controller
     {
         $data = DB::table('administracion.sis_sede')
             ->select(
-                'sis_sede.*', 'ubi_dis.descripcion as ubigeo_descripcion'
+                'sis_sede.*',
+                'ubi_dis.descripcion as ubigeo_descripcion'
             )
-            ->leftJoin('configuracion.ubi_dis','ubi_dis.id_dis','=','sis_sede.id_ubigeo')
-            ->where('sis_sede.estado','=','1')
+            ->leftJoin('configuracion.ubi_dis', 'ubi_dis.id_dis', '=', 'sis_sede.id_ubigeo')
+            ->where('sis_sede.estado', '=', '1')
             ->orderBy('sis_sede.id_empresa', 'asc')
             ->get();
         return $data;
@@ -179,7 +183,7 @@ class OrdenController extends Controller
     public function select_mostrar_empresas()
     {
         $data = DB::table('administracion.adm_empresa')
-            ->select('adm_empresa.id_empresa', 'adm_empresa.logo_empresa','adm_contri.nro_documento', 'adm_contri.razon_social')
+            ->select('adm_empresa.id_empresa', 'adm_empresa.logo_empresa', 'adm_contri.nro_documento', 'adm_contri.razon_social')
             ->join('contabilidad.adm_contri', 'adm_empresa.id_contribuyente', '=', 'adm_contri.id_contribuyente')
             ->where('adm_empresa.estado', '=', 1)
             ->orderBy('adm_contri.razon_social', 'asc')
@@ -189,15 +193,16 @@ class OrdenController extends Controller
 
     public function select_mostrar_estados_compra()
     {
-          $data = DB::table('logistica.estados_compra')
+        $data = DB::table('logistica.estados_compra')
             ->select('estados_compra.*')
             ->get();
         return $data;
     }
-    
-    public function select_documento(){
+
+    public function select_documento()
+    {
         $data = DB::table('administracion.adm_tp_docum')
-            ->select('adm_tp_docum.id_tp_documento','adm_tp_docum.descripcion','adm_tp_docum.abreviatura')
+            ->select('adm_tp_docum.id_tp_documento', 'adm_tp_docum.descripcion', 'adm_tp_docum.abreviatura')
             ->where([
                 ['adm_tp_docum.estado', '=', 1],
                 ['adm_tp_docum.descripcion', 'like', '%Orden%']
@@ -216,39 +221,43 @@ class OrdenController extends Controller
         return $data;
     }
 
-    function sedesAcceso($id_empresa){
+    function sedesAcceso($id_empresa)
+    {
         $id_usuario = Auth::user()->id_usuario;
         $sedes = DB::table('configuracion.sis_usua_sede')
-        ->select(
-            'sis_sede.*',
-            DB::raw("(ubi_dis.descripcion) || ' ' || (ubi_prov.descripcion) || ' ' || (ubi_dpto.descripcion)  AS ubigeo_descripcion")
+            ->select(
+                'sis_sede.*',
+                DB::raw("(ubi_dis.descripcion) || ' ' || (ubi_prov.descripcion) || ' ' || (ubi_dpto.descripcion)  AS ubigeo_descripcion")
             )
-        ->join('administracion.sis_sede','sis_sede.id_sede','=','sis_usua_sede.id_sede')
-        ->leftJoin('configuracion.ubi_dis','ubi_dis.id_dis','=','sis_sede.id_ubigeo')
-        ->leftJoin('configuracion.ubi_prov', 'ubi_dis.id_prov', '=', 'ubi_prov.id_prov')
-        ->leftJoin('configuracion.ubi_dpto', 'ubi_prov.id_dpto', '=', 'ubi_dpto.id_dpto')
+            ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'sis_usua_sede.id_sede')
+            ->leftJoin('configuracion.ubi_dis', 'ubi_dis.id_dis', '=', 'sis_sede.id_ubigeo')
+            ->leftJoin('configuracion.ubi_prov', 'ubi_dis.id_prov', '=', 'ubi_prov.id_prov')
+            ->leftJoin('configuracion.ubi_dpto', 'ubi_prov.id_dpto', '=', 'ubi_dpto.id_dpto')
 
-        ->where([['sis_usua_sede.id_usuario','=',$id_usuario],
-                ['sis_usua_sede.estado','=', 1],
-                ['sis_sede.estado','=', 1],
-                ['sis_sede.id_empresa','=',$id_empresa]])
-		->get();
+            ->where([
+                ['sis_usua_sede.id_usuario', '=', $id_usuario],
+                ['sis_usua_sede.estado', '=', 1],
+                ['sis_sede.estado', '=', 1],
+                ['sis_sede.id_empresa', '=', $id_empresa]
+            ])
+            ->get();
         return $sedes;
     }
 
 
-   
 
-    public function listarDetalleOrden(Request $request){
+
+    public function listarDetalleOrden(Request $request)
+    {
 
         $idEmpresa = $request->idEmpresa;
         $idSede = $request->idSede;
         $fechaRegistroDesde = $request->fechaRegistroDesde;
         $fechaRegistroHasta = $request->fechaRegistroHasta;
         $idEstado = $request->idEstado;
-     
 
-        $orden_obj =Orden::select(
+
+        $orden_obj = Orden::select(
             'log_ord_compra.id_orden_compra as id_orden_compra',
             'log_ord_compra.id_grupo_cotizacion',
             'log_ord_compra.id_tp_documento',
@@ -313,201 +322,199 @@ class OrdenController extends Controller
             'alm_subcat.descripcion as subcategoria',
             'alm_prod.descripcion AS alm_prod_descripcion'
         )
-        
-        ->leftJoin('logistica.log_det_ord_compra', 'log_det_ord_compra.id_orden_compra', '=', 'log_ord_compra.id_orden_compra')
-        ->leftJoin('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
-        ->leftJoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
-        ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'log_ord_compra.id_sede')
-        ->leftJoin('configuracion.sis_moneda', 'log_ord_compra.id_moneda', '=', 'sis_moneda.id_moneda')
-        ->leftJoin('logistica.estados_compra', 'log_det_ord_compra.estado', '=', 'estados_compra.id_estado')
-        ->leftJoin('almacen.alm_prod', 'log_det_ord_compra.id_producto', '=', 'alm_prod.id_producto')
-        ->leftJoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
-        ->leftJoin('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')    
-        ->leftJoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
-        ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
-        ->leftJoin('comercial.com_cliente','com_cliente.id_cliente','=','alm_req.id_cliente')
-        ->leftJoin('contabilidad.adm_contri as contri_cli','contri_cli.id_contribuyente','=','com_cliente.id_contribuyente')
-        ->leftJoin('mgcp_cuadro_costos.cc_am_filas', 'cc_am_filas.id', '=', 'alm_det_req.id_cc_am_filas')
-        ->leftJoin('mgcp_cuadro_costos.cc_am', 'cc_am_filas.id_cc_am', '=', 'cc_am.id_cc')
 
-        ->when(($idEmpresa > 0), function ($query) use($idEmpresa) {
-            return $query->whereRaw('sis_sede.id_empresa = ' . $idEmpresa);
-        })
-        ->when(($idSede > 0), function ($query) use($idSede) {
-            return $query->whereRaw('sis_sede.id_sede = ' . $idSede);
-        })
+            ->leftJoin('logistica.log_det_ord_compra', 'log_det_ord_compra.id_orden_compra', '=', 'log_ord_compra.id_orden_compra')
+            ->leftJoin('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
+            ->leftJoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
+            ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'log_ord_compra.id_sede')
+            ->leftJoin('configuracion.sis_moneda', 'log_ord_compra.id_moneda', '=', 'sis_moneda.id_moneda')
+            ->leftJoin('logistica.estados_compra', 'log_det_ord_compra.estado', '=', 'estados_compra.id_estado')
+            ->leftJoin('almacen.alm_prod', 'log_det_ord_compra.id_producto', '=', 'alm_prod.id_producto')
+            ->leftJoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
+            ->leftJoin('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
+            ->leftJoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
+            ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+            ->leftJoin('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'alm_req.id_cliente')
+            ->leftJoin('contabilidad.adm_contri as contri_cli', 'contri_cli.id_contribuyente', '=', 'com_cliente.id_contribuyente')
+            ->leftJoin('mgcp_cuadro_costos.cc_am_filas', 'cc_am_filas.id', '=', 'alm_det_req.id_cc_am_filas')
+            ->leftJoin('mgcp_cuadro_costos.cc_am', 'cc_am_filas.id_cc_am', '=', 'cc_am.id_cc')
 
-        ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta == 'SIN_FILTRO')), function ($query) use($fechaRegistroDesde) {
-            return $query->where('log_ord_compra.fecha' ,'>=',$fechaRegistroDesde); 
-        })
-        ->when((($fechaRegistroDesde == 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use($fechaRegistroHasta) {
-            return $query->where('log_ord_compra.fecha' ,'<=',$fechaRegistroHasta); 
-        })
-        ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use($fechaRegistroDesde,$fechaRegistroHasta) {
-            return $query->whereBetween('log_ord_compra.fecha' ,[$fechaRegistroDesde,$fechaRegistroHasta]); 
-        })
+            ->when(($idEmpresa > 0), function ($query) use ($idEmpresa) {
+                return $query->whereRaw('sis_sede.id_empresa = ' . $idEmpresa);
+            })
+            ->when(($idSede > 0), function ($query) use ($idSede) {
+                return $query->whereRaw('sis_sede.id_sede = ' . $idSede);
+            })
 
-        ->when(($idEstado > 0), function ($query) use($idEstado) {
-            return $query->whereRaw('log_ord_compra.estado = ' . $idEstado);
-        })
+            ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta == 'SIN_FILTRO')), function ($query) use ($fechaRegistroDesde) {
+                return $query->where('log_ord_compra.fecha', '>=', $fechaRegistroDesde);
+            })
+            ->when((($fechaRegistroDesde == 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use ($fechaRegistroHasta) {
+                return $query->where('log_ord_compra.fecha', '<=', $fechaRegistroHasta);
+            })
+            ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use ($fechaRegistroDesde, $fechaRegistroHasta) {
+                return $query->whereBetween('log_ord_compra.fecha', [$fechaRegistroDesde, $fechaRegistroHasta]);
+            })
 
-        ->where([
-            // ['log_ord_compra.codigo', '=', 'OC-21080176'],
-            ['log_ord_compra.estado', '!=', 7],
-            // $tipoOrden >0 ? ['log_ord_compra.id_tp_documento',$tipoOrden]:[null],
-            // $empresa >0 ? ['sis_sede.id_empresa',$empresa]:[null],
-            // $sede >0 ? ['sis_sede.id_sede',$sede]:[null],
-            // ($tipoProveedor =='NACIONAL') ? ['adm_contri.id_pais','=','170']:($tipoProveedor =='EXTRANJERO' ? ['adm_contri.id_pais','=','170']:[null]),
-            // $estado >0 ? ['log_ord_compra.estado',$estado]:[null]
+            ->when(($idEstado > 0), function ($query) use ($idEstado) {
+                return $query->whereRaw('log_ord_compra.estado = ' . $idEstado);
+            })
+
+            ->where([
+                // ['log_ord_compra.codigo', '=', 'OC-21080176'],
+                ['log_ord_compra.estado', '!=', 7],
+                // $tipoOrden >0 ? ['log_ord_compra.id_tp_documento',$tipoOrden]:[null],
+                // $empresa >0 ? ['sis_sede.id_empresa',$empresa]:[null],
+                // $sede >0 ? ['sis_sede.id_sede',$sede]:[null],
+                // ($tipoProveedor =='NACIONAL') ? ['adm_contri.id_pais','=','170']:($tipoProveedor =='EXTRANJERO' ? ['adm_contri.id_pais','=','170']:[null]),
+                // $estado >0 ? ['log_ord_compra.estado',$estado]:[null]
             ])
-        // ->when(($vinculadoPor !='null'), function($query) use ($vinculadoPor)  {
-        //     if($vinculadoPor== 'REQUERIMIENTO'){
-        //         $whereVinculadoPor='log_det_ord_compra.id_detalle_requerimiento > 0';
-        //     }elseif($vinculadoPor == 'CUADRO_COMPARATIVO'){
-        //         $whereVinculadoPor='log_det_ord_compra.detalle_cuadro_comparativo_id > 0';
-        //     }
-        //     return $query->WhereIn('log_ord_compra.id_orden_compra', function($query) use ($whereVinculadoPor)
-        //     {
-        //         $query->select('log_det_ord_compra.id_orden_compra')
-        //         ->from('logistica.log_det_ord_compra')
-        //         ->whereRaw($whereVinculadoPor);
-        //     });
-        // })
-        // ->when(($enAlmacen =='true'), function($query)  {
-        //     return $query->WhereIn('log_ord_compra.id_orden_compra', function($query)
-        //     {
-        //         $query->select('log_det_ord_compra.id_orden_compra')
-        //             ->from('logistica.log_det_ord_compra')
-        //             ->leftjoin('almacen.guia_com_det', 'guia_com_det.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden')
-        //             ->whereRaw('guia_com_det.id_guia_com_det > 0');
-        //     });
-        // })
-        ->orderBy('log_ord_compra.fecha','desc')
-        // ->whereRaw('coalesce((log_det_ord_compra.cantidad * log_det_ord_compra.precio) ,0) '.$simboloSubtotal.' '.$subtotal)
-        ->get();
+            // ->when(($vinculadoPor !='null'), function($query) use ($vinculadoPor)  {
+            //     if($vinculadoPor== 'REQUERIMIENTO'){
+            //         $whereVinculadoPor='log_det_ord_compra.id_detalle_requerimiento > 0';
+            //     }elseif($vinculadoPor == 'CUADRO_COMPARATIVO'){
+            //         $whereVinculadoPor='log_det_ord_compra.detalle_cuadro_comparativo_id > 0';
+            //     }
+            //     return $query->WhereIn('log_ord_compra.id_orden_compra', function($query) use ($whereVinculadoPor)
+            //     {
+            //         $query->select('log_det_ord_compra.id_orden_compra')
+            //         ->from('logistica.log_det_ord_compra')
+            //         ->whereRaw($whereVinculadoPor);
+            //     });
+            // })
+            // ->when(($enAlmacen =='true'), function($query)  {
+            //     return $query->WhereIn('log_ord_compra.id_orden_compra', function($query)
+            //     {
+            //         $query->select('log_det_ord_compra.id_orden_compra')
+            //             ->from('logistica.log_det_ord_compra')
+            //             ->leftjoin('almacen.guia_com_det', 'guia_com_det.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden')
+            //             ->whereRaw('guia_com_det.id_guia_com_det > 0');
+            //     });
+            // })
+            ->orderBy('log_ord_compra.fecha', 'desc')
+            // ->whereRaw('coalesce((log_det_ord_compra.cantidad * log_det_ord_compra.precio) ,0) '.$simboloSubtotal.' '.$subtotal)
+            ->get();
 
         // $orden_list = collect($orden_obj)->map(function($x){ return (array) $x; })->toArray(); 
         // Debugbar::info($orden_obj);
 
-        $output['data']=$orden_obj;
+        $output['data'] = $orden_obj;
         return $output;
     }
 
-    function documentosVinculadosOrden($id_orden){
-        $status=0;
-        $id_cc='';
-        $tipo_cuadro='';
-        $id_oportunidad='';
-        $documentos=[];
+    function documentosVinculadosOrden($id_orden)
+    {
+        $status = 0;
+        $id_cc = '';
+        $tipo_cuadro = '';
+        $id_oportunidad = '';
+        $documentos = [];
 
         $log_ord_compra = DB::table('logistica.log_ord_compra')
-        ->select(
-            'log_ord_compra.id_orden_compra',
-            'log_ord_compra.codigo_softlink',
-            'alm_req.id_cc',
-            'alm_req.tipo_cuadro',
-            'log_ord_compra.estado as estado_orden',
-            'alm_req.codigo as codigo_requerimiento',
-            'log_ord_compra.codigo as codigo_orden',
-            'alm_det_req.id_requerimiento'
-        )
-        ->leftJoin('logistica.log_det_ord_compra', 'log_det_ord_compra.id_orden_compra', '=', 'log_ord_compra.id_orden_compra')
-        ->leftJoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
-        ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
-        ->where([
-            ['log_ord_compra.id_orden_compra', '=', $id_orden]
-        ])
-        ->get();
-        
-        if(count($log_ord_compra)>0){
-            foreach($log_ord_compra as $data){
-                $id_cc=$data->id_cc;
-                $tipo_cuadro=$data->tipo_cuadro;
-            }
-
-            $cc = DB::table('mgcp_cuadro_costos.cc')
-            ->select('cc.id_oportunidad')
+            ->select(
+                'log_ord_compra.id_orden_compra',
+                'log_ord_compra.codigo_softlink',
+                'alm_req.id_cc',
+                'alm_req.tipo_cuadro',
+                'log_ord_compra.estado as estado_orden',
+                'alm_req.codigo as codigo_requerimiento',
+                'log_ord_compra.codigo as codigo_orden',
+                'alm_det_req.id_requerimiento'
+            )
+            ->leftJoin('logistica.log_det_ord_compra', 'log_det_ord_compra.id_orden_compra', '=', 'log_ord_compra.id_orden_compra')
+            ->leftJoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
+            ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
             ->where([
-                ['cc.id', '=', $id_cc]
+                ['log_ord_compra.id_orden_compra', '=', $id_orden]
             ])
             ->get();
 
-            if(count($cc)>0){
+        if (count($log_ord_compra) > 0) {
+            foreach ($log_ord_compra as $data) {
+                $id_cc = $data->id_cc;
+                $tipo_cuadro = $data->tipo_cuadro;
+            }
+
+            $cc = DB::table('mgcp_cuadro_costos.cc')
+                ->select('cc.id_oportunidad')
+                ->where([
+                    ['cc.id', '=', $id_cc]
+                ])
+                ->get();
+
+            if (count($cc) > 0) {
 
                 $id_oportunidad = $cc->first()->id_oportunidad;
                 $oc_propias = DB::table('mgcp_acuerdo_marco.oc_propias')
-                ->select('oc_propias.id','oc_propias.url_oc_fisica')
-                ->where([
-                    ['oc_propias.id_oportunidad', '=', $id_oportunidad]
-                ])
-                ->get();
-                
-                if(count($oc_propias)>0){
-                    $orden_electronica= "https://apps1.perucompras.gob.pe//OrdenCompra/obtenerPdfOrdenPublico?ID_OrdenCompra=".($oc_propias->first()->id)."&ImprimirCompleto=1";
-                    $orden_fisica= $oc_propias->first()->url_oc_fisica;
-                    $documentos[]=[
-                        'orden_fisica'=>$orden_fisica,
-                        'orden_electronica'=>$orden_electronica,
+                    ->select('oc_propias.id', 'oc_propias.url_oc_fisica')
+                    ->where([
+                        ['oc_propias.id_oportunidad', '=', $id_oportunidad]
+                    ])
+                    ->get();
+
+                if (count($oc_propias) > 0) {
+                    $orden_electronica = "https://apps1.perucompras.gob.pe//OrdenCompra/obtenerPdfOrdenPublico?ID_OrdenCompra=" . ($oc_propias->first()->id) . "&ImprimirCompleto=1";
+                    $orden_fisica = $oc_propias->first()->url_oc_fisica;
+                    $documentos[] = [
+                        'orden_fisica' => $orden_fisica,
+                        'orden_electronica' => $orden_electronica,
                     ];
-                    $status=200;
-
-                }else{
-                    $status=204;
+                    $status = 200;
+                } else {
+                    $status = 204;
                 }
-
-
-            }else{
-                $status=204;
+            } else {
+                $status = 204;
             }
-
-
-        }else{
-            $status=204;
+        } else {
+            $status = 204;
         }
 
-        $output=['status'=>$status, 'data'=>$documentos];
+        $output = ['status' => $status, 'data' => $documentos];
 
         return response()->json($output);
     }
 
-    public function cantidadCompradaDetalleOrden($id_detalle_requerimiento ){
-        $cantiadComprada= 0;
+    public function cantidadCompradaDetalleOrden($id_detalle_requerimiento)
+    {
+        $cantiadComprada = 0;
         $det_ord_compra = DB::table('logistica.log_det_ord_compra')
-        ->select('log_det_ord_compra.*')
-        ->where([
-            ['log_det_ord_compra.id_detalle_requerimiento', '=',$id_detalle_requerimiento],
-            ['log_det_ord_compra.estado','!=',7]
-            ]
-        )
-        ->get();
+            ->select('log_det_ord_compra.*')
+            ->where(
+                [
+                    ['log_det_ord_compra.id_detalle_requerimiento', '=', $id_detalle_requerimiento],
+                    ['log_det_ord_compra.estado', '!=', 7]
+                ]
+            )
+            ->get();
 
-        if(isset($det_ord_compra) && sizeof($det_ord_compra)> 0){
-            foreach($det_ord_compra as $data){
+        if (isset($det_ord_compra) && sizeof($det_ord_compra) > 0) {
+            foreach ($det_ord_compra as $data) {
                 $cantiadComprada += $data->cantidad;
-
             }
         }
         return $cantiadComprada;
-
     }
 
 
-    public function ObtenerRequerimientoDetallado(Request $request ){
-    // public function ObtenerRequerimientoDetallado($requerimientoList ){
+    public function ObtenerRequerimientoDetallado(Request $request)
+    {
+        // public function ObtenerRequerimientoDetallado($requerimientoList ){
         $requerimientoList = $request->requerimientoList;
 
-        $data= Requerimiento::with([
-        'empresa',
-        'sede',
-        'moneda',
-        'detalle' => function ($q) {
-            $q->whereNotIn('alm_det_req.estado', [7,5,28]);
-        },'detalle.estado',
-        'detalle.producto',
-        'detalle.unidadMedida',
-        'detalle.reserva' => function ($q) {
-            $q->where('alm_reserva.estado', '=', 1);
-        }])->whereIn('id_requerimiento',$requerimientoList)->get();
+        $data = Requerimiento::with([
+            'empresa',
+            'sede',
+            'moneda',
+            'detalle' => function ($q) {
+                $q->whereNotIn('alm_det_req.estado', [7, 5, 28]);
+            }, 'detalle.estado',
+            'detalle.producto',
+            'detalle.unidadMedida',
+            'detalle.reserva' => function ($q) {
+                $q->where('alm_reserva.estado', '=', 1);
+            }
+        ])->whereIn('id_requerimiento', $requerimientoList)->get();
 
         return $data;
     }
@@ -533,7 +540,7 @@ class OrdenController extends Controller
             ->leftJoin('configuracion.ubi_prov as prov_empresa_sede', 'dis_empresa_sede.id_prov', '=', 'prov_empresa_sede.id_prov')
             ->leftJoin('configuracion.ubi_dpto as dpto_empresa_sede', 'prov_empresa_sede.id_dpto', '=', 'dpto_empresa_sede.id_dpto')
             ->leftJoin('administracion.adm_estado_doc', 'alm_req.estado', '=', 'adm_estado_doc.id_estado_doc')
-            
+
             ->leftJoin('configuracion.sis_usua', 'alm_req.id_usuario', '=', 'sis_usua.id_usuario')
             ->leftJoin('rrhh.rrhh_trab', 'sis_usua.id_trabajador', '=', 'rrhh_trab.id_trabajador')
             ->leftJoin('rrhh.rrhh_postu', 'rrhh_postu.id_postulante', '=', 'rrhh_trab.id_postulante')
@@ -549,7 +556,7 @@ class OrdenController extends Controller
             ->leftJoin('configuracion.ubi_dis', 'alm_req.id_ubigeo_entrega', '=', 'ubi_dis.id_dis')
             ->leftJoin('configuracion.ubi_prov', 'ubi_dis.id_prov', '=', 'ubi_prov.id_prov')
             ->leftJoin('configuracion.ubi_dpto', 'ubi_prov.id_dpto', '=', 'ubi_dpto.id_dpto')
-            
+
             ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
             ->leftJoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
             ->leftJoin('mgcp_cuadro_costos.responsables', 'responsables.id', '=', 'oportunidades.id_responsable')
@@ -675,7 +682,7 @@ class OrdenController extends Controller
                     'nombre_ejecutivo_responsable' => $data->nombre_ejecutivo_responsable,
                     'id_cc' => $data->id_cc
 
-                    
+
                 ];
             };
 
@@ -704,9 +711,9 @@ class OrdenController extends Controller
                     'alm_det_req.estado',
                     // 'alm_det_req.stock_comprometido',
                     'alm_det_req.observacion',
-                    
-                    
-                    
+
+
+
                     'alm_det_req.id_producto',
                     'alm_prod.codigo AS alm_prod_codigo',
                     'alm_prod.part_number',
@@ -719,7 +726,7 @@ class OrdenController extends Controller
                     'alm_det_req_adjuntos.id_detalle_requerimiento AS adjunto_id_detalle_requerimiento'
                 )
                 ->whereIn('alm_req.id_requerimiento', [$requerimientoList])
-                ->whereIn('alm_det_req.tiene_transformacion',[false])
+                ->whereIn('alm_det_req.tiene_transformacion', [false])
                 ->whereNotIn('alm_det_req.estado', [7])
                 ->orderBy('alm_prod.id_producto', 'asc')
                 ->get();
@@ -747,14 +754,14 @@ class OrdenController extends Controller
                 $detalle_requerimiento = [];
                 foreach ($alm_det_req as $data) {
                     if ($data->id_detalle_requerimiento !== $lastId) {
-                        $subtotal =+ $data->cantidad *  $data->precio_unitario;
+                        $subtotal = +$data->cantidad *  $data->precio_unitario;
                         // $total = $subtotal;
                         $detalle_requerimiento[] = [
                             'id'                        => $data->id_detalle_requerimiento,
                             'id_detalle_requerimiento'  => $data->id_detalle_requerimiento,
                             'id_requerimiento'          => $data->id_requerimiento,
                             'codigo_requerimiento'      => $data->codigo_requerimiento,
-                            'cantidad'                  => $data->cantidad - (isset($data->stock_comprometido)?$data->stock_comprometido:0) - ($this->cantidadCompradaDetalleOrden($data->id_detalle_requerimiento)),
+                            'cantidad'                  => $data->cantidad - (isset($data->stock_comprometido) ? $data->stock_comprometido : 0) - ($this->cantidadCompradaDetalleOrden($data->id_detalle_requerimiento)),
                             'id_moneda'                 => $data->id_moneda,
                             'id_unidad_medida'          => $data->id_unidad_medida,
                             'unidad_medida'             => $data->unidad_medida,
@@ -807,103 +814,110 @@ class OrdenController extends Controller
 
         return $data;
     }
-    
-    function update_estado_orden(Request $request ){
+
+    function update_estado_orden(Request $request)
+    {
         $id_orden_compra = $request->id_orden_compra;
         $id_estado_orden_selected = $request->id_estado_orden_selected;
-        
-       $update_log_ord_compra = DB::table('logistica.log_ord_compra')
-        ->where([
-                ['id_orden_compra',$id_orden_compra]])
-        ->update(
-            [
-                'estado' => $id_estado_orden_selected
-            ]);
 
-         DB::table('logistica.log_det_ord_compra')
-        ->where([
-                ['id_orden_compra',$id_orden_compra],
-                ['estado','!=',7]
-                ])
-        ->update(
-            [
-                'estado' => $id_estado_orden_selected
-            ]);
-    
+        $update_log_ord_compra = DB::table('logistica.log_ord_compra')
+            ->where([
+                ['id_orden_compra', $id_orden_compra]
+            ])
+            ->update(
+                [
+                    'estado' => $id_estado_orden_selected
+                ]
+            );
+
+        DB::table('logistica.log_det_ord_compra')
+            ->where([
+                ['id_orden_compra', $id_orden_compra],
+                ['estado', '!=', 7]
+            ])
+            ->update(
+                [
+                    'estado' => $id_estado_orden_selected
+                ]
+            );
+
         return $update_log_ord_compra;
-
     }
 
-    function update_estado_item_orden(Request $request ){
+    function update_estado_item_orden(Request $request)
+    {
         $id_detalle_orden_compra = $request->id_detalle_orden_compra;
         $id_estado_detalle_orden_selected = $request->id_estado_detalle_orden_selected;
-        
+
         $update_log_det_ord_compra = DB::table('logistica.log_det_ord_compra')
-        ->where([
-                ['id_detalle_orden',$id_detalle_orden_compra]])
-        ->update(
-            [
-                'estado' => $id_estado_detalle_orden_selected
-            ]);
-        $detalleOrden= OrdenCompraDetalle::where('id_detalle_orden',$id_detalle_orden_compra)->first();
+            ->where([
+                ['id_detalle_orden', $id_detalle_orden_compra]
+            ])
+            ->update(
+                [
+                    'estado' => $id_estado_detalle_orden_selected
+                ]
+            );
+        $detalleOrden = OrdenCompraDetalle::where('id_detalle_orden', $id_detalle_orden_compra)->first();
 
         $this->evaluarActualizarEstadoOrdenYDetalle($detalleOrden->id_orden_compra, $id_estado_detalle_orden_selected);
 
         return $update_log_det_ord_compra;
-
     }
 
-    function evaluarActualizarEstadoOrdenYDetalle($idOrden,$estadoReferencial){
-        $orden= Orden::find($idOrden);
-        $DetalleOrden= OrdenCompraDetalle::where([['id_orden_compra',$idOrden],['estado','!=',7]])->get();
+    function evaluarActualizarEstadoOrdenYDetalle($idOrden, $estadoReferencial)
+    {
+        $orden = Orden::find($idOrden);
+        $DetalleOrden = OrdenCompraDetalle::where([['id_orden_compra', $idOrden], ['estado', '!=', 7]])->get();
         $cantidadDetalleOrden = count($DetalleOrden);
-        $cantidadEstadoCoincidente=0;
+        $cantidadEstadoCoincidente = 0;
         foreach ($DetalleOrden as $detalle) {
-            if($detalle->estado ==$estadoReferencial ){
+            if ($detalle->estado == $estadoReferencial) {
                 $cantidadEstadoCoincidente++;
             }
         }
-        if($cantidadEstadoCoincidente ==$cantidadDetalleOrden ){
+        if ($cantidadEstadoCoincidente == $cantidadDetalleOrden) {
             // actualizar cabecera de orden 
-            $orden->estado =$estadoReferencial;
+            $orden->estado = $estadoReferencial;
             $orden->save();
         }
     }
 
-    function update_estado_detalle_requerimiento($id_detalle_requerimiento,$estado ){
-        
-        $status=500;
-        $alm_det_req = DB::table('almacen.alm_det_req')
-        ->where([
-                ['id_detalle_requerimiento',$id_detalle_requerimiento]])
-        ->update(
-            [
-                'estado' => $estado
-            ]);
-        if(isset($alm_det_req) && $alm_det_req>0){
-            $status= 200;
-        }else{
-            $status= 204;
+    function update_estado_detalle_requerimiento($id_detalle_requerimiento, $estado)
+    {
 
+        $status = 500;
+        $alm_det_req = DB::table('almacen.alm_det_req')
+            ->where([
+                ['id_detalle_requerimiento', $id_detalle_requerimiento]
+            ])
+            ->update(
+                [
+                    'estado' => $estado
+                ]
+            );
+        if (isset($alm_det_req) && $alm_det_req > 0) {
+            $status = 200;
+        } else {
+            $status = 204;
         }
-        $output = [ 'status'=>$status];
+        $output = ['status' => $status];
 
         return $output;
-
     }
 
     function view_listar_ordenes()
     {
-        
+
         $empresas = Empresa::mostrar();
         $grupos = Grupo::mostrar();
         $estados = EstadoCompra::mostrar();
 
 
-        return view('logistica/gestion_logistica/compras/ordenes/listado/listar_ordenes', compact('empresas','grupos','estados'));
+        return view('logistica/gestion_logistica/compras/ordenes/listado/listar_ordenes', compact('empresas', 'grupos', 'estados'));
     }
 
-    function consult_doc_aprob($id_doc,$tp_doc)
+    function consult_doc_aprob($id_doc, $tp_doc)
     {
         $sql = DB::table('administracion.adm_documentos_aprob')->where([['id_tp_documento', '=', $tp_doc], ['id_doc', '=', $id_doc]])->get();
 
@@ -915,26 +929,27 @@ class OrdenController extends Controller
         return $val;
     }
 
-    public function obtenerFacturas($idOrden){
-        $facturas=[];
+    public function obtenerFacturas($idOrden)
+    {
+        $facturas = [];
         $sql_facturas = DB::table('logistica.log_det_ord_compra')
-        ->select(DB::raw("concat(doc_com.serie, '-', doc_com.numero) AS facturas"))
-        ->join('almacen.guia_com_det', 'guia_com_det.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden')
-        ->leftjoin('almacen.doc_com_det', 'doc_com_det.id_guia_com_det', '=', 'guia_com_det.id_guia_com_det')
-        ->leftjoin('almacen.doc_com', 'doc_com.id_doc_com', '=', 'doc_com_det.id_doc')
-        ->where('log_det_ord_compra.id_orden_compra',$idOrden)
-        ->get();
-        if(count($sql_facturas)>0){
+            ->select(DB::raw("concat(doc_com.serie, '-', doc_com.numero) AS facturas"))
+            ->join('almacen.guia_com_det', 'guia_com_det.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden')
+            ->leftjoin('almacen.doc_com_det', 'doc_com_det.id_guia_com_det', '=', 'guia_com_det.id_guia_com_det')
+            ->leftjoin('almacen.doc_com', 'doc_com.id_doc_com', '=', 'doc_com_det.id_doc')
+            ->where('log_det_ord_compra.id_orden_compra', $idOrden)
+            ->get();
+        if (count($sql_facturas) > 0) {
             foreach ($sql_facturas as $key => $value) {
-                $facturas[]=$value->facturas;
+                $facturas[] = $value->facturas;
             }
-
         }
         return array_values(array_unique($facturas));
     }
 
-    public function listarOrdenes(Request $request){
-       
+    public function listarOrdenes(Request $request)
+    {
+
         $tipoOrden = $request->tipoOrden;
         $idEmpresa = $request->idEmpresa;
         $idSede = $request->idSede;
@@ -943,13 +958,13 @@ class OrdenController extends Controller
         $fechaRegistroDesde = $request->fechaRegistroDesde;
         $fechaRegistroHasta = $request->fechaRegistroHasta;
         $idEstado = $request->idEstado;
-     
 
-        $ord_compra =Orden::select(
+
+        $ord_compra = Orden::select(
             'log_ord_compra.*',
             'sis_sede.descripcion as descripcion_sede_empresa',
 
-             // 'log_cdn_pago.descripcion as condicion',
+            // 'log_cdn_pago.descripcion as condicion',
             DB::raw("(CASE 
             WHEN log_ord_compra.id_condicion = 1 THEN log_cdn_pago.descripcion 
             WHEN log_ord_compra.id_condicion = 2 THEN log_cdn_pago.descripcion || ' ' || log_ord_compra.plazo_dias  || ' Días'
@@ -982,132 +997,132 @@ class OrdenController extends Controller
             WHERE log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra AND
             logistica.log_det_ord_compra.estado != 7 LIMIT 1) AS monto_total_presup")
         )
-        ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'log_ord_compra.id_sede')
-        ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
-        ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
-        ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'log_ord_compra.id_moneda')
-        ->leftjoin('logistica.log_cdn_pago','log_cdn_pago.id_condicion_pago','=','log_ord_compra.id_condicion')
-        ->leftjoin('contabilidad.adm_cta_contri as cta_prin','cta_prin.id_cuenta_contribuyente','=','log_ord_compra.id_cta_principal')
-        ->leftjoin('contabilidad.adm_cta_contri as cta_alter','cta_alter.id_cuenta_contribuyente','=','log_ord_compra.id_cta_alternativa')
-        ->leftjoin('contabilidad.adm_cta_contri as cta_detra','cta_detra.id_cuenta_contribuyente','=','log_ord_compra.id_cta_detraccion')
-        ->leftjoin('logistica.estados_compra','estados_compra.id_estado','=','log_ord_compra.estado')
-        ->leftjoin('logistica.log_ord_compra_pago','log_ord_compra_pago.id_orden_compra','=','log_ord_compra.id_orden_compra')
+            ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'log_ord_compra.id_sede')
+            ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
+            ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
+            ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'log_ord_compra.id_moneda')
+            ->leftjoin('logistica.log_cdn_pago', 'log_cdn_pago.id_condicion_pago', '=', 'log_ord_compra.id_condicion')
+            ->leftjoin('contabilidad.adm_cta_contri as cta_prin', 'cta_prin.id_cuenta_contribuyente', '=', 'log_ord_compra.id_cta_principal')
+            ->leftjoin('contabilidad.adm_cta_contri as cta_alter', 'cta_alter.id_cuenta_contribuyente', '=', 'log_ord_compra.id_cta_alternativa')
+            ->leftjoin('contabilidad.adm_cta_contri as cta_detra', 'cta_detra.id_cuenta_contribuyente', '=', 'log_ord_compra.id_cta_detraccion')
+            ->leftjoin('logistica.estados_compra', 'estados_compra.id_estado', '=', 'log_ord_compra.estado')
+            ->leftjoin('logistica.log_ord_compra_pago', 'log_ord_compra_pago.id_orden_compra', '=', 'log_ord_compra.id_orden_compra')
 
-        ->when(($tipoOrden > 0), function ($query) use($tipoOrden) {
-            return $query->whereRaw('log_ord_compra.id_tp_documento = ' . $tipoOrden);
-        })
-        ->when(($idEmpresa > 0), function ($query) use($idEmpresa) {
-            return $query->whereRaw('sis_sede.id_empresa = ' . $idEmpresa);
-        })
-        ->when(($idSede > 0), function ($query) use($idSede) {
-            return $query->whereRaw('sis_sede.id_sede = ' . $idSede);
-        })
+            ->when(($tipoOrden > 0), function ($query) use ($tipoOrden) {
+                return $query->whereRaw('log_ord_compra.id_tp_documento = ' . $tipoOrden);
+            })
+            ->when(($idEmpresa > 0), function ($query) use ($idEmpresa) {
+                return $query->whereRaw('sis_sede.id_empresa = ' . $idEmpresa);
+            })
+            ->when(($idSede > 0), function ($query) use ($idSede) {
+                return $query->whereRaw('sis_sede.id_sede = ' . $idSede);
+            })
 
-        ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta == 'SIN_FILTRO')), function ($query) use($fechaRegistroDesde) {
-            return $query->where('log_ord_compra.fecha' ,'>=',$fechaRegistroDesde); 
-        })
-        ->when((($fechaRegistroDesde == 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use($fechaRegistroHasta) {
-            return $query->where('log_ord_compra.fecha' ,'<=',$fechaRegistroHasta); 
-        })
-        ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use($fechaRegistroDesde,$fechaRegistroHasta) {
-            return $query->whereBetween('log_ord_compra.fecha' ,[$fechaRegistroDesde,$fechaRegistroHasta]); 
-        })
+            ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta == 'SIN_FILTRO')), function ($query) use ($fechaRegistroDesde) {
+                return $query->where('log_ord_compra.fecha', '>=', $fechaRegistroDesde);
+            })
+            ->when((($fechaRegistroDesde == 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use ($fechaRegistroHasta) {
+                return $query->where('log_ord_compra.fecha', '<=', $fechaRegistroHasta);
+            })
+            ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use ($fechaRegistroDesde, $fechaRegistroHasta) {
+                return $query->whereBetween('log_ord_compra.fecha', [$fechaRegistroDesde, $fechaRegistroHasta]);
+            })
 
-        ->when(($idEstado > 0), function ($query) use($idEstado) {
-            return $query->whereRaw('log_ord_compra.estado = ' . $idEstado);
-        })
+            ->when(($idEstado > 0), function ($query) use ($idEstado) {
+                return $query->whereRaw('log_ord_compra.estado = ' . $idEstado);
+            })
 
 
-        ->where([
-            // ['log_ord_compra.codigo', '=', 'OC-21090191'],
-            ['log_ord_compra.estado', '!=', 7],
-            // ['log_ord_compra.id_grupo_cotizacion', '=', null]
-            // $tipoOrden >0 ? ['log_ord_compra.id_tp_documento',$tipoOrden]:[null],
-            // $empresa >0 ? ['sis_sede.id_empresa',$empresa]:[null],
-            // $sede >0 ? ['sis_sede.id_sede',$sede]:[null],
-            // ($tipoProveedor =='NACIONAL') ? ['adm_contri.id_pais','=','170']:($tipoProveedor =='EXTRANJERO' ? ['adm_contri.id_pais','=','170']:[null]),
-            // $estado >0 ? ['log_ord_compra.estado',$estado]:[null]
-            // $montoOrden >0 ? ['suma_subtotal','>',$montoOrden]:[null]
+            ->where([
+                // ['log_ord_compra.codigo', '=', 'OC-21090191'],
+                ['log_ord_compra.estado', '!=', 7],
+                // ['log_ord_compra.id_grupo_cotizacion', '=', null]
+                // $tipoOrden >0 ? ['log_ord_compra.id_tp_documento',$tipoOrden]:[null],
+                // $empresa >0 ? ['sis_sede.id_empresa',$empresa]:[null],
+                // $sede >0 ? ['sis_sede.id_sede',$sede]:[null],
+                // ($tipoProveedor =='NACIONAL') ? ['adm_contri.id_pais','=','170']:($tipoProveedor =='EXTRANJERO' ? ['adm_contri.id_pais','=','170']:[null]),
+                // $estado >0 ? ['log_ord_compra.estado',$estado]:[null]
+                // $montoOrden >0 ? ['suma_subtotal','>',$montoOrden]:[null]
 
-        ])
+            ])
 
-        // ->when(($vinculadoPor !='null' && $vinculadoPor !=null), function($query) use ($vinculadoPor)  {
-        //     if($vinculadoPor== 'REQUERIMIENTO'){
-        //         $whereVinculadoPor='log_det_ord_compra.id_detalle_requerimiento > 0';
-        //     }elseif($vinculadoPor == 'CUADRO_COMPARATIVO'){
-        //         $whereVinculadoPor='log_det_ord_compra.detalle_cuadro_comparativo_id > 0';
-        //     }
-        //     return $query->WhereIn('log_ord_compra.id_orden_compra', function($query) use ($whereVinculadoPor)
-        //     {
-        //         $query->select('log_det_ord_compra.id_orden_compra')
-        //         ->from('logistica.log_det_ord_compra')
-        //         ->whereRaw($whereVinculadoPor);
-        //     });
-        // })
+            // ->when(($vinculadoPor !='null' && $vinculadoPor !=null), function($query) use ($vinculadoPor)  {
+            //     if($vinculadoPor== 'REQUERIMIENTO'){
+            //         $whereVinculadoPor='log_det_ord_compra.id_detalle_requerimiento > 0';
+            //     }elseif($vinculadoPor == 'CUADRO_COMPARATIVO'){
+            //         $whereVinculadoPor='log_det_ord_compra.detalle_cuadro_comparativo_id > 0';
+            //     }
+            //     return $query->WhereIn('log_ord_compra.id_orden_compra', function($query) use ($whereVinculadoPor)
+            //     {
+            //         $query->select('log_det_ord_compra.id_orden_compra')
+            //         ->from('logistica.log_det_ord_compra')
+            //         ->whereRaw($whereVinculadoPor);
+            //     });
+            // })
 
-        // ->when(($enAlmacen =='true'), function($query)  {
-        //     return $query->WhereIn('log_ord_compra.id_orden_compra', function($query)
-        //     {
-        //         $query->select('log_det_ord_compra.id_orden_compra')
-        //             ->from('logistica.log_det_ord_compra')
-        //             ->leftjoin('almacen.guia_com_det', 'guia_com_det.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden')
-        //             ->whereRaw('guia_com_det.id_guia_com_det > 0');
-        //     });
-        // })
+            // ->when(($enAlmacen =='true'), function($query)  {
+            //     return $query->WhereIn('log_ord_compra.id_orden_compra', function($query)
+            //     {
+            //         $query->select('log_det_ord_compra.id_orden_compra')
+            //             ->from('logistica.log_det_ord_compra')
+            //             ->leftjoin('almacen.guia_com_det', 'guia_com_det.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden')
+            //             ->whereRaw('guia_com_det.id_guia_com_det > 0');
+            //     });
+            // })
 
-            ->orderBy('log_ord_compra.fecha','desc')
+            ->orderBy('log_ord_compra.fecha', 'desc')
 
             // ->whereRaw('(SELECT  coalesce(sum((log_det_ord_compra.cantidad * log_det_ord_compra.precio))*1.18 ,0)
             // FROM logistica.log_det_ord_compra 
             // WHERE   log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra AND
             //         log_det_ord_compra.estado != 7) '.$simboloMontoOrden.' '.$montoOrden)
-        ->get();
+            ->get();
 
 
-        $data_orden=[];
-        if(count($ord_compra)>0){
-            foreach($ord_compra as $element){
+        $data_orden = [];
+        if (count($ord_compra) > 0) {
+            foreach ($ord_compra as $element) {
 
-                $fechaHoy =Carbon::now();
+                $fechaHoy = Carbon::now();
                 $fechaOrden = Carbon::create($element->fecha);
-                $fechaLlegada=$fechaOrden->addDays($element->plazo_entrega);
+                $fechaLlegada = $fechaOrden->addDays($element->plazo_entrega);
 
-                $data_orden[]=[
-                    'id_orden_compra'=> $element->id_orden_compra,
-                    'id_tp_documento'=> $element->id_tp_documento,
-                    'fecha' => $element->fecha, 
-                    'codigo'=> $element->codigo,
-                    'descripcion_sede_empresa'=> $element->descripcion_sede_empresa,
-                    'nro_documento'=> $element->nro_documento, 
-                    'razon_social'=> $element->razon_social,
-                    'id_moneda'=> $element->id_moneda, 
-                    'tipo_cambio_compra'=> $element->tipo_cambio_compra, 
-                    'moneda_simbolo'=> $element->moneda_simbolo, 
-                    'incluye_igv'=> $element->incluye_igv,
-                    'leadtime'=> $fechaLlegada->toDateString(),
-                    'dias_restantes'=> $fechaLlegada->diffInDays($fechaHoy->toDateString()),
-                    'monto_igv'=> $element->monto_igv, 
-                    'monto_total'=>$element->monto_total, 
-                    'condicion'=> $element->condicion, 
-                    'plazo_entrega'=> $element->plazo_entrega, 
-                    'nro_cuenta_prin'=> $element->nro_cuenta_prin, 
-                    'nro_cuenta_alter'=> $element->nro_cuenta_alter, 
-                    'nro_cuenta_detra'=> $element->nro_cuenta_detra,
-                    'codigo_cuadro_comparativo'=> '',
-                    'estado'=>$element->estado,
-                    'estado_doc'=>$element->estado_doc,
-                    'detalle_pago'=> $element->detalle_pago, 
-                    'archivo_adjunto'=> $element->archivo_adjunto,
-                    'monto_total_presup'=> $element->monto_total_presup,
-                    'monto_total_orden'=> $element->monto_total_orden,
-                    'facturas'=> $this->obtenerFacturas($element->id_orden_compra),
-                    'requerimientos'=> $element->requerimientos
-                    
+                $data_orden[] = [
+                    'id_orden_compra' => $element->id_orden_compra,
+                    'id_tp_documento' => $element->id_tp_documento,
+                    'fecha' => $element->fecha,
+                    'codigo' => $element->codigo,
+                    'descripcion_sede_empresa' => $element->descripcion_sede_empresa,
+                    'nro_documento' => $element->nro_documento,
+                    'razon_social' => $element->razon_social,
+                    'id_moneda' => $element->id_moneda,
+                    'tipo_cambio_compra' => $element->tipo_cambio_compra,
+                    'moneda_simbolo' => $element->moneda_simbolo,
+                    'incluye_igv' => $element->incluye_igv,
+                    'leadtime' => $fechaLlegada->toDateString(),
+                    'dias_restantes' => $fechaLlegada->diffInDays($fechaHoy->toDateString()),
+                    'monto_igv' => $element->monto_igv,
+                    'monto_total' => $element->monto_total,
+                    'condicion' => $element->condicion,
+                    'plazo_entrega' => $element->plazo_entrega,
+                    'nro_cuenta_prin' => $element->nro_cuenta_prin,
+                    'nro_cuenta_alter' => $element->nro_cuenta_alter,
+                    'nro_cuenta_detra' => $element->nro_cuenta_detra,
+                    'codigo_cuadro_comparativo' => '',
+                    'estado' => $element->estado,
+                    'estado_doc' => $element->estado_doc,
+                    'detalle_pago' => $element->detalle_pago,
+                    'archivo_adjunto' => $element->archivo_adjunto,
+                    'monto_total_presup' => $element->monto_total_presup,
+                    'monto_total_orden' => $element->monto_total_orden,
+                    'facturas' => $this->obtenerFacturas($element->id_orden_compra),
+                    'requerimientos' => $element->requerimientos
+
                 ];
             }
         }
 
-            $detalle_orden = Orden::select(
+        $detalle_orden = Orden::select(
             'log_ord_compra.id_orden_compra',
             'log_det_ord_compra.id_detalle_orden',
             'alm_req.id_requerimiento',
@@ -1118,54 +1133,54 @@ class OrdenController extends Controller
             'guia_com_det.fecha_registro as fecha_ingreso_almacen',
             'oc_propias_view.fecha_estado',
             'oc_propias_view.estado_aprobacion_cuadro'
-            )
-        ->leftJoin('logistica.log_det_ord_compra', 'log_det_ord_compra.id_orden_compra', '=', 'log_ord_compra.id_orden_compra')
-        ->leftJoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
-        ->leftJoin('almacen.guia_com_det', 'guia_com_det.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden')
-        ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
-        ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
-        ->leftJoin('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'cc.id_oportunidad')
-        ->leftJoin('mgcp_cuadro_costos.cc_view', 'cc_view.id_oportunidad', '=', 'cc.id_oportunidad')
-        ->where([
-            ['log_ord_compra.estado', '!=', 7],
-            ['log_det_ord_compra.id_detalle_requerimiento', '>', 0]
-        ])
-        ->orderBy('log_ord_compra.fecha','desc')
-        ->get();
+        )
+            ->leftJoin('logistica.log_det_ord_compra', 'log_det_ord_compra.id_orden_compra', '=', 'log_ord_compra.id_orden_compra')
+            ->leftJoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
+            ->leftJoin('almacen.guia_com_det', 'guia_com_det.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden')
+            ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+            ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
+            ->leftJoin('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'cc.id_oportunidad')
+            ->leftJoin('mgcp_cuadro_costos.cc_view', 'cc_view.id_oportunidad', '=', 'cc.id_oportunidad')
+            ->where([
+                ['log_ord_compra.estado', '!=', 7],
+                ['log_det_ord_compra.id_detalle_requerimiento', '>', 0]
+            ])
+            ->orderBy('log_ord_compra.fecha', 'desc')
+            ->get();
 
-        $data_detalle_orden=[];
-        if(count($ord_compra)>0){
-            foreach($detalle_orden as $element){
-                
-                $data_detalle_orden[]=[
-                    'id_orden_compra'=> $element->id_orden_compra,
-                    'id_detalle_orden'=> $element->id_detalle_orden,
-                    'id_requerimiento'=> $element->id_requerimiento,
-                    'codigo_requerimiento'=> $element->codigo_requerimiento,
-                    'codigo_oportunidad'=> $element->codigo_oportunidad,
-                    'fecha_entrega'=> $element->fecha_entrega,
-                    'fecha_ingreso_almacen'=> $element->fecha_ingreso_almacen,
-                    'estado_aprobacion'=> $element->estado_aprobacion_cuadro,
-                    'fecha_estado'=> $element->fecha_estado,
-                    'fecha_registro_requerimiento'=> $element->fecha_registro_requerimiento
+        $data_detalle_orden = [];
+        if (count($ord_compra) > 0) {
+            foreach ($detalle_orden as $element) {
+
+                $data_detalle_orden[] = [
+                    'id_orden_compra' => $element->id_orden_compra,
+                    'id_detalle_orden' => $element->id_detalle_orden,
+                    'id_requerimiento' => $element->id_requerimiento,
+                    'codigo_requerimiento' => $element->codigo_requerimiento,
+                    'codigo_oportunidad' => $element->codigo_oportunidad,
+                    'fecha_entrega' => $element->fecha_entrega,
+                    'fecha_ingreso_almacen' => $element->fecha_ingreso_almacen,
+                    'estado_aprobacion' => $element->estado_aprobacion_cuadro,
+                    'fecha_estado' => $element->fecha_estado,
+                    'fecha_registro_requerimiento' => $element->fecha_registro_requerimiento
                 ];
             }
         }
 
-      
+
         // Debugbar::info($data_detalle_orden);
 
         foreach ($data_orden as $ordenKey => $ordenValue) {
             foreach ($data_detalle_orden as $detalleOrdnKey => $detalleOrdenValue) {
-                if($ordenValue['id_orden_compra'] == $detalleOrdenValue['id_orden_compra']){
+                if ($ordenValue['id_orden_compra'] == $detalleOrdenValue['id_orden_compra']) {
                     // if(in_array($detalleOrdenValue['codigo_requerimiento'],$data_orden[$ordenKey]['codigo_requerimiento'])==false){
-                        // $data_orden[$ordenKey]['requerimientos'][]=['id_requerimiento'=>$detalleOrdenValue['id_requerimiento'], 'codigo'=> $detalleOrdenValue['codigo_requerimiento']];
-                        $data_orden[$ordenKey]['codigo_oportunidad']=$detalleOrdenValue['codigo_oportunidad'];
-                        $data_orden[$ordenKey]['fecha_vencimiento_ocam']=$detalleOrdenValue['fecha_entrega'];
-                        $data_orden[$ordenKey]['fecha_ingreso_almacen']=$detalleOrdenValue['fecha_ingreso_almacen'];
-                        $data_orden[$ordenKey]['estado_aprobacion_cc']=$detalleOrdenValue['estado_aprobacion'];
-                        $data_orden[$ordenKey]['fecha_estado']=$detalleOrdenValue['fecha_estado'];
-                        $data_orden[$ordenKey]['fecha_registro_requerimiento']=$detalleOrdenValue['fecha_registro_requerimiento'];
+                    // $data_orden[$ordenKey]['requerimientos'][]=['id_requerimiento'=>$detalleOrdenValue['id_requerimiento'], 'codigo'=> $detalleOrdenValue['codigo_requerimiento']];
+                    $data_orden[$ordenKey]['codigo_oportunidad'] = $detalleOrdenValue['codigo_oportunidad'];
+                    $data_orden[$ordenKey]['fecha_vencimiento_ocam'] = $detalleOrdenValue['fecha_entrega'];
+                    $data_orden[$ordenKey]['fecha_ingreso_almacen'] = $detalleOrdenValue['fecha_ingreso_almacen'];
+                    $data_orden[$ordenKey]['estado_aprobacion_cc'] = $detalleOrdenValue['estado_aprobacion'];
+                    $data_orden[$ordenKey]['fecha_estado'] = $detalleOrdenValue['fecha_estado'];
+                    $data_orden[$ordenKey]['fecha_registro_requerimiento'] = $detalleOrdenValue['fecha_registro_requerimiento'];
                     // }
                 }
             }
@@ -1173,20 +1188,27 @@ class OrdenController extends Controller
 
         $output['data'] = $data_orden;
         return $output;
- 
     }
 
-    public function detalleOrden($idOrden){
-        $detalle = OrdenCompraDetalle::with(['reserva'=> function ($q) {
+    public function detalleOrden($idOrden)
+    {
+        $detalle = OrdenCompraDetalle::with(['reserva' => function ($q) {
             $q->where('alm_reserva.estado', '=', 1);
         }])->select(
-            'log_det_ord_compra.*','alm_prod.codigo', 
+            'log_det_ord_compra.*',
+            'alm_prod.codigo',
             'sis_moneda.simbolo as moneda_simbolo',
             'sis_moneda.descripcion as moneda_descripcion',
-            'alm_prod.part_number','alm_cat_prod.descripcion as categoria',
-            'alm_subcat.descripcion as subcategoria','alm_req.id_requerimiento',
-            'alm_prod.descripcion','alm_und_medida.abreviatura','alm_req.codigo as codigo_req',
-            'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color','sis_sede.descripcion as sede_req',
+            'alm_prod.part_number',
+            'alm_cat_prod.descripcion as categoria',
+            'alm_subcat.descripcion as subcategoria',
+            'alm_req.id_requerimiento',
+            'alm_prod.descripcion',
+            'alm_und_medida.abreviatura',
+            'alm_req.codigo as codigo_req',
+            'adm_estado_doc.estado_doc',
+            'adm_estado_doc.bootstrap_color',
+            'sis_sede.descripcion as sede_req',
             'oc_propias_view.nro_orden',
             'oc_propias_view.codigo_oportunidad',
             'oportunidades.oportunidad',
@@ -1197,30 +1219,31 @@ class OrdenController extends Controller
             'oc_propias_view.moneda_oc',
             'oc_propias_view.nombre_corto_responsable'
         )
-        ->leftjoin('logistica.log_ord_compra', 'log_ord_compra.id_orden_compra', '=', 'log_det_ord_compra.id_orden_compra')
-        ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'log_ord_compra.id_moneda')
-        ->leftjoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'log_det_ord_compra.id_producto')
-        ->leftjoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
-        ->leftjoin('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
-        ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'log_det_ord_compra.id_unidad_medida')
-        ->leftjoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
-        ->leftjoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
-        ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'log_det_ord_compra.estado')
-        ->leftjoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_req.id_sede')
-        ->leftjoin('mgcp_cuadro_costos.cc','cc.id','=','alm_req.id_cc')
-        ->leftJoin('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'cc.id_oportunidad')
-        ->leftjoin('mgcp_oportunidades.oportunidades','oportunidades.id','=','oc_propias_view.id_oportunidad')
+            ->leftjoin('logistica.log_ord_compra', 'log_ord_compra.id_orden_compra', '=', 'log_det_ord_compra.id_orden_compra')
+            ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'log_ord_compra.id_moneda')
+            ->leftjoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'log_det_ord_compra.id_producto')
+            ->leftjoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
+            ->leftjoin('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
+            ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'log_det_ord_compra.id_unidad_medida')
+            ->leftjoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
+            ->leftjoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+            ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'log_det_ord_compra.estado')
+            ->leftjoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_req.id_sede')
+            ->leftjoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
+            ->leftJoin('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'cc.id_oportunidad')
+            ->leftjoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'oc_propias_view.id_oportunidad')
 
-  
 
-        ->where([
-            ['log_det_ord_compra.id_orden_compra', '=', $idOrden]
-        ])
-        ->get();
-    return response()->json($detalle);
+
+            ->where([
+                ['log_det_ord_compra.id_orden_compra', '=', $idOrden]
+            ])
+            ->get();
+        return response()->json($detalle);
     }
 
-    public function listaHistorialOrdenes(){
+    public function listaHistorialOrdenes()
+    {
         $ordenes = Orden::select(
             'log_ord_compra.*',
             'sis_sede.descripcion as descripcion_sede_empresa',
@@ -1240,44 +1263,44 @@ class OrdenController extends Controller
             'log_ord_compra_pago.detalle_pago',
             'log_ord_compra_pago.archivo_adjunto'
         )
-        ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'log_ord_compra.id_sede')
-        ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
-        ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
-        ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'log_ord_compra.id_moneda')
-        ->leftjoin('logistica.log_cdn_pago','log_cdn_pago.id_condicion_pago','=','log_ord_compra.id_condicion')
-        ->leftjoin('logistica.estados_compra','estados_compra.id_estado','=','log_ord_compra.estado')
+            ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'log_ord_compra.id_sede')
+            ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
+            ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
+            ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'log_ord_compra.id_moneda')
+            ->leftjoin('logistica.log_cdn_pago', 'log_cdn_pago.id_condicion_pago', '=', 'log_ord_compra.id_condicion')
+            ->leftjoin('logistica.estados_compra', 'estados_compra.id_estado', '=', 'log_ord_compra.estado')
 
-        ->leftjoin('logistica.log_ord_compra_pago','log_ord_compra_pago.id_orden_compra','=','log_ord_compra.id_orden_compra')
-        ->leftJoin('configuracion.ubi_dis as dis_destino', 'log_ord_compra.ubigeo_destino', '=', 'dis_destino.id_dis')
-        ->leftJoin('configuracion.ubi_prov as prov_destino', 'dis_destino.id_prov', '=', 'prov_destino.id_prov')
-        ->leftJoin('configuracion.ubi_dpto as dpto_destino', 'prov_destino.id_dpto', '=', 'dpto_destino.id_dpto')
+            ->leftjoin('logistica.log_ord_compra_pago', 'log_ord_compra_pago.id_orden_compra', '=', 'log_ord_compra.id_orden_compra')
+            ->leftJoin('configuracion.ubi_dis as dis_destino', 'log_ord_compra.ubigeo_destino', '=', 'dis_destino.id_dis')
+            ->leftJoin('configuracion.ubi_prov as prov_destino', 'dis_destino.id_prov', '=', 'prov_destino.id_prov')
+            ->leftJoin('configuracion.ubi_dpto as dpto_destino', 'prov_destino.id_dpto', '=', 'dpto_destino.id_dpto')
 
-        ->where([
-            ['log_ord_compra.estado', '!=', 7]
-        ]);
+            ->where([
+                ['log_ord_compra.estado', '!=', 7]
+            ]);
         return datatables($ordenes)
-        ->filterColumn('log_ord_compra.fecha', function ($query, $keyword) {
-            try {
-                $desde = Carbon::createFromFormat('d-m-Y', trim($keyword))->hour(0)->minute(0)->second(0);
-                $hasta = Carbon::createFromFormat('d-m-Y', trim($keyword));
-                $query->whereBetween('log_ord_compra.fecha', [$desde, $hasta->addDay()->addSeconds(-1)]);
-            } catch (\Throwable $th) {
-            }
-        })
-        ->filterColumn('moneda_descripcion', function ($query, $keyword) {
-            $keywords = trim(strtoupper($keyword));
-            $query->whereRaw("sis_moneda.descripcion LIKE ?", ["%{$keywords}%"]);
-        })
-        ->filterColumn('estado_doc', function ($query, $keyword) {
-            $keywords = trim(strtoupper($keyword));
-            $query->whereRaw("estados_compra.descripcion LIKE ?", ["%{$keywords}%"]);
-        })
-        ->toJson();
-        
+            ->filterColumn('log_ord_compra.fecha', function ($query, $keyword) {
+                try {
+                    $desde = Carbon::createFromFormat('d-m-Y', trim($keyword))->hour(0)->minute(0)->second(0);
+                    $hasta = Carbon::createFromFormat('d-m-Y', trim($keyword));
+                    $query->whereBetween('log_ord_compra.fecha', [$desde, $hasta->addDay()->addSeconds(-1)]);
+                } catch (\Throwable $th) {
+                }
+            })
+            ->filterColumn('moneda_descripcion', function ($query, $keyword) {
+                $keywords = trim(strtoupper($keyword));
+                $query->whereRaw("sis_moneda.descripcion LIKE ?", ["%{$keywords}%"]);
+            })
+            ->filterColumn('estado_doc', function ($query, $keyword) {
+                $keywords = trim(strtoupper($keyword));
+                $query->whereRaw("estados_compra.descripcion LIKE ?", ["%{$keywords}%"]);
+            })
+            ->toJson();
     }
-    public function mostrarOrden($id_orden){
-        
-      
+    public function mostrarOrden($id_orden)
+    {
+
+
         $orden = Orden::select(
             'log_ord_compra.id_orden_compra',
             'log_ord_compra.id_tp_documento',
@@ -1332,178 +1355,177 @@ class OrdenController extends Controller
             'adm_estado_doc.estado_doc',
             'adm_estado_doc.bootstrap_color'
         )
-        ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'log_ord_compra.id_sede')
-        ->leftJoin('administracion.adm_empresa', 'sis_sede.id_empresa', '=', 'adm_empresa.id_empresa')
-        ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
-        ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
-        ->leftJoin('configuracion.ubi_dis as dis_proveedor', 'adm_contri.ubigeo', '=', 'dis_proveedor.id_dis')
-        ->leftJoin('configuracion.ubi_prov as prov_proveedor', 'dis_proveedor.id_prov', '=', 'prov_proveedor.id_prov')
-        ->leftJoin('configuracion.ubi_dpto as dpto_proveedor', 'prov_proveedor.id_dpto', '=', 'dpto_proveedor.id_dpto')
-        ->leftJoin('contabilidad.adm_ctb_contac', 'adm_ctb_contac.id_datos_contacto', '=', 'log_ord_compra.id_contacto')
-        ->leftJoin('contabilidad.adm_cta_contri', 'adm_cta_contri.id_cuenta_contribuyente', '=', 'log_ord_compra.id_cta_principal')
+            ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'log_ord_compra.id_sede')
+            ->leftJoin('administracion.adm_empresa', 'sis_sede.id_empresa', '=', 'adm_empresa.id_empresa')
+            ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
+            ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
+            ->leftJoin('configuracion.ubi_dis as dis_proveedor', 'adm_contri.ubigeo', '=', 'dis_proveedor.id_dis')
+            ->leftJoin('configuracion.ubi_prov as prov_proveedor', 'dis_proveedor.id_prov', '=', 'prov_proveedor.id_prov')
+            ->leftJoin('configuracion.ubi_dpto as dpto_proveedor', 'prov_proveedor.id_dpto', '=', 'dpto_proveedor.id_dpto')
+            ->leftJoin('contabilidad.adm_ctb_contac', 'adm_ctb_contac.id_datos_contacto', '=', 'log_ord_compra.id_contacto')
+            ->leftJoin('contabilidad.adm_cta_contri', 'adm_cta_contri.id_cuenta_contribuyente', '=', 'log_ord_compra.id_cta_principal')
 
-        ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'log_ord_compra.id_moneda')
-        ->leftjoin('logistica.log_cdn_pago','log_cdn_pago.id_condicion_pago','=','log_ord_compra.id_condicion')
-        ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','log_ord_compra.estado')
-        ->leftjoin('logistica.log_ord_compra_pago','log_ord_compra_pago.id_orden_compra','=','log_ord_compra.id_orden_compra')
-        ->leftJoin('configuracion.ubi_dis as dis_destino', 'log_ord_compra.ubigeo_destino', '=', 'dis_destino.id_dis')
-        ->leftJoin('configuracion.ubi_prov as prov_destino', 'dis_destino.id_prov', '=', 'prov_destino.id_prov')
-        ->leftJoin('configuracion.ubi_dpto as dpto_destino', 'prov_destino.id_dpto', '=', 'dpto_destino.id_dpto')
-        ->leftJoin('rrhh.rrhh_trab as trab_aut_1', 'trab_aut_1.id_trabajador', '=', 'log_ord_compra.personal_autorizado_1')
-        ->leftJoin('rrhh.rrhh_postu as post_aut_1', 'post_aut_1.id_postulante', '=', 'trab_aut_1.id_postulante')
-        ->leftJoin('rrhh.rrhh_perso as pers_aut_1', 'pers_aut_1.id_persona', '=', 'post_aut_1.id_persona')
-        ->leftJoin('contabilidad.sis_identi as identi_aut_1', 'identi_aut_1.id_doc_identidad', '=', 'pers_aut_1.id_documento_identidad')
-        ->leftJoin('rrhh.rrhh_trab as trab_aut_2', 'trab_aut_2.id_trabajador', '=', 'log_ord_compra.personal_autorizado_2')
-        ->leftJoin('rrhh.rrhh_postu as post_aut_2', 'post_aut_2.id_postulante', '=', 'trab_aut_2.id_postulante')
-        ->leftJoin('rrhh.rrhh_perso as pers_aut_2', 'pers_aut_2.id_persona', '=', 'post_aut_2.id_persona')
-        ->leftJoin('contabilidad.sis_identi as identi_aut_2', 'identi_aut_2.id_doc_identidad', '=', 'pers_aut_2.id_documento_identidad')
-        ->with(['detalle.detalleRequerimiento.reserva','detalle.guia_compra_detalle'=> function ($q) {
-            $q->where('guia_com_det.estado', '!=', 7);
-        },'detalle.producto','detalle.unidad_medida','detalle.estado_orden'])
-        ->where([
-            ['log_ord_compra.id_orden_compra', '=', $id_orden]
-        ])
-        ->first();
+            ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'log_ord_compra.id_moneda')
+            ->leftjoin('logistica.log_cdn_pago', 'log_cdn_pago.id_condicion_pago', '=', 'log_ord_compra.id_condicion')
+            ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'log_ord_compra.estado')
+            ->leftjoin('logistica.log_ord_compra_pago', 'log_ord_compra_pago.id_orden_compra', '=', 'log_ord_compra.id_orden_compra')
+            ->leftJoin('configuracion.ubi_dis as dis_destino', 'log_ord_compra.ubigeo_destino', '=', 'dis_destino.id_dis')
+            ->leftJoin('configuracion.ubi_prov as prov_destino', 'dis_destino.id_prov', '=', 'prov_destino.id_prov')
+            ->leftJoin('configuracion.ubi_dpto as dpto_destino', 'prov_destino.id_dpto', '=', 'dpto_destino.id_dpto')
+            ->leftJoin('rrhh.rrhh_trab as trab_aut_1', 'trab_aut_1.id_trabajador', '=', 'log_ord_compra.personal_autorizado_1')
+            ->leftJoin('rrhh.rrhh_postu as post_aut_1', 'post_aut_1.id_postulante', '=', 'trab_aut_1.id_postulante')
+            ->leftJoin('rrhh.rrhh_perso as pers_aut_1', 'pers_aut_1.id_persona', '=', 'post_aut_1.id_persona')
+            ->leftJoin('contabilidad.sis_identi as identi_aut_1', 'identi_aut_1.id_doc_identidad', '=', 'pers_aut_1.id_documento_identidad')
+            ->leftJoin('rrhh.rrhh_trab as trab_aut_2', 'trab_aut_2.id_trabajador', '=', 'log_ord_compra.personal_autorizado_2')
+            ->leftJoin('rrhh.rrhh_postu as post_aut_2', 'post_aut_2.id_postulante', '=', 'trab_aut_2.id_postulante')
+            ->leftJoin('rrhh.rrhh_perso as pers_aut_2', 'pers_aut_2.id_persona', '=', 'post_aut_2.id_persona')
+            ->leftJoin('contabilidad.sis_identi as identi_aut_2', 'identi_aut_2.id_doc_identidad', '=', 'pers_aut_2.id_documento_identidad')
+            ->with(['detalle.detalleRequerimiento.reserva', 'detalle.guia_compra_detalle' => function ($q) {
+                $q->where('guia_com_det.estado', '!=', 7);
+            }, 'detalle.producto', 'detalle.unidad_medida', 'detalle.estado_orden'])
+            ->where([
+                ['log_ord_compra.id_orden_compra', '=', $id_orden]
+            ])
+            ->first();
 
-        
+
 
 
         return response()->json($orden);
-
     }
 
 
 
 
-    public function groupIncluded($id_orden){
+    public function groupIncluded($id_orden)
+    {
         $sql = DB::table('logistica.log_ord_compra')
-        ->select(
-            'log_ord_compra.codigo as codigo_orden',
-            'log_ord_compra.id_orden_compra',
-            'log_ord_compra.estado as estado_orden',
-            'log_valorizacion_cotizacion.id_valorizacion_cotizacion',
-            'valoriza_coti_detalle.id_detalle_requerimiento',
-            'alm_det_req.id_requerimiento',
-            'alm_req.codigo as codigo_requerimiento',
-            'alm_req.id_grupo',
-            'adm_grupo.descripcion as descripcion_grupo',
-            'alm_req.id_area',
-            'adm_area.descripcion as descripcion_area'
-        )
-        ->leftJoin('logistica.log_det_ord_compra', 'log_det_ord_compra.id_orden_compra', '=', 'log_ord_compra.id_orden_compra')
-        ->leftJoin('logistica.log_valorizacion_cotizacion', 'log_valorizacion_cotizacion.id_valorizacion_cotizacion', '=', 'log_det_ord_compra.id_valorizacion_cotizacion')
-        ->leftJoin('logistica.valoriza_coti_detalle', 'valoriza_coti_detalle.id_valorizacion_cotizacion', '=', 'log_valorizacion_cotizacion.id_valorizacion_cotizacion')
-        ->leftJoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'valoriza_coti_detalle.id_detalle_requerimiento')
-        ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+            ->select(
+                'log_ord_compra.codigo as codigo_orden',
+                'log_ord_compra.id_orden_compra',
+                'log_ord_compra.estado as estado_orden',
+                'log_valorizacion_cotizacion.id_valorizacion_cotizacion',
+                'valoriza_coti_detalle.id_detalle_requerimiento',
+                'alm_det_req.id_requerimiento',
+                'alm_req.codigo as codigo_requerimiento',
+                'alm_req.id_grupo',
+                'adm_grupo.descripcion as descripcion_grupo',
+                'alm_req.id_area',
+                'adm_area.descripcion as descripcion_area'
+            )
+            ->leftJoin('logistica.log_det_ord_compra', 'log_det_ord_compra.id_orden_compra', '=', 'log_ord_compra.id_orden_compra')
+            ->leftJoin('logistica.log_valorizacion_cotizacion', 'log_valorizacion_cotizacion.id_valorizacion_cotizacion', '=', 'log_det_ord_compra.id_valorizacion_cotizacion')
+            ->leftJoin('logistica.valoriza_coti_detalle', 'valoriza_coti_detalle.id_valorizacion_cotizacion', '=', 'log_valorizacion_cotizacion.id_valorizacion_cotizacion')
+            ->leftJoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'valoriza_coti_detalle.id_detalle_requerimiento')
+            ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
 
-        ->leftJoin('administracion.adm_grupo', 'adm_grupo.id_grupo', '=', 'alm_req.id_grupo')
-        ->leftJoin('administracion.adm_area', 'adm_area.id_area', '=', 'alm_req.id_area')
-        ->where([
-            ['log_ord_compra.id_orden_compra', '=', $id_orden],
-            ['log_ord_compra.estado', '!=', 7]
-        ])
-        ->get();
+            ->leftJoin('administracion.adm_grupo', 'adm_grupo.id_grupo', '=', 'alm_req.id_grupo')
+            ->leftJoin('administracion.adm_area', 'adm_area.id_area', '=', 'alm_req.id_area')
+            ->where([
+                ['log_ord_compra.id_orden_compra', '=', $id_orden],
+                ['log_ord_compra.estado', '!=', 7]
+            ])
+            ->get();
 
-        $output=[];
-        $idGrupoList=[];
-        foreach($sql as $data){
-            if(in_array($data->id_grupo,$idGrupoList) == false){
-                array_push($idGrupoList,$data->id_grupo);
-                $output[]=[
-                    'id_orden'=>$data->id_grupo,
-                    'estado_orden'=>$data->estado_orden,
-                    'codigo_orden'=>$data->codigo_orden,
-                    'id_requerimiento'=>$data->id_requerimiento,
-                    'codigo_requerimiento'=>$data->codigo_requerimiento,
-                    'id_grupo'=>$data->id_grupo,
-                    'nombre_grupo'=>$data->descripcion_grupo,
-                    'id_area'=>$data->id_area,
-                    'nombre_area'=>$data->descripcion_area
+        $output = [];
+        $idGrupoList = [];
+        foreach ($sql as $data) {
+            if (in_array($data->id_grupo, $idGrupoList) == false) {
+                array_push($idGrupoList, $data->id_grupo);
+                $output[] = [
+                    'id_orden' => $data->id_grupo,
+                    'estado_orden' => $data->estado_orden,
+                    'codigo_orden' => $data->codigo_orden,
+                    'id_requerimiento' => $data->id_requerimiento,
+                    'codigo_requerimiento' => $data->codigo_requerimiento,
+                    'id_grupo' => $data->id_grupo,
+                    'nombre_grupo' => $data->descripcion_grupo,
+                    'id_area' => $data->id_area,
+                    'nombre_area' => $data->descripcion_area
                 ];
             }
-
         }
         return $output;
     }
-    
+
     public function get_orden_por_requerimiento($id_orden_compra)
     {
-        
-        $head_orden_compra = Orden::select(
-                'log_ord_compra.id_orden_compra',
-                'log_ord_compra.id_tp_documento',
-                'adm_tp_docum.descripcion AS tipo_documento',
-                'log_ord_compra.fecha',
-                'log_ord_compra.id_usuario',
-                DB::raw("concat(pers.nombres,' ',pers.apellido_paterno,' ',pers.apellido_materno) as nombre_usuario"),
-                'log_ord_compra.id_moneda',
-                'sis_moneda.simbolo as moneda_simbolo',
-                'log_ord_compra.incluye_igv',
-                'log_ord_compra.igv_porcentaje',
-                'log_ord_compra.monto_subtotal', 
-                'log_ord_compra.monto_igv',
-                'log_ord_compra.monto_total', 
-                'log_ord_compra.estado',
-                'log_ord_compra.id_proveedor',
-                'adm_contri.razon_social AS razon_social_proveedor',
-                'adm_contri.nro_documento AS nro_documento_proveedor',
-                'sis_identi.descripcion AS tipo_doc_proveedor',
-                'adm_contri.telefono AS telefono_proveedor',
-                'adm_contri.direccion_fiscal AS direccion_fiscal_proveedor',
-                'adm_contri.email AS email_proveedor',
-                DB::raw("(dis_prov.descripcion) || ' - ' || (prov_prov.descripcion) || ' - ' || (dpto_prov.descripcion)  AS ubigeo_proveedor"),
-                'log_ord_compra.codigo',
-                'log_ord_compra.id_condicion_softlink',
-                'log_ord_compra.id_condicion',
-                'log_cdn_pago.descripcion AS condicion_pago',
-                'log_ord_compra.plazo_dias',
-                'log_ord_compra.id_cta_principal',
-                'cta_prin.nro_cuenta as nro_cuenta_principal',
-                'log_ord_compra.id_cta_alternativa',
-                'cta_alter.nro_cuenta as nro_cuenta_alternativa',
-                'log_ord_compra.id_cta_detraccion',
-                'cta_detra.nro_cuenta as nro_cuenta_detraccion',
-                'log_ord_compra.plazo_entrega',
-                'log_ord_compra.observacion',
-                'log_ord_compra.en_almacen',
-                'log_ord_compra.id_occ',
-                'log_ord_compra.id_sede',
-                'log_ord_compra.direccion_destino',
-                'log_ord_compra.ubigeo_destino',
-                DB::raw("(dis_destino.descripcion) || ' - ' || (prov_destino.descripcion) || ' - ' || (dpto_destino.descripcion)  AS ubigeo_destino"),
-                'log_ord_compra.personal_autorizado_1',
-                DB::raw("concat(pers_aut_1.nombres,' ',pers_aut_1.apellido_paterno,' ',pers_aut_1.apellido_materno) AS nombre_personal_autorizado_1"),
-                'identi_aut_1.descripcion as documento_idendidad_personal_autorizado_1',
-                'pers_aut_1.nro_documento as nro_documento_personal_autorizado_1',
-                'log_ord_compra.personal_autorizado_2',
-                DB::raw("concat(pers_aut_2.nombres,' ',pers_aut_2.apellido_paterno,' ',pers_aut_2.apellido_materno) AS nombre_personal_autorizado_2"),
-                'identi_aut_2.descripcion as documento_idendidad_personal_autorizado_2',
-                'pers_aut_2.nro_documento as nro_documento_personal_autorizado_2',
-                'contrib.razon_social as razon_social_empresa',
-                'contrib.direccion_fiscal as direccion_fiscal_empresa',
-                DB::raw("(dis_empresa.descripcion) || ' - ' || (prov_empresa.descripcion) || ' - ' || (dpto_empresa.descripcion)  AS ubigeo_empresa"),
-                'sis_sede.codigo as codigo_sede_empresa',
-                'sis_sede.id_empresa',
-                'contab_sis_identi.descripcion AS tipo_doc_empresa',
-                'contab_contri.nro_documento AS nro_documento_empresa',
-                'sis_sede.direccion AS direccion_fiscal_empresa_sede',
-                'contab_contri.telefono AS telefono_empresa',
-                'contab_contri.email AS email_empresa',
-                'adm_empresa.logo_empresa',
-                // 'log_ord_compra.id_requerimiento',
-                // 'alm_req.codigo as codigo_requerimiento',
-                'log_ord_compra.fecha AS fecha_orden',
-                'sis_moneda.descripcion as moneda_descripcion',
-                'log_ord_compra.id_contacto',
-                'adm_ctb_contac.nombre as nombre_contacto',
-                'adm_ctb_contac.telefono as telefono_contacto',
-                'adm_ctb_contac.email as email_contacto',
-                'adm_ctb_contac.cargo as cargo_contacto',
-                'adm_ctb_contac.direccion as direccion_contacto',
-                'adm_ctb_contac.horario as horario_contacto',
-                DB::raw("(dis_contac.descripcion) || ' ' || (prov_contac.descripcion) || ' ' || (dpto_contac.descripcion)  AS ubigeo_contacto")
 
-            )
+        $head_orden_compra = Orden::select(
+            'log_ord_compra.id_orden_compra',
+            'log_ord_compra.id_tp_documento',
+            'adm_tp_docum.descripcion AS tipo_documento',
+            'log_ord_compra.fecha',
+            'log_ord_compra.id_usuario',
+            DB::raw("concat(pers.nombres,' ',pers.apellido_paterno,' ',pers.apellido_materno) as nombre_usuario"),
+            'log_ord_compra.id_moneda',
+            'sis_moneda.simbolo as moneda_simbolo',
+            'log_ord_compra.incluye_igv',
+            'log_ord_compra.igv_porcentaje',
+            'log_ord_compra.monto_subtotal',
+            'log_ord_compra.monto_igv',
+            'log_ord_compra.monto_total',
+            'log_ord_compra.estado',
+            'log_ord_compra.id_proveedor',
+            'adm_contri.razon_social AS razon_social_proveedor',
+            'adm_contri.nro_documento AS nro_documento_proveedor',
+            'sis_identi.descripcion AS tipo_doc_proveedor',
+            'adm_contri.telefono AS telefono_proveedor',
+            'adm_contri.direccion_fiscal AS direccion_fiscal_proveedor',
+            'adm_contri.email AS email_proveedor',
+            DB::raw("(dis_prov.descripcion) || ' - ' || (prov_prov.descripcion) || ' - ' || (dpto_prov.descripcion)  AS ubigeo_proveedor"),
+            'log_ord_compra.codigo',
+            'log_ord_compra.id_condicion_softlink',
+            'log_ord_compra.id_condicion',
+            'log_cdn_pago.descripcion AS condicion_pago',
+            'log_ord_compra.plazo_dias',
+            'log_ord_compra.id_cta_principal',
+            'cta_prin.nro_cuenta as nro_cuenta_principal',
+            'log_ord_compra.id_cta_alternativa',
+            'cta_alter.nro_cuenta as nro_cuenta_alternativa',
+            'log_ord_compra.id_cta_detraccion',
+            'cta_detra.nro_cuenta as nro_cuenta_detraccion',
+            'log_ord_compra.plazo_entrega',
+            'log_ord_compra.observacion',
+            'log_ord_compra.en_almacen',
+            'log_ord_compra.id_occ',
+            'log_ord_compra.id_sede',
+            'log_ord_compra.direccion_destino',
+            'log_ord_compra.ubigeo_destino',
+            DB::raw("(dis_destino.descripcion) || ' - ' || (prov_destino.descripcion) || ' - ' || (dpto_destino.descripcion)  AS ubigeo_destino"),
+            'log_ord_compra.personal_autorizado_1',
+            DB::raw("concat(pers_aut_1.nombres,' ',pers_aut_1.apellido_paterno,' ',pers_aut_1.apellido_materno) AS nombre_personal_autorizado_1"),
+            'identi_aut_1.descripcion as documento_idendidad_personal_autorizado_1',
+            'pers_aut_1.nro_documento as nro_documento_personal_autorizado_1',
+            'log_ord_compra.personal_autorizado_2',
+            DB::raw("concat(pers_aut_2.nombres,' ',pers_aut_2.apellido_paterno,' ',pers_aut_2.apellido_materno) AS nombre_personal_autorizado_2"),
+            'identi_aut_2.descripcion as documento_idendidad_personal_autorizado_2',
+            'pers_aut_2.nro_documento as nro_documento_personal_autorizado_2',
+            'contrib.razon_social as razon_social_empresa',
+            'contrib.direccion_fiscal as direccion_fiscal_empresa',
+            DB::raw("(dis_empresa.descripcion) || ' - ' || (prov_empresa.descripcion) || ' - ' || (dpto_empresa.descripcion)  AS ubigeo_empresa"),
+            'sis_sede.codigo as codigo_sede_empresa',
+            'sis_sede.id_empresa',
+            'contab_sis_identi.descripcion AS tipo_doc_empresa',
+            'contab_contri.nro_documento AS nro_documento_empresa',
+            'sis_sede.direccion AS direccion_fiscal_empresa_sede',
+            'contab_contri.telefono AS telefono_empresa',
+            'contab_contri.email AS email_empresa',
+            'adm_empresa.logo_empresa',
+            // 'log_ord_compra.id_requerimiento',
+            // 'alm_req.codigo as codigo_requerimiento',
+            'log_ord_compra.fecha AS fecha_orden',
+            'sis_moneda.descripcion as moneda_descripcion',
+            'log_ord_compra.id_contacto',
+            'adm_ctb_contac.nombre as nombre_contacto',
+            'adm_ctb_contac.telefono as telefono_contacto',
+            'adm_ctb_contac.email as email_contacto',
+            'adm_ctb_contac.cargo as cargo_contacto',
+            'adm_ctb_contac.direccion as direccion_contacto',
+            'adm_ctb_contac.horario as horario_contacto',
+            DB::raw("(dis_contac.descripcion) || ' ' || (prov_contac.descripcion) || ' ' || (dpto_contac.descripcion)  AS ubigeo_contacto")
+
+        )
             ->leftJoin('administracion.adm_tp_docum', 'adm_tp_docum.id_tp_documento', '=', 'log_ord_compra.id_tp_documento')
             ->leftJoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'log_ord_compra.id_usuario')
             ->leftJoin('rrhh.rrhh_trab as trab', 'trab.id_trabajador', '=', 'sis_usua.id_trabajador')
@@ -1521,9 +1543,9 @@ class OrdenController extends Controller
             ->leftJoin('contabilidad.adm_contri as contab_contri', 'contab_contri.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
             ->leftJoin('contabilidad.sis_identi as contab_sis_identi', 'contab_sis_identi.id_doc_identidad', '=', 'contab_contri.id_doc_identidad')
             ->leftJoin('contabilidad.adm_contri as contrib', 'adm_empresa.id_contribuyente', '=', 'contrib.id_contribuyente')
-            ->leftjoin('contabilidad.adm_cta_contri as cta_prin','cta_prin.id_cuenta_contribuyente','=','log_ord_compra.id_cta_principal')
-            ->leftjoin('contabilidad.adm_cta_contri as cta_alter','cta_alter.id_cuenta_contribuyente','=','log_ord_compra.id_cta_alternativa')
-            ->leftjoin('contabilidad.adm_cta_contri as cta_detra','cta_detra.id_cuenta_contribuyente','=','log_ord_compra.id_cta_detraccion')
+            ->leftjoin('contabilidad.adm_cta_contri as cta_prin', 'cta_prin.id_cuenta_contribuyente', '=', 'log_ord_compra.id_cta_principal')
+            ->leftjoin('contabilidad.adm_cta_contri as cta_alter', 'cta_alter.id_cuenta_contribuyente', '=', 'log_ord_compra.id_cta_alternativa')
+            ->leftjoin('contabilidad.adm_cta_contri as cta_detra', 'cta_detra.id_cuenta_contribuyente', '=', 'log_ord_compra.id_cta_detraccion')
             ->leftJoin('contabilidad.adm_ctb_contac', 'adm_ctb_contac.id_datos_contacto', '=', 'log_ord_compra.id_contacto')
             ->leftJoin('rrhh.rrhh_trab as trab_aut_1', 'trab_aut_1.id_trabajador', '=', 'log_ord_compra.personal_autorizado_1')
             ->leftJoin('rrhh.rrhh_postu as post_aut_1', 'post_aut_1.id_postulante', '=', 'trab_aut_1.id_postulante')
@@ -1551,62 +1573,62 @@ class OrdenController extends Controller
                 ['log_ord_compra.estado', '!=', 7]
             ])
             ->get();
-            // return $head_orden_compra;
+        // return $head_orden_compra;
 
         $detalle_orden_compra = DB::table('logistica.log_det_ord_compra')
             ->select(
-            'log_det_ord_compra.id_detalle_orden',
-            'log_det_ord_compra.id_orden_compra',
-            'log_det_ord_compra.id_item',
-            'alm_item.codigo AS codigo_item',
-            'alm_prod.descripcion AS descripcion_producto',
-            'alm_prod.codigo AS codigo_producto',
-            'alm_prod.part_number',
-            'log_det_ord_compra.garantia',
-            'log_det_ord_compra.estado',
-            'log_det_ord_compra.personal_autorizado',
-            // DB::raw("(pers_aut.nombres) || ' ' || (pers_aut.apellido_paterno) || ' ' || (pers_aut.apellido_materno) AS nombre_personal_autorizado"),
-            'log_det_ord_compra.lugar_despacho',
-            'log_det_ord_compra.descripcion_adicional',
-            'log_det_ord_compra.cantidad',
-            'log_det_ord_compra.precio',
-            'log_det_ord_compra.id_unidad_medida',
-            'alm_und_medida.descripcion AS unidad_medida',
-            'log_det_ord_compra.subtotal',
-            'log_det_ord_compra.id_detalle_requerimiento'
-        )
-        ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'log_det_ord_compra.id_unidad_medida')
-        ->leftJoin('almacen.alm_item', 'alm_item.id_item', '=', 'log_det_ord_compra.id_item')
-        ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'log_det_ord_compra.id_producto')
-        ->leftJoin('configuracion.sis_usua as sis_usua_aut', 'sis_usua_aut.id_usuario', '=', 'log_det_ord_compra.personal_autorizado')
-        ->leftJoin('rrhh.rrhh_trab as trab_aut', 'trab_aut.id_trabajador', '=', 'sis_usua_aut.id_trabajador')
-        ->leftJoin('rrhh.rrhh_postu as post_aut', 'post_aut.id_postulante', '=', 'trab_aut.id_postulante')
-        ->leftJoin('rrhh.rrhh_perso as pers_aut', 'pers_aut.id_persona', '=', 'post_aut.id_persona')
-        ->where([
-            ['log_det_ord_compra.id_orden_compra', '=', $id_orden_compra],
-            ['log_det_ord_compra.estado', '!=', 7]
-        ])
-        ->orderby('log_det_ord_compra.id_detalle_orden','asc')
+                'log_det_ord_compra.id_detalle_orden',
+                'log_det_ord_compra.id_orden_compra',
+                'log_det_ord_compra.id_item',
+                'alm_item.codigo AS codigo_item',
+                'alm_prod.descripcion AS descripcion_producto',
+                'alm_prod.codigo AS codigo_producto',
+                'alm_prod.part_number',
+                'log_det_ord_compra.garantia',
+                'log_det_ord_compra.estado',
+                'log_det_ord_compra.personal_autorizado',
+                // DB::raw("(pers_aut.nombres) || ' ' || (pers_aut.apellido_paterno) || ' ' || (pers_aut.apellido_materno) AS nombre_personal_autorizado"),
+                'log_det_ord_compra.lugar_despacho',
+                'log_det_ord_compra.descripcion_adicional',
+                'log_det_ord_compra.cantidad',
+                'log_det_ord_compra.precio',
+                'log_det_ord_compra.id_unidad_medida',
+                'alm_und_medida.descripcion AS unidad_medida',
+                'log_det_ord_compra.subtotal',
+                'log_det_ord_compra.id_detalle_requerimiento'
+            )
+            ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'log_det_ord_compra.id_unidad_medida')
+            ->leftJoin('almacen.alm_item', 'alm_item.id_item', '=', 'log_det_ord_compra.id_item')
+            ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'log_det_ord_compra.id_producto')
+            ->leftJoin('configuracion.sis_usua as sis_usua_aut', 'sis_usua_aut.id_usuario', '=', 'log_det_ord_compra.personal_autorizado')
+            ->leftJoin('rrhh.rrhh_trab as trab_aut', 'trab_aut.id_trabajador', '=', 'sis_usua_aut.id_trabajador')
+            ->leftJoin('rrhh.rrhh_postu as post_aut', 'post_aut.id_postulante', '=', 'trab_aut.id_postulante')
+            ->leftJoin('rrhh.rrhh_perso as pers_aut', 'pers_aut.id_persona', '=', 'post_aut.id_persona')
+            ->where([
+                ['log_det_ord_compra.id_orden_compra', '=', $id_orden_compra],
+                ['log_det_ord_compra.estado', '!=', 7]
+            ])
+            ->orderby('log_det_ord_compra.id_detalle_orden', 'asc')
 
-        ->get();
+            ->get();
 
 
         $head = [];
         $detalle = [];
 
-        if(count($head_orden_compra)>0){
+        if (count($head_orden_compra) > 0) {
             foreach ($head_orden_compra as $data) {
                 $head = [
                     'id_orden_compra' => $data->id_orden_compra,
-                    'logo_empresa'=>$data->logo_empresa,
+                    'logo_empresa' => $data->logo_empresa,
                     'codigo' => $data->codigo,
                     'fecha_orden' => $data->fecha_orden,
                     'tipo_documento' => $data->tipo_documento,
                     // 'codigo_requerimiento' => $data->codigo_requerimiento,
                     'fecha_registro' => $data->fecha,
-                    'moneda_simbolo' => $data->moneda_simbolo, 
-                    'incluye_igv' => $data->incluye_igv, 
-                    'observacion' => $data->observacion, 
+                    'moneda_simbolo' => $data->moneda_simbolo,
+                    'incluye_igv' => $data->incluye_igv,
+                    'observacion' => $data->observacion,
                     // 'monto_igv' => $data->monto_igv,
                     // 'monto_total' => $data->monto_total,
                     // 'moneda_descripcion' => $data->moneda_descripcion 
@@ -1620,7 +1642,7 @@ class OrdenController extends Controller
                         'direccion_fiscal_proveedor' => $data->direccion_fiscal_proveedor,
                         'ubigeo_proveedor' => $data->ubigeo_proveedor,
 
-                        'contacto'=>[
+                        'contacto' => [
                             'nombre_contacto' => $data->nombre_contacto,
                             'telefono_contacto' => $data->telefono_contacto,
                             'email_contacto' => $data->email_contacto,
@@ -1629,9 +1651,9 @@ class OrdenController extends Controller
                             'horario_contacto' => $data->horario_contacto,
                             'ubigeo_contacto' => $data->ubigeo_contacto
                         ],
-                    ], 
-                
-                    'condicion_compra'=>[
+                    ],
+
+                    'condicion_compra' => [
                         'id_condicion_softlink' => $data->id_condicion_softlink,
                         'id_condicion' => $data->id_condicion,
                         'condicion_pago' => $data->condicion_pago,
@@ -1640,45 +1662,43 @@ class OrdenController extends Controller
 
 
                     ],
-                    'datos_para_despacho'=>[
+                    'datos_para_despacho' => [
                         'id_empresa' => $data->id_empresa,
-                        'sede'=>$data->codigo_sede_empresa,   
+                        'sede' => $data->codigo_sede_empresa,
                         'razon_social_empresa' => $data->razon_social_empresa,
                         'tipo_doc_empresa' => $data->tipo_doc_empresa,
                         'nro_documento_empresa' => $data->nro_documento_empresa,
                         'direccion_sede' => $data->direccion_fiscal_empresa_sede,
-                        'direccion_destino'=>$data->direccion_destino,
-                        'ubigeo_destino'=>$data->ubigeo_destino,
+                        'direccion_destino' => $data->direccion_destino,
+                        'ubigeo_destino' => $data->ubigeo_destino,
                         'personal_autorizado_1' => $data->personal_autorizado_1,
-                        'documento_idendidad_personal_autorizado_1' => $data->documento_idendidad_personal_autorizado_1, 
-                        'nro_documento_personal_autorizado_1' => $data->nro_documento_personal_autorizado_1, 
+                        'documento_idendidad_personal_autorizado_1' => $data->documento_idendidad_personal_autorizado_1,
+                        'nro_documento_personal_autorizado_1' => $data->nro_documento_personal_autorizado_1,
                         'nombre_personal_autorizado_1' => $data->nombre_personal_autorizado_1,
                         'personal_autorizado_2' => $data->personal_autorizado_2,
-                        'documento_idendidad_personal_autorizado_2' => $data->documento_idendidad_personal_autorizado_2, 
-                        'nro_documento_personal_autorizado_2' => $data->nro_documento_personal_autorizado_2, 
+                        'documento_idendidad_personal_autorizado_2' => $data->documento_idendidad_personal_autorizado_2,
+                        'nro_documento_personal_autorizado_2' => $data->nro_documento_personal_autorizado_2,
                         'nombre_personal_autorizado_2' => $data->nombre_personal_autorizado_2
                     ],
-                    'facturar_a_nombre'=>[
+                    'facturar_a_nombre' => [
                         'id_empresa' => $data->id_empresa,
                         'razon_social_empresa' => $data->razon_social_empresa,
                         'tipo_doc_empresa' => $data->tipo_doc_empresa,
                         'nro_documento_empresa' => $data->nro_documento_empresa,
                         'direccion_fiscal_empresa' => $data->direccion_fiscal_empresa,
-                        'ubigeo_empresa'=>$data->ubigeo_empresa,
+                        'ubigeo_empresa' => $data->ubigeo_empresa,
                         // 'direccion_sede' => $data->direccion_fiscal_empresa_sede,
                         // 'telefono_empresa' => $data->telefono_empresa,
                         'email_empresa' => $data->email_empresa,
-                        'sede'=>$data->codigo_sede_empresa
+                        'sede' => $data->codigo_sede_empresa
                     ],
                     'nombre_usuario' => $data->nombre_usuario
                 ];
-
-    
             }
         }
 
-        $idDetalleReqList=[];
-        if(count($detalle_orden_compra)>0){
+        $idDetalleReqList = [];
+        if (count($detalle_orden_compra) > 0) {
             foreach ($detalle_orden_compra as $data) {
                 $detalle[] = [
                     'id_detalle_requerimiento' => $data->id_detalle_requerimiento,
@@ -1702,46 +1722,46 @@ class OrdenController extends Controller
                     'lugar_despacho' => $data->lugar_despacho
                     // 'nombre_personal_autorizado' => $data->nombre_personal_autorizado 
                 ];
-                $idDetalleReqList[]=$data->id_detalle_requerimiento;
+                $idDetalleReqList[] = $data->id_detalle_requerimiento;
             }
         }
 
-        $codigoReqList=[];
-        $idCcList=[];
-        if(count($idDetalleReqList) > 0){
+        $codigoReqList = [];
+        $idCcList = [];
+        if (count($idDetalleReqList) > 0) {
             $req = DB::table('almacen.alm_det_req')
-            ->select(
-                'alm_req.id_requerimiento',
-                'alm_req.codigo',
-                'alm_req.concepto',
-                'alm_req.id_cc'
+                ->select(
+                    'alm_req.id_requerimiento',
+                    'alm_req.codigo',
+                    'alm_req.concepto',
+                    'alm_req.id_cc'
                 )
-            ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
-            ->whereIn('alm_det_req.id_detalle_requerimiento',$idDetalleReqList)
-            ->distinct()
-            ->get();
+                ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+                ->whereIn('alm_det_req.id_detalle_requerimiento', $idDetalleReqList)
+                ->distinct()
+                ->get();
 
-            if(count($req) >0){
-                foreach($req as $data){
-                    $codigoReqList[]=$data->codigo;
-                    $idCcList[]=$data->id_cc;
+            if (count($req) > 0) {
+                foreach ($req as $data) {
+                    $codigoReqList[] = $data->codigo;
+                    $idCcList[] = $data->id_cc;
                 }
             }
 
             $cdc = DB::table('mgcp_cuadro_costos.cc')
-            ->select(
-                'oportunidades.codigo_oportunidad',
-                'users.name as nombre_responsable'
+                ->select(
+                    'oportunidades.codigo_oportunidad',
+                    'users.name as nombre_responsable'
                 )
-            ->join('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
-            ->LeftJoin('mgcp_cuadro_costos.responsables', 'responsables.id', '=', 'oportunidades.id_responsable')
-            ->LeftJoin('mgcp_usuarios.users', 'users.id', '=', 'oportunidades.id_responsable')
-            ->whereIn('cc.id',$idCcList)
-            ->distinct()
-            ->get();
+                ->join('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
+                ->LeftJoin('mgcp_cuadro_costos.responsables', 'responsables.id', '=', 'oportunidades.id_responsable')
+                ->LeftJoin('mgcp_usuarios.users', 'users.id', '=', 'oportunidades.id_responsable')
+                ->whereIn('cc.id', $idCcList)
+                ->distinct()
+                ->get();
 
-            $codigo_oportunidad=count($cdc)>0 ?$cdc->first()->codigo_oportunidad:'';
-            $nombre_responsable=count($cdc)>0 ?$cdc->first()->nombre_responsable:'';
+            $codigo_oportunidad = count($cdc) > 0 ? $cdc->first()->codigo_oportunidad : '';
+            $nombre_responsable = count($cdc) > 0 ? $cdc->first()->nombre_responsable : '';
             // dd( $cdc );
 
         }
@@ -1754,13 +1774,13 @@ class OrdenController extends Controller
 
         $result = [
             'head' => $head,
-            'detalle' => $detalle 
+            'detalle' => $detalle
         ];
-        
-        $result['head']['codigo_requerimiento']=$codigoReqText;
-        $result['head']['codigo_cc']= isset($codigo_oportunidad)?$codigo_oportunidad:'';
-        $result['head']['nombre_responsable_cc']=isset($nombre_responsable)?$nombre_responsable:'';
-      
+
+        $result['head']['codigo_requerimiento'] = $codigoReqText;
+        $result['head']['codigo_cc'] = isset($codigo_oportunidad) ? $codigo_oportunidad : '';
+        $result['head']['nombre_responsable_cc'] = isset($nombre_responsable) ? $nombre_responsable : '';
+
 
         return $result;
     }
@@ -1768,9 +1788,9 @@ class OrdenController extends Controller
     {
         $ordenArray = $this->get_orden_por_requerimiento($id_orden_compra);
         // return dd($ordenArray);
-        $sizeOrdenHeader=count($ordenArray['head']);
-        
-        if($sizeOrdenHeader == 0){
+        $sizeOrdenHeader = count($ordenArray['head']);
+
+        if ($sizeOrdenHeader == 0) {
             $html = 'Error en documento';
             return $html;
         }
@@ -1867,12 +1887,12 @@ class OrdenController extends Controller
             </style>
             </head>
             <body>';
-            
-                if(isset($ordenArray['head']['logo_empresa']) && ($ordenArray['head']['logo_empresa'] != null)){
-                    $html.='<img src=".'.$ordenArray['head']['logo_empresa'].'" alt="Logo" height="75px">';
-                }
 
-            $html.='
+        if (isset($ordenArray['head']['logo_empresa']) && ($ordenArray['head']['logo_empresa'] != null)) {
+            $html .= '<img src=".' . $ordenArray['head']['logo_empresa'] . '" alt="Logo" height="75px">';
+        }
+
+        $html .= '
             
                 <br>
                 <hr>
@@ -1880,44 +1900,44 @@ class OrdenController extends Controller
                 <table border="0" >
                     <tr>
                         <td nowrap  width="15%" class="subtitle verticalTop">Sr.(s):</td>
-                        <td width="50%" class="verticalTop">' . $ordenArray['head']['proveedor']['nro_documento_proveedor'].' - '.$ordenArray['head']['proveedor']['razon_social_proveedor'] . '</td>
+                        <td width="50%" class="verticalTop">' . $ordenArray['head']['proveedor']['nro_documento_proveedor'] . ' - ' . $ordenArray['head']['proveedor']['razon_social_proveedor'] . '</td>
                         <td nowrap  width="15%" class="subtitle verticalTop">Fecha de Emisión:</td>
                         <td>' . substr($ordenArray['head']['fecha_orden'], 0, 11) . '</td>
                     </tr>
                     <tr>
                         <td nowrap  width="15%" class="subtitle">Dirección:</td>
-                        <td class="verticalTop">' . $ordenArray['head']['proveedor']['direccion_fiscal_proveedor'] .'<br>'.$ordenArray['head']['proveedor']['ubigeo_proveedor'] .'</td>
+                        <td class="verticalTop">' . $ordenArray['head']['proveedor']['direccion_fiscal_proveedor'] . '<br>' . $ordenArray['head']['proveedor']['ubigeo_proveedor'] . '</td>
                         <td nowrap  width="15%" class="subtitle verticalTop"> Teléfono:</td>
-                        <td class="verticalTop">' . $ordenArray['head']['proveedor']['telefono_proveedor']. '</td>
+                        <td class="verticalTop">' . $ordenArray['head']['proveedor']['telefono_proveedor'] . '</td>
                     </tr>
                     <tr>
                         <td nowrap  width="15%" class="subtitle">Contacto:</td>
-                        <td class="verticalTop">' . $ordenArray['head']['proveedor']['contacto']['nombre_contacto'] . ' - '.$ordenArray['head']['proveedor']['contacto']['cargo_contacto'] . '</td>
+                        <td class="verticalTop">' . $ordenArray['head']['proveedor']['contacto']['nombre_contacto'] . ' - ' . $ordenArray['head']['proveedor']['contacto']['cargo_contacto'] . '</td>
                          
                     </tr>
  
                 </table>';
 
-                $html.='<p class="left" style="color:#d04f46">';
+        $html .= '<p class="left" style="color:#d04f46">';
 
-                // if($ordenArray['aprobaciones']['aprob_necesarias'] == $ordenArray['aprobaciones']['total_aprob']){
-                //     $html.='<strong>ORDEN APROBADA </strong>';
-                //     //   $apro=implode(',',array_values($ordenArray['aprobaciones']['aprobaciones']));
-                //     //  $html.=$apro;
+        // if($ordenArray['aprobaciones']['aprob_necesarias'] == $ordenArray['aprobaciones']['total_aprob']){
+        //     $html.='<strong>ORDEN APROBADA </strong>';
+        //     //   $apro=implode(',',array_values($ordenArray['aprobaciones']['aprobaciones']));
+        //     //  $html.=$apro;
 
-                //     foreach ($ordenArray['aprobaciones']['aprobaciones'] as $key => $data) {
-                //         $apro[]=$data->nombre.' ['.$data->fecha_vobo.']';
-                //     }
-                //     $html.=implode(", ",$apro);
+        //     foreach ($ordenArray['aprobaciones']['aprobaciones'] as $key => $data) {
+        //         $apro[]=$data->nombre.' ['.$data->fecha_vobo.']';
+        //     }
+        //     $html.=implode(", ",$apro);
 
-                // }else{
-                //     $html.='<strong>ORDEN NO APROBADA </strong>';
-                // }
+        // }else{
+        //     $html.='<strong>ORDEN NO APROBADA </strong>';
+        // }
 
-                $html.='</p>';
+        $html .= '</p>';
 
 
-                $html.='<br>
+        $html .= '<br>
 
                 <table class="tablePDF" style="border:0; font-size:8px;">
                 <thead>
@@ -1934,42 +1954,39 @@ class OrdenController extends Controller
                 </thead>';
 
         // $total = 0;
-        $monto_neto=0;
+        $monto_neto = 0;
         foreach ($ordenArray['detalle'] as $key => $data) {
-            $monto_neto += $data['subtotal'] ;
+            $monto_neto += $data['subtotal'];
         }
-        $igv =0;
-        $monto_total=0;
+        $igv = 0;
+        $monto_total = 0;
         foreach ($ordenArray['detalle'] as $key => $data) {
-          
-            if($ordenArray['head']['incluye_igv'] == true){
-                $igv =(($monto_neto)*0.18);
 
-            }else{
-                $igv =0;
-
+            if ($ordenArray['head']['incluye_igv'] == true) {
+                $igv = (($monto_neto) * 0.18);
+            } else {
+                $igv = 0;
             }
 
-            $monto_total =($monto_neto+$igv);
+            $monto_total = ($monto_neto + $igv);
             // $subtotal = $data['subtotal']>0?$data['subtotal']:number_format($data['cantidad'] * $data['precio'],2,'.','');
 
             $html .= '<tr style="text-align:left">';
             // $html .= '<td>' . ($key + 1) . '</td>';
             $html .= '<td>' . $data['codigo_producto'] . '</td>';
             $html .= '<td>' . $data['part_number'] . '</td>';
-            if($data['descripcion_adicional'] != null && strlen($data['descripcion_adicional']) > 0){
+            if ($data['descripcion_adicional'] != null && strlen($data['descripcion_adicional']) > 0) {
 
                 $html .= '<td>' . ($data['descripcion_adicional'] ? $data['descripcion_adicional'] : $data['descripcion_adicional']) . '</td>';
-
-            }else{
+            } else {
                 $html .= '<td>' . ($data['descripcion_producto'] ? $data['descripcion_producto'] : $data['descripcion_adicional']) . '</td>';
             }
             $html .= '<td>' . $data['unidad_medida'] . '</td>';
             $html .= '<td style="text-align:center">' . $data['cantidad'] . '</td>';
-            $html .= '<td style="text-align:center">' .$ordenArray['head']['moneda_simbolo']. number_format($data['precio'],2) . '</td>';
+            $html .= '<td style="text-align:center">' . $ordenArray['head']['moneda_simbolo'] . number_format($data['precio'], 2) . '</td>';
             // $html .= '<td class="right">' . number_format((($data['cantidad'] * $data['precio']) - (($data['cantidad']* $data['precio'])/1.18)),2,'.','') . '</td>';
             $html .= '<td style="text-align:right"> </td>';
-            $html .= '<td style="text-align:right">' .$ordenArray['head']['moneda_simbolo']. number_format($data['subtotal'],2). '</td>';
+            $html .= '<td style="text-align:right">' . $ordenArray['head']['moneda_simbolo'] . number_format($data['subtotal'], 2) . '</td>';
             $html .= '</tr>';
             // $total = $total + ($data['cantidad'] * $data['precio']);
         }
@@ -1978,94 +1995,94 @@ class OrdenController extends Controller
 
         $html .= '
                 <tr>
-                    <td class="right noBorder textBold"  colspan="7">Monto Neto '.$ordenArray['head']['moneda_simbolo'].'</td>
-                    <td class="right  noBorder textBold">' . number_format($monto_neto,2) . '</td>
+                    <td class="right noBorder textBold"  colspan="7">Monto Neto ' . $ordenArray['head']['moneda_simbolo'] . '</td>
+                    <td class="right  noBorder textBold">' . number_format($monto_neto, 2) . '</td>
                 </tr>
                 <tr>
-                    <td class="right noBorder textBold"  colspan="7">IGV '.$ordenArray['head']['moneda_simbolo'].'</td>
-                    <td class="right noBorder textBold">' . number_format($igv,2) . '</td>
+                    <td class="right noBorder textBold"  colspan="7">IGV ' . $ordenArray['head']['moneda_simbolo'] . '</td>
+                    <td class="right noBorder textBold">' . number_format($igv, 2) . '</td>
                 </tr>
                 <tr>
-                    <td class="right noBorder textBold"  colspan="7">Monto Total '.$ordenArray['head']['moneda_simbolo'].'</td>
-                    <td class="right noBorder textBold">' . number_format($monto_total,2) . '</td>
+                    <td class="right noBorder textBold"  colspan="7">Monto Total ' . $ordenArray['head']['moneda_simbolo'] . '</td>
+                    <td class="right noBorder textBold">' . number_format($monto_total, 2) . '</td>
                 </tr>
                 </table>
                 <br>
                 <br>';
-                
-        
-                $html.='
+
+
+        $html .= '
                 <table width="100%" border=0>
                 <caption class="left subtitle" style="padding-bottom:10px; font-size:0.7rem">Condición de compra:</caption>
 
                 <tr>
                 <td nowrap  width="15%" class="subtitle">-Forma de Pago: </td>
-                <td  class="verticalTop left">' . $ordenArray['head']['condicion_compra']['condicion_pago'].' '.(($ordenArray['head']['condicion_compra']['id_condicion'] ==2)?$ordenArray['head']['condicion_compra']['plazo_dias']. ' días':''). '</td>';
+                <td  class="verticalTop left">' . $ordenArray['head']['condicion_compra']['condicion_pago'] . ' ' . (($ordenArray['head']['condicion_compra']['id_condicion'] == 2) ? $ordenArray['head']['condicion_compra']['plazo_dias'] . ' días' : '') . '</td>';
 
-            
-            $html.=' 
+
+        $html .= ' 
                     <td width="15%" class="verticalTop subtitle">-Plazo entrega: </td>
-                    <td class="verticalTop">' . $ordenArray['head']['condicion_compra']['plazo_entrega'].' Días</td>
+                    <td class="verticalTop">' . $ordenArray['head']['condicion_compra']['plazo_entrega'] . ' Días</td>
             
                 </tr>
                 <tr>
                     <td width="15%" class="verticalTop subtitle">-CDC / Req.: </td>
-                    <td class="verticalTop">' . ($ordenArray['head']['codigo_cc']?$ordenArray['head']['codigo_cc']:$ordenArray['head']['codigo_requerimiento']) . '</td
+                    <td class="verticalTop">' . ($ordenArray['head']['codigo_cc'] ? $ordenArray['head']['codigo_cc'] : $ordenArray['head']['codigo_requerimiento']) . '</td
         
                 </tr>
                 </table>
                 <br>
-                ';        
-                
-                $personal_autorizado_1=$ordenArray['head']['datos_para_despacho']['personal_autorizado_1'] >0?($ordenArray['head']['datos_para_despacho']['nombre_personal_autorizado_1'] .' ('.$ordenArray['head']['datos_para_despacho']['documento_idendidad_personal_autorizado_1'].': '.$ordenArray['head']['datos_para_despacho']['nro_documento_personal_autorizado_1'].')'):'';
-                $personal_autorizado_2=$ordenArray['head']['datos_para_despacho']['personal_autorizado_2'] >0?($ordenArray['head']['datos_para_despacho']['nombre_personal_autorizado_2'] .' ('.$ordenArray['head']['datos_para_despacho']['documento_idendidad_personal_autorizado_2'].': '.$ordenArray['head']['datos_para_despacho']['nro_documento_personal_autorizado_2'].')'):'';
+                ';
 
-        $html.='
+        $personal_autorizado_1 = $ordenArray['head']['datos_para_despacho']['personal_autorizado_1'] > 0 ? ($ordenArray['head']['datos_para_despacho']['nombre_personal_autorizado_1'] . ' (' . $ordenArray['head']['datos_para_despacho']['documento_idendidad_personal_autorizado_1'] . ': ' . $ordenArray['head']['datos_para_despacho']['nro_documento_personal_autorizado_1'] . ')') : '';
+        $personal_autorizado_2 = $ordenArray['head']['datos_para_despacho']['personal_autorizado_2'] > 0 ? ($ordenArray['head']['datos_para_despacho']['nombre_personal_autorizado_2'] . ' (' . $ordenArray['head']['datos_para_despacho']['documento_idendidad_personal_autorizado_2'] . ': ' . $ordenArray['head']['datos_para_despacho']['nro_documento_personal_autorizado_2'] . ')') : '';
+
+        $html .= '
                 <table width="100%" border=0>
                 <caption class="left subtitle" style="padding-bottom:10px; font-size:0.7rem">Datos para el despacho:</caption>
 
                 <tr>
                     <td nowrap  width="15%" class="verticalTop subtitle">-Destino / Dirección: </td>
-                    <td class="verticalTop">' . $ordenArray['head']['datos_para_despacho']['direccion_destino'] .'<br>'.$ordenArray['head']['datos_para_despacho']['ubigeo_destino'] .'</td>
+                    <td class="verticalTop">' . $ordenArray['head']['datos_para_despacho']['direccion_destino'] . '<br>' . $ordenArray['head']['datos_para_despacho']['ubigeo_destino'] . '</td>
                     <td width="15%" class="verticalTop subtitle">-Personal Autorizado:</td>
-                    <td class="verticalTop">' .$personal_autorizado_1.($personal_autorizado_2?("<br>".$personal_autorizado_2):"").'</td>
+                    <td class="verticalTop">' . $personal_autorizado_1 . ($personal_autorizado_2 ? ("<br>" . $personal_autorizado_2) : "") . '</td>
                 </tr>
                 <tr>
                     <td nowrap  width="15%" class="subtitle">-Observación:</td>
-                    <td class="verticalTop">' . $ordenArray['head']['observacion']. '</td>
+                    <td class="verticalTop">' . $ordenArray['head']['observacion'] . '</td>
                 </tr>
                 </table>
                 <br>
                 
         ';
 
-        $html.='
+        $html .= '
             <table width="100%" border=0>
                 <caption class="left subtitle" style="padding-bottom:10px; font-size:0.7rem">Facturar a nombre:</caption>
 
                 <tr>
                     <td nowrap  width="15%" class="verticalTop subtitle">-Razón Social: </td>
-                    <td class="verticalTop">' . $ordenArray['head']['facturar_a_nombre']['razon_social_empresa'].'</td>
+                    <td class="verticalTop">' . $ordenArray['head']['facturar_a_nombre']['razon_social_empresa'] . '</td>
                 </tr>
                 <tr>
                     <td nowrap  width="15%" class="verticalTop subtitle">-RUC: </td>
-                    <td class="verticalTop">' . $ordenArray['head']['facturar_a_nombre']['nro_documento_empresa'].'</td>
+                    <td class="verticalTop">' . $ordenArray['head']['facturar_a_nombre']['nro_documento_empresa'] . '</td>
                 </tr>
                 <tr>
                     <td nowrap  width="15%" class="verticalTop subtitle">-Dirección: </td>
-                    <td class="verticalTop">' .$ordenArray['head']['facturar_a_nombre']['direccion_fiscal_empresa'] .',<br>'.$ordenArray['head']['facturar_a_nombre']['ubigeo_empresa'].'</td>
+                    <td class="verticalTop">' . $ordenArray['head']['facturar_a_nombre']['direccion_fiscal_empresa'] . ',<br>' . $ordenArray['head']['facturar_a_nombre']['ubigeo_empresa'] . '</td>
 
                 </tr>
             </table>
             <br>
         ';
 
-        $html.= '<br>
+        $html .= '<br>
 
                     <footer>
                         <p style="font-size:9px; " class="pie_de_pagina">Generado por: ' . ucwords(strtolower($ordenArray['head']['nombre_usuario'])) .  '<br>'
-                        .'Fecha registro: '.$ordenArray['head']['fecha_registro'].'<br>'
-                        .'Versión del sistema: '.config('global.nombreSistema') . ' '  . config('global.version') . ' </p>
+            . 'Fecha registro: ' . $ordenArray['head']['fecha_registro'] . '<br>'
+            . 'Versión del sistema: ' . config('global.nombreSistema') . ' '  . config('global.version') . ' </p>
                     </footer>
                 
             </body>
@@ -2080,7 +2097,7 @@ class OrdenController extends Controller
     //     $ordenArray = $this->get_orden($id_orden_compra);
     //     // $ordenArray = json_decode($orden, true);
     //     $sizeOrdenHeader=count($ordenArray['header_orden']);
-        
+
     //     if($sizeOrdenHeader == 0){
     //         $html = 'Error en documento';
     //         return $html;
@@ -2111,7 +2128,7 @@ class OrdenController extends Controller
     //                 background-color:#d04f46;
     //             }
     //             .bgColorRed{
-                
+
     //             }
     //             .tablePDF,
     //             .tablePDF tr td{
@@ -2158,7 +2175,7 @@ class OrdenController extends Controller
     //                 width: 100%;
     //                 height: auto;
     //             }
-       
+
     //             .tablePDF .noBorder{
     //                 border:none;
     //                 border-left:none;
@@ -2296,7 +2313,7 @@ class OrdenController extends Controller
     //             $desItem= $data['descripcion_producto'] ? $data['descripcion_producto'] : $data['descripcion_requerimiento'];
     //             $lugarDesp= $data['lugar_despacho_orden'];
     //             $persAut= $data['nombre_personal_autorizado'];
- 
+
     //             $html .= '<tr>';
     //             $html .= '<td>' . $contador. '</td>';
     //             $html .= '<td>' .$codigo.'-'. $desItem . '</td>';
@@ -2330,7 +2347,7 @@ class OrdenController extends Controller
     //                 </tr>
     //                 <br>
     //             </table>
- 
+
     //             <br>
     //             <p class="subtitle">Datos de Facturación</p>
     //             <table border="0">
@@ -2387,7 +2404,7 @@ class OrdenController extends Controller
     //                 </tr>
     //             </footer>
     //         </body>
-            
+
     //     </html>';
     //     // <p class="subtitle">Datos para Despacho</p>
     //     // <table border="0">
@@ -2407,73 +2424,74 @@ class OrdenController extends Controller
 
 
 
-    function cambioElEstadoActualDetalleReq($id_detalle_requerimiento){
-            $alm_det_req = DB::table('almacen.alm_det_req')
+    function cambioElEstadoActualDetalleReq($id_detalle_requerimiento)
+    {
+        $alm_det_req = DB::table('almacen.alm_det_req')
             ->select(
                 'alm_det_req.*'
             )
-            ->where('alm_det_req.id_detalle_requerimiento',$id_detalle_requerimiento)
-            ->whereNotIn('alm_det_req.estado', [1,2,15,5,7])
+            ->where('alm_det_req.id_detalle_requerimiento', $id_detalle_requerimiento)
+            ->whereNotIn('alm_det_req.estado', [1, 2, 15, 5, 7])
             ->get();
 
-            if(count($alm_det_req)>0){
-                return true;
-            }else{
-                return false;
-            }
-
+        if (count($alm_det_req) > 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
-    function cambioElEstadoActualReq($id_requerimiento){
-            $alm_req = DB::table('almacen.alm_req')
+    function cambioElEstadoActualReq($id_requerimiento)
+    {
+        $alm_req = DB::table('almacen.alm_req')
             ->select(
                 'alm_req.*'
             )
-            ->where('alm_req.id_requerimiento',$id_requerimiento)
-            ->whereNotIn('alm_req.estado', [1,2,15,5,7])
+            ->where('alm_req.id_requerimiento', $id_requerimiento)
+            ->whereNotIn('alm_req.estado', [1, 2, 15, 5, 7])
             ->get();
 
-            if(count($alm_req)>0){
-                return true;
-            }else{
-                return false;
-            }
-
+        if (count($alm_req) > 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
-    public function guardar_orden_por_requerimiento(Request $request){
+    public function guardar_orden_por_requerimiento(Request $request)
+    {
 
         try {
             DB::beginTransaction();
             $orden = new Orden();
             $tp_doc = ($request->id_tp_documento !== null ? $request->id_tp_documento : 2);
             $orden->codigo =  Orden::nextCodigoOrden($tp_doc);
-            $orden->id_grupo_cotizacion = $request->id_grupo_cotizacion?$request->id_grupo_cotizacion:null;
+            $orden->id_grupo_cotizacion = $request->id_grupo_cotizacion ? $request->id_grupo_cotizacion : null;
             $orden->id_tp_documento = $tp_doc;
-            $orden->fecha = $request->fecha_emision?$request->fecha_emision:new Carbon();
+            $orden->fecha = $request->fecha_emision ? $request->fecha_emision : new Carbon();
             $orden->fecha_registro = new Carbon();
             $orden->id_usuario = Auth::user()->id_usuario;
-            $orden->id_moneda = $request->id_moneda?$request->id_moneda:null;
-            $orden->incluye_igv = isset($request->incluye_igv)?$request->incluye_igv:true;
+            $orden->id_moneda = $request->id_moneda ? $request->id_moneda : null;
+            $orden->incluye_igv = isset($request->incluye_igv) ? $request->incluye_igv : true;
             $orden->id_proveedor = $request->id_proveedor;
-            $orden->id_cta_principal = isset($request->id_cuenta_principal_proveedor)?$request->id_cuenta_principal_proveedor:null;
-            $orden->id_contacto = isset($request->id_contacto_proveedor)?$request->id_contacto_proveedor:null;
-            $orden->plazo_entrega =  $request->plazo_entrega?$request->plazo_entrega:null;
-            $orden->id_condicion_softlink = $request->id_condicion_softlink?$request->id_condicion_softlink:null;
-            $orden->id_condicion = $request->id_condicion?$request->id_condicion:null;
-            $orden->plazo_dias = $request->plazo_dias?$request->plazo_dias:null;
-            $orden->id_cotizacion = $request->id_cotizacion?$request->id_cotizacion:null;
-            $orden->id_tp_doc = isset($request->id_tp_doc)?$request->id_tp_doc:null;
-            $orden->personal_autorizado_1 = $request->personal_autorizado_1?$request->personal_autorizado_1:null;
-            $orden->personal_autorizado_2 = $request->personal_autorizado_2?$request->personal_autorizado_2:null;
-            $orden->id_occ = $request->id_cc?$request->id_cc:null;
-            $orden->id_sede = $request->id_sede?$request->id_sede:null;
-            $orden->direccion_destino = $request->direccion_destino !=null ?trim(strtoupper($request->direccion_destino)):null;
-            $orden->ubigeo_destino = isset($request->id_ubigeo_destino)?$request->id_ubigeo_destino:null;
+            $orden->id_cta_principal = isset($request->id_cuenta_principal_proveedor) ? $request->id_cuenta_principal_proveedor : null;
+            $orden->id_contacto = isset($request->id_contacto_proveedor) ? $request->id_contacto_proveedor : null;
+            $orden->plazo_entrega =  $request->plazo_entrega ? $request->plazo_entrega : null;
+            $orden->id_condicion_softlink = $request->id_condicion_softlink ? $request->id_condicion_softlink : null;
+            $orden->id_condicion = $request->id_condicion ? $request->id_condicion : null;
+            $orden->plazo_dias = $request->plazo_dias ? $request->plazo_dias : null;
+            $orden->id_cotizacion = $request->id_cotizacion ? $request->id_cotizacion : null;
+            $orden->id_tp_doc = isset($request->id_tp_doc) ? $request->id_tp_doc : null;
+            $orden->personal_autorizado_1 = $request->personal_autorizado_1 ? $request->personal_autorizado_1 : null;
+            $orden->personal_autorizado_2 = $request->personal_autorizado_2 ? $request->personal_autorizado_2 : null;
+            $orden->id_occ = $request->id_cc ? $request->id_cc : null;
+            $orden->id_sede = $request->id_sede ? $request->id_sede : null;
+            $orden->direccion_destino = $request->direccion_destino != null ? trim(strtoupper($request->direccion_destino)) : null;
+            $orden->ubigeo_destino = isset($request->id_ubigeo_destino) ? $request->id_ubigeo_destino : null;
             $orden->en_almacen = false;
             $orden->estado = 1;
-            $orden->codigo_softlink = $request->codigo_orden!==null ? $request->codigo_orden : '';
-            $orden->observacion = $request->observacion!=null ?trim(strtoupper($request->observacion)):null;
-            $orden->tipo_cambio_compra = isset($request->tipo_cambio_compra)?$request->tipo_cambio_compra:true;
+            $orden->codigo_softlink = $request->codigo_orden !== null ? $request->codigo_orden : '';
+            $orden->observacion = $request->observacion != null ? trim(strtoupper($request->observacion)) : null;
+            $orden->tipo_cambio_compra = isset($request->tipo_cambio_compra) ? $request->tipo_cambio_compra : true;
             $orden->save();
 
             $count = count($request->descripcion);
@@ -2481,258 +2499,258 @@ class OrdenController extends Controller
             // $idRequerimientoList=[];
 
             for ($i = 0; $i < $count; $i++) {
-            $detalle = new OrdenCompraDetalle();
-            $detalle->id_orden_compra= $orden->id_orden_compra;
-            $detalle->id_producto= ($request->idProducto[$i]?$request->idProducto[$i]:null);
-            $detalle->id_detalle_requerimiento=$request->idDetalleRequerimiento[$i]?$request->idDetalleRequerimiento[$i]:null;
-            $detalle->cantidad=$request->cantidadAComprarRequerida[$i];
-            $detalle->id_unidad_medida=$request->unidad[$i];
-            $detalle->precio=$request->precioUnitario[$i];
-            $detalle->descripcion_adicional= $request->descripcion[$i] !=null ?trim(strtoupper($request->descripcion[$i])):null;
-            $detalle->subtotal= floatval($request->cantidadAComprarRequerida[$i] * $request->precioUnitario[$i]);
-            $detalle->tipo_item_id=$request->idTipoItem[$i];
-            $detalle->estado=1;
-            $detalle->fecha_registro = new Carbon();
+                $detalle = new OrdenCompraDetalle();
+                $detalle->id_orden_compra = $orden->id_orden_compra;
+                $detalle->id_producto = ($request->idProducto[$i] ? $request->idProducto[$i] : null);
+                $detalle->id_detalle_requerimiento = $request->idDetalleRequerimiento[$i] ? $request->idDetalleRequerimiento[$i] : null;
+                $detalle->cantidad = $request->cantidadAComprarRequerida[$i];
+                $detalle->id_unidad_medida = $request->unidad[$i];
+                $detalle->precio = $request->precioUnitario[$i];
+                $detalle->descripcion_adicional = $request->descripcion[$i] != null ? trim(strtoupper($request->descripcion[$i])) : null;
+                $detalle->subtotal = floatval($request->cantidadAComprarRequerida[$i] * $request->precioUnitario[$i]);
+                $detalle->tipo_item_id = $request->idTipoItem[$i];
+                $detalle->estado = 1;
+                $detalle->fecha_registro = new Carbon();
 
-            // $detalle->fecha_registro = new Carbon();
-            $detalle->save();
+                // $detalle->fecha_registro = new Carbon();
+                $detalle->save();
 
-            // if($request->idDetalleRequerimiento[$i]>0){
-            //     $idRequerimientoList[]= DetalleRequerimiento::find($request->idDetalleRequerimiento[$i])->first()->id_requerimiento;
-            // }
+                // if($request->idDetalleRequerimiento[$i]>0){
+                //     $idRequerimientoList[]= DetalleRequerimiento::find($request->idDetalleRequerimiento[$i])->first()->id_requerimiento;
+                // }
 
             }
 
-            $actualizarEstados=[];
-            
-            
+            $actualizarEstados = [];
+
+
             DB::commit();
 
-            if(isset($orden->id_orden_compra) and $orden->id_orden_compra >0){
-                $actualizarEstados = $this->actualizarNuevoEstadoRequerimiento($orden->id_orden_compra,$orden->codigo);
+            if (isset($orden->id_orden_compra) and $orden->id_orden_compra > 0) {
+                $actualizarEstados = $this->actualizarNuevoEstadoRequerimiento($orden->id_orden_compra, $orden->codigo);
             }
 
 
 
             return response()->json([
-                'id_orden_compra' => $orden->id_orden_compra, 
+                'id_orden_compra' => $orden->id_orden_compra,
                 'codigo' => $orden->codigo,
-                'lista_estado_requerimiento'=>$actualizarEstados['lista_estado_requerimiento'],
-                'lista_finalizados'=>$actualizarEstados['lista_finalizados'],
-                'status_migracion_softlink'=>(new MigrateOrdenSoftLinkController)->migrarOrdenCompra($orden->id_orden_compra)->original??null //tipo : success , warning, error, mensaje : ""
+                'lista_estado_requerimiento' => $actualizarEstados['lista_estado_requerimiento'],
+                'lista_finalizados' => $actualizarEstados['lista_finalizados'],
+                'status_migracion_softlink' => (new MigrateOrdenSoftLinkController)->migrarOrdenCompra($orden->id_orden_compra)->original ?? null //tipo : success , warning, error, mensaje : ""
 
             ]);
-
         } catch (Exception $e) {
             DB::rollBack();
-            return response()->json(['id_orden_compra' => 0, 'codigo' => '','lista_finalizados'=>[],'status_migracion_softlink'=>null, 'mensaje' => 'Hubo un problema al guardar la orden. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
-
+            return response()->json(['id_orden_compra' => 0, 'codigo' => '', 'lista_finalizados' => [], 'status_migracion_softlink' => null, 'mensaje' => 'Hubo un problema al guardar la orden. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
         }
-
     }
 
- 
 
 
-    function obtenerIdRequerimientoList($idOrden){
+
+    function obtenerIdRequerimientoList($idOrden)
+    {
 
         $det_orden = DB::table('logistica.log_det_ord_compra')
-        ->select('log_det_ord_compra.*')
-        ->where('log_det_ord_compra.id_orden_compra',$idOrden)
-        ->get();
+            ->select('log_det_ord_compra.*')
+            ->where('log_det_ord_compra.id_orden_compra', $idOrden)
+            ->get();
 
 
 
-        $idDetalleRequerimientoList=[];
-        $idRequerimientoList=[];
+        $idDetalleRequerimientoList = [];
+        $idRequerimientoList = [];
 
         foreach ($det_orden as $value) {
-            if($value->id_detalle_requerimiento >0){
-                $idDetalleRequerimientoList[]=$value->id_detalle_requerimiento;
+            if ($value->id_detalle_requerimiento > 0) {
+                $idDetalleRequerimientoList[] = $value->id_detalle_requerimiento;
             }
         }
 
-        if(count($idDetalleRequerimientoList) >0){
+        if (count($idDetalleRequerimientoList) > 0) {
 
             $alm_det_req = DB::table('almacen.alm_det_req')
-            ->select('alm_det_req.*')
-            ->where('alm_det_req.estado','!=',7)
-            ->whereIn('alm_det_req.id_detalle_requerimiento',$idDetalleRequerimientoList)
-            ->get();
+                ->select('alm_det_req.*')
+                ->where('alm_det_req.estado', '!=', 7)
+                ->whereIn('alm_det_req.id_detalle_requerimiento', $idDetalleRequerimientoList)
+                ->get();
 
             foreach ($alm_det_req as $value) {
-                $idRequerimientoList[]=$value->id_requerimiento;
+                $idRequerimientoList[] = $value->id_requerimiento;
             }
         }
 
 
         return $idRequerimientoList;
-
     }
 
-    function obtenerDetalleRequerimiento($idRequerimientoList){
-        $alm_det_req = DetalleRequerimiento::with(['reserva'=> function ($q) {
+    function obtenerDetalleRequerimiento($idRequerimientoList)
+    {
+        $alm_det_req = DetalleRequerimiento::with(['reserva' => function ($q) {
             $q->where('alm_reserva.estado', '=', 1);
         }])
-        ->where('alm_det_req.estado','!=',7)
-        ->whereIn('alm_det_req.id_requerimiento',$idRequerimientoList)
-        ->get();
+            ->where('alm_det_req.estado', '!=', 7)
+            ->whereIn('alm_det_req.id_requerimiento', $idRequerimientoList)
+            ->get();
 
         return $alm_det_req;
     }
 
-    function obtenerItemBase($detalleRequerimiento){
+    function obtenerItemBase($detalleRequerimiento)
+    {
 
-        $itemBase=[];
+        $itemBase = [];
         foreach ($detalleRequerimiento as $value) {
 
-            if($value->tiene_transformacion == false){
-                $stock_comprometido=0;
-                if(count($value->reserva)>0){
+            if ($value->tiene_transformacion == false) {
+                $stock_comprometido = 0;
+                if (count($value->reserva) > 0) {
                     foreach ($value->reserva as $reserva) {
-                        $stock_comprometido+=$reserva->stock_comprometido;
+                        $stock_comprometido += $reserva->stock_comprometido;
                     }
                 }
 
-                $itemBase[]=[  
-                    'id_detalle_requerimiento' =>$value->id_detalle_requerimiento,
-                    'id_requerimiento' =>$value->id_requerimiento,
-                    'cantidad' =>$value->cantidad,
-                    'stock_comprometido' =>$stock_comprometido,
-                    'estado' =>$value->estado,
-                    'cantidad_atendida' =>0,
-                    'update' =>false,
+                $itemBase[] = [
+                    'id_detalle_requerimiento' => $value->id_detalle_requerimiento,
+                    'id_requerimiento' => $value->id_requerimiento,
+                    'cantidad' => $value->cantidad,
+                    'stock_comprometido' => $stock_comprometido,
+                    'estado' => $value->estado,
+                    'cantidad_atendida' => 0,
+                    'update' => false,
                 ];
             }
         }
         return $itemBase;
     }
 
-    function obtenerItemBaseEnOtrasOrdenesGeneradas($idOrden,$itemBaseList){
-        $idDetalleOrdenList=[];
+    function obtenerItemBaseEnOtrasOrdenesGeneradas($idOrden, $itemBaseList)
+    {
+        $idDetalleOrdenList = [];
         foreach ($itemBaseList as $value) {
-            $idDetalleOrdenList[]=$value['id_detalle_requerimiento'];
+            $idDetalleOrdenList[] = $value['id_detalle_requerimiento'];
         }
 
         $otros_det_orden = DB::table('logistica.log_det_ord_compra')
-        ->select(
-            'log_det_ord_compra.*'
+            ->select(
+                'log_det_ord_compra.*'
             )
-        ->where('log_det_ord_compra.id_orden_compra','!=',$idOrden)
-        ->whereIn('log_det_ord_compra.id_detalle_requerimiento',$idDetalleOrdenList)
-        ->get();
+            ->where('log_det_ord_compra.id_orden_compra', '!=', $idOrden)
+            ->whereIn('log_det_ord_compra.id_detalle_requerimiento', $idDetalleOrdenList)
+            ->get();
 
-        $data=[];
+        $data = [];
         foreach ($otros_det_orden as $value) {
-            $data[]=[
-                'id_detalle_orden'=>$value->id_detalle_orden,
-                'id_detalle_requerimiento'=>$value->id_detalle_requerimiento,
-                'id_orden_compra'=>$value->id_orden_compra,
-                'cantidad'=>$value->cantidad
+            $data[] = [
+                'id_detalle_orden' => $value->id_detalle_orden,
+                'id_detalle_requerimiento' => $value->id_detalle_requerimiento,
+                'id_orden_compra' => $value->id_orden_compra,
+                'cantidad' => $value->cantidad
             ];
         }
 
         return $data;
     }
-    function obtenerDetalleOrdenGenerada($idOrden){
-  
+    function obtenerDetalleOrdenGenerada($idOrden)
+    {
+
 
         $det_orden = DB::table('logistica.log_det_ord_compra')
-        ->select(
-            'log_det_ord_compra.*'
+            ->select(
+                'log_det_ord_compra.*'
             )
-        ->where('log_det_ord_compra.id_orden_compra','=',$idOrden)
-        ->get();
-            $data=[];
+            ->where('log_det_ord_compra.id_orden_compra', '=', $idOrden)
+            ->get();
+        $data = [];
         foreach ($det_orden as $value) {
-            $data[]=[
-                'id_detalle_requerimiento'=>$value->id_detalle_requerimiento,
-                'id_detalle_orden'=>$value->id_detalle_orden,
-                'id_orden_compra'=>$value->id_orden_compra,
-                'cantidad'=>$value->cantidad
+            $data[] = [
+                'id_detalle_requerimiento' => $value->id_detalle_requerimiento,
+                'id_detalle_orden' => $value->id_detalle_orden,
+                'id_orden_compra' => $value->id_orden_compra,
+                'cantidad' => $value->cantidad
             ];
         }
 
         return $data;
     }
 
-    function obtenerItemAtendidoParcialOSinAtender($itemBaseList){
-        $ItemAtendidoParcialOSinAtenderList=[];
+    function obtenerItemAtendidoParcialOSinAtender($itemBaseList)
+    {
+        $ItemAtendidoParcialOSinAtenderList = [];
         foreach ($itemBaseList as $value) {
-            if($value['estado'] ==1 || $value['estado'] ==15 || $value['estado'] ==27){
-                $ItemAtendidoParcialOSinAtenderList[]=$value;
+            if ($value['estado'] == 1 || $value['estado'] == 15 || $value['estado'] == 27) {
+                $ItemAtendidoParcialOSinAtenderList[] = $value;
             }
         }
         return $ItemAtendidoParcialOSinAtenderList;
     }
 
-    function obtenerNuevoEstadoDetalleRequerimiento($itemBaseList,$itemBaseEnOtrasOrdenesGeneradasList, $detalleOrdenGeneradaList,$itemAtendidoParcialOSinAtender){
-        $itemsOtrasOrden=[];
-        if(count($itemBaseEnOtrasOrdenesGeneradasList)>0){
+    function obtenerNuevoEstadoDetalleRequerimiento($itemBaseList, $itemBaseEnOtrasOrdenesGeneradasList, $detalleOrdenGeneradaList, $itemAtendidoParcialOSinAtender)
+    {
+        $itemsOtrasOrden = [];
+        if (count($itemBaseEnOtrasOrdenesGeneradasList) > 0) {
             foreach ($itemBaseEnOtrasOrdenesGeneradasList as $key => $value) {
-                $itemsOtrasOrden[]=[
-                    'id_detalle_requerimiento'=>$value['id_detalle_requerimiento'],
-                    'cantidad'=>$value['cantidad']
+                $itemsOtrasOrden[] = [
+                    'id_detalle_requerimiento' => $value['id_detalle_requerimiento'],
+                    'cantidad' => $value['cantidad']
                 ];
             }
         }
-        $itemsReqSinAtenderYParciales=[];
-        if(count($itemAtendidoParcialOSinAtender)>0){
+        $itemsReqSinAtenderYParciales = [];
+        if (count($itemAtendidoParcialOSinAtender) > 0) {
             foreach ($itemAtendidoParcialOSinAtender as $value) {
-                $itemsReqSinAtenderYParciales[]=[
-                    'id_detalle_requerimiento'=>$value['id_detalle_requerimiento'],
-                    'cantidad'=>$value['cantidad'],
-                    'stock_comprometido'=>$value['stock_comprometido'],
+                $itemsReqSinAtenderYParciales[] = [
+                    'id_detalle_requerimiento' => $value['id_detalle_requerimiento'],
+                    'cantidad' => $value['cantidad'],
+                    'stock_comprometido' => $value['stock_comprometido'],
                 ];
             }
         }
 
-        $itemsOrdenGeneradaHoy=[];
-        if(count($detalleOrdenGeneradaList)>0){
+        $itemsOrdenGeneradaHoy = [];
+        if (count($detalleOrdenGeneradaList) > 0) {
             foreach ($detalleOrdenGeneradaList as $value) {
-                $itemsOrdenGeneradaHoy[]=[
-                    'id_detalle_requerimiento'=>$value['id_detalle_requerimiento'],
-                    'cantidad'=>$value['cantidad']
+                $itemsOrdenGeneradaHoy[] = [
+                    'id_detalle_requerimiento' => $value['id_detalle_requerimiento'],
+                    'cantidad' => $value['cantidad']
                 ];
             }
         }
 
         // recorrer itembase para actualziar estado de detOrdenGeneradaHoy
-        if(count($itemsOrdenGeneradaHoy)>0){
+        if (count($itemsOrdenGeneradaHoy) > 0) {
             foreach ($itemBaseList as $keyItemBase => $itemBase) {
                 foreach ($itemsOrdenGeneradaHoy as $keyOrdenHoy => $ordenHoy) {
-                    if($itemBase['id_detalle_requerimiento'] == $ordenHoy['id_detalle_requerimiento']){
+                    if ($itemBase['id_detalle_requerimiento'] == $ordenHoy['id_detalle_requerimiento']) {
                         $itemBaseList[$keyItemBase]['cantidad_atendida'] += intval($ordenHoy['cantidad']);
                         $itemBaseList[$keyItemBase]['update'] = true;
                     }
                 }
             }
-
         }
         // sumar si existe stockComprometido en itemAtendidoParcialOsinAtender
-        if(count($itemsReqSinAtenderYParciales)>0){
+        if (count($itemsReqSinAtenderYParciales) > 0) {
             foreach ($itemBaseList as $keyItemBase => $itemBase) {
                 foreach ($itemsReqSinAtenderYParciales as $keySinAtenderYParcial => $itemSinAtenderYParcial) {
-                    if($itemBase['id_detalle_requerimiento'] == $itemSinAtenderYParcial['id_detalle_requerimiento']){
+                    if ($itemBase['id_detalle_requerimiento'] == $itemSinAtenderYParcial['id_detalle_requerimiento']) {
                         $itemBaseList[$keyItemBase]['cantidad_atendida'] += intval($itemSinAtenderYParcial['stock_comprometido']);
 
-                        if($itemBase['estado'] !=1){
+                        if ($itemBase['estado'] != 1) {
                             $itemBaseList[$keyItemBase]['update'] = true;
                         }
-
                     }
                 }
             }
         }
 
         // sumar cantidad de otra ordenes si existe
-        if(count($itemBaseEnOtrasOrdenesGeneradasList)>0){
+        if (count($itemBaseEnOtrasOrdenesGeneradasList) > 0) {
             foreach ($itemBaseList as $keyItemBase => $itemBase) {
-                    foreach ($itemBaseEnOtrasOrdenesGeneradasList as $keyItemOtrasOrdenes => $itemOtrasOrdenes) {
-                    if($itemBase['id_detalle_requerimiento'] == $itemOtrasOrdenes['id_detalle_requerimiento']){
+                foreach ($itemBaseEnOtrasOrdenesGeneradasList as $keyItemOtrasOrdenes => $itemOtrasOrdenes) {
+                    if ($itemBase['id_detalle_requerimiento'] == $itemOtrasOrdenes['id_detalle_requerimiento']) {
                         $itemBaseList[$keyItemBase]['cantidad_atendida'] += intval($itemOtrasOrdenes['cantidad']);
                         $itemBaseList[$keyItemBase]['update'] = true;
-
                     }
                 }
             }
@@ -2740,17 +2758,16 @@ class OrdenController extends Controller
 
         // detenerminar con itemmBase el estado del detalle Req
         foreach ($itemBaseList as $keyItemBase => $itemBase) {
-            if($itemBase['estado'] != '28'){ //diferente  a atentido almacén total
-                if(($itemBase['cantidad']== $itemBase['cantidad_atendida'])&& ($itemBase['update']==true)){
+            if ($itemBase['estado'] != '28') { //diferente  a atentido almacén total
+                if (($itemBase['cantidad'] == $itemBase['cantidad_atendida']) && ($itemBase['update'] == true)) {
                     $itemBaseList[$keyItemBase]['estado'] = 5; //atendido total
-                }elseif($itemBase['cantidad'] < $itemBase['cantidad_atendida']){
+                } elseif ($itemBase['cantidad'] < $itemBase['cantidad_atendida']) {
                     $itemBaseList[$keyItemBase]['estado'] = 5; //atendido total
-                    
-                }elseif(($itemBase['cantidad_atendida']>0) && ($itemBase['cantidad'] > $itemBase['cantidad_atendida'])){
+
+                } elseif (($itemBase['cantidad_atendida'] > 0) && ($itemBase['cantidad'] > $itemBase['cantidad_atendida'])) {
                     $itemBaseList[$keyItemBase]['estado'] = 15; //atendido parcial
                 }
             }
-
         }
 
 
@@ -2758,36 +2775,36 @@ class OrdenController extends Controller
         return $itemBaseList;
     }
 
-    function obtenerNuevoEstadoCabeceraRequerimiento($idRequerimientoList,$nuevoEstadoDetalleRequerimiento){
+    function obtenerNuevoEstadoCabeceraRequerimiento($idRequerimientoList, $nuevoEstadoDetalleRequerimiento)
+    {
         // Debugbar::info($idRequerimientoList);
         // Debugbar::info($nuevoEstadoDetalleRequerimiento);
 
-        $estadoRequerimiento=[];
+        $estadoRequerimiento = [];
         foreach ($nuevoEstadoDetalleRequerimiento as $itemBase) {
-            $estadoRequerimiento[$itemBase['id_requerimiento']][]=$itemBase['estado'];
+            $estadoRequerimiento[$itemBase['id_requerimiento']][] = $itemBase['estado'];
         }
         // Debugbar::info($estadoRequerimiento);
 
-        $nuevoEstadoCabeceraRequerimiento=[];
+        $nuevoEstadoCabeceraRequerimiento = [];
 
-        $arrParaEstadosAtencionParcial=[1,15,27];
+        $arrParaEstadosAtencionParcial = [1, 15, 27];
 
         foreach ($idRequerimientoList as $indice => $valueReqId) {
-            $clave=0;
+            $clave = 0;
             foreach ($arrParaEstadosAtencionParcial as $arr) {
-                $clave += intval(in_array($arr, $estadoRequerimiento[$valueReqId])); 
-
+                $clave += intval(in_array($arr, $estadoRequerimiento[$valueReqId]));
             }
-            if($clave >0){
-                $nuevoEstadoCabeceraRequerimiento[]=[
-                    'id_requerimiento'=>$valueReqId,
-                    'nuevo_estado'=>15
+            if ($clave > 0) {
+                $nuevoEstadoCabeceraRequerimiento[] = [
+                    'id_requerimiento' => $valueReqId,
+                    'nuevo_estado' => 15
                 ];
-            }elseif($clave==0){
-            
-                $nuevoEstadoCabeceraRequerimiento[]=[
-                    'id_requerimiento'=>$valueReqId,
-                    'nuevo_estado'=>5
+            } elseif ($clave == 0) {
+
+                $nuevoEstadoCabeceraRequerimiento[] = [
+                    'id_requerimiento' => $valueReqId,
+                    'nuevo_estado' => 5
                 ];
             }
         }
@@ -2797,200 +2814,186 @@ class OrdenController extends Controller
 
 
 
-    function actualizarNuevoEstadoRequerimiento($idOrden,$codigo){
+    function actualizarNuevoEstadoRequerimiento($idOrden, $codigo)
+    {
 
         $idRequerimientoList = $this->obtenerIdRequerimientoList($idOrden);
         $detalleRequerimiento = $this->obtenerDetalleRequerimiento($idRequerimientoList);
         $itemBaseList = $this->obtenerItemBase($detalleRequerimiento);
-        $itemBaseEnOtrasOrdenesGeneradasList= $this->obtenerItemBaseEnOtrasOrdenesGeneradas($idOrden, $itemBaseList);
-        $detalleOrdenGeneradaList= $this->obtenerDetalleOrdenGenerada($idOrden);
-        $itemAtendidoParcialOSinAtender= $this->obtenerItemAtendidoParcialOSinAtender($itemBaseList);
+        $itemBaseEnOtrasOrdenesGeneradasList = $this->obtenerItemBaseEnOtrasOrdenesGeneradas($idOrden, $itemBaseList);
+        $detalleOrdenGeneradaList = $this->obtenerDetalleOrdenGenerada($idOrden);
+        $itemAtendidoParcialOSinAtender = $this->obtenerItemAtendidoParcialOSinAtender($itemBaseList);
         // if(config('app.debug')){
-            // Debugbar::info($idRequerimientoList);
-            // Debugbar::info($detalleRequerimiento);
-            // Debugbar::info($itemBaseList);
+        // Debugbar::info($idRequerimientoList);
+        // Debugbar::info($detalleRequerimiento);
+        // Debugbar::info($itemBaseList);
         //     Debugbar::info($itemBaseEnOtrasOrdenesGeneradasList);
         //     Debugbar::info($detalleOrdenGeneradaList);
         //     Debugbar::info($itemAtendidoParcialOSinAtender);
         // }
-           
 
-        $nuevoEstadoDetalleRequerimiento = $this->obtenerNuevoEstadoDetalleRequerimiento($itemBaseList,$itemBaseEnOtrasOrdenesGeneradasList,$detalleOrdenGeneradaList,$itemAtendidoParcialOSinAtender);
+
+        $nuevoEstadoDetalleRequerimiento = $this->obtenerNuevoEstadoDetalleRequerimiento($itemBaseList, $itemBaseEnOtrasOrdenesGeneradasList, $detalleOrdenGeneradaList, $itemAtendidoParcialOSinAtender);
         // Debugbar::info($nuevoEstadoDetalleRequerimiento);
-        $nuevoEstadoCabeceraRequerimiento = $this->obtenerNuevoEstadoCabeceraRequerimiento($idRequerimientoList,$nuevoEstadoDetalleRequerimiento);
+        $nuevoEstadoCabeceraRequerimiento = $this->obtenerNuevoEstadoCabeceraRequerimiento($idRequerimientoList, $nuevoEstadoDetalleRequerimiento);
         // Debugbar::info($nuevoEstadoCabeceraRequerimiento);
 
 
         // actualizar cabecera requerimiento
         foreach ($nuevoEstadoCabeceraRequerimiento as $c) {
             DB::table('almacen.alm_req')
-            ->where('id_requerimiento',$c['id_requerimiento'])
-            ->update(['estado'=>$c['nuevo_estado']]); 
+                ->where('id_requerimiento', $c['id_requerimiento'])
+                ->update(['estado' => $c['nuevo_estado']]);
         }
 
         // actualizar detalle requerimiento
         foreach ($nuevoEstadoDetalleRequerimiento as $d) {
-            if($d['update']==true){
+            if ($d['update'] == true) {
                 DB::table('almacen.alm_det_req')
-                ->where('id_detalle_requerimiento',$d['id_detalle_requerimiento'])
-                ->update(
-                    [
-                        'estado'=>$d['estado']
-                    ]
-                ); 
+                    ->where('id_detalle_requerimiento', $d['id_detalle_requerimiento'])
+                    ->update(
+                        [
+                            'estado' => $d['estado']
+                        ]
+                    );
             }
         }
 
 
         $finalizadosORestablecido = CuadroPresupuestoHelper::finalizar(array_unique($idRequerimientoList));
- 
-
-        return ['lista_estado_requerimiento'=>$nuevoEstadoCabeceraRequerimiento,'lista_finalizados'=>$finalizadosORestablecido['lista_finalizados'],'lista_restablecidos'=>$finalizadosORestablecido['lista_restablecidos']];
 
 
+        return ['lista_estado_requerimiento' => $nuevoEstadoCabeceraRequerimiento, 'lista_finalizados' => $finalizadosORestablecido['lista_finalizados'], 'lista_restablecidos' => $finalizadosORestablecido['lista_restablecidos']];
     }
 
- 
 
 
 
-    public function actualizar_orden_por_requerimiento(Request $request){
+
+    public function actualizar_orden_por_requerimiento(Request $request)
+    {
         try {
             DB::beginTransaction();
-            $data=[];
-            $status=0;
-            $ValidarOrdenSoftlink= (new MigrateOrdenSoftLinkController)->validarOrdenSoftlink($request->id_orden);
-            if($ValidarOrdenSoftlink['tipo']=='success'){
+            $data = [];
+            $status = 0;
+            $ValidarOrdenSoftlink = (new MigrateOrdenSoftLinkController)->validarOrdenSoftlink($request->id_orden);
+            if ($ValidarOrdenSoftlink['tipo'] == 'success') {
                 $orden = Orden::where("id_orden_compra", $request->id_orden)->first();
-                $orden->id_grupo_cotizacion = $request->id_grupo_cotizacion?$request->id_grupo_cotizacion:null;
+                $orden->id_grupo_cotizacion = $request->id_grupo_cotizacion ? $request->id_grupo_cotizacion : null;
                 $orden->id_tp_documento = ($request->id_tp_documento !== null ? $request->id_tp_documento : 2);
                 $orden->id_usuario = Auth::user()->id_usuario;
-                $orden->id_moneda = $request->id_moneda?$request->id_moneda:null;
-                $orden->fecha = $request->fecha_emision?$request->fecha_emision:new Carbon();
-                $orden->incluye_igv = isset($request->incluye_igv)?$request->incluye_igv:true;
+                $orden->id_moneda = $request->id_moneda ? $request->id_moneda : null;
+                $orden->fecha = $request->fecha_emision ? $request->fecha_emision : new Carbon();
+                $orden->incluye_igv = isset($request->incluye_igv) ? $request->incluye_igv : true;
                 $orden->id_proveedor = $request->id_proveedor;
-                $orden->id_cta_principal = isset($request->id_cuenta_principal_proveedor)?$request->id_cuenta_principal_proveedor:null;
-                $orden->id_contacto = isset($request->id_contacto_proveedor)?$request->id_contacto_proveedor:null;
-                $orden->plazo_entrega =  $request->plazo_entrega?$request->plazo_entrega:null;
-                $orden->id_condicion = $request->id_condicion?$request->id_condicion:null;
-                $orden->id_condicion_softlink = $request->id_condicion_softlink?$request->id_condicion_softlink:null;
-                $orden->plazo_dias = $request->plazo_dias?$request->plazo_dias:null;
-                $orden->id_cotizacion = $request->id_cotizacion?$request->id_cotizacion:null;
-                $orden->id_tp_doc = isset($request->id_tp_doc)?$request->id_tp_doc:null;
-                $orden->personal_autorizado_1 = $request->personal_autorizado_1?$request->personal_autorizado_1:null;
-                $orden->personal_autorizado_2 = $request->personal_autorizado_2?$request->personal_autorizado_2:null;
-                $orden->id_occ = $request->id_cc?$request->id_cc:null;
-                $orden->id_sede = $request->id_sede?$request->id_sede:null;
-                $orden->direccion_destino = $request->direccion_destino?$request->direccion_destino:null;
-                $orden->ubigeo_destino = isset($request->id_ubigeo_destino)?$request->id_ubigeo_destino:null;
-                $orden->codigo_softlink = $request->codigo_orden!==null ? $request->codigo_orden : '';
-                $orden->observacion = isset($request->observacion)?$request->observacion:null;
-                $orden->tipo_cambio_compra = isset($request->tipo_cambio_compra)?$request->tipo_cambio_compra:true;
+                $orden->id_cta_principal = isset($request->id_cuenta_principal_proveedor) ? $request->id_cuenta_principal_proveedor : null;
+                $orden->id_contacto = isset($request->id_contacto_proveedor) ? $request->id_contacto_proveedor : null;
+                $orden->plazo_entrega =  $request->plazo_entrega ? $request->plazo_entrega : null;
+                $orden->id_condicion = $request->id_condicion ? $request->id_condicion : null;
+                $orden->id_condicion_softlink = $request->id_condicion_softlink ? $request->id_condicion_softlink : null;
+                $orden->plazo_dias = $request->plazo_dias ? $request->plazo_dias : null;
+                $orden->id_cotizacion = $request->id_cotizacion ? $request->id_cotizacion : null;
+                $orden->id_tp_doc = isset($request->id_tp_doc) ? $request->id_tp_doc : null;
+                $orden->personal_autorizado_1 = $request->personal_autorizado_1 ? $request->personal_autorizado_1 : null;
+                $orden->personal_autorizado_2 = $request->personal_autorizado_2 ? $request->personal_autorizado_2 : null;
+                $orden->id_occ = $request->id_cc ? $request->id_cc : null;
+                $orden->id_sede = $request->id_sede ? $request->id_sede : null;
+                $orden->direccion_destino = $request->direccion_destino ? $request->direccion_destino : null;
+                $orden->ubigeo_destino = isset($request->id_ubigeo_destino) ? $request->id_ubigeo_destino : null;
+                $orden->codigo_softlink = $request->codigo_orden !== null ? $request->codigo_orden : '';
+                $orden->observacion = isset($request->observacion) ? $request->observacion : null;
+                $orden->tipo_cambio_compra = isset($request->tipo_cambio_compra) ? $request->tipo_cambio_compra : true;
                 $orden->save();
-    
-                // $TodoDetalleOrden = OrdenCompraDetalle::where("id_orden_compra", $orden->id_orden_compra)->get();
+
                 $idDetalleProcesado = [];
-     
-                if(isset($request->cantidadAComprarRequerida)){
-    
-                $count = count($request->cantidadAComprarRequerida);
-                for ($i = 0; $i < $count; $i++) {
-                    $id = $request->idRegister[$i];
-                    if (preg_match('/[A-Za-z].*[0-9]|[0-9].*[A-Za-z]/', $id)) // es un id con numeros y letras => es nuevo, insertar
-                    {
-                        $detalle = new OrdenCompraDetalle();
-                        $detalle->id_orden_compra= $orden->id_orden_compra;
-                        $detalle->id_producto= $request->idProducto[$i];
-                        $detalle->id_detalle_requerimiento=$request->idDetalleRequerimiento[$i];
-                        $detalle->cantidad=$request->cantidadAComprarRequerida[$i];
-                        $detalle->id_unidad_medida=$request->unidad[$i];
-                        $detalle->precio=$request->precioUnitario[$i];
-                        $detalle->descripcion_adicional=$request->descripcion[$i];
-                        $detalle->subtotal= floatval($request->cantidadAComprarRequerida[$i] * $request->precioUnitario[$i]);
-                        $detalle->tipo_item_id=$request->idTipoItem[$i];
-                        $detalle->estado=1;
-                        $detalle->save();
-    
-                    }else{ // es un id solo de numerico => actualiza
-                            if($request->idEstado[$i]==7){
-                                if(is_numeric($id)){ // si es un numero 
+
+                if (isset($request->cantidadAComprarRequerida)) {
+
+                    $count = count($request->cantidadAComprarRequerida);
+                    for ($i = 0; $i < $count; $i++) {
+                        $id = $request->idRegister[$i];
+                        if (preg_match('/[A-Za-z].*[0-9]|[0-9].*[A-Za-z]/', $id)) // es un id con numeros y letras => es nuevo, insertar
+                        {
+                            $detalle = new OrdenCompraDetalle();
+                            $detalle->id_orden_compra = $orden->id_orden_compra;
+                            $detalle->id_producto = $request->idProducto[$i];
+                            $detalle->id_detalle_requerimiento = $request->idDetalleRequerimiento[$i];
+                            $detalle->cantidad = $request->cantidadAComprarRequerida[$i];
+                            $detalle->id_unidad_medida = $request->unidad[$i];
+                            $detalle->precio = $request->precioUnitario[$i];
+                            $detalle->descripcion_adicional = $request->descripcion[$i] != null ? trim(strtoupper($request->descripcion[$i])) : null;
+                            $detalle->subtotal = floatval($request->cantidadAComprarRequerida[$i] * $request->precioUnitario[$i]);
+                            $detalle->tipo_item_id = $request->idTipoItem[$i];
+                            $detalle->estado = 1;
+                            $detalle->save();
+                        } else { // es un id solo de numerico => actualiza
+                            if ($request->idEstado[$i] == 7) {
+                                if (is_numeric($id)) { // si es un numero 
                                     $detalle = OrdenCompraDetalle::where("id_detalle_orden", $id)->first();
                                     $detalle->estado = 7;
                                     $detalle->save();
                                 }
-
-                            }else{
+                            } else {
 
                                 $detalle = OrdenCompraDetalle::where("id_detalle_orden", $id)->first();
-                                $detalle->id_producto= $request->idProducto[$i];
-                                $detalle->id_detalle_requerimiento=$request->idDetalleRequerimiento[$i];
-                                $detalle->cantidad=$request->cantidadAComprarRequerida[$i];
-                                $detalle->id_unidad_medida=$request->unidad[$i];
-                                $detalle->precio=$request->precioUnitario[$i];
-                                $detalle->descripcion_adicional= $request->descripcion[$i] !=null ?trim(strtoupper($request->descripcion[$i])):null;
-                                $detalle->subtotal= floatval($request->cantidadAComprarRequerida[$i] * $request->precioUnitario[$i]);
-                                $detalle->tipo_item_id=$request->idTipoItem[$i];
+                                $detalle->id_producto = $request->idProducto[$i];
+                                $detalle->id_detalle_requerimiento = $request->idDetalleRequerimiento[$i];
+                                $detalle->cantidad = $request->cantidadAComprarRequerida[$i];
+                                $detalle->id_unidad_medida = $request->unidad[$i];
+                                $detalle->precio = $request->precioUnitario[$i];
+                                $detalle->descripcion_adicional = $request->descripcion[$i] != null ? trim(strtoupper($request->descripcion[$i])) : null;
+                                $detalle->subtotal = floatval($request->cantidadAComprarRequerida[$i] * $request->precioUnitario[$i]);
+                                $detalle->tipo_item_id = $request->idTipoItem[$i];
                                 $detalle->save();
-            
+
                                 $idDetalleProcesado[] = $detalle->id_detalle_orden;
                             }
-    
+                        }
                     }
                 }
-                }
-    
-                // foreach ($TodoDetalleOrden as $detalleOrden) {
-                //     if (!in_array($detalleOrden->id_detalle_orden, $idDetalleProcesado)) {
-                //         $detalleConAnulidad = OrdenCompraDetalle::where("id_detalle_orden", $detalleOrden->id_detalle_orden)->first();
-                //         $detalleConAnulidad->estado = 7;
-                //         $detalleConAnulidad->save();
-                //     }
-                // }
 
-                $data =[
-                    'id_orden_compra' => $orden->id_orden_compra, 
+
+                $data = [
+                    'id_orden_compra' => $orden->id_orden_compra,
                     'codigo' => $orden->codigo,
                     'status_migracion_softlink' => $ValidarOrdenSoftlink,
                 ];
 
-                $status= 200;
-            }else{
-                    $data =[
-                        'id_orden_compra' => 0, 
-                        'codigo' => '',
-                        'status_migracion_softlink' => $ValidarOrdenSoftlink,
-                    ];
-                    $status= 204;
-                }
-                
-
-
-        DB::commit();
-        if($status == 200){
-            $migrarOrdenSoftlink= (new MigrateOrdenSoftLinkController)->migrarOrdenCompra($request->id_orden)->original;
-            if($migrarOrdenSoftlink['tipo']=='success'){
-                $data =[
-                    'id_orden_compra' => $orden->id_orden_compra, 
-                    'codigo' => $orden->codigo,
-                    'status_migracion_softlink' => $migrarOrdenSoftlink,
-                ];
-            }else{
-                $data =[
-                    'id_orden_compra' => 0, 
+                $status = 200;
+            } else {
+                $data = [
+                    'id_orden_compra' => 0,
                     'codigo' => '',
-                    'status_migracion_softlink' => $migrarOrdenSoftlink,
+                    'status_migracion_softlink' => $ValidarOrdenSoftlink,
                 ];
+                $status = 204;
             }
-        }
 
-        return response()->json($data);
- 
+
+
+            DB::commit();
+            if ($status == 200) {
+                $migrarOrdenSoftlink = (new MigrateOrdenSoftLinkController)->migrarOrdenCompra($request->id_orden)->original;
+                if ($migrarOrdenSoftlink['tipo'] == 'success') {
+                    $data = [
+                        'id_orden_compra' => $orden->id_orden_compra,
+                        'codigo' => $orden->codigo,
+                        'status_migracion_softlink' => $migrarOrdenSoftlink,
+                    ];
+                } else {
+                    $data = [
+                        'id_orden_compra' => 0,
+                        'codigo' => '',
+                        'status_migracion_softlink' => $migrarOrdenSoftlink,
+                    ];
+                }
+            }
+
+            return response()->json($data);
         } catch (\PDOException $e) {
             DB::rollBack();
-            return response()->json(['id_orden_compra' => 0, 'codigo' => '','status_migracion_softlink'=>null, 'mensaje' => 'Hubo un problema al actualizar la orden. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
-
+            return response()->json(['id_orden_compra' => 0, 'codigo' => '', 'status_migracion_softlink' => null, 'mensaje' => 'Hubo un problema al actualizar la orden. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
         }
-
     }
 
 
@@ -3158,14 +3161,14 @@ class OrdenController extends Controller
     //             }
     //         }
 
- 
+
 
     //     } else {
 
     //         $detalle_orden = [];
     //     }
 
- 
+
     //     $output=['status'=>200, 'data'=>['orden'=>$orden,'detalle_orden'=>$detalle_orden]];
 
 
@@ -3199,8 +3202,8 @@ class OrdenController extends Controller
 
     public function guardar_contacto(Request $request)
     {
-        $status=0;
-        $data=[];
+        $status = 0;
+        $data = [];
 
         $id_datos_contacto = DB::table('contabilidad.adm_ctb_contac')->insertGetId(
             [
@@ -3214,8 +3217,8 @@ class OrdenController extends Controller
             ],
             'id_datos_contacto'
         );
-        if($id_datos_contacto >0){
-            $status=200;
+        if ($id_datos_contacto > 0) {
+            $status = 200;
             $data = DB::table('contabilidad.adm_ctb_contac')
                 ->where([
                     ['id_datos_contacto', '=', $id_datos_contacto]
@@ -3223,430 +3226,425 @@ class OrdenController extends Controller
                 ->first();
         }
 
-        $output = ['status'=>$status,'data'=>$data];
- 
+        $output = ['status' => $status, 'data' => $data];
+
         return json_encode($output);
     }
 
 
 
-    function tieneIngresoAlmacen($id_orden){
-        $status=0;
-        $msj=[];
-        $data=[];
+    function tieneIngresoAlmacen($id_orden)
+    {
+        $status = 0;
+        $msj = [];
+        $data = [];
         // buscar en detalle_orden los id_detalle_requerimiento
         $log_det_ord_compra = DB::table('logistica.log_det_ord_compra')
-        ->select(
-            'log_det_ord_compra.*'
-            )
-        ->where([
-            ['log_det_ord_compra.id_orden_compra','=',$id_orden]
-            ])
-        ->get();
-    
-        // verificar si existe ingreso en almacen 
-        if(count($log_det_ord_compra)>0){
-            foreach($log_det_ord_compra as $data){
-                $id_detalle_orden_list[]=$data->id_detalle_orden;
-            }
-    
-            $guia_com_det = DB::table('almacen.guia_com_det')
             ->select(
-                'guia_com_det.*'
-                )
-            ->whereIn('guia_com_det.id_oc_det',$id_detalle_orden_list)
-            ->where('guia_com_det.estado',1)
+                'log_det_ord_compra.*'
+            )
+            ->where([
+                ['log_det_ord_compra.id_orden_compra', '=', $id_orden]
+            ])
             ->get();
-            if(count($guia_com_det)>0){
-                $status = 401;
-                $msj[]='No se puede reverir. La orden tiene items ingresados a almacén';
-                $data=true;
-    
-            }else{
-                $status = 200;
-                $msj[]='La orden no tiene items ingresados a almacén';
-                $data=false;
+
+        // verificar si existe ingreso en almacen 
+        if (count($log_det_ord_compra) > 0) {
+            foreach ($log_det_ord_compra as $data) {
+                $id_detalle_orden_list[] = $data->id_detalle_orden;
             }
-    
-        }else{
+
+            $guia_com_det = DB::table('almacen.guia_com_det')
+                ->select(
+                    'guia_com_det.*'
+                )
+                ->whereIn('guia_com_det.id_oc_det', $id_detalle_orden_list)
+                ->where('guia_com_det.estado', 1)
+                ->get();
+            if (count($guia_com_det) > 0) {
+                $status = 401;
+                $msj[] = 'No se puede reverir. La orden tiene items ingresados a almacén';
+                $data = true;
+            } else {
+                $status = 200;
+                $msj[] = 'La orden no tiene items ingresados a almacén';
+                $data = false;
+            }
+        } else {
             $status = 204;
-            $msj[]='la orden no tiene detalle';
-            $data=false;
+            $msj[] = 'la orden no tiene detalle';
+            $data = false;
         }
-    
-        $output=['status'=>$status, 'mensaje'=>$msj,'data'=>$data];
-        return $output;  
+
+        $output = ['status' => $status, 'mensaje' => $msj, 'data' => $data];
+        return $output;
     }
-    
-    function makeRevertirOrden($id_orden,$sustento){
-        $status=0;
-        $msj=[];
-        $output=[];
-        $id_requerimiento_list=[];
-        $id_usuario_list=[];
 
-       $revertirOrden = DB::table('logistica.log_ord_compra') //revertir orden
-        ->where([
-                ['id_orden_compra',$id_orden]])
-        ->update(
-            [
-                'estado' => 7,
-                'codigo_softlink' => null,
-                'fecha_anulacion' => new Carbon(),
-                'sustento_anulacion'=>$sustento
-            ]);
+    function makeRevertirOrden($id_orden, $sustento)
+    {
+        $status = 0;
+        $msj = [];
+        $output = [];
+        $id_requerimiento_list = [];
+        $id_usuario_list = [];
 
-       $revertirDetalleOrden = DB::table('logistica.log_det_ord_compra') // revertir detalle orden
-        ->where([['id_orden_compra',$id_orden]])
-        ->update(
-            [
-                'estado' => 7
-            ]);
-        if($revertirOrden > 0){
-            $status=200;
-            $msj[]='Orden Revertida';
-        }else{
-            $status=204;
-            $msj[]='hubo un problema al tratar de revertir la orden';
+        $revertirOrden = DB::table('logistica.log_ord_compra') //revertir orden
+            ->where([
+                ['id_orden_compra', $id_orden]
+            ])
+            ->update(
+                [
+                    'estado' => 7,
+                    'codigo_softlink' => null,
+                    'fecha_anulacion' => new Carbon(),
+                    'sustento_anulacion' => $sustento
+                ]
+            );
 
+        $revertirDetalleOrden = DB::table('logistica.log_det_ord_compra') // revertir detalle orden
+            ->where([['id_orden_compra', $id_orden]])
+            ->update(
+                [
+                    'estado' => 7
+                ]
+            );
+        if ($revertirOrden > 0) {
+            $status = 200;
+            $msj[] = 'Orden Revertida';
+        } else {
+            $status = 204;
+            $msj[] = 'hubo un problema al tratar de revertir la orden';
         }
-        if($revertirDetalleOrden > 0){
-            $status=200;
+        if ($revertirDetalleOrden > 0) {
+            $status = 200;
             // $msj[]='Detalle Orden Revertida';
-        }else{
-            $status=204;
-            $msj[]='hubo un problema al tratar de revertir el detalle de la orden';
-
+        } else {
+            $status = 204;
+            $msj[] = 'hubo un problema al tratar de revertir el detalle de la orden';
         }
         // revertir requerimiento y detalle requerimiento ==>
         // buscar en detalle_orden los id_detalle_requerimiento
         $log_det_ord_compra = DB::table('logistica.log_det_ord_compra')
-        ->select(
-            'log_det_ord_compra.*'
+            ->select(
+                'log_det_ord_compra.*'
             )
-        ->where([
-            ['log_det_ord_compra.id_orden_compra','=',$id_orden]
+            ->where([
+                ['log_det_ord_compra.id_orden_compra', '=', $id_orden]
             ])
-        ->get();
+            ->get();
 
-        if(count($log_det_ord_compra)>0){
-            foreach($log_det_ord_compra as $data){
-                $id_detalle_req_list[]=$data->id_detalle_requerimiento;
+        if (count($log_det_ord_compra) > 0) {
+            foreach ($log_det_ord_compra as $data) {
+                $id_detalle_req_list[] = $data->id_detalle_requerimiento;
             }
             // buscar id_requerimiento
             $alm_req = DB::table('almacen.alm_req')
-            ->select(
-                'alm_req.*'
+                ->select(
+                    'alm_req.*'
                 )
-            ->leftJoin('almacen.alm_det_req', 'alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento')
-            ->whereIn('alm_det_req.id_detalle_requerimiento',$id_detalle_req_list)
-            ->get();
+                ->leftJoin('almacen.alm_det_req', 'alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento')
+                ->whereIn('alm_det_req.id_detalle_requerimiento', $id_detalle_req_list)
+                ->get();
 
-            if(count($alm_req)>0){
-                foreach($alm_req as $data){
-                    $id_requerimiento_list[]= $data->id_requerimiento;
-                    $id_usuario_list[]=$data->id_usuario;
+            if (count($alm_req) > 0) {
+                foreach ($alm_req as $data) {
+                    $id_requerimiento_list[] = $data->id_requerimiento;
+                    $id_usuario_list[] = $data->id_usuario;
                 }
 
-                if(count($id_requerimiento_list)>0){
+                if (count($id_requerimiento_list) > 0) {
                     DB::table('almacen.alm_req')
-                    ->whereIn('id_requerimiento',$id_requerimiento_list)
-                    ->update(['estado'=>2]);
-            
-                   $detalleRequerimiento = DetalleRequerimiento::with(['reserva'=> function ($q) {
-                    $q->where('alm_reserva.estado', '=', 1);
-                    }])->whereIn('id_requerimiento',$id_requerimiento_list)->get();
+                        ->whereIn('id_requerimiento', $id_requerimiento_list)
+                        ->update(['estado' => 2]);
+
+                    $detalleRequerimiento = DetalleRequerimiento::with(['reserva' => function ($q) {
+                        $q->where('alm_reserva.estado', '=', 1);
+                    }])->whereIn('id_requerimiento', $id_requerimiento_list)->get();
 
                     foreach ($detalleRequerimiento as $value) {
-                        if(count($value->reserva) ==0){
+                        if (count($value->reserva) == 0) {
                             $det = DetalleRequerimiento::find($value->id_detalle_requerimiento);
-                            $det->estado =1;
+                            $det->estado = 1;
                             $det->save();
                         }
                     }
                     $status = 200;
-                    $msj[]='se restableció el estado del requerimiento';
+                    $msj[] = 'se restableció el estado del requerimiento';
                     $finalizadosORestablecido = CuadroPresupuestoHelper::finalizar($id_requerimiento_list);
 
-                    if($finalizadosORestablecido['lista_restablecidos']  && count($finalizadosORestablecido['lista_restablecidos'])>0){
+                    if ($finalizadosORestablecido['lista_restablecidos']  && count($finalizadosORestablecido['lista_restablecidos']) > 0) {
                         foreach ($finalizadosORestablecido['lista_restablecidos'] as $lr) {
 
-                            $msj[]='Se actualizo el estado del cuadro de prespuesto '.$lr['oportunidad']->codigo_oportunidad;
+                            $msj[] = 'Se actualizo el estado del cuadro de prespuesto ' . $lr['oportunidad']->codigo_oportunidad;
                         }
                         // enviar correo de anulación de orden
                         $correosAnulaciónOrden = [];
 
                         if (config('app.debug')) {
                             $correosAnulaciónOrden[] = config('global.correoDebug2');
-
                         } else {
 
-                            $correosAnulaciónOrden[]=Auth::user()->email; //usuario en sessión que genero la acción
-                            
+                            $correosAnulaciónOrden[] = Auth::user()->email; //usuario en sessión que genero la acción
+
                             foreach ($id_usuario_list as $idUsu) {
-                                $correosAnulaciónOrden[]=Usuario::find($idUsu)->email; // usuario dueño del requerimiento(s)
+                                $correosAnulaciónOrden[] = Usuario::find($idUsu)->email; // usuario dueño del requerimiento(s)
                             }
                         }
-                        $orden=Orden::with('sede')->find($id_orden);
-                        Mail::to($correosAnulaciónOrden)->send(new EmailOrdenAnulada($orden,$finalizadosORestablecido['lista_restablecidos'],Auth::user()->nombre_corto));
+                        $orden = Orden::with('sede')->find($id_orden);
+                        Mail::to($correosAnulaciónOrden)->send(new EmailOrdenAnulada($orden, $finalizadosORestablecido['lista_restablecidos'], Auth::user()->nombre_corto));
 
 
                         // final de envio correo de anulación de orden
 
 
                     }
-
-                }else{
+                } else {
                     $status = 204;
-                    $msj[]='hubo un problema, no se pudo restablecer el estado del requerimientos';
+                    $msj[] = 'hubo un problema, no se pudo restablecer el estado del requerimientos';
                 }
-
-            }//-> si no se encuentra req
-            else{
+            } //-> si no se encuentra req
+            else {
                 $status = 204;
-                $msj[]='no se encontro requerimientos';
+                $msj[] = 'no se encontro requerimientos';
             }
-
-        }// -> si no tiene detalle la orden
-        else{
+        } // -> si no tiene detalle la orden
+        else {
             $status = 204;
-            $msj[]='no se encontro el detalle de la orden';
-
+            $msj[] = 'no se encontro el detalle de la orden';
         }
 
-    $output=['status'=>$status, 'mensaje'=>$msj, 'requerimientoIdList'=>$id_requerimiento_list];
-    return $output;
+        $output = ['status' => $status, 'mensaje' => $msj, 'requerimientoIdList' => $id_requerimiento_list];
+        return $output;
+    }
 
-}
 
- 
-    function makeAnularItemOrdenByIdDetalleRequerimiento($idOrden,$idDetalleRequerimiento){
-        $status=0;
-        $msj=[];
-        $output=[];
-        if($idOrden >0 && $idDetalleRequerimiento>0){
-            $detalleOrdenes= OrdenCompraDetalle::where([['id_orden_compra',$idOrden],['id_detalle_requerimiento',$idDetalleRequerimiento]])->get();
+    function makeAnularItemOrdenByIdDetalleRequerimiento($idOrden, $idDetalleRequerimiento)
+    {
+        $status = 0;
+        $msj = [];
+        $output = [];
+        if ($idOrden > 0 && $idDetalleRequerimiento > 0) {
+            $detalleOrdenes = OrdenCompraDetalle::where([['id_orden_compra', $idOrden], ['id_detalle_requerimiento', $idDetalleRequerimiento]])->get();
             foreach ($detalleOrdenes as $do) {
-                $do->estado=7;
+                $do->estado = 7;
                 $do->save();
-                
             }
-            $status=200;
-            $msj[]='Item Anulado';
-        }else{
-            $status=204;
-            $msj[]='hubo un problema al tratar de anular el item de la orden, id(s) debe ser > 0';
+            $status = 200;
+            $msj[] = 'Item Anulado';
+        } else {
+            $status = 204;
+            $msj[] = 'hubo un problema al tratar de anular el item de la orden, id(s) debe ser > 0';
         }
-    $output=['status'=>$status, 'mensaje'=>$msj];
-    return $output;
+        $output = ['status' => $status, 'mensaje' => $msj];
+        return $output;
+    }
 
-}
-
-    public function anularOrden(Request $request){
+    public function anularOrden(Request $request)
+    {
         try {
             DB::beginTransaction();
-            
-            $idOrden= $request->idOrden;
-            $sustento=  $request->sustento!=null ?trim(strtoupper($request->sustento)):null;
-            
+
+            $idOrden = $request->idOrden;
+            $sustento =  $request->sustento != null ? trim(strtoupper($request->sustento)) : null;
+
             $status = 0;
             $msj = [];
             $output = [];
             $requerimientoIdList = [];
 
-            $ValidarOrdenSoftlink= (new MigrateOrdenSoftLinkController)->validarOrdenSoftlink($idOrden);
-            
-            if($ValidarOrdenSoftlink['tipo']== 'success'){
-    
-                    $hasIngreso = $this->TieneingresoAlmacen($idOrden);
-                    if($hasIngreso['status'] == 200 && $hasIngreso['data'] == false){
-                        $makeRevertirOrden = $this->makeRevertirOrden($idOrden,$sustento);
-                        $status = $makeRevertirOrden['status'];
-                        $msj[] = $makeRevertirOrden['mensaje'];
-                        $requerimientoIdList = $makeRevertirOrden['requerimientoIdList'];
-                    }
-                    else{
-                        $status= $hasIngreso['status'];
-                        $msj[]= $hasIngreso['mensaje'];
-                    }
-    
-                    if($status ==200){
-                        $orden = Orden::select(
-                            'log_ord_compra.codigo'
-                        )
-                        ->where('log_ord_compra.id_orden_compra',$idOrden)
+            $ValidarOrdenSoftlink = (new MigrateOrdenSoftLinkController)->validarOrdenSoftlink($idOrden);
+
+            if ($ValidarOrdenSoftlink['tipo'] == 'success') {
+
+                $hasIngreso = $this->TieneingresoAlmacen($idOrden);
+                if ($hasIngreso['status'] == 200 && $hasIngreso['data'] == false) {
+                    $makeRevertirOrden = $this->makeRevertirOrden($idOrden, $sustento);
+                    $status = $makeRevertirOrden['status'];
+                    $msj[] = $makeRevertirOrden['mensaje'];
+                    $requerimientoIdList = $makeRevertirOrden['requerimientoIdList'];
+                } else {
+                    $status = $hasIngreso['status'];
+                    $msj[] = $hasIngreso['mensaje'];
+                }
+
+                if ($status == 200) {
+                    $orden = Orden::select(
+                        'log_ord_compra.codigo'
+                    )
+                        ->where('log_ord_compra.id_orden_compra', $idOrden)
                         ->first();
-    
-                        for ($i = 0; $i < count($requerimientoIdList); $i++) {
-                            DB::table('almacen.alm_req_obs')
-                            ->insert([  'id_requerimiento'=>$requerimientoIdList[$i],
-                                        'accion'=>'ORDEN ANULADA',
-                                        'descripcion'=>'Orden '.($orden->codigo?$orden->codigo:"").' anulada',
-                                        'id_usuario'=>Auth::user()->id_usuario,
-                                        'fecha_registro'=>date('Y-m-d H:i:s')
+
+                    for ($i = 0; $i < count($requerimientoIdList); $i++) {
+                        DB::table('almacen.alm_req_obs')
+                            ->insert([
+                                'id_requerimiento' => $requerimientoIdList[$i],
+                                'accion' => 'ORDEN ANULADA',
+                                'descripcion' => 'Orden ' . ($orden->codigo ? $orden->codigo : "") . ' anulada',
+                                'id_usuario' => Auth::user()->id_usuario,
+                                'fecha_registro' => date('Y-m-d H:i:s')
                             ]);
-                        }
                     }
-                    $output =[
-                        'id_orden_compra' => $idOrden, 
-                        'codigo' => $orden->codigo,
-                        'status' => $status,
-                        'mensaje'=>$msj,
-                        'status_migracion_softlink' => $ValidarOrdenSoftlink,
-                    ];
-                    $status= 200;
-                
-            }else{
-                $output =[
-                    'id_orden_compra' => 0, 
-                    'codigo' => '',
-                    'status' => 204,
-                    'mensaje'=>'No se pudo anular la orden',
+                }
+                $output = [
+                    'id_orden_compra' => $idOrden,
+                    'codigo' => $orden->codigo,
+                    'status' => $status,
+                    'mensaje' => $msj,
                     'status_migracion_softlink' => $ValidarOrdenSoftlink,
                 ];
-                $status= 204;
+                $status = 200;
+            } else {
+                $output = [
+                    'id_orden_compra' => 0,
+                    'codigo' => '',
+                    'status' => 204,
+                    'mensaje' => 'No se pudo anular la orden',
+                    'status_migracion_softlink' => $ValidarOrdenSoftlink,
+                ];
+                $status = 204;
             }
 
 
             DB::commit();
 
-            if($status == 200){
-                $migrarOrdenSoftlink= (new MigrateOrdenSoftLinkController)->anularOrdenSoftlink($idOrden)->original;
-                if($migrarOrdenSoftlink['tipo']=='success'){
-                    $output =[
-                        'id_orden_compra' => $orden->id_orden_compra, 
+            if ($status == 200) {
+                $migrarOrdenSoftlink = (new MigrateOrdenSoftLinkController)->anularOrdenSoftlink($idOrden)->original;
+                if ($migrarOrdenSoftlink['tipo'] == 'success') {
+                    $output = [
+                        'id_orden_compra' => $orden->id_orden_compra,
                         'codigo' => $orden->codigo,
                         'status' => 200,
-                        'mensaje'=>$msj,
+                        'mensaje' => $msj,
                         'status_migracion_softlink' => $migrarOrdenSoftlink,
                     ];
-                }else{
-                    $output =[
-                        'id_orden_compra' => 0, 
+                } else {
+                    $output = [
+                        'id_orden_compra' => 0,
                         'codigo' => '',
                         'status' => 204,
-                        'mensaje'=>'No se pudo anular la orden',
+                        'mensaje' => 'No se pudo anular la orden',
                         'status_migracion_softlink' => $migrarOrdenSoftlink,
                     ];
                 }
             }
             return response()->json($output);
-
         } catch (\PDOException $e) {
             DB::rollBack();
         }
     }
-    public function anularItemOrden(Request $request){
+    public function anularItemOrden(Request $request)
+    {
         // try {
         //     DB::beginTransaction();
-            
-            $idOrden = $request->idOrden;
-            $idDetalleRequerimiento= $request->idDetalleRequerimiento;
-            
-            
-            $status = 0;
-            $msj = [];
-            $output = [];
-            $requerimientoIdList=[];
 
-            $hasIngreso = $this->TieneingresoAlmacen($idOrden);
-            if($hasIngreso['status'] == 200 && $hasIngreso['data'] == false){
-                $makeAnularItemOrdenByDetalleRequerimiento = $this->makeAnularItemOrdenByIdDetalleRequerimiento($idOrden,$idDetalleRequerimiento);
-                $status = $makeAnularItemOrdenByDetalleRequerimiento['status'];
-                $msj[] = $makeAnularItemOrdenByDetalleRequerimiento['mensaje'];
+        $idOrden = $request->idOrden;
+        $idDetalleRequerimiento = $request->idDetalleRequerimiento;
 
-                $detallesReq= DetalleRequerimiento::where('id_detalle_requerimiento',$idDetalleRequerimiento)->get();
-                foreach ($detallesReq as $dr) {
-                    $requerimiento= Requerimiento::find($dr->id_requerimiento);
-                    $requerimientoIdList[]= $requerimiento->id_requerimiento;
-                }
 
-                for ($i = 0; $i < count($requerimientoIdList); $i++) {
-                    DB::table('almacen.alm_req_obs')
-                    ->insert([  'id_requerimiento'=>$requerimientoIdList[$i],
-                                'accion'=>'UN ITEM DE ORDEN FUE ANULADA',
-                                'descripcion'=>'Orden '.(Orden::find($idOrden)->codigo??"").' anulada',
-                                'id_usuario'=>Auth::user()->id_usuario,
-                                'fecha_registro'=>date('Y-m-d H:i:s')
+        $status = 0;
+        $msj = [];
+        $output = [];
+        $requerimientoIdList = [];
+
+        $hasIngreso = $this->TieneingresoAlmacen($idOrden);
+        if ($hasIngreso['status'] == 200 && $hasIngreso['data'] == false) {
+            $makeAnularItemOrdenByDetalleRequerimiento = $this->makeAnularItemOrdenByIdDetalleRequerimiento($idOrden, $idDetalleRequerimiento);
+            $status = $makeAnularItemOrdenByDetalleRequerimiento['status'];
+            $msj[] = $makeAnularItemOrdenByDetalleRequerimiento['mensaje'];
+
+            $detallesReq = DetalleRequerimiento::where('id_detalle_requerimiento', $idDetalleRequerimiento)->get();
+            foreach ($detallesReq as $dr) {
+                $requerimiento = Requerimiento::find($dr->id_requerimiento);
+                $requerimientoIdList[] = $requerimiento->id_requerimiento;
+            }
+
+            for ($i = 0; $i < count($requerimientoIdList); $i++) {
+                DB::table('almacen.alm_req_obs')
+                    ->insert([
+                        'id_requerimiento' => $requerimientoIdList[$i],
+                        'accion' => 'UN ITEM DE ORDEN FUE ANULADA',
+                        'descripcion' => 'Orden ' . (Orden::find($idOrden)->codigo ?? "") . ' anulada',
+                        'id_usuario' => Auth::user()->id_usuario,
+                        'fecha_registro' => date('Y-m-d H:i:s')
                     ]);
-                }
-                
-                (new ComprasPendientesController)->restablecerEstadoDetalleRequerimiento($idDetalleRequerimiento);
-
- 
-            }
-            else{
-                $status= $hasIngreso['status'];
-                $msj[]= $hasIngreso['mensaje'];
             }
 
-            // DB::commit();
+            (new ComprasPendientesController)->restablecerEstadoDetalleRequerimiento($idDetalleRequerimiento);
+        } else {
+            $status = $hasIngreso['status'];
+            $msj[] = $hasIngreso['mensaje'];
+        }
 
-            if($status ==200){
-                $detOrdenes = OrdenCompraDetalle::where('id_orden_compra',$idOrden)->get();
-                $cantidadItemOrden=0;
-                $cantidadItemOrdenAnulados=0;
-                foreach ($detOrdenes as $d) {
-                    $cantidadItemOrden++;
-                    if($d->estado ==7){
-                        $cantidadItemOrdenAnulados++;
-                    }
-                }
-                if($cantidadItemOrden == $cantidadItemOrdenAnulados){
-                    $anularOrden =$this->makeAnularOrden($idOrden);
-                    $msj[] =$anularOrden['mensaje'];
+        // DB::commit();
+
+        if ($status == 200) {
+            $detOrdenes = OrdenCompraDetalle::where('id_orden_compra', $idOrden)->get();
+            $cantidadItemOrden = 0;
+            $cantidadItemOrdenAnulados = 0;
+            foreach ($detOrdenes as $d) {
+                $cantidadItemOrden++;
+                if ($d->estado == 7) {
+                    $cantidadItemOrdenAnulados++;
                 }
             }
+            if ($cantidadItemOrden == $cantidadItemOrdenAnulados) {
+                $anularOrden = $this->makeAnularOrden($idOrden);
+                $msj[] = $anularOrden['mensaje'];
+            }
+        }
 
-            return response()->json(['status'=>$status, 'mensaje'=>$msj]);
+        return response()->json(['status' => $status, 'mensaje' => $msj]);
 
         // } catch (\PDOException $e) {
         //     DB::rollBack();
         // }
     }
 
-    function makeAnularOrden($idOrden){
-        $status=0;
-        $msj=[];
+    function makeAnularOrden($idOrden)
+    {
+        $status = 0;
+        $msj = [];
 
-        if($idOrden>0){
+        if ($idOrden > 0) {
 
-            $orden= Orden::find($idOrden);
-            $orden->estado=7;
+            $orden = Orden::find($idOrden);
+            $orden->estado = 7;
             $orden->save();
-            $status=200;
-            $msj[]='Orden Anulado';
-            
-        }else{
-            $status=204;
-
+            $status = 200;
+            $msj[] = 'Orden Anulado';
+        } else {
+            $status = 204;
         }
-    
-        $output=['status'=>$status, 'mensaje'=>$msj];
+
+        $output = ['status' => $status, 'mensaje' => $msj];
         return $output;
+    }
 
-}
-
-    public function exportExcelListaOrdenes(){
+    public function exportExcelListaOrdenes()
+    {
         // return Orden::reporteListaOrdenes();
         return Excel::download(new ListOrdenesHeadExport, 'lista_ordenes.xlsx');
     }
-    public function reporteOrdenesCompraExcel($idEmpresa,$idSede,$fechaRegistroDesde,$fechaRegistroHasta){
-        return Excel::download(new ReporteOrdenesCompraExcel($idEmpresa,$idSede,$fechaRegistroDesde,$fechaRegistroHasta), 'reporte_ordenes_compra.xlsx');
+    public function reporteOrdenesCompraExcel($idEmpresa, $idSede, $fechaRegistroDesde, $fechaRegistroHasta)
+    {
+        return Excel::download(new ReporteOrdenesCompraExcel($idEmpresa, $idSede, $fechaRegistroDesde, $fechaRegistroHasta), 'reporte_ordenes_compra.xlsx');
     }
-    public function reporteTransitoOrdenesCompraExcel($idEmpresa,$idSede,$fechaRegistroDesde,$fechaRegistroHasta){
-        return Excel::download(new ReporteTransitoOrdenesCompraExcel($idEmpresa,$idSede,$fechaRegistroDesde,$fechaRegistroHasta), 'reporte_transito_ordenes_compra.xlsx');
+    public function reporteTransitoOrdenesCompraExcel($idEmpresa, $idSede, $fechaRegistroDesde, $fechaRegistroHasta)
+    {
+        return Excel::download(new ReporteTransitoOrdenesCompraExcel($idEmpresa, $idSede, $fechaRegistroDesde, $fechaRegistroHasta), 'reporte_transito_ordenes_compra.xlsx');
     }
 
 
-    public function listarCuentasBancariasProveedor($idProveedor){
+    public function listarCuentasBancariasProveedor($idProveedor)
+    {
         // $cuentas = CuentaContribuyente::mostrarCuentasContribuyente($idProveedor)->get();
         $cuentas = Proveedor::mostrarCuentasProveedor($idProveedor)->get();
         return $cuentas;
     }
 
-    public function guardarCuentaBancariaProveedor(Request $request){
-        $status=0;
+    public function guardarCuentaBancariaProveedor(Request $request)
+    {
+        $status = 0;
 
         $idContribuyente = Proveedor::find($request->id_proveedor)->id_contribuyente;
 
@@ -3664,18 +3662,19 @@ class OrdenController extends Controller
             ],
             'id_cuenta_contribuyente'
         );
-        if($idCuentaContribuyente >0){
-            $status=200;
+        if ($idCuentaContribuyente > 0) {
+            $status = 200;
         }
 
-        $output = ['status'=>$status,'id_cuenta_contribuyente'=>$idCuentaContribuyente];
- 
+        $output = ['status' => $status, 'id_cuenta_contribuyente' => $idCuentaContribuyente];
+
         return json_encode($output);
     }
-    public function obtenerContactoProveedor($idProveedor){
+    public function obtenerContactoProveedor($idProveedor)
+    {
 
         $output = Proveedor::find($idProveedor)->contactoContribuyente;
- 
+
         return json_encode($output);
     }
 
@@ -3690,13 +3689,12 @@ class OrdenController extends Controller
         // }])->where('log_prove.estado','=',1);
 
 
-        $proveedores = Proveedor::with('contribuyente','estadoProveedor','cuentaContribuyente')->whereHas('contribuyente', function($q){
+        $proveedores = Proveedor::with('contribuyente', 'estadoProveedor', 'cuentaContribuyente')->whereHas('contribuyente', function ($q) {
             $q->where('estado', '=', 1);
-        })->where('log_prove.estado','=',1);
+        })->where('log_prove.estado', '=', 1);
 
- 
+
 
         return datatables($proveedores)->toJson();
     }
-
 }

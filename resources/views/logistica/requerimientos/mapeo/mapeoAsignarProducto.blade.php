@@ -40,13 +40,14 @@
                                             <div style="font-size:18px"><label>Productos sugeridos</label></div>
                                             <div class="row">
                                                 <div class="col-md-12">
-                                                    <table class="mytable table table-condensed table-bordered table-okc-view" style="font-size:0.8em;" width="100%" id="productosSugeridos">
+                                                    <table class="mytable table table-condensed table-striped table-hover table-bordered table-okc-view" style="font-size:0.8em;" width="100%" id="productosSugeridos">
                                                         <thead>
                                                             <tr>
-                                                                <th>Código</th>
+                                                                <th>Cód. producto</th>
+                                                                <th>Cód. Soflink</th>
                                                                 <th>PartNumber</th>
                                                                 <th>Marca</th>
-                                                                <th width: "90%">Descripción</th>
+                                                                <th style="width: 70%;">Descripción</th>
                                                                 <th></th>
                                                             </tr>
                                                         </thead>
@@ -57,15 +58,16 @@
 
                                             <div class="row">
                                                 <div class="col-md-12">
-                                                    <table class="mytable table table-condensed table-bordered table-okc-view" style="font-size:0.8em;" width="100%" id="productosCatalogo">
+                                                <table class="mytable table table-condensed table-striped table-hover table-bordered table-okc-view" style="font-size:0.8em;" width="100%" id="productosCatalogo">
                                                         <thead>
                                                             <tr>
-                                                                <th>#</th>
-                                                                <th>Código</th>
-                                                                <th>PartNumber</th>
-                                                                <th>Marca</th>
-                                                                <th width: "90%">Descripción</th>
-                                                                <th></th>
+                                                                <th style="width: 5%">#</th>
+                                                                <th style="width: 5%">Cód. producto</th>
+                                                                <th style="width: 5%">Cód. Soflink</th>
+                                                                <th style="width: 5%">PartNumber</th>
+                                                                <th style="width: 5%">Marca</th>
+                                                                <th style="width: 70%;">Descripción</th>
+                                                                <th style="width: 5%"></th>
                                                             </tr>
                                                         </thead>
                                                         <tbody></tbody>
