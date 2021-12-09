@@ -222,7 +222,14 @@ class MigrateOrdenSoftLinkController extends Controller
 
                     if ($oc_softlink !== null) {
                         //pregunta si fue referenciado
-                        if ($oc_softlink->flg_referen == 1) {
+                        $guia_referen = DB::connection('soft')->table('movimien')
+                            ->where([
+                                ['cod_pedi', '=', $oc_softlink->cod_docu],
+                                ['num_pedi', '=', $oc_softlink->num_docu],
+                                ['flg_anulado', '=', 0]
+                            ])
+                            ->first();
+                        if ($guia_referen !== null) {
                             $arrayRspta = array(
                                 'tipo' => 'warning',
                                 'mensaje' => 'Ésta orden ya fue referenciada en Softlink.',
