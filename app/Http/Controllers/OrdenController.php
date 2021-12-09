@@ -3454,7 +3454,7 @@ class OrdenController extends Controller
 
             $ValidarOrdenSoftlink = (new MigrateOrdenSoftLinkController)->validarOrdenSoftlink($idOrden);
 
-            if ($ValidarOrdenSoftlink['tipo'] == 'success') {
+            if ($ValidarOrdenSoftlink['tipo'] == 'success' || strpos($ValidarOrdenSoftlink['mensaje'], 'anulada') == true ) {
 
                 $hasIngreso = $this->TieneingresoAlmacen($idOrden);
                 if ($hasIngreso['status'] == 200 && $hasIngreso['data'] == false) {
