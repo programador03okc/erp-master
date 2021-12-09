@@ -1867,7 +1867,7 @@ class OrdenView {
                 this.ordenCtrl.anularOrden(id,sustentoAnularOrden).then((response) => {
                     $("#wrapper-okc").LoadingOverlay("hide", true);
         
-                    // console.log(res);
+                    console.log(response);
                     if (response.status == 200) {
                         this.restablecerFormularioOrden();
                         Lobibox.notify(response.status == 200 ? 'success' : 'warning', {
