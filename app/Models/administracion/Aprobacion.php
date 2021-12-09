@@ -42,8 +42,8 @@ class Aprobacion extends Model
                 ->leftJoin('rrhh.rrhh_perso as pers', 'pers.id_persona', '=', 'post.id_persona')
                 ->leftJoin('administracion.adm_operacion', 'adm_flujo.id_operacion', '=', 'adm_operacion.id_operacion')
                 ->where([
-                    ['id_doc_aprob', '=', $id_doc_aprobacion],
-                    ['adm_flujo.estado', '=', 1]
+                    ['id_doc_aprob', '=', $id_doc_aprobacion]
+                    // ['adm_flujo.estado', '=', 1]
                 ])
                 ->orderBy('adm_aprobacion.fecha_vobo', 'asc')
                 ->get();
