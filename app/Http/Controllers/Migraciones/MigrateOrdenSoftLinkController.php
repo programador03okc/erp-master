@@ -1008,9 +1008,9 @@ class MigrateOrdenSoftLinkController extends Controller
                 }
                 //verifica si fue anulado
                 else if ($oc_softlink->flg_anulado == 1) {
-                    //Ya tiene ingreso a almacen
+                    //Ya fue anulada en softlink
                     $arrayRspta = array(
-                        'tipo' => 'warning',
+                        'tipo' => 'success',
                         'mensaje' => 'Ésta orden ya fue anulada en Softlink. Nro. OC ' . $oc_softlink->num_docu . ' id ' . $oc_softlink->mov_id,
                         'ocSoftlink' => array('cabecera' => $oc_softlink),
                         'ocAgile' => array('cabecera' => $oc),
