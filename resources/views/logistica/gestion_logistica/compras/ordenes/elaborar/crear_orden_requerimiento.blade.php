@@ -26,7 +26,7 @@ Elaborar orden
             <div class="col-md-12">
                 <h4 style="display:flex;justify-content: space-between;">General &nbsp;
                     <div>
-                        <span style="color:blue;" name="codigo_orden_interno"></span> &nbsp; <span style="font-size:small;" name="estado_cuadro_costo"></span>
+                        <span style="color:blue;" name="codigo_orden_interno"></span> &nbsp; <span style="font-size:small;" name="estado_orden"></span>
                     </div>
                     <div>
                         <button type="button" name="btn-imprimir-orden-pdf" class="btn btn-info btn-sm handleClickImprimirOrdenPdf" title="Imprimir orden en .pdf" disabled><i class="fas fa-print"></i> Imprimir</button>

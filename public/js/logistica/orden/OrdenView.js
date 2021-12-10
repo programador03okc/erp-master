@@ -1802,14 +1802,15 @@ class OrdenView {
         document.querySelector("form[id='form-crear-orden-requerimiento'] select[name='id_tp_documento']").value = data.id_tp_documento ? data.id_tp_documento : '';
         document.querySelector("form[id='form-crear-orden-requerimiento'] select[name='id_moneda']").value = data.id_moneda ? data.id_moneda : '';
         document.querySelector("form[id='form-crear-orden-requerimiento'] span[name='codigo_orden_interno']").textContent = data.codigo_orden ? data.codigo_orden : '';
-        document.querySelector("form[id='form-crear-orden-requerimiento'] span[name='estado_cuadro_costo']").textContent = data.cuadro_costo !=null && data.cuadro_costo.length>0 ? data.cuadro_costo.map(e => ('('+e.codigo+': '+e.estado_aprobacion+')')).join(",") : '';
+        // document.querySelector("form[id='form-crear-orden-requerimiento'] span[name='estado_orden']").textContent = data.estado_orden !=null?"(Estado: "+data.estado_orden+')':'';
+        document.querySelector("form[id='form-crear-orden-requerimiento'] span[name='estado_orden']").textContent = data.estado_orden !=null?`(Estado: ${data.estado_orden})`:'';
         if(data.cuadro_costo !=null && data.cuadro_costo.length >0 ){
             document.querySelector("div[id='modal-estado-cuadro-presupuesto'] label[id='id_orden']").textContent= data.id_orden_compra ? data.id_orden_compra : '';
             data.cuadro_costo.map((element,index)=>{
                 console.log(element);
                 if(element.id_estado_aprobacion ==4){ //finalizado
                     document.querySelector("button[id='btn-enviar-email-finalizacion-cuadro-presupuesto']").classList.remove("oculto");
-
+                    document.querySelector("div[id='contenedor-detalle-estado-cdp']").innerHTML='';
                     document.querySelector("div[id='contenedor-detalle-estado-cdp']").insertAdjacentHTML('beforeend', `<div class="panel panel-default">
                     <div class="panel-body">
                         <dl class="dl-horizontal">
@@ -1820,6 +1821,9 @@ class OrdenView {
                         </dl>
                     </div>
                 </div>`);
+
+                }else{
+                    document.querySelector("button[id='btn-enviar-email-finalizacion-cuadro-presupuesto']").classList.add("oculto");
 
                 }
             })
