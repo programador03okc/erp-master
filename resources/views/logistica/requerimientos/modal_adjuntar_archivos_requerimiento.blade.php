@@ -9,7 +9,7 @@
 
                 <div class="row" id="group-action-upload-file">
                     <div class="col-md-12">
-                        <input type="file" name="nombre_archivo" class="custom-file-input handleChangeAgregarAdjuntoRequerimiento" placeholder="Seleccionar archivo" />
+                        <input type="file" name="nombre_archivo" class="filestyle handleChangeAgregarAdjuntoRequerimiento" data-input="false" placeholder="Seleccionar archivo" />
                     </div>
                 </div>
                 <br>
