@@ -30,6 +30,7 @@ Elaborar orden
                     </div>
                     <div>
                         <button type="button" name="btn-imprimir-orden-pdf" class="btn btn-info btn-sm handleClickImprimirOrdenPdf" title="Imprimir orden en .pdf" disabled><i class="fas fa-print"></i> Imprimir</button>
+                        <button type="button" name="btn-enviar-email-finalizacion-cuadro-presupuesto" class="btn btn-default btn-sm handleClickEstadoCuadroPresupuesto oculto" id="btn-enviar-email-finalizacion-cuadro-presupuesto"  style="background-color: #9b659b; color:#fff;" title="Enviar email finalización CDP"><i class="fas fa-info-circle"></i> Estado CDP</button>
                         <button type="button" name="btn-enviar-softlink" id="btn-enviar-softlink" class="btn btn-success btn-sm" title="Enviar Orden a Softlink" onclick="enviarOrdenSoftlink();" disabled> Migrar a softlink</button>
                     </div>
                 </h4>
@@ -362,6 +363,7 @@ Elaborar orden
         @endforeach
     </select>
 </div>
+@include('logistica.gestion_logistica.compras.ordenes.elaborar.modal_estado_cuadro_presupuesto')
 @include('logistica.gestion_logistica.compras.ordenes.elaborar.modal_vincular_requerimiento_orden')
 @include('logistica.gestion_logistica.compras.ordenes.elaborar.modal_catalogo_items')
 @include('logistica.gestion_logistica.compras.ordenes.elaborar.modal_ordenes_elaboradas')

@@ -80,6 +80,12 @@ class OrdenView {
         $('#form-crear-orden-requerimiento').on("click", "button.handleClickImprimirOrdenPdf", () => {
             this.imprimirOrdenPDF();
         });
+        $('#form-crear-orden-requerimiento').on("click", "button.handleClickEstadoCuadroPresupuesto", () => {
+            this.estadoCuadroPresupuesto();
+        });
+        $('#modal-estado-cuadro-presupuesto').on("click", "button.handleClickEnviarNotificacionEmailCuadroPresupuestoFinalizado", () => {
+            this.enviarNotificacionEmailCuadroPresupuestoFinalizado();
+        });
         $('#form-crear-orden-requerimiento').on("change", "select.handleChangeSede", (e) => {
             this.changeSede(e.currentTarget);
         });
@@ -164,6 +170,87 @@ class OrdenView {
                 'Lo sentimos no se encontro una orden vinculada para imprimir',
                 'warning'
             );
+        }
+
+    }
+
+    estadoCuadroPresupuesto(){
+        $('#modal-estado-cuadro-presupuesto').modal({
+            show: true,
+            backdrop: 'true',
+            keyboard: true
+
+        });
+    }
+
+    enviarNotificacionEmailCuadroPresupuestoFinalizado(){
+        let idOrden =document.querySelector("div[id='modal-estado-cuadro-presupuesto'] label[id='id_orden']").textContent;
+
+        if(idOrden >0){
+            Swal.fire({
+                title: '¿Esta seguro de querer enviarle una notificar a los usuarios de la finalización de cuadro de presupuesto?',
+                text: "Solo se considera de los cuadros finalizados vinculados a la orden",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Si, enviar email'
+    
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: 'POST',
+                        url: 'enviar-notificacion-finalizacion-cdp',
+                        data:{'idOrden':idOrden},
+                        dataType: 'JSON',
+                        success: (response) => {
+                            console.log(response);
+                            if(response.status ==200){
+                                Lobibox.notify('success', {
+                                    title: false,
+                                    size: 'mini',
+                                    rounded: true,
+                                    sound: false,
+                                    delayIndicator: false,
+                                    msg: 'La notificación fue enviada <i class="far fa-envelope"></i>'
+                                });
+
+                            }else{
+                                Lobibox.notify('danger', {
+                                    title: false,
+                                    size: 'mini',
+                                    rounded: true,
+                                    sound: false,
+                                    delayIndicator: false,
+                                    msg: 'La notificación NO puedo ser enviada, por favor vuelva a intentarlo'
+                                });    
+                            }
+                        }
+                    }).fail((jqXHR, textStatus, errorThrown) => {
+                        Swal.fire(
+                            '',
+                            'Hubo un problema al intentar mostrar enviar la notificación, por favor vuelva a intentarlo.',
+                            'error'
+                        );
+                        // sessionStorage.removeItem('idOrden');
+                        console.log(jqXHR);
+                        console.log(textStatus);
+                        console.log(errorThrown);
+                    });
+
+
+                }
+            });
+        }else{
+            Lobibox.notify('warning', {
+                title: false,
+                size: 'mini',
+                rounded: true,
+                sound: false,
+                delayIndicator: false,
+                msg: 'No se encontró un Id orden valido para continuar'
+            });
         }
 
     }
@@ -1716,7 +1803,28 @@ class OrdenView {
         document.querySelector("form[id='form-crear-orden-requerimiento'] select[name='id_moneda']").value = data.id_moneda ? data.id_moneda : '';
         document.querySelector("form[id='form-crear-orden-requerimiento'] span[name='codigo_orden_interno']").textContent = data.codigo_orden ? data.codigo_orden : '';
         document.querySelector("form[id='form-crear-orden-requerimiento'] span[name='estado_cuadro_costo']").textContent = data.cuadro_costo !=null && data.cuadro_costo.length>0 ? data.cuadro_costo.map(e => ('('+e.codigo+': '+e.estado_aprobacion+')')).join(",") : '';
+        if(data.cuadro_costo !=null && data.cuadro_costo.length >0 ){
+            document.querySelector("div[id='modal-estado-cuadro-presupuesto'] label[id='id_orden']").textContent= data.id_orden_compra ? data.id_orden_compra : '';
+            data.cuadro_costo.map((element,index)=>{
+                console.log(element);
+                if(element.id_estado_aprobacion ==4){ //finalizado
+                    document.querySelector("button[id='btn-enviar-email-finalizacion-cuadro-presupuesto']").classList.remove("oculto");
 
+                    document.querySelector("div[id='contenedor-detalle-estado-cdp']").insertAdjacentHTML('beforeend', `<div class="panel panel-default">
+                    <div class="panel-body">
+                        <dl class="dl-horizontal">
+                            <dt>Código</dt>
+                            <dd>${element.codigo}</dd>
+                            <dt>Estado CDP</dt>
+                            <dd>${element.estado_aprobacion}</dd>
+                        </dl>
+                    </div>
+                </div>`);
+
+                }
+            })
+
+        }
         document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='codigo_orden']").value = data.codigo_softlink ? data.codigo_softlink : '';
         document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='fecha_emision']").value = data.fecha ? moment(data.fecha, 'DD-MM-YYYY h:m').format('YYYY-MM-DDThh:mm') : '';
         document.querySelector("form[id='form-crear-orden-requerimiento'] select[name='id_sede']").value = data.id_sede ? data.id_sede : '';
