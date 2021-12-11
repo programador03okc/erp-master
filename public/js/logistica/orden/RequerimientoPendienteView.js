@@ -17,6 +17,7 @@ var trRequerimientosPendientes;
 
 var reqTrueList = [];
 
+var $tablaListaRequerimientosAtendidos;
 class RequerimientoPendienteView {
     constructor(requerimientoPendienteCtrl) {
         this.requerimientoPendienteCtrl = requerimientoPendienteCtrl;
@@ -36,7 +37,12 @@ class RequerimientoPendienteView {
         // $('#modal-atender-con-almacen').on("click","button.handleClickGuardarAtendidoConAlmacen", ()=>{
         //     this.guardarAtendidoConAlmacen();
         // });
-
+        $('#lista_compras').on("click", ".handleClickTabRequerimientosPendientes", () => {
+            this.tabRequerimientosPendientes();
+        });
+        $('#lista_compras').on("click", ".handleClickTabRequerimientosAtendidos", () => {
+            this.tabRequerimientosAtendidos();
+        });
         $('#modal-filtro-requerimientos-pendientes').on("click", "input[type=checkbox]", (e) => {
             this.estadoCheckFiltroRequerimientosPendientes(e);
         });
@@ -46,6 +52,17 @@ class RequerimientoPendienteView {
         $('#modal-filtro-requerimientos-pendientes').on("blur", "input.handleBlurUpdateValorFiltroRequerimientosPendientes", (e) => {
             this.updateValorFiltroRequerimientosPendientes(e);
         });
+
+        $('#modal-filtro-requerimientos-atendidos').on("click", "input[type=checkbox]", (e) => {
+            this.estadoCheckFiltroRequerimientosAtendidos(e);
+        });
+        $('#modal-filtro-requerimientos-atendidos').on("change", "select.handleChangeUpdateValorFiltroRequerimientosAtendidos", (e) => {
+            this.updateValorFiltroRequerimientosAtendidos(e);
+        });
+        $('#modal-filtro-requerimientos-atendidos').on("blur", "input.handleBlurUpdateValorFiltroRequerimientosAtendidos", (e) => {
+            this.updateValorFiltroRequerimientosAtendidos(e);
+        });
+
 
         $('#requerimientos_pendientes').on("click", "button.handleClickCrearOrdenCompra", () => {
             this.crearOrdenCompra();
@@ -65,12 +82,23 @@ class RequerimientoPendienteView {
             // var data = $('#listaRequerimientosPendientes').DataTable().row($(this).parents("tr")).data();
             this.verDetalleRequerimiento(e.currentTarget);
         });
+        $('#listaRequerimientosAtendidos tbody').on("click", "button.handleClickVerDetalleRequerimiento", (e) => {
+            this.verDetalleRequerimientoAtendidos(e.currentTarget);
+        });
 
         $('#listaRequerimientosPendientes tbody').on("click", "button.handleClickAtenderConAlmacen", (e) => {
             this.atenderConAlmacen(e.currentTarget);
         });
+ 
+        $('#listaRequerimientosAtendidos tbody').on("click", "button.handleClickAtenderConAlmacen", (e) => {
+            this.atenderConAlmacen(e.currentTarget);
+        });
+ 
 
         $('#listaRequerimientosPendientes tbody').on("click", "button.handleClickOpenModalCuadroCostos", (e) => {
+            this.openModalCuadroCostos(e.currentTarget);
+        });
+        $('#listaRequerimientosAtendidos tbody').on("click", "button.handleClickOpenModalCuadroCostos", (e) => {
             this.openModalCuadroCostos(e.currentTarget);
         });
 
@@ -84,6 +112,9 @@ class RequerimientoPendienteView {
             this.verAdjuntoDetalleRequerimiento(e.currentTarget);
         });
         $('#listaRequerimientosPendientes tbody').on("click", "button.handleClickVerTodoAdjuntos", (e) => {
+            this.verTodoAdjuntos(e.currentTarget);
+        });
+        $('#listaRequerimientosAtendidos tbody').on("click", "button.handleClickVerTodoAdjuntos", (e) => {
             this.verTodoAdjuntos(e.currentTarget);
         });
         $('#modal-adjuntos-detalle-requerimiento').on("click", "button.handleClickDescargarArchivoDetalleRequerimiento", (e) => {
@@ -140,6 +171,17 @@ class RequerimientoPendienteView {
                 this.renderRequerimientoPendienteList('SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO');
             } else {
                 this.renderRequerimientoPendienteList(this.ActualParametroEmpresa, this.ActualParametroSede, this.ActualParametroFechaDesde, this.ActualParametroFechaHasta, this.ActualParametroReserva, this.ActualParametroOrden);
+            }
+
+
+        });
+        $('#modal-filtro-requerimientos-atendidos').on('hidden.bs.modal', () => {
+            this.updateValorFiltroRequerimientosAtendidos();
+
+            if (this.updateContadorFiltroRequerimientosAtendidos() == 0) {
+                this.renderRequerimientoAtendidosList('SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO');
+            } else {
+                this.renderRequerimientoAtendidosList(this.ActualParametroEmpresa, this.ActualParametroSede, this.ActualParametroFechaDesde, this.ActualParametroFechaHasta, this.ActualParametroReserva, this.ActualParametroOrden);
             }
 
 
@@ -218,6 +260,14 @@ class RequerimientoPendienteView {
     }
 
 
+    tabRequerimientosPendientes(){
+        this.renderRequerimientoPendienteList('SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO');
+    }
+
+    tabRequerimientosAtendidos(){
+        this.renderRequerimientoAtendidosList('SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO');
+
+    }
 
     // control de estado de check de filtro
     estadoCheckFiltroRequerimientosPendientes(e) {
@@ -262,8 +312,49 @@ class RequerimientoPendienteView {
             default:
                 break;
         }
-
-
+    }
+    estadoCheckFiltroRequerimientosAtendidos(e) {
+        switch (e.currentTarget.getAttribute('name')) {
+            case 'chkEmpresa':
+                if (e.currentTarget.checked == true) {
+                    document.querySelector("div[id='modal-filtro-requerimientos-atendidos'] select[name='empresa']").removeAttribute("readOnly")
+                } else {
+                    document.querySelector("div[id='modal-filtro-requerimientos-atendidos'] select[name='empresa']").setAttribute("readOnly", true)
+                }
+                break;
+            case 'chkSede':
+                if (e.currentTarget.checked == true) {
+                    document.querySelector("div[id='modal-filtro-requerimientos-atendidos'] select[name='sede']").removeAttribute("readOnly")
+                } else {
+                    document.querySelector("div[id='modal-filtro-requerimientos-atendidos'] select[name='sede']").setAttribute("readOnly", true)
+                }
+                break;
+            case 'chkFechaRegistro':
+                if (e.currentTarget.checked == true) {
+                    document.querySelector("div[id='modal-filtro-requerimientos-atendidos'] input[name='fechaRegistroDesde']").removeAttribute("readOnly")
+                    document.querySelector("div[id='modal-filtro-requerimientos-atendidos'] input[name='fechaRegistroHasta']").removeAttribute("readOnly")
+                } else {
+                    document.querySelector("div[id='modal-filtro-requerimientos-atendidos'] input[name='fechaRegistroDesde']").setAttribute("readOnly", true)
+                    document.querySelector("div[id='modal-filtro-requerimientos-atendidos'] input[name='fechaRegistroHasta']").setAttribute("readOnly", true)
+                }
+                break;
+            case 'chkReservaAlmacen':
+                if (e.currentTarget.checked == true) {
+                    document.querySelector("div[id='modal-filtro-requerimientos-atendidos'] select[name='reserva']").removeAttribute("readOnly")
+                } else {
+                    document.querySelector("div[id='modal-filtro-requerimientos-atendidos'] select[name='reserva']").setAttribute("readOnly", true)
+                }
+                break;
+            case 'chkOrden':
+                if (e.currentTarget.checked == true) {
+                    document.querySelector("div[id='modal-filtro-requerimientos-atendidos'] select[name='orden']").removeAttribute("readOnly")
+                } else {
+                    document.querySelector("div[id='modal-filtro-requerimientos-atendidos'] select[name='orden']").setAttribute("readOnly", true)
+                }
+                break;
+            default:
+                break;
+        }
     }
 
     updateContadorFiltroRequerimientosPendientes() {
@@ -276,6 +367,19 @@ class RequerimientoPendienteView {
             }
         });
         document.querySelector("button[id='btnFiltrosRequerimientosPendientes'] span").innerHTML = '<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : ' + contadorCheckActivo
+        return contadorCheckActivo;
+
+    }
+    updateContadorFiltroRequerimientosAtendidos() {
+
+        let contadorCheckActivo = 0;
+        const allCheckBoxFiltroRequerimientosAtendidos = document.querySelectorAll("div[id='modal-filtro-requerimientos-atendidos'] input[type='checkbox']");
+        allCheckBoxFiltroRequerimientosAtendidos.forEach(element => {
+            if (element.checked == true) {
+                contadorCheckActivo++;
+            }
+        });
+        document.querySelector("button[id='btnFiltrosRequerimientosAtendidos'] span").innerHTML = '<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : ' + contadorCheckActivo
         return contadorCheckActivo;
 
     }
@@ -302,6 +406,31 @@ class RequerimientoPendienteView {
         }
         if (modalRequerimientosPendientes.querySelector("select[name='orden']").getAttribute("readonly") == null) {
             this.ActualParametroOrden = modalRequerimientosPendientes.querySelector("select[name='orden']").value;
+        }
+
+    }
+    updateValorFiltroRequerimientosAtendidos() {
+
+
+        const modalRequerimientosAtendidos = document.querySelector("div[id='modal-filtro-requerimientos-atendidos']");
+
+        if (modalRequerimientosAtendidos.querySelector("select[name='empresa']").getAttribute("readonly") == null) {
+            this.ActualParametroEmpresa = modalRequerimientosAtendidos.querySelector("select[name='empresa']").value;
+        }
+        if (modalRequerimientosAtendidos.querySelector("select[name='sede']").getAttribute("readonly") == null) {
+            this.ActualParametroSede = modalRequerimientosAtendidos.querySelector("select[name='sede']").value;
+        }
+        if (modalRequerimientosAtendidos.querySelector("input[name='fechaRegistroDesde']").getAttribute("readonly") == null) {
+            this.ActualParametroFechaDesde = modalRequerimientosAtendidos.querySelector("input[name='fechaRegistroDesde']").value.length > 0 ? modalRequerimientosAtendidos.querySelector("input[name='fechaRegistroDesde']").value : 'SIN_FILTRO';
+        }
+        if (modalRequerimientosAtendidos.querySelector("input[name='fechaRegistroHasta']").getAttribute("readonly") == null) {
+            this.ActualParametroFechaHasta = modalRequerimientosAtendidos.querySelector("input[name='fechaRegistroHasta']").value.length > 0 ? modalRequerimientosAtendidos.querySelector("input[name='fechaRegistroHasta']").value : 'SIN_FILTRO';
+        }
+        if (modalRequerimientosAtendidos.querySelector("select[name='reserva']").getAttribute("readonly") == null) {
+            this.ActualParametroReserva = modalRequerimientosAtendidos.querySelector("select[name='reserva']").value;
+        }
+        if (modalRequerimientosAtendidos.querySelector("select[name='orden']").getAttribute("readonly") == null) {
+            this.ActualParametroOrden = modalRequerimientosAtendidos.querySelector("select[name='orden']").value;
         }
 
     }
@@ -556,6 +685,196 @@ class RequerimientoPendienteView {
     }
 
 
+    renderRequerimientoAtendidosList(idEmpresa = 'SIN_FILTRO', idSede = 'SIN_FILTRO', fechaRegistroDesde = 'SIN_FILTRO', fechaRegistroHasta = 'SIN_FILTRO', reserva = 'SIN_FILTRO', orden = 'SIN_FILTRO') {
+        let that = this;
+
+        $tablaListaRequerimientosAtendidos = $('#listaRequerimientosAtendidos').DataTable({
+            'dom': vardataTables[1],
+            'buttons': [
+                {
+                    text: '<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : 0',
+                    attr: {
+                        id: 'btnFiltrosRequerimientosAtendidos'
+                    },
+                    action: () => {
+                        this.abrirModalFiltrosRequerimientosAtendidos();
+
+                    },
+                    className: 'btn-default btn-sm'
+                }
+            ],
+            'language': vardataTables[0],
+            'order': [[0, 'desc']],
+            'bLengthChange': false,
+            'serverSide': true,
+            'destroy': true,
+            'ajax': {
+                'url': 'requerimientos-atendidos',
+                'type': 'POST',
+                'data': { 'idEmpresa': idEmpresa, 'idSede': idSede, 'fechaRegistroDesde': fechaRegistroDesde, 'fechaRegistroHasta': fechaRegistroHasta, 'reserva': reserva, 'orden': orden },
+                beforeSend: data => {
+
+                    $("#listaRequerimientosAtendidos").LoadingOverlay("show", {
+                        imageAutoResize: true,
+                        progress: true,
+                        imageColor: "#3c8dbc"
+                    });
+                }
+
+            },
+            'columns': [
+                { 'data': 'empresa_sede', 'name': 'sis_sede.descripcion', 'className': 'text-center' },
+                { 'data': 'codigo', 'name': 'alm_req.codigo', 'className': 'text-center' },
+                { 'data': 'fecha_registro', 'name': 'alm_req.fecha_registro', 'className': 'text-center' },
+                { 'data': 'fecha_entrega', 'name': 'alm_req.fecha_entrega', 'className': 'text-center' },
+                { 'data': 'concepto', 'name': 'alm_req.concepto', 'className': 'text-left' },
+                { 'data': 'tipo_req_desc', 'name': 'alm_tp_req.descripcion', 'className': 'text-center' },
+                { 'data': 'division', 'name': 'division.descripcion', 'className': 'text-center', "searchable": false },
+                { 'data': 'cc_solicitado_por', 'name': 'cc_view.name', 'className': 'text-center' },
+                { 'data': 'estado_doc', 'name': 'adm_estado_doc.estado_doc', 'className': 'text-center' },
+                { 'data': 'id_requerimiento', 'name': 'alm_req.id_requerimiento', 'className': 'text-center', "searchable": false }
+
+
+
+            ],
+            'columnDefs': [
+
+                {
+                    'render': function (data, type, row) {
+                        return `${row.estado == 38 ? '<i class="fas fa-exclamation-triangle '+(row.count_pendientes>0?'red':'orange')+' handleClickAbrirModalPorRegularizar" style="cursor:pointer;" title="Por regularizar'+(row.count_pendientes>0?'(Tiene '+row.count_pendientes+' item(s) pendientes por mapear)':'')+'" data-id-requerimiento="' + row.id_requerimiento + '" ></i> &nbsp;' : ''}<a href="/necesidades/requerimiento/elaboracion/index?id=${row.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${row.codigo}</a> ${row.tiene_transformacion == true ? '<i class="fas fa-random text-danger" title="Con transformación"></i>' : ''} `;
+                    }, targets: 1
+                },
+                {
+                    'render': function (data, type, row) {
+                        return row.division != null ? JSON.parse(row.division.replace(/&quot;/g, '"')).join(",") : '';
+                    }, targets: 6
+                },
+                {
+                    'render': function (data, type, row) {
+                        return row.cc_solicitado_por != null ? row.cc_solicitado_por : (row.solicitado_por != null ? row.solicitado_por : '');
+                    }, targets: 7
+                },
+                {
+                    'render': function (data, type, row) {
+                        return '<span class="label label-default estadoRequerimiento">' + row['estado_doc'] + '</span>';
+                    }, targets: 8
+                },
+                {
+                    'render': function (data, type, row) {
+                        // if(permisoCrearOrdenPorRequerimiento == '1') {
+                        let tieneTransformacion = row.tiene_transformacion;
+                        let cantidadItemBase = row.cantidad_items_base;
+                        if (tieneTransformacion == true && cantidadItemBase == 0) {
+                            return ('<div class="btn-group" role="group">' +
+                                '</div>' +
+                                '<div class="btn-group" role="group">' +
+                                '<button type="button" class="btn btn-info btn-xs" name="btnVercuadroCostos" title="Ver Cuadro Costos" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.openModalCuadroCostos(this);">' +
+                                '<i class="fas fa-eye fa-sm"></i>' +
+                                '</button>' +
+
+                                '</div>');
+                        } else {
+                            let openDiv = '<div class="btn-group" role="group">';
+                            let btnVerDetalleRequerimiento = '<button type="button" class="btn btn-default btn-xs handleClickVerDetalleRequerimiento" name="btnVerDetalleRequerimiento" title="Ver detalle requerimiento" data-id-requerimiento="' + row.id_requerimiento + '" ><i class="fas fa-chevron-down fa-sm"></i></button>';
+                            // let btnObservarRequerimientoLogistica= '<button type="button" class="btn btn-default btn-xs handleClickObservarRequerimientoLogistica" name="btnObservarRequerimientoLogistica" title="Observar requerimiento" data-id-requerimiento="' + row.id_requerimiento + '" style="background: gold;" ><i class="fas fa-exclamation-triangle fa-sm"></i></button>';
+
+                            // let btnAgregarItemBase = '<button type="button" class="btn btn-success btn-xs" name="btnAgregarItemBase" title="Mapear productos" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.openModalAgregarItemBase(this);"  ><i class="fas fa-sign-out-alt"></i></button>';
+                            let btnVerAdjuntos = '';
+                            let btnAtenderAlmacen = '';
+                            if(row.cantidad_adjuntos_activos.cabecera >0 || row.cantidad_adjuntos_activos.detalle>0){ 
+                                btnVerAdjuntos = '<button type="button" class="btn btn-default btn-xs handleClickVerTodoAdjuntos" title="Ver adjuntos" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo="' + row.codigo + '"  ><i class="fas fa-folder"></i></button>';
+
+                            }
+                                if (row.count_mapeados > 0) {
+                                if (row.estado == 38 || row.estado ==39 ) { // estado por regularizar | estado  en pausa
+
+                                    btnAtenderAlmacen = '<button type="button" class="btn btn-primary btn-xs handleClickAtenderConAlmacen" name="btnOpenModalAtenderConAlmacen" title="Reserva en almacén" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo-requerimiento="' + row.codigo + '" disabled><i class="fas fa-dolly fa-sm"></i></button>';
+ 
+                                } else {
+                                    btnAtenderAlmacen = '<button type="button" class="btn btn-primary btn-xs handleClickAtenderConAlmacen" name="btnOpenModalAtenderConAlmacen" title="Reserva en almacén" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo-requerimiento="' + row.codigo + '"><i class="fas fa-dolly fa-sm"></i></button>';
+ 
+                                }
+                            }
+
+
+                            let btnVercuadroCostos = '';
+                            if (row.id_tipo_requerimiento == 1) {
+                                btnVercuadroCostos = '<button type="button" class="btn btn-info btn-xs handleClickOpenModalCuadroCostos" name="btnVercuadroCostos" title="Ver Cuadro Costos" data-id-requerimiento="' + row.id_requerimiento + '" ><i class="fas fa-eye fa-sm"></i></button>';
+                            }
+
+
+                            let closeDiv = '</div>';
+
+                            if (row.cantidad_tipo_servicio > 0) {
+                                return (openDiv + btnVerDetalleRequerimiento + btnAtenderAlmacen + btnVercuadroCostos +btnVerAdjuntos+ closeDiv);
+                            } else {
+                                return (openDiv + btnVerDetalleRequerimiento + btnAtenderAlmacen + btnVercuadroCostos +btnVerAdjuntos+ closeDiv);
+                            }
+                        }
+
+                    }, targets: 9
+                }
+
+            ],
+            'rowCallback': function (row, data, dataIndex) {
+                // Get row ID
+                var rowId = data.id_requerimiento;
+                // If row ID is in the list of selected row IDs
+                if ($.inArray(rowId, reqTrueList) !== -1) {
+                    $(row).find('input[type="checkbox"]').prop('checked', true);
+                    $(row).addClass('selected');
+                }
+            },
+            'initComplete': function () {
+
+                //Boton de busqueda
+                const $filter = $('#listaRequerimientosAtendidos_filter');
+                const $input = $filter.find('input');
+                $filter.append('<button id="btnBuscar" class="btn btn-default btn-sm pull-right" type="button"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>');
+                $input.off();
+                $input.on('keyup', (e) => {
+                    if (e.key == 'Enter') {
+                        $('#btnBuscar').trigger('click');
+                    }
+                });
+                $('#btnBuscar').on('click', (e) => {
+                    $tablaListaRequerimientosAtendidos.search($input.val()).draw();
+                })
+                //Fin boton de busqueda
+
+                that.updateContadorFiltroRequerimientosAtendidos();
+
+
+
+            },
+            "drawCallback": function (settings) {
+                //Botón de búsqueda
+                $('#listaRequerimientosAtendidos_filter input').prop('disabled', false);
+                $('#btnBuscar').html('<span class="glyphicon glyphicon-search" aria-hidden="true"></span>').prop('disabled', false);
+                $('#listaRequerimientosAtendidos_filter input').trigger('focus');
+                //fin botón búsqueda
+                if ($tablaListaRequerimientosAtendidos.rows().data().length == 0) {
+                    Lobibox.notify('info', {
+                        title: false,
+                        size: 'mini',
+                        rounded: true,
+                        sound: false,
+                        delayIndicator: false,
+                        msg: `No se encontro data disponible para mostrar`
+                    });
+                }
+                //Botón de búsqueda
+                $('#listaRequerimientosAtendidos_filter input').prop('disabled', false);
+                $('#btnBuscar').html('<span class="glyphicon glyphicon-search" aria-hidden="true"></span>').prop('disabled', false);
+                $('#listaRequerimientosAtendidos_filter input').trigger('focus');
+                //fin botón búsqueda
+                $("#listaRequerimientosAtendidos").LoadingOverlay("hide", true);
+            },
+
+        });
+    }
+
+
     // renderRequerimientoPendienteList(empresa = 'SIN_FILTRO', sede = 'SIN_FILTRO', fechaRegistroDesde = 'SIN_FILTRO', fechaRegistroHasta = 'SIN_FILTRO', reserva = 'SIN_FILTRO', orden = 'SIN_FILTRO') {
     //     this.requerimientoPendienteCtrl.getRequerimientosPendientes(empresa, sede, fechaRegistroDesde, fechaRegistroHasta, reserva, orden).then((res) => {
     //         this.construirTablaListaRequerimientosPendientes(res);
@@ -660,262 +979,7 @@ class RequerimientoPendienteView {
         win.focus();
     }
 
-    // construirTablaListaRequerimientosPendientes(data) {
-    //     let that = this;
-    //     that.requerimientoPendienteCtrl.limpiarTabla('listaRequerimientosPendientes');
-
-    //     tablaListaRequerimientosPendientes = $('#listaRequerimientosPendientes').DataTable({
-    //         'dom': vardataTables[1],
-    //         'buttons': [
-    //             {
-    //                 text: '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Nueva orden',
-    //                 attr: {
-    //                     disabled: true,
-    //                     id: 'btnCrearOrdenCompra'
-    //                 },
-    //                 action: () => {
-    //                     this.crearOrdenCompra();
-
-    //                 },
-    //                 className: 'btn-warning btn-sm'
-    //             },
-    //             {
-    //                 text: '<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : 0',
-    //                 attr: {
-    //                     id: 'btnFiltrosRequerimientosPendientes'
-    //                 },
-    //                 action: () => {
-    //                     this.abrirModalFiltrosRequerimientosPendientes();
-
-    //                 },
-    //                 className: 'btn-default btn-sm'
-    //             }
-    //         ],
-    //         'language': vardataTables[0],
-    //         'order': [[0, 'desc']],
-    //         'destroy': true,
-    //         "bInfo": true,
-    //         "bLengthChange": false,
-
-    //         'data': data,
-    //         'columns': [
-    //             { 'data': 'id_requerimiento' },
-    //             {
-    //                 render: function (data, type, row) {
-    //                     return `<div class="text-center"><input type="checkbox" data-estado="${row.estado}" data-mapeos-pendientes="${row.count_pendientes}" data-mapeados="${row.count_mapeados}" data-id-requerimiento="${row.id_requerimiento}" /></div>`;
-    //                 }
-    //             },
-    //             { 'data': 'empresa_sede' },
-    //             {
-    //                 render: function (data, type, row) {
-    //                     return `${row.estado ==38 ? '<i class="fas fa-exclamation-triangle orange handleClickAbrirModalPorRegularizar" style="cursor:pointer;" title="Por regularizar" data-id-requerimiento="'+row.id_requerimiento+'" ></i> &nbsp;' : ''}<a href="/necesidades/requerimiento/elaboracion/index?id=${row.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${row.codigo}</a> ${row.tiene_transformacion == true ? '<i class="fas fa-random text-danger" title="Con transformación"></i>' : ''} `;
-    //                     // return `<a class="lbl-codigo handleClickAbrirRequerimiento" title="Abrir Requerimiento" data-id-requerimiento="${row.id_requerimiento}">${row.codigo}</a> ${row.tiene_transformacion == true ? '<i class="fas fa-random text-danger" title="Con transformación"></i>' : ''}`;
-    //                 }
-    //             },
-
-    //             { 'data': 'fecha_registro' },
-    //             { 'data': 'fecha_entrega' },
-    //             { 'data': 'concepto' },
-    //             { 'data': 'tipo_req_desc' },
-    //             {
-    //                 render: function (data, type, row) {
-    //                     return row.division != null ? eval(row.division).join() : '';
-    //                 }
-    //             },
-    //             {
-    //                 render: function (data, type, row) {
-    //                     return row.cc_solicitado_por != null ? row.cc_solicitado_por : (row.solicitado_por != null ? row.solicitado_por : '');
-    //                 }
-    //             },
-    //             {
-    //                 'render':
-    //                     function (data, type, row) {
-    //                         return '<span class="label label-default estadoRequerimiento">' + row['estado_doc'] + '</span>';
-
-    //                     }
-    //             },
-    //             {
-    //                 render: function (data, type, row) {
-
-    //                     // if(permisoCrearOrdenPorRequerimiento == '1') {
-    //                     let tieneTransformacion = row.tiene_transformacion;
-    //                     let cantidadItemBase = row.cantidad_items_base;
-    //                     if (tieneTransformacion == true && cantidadItemBase == 0) {
-    //                         return ('<div class="btn-group" role="group">' +
-    //                             '</div>' +
-    //                             '<div class="btn-group" role="group">' +
-    //                             '<button type="button" class="btn btn-info btn-xs" name="btnVercuadroCostos" title="Ver Cuadro Costos" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.openModalCuadroCostos(this);">' +
-    //                             '<i class="fas fa-eye fa-sm"></i>' +
-    //                             '</button>' +
-
-    //                             '</div>');
-    //                     } else {
-    //                         let openDiv = '<div class="btn-group" role="group">';
-    //                         let btnVerDetalleRequerimiento = '<button type="button" class="btn btn-default btn-xs handleClickVerDetalleRequerimiento" name="btnVerDetalleRequerimiento" title="Ver detalle requerimiento" data-id-requerimiento="' + row.id_requerimiento + '" ><i class="fas fa-chevron-down fa-sm"></i></button>';
-    //                         // let btnObservarRequerimientoLogistica= '<button type="button" class="btn btn-default btn-xs handleClickObservarRequerimientoLogistica" name="btnObservarRequerimientoLogistica" title="Observar requerimiento" data-id-requerimiento="' + row.id_requerimiento + '" style="background: gold;" ><i class="fas fa-exclamation-triangle fa-sm"></i></button>';
-
-    //                         // let btnAgregarItemBase = '<button type="button" class="btn btn-success btn-xs" name="btnAgregarItemBase" title="Mapear productos" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.openModalAgregarItemBase(this);"  ><i class="fas fa-sign-out-alt"></i></button>';
-    //                         let btnMapearProductos = '<button type="button" class="mapeo btn btn-success btn-xs" title="Mapear productos" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo="' + row.codigo + '"  ><i class="fas fa-sign-out-alt"></i> <span class="badge" title="Cantidad items sin mapear" name="cantidadAdjuntosRequerimiento" style="position:absolute;border: solid 0.1px;z-index: 9;top: -9px;left: 0px;font-size: 0.9rem;">' + row.count_pendientes + '</span></button>';
-    //                         let btnAtenderAlmacen = '';
-    //                         let btnCrearOrdenCompra = '';
-    //                         let btnCrearOrdenServicio = '';
-    //                         // if(row.count_pendientes ==0){
-    //                             if (row.count_mapeados > 0) {
-    //                                 if(row.estado ==38){
-
-    //                                     btnAtenderAlmacen = '<button type="button" class="btn btn-primary btn-xs handleClickAtenderConAlmacen" name="btnOpenModalAtenderConAlmacen" title="Reserva en almacén" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo-requerimiento="' + row.codigo + '" disabled><i class="fas fa-dolly fa-sm"></i></button>';
-    //                                     btnCrearOrdenCompra = '<button type="button" class="btn btn-warning btn-xs handleClickCrearOrdenCompraPorRequerimiento" name="btnCrearOrdenCompraPorRequerimiento" title="Crear Orden de Compra" data-id-requerimiento="' + row.id_requerimiento + '"  disabled><i class="fas fa-file-invoice" ></i></button>';
-    //                                     btnCrearOrdenServicio = '<button type="button" class="btn btn-danger btn-xs handleClickCrearOrdenServicioPorRequerimiento" name="btnCrearOrdenServicioPorRequerimiento" title="Crear Orden de Servicio" data-id-requerimiento="' + row.id_requerimiento + '" disabled ><i class="fas fa-file-invoice fa-sm"></i></button>';
-
-    //                                 }else{
-    //                                     btnAtenderAlmacen = '<button type="button" class="btn btn-primary btn-xs handleClickAtenderConAlmacen" name="btnOpenModalAtenderConAlmacen" title="Reserva en almacén" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo-requerimiento="' + row.codigo + '"><i class="fas fa-dolly fa-sm"></i></button>';
-    //                                     btnCrearOrdenCompra = '<button type="button" class="btn btn-warning btn-xs handleClickCrearOrdenCompraPorRequerimiento" name="btnCrearOrdenCompraPorRequerimiento" title="Crear Orden de Compra" data-id-requerimiento="' + row.id_requerimiento + '"  ><i class="fas fa-file-invoice"></i></button>';
-    //                                     btnCrearOrdenServicio = '<button type="button" class="btn btn-danger btn-xs handleClickCrearOrdenServicioPorRequerimiento" name="btnCrearOrdenServicioPorRequerimiento" title="Crear Orden de Servicio" data-id-requerimiento="' + row.id_requerimiento + '"  ><i class="fas fa-file-invoice fa-sm"></i></button>';
-
-    //                                 }
-    //                             }
-
-
-    //                             let btnVercuadroCostos = '';
-    //                             if (row.id_tipo_requerimiento == 1) {
-    //                                 btnVercuadroCostos = '<button type="button" class="btn btn-info btn-xs handleClickOpenModalCuadroCostos" name="btnVercuadroCostos" title="Ver Cuadro Costos" data-id-requerimiento="' + row.id_requerimiento + '" ><i class="fas fa-eye fa-sm"></i></button>';
-    //                             }
-
-
-    //                         let closeDiv = '</div>';
-
-    //                             if (row.cantidad_tipo_servicio > 0) {
-    //                                 return (openDiv + btnVerDetalleRequerimiento + btnAtenderAlmacen + btnMapearProductos + btnCrearOrdenCompra + btnCrearOrdenServicio + btnVercuadroCostos + closeDiv);
-    //                             } else {
-    //                                 return (openDiv + btnVerDetalleRequerimiento + btnAtenderAlmacen + btnMapearProductos + btnCrearOrdenCompra + btnVercuadroCostos + closeDiv);
-    //                             }
-
-
-    //                     }
-    //                 },
-    //             }
-    //         ],
-    //         'initComplete': function () {
-    //             that.updateContadorFiltroRequerimientosPendientes();
-
-    //             var trs = this.$('tr');
-    //             for (let i = 0; i < trs.length; i++) {
-    //                 trs[i].childNodes[1].childNodes[0].childNodes[0].addEventListener('click', handleTrClick);
-    //             }
-    //             function handleTrClick() {
-    //                 if (this.classList.contains('eventClick')) {
-    //                     this.classList.remove('eventClick');
-    //                 } else {
-    //                     const rows = Array.from(document.querySelectorAll('tr.eventClick'));
-    //                     rows.forEach(row => {
-    //                         row.classList.remove('eventClick');
-    //                     });
-    //                     this.classList.add('eventClick');
-    //                 }
-    //                 if(this.dataset.estado ==38){
-    //                     this.checked = false;
-    //                     Swal.fire(
-    //                         '',
-    //                         'No puede generar una orden si el requerimiento esta por regularizar',
-    //                         'warning'
-    //                     ); 
-    //                 }
-    //                 if (this.dataset.mapeados == 0) {
-    //                     this.checked = false;
-    //                     Swal.fire(
-    //                         '',
-    //                         'No puede generar una orden si tiene aun productos sin mapear',
-    //                         'warning'
-    //                     );
-    //                 } else {
-    //                     let id = this.dataset.idRequerimiento
-    //                     let stateCheck = this.checked
-    //                     that.requerimientoPendienteCtrl.controlListCheckReq(id, stateCheck);
-
-    //                 }
-    //             }
-
-    //         },
-    //         'columnDefs': [
-    //             { 'aTargets': [0], 'sClass': 'invisible', 'sWidth': '0%' },
-    //             { 'aTargets': [1], 'sWidth': '3%' },
-    //             { 'aTargets': [2], 'sWidth': '5%' },
-    //             { 'aTargets': [3], 'sWidth': '8%' },
-    //             { 'aTargets': [4], 'sWidth': '5%', 'className': 'text-center' },
-    //             { 'aTargets': [5], 'sWidth': '5%', 'className': 'text-center' },
-    //             { 'aTargets': [6], 'sWidth': '20%', 'className': 'text-left' },
-    //             { 'aTargets': [7], 'sWidth': '5%', 'className': 'text-center' },
-    //             { 'aTargets': [8], 'sWidth': '5%', 'className': 'text-center' },
-    //             { 'aTargets': [9], 'sWidth': '10%', 'className': 'text-left' },
-    //             { 'aTargets': [10], 'sWidth': '5%', 'className': 'text-center' },
-    //             { 'aTargets': [11], 'sWidth': '5%', 'className': 'text-center' }
-    //         ],
-    //         "createdRow": function (row, data, dataIndex) {
-    //             // if (data.tiene_transformacion == true) {
-    //             //     $(row.childNodes[3]).css('background-color', '#d8c74ab8');
-    //             //     $(row.childNodes[3]).css('font-weight', 'bold');
-    //             // }
-    //             // else if (data.tiene_transformacion == false) {
-    //             //     $(row.childNodes[3]).css('background-color', '#b498d0');
-    //             //     $(row.childNodes[3]).css('font-weight', 'bold');
-    //             // }
-
-    //         }
-    //     });
-
-    //     $('#listaRequerimientosPendientes tbody').on("click", "button.mapeo", function (e) {
-    //         var id_requerimiento = $(this).data('idRequerimiento');
-    //         var codigo = $(this).data('codigo');
-    //         objBtnMapeo = e.currentTarget;
-    //         // console.log(objBtnMapeo);
-
-    //         $('#modal-mapeoItemsRequerimiento').modal({
-    //             show: true
-    //         });
-    //         $('[name=id_requerimiento]').val(id_requerimiento);
-    //         $('#cod_requerimiento').text(codigo);
-    //         listarItemsRequerimientoMapeo(id_requerimiento);
-
-    //         $('#submit_mapeoItemsRequerimiento').removeAttr('disabled');
-    //     });
-    // }
-    // limpiarFiltroRequerimientosPendientes(){
-    //     let allSelectFiltroRequerimientosPendientes= document.querySelectorAll("div[id='formFiltroListaRequerimientosPendientes'] select");
-    //     allSelectFiltroRequerimientosPendientes.forEach(element => {
-    //         element.value='SIN_FILTRO';
-    //     });
-
-    //     let allInputFiltroRequerimientosPendientes= document.querySelectorAll("div[id='formFiltroListaRequerimientosPendientes'] input");
-    //     allInputFiltroRequerimientosPendientes.forEach(element => {
-    //         element.value='';
-    //     });
-
-    //     let selectElement = document.querySelector("div[id='modal-filtro-requerimientos-pendientes'] select[name='sede']");
-    //     if (selectElement.options.length > 0) {
-    //         let i, L = selectElement.options.length - 1;
-    //         for (i = L; i >= 0; i--) {
-    //             selectElement.remove(i);
-    //         }
-    //         let option = document.createElement("option");
-
-    //         option.value='SIN_FILTRO';
-    //         option.text='-----------------';
-    //         selectElement.add(option);
-    //     }
-    // }
-
-    // aplicarFiltroRequerimientosPendientes(){
-    //         let empresa = document.querySelector("div[id='modal-filtro-requerimientos-pendientes'] select[name='empresa']").value;
-    //         let sede = document.querySelector("div[id='modal-filtro-requerimientos-pendientes'] select[name='sede']").value;
-    //         let fechaRegistroDesde = document.querySelector("div[id='modal-filtro-requerimientos-pendientes'] input[name='fechaRegistroDesde']").value;
-    //         let fechaRegistroHasta = document.querySelector("div[id='modal-filtro-requerimientos-pendientes'] input[name='fechaRegistroHasta']").value;
-    //         let reserva = document.querySelector("div[id='modal-filtro-requerimientos-pendientes'] select[name='reserva']").value;
-    //         let orden = document.querySelector("div[id='modal-filtro-requerimientos-pendientes'] select[name='orden']").value;
-
-    //         this.renderRequerimientoPendienteList(empresa,sede,(fechaRegistroDesde==''?'SIN_FILTRO':fechaRegistroDesde),(fechaRegistroHasta==''?'SIN_FILTRO':fechaRegistroHasta),reserva,orden);
-    //         $('#modal-filtro-requerimientos-pendientes').modal('hide');
-
-    // }
+ 
 
 
     verDetalleRequerimiento(obj) {
@@ -951,12 +1015,55 @@ class RequerimientoPendienteView {
         }
     }
 
+    verDetalleRequerimientoAtendidos(obj) {
+        let tr = obj.closest('tr');
+        var row = $tablaListaRequerimientosAtendidos.row(tr);
+        var id = obj.dataset.idRequerimiento;
+        if (row.child.isShown()) {
+            //  This row is already open - close it
+            row.child.hide();
+            tr.classList.remove('shown');
+        }
+        else {
+            // Open this row
+            //    row.child( format(iTableCounter, id) ).show();
+            this.buildFormatListaRequerimientosAtendidos(obj, iTableCounter, id, row);
+            tr.classList.add('shown');
+            // try datatable stuff
+            oInnerTable = $('#listaRequerimientosPendientes_' + iTableCounter).dataTable({
+                //    data: sections, 
+                autoWidth: true,
+                deferRender: true,
+                info: false,
+                lengthChange: false,
+                ordering: false,
+                paging: false,
+                scrollX: false,
+                scrollY: false,
+                searching: false,
+                columns: [
+                ]
+            });
+            iTableCounter = iTableCounter + 1;
+        }
+    }
+
     buildFormatListaRequerimientosPendientes(obj, table_id, id, row) {
         obj.setAttribute('disabled', true);
 
         this.requerimientoPendienteCtrl.obtenerDetalleRequerimientos(id).then((res) => {
             obj.removeAttribute('disabled');
             this.construirDetalleRequerimientoListaRequerimientosPendientes(table_id, row, res);
+        }).catch((err) => {
+            console.log(err)
+        })
+    }
+    buildFormatListaRequerimientosAtendidos(obj, table_id, id, row) {
+        obj.setAttribute('disabled', true);
+
+        this.requerimientoPendienteCtrl.obtenerDetalleRequerimientos(id).then((res) => {
+            obj.removeAttribute('disabled');
+            this.construirDetalleRequerimientoListaRequerimientosAtendidos(table_id, row, res);
         }).catch((err) => {
             console.log(err)
         })
@@ -1027,11 +1134,83 @@ class RequerimientoPendienteView {
         }
         row.child(tabla).show();
     }
+    construirDetalleRequerimientoListaRequerimientosAtendidos(table_id, row, response) {
+        var html = '';
+        // console.log(response);
+        if (response.length > 0) {
+            response.forEach(function (element) {
+                // if(element.tiene_transformacion==false){
+                let stock_comprometido = 0;
+                (element.reserva).forEach(reserva => {
+                    if (reserva.estado == 1) {
+                        stock_comprometido += parseFloat(reserva.stock_comprometido);
+                    }
+                });
+                let cantidadAdjuntosDetalleRequerimiento = 0;
+                (element.adjunto_detalle_requerimiento).forEach(adjuntoItem => {
+                    if (adjuntoItem.estado == 1) {
+                        cantidadAdjuntosDetalleRequerimiento ++;
+                    }
+                });
+
+                html += `<tr>
+                        <td style="border: none; text-align:center;" data-part-number="${element.part_number}" data-producto-part-number="${element.producto_part_number}">${(element.producto_part_number != null ? element.producto_part_number : (element.part_number != null ? element.part_number : ''))} ${element.tiene_transformacion == true ? '<br><span class="label label-default">Transformado</span>' : ''}</td>
+                        <td style="border: none; text-align:left;">${element.producto_codigo != null ? element.producto_codigo : ''}</td>
+                        <td style="border: none; text-align:left;">${element.producto_codigo_softlink != null ? element.producto_codigo_softlink : ''}</td>
+                        <td style="border: none; text-align:left;">${element.producto_descripcion != null ? element.producto_descripcion : (element.descripcion ? element.descripcion : '')}</td>
+                        <td style="border: none; text-align:center;">${element.abreviatura != null ? element.abreviatura : ''}</td>
+                        <td style="border: none; text-align:center;">${element.cantidad > 0 ? element.cantidad : ''}</td>
+                        <td style="border: none; text-align:center;">${(element.precio_unitario > 0 ? ((element.moneda_simbolo ? element.moneda_simbolo : ((element.moneda_simbolo ? element.moneda_simbolo : '') + '0.00')) + $.number(element.precio_unitario, 2)) : (element.moneda_simbolo ? element.moneda_simbolo : '') + '0.00')}</td>
+                        <td style="border: none; text-align:center;">${(parseFloat(element.subtotal) > 0 ? ((element.moneda_simbolo ? element.moneda_simbolo : '') + $.number(element.subtotal, 2)) : ((element.moneda_simbolo ? element.moneda_simbolo : '') + $.number((element.cantidad * element.precio_unitario), 2)))}</td>
+                        <td style="border: none; text-align:center;">${element.motivo != null ? element.motivo : ''}</td>
+                        <td style="border: none; text-align:center;">${stock_comprometido != null ? stock_comprometido : ''}</td>
+                        <td style="border: none; text-align:center;">${element.estado_doc != null && element.tiene_transformacion == false ? element.estado_doc : ''}</td>
+                        <td style="border: none; text-align:center;">${cantidadAdjuntosDetalleRequerimiento >0 ?`<button type="button" class="btn btn-default btn-xs handleClickVerAdjuntoDetalleRequerimiento" name="btnVerAdjuntoDetalleRequerimiento" title="Ver adjuntos" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-descripcion="${element.producto_descripcion != null ? element.producto_descripcion : (element.descripcion ? element.descripcion : '')}" ><i class="fas fa-paperclip"></i></button>`:''}</td>
+                        </tr>`;
+                // }
+            });
+            var tabla = `<table class="table table-condensed table-bordered" 
+                id="detalle_${table_id}">
+                <thead style="color: black;background-color: #c7cacc;">
+                    <tr>
+                        <th style="border: none; text-align:center;">Part number</th>
+                        <th style="border: none; text-align:center;">Cód. producto</th>
+                        <th style="border: none; text-align:center;">Cód. softlink</th>
+                        <th style="border: none; text-align:center;">Descripcion</th>
+                        <th style="border: none; text-align:center;">Unidad medida</th>
+                        <th style="border: none; text-align:center;">Cantidad</th>
+                        <th style="border: none; text-align:center;">Precio unitario</th>
+                        <th style="border: none; text-align:center;">Subtotal</th>
+                        <th style="border: none; text-align:center;">Motivo</th>
+                        <th style="border: none; text-align:center;">Reserva almacén</th>
+                        <th style="border: none; text-align:center;">Estado</th>
+                        <th style="border: none; text-align:center;">Adjuntos</th>
+                    </tr>
+                </thead>
+                <tbody style="background: #e7e8ea;">${html}</tbody>
+                </table>`;
+        } else {
+            var tabla = `<table class="table table-sm" style="border: none;" 
+                id="detalle_${table_id}">
+                <tbody>
+                    <tr><td>No hay registros para mostrar</td></tr>
+                </tbody>
+                </table>`;
+        }
+        row.child(tabla).show();
+    }
 
     // filtros
 
     abrirModalFiltrosRequerimientosPendientes() {
         $('#modal-filtro-requerimientos-pendientes').modal({
+            show: true,
+            backdrop: 'static'
+        });
+    }
+
+    abrirModalFiltrosRequerimientosAtendidos() {
+        $('#modal-filtro-requerimientos-atendidos').modal({
             show: true,
             backdrop: 'static'
         });
