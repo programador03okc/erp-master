@@ -1199,7 +1199,7 @@ class OrdenView {
 
             (res.detalle).forEach((element) => {
                 if (element.tiene_transformacion == false) {
-                    if (element.id_producto > 0) {
+                    if (element.id_producto > 0 && (![5,28,7].includes(element.id_estado))) {
                         i++;
 
                         let cantidad_atendido_almacen = 0;
