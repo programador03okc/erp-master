@@ -306,8 +306,8 @@ Elaborar orden
                                     <th style="width: 5%">Cantidad solicitada</th>
                                     <th style="width: 5%">Cantidad Reservada</th>
                                     <th style="width: 5%">Cantidad atendido orden</th>
-                                    <th style="width: 10%">Precio</th>
                                     <th style="width: 8%">Cantidad a comprar / requerir</th>
+                                    <th style="width: 10%">Precio</th>
                                     <th style="width: 6%">Total</th>
                                     <th style="width: 5%">Acción</th>
                                 </tr>
