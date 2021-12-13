@@ -508,7 +508,7 @@ class AprobarRequerimientoView {
         if (data.length > 0) {
             for (let i = 0; i < data.length; i++) {
                 html += `<tr>
-                    <td style="text-align:center;">${data[i].nombre_usuario ? data[i].nombre_usuario : ''}</td>
+                    <td style="text-align:center;">${data[i].nombre_corto ? data[i].nombre_corto : ''}</td>
                     <td style="text-align:center;">${data[i].accion ? data[i].accion : ''}${data[i].tiene_sustento ==true ? ' (Tiene sustento)': ''}</td>
                     <td style="text-align:left;">${data[i].detalle_observacion ? data[i].detalle_observacion : ''}</td>
                     <td style="text-align:center;">${data[i].fecha_vobo ? data[i].fecha_vobo : ''}</td>
