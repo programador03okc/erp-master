@@ -499,7 +499,7 @@ function llenar_tabla_historial_aprobaciones(data) {
         for (var a = 0; a < data.length; a++) {
             var row = table.insertRow(a + 1);
             row.insertCell(0).innerHTML = data[a].estado ? data[a].estado.toUpperCase() : '-';
-            row.insertCell(1).innerHTML = data[a].nombre_usuario ? data[a].nombre_usuario : '-';
+            row.insertCell(1).innerHTML = data[a].nombre_corto ? data[a].nombre_corto : '-';
             row.insertCell(2).innerHTML = data[a].obs ? data[a].obs : '-';
             row.insertCell(3).innerHTML = data[a].fecha ? data[a].fecha : '-';
         }
