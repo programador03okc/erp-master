@@ -3001,6 +3001,23 @@ class OrdenController extends Controller
     }
 
 
+    public function validarOrdenAgilOrdenSoftlink(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            $ValidarOrdenSoftlink = (new MigrateOrdenSoftLinkController)->validarOrdenSoftlink($request->idOrden);
+       
+            DB::commit();
+ 
+
+            return response()->json($ValidarOrdenSoftlink);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json(['tipo' => 'error', 'mensaje' => 'Hubo un problema al actualizar la orden. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
+        }
+    }
+
     // public function ver_orden($id_orden)
     // {
 

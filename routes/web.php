@@ -824,6 +824,7 @@ Route::group(['middleware' => ['auth']], function () {
 						Route::get('migrarOrdenCompra/{id}', 'Migraciones\MigrateOrdenSoftLinkController@migrarOrdenCompra');
 						Route::post('mostrar-catalogo-productos', 'Logistica\RequerimientoController@mostrarCatalogoProductos');
 						Route::post('enviar-notificacion-finalizacion-cdp', 'OrdenController@enviarNotificacionFinalizacionCDP');
+						Route::post('validar-orden-agil-orden-softlink', 'OrdenController@validarOrdenAgilOrdenSoftlink');
 
 					});
 					Route::group(['as' => 'listado.', 'prefix' => 'listado'], function () {
