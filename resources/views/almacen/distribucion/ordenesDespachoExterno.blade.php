@@ -2,7 +2,7 @@
 @include('layout.menu_logistica')
 
 @section('cabecera')
-Gestión de Despacho Externo
+Gestión de Despachos
 @endsection
 
 @section('estilos')
@@ -55,10 +55,10 @@ Gestión de Despacho Externo
                                     <th>Generado por</th>
                                     <th>Sede Req.</th>
                                     <th>Cod. D.E.</th>
-                                    <th>Nro. Prio.</th>
+                                    {{-- <th>Nro. Prio.</th> --}}
                                     <th>Fecha Despacho Real</th>
                                     <th>Fecha Llegada</th>
-                                    <th>Estado D.E.</th>
+                                    <th>Estado</th>
                                     <th width="60px">Acción</th>
                                 </tr>
                             </thead>

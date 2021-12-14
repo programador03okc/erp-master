@@ -28,35 +28,75 @@ Gestión de Despachos Internos
         <div class="box-body">
             <div class="col-md-12" style="padding-top:10px;padding-bottom:10px;">
 
-                <form id="formFiltrosDespachoInterno" method="POST" target="_blank" action="{{route('almacen.movimientos.pendientes-ingreso.ordenesPendientesExcel')}}">
-                    @csrf()
-                    <input type="hidden" name="select_mostrar" value="0">
-                </form>
-
                 <div class="row">
-                    <div class="col-md-12">
-                        <table class="mytable table table-condensed table-bordered table-okc-view" id="requerimientosEnProceso">
-                            <thead>
-                                <tr>
-                                    <th hidden></th>
-                                    <th></th>
-                                    <th width="8%">Cod.Req.</th>
-                                    <th>Fecha Despacho</th>
-                                    <th>Orden Elec.</th>
-                                    <th>Cod.CP</th>
-                                    <th>Cliente/Entidad</th>
-                                    <th>Generado por</th>
-                                    <th>Sede Req.</th>
-                                    {{-- <th>Estado</th> --}}
-                                    <th>O.T.</th>
-                                    <th>D.I.</th>
-                                    {{-- <th>Estado O.T.</th> --}}
-                                    <th>Estado D.I.</th>
-                                    <th width="30px">Acción</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
+                    <div class="col-md-3">
+
+                        <div style="display:flex">
+                            <label style="text-align: center;margin-left: 20px;margin-top: 7px;margin-right: 10px;">Mostrar: </label>
+                            <select class="form-control" id="selectMostrar">
+                                <option value="0" >Todos</option>
+                                <option value="1" >Priorizados</option>
+                                <option value="2" selected>Priorizados Hoy</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                    
+                <div class="row">
+
+                    <div class="col-md-3">
+                        <div class="card">
+                            <div class="card-header" style="margin-bottom: 15px;">
+                                <div class="small-box bg-aqua" style="padding: 5px;text-align: center;">
+                                    Programadas
+                                </div>
+                            </div>
+                            <div class="card-body" id="listaProgramados"></div>
+                        </div>
+                    </div>
+    
+                    <div class="col-md-3">
+                        <div class="card">
+                            <div class="card-header" style="margin-bottom: 15px;">
+                                <div class="small-box bg-blue" style="padding: 5px;text-align: center;">
+                                    Pendientes
+                                </div>
+                            </div>
+                            <div class="card-body" id="listaPendientes">
+                                {{-- <div class="small-box bg-blue">
+                                    <div class="inner">
+                                        <h5>OKC2110040 - BANCO DE LA NACION</h5>
+                                    </div>
+                                    <a href="#" class="small-box-footer"> 
+                                        <i class="fa fa-arrow-circle-left"></i>
+                                        <i class="fa fa-arrow-circle-right"></i>
+                                    </a>
+                                </div> --}}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="card">
+                            <div class="card-header" style="margin-bottom: 15px;">
+                                <div class="small-box bg-orange" style="padding: 5px;text-align: center;">
+                                    Proceso
+                                </div>
+                            </div>
+                            <div class="card-body" id="listaProceso"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div class="card">
+                            <div class="card-header" style="margin-bottom: 15px;">
+                                <div class="small-box bg-green" style="padding: 5px;text-align: center;">
+                                    Finalizadas
+                                </div>
+                            </div>
+                            <div class="card-body" id="listaFinalizadas"></div>
+                        </div>
                     </div>
                 </div>
 
@@ -88,8 +128,8 @@ Gestión de Despachos Internos
 <script>
     $(document).ready(function() {
         seleccionarMenu(window.location);
-        $.fn.dataTable.Buttons.defaults.dom.button.className = 'btn';
-        listarRequerimientosPendientes();
+        // $.fn.dataTable.Buttons.defaults.dom.button.className = 'btn';
+        listarDespachosInternos();
     });
 </script>
 @endsection

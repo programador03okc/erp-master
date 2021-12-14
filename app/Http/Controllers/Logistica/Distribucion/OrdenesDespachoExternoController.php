@@ -94,6 +94,7 @@ class OrdenesDespachoExternoController extends Controller
                 'orden_despacho.plazo_excedido',
                 'orden_despacho.fecha_entregada',
                 'orden_despacho.fecha_despacho_real',
+                'despachoInterno.codigo as codigo_despacho_interno',
                 'est_od.estado_doc as estado_od',
                 'estado_envio.descripcion as estado_envio',
                 'est_od.bootstrap_color as estado_bootstrap_od',
@@ -149,6 +150,11 @@ class OrdenesDespachoExternoController extends Controller
                 $join->on('orden_despacho.id_requerimiento', '=', 'alm_req.id_requerimiento');
                 $join->where('orden_despacho.aplica_cambios', '=', false);
                 $join->where('orden_despacho.estado', '!=', 7);
+            })
+            ->leftJoin('almacen.orden_despacho as despachoInterno', function ($join) {
+                $join->on('despachoInterno.id_requerimiento', '=', 'alm_req.id_requerimiento');
+                $join->where('despachoInterno.aplica_cambios', '=', true);
+                $join->where('despachoInterno.estado', '!=', 7);
             })
             ->leftJoin('contabilidad.adm_contri as transportista', 'transportista.id_contribuyente', '=', 'orden_despacho.id_transportista')
             // ->leftJoin('configuracion.ubi_dis as od_dis', 'od_dis.id_dis', '=', 'orden_despacho.ubigeo_destino')
@@ -942,7 +948,7 @@ class OrdenesDespachoExternoController extends Controller
                                 'id_transportista' => $request->tr_id_transportista,
                                 'flete_real' => $request->importe_flete,
                                 'fecha_salida' => $request->fecha_despacho_real,
-                                'id_usuario' => $request->fecha_despacho_real,
+                                'id_usuario' => $id_usuario,
                                 'fecha_registro' => new Carbon(),
                             ], 'id');
                     }
@@ -1014,7 +1020,7 @@ class OrdenesDespachoExternoController extends Controller
             DB::rollBack();
         }
     }
-
+    /*
     public function migrarDespachos()
     {
         try {
@@ -1135,6 +1141,111 @@ class OrdenesDespachoExternoController extends Controller
             }
             DB::commit();
             return response()->json($ods);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+        }
+    }
+*/
+
+    public function migrarDespachos()
+    {
+        try {
+            DB::beginTransaction();
+
+            $despachos = DB::table('almacen.orden_despacho')
+                ->select(
+                    'orden_despacho.id_od',
+                    'orden_despacho.id_transportista',
+                    'orden_despacho.importe_flete',
+                    'orden_despacho.fecha_despacho_real',
+                    'orden_despacho.fecha_entregada',
+                    DB::raw("(SELECT SUM(gasto_extra) FROM almacen.orden_despacho_obs WHERE
+                            orden_despacho_obs.id_od = orden_despacho.id_od
+                            and orden_despacho.estado != 7) AS suma_gasto_extra"),
+                    'alm_req.id_requerimiento',
+                    'alm_req.tiene_transformacion',
+                    'oc_propias_view.fecha_salida',
+                    'oc_propias_view.fecha_llegada',
+                    'oc_propias_view.flete_real',
+                    'oc_propias_view.id_transportista',
+                    'oc_propias_view.tipo',
+                    'oc_propias_view.id as id_orden',
+                    'oc_directas.id_despacho as id_despacho_directa',
+                    'oc_propias.id_despacho as id_despacho_propia'
+                )
+                ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'orden_despacho.id_requerimiento')
+                ->join('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
+                ->leftjoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
+                ->leftJoin('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'cc.id_oportunidad')
+                ->leftJoin('mgcp_ordenes_compra.oc_directas', 'oc_directas.id', '=', 'oc_propias_view.id')
+                ->leftJoin('mgcp_acuerdo_marco.oc_propias', 'oc_propias.id', '=', 'oc_propias_view.id')
+                ->where([['orden_despacho.aplica_cambios', '=', false]])
+                ->get();
+
+            $rsptas = [];
+            $id_usuario = Auth::user()->id_usuario;
+            $update = 0;
+            $save = 0;
+
+            foreach ($despachos as $req) {
+                //tiene un despacho
+                $id_despacho = $req->id_despacho_directa !== null ? $req->id_despacho_directa
+                    : ($req->id_despacho_propia !== null ? $req->id_despacho_propia : null);
+
+                $flete_real = (floatval($req->importe_flete) + floatval($req->suma_gasto_extra));
+
+                //si ya existe un despacho
+                if ($id_despacho !== null) {
+                    DB::table('mgcp_ordenes_compra.despachos')
+                        ->where('id', $id_despacho)
+                        ->update([
+                            'id_transportista' => $req->id_transportista,
+                            'flete_real' => $flete_real,
+                            'fecha_llegada' => $req->fecha_entregada,
+                            'fecha_salida' => $req->fecha_despacho_real
+                        ]);
+                    $update++;
+                    array_push($rsptas, [
+                        'tipo' => 'update',
+                        'id_despacho' => $id_despacho,
+                        'mensaje' => 'id_transportista = ' . $req->id_transportista . ' flete real = ' . $flete_real
+                    ]);
+                } else {
+                    $id_despacho = DB::table('mgcp_ordenes_compra.despachos')
+                        ->insertGetId([
+                            'id_transportista' => $req->id_transportista,
+                            'flete_real' => $flete_real,
+                            'fecha_llegada' => $req->fecha_entregada,
+                            'fecha_salida' => $req->fecha_despacho_real,
+                            'id_usuario' => $id_usuario,
+                            'fecha_registro' => new Carbon(),
+                        ], 'id');
+                    $save++;
+                    array_push($rsptas, [
+                        'tipo' => 'save',
+                        'id_despacho' => $id_despacho,
+                        'mensaje' => 'id_transportista = ' . $req->id_transportista . ' flete real = ' . $flete_real
+                    ]);
+                }
+
+                if ($req->tipo == 'am') {
+                    DB::table('mgcp_acuerdo_marco.oc_propias')
+                        ->where('oc_propias.id', $req->id_orden)
+                        ->update([
+                            'despachada' => true,
+                            'id_despacho' => $id_despacho
+                        ]);
+                } else {
+                    DB::table('mgcp_ordenes_compra.oc_directas')
+                        ->where('oc_directas.id', $req->id_orden)
+                        ->update([
+                            'despachada' => true,
+                            'id_despacho' => $id_despacho
+                        ]);
+                }
+            }
+            DB::commit();
+            return response()->json(['updates' => $update, 'saves' => $save, 'rsptas' => $rsptas]);
         } catch (\PDOException $e) {
             DB::rollBack();
         }

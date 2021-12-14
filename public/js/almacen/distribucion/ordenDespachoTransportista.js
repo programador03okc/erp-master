@@ -4,7 +4,7 @@ function openAgenciaTransporte(data) {
     });
     console.log(data);
     $("[name=id_od]").val(data.id_od);
-    $("[name=con_id_requerimiento]").val(data.id_req);
+    $("[name=con_id_requerimiento]").val(data.id_requerimiento);
     $("[name=tr_id_transportista]").val(data.id_transportista !== null ? data.id_transportista : '');
 
     $("[name=tr_razon_social]").val(data.transportista_razon_social !== null ? data.transportista_razon_social : '');

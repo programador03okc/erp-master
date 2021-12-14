@@ -178,25 +178,13 @@ function listarRequerimientosPendientes(usuario) {
                 }
             },
             { data: 'sede_descripcion_req', name: 'sede_req.descripcion', className: "text-center" },
-            // {
-            //     data: 'estado_doc', name: 'adm_estado_doc.bootstrap_color',
-            //     'render': function (data, type, row) {
-            //         return '<span class="label label-' + row['bootstrap_color'] + '">' + row['estado_doc'] + '</span>'
-            //     }
-            // },
-            // {
-            //     data: 'fecha_despacho', name: 'orden_despacho.fecha_despacho',
-            //     'render': function (data, type, row) {
-            //         return (row['fecha_despacho'] !== null ? formatDate(row['fecha_despacho']) : '');
-            //     }
-            // },
             { data: 'codigo_od', name: 'orden_despacho.codigo', className: "text-center" },
-            {
-                data: 'numero_orden', name: 'orden_despacho.nro_orden',
-                'render': function (data, type, row) {
-                    return (row['numero_orden'] !== null ? formatDate(row['fecha_despacho']) + '<br><span class="label label-default">' + row['numero_orden'] + '</span>' : '');
-                }
-            },
+            // {
+            //     data: 'numero_orden', name: 'orden_despacho.nro_orden',
+            //     'render': function (data, type, row) {
+            //         return (row['numero_orden'] !== null ? formatDate(row['fecha_despacho']) + '<br><span class="label label-default">' + row['numero_orden'] + '</span>' : '');
+            //     }
+            // },
             {
                 data: 'fecha_despacho_real', name: 'orden_despacho.fecha_despacho_real',
                 'render': function (data, type, row) {
@@ -211,7 +199,7 @@ function listarRequerimientosPendientes(usuario) {
             },
             {
                 'render': function (data, type, row) {
-                    return '<span class="label label-' + row['estado_bootstrap_od'] + '">' + row['estado_od'] + '</span>'
+                    return '<span class="label label-' + row['bootstrap_color'] + '">' + row['estado_doc'] + '</span>'
                 }
             },
             { data: 'id_od', name: 'orden_despacho.id_od' },
@@ -256,6 +244,7 @@ function listarRequerimientosPendientes(usuario) {
                         data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}">
                         <i class="fas fa-chevron-down"></i></button>
                         
+                        
                         ${row['id_requerimiento'] !== null ?
                             `<button type="button" class="envio_od btn btn-${row['id_od'] !== null ? 'warning' : 'default'} btn-flat btn-xs " data-toggle="tooltip"
                             data-placement="bottom" title="Enviar Orden de Despacho" data-id="${row['id_requerimiento']}"
@@ -264,6 +253,11 @@ function listarRequerimientosPendientes(usuario) {
                             : ''}
                         
                         `+
+
+                        // ${row['tiene_transformacion'] ?
+                        //     `<button type="button" class="interno btn btn-${row['codigo_despacho_interno'] !== null ? 'danger' : 'default'} btn-flat btn-xs " data-toggle="tooltip"
+                        //     data-placement="bottom" title="Programar Despacho Interno" data-id="${row['id_requerimiento']}">
+                        //     <i class="fas fa-random"></i></button>` : ''}
 
                         // ${usuarioSesion == 'Rocio.Condori' ?
                         //     `<button type="button" class="envio btn btn-${row['id_od'] !== null ? 'success' : 'default'} btn-flat btn-xs " data-toggle="tooltip"
@@ -305,7 +299,7 @@ function listarRequerimientosPendientes(usuario) {
                                    <i class="fas fa-file-upload"></i></button>`
                            : '')*/
                         `</div>`
-                }, targets: 18
+                }, targets: 17
             }
         ],
         select: "multi",
@@ -426,6 +420,12 @@ $('#requerimientosEnProceso tbody').on("click", "button.envio_od", function (e) 
     openOrdenDespachoEnviar(data);
 });
 
+$('#requerimientosEnProceso tbody').on("click", "button.interno", function (e) {
+    $(e.preventDefault());
+    var id = $(this).data("id");
+    generarDespachoInterno(id);
+});
+
 $('#requerimientosEnProceso tbody').on("click", "button.envio", function (e) {
     $(e.preventDefault());
     var data = $('#requerimientosEnProceso').DataTable().row($(this).parents("tr")).data();
@@ -434,6 +434,31 @@ $('#requerimientosEnProceso tbody').on("click", "button.envio", function (e) {
     openOrdenDespachoEnviar(data);
 });
 
+function generarDespachoInterno(id) {
+    $.ajax({
+        type: 'GET',
+        url: 'generarDespachoInterno/' + id,
+        dataType: 'JSON',
+        success: function (response) {
+            console.log(response);
+
+            Lobibox.notify(response.tipo, {
+                title: false,
+                size: "mini",
+                rounded: true,
+                sound: false,
+                delayIndicator: false,
+                msg: response.mensaje
+            });
+            $('#requerimientosEnProceso').DataTable().ajax.reload(null, false);
+
+        }
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
 $('#modal-comentarios_oc_mgcp').on('shown.bs.modal', function (e) {
 
 
@@ -585,17 +610,17 @@ function migrarDespachos() {
             dataType: 'JSON',
             success: function (response) {
                 console.log(response);
-                if (response > 0) {
-                    Lobibox.notify("success", {
-                        title: false,
-                        size: "mini",
-                        rounded: true,
-                        sound: false,
-                        delayIndicator: false,
-                        msg: "Despachos migrados con exito."
-                    });
-                    $('#requerimientosEnProceso').DataTable().ajax.reload(null, false);
-                }
+
+                Lobibox.notify("success", {
+                    title: false,
+                    size: "mini",
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    msg: "Despachos migrados con exito."
+                });
+                $('#requerimientosEnProceso').DataTable().ajax.reload(null, false);
+
             }
         }).fail(function (jqXHR, textStatus, errorThrown) {
             console.log(jqXHR);

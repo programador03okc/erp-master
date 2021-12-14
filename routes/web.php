@@ -783,12 +783,10 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('realizar-liberacion-de-producto-comprometido-en-toda-orden', 'ComprasPendientesController@realizarLiberacionDeProductoEnTodaOrden');
 					Route::post('realizar-anular-item-en-toda-orden-y-reservas', 'ComprasPendientesController@realizarAnularItemEnTodaOrdenYReservas');
 					Route::get('imprimir_ingreso/{id}', 'Almacen\Movimiento\IngresoPdfController@imprimir_ingreso');
- 					Route::get('items-orden-items-reserva-por-detalle-requerimiento/{idDetalleRequerimiento}', 'ComprasPendientesController@itemsOrdenItemsReservaPorDetalleRequerimiento');
+					Route::get('items-orden-items-reserva-por-detalle-requerimiento/{idDetalleRequerimiento}', 'ComprasPendientesController@itemsOrdenItemsReservaPorDetalleRequerimiento');
 					Route::get('finalizar-cuadro/{id}', 'OrdenController@finalizarCuadroPresupuesto');
-					Route::get('mostrar-archivos-adjuntos-detalle-requerimiento/{id_detalle_requerimiento}', 'Logistica\RequerimientoController@mostrarArchivosAdjuntos');					
+					Route::get('mostrar-archivos-adjuntos-detalle-requerimiento/{id_detalle_requerimiento}', 'Logistica\RequerimientoController@mostrarArchivosAdjuntos');
 					Route::get('mostrar-todo-adjuntos-requerimiento/{id_requerimiento}', 'Logistica\RequerimientoController@mostrarTodoAdjuntos');
-					
-
 				});
 
 				Route::group(['as' => 'ordenes.', 'prefix' => 'ordenes'], function () {
@@ -822,7 +820,6 @@ Route::group(['middleware' => ['auth']], function () {
 						Route::post('guardar-cuenta-bancaria-proveedor', 'OrdenController@guardarCuentaBancariaProveedor');
 						Route::get('migrarOrdenCompra/{id}', 'Migraciones\MigrateOrdenSoftLinkController@migrarOrdenCompra');
 						Route::post('mostrar-catalogo-productos', 'Logistica\RequerimientoController@mostrarCatalogoProductos');
-
 					});
 					Route::group(['as' => 'listado.', 'prefix' => 'listado'], function () {
 						Route::get('index', 'OrdenController@view_listar_ordenes')->name('index');
@@ -1003,6 +1000,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('verDetalleRequerimientoDI/{id}', 'Logistica\Distribucion\OrdenesTransformacionController@verDetalleRequerimientoDI');
 				Route::get('listar_ubigeos', 'AlmacenController@listar_ubigeos');
 				Route::post('guardarOrdenDespachoExterno', 'Logistica\Distribucion\OrdenesDespachoExternoController@guardarOrdenDespachoExterno');
+				Route::get('generarDespachoInterno/{id}', 'Logistica\Distribucion\OrdenesDespachoInternoController@generarDespachoInterno');
 				// Route::get('guardarOrdenDespachoExterno/{id}', 'Logistica\Distribucion\OrdenesDespachoExternoController@guardarOrdenDespachoExterno');
 				Route::post('actualizarOrdenDespachoExterno', 'Logistica\Distribucion\OrdenesDespachoExternoController@actualizarOrdenDespachoExterno');
 				Route::get('anular_orden_despacho/{id}/{tp}', 'Almacen\Movimiento\SalidasPendientesController@anular_orden_despacho');
@@ -1046,6 +1044,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('verDetalleRequerimientoDI/{id}', 'Logistica\Distribucion\OrdenesTransformacionController@verDetalleRequerimientoDI');
 				Route::get('listar_ubigeos', 'AlmacenController@listar_ubigeos');
 				Route::post('guardarOrdenDespachoExterno', 'Logistica\Distribucion\OrdenesDespachoExternoController@guardarOrdenDespachoExterno');
+				Route::get('generarDespachoInterno/{id}', 'Logistica\Distribucion\OrdenesDespachoInternoController@generarDespachoInterno');
 				Route::get('anular_orden_despacho/{id}/{tp}', 'Almacen\Movimiento\SalidasPendientesController@anular_orden_despacho');
 				Route::post('enviarFacturacion', 'Logistica\Distribucion\OrdenesDespachoExternoController@enviarFacturacion');
 
@@ -1054,6 +1053,9 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('imprimir_transferencia/{id}', 'Almacen\Movimiento\TransferenciaController@imprimir_transferencia');
 				Route::get('imprimir_ingreso/{id}', 'Almacen\Movimiento\IngresoPdfController@imprimir_ingreso');
 				Route::get('imprimir_salida/{id}', 'Almacen\Movimiento\SalidaPdfController@imprimir_salida');
+
+				Route::get('listarDespachosInternos', 'Logistica\Distribucion\OrdenesDespachoInternoController@listarDespachosInternos');
+				Route::post('cambiaEstado', 'Logistica\Distribucion\OrdenesDespachoInternoController@cambiaEstado');
 			});
 		});
 
