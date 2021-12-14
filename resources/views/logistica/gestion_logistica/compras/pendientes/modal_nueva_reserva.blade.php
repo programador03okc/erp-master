@@ -29,8 +29,14 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12">
-                                <span>Cantidad: </span>
+                                <span>Cantidad solicitada: </span>
                                 <label id="cantidad"></label> <label id="unidadMedida"></label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <span>Cantidad acumulada en Ordenes: </span>
+                                <label id="cantidadEnOrdenes"></label>
                             </div>
                         </div>
                         </fieldset>

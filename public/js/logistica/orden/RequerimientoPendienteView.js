@@ -1587,6 +1587,7 @@ class RequerimientoPendienteView {
             document.querySelector("form[id='form-nueva-reserva'] label[id='descripcion']").textContent = data.producto.descripcion != null ? data.producto.descripcion : (data.descripcion != null ? data.descripcion : '');
             document.querySelector("form[id='form-nueva-reserva'] label[id='cantidad']").textContent = data.cantidad;
             document.querySelector("form[id='form-nueva-reserva'] label[id='unidadMedida']").textContent = data.unidad_medida.descripcion;
+            document.querySelector("form[id='form-nueva-reserva'] label[id='cantidadEnOrdenes']").textContent = data.ordenes_compra != null && data.ordenes_compra.length >0 ? data.ordenes_compra.reduce((a, b) => +a + +b.cantidad, 0) :'0';
             document.querySelector("div[id='modal-nueva-reserva'] input[name='cantidadReserva']").value = parseFloat(document.querySelector("div[id='modal-nueva-reserva'] label[id='cantidad']").textContent) > 0 ? document.querySelector("div[id='modal-nueva-reserva'] label[id='cantidad']").textContent : 0;
 
             this.listarTablaListaConReserva(data.reserva);
