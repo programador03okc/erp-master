@@ -2062,7 +2062,55 @@ class OrdenView {
         sessionStorage.removeItem('tipoOrden');
         sessionStorage.removeItem('action');
     }
+
+
+
+    validarOrdenAgilOrdenSoftlink(){
+        let idOrden = document.querySelector("input[name='id_orden']").value;
+        if(idOrden >0){
+            $.ajax({
+                type: 'POST',
+                url: 'validar-orden-agil-orden-softlink',
+                data:{'idOrden':idOrden},
+                dataType: 'JSON',
+                success: (response) => {
+                    console.log(response);
+                    if(response.tipo =='warning'){
+                        Lobibox.notify('warning', {
+                            title: false,
+                            size: 'mini',
+                            rounded: true,
+                            sound: false,
+                            delayIndicator: false,
+                            msg: response.mensaje
+                        });
+                    }
+                }
+            }).fail((jqXHR, textStatus, errorThrown) => {
+                Swal.fire(
+                    '',
+                    'Hubo un problema al intentar validar la orden de Ágil con la orden Softlink, por favor vuelva a intentarlo.',
+                    'error'
+                );
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            });
+        }else{
+            Lobibox.notify('warning', {
+                title: false,
+                size: 'mini',
+                rounded: true,
+                sound: false,
+                delayIndicator: false,
+                msg: 'Se intentó validar la orden con softlink pero No se encontro un id de orden valido'
+            });
+        }
+    }
 }
+
+
+
 
 
 function cancelarOrden() {
@@ -2071,5 +2119,14 @@ function cancelarOrden() {
     const ordenView = new OrdenView(ordenController);
     ordenView.restablecerFormularioOrden();
     document.querySelector("span[id='text-info-req-vinculado']") ? document.querySelector("span[id='text-info-req-vinculado']").remove() : false;
+
+}
+
+function editarOrden() {
+    document.querySelector("button[name='btn-enviar-softlink']").setAttribute("disabled", true);
+    const ordenModel = new OrdenModel();
+    const ordenController = new OrdenCtrl(ordenModel);
+    const ordenView = new OrdenView(ordenController);
+    ordenView.validarOrdenAgilOrdenSoftlink();
 
 }
