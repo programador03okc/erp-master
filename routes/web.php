@@ -751,6 +751,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::group(['as' => 'pendientes.', 'prefix' => 'pendientes'], function () {
 					Route::get('index', 'ComprasPendientesController@viewComprasPendientes')->name('index');
 					Route::post('requerimientos-pendientes', 'ComprasPendientesController@listarRequerimientosPendientes')->name('requerimientos-pendientes');
+					Route::post('requerimientos-atendidos', 'ComprasPendientesController@listarRequerimientosAtendidos')->name('requerimientos-atendidos');
 					// Route::post('lista_items-cuadro-costos-por-requerimiento-pendiente-compra', 'ComprasPendientesController@get_lista_items_cuadro_costos_por_id_requerimiento_pendiente_compra')->name('lista_items-cuadro-costos-por-requerimiento-pendiente-compra');
 					// Route::post('tiene-items-para-compra', 'ComprasPendientesController@tieneItemsParaCompra')->name('tiene-items-para-compra');
 					Route::post('lista_items-cuadro-costos-por-requerimiento', 'ComprasPendientesController@get_lista_items_cuadro_costos_por_id_requerimiento')->name('lista_items-cuadro-costos-por-requerimiento');
@@ -820,6 +821,7 @@ Route::group(['middleware' => ['auth']], function () {
 						Route::post('guardar-cuenta-bancaria-proveedor', 'OrdenController@guardarCuentaBancariaProveedor');
 						Route::get('migrarOrdenCompra/{id}', 'Migraciones\MigrateOrdenSoftLinkController@migrarOrdenCompra');
 						Route::post('mostrar-catalogo-productos', 'Logistica\RequerimientoController@mostrarCatalogoProductos');
+						Route::post('enviar-notificacion-finalizacion-cdp', 'OrdenController@enviarNotificacionFinalizacionCDP');
 					});
 					Route::group(['as' => 'listado.', 'prefix' => 'listado'], function () {
 						Route::get('index', 'OrdenController@view_listar_ordenes')->name('index');

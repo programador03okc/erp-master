@@ -89,9 +89,9 @@ class ProductoController extends Controller
             ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida');
 
         if (session()->has('productFilter_partnumber')) {
-            $data = $data->where('alm_prod.part_number', session()->get('productFilter_partnumber'))->get();
+            $data = $data->where('alm_prod.part_number', trim(session()->get('productFilter_partnumber')))->get();
         } else if (session()->has('productFilter_descripcion')) {
-            $data = $data->where('alm_prod.descripcion', session()->get('productFilter_descripcion'))->get();
+            $data = $data->where('alm_prod.descripcion', trim(session()->get('productFilter_descripcion')))->get();
         }
         // $output['data'] = $data;
         return response()->json($data);
@@ -109,7 +109,7 @@ class ProductoController extends Controller
                     'alm_subcat.descripcion as marca'
                 )
                 ->leftjoin('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
-                ->where('alm_prod.part_number', $part_number)
+                ->where('alm_prod.part_number', trim($part_number))
                 ->get();
         } else if ($descripcion !== '') {
             $prod = DB::table('almacen.alm_prod')
@@ -121,7 +121,7 @@ class ProductoController extends Controller
                     'alm_subcat.descripcion as marca'
                 )
                 ->leftjoin('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
-                ->where('alm_prod.descripcion', $descripcion)
+                ->where('alm_prod.descripcion', trim($descripcion))
                 ->get();
         }
         $output['data'] = $prod;

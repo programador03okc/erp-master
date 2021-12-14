@@ -21,11 +21,14 @@ use App\Exports\ReporteOrdenesCompraExcel;
 use App\Exports\ReporteTransitoOrdenesCompraExcel;
 use App\Helpers\CuadroPresupuestoHelper;
 use App\Http\Controllers\Migraciones\MigrateOrdenSoftLinkController;
+use App\Mail\EmailFinalizacionCuadroPresupuesto;
 use App\Mail\EmailOrdenAnulada;
+use App\Mail\EmailOrdenServicioOrdenTransformacion;
 use App\Models\Administracion\Empresa;
 use App\Models\Administracion\Estado;
 use App\Models\Almacen\DetalleRequerimiento;
 use App\Models\Almacen\Requerimiento;
+use App\Models\almacen\Transformacion;
 use App\Models\Almacen\UnidadMedida;
 use App\Models\Comercial\CuadroCosto\CcAmFila;
 
@@ -41,6 +44,7 @@ use App\Models\Logistica\Orden;
 use App\Models\Logistica\OrdenCompraDetalle;
 use App\Models\Logistica\Proveedor;
 use App\Models\mgcp\CuadroCosto\CuadroCosto;
+use App\Models\mgcp\CuadroCosto\CuadroCostoView;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Mail;
@@ -3511,7 +3515,7 @@ class OrdenController extends Controller
                 $migrarOrdenSoftlink = (new MigrateOrdenSoftLinkController)->anularOrdenSoftlink($idOrden)->original;
                 if ($migrarOrdenSoftlink['tipo'] == 'success') {
                     $output = [
-                        'id_orden_compra' => $orden->id_orden_compra,
+                        'id_orden_compra' => $idOrden,
                         'codigo' => $orden->codigo,
                         'status' => 200,
                         'mensaje' => $msj,
@@ -3696,5 +3700,90 @@ class OrdenController extends Controller
 
 
         return datatables($proveedores)->toJson();
+    }
+
+
+    public function enviarNotificacionFinalizacionCDP(Request $request){
+        $idOrden= $request->idOrden;
+        $idDetalleRequerimientoList=[];
+        $idRequerimientoList=[];
+        $idCuadroPresupuestoFinalizadoList=[];
+        $codigoOportunidad=[];
+        $payloadCuadroPresupuestoFinalizado=[];
+        $status=0;
+
+        if($idOrden >0){
+            $detalleOrden =OrdenCompraDetalle::where('id_orden_compra',$idOrden)->get();
+            foreach ($detalleOrden as $do) {
+                if($do->id_detalle_requerimiento >0){
+                    $idDetalleRequerimientoList[]=$do->id_detalle_requerimiento;
+                }
+            }
+            $detalleRequerimiento = DetalleRequerimiento::whereIn('id_detalle_requerimiento',$idDetalleRequerimientoList)->get();
+            foreach ($detalleRequerimiento as $dr) {
+                $idRequerimientoList[]=$dr->id_requerimiento;
+            }
+
+             //busca cdp finalizados
+            foreach (array_unique($idRequerimientoList) as $idRequerimiento) {
+                $requerimiento = Requerimiento::find($idRequerimiento);
+                if($requerimiento->id_cc >0){
+                    $cuadroPresupuesto= CuadroCosto::find($requerimiento->id_cc);
+                    if($cuadroPresupuesto->estado_aprobacion == 4){
+                        $idCuadroPresupuestoFinalizadoList[]=$requerimiento->id_cc;
+                        $codigoOportunidad[]=$cuadroPresupuesto->oportunidad->codigo_oportunidad;
+                        $payloadCuadroPresupuestoFinalizado[] = [
+                            'requerimiento' => $requerimiento,
+                            'cuadro_presupuesto' => $cuadroPresupuesto,
+                            'orden_compra_propia' => $cuadroPresupuesto->oportunidad->ordenCompraPropia,
+                            'oportunidad' => $cuadroPresupuesto->oportunidad
+                        ];                    
+                    }
+                }
+            }
+
+            // si existe CDP finalizados (estado_aprobacion = 4), preparar correo y enviar
+            if($idCuadroPresupuestoFinalizadoList>0){
+                $correosOrdenServicioTransformacion = [];
+                $correoFinalizacionCuadroPresupuesto=[];
+
+                if (config('app.debug')) {
+                    $correosOrdenServicioTransformacion[] = config('global.correoDebug2');
+                    $correoFinalizacionCuadroPresupuesto[]= config('global.correoDebug2');
+
+                } else {
+                    $idUsuarios = Usuario::getAllIdUsuariosPorRol(25); //Rol de usuario de despacho externo
+                    foreach ($idUsuarios as $id) {
+                        $correosOrdenServicioTransformacion[] = Usuario::find($id)->email;
+                    }
+
+                    //$correoUsuarioEnSession=Auth::user()->email;
+                    $correoFinalizacionCuadroPresupuesto[]=Auth::user()->email;
+                    $correoFinalizacionCuadroPresupuesto[]=Usuario::find($requerimiento->id_usuario)->email;
+                }
+                
+                Mail::to(array_unique($correoFinalizacionCuadroPresupuesto))->send(new EmailFinalizacionCuadroPresupuesto($codigoOportunidad,$payloadCuadroPresupuestoFinalizado,Auth::user()->nombre_corto));
+                $status =200;
+
+                foreach ($payloadCuadroPresupuestoFinalizado as $pl) { // enviar orde servicio / transformacion a multiples usuarios
+                    $transformacion =  Transformacion::select('transformacion.codigo', 'cc.id_oportunidad', 'adm_empresa.logo_empresa')
+                    ->leftjoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'transformacion.id_cc')
+                    ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'transformacion.id_almacen')
+                    ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_almacen.id_sede')
+                    ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
+                    ->where('cc.id', $pl['cuadro_presupuesto']->id)
+                    ->first();
+                    $logoEmpresa=empty($transformacion->logo_empresa)?null:$transformacion->logo_empresa;
+                    $codigoTransformacion=empty($transformacion->codigo)?null:$transformacion->codigo;
+                    Mail::to($correosOrdenServicioTransformacion)->send(new EmailOrdenServicioOrdenTransformacion($pl['oportunidad'],$logoEmpresa,$codigoTransformacion));
+                }
+
+            }else{
+                $status=204;
+            }
+        }
+
+        return $status;
+
     }
 }

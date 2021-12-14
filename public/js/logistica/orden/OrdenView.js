@@ -80,6 +80,12 @@ class OrdenView {
         $('#form-crear-orden-requerimiento').on("click", "button.handleClickImprimirOrdenPdf", () => {
             this.imprimirOrdenPDF();
         });
+        $('#form-crear-orden-requerimiento').on("click", "button.handleClickEstadoCuadroPresupuesto", () => {
+            this.estadoCuadroPresupuesto();
+        });
+        $('#modal-estado-cuadro-presupuesto').on("click", "button.handleClickEnviarNotificacionEmailCuadroPresupuestoFinalizado", () => {
+            this.enviarNotificacionEmailCuadroPresupuestoFinalizado();
+        });
         $('#form-crear-orden-requerimiento').on("change", "select.handleChangeSede", (e) => {
             this.changeSede(e.currentTarget);
         });
@@ -164,6 +170,87 @@ class OrdenView {
                 'Lo sentimos no se encontro una orden vinculada para imprimir',
                 'warning'
             );
+        }
+
+    }
+
+    estadoCuadroPresupuesto(){
+        $('#modal-estado-cuadro-presupuesto').modal({
+            show: true,
+            backdrop: 'true',
+            keyboard: true
+
+        });
+    }
+
+    enviarNotificacionEmailCuadroPresupuestoFinalizado(){
+        let idOrden =document.querySelector("div[id='modal-estado-cuadro-presupuesto'] label[id='id_orden']").textContent;
+
+        if(idOrden >0){
+            Swal.fire({
+                title: '¿Esta seguro de querer enviarle una notificar a los usuarios de la finalización de cuadro de presupuesto?',
+                text: "Solo se considera de los cuadros finalizados vinculados a la orden",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Si, enviar email'
+    
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: 'POST',
+                        url: 'enviar-notificacion-finalizacion-cdp',
+                        data:{'idOrden':idOrden},
+                        dataType: 'JSON',
+                        success: (response) => {
+                            console.log(response);
+                            if(response.status ==200){
+                                Lobibox.notify('success', {
+                                    title: false,
+                                    size: 'mini',
+                                    rounded: true,
+                                    sound: false,
+                                    delayIndicator: false,
+                                    msg: 'La notificación fue enviada <i class="far fa-envelope"></i>'
+                                });
+
+                            }else{
+                                Lobibox.notify('danger', {
+                                    title: false,
+                                    size: 'mini',
+                                    rounded: true,
+                                    sound: false,
+                                    delayIndicator: false,
+                                    msg: 'La notificación NO puedo ser enviada, por favor vuelva a intentarlo'
+                                });    
+                            }
+                        }
+                    }).fail((jqXHR, textStatus, errorThrown) => {
+                        Swal.fire(
+                            '',
+                            'Hubo un problema al intentar mostrar enviar la notificación, por favor vuelva a intentarlo.',
+                            'error'
+                        );
+                        // sessionStorage.removeItem('idOrden');
+                        console.log(jqXHR);
+                        console.log(textStatus);
+                        console.log(errorThrown);
+                    });
+
+
+                }
+            });
+        }else{
+            Lobibox.notify('warning', {
+                title: false,
+                size: 'mini',
+                rounded: true,
+                sound: false,
+                delayIndicator: false,
+                msg: 'No se encontró un Id orden valido para continuar'
+            });
         }
 
     }
@@ -416,13 +503,13 @@ class OrdenView {
                         <td>${(data[i].cantidad_atendido_almacen ? data[i].cantidad_atendido_almacen : '')}</td>
                         <td>${(data[i].cantidad_atendido_orden ? data[i].cantidad_atendido_orden : '')}</td>
                         <td>
+                            <input class="form-control cantidad_a_comprar input-sm text-right ${(data[i].estado_guia_com_det > 0 && data[i].estado_guia_com_det != 7 ? '' : 'activation')}  handleBurUpdateSubtotal"  data-id-tipo-item="1" type="number" min="0" name="cantidadAComprarRequerida[]"  placeholder="" value="${data[i].cantidad_a_comprar ? data[i].cantidad_a_comprar : 0}" disabled>
+                        </td>
+                        <td>
                             <div class="input-group">
                                 <div class="input-group-addon" style="background:lightgray;" name="simboloMoneda">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</div>
                                 <input class="form-control precio input-sm text-right ${(data[i].estado_guia_com_det > 0 && data[i].estado_guia_com_det != 7 ? '' : 'activation')}  handleBurUpdateSubtotal" data-id-tipo-item="1" data-producto-regalo="${(data[i].producto_regalo ? data[i].producto_regalo : false)}" type="number" min="0" name="precioUnitario[]"  placeholder="" value="${data[i].precio_unitario ? data[i].precio_unitario : 0}" disabled>
                             </div>
-                        </td>
-                        <td>
-                            <input class="form-control cantidad_a_comprar input-sm text-right ${(data[i].estado_guia_com_det > 0 && data[i].estado_guia_com_det != 7 ? '' : 'activation')}  handleBurUpdateSubtotal"  data-id-tipo-item="1" type="number" min="0" name="cantidadAComprarRequerida[]"  placeholder="" value="${data[i].cantidad_a_comprar ? data[i].cantidad_a_comprar : 0}" disabled>
                         </td>
                         <td style="text-align:right;"><span class="moneda" name="simboloMoneda">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</span><span class="subtotal" name="subtotal[]">0.00</span></td>
                         <td>
@@ -445,13 +532,13 @@ class OrdenView {
                     <td></td>
                     <td></td>
                     <td>
+                        <input class="form-control cantidad_a_comprar input-sm text-right activation handleBurUpdateSubtotal" data-id-tipo-item="2" type="number" min="0" name="cantidadAComprarRequerida[]"  placeholder="" value="${data[i].cantidad_a_comprar ? data[i].cantidad_a_comprar : ''}" disabled>
+                    </td>
+                    <td>
                         <div class="input-group">
                             <div class="input-group-addon" style="background:lightgray;" name="simboloMoneda">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</div>
                             <input class="form-control precio input-sm text-right activation  handleBurUpdateSubtotal" data-id-tipo-item="2" type="number" min="0" name="precioUnitario[]"  placeholder="" value="${data[i].precio_unitario ? data[i].precio_unitario : 0}" disabled>
                         </div>
-                    </td>
-                    <td>
-                        <input class="form-control cantidad_a_comprar input-sm text-right activation handleBurUpdateSubtotal" data-id-tipo-item="2" type="number" min="0" name="cantidadAComprarRequerida[]"  placeholder="" value="${data[i].cantidad_a_comprar ? data[i].cantidad_a_comprar : ''}" disabled>
                     </td>
                     <td style="text-align:right;"><span class="moneda" name="simboloMoneda">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</span><span class="subtotal" name="subtotal[]">0.00</span></td>
                     <td>
@@ -811,13 +898,13 @@ class OrdenView {
         <td>${(data[0].cantidad_atendido_almacen ? data[0].cantidad_atendido_almacen : '')}</td>
         <td>${(data[0].cantidad_atendido_orden ? data[0].cantidad_atendido_orden : '')}</td>
         <td>
+            <input class="form-control cantidad_a_comprar input-sm text-right ${(data[0].estado_guia_com_det > 0 && data[0].estado_guia_com_det != 7 ? '' : 'activation')}  handleBurUpdateSubtotal"  data-id-tipo-item="1" type="number" min="0" name="cantidadAComprarRequerida[]"  placeholder="" value="${data[0].cantidad_a_comprar ? data[0].cantidad_a_comprar : ''}" >
+        </td>
+        <td>
             <div class="input-group">
                 <div class="input-group-addon" style="background:lightgray;" name="simboloMoneda">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</div>
                 <input class="form-control precio input-sm text-right ${(data[0].estado_guia_com_det > 0 && data[0].estado_guia_com_det != 7 ? '' : 'activation')}  handleBurUpdateSubtotal" data-id-tipo-item="1" data-producto-regalo="${(data[0].producto_regalo ? data[0].producto_regalo : false)}" type="number" min="0" name="precioUnitario[]"  placeholder="" value="${data[0].precio_unitario ? data[0].precio_unitario : 0}" >
             </div>
-        </td>
-        <td>
-            <input class="form-control cantidad_a_comprar input-sm text-right ${(data[0].estado_guia_com_det > 0 && data[0].estado_guia_com_det != 7 ? '' : 'activation')}  handleBurUpdateSubtotal"  data-id-tipo-item="1" type="number" min="0" name="cantidadAComprarRequerida[]"  placeholder="" value="${data[0].cantidad_a_comprar ? data[0].cantidad_a_comprar : ''}" >
         </td>
         <td style="text-align:right;"><span class="moneda" name="simboloMoneda">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</span><span class="subtotal" name="subtotal[]">0.00</span></td>
         <td>
@@ -856,13 +943,13 @@ class OrdenView {
         <td></td>
         <td></td>
         <td>
+            <input class="form-control cantidad_a_comprar input-sm text-right activation  handleBurUpdateSubtotal" data-id-tipo-item="2" type="number" min="0" name="cantidadAComprarRequerida[]"  placeholder="" value="" >
+        </td>
+        <td>
             <div class="input-group">
                 <div class="input-group-addon" style="background:lightgray;" name="simboloMoneda">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</div>
                 <input class="form-control precio input-sm text-right activation handleBurUpdatePrecio handleBurUpdateSubtotal" data-id-tipo-item="2" type="number" min="0" name="precioUnitario[]"  placeholder="" value="0" >
             </div>
-        </td>
-        <td>
-            <input class="form-control cantidad_a_comprar input-sm text-right activation  handleBurUpdateSubtotal" data-id-tipo-item="2" type="number" min="0" name="cantidadAComprarRequerida[]"  placeholder="" value="" >
         </td>
         <td style="text-align:right;"><span class="moneda" name="simboloMoneda">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</span><span class="subtotal" name="subtotal[]">0.00</span></td>
         <td>
@@ -1112,7 +1199,7 @@ class OrdenView {
 
             (res.detalle).forEach((element) => {
                 if (element.tiene_transformacion == false) {
-                    if (element.id_producto > 0) {
+                    if (element.id_producto > 0 && (![5,28,7].includes(element.id_estado))) {
                         i++;
 
                         let cantidad_atendido_almacen = 0;
@@ -1715,8 +1802,33 @@ class OrdenView {
         document.querySelector("form[id='form-crear-orden-requerimiento'] select[name='id_tp_documento']").value = data.id_tp_documento ? data.id_tp_documento : '';
         document.querySelector("form[id='form-crear-orden-requerimiento'] select[name='id_moneda']").value = data.id_moneda ? data.id_moneda : '';
         document.querySelector("form[id='form-crear-orden-requerimiento'] span[name='codigo_orden_interno']").textContent = data.codigo_orden ? data.codigo_orden : '';
-        document.querySelector("form[id='form-crear-orden-requerimiento'] span[name='estado_cuadro_costo']").textContent = data.cuadro_costo !=null && data.cuadro_costo.length>0 ? data.cuadro_costo.map(e => ('('+e.codigo+': '+e.estado_aprobacion+')')).join(",") : '';
+        // document.querySelector("form[id='form-crear-orden-requerimiento'] span[name='estado_orden']").textContent = data.estado_orden !=null?"(Estado: "+data.estado_orden+')':'';
+        document.querySelector("form[id='form-crear-orden-requerimiento'] span[name='estado_orden']").textContent = data.estado_orden !=null?`(Estado: ${data.estado_orden})`:'';
+        if(data.cuadro_costo !=null && data.cuadro_costo.length >0 ){
+            document.querySelector("div[id='modal-estado-cuadro-presupuesto'] label[id='id_orden']").textContent= data.id_orden_compra ? data.id_orden_compra : '';
+            data.cuadro_costo.map((element,index)=>{
+                console.log(element);
+                if(element.id_estado_aprobacion ==4){ //finalizado
+                    document.querySelector("button[id='btn-enviar-email-finalizacion-cuadro-presupuesto']").classList.remove("oculto");
+                    document.querySelector("div[id='contenedor-detalle-estado-cdp']").innerHTML='';
+                    document.querySelector("div[id='contenedor-detalle-estado-cdp']").insertAdjacentHTML('beforeend', `<div class="panel panel-default">
+                    <div class="panel-body">
+                        <dl class="dl-horizontal">
+                            <dt>Código</dt>
+                            <dd>${element.codigo}</dd>
+                            <dt>Estado CDP</dt>
+                            <dd>${element.estado_aprobacion}</dd>
+                        </dl>
+                    </div>
+                </div>`);
 
+                }else{
+                    document.querySelector("button[id='btn-enviar-email-finalizacion-cuadro-presupuesto']").classList.add("oculto");
+
+                }
+            })
+
+        }
         document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='codigo_orden']").value = data.codigo_softlink ? data.codigo_softlink : '';
         document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='fecha_emision']").value = data.fecha ? moment(data.fecha, 'DD-MM-YYYY h:m').format('YYYY-MM-DDThh:mm') : '';
         document.querySelector("form[id='form-crear-orden-requerimiento'] select[name='id_sede']").value = data.id_sede ? data.id_sede : '';
@@ -1794,13 +1906,13 @@ class OrdenView {
                         <td>${(cantidad_atendido_almacen >0 ? cantidad_atendido_almacen : '')}</td> 
                         <td>${(cantidad_atendido_orden >0 ? cantidad_atendido_orden : '')}</td>
                         <td>
+                            <input class="form-control cantidad_a_comprar input-sm text-right ${(detalle[i].guia_compra_detalle !=null && detalle[i].guia_compra_detalle.length > 0 ? '' : 'activation')}  handleBurUpdateSubtotal"  data-id-tipo-item="1" type="number" min="0" name="cantidadAComprarRequerida[]"  placeholder="" value="${detalle[i].cantidad ? detalle[i].cantidad : 0}" disabled>
+                        </td>
+                        <td>
                             <div class="input-group">
                                 <div class="input-group-addon" style="background:lightgray;" name="simboloMoneda">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</div>
                                 <input class="form-control precio input-sm text-right ${(detalle[i].guia_compra_detalle !=null && detalle[i].guia_compra_detalle.length > 0 ? '' : 'activation')}  handleBurUpdateSubtotal" data-id-tipo-item="1" data-producto-regalo="${(detalle[i].producto_regalo ? detalle[i].producto_regalo : false)}" type="number" min="0" name="precioUnitario[]"  placeholder="" value="${detalle[i].precio ? detalle[i].precio : 0}" disabled>
                             </div>
-                        </td>
-                        <td>
-                            <input class="form-control cantidad_a_comprar input-sm text-right ${(detalle[i].guia_compra_detalle !=null && detalle[i].guia_compra_detalle.length > 0 ? '' : 'activation')}  handleBurUpdateSubtotal"  data-id-tipo-item="1" type="number" min="0" name="cantidadAComprarRequerida[]"  placeholder="" value="${detalle[i].cantidad ? detalle[i].cantidad : 0}" disabled>
                         </td>
                         <td style="text-align:right;"><span class="moneda" name="simboloMoneda">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</span><span class="subtotal" name="subtotal[]">0.00</span></td>
                         <td>
@@ -1823,13 +1935,13 @@ class OrdenView {
                     <td></td>
                     <td></td>
                     <td>
+                        <input class="form-control cantidad_a_comprar input-sm text-right activation handleBurUpdateSubtotal" data-id-tipo-item="2" type="number" min="0" name="cantidadAComprarRequerida[]"  placeholder="" value="${detalle[i].cantidad ? detalle[i].cantidad : ''}" disabled>
+                    </td>
+                    <td>
                         <div class="input-group">
                             <div class="input-group-addon" style="background:lightgray;" name="simboloMoneda">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</div>
                             <input class="form-control precio input-sm text-right activation  handleBurUpdateSubtotal" data-id-tipo-item="2" type="number" min="0" name="precioUnitario[]"  placeholder="" value="${detalle[i].precio ? detalle[i].precio : 0}" disabled>
                         </div>
-                    </td>
-                    <td>
-                        <input class="form-control cantidad_a_comprar input-sm text-right activation handleBurUpdateSubtotal" data-id-tipo-item="2" type="number" min="0" name="cantidadAComprarRequerida[]"  placeholder="" value="${detalle[i].cantidad ? detalle[i].cantidad : ''}" disabled>
                     </td>
                     <td style="text-align:right;"><span class="moneda" name="simboloMoneda">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</span><span class="subtotal" name="subtotal[]">0.00</span></td>
                     <td>
