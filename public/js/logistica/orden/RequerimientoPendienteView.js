@@ -160,8 +160,8 @@ class RequerimientoPendienteView {
         $('#modal-nueva-reserva').on("click", "button.handleClickAnularReserva", (e) => {
             this.anularReserva(e.currentTarget);
         });
-        $('#modal-nueva-reserva').on("change", "select.handleChangeObtenerStockAlmacen", (e) => {
-            this.handleChangeObtenerStockAlmacen(e.currentTarget);
+        $('#modal-nueva-reserva').on("change", "select.handleChangeObtenerStockAlmacen", () => {
+            this.handleChangeObtenerStockAlmacen();
         });
 
         $('#modal-filtro-requerimientos-pendientes').on('hidden.bs.modal', () => {
@@ -1762,11 +1762,12 @@ class RequerimientoPendienteView {
 
     }
 
-    handleChangeObtenerStockAlmacen(obj) {
-
-        if (obj.value > 0) {
-            if (!document.getElementsByName("cantidadReserva")[0].value > 0) {
-                Swal.fire({
+    handleChangeObtenerStockAlmacen() {
+       let idAlmacen= document.getElementsByName("almacenReserva")[0].value;
+       let cantidadReservar =document.getElementsByName("cantidadReserva")[0].value;
+        if (idAlmacen > 0) {
+            if (!cantidadReservar > 0) {
+                Swal.fire({ 
                     icon: 'warning',
                     title: 'Oops...',
                     text: 'Primero debe ingresar una cantidad a reservar que sea mayor a cero',
@@ -1781,7 +1782,7 @@ class RequerimientoPendienteView {
                 $.ajax({
                     type: 'POST',
                     url: 'obtener-stock-almacen',
-                    data: { 'idAlmacen': obj.value, 'idProducto': idProducto },
+                    data: { 'idAlmacen': idAlmacen, 'idProducto': idProducto },
                     dataType: 'JSON',
                 }).done((response) => {
 
@@ -1789,26 +1790,7 @@ class RequerimientoPendienteView {
                     document.querySelector("div[id='modal-nueva-reserva'] div[id='contenedor-info-stock'] span[id='info-stock-almacen']").textContent=response.stock;
                     document.querySelector("div[id='modal-nueva-reserva'] div[id='contenedor-info-stock'] span[id='info-reservas-activas']").textContent=response.reservas;
                     document.querySelector("div[id='modal-nueva-reserva'] div[id='contenedor-info-stock'] span[id='info-saldo-disponible']").textContent=response.saldo;
-                    // Swal.fire({
-                    //     title: 'Información de Stock',
-                    //     html: `
-                    //         <h5 style="font-weight: bold; color:#356ed5;">Stock total en almacén: ${response.stock} </h5>
-                    //         <h5 style="font-weight: bold; color:#d535c1;">Reservas activas: ${response.reservas} </h5>
-                    //         <h5 style="font-weight: bold; color:#00a65a;">Saldo disponible: ${response.saldo} </h5>
-                    //     `,
-                    //     showDenyButton: false,
-                    //     showCancelButton: false,
-                    //     confirmButtonText: 'Ok',
-                    //     cancelButtonText: 'Cancelar',
-                    //     stopKeydownPropagation: true,
-                    // }).then((result) => {
-                    //     /* Read more about isConfirmed, isDenied below */
-                    //     // if (!result.isConfirmed) {
-                    //     //     document.getElementsByName("cantidadReserva")[0].value='';
-                    //     // }else{
 
-                    //     // }
-                    // })
                 }).fail((jqXHR, textStatus, errorThrown) => {
                     Swal.fire(
                         '',
@@ -1869,6 +1851,7 @@ class RequerimientoPendienteView {
                             msg: `${response.mensaje}`
                         });
                         obj.removeAttribute("disabled");
+                        this.handleChangeObtenerStockAlmacen();
 
                         this.listarTablaListaConReserva(response.data)
                         this.llenarTablaModalAtenderConAlmacen(document.querySelector("form[id='form-nueva-reserva'] input[name='idRequerimiento']").value);
