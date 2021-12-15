@@ -111,8 +111,8 @@ function listarItemsPorRegularizar(idRequerimiento) {
             { 'data': 'detalle_cc.descripcion', "searchable": false },
             { 'data': 'detalle_cc.cantidad', "searchable": false },
             { 'data': 'detalle_cc.pvu_oc', "searchable": false },
-            { 'data': 'producto.part_number', "searchable": false },
-            { 'data': 'producto.descripcion', "searchable": false },
+            { 'data': 'producto.part_number','defaultContent':'', "searchable": false },
+            { 'data': 'producto.descripcion','defaultContent':'(sin mapear)', "searchable": false },
             { 'data': 'cantidad', "searchable": false },
             { 'data': 'precio_unitario', "searchable": false },
             { 'data': 'detalle_orden', "searchable": false },
@@ -127,7 +127,7 @@ function listarItemsPorRegularizar(idRequerimiento) {
                 'render': function (data, type, row) {
 
                     return `<div style="text-align:left; width: 100%; height: 80px; margin: 0; padding: 0; overflow-y: scroll;">
-                    ${row.detalle_cc.descripcion ?? '(Sin mapeado)'}
+                    ${row.detalle_cc!=null?row.detalle_cc.descripcion:'(Sin mapear)'}
                     </div>`;
                 }, targets: 1
             },
@@ -135,7 +135,15 @@ function listarItemsPorRegularizar(idRequerimiento) {
                 'render': function (data, type, row) {
 
                     return `<div style="text-align:left; width: 100%; height: 80px; margin: 0; padding: 0; overflow-y: scroll;">
-                    ${row.producto.descripcion ?? '(Sin mapeado)'}
+                    ${row.producto!=null ?row.producto.part_number :'(Sin mapear) '+row.part_number}
+                    </div>`;
+                }, targets: 4
+            },
+            {
+                'render': function (data, type, row) {
+
+                    return `<div style="text-align:left; width: 100%; height: 80px; margin: 0; padding: 0; overflow-y: scroll;">
+                    ${row.producto!=null ?row.producto.descripcion :'(Sin mapear) '+row.descripcion}
                     </div>`;
                 }, targets: 5
             },
