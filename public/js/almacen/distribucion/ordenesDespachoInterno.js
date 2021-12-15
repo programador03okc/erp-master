@@ -16,6 +16,7 @@ function listarDespachosInternos() {
                             <i class="fas fa-chevron-up" style="cursor: pointer;" onClick="subirPrioridad(${element.id_od})"></i>
                             <i class="fas fa-chevron-down" style="cursor: pointer;" onClick="bajarPrioridad(${element.id_od})"></i>
                         </div>
+                        <i class="fas fa-print" style="cursor: pointer;" onClick="imprimirTransformacion(${element.id_transformacion})"></i>
                         ${element.codigo_oportunidad} - ${element.nombre_entidad}</h5>
                     </div>
                     <a href="#" class="small-box-footer" style="cursor: auto;"> 
@@ -32,6 +33,7 @@ function listarDespachosInternos() {
                 <div class="small-box bg-blue">
                     <div class="inner">
                         <h5 style="margin:0px;">
+                        <i class="fas fa-print" style="cursor: pointer;" onClick="imprimirTransformacion(${element.id_transformacion})"></i>
                         ${element.codigo_oportunidad} - ${element.nombre_entidad}</h5>
                     </div>
                     <a href="#" class="small-box-footer" style="cursor: auto;">
@@ -48,6 +50,7 @@ function listarDespachosInternos() {
                 <div class="small-box bg-orange">
                     <div class="inner">
                         <h5 style="margin:0px;">
+                        <i class="fas fa-print" style="cursor: pointer;" onClick="imprimirTransformacion(${element.id_transformacion})"></i>
                         ${element.codigo_oportunidad} - ${element.nombre_entidad}</h5>
                     </div>
                     <a href="#" class="small-box-footer" style="cursor: auto;">
@@ -64,6 +67,7 @@ function listarDespachosInternos() {
                 <div class="small-box bg-green">
                     <div class="inner">
                         <h5 style="margin:0px;">
+                        <i class="fas fa-print" style="cursor: pointer;" onClick="imprimirTransformacion(${element.id_transformacion})"></i>
                         ${element.codigo_oportunidad} - ${element.nombre_entidad}</h5>
                     </div>
                     <a href="#" class="small-box-footer" style="cursor: auto;">
@@ -202,7 +206,7 @@ function bajarPrioridad(id_od) {
 
 function pasarProgramadasAlDiaSiguiente() {
     Swal.fire({
-        title: "¿Está seguro de pasar todos las programadas para mañana?",
+        title: "¿Está seguro de pasar todas las programadas para mañana?",
         icon: "info",
         showCancelButton: true,
         confirmButtonColor: "#3085d6", //"#00a65a", //
@@ -237,4 +241,15 @@ function pasarProgramadasAlDiaSiguiente() {
             });
         }
     });
+}
+
+function imprimirTransformacion(id_transformacion) {
+    if (id_transformacion !== null) {
+        window.open('imprimir_transformacion/' + id_transformacion);
+    } else {
+        Swal.fire({
+            title: "Debe seleccionar una Hoja de Transformación!",
+            icon: "error",
+        });
+    }
 }

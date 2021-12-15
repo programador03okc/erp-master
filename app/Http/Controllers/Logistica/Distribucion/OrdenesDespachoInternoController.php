@@ -140,6 +140,7 @@ class OrdenesDespachoInternoController extends Controller
                     $codigo = OrdenDespacho::ODnextId($req->id_almacen, true, 0); //$this->ODnextId(date('Y-m-d'), $req->id_almacen, true);
                     $usuario = Auth::user()->id_usuario;
                     $fechaRegistro = new Carbon();
+
                     $nro_orden = DB::table('almacen.orden_despacho')
                         ->where([['estado', '!=', 7], ['aplica_cambios', '=', true]])
                         ->whereDate('fecha_despacho', '=', (new Carbon($request->fecha_despacho))->format('Y-m-d'))
@@ -172,7 +173,7 @@ class OrdenesDespachoInternoController extends Controller
                             'fecha_registro' => $fechaRegistro
                         ]);
 
-                    $codTrans = $this->transformacion_nextId($fechaRegistro, $req->id_almacen);
+                    $codTrans = $this->transformacion_nextId($fechaRegistro, $req->id_empresa);
 
                     $id_transformacion = DB::table('almacen.transformacion')
                         ->insertGetId(
@@ -314,6 +315,7 @@ class OrdenesDespachoInternoController extends Controller
                 'orden_despacho.id_od',
                 'orden_despacho.estado',
                 'transformacion.id_transformacion',
+                'oportunidades.id as id_oportunidad',
                 'oportunidades.codigo_oportunidad',
                 'orden_despacho.nro_orden',
                 'oc_propias_view.nombre_entidad'
@@ -336,6 +338,7 @@ class OrdenesDespachoInternoController extends Controller
                 'orden_despacho.id_od',
                 'orden_despacho.estado',
                 'transformacion.id_transformacion',
+                'oportunidades.id as id_oportunidad',
                 'oportunidades.codigo_oportunidad',
                 'oc_propias_view.nombre_entidad'
             )
@@ -357,6 +360,7 @@ class OrdenesDespachoInternoController extends Controller
                 'orden_despacho.id_od',
                 'orden_despacho.estado',
                 'transformacion.id_transformacion',
+                'oportunidades.id as id_oportunidad',
                 'oportunidades.codigo_oportunidad',
                 'oc_propias_view.nombre_entidad'
             )
@@ -378,6 +382,7 @@ class OrdenesDespachoInternoController extends Controller
                 'orden_despacho.id_od',
                 'orden_despacho.estado',
                 'transformacion.id_transformacion',
+                'oportunidades.id as id_oportunidad',
                 'oportunidades.codigo_oportunidad',
                 'oc_propias_view.nombre_entidad'
             )
@@ -567,22 +572,28 @@ class OrdenesDespachoInternoController extends Controller
         }
     }
 
-    public function transformacion_nextId($fecha, $id_almacen)
+    public function transformacion_nextId($fecha, $id_empresa)
     {
         $yyyy = date('Y', strtotime($fecha));
 
-        $almacen = DB::table('almacen.alm_almacen')
+        $empresa = DB::table('administracion.adm_empresa')
             ->select('codigo')
-            ->where('id_almacen', $id_almacen)
+            ->where('id_empresa', $id_empresa)
             ->first();
 
         $cantidad = DB::table('almacen.transformacion')
-            ->where([['id_almacen', '=', $id_almacen], ['estado', '!=', 7]])
-            ->whereYear('fecha_transformacion', '=', $yyyy)
+            ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'transformacion.id_almacen')
+            ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_almacen.id_sede')
+            ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
+            ->where([
+                ['adm_empresa.id_empresa', '=', $id_empresa],
+                ['transformacion.estado', '!=', 7]
+            ])
+            ->whereYear('transformacion.fecha_transformacion', '=', $yyyy)
             ->get()->count();
 
-        $val = $this->leftZero(3, ($cantidad + 1));
-        $nextId = "OT-" . $almacen->codigo . "-" . $val;
+        $val = $this->leftZero(4, ($cantidad + 1));
+        $nextId = "OT-" . $empresa->codigo . "-" . $yyyy . "-" . $val;
 
         return $nextId;
     }
