@@ -1002,7 +1002,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('verDetalleRequerimientoDI/{id}', 'Logistica\Distribucion\OrdenesTransformacionController@verDetalleRequerimientoDI');
 				Route::get('listar_ubigeos', 'AlmacenController@listar_ubigeos');
 				Route::post('guardarOrdenDespachoExterno', 'Logistica\Distribucion\OrdenesDespachoExternoController@guardarOrdenDespachoExterno');
-				Route::get('generarDespachoInterno/{id}', 'Logistica\Distribucion\OrdenesDespachoInternoController@generarDespachoInterno');
+				Route::post('generarDespachoInterno', 'Logistica\Distribucion\OrdenesDespachoInternoController@generarDespachoInterno');
 				// Route::get('guardarOrdenDespachoExterno/{id}', 'Logistica\Distribucion\OrdenesDespachoExternoController@guardarOrdenDespachoExterno');
 				Route::post('actualizarOrdenDespachoExterno', 'Logistica\Distribucion\OrdenesDespachoExternoController@actualizarOrdenDespachoExterno');
 				Route::get('anular_orden_despacho/{id}/{tp}', 'Almacen\Movimiento\SalidasPendientesController@anular_orden_despacho');
@@ -1033,7 +1033,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('listarPorOc', 'mgcp\OrdenCompra\Propia\ComentarioController@listarPorOc')->name('listar-por-oc');
 
 				Route::get('migrarDespachos', 'Logistica\Distribucion\OrdenesDespachoExternoController@migrarDespachos')->name('migrarDespachos');
-				Route::get('pruebaDespacho', 'Logistica\Distribucion\OrdenesDespachoExternoController@pruebaDespacho')->name('pruebaDespacho');
+				Route::get('generarDespachoInternoNroOrden', 'Logistica\Distribucion\OrdenesDespachoInternoController@generarDespachoInternoNroOrden')->name('generarDespachoInternoNroOrden');
 			});
 
 			Route::group(['as' => 'ordenes-despacho-interno.', 'prefix' => 'ordenes-despacho-interno'], function () {
@@ -1056,7 +1056,10 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('imprimir_ingreso/{id}', 'Almacen\Movimiento\IngresoPdfController@imprimir_ingreso');
 				Route::get('imprimir_salida/{id}', 'Almacen\Movimiento\SalidaPdfController@imprimir_salida');
 
-				Route::get('listarDespachosInternos', 'Logistica\Distribucion\OrdenesDespachoInternoController@listarDespachosInternos');
+				Route::get('listarDespachosInternos/{fec}', 'Logistica\Distribucion\OrdenesDespachoInternoController@listarDespachosInternos');
+				Route::get('subirPrioridad/{id}', 'Logistica\Distribucion\OrdenesDespachoInternoController@subirPrioridad');
+				Route::get('bajarPrioridad/{id}', 'Logistica\Distribucion\OrdenesDespachoInternoController@bajarPrioridad');
+				Route::get('pasarProgramadasAlDiaSiguiente/{fec}', 'Logistica\Distribucion\OrdenesDespachoInternoController@pasarProgramadasAlDiaSiguiente');
 				Route::post('cambiaEstado', 'Logistica\Distribucion\OrdenesDespachoInternoController@cambiaEstado');
 			});
 		});

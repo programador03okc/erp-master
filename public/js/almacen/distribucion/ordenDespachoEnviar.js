@@ -20,6 +20,12 @@ function openOrdenDespachoEnviar(data) {
     $('[name=mensaje]').val(msj);
 }
 
+function generarOrdenDespacho(data) {
+    $('[name=id_requerimiento]').val(data.id_requerimiento ?? '');
+    $('[name=id_oportunidad]').val(data.id_oportunidad ?? '');
+    guardar_orden_despacho();
+}
+
 $('#submit_orden_despacho_enviar').on('click', function (params) {
 
     // Swal.fire({

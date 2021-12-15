@@ -106,14 +106,23 @@ class OrdenesDespachoInternoController extends Controller
         }
     }
 
-    public function generarDespachoInterno($id_requerimiento)
+    public function generarDespachoInternoNroOrden()
+    {
+        $fechaRegistro = new Carbon();
+        $nro_orden = DB::table('almacen.orden_despacho')
+            ->where([['estado', '!=', 7], ['aplica_cambios', '=', true]])
+            ->whereDate('orden_despacho.fecha_despacho', '=', (new Carbon($fechaRegistro))->format('Y-m-d'))
+            ->count();
+        return $nro_orden;
+    }
+    public function generarDespachoInterno(Request $request)
     {
         try {
             DB::beginTransaction();
 
             $req = DB::table('almacen.alm_req')
                 ->select('alm_req.*', 'despachoInterno.codigo as codigoDespachoInterno')
-                ->where('alm_req.id_requerimiento', $id_requerimiento)
+                ->where('alm_req.id_requerimiento', $request->id_requerimiento)
                 ->leftJoin('almacen.orden_despacho as despachoInterno', function ($join) {
                     $join->on('despachoInterno.id_requerimiento', '=', 'alm_req.id_requerimiento');
                     $join->where('despachoInterno.aplica_cambios', '=', true);
@@ -130,8 +139,11 @@ class OrdenesDespachoInternoController extends Controller
                 } else {
                     $codigo = OrdenDespacho::ODnextId($req->id_almacen, true, 0); //$this->ODnextId(date('Y-m-d'), $req->id_almacen, true);
                     $usuario = Auth::user()->id_usuario;
-                    $fechaRegistro = date('Y-m-d H:i:s');
-                    $nro_orden = OrdenDespacho::where([['fecha_despacho', '=', $fechaRegistro]])->count();
+                    $fechaRegistro = new Carbon();
+                    $nro_orden = DB::table('almacen.orden_despacho')
+                        ->where([['estado', '!=', 7], ['aplica_cambios', '=', true]])
+                        ->whereDate('fecha_despacho', '=', (new Carbon($request->fecha_despacho))->format('Y-m-d'))
+                        ->count();
 
                     $id_od = DB::table('almacen.orden_despacho')
                         ->insertGetId(
@@ -140,8 +152,8 @@ class OrdenesDespachoInternoController extends Controller
                                 'id_requerimiento' => $req->id_requerimiento,
                                 'id_almacen' => $req->id_almacen,
                                 'codigo' => $codigo,
-                                'fecha_despacho' => $fechaRegistro,
-                                'nro_orden' => $nro_orden,
+                                'fecha_despacho' => $request->fecha_despacho,
+                                'nro_orden' => ($nro_orden + 1),
                                 'aplica_cambios' => true,
                                 'registrado_por' => $usuario,
                                 'fecha_registro' => $fechaRegistro,
@@ -188,7 +200,7 @@ class OrdenesDespachoInternoController extends Controller
 
                     $detalles = DB::table('almacen.alm_det_req')
                         ->where([
-                            ['id_requerimiento', '=', $id_requerimiento],
+                            ['id_requerimiento', '=', $request->id_requerimiento],
                             ['estado', '!=', 7]
                         ])
                         ->get();
@@ -243,12 +255,12 @@ class OrdenesDespachoInternoController extends Controller
                     }
 
                     DB::table('almacen.alm_req')
-                        ->where('id_requerimiento', $id_requerimiento)
+                        ->where('id_requerimiento', $request->id_requerimiento)
                         ->update(['estado' => 22]); //despacho interno
 
                     $arrayRspta = array(
                         'tipo' => 'success',
-                        'mensaje' => 'Se programó y generó correctamente la Orden de Transformación.'
+                        'mensaje' => 'Se programó y generó correctamente la Orden de Transformación. Para el ' . $req->codigo
                     );
                 }
             } else {
@@ -266,7 +278,36 @@ class OrdenesDespachoInternoController extends Controller
         }
     }
 
-    public function listarDespachosInternos()
+    public function pasarProgramadasAlDiaSiguiente($fecha)
+    {
+        try {
+            DB::beginTransaction();
+
+            $nueva_fecha = (new Carbon($fecha))->addDay();
+
+            $programados = DB::table('almacen.orden_despacho')
+                ->select('orden_despacho.id_od')
+                ->where([
+                    ['orden_despacho.aplica_cambios', '=', true],
+                    ['orden_despacho.estado', '=', 1],
+                    ['orden_despacho.fecha_despacho', '=', $fecha],
+                ])
+                ->orderBy('orden_despacho.nro_orden')
+                ->get();
+
+            foreach ($programados as $od) {
+                DB::table('almacen.orden_despacho')
+                    ->where('id_od', $od->id_od)
+                    ->update(['fecha_despacho' => $nueva_fecha]);
+            }
+            DB::commit();
+            return array('tipo' => 'success', 'mensaje' => 'Se pasaron los despachos programados para mañana.');
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return array('tipo' => 'error', 'mensaje' => 'Hubo un problema al enviar la orden. Por favor intente de nuevo', 'error' => $e->getMessage());
+        }
+    }
+    public function listarDespachosInternos($fecha)
     {
         $listaProgramados = DB::table('almacen.orden_despacho')
             ->select(
@@ -274,6 +315,7 @@ class OrdenesDespachoInternoController extends Controller
                 'orden_despacho.estado',
                 'transformacion.id_transformacion',
                 'oportunidades.codigo_oportunidad',
+                'orden_despacho.nro_orden',
                 'oc_propias_view.nombre_entidad'
             )
             ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'orden_despacho.id_requerimiento')
@@ -283,7 +325,8 @@ class OrdenesDespachoInternoController extends Controller
             ->leftJoin('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'cc.id_oportunidad')
             ->where([
                 ['orden_despacho.aplica_cambios', '=', true],
-                ['orden_despacho.estado', '=', 1]
+                ['orden_despacho.estado', '=', 1],
+                ['orden_despacho.fecha_despacho', '=', $fecha],
             ])
             ->orderBy('orden_despacho.nro_orden')
             ->get();
@@ -303,7 +346,8 @@ class OrdenesDespachoInternoController extends Controller
             ->leftJoin('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'cc.id_oportunidad')
             ->where([
                 ['orden_despacho.aplica_cambios', '=', true],
-                ['orden_despacho.estado', '=', 21]
+                ['orden_despacho.estado', '=', 21],
+                ['orden_despacho.fecha_despacho', '=', $fecha],
             ])
             ->orderBy('orden_despacho.nro_orden')
             ->get();
@@ -323,7 +367,8 @@ class OrdenesDespachoInternoController extends Controller
             ->leftJoin('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'cc.id_oportunidad')
             ->where([
                 ['orden_despacho.aplica_cambios', '=', true],
-                ['orden_despacho.estado', '=', 24]
+                ['orden_despacho.estado', '=', 24],
+                ['orden_despacho.fecha_despacho', '=', $fecha],
             ])
             ->orderBy('orden_despacho.nro_orden')
             ->get();
@@ -343,7 +388,8 @@ class OrdenesDespachoInternoController extends Controller
             ->leftJoin('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'cc.id_oportunidad')
             ->where([
                 ['orden_despacho.aplica_cambios', '=', true],
-                ['orden_despacho.estado', '=', 10]
+                ['orden_despacho.estado', '=', 10],
+                ['orden_despacho.fecha_despacho', '=', $fecha],
             ])
             ->orderBy('orden_despacho.nro_orden')
             ->get();
@@ -356,6 +402,93 @@ class OrdenesDespachoInternoController extends Controller
         ]);
     }
 
+    public function subirPrioridad($id_od)
+    {
+        try {
+            DB::beginTransaction();
+
+            $od = DB::table('almacen.orden_despacho')
+                ->where('id_od', $id_od)
+                ->first();
+            $arrayRspta = [];
+
+            if ($od->nro_orden > 1) {
+                $nuevo_orden = intval($od->nro_orden) - 1;
+
+                $od_anterior = DB::table('almacen.orden_despacho')
+                    ->where([
+                        ['fecha_despacho', '=', $od->fecha_despacho],
+                        ['aplica_cambios', '=', true],
+                        ['estado', '=', 1],
+                        ['nro_orden', '=', $nuevo_orden]
+                    ])
+                    ->first();
+
+                if ($od_anterior !== null) {
+                    DB::table('almacen.orden_despacho')
+                        ->where('id_od', $id_od)
+                        ->update(['nro_orden' => $nuevo_orden]);
+
+                    DB::table('almacen.orden_despacho')
+                        ->where('id_od', $od_anterior->id_od)
+                        ->update(['nro_orden' => (intval($od_anterior->nro_orden) + 1)]);
+                }
+                $arrayRspta = array('tipo' => 'success', 'mensaje' => 'Se subió correctamente prioridad.');
+            } else {
+                $arrayRspta = array('tipo' => 'warning', 'mensaje' => 'No hay mas para subir.');
+            }
+
+            DB::commit();
+            return $arrayRspta;
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return array('tipo' => 'error', 'mensaje' => 'Hubo un problema al enviar la orden. Por favor intente de nuevo.', 'error' => $e->getMessage());
+        }
+    }
+
+    public function bajarPrioridad($id_od)
+    {
+        try {
+            DB::beginTransaction();
+
+            $od = DB::table('almacen.orden_despacho')
+                ->where('id_od', $id_od)
+                ->first();
+            $arrayRspta = [];
+            $nuevo_orden = intval($od->nro_orden) + 1;
+
+            $od_superior = DB::table('almacen.orden_despacho')
+                ->where([
+                    ['fecha_despacho', '=', $od->fecha_despacho],
+                    ['aplica_cambios', '=', true],
+                    ['estado', '=', 1],
+                    ['nro_orden', '=', $nuevo_orden]
+                ])
+                ->first();
+
+            if ($od_superior !== null) {
+
+                DB::table('almacen.orden_despacho')
+                    ->where('id_od', $id_od)
+                    ->update(['nro_orden' => $nuevo_orden]);
+
+                DB::table('almacen.orden_despacho')
+                    ->where('id_od', $od_superior->id_od)
+                    ->update(['nro_orden' => (intval($od_superior->nro_orden) - 1)]);
+
+                $arrayRspta = array('tipo' => 'success', 'mensaje' => 'Se bajó correctamente prioridad.');
+            } else {
+                $arrayRspta = array('tipo' => 'warning', 'mensaje' => 'No hay mas para bajar.');
+            }
+
+            DB::commit();
+            return $arrayRspta;
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return array('tipo' => 'error', 'mensaje' => 'Hubo un problema al enviar la orden. Por favor intente de nuevo.', 'error' => $e->getMessage());
+        }
+    }
+
     public function cambiaEstado(Request $request)
     {
         try {
@@ -365,15 +498,72 @@ class OrdenesDespachoInternoController extends Controller
                 ->where('id_od', $request->id_od)
                 ->update(['estado' => $request->estado]);
 
-            DB::table('almacen.transformacion')
-                ->where('id_transformacion', $request->id_transformacion)
-                ->update(['estado' => $request->estado]);
+            $od = DB::table('almacen.orden_despacho')
+                ->select('orden_despacho.id_requerimiento', 'orden_despacho.fecha_despacho')
+                ->where('id_od', $request->id_od)->first();
 
+            //actualiza datos de transformacion
+            if ($request->estado == 24) {
+                DB::table('almacen.transformacion')
+                    ->where('id_transformacion', $request->id_transformacion)
+                    ->update([
+                        'estado' => $request->estado,
+                        'fecha_inicio' => new Carbon()
+                    ]);
+            } else if ($request->estado == 10) {
+                DB::table('almacen.transformacion')
+                    ->where('id_transformacion', $request->id_transformacion)
+                    ->update([
+                        'estado' => $request->estado,
+                        'fecha_transformacion' => new Carbon()
+                    ]);
+            } else if ($request->estado == 21) {
+                DB::table('almacen.transformacion')
+                    ->where('id_transformacion', $request->id_transformacion)
+                    ->update(['estado' => $request->estado]);
+
+                $this->actualizaNroOrden($od->fecha_despacho);
+            } else if ($request->estado == 1) {
+                DB::table('almacen.transformacion')
+                    ->where('id_transformacion', $request->id_transformacion)
+                    ->update(['estado' => $request->estado]);
+
+                $this->actualizaNroOrden($od->fecha_despacho);
+            }
+
+            //actualiza estado del requerimiento
+            if ($request->estado == 10) {
+                DB::table('almacen.alm_req')
+                    ->where('id_requerimiento', $od->id_requerimiento)
+                    ->update(['estado' => $request->estado]);
+            } else {
+                DB::table('almacen.alm_req')
+                    ->where('id_requerimiento', $od->id_requerimiento)
+                    ->update(['estado' => 22]);
+            }
             DB::commit();
             return array('tipo' => 'success', 'mensaje' => 'Se actualizó correctamente el estado.');
         } catch (\PDOException $e) {
             DB::rollBack();
             return array('tipo' => 'error', 'mensaje' => 'Hubo un problema al enviar la orden. Por favor intente de nuevo.', 'error' => $e->getMessage());
+        }
+    }
+
+    private function actualizaNroOrden($fecha_despacho)
+    {
+        $despachos = DB::table('almacen.orden_despacho')
+            ->where([
+                ['fecha_despacho', '=', $fecha_despacho],
+                ['aplica_cambios', '=', true],
+                ['estado', '=', 1]
+            ])
+            ->orderBy('nro_orden')->get();
+        $i = 1;
+        foreach ($despachos as $d) {
+            DB::table('almacen.orden_despacho')
+                ->where('id_od', $d->id_od)
+                ->update(['nro_orden' => $i]);
+            $i++;
         }
     }
 

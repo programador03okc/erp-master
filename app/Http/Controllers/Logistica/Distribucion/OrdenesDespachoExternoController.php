@@ -547,7 +547,14 @@ class OrdenesDespachoExternoController extends Controller
             }
 
             DB::commit();
-            return response()->json(array('tipo' => 'success', 'mensaje' => ($ordenDespacho !== null ? 'Se envió la orden con código ' . $ordenDespacho->codigo : 'Se envió sólo el correo')), 200);
+            return response()->json(
+                array(
+                    'tipo' => 'success',
+                    'mensaje' => ($request->envio == 'envio'
+                        ? ($ordenDespacho !== null ? 'Se envió la orden con código ' . $ordenDespacho->codigo : 'Se envió sólo el correo')
+                        : 'Se generó la orden de despacho'), 200
+                )
+            );
         } catch (\PDOException $e) {
             DB::rollBack();
 

@@ -8,12 +8,12 @@ function listarRequerimientosPendientes(usuario) {
     let botones = [];
     // if (acceso == '1') {
     botones.push(
-        {
-            text: ' Priorizar seleccionados',
-            action: function () {
-                priorizar();
-            }, className: 'btn-primary disabled btnPriorizar'
-        },
+        // {
+        //     text: ' Priorizar seleccionados',
+        //     action: function () {
+        //         priorizar();
+        //     }, className: 'btn-primary disabled btnPriorizar'
+        // },
         {
             text: ' Exportar Excel',
             action: function () {
@@ -107,7 +107,7 @@ function listarRequerimientosPendientes(usuario) {
         },
         columns: [
             { data: 'id_requerimiento', name: 'alm_req.id_requerimiento' },
-            { data: 'id_od', name: 'orden_despacho.id_od' },
+            // { data: 'id_od', name: 'orden_despacho.id_od' },
             { data: 'codigo', name: 'alm_req.codigo', className: "text-center" },
             {
                 data: 'fecha_entrega', name: 'oc_propias_view.fecha_entrega',
@@ -178,18 +178,24 @@ function listarRequerimientosPendientes(usuario) {
                 }
             },
             { data: 'sede_descripcion_req', name: 'sede_req.descripcion', className: "text-center" },
-            { data: 'codigo_od', name: 'orden_despacho.codigo', className: "text-center" },
-            // {
-            //     data: 'numero_orden', name: 'orden_despacho.nro_orden',
-            //     'render': function (data, type, row) {
-            //         return (row['numero_orden'] !== null ? formatDate(row['fecha_despacho']) + '<br><span class="label label-default">' + row['numero_orden'] + '</span>' : '');
-            //     }
-            // },
+            // { data: 'codigo_od', name: 'orden_despacho.codigo', className: "text-center" },
             {
                 data: 'fecha_despacho_real', name: 'orden_despacho.fecha_despacho_real',
                 'render': function (data, type, row) {
                     return (row['fecha_despacho_real'] !== null ? formatDate(row['fecha_despacho_real']) : '');
                 }
+            },
+            {
+                data: 'importe_flete', name: 'orden_despacho.importe_flete',
+                'render': function (data, type, row) {
+                    return (row['importe_flete'] !== null ? formatNumber.decimal(row['importe_flete'], 'S/', -2) : '');
+                }
+            },
+            {
+                // data: 'importe_flete', name: 'orden_despacho.importe_flete',
+                'render': function (data, type, row) {
+                    return (row['gasto_extra'] !== null ? formatNumber.decimal(row['gasto_extra'], 'S/', -2) : '');
+                }, searchable: 'false', orderable: 'false'
             },
             {
                 data: 'fecha_entregada', name: 'orden_despacho.fecha_entregada',
@@ -206,25 +212,25 @@ function listarRequerimientosPendientes(usuario) {
         ],
         columnDefs: [
             { targets: [0], className: "invisible" },
-            {
-                targets: 1,
-                searchable: false,
-                orderable: false,
-                className: "dt-body-center",
-                checkboxes: {
-                    selectRow: true,
-                    selectCallback: function (nodes, selected) {
-                        $('input[type="checkbox"]', nodes).iCheck("update");
-                    },
-                    selectAllCallback: function (
-                        nodes,
-                        selected,
-                        indeterminate
-                    ) {
-                        $('input[type="checkbox"]', nodes).iCheck("update");
-                    }
-                }
-            },
+            // {
+            //     targets: 1,
+            //     searchable: false,
+            //     orderable: false,
+            //     className: "dt-body-center",
+            //     checkboxes: {
+            //         selectRow: true,
+            //         selectCallback: function (nodes, selected) {
+            //             $('input[type="checkbox"]', nodes).iCheck("update");
+            //         },
+            //         selectAllCallback: function (
+            //             nodes,
+            //             selected,
+            //             indeterminate
+            //         ) {
+            //             $('input[type="checkbox"]', nodes).iCheck("update");
+            //         }
+            //     }
+            // },
             {
                 render: function (data, type, row) {
                     if (row["codigo"] !== null) {
@@ -234,7 +240,7 @@ function listarRequerimientosPendientes(usuario) {
                     } else {
                         return '';
                     }
-                }, targets: 2
+                }, targets: 1
             },
             {
                 'render': function (data, type, row) {//
@@ -244,35 +250,35 @@ function listarRequerimientosPendientes(usuario) {
                         data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}">
                         <i class="fas fa-chevron-down"></i></button>
                         
-                        
+                        ${row['tiene_transformacion'] ?
+                            `<button type="button" class="interno btn btn-${row['codigo_despacho_interno'] !== null ? 'danger' : 'default'} btn-flat btn-xs " data-toggle="tooltip"
+                            data-placement="bottom" title="Programar Despacho Interno" data-id="${row['id_requerimiento']}" data-cdp="${row['codigo_oportunidad']}">
+                            <i class="fas fa-random"></i></button>` : ''}
+                            
                         ${row['id_requerimiento'] !== null ?
                             `<button type="button" class="envio_od btn btn-${row['id_od'] !== null ? 'warning' : 'default'} btn-flat btn-xs " data-toggle="tooltip"
                             data-placement="bottom" title="Enviar Orden de Despacho" data-id="${row['id_requerimiento']}"
                             data-fentrega="${row['fecha_entrega']}" data-cdp="${row['codigo_oportunidad']}">
-                            <i class="far fa-envelope"></i></button>`
-                            : ''}
-                        
+                            <i class="far fa-envelope"></i></button>
+                            `: ''}
                         `+
 
-                        // ${row['tiene_transformacion'] ?
-                        //     `<button type="button" class="interno btn btn-${row['codigo_despacho_interno'] !== null ? 'danger' : 'default'} btn-flat btn-xs " data-toggle="tooltip"
-                        //     data-placement="bottom" title="Programar Despacho Interno" data-id="${row['id_requerimiento']}">
-                        //     <i class="fas fa-random"></i></button>` : ''}
+                        // <button type="button" class="envio btn btn-${row['id_od'] !== null ? 'warning' : 'default'} btn-flat btn-xs " data-toggle="tooltip"
+                        //     data-placement="bottom" title="Generar Orden de Despacho" data-id="${row['id_requerimiento']}"
+                        //     data-fentrega="${row['fecha_entrega']}" data-cdp="${row['codigo_oportunidad']}">
+                        //     <i class="fas fa-file-alt"></i></button>
 
-                        // ${usuarioSesion == 'Rocio.Condori' ?
-                        //     `<button type="button" class="envio btn btn-${row['id_od'] !== null ? 'success' : 'default'} btn-flat btn-xs " data-toggle="tooltip"
-                        // data-placement="bottom" title="Enviar Orden de Despacho" data-id="${row['id_requerimiento']}"
-                        // data-fentrega="${row['fecha_entrega']}" data-cdp="${row['codigo_oportunidad']}">
-                        // <i class="far fa-envelope"></i></button>` : ''}
                         // <button type="button" class="trazabilidad btn btn-warning btn-flat btn-xs " data-toggle="tooltip"
                         //     data-placement="bottom" title="Ver Trazabilidad de Docs"  data-id="${row['id_requerimiento']}">
                         //     <i class="fas fa-route"></i></button>
 
                         /*(row['id_od'] == null && row['productos_no_mapeados'] == 0)*/
-                        `<button type="button" class="comentarios btn btn-${row["tiene_comentarios"] ? 'danger' : 'default'} btn-flat btn-xs" data-toggle="tooltip" 
-                            data-placement="bottom" title="Ver comentarios mgcp" data-oc="${row["id_oc_propia"]}" data-tp="${row["tipo"]}"
-                            data-nro="${row["nro_orden"]}">
-                            <i class="fas fa-comment"></i></button>
+                        `${row["tiene_comentarios"] ?
+                            `<button type="button" class="comentarios btn btn-default btn-flat btn-xs" data-toggle="tooltip" 
+                                data-placement="bottom" title="Ver comentarios mgcp" data-oc="${row["id_oc_propia"]}" data-tp="${row["tipo"]}"
+                                data-nro="${row["nro_orden"]}" style="background-color: #e4a8ff;">
+                                <i class="fas fa-comment"></i></button>` : ''
+                        }
                         </div>
                         <div style="display:flex;">
                             <button type="button" class="contacto btn btn-${(row['id_contacto'] !== null && row['enviar_contacto']) ? 'success' : 'default'} btn-flat btn-xs " 
@@ -302,50 +308,50 @@ function listarRequerimientosPendientes(usuario) {
                 }, targets: 17
             }
         ],
-        select: "multi",
-        order: [[3, "desc"]], //, [0, "desc"]
+        // select: "multi",
+        order: [[2, "desc"]], //, [0, "desc"]
     });
     vista_extendida();
 
-    $($("#requerimientosEnProceso").DataTable().table().container()).on("ifChanged", ".dt-checkboxes", function (event) {
-        var cell = $("#requerimientosEnProceso").DataTable().cell($(this).closest("td"));
-        cell.checkboxes.select(this.checked);
+    // $($("#requerimientosEnProceso").DataTable().table().container()).on("ifChanged", ".dt-checkboxes", function (event) {
+    //     var cell = $("#requerimientosEnProceso").DataTable().cell($(this).closest("td"));
+    //     cell.checkboxes.select(this.checked);
 
-        var data = $("#requerimientosEnProceso").DataTable().row($(this).parents("tr")).data();
+    //     var data = $("#requerimientosEnProceso").DataTable().row($(this).parents("tr")).data();
 
-        if (data !== null && data !== undefined) {
-            console.log(data.id_od);
-            if (data.id_od !== null) {
-                if (this.checked) {
-                    despachos_seleccionados.push({
-                        'id_od': data.id_od,
-                        'id_requerimiento': data.id_requerimiento
-                    });
-                    $('.btnPriorizar').removeClass('disabled');
-                } else {
-                    var index = despachos_seleccionados.findIndex(function (item, i) {
-                        return item.id_od == data.id_od;
-                    });
-                    if (index !== null) {
-                        despachos_seleccionados.splice(index, 1);
-                        $('.btnPriorizar').addClass('disabled');
-                    }
-                }
-            } else {
-                Lobibox.notify("error", {
-                    title: false,
-                    size: "mini",
-                    rounded: true,
-                    sound: false,
-                    delayIndicator: false,
-                    msg: 'El requerimiento seleccionado no cuenta con una orden de despacho aún.'
-                });
-                // this.checked = false;
-                // console.log(this.checked);
-                // cell.checkboxes.select(this.checked);
-            }
-        }
-    });
+    //     if (data !== null && data !== undefined) {
+    //         console.log(data.id_od);
+    //         if (data.id_od !== null) {
+    //             if (this.checked) {
+    //                 despachos_seleccionados.push({
+    //                     'id_od': data.id_od,
+    //                     'id_requerimiento': data.id_requerimiento
+    //                 });
+    //                 $('.btnPriorizar').removeClass('disabled');
+    //             } else {
+    //                 var index = despachos_seleccionados.findIndex(function (item, i) {
+    //                     return item.id_od == data.id_od;
+    //                 });
+    //                 if (index !== null) {
+    //                     despachos_seleccionados.splice(index, 1);
+    //                     $('.btnPriorizar').addClass('disabled');
+    //                 }
+    //             }
+    //         } else {
+    //             Lobibox.notify("error", {
+    //                 title: false,
+    //                 size: "mini",
+    //                 rounded: true,
+    //                 sound: false,
+    //                 delayIndicator: false,
+    //                 msg: 'El requerimiento seleccionado no cuenta con una orden de despacho aún.'
+    //             });
+    //             // this.checked = false;
+    //             // console.log(this.checked);
+    //             // cell.checkboxes.select(this.checked);
+    //         }
+    //     }
+    // });
 }
 
 function exportarDespachosExternos() {
@@ -411,7 +417,6 @@ $("#requerimientosEnProceso tbody").on("click", "a.archivos", function (e) {
     obtenerArchivosMgcp(id, tipo);
 });
 
-// let od_envio = '';
 $('#requerimientosEnProceso tbody').on("click", "button.envio_od", function (e) {
     $(e.preventDefault());
     var data = $('#requerimientosEnProceso').DataTable().row($(this).parents("tr")).data();
@@ -423,44 +428,31 @@ $('#requerimientosEnProceso tbody').on("click", "button.envio_od", function (e) 
 $('#requerimientosEnProceso tbody').on("click", "button.interno", function (e) {
     $(e.preventDefault());
     var id = $(this).data("id");
-    generarDespachoInterno(id);
+    var cdp = $(this).data("cdp");
+    openFechaProgramada(id);
+    // Swal.fire({
+    //     title: "¿Está seguro que desea enviar el " + cdp + " a despacho interno?",
+    //     icon: "info",
+    //     showCancelButton: true,
+    //     confirmButtonColor: "#3085d6", //"#00a65a", //
+    //     cancelButtonColor: "#d33",
+    //     cancelButtonText: "Aún No.",
+    //     confirmButtonText: "Si"
+    // }).then(result => {
+    //     if (result.isConfirmed) {
+    //         generarDespachoInterno(id);
+    //     }
+    // });
 });
 
 $('#requerimientosEnProceso tbody').on("click", "button.envio", function (e) {
     $(e.preventDefault());
     var data = $('#requerimientosEnProceso').DataTable().row($(this).parents("tr")).data();
-    // od_envio = 'envio';
     $('[name=envio]').val('');
-    openOrdenDespachoEnviar(data);
+    generarOrdenDespacho(data);
 });
 
-function generarDespachoInterno(id) {
-    $.ajax({
-        type: 'GET',
-        url: 'generarDespachoInterno/' + id,
-        dataType: 'JSON',
-        success: function (response) {
-            console.log(response);
-
-            Lobibox.notify(response.tipo, {
-                title: false,
-                size: "mini",
-                rounded: true,
-                sound: false,
-                delayIndicator: false,
-                msg: response.mensaje
-            });
-            $('#requerimientosEnProceso').DataTable().ajax.reload(null, false);
-
-        }
-    }).fail(function (jqXHR, textStatus, errorThrown) {
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    });
-}
 $('#modal-comentarios_oc_mgcp').on('shown.bs.modal', function (e) {
-
 
     $('#divComentarios').LoadingOverlay("show", {
         imageAutoResize: true,

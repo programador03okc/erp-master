@@ -1,7 +1,8 @@
 function listarDespachosInternos() {
+    var fecha = $('#fecha_programacion').val();
     $.ajax({
         type: 'GET',
-        url: 'listarDespachosInternos',
+        url: 'listarDespachosInternos/' + fecha,
         dataType: 'JSON',
         success: function (response) {
             console.log(response);
@@ -11,14 +12,14 @@ function listarDespachosInternos() {
                 <div class="small-box bg-aqua">
                     <div class="inner">
                         <h5 style="margin:0px;">
-                        <div style="display:flex;">
-                            <i class="fas fa-chevron-up"></i>
-                            <i class="fas fa-chevron-down"></i>
+                        <div style="display:block;">
+                            <i class="fas fa-chevron-up" style="cursor: pointer;" onClick="subirPrioridad(${element.id_od})"></i>
+                            <i class="fas fa-chevron-down" style="cursor: pointer;" onClick="bajarPrioridad(${element.id_od})"></i>
                         </div>
                         ${element.codigo_oportunidad} - ${element.nombre_entidad}</h5>
                     </div>
                     <a href="#" class="small-box-footer" style="cursor: auto;"> 
-                        <i class="fa fa-arrow-circle-right"  style="cursor: pointer;"
+                        <i class="fa fa-arrow-circle-right" style="cursor: pointer;"
                         onClick="siguiente(${element.estado},${element.id_od},${element.id_transformacion})"></i>
                     </a>
                 </div>`;
@@ -144,5 +145,96 @@ function cambiaEstado(nuevo_estado, id_od, id_transformacion) {
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
+    });
+}
+
+function subirPrioridad(id_od) {
+    $.ajax({
+        type: 'GET',
+        url: 'subirPrioridad/' + id_od,
+        dataType: 'JSON',
+        success: function (response) {
+            console.log(response);
+            Lobibox.notify(response.tipo, {
+                title: false,
+                size: "mini",
+                rounded: true,
+                sound: false,
+                delayIndicator: false,
+                msg: response.mensaje
+            });
+            if (response.tipo == 'success') {
+                listarDespachosInternos();
+            }
+        }
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
+
+function bajarPrioridad(id_od) {
+    $.ajax({
+        type: 'GET',
+        url: 'bajarPrioridad/' + id_od,
+        dataType: 'JSON',
+        success: function (response) {
+            console.log(response);
+            Lobibox.notify(response.tipo, {
+                title: false,
+                size: "mini",
+                rounded: true,
+                sound: false,
+                delayIndicator: false,
+                msg: response.mensaje
+            });
+            if (response.tipo == 'success') {
+                listarDespachosInternos();
+            }
+        }
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
+
+function pasarProgramadasAlDiaSiguiente() {
+    Swal.fire({
+        title: "¿Está seguro de pasar todos las programadas para mañana?",
+        icon: "info",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6", //"#00a65a", //
+        cancelButtonColor: "#d33",
+        cancelButtonText: "Aún No.",
+        confirmButtonText: "Si, Pasar para mañana"
+    }).then(result => {
+        if (result.isConfirmed) {
+            var fecha = $('#fecha_programacion').val();
+            $.ajax({
+                type: 'GET',
+                url: 'pasarProgramadasAlDiaSiguiente/' + fecha,
+                dataType: 'JSON',
+                success: function (response) {
+                    console.log(response);
+                    Lobibox.notify(response.tipo, {
+                        title: false,
+                        size: "mini",
+                        rounded: true,
+                        sound: false,
+                        delayIndicator: false,
+                        msg: response.mensaje
+                    });
+                    if (response.tipo == 'success') {
+                        listarDespachosInternos();
+                    }
+                }
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            });
+        }
     });
 }

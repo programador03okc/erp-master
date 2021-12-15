@@ -42,7 +42,7 @@ Gestión de Despachos
                             <thead>
                                 <tr>
                                     <th hidden></th>
-                                    <th></th>
+                                    {{-- <th></th> --}}
                                     <th>Cod.Req.</th>
                                     <th>Fecha Fin Entrega</th>
                                     <th>Nro O/C</th>
@@ -54,10 +54,10 @@ Gestión de Despachos
                                     <th width="30%">Cliente/Entidad</th>
                                     <th>Generado por</th>
                                     <th>Sede Req.</th>
-                                    <th>Cod. D.E.</th>
-                                    {{-- <th>Nro. Prio.</th> --}}
                                     <th>Fecha Despacho Real</th>
-                                    <th>Fecha Llegada</th>
+                                    <th>Flete</th>
+                                    <th>Gasto Adic.</th>
+                                    <th>Fecha Entregada</th>
                                     <th>Estado</th>
                                     <th width="60px">Acción</th>
                                 </tr>
@@ -79,6 +79,7 @@ Gestión de Despachos
 @include('almacen.distribucion.contactoEnviar')
 @include('almacen.distribucion.ordenDespachoEstados')
 @include('almacen.distribucion.comentarios_oc_mgcp')
+@include('almacen.distribucion.ordenDespachoProgramar')
 @include('almacen.distribucion.priorizarDespachoExterno')
 @include('tesoreria.facturacion.archivos_oc_mgcp')
 @include('publico.ubigeoModal')
@@ -110,7 +111,8 @@ Gestión de Despachos
 <script src="{{ asset('js/almacen/distribucion/contacto.js?')}}?v={{filemtime(public_path('js/almacen/distribucion/contacto.js'))}}"></script>
 <script src="{{ asset('js/almacen/distribucion/contactoEnviar.js?')}}?v={{filemtime(public_path('js/almacen/distribucion/contactoEnviar.js'))}}"></script>
 <script src="{{ asset('js/almacen/distribucion/agregarTransportista.js?')}}?v={{filemtime(public_path('js/almacen/distribucion/agregarTransportista.js'))}}"></script>
-<script src="{{ asset('js/almacen/distribucion/priorizarDespachoExterno.js?')}}?v={{filemtime(public_path('js/almacen/distribucion/priorizarDespachoExterno.js'))}}"></script>
+<script src="{{ asset('js/almacen/distribucion/ordenDespachoProgramar.js?')}}?v={{filemtime(public_path('js/almacen/distribucion/ordenDespachoProgramar.js'))}}"></script>
+{{-- <script src="{{ asset('js/almacen/distribucion/priorizarDespachoExterno.js?')}}?v={{filemtime(public_path('js/almacen/distribucion/priorizarDespachoExterno.js'))}}"></script> --}}
 <script src="{{ asset('js/tesoreria/facturacion/archivosMgcp.js?')}}?v={{filemtime(public_path('js/tesoreria/facturacion/archivosMgcp.js'))}}"></script>
 {{-- <script src="{{ asset('js/logistica/requerimiento/trazabilidad.js')}}"></script> --}}
 

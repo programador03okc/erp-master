@@ -30,15 +30,16 @@ Gestión de Despachos Internos
 
                 <div class="row">
                     <div class="col-md-3">
-
-                        <div style="display:flex">
-                            <label style="text-align: center;margin-left: 20px;margin-top: 7px;margin-right: 10px;">Mostrar: </label>
-                            <select class="form-control" id="selectMostrar">
-                                <option value="0" >Todos</option>
-                                <option value="1" >Priorizados</option>
-                                <option value="2" selected>Priorizados Hoy</option>
-                            </select>
-                        </div>
+                        <label style="text-align: right;margin-left: 20px;margin-top: 7px;margin-right: 10px;">Fecha de programación: </label>
+                    </div>
+                    <div class="col-md-3">
+                        <input type="date" class="form-control" id="fecha_programacion"/>
+                    </div>
+                    <div class="col-md-2">
+                    <div style="display:flex;">
+                        <button class="btn btn-default btn-flat" onClick="listarDespachosInternos()"><i class="fas fa-sync-alt"></i> Actualizar</button>
+                        <button class="btn btn-default btn-flat" onClick="pasarProgramadasAlDiaSiguiente()"><i class="fas fa-undo-alt"></i> Pasar programadas para mañana</button>
+                    </div>
                     </div>
                 </div>
                 
@@ -129,6 +130,7 @@ Gestión de Despachos Internos
     $(document).ready(function() {
         seleccionarMenu(window.location);
         // $.fn.dataTable.Buttons.defaults.dom.button.className = 'btn';
+        $('#fecha_programacion').val(fecha_actual());
         listarDespachosInternos();
     });
 </script>
