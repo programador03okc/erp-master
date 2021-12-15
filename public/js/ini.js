@@ -187,8 +187,8 @@ $(document).ready(function () {
 						editar_doc_compra();
 					}
 					else if (page == 'crear-orden-requerimiento') {
-					
-						document.querySelector("button[name='btn-enviar-softlink']").setAttribute("disabled", true);
+						editarOrden();
+
 					}
 				}
 				break;
