@@ -115,14 +115,21 @@ class OrdenesDespachoInternoController extends Controller
             ->count();
         return $nro_orden;
     }
+
     public function generarDespachoInterno(Request $request)
     {
         try {
             DB::beginTransaction();
 
             $req = DB::table('almacen.alm_req')
-                ->select('alm_req.*', 'despachoInterno.codigo as codigoDespachoInterno')
+                ->select(
+                    'alm_req.*',
+                    'despachoInterno.codigo as codigoDespachoInterno',
+                    'oportunidades.codigo_oportunidad'
+                )
                 ->where('alm_req.id_requerimiento', $request->id_requerimiento)
+                ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
+                ->leftJoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
                 ->leftJoin('almacen.orden_despacho as despachoInterno', function ($join) {
                     $join->on('despachoInterno.id_requerimiento', '=', 'alm_req.id_requerimiento');
                     $join->where('despachoInterno.aplica_cambios', '=', true);
@@ -261,7 +268,7 @@ class OrdenesDespachoInternoController extends Controller
 
                     $arrayRspta = array(
                         'tipo' => 'success',
-                        'mensaje' => 'Se programó y generó correctamente la Orden de Transformación. Para el ' . $req->codigo
+                        'mensaje' => 'Se generó correctamente la Orden de Transformación. Para el ' . ($req->codigo_oportunidad !== null ? $req->codigo_oportunidad : $req->codigo)
                     );
                 }
             } else {
