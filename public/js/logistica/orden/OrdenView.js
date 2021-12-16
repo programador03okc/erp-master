@@ -1074,7 +1074,7 @@ class OrdenView {
                     function (data, type, row) {
                         let containerOpenBrackets = `<div class="btn-group" role="group" style="display: flex;flex-direction: row;flex-wrap: nowrap;">`;
                         let btnVerDetalle = `<button type="button" class="ver-detalle btn btn-default boton handleClickVerDetalleRequerimientoModalVincularRequerimiento" data-id-requerimiento="${row.id_requerimiento}"  data-toggle="tooltip" data-placement="bottom" title="Ver detalle requerimiento" data-id="${row.id_orden_compra}"> <i class="fas fa-chevron-down fa-sm"></i> </button>`;
-                        let btnSeleccionar = `<button type="button" class="ver-detalle btn btn-${row.count_pendientes >0?'default':'success'} boton handleClickVincularRequerimiento" data-toggle="tooltip" data-placement="bottom" title="Seleccionar" data-id-requerimiento="${row.id_requerimiento}" data-id="${row.id_orden_compra}"> Seleccionar </button>`;
+                        let btnSeleccionar = `<button type="button" class="ver-detalle btn btn-${row.count_pendientes >0?'default':'success'} boton handleClickVincularRequerimiento" data-toggle="tooltip" data-placement="bottom" title="${(row.estado == 38 || row.estado ==39?'Este requerimiento tiene un estado por regularizar / en pausa':'Seleccionar')}" data-id-requerimiento="${row.id_requerimiento}" data-id="${row.id_orden_compra}" ${(row.estado == 38 || row.estado ==39?'disabled':'')}> Seleccionar </button>`;
                         let containerCloseBrackets = `</div>`;
                         let infoPorMapear =`<small class="text-${row.count_pendientes >0?'danger':'success'}">${row.count_pendientes >0?('Mapeos pendientes: '+row.count_pendientes):''}</small>
                         `;
@@ -1719,8 +1719,23 @@ class OrdenView {
             'columnDefs': [
                 {
                     'render': function (data, type, row) {
+                        let cantidadRequerimientosPorRegularizar=0;
+                        let cantidadRequerimientosEnPausa=0;
+                        if(row.requerimientos && row.requerimientos.length>0){
+                            row.requerimientos.forEach(element => {
+                                if(element.estado == 38){ // por regularizar
+                                    cantidadRequerimientosPorRegularizar++
+                                } 
+                                if(element.estado == 39){ // en pausa
+                                    cantidadRequerimientosEnPausa++
+                                } 
+                            });
+
+                        }
                         return `<center><div class="btn-group" role="group" style="margin-bottom: 5px;">
-                        <button type="button" class="btn btn-xs btn-success handleClickSelectOrden" data-id-orden="${row.id_orden_compra}" title="Seleccionar" >Seleccionar</button>
+                        <button type="button" class="btn btn-xs btn-success handleClickSelectOrden" data-id-orden="${row.id_orden_compra}" title="${(cantidadRequerimientosPorRegularizar>0 || cantidadRequerimientosEnPausa >0?'Tiene requerimientos en pausa o por regularizar':'seleccionar')}" ${(cantidadRequerimientosPorRegularizar>0 || cantidadRequerimientosEnPausa >0?'disabled':'')}>
+                            Seleccionar
+                        </button>
                         </div></center>`;
                     }, targets: 9
                 },
