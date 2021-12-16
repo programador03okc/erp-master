@@ -19,9 +19,9 @@ $('#modal-por-regularizar').on("click", "button.handleClickAnularItemComprometid
 });
 
 
-$('#modal-por-regularizar').on("click", "button.handleClickLevantarRegularizacion", (e) => {
-    levantarRegularizacion(e.currentTarget);
-});
+// $('#modal-por-regularizar').on("click", "button.handleClickLevantarRegularizacion", (e) => {
+//     levantarRegularizacion(e.currentTarget);
+// });
 
 $('#modal-por-regularizar').on("click", "button.handleClickDesplegarVerDetalleOrdenReserva", (e) => {
     // var data = $('#listaRequerimientosPendientes').DataTable().row($(this).parents("tr")).data();
