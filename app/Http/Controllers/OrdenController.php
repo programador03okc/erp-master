@@ -3405,13 +3405,22 @@ class OrdenController extends Controller
                             $correosAnulaciónOrden[] = config('global.correoDebug2');
                         } else {
 
-                            $correosAnulaciónOrden[] = Auth::user()->email; //usuario en sessión que genero la acción
-
+                            // $correosAnulaciónOrden[] = Auth::user()->email; //usuario en sessión que genero la acción
+                            $idUsuariosAlAnularOrden = Usuario::getAllIdUsuariosPorRol(27);// Usuarios que reciben correo al anula rorden
+                            foreach ($idUsuariosAlAnularOrden as $id) {
+                                $correosAnulaciónOrden[] = Usuario::find($id)->email;
+                            }
                             foreach ($id_usuario_list as $idUsu) {
                                 $correosAnulaciónOrden[] = Usuario::find($idUsu)->email; // usuario dueño del requerimiento(s)
                             }
                         }
                         $orden = Orden::with('sede')->find($id_orden);
+                        // Compras (Karla Quijano, Luis Alegre, Richard Dorado) //id_usuario (78,75,4)
+                        // Despacho (Ricardo Visbal, Yennifer Chicata, Silvia Nashñate) //id_usuario (64,74,97)
+                        // Almacen (Henry Lozano, Dora Casales, Leandro Somontes y Geraldine Capcha) //id_usuario (60,93,96,66)
+                        // PM (Helen Ayma, Maricielo Hinostroza y Boris Correa) //id_usuario (95,87,82)
+                        // Vendedor (según el CDP),
+                        // Manuel Rivera, Jonathan Medina // id_usuario (26,6)
                         Mail::to($correosAnulaciónOrden)->send(new EmailOrdenAnulada($orden, $finalizadosORestablecido['lista_restablecidos'], Auth::user()->nombre_corto));
 
 

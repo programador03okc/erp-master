@@ -42,7 +42,7 @@
                 <div class="modal-footer">
                     <div class="row">
                         <div class="col-md-12">
-                            <button type="button" class="btn btn-sm btn-success handleClickLevantarRegularizacion" >Levantar regularización</button>
+                            <!-- <button type="button" class="btn btn-sm btn-success handleClickLevantarRegularizacion" >Levantar regularización</button> -->
                             <button type="button" class="btn btn-sm btn-primary" aria-label="close" data-dismiss="modal">Cerrar</button>
 
                         </div>

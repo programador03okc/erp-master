@@ -524,7 +524,7 @@ class RequerimientoPendienteView {
                 },
                 {
                     'render': function (data, type, row) {
-                        return '<span class="label label-default estadoRequerimiento">' + row['estado_doc'] + '</span>';
+                        return '<span class="label label-default estadoRequerimiento" title="'+(row['estado_doc']=='En pausa'?'Retiro de aprobación por actualización de CDP':'')+'">' + row['estado_doc'] + '</span>';
                     }, targets: 9
                 },
                 {
@@ -756,7 +756,7 @@ class RequerimientoPendienteView {
                 },
                 {
                     'render': function (data, type, row) {
-                        return '<span class="label label-default estadoRequerimiento">' + row['estado_doc'] + '</span>';
+                        return '<span class="label label-default estadoRequerimiento" title="'+(row['estado_doc']=='En pausa'?'Retiro de aprobación por actualización de CDP':'')+'">' + row['estado_doc'] + '</span>';
                     }, targets: 8
                 },
                 {
