@@ -1978,7 +1978,7 @@ class OrdenView {
 
         let sustentoAnularOrden='';
         Swal.fire({
-            title: 'Sustente el movivo de la anulación de orden',
+            title: 'Sustente el motivo de la anulación de la orden',
             input: 'textarea',
             inputAttributes: {
                 autocapitalize: 'off'
