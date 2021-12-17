@@ -1257,4 +1257,51 @@ class OrdenesDespachoExternoController extends Controller
             DB::rollBack();
         }
     }
+
+    public function actualizarOcFisica(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            if ($request->tipo == 'am') {
+                DB::table('mgcp_acuerdo_marco.oc_propias')
+                    ->where('oc_propias.id', $request->id)
+                    ->update(['orden_compra' => $request->oc_fisica]);
+            } else if ($request->tipo == 'directa') {
+                DB::table('mgcp_ordenes_compra.oc_directas')
+                    ->where('oc_directas.id', $request->id)
+                    ->update(['orden_compra' => $request->oc_fisica]);
+            }
+            DB::commit();
+
+            return array('tipo' => 'success', 'mensaje' => 'Se actualizó correctamente la OC física de la ' . $request->nro_orden);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return array('tipo' => 'error', 'mensaje' => 'Hubo un problema al enviar la orden. Por favor intente de nuevo', 'error' => $e->getMessage());
+        }
+    }
+
+
+    public function actualizarSiaf(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            if ($request->tipo == 'am') {
+                DB::table('mgcp_acuerdo_marco.oc_propias')
+                    ->where('oc_propias.id', $request->id)
+                    ->update(['siaf' => $request->siaf]);
+            } else if ($request->tipo == 'directa') {
+                DB::table('mgcp_ordenes_compra.oc_directas')
+                    ->where('oc_directas.id', $request->id)
+                    ->update(['siaf' => $request->siaf]);
+            }
+            DB::commit();
+
+            return array('tipo' => 'success', 'mensaje' => 'Se actualizó el SIAF correctamente la ' . $request->nro_orden);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return array('tipo' => 'error', 'mensaje' => 'Hubo un problema al enviar la orden. Por favor intente de nuevo', 'error' => $e->getMessage());
+        }
+    }
 }

@@ -138,7 +138,10 @@ function listarRequerimientosPendientes(usuario) {
             {
                 data: 'orden_compra', name: 'oc_propias_view.orden_compra',
                 render: function (data, type, row) {
-                    return ((row['orden_compra'] !== null ? row['orden_compra'] : '') + (row['siaf'] !== null ? ' / ' + row['siaf'] : ''));
+                    return `<input type="text" style="width:70px; text-align:center;" class="oc_fisica" placeholder="Orden física"
+                        value="${row["orden_compra"] !== null ? row["orden_compra"] : ""}"/><br>
+                    <input type="text" style="width:70px; text-align:center;" class="siaf"  placeholder="SIAF"
+                        value="${row["siaf"] !== null ? row["siaf"] : ""}"/>`;
                 }, className: "text-center"
             },
             { data: 'occ', name: 'oc_propias_view.occ' },
@@ -400,7 +403,6 @@ $("#form-enviarFacturacion").on("submit", function (e) {
     enviarFacturacion(data);
 });
 
-
 $("#requerimientosEnProceso tbody").on("click", "a.verRequerimiento", function (e) {
     $(e.preventDefault());
     var id = $(this).data("id");
@@ -500,6 +502,85 @@ $('#requerimientosEnProceso tbody').on("click", "button.comentarios", function (
 
 });
 
+$('#requerimientosEnProceso tbody').on("blur", "input.oc_fisica", function (e) {
+    var data = $('#requerimientosEnProceso').DataTable().row($(this).parents("tr")).data();
+    var value = $(this).val();
+    console.log(data);
+    actualizarOcFisica(data, value);
+});
+
+$('#requerimientosEnProceso tbody').on("blur", "input.siaf", function (e) {
+    var data = $('#requerimientosEnProceso').DataTable().row($(this).parents("tr")).data();
+    var value = $(this).val();
+    console.log(data);
+    actualizarSiaf(data, value);
+});
+
+function actualizarOcFisica(data, value) {
+    console.log(value);
+    $.ajax({
+        type: "POST",
+        url: "actualizarOcFisica",
+        data: {
+            tipo: data.tipo,
+            id: data.id_oc_propia,
+            nro_orden: data.nro_orden,
+            oc_fisica: value
+        },
+        dataType: "JSON",
+    }).done(function (response) {
+        console.log(response);
+        Lobibox.notify(response.tipo, {
+            title: false,
+            size: "mini",
+            rounded: true,
+            sound: false,
+            delayIndicator: false,
+            msg: response.mensaje
+        });
+        // $('#listaComentarios tbody').html(html);
+    }).always(function () {
+        // $('#divComentarios').LoadingOverlay("hide", true);
+
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
+
+function actualizarSiaf(data, value) {
+    console.log(value);
+    $.ajax({
+        type: "POST",
+        url: "actualizarSiaf",
+        data: {
+            tipo: data.tipo,
+            id: data.id_oc_propia,
+            nro_orden: data.nro_orden,
+            siaf: value
+        },
+        dataType: "JSON",
+    }).done(function (response) {
+        console.log(response);
+        Lobibox.notify(response.tipo, {
+            title: false,
+            size: "mini",
+            rounded: true,
+            sound: false,
+            delayIndicator: false,
+            msg: response.mensaje
+        });
+        // $('#listaComentarios tbody').html(html);
+    }).always(function () {
+        // $('#divComentarios').LoadingOverlay("hide", true);
+
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
 
 $('#requerimientosEnProceso tbody').on("click", "button.anular", function () {
     var id = $(this).data('id');

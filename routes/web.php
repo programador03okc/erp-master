@@ -823,7 +823,6 @@ Route::group(['middleware' => ['auth']], function () {
 						Route::post('mostrar-catalogo-productos', 'Logistica\RequerimientoController@mostrarCatalogoProductos');
 						Route::post('enviar-notificacion-finalizacion-cdp', 'OrdenController@enviarNotificacionFinalizacionCDP');
 						Route::post('validar-orden-agil-orden-softlink', 'OrdenController@validarOrdenAgilOrdenSoftlink');
-
 					});
 					Route::group(['as' => 'listado.', 'prefix' => 'listado'], function () {
 						Route::get('index', 'OrdenController@view_listar_ordenes')->name('index');
@@ -1033,6 +1032,8 @@ Route::group(['middleware' => ['auth']], function () {
 
 				Route::post('despachosExternosExcel', 'Logistica\Distribucion\OrdenesDespachoExternoController@despachosExternosExcel')->name('despachosExternosExcel');
 				Route::post('listarPorOc', 'mgcp\OrdenCompra\Propia\ComentarioController@listarPorOc')->name('listar-por-oc');
+				Route::post('actualizarOcFisica', 'Logistica\Distribucion\OrdenesDespachoExternoController@actualizarOcFisica')->name('actualizarOcFisica');
+				Route::post('actualizarSiaf', 'Logistica\Distribucion\OrdenesDespachoExternoController@actualizarSiaf')->name('actualizarSiaf');
 
 				Route::get('migrarDespachos', 'Logistica\Distribucion\OrdenesDespachoExternoController@migrarDespachos')->name('migrarDespachos');
 				Route::get('generarDespachoInternoNroOrden', 'Logistica\Distribucion\OrdenesDespachoInternoController@generarDespachoInternoNroOrden')->name('generarDespachoInternoNroOrden');
