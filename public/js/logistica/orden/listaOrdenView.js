@@ -76,9 +76,6 @@ class ListaOrdenView {
             this.editarEstadoItemOrden(e.currentTarget);
         });
 
-        $('#listaDetalleOrden tbody').on("click", "button.handleClickAnularOrden", (e) => {
-            this.anularOrden(e.currentTarget);
-        });
         $('#listaDetalleOrden tbody').on("click", "button.handleClickAbrirOrdenPDF", (e) => {
             this.abrirOrdenPDF(e.currentTarget.dataset.idOrdenCompra);
         });
@@ -986,24 +983,14 @@ class ListaOrdenView {
                             });
                         }
 
-                        let containerOpenBrackets = '<div class="btn-group btn-group-sm" role="group" style="margin-bottom: 5px;display: flex;flex-direction: row;flex-wrap: nowrap;">';
+                        let containerOpenBrackets = '<div class="btn-group btn-group-xs" role="group" style="margin-bottom: 5px;display: flex;flex-direction: row;flex-wrap: nowrap;">';
                         let btnImprimirOrden = '<button type="button" class="btn btn-sm btn-warning boton handleClickAbrirOrdenPDF" name="btnGenerarOrdenRequerimientoPDF" title="Abrir orden PDF" data-id-requerimiento="' + row.id_requerimiento + '"  data-codigo-requerimiento="' + row.codigo_requerimiento + '" data-id-orden-compra="' + row.id_orden_compra + '"><i class="fas fa-file-download fa-xs"></i></button>';
-                        let btnAnularOrden = '';
-                        if (![6, 27, 28].includes(row.orden_estado)) {
-                            if (cantidadRequerimientosConEstadosPorRegularizarOenPausa > 0) {
-
-                                btnAnularOrden = '<button type="button" class="btn btn-sm btn-danger boton handleClickAnularOrden" name="btnAnularOrden" title="Anular orden" data-codigo-orden="' + row.codigo + '" data-id-orden-compra="' + row.id_orden_compra + '" disabled><i class="fas fa-backspace fa-xs"></i></button>';
-                            } else {
-                                btnAnularOrden = '<button type="button" class="btn btn-sm btn-danger boton handleClickAnularOrden" name="btnAnularOrden" title="Anular orden" data-codigo-orden="' + row.codigo + '" data-id-orden-compra="' + row.id_orden_compra + '"><i class="fas fa-backspace fa-xs"></i></button>';
-
-                            }
-                        }
                         let btnDocumentosVinculados = '<button type="button" class="btn btn-sm btn-primary boton handleClickDocumentosVinculados" name="btnDocumentosVinculados" title="Ver documentos vinculados" data-id-requerimiento="' + row.id_requerimiento + '"  data-codigo-requerimiento="' + row.codigo_requerimiento + '" data-id-orden-compra="' + row.id_orden_compra + '"><i class="fas fa-folder fa-xs"></i></button>';
                         let containerCloseBrackets = '</div>';
 
 
 
-                        return (containerOpenBrackets + btnImprimirOrden + btnDocumentosVinculados + btnAnularOrden + containerCloseBrackets);
+                        return (containerOpenBrackets + btnImprimirOrden + btnDocumentosVinculados  + containerCloseBrackets);
 
 
 
@@ -1346,12 +1333,27 @@ class ListaOrdenView {
                                 }
 
                             } else {
+                                
                                 $("#wrapper-okc").LoadingOverlay("hide", true);
+
                                 Swal.fire(
                                     '',
-                                    'Lo sentimos hubo un error en el servidor al intentar anular la orden, por favor vuelva a intentarlo',
-                                    'error'
+                                    res.mensaje.toString(),
+                                    res.tipo_estado
                                 );
+
+                                if(res.status_migracion_softlink != null){
+                                        
+                                    Lobibox.notify(res.status_migracion_softlink.tipo, {
+                                        title: false,
+                                        size: 'mini',
+                                        rounded: true,
+                                        sound: false,
+                                        delayIndicator: false,
+                                        msg: res.status_migracion_softlink.mensaje
+                                    });
+                
+                                }
                                 console.log(res);
                             }
                         }).catch((err) => {

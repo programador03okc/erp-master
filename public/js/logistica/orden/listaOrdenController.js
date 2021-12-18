@@ -63,8 +63,8 @@ class ListaOrdenCtrl {
     }
 
 
-    anularOrden(id){
-        return this.listaOrdenModel.anularOrden(id);
+    anularOrden(id,sustento){
+        return this.listaOrdenModel.anularOrden(id,sustento);
     }
 
     listarDocumentosVinculados(id){

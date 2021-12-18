@@ -1699,7 +1699,7 @@ class RequerimientoPendienteView {
                     },
                     success: (response) => {
                         // console.log(response);
-                        if (response.status == 200) {
+                        if (response.id_reserva >0) {
                             $('#modal-nueva-reserva .modal-content').LoadingOverlay("hide", true);
 
                             Lobibox.notify('success', {
@@ -1717,12 +1717,12 @@ class RequerimientoPendienteView {
 
                         } else {
                             $('#modal-nueva-reserva .modal-content').LoadingOverlay("hide", true);
+                                Swal.fire(
+                                    '',
+                                    response.mensaje,
+                                    response.tipo_estado
+                                );
                             console.log(response);
-                            Swal.fire(
-                                '',
-                                'Lo sentimos hubo un problema al intentar anular la reserva, por favor vuelva a intentarlo',
-                                'error'
-                            );
                         }
 
                         if (response.lista_finalizados.length > 0) {
@@ -1865,7 +1865,6 @@ class RequerimientoPendienteView {
                         // finalidados
                         if (response.lista_finalizados.length > 0) {
                             response.lista_finalizados.forEach(element => {
-                                console.log(element);
                                 Swal.fire({
                                     title: '',
                                     html: `Se finalizó el cuadro de presupuesto ${element.cuadro_presupuesto.oportunidad.codigo_oportunidad} del requerimiento ${element.requerimiento.codigo}`,
@@ -1878,21 +1877,14 @@ class RequerimientoPendienteView {
                     } else {
                         $('#modal-nueva-reserva .modal-content').LoadingOverlay("hide", true);
                         // console.log(response);
-                        if (response.mensaje.length > 0) {
                             Swal.fire(
                                 '',
                                 response.mensaje,
-                                'warning'
+                                response.tipo_estado
                             );
-                        } else {
-                            Swal.fire(
-                                '',
-                                'Lo sentimos hubo un problema en el servidor al intentar guardar la reserva, por favor vuelva a intentarlo',
-                                'error'
-                            );
-                        }
+                        
                         obj.removeAttribute("disabled");
-
+                        console.log(response);
                     }
                 },
                 fail: (jqXHR, textStatus, errorThrown) => {
