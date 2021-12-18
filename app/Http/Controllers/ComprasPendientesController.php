@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Necesidad\RequerimientoHelper;
 use App\Http\Controllers\Almacen\Movimiento\OrdenesPendientesController;
 use App\Models\Almacen\Almacen;
 use App\Models\Almacen\DetalleRequerimiento;
@@ -562,72 +563,80 @@ class ComprasPendientesController extends Controller
 
             $mensaje='';
             $crearNuevaReserva=true;
-            $ReservasProductoActivas = Reserva::where([['id_detalle_requerimiento',$request->idDetalleRequerimiento],
-            ['estado',1]])->get();
             $codigoOIdReservaAnulada= '';
             $idRequerimientoList=[];
+            
 
-            foreach ($ReservasProductoActivas as $value) {
-                if($value->id_almacen_reserva == $request->almacenReserva && $value->stock_comprometido == $request->cantidadReserva){
-                    $crearNuevaReserva=false;
-                    $mensaje.='No puede generar una reserva que actualmente existe con mismo almacén y misma cantidad a reservar';
+            $requerimientoHelper = new RequerimientoHelper();
+            if($requerimientoHelper->EstaHabilitadoRequerimiento([$request->idDetalleRequerimiento])==true){
+                $ReservasProductoActivas = Reserva::where([['id_detalle_requerimiento',$request->idDetalleRequerimiento],['estado',1]])->get();
+                foreach ($ReservasProductoActivas as $value) {
+                    if($value->id_almacen_reserva == $request->almacenReserva && $value->stock_comprometido == $request->cantidadReserva){
+                        $crearNuevaReserva=false;
+                        $mensaje.='No puede generar una reserva que actualmente existe con mismo almacén y misma cantidad a reservar';
+                    }
+                    if($value->id_almacen_reserva == $request->almacenReserva){
+                        $reservaMismoAlmacen = Reserva::where([['id_detalle_requerimiento',$request->idDetalleRequerimiento],['estado',1],
+                        ['id_almacen_reserva',$request->almacenReserva]])->first();
+                        $reservaMismoAlmacen->estado=7;
+                        $reservaMismoAlmacen->save();
+                        $codigoOIdReservaAnulada= $reservaMismoAlmacen->codigo?$reservaMismoAlmacen->codigo:$reservaMismoAlmacen->id_reserva;
+                        $crearNuevaReserva= true;
+    
+                    }
                 }
-                if($value->id_almacen_reserva == $request->almacenReserva){
-                    $reservaMismoAlmacen = Reserva::where([['id_detalle_requerimiento',$request->idDetalleRequerimiento],['estado',1],
-                    ['id_almacen_reserva',$request->almacenReserva]])->first();
-                    $reservaMismoAlmacen->estado=7;
-                    $reservaMismoAlmacen->save();
-                    $codigoOIdReservaAnulada= $reservaMismoAlmacen->codigo?$reservaMismoAlmacen->codigo:$reservaMismoAlmacen->id_reserva;
-                    $crearNuevaReserva= true;
-
-                }
-            }
-            $reserva = new Reserva();
-            if($crearNuevaReserva==true){
-                $reserva->codigo = Reserva::crearCodigo();
-                $reserva->id_unidad_medida = $request->idUnidadMedida;
-                $reserva->id_detalle_requerimiento = $request->idDetalleRequerimiento;
-                $reserva->id_producto = $request->idProducto;
-                $reserva->id_almacen_reserva = $request->almacenReserva;
-                $reserva->stock_comprometido = $request->cantidadReserva;
-                $reserva->usuario_registro =  Auth::user()->id_usuario;
-                $reserva->fecha_registro =  new Carbon();
-                $reserva->estado = 1;
-                $reserva->save();
-
-                if($request->idDetalleRequerimiento > 0){
-                    $idRequerimientoList[]= DetalleRequerimiento::find($request->idDetalleRequerimiento)->first()->id_requerimiento;
+                $reserva = new Reserva();
+                if($crearNuevaReserva==true){
+                    $reserva->codigo = Reserva::crearCodigo();
+                    $reserva->id_unidad_medida = $request->idUnidadMedida;
+                    $reserva->id_detalle_requerimiento = $request->idDetalleRequerimiento;
+                    $reserva->id_producto = $request->idProducto;
+                    $reserva->id_almacen_reserva = $request->almacenReserva;
+                    $reserva->stock_comprometido = $request->cantidadReserva;
+                    $reserva->usuario_registro =  Auth::user()->id_usuario;
+                    $reserva->fecha_registro =  new Carbon();
+                    $reserva->estado = 1;
+                    $reserva->save();
+    
+                    if($request->idDetalleRequerimiento > 0){
+                        $idRequerimientoList[]= DetalleRequerimiento::find($request->idDetalleRequerimiento)->first()->id_requerimiento;
+                    }
+        
                 }
     
+                
+                if($reserva->id_reserva > 0){
+     
+                        $mensaje.=' Se creo nueva reserva '.$reserva->codigo;
+                
+                    OrdenesPendientesController::validaProdUbi($request->idProducto, $request->almacenReserva);
+                    if(strlen($codigoOIdReservaAnulada)>0){
+                        $mensaje.=' en remplazo por la reserva '.$codigoOIdReservaAnulada;
+                    }
+                } 
+    
+                $ReservasProductoActualizadas = Reserva::with('almacen','usuario.trabajador.postulante.persona','estado')->where([['id_detalle_requerimiento',$request->idDetalleRequerimiento], ['estado',1]])->get();
+    
+    
+                
+                DB::commit();
+    
+                DetalleRequerimiento::actualizarEstadoDetalleRequerimientoAtendido($request->idDetalleRequerimiento);
+                // actualizar estado de requerimiento
+                $Requerimiento = DetalleRequerimiento::where('id_detalle_requerimiento',$request->idDetalleRequerimiento)->first();
+                $nuevoEstado=  Requerimiento::actualizarEstadoRequerimientoAtendido([$Requerimiento->id_requerimiento]);
+    
+                return response()->json(['id_reserva'=>$reserva->id_reserva,'codigo'=>$reserva->codigo,'lista_finalizados'=>$nuevoEstado['lista_finalizados'],'data'=>$ReservasProductoActualizadas,'tipo_estado'=>'success','estado_requerimiento'=>$nuevoEstado['estado_actual'] ,'mensaje'=>$mensaje]);
+
+            }else{
+                return response()->json(['id_reserva'=>'','codigo'=>'','lista_finalizados'=>[],'data'=>[],'tipo_estado'=>'warning','estado_requerimiento'=>null ,'mensaje'=>'No puede guardar la reserva, existe un requerimiento vinculado con estado "En pausa" o  "Por regularizar"']);
+
             }
 
-            
-            if($reserva->id_reserva > 0){
- 
-                    $mensaje.=' Se creo nueva reserva '.$reserva->codigo;
-            
-                OrdenesPendientesController::validaProdUbi($request->idProducto, $request->almacenReserva);
-                if(strlen($codigoOIdReservaAnulada)>0){
-                    $mensaje.=' en remplazo por la reserva '.$codigoOIdReservaAnulada;
-                }
-            } 
 
-            $ReservasProductoActualizadas = Reserva::with('almacen','usuario.trabajador.postulante.persona','estado')->where([['id_detalle_requerimiento',$request->idDetalleRequerimiento], ['estado',1]])->get();
-
-
-            
-            DB::commit();
-
-            DetalleRequerimiento::actualizarEstadoDetalleRequerimientoAtendido($request->idDetalleRequerimiento);
-            // actualizar estado de requerimiento
-            $Requerimiento = DetalleRequerimiento::where('id_detalle_requerimiento',$request->idDetalleRequerimiento)->first();
-            $nuevoEstado=  Requerimiento::actualizarEstadoRequerimientoAtendido([$Requerimiento->id_requerimiento]);
-
-
-        return response()->json(['id_reserva'=>$reserva->id_reserva,'codigo'=>$reserva->codigo,'lista_finalizados'=>$nuevoEstado['lista_finalizados'],'data'=>$ReservasProductoActualizadas,'estado_requerimiento'=>$nuevoEstado['estado_actual'] ,'mensaje'=>$mensaje]);
         } catch (\PDOException $e) {
             DB::rollBack();
-            return response()->json(['id_reserva' => 0, 'codigo' => '','lista_finalizados'=>[], 'data'=>[],'estado_requerimiento'=>[] ,'mensaje' => 'Hubo un problema al guardar la reserva. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
+            return response()->json(['id_reserva' => 0, 'codigo' => '','lista_finalizados'=>[], 'data'=>[],'estado_requerimiento'=>[] ,'tipo_estado'=>'error','mensaje' => 'Hubo un problema al guardar la reserva. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
 
         }
     }
@@ -656,28 +665,34 @@ class ComprasPendientesController extends Controller
         
         try {
             DB::beginTransaction();
-
-            $status=0;
         
-            $reserva = Reserva::where('id_reserva',$request->idReserva)->first();
-            $reserva->estado=7;
-            $reserva->save();
+            $requerimientoHelper = new RequerimientoHelper();
+            if($requerimientoHelper->EstaHabilitadoRequerimiento([$request->idDetalleRequerimiento])==true){
 
-            if($reserva){
-                $status=200;
+                $reserva = Reserva::where('id_reserva',$request->idReserva)->first();
+                $reserva->estado=7;
+                $reserva->save();
+    
+            
+                $ReservasProductoActualizadas = Reserva::with('almacen','usuario.trabajador.postulante.persona','estado')->where([['id_detalle_requerimiento',$request->idDetalleRequerimiento], ['estado',1]])->get();
+                DetalleRequerimiento::actualizarEstadoDetalleRequerimientoAtendido($request->idDetalleRequerimiento);
+                // actualizar estado de requerimiento
+                $Requerimiento = DetalleRequerimiento::where('id_detalle_requerimiento',$request->idDetalleRequerimiento)->first();
+                $nuevoEstado= Requerimiento::actualizarEstadoRequerimientoAtendido([$Requerimiento->id_requerimiento]);
+    
+            //     (new LogisticaController)->generarTransferenciaRequerimiento($id_requerimiento, $id_sede, $data);
+                DB::commit();
+                return response()->json(['id_reserva'=>$reserva->id_reserva,'data'=>$ReservasProductoActualizadas, 'tipo_estado'=>'success', 'estado_requerimiento'=>$nuevoEstado['estado_actual'],'lista_finalizados'=>$nuevoEstado['lista_finalizados'],'lista_restablecidos'=>$nuevoEstado['lista_restablecidos']]);
+            }else{
+                return response()->json(['id_reserva'=>0,'data'=>[],'tipo_estado'=>'warning','mensaje'=>'No puede anular la reserva, existe un requerimiento vinculado con estado "En pausa" o  "Por regularizar"']);
+
             }
-            $ReservasProductoActualizadas = Reserva::with('almacen','usuario.trabajador.postulante.persona','estado')->where([['id_detalle_requerimiento',$request->idDetalleRequerimiento], ['estado',1]])->get();
-            DetalleRequerimiento::actualizarEstadoDetalleRequerimientoAtendido($request->idDetalleRequerimiento);
-            // actualizar estado de requerimiento
-            $Requerimiento = DetalleRequerimiento::where('id_detalle_requerimiento',$request->idDetalleRequerimiento)->first();
-            $nuevoEstado= Requerimiento::actualizarEstadoRequerimientoAtendido([$Requerimiento->id_requerimiento]);
 
-        //     (new LogisticaController)->generarTransferenciaRequerimiento($id_requerimiento, $id_sede, $data);
-            DB::commit();
 
-        return response()->json(['id_reserva'=>$reserva->id_reserva,'data'=>$ReservasProductoActualizadas, 'status'=>$status, 'estado_requerimiento'=>$nuevoEstado['estado_actual'],'lista_finalizados'=>$nuevoEstado['lista_finalizados'],'lista_restablecidos'=>$nuevoEstado['lista_restablecidos']]);
         } catch (\PDOException $e) {
             DB::rollBack();
+            return response()->json(['id_reserva' => 0, 'data'=>[],'estado_requerimiento'=>[] ,'tipo_estado'=>'error', 'mensaje' => 'Hubo un problema en el servidor al intentar anular la reserva. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
+
         }
     }
 

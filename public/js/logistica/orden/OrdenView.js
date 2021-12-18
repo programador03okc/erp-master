@@ -217,7 +217,7 @@ class OrdenView {
                                 });
 
                             }else{
-                                Lobibox.notify('danger', {
+                                Lobibox.notify('error', {
                                     title: false,
                                     size: 'mini',
                                     rounded: true,
@@ -1529,12 +1529,13 @@ class OrdenView {
                             }
 
                         } else {
-                            $("#wrapper-okc").LoadingOverlay("hide", true);
-                            Swal.fire(
-                                '',
-                                'Lo sentimos hubo un error en el servidor al intentar guardar la orden, por favor vuelva a intentarlo',
-                                'error'
-                            );
+                                $("#wrapper-okc").LoadingOverlay("hide", true);
+                                Swal.fire(
+                                    '',
+                                    response.mensaje,
+                                    response.tipo_estado
+                                );
+                            
                         }
                     }
                 }).fail(function (jqXHR, textStatus, errorThrown) {
@@ -1606,7 +1607,7 @@ class OrdenView {
                         }else{
                             $("#wrapper-okc").LoadingOverlay("hide", true);
 
-                            Lobibox.notify('danger', {
+                            Lobibox.notify('error', {
                                 title: false,
                                 size: 'mini',
                                 rounded: true,
@@ -1614,6 +1615,12 @@ class OrdenView {
                                 delayIndicator: false,
                                 msg: `Orden no se puedo actualizada`
                             });
+
+                            Swal.fire(
+                                '',
+                                response.mensaje,
+                                response.tipo_estado
+                            );
 
                             if(response.status_migracion_softlink != null){
                                 
@@ -2024,15 +2031,13 @@ class OrdenView {
         
                     } else {
                         $("#wrapper-okc").LoadingOverlay("hide", true);
-        
-                        Lobibox.notify('warning', {
-                            title: false,
-                            size: 'mini',
-                            rounded: true,
-                            sound: false,
-                            delayIndicator: false,
-                            msg: response.mensaje.toString()
-                        });
+
+                        Swal.fire(
+                            '',
+                            response.mensaje.toString(),
+                            response.tipo_estado
+                        );
+                    
                         console.log(response);
         
                         if(response.status_migracion_softlink != null){

@@ -163,18 +163,27 @@ class ListaOrdenModel {
     }
 
 
-    anularOrden(id_orden){
 
+    anularOrden(id,sustento){
         return new Promise(function(resolve, reject) {
             $.ajax({
-                type: 'PUT',
-                url:`anular/${id_orden}`,
+                type: 'POST',
+                url:`anular`,
+                data:{'idOrden':id,'sustento':sustento},
                 dataType: 'JSON',
+                beforeSend: data => {
+    
+                    $("#wrapper-okc").LoadingOverlay("show", {
+                        imageAutoResize: true,
+                        progress: true,
+                        imageColor: "#3c8dbc"
+                    });
+                },
                 success(response) {
-                    resolve(response) // Resolve promise and go to then() 
+                    resolve(response);
                 },
                 error: function(err) {
-                reject(err) // Reject the promise and go to catch()
+                reject(err)
                 }
                 });
             });
