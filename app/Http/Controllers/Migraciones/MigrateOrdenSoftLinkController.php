@@ -1046,4 +1046,47 @@ class MigrateOrdenSoftLinkController extends Controller
             return response()->json(array('tipo' => 'error', 'mensaje' => 'Hubo un problema al anular la orden. Por favor intente de nuevo', 'error' => $e->getMessage()));
         }
     }
+
+    public function listarOrdenesSoftlinkNoVinculadas($cod_empresa, $fecha)
+    {
+        try {
+            DB::beginTransaction();
+            $empresas = [
+                ['id' => 1, 'nombre' => 'OKC', 'cod_docu' => 'OC'],
+                ['id' => 2, 'nombre' => 'PYC', 'cod_docu' => 'O3'],
+                ['id' => 3, 'nombre' => 'SVS', 'cod_docu' => 'O2'],
+                ['id' => 4, 'nombre' => 'JEDR', 'cod_docu' => 'O5'],
+                ['id' => 5, 'nombre' => 'RBDB', 'cod_docu' => 'O4'],
+                ['id' => 6, 'nombre' => 'PTEC', 'cod_docu' => 'O6']
+            ];
+            $cod_suc = '';
+            $cod_docu = '';
+
+            foreach ($empresas as $emp) {
+                if ($emp['nombre'] == $cod_empresa) {
+                    $cod_suc = $emp['id'];
+                    $cod_docu = $emp['cod_docu'];
+                }
+            }
+            $fechaDesde = (new Carbon($fecha))->subMonth(3);
+
+            $lista = DB::connection('soft')->table('movimien')
+                ->select('mov_id', 'num_docu', 'cod_docu', 'auxiliar.nom_auxi')
+                ->join('auxiliar', 'auxiliar.cod_auxi', '=', 'movimien.cod_auxi')
+                ->where([
+                    ['cod_suc', '=', $cod_suc],
+                    ['cod_docu', '=', $cod_docu],
+                    ['flg_anulado', '=', 0],
+                    ['mov_id', 'not like', '000%']
+                ])
+                ->whereDate('fec_docu', '<=', (new Carbon($fechaDesde))->format('Y-m-d'))
+                ->get();
+
+            DB::commit();
+            return response()->json(array('tipo' => 'success', 'lista' => $lista), 200);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json(array('tipo' => 'error', 'mensaje' => 'Hubo un problema al anular la orden. Por favor intente de nuevo', 'error' => $e->getMessage()));
+        }
+    }
 }
