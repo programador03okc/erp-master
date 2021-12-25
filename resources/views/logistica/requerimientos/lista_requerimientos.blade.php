@@ -5,7 +5,7 @@
 @endsection
 
 @section('cabecera')
-Listado de requerimientos
+Listado de requerimientos de B/S
 @endsection
 
 @section('estilos')
@@ -15,7 +15,7 @@ Listado de requerimientos
 @section('breadcrumb')
 <ol class="breadcrumb">
     <li><a href="{{route('necesidades.index')}}"><i class="fas fa-tachometer-alt"></i> Necesidades</a></li>
-    <li>Requerimientos</li>
+    <li>Requerimientos de B/S</li>
     <li class="active">Listado</li>
 </ol>
 @endsection

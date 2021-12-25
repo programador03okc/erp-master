@@ -4,7 +4,7 @@
     @if(Auth::user()->tieneSubModulo(23))
     <li class=" treeview ">
         <a href="#">
-            <i class="fas fa-file-prescription"></i> <span>Requerimientos</span>
+            <i class="fas fa-file-prescription"></i> <span>Requerimiento de B/S</span>
             <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
             </span>
@@ -22,23 +22,21 @@
         </ul>
     </li>
     @endif
-    {{-- @if(Auth::user()->tieneSubModulo(23))
+    @if(Auth::user()->tieneSubModulo(23))
     <li class=" treeview ">
         <a href="#">
-            <i class="fas fa-file-invoice-dollar"></i> <span>Solicitudes de pago</span>
+            <i class="fas fa-file-invoice-dollar"></i> <span>Requerimiento de pago</span>
             <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
             </span>
         </a>
         <ul class="treeview-menu">
             @if(Auth::user()->tieneAplicacion(102))
-            <li><a href="#"><i class="far fa-circle fa-xs"></i> Crear / editar</a></li>
+            <li><a href="{{route('necesidades.pago.listado.index')}}"><i class="far fa-circle fa-xs"></i> Listado</a></li>
             @endif
-            @if(Auth::user()->tieneAplicacion(103))
-            <li><a href="#"><i class="far fa-circle fa-xs"></i> Listado</a></li>
-            @endif
+  
         </ul>
     </li>
-    @endif --}}
+    @endif
 </ul>
 @endsection
