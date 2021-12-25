@@ -2022,6 +2022,11 @@ class RequerimientoController extends Controller
         return Sede::listarSedesPorEmpresa($idEmpresa);
     }
 
+    public function listarDivisionPorGrupo($idGrupo)
+    {
+        return DivisionArea::listarDivisionPorGrupo($idGrupo);
+    }
+
 
 
     // botonera aprobar  

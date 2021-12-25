@@ -6,6 +6,7 @@ use App\Models\Administracion\Empresa;
 use App\Models\Tesoreria\Area;
 use App\Models\Tesoreria\Rol;
 use Illuminate\Contracts\Session\Session;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\DB;
@@ -13,7 +14,7 @@ use Illuminate\Support\Facades\Auth;
 
 class Usuario extends Authenticatable
 {
-	use Notifiable;
+	use Notifiable,SoftDeletes;
 	//
 	protected $table = 'configuracion.sis_usua';
 	protected $primaryKey = 'id_usuario';

@@ -31,7 +31,6 @@ class Division extends Model
 
 
     }
-
     public static function mostrarDivisionUsuarioNroOrdenUno(){
         $roles = Auth::user()->getAllRol();
         $idRolUsuarioList=[];
