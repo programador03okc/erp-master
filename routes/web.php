@@ -1857,6 +1857,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('presupuesto/{area_id}', 'Tesoreria\AjaxController@getPresupuesto')->name('presupuesto');
 	});
 */
+	Route::get('migrarOrdenVenta/{id}', 'Migraciones\MigrateRequerimientoSoftLinkController@migrarOrdenVenta');
 	Route::get('correlativo', 'Migraciones\MigrateOrdenSoftLinkController@correlativo');
 
 	// Route::get('generarDespachoInternoMgcp/{id}', 'Logistica\Distribucion\OrdenesTransformacionController@generarDespachoInternoMgcp');
