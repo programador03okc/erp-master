@@ -1,6 +1,6 @@
 function enviarOrdenSoftlink() {
     let id_orden = $('[name=id_orden]').val();
-    const $button = $("#btn-enviar-softlink");
+    const $button = $("#btn-relacionar-a-oc-softlink");
     $button.prop('disabled', 'true');
     $button.html('Migrando...');
 

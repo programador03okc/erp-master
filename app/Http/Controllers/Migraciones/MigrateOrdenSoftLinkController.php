@@ -1083,7 +1083,7 @@ class MigrateOrdenSoftLinkController extends Controller
                 ->get();
 
             DB::commit();
-            return response()->json(array('tipo' => 'success', 'lista' => $lista), 200);
+            return response()->json(array('tipo' => 'success', 'data' => $lista), 200);
         } catch (\PDOException $e) {
             DB::rollBack();
             return response()->json(array('tipo' => 'error', 'mensaje' => 'Hubo un problema al anular la orden. Por favor intente de nuevo', 'error' => $e->getMessage()));
