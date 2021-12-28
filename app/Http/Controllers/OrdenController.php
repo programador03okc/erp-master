@@ -102,7 +102,9 @@ class OrdenController extends Controller
         // $sedes = Auth::user()->sedesAcceso();
         $bancos = Banco::mostrar();
         $tipo_cuenta = TipoCuenta::mostrar();
-        return view('logistica/gestion_logistica/compras/ordenes/elaborar/crear_orden_requerimiento', compact('bancos', 'tipo_cuenta', 'sedes', 'sis_identidad', 'tp_documento', 'tp_moneda', 'tp_doc', 'condiciones', 'condiciones_softlink', 'clasificaciones', 'subcategorias', 'categorias', 'unidades', 'unidades_medida', 'monedas'));
+        $empresas = $this->select_mostrar_empresas();
+
+        return view('logistica/gestion_logistica/compras/ordenes/elaborar/crear_orden_requerimiento', compact('empresas','bancos', 'tipo_cuenta', 'sedes', 'sis_identidad', 'tp_documento', 'tp_moneda', 'tp_doc', 'condiciones', 'condiciones_softlink', 'clasificaciones', 'subcategorias', 'categorias', 'unidades', 'unidades_medida', 'monedas'));
     }
 
     function lista_contactos_proveedor($id_proveedor)
@@ -188,7 +190,7 @@ class OrdenController extends Controller
     public function select_mostrar_empresas()
     {
         $data = DB::table('administracion.adm_empresa')
-            ->select('adm_empresa.id_empresa', 'adm_empresa.logo_empresa', 'adm_contri.nro_documento', 'adm_contri.razon_social')
+            ->select('adm_empresa.id_empresa','adm_empresa.codigo', 'adm_empresa.logo_empresa', 'adm_contri.nro_documento', 'adm_contri.razon_social')
             ->join('contabilidad.adm_contri', 'adm_empresa.id_contribuyente', '=', 'adm_contri.id_contribuyente')
             ->where('adm_empresa.estado', '=', 1)
             ->orderBy('adm_contri.razon_social', 'asc')
@@ -3010,6 +3012,7 @@ class OrdenController extends Controller
                     $data = [
                         'id_orden_compra' => $orden->id_orden_compra,
                         'codigo' => $orden->codigo,
+                        'mensaje'=>$ValidarOrdenSoftlink['mensaje'],
                         'status_migracion_softlink' => $ValidarOrdenSoftlink,
                     ];
     
@@ -3018,6 +3021,7 @@ class OrdenController extends Controller
                     $data = [
                         'id_orden_compra' => 0,
                         'codigo' => '',
+                        'mensaje'=>$ValidarOrdenSoftlink['mensaje'],
                         'status_migracion_softlink' => $ValidarOrdenSoftlink,
                     ];
                     $status = 204;
@@ -3893,5 +3897,34 @@ class OrdenController extends Controller
 
         return $status;
 
+    }
+
+
+    public function vincularOcSoftlink(Request $request){
+        // $request->idOrden;
+        // $request->movId;
+        try {
+            DB::beginTransaction();
+            
+       
+            $orden = Orden::where("id_orden_compra", $request->idOrden)->first();
+            $orden->id_softlink =$request->movId;
+            $orden->save();
+
+            $arrayRspta = array(
+                'tipo_estado' => 'success',
+                'mensaje' => 'Se vinculó correctamente la orden ' . $orden->codigo . ' con id ' . $request->movId,
+                'ocAgile' => array('cabecera' => $orden),
+            );
+            
+            DB::commit();
+            
+            return response()->json($arrayRspta, 200);
+        
+
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json(['tipo_estado'=>'error', 'ocAgile' => null, 'mensaje' => 'Hubo un problema al actualizar la orden. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
+        }
     }
 }

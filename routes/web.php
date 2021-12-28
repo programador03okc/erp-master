@@ -729,6 +729,20 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('mostrar_categorias_tipo/{id}', 'Almacen\Catalogo\ProductoController@mostrar_categorias_tipo');
 			});
 		});
+
+		Route::group(['as' => 'pago.', 'prefix' => 'pago'], function () {
+			Route::group(['as' => 'listado.', 'prefix' => 'listado'], function () {
+				Route::get('index', 'Tesoreria\RequerimientoPagoController@viewListaRequerimientoPago')->name('index');
+				Route::post('lista-requerimiento-pago', 'Tesoreria\RequerimientoPagoController@listarRequerimientoPago')->name('lista-requerimiento-pago');
+				Route::get('detalle-requerimiento-pago/{id?}', 'Tesoreria\RequerimientoPagoController@listarDetalleRequerimientoPago')->name('detalle-requerimiento-pago');
+				Route::get('listar-sedes-por-empresa/{id?}', 'Logistica\RequerimientoController@listarSedesPorEmpresa')->name('listar-sedes-por-empresa');
+				Route::get('listar-division-por-grupo/{id?}', 'Logistica\RequerimientoController@listarDivisionPorGrupo')->name('listar-division-por-grupo');
+				Route::get('mostrar-partidas/{idGrupo?}/{idProyecto?}', 'Logistica\RequerimientoController@mostrarPartidas')->name('mostrar-partidas');
+				Route::get('mostrar-centro-costos', 'Finanzas\CentroCosto\CentroCostoController@mostrarCentroCostosSegunGrupoUsuario')->name('mostrar-centro-costos');
+				Route::post('guardar-requerimiento-pago', 'Tesoreria\RequerimientoPagoController@guardarRequerimientoPago')->name('guardar-requerimiento-pago');
+
+			});
+		});
 	});
 
 
@@ -821,9 +835,11 @@ Route::group(['middleware' => ['auth']], function () {
 						Route::post('guardar-cuenta-bancaria-proveedor', 'OrdenController@guardarCuentaBancariaProveedor');
 						Route::get('migrarOrdenCompra/{id}', 'Migraciones\MigrateOrdenSoftLinkController@migrarOrdenCompra');
 						Route::get('listarOrdenesSoftlinkNoVinculadas/{cod}/{fec}', 'Migraciones\MigrateOrdenSoftLinkController@listarOrdenesSoftlinkNoVinculadas');
+						// Route::get('migrarOrdenCompra/{id}', 'Migraciones\MigrateOrdenSoftLinkController@migrarOrdenCompra');
 						Route::post('mostrar-catalogo-productos', 'Logistica\RequerimientoController@mostrarCatalogoProductos');
 						Route::post('enviar-notificacion-finalizacion-cdp', 'OrdenController@enviarNotificacionFinalizacionCDP');
 						Route::post('validar-orden-agil-orden-softlink', 'OrdenController@validarOrdenAgilOrdenSoftlink');
+						Route::post('vincular-oc-softlink', 'OrdenController@vincularOcSoftlink');
 					});
 					Route::group(['as' => 'listado.', 'prefix' => 'listado'], function () {
 						Route::get('index', 'OrdenController@view_listar_ordenes')->name('index');

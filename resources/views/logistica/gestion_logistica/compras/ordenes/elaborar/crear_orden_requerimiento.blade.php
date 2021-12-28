@@ -31,7 +31,7 @@ Elaborar orden
                     <div>
                         <button type="button" name="btn-imprimir-orden-pdf" class="btn btn-info btn-sm handleClickImprimirOrdenPdf" title="Imprimir orden en .pdf" disabled><i class="fas fa-print"></i> Imprimir</button>
                         <button type="button" name="btn-enviar-email-finalizacion-cuadro-presupuesto" class="btn btn-default btn-sm handleClickEstadoCuadroPresupuesto oculto" id="btn-enviar-email-finalizacion-cuadro-presupuesto"  style="background-color: #9b659b; color:#fff;" title="Enviar email finalización CDP"><i class="fas fa-info-circle"></i> Estado CDP</button>
-                        <button type="button" name="btn-enviar-softlink" id="btn-enviar-softlink" class="btn btn-success btn-sm" title="Enviar Orden a Softlink" onclick="enviarOrdenSoftlink();" disabled> Migrar a softlink</button>
+                        <button type="button" name="btn-relacionar-a-oc-softlink" id="btn-relacionar-a-oc-softlink" class="btn btn-success btn-sm" title="Relacionar a OC de Softlink" onclick="listarOcSoftlink(event);" disabled> Relacionar a OC de softlink</button>
                     </div>
                 </h4>
                 <fieldset class="group-table">
@@ -363,6 +363,19 @@ Elaborar orden
         @endforeach
     </select>
 </div>
+<div class="hidden">
+    <h5>Empresa - Sede</h5>
+    <select name="selectEmpresa">
+        @foreach ($empresas as $empresa)
+        @if($empresa->id_empresa ==1)
+            <option value="{{$empresa->id_empresa}}" data-codigo-empresa="{{$empresa->codigo}}" selected>{{$empresa->razon_social}}</option>
+        @else
+        <option value="{{$empresa->id_empresa}}" data-codigo-empresa="{{$empresa->codigo}}">{{$empresa->razon_social}}</option>
+        @endif
+        @endforeach
+    </select>
+</div>
+@include('logistica.gestion_logistica.compras.ordenes.elaborar.modal_lista_oc_softlink')
 @include('logistica.gestion_logistica.compras.ordenes.elaborar.modal_estado_cuadro_presupuesto')
 @include('logistica.gestion_logistica.compras.ordenes.elaborar.modal_vincular_requerimiento_orden')
 @include('logistica.gestion_logistica.compras.ordenes.elaborar.modal_catalogo_items')
@@ -398,7 +411,7 @@ Elaborar orden
 <script src="{{('/js/logistica/orden/OrdenModel.js')}}?v={{filemtime(public_path('/js/logistica/orden/OrdenModel.js'))}}"></script>
 <script src="{{('/js/logistica/orden/OrdenView.js')}}?v={{filemtime(public_path('/js/logistica/orden/OrdenView.js'))}}"></script>
 <script src="{{('/js/logistica/orden/OrdenController.js')}}?v={{filemtime(public_path('/js/logistica/orden/OrdenController.js'))}}"></script>
-<script src="{{('/js/logistica/orden/enviarOrdenSoftlink.js')}}?v={{filemtime(public_path('/js/logistica/orden/enviarOrdenSoftlink.js'))}}"></script>
+<script src="{{('/js/logistica/orden/relacionarOcSoftlink.js')}}?v={{filemtime(public_path('/js/logistica/orden/relacionarOcSoftlink.js'))}}"></script>
 
 
 <script>
