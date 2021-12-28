@@ -226,6 +226,7 @@ class MigrateOrdenSoftLinkController extends Controller
                             ->where([
                                 ['cod_pedi', '=', $oc_softlink->cod_docu],
                                 ['num_pedi', '=', $oc_softlink->num_docu],
+                                ['cod_suc', '=', $oc_softlink->cod_suc],
                                 ['flg_anulado', '=', 0]
                             ])
                             ->first();

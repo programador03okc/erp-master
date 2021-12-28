@@ -74,6 +74,8 @@ class MigrateRequerimientoSoftLinkController extends Controller
                     'alm_cat_prod.descripcion as categoria',
                     'alm_subcat.descripcion as subcategoria',
                     'alm_clasif.descripcion as clasificacion',
+                    'alm_cat_prod.id_categoria',
+                    'alm_subcat.id_subcategoria',
                     'alm_prod.id_moneda',
                     'alm_prod.series',
                     'alm_prod.notas'
@@ -117,6 +119,7 @@ class MigrateRequerimientoSoftLinkController extends Controller
                 $cod = ($req->ruc !== null ? '06' : $req->cod_di);
                 //obtiene o crea cliente
                 $cod_auxi = $this->obtenerCliente($nro_documento, $razon_social, $doc_tipo, $cod);
+
                 //calcula IGV
                 $mon_impto = (floatval($req->total_precio) * ($igv / 100));
                 //obtiene el tipo de cambio
@@ -135,6 +138,7 @@ class MigrateRequerimientoSoftLinkController extends Controller
                             ->where([
                                 ['cod_pedi', '=', $occ_softlink->cod_docu],
                                 ['num_pedi', '=', $occ_softlink->num_docu],
+                                ['cod_suc', '=', $occ_softlink->cod_suc],
                                 ['flg_anulado', '=', 0]
                             ])
                             ->first();
@@ -186,7 +190,7 @@ class MigrateRequerimientoSoftLinkController extends Controller
                             foreach ($detalles as $det) {
                                 $i++;
                                 //Obtiene y/o crea el producto
-                                if ($det->id_tipo_item == 1) {
+                                if ($det->id_producto !== null) {
                                     $cod_prod = $this->obtenerProducto($det);
                                 } else {
                                     $cod_prod = '005675'; //OTROS SERVICIOS - DEFAULT
@@ -198,7 +202,7 @@ class MigrateRequerimientoSoftLinkController extends Controller
                                         ->where('unico', $det->id_occ_det_softlink)
                                         ->update([
                                             'fec_pedi' => $req->fecha_requerimiento,
-                                            'cod_auxi' => trim($det->abreviatura),
+                                            'cod_auxi' => ($cod_prod == '005675' ? 'SERV.' : trim($det->abreviatura)),
                                             'cod_prod' => $cod_prod,
                                             'nom_prod' => ($cod_prod == '005675' ? 'OTROS SERVICIOS - ' . $det->descripcion : $det->descripcion_prod),
                                             'can_pedi' => $det->cantidad,
@@ -238,6 +242,8 @@ class MigrateRequerimientoSoftLinkController extends Controller
                     //obtiene el año a 2 digitos y le aumenta 2 ceros adelante
                     $yy = $this->leftZero(4, intval(date('y', strtotime($hoy))));
                     //obtiene el ultimo registro
+                    $ult_mov = null;
+
                     $ult_mov = DB::connection('soft')->table('movimien')
                         ->where([
                             ['num_docu', '>', $yy . '0000000'],
@@ -247,13 +253,13 @@ class MigrateRequerimientoSoftLinkController extends Controller
                             ['cod_docu', '=', 'NP']
                         ])
                         ->orderBy('num_docu', 'desc')->first();
+
                     //obtiene el correlativo
                     $num_ult_mov = substr($ult_mov->num_docu, 4);
                     //crea el correlativo del documento
                     $nro_mov = $this->leftZero(7, (intval($num_ult_mov) + 1));
                     //anida el anio con el numero de documento
                     $num_docu = $yy . $nro_mov;
-
                     $this->agregarCabeceraOCC($mov_id, $cod_suc, $req, $num_docu, $cod_auxi, $igv, $mon_impto, $tp_cambio, $id_requerimiento);
 
                     $i = 0;
@@ -582,16 +588,16 @@ class MigrateRequerimientoSoftLinkController extends Controller
                 ->select('cod_prod')
                 ->join('sopsub2', 'sopsub2.cod_sub2', '=', 'sopprod.cod_subc')
                 ->where([
-                    ['sopprod.cod_espe', '=', trim($det->part_number)],
+                    ['sopprod.cod_espe', '=', trim($det->part_number_prod)],
                     ['sopsub2.nom_sub2', '=', $det->subcategoria]
                 ])
                 ->first();
-        } else if ($det->descripcion !== null && $det->descripcion !== '') {
+        } else if ($det->descripcion_prod !== null && $det->descripcion_prod !== '') {
             $prod = DB::connection('soft')->table('sopprod')
                 ->select('cod_prod')
                 ->join('sopsub2', 'sopsub2.cod_sub2', '=', 'sopprod.cod_subc')
                 ->where([
-                    ['nom_prod', '=', trim($det->descripcion)],
+                    ['nom_prod', '=', trim($det->descripcion_prod)],
                     ['sopsub2.nom_sub2', '=', $det->subcategoria]
                 ])
                 ->first();
@@ -626,9 +632,9 @@ class MigrateRequerimientoSoftLinkController extends Controller
                     'cod_cate' => $cod_cate,
                     'cod_subc' => $cod_subc,
                     'cod_prov' => '',
-                    'cod_espe' => trim($det->part_number),
+                    'cod_espe' => trim($det->part_number_prod),
                     'cod_sunat' => '',
-                    'nom_prod' => trim($det->descripcion),
+                    'nom_prod' => trim($det->descripcion_prod),
                     'cod_unid' => $cod_unid,
                     'nom_unid' => trim($det->abreviatura),
                     'fac_unid' => '1',
@@ -639,7 +645,7 @@ class MigrateRequerimientoSoftLinkController extends Controller
                     'kardoc_unico' => '',
                     'fec_ingre' => date('Y-m-d'),
                     'flg_descargo' => '1',
-                    'tip_moneda' => $det->id_moneda,
+                    'tip_moneda' => ($det->id_moneda !== null ? $det->id_moneda : 1),
                     'flg_serie' => ($det->series ? '1' : '0'), //Revisar
                     'txt_observa' => ($det->notas !== null ? $det->notas : ''),
                     'flg_afecto' => '1',
