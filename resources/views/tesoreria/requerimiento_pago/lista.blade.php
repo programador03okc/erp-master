@@ -60,6 +60,7 @@ Listado de requerimientos de pago
 </div>
 
 @include('tesoreria.requerimiento_pago.modal_requerimiento_pago')
+@include('tesoreria.requerimiento_pago.modal_lista_cuadro_presupuesto')
 @include('logistica.requerimientos.modal_partidas')
 @include('logistica.requerimientos.modal_centro_costos')
 
@@ -72,6 +73,8 @@ Listado de requerimientos de pago
 <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
 <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
 <script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
+<script src="{{ asset('datatables/Buttons/js/buttons.print.min.js') }}"></script>
+<script src="{{ asset('datatables/Buttons/js/buttons.html5.min.js') }}"></script>
 <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
 <script src="{{ asset('js/necesidad/requerimiento_pago/ListarRequerimientoPagoView.js')}}?v={{filemtime(public_path('js/necesidad/requerimiento_pago/ListarRequerimientoPagoView.js'))}}"></script>

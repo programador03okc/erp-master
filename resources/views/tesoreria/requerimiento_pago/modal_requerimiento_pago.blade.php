@@ -104,21 +104,25 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-12 oculto">
+                                    <div class="col-md-12 oculto" id="contenedor-proyecto">
                                         <div class="form-group">
                                             <h5>Proyecto</h5>
                                             <select class="form-control activation handleCheckStatusValue" name="proyecto">
-                                            <option value="0">Elija una opción</option>
+                                            <option value="0">Seleccione un Proyecto</option>
+                                            @foreach ($proyectos_activos as $proyecto)
+                                                <option value="{{$proyecto->id_proyecto}}" data-id-centro-costo="{{$proyecto->id_centro_costo}}" data-codigo-centro-costo="{{$proyecto->codigo_centro_costo}}" data-descripcion-centro-costo="{{$proyecto->descripcion_centro_costo}}" data-codigo="{{$proyecto->codigo}}">{{$proyecto->descripcion}}</option>
+                                            @endforeach
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-3 oculto">
+                                    <div class="col-md-3 oculto" id="contenedor-cdp">
                                         <div class="form-group">
                                             <h5>CDP</h5>
                                             <div style="display:flex;">
-                                                <input type="text" class="form-control activation handleCheckStatusValue" name="cdp" readonly>
+                                                <input type="text" class="form-control oculto" name="id_cc">
+                                                <input type="text" class="form-control" name="codigo_oportunidad" readonly>
 
-                                                <button type="button" class="btn-primary" title="Buscar cuadro de presupuesto" placeholder="Código CDP" name="btnSearchCDP"">
+                                                <button type="button" class="btn-primary handleClickModalListaCuadroDePresupuesto" title="Buscar cuadro de presupuesto" placeholder="Código CDP" name="btnSearchCDP"">
                                                     <i class="fas fa-search"></i>
                                                 </button>
                                             </div>

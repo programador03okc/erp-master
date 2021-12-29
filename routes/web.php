@@ -740,6 +740,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('mostrar-partidas/{idGrupo?}/{idProyecto?}', 'Logistica\RequerimientoController@mostrarPartidas')->name('mostrar-partidas');
 				Route::get('mostrar-centro-costos', 'Finanzas\CentroCosto\CentroCostoController@mostrarCentroCostosSegunGrupoUsuario')->name('mostrar-centro-costos');
 				Route::post('guardar-requerimiento-pago', 'Tesoreria\RequerimientoPagoController@guardarRequerimientoPago')->name('guardar-requerimiento-pago');
+				Route::post('lista-cuadro-presupuesto', 'Tesoreria\RequerimientoPagoController@listaCuadroPresupuesto');
 
 			});
 		});
