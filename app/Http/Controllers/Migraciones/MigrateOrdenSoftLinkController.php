@@ -226,6 +226,7 @@ class MigrateOrdenSoftLinkController extends Controller
                             ->where([
                                 ['cod_pedi', '=', $oc_softlink->cod_docu],
                                 ['num_pedi', '=', $oc_softlink->num_docu],
+                                ['cod_suc', '=', $oc_softlink->cod_suc],
                                 ['flg_anulado', '=', 0]
                             ])
                             ->first();
@@ -337,8 +338,7 @@ class MigrateOrdenSoftLinkController extends Controller
                             ['num_docu', '<', $yy . '9999999'],
                             ['cod_suc', '=', $cod_suc],
                             ['tipo', '=', 1], //compra
-                            ['cod_docu', '=', $cod_docu],
-                            // ['cod_alma', '=', $oc->codigo_almacen]
+                            ['cod_docu', '=', $cod_docu]
                         ])
                         ->orderBy('num_docu', 'desc')->first();
                     //obtiene el correlativo
@@ -453,7 +453,7 @@ class MigrateOrdenSoftLinkController extends Controller
                 'idcontrato' => '',
                 'canje_fact' => 0,
                 'aceptado' => 0,
-                'reg_conta' => '0',
+                'reg_conta' => 0,
                 'mov_pago' => '',
                 'ndocu1' => ($oc->plazo_entrega !== null ? $oc->plazo_entrega . ' DIAS' : ''),
                 'ndocu2' => ($oc->direccion_destino !== null ? $oc->direccion_destino . ' ' . ($oc->ubigeo_destino !== null ? $oc->ubigeo_destino : '') : ''),
