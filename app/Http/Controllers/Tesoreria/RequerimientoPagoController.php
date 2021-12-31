@@ -333,6 +333,66 @@ class RequerimientoPagoController extends Controller
         }
     }
 
+    function anularRequerimientoPago(Request $request){
+        try {
+            DB::beginTransaction();
+
+                $idRequerimientoPago = $request->idRequerimientoPago;
+                $output = [];
+    
+                if ($idRequerimientoPago >0) {
+                    $requerimientoPago = RequerimientoPago::find($idRequerimientoPago);
+                    $todoDetalleRequerimientoPago = DetalleRequerimientoPago::where("id_requerimiento_pago", $idRequerimientoPago)->get();
+ 
+                    if(in_array($requerimientoPago->estado,[1,3])){ // estado elaborado, estado observado
+                        $requerimientoPago->estado= 7;
+                        $requerimientoPago->save();
+
+                        foreach ($todoDetalleRequerimientoPago as $detalleRequerimientoPago) {
+                            $detalle = DetalleRequerimientoPago::where("id_detalle_requerimiento_pago", $detalleRequerimientoPago->id_detalle_requerimiento_pago)->first();
+                            $detalle->estado = 7;
+                            $detalle->save();
+                        }
+                        $output = [
+                            'id_requerimiento_pago' => $idRequerimientoPago,
+                            'status' => 200,
+                            'tipo_estado'=>'success',
+                            'mensaje' => 'El requerimiento de pago '.$requerimientoPago->codigo.' fue anulado',
+                        ];
+
+
+                    }else{
+                        $output = [
+                            'id_requerimiento_pago' => 0,
+                            'status' => 204,
+                            'tipo_estado'=>'warning',
+                            'mensaje' => 'No se pudo anular el requerimiento de pago, únicamente se puede anular requerimientos en estado elaborado o observado',
+                        ]; 
+                    }
+
+
+                } else {
+                    $output = [
+                        'id_requerimiento_pago' => 0,
+                        'status' => 204,
+                        'tipo_estado'=>'warning',
+                        'mensaje' => 'No se pudo anular el requerimiento de pago, el id no es valido',
+                    ];
+                }
+    
+    
+                DB::commit();
+
+                return response()->json($output);
+            
+
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json(['id_requerimiento_pago' => 0,'tipo_estado'=>'error',  'mensaje' => 'Hubo un problema en el método para anular el requerimiento de pago. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
+
+        }
+    }
+
 
     function listaCuadroPresupuesto(Request $request){
         $data = CuadroCostoView::where('eliminado',false);

@@ -44,6 +44,9 @@ class ListarRequerimientoPagoView {
         $('#ListaRequerimientoPago tbody').on("click", "button.handleClickEditarRequerimientoPago", (e) => {
             this.editarRequerimientoPago(e.currentTarget);
         });
+        $('#ListaRequerimientoPago tbody').on("click", "button.handleClickAnularRequerimientoPago", (e) => {
+            this.anularRequerimientoPago(e.currentTarget);
+        });
 
         $('#modal-requerimiento-pago').on("change", "select.handleChangeOptEmpresa", (e) => {
             this.changeOptEmpresaSelect(e.currentTarget);
@@ -238,8 +241,8 @@ class ListarRequerimientoPagoView {
                         let btnEditar = '';
                         let btnAnular = '';
                         if (row.id_usuario == auth_user.id_usuario && (row.estado == 1 || row.estado == 3)) {
-                            btnEditar = '<button type="button" class="btn btn-xs btn-warning btnEditarRequerimientoPago handleClickEditarRequerimientoPago" data-id-requerimiento-pago="'+row.id_requerimiento_pago+'" title="Editar"><i class="fas fa-edit fa-xs"></i></button>';
-                            btnAnular = '<button type="button" class="btn btn-xs btn-danger btnAnularRequerimientoPago handleClickAnularRequerimientoPago" title="Anular"><i class="fas fa-times fa-xs"></i></button>';
+                            btnEditar = '<button type="button" class="btn btn-xs btn-warning btnEditarRequerimientoPago handleClickEditarRequerimientoPago" data-id-requerimiento-pago="'+row.id_requerimiento_pago+'" data-codigo-requerimiento-pago="'+row.codigo+'" title="Editar"><i class="fas fa-edit fa-xs"></i></button>';
+                            btnAnular = '<button type="button" class="btn btn-xs btn-danger btnAnularRequerimientoPago handleClickAnularRequerimientoPago" data-id-requerimiento-pago="'+row.id_requerimiento_pago+'" data-codigo-requerimiento-pago="'+row.codigo+'" title="Anular"><i class="fas fa-times fa-xs"></i></button>';
                         }
                         let btnVerDetalle= `<button type="button" class="btn btn-xs btn-primary desplegar-detalle handleClickVerDetalleRequerimientoPago" data-toggle="tooltip" data-placement="bottom" title="Ver Detalle" data-id-requerimiento-pago="${row.id_requerimiento_pago}">
                         <i class="fas fa-chevron-down"></i>
@@ -1557,6 +1560,93 @@ class ListarRequerimientoPagoView {
                 'error'
                 );
         }
+    }
+
+    anularRequerimientoPago(obj){
+        if(obj.dataset.idRequerimientoPago >0){
+            Swal.fire({
+                title: `Esta seguro que desea anular el requerimiento ${obj.dataset.codigoRequerimientoPago}?`,
+                text: "No podrás revertir esta acción",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'cancelar',
+                confirmButtonText: 'Si, eliminar'
+    
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                    this.realizarAnulacionRequerimientoPago(obj.dataset.idRequerimientoPago).then((response) => {
+                        $("#wrapper-okc").LoadingOverlay("hide", true);
+                        console.log(response);
+            
+                        if (response.status == 200) {
+                            
+                            let tr = obj.closest("tr");
+                            tr.remove(); 
+
+                            Lobibox.notify('success', {
+                                title: false,
+                                size: 'mini',
+                                rounded: true,
+                                sound: false,
+                                delayIndicator: false,
+                                msg: response.mensaje
+                            });
+            
+                        } else {
+                            $("#wrapper-okc").LoadingOverlay("hide", true);
+    
+                            Swal.fire(
+                                '',
+                                response.mensaje,
+                                response.tipo_estado
+                            );
+            
+                        }
+                    }).catch((err) => {
+                        $("#wrapper-okc").LoadingOverlay("hide", true);
+                        console.log(err)
+                        Swal.fire(
+                            '',
+                            'Lo sentimos hubo un error en el servidor, por favor vuelva a intentarlo',
+                            'error'
+                        );
+                    });
+                }
+            })
+        }else{
+            Swal.fire(
+                '',
+                'Lo sentimos no se encontro un ID valido para cargar el requerimiento de pago seleccionado, por favor vuelva a intentarlo',
+                'error'
+                );
+        }
+    }
+    realizarAnulacionRequerimientoPago(id){
+        return new Promise(function(resolve, reject) {
+            $.ajax({
+                type: 'POST',
+                url:`anular-requerimiento-pago`,
+                data:{'idRequerimientoPago':id},
+                dataType: 'JSON',
+                beforeSend: data => {
+    
+                    $("#wrapper-okc").LoadingOverlay("show", {
+                        imageAutoResize: true,
+                        progress: true,
+                        imageColor: "#3c8dbc"
+                    });
+                },
+                success(response) {
+                    resolve(response);
+                },
+                error: function(err) {
+                reject(err)
+                }
+                });
+            });
     }
 
     cargarRequerimientoPago(idRequerimientoPago){
