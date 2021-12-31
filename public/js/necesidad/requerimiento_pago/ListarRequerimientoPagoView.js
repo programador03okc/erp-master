@@ -732,7 +732,7 @@ class ListarRequerimientoPagoView {
                 }else{
                     tr.querySelector("input[class~='idEstado']").value=7;
                     tr.classList.add("danger","textRedStrikeHover");
-                    tr.querySelector("button[name='btnOpenModalEliminarItemOrden']").setAttribute("disabled",true);
+                    tr.querySelector("button[name='btnEliminarItem[]']").setAttribute("disabled",true);
                     this.calcularSubtotal();
                     this.calcularTotal();
                 }
