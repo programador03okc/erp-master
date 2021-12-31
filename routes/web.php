@@ -739,8 +739,10 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('listar-division-por-grupo/{id?}', 'Logistica\RequerimientoController@listarDivisionPorGrupo')->name('listar-division-por-grupo');
 				Route::get('mostrar-partidas/{idGrupo?}/{idProyecto?}', 'Logistica\RequerimientoController@mostrarPartidas')->name('mostrar-partidas');
 				Route::get('mostrar-centro-costos', 'Finanzas\CentroCosto\CentroCostoController@mostrarCentroCostosSegunGrupoUsuario')->name('mostrar-centro-costos');
-				Route::post('guardar-requerimiento-pago', 'Tesoreria\RequerimientoPagoController@guardarRequerimientoPago')->name('guardar-requerimiento-pago');
+				Route::post('guardar-requerimiento-pago', 'Tesoreria\RequerimientoPagoController@guardarRequerimientoPago');
 				Route::post('lista-cuadro-presupuesto', 'Tesoreria\RequerimientoPagoController@listaCuadroPresupuesto');
+				Route::get('mostrar-requerimiento-pago/{idRequerimientoPago}', 'Tesoreria\RequerimientoPagoController@mostrarRequerimientoPago');
+				Route::post('actualizar-requerimiento-pago', 'Tesoreria\RequerimientoPagoController@actualizarRequerimientoPago');
 
 			});
 		});

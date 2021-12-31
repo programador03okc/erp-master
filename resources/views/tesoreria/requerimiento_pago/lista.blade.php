@@ -52,9 +52,9 @@ Listado de requerimientos de pago
 
 
 <div class="hidden" id="divOculto">
-    <select id="selectUnidadMedida">
+    <select id="selectUnidadMedida"  onchange="updateUM(this);">
         @foreach ($unidadesMedida as $unidad)
-        <option value="{{$unidad->id_unidad_medida}}" {{$unidad->id_unidad_medida=='1' ? 'selected' : ''}}>{{$unidad->descripcion}}</option>
+        <option value="{{$unidad->id_unidad_medida}}">{{$unidad->descripcion}}</option>
         @endforeach
     </select>
 </div>
@@ -81,7 +81,10 @@ Listado de requerimientos de pago
 
 
 <script>
-
+function updateUM(val){
+  val.options[val.selectedIndex].setAttribute("selected","");
+  
+}
     var gruposUsuario = JSON.parse('{!!$gruposUsuario!!}');
 
     $(document).ready(function() {

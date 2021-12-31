@@ -2,6 +2,8 @@
     <div class="modal-dialog modal-lg" style="width: 90%;">
         <div class="modal-content">
             <form id="form-requerimiento-pago" method="post" type="register">
+                <input type="hidden" name="id_requerimiento_pago" primary="ids">
+
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
                     <h3 class="modal-title" id="modal-title">Requerimiento de pago</h3>
@@ -29,7 +31,7 @@
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <h5>Fecha</h5>
-                                            <input type="date" class="form-control activation handleCheckStatusValue" name="fecha" readonly>
+                                            <input type="date" class="form-control activation handleCheckStatusValue" name="fecha_registro" readonly>
                                         </div>
                                     </div>
                                     <div class="col-md-2">
@@ -175,15 +177,14 @@
                         <div class="col-md-12">
                             <fieldset class="group-table">
                                 <div class="btn-group" role="group" aria-label="...">
-                                    <button type="button" class="btn btn-xs btn-success activation handleCheckStatusValue handleClickAgregarProducto" id="btnAddProducto" data-toggle="tooltip" data-placement="bottom" title="Agregar Producto"><i class="fas fa-plus"></i> Producto
-                                    </button>
+                                    <!-- <button type="button" class="btn btn-xs btn-success activation handleCheckStatusValue handleClickAgregarProducto" id="btnAddProducto" data-toggle="tooltip" data-placement="bottom" title="Agregar Producto"><i class="fas fa-plus"></i> Producto
+                                    </button> -->
                                     <button type="button" class="btn btn-xs btn-primary activation handleCheckStatusValue handleClickAgregarServicio" id="btnAddServicio" data-toggle="tooltip" data-placement="bottom" title="Agregar Servicio"><i class="fas fa-plus"></i> Servicio
                                     </button>
                                 </div>
                                 <table class="table table-striped table-condensed table-bordered" id="ListaDetalleRequerimientoPago" width="100%">
                                     <thead>
                                         <tr>
-                                            <th style="width: 3%">#</th>
                                             <th style="width: 10%">Partida</th>
                                             <th style="width: 10%">C.Costo</th>
                                             <th style="width: 10%">Part number</th>
@@ -200,7 +201,7 @@
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <td colspan="8" class="text-right"><strong>Total:</strong></td>
+                                            <td colspan="7" class="text-right"><strong>Total:</strong></td>
                                             <td class="text-right"><span name="simboloMoneda">S/</span><label name="total"> 0.00</label></td>
                                             <td></td>
                                         </tr>

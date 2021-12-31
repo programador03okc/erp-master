@@ -219,7 +219,7 @@ class RequerimientoPagoController extends Controller
                 $detalle->save();
                 $detalle->idRegister = $request->idRegister[$i];
                 $detalleArray[] = $detalle;
-                $montoTotal += $detalle->cantidad * $detalle->precio_unitario;
+                $montoTotal += $detalle->cantidad * $detalle->precioUnitario;
             }
 
             DB::commit();
@@ -242,6 +242,97 @@ class RequerimientoPagoController extends Controller
         }
     }
 
+    function actualizarRequerimientoPago(Request $request){
+        DB::beginTransaction();
+        try {
+            $requerimientoPago = RequerimientoPago::where("id_requerimiento_pago", $request->id_requerimiento_pago)->first();
+            $requerimientoPago->id_usuario = Auth::user()->id_usuario;
+            $requerimientoPago->concepto = strtoupper($request->concepto);
+            $requerimientoPago->id_periodo = $request->periodo;
+            $requerimientoPago->id_moneda = $request->moneda > 0 ? $request->moneda : null;
+            $requerimientoPago->id_prioridad = $request->prioridad >0 ? $request->prioridad:null;
+            $requerimientoPago->comentario = $request->comentario;
+            $requerimientoPago->id_empresa = $request->empresa ? $request->empresa : null;
+            $requerimientoPago->id_sede = $request->sede > 0 ? $request->sede : null;
+            $requerimientoPago->id_grupo = $request->grupo > 0 ? $request->grupo : null;
+            $requerimientoPago->id_division = $request->division;
+            if($request->tipo_cuenta=='bcp'){
+                $requerimientoPago->nro_cuenta = $request->nro_cuenta;
+            }else if($request->tipo_cuenta=='cci'){
+                $requerimientoPago->nro_cuenta_interbancaria = $request->nro_cuenta;
+            }
+            if($request->tipo_documento_identidad=='dni'){
+                $requerimientoPago->dni = $request->nro_documento_idendidad;
+            }else if($request->tipo_documento_identidad=='ruc'){
+                $requerimientoPago->ruc = $request->nro_documento_idendidad;
+            }
+            // $requerimientoPago->confirmacion_pago = ($request->tipo_requerimiento == 2 ? ($request->fuente == 2 ? true : false) : true);
+            $requerimientoPago->monto_total = $request->monto_total;
+            $requerimientoPago->id_proyecto = $request->proyecto > 0 ? $request->proyecto : null;
+            $requerimientoPago->id_cc = $request->id_cc > 0?$request->id_cc:null;
+            $requerimientoPago->save();
+
+            $count = count($request->descripcion);
+            
+            for ($i = 0; $i < $count; $i++) {
+                $id = $request->idRegister[$i];
+
+                if (preg_match('/[A-Za-z].*[0-9]|[0-9].*[A-Za-z]/', $id)) // es un id con numeros y letras => es nuevo, insertar
+                {
+                    $detalle = new DetalleRequerimientoPago();
+
+                    $detalle->id_requerimiento_pago = $requerimientoPago->id_requerimiento_pago;
+                    $detalle->id_tipo_item = $request->tipoItem[$i];
+                    $detalle->id_partida = $request->idPartida[$i];
+                    $detalle->id_centro_costo = $request->idCentroCosto[$i];
+                    $detalle->part_number = $request->partNumber[$i];
+                    $detalle->descripcion = $request->descripcion[$i] != null ? trim(strtoupper($request->descripcion[$i])) : null;
+                    $detalle->id_unidad_medida = $request->unidad[$i];
+                    $detalle->cantidad = $request->cantidad[$i];
+                    $detalle->precio_unitario = floatval($request->precioUnitario[$i]);
+                    $detalle->subtotal = floatval($request->cantidad[$i] * $request->precioUnitario[$i]);
+                    $detalle->fecha_registro = new Carbon();
+                    $detalle->estado = 1;
+                    $detalle->save();
+ 
+                } else { // es un id solo de numerico => actualiza
+                    if ($request->idEstado[$i] == 7) {
+                        if (is_numeric($id)) { // si es un numero 
+                            $detalle = DetalleRequerimientoPago::where("id_detalle_requerimiento_pago", $id)->first();
+                            $detalle->estado = 7;
+                            $detalle->save();
+                        }
+                    } else {
+
+                        $detalle = DetalleRequerimientoPago::where("id_detalle_requerimiento_pago", $id)->first();
+                        $detalle->id_tipo_item = $request->tipoItem[$i];
+                        $detalle->id_partida = $request->idPartida[$i];
+                        $detalle->id_centro_costo = $request->idCentroCosto[$i];
+                        $detalle->part_number = $request->partNumber[$i];
+                        $detalle->descripcion = $request->descripcion[$i] != null ? trim(strtoupper($request->descripcion[$i])) : null;
+                        $detalle->id_unidad_medida = $request->unidad[$i];
+                        $detalle->cantidad = $request->cantidad[$i];
+                        $detalle->precio_unitario = floatval($request->precioUnitario[$i]);
+                        $detalle->subtotal = floatval($request->cantidad[$i] * $request->precioUnitario[$i]);
+                        $detalle->save();
+
+                    }
+                }
+                
+
+            }
+
+            DB::commit();
+
+
+    
+            return response()->json(['id_requerimiento_pago' => $requerimientoPago->id_requerimiento_pago, 'mensaje' => 'Se actualizó el requerimiento de pago '.$requerimientoPago->codigo]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json(['id_requerimiento_pago' => 0, 'mensaje' => 'Hubo un problema al actualizar el requerimiento de pago. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
+        }
+    }
+
 
     function listaCuadroPresupuesto(Request $request){
         $data = CuadroCostoView::where('eliminado',false);
@@ -249,6 +340,37 @@ class RequerimientoPagoController extends Controller
         return datatables($data)->toJson();
     }
     
+
+    function mostrarRequerimientoPago($idRequerimientoPago){
+
+        // $data = RequerimientoPago::where('id_requerimiento_pago',$idRequerimientoPago)->with(['detalle'=> function($q){
+        //     $q->where('estado', '!=', 7);
+        // },'empresa','sede','grupo','division','moneda','creadoPor','detalle.unidadMedida','detalle.producto','detalle.estado'])->get();
+        // return $data ;
+        // $detalleRequerimientoPagoList=  DetalleRequerimientoPago::select(
+        //     'detalle_requerimiento_pago.*',
+        //     'adm_estado_doc.estado_doc',
+        //     'alm_prod.codigo as producto_codigo',
+        //     'alm_prod.part_number as producto_part_number',
+        //     'alm_prod.descripcion as producto_descripcion',
+        //     'alm_prod.id_unidad_medida as producto_id_unidad_medida',
+        //     'presup_par.codigo AS codigo_partida',
+        //     'presup_pardet.descripcion AS descripcion_partida',
+        //     'presup_par.importe_total AS presupuesto_total_partida'
+        // )
+        // ->leftJoin('almacen.alm_prod', 'detalle_requerimiento_pago.id_producto', '=', 'alm_prod.id_producto')
+        // ->leftJoin('administracion.adm_estado_doc', 'detalle_requerimiento_pago.estado', '=', 'adm_estado_doc.id_estado_doc')
+        // ->leftJoin('finanzas.presup_par', 'presup_par.id_partida', '=', 'detalle_requerimiento_pago.id_partida')
+        // ->leftJoin('finanzas.presup_pardet', 'presup_pardet.id_pardet', '=', 'presup_par.id_pardet')
+        // ->where([['detalle_requerimiento_pago.id_requerimiento_pago',$idRequerimientoPago],['detalle_requerimiento_pago.estado','!=',7]])
+        // ->get();
+        $detalleRequerimientoPagoList =DetalleRequerimientoPago::with('unidadMedida','producto','partida.presupuesto','centroCosto','estado')->where([['id_requerimiento_pago',$idRequerimientoPago],['estado','!=',7]])->get();
+
+        $requerimientoPago=RequerimientoPago::where('id_requerimiento_pago',$idRequerimientoPago)->with('periodo','prioridad','moneda','creadoPor','empresa','sede','grupo','division','cuadroCostos','proyecto')->first();
+        
+        return $requerimientoPago->setAttribute('detalle',$detalleRequerimientoPagoList);
+        
+    }
     // function view_main_tesoreria(){
     //     $pagos_pendientes = DB::table('almacen.alm_req')
     //     ->where('estado',8)->count();

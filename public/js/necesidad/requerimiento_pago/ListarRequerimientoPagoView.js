@@ -41,26 +41,31 @@ class ListarRequerimientoPagoView {
         $('#ListaRequerimientoPago').on("click", "button.handleClickVerDetalleRequerimientoPago", (e) => {
             this.verDetalleRequerimientoPago(e.currentTarget);
         });
+        $('#ListaRequerimientoPago tbody').on("click", "button.handleClickEditarRequerimientoPago", (e) => {
+            this.editarRequerimientoPago(e.currentTarget);
+        });
+
         $('#modal-requerimiento-pago').on("change", "select.handleChangeOptEmpresa", (e) => {
             this.changeOptEmpresaSelect(e.currentTarget);
         });
+
         $('#modal-requerimiento-pago').on("change", "select.handleChangeOptGrupo", (e) => {
             this.changeOptGrupoSelect(e.currentTarget);
         });
+
         $('#modal-requerimiento-pago').on("click", "button.handleClickAgregarProducto", () => {
             this.agregarProducto();
             this.checkStatusBtnGuardar();
         });
+
         $('#modal-requerimiento-pago').on("click", "button.handleClickAgregarServicio", () => {
             this.agregarServicio();
             this.checkStatusBtnGuardar();
-
         });
 
         $('#ListaDetalleRequerimientoPago tbody').on("click","button.handleClickEliminarItem", (e)=>{
             this.eliminarItem(e.currentTarget);
             this.checkStatusBtnGuardar();
-
         });
 
         $('#ListaDetalleRequerimientoPago tbody').on("click","button.handleClickCargarModalPartidas", (e)=>{
@@ -71,6 +76,7 @@ class ListarRequerimientoPagoView {
             this.apertura(e.currentTarget.dataset.idPresup);
             this.changeBtnIcon(e);
         });
+
         $('#modal-partidas').on("click","button.handleClickSelectPartida", (e)=>{
             this.selectPartida(e.currentTarget.dataset.idPartida);
         });
@@ -93,6 +99,9 @@ class ListarRequerimientoPagoView {
 
         $('#modal-requerimiento-pago').on("click", "button.handleClickGuardarRequerimientoPago", () => {
             this.guardarRequerimientoPago();
+        });
+        $('#modal-requerimiento-pago').on("click", "button.handleClickRequerimientoPago", () => {
+            this.actualizarRequerimientoPago();
         });
         $('#modal-requerimiento-pago').on("change", "select.handleChangeUpdateMoneda", () => {
             this.changeMonedaSelect();
@@ -188,7 +197,7 @@ class ListarRequerimientoPagoView {
                 { 'data': 'monto_total', 'name': 'requerimiento_pago.monto_total', 'defaultContent':'', 'className': 'text-right' },
                 { 'data': 'usuario_nombre_corto', 'name': 'sis_usua.nombre_corto' },
                 { 'data': 'nombre_estado', 'name': 'adm_estado_doc.estado_doc' },
-                { 'data': 'id_requerimiento_pago' }
+                { 'data': 'id_requerimiento_pago' ,'name': 'requerimiento_pago.id_requerimiento_pago'}
             ],
             'columnDefs': [
 
@@ -229,8 +238,8 @@ class ListarRequerimientoPagoView {
                         let btnEditar = '';
                         let btnAnular = '';
                         if (row.id_usuario == auth_user.id_usuario && (row.estado == 1 || row.estado == 3)) {
-                            btnEditar = '<button type="button" class="btn btn-xs btn-warning btnEditarRequerimientoPago handleClickAbrirRequerimientoPago" title="Editar" disabled><i class="fas fa-edit fa-xs"></i></button>';
-                            btnAnular = '<button type="button" class="btn btn-xs btn-danger btnAnularRequerimientoPago handleClickAnularRequerimientoPago" title="Anular" disabled><i class="fas fa-times fa-xs"></i></button>';
+                            btnEditar = '<button type="button" class="btn btn-xs btn-warning btnEditarRequerimientoPago handleClickEditarRequerimientoPago" data-id-requerimiento-pago="'+row.id_requerimiento_pago+'" title="Editar"><i class="fas fa-edit fa-xs"></i></button>';
+                            btnAnular = '<button type="button" class="btn btn-xs btn-danger btnAnularRequerimientoPago handleClickAnularRequerimientoPago" title="Anular"><i class="fas fa-times fa-xs"></i></button>';
                         }
                         let btnVerDetalle= `<button type="button" class="btn btn-xs btn-primary desplegar-detalle handleClickVerDetalleRequerimientoPago" data-toggle="tooltip" data-placement="bottom" title="Ver Detalle" data-id-requerimiento-pago="${row.id_requerimiento_pago}">
                         <i class="fas fa-chevron-down"></i>
@@ -406,8 +415,8 @@ class ListarRequerimientoPagoView {
         });
         document.querySelector("div[id='modal-requerimiento-pago'] form[id='form-requerimiento-pago']").setAttribute("type",'register');
         document.querySelector("div[id='modal-requerimiento-pago'] h3[id='modal-title']").textContent="Nuevo requerimiento de pago";
-        document.querySelector("div[id='modal-requerimiento-pago'] button[id='btnActualizarRequerimientoPago']").classList.add("oulto"); 
-        document.querySelector("div[id='modal-requerimiento-pago'] input[name='fecha']").value= moment().format("YYYY-MM-DD"); 
+        document.querySelector("div[id='modal-requerimiento-pago'] button[id='btnActualizarRequerimientoPago']").classList.add("oculto"); 
+        document.querySelector("div[id='modal-requerimiento-pago'] input[name='fecha_registro']").value= moment().format("YYYY-MM-DD"); 
     }
 
 
@@ -417,11 +426,7 @@ class ListarRequerimientoPagoView {
             document.querySelector("div[id='modal-requerimiento-pago'] select[name='sede']").removeAttribute("disabled");
             document.querySelector("div[id='modal-requerimiento-pago'] select[name='grupo']").removeAttribute("disabled");
 
-            this.obtenerSede(idEmpresa).then((res)=> {
-                this.llenarSelectSede(res);
-            }).catch(function (err) {
-                console.log(err)
-            })
+            this.construirOptSelectSede(idEmpresa);
         }else{
 
             document.querySelector("div[id='modal-requerimiento-pago'] select[name='sede']").setAttribute("disabled",true);
@@ -431,6 +436,14 @@ class ListarRequerimientoPagoView {
 
  
         return false;
+    }
+
+    construirOptSelectSede(idEmpresa){
+        this.obtenerSede(idEmpresa).then((res)=> {
+            this.llenarSelectSede(res);
+        }).catch(function (err) {
+            console.log(err)
+        })
     }
 
     obtenerSede(idEmpresa){
@@ -486,11 +499,7 @@ class ListarRequerimientoPagoView {
         if(idGrupo>0){
             document.querySelector("div[id='modal-requerimiento-pago'] select[name='division']").removeAttribute("disabled");
 
-            this.obtenerDivision(idGrupo).then((res)=> {
-                this.llenarSelectDivision(res);
-            }).catch(function (err) {
-                console.log(err)
-            })
+            this.construirOptSelectDivision(idGrupo);
             if(idGrupo==3 || descripcionGrupo=='Proyectos'){
                 document.querySelector("div[id='modal-requerimiento-pago'] div[id='contenedor-proyecto']").classList.remove("oculto");
                 document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_cc']").value='';
@@ -517,6 +526,13 @@ class ListarRequerimientoPagoView {
         return false;
     }
 
+    construirOptSelectDivision(idGrupo){
+        this.obtenerDivision(idGrupo).then((res)=> {
+            this.llenarSelectDivision(res);
+        }).catch(function (err) {
+            console.log(err)
+        })
+    }
     obtenerDivision(idGrupo){
         return new Promise(function(resolve, reject) {
             $.ajax({
@@ -562,44 +578,65 @@ class ListarRequerimientoPagoView {
         return ID;
     }
 
-    agregarProducto(){
+    agregarProducto(data =null){
+        // fix unidad medida que toma el html de un select oculto y debe tener por defecto seleccionado el option que viene de data
+        let um=document.querySelector("select[id='selectUnidadMedida']").getElementsByTagName('option');
+        let indexUm=0;
+        for (let i = 0; i < um.length; i++) {
+            if(um[i].value== ( data !=null && typeof data.id_unidad_medida === 'number' ? data.id_unidad_medida:1)){
+                indexUm=i;
+            }
+            
+        }
+        document.querySelector("select[id='selectUnidadMedida']").getElementsByTagName('option')[indexUm].setAttribute("selected","");
+        //  fin fix unidad medida
+
+
         document.querySelector("tbody[id='body_detalle_requerimiento_pago']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
-        <td></td>
-        <td><p class="descripcion-partida">(NO SELECCIONADO)</p><button type="button" class="btn btn-xs btn-info handleClickCargarModalPartidas" name="partida">Seleccionar</button> 
+        <td>
+            <input type="hidden"  class="idEstado" name="idEstado[]">
+            <p class="descripcion-partida" title="${(data !=null && data.partida.codigo !=null? data.partida.codigo:'')}">${(data !=null && data.partida.descripcion !=null? data.partida.descripcion:'(NO SELECCIONADO)')}</p>
+            <button type="button" class="btn btn-xs btn-info handleClickCargarModalPartidas" name="partida">Seleccionar</button> 
             <div class="form-group">
                 <h5></h5>
-                <input type="text" class="partida" name="idPartida[]" hidden>
+                <input type="text" class="partida" name="idPartida[]" value="${(data !=null && data.partida.id_partida !=null? data.partida.id_partida:'')}" hidden>
             </div>
         </td>
-        <td><p class="descripcion-centro-costo" title="${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.codigo : ''}">${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.descripcion : '(NO SELECCIONADO)'}</p><button type="button" class="btn btn-xs btn-primary handleClickCargarModalCentroCostos" name="centroCostos"  ${tempCentroCostoSelected != undefined ? 'disabled' : ''} title="${tempCentroCostoSelected != undefined ? 'El centro de costo esta asignado a un proyecto' : ''}" >Seleccionar</button> 
+        <td>
+            <p class="descripcion-centro-costo" title="${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.codigo : (data !=null && data.centro_costo.codigo !=null? data.centro_costo.codigo:'')}">${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.descripcion : data !=null && data.centro_costo.descripcion !=null? data.centro_costo.descripcion:'(NO SELECCIONADO)'} </p>
+            <button type="button" class="btn btn-xs btn-primary handleClickCargarModalCentroCostos" name="centroCostos"  ${tempCentroCostoSelected != undefined ? 'disabled' : ''} title="${tempCentroCostoSelected != undefined ? 'El centro de costo esta asignado a un proyecto' : ''}" >Seleccionar</button> 
             <div class="form-group">
                 <h5></h5>
-                <input type="text" class="centroCosto" name="idCentroCosto[]" value="${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.id : ''}" hidden>
+                <input type="text" class="centroCosto" name="idCentroCosto[]" value="${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.id : (data !=null && data.centro_costo.id_centro_costo !=null? data.centro_costo.id_centro_costo:'')}" hidden>
             </div>
         </td>
-        <td><input class="form-control input-sm" type="text" name="partNumber[]" placeholder="Part number"></td>
         <td>
-            <div class="form-group">
-                <h5></h5>
-                <textarea class="form-control input-sm descripcion handleCheckStatusValue" name="descripcion[]" placeholder="Descripción" ></textarea></td>
-            </div>
-        <td><select name="unidad[]" class="form-control input-sm">${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
-        <td>
-            <div class="form-group">
-                <h5></h5>
-                <input class="form-control input-sm cantidad text-right handleCheckStatusValue handleBurUpdateSubtotal" type="number" min="1" name="cantidad[]" placeholder="Cantidad">
-            </div>
+            <input class="form-control input-sm" type="text" name="partNumber[]" placeholder="Part number" value="${data !=null && typeof data.part_number === 'string' ? data.part_number:""}">
         </td>
         <td>
             <div class="form-group">
                 <h5></h5>
-                <input class="form-control input-sm precio text-right handleCheckStatusValue handleBurUpdateSubtotal" type="number" min="0" name="precioUnitario[]" placeholder="Precio U."></td>
+                <textarea class="form-control input-sm descripcion handleCheckStatusValue" name="descripcion[]" placeholder="Descripción" >${data !=null && typeof data.descripcion === 'string' ? data.descripcion:""}</textarea></td>
+            </div>
+        <td>
+            <select name="unidad[]" class="form-control input-sm" value="${data !=null && typeof data.id_unidad_medida === 'number' ? data.id_unidad_medida:1}">${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
+        <td>
+            <div class="form-group">
+                <h5></h5>
+                <input class="form-control input-sm cantidad text-right handleCheckStatusValue handleBurUpdateSubtotal" type="number" min="1" name="cantidad[]" placeholder="Cantidad" value="${data !=null && typeof data.cantidad === 'string' ? data.cantidad:""}">
+            </div>
+        </td>
+        <td>
+            <div class="form-group">
+                <h5></h5>
+                <input class="form-control input-sm precio text-right handleCheckStatusValue handleBurUpdateSubtotal" type="number" min="0" name="precioUnitario[]" placeholder="Precio U." value="${data !=null && typeof data.precio_unitario === 'string' ? data.precio_unitario:""}"></td>
             </div>  
-        <td style="text-align:right;"><span class="moneda" name="simboloMoneda">${document.querySelector("select[name='moneda']").options[document.querySelector("select[name='moneda']").selectedIndex].dataset.simbolo}</span><span class="subtotal" name="subtotal[]">0.00</span></td>
+        <td style="text-align:right;">
+            <span class="moneda" name="simboloMoneda">${document.querySelector("select[name='moneda']").options[document.querySelector("select[name='moneda']").selectedIndex].dataset.simbolo}</span><span class="subtotal" name="subtotal[]">0.00</span></td>
         <td>
             <div class="btn-group" role="group">
                 <input type="hidden" class="tipoItem" name="tipoItem[]" value="1">
-                <input type="hidden" class="idRegister" name="idRegister[]" value="${this.makeId()}">
+                <input type="hidden" class="idRegister" name="idRegister[]" value="${data!=null & data.id_detalle_requerimiento_pago>0?data.id_detalle_requerimiento_pago:(this.makeId())}">
                 <button type="button" class="btn btn-warning btn-xs handleClickAdjuntarArchivoItem" name="btnAdjuntarArchivoItem[]" title="Adjuntos" disabled>
                     <i class="fas fa-paperclip"></i>
                     <span class="badge" name="cantidadAdjuntosItem" style="position:absolute; top:-10px; left:-10px; border: solid 0.1px;">0</span>    
@@ -608,48 +645,54 @@ class ListarRequerimientoPagoView {
             </div>
         </td>
         </tr>`);
+
+  
     }
 
-    agregarServicio(){
+    agregarServicio(data=null){
         document.querySelector("tbody[id='body_detalle_requerimiento_pago']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
-        <td></td>
-        <td><p class="descripcion-partida">(NO SELECCIONADO)</p><button type="button" class="btn btn-xs btn-info handleClickCargarModalPartidas" name="partida">Seleccionar</button> 
+        <td>    
+            <input type="hidden"  class="idEstado" name="idEstado[]">
+            <p class="descripcion-partida" title="${(data !=null && data.partida.codigo !=null? data.partida.codigo:'')}">${(data !=null && data.partida.descripcion !=null? data.partida.descripcion:'(NO SELECCIONADO)')}</p>
+            <button type="button" class="btn btn-xs btn-info handleClickCargarModalPartidas" name="partida">Seleccionar</button> 
             <div class="form-group">
                 <h5></h5>
-                <input type="text" class="partida" name="idPartida[]" hidden>
+                <input type="text" class="partida" name="idPartida[]" value="${(data !=null && data.partida.id_partida !=null? data.partida.id_partida:'')}" hidden>
             </div>
-            </td>
-            <td><p class="descripcion-centro-costo" title="${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.codigo : ''}">${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.descripcion : '(NO SELECCIONADO)'}</p><button type="button" class="btn btn-xs btn-primary handleClickCargarModalCentroCostos" name="centroCostos"  ${tempCentroCostoSelected != undefined ? 'disabled' : ''} title="${tempCentroCostoSelected != undefined ? 'El centro de costo esta asignado a un proyecto' : ''}" >Seleccionar</button> 
+        </td>
+        <td>
+            <p class="descripcion-centro-costo" title="${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.codigo : (data !=null && data.centro_costo.codigo !=null? data.centro_costo.codigo:'')}">${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.descripcion : data !=null && data.centro_costo.descripcion !=null? data.centro_costo.descripcion:'(NO SELECCIONADO)'} </p>
+            <button type="button" class="btn btn-xs btn-primary handleClickCargarModalCentroCostos" name="centroCostos"  ${tempCentroCostoSelected != undefined ? 'disabled' : ''} title="${data !=null && data.centro_costo.codigo !=null? data.centro_costo.codigo:''}" >Seleccionar</button> 
             <div class="form-group">
                 <h5></h5>
-                <input type="text" class="centroCosto" name="idCentroCosto[]" value="${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.id : ''}" hidden>
+                <input type="text" class="centroCosto" name="idCentroCosto[]" value="${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.id : (data !=null && data.centro_costo.id_centro_costo !=null? data.centro_costo.id_centro_costo:'')}" hidden>
             </div>
         </td>
         <td>(Servicio)<input type="hidden" name="partNumber[]"></td>
         <td>
             <div class="form-group">
                 <h5></h5>
-                <textarea class="form-control input-sm descripcion handleCheckStatusValue" name="descripcion[]" placeholder="Descripción"></textarea>
+                <textarea class="form-control input-sm descripcion handleCheckStatusValue" name="descripcion[]" placeholder="Descripción">${data !=null && typeof data.descripcion === 'string' ? data.descripcion:""}</textarea>
             </div>
         </td>
-        <td><select name="unidad[]" class="form-control input-sm">${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
+        <td><select name="unidad[]" class="form-control input-sm oculto" value="17" readOnly><option value="17">Servicio</option></select> Servicio</td>
         <td>
             <div class="form-group">
                 <h5></h5>
-                <input class="form-control input-sm cantidad text-right handleCheckStatusValue handleBurUpdateSubtotal" type="number" min="1" name="cantidad[]"  placeholder="Cantidad">
+                <input class="form-control input-sm cantidad text-right handleCheckStatusValue handleBurUpdateSubtotal" type="number" min="1" name="cantidad[]"  placeholder="Cantidad" value="${data !=null && typeof data.cantidad === 'string' ? data.cantidad:""}">
             </div>
         </td>
         <td>
             <div class="form-group">
                 <h5></h5>
-                <input class="form-control input-sm precio text-right handleCheckStatusValue handleBurUpdateSubtotal" type="number" min="0" name="precioUnitario[]"  placeholder="Precio U.">
+                <input class="form-control input-sm precio text-right handleCheckStatusValue handleBurUpdateSubtotal" type="number" min="0" name="precioUnitario[]"  placeholder="Precio U." value="${data !=null && typeof data.precio_unitario === 'string' ? data.precio_unitario:""}">
             </div>
         </td>
         <td style="text-align:right;"><span class="moneda" name="simboloMoneda">${document.querySelector("select[name='moneda']").options[document.querySelector("select[name='moneda']").selectedIndex].dataset.simbolo}</span><span class="subtotal" name="subtotal[]">0.00</span></td>
         <td>
             <div class="btn-group" role="group">
                 <input type="hidden" class="tipoItem" name="tipoItem[]" value="2">
-                <input type="hidden" class="idRegister" name="idRegister[]" value="${this.makeId()}">
+                <input type="hidden" class="idRegister" name="idRegister[]" value="${data!=null & data.id_detalle_requerimiento_pago>0?data.id_detalle_requerimiento_pago:(this.makeId())}">
                 <button type="button" class="btn btn-warning btn-xs handleClickAdjuntarArchivoItem" name="btnAdjuntarArchivoItem[]" title="Adjuntos" >
                     <i class="fas fa-paperclip"></i>
                     <span class="badge" name="cantidadAdjuntosItem" style="position:absolute; top:-10px; left:-10px; border: solid 0.1px;">0</span>    
@@ -661,12 +704,46 @@ class ListarRequerimientoPagoView {
 
     }
 
-
+ 
     eliminarItem(obj) {
-        let tr = obj.closest("tr");
-        tr.remove();
-        // this.updateContadorItem();
-        // this.calcularTotal();
+
+        Swal.fire({
+            title: 'Esta seguro?',
+            text: "No podrás revertir esta acción",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: 'cancelar',
+            confirmButtonText: 'Si, eliminar'
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                let tr = obj.closest("tr");
+                var regExp = /[a-zA-Z]/g;
+
+                if(regExp.test(tr.querySelector("input[name='idRegister[]']").value) ==true ){
+                    tr.remove();
+                    this.calcularSubtotal();
+                    this.calcularTotal();    
+                }else{
+                    tr.querySelector("input[class~='idEstado']").value=7;
+                    tr.classList.add("danger","textRedStrikeHover");
+                    tr.querySelector("button[name='btnOpenModalEliminarItemOrden']").setAttribute("disabled",true);
+                    this.calcularSubtotal();
+                    this.calcularTotal();
+                }
+
+                Lobibox.notify('success', {
+                    title: false,
+                    size: 'mini',
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    msg: 'El item fue eliminado'
+                });
+            }
+        })
     }
 
     checkStatusBtnGuardar(){
@@ -821,14 +898,14 @@ class ListarRequerimientoPagoView {
     selectPartida(idPartida) {
         let codigo = $("#par-" + idPartida + " ").find("td[name=codigo]")[0].innerHTML;
         let descripcion = $("#par-" + idPartida + " ").find("td[name=descripcion]")[0].innerHTML;
-        let presupuestoTotal = $("#par-" + idPartida + " ").find("td[name=importe_total]")[0].dataset.presupuestoTotal;
+        // let presupuestoTotal = $("#par-" + idPartida + " ").find("td[name=importe_total]")[0].dataset.presupuestoTotal;
         tempObjectBtnPartida.nextElementSibling.querySelector("input").value = idPartida;
         tempObjectBtnPartida.textContent = 'Cambiar';
 
         let tr = tempObjectBtnPartida.closest("tr");
-        tr.querySelector("p[class='descripcion-partida']").dataset.idPartida = idPartida;
+        // tr.querySelector("p[class='descripcion-partida']").dataset.idPartida = idPartida;
         tr.querySelector("p[class='descripcion-partida']").textContent = descripcion
-        tr.querySelector("p[class='descripcion-partida']").dataset.presupuestoTotal = presupuestoTotal;
+        // tr.querySelector("p[class='descripcion-partida']").dataset.presupuestoTotal = presupuestoTotal;
         tr.querySelector("p[class='descripcion-partida']").setAttribute('title', codigo);
 
         // this.checkStatusValue(tempObjectBtnPartida.nextElementSibling.querySelector("input"));
@@ -1005,6 +1082,19 @@ class ListarRequerimientoPagoView {
         this.calcularTotal();
     }
 
+    calcularSubtotal(){
+        let TableTBody = document.querySelector("tbody[id='body_detalle_requerimiento_pago']");
+        let childrenTableTbody = TableTBody.children;
+        for (let index = 0; index < childrenTableTbody.length; index++) {
+            
+            let cantidad = parseFloat(childrenTableTbody[index].querySelector("input[class~='cantidad']").value ? childrenTableTbody[index].querySelector("input[class~='cantidad']").value : 0);
+            let precioUnitario = parseFloat(childrenTableTbody[index].querySelector("input[class~='precio']").value ? childrenTableTbody[index].querySelector("input[class~='precio']").value : 0);
+             childrenTableTbody[index].querySelector("span[class~='subtotal']").textContent=(cantidad * precioUnitario);
+
+        }
+    }
+
+
     calcularTotal(){
         let TableTBody = document.querySelector("tbody[id='body_detalle_requerimiento_pago']");
         let childrenTableTbody = TableTBody.children;
@@ -1031,7 +1121,7 @@ class ListarRequerimientoPagoView {
         }
     }
 
-    guardarRequerimientoPago(){
+    validarFormularioRequerimientoPago(){
         let continuar = true;
         if (document.querySelector("tbody[id='body_detalle_requerimiento_pago']").childElementCount == 0) {
             Swal.fire(
@@ -1143,8 +1233,11 @@ class ListarRequerimientoPagoView {
 
             }
         }
+        return continuar;
+    }
+    guardarRequerimientoPago(){
 
-        if (continuar) {
+        if (this.validarFormularioRequerimientoPago()) {
             let formData = new FormData($('#form-requerimiento-pago')[0]);
 
                 $.ajax({
@@ -1231,6 +1324,100 @@ class ListarRequerimientoPagoView {
     }
 
 
+    actualizarRequerimientoPago(){
+        if(document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_requerimiento_pago']").value >0){
+        if (this.validarFormularioRequerimientoPago()) {
+            let formData = new FormData($('#form-requerimiento-pago')[0]);
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'actualizar-requerimiento-pago',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    dataType: 'JSON',
+                    beforeSend:  (data)=> {
+
+                        var customElement = $("<div>", {
+                            "css": {
+                                "font-size": "24px",
+                                "text-align": "center",
+                                "padding": "0px",
+                                "margin-top": "-400px"
+                            },
+                            "class": "your-custom-class",
+                            "text": "Actualizando requerimiento de pago..."
+                        });
+
+                        $('#wrapper-okc').LoadingOverlay("show", {
+                            imageAutoResize: true,
+                            progress: true,
+                            custom: customElement,
+                            imageColor: "#3c8dbc"
+                        });
+                    },
+                    success: (response) =>{
+                        console.log(response);
+                        if (response.id_requerimiento_pago > 0) {
+                            $('#wrapper-okc').LoadingOverlay("hide", true);
+
+                            Lobibox.notify('success', {
+                                title:false,
+                                size: 'mini',
+                                rounded: true,
+                                sound: false,
+                                delayIndicator: false,
+                                msg: response.mensaje
+                            });
+                            $("#ListaRequerimientoPago").DataTable().ajax.reload(null, false);
+
+                        } else {
+                            $('#wrapper-okc').LoadingOverlay("hide", true);
+                            Swal.fire(
+                                '',
+                                response.mensaje,
+                                'error'
+                            );
+                        }
+                    },
+                    statusCode: {
+                        404: function() {
+                        $('#wrapper-okc').LoadingOverlay("hide", true);
+                        Swal.fire(
+                            'Error 404',
+                            'Lo sentimos hubo un problema con el servidor, la ruta a la que se quiere acceder para actualizar no esta disponible, por favor vuelva a intentarlo más tarde.',
+                            'error'
+                        );
+                        }
+                    },
+                    fail:  (jqXHR, textStatus, errorThrown) =>{
+                        $('#wrapper-okc').LoadingOverlay("hide", true);
+                        Swal.fire(
+                            '',
+                            'Lo sentimos hubo un error en el servidor al intentar actualizar el requerimiento de pago, por favor vuelva a intentarlo',
+                            'error'
+                        );
+                        console.log(jqXHR);
+                        console.log(textStatus);
+                        console.log(errorThrown);
+                    }
+                });
+
+        } else {
+            Swal.fire(
+                '',
+                'Por favor ingrese los datos faltantes en el formulario',
+                'warning'
+            );
+        }
+    }else{
+        Swal.fire(
+            '',
+            'No se encontro un requerimiento de pago seleccionado, vuelva a intentarlo seleccionado un requerimiento de pago editable de la lista',
+            'warning'
+        );
+    }
+    }
 
     modalListaCuadroDePresupuesto(){
         $('#modal-lista-cuadro-presupuesto').modal({
@@ -1346,5 +1533,103 @@ class ListarRequerimientoPagoView {
                 );
             }
         $('#modal-lista-cuadro-presupuesto').modal('hide');
+    }
+
+
+    editarRequerimientoPago(obj){
+
+        $('#modal-requerimiento-pago').modal({
+            show: true,
+            backdrop: 'static'
+        });
+        document.querySelector("div[id='modal-requerimiento-pago'] form[id='form-requerimiento-pago']").setAttribute("type",'edition');
+        document.querySelector("div[id='modal-requerimiento-pago'] h3[id='modal-title']").textContent="Editar requerimiento de pago";
+        document.querySelector("div[id='modal-requerimiento-pago'] button[id='btnGuardarRequerimientoPago']").classList.add("oculto"); 
+        document.querySelector("div[id='modal-requerimiento-pago'] button[id='btnActualizarRequerimientoPago']").classList.remove("oculto"); 
+        document.querySelector("div[id='modal-requerimiento-pago'] button[id='btnActualizarRequerimientoPago']").removeAttribute("disabled"); 
+        
+        if(obj.dataset.idRequerimientoPago >0){
+            this.cargarRequerimientoPago(obj.dataset.idRequerimientoPago);
+        }else{
+            Swal.fire(
+                '',
+                'Lo sentimos no se encontro un ID valido para cargar el requerimiento de pago seleccionado, por favor vuelva a intentarlo',
+                'error'
+                );
+        }
+    }
+
+    cargarRequerimientoPago(idRequerimientoPago){
+        this.obtenerRequerimientoPago(idRequerimientoPago).then((res)=> {
+            this.mostrarRequerimientoPago(res);
+
+        }).catch(function (err) {
+            console.log(err)
+        });
+    }
+
+    obtenerRequerimientoPago(id){
+        return new Promise(function(resolve, reject) {
+            $.ajax({
+                type: 'GET',
+                url:`mostrar-requerimiento-pago/${id}`,
+                dataType: 'JSON',
+                success(response) {
+                    resolve(response);
+                },
+                error: function(err) {
+                reject(err)
+                }
+                });
+            });
+    }
+
+    mostrarRequerimientoPago(data){
+        console.log(data);
+        if(data.id_empresa>0){
+            this.construirOptSelectSede(data.id_empresa);
+        }
+        if(data.id_grupo>0){
+            this.construirOptSelectDivision(data.id_grupo);
+        }
+
+        document.querySelector("div[id='modal-requerimiento-pago'] select[name='sede']").removeAttribute("disabled");
+        document.querySelector("div[id='modal-requerimiento-pago'] select[name='grupo']").removeAttribute("disabled");
+        document.querySelector("div[id='modal-requerimiento-pago'] select[name='division']").removeAttribute("disabled");
+
+        const fechaRegistro = moment(data.fecha_registro, 'DD-MM-YYYY').format('YYYY-MM-DD')
+        document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_requerimiento_pago']").value= data.id_requerimiento_pago;
+        document.querySelector("div[id='modal-requerimiento-pago'] input[name='codigo']").value= data.codigo;
+        document.querySelector("div[id='modal-requerimiento-pago'] input[name='concepto']").value= data.concepto;
+        document.querySelector("div[id='modal-requerimiento-pago'] input[name='fecha_registro']").value= fechaRegistro;
+        document.querySelector("div[id='modal-requerimiento-pago'] select[name='periodo']").value= data.id_periodo;
+        document.querySelector("div[id='modal-requerimiento-pago'] select[name='moneda']").value= data.id_moneda;
+        document.querySelector("div[id='modal-requerimiento-pago'] select[name='prioridad']").value= data.id_prioridad;
+        document.querySelector("div[id='modal-requerimiento-pago'] textarea[name='comentario']").value= data.comentario;
+        document.querySelector("div[id='modal-requerimiento-pago'] select[name='empresa']").value= data.id_empresa;
+        document.querySelector("div[id='modal-requerimiento-pago'] select[name='sede']").value= data.id_sede;
+        document.querySelector("div[id='modal-requerimiento-pago'] select[name='grupo']").value= data.id_grupo;
+        document.querySelector("div[id='modal-requerimiento-pago'] select[name='division']").value= data.id_division;
+        document.querySelector("div[id='modal-requerimiento-pago'] select[name='tipo_cuenta']").value= data.nro_cuenta !=null && data.nro_cuenta.length >0 ?'bcp':'cci';
+        document.querySelector("div[id='modal-requerimiento-pago'] input[name='nro_cuenta']").value= data.nro_cuenta !=null && data.nro_cuenta.length >0 ?data.nro_cuenta:data.nro_cuenta_interbancaria;
+        document.querySelector("div[id='modal-requerimiento-pago'] select[name='tipo_documento_idendidad']").value= data.dni != null && data.dni.length>0?'dni':'ruc';
+        document.querySelector("div[id='modal-requerimiento-pago'] input[name='nro_documento_idendidad']").value= data.dni != null && data.dni.length>0?data.dni:data.ruc;
+        document.querySelector("div[id='modal-requerimiento-pago'] input[name='monto_total']").value= data.monto_total;
+        document.querySelector("div[id='modal-requerimiento-pago'] input[name='monto_total_read_only']").value=$.number(data.monto_total, 2);
+
+        this.limpiarTabla('ListaDetalleRequerimientoPago');
+
+        data.detalle.forEach(element => {
+            if(element.id_tipo_item ==1){
+                this.agregarProducto(element);
+                this.calcularSubtotal();
+                this.calcularTotal();
+
+            }else if(element.id_tipo_item ==2){
+                this.agregarServicio(element);
+                this.calcularSubtotal();
+                this.calcularTotal();
+            }
+        });
     }
 }

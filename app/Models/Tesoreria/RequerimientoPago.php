@@ -110,6 +110,14 @@ class RequerimientoPago extends Model
     {
         return $this->hasMany('App\Models\Tesoreria\DetalleRequerimientoPago', 'id_requerimiento_pago', 'id_requerimiento_pago');
     }
+    public function prioridad()
+    {
+        return $this->hasOne('App\Models\Administracion\prioridad', 'id_prioridad', 'id_prioridad');
+    }
+    public function periodo()
+    {
+        return $this->hasOne('App\Models\Administracion\periodo', 'id_periodo', 'id_periodo');
+    }
     public function division()
     {
         return $this->belongsTo('App\Models\Administracion\DivisionArea', 'division_id', 'id_division');
@@ -129,5 +137,18 @@ class RequerimientoPago extends Model
     public function sede()
     {
         return $this->hasOne('App\Models\Administracion\Sede', 'id_sede', 'id_sede');
+    }
+
+    public function grupo(){
+        return $this->belongsTo('App\Models\Configuracion\Grupo','id_grupo','id_grupo');
+    }
+
+    public function cuadroCostos()
+    {
+        return $this->hasOne('App\Models\Comercial\CuadroCosto\CuadroCostosView', 'id', 'id_cc');
+    }
+    public function proyecto()
+    {
+        return $this->hasOne('App\Models\Proyectos\Proyecto', 'id_proyecto', 'id_proyecto');
     }
 }
