@@ -23,7 +23,7 @@ class MigrateRequerimientoSoftLinkController extends Controller
         return $data;
     }
 
-    public function migrarOrdenVenta($id_requerimiento)
+    public function migrarOCC($id_requerimiento)
     {
         try {
             DB::beginTransaction();

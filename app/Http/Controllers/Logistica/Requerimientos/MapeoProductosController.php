@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Logistica\Requerimientos;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\AlmacenController;
+use App\Http\Controllers\Migraciones\MigrateRequerimientoSoftLinkController;
 use App\Models\Almacen\DetalleRequerimiento;
 use App\Models\Almacen\Requerimiento;
 use Illuminate\Support\Facades\DB;
@@ -119,7 +120,7 @@ class MapeoProductosController extends Controller
             $cantidadItemsMapeados=$cantidades['cantidadMapeados'];
             $cantidadItemsTotal=$cantidades['cantidadTotal'];
 
-          
+        
             $estadoRequerimiento= null;
             if($cantidadItemsMapeados >0){
                 $mensaje[]='Productos mapeados con éxito';
@@ -134,11 +135,22 @@ class MapeoProductosController extends Controller
 
 
             DB::commit();
-            return response()->json(array('response' => 'ok','mensaje'=>$mensaje,'estado_requerimiento'=>$estadoRequerimiento,'cantidad_items_mapeados'=>$cantidadItemsMapeados,'cantidad_total_items'=>$cantidadItemsTotal), 200);
+            
+            $status_migracion_occ=null;
+            $detalleRequerimiento= DetalleRequerimiento::find($request->detalle[0]['id_detalle_requerimiento']);
+            $todoDetalleRequerimientoNoMapeados=DetalleRequerimiento::where([['id_requerimiento',$detalleRequerimiento->id_requerimiento],['entrega_cliente',true],['estado','!=',7]])->count();
+            $todoDetalleRequerimientoMapeados=DetalleRequerimiento::where([['id_requerimiento',$detalleRequerimiento->id_requerimiento],['entrega_cliente',true],['estado','!=',7]])->whereIsNotNull('id_producto')->count();
+
+            if($todoDetalleRequerimientoMapeados == $todoDetalleRequerimientoNoMapeados){
+                $status_migracion_occ=(new MigrateRequerimientoSoftLinkController)->migrarOCC($detalleRequerimiento->id_requerimiento) ?? null;
+            }
+
+
+            return response()->json(array('response' => 'ok','status_migracion_occ'=>$status_migracion_occ,'mensaje'=>$mensaje,'estado_requerimiento'=>$estadoRequerimiento,'cantidad_items_mapeados'=>$cantidadItemsMapeados,'cantidad_total_items'=>$cantidadItemsTotal), 200);
 
         } catch (Exception $e) {
             DB::rollBack();
-            return response()->json(array('response' => 'null','estado_requerimiento'=>'null','mensaje'=>'Hubo un problema al guardar el mapeo de productos. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage(),'cantidad_items_mapeados'=>$cantidadItemsMapeados,'cantidad_total_items'=>$cantidadItemsTotal), 200);
+            return response()->json(array('response' => null,'status_migracion_occ'=>null,'estado_requerimiento'=>'null','mensaje'=>'Hubo un problema al guardar el mapeo de productos. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage(),'cantidad_items_mapeados'=>$cantidadItemsMapeados,'cantidad_total_items'=>$cantidadItemsTotal), 200);
         }
     }
 
