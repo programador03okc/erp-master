@@ -360,6 +360,7 @@ class RequerimientoView {
         document.querySelector("input[name='id_grupo']").value = data.id_grupo;
         document.querySelector("input[name='estado']").value = data.estado;
         document.querySelector("span[id='estado_doc']").textContent = data.estado_doc;
+        document.querySelector("span[id='nro_occ_softlink']").textContent = data.nro_occ_softlink !=null ?'OCC: '+data.nro_occ_softlink:'';
         document.querySelector("input[name='fecha_requerimiento']").value = data.fecha_requerimiento;
         document.querySelector("input[name='concepto']").value = data.concepto;
         document.querySelector("select[name='moneda']").value = data.id_moneda;
@@ -2043,6 +2044,7 @@ class RequerimientoView {
         $('#form-requerimiento')[0].reset();
         document.querySelector("span[id='codigo_requerimiento']").textContent='';
         document.querySelector("span[id='estado_doc']").textContent='';
+        document.querySelector("span[id='nro_occ_softlink']").textContent='';
         this.limpiarTabla('ListaDetalleRequerimiento');
         this.limpiarTabla('listaArchivosRequerimiento');
         this.limpiarTabla('listaArchivos');
