@@ -39,6 +39,7 @@ Gestión de Despachos Internos
                     <div style="display:flex;">
                         <button class="btn btn-default btn-flat" onClick="listarDespachosInternos()"><i class="fas fa-sync-alt"></i> Actualizar</button>
                         <button class="btn btn-default btn-flat" onClick="pasarProgramadasAlDiaSiguiente()"><i class="fas fa-undo-alt"></i> Pasar programadas para mañana</button>
+                        <button class="btn btn-default btn-flat" onClick="listarPendientesAnteriores()"><i class="fas fa-undo-alt"></i> Pendientes anteriores</button>
                     </div>
                     </div>
                 </div>
@@ -106,6 +107,7 @@ Gestión de Despachos Internos
     </div>
 </div>
 @include('tesoreria.facturacion.archivos_oc_mgcp')
+@include('almacen.distribucion.transformacionesPendientesModal')
 
 @endsection
 
