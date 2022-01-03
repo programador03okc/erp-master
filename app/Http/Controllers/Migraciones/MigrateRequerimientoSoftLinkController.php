@@ -246,8 +246,8 @@ class MigrateRequerimientoSoftLinkController extends Controller
 
                     $ult_mov = DB::connection('soft')->table('movimien')
                         ->where([
-                            ['num_docu', '>', $yy . '0000000'],
-                            ['num_docu', '<', $yy . '9999999'],
+                            // ['num_docu', '>', $yy . '0000000'],
+                            // ['num_docu', '<', $yy . '9999999'],
                             ['cod_suc', '=', $cod_suc],
                             ['tipo', '=', 2], //venta
                             ['cod_docu', '=', 'NP']
