@@ -136,13 +136,20 @@ class MapeoProductosController extends Controller
 
             DB::commit();
             
-            $status_migracion_occ=null;
             $detalleRequerimiento= DetalleRequerimiento::find($request->detalle[0]['id_detalle_requerimiento']);
             $todoDetalleRequerimientoNoMapeados=DetalleRequerimiento::where([['id_requerimiento',$detalleRequerimiento->id_requerimiento],['entrega_cliente',true],['estado','!=',7]])->count();
-            $todoDetalleRequerimientoMapeados=DetalleRequerimiento::where([['id_requerimiento',$detalleRequerimiento->id_requerimiento],['entrega_cliente',true],['estado','!=',7]])->whereIsNotNull('id_producto')->count();
+            $todoDetalleRequerimientoMapeados=DetalleRequerimiento::where([['id_requerimiento',$detalleRequerimiento->id_requerimiento],['entrega_cliente',true],['estado','!=',7]])->whereNotNull('id_producto')->count();
 
             if($todoDetalleRequerimientoMapeados == $todoDetalleRequerimientoNoMapeados){
                 $status_migracion_occ=(new MigrateRequerimientoSoftLinkController)->migrarOCC($detalleRequerimiento->id_requerimiento) ?? null;
+            }else{
+                $status_migracion_occ=array(
+                    'tipo' => 'info',
+                    'mensaje' => 'No se migró la OCC porque aún faltan mapear items.',
+                    'occ_softlink' =>  '',
+                    'occSoftlink' => '',
+                    'reqAgile' => '',
+                );
             }
 
 
