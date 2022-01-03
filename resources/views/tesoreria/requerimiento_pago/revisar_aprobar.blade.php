@@ -5,7 +5,7 @@
 @endsection
 
 @section('cabecera')
-Listado de requerimientos de pago
+Revisar / aprobar requerimientos de pago
 @endsection
 
 @section('estilos')
@@ -15,7 +15,7 @@ Listado de requerimientos de pago
 <ol class="breadcrumb">
     <li><a href="{{route('necesidades.index')}}"><i class="fas fa-tachometer-alt"></i> Necesidades</a></li>
     <li>Requerimientos de pago</li>
-    <li class="active">Listado</li>
+    <li class="active">Revisar / aprobar</li>
 </ol>
 @endsection
 
@@ -63,7 +63,6 @@ Listado de requerimientos de pago
 @include('tesoreria.requerimiento_pago.modal_lista_cuadro_presupuesto')
 @include('logistica.requerimientos.modal_partidas')
 @include('logistica.requerimientos.modal_centro_costos')
-@include('tesoreria.requerimiento_pago.modal_adjuntar_archivos_requerimiento_pago')
 
 @endsection
 
@@ -91,11 +90,11 @@ function updateUM(val){
     $(document).ready(function() {
         seleccionarMenu(window.location);
 
-        const listarRequerimientoPagoView = new ListarRequerimientoPagoView();
+        // const listarRequerimientoPagoView = new ListarRequerimientoPagoView();
         
-        listarRequerimientoPagoView.mostrarListaRequerimientoPago('ALL');
+        // listarRequerimientoPagoView.mostrarListaRequerimientoPago('ALL');
         
-        listarRequerimientoPagoView.initializeEventHandler();
+        // listarRequerimientoPagoView.initializeEventHandler();
  
     });
 

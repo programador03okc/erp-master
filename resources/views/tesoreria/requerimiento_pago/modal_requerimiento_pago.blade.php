@@ -24,7 +24,7 @@
                                     <div class="col-md-7">
                                         <div class="form-group">
                                             <h5>Concepto:</h5>
-                                            <input type="text" class="form-control activation handleCheckStatusValue"  placeholder="Concepto/motivo" name="concepto">
+                                            <input type="text" class="form-control activation handleCheckStatusValue" placeholder="Concepto/motivo" name="concepto">
                                             </select>
                                         </div>
                                     </div>
@@ -110,10 +110,10 @@
                                         <div class="form-group">
                                             <h5>Proyecto</h5>
                                             <select class="form-control activation handleCheckStatusValue" name="proyecto">
-                                            <option value="0">Seleccione un Proyecto</option>
-                                            @foreach ($proyectos_activos as $proyecto)
+                                                <option value="0">Seleccione un Proyecto</option>
+                                                @foreach ($proyectos_activos as $proyecto)
                                                 <option value="{{$proyecto->id_proyecto}}" data-id-centro-costo="{{$proyecto->id_centro_costo}}" data-codigo-centro-costo="{{$proyecto->codigo_centro_costo}}" data-descripcion-centro-costo="{{$proyecto->descripcion_centro_costo}}" data-codigo="{{$proyecto->codigo}}">{{$proyecto->descripcion}}</option>
-                                            @endforeach
+                                                @endforeach
                                             </select>
                                         </div>
                                     </div>
@@ -125,7 +125,7 @@
                                                 <input type="text" class="form-control" name="codigo_oportunidad" readonly>
 
                                                 <button type="button" class="btn-primary handleClickModalListaCuadroDePresupuesto" title="Buscar cuadro de presupuesto" placeholder="Código CDP" name="btnSearchCDP"">
-                                                    <i class="fas fa-search"></i>
+                                                    <i class=" fas fa-search"></i>
                                                 </button>
                                             </div>
                                         </div>
@@ -168,6 +168,19 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                        <h5>&nbsp;</h5>
+                                             <div style="display:flex; position:relative;">
+                                                <button type="button" class="btn btn-warning btn-md handleClickAdjuntarArchivoCabecera" name="btnAdjuntarArchivoCabecera[]" title="Adjuntos">
+                                                    <i class="fas fa-paperclip"></i>
+                                                    <span class="badge" name="cantidadAdjuntosCabecera" style="position:absolute; top:-10px; left:-10px; border: solid 0.1px;">0</span>
+                                                    Adjuntos
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                 </div>
                             </fieldset>
                         </div>
