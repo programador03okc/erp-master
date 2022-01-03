@@ -744,7 +744,6 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('mostrar-requerimiento-pago/{idRequerimientoPago}', 'Tesoreria\RequerimientoPagoController@mostrarRequerimientoPago');
 				Route::post('actualizar-requerimiento-pago', 'Tesoreria\RequerimientoPagoController@actualizarRequerimientoPago');
 				Route::post('anular-requerimiento-pago', 'Tesoreria\RequerimientoPagoController@anularRequerimientoPago');
-
 			});
 			Route::group(['as' => 'revisar_aprobar.', 'prefix' => 'revisar_aprobar'], function () {
 				Route::get('index', 'Tesoreria\RequerimientoPagoController@viewRevisarAprobarRequerimientoPago')->name('index');
@@ -1089,6 +1088,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('bajarPrioridad/{id}', 'Logistica\Distribucion\OrdenesDespachoInternoController@bajarPrioridad');
 				Route::get('pasarProgramadasAlDiaSiguiente/{fec}', 'Logistica\Distribucion\OrdenesDespachoInternoController@pasarProgramadasAlDiaSiguiente');
 				Route::post('cambiaEstado', 'Logistica\Distribucion\OrdenesDespachoInternoController@cambiaEstado');
+				Route::get('listarPendientesAnteriores/{fec}', 'Logistica\Distribucion\OrdenesDespachoInternoController@listarPendientesAnteriores');
 			});
 		});
 

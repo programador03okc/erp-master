@@ -84,6 +84,34 @@ function listarDespachosInternos() {
     });
 }
 
+function listarPendientesAnteriores() {
+    var fecha = $('#fecha_programacion').val();
+    $('#modal-transformacionesPendientes').modal({
+        show: true
+    });
+
+    var vardataTables = funcDatatables();
+
+    $('#listaTransformacionesPendientes').dataTable({
+        'dom': vardataTables[1],
+        'buttons': [],
+        'language': vardataTables[0],
+        'bDestroy': true,
+        ajax: {
+            url: 'listarPendientesAnteriores/' + fecha,
+            type: 'GET',
+        },
+        'columns': [
+            { 'data': 'id_od' },
+            { 'data': 'fecha_despacho' },
+            { 'data': 'codigo_oportunidad' },
+            { 'data': 'nombre_entidad' },
+            { 'data': 'estado' },
+        ],
+        'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible' }],
+    });
+}
+
 function siguiente(estado, id_od, id_transformacion) {
     var siguiente = 0;
     switch (estado) {

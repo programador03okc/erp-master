@@ -293,10 +293,10 @@ class MigrateRequerimientoSoftLinkController extends Controller
             }
 
             DB::commit();
-            return response()->json($arrayRspta, 200);
+            return $arrayRspta;
         } catch (\PDOException $e) {
             DB::rollBack($e);
-            return response()->json(array('tipo' => 'error', 'mensaje' => 'Hubo un problema al enviar el requerimiento. Por favor intente de nuevo', 'error' => $e->getMessage()));
+            return array('tipo' => 'error', 'mensaje' => 'Hubo un problema al enviar el requerimiento. Por favor intente de nuevo', 'error' => $e->getMessage());
         }
     }
 

@@ -414,6 +414,35 @@ class OrdenesDespachoInternoController extends Controller
         ]);
     }
 
+    public function listarPendientesAnteriores($fecha)
+    {
+        $lista = DB::table('almacen.orden_despacho')
+            ->select(
+                'orden_despacho.id_od',
+                'orden_despacho.fecha_despacho',
+                'orden_despacho.estado',
+                'transformacion.id_transformacion',
+                'oportunidades.id as id_oportunidad',
+                'oportunidades.codigo_oportunidad',
+                'orden_despacho.nro_orden',
+                'oc_propias_view.nombre_entidad'
+            )
+            ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'orden_despacho.id_requerimiento')
+            ->join('almacen.transformacion', 'transformacion.id_od', '=', 'orden_despacho.id_od')
+            ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
+            ->leftjoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
+            ->leftJoin('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'cc.id_oportunidad')
+            ->where([
+                ['orden_despacho.aplica_cambios', '=', true],
+                ['orden_despacho.fecha_despacho', '<', $fecha],
+            ])
+            ->whereIn('orden_despacho.estado', [1, 21, 24])
+            ->orderBy('orden_despacho.nro_orden')
+            ->get();
+        $output['data'] = $lista;
+        return response()->json($output);
+    }
+
     public function subirPrioridad($id_od)
     {
         try {
