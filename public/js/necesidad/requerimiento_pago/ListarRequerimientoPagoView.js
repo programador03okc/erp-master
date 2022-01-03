@@ -121,6 +121,9 @@ class ListarRequerimientoPagoView {
         $('#modal-requerimiento-pago').on("click", "button.handleClickModalListaCuadroDePresupuesto", () => {
             this.modalListaCuadroDePresupuesto();
         });
+        $('#modal-requerimiento-pago').on("click", "button.handleClickAdjuntarArchivoCabecera", () => {
+            this.modalAdjuntarArchivosCabecera();
+        });
         $('#listaCuadroPresupuesto').on("click", "button.handleClickSeleccionarCDP", (e) => {
             this.seleccionarCDP(e.currentTarget);
         });
@@ -159,7 +162,8 @@ class ListarRequerimientoPagoView {
                 {
                     text: '<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : 0',
                     attr: {
-                        id: 'btnFiltrosListaRequerimientosElaborados'
+                        id: 'btnFiltrosListaRequerimientosElaborados',
+                        disabled:true
                     },
                     action: () => {
                         // this.abrirModalFiltrosRequerimientosElaborados();
@@ -640,7 +644,7 @@ class ListarRequerimientoPagoView {
             <div class="btn-group" role="group">
                 <input type="hidden" class="tipoItem" name="tipoItem[]" value="1">
                 <input type="hidden" class="idRegister" name="idRegister[]" value="${data!=null & data.id_detalle_requerimiento_pago>0?data.id_detalle_requerimiento_pago:(this.makeId())}">
-                <button type="button" class="btn btn-warning btn-xs handleClickAdjuntarArchivoItem" name="btnAdjuntarArchivoItem[]" title="Adjuntos" disabled>
+                <button type="button" class="btn btn-warning btn-xs handleClickAdjuntarArchivoItem" name="btnAdjuntarArchivoItem[]" title="Adjuntos">
                     <i class="fas fa-paperclip"></i>
                     <span class="badge" name="cantidadAdjuntosItem" style="position:absolute; top:-10px; left:-10px; border: solid 0.1px;">0</span>    
                 </button> 
@@ -732,7 +736,7 @@ class ListarRequerimientoPagoView {
                 }else{
                     tr.querySelector("input[class~='idEstado']").value=7;
                     tr.classList.add("danger","textRedStrikeHover");
-                    tr.querySelector("button[name='btnOpenModalEliminarItemOrden']").setAttribute("disabled",true);
+                    tr.querySelector("button[name='btnEliminarItem[]']").setAttribute("disabled",true);
                     this.calcularSubtotal();
                     this.calcularTotal();
                 }
@@ -1720,6 +1724,13 @@ class ListarRequerimientoPagoView {
                 this.calcularSubtotal();
                 this.calcularTotal();
             }
+        });
+    }
+
+
+    modalAdjuntarArchivosCabecera(){
+        $('#modal-adjuntar-archivos-requerimiento-pago').modal({
+            show: true
         });
     }
 }

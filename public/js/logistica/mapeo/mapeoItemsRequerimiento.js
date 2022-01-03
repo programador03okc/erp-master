@@ -307,8 +307,18 @@ $("#form-mapeoItemsRequerimiento").on("submit", function (e) {
                             delayIndicator: false,
                             msg: response.mensaje.toString()
                         });
-                        $('#modal-mapeoItemsRequerimiento').modal('hide');
+                        
+                        Lobibox.notify(response.status_migracion_occ.tipo, {
+                            title: false,
+                            size: 'mini',
+                            rounded: true,
+                            sound: false,
+                            delayIndicator: false,
+                            msg: response.status_migracion_occ.mensaje
+                        });
 
+                        $('#modal-mapeoItemsRequerimiento').modal('hide');
+                        
                         if (objBtnMapeo != undefined) {
                             let cantidadPorMapear = parseInt(response.cantidad_total_items) - parseInt(response.cantidad_items_mapeados);
                             // console.log(objBtnMapeo.closest("div"));

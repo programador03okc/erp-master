@@ -48,7 +48,22 @@ class RequerimientoPagoController extends Controller
 
 
         return view('tesoreria/requerimiento_pago/lista',compact('prioridades','empresas','grupos','periodos','monedas','unidadesMedida','divisiones','gruposUsuario','proyectos_activos'));
+    }
+    public function viewRevisarAprobarRequerimientoPago(){
+        $periodos = Periodo::mostrar();
+        $prioridades = Prioridad::mostrar();
+        $gruposUsuario = Auth::user()->getAllGrupo();
 
+        $empresas = Empresa::mostrar();
+        $grupos = Grupo::mostrar();
+        $divisiones = Division::mostrar();
+        $monedas = Moneda::mostrar();
+        $unidadesMedida = UnidadMedida::mostrar();
+        $proyectos_activos = (new ProyectosController)->listar_proyectos_activos();
+
+
+
+        return view('tesoreria/requerimiento_pago/revisar_aprobar',compact('prioridades','empresas','grupos','periodos','monedas','unidadesMedida','divisiones','gruposUsuario','proyectos_activos'));
     }
     function listarRequerimientoPago(Request $request){
         $mostrar = $request->meOrAll;
