@@ -15,6 +15,7 @@
                                     <tr>
                                         <th hidden></th>
                                         <th>Fecha Priorización</th>
+                                        <th>Requerimiento</th>
                                         <th>Cod.CDP</th>
                                         <th width="50%">Cliente/Entidad</th>
                                         <th>Estado</th>

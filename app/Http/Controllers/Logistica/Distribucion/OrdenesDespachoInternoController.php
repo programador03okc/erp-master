@@ -344,6 +344,7 @@ class OrdenesDespachoInternoController extends Controller
             ->select(
                 'orden_despacho.id_od',
                 'orden_despacho.estado',
+                'orden_despacho.fecha_despacho',
                 'transformacion.id_transformacion',
                 'oportunidades.id as id_oportunidad',
                 'oportunidades.codigo_oportunidad',
@@ -357,8 +358,9 @@ class OrdenesDespachoInternoController extends Controller
             ->where([
                 ['orden_despacho.aplica_cambios', '=', true],
                 ['orden_despacho.estado', '=', 21],
-                ['orden_despacho.fecha_despacho', '=', $fecha],
+                // ['orden_despacho.fecha_despacho', '=', $fecha],
             ])
+            ->orderBy('orden_despacho.fecha_despacho')
             ->orderBy('orden_despacho.nro_orden')
             ->get();
 
@@ -366,6 +368,7 @@ class OrdenesDespachoInternoController extends Controller
             ->select(
                 'orden_despacho.id_od',
                 'orden_despacho.estado',
+                'orden_despacho.fecha_despacho',
                 'transformacion.id_transformacion',
                 'oportunidades.id as id_oportunidad',
                 'oportunidades.codigo_oportunidad',
@@ -379,8 +382,9 @@ class OrdenesDespachoInternoController extends Controller
             ->where([
                 ['orden_despacho.aplica_cambios', '=', true],
                 ['orden_despacho.estado', '=', 24],
-                ['orden_despacho.fecha_despacho', '=', $fecha],
+                // ['orden_despacho.fecha_despacho', '=', $fecha],
             ])
+            ->orderBy('orden_despacho.fecha_despacho')
             ->orderBy('orden_despacho.nro_orden')
             ->get();
 
@@ -425,6 +429,7 @@ class OrdenesDespachoInternoController extends Controller
                 'oportunidades.id as id_oportunidad',
                 'oportunidades.codigo_oportunidad',
                 'orden_despacho.nro_orden',
+                'alm_req.codigo as codigo_req',
                 'oc_propias_view.nombre_entidad'
             )
             ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'orden_despacho.id_requerimiento')

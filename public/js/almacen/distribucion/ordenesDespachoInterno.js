@@ -34,7 +34,7 @@ function listarDespachosInternos() {
                     <div class="inner">
                         <h5 style="margin:0px;">
                         <i class="fas fa-print" style="cursor: pointer;" onClick="imprimirTransformacion(${element.id_transformacion})"></i>
-                        ${element.codigo_oportunidad} - ${element.nombre_entidad}</h5>
+                        ${element.codigo_oportunidad} - ${element.nombre_entidad} - ${formatDate(element.fecha_despacho)}</h5>
                     </div>
                     <a href="#" class="small-box-footer" style="cursor: auto;">
                         <i class="fa fa-arrow-circle-left"  style="cursor: pointer;" onClick="anterior(${element.estado},${element.id_od},${element.id_transformacion})"></i>
@@ -51,7 +51,7 @@ function listarDespachosInternos() {
                     <div class="inner">
                         <h5 style="margin:0px;">
                         <i class="fas fa-print" style="cursor: pointer;" onClick="imprimirTransformacion(${element.id_transformacion})"></i>
-                        ${element.codigo_oportunidad} - ${element.nombre_entidad}</h5>
+                        ${element.codigo_oportunidad} - ${element.nombre_entidad} - ${formatDate(element.fecha_despacho)}</h5>
                     </div>
                     <a href="#" class="small-box-footer" style="cursor: auto;">
                         <i class="fa fa-arrow-circle-left"  style="cursor: pointer;" onClick="anterior(${element.estado},${element.id_od},${element.id_transformacion})"></i>
@@ -104,6 +104,7 @@ function listarPendientesAnteriores() {
         'columns': [
             { 'data': 'id_od' },
             { 'data': 'fecha_despacho' },
+            { 'data': 'codigo_req' },
             { 'data': 'codigo_oportunidad' },
             { 'data': 'nombre_entidad' },
             { 'data': 'estado' },

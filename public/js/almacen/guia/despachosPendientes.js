@@ -90,7 +90,7 @@ function listarDespachosPendientes(permiso) {
                 }
             });
             $("#btnBuscar").on("click", e => {
-                table.search($input.val()).draw();
+                $tableSalidas.search($input.val()).draw();
             });
 
             const $form = $('#formFiltrosSalidasPendientes');
@@ -166,21 +166,21 @@ function listarDespachosPendientes(permiso) {
             {
                 'render': function (data, type, row) {
 
-                    if (permiso == '1') {
-                        return `<button type="button" class="detalle btn btn-default btn-flat boton" data-toggle="tooltip"
+                    // if (permiso == '1') {
+                    return `<button type="button" class="detalle btn btn-default btn-flat boton" data-toggle="tooltip"
                                 data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}">
                                 <i class="fas fa-chevron-down"></i></button>` +
 
-                            (row['suma_reservas'] !== null && row['suma_cantidad'] !== null && row['suma_reservas'] >= row['suma_cantidad'] ?
-                                (`<button type="button" class="guia btn btn-warning btn-flat boton" data-toggle="tooltip" 
+                        (row['suma_reservas'] !== null && row['suma_cantidad'] !== null && row['suma_reservas'] >= row['suma_cantidad'] ?
+                            (`<button type="button" class="guia btn btn-warning btn-flat boton" data-toggle="tooltip" 
                                 data-placement="bottom" title="Generar Guía" >
                                 <i class="fas fa-sign-in-alt"></i></button>`) : '');
-                    } else {
-                        return '<button type="button" class="detalle btn btn-primary btn-flat boton" data-toggle="tooltip" ' +
-                            'data-placement="bottom" title="Ver Detalle" >' +
-                            '<i class="fas fa-list-ul"></i></button>'
-                    }
-                }, targets: 9
+                    // } else {
+                    //     return '<button type="button" class="detalle btn btn-primary btn-flat boton" data-toggle="tooltip" ' +
+                    //         'data-placement="bottom" title="Ver Detalle" >' +
+                    //         '<i class="fas fa-list-ul"></i></button>'
+                    // }
+                }, targets: 10
             }
         ],
         'order': [[0, "desc"]],

@@ -546,7 +546,8 @@ class SalidasPendientesController extends Controller
             )
 
             ->join('almacen.orden_despacho', 'orden_despacho.id_od', '=', 'orden_despacho_det.id_od')
-            ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'orden_despacho_det.id_producto')
+            ->join('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'orden_despacho_det.id_detalle_requerimiento')
+            ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_det_req.id_producto')
             ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
             // ->leftJoin('logistica.log_det_ord_compra', function ($join) {
             //     $join->on('log_det_ord_compra.id_detalle_requerimiento', '=', 'orden_despacho_det.id_detalle_requerimiento');

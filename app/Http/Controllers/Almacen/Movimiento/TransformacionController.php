@@ -239,7 +239,9 @@ class TransformacionController extends Controller
                 WHERE d.id_transformacion = transfor_transformado.id_transformacion
                 and   d.estado != 7) AS suma_materia")
             )
-            ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'transfor_transformado.id_producto')
+            ->join('almacen.orden_despacho_det', 'orden_despacho_det.id_od_detalle', '=', 'transfor_transformado.id_od_detalle')
+            ->join('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'orden_despacho_det.id_detalle_requerimiento')
+            ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_det_req.id_producto')
             ->join('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
             ->join('almacen.transformacion', 'transformacion.id_transformacion', '=', 'transfor_transformado.id_transformacion')
             ->where('transfor_transformado.id_transformacion', $id_transformacion)
