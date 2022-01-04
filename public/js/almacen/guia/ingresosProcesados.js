@@ -148,7 +148,6 @@ function listarIngresos() {
             { data: "ordenes", orderable: false },//Órdenes
             { data: "ordenes", orderable: false },//dta
             { data: "facturas", orderable: false },//dta
-            // { data: "id_guia_com" },
             { data: "requerimientos", orderable: false },
             { data: "id_mov_alm", searchable: false }
         ],
@@ -187,7 +186,7 @@ function listarIngresos() {
             },
             {
                 render: function (data, type, row) {
-                    return row.comprobantes;
+                    return row.comprobantes.codigo;
                 },
                 targets: 11
             },

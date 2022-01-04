@@ -747,7 +747,6 @@ Route::group(['middleware' => ['auth']], function () {
 			});
 			Route::group(['as' => 'revisar_aprobar.', 'prefix' => 'revisar_aprobar'], function () {
 				Route::get('index', 'Tesoreria\RequerimientoPagoController@viewRevisarAprobarRequerimientoPago')->name('index');
-
 			});
 		});
 	});
@@ -1685,9 +1684,21 @@ Route::group(['middleware' => ['auth']], function () {
 	/**Tesoreria */
 	Route::group(['as' => 'tesoreria.', 'prefix' => 'tesoreria'], function () {
 
-		Route::get('index', 'Tesoreria\RequerimientoPagoController@view_main_tesoreria')->name('index');
+		Route::get('index', 'Tesoreria\RegistroPagoController@view_main_tesoreria')->name('index');
 
 		Route::group(['as' => 'pagos.', 'prefix' => 'pagos'], function () {
+
+			Route::group(['as' => 'procesar-pago.', 'prefix' => 'procesar-pago'], function () {
+
+				Route::get('index', 'Tesoreria\RegistroPagoController@view_pendientes_pago')->name('index');
+				Route::post('listarComprobantesPagos', 'Tesoreria\RegistroPagoController@listarComprobantesPagos')->name('listar-comprobante-pagos');
+				Route::post('listarOrdenesCompra', 'Tesoreria\RegistroPagoController@listarOrdenesCompra')->name('listar-ordenes-compra');
+				Route::post('procesarPago', 'Tesoreria\RegistroPagoController@procesarPago')->name('procesar-pagos');
+				Route::get('pagosComprobante/{id}', 'Tesoreria\RegistroPagoController@pagosComprobante')->name('pagos-comprobante');
+				Route::get('pagosOrdenes/{id}', 'Tesoreria\RegistroPagoController@pagosOrdenes')->name('pagos-ordenes');
+				// Route::post('listarRequerimientosPagos', 'Tesoreria\RegistroPagoController@listarRequerimientosPagos')->name('listar-requerimiento-pagos');
+				// Route::get('detalleRequerimiento/{id}', 'Logistica\RequerimientoController@detalleRequerimiento')->name('detalle-requerimiento');
+			});
 
 			Route::group(['as' => 'confirmacion-pagos.', 'prefix' => 'confirmacion-pagos'], function () {
 
@@ -1698,18 +1709,6 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('pago_no_confirmado', 'Logistica\Distribucion\DistribucionController@pago_no_confirmado');
 				Route::get('verDetalleRequerimientoDI/{id}', 'Logistica\Distribucion\OrdenesTransformacionController@verDetalleRequerimientoDI');
 				Route::get('verRequerimientoAdjuntos/{id}', 'Logistica\Distribucion\DistribucionController@verRequerimientoAdjuntos');
-			});
-
-			Route::group(['as' => 'procesar-pago.', 'prefix' => 'procesar-pago'], function () {
-
-				Route::get('index', 'Tesoreria\RequerimientoPagoController@view_pendientes_pago')->name('index');
-				Route::post('listarComprobantesPagos', 'Tesoreria\RequerimientoPagoController@listarComprobantesPagos')->name('listar-comprobante-pagos');
-				Route::post('listarOrdenesCompra', 'Tesoreria\RequerimientoPagoController@listarOrdenesCompra')->name('listar-ordenes-compra');
-				Route::post('procesarPago', 'Tesoreria\RequerimientoPagoController@procesarPago')->name('procesar-pagos');
-				Route::get('pagosComprobante/{id}', 'Tesoreria\RequerimientoPagoController@pagosComprobante')->name('pagos-comprobante');
-				Route::get('pagosOrdenes/{id}', 'Tesoreria\RequerimientoPagoController@pagosOrdenes')->name('pagos-ordenes');
-				// Route::post('listarRequerimientosPagos', 'Tesoreria\RequerimientoPagoController@listarRequerimientosPagos')->name('listar-requerimiento-pagos');
-				// Route::get('detalleRequerimiento/{id}', 'Logistica\RequerimientoController@detalleRequerimiento')->name('detalle-requerimiento');
 			});
 		});
 

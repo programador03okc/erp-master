@@ -87,9 +87,9 @@ class Movimiento extends Model
                 ['doc_com.estado', '!=', 7]
             ])
             ->select([
-                'doc_com.serie', 
+                'doc_com.serie',
                 'doc_com.numero',
-                'sis_sede.descripcion as empresa_sede', 
+                'sis_sede.descripcion as empresa_sede',
                 'sis_moneda.simbolo',
                 'log_cdn_pago.descripcion as condicion_descripcion',
                 'doc_com.sub_total',
@@ -102,18 +102,19 @@ class Movimiento extends Model
         $empresaSedeComprobante = '';
         $monedaComprobante = '';
         $condicionComprobante = '';
+
         foreach ($comprobantes as $doc) {
-            $codigoComprobanteList[]= ($doc->serie . '-' . $doc->numero);
-            $empresaSedeComprobante= $doc->empresa_sede;
-            $monedaComprobante= $doc->simbolo;
-            $condicionComprobante= $doc->condicion_descripcion;
-            $montosList=[
-                'sub_total'=>$doc->sub_total??0,
-                'total_igv'=>$doc->total_igv??0,
-                'total_a_pagar'=>$doc->total_a_pagar??0
+            $codigoComprobanteList[] = ($doc->serie . '-' . $doc->numero);
+            $empresaSedeComprobante = $doc->empresa_sede;
+            $monedaComprobante = $doc->simbolo;
+            $condicionComprobante = $doc->condicion_descripcion;
+            $montosList = [
+                'sub_total' => $doc->sub_total ?? 0,
+                'total_igv' => $doc->total_igv ?? 0,
+                'total_a_pagar' => $doc->total_a_pagar ?? 0
             ];
         }
-        return ['codigo'=>$codigoComprobanteList,'empresa_sede'=>$empresaSedeComprobante,'moneda'=>$monedaComprobante,'condicion'=>$condicionComprobante,'montos'=>$montosList];
+        return ['codigo' => $codigoComprobanteList, 'empresa_sede' => $empresaSedeComprobante, 'moneda' => $monedaComprobante, 'condicion' => $condicionComprobante, 'montos' => $montosList];
     }
 
     // public function getMonedaComprobantesAttribute()
@@ -177,31 +178,40 @@ class Movimiento extends Model
     //     return $resultado;
     // }
 
-    public function almacen(){
-        return $this->hasOne('App\Models\Almacen\Almacen','id_almacen','id_almacen');
+    public function almacen()
+    {
+        return $this->hasOne('App\Models\Almacen\Almacen', 'id_almacen', 'id_almacen');
     }
-    public function guia_compra(){
-        return $this->hasOne('App\Models\Almacen\GuiaCompra','id_guia','id_guia_com');
+    public function guia_compra()
+    {
+        return $this->hasOne('App\Models\Almacen\GuiaCompra', 'id_guia', 'id_guia_com');
     }
-    public function guia_venta(){
-        return $this->hasOne('App\Models\Almacen\GuiaVenta','id_guia_ven','id_guia_ven');
+    public function guia_venta()
+    {
+        return $this->hasOne('App\Models\Almacen\GuiaVenta', 'id_guia_ven', 'id_guia_ven');
     }
-    public function operacion(){
-        return $this->hasOne('App\Models\Almacen\TipoOperacion','id_operacion','id_operacion');
+    public function operacion()
+    {
+        return $this->hasOne('App\Models\Almacen\TipoOperacion', 'id_operacion', 'id_operacion');
     }
-    public function documento_compra(){
-        return $this->hasOne('App\Models\Almacen\DocumentoCompra','id_doc_com','id_doc_com');
+    public function documento_compra()
+    {
+        return $this->hasOne('App\Models\Almacen\DocumentoCompra', 'id_doc_com', 'id_doc_com');
     }
-    public function documento_venta(){
-        return $this->hasOne('App\Models\Almacen\DocumentoVenta','id_doc_ven','id_doc_ven');
+    public function documento_venta()
+    {
+        return $this->hasOne('App\Models\Almacen\DocumentoVenta', 'id_doc_ven', 'id_doc_ven');
     }
-    public function usuario(){
-        return $this->hasOne('App\Models\Configuracion\Usuario','id_usuario','usuario');
+    public function usuario()
+    {
+        return $this->hasOne('App\Models\Configuracion\Usuario', 'id_usuario', 'usuario');
     }
-    public function estado(){
-        return $this->hasone('App\Models\Administracion\Estado','id_estado_doc','estado');
+    public function estado()
+    {
+        return $this->hasone('App\Models\Administracion\Estado', 'id_estado_doc', 'estado');
     }
-    public function movimiento_detalle(){
-        return $this->hasMany('App\Models\Almacen\MovimientoDetalle','id_mov_alm','id_mov_alm');
+    public function movimiento_detalle()
+    {
+        return $this->hasMany('App\Models\Almacen\MovimientoDetalle', 'id_mov_alm', 'id_mov_alm');
     }
 }
