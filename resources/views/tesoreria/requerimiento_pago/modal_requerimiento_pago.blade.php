@@ -12,6 +12,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <fieldset class="group-table">
+                            <h5><strong>Datos del Requerimiento</strong></h5>
                                 <div class="row">
                                     <input type="text" class="oculto" name="idProveedor">
                                     <div class="col-md-2">
@@ -30,7 +31,7 @@
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
-                                            <h5>Fecha</h5>
+                                            <h5>Fecha de emisión</h5>
                                             <input type="date" class="form-control activation handleCheckStatusValue" name="fecha_registro" readonly>
                                         </div>
                                     </div>
@@ -189,6 +190,8 @@
                     <div class="row">
                         <div class="col-md-12">
                             <fieldset class="group-table">
+                            <h5><strong>Detalle del Requerimiento</strong></h5>
+
                                 <div class="btn-group" role="group" aria-label="...">
                                     <!-- <button type="button" class="btn btn-xs btn-success activation handleCheckStatusValue handleClickAgregarProducto" id="btnAddProducto" data-toggle="tooltip" data-placement="bottom" title="Agregar Producto"><i class="fas fa-plus"></i> Producto
                                     </button> -->
