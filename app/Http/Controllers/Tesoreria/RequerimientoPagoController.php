@@ -16,6 +16,8 @@ use App\Models\Almacen\UnidadMedida;
 use App\Models\Configuracion\Grupo;
 use App\Models\Configuracion\Moneda;
 use App\Models\mgcp\CuadroCosto\CuadroCostoView;
+use App\Models\Tesoreria\AdjuntoRequerimientoPago;
+use App\Models\Tesoreria\CategoriaAdjunto;
 use App\Models\Tesoreria\DetalleRequerimientoPago;
 use App\Models\Tesoreria\RequerimientoPago;
 use Carbon\Carbon;
@@ -443,4 +445,16 @@ class RequerimientoPagoController extends Controller
 
         return $requerimientoPago->setAttribute('detalle', $detalleRequerimientoPagoList);
     }
+
+    function listaAdjuntosCabeceraRequerimientoPago($idRequerimientoPago){
+        $data = AdjuntoRequerimientoPago::where([['id_requerimiento_pago',$idRequerimientoPago],['estado','!=',7]])->with('categoriaAdjunto')->get();
+        return response()->json($data);
+
+    }
+    function listaCategoriaAdjuntos(){
+        $data = CategoriaAdjunto::where("estado",'!=',7)->get();
+        return response()->json($data);
+
+    }
+
 }

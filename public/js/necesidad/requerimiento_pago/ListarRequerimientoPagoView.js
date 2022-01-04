@@ -1732,5 +1732,57 @@ class ListarRequerimientoPagoView {
         $('#modal-adjuntar-archivos-requerimiento-pago').modal({
             show: true
         });
+
+        this.listarArchivosAdjuntosCabecera();
+    }
+
+    listarArchivosAdjuntosCabecera(){
+        let idRequerimientoPago =document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_requerimiento_pago']").value;
+        if(idRequerimientoPago >0){
+            this.getcategoriaAdjunto().then((categoriaAdjuntoList) => {
+                this.getAdjuntosRequerimientoPagoCabecera(idRequerimientoPago).then((adjuntoList) => {
+                    this.construirTablaAdjuntosRequerimientoPagoCabecera(adjuntoList, categoriaAdjuntoList);
+                }).catch(function (err) {
+                    console.log(err)
+                })
+            }).catch(function (err) {
+                console.log(err)
+            })
+        }
+    }
+
+    getAdjuntosRequerimientoPagoCabecera(idRequerimientoPago){
+        return new Promise(function(resolve, reject) {
+            $.ajax({
+                type: 'GET',
+                url:`listar-adjuntos-requerimiento-pago-cabecera/${idRequerimientoPago}`,
+                dataType: 'JSON',
+                success(response) {
+                    resolve(response);
+                },
+                error: function(err) {
+                    reject(err) 
+                }
+                });
+            });
+    }
+    getcategoriaAdjunto(){
+        return new Promise(function(resolve, reject) {
+            $.ajax({
+                type: 'GET',
+                url:`listar-categoria-adjunto`,
+                dataType: 'JSON',
+                success(response) {
+                    resolve(response);
+                },
+                error: function(err) {
+                    reject(err) 
+                }
+                });
+            });
+    }
+
+    construirTablaAdjuntosRequerimientoPagoCabecera(adjuntoList,categoriaAdjuntoList){
+        console.log(adjuntoList,categoriaAdjuntoList);
     }
 }

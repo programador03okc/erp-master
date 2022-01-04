@@ -744,6 +744,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('mostrar-requerimiento-pago/{idRequerimientoPago}', 'Tesoreria\RequerimientoPagoController@mostrarRequerimientoPago');
 				Route::post('actualizar-requerimiento-pago', 'Tesoreria\RequerimientoPagoController@actualizarRequerimientoPago');
 				Route::post('anular-requerimiento-pago', 'Tesoreria\RequerimientoPagoController@anularRequerimientoPago');
+				Route::get('listar-adjuntos-requerimiento-pago-cabecera/{idRequerimentoPago}', 'Tesoreria\RequerimientoPagoController@listaAdjuntosCabeceraRequerimientoPago');
+				Route::get('listar-categoria-adjunto', 'Tesoreria\RequerimientoPagoController@listaCategoriaAdjuntos');
 			});
 			Route::group(['as' => 'revisar_aprobar.', 'prefix' => 'revisar_aprobar'], function () {
 				Route::get('index', 'Tesoreria\RequerimientoPagoController@viewRevisarAprobarRequerimientoPago')->name('index');
