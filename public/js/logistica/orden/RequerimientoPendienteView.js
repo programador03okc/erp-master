@@ -1071,16 +1071,24 @@ class RequerimientoPendienteView {
 
     construirDetalleRequerimientoListaRequerimientosPendientes(table_id, row, response) {
         var html = '';
-        // console.log(response);
+        console.log(response);
         if (response.length > 0) {
             response.forEach(function (element) {
                 // if(element.tiene_transformacion==false){
-                let stock_comprometido = 0;
+                let stockComprometido = 0;
                 (element.reserva).forEach(reserva => {
                     if (reserva.estado == 1) {
-                        stock_comprometido += parseFloat(reserva.stock_comprometido);
+                        stockComprometido += parseFloat(reserva.stockComprometido);
                     }
                 });
+
+                let atencionOrden = 0;
+                (element.ordenes_compra).forEach(orden => {
+                    if (orden.estado == 1) {
+                        atencionOrden += parseFloat(orden.cantidad);
+                    }
+                });
+
                 let cantidadAdjuntosDetalleRequerimiento = 0;
                 (element.adjunto_detalle_requerimiento).forEach(adjuntoItem => {
                     if (adjuntoItem.estado == 1) {
@@ -1098,7 +1106,8 @@ class RequerimientoPendienteView {
                         <td style="border: none; text-align:center;">${(element.precio_unitario > 0 ? ((element.moneda_simbolo ? element.moneda_simbolo : ((element.moneda_simbolo ? element.moneda_simbolo : '') + '0.00')) + $.number(element.precio_unitario, 2)) : (element.moneda_simbolo ? element.moneda_simbolo : '') + '0.00')}</td>
                         <td style="border: none; text-align:center;">${(parseFloat(element.subtotal) > 0 ? ((element.moneda_simbolo ? element.moneda_simbolo : '') + $.number(element.subtotal, 2)) : ((element.moneda_simbolo ? element.moneda_simbolo : '') + $.number((element.cantidad * element.precio_unitario), 2)))}</td>
                         <td style="border: none; text-align:center;">${element.motivo != null ? element.motivo : ''}</td>
-                        <td style="border: none; text-align:center;">${stock_comprometido != null ? stock_comprometido : ''}</td>
+                        <td style="border: none; text-align:center;">${stockComprometido != null ? stockComprometido : '0'}</td>
+                        <td style="border: none; text-align:center;">${atencionOrden != null ? atencionOrden : '0'}</td>
                         <td style="border: none; text-align:center;">${element.estado_doc != null && element.tiene_transformacion == false ? element.estado_doc : ''}</td>
                         <td style="border: none; text-align:center;">${cantidadAdjuntosDetalleRequerimiento >0 ?`<button type="button" class="btn btn-default btn-xs handleClickVerAdjuntoDetalleRequerimiento" name="btnVerAdjuntoDetalleRequerimiento" title="Ver adjuntos" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-descripcion="${element.producto_descripcion != null ? element.producto_descripcion : (element.descripcion ? element.descripcion : '')}" ><i class="fas fa-paperclip"></i></button>`:''}</td>
                         </tr>`;
@@ -1118,6 +1127,7 @@ class RequerimientoPendienteView {
                         <th style="border: none; text-align:center;">Subtotal</th>
                         <th style="border: none; text-align:center;">Motivo</th>
                         <th style="border: none; text-align:center;">Reserva almacén</th>
+                        <th style="border: none; text-align:center;">Atención Orden</th>
                         <th style="border: none; text-align:center;">Estado</th>
                         <th style="border: none; text-align:center;">Adjuntos</th>
                     </tr>
@@ -1140,12 +1150,20 @@ class RequerimientoPendienteView {
         if (response.length > 0) {
             response.forEach(function (element) {
                 // if(element.tiene_transformacion==false){
-                let stock_comprometido = 0;
+                let stockComprometido = 0;
                 (element.reserva).forEach(reserva => {
                     if (reserva.estado == 1) {
-                        stock_comprometido += parseFloat(reserva.stock_comprometido);
+                        stockComprometido += parseFloat(reserva.stockComprometido);
                     }
                 });
+
+                let atencionOrden = 0;
+                (element.ordenes_compra).forEach(orden => {
+                    if (orden.estado == 1) {
+                        atencionOrden += parseFloat(orden.cantidad);
+                    }
+                });
+
                 let cantidadAdjuntosDetalleRequerimiento = 0;
                 (element.adjunto_detalle_requerimiento).forEach(adjuntoItem => {
                     if (adjuntoItem.estado == 1) {
@@ -1163,7 +1181,8 @@ class RequerimientoPendienteView {
                         <td style="border: none; text-align:center;">${(element.precio_unitario > 0 ? ((element.moneda_simbolo ? element.moneda_simbolo : ((element.moneda_simbolo ? element.moneda_simbolo : '') + '0.00')) + $.number(element.precio_unitario, 2)) : (element.moneda_simbolo ? element.moneda_simbolo : '') + '0.00')}</td>
                         <td style="border: none; text-align:center;">${(parseFloat(element.subtotal) > 0 ? ((element.moneda_simbolo ? element.moneda_simbolo : '') + $.number(element.subtotal, 2)) : ((element.moneda_simbolo ? element.moneda_simbolo : '') + $.number((element.cantidad * element.precio_unitario), 2)))}</td>
                         <td style="border: none; text-align:center;">${element.motivo != null ? element.motivo : ''}</td>
-                        <td style="border: none; text-align:center;">${stock_comprometido != null ? stock_comprometido : ''}</td>
+                        <td style="border: none; text-align:center;">${stockComprometido != null ? stockComprometido : '0'}</td>
+                        <td style="border: none; text-align:center;">${atencionOrden != null ? atencionOrden : '0'}</td>
                         <td style="border: none; text-align:center;">${element.estado_doc != null && element.tiene_transformacion == false ? element.estado_doc : ''}</td>
                         <td style="border: none; text-align:center;">${cantidadAdjuntosDetalleRequerimiento >0 ?`<button type="button" class="btn btn-default btn-xs handleClickVerAdjuntoDetalleRequerimiento" name="btnVerAdjuntoDetalleRequerimiento" title="Ver adjuntos" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-descripcion="${element.producto_descripcion != null ? element.producto_descripcion : (element.descripcion ? element.descripcion : '')}" ><i class="fas fa-paperclip"></i></button>`:''}</td>
                         </tr>`;
@@ -1183,6 +1202,7 @@ class RequerimientoPendienteView {
                         <th style="border: none; text-align:center;">Subtotal</th>
                         <th style="border: none; text-align:center;">Motivo</th>
                         <th style="border: none; text-align:center;">Reserva almacén</th>
+                        <th style="border: none; text-align:center;">Atención Orden</th>
                         <th style="border: none; text-align:center;">Estado</th>
                         <th style="border: none; text-align:center;">Adjuntos</th>
                     </tr>
