@@ -445,6 +445,9 @@ class ListaOrdenView {
                     'render':
                         function (data, type, row, meta) {
                             let cantidadRequerimientosConEstadosPorRegularizarOenPausa = 0;
+                            let estadoDetalleOrdenHabilitadasActualizar = [1, 2, 3, 4, 5, 6, 15];
+
+
                             if (row.requerimientos != undefined && row.requerimientos.length > 0) {
                                 (row.requerimientos).forEach(element => {
                                     if (element.estado == 38 || element.estado == 39) {
@@ -453,16 +456,17 @@ class ListaOrdenView {
                                 });
                             }
                             if (cantidadRequerimientosConEstadosPorRegularizarOenPausa > 0) {
-                                let estadoDetalleOrdenHabilitadasActualizar = [1, 2, 3, 4, 5, 6, 15];
+                                    return `<center><span class="label label-default" data-id-estado-orden-compra="${row.estado}" data-codigo-orden="${row.codigo}" data-id-orden-compra="${row.id_orden_compra}" >${row.estado_doc}</span></center>`;
+                                
+
+                            } else {
                                 if (estadoDetalleOrdenHabilitadasActualizar.includes(row.estado) == true) {
-                                    return `<center><a class="handleClickEditarEstadoOrden" data-id-estado-orden-compra="${row.estado}" data-codigo-orden="${row.codigo}" data-id-orden-compra="${row.id_orden_compra}" style="cursor:pointer;">${row.estado_doc}</a></center>`;
-                                } else {
+
+                                return `<center><a class="handleClickEditarEstadoOrden" data-id-estado-orden-compra="${row.estado}" data-codigo-orden="${row.codigo}" data-id-orden-compra="${row.id_orden_compra}" style="cursor:pointer;">${row.estado_doc}</a></center>`;
+                                }else{
                                     return `<center><span class="label label-default" data-id-estado-orden-compra="${row.estado}" data-codigo-orden="${row.codigo}" data-id-orden-compra="${row.id_orden_compra}" >${row.estado_doc}</span></center>`;
 
                                 }
-
-                            } else {
-                                return `<center><span class="label label-default" data-id-estado-orden-compra="${row.estado}" data-codigo-orden="${row.codigo}" data-id-orden-compra="${row.id_orden_compra}" >${row.estado_doc}</span></center>`;
                             }
                         }
                 },
@@ -889,7 +893,7 @@ class ListaOrdenView {
                 },
                 {
                     render: function (data, type, row) {
-                        return `${row.part_number ? row.part_number : ''} ${row.tiene_transformacion == true ? '<i class="fas fa-random text-danger" title="Con transformación"></i>' : ''}`;
+                        return `${row.part_number ? row.part_number : ''}`;
                     }
                 },
                 {

@@ -380,14 +380,13 @@ Elaborar orden
 @include('logistica.gestion_logistica.compras.ordenes.elaborar.modal_vincular_requerimiento_orden')
 @include('logistica.gestion_logistica.compras.ordenes.elaborar.modal_catalogo_items')
 @include('logistica.gestion_logistica.compras.ordenes.elaborar.modal_ordenes_elaboradas')
-@include('logistica.gestion_logistica.compras.ordenes.elaborar.modal_cuentas_bancarias_proveedor')
-@include('logistica.gestion_logistica.compras.ordenes.elaborar.modal_agregar_cuenta_bancaria_proveedor')
-@include('logistica.gestion_logistica.compras.ordenes.elaborar.modal_proveedor')
+@include('logistica.gestion_logistica.proveedores.modal_cuentas_bancarias_proveedor')
+@include('logistica.gestion_logistica.proveedores.modal_agregar_cuenta_bancaria_proveedor')
+@include('logistica.gestion_logistica.proveedores.modal_lista_proveedores')
 @include('logistica.cotizaciones.add_proveedor')
 @include('publico.ubigeoModal')
-@include('logistica.gestion_logistica.compras.ordenes.elaborar.modal_contacto_proveedor')
+@include('logistica.gestion_logistica.proveedores.modal_contacto_proveedor')
 @include('logistica.gestion_logistica.compras.ordenes.elaborar.modal_trabajadores')
-@include('logistica.gestion_logistica.compras.ordenes.elaborar.agregar_contacto_proveedor')
 
 @include('logistica.gestion_logistica.compras.pendientes.modal_ver_cuadro_costos')
 @include('logistica.requerimientos.modal_vincular_item_requerimiento')
@@ -400,13 +399,12 @@ Elaborar orden
 <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
 <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
 <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
-<script src="{{('/js/logistica/orden/modal_proveedor.js')}}?v={{filemtime(public_path('/js/logistica/orden/modal_proveedor.js'))}}"></script>
+<script src="{{('/js/logistica/proveedores/listaProveedoresModal.js')}}?v={{filemtime(public_path('/js/logistica/proveedores/listaProveedoresModal.js'))}}"></script>
+<script src="{{('/js/logistica/proveedores/cuentasBancariasProveedor.js')}}?v={{filemtime(public_path('/js/logistica/proveedores/cuentasBancariasProveedor.js'))}}"></script>
 <script src="{{('/js/logistica/add_proveedor.js')}}?v={{filemtime(public_path('/js/logistica/add_proveedor.js'))}}"></script>
 <script src="{{ asset('js/publico/ubigeoModal.js')}}?v={{filemtime(public_path('js/publico/ubigeoModal.js'))}}"></script>
-<script src="{{('/js/logistica/orden/proveedorContactoModal.js')}}?v={{filemtime(public_path('/js/logistica/orden/proveedorContactoModal.js'))}}"></script>
+<script src="{{('/js/logistica/proveedores/proveedorContactoModal.js')}}?v={{filemtime(public_path('/js/logistica/proveedores/proveedorContactoModal.js'))}}"></script>
 <script src="{{('/js/logistica/orden/trabajadorModal.js')}}?v={{filemtime(public_path('/js/logistica/orden/trabajadorModal.js'))}}"></script>
-<script src="{{('/js/logistica/orden/agregarContacto.js')}}?v={{filemtime(public_path('/js/logistica/orden/agregarContacto.js'))}}"></script>
-<script src="{{('/js/logistica/orden/cuentasBancariasProveedor.js')}}?v={{filemtime(public_path('/js/logistica/orden/cuentasBancariasProveedor.js'))}}"></script>
 <script src="{{ asset('js/publico/consulta_sunat.js')}}?v={{filemtime(public_path('js/publico/consulta_sunat.js'))}}"></script>
 <script src="{{('/js/logistica/orden/OrdenModel.js')}}?v={{filemtime(public_path('/js/logistica/orden/OrdenModel.js'))}}"></script>
 <script src="{{('/js/logistica/orden/OrdenView.js')}}?v={{filemtime(public_path('/js/logistica/orden/OrdenView.js'))}}"></script>

@@ -15,6 +15,8 @@ use App\Models\Almacen\Trazabilidad;
 use App\Models\Almacen\UnidadMedida;
 use App\Models\Configuracion\Grupo;
 use App\Models\Configuracion\Moneda;
+use App\Models\Contabilidad\Banco;
+use App\Models\Contabilidad\TipoCuenta;
 use App\Models\mgcp\CuadroCosto\CuadroCostoView;
 use App\Models\Tesoreria\AdjuntoRequerimientoPago;
 use App\Models\Tesoreria\CategoriaAdjunto;
@@ -48,10 +50,12 @@ class RequerimientoPagoController extends Controller
         $monedas = Moneda::mostrar();
         $unidadesMedida = UnidadMedida::mostrar();
         $proyectos_activos = (new ProyectosController)->listar_proyectos_activos();
+        $bancos = Banco::mostrar();
+        $tipo_cuenta = TipoCuenta::mostrar();
 
 
 
-        return view('tesoreria/requerimiento_pago/lista', compact('prioridades', 'empresas', 'grupos', 'periodos', 'monedas', 'unidadesMedida', 'divisiones', 'gruposUsuario', 'proyectos_activos'));
+        return view('tesoreria/requerimiento_pago/lista', compact('prioridades', 'empresas', 'grupos', 'periodos', 'monedas', 'unidadesMedida', 'divisiones', 'gruposUsuario', 'proyectos_activos','bancos','tipo_cuenta'));
     }
     public function viewRevisarAprobarRequerimientoPago()
     {
@@ -201,16 +205,8 @@ class RequerimientoPagoController extends Controller
             $requerimientoPago->id_sede = $request->sede > 0 ? $request->sede : null;
             $requerimientoPago->id_grupo = $request->grupo > 0 ? $request->grupo : null;
             $requerimientoPago->id_division = $request->division;
-            if ($request->tipo_cuenta == 'bcp') {
-                $requerimientoPago->nro_cuenta = $request->nro_cuenta;
-            } else if ($request->tipo_cuenta == 'cci') {
-                $requerimientoPago->nro_cuenta_interbancaria = $request->nro_cuenta;
-            }
-            if ($request->tipo_documento_identidad == 'dni') {
-                $requerimientoPago->dni = $request->nro_documento_idendidad;
-            } else if ($request->tipo_documento_identidad == 'ruc') {
-                $requerimientoPago->ruc = $request->nro_documento_idendidad;
-            }
+            $requerimientoPago->id_proveedor = $request->id_proveedor >0 ? $request->id_proveedor :null;
+            $requerimientoPago->id_cuenta_proveedor = $request->id_cuenta_principal_proveedor>0?$request->id_cuenta_principal_proveedor:null;
             // $requerimientoPago->confirmacion_pago = ($request->tipo_requerimiento == 2 ? ($request->fuente == 2 ? true : false) : true);
             $requerimientoPago->monto_total = $request->monto_total;
             $requerimientoPago->id_proyecto = $request->proyecto > 0 ? $request->proyecto : null;
@@ -279,16 +275,8 @@ class RequerimientoPagoController extends Controller
             $requerimientoPago->id_sede = $request->sede > 0 ? $request->sede : null;
             $requerimientoPago->id_grupo = $request->grupo > 0 ? $request->grupo : null;
             $requerimientoPago->id_division = $request->division;
-            if ($request->tipo_cuenta == 'bcp') {
-                $requerimientoPago->nro_cuenta = $request->nro_cuenta;
-            } else if ($request->tipo_cuenta == 'cci') {
-                $requerimientoPago->nro_cuenta_interbancaria = $request->nro_cuenta;
-            }
-            if ($request->tipo_documento_identidad == 'dni') {
-                $requerimientoPago->dni = $request->nro_documento_idendidad;
-            } else if ($request->tipo_documento_identidad == 'ruc') {
-                $requerimientoPago->ruc = $request->nro_documento_idendidad;
-            }
+            $requerimientoPago->id_proveedor = $request->id_proveedor >0 ? $request->id_proveedor :null;
+            $requerimientoPago->id_cuenta_proveedor = $request->id_cuenta_principal_proveedor>0?$request->id_cuenta_principal_proveedor:null;
             // $requerimientoPago->confirmacion_pago = ($request->tipo_requerimiento == 2 ? ($request->fuente == 2 ? true : false) : true);
             $requerimientoPago->monto_total = $request->monto_total;
             $requerimientoPago->id_proyecto = $request->proyecto > 0 ? $request->proyecto : null;

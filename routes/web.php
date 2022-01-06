@@ -746,6 +746,10 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('anular-requerimiento-pago', 'Tesoreria\RequerimientoPagoController@anularRequerimientoPago');
 				Route::get('listar-adjuntos-requerimiento-pago-cabecera/{idRequerimentoPago}', 'Tesoreria\RequerimientoPagoController@listaAdjuntosCabeceraRequerimientoPago');
 				Route::get('listar-categoria-adjunto', 'Tesoreria\RequerimientoPagoController@listaCategoriaAdjuntos');
+				Route::post('mostrar-proveedores', 'OrdenController@mostrarProveedores');
+				Route::get('listar-cuentas-bancarias-proveedor/{idProveedor?}', 'OrdenController@listarCuentasBancariasProveedor')->name('listar-cuentas-bancarias-proveedor');
+				Route::post('guardar-cuenta-bancaria-proveedor', 'OrdenController@guardarCuentaBancariaProveedor');
+
 			});
 			Route::group(['as' => 'revisar_aprobar.', 'prefix' => 'revisar_aprobar'], function () {
 				Route::get('index', 'Tesoreria\RequerimientoPagoController@viewRevisarAprobarRequerimientoPago')->name('index');

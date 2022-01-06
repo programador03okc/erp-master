@@ -12,7 +12,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <fieldset class="group-table">
-                            <h5><strong>Datos del Requerimiento</strong></h5>
+                                <h5><strong>Datos del Requerimiento</strong></h5>
                                 <div class="row">
                                     <input type="text" class="oculto" name="idProveedor">
                                     <div class="col-md-2">
@@ -134,28 +134,28 @@
 
                                     <div class="col-md-3">
                                         <div class="form-group">
-                                            <h5>Tipo cuenta</h5>
+                                            <h5>Proveedor</h5>
                                             <div style="display:flex;">
-                                                <select class="form-control activation handleCheckStatusValue" name="tipo_cuenta">
-                                                    <option value="bcp">BCP</option>
-                                                    <option value="cci">CCI</option>
-                                                </select>
-                                                <input type="text" class="form-control activation handleCheckStatusValue" placeholder="Nro de cuenta" name="nro_cuenta">
-
+                                                <input class="oculto" name="id_proveedor">
+                                                <input class="oculto" name="id_contrib">
+                                                <input type="text" class="form-control handleCheckStatusValue" name="razon_social" disabled>
+                                                <button type="button" class="group-text" onClick="proveedorModal();">
+                                                    <i class="fa fa-search"></i>
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
 
                                     <div class="col-md-3">
                                         <div class="form-group">
-                                            <h5>Documento</h5>
+                                            <h5>Cuenta bancaria</h5>
                                             <div style="display:flex;">
-                                                <select class="form-control activation handleCheckStatusValue" name="tipo_documento_idendidad">
-                                                    <option value="dni">DNI</option>
-                                                    <option value="ruc">RUC</option>
-                                                </select>
-                                                <input type="text" class="form-control activation handleCheckStatusValue" placeholder="Nro de documento" name="nro_documento_idendidad">
-
+                                                <input class="oculto" name="id_cuenta_principal_proveedor">
+                                                <input type="text" class="form-control handleCheckStatusValue" name="nro_cuenta_principal_proveedor" readOnly>
+                                                <button type="button" class="group-text" onClick="cuentasBancariasModal();">
+                                                    <i class="fa fa-search"></i>
+                                                </button>
+                                                <button type="button" class="btn-primary" title="Agregar cuenta bancaria" onClick="agregar_cuenta_proveedor();"><i class="fas fa-plus"></i></button>
                                             </div>
                                         </div>
                                     </div>
@@ -171,8 +171,8 @@
                                     </div>
                                     <div class="col-md-2">
                                         <div class="form-group">
-                                        <h5>&nbsp;</h5>
-                                             <div style="display:flex; position:relative;">
+                                            <h5>&nbsp;</h5>
+                                            <div style="display:flex; position:relative;">
                                                 <button type="button" class="btn btn-warning btn-md handleClickAdjuntarArchivoCabecera" name="btnAdjuntarArchivoCabecera[]" title="Adjuntos">
                                                     <i class="fas fa-paperclip"></i>
                                                     <span class="badge" name="cantidadAdjuntosCabecera" style="position:absolute; top:-10px; left:-10px; border: solid 0.1px;">0</span>
@@ -190,7 +190,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <fieldset class="group-table">
-                            <h5><strong>Detalle del Requerimiento</strong></h5>
+                                <h5><strong>Detalle del Requerimiento</strong></h5>
 
                                 <div class="btn-group" role="group" aria-label="...">
                                     <!-- <button type="button" class="btn btn-xs btn-success activation handleCheckStatusValue handleClickAgregarProducto" id="btnAddProducto" data-toggle="tooltip" data-placement="bottom" title="Agregar Producto"><i class="fas fa-plus"></i> Producto
