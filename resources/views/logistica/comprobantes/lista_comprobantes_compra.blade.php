@@ -1,8 +1,5 @@
 @extends('layout.main')
 @include('layout.menu_tesoreria')
-@section('option')
-    @include('layout.option')
-@endsection
 
 @section('cabecera')
     Reporte de Comprobantes

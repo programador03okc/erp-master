@@ -15,6 +15,11 @@
                             <input type="date" class="form-control" name="fecha_despacho"/>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <input type="text" class="form-control" name="comentario"/>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-sm btn-success" 
