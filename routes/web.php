@@ -749,7 +749,6 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('mostrar-proveedores', 'OrdenController@mostrarProveedores');
 				Route::get('listar-cuentas-bancarias-proveedor/{idProveedor?}', 'OrdenController@listarCuentasBancariasProveedor')->name('listar-cuentas-bancarias-proveedor');
 				Route::post('guardar-cuenta-bancaria-proveedor', 'OrdenController@guardarCuentaBancariaProveedor');
-
 			});
 			Route::group(['as' => 'revisar_aprobar.', 'prefix' => 'revisar_aprobar'], function () {
 				Route::get('index', 'Tesoreria\RequerimientoPagoController@viewRevisarAprobarRequerimientoPago')->name('index');
@@ -1064,6 +1063,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('listarPorOc', 'mgcp\OrdenCompra\Propia\ComentarioController@listarPorOc')->name('listar-por-oc');
 				Route::post('actualizarOcFisica', 'Logistica\Distribucion\OrdenesDespachoExternoController@actualizarOcFisica')->name('actualizarOcFisica');
 				Route::post('actualizarSiaf', 'Logistica\Distribucion\OrdenesDespachoExternoController@actualizarSiaf')->name('actualizarSiaf');
+
+				Route::post('anularDespachoInterno', 'Logistica\Distribucion\OrdenesDespachoInternoController@anularDespachoInterno')->name('anularDespachoInterno');
 
 				Route::get('migrarDespachos', 'Logistica\Distribucion\OrdenesDespachoExternoController@migrarDespachos')->name('migrarDespachos');
 				Route::get('generarDespachoInternoNroOrden', 'Logistica\Distribucion\OrdenesDespachoInternoController@generarDespachoInternoNroOrden')->name('generarDespachoInternoNroOrden');

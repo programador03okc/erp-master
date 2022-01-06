@@ -116,6 +116,30 @@ class OrdenesDespachoInternoController extends Controller
         return $nro_orden;
     }
 
+    public function anularDespachoInterno(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            DB::table('almacen.orden_despacho')
+                ->where('id_od', $request->id_od)
+                ->update(['estado' => 7]);
+
+            DB::table('almacen.alm_req')
+                ->where('id_requerimiento', $request->id_requerimiento)
+                ->update(['estado' => 2]); //aprobado
+
+            DB::commit();
+            return response()->json(array(
+                'tipo' => 'success',
+                'mensaje' => 'El Despacho Interno ha sido anulado.'
+            ));
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return array('tipo' => 'error', 'mensaje' => 'Hubo un problema al enviar la orden. Por favor intente de nuevo', 'error' => $e->getMessage());
+        }
+    }
+
     public function generarDespachoInterno(Request $request)
     {
         try {
@@ -125,6 +149,7 @@ class OrdenesDespachoInternoController extends Controller
                 ->select(
                     'alm_req.*',
                     'despachoInterno.codigo as codigoDespachoInterno',
+                    'despachoInterno.id_od',
                     'oportunidades.codigo_oportunidad'
                 )
                 ->where('alm_req.id_requerimiento', $request->id_requerimiento)
@@ -139,9 +164,15 @@ class OrdenesDespachoInternoController extends Controller
 
             if ($req !== null) {
                 if ($req->codigoDespachoInterno !== null) {
+                    DB::table('almacen.orden_despacho')
+                        ->where('id_od', $req->id_od)
+                        ->update([
+                            'fecha_despacho' => $request->fecha_despacho,
+                            'comentario' => trim($request->comentario),
+                        ]);
                     $arrayRspta = array(
-                        'tipo' => 'warning',
-                        'mensaje' => 'Ya existe una Orden de Transformación generada, es la: ' . $req->codigoDespachoInterno
+                        'tipo' => 'success',
+                        'mensaje' => 'Se actualizó la Orden de Despacho Interno ' . $req->codigoDespachoInterno
                     );
                 } else {
                     $codigo = OrdenDespacho::ODnextId($req->id_almacen, true, 0); //$this->ODnextId(date('Y-m-d'), $req->id_almacen, true);
@@ -161,7 +192,7 @@ class OrdenesDespachoInternoController extends Controller
                                 'id_almacen' => $req->id_almacen,
                                 'codigo' => $codigo,
                                 'fecha_despacho' => $request->fecha_despacho,
-                                'comentario' => $request->comentario,
+                                'comentario' => trim($request->comentario),
                                 'nro_orden' => ($nro_orden + 1),
                                 'aplica_cambios' => true,
                                 'registrado_por' => $usuario,

@@ -255,7 +255,8 @@ function listarRequerimientosPendientes(usuario) {
                         
                         ${row['tiene_transformacion'] ?
                             `<button type="button" class="interno btn btn-${row['codigo_despacho_interno'] !== null ? 'danger' : 'default'} btn-flat btn-xs " data-toggle="tooltip"
-                            data-placement="bottom" title="Programar Despacho Interno" data-id="${row['id_requerimiento']}" data-cdp="${row['codigo_oportunidad']}">
+                            data-placement="bottom" title="Programar Despacho Interno" data-id="${row['id_requerimiento']}" data-cdp="${row['codigo_oportunidad']}"
+                            data-idod="${row['id_despacho_interno']}" >
                             <i class="fas fa-random"></i></button>` : ''}
                             
                         ${row['id_requerimiento'] !== null ?
@@ -430,8 +431,9 @@ $('#requerimientosEnProceso tbody').on("click", "button.envio_od", function (e) 
 $('#requerimientosEnProceso tbody').on("click", "button.interno", function (e) {
     $(e.preventDefault());
     var id = $(this).data("id");
+    var od = $(this).data("idod");
     var cdp = $(this).data("cdp");
-    openFechaProgramada(id);
+    openFechaProgramada(id, od);
     // Swal.fire({
     //     title: "¿Está seguro que desea enviar el " + cdp + " a despacho interno?",
     //     icon: "info",

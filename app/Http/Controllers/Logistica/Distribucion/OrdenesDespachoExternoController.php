@@ -94,6 +94,7 @@ class OrdenesDespachoExternoController extends Controller
                 'orden_despacho.plazo_excedido',
                 'orden_despacho.fecha_entregada',
                 'orden_despacho.fecha_despacho_real',
+                'despachoInterno.id_od as id_despacho_interno',
                 'despachoInterno.codigo as codigo_despacho_interno',
                 'est_od.estado_doc as estado_od',
                 'estado_envio.descripcion as estado_envio',

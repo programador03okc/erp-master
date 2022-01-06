@@ -10,6 +10,7 @@
                 </div>
                 <div class="modal-body">
                     <input type="text" class="oculto" name="req_id_requerimiento">
+                    <input type="text" class="oculto" name="req_id_od">
                     <div class="row">
                         <div class="col-md-12">
                             <h5>Fecha de programación</h5>
@@ -24,6 +25,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-danger" 
+                    id="btnDespachoObs" onClick="anularDespachoInterno();" >Quitar despacho</button>
                     <button type="button" class="btn btn-sm btn-success" 
                     id="btnDespachoObs" onClick="generarDespachoInterno();" >Programar despacho</button>
                 </div>
