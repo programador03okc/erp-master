@@ -467,7 +467,10 @@ class RequerimientoView {
                         <input type="text" class="centroCosto" name="idCentroCosto[]" value="${data[i].id_centro_costo}" hidden>
                     </div>
                 </td>
-                <td><input class="form-control activation input-sm" type="text" name="partNumber[]" placeholder="Part number" value="${((data[i].part_number!=null && data[i].part_number.length >0) ? data[i].part_number: (data[i].producto_part_number != null? data[i].producto_part_number:''))}" ${hasDisabledInput}> ${data[i].tiene_transformacion == true?'<br><span class="badge badge-secondary">Transformado</span>':''}</td>
+                <td>
+                    <input class="form-control activation input-sm" type="text" name="partNumber[]" placeholder="Part number" value="${((data[i].part_number!=null && data[i].part_number.length >0) ? data[i].part_number: (data[i].producto_part_number != null? data[i].producto_part_number:''))}" ${hasDisabledInput}> ${data[i].tiene_transformacion == true?'<br><span class="badge badge-secondary">Transformado</span>':''}
+                    ${((data[i].codigo_producto!=null && data[i].codigo_producto.length >0) ? `<small> Código producto: ${ data[i].codigo_producto}</small>`: `<small> (Sin código de producto)</small>`)}
+                    </td>
                 <td>
                     <div class="form-group">
                         <textarea class="form-control activation input-sm descripcion handleBlurUpdateDescripcionItem" name="descripcion[]" placeholder="Descripción" value="${((data[i].descripcion != null && data[i].descripcion >0 )?data[i].descripcion:(data[i].producto_descripcion !=null ?data[i].producto_descripcion:''))}"   ${hasDisabledInput} >${(data[i].descripcion != null ?data[i].descripcion:(data[i].producto_descripcion !=null ?data[i].producto_descripcion:''))}</textarea></td>

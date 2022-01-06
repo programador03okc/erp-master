@@ -1318,7 +1318,6 @@ class RequerimientoPendienteView {
     }
 
     construirTablaListaItemsRequerimientoParaAtenderConAlmacen(data) {
-        // console.log(data);
         $('#listaItemsRequerimientoParaAtenderConAlmacen').dataTable({
             'dom': vardataTables[1],
             'buttons': [],
@@ -1404,6 +1403,7 @@ class RequerimientoPendienteView {
                             return `<center><div class="btn-group" role="group" style="margin-bottom: 5px;">
                             <button type="button" class="btn btn-xs btn-success btnNuevaReserva handleClickAbrirModalNuevaReserva" 
                                 data-codigo-requerimiento="${document.querySelector("span[id='codigo_requerimiento']").textContent}" 
+                                data-id-requerimiento="${row.id_requerimiento}" 
                                 data-id-detalle-requerimiento="${row.id_detalle_requerimiento}" 
                                 title="Nueva reserva" ><i class="fas fa-box fa-xs"></i></button>
                             <button type="button" class="btn btn-xs btn-info btnHistorialReserva handleClickAbrirModaHistorialReserva" 
@@ -1560,11 +1560,28 @@ class RequerimientoPendienteView {
         document.querySelector("div[id='modal-nueva-reserva'] span[id='codigoRequerimiento']").textContent = obj.dataset.codigoRequerimiento;
         // console.log(obj);
         if (parseInt(obj.dataset.idDetalleRequerimiento) > 0) {
-            this.requerimientoPendienteCtrl.obtenerDetalleRequerimientoParaReserva(obj.dataset.idDetalleRequerimiento).then((res) => {
-                $('#modal-nueva-reserva .modal-content').LoadingOverlay("hide", true);
-                if (res.status == 200) {
-                    this.llenarModalNuevaReserva(res.data)
-                }
+            
+            this.requerimientoPendienteCtrl.obtenerDetalleRequerimientoParaReserva(obj.dataset.idDetalleRequerimiento).then((res1) => {
+
+                this.requerimientoPendienteCtrl.obtenerAlmacenPorDefectoRequerimiento(obj.dataset.idRequerimiento).then((res2) => {
+                    console.log(res1);
+                    console.log(res2);
+                    $('#modal-nueva-reserva .modal-content').LoadingOverlay("hide", true);
+                    if (res1.status == 200) {
+                        this.llenarModalNuevaReserva(res1.data)
+                    }
+                    if (res2.status == 200) {
+                        this.seleccionarAlmacenPorDefectoRequerimientoParaReserva(res2.data)
+                    }
+                }).catch(function (err) {
+                    Swal.fire(
+                        '',
+                        'Hubo un problema al  intentarobtener la data del requerimiento para obtener el almacén',
+                        'error'
+                    );
+                })
+
+
             }).catch(function (err) {
                 Swal.fire(
                     '',
@@ -1573,6 +1590,13 @@ class RequerimientoPendienteView {
                 );
             })
 
+
+
+        }
+    }
+    seleccionarAlmacenPorDefectoRequerimientoParaReserva(data){
+        if(data.id_almacen >0){
+            document.querySelector("div[id='modal-nueva-reserva'] select[name='almacenReserva']").value=data.id_almacen;
         }
     }
 

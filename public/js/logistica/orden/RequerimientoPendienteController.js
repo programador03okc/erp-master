@@ -125,6 +125,10 @@ class RequerimientoPendienteCtrl{
         return this.requerimientoPendienteModel.obtenerDetalleRequerimientoParaReserva(idDetalleRequerimiento);
 
     }
+    obtenerAlmacenPorDefectoRequerimiento(idRequerimiento){
+        return this.requerimientoPendienteModel.obtenerAlmacenPorDefectoRequerimiento(idRequerimiento);
+
+    }
 
     obtenerHistorialDetalleRequerimientoParaReserva(idDetalleRequerimiento){
         return this.requerimientoPendienteModel.obtenerHistorialDetalleRequerimientoParaReserva(idDetalleRequerimiento);

@@ -102,17 +102,19 @@ function selectProveedor(obj){
     let cuentaPrincipal= obj.dataset.cuentaPrincipal?obj.dataset.cuentaPrincipal:"";
     let idCuentaPrincipal= obj.dataset.idCuentaPrincipal?obj.dataset.idCuentaPrincipal:"";
 
-    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_proveedor']").value =idProveedor;
-    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_contrib']").value =idContribuyente;
-    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='razon_social']").value =razonSocial;
-    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='direccion_proveedor']").value =direccionFiscal;
-    // document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='telefono_proveedor']").value =telefono;
-    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='ubigeo_proveedor']").value =ubigeo;
-    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='ubigeo_proveedor_descripcion']").value =ubigeoDescripcion;
-    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_cuenta_principal_proveedor']").value =idCuentaPrincipal;
-    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='nro_cuenta_principal_proveedor']").value =cuentaPrincipal;
- 
-    obtenerContactoPorDefecto(idProveedor)
+    document.querySelector("input[name='id_proveedor']").value =idProveedor;
+    document.querySelector("input[name='id_contrib']").value =idContribuyente;
+    document.querySelector("input[name='razon_social']").value =razonSocial;
+    document.querySelector("input[name='id_cuenta_principal_proveedor']").value =idCuentaPrincipal;
+    document.querySelector("input[name='nro_cuenta_principal_proveedor']").value =cuentaPrincipal;
+    
+    if(document.querySelector("form[id='form-crear-orden-requerimiento']")){
+        document.querySelector("input[name='direccion_proveedor']").value =direccionFiscal;
+        document.querySelector("input[name='ubigeo_proveedor']").value =ubigeo;
+        document.querySelector("input[name='ubigeo_proveedor_descripcion']").value =ubigeoDescripcion;
+        obtenerContactoPorDefecto(idProveedor)
+    }
+
     $('#modal-proveedores').modal('hide');
 }
 
@@ -123,15 +125,15 @@ function obtenerContactoPorDefecto(idProveedor){
         dataType: 'JSON',
         success: function(response){
             if(response.length >0){                    
-                document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_contacto_proveedor']").value =response[0].id_datos_contacto;
-                document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='contacto_proveedor_nombre']").value =response[0].nombre;
-                document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='contacto_proveedor_telefono']").value =response[0].telefono;
+                document.querySelector("input[name='id_contacto_proveedor']").value =response[0].id_datos_contacto;
+                document.querySelector("input[name='contacto_proveedor_nombre']").value =response[0].nombre;
+                document.querySelector("input[name='contacto_proveedor_telefono']").value =response[0].telefono;
 
 
             }else{
-                document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_contacto_proveedor']").value ="";
-                document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='contacto_proveedor_nombre']").value ="";
-                document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='contacto_proveedor_telefono']").value ="";
+                document.querySelector("input[name='id_contacto_proveedor']").value ="";
+                document.querySelector("input[name='contacto_proveedor_nombre']").value ="";
+                document.querySelector("input[name='contacto_proveedor_telefono']").value ="";
 
 
                 Lobibox.notify('info', {

@@ -25,7 +25,7 @@
                     <li><a href="{{route('logistica.gestion-logistica.compras.ordenes.listado.index')}}"><i class="far fa-circle fa-xs"></i> Gestión de estados</a></li>
                 @endif
             @endif
-            <li><a href="{{route('logistica.distribucion.ordenes-transformacion.index')}}"><i class="far fa-circle fa-xs"></i> Envío de transformaciones </a></li>
+            <!-- <li><a href="{{route('logistica.distribucion.ordenes-transformacion.index')}}"><i class="far fa-circle fa-xs"></i> Envío de transformaciones </a></li> -->
 
             @if(Auth::user()->tieneSubModulo(28))
             <li class="treeview">

@@ -36,6 +36,7 @@ use App\Models\Administracion\Estado;
 use App\Models\administracion\Sede;
 use App\Models\Almacen\AdjuntoDetalleRequerimiento;
 use App\Models\Almacen\AdjuntoRequerimiento;
+use App\Models\Almacen\Almacen;
 use App\Models\Almacen\Producto;
 use App\Models\Almacen\Transferencia;
 use App\Models\Configuracion\Grupo;
@@ -3481,6 +3482,22 @@ class RequerimientoController extends Controller
         } else {
             return ['data' => [], 'status' => 204];
         }
+    }
+    public function obtenerAlmacenRequerimiento($idRequerimiento)
+    {
+        if($idRequerimiento >0){
+            $requerimiento = Requerimiento::find($idRequerimiento);
+            if($requerimiento->id_almacen >0){
+                $almacen = Almacen::find($requerimiento->id_almacen);
+                return ['data' => $almacen, 'status' => 200];
+            }else{
+                return ['data' => [], 'status' => 204,'mensaje' => 'No se encontró id almacén'];
+            }
+        }else{
+            return ['data' => [], 'status' => 204,'mensaje' => 'No se encontró el id de requerimiento'];
+
+        }
+        
     }
     public function historialReservaProducto($idDetalleRequerimiento)
     {

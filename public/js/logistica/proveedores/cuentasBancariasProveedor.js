@@ -88,8 +88,8 @@ function guardarCuentaBancariaProveedor(){
 }
 
 function agregar_cuenta_proveedor(){
-    let razonSocialProveedor = document.querySelector("div[type='crear-orden-requerimiento'] input[name='razon_social']").value;
-    let idProveedor = document.querySelector("div[type='crear-orden-requerimiento'] input[name='id_proveedor']").value;
+    let razonSocialProveedor = document.querySelector("input[name='razon_social']").value;
+    let idProveedor = document.querySelector("input[name='id_proveedor']").value;
 
     if(idProveedor >0){
         $('#modal-agregar-cuenta-bancaria-proveedor').modal({
@@ -110,8 +110,8 @@ function agregar_cuenta_proveedor(){
 
 
 function cuentasBancariasModal(){
-    let razonSocialProveedor = document.querySelector("div[type='crear-orden-requerimiento'] input[name='razon_social']").value;
-    let idProveedor = document.querySelector("div[type='crear-orden-requerimiento'] input[name='id_proveedor']").value;
+    let razonSocialProveedor = document.querySelector("input[name='razon_social']").value;
+    let idProveedor = document.querySelector("input[name='id_proveedor']").value;
     if(idProveedor >0){
         $('#modal-cuentas-bancarias-proveedor').modal({
             show: true
@@ -168,11 +168,14 @@ function getCuentasBancarias(idProveedor){
 
 
 function ConstruirTablalistaCuentasBancariasProveedor(data){
+    var vardataTables = funcDatatables();
+
     $('#listaCuentasBancariasProveedor').DataTable({
         'processing':true,
         'destroy':true,
+        'dom': vardataTables[1],
+        'buttons': [],
         'language' : vardataTables[0],
-        'dom': 'Bfrtip',
         'order': [1, 'desc'],
         'data': data,
         'columns': [
@@ -220,7 +223,7 @@ function ConstruirTablalistaCuentasBancariasProveedor(data){
 
 function seleccionarCuentaContribuyente(obj){
     $('#modal-cuentas-bancarias-proveedor').modal('hide');
-    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='nro_cuenta_principal_proveedor']").value= obj.dataset.nroCuenta;
-    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_cuenta_principal_proveedor']").value= obj.dataset.idCuenta;
+    document.querySelector("input[name='nro_cuenta_principal_proveedor']").value= obj.dataset.nroCuenta;
+    document.querySelector("input[name='id_cuenta_principal_proveedor']").value= obj.dataset.idCuenta;
 
 }

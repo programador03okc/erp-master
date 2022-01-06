@@ -746,6 +746,10 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('anular-requerimiento-pago', 'Tesoreria\RequerimientoPagoController@anularRequerimientoPago');
 				Route::get('listar-adjuntos-requerimiento-pago-cabecera/{idRequerimentoPago}', 'Tesoreria\RequerimientoPagoController@listaAdjuntosCabeceraRequerimientoPago');
 				Route::get('listar-categoria-adjunto', 'Tesoreria\RequerimientoPagoController@listaCategoriaAdjuntos');
+				Route::post('mostrar-proveedores', 'OrdenController@mostrarProveedores');
+				Route::get('listar-cuentas-bancarias-proveedor/{idProveedor?}', 'OrdenController@listarCuentasBancariasProveedor')->name('listar-cuentas-bancarias-proveedor');
+				Route::post('guardar-cuenta-bancaria-proveedor', 'OrdenController@guardarCuentaBancariaProveedor');
+
 			});
 			Route::group(['as' => 'revisar_aprobar.', 'prefix' => 'revisar_aprobar'], function () {
 				Route::get('index', 'Tesoreria\RequerimientoPagoController@viewRevisarAprobarRequerimientoPago')->name('index');
@@ -797,6 +801,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('mostrar_categorias_tipo/{id}', 'Almacen\Catalogo\ProductoController@mostrar_categorias_tipo');
 					Route::get('detalle-requerimiento/{idRequerimiento?}', 'Logistica\RequerimientoController@detalleRequerimiento')->name('detalle-requerimientos');
 					Route::get('detalle-requeriento-para-reserva/{idDetalleRequerimiento?}', 'Logistica\RequerimientoController@detalleRequerimientoParaReserva')->name('detalle-requerimiento-para-reserva');
+					Route::get('almacen-requeriento/{idRequerimiento?}', 'Logistica\RequerimientoController@obtenerAlmacenRequerimiento');
 					Route::get('historial-reserva-producto/{idDetalleRequerimiento?}', 'Logistica\RequerimientoController@historialReservaProducto')->name('historial-reserva-producto');
 					Route::get('todo-detalle-requeriento/{idRequerimiento?}/{transformadosONoTransformados?}', 'Logistica\RequerimientoController@todoDetalleRequerimiento')->name('todo-detalle-requerimiento');
 					Route::get('mostrar_tipos_clasificacion/{id}', 'Almacen\Catalogo\TipoProductoController@mostrar_tipos_clasificacion');

@@ -408,4 +408,8 @@ class Requerimiento extends Model
     {
         return $this->hasOne('App\Models\Comercial\CuadroCosto\CuadroCostosView', 'id', 'id_cc');
     }
+    // public function almacen()
+    // {
+    //     return $this->hasOne('App\Models\almacen\Almacen', 'id_almacen', 'id_almacen');
+    // }
 }

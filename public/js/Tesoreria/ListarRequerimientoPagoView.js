@@ -699,7 +699,7 @@ class ListarRequerimientoPagoView {
         <td>
             <div class="btn-group" role="group">
                 <input type="hidden" class="tipoItem" name="tipoItem[]" value="2">
-                <input type="hidden" class="idRegister" name="idRegister[]" value="${data!=null & data.id_detalle_requerimiento_pago>0?data.id_detalle_requerimiento_pago:(this.makeId())}">
+                <input type="hidden" class="idRegister" name="idRegister[]" value="${data!=null && data.id_detalle_requerimiento_pago>0?data.id_detalle_requerimiento_pago:(this.makeId())}">
                 <button type="button" class="btn btn-warning btn-xs handleClickAdjuntarArchivoItem" name="btnAdjuntarArchivoItem[]" title="Adjuntos" >
                     <i class="fas fa-paperclip"></i>
                     <span class="badge" name="cantidadAdjuntosItem" style="position:absolute; top:-10px; left:-10px; border: solid 0.1px;">0</span>    
@@ -1189,6 +1189,28 @@ class ListarRequerimientoPagoView {
             }
         }
 
+        if (document.querySelector("input[name='id_proveedor']").value == '') {
+            continuar = false;
+            if (document.querySelector("input[name='razon_social']").closest('div').parentElement.querySelector("span") == null) {
+                let newSpanInfo = document.createElement("span");
+                newSpanInfo.classList.add('text-danger');
+                newSpanInfo.textContent = '(Seleccione un proveedor)';
+                document.querySelector("input[name='razon_social']").closest('div').parentElement.querySelector("h5").appendChild(newSpanInfo);
+                document.querySelector("input[name='razon_social']").closest('div').parentElement.classList.add('has-error');
+            }
+        }
+        if (document.querySelector("input[name='id_cuenta_principal_proveedor']").value == '') {
+            continuar = false;
+            if (document.querySelector("input[name='nro_cuenta_principal_proveedor']").closest('div').parentElement.querySelector("span") == null) {
+                let newSpanInfo = document.createElement("span");
+                newSpanInfo.classList.add('text-danger');
+                newSpanInfo.textContent = '(Seleccione una cuenta bancaria del proveedor)';
+                document.querySelector("input[name='nro_cuenta_principal_proveedor']").closest('div').parentElement.querySelector("h5").appendChild(newSpanInfo);
+                document.querySelector("input[name='nro_cuenta_principal_proveedor']").closest('div').parentElement.classList.add('has-error');
+            }
+        }
+        
+
         let tbodyChildren = document.querySelector("tbody[id='body_detalle_requerimiento_pago']").children;
         for (let index = 0; index < tbodyChildren.length; index++) {
             if (!(tbodyChildren[index].querySelector("input[class~='centroCosto']").value >0)) {
@@ -1208,7 +1230,6 @@ class ListarRequerimientoPagoView {
                     let newSpanInfo = document.createElement("span");
                     newSpanInfo.classList.add('text-danger');
                     newSpanInfo.textContent = 'Ingrese una cantidad';
-                    console.log(tbodyChildren[index].querySelector("input[class~='cantidad']").closest('td'));
                     tbodyChildren[index].querySelector("input[class~='cantidad']").closest('td').querySelector("h5").appendChild(newSpanInfo);
                     tbodyChildren[index].querySelector("input[class~='cantidad']").closest('td').querySelector("div[class~='form-group']").classList.add('has-error');
                 }
@@ -1704,10 +1725,6 @@ class ListarRequerimientoPagoView {
         document.querySelector("div[id='modal-requerimiento-pago'] select[name='sede']").value= data.id_sede;
         document.querySelector("div[id='modal-requerimiento-pago'] select[name='grupo']").value= data.id_grupo;
         document.querySelector("div[id='modal-requerimiento-pago'] select[name='division']").value= data.id_division;
-        document.querySelector("div[id='modal-requerimiento-pago'] select[name='tipo_cuenta']").value= data.nro_cuenta !=null && data.nro_cuenta.length >0 ?'bcp':'cci';
-        document.querySelector("div[id='modal-requerimiento-pago'] input[name='nro_cuenta']").value= data.nro_cuenta !=null && data.nro_cuenta.length >0 ?data.nro_cuenta:data.nro_cuenta_interbancaria;
-        document.querySelector("div[id='modal-requerimiento-pago'] select[name='tipo_documento_idendidad']").value= data.dni != null && data.dni.length>0?'dni':'ruc';
-        document.querySelector("div[id='modal-requerimiento-pago'] input[name='nro_documento_idendidad']").value= data.dni != null && data.dni.length>0?data.dni:data.ruc;
         document.querySelector("div[id='modal-requerimiento-pago'] input[name='monto_total']").value= data.monto_total;
         document.querySelector("div[id='modal-requerimiento-pago'] input[name='monto_total_read_only']").value=$.number(data.monto_total, 2);
 

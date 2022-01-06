@@ -194,6 +194,34 @@ class RequerimientoPendienteModel {
             });
             });
     }
+
+    obtenerAlmacenPorDefectoRequerimiento(idRequerimiento){
+        return new Promise(function(resolve, reject) {
+            $.ajax({
+                type: 'GET',
+                url: 'almacen-requeriento/'+idRequerimiento,
+                processData: false,
+                contentType: false,
+                dataType: 'JSON',
+                beforeSend:  (data)=> { // Are not working with dataType:'jsonp'
+ 
+                },
+                success: (response) =>{
+                    resolve(response);
+                },
+                fail:  (jqXHR, textStatus, errorThrown) =>{
+                    Swal.fire(
+                        '',
+                        'Lo sentimos hubo un error en el servidor al intentar obtener la data, por favor vuelva a intentarlo',
+                        'error'
+                    );
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                }
+            });
+            });
+    }
     obtenerHistorialDetalleRequerimientoParaReserva(idDetalleRequerimiento){
         return new Promise(function(resolve, reject) {
             $.ajax({
