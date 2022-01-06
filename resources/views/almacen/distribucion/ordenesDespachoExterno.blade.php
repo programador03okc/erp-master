@@ -112,8 +112,8 @@ Gestión de Despachos
 <script src="{{ asset('js/almacen/distribucion/contactoEnviar.js?')}}?v={{filemtime(public_path('js/almacen/distribucion/contactoEnviar.js'))}}"></script>
 <script src="{{ asset('js/almacen/distribucion/agregarTransportista.js?')}}?v={{filemtime(public_path('js/almacen/distribucion/agregarTransportista.js'))}}"></script>
 <script src="{{ asset('js/almacen/distribucion/ordenDespachoProgramar.js?')}}?v={{filemtime(public_path('js/almacen/distribucion/ordenDespachoProgramar.js'))}}"></script>
-{{-- <script src="{{ asset('js/almacen/distribucion/priorizarDespachoExterno.js?')}}?v={{filemtime(public_path('js/almacen/distribucion/priorizarDespachoExterno.js'))}}"></script> --}}
 <script src="{{ asset('js/tesoreria/facturacion/archivosMgcp.js?')}}?v={{filemtime(public_path('js/tesoreria/facturacion/archivosMgcp.js'))}}"></script>
+{{-- <script src="{{ asset('js/almacen/distribucion/priorizarDespachoExterno.js?')}}?v={{filemtime(public_path('js/almacen/distribucion/priorizarDespachoExterno.js'))}}"></script> --}}
 {{-- <script src="{{ asset('js/logistica/requerimiento/trazabilidad.js')}}"></script> --}}
 
 <script src="{{ asset('js/publico/ubigeoModal.js?')}}?v={{filemtime(public_path('js/publico/ubigeoModal.js'))}}"></script>

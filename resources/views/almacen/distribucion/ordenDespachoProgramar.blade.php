@@ -5,19 +5,21 @@
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
                     <div style="display:flex;">
-                        <h3 class="modal-title">Fecha programada</h3>
+                        <h3 class="modal-title">Despacho interno</h3>
                     </div>
                 </div>
                 <div class="modal-body">
                     <input type="text" class="oculto" name="req_id_requerimiento">
                     <div class="row">
                         <div class="col-md-12">
+                            <h5>Fecha de programación</h5>
                             <input type="date" class="form-control" name="fecha_despacho"/>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <input type="text" class="form-control" name="comentario"/>
+                            <h5>Comentario</h5>
+                            <textarea class="form-control" name="comentario"></textarea>
                         </div>
                     </div>
                 </div>

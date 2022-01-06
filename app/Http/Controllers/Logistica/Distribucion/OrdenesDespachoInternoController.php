@@ -161,6 +161,7 @@ class OrdenesDespachoInternoController extends Controller
                                 'id_almacen' => $req->id_almacen,
                                 'codigo' => $codigo,
                                 'fecha_despacho' => $request->fecha_despacho,
+                                'comentario' => $request->comentario,
                                 'nro_orden' => ($nro_orden + 1),
                                 'aplica_cambios' => true,
                                 'registrado_por' => $usuario,
@@ -321,6 +322,7 @@ class OrdenesDespachoInternoController extends Controller
             ->select(
                 'orden_despacho.id_od',
                 'orden_despacho.estado',
+                'orden_despacho.comentario',
                 'transformacion.id_transformacion',
                 'oportunidades.id as id_oportunidad',
                 'oportunidades.codigo_oportunidad',
@@ -344,6 +346,7 @@ class OrdenesDespachoInternoController extends Controller
             ->select(
                 'orden_despacho.id_od',
                 'orden_despacho.estado',
+                'orden_despacho.comentario',
                 'orden_despacho.fecha_despacho',
                 'transformacion.id_transformacion',
                 'oportunidades.id as id_oportunidad',
@@ -368,6 +371,7 @@ class OrdenesDespachoInternoController extends Controller
             ->select(
                 'orden_despacho.id_od',
                 'orden_despacho.estado',
+                'orden_despacho.comentario',
                 'orden_despacho.fecha_despacho',
                 'transformacion.id_transformacion',
                 'oportunidades.id as id_oportunidad',
@@ -392,6 +396,7 @@ class OrdenesDespachoInternoController extends Controller
             ->select(
                 'orden_despacho.id_od',
                 'orden_despacho.estado',
+                'orden_despacho.comentario',
                 'transformacion.id_transformacion',
                 'oportunidades.id as id_oportunidad',
                 'oportunidades.codigo_oportunidad',

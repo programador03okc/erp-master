@@ -2,7 +2,7 @@
 @include('layout.menu_tesoreria')
 
 @section('cabecera')
-Procesar Pagos
+Registro de pagos
 @endsection
 
 @section('breadcrumb')

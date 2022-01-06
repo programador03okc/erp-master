@@ -7,12 +7,14 @@ function openFechaProgramada(id) {
 function generarDespachoInterno() {
     var id = $('[name=req_id_requerimiento]').val();
     var fec = $('[name=fecha_despacho]').val();
+    var com = $('[name=comentario]').val();
     $.ajax({
         type: 'POST',
         url: 'generarDespachoInterno',
         data: {
             'id_requerimiento': id,
             'fecha_despacho': fec,
+            'comentario': com,
         },
         dataType: 'JSON',
         success: function (response) {

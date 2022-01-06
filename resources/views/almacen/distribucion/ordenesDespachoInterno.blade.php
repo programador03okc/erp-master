@@ -124,9 +124,9 @@ Gestión de Despachos Internos
 <script src="{{ asset('template/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js') }}"></script>
 <script src="{{ asset('template/plugins/bootstrap-datepicker/locales/bootstrap-datepicker.es.min.js') }}"></script>
 
-<script src="{{ asset('js/almacen/distribucion/ordenesDespachoInterno.js')}}"></script>
-<script src="{{ asset('js/almacen/distribucion/verDetalleRequerimiento.js')}}"></script>
-<script src="{{ asset('js/tesoreria/facturacion/archivosMgcp.js')}}"></script>
+<script src="{{ asset('js/almacen/distribucion/ordenesDespachoInterno.js')}}?v={{filemtime(public_path('js/almacen/distribucion/ordenesDespachoInterno.js'))}}"></script>
+<script src="{{ asset('js/almacen/distribucion/verDetalleRequerimiento.js')}}?v={{filemtime(public_path('js/almacen/distribucion/verDetalleRequerimiento.js'))}}"></script>
+<script src="{{ asset('js/tesoreria/facturacion/archivosMgcp.js')}}?v={{filemtime(public_path('js/tesoreria/facturacion/archivosMgcp.js'))}}"></script>
 
 <script>
     $(document).ready(function() {
