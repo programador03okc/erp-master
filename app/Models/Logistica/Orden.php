@@ -5,8 +5,10 @@ namespace App\Models\Logistica;
 
 use App\Models\Almacen\DetalleRequerimiento;
 use App\Models\Almacen\Requerimiento;
+use App\Models\mgcp\AcuerdoMarco\OrdenCompraPropias;
 use App\Models\mgcp\CuadroCosto\CuadroCosto;
 use App\Models\mgcp\CuadroCosto\CuadroCostoView;
+use App\Models\mgcp\OrdenCompra\Propia\OrdenCompraPropiaView;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -75,12 +77,17 @@ class Orden extends Model {
         }
 
         $ccVista= CuadroCostoView::whereIn('id',$idCuadroCostoList)->get();
-
+        
         foreach ($ccVista as $cc) {
+            $ocPropia = OrdenCompraPropiaView::where('id_oportunidad',$cc->id_oportunidad)->first();
             
             $data[]=[
                 'id'=>$cc->id,
-                'codigo'=>$cc->codigo_oportunidad,
+                'codigo_oportunidad'=>$cc->codigo_oportunidad,
+                'fecha_creacion'=>$cc->fecha_creacion,
+                'fecha_limite'=>$cc->fecha_limite,
+                'estado_aprobacion_cuadro'=>$cc->estado_aprobacion,
+                'fecha_aprobacion'=>$ocPropia->fecha_aprobacion,
                 'id_estado_aprobacion'=>$cc->id_estado_aprobacion,
                 'estado_aprobacion'=>$cc->estado_aprobacion
             ];
@@ -153,12 +160,13 @@ class Orden extends Model {
 
         $equipos=OrdenCompraDetalle::where('log_det_ord_compra.id_orden_compra',$this->attributes['id_orden_compra'])
         ->leftJoin('almacen.alm_prod','alm_prod.id_producto','log_det_ord_compra.id_producto')
-        ->select('alm_prod.descripcion','log_det_ord_compra.cantidad')->get(); 
+        ->select('alm_prod.descripcion','log_det_ord_compra.cantidad','log_det_ord_compra.descripcion_adicional')->get(); 
         $cantidadEquipoList=[];
         foreach ($equipos as $equipo){
-            $cantidadEquipoList[]= '('.(floatval($equipo->cantidad) <10?('0'.$equipo->cantidad):$equipo->cantidad).' Ud.) '.$equipo->descripcion; 
-        }
-        return implode('<br>',$cantidadEquipoList);
+            // $cantidadEquipoList[]= '('.(floatval($equipo->cantidad) <10?('0'.$equipo->cantidad):$equipo->cantidad).' Ud.) '.(utf8_decode($equipo->descripcion)); 
+            $cantidadEquipoList[]= '('.(floatval($equipo->cantidad) <10?('0'.$equipo->cantidad):$equipo->cantidad).' Ud.) '.$equipo->descripcion != ''? (preg_replace('/[\x00-\x09\x0B\x0C\x0E-\x1F\x7F]/','',$equipo->descripcion)):(preg_replace('/[\x00-\x09\x0B\x0C\x0E-\x1F\x7F]/','',$equipo->descripcion_adicional)) ; 
+          }
+        return implode(' + ',$cantidadEquipoList);
     }
 
 

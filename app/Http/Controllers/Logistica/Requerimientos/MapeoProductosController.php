@@ -94,7 +94,7 @@ class MapeoProductosController extends Controller
                             'id_categoria' => $det['id_categoria'],
                             'id_subcategoria' => $det['id_subcategoria'],
                             'id_clasif' => $det['id_clasif'],
-                            'descripcion' => strtoupper($det['descripcion']),
+                            'descripcion' => utf8_decode(strtoupper($det['descripcion'])),
                             'id_unidad_medida' => $det['id_unidad_medida'],
                             'series' => $det['series'],
                             'id_usuario' => $id_usuario,
