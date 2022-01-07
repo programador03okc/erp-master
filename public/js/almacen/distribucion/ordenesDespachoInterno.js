@@ -11,73 +11,100 @@ function listarDespachosInternos() {
                 html += `
                 <div class="small-box bg-aqua">
                     <div class="inner">
-                        <h5 style="margin:0px;">
+                        <h5 style="margin:0px;font-size: 13px;">
                         <div style="display:block;">
-                            <i class="fas fa-chevron-up" style="cursor: pointer;" onClick="subirPrioridad(${element.id_od})"></i>
-                            <i class="fas fa-chevron-down" style="cursor: pointer;" onClick="bajarPrioridad(${element.id_od})"></i>
+                            <i class="fas fa-chevron-up" style="cursor: pointer;" data-toggle="tooltip"
+                            data-placement="bottom" title="Subir prioridad" onClick="subirPrioridad(${element.id_od})"></i>
+                            <i class="fas fa-chevron-down" style="cursor: pointer;"  data-toggle="tooltip"
+                            data-placement="bottom" title="Bajar prioridad" onClick="bajarPrioridad(${element.id_od})"></i>
                         </div>
-                        <i class="fas fa-print" style="cursor: pointer;" onClick="imprimirTransformacion(${element.id_transformacion})"></i>
-                        ${element.codigo_oportunidad} - ${element.nombre_entidad}</h5>
-                        <p>${element.comentario ?? ''}</p>
-                    </div>
-                    <a href="#" class="small-box-footer" style="cursor: auto;"> 
-                        <i class="fa fa-arrow-circle-right" style="cursor: pointer;"
-                        onClick="siguiente(${element.estado},${element.id_od},${element.id_transformacion})"></i>
-                    </a>
-                </div>`;
+                        ${element.codigo_req} - 
+                        <i class="fas fa-file-pdf" style="cursor: pointer;" data-toggle="tooltip"
+                            data-placement="bottom" title="Ver Orden de Transformación" onClick="imprimirTransformacion(${element.id_transformacion})"></i>
+                        <a target="_blank" href="https://mgcp.okccloud.com/mgcp/cuadro-costos/detalles/${element.id_oportunidad}" data-toggle="tooltip"
+                            data-placement="bottom" title="Ver CDP en mgcp">
+                        <i class="fas fa-th-large"></i></a> ${element.codigo_oportunidad}<br></h5>
+                        <p style="margin-bottom:0px;">${element.nombre_entidad}</p>
+                        ${element.comentario !== null ? '<p style="margin-bottom:0px;font-size: 13px;">' + element.comentario + '</p>' : ""}
+                    </div >
+                <a href="#" class="small-box-footer" style="cursor: auto;">
+                    <i class="fa fa-arrow-circle-right" style="cursor: pointer;" data-toggle="tooltip"
+                    data-placement="bottom" title="Siguiente" onClick="siguiente(${element.estado},${element.id_od},${element.id_transformacion})"></i>
+                </a>
+                </div> `;
             });
             $('#listaProgramados').html(html);
 
             html = '';
             response['listaPendientes'].forEach(element => {
                 html += `
-                <div class="small-box bg-blue">
+                <div class= "small-box bg-blue">
                     <div class="inner">
-                        <h5 style="margin:0px;">
-                        <i class="fas fa-print" style="cursor: pointer;" onClick="imprimirTransformacion(${element.id_transformacion})"></i>
-                        ${element.codigo_oportunidad} - ${element.nombre_entidad} - ${formatDate(element.fecha_despacho)}</h5>
-                        <p>${element.comentario ?? ''}</p>
+                        <h5 style="margin:0px;font-size: 13px;">
+                        ${element.codigo_req} - 
+                        <i class="fas fa-file-pdf" style="cursor: pointer;" data-toggle="tooltip"
+                            data-placement="bottom" title="Ver Orden de Transformación" onClick="imprimirTransformacion(${element.id_transformacion})"></i>
+                        <a target="_blank" href="https://mgcp.okccloud.com/mgcp/cuadro-costos/detalles/${element.id_oportunidad}" data-toggle="tooltip"
+                            data-placement="bottom" title="Ver CDP en mgcp">
+                        <i class="fas fa-th-large"></i></a>${element.codigo_oportunidad} - ${formatDate(element.fecha_despacho)}<br>
+                        </h5><p style="margin-bottom:0px;">${element.nombre_entidad}</p>
+                        ${element.comentario !== null ? '<p style="margin-bottom:0px;font-size: 13px;">' + element.comentario + '</p>' : ""}
                     </div>
                     <a href="#" class="small-box-footer" style="cursor: auto;">
-                        <i class="fa fa-arrow-circle-left"  style="cursor: pointer;" onClick="anterior(${element.estado},${element.id_od},${element.id_transformacion})"></i>
-                        <i class="fa fa-arrow-circle-right"  style="cursor: pointer;" onClick="siguiente(${element.estado},${element.id_od},${element.id_transformacion})"></i>
+                        <i class="fa fa-arrow-circle-left"  style="cursor: pointer;" data-toggle="tooltip"
+                        data-placement="bottom" title="Anterior" onClick="anterior(${element.estado},${element.id_od},${element.id_transformacion})"></i>
+                        <i class="fa fa-arrow-circle-right"  style="cursor: pointer;" data-toggle="tooltip"
+                        data-placement="bottom" title="Siguiente" onClick="siguiente(${element.estado},${element.id_od},${element.id_transformacion})"></i>
                     </a>
-                </div>`;
+                </div> `;
             });
             $('#listaPendientes').html(html);
 
             html = '';
             response['listaProceso'].forEach(element => {
                 html += `
-                <div class="small-box bg-orange">
+                <div class= "small-box bg-orange" >
                     <div class="inner">
-                        <h5 style="margin:0px;">
-                        <i class="fas fa-print" style="cursor: pointer;" onClick="imprimirTransformacion(${element.id_transformacion})"></i>
-                        ${element.codigo_oportunidad} - ${element.nombre_entidad} - ${formatDate(element.fecha_despacho)}</h5>
-                        <p>${element.comentario ?? ''}</p>
+                        <h5 style="margin:0px;font-size: 13px;">
+                        ${element.codigo_req} - 
+                        <i class="fas fa-file-pdf" style="cursor: pointer;" data-toggle="tooltip"
+                            data-placement="bottom" title="Ver Orden de Transformación" onClick="imprimirTransformacion(${element.id_transformacion})"></i>
+                        <a target="_blank" href="https://mgcp.okccloud.com/mgcp/cuadro-costos/detalles/${element.id_oportunidad}" data-toggle="tooltip"
+                            data-placement="bottom" title="Ver CDP en mgcp">
+                        <i class="fas fa-th-large"></i></a>${element.codigo_oportunidad} - ${formatDate(element.fecha_despacho)}<br>
+                        </h5><p style="margin-bottom:0px;">${element.nombre_entidad}</p>
+                        ${element.comentario !== null ? '<p style="margin-bottom:0px;font-size: 13px;">' + element.comentario + '</p>' : ""}
                     </div>
                     <a href="#" class="small-box-footer" style="cursor: auto;">
-                        <i class="fa fa-arrow-circle-left"  style="cursor: pointer;" onClick="anterior(${element.estado},${element.id_od},${element.id_transformacion})"></i>
-                        <i class="fa fa-arrow-circle-right"  style="cursor: pointer;" onClick="siguiente(${element.estado},${element.id_od},${element.id_transformacion})"></i>
+                        <i class="fa fa-arrow-circle-left"  style="cursor: pointer;" data-toggle="tooltip"
+                        data-placement="bottom" title="Anterior" onClick="anterior(${element.estado},${element.id_od},${element.id_transformacion})"></i>
+                        <i class="fa fa-arrow-circle-right"  style="cursor: pointer;" data-toggle="tooltip"
+                        data-placement="bottom" title="Siguiente" onClick="siguiente(${element.estado},${element.id_od},${element.id_transformacion})"></i>
                     </a>
-                </div>`;
+                </div> `;
             });
             $('#listaProceso').html(html);
 
             html = '';
             response['listaFinalizadas'].forEach(element => {
                 html += `
-                <div class="small-box bg-green">
+                <div class= "small-box bg-green" >
                     <div class="inner">
-                        <h5 style="margin:0px;">
-                        <i class="fas fa-print" style="cursor: pointer;" onClick="imprimirTransformacion(${element.id_transformacion})"></i>
-                        ${element.codigo_oportunidad} - ${element.nombre_entidad}</h5>
-                        <p>${element.comentario ?? ''}</p>
+                        <h5 style="margin:0px;font-size: 13px;">
+                        ${element.codigo_req} - 
+                        <i class="fas fa-file-pdf" style="cursor: pointer;" data-toggle="tooltip"
+                            data-placement="bottom" title="Ver Orden de Transformación" onClick="imprimirTransformacion(${element.id_transformacion})"></i>
+                        <a target="_blank" href="https://mgcp.okccloud.com/mgcp/cuadro-costos/detalles/${element.id_oportunidad}" data-toggle="tooltip"
+                            data-placement="bottom" title="Ver CDP en mgcp">
+                        <i class="fas fa-th-large"></i></a>${element.codigo_oportunidad}<br></h5>
+                        <p style="margin-bottom:0px;">${element.nombre_entidad}</p>
+                        ${element.comentario !== null ? '<p style="margin-bottom:0px;font-size: 13px;">' + element.comentario + '</p>' : ""}
                     </div>
                     <a href="#" class="small-box-footer" style="cursor: auto;">
-                    <i class="fa fa-arrow-circle-left" style="cursor: pointer;" onClick="anterior(${element.estado},${element.id_od},${element.id_transformacion})"></i>
+                    <i class="fa fa-arrow-circle-left" style="cursor: pointer;" data-toggle="tooltip"
+                    data-placement="bottom" title="Anterior" onClick="anterior(${element.estado},${element.id_od},${element.id_transformacion})"></i>
                     </a>
-                </div>`;
+                </div> `;
             });
             $('#listaFinalizadas').html(html);
         }
@@ -111,7 +138,7 @@ function listarPendientesAnteriores() {
             { 'data': 'codigo_req' },
             { 'data': 'codigo_oportunidad' },
             { 'data': 'nombre_entidad' },
-            { 'data': 'estado' },
+            // { 'data': 'estado' },
         ],
         'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible' }],
     });

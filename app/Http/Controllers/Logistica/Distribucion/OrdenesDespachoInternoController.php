@@ -357,6 +357,7 @@ class OrdenesDespachoInternoController extends Controller
                 'transformacion.id_transformacion',
                 'oportunidades.id as id_oportunidad',
                 'oportunidades.codigo_oportunidad',
+                'alm_req.codigo as codigo_req',
                 'orden_despacho.nro_orden',
                 'oc_propias_view.nombre_entidad'
             )
@@ -382,6 +383,7 @@ class OrdenesDespachoInternoController extends Controller
                 'transformacion.id_transformacion',
                 'oportunidades.id as id_oportunidad',
                 'oportunidades.codigo_oportunidad',
+                'alm_req.codigo as codigo_req',
                 'oc_propias_view.nombre_entidad'
             )
             ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'orden_despacho.id_requerimiento')
@@ -407,6 +409,7 @@ class OrdenesDespachoInternoController extends Controller
                 'transformacion.id_transformacion',
                 'oportunidades.id as id_oportunidad',
                 'oportunidades.codigo_oportunidad',
+                'alm_req.codigo as codigo_req',
                 'oc_propias_view.nombre_entidad'
             )
             ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'orden_despacho.id_requerimiento')
@@ -431,6 +434,7 @@ class OrdenesDespachoInternoController extends Controller
                 'transformacion.id_transformacion',
                 'oportunidades.id as id_oportunidad',
                 'oportunidades.codigo_oportunidad',
+                'alm_req.codigo as codigo_req',
                 'oc_propias_view.nombre_entidad'
             )
             ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'orden_despacho.id_requerimiento')
@@ -477,9 +481,10 @@ class OrdenesDespachoInternoController extends Controller
             ->where([
                 ['orden_despacho.aplica_cambios', '=', true],
                 ['orden_despacho.fecha_despacho', '<', $fecha],
+                ['orden_despacho.estado', '=', 1],
             ])
-            ->whereIn('orden_despacho.estado', [1, 21, 24])
-            ->orderBy('orden_despacho.nro_orden')
+            // ->whereIn('orden_despacho.estado', [1, 21, 24])
+            ->orderBy('orden_despacho.fecha_despacho', 'desc')
             ->get();
         $output['data'] = $lista;
         return response()->json($output);

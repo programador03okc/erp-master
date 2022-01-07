@@ -33,13 +33,13 @@ Gestión de Despachos Internos
                         <label style="text-align: right;margin-left: 20px;margin-top: 7px;margin-right: 10px;">Fecha de programación: </label>
                     </div>
                     <div class="col-md-3">
-                        <input type="date" class="form-control" id="fecha_programacion"/>
+                        <input type="date" class="form-control" id="fecha_programacion" onchange="listarDespachosInternos();"/>
                     </div>
                     <div class="col-md-2">
                     <div style="display:flex;">
                         <button class="btn btn-default btn-flat" onClick="listarDespachosInternos()"><i class="fas fa-sync-alt"></i> Actualizar</button>
                         <button class="btn btn-default btn-flat" onClick="pasarProgramadasAlDiaSiguiente()"><i class="fas fa-undo-alt"></i> Pasar programadas para mañana</button>
-                        <button class="btn btn-default btn-flat" onClick="listarPendientesAnteriores()"><i class="fas fa-undo-alt"></i> Pendientes anteriores</button>
+                        <button class="btn btn-default btn-flat" onClick="listarPendientesAnteriores()"><i class="fas fa-tasks"></i> Pendientes anteriores</button>
                     </div>
                     </div>
                 </div>

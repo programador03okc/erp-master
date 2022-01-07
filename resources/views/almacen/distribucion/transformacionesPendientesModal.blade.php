@@ -4,7 +4,7 @@
             <form id="form-transformacionesPendientes">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
-                    <h3 class="modal-title">Transformaciones pendientes</h3>
+                    <h4 class="modal-title">Transformaciones anteriores programadas no atendidas</h4>
                 </div>
                 <div class="modal-body">
                     <div class="row">
@@ -18,7 +18,7 @@
                                         <th>Requerimiento</th>
                                         <th>Cod.CDP</th>
                                         <th width="50%">Cliente/Entidad</th>
-                                        <th>Estado</th>
+                                        {{-- <th>Estado</th> --}}
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
