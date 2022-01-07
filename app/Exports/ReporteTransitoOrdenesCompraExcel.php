@@ -32,10 +32,9 @@ class ReporteTransitoOrdenesCompraExcel implements FromView
 
         $data=[];
         foreach($ordenes as $element){
-
             $fechaOrden = Carbon::create($element['fecha']);
             if($element->cuadro_costo!=null){
-                $fechaAprobacionCC= Carbon::create($element->cuadro_costo['fecha_estado']);
+                $fechaAprobacionCC= Carbon::create($element->cuadro_costo[0]['fecha_aprobacion']);
                 $diasRestantes = $fechaAprobacionCC->diffInDays($fechaOrden);
                 $condicion = intval($diasRestantes) <=1?'ATENDIDO A TIEMPO':'ATENDIDO FUERA DE TIEMPO';
             }else{
@@ -46,9 +45,8 @@ class ReporteTransitoOrdenesCompraExcel implements FromView
             $fechaLlegada= Carbon::create($element['fecha'])->addDays($element['plazo_entrega']);
             $diasEntrega = $fechaLlegada->diffInDays($fechaOrden);
             $condicion2 = intval($diasEntrega) <=2?'ATENDIDO A TIEMPO':(intval($diasEntrega)>=15?'IMPORTACIÓN':'ATENDIDO FUERA DE TIEMPO');
-
             $data[]=[
-                'codigo_oportunidad'=> $element->cuadro_costo?$element->cuadro_costo['codigo_oportunidad']:'',
+                'codigo_oportunidad'=> $element->cuadro_costo?$element->cuadro_costo[0]['codigo_oportunidad']:'',
                 'razon_social_proveedor'=> $element->proveedor['contribuyente']['razon_social']??'',
                 'codigo'=> $element->codigo,
                 'fecha'=> $element->fecha,
@@ -59,8 +57,10 @@ class ReporteTransitoOrdenesCompraExcel implements FromView
                 'tiene_transformacion'=> $element->tiene_transformacion ==true?'SI':'NO',
                 'cantidad_equipos'=> $element->cantidad_equipos
 
+                
             ];
         }
+        // dd($data);
         return view('logistica.reportes.view_transito_ordenes_compra_export', [
             'transitoOrdenes' => $data
         ]);

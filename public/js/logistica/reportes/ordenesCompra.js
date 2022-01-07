@@ -238,28 +238,29 @@ class OrdenesCompra {
 
                 {
                     'render': function (data, type, row) {
-                        return JSON.parse(row.cuadro_costo)!=null && (JSON.parse(row.cuadro_costo)).length >0 && JSON.parse(row.cuadro_costo)[0].codigo_oportunidad !=null ?JSON.parse(row.cuadro_costo)[0].codigo_oportunidad:'(No aplica)';
+                        console.log((row.cuadro_costo));
+                        return (row.cuadro_costo)!=null && ((row.cuadro_costo)).length >0 && (row.cuadro_costo)[0].codigo_oportunidad !=null ?(row.cuadro_costo)[0].codigo_oportunidad:'(No aplica)';
                     }, targets: 0
                 },
                 {
                     'render': function (data, type, row) {
-                        return  JSON.parse(row.cuadro_costo)!=null && (JSON.parse(row.cuadro_costo)).length >0 ? (moment(JSON.parse(row.cuadro_costo)[0].fecha_limite, "DD-MM-YYYY").format("DD-MM-YYYY").toString() ):'';
+                        return  (row.cuadro_costo)!=null && ((row.cuadro_costo)).length >0 ? (moment((row.cuadro_costo)[0].fecha_limite, "DD-MM-YYYY").format("DD-MM-YYYY").toString() ):'';
                     }, targets: 4
                 },
                 {
                     'render': function (data, type, row) {
-                        return JSON.parse(row.cuadro_costo)!=null && (JSON.parse(row.cuadro_costo)).length >0 && JSON.parse(row.cuadro_costo)[0].estado_aprobacion_cuadro != null?JSON.parse(row.cuadro_costo)[0].estado_aprobacion_cuadro:'(No aplica)';
+                        return (row.cuadro_costo)!=null && ((row.cuadro_costo)).length >0 && (row.cuadro_costo)[0].estado_aprobacion_cuadro != null?(row.cuadro_costo)[0].estado_aprobacion_cuadro:'(No aplica)';
                     }, targets: 5
                 },
                 {
                     'render': function (data, type, row) {
-                        return JSON.parse(row.cuadro_costo)!=null && (JSON.parse(row.cuadro_costo)).length >0 ?(moment(JSON.parse(row.cuadro_costo)[0].fecha_estado, "DD-MM-YYYY").format("DD-MM-YYYY").toString()):'';
+                        return (row.cuadro_costo)!=null && ((row.cuadro_costo)).length >0 ?(moment((row.cuadro_costo)[0].fecha_aprobacion, "DD-MM-YYYY").format("DD-MM-YYYY").toString()):'';
                     }, targets: 6
                 },
                 {
                     'render': function (data, type, row) {
 
-                        let fecha_aprobacion_cc = JSON.parse(row.cuadro_costo)!=null && (JSON.parse(row.cuadro_costo).length) >0 ?JSON.parse(row.cuadro_costo)[0].fecha_estado:'';
+                        let fecha_aprobacion_cc = (row.cuadro_costo)!=null && ((row.cuadro_costo).length) >0 ?(row.cuadro_costo)[0].fecha_aprobacion:'';
                         let fecha_oc = row.fecha != null ?row.fecha:'';
                         let dias_restantes = moment(fecha_aprobacion_cc, 'DD-MM-YYYY').diff(moment(fecha_oc, 'DD-MM-YYYY'), 'days');
 
@@ -269,7 +270,7 @@ class OrdenesCompra {
 
                 {
                     'render': function (data, type, row) {
-                        let fecha_aprobacion_cc = JSON.parse(row.cuadro_costo)!=null && (JSON.parse(row.cuadro_costo)).length >0 ?JSON.parse(row.cuadro_costo)[0].fecha_estado:'';
+                        let fecha_aprobacion_cc = (row.cuadro_costo)!=null && ((row.cuadro_costo)).length >0 ?(row.cuadro_costo)[0].fecha_aprobacion:'';
                         let fecha_oc = row.fecha != null ?row.fecha:'';
                         let dias_restantes = moment(fecha_aprobacion_cc, 'DD-MM-YYYY').diff(moment(fecha_oc, 'DD-MM-YYYY'), 'days');
 

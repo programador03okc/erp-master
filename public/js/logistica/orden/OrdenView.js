@@ -1467,7 +1467,7 @@ class OrdenView {
                     contentType: false,
                     dataType: 'JSON',
                     beforeSend: data => {
-    
+
                         $("#wrapper-okc").LoadingOverlay("show", {
                             imageAutoResize: true,
                             progress: true,
@@ -1488,6 +1488,7 @@ class OrdenView {
                                 rounded: true,
                                 sound: false,
                                 delayIndicator: false,
+                                delay: 5000,
                                 msg: `Orden ${response.codigo} creada.`
                             });
                             
@@ -1501,9 +1502,20 @@ class OrdenView {
                                     rounded: true,
                                     sound: false,
                                     delayIndicator: false,
+                                    delay: 5000,
                                     msg: response.status_migracion_softlink.mensaje
                                 });
 
+                            }else{
+                                Lobibox.notify(response.tipo_estado, {
+                                    title: false,
+                                    size: 'normal',
+                                    rounded: true,
+                                    sound: false,
+                                    delay: 10000,
+                                    delayIndicator: false,
+                                    msg: `Hubo un problema para migrar la OC ${response.mensaje}`
+                                });
                             }
                             changeStateButton('guardar');
                             $('#form-crear-orden-requerimiento').attr('type', 'register');
