@@ -441,8 +441,9 @@ class OrdenesDespachoInternoController extends Controller
             ->where([
                 ['orden_despacho.aplica_cambios', '=', true],
                 ['orden_despacho.estado', '=', 10],
-                ['orden_despacho.fecha_despacho', '=', $fecha],
+                // ['transformacion.fecha_transformacion', '=', $fecha],
             ])
+            ->whereDate('transformacion.fecha_transformacion', $fecha)
             ->orderBy('orden_despacho.nro_orden')
             ->get();
 

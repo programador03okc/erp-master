@@ -255,7 +255,8 @@ function listarRequerimientosPendientes(usuario) {
                         
                         ${row['tiene_transformacion'] ?
                             `<button type="button" class="interno btn btn-${row['codigo_despacho_interno'] !== null ? 'danger' : 'default'} btn-flat btn-xs " data-toggle="tooltip"
-                            data-placement="bottom" title="Programar Despacho Interno" data-id="${row['id_requerimiento']}" data-cdp="${row['codigo_oportunidad']}"
+                            data-placement="bottom" title="Programar Despacho Interno" data-id="${row['id_requerimiento']}" 
+                            data-estado="${row['estado_di']}"
                             data-idod="${row['id_despacho_interno']}" >
                             <i class="fas fa-random"></i></button>` : ''}
                             
@@ -432,21 +433,27 @@ $('#requerimientosEnProceso tbody').on("click", "button.interno", function (e) {
     $(e.preventDefault());
     var id = $(this).data("id");
     var od = $(this).data("idod");
-    var cdp = $(this).data("cdp");
-    openFechaProgramada(id, od);
-    // Swal.fire({
-    //     title: "¿Está seguro que desea enviar el " + cdp + " a despacho interno?",
-    //     icon: "info",
-    //     showCancelButton: true,
-    //     confirmButtonColor: "#3085d6", //"#00a65a", //
-    //     cancelButtonColor: "#d33",
-    //     cancelButtonText: "Aún No.",
-    //     confirmButtonText: "Si"
-    // }).then(result => {
-    //     if (result.isConfirmed) {
-    //         generarDespachoInterno(id);
-    //     }
-    // });
+    var estado = $(this).data("estado");
+    console.log(estado);
+    var msj = '';
+
+    if (estado == null || estado == 1) {
+        openFechaProgramada(id, od);
+    } else if (estado == 10) {
+        msj = 'Ya se finalizó el proceso de transformación. No es posible modificar.';
+    } else {
+        msj = 'Ya se inició el proceso de transformación. No es posible modificar.';
+    }
+    if (msj !== '') {
+        Lobibox.notify('warning', {
+            title: false,
+            size: "mini",
+            rounded: true,
+            sound: false,
+            delayIndicator: false,
+            msg: msj
+        });
+    }
 });
 
 $('#requerimientosEnProceso tbody').on("click", "button.envio", function (e) {
