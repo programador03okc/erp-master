@@ -8,8 +8,11 @@
             <i class="fas fa-code-branch"></i> <span>Transformaciones</span> <i class="fa fa-angle-left pull-right"></i>
         </a>
         <ul class="treeview-menu">
+            @if(Auth::user()->tieneAplicacion(88))
+            <li><a href="{{route('cas.customizacion.tablero-transformaciones.index')}}"> Gestión de Transformaciones </a></li>
+            @endif
             @if(Auth::user()->tieneAplicacion(87))
-            <li><a href="{{route('cas.customizacion.gestion-customizaciones.index')}}"> Gestión de Transformaciones </a></li>
+            <li><a href="{{route('cas.customizacion.gestion-customizaciones.index')}}"> Lista de Transformaciones </a></li>
             @endif
             @if(Auth::user()->tieneAplicacion(88))
             <li><a href="{{route('cas.customizacion.hoja-transformacion.index')}}"> Orden de Transformación </a></li>

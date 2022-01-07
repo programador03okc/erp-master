@@ -1094,8 +1094,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('subirPrioridad/{id}', 'Logistica\Distribucion\OrdenesDespachoInternoController@subirPrioridad');
 				Route::get('bajarPrioridad/{id}', 'Logistica\Distribucion\OrdenesDespachoInternoController@bajarPrioridad');
 				Route::get('pasarProgramadasAlDiaSiguiente/{fec}', 'Logistica\Distribucion\OrdenesDespachoInternoController@pasarProgramadasAlDiaSiguiente');
-				Route::post('cambiaEstado', 'Logistica\Distribucion\OrdenesDespachoInternoController@cambiaEstado');
 				Route::get('listarPendientesAnteriores/{fec}', 'Logistica\Distribucion\OrdenesDespachoInternoController@listarPendientesAnteriores');
+				Route::post('cambiaEstado', 'Logistica\Distribucion\OrdenesDespachoInternoController@cambiaEstado');
 			});
 		});
 
@@ -1590,6 +1590,16 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('index', 'Almacen\Movimiento\TransformacionController@view_main_cas')->name('index');
 
 		Route::group(['as' => 'customizacion.', 'prefix' => 'customizacion'], function () {
+
+			Route::group(['as' => 'tablero-transformaciones.', 'prefix' => 'tablero-transformaciones'], function () {
+
+				Route::get('index', 'Logistica\Distribucion\OrdenesTransformacionController@view_tablero_transformaciones')->name('index');
+				Route::get('listarDespachosInternos/{fec}', 'Logistica\Distribucion\OrdenesDespachoInternoController@listarDespachosInternos');
+				Route::get('subirPrioridad/{id}', 'Logistica\Distribucion\OrdenesDespachoInternoController@subirPrioridad');
+				Route::get('bajarPrioridad/{id}', 'Logistica\Distribucion\OrdenesDespachoInternoController@bajarPrioridad');
+				Route::get('pasarProgramadasAlDiaSiguiente/{fec}', 'Logistica\Distribucion\OrdenesDespachoInternoController@pasarProgramadasAlDiaSiguiente');
+				Route::get('listarPendientesAnteriores/{fec}', 'Logistica\Distribucion\OrdenesDespachoInternoController@listarPendientesAnteriores');
+			});
 
 			Route::group(['as' => 'gestion-customizaciones.', 'prefix' => 'gestion-customizaciones'], function () {
 				//Transformaciones

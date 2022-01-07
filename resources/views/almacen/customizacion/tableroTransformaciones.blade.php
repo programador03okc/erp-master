@@ -1,8 +1,8 @@
 @extends('layout.main')
-@include('layout.menu_logistica')
+@include('layout.menu_cas')
 
 @section('cabecera')
-Gestión de Despachos Internos
+Gestión de transformaciones
 @endsection
 
 @section('estilos')
@@ -16,14 +16,14 @@ Gestión de Despachos Internos
 
 @section('breadcrumb')
 <ol class="breadcrumb">
-    <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> Logística</a></li>
-    <li>Distribución</li>
+    <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> Servicios CAS</a></li>
+    <li>Transformaciones</li>
     <li class="active">@yield('cabecera')</li>
 </ol>
 @endsection
 
 @section('content')
-<div class="page-main" type="despachosInternos">
+<div class="page-main" type="tableroTransformaciones">
     <div class="box box-solid">
         <div class="box-body">
             <div class="col-md-12" style="padding-top:10px;padding-bottom:10px;">

@@ -7,17 +7,19 @@ function listarDespachosInternos() {
         success: function (response) {
             console.log(response);
             var html = '';
+            var page = $('.page-main').attr('type');
             response['listaProgramados'].forEach(element => {
                 html += `
                 <div class="small-box bg-aqua">
                     <div class="inner">
                         <h5 style="margin:0px;font-size: 13px;">
-                        <div style="display:block;">
+                        ${page == 'despachosInternos' ?
+                        `<div style="display:block;">
                             <i class="fas fa-chevron-up" style="cursor: pointer;" data-toggle="tooltip"
                             data-placement="bottom" title="Subir prioridad" onClick="subirPrioridad(${element.id_od})"></i>
                             <i class="fas fa-chevron-down" style="cursor: pointer;"  data-toggle="tooltip"
                             data-placement="bottom" title="Bajar prioridad" onClick="bajarPrioridad(${element.id_od})"></i>
-                        </div>
+                        </div>` : ''}
                         ${element.codigo_req} - 
                         <i class="fas fa-file-pdf" style="cursor: pointer;" data-toggle="tooltip"
                             data-placement="bottom" title="Ver Orden de Transformación" onClick="imprimirTransformacion(${element.id_transformacion})"></i>
@@ -28,8 +30,10 @@ function listarDespachosInternos() {
                         ${element.comentario !== null ? '<p style="margin-bottom:0px;font-size: 13px;">' + element.comentario + '</p>' : ""}
                     </div >
                 <a href="#" class="small-box-footer" style="cursor: auto;">
-                    <i class="fa fa-arrow-circle-right" style="cursor: pointer;" data-toggle="tooltip"
-                    data-placement="bottom" title="Siguiente" onClick="siguiente(${element.estado},${element.id_od},${element.id_transformacion})"></i>
+                    ${page == 'tableroTransformaciones' ?
+                        `<i class="fa fa-arrow-circle-right" style="cursor: pointer;" data-toggle="tooltip"
+                    data-placement="bottom" title="Siguiente" onClick="siguiente(${element.estado},${element.id_od},${element.id_transformacion})"></i>` : ''
+                    }
                 </a>
                 </div> `;
             });
@@ -51,10 +55,12 @@ function listarDespachosInternos() {
                         ${element.comentario !== null ? '<p style="margin-bottom:0px;font-size: 13px;">' + element.comentario + '</p>' : ""}
                     </div>
                     <a href="#" class="small-box-footer" style="cursor: auto;">
-                        <i class="fa fa-arrow-circle-left"  style="cursor: pointer;" data-toggle="tooltip"
+                    ${page == 'tableroTransformaciones' ?
+                        `<i class="fa fa-arrow-circle-left"  style="cursor: pointer;" data-toggle="tooltip"
                         data-placement="bottom" title="Anterior" onClick="anterior(${element.estado},${element.id_od},${element.id_transformacion})"></i>
                         <i class="fa fa-arrow-circle-right"  style="cursor: pointer;" data-toggle="tooltip"
-                        data-placement="bottom" title="Siguiente" onClick="siguiente(${element.estado},${element.id_od},${element.id_transformacion})"></i>
+                        data-placement="bottom" title="Siguiente" onClick="siguiente(${element.estado},${element.id_od},${element.id_transformacion})"></i>`
+                        : ''}
                     </a>
                 </div> `;
             });
@@ -76,10 +82,12 @@ function listarDespachosInternos() {
                         ${element.comentario !== null ? '<p style="margin-bottom:0px;font-size: 13px;">' + element.comentario + '</p>' : ""}
                     </div>
                     <a href="#" class="small-box-footer" style="cursor: auto;">
-                        <i class="fa fa-arrow-circle-left"  style="cursor: pointer;" data-toggle="tooltip"
+                    ${page == 'tableroTransformaciones' ?
+                        `<i class="fa fa-arrow-circle-left"  style="cursor: pointer;" data-toggle="tooltip"
                         data-placement="bottom" title="Anterior" onClick="anterior(${element.estado},${element.id_od},${element.id_transformacion})"></i>
                         <i class="fa fa-arrow-circle-right"  style="cursor: pointer;" data-toggle="tooltip"
-                        data-placement="bottom" title="Siguiente" onClick="siguiente(${element.estado},${element.id_od},${element.id_transformacion})"></i>
+                        data-placement="bottom" title="Siguiente" onClick="siguiente(${element.estado},${element.id_od},${element.id_transformacion})"></i>`
+                        : ''}
                     </a>
                 </div> `;
             });
@@ -101,8 +109,10 @@ function listarDespachosInternos() {
                         ${element.comentario !== null ? '<p style="margin-bottom:0px;font-size: 13px;">' + element.comentario + '</p>' : ""}
                     </div>
                     <a href="#" class="small-box-footer" style="cursor: auto;">
-                    <i class="fa fa-arrow-circle-left" style="cursor: pointer;" data-toggle="tooltip"
-                    data-placement="bottom" title="Anterior" onClick="anterior(${element.estado},${element.id_od},${element.id_transformacion})"></i>
+                    ${page == 'tableroTransformaciones' ?
+                        `<i class="fa fa-arrow-circle-left" style="cursor: pointer;" data-toggle="tooltip"
+                        data-placement="bottom" title="Anterior" onClick="anterior(${element.estado},${element.id_od},${element.id_transformacion})"></i>`
+                        : ''}
                     </a>
                 </div> `;
             });

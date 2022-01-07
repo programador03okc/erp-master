@@ -20,6 +20,11 @@ class OrdenesTransformacionController extends Controller
         return view('almacen/distribucion/ordenesTransformacion');
     }
 
+    function view_tablero_transformaciones()
+    {
+        return view('almacen/customizacion/tableroTransformaciones');
+    }
+
     public function listarRequerimientosEnProceso()
     {
         $data = DB::table('almacen.alm_reserva')
