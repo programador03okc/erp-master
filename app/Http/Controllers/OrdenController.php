@@ -2471,6 +2471,7 @@ class OrdenController extends Controller
             DB::beginTransaction();
             $idOrden='';
             $codigoOrden='';
+            $statusMigracionSoftlink=null;
             $actualizarEstados = [];
 
             $idDetalleRequerimientoList=[];
@@ -2550,7 +2551,7 @@ class OrdenController extends Controller
                 if (isset($orden->id_orden_compra) and $orden->id_orden_compra > 0) {
                     $actualizarEstados = $this->actualizarNuevoEstadoRequerimiento($orden->id_orden_compra, $orden->codigo);
                 }
-
+                $statusMigracionSoftlink= (new MigrateOrdenSoftLinkController)->migrarOrdenCompra($idOrden)->original ?? null; //tipo : success , warning, error, mensaje : ""
                 return response()->json([
                     'id_orden_compra' => $idOrden,
                     'codigo' => $codigoOrden,
@@ -2558,7 +2559,7 @@ class OrdenController extends Controller
                     'tipo_estado'=>'success',
                     'lista_estado_requerimiento' => $actualizarEstados['lista_estado_requerimiento'],
                     'lista_finalizados' => $actualizarEstados['lista_finalizados'],
-                    'status_migracion_softlink' => (new MigrateOrdenSoftLinkController)->migrarOrdenCompra($idOrden)->original ?? null //tipo : success , warning, error, mensaje : ""
+                    'status_migracion_softlink' => $statusMigracionSoftlink
     
                 ]);
 
@@ -2578,15 +2579,9 @@ class OrdenController extends Controller
 
             }
 
-
-
-
-
-
-
         } catch (Exception $e) {
             DB::rollBack();
-            return response()->json(['id_orden_compra' => 0, 'codigo' => '', 'tipo_estado'=>'error' ,'lista_finalizados' => [], 'status_migracion_softlink' => null, 'mensaje' => 'Hubo un problema al guardar la orden. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
+            return response()->json(['id_orden_compra' => $idOrden, 'codigo' => $codigoOrden, 'tipo_estado'=>'error' ,'lista_finalizados' => ($actualizarEstados!=null?$actualizarEstados['lista_finalizados']:[]), 'status_migracion_softlink' => $statusMigracionSoftlink, 'mensaje' => 'Mensaje de error: ' . $e->getMessage()]);
         }
     }
 
