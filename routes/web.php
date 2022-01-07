@@ -1600,6 +1600,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('pasarProgramadasAlDiaSiguiente/{fec}', 'Logistica\Distribucion\OrdenesDespachoInternoController@pasarProgramadasAlDiaSiguiente');
 				Route::get('listarPendientesAnteriores/{fec}', 'Logistica\Distribucion\OrdenesDespachoInternoController@listarPendientesAnteriores');
 				Route::get('imprimir_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@imprimir_transformacion');
+				Route::post('cambiaEstado', 'Logistica\Distribucion\OrdenesDespachoInternoController@cambiaEstado');
 			});
 
 			Route::group(['as' => 'gestion-customizaciones.', 'prefix' => 'gestion-customizaciones'], function () {
