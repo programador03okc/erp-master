@@ -13,7 +13,7 @@ Dashboard Servicios CAS
 
 <div class="row">
 
-    <div class="col-md-3">
+    {{-- <div class="col-md-3">
         <div class="small-box bg-blue">
             <div class="icon">
                 <i class="fas fa-file-prescription"></i>
@@ -24,7 +24,7 @@ Dashboard Servicios CAS
             </div>
             <a href="{{route('cas.customizacion.gestion-customizaciones.index')}}" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
         </div>
-    </div>
+    </div> --}}
 
 </div>
 
