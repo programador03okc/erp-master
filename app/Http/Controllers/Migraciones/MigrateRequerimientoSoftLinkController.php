@@ -125,8 +125,10 @@ class MigrateRequerimientoSoftLinkController extends Controller
                 //obtiene o crea cliente
                 $cod_auxi = $this->obtenerCliente($nro_documento, $razon_social, $doc_tipo, $cod);
 
+                $pri = $detalles[0];
                 //calcula IGV
-                $mon_impto = (floatval($req->total_precio) * ($igv / 100));
+                $mon_bruto = (floatval($pri->importe) / (1 + ($igv / 100)));
+                $mon_impto = (floatval($mon_bruto) * ($igv / 100));
                 //obtiene el tipo de cambio
                 $tp_cambio = DB::connection('soft')->table('tcambio')
                     ->where([['dfecha', '<=', new Carbon($req->fecha_requerimiento)]])
@@ -179,9 +181,9 @@ class MigrateRequerimientoSoftLinkController extends Controller
                                         'tip_mone' => $req->id_moneda,
                                         // 'tip_codicion' => $oc->id_condicion_softlink,
                                         'impto1' => $igv,
-                                        'mon_bruto' => $req->total_precio,
+                                        'mon_bruto' => $mon_bruto,
                                         'mon_impto1' => $mon_impto,
-                                        'mon_total' => ($req->total_precio + $mon_impto),
+                                        'mon_total' => ($mon_bruto + $mon_impto),
                                         'txt_observa' => 'CREADO DE FORMA AUTOMÁTICA DESDE AGILE',
                                         'cod_user' => $req->codvend_softlink,
                                         'tip_cambio' => $tp_cambio->cambio3, //tipo cambio venta
@@ -202,6 +204,7 @@ class MigrateRequerimientoSoftLinkController extends Controller
                                 }
 
                                 if ($det->id_occ_det_softlink !== null) {
+                                    $unitario = ($det->importe / ($det->cantidad > 0 ? $det->cantidad : 1));
                                     //actualiza el detalle
                                     DB::connection('soft')->table('detmov')
                                         ->where('unico', $det->id_occ_det_softlink)
@@ -213,10 +216,10 @@ class MigrateRequerimientoSoftLinkController extends Controller
                                             'can_pedi' => $det->cantidad,
                                             'sal_pedi' => $det->cantidad,
                                             'can_devo' => $i, //numeracion del item 
-                                            'pre_prod' => ($det->importe !== null ? $det->importe : 0),
-                                            'pre_neto' => ($det->importe !== null ? ($det->importe * $det->cantidad) : 0),
+                                            'pre_prod' => ($det->importe !== null ? $unitario : 0),
+                                            'pre_neto' => ($det->importe !== null ? $det->importe : 0),
                                             'impto1' => $igv,
-                                            'imp_item' => ($det->importe !== null ? ($det->importe * $det->cantidad) : 0),
+                                            'imp_item' => ($det->importe !== null ? $det->importe : 0),
                                             'flg_serie' => ($cod_prod == '005675' ? 0 : ($det->series ? 1 : 0)),
                                         ]);
                                 } else {
