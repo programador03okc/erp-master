@@ -87,7 +87,7 @@ class Orden extends Model {
                 'fecha_creacion'=>$cc->fecha_creacion,
                 'fecha_limite'=>$cc->fecha_limite,
                 'estado_aprobacion_cuadro'=>$cc->estado_aprobacion,
-                'fecha_aprobacion'=>$ocPropia->fecha_aprobacion,
+                'fecha_aprobacion'=>$ocPropia->fecha_aprobacion??null,
                 'id_estado_aprobacion'=>$cc->id_estado_aprobacion,
                 'estado_aprobacion'=>$cc->estado_aprobacion
             ];
