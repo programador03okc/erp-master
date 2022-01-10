@@ -367,6 +367,17 @@ $("#form-mapeoItemsRequerimiento").on("submit", function (e) {
                             construirTablaItemsPorRegularizar(document.querySelector("div[id='modal-mapeoItemsRequerimiento'] input[name='id_requerimiento']").value); // Regularizar.js
                         }
 
+                    }else{
+                        console.log(response);
+                        Lobibox.notify('warning', {
+                            title: false,
+                            size: 'large',
+                            rounded: true,
+                            sound: false,
+                            delayIndicator: false,
+                            msg: response.mensaje
+                        });
+
                     }
                 }
             }).fail(function (jqXHR, textStatus, errorThrown) {

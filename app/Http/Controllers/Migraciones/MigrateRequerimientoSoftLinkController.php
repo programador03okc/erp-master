@@ -263,7 +263,12 @@ class MigrateRequerimientoSoftLinkController extends Controller
                         ->orderBy('num_docu', 'desc')->first();
 
                     //obtiene el correlativo
-                    $num_ult_mov = substr($ult_mov->num_docu, 4);
+                    if($ult_mov != null){
+                        $num_ult_mov = substr($ult_mov->num_docu, 4);
+                    }else{
+                        $num_ult_mov = 0;
+
+                    }
                     //crea el correlativo del documento
                     $nro_mov = $this->leftZero(7, (intval($num_ult_mov) + 1));
                     //anida el anio con el numero de documento
