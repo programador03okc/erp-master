@@ -178,7 +178,7 @@ class MigrateRequerimientoSoftLinkController extends Controller
                                         'fec_vcto' => $req->fecha_requerimiento,
                                         'cod_auxi' => $cod_auxi,
                                         'cod_vend' => $req->codvend_softlink,
-                                        'tip_mone' => $req->id_moneda,
+                                        'tip_mone' => ($pri->moneda == 's' ? 1 : 2),
                                         // 'tip_codicion' => $oc->id_condicion_softlink,
                                         'impto1' => $igv,
                                         'mon_bruto' => $mon_bruto,
