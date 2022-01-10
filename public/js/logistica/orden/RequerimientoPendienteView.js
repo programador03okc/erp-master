@@ -22,15 +22,15 @@ class RequerimientoPendienteView {
     constructor(requerimientoPendienteCtrl) {
         this.requerimientoPendienteCtrl = requerimientoPendienteCtrl;
         $.fn.dataTable.Buttons.defaults.dom.button.className = 'btn';
-
         vista_extendida();
-
+        
         this.ActualParametroEmpresa = 'SIN_FILTRO';
         this.ActualParametroSede = 'SIN_FILTRO';
         this.ActualParametroFechaDesde = 'SIN_FILTRO';
         this.ActualParametroFechaHasta = 'SIN_FILTRO';
         this.ActualParametroReserva = 'SIN_FILTRO';
         this.ActualParametroOrden = 'SIN_FILTRO';
+
     }
 
     initializeEventHandler() {
@@ -43,6 +43,7 @@ class RequerimientoPendienteView {
         $('#lista_compras').on("click", ".handleClickTabRequerimientosAtendidos", () => {
             this.tabRequerimientosAtendidos();
         });
+
         $('#modal-filtro-requerimientos-pendientes').on("click", "input[type=checkbox]", (e) => {
             this.estadoCheckFiltroRequerimientosPendientes(e);
         });
@@ -200,24 +201,25 @@ class RequerimientoPendienteView {
         });
 
         // Handle click on checkbox
-        $('#listaRequerimientosPendientes').on('click', 'input[type="checkbox"]', function (e) {
+        $('#listaRequerimientosPendientes').on('click', 'input[type="checkbox"]',   (e) =>{
 
             let that = this;
-            var $row = $(this).closest('tr');
-
+            // var $row = $(this).closest('tr');
+            var $row = e.currentTarget.closest('tr');
+            
             // Get row data
             var data = $tablaListaRequerimientosPendientes.row($row).data();
             // Get row ID
             var rowId = data.id_requerimiento;
             var idEstadoRequerimiento = data.estado;
             var cantidadMapeados = data.count_mapeados;
-            console.log(data);
+            // console.log(data);
             // Determine whether row ID is in the list of selected row IDs 
             var index = $.inArray(rowId, reqTrueList);
 
 
             if (idEstadoRequerimiento == 38) {
-                this.checked = false;
+                e.currentTarget.checked = false;
                 Swal.fire(
                     '',
                     'No puede generar una orden si el requerimiento esta por regularizar',
@@ -225,38 +227,49 @@ class RequerimientoPendienteView {
                 );
             }
             if (cantidadMapeados == 0) {
-                this.checked = false;
+                e.currentTarget.checked = false;
                 Swal.fire(
                     '',
                     'No puede generar una orden si tiene aun productos sin mapear',
                     'warning'
                 );
             }
-
+             
             // If checkbox is checked and row ID is not in list of selected row IDs
-            if (this.checked && index === -1) {
-                reqTrueList.push(rowId);
+            if (e.currentTarget.checked && index === -1) {
+                let idx=reqTrueList.indexOf(parseInt(rowId));
+                if((idx == -1)){
+                    reqTrueList.push(parseInt(rowId));
+                }
 
                 // Otherwise, if checkbox is not checked and row ID is in list of selected row IDs
-            } else if (!this.checked && index !== -1) {
+            } else if (!e.currentTarget.checked && index !== -1) {
                 reqTrueList.splice(index, 1);
             }
 
-            if (this.checked) {
-                $row.addClass('selected');
+            if (e.currentTarget.checked) {
+                // $row.addClass('selected');
+                $row.classList.add('selected');
                 document.getElementById('btnCrearOrdenCompra').removeAttribute('disabled');
 
 
             } else {
-                $row.removeClass('selected');
+                $row.classList.remove('selected');
                 document.getElementById('btnCrearOrdenCompra').setAttribute('disabled', true);
 
             }
 
+            this.updateContadorRequerimientosPendientesSeleccionados();
 
 
-            e.stopPropagation();
+            // this.stopPropagation();
         });
+
+
+        $('#lista_compras').on("click", "button.handleClickLimpiarRequerimientosPendientesSeleccionadosConCheck", () => {
+            this.limpiarRequerimientosPendientesSeleccionadosConCheck();
+        });
+
     }
 
 
@@ -599,23 +612,26 @@ class RequerimientoPendienteView {
                     $(row).find('input[type="checkbox"]').prop('checked', true);
                     $(row).addClass('selected');
                 }
+
             },
             'initComplete': function () {
 
                 //Boton de busqueda
                 const $filter = $('#listaRequerimientosPendientes_filter');
                 const $input = $filter.find('input');
-                $filter.append('<button id="btnBuscar" class="btn btn-default btn-sm pull-right" type="button"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>');
+                $filter.append('<button id="btnBuscarRequerimientosPendientes" class="btn btn-default btn-sm pull-right" type="button"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>');
                 $input.off();
                 $input.on('keyup', (e) => {
                     if (e.key == 'Enter') {
-                        $('#btnBuscar').trigger('click');
+                        $('#btnBuscarRequerimientosPendientes').trigger('click');
                     }
                 });
-                $('#btnBuscar').on('click', (e) => {
+                $('#btnBuscarRequerimientosPendientes').on('click', (e) => {
                     $tablaListaRequerimientosPendientes.search($input.val()).draw();
                 })
                 //Fin boton de busqueda
+
+
 
                 that.updateContadorFiltroRequerimientosPendientes();
 
@@ -660,7 +676,7 @@ class RequerimientoPendienteView {
             "drawCallback": function (settings) {
                 //Botón de búsqueda
                 $('#listaRequerimientosPendientes_filter input').prop('disabled', false);
-                $('#btnBuscar').html('<span class="glyphicon glyphicon-search" aria-hidden="true"></span>').prop('disabled', false);
+                $('#btnBuscarRequerimientosPendientes').html('<span class="glyphicon glyphicon-search" aria-hidden="true"></span>').prop('disabled', false);
                 $('#listaRequerimientosPendientes_filter input').trigger('focus');
                 //fin botón búsqueda
                 if ($tablaListaRequerimientosPendientes.rows().data().length == 0) {
@@ -675,12 +691,71 @@ class RequerimientoPendienteView {
                 }
                 //Botón de búsqueda
                 $('#listaRequerimientosPendientes_filter input').prop('disabled', false);
-                $('#btnBuscar').html('<span class="glyphicon glyphicon-search" aria-hidden="true"></span>').prop('disabled', false);
+                $('#btnBuscarRequerimientosPendientes').html('<span class="glyphicon glyphicon-search" aria-hidden="true"></span>').prop('disabled', false);
                 $('#listaRequerimientosPendientes_filter input').trigger('focus');
                 //fin botón búsqueda
                 $("#listaRequerimientosPendientes").LoadingOverlay("hide", true);
+
+                const $filter = document.querySelector("div[id='listaRequerimientosPendientes_wrapper'] div[class~='btn-group']");
+
+                if(!document.querySelector("button[id='btnLimpiarRequerimientosPendientesSeleccionados']")){
+                    $filter.insertAdjacentHTML('afterbegin', `<button class="btn btn-sm btn-default handleClickLimpiarRequerimientosPendientesSeleccionadosConCheck" type="button" id="btnLimpiarRequerimientosPendientesSeleccionados" disabled>
+                    Limpiar Seleccionados <span class="badge" id='contadorRequerimientosPendientesSeleccionados'>${reqTrueList.length}</span>
+                    </button>`);
+
+                }
+                that.updateContadorRequerimientosPendientesSeleccionados();
+
             },
 
+        });
+    }
+
+    updateContadorRequerimientosPendientesSeleccionados(){
+        const contador = document.querySelector("span[id='contadorRequerimientosPendientesSeleccionados']");
+        contador.textContent = reqTrueList.length;
+
+        if(reqTrueList.length >0){
+            
+            document.querySelector("button[id='btnLimpiarRequerimientosPendientesSeleccionados']").removeAttribute("disabled");
+            document.querySelector("button[id='btnLimpiarRequerimientosPendientesSeleccionados']").classList.replace('btn-default','btn-info');
+            //asegurar que este el check marcado en la pagina actual
+            let trs= document.querySelector("table[id='listaRequerimientosPendientes'] tbody").children;
+
+            for (let index = 1; index < trs.length; index++) {
+                if( reqTrueList.includes(parseInt(trs[index].querySelector("input[type='checkbox']").dataset.idRequerimiento)) ){
+                    trs[index].querySelector("input[type='checkbox']").checked = true;
+                }
+            }
+        }else{
+            document.querySelector("button[id='btnLimpiarRequerimientosPendientesSeleccionados']").setAttribute("disabled",true);
+            document.querySelector("button[id='btnLimpiarRequerimientosPendientesSeleccionados']").classList.replace('btn-info','btn-default');
+
+
+        }
+    }
+
+    limpiarRequerimientosPendientesSeleccionadosConCheck(){
+        
+        Swal.fire({
+            title: 'Esta seguro que desea limpiar todas las selecciones?',
+            text: "Se quitara el check de seleccion a todo los requerimientos",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: 'Cancelar',
+            confirmButtonText: 'Si, limpiar'
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                reqTrueList=[];
+                sessionStorage.removeItem('idOrden');
+                sessionStorage.removeItem('reqCheckedList');
+                sessionStorage.removeItem('tipoOrden');
+                $tablaListaRequerimientosPendientes.ajax.reload(null,false);                
+
+            }
         });
     }
 
@@ -830,14 +905,14 @@ class RequerimientoPendienteView {
                 //Boton de busqueda
                 const $filter = $('#listaRequerimientosAtendidos_filter');
                 const $input = $filter.find('input');
-                $filter.append('<button id="btnBuscar" class="btn btn-default btn-sm pull-right" type="button"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>');
+                $filter.append('<button id="btnBuscarRequerimientosAtendidos" class="btn btn-default btn-sm pull-right" type="button"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>');
                 $input.off();
                 $input.on('keyup', (e) => {
                     if (e.key == 'Enter') {
-                        $('#btnBuscar').trigger('click');
+                        $('#btnBuscarRequerimientosAtendidos').trigger('click');
                     }
                 });
-                $('#btnBuscar').on('click', (e) => {
+                $('#btnBuscarRequerimientosAtendidos').on('click', (e) => {
                     $tablaListaRequerimientosAtendidos.search($input.val()).draw();
                 })
                 //Fin boton de busqueda
@@ -850,7 +925,7 @@ class RequerimientoPendienteView {
             "drawCallback": function (settings) {
                 //Botón de búsqueda
                 $('#listaRequerimientosAtendidos_filter input').prop('disabled', false);
-                $('#btnBuscar').html('<span class="glyphicon glyphicon-search" aria-hidden="true"></span>').prop('disabled', false);
+                $('#btnBuscarRequerimientosAtendidos').html('<span class="glyphicon glyphicon-search" aria-hidden="true"></span>').prop('disabled', false);
                 $('#listaRequerimientosAtendidos_filter input').trigger('focus');
                 //fin botón búsqueda
                 if ($tablaListaRequerimientosAtendidos.rows().data().length == 0) {
@@ -865,7 +940,7 @@ class RequerimientoPendienteView {
                 }
                 //Botón de búsqueda
                 $('#listaRequerimientosAtendidos_filter input').prop('disabled', false);
-                $('#btnBuscar').html('<span class="glyphicon glyphicon-search" aria-hidden="true"></span>').prop('disabled', false);
+                $('#btnBuscarRequerimientosAtendidos').html('<span class="glyphicon glyphicon-search" aria-hidden="true"></span>').prop('disabled', false);
                 $('#listaRequerimientosAtendidos_filter input').trigger('focus');
                 //fin botón búsqueda
                 $("#listaRequerimientosAtendidos").LoadingOverlay("hide", true);
@@ -2461,12 +2536,32 @@ class RequerimientoPendienteView {
 
     // Crear orden por requerimiento
     crearOrdenCompraPorRequerimiento(obj) {
-        this.requerimientoPendienteCtrl.crearOrdenCompraPorRequerimiento(obj);
+        let idx=reqTrueList.indexOf(parseInt(obj.dataset.idRequerimiento));
+        if((idx == -1)){
+            reqTrueList.push(parseInt(obj.dataset.idRequerimiento));
+        }
+        console.log(reqTrueList);
+        sessionStorage.removeItem('idOrden');
+        sessionStorage.setItem('reqCheckedList', JSON.stringify(reqTrueList));
+        sessionStorage.setItem('tipoOrden', 'COMPRA');
+        sessionStorage.setItem('action', 'register');
+        let url ="/logistica/gestion-logistica/compras/ordenes/elaborar/index";
+        var win = location.href=url;
+        this.updateContadorRequerimientosPendientesSeleccionados();
 
     }
     // Crear orden de servicio por requerimiento
     crearOrdenServicioPorRequerimiento(obj) {
-        this.requerimientoPendienteCtrl.crearOrdenServicioPorRequerimiento(obj);
+        let idx=reqTrueList.indexOf(parseInt(obj.dataset.idRequerimiento));
+        if((idx == -1)){
+            reqTrueList.push(parseInt(obj.dataset.idRequerimiento));
+        }
+        sessionStorage.removeItem('idOrden');
+        sessionStorage.setItem('reqCheckedList', JSON.stringify(reqTrueList));
+        sessionStorage.setItem('tipoOrden', 'SERVICIO');
+        let url ="/logistica/gestion-logistica/compras/ordenes/elaborar/index";
+        var win = location.href=url;
+        this.updateContadorRequerimientosPendientesSeleccionados();
 
     }
 

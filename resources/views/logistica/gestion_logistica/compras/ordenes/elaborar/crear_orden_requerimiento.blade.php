@@ -30,8 +30,9 @@ Elaborar orden
                     </div>
                     <div>
                         <button type="button" name="btn-imprimir-orden-pdf" class="btn btn-info btn-sm handleClickImprimirOrdenPdf" title="Imprimir orden en .pdf" disabled><i class="fas fa-print"></i> Imprimir</button>
-                        <button type="button" name="btn-enviar-email-finalizacion-cuadro-presupuesto" class="btn btn-default btn-sm handleClickEstadoCuadroPresupuesto oculto" id="btn-enviar-email-finalizacion-cuadro-presupuesto"  style="background-color: #9b659b; color:#fff;" title="Enviar email finalización CDP"><i class="fas fa-info-circle"></i> Estado CDP</button>
+                        <button type="button" name="btn-enviar-email-finalizacion-cuadro-presupuesto" class="btn btn-default btn-sm handleClickEstadoCuadroPresupuesto oculto" id="btn-enviar-email-finalizacion-cuadro-presupuesto" style="background-color: #9b659b; color:#fff;" title="Enviar email finalización CDP"><i class="fas fa-info-circle"></i> Estado CDP</button>
                         <button type="button" name="btn-relacionar-a-oc-softlink" id="btn-relacionar-a-oc-softlink" class="btn btn-success btn-sm" title="Relacionar a OC de Softlink" onclick="listarOcSoftlink(event);" disabled> Relacionar a OC de softlink</button>
+
                     </div>
                 </h4>
                 <fieldset class="group-table">
@@ -84,6 +85,17 @@ Elaborar orden
                         <div class="col-md-2" id="group-datos_para_despacho-logo_empresa">
                             <img id="logo_empresa" src="/images/img-wide.png" alt="" style="height:56px;!important;width:100%;!important;margin-top:-20px;">
                         </div>
+
+                        <div class="col-md-2 oculto" id="group-migrar-oc-softlink">
+                            <h5>&nbsp;</h5>
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="migrar_oc_softlink" checked>
+                                    Migrar orden a softlink
+                                </label>
+                            </div>
+                        </div>
+
                     </div>
                 </fieldset>
             </div>
@@ -287,7 +299,7 @@ Elaborar orden
                             <h6>Item's de requerimiento</h6>
                         </legend>
                         <div class="btn-group" role="group" aria-label="...">
-                            <button type="button" class="btn btn-xs btn-success activation handleClickCatalogoProductosModal" id="btnAgregarProducto" data-toggle="tooltip" data-placement="bottom" title="Agregar producto para obsequio"><i class="fas fa-plus"></i> Productos para obsequio 
+                            <button type="button" class="btn btn-xs btn-success activation handleClickCatalogoProductosModal" id="btnAgregarProducto" data-toggle="tooltip" data-placement="bottom" title="Agregar producto para obsequio"><i class="fas fa-plus"></i> Productos para obsequio
                             </button>
                             <button type="button" class="btn btn-xs btn-primary activation handleClickAgregarServicio" id="btnAgregarServicio" data-toggle="tooltip" data-placement="bottom" title="Agregar servicio"><i class="fas fa-plus"></i> Servicio
                             </button>
@@ -321,7 +333,7 @@ Elaborar orden
                                 </tr>
                                 <tr>
                                     <td colspan="7" class="text-right">
-                                    <input class="activation handleClickIncluyeIGV" type="checkbox" name="incluye_igv" checked> <strong>Incluye IGV</strong>
+                                        <input class="activation handleClickIncluyeIGV" type="checkbox" name="incluye_igv" checked> <strong>Incluye IGV</strong>
                                     </td>
                                     <td class="text-right"><span name="simboloMoneda">S/</span><label name="igv"> 0.00</label></td>
                                     <td></td>
@@ -368,7 +380,7 @@ Elaborar orden
     <select name="selectEmpresa">
         @foreach ($empresas as $empresa)
         @if($empresa->id_empresa ==1)
-            <option value="{{$empresa->id_empresa}}" data-codigo-empresa="{{$empresa->codigo}}" selected>{{$empresa->razon_social}}</option>
+        <option value="{{$empresa->id_empresa}}" data-codigo-empresa="{{$empresa->codigo}}" selected>{{$empresa->razon_social}}</option>
         @else
         <option value="{{$empresa->id_empresa}}" data-codigo-empresa="{{$empresa->codigo}}">{{$empresa->razon_social}}</option>
         @endif
@@ -413,8 +425,6 @@ Elaborar orden
 
 
 <script>
-
-
     window.onload = function() {
         seleccionarMenu(window.location);
 
@@ -423,6 +433,6 @@ Elaborar orden
         const ordenView = new OrdenView(ordenController);
         ordenView.init();
         ordenView.initializeEventHandler();
-};
+    };
 </script>
 @endsection

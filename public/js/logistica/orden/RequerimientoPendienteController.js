@@ -608,26 +608,7 @@ class RequerimientoPendienteCtrl{
 
     }
 
-    // Crear orden por requerimiento
-    crearOrdenCompraPorRequerimiento(obj){
-        reqTrueList.push(obj.dataset.idRequerimiento)
-        console.log(reqTrueList);
-        sessionStorage.removeItem('idOrden');
-        sessionStorage.setItem('reqCheckedList', JSON.stringify(reqTrueList));
-        sessionStorage.setItem('tipoOrden', 'COMPRA');
-        sessionStorage.setItem('action', 'register');
-        let url ="/logistica/gestion-logistica/compras/ordenes/elaborar/index";
-        var win = location.href=url;
-    }
-    // Crear orden servicio por requerimiento
-    crearOrdenServicioPorRequerimiento(obj){
-        reqTrueList.push(obj.dataset.idRequerimiento)
-        sessionStorage.removeItem('idOrden');
-        sessionStorage.setItem('reqCheckedList', JSON.stringify(reqTrueList));
-        sessionStorage.setItem('tipoOrden', 'SERVICIO');
-        let url ="/logistica/gestion-logistica/compras/ordenes/elaborar/index";
-        var win = location.href=url;
-    }
+ 
 
     crearOrdenCompra(){
         // reqTrueList=[];

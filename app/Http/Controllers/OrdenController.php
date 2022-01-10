@@ -2551,11 +2551,19 @@ class OrdenController extends Controller
                 if (isset($orden->id_orden_compra) and $orden->id_orden_compra > 0) {
                     $actualizarEstados = $this->actualizarNuevoEstadoRequerimiento($orden->id_orden_compra, $orden->codigo);
                 }
-                $statusMigracionSoftlink= (new MigrateOrdenSoftLinkController)->migrarOrdenCompra($idOrden)->original ?? null; //tipo : success , warning, error, mensaje : ""
+                
+
+                if($request->migrar_oc_softlink ==true){
+                    
+                    $statusMigracionSoftlink= (new MigrateOrdenSoftLinkController)->migrarOrdenCompra($idOrden)->original ?? null; //tipo : success , warning, error, mensaje : ""
+                }
+ 
+
+
                 return response()->json([
                     'id_orden_compra' => $idOrden,
                     'codigo' => $codigoOrden,
-                    'mensaje'=>'OK',
+                    'mensaje'=>$request->migrar_oc_softlink ==true?'OK':'',
                     'tipo_estado'=>'success',
                     'lista_estado_requerimiento' => $actualizarEstados['lista_estado_requerimiento'],
                     'lista_finalizados' => $actualizarEstados['lista_finalizados'],
@@ -3922,4 +3930,5 @@ class OrdenController extends Controller
             return response()->json(['tipo_estado'=>'error', 'ocAgile' => null, 'mensaje' => 'Hubo un problema al actualizar la orden. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
         }
     }
+
 }
