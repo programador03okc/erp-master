@@ -78,13 +78,18 @@ class MigrateRequerimientoSoftLinkController extends Controller
                     'alm_subcat.id_subcategoria',
                     'alm_prod.id_moneda',
                     'alm_prod.series',
-                    'alm_prod.notas'
+                    'alm_prod.notas',
+                    'oportunidades.moneda',
+                    'oportunidades.importe',
                 )
                 ->leftjoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_det_req.id_producto')
                 ->leftjoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
                 ->leftjoin('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
                 ->leftjoin('almacen.alm_clasif', 'alm_clasif.id_clasificacion', '=', 'alm_prod.id_clasif')
                 ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
+                ->leftjoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+                ->leftjoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
+                ->leftjoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
                 ->where([
                     ['alm_det_req.id_requerimiento', '=', $id_requerimiento],
                     ['alm_det_req.entrega_cliente', '=', true]
@@ -177,11 +182,11 @@ class MigrateRequerimientoSoftLinkController extends Controller
                                         'mon_bruto' => $req->total_precio,
                                         'mon_impto1' => $mon_impto,
                                         'mon_total' => ($req->total_precio + $mon_impto),
-                                        'txt_observa' => ($req->observacion !== null ? $req->observacion : ''),
+                                        'txt_observa' => 'CREADO DE FORMA AUTOMÁTICA DESDE AGILE',
                                         'cod_user' => $req->codvend_softlink,
                                         'tip_cambio' => $tp_cambio->cambio3, //tipo cambio venta
                                         'ndocu1' => ($req->nro_orden !== null ? $req->nro_orden : ''),
-                                        'ndocu2' => ($req->direccion_entrega !== null ? $req->direccion_entrega : ''),
+                                        'ndocu2' => '',
                                         'ndocu3' => ($req->codigo_oportunidad !== null ? $req->codigo_oportunidad : ''),
                                     ]
                                 );
@@ -208,10 +213,10 @@ class MigrateRequerimientoSoftLinkController extends Controller
                                             'can_pedi' => $det->cantidad,
                                             'sal_pedi' => $det->cantidad,
                                             'can_devo' => $i, //numeracion del item 
-                                            'pre_prod' => ($det->precio_unitario !== null ? $det->precio_unitario : 0),
-                                            'pre_neto' => ($det->precio_unitario !== null ? ($det->precio_unitario * $det->cantidad) : 0),
+                                            'pre_prod' => ($det->importe !== null ? $det->importe : 0),
+                                            'pre_neto' => ($det->importe !== null ? ($det->importe * $det->cantidad) : 0),
                                             'impto1' => $igv,
-                                            'imp_item' => ($det->precio_unitario !== null ? ($det->precio_unitario * $det->cantidad) : 0),
+                                            'imp_item' => ($det->importe !== null ? ($det->importe * $det->cantidad) : 0),
                                             'flg_serie' => ($cod_prod == '005675' ? 0 : ($det->series ? 1 : 0)),
                                         ]);
                                 } else {
@@ -238,7 +243,7 @@ class MigrateRequerimientoSoftLinkController extends Controller
                     $count = DB::connection('soft')->table('movimien')->count();
                     //codificar segun criterio x documento
                     $mov_id = $this->leftZero(10, (intval($count) + 1));
-                    $hoy = date('Y-m-d');
+                    $hoy = new Carbon();
                     //obtiene el año a 2 digitos y le aumenta 2 ceros adelante
                     $yy = $this->leftZero(4, intval(date('y', strtotime($hoy))));
                     //obtiene el ultimo registro
@@ -246,8 +251,8 @@ class MigrateRequerimientoSoftLinkController extends Controller
 
                     $ult_mov = DB::connection('soft')->table('movimien')
                         ->where([
-                            // ['num_docu', '>', $yy . '0000000'],
-                            // ['num_docu', '<', $yy . '9999999'],
+                            ['num_docu', '>', $yy . '0000000'],
+                            ['num_docu', '<', $yy . '9999999'],
                             ['cod_suc', '=', $cod_suc],
                             ['tipo', '=', 2], //venta
                             ['cod_docu', '=', 'NP']
@@ -274,6 +279,8 @@ class MigrateRequerimientoSoftLinkController extends Controller
                         $this->agregarDetalleOCC($det, $mov_id, $cod_prod, $num_docu, $req->fecha_requerimiento, $igv, $i);
                         // $this->actualizaStockEnTransito($oc, $cod_prod, $det, $cod_suc);
                     }
+                    $this->agregarAudita($req, $yy, $nro_mov);
+
                     $socc = DB::connection('soft')->table('movimien')->where('mov_id', $mov_id)->first();
                     $sdet = DB::connection('soft')->table('detmov')->where('mov_id', $mov_id)->get();
 
@@ -335,7 +342,7 @@ class MigrateRequerimientoSoftLinkController extends Controller
                 'tot_cargo' => '0.00',
                 'tot_percep' => '0.00',
                 'tip_codicion' => '02', //revisar mgcp
-                'txt_observa' => ($req->observacion !== null ? $req->observacion : ''),
+                'txt_observa' => 'CREADO DE FORMA AUTOMÁTICA DESDE AGILE',
                 'flg_kardex' => 0,
                 'flg_anulado' => 0,
                 'flg_referen' => 0,
@@ -366,7 +373,7 @@ class MigrateRequerimientoSoftLinkController extends Controller
                 'reg_conta' => 0,
                 'mov_pago' => '',
                 'ndocu1' => ($req->nro_orden !== null ? $req->nro_orden : ''),
-                'ndocu2' => ($req->direccion_entrega !== null ? $req->direccion_entrega : ''),
+                'ndocu2' => '',
                 'ndocu3' => ($req->codigo_oportunidad !== null ? $req->codigo_oportunidad : ''),
                 'flg_logis' => 0,
                 'cod_recep' => '',
@@ -421,7 +428,7 @@ class MigrateRequerimientoSoftLinkController extends Controller
                 'fec_pedi' => $fecha_requerimiento,
                 'cod_auxi' => trim($det->abreviatura),
                 'cod_prod' => $cod_prod,
-                'nom_prod' => ($cod_prod == '005675' ? 'OTROS SERVICIOS - ' . $det->descripcion_adicional : $det->descripcion),
+                'nom_prod' => ($cod_prod == '005675' ? 'OTROS SERVICIOS - ' . $det->descripcion_adicional : $det->descripcion_prod),
                 'can_pedi' => $det->cantidad,
                 'sal_pedi' => $det->cantidad,
                 'can_devo' => $i, //numeracion del item 
@@ -823,6 +830,26 @@ class MigrateRequerimientoSoftLinkController extends Controller
             );
         }
         return $cod_unid;
+    }
+
+    public function agregarAudita($req, $yy, $nro_mov)
+    {
+        $vendedor = DB::connection('soft')->table('vendedor')
+            ->select('usuario')
+            ->where('codvend', $req->codvend_softlink)
+            ->first();
+
+        $count = DB::connection('soft')->table('audita')->count();
+
+        //Agrega registro de auditoria
+        DB::connection('soft')->table('audita')
+            ->insert([
+                'unico' => sprintf('%010d', $count + 1),
+                'usuario' => $req->codvend_softlink,
+                'terminal' => $vendedor->usuario,
+                'fecha_hora' => new Carbon(),
+                'accion' => 'NUEVO : NP ' . $yy . '-' . $nro_mov
+            ]);
     }
 
     public function leftZero($lenght, $number)
