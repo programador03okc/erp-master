@@ -695,6 +695,44 @@ class ComprasPendientesController extends Controller
 
         }
     }
+    function anularTodaReservaAlmacenDetalleRequerimiento(Request $request)
+    {
+        
+        try {
+            DB::beginTransaction();
+            $tipo_estado='warning';
+            $requerimientoHelper = new RequerimientoHelper();
+            if($requerimientoHelper->EstaHabilitadoRequerimiento([$request->idDetalleRequerimiento])==true){
+
+                $reservas = Reserva::where([['id_detalle_requerimiento',$request->idDetalleRequerimiento],['estado','!=',7]])->get();
+                foreach ($reservas as $r) {
+                    $reserva= Reserva::where('id_reserva',$r->id_reserva)->first();
+                    $reserva->estado=7;
+                    $reserva->save();
+                    $tipo_estado='success';
+                }
+    
+            
+                $ReservasProductoActualizadas = Reserva::with('almacen','usuario.trabajador.postulante.persona','estado')->where([['id_detalle_requerimiento',$request->idDetalleRequerimiento], ['estado',1]])->get();
+                DetalleRequerimiento::actualizarEstadoDetalleRequerimientoAtendido($request->idDetalleRequerimiento);
+                // actualizar estado de requerimiento
+                $Requerimiento = DetalleRequerimiento::where('id_detalle_requerimiento',$request->idDetalleRequerimiento)->first();
+                $nuevoEstado= Requerimiento::actualizarEstadoRequerimientoAtendido([$Requerimiento->id_requerimiento]);
+    
+                DB::commit();
+                return response()->json(['data'=>$ReservasProductoActualizadas, 'tipo_estado'=>$tipo_estado, 'estado_requerimiento'=>$nuevoEstado['estado_actual'],'lista_finalizados'=>$nuevoEstado['lista_finalizados'],'lista_restablecidos'=>$nuevoEstado['lista_restablecidos']]);
+            }else{
+                return response()->json(['data'=>[],'tipo_estado'=>'warning','mensaje'=>'No puede anular la reserva, existe un requerimiento vinculado con estado "En pausa" o  "Por regularizar"']);
+
+            }
+
+
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json(['id_reserva' => 0, 'data'=>[],'estado_requerimiento'=>[] ,'tipo_estado'=>'error', 'mensaje' => 'Hubo un problema en el servidor al intentar anular la reserva. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
+
+        }
+    }
 
     function buscarItemCatalogo(Request $request)
     {

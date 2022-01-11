@@ -112,6 +112,12 @@ class RequerimientoPendienteView {
         $('#listaRequerimientosPendientes tbody').on("click", "button.handleClickVerAdjuntoDetalleRequerimiento", (e) => {
             this.verAdjuntoDetalleRequerimiento(e.currentTarget);
         });
+        $('#listaRequerimientosAtendidos tbody').on("click", "button.handleClickVerAdjuntoDetalleRequerimiento", (e) => {
+            this.verAdjuntoDetalleRequerimiento(e.currentTarget);
+        });
+        $('#listaRequerimientosAtendidos tbody').on("click", "button.handleClickAnularReservaActiva", (e) => {
+            this.anularReservaActiva(e.currentTarget);
+        });
         $('#listaRequerimientosPendientes tbody').on("click", "button.handleClickVerTodoAdjuntos", (e) => {
             this.verTodoAdjuntos(e.currentTarget);
         });
@@ -484,6 +490,7 @@ class RequerimientoPendienteView {
             'bLengthChange': false,
             'serverSide': true,
             'destroy': true,
+            'stateSave':true,
             'ajax': {
                 'url': 'requerimientos-pendientes',
                 'type': 'POST',
@@ -1153,7 +1160,7 @@ class RequerimientoPendienteView {
                 let stockComprometido = 0;
                 (element.reserva).forEach(reserva => {
                     if (reserva.estado == 1) {
-                        stockComprometido += parseFloat(reserva.stockComprometido);
+                        stockComprometido += parseFloat(reserva.stock_comprometido);
                     }
                 });
 
@@ -1228,7 +1235,7 @@ class RequerimientoPendienteView {
                 let stockComprometido = 0;
                 (element.reserva).forEach(reserva => {
                     if (reserva.estado == 1) {
-                        stockComprometido += parseFloat(reserva.stockComprometido);
+                        stockComprometido += parseFloat(reserva.stock_comprometido);
                     }
                 });
 
@@ -1256,10 +1263,19 @@ class RequerimientoPendienteView {
                         <td style="border: none; text-align:center;">${(element.precio_unitario > 0 ? ((element.moneda_simbolo ? element.moneda_simbolo : ((element.moneda_simbolo ? element.moneda_simbolo : '') + '0.00')) + $.number(element.precio_unitario, 2)) : (element.moneda_simbolo ? element.moneda_simbolo : '') + '0.00')}</td>
                         <td style="border: none; text-align:center;">${(parseFloat(element.subtotal) > 0 ? ((element.moneda_simbolo ? element.moneda_simbolo : '') + $.number(element.subtotal, 2)) : ((element.moneda_simbolo ? element.moneda_simbolo : '') + $.number((element.cantidad * element.precio_unitario), 2)))}</td>
                         <td style="border: none; text-align:center;">${element.motivo != null ? element.motivo : ''}</td>
-                        <td style="border: none; text-align:center;">${stockComprometido != null ? stockComprometido : '0'}</td>
-                        <td style="border: none; text-align:center;">${atencionOrden != null ? atencionOrden : '0'}</td>
+                        <td style="border: none; text-align:center;">
+                            ${stockComprometido != null && parseInt(stockComprometido) >0 ? '<span class="label label-default">'+stockComprometido+'</span>' : '0'}
+                        </td>
+                        <td style="border: none; text-align:center;">
+                            ${atencionOrden != null && atencionOrden>0 ? '<span class="label label-default">'+atencionOrden+'</span>' : '0'}
+                        </td>
                         <td style="border: none; text-align:center;">${element.estado_doc != null && element.tiene_transformacion == false ? element.estado_doc : ''}</td>
-                        <td style="border: none; text-align:center;">${cantidadAdjuntosDetalleRequerimiento >0 ?`<button type="button" class="btn btn-default btn-xs handleClickVerAdjuntoDetalleRequerimiento" name="btnVerAdjuntoDetalleRequerimiento" title="Ver adjuntos" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-descripcion="${element.producto_descripcion != null ? element.producto_descripcion : (element.descripcion ? element.descripcion : '')}" ><i class="fas fa-paperclip"></i></button>`:''}</td>
+                        <td style="border: none; text-align:center;">
+                        ${cantidadAdjuntosDetalleRequerimiento >0 ?`<button type="button" class="btn btn-default btn-xs handleClickVerAdjuntoDetalleRequerimiento" name="btnVerAdjuntoDetalleRequerimiento" title="Ver adjuntos" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-descripcion="${element.producto_descripcion != null ? element.producto_descripcion : 'no mapeado'}" ><i class="fas fa-paperclip"></i></button>`:''}
+                        ${stockComprometido != null && parseInt(stockComprometido) >0 ? `<button type="button" class="btn btn-danger btn-xs handleClickAnularReservaActiva" name="btnAnularReservaAtendida" title="Anular reserva" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-descripcion="${element.producto_descripcion != null ? element.producto_descripcion : 'no mapeado'}" ><i class="fas fa-minus-circle"></i></button>`:''}
+
+
+                        </td>
                         </tr>`;
                 // }
             });
@@ -1279,7 +1295,7 @@ class RequerimientoPendienteView {
                         <th style="border: none; text-align:center;">Reserva almacén</th>
                         <th style="border: none; text-align:center;">Atención Orden</th>
                         <th style="border: none; text-align:center;">Estado</th>
-                        <th style="border: none; text-align:center;">Adjuntos</th>
+                        <th style="border: none; text-align:center;">Acción</th>
                     </tr>
                 </thead>
                 <tbody style="background: #e7e8ea;">${html}</tbody>
@@ -2563,6 +2579,7 @@ class RequerimientoPendienteView {
         var win = location.href=url;
         this.updateContadorRequerimientosPendientesSeleccionados();
 
+
     }
 
     crearOrdenCompra() {
@@ -2583,6 +2600,81 @@ class RequerimientoPendienteView {
 
     }
 
+    anularReservaActiva(obj){
+
+        Swal.fire({
+            title: '¿Está seguro que desea anular la reserva ?',
+            text: obj.dataset.descripcion,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: 'Cancelar',
+            confirmButtonText: 'Si, anular reserva'
+    
+        }).then((result) => {
+            if (result.isConfirmed) {
+                let formData = new FormData();
+                formData.append(`idDetalleRequerimiento`, obj.dataset.idDetalleRequerimiento);
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'anular-toda-reserva-detalle-requerimiento',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    dataType: 'JSON',
+                    beforeSend: (data) => { // Are not working with dataType:'jsonp'
+
+                        $('#wrapper-okc').LoadingOverlay("show", {
+                            imageAutoResize: true,
+                            progress: true,
+                            imageColor: "#3c8dbc"
+                        });
+                    },
+                    success: (response) => {
+                        // console.log(response);
+                        if (response.tipo_estado =='success') {
+                            $('#wrapper-okc').LoadingOverlay("hide", true);
+
+                            Lobibox.notify('success', {
+                                title: false,
+                                size: 'mini',
+                                rounded: true,
+                                sound: false,
+                                delayIndicator: false,
+                                msg: `Las reservas del producto fueron anuladas`
+                            });
+
+                            $tablaListaRequerimientosAtendidos.ajax.reload(null,false);                
+
+                        } else {
+                            $('#wrapper-okc').LoadingOverlay("hide", true);
+                                Swal.fire(
+                                    '',
+                                    response.mensaje,
+                                    response.tipo_estado
+                                );
+                            console.log(response);
+                        }
+
+
+                    },
+                    fail: (jqXHR, textStatus, errorThrown) => {
+                        $('#wrapper-okc').LoadingOverlay("hide", true);
+                        Swal.fire(
+                            '',
+                            'Lo sentimos hubo un problema en el servidor al intentar anular la reserva, por favor vuelva a intentarlo',
+                            'error'
+                        );
+                        console.log(jqXHR);
+                        console.log(textStatus);
+                        console.log(errorThrown);
+                    }
+                });
+            }
+        });
+    }
 
     listarArchivosAdjuntosDetalleRequerimiento(idDetalleRequerimiento){
 

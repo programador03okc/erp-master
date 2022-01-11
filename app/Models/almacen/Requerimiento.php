@@ -17,7 +17,7 @@ class Requerimiento extends Model
 {
     protected $table = 'almacen.alm_req';
     protected $primaryKey = 'id_requerimiento';
-    protected $appends = ['termometro', 'nombre_estado', 'nombre_completo_usuario', 'ordenes_compra', 'cantidad_tipo_producto', 'cantidad_tipo_servicio','cantidad_adjuntos_activos'];
+    protected $appends = ['termometro', 'nombre_estado', 'nombre_completo_usuario', 'ordenes_compra','reserva', 'cantidad_tipo_producto', 'cantidad_tipo_servicio','cantidad_adjuntos_activos'];
     public $timestamps = false;
 
     // public function getMontoTotalAttribute(){
@@ -183,6 +183,16 @@ class Requerimiento extends Model
         return $nombreUsuario;
     }
 
+    public function getReservaAttribute()
+    {
+
+        $reservas = Reserva::leftJoin('almacen.alm_det_req', 'alm_reserva.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento')
+            ->where([['alm_det_req.id_requerimiento', $this->attributes['id_requerimiento']], ['alm_reserva.estado', '!=', 7]])
+            ->select(['alm_reserva.id_reserva', 'alm_reserva.codigo','alm_reserva.stock_comprometido'])
+            ->get();
+
+        return $reservas;
+    }
     public function getOrdenesCompraAttribute()
     {
 

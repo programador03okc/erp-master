@@ -783,7 +783,8 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('grupo-select-item-para-compra', 'ComprasPendientesController@getGrupoSelectItemParaCompra')->name('grupo-select-item-para-compra');
 					Route::post('guardar-reserva-almacen', 'ComprasPendientesController@guardarReservaAlmacen')->name('guardar-reserva-almacen');
 					Route::post('obtener-stock-almacen', 'ComprasPendientesController@obtenerStockAlmacen')->name('obtener-stock-almacen');
-					Route::post('anular-reserva-almacen', 'ComprasPendientesController@anularReservaAlmacen')->name('anular-reserva-almacen');
+					Route::post('anular-reserva-almacen', 'ComprasPendientesController@anularReservaAlmacen');
+					Route::post('anular-toda-reserva-detalle-requerimiento', 'ComprasPendientesController@anularTodaReservaAlmacenDetalleRequerimiento');
 					Route::post('buscar-item-catalogo', 'ComprasPendientesController@buscarItemCatalogo')->name('buscar-item-catalogo');
 					Route::post('guardar-items-detalle-requerimiento', 'ComprasPendientesController@guardarItemsEnDetalleRequerimiento')->name('guardar-items-detalle-requerimiento');
 					Route::get('listar-almacenes', 'Almacen\Ubicacion\AlmacenController@mostrar_almacenes')->name('listar-almacenes');
