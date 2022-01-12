@@ -1856,7 +1856,7 @@ class OrdenView {
                     <div class="panel-body">
                         <dl class="dl-horizontal">
                             <dt>Código</dt>
-                            <dd>${element.codigo}</dd>
+                            <dd>${element.codigo_oportunidad}</dd>
                             <dt>Estado CDP</dt>
                             <dd>${element.estado_aprobacion}</dd>
                         </dl>
