@@ -1095,8 +1095,8 @@ class ComprasPendientesController extends Controller
                     'id_detalle_requerimiento'=>$re->id_detalle_requerimiento
                 ];
             }
-            Debugbar::info($detalleOrdenesAfectadas);
-            Debugbar::info($reservasAfectadas);
+            // Debugbar::info($detalleOrdenesAfectadas);
+            // Debugbar::info($reservasAfectadas);
 
             if(count($detalleOrdenesAfectadas)>0){
                 $trazabilidad = new Trazabilidad();

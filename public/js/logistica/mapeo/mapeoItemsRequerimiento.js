@@ -296,8 +296,17 @@ $("#form-mapeoItemsRequerimiento").on("submit", function (e) {
                     detalle: lista
                 },
                 dataType: 'JSON',
+                beforeSend: data => {
+    
+                    $("#modal-mapeoItemsRequerimiento .modal-dialog").LoadingOverlay("show", {
+                        imageAutoResize: true,
+                        progress: true,
+                        imageColor: "#3c8dbc"
+                    });
+                },
                 success: function (response) {
                     if (response.response == 'ok') {
+                        $("#modal-mapeoItemsRequerimiento .modal-dialog").LoadingOverlay("hide", true);
                         // console.log(response);
                         Lobibox.notify('success', {
                             title: false,
@@ -368,6 +377,7 @@ $("#form-mapeoItemsRequerimiento").on("submit", function (e) {
                         }
 
                     }else{
+                        $("#modal-mapeoItemsRequerimiento .modal-dialog").LoadingOverlay("hide", true);
                         console.log(response);
                         Lobibox.notify('warning', {
                             title: false,
@@ -382,6 +392,7 @@ $("#form-mapeoItemsRequerimiento").on("submit", function (e) {
                 }
             }).fail(function (jqXHR, textStatus, errorThrown) {
                 console.log(jqXHR);
+                $("#modal-mapeoItemsRequerimiento .modal-dialog").LoadingOverlay("hide", true);
                 Swal.fire(
                     '',
                     'Lo sentimos hubo un error en el servidor al intentar guardar el mapeo de producto(s), por favor vuelva a intentarlo',

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Debugbar;
 
 class ProductoController extends Controller
 {
@@ -94,6 +95,10 @@ class ProductoController extends Controller
             $data = $data->where('alm_prod.descripcion', trim(session()->get('productFilter_descripcion')))->get();
         }
         // $output['data'] = $data;
+        Debugbar::info($data);
+        Debugbar::info(trim(session()->get('productFilter_partnumber')));
+        Debugbar::info(trim(session()->get('productFilter_descripcion')));
+
         return response()->json($data);
     }
 
