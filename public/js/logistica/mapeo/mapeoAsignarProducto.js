@@ -69,8 +69,7 @@ function listarProductosCatalogo() {
     });
 }
 
-let sDesc = '';
-let sPart = '';
+ 
 
 function listarProductosSugeridos(part_number, descripcion, type) {
     var pn = '', ds = '';
@@ -91,41 +90,31 @@ function listarProductosSugeridos(part_number, descripcion, type) {
             ds = descripcion;
         }
     }
-    // console.log(part_number, descripcion, type);
-    if (part_number !== sPart || descripcion !== sDesc) {
-        // console.log(pn, ds);
+
         $('#productosSugeridos tbody').html('');
         $.ajax({
             type: 'POST',
-            url: 'actualizarSugeridos',
+            url: 'listarProductosSugeridos',
             data: {
                 part_number: pn,
                 descripcion: ds
             },
             success: function (response) {
-                // console.log(response);
-                if (response.response == 'ok') {
-                    listarSugeridos();
-                    sPart = part_number;
-                    sDesc = descripcion;
+                console.log(response);
+                if (response.length >0) {
+                    listarSugeridos(response);
                 }
             }
         });
-    }
+    
 
 }
 
-function listarSugeridos() {
-    $.ajax({
-        type: 'GET',
-        url: 'listarProductosSugeridos',
-        dataType: 'JSON',
-        success: function (response) {
-            // console.log(response);
-            // console.log(response.length);
+function listarSugeridos(data) {
+    console.log(data);
             html = '';
-            if (response.length > 0) {
-                response.forEach(function (element) {
+            if (data.length > 0) {
+                data.forEach(function (element) {
                     html += `
                     <tr>
                     <td>${element.codigo ?? ''}</td>
@@ -148,12 +137,6 @@ function listarSugeridos() {
                 html = '<tr><td colSpan="5" class="text-center">No hay datos para mostrar</td></tr>';
             }
             $('#productosSugeridos tbody').html(html);
-        }
-    }).fail(function (jqXHR, textStatus, errorThrown) {
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    });
 }
 
 function selectProductoAsignado(obj) {
