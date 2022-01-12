@@ -20,7 +20,9 @@
                             <div style="display:flex;">
                                 <select class="form-control" name="estado_orden" >
                                     @foreach ($estados as $estado)
+                                        @if($estado->id_estado != 7)
                                         <option value="{{$estado->id_estado}}">{{$estado->descripcion}}</option>
+                                        @endif
                                     @endforeach     
                                 </select>
                             </div>
