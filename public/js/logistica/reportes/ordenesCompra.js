@@ -259,11 +259,11 @@ class OrdenesCompra {
                 },
                 {
                     'render': function (data, type, row) {
-
+                        // console.log(row.cuadro_costo);
                         let fecha_aprobacion_cc = (row.cuadro_costo)!=null && ((row.cuadro_costo).length) >0 ?(row.cuadro_costo)[0].fecha_aprobacion:'';
                         let fecha_oc = row.fecha != null ?row.fecha:'';
                         let dias_restantes = moment(fecha_aprobacion_cc, 'DD-MM-YYYY').diff(moment(fecha_oc, 'DD-MM-YYYY'), 'days');
-
+                        // console.log(dias_restantes);
                         return dias_restantes;
                     }, targets: 7
                 },
@@ -286,7 +286,27 @@ class OrdenesCompra {
                 {
                     'render': function (data, type, row) {
                         let fechaPlazoEntrega = moment(row['fecha'], "DD-MM-YYYY").add(row['plazo_entrega'], 'days').format("DD-MM-YYYY").toString();
+                        // console.log(row['fecha']);
+                        // console.log(row['plazo_entrega']);
+                        // console.log(fechaPlazoEntrega);
                         let dias_restantes = moment(fechaPlazoEntrega, 'DD-MM-YYYY').diff(moment( row['fecha'], 'DD-MM-YYYY'), 'days');
+                        // console.log(dias_restantes);
+
+                        // var fecha = row['fecha'];
+                        // var fecha_formt = moment(row['fecha'],"DD-MM-YYYY").format("DD-MM-YYYY");
+                        // var plazo = row['plazo_entrega'];
+                        // var fechaPlazo = moment(fecha_formt).add(plazo, 'days')._d;
+                        // var nuevoformatoFechaFechaPlazo=moment(fechaPlazo).format("DD-MM-YYYY");
+                        // var fechaPlazo_format = moment(fecha).add(fecha_formt, 'days').format("DD-MM-YYYY").toString();
+                        
+                        // var fechaDif = moment(fechaPlazo).diff(fecha,'days');
+                        // console.log(fecha);
+                        // console.log(fecha_formt);
+                        // console.log(plazo);
+                        // console.log(fechaPlazo);
+                        // console.log(nuevoformatoFechaFechaPlazo);
+                        // console.log(fechaPlazo_format);
+                        // console.log(fechaDif);
 
                         return dias_restantes;
                     }, targets: 10

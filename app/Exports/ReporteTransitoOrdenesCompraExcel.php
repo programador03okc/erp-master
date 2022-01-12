@@ -35,7 +35,7 @@ class ReporteTransitoOrdenesCompraExcel implements FromView
             $fechaOrden = Carbon::create($element['fecha']);
             if($element->cuadro_costo!=null){
                 $fechaAprobacionCC= Carbon::create($element->cuadro_costo[0]['fecha_aprobacion']);
-                $diasRestantes = $fechaAprobacionCC->diffInDays($fechaOrden);
+                $diasRestantes = $fechaAprobacionCC->diffInDays($fechaOrden,false);
                 $condicion = intval($diasRestantes) <=1?'ATENDIDO A TIEMPO':'ATENDIDO FUERA DE TIEMPO';
             }else{
                 $diasRestantes='';
@@ -43,7 +43,7 @@ class ReporteTransitoOrdenesCompraExcel implements FromView
             }
 
             $fechaLlegada= Carbon::create($element['fecha'])->addDays($element['plazo_entrega']);
-            $diasEntrega = $fechaLlegada->diffInDays($fechaOrden);
+            $diasEntrega = $fechaLlegada->diffInDays($fechaOrden,false);
             $condicion2 = intval($diasEntrega) <=2?'ATENDIDO A TIEMPO':(intval($diasEntrega)>=15?'IMPORTACIÓN':'ATENDIDO FUERA DE TIEMPO');
             $data[]=[
                 'codigo_oportunidad'=> $element->cuadro_costo?$element->cuadro_costo[0]['codigo_oportunidad']:'',

@@ -6,6 +6,7 @@ namespace App\Models\Logistica;
 use App\Models\Almacen\DetalleRequerimiento;
 use App\Models\Almacen\Requerimiento;
 use App\Models\mgcp\AcuerdoMarco\OrdenCompraPropias;
+use App\Models\mgcp\CuadroCosto\CcSolicitud;
 use App\Models\mgcp\CuadroCosto\CuadroCosto;
 use App\Models\mgcp\CuadroCosto\CuadroCostoView;
 use App\Models\mgcp\OrdenCompra\Propia\OrdenCompraPropiaView;
@@ -79,7 +80,7 @@ class Orden extends Model {
         $ccVista= CuadroCostoView::whereIn('id',$idCuadroCostoList)->get();
         
         foreach ($ccVista as $cc) {
-            $ocPropia = OrdenCompraPropiaView::where('id_oportunidad',$cc->id_oportunidad)->first();
+            $ccSolicitud = CcSolicitud::where([['id_cc',$cc->id],['aprobada',true],['id_tipo',1]])->orderBy("id",'desc')->first();
             
             $data[]=[
                 'id'=>$cc->id,
@@ -87,7 +88,7 @@ class Orden extends Model {
                 'fecha_creacion'=>$cc->fecha_creacion,
                 'fecha_limite'=>$cc->fecha_limite,
                 'estado_aprobacion_cuadro'=>$cc->estado_aprobacion,
-                'fecha_aprobacion'=>$ocPropia->fecha_aprobacion??null,
+                'fecha_aprobacion'=>$ccSolicitud->fecha_solicitud??null,
                 'id_estado_aprobacion'=>$cc->id_estado_aprobacion,
                 'estado_aprobacion'=>$cc->estado_aprobacion
             ];
