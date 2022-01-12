@@ -238,7 +238,7 @@ class OrdenesCompra {
 
                 {
                     'render': function (data, type, row) {
-                        console.log((row.cuadro_costo));
+                        // console.log((row.cuadro_costo));
                         return (row.cuadro_costo)!=null && ((row.cuadro_costo)).length >0 && (row.cuadro_costo)[0].codigo_oportunidad !=null ?(row.cuadro_costo)[0].codigo_oportunidad:'(No aplica)';
                     }, targets: 0
                 },
