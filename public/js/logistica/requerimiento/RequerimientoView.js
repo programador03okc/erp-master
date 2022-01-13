@@ -1453,7 +1453,7 @@ class RequerimientoView {
         $('#modal-adjuntar-archivos-requerimiento').modal({
             show: true
         });
-
+        $(":file").filestyle('clear');
 
         document.querySelector("div[id='modal-adjuntar-archivos-requerimiento'] div[id='group-action-upload-file']").classList.remove("oculto");
 
@@ -1564,6 +1564,8 @@ class RequerimientoView {
             show: true,
             backdrop: 'true'
         });
+        $(":file").filestyle('clear');
+
         document.querySelector("div[id='modal-adjuntar-archivos-detalle-requerimiento'] div[id='group-action-upload-file']").classList.remove('oculto');
 
         this.limpiarTabla('listaArchivos');
