@@ -49,6 +49,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 
 use Debugbar;
+use Mockery\Undefined;
 use PhpParser\Node\Stmt\TryCatch;
 
 class RequerimientoController extends Controller
@@ -1589,6 +1590,7 @@ class RequerimientoController extends Controller
 
         // return $requerimientos;
         $payload = [];
+        $mensaje=[];
         $operacion_selected = 0;
         $flujo_list_selected = [];
 
@@ -1609,53 +1611,71 @@ class RequerimientoController extends Controller
 
                 $operaciones = Operacion::getOperacion(1, $id_tipo_requerimiento_req, $id_grupo_req, $division_id, $id_prioridad_req);
                 // Debugbar::info($operaciones[0]->id_operacion);
+                if($operaciones ==[]){
+                    $mensaje[]= "El requerimiento ".$element->codigo." no coincide con una operación valida, es omitido en la lista. Parametros para obtener operacion: tipoDocumento= 1, tipoRequerimiento= ".$id_tipo_requerimiento_req.",Grupo= ".$id_grupo_req.", Division= ".$division_id.", Prioridad= ".$id_prioridad_req;
+                }else{
+                    $flujoTotal = Flujo::getIdFlujo($operaciones[0]->id_operacion)['data'];
 
-
-                $flujoTotal = Flujo::getIdFlujo($operaciones[0]->id_operacion)['data'];
-
-                $tamañoFlujo = $flujoTotal ? count($flujoTotal) : 0;
-
-                $voboList = Aprobacion::getVoBo($idDocumento); // todas las vobo del documento
-                $cantidadAprobacionesRealizadas = Aprobacion::getCantidadAprobacionesRealizadas($idDocumento);
-                $ultimoVoBo = Aprobacion::getUltimoVoBo($idDocumento);
-                // Debugbar::info($cantidadAprobacionesRealizadas);
-
-                $nextFlujo = [];
-                $nextIdRolAprobante = 0;
-                $nextIdFlujo = 0;
-                $nextIdOperacion = 0;
-                $nextNroOrden = 0;
-                $aprobacionFinalOPendiente = '';
-                $cantidadConSiguienteAprobacion=false;
-                $tieneRolConSiguienteAprobacion='';
-
-                if ($cantidadAprobacionesRealizadas > 0) {
-
-                    // si existe data => evaluar si tiene aprobacion / Rechazado / observado.
-                    if (in_array($ultimoVoBo->id_vobo, [1, 5])) { // revisado o aprobado
-                        // next flujo y rol aprobante
-                        $ultimoIdFlujo = $ultimoVoBo->id_flujo;
-
-                        foreach ($flujoTotal as $key => $flujo) {
-                            if ($flujo->id_flujo == $ultimoIdFlujo) {
-                                $nroOrdenUltimoFlujo = $flujo->orden;
-                                if ($nroOrdenUltimoFlujo != $tamañoFlujo) { // get next id_flujo
-                                    foreach ($flujoTotal as $key => $flujo) {
-                                        if ($flujo->estado == 1) {
-                                            if ($flujo->orden == $nroOrdenUltimoFlujo + 1) {
-                                                $nextFlujo = $flujo;
-                                                $nextIdFlujo = $flujo->id_flujo;
-                                                $nextIdOperacion = $flujo->id_operacion;
-                                                $nextIdRolAprobante = $flujo->id_rol;
-                                                $aprobacionFinalOPendiente = $flujo->orden == $tamañoFlujo ? 'APROBACION_FINAL' : 'PENDIENTE'; // NEXT NRO ORDEN == TAMAÑO FLUJO?
+                    $tamañoFlujo = $flujoTotal ? count($flujoTotal) : 0;
+    
+                    $voboList = Aprobacion::getVoBo($idDocumento); // todas las vobo del documento
+                    $cantidadAprobacionesRealizadas = Aprobacion::getCantidadAprobacionesRealizadas($idDocumento);
+                    $ultimoVoBo = Aprobacion::getUltimoVoBo($idDocumento);
+                    // Debugbar::info($cantidadAprobacionesRealizadas);
+    
+                    $nextFlujo = [];
+                    $nextIdRolAprobante = 0;
+                    $nextIdFlujo = 0;
+                    $nextIdOperacion = 0;
+                    $nextNroOrden = 0;
+                    $aprobacionFinalOPendiente = '';
+                    $cantidadConSiguienteAprobacion=false;
+                    $tieneRolConSiguienteAprobacion='';
+    
+                    if ($cantidadAprobacionesRealizadas > 0) {
+    
+                        // si existe data => evaluar si tiene aprobacion / Rechazado / observado.
+                        if (in_array($ultimoVoBo->id_vobo, [1, 5])) { // revisado o aprobado
+                            // next flujo y rol aprobante
+                            $ultimoIdFlujo = $ultimoVoBo->id_flujo;
+    
+                            foreach ($flujoTotal as $key => $flujo) {
+                                if ($flujo->id_flujo == $ultimoIdFlujo) {
+                                    $nroOrdenUltimoFlujo = $flujo->orden;
+                                    if ($nroOrdenUltimoFlujo != $tamañoFlujo) { // get next id_flujo
+                                        foreach ($flujoTotal as $key => $flujo) {
+                                            if ($flujo->estado == 1) {
+                                                if ($flujo->orden == $nroOrdenUltimoFlujo + 1) {
+                                                    $nextFlujo = $flujo;
+                                                    $nextIdFlujo = $flujo->id_flujo;
+                                                    $nextIdOperacion = $flujo->id_operacion;
+                                                    $nextIdRolAprobante = $flujo->id_rol;
+                                                    $aprobacionFinalOPendiente = $flujo->orden == $tamañoFlujo ? 'APROBACION_FINAL' : 'PENDIENTE'; // NEXT NRO ORDEN == TAMAÑO FLUJO?
+                                                }
                                             }
                                         }
                                     }
                                 }
                             }
                         }
-                    }
-                    if ($ultimoVoBo->id_vobo == 3 && $ultimoVoBo->id_sustentacion != null) { //observado con sustentacion
+                        if ($ultimoVoBo->id_vobo == 3 && $ultimoVoBo->id_sustentacion != null) { //observado con sustentacion
+                            foreach ($flujoTotal as $flujo) {
+                                if ($flujo->orden == 1) {
+                                    // Debugbar::info($flujo);
+                                    $nextFlujo = $flujo;
+                                    $nextNroOrden = $flujo->orden;
+                                    $nextIdOperacion = $flujo->id_operacion;
+                                    $nextIdFlujo = $flujo->id_flujo;
+                                    $nextIdRolAprobante = $flujo->id_rol;
+                                    $aprobacionFinalOPendiente = $flujo->orden == $tamañoFlujo ? 'APROBACION_FINAL' : 'PENDIENTE'; // NEXT NRO ORDEN == TAMAÑO FLUJO?
+    
+                                }
+                            }
+                        }
+                    } else { //  no tiene aprobaciones, entonces es la PRIMERA APROBACIÓN de este req.
+                        // tiene observación?
+    
+                        //obtener rol del flujo de aprobacion con orden #1 y comprar con el rol del usuario en sesion
                         foreach ($flujoTotal as $flujo) {
                             if ($flujo->orden == 1) {
                                 // Debugbar::info($flujo);
@@ -1665,51 +1685,89 @@ class RequerimientoController extends Controller
                                 $nextIdFlujo = $flujo->id_flujo;
                                 $nextIdRolAprobante = $flujo->id_rol;
                                 $aprobacionFinalOPendiente = $flujo->orden == $tamañoFlujo ? 'APROBACION_FINAL' : 'PENDIENTE'; // NEXT NRO ORDEN == TAMAÑO FLUJO?
-
+    
                             }
                         }
                     }
-                } else { //  no tiene aprobaciones, entonces es la PRIMERA APROBACIÓN de este req.
-                    // tiene observación?
-
-                    //obtener rol del flujo de aprobacion con orden #1 y comprar con el rol del usuario en sesion
+                    $numeroOrdenSiguienteAprobacion=0;
                     foreach ($flujoTotal as $flujo) {
-                        if ($flujo->orden == 1) {
-                            // Debugbar::info($flujo);
-                            $nextFlujo = $flujo;
-                            $nextNroOrden = $flujo->orden;
-                            $nextIdOperacion = $flujo->id_operacion;
-                            $nextIdFlujo = $flujo->id_flujo;
-                            $nextIdRolAprobante = $flujo->id_rol;
-                            $aprobacionFinalOPendiente = $flujo->orden == $tamañoFlujo ? 'APROBACION_FINAL' : 'PENDIENTE'; // NEXT NRO ORDEN == TAMAÑO FLUJO?
-
-                        }
-                    }
-                }
-                $numeroOrdenSiguienteAprobacion=0;
-                foreach ($flujoTotal as $flujo) {
-                    if ($flujo->id_operacion == $nextIdOperacion) {
-                        if($flujo->orden == (intval($nextNroOrden)+1)){ // si existe una siguiente aprobacion (nro orden + 1 ) 
-                            if(in_array($flujo->id_rol, $idRolUsuarioList) == true){
-                                $cantidadConSiguienteAprobacion=true;
-                                $numeroOrdenSiguienteAprobacion= $flujo->orden;
+                        if ($flujo->id_operacion == $nextIdOperacion) {
+                            if($flujo->orden == (intval($nextNroOrden)+1)){ // si existe una siguiente aprobacion (nro orden + 1 ) 
+                                if(in_array($flujo->id_rol, $idRolUsuarioList) == true){
+                                    $cantidadConSiguienteAprobacion=true;
+                                    $numeroOrdenSiguienteAprobacion= $flujo->orden;
+                                }
+                                
                             }
                             
                         }
-                        
                     }
-                }
-
-                if($cantidadConSiguienteAprobacion ==true){
-                    $tieneRolConSiguienteAprobacion=true;
-                }else{
-                    $tieneRolConSiguienteAprobacion=false;    
-                }
-      
-                if ((in_array($nextIdRolAprobante, $idRolUsuarioList)) == true) {
-                    if ($nextNroOrden == 1) {
-                        // fitlar por division
-                        if (in_array($element->division_id, $idDivisionUsuarioList) == true) {
+    
+                    if($cantidadConSiguienteAprobacion ==true){
+                        $tieneRolConSiguienteAprobacion=true;
+                    }else{
+                        $tieneRolConSiguienteAprobacion=false;    
+                    }
+          
+                    if ((in_array($nextIdRolAprobante, $idRolUsuarioList)) == true) {
+                        if ($nextNroOrden == 1) {
+                            // fitlar por division
+                            if (in_array($element->division_id, $idDivisionUsuarioList) == true) {
+                                $payload[] = [
+                                    'termometro' => $element->termometro,
+                                    'id_requerimiento' => $element->id_requerimiento,
+                                    'id_tipo_requerimiento' => $element->id_tipo_requerimiento,
+                                    'tipo_requerimiento' => $element->tipo_requerimiento,
+                                    'id_tipo_cliente' => $element->id_tipo_cliente,
+                                    'descripcion_tipo_cliente' => $element->descripcion_tipo_cliente,
+                                    'id_prioridad' => $element->id_prioridad,
+                                    'descripcion_prioridad' => $element->descripcion_prioridad,
+                                    'id_periodo' => $element->id_periodo,
+                                    'descripcion_periodo' => $element->descripcion_periodo,
+                                    'codigo' => $element->codigo,
+                                    'concepto' => $element->concepto,
+                                    'id_empresa' => $element->id_empresa,
+                                    'razon_social_empresa' => $element->razon_social_empresa,
+                                    'codigo_sede_empresa' => $element->codigo_sede_empresa,
+                                    'logo_empresa' => $element->logo_empresa,
+                                    'id_grupo' => $element->id_grupo,
+                                    'descripcion_grupo' => $element->descripcion_grupo,
+                                    'fecha_requerimiento' => $element->fecha_requerimiento,
+                                    'observacion' => $element->observacion,
+                                    'name_ubigeo' => $element->name_ubigeo,
+                                    'id_moneda' => $element->id_moneda,
+                                    'simbolo_moneda' => $element->simbolo_moneda,
+                                    'desrcipcion_moneda' => $element->desrcipcion_moneda,
+                                    'monto' => $element->monto,
+                                    'fecha_registro' => $element->fecha_registro,
+                                    'fecha_entrega' => $element->fecha_entrega,
+                                    'id_usuario' => $element->id_usuario,
+                                    'id_rol' => $element->id_rol,
+                                    'descripcion_rol' => $element->descripcion_rol,
+                                    'usuario' => $element->usuario,
+                                    'nombre_usuario' => $element->nombre_usuario,
+                                    'id_almacen' => $element->id_almacen,
+                                    'descripcion_almacen' => $element->descripcion_almacen,
+                                    'cantidad_aprobados_total_flujo' => ($cantidadAprobacionesRealizadas) . '/' . ($tamañoFlujo),
+                                    'aprobaciones' => $voboList,
+                                    'pendiente_aprobacion' => $pendiente_aprobacion,
+                                    // 'observaciones' => $observacion_list,
+                                    'observaciones' => [],
+                                    'estado' => $element->estado,
+                                    'estado_doc' => $element->estado_doc,
+                                    'division' => $element->division,
+                                    'id_flujo' => $nextIdFlujo,
+                                    'id_usuario_aprobante' => $idUsuarioAprobante,
+                                    'id_rol_aprobante' => $nextIdRolAprobante,
+                                    'aprobacion_final_o_pendiente' => $aprobacionFinalOPendiente,
+                                    'id_doc_aprob' => $idDocumento,
+                                    'monto_total' => $element->monto_total,
+                                    'idOperacion'=>$nextIdOperacion,
+                                    'tieneRolConSiguienteAprobacion'=>$tieneRolConSiguienteAprobacion
+    
+                                ];
+                            }
+                        } else {
                             $payload[] = [
                                 'termometro' => $element->termometro,
                                 'id_requerimiento' => $element->id_requerimiento,
@@ -1761,70 +1819,18 @@ class RequerimientoController extends Controller
                                 'monto_total' => $element->monto_total,
                                 'idOperacion'=>$nextIdOperacion,
                                 'tieneRolConSiguienteAprobacion'=>$tieneRolConSiguienteAprobacion
-
+     
                             ];
                         }
-                    } else {
-                        $payload[] = [
-                            'termometro' => $element->termometro,
-                            'id_requerimiento' => $element->id_requerimiento,
-                            'id_tipo_requerimiento' => $element->id_tipo_requerimiento,
-                            'tipo_requerimiento' => $element->tipo_requerimiento,
-                            'id_tipo_cliente' => $element->id_tipo_cliente,
-                            'descripcion_tipo_cliente' => $element->descripcion_tipo_cliente,
-                            'id_prioridad' => $element->id_prioridad,
-                            'descripcion_prioridad' => $element->descripcion_prioridad,
-                            'id_periodo' => $element->id_periodo,
-                            'descripcion_periodo' => $element->descripcion_periodo,
-                            'codigo' => $element->codigo,
-                            'concepto' => $element->concepto,
-                            'id_empresa' => $element->id_empresa,
-                            'razon_social_empresa' => $element->razon_social_empresa,
-                            'codigo_sede_empresa' => $element->codigo_sede_empresa,
-                            'logo_empresa' => $element->logo_empresa,
-                            'id_grupo' => $element->id_grupo,
-                            'descripcion_grupo' => $element->descripcion_grupo,
-                            'fecha_requerimiento' => $element->fecha_requerimiento,
-                            'observacion' => $element->observacion,
-                            'name_ubigeo' => $element->name_ubigeo,
-                            'id_moneda' => $element->id_moneda,
-                            'simbolo_moneda' => $element->simbolo_moneda,
-                            'desrcipcion_moneda' => $element->desrcipcion_moneda,
-                            'monto' => $element->monto,
-                            'fecha_registro' => $element->fecha_registro,
-                            'fecha_entrega' => $element->fecha_entrega,
-                            'id_usuario' => $element->id_usuario,
-                            'id_rol' => $element->id_rol,
-                            'descripcion_rol' => $element->descripcion_rol,
-                            'usuario' => $element->usuario,
-                            'nombre_usuario' => $element->nombre_usuario,
-                            'id_almacen' => $element->id_almacen,
-                            'descripcion_almacen' => $element->descripcion_almacen,
-                            'cantidad_aprobados_total_flujo' => ($cantidadAprobacionesRealizadas) . '/' . ($tamañoFlujo),
-                            'aprobaciones' => $voboList,
-                            'pendiente_aprobacion' => $pendiente_aprobacion,
-                            // 'observaciones' => $observacion_list,
-                            'observaciones' => [],
-                            'estado' => $element->estado,
-                            'estado_doc' => $element->estado_doc,
-                            'division' => $element->division,
-                            'id_flujo' => $nextIdFlujo,
-                            'id_usuario_aprobante' => $idUsuarioAprobante,
-                            'id_rol_aprobante' => $nextIdRolAprobante,
-                            'aprobacion_final_o_pendiente' => $aprobacionFinalOPendiente,
-                            'id_doc_aprob' => $idDocumento,
-                            'monto_total' => $element->monto_total,
-                            'idOperacion'=>$nextIdOperacion,
-                            'tieneRolConSiguienteAprobacion'=>$tieneRolConSiguienteAprobacion
- 
-                        ];
                     }
                 }
+
+
             }
         }
 
 
-        $output = ['data' => $payload];
+        $output = ['data' => $payload, 'mensaje'=>$mensaje];
         return $output;
     }
 

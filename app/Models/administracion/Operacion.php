@@ -97,6 +97,6 @@ class Operacion extends Model
         // }   
 
 
-        return $adm_operacion;
+        return count($adm_operacion)==0 ?[]:$adm_operacion;
     }
 }

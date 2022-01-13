@@ -53,6 +53,19 @@ class AprobarRequerimientoView {
     mostrar(idEmpresa, idSede, idGrupo, idPrioridad) {
         this.requerimientoCtrl.getListadoAprobacion(idEmpresa, idSede, idGrupo, idPrioridad).then((res) =>{
             this.construirTablaListaRequerimientosPendientesAprobacion(res['data']);
+            console.log(res);
+            if(res['mensaje'].length>0){
+                console.warn(res['mensaje']);
+                    Lobibox.notify('warning', {
+                    title:false,
+                    size: 'mini',
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    msg: res['mensaje'].toString()
+                    }); 
+            }
+            
         }).catch(function (err) {
             console.log(err)
         })

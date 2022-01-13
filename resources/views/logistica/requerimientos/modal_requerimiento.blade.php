@@ -89,7 +89,7 @@
                 </fieldset>
 
                 <fieldset class="group-importes">
-                    <legend style="background:#b3a705;">Historial de revisiones</legend>
+                    <legend style="background:#b3a705;">Historial de revisiones/aprobaciones</legend>
                     <br>
                     <table class="table table-bordered" id="listaHistorialRevision">
                         <thead>
