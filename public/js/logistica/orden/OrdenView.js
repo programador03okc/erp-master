@@ -209,30 +209,30 @@ class OrdenView {
                         url: 'enviar-notificacion-finalizacion-cdp',
                         data:{'idOrden':idOrden},
                         dataType: 'JSON',
+                        beforeSend: data => {
+
+                            $("#modal-estado-cuadro-presupuesto .modal-content").LoadingOverlay("show", {
+                                imageAutoResize: true,
+                                progress: true,
+                                imageColor: "#3c8dbc"
+                            });
+                        },
                         success: (response) => {
+                            $("#modal-estado-cuadro-presupuesto .modal-content").LoadingOverlay("hide", true);
+
                             console.log(response);
-                            if(response.status ==200){
-                                Lobibox.notify('success', {
+                                Lobibox.notify(response.tipo_estado, {
                                     title: false,
                                     size: 'mini',
                                     rounded: true,
                                     sound: false,
                                     delayIndicator: false,
-                                    msg: 'La notificación fue enviada <i class="far fa-envelope"></i>'
+                                    msg: response.mensaje
                                 });
 
-                            }else{
-                                Lobibox.notify('error', {
-                                    title: false,
-                                    size: 'mini',
-                                    rounded: true,
-                                    sound: false,
-                                    delayIndicator: false,
-                                    msg: 'La notificación NO puedo ser enviada, por favor vuelva a intentarlo'
-                                });    
-                            }
                         }
                     }).fail((jqXHR, textStatus, errorThrown) => {
+                        $("#modal-estado-cuadro-presupuesto .modal-content").LoadingOverlay("hide", true);
                         Swal.fire(
                             '',
                             'Hubo un problema al intentar mostrar enviar la notificación, por favor vuelva a intentarlo.',
@@ -1854,12 +1854,12 @@ class OrdenView {
                     document.querySelector("div[id='contenedor-detalle-estado-cdp']").innerHTML='';
                     document.querySelector("div[id='contenedor-detalle-estado-cdp']").insertAdjacentHTML('beforeend', `<div class="panel panel-default">
                     <div class="panel-body">
-                        <dl class="dl-horizontal">
-                            <dt>Código</dt>
-                            <dd>${element.codigo_oportunidad}</dd>
-                            <dt>Estado CDP</dt>
-                            <dd>${element.estado_aprobacion}</dd>
-                        </dl>
+                    
+                        <ul style="list-style-type:none;">
+                            <li><strong>Código:</strong> ${element.codigo_oportunidad}</li>
+                            <li><strong>Estado CDP:</strong> ${element.estado_aprobacion}</li>
+                        </ul>
+ 
                     </div>
                 </div>`);
 

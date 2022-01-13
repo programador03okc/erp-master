@@ -3819,13 +3819,16 @@ class OrdenController extends Controller
 
 
     public function enviarNotificacionFinalizacionCDP(Request $request){
+        try {
+            DB::beginTransaction();
         $idOrden= $request->idOrden;
         $idDetalleRequerimientoList=[];
         $idRequerimientoList=[];
         $idCuadroPresupuestoFinalizadoList=[];
         $codigoOportunidad=[];
         $payloadCuadroPresupuestoFinalizado=[];
-        $status=0;
+        $tipoStatus="";
+        $mensaje="";
 
         if($idOrden >0){
             $detalleOrden =OrdenCompraDetalle::where('id_orden_compra',$idOrden)->get();
@@ -3834,72 +3837,89 @@ class OrdenController extends Controller
                     $idDetalleRequerimientoList[]=$do->id_detalle_requerimiento;
                 }
             }
-            $detalleRequerimiento = DetalleRequerimiento::whereIn('id_detalle_requerimiento',$idDetalleRequerimientoList)->get();
-            foreach ($detalleRequerimiento as $dr) {
-                $idRequerimientoList[]=$dr->id_requerimiento;
-            }
-
-             //busca cdp finalizados
-            foreach (array_unique($idRequerimientoList) as $idRequerimiento) {
-                $requerimiento = Requerimiento::find($idRequerimiento);
-                if($requerimiento->id_cc >0){
-                    $cuadroPresupuesto= CuadroCosto::find($requerimiento->id_cc);
-                    if($cuadroPresupuesto->estado_aprobacion == 4){
-                        $idCuadroPresupuestoFinalizadoList[]=$requerimiento->id_cc;
-                        $codigoOportunidad[]=$cuadroPresupuesto->oportunidad->codigo_oportunidad;
-                        $payloadCuadroPresupuestoFinalizado[] = [
-                            'requerimiento' => $requerimiento,
-                            'cuadro_presupuesto' => $cuadroPresupuesto,
-                            'orden_compra_propia' => $cuadroPresupuesto->oportunidad->ordenCompraPropia,
-                            'oportunidad' => $cuadroPresupuesto->oportunidad
-                        ];                    
-                    }
-                }
-            }
-
-            // si existe CDP finalizados (estado_aprobacion = 4), preparar correo y enviar
-            if($idCuadroPresupuestoFinalizadoList>0){
-                $correosOrdenServicioTransformacion = [];
-                $correoFinalizacionCuadroPresupuesto=[];
-
-                if (config('app.debug')) {
-                    $correosOrdenServicioTransformacion[] = config('global.correoDebug2');
-                    $correoFinalizacionCuadroPresupuesto[]= config('global.correoDebug2');
-
-                } else {
-                    $idUsuarios = Usuario::getAllIdUsuariosPorRol(25); //Rol de usuario de despacho externo
-                    foreach ($idUsuarios as $id) {
-                        $correosOrdenServicioTransformacion[] = Usuario::find($id)->email;
-                    }
-
-                    //$correoUsuarioEnSession=Auth::user()->email;
-                    $correoFinalizacionCuadroPresupuesto[]=Auth::user()->email;
-                    $correoFinalizacionCuadroPresupuesto[]=Usuario::find($requerimiento->id_usuario)->email;
-                }
-                
-                Mail::to(array_unique($correoFinalizacionCuadroPresupuesto))->send(new EmailFinalizacionCuadroPresupuesto($codigoOportunidad,$payloadCuadroPresupuestoFinalizado,Auth::user()->nombre_corto));
-                $status =200;
-
-                foreach ($payloadCuadroPresupuestoFinalizado as $pl) { // enviar orde servicio / transformacion a multiples usuarios
-                    $transformacion =  Transformacion::select('transformacion.codigo', 'cc.id_oportunidad', 'adm_empresa.logo_empresa')
-                    ->leftjoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'transformacion.id_cc')
-                    ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'transformacion.id_almacen')
-                    ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_almacen.id_sede')
-                    ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
-                    ->where('cc.id', $pl['cuadro_presupuesto']->id)
-                    ->first();
-                    $logoEmpresa=empty($transformacion->logo_empresa)?null:$transformacion->logo_empresa;
-                    $codigoTransformacion=empty($transformacion->codigo)?null:$transformacion->codigo;
-                    Mail::to($correosOrdenServicioTransformacion)->send(new EmailOrdenServicioOrdenTransformacion($pl['oportunidad'],$logoEmpresa,$codigoTransformacion));
-                }
-
+            if(count($idDetalleRequerimientoList)==0){
+                $tipoStatus="error";
+                $mensaje="No se encontro Id detalle requerimiento en el detalle de la orden";
             }else{
-                $status=204;
+                $detalleRequerimiento = DetalleRequerimiento::whereIn('id_detalle_requerimiento',$idDetalleRequerimientoList)->get();
+                foreach ($detalleRequerimiento as $dr) {
+                    $idRequerimientoList[]=$dr->id_requerimiento;
+                }
+    
+                 //busca cdp finalizados
+                foreach (array_unique($idRequerimientoList) as $idRequerimiento) {
+                    $requerimiento = Requerimiento::find($idRequerimiento);
+                    if($requerimiento->id_cc >0){
+                        $cuadroPresupuesto= CuadroCosto::find($requerimiento->id_cc);
+                        if($cuadroPresupuesto->estado_aprobacion == 4){
+                            $idCuadroPresupuestoFinalizadoList[]=$requerimiento->id_cc;
+                            $codigoOportunidad[]=$cuadroPresupuesto->oportunidad->codigo_oportunidad;
+                            $payloadCuadroPresupuestoFinalizado[] = [
+                                'requerimiento' => $requerimiento,
+                                'cuadro_presupuesto' => $cuadroPresupuesto,
+                                'orden_compra_propia' => $cuadroPresupuesto->oportunidad->ordenCompraPropia,
+                                'oportunidad' => $cuadroPresupuesto->oportunidad
+                            ];                    
+                        }
+                    }
+                }
+    
+                // si existe CDP finalizados (estado_aprobacion = 4), preparar correo y enviar
+                if($idCuadroPresupuestoFinalizadoList>0){
+                    $correosOrdenServicioTransformacion = [];
+                    $correoFinalizacionCuadroPresupuesto=[];
+    
+                    if (config('app.debug')) {
+                        $correosOrdenServicioTransformacion[] = config('global.correoDebug2');
+                        $correoFinalizacionCuadroPresupuesto[]= config('global.correoDebug2');
+    
+                    } else {
+                        $idUsuarios = Usuario::getAllIdUsuariosPorRol(25); //Rol de usuario de despacho externo
+                        foreach ($idUsuarios as $id) {
+                            $correosOrdenServicioTransformacion[] = Usuario::find($id)->email;
+                        }
+    
+                        //$correoUsuarioEnSession=Auth::user()->email;
+                        $correoFinalizacionCuadroPresupuesto[]=Auth::user()->email;
+                        $correoFinalizacionCuadroPresupuesto[]=Usuario::find($requerimiento->id_usuario)->email;
+                    }
+                    
+                    Mail::to(array_unique($correoFinalizacionCuadroPresupuesto))->send(new EmailFinalizacionCuadroPresupuesto($codigoOportunidad,$payloadCuadroPresupuestoFinalizado,Auth::user()->nombre_corto));
+                    $tipoStatus ="success";
+                    $mensaje="La notificación fue enviada";
+    
+                    foreach ($payloadCuadroPresupuestoFinalizado as $pl) { // enviar orde servicio / transformacion a multiples usuarios
+                        $transformacion =  Transformacion::select('transformacion.codigo', 'cc.id_oportunidad', 'adm_empresa.logo_empresa')
+                        ->leftjoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'transformacion.id_cc')
+                        ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'transformacion.id_almacen')
+                        ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_almacen.id_sede')
+                        ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
+                        ->where('cc.id', $pl['cuadro_presupuesto']->id)
+                        ->first();
+                        $logoEmpresa=empty($transformacion->logo_empresa)?null:$transformacion->logo_empresa;
+                        $codigoTransformacion=empty($transformacion->codigo)?null:$transformacion->codigo;
+                        Mail::to($correosOrdenServicioTransformacion)->send(new EmailOrdenServicioOrdenTransformacion($pl['oportunidad'],$logoEmpresa,$codigoTransformacion));
+                    }
+    
+                }else{
+                    $tipoStatus="warning";
+                    $mensaje="La notificación no puedo ser enviada, debido al estado actual del CDP";
+    
+                }
             }
+
+        }else{
+            $mensaje="No se encontro un id de orden valido";
+            $tipoStatus="error";
         }
 
-        return $status;
+        DB::commit();
+        return ['tipo_estado'=>$tipoStatus,'mensaje'=>$mensaje];
 
+    } catch (Exception $e) {
+        DB::rollBack();
+        return response()->json(['tipo_estado'=>'error',  'mensaje' => 'Mensaje de error: ' . $e->getMessage()]);
+    }
     }
 
 
