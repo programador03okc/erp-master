@@ -255,14 +255,14 @@ function listarRequerimientosPendientes(usuario) {
                         
                         ${row['tiene_transformacion'] ?
                             `<button type="button" class="interno btn btn-${row['codigo_despacho_interno'] !== null ? 'danger' : 'default'} btn-flat btn-xs " data-toggle="tooltip"
-                            data-placement="bottom" title="Programar Despacho Interno" data-id="${row['id_requerimiento']}" 
+                            data-placement="bottom" title="Despacho Interno" data-id="${row['id_requerimiento']}" 
                             data-estado="${row['estado_di']}"
                             data-idod="${row['id_despacho_interno']}" >
                             <i class="fas fa-random"></i></button>` : ''}
                             
                         ${row['id_requerimiento'] !== null ?
                             `<button type="button" class="envio_od btn btn-${row['id_od'] !== null ? 'warning' : 'default'} btn-flat btn-xs " data-toggle="tooltip"
-                            data-placement="bottom" title="Enviar Orden de Despacho" data-id="${row['id_requerimiento']}"
+                            data-placement="bottom" title="Orden de Despacho" data-id="${row['id_requerimiento']}"
                             data-fentrega="${row['fecha_entrega']}" data-cdp="${row['codigo_oportunidad']}">
                             <i class="far fa-envelope"></i></button>
                             `: ''}
