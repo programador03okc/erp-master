@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ProyectosController;
-use App\Models\Administracion\Division;
+use App\Models\Administracion\DivisionArea;
 use App\Models\Administracion\Documento;
 use App\Models\Administracion\Empresa;
 use App\Models\Administracion\Periodo;
@@ -46,7 +46,7 @@ class RequerimientoPagoController extends Controller
 
         $empresas = Empresa::mostrar();
         $grupos = Grupo::mostrar();
-        $divisiones = Division::mostrar();
+        $divisiones = DivisionArea::mostrar();
         $monedas = Moneda::mostrar();
         $unidadesMedida = UnidadMedida::mostrar();
         $proyectos_activos = (new ProyectosController)->listar_proyectos_activos();
@@ -65,7 +65,7 @@ class RequerimientoPagoController extends Controller
 
         $empresas = Empresa::mostrar();
         $grupos = Grupo::mostrar();
-        $divisiones = Division::mostrar();
+        $divisiones = DivisionArea::mostrar();
         $monedas = Moneda::mostrar();
         $unidadesMedida = UnidadMedida::mostrar();
         $proyectos_activos = (new ProyectosController)->listar_proyectos_activos();

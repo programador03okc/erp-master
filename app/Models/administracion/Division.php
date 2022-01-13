@@ -12,25 +12,7 @@ class Division extends Model
     protected $primaryKey = 'id_flujo';
     public $timestamps = false;
     
-    public static function mostrar()
-    {
-        $grupos = Auth::user()->getAllGrupo();
-        $idGrupoList=[];
 
-        foreach ($grupos as $value) {
-            $idGrupoList[]=$value->id_grupo;
-        }
-
-        $divisiones = DB::table('administracion.division')
-        ->select('division.*')
-        ->whereIn('division.grupo_id', $idGrupoList)
-        ->where('division.estado',1)
-        ->get();
-
-        return $divisiones;
-
-
-    }
     public static function mostrarDivisionUsuarioNroOrdenUno(){
         $roles = Auth::user()->getAllRol();
         $idRolUsuarioList=[];
