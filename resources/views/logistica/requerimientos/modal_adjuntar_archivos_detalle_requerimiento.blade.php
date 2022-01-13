@@ -8,7 +8,7 @@
             <div class="modal-body">
                 <div class="row" id="group-action-upload-file">
                     <div class="col-md-12">
-                        <input type="file" class="filestyle handleChangeAgregarAdjuntoItem" data-input="false" name="nombre_archivo" />
+                        <input type="file" class="filestyle handleChangeAgregarAdjuntoItem"  name="nombre_archivo" placeholder="Seleccionar archivo" data-buttonName="btn-primary" data-buttonText="Seleccionar archivo" data-size="sm" data-iconName="fa fa-folder-open" />
                     </div>
 
                 </div>

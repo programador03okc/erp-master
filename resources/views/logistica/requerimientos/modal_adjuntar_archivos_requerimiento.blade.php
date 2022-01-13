@@ -6,10 +6,10 @@
                 <h3 class="modal-title">Archivos adjuntos de requerimiento</h3>
             </div>
             <div class="modal-body">
-
+ 
                 <div class="row" id="group-action-upload-file">
                     <div class="col-md-12">
-                        <input type="file" name="nombre_archivo" class="filestyle handleChangeAgregarAdjuntoRequerimiento" data-input="false" placeholder="Seleccionar archivo" />
+                        <input type="file" name="nombre_archivo" id="nombre_archivo" class="filestyle handleChangeAgregarAdjuntoRequerimiento"   placeholder="Seleccionar archivo" data-buttonName="btn-primary" data-buttonText="Seleccionar archivo" data-size="sm" data-iconName="fa fa-folder-open" />
                     </div>
                 </div>
                 <br>

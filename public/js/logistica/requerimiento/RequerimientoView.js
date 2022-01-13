@@ -1455,8 +1455,6 @@ class RequerimientoView {
         });
 
 
-        // document.querySelector("div[id='modal-adjuntar-archivos-requerimiento'] div[class='bootstrap-filestyle input-group'] input[type='text']").classList.add('oculto');
-        document.querySelector("div[id='modal-adjuntar-archivos-requerimiento'] span[class='buttonText']").textContent = "Agregar archivo";
         document.querySelector("div[id='modal-adjuntar-archivos-requerimiento'] div[id='group-action-upload-file']").classList.remove("oculto");
 
         this.limpiarTabla('listaArchivosRequerimiento');
@@ -1561,9 +1559,7 @@ class RequerimientoView {
         tempIdRegisterActive = obj.closest('td').querySelector("input[class~='idRegister']").value;
         tempObjectBtnInputFile = obj;
 
-        document.querySelector("div[id='modal-adjuntar-archivos-detalle-requerimiento'] span[class='buttonText']").textContent = 'Agregar archivo';
-        document.querySelector("div[id='modal-adjuntar-archivos-detalle-requerimiento'] div[class='bootstrap-filestyle input-group'] input[type='text']")?document.querySelector("div[id='modal-adjuntar-archivos-detalle-requerimiento'] div[class='bootstrap-filestyle input-group'] input[type='text']").classList.add('oculto'):false;
-
+ 
         $('#modal-adjuntar-archivos-detalle-requerimiento').modal({
             show: true,
             backdrop: 'true'
