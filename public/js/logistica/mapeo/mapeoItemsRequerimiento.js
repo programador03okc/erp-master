@@ -316,15 +316,17 @@ $("#form-mapeoItemsRequerimiento").on("submit", function (e) {
                             delayIndicator: false,
                             msg: response.mensaje.toString()
                         });
-                        
-                        Lobibox.notify(response.status_migracion_occ.tipo, {
-                            title: false,
-                            size: 'mini',
-                            rounded: true,
-                            sound: false,
-                            delayIndicator: false,
-                            msg: response.status_migracion_occ.mensaje
-                        });
+
+                        if(response.status_migracion_occ!=null){
+                            Lobibox.notify(response.status_migracion_occ.tipo, {
+                                title: false,
+                                size: 'mini',
+                                rounded: true,
+                                sound: false,
+                                delayIndicator: false,
+                                msg: response.status_migracion_occ.mensaje
+                            });
+                        }
 
                         $('#modal-mapeoItemsRequerimiento').modal('hide');
                         

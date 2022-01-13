@@ -262,7 +262,7 @@ class OrdenesCompra {
                         // console.log(row.cuadro_costo);
                         let fecha_aprobacion_cc = (row.cuadro_costo)!=null && ((row.cuadro_costo).length) >0 ?(row.cuadro_costo)[0].fecha_aprobacion:'';
                         let fecha_oc = row.fecha != null ?row.fecha:'';
-                        let dias_restantes = moment(fecha_aprobacion_cc, 'DD-MM-YYYY').diff(moment(fecha_oc, 'DD-MM-YYYY'), 'days');
+                        let dias_restantes = moment(fecha_oc, 'DD-MM-YYYY').diff(moment(fecha_aprobacion_cc, 'DD-MM-YYYY'), 'days'); 
                         // console.log(dias_restantes);
                         return dias_restantes;
                     }, targets: 7
@@ -272,7 +272,7 @@ class OrdenesCompra {
                     'render': function (data, type, row) {
                         let fecha_aprobacion_cc = (row.cuadro_costo)!=null && ((row.cuadro_costo)).length >0 ?(row.cuadro_costo)[0].fecha_aprobacion:'';
                         let fecha_oc = row.fecha != null ?row.fecha:'';
-                        let dias_restantes = moment(fecha_aprobacion_cc, 'DD-MM-YYYY').diff(moment(fecha_oc, 'DD-MM-YYYY'), 'days');
+                        let dias_restantes = moment(fecha_oc, 'DD-MM-YYYY').diff(moment(fecha_aprobacion_cc, 'DD-MM-YYYY'), 'days');
 
                         
                         return (dias_restantes <=1?'ATENDIDO A TIEMPO':'ATENDIDO FUERA DE TIEMPO');

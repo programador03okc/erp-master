@@ -140,17 +140,17 @@ class MapeoProductosController extends Controller
             $todoDetalleRequerimientoNoMapeados=DetalleRequerimiento::where([['id_requerimiento',$detalleRequerimiento->id_requerimiento],['entrega_cliente',true],['estado','!=',7]])->count();
             $todoDetalleRequerimientoMapeados=DetalleRequerimiento::where([['id_requerimiento',$detalleRequerimiento->id_requerimiento],['entrega_cliente',true],['estado','!=',7]])->whereNotNull('id_producto')->count();
 
-            if($todoDetalleRequerimientoMapeados == $todoDetalleRequerimientoNoMapeados){
-                $status_migracion_occ=(new MigrateRequerimientoSoftLinkController)->migrarOCC($detalleRequerimiento->id_requerimiento);
-            }else{
-                $status_migracion_occ=array(
-                    'tipo' => 'info',
-                    'mensaje' => 'No se migró la OCC porque aún faltan mapear items. '.$todoDetalleRequerimientoNoMapeados.' + '.$todoDetalleRequerimientoMapeados,
-                    'occ_softlink' =>  '',
-                    'occSoftlink' => '',
-                    'reqAgile' => '',
-                );
-            }
+            // if($todoDetalleRequerimientoMapeados == $todoDetalleRequerimientoNoMapeados){
+            //     $status_migracion_occ=(new MigrateRequerimientoSoftLinkController)->migrarOCC($detalleRequerimiento->id_requerimiento);
+            // }else{
+            //     $status_migracion_occ=array(
+            //         'tipo' => 'info',
+            //         'mensaje' => 'No se migró la OCC porque aún faltan mapear items. '.$todoDetalleRequerimientoNoMapeados.' + '.$todoDetalleRequerimientoMapeados,
+            //         'occ_softlink' =>  '',
+            //         'occSoftlink' => '',
+            //         'reqAgile' => '',
+            //     );
+            // }
 
 
             return response()->json(['response' => 'ok','status_migracion_occ'=>$status_migracion_occ,'mensaje'=>$mensaje,'estado_requerimiento'=>$estadoRequerimiento,'cantidad_items_mapeados'=>$cantidadItemsMapeados,'cantidad_total_items'=>$cantidadItemsTotal]);

@@ -704,6 +704,7 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::group(['as' => 'aprobar.', 'prefix' => 'aprobar'], function () {
 				Route::get('index', 'Logistica\RequerimientoController@viewAprobar')->name('index');
 				Route::post('listado-aprobacion', 'Logistica\RequerimientoController@listadoAprobacion')->name('listado-aprobacion');
+				// Route::get('getOperacion/{id1}/{id2}/{id3}/{id4}/{id5}', 'Logistica\RequerimientoController@getOperacion');
 				Route::get('mostrar-requerimiento/{id?}/{codigo?}', 'Logistica\RequerimientoController@mostrarRequerimiento')->name('mostrar-requerimiento');
 				Route::post('guardar-respuesta', 'Logistica\RequerimientoController@guardarRespuesta')->name('guardar-respuesta');
 
