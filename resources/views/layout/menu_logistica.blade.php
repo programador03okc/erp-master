@@ -95,15 +95,15 @@
 
     @if(Auth::user()->tieneSubModulo(20))
     <li class="treeview">
-        <a href="#"><i class="fas fa-truck"></i> <span> Distribución</span>
+        <a href="#"><i class="fas fa-truck"></i> <span> Despachos</span>
             <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
             </span>
         </a>
         <ul class="treeview-menu">
             @if(Auth::user()->tieneAplicacion(80))
-            <li><a href="{{route('logistica.distribucion.ordenes-despacho-interno.index')}}"><i class="far fa-circle fa-xs"></i> Despacho Interno </a></li>
-            <li><a href="{{route('logistica.distribucion.ordenes-despacho-externo.index')}}"><i class="far fa-circle fa-xs"></i> Despacho Externo </a></li>
+            <li><a href="{{route('logistica.distribucion.ordenes-despacho-externo.index')}}"><i class="far fa-circle fa-xs"></i> Despachos Externos </a></li>
+            <li><a href="{{route('logistica.distribucion.ordenes-despacho-interno.index')}}"><i class="far fa-circle fa-xs"></i> Despachos Internos </a></li>
             @endif
 </ul>
 </li>
