@@ -327,19 +327,19 @@ Elaborar orden
                             <tbody id="body_detalle_orden"></tbody>
                             <tfoot>
                                 <tr>
-                                    <td colspan="7" class="text-right"><strong>Monto neto:</strong></td>
+                                    <td colspan="11" class="text-right"><strong>Monto neto:</strong></td>
                                     <td class="text-right"><span name="simboloMoneda">S/</span><label name="montoNeto"> 0.00</label></td>
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td colspan="7" class="text-right">
+                                    <td colspan="11" class="text-right">
                                         <input class="activation handleClickIncluyeIGV" type="checkbox" name="incluye_igv" checked> <strong>Incluye IGV</strong>
                                     </td>
                                     <td class="text-right"><span name="simboloMoneda">S/</span><label name="igv"> 0.00</label></td>
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td colspan="7" class="text-right"><strong>Monto total:</strong></td>
+                                    <td colspan="11" class="text-right"><strong>Monto total:</strong></td>
                                     <td class="text-right"><span name="simboloMoneda">S/</span><label name="montoTotal"> 0.00</label></td>
                                     <td></td>
                                 </tr>
