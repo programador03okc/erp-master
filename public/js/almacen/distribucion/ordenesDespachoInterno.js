@@ -13,28 +13,33 @@ function listarDespachosInternos() {
                 <div class="small-box bg-aqua">
                     <div class="inner">
                         <h5 style="margin:0px;font-size: 13px;">
-                        ${page == 'despachosInternos' ?
+                            ${page == 'despachosInternos' ?
                         `<div style="display:block;">
-                            <i class="fas fa-chevron-up" style="cursor: pointer;" data-toggle="tooltip"
-                            data-placement="bottom" title="Subir prioridad" onClick="subirPrioridad(${element.id_od})"></i>
-                            <i class="fas fa-chevron-down" style="cursor: pointer;"  data-toggle="tooltip"
-                            data-placement="bottom" title="Bajar prioridad" onClick="bajarPrioridad(${element.id_od})"></i>
-                        </div>` : ''}
-                        ${element.codigo_req} - 
-                        <i class="fas fa-file-pdf" style="cursor: pointer;" data-toggle="tooltip"
-                            data-placement="bottom" title="Ver Orden de Transformación" onClick="imprimirTransformacion(${element.id_transformacion})"></i>
-                        <a target="_blank" href="https://mgcp.okccloud.com/mgcp/cuadro-costos/detalles/${element.id_oportunidad}" data-toggle="tooltip"
-                            data-placement="bottom" title="Ver CDP en mgcp">
-                        <i class="fas fa-th-large"></i></a> ${element.codigo_oportunidad}<br></h5>
+                                    <i class="fas fa-chevron-up" style="cursor: pointer;" data-toggle="tooltip"
+                                    data-placement="bottom" title="Subir prioridad" onClick="subirPrioridad(${element.id_od})"></i>
+                                    <i class="fas fa-chevron-down" style="cursor: pointer;"  data-toggle="tooltip"
+                                    data-placement="bottom" title="Bajar prioridad" onClick="bajarPrioridad(${element.id_od})"></i>
+                                </div>` : ''}
+                                <i class="fas fa-file-pdf" style="cursor: pointer;" data-toggle="tooltip" data-placement="bottom" 
+                                    title="Ver PDF de la Orden de Transformación" onClick="imprimirTransformacion(${element.id_transformacion})"></i>
+                                ${element.codigo_transformacion}
+                                <i class="fas fa-table" style="cursor: pointer;" data-toggle="tooltip" data-placement="bottom" 
+                                    title="Abrir Orden de Transformación" onClick="abrirTransformacion(${element.id_transformacion})"></i>
+                            <br>
+                            ${element.codigo_req} - ${element.codigo_oportunidad}
+                            <a target="_blank" href="https://mgcp.okccloud.com/mgcp/cuadro-costos/detalles/${element.id_oportunidad}" data-toggle="tooltip"
+                                data-placement="bottom" title="Ver CDP en mgcp"> <i class="fas fa-th-large"></i></a>
+                            <br>
+                        </h5>
                         <p style="margin-bottom:0px;">${element.nombre_entidad}</p>
                         ${element.comentario !== null ? '<p style="margin-bottom:0px;font-size: 13px;">' + element.comentario + '</p>' : ""}
                     </div >
-                <a href="#" class="small-box-footer" style="cursor: auto;">
-                    ${page == 'tableroTransformaciones' ?
+                    <a href="#" class="small-box-footer" style="cursor: auto;">
+                        ${page == 'tableroTransformaciones' ?
                         `<i class="fa fa-arrow-circle-right" style="cursor: pointer;" data-toggle="tooltip"
-                    data-placement="bottom" title="Siguiente" onClick="siguiente(${element.estado},${element.id_od},${element.id_transformacion})"></i>` : ''
+                        data-placement="bottom" title="Siguiente" onClick="siguiente(${element.estado},${element.id_od},${element.id_transformacion})"></i>` : ''
                     }
-                </a>
+                    </a>
                 </div> `;
             });
             $('#listaProgramados').html(html);
@@ -45,21 +50,26 @@ function listarDespachosInternos() {
                 <div class= "small-box bg-blue">
                     <div class="inner">
                         <h5 style="margin:0px;font-size: 13px;">
-                        ${element.codigo_req} - 
-                        <i class="fas fa-file-pdf" style="cursor: pointer;" data-toggle="tooltip"
-                            data-placement="bottom" title="Ver Orden de Transformación" onClick="imprimirTransformacion(${element.id_transformacion})"></i>
-                        <a target="_blank" href="https://mgcp.okccloud.com/mgcp/cuadro-costos/detalles/${element.id_oportunidad}" data-toggle="tooltip"
-                            data-placement="bottom" title="Ver CDP en mgcp">
-                        <i class="fas fa-th-large"></i></a>${element.codigo_oportunidad} - ${formatDate(element.fecha_despacho)}<br>
+                            <i class="fas fa-file-pdf" style="cursor: pointer;" data-toggle="tooltip" data-placement="bottom" 
+                                title="Ver PDF de la Orden de Transformación" onClick="imprimirTransformacion(${element.id_transformacion})"></i>
+                                ${element.codigo_transformacion}
+                            <i class="fas fa-table" style="cursor: pointer;" data-toggle="tooltip" data-placement="bottom" 
+                                title="Abrir Orden de Transformación" onClick="abrirTransformacion(${element.id_transformacion})"></i>
+                            <br>
+                            ${element.codigo_req} - ${element.codigo_oportunidad}
+                            <a target="_blank" href="https://mgcp.okccloud.com/mgcp/cuadro-costos/detalles/${element.id_oportunidad}" data-toggle="tooltip"
+                                data-placement="bottom" title="Ver CDP en mgcp"><i class="fas fa-th-large"></i></a>
+                             - ${formatDate(element.fecha_despacho)}
+                            <br>
                         </h5><p style="margin-bottom:0px;">${element.nombre_entidad}</p>
                         ${element.comentario !== null ? '<p style="margin-bottom:0px;font-size: 13px;">' + element.comentario + '</p>' : ""}
                     </div>
                     <a href="#" class="small-box-footer" style="cursor: auto;">
-                    ${page == 'tableroTransformaciones' ?
+                        ${page == 'tableroTransformaciones' ?
                         `<i class="fa fa-arrow-circle-left"  style="cursor: pointer;" data-toggle="tooltip"
-                        data-placement="bottom" title="Anterior" onClick="anterior(${element.estado},${element.id_od},${element.id_transformacion})"></i>
-                        <i class="fa fa-arrow-circle-right"  style="cursor: pointer;" data-toggle="tooltip"
-                        data-placement="bottom" title="Siguiente" onClick="siguiente(${element.estado},${element.id_od},${element.id_transformacion})"></i>`
+                            data-placement="bottom" title="Anterior" onClick="anterior(${element.estado},${element.id_od},${element.id_transformacion})"></i>
+                            <i class="fa fa-arrow-circle-right"  style="cursor: pointer;" data-toggle="tooltip"
+                            data-placement="bottom" title="Siguiente" onClick="siguiente(${element.estado},${element.id_od},${element.id_transformacion})"></i>`
                         : ''}
                     </a>
                 </div> `;
@@ -72,13 +82,19 @@ function listarDespachosInternos() {
                 <div class= "small-box bg-orange" >
                     <div class="inner">
                         <h5 style="margin:0px;font-size: 13px;">
-                        ${element.codigo_req} - 
-                        <i class="fas fa-file-pdf" style="cursor: pointer;" data-toggle="tooltip"
-                            data-placement="bottom" title="Ver Orden de Transformación" onClick="imprimirTransformacion(${element.id_transformacion})"></i>
-                        <a target="_blank" href="https://mgcp.okccloud.com/mgcp/cuadro-costos/detalles/${element.id_oportunidad}" data-toggle="tooltip"
-                            data-placement="bottom" title="Ver CDP en mgcp">
-                        <i class="fas fa-th-large"></i></a>${element.codigo_oportunidad} - ${formatDate(element.fecha_despacho)}<br>
-                        </h5><p style="margin-bottom:0px;">${element.nombre_entidad}</p>
+                                <i class="fas fa-file-pdf" style="cursor: pointer;" data-toggle="tooltip" data-placement="bottom" 
+                                    title="Ver PDF de la Orden de Transformación" onClick="imprimirTransformacion(${element.id_transformacion})"></i>
+                                ${element.codigo_transformacion}
+                                <i class="fas fa-table" style="cursor: pointer;" data-toggle="tooltip" data-placement="bottom" 
+                                    title="Abrir Orden de Transformación" onClick="abrirTransformacion(${element.id_transformacion})"></i>
+                            <br>
+                            ${element.codigo_req} - ${element.codigo_oportunidad}
+                            <a target="_blank" href="https://mgcp.okccloud.com/mgcp/cuadro-costos/detalles/${element.id_oportunidad}" data-toggle="tooltip"
+                                data-placement="bottom" title="Ver CDP en mgcp"> <i class="fas fa-th-large"></i></a>
+                            - ${formatDate(element.fecha_despacho)}
+                            <br>
+                        </h5>
+                        <p style="margin-bottom:0px;">${element.nombre_entidad}</p>
                         ${element.comentario !== null ? '<p style="margin-bottom:0px;font-size: 13px;">' + element.comentario + '</p>' : ""}
                     </div>
                     <a href="#" class="small-box-footer" style="cursor: auto;">
@@ -99,12 +115,17 @@ function listarDespachosInternos() {
                 <div class= "small-box bg-green" >
                     <div class="inner">
                         <h5 style="margin:0px;font-size: 13px;">
-                        ${element.codigo_req} - 
-                        <i class="fas fa-file-pdf" style="cursor: pointer;" data-toggle="tooltip"
-                            data-placement="bottom" title="Ver Orden de Transformación" onClick="imprimirTransformacion(${element.id_transformacion})"></i>
-                        <a target="_blank" href="https://mgcp.okccloud.com/mgcp/cuadro-costos/detalles/${element.id_oportunidad}" data-toggle="tooltip"
-                            data-placement="bottom" title="Ver CDP en mgcp">
-                        <i class="fas fa-th-large"></i></a>${element.codigo_oportunidad}<br></h5>
+                                <i class="fas fa-file-pdf" style="cursor: pointer;" data-toggle="tooltip" data-placement="bottom" 
+                                    title="Ver PDF de la Orden de Transformación" onClick="imprimirTransformacion(${element.id_transformacion})"></i>
+                                ${element.codigo_transformacion}
+                                <i class="fas fa-table" style="cursor: pointer;" data-toggle="tooltip" data-placement="bottom" 
+                                    title="Abrir Orden de Transformación" onClick="abrirTransformacion(${element.id_transformacion})"></i>
+                            <br>
+                            ${element.codigo_req} - ${element.codigo_oportunidad}
+                            <a target="_blank" href="https://mgcp.okccloud.com/mgcp/cuadro-costos/detalles/${element.id_oportunidad}" data-toggle="tooltip"
+                                data-placement="bottom" title="Ver CDP en mgcp"> <i class="fas fa-th-large"></i></a>
+                            <br>
+                        </h5>
                         <p style="margin-bottom:0px;">${element.nombre_entidad}</p>
                         ${element.comentario !== null ? '<p style="margin-bottom:0px;font-size: 13px;">' + element.comentario + '</p>' : ""}
                     </div>
@@ -322,4 +343,11 @@ function imprimirTransformacion(id_transformacion) {
             icon: "error",
         });
     }
+}
+
+function abrirTransformacion(id_transformacion) {
+    console.log('abrir_transformacion' + id_transformacion);
+    localStorage.setItem("id_transfor", id_transformacion);
+    var win = window.open("/cas/customizacion/hoja-transformacion/index", '_blank');
+    win.focus();
 }

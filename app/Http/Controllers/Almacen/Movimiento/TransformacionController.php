@@ -721,11 +721,13 @@ class TransformacionController extends Controller
                 'alm_prod.series',
                 'alm_det_req.part_number as part_number_req',
                 'alm_det_req.descripcion as descripcion_req',
+                'productos_am.ficha_tecnica'
             )
             ->join('almacen.orden_despacho_det', 'orden_despacho_det.id_od_detalle', '=', 'transfor_transformado.id_od_detalle')
             ->join('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'orden_despacho_det.id_detalle_requerimiento')
             ->leftjoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_det_req.id_producto')
             ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_det_req.id_unidad_medida')
+            ->leftjoin('mgcp_acuerdo_marco.productos_am', 'productos_am.part_no', '=', 'alm_det_req.part_number')
             ->where([
                 ['transfor_transformado.id_transformacion', '=', $id_transformacion],
                 ['transfor_transformado.estado', '=', 1]
