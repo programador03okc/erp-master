@@ -311,16 +311,26 @@ Orden de Transformación
 <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
 <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
-<script src="{{('/js/almacen/customizacion/transformacion.js')}}"></script>
-<script src="{{('/js/almacen/customizacion/transformacionModal.js')}}"></script>
-<script src="{{('/js/almacen/producto/productoModal.js')}}"></script>
-<script src="{{('/js/almacen/producto/productoCreate.js')}}"></script>
-<script src="{{('/js/almacen/customizacion/transfor_materia.js')}}"></script>
-<script src="{{('/js/almacen/customizacion/transfor_directo.js')}}"></script>
-<script src="{{('/js/almacen/customizacion/transfor_indirecto.js')}}"></script>
-<script src="{{('/js/almacen/customizacion/transfor_sobrante.js')}}"></script>
-<script src="{{('/js/almacen/customizacion/transfor_transformado.js')}}"></script>
-<script src="{{('/js/logistica/servicioModal.js')}}"></script>
+<script src="{{ asset('js/almacen/customizacion/transformacion.js')}}?v={{filemtime(public_path('js/almacen/customizacion/transformacion.js'))}}"></script>
+<script src="{{ asset('js/almacen/customizacion/transformacionModal.js')}}?v={{filemtime(public_path('js/almacen/customizacion/transformacionModal.js'))}}"></script>
+<script src="{{ asset('js/almacen/producto/productoModal.js')}}?v={{filemtime(public_path('js/almacen/producto/productoModal.js'))}}"></script>
+<script src="{{ asset('js/almacen/customizacion/transfor_materia.js')}}?v={{filemtime(public_path('js/almacen/customizacion/transfor_materia.js'))}}"></script>
+<script src="{{ asset('js/almacen/customizacion/transfor_directo.js')}}?v={{filemtime(public_path('js/almacen/customizacion/transfor_directo.js'))}}"></script>
+<script src="{{ asset('js/almacen/customizacion/transfor_indirecto.js')}}?v={{filemtime(public_path('js/almacen/customizacion/transfor_indirecto.js'))}}"></script>
+<script src="{{ asset('js/almacen/customizacion/transfor_sobrante.js')}}?v={{filemtime(public_path('js/almacen/customizacion/transfor_sobrante.js'))}}"></script>
+<script src="{{ asset('js/almacen/customizacion/transfor_transformado.js')}}?v={{filemtime(public_path('js/almacen/customizacion/transfor_transformado.js'))}}"></script>
+{{-- <script src="{{('/js/almacen/customizacion/transformacion.js')}}"></script> --}}
+{{-- <script src="{{('/js/almacen/customizacion/transformacionModal.js')}}"></script>
+<script src="{{('/js/almacen/producto/productoModal.js')}}"></script> --}}
+{{-- <script src="{{('/js/almacen/customizacion/transfor_materia.js')}}"></script> --}}
+{{-- <script src="{{('/js/almacen/customizacion/transfor_directo.js')}}"></script> --}}
+{{-- <script src="{{('/js/almacen/customizacion/transfor_indirecto.js')}}"></script> --}}
+{{-- <script src="{{('/js/almacen/customizacion/transfor_sobrante.js')}}"></script> --}}
+{{-- <script src="{{('/js/almacen/customizacion/transfor_transformado.js')}}"></script> --}}
+
+{{-- <script src="{{('/js/almacen/producto/productoCreate.js')}}"></script>
+<script src="{{('/js/logistica/servicioModal.js')}}"></script> --}}
+
 <script>
     $(document).ready(function() {
         seleccionarMenu(window.location);

@@ -109,7 +109,11 @@ function listar_transformados(id_transformacion) {
                 response.forEach(element => {
                     html += `<tr id="${element.id_transformado}">
                         <td class="text-center">${element.codigo !== null ? element.codigo : ''}</td>
-                        <td class="text-center">${element.part_number !== null ? element.part_number : (element.part_number_req !== undefined ? element.part_number_req : '')}</td>
+                        <td class="text-center">${element.part_number !== null ? element.part_number : (element.part_number_req !== undefined ? element.part_number_req : '')}
+                        ${(element.ficha_tecnica !== null && element.ficha_tecnica !== undefined && element.ficha_tecnica !== '') ?
+                            `<a target="_blank" href="${element.ficha_tecnica}" data-toggle="tooltip"
+                            data-placement="bottom" title="Ver ficha técnica"><i class="fas fa-file-pdf"></i></a>`: ''}
+                        </td>
                         <td>${element.descripcion !== null ? element.descripcion : (element.descripcion_req !== undefined ? element.descripcion_req : '')}</td>
                         <td class="text-right">${element.cantidad}</td>
                         <td>${element.abreviatura}</td>
