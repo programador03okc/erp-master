@@ -531,7 +531,7 @@ class OrdenView {
                     <td>(No aplica) <input type="hidden" value=""></td>
                     <td>(No aplica) <input type="hidden" value=""></td>
                     <td>(No aplica) <input type="hidden"  name="idProducto[]" value=""></td>
-                    <td><textarea name="descripcion[]" placeholder="Descripción" class="form-control descripcion_servicio activation" value="${(data[i].descripcion ? data[i].descripcion : '')}" style="width:100%;height: 60px;overflow: scroll;"> </textarea> </td>
+                    <td><textarea name="descripcion[]" placeholder="Descripción" class="form-control descripcion_servicio activation" value="${(data[i].descripcion ? data[i].descripcion : '')}" style="width:100%;height: 60px;overflow: scroll;"> ${(data[i].descripcion ? data[i].descripcion : '')}</textarea> </td>
                     <td><select name="unidad[]" class="form-control activation input-sm" value="${data[i].id_unidad_medida}" disabled>${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
                     <td>${(data[i].cantidad ? data[i].cantidad : '')}</td>
                     <td></td>
