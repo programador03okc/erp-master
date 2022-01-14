@@ -1908,7 +1908,7 @@ class OrdenController extends Controller
                     <tr>
                         <td nowrap  width="15%" class="subtitle verticalTop">Sr.(s):</td>
                         <td width="50%" class="verticalTop">' . $ordenArray['head']['proveedor']['nro_documento_proveedor'] . ' - ' . $ordenArray['head']['proveedor']['razon_social_proveedor'] . '</td>
-                        <td nowrap  width="15%" class="subtitle verticalTop">Fecha de Emisión:</td>
+                        <td nowrap  width="15%" class="subtitle verticalTop">Fecha de emisión:</td>
                         <td>' . substr($ordenArray['head']['fecha_orden'], 0, 11) . '</td>
                     </tr>
                     <tr>
@@ -1950,7 +1950,7 @@ class OrdenController extends Controller
                 <thead>
                     <tr class="subtitle">
                         <td style="width:5px; text-align:center;">Código</td>
-                        <td style="width:5px; text-align:center;">Part Number</td>
+                        <td style="width:5px; text-align:center;">Part number</td>
                         <td style="width:280px; text-align:center;">Descripción</td>
                         <td style="width:15px; text-align:center;">Und</td>
                         <td style="width:5px; text-align:center;">Cant.</td>
@@ -2002,7 +2002,7 @@ class OrdenController extends Controller
 
         $html .= '
                 <tr>
-                    <td class="right noBorder textBold"  colspan="7">Monto Neto ' . $ordenArray['head']['moneda_simbolo'] . '</td>
+                    <td class="right noBorder textBold"  colspan="7">Monto neto ' . $ordenArray['head']['moneda_simbolo'] . '</td>
                     <td class="right  noBorder textBold">' . number_format($monto_neto, 2) . '</td>
                 </tr>
                 <tr>
@@ -2010,7 +2010,7 @@ class OrdenController extends Controller
                     <td class="right noBorder textBold">' . number_format($igv, 2) . '</td>
                 </tr>
                 <tr>
-                    <td class="right noBorder textBold"  colspan="7">Monto Total ' . $ordenArray['head']['moneda_simbolo'] . '</td>
+                    <td class="right noBorder textBold"  colspan="7">Monto total ' . $ordenArray['head']['moneda_simbolo'] . '</td>
                     <td class="right noBorder textBold">' . number_format($monto_total, 2) . '</td>
                 </tr>
                 </table>
@@ -2023,12 +2023,12 @@ class OrdenController extends Controller
                 <caption class="left subtitle" style="padding-bottom:10px; font-size:0.7rem">Condición de compra:</caption>
 
                 <tr>
-                <td nowrap  width="15%" class="subtitle">-Forma de Pago: </td>
+                <td nowrap  width="15%" class="subtitle">-Forma de pago: </td>
                 <td  class="verticalTop left">' . $ordenArray['head']['condicion_compra']['condicion_pago'] . ' ' . (($ordenArray['head']['condicion_compra']['id_condicion'] == 2) ? $ordenArray['head']['condicion_compra']['plazo_dias'] . ' días' : '') . '</td>';
 
 
         $html .= ' 
-                    <td width="15%" class="verticalTop subtitle">-Plazo entrega: </td>
+                    <td width="15%" class="verticalTop subtitle">-Plazo de entrega: </td>
                     <td class="verticalTop">' . $ordenArray['head']['condicion_compra']['plazo_entrega'] . ' Días</td>
             
                 </tr>
@@ -2051,7 +2051,7 @@ class OrdenController extends Controller
                 <tr>
                     <td nowrap  width="15%" class="verticalTop subtitle">Dirección entrega: </td>
                     <td class="verticalTop">' . $ordenArray['head']['datos_para_despacho']['direccion_destino'] . '<br>' . $ordenArray['head']['datos_para_despacho']['ubigeo_destino'] . '</td>
-                    <td width="15%" class="verticalTop subtitle">-Personal Autorizado:</td>
+                    <td width="15%" class="verticalTop subtitle">-Personal autorizado:</td>
                     <td class="verticalTop">' . $personal_autorizado_1 . ($personal_autorizado_2 ? ("<br>" . $personal_autorizado_2) : "") . '</td>
                 </tr>
                 <tr>
@@ -2068,7 +2068,7 @@ class OrdenController extends Controller
                 <caption class="left subtitle" style="padding-bottom:10px; font-size:0.7rem">Facturar a nombre:</caption>
 
                 <tr>
-                    <td nowrap  width="15%" class="verticalTop subtitle">-Razón Social: </td>
+                    <td nowrap  width="15%" class="verticalTop subtitle">-Razón social: </td>
                     <td class="verticalTop">' . $ordenArray['head']['facturar_a_nombre']['razon_social_empresa'] . '</td>
                 </tr>
                 <tr>
