@@ -2033,7 +2033,7 @@ class OrdenController extends Controller
             
                 </tr>
                 <tr>
-                    <td width="15%" class="verticalTop subtitle">-CDC / Req.: </td>
+                    <td width="15%" class="verticalTop subtitle">-CDP / Req.: </td>
                     <td class="verticalTop">' . ($ordenArray['head']['codigo_cc'] ? $ordenArray['head']['codigo_cc'] : '').'/'.($ordenArray['head']['codigo_requerimiento'] ? $ordenArray['head']['codigo_requerimiento'] : '') . '</td
         
                 </tr>
@@ -2077,7 +2077,7 @@ class OrdenController extends Controller
                 </tr>
                 <tr>
                     <td nowrap  width="15%" class="verticalTop subtitle">-Dirección: </td>
-                    <td class="verticalTop">' . $ordenArray['head']['facturar_a_nombre']['direccion_fiscal_empresa'] . ',<br>' . $ordenArray['head']['facturar_a_nombre']['ubigeo_empresa'] . '</td>
+                    <td class="verticalTop">' . $ordenArray['head']['facturar_a_nombre']['direccion_fiscal_empresa'] . ', ' . $ordenArray['head']['facturar_a_nombre']['ubigeo_empresa'] . '</td>
 
                 </tr>
             </table>
