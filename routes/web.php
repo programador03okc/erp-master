@@ -846,7 +846,7 @@ Route::group(['middleware' => ['auth']], function () {
 						Route::get('listar-cuentas-bancarias-proveedor/{idProveedor?}', 'OrdenController@listarCuentasBancariasProveedor')->name('listar-cuentas-bancarias-proveedor');
 						Route::post('guardar-cuenta-bancaria-proveedor', 'OrdenController@guardarCuentaBancariaProveedor');
 						Route::get('migrarOrdenCompra/{id}', 'Migraciones\MigrateOrdenSoftLinkController@migrarOrdenCompra');
-						Route::get('listarOrdenesSoftlinkNoVinculadas/{cod}/{fec}', 'Migraciones\MigrateOrdenSoftLinkController@listarOrdenesSoftlinkNoVinculadas');
+						Route::get('listarOrdenesSoftlinkNoVinculadas/{cod}/{ini}/{fin}', 'Migraciones\MigrateOrdenSoftLinkController@listarOrdenesSoftlinkNoVinculadas');
 						// Route::get('migrarOrdenCompra/{id}', 'Migraciones\MigrateOrdenSoftLinkController@migrarOrdenCompra');
 						Route::post('mostrar-catalogo-productos', 'Logistica\RequerimientoController@mostrarCatalogoProductos');
 						Route::post('enviar-notificacion-finalizacion-cdp', 'OrdenController@enviarNotificacionFinalizacionCDP');

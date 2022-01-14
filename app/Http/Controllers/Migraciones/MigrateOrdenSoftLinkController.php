@@ -1047,7 +1047,7 @@ class MigrateOrdenSoftLinkController extends Controller
         }
     }
 
-    public function listarOrdenesSoftlinkNoVinculadas($cod_empresa, $fecha)
+    public function listarOrdenesSoftlinkNoVinculadas($cod_empresa, $fechaInicio, $fechaFin)
     {
         try {
             DB::beginTransaction();
@@ -1068,7 +1068,7 @@ class MigrateOrdenSoftLinkController extends Controller
                     $cod_docu = $emp['cod_docu'];
                 }
             }
-            $fechaDesde = (new Carbon($fecha))->subMonth(3);
+            // $fechaDesde = (new Carbon($fecha))->subMonth(3);
 
             $lista = DB::connection('soft')->table('movimien')
                 ->select('mov_id', 'num_docu', 'cod_docu', 'auxiliar.nom_auxi')
@@ -1079,7 +1079,8 @@ class MigrateOrdenSoftLinkController extends Controller
                     ['flg_anulado', '=', 0],
                     ['mov_id', 'not like', '000%']
                 ])
-                ->whereDate('fec_docu', '<=', (new Carbon($fechaDesde))->format('Y-m-d'))
+                ->whereDate('fec_docu', '>=', (new Carbon($fechaInicio))->format('Y-m-d'))
+                ->whereDate('fec_docu', '<=', (new Carbon($fechaFin))->format('Y-m-d'))
                 ->get();
 
             DB::commit();
