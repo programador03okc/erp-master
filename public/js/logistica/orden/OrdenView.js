@@ -851,7 +851,7 @@ class OrdenView {
 
         this.agregarProducto([{
             'id': this.makeId(),
-            'cantidad': null,
+            'cantidad': 1,
             'cantidad_a_comprar': 1,
             'codigo_producto': obj.dataset.codigo,
             'codigo_softlink': obj.dataset.codigoSoftlink,

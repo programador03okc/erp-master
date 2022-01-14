@@ -313,13 +313,13 @@ Elaborar orden
                                     <th style="width: 5%">Cod. producto</th>
                                     <th style="width: 5%">Cod. softlink</th>
                                     <th style="width: 5%">Part number</th>
-                                    <th>Item</th>
-                                    <th style="width: 8%">Unidad</th>
+                                    <th>Descripción del producto/servicio</th>
+                                    <th style="width: 8%">Unid. Med.</th>
                                     <th style="width: 5%">Cantidad solicitada</th>
                                     <th style="width: 5%">Cantidad Reservada</th>
-                                    <th style="width: 5%">Cantidad atendido orden</th>
-                                    <th style="width: 8%">Cantidad a comprar / requerir</th>
-                                    <th style="width: 10%">Precio</th>
+                                    <th style="width: 5%">Cantidad atendida por orden</th>
+                                    <th style="width: 8%">Cantidad a comprar</th>
+                                    <th style="width: 10%">Precio Unitario</th>
                                     <th style="width: 6%">Total</th>
                                     <th style="width: 5%">Acción</th>
                                 </tr>
