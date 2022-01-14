@@ -47,39 +47,39 @@ Crear / editar requerimiento
         <input type="hidden" name="estado">
 
 
-        
+
         <div class="group-table" id="group-historial-revisiones" hidden>
             <div class="row">
                 <div class="col-sm-12">
                     <fieldset class="group-importes">
                         <legend style="background: #b3a705;">
-                            <h6>Historial de revisiones</h6>
+                            <h6>Historial de revisiones/aprobaciones</h6>
                         </legend>
                         <table class="table table-bordered" id="listaHistorialRevision">
                             <thead>
                                 <tr>
-                                <th>Revisado por</th>
-                                <th>Acción</th>
-                                <th>Comentario</th>
-                                <th>Fecha revisión</th>
+                                    <th>Revisado por</th>
+                                    <th>Acción</th>
+                                    <th>Comentario</th>
+                                    <th>Fecha revisión</th>
                                 </tr>
                             </thead>
                             <tbody id="body_historial_revision"></tbody>
                         </table>
                 </div>
             </div>
-</div>
+        </div>
 
         <div class="row">
             <div class="col-md-12">
                 <h4 style="display:flex;justify-content: space-between;">General
                     <div>
                         <span class="label label-default" id="codigo_requerimiento"></span>
-                        <small>Tipo cambio($): <span id="tipo_cambio_compra">{{$tipo_cambio}}</span></small> 
+                        <small>Tipo cambio($): <span id="tipo_cambio_compra">{{$tipo_cambio}}</span></small>
                         <span class="label label-default" id="estado_doc"></span>
                         <span class="label label-success" id="nro_occ_softlink"></span>
                         <button type="button" name="btn-imprimir-requerimento-pdf" class="btn btn-info btn-sm handleClickImprimirRequerimientoPdf" title="Imprimir requerimiento en .pdf" disabled><i class="fas fa-print"></i> Imprimir</button>
-                        <button type="button" name="btn-adjuntos-requerimiento" class="btn btn-sm btn-warning handleClickAdjuntarArchivoRequerimiento" title="Archivos adjuntos"  disabled><i class="fas fa-paperclip"></i>
+                        <button type="button" name="btn-adjuntos-requerimiento" class="btn btn-sm btn-warning handleClickAdjuntarArchivoRequerimiento" title="Archivos adjuntos" disabled><i class="fas fa-paperclip"></i>
                             <span class="badge" name="cantidadAdjuntosRequerimiento" style="position:absolute; right: 74px; border: solid 0.1px;">0</span>
                             Adjuntos
                         </button>
@@ -105,7 +105,7 @@ Crear / editar requerimiento
                         <div class="col-md-6">
                             <div class="form-group">
                                 <h5>Concepto/Motivo</h5>
-                                <input type="text" class="form-control activation handleChangeUpdateConcepto" name="concepto" >
+                                <input type="text" class="form-control activation handleChangeUpdateConcepto" name="concepto">
                             </div>
                         </div>
 
@@ -445,13 +445,10 @@ Crear / editar requerimiento
 
 
         <br>
-        <div class="group-table">
             <div class="row">
                 <div class="col-sm-12">
-                    <fieldset class="group-importes">
-                        <legend>
-                            <h6>Item's de Requerimiento</h6>
-                        </legend>
+                    <h4 style="display:flex;justify-content: space-between;">Item's de requerimiento</h4>
+                    <fieldset class="group-table">
                         <div class="btn-group" role="group" aria-label="...">
                             <button type="button" class="btn btn-xs btn-success activation" id="btn-add-producto" data-toggle="tooltip" data-placement="bottom" title="Agregar Detalle" disabled><i class="fas fa-plus"></i> Producto
                             </button> <!--  onClick="catalogoItemsModal();" -->
@@ -490,92 +487,88 @@ Crear / editar requerimiento
                     </fieldset>
                 </div>
             </div>
-        <br>
-        <fieldset class="group-table" id="group-detalle-items-transformados" hidden>
-            <div class="row">
-                <div class="col-sm-12">
-                    <fieldset class="group-importes">
-                        <legend style="background: #968a30;">
-                            <h6 name='titulo_tabla_detalle_items_transfomados'>Detalles Items Transformados</h6>
-                        </legend>
-                        <table class="mytable table table-striped table-condensed table-bordered dataTable no-footer" id="ListaDetalleItemstransformado" width="100%" style="width: 100%;background: #968a30;">
-                            <thead>
-                                <tr>
-                                    <th>Part No.</th>
-                                    <th>Descripción</th>
-                                    <th>Cant.</th>
-                                    <th>Comentario</th>
-                                    <th>Acción</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
+            <br>
+            <fieldset class="group-table" id="group-detalle-items-transformados" hidden>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <fieldset class="group-importes">
+                            <legend style="background: #968a30;">
+                                <h6 name='titulo_tabla_detalle_items_transfomados'>Detalles Items Transformados</h6>
+                            </legend>
+                            <table class="mytable table table-striped table-condensed table-bordered dataTable no-footer" id="ListaDetalleItemstransformado" width="100%" style="width: 100%;background: #968a30;">
+                                <thead>
+                                    <tr>
+                                        <th>Part No.</th>
+                                        <th>Descripción</th>
+                                        <th>Cant.</th>
+                                        <th>Comentario</th>
+                                        <th>Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                    </div>
                 </div>
-            </div>
-        </fieldset>
-        <fieldset class="group-table" id="group-detalle-cuadro-costos" hidden>
-            <div class="row">
-                <div class="col-sm-12">
-                    <fieldset class="group-importes">
-                        <legend style="background: #5d4d6d;">
-                            <h6 name='titulo_tabla_detalle_cc'>Detalles de cuadro de Costos</h6>
-                        </legend>
-                        <table class="mytable table table-striped table-condensed table-bordered dataTable no-footer" id="ListaDetalleCuadroCostos" width="100%" style="width: 100%;background: #f8f3f9;">
-                            <thead>
-                                <tr>
-                                    <th>Part No.</th>
-                                    <th>Descripción</th>
-                                    <th>P.V.U. O/C (sinIGV) S/</th>
-                                    <th>Flete O/C (sinIGV) S/</th>
-                                    <th>Cant.</th>
-                                    <th>Garant. meses</th>
-                                    <th>Proveedor seleccionado</th>
-                                    <th>Creado Por</th>
-                                    <th>Fecha Creación</th>
-                                    <th>Acción</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
+            </fieldset>
+            <fieldset class="group-table" id="group-detalle-cuadro-costos" hidden>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <fieldset class="group-importes">
+                            <legend style="background: #5d4d6d;">
+                                <h6 name='titulo_tabla_detalle_cc'>Detalles de cuadro de Costos</h6>
+                            </legend>
+                            <table class="mytable table table-striped table-condensed table-bordered dataTable no-footer" id="ListaDetalleCuadroCostos" width="100%" style="width: 100%;background: #f8f3f9;">
+                                <thead>
+                                    <tr>
+                                        <th>Part No.</th>
+                                        <th>Descripción</th>
+                                        <th>P.V.U. O/C (sinIGV) S/</th>
+                                        <th>Flete O/C (sinIGV) S/</th>
+                                        <th>Cant.</th>
+                                        <th>Garant. meses</th>
+                                        <th>Proveedor seleccionado</th>
+                                        <th>Creado Por</th>
+                                        <th>Fecha Creación</th>
+                                        <th>Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                    </div>
                 </div>
-            </div>
-        </fieldset>
-    
-        <div class="group-table col-md-6">
-            <div class="row">
-                <div class="col-md-12">
-                    <fieldset class="group-importes">
-                        <legend style="background: #999;">
-                            <h6 name='titulo_tabla_detalle_cc'>Partidas Activas</h6>
-                        </legend>
-                        <table class="table table-striped table-bordered" id="listaPartidasActivas" width="100%">
-                            <thead>
-                                <tr>
-                                    <th width="10">Codigo</th>
-                                    <th width="70">Descripción</th>
-                                    <th width="10">Presupuesto Total</th>
-                                    <th width="10">Presupuesto Utilizado</th>
-                                    <th width="10">Saldo</th>
-                                </tr>
-                            </thead>
-                            <tbody id="body_partidas_activas">
-                            </tbody>
-                        </table>
-                    </fieldset>
-                </div>
-            </div>
-        </div>
+            </fieldset>
 
         <div class="row">
-            <div class="col-md-12">
-                <button type="button" onclick="scrollToTheTopOfDocument()" id="btnVolverArriba" title="Volver Arriba"><i class="fas fa-arrow-circle-up"></i></button>
-                <!-- <button type="submit" class="btn-okc" id="btnGuardar"><i class="fas fa-save fa-lg"></i> Guardar</button> -->
+            <div class="col-md-6">
+                    <h4 style="display:flex;justify-content: space-between;">Partidas activas</h4>
+                        <fieldset class="group-table">
+                            <table class="table table-striped table-bordered" id="listaPartidasActivas" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th width="10">Codigo</th>
+                                        <th width="70">Descripción</th>
+                                        <th width="10">Presupuesto Total</th>
+                                        <th width="10">Presupuesto Utilizado</th>
+                                        <th width="10">Saldo</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="body_partidas_activas">
+                                </tbody>
+                            </table>
+                        </fieldset>
+                </div>
             </div>
-        </div>
-        <br>
-        <div class="row" id="observaciones_requerimiento"></div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <button type="button" onclick="scrollToTheTopOfDocument()" id="btnVolverArriba" title="Volver Arriba"><i class="fas fa-arrow-circle-up"></i></button>
+                    <!-- <button type="submit" class="btn-okc" id="btnGuardar"><i class="fas fa-save fa-lg"></i> Guardar</button> -->
+                </div>
+            </div>
+            <br>
+            <div class="row" id="observaciones_requerimiento"></div>
     </form>
 
 </div>
@@ -692,7 +685,7 @@ Crear / editar requerimiento
     //         cambiarTipoFormulario(6)
     //     }
     // });
- 
+
 
     window.onload = function() {
 
@@ -701,10 +694,10 @@ Crear / editar requerimiento
         var id_grupo = '{{Auth::user()->getGrupo()->id_grupo}}';
         document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value = id_grupo;
 
-        
+
         const requerimientoModel = new RequerimientoModel();
         const requerimientoController = new RequerimientoCtrl(requerimientoModel);
-        const requerimientoView= new RequerimientoView(requerimientoController);
+        const requerimientoView = new RequerimientoView(requerimientoController);
         requerimientoView.init();
     };
 </script>
