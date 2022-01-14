@@ -116,7 +116,7 @@ class MapeoProductosController extends Controller
             }
 
             $DetalleRequerimiento= DetalleRequerimiento::find($request->detalle[0]['id_detalle_requerimiento']);
-            $cantidades = $this->obtenerCantidadItemsMapeados($DetalleRequerimiento->id_requerimiento);
+            $cantidades = $this->obtenerCantidadProductosMapeados($DetalleRequerimiento->id_requerimiento);
             $cantidadItemsMapeados=$cantidades['cantidadMapeados'];
             $cantidadItemsTotal=$cantidades['cantidadTotal'];
 
@@ -161,20 +161,20 @@ class MapeoProductosController extends Controller
         }
     }
 
-    public function obtenerCantidadItemsMapeados($idRequerimiento){
-        $cantidadItemsTotal=0;
-        $cantidadItemsMapeados=0;
+    public function obtenerCantidadProductosMapeados($idRequerimiento){
+        $cantidadProductosTotal=0;
+        $cantidadProductosMapeados=0;
 
-        $todoDetalleRequerimiento = DetalleRequerimiento::where('id_requerimiento',$idRequerimiento)->where('estado','!=',7)->get();
+        $todoDetalleRequerimiento = DetalleRequerimiento::where('id_requerimiento',$idRequerimiento)->where([['id_tipo_item','=',1],['estado','!=',7]])->get();
 
-        $cantidadItemsTotal = count($todoDetalleRequerimiento);
-        foreach ($todoDetalleRequerimiento as $key => $value) {
+        $cantidadProductosTotal = count($todoDetalleRequerimiento);
+        foreach ($todoDetalleRequerimiento as $value) {
             if($value->id_producto >0){
-                $cantidadItemsMapeados++;
+                $cantidadProductosMapeados++;
             }
         }
 
-        return ['cantidadTotal'=>$cantidadItemsTotal,'cantidadMapeados'=>$cantidadItemsMapeados];
+        return ['cantidadTotal'=>$cantidadProductosTotal,'cantidadMapeados'=>$cantidadProductosMapeados];
     }
 
 }

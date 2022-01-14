@@ -13,7 +13,7 @@ class RequerimientoView {
         this.requerimientoCtrl = requerimientoCtrl;
     }
     init() {
-        this.agregarFilaEvent();
+        // this.agregarFilaEvent();
         this.initializeEventHandler();
         // $('[name=periodo]').val(today.getFullYear());
         // this.getTipoCambioCompra();
@@ -48,6 +48,13 @@ class RequerimientoView {
         document.querySelector("select[class~='handleChangeDivision']").addEventListener("change", this.updateDivision.bind(this), false);
         document.querySelector("select[class~='handleChangeTipoRequerimiento']").addEventListener("change", this.updateTipoRequerimiento.bind(this), false);
 
+
+        $('#form-requerimiento').on("click","button.handleClickAgregarProducto", ()=>{
+            this.agregarFilaProducto();
+        });
+        $('#form-requerimiento').on("click","button.handleClickAgregarServicio", ()=>{
+            this.agregarFilaServicio();
+        });
 
         $('#listaRequerimiento tbody').on("click","button.handleClickCargarRequerimiento", (e)=>{
             this.cargarRequerimiento(e.target.dataset.idRequerimiento);
@@ -453,7 +460,20 @@ class RequerimientoView {
         vista_extendida();
 
         for (let i = 0; i < data.length; i++) {
-           
+
+                // fix unidad medida que toma el html de un select oculto y debe tener por defecto seleccionado el option que viene de data
+                let um=document.querySelector("select[id='selectUnidadMedida']").getElementsByTagName('option');
+                let indexUm=0;
+                
+                for (let j = 0; j < um.length; j++) {
+                    if(um[j].value== data[i].id_unidad_medida){
+                        indexUm=j;
+                    }
+                    
+                }
+                document.querySelector("select[id='selectUnidadMedida']").getElementsByTagName('option')[indexUm].setAttribute("selected","");
+                //  fin fix unidad medida
+
                 if (data[i].id_tipo_item == 1) { // producto
                 document.querySelector("tbody[id='body_detalle_requerimiento']").insertAdjacentHTML('beforeend', `<tr style="text-align:center; background-color:${data[i].estado ==7?'#f5e4e4':''}; ">
                 <td></td>
@@ -864,115 +884,127 @@ class RequerimientoView {
         return ID;
     }
 
+    agregarFilaProducto(){
+        
+        vista_extendida();
 
-    agregarFilaEvent() {
-        document.querySelector("button[id='btn-add-producto']").addEventListener('click', (event) => {
+                // fix unidad medida que toma el html de un select oculto y debe tener por defecto seleccionado el option que viene de data
+                let um=document.querySelector("select[id='selectUnidadMedida']").getElementsByTagName('option');
+                let indexUm=0;
+                for (let i = 0; i < um.length; i++) {
+                    if(um[i].value== 1){
+                        indexUm=i;
+                    }   
+                }
+                document.querySelector("select[id='selectUnidadMedida']").getElementsByTagName('option')[indexUm].setAttribute("selected","");
+                //  fin fix unidad medida
 
-            vista_extendida();
+        let tipoRequerimiento = document.querySelector("form[id='form-requerimiento'] select[name='tipo_requerimiento']").value;
+        let idGrupo = document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value;
 
-            let tipoRequerimiento = document.querySelector("form[id='form-requerimiento'] select[name='tipo_requerimiento']").value;
-            let idGrupo = document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value;
+        document.querySelector("tbody[id='body_detalle_requerimiento']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
+        <td></td>
+        <td><p class="descripcion-partida">(NO SELECCIONADO)</p><button type="button" class="btn btn-xs btn-info handleClickCargarModalPartidas" name="partida">Seleccionar</button> 
+            <div class="form-group">
+                <input type="text" class="partida" name="idPartida[]" hidden>
+            </div>
+        </td>
+        <td><p class="descripcion-centro-costo" title="${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.codigo : ''}">${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.descripcion : '(NO SELECCIONADO)'}</p><button type="button" class="btn btn-xs btn-primary handleClickCargarModalCentroCostos" name="centroCostos"  ${tempCentroCostoSelected != undefined ? 'disabled' : ''} title="${tempCentroCostoSelected != undefined ? 'El centro de costo esta asignado a un proyecto' : ''}" >Seleccionar</button> 
+            <div class="form-group">
+                <input type="text" class="centroCosto" name="idCentroCosto[]" value="${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.id : ''}" hidden>
+            </div>
+        </td>
+        <td><input class="form-control input-sm" type="text" name="partNumber[]" placeholder="Part number"></td>
+        <td>
+            <div class="form-group">
+                <textarea class="form-control input-sm descripcion handleBlurUpdateDescripcionItem" name="descripcion[]" placeholder="Descripción" ></textarea></td>
+            </div>
+        <td><select name="unidad[]" class="form-control input-sm">${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
+        <td>
+            <div class="form-group">
+                <input class="form-control input-sm cantidad text-right handleBurUpdateSubtotal handleBlurUpdateCantidadItem handleBlurCalcularPresupuestoUtilizadoYSaldoPorPartida" type="number" min="1" name="cantidad[]" placeholder="Cantidad">
+            </div>
+        </td>
+        <td>
+            <div class="form-group">
+                <input class="form-control input-sm precio text-right handleBurUpdateSubtotal handleBlurUpdatePrecioItem handleBlurCalcularPresupuestoUtilizadoYSaldoPorPartida" type="number" min="0" name="precioUnitario[]" placeholder="Precio U."></td>
+            </div>  
+        <td style="text-align:right;"><span class="moneda" name="simboloMoneda">${document.querySelector("select[name='moneda']").options[document.querySelector("select[name='moneda']").selectedIndex].dataset.simbolo}</span><span class="subtotal" name="subtotal[]">0.00</span></td>
+        <td><textarea class="form-control input-sm" name="motivo[]" placeholder="Motivo de requerimiento de item (opcional)"></textarea></td>
+        <td>
+            <div class="btn-group" role="group">
+                <input type="hidden" class="tipoItem" name="tipoItem[]" value="1">
+                <input type="hidden" class="idRegister" name="idRegister[]" value="${this.makeId()}">
+                <button type="button" class="btn btn-warning btn-xs handleClickAdjuntarArchivoItem" name="btnAdjuntarArchivoItem[]" title="Adjuntos" >
+                    <i class="fas fa-paperclip"></i>
+                    <span class="badge" name="cantidadAdjuntosItem" style="position:absolute; top:-10px; left:-10px; border: solid 0.1px;">0</span>    
+                </button> 
+                <button type="button" class="btn btn-danger btn-xs handleClickEliminarItem" name="btnEliminarItem[]" title="Eliminar"  ><i class="fas fa-trash-alt"></i></button>
+            </div>
+        </td>
+        </tr>`);
 
-            document.querySelector("tbody[id='body_detalle_requerimiento']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
-            <td></td>
-            <td><p class="descripcion-partida">(NO SELECCIONADO)</p><button type="button" class="btn btn-xs btn-info handleClickCargarModalPartidas" name="partida">Seleccionar</button> 
-                <div class="form-group">
-                    <input type="text" class="partida" name="idPartida[]" hidden>
-                </div>
+        this.updateContadorItem();
+    }
+    agregarFilaServicio(){
+        vista_extendida();
+                // fix unidad medida que toma el html de un select oculto y debe tener por defecto seleccionado el option que viene de data
+                let um=document.querySelector("select[id='selectUnidadMedida']").getElementsByTagName('option');
+                let indexUm=0;
+                for (let i = 0; i < um.length; i++) {
+                    if(um[i].value== 17){
+                        indexUm=i;
+                    }   
+                }
+                document.querySelector("select[id='selectUnidadMedida']").getElementsByTagName('option')[indexUm].setAttribute("selected","");
+                //  fin fix unidad medida
+
+        document.querySelector("tbody[id='body_detalle_requerimiento']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
+        <td></td>
+        <td><p class="descripcion-partida">(NO SELECCIONADO)</p><button type="button" class="btn btn-xs btn-info handleClickCargarModalPartidas" name="partida">Seleccionar</button> 
+            <div class="form-group">
+                <input type="text" class="partida" name="idPartida[]" hidden>
+            </div>
             </td>
             <td><p class="descripcion-centro-costo" title="${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.codigo : ''}">${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.descripcion : '(NO SELECCIONADO)'}</p><button type="button" class="btn btn-xs btn-primary handleClickCargarModalCentroCostos" name="centroCostos"  ${tempCentroCostoSelected != undefined ? 'disabled' : ''} title="${tempCentroCostoSelected != undefined ? 'El centro de costo esta asignado a un proyecto' : ''}" >Seleccionar</button> 
-                <div class="form-group">
-                    <input type="text" class="centroCosto" name="idCentroCosto[]" value="${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.id : ''}" hidden>
-                </div>
-            </td>
-            <td><input class="form-control input-sm" type="text" name="partNumber[]" placeholder="Part number"></td>
-            <td>
-                <div class="form-group">
-                    <textarea class="form-control input-sm descripcion handleBlurUpdateDescripcionItem" name="descripcion[]" placeholder="Descripción" ></textarea></td>
-                </div>
-            <td><select name="unidad[]" class="form-control input-sm">${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
-            <td>
-                <div class="form-group">
-                    <input class="form-control input-sm cantidad text-right handleBurUpdateSubtotal handleBlurUpdateCantidadItem handleBlurCalcularPresupuestoUtilizadoYSaldoPorPartida" type="number" min="1" name="cantidad[]" placeholder="Cantidad">
-                </div>
-            </td>
-            <td>
-                <div class="form-group">
-                    <input class="form-control input-sm precio text-right handleBurUpdateSubtotal handleBlurUpdatePrecioItem handleBlurCalcularPresupuestoUtilizadoYSaldoPorPartida" type="number" min="0" name="precioUnitario[]" placeholder="Precio U."></td>
-                </div>  
-            <td style="text-align:right;"><span class="moneda" name="simboloMoneda">${document.querySelector("select[name='moneda']").options[document.querySelector("select[name='moneda']").selectedIndex].dataset.simbolo}</span><span class="subtotal" name="subtotal[]">0.00</span></td>
-            <td><textarea class="form-control input-sm" name="motivo[]" placeholder="Motivo de requerimiento de item (opcional)"></textarea></td>
-            <td>
-                <div class="btn-group" role="group">
-                    <input type="hidden" class="tipoItem" name="tipoItem[]" value="1">
-                    <input type="hidden" class="idRegister" name="idRegister[]" value="${this.makeId()}">
-                    <button type="button" class="btn btn-warning btn-xs handleClickAdjuntarArchivoItem" name="btnAdjuntarArchivoItem[]" title="Adjuntos" >
-                        <i class="fas fa-paperclip"></i>
-                        <span class="badge" name="cantidadAdjuntosItem" style="position:absolute; top:-10px; left:-10px; border: solid 0.1px;">0</span>    
-                    </button> 
-                    <button type="button" class="btn btn-danger btn-xs handleClickEliminarItem" name="btnEliminarItem[]" title="Eliminar"  ><i class="fas fa-trash-alt"></i></button>
-                </div>
-            </td>
-            </tr>`);
+            <div class="form-group">
+                <input type="text" class="centroCosto" name="idCentroCosto[]" value="${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.id : ''}" hidden>
+            </div>
+        </td>
+        <td>(Servicio)<input type="hidden" name="partNumber[]"></td>
+        <td>
+            <div class="form-group">
+                <textarea class="form-control input-sm descripcion handleBlurUpdateDescripcionItem" name="descripcion[]" placeholder="Descripción"></textarea>
+            </div>
+        </td>
+        <td><select name="unidad[]" class="form-control input-sm">${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
+        <td>
+            <div class="form-group">
+                <input class="form-control input-sm cantidad text-right handleBurUpdateSubtotal handleBlurUpdateCantidadItem handleBlurCalcularPresupuestoUtilizadoYSaldoPorPartida" type="number" min="1" name="cantidad[]"  placeholder="Cantidad">
+            </div>
+        </td>
+        <td>
+            <div class="form-group">
+                <input class="form-control input-sm precio text-right handleBurUpdateSubtotal handleBlurUpdatePrecioItem handleBlurCalcularPresupuestoUtilizadoYSaldoPorPartida" type="number" min="0" name="precioUnitario[]"  placeholder="Precio U.">
+            </div>
+        </td>
+        <td style="text-align:right;"><span class="moneda" name="simboloMoneda">${document.querySelector("select[name='moneda']").options[document.querySelector("select[name='moneda']").selectedIndex].dataset.simbolo}</span><span class="subtotal" name="subtotal[]">0.00</span></td>
+        <td><textarea class="form-control input-sm" name="motivo[]" placeholder="Motivo de requerimiento de item (opcional)"></textarea></td>
+        <td>
+            <div class="btn-group" role="group">
+                <input type="hidden" class="tipoItem" name="tipoItem[]" value="2">
+                <input type="hidden" class="idRegister" name="idRegister[]" value="${this.makeId()}">
+                <button type="button" class="btn btn-warning btn-xs handleClickAdjuntarArchivoItem" name="btnAdjuntarArchivoItem[]" title="Adjuntos" >
+                    <i class="fas fa-paperclip"></i>
+                    <span class="badge" name="cantidadAdjuntosItem" style="position:absolute; top:-10px; left:-10px; border: solid 0.1px;">0</span>    
+                </button>
+                <button type="button" class="btn btn-danger btn-xs handleClickEliminarItem" name="btnEliminarItem[]" title="Eliminar" ><i class="fas fa-trash-alt"></i></button>
+            </div>
+        </td>
+        </tr>`);
 
-            this.updateContadorItem();
 
-        });
-        document.querySelector("button[id='btn-add-servicio']").addEventListener('click', (event) => {
-
-            vista_extendida();
-
-            // let tipoRequerimiento = document.querySelector("form[id='form-requerimiento'] select[name='tipo_requerimiento']").value;
-            // let idGrupo = document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value;
-
-            document.querySelector("tbody[id='body_detalle_requerimiento']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
-            <td></td>
-            <td><p class="descripcion-partida">(NO SELECCIONADO)</p><button type="button" class="btn btn-xs btn-info handleClickCargarModalPartidas" name="partida">Seleccionar</button> 
-                <div class="form-group">
-                    <input type="text" class="partida" name="idPartida[]" hidden>
-                </div>
-                </td>
-                <td><p class="descripcion-centro-costo" title="${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.codigo : ''}">${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.descripcion : '(NO SELECCIONADO)'}</p><button type="button" class="btn btn-xs btn-primary handleClickCargarModalCentroCostos" name="centroCostos"  ${tempCentroCostoSelected != undefined ? 'disabled' : ''} title="${tempCentroCostoSelected != undefined ? 'El centro de costo esta asignado a un proyecto' : ''}" >Seleccionar</button> 
-                <div class="form-group">
-                    <input type="text" class="centroCosto" name="idCentroCosto[]" value="${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.id : ''}" hidden>
-                </div>
-            </td>
-            <td>(Servicio)<input type="hidden" name="partNumber[]"></td>
-            <td>
-                <div class="form-group">
-                    <textarea class="form-control input-sm descripcion handleBlurUpdateDescripcionItem" name="descripcion[]" placeholder="Descripción"></textarea>
-                </div>
-            </td>
-            <td><select name="unidad[]" class="form-control input-sm">${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
-            <td>
-                <div class="form-group">
-                    <input class="form-control input-sm cantidad text-right handleBurUpdateSubtotal handleBlurUpdateCantidadItem handleBlurCalcularPresupuestoUtilizadoYSaldoPorPartida" type="number" min="1" name="cantidad[]"  placeholder="Cantidad">
-                </div>
-            </td>
-            <td>
-                <div class="form-group">
-                    <input class="form-control input-sm precio text-right handleBurUpdateSubtotal handleBlurUpdatePrecioItem handleBlurCalcularPresupuestoUtilizadoYSaldoPorPartida" type="number" min="0" name="precioUnitario[]"  placeholder="Precio U.">
-                </div>
-            </td>
-            <td style="text-align:right;"><span class="moneda" name="simboloMoneda">${document.querySelector("select[name='moneda']").options[document.querySelector("select[name='moneda']").selectedIndex].dataset.simbolo}</span><span class="subtotal" name="subtotal[]">0.00</span></td>
-            <td><textarea class="form-control input-sm" name="motivo[]" placeholder="Motivo de requerimiento de item (opcional)"></textarea></td>
-            <td>
-                <div class="btn-group" role="group">
-                    <input type="hidden" class="tipoItem" name="tipoItem[]" value="2">
-                    <input type="hidden" class="idRegister" name="idRegister[]" value="${this.makeId()}">
-                    <button type="button" class="btn btn-warning btn-xs handleClickAdjuntarArchivoItem" name="btnAdjuntarArchivoItem[]" title="Adjuntos" >
-                        <i class="fas fa-paperclip"></i>
-                        <span class="badge" name="cantidadAdjuntosItem" style="position:absolute; top:-10px; left:-10px; border: solid 0.1px;">0</span>    
-                    </button>
-                    <button type="button" class="btn btn-danger btn-xs handleClickEliminarItem" name="btnEliminarItem[]" title="Eliminar" ><i class="fas fa-trash-alt"></i></button>
-                </div>
-            </td>
-            </tr>`);
-
- 
-            this.updateContadorItem();
-
-        });
+        this.updateContadorItem();
     }
 
     updateContadorItem() {

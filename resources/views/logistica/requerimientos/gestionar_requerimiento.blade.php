@@ -450,9 +450,9 @@ Crear / editar requerimiento
                     <h4 style="display:flex;justify-content: space-between;">Item's de requerimiento</h4>
                     <fieldset class="group-table">
                         <div class="btn-group" role="group" aria-label="...">
-                            <button type="button" class="btn btn-xs btn-success activation" id="btn-add-producto" data-toggle="tooltip" data-placement="bottom" title="Agregar Detalle" disabled><i class="fas fa-plus"></i> Producto
+                            <button type="button" class="btn btn-xs btn-success activation handleClickAgregarProducto" id="btn-add-producto" data-toggle="tooltip" data-placement="bottom" title="Agregar Detalle" disabled><i class="fas fa-plus"></i> Producto
                             </button> <!--  onClick="catalogoItemsModal();" -->
-                            <button type="button" class="btn btn-xs btn-primary activation" id="btn-add-servicio" data-toggle="tooltip" data-placement="bottom" title="Agregar Detalle" disabled><i class="fas fa-plus"></i> Servicio
+                            <button type="button" class="btn btn-xs btn-primary activation handleClickAgregarServicio" id="btn-add-servicio" data-toggle="tooltip" data-placement="bottom" title="Agregar Detalle" disabled><i class="fas fa-plus"></i> Servicio
                             </button>
                         </div>
                         <table class="table table-striped table-condensed table-bordered" id="ListaDetalleRequerimiento" width="100%">
@@ -576,7 +576,7 @@ Crear / editar requerimiento
 <div class="hidden" id="divOculto">
     <select id="selectUnidadMedida">
         @foreach ($unidadesMedida as $unidad)
-        <option value="{{$unidad->id_unidad_medida}}" {{$unidad->id_unidad_medida=='1' ? 'selected' : ''}}>{{$unidad->descripcion}}</option>
+            <option value="{{$unidad->id_unidad_medida}}">{{$unidad->descripcion}}</option>
         @endforeach
     </select>
 </div>
