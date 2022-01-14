@@ -3,14 +3,14 @@
 
 
 @section('cabecera')
-    Listado de proveedores
+    Lista de proveedores
 @endsection
 
 @section('breadcrumb')
 <ol class="breadcrumb">
     <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> Logística</a></li>
     <li>Proveedores</li>
-    <li class="active">Listado</li>
+    <li class="active">Lista proveedores</li>
 </ol>
 @endsection
 

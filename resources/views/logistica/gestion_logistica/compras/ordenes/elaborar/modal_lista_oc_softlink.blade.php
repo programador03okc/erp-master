@@ -8,7 +8,8 @@
             <div class="modal-body">
 
             <div style="display:flex;">
-                <input type="date" class="form-control handleChangeFiltroFechaVincularOcSoftlink" value={{ date('Y-m-d H:i:s') }} name="filtroFecha" style="width: 20rem;">
+                <input type="date" class="form-control handleChangeFiltroFechaInicioVincularOcSoftlink" value={{ Carbon\Carbon::now()->subMonth(1) }} name="filtroFechaInicio" style="width: 30rem;">
+                <input type="date" class="form-control handleChangeFiltroFechaFinVincularOcSoftlink" value={{ date('Y-m-d H:i:s') }} name="filtroFechaFin" style="width: 30rem;">
                 <select class="form-control handleChangeFiltroEmpresaVincularOcSoftlink" name="filtroEmpresa" style="width: 100%;">
                 @foreach ($empresas as $empresa)
                     @if($empresa->id_empresa ==1)

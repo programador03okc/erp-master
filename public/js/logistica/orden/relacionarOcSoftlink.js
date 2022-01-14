@@ -4,13 +4,15 @@ var $tablaHistorialOrdenesElaboradas;
 $('#listaOcSoftlink tbody').on("click", "button.handleClickSelectOcParaVincular", (e) => {
     this.selectOcParaVincular(e.currentTarget);
 });
-$('#modal-lista-oc-softlink').on("change", ".handleChangeFiltroFechaVincularOcSoftlink", (e) => {
-    console.log(document.querySelector("select[name='filtroEmpresa']").options[document.querySelector("select[name='filtroEmpresa']").selectedIndex].dataset.codigoEmpresa, e.currentTarget.value)
-    this.mostrarOrdenesSoftlinkNoVinculadas(document.querySelector("select[name='filtroEmpresa']").options[document.querySelector("select[name='filtroEmpresa']").selectedIndex].dataset.codigoEmpresa, e.currentTarget.value);
+$('#modal-lista-oc-softlink').on("change", ".handleChangeFiltroFechaInicioVincularOcSoftlink", (e) => {
+    this.mostrarOrdenesSoftlinkNoVinculadas(document.querySelector("select[name='filtroEmpresa']").options[document.querySelector("select[name='filtroEmpresa']").selectedIndex].dataset.codigoEmpresa, e.currentTarget.value,document.querySelector("input[name='filtroFechaFin']").value);
+});
+$('#modal-lista-oc-softlink').on("change", ".handleChangeFiltroFechaFinVincularOcSoftlink", (e) => {
+    this.mostrarOrdenesSoftlinkNoVinculadas(document.querySelector("select[name='filtroEmpresa']").options[document.querySelector("select[name='filtroEmpresa']").selectedIndex].dataset.codigoEmpresa,document.querySelector("input[name='filtroFechaInicio']").value, e.currentTarget.value);
 });
 $('#modal-lista-oc-softlink').on("change", ".handleChangeFiltroEmpresaVincularOcSoftlink", (e) => {
     console.log(document.querySelector("select[name='filtroEmpresa']").options[document.querySelector("select[name='filtroEmpresa']").selectedIndex].dataset.codigoEmpresa, e.currentTarget.value)
-    this.mostrarOrdenesSoftlinkNoVinculadas(e.currentTarget.value, document.querySelector("input[name='filtroFecha']").value );
+    this.mostrarOrdenesSoftlinkNoVinculadas(e.currentTarget.value, document.querySelector("input[name='filtroFechaInicio']").value,document.querySelector("input[name='filtroFechaInicio']").value,document.querySelector("input[name='filtroFechaFin']").value );
 });
 
 
@@ -25,12 +27,13 @@ function listarOcSoftlink(e){
     const $button = e.currentTarget;
     $button.setAttribute('disabled',true);
     let codigoEmpresa =document.querySelector("select[name='filtroEmpresa']")?document.querySelector("select[name='filtroEmpresa']").options[document.querySelector("select[name='filtroEmpresa']").selectedIndex].dataset.codigoEmpresa:'OKC';
-    let fecha = document.querySelector("input[name='filtroFecha']").value !=''?document.querySelector("input[name='filtroFecha']").value:new Date().toISOString().substring(0, 10);
-    console.log(codigoEmpresa,fecha);
-    mostrarOrdenesSoftlinkNoVinculadas(codigoEmpresa,fecha);
+    let fechaInicio = document.querySelector("input[name='filtroFechaInicio']").value !=''?document.querySelector("input[name='filtroFechaInicio']").value:new Date().toISOString().substring(0, 10);
+    let fechaFin = document.querySelector("input[name='filtroFechaFin']").value !=''?document.querySelector("input[name='filtroFechaFin']").value:new Date().toISOString().substring(0, 10);
+    console.log(codigoEmpresa,fechaInicio,fechaFin);
+    mostrarOrdenesSoftlinkNoVinculadas(codigoEmpresa,fechaInicio,fechaFin);
 }
 
-function mostrarOrdenesSoftlinkNoVinculadas(codigoEmpresa,fecha){
+function mostrarOrdenesSoftlinkNoVinculadas(codigoEmpresa,fechaInicio,fechaFin){
         var vardataTables = funcDatatables();
         $tablaListaOcSoftlink= $('#listaOcSoftlink').DataTable({
             'dom': vardataTables[1],
@@ -41,7 +44,7 @@ function mostrarOrdenesSoftlinkNoVinculadas(codigoEmpresa,fecha){
             'serverSide': false,
             'destroy': true,
             'ajax': {
-                'url': `listarOrdenesSoftlinkNoVinculadas/${codigoEmpresa}/${fecha}`,
+                'url': `listarOrdenesSoftlinkNoVinculadas/${codigoEmpresa}/${fechaInicio}/${fechaFin}`,
                 'type': 'GET',
                 beforeSend: data => {
     

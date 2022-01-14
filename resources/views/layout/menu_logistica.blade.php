@@ -18,7 +18,7 @@
 
             @if(Auth::user()->tieneSubModulo(25))
                 @if(Auth::user()->tieneAplicacion(108))
-                <li><a href="{{route('logistica.gestion-logistica.compras.ordenes.elaborar.index')}}"><i class="far fa-circle fa-xs"></i> Elaborar orden</a></li>
+                <li><a href="{{route('logistica.gestion-logistica.compras.ordenes.elaborar.index')}}"><i class="far fa-circle fa-xs"></i> Orden de compra / servicio</a></li>
             
                 @endif
                 @if(Auth::user()->tieneAplicacion(109))
@@ -88,7 +88,7 @@
             </span>
         </a>
         <ul class="treeview-menu">
-            <li><a href="{{route('logistica.gestion-logistica.proveedores.index')}}"><i class="far fa-circle fa-xs"></i> Listado</a></li>
+            <li><a href="{{route('logistica.gestion-logistica.proveedores.index')}}"><i class="far fa-circle fa-xs"></i> Lista de proveedores</a></li>
         </ul>
     </li>
     @endif

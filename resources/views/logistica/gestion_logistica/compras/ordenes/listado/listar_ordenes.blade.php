@@ -4,7 +4,7 @@
 @endsection
 
 @section('cabecera')
-    Listado de Ordenes
+    Gestión de estados
 @endsection
 
 @section('breadcrumb')
@@ -12,7 +12,7 @@
     <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> Logística</a></li>
     <li>Compras</li>
     <li>Ordenes</li>
-    <li class="active">Listado</li>
+    <li class="active">Gestión de estados</li>
 </ol>
 @endsection
 

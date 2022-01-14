@@ -5,14 +5,14 @@
 @endsection
 
 @section('cabecera')
-Elaborar orden
+Orden de compra / servicio
 @endsection
 
 @section('breadcrumb')
 <ol class="breadcrumb">
     <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> Logística</a></li>
     <li>Órdenes</li>
-    <li class="active">Elaborar</li>
+    <li class="active">Orden  de compra / servicio</li>
 </ol>
 @endsection
 
