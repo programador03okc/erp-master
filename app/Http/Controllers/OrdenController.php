@@ -2034,7 +2034,7 @@ class OrdenController extends Controller
                 </tr>
                 <tr>
                     <td width="15%" class="verticalTop subtitle">-CDC / Req.: </td>
-                    <td class="verticalTop">' . ($ordenArray['head']['codigo_cc'] ? $ordenArray['head']['codigo_cc'] : $ordenArray['head']['codigo_requerimiento']) . '</td
+                    <td class="verticalTop">' . ($ordenArray['head']['codigo_cc'] ? $ordenArray['head']['codigo_cc'] : '').'/'.($ordenArray['head']['codigo_requerimiento'] ? $ordenArray['head']['codigo_requerimiento'] : '') . '</td
         
                 </tr>
                 </table>
@@ -2049,7 +2049,7 @@ class OrdenController extends Controller
                 <caption class="left subtitle" style="padding-bottom:10px; font-size:0.7rem">Datos para el despacho:</caption>
 
                 <tr>
-                    <td nowrap  width="15%" class="verticalTop subtitle">-Destino / Dirección: </td>
+                    <td nowrap  width="15%" class="verticalTop subtitle">Dirección entrega: </td>
                     <td class="verticalTop">' . $ordenArray['head']['datos_para_despacho']['direccion_destino'] . '<br>' . $ordenArray['head']['datos_para_despacho']['ubigeo_destino'] . '</td>
                     <td width="15%" class="verticalTop subtitle">-Personal Autorizado:</td>
                     <td class="verticalTop">' . $personal_autorizado_1 . ($personal_autorizado_2 ? ("<br>" . $personal_autorizado_2) : "") . '</td>
