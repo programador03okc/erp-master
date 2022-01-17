@@ -2,7 +2,7 @@
 @include('layout.menu_almacen')
 
 @section('cabecera')
-Gestión de Transferencias
+Transferencias
 @endsection
 
 @section('estilos')
@@ -16,7 +16,7 @@ Gestión de Transferencias
 @section('breadcrumb')
 <ol class="breadcrumb">
     <li><a href="{{route('almacen.index')}}"><i class="fas fa-tachometer-alt"></i> Almacenes</a></li>
-    <li>Transferencias</li>
+    <li>Movimientos</li>
     <li class="active">@yield('cabecera')</li>
 </ol>
 @endsection

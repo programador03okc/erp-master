@@ -72,16 +72,20 @@
         </a>
         <ul class="treeview-menu">
             @if(Auth::user()->tieneAplicacion(82))
-            <li><a href="{{route('almacen.movimientos.pendientes-ingreso.index')}}"> Pendientes de Ingreso </a></li>
+            <li><a href="{{route('almacen.movimientos.pendientes-ingreso.index')}}"> Atención de Ingresos </a></li>
             @endif
             @if(Auth::user()->tieneAplicacion(83))
-            <li><a href="{{route('almacen.movimientos.pendientes-salida.index')}}"> Pendientes de Salida </a></li>
+            <li><a href="{{route('almacen.movimientos.pendientes-salida.index')}}"> Atención de Salidas </a></li>
+            @endif
+            @if(Auth::user()->tieneAplicacion(86))
+            <li><a href="{{route('almacen.transferencias.gestion-transferencias.index')}}"> Transferencias </a></li>
             @endif
             <li><a href="{{route('almacen.movimientos.prorrateo.index')}}"> Prorrateo de Costos </a></li>
+            <li><a href="{{route('almacen.movimientos.reservas.index')}}"> Reservas de almacén </a></li>
         </ul>
     </li>
     @endif
-    @if(Auth::user()->tieneSubModulo(40))
+    {{-- @if(Auth::user()->tieneSubModulo(40))
     <li class="treeview">
         <a href="#">
             <i class="fas fa-exchange-alt"></i> <span>Transferencias</span> <i class="fa fa-angle-left pull-right"></i>
@@ -92,7 +96,7 @@
             @endif
         </ul>
     </li>
-    @endif
+    @endif --}}
 
     @if(Auth::user()->tieneSubModulo(42))
     <li class="treeview">

@@ -1361,6 +1361,12 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('updateProrrateo', 'Almacen\Movimiento\ProrrateoCostosController@updateProrrateo');
 				Route::get('anular_prorrateo/{id}', 'Almacen\Movimiento\ProrrateoCostosController@anular_prorrateo');
 			});
+
+			Route::group(['as' => 'reservas.', 'prefix' => 'reservas'], function () {
+				//Pendientes de Salida
+				Route::get('index', 'Almacen\Movimiento\ReservasAlmacenController@viewReservasAlmacen')->name('index');
+				Route::post('listarReservasAlmacen', 'Almacen\Movimiento\ReservasAlmacenController@listarReservasAlmacen')->name('listarReservasAlmacen');
+			});
 		});
 
 		Route::group(['as' => 'comprobantes.', 'prefix' => 'comprobantes'], function () {

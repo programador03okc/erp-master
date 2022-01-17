@@ -1,0 +1,87 @@
+@extends('layout.main')
+@include('layout.menu_almacen')
+
+@section('cabecera')
+Reservas de almacén
+@endsection
+
+@section('estilos')
+<link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
+<link rel="stylesheet" href="{{ asset('template/plugins/jquery-datatables-checkboxes/css/dataTables.checkboxes.css') }}">
+<link rel="stylesheet" href="{{ asset('datatables/Datatables/css/dataTables.bootstrap.min.css') }}">
+<link rel="stylesheet" href="{{ asset('datatables/Buttons/css/buttons.dataTables.min.css') }}">
+<style>
+    #despachosPendientes_filter,
+    #despachosEntregados_filter{
+        margin-top:10px;
+    }
+</style>
+@endsection
+
+@section('breadcrumb')
+<ol class="breadcrumb">
+    <li><a href="{{route('almacen.index')}}"><i class="fas fa-tachometer-alt"></i> Almacenes</a></li>
+    <li>Movimientos</li>
+    <li class="active">@yield('cabecera')</li>
+</ol>
+@endsection
+
+@section('content')
+<div class="box box-solid">
+    <div class="box-body">
+        <div class="page-main" type="reservasAlmacen">
+            <div class="row" style="padding-top:10px;padding-right:10px;padding-left:10px;">
+                <div class="col-md-12">
+                    <table class="mytable table table-condensed table-bordered table-okc-view" 
+                        id="reservasAlmacen" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th hidden></th>
+                                <th>Código</th>
+                                <th>Part Number</th>
+                                <th>Descripción del producto</th>
+                                <th>Almacén de reserva</th>
+                                <th>Stock comprometido</th>
+                                <th>Usuario que la registró</th>
+                                <th>Fecha de registro</th>
+                                <th>Requerimiento</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                        <tfoot></tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
+
+@section('scripts')
+<script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
+<script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
+<script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
+<script src="{{ asset('datatables/Buttons/js/buttons.print.min.js') }}"></script>
+<script src="{{ asset('datatables/Buttons/js/buttons.html5.min.js') }}"></script>
+<script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
+<script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
+<script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
+
+<script src="{{ asset('template/plugins/js-xlsx/xlsx.full.min.js') }}"></script>
+<script src="{{ asset('template/plugins/moment.min.js') }}"></script>
+<script src="{{ asset('template/plugins/loadingoverlay.min.js') }}"></script>
+<script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
+
+<script src="{{ asset('js/almacen/reservas/reservasAlmacen.js') }}"></script>
+
+<script>
+    $(document).ready(function() {
+        seleccionarMenu(window.location);
+        listarReservasAlmacen();
+        // $.fn.dataTable.Buttons.defaults.dom.button.className = 'btn';
+    //     iniciar('{{Auth::user()->tieneAccion(85)}}');
+    });
+</script>
+@endsection
