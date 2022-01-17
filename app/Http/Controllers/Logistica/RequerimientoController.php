@@ -1375,7 +1375,8 @@ class RequerimientoController extends Controller
 
             ->when((intval($idEstado) > 0), function ($query)  use ($idEstado) {
                 return $query->whereRaw('alm_req.estado = ' . $idEstado);
-            });
+            })
+            ->where('alm_req.flg_compras','=',0);
 
         return datatables($requerimientos)
             ->filterColumn('nombre_usuario', function ($query, $keyword) {
@@ -1559,6 +1560,7 @@ class RequerimientoController extends Controller
                 WHERE   alm_det_req.id_requerimiento = alm_req.id_requerimiento AND
                 alm_det_req.estado != 7) AS monto_total")
             )
+            ->where('alm_req.flg_compras','=',0)
             // ->where([
             // ['alm_req.id_tipo_requerimiento', '=', $tipo_requerimiento],
             // ['alm_req.id_requerimiento', '=', '262']
