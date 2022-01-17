@@ -86,6 +86,17 @@ class RequerimientoPendienteView {
         $('#listaRequerimientosAtendidos tbody').on("click", "button.handleClickVerDetalleRequerimiento", (e) => {
             this.verDetalleRequerimientoAtendidos(e.currentTarget);
         });
+        
+
+        
+        $('body').on("click", "span.handleClickModalVerOrdenDeRequerimiento", (e) => { // tab para lista pendiente tab lista atendidos
+            this.modalVerOrdenDeRequerimiento(e.currentTarget);
+        });
+
+        $('body').on("click", "label.handleClickAbrirOrden", (e) => { // tab para lista pendiente tab lista atendidos
+            this.abrirOrden(e.currentTarget);
+        });
+
 
         $('#listaRequerimientosPendientes tbody').on("click", "button.handleClickAtenderConAlmacen", (e) => {
             this.atenderConAlmacen(e.currentTarget);
@@ -730,7 +741,8 @@ class RequerimientoPendienteView {
             let trs= document.querySelector("table[id='listaRequerimientosPendientes'] tbody").children;
 
             for (let index = 1; index < trs.length; index++) {
-                if( reqTrueList.includes(parseInt(trs[index].querySelector("input[type='checkbox']").dataset.idRequerimiento)) ){
+                console.log(reqTrueList.includes(parseInt(trs[index].querySelector("input[type='checkbox']"))));
+                if( trs[index].querySelector("input[type='checkbox']")? reqTrueList.includes(parseInt(trs[index].querySelector("input[type='checkbox']").dataset.idRequerimiento)) : false){
                     trs[index].querySelector("input[type='checkbox']").checked = true;
                 }
             }
@@ -1151,33 +1163,70 @@ class RequerimientoPendienteView {
         })
     }
 
+
+    modalVerOrdenDeRequerimiento(obj){
+        
+        $('#modal-ver-orden-de-requerimiento').modal({
+            show: true,
+            backdrop: 'static'
+        });
+
+        document.querySelector("div[id='modal-ver-orden-de-requerimiento'] span[id='codigo']").textContent='';
+        document.querySelector("div[id='modal-ver-orden-de-requerimiento'] div[id='contenedor-ordenes-de-requerimiento']").innerHTML='';
+
+        let linkOrden=[];
+        if(JSON.parse(obj.dataset.orden).length >0){
+            (JSON.parse(obj.dataset.orden)).forEach(element => {
+                linkOrden.push(`<label class='lbl-codigo handleClickAbrirOrden' title='Ir a orden' data-id-orden='${element.id_orden}'>${element.codigo}</label>`);
+    
+            });
+            document.querySelector("div[id='modal-ver-orden-de-requerimiento'] div[id='contenedor-ordenes-de-requerimiento']").innerHTML=linkOrden.toString();            
+        }
+
+        document.querySelector("div[id='modal-ver-orden-de-requerimiento'] span[id='codigo']").textContent=obj.dataset.codigoRequerimiento !=null ?obj.dataset.codigoRequerimiento:'';
+
+    }
+
+    abrirOrden(obj){
+        if(obj.dataset.idOrden>0){
+                sessionStorage.removeItem('reqCheckedList');
+                sessionStorage.removeItem('tipoOrden');
+                sessionStorage.setItem("idOrden", obj.dataset.idOrden);
+                sessionStorage.setItem("action", 'historial');
+        
+                let url = "/logistica/gestion-logistica/compras/ordenes/elaborar/index";
+                var win = window.open(url, '_blank');
+                win.focus();
+        }
+    }
+
+
+ 
+
     construirDetalleRequerimientoListaRequerimientosPendientes(table_id, row, response) {
+
         var html = '';
-        console.log(response);
+        // console.log(response);
         if (response.length > 0) {
             response.forEach(function (element) {
                 // if(element.tiene_transformacion==false){
                 let stockComprometido = 0;
                 (element.reserva).forEach(reserva => {
-                    if (reserva.estado == 1) {
                         stockComprometido += parseFloat(reserva.stock_comprometido);
-                    }
                 });
 
                 let atencionOrden = 0;
+                let objOrdenList = [];
                 (element.ordenes_compra).forEach(orden => {
-                    if (orden.estado == 1) {
                         atencionOrden += parseFloat(orden.cantidad);
-                    }
+                        objOrdenList.push({'id_orden':orden.id_orden_compra,'codigo':orden.codigo });
                 });
 
                 let cantidadAdjuntosDetalleRequerimiento = 0;
                 (element.adjunto_detalle_requerimiento).forEach(adjuntoItem => {
-                    if (adjuntoItem.estado == 1) {
                         cantidadAdjuntosDetalleRequerimiento ++;
-                    }
                 });
-
+//                
                 html += `<tr>
                         <td style="border: none; text-align:center;" data-part-number="${element.part_number}" data-producto-part-number="${element.producto_part_number}">${(element.producto_part_number != null ? element.producto_part_number : (element.part_number != null ? element.part_number : ''))} ${element.tiene_transformacion == true ? '<br><span class="label label-default">Transformado</span>' : ''}</td>
                         <td style="border: none; text-align:left;">${element.producto_codigo != null ? element.producto_codigo : ''}</td>
@@ -1188,8 +1237,8 @@ class RequerimientoPendienteView {
                         <td style="border: none; text-align:center;">${(element.precio_unitario > 0 ? ((element.moneda_simbolo ? element.moneda_simbolo : ((element.moneda_simbolo ? element.moneda_simbolo : '') + '0.00')) + $.number(element.precio_unitario, 2)) : (element.moneda_simbolo ? element.moneda_simbolo : '') + '0.00')}</td>
                         <td style="border: none; text-align:center;">${(parseFloat(element.subtotal) > 0 ? ((element.moneda_simbolo ? element.moneda_simbolo : '') + $.number(element.subtotal, 2)) : ((element.moneda_simbolo ? element.moneda_simbolo : '') + $.number((element.cantidad * element.precio_unitario), 2)))}</td>
                         <td style="border: none; text-align:center;">${element.motivo != null ? element.motivo : ''}</td>
-                        <td style="border: none; text-align:center;">${stockComprometido != null ? stockComprometido : '0'}</td>
-                        <td style="border: none; text-align:center;">${atencionOrden != null ? atencionOrden : '0'}</td>
+                        <td style="border: none; text-align:center;">${stockComprometido!=null && stockComprometido >0 ? stockComprometido : '0'}</td>
+                        <td style="border: none; text-align:center;">${atencionOrden != null && atencionOrden >0 ? `<span class="label label-info handleClickModalVerOrdenDeRequerimiento" data-codigo-requerimiento="${element.codigo_requerimiento}" data-orden=${JSON.stringify(objOrdenList)} style="cursor:pointer;" >${atencionOrden}</span>`  : '0'} </td>
                         <td style="border: none; text-align:center;">${element.estado_doc != null && element.tiene_transformacion == false ? element.estado_doc : ''}</td>
                         <td style="border: none; text-align:center;">${cantidadAdjuntosDetalleRequerimiento >0 ?`<button type="button" class="btn btn-default btn-xs handleClickVerAdjuntoDetalleRequerimiento" name="btnVerAdjuntoDetalleRequerimiento" title="Ver adjuntos" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-descripcion="${element.producto_descripcion != null ? element.producto_descripcion : (element.descripcion ? element.descripcion : '')}" ><i class="fas fa-paperclip"></i></button>`:''}</td>
                         </tr>`;
@@ -1226,7 +1275,9 @@ class RequerimientoPendienteView {
         }
         row.child(tabla).show();
     }
+
     construirDetalleRequerimientoListaRequerimientosAtendidos(table_id, row, response) {
+
         var html = '';
         // console.log(response);
         if (response.length > 0) {
@@ -1234,23 +1285,21 @@ class RequerimientoPendienteView {
                 // if(element.tiene_transformacion==false){
                 let stockComprometido = 0;
                 (element.reserva).forEach(reserva => {
-                    if (reserva.estado == 1) {
                         stockComprometido += parseFloat(reserva.stock_comprometido);
-                    }
                 });
 
                 let atencionOrden = 0;
+                let objOrdenList = [];
                 (element.ordenes_compra).forEach(orden => {
-                    if (orden.estado == 1) {
                         atencionOrden += parseFloat(orden.cantidad);
-                    }
+                        objOrdenList.push({'id_orden':orden.id_orden_compra,'codigo':orden.codigo });
+
+
                 });
 
                 let cantidadAdjuntosDetalleRequerimiento = 0;
                 (element.adjunto_detalle_requerimiento).forEach(adjuntoItem => {
-                    if (adjuntoItem.estado == 1) {
                         cantidadAdjuntosDetalleRequerimiento ++;
-                    }
                 });
 
                 html += `<tr>
@@ -1267,7 +1316,7 @@ class RequerimientoPendienteView {
                             ${stockComprometido != null && parseInt(stockComprometido) >0 ? '<span class="label label-default">'+stockComprometido+'</span>' : '0'}
                         </td>
                         <td style="border: none; text-align:center;">
-                            ${atencionOrden != null && atencionOrden>0 ? '<span class="label label-default">'+atencionOrden+'</span>' : '0'}
+                            ${atencionOrden != null && atencionOrden>0 ? `<span class="label label-info handleClickModalVerOrdenDeRequerimiento" data-codigo-requerimiento="${element.codigo_requerimiento}" data-orden=${JSON.stringify(objOrdenList)}  style="cursor:pointer;">${atencionOrden}</span>` : '0'}
                         </td>
                         <td style="border: none; text-align:center;">${element.estado_doc != null && element.tiene_transformacion == false ? element.estado_doc : ''}</td>
                         <td style="border: none; text-align:center;">
@@ -1511,17 +1560,28 @@ class RequerimientoPendienteView {
                 {
                     render: function (data, type, row) {
                         if (row.id_producto > 0) {
-                            return `<center><div class="btn-group" role="group" style="margin-bottom: 5px;">
-                            <button type="button" class="btn btn-xs btn-success btnNuevaReserva handleClickAbrirModalNuevaReserva" 
-                                data-codigo-requerimiento="${document.querySelector("span[id='codigo_requerimiento']").textContent}" 
-                                data-id-requerimiento="${row.id_requerimiento}" 
-                                data-id-detalle-requerimiento="${row.id_detalle_requerimiento}" 
-                                title="Nueva reserva" ><i class="fas fa-box fa-xs"></i></button>
-                            <button type="button" class="btn btn-xs btn-info btnHistorialReserva handleClickAbrirModaHistorialReserva" 
-                                data-codigo-requerimiento="${document.querySelector("span[id='codigo_requerimiento']").textContent}" 
-                                data-id-detalle-requerimiento="${row.id_detalle_requerimiento}" 
-                                title="Historial reserva" ><i class="fas fa-eye fa-xs"></i></button>
-                            </div></center>`;
+
+                            if(document.querySelector("li[class~='handleClickTabRequerimientosAtendidos']").classList.contains("active") ==true){
+                                return `<center><div class="btn-group" role="group" style="margin-bottom: 5px;">
+                                <button type="button" class="btn btn-xs btn-info btnHistorialReserva handleClickAbrirModaHistorialReserva" 
+                                    data-codigo-requerimiento="${document.querySelector("span[id='codigo_requerimiento']").textContent}" 
+                                    data-id-detalle-requerimiento="${row.id_detalle_requerimiento}" 
+                                    title="Historial reserva" ><i class="fas fa-eye fa-xs"></i></button>
+                                </div></center>`;
+                            }else{
+
+                                return `<center><div class="btn-group" role="group" style="margin-bottom: 5px;">
+                                <button type="button" class="btn btn-xs btn-success btnNuevaReserva handleClickAbrirModalNuevaReserva" 
+                                    data-codigo-requerimiento="${document.querySelector("span[id='codigo_requerimiento']").textContent}" 
+                                    data-id-requerimiento="${row.id_requerimiento}" 
+                                    data-id-detalle-requerimiento="${row.id_detalle_requerimiento}" 
+                                    title="Nueva reserva" ><i class="fas fa-box fa-xs"></i></button>
+                                <button type="button" class="btn btn-xs btn-info btnHistorialReserva handleClickAbrirModaHistorialReserva" 
+                                    data-codigo-requerimiento="${document.querySelector("span[id='codigo_requerimiento']").textContent}" 
+                                    data-id-detalle-requerimiento="${row.id_detalle_requerimiento}" 
+                                    title="Historial reserva" ><i class="fas fa-eye fa-xs"></i></button>
+                                </div></center>`;
+                            }
 
                         } else {
                             return '(Sin mapear)';
