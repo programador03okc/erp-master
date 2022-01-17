@@ -297,8 +297,8 @@ class ComprasPendientesController extends Controller
                 return $query->whereBetween('alm_req.fecha_requerimiento' ,[$fechaRegistroDesde,$fechaRegistroHasta]); 
             })
 
-            ->where('alm_req.confirmacion_pago', true)
-            ->whereIn('alm_req.estado', [2,15,27,38,39]);
+            ->whereIn('alm_req.estado', [2,15,27,38,39])
+            ->where('alm_req.flg_compras','=',0);
             
             return datatables($alm_req)
             ->filterColumn('alm_req.fecha_entrega', function ($query, $keyword) {
@@ -463,8 +463,7 @@ class ComprasPendientesController extends Controller
             ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use($fechaRegistroDesde,$fechaRegistroHasta) {
                 return $query->whereBetween('alm_req.fecha_requerimiento' ,[$fechaRegistroDesde,$fechaRegistroHasta]); 
             })
-
-            // ->where('alm_req.confirmacion_pago', true)
+            ->where('alm_req.flg_compras','=',0)
             ->whereIn('alm_req.estado', [5,28]);
             
             return datatables($alm_req)
