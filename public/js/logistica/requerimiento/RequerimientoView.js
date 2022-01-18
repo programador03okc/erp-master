@@ -289,7 +289,7 @@ class RequerimientoView {
             let optionSelectDivisionHTML='';
             this.requerimientoCtrl.getDivisiones().then((res)=> {
                 res.forEach(element => {
-                        optionSelectDivisionHTML += `<option value="${element.id_division}" selected>${element.descripcion}</option> `;
+                        optionSelectDivisionHTML += `<option value="${element.id_division}">${element.descripcion}</option> `;
                 });
                 document.querySelector("select[name='division']").innerHTML=optionSelectDivisionHTML;
             }).catch(function (err) {

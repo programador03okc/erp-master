@@ -1485,6 +1485,7 @@ class OrdenController extends Controller
             'log_ord_compra.id_condicion_softlink',
             'log_ord_compra.id_condicion',
             'log_cdn_pago.descripcion AS condicion_pago',
+            'log_ord_compra.codigo_softlink',
             'log_ord_compra.plazo_dias',
             'log_ord_compra.id_cta_principal',
             'cta_prin.nro_cuenta as nro_cuenta_principal',
@@ -1665,7 +1666,8 @@ class OrdenController extends Controller
                         'id_condicion' => $data->id_condicion,
                         'condicion_pago' => $data->condicion_pago,
                         'plazo_dias' => $data->plazo_dias,
-                        'plazo_entrega' => $data->plazo_entrega
+                        'plazo_entrega' => $data->plazo_entrega,
+                        'codigo_softlink' => $data->codigo_softlink
 
 
                     ],
@@ -2034,7 +2036,12 @@ class OrdenController extends Controller
                 </tr>
                 <tr>
                     <td width="15%" class="verticalTop subtitle">-CDP / Req.: </td>
-                    <td class="verticalTop">' . ($ordenArray['head']['codigo_cc'] ? $ordenArray['head']['codigo_cc'] : '').'/'.($ordenArray['head']['codigo_requerimiento'] ? $ordenArray['head']['codigo_requerimiento'] : '') . '</td
+                    <td class="verticalTop">' . ($ordenArray['head']['codigo_cc'] ? $ordenArray['head']['codigo_cc'].'/' : '').($ordenArray['head']['codigo_requerimiento'] ? $ordenArray['head']['codigo_requerimiento'] : '') . '</td
+        
+                </tr>
+                <tr>
+                    <td width="15%" class="verticalTop subtitle">-Cod. Softlink: </td>
+                    <td class="verticalTop">' .  ($ordenArray['head']['condicion_compra']['codigo_softlink']?$ordenArray['head']['condicion_compra']['codigo_softlink']:'') . '</td
         
                 </tr>
                 </table>
@@ -2049,7 +2056,7 @@ class OrdenController extends Controller
                 <caption class="left subtitle" style="padding-bottom:10px; font-size:0.7rem">Datos para el despacho:</caption>
 
                 <tr>
-                    <td nowrap  width="15%" class="verticalTop subtitle">Dirección entrega: </td>
+                    <td nowrap  width="15%" class="verticalTop subtitle">-Dirección entrega: </td>
                     <td class="verticalTop">' . $ordenArray['head']['datos_para_despacho']['direccion_destino'] . '<br>' . $ordenArray['head']['datos_para_despacho']['ubigeo_destino'] . '</td>
                     <td width="15%" class="verticalTop subtitle">-Personal autorizado:</td>
                     <td class="verticalTop">' . $personal_autorizado_1 . ($personal_autorizado_2 ? ("<br>" . $personal_autorizado_2) : "") . '</td>
