@@ -464,7 +464,7 @@ class ComprasPendientesController extends Controller
                 return $query->whereBetween('alm_req.fecha_requerimiento' ,[$fechaRegistroDesde,$fechaRegistroHasta]); 
             })
             ->where('alm_req.flg_compras','=',0)
-            ->whereIn('alm_req.estado', [5,28]);
+            ->whereNotIn('alm_req.estado', [1,2,3,4,7,12,13,15,27,28]);
             
             return datatables($alm_req)
             ->filterColumn('alm_req.fecha_entrega', function ($query, $keyword) {

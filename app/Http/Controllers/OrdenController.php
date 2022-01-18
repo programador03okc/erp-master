@@ -3040,6 +3040,19 @@ class OrdenController extends Controller
     
     
                 DB::commit();
+
+                if (str_contains($data['mensaje'],'No existe un id_softlink en la OC seleccionada')) {
+                    $migrarOrdenSoftlink = (new MigrateOrdenSoftLinkController)->migrarOrdenCompra($request->id_orden)->original;
+                    if ($migrarOrdenSoftlink['tipo'] == 'success') {
+                        $data = [
+                            'id_orden_compra' => 0,
+                            'codigo' => '',
+                            'tipo_estado' => 'success',
+                            'mensaje'=>'Se a obtenido una respuesta satisfactoria al intentar migrar la orden a softlink',
+                            'status_migracion_softlink' => $migrarOrdenSoftlink,
+                        ];
+                    }
+                }
                 if ($status == 200) {
                     $migrarOrdenSoftlink = (new MigrateOrdenSoftLinkController)->migrarOrdenCompra($request->id_orden)->original;
                     if ($migrarOrdenSoftlink['tipo'] == 'success') {
