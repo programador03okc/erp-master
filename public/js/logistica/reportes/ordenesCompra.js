@@ -221,6 +221,7 @@ class OrdenesCompra {
             },
             'columns': [
                 { 'data': 'id_orden_compra', 'name': 'id_orden_compra', 'className': 'text-center' },
+                { 'data': 'id_orden_compra', 'name': 'id_orden_compra', 'className': 'text-center' },
                 { 'data': 'codigo', 'name': 'log_ord_compra.codigo', 'className': 'text-center' },
                 { 'data': 'sede.descripcion', 'name': 'sede.descripcion',  'defaultContent':'' ,'className': 'text-center' },
                 { 'data': 'estado.descripcion', 'name': 'estado.descripcion', 'className': 'text-center' },
@@ -239,23 +240,29 @@ class OrdenesCompra {
                 {
                     'render': function (data, type, row) {
                         // console.log((row.cuadro_costo));
-                        return (row.cuadro_costo)!=null && ((row.cuadro_costo)).length >0 && (row.cuadro_costo)[0].codigo_oportunidad !=null ?(row.cuadro_costo)[0].codigo_oportunidad:'(No aplica)';
+                        return (row.requerimientos)!=null && ((row.requerimientos)).length >0 ?(row.requerimientos).map(e => e.codigo).join(","):'';
                     }, targets: 0
                 },
                 {
                     'render': function (data, type, row) {
-                        return  (row.cuadro_costo)!=null && ((row.cuadro_costo)).length >0 ? (moment((row.cuadro_costo)[0].fecha_limite, "DD-MM-YYYY").format("DD-MM-YYYY").toString() ):'';
-                    }, targets: 4
+                        // console.log((row.cuadro_costo));
+                        return (row.cuadro_costo)!=null && ((row.cuadro_costo)).length >0 && (row.cuadro_costo)[0].codigo_oportunidad !=null ?(row.cuadro_costo)[0].codigo_oportunidad:'(No aplica)';
+                    }, targets: 1
                 },
                 {
                     'render': function (data, type, row) {
-                        return (row.cuadro_costo)!=null && ((row.cuadro_costo)).length >0 && (row.cuadro_costo)[0].estado_aprobacion_cuadro != null?(row.cuadro_costo)[0].estado_aprobacion_cuadro:'(No aplica)';
+                        return  (row.cuadro_costo)!=null && ((row.cuadro_costo)).length >0 ? (moment((row.cuadro_costo)[0].fecha_limite, "DD-MM-YYYY").format("DD-MM-YYYY").toString() ):'';
                     }, targets: 5
                 },
                 {
                     'render': function (data, type, row) {
-                        return (row.cuadro_costo)!=null && ((row.cuadro_costo)).length >0 ?(moment((row.cuadro_costo)[0].fecha_aprobacion, "DD-MM-YYYY").format("DD-MM-YYYY").toString()):'';
+                        return (row.cuadro_costo)!=null && ((row.cuadro_costo)).length >0 && (row.cuadro_costo)[0].estado_aprobacion_cuadro != null?(row.cuadro_costo)[0].estado_aprobacion_cuadro:'(No aplica)';
                     }, targets: 6
+                },
+                {
+                    'render': function (data, type, row) {
+                        return (row.cuadro_costo)!=null && ((row.cuadro_costo)).length >0 ?(moment((row.cuadro_costo)[0].fecha_aprobacion, "DD-MM-YYYY").format("DD-MM-YYYY").toString()):'';
+                    }, targets: 7
                 },
                 {
                     'render': function (data, type, row) {
@@ -265,7 +272,7 @@ class OrdenesCompra {
                         let dias_restantes = moment(fecha_oc, 'DD-MM-YYYY').diff(moment(fecha_aprobacion_cc, 'DD-MM-YYYY'), 'days'); 
                         // console.log(dias_restantes);
                         return dias_restantes;
-                    }, targets: 7
+                    }, targets: 8
                 },
 
                 {
@@ -276,12 +283,12 @@ class OrdenesCompra {
 
                         
                         return (dias_restantes <=1?'ATENDIDO A TIEMPO':'ATENDIDO FUERA DE TIEMPO');
-                    }, targets: 8
+                    }, targets: 9
                 },
                 {
                     'render': function (data, type, row) {
                         return moment(row['fecha'], "DD-MM-YYYY").format("DD-MM-YYYY").toString();
-                    }, targets: 9
+                    }, targets: 10
                 },
                 {
                     'render': function (data, type, row) {
@@ -309,7 +316,7 @@ class OrdenesCompra {
                         // console.log(fechaDif);
 
                         return dias_restantes;
-                    }, targets: 10
+                    }, targets: 11
                 },
                 {
                     'render': function (data, type, row) {
@@ -317,13 +324,13 @@ class OrdenesCompra {
                         let dias_restantes = moment(fechaPlazoEntrega, 'DD-MM-YYYY').diff(moment( row['fecha'], 'DD-MM-YYYY'), 'days');
 
                         return (dias_restantes <=2?'ATENDIDO A TIEMPO':(dias_restantes>=15?'IMPORTACIÓN':'ATENDIDO FUERA DE TIEMPO'));
-                    }, targets: 11
+                    }, targets: 12
                 },
                 {
                     'render': function (data, type, row) {
                         let fechaPlazoEntrega = moment(row['fecha'], "DD-MM-YYYY").add(row['plazo_entrega'], 'days').format("DD-MM-YYYY").toString();
                         return fechaPlazoEntrega;
-                    }, targets: 12
+                    }, targets: 13
                 },
    
                 // {

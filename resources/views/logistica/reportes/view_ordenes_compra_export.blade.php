@@ -1,6 +1,7 @@
 <table>
     <thead>
         <tr>
+            <th>Requerimiento</th>
             <th>Cuadro costos</th>
             <th>Orden compra</th>
             <th>Empresa - Sede</th>
@@ -19,6 +20,7 @@
     <tbody>
         @foreach ($ordenes as $orden)
         <tr>
+            <td>{{ $orden["requerimientos"] }}</td>
             <td>{{ $orden["codigo_oportunidad"] }}</td>
             <td>{{ $orden["codigo"] }}</td>
             <td>{{ $orden["sede"] }}</td>

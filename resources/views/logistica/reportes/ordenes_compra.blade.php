@@ -28,6 +28,7 @@ Reportes de ordenes compra
                 <table class="mytable table table-condensed table-striped table-hover table-bordered table-okc-view" id="listaOrdenesCompra">
                     <thead>
                         <tr>
+                            <th style="text-align:center;">Req.</th>
                             <th style="text-align:center;">Cuadro costos</th>
                             <th style="text-align:center;">Orden compra</th>
                             <th style="text-align:center;">Empresa - Sede</th>

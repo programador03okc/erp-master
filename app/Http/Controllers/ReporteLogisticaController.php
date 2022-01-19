@@ -88,7 +88,11 @@ class ReporteLogisticaController extends Controller{
 		$data = $this->obtenerDataOrdenesCompra($idEmpresa,$idSede,$fechaRegistroDesde,$fechaRegistroHasta);
 		
 		
-		return datatables($data)->rawColumns(['requerimientos','cuadro_costo'])->toJson();
+		return datatables($data)
+		// ->filterColumn('codigo_requerimiento', function ($query, $keyword) {
+		// 	$query->where('alm_req.codigo', $keyword);
+		// })
+		->rawColumns(['requerimientos','cuadro_costo'])->toJson();
 
 	}
 

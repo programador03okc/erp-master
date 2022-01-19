@@ -42,8 +42,14 @@ class ReporteOrdenesCompraExcel implements FromView
             $fechaLlegada= Carbon::create($element['fecha'])->addDays($element['plazo_entrega']);
             $diasEntrega = $fechaOrden->diffInDays($fechaLlegada,false);
             $condicion2 = intval($diasEntrega) <=2?'ATENDIDO A TIEMPO':(intval($diasEntrega)>=15?'IMPORTACIÓN':'ATENDIDO FUERA DE TIEMPO');
+            
+            $codigoRequerimiento=[];
+            foreach ($element->requerimientos as $value) {
+                $codigoRequerimiento[]= $value->codigo;
+            }
 
             $data[]=[
+                'requerimientos'=> implode(",", $codigoRequerimiento),
                 'codigo_oportunidad'=> $element->cuadro_costo?($element->cuadro_costo)[0]['codigo_oportunidad']:'',
                 'codigo'=> $element->codigo,
                 'sede'=> $element->sede->descripcion,
