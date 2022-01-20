@@ -72,6 +72,8 @@ class MapeoProductosController extends Controller
             $cantidadItemsMapeados=0;
             $cantidadItemsTotal=0;
             $mensaje =[];
+            $status_migracion_occ=null;
+
             foreach($request->detalle as $det){
     
                 // anular items si existe
@@ -94,7 +96,7 @@ class MapeoProductosController extends Controller
                             'id_categoria' => $det['id_categoria'],
                             'id_subcategoria' => $det['id_subcategoria'],
                             'id_clasif' => $det['id_clasif'],
-                            'descripcion' => utf8_decode(strtoupper($det['descripcion'])),
+                            'descripcion' => mb_convert_encoding((strtoupper($det['descripcion'])), 'UTF-8', 'UTF-8'),
                             'id_unidad_medida' => $det['id_unidad_medida'],
                             'series' => $det['series'],
                             'id_usuario' => $id_usuario,
@@ -135,7 +137,6 @@ class MapeoProductosController extends Controller
 
 
             DB::commit();
-            $status_migracion_occ=null;
             $detalleRequerimiento= DetalleRequerimiento::find($request->detalle[0]['id_detalle_requerimiento']);
             $todoDetalleRequerimientoNoMapeados=DetalleRequerimiento::where([['id_requerimiento',$detalleRequerimiento->id_requerimiento],['entrega_cliente',true],['estado','!=',7]])->count();
             $todoDetalleRequerimientoMapeados=DetalleRequerimiento::where([['id_requerimiento',$detalleRequerimiento->id_requerimiento],['entrega_cliente',true],['estado','!=',7]])->whereNotNull('id_producto')->count();
