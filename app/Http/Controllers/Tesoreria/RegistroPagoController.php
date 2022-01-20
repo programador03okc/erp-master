@@ -28,6 +28,37 @@ class RegistroPagoController extends Controller
         return view('tesoreria/pagos/pendientesPago');
     }
 
+    public function listarRequerimientosPago()
+    {
+        $data = DB::table('tesoreria.requerimiento_pago')
+            ->select(
+                'requerimiento_pago.*',
+                'adm_contri.razon_social',
+                'empresa.razon_social as razon_social_empresa',
+                'sis_moneda.simbolo',
+                'sis_grupo.descripcion as grupo_descripcion',
+                'adm_estado_doc.estado_doc',
+                'adm_estado_doc.bootstrap_color',
+                'sis_sede.descripcion as sede_descripcion',
+                // 'adm_cta_contri.nro_cuenta',
+                DB::raw("(SELECT sum(total_pago) FROM tesoreria.req_pagos
+                        WHERE req_pagos.id_requerimiento_pago = requerimiento_pago.id_requerimiento_pago
+                        and req_pagos.estado != 7) AS suma_pagado")
+            )
+            ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'requerimiento_pago.id_proveedor')
+            ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
+            ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'requerimiento_pago.id_moneda')
+            ->leftJoin('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'requerimiento_pago.estado')
+            ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'requerimiento_pago.id_sede')
+            ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'requerimiento_pago.id_empresa')
+            ->join('contabilidad.adm_contri as empresa', 'empresa.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
+            ->join('configuracion.sis_grupo', 'sis_grupo.id_grupo', '=', 'requerimiento_pago.id_grupo')
+            // ->leftJoin('contabilidad.adm_cta_contri', 'adm_cta_contri.id_cuenta_contribuyente', '=', 'requerimiento_pago.id_cuenta_proveedor')
+            ->where([['requerimiento_pago.estado', '!=', 7]]);
+
+        return datatables($data)->toJson();
+    }
+
     public function listarOrdenesCompra()
     {
         $data = DB::table('logistica.log_ord_compra')
@@ -152,6 +183,22 @@ class RegistroPagoController extends Controller
         return response()->json($detalles);
     }
 
+    public function pagosRequerimientos($id_requerimiento_pago)
+    {
+        $detalles = DB::table('tesoreria.req_pagos')
+            ->select('req_pagos.*', 'sis_usua.nombre_corto', 'sis_moneda.simbolo')
+            ->leftJoin('tesoreria.requerimiento_pago', 'requerimiento_pago.id_requerimiento_pago', '=', 'req_pagos.id_requerimiento_pago')
+            ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'requerimiento_pago.id_moneda')
+            ->leftJoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'req_pagos.registrado_por')
+            ->where([
+                ['req_pagos.id_requerimiento_pago', '=', $id_requerimiento_pago],
+                ['req_pagos.estado', '!=', 7]
+            ])
+            ->get();
+
+        return response()->json($detalles);
+    }
+
     public function detalleComprobante($id_doc_com)
     {
         $detalles = DB::table('almacen.doc_com_det')
@@ -187,6 +234,7 @@ class RegistroPagoController extends Controller
             $id_pago = DB::table('tesoreria.req_pagos')
                 ->insertGetId([
                     'id_oc' => $request->id_oc,
+                    'id_requerimiento_pago' => $request->id_requerimiento_pago,
                     'id_doc_com' => $request->id_doc_com,
                     'fecha_pago' => $request->fecha_pago,
                     'observacion' => $request->observacion,
