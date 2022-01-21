@@ -29,6 +29,9 @@ class ListarProveedorView {
         $('#modal-proveedor').on("keyup", "input.handleKeyUpNroDocumento", (e) => {
             this.validarNroDocumento(e);
         });
+        $('#modal-proveedor').on("focusout", "input.handleFocusoutNroDocumento", (e) => {
+            this.obtenerDataContribuyenteSegunNroDocumento(e.currentTarget);
+        });
         $('#modal-proveedor').on("keyup", "input.handleKeyUpRazonSocial", (e) => {
             this.ponerMayusculaRazonSocial(e);
         });
@@ -391,7 +394,6 @@ class ListarProveedorView {
 
     validarNroDocumento(e) {
         let tipoDocumento = document.querySelector("select[name='tipoDocumentoIdentidad']").value;
-
         switch (tipoDocumento) {
             case '1': //DNI
                 this.validacionRegexSoloNumeros(e);
@@ -407,6 +409,71 @@ class ListarProveedorView {
             default:
                 break;
         }
+    }
+
+    obtenerDataContribuyenteSegunNroDocumento(obj){
+        // console.log(obj);
+        let nroDocumento = obj.value;
+        let tipoDocumento= document.querySelector("select[name='tipoDocumentoIdentidad']").value;
+        $.ajax({
+            type: 'POST',
+            url: 'obtener-data-contribuyente-segun-nro-documento',
+            data:{'nroDocumento':nroDocumento,'tipoDocumento':tipoDocumento},
+            dataType: 'JSON',
+            beforeSend: data => {
+    
+                $("input[name='nroDocumento']").LoadingOverlay("show", {
+                    imageAutoResize: true,
+                    progress: true,
+                    imageColor: "#3c8dbc"
+                });
+            },
+            success: (response) => {
+                $("input[name='nroDocumento']").LoadingOverlay("hide", true);
+
+                console.log(response);
+                
+                    if(response.tipo_estado=='success'){
+                        if(response.data!=null){
+                            document.querySelector("div[id='modal-proveedor'] input[name='contribuyenteEncontrado']").value = true;
+                            this.mostrarFormularioProveedor(response.data);
+                            document.querySelector("form[id='form-proveedor']").setAttribute("type", "edition");
+                            document.querySelector("div[id='modal-proveedor'] h3[class='modal-title']").textContent = 'Editar Proveedor';
+                            document.querySelector("button[id='btnGuardarProveedor']").classList.add("oculto");
+                            document.querySelector("button[id='btnActualizarProveedor']").classList.remove("oculto");
+                    
+                        }
+                        Lobibox.notify(response.tipo_estado, {
+                            title: false,
+                            size: 'mini',
+                            rounded: true,
+                            sound: false,
+                            delayIndicator: false,
+                            msg: response.mensaje
+                        });
+                    }else{
+                        document.querySelector("div[id='modal-proveedor'] input[name='contribuyenteEncontrado']").value = false;
+                        document.querySelector("div[id='modal-proveedor'] h3[class='modal-title']").textContent = 'Nuevo Proveedor';
+                        document.querySelector("form[id='form-proveedor']").setAttribute("type", "register");
+
+                        $("#form-proveedor")[0].reset();
+                        this.limpiarTabla('listaContactoProveedor');
+                        this.limpiarTabla('listaCuentaBancariasProveedor');
+                    }
+
+            }
+        }).fail((jqXHR, textStatus, errorThrown) => {
+            $("input[name='nroDocumento']").LoadingOverlay("hide", true);
+
+            Swal.fire(
+                '',
+                'Hubo un problema al intentar obtener la data del contribuyente, por favor vuelva a intentarlo.',
+                'error'
+            );
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        });
     }
 
     ponerMayusculaRazonSocial(e) {
@@ -1129,29 +1196,7 @@ class ListarProveedorView {
 
         this.proveedorCtrl.getProveedor(idProveedor).then((res) => {
 
-            document.querySelector("div[id='modal-proveedor'] input[name='idProveedor']").value = res.id_proveedor;
-            document.querySelector("div[id='modal-proveedor'] select[name='tipoContribuyente']").value = res.contribuyente.id_tipo_contribuyente;
-            document.querySelector("div[id='modal-proveedor'] select[name='tipoDocumentoIdentidad']").value = res.contribuyente.tipo_documento_identidad.id_doc_identidad;
-            document.querySelector("div[id='modal-proveedor'] input[name='nroDocumento']").value = res.contribuyente.nro_documento;
-            document.querySelector("div[id='modal-proveedor'] input[name='razonSocial']").value = res.contribuyente.razon_social;
-            document.querySelector("div[id='modal-proveedor'] input[name='direccion']").value = res.contribuyente.direccion_fiscal;
-            document.querySelector("div[id='modal-proveedor'] select[name='pais']").value = res.contribuyente.pais.id_pais;
-            document.querySelector("div[id='modal-proveedor'] input[name='ubigeoProveedor']").value = res.contribuyente.ubigeo;
-            document.querySelector("div[id='modal-proveedor'] input[name='descripcionUbigeoProveedor']").value = res.contribuyente.ubigeo_completo;
-            document.querySelector("div[id='modal-proveedor'] input[name='telefono']").value = res.contribuyente.telefono;
-            document.querySelector("div[id='modal-proveedor'] input[name='celular']").value = res.contribuyente.celular;
-            document.querySelector("div[id='modal-proveedor'] input[name='email']").value = res.contribuyente.email;
-            document.querySelector("div[id='modal-proveedor'] textarea[name='observacion']").value = res.observacion;
-
-            if (res.establecimiento_proveedor.length > 0) {
-                this.llenarTablaEstablecimientoDeProveedorSeleccionado(res.establecimiento_proveedor);
-            }
-            if (res.contacto_contribuyente.length > 0) {
-                this.llenarTablaContactosDeProveedorSeleccionado(res.contacto_contribuyente);
-            }
-            if (res.cuenta_contribuyente.length > 0) {
-                this.llenarTablaCuentaBancariaDeProveedorSeleccionado(res.cuenta_contribuyente);
-            }
+            this.mostrarFormularioProveedor(res);
 
         }).catch(function (err) {
             console.log(err)
@@ -1162,6 +1207,33 @@ class ListarProveedorView {
             );
         })
 
+    }
+
+    mostrarFormularioProveedor(res){
+        document.querySelector("div[id='modal-proveedor'] input[name='idContribuyente']").value = res.id_contribuyente;
+        document.querySelector("div[id='modal-proveedor'] input[name='idProveedor']").value = res.proveedor!=null ?res.proveedor.id_proveedor:'';
+        document.querySelector("div[id='modal-proveedor'] select[name='tipoContribuyente']").value = res.id_tipo_contribuyente;
+        document.querySelector("div[id='modal-proveedor'] select[name='tipoDocumentoIdentidad']").value = res.tipo_documento_identidad.id_doc_identidad;
+        document.querySelector("div[id='modal-proveedor'] input[name='nroDocumento']").value = res.nro_documento;
+        document.querySelector("div[id='modal-proveedor'] input[name='razonSocial']").value = res.razon_social;
+        document.querySelector("div[id='modal-proveedor'] input[name='direccion']").value = res.direccion_fiscal;
+        document.querySelector("div[id='modal-proveedor'] select[name='pais']").value = res.pais.id_pais;
+        document.querySelector("div[id='modal-proveedor'] input[name='ubigeoProveedor']").value = res.ubigeo;
+        document.querySelector("div[id='modal-proveedor'] input[name='descripcionUbigeoProveedor']").value = res.ubigeo_completo;
+        document.querySelector("div[id='modal-proveedor'] input[name='telefono']").value = res.telefono;
+        document.querySelector("div[id='modal-proveedor'] input[name='celular']").value = res.celular;
+        document.querySelector("div[id='modal-proveedor'] input[name='email']").value = res.email;
+        document.querySelector("div[id='modal-proveedor'] textarea[name='observacion']").value = res.proveedor!=null ?res.proveedor.observacion:'';
+
+        if (res.proveedor!=null && res.proveedor.establecimiento_proveedor.length > 0) {
+            this.llenarTablaEstablecimientoDeProveedorSeleccionado(res.proveedor.establecimiento_proveedor);
+        }
+        if (res.contacto_contribuyente.length > 0) {
+            this.llenarTablaContactosDeProveedorSeleccionado(res.contacto_contribuyente);
+        }
+        if (res.cuenta_contribuyente.length > 0) {
+            this.llenarTablaCuentaBancariaDeProveedorSeleccionado(res.cuenta_contribuyente);
+        }
     }
 
 
@@ -1254,7 +1326,7 @@ class ListarProveedorView {
 
     actualizarProveedor(obj) {
         let mensaje = this.validarModalProveedor();
-        if (!document.querySelector("div[id='modal-proveedor'] input[name='idProveedor']").value > 0) {
+        if ( (Boolean(document.querySelector("div[id='modal-proveedor'] input[name='contribuyenteEncontrado']").value) ==false) && (!document.querySelector("div[id='modal-proveedor'] input[name='idProveedor']").value > 0)) {
             mensaje += '<li style="text-align: left;">Hubo un problema, no se encontro un id de proveedor, vuelva a intenta seleccionar el proveedor.</li>';
         }
         if (mensaje.length > 0) {
@@ -1294,16 +1366,17 @@ class ListarProveedorView {
                             delayIndicator: false,
                             msg: `Proveedor actualizado`
                         });
+                        $("#listaProveedores").DataTable().ajax.reload(null, false);
 
-                        this.objectBtnEdition.closest("tr").querySelector("td[class~='tipoDocumento']").textContent = response.data.contribuyente.tipo_documento_identidad.descripcion ?? '';
-                        this.objectBtnEdition.closest("tr").querySelector("td[class~='nroDocumento']").textContent = response.data.contribuyente.nro_documento ?? '';
-                        this.objectBtnEdition.closest("tr").querySelector("td[class~='razonSocial']").textContent = response.data.contribuyente.razon_social ?? '';
-                        this.objectBtnEdition.closest("tr").querySelector("td[class~='tipoEmpresa']").textContent = response.data.contribuyente.tipo_contribuyente.descripcion ?? '';
-                        this.objectBtnEdition.closest("tr").querySelector("td[class~='pais']").textContent = response.data.contribuyente.pais.descripcion ?? '';
-                        this.objectBtnEdition.closest("tr").querySelector("td[class~='ubigeo']").textContent = response.data.contribuyente.ubigeo_completo ?? '';
-                        this.objectBtnEdition.closest("tr").querySelector("td[class~='direccion']").textContent = response.data.contribuyente.direccion_fiscal ?? '';
-                        this.objectBtnEdition.closest("tr").querySelector("td[class~='telefono']").textContent = response.data.contribuyente.telefono ?? '';
-                        this.objectBtnEdition.closest("tr").querySelector("td[class~='estado']").textContent = response.data.estado_proveedor.descripcion ?? '';
+                        // this.objectBtnEdition.closest("tr").querySelector("td[class~='tipoDocumento']").textContent = response.data.tipo_documento_identidad.descripcion ?? '';
+                        // this.objectBtnEdition.closest("tr").querySelector("td[class~='nroDocumento']").textContent = response.data.nro_documento ?? '';
+                        // this.objectBtnEdition.closest("tr").querySelector("td[class~='razonSocial']").textContent = response.data.razon_social ?? '';
+                        // this.objectBtnEdition.closest("tr").querySelector("td[class~='tipoEmpresa']").textContent = response.data.tipo_contribuyente.descripcion ?? '';
+                        // this.objectBtnEdition.closest("tr").querySelector("td[class~='pais']").textContent = response.data.pais.descripcion ?? '';
+                        // this.objectBtnEdition.closest("tr").querySelector("td[class~='ubigeo']").textContent = response.data.ubigeo_completo ?? '';
+                        // this.objectBtnEdition.closest("tr").querySelector("td[class~='direccion']").textContent = response.data.direccion_fiscal ?? '';
+                        // this.objectBtnEdition.closest("tr").querySelector("td[class~='telefono']").textContent = response.data.telefono ?? '';
+                        // this.objectBtnEdition.closest("tr").querySelector("td[class~='estado']").textContent = response.data.proveedor.estado_proveedor.descripcion ?? '';
 
                         obj.removeAttribute("disabled");
                         $("#form-proveedor")[0].reset();
@@ -1355,22 +1428,22 @@ class ListarProveedorView {
         let idProveedor = obj.dataset.idProveedor;
         this.proveedorCtrl.getProveedor(idProveedor).then((res) => {
 
-            document.querySelector("div[id='modal-ver-proveedor'] span[id='tituloAdicional']")?document.querySelector("div[id='modal-ver-proveedor'] span[id='tituloAdicional']").textContent = res.contribuyente.razon_social:null;
+            document.querySelector("div[id='modal-ver-proveedor'] span[id='tituloAdicional']")?document.querySelector("div[id='modal-ver-proveedor'] span[id='tituloAdicional']").textContent = res.razon_social:null;
 
-            document.querySelector("div[id='modal-ver-proveedor'] p[name='tipoContribuyente']").textContent = res.contribuyente.tipo_contribuyente.descripcion;
-            document.querySelector("div[id='modal-ver-proveedor'] p[name='tipoDocumentoIdentidad']").textContent = res.contribuyente.tipo_documento_identidad.descripcion;
-            document.querySelector("div[id='modal-ver-proveedor'] p[name='nroDocumento']").textContent = res.contribuyente.nro_documento;
-            document.querySelector("div[id='modal-ver-proveedor'] p[name='razonSocial']").textContent = res.contribuyente.razon_social;
-            document.querySelector("div[id='modal-ver-proveedor'] p[name='direccion']").textContent = res.contribuyente.direccion_fiscal;
-            document.querySelector("div[id='modal-ver-proveedor'] p[name='pais']").textContent = res.contribuyente.pais.descripcion;
-            document.querySelector("div[id='modal-ver-proveedor'] p[name='descripcionUbigeoProveedor']").textContent = res.contribuyente.ubigeo_completo;
-            document.querySelector("div[id='modal-ver-proveedor'] p[name='telefono']").textContent = res.contribuyente.telefono;
-            document.querySelector("div[id='modal-ver-proveedor'] p[name='celular']").textContent = res.contribuyente.celular;
-            document.querySelector("div[id='modal-ver-proveedor'] p[name='email']").textContent = res.contribuyente.email;
-            document.querySelector("div[id='modal-ver-proveedor'] p[name='observacion']").textContent = res.observacion;
+            document.querySelector("div[id='modal-ver-proveedor'] p[name='tipoContribuyente']").textContent = res.tipo_contribuyente.descripcion;
+            document.querySelector("div[id='modal-ver-proveedor'] p[name='tipoDocumentoIdentidad']").textContent = res.tipo_documento_identidad.descripcion;
+            document.querySelector("div[id='modal-ver-proveedor'] p[name='nroDocumento']").textContent = res.nro_documento;
+            document.querySelector("div[id='modal-ver-proveedor'] p[name='razonSocial']").textContent = res.razon_social;
+            document.querySelector("div[id='modal-ver-proveedor'] p[name='direccion']").textContent = res.direccion_fiscal;
+            document.querySelector("div[id='modal-ver-proveedor'] p[name='pais']").textContent = res.pais.descripcion;
+            document.querySelector("div[id='modal-ver-proveedor'] p[name='descripcionUbigeoProveedor']").textContent = res.ubigeo_completo;
+            document.querySelector("div[id='modal-ver-proveedor'] p[name='telefono']").textContent = res.telefono;
+            document.querySelector("div[id='modal-ver-proveedor'] p[name='celular']").textContent = res.celular;
+            document.querySelector("div[id='modal-ver-proveedor'] p[name='email']").textContent = res.email;
+            document.querySelector("div[id='modal-ver-proveedor'] p[name='observacion']").textContent = res.proveedor.observacion;
 
-            if (res.establecimiento_proveedor.length > 0) {
-                this.llenarTablaEstablecimientosDeProveedorSeleccionadoSoloLectura(res.establecimiento_proveedor);
+            if (res.proveedor.establecimiento_proveedor.length > 0) {
+                this.llenarTablaEstablecimientosDeProveedorSeleccionadoSoloLectura(res.proveedor.establecimiento_proveedor);
             }
             if (res.contacto_contribuyente.length > 0) {
                 this.llenarTablaContactosDeProveedorSeleccionadoSoloLectura(res.contacto_contribuyente);
@@ -1432,7 +1505,7 @@ class ListarProveedorView {
         if (data.length > 0) {
             (data).forEach(element => {
                 document.querySelector("tbody[id='bodylistaCuentasBancariasProveedorSoloLectura']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
-                    <td><input type="hidden" name="idBanco[]" value="${(element.id_banco != null && element.id_banco != '') ? element.id_banco : ''}"><input type="hidden" name="nombreBanco[]" value="${(element.banco.contribuyente != null && element.banco.contribuyente.razon_social != '') ? element.banco.contribuyente.razon_social : ''}"> ${(element.banco.contribuyente.razon_social != null && element.banco.contribuyente.razon_social != '') ? element.banco.contribuyente.razon_social : ''}</td>
+                    <td><input type="hidden" name="idBanco[]" value="${(element.id_banco != null && element.id_banco != '') ? element.id_banco : ''}"><input type="hidden" name="nombreBanco[]" value="${(element.banco!=null && element.banco.contribuyente != null && element.banco.contribuyente.razon_social != '') ? element.banco.contribuyente.razon_social : ''}"> ${(element.banco.contribuyente.razon_social != null && element.banco.contribuyente.razon_social != '') ? element.banco.contribuyente.razon_social : ''}</td>
                     <td><input type="hidden" name="idTipoCuenta[]" value="${(element.id_tipo_cuenta != null && element.id_tipo_cuenta != '') ? element.id_tipo_cuenta : ''}">${(element.tipo_cuenta != null && element.tipo_cuenta.descripcion != '') ? element.tipo_cuenta.descripcion : ''}</td>
                     <td><input type="hidden" name="idMoneda[]" value="${(element.id_moneda != null && element.id_moneda != '') ? element.id_moneda : ''}">${(element.moneda != null && element.moneda.descripcion != '') ? element.moneda.descripcion : ''}</td>
                     <td><input type="hidden" name="nroCuenta[]" value="${(element.nro_cuenta != null && element.nro_cuenta != '') ? element.nro_cuenta : ''}">${(element.nro_cuenta != null && element.nro_cuenta != '') ? element.nro_cuenta : ''}</td>

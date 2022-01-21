@@ -23,6 +23,8 @@
                             <div role="tabpanel" class="tab-pane active" id="principal">
                                 <fieldset class="group-table">
                                     <div class="row">
+                                    <input type="text" class="oculto" name="contribuyenteEncontrado" value="false">
+                                    <input type="text" class="oculto" name="idContribuyente">
                                     <input type="text" class="oculto" name="idProveedor">
                                         <div class="col-md-4">
                                             <div class="form-group">
@@ -55,7 +57,8 @@
                                         <div class="col-md-2">
                                             <div class="form-group">
                                                 <h5>Nro documento</h5>
-                                                <input type="text" class="form-control activation handleKeyUpNroDocumento"  name="nroDocumento">
+                                                <input type="text" class="form-control activation handleKeyUpNroDocumento handleFocusoutNroDocumento"  name="nroDocumento">
+                                                <span class="text-info oculto" name="info-obtener-contribuyente"></span>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
