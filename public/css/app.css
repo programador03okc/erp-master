@@ -19,7 +19,6 @@ body {
 body .login-box {
   width: 32vw;
   height: auto;
-
 }
 
 .login-page {
@@ -102,7 +101,6 @@ body .login-box {
 @media (max-width: 380px) {
   body .login-box {
     width: 90vw;
-   
   }
 
   .login-box-body {
@@ -1412,9 +1410,9 @@ form .select2-container .select2-selection--single {
   transition-duration: 3s, 3s;
 }
 
-.textRedStrikeHover{
-  color:#a52d1f;
-  text-decoration:line-through;
+.textRedStrikeHover {
+  color: #a52d1f;
+  text-decoration: line-through;
 }
 
 .transition {
@@ -1538,10 +1536,6 @@ form .select2-container .select2-selection--single {
 }
 
 @media (max-width: 768px) {
-  body .login-box {
-    width: 90vw;
-   
-  }
   .main-header > .navbar {
     border-top: 1px solid #ddd;
     border-bottom: 1px solid #ddd;

@@ -1719,11 +1719,11 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('index', 'Tesoreria\RegistroPagoController@view_pendientes_pago')->name('index');
 				Route::post('listarComprobantesPagos', 'Tesoreria\RegistroPagoController@listarComprobantesPagos')->name('listar-comprobante-pagos');
 				Route::post('listarOrdenesCompra', 'Tesoreria\RegistroPagoController@listarOrdenesCompra')->name('listar-ordenes-compra');
+				Route::post('listarRequerimientosPago', 'Tesoreria\RegistroPagoController@listarRequerimientosPago')->name('listar-requerimientos-pago');
 				Route::post('procesarPago', 'Tesoreria\RegistroPagoController@procesarPago')->name('procesar-pagos');
 				Route::get('pagosComprobante/{id}', 'Tesoreria\RegistroPagoController@pagosComprobante')->name('pagos-comprobante');
 				Route::get('pagosOrdenes/{id}', 'Tesoreria\RegistroPagoController@pagosOrdenes')->name('pagos-ordenes');
-				// Route::post('listarRequerimientosPagos', 'Tesoreria\RegistroPagoController@listarRequerimientosPagos')->name('listar-requerimiento-pagos');
-				// Route::get('detalleRequerimiento/{id}', 'Logistica\RequerimientoController@detalleRequerimiento')->name('detalle-requerimiento');
+				Route::get('pagosRequerimientos/{id}', 'Tesoreria\RegistroPagoController@pagosRequerimientos')->name('pagos-requerimientos');
 			});
 
 			Route::group(['as' => 'confirmacion-pagos.', 'prefix' => 'confirmacion-pagos'], function () {

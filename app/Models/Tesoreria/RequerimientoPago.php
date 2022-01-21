@@ -14,16 +14,16 @@ class RequerimientoPago extends Model
 {
     protected $table = 'tesoreria.requerimiento_pago';
     protected $primaryKey = 'id_requerimiento_pago';
-    protected $appends = ['id_documento','termometro', 'nombre_estado'];
+    protected $appends = ['id_documento', 'termometro', 'nombre_estado'];
     public $timestamps = false;
 
- 
+
 
     public function getIdDocumentoAttribute()
     {
-        $documento= Documento::where([["id_doc",$this->attributes['id_requerimiento_pago']],["id_tp_documento","3"]])->first();
-        
-        return $documento!=null ?$documento->id_doc_aprob:null;
+        $documento = Documento::where([["id_doc", $this->attributes['id_requerimiento_pago']], ["id_tp_documento", "3"]])->first();
+
+        return $documento != null ? $documento->id_doc_aprob : null;
     }
     public function getFechaEntregaAttribute()
     {
@@ -49,7 +49,7 @@ class RequerimientoPago extends Model
         return $estado;
     }
 
- 
+
     public function getTermometroAttribute()
     {
 
@@ -85,7 +85,7 @@ class RequerimientoPago extends Model
 
     public static function crearCodigo($idGrupo, $idRequerimientoPago)
     {
-        $documento = 'RDP'; //Prefijo para el codigo de requerimiento
+        $documento = 'RP'; //Prefijo para el codigo de requerimiento
         if ($idGrupo == 1) {
             $documento .= 'A';
             $num = RequerimientoPago::obtenerCantidadRegistros(1, $idRequerimientoPago); //tipo: BS, grupo: Administración
@@ -139,8 +139,9 @@ class RequerimientoPago extends Model
         return $this->hasOne('App\Models\Administracion\Sede', 'id_sede', 'id_sede');
     }
 
-    public function grupo(){
-        return $this->belongsTo('App\Models\Configuracion\Grupo','id_grupo','id_grupo');
+    public function grupo()
+    {
+        return $this->belongsTo('App\Models\Configuracion\Grupo', 'id_grupo', 'id_grupo');
     }
 
     public function cuadroCostos()
