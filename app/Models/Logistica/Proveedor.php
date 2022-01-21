@@ -2,6 +2,16 @@
 
 namespace App\Models\Logistica;
 
+use App\Models\Configuracion\Distrito;
+use App\Models\Configuracion\Pais;
+use App\Models\Contabilidad\Banco;
+use App\Models\Contabilidad\ContactoContribuyente;
+use App\Models\Contabilidad\Contribuyente;
+use App\Models\Contabilidad\CuentaContribuyente;
+use App\Models\Contabilidad\TipoContribuyente;
+use App\Models\Contabilidad\TipoCuenta;
+use App\Models\Contabilidad\TipoDocumentoIdentidad;
+use App\Models\sistema\moneda;
 use Illuminate\Database\Eloquent\Model;
 
 class Proveedor extends Model
@@ -32,8 +42,36 @@ class Proveedor extends Model
 
     }
     public static function mostrar($idProveedor){
-        $data = Proveedor::with(['contribuyente.tipoContribuyente',
-        'contribuyente.tipoDocumentoIdentidad',
+        // $data = Proveedor::with(['contribuyente.tipoContribuyente',
+        // 'contribuyente.tipoDocumentoIdentidad',
+        // 'cuentaContribuyente'=> function($q){
+        //     $q->where('adm_cta_contri.estado', '=', 1);
+        // },
+        // 'cuentaContribuyente.banco',
+        // 'cuentaContribuyente.banco.contribuyente',
+        // 'cuentaContribuyente.tipoCuenta',
+        // 'cuentaContribuyente.moneda',
+        // 'contribuyente.pais',
+        // 'contribuyente.distrito',
+        // 'contactoContribuyente' => function($q){
+        //     $q->where('adm_ctb_contac.estado', '=', 1);
+        // },
+        // // 'contribuyente.distrito.provincia',
+        // // 'contribuyente.distrito.provincia.departamento',
+        // 'establecimientoProveedor' => function($q){
+        //     $q->where('establecimiento_proveedor.estado', '=', 1);
+        // },
+        // 'establecimientoProveedor.estadoEstablecimiento',
+        // 'estadoProveedor'
+        // ])->whereHas('contribuyente', function($q){
+        //     $q->where('estado', '=', 1);
+        // })->where('id_proveedor',$idProveedor)->first();
+        // // ->where('log_prove.id_contribuyente','=',1912);
+        // return $data;
+
+        $data = Contribuyente::with(['tipoContribuyente',
+        'proveedor',
+        'tipoDocumentoIdentidad',
         'cuentaContribuyente'=> function($q){
             $q->where('adm_cta_contri.estado', '=', 1);
         },
@@ -41,21 +79,19 @@ class Proveedor extends Model
         'cuentaContribuyente.banco.contribuyente',
         'cuentaContribuyente.tipoCuenta',
         'cuentaContribuyente.moneda',
-        'contribuyente.pais',
-        'contribuyente.distrito',
+        'pais',
+        'distrito',
         'contactoContribuyente' => function($q){
             $q->where('adm_ctb_contac.estado', '=', 1);
         },
-        // 'contribuyente.distrito.provincia',
-        // 'contribuyente.distrito.provincia.departamento',
-        'establecimientoProveedor' => function($q){
+        'proveedor.establecimientoProveedor' => function($q){
             $q->where('establecimiento_proveedor.estado', '=', 1);
         },
-        'establecimientoProveedor.estadoEstablecimiento',
-        'estadoProveedor'
-        ])->whereHas('contribuyente', function($q){
-            $q->where('estado', '=', 1);
-        })->where('id_proveedor',$idProveedor)->first();
+        'proveedor.establecimientoProveedor.estadoEstablecimiento',
+        'proveedor.estadoProveedor'
+        ])->whereHas('proveedor', function($q) use($idProveedor){
+            $q->where('id_proveedor', '=', $idProveedor);
+        })->first();
         // ->where('log_prove.id_contribuyente','=',1912);
         return $data;
 
