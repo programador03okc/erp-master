@@ -415,65 +415,68 @@ class ListarProveedorView {
         // console.log(obj);
         let nroDocumento = obj.value;
         let tipoDocumento= document.querySelector("select[name='tipoDocumentoIdentidad']").value;
-        $.ajax({
-            type: 'POST',
-            url: 'obtener-data-contribuyente-segun-nro-documento',
-            data:{'nroDocumento':nroDocumento,'tipoDocumento':tipoDocumento},
-            dataType: 'JSON',
-            beforeSend: data => {
-    
-                $("input[name='nroDocumento']").LoadingOverlay("show", {
-                    imageAutoResize: true,
-                    progress: true,
-                    imageColor: "#3c8dbc"
-                });
-            },
-            success: (response) => {
-                $("input[name='nroDocumento']").LoadingOverlay("hide", true);
-
-                console.log(response);
-                
-                    if(response.tipo_estado=='success'){
-                        if(response.data!=null){
-                            document.querySelector("div[id='modal-proveedor'] input[name='contribuyenteEncontrado']").value = true;
-                            this.mostrarFormularioProveedor(response.data);
-                            document.querySelector("form[id='form-proveedor']").setAttribute("type", "edition");
-                            document.querySelector("div[id='modal-proveedor'] h3[class='modal-title']").textContent = 'Editar Proveedor';
-                            document.querySelector("button[id='btnGuardarProveedor']").classList.add("oculto");
-                            document.querySelector("button[id='btnActualizarProveedor']").classList.remove("oculto");
-                    
-                        }
-                        Lobibox.notify(response.tipo_estado, {
-                            title: false,
-                            size: 'mini',
-                            rounded: true,
-                            sound: false,
-                            delayIndicator: false,
-                            msg: response.mensaje
+            if(obj.value.length > 0){
+                $.ajax({
+                    type: 'POST',
+                    url: 'obtener-data-contribuyente-segun-nro-documento',
+                    data:{'nroDocumento':nroDocumento,'tipoDocumento':tipoDocumento},
+                    dataType: 'JSON',
+                    beforeSend: data => {
+            
+                        $("input[name='nroDocumento']").LoadingOverlay("show", {
+                            imageAutoResize: true,
+                            progress: true,
+                            imageColor: "#3c8dbc"
                         });
-                    }else{
-                        document.querySelector("div[id='modal-proveedor'] input[name='contribuyenteEncontrado']").value = false;
-                        document.querySelector("div[id='modal-proveedor'] h3[class='modal-title']").textContent = 'Nuevo Proveedor';
-                        document.querySelector("form[id='form-proveedor']").setAttribute("type", "register");
-
-                        $("#form-proveedor")[0].reset();
-                        this.limpiarTabla('listaContactoProveedor');
-                        this.limpiarTabla('listaCuentaBancariasProveedor');
+                    },
+                    success: (response) => {
+                        $("input[name='nroDocumento']").LoadingOverlay("hide", true);
+        
+                        console.log(response);
+                        
+                            if(response.tipo_estado=='success'){
+                                if(response.data!=null){
+                                    document.querySelector("div[id='modal-proveedor'] input[name='contribuyenteEncontrado']").value = true;
+                                    this.mostrarFormularioProveedor(response.data);
+                                    document.querySelector("form[id='form-proveedor']").setAttribute("type", "edition");
+                                    document.querySelector("div[id='modal-proveedor'] h3[class='modal-title']").textContent = 'Editar Proveedor';
+                                    document.querySelector("button[id='btnGuardarProveedor']").classList.add("oculto");
+                                    document.querySelector("button[id='btnActualizarProveedor']").classList.remove("oculto");
+                            
+                                }
+                                Lobibox.notify(response.tipo_estado, {
+                                    title: false,
+                                    size: 'mini',
+                                    rounded: true,
+                                    sound: false,
+                                    delayIndicator: false,
+                                    msg: response.mensaje
+                                });
+                            }else{
+                                document.querySelector("div[id='modal-proveedor'] input[name='contribuyenteEncontrado']").value = false;
+                                document.querySelector("div[id='modal-proveedor'] h3[class='modal-title']").textContent = 'Nuevo Proveedor';
+                                document.querySelector("form[id='form-proveedor']").setAttribute("type", "register");
+        
+                                $("#form-proveedor")[0].reset();
+                                this.limpiarTabla('listaContactoProveedor');
+                                this.limpiarTabla('listaCuentaBancariasProveedor');
+                            }
+        
                     }
-
+                }).fail((jqXHR, textStatus, errorThrown) => {
+                    $("input[name='nroDocumento']").LoadingOverlay("hide", true);
+        
+                    Swal.fire(
+                        '',
+                        'Hubo un problema al intentar obtener la data del contribuyente, por favor vuelva a intentarlo.',
+                        'error'
+                    );
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                });
             }
-        }).fail((jqXHR, textStatus, errorThrown) => {
-            $("input[name='nroDocumento']").LoadingOverlay("hide", true);
-
-            Swal.fire(
-                '',
-                'Hubo un problema al intentar obtener la data del contribuyente, por favor vuelva a intentarlo.',
-                'error'
-            );
-            console.log(jqXHR);
-            console.log(textStatus);
-            console.log(errorThrown);
-        });
+        
     }
 
     ponerMayusculaRazonSocial(e) {
