@@ -19,7 +19,12 @@ class SalidasPendientesController extends Controller
         $clasificaciones = AlmacenController::mostrar_guia_clas_cbo();
         $usuarios = AlmacenController::select_usuarios();
         $motivos_anu = AlmacenController::select_motivo_anu();
-        return view('almacen/guias/despachosPendientes', compact('tp_operacion', 'clasificaciones', 'usuarios', 'motivos_anu'));
+        $nro_od_pendientes = DB::table('almacen.orden_despacho')
+            ->where('orden_despacho.estado', 25)->count();
+        return view(
+            'almacen/guias/despachosPendientes',
+            compact('tp_operacion', 'clasificaciones', 'usuarios', 'motivos_anu', 'nro_od_pendientes')
+        );
     }
 
     public function listarOrdenesDespachoPendientes(Request $request)

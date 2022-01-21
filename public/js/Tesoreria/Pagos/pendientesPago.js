@@ -32,7 +32,13 @@ class RequerimientoPago {
                 { 'data': 'fecha_registro', 'name': 'requerimiento_pago.fecha_registro', 'className': 'text-center' },
                 // { 'data': 'nro_cuenta', 'name': 'adm_cta_contri.nro_cuenta' },
                 { 'data': 'simbolo', 'name': 'sis_moneda.simbolo', 'className': 'text-center' },
-                { 'data': 'monto_total', 'name': 'requerimiento_pago.monto_total', 'className': 'text-right' },
+                // { 'data': 'monto_total', 'name': 'requerimiento_pago.monto_total', 'className': 'text-right' },
+                {
+                    'data': 'monto_total', 'name': 'requerimiento_pago.monto_total',
+                    'render': function (data, type, row) {
+                        return (formatDecimal(row['monto_total']));
+                    }, 'className': 'text-right'
+                },
                 {
                     'render': function (data, type, row) {
                         return (formatDecimal(formatDecimal(row['monto_total']) - formatDecimal(row['suma_pagado'] !== null ? row['suma_pagado'] : 0)));

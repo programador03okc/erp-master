@@ -2,7 +2,7 @@
 @include('layout.menu_almacen')
 
 @section('cabecera')
-Pendientes de Ingreso
+Atención de Ingresos
 @endsection
 
 @section('estilos')
@@ -29,8 +29,8 @@ Pendientes de Ingreso
             <div class="col-md-12" id="tab-ordenes" style="padding-top:10px;padding-bottom:10px;">
 
                 <ul class="nav nav-tabs" id="myTabOrdenesPendientes">
-                    <li class="active"><a data-toggle="tab" href="#pendientes">Ordenes Pendientes de Ingreso</a></li>
-                    <li class=""><a data-toggle="tab" href="#transformaciones">Transformaciones Pendientes de Ingreso</a></li>
+                    <li class="active"><a data-toggle="tab" href="#pendientes">Ordenes Pendientes de Ingreso <span id="nro_ordenes" class="badge badge-info">{{$nro_oc_pendientes}}</span></a></li>
+                    <li class=""><a data-toggle="tab" href="#transformaciones">Transformaciones Pendientes de Ingreso <span id="nro_transformaciones" class="badge badge-info">{{$nro_ot_pendientes}}</span></a></li>
                     <li class=""><a data-toggle="tab" href="#ingresadas">Ingresos Procesados</a></li>
                 </ul>
 

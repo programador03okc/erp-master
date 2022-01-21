@@ -9,6 +9,7 @@
             </div>
             <form id="form-procesarPago" enctype="multipart/form-data" method="post">
                 <div class="modal-body">
+                    <input type="text" class="oculto" name="id_requerimiento_pago" />
                     <input type="text" class="oculto" name="id_oc" />
                     <input type="text" class="oculto" name="id_doc_com" />
                     <input type="text" class="oculto" name="codigo" />

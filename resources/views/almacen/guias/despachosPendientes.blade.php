@@ -2,7 +2,7 @@
 @include('layout.menu_almacen')
 
 @section('cabecera')
-Pendientes de Salida
+Atención de Salidas
 @endsection
 
 @section('estilos')
@@ -32,7 +32,7 @@ Pendientes de Salida
         <div class="page-main" type="despachosPendientes">
             <div class="col-md-12" id="tab-despachosPendientes" style="padding-top:10px;padding-bottom:10px;">
                 <ul class="nav nav-tabs" id="myTabDespachosPendientes">
-                    <li class="active"><a data-toggle="tab" href="#pendientes">Despachos Pendientes</a></li>
+                    <li class="active"><a data-toggle="tab" href="#pendientes">Despachos Pendientes <span id="nro_despachos" class="badge badge-info">{{$nro_od_pendientes}}</span></a></li>
                     <li class=""><a data-toggle="tab" href="#salidas">Salidas Procesadas</a></li>
                 </ul>
                 <div class="tab-content">

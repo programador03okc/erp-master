@@ -29,8 +29,8 @@ Transferencias
 
                 <ul class="nav nav-tabs" id="myTabTransferencias">
                     <li class="active"><a data-toggle="tab" href="#requerimientos">Requerimientos Pendientes</a></li>
-                    <li class=""><a data-toggle="tab" href="#porEnviar">Transferencias Pendientes de Enviar</a></li>
-                    <li class=""><a data-toggle="tab" href="#pendientes">Transferencias Pendientes de Recibir</a></li>
+                    <li class=""><a data-toggle="tab" href="#porEnviar">Transferencias por Enviar</a></li>
+                    <li class=""><a data-toggle="tab" href="#pendientes">Transferencias por Recibir</a></li>
                     <li class=""><a data-toggle="tab" href="#recibidas">Transferencias Recibidas</a></li>
                 </ul>
                 <div class="tab-content">

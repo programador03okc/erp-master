@@ -21,13 +21,45 @@ Registro de pagos
             <div class="col-md-12" style="padding-top:10px;padding-bottom:10px;">
                 
                 <ul class="nav nav-tabs" id="myTab">
-                    <li class="active"><a data-toggle="tab" href="#comprobantes">Comprobantes</a></li>
+                    <li class="active"><a data-toggle="tab" href="#requerimientos">Requerimiento de pagos</a></li>
+                    <li class=""><a data-toggle="tab" href="#comprobantes">Comprobantes</a></li>
                     <li class=""><a data-toggle="tab" href="#ordenes">Ordenes de compra</a></li>
                 </ul>
 
                 <div class="tab-content">
 
-                    <div id="comprobantes" class="tab-pane fade in active">
+                    <div id="requerimientos" class="tab-pane fade in active">
+                        <br>
+                        <form id="form-requerimientos" type="register">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <table class="mytable table table-condensed table-bordered table-okc-view" 
+                                        id="listaRequerimientos">
+                                        <thead>
+                                            <tr>
+                                                <th hidden>#</th>
+                                                <th>Código</th>
+                                                <th>Empresa</th>
+                                                <th>Grupo</th>
+                                                <th>Concepto</th>
+                                                <th>Proveedor</th>
+                                                <th>Fecha Emisión</th>
+                                                {{-- <th>Cta. Bancaria</th> --}}
+                                                <th>Mnd</th>
+                                                <th>Total</th>
+                                                <th>Saldo</th>
+                                                <th>Estado</th>
+                                                <th style="width:90px;">Acción</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div id="comprobantes" class="tab-pane fade ">
                         <br>
                         <form id="form-comprobantes" type="register">
                             <div class="row">
@@ -48,11 +80,6 @@ Registro de pagos
                                                 <th>Mnd</th>
                                                 <th>Total</th>
                                                 <th>Saldo</th>
-                                                <!-- <th>Fecha Pago</th>
-                                                <th>Motivo</th>
-                                                <th>Procesado por</th>
-                                                <th>Total pago</th>
-                                                <th>Adjunto</th> -->
                                                 <th>Estado</th>
                                                 <th style="width:90px;">Acción</th>
                                             </tr>
@@ -142,6 +169,9 @@ Registro de pagos
             }
             else if (tab=='#comprobantes'){
                 $('#listaComprobantes').DataTable().ajax.reload();
+            }
+            else if (tab=='#requerimientos'){
+                $('#listaRequerimientos').DataTable().ajax.reload();
             }
          });
     });

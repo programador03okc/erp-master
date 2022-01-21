@@ -54,6 +54,14 @@ class OrdenesPendientesController extends Controller
         $fechaActual = new Carbon();
         $fechaActual2 = new Carbon();
         $tipos = GenericoAlmacenController::mostrar_tipos_cbo();
+        $nro_oc_pendientes = DB::table('logistica.log_ord_compra')
+            ->where([
+                ['log_ord_compra.estado', '!=', 7],
+                ['log_ord_compra.en_almacen', '=', false],
+                ['log_ord_compra.id_tp_documento', '=', 2]
+            ])->count();
+        $nro_ot_pendientes = DB::table('almacen.transformacion')
+            ->where([['transformacion.estado', '=', 9]])->count();
 
         return view('almacen/guias/ordenesPendientes', compact(
             'almacenes',
@@ -72,6 +80,8 @@ class OrdenesPendientesController extends Controller
             'sedes',
             'fechaActual',
             'fechaActual2',
+            'nro_oc_pendientes',
+            'nro_ot_pendientes',
         ));
     }
 

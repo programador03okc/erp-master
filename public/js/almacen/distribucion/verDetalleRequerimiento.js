@@ -57,7 +57,7 @@ function format(table_id, id, row, $boton) {
                     </tbody>
                     </table>`;
                 }
-                $boton.prop('disabled', false);
+                $boton.attr("disabled", false);
                 row.child(tabla).show();
             }
         }).fail(function (jqXHR, textStatus, errorThrown) {
