@@ -82,7 +82,7 @@ class RegistroPagoController extends Controller
             )
             ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
             ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
-            ->join('logistica.estados_compra', 'estados_compra.id_estado', '=', 'log_ord_compra.estado')
+            ->join('logistica.estados_compra', 'estados_compra.id_estado', '=', 'log_ord_compra.estado_pago')
             ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'log_ord_compra.id_moneda')
             ->leftJoin('logistica.log_cdn_pago', 'log_cdn_pago.id_condicion_pago', '=', 'log_ord_compra.id_condicion')
             ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'log_ord_compra.id_sede')
@@ -262,10 +262,14 @@ class RegistroPagoController extends Controller
                 if ($request->id_oc !== null) {
                     DB::table('logistica.log_ord_compra')
                         ->where('id_orden_compra', $request->id_oc)
-                        ->update(['estado' => 9]); //pagada
+                        ->update(['estado_pago' => 9]); //pagada
                 } else if ($request->id_doc_com !== null) {
                     DB::table('almacen.doc_com')
                         ->where('id_doc_com', $request->id_doc_com)
+                        ->update(['estado' => 9]); //procesado
+                } else if ($request->id_requerimiento_pago !== null) {
+                    DB::table('tesoreria.requerimiento_pago')
+                        ->where('id_requerimiento_pago', $request->id_requerimiento_pago)
                         ->update(['estado' => 9]); //procesado
                 }
             }
