@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
 
-class AdjuntoRequerimientoPago extends Model
+class RequerimientoPagoAdjunto extends Model
 {
-    protected $table = 'tesoreria.adjunto_requerimiento_pago';
-    protected $primaryKey = 'id_adjunto';
+    protected $table = 'tesoreria.requerimiento_pago_adjunto';
+    protected $primaryKey = 'id_requerimiento_pago_adjunto';
     public $timestamps = false;
 
     public function categoriaAdjunto()

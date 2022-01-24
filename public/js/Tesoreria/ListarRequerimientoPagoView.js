@@ -196,6 +196,7 @@ class ListarRequerimientoPagoView {
                 { 'data': 'prioridad', 'name': 'adm_prioridad.descripcion', 'className': 'text-center' },
                 { 'data': 'codigo', 'name': 'codigo', 'className': 'text-center' },
                 { 'data': 'concepto', 'name': 'concepto' },
+                { 'data': 'descripcion_requerimiento_pago_tipo', 'name': 'descripcion_requerimiento_pago_tipo' },
                 { 'data': 'fecha_registro', 'name': 'requerimiento_pago.fecha_registro', 'className': 'text-center' },
                 { 'data': 'empresa_razon_social', 'name': 'adm_contri.razon_social', 'className': 'text-center' },
                 { 'data': 'sede', 'name': 'sis_sede.codigo', 'className': 'text-center' },
@@ -215,7 +216,7 @@ class ListarRequerimientoPagoView {
                 },
                 {
                     'render': function (data, type, row) {
-                        switch (row['estado']) {
+                        switch (row['id_estado']) {
                             case 1:
                                 return '<span class="labelEstado label label-default">' + row['nombre_estado'] + '</span>';
                                 break;
@@ -236,7 +237,7 @@ class ListarRequerimientoPagoView {
                                 break;
 
                         }
-                    }, targets: 11, className: 'text-center'
+                    }, targets: 12, className: 'text-center'
                 },
                 {
                     'render': function (data, type, row) {
@@ -244,7 +245,7 @@ class ListarRequerimientoPagoView {
                         let containerCloseBrackets = '</div></center>';
                         let btnEditar = '';
                         let btnAnular = '';
-                        if (row.id_usuario == auth_user.id_usuario && (row.estado == 1 || row.estado == 3)) {
+                        if (row.id_usuario == auth_user.id_usuario && (row.id_estado == 1 || row.id_estado == 3)) {
                             btnEditar = '<button type="button" class="btn btn-xs btn-warning btnEditarRequerimientoPago handleClickEditarRequerimientoPago" data-id-requerimiento-pago="'+row.id_requerimiento_pago+'" data-codigo-requerimiento-pago="'+row.codigo+'" title="Editar"><i class="fas fa-edit fa-xs"></i></button>';
                             btnAnular = '<button type="button" class="btn btn-xs btn-danger btnAnularRequerimientoPago handleClickAnularRequerimientoPago" data-id-requerimiento-pago="'+row.id_requerimiento_pago+'" data-codigo-requerimiento-pago="'+row.codigo+'" title="Anular"><i class="fas fa-times fa-xs"></i></button>';
                         }
@@ -254,7 +255,7 @@ class ListarRequerimientoPagoView {
 
 
                         return containerOpenBrackets +btnVerDetalle  + btnEditar + btnAnular + containerCloseBrackets;
-                    }, targets: 12
+                    }, targets: 13
                 },
 
             ],
@@ -660,19 +661,19 @@ class ListarRequerimientoPagoView {
         document.querySelector("tbody[id='body_detalle_requerimiento_pago']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
         <td>    
             <input type="hidden"  class="idEstado" name="idEstado[]">
-            <p class="descripcion-partida" title="${(data !=null && data.partida.codigo !=null? data.partida.codigo:'')}">${(data !=null && data.partida.descripcion !=null? data.partida.descripcion:'(NO SELECCIONADO)')}</p>
+            <p class="descripcion-partida" title="${(data !=null && data.partida !=null? data.partida.codigo:'')}">${(data !=null && data.partida !=null? data.partida.descripcion:'(NO SELECCIONADO)')}</p>
             <button type="button" class="btn btn-xs btn-info handleClickCargarModalPartidas" name="partida">Seleccionar</button> 
             <div class="form-group">
                 <h5></h5>
-                <input type="text" class="partida" name="idPartida[]" value="${(data !=null && data.partida.id_partida !=null? data.partida.id_partida:'')}" hidden>
+                <input type="text" class="partida" name="idPartida[]" value="${(data !=null && data.partida !=null? data.partida.id_partida:'')}" hidden>
             </div>
         </td>
         <td>
-            <p class="descripcion-centro-costo" title="${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.codigo : (data !=null && data.centro_costo.codigo !=null? data.centro_costo.codigo:'')}">${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.descripcion : data !=null && data.centro_costo.descripcion !=null? data.centro_costo.descripcion:'(NO SELECCIONADO)'} </p>
-            <button type="button" class="btn btn-xs btn-primary handleClickCargarModalCentroCostos" name="centroCostos"  ${tempCentroCostoSelected != undefined ? 'disabled' : ''} title="${data !=null && data.centro_costo.codigo !=null? data.centro_costo.codigo:''}" >Seleccionar</button> 
+            <p class="descripcion-centro-costo" title="${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.codigo : (data !=null && data.centro_costo !=null? data.centro_costo.codigo:'')}">${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.descripcion : data !=null && data.centro_costo !=null? data.centro_costo.descripcion:'(NO SELECCIONADO)'} </p>
+            <button type="button" class="btn btn-xs btn-primary handleClickCargarModalCentroCostos" name="centroCostos"  ${tempCentroCostoSelected != undefined ? 'disabled' : ''} title="${data !=null && data.centro_costo !=null? data.centro_costo.codigo:''}" >Seleccionar</button> 
             <div class="form-group">
                 <h5></h5>
-                <input type="text" class="centroCosto" name="idCentroCosto[]" value="${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.id : (data !=null && data.centro_costo.id_centro_costo !=null? data.centro_costo.id_centro_costo:'')}" hidden>
+                <input type="text" class="centroCosto" name="idCentroCosto[]" value="${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.id : (data !=null && data.centro_costo !=null? data.centro_costo.id_centro_costo:'')}" hidden>
             </div>
         </td>
         <td>(Servicio)<input type="hidden" name="partNumber[]"></td>
@@ -1717,6 +1718,9 @@ class ListarRequerimientoPagoView {
         document.querySelector("div[id='modal-requerimiento-pago'] input[name='codigo']").value= data.codigo;
         document.querySelector("div[id='modal-requerimiento-pago'] input[name='concepto']").value= data.concepto;
         document.querySelector("div[id='modal-requerimiento-pago'] input[name='fecha_registro']").value= fechaRegistro;
+        document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_proveedor']").value= data.id_proveedor;
+        document.querySelector("div[id='modal-requerimiento-pago'] input[name='razon_social']").value= data.proveedor !=null?data.proveedor.razon_social:'';
+        document.querySelector("div[id='modal-requerimiento-pago'] input[name='nro_cuenta_principal_proveedor']").value= data.proveedor!=null && data.proveedor.cuenta_contribuyente.length >0 ?data.proveedor.cuenta_contribuyente[0].nro_cuenta:'';
         document.querySelector("div[id='modal-requerimiento-pago'] select[name='periodo']").value= data.id_periodo;
         document.querySelector("div[id='modal-requerimiento-pago'] select[name='moneda']").value= data.id_moneda;
         document.querySelector("div[id='modal-requerimiento-pago'] select[name='prioridad']").value= data.id_prioridad;

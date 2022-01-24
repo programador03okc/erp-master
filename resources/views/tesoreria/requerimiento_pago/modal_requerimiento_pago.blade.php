@@ -22,7 +22,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-7">
+                                    <div class="col-md-5">
                                         <div class="form-group">
                                             <h5>Concepto:</h5>
                                             <input type="text" class="form-control activation handleCheckStatusValue" placeholder="Concepto/motivo" name="concepto">
@@ -30,6 +30,16 @@
                                         </div>
                                     </div>
                                     <div class="col-md-3">
+                                        <div class="form-group">
+                                            <h5>Tipo requerimiento</h5>
+                                            <select class="form-control activation handleCheckStatusValue" name="tipo_requerimiento_pago">
+                                                @foreach ($tipos_requerimiento_pago as $tipo)
+                                                <option value="{{$tipo->id_requerimiento_pago_tipo}}">{{$tipo->descripcion}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
                                         <div class="form-group">
                                             <h5>Fecha de emisión</h5>
                                             <input type="date" class="form-control activation handleCheckStatusValue" name="fecha_registro" readonly>

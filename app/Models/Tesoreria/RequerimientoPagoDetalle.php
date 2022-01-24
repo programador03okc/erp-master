@@ -6,10 +6,10 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
-class DetalleRequerimientoPago extends Model
+class RequerimientoPagoDetalle extends Model
 {
-    protected $table = 'tesoreria.detalle_requerimiento_pago';
-    protected $primaryKey = 'id_detalle_requerimiento_pago';
+    protected $table = 'tesoreria.requerimiento_pago_detalle';
+    protected $primaryKey = 'id_requerimiento_pago_detalle';
     public $timestamps = false;
  
     public function getFechaRegistroAttribute()
@@ -31,7 +31,6 @@ class DetalleRequerimientoPago extends Model
         return $this->hasone('App\Models\Almacen\UnidadMedida','id_unidad_medida','id_unidad_medida');
     }
     public function estado(){
-        return $this->hasone('App\Models\Administracion\Estado','id_estado_doc','estado');
+        return $this->hasone('App\Models\Administracion\Estado','id_estado_doc','id_estado');
     }
 }
-

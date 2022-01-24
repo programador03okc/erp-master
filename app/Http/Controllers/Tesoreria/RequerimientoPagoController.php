@@ -11,17 +11,17 @@ use App\Models\Administracion\Documento;
 use App\Models\Administracion\Empresa;
 use App\Models\Administracion\Periodo;
 use App\Models\Administracion\Prioridad;
-use App\Models\Almacen\Trazabilidad;
 use App\Models\Almacen\UnidadMedida;
 use App\Models\Configuracion\Grupo;
 use App\Models\Configuracion\Moneda;
 use App\Models\Contabilidad\Banco;
 use App\Models\Contabilidad\TipoCuenta;
 use App\Models\mgcp\CuadroCosto\CuadroCostoView;
-use App\Models\Tesoreria\AdjuntoRequerimientoPago;
-use App\Models\Tesoreria\CategoriaAdjunto;
-use App\Models\Tesoreria\DetalleRequerimientoPago;
+use App\Models\Tesoreria\RequerimientoPagoDetalle;
 use App\Models\Tesoreria\RequerimientoPago;
+use App\Models\Tesoreria\RequerimientoPagoAdjunto;
+use App\Models\Tesoreria\RequerimientoPagoCategoriaAdjunto;
+use App\Models\Tesoreria\RequerimientoPagoTipo;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -52,10 +52,10 @@ class RequerimientoPagoController extends Controller
         $proyectos_activos = (new ProyectosController)->listar_proyectos_activos();
         $bancos = Banco::mostrar();
         $tipo_cuenta = TipoCuenta::mostrar();
+        $tipos_requerimiento_pago = RequerimientoPagoTipo::mostrar();
 
 
-
-        return view('tesoreria/requerimiento_pago/lista', compact('prioridades', 'empresas', 'grupos', 'periodos', 'monedas', 'unidadesMedida', 'divisiones', 'gruposUsuario', 'proyectos_activos','bancos','tipo_cuenta'));
+        return view('tesoreria/requerimiento_pago/lista', compact('prioridades', 'empresas', 'grupos', 'tipos_requerimiento_pago','periodos', 'monedas', 'unidadesMedida', 'divisiones', 'gruposUsuario', 'proyectos_activos','bancos','tipo_cuenta'));
     }
     public function viewRevisarAprobarRequerimientoPago()
     {
@@ -86,7 +86,8 @@ class RequerimientoPagoController extends Controller
         $idEstado = $request->idEstado;
 
         $data = RequerimientoPago::with('detalle')
-            ->leftJoin('administracion.adm_estado_doc', 'requerimiento_pago.estado', '=', 'adm_estado_doc.id_estado_doc')
+            ->leftJoin('tesoreria.requerimiento_pago_tipo', 'requerimiento_pago_tipo.id_requerimiento_pago_tipo', '=', 'requerimiento_pago.id_requerimiento_pago_tipo')
+            ->leftJoin('administracion.adm_estado_doc', 'requerimiento_pago.id_estado', '=', 'adm_estado_doc.id_estado_doc')
             ->leftJoin('administracion.adm_prioridad', 'requerimiento_pago.id_prioridad', '=', 'adm_prioridad.id_prioridad')
             ->leftJoin('configuracion.sis_grupo', 'requerimiento_pago.id_grupo', '=', 'sis_grupo.id_grupo')
             ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'requerimiento_pago.id_sede')
@@ -99,6 +100,7 @@ class RequerimientoPagoController extends Controller
             ->leftJoin('administracion.division', 'division.id_division', '=', 'requerimiento_pago.id_division')
             ->select(
                 'requerimiento_pago.*',
+                'requerimiento_pago_tipo.descripcion as descripcion_requerimiento_pago_tipo',
                 'sis_moneda.descripcion as moneda',
                 'adm_periodo.descripcion as periodo',
                 'adm_prioridad.descripcion as prioridad',
@@ -140,7 +142,7 @@ class RequerimientoPagoController extends Controller
             })
 
             ->when((intval($idEstado) > 0), function ($query)  use ($idEstado) {
-                return $query->whereRaw('requerimiento_pago.estado = ' . $idEstado);
+                return $query->whereRaw('requerimiento_pago.id_estado = ' . $idEstado);
             });
 
         return datatables($data)
@@ -159,9 +161,9 @@ class RequerimientoPagoController extends Controller
     function listarDetalleRequerimientoPago($idRequerimientoPago)
     {
 
-        $detalles = DetalleRequerimientoPago::select(
+        $detalles = RequerimientoPagoDetalle::select(
             'requerimiento_pago.codigo as codigo_requerimiento_pago',
-            'detalle_requerimiento_pago.*',
+            'requerimiento_pago_detalle.*',
             'sis_moneda.simbolo as moneda_simbolo',
             'sis_moneda.descripcion as moneda_descripcion',
             'adm_estado_doc.estado_doc',
@@ -172,14 +174,14 @@ class RequerimientoPagoController extends Controller
             'alm_prod.part_number as producto_part_number',
             'alm_und_medida.abreviatura'
         )
-            ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'detalle_requerimiento_pago.id_producto')
-            ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'detalle_requerimiento_pago.id_unidad_medida')
-            ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'detalle_requerimiento_pago.estado')
-            ->join('tesoreria.requerimiento_pago', 'requerimiento_pago.id_requerimiento_pago', '=', 'detalle_requerimiento_pago.id_requerimiento_pago')
+            ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'requerimiento_pago_detalle.id_producto')
+            ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'requerimiento_pago_detalle.id_unidad_medida')
+            ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'requerimiento_pago_detalle.id_estado')
+            ->join('tesoreria.requerimiento_pago', 'requerimiento_pago.id_requerimiento_pago', '=', 'requerimiento_pago_detalle.id_requerimiento_pago')
             ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'requerimiento_pago.id_moneda')
             ->where([
                 ['requerimiento_pago.id_requerimiento_pago', '=', $idRequerimientoPago],
-                ['requerimiento_pago.estado', '!=', 7]
+                ['requerimiento_pago.id_estado', '!=', 7]
             ])
             ->get();
 
@@ -200,6 +202,7 @@ class RequerimientoPagoController extends Controller
             $requerimientoPago->id_periodo = $request->periodo;
             $requerimientoPago->id_moneda = $request->moneda > 0 ? $request->moneda : null;
             $requerimientoPago->id_prioridad = $request->prioridad > 0 ? $request->prioridad : null;
+            $requerimientoPago->id_requerimiento_pago_tipo = $request->tipo_requerimiento_pago > 0 ? $request->tipo_requerimiento_pago : null;
             $requerimientoPago->comentario = $request->comentario;
             $requerimientoPago->id_empresa = $request->empresa ? $request->empresa : null;
             $requerimientoPago->id_sede = $request->sede > 0 ? $request->sede : null;
@@ -221,7 +224,7 @@ class RequerimientoPagoController extends Controller
                     return response()->json(['id_requerimiento_pago' => 0, 'codigo' => '', 'mensaje' => 'La cantidad solicitada debe ser mayor a 0']);
                 }
 
-                $detalle = new DetalleRequerimientoPago();
+                $detalle = new RequerimientoPagoDetalle();
                 $detalle->id_requerimiento_pago = $requerimientoPago->id_requerimiento_pago;
                 $detalle->id_tipo_item = $request->tipoItem[$i];
                 $detalle->id_partida = $request->idPartida[$i];
@@ -270,6 +273,7 @@ class RequerimientoPagoController extends Controller
             $requerimientoPago->id_periodo = $request->periodo;
             $requerimientoPago->id_moneda = $request->moneda > 0 ? $request->moneda : null;
             $requerimientoPago->id_prioridad = $request->prioridad > 0 ? $request->prioridad : null;
+            $requerimientoPago->id_requerimiento_pago_tipo = $request->tipo_requerimiento_pago > 0 ? $request->tipo_requerimiento_pago : null;
             $requerimientoPago->comentario = $request->comentario;
             $requerimientoPago->id_empresa = $request->empresa ? $request->empresa : null;
             $requerimientoPago->id_sede = $request->sede > 0 ? $request->sede : null;
@@ -290,7 +294,7 @@ class RequerimientoPagoController extends Controller
 
                 if (preg_match('/[A-Za-z].*[0-9]|[0-9].*[A-Za-z]/', $id)) // es un id con numeros y letras => es nuevo, insertar
                 {
-                    $detalle = new DetalleRequerimientoPago();
+                    $detalle = new RequerimientoPagoDetalle();
 
                     $detalle->id_requerimiento_pago = $requerimientoPago->id_requerimiento_pago;
                     $detalle->id_tipo_item = $request->tipoItem[$i];
@@ -303,18 +307,18 @@ class RequerimientoPagoController extends Controller
                     $detalle->precio_unitario = floatval($request->precioUnitario[$i]);
                     $detalle->subtotal = floatval($request->cantidad[$i] * $request->precioUnitario[$i]);
                     $detalle->fecha_registro = new Carbon();
-                    $detalle->estado = 1;
+                    $detalle->id_estado = 1;
                     $detalle->save();
                 } else { // es un id solo de numerico => actualiza
                     if ($request->idEstado[$i] == 7) {
                         if (is_numeric($id)) { // si es un numero 
-                            $detalle = DetalleRequerimientoPago::where("id_detalle_requerimiento_pago", $id)->first();
-                            $detalle->estado = 7;
+                            $detalle = RequerimientoPagoDetalle::where("id_detalle_requerimiento_pago", $id)->first();
+                            $detalle->id_estado = 7;
                             $detalle->save();
                         }
                     } else {
 
-                        $detalle = DetalleRequerimientoPago::where("id_detalle_requerimiento_pago", $id)->first();
+                        $detalle = RequerimientoPagoDetalle::where("id_detalle_requerimiento_pago", $id)->first();
                         $detalle->id_tipo_item = $request->tipoItem[$i];
                         $detalle->id_partida = $request->idPartida[$i];
                         $detalle->id_centro_costo = $request->idCentroCosto[$i];
@@ -350,14 +354,14 @@ class RequerimientoPagoController extends Controller
 
             if ($idRequerimientoPago > 0) {
                 $requerimientoPago = RequerimientoPago::find($idRequerimientoPago);
-                $todoDetalleRequerimientoPago = DetalleRequerimientoPago::where("id_requerimiento_pago", $idRequerimientoPago)->get();
+                $todoDetalleRequerimientoPago = RequerimientoPagoDetalle::where("id_requerimiento_pago", $idRequerimientoPago)->get();
 
                 if (in_array($requerimientoPago->estado, [1, 3])) { // estado elaborado, estado observado
                     $requerimientoPago->estado = 7;
                     $requerimientoPago->save();
 
                     foreach ($todoDetalleRequerimientoPago as $detalleRequerimientoPago) {
-                        $detalle = DetalleRequerimientoPago::where("id_detalle_requerimiento_pago", $detalleRequerimientoPago->id_detalle_requerimiento_pago)->first();
+                        $detalle = RequerimientoPagoDetalle::where("id_detalle_requerimiento_pago", $detalleRequerimientoPago->id_detalle_requerimiento_pago)->first();
                         $detalle->estado = 7;
                         $detalle->save();
                     }
@@ -410,7 +414,7 @@ class RequerimientoPagoController extends Controller
         //     $q->where('estado', '!=', 7);
         // },'empresa','sede','grupo','division','moneda','creadoPor','detalle.unidadMedida','detalle.producto','detalle.estado'])->get();
         // return $data ;
-        // $detalleRequerimientoPagoList=  DetalleRequerimientoPago::select(
+        // $detalleRequerimientoPagoList=  RequerimientoPagoDetalle::select(
         //     'detalle_requerimiento_pago.*',
         //     'adm_estado_doc.estado_doc',
         //     'alm_prod.codigo as producto_codigo',
@@ -422,25 +426,27 @@ class RequerimientoPagoController extends Controller
         //     'presup_par.importe_total AS presupuesto_total_partida'
         // )
         // ->leftJoin('almacen.alm_prod', 'detalle_requerimiento_pago.id_producto', '=', 'alm_prod.id_producto')
-        // ->leftJoin('administracion.adm_estado_doc', 'detalle_requerimiento_pago.estado', '=', 'adm_estado_doc.id_estado_doc')
+        // ->leftJoin('administracion.adm_estado_doc', 'detalle_requerimiento_pago.id_estado', '=', 'adm_estado_doc.id_estado_doc')
         // ->leftJoin('finanzas.presup_par', 'presup_par.id_partida', '=', 'detalle_requerimiento_pago.id_partida')
         // ->leftJoin('finanzas.presup_pardet', 'presup_pardet.id_pardet', '=', 'presup_par.id_pardet')
-        // ->where([['detalle_requerimiento_pago.id_requerimiento_pago',$idRequerimientoPago],['detalle_requerimiento_pago.estado','!=',7]])
+        // ->where([['detalle_requerimiento_pago.id_requerimiento_pago',$idRequerimientoPago],['detalle_requerimiento_pago.id_estado','!=',7]])
         // ->get();
-        $detalleRequerimientoPagoList = DetalleRequerimientoPago::with('unidadMedida', 'producto', 'partida.presupuesto', 'centroCosto', 'estado')->where([['id_requerimiento_pago', $idRequerimientoPago], ['estado', '!=', 7]])->get();
+        $detalleRequerimientoPagoList = RequerimientoPagoDetalle::with('unidadMedida', 'producto', 'partida.presupuesto', 'centroCosto', 'estado')->where([['id_requerimiento_pago', $idRequerimientoPago], ['id_estado', '!=', 7]])->get();
 
-        $requerimientoPago = RequerimientoPago::where('id_requerimiento_pago', $idRequerimientoPago)->with('periodo', 'prioridad', 'moneda', 'creadoPor', 'empresa', 'sede', 'grupo', 'division', 'cuadroCostos', 'proyecto')->first();
+        $requerimientoPago = RequerimientoPago::where('id_requerimiento_pago', $idRequerimientoPago)
+        ->with('periodo', 'prioridad', 'moneda', 'creadoPor', 'empresa', 'sede', 'grupo', 'division', 'cuadroCostos', 'proyecto')
+        ->first();
 
         return $requerimientoPago->setAttribute('detalle', $detalleRequerimientoPagoList);
     }
 
     function listaAdjuntosCabeceraRequerimientoPago($idRequerimientoPago){
-        $data = AdjuntoRequerimientoPago::where([['id_requerimiento_pago',$idRequerimientoPago],['estado','!=',7]])->with('categoriaAdjunto')->get();
+        $data = RequerimientoPagoAdjunto::where([['id_requerimiento_pago',$idRequerimientoPago],['id_estado','!=',7]])->with('categoriaAdjunto')->get();
         return response()->json($data);
 
     }
     function listaCategoriaAdjuntos(){
-        $data = CategoriaAdjunto::where("estado",'!=',7)->get();
+        $data = RequerimientoPagoCategoriaAdjunto::where("id_estado",'!=',7)->get();
         return response()->json($data);
 
     }

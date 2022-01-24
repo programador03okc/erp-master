@@ -31,6 +31,7 @@ Listado de requerimientos de pago
                                 <th class="text-center" style="width:2%">Prio.</th>
                                 <th class="text-center" style="width:8%">Código</th>
                                 <th class="text-center" style="width:20%">Concepto</th>
+                                <th class="text-center" style="width:15%">Tipo Req.</th>
                                 <th class="text-center" style="width:8%">Fecha registro</th>
                                 <th class="text-center" style="width:10%">Empresa</th>
                                 <th class="text-center" style="width:10%">Sede</th>

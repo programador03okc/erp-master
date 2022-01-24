@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use App\Models\Administracion\Estado;
 use App\Models\Configuracion\Usuario;
+use App\Models\Contabilidad\Contribuyente;
+use App\Models\Contabilidad\CuentaContribuyente;
 use Carbon\Carbon;
 use Debugbar;
 
@@ -14,7 +16,7 @@ class RequerimientoPago extends Model
 {
     protected $table = 'tesoreria.requerimiento_pago';
     protected $primaryKey = 'id_requerimiento_pago';
-    protected $appends = ['id_documento', 'termometro', 'nombre_estado'];
+    protected $appends = ['id_documento', 'termometro', 'nombre_estado','proveedor'];
     public $timestamps = false;
 
 
@@ -43,10 +45,24 @@ class RequerimientoPago extends Model
 
     public function getNombreEstadoAttribute()
     {
-        $estado = Estado::join('tesoreria.requerimiento_pago', 'adm_estado_doc.id_estado_doc', '=', 'requerimiento_pago.estado')
+        $estado = Estado::join('tesoreria.requerimiento_pago', 'adm_estado_doc.id_estado_doc', '=', 'requerimiento_pago.id_estado')
             ->where('requerimiento_pago.id_requerimiento_pago', $this->attributes['id_requerimiento_pago'])
             ->first()->estado_doc;
         return $estado;
+    }
+    public function getProveedorAttribute()
+    {
+        $proveedor = Proveedor::leftJoin('tesoreria.requerimiento_pago', 'requerimiento_pago.id_proveedor', '=', 'log_prove.id_proveedor')
+        ->leftJoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
+        ->leftJoin('contabilidad.sis_identi', 'sis_identi.id_doc_identidad', '=', 'adm_contri.id_doc_identidad')
+        ->where('requerimiento_pago.id_requerimiento_pago', $this->attributes['id_requerimiento_pago'])
+        ->select('adm_contri.id_contribuyente'
+            ,'log_prove.id_proveedor','adm_contri.id_doc_identidad','sis_identi.descripcion AS documento_identidad','adm_contri.razon_social','adm_contri.nro_documento')
+        ->first();
+        $cuentaContribuyente = CuentaContribuyente::with('banco','tipoCuenta','moneda')->where([['id_contribuyente',$proveedor->id_contribuyente],['estado','!=',7]])->get();
+        $proveedor->setAttribute('cuenta_contribuyente',$cuentaContribuyente);
+        
+        return $proveedor;
     }
 
 
@@ -108,7 +124,7 @@ class RequerimientoPago extends Model
 
     public function detalle()
     {
-        return $this->hasMany('App\Models\Tesoreria\DetalleRequerimientoPago', 'id_requerimiento_pago', 'id_requerimiento_pago');
+        return $this->hasMany('App\Models\Tesoreria\RequerimientoPagoDetalle', 'id_requerimiento_pago', 'id_requerimiento_pago');
     }
     public function prioridad()
     {

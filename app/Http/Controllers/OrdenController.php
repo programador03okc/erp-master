@@ -2519,6 +2519,7 @@ class OrdenController extends Controller
                 $orden->ubigeo_destino = isset($request->id_ubigeo_destino) ? $request->id_ubigeo_destino : null;
                 $orden->en_almacen = false;
                 $orden->estado = 1;
+                $orden->estado_pago = 1;
                 $orden->codigo_softlink = $request->codigo_orden !== null ? $request->codigo_orden : '';
                 $orden->observacion = $request->observacion != null ? trim(strtoupper($request->observacion)) : null;
                 $orden->tipo_cambio_compra = isset($request->tipo_cambio_compra) ? $request->tipo_cambio_compra : true;
