@@ -100,8 +100,8 @@ class OrdenView {
         $('#form-crear-orden-requerimiento').on("change", "select.handleChangeMoneda", (e) => {
             this.changeMoneda(e.currentTarget);
         });
-        $('#form-crear-orden-requerimiento').on("click", "input.handleClickIncluyeIGV", () => {
-            this.calcularMontosTotales();
+        $('#form-crear-orden-requerimiento').on("click", "input.handleClickIncluyeIGV", (e) => {
+            this.actualizarValorIncluyeIGV(e.currentTarget);
         });
 
         $('#form-crear-orden-requerimiento').on("click", "button.handleClickCatalogoProductosModal", () => {
@@ -588,6 +588,12 @@ class OrdenView {
 
         tr.querySelector("span[class='subtotal']").textContent = $.number(subtotal, 2);
         this.calcularMontosTotales();
+    }
+
+
+    actualizarValorIncluyeIGV(obj){
+        this.calcularMontosTotales();
+
     }
 
     calcularMontosTotales() {
@@ -1454,6 +1460,7 @@ class OrdenView {
         // console.log(action);
         let that= this;
         let formData = new FormData($('#form-crear-orden-requerimiento')[0]);
+        formData.set('incluye_igv', (document.querySelector("input[name='incluye_igv']").checked));
         var msj = this.validaOrdenRequerimiento();
         if (msj.length > 0) {
             Swal.fire({
