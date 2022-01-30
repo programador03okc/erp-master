@@ -34,7 +34,7 @@
     }
 
     div.producto-transformar {
-        background-color: #bce8f1;
+        background-color: #bcf9fd;
         padding-top: 5px;
         padding-bottom: 5px;
         font-weight: bold;

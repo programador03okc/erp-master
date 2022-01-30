@@ -65,6 +65,8 @@ class OrdenesDespachoExternoController extends Controller
                 'alm_req.id_prioridad',
                 'alm_req.id_contacto',
                 'alm_req.enviar_contacto',
+                'alm_req.estado',
+                'alm_req.estado_despacho',
                 'sis_usua.nombre_corto as responsable',
                 'adm_estado_doc.estado_doc',
                 'adm_estado_doc.bootstrap_color',
@@ -132,7 +134,7 @@ class OrdenesDespachoExternoController extends Controller
             ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id_oportunidad', '=', 'oportunidades.id')
             ->leftJoin('almacen.alm_req', 'alm_req.id_cc', '=', 'cc.id')
             ->leftJoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'alm_req.id_usuario')
-            ->leftJoin('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'alm_req.estado')
+            ->leftJoin('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'alm_req.estado_despacho')
             ->leftJoin('administracion.sis_sede as sede_req', 'sede_req.id_sede', '=', 'alm_req.id_sede')
             ->leftJoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_req.id_almacen')
             ->leftJoin('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'alm_req.id_cliente')
@@ -489,7 +491,7 @@ class OrdenesDespachoExternoController extends Controller
 
                     DB::table('almacen.alm_req')
                         ->where('id_requerimiento', $requerimiento->id_requerimiento)
-                        ->update(['estado' => 23]); //despacho externo
+                        ->update(['estado_despacho' => 23]); //despacho externo
 
                     $ordenDespacho->codigo = OrdenDespacho::ODnextId($requerimiento->id_almacen, false, $ordenDespacho->id_od);
                     $ordenDespacho->save();

@@ -108,7 +108,16 @@ function listarRequerimientosPendientes(usuario) {
         columns: [
             { data: 'id_requerimiento', name: 'alm_req.id_requerimiento' },
             // { data: 'id_od', name: 'orden_despacho.id_od' },
-            { data: 'codigo', name: 'alm_req.codigo', className: "text-center" },
+            // { data: 'codigo', name: 'alm_req.codigo', className: "text-center" },
+            {
+                data: 'codigo', name: 'alm_req.codigo', className: "text-center",
+                'render': function (data, type, row) {
+                    return row['codigo'] + (row['estado'] == 38 ?
+                        ' <i class="fas fa-exclamation-triangle red" data-toggle="tooltip" data-placement="bottom" title="Requerimiento por regularizar"></i> '
+                        : (row['estado'] == 39 ?
+                            ' <i class="fas fa-pause orange" data-toggle="tooltip" data-placement="bottom" title="Requerimiento en pausa"></i> ' : ''));
+                }
+            },
             {
                 data: 'fecha_entrega', name: 'oc_propias_view.fecha_entrega',
                 'render': function (data, type, row) {
@@ -208,8 +217,10 @@ function listarRequerimientosPendientes(usuario) {
             },
             {
                 'render': function (data, type, row) {
-                    return '<span class="label label-' + row['bootstrap_color'] + '">' + row['estado_doc'] + '</span>'
-                }
+                    var color = row['estado_doc'] == 'Elaborado' || row['estado_doc'] == 'Aprobado';
+                    return '<span class="label label-' + (color ? 'primary' : row['bootstrap_color']) + '">' +
+                        (color ? 'Pendiente' : row['estado_doc']) + '</span>'
+                }, className: "text-center"
             },
             { data: 'id_od', name: 'orden_despacho.id_od' },
         ],
@@ -256,7 +267,7 @@ function listarRequerimientosPendientes(usuario) {
                         ${row['tiene_transformacion'] ?
                             `<button type="button" class="interno btn btn-${row['codigo_despacho_interno'] !== null ? 'danger' : 'default'} btn-flat btn-xs " data-toggle="tooltip"
                             data-placement="bottom" title="Despacho Interno" data-id="${row['id_requerimiento']}" 
-                            data-estado="${row['estado_di']}"
+                            data-estado="${row['estado_di']}" data-estado-despacho="${row['estado_despacho']}"
                             data-idod="${row['id_despacho_interno']}" >
                             <i class="fas fa-random"></i></button>` : ''}
                             
@@ -434,15 +445,21 @@ $('#requerimientosEnProceso tbody').on("click", "button.interno", function (e) {
     var id = $(this).data("id");
     var od = $(this).data("idod");
     var estado = $(this).data("estado");
+    var estado_despacho = $(this).data("estadoDespacho");
     console.log(estado);
     var msj = '';
 
-    if (estado == null || estado == 1) {
-        openFechaProgramada(id, od);
-    } else if (estado == 10) {
-        msj = 'Ya se finalizó el proceso de transformación. No es posible modificar.';
-    } else {
-        msj = 'Ya se inició el proceso de transformación. No es posible modificar.';
+    if (estado_despacho == 23) {
+        msj = 'Ya se generó un despacho externo. No es posible modificar.';
+    }
+    else {
+        if (estado == null || estado == 1) {
+            openFechaProgramada(id, od);
+        } else if (estado == 10) {
+            msj = 'Ya se finalizó el proceso de transformación. No es posible modificar.';
+        } else {
+            msj = 'Ya se inició el proceso de transformación. No es posible modificar.';
+        }
     }
     if (msj !== '') {
         Lobibox.notify('warning', {
