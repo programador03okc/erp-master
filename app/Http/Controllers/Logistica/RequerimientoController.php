@@ -692,16 +692,6 @@ class RequerimientoController extends Controller
                             'nombre_archivo' => $archivo->getClientOriginalName(),
                             'archivo' => $archivo
                         ];
-                        // $adjuntoDetelleRequerimiento =DB::table('almacen.alm_det_req_adjuntos')->insertGetId(
-                        //     [
-                        //         'id_detalle_requerimiento'  => $detalleArray[$i]['id_detalle_requerimiento'],
-                        //         'archivo'                   => $archivo->getClientOriginalName(),
-                        //         'estado'                    => 1,
-                        //         'fecha_registro'            => date('Y-m-d H:i:s')
-                        //     ],
-                        //     'id_adjunto'
-                        // );
-                        // Storage::disk('archivos')->put("logistica/requerimiento/" . $archivo->getClientOriginalName(), \File::get($archivo));
                     }
                 }
             }
@@ -856,7 +846,7 @@ class RequerimientoController extends Controller
                         ],
                         'id_adjunto'
                     );
-                    Storage::disk('archivos')->put("logistica/requerimiento/" . $newNameFile, File::get($archivo));
+                    Storage::disk('archivos')->put("necesidades/requerimiento/bienes_servicios/cabecera/" . $newNameFile, File::get($archivo));
                 }
             }
         }
@@ -885,7 +875,7 @@ class RequerimientoController extends Controller
                         ],
                         'id_adjunto'
                     );
-                    Storage::disk('archivos')->put("logistica/requerimiento/" . $newNameFile, File::get($archivo));
+                    Storage::disk('archivos')->put("necesidades/requerimiento/bienes_servicios/cabecera/" . $newNameFile, File::get($archivo));
                 }
             }
         }
@@ -908,7 +898,7 @@ class RequerimientoController extends Controller
                         ],
                         'id_adjunto'
                     );
-                    Storage::disk('archivos')->put("logistica/requerimiento/" . $newNameFile, File::get($archivo));
+                    Storage::disk('archivos')->put("necesidades/requerimiento/bienes_servicios/cabecera/" . $newNameFile, File::get($archivo));
                 }
             }
         }
@@ -931,7 +921,7 @@ class RequerimientoController extends Controller
                         ],
                         'id_adjunto'
                     );
-                    Storage::disk('archivos')->put("logistica/requerimiento/" . $newNameFile, File::get($archivo));
+                    Storage::disk('archivos')->put("necesidades/requerimiento/bienes_servicios/cabecera/" . $newNameFile, File::get($archivo));
                 }
             }
         }
@@ -963,7 +953,7 @@ class RequerimientoController extends Controller
                     ],
                     'id_adjunto'
                 );
-                Storage::disk('archivos')->put("logistica/detalle_requerimiento/" . $newNameFile, File::get($adjunto['archivo']));
+                Storage::disk('archivos')->put("necesidades/requerimiento/bienes_servicios/detalle/" . $newNameFile, File::get($adjunto['archivo']));
             }
         }
         return response()->json($detalleAdjuntos);

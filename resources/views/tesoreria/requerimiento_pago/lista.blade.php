@@ -65,6 +65,7 @@ Listado de requerimientos de pago
 @include('logistica.requerimientos.modal_partidas')
 @include('logistica.requerimientos.modal_centro_costos')
 @include('tesoreria.requerimiento_pago.modal_adjuntar_archivos_requerimiento_pago')
+@include('tesoreria.requerimiento_pago.modal_adjuntar_archivos_requerimiento_pago_detalle')
 @include('logistica.gestion_logistica.proveedores.modal_lista_proveedores')
 @include('logistica.gestion_logistica.proveedores.modal_cuentas_bancarias_proveedor')
 @include('logistica.gestion_logistica.proveedores.modal_agregar_cuenta_bancaria_proveedor')

@@ -23,7 +23,7 @@
     </li>
     @endif
     @if(Auth::user()->tieneSubModulo(23))
-    <li class=" treeview oculto">
+    <li class="treeview">
         <a href="#">
             <i class="fas fa-file-invoice-dollar"></i> <span>Requerimiento de pago</span>
             <span class="pull-right-container">

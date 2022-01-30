@@ -126,6 +126,10 @@ class RequerimientoPago extends Model
     {
         return $this->hasMany('App\Models\Tesoreria\RequerimientoPagoDetalle', 'id_requerimiento_pago', 'id_requerimiento_pago');
     }
+    public function adjunto()
+    {
+        return $this->hasMany('App\Models\Tesoreria\RequerimientoPagoAdjunto', 'id_requerimiento_pago', 'id_requerimiento_pago');
+    }
     public function prioridad()
     {
         return $this->hasOne('App\Models\Administracion\prioridad', 'id_prioridad', 'id_prioridad');

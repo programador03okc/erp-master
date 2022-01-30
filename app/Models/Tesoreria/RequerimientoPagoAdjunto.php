@@ -3,7 +3,6 @@
 namespace App\Models\Tesoreria;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
 
 
 class RequerimientoPagoAdjunto extends Model
@@ -14,6 +13,6 @@ class RequerimientoPagoAdjunto extends Model
 
     public function categoriaAdjunto()
     {
-        return $this->hasOne('App\Models\Tesoreria\CategoriaAdjunto', 'id_categoria_adjunto', 'categoria_adjunto_id');
+        return $this->belongsTo('App\Models\Tesoreria\RequerimientoPagoCategoriaAdjunto', 'id_categoria_adjunto','id_requerimiento_pago_categoria_adjunto');
     }
 }

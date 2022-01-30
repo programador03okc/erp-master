@@ -3,8 +3,6 @@
 namespace App\Models\Tesoreria;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
-
 
 class RequerimientoPagoCategoriaAdjunto extends Model
 {

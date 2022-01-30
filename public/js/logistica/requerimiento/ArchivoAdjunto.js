@@ -90,9 +90,10 @@ class ArchivoAdjunto {
     }
 
     static changeCategoriaAdjunto(obj) {
+        
         if (tempArchivoAdjuntoRequerimientoList.length > 0) {
-            let indice = tempArchivoAdjuntoRequerimientoList.findIndex(elemnt => elemnt.id === obj.closest('tr').id);
-            tempArchivoAdjuntoRequerimientoList[indice].category = obj.value;
+            let indice = tempArchivoAdjuntoRequerimientoList.findIndex(elemnt => elemnt.id == obj.closest('tr').id);
+            tempArchivoAdjuntoRequerimientoList[indice].category =  parseInt(obj.value)>0?parseInt(obj.value):1;
         } else {
             alert("Hubo un error inesperado en la lista de adjuntos por requerimiento, la cantidad de adjuntos es cero");
         }
@@ -116,7 +117,7 @@ class ArchivoAdjunto {
         if (tempArchivoAdjuntoRequerimientoList.length > 0) {
             tempArchivoAdjuntoRequerimientoList.forEach(element => {
                 if (element.id == id) {
-                    window.open("/files/logistica/requerimiento/" + element.nameFile);
+                    window.open("/files/necesidades/requerimientos/bienes_servicios/cabecera/" + element.nameFile);
                 }
             });
         }
@@ -140,7 +141,7 @@ class ArchivoAdjunto {
         if (tempArchivoAdjuntoItemList.length > 0) {
             tempArchivoAdjuntoItemList.forEach(element => {
                 if (element.id == id) {
-                    window.open("/files/logistica/detalle_requerimiento/" + element.nameFile);
+                    window.open("/files/necesidades/requerimientos/bienes_servicios/detalle/" + element.nameFile);
                 }
             });
         }

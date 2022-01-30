@@ -744,7 +744,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('mostrar-requerimiento-pago/{idRequerimientoPago}', 'Tesoreria\RequerimientoPagoController@mostrarRequerimientoPago');
 				Route::post('actualizar-requerimiento-pago', 'Tesoreria\RequerimientoPagoController@actualizarRequerimientoPago');
 				Route::post('anular-requerimiento-pago', 'Tesoreria\RequerimientoPagoController@anularRequerimientoPago');
-				Route::get('listar-adjuntos-requerimiento-pago-cabecera/{idRequerimentoPago}', 'Tesoreria\RequerimientoPagoController@listaAdjuntosCabeceraRequerimientoPago');
+				Route::get('listar-adjuntos-requerimiento-pago-cabecera/{idRequerimentoPago}', 'Tesoreria\RequerimientoPagoController@listaAdjuntosRequerimientoPagoCabecera');
+				Route::get('listar-adjuntos-requerimiento-pago-detalle/{idRequerimentoPagoDetalle}', 'Tesoreria\RequerimientoPagoController@listaAdjuntosRequerimientoPagoDetalle');
 				Route::get('listar-categoria-adjunto', 'Tesoreria\RequerimientoPagoController@listaCategoriaAdjuntos');
 				Route::post('mostrar-proveedores', 'OrdenController@mostrarProveedores');
 				Route::get('listar-cuentas-bancarias-proveedor/{idProveedor?}', 'OrdenController@listarCuentasBancariasProveedor')->name('listar-cuentas-bancarias-proveedor');

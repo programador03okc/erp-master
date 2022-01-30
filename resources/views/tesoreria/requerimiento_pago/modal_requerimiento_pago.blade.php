@@ -3,7 +3,8 @@
         <div class="modal-content">
             <form id="form-requerimiento-pago" method="post" type="register">
                 <input type="hidden" name="id_requerimiento_pago" primary="ids">
-
+                <input type="text" class="oculto" name="id_usuario">
+                <input type="text" class="oculto" name="id_estado">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
                     <h3 class="modal-title" id="modal-title">Requerimiento de pago</h3>
@@ -14,7 +15,7 @@
                             <fieldset class="group-table">
                                 <h5><strong>Datos del Requerimiento</strong></h5>
                                 <div class="row">
-                                    <input type="text" class="oculto" name="idProveedor">
+
                                     <div class="col-md-2">
                                         <div class="form-group">
                                             <h5>Código:</h5>
@@ -145,6 +146,7 @@
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <h5>Proveedor</h5>
+                                            <input type="text" class="oculto" name="idProveedor">
                                             <div style="display:flex;">
                                                 <input class="oculto" name="id_proveedor">
                                                 <input class="oculto" name="id_contrib">
@@ -185,7 +187,7 @@
                                             <div style="display:flex; position:relative;">
                                                 <button type="button" class="btn btn-warning btn-md handleClickAdjuntarArchivoCabecera" name="btnAdjuntarArchivoCabecera[]" title="Adjuntos">
                                                     <i class="fas fa-paperclip"></i>
-                                                    <span class="badge" name="cantidadAdjuntosCabecera" style="position:absolute; top:-10px; left:-10px; border: solid 0.1px;">0</span>
+                                                    <span class="badge" name="cantidadAdjuntosCabeceraRequerimientoPago" style="position:absolute; top:-10px; left:-10px; border: solid 0.1px;">0</span>
                                                     Adjuntos
                                                 </button>
                                             </div>

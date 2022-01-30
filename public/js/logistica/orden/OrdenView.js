@@ -656,7 +656,7 @@ class OrdenView {
         }).then((result) => {
             if (result.isConfirmed) {
                 let tr = obj.closest("tr");
-                var regExp = /[a-zA-Z]/g;
+                var regExp = /[a-zA-Z]/g; //expresión regular
 
                 if(regExp.test(tr.querySelector("input[name='idRegister[]']").value) ==true ){
                     tr.remove();

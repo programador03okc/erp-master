@@ -18,6 +18,9 @@ class RequerimientoPagoDetalle extends Model
         return $fecha->format('d-m-Y H:i');
     }
 
+    public function adjunto(){
+        return $this->hasMany('App\Models\Tesoreria\RequerimientoPagoAdjuntoDetalle','id_requerimiento_pago_detalle','id_requerimiento_pago_detalle');
+    }
     public function centroCosto(){
         return $this->hasone('App\Models\Finanzas\CentroCostosView','id_centro_costo','id_centro_costo');
     }

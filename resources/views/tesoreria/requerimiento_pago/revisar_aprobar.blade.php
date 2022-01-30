@@ -77,7 +77,7 @@ Revisar / aprobar requerimientos de pago
 <script src="{{ asset('datatables/Buttons/js/buttons.html5.min.js') }}"></script>
 <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
-<script src="{{ asset('js/necesidad/requerimiento_pago/ListarRequerimientoPagoView.js')}}?v={{filemtime(public_path('js/necesidad/requerimiento_pago/ListarRequerimientoPagoView.js'))}}"></script>
+<script src="{{ asset('js/Tesoreria/ListarRequerimientoPagoView.js')}}?v={{filemtime(public_path('js/Tesoreria/ListarRequerimientoPagoView.js'))}}"></script>
 
 
 <script>
