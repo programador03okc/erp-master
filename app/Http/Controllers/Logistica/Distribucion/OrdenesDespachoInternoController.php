@@ -120,14 +120,25 @@ class OrdenesDespachoInternoController extends Controller
     {
         try {
             DB::beginTransaction();
+            $usuario = Auth::user()->id_usuario;
 
             DB::table('almacen.orden_despacho')
                 ->where('id_od', $request->id_od)
-                ->update(['estado' => 7]);
+                ->update([
+                    'estado' => 7,
+                    'usuario_anula' => $usuario
+                ]);
+
+            DB::table('almacen.transformacion')
+                ->where('id_od', $request->id_od)
+                ->update([
+                    'estado' => 7,
+                    'usuario_anula' => $usuario
+                ]);
 
             DB::table('almacen.alm_req')
                 ->where('id_requerimiento', $request->id_requerimiento)
-                ->update(['estado' => 2]); //aprobado
+                ->update(['estado_despacho' => 2]); //aprobado
 
             DB::commit();
             return response()->json(array(
@@ -288,15 +299,15 @@ class OrdenesDespachoInternoController extends Controller
                                 ]);
                         }
 
-                        DB::table('almacen.alm_det_req')
-                            ->where('id_detalle_requerimiento', $i->id_detalle_requerimiento)
-                            ->update(['estado' => 22]); //despacho interno
+                        // DB::table('almacen.alm_det_req')
+                        //     ->where('id_detalle_requerimiento', $i->id_detalle_requerimiento)
+                        //     ->update(['estado' => 22]); //despacho interno
 
                     }
 
                     DB::table('almacen.alm_req')
                         ->where('id_requerimiento', $request->id_requerimiento)
-                        ->update(['estado' => 22]); //despacho interno
+                        ->update(['estado_despacho' => 22]); //despacho interno
 
                     $arrayRspta = array(
                         'tipo' => 'success',
@@ -627,11 +638,11 @@ class OrdenesDespachoInternoController extends Controller
             if ($request->estado == 10) {
                 DB::table('almacen.alm_req')
                     ->where('id_requerimiento', $od->id_requerimiento)
-                    ->update(['estado' => $request->estado]);
+                    ->update(['estado_despacho' => $request->estado]);
             } else {
                 DB::table('almacen.alm_req')
                     ->where('id_requerimiento', $od->id_requerimiento)
-                    ->update(['estado' => 22]);
+                    ->update(['estado_despacho' => 22]);
             }
             DB::commit();
             return array('tipo' => 'success', 'mensaje' => 'Se actualizó correctamente el estado.');
@@ -662,6 +673,7 @@ class OrdenesDespachoInternoController extends Controller
     public function transformacion_nextId($fecha, $id_empresa)
     {
         $yyyy = date('Y', strtotime($fecha));
+        $yy = date('y', strtotime($fecha));
 
         $empresa = DB::table('administracion.adm_empresa')
             ->select('codigo')
@@ -676,11 +688,11 @@ class OrdenesDespachoInternoController extends Controller
                 ['adm_empresa.id_empresa', '=', $id_empresa],
                 ['transformacion.estado', '!=', 7]
             ])
-            ->whereYear('transformacion.fecha_transformacion', '=', $yyyy)
+            ->whereYear('transformacion.fecha_registro', '=', $yyyy)
             ->get()->count();
 
         $val = $this->leftZero(4, ($cantidad + 1));
-        $nextId = "OT-" . $empresa->codigo . "-" . $yyyy . "-" . $val;
+        $nextId = "OT-" . $empresa->codigo . "-" . $yy . "-" . $val;
 
         return $nextId;
     }

@@ -58,7 +58,7 @@ Gestión de Despachos
                                     <th>Flete</th>
                                     <th>Gasto Adic.</th>
                                     <th>Fecha Entregada</th>
-                                    <th>Estado</th>
+                                    <th>Estado despacho</th>
                                     <th width="60px">Acción</th>
                                 </tr>
                             </thead>
