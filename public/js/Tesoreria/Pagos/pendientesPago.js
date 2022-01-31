@@ -30,7 +30,12 @@ class RequerimientoPago {
                 { 'data': 'concepto', 'name': 'requerimiento_pago.concepto' },
                 { 'data': 'nro_documento', 'name': 'adm_contri.nro_documento' },
                 { 'data': 'razon_social', 'name': 'adm_contri.razon_social' },
-                { 'data': 'fecha_registro', 'name': 'requerimiento_pago.fecha_registro', 'className': 'text-center' },
+                // { 'data': 'fecha_registro', 'name': 'requerimiento_pago.fecha_registro', 'className': 'text-center' },
+                {
+                    'render': function (data, type, row) {
+                        return (row['fecha_registro'] !== null ? formatDate(row['fecha_registro']) : '');
+                    }, 'className': 'text-center', 'searchable': false
+                },
                 // { 'data': 'nro_cuenta', 'name': 'adm_cta_contri.nro_cuenta' },
                 { 'data': 'simbolo', 'name': 'sis_moneda.simbolo', 'className': 'text-center' },
                 // { 'data': 'monto_total', 'name': 'requerimiento_pago.monto_total', 'className': 'text-right' },
@@ -55,11 +60,12 @@ class RequerimientoPago {
                         function (data, type, row) {
                             return `<div class="btn-group" role="group">
                             ${row['id_estado'] == 1 ?
-                                    `<button type="button" style="padding-left:8px;padding-right:7px;" class="pago btn btn-danger boton" data-toggle="tooltip" 
-                                    data-placement="bottom" data-id="${row['id_requerimiento_pago']}" data-cod="${row['codigo']}" 
-                                    data-total="${row['monto_total']}" data-pago="${row['suma_pagado']}" 
+                                    `<button type="button" class="pago btn btn-danger boton" data-toggle="tooltip" data-placement="bottom" 
+                                    data-id="${row['id_requerimiento_pago']}" data-cod="${row['codigo']}" 
+                                    data-total="${row['monto_total']}" data-pago="${row['suma_pagado']}" data-nrodoc="${row['nro_documento']}"
                                     data-moneda="${row['simbolo']}" data-prov="${encodeURIComponent(row['razon_social'])}" 
-                                    data-cta="${row['nro_cuenta']}" title="Registrar Pago"> 
+                                    data-cta="${row['nro_cuenta']}" data-tpcta="${row['tipo_cuenta']}" 
+                                    title="Registrar Pago"> 
                                     <i class="fas fa-hand-holding-usd"></i> </button>`: ''}
                             ${row['suma_pagado'] > 0 ?
                                     `<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
@@ -114,9 +120,9 @@ class RequerimientoPago {
                         function (data, type, row) {
                             return `<div class="btn-group" role="group">
                             ${row['estado'] == 1 ?
-                                    `<button type="button" style="padding-left:8px;padding-right:7px;" class="pago btn btn-danger boton" data-toggle="tooltip" 
-                                    data-placement="bottom" data-id="${row['id_doc_com']}" data-cod="${row['serie'] + '-' + row['numero']}" 
-                                    data-total="${row['total_a_pagar']}" data-pago="${row['suma_pagado']}" 
+                                    `<button type="button" style="padding-left:8px;padding-right:7px;" class="pago btn btn-danger boton" data-toggle="tooltip" data-placement="bottom" 
+                                    data-id="${row['id_doc_com']}" data-cod="${row['serie'] + '-' + row['numero']}" 
+                                    data-total="${row['total_a_pagar']}" data-pago="${row['suma_pagado']}" data-nrodoc="${row['nro_documento']}"
                                     data-moneda="${row['simbolo']}" data-prov="${encodeURIComponent(row['razon_social'])}" 
                                     data-cta="${row['nro_cuenta']}" title="Registrar Pago"> 
                                     <i class="fas fa-hand-holding-usd"></i> </button>`: ''}
@@ -181,11 +187,12 @@ class RequerimientoPago {
                         function (data, type, row) {
                             return `<div class="btn-group" role="group">
                     ${row['estado'] !== 9 ?
-                                    `<button type="button" style="padding-left:8px;padding-right:7px;" class="pago btn btn-danger boton" data-toggle="tooltip" 
-                                data-placement="bottom" data-id="${row['id_orden_compra']}" data-cod="${row['codigo']}" 
-                                data-total="${row['suma_total']}" data-pago="${row['suma_pagado']}" data-nrodoc="${row['nro_documento']}" 
-                                data-moneda="${row['simbolo']}" data-prov="${encodeURIComponent(row['razon_social'])}" 
-                                data-cta="${row['nro_cuenta']}" title="Registrar Pago" >
+                                    `<button type="button" class="pago btn btn-danger boton" data-toggle="tooltip" data-placement="bottom" 
+                                    data-id="${row['id_orden_compra']}" data-cod="${row['codigo']}" 
+                                    data-total="${row['suma_total']}" data-pago="${row['suma_pagado']}" data-nrodoc="${row['nro_documento']}" 
+                                    data-moneda="${row['simbolo']}" data-prov="${encodeURIComponent(row['razon_social'])}" 
+                                    data-cta="${row['nro_cuenta']}" data-tpcta="${row['tipo_cuenta']}"
+                                    title="Registrar Pago" >
                                 <i class="fas fa-hand-holding-usd"></i></button>`: ''}
                     ${row['suma_pagado'] > 0 ?
                                     `<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
@@ -203,35 +210,41 @@ class RequerimientoPago {
     }
 }
 
-$('#listaComprobantes tbody').on("click", "button.pago", function () {
-    var id_doc_com = $(this).data('id');
+$('#listaRequerimientos tbody').on("click", "button.pago", function () {
+    var id_req = $(this).data('id');
     var codigo = $(this).data('cod');
     var total = $(this).data('total');
-    var pago = $(this).data('pago');
+    var pago = ($(this).data('pago') !== null ? parseFloat($(this).data('pago')) : 0);
     var moneda = $(this).data('moneda');
-    var prov = $(this).data('prov');
     var nrodoc = $(this).data('nrodoc');
+    var prov = $(this).data('prov');
+    var tpcta = $(this).data('tpcta');
     var cta = $(this).data('cta');
 
-    var total_pago = formatDecimal(parseFloat(total) - (pago !== null ? parseFloat(pago) : 0));
-    console.log(nrodoc);
+    var total_pago = formatDecimal(parseFloat(total) - pago);
+    console.log(cta);
 
     $('#modal-procesarPago').modal({
         show: true
     });
-    console.log(codigo);
-    $('[name=id_doc_com]').val(id_doc_com);
-    $('[name=id_requerimiento_pago]').val('');
+
+    $('[name=id_requerimiento_pago]').val(id_req);
     $('[name=id_oc]').val('');
+    $('[name=id_doc_com]').val('');
     $('[name=codigo]').val(codigo);
     $('[name=cod_serie_numero]').text(codigo);
+
     $('[name=total_pago]').val(total_pago);
     $('[name=total]').val(total_pago);
+    $('[name=total_pagado]').text(formatNumber.decimal(pago, moneda, -2));
+    $('[name=monto_total]').text(formatNumber.decimal(total, moneda, -2));
+
     $('[name=observacion]').val('');
     $('[name=simbolo]').val(moneda);
     $('[name=nro_documento]').text(nrodoc);
     $('[name=razon_social]').text(decodeURIComponent(prov));
-    $('[name=cta_bancaria]').text(cta);
+    $('[name=tp_cta_bancaria]').text(cta !== 'undefined' ? tpcta : '');
+    $('[name=cta_bancaria]').text(cta !== 'undefined' ? cta : '');
 
     $('#submit_procesarPago').removeAttr('disabled');
 });
@@ -240,12 +253,15 @@ $('#listaOrdenes tbody').on("click", "button.pago", function () {
     var id_oc = $(this).data('id');
     var codigo = $(this).data('cod');
     var total = $(this).data('total');
-    var pago = $(this).data('pago');
+    var pago = ($(this).data('pago') !== null ? parseFloat($(this).data('pago')) : 0);
     var moneda = $(this).data('moneda');
+    var nrodoc = $(this).data('nrodoc');
     var prov = $(this).data('prov');
+    var tpcta = $(this).data('tpcta');
     var cta = $(this).data('cta');
 
-    var total_pago = formatDecimal(parseFloat(total) - (pago !== null ? parseFloat(pago) : 0));
+    // var monto_pago = (pago !== null ? parseFloat(pago) : 0);
+    var total_pago = formatDecimal(parseFloat(total) - pago);
     console.log(total_pago);
 
     $('#modal-procesarPago').modal({
@@ -257,42 +273,56 @@ $('#listaOrdenes tbody').on("click", "button.pago", function () {
     $('[name=id_doc_com]').val('');
     $('[name=codigo]').val(codigo);
     $('[name=cod_serie_numero]').text(codigo);
+
     $('[name=total_pago]').val(total_pago);
     $('[name=total]').val(total_pago);
+    $('[name=total_pagado]').text(formatNumber.decimal(pago, moneda, -2));
+    $('[name=monto_total]').text(formatNumber.decimal(total, moneda, -2));
+
     $('[name=observacion]').val('');
     $('[name=simbolo]').val(moneda);
+    $('[name=nro_documento]').text(nrodoc);
     $('[name=razon_social]').text(decodeURIComponent(prov));
-    $('[name=cta_bancaria]').text(cta);
+    $('[name=tp_cta_bancaria]').text(cta !== 'undefined' ? tpcta : '');
+    $('[name=cta_bancaria]').text(cta !== 'undefined' ? cta : '');
 
     $('#submit_procesarPago').removeAttr('disabled');
 });
 
-$('#listaRequerimientos tbody').on("click", "button.pago", function () {
-    var id_req = $(this).data('id');
+$('#listaComprobantes tbody').on("click", "button.pago", function () {
+    var id_doc_com = $(this).data('id');
     var codigo = $(this).data('cod');
     var total = $(this).data('total');
-    var pago = $(this).data('pago');
+    var pago = ($(this).data('pago') !== null ? parseFloat($(this).data('pago')) : 0);
     var moneda = $(this).data('moneda');
+    var nrodoc = $(this).data('nrodoc');
     var prov = $(this).data('prov');
+    var tpcta = $(this).data('tpcta');
     var cta = $(this).data('cta');
 
-    var total_pago = formatDecimal(parseFloat(total) - (pago !== null ? parseFloat(pago) : 0));
-    console.log(total_pago);
+    var total_pago = formatDecimal(parseFloat(total) - pago);
+    console.log(nrodoc);
 
     $('#modal-procesarPago').modal({
         show: true
     });
-
-    $('[name=id_requerimiento_pago]').val(id_req);
+    console.log(codigo);
+    $('[name=id_doc_com]').val(id_doc_com);
+    $('[name=id_requerimiento_pago]').val('');
     $('[name=id_oc]').val('');
-    $('[name=id_doc_com]').val('');
     $('[name=codigo]').val(codigo);
     $('[name=cod_serie_numero]').text(codigo);
+
     $('[name=total_pago]').val(total_pago);
     $('[name=total]').val(total_pago);
+    $('[name=total_pagado]').text(formatNumber.decimal(pago, moneda, -2));
+    $('[name=monto_total]').text(formatNumber.decimal(total, moneda, -2));
+
     $('[name=observacion]').val('');
     $('[name=simbolo]').val(moneda);
+    $('[name=nro_documento]').text(nrodoc);
     $('[name=razon_social]').text(decodeURIComponent(prov));
+    $('[name=tp_cta_bancaria]').text(cta !== 'undefined' ? tpcta : '');
     $('[name=cta_bancaria]').text(cta !== 'undefined' ? cta : '');
 
     $('#submit_procesarPago').removeAttr('disabled');

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Tesoreria;
 
+use App\Http\Controllers\AlmacenController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\File;
@@ -25,7 +26,8 @@ class RegistroPagoController extends Controller
 
     function view_pendientes_pago()
     {
-        return view('tesoreria/pagos/pendientesPago');
+        $empresas = AlmacenController::select_empresa();
+        return view('tesoreria/pagos/pendientesPago', compact('empresas'));
     }
 
     public function listarRequerimientosPago()
@@ -41,7 +43,8 @@ class RegistroPagoController extends Controller
                 'adm_estado_doc.estado_doc',
                 'adm_estado_doc.bootstrap_color',
                 'sis_sede.descripcion as sede_descripcion',
-                // 'adm_cta_contri.nro_cuenta',
+                'adm_cta_contri.nro_cuenta',
+                'adm_tp_cta.descripcion as tipo_cuenta',
                 DB::raw("(SELECT sum(total_pago) FROM tesoreria.registro_pago
                         WHERE registro_pago.id_requerimiento_pago = requerimiento_pago.id_requerimiento_pago
                         and registro_pago.estado != 7) AS suma_pagado")
@@ -53,8 +56,9 @@ class RegistroPagoController extends Controller
             ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'requerimiento_pago.id_sede')
             ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'requerimiento_pago.id_empresa')
             ->join('contabilidad.adm_contri as empresa', 'empresa.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
+            ->leftJoin('contabilidad.adm_cta_contri', 'adm_cta_contri.id_cuenta_contribuyente', '=', 'requerimiento_pago.id_cuenta_proveedor')
+            ->leftJoin('contabilidad.adm_tp_cta', 'adm_tp_cta.id_tipo_cuenta', '=', 'adm_cta_contri.id_tipo_cuenta')
             ->join('configuracion.sis_grupo', 'sis_grupo.id_grupo', '=', 'requerimiento_pago.id_grupo')
-            // ->leftJoin('contabilidad.adm_cta_contri', 'adm_cta_contri.id_cuenta_contribuyente', '=', 'requerimiento_pago.id_cuenta_proveedor')
             ->where([['requerimiento_pago.id_estado', '!=', 7]]);
 
         return datatables($data)->toJson();
@@ -75,6 +79,7 @@ class RegistroPagoController extends Controller
                 // 'registro_pago.fecha_pago','registro_pago.observacion',
                 // 'registrado_por.nombre_corto as usuario_pago',
                 'adm_cta_contri.nro_cuenta',
+                'adm_tp_cta.descripcion as tipo_cuenta',
                 DB::raw("(SELECT sum(subtotal) FROM logistica.log_det_ord_compra
                         WHERE log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra
                         and log_det_ord_compra.estado != 7) AS suma_total"),
@@ -91,6 +96,7 @@ class RegistroPagoController extends Controller
             // ->leftJoin('tesoreria.registro_pago','registro_pago.id_oc','=','log_ord_compra.id_orden_compra')
             // ->leftJoin('configuracion.sis_usua as registrado_por','registrado_por.id_usuario','=','registro_pago.registrado_por')
             ->leftJoin('contabilidad.adm_cta_contri', 'adm_cta_contri.id_cuenta_contribuyente', '=', 'log_ord_compra.id_cta_principal')
+            ->leftJoin('contabilidad.adm_tp_cta', 'adm_tp_cta.id_tipo_cuenta', '=', 'adm_cta_contri.id_tipo_cuenta')
             ->where([['log_ord_compra.id_condicion', '=', 1], ['log_ord_compra.estado', '!=', 7]]);
 
         return datatables($data)->toJson();
