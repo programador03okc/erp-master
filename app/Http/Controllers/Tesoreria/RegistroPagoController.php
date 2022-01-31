@@ -33,6 +33,7 @@ class RegistroPagoController extends Controller
         $data = DB::table('tesoreria.requerimiento_pago')
             ->select(
                 'requerimiento_pago.*',
+                'adm_contri.nro_documento',
                 'adm_contri.razon_social',
                 'empresa.razon_social as razon_social_empresa',
                 'sis_moneda.simbolo',
@@ -41,9 +42,9 @@ class RegistroPagoController extends Controller
                 'adm_estado_doc.bootstrap_color',
                 'sis_sede.descripcion as sede_descripcion',
                 // 'adm_cta_contri.nro_cuenta',
-                DB::raw("(SELECT sum(total_pago) FROM tesoreria.req_pagos
-                        WHERE req_pagos.id_requerimiento_pago = requerimiento_pago.id_requerimiento_pago
-                        and req_pagos.estado != 7) AS suma_pagado")
+                DB::raw("(SELECT sum(total_pago) FROM tesoreria.registro_pago
+                        WHERE registro_pago.id_requerimiento_pago = requerimiento_pago.id_requerimiento_pago
+                        and registro_pago.estado != 7) AS suma_pagado")
             )
             ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'requerimiento_pago.id_proveedor')
             ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
@@ -64,21 +65,22 @@ class RegistroPagoController extends Controller
         $data = DB::table('logistica.log_ord_compra')
             ->select(
                 'log_ord_compra.*',
+                'adm_contri.nro_documento',
                 'adm_contri.razon_social',
                 'estados_compra.descripcion as estado_doc',
                 'sis_moneda.simbolo',
                 'log_cdn_pago.descripcion AS condicion_pago',
                 'sis_sede.descripcion as sede_descripcion',
-                // 'req_pagos.total_pago','req_pagos.adjunto',
-                // 'req_pagos.fecha_pago','req_pagos.observacion',
+                // 'registro_pago.total_pago','registro_pago.adjunto',
+                // 'registro_pago.fecha_pago','registro_pago.observacion',
                 // 'registrado_por.nombre_corto as usuario_pago',
                 'adm_cta_contri.nro_cuenta',
                 DB::raw("(SELECT sum(subtotal) FROM logistica.log_det_ord_compra
                         WHERE log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra
                         and log_det_ord_compra.estado != 7) AS suma_total"),
-                DB::raw("(SELECT sum(total_pago) FROM tesoreria.req_pagos
-                        WHERE req_pagos.id_oc = log_ord_compra.id_orden_compra
-                        and req_pagos.estado != 7) AS suma_pagado")
+                DB::raw("(SELECT sum(total_pago) FROM tesoreria.registro_pago
+                        WHERE registro_pago.id_oc = log_ord_compra.id_orden_compra
+                        and registro_pago.estado != 7) AS suma_pagado")
             )
             ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
             ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
@@ -86,8 +88,8 @@ class RegistroPagoController extends Controller
             ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'log_ord_compra.id_moneda')
             ->leftJoin('logistica.log_cdn_pago', 'log_cdn_pago.id_condicion_pago', '=', 'log_ord_compra.id_condicion')
             ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'log_ord_compra.id_sede')
-            // ->leftJoin('tesoreria.req_pagos','req_pagos.id_oc','=','log_ord_compra.id_orden_compra')
-            // ->leftJoin('configuracion.sis_usua as registrado_por','registrado_por.id_usuario','=','req_pagos.registrado_por')
+            // ->leftJoin('tesoreria.registro_pago','registro_pago.id_oc','=','log_ord_compra.id_orden_compra')
+            // ->leftJoin('configuracion.sis_usua as registrado_por','registrado_por.id_usuario','=','registro_pago.registrado_por')
             ->leftJoin('contabilidad.adm_cta_contri', 'adm_cta_contri.id_cuenta_contribuyente', '=', 'log_ord_compra.id_cta_principal')
             ->where([['log_ord_compra.id_condicion', '=', 1], ['log_ord_compra.estado', '!=', 7]]);
 
@@ -114,9 +116,9 @@ class RegistroPagoController extends Controller
                 'log_cdn_pago.descripcion AS condicion_pago',
                 'cont_tp_doc.descripcion as tipo_documento',
                 'adm_cta_contri.nro_cuenta',
-                DB::raw("(SELECT sum(total_pago) FROM tesoreria.req_pagos
-                      WHERE req_pagos.id_doc_com = doc_com.id_doc_com
-                        and req_pagos.estado != 7) AS suma_pagado")
+                DB::raw("(SELECT sum(total_pago) FROM tesoreria.registro_pago
+                      WHERE registro_pago.id_doc_com = doc_com.id_doc_com
+                        and registro_pago.estado != 7) AS suma_pagado")
             )
             ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'doc_com.id_proveedor')
             ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
@@ -153,14 +155,14 @@ class RegistroPagoController extends Controller
 
     public function pagosComprobante($id_doc_com)
     {
-        $detalles = DB::table('tesoreria.req_pagos')
-            ->select('req_pagos.*', 'sis_usua.nombre_corto', 'sis_moneda.simbolo')
-            ->leftJoin('almacen.doc_com', 'doc_com.id_doc_com', '=', 'req_pagos.id_doc_com')
+        $detalles = DB::table('tesoreria.registro_pago')
+            ->select('registro_pago.*', 'sis_usua.nombre_corto', 'sis_moneda.simbolo')
+            ->leftJoin('almacen.doc_com', 'doc_com.id_doc_com', '=', 'registro_pago.id_doc_com')
             ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'doc_com.moneda')
-            ->leftJoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'req_pagos.registrado_por')
+            ->leftJoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'registro_pago.registrado_por')
             ->where([
-                ['req_pagos.id_doc_com', '=', $id_doc_com],
-                ['req_pagos.estado', '!=', 7]
+                ['registro_pago.id_doc_com', '=', $id_doc_com],
+                ['registro_pago.estado', '!=', 7]
             ])
             ->get();
 
@@ -169,14 +171,14 @@ class RegistroPagoController extends Controller
 
     public function pagosOrdenes($id_oc)
     {
-        $detalles = DB::table('tesoreria.req_pagos')
-            ->select('req_pagos.*', 'sis_usua.nombre_corto', 'sis_moneda.simbolo')
-            ->leftJoin('logistica.log_ord_compra', 'log_ord_compra.id_orden_compra', '=', 'req_pagos.id_oc')
+        $detalles = DB::table('tesoreria.registro_pago')
+            ->select('registro_pago.*', 'sis_usua.nombre_corto', 'sis_moneda.simbolo')
+            ->leftJoin('logistica.log_ord_compra', 'log_ord_compra.id_orden_compra', '=', 'registro_pago.id_oc')
             ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'log_ord_compra.id_moneda')
-            ->leftJoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'req_pagos.registrado_por')
+            ->leftJoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'registro_pago.registrado_por')
             ->where([
-                ['req_pagos.id_oc', '=', $id_oc],
-                ['req_pagos.estado', '!=', 7]
+                ['registro_pago.id_oc', '=', $id_oc],
+                ['registro_pago.estado', '!=', 7]
             ])
             ->get();
 
@@ -185,14 +187,14 @@ class RegistroPagoController extends Controller
 
     public function pagosRequerimientos($id_requerimiento_pago)
     {
-        $detalles = DB::table('tesoreria.req_pagos')
-            ->select('req_pagos.*', 'sis_usua.nombre_corto', 'sis_moneda.simbolo')
-            ->leftJoin('tesoreria.requerimiento_pago', 'requerimiento_pago.id_requerimiento_pago', '=', 'req_pagos.id_requerimiento_pago')
+        $detalles = DB::table('tesoreria.registro_pago')
+            ->select('registro_pago.*', 'sis_usua.nombre_corto', 'sis_moneda.simbolo')
+            ->leftJoin('tesoreria.requerimiento_pago', 'requerimiento_pago.id_requerimiento_pago', '=', 'registro_pago.id_requerimiento_pago')
             ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'requerimiento_pago.id_moneda')
-            ->leftJoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'req_pagos.registrado_por')
+            ->leftJoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'registro_pago.registrado_por')
             ->where([
-                ['req_pagos.id_requerimiento_pago', '=', $id_requerimiento_pago],
-                ['req_pagos.estado', '!=', 7]
+                ['registro_pago.id_requerimiento_pago', '=', $id_requerimiento_pago],
+                ['registro_pago.estado', '!=', 7]
             ])
             ->get();
 
@@ -231,7 +233,7 @@ class RegistroPagoController extends Controller
             $id_usuario = Auth::user()->id_usuario;
             $file = $request->file('adjunto');
 
-            $id_pago = DB::table('tesoreria.req_pagos')
+            $id_pago = DB::table('tesoreria.registro_pago')
                 ->insertGetId([
                     'id_oc' => $request->id_oc,
                     'id_requerimiento_pago' => $request->id_requerimiento_pago,
@@ -252,7 +254,7 @@ class RegistroPagoController extends Controller
                 File::delete(public_path('tesoreria/pagos/' . $nombre));
                 Storage::disk('archivos')->put('tesoreria/pagos/' . $nombre, File::get($file));
 
-                DB::table('tesoreria.req_pagos')
+                DB::table('tesoreria.registro_pago')
                     ->where('id_pago', $id_pago)
                     ->update(['adjunto' => $nombre]);
             }
@@ -270,7 +272,7 @@ class RegistroPagoController extends Controller
                 } else if ($request->id_requerimiento_pago !== null) {
                     DB::table('tesoreria.requerimiento_pago')
                         ->where('id_requerimiento_pago', $request->id_requerimiento_pago)
-                        ->update(['estado' => 9]); //procesado
+                        ->update(['id_estado' => 9]); //procesado
                 }
             }
 

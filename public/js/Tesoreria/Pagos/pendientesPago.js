@@ -28,6 +28,7 @@ class RequerimientoPago {
                 { 'data': 'razon_social_empresa', 'name': 'empresa.razon_social' },
                 { 'data': 'grupo_descripcion', 'name': 'sis_grupo.descripcion' },
                 { 'data': 'concepto', 'name': 'requerimiento_pago.concepto' },
+                { 'data': 'nro_documento', 'name': 'adm_contri.nro_documento' },
                 { 'data': 'razon_social', 'name': 'adm_contri.razon_social' },
                 { 'data': 'fecha_registro', 'name': 'requerimiento_pago.fecha_registro', 'className': 'text-center' },
                 // { 'data': 'nro_cuenta', 'name': 'adm_cta_contri.nro_cuenta' },
@@ -53,7 +54,7 @@ class RequerimientoPago {
                     'render':
                         function (data, type, row) {
                             return `<div class="btn-group" role="group">
-                            ${row['estado'] == 1 ?
+                            ${row['id_estado'] == 1 ?
                                     `<button type="button" style="padding-left:8px;padding-right:7px;" class="pago btn btn-danger boton" data-toggle="tooltip" 
                                     data-placement="bottom" data-id="${row['id_requerimiento_pago']}" data-cod="${row['codigo']}" 
                                     data-total="${row['monto_total']}" data-pago="${row['suma_pagado']}" 
@@ -150,6 +151,7 @@ class RequerimientoPago {
                 { 'data': 'sede_descripcion', 'name': 'sis_sede.descripcion' },
                 { 'data': 'codigo' },
                 { 'data': 'codigo_softlink' },
+                { 'data': 'nro_documento', 'name': 'adm_contri.nro_documento' },
                 { 'data': 'razon_social', 'name': 'adm_contri.razon_social' },
                 {
                     'render': function (data, type, row) {
@@ -181,7 +183,7 @@ class RequerimientoPago {
                     ${row['estado'] !== 9 ?
                                     `<button type="button" style="padding-left:8px;padding-right:7px;" class="pago btn btn-danger boton" data-toggle="tooltip" 
                                 data-placement="bottom" data-id="${row['id_orden_compra']}" data-cod="${row['codigo']}" 
-                                data-total="${row['suma_total']}" data-pago="${row['suma_pagado']}" 
+                                data-total="${row['suma_total']}" data-pago="${row['suma_pagado']}" data-nrodoc="${row['nro_documento']}" 
                                 data-moneda="${row['simbolo']}" data-prov="${encodeURIComponent(row['razon_social'])}" 
                                 data-cta="${row['nro_cuenta']}" title="Registrar Pago" >
                                 <i class="fas fa-hand-holding-usd"></i></button>`: ''}
@@ -208,10 +210,11 @@ $('#listaComprobantes tbody').on("click", "button.pago", function () {
     var pago = $(this).data('pago');
     var moneda = $(this).data('moneda');
     var prov = $(this).data('prov');
+    var nrodoc = $(this).data('nrodoc');
     var cta = $(this).data('cta');
 
     var total_pago = formatDecimal(parseFloat(total) - (pago !== null ? parseFloat(pago) : 0));
-    console.log(total_pago);
+    console.log(nrodoc);
 
     $('#modal-procesarPago').modal({
         show: true
@@ -226,6 +229,7 @@ $('#listaComprobantes tbody').on("click", "button.pago", function () {
     $('[name=total]').val(total_pago);
     $('[name=observacion]').val('');
     $('[name=simbolo]').val(moneda);
+    $('[name=nro_documento]').text(nrodoc);
     $('[name=razon_social]').text(decodeURIComponent(prov));
     $('[name=cta_bancaria]').text(cta);
 
@@ -289,7 +293,7 @@ $('#listaRequerimientos tbody').on("click", "button.pago", function () {
     $('[name=observacion]').val('');
     $('[name=simbolo]').val(moneda);
     $('[name=razon_social]').text(decodeURIComponent(prov));
-    $('[name=cta_bancaria]').text(cta);
+    $('[name=cta_bancaria]').text(cta !== 'undefined' ? cta : '');
 
     $('#submit_procesarPago').removeAttr('disabled');
 });
