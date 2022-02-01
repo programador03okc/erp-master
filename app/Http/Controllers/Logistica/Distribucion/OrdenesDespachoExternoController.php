@@ -1194,6 +1194,7 @@ class OrdenesDespachoExternoController extends Controller
                     'oc_propias_view.id_transportista',
                     'oc_propias_view.tipo',
                     'oc_propias_view.id as id_orden',
+                    'oc_propias_view.nro_orden',
                     'oc_directas.id_despacho as id_despacho_directa',
                     'oc_propias.id_despacho as id_despacho_propia'
                 )
@@ -1235,7 +1236,7 @@ class OrdenesDespachoExternoController extends Controller
                     array_push($rsptas, [
                         'tipo' => 'update',
                         'id_despacho' => $id_despacho,
-                        'mensaje' => 'id_transportista = ' . $req->id_transportista . ' flete real = ' . $flete_real
+                        'mensaje' => 'nro_orden: ' . $req->nro_orden . ' id_transportista = ' . $req->id_transportista . ' flete real = ' . $flete_real
                     ]);
                 } else {
                     $id_despacho = DB::table('mgcp_ordenes_compra.despachos')
@@ -1251,7 +1252,7 @@ class OrdenesDespachoExternoController extends Controller
                     array_push($rsptas, [
                         'tipo' => 'save',
                         'id_despacho' => $id_despacho,
-                        'mensaje' => 'id_transportista = ' . $req->id_transportista . ' flete real = ' . $flete_real
+                        'mensaje' => 'nro_orden: ' . $req->nro_orden . ' id_transportista = ' . $req->id_transportista . ' flete real = ' . $flete_real
                     ]);
                 }
 
