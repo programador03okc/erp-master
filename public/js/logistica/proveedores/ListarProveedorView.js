@@ -453,6 +453,7 @@ class ListarProveedorView {
                                     msg: response.mensaje
                                 });
                             }else{
+                                let tempNueroDocumentoIngresado = document.querySelector("div[id='modal-proveedor'] input[name='nroDocumento']").value;
                                 document.querySelector("div[id='modal-proveedor'] input[name='contribuyenteEncontrado']").value = false;
                                 document.querySelector("div[id='modal-proveedor'] h3[class='modal-title']").textContent = 'Nuevo Proveedor';
                                 document.querySelector("form[id='form-proveedor']").setAttribute("type", "register");
@@ -460,6 +461,7 @@ class ListarProveedorView {
                                 $("#form-proveedor")[0].reset();
                                 this.limpiarTabla('listaContactoProveedor');
                                 this.limpiarTabla('listaCuentaBancariasProveedor');
+                                document.querySelector("div[id='modal-proveedor'] input[name='nroDocumento']").value= tempNueroDocumentoIngresado;
                             }
         
                     }
