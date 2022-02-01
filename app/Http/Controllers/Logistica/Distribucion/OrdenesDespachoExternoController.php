@@ -1203,7 +1203,10 @@ class OrdenesDespachoExternoController extends Controller
                 ->leftJoin('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'cc.id_oportunidad')
                 ->leftJoin('mgcp_ordenes_compra.oc_directas', 'oc_directas.id', '=', 'oc_propias_view.id')
                 ->leftJoin('mgcp_acuerdo_marco.oc_propias', 'oc_propias.id', '=', 'oc_propias_view.id')
-                ->where([['orden_despacho.aplica_cambios', '=', false]])
+                ->where([
+                    ['orden_despacho.aplica_cambios', '=', false],
+                    ['orden_despacho.estado', '!=', 7]
+                ])
                 ->get();
 
             $rsptas = [];
