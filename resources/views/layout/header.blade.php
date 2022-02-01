@@ -37,7 +37,7 @@
                         <span class="hidden-xs">{{ Auth::user()->nombre_corto }}</span>
                     </a>
                     <ul class="dropdown-menu">
-                        <li class="user-header">
+                        <li class="user-header" style="height: auto;">
                             <img src="{{ asset('images/user2-160x160.jpg') }}" class="img-circle" alt="User Image">
                             <p>{{ Auth::user()->nombre_corto }}
                                 <small>{{ Auth::user()->getRolesText() }}</small>
