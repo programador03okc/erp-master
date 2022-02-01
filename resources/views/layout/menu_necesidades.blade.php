@@ -22,7 +22,8 @@
         </ul>
     </li>
     @endif
-    <li class="treeview">
+    @if(Auth::user()->tieneSubModulo(23))
+    <li class="treeview oculto">
         <a href="#">
             <i class="fas fa-file-invoice-dollar"></i> <span>Requerimiento de pago</span>
             <span class="pull-right-container">
@@ -30,11 +31,15 @@
             </span>
         </a>
         <ul class="treeview-menu">
+            @if(Auth::user()->tieneAplicacion(102))
             <li><a href="{{route('necesidades.pago.listado.index')}}"><i class="far fa-circle fa-xs"></i> Listado</a></li>
-            
+            @endif
+            @if(Auth::user()->tieneAplicacion(103))
             <li><a href="{{route('necesidades.pago.revisar_aprobar.index')}}"><i class="far fa-circle fa-xs"></i> Revisar / aprobar</a></li>
-            
+            @endif
+  
         </ul>
     </li>
+    @endif
 </ul>
 @endsection
