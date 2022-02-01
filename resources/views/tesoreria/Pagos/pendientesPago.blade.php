@@ -22,8 +22,8 @@ Registro de pagos
                 
                 <ul class="nav nav-tabs" id="myTab">
                     <li class="active"><a data-toggle="tab" href="#requerimientos">Requerimiento de pagos</a></li>
-                    <li class=""><a data-toggle="tab" href="#comprobantes">Comprobantes</a></li>
                     <li class=""><a data-toggle="tab" href="#ordenes">Ordenes de compra</a></li>
+                    <li class=""><a data-toggle="tab" href="#comprobantes">Comprobantes</a></li>
                 </ul>
 
                 <div class="tab-content">
@@ -38,50 +38,19 @@ Registro de pagos
                                         <thead>
                                             <tr>
                                                 <th hidden>#</th>
-                                                <th>Código</th>
                                                 <th>Empresa</th>
+                                                <th>Código</th>
                                                 <th>Grupo</th>
                                                 <th>Concepto</th>
-                                                <th>Proveedor</th>
+                                                <th>Nro. Doc.</th>
+                                                <th>Razon social del proveedor</th>
                                                 <th>Fecha Emisión</th>
                                                 {{-- <th>Cta. Bancaria</th> --}}
                                                 <th>Mnd</th>
                                                 <th>Total</th>
                                                 <th>Saldo</th>
                                                 <th>Estado</th>
-                                                <th style="width:90px;">Acción</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody></tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-
-                    <div id="comprobantes" class="tab-pane fade ">
-                        <br>
-                        <form id="form-comprobantes" type="register">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <table class="mytable table table-condensed table-bordered table-okc-view" 
-                                        id="listaComprobantes">
-                                        <thead>
-                                            <tr>
-                                                <th hidden>#</th>
-                                                <th>Tipo Doc.</th>
-                                                <th>Serie</th>
-                                                <th>Número</th>
-                                                <th>Proveedor</th>
-                                                <th>Fecha Emisión</th>
-                                                <th>Condición</th>
-                                                <th>Fecha Vencimiento</th>
-                                                <th>Cta. Bancaria</th>
-                                                <th>Mnd</th>
-                                                <th>Total</th>
-                                                <th>Saldo</th>
-                                                <th>Estado</th>
-                                                <th style="width:90px;">Acción</th>
+                                                <th style="width:80px;">Acción</th>
                                             </tr>
                                         </thead>
                                         <tbody></tbody>
@@ -102,23 +71,19 @@ Registro de pagos
                                         <thead>
                                             <tr>
                                                 <th hidden></th>
-                                                <th>Emp-Sede</th>
+                                                <th>Empresa</th>
                                                 <th>Codigo</th>
                                                 <th>Codigo SoftLink</th>
-                                                <th>Proveedor</th>
-                                                <th>Fecha</th>
+                                                <th>Nro. Doc.</th>
+                                                <th>Razon social del proveedor</th>
+                                                <th>Fecha emisión</th>
                                                 <th>Condición Pago</th>
                                                 <th>Cta. Bancaria</th>
                                                 <th>Mnd</th>
                                                 <th>Total</th>
                                                 <th>Saldo</th>
-                                                <!-- <th>Fecha Pago</th>
-                                                <th>Motivo</th>
-                                                <th>Procesado por</th>
-                                                <th>Total pago</th>
-                                                <th>Adjunto</th> -->
                                                 <th>Estado</th>
-                                                <th style="width:120px;">Acción</th>
+                                                <th style="width:80px;">Acción</th>
                                             </tr>
                                         </thead>
                                         <tbody></tbody>
@@ -126,6 +91,39 @@ Registro de pagos
                                 </div>
                             </div>
 
+                        </form>
+                    </div>
+
+                    <div id="comprobantes" class="tab-pane fade ">
+                        <br>
+                        <form id="form-comprobantes" type="register">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <table class="mytable table table-condensed table-bordered table-okc-view" 
+                                        id="listaComprobantes">
+                                        <thead>
+                                            <tr>
+                                                <th hidden>#</th>
+                                                <th>Tipo Doc.</th>
+                                                <th>Serie</th>
+                                                <th>Número</th>
+                                                {{-- <th>Nro. Doc.</th> --}}
+                                                <th>Razon social del proveedor</th>
+                                                <th>Fecha Emisión</th>
+                                                <th>Condición</th>
+                                                <th>Fecha Vencimiento</th>
+                                                <th>Cta. Bancaria</th>
+                                                <th>Mnd</th>
+                                                <th>Total</th>
+                                                <th>Saldo</th>
+                                                <th>Estado</th>
+                                                <th style="width:80px;">Acción</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </form>
                     </div>
 
