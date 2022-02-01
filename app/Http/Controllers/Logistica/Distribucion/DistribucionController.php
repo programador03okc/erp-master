@@ -1813,7 +1813,12 @@ class DistribucionController extends Controller
         $fechaRegistro = new Carbon();
 
         $od = DB::table('almacen.orden_despacho')
-            ->select('alm_req.id_requerimiento', 'orden_despacho.codigo', 'alm_req.fecha_entrega')
+            ->select(
+                'alm_req.id_requerimiento',
+                'orden_despacho.codigo',
+                'alm_req.fecha_entrega',
+                'orden_despacho.importe_flete'
+            )
             ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'orden_despacho.id_requerimiento')
             ->where('id_od', $request->id_od)->first();
 
@@ -1848,21 +1853,62 @@ class DistribucionController extends Controller
                 ->first();
 
             if ($oc !== null) {
-                if ($oc->id_despacho_directa !== null) {
+                //tiene un despacho
+                $id_despacho = $oc->id_despacho_directa !== null ? $oc->id_despacho_directa
+                    : ($oc->id_despacho_propia !== null ? $oc->id_despacho_propia : null);
+
+                //si ya existe un despacho
+                if ($id_despacho !== null) {
 
                     DB::table('mgcp_ordenes_compra.despachos')
-                        ->where('id', $oc->id_despacho_directa)
+                        ->where('id', $id_despacho)
                         ->update([
-                            'fecha_llegada' => $request->fecha_estado
+                            'flete_real' => (($od->importe_flete !== null ? $od->importe_flete : 0) + ($request->gasto_extra !== null ? $request->gasto_extra : 0)),
+                            'fecha_llegada' => $request->fecha_estado,
                         ]);
-                } else if ($oc->id_despacho_propia !== null) {
+                } else {
+                    $id_despacho = DB::table('mgcp_ordenes_compra.despachos')
+                        ->insertGetId([
+                            'flete_real' => (($od->importe_flete !== null ? $od->importe_flete : 0) + ($request->gasto_extra !== null ? $request->gasto_extra : 0)),
+                            'fecha_llegada' => $request->fecha_estado,
+                            'id_usuario' => $id_usuario,
+                            'fecha_registro' => new Carbon(),
+                        ], 'id');
+                }
 
-                    DB::table('mgcp_ordenes_compra.despachos')
-                        ->where('id', $oc->id_despacho_propia)
+                if ($oc->tipo == 'am') {
+                    DB::table('mgcp_acuerdo_marco.oc_propias')
+                        ->where('oc_propias.id', $oc->id)
                         ->update([
-                            'fecha_llegada' => $request->fecha_estado
+                            'despachada' => true,
+                            'id_despacho' => $id_despacho
+                        ]);
+                } else {
+                    DB::table('mgcp_ordenes_compra.oc_directas')
+                        ->where('oc_directas.id', $oc->id)
+                        ->update([
+                            'despachada' => true,
+                            'id_despacho' => $id_despacho
                         ]);
                 }
+
+                // if ($oc->id_despacho_directa !== null) {
+
+                //     DB::table('mgcp_ordenes_compra.despachos')
+                //         ->where('id', $oc->id_despacho_directa)
+                //         ->update([
+                //             'flete_real' => ($oc->importe_flete + ($request->gasto_extra !== null ? $request->gasto_extra : 0)),
+                //             'fecha_llegada' => $request->fecha_estado,
+                //         ]);
+                // } else if ($oc->id_despacho_propia !== null) {
+
+                //     DB::table('mgcp_ordenes_compra.despachos')
+                //         ->where('id', $oc->id_despacho_propia)
+                //         ->update([
+                //             'flete_real' => ($oc->importe_flete + ($request->gasto_extra !== null ? $request->gasto_extra : 0)),
+                //             'fecha_llegada' => $request->fecha_estado,
+                //         ]);
+                // }
             }
         }
 

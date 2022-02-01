@@ -1070,6 +1070,8 @@ Route::group(['middleware' => ['auth']], function () {
 
 				Route::get('migrarDespachos', 'Logistica\Distribucion\OrdenesDespachoExternoController@migrarDespachos')->name('migrarDespachos');
 				Route::get('generarDespachoInternoNroOrden', 'Logistica\Distribucion\OrdenesDespachoInternoController@generarDespachoInternoNroOrden')->name('generarDespachoInternoNroOrden');
+
+				Route::get('pruebaTransportista', 'Logistica\Distribucion\OrdenesDespachoExternoController@pruebaTransportista')->name('pruebaTransportista');
 			});
 
 			Route::group(['as' => 'ordenes-despacho-interno.', 'prefix' => 'ordenes-despacho-interno'], function () {

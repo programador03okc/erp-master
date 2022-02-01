@@ -878,6 +878,31 @@ class OrdenesDespachoExternoController extends Controller
         }
     }
 
+    public function pruebaTransportista()
+    {
+        $oc = DB::table('almacen.alm_req')
+            ->select(
+                'oc_propias_view.id',
+                'oc_propias_view.tipo',
+                'oc_directas.id_despacho as id_despacho_directa',
+                'oc_propias.id_despacho as id_despacho_propia',
+                DB::raw("(SELECT SUM(orden_despacho_obs.gasto_extra) FROM almacen.orden_despacho_obs 
+                inner join almacen.orden_despacho on
+                (orden_despacho_obs.id_od = orden_despacho.id_od)
+                where   orden_despacho.id_requerimiento = alm_req.id_requerimiento
+                        and orden_despacho.aplica_cambios = false
+                        and orden_despacho.estado != 7) AS gasto_extra")
+            )
+            // ->join('almacen.orden_despacho', 'orden_despacho.id_requerimiento', '=', 'alm_req.id_requerimiento')
+            ->join('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
+            ->join('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
+            ->join('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'cc.id_oportunidad')
+            ->leftJoin('mgcp_ordenes_compra.oc_directas', 'oc_directas.id', '=', 'oc_propias_view.id')
+            ->leftJoin('mgcp_acuerdo_marco.oc_propias', 'oc_propias.id', '=', 'oc_propias_view.id')
+            ->where('alm_req.id_requerimiento', 1130)
+            ->first();
+        return response()->json($oc);
+    }
     public function despachoTransportista(Request $request)
     {
         try {
@@ -908,8 +933,15 @@ class OrdenesDespachoExternoController extends Controller
                         'oc_propias_view.id',
                         'oc_propias_view.tipo',
                         'oc_directas.id_despacho as id_despacho_directa',
-                        'oc_propias.id_despacho as id_despacho_propia'
+                        'oc_propias.id_despacho as id_despacho_propia',
+                        DB::raw("(SELECT SUM(orden_despacho_obs.gasto_extra) FROM almacen.orden_despacho_obs 
+                        inner join almacen.orden_despacho on
+                        (orden_despacho_obs.id_od = orden_despacho.id_od)
+                        where   orden_despacho.id_requerimiento = alm_req.id_requerimiento
+                                and orden_despacho.aplica_cambios = false
+                                and orden_despacho.estado != 7) AS gasto_extra")
                     )
+                    // ->join('almacen.orden_despacho', 'orden_despacho.id_requerimiento', '=', 'alm_req.id_requerimiento')
                     ->join('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
                     ->join('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
                     ->join('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'cc.id_oportunidad')
@@ -931,14 +963,14 @@ class OrdenesDespachoExternoController extends Controller
                             ->where('id', $id_despacho)
                             ->update([
                                 'id_transportista' => $request->tr_id_transportista,
-                                'flete_real' => $request->importe_flete,
+                                'flete_real' => (($request->importe_flete !== null ? $request->importe_flete : 0) + ($oc->gasto_extra !== null ? $oc->gasto_extra : 0)),
                                 'fecha_salida' => $request->fecha_despacho_real,
                             ]);
                     } else {
                         $id_despacho = DB::table('mgcp_ordenes_compra.despachos')
                             ->insertGetId([
                                 'id_transportista' => $request->tr_id_transportista,
-                                'flete_real' => $request->importe_flete,
+                                'flete_real' => (($request->importe_flete !== null ? $request->importe_flete : 0) + ($oc->gasto_extra !== null ? $oc->gasto_extra : 0)),
                                 'fecha_salida' => $request->fecha_despacho_real,
                                 'id_usuario' => $id_usuario,
                                 'fecha_registro' => new Carbon(),
