@@ -237,6 +237,7 @@ class ProveedoresController extends Controller
             $contribuyente->ubigeo = $request->ubigeoProveedor;
             $contribuyente->telefono = $request->telefono;
             $contribuyente->celular = $request->celular;
+            $contribuyente->estado = 1;
             $contribuyente->email = $request->email;
             $contribuyente->transportista = false;
             $contribuyente->save();
