@@ -71,6 +71,7 @@ class RegistroPagoController extends Controller
                 'log_ord_compra.*',
                 'adm_contri.nro_documento',
                 'adm_contri.razon_social',
+                'empresa.razon_social as razon_social_empresa',
                 'estados_compra.descripcion as estado_doc',
                 'sis_moneda.simbolo',
                 'log_cdn_pago.descripcion AS condicion_pago',
@@ -93,8 +94,8 @@ class RegistroPagoController extends Controller
             ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'log_ord_compra.id_moneda')
             ->leftJoin('logistica.log_cdn_pago', 'log_cdn_pago.id_condicion_pago', '=', 'log_ord_compra.id_condicion')
             ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'log_ord_compra.id_sede')
-            // ->leftJoin('tesoreria.registro_pago','registro_pago.id_oc','=','log_ord_compra.id_orden_compra')
-            // ->leftJoin('configuracion.sis_usua as registrado_por','registrado_por.id_usuario','=','registro_pago.registrado_por')
+            ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
+            ->join('contabilidad.adm_contri as empresa', 'empresa.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
             ->leftJoin('contabilidad.adm_cta_contri', 'adm_cta_contri.id_cuenta_contribuyente', '=', 'log_ord_compra.id_cta_principal')
             ->leftJoin('contabilidad.adm_tp_cta', 'adm_tp_cta.id_tipo_cuenta', '=', 'adm_cta_contri.id_tipo_cuenta')
             ->where([['log_ord_compra.id_condicion', '=', 1], ['log_ord_compra.estado', '!=', 7]]);
