@@ -59,10 +59,8 @@ Revisar / aprobar requerimientos de pago
     </select>
 </div>
 
-@include('tesoreria.requerimiento_pago.modal_requerimiento_pago')
-@include('tesoreria.requerimiento_pago.modal_lista_cuadro_presupuesto')
-@include('logistica.requerimientos.modal_partidas')
-@include('logistica.requerimientos.modal_centro_costos')
+
+
 
 @endsection
 

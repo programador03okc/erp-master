@@ -140,7 +140,11 @@ class RequerimientoPago extends Model
     }
     public function division()
     {
-        return $this->belongsTo('App\Models\Administracion\DivisionArea', 'division_id', 'id_division');
+        return $this->belongsTo('App\Models\Administracion\DivisionArea', 'id_division', 'id_division');
+    }
+    public function tipoRequerimientoPago()
+    {
+        return $this->belongsTo('App\Models\Tesoreria\RequerimientoPagoTipo', 'id_requerimiento_pago_tipo', 'id_requerimiento_pago_tipo');
     }
     public function creadoPor()
     {

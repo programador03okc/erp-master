@@ -3517,13 +3517,14 @@ class OrdenController extends Controller
 
 
                     }
-                } else {
-                    $status = 204;
-                    $msj[] = 'hubo un problema, no se pudo restablecer el estado del requerimientos';
-                }
+                } 
+                // else {
+                    // $status = 204;
+                    // $msj[] = 'hubo un problema, no se pudo restablecer el estado del requerimientos';
+                // }
             } //-> si no se encuentra req
             else {
-                $status = 204;
+                // $status = 200;
                 $msj[] = 'no se encontro requerimientos';
             }
         } // -> si no tiene detalle la orden
@@ -3588,6 +3589,8 @@ class OrdenController extends Controller
                     $hasIngreso = $this->TieneingresoAlmacen($idOrden);
                     if ($hasIngreso['status'] == 200 && $hasIngreso['data'] == false) {
                         $makeRevertirOrden = $this->makeRevertirOrden($idOrden, $sustento);
+                        // Debugbar::info($makeRevertirOrden);
+
                         $status = $makeRevertirOrden['status'];
                         $msj[] = $makeRevertirOrden['mensaje'];
                         $requerimientoIdList = $makeRevertirOrden['requerimientoIdList'];
@@ -3595,7 +3598,7 @@ class OrdenController extends Controller
                         $status = $hasIngreso['status'];
                         $msj[] = $hasIngreso['mensaje'];
                     }
-    
+
                     if ($status == 200) {
                         $orden = Orden::select(
                             'log_ord_compra.codigo'
@@ -3614,6 +3617,8 @@ class OrdenController extends Controller
                                 ]);
                         }
                     }
+                    // Debugbar::info($status);
+
                     $output = [
                         'id_orden_compra' => $idOrden,
                         'codigo' => $orden->codigo,
