@@ -569,22 +569,22 @@ class OrdenView {
 
     updateSubtotal(obj) {
         let tr = obj.closest("tr");
-        let isGift = (tr.querySelector("input[class~='precio']").dataset.productoRegalo);
+        // let isGift = (tr.querySelector("input[class~='precio']").dataset.productoRegalo);
         let cantidad = parseFloat(tr.querySelector("input[class~='cantidad_a_comprar']").value);
         let precioUnitario = parseFloat(tr.querySelector("input[class~='precio']").value);
         let subtotal = (cantidad * precioUnitario);
 
-        if (isGift == 'true') {
-            if (subtotal > 10) {
-                Swal.fire(
-                    '',
-                    'El precio fijado para un obsequio no puede ser mayor a 10.00',
-                    'info'
-                );
-                tr.querySelector("input[class~='precio']").value = 0;
-                subtotal = 0;
-            }
-        }
+        // if (isGift == 'true') {
+        //     if (subtotal > 10) {
+        //         Swal.fire(
+        //             '',
+        //             'El precio fijado para un obsequio no puede ser mayor a 10.00',
+        //             'info'
+        //         );
+        //         tr.querySelector("input[class~='precio']").value = 0;
+        //         subtotal = 0;
+        //     }
+        // }
 
         tr.querySelector("span[class='subtotal']").textContent = $.number(subtotal, 2);
         this.calcularMontosTotales();
