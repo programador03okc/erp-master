@@ -381,7 +381,8 @@ class AlmacenController extends Controller
     {
         $data = DB::table('administracion.adm_empresa')
             ->join('contabilidad.adm_contri', 'adm_empresa.id_contribuyente', '=', 'adm_contri.id_contribuyente')
-            ->select('adm_empresa.id_empresa', 'adm_contri.nro_documento', 'adm_contri.razon_social')->where('adm_empresa.estado', '=', 1)
+            ->select('adm_empresa.id_empresa', 'adm_contri.id_contribuyente', 'adm_contri.nro_documento', 'adm_contri.razon_social')
+            ->where('adm_empresa.estado', '=', 1)
             ->orderBy('adm_empresa.id_empresa', 'asc')->get();
         return $data;
     }
@@ -4906,13 +4907,13 @@ class AlmacenController extends Controller
         return response()->json($data);
     }
 
-    public function ExportarExcelListaIngresos($idEmpresa,$idSede, $almacenes, $condiciones, $fecha_inicio, $fecha_fin, $id_proveedor, $id_usuario, $moneda, $transportista){
-        return Excel::download(new ReporteIngresosExcel($idEmpresa,$idSede, $almacenes, $condiciones, $fecha_inicio, $fecha_fin, $id_proveedor, $id_usuario, $moneda, $transportista), 'lista_ingresos.xlsx');
-
+    public function ExportarExcelListaIngresos($idEmpresa, $idSede, $almacenes, $condiciones, $fecha_inicio, $fecha_fin, $id_proveedor, $id_usuario, $moneda, $transportista)
+    {
+        return Excel::download(new ReporteIngresosExcel($idEmpresa, $idSede, $almacenes, $condiciones, $fecha_inicio, $fecha_fin, $id_proveedor, $id_usuario, $moneda, $transportista), 'lista_ingresos.xlsx');
     }
 
-    
-    public function listar_ingresos_lista($idEmpresa,$idSede, $almacenes, $condiciones, $fecha_inicio, $fecha_fin, $id_proveedor, $id_usuario, $idMoneda, /*$referenciado,*/ $transportista)
+
+    public function listar_ingresos_lista($idEmpresa, $idSede, $almacenes, $condiciones, $fecha_inicio, $fecha_fin, $id_proveedor, $id_usuario, $idMoneda, /*$referenciado,*/ $transportista)
     {
         $alm_array = explode(',', $almacenes);
         // $doc_array = explode(',',$documentos);
@@ -4957,47 +4958,47 @@ class AlmacenController extends Controller
             ->leftjoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'doc_com.moneda')
             ->leftjoin('logistica.log_cdn_pago', 'log_cdn_pago.id_condicion_pago', '=', 'doc_com.id_condicion')
 
-            ->when(($idEmpresa > 0), function ($query) use($idEmpresa) {
-                $sedes= Sede::where('id_empresa',$idEmpresa)->get();
-                $idSedeList=[];
-                foreach($sedes as $sede){
-                    $idSedeList[]=$sede->id_sede;
+            ->when(($idEmpresa > 0), function ($query) use ($idEmpresa) {
+                $sedes = Sede::where('id_empresa', $idEmpresa)->get();
+                $idSedeList = [];
+                foreach ($sedes as $sede) {
+                    $idSedeList[] = $sede->id_sede;
                 }
                 return $query->whereIn('alm_almacen.id_sede', $idSedeList);
             })
-            ->when(($idSede > 0), function ($query) use($idSede) {
-                return $query->where('alm_almacen.id_sede',$idSede);
+            ->when(($idSede > 0), function ($query) use ($idSede) {
+                return $query->where('alm_almacen.id_sede', $idSede);
             })
 
-            ->when((($fecha_inicio != 'SIN_FILTRO') and ($fecha_fin == 'SIN_FILTRO')), function ($query) use($fecha_inicio) {
-                return $query->where('mov_alm.fecha_emision' ,'>=',$fecha_inicio); 
+            ->when((($fecha_inicio != 'SIN_FILTRO') and ($fecha_fin == 'SIN_FILTRO')), function ($query) use ($fecha_inicio) {
+                return $query->where('mov_alm.fecha_emision', '>=', $fecha_inicio);
             })
-            ->when((($fecha_inicio == 'SIN_FILTRO') and ($fecha_fin != 'SIN_FILTRO')), function ($query) use($fecha_fin) {
-                return $query->where('mov_alm.fecha_emision' ,'<=',$fecha_fin); 
+            ->when((($fecha_inicio == 'SIN_FILTRO') and ($fecha_fin != 'SIN_FILTRO')), function ($query) use ($fecha_fin) {
+                return $query->where('mov_alm.fecha_emision', '<=', $fecha_fin);
             })
-            ->when((($fecha_inicio != 'SIN_FILTRO') and ($fecha_fin != 'SIN_FILTRO')), function ($query) use($fecha_inicio,$fecha_fin) {
-                return $query->whereBetween('mov_alm.fecha_emision' ,[$fecha_inicio,$fecha_fin]); 
+            ->when((($fecha_inicio != 'SIN_FILTRO') and ($fecha_fin != 'SIN_FILTRO')), function ($query) use ($fecha_inicio, $fecha_fin) {
+                return $query->whereBetween('mov_alm.fecha_emision', [$fecha_inicio, $fecha_fin]);
             })
 
-            ->when((count($alm_array) > 0), function ($query) use($alm_array) {
-                return $query->whereIn('mov_alm.id_almacen',$alm_array);
+            ->when((count($alm_array) > 0), function ($query) use ($alm_array) {
+                return $query->whereIn('mov_alm.id_almacen', $alm_array);
             })
-            ->when((count($con_array) > 0), function ($query) use($con_array) {
-                return $query->whereIn('mov_alm.id_operacion',$con_array);
+            ->when((count($con_array) > 0), function ($query) use ($con_array) {
+                return $query->whereIn('mov_alm.id_operacion', $con_array);
             })
-            ->when(($id_proveedor !=null && $id_proveedor > 0), function ($query) use($id_proveedor) {
-                return $query->where('guia_com.id_proveedor',$id_proveedor);
+            ->when(($id_proveedor != null && $id_proveedor > 0), function ($query) use ($id_proveedor) {
+                return $query->where('guia_com.id_proveedor', $id_proveedor);
             })
-            ->when(($id_usuario !=null && $id_usuario > 0), function ($query) use($id_usuario) {
-                return $query->where('guia_com.usuario',$id_usuario);
+            ->when(($id_usuario != null && $id_usuario > 0), function ($query) use ($id_usuario) {
+                return $query->where('guia_com.usuario', $id_usuario);
             })
-            ->when(($idMoneda == 1 || $idMoneda == 2), function ($query) use($idMoneda) {
-                return $query->where('doc_com.moneda',$idMoneda);
+            ->when(($idMoneda == 1 || $idMoneda == 2), function ($query) use ($idMoneda) {
+                return $query->where('doc_com.moneda', $idMoneda);
             })
-            ->when(($transportista !=null && $transportista > 0), function ($query) use($transportista) {
-                return $query->where('guia_com.transportista',$transportista);
+            ->when(($transportista != null && $transportista > 0), function ($query) use ($transportista) {
+                return $query->where('guia_com.transportista', $transportista);
             })
- 
+
 
             // ->whereIn('mov_alm.id_almacen', $alm_array)
             // ->whereIn('guia_com.id_tp_doc_almacen',$doc_array)
@@ -5107,9 +5108,9 @@ class AlmacenController extends Controller
     }
 
 
-    public function ExportarExcelListaSalidas($idEmpresa,$idSede, $almacenes, $condiciones, $fecha_inicio, $fecha_fin, $id_proveedor, $id_usuario, $moneda){
-        return Excel::download(new ReporteSalidasExcel($idEmpresa,$idSede, $almacenes, $condiciones, $fecha_inicio, $fecha_fin, $id_proveedor, $id_usuario, $moneda), 'lista_salidas.xlsx');
-
+    public function ExportarExcelListaSalidas($idEmpresa, $idSede, $almacenes, $condiciones, $fecha_inicio, $fecha_fin, $id_proveedor, $id_usuario, $moneda)
+    {
+        return Excel::download(new ReporteSalidasExcel($idEmpresa, $idSede, $almacenes, $condiciones, $fecha_inicio, $fecha_fin, $id_proveedor, $id_usuario, $moneda), 'lista_salidas.xlsx');
     }
 
     public function listar_salidas($almacenes, $documentos, $condiciones, $fecha_inicio, $fecha_fin, $id_cliente, $id_usuario, $moneda, $referenciado)

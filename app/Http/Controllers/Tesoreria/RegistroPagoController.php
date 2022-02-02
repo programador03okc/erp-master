@@ -160,45 +160,57 @@ class RegistroPagoController extends Controller
             ->make(true);
     }
 
-    public function pagosComprobante($id_doc_com)
+    public function listarPagos($tipo, $id)
     {
         $detalles = DB::table('tesoreria.registro_pago')
-            ->select('registro_pago.*', 'sis_usua.nombre_corto', 'sis_moneda.simbolo')
-            ->leftJoin('almacen.doc_com', 'doc_com.id_doc_com', '=', 'registro_pago.id_doc_com')
-            ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'doc_com.moneda')
+            ->select(
+                'registro_pago.*',
+                'sis_usua.nombre_corto',
+                'sis_moneda.simbolo',
+                'adm_contri.razon_social as razon_social_empresa',
+                'adm_cta_contri.nro_cuenta'
+            )
             ->leftJoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'registro_pago.registrado_por')
-            ->where([
-                ['registro_pago.id_doc_com', '=', $id_doc_com],
-                ['registro_pago.estado', '!=', 7]
-            ])
-            ->get();
+            ->leftJoin('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'registro_pago.id_empresa')
+            ->leftJoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
+            ->leftJoin('contabilidad.adm_cta_contri', 'adm_cta_contri.id_cuenta_contribuyente', '=', 'registro_pago.id_cuenta_origen');
 
-        return response()->json($detalles);
+        if ($tipo == "orden") {
+            $query = $detalles->leftJoin('logistica.log_ord_compra', 'log_ord_compra.id_orden_compra', '=', 'registro_pago.id_oc')
+                ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'log_ord_compra.id_moneda')
+                ->where([['registro_pago.id_oc', '=', $id], ['registro_pago.estado', '!=', 7]])
+                ->get();
+        } else if ($tipo == "requerimiento") {
+            $query = $detalles->join('tesoreria.requerimiento_pago', 'requerimiento_pago.id_requerimiento_pago', '=', 'registro_pago.id_requerimiento_pago')
+                ->join('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'requerimiento_pago.id_moneda')
+                ->where([['registro_pago.id_requerimiento_pago', '=', $id], ['registro_pago.estado', '!=', 7]])
+                ->get();
+        } else if ($tipo == "comprobante") {
+            $query = $detalles->leftJoin('almacen.doc_com', 'doc_com.id_doc_com', '=', 'registro_pago.id_doc_com')
+                ->join('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'doc_com.moneda')
+                ->where([['registro_pago.id_doc_com', '=', $id], ['registro_pago.estado', '!=', 7]])
+                ->get();
+        }
+
+        return response()->json($query);
     }
-
-    public function pagosOrdenes($id_oc)
-    {
-        $detalles = DB::table('tesoreria.registro_pago')
-            ->select('registro_pago.*', 'sis_usua.nombre_corto', 'sis_moneda.simbolo')
-            ->leftJoin('logistica.log_ord_compra', 'log_ord_compra.id_orden_compra', '=', 'registro_pago.id_oc')
-            ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'log_ord_compra.id_moneda')
-            ->leftJoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'registro_pago.registrado_por')
-            ->where([
-                ['registro_pago.id_oc', '=', $id_oc],
-                ['registro_pago.estado', '!=', 7]
-            ])
-            ->get();
-
-        return response()->json($detalles);
-    }
-
+    /*
     public function pagosRequerimientos($id_requerimiento_pago)
     {
         $detalles = DB::table('tesoreria.registro_pago')
-            ->select('registro_pago.*', 'sis_usua.nombre_corto', 'sis_moneda.simbolo')
+            ->select(
+                'registro_pago.*',
+                'sis_usua.nombre_corto',
+                'sis_moneda.simbolo',
+                'adm_contri.razon_social as razon_social_empresa',
+                'adm_cta_contri.nro_cuenta'
+            )
             ->leftJoin('tesoreria.requerimiento_pago', 'requerimiento_pago.id_requerimiento_pago', '=', 'registro_pago.id_requerimiento_pago')
             ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'requerimiento_pago.id_moneda')
             ->leftJoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'registro_pago.registrado_por')
+            ->leftJoin('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'registro_pago.id_empresa')
+            ->leftJoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
+            ->leftJoin('contabilidad.adm_cta_contri', 'adm_cta_contri.id_cuenta_contribuyente', '=', 'registro_pago.id_cuenta_origen')
             ->where([
                 ['registro_pago.id_requerimiento_pago', '=', $id_requerimiento_pago],
                 ['registro_pago.estado', '!=', 7]
@@ -207,6 +219,31 @@ class RegistroPagoController extends Controller
 
         return response()->json($detalles);
     }
+
+    public function pagosComprobante($id_doc_com)
+    {
+        $detalles = DB::table('tesoreria.registro_pago')
+            ->select(
+                'registro_pago.*',
+                'sis_usua.nombre_corto',
+                'sis_moneda.simbolo',
+                'adm_contri.razon_social as razon_social_empresa',
+                'adm_cta_contri.nro_cuenta'
+            )
+            ->leftJoin('almacen.doc_com', 'doc_com.id_doc_com', '=', 'registro_pago.id_doc_com')
+            ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'doc_com.moneda')
+            ->leftJoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'registro_pago.registrado_por')
+            ->leftJoin('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'registro_pago.id_empresa')
+            ->leftJoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
+            ->leftJoin('contabilidad.adm_cta_contri', 'adm_cta_contri.id_cuenta_contribuyente', '=', 'registro_pago.id_cuenta_origen')
+            ->where([
+                ['registro_pago.id_doc_com', '=', $id_doc_com],
+                ['registro_pago.estado', '!=', 7]
+            ])
+            ->get();
+
+        return response()->json($detalles);
+    }*/
 
     public function detalleComprobante($id_doc_com)
     {
@@ -232,6 +269,17 @@ class RegistroPagoController extends Controller
         return response()->json($detalles);
     }
 
+    function cuentasOrigen($id_empresa)
+    {
+        $cuentas = DB::table('contabilidad.adm_cta_contri')
+            ->select('adm_cta_contri.id_cuenta_contribuyente', 'adm_cta_contri.nro_cuenta')
+            // ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'adm_cta_contri.id_contribuyente')
+            ->leftjoin('administracion.adm_empresa', 'adm_empresa.id_contribuyente', '=', 'adm_cta_contri.id_contribuyente')
+            ->where('adm_empresa.id_empresa', $id_empresa)
+            ->get();
+        return response()->json($cuentas);
+    }
+
     function procesarPago(Request $request)
     {
         try {
@@ -248,6 +296,8 @@ class RegistroPagoController extends Controller
                     'fecha_pago' => $request->fecha_pago,
                     'observacion' => $request->observacion,
                     'total_pago' => round($request->total_pago, 2),
+                    'id_empresa' => $request->id_empresa,
+                    'id_cuenta_origen' => $request->id_cuenta_origen,
                     'registrado_por' => $id_usuario,
                     'estado' => 1,
                     'fecha_registro' => date('Y-m-d H:i:s')
@@ -285,6 +335,22 @@ class RegistroPagoController extends Controller
 
             DB::commit();
             return response()->json($id_pago);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+        }
+    }
+
+    function anularPago($id_pago)
+    {
+        try {
+            DB::beginTransaction();
+
+            DB::table('tesoreria.registro_pago')
+                ->where('id_pago', $id_pago)
+                ->update(['estado' => 7]);
+
+            DB::commit();
+            return response()->json("Se anulo correctamente");
         } catch (\PDOException $e) {
             DB::rollBack();
         }

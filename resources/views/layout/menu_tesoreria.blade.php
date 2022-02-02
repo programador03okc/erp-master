@@ -2,8 +2,15 @@
 @section('sidebar')
 <ul class="sidebar-menu" data-widget="tree">
     <li><a href="{{route('tesoreria.index')}}"><i class="fas fa-tachometer-alt"></i> <span>Tesorería</span></a></li>
-    
-    <li class="treeview">
+
+    <li>
+        <a href="{{route('tesoreria.pagos.procesar-pago.index')}}"><i class="fas fa-file-invoice-dollar"></i> 
+            <span>Registro de Pagos </span>
+        </a>
+        
+    </li>
+
+    {{-- <li class="treeview">
         <a href="#">
             <i class="fas fa-file-invoice-dollar"></i> <span> Pagos </span>
             <span class="pull-right-container">
@@ -12,9 +19,8 @@
         </a>
         <ul class="treeview-menu">
             <li><a href="{{route('tesoreria.pagos.procesar-pago.index')}}"><i class="far fa-circle fa-xs"></i> Registro de Pagos </a></li>
-            {{-- <li><a href="{{route('tesoreria.pagos.confirmacion-pagos.index')}}"><i class="far fa-circle fa-xs"></i> Confirmación de Pagos </a></li> --}}
         </ul>
-    </li>
+    </li> --}}
     
     @if(Auth::user()->tieneSubModulo(44))
     <li class="treeview">
