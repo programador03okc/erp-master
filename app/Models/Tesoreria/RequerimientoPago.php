@@ -59,7 +59,7 @@ class RequerimientoPago extends Model
         ->select('adm_contri.id_contribuyente'
             ,'log_prove.id_proveedor','adm_contri.id_doc_identidad','sis_identi.descripcion AS documento_identidad','adm_contri.razon_social','adm_contri.nro_documento')
         ->first();
-        $cuentaContribuyente = CuentaContribuyente::with('banco','tipoCuenta','moneda')->where([['id_contribuyente',$proveedor->id_contribuyente],['estado','!=',7]])->get();
+        $cuentaContribuyente = CuentaContribuyente::with('banco.contribuyente','tipoCuenta','moneda')->where([['id_contribuyente',$proveedor->id_contribuyente],['estado','!=',7]])->get();
         $proveedor->setAttribute('cuenta_contribuyente',$cuentaContribuyente);
         
         return $proveedor;

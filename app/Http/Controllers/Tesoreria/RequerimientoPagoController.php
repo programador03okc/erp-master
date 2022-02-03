@@ -32,6 +32,8 @@ use Illuminate\Support\Facades\Auth;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use Yajra\DataTables\Facades\DataTables;
 use Debugbar;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\View;
 
 class RequerimientoPagoController extends Controller
 {
@@ -637,5 +639,20 @@ class RequerimientoPagoController extends Controller
     {
         $data = RequerimientoPagoAdjuntoDetalle::where([['id_requerimiento_pago_detalle', $idRequerimientoPagoDetalle], ['id_estado', '!=', 7]])->get();
         return response()->json($data);
+    }
+
+    function imprimirRequerimientoPagoPdf($idRequerimientoPago){
+
+        $requerimientoPago = $this->mostrarRequerimientoPago($idRequerimientoPago);
+        $vista = View::make(
+            'tesoreria/requerimiento_pago/export/RequerimientoPagoPdf',
+            compact('requerimientoPago')
+        )->render();
+
+        $pdf = App::make('dompdf.wrapper');
+        $pdf->loadHTML($vista);
+
+        return $pdf->stream();
+        return $pdf->download('requerimiento-pago.pdf');
     }
 }

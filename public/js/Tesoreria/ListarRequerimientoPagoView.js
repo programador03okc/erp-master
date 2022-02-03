@@ -134,6 +134,9 @@ class ListarRequerimientoPagoView {
         $('#modal-vista-rapida-requerimiento-pago').on("click", "a.handleClickAdjuntarArchivoDetalle", (e) => {
             this.modalAdjuntarArchivosDetalle(e.currentTarget);
         });
+        $('#modal-vista-rapida-requerimiento-pago').on("click", "button.handleClickimprimirRequerimientoPagoEnPdf", () => {
+            this.imprimirRequerimientoPagoEnPdf();
+        });
         $('#listaCuadroPresupuesto').on("click", "button.handleClickSeleccionarCDP", (e) => {
             this.seleccionarCDP(e.currentTarget);
         });
@@ -2278,6 +2281,28 @@ class ListarRequerimientoPagoView {
         tempIdArchivoAdjuntoRequerimientoPagoDetalleToDeleteList.push(obj.dataset.id);
         tempArchivoAdjuntoRequerimientoPagoDetalleList = tempArchivoAdjuntoRequerimientoPagoDetalleList.filter((element, i) => element.id != obj.dataset.id);
         this.updateContadorTotalAdjuntosRequerimientoPagoDetalle();
+
+    }
+
+    imprimirRequerimientoPagoEnPdf(){
+        let idRequerimientoPago = document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] input[name='id_requerimiento_pago']").value;
+
+
+        if (idRequerimientoPago.length > 0) {
+
+            var regExp = /[a-zA-Z]/g; //expresión regular
+
+            if (regExp.test(idRequerimientoPago) == false) {
+                window.open('imprimir-requerimiento-pago-pdf/'+idRequerimientoPago);
+            }else{
+                Swal.fire(
+                    '',
+                    'Hubo un error inesperado al intentar imprimir el requerimiento de pago, no se encontro un ID valido para continuar, intente refrescar la ventana de navegador',
+                    'error'
+                );
+            }
+
+        }
 
     }
 
