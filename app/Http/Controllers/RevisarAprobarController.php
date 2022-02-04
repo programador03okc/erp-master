@@ -175,11 +175,8 @@ class RevisarAprobarController extends Controller{
                 $idTipoRequerimiento = $element->id_tp_documento == 1 ? $element->id_tipo_requerimiento:0;
                 $idPrioridad = $element->id_prioridad;
                 $estado = $element->estado !=null ?$element->estado:$element->id_estado;
-                $idDivision = $element->division_id !=null ?$element->division_id:$element->id_division;
-                
-                
+                $idDivision = $element->division_id !=null ?$element->division_id:$element->id_division;                
                 $operaciones = Operacion::getOperacion($tipoDocumento, $idTipoRequerimiento, $idGrupo, $idDivision, $idPrioridad);
-                Debugbar::info($operaciones);
                 
                 if($operaciones ==[]){
                     $mensaje[]= "El requerimiento ".$element->codigo." no coincide con una operación valida, es omitido en la lista. Parametros para obtener operacion: tipoDocumento= ".$tipoDocumento.", tipoRequerimiento= ".$idTipoRequerimiento.",Grupo= ".$idGrupo.", Division= ".$idDivision.", Prioridad= ".$idPrioridad;
