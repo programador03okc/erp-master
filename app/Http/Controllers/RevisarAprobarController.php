@@ -169,7 +169,6 @@ class RevisarAprobarController extends Controller{
 
         foreach ($todosLosDocumentos as $element) {
             if (in_array($element->id_grupo, $idGrupoList) == true) {
-                // Debugbar::info($element->id_grupo);
                 $idDocumento = $element->id_doc_aprob;
                 $tipoDocumento = $element->id_tp_documento;
                 $idGrupo = $element->id_grupo;
@@ -177,12 +176,13 @@ class RevisarAprobarController extends Controller{
                 $idPrioridad = $element->id_prioridad;
                 $estado = $element->estado !=null ?$element->estado:$element->id_estado;
                 $idDivision = $element->division_id !=null ?$element->division_id:$element->id_division;
-
-
+                
+                
                 $operaciones = Operacion::getOperacion($tipoDocumento, $idTipoRequerimiento, $idGrupo, $idDivision, $idPrioridad);
+                Debugbar::info($operaciones);
                 
                 if($operaciones ==[]){
-                    $mensaje[]= "El requerimiento ".$element->codigo." no coincide con una operación valida, es omitido en la lista. Parametros para obtener operacion: tipoDocumento= 1, tipoRequerimiento= ".$idTipoRequerimiento.",Grupo= ".$idGrupo.", Division= ".$idDivision.", Prioridad= ".$idPrioridad;
+                    $mensaje[]= "El requerimiento ".$element->codigo." no coincide con una operación valida, es omitido en la lista. Parametros para obtener operacion: tipoDocumento= ".$tipoDocumento.", tipoRequerimiento= ".$idTipoRequerimiento.",Grupo= ".$idGrupo.", Division= ".$idDivision.", Prioridad= ".$idPrioridad;
                 }else{
                     $flujoTotal = Flujo::getIdFlujo($operaciones[0]->id_operacion)['data'];
                     $tamañoFlujo = $flujoTotal ? count($flujoTotal) : 0;
