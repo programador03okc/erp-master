@@ -15,6 +15,7 @@ use App\Models\Almacen\UnidadMedida;
 use App\Models\Configuracion\Grupo;
 use App\Models\Configuracion\Moneda;
 use App\Models\Contabilidad\Banco;
+use App\Models\Contabilidad\Identidad;
 use App\Models\Contabilidad\TipoCuenta;
 use App\Models\mgcp\CuadroCosto\CuadroCostoView;
 use App\Models\Tesoreria\RequerimientoPagoDetalle;
@@ -57,9 +58,26 @@ class RequerimientoPagoController extends Controller
         $bancos = Banco::mostrar();
         $tipo_cuenta = TipoCuenta::mostrar();
         $tipos_requerimiento_pago = RequerimientoPagoTipo::mostrar();
+        $tipos_documentos = Identidad::mostrar();
 
-
-        return view('tesoreria/requerimiento_pago/lista', compact('prioridades', 'empresas', 'grupos', 'tipos_requerimiento_pago', 'periodos', 'monedas', 'unidadesMedida', 'divisiones', 'gruposUsuario', 'proyectos_activos', 'bancos', 'tipo_cuenta'));
+        return view(
+            'tesoreria/requerimiento_pago/lista',
+            compact(
+                'prioridades',
+                'empresas',
+                'grupos',
+                'tipos_requerimiento_pago',
+                'periodos',
+                'monedas',
+                'unidadesMedida',
+                'divisiones',
+                'gruposUsuario',
+                'proyectos_activos',
+                'bancos',
+                'tipo_cuenta',
+                'tipos_documentos'
+            )
+        );
     }
     public function viewRevisarAprobarRequerimientoPago()
     {
@@ -268,7 +286,7 @@ class RequerimientoPagoController extends Controller
             $documento->id_doc = $requerimientoPago->id_requerimiento_pago;
             $documento->save();
 
-            
+
             $this->guardarAdjuntoRequerimientoPagoCabecera($requerimientoPago, $codigo);
 
             // guardar adjuntos nivel detalle
@@ -622,7 +640,7 @@ class RequerimientoPagoController extends Controller
         $detalleRequerimientoPagoList = RequerimientoPagoDetalle::with('unidadMedida', 'producto', 'partida.presupuesto', 'centroCosto', 'adjunto', 'estado')->where([['id_requerimiento_pago', $idRequerimientoPago], ['id_estado', '!=', 7]])->get();
 
         $requerimientoPago = RequerimientoPago::where('id_requerimiento_pago', $idRequerimientoPago)
-            ->with('tipoRequerimientoPago','periodo', 'prioridad', 'moneda', 'creadoPor', 'empresa', 'sede', 'grupo', 'division', 'cuadroCostos', 'proyecto', 'adjunto')
+            ->with('tipoRequerimientoPago', 'periodo', 'prioridad', 'moneda', 'creadoPor', 'empresa', 'sede', 'grupo', 'division', 'cuadroCostos', 'proyecto', 'adjunto')
             ->first();
 
         return $requerimientoPago->setAttribute('detalle', $detalleRequerimientoPagoList);
@@ -645,7 +663,8 @@ class RequerimientoPagoController extends Controller
         return response()->json($data);
     }
 
-    function imprimirRequerimientoPagoPdf($idRequerimientoPago){
+    function imprimirRequerimientoPagoPdf($idRequerimientoPago)
+    {
 
         $requerimientoPago = $this->mostrarRequerimientoPago($idRequerimientoPago);
         $vista = View::make(

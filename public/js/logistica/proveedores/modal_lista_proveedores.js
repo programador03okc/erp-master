@@ -1,28 +1,38 @@
-$(function(){
-    var vardataTables = funcDatatables();
+$(function () {
     listarTablaProveedores();
 
-    
+
 });
 
-function listarTablaProveedores(){
+function listarTablaProveedores() {
     var vardataTables = funcDatatables();
+
+    let botones = [];
+    botones.push({
+        text: 'Nuevo transportista',
+        action: function () {
+            agregarTransportista();
+        }, className: 'btn-primary'
+    });
+
     $('#ListaProveedores').dataTable({
-        'dom': 'frtip',
-        'language' : vardataTables[0],
+        // 'dom': 'frtip',
+        'dom': vardataTables[1],
+        'buttons': botones,
+        'language': vardataTables[0],
         'processing': true,
         'bDestroy': true,
         'ajax': '/logistica/listar_proveedores',
-        'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
+        'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible' }],
     });
-    $('#ListaProveedores').DataTable().on("draw", function(){
+    $('#ListaProveedores').DataTable().on("draw", function () {
         resizeSide();
     });
 
-    $('#ListaProveedores tbody').on('click', 'tr', function(){
-        if ($(this).hasClass('eventClick')){
+    $('#ListaProveedores tbody').on('click', 'tr', function () {
+        if ($(this).hasClass('eventClick')) {
             $(this).removeClass('eventClick');
-        }else{
+        } else {
             $('#ListaProveedores').dataTable().$('tr.eventClick').removeClass('eventClick');
             $(this).addClass('eventClick');
         }
@@ -31,12 +41,12 @@ function listarTablaProveedores(){
     });
 }
 
-function selectValue(){
+function selectValue() {
     var myId = $('.modal-footer #id_proveedor').text();
-    
+
     $('#modal-lista-proveedores').modal('hide');
     // changeStateButton('historial');
-    
+
     var activeTab = $('#tab-proveedores ul li.active a').attr('type');
     // var activeForm = "form-"+activeTab.substring(1);
     // actualizarForm(activeForm, myId);
@@ -46,13 +56,11 @@ function selectValue(){
 // function actualizarForm(activeForm,myId){
 
 
-    function limpiarTabla(idElement){
-        var table = document.getElementById(idElement);
-        for(var i = table.rows.length - 1; i > 0; i--)
-        {
-            table.deleteRow(i);
-        }
-        return null;
+function limpiarTabla(idElement) {
+    var table = document.getElementById(idElement);
+    for (var i = table.rows.length - 1; i > 0; i--) {
+        table.deleteRow(i);
     }
-    
- 
+    return null;
+}
+

@@ -751,6 +751,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('listar-cuentas-bancarias-proveedor/{idProveedor?}', 'OrdenController@listarCuentasBancariasProveedor')->name('listar-cuentas-bancarias-proveedor');
 				Route::post('guardar-cuenta-bancaria-proveedor', 'OrdenController@guardarCuentaBancariaProveedor');
 				Route::get('imprimir-requerimiento-pago-pdf/{id}', 'Tesoreria\RequerimientoPagoController@imprimirRequerimientoPagoPdf');
+
+				Route::post('guardarProveedor', 'Tesoreria\ProveedorController@guardarProveedor');
 			});
 			Route::group(['as' => 'revisar_aprobar.', 'prefix' => 'revisar_aprobar'], function () {
 				Route::get('index', 'Tesoreria\RequerimientoPagoController@viewRevisarAprobarRequerimientoPago')->name('index');
@@ -761,7 +763,6 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('index', 'RevisarAprobarController@viewListaRequerimientoPagoPendienteParaAprobacion')->name('index');
 				Route::post('documentos-pendientes', 'RevisarAprobarController@mostrarListaDeDocumentosPendientes');
 				Route::get('imprimir-requerimiento-pago-pdf/{id}', 'Tesoreria\RequerimientoPagoController@imprimirRequerimientoPagoPdf');
-
 			});
 		});
 	});
