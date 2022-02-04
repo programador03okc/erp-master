@@ -40,8 +40,8 @@ class RegistroPagoController extends Controller
                 'empresa.razon_social as razon_social_empresa',
                 'sis_moneda.simbolo',
                 'sis_grupo.descripcion as grupo_descripcion',
-                'adm_estado_doc.estado_doc',
-                'adm_estado_doc.bootstrap_color',
+                'requerimiento_pago_estado.descripcion as estado_doc',
+                'requerimiento_pago_estado.bootstrap_color',
                 'sis_sede.descripcion as sede_descripcion',
                 'adm_cta_contri.nro_cuenta',
                 'adm_tp_cta.descripcion as tipo_cuenta',
@@ -52,7 +52,7 @@ class RegistroPagoController extends Controller
             ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'requerimiento_pago.id_proveedor')
             ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
             ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'requerimiento_pago.id_moneda')
-            ->leftJoin('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'requerimiento_pago.id_estado')
+            ->leftJoin('tesoreria.requerimiento_pago_estado', 'requerimiento_pago_estado.id_requerimiento_pago_estado', '=', 'requerimiento_pago.id_estado')
             ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'requerimiento_pago.id_sede')
             ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'requerimiento_pago.id_empresa')
             ->join('contabilidad.adm_contri as empresa', 'empresa.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
@@ -72,13 +72,11 @@ class RegistroPagoController extends Controller
                 'adm_contri.nro_documento',
                 'adm_contri.razon_social',
                 'empresa.razon_social as razon_social_empresa',
-                'estados_compra.descripcion as estado_doc',
+                'requerimiento_pago_estado.descripcion as estado_doc',
+                'requerimiento_pago_estado.bootstrap_color',
                 'sis_moneda.simbolo',
                 'log_cdn_pago.descripcion AS condicion_pago',
                 'sis_sede.descripcion as sede_descripcion',
-                // 'registro_pago.total_pago','registro_pago.adjunto',
-                // 'registro_pago.fecha_pago','registro_pago.observacion',
-                // 'registrado_por.nombre_corto as usuario_pago',
                 'adm_cta_contri.nro_cuenta',
                 'adm_tp_cta.descripcion as tipo_cuenta',
                 DB::raw("(SELECT sum(subtotal) FROM logistica.log_det_ord_compra
@@ -90,7 +88,7 @@ class RegistroPagoController extends Controller
             )
             ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
             ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
-            ->join('logistica.estados_compra', 'estados_compra.id_estado', '=', 'log_ord_compra.estado_pago')
+            ->join('tesoreria.requerimiento_pago_estado', 'requerimiento_pago_estado.id_requerimiento_pago_estado', '=', 'log_ord_compra.estado_pago')
             ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'log_ord_compra.id_moneda')
             ->leftJoin('logistica.log_cdn_pago', 'log_cdn_pago.id_condicion_pago', '=', 'log_ord_compra.id_condicion')
             ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'log_ord_compra.id_sede')
@@ -321,7 +319,7 @@ class RegistroPagoController extends Controller
                 if ($request->id_oc !== null) {
                     DB::table('logistica.log_ord_compra')
                         ->where('id_orden_compra', $request->id_oc)
-                        ->update(['estado_pago' => 9]); //pagada
+                        ->update(['estado_pago' => 6]); //pagada
                 } else if ($request->id_doc_com !== null) {
                     DB::table('almacen.doc_com')
                         ->where('id_doc_com', $request->id_doc_com)
@@ -329,7 +327,7 @@ class RegistroPagoController extends Controller
                 } else if ($request->id_requerimiento_pago !== null) {
                     DB::table('tesoreria.requerimiento_pago')
                         ->where('id_requerimiento_pago', $request->id_requerimiento_pago)
-                        ->update(['id_estado' => 9]); //procesado
+                        ->update(['id_estado' => 6]); //procesado
                 }
             }
 
@@ -340,10 +338,150 @@ class RegistroPagoController extends Controller
         }
     }
 
+    function enviarAPago(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            $msj = '';
+            $tipo = '';
+
+            if ($request->tipo == "requerimiento") {
+                $req = DB::table('tesoreria.requerimiento_pago')
+                    ->where('id_requerimiento_pago', $request->id)->first();
+                //ya fue pagado?
+                if ($req->id_estado !== 6) {
+                    //fue anulado?
+                    if ($req->id_estado !== 7) {
+                        DB::table('tesoreria.requerimiento_pago')
+                            ->where('id_requerimiento_pago', $request->id)
+                            ->update(['id_estado' => 5]); //enviado a pago
+                        $msj = 'El requerimiento fue enviado a pago exitosamente';
+                        $tipo = 'success';
+                    } else {
+                        $msj = 'El requerimiento fue anulado';
+                        $tipo = 'warning';
+                    }
+                } else {
+                    $msj = 'El requerimiento ya fue pagado';
+                    $tipo = 'warning';
+                }
+            } else if ($request->tipo == "orden") {
+                $oc = DB::table('logistica.log_ord_compra')
+                    ->where('id_orden_compra', $request->id)->first();
+                //fue pagada?
+                if ($oc->estado_pago !== 6) {
+                    //fue anulado?
+                    if ($oc->estado !== 7) {
+                        DB::table('logistica.log_ord_compra')
+                            ->where('id_orden_compra', $request->id)
+                            ->update(['estado_pago' => 5]); //enviado a pago
+                        $msj = 'La orden fue enviada a pago exitosamente';
+                        $tipo = 'success';
+                    } else {
+                        $msj = 'La orden fue anulada';
+                        $tipo = 'warning';
+                    }
+                } else {
+                    $msj = 'La orden ya fue pagada';
+                    $tipo = 'warning';
+                }
+            }
+            // else if ($tipo !== "comprobante") {
+            //     DB::table('almacen.doc_com')
+            //         ->where('id_doc_com', $id)
+            //         ->update(['estado' => 5]); //
+            // }
+
+            DB::commit();
+            return response()->json(['tipo' => $tipo, 'mensaje' => $msj]);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+        }
+    }
+
+    function revertirEnvio(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            $msj = '';
+            $tipo = '';
+
+            if ($request->tipo == "requerimiento") {
+                $req = DB::table('tesoreria.requerimiento_pago')
+                    ->where('id_requerimiento_pago', $request->id)->first();
+
+                if ($req->id_estado !== 6) {
+                    if ($req->id_estado !== 7) {
+                        DB::table('tesoreria.requerimiento_pago')
+                            ->where('id_requerimiento_pago', $request->id)
+                            ->update(['id_estado' => 2]); //aprobado
+                        $msj = 'El requerimiento fue enviado a pago exitosamente';
+                        $tipo = 'success';
+                    } else {
+                        $msj = 'El requerimiento fue anulado';
+                        $tipo = 'warning';
+                    }
+                } else {
+                    $msj = 'El requerimiento ya fue pagado';
+                    $tipo = 'warning';
+                }
+            } else if ($request->tipo == "orden") {
+                $oc = DB::table('logistica.log_ord_compra')
+                    ->where('id_orden_compra', $request->id)->first();
+
+                if ($oc->estado_pago !== 6) {
+                    if ($oc->estado !== 7) {
+                        DB::table('logistica.log_ord_compra')
+                            ->where('id_orden_compra', $request->id)
+                            ->update(['estado_pago' => 1]); //elaborado
+                        $msj = 'La orden fue enviada a pago exitosamente';
+                        $tipo = 'success';
+                    } else {
+                        $msj = 'La orden fue anulada';
+                        $tipo = 'warning';
+                    }
+                } else {
+                    $msj = 'La orden ya fue pagada';
+                    $tipo = 'warning';
+                }
+            }
+            // else if ($tipo !== "comprobante") {
+            //     DB::table('almacen.doc_com')
+            //         ->where('id_doc_com', $id)
+            //         ->update(['estado' => 5]); //
+            // }
+
+            DB::commit();
+            return response()->json(['tipo' => $tipo, 'mensaje' => $msj]);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+        }
+    }
+
     function anularPago($id_pago)
     {
         try {
             DB::beginTransaction();
+
+            $pago = DB::table('tesoreria.registro_pago')
+                ->select(
+                    'registro_pago.id_requerimiento_pago',
+                    'registro_pago.id_oc',
+                    'registro_pago.id_doc_com',
+                )
+                ->where('registro_pago.id_pago', $id_pago)
+                ->first();
+
+            if ($pago->id_requerimiento_pago !== null) {
+                DB::table('tesoreria.requerimiento_pago')
+                    ->where('id_requerimiento_pago', $pago->id_requerimiento_pago)
+                    ->update(['id_estado' => 5]); //enviado a pago
+
+            } else if ($pago->id_oc !== null) {
+                DB::table('logistica.log_ord_compra')
+                    ->where('id_orden_compra', $pago->id_oc)
+                    ->update(['estado_pago' => 5]); //enviado a pago
+            } //falta agregar comprobante
 
             DB::table('tesoreria.registro_pago')
                 ->where('id_pago', $id_pago)

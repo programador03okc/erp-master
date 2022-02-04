@@ -1,12 +1,15 @@
 class RequerimientoPago {
-    constructor(permisoConfirmarDenegarPago) {
-        this.permisoConfirmarDenegarPago = permisoConfirmarDenegarPago;
+    constructor(permisoVer, permisoEnviar, permisoRegistrar) {
+        this.permisoVer = permisoVer;
+        this.permisoEnviar = permisoEnviar;
+        this.permisoRegistrar = permisoRegistrar;
         this.listarRequerimientos();
         this.listarComprobantes();
         this.listarOrdenes();
     }
 
     listarRequerimientos() {
+        const permisoVer = this.permisoVer;
         var vardataTables = funcDatatables();
         tableRequerimientos = $('#listaRequerimientos').DataTable({
             'dom': vardataTables[1],
@@ -50,20 +53,29 @@ class RequerimientoPago {
                 },
                 {
                     'render': function (data, type, row) {
-                        return '<span class="label label-' + (row['id_estado'] == 9 ? 'success' : 'default') + '">' + row['estado_doc'] + '</span>'
+                        return '<span class="label label-' + row['bootstrap_color'] + '">' + row['estado_doc'] + '</span>'
                     }
                 },
                 {
                     'render':
                         function (data, type, row) {
+                            console.log(permisoVer);
                             return `<div class="btn-group" role="group">
-                            ${row['id_estado'] == 1 ?
-                                    `<button type="button" class="pago btn btn-success boton" data-toggle="tooltip" data-placement="bottom" 
-                                    data-id="${row['id_requerimiento_pago']}" data-cod="${row['codigo']}" data-tipo="requerimiento"
-                                    data-total="${row['monto_total']}" data-pago="${row['suma_pagado']}" data-nrodoc="${row['nro_documento']}"
-                                    data-moneda="${row['simbolo']}" data-prov="${encodeURIComponent(row['razon_social'])}" 
-                                    data-cta="${row['nro_cuenta']}" data-tpcta="${row['tipo_cuenta']}" 
-                                    title="Registrar Pago"> 
+                            ${(row['id_estado'] == 1 || row['id_estado'] == 2) ?
+                                    `<button type="button" class="enviar btn btn-info boton" data-toggle="tooltip" 
+                                data-placement="bottom" data-id="${row['id_requerimiento_pago']}" data-tipo="requerimiento"
+                                title="Enviar a pago"> <i class="fas fa-share"></i></button>`: ''}
+                            ${row['id_estado'] == 5 ?
+                                    `<button type="button" class="revertir btn btn-danger boton" data-toggle="tooltip" 
+                                        data-placement="bottom" data-id="${row['id_requerimiento_pago']}" data-tipo="requerimiento"
+                                        title="Revertir envío"><i class="fas fa-undo-alt"></i></button>
+                                    
+                                    <button type="button" class="pago btn btn-success boton" data-toggle="tooltip" data-placement="bottom" 
+                                        data-id="${row['id_requerimiento_pago']}" data-cod="${row['codigo']}" data-tipo="requerimiento"
+                                        data-total="${row['monto_total']}" data-pago="${row['suma_pagado']}" data-nrodoc="${row['nro_documento']}"
+                                        data-moneda="${row['simbolo']}" data-prov="${encodeURIComponent(row['razon_social'])}" 
+                                        data-cta="${row['nro_cuenta']}" data-tpcta="${row['tipo_cuenta']}" 
+                                        title="Registrar Pago"> 
                                     <i class="fas fa-hand-holding-usd"></i> </button>`: ''}
                             ${row['suma_pagado'] > 0 ?
                                     `<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
@@ -121,20 +133,29 @@ class RequerimientoPago {
                 },
                 {
                     'render': function (data, type, row) {
-                        return '<span class="label label-' + (row['estado_pago'] == 9 ? 'success' : 'default') + '">' + row['estado_doc'] + '</span>'
+                        return '<span class="label label-' + row['bootstrap_color'] + '">' + row['estado_doc'] + '</span>'
                     }
                 },
                 {
                     'render':
                         function (data, type, row) {
                             return `<div class="btn-group" role="group">
-                    ${row['estado_pago'] !== 9 ?
-                                    `<button type="button" class="pago btn btn-success boton" data-toggle="tooltip" data-placement="bottom" 
-                                    data-id="${row['id_orden_compra']}" data-cod="${row['codigo']}" data-tipo="orden"
-                                    data-total="${row['suma_total']}" data-pago="${row['suma_pagado']}" data-nrodoc="${row['nro_documento']}" 
-                                    data-moneda="${row['simbolo']}" data-prov="${encodeURIComponent(row['razon_social'])}" 
-                                    data-cta="${row['nro_cuenta']}" data-tpcta="${row['tipo_cuenta']}"
-                                    title="Registrar Pago" >
+                    ${(row['estado_pago'] == 1 || row['estado_pago'] == 2) ?
+                                    `<button type="button" class="enviar btn btn-info boton" data-toggle="tooltip" 
+                                data-placement="bottom" data-id="${row['id_orden_compra']}" data-tipo="orden"
+                                title="Enviar a pago" >
+                                <i class="fas fa-share"></i></button>`: ''}
+                    ${row['estado_pago'] == 5 ?
+                                    `<button type="button" class="revertir btn btn-danger boton" data-toggle="tooltip" 
+                                    data-placement="bottom" data-id="${row['id_orden_compra']}" data-tipo="orden"
+                                    title="Revertir envío"><i class="fas fa-undo-alt"></i></button>
+                                    
+                                    <button type="button" class="pago btn btn-success boton" data-toggle="tooltip" data-placement="bottom" 
+                                data-id="${row['id_orden_compra']}" data-cod="${row['codigo']}" data-tipo="orden"
+                                data-total="${row['suma_total']}" data-pago="${row['suma_pagado']}" data-nrodoc="${row['nro_documento']}" 
+                                data-moneda="${row['simbolo']}" data-prov="${encodeURIComponent(row['razon_social'])}" 
+                                data-cta="${row['nro_cuenta']}" data-tpcta="${row['tipo_cuenta']}"
+                                title="Registrar Pago" >
                                 <i class="fas fa-hand-holding-usd"></i></button>`: ''}
                     ${row['suma_pagado'] > 0 ?
                                     `<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
@@ -226,6 +247,30 @@ $('#listaOrdenes tbody').on("click", "button.pago", function () {
 
 $('#listaComprobantes tbody').on("click", "button.pago", function () {
     openRegistroPago($(this));
+});
+
+$('#listaRequerimientos tbody').on("click", "button.enviar", function () {
+    var id = $(this).data('id');
+    var tipo = $(this).data('tipo');
+    enviarAPago(tipo, id);
+});
+
+$('#listaOrdenes tbody').on("click", "button.enviar", function () {
+    var id = $(this).data('id');
+    var tipo = $(this).data('tipo');
+    enviarAPago(tipo, id);
+});
+
+$('#listaRequerimientos tbody').on("click", "button.revertir", function () {
+    var id = $(this).data('id');
+    var tipo = $(this).data('tipo');
+    revertirEnvio(tipo, id);
+});
+
+$('#listaOrdenes tbody').on("click", "button.revertir", function () {
+    var id = $(this).data('id');
+    var tipo = $(this).data('tipo');
+    revertirEnvio(tipo, id);
 });
 
 var iTableCounter = 1;

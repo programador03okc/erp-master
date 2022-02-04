@@ -153,11 +153,125 @@ function listarCuentasOrigen() {
     });
 }
 
+function enviarAPago(tipo, id) {
+
+    console.log(tipo);
+
+    Swal.fire({
+        title: "¿Está seguro que desea enviar a pago?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6", //"#00a65a",
+        cancelButtonColor: "#d33",
+        cancelButtonText: "Cancelar",
+        confirmButtonText: "Sí, Enviar"
+    }).then(result => {
+        if (result.isConfirmed) {
+            $.ajax({
+                type: 'POST',
+                url: 'enviarAPago',// + tipo + '/' + id,
+                data: {
+                    'tipo': tipo,
+                    'id': id,
+                },
+                dataType: 'JSON',
+            }).done(function (response) {
+                console.log(response);
+                Lobibox.notify(response.tipo, {
+                    size: "mini",
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    msg: response.mensaje
+                });
+                if (tipo == "orden") {
+                    tableOrdenes.ajax.reload(null, false);
+                }
+                else if (tipo == "requerimiento") {
+                    tableRequerimientos.ajax.reload(null, false);
+                }
+                else if (tipo == "orden") {
+                    tableComprobantes.ajax.reload(null, false);
+                }
+            }).always(function () {
+                // $("select[name='id_cuenta_origen']").LoadingOverlay("hide", true);
+            }).fail(function (jqXHR) {
+                Lobibox.notify('error', {
+                    size: "mini",
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    msg: 'Hubo un problema. Por favor actualice la página e intente de nuevo.'
+                });
+                //Cerrar el modal
+                // $modal.modal('hide');
+                console.log('Error devuelto: ' + jqXHR.responseText);
+            });
+        }
+    });
+}
+
+function revertirEnvio(tipo, id) {
+
+    console.log(tipo);
+
+    Swal.fire({
+        title: "¿Está seguro que desea revertir el envío?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6", //"#00a65a",
+        cancelButtonColor: "#d33",
+        cancelButtonText: "Cancelar",
+        confirmButtonText: "Sí, Revertir"
+    }).then(result => {
+        if (result.isConfirmed) {
+            $.ajax({
+                type: 'POST',
+                url: 'revertirEnvio',
+                data: {
+                    'tipo': tipo,
+                    'id': id,
+                },
+                dataType: 'JSON',
+            }).done(function (response) {
+                console.log(response);
+                Lobibox.notify(response.tipo, {
+                    size: "mini",
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    msg: response.mensaje
+                });
+                if (tipo == "orden") {
+                    tableOrdenes.ajax.reload(null, false);
+                }
+                else if (tipo == "requerimiento") {
+                    tableRequerimientos.ajax.reload(null, false);
+                }
+                else if (tipo == "orden") {
+                    tableComprobantes.ajax.reload(null, false);
+                }
+            }).always(function () {
+                // $("select[name='id_cuenta_origen']").LoadingOverlay("hide", true);
+            }).fail(function (jqXHR) {
+                Lobibox.notify('error', {
+                    size: "mini",
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    msg: 'Hubo un problema. Por favor actualice la página e intente de nuevo.'
+                });
+                //Cerrar el modal
+                // $modal.modal('hide');
+                console.log('Error devuelto: ' + jqXHR.responseText);
+            });
+        }
+    });
+}
+
 function anularPago(id_pago, tipo) {
 
     console.log(tipo);
-    // idx = $(this).parents("tr")[0].id;
-    // $(this).parents("tr").remove();
 
     Swal.fire({
         title: "¿Está seguro que anular éste pago?",
