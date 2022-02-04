@@ -91,6 +91,7 @@ class MigrateOrdenSoftLinkController extends Controller
                 ->select(
                     'log_ord_compra.id_orden_compra',
                     'log_ord_compra.codigo',
+                    'log_ord_compra.id_tp_documento',
                     'log_ord_compra.id_softlink',
                     'log_ord_compra.fecha',
                     'log_ord_compra.fecha_registro',
@@ -315,13 +316,13 @@ class MigrateOrdenSoftLinkController extends Controller
                                 'ocAgile' => array('cabecera' => $oc),
                             );
 
-                                    //Actualiza la oc softlink eb agile
-                        DB::table('logistica.log_ord_compra')
-                        ->where('id_orden_compra', $id_orden_compra)
-                        ->update([
-                            'codigo_softlink' => $oc_softlink->num_docu,
-                            'id_softlink' => $oc_softlink->mov_id
-                        ]);
+                            //Actualiza la oc softlink eb agile
+                            DB::table('logistica.log_ord_compra')
+                                ->where('id_orden_compra', $id_orden_compra)
+                                ->update([
+                                    'codigo_softlink' => $oc_softlink->num_docu,
+                                    'id_softlink' => $oc_softlink->mov_id
+                                ]);
                         }
                     } else {
                         $arrayRspta = array(
