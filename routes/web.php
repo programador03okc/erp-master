@@ -757,6 +757,14 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('index', 'Tesoreria\RequerimientoPagoController@viewRevisarAprobarRequerimientoPago')->name('index');
 			});
 		});
+		Route::group(['as' => 'revisar-aprobar.', 'prefix' => 'revisar-aprobar'], function () {
+			Route::group(['as' => 'listado.', 'prefix' => 'listado'], function () {
+				Route::get('index', 'RevisarAprobarController@viewListaRequerimientoPagoPendienteParaAprobacion')->name('index');
+				Route::post('documentos-pendientes', 'RevisarAprobarController@mostrarListaDeDocumentosPendientes');
+				Route::get('imprimir-requerimiento-pago-pdf/{id}', 'Tesoreria\RequerimientoPagoController@imprimirRequerimientoPagoPdf');
+
+			});
+		});
 	});
 
 

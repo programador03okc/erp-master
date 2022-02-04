@@ -41,5 +41,6 @@
         </ul>
     </li>
     @endif
+        <li><a href="{{route('necesidades.revisar-aprobar.listado.index')}}"><i class="fas fa-stamp"></i> <span>Revisar / aprobar</span></a></li>
 </ul>
 @endsection

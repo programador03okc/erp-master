@@ -252,6 +252,9 @@ class RequerimientoPagoController extends Controller
                 $montoTotal += $detalle->cantidad * $detalle->precioUnitario;
             }
 
+
+
+
             DB::commit();
 
             $codigo = RequerimientoPago::crearCodigo($request->grupo, $requerimientoPago->id_requerimiento_pago);
@@ -260,11 +263,12 @@ class RequerimientoPagoController extends Controller
             $rp->save();
 
             $documento = new Documento();
-            $documento->id_tp_documento = 11;
-            $documento->codigo_doc = $codigo;
+            $documento->id_tp_documento = 11; // requerimiento pago
+            $documento->codigo_doc = $requerimientoPago->codigo;
             $documento->id_doc = $requerimientoPago->id_requerimiento_pago;
             $documento->save();
 
+            
             $this->guardarAdjuntoRequerimientoPagoCabecera($requerimientoPago, $codigo);
 
             // guardar adjuntos nivel detalle

@@ -155,8 +155,8 @@
                                             <div style="display:flex;">
                                                 <input class="oculto" name="id_proveedor">
                                                 <input class="oculto" name="id_contrib">
-                                                <input type="text" class="form-control handleCheckStatusValue" name="tipo_documento_identidad" style="width:10%;" disabled>
-                                                <input type="text" class="form-control handleCheckStatusValue" name="nro_documento" style="width:30%;" disabled>
+                                                <input type="text" class="form-control" name="tipo_documento_identidad" style="width:10%;" disabled>
+                                                <input type="text" class="form-control" name="nro_documento" style="width:30%;" disabled>
                                                 <input type="text" class="form-control handleCheckStatusValue" name="razon_social" style="width:60%;" disabled>
                                                 <button type="button" class="group-text" onClick="proveedorModal();">
                                                     <i class="fa fa-search"></i>
@@ -213,7 +213,6 @@
                                         <tr>
                                             <th style="width: 10%">Partida</th>
                                             <th style="width: 10%">C.Costo</th>
-                                            <th style="width: 10%">Part number</th>
                                             <th>Descripción de item</th>
                                             <th style="width: 10%">Unidad</th>
                                             <th style="width: 6%">Cantidad</th>
@@ -227,7 +226,7 @@
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <td colspan="7" class="text-right"><strong>Total:</strong></td>
+                                            <td colspan="6" class="text-right"><strong>Total:</strong></td>
                                             <td class="text-right"><span name="simboloMoneda">S/</span><label name="total"> 0.00</label></td>
                                             <td></td>
                                         </tr>

@@ -101,7 +101,7 @@
             <tr>
                 <th style="width: 15%" class="text-right">Tipo req.:</th>
                 <td style="width: 35%">{{ $requerimientoPago->tipoRequerimientoPago!=null ? $requerimientoPago->tipoRequerimientoPago['descripcion']:'' }}</td>
-                <th style="width: 15%" class="text-right">Motivo:</th>
+                <th style="width: 15%" class="text-right">Concepto:</th>
                 <td style="width: 35%">{{$requerimientoPago->concepto!=null ? $requerimientoPago->concepto: ''}}</td>
             </tr>
             <tr>
@@ -146,6 +146,9 @@
             <tr>
                 <th style="width: 15%" class="text-right">Moneda:</th>
                 <td style="width: 35%">{{ $requerimientoPago->moneda!=null ? $requerimientoPago->moneda['descripcion']:'' }}</td>
+                <th style="width: 15%" class="text-right">Tipo Cuenta:</th>
+                <td style="width: 35%">{{ $requerimientoPago->proveedor !=null ? $requerimientoPago->proveedor['cuenta_contribuyente'][0]['tipoCuenta']['descripcion']:'' }}</td>
+
             </tr>
         </thead>
     </table>
@@ -156,23 +159,22 @@
     <table class="bordered">
         <thead>
             <tr>
-                <th class="text-center cabecera-producto" style="width: 15%">Partida</th>
-                <th class="text-center cabecera-producto" style="width: 15%">Centro costo</th>
+                <th class="text-center cabecera-producto">Partida</th>
+                <th class="text-center cabecera-producto">Centro costo</th>
                 <th class="text-center cabecera-producto">Descripción de item</th>
-                <th class="text-center cabecera-producto" style="width: 10%">Cantidad</th>
-                <th class="text-center cabecera-producto" style="width: 10%">Unidad</th>
+                <th class="text-center cabecera-producto" style="width: 10%">Cant.</th>
                 <th class="text-center cabecera-producto" style="width: 10%">Precio Unit.</th>
                 <th class="text-center cabecera-producto" style="width: 10%">Subtotal</th>
             </tr>
         </thead>
         <tbody>
             @foreach(($requerimientoPago->detalle) as $item)
+
             <tr>
-                <td class="text-center" style="width: 15%">{{ $item->partida != null ? $item->partida['descripcion'] : '' }}</td>
-                <td class="text-center" style="width: 15%">{{ $item->centroCosto != null ? $item->centroCosto['descripcion'] : '' }}</td>
-                <td class="text-left" style="width: 30%">{{ $item->descripcion != null ? $item->descripcion : '' }}</td>
-                <td class="text-center" style="width: 10%">{{ $item->cantidad != null ? $item->cantidad : '' }}</td>
-                <td class="text-center" style="width: 10%">{{ $item->unidadMedida != null ? $item->unidadMedida['descripcion'] : '' }}</td>
+                <td class="text-center">{{ $item->partida != null ? $item->partida['descripcion'] : '' }}</td>
+                <td class="text-center">{{ $item->centroCosto != null ? $item->centroCosto['descripcion'] : '' }}</td>
+                <td class="text-left">{{ $item->descripcion != null ? $item->descripcion : '' }}</td>
+                <td class="text-center" style="width: 10%">{{ $item->cantidad != null ? $item->cantidad : '' }} {{($item->unidadMedida != null ? $item->unidadMedida['abreviatura'] : '') }}</td>
                 <td class="text-right" style="width: 10%">{{ $requerimientoPago->moneda !=null ? $requerimientoPago->moneda['simbolo']:'' }} {{ $item->precio_unitario != null ? number_format($item->precio_unitario, 2): '' }}</td>
                 <td class="text-right" style="width: 10%">{{ $requerimientoPago->moneda !=null ? $requerimientoPago->moneda['simbolo']:'' }} {{ $item->subtotal != null ? number_format($item->subtotal, 2) : '' }}</td>
             </tr>
@@ -180,7 +182,7 @@
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="6" class="text-right"><strong>Total:</strong></td>
+                <td colspan="5" class="text-right"><strong>Total:</strong></td>
                 <td class="text-right"><span name="simboloMoneda">{{$requerimientoPago->moneda !=null ? $requerimientoPago->moneda['simbolo']:''}}</span>{{number_format($requerimientoPago->monto_total, 2) }}</td>
             </tr>
         </tfoot>

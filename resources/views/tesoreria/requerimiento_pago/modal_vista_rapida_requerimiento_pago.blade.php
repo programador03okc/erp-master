@@ -6,8 +6,10 @@
                 <h3 class="modal-title">Detalle del requerimiento pago</h3>
             </div>
             <div class="modal-body">
-                <button type="button" name="btn-mostrar-requerimento-pago-pdf" class="btn btn-info btn-sm handleClickimprimirRequerimientoPagoEnPdf"  ><i class="fas fa-print"></i> Imprimir</button>
+                <div id="botonera-accion"></div>
                 <input type="hidden" name="id_requerimiento_pago">
+                <input type="hidden" name="id_estado">
+                <input type="hidden" name="id_usuario">
                 <fieldset class="group-importes">
                     <legend>Datos generales</legend>
                     <table class="table" border="0" id="tablaDatosGenerales">
@@ -62,7 +64,6 @@
                                 <th style="width: 2%">#</th>
                                 <th style="width: 10%">Partida</th>
                                 <th style="width: 10%">C.Costo</th>
-                                <th style="width: 5%">Part number</th>
                                 <th style="width: 30%">Descripción de item</th>
                                 <th style="width: 5%">Unidad</th>
                                 <th style="width: 5%">Cantidad</th>

@@ -1754,8 +1754,8 @@ class RequerimientoController extends Controller
                                     'aprobacion_final_o_pendiente' => $aprobacionFinalOPendiente,
                                     'id_doc_aprob' => $idDocumento,
                                     'monto_total' => $element->monto_total,
-                                    'idOperacion'=>$nextIdOperacion,
-                                    'tieneRolConSiguienteAprobacion'=>$tieneRolConSiguienteAprobacion
+                                    'id_operacion'=>$nextIdOperacion,
+                                    'tiene_rol_con_siguiente_aprobacion'=>$tieneRolConSiguienteAprobacion
     
                                 ];
                             }
@@ -1809,8 +1809,8 @@ class RequerimientoController extends Controller
                                 'aprobacion_final_o_pendiente' => $aprobacionFinalOPendiente,
                                 'id_doc_aprob' => $idDocumento,
                                 'monto_total' => $element->monto_total,
-                                'idOperacion'=>$nextIdOperacion,
-                                'tieneRolConSiguienteAprobacion'=>$tieneRolConSiguienteAprobacion
+                                'id_operacion'=>$nextIdOperacion,
+                                'tiene_rol_con_siguiente_aprobacion'=>$tieneRolConSiguienteAprobacion
      
                             ];
                         }

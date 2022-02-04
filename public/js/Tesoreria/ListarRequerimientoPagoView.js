@@ -40,17 +40,8 @@ class ListarRequerimientoPagoView {
 
         this.checkStatusBtnGuardar();
 
-        $('#ListaRequerimientoPago').on("click", "button.handleClickVerDetalleRequerimientoPago", (e) => {
-            this.verDetalleRequerimientoPago(e.currentTarget);
-        });
         $('#ListaRequerimientoPago tbody').on("click", "button.handleClickVerEnVistaRapidaRequerimientoPago", (e) => {
             this.verEnVistaRapidaRequerimientoPago(e.currentTarget);
-        });
-        $('#ListaRequerimientoPago tbody').on("click", "button.handleClickEditarRequerimientoPago", (e) => {
-            this.editarRequerimientoPago(e.currentTarget);
-        });
-        $('#ListaRequerimientoPago tbody').on("click", "button.handleClickAnularRequerimientoPago", (e) => {
-            this.anularRequerimientoPago(e.currentTarget);
         });
 
         $('#modal-requerimiento-pago').on("change", "select.handleChangeOptEmpresa", (e) => {
@@ -128,14 +119,20 @@ class ListarRequerimientoPagoView {
         $('#modal-requerimiento-pago').on("click", "button.handleClickAdjuntarArchivoDetalle", (e) => {
             this.modalAdjuntarArchivosDetalle(e.currentTarget);
         });
+        $('#ListaRequerimientoPago tbody').on("click", "button.handleClickimprimirRequerimientoPagoEnPdf", (e) => {
+            this.imprimirRequerimientoPagoEnPdf(e.currentTarget);
+        });
         $('#modal-vista-rapida-requerimiento-pago').on("click", "a.handleClickAdjuntarArchivoCabecera", (e) => {
             this.modalAdjuntarArchivosCabecera(e.currentTarget);
         });
         $('#modal-vista-rapida-requerimiento-pago').on("click", "a.handleClickAdjuntarArchivoDetalle", (e) => {
             this.modalAdjuntarArchivosDetalle(e.currentTarget);
         });
-        $('#modal-vista-rapida-requerimiento-pago').on("click", "button.handleClickimprimirRequerimientoPagoEnPdf", () => {
-            this.imprimirRequerimientoPagoEnPdf();
+        $('#modal-vista-rapida-requerimiento-pago').on("click", "button.handleClickEditarRequerimientoPago", () => {
+            this.editarRequerimientoPago();
+        });
+        $('#modal-vista-rapida-requerimiento-pago').on("click", "button.handleClickAnularRequerimientoPago", () => {
+            this.anularRequerimientoPago();
         });
         $('#listaCuadroPresupuesto').on("click", "button.handleClickSeleccionarCDP", (e) => {
             this.seleccionarCDP(e.currentTarget);
@@ -280,19 +277,13 @@ class ListarRequerimientoPagoView {
                     'render': function (data, type, row) {
                         let containerOpenBrackets = '<center><div class="btn-group" role="group" style="margin-bottom: 5px;">';
                         let containerCloseBrackets = '</div></center>';
-                        let btnEditar = '';
-                        let btnAnular = '';
-                        let btnVerEnModal = '<button type="button" class="btn btn-xs btn-info btnVerEnVistaRapidaRequerimientoPago handleClickVerEnVistaRapidaRequerimientoPago" data-id-requerimiento-pago="' + row.id_requerimiento_pago + '" data-codigo-requerimiento-pago="' + row.codigo + '" title="Vista rápida"><i class="fas fa-eye fa-xs"></i></button>';
-                        if (row.id_usuario == auth_user.id_usuario && (row.id_estado == 1 || row.id_estado == 3)) {
-                            btnEditar = '<button type="button" class="btn btn-xs btn-warning btnEditarRequerimientoPago handleClickEditarRequerimientoPago" data-id-requerimiento-pago="' + row.id_requerimiento_pago + '" data-codigo-requerimiento-pago="' + row.codigo + '" title="Editar"><i class="fas fa-edit fa-xs"></i></button>';
-                            btnAnular = '<button type="button" class="btn btn-xs btn-danger btnAnularRequerimientoPago handleClickAnularRequerimientoPago" data-id-requerimiento-pago="' + row.id_requerimiento_pago + '" data-codigo-requerimiento-pago="' + row.codigo + '" title="Anular"><i class="fas fa-times fa-xs"></i></button>';
-                        }
-                        let btnVerDetalle = `<button type="button" class="btn btn-xs btn-primary desplegar-detalle handleClickVerDetalleRequerimientoPago" data-toggle="tooltip" data-placement="bottom" title="Desplegar detalle" data-id-requerimiento-pago="${row.id_requerimiento_pago}">
-                        <i class="fas fa-chevron-down"></i>
+                        let btnVerEnModal = '<button type="button" class="btn btn-xs btn-primary  handleClickVerEnVistaRapidaRequerimientoPago" name="btnVerEnVistaRapidaRequerimientoPago" data-id-requerimiento-pago="' + row.id_requerimiento_pago + '" data-codigo-requerimiento-pago="' + row.codigo + '" title="Vista rápida"><i class="fas fa-eye fa-xs"></i></button>';
+                        let btnImprimirEnPdf = `<button type="button" class="btn btn-xs btn-info handleClickimprimirRequerimientoPagoEnPdf" name="btnImprimirRequerimientoPagoEnPdf" data-toggle="tooltip" data-placement="bottom" title="Imprimir en PDF" data-id-requerimiento-pago="${row.id_requerimiento_pago}">
+                        <i class="fas fa-print"></i>
                         </button>`;
 
 
-                        return containerOpenBrackets + btnVerDetalle + btnVerEnModal + btnEditar + btnAnular + containerCloseBrackets;
+                        return containerOpenBrackets + btnVerEnModal +btnImprimirEnPdf + containerCloseBrackets;
                     }, targets: 13
                 },
 
@@ -344,114 +335,6 @@ class ListarRequerimientoPagoView {
         // $('#ListaRequerimientoPago').DataTable().on("draw", function () {
         //     resizeSide();
         // });
-    }
-
-    verDetalleRequerimientoPago(obj) {
-        let tr = obj.closest('tr');
-        var row = $tablaListaRequerimientoPago.row(tr);
-        var id = obj.dataset.idRequerimientoPago;
-        if (row.child.isShown()) {
-            //  This row is already open - close it
-            row.child.hide();
-            tr.classList.remove('shown');
-        }
-        else {
-            // Open this row
-            //    row.child( format(iTableCounter, id) ).show();
-            this.buildFormatListaRequerimientosPago(obj, iTableCounter, id, row);
-            tr.classList.add('shown');
-            // try datatable stuff
-            oInnerTable = $('#ListaRequerimientoPago_' + iTableCounter).dataTable({
-                //    data: sections, 
-                autoWidth: true,
-                deferRender: true,
-                info: false,
-                lengthChange: false,
-                ordering: false,
-                paging: false,
-                scrollX: false,
-                scrollY: false,
-                searching: false,
-                columns: [
-                ]
-            });
-            iTableCounter = iTableCounter + 1;
-        }
-    }
-
-    buildFormatListaRequerimientosPago(obj, table_id, id, row) {
-        obj.setAttribute('disabled', true);
-
-        this.obtenerDetalleRequerimientoPago(id).then((res) => {
-            obj.removeAttribute('disabled');
-            this.construirDetalleRequerimientoPago(table_id, row, res);
-        }).catch((err) => {
-            console.log(err)
-        })
-    }
-
-    obtenerDetalleRequerimientoPago(id) {
-        return new Promise(function (resolve, reject) {
-            $.ajax({
-                type: 'GET',
-                url: `detalle-requerimiento-pago/${id}`,
-                dataType: 'JSON',
-                success(response) {
-                    resolve(response);
-                },
-                error: function (err) {
-                    reject(err)
-                }
-            });
-        });
-    }
-
-    construirDetalleRequerimientoPago(table_id, row, response) {
-        var html = '';
-        // console.log(response);
-        if (response.length > 0) {
-            response.forEach(function (element) {
-                let cantidadAdjuntosDetalleRequerimiento = 0;
-                html += `<tr>
-                        <td style="border: none; text-align:center;" data-part-number="${element.part_number}" data-producto-part-number="${element.producto_part_number}">${(element.producto_part_number != null ? element.producto_part_number : (element.part_number != null ? element.part_number : ''))} ${element.tiene_transformacion == true ? '<br><span class="label label-default">Transformado</span>' : ''}</td>
-                        <td style="border: none; text-align:left;">${element.producto_codigo != null ? element.producto_codigo : ''}</td>
-                        <td style="border: none; text-align:left;">${element.producto_codigo_softlink != null ? element.producto_codigo_softlink : ''}</td>
-                        <td style="border: none; text-align:left;">${element.producto_descripcion != null ? element.producto_descripcion : (element.descripcion ? element.descripcion : '')}</td>
-                        <td style="border: none; text-align:center;">${element.moneda_descripcion != null ? element.moneda_descripcion : ''}</td>
-                        <td style="border: none; text-align:center;">${element.cantidad > 0 ? element.cantidad : ''}</td>
-                        <td style="border: none; text-align:center;">${(element.precio > 0 ? ((element.moneda_simbolo ? element.moneda_simbolo : ((element.moneda_simbolo ? element.moneda_simbolo : '') + '0.00')) + $.number(element.precio, 2)) : (element.moneda_simbolo ? element.moneda_simbolo : '') + '0.00')}</td>
-                        <td style="border: none; text-align:center;">${(parseFloat(element.subtotal) > 0 ? ((element.moneda_simbolo ? element.moneda_simbolo : '') + $.number(element.subtotal, 2)) : ((element.moneda_simbolo ? element.moneda_simbolo : '') + $.number((element.cantidad * element.precio), 2)))}</td>
-                        <td style="border: none; text-align:center;">${element.estado_doc != null ? element.estado_doc : ''}</td>
-                        <td style="border: none; text-align:center;">${cantidadAdjuntosDetalleRequerimiento > 0 ? `<button type="button" class="btn btn-default btn-xs handleClickVerAdjuntoDetalleRequerimiento" name="btnVerAdjuntoDetalleRequerimiento" title="Ver adjuntos" data-id-detalle-requerimiento-pago="${element.id_requerimiento_pago_detalle}" data-descripcion="${element.producto_descripcion != null ? element.producto_descripcion : (element.descripcion ? element.descripcion : '')}" ><i class="fas fa-paperclip"></i></button>` : ''}</td>
-                        </tr>`;
-            });
-            var tabla = `<table class="table table-condensed table-bordered" 
-                id="detalle_${table_id}">
-                <thead style="color: black;background-color: #c7cacc;">
-                    <tr>
-                        <th style="border: none; text-align:center;">Part number</th>
-                        <th style="border: none; text-align:center;">Cód. producto</th>
-                        <th style="border: none; text-align:center;">Cód. softlink</th>
-                        <th style="border: none; text-align:center;">Descripcion</th>
-                        <th style="border: none; text-align:center;">Unidad medida</th>
-                        <th style="border: none; text-align:center;">Cantidad</th>
-                        <th style="border: none; text-align:center;">Precio unitario</th>
-                        <th style="border: none; text-align:center;">Subtotal</th>
-                        <th style="border: none; text-align:center;">Estado</th>
-                        <th style="border: none; text-align:center;">Adjuntos</th>
-                    </tr>
-                </thead>
-                <tbody style="background: #e7e8ea;">${html}</tbody>
-                </table>`;
-        } else {
-            var tabla = `<table class="table table-sm" style="border: none;" 
-                id="detalle_${table_id}">
-                <tbody>
-                    <tr><td>No hay registros para mostrar</td></tr>
-                </tbody>
-                </table>`;
-        }
-        row.child(tabla).show();
     }
 
 
@@ -667,7 +550,6 @@ class ListarRequerimientoPagoView {
                 <input type="text" class="centroCosto" name="idCentroCosto[]" value="${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.id : (data != null && data.centro_costo != null ? data.centro_costo.id_centro_costo : '')}" hidden>
             </div>
         </td>
-        <td>(Servicio)<input type="hidden" name="partNumber[]"></td>
         <td>
             <div class="form-group">
                 <h5></h5>
@@ -1103,7 +985,11 @@ class ListarRequerimientoPagoView {
             let precioUnitario = parseFloat(childrenTableTbody[index].querySelector("input[class~='precio']").value ? childrenTableTbody[index].querySelector("input[class~='precio']").value : 0);
             total += (cantidad * precioUnitario);
         }
-        document.querySelector("label[name='total']").textContent = Util.formatoNumero(total, 2);
+        
+        let allLabelTotal = document.querySelectorAll("label[name='total']");
+        allLabelTotal.forEach(element => {
+            element.textContent= Util.formatoNumero(total, 2);
+        });
         document.querySelector("input[name='monto_total']").value = total;
         document.querySelector("input[name='monto_total_read_only']").value = Util.formatoNumero(total, 2);
     }
@@ -1426,6 +1312,8 @@ class ListarRequerimientoPagoView {
                         if (response.id_requerimiento_pago > 0) {
                             $('#wrapper-okc').LoadingOverlay("hide", true);
 
+                            $('#modal-requerimiento-pago').modal('hide');
+
                             Lobibox.notify('success', {
                                 title: false,
                                 size: 'mini',
@@ -1435,6 +1323,11 @@ class ListarRequerimientoPagoView {
                                 msg: response.mensaje
                             });
                             $("#ListaRequerimientoPago").DataTable().ajax.reload(null, false);
+
+                            // si modal de modal-vista-rapida-requerimiento-pago esta abierto => refrescar data
+                            if(document.querySelector("div[id='modal-vista-rapida-requerimiento-pago']").classList.contains("in")){
+                                this.cargarDataRequerimientoPago(response.id_requerimiento_pago);
+                            }
 
                         } else {
                             $('#wrapper-okc').LoadingOverlay("hide", true);
@@ -1600,13 +1493,9 @@ class ListarRequerimientoPagoView {
         $('#modal-lista-cuadro-presupuesto').modal('hide');
     }
 
-
-    verEnVistaRapidaRequerimientoPago(obj) {
-        $('#modal-vista-rapida-requerimiento-pago').modal({
-            show: true
-        });
-        if (obj.dataset.idRequerimientoPago > 0) {
-            this.obtenerRequerimientoPago(obj.dataset.idRequerimientoPago).then((res) => {
+    cargarDataRequerimientoPago(idRequerimientoPago){
+        if (idRequerimientoPago > 0) {
+            this.obtenerRequerimientoPago(idRequerimientoPago).then((res) => {
                 this.mostrarDataEnVistaRapidaRequerimientoPago(res)
 
             }).catch(function (err) {
@@ -1621,10 +1510,19 @@ class ListarRequerimientoPagoView {
         }
     }
 
+    verEnVistaRapidaRequerimientoPago(obj) {
+        $('#modal-vista-rapida-requerimiento-pago').modal({
+            show: true
+        });
+        this.cargarDataRequerimientoPago(obj.dataset.idRequerimientoPago);
+    }
+
     mostrarDataEnVistaRapidaRequerimientoPago(data) {
         // console.log(data);
         // ### ==================== cabecera ====================== ###
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] input[name='id_requerimiento_pago']").value = data.id_requerimiento_pago;
+        document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] input[name='id_estado']").value = data.id_estado;
+        document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] input[name='id_usuario']").value = data.id_usuario;
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='codigo']").textContent = data.codigo;
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='concepto']").textContent = data.concepto;
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='razon_social_empresa']").textContent = data.sede != null ? data.sede.descripcion : '';
@@ -1640,11 +1538,27 @@ class ListarRequerimientoPagoView {
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='listaDetalleRequerimientoPago'] span[name='simbolo_moneda']").textContent = data.moneda != null && data.moneda.simbolo != undefined ? data.moneda.simbolo : '';
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='listaDetalleRequerimientoPago'] label[name='total']").textContent = data.monto_total;
 
+        
         if (data.adjunto.length > 0) {
             document.querySelector("td[id='adjuntosRequerimientoPago']").innerHTML = `<a title="Ver archivos adjuntos de requerimiento pago" style="cursor:pointer;" data-tipo-modal="lectura" class="handleClickAdjuntarArchivoCabecera"  data-id-requerimiento-pago="">
             Ver (<span>${data.adjunto.length}</span>)
             </a>`;
         }
+
+        // ### ==================== botonera ====================== ###
+        // limpiando botonera
+        let parent = document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] div[id='botonera-accion']");
+        while (parent.firstChild) {
+            parent.removeChild(parent.firstChild);
+        }
+        // si el usuario en sessión es el propiertario del documento y el estado es elaborado o observado se mostrara los botones
+        if (data.id_usuario == auth_user.id_usuario && (data.id_estado == 1 || data.id_estado == 3)) {
+            document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] div[id='botonera-accion']").insertAdjacentHTML('beforeend', `
+            <button type="button" name="btnEditarRequerimientoPago" class="btn btn-warning btn-sm handleClickEditarRequerimientoPago" ><i class="fas fa-edit"></i> Editar</button>
+            <button type="button" name="btnAnularRequerimientoPago" class="btn btn-danger btn-sm handleClickAnularRequerimientoPago"  ><i class="fas fa-ban"></i> Anular</button>   
+            `)
+        }
+
         // ### ==================== Detalle ====================== ###
 
         this.limpiarTabla('listaDetalleRequerimientoPago');
@@ -1657,7 +1571,6 @@ class ListarRequerimientoPagoView {
                 <td>${i + 1}</td>
                 <td>${data.detalle[i].partida ? data.detalle[i].partida.descripcion : ''}</td>
                 <td>${data.detalle[i].centro_costo ? data.detalle[i].centro_costo.descripcion : ''}</td>
-                <td>(Servicio)</td>
                 <td name="descripcion_servicio">${data.detalle[i].descripcion != null ? data.detalle[i].descripcion : ''} </td>
                 <td>${data.detalle[i].unidad_medida != null ? data.detalle[i].unidad_medida.descripcion : ''}</td>
                 <td style="text-align:center;">${data.detalle[i].cantidad >= 0 ? data.detalle[i].cantidad : ''}</td>
@@ -1678,7 +1591,9 @@ class ListarRequerimientoPagoView {
 
     }
 
-    editarRequerimientoPago(obj) {
+    editarRequerimientoPago() {
+        let idRequerimientoPago = document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] input[name='id_requerimiento_pago']").value;
+
         this.resetearFormularioRequerimientoPago();
         $('#modal-requerimiento-pago').modal({
             show: true
@@ -1689,8 +1604,8 @@ class ListarRequerimientoPagoView {
         document.querySelector("div[id='modal-requerimiento-pago'] button[id='btnActualizarRequerimientoPago']").classList.remove("oculto");
         document.querySelector("div[id='modal-requerimiento-pago'] button[id='btnActualizarRequerimientoPago']").removeAttribute("disabled");
 
-        if (obj.dataset.idRequerimientoPago > 0) {
-            this.cargarRequerimientoPago(obj.dataset.idRequerimientoPago);
+        if (idRequerimientoPago > 0) {
+            this.cargarRequerimientoPago(idRequerimientoPago);
         } else {
             Swal.fire(
                 '',
@@ -1700,29 +1615,29 @@ class ListarRequerimientoPagoView {
         }
     }
 
-    anularRequerimientoPago(obj) {
-        if (obj.dataset.idRequerimientoPago > 0) {
+    anularRequerimientoPago() {
+        let idRequerimientoPago = document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] input[name='id_requerimiento_pago']").value;
+        let codigoRequerimiento = document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='codigo']").textContent;
+        if (parseInt(idRequerimientoPago) > 0) {
             Swal.fire({
-                title: `Esta seguro que desea anular el requerimiento ${obj.dataset.codigoRequerimientoPago}?`,
+                title: `Esta seguro que desea anular el requerimiento ${codigoRequerimiento}?`,
                 text: "No podrás revertir esta acción",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
                 cancelButtonText: 'cancelar',
-                confirmButtonText: 'Si, eliminar'
+                confirmButtonText: 'Si, anular'
 
             }).then((result) => {
                 if (result.isConfirmed) {
 
-                    this.realizarAnulacionRequerimientoPago(obj.dataset.idRequerimientoPago).then((response) => {
+                    this.realizarAnulacionRequerimientoPago(idRequerimientoPago).then((response) => {
                         $("#wrapper-okc").LoadingOverlay("hide", true);
                         console.log(response);
 
                         if (response.status == 200) {
-
-                            let tr = obj.closest("tr");
-                            tr.remove();
+                            $('#modal-vista-rapida-requerimiento-pago').modal('hide');
 
                             Lobibox.notify('success', {
                                 title: false,
@@ -1732,6 +1647,8 @@ class ListarRequerimientoPagoView {
                                 delayIndicator: false,
                                 msg: response.mensaje
                             });
+
+                            $("#ListaRequerimientoPago").DataTable().ajax.reload(null, false);
 
                         } else {
                             $("#wrapper-okc").LoadingOverlay("hide", true);
@@ -1848,6 +1765,7 @@ class ListarRequerimientoPagoView {
         document.querySelector("div[id='modal-requerimiento-pago'] select[name='division']").value = data.id_division;
         document.querySelector("div[id='modal-requerimiento-pago'] input[name='monto_total']").value = data.monto_total;
         document.querySelector("div[id='modal-requerimiento-pago'] input[name='monto_total_read_only']").value = $.number(data.monto_total, 2);
+        document.querySelector("div[id='modal-requerimiento-pago'] table[id='ListaDetalleRequerimientoPago'] label[name='total']").textContent = $.number(data.monto_total, 2);
 
         this.limpiarTabla('ListaDetalleRequerimientoPago');
 
@@ -2290,8 +2208,9 @@ class ListarRequerimientoPagoView {
 
     }
 
-    imprimirRequerimientoPagoEnPdf(){
-        let idRequerimientoPago = document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] input[name='id_requerimiento_pago']").value;
+    imprimirRequerimientoPagoEnPdf(obj){
+
+        let idRequerimientoPago = obj.dataset.idRequerimientoPago;
 
 
         if (idRequerimientoPago.length > 0) {
@@ -2311,5 +2230,7 @@ class ListarRequerimientoPagoView {
         }
 
     }
+
+
 
 }

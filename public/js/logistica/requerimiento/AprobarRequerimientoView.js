@@ -254,8 +254,8 @@ class AprobarRequerimientoView {
                                         data-id-rol-aprobante="${row['id_rol_aprobante']}"
                                         data-id-flujo="${row['id_flujo']}"
                                         data-aprobacion-final-o-pendiente="${row['aprobacion_final_o_pendiente']}"
-                                        data-id-operacion="${row['idOperacion']}"
-                                        data-tiene-rol-con-siguiente-aprobacion="${row['tieneRolConSiguienteAprobacion']}"
+                                        data-id-operacion="${row['id_operacion']}"
+                                        data-tiene-rol-con-siguiente-aprobacion="${row['tiene_rol_con_siguiente_aprobacion']}"
                                         >
                                         <i class="fas fa-eye fa-xs"></i>
                                     </button>
