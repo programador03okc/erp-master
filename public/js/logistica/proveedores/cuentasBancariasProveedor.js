@@ -225,15 +225,6 @@ function ConstruirTablalistaCuentasBancariasProveedor(data) {
                 }, 'className': 'text-center'
             }
         ],
-
-        'columnDefs': [
-            { 'aTargets': [0], 'sWidth': '30%' },
-            { 'aTargets': [1], 'sWidth': '10%' },
-            { 'aTargets': [2], 'sWidth': '10%' },
-            { 'aTargets': [3], 'sWidth': '10%' },
-            { 'aTargets': [4], 'sWidth': '10%' },
-            { 'aTargets': [5], 'sWidth': '8%' }
-        ],
     });
 }
 
