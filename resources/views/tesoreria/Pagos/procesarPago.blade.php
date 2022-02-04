@@ -1,5 +1,5 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-procesarPago" style="overflow-y:scroll;">
-    <div class="modal-dialog" style="width: 900px;">
+    <div class="modal-dialog" style="width: 800px;">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
@@ -68,18 +68,21 @@
                                 <h5>Fecha del Pago</h5>
                                 <input type="date" class="form-control" name="fecha_pago" value="<?= date('Y-m-d'); ?>" required />
                             </div>
-                            {{-- <div class="col-md-6">
+                            <div class="col-md-6">
                                 <h5>Cuenta origen</h5>
                                 <div style="display:flex;">
-                                    <select class="form-control js-example-basic-single" name="id_empresa" >
-                                        <option value="0">Elija una opción</option>
+                                    <select class="form-control js-example-basic-single" name="id_empresa" id="id_empresa" 
+                                        onchange="listarCuentasOrigen()" required>
+                                        <option value="">Elija una opción</option>
                                         @foreach ($empresas as $empresa)
                                         <option value="{{$empresa->id_empresa}}">{{$empresa->razon_social}}</option>
                                         @endforeach
                                     </select>
-                                    <input type="text" class="form-control" name="cuenta_origen"  />
+                                    <select class="form-control js-example-basic-single" name="id_cuenta_origen" id="id_cuenta_origen" required>
+                                    </select>
+                                    {{-- <input type="text" class="form-control" name="cuenta_origen"  /> --}}
                                 </div>
-                            </div> --}}
+                            </div>
                             <div class="col-md-3">
                                 <h5>Total a pagar</h5>
                                 <div style="display:flex;">

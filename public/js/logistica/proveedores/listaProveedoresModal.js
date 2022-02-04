@@ -110,7 +110,9 @@ function selectProveedor(obj){
     if( document.querySelector("input[name='tipo_documento_identidad']")!=null){
         document.querySelector("input[name='tipo_documento_identidad']").value =tipoDocumentoIdentidad;
     }
-    document.querySelector("input[name='nro_documento']").value =numeroDocumento;
+    if( document.querySelector("input[name='nro_documento']")!=null){
+        document.querySelector("input[name='nro_documento']").value =numeroDocumento;
+    }
     document.querySelector("input[name='razon_social']").value =razonSocial;
     document.querySelector("input[name='id_cuenta_principal_proveedor']").value =idCuentaPrincipal;
     document.querySelector("input[name='nro_cuenta_principal_proveedor']").value =cuentaPrincipal;

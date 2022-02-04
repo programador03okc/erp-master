@@ -149,9 +149,10 @@ Registro de pagos
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script> -->
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/loadingoverlay.min.js') }}"></script>
 
     <script src="{{ asset('js/tesoreria/pagos/pendientesPago.js')}}"></script>
-    <!-- <script src="{{ asset('js/almacen/distribucion/requerimientoDetalle.js')}}"></script> -->
+    <script src="{{ asset('js/tesoreria/pagos/procesarPago.js')}}"></script>
     <script>
     $(document).ready(function(){
         seleccionarMenu(window.location);
