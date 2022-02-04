@@ -149,7 +149,7 @@
                                                 <button type="button" class="group-text" onClick="cuentasBancariasModal();">
                                                     <i class="fa fa-search"></i>
                                                 </button>
-                                                <button type="button" class="btn-primary" title="Agregar cuenta bancaria" onClick="agregar_cuenta_proveedor();"><i class="fas fa-plus"></i></button>
+                                                {{-- <button type="button" class="btn-primary" title="Agregar cuenta bancaria" onClick="agregar_cuenta_proveedor();"><i class="fas fa-plus"></i></button> --}}
                                             </div>
                                         {{-- </div> --}}
                                     </div>

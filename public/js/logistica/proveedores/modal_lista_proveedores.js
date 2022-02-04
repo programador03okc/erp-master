@@ -16,7 +16,6 @@ function listarTablaProveedores() {
     });
 
     $('#ListaProveedores').dataTable({
-        // 'dom': 'frtip',
         'dom': vardataTables[1],
         'buttons': botones,
         'language': vardataTables[0],
