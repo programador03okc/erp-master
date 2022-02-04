@@ -3834,7 +3834,7 @@ class OrdenController extends Controller
         // }])->where('log_prove.estado','=',1);
 
 
-        $proveedores = Proveedor::with('contribuyente', 'estadoProveedor', 'cuentaContribuyente')->whereHas('contribuyente', function ($q) {
+        $proveedores = Proveedor::with('contribuyente.tipoDocumentoIdentidad', 'estadoProveedor', 'cuentaContribuyente')->whereHas('contribuyente', function ($q) {
             $q->where('estado', '=', 1);
         })->where('log_prove.estado', '=', 1);
 

@@ -36,8 +36,9 @@ function listar_proveedores(){
                         <button type="button" class="btn btn-success btn-sm" name="btnSeleccionarProveedor" title="Seleccionar proveedor" 
                         data-id-proveedor="${row.id_proveedor}"
                         data-id-contribuyente="${row.id_contribuyente}"
+                        data-tipo-documento-identidad="${row.contribuyente && row.contribuyente.tipo_documento_identidad !=null ?row.contribuyente.tipo_documento_identidad.descripcion:''}"
+                        data-numero-documento="${row.contribuyente && row.contribuyente.nro_documento !=null ?row.contribuyente.nro_documento:''}"
                         data-razon-social="${row.contribuyente && row.contribuyente.razon_social!=null?row.contribuyente.razon_social:''}"
-                        data-ruc="${row.contribuyente && row.contribuyente.nro_documento !=null ?row.contribuyente.nro_documento:''}"
                         data-direccion-fiscal="${row.contribuyente && row.contribuyente.direccion_fiscal!=null?row.contribuyente.direccion_fiscal:''}"
                         data-telefono="${row.contribuyente && row.contribuyente.telefono!=null?row.contribuyente.telefono:''}"
                         data-ubigeo-descripcion="${row.contribuyente && row.contribuyente.ubigeo_completo!=null?row.contribuyente.ubigeo_completo:''}"
@@ -93,6 +94,8 @@ function selectProveedor(obj){
     // console.log(obj);
     let idProveedor= obj.dataset.idProveedor;
     let idContribuyente= obj.dataset.idContribuyente;
+    let tipoDocumentoIdentidad= obj.dataset.tipoDocumentoIdentidad? obj.dataset.tipoDocumentoIdentidad:"";
+    let numeroDocumento= obj.dataset.numeroDocumento? obj.dataset.numeroDocumento:"";
     let razonSocial= obj.dataset.razonSocial? obj.dataset.razonSocial:"";
     // let ruc= obj.dataset.ruc;
     let direccionFiscal= obj.dataset.direccionFiscal?obj.dataset.direccionFiscal:"";
@@ -104,6 +107,8 @@ function selectProveedor(obj){
 
     document.querySelector("input[name='id_proveedor']").value =idProveedor;
     document.querySelector("input[name='id_contrib']").value =idContribuyente;
+    document.querySelector("input[name='tipo_documento_identidad']").value =tipoDocumentoIdentidad;
+    document.querySelector("input[name='nro_documento']").value =numeroDocumento;
     document.querySelector("input[name='razon_social']").value =razonSocial;
     document.querySelector("input[name='id_cuenta_principal_proveedor']").value =idCuentaPrincipal;
     document.querySelector("input[name='nro_cuenta_principal_proveedor']").value =cuentaPrincipal;

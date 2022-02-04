@@ -7,7 +7,14 @@
                 <input type="text" class="oculto" name="id_estado">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
-                    <h3 class="modal-title" id="modal-title">Requerimiento de pago</h3>
+                    <h3 class="modal-title" id="modal-title"> 
+                    <div style="display:flex; justify-content: space-between;">
+                        <div><span id="titulo-modal">Requerimiento de pago </span> <span class="text-primary"  style="font-weight: bold;" name="codigo"></span></div>
+                        <label style="font-size: 1.4rem; margin-right: 10px; "><span name="fecha_registro"></span></label> 
+
+                    </div>
+                </h3> 
+                    
                 </div>
                 <div class="modal-body">
                     <div class="row">
@@ -15,14 +22,6 @@
                             <fieldset class="group-table">
                                 <h5><strong>Datos del Requerimiento</strong></h5>
                                 <div class="row">
-
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                            <h5>Código:</h5>
-                                            <input type="text" class="form-control activation handleCheckStatusValue" name="codigo" readonly>
-                                            </select>
-                                        </div>
-                                    </div>
                                     <div class="col-md-5">
                                         <div class="form-group">
                                             <h5>Concepto:</h5>
@@ -42,26 +41,10 @@
                                     </div>
                                     <div class="col-md-2">
                                         <div class="form-group">
-                                            <h5>Fecha de emisión</h5>
-                                            <input type="date" class="form-control activation handleCheckStatusValue" name="fecha_registro" readonly>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="form-group">
                                             <h5>Periodo</h5>
                                             <select class="form-control activation handleCheckStatusValue" name="periodo">
                                                 @foreach ($periodos as $periodo)
                                                 <option value="{{$periodo->id_periodo}}">{{$periodo->descripcion}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                            <h5>Moneda</h5>
-                                            <select class="form-control activation handleCheckStatusValue handleChangeUpdateMoneda" name="moneda">
-                                                @foreach ($monedas as $moneda)
-                                                <option data-simbolo="{{$moneda->simbolo}}" value="{{$moneda->id_moneda}}">{{$moneda->descripcion}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -74,12 +57,6 @@
                                                 <option value="{{$prioridad->id_prioridad}}">{{$prioridad->descripcion}}</option>
                                                 @endforeach
                                             </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <h5>Comentario</h5>
-                                            <textarea class="form-control activation handleCheckStatusValue" name="comentario" placeholder="Comentario/observación (opcional)" cols="100" rows="100" style="height:50px;"></textarea>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
@@ -142,23 +119,52 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <h5>Comentario</h5>
+                                            <textarea class="form-control activation handleCheckStatusValue" name="comentario" placeholder="Comentario/observación (opcional)" cols="100" rows="100" style="height:50px;"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <h5>&nbsp;</h5>
+                                            <div style="display:flex; position:relative;">
+                                                <button type="button" class="btn btn-warning btn-md handleClickAdjuntarArchivoCabecera" name="btnAdjuntarArchivoCabecera[]" title="Adjuntos">
+                                                    <i class="fas fa-paperclip"></i>
+                                                    <span class="badge" name="cantidadAdjuntosCabeceraRequerimientoPago" style="position:absolute; top:-10px; left:-10px; border: solid 0.1px;">0</span>
+                                                    Adjuntos
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
 
-                                    <div class="col-md-3">
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <fieldset class="group-table">
+                                <h5><strong>Datos del Proveedor</strong></h5>
+                                <div class="row">
+                                    <div class="col-md-6">
                                         <div class="form-group">
                                             <h5>Proveedor</h5>
                                             <input type="text" class="oculto" name="idProveedor">
                                             <div style="display:flex;">
                                                 <input class="oculto" name="id_proveedor">
                                                 <input class="oculto" name="id_contrib">
-                                                <input type="text" class="form-control handleCheckStatusValue" name="razon_social" disabled>
+                                                <input type="text" class="form-control handleCheckStatusValue" name="tipo_documento_identidad" style="width:10%;" disabled>
+                                                <input type="text" class="form-control handleCheckStatusValue" name="nro_documento" style="width:30%;" disabled>
+                                                <input type="text" class="form-control handleCheckStatusValue" name="razon_social" style="width:60%;" disabled>
                                                 <button type="button" class="group-text" onClick="proveedorModal();">
                                                     <i class="fa fa-search"></i>
                                                 </button>
                                             </div>
                                         </div>
                                     </div>
-
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <h5>Cuenta bancaria</h5>
                                             <div style="display:flex;">
@@ -175,25 +181,17 @@
                                         <div class="form-group">
                                             <h5>Monto Total:</h5>
                                             <div style="display:flex;">
-                                                <div class="input-group-addon" name="montoMoneda" style="width: auto;">S/.</div>
-                                                <input type="text" class="form-control oculto" name="monto_total">
+                                                <!-- <div class="input-group-addon" name="montoMoneda" style="width: auto;">S/.</div> -->
+                                                <select class="form-control activation handleCheckStatusValue handleChangeUpdateMoneda" name="moneda" style="width:50%;">
+                                                    @foreach ($monedas as $moneda)
+                                                    <option data-simbolo="{{$moneda->simbolo}}" value="{{$moneda->id_moneda}}">{{$moneda->simbolo}}</option>
+                                                    @endforeach
+                                                </select>
+                                                <input type="text" class="form-control oculto" name="monto_total" style="text-align: right;">
                                                 <input type="text" class="form-control activation handleCheckStatusValue" name="monto_total_read_only" readonly>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                            <h5>&nbsp;</h5>
-                                            <div style="display:flex; position:relative;">
-                                                <button type="button" class="btn btn-warning btn-md handleClickAdjuntarArchivoCabecera" name="btnAdjuntarArchivoCabecera[]" title="Adjuntos">
-                                                    <i class="fas fa-paperclip"></i>
-                                                    <span class="badge" name="cantidadAdjuntosCabeceraRequerimientoPago" style="position:absolute; top:-10px; left:-10px; border: solid 0.1px;">0</span>
-                                                    Adjuntos
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-
                                 </div>
                             </fieldset>
                         </div>

@@ -6,7 +6,7 @@
                 <h3 class="modal-title">Detalle del requerimiento pago</h3>
             </div>
             <div class="modal-body">
-                <button type="button" name="btn-mostrar-requerimento-pago-pdf" class="btn btn-info btn-sm handleClickMostrarRequerimientoPagoConceptoPdf"  ><i class="fas fa-print"></i> Imprimir</button>
+                <button type="button" name="btn-mostrar-requerimento-pago-pdf" class="btn btn-info btn-sm handleClickimprimirRequerimientoPagoEnPdf"  ><i class="fas fa-print"></i> Imprimir</button>
                 <input type="hidden" name="id_requerimiento_pago">
                 <fieldset class="group-importes">
                     <legend>Datos generales</legend>

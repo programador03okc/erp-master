@@ -134,6 +134,9 @@ class ListarRequerimientoPagoView {
         $('#modal-vista-rapida-requerimiento-pago').on("click", "a.handleClickAdjuntarArchivoDetalle", (e) => {
             this.modalAdjuntarArchivosDetalle(e.currentTarget);
         });
+        $('#modal-vista-rapida-requerimiento-pago').on("click", "button.handleClickimprimirRequerimientoPagoEnPdf", () => {
+            this.imprimirRequerimientoPagoEnPdf();
+        });
         $('#listaCuadroPresupuesto').on("click", "button.handleClickSeleccionarCDP", (e) => {
             this.seleccionarCDP(e.currentTarget);
         });
@@ -454,6 +457,9 @@ class ListarRequerimientoPagoView {
 
     resetearFormularioRequerimientoPago() {
         $('#form-requerimiento-pago')[0].reset();
+        document.querySelector("div[id='modal-requerimiento-pago'] span[name='codigo']").textContent = '';
+        document.querySelector("div[id='modal-requerimiento-pago'] span[name='fecha_registro']").textContent = '';
+
         tempArchivoAdjuntoRequerimientoPagoCabeceraList = [];
         tempArchivoAdjuntoRequerimientoPagoDetalleList = [];
         tempIdArchivoAdjuntoRequerimientoPagoCabeceraToDeleteList = [];
@@ -475,9 +481,9 @@ class ListarRequerimientoPagoView {
             show: true
         });
         document.querySelector("div[id='modal-requerimiento-pago'] form[id='form-requerimiento-pago']").setAttribute("type", 'register');
-        document.querySelector("div[id='modal-requerimiento-pago'] h3[id='modal-title']").textContent = "Nuevo requerimiento de pago";
+        document.querySelector("div[id='modal-requerimiento-pago'] span[id='titulo-modal']").textContent = "Nuevo requerimiento de pago";
         document.querySelector("div[id='modal-requerimiento-pago'] button[id='btnActualizarRequerimientoPago']").classList.add("oculto");
-        document.querySelector("div[id='modal-requerimiento-pago'] input[name='fecha_registro']").value = moment().format("YYYY-MM-DD");
+        // document.querySelector("div[id='modal-requerimiento-pago'] input[name='fecha_registro']").value = moment().format("YYYY-MM-DD");
     }
 
 
@@ -1060,8 +1066,8 @@ class ListarRequerimientoPagoView {
                 element.textContent = simboloMonedaPresupuestoUtilizado;
             });
         }
-        document.querySelector("div[name='montoMoneda']").textContent = simboloMonedaPresupuestoUtilizado;
-        this.calcularPresupuestoUtilizadoYSaldoPorPartida();
+        // document.querySelector("div[name='montoMoneda']").textContent = simboloMonedaPresupuestoUtilizado;
+        // this.calcularPresupuestoUtilizadoYSaldoPorPartida();
 
     }
 
@@ -1678,7 +1684,7 @@ class ListarRequerimientoPagoView {
             show: true
         });
         document.querySelector("div[id='modal-requerimiento-pago'] form[id='form-requerimiento-pago']").setAttribute("type", 'edition');
-        document.querySelector("div[id='modal-requerimiento-pago'] h3[id='modal-title']").textContent = "Editar requerimiento de pago";
+        document.querySelector("div[id='modal-requerimiento-pago'] span[id='titulo-modal']").textContent = "Editar requerimiento de pago";
         document.querySelector("div[id='modal-requerimiento-pago'] button[id='btnGuardarRequerimientoPago']").classList.add("oculto");
         document.querySelector("div[id='modal-requerimiento-pago'] button[id='btnActualizarRequerimientoPago']").classList.remove("oculto");
         document.querySelector("div[id='modal-requerimiento-pago'] button[id='btnActualizarRequerimientoPago']").removeAttribute("disabled");
@@ -1818,13 +1824,16 @@ class ListarRequerimientoPagoView {
         document.querySelector("div[id='modal-requerimiento-pago'] select[name='grupo']").removeAttribute("disabled");
         document.querySelector("div[id='modal-requerimiento-pago'] select[name='division']").removeAttribute("disabled");
 
-        const fechaRegistro = moment(data.fecha_registro, 'DD-MM-YYYY').format('YYYY-MM-DD')
+        const fechaRegistro = moment(data.fecha_registro, 'DD-MM-YYYY').format('YYYY-MM-DD');
         document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_requerimiento_pago']").value = data.id_requerimiento_pago;
         document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_usuario']").value = data.id_usuario;
         document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_estado']").value = data.id_estado;
-        document.querySelector("div[id='modal-requerimiento-pago'] input[name='codigo']").value = data.codigo;
+        // document.querySelector("div[id='modal-requerimiento-pago'] input[name='codigo']").value = data.codigo;
+        document.querySelector("div[id='modal-requerimiento-pago'] span[name='codigo']").textContent = data.codigo;
+
         document.querySelector("div[id='modal-requerimiento-pago'] input[name='concepto']").value = data.concepto;
-        document.querySelector("div[id='modal-requerimiento-pago'] input[name='fecha_registro']").value = fechaRegistro;
+        // document.querySelector("div[id='modal-requerimiento-pago'] input[name='fecha_registro']").value = fechaRegistro;
+        document.querySelector("div[id='modal-requerimiento-pago'] span[name='fecha_registro']").textContent = 'Fecha registro: ' + fechaRegistro;
         document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_proveedor']").value = data.id_proveedor;
         document.querySelector("div[id='modal-requerimiento-pago'] input[name='razon_social']").value = data.proveedor != null ? data.proveedor.razon_social : '';
         document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_cuenta_principal_proveedor']").value = data.proveedor != null && data.proveedor.cuenta_contribuyente.length > 0 ? data.proveedor.cuenta_contribuyente[0].id_cuenta_contribuyente : '';
@@ -2278,6 +2287,28 @@ class ListarRequerimientoPagoView {
         tempIdArchivoAdjuntoRequerimientoPagoDetalleToDeleteList.push(obj.dataset.id);
         tempArchivoAdjuntoRequerimientoPagoDetalleList = tempArchivoAdjuntoRequerimientoPagoDetalleList.filter((element, i) => element.id != obj.dataset.id);
         this.updateContadorTotalAdjuntosRequerimientoPagoDetalle();
+
+    }
+
+    imprimirRequerimientoPagoEnPdf(){
+        let idRequerimientoPago = document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] input[name='id_requerimiento_pago']").value;
+
+
+        if (idRequerimientoPago.length > 0) {
+
+            var regExp = /[a-zA-Z]/g; //expresión regular
+
+            if (regExp.test(idRequerimientoPago) == false) {
+                window.open('imprimir-requerimiento-pago-pdf/'+idRequerimientoPago);
+            }else{
+                Swal.fire(
+                    '',
+                    'Hubo un error inesperado al intentar imprimir el requerimiento de pago, no se encontro un ID valido para continuar, intente refrescar la ventana de navegador',
+                    'error'
+                );
+            }
+
+        }
 
     }
 

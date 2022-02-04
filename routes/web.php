@@ -750,6 +750,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('mostrar-proveedores', 'OrdenController@mostrarProveedores');
 				Route::get('listar-cuentas-bancarias-proveedor/{idProveedor?}', 'OrdenController@listarCuentasBancariasProveedor')->name('listar-cuentas-bancarias-proveedor');
 				Route::post('guardar-cuenta-bancaria-proveedor', 'OrdenController@guardarCuentaBancariaProveedor');
+				Route::get('imprimir-requerimiento-pago-pdf/{id}', 'Tesoreria\RequerimientoPagoController@imprimirRequerimientoPagoPdf');
+
 			});
 			Route::group(['as' => 'revisar_aprobar.', 'prefix' => 'revisar_aprobar'], function () {
 				Route::get('index', 'Tesoreria\RequerimientoPagoController@viewRevisarAprobarRequerimientoPago')->name('index');
