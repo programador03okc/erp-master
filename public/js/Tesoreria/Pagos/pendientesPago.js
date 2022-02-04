@@ -10,7 +10,11 @@ class RequerimientoPago {
 
     listarRequerimientos() {
         const permisoVer = this.permisoVer;
+        const permisoEnviar = this.permisoEnviar;
+        const permisoRegistrar = this.permisoRegistrar;
+
         var vardataTables = funcDatatables();
+
         tableRequerimientos = $('#listaRequerimientos').DataTable({
             'dom': vardataTables[1],
             'buttons': vardataTables[2],
@@ -61,23 +65,26 @@ class RequerimientoPago {
                         function (data, type, row) {
                             console.log(permisoVer);
                             return `<div class="btn-group" role="group">
-                            ${(row['id_estado'] == 1 || row['id_estado'] == 2) ?
+                            ${((row['id_estado'] == 1 || row['id_estado'] == 2) && permisoEnviar == '1') ?
                                     `<button type="button" class="enviar btn btn-info boton" data-toggle="tooltip" 
                                 data-placement="bottom" data-id="${row['id_requerimiento_pago']}" data-tipo="requerimiento"
-                                title="Enviar a pago"> <i class="fas fa-share"></i></button>`: ''}
+                                title="Enviar a pago"> <i class="fas fa-share"></i></button>`
+                                    : ''}
                             ${row['id_estado'] == 5 ?
-                                    `<button type="button" class="revertir btn btn-danger boton" data-toggle="tooltip" 
+                                    `${permisoEnviar == '1' ?
+                                        `<button type="button" class="revertir btn btn-danger boton" data-toggle="tooltip" 
                                         data-placement="bottom" data-id="${row['id_requerimiento_pago']}" data-tipo="requerimiento"
-                                        title="Revertir envío"><i class="fas fa-undo-alt"></i></button>
-                                    
-                                    <button type="button" class="pago btn btn-success boton" data-toggle="tooltip" data-placement="bottom" 
+                                        title="Revertir envío"><i class="fas fa-undo-alt"></i></button>`: ''}
+                                    ${permisoRegistrar == '1' ?
+                                        `<button type="button" class="pago btn btn-success boton" data-toggle="tooltip" data-placement="bottom" 
                                         data-id="${row['id_requerimiento_pago']}" data-cod="${row['codigo']}" data-tipo="requerimiento"
                                         data-total="${row['monto_total']}" data-pago="${row['suma_pagado']}" data-nrodoc="${row['nro_documento']}"
                                         data-moneda="${row['simbolo']}" data-prov="${encodeURIComponent(row['razon_social'])}" 
-                                        data-cta="${row['nro_cuenta']}" data-tpcta="${row['tipo_cuenta']}" 
-                                        title="Registrar Pago"> 
-                                    <i class="fas fa-hand-holding-usd"></i> </button>`: ''}
-                            ${row['suma_pagado'] > 0 ?
+                                        data-cta="${row['nro_cuenta']}" data-tpcta="${row['tipo_cuenta']}" title="Registrar Pago"> 
+                                    <i class="fas fa-hand-holding-usd"></i> </button>`
+                                        : ''}`
+                                    : ''}
+                            ${row['suma_pagado'] > 0 && permisoVer == '1' ?
                                     `<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
                                     data-placement="bottom" data-id="${row['id_requerimiento_pago']}" title="Ver detalle de los pagos" >
                                     <i class="fas fa-chevron-down"></i></button>`: ''}
@@ -92,6 +99,10 @@ class RequerimientoPago {
     }
 
     listarOrdenes() {
+        const permisoVer = this.permisoVer;
+        const permisoEnviar = this.permisoEnviar;
+        const permisoRegistrar = this.permisoRegistrar;
+
         var vardataTables = funcDatatables();
         tableOrdenes = $('#listaOrdenes').DataTable({
             'dom': vardataTables[1],
@@ -140,24 +151,27 @@ class RequerimientoPago {
                     'render':
                         function (data, type, row) {
                             return `<div class="btn-group" role="group">
-                    ${(row['estado_pago'] == 1 || row['estado_pago'] == 2) ?
+                            ${((row['estado_pago'] == 1 || row['estado_pago'] == 2) && permisoEnviar == '1') ?
                                     `<button type="button" class="enviar btn btn-info boton" data-toggle="tooltip" 
                                 data-placement="bottom" data-id="${row['id_orden_compra']}" data-tipo="orden"
                                 title="Enviar a pago" >
                                 <i class="fas fa-share"></i></button>`: ''}
-                    ${row['estado_pago'] == 5 ?
-                                    `<button type="button" class="revertir btn btn-danger boton" data-toggle="tooltip" 
+                            ${row['estado_pago'] == 5 ?
+                                    `${permisoEnviar == '1' ?
+                                        `<button type="button" class="revertir btn btn-danger boton" data-toggle="tooltip" 
                                     data-placement="bottom" data-id="${row['id_orden_compra']}" data-tipo="orden"
-                                    title="Revertir envío"><i class="fas fa-undo-alt"></i></button>
+                                    title="Revertir envío"><i class="fas fa-undo-alt"></i></button>` : ''}
                                     
-                                    <button type="button" class="pago btn btn-success boton" data-toggle="tooltip" data-placement="bottom" 
-                                data-id="${row['id_orden_compra']}" data-cod="${row['codigo']}" data-tipo="orden"
-                                data-total="${row['suma_total']}" data-pago="${row['suma_pagado']}" data-nrodoc="${row['nro_documento']}" 
-                                data-moneda="${row['simbolo']}" data-prov="${encodeURIComponent(row['razon_social'])}" 
-                                data-cta="${row['nro_cuenta']}" data-tpcta="${row['tipo_cuenta']}"
-                                title="Registrar Pago" >
-                                <i class="fas fa-hand-holding-usd"></i></button>`: ''}
-                    ${row['suma_pagado'] > 0 ?
+                                ${permisoRegistrar == '1' ?
+                                        `<button type="button" class="pago btn btn-success boton" data-toggle="tooltip" data-placement="bottom" 
+                                    data-id="${row['id_orden_compra']}" data-cod="${row['codigo']}" data-tipo="orden"
+                                    data-total="${row['suma_total']}" data-pago="${row['suma_pagado']}" data-nrodoc="${row['nro_documento']}" 
+                                    data-moneda="${row['simbolo']}" data-prov="${encodeURIComponent(row['razon_social'])}" 
+                                    data-cta="${row['nro_cuenta']}" data-tpcta="${row['tipo_cuenta']}"
+                                    title="Registrar Pago"><i class="fas fa-hand-holding-usd"></i></button>`
+                                        : ''}`
+                                    : ''}
+                            ${row['suma_pagado'] > 0 && permisoVer == '1' ?
                                     `<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
                                 data-placement="bottom" data-id="${row['id_orden_compra']}" title="Ver detalle de los pagos" >
                                 <i class="fas fa-chevron-down"></i></button>`: ''}
