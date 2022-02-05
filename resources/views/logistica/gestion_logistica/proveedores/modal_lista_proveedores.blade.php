@@ -12,9 +12,9 @@
                 <table class="table table-hover table-condensed table-striped table-bordered table-okc-view" id="listaProveedor" width="100%">
                     <thead>
                         <tr>
-                            <th class="text-center" style="width: 5%;">Nro documento</th>
-                            <th class="text-center" style="width: 90%;">Razon social</th>
-                            <th class="text-center" style="width: 5%;">Acción</th>
+                            <th class="text-center" >Nro documento</th>
+                            <th class="text-center" >Razon social</th>
+                            <th class="text-center" >Acción</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
