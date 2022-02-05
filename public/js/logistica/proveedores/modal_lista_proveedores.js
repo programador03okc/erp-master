@@ -9,9 +9,9 @@ function listarTablaProveedores() {
 
     let botones = [];
     botones.push({
-        text: 'Nuevo transportista',
+        text: 'Nuevo proveedor',
         action: function () {
-            agregarTransportista();
+            nuevoProveedor();
         }, className: 'btn-primary'
     });
 
