@@ -6,7 +6,9 @@
                 <h3 class="modal-title">Lista de Proveedores</h3>
             </div>
             <div class="modal-body">
-                <button type="button" class="btn btn-primary btn-sm handleClickCrearProveedor" title="Agregar Proveedor" ><i class="fas fa-plus"></i> Crear nuevo</button>
+                <button type="button" class="btn btn-primary btn-sm handleClickCrearProveedor" 
+                    title="Agregar Proveedor" onClick="nuevoProveedor();">
+                    <i class="fas fa-plus"></i> Crear nuevo</button>
                 <table class="table table-hover table-condensed table-striped table-bordered table-okc-view" id="listaProveedor" width="100%">
                     <thead>
                         <tr>

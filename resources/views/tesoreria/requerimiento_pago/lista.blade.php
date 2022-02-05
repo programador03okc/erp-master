@@ -63,13 +63,18 @@ Listado de requerimientos de pago
 @include('tesoreria.requerimiento_pago.modal_vista_rapida_requerimiento_pago')
 @include('tesoreria.requerimiento_pago.modal_requerimiento_pago')
 @include('tesoreria.requerimiento_pago.modal_lista_cuadro_presupuesto')
+
 @include('logistica.requerimientos.modal_partidas')
 @include('logistica.requerimientos.modal_centro_costos')
+
 @include('tesoreria.requerimiento_pago.modal_adjuntar_archivos_requerimiento_pago')
 @include('tesoreria.requerimiento_pago.modal_adjuntar_archivos_requerimiento_pago_detalle')
+
 @include('logistica.gestion_logistica.proveedores.modal_lista_proveedores')
 @include('logistica.gestion_logistica.proveedores.modal_cuentas_bancarias_proveedor')
 @include('logistica.gestion_logistica.proveedores.modal_agregar_cuenta_bancaria_proveedor')
+
+@include('tesoreria.requerimiento_pago.modal_nuevo_proveedor')
 
 @endsection
 
@@ -84,16 +89,16 @@ Listado de requerimientos de pago
 <script src="{{ asset('datatables/Buttons/js/buttons.html5.min.js') }}"></script>
 <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
-<script src="{{ asset('js/Tesoreria/ListarRequerimientoPagoView.js')}}?v={{filemtime(public_path('js/Tesoreria/ListarRequerimientoPagoView.js'))}}"></script>
+<script src="{{ asset('js/tesoreria/requerimientoPago/ListarRequerimientoPagoView.js')}}?v={{filemtime(public_path('js/Tesoreria/requerimientoPago/ListarRequerimientoPagoView.js'))}}"></script>
+<script src="{{ asset('js/tesoreria/requerimientoPago/nuevoProveedor.js')}}?v={{filemtime(public_path('js/Tesoreria/requerimientoPago/nuevoProveedor.js'))}}"></script>
 <script src="{{('/js/logistica/proveedores/listaProveedoresModal.js')}}?v={{filemtime(public_path('/js/logistica/proveedores/listaProveedoresModal.js'))}}"></script>
 <script src="{{('/js/logistica/proveedores/cuentasBancariasProveedor.js')}}?v={{filemtime(public_path('/js/logistica/proveedores/cuentasBancariasProveedor.js'))}}"></script>
 
 
 <script>
-function updateUM(val){
-  val.options[val.selectedIndex].setAttribute("selected","");
-  
-}
+    function updateUM(val){
+        val.options[val.selectedIndex].setAttribute("selected","");
+    }
     var gruposUsuario = JSON.parse('{!!$gruposUsuario!!}');
 
     $(document).ready(function() {
@@ -106,8 +111,6 @@ function updateUM(val){
         listarRequerimientoPagoView.initializeEventHandler();
  
     });
-
-
     // window.onload = function() {
     //     listarRequerimientoView.mostrar('ALL');
     // };
