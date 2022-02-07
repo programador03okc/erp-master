@@ -39,7 +39,7 @@ Atención de Salidas
                     <div id="pendientes" class="tab-pane fade in active">
                         <form id="formFiltrosSalidasPendientes" method="POST" target="_blank" action="{{route('almacen.movimientos.pendientes-ingreso.ordenesPendientesExcel')}}">
                             @csrf()
-                            <input type="hidden" name="select_mostrar_pendientes" value="2">
+                            <input type="hidden" name="select_mostrar_pendientes" value="0">
                         </form>
                         <div class="row">
                             <div class="col-md-12">

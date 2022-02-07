@@ -326,7 +326,8 @@ class OrdenesPendientesController extends Controller
             ->leftJoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
             ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'mov_alm.usuario')
             ->join('almacen.tp_ope', 'tp_ope.id_operacion', '=', 'mov_alm.id_operacion')
-            ->where([['mov_alm.estado', '!=', 7], ['mov_alm.id_tp_mov', '=', 1]]);
+            ->where([['mov_alm.estado', '!=', 7], ['mov_alm.id_tp_mov', '=', 1]])
+            ->whereIn('mov_alm.id_operacion', [2, 26]);
 
         $array_sedes = [];
         if ($request->ingreso_fecha_inicio !== null) {

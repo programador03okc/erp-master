@@ -52,7 +52,7 @@ class SalidasPendientesController extends Controller
                         FROM almacen.alm_reserva AS reserva
                         INNER JOIN almacen.orden_despacho_det AS despacho 
                             ON( despacho.id_od = orden_despacho.id_od  
-                            and despacho.transformado != orden_despacho.aplica_cambios)
+                            and despacho.transformado = orden_despacho.aplica_cambios)
                         WHERE reserva.id_detalle_requerimiento = despacho.id_detalle_requerimiento
                             and reserva.estado != 7
                             and reserva.estado != 5
@@ -60,7 +60,7 @@ class SalidasPendientesController extends Controller
                 DB::raw("(SELECT SUM(despacho.cantidad) 
                         FROM  almacen.orden_despacho_det AS despacho 
                         WHERE despacho.id_od = orden_despacho.id_od
-                          AND despacho.transformado != orden_despacho.aplica_cambios
+                          AND despacho.transformado = orden_despacho.aplica_cambios
                           AND despacho.estado != 7) AS suma_cantidad")
             )
             ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'orden_despacho.id_requerimiento')
@@ -382,7 +382,8 @@ class SalidasPendientesController extends Controller
             ->leftjoin('almacen.alm_req as req_trans', 'req_trans.id_requerimiento', '=', 'trans.id_requerimiento')
             ->leftjoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'orden_despacho.id_requerimiento')
             ->join('almacen.tp_ope', 'tp_ope.id_operacion', '=', 'mov_alm.id_operacion')
-            ->where([['mov_alm.estado', '!=', '7']]);
+            ->where([['mov_alm.estado', '!=', '7']])
+            ->whereIn('mov_alm.id_operacion', [1, 27]);
         // ->get();
         // return response()->json($data);
         return datatables($data)->toJson();
@@ -533,6 +534,7 @@ class SalidasPendientesController extends Controller
         $data = DB::table('almacen.orden_despacho_det')
             ->select(
                 'orden_despacho_det.*',
+                'alm_prod.id_producto',
                 'alm_prod.codigo',
                 'alm_prod.descripcion',
                 'alm_prod.series as control_series',
@@ -576,7 +578,7 @@ class SalidasPendientesController extends Controller
             ->where([
                 ['orden_despacho_det.id_od', '=', $id_od],
                 ['orden_despacho_det.estado', '!=', 7],
-                ['orden_despacho_det.transformado', '=', ($tiene_transformacion == 'si' ? false : true)]
+                ['orden_despacho_det.transformado', '=', ($tiene_transformacion == 'si' ? true : false)]
             ])
             ->get();
 
