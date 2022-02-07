@@ -734,7 +734,7 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::group(['as' => 'listado.', 'prefix' => 'listado'], function () {
 				Route::get('index', 'Tesoreria\RequerimientoPagoController@viewListaRequerimientoPago')->name('index');
 				Route::post('lista-requerimiento-pago', 'Tesoreria\RequerimientoPagoController@listarRequerimientoPago')->name('lista-requerimiento-pago');
-				Route::get('detalle-requerimiento-pago/{id?}', 'Tesoreria\RequerimientoPagoController@listarDetalleRequerimientoPago')->name('detalle-requerimiento-pago');
+				// Route::get('detalle-requerimiento-pago/{id?}', 'Tesoreria\RequerimientoPagoController@listarDetalleRequerimientoPago')->name('detalle-requerimiento-pago');
 				Route::get('listar-sedes-por-empresa/{id?}', 'Logistica\RequerimientoController@listarSedesPorEmpresa')->name('listar-sedes-por-empresa');
 				Route::get('listar-division-por-grupo/{id?}', 'Logistica\RequerimientoController@listarDivisionPorGrupo')->name('listar-division-por-grupo');
 				Route::get('mostrar-partidas/{idGrupo?}/{idProyecto?}', 'Logistica\RequerimientoController@mostrarPartidas')->name('mostrar-partidas');
@@ -763,6 +763,13 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('index', 'RevisarAprobarController@viewListaRequerimientoPagoPendienteParaAprobacion')->name('index');
 				Route::post('documentos-pendientes', 'RevisarAprobarController@mostrarListaDeDocumentosPendientes');
 				Route::get('imprimir-requerimiento-pago-pdf/{id}', 'Tesoreria\RequerimientoPagoController@imprimirRequerimientoPagoPdf');
+				Route::post('guardar-respuesta', 'RevisarAprobarController@guardarRespuesta');
+				Route::get('mostrar-requerimiento-pago/{idRequerimientoPago}', 'Tesoreria\RequerimientoPagoController@mostrarRequerimientoPago');
+				Route::get('listar-categoria-adjunto', 'Tesoreria\RequerimientoPagoController@listaCategoriaAdjuntos');
+				Route::get('listar-adjuntos-requerimiento-pago-cabecera/{idRequerimentoPago}', 'Tesoreria\RequerimientoPagoController@listaAdjuntosRequerimientoPagoCabecera');
+				Route::get('listar-adjuntos-requerimiento-pago-detalle/{idRequerimentoPagoDetalle}', 'Tesoreria\RequerimientoPagoController@listaAdjuntosRequerimientoPagoDetalle');
+				Route::get('mostrar-requerimiento/{id?}/{codigo?}', 'Logistica\RequerimientoController@mostrarRequerimiento')->name('mostrar-requerimiento');
+
 			});
 		});
 	});

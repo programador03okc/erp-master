@@ -3,10 +3,9 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title">Detalle del requerimiento</h3>
+                <h3 class="modal-title">Detalle del requerimiento de B/S</h3>
             </div>
             <div class="modal-body">
-                <button type="button" name="btn-imprimir-requerimento-pdf" class="btn btn-info btn-sm handleClickImprimirRequerimientoPdf"  ><i class="fas fa-print"></i> Imprimir</button>
                 <input type="hidden" name="id_requerimiento">
                 <fieldset class="group-importes">
                     <legend>Datos generales</legend>

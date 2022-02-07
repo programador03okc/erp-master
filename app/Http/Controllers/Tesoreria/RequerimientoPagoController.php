@@ -6,11 +6,13 @@ use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ProyectosController;
+use App\Models\Administracion\Aprobacion;
 use App\Models\Administracion\DivisionArea;
 use App\Models\Administracion\Documento;
 use App\Models\Administracion\Empresa;
 use App\Models\Administracion\Periodo;
 use App\Models\Administracion\Prioridad;
+use App\Models\Almacen\Trazabilidad;
 use App\Models\Almacen\UnidadMedida;
 use App\Models\Configuracion\Grupo;
 use App\Models\Configuracion\Moneda;
@@ -181,37 +183,6 @@ class RequerimientoPagoController extends Controller
     }
 
 
-    function listarDetalleRequerimientoPago($idRequerimientoPago)
-    {
-
-        $detalles = RequerimientoPagoDetalle::select(
-            'requerimiento_pago.codigo as codigo_requerimiento_pago',
-            'requerimiento_pago_detalle.*',
-            'sis_moneda.simbolo as moneda_simbolo',
-            'sis_moneda.descripcion as moneda_descripcion',
-            'adm_estado_doc.estado_doc',
-            'adm_estado_doc.bootstrap_color',
-            'alm_prod.descripcion as producto_descripcion',
-            'alm_prod.codigo as producto_codigo',
-            'alm_prod.cod_softlink as producto_codigo_softlink',
-            'alm_prod.part_number as producto_part_number',
-            'alm_und_medida.abreviatura'
-        )
-            ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'requerimiento_pago_detalle.id_producto')
-            ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'requerimiento_pago_detalle.id_unidad_medida')
-            ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'requerimiento_pago_detalle.id_estado')
-            ->join('tesoreria.requerimiento_pago', 'requerimiento_pago.id_requerimiento_pago', '=', 'requerimiento_pago_detalle.id_requerimiento_pago')
-            ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'requerimiento_pago.id_moneda')
-            ->where([
-                ['requerimiento_pago.id_requerimiento_pago', '=', $idRequerimientoPago],
-                ['requerimiento_pago.id_estado', '!=', 7]
-            ])
-            ->get();
-
-        return response()->json($detalles);
-    }
-
-
 
     function guardarRequerimientoPago(Request $request)
     {
@@ -256,7 +227,6 @@ class RequerimientoPagoController extends Controller
                 $detalle->id_tipo_item = $request->tipoItem[$i];
                 $detalle->id_partida = $request->idPartida[$i];
                 $detalle->id_centro_costo = $request->idCentroCosto[$i];
-                $detalle->part_number = $request->partNumber[$i];
                 $detalle->descripcion = $request->descripcion[$i];
                 $detalle->id_unidad_medida = $request->unidad[$i];
                 $detalle->cantidad = $request->cantidad[$i];
@@ -394,7 +364,7 @@ class RequerimientoPagoController extends Controller
             }
         }
     }
-
+ 
 
     function actualizarRequerimientoPago(Request $request)
     {
@@ -414,7 +384,24 @@ class RequerimientoPagoController extends Controller
             $requerimientoPago->id_division = $request->division;
             $requerimientoPago->id_proveedor = $request->id_proveedor > 0 ? $request->id_proveedor : null;
             $requerimientoPago->id_cuenta_proveedor = $request->id_cuenta_principal_proveedor > 0 ? $request->id_cuenta_principal_proveedor : null;
-            // $requerimientoPago->confirmacion_pago = ($request->tipo_requerimiento == 2 ? ($request->fuente == 2 ? true : false) : true);
+            if ($request->id_estado == 3) { // levantar observación
+                $requerimientoPago->id_estado = 1;
+                // $trazabilidad = new Trazabilidad();
+                // $trazabilidad->id_requerimiento = $request->id_requerimiento;
+                // $trazabilidad->id_usuario = Auth::user()->id_usuario;
+                // $trazabilidad->accion = 'SUSTENTADO';
+                // $trazabilidad->descripcion = 'Sustentado por ' . $nombreCompletoUsuario ? $nombreCompletoUsuario : '';
+                // $trazabilidad->fecha_registro = new Carbon();
+                // $trazabilidad->save();
+    
+                $idDocumento = Documento::getIdDocAprob($requerimientoPago->id_requerimiento_pago, 11);
+                $ultimoVoBo = Aprobacion::getUltimoVoBo($idDocumento);
+                $aprobacion = Aprobacion::where("id_aprobacion", $ultimoVoBo->id_aprobacion)->first();
+                $aprobacion->tiene_sustento = true;
+                $aprobacion->save();
+    
+                // TODO:  enviaar notificación al usuario aprobante, asunto => se levanto la observación 
+            }
             $requerimientoPago->monto_total = $request->monto_total;
             $requerimientoPago->id_proyecto = $request->proyecto > 0 ? $request->proyecto : null;
             $requerimientoPago->id_cc = $request->id_cc > 0 ? $request->id_cc : null;
@@ -437,7 +424,6 @@ class RequerimientoPagoController extends Controller
                     $detalle->id_tipo_item = $request->tipoItem[$i];
                     $detalle->id_partida = $request->idPartida[$i];
                     $detalle->id_centro_costo = $request->idCentroCosto[$i];
-                    $detalle->part_number = $request->partNumber[$i];
                     $detalle->descripcion = $request->descripcion[$i] != null ? trim(strtoupper($request->descripcion[$i])) : null;
                     $detalle->id_unidad_medida = $request->unidad[$i];
                     $detalle->cantidad = $request->cantidad[$i];
@@ -463,7 +449,6 @@ class RequerimientoPagoController extends Controller
                         $detalle->id_tipo_item = $request->tipoItem[$i];
                         $detalle->id_partida = $request->idPartida[$i];
                         $detalle->id_centro_costo = $request->idCentroCosto[$i];
-                        $detalle->part_number = $request->partNumber[$i];
                         $detalle->descripcion = $request->descripcion[$i] != null ? trim(strtoupper($request->descripcion[$i])) : null;
                         $detalle->id_unidad_medida = $request->unidad[$i];
                         $detalle->cantidad = $request->cantidad[$i];
@@ -502,19 +487,22 @@ class RequerimientoPagoController extends Controller
             // adjunto detalle - guardar adjuntos
             $adjuntoRequerimientoPagoDetalleArray = [];
 
-            for ($i = 0; $i < count($detalleArray); $i++) {
-
-                $archivos = $request->{"archivoAdjuntoRequerimientoPagoDetalle" . $detalleArray[$i]['idRegister']};
-
-                if (isset($archivos)) {
-                    foreach ($archivos as $archivo) {
-                        $adjuntoRequerimientoPagoDetalleArray[] = [
-                            'id_requerimiento_pago_detalle' => $detalleArray[$i]['id_requerimiento_pago_detalle'],
-                            // 'nombre_archivo' => $archivo->getClientOriginalName(),
-                            'archivo' => $archivo
-                        ];
+            if(count($detalleArray)>0){
+                for ($i = 0; $i < count($detalleArray); $i++) {
+    
+                    $archivos = $request->{"archivoAdjuntoRequerimientoPagoDetalle" . $detalleArray[$i]['idRegister']};
+    
+                    if (isset($archivos)) {
+                        foreach ($archivos as $archivo) {
+                            $adjuntoRequerimientoPagoDetalleArray[] = [
+                                'id_requerimiento_pago_detalle' => $detalleArray[$i]['id_requerimiento_pago_detalle'],
+                                // 'nombre_archivo' => $archivo->getClientOriginalName(),
+                                'archivo' => $archivo
+                            ];
+                        }
                     }
                 }
+
             }
 
 
@@ -533,6 +521,9 @@ class RequerimientoPagoController extends Controller
                     }
                 }
             }
+
+    
+
             DB::commit();
 
 
@@ -616,32 +607,21 @@ class RequerimientoPagoController extends Controller
     function mostrarRequerimientoPago($idRequerimientoPago)
     {
 
-        // $data = RequerimientoPago::where('id_requerimiento_pago',$idRequerimientoPago)->with(['detalle'=> function($q){
-        //     $q->where('estado', '!=', 7);
-        // },'empresa','sede','grupo','division','moneda','creadoPor','detalle.unidadMedida','detalle.producto','detalle.estado'])->get();
-        // return $data ;
-        // $detalleRequerimientoPagoList=  RequerimientoPagoDetalle::select(
-        //     'detalle_requerimiento_pago.*',
-        //     'adm_estado_doc.estado_doc',
-        //     'alm_prod.codigo as producto_codigo',
-        //     'alm_prod.part_number as producto_part_number',
-        //     'alm_prod.descripcion as producto_descripcion',
-        //     'alm_prod.id_unidad_medida as producto_id_unidad_medida',
-        //     'presup_par.codigo AS codigo_partida',
-        //     'presup_pardet.descripcion AS descripcion_partida',
-        //     'presup_par.importe_total AS presupuesto_total_partida'
-        // )
-        // ->leftJoin('almacen.alm_prod', 'detalle_requerimiento_pago.id_producto', '=', 'alm_prod.id_producto')
-        // ->leftJoin('administracion.adm_estado_doc', 'detalle_requerimiento_pago.id_estado', '=', 'adm_estado_doc.id_estado_doc')
-        // ->leftJoin('finanzas.presup_par', 'presup_par.id_partida', '=', 'detalle_requerimiento_pago.id_partida')
-        // ->leftJoin('finanzas.presup_pardet', 'presup_pardet.id_pardet', '=', 'presup_par.id_pardet')
-        // ->where([['detalle_requerimiento_pago.id_requerimiento_pago',$idRequerimientoPago],['detalle_requerimiento_pago.id_estado','!=',7]])
-        // ->get();
-        $detalleRequerimientoPagoList = RequerimientoPagoDetalle::with('unidadMedida', 'producto', 'partida.presupuesto', 'centroCosto', 'adjunto', 'estado')->where([['id_requerimiento_pago', $idRequerimientoPago], ['id_estado', '!=', 7]])->get();
+        $detalleRequerimientoPagoList = RequerimientoPagoDetalle::with('unidadMedida', 'producto', 'partida.presupuesto', 'centroCosto', 'adjunto', 'estado')->where([['id_requerimiento_pago', $idRequerimientoPago]])->get();
 
         $requerimientoPago = RequerimientoPago::where('id_requerimiento_pago', $idRequerimientoPago)
             ->with('tipoRequerimientoPago', 'periodo', 'prioridad', 'moneda', 'creadoPor', 'empresa', 'sede', 'grupo', 'division', 'cuadroCostos', 'proyecto', 'adjunto')
             ->first();
+
+        $documento = Documento::where([['id_tp_documento',11],['id_doc',$idRequerimientoPago]])->first();
+        if($documento->id_doc_aprob > 0){
+            $aprobacion= Aprobacion::where('id_doc_aprob',$documento->id_doc_aprob)->with('usuario','VoBo')->get();
+        }else{
+            $aprobacion=[];
+        }
+        $requerimientoPago->setAttribute('aprobacion', $aprobacion);
+
+
 
         return $requerimientoPago->setAttribute('detalle', $detalleRequerimientoPagoList);
     }

@@ -195,5 +195,12 @@ class Aprobacion extends Model
             return $aprobaciones;
         
     }
-    
+    public function usuario()
+    {
+        return $this->belongsTo('App\Models\Configuracion\Usuario', 'id_usuario', 'id_usuario');
+    }
+    public function VoBo()
+    {
+        return $this->belongsTo('App\Models\Administracion\VoBo', 'id_vobo', 'id_vobo');
+    }
 }

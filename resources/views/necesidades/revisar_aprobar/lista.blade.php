@@ -49,6 +49,13 @@ Revisar/aprobar
     </div>
 </div>
 
+@include('tesoreria.requerimiento_pago.modal_vista_rapida_requerimiento_pago')
+@include('tesoreria.requerimiento_pago.modal_adjuntar_archivos_requerimiento_pago')
+@include('tesoreria.requerimiento_pago.modal_adjuntar_archivos_requerimiento_pago_detalle')
+
+@include('logistica.requerimientos.modal_requerimiento')
+@include('logistica.requerimientos.modal_adjuntar_archivos_requerimiento')
+@include('logistica.requerimientos.modal_adjuntar_archivos_detalle_requerimiento')
 
 @endsection
 

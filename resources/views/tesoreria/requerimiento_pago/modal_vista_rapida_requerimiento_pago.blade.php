@@ -100,7 +100,7 @@
                                 <th>Fecha revisión</th>
                             </tr>
                         </thead>
-                        <tbody id="body_historial_revision"></tbody>
+                        <tbody id="body_requerimiento_pago_historial_revision"></tbody>
                     </table>
                 </fieldset>
 
