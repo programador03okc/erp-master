@@ -846,7 +846,7 @@ class RequerimientoController extends Controller
                         ],
                         'id_adjunto'
                     );
-                    Storage::disk('archivos')->put("necesidades/requerimiento/bienes_servicios/cabecera/" . $newNameFile, File::get($archivo));
+                    Storage::disk('archivos')->put("necesidades/requerimientos/bienes_servicios/cabecera/" . $newNameFile, File::get($archivo));
                 }
             }
         }
@@ -875,7 +875,7 @@ class RequerimientoController extends Controller
                         ],
                         'id_adjunto'
                     );
-                    Storage::disk('archivos')->put("necesidades/requerimiento/bienes_servicios/cabecera/" . $newNameFile, File::get($archivo));
+                    Storage::disk('archivos')->put("necesidades/requerimientos/bienes_servicios/cabecera/" . $newNameFile, File::get($archivo));
                 }
             }
         }
@@ -898,7 +898,7 @@ class RequerimientoController extends Controller
                         ],
                         'id_adjunto'
                     );
-                    Storage::disk('archivos')->put("necesidades/requerimiento/bienes_servicios/cabecera/" . $newNameFile, File::get($archivo));
+                    Storage::disk('archivos')->put("necesidades/requerimientos/bienes_servicios/cabecera/" . $newNameFile, File::get($archivo));
                 }
             }
         }
@@ -921,7 +921,7 @@ class RequerimientoController extends Controller
                         ],
                         'id_adjunto'
                     );
-                    Storage::disk('archivos')->put("necesidades/requerimiento/bienes_servicios/cabecera/" . $newNameFile, File::get($archivo));
+                    Storage::disk('archivos')->put("necesidades/requerimientos/bienes_servicios/cabecera/" . $newNameFile, File::get($archivo));
                 }
             }
         }
@@ -953,7 +953,7 @@ class RequerimientoController extends Controller
                     ],
                     'id_adjunto'
                 );
-                Storage::disk('archivos')->put("necesidades/requerimiento/bienes_servicios/detalle/" . $newNameFile, File::get($adjunto['archivo']));
+                Storage::disk('archivos')->put("necesidades/requerimientos/bienes_servicios/detalle/" . $newNameFile, File::get($adjunto['archivo']));
             }
         }
         return response()->json($detalleAdjuntos);

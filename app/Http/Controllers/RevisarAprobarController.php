@@ -2,17 +2,26 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\NotificacionHelper;
 use App\Models\Administracion\Aprobacion;
 use App\Models\Administracion\Division;
 use App\Models\Administracion\DivisionArea;
 use App\Models\Administracion\Documento;
 use App\Models\Administracion\Flujo;
 use App\Models\Administracion\Operacion;
+use App\Models\Almacen\DetalleRequerimiento;
+use App\Models\Almacen\Requerimiento;
+use App\Models\Almacen\Trazabilidad;
+use App\Models\Configuracion\Usuario;
+use App\Models\Tesoreria\RequerimientoPago;
+use App\Models\Tesoreria\RequerimientoPagoDetalle;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
-
+use Debugbar;
+use Exception;
 
 class RevisarAprobarController extends Controller{
 
@@ -177,7 +186,8 @@ class RevisarAprobarController extends Controller{
                 $estado = $element->estado !=null ?$element->estado:$element->id_estado;
                 $idDivision = $element->division_id !=null ?$element->division_id:$element->id_division;                
                 $operaciones = Operacion::getOperacion($tipoDocumento, $idTipoRequerimiento, $idGrupo, $idDivision, $idPrioridad);
-                
+                // Debugbar::info($operaciones);
+
                 if($operaciones ==[]){
                     $mensaje[]= "El requerimiento ".$element->codigo." no coincide con una operación valida, es omitido en la lista. Parametros para obtener operacion: tipoDocumento= ".$tipoDocumento.", tipoRequerimiento= ".$idTipoRequerimiento.",Grupo= ".$idGrupo.", Division= ".$idDivision.", Prioridad= ".$idPrioridad;
                 }else{
@@ -273,7 +283,9 @@ class RevisarAprobarController extends Controller{
                     }
                     
                     $llenarCargaUtil=false;
+
                     if ((in_array($nextIdRolAprobante, $idRolUsuarioList)) == true) {
+
                         if ($nextNroOrden == 1) {
                             // fitlar por division
                             if (in_array($idDivision, $idDivisionUsuarioList) == true) {
@@ -282,7 +294,6 @@ class RevisarAprobarController extends Controller{
                         } else {
                             $llenarCargaUtil=true;
                         }
-                        
                         if($llenarCargaUtil){
                             $element->setAttribute('id_flujo',$nextIdFlujo);
                             $element->setAttribute('id_usuario_aprobante',$idUsuarioAprobante);
@@ -307,5 +318,381 @@ class RevisarAprobarController extends Controller{
         $output = ['data' => $payload, 'mensaje'=>$mensaje];
         return $output;
 
+    }
+
+    public function obtenerRelacionadoAIdDocumento($tipoDocumento,$idDocumento){
+        $result = [];
+        
+        $documento = Documento::where([['id_doc_aprob',$idDocumento],['id_tp_documento',$tipoDocumento]])->first();
+
+        if( !empty($documento)){
+            $result =[ 
+                'id'=> $documento->id_doc,
+                'mensaje'=>'Id encontrado',
+                'estado'=>'success'
+        ];
+            
+        }else{
+            $result =[ 
+            'id'=>0,
+            'mensaje'=>'No se encontro un id que haga referencia al id documento',
+            'estado'=>'error'
+        ];
+
+        }
+
+        return $result;
+    
+    }
+    
+    public function obtenerMontoTotalDocumento($tipoDocumento, $idDocumento){
+
+        $montoTotal =0;
+        
+        if($tipoDocumento ==1){
+            $obtenerId = $this->obtenerRelacionadoAIdDocumento($tipoDocumento,$idDocumento);
+            if($obtenerId['estado']=='succces'){
+                $requerimiento = Requerimiento::find($obtenerId['id']);
+                $detalle = $requerimiento->detalle;
+                $montoTotal = 0;
+                foreach ($detalle as $item) {
+                    $montoTotal += $item->cantidad * $item->precio_unitario;
+                }
+            }
+        }elseif($tipoDocumento ==11){
+
+            $obtenerId = $this->obtenerRelacionadoAIdDocumento($tipoDocumento,$idDocumento);
+            if($obtenerId['estado']=='succces'){
+                $requerimiento = RequerimientoPago::find($obtenerId['id']);
+                $detalle = $requerimiento->detalle;
+                $montoTotal = 0;
+                foreach ($detalle as $item) {
+                    $montoTotal += $item->cantidad * $item->precio_unitario;
+                }
+            }
+        }
+        return ['monto'=>$montoTotal, 'estado'=>$obtenerId['estado'], 'mensaje'=>$obtenerId['mensaje']];
+    }
+
+    public function actualizarEstadoRequerimiento($accion,$requerimiento,$aprobacionFinalOPendiente){
+        switch ($accion) {
+            case '1':
+                if ($aprobacionFinalOPendiente == 'APROBACION_FINAL') {
+                    $requerimiento->estado = 2;
+                }
+                break;
+            case '2':
+                $requerimiento->estado = 7;
+                $detalleRequerimiento = DetalleRequerimiento::where("id_requerimiento", $requerimiento->id_requerimiento)->get();
+                foreach ($detalleRequerimiento as $detalle) {
+                    $detalle->estado = 7;
+                    $detalle->save();
+                }
+                break;
+            case '3':
+                $requerimiento->estado = 3;
+                break;
+            case '5':
+                $requerimiento->estado = 12;
+                break;
+        }
+        $requerimiento->save();
+    }
+    public function actualizarEstadoRequerimientoPago($accion,$requerimientoPago,$aprobacionFinalOPendiente){
+        switch ($accion) {
+            case '1':
+                if ($aprobacionFinalOPendiente == 'APROBACION_FINAL') {
+                    $requerimientoPago->id_estado = 2;
+                }
+                break;
+            case '2':
+                $requerimientoPago->id_estado = 7;
+                $detalleRequerimientoPago = RequerimientoPagoDetalle::where("id_requerimiento_pago", $requerimientoPago->id_requerimiento_pago)->get();
+                foreach ($detalleRequerimientoPago as $detalle) {
+                    $detalle->id_estado = 7;
+                    $detalle->save();
+                }
+                break;
+            case '3':
+                $requerimientoPago->id_estado = 3;
+                break;
+            case '5':
+                $requerimientoPago->id_estado = 12;
+                break;
+        }
+        $requerimientoPago->save();
+    }
+
+    public function registrarTrazabilidad($idRequerimiento,$aprobacionFinalOPendiente, $idUsuario, $nombreCompletoUsuarioRevisaAprueba, $accion){
+        $trazabilidad = new Trazabilidad();
+        $trazabilidad->id_requerimiento = $idRequerimiento;
+        $trazabilidad->id_usuario = $idUsuario;
+        switch ($accion) {
+            case '1':
+                if ($aprobacionFinalOPendiente == 'APROBACION_FINAL') {
+                    $trazabilidad->accion = 'APROBADO';
+                    $trazabilidad->descripcion = 'Aprobado por ';
+                }
+                break;
+            case '2':
+                $trazabilidad->accion = 'RECHAZADO';
+                $trazabilidad->descripcion = 'Rechazado por ';
+                break;
+            case '3':
+                $trazabilidad->accion = 'OBSERVADO';
+                $trazabilidad->descripcion = 'Observado por ';
+
+                break;
+            case '5':
+                $trazabilidad->accion = 'REVISADO';
+                $trazabilidad->descripcion = 'Revisado por ';
+
+                break;
+        }
+        $trazabilidad->descripcion .=  $nombreCompletoUsuarioRevisaAprueba ?? '';
+        $trazabilidad->fecha_registro = new Carbon();
+        $trazabilidad->save();
+
+        return $trazabilidad;
+    
+    }
+
+    private function enviarNotificacionPorAprobacion($requerimiento,$comentario,$nombreCompletoUsuarioCreador,$nombreCompletoUsuarioRevisaAprueba,$montoTotal,$trazabilidad){
+        $titulo = 'El requerimiento ' . $requerimiento->codigo . ' fue '.$trazabilidad->accion;
+        $mensaje = 'El requerimiento ' . $requerimiento->codigo . ' fue '.$trazabilidad->accion.'. Información adicional del requerimiento:' .
+            '<ul>' .
+            '<li> Concepto/Motivo: ' . $requerimiento->concepto . '</li>' .
+            '<li> Tipo de requerimiento: ' . $requerimiento->tipo->descripcion . '</li>' .
+            '<li> División: ' . $requerimiento->division->descripcion . '</li>' .
+            '<li> Fecha limite de entrega: ' . $requerimiento->fecha_entrega . '</li>' .
+            '<li> Monto Total: ' . $requerimiento->moneda->simbolo . number_format($montoTotal, 2) . '</li>' .
+            '<li> Creado por: ' . ($nombreCompletoUsuarioCreador ?? '') . '</li>' .
+            '<li> '.$trazabilidad->descripcion.': ' . ($nombreCompletoUsuarioRevisaAprueba ?? '') . '</li>' .
+            (!empty($comentario) ? ('<li> Comentario: ' . $comentario . '</li>') : '') .
+            '</ul>' .
+            '<p> *Este correo es generado de manera automática, por favor no responder.</p> 
+        <br> Saludos <br> Módulo de Logística <br> SYSTEM AGILE';
+
+        $seNotificaraporEmail = false;
+            $correoUsuarioList = [];
+        $correoUsuarioList[] = Usuario::find($requerimiento->id_usuario)->email; // notificar a usuario
+        $usuariosList = Usuario::getAllIdUsuariosPorRol(4); // notificar al usuario  con rol = 'logistico compras'
+
+        // Debugbar::info($usuariosList);
+        if (count($usuariosList) > 0) {
+            if (config('app.debug')) {
+                $correoUsuarioList[] = config('global.correoDebug2');
+            }else{
+                foreach ($usuariosList as $idUsuario) {
+                    $correoUsuarioList[] = Usuario::find($idUsuario)->email;
+                }
+            }
+
+            if (count($correoUsuarioList) > 0) {
+                // $destinatarios[]= 'programador03@okcomputer.com.pe';
+                $destinatarios = $correoUsuarioList;
+                $seNotificaraporEmail = true;
+
+
+
+                $payload = [
+                    'id_empresa' => $requerimiento->id_empresa,
+                    'email_destinatario' => $destinatarios,
+                    'titulo' => $titulo,
+                    'mensaje' => $mensaje
+                ];
+
+                // Debugbar::info($payload);
+
+                if (count($destinatarios) > 0) {
+                    NotificacionHelper::enviarEmail($payload);
+
+                }
+            }
+        }    
+    }
+
+    public function registrarRespuesta($accion, $idFlujo, $idDocumento, $idUsuario,$comentario, $idRolAprobante){
+        $aprobacion = new Aprobacion();
+        $aprobacion->id_flujo = $idFlujo;
+        $aprobacion->id_doc_aprob = $idDocumento;
+        $aprobacion->id_usuario = $idUsuario;
+        $aprobacion->id_vobo = $accion;
+        $aprobacion->fecha_vobo = new Carbon();
+        $aprobacion->detalle_observacion = $comentario;
+        $aprobacion->id_rol = $idRolAprobante;
+        $aprobacion->tiene_sustento = false;
+        $aprobacion->save();
+
+        $mensaje='';
+        if($accion ==1){
+            $mensaje='Documento aprobado';
+        }elseif($accion ==2){
+            $mensaje='Documento rechazado';
+            
+        }elseif($accion ==3){
+            $mensaje='Documento observado';
+            
+        }
+
+        return ['data'=>$aprobacion,'mensaje'=>$mensaje];
+    }
+
+    public function guardarRespuesta(Request $request){
+        DB::beginTransaction();
+        try {
+            // $accion = $request->accion;
+            // $sustento = $request->sustento;
+            // $idTipoDocumento = $request->tipoDocumento;
+            // $tipoDocumento = $request->tipoDocumento;
+            // $idDocumento = $request->idDocumento;
+            // $idRequerimiento = $request->idRequerimiento;
+            // $idRequerimientoPago = $request->idRequerimientoPago;
+            // idUsuarioPropietarioDocumento = $request->idUsuarioPropietarioDocumento;
+            // idUsuarioAprobante = $request->idUsuarioAprobante;
+            // $idRolAprobante = $request->idRolAprobante;
+            // $idFlujo = $request->idFlujo;
+            // $aprobacionFinalOPendiente = $request->aprobacionFinalOPendiente;
+            // tieneRolConSiguienteAprobacion = $request->tieneRolConSiguienteAprobacion;
+            // idOperacion = $request->idOperacion;
+            $nombreCompletoUsuarioRevisaAprueba = Usuario::find($request->idUsuarioAprobante)->nombre_corto;
+
+            if ($request->aprobacionFinalOPendiente == 'PENDIENTE') {
+                if ($request->accion == 1) {
+                    $request->accion = 5; // Revisado
+                }
+            }
+            // agregar vobo (1= aprobado, 2= rechazado, 3=observado, 5=Revisado)
+            $aprobacion= $this->registrarRespuesta($request->accion, $request->idFlujo, $request->idDocumento,$request->idUsuarioAprobante,$request->sustento, $request->idRolAprobante);
+
+ 
+            $montoTotal= 0;
+
+            $obtenerMontoTotal = $this->obtenerMontoTotalDocumento($request->idTipoDocumento,$request->idDocumento);
+
+            if($obtenerMontoTotal['estado']=='success'){
+                $montoTotal=$obtenerMontoTotal['monto'];
+            }else{
+                return response()->json(['id_aprobacion' => 0, 'notificacion_por_emial' => false, 'mensaje' => 'Hubo un problema al guardar la respuesta. Mensaje de error:'.$obtenerMontoTotal['mensaje']]);
+
+            }
+
+            $nombreCompletoUsuarioCreador = Usuario::find($request->idUsuarioPropietarioDocumento)->nombre_corto;
+            //  ======= inicio tipo requerimiento b/s =======
+
+            if($request->idTipoDocumento ==1){ 
+                if($request->idRequerimiento > 0){
+                    $requerimiento = Requerimiento::find($request->idRequerimiento);
+                }else{
+                    $obtenerId = $this->obtenerRelacionadoAIdDocumento($request->idTipoDocumento,$request->idDocumento);
+                            Debugbar::info($obtenerId);
+
+                    if($obtenerId['estado']=='success'){
+                        $requerimiento = Requerimiento::find($obtenerId['id']);
+                    }else{
+                        return response()->json(['id_aprobacion' => 0, 'notificacion_por_emial' => false, 'mensaje' => 'Hubo un problema al guardar la respuesta. Mensaje de error:'.$obtenerMontoTotal['mensaje']]);
+                    }
+                }
+
+                $this->actualizarEstadoRequerimiento($request->accion,$requerimiento,$request->aprobacionFinalOPendiente);
+                $trazabilidad= $this->registrarTrazabilidad($request->idRequerimiento,$request->aprobacionFinalOPendiente,$request->idUsuarioAprobante, $nombreCompletoUsuarioRevisaAprueba, $request->accion);
+    
+                // $this->enviarNotificacionPorAprobacion($requerimiento,$request->sustento,$nombreCompletoUsuarioCreador,$nombreCompletoUsuarioRevisaAprueba,$montoTotal,$trazabilidad);
+            }
+            //  ======= fin tipo requerimiento b/s =======
+
+            //  ======= inicio tipo requerimiento pago =======
+            if($request->idTipoDocumento ==11){ 
+                if($request->idRequerimientoPago > 0){
+                    $requerimientoPago = RequerimientoPago::find($request->idRequerimientoPago);
+                }else{
+                    $obtenerId = $this->obtenerRelacionadoAIdDocumento($request->idTipoDocumento,$request->idDocumento);
+                    if($obtenerId['estado']=='success'){
+                        $requerimientoPago = RequerimientoPago::find($obtenerId['id']);
+                    }else{
+                        return response()->json(['id_aprobacion' => 0, 'notificacion_por_emial' => false, 'mensaje' => 'Hubo un problema al guardar la respuesta. Mensaje de error:'.$obtenerMontoTotal['mensaje']]);
+                    }
+                }
+
+                $this->actualizarEstadoRequerimientoPago($request->accion,$requerimientoPago,$request->aprobacionFinalOPendiente);
+                // $trazabilidad= $this->registrarTrazabilidad($request->idRequerimiento,$request->aprobacionFinalOPendiente,$request->idUsuarioAprobante, $nombreCompletoUsuarioRevisaAprueba, $request->accion);
+    
+                // $this->enviarNotificacionPorAprobacion($requerimientoPago,$request->sustento,$nombreCompletoUsuarioCreador,$nombreCompletoUsuarioRevisaAprueba,$montoTotal,$trazabilidad);
+            }
+            //  ======= fin tipo requerimiento pago =======
+
+            
+            $accionNext=0;
+            $aprobacionFinalOPendiente='';
+
+            if($request->tieneRolConSiguienteAprobacion == true){ // si existe un siguiente flujo de aprobacion con el mismo rol
+                if($request->accion==1 || $request->accion ==5){ // si accion es revisar/aprobar, buscar siguientes aprobaciones con mismo rol de usuario para auto aprobación 
+
+                    $allRol = Auth::user()->getAllRol();
+                    $idRolUsuarioList = [];
+                    foreach ($allRol as  $rol) {
+                        $idRolUsuarioList[] = $rol->id_rol;
+                    }
+    
+                    $flujoTotal = Flujo::getIdFlujo($request->idOperacion)['data'];
+                    $tamañoFlujo = $flujoTotal ? count($flujoTotal) : 0;
+    
+                    $ordenActual=0;
+                    foreach ($flujoTotal as $flujo) {
+                        if($flujo->id_flujo == $request->idFlujo){
+                            $ordenActual=$flujo->orden;
+                        }
+                    }
+
+                    if($ordenActual>0){
+                        $i=1;
+                        foreach ($flujoTotal as $flujo) {
+                            if($i<=$tamañoFlujo){
+                                if($flujo->orden == (intval($ordenActual)+$i)){
+                                    if(in_array($flujo->id_rol, $idRolUsuarioList) == true){
+                                        // guardar aprobación
+                                        if($flujo->orden ==$tamañoFlujo ){
+                                            $accionNext =1;
+                                            $aprobacionFinalOPendiente='APROBACION_FINAL';
+                                        }else{
+                                            $accionNext =5;
+                                            $aprobacionFinalOPendiente='PENDIENTE';
+
+                                        }
+                                        $aprobacion= $this->registrarRespuesta($accionNext, $flujo->id_flujo, $request->idDocumento,$request->idUsuarioAprobante,$request->sustento, $flujo->id_rol);
+
+                                        if($request->idTipoDocumento ==1){ //documento de tipo: requerimiento b/s
+                                            $trazabilidad= $this->registrarTrazabilidad($request->idRequerimiento,$aprobacionFinalOPendiente,$request->idUsuarioAprobante, $nombreCompletoUsuarioRevisaAprueba, $accionNext);
+                                            $this->actualizarEstadoRequerimiento($accionNext,$requerimiento,$aprobacionFinalOPendiente);
+                                            // $this->enviarNotificacionPorAprobacion($requerimiento,$request->sustento,$nombreCompletoUsuarioCreador,$nombreCompletoUsuarioRevisaAprueba,$montoTotal,$trazabilidad);
+                                        }elseif($request->idTipoDocumento ==11){//documento de tipo: requerimiento pago
+                                            // $trazabilidad= $this->registrarTrazabilidad($request->idRequerimiento,$aprobacionFinalOPendiente,$request->idUsuarioAprobante, $nombreCompletoUsuarioRevisaAprueba, $accionNext);
+                                            $this->actualizarEstadoRequerimientoPago($accionNext,$requerimientoPago,$aprobacionFinalOPendiente);
+                                            
+                                            // $this->enviarNotificacionPorAprobacion($requerimiento,$request->sustento,$nombreCompletoUsuarioCreador,$nombreCompletoUsuarioRevisaAprueba,$montoTotal,$trazabilidad);
+
+                                        }
+                                    }
+                                    $i++;
+                                }
+                            }
+    
+                        }
+                    }
+                }
+            }
+            if ($request->accion == 1) {
+                $seNotificaraporEmail = true;
+                // TO-DO NOTIFICAR AL USUARIO QUE SU REQUERIMIENTO FUE APROBADO
+            }
+
+            $seNotificaraporEmail = true;
+            DB::commit();
+            return response()->json(['id_aprobacion' => $aprobacion['data']->id_aprobacion, 'mensaje'=>$aprobacion['mensaje'], 'notificacion_por_emial' => $seNotificaraporEmail]);
+
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json(['id_aprobacion' => 0, 'notificacion_por_emial' => false, 'mensaje' => 'Hubo un problema al guardar la respuesta. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
+        }
     }
 }

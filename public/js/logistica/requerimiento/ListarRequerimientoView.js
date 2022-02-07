@@ -32,7 +32,7 @@ class ListarRequerimientoView {
     // }
 
     initializeEventHandler() {
-        document.querySelector("button[class~='handleClickImprimirRequerimientoPdf']").addEventListener("click", this.imprimirRequerimientoPdf.bind(this), false);
+        // document.querySelector("button[class~='handleClickImprimirRequerimientoPdf']").addEventListener("click", this.imprimirRequerimientoPdf.bind(this), false);
 
         $('#modal-filtro-requerimientos-elaborados').on("change", "select.handleChangeUpdateValorFiltroRequerimientosElaborados", (e) => {
             this.updateValorFiltroRequerimientosElaborados();
@@ -47,6 +47,9 @@ class ListarRequerimientoView {
         });
         $('#modal-filtro-requerimientos-elaborados').on("change", "select.handleChangeFiltroGrupo", (e) => {
             this.getDataSelectDivision(e.currentTarget.value);
+        });
+        $('#ListaRequerimientosElaborados').on("click", "button.handleClickImprimirRequerimientoPdf", (e) => {
+            this.imprimirRequerimientoPdf(e.currentTarget);
         });
 
 
@@ -263,10 +266,12 @@ class ListarRequerimientoView {
         return contadorCheckActivo;
     }
 
-    imprimirRequerimientoPdf() {
-        var id = document.getElementsByName("id_requerimiento")[0].value;
-        window.open('imprimir-requerimiento-pdf/' + id + '/0');
+    imprimirRequerimientoPdf(obj) {
+        if(obj.dataset.idRequerimiento >0){
+            window.open('imprimir-requerimiento-pdf/' + obj.dataset.idRequerimiento + '/0');
 
+        }
+         
     }
 
     limpiarTabla(idElement) {
@@ -408,7 +413,8 @@ class ListarRequerimientoView {
                         let btnEditar = '';
                         let btnAnular = '';
                         // let btnMandarAPago = '';
-                        let btnDetalleRapido = '<button type="button" class="btn btn-xs btn-info btnVerDetalle handleClickVerDetalleRequerimientoSoloLectura" data-id-requerimiento="' + row['id_requerimiento'] + '" title="Ver detalle" ><i class="fas fa-eye fa-xs"></i></button>';
+                        let btnDetalleRapido = '<button type="button" class="btn btn-xs btn-primary btnVerDetalle handleClickVerDetalleRequerimientoSoloLectura" data-id-requerimiento="' + row['id_requerimiento'] + '" title="Ver detalle" ><i class="fas fa-eye fa-xs"></i></button>';
+                        let btnImprimirEnPdf = '<button type="button" class="btn btn-xs btn-info handleClickImprimirRequerimientoPdf" data-id-requerimiento="' + row['id_requerimiento'] + '" title="Imprimir en PDF" ><i class="fas fa-print fa-xs"></i></button>';
                         let btnTrazabilidad = '<button type="button" class="btn btn-xs btn-default btnVerTrazabilidad handleClickVerTrazabilidadRequerimiento" title="Trazabilidad"><i class="fas fa-route fa-xs"></i></button>';
                         // if(row.estado ==2){
                         //         btnMandarAPago = '<button type="button" class="btn btn-xs btn-success" title="Mandar a pago" onClick="listarRequerimientoView.requerimientoAPago(' + row['id_requerimiento'] + ');"><i class="fas fa-hand-holding-usd fa-xs"></i></button>';
@@ -417,12 +423,12 @@ class ListarRequerimientoView {
                             btnEditar = '<button type="button" class="btn btn-xs btn-warning btnEditarRequerimiento handleClickAbrirRequerimiento" title="Editar" ><i class="fas fa-edit fa-xs"></i></button>';
                             btnAnular = '<button type="button" class="btn btn-xs btn-danger btnAnularRequerimiento handleClickAnularRequerimiento" title="Anular" ><i class="fas fa-times fa-xs"></i></button>';
                         }
-                        let btnVerDetalle= `<button type="button" class="btn btn-xs btn-primary desplegar-detalle handleClickDesplegarDetalleRequerimiento" data-toggle="tooltip" data-placement="bottom" title="Ver Detalle" data-id="${row.id_requerimiento}">
-                        <i class="fas fa-chevron-down"></i>
-                        </button>`;
+                        // let btnVerDetalle= `<button type="button" class="btn btn-xs btn-default desplegar-detalle handleClickDesplegarDetalleRequerimiento" data-toggle="tooltip" data-placement="bottom" title="Ver Detalle" data-id="${row.id_requerimiento}">
+                        // <i class="fas fa-chevron-down"></i>
+                        // </button>`;
 
 
-                        return containerOpenBrackets +btnVerDetalle+ btnDetalleRapido + btnTrazabilidad + btnEditar + btnAnular + containerCloseBrackets;
+                        return containerOpenBrackets + btnDetalleRapido +btnImprimirEnPdf+ btnTrazabilidad + btnEditar + btnAnular + containerCloseBrackets;
                     }, targets: 14
                 },
 
@@ -469,9 +475,9 @@ class ListarRequerimientoView {
                     that.verDetalleRequerimientoSoloLectura(data, that);
                 });
                 
-                $('#ListaRequerimientosElaborados tbody').on("click", "button.handleClickDesplegarDetalleRequerimiento", function(e) {
-                    that.desplegarDetalleRequerimiento(e.currentTarget);
-                });
+                // $('#ListaRequerimientosElaborados tbody').on("click", "button.handleClickDesplegarDetalleRequerimiento", function(e) {
+                //     that.desplegarDetalleRequerimiento(e.currentTarget);
+                // });
                 
             },
             "drawCallback": function( settings ) {
@@ -822,101 +828,101 @@ class ListarRequerimientoView {
     }
 
 
-    desplegarDetalleRequerimiento(obj){
-        let tr = obj.closest('tr');
-        var row = $tablaListaRequerimientosElaborados.row(tr);
-        var id = obj.dataset.id;
-        if (row.child.isShown()) {
-            //  This row is already open - close it
-            row.child.hide();
-            tr.classList.remove('shown');
-        }
-        else {
-            // Open this row
-            //    row.child( format(iTableCounter, id) ).show();
-            this.buildFormat(obj, iTableCounter, id, row);
-            tr.classList.add('shown');
-            // try datatable stuff
-            oInnerTable = $('#ListaRequerimientosElaborados_' + iTableCounter).dataTable({
-                //    data: sections, 
-                autoWidth: true,
-                deferRender: true,
-                info: false,
-                lengthChange: false,
-                ordering: false,
-                paging: false,
-                scrollX: false,
-                scrollY: false,
-                searching: false,
-                columns: [
-                ]
-            });
-            iTableCounter = iTableCounter + 1;
-        }
-    }
+    // desplegarDetalleRequerimiento(obj){
+    //     let tr = obj.closest('tr');
+    //     var row = $tablaListaRequerimientosElaborados.row(tr);
+    //     var id = obj.dataset.id;
+    //     if (row.child.isShown()) {
+    //         //  This row is already open - close it
+    //         row.child.hide();
+    //         tr.classList.remove('shown');
+    //     }
+    //     else {
+    //         // Open this row
+    //         //    row.child( format(iTableCounter, id) ).show();
+    //         this.buildFormat(obj, iTableCounter, id, row);
+    //         tr.classList.add('shown');
+    //         // try datatable stuff
+    //         oInnerTable = $('#ListaRequerimientosElaborados_' + iTableCounter).dataTable({
+    //             //    data: sections, 
+    //             autoWidth: true,
+    //             deferRender: true,
+    //             info: false,
+    //             lengthChange: false,
+    //             ordering: false,
+    //             paging: false,
+    //             scrollX: false,
+    //             scrollY: false,
+    //             searching: false,
+    //             columns: [
+    //             ]
+    //         });
+    //         iTableCounter = iTableCounter + 1;
+    //     }
+    // }
 
-    buildFormat(obj, table_id, id, row) {
-        obj.setAttribute('disabled', true);
-        this.requerimientoCtrl.obtenerDetalleRequerimientos(id).then((res) => {
-            // console.log(res);
-            obj.removeAttribute('disabled');
-            this.construirDesplegableDetalleRequerimientosElaboradas(table_id, row, res);
-        }).catch((err) => {
-            console.log(err)
-        })
-    }
+    // buildFormat(obj, table_id, id, row) {
+    //     obj.setAttribute('disabled', true);
+    //     this.requerimientoCtrl.obtenerDetalleRequerimientos(id).then((res) => {
+    //         // console.log(res);
+    //         obj.removeAttribute('disabled');
+    //         this.construirDesplegableDetalleRequerimientosElaboradas(table_id, row, res);
+    //     }).catch((err) => {
+    //         console.log(err)
+    //     })
+    // }
 
-    construirDesplegableDetalleRequerimientosElaboradas(table_id, row, response){
-        var html = '';
-        // console.log(response);
-        if (response.length > 0) {
-            response.forEach(function (element) {
-                // if(element.tiene_transformacion==false){
-                let stock_comprometido = 0;
-                (element.reserva).forEach(reserva => {
-                    if(reserva.estado ==1){
-                        stock_comprometido+= parseFloat(reserva.stock_comprometido);
-                    }
-                });
+    // construirDesplegableDetalleRequerimientosElaboradas(table_id, row, response){
+    //     var html = '';
+    //     // console.log(response);
+    //     if (response.length > 0) {
+    //         response.forEach(function (element) {
+    //             // if(element.tiene_transformacion==false){
+    //             let stock_comprometido = 0;
+    //             (element.reserva).forEach(reserva => {
+    //                 if(reserva.estado ==1){
+    //                     stock_comprometido+= parseFloat(reserva.stock_comprometido);
+    //                 }
+    //             });
 
-                    html += `<tr>
-                        <td style="border: none; text-align:center;" data-part-number="${element.part_number}" data-producto-part-number="${element.producto_part_number}">${(element.producto_part_number != null ? element.producto_part_number :(element.part_number !=null ?element.part_number:''))} ${element.tiene_transformacion ==true?'<span class="label label-default">Transformado</span>':''}</td>
-                        <td style="border: none; text-align:left;">${element.producto_descripcion != null ? element.producto_descripcion : (element.descripcion?element.descripcion:'')}</td>
-                        <td style="border: none; text-align:center;">${element.abreviatura != null ? element.abreviatura : ''}</td>
-                        <td style="border: none; text-align:center;">${element.cantidad >0 ? element.cantidad : ''}</td>
-                        <td style="border: none; text-align:center;">${(element.precio_unitario >0 ? ((element.moneda_simbolo?element.moneda_simbolo:((element.moneda_simbolo?element.moneda_simbolo:'')+'0.00')) + $.number(element.precio_unitario,2)) : (element.moneda_simbolo?element.moneda_simbolo:'')+'0.00')}</td>
-                        <td style="border: none; text-align:center;">${(parseFloat(element.subtotal) > 0 ? ((element.moneda_simbolo?element.moneda_simbolo:'') + $.number(element.subtotal,2)) :((element.moneda_simbolo?element.moneda_simbolo:'')+$.number((element.cantidad * element.precio_unitario),2)))}</td>
-                        <td style="border: none; text-align:center;">${element.motivo != null ? element.motivo : ''}</td>
-                        <td style="border: none; text-align:center;">${stock_comprometido != null ? stock_comprometido : ''}</td>
-                        <td style="border: none; text-align:center;">${element.estado_doc != null && element.tiene_transformacion ==false ? element.estado_doc : ''}</td>
-                        </tr>`;
-                    // }
-                });
-                var tabla = `<table class="table table-condensed table-bordered" 
-                id="detalle_${table_id}">
-                <thead style="color: black;background-color: #c7cacc;">
-                    <tr>
-                        <th style="border: none; text-align:center;">Part number</th>
-                        <th style="border: none; text-align:center;">Descripcion</th>
-                        <th style="border: none; text-align:center;">Unidad medida</th>
-                        <th style="border: none; text-align:center;">Cantidad</th>
-                        <th style="border: none; text-align:center;">Precio unitario</th>
-                        <th style="border: none; text-align:center;">Subtotal</th>
-                        <th style="border: none; text-align:center;">Motivo</th>
-                        <th style="border: none; text-align:center;">Reserva almacén</th>
-                        <th style="border: none; text-align:center;">Estado</th>
-                    </tr>
-                </thead>
-                <tbody style="background: #e7e8ea;">${html}</tbody>
-                </table>`;
-        }else{
-            var tabla = `<table class="table table-sm" style="border: none;" 
-                id="detalle_${table_id}">
-                <tbody>
-                    <tr><td>No hay registros para mostrar</td></tr>
-                </tbody>
-                </table>`;
-            }
-            row.child(tabla).show();
-    }
+    //                 html += `<tr>
+    //                     <td style="border: none; text-align:center;" data-part-number="${element.part_number}" data-producto-part-number="${element.producto_part_number}">${(element.producto_part_number != null ? element.producto_part_number :(element.part_number !=null ?element.part_number:''))} ${element.tiene_transformacion ==true?'<span class="label label-default">Transformado</span>':''}</td>
+    //                     <td style="border: none; text-align:left;">${element.producto_descripcion != null ? element.producto_descripcion : (element.descripcion?element.descripcion:'')}</td>
+    //                     <td style="border: none; text-align:center;">${element.abreviatura != null ? element.abreviatura : ''}</td>
+    //                     <td style="border: none; text-align:center;">${element.cantidad >0 ? element.cantidad : ''}</td>
+    //                     <td style="border: none; text-align:center;">${(element.precio_unitario >0 ? ((element.moneda_simbolo?element.moneda_simbolo:((element.moneda_simbolo?element.moneda_simbolo:'')+'0.00')) + $.number(element.precio_unitario,2)) : (element.moneda_simbolo?element.moneda_simbolo:'')+'0.00')}</td>
+    //                     <td style="border: none; text-align:center;">${(parseFloat(element.subtotal) > 0 ? ((element.moneda_simbolo?element.moneda_simbolo:'') + $.number(element.subtotal,2)) :((element.moneda_simbolo?element.moneda_simbolo:'')+$.number((element.cantidad * element.precio_unitario),2)))}</td>
+    //                     <td style="border: none; text-align:center;">${element.motivo != null ? element.motivo : ''}</td>
+    //                     <td style="border: none; text-align:center;">${stock_comprometido != null ? stock_comprometido : ''}</td>
+    //                     <td style="border: none; text-align:center;">${element.estado_doc != null && element.tiene_transformacion ==false ? element.estado_doc : ''}</td>
+    //                     </tr>`;
+    //                 // }
+    //             });
+    //             var tabla = `<table class="table table-condensed table-bordered" 
+    //             id="detalle_${table_id}">
+    //             <thead style="color: black;background-color: #c7cacc;">
+    //                 <tr>
+    //                     <th style="border: none; text-align:center;">Part number</th>
+    //                     <th style="border: none; text-align:center;">Descripcion</th>
+    //                     <th style="border: none; text-align:center;">Unidad medida</th>
+    //                     <th style="border: none; text-align:center;">Cantidad</th>
+    //                     <th style="border: none; text-align:center;">Precio unitario</th>
+    //                     <th style="border: none; text-align:center;">Subtotal</th>
+    //                     <th style="border: none; text-align:center;">Motivo</th>
+    //                     <th style="border: none; text-align:center;">Reserva almacén</th>
+    //                     <th style="border: none; text-align:center;">Estado</th>
+    //                 </tr>
+    //             </thead>
+    //             <tbody style="background: #e7e8ea;">${html}</tbody>
+    //             </table>`;
+    //     }else{
+    //         var tabla = `<table class="table table-sm" style="border: none;" 
+    //             id="detalle_${table_id}">
+    //             <tbody>
+    //                 <tr><td>No hay registros para mostrar</td></tr>
+    //             </tbody>
+    //             </table>`;
+    //         }
+    //         row.child(tabla).show();
+    // }
 }

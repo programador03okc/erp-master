@@ -16,9 +16,9 @@
             @if(Auth::user()->tieneAplicacion(103))
             <li><a href="{{route('necesidades.requerimiento.listado.index')}}"><i class="far fa-circle fa-xs"></i> Listado</a></li>
             @endif
-            @if(Auth::user()->tieneAplicacion(103))
+            <!-- @if(Auth::user()->tieneAplicacion(103))
             <li><a href="{{route('necesidades.requerimiento.aprobar.index')}}"><i class="far fa-circle fa-xs"></i> Revisar / aprobar</a></li>
-            @endif
+            @endif -->
         </ul>
     </li>
     @endif
@@ -34,10 +34,6 @@
             @if(Auth::user()->tieneAplicacion(102))
             <li><a href="{{route('necesidades.pago.listado.index')}}"><i class="far fa-circle fa-xs"></i> Listado</a></li>
             @endif
-            @if(Auth::user()->tieneAplicacion(103))
-            <li><a href="{{route('necesidades.pago.revisar_aprobar.index')}}"><i class="far fa-circle fa-xs"></i> Revisar / aprobar</a></li>
-            @endif
-  
         </ul>
     </li>
     @endif
