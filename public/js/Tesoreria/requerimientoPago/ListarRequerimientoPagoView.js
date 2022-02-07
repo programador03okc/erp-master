@@ -533,12 +533,12 @@ class ListarRequerimientoPagoView {
 
 
     agregarServicio(data = null) {
-        if (data.id_estado != '7') {
+        
             let idFila = data != null && data.id_requerimiento_pago_detalle > 0 ? data.id_requerimiento_pago_detalle : (this.makeId());
             let cantidadAdjuntos = data != null && data.adjunto != null ? data.adjunto.length : '0';
-            document.querySelector("tbody[id='body_detalle_requerimiento_pago']").insertAdjacentHTML('beforeend', `<tr style="background-color:${data.id_estado == '7' ? '#f1d7d7' : ''}; text-align:center">
+            document.querySelector("tbody[id='body_detalle_requerimiento_pago']").insertAdjacentHTML('beforeend', `<tr style="background-color:${data != null && data.id_estado == '7' ? '#f1d7d7' : ''}; text-align:center">
         <td>    
-            <input type="hidden"  class="idEstado" name="idEstado[]" value="${data.id_estado}">
+            <input type="hidden"  class="idEstado" name="idEstado[]" value="${data!=null && data.id_estado}">
             <p class="descripcion-partida" title="${(data != null && data.partida != null ? data.partida.codigo : '')}">${(data != null && data.partida != null ? data.partida.descripcion : '(NO SELECCIONADO)')}</p>
             <button type="button" class="btn btn-xs btn-info handleClickCargarModalPartidas" name="partida">Seleccionar</button> 
             <div class="form-group">
@@ -586,7 +586,7 @@ class ListarRequerimientoPagoView {
             </div>
         </td>
         </tr>`);
-        }
+        
     }
 
 
