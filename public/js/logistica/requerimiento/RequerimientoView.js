@@ -292,6 +292,8 @@ class RequerimientoView {
                         optionSelectDivisionHTML += `<option value="${element.id_division}">${element.descripcion}</option> `;
                 });
                 document.querySelector("select[name='division']").innerHTML=optionSelectDivisionHTML;
+                this.mostrarCabeceraRequerimiento(data['requerimiento'][0]);
+
             }).catch(function (err) {
                 console.log(err)
                 Swal.fire(
@@ -302,7 +304,6 @@ class RequerimientoView {
             })
             // 
 
-            this.mostrarCabeceraRequerimiento(data['requerimiento'][0]);
             if (data.hasOwnProperty('det_req')) {
                 if(data['requerimiento'][0].estado == 7 || data['requerimiento'][0].estado == 2){
                     changeStateButton('cancelar'); //init.js
