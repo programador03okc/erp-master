@@ -23,7 +23,7 @@ Registro de pagos
                 <ul class="nav nav-tabs" id="myTab">
                     <li class="active"><a data-toggle="tab" href="#requerimientos">Requerimiento de pagos</a></li>
                     <li class=""><a data-toggle="tab" href="#ordenes">Ordenes de compra</a></li>
-                    <li class=""><a data-toggle="tab" href="#comprobantes">Comprobantes</a></li>
+                    {{-- <li class=""><a data-toggle="tab" href="#comprobantes">Comprobantes</a></li> --}}
                 </ul>
 
                 <div class="tab-content">
@@ -83,7 +83,7 @@ Registro de pagos
                                                 <th>Total</th>
                                                 <th>Saldo</th>
                                                 <th>Estado</th>
-                                                <th style="width:80px;">Acción</th>
+                                                <th style="width:10%;">Acción</th>
                                             </tr>
                                         </thead>
                                         <tbody></tbody>
@@ -94,7 +94,7 @@ Registro de pagos
                         </form>
                     </div>
 
-                    <div id="comprobantes" class="tab-pane fade ">
+                    {{-- <div id="comprobantes" class="tab-pane fade ">
                         <br>
                         <form id="form-comprobantes" type="register">
                             <div class="row">
@@ -107,7 +107,6 @@ Registro de pagos
                                                 <th>Tipo Doc.</th>
                                                 <th>Serie</th>
                                                 <th>Número</th>
-                                                {{-- <th>Nro. Doc.</th> --}}
                                                 <th>Razon social del proveedor</th>
                                                 <th>Fecha Emisión</th>
                                                 <th>Condición</th>
@@ -125,7 +124,7 @@ Registro de pagos
                                 </div>
                             </div>
                         </form>
-                    </div>
+                    </div> --}}
 
                 </div>
 
@@ -158,7 +157,9 @@ Registro de pagos
         seleccionarMenu(window.location);
         vista_extendida();
 
-        let requerimientoPago=new RequerimientoPago('{{Auth::user()->tieneAccion(78)}}');
+        let requerimientoPago=new RequerimientoPago('{{Auth::user()->tieneAccion(136)}}','{{Auth::user()->tieneAccion(137)}}','{{Auth::user()->tieneAccion(138)}}');
+        // let enviarAPago=new RequerimientoPago('{{Auth::user()->tieneAccion(137)}}');
+        // let registrarPago=new RequerimientoPago('{{Auth::user()->tieneAccion(138)}}');
 
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
             let tab = $(e.target).attr("href") // activated tab
