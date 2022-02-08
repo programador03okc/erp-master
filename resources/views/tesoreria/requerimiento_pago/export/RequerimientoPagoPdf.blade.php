@@ -127,7 +127,7 @@
     </table>
 
     <div class="seccion">
-        <h4 style="font-size: 14px;">Datos de Proveedor</h4>
+        <h4 style="font-size: 14px;">Datos del destinatario de pago</h4>
     </div>
     <table>
         <thead>

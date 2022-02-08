@@ -128,11 +128,11 @@ class ListarRequerimientoPagoView {
         $('#modal-vista-rapida-requerimiento-pago').on("click", "a.handleClickAdjuntarArchivoDetalle", (e) => {
             this.modalAdjuntarArchivosDetalle(e.currentTarget);
         });
-        $('#modal-vista-rapida-requerimiento-pago').on("click", "button.handleClickEditarRequerimientoPago", () => {
-            this.editarRequerimientoPago();
+        $('#ListaRequerimientoPago tbody').on("click", "button.handleClickEditarRequerimientoPago", (e) => {
+            this.editarRequerimientoPago(e.currentTarget);
         });
-        $('#modal-vista-rapida-requerimiento-pago').on("click", "button.handleClickAnularRequerimientoPago", () => {
-            this.anularRequerimientoPago();
+        $('#ListaRequerimientoPago tbody').on("click", "button.handleClickAnularRequerimientoPago", (e) => {
+            this.anularRequerimientoPago(e.currentTarget);
         });
         $('#listaCuadroPresupuesto').on("click", "button.handleClickSeleccionarCDP", (e) => {
             this.seleccionarCDP(e.currentTarget);
@@ -278,15 +278,25 @@ class ListarRequerimientoPagoView {
                 },
                 {
                     'render': function (data, type, row) {
+
                         let containerOpenBrackets = '<center><div class="btn-group" role="group" style="margin-bottom: 5px;">';
                         let containerCloseBrackets = '</div></center>';
                         let btnVerEnModal = '<button type="button" class="btn btn-xs btn-primary  handleClickVerEnVistaRapidaRequerimientoPago" name="btnVerEnVistaRapidaRequerimientoPago" data-id-requerimiento-pago="' + row.id_requerimiento_pago + '" data-codigo-requerimiento-pago="' + row.codigo + '" title="Vista rápida"><i class="fas fa-eye fa-xs"></i></button>';
+                        let btnEditar = '<button type="button" class="btn btn-xs btn-warning  handleClickEditarRequerimientoPago" name="btnEditarRequerimientoPago" data-id-requerimiento-pago="' + row.id_requerimiento_pago + '" data-codigo-requerimiento-pago="' + row.codigo + '" title="Editar"><i class="fas fa-edit fa-xs"></i></button>';
+                        let btnAnular = '<button type="button" class="btn btn-xs btn-danger  handleClickAnularRequerimientoPago" name="btnAnularRapidaRequerimientoPago" data-id-requerimiento-pago="' + row.id_requerimiento_pago + '" data-codigo-requerimiento-pago="' + row.codigo + '" title="Anular"><i class="fas fa-ban fa-xs"></i></button>';
                         let btnImprimirEnPdf = `<button type="button" class="btn btn-xs btn-info handleClickimprimirRequerimientoPagoEnPdf" name="btnImprimirRequerimientoPagoEnPdf" data-toggle="tooltip" data-placement="bottom" title="Imprimir en PDF" data-id-requerimiento-pago="${row.id_requerimiento_pago}">
                         <i class="fas fa-print"></i>
                         </button>`;
 
+                        let botonera = containerOpenBrackets + btnVerEnModal + btnImprimirEnPdf;
+                        if (row.id_usuario == auth_user.id_usuario && (row.id_estado == 1 || row.id_estado == 3)) {
+                            botonera += btnEditar + btnAnular;
+                        }
+                        botonera += containerCloseBrackets;
 
-                        return containerOpenBrackets + btnVerEnModal + btnImprimirEnPdf + containerCloseBrackets;
+                        return botonera;
+
+
                     }, targets: 13
                 },
 
@@ -339,9 +349,24 @@ class ListarRequerimientoPagoView {
         //     resizeSide();
         // });
     }
+    limpiarMesajesValidacion() {
+        let allDivError = document.querySelectorAll("div[class='form-group has-error']");
+        let allSpanDanger = document.querySelectorAll("span[class~='text-danger']");
+        if (allDivError.length > 0) {
+            allDivError.forEach(element => {
+                element.classList.remove('has-error');
+            });
+        }
+        if (allSpanDanger.length > 0) {
+            allSpanDanger.forEach(element => {
+                element.remove();
+            });
+        }
 
+    }
 
     resetearFormularioRequerimientoPago() {
+        this.limpiarMesajesValidacion();
         $('#form-requerimiento-pago')[0].reset();
         document.querySelector("div[id='modal-requerimiento-pago'] span[name='codigo']").textContent = '';
         document.querySelector("div[id='modal-requerimiento-pago'] span[name='fecha_registro']").textContent = '';
@@ -369,7 +394,9 @@ class ListarRequerimientoPagoView {
         document.querySelector("div[id='modal-requerimiento-pago'] form[id='form-requerimiento-pago']").setAttribute("type", 'register');
         document.querySelector("div[id='modal-requerimiento-pago'] span[id='titulo-modal']").textContent = "Nuevo requerimiento de pago";
         document.querySelector("div[id='modal-requerimiento-pago'] button[id='btnActualizarRequerimientoPago']").classList.add("oculto");
+        document.querySelector("div[id='modal-requerimiento-pago'] button[id='btnGuardarRequerimientoPago']").classList.remove("oculto");
         // document.querySelector("div[id='modal-requerimiento-pago'] input[name='fecha_registro']").value = moment().format("YYYY-MM-DD");
+
     }
 
 
@@ -533,12 +560,12 @@ class ListarRequerimientoPagoView {
 
 
     agregarServicio(data = null) {
-        
-            let idFila = data != null && data.id_requerimiento_pago_detalle > 0 ? data.id_requerimiento_pago_detalle : (this.makeId());
-            let cantidadAdjuntos = data != null && data.adjunto != null ? data.adjunto.length : '0';
-            document.querySelector("tbody[id='body_detalle_requerimiento_pago']").insertAdjacentHTML('beforeend', `<tr style="background-color:${data != null && data.id_estado == '7' ? '#f1d7d7' : ''}; text-align:center">
+
+        let idFila = data != null && data.id_requerimiento_pago_detalle > 0 ? data.id_requerimiento_pago_detalle : (this.makeId());
+        let cantidadAdjuntos = data != null && data.adjunto != null ? data.adjunto.length : '0';
+        document.querySelector("tbody[id='body_detalle_requerimiento_pago']").insertAdjacentHTML('beforeend', `<tr style="background-color:${data != null && data.id_estado == '7' ? '#f1d7d7' : ''}; text-align:center">
         <td>    
-            <input type="hidden"  class="idEstado" name="idEstado[]" value="${data!=null && data.id_estado}">
+            <input type="hidden"  class="idEstado" name="idEstado[]" value="${data != null && data.id_estado}">
             <p class="descripcion-partida" title="${(data != null && data.partida != null ? data.partida.codigo : '')}">${(data != null && data.partida != null ? data.partida.descripcion : '(NO SELECCIONADO)')}</p>
             <button type="button" class="btn btn-xs btn-info handleClickCargarModalPartidas" name="partida">Seleccionar</button> 
             <div class="form-group">
@@ -586,7 +613,7 @@ class ListarRequerimientoPagoView {
             </div>
         </td>
         </tr>`);
-        
+
     }
 
 
@@ -990,7 +1017,7 @@ class ListarRequerimientoPagoView {
             total += (cantidad * precioUnitario);
         }
 
-        let allLabelTotal = document.querySelectorAll("label[name='total']");
+        let allLabelTotal = document.querySelectorAll("div[id='modal-requerimiento-pago'] label[name='total']");
         allLabelTotal.forEach(element => {
             element.textContent = Util.formatoNumero(total, 2);
         });
@@ -1328,11 +1355,6 @@ class ListarRequerimientoPagoView {
                             });
                             $("#ListaRequerimientoPago").DataTable().ajax.reload(null, false);
 
-                            // si modal de modal-vista-rapida-requerimiento-pago esta abierto => refrescar data
-                            if (document.querySelector("div[id='modal-vista-rapida-requerimiento-pago']").classList.contains("in")) {
-                                this.cargarDataRequerimientoPago(response.id_requerimiento_pago);
-                            }
-
                         } else {
                             $('#wrapper-okc').LoadingOverlay("hide", true);
                             Swal.fire(
@@ -1499,11 +1521,24 @@ class ListarRequerimientoPagoView {
 
     cargarDataRequerimientoPago(idRequerimientoPago) {
         if (idRequerimientoPago > 0) {
+            $('#modal-vista-rapida-requerimiento-pago .modal-content').LoadingOverlay("show", {
+                imageAutoResize: true,
+                progress: true,
+                imageColor: "#3c8dbc"
+            });
             this.obtenerRequerimientoPago(idRequerimientoPago).then((res) => {
+                $('#modal-vista-rapida-requerimiento-pago .modal-content').LoadingOverlay("hide", true);
+
                 this.mostrarDataEnVistaRapidaRequerimientoPago(res)
 
             }).catch(function (err) {
+                $('#modal-vista-rapida-requerimiento-pago .modal-content').LoadingOverlay("hide", true);
                 console.log(err)
+                Swal.fire(
+                    '',
+                    'Hubo un error al tratar de obtener la data',
+                    'error'
+                );
             });
         } else {
             Swal.fire(
@@ -1513,11 +1548,35 @@ class ListarRequerimientoPagoView {
             );
         }
     }
+    limpiarVistaRapidaRequerimientoPago() {
+        document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] input[name='id_requerimiento_pago']").value = '';
+        document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] input[name='id_estado']").value = '';
+        document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] input[name='id_usuario']").value = '';
+        document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='codigo']").textContent = '';
+        document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='concepto']").textContent = '';
+        document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='razon_social_empresa']").textContent = '';
+        document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='grupo_division']").textContent = '';
+        document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='tipo_requerimiento']").textContent = '';
+        document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='prioridad']").textContent = '';
+        document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='fecha_registro']").textContent = '';
+        document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='creado_por']").textContent = '';
+        document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='periodo']").textContent = '';
+        document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='proveedor']").textContent = '';
+        document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='comentario']").textContent = '';
+        document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] span[name='simboloMoneda']").textContent = '';
+        document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='listaDetalleRequerimientoPago'] span[name='simbolo_moneda']").textContent = '';
+        document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='listaDetalleRequerimientoPago'] label[name='total']").textContent = '';
+        document.querySelector("td[id='adjuntosRequerimientoPago']").innerHTML = '';
+        this.limpiarTabla('listaDetalleRequerimientoPago');
+        this.limpiarTabla('listaHistorialRevision');
+
+    }
 
     verEnVistaRapidaRequerimientoPago(obj) {
         $('#modal-vista-rapida-requerimiento-pago').modal({
             show: true
         });
+        this.limpiarVistaRapidaRequerimientoPago();
         this.cargarDataRequerimientoPago(obj.dataset.idRequerimientoPago);
     }
 
@@ -1549,28 +1608,15 @@ class ListarRequerimientoPagoView {
             </a>`;
         }
 
-        // ### ==================== botonera ====================== ###
-        // limpiando botonera
-        let parent = document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] div[id='botonera-accion']");
-        while (parent.firstChild) {
-            parent.removeChild(parent.firstChild);
-        }
-        // si el usuario en sessión es el propiertario del documento y el estado es elaborado o observado se mostrara los botones
-        if (data.id_usuario == auth_user.id_usuario && (data.id_estado == 1 || data.id_estado == 3)) {
-            document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] div[id='botonera-accion']").insertAdjacentHTML('beforeend', `
-            <button type="button" name="btnEditarRequerimientoPago" class="btn btn-warning btn-sm handleClickEditarRequerimientoPago" ><i class="fas fa-edit"></i> Editar</button>
-            <button type="button" name="btnAnularRequerimientoPago" class="btn btn-danger btn-sm handleClickAnularRequerimientoPago"  ><i class="fas fa-ban"></i> Anular</button>   
-            `)
-        }
 
         // ### ==================== Detalle ====================== ###
-        
+
         this.limpiarTabla('listaDetalleRequerimientoPago');
         if (data.detalle.length > 0) {
             for (let i = 0; i < data.detalle.length; i++) {
                 let cantidadAdjuntosItem = 0;
                 cantidadAdjuntosItem = data.detalle[i].adjunto.length;
-                
+
                 document.querySelector("tbody[id='body_requerimiento_pago_detalle']").insertAdjacentHTML('beforeend', `<tr style="background-color:${data.detalle[i].id_estado == '7' ? '#f1d7d7' : ''}">
                 <td>${i + 1}</td>
                 <td>${data.detalle[i].partida ? data.detalle[i].partida.descripcion : ''}</td>
@@ -1580,17 +1626,17 @@ class ListarRequerimientoPagoView {
                 <td style="text-align:center;">${data.detalle[i].cantidad >= 0 ? data.detalle[i].cantidad : ''}</td>
                 <td style="text-align:right;">${data.moneda != null && data.moneda.simbolo != undefined ? data.moneda.simbolo : ''}${Util.formatoNumero(data.detalle[i].precio_unitario, 2)}</td>
                 <td style="text-align:right;">${data.moneda != null && data.moneda.simbolo != undefined ? data.moneda.simbolo : ''}${(data.detalle[i].subtotal ? Util.formatoNumero(data.detalle[i].subtotal, 2) : (Util.formatoNumero((data.detalle[i].cantidad * data.detalle[i].precio_unitario), 2)))}</td>
-                <td>${data.detalle[i].estado != null ? data.detalle[i].estado.estado_doc : ''}</td>
+                <td style="text-align:center;">${data.detalle[i].estado != null ? data.detalle[i].estado.estado_doc : ''}</td>
                 <td style="text-align: center;"> 
                 ${cantidadAdjuntosItem > 0 ? '<a title="Ver archivos adjuntos de item" style="cursor:pointer;" class="handleClickAdjuntarArchivoDetalle" data-tipo-modal="lectura" data-id="' + data.detalle[i].id_requerimiento_pago_detalle + '" >Ver (<span>' + cantidadAdjuntosItem + '</span>)</a>' : '-'}
                 </td>
                 </tr>`);
-                
-                
-                
+
+
+
             }
             // ### ==================== Detalle ====================== ###
-            
+
             // ### ==================== Historia aprobación ====================== ###
             this.limpiarTabla('listaHistorialRevision');
             data.aprobacion.forEach(element => {
@@ -1602,8 +1648,9 @@ class ListarRequerimientoPagoView {
 
     }
 
-    editarRequerimientoPago() {
-        let idRequerimientoPago = document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] input[name='id_requerimiento_pago']").value;
+    editarRequerimientoPago(obj) {
+
+        let idRequerimientoPago = obj.dataset.idRequerimientoPago;
 
         this.resetearFormularioRequerimientoPago();
         $('#modal-requerimiento-pago').modal({
@@ -1626,9 +1673,9 @@ class ListarRequerimientoPagoView {
         }
     }
 
-    anularRequerimientoPago() {
-        let idRequerimientoPago = document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] input[name='id_requerimiento_pago']").value;
-        let codigoRequerimiento = document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='codigo']").textContent;
+    anularRequerimientoPago(obj) {
+        let idRequerimientoPago = obj.dataset.idRequerimientoPago;
+        let codigoRequerimiento = obj.dataset.codigo;
         if (parseInt(idRequerimientoPago) > 0) {
             Swal.fire({
                 title: `Esta seguro que desea anular el requerimiento ${codigoRequerimiento}?`,
@@ -1754,6 +1801,7 @@ class ListarRequerimientoPagoView {
 
         const fechaRegistro = moment(data.fecha_registro, 'DD-MM-YYYY').format('YYYY-MM-DD');
         document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_requerimiento_pago']").value = data.id_requerimiento_pago;
+        document.querySelector("div[id='modal-requerimiento-pago'] select[name='tipo_requerimiento_pago']").value = data.id_requerimiento_pago_tipo;
         document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_usuario']").value = data.id_usuario;
         document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_estado']").value = data.id_estado;
         // document.querySelector("div[id='modal-requerimiento-pago'] input[name='codigo']").value = data.codigo;
@@ -1764,6 +1812,8 @@ class ListarRequerimientoPagoView {
         document.querySelector("div[id='modal-requerimiento-pago'] span[name='fecha_registro']").textContent = 'Fecha registro: ' + fechaRegistro;
         document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_proveedor']").value = data.id_proveedor;
         document.querySelector("div[id='modal-requerimiento-pago'] input[name='razon_social']").value = data.proveedor != null ? data.proveedor.razon_social : '';
+        document.querySelector("div[id='modal-requerimiento-pago'] input[name='nro_documento']").value = data.proveedor != null ? data.proveedor.nro_documento : '';
+        document.querySelector("div[id='modal-requerimiento-pago'] input[name='tipo_documento_identidad']").value = data.proveedor != null ? data.proveedor.documento_identidad : '';
         document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_cuenta_principal_proveedor']").value = data.proveedor != null && data.proveedor.cuenta_contribuyente.length > 0 ? data.proveedor.cuenta_contribuyente[0].id_cuenta_contribuyente : '';
         document.querySelector("div[id='modal-requerimiento-pago'] input[name='nro_cuenta_principal_proveedor']").value = data.proveedor != null && data.proveedor.cuenta_contribuyente.length > 0 ? data.proveedor.cuenta_contribuyente[0].nro_cuenta : '';
         document.querySelector("div[id='modal-requerimiento-pago'] select[name='periodo']").value = data.id_periodo;
@@ -1781,10 +1831,12 @@ class ListarRequerimientoPagoView {
         this.limpiarTabla('ListaDetalleRequerimientoPago');
 
         data.detalle.forEach(element => {
-            this.agregarServicio(element);
-            this.calcularSubtotal();
-            this.calcularTotal();
-        });    
+            if (element.id_estado != 7) {
+                this.agregarServicio(element);
+                this.calcularSubtotal();
+                this.calcularTotal();
+            }
+        });
 
         // agregar data adjuntos a variable temporal
         if (data.adjunto.length > 0) {
@@ -1815,7 +1867,7 @@ class ListarRequerimientoPagoView {
         let idRequerimientoPago = null;
         if (obj.dataset.tipoModal == "lectura") {
             idRequerimientoPago = document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] input[name='id_requerimiento_pago']") != null ? document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] input[name='id_requerimiento_pago']").value : null;
-            this.listarArchivosAdjuntosCabecera(idRequerimientoPago);
+            this.listarArchivosAdjuntosCabecera(idRequerimientoPago, obj.dataset.tipoModal);
             document.querySelector("div[id='modal-adjuntar-archivos-requerimiento-pago'] div[id='group-action-upload-file']").classList.add("oculto");
         } else {
             idRequerimientoPago = document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_requerimiento_pago']") != null ? document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_requerimiento_pago']").value : null
@@ -1825,7 +1877,7 @@ class ListarRequerimientoPagoView {
         }
     }
 
-    listarArchivosAdjuntosCabecera(idRequerimientoPago) {
+    listarArchivosAdjuntosCabecera(idRequerimientoPago, tipoModal = null) {
         // let idRequerimientoPago = document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_requerimiento_pago']").value.length > 0 ? document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_requerimiento_pago']").value : document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] input[name='id_requerimiento_pago']").value;
         if (idRequerimientoPago.length > 0) {
 
@@ -1845,7 +1897,7 @@ class ListarRequerimientoPagoView {
 
                         });
 
-                        this.construirTablaAdjuntosRequerimientoPagoCabecera(tempArchivoAdjuntoRequerimientoPagoCabeceraList, categoriaAdjuntoList);
+                        this.construirTablaAdjuntosRequerimientoPagoCabecera(tempArchivoAdjuntoRequerimientoPagoCabeceraList, categoriaAdjuntoList, tipoModal);
                     }).catch(function (err) {
                         console.log(err)
                     })
@@ -1889,7 +1941,7 @@ class ListarRequerimientoPagoView {
     }
 
 
-    construirTablaAdjuntosRequerimientoPagoCabecera(adjuntoList, categoriaAdjuntoList) {
+    construirTablaAdjuntosRequerimientoPagoCabecera(adjuntoList, categoriaAdjuntoList, tipoModal) {
         // console.log(adjuntoList,categoriaAdjuntoList);
         // this.limpiarTabla('listaArchivosRequerimientoPagoCabecera');
 
@@ -1928,8 +1980,10 @@ class ListarRequerimientoPagoView {
             if (Number.isInteger(element.id)) {
                 html += `<button type="button" class="btn btn-info btn-xs handleClickDescargarArchivoCabeceraRequerimientoPago" name="btnDescargarArchivoCabeceraRequerimientoPago" title="Descargar" data-id="${element.id}" ><i class="fas fa-paperclip"></i></button>`;
             }
-            html += `<button type="button" class="btn btn-danger btn-xs handleClickEliminarArchivoCabeceraRequerimientoPago ${hasHiddenBtnEliminarArchivo}" name="btnEliminarArchivoRequerimientoPago" title="Eliminar" data-id="${element.id}" ><i class="fas fa-trash-alt"></i></button>
-            </div>
+            if (!tipoModal == 'lectura') {
+                html += `<button type="button" class="btn btn-danger btn-xs handleClickEliminarArchivoCabeceraRequerimientoPago ${hasHiddenBtnEliminarArchivo}" name="btnEliminarArchivoRequerimientoPago" title="Eliminar" data-id="${element.id}" ><i class="fas fa-trash-alt"></i></button>`;
+            }
+            html += `</div>
         </td>
         </tr>`;
         });
@@ -2066,20 +2120,22 @@ class ListarRequerimientoPagoView {
 
         objBotonAdjuntoRequerimientoPagoDetalleSeleccionado = obj;
         let textoDescripcion = '';
+
         if (obj.dataset.tipoModal == "lectura") {
             document.querySelector("div[id='modal-adjuntar-archivos-requerimiento-pago-detalle'] div[id='group-action-upload-file']").classList.add("oculto");
+
             textoDescripcion = (obj.closest('tr').querySelector("td[name='descripcion_servicio']")) ? ((obj.closest('tr').querySelector("td[name='descripcion_servicio']").textContent).length > 0 ? obj.closest('tr').querySelector("td[name='descripcion_servicio']").textContent : '') : '';
         } else {
             document.querySelector("div[id='modal-adjuntar-archivos-requerimiento-pago-detalle'] div[id='group-action-upload-file']").classList.remove("oculto");
             textoDescripcion = (obj.closest('tr').querySelector("textarea[name='descripcion[]']")) ? ((obj.closest('tr').querySelector("textarea[name='descripcion[]']").value).length > 0 ? obj.closest('tr').querySelector("textarea[name='descripcion[]']").value : '') : '';
         }
         document.querySelector("div[id='modal-adjuntar-archivos-requerimiento-pago-detalle'] span[id='descripcion']").textContent = textoDescripcion.length > 0 ? textoDescripcion : '';
-        this.listarArchivosAdjuntosDetalle(obj.dataset.id);
+        this.listarArchivosAdjuntosDetalle(obj.dataset.id, obj.dataset.tipoModal);
 
 
     }
 
-    listarArchivosAdjuntosDetalle(idRequerimientoPagoDetalle) {
+    listarArchivosAdjuntosDetalle(idRequerimientoPagoDetalle, tipoModal) {
 
         if (idRequerimientoPagoDetalle.length > 0) {
 
@@ -2098,7 +2154,7 @@ class ListarRequerimientoPagoView {
 
                     });
 
-                    this.construirTablaAdjuntosRequerimientoPagoDetalle(tempArchivoAdjuntoRequerimientoPagoDetalleList);
+                    this.construirTablaAdjuntosRequerimientoPagoDetalle(tempArchivoAdjuntoRequerimientoPagoDetalleList, tipoModal);
                 }).catch(function (err) {
                     console.log(err)
                 })
@@ -2123,7 +2179,7 @@ class ListarRequerimientoPagoView {
         });
     }
 
-    construirTablaAdjuntosRequerimientoPagoDetalle(adjuntoList) {
+    construirTablaAdjuntosRequerimientoPagoDetalle(adjuntoList, tipoModal) {
         this.limpiarTabla('listaArchivosRequerimientoPagoDetalle');
 
         let html = '';
@@ -2146,7 +2202,11 @@ class ListarRequerimientoPagoView {
             if (Number.isInteger(element.id)) {
                 html += `<button type="button" class="btn btn-info btn-xs handleClickDescargarArchivoRequerimientoPagoDetalle" name="btnDescargarArchivoRequerimientoPagoDetalle" title="Descargar" data-id="${element.id}" ><i class="fas fa-paperclip"></i></button>`;
             }
-            html += `<button type="button" class="btn btn-danger btn-xs handleClickEliminarArchivoRequerimientoPagoDetalle ${hasDisableBtnEliminarArchivo}" name="btnEliminarArchivoRequerimientoPagoDetalle" title="Eliminar" data-id="${element.id}"  ><i class="fas fa-trash-alt"></i></button>
+            if (!tipoModal == 'lectura') {
+
+                html += `<button type="button" class="btn btn-danger btn-xs handleClickEliminarArchivoRequerimientoPagoDetalle ${hasDisableBtnEliminarArchivo}" name="btnEliminarArchivoRequerimientoPagoDetalle" title="Eliminar" data-id="${element.id}"  ><i class="fas fa-trash-alt"></i></button>`;
+            }
+            html += `
             </div>
         </td>
         </tr>`;
@@ -2254,10 +2314,10 @@ class ListarRequerimientoPagoView {
 
     agregarHistorialAprobacion(data) {
         document.querySelector("tbody[id='body_requerimiento_pago_historial_revision']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
-        <td>${data.usuario !=null? data.usuario.nombre_corto:''}</td>
-        <td>${data.vo_bo !=null? data.vo_bo.descripcion:''}</td>
-        <td>${data.detalle_observacion !=null? data.detalle_observacion:''}</td>
-        <td>${data.fecha_vobo !=null? data.fecha_vobo:''}</td>
+        <td>${data.usuario != null ? data.usuario.nombre_corto : ''}</td>
+        <td>${data.vo_bo != null ? data.vo_bo.descripcion : ''}</td>
+        <td>${data.detalle_observacion != null ? data.detalle_observacion : ''}</td>
+        <td>${data.fecha_vobo != null ? data.fecha_vobo : ''}</td>
         </tr>`);
     }
 

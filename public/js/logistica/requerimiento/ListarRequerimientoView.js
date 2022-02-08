@@ -510,25 +510,61 @@ class ListarRequerimientoView {
         });
     }
 
+    limpiarVistaRapidaRequerimientoBienesServicios(){
+        document.querySelector("div[id='modal-requerimiento'] input[name='id_requerimiento']").value = '';
+        document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='codigo']").textContent = '';
+        document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='concepto']").textContent = '';
+        document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='razon_social_empresa']").textContent = '';
+        document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='division']").textContent = '';
+        document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='tipo_requerimiento']").textContent = '';
+        document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='prioridad']").textContent = '';
+        document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='fecha_entrega']").textContent = '';
+        document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='solicitado_por']").textContent = '';
+        document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='periodo']").textContent = '';
+        document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='creado_por']").textContent = '';
+        document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='observacion']").textContent = '';
+        document.querySelector("div[id='modal-requerimiento'] span[name='simboloMoneda']").textContent = '';
+        document.querySelector("div[id='modal-requerimiento'] table[id='listaDetalleRequerimientoModal'] span[name='simbolo_moneda']").textContent = '';
+        document.querySelector("div[id='modal-requerimiento'] table[id='listaDetalleRequerimientoModal'] label[name='total']").textContent = '';
+        this.limpiarTabla('listaDetalleRequerimientoModal');
+        this.limpiarTabla('listaHistorialRevision');
+
+    }
+
+
     verDetalleRequerimientoSoloLectura(data, that) {
         let idRequerimiento = data.id_requerimiento;
         $('#modal-requerimiento').modal({
             show: true,
             backdrop: 'true'
         });
+        this.limpiarVistaRapidaRequerimientoBienesServicios();
 
         document.querySelector("div[id='modal-requerimiento'] fieldset[id='group-acciones']").classList.add("oculto");
         document.querySelector("div[id='modal-requerimiento'] button[id='btnRegistrarRespuesta']").classList.add("oculto");
 
-        that.requerimientoCtrl.getRequerimiento(idRequerimiento).then((res) => {
-            that.construirSeccionDatosGenerales(res['requerimiento'][0]);
-            that.construirSeccionItemsDeRequerimiento(res['det_req'], res['requerimiento'][0]['simbolo_moneda']);
-            that.construirSeccionHistorialAprobacion(res['historial_aprobacion']);
-            $('#modal-requerimiento div.modal-body').LoadingOverlay("hide", true);
+        if(idRequerimiento >0){
 
-        }).catch(function (err) {
-            console.log(err)
-        })
+            $('#modal-requerimiento .modal-content').LoadingOverlay("show", {
+                imageAutoResize: true,
+                progress: true,
+                imageColor: "#3c8dbc"
+            });
+    
+            that.requerimientoCtrl.getRequerimiento(idRequerimiento).then((res) => {
+                $('#modal-requerimiento .modal-content').LoadingOverlay("hide", true);
+
+                that.construirSeccionDatosGenerales(res['requerimiento'][0]);
+                that.construirSeccionItemsDeRequerimiento(res['det_req'], res['requerimiento'][0]['simbolo_moneda']);
+                that.construirSeccionHistorialAprobacion(res['historial_aprobacion']);
+                $('#modal-requerimiento div.modal-body').LoadingOverlay("hide", true);
+    
+            }).catch(function (err) {
+                $('#modal-requerimiento .modal-content').LoadingOverlay("hide", true);
+
+                console.log(err)
+            })
+        }
     }
 
     construirSeccionDatosGenerales(data) {

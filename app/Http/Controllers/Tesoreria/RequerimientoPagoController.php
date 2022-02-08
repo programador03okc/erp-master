@@ -614,8 +614,12 @@ class RequerimientoPagoController extends Controller
             ->first();
 
         $documento = Documento::where([['id_tp_documento',11],['id_doc',$idRequerimientoPago]])->first();
-        if($documento->id_doc_aprob > 0){
-            $aprobacion= Aprobacion::where('id_doc_aprob',$documento->id_doc_aprob)->with('usuario','VoBo')->get();
+        if( !empty($documento)){
+            if($documento->id_doc_aprob > 0){
+                $aprobacion= Aprobacion::where('id_doc_aprob',$documento->id_doc_aprob)->with('usuario','VoBo')->get();
+            }else{
+                $aprobacion=[];
+            }
         }else{
             $aprobacion=[];
         }

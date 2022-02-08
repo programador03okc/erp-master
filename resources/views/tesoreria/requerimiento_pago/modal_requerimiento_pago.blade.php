@@ -7,14 +7,14 @@
                 <input type="text" class="oculto" name="id_estado">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
-                    <h3 class="modal-title" id="modal-title"> 
-                    <div style="display:flex; justify-content: space-between;">
-                        <div><span id="titulo-modal">Requerimiento de pago </span> <span class="text-primary"  style="font-weight: bold;" name="codigo"></span></div>
-                        <label style="font-size: 1.4rem; margin-right: 10px; "><span name="fecha_registro"></span></label> 
+                    <h3 class="modal-title" id="modal-title">
+                        <div style="display:flex; justify-content: space-between;">
+                            <div><span id="titulo-modal">Requerimiento de pago </span> <span class="text-primary" style="font-weight: bold;" name="codigo"></span></div>
+                            <label style="font-size: 1.4rem; margin-right: 10px; "><span name="fecha_registro"></span></label>
 
-                    </div>
-                </h3> 
-                    
+                        </div>
+                    </h3>
+
                 </div>
                 <div class="modal-body">
                     <div class="row">
@@ -23,35 +23,46 @@
                                 <h5><strong>Datos del Requerimiento</strong></h5>
                                 <div class="row">
                                     <div class="col-md-6">
+                                        <div class="form-group">
                                             <h5>Concepto:</h5>
                                             <input type="text" class="form-control activation handleCheckStatusValue" placeholder="Concepto/motivo" name="concepto">
                                             </select>
+                                        </div>
                                     </div>
                                     <div class="col-md-3">
+                                        <div class="form-group">
+
                                             <h5>Tipo requerimiento</h5>
                                             <select class="form-control activation handleCheckStatusValue" name="tipo_requerimiento_pago">
                                                 @foreach ($tipos_requerimiento_pago as $tipo)
                                                 <option value="{{$tipo->id_requerimiento_pago_tipo}}">{{$tipo->descripcion}}</option>
                                                 @endforeach
                                             </select>
+                                        </div>
                                     </div>
                                     <div class="col-md-1">
+                                        <div class="form-group">
+
                                             <h5>Periodo</h5>
                                             <select class="form-control activation handleCheckStatusValue" name="periodo">
                                                 @foreach ($periodos as $periodo)
                                                 <option value="{{$periodo->id_periodo}}">{{$periodo->descripcion}}</option>
                                                 @endforeach
                                             </select>
+                                        </div>
                                     </div>
                                     <div class="col-md-2">
+                                        <div class="form-group">
                                             <h5>Prioridad</h5>
                                             <select class="form-control activation handleCheckStatusValue" name="prioridad">
                                                 @foreach ($prioridades as $prioridad)
                                                 <option value="{{$prioridad->id_prioridad}}">{{$prioridad->descripcion}}</option>
                                                 @endforeach
                                             </select>
+                                        </div>
                                     </div>
                                     <div class="col-md-3">
+                                        <div class="form-group">
                                             <h5>Empresa</h5>
                                             <select class="form-control activation handleCheckStatusValue handleChangeOptEmpresa" name="empresa">
                                                 <option value="0">Elija una opción</option>
@@ -59,13 +70,17 @@
                                                 <option value="{{$empresa->id_empresa}}">{{ $empresa->razon_social}}</option>
                                                 @endforeach
                                             </select>
+                                        </div>
                                     </div>
                                     <div class="col-md-3">
+                                        <div class="form-group">
                                             <h5>Sede</h5>
                                             <select class="form-control activation handleCheckStatusValue" name="sede" disabled>
                                             </select>
+                                        </div>
                                     </div>
                                     <div class="col-md-3">
+                                        <div class="form-group">
                                             <h5>Grupo</h5>
                                             <select class="form-control activation handleCheckStatusValue handleChangeOptGrupo" name="grupo" disabled>
                                                 <option value="0">Elija una opción</option>
@@ -73,13 +88,19 @@
                                                 <option value="{{$grupo->id_grupo}}">{{ $grupo->descripcion}}</option>
                                                 @endforeach
                                             </select>
+                                        </div>
                                     </div>
                                     <div class="col-md-3">
+                                        <div class="form-group">
+
                                             <h5>División</h5>
                                             <select class="form-control activation handleCheckStatusValue" name="division" disabled>
                                             </select>
+                                        </div>
                                     </div>
                                     <div class="col-md-12 oculto" id="contenedor-proyecto">
+                                        <div class="form-group">
+
                                             <h5>Proyecto</h5>
                                             <select class="form-control activation handleCheckStatusValue" name="proyecto">
                                                 <option value="0">Seleccione un Proyecto</option>
@@ -87,8 +108,10 @@
                                                 <option value="{{$proyecto->id_proyecto}}" data-id-centro-costo="{{$proyecto->id_centro_costo}}" data-codigo-centro-costo="{{$proyecto->codigo_centro_costo}}" data-descripcion-centro-costo="{{$proyecto->descripcion_centro_costo}}" data-codigo="{{$proyecto->codigo}}">{{$proyecto->descripcion}}</option>
                                                 @endforeach
                                             </select>
+                                        </div>
                                     </div>
                                     <div class="col-md-3 oculto" id="contenedor-cdp">
+                                        <div class="form-group">
                                             <h5>CDP</h5>
                                             <div style="display:flex;">
                                                 <input type="text" class="form-control oculto" name="id_cc">
@@ -98,20 +121,24 @@
                                                     <i class=" fas fa-search"></i>
                                                 </button>
                                             </div>
+                                        </div>
                                     </div>
                                     <div class="col-md-6">
+                                        <div class="form-group">
+
                                             <h5>Comentario</h5>
                                             <textarea class="form-control activation handleCheckStatusValue" name="comentario" placeholder="Comentario/observación (opcional)" cols="100" rows="100" style="height:50px;"></textarea>
+                                        </div>
                                     </div>
                                     <div class="col-md-2">
-                                            <h5>&nbsp;</h5>
-                                            <div style="display:flex; position:relative;">
-                                                <button type="button" class="btn btn-warning btn-md handleClickAdjuntarArchivoCabecera" name="btnAdjuntarArchivoCabecera[]" title="Adjuntos">
-                                                    <i class="fas fa-paperclip"></i>
-                                                    <span class="badge" name="cantidadAdjuntosCabeceraRequerimientoPago" style="position:absolute; top:-10px; left:-10px; border: solid 0.1px;">0</span>
-                                                    Adjuntos
-                                                </button>
-                                            </div>
+                                        <h5>&nbsp;</h5>
+                                        <div style="display:flex; position:relative;">
+                                            <button type="button" class="btn btn-warning btn-md handleClickAdjuntarArchivoCabecera" name="btnAdjuntarArchivoCabecera[]" title="Adjuntos">
+                                                <i class="fas fa-paperclip"></i>
+                                                <span class="badge" name="cantidadAdjuntosCabeceraRequerimientoPago" style="position:absolute; top:-10px; left:-10px; border: solid 0.1px;">0</span>
+                                                Adjuntos
+                                            </button>
+                                        </div>
                                     </div>
 
                                 </div>
@@ -122,11 +149,11 @@
                     <div class="row">
                         <div class="col-md-12">
                             <fieldset class="group-table">
-                                <h5><strong>Datos del Proveedor</strong></h5>
+                                <h5><strong>Datos del destinatario de pago</strong></h5>
                                 <div class="row">
                                     <div class="col-md-6">
-                                        {{-- <div class="form-group"> --}}
-                                            <h5>Proveedor</h5>
+                                        <div class="form-group">
+                                            <h5>Destinatario</h5>
                                             <input type="text" class="oculto" name="idProveedor">
                                             <div style="display:flex;">
                                                 <input class="oculto" name="id_proveedor">
@@ -138,10 +165,10 @@
                                                     <i class="fa fa-search"></i>
                                                 </button>
                                             </div>
-                                        {{-- </div> --}}
+                                        </div>
                                     </div>
                                     <div class="col-md-3">
-                                        {{-- <div class="form-group"> --}}
+                                        <div class="form-group">
                                             <h5>Cuenta bancaria</h5>
                                             <div style="display:flex;">
                                                 <input class="oculto" name="id_cuenta_principal_proveedor">
@@ -151,21 +178,21 @@
                                                 </button>
                                                 {{-- <button type="button" class="btn-primary" title="Agregar cuenta bancaria" onClick="agregar_cuenta_proveedor();"><i class="fas fa-plus"></i></button> --}}
                                             </div>
-                                        {{-- </div> --}}
+                                        </div>
                                     </div>
                                     <div class="col-md-3">
                                         {{-- <div class="form-group"> --}}
-                                            <h5>Monto Total:</h5>
-                                            <div style="display:flex;">
-                                                <!-- <div class="input-group-addon" name="montoMoneda" style="width: auto;">S/.</div> -->
-                                                <select class="form-control activation handleCheckStatusValue handleChangeUpdateMoneda" name="moneda" style="width:50%;">
-                                                    @foreach ($monedas as $moneda)
-                                                    <option data-simbolo="{{$moneda->simbolo}}" value="{{$moneda->id_moneda}}">{{$moneda->simbolo}}</option>
-                                                    @endforeach
-                                                </select>
-                                                <input type="text" class="form-control oculto" name="monto_total" style="text-align: right;">
-                                                <input type="text" class="form-control activation handleCheckStatusValue" name="monto_total_read_only" readonly>
-                                            </div>
+                                        <h5>Monto Total:</h5>
+                                        <div style="display:flex;">
+                                            <!-- <div class="input-group-addon" name="montoMoneda" style="width: auto;">S/.</div> -->
+                                            <select class="form-control activation handleCheckStatusValue handleChangeUpdateMoneda" name="moneda" style="width:50%;">
+                                                @foreach ($monedas as $moneda)
+                                                <option data-simbolo="{{$moneda->simbolo}}" value="{{$moneda->id_moneda}}">{{$moneda->simbolo}}</option>
+                                                @endforeach
+                                            </select>
+                                            <input type="text" class="form-control oculto" name="monto_total" style="text-align: right;">
+                                            <input type="text" class="form-control activation handleCheckStatusValue" name="monto_total_read_only" readonly>
+                                        </div>
                                         {{-- </div> --}}
                                     </div>
                                 </div>
