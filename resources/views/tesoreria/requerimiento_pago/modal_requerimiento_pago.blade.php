@@ -149,11 +149,11 @@
                     <div class="row">
                         <div class="col-md-12">
                             <fieldset class="group-table">
-                                <h5><strong>Datos del Proveedor</strong></h5>
+                                <h5><strong>Datos del destinatario de pago</strong></h5>
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <h5>Proveedor</h5>
+                                            <h5>Destinatario</h5>
                                             <input type="text" class="oculto" name="idProveedor">
                                             <div style="display:flex;">
                                                 <input class="oculto" name="id_proveedor">
