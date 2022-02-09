@@ -234,6 +234,8 @@ class OrdenesCompra {
                 { 'data': 'id_orden_compra', 'name': 'id_orden_compra', 'className': 'text-center' },
                 { 'data': 'id_orden_compra', 'name': 'id_orden_compra', 'className': 'text-center' },
                 { 'data': 'id_orden_compra', 'name': 'id_orden_compra', 'className': 'text-center' },
+                { 'data': 'observacion', 'name': 'log_ord_compra.observacion', 'className': 'text-left' },
+
             ],
             'columnDefs': [
 
