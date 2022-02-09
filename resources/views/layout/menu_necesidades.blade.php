@@ -22,9 +22,9 @@
         </ul>
     </li>
     @endif
-    @if(Auth::user()->tieneSubModulo(23))
+    @if(Auth::user()->tieneSubModulo(52))
 
-    <!-- <li><a href="{{route('necesidades.pago.listado.index')}}"><i class="fas fa-file-invoice-dollar"></i> <span>Requerimiento de pago</span></a></li> -->
+    <li><a href="{{route('necesidades.pago.listado.index')}}"><i class="fas fa-file-invoice-dollar"></i> <span>Requerimiento de pago</span></a></li>
 
     @endif
         <li><a href="{{route('necesidades.revisar-aprobar.listado.index')}}"><i class="fas fa-stamp"></i> <span>Revisar / aprobar</span></a></li>
