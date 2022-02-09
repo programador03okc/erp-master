@@ -68,13 +68,13 @@ class RequerimientoPago {
                             ${((row['id_estado'] == 1 || row['id_estado'] == 2) && permisoEnviar == '1') ?
                                     `<button type="button" class="enviar btn btn-info boton" data-toggle="tooltip" 
                                 data-placement="bottom" data-id="${row['id_requerimiento_pago']}" data-tipo="requerimiento"
-                                title="Enviar a pago"> <i class="fas fa-share"></i></button>`
+                                title="Autorizar pago"> <i class="fas fa-share"></i></button>`
                                     : ''}
                             ${row['id_estado'] == 5 ?
                                     `${permisoEnviar == '1' ?
                                         `<button type="button" class="revertir btn btn-danger boton" data-toggle="tooltip" 
                                         data-placement="bottom" data-id="${row['id_requerimiento_pago']}" data-tipo="requerimiento"
-                                        title="Revertir envío"><i class="fas fa-undo-alt"></i></button>`: ''}
+                                        title="Revertir autorización"><i class="fas fa-undo-alt"></i></button>`: ''}
                                     ${permisoRegistrar == '1' ?
                                         `<button type="button" class="pago btn btn-success boton" data-toggle="tooltip" data-placement="bottom" 
                                         data-id="${row['id_requerimiento_pago']}" data-cod="${row['codigo']}" data-tipo="requerimiento"
@@ -154,13 +154,13 @@ class RequerimientoPago {
                             ${((row['estado_pago'] == 1 || row['estado_pago'] == 2) && permisoEnviar == '1') ?
                                     `<button type="button" class="enviar btn btn-info boton" data-toggle="tooltip" 
                                 data-placement="bottom" data-id="${row['id_orden_compra']}" data-tipo="orden"
-                                title="Enviar a pago" >
+                                title="Autorizar pago" >
                                 <i class="fas fa-share"></i></button>`: ''}
                             ${row['estado_pago'] == 5 ?
                                     `${permisoEnviar == '1' ?
                                         `<button type="button" class="revertir btn btn-danger boton" data-toggle="tooltip" 
                                     data-placement="bottom" data-id="${row['id_orden_compra']}" data-tipo="orden"
-                                    title="Revertir envío"><i class="fas fa-undo-alt"></i></button>` : ''}
+                                    title="Revertir autorización"><i class="fas fa-undo-alt"></i></button>` : ''}
                                     
                                 ${permisoRegistrar == '1' ?
                                         `<button type="button" class="pago btn btn-success boton" data-toggle="tooltip" data-placement="bottom" 

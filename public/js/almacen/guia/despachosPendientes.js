@@ -98,9 +98,9 @@ function listarDespachosPendientes(permiso) {
                 `<div style="display:flex">
                     <label style="text-align: center;margin-top: 7px;margin-left: 10px;margin-right: 10px;">Mostrar: </label>
                     <select class="form-control" id="selectMostrarPendientes">
-                        <option value="0" >Todos</option>
+                        <option value="0" selected>Todos</option>
                         <option value="1" >Priorizados</option>
-                        <option value="2" selected>Los de Hoy</option>
+                        <option value="2" >Los de Hoy</option>
                     </select>
                 </div>`
             );
@@ -157,7 +157,8 @@ function listarDespachosPendientes(permiso) {
             {
                 data: 'estado_doc', name: 'adm_estado_doc.bootstrap_color', className: "text-center",
                 'render': function (data, type, row) {
-                    return '<span class="label label-' + row['bootstrap_color'] + '">' + row['estado_doc'] + '</span>'
+                    return '<span class="label label-' + row['bootstrap_color'] + '">' + row['estado_doc'] + '</span>' +
+                        row['suma_reservas'] + ' ' + row['suma_cantidad']
                 }
             },
         ],
