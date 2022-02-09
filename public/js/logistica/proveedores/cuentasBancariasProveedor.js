@@ -89,15 +89,23 @@ function guardarCuentaBancariaProveedor() {
 }
 
 function agregar_cuenta_proveedor() {
-    let razonSocialProveedor = document.querySelector("input[name='razon_social']").value;
-    let idProveedor = document.querySelector("input[name='id_proveedor']").value;
 
-    if (idProveedor > 0) {
+    if($('.page-main').attr('type')=='lista_requerimiento_pago'){
+        document.querySelector("div[id='modal-agregar-cuenta-bancaria-proveedor'] strong[id='nombre_contexto']").textContent= "Destinatarios";
+    }else{
+        document.querySelector("div[id='modal-agregar-cuenta-bancaria-proveedor'] strong[id='nombre_contexto']").textContent= "Proveedores";
+    }
+
+    let razonSocialProveedor = document.querySelector("input[name='razon_social']").value;
+    let id = document.querySelector("input[name='id_proveedor']").value;
+
+    if (id > 0) {
         $('#modal-agregar-cuenta-bancaria-proveedor').modal({
             show: true
         });
+       
         document.querySelector("div[id='modal-agregar-cuenta-bancaria-proveedor'] span[id='razon_social_proveedor']").textContent = razonSocialProveedor;
-        document.querySelector("div[id='modal-agregar-cuenta-bancaria-proveedor'] input[name='id_proveedor']").value = idProveedor;
+        document.querySelector("div[id='modal-agregar-cuenta-bancaria-proveedor'] input[name='id_proveedor']").value = id;
 
     } else {
         Swal.fire(
@@ -111,19 +119,29 @@ function agregar_cuenta_proveedor() {
 
 
 function cuentasBancariasModal() {
+    let nombre_contexto= 'proveedor';
+    if($('.page-main').attr('type')=='lista_requerimiento_pago'){
+        document.querySelector("div[id='modal-cuentas-bancarias-proveedor'] h3[class='modal-title']").textContent= "Lista de cuentas bancarias del destinatarios";
+        document.querySelector("div[id='modal-cuentas-bancarias-proveedor'] strong[id='nombre_contexto']").textContent= "Destinatario";
+        nombre_contexto = 'destinatario';
+    }else{
+        document.querySelector("div[id='modal-cuentas-bancarias-proveedor'] h3[class='modal-title']").textContent= "Lista de cuentas bancarias del proveedor";
+        document.querySelector("div[id='modal-cuentas-bancarias-proveedor'] strong[id='nombre_contexto']").textContent= "Proveedor";
+    }
+
     let razonSocialProveedor = document.querySelector("input[name='razon_social']").value;
-    let idProveedor = document.querySelector("input[name='id_proveedor']").value;
-    if (idProveedor > 0) {
+    let id = document.querySelector("input[name='id_proveedor']").value;
+    if (id > 0) {
         $('#modal-cuentas-bancarias-proveedor').modal({
             show: true
         });
         document.querySelector("div[id='modal-cuentas-bancarias-proveedor'] span[id='razon_social_proveedor']").textContent = razonSocialProveedor;
-        listarCuentasBancariasContribuyente(idProveedor);
+        listarCuentasBancariasContribuyente(id);
 
     } else {
         Swal.fire(
             '',
-            'Debe seleccionar un proveedor',
+            'Debe seleccionar un '+ nombre_contexto,
             'warning'
         );
     }
