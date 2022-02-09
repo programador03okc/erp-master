@@ -224,10 +224,10 @@ class TransformacionController extends Controller
         $transformados = DB::table('almacen.transfor_transformado')
             ->select(
                 'transfor_transformado.id_transformado',
-                'transfor_transformado.id_producto',
                 'transfor_transformado.cantidad',
                 'transfor_transformado.valor_unitario',
                 'transfor_transformado.valor_total',
+                'alm_prod.id_producto',
                 'alm_prod.descripcion',
                 'alm_prod.id_unidad_medida',
                 'alm_prod.part_number',

@@ -172,10 +172,13 @@ function listarDespachosPendientes(permiso) {
                                 data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}">
                                 <i class="fas fa-chevron-down"></i></button>` +
 
-                        (row['suma_reservas'] !== null && row['suma_cantidad'] !== null && row['suma_reservas'] >= row['suma_cantidad'] ?
-                            (`<button type="button" class="guia btn btn-warning btn-flat boton" data-toggle="tooltip" 
+                        // (row['suma_reservas'] !== null && row['suma_cantidad'] !== null && row['suma_reservas'] >= row['suma_cantidad'] ?
+                        (`<button type="button" class="guia btn btn-warning btn-flat boton" data-toggle="tooltip" 
                                 data-placement="bottom" title="Generar Guía" >
-                                <i class="fas fa-sign-in-alt"></i></button>`) : '');
+                                <i class="fas fa-sign-in-alt"></i></button>`)
+                    // : ''
+                    // );
+
                     // } else {
                     //     return '<button type="button" class="detalle btn btn-primary btn-flat boton" data-toggle="tooltip" ' +
                     //         'data-placement="bottom" title="Ver Detalle" >' +

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Logistica\Distribucion\OrdenesDespachoExternoController;
 use App\Models\Almacen\Requerimiento;
+use App\Models\Distribucion\OrdenDespacho;
 use App\Models\Logistica\Orden;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -127,7 +128,8 @@ class VentasInternasController extends Controller
                     ],
                     'id_od'
                 );
-                $codigo = OrdenesDespachoExternoController::ODnextId($fecha, $detalle->first()->id_almacen, false, $id_od);
+                // $codigo = OrdenesDespachoExternoController::ODnextId($fecha, $detalle->first()->id_almacen, false, $id_od);
+                $codigo = OrdenDespacho::ODnextId($detalle->first()->id_almacen, false, $id_od);
 
                 if ($codigo !== null) {
                     DB::table('almacen.orden_despacho')

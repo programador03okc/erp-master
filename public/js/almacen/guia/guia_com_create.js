@@ -270,7 +270,7 @@ $("#form-guia_create").on("submit", function (e) {
             });
         });
     }
-
+    console.log(detalle);
     if (validaCampos.length > 0) {
         Swal.fire(validaCampos, "", "warning");
     } else {

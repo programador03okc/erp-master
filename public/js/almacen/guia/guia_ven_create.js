@@ -31,7 +31,7 @@ function open_guia_create(data) {
     // $('#serie').text('');
     // $('#numero').text('');
     detalle = [];
-    listarDetalleOrdenDespacho(data.id_od, (data.aplica_cambios ? 'si' : 'no'));
+    listarDetalleOrdenDespacho(data.id_od, (data.aplica_cambios ? 'si' : 'no'), (data.tiene_transformacion ? 'si' : 'no'));
     // cargar_almacenes(data.id_sede, 'id_almacen');
     // var tp_doc_almacen = 2;//guia venta
     // next_serie_numero(data.id_sede,tp_doc_almacen);
@@ -39,12 +39,12 @@ function open_guia_create(data) {
 
 let detalle = [];
 
-function listarDetalleOrdenDespacho(id_od, tiene_transformacion) {
+function listarDetalleOrdenDespacho(id_od, aplica_cambios, tiene_transformacion) {
     detalle = [];
-    console.log('verDetalleDespacho/' + id_od + '/' + tiene_transformacion);
+    console.log('verDetalleDespacho/' + id_od + '/' + aplica_cambios);
     $.ajax({
         type: 'GET',
-        url: 'verDetalleDespacho/' + id_od + '/' + tiene_transformacion,
+        url: 'verDetalleDespacho/' + id_od + '/' + aplica_cambios + '/' + tiene_transformacion,
         dataType: 'JSON',
         success: function (response) {
             console.log(response);

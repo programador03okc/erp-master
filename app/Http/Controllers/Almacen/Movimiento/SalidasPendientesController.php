@@ -38,7 +38,7 @@ class SalidasPendientesController extends Controller
                 'alm_req.concepto',
                 'alm_req.tiene_transformacion',
                 'alm_req.obs_facturacion',
-                // 'sis_usua.nombre_corto',
+                // 'sis_usua.nombre_corto', (orden_despacho.aplica_cambios==true ? false : alm_req.tiene_transformacion)
                 'adm_estado_doc.estado_doc',
                 'adm_estado_doc.bootstrap_color',
                 'transformacion.id_transformacion',
@@ -52,7 +52,7 @@ class SalidasPendientesController extends Controller
                         FROM almacen.alm_reserva AS reserva
                         INNER JOIN almacen.orden_despacho_det AS despacho 
                             ON( despacho.id_od = orden_despacho.id_od  
-                            and despacho.transformado = orden_despacho.aplica_cambios)
+                            and despacho.transformado = false)
                         WHERE reserva.id_detalle_requerimiento = despacho.id_detalle_requerimiento
                             and reserva.estado != 7
                             and reserva.estado != 5
@@ -60,7 +60,7 @@ class SalidasPendientesController extends Controller
                 DB::raw("(SELECT SUM(despacho.cantidad) 
                         FROM  almacen.orden_despacho_det AS despacho 
                         WHERE despacho.id_od = orden_despacho.id_od
-                          AND despacho.transformado = orden_despacho.aplica_cambios
+                          AND despacho.transformado = false
                           AND despacho.estado != 7) AS suma_cantidad")
             )
             ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'orden_despacho.id_requerimiento')
@@ -529,7 +529,7 @@ class SalidasPendientesController extends Controller
         }
     }
 
-    public function verDetalleDespacho($id_od, $tiene_transformacion)
+    public function verDetalleDespacho($id_od, $aplica_cambios, $tiene_transformacion)
     {
         $data = DB::table('almacen.orden_despacho_det')
             ->select(
@@ -578,7 +578,7 @@ class SalidasPendientesController extends Controller
             ->where([
                 ['orden_despacho_det.id_od', '=', $id_od],
                 ['orden_despacho_det.estado', '!=', 7],
-                ['orden_despacho_det.transformado', '=', ($tiene_transformacion == 'si' ? true : false)]
+                ['orden_despacho_det.transformado', '=', ($aplica_cambios == 'si' ? false : ($tiene_transformacion == 'si' ? true : false))]
             ])
             ->get();
 

@@ -769,7 +769,6 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('listar-adjuntos-requerimiento-pago-cabecera/{idRequerimentoPago}', 'Tesoreria\RequerimientoPagoController@listaAdjuntosRequerimientoPagoCabecera');
 				Route::get('listar-adjuntos-requerimiento-pago-detalle/{idRequerimentoPagoDetalle}', 'Tesoreria\RequerimientoPagoController@listaAdjuntosRequerimientoPagoDetalle');
 				Route::get('mostrar-requerimiento/{id?}/{codigo?}', 'Logistica\RequerimientoController@mostrarRequerimiento')->name('mostrar-requerimiento');
-
 			});
 		});
 	});
@@ -1358,7 +1357,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('listarSalidasDespacho', 'Almacen\Movimiento\SalidasPendientesController@listarSalidasDespacho');
 				Route::post('anular_salida', 'Almacen\Movimiento\SalidasPendientesController@anular_salida');
 				Route::post('cambio_serie_numero', 'Almacen\Movimiento\SalidasPendientesController@cambio_serie_numero');
-				Route::get('verDetalleDespacho/{id}/{tra}', 'Almacen\Movimiento\SalidasPendientesController@verDetalleDespacho');
+				Route::get('verDetalleDespacho/{id}/{ac}/{tra}', 'Almacen\Movimiento\SalidasPendientesController@verDetalleDespacho');
 				Route::get('marcar_despachado/{id}/{tra}', 'Almacen\Movimiento\SalidasPendientesController@marcar_despachado');
 				Route::get('imprimir_salida/{id}', 'Almacen\Movimiento\SalidaPdfController@imprimir_salida');
 				// Route::get('anular_orden_despacho/{id}', 'Almacen\Movimiento\SalidasPendientesController@anular_orden_despacho');
