@@ -2691,7 +2691,7 @@ class OrdenController extends Controller
             ->select(
                 'log_det_ord_compra.*'
             )
-            ->where('log_det_ord_compra.id_orden_compra', '!=', $idOrden)
+            ->where([['log_det_ord_compra.id_orden_compra', '!=', $idOrden],['log_det_ord_compra.estado', '!=', 7]])
             ->whereIn('log_det_ord_compra.id_detalle_requerimiento', $idDetalleOrdenList)
             ->get();
 
@@ -2715,7 +2715,7 @@ class OrdenController extends Controller
             ->select(
                 'log_det_ord_compra.*'
             )
-            ->where('log_det_ord_compra.id_orden_compra', '=', $idOrden)
+            ->where([['log_det_ord_compra.id_orden_compra', '=', $idOrden]])
             ->get();
         $data = [];
         foreach ($det_orden as $value) {
@@ -2723,6 +2723,7 @@ class OrdenController extends Controller
                 'id_detalle_requerimiento' => $value->id_detalle_requerimiento,
                 'id_detalle_orden' => $value->id_detalle_orden,
                 'id_orden_compra' => $value->id_orden_compra,
+                'estado' => $value->estado,
                 'cantidad' => $value->cantidad
             ];
         }
@@ -2768,7 +2769,8 @@ class OrdenController extends Controller
             foreach ($detalleOrdenGeneradaList as $value) {
                 $itemsOrdenGeneradaHoy[] = [
                     'id_detalle_requerimiento' => $value['id_detalle_requerimiento'],
-                    'cantidad' => $value['cantidad']
+                    'cantidad' => $value['cantidad'],
+                    'estado' => $value['estado']
                 ];
             }
         }
@@ -2780,6 +2782,9 @@ class OrdenController extends Controller
                     if ($itemBase['id_detalle_requerimiento'] == $ordenHoy['id_detalle_requerimiento']) {
                         $itemBaseList[$keyItemBase]['cantidad_atendida'] += intval($ordenHoy['cantidad']);
                         $itemBaseList[$keyItemBase]['update'] = true;
+                        if($ordenHoy['estado']==7){
+                            $itemBaseList[$keyItemBase]['cantidad_atendida'] = 0;
+                        }
                     }
                 }
             }
@@ -2821,6 +2826,8 @@ class OrdenController extends Controller
 
                 } elseif (($itemBase['cantidad_atendida'] > 0) && ($itemBase['cantidad'] > $itemBase['cantidad_atendida'])) {
                     $itemBaseList[$keyItemBase]['estado'] = 15; //atendido parcial
+                }elseif (($itemBase['cantidad_atendida'] == 0) && ($itemBase['cantidad'] > 0)) {
+                    $itemBaseList[$keyItemBase]['estado'] = 1; //elaborado
                 }
             }
         }
@@ -2881,17 +2888,17 @@ class OrdenController extends Controller
         // if(config('app.debug')){
         // Debugbar::info($idRequerimientoList);
         // Debugbar::info($detalleRequerimiento);
-        // Debugbar::info($itemBaseList);
-        //     Debugbar::info($itemBaseEnOtrasOrdenesGeneradasList);
-        //     Debugbar::info($detalleOrdenGeneradaList);
-        //     Debugbar::info($itemAtendidoParcialOSinAtender);
+        Debugbar::info($itemBaseList);
+        // Debugbar::info($itemBaseEnOtrasOrdenesGeneradasList);
+        Debugbar::info($detalleOrdenGeneradaList);
+    //     Debugbar::info($itemAtendidoParcialOSinAtender);
         // }
 
 
         $nuevoEstadoDetalleRequerimiento = $this->obtenerNuevoEstadoDetalleRequerimiento($itemBaseList, $itemBaseEnOtrasOrdenesGeneradasList, $detalleOrdenGeneradaList, $itemAtendidoParcialOSinAtender);
-        // Debugbar::info($nuevoEstadoDetalleRequerimiento);
+        Debugbar::info($nuevoEstadoDetalleRequerimiento);
         $nuevoEstadoCabeceraRequerimiento = $this->obtenerNuevoEstadoCabeceraRequerimiento($idRequerimientoList, $nuevoEstadoDetalleRequerimiento);
-        // Debugbar::info($nuevoEstadoCabeceraRequerimiento);
+        Debugbar::info($nuevoEstadoCabeceraRequerimiento);
 
 
         // actualizar cabecera requerimiento
@@ -2999,6 +3006,7 @@ class OrdenController extends Controller
                                         $detalle = OrdenCompraDetalle::where("id_detalle_orden", $id)->first();
                                         $detalle->estado = 7;
                                         $detalle->save();
+
                                     }
                                 } else {
     
@@ -3041,6 +3049,9 @@ class OrdenController extends Controller
     
     
                 DB::commit();
+                if (isset($request->id_orden) and $request->id_orden > 0) {
+                    $this->actualizarNuevoEstadoRequerimiento($request->id_orden, null);
+                }
 
                 if (str_contains($data['mensaje'],'No existe un id_softlink en la OC seleccionada')) {
                     $migrarOrdenSoftlink = (new MigrateOrdenSoftLinkController)->migrarOrdenCompra($request->id_orden)->original;
