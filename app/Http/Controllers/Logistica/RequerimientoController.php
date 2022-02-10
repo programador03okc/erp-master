@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Logistica;
 
+use App\Exports\reporteRequerimientosBienesServiciosExcel;
 use App\Helpers\NotificacionHelper;
 use App\Http\Controllers\Almacen\Reporte\SaldosController;
 use App\Http\Controllers\AlmacenController;
@@ -47,6 +48,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
+use Maatwebsite\Excel\Facades\Excel;
 
 use Debugbar;
 use Mockery\Undefined;
@@ -1248,6 +1250,113 @@ class RequerimientoController extends Controller
             DB::rollBack();
             return response()->json(['estado' => 0, 'mensaje' => 'Hubo un problema al anular el requerimiento. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage(),'tipo_mensaje'=>$tipoMensaje]);
         }
+    }
+
+    public function obtenerRequerimientosElaborados($meOrAll,$idEmpresa,$idSede,$idGrupo,$idDivision,$fechaRegistroDesde,$fechaRegistroHasta,$idEstado){
+        $requerimientos = Requerimiento::with('detalle')->leftJoin('administracion.adm_documentos_aprob', 'alm_req.id_requerimiento', '=', 'adm_documentos_aprob.id_doc')
+            ->leftJoin('administracion.adm_estado_doc', 'alm_req.estado', '=', 'adm_estado_doc.id_estado_doc')
+            ->leftJoin('almacen.alm_tp_req', 'alm_req.id_tipo_requerimiento', '=', 'alm_tp_req.id_tipo_requerimiento')
+            ->leftJoin('administracion.adm_prioridad', 'alm_req.id_prioridad', '=', 'adm_prioridad.id_prioridad')
+            ->leftJoin('configuracion.sis_grupo', 'alm_req.id_grupo', '=', 'sis_grupo.id_grupo')
+            ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_req.id_sede')
+            ->leftJoin('administracion.adm_area', 'alm_req.id_area', '=', 'adm_area.id_area')
+            ->leftJoin('configuracion.sis_moneda', 'alm_req.id_moneda', '=', 'sis_moneda.id_moneda')
+            ->leftJoin('administracion.adm_periodo', 'adm_periodo.id_periodo', '=', 'alm_req.id_periodo')
+            ->leftJoin('administracion.adm_empresa', 'alm_req.id_empresa', '=', 'adm_empresa.id_empresa')
+            ->leftJoin('contabilidad.adm_contri', 'adm_empresa.id_contribuyente', '=', 'adm_contri.id_contribuyente')
+            ->leftJoin('contabilidad.sis_identi', 'sis_identi.id_doc_identidad', '=', 'adm_contri.id_doc_identidad')
+            ->leftJoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'alm_req.id_usuario')
+            ->leftJoin('rrhh.rrhh_trab as trab', 'trab.id_trabajador', '=', 'sis_usua.id_trabajador')
+            ->leftJoin('rrhh.rrhh_postu as post', 'post.id_postulante', '=', 'trab.id_postulante')
+            ->leftJoin('rrhh.rrhh_perso as pers', 'pers.id_persona', '=', 'post.id_persona')
+            ->leftJoin('administracion.division', 'division.id_division', '=', 'alm_req.division_id')
+
+            ->select(
+                'alm_req.id_requerimiento',
+                'adm_documentos_aprob.id_doc_aprob',
+                'alm_req.codigo',
+                'alm_req.id_tipo_requerimiento',
+                'alm_req.id_usuario',
+                'alm_req.id_rol',
+                'alm_req.fecha_requerimiento',
+                'alm_req.fecha_entrega',
+                'alm_req.id_periodo',
+                'adm_periodo.descripcion as descripcion_periodo',
+                'alm_req.concepto',
+                'alm_req.id_grupo',
+                'alm_req.id_empresa',
+                'adm_contri.razon_social',
+                'adm_contri.nro_documento',
+                'adm_contri.id_doc_identidad',
+                'sis_identi.descripcion as tipo_documento_identidad',
+                'alm_req.concepto AS alm_req_concepto',
+                'alm_req.estado',
+                'alm_req.id_area',
+                'alm_req.id_prioridad',
+                'alm_req.id_presupuesto',
+                'alm_req.id_moneda',
+                'alm_req.*',
+                'adm_estado_doc.estado_doc',
+                'alm_tp_req.descripcion AS tipo_requerimiento',
+                'adm_prioridad.descripcion AS priori',
+                'sis_grupo.descripcion AS grupo',
+                'adm_area.descripcion AS area',
+                'sis_moneda.simbolo AS simbolo_moneda',
+                'alm_req.fecha_registro',
+                'alm_req.division_id',
+                'division.descripcion as division',
+                DB::raw("CONCAT(pers.nombres,' ',pers.apellido_paterno,' ',pers.apellido_materno) as nombre_usuario"),
+                DB::raw("(SELECT COUNT(adm_aprobacion.id_aprobacion) 
+                FROM administracion.adm_aprobacion 
+                WHERE   adm_aprobacion.id_vobo = 3 AND
+                adm_aprobacion.tiene_sustento = true AND adm_aprobacion.id_doc_aprob = adm_documentos_aprob.id_doc_aprob) AS cantidad_sustentos"),
+                DB::raw("(SELECT SUM(alm_det_req.cantidad * alm_det_req.precio_unitario) 
+                FROM almacen.alm_det_req 
+                WHERE   alm_det_req.id_requerimiento = alm_req.id_requerimiento AND
+                alm_det_req.estado != 7) AS monto_total")
+
+            )
+
+            ->when(($meOrAll === 'ME'), function ($query) {
+                $idUsuario = Auth::user()->id_usuario;
+                return $query->whereRaw('alm_req.id_usuario = ' . $idUsuario);
+            })
+            ->when(($meOrAll === 'ALL'), function ($query) {
+                return $query->whereRaw('alm_req.id_usuario > 0');
+            })
+            ->when(($meOrAll === 'REVISADO_APROBADO'), function ($query) {
+                $idUsuario = Auth::user()->id_usuario;
+                $query->leftJoin('administracion.adm_aprobacion', 'adm_aprobacion.id_doc_aprob', '=', 'adm_documentos_aprob.id_doc_aprob');
+                return $query->whereRaw('adm_aprobacion.id_usuario = ' . $idUsuario . ' and adm_aprobacion.id_vobo = 1 ');
+            })
+            ->when((intval($idEmpresa) > 0), function ($query)  use ($idEmpresa) {
+                return $query->whereRaw('alm_req.id_empresa = ' . $idEmpresa);
+            })
+            ->when((intval($idSede) > 0), function ($query)  use ($idSede) {
+                return $query->whereRaw('alm_req.id_sede = ' . $idSede);
+            })
+            ->when((intval($idGrupo) > 0), function ($query)  use ($idGrupo) {
+                return $query->whereRaw('sis_grupo.id_grupo = ' . $idGrupo);
+            })
+            ->when((intval($idDivision) >0), function ($query)  use ($idDivision) {
+                return $query->whereRaw('alm_req.division_id = ' . $idDivision);
+            })
+            ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta == 'SIN_FILTRO')), function ($query) use($fechaRegistroDesde) {
+                return $query->where('alm_req.fecha_requerimiento' ,'>=',$fechaRegistroDesde); 
+            })
+            ->when((($fechaRegistroDesde == 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use($fechaRegistroHasta) {
+                return $query->where('alm_req.fecha_requerimiento' ,'<=',$fechaRegistroHasta); 
+            })
+            ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use($fechaRegistroDesde,$fechaRegistroHasta) {
+                return $query->whereBetween('alm_req.fecha_requerimiento' ,[$fechaRegistroDesde,$fechaRegistroHasta]); 
+            })
+            ->when((intval($idEstado) > 0), function ($query)  use ($idEstado) {
+                return $query->whereRaw('alm_req.estado = ' . $idEstado);
+            })
+            ->where('alm_req.flg_compras','=',0);
+
+        return $requerimientos;
+            
     }
 
     public function listarRequerimientosElaborados(Request $request)
@@ -3614,4 +3723,10 @@ class RequerimientoController extends Controller
 
         return datatables($catalogo)->toJson();
     }
+
+    public function reporteRequerimientosBienesServiciosExcel($meOrAll,$idEmpresa, $idSede,$idGrupo,$idDivision, $fechaRegistroDesde, $fechaRegistroHasta,$idEstado){
+        return Excel::download(new reporteRequerimientosBienesServiciosExcel($meOrAll,$idEmpresa, $idSede,$idGrupo,$idDivision, $fechaRegistroDesde, $fechaRegistroHasta,$idEstado), 'reporte_requerimientos_bienes_servicios.xlsx');
+
+    }
+    
 }
