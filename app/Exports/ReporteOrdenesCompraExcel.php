@@ -62,7 +62,8 @@ class ReporteOrdenesCompraExcel implements FromView
                 'fecha'=> $element->fecha,
                 'dias_entrega'=> $diasEntrega,
                 'condicion2'=> $condicion2,
-                'fecha_entrega'=> $fechaLlegada
+                'fecha_entrega'=> $fechaLlegada,
+                'observacion'=> $element->observacion
 
             ];
         }

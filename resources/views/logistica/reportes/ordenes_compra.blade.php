@@ -42,6 +42,7 @@ Reportes de ordenes compra
                             <th style="text-align:center;">Días de entrega</th>
                             <th style="text-align:center;">Condición 2</th>
                             <th style="text-align:center;">Fecha entrega</th>
+                            <th style="text-align:center;">Observacion</th>
                         </tr>
                     </thead>
                     <tbody></tbody>

@@ -8,7 +8,7 @@
             <div class="modal-body">
                 <div class="row">
                         <div class="col-md-12">
-                        <p class="form-control-static"><strong>Proveedor:</strong> <span id="razon_social_proveedor"></span></p>
+                        <p class="form-control-static"><strong id="nombre_contexto">Proveedor:</strong> <span id="razon_social_proveedor"></span></p>
 
                     </div>
                 </div>

@@ -22,20 +22,10 @@
         </ul>
     </li>
     @endif
-    @if(Auth::user()->tieneSubModulo(23))
-    <li class="treeview">
-        <a href="#">
-            <i class="fas fa-file-invoice-dollar"></i> <span>Requerimiento de pago</span>
-            <span class="pull-right-container">
-                <i class="fa fa-angle-left pull-right"></i>
-            </span>
-        </a>
-        <ul class="treeview-menu">
-            @if(Auth::user()->tieneAplicacion(102))
-            <li><a href="{{route('necesidades.pago.listado.index')}}"><i class="far fa-circle fa-xs"></i> Listado</a></li>
-            @endif
-        </ul>
-    </li>
+    @if(Auth::user()->tieneSubModulo(52))
+
+    <li><a href="{{route('necesidades.pago.listado.index')}}"><i class="fas fa-file-invoice-dollar"></i> <span>Requerimiento de pago</span></a></li>
+
     @endif
         <li><a href="{{route('necesidades.revisar-aprobar.listado.index')}}"><i class="fas fa-stamp"></i> <span>Revisar / aprobar</span></a></li>
 </ul>

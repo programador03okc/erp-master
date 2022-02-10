@@ -87,6 +87,12 @@ function proveedorModal(){
         listar_transportistas();
     } else {
         listar_proveedores();
+        if($('.page-main').attr('type')=='lista_requerimiento_pago'){
+            document.querySelector("div[id='modal-proveedores'] h3[class='modal-title']").textContent= "Lista de Destinatarios";
+        }else{
+            document.querySelector("div[id='modal-proveedores'] h3[class='modal-title']").textContent= "Lista de Proveedores";
+
+        }
     }
 }
 

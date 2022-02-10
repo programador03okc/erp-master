@@ -15,6 +15,7 @@
             <th>Días de entrega</th>
             <th>Condición 2</th>
             <th>Fecha entrega</th>
+            <th>Observacion</th>
         </tr>
     </thead>
     <tbody>
@@ -34,6 +35,8 @@
             <td>{{ $orden["dias_entrega"] }}</td>
             <td>{{ $orden["condicion2"] }}</td>
             <td>{{ $orden["fecha_entrega"] }}</td>
+            <td>{{ $orden["observacion"] }}</td>
+
         </tr>
         @endforeach
     </tbody>
