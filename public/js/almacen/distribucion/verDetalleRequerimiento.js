@@ -73,7 +73,7 @@ function format(table_id, id, row, $boton) {
             </tbody>
             </table>`;
 
-        $boton.prop('disabled', false);
+        // $boton.prop('disabled', false);
         row.child(tabla).show();
     }
 }

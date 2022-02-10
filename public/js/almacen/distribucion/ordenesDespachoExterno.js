@@ -112,10 +112,11 @@ function listarRequerimientosPendientes(usuario) {
             {
                 data: 'codigo', name: 'alm_req.codigo', className: "text-center",
                 'render': function (data, type, row) {
-                    return row['codigo'] + (row['estado'] == 38 ?
+                    return (row['codigo'] !== null ? row['codigo'] : '') + (row['estado'] == 38 ?
                         ' <i class="fas fa-exclamation-triangle red" data-toggle="tooltip" data-placement="bottom" title="Requerimiento por regularizar"></i> '
                         : (row['estado'] == 39 ?
-                            ' <i class="fas fa-pause orange" data-toggle="tooltip" data-placement="bottom" title="Requerimiento en pausa"></i> ' : ''));
+                            ' <i class="fas fa-pause orange" data-toggle="tooltip" data-placement="bottom" title="Requerimiento en pausa"></i> ' : ''))
+                        + (row['tiene_transformacion'] ? ' <i class="fas fa-random red"></i>' : '');
                 }
             },
             {
@@ -756,13 +757,13 @@ $('#requerimientosEnProceso tbody').on('click', 'td button.detalle', function ()
     var id = $(this).data('id');
 
     const $boton = $(this);
-    $boton.prop('disabled', true);
+    // $boton.prop('disabled', true);
 
     if (row.child.isShown()) {
         //  This row is already open - close it
         row.child.hide();
         tr.removeClass('shown');
-        $boton.prop('disabled', false);
+        // $boton.prop('disabled', false);
     }
     else {
         format(iTableCounter, id, row, $boton);

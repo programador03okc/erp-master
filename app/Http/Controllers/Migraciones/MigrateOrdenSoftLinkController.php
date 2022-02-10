@@ -739,6 +739,66 @@ class MigrateOrdenSoftLinkController extends Controller
                 ]
             );
 
+            $sucursales = DB::connection('soft')->table('sucursal')->get();
+
+            foreach ($sucursales as $suc) {
+                $prod = DB::connection('soft')->table('precios')
+                    ->where([['cod_prod', '=', $cod_prod], ['cod_suc', '=', $suc->cod_suc]])
+                    ->first();
+
+                if ($prod == null) {
+                    DB::connection('soft')->table('precios')->insert(
+                        [
+                            'cod_prod' => $cod_prod,
+                            'cod_suc' => $suc->cod_suc,
+                            'en_lista' => 1,
+                            'lsupendido' => 0,
+                            'fecha_susp' => '0000-00-00',
+                            'precio_venta' => 0,
+                            'precio_mayor' => 0,
+                            'precio_tres' => 0,
+                            'precio_cuatro' => 0,
+                            'precio_cinco' => 0,
+                            'precio_seis' => 0,
+                            'precio_costo' => 0,
+                            'precio_inver' => 0,
+                            'precio_refer' => 0,
+                            'porct_1' => 0,
+                            'porct_2' => 0,
+                            'porct_3' => 0,
+                            'porct_4' => 0,
+                            'porct_5' => 0,
+                            'porct_6' => 0,
+                            'costo_ultimo' => 0
+                        ]
+                    );
+                }
+            }
+
+            $almacenes = DB::connection('soft')->table('almacen')->get();
+
+            foreach ($almacenes as $alm) {
+                $stock = DB::connection('soft')->table('stocks')
+                    ->where([['cod_suc', '=', $alm->cod_suc], ['cod_alma', '=', $alm->cod_alma], ['cod_prod', '=', $cod_prod]])
+                    ->first();
+
+                if ($stock == null) {
+                    DB::connection('soft')->table('stocks')->insert(
+                        [
+                            'cod_suc' => $alm->cod_suc,
+                            'cod_alma' => $alm->cod_alma,
+                            'cod_prod' => $cod_prod,
+                            'stock_act' => 0,
+                            'stock_ing' => 0,
+                            'stock_ped' => 0,
+                            'stock_min' => 0,
+                            'stock_max' => 0,
+                            'cod_ubic' => '',
+                        ]
+                    );
+                }
+            }
+
             DB::table('almacen.alm_prod')
                 ->where('id_producto', $det->id_producto)
                 ->update(['cod_softlink' => $cod_prod]);
