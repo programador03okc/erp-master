@@ -2,7 +2,7 @@
 @section('sidebar')
 <ul class="sidebar-menu" data-widget="tree">
     <li><a href="{{route('tesoreria.index')}}"><i class="fas fa-tachometer-alt"></i> <span>Tesorería</span></a></li>
-    @if(Auth::user()->tieneAplicacion(132))
+    @if(Auth::user()->tieneAplicacion(133))
     <li>
         <a href="{{route('tesoreria.pagos.procesar-pago.index')}}"><i class="fas fa-file-invoice-dollar"></i> 
             <span>Registro de Pagos </span>
