@@ -76,6 +76,7 @@ class SalidasPendientesController extends Controller
 
         if ($request->select_mostrar_pendientes == 0) {
             $data->whereIn('orden_despacho.estado', [1, 25]);
+            $data->where('orden_despacho.flg_despacho', 0);
         } else if ($request->select_mostrar_pendientes == 1) {
             $data->where('orden_despacho.estado', 25);
         } else if ($request->select_mostrar_pendientes == 2) {

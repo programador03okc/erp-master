@@ -1041,7 +1041,7 @@ class TransformacionController extends Controller
                     DB::table('almacen.alm_req')
                         ->where('id_requerimiento', $req->id_requerimiento)
                         ->update([
-                            'estado' => 10, //Culminado
+                            'estado_despacho' => 10, //Culminado
                         ]);
                 }
             }
