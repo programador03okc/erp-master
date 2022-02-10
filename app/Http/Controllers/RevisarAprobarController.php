@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\NotificacionHelper;
+use App\Mail\EmailNotificarUsuarioPropietarioDeDocumento;
 use App\Models\Administracion\Aprobacion;
 use App\Models\Administracion\Division;
 use App\Models\Administracion\DivisionArea;
@@ -22,6 +23,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Debugbar;
 use Exception;
+use Illuminate\Support\Facades\Mail;
 
 class RevisarAprobarController extends Controller{
 
@@ -351,7 +353,7 @@ class RevisarAprobarController extends Controller{
         
         if($tipoDocumento ==1){
             $obtenerId = $this->obtenerRelacionadoAIdDocumento($tipoDocumento,$idDocumento);
-            if($obtenerId['estado']=='succces'){
+            if($obtenerId['estado']=='success'){
                 $requerimiento = Requerimiento::find($obtenerId['id']);
                 $detalle = $requerimiento->detalle;
                 $montoTotal = 0;
@@ -362,9 +364,9 @@ class RevisarAprobarController extends Controller{
         }elseif($tipoDocumento ==11){
 
             $obtenerId = $this->obtenerRelacionadoAIdDocumento($tipoDocumento,$idDocumento);
-            if($obtenerId['estado']=='succces'){
-                $requerimiento = RequerimientoPago::find($obtenerId['id']);
-                $detalle = $requerimiento->detalle;
+            if($obtenerId['estado']=='success'){
+                $requerimientoPago = RequerimientoPago::find($obtenerId['id']);
+                $detalle = $requerimientoPago->detalle;
                 $montoTotal = 0;
                 foreach ($detalle as $item) {
                     $montoTotal += $item->cantidad * $item->precio_unitario;
@@ -397,6 +399,7 @@ class RevisarAprobarController extends Controller{
                 break;
         }
         $requerimiento->save();
+        return $requerimiento;
     }
     public function actualizarEstadoRequerimientoPago($accion,$requerimientoPago,$aprobacionFinalOPendiente){
         switch ($accion) {
@@ -457,7 +460,7 @@ class RevisarAprobarController extends Controller{
     
     }
 
-    private function enviarNotificacionPorAprobacion($requerimiento,$comentario,$nombreCompletoUsuarioCreador,$nombreCompletoUsuarioRevisaAprueba,$montoTotal,$trazabilidad){
+    private function enviarNotificacionPorAprobacion($requerimiento,$comentario,$nombreCompletoUsuarioPropietarioDelDocumento,$nombreCompletoUsuarioRevisaAprueba,$montoTotal,$trazabilidad){
         $titulo = 'El requerimiento ' . $requerimiento->codigo . ' fue '.$trazabilidad->accion;
         $mensaje = 'El requerimiento ' . $requerimiento->codigo . ' fue '.$trazabilidad->accion.'. Información adicional del requerimiento:' .
             '<ul>' .
@@ -466,7 +469,7 @@ class RevisarAprobarController extends Controller{
             '<li> División: ' . $requerimiento->division->descripcion . '</li>' .
             '<li> Fecha limite de entrega: ' . $requerimiento->fecha_entrega . '</li>' .
             '<li> Monto Total: ' . $requerimiento->moneda->simbolo . number_format($montoTotal, 2) . '</li>' .
-            '<li> Creado por: ' . ($nombreCompletoUsuarioCreador ?? '') . '</li>' .
+            '<li> Creado por: ' . ($nombreCompletoUsuarioPropietarioDelDocumento ?? '') . '</li>' .
             '<li> '.$trazabilidad->descripcion.': ' . ($nombreCompletoUsuarioRevisaAprueba ?? '') . '</li>' .
             (!empty($comentario) ? ('<li> Comentario: ' . $comentario . '</li>') : '') .
             '</ul>' .
@@ -556,10 +559,20 @@ class RevisarAprobarController extends Controller{
             // tieneRolConSiguienteAprobacion = $request->tieneRolConSiguienteAprobacion;
             // idOperacion = $request->idOperacion;
             $nombreCompletoUsuarioRevisaAprueba = Usuario::find($request->idUsuarioAprobante)->nombre_corto;
-
+            $accion='';
+            if ($request->accion == 1) {
+                $accion='Aprobado';
+            }
+            if ($request->accion == 2) {
+                $accion='Rechazado';
+            }
+            if ($request->accion == 3) {
+                $accion='Observado';
+            }
             if ($request->aprobacionFinalOPendiente == 'PENDIENTE') {
                 if ($request->accion == 1) {
                     $request->accion = 5; // Revisado
+                    $accion='Pendiente Aprobación';
                 }
             }
             // agregar vobo (1= aprobado, 2= rechazado, 3=observado, 5=Revisado)
@@ -572,12 +585,13 @@ class RevisarAprobarController extends Controller{
 
             if($obtenerMontoTotal['estado']=='success'){
                 $montoTotal=$obtenerMontoTotal['monto'];
+
             }else{
                 return response()->json(['id_aprobacion' => 0, 'notificacion_por_emial' => false, 'mensaje' => 'Hubo un problema al guardar la respuesta. Mensaje de error:'.$obtenerMontoTotal['mensaje']]);
 
             }
 
-            $nombreCompletoUsuarioCreador = Usuario::find($request->idUsuarioPropietarioDocumento)->nombre_corto;
+            $nombreCompletoUsuarioPropietarioDelDocumento = Usuario::find($request->idUsuarioPropietarioDocumento)->nombre_corto;
             //  ======= inicio tipo requerimiento b/s =======
 
             if($request->idTipoDocumento ==1){ 
@@ -585,7 +599,6 @@ class RevisarAprobarController extends Controller{
                     $requerimiento = Requerimiento::find($request->idRequerimiento);
                 }else{
                     $obtenerId = $this->obtenerRelacionadoAIdDocumento($request->idTipoDocumento,$request->idDocumento);
-                            Debugbar::info($obtenerId);
 
                     if($obtenerId['estado']=='success'){
                         $requerimiento = Requerimiento::find($obtenerId['id']);
@@ -594,10 +607,11 @@ class RevisarAprobarController extends Controller{
                     }
                 }
 
-                $this->actualizarEstadoRequerimiento($request->accion,$requerimiento,$request->aprobacionFinalOPendiente);
+                $requerimientoConEstadoActualizado= $this->actualizarEstadoRequerimiento($request->accion,$requerimiento,$request->aprobacionFinalOPendiente);
                 $trazabilidad= $this->registrarTrazabilidad($request->idRequerimiento,$request->aprobacionFinalOPendiente,$request->idUsuarioAprobante, $nombreCompletoUsuarioRevisaAprueba, $request->accion);
     
-                // $this->enviarNotificacionPorAprobacion($requerimiento,$request->sustento,$nombreCompletoUsuarioCreador,$nombreCompletoUsuarioRevisaAprueba,$montoTotal,$trazabilidad);
+                // $this->enviarNotificacionPorAprobacion($requerimiento,$request->sustento,$nombreCompletoUsuarioPropietarioDelDocumento,$nombreCompletoUsuarioRevisaAprueba,$montoTotal,$trazabilidad);
+ 
             }
             //  ======= fin tipo requerimiento b/s =======
 
@@ -617,7 +631,9 @@ class RevisarAprobarController extends Controller{
                 $this->actualizarEstadoRequerimientoPago($request->accion,$requerimientoPago,$request->aprobacionFinalOPendiente);
                 // $trazabilidad= $this->registrarTrazabilidad($request->idRequerimiento,$request->aprobacionFinalOPendiente,$request->idUsuarioAprobante, $nombreCompletoUsuarioRevisaAprueba, $request->accion);
     
-                // $this->enviarNotificacionPorAprobacion($requerimientoPago,$request->sustento,$nombreCompletoUsuarioCreador,$nombreCompletoUsuarioRevisaAprueba,$montoTotal,$trazabilidad);
+                // $this->enviarNotificacionPorAprobacion($requerimientoPago,$request->sustento,$nombreCompletoUsuarioPropietarioDelDocumento,$nombreCompletoUsuarioRevisaAprueba,$montoTotal,$trazabilidad);
+ 
+
             }
             //  ======= fin tipo requerimiento pago =======
 
@@ -654,23 +670,26 @@ class RevisarAprobarController extends Controller{
                                         if($flujo->orden ==$tamañoFlujo ){
                                             $accionNext =1;
                                             $aprobacionFinalOPendiente='APROBACION_FINAL';
+                                            $accion='Aprobado';
+                                            
                                         }else{
                                             $accionNext =5;
                                             $aprobacionFinalOPendiente='PENDIENTE';
-
+                                            $accion='Pendiente Aprobación';
+                                            
                                         }
                                         $aprobacion= $this->registrarRespuesta($accionNext, $flujo->id_flujo, $request->idDocumento,$request->idUsuarioAprobante,$request->sustento, $flujo->id_rol);
 
                                         if($request->idTipoDocumento ==1){ //documento de tipo: requerimiento b/s
                                             $trazabilidad= $this->registrarTrazabilidad($request->idRequerimiento,$aprobacionFinalOPendiente,$request->idUsuarioAprobante, $nombreCompletoUsuarioRevisaAprueba, $accionNext);
                                             $this->actualizarEstadoRequerimiento($accionNext,$requerimiento,$aprobacionFinalOPendiente);
-                                            // $this->enviarNotificacionPorAprobacion($requerimiento,$request->sustento,$nombreCompletoUsuarioCreador,$nombreCompletoUsuarioRevisaAprueba,$montoTotal,$trazabilidad);
+                                            // $this->enviarNotificacionPorAprobacion($requerimiento,$request->sustento,$nombreCompletoUsuarioPropietarioDelDocumento,$nombreCompletoUsuarioRevisaAprueba,$montoTotal,$trazabilidad);
+
                                         }elseif($request->idTipoDocumento ==11){//documento de tipo: requerimiento pago
                                             // $trazabilidad= $this->registrarTrazabilidad($request->idRequerimiento,$aprobacionFinalOPendiente,$request->idUsuarioAprobante, $nombreCompletoUsuarioRevisaAprueba, $accionNext);
                                             $this->actualizarEstadoRequerimientoPago($accionNext,$requerimientoPago,$aprobacionFinalOPendiente);
                                             
-                                            // $this->enviarNotificacionPorAprobacion($requerimiento,$request->sustento,$nombreCompletoUsuarioCreador,$nombreCompletoUsuarioRevisaAprueba,$montoTotal,$trazabilidad);
-
+                                            // $this->enviarNotificacionPorAprobacion($requerimiento,$request->sustento,$nombreCompletoUsuarioPropietarioDelDocumento,$nombreCompletoUsuarioRevisaAprueba,$montoTotal,$trazabilidad);
                                         }
                                     }
                                     $i++;
@@ -681,9 +700,28 @@ class RevisarAprobarController extends Controller{
                     }
                 }
             }
-            if ($request->accion == 1) {
+            if ($request->accion > 0) {
                 $seNotificaraporEmail = true;
                 // TO-DO NOTIFICAR AL USUARIO QUE SU REQUERIMIENTO FUE APROBADO
+                $correoDestinatario = [];
+
+                if (config('app.debug')) {
+                    $correoDestinatario[] = config('global.correoDebug2');
+                } else {
+                    if($request->idTipoDocumento ==1){ //documento de tipo: requerimiento b/s
+                        $correoDestinatario[] = Usuario::find($requerimiento->id_usuario)->email;
+                    }elseif($request->idTipoDocumento ==11){//documento de tipo: requerimiento pago
+                        $correoDestinatario[] = Usuario::find($requerimientoPago->id_usuario)->email;
+                    }
+
+                }
+                if($request->idTipoDocumento ==1){ //documento de tipo: requerimiento b/s
+                    Mail::to($correoDestinatario)->send(new EmailNotificarUsuarioPropietarioDeDocumento($request->idTipoDocumento,$requerimiento,$request->sustento,$nombreCompletoUsuarioPropietarioDelDocumento,$nombreCompletoUsuarioRevisaAprueba,$montoTotal,$accion));
+                }elseif($request->idTipoDocumento ==11){ //documento de tipo: requerimiento pago
+                    Mail::to($correoDestinatario)->send(new EmailNotificarUsuarioPropietarioDeDocumento($request->idTipoDocumento,$requerimientoPago,$request->sustento,$nombreCompletoUsuarioPropietarioDelDocumento,$nombreCompletoUsuarioRevisaAprueba,$montoTotal,$accion));
+
+                }
+
             }
 
             $seNotificaraporEmail = true;
