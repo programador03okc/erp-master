@@ -1144,18 +1144,18 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::group(['as' => 'catalogos.', 'prefix' => 'catalogos'], function () {
 
 			Route::group(['as' => 'tipos.', 'prefix' => 'tipos'], function () {
-				//Tipo Producto
+				//Categoria
 				Route::get('index', 'Almacen\Catalogo\TipoProductoController@view_tipo')->name('index');
-				Route::get('listar_tipos', 'Almacen\Catalogo\TipoProductoController@mostrar_tp_productos');
-				Route::get('mostrar_tipo/{id}', 'Almacen\Catalogo\TipoProductoController@mostrar_tp_producto');
-				Route::post('guardar_tipo', 'Almacen\Catalogo\TipoProductoController@guardar_tp_producto');
-				Route::post('actualizar_tipo', 'Almacen\Catalogo\TipoProductoController@update_tp_producto');
-				Route::get('anular_tipo/{id}', 'Almacen\Catalogo\TipoProductoController@anular_tp_producto');
-				Route::get('revisarTipo/{id}', 'Almacen\Catalogo\TipoProductoController@tipo_revisar_relacion');
+				Route::get('listarCategorias', 'Almacen\Catalogo\TipoProductoController@listarCategorias');
+				Route::get('mostrarCategoria/{id}', 'Almacen\Catalogo\TipoProductoController@mostrarCategoria');
+				Route::post('guardarCategoria', 'Almacen\Catalogo\TipoProductoController@guardarCategoria');
+				Route::post('actualizarCategoria', 'Almacen\Catalogo\TipoProductoController@actualizarCategoria');
+				Route::get('anularCategoria/{id}', 'Almacen\Catalogo\TipoProductoController@anularCategoria');
+				Route::get('revisarCategoria/{id}', 'Almacen\Catalogo\TipoProductoController@revisarCategoria');
 			});
 
 			Route::group(['as' => 'categorias.', 'prefix' => 'categorias'], function () {
-				//Categoria
+				//SubCategoria
 				Route::get('index', 'Almacen\Catalogo\CategoriaController@view_categoria')->name('index');
 				Route::get('listar_categorias', 'Almacen\Catalogo\CategoriaController@mostrar_categorias');
 				Route::get('mostrar_categoria/{id}', 'Almacen\Catalogo\CategoriaController@mostrar_categoria');
@@ -1167,7 +1167,7 @@ Route::group(['middleware' => ['auth']], function () {
 			});
 
 			Route::group(['as' => 'sub-categorias.', 'prefix' => 'sub-categorias'], function () {
-				//Sub Categoria
+				//Marca
 				Route::get('index', 'Almacen\Catalogo\SubCategoriaController@view_subcategoria')->name('index');
 				Route::get('listar_subcategorias', 'Almacen\Catalogo\SubCategoriaController@mostrar_sub_categorias');
 				Route::get('mostrar_subcategoria/{id}', 'Almacen\Catalogo\SubCategoriaController@mostrar_sub_categoria');

@@ -272,7 +272,7 @@ function eventRegister(type, data, action, frm_active) {
             break;
         ////////////////////////// ALMACEN //////////////////////////
         case "tipo":
-            save_tipo(data, action);
+            guardarCategoria(data, action);
             break;
         case "categoria":
             save_categoria(data, action);
@@ -596,7 +596,7 @@ function anularRegister(type, ids, active) {
             break;
         ////////////////////////// ALMACEN //////////////////////////
         case "tipo":
-            anular_tipo(ids);
+            anularCategoria(ids);
             break;
         case "categoria":
             anular_categoria(ids);
