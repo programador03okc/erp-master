@@ -24,6 +24,7 @@ Revisar / aprobar requerimientos de pago
     <div class="row">
         <div class="col-md-12">
             <fieldset class="group-table">
+                <div class="table-responsive">
                     <table class="mytable table table-hover table-condensed table-bordered table-okc-view" id="ListaRequerimientoPago" width="100%">
                         <thead>
                             <tr>
@@ -44,7 +45,7 @@ Revisar / aprobar requerimientos de pago
                         </thead>
                     </table>
 
-
+                </div>
             </fieldset>
         </div>
     </div>
@@ -52,7 +53,7 @@ Revisar / aprobar requerimientos de pago
 
 
 <div class="hidden" id="divOculto">
-    <select id="selectUnidadMedida"  onchange="updateUM(this);">
+    <select id="selectUnidadMedida" onchange="updateUM(this);">
         @foreach ($unidadesMedida as $unidad)
         <option value="{{$unidad->id_unidad_medida}}">{{$unidad->descripcion}}</option>
         @endforeach
@@ -79,27 +80,26 @@ Revisar / aprobar requerimientos de pago
 
 
 <script>
-function updateUM(val){
-  val.options[val.selectedIndex].setAttribute("selected","");
-  
-}
+    function updateUM(val) {
+        val.options[val.selectedIndex].setAttribute("selected", "");
+
+    }
     var gruposUsuario = JSON.parse('{!!$gruposUsuario!!}');
 
     $(document).ready(function() {
         seleccionarMenu(window.location);
 
         // const listarRequerimientoPagoView = new ListarRequerimientoPagoView();
-        
+
         // listarRequerimientoPagoView.mostrarListaRequerimientoPago('ALL');
-        
+
         // listarRequerimientoPagoView.initializeEventHandler();
- 
+
     });
 
 
     // window.onload = function() {
     //     listarRequerimientoView.mostrar('ALL');
     // };
-
 </script>
 @endsection
