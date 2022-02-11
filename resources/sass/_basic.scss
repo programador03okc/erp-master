@@ -1360,25 +1360,25 @@ form .select2-container .select2-selection--single {
 }
 // tabla Comparar Variable entre Proveedores
 
-.table-responsive > .table > tbody > tr > td,
-.table-responsive > .table > tfoot > tr > td,
-.table-responsive > .table > thead > tr > td,
-.table-responsive > .table > thead > tr > th {
-    //  white-space: nowrap !important;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-.table-responsive {
-    max-width: 95% !important;
-    overflow-y: scroll;
-    margin: 0 auto;
-}
-.table-responsive table tr {
-    flex-direction: row;
-    // display: flex;
-    width: auto;
-    display: block;
-}
+// .table-responsive > .table > tbody > tr > td,
+// .table-responsive > .table > tfoot > tr > td,
+// .table-responsive > .table > thead > tr > td,
+// .table-responsive > .table > thead > tr > th {
+//     //  white-space: nowrap !important;
+//     overflow: hidden;
+//     text-overflow: ellipsis;
+// }
+// .table-responsive {
+//     max-width: 95% !important;
+//     overflow-y: scroll;
+//     margin: 0 auto;
+// }
+// .table-responsive table tr {
+//     flex-direction: row;
+//     // display: flex;
+//     width: auto;
+//     display: block;
+// }
 .wd-15rem {
     width: 15rem;
 }
@@ -1557,10 +1557,10 @@ form .select2-container .select2-selection--single {
 // .box-header.with-border{
 //     border-bottom: 0px solid #fff;
 // }
-.box-body {
-    display: block;
-    padding: 0;
-}
+// .box-body {
+//     display: block;
+//     padding: 0;
+// }
 .okc-cc {
     width: 100%;
     display: block;
