@@ -1,42 +1,42 @@
-body{
+body {
     background-color: #f2f2f2;
     color: #212529;
 }
-body .login-box{
+body .login-box {
     width: 32vw;
     height: auto;
 }
-.login-page{
+.login-page {
     background-color: #f2f2f2;
 }
-.login-box-body{
+.login-box-body {
     border: 1px solid #eaeced;
     padding: 50px 80px;
 }
-.login-img{
+.login-img {
     padding: 10px;
 }
-.login-img img{
+.login-img img {
     border: 0;
 }
-.login-header{
+.login-header {
     text-align: center;
 }
-.login-page .login-name{
+.login-page .login-name {
     margin: 0;
     background-color: transparent;
     text-align: center;
 }
-.login-page .login-name h3{
+.login-page .login-name h3 {
     color: #db2828;
     font-weight: 700;
-    font-family: 'Open Sans';
+    font-family: "Open Sans";
     margin: 0;
 }
-.login-page .has-feedback .form-control{
+.login-page .has-feedback .form-control {
     padding-left: 42.5px;
 }
-.login-page .form-control-feedback{
+.login-page .form-control-feedback {
     position: absolute;
     top: 0;
     left: 0;
@@ -48,34 +48,35 @@ body .login-box{
     text-align: center;
     pointer-events: none;
 }
-.login-page .form-control:active, .login-page .form-control:focus{
+.login-page .form-control:active,
+.login-page .form-control:focus {
     border: 1px solid #ccc;
 }
 .btn-okc-login,
-.btn-okc-login:hover{
+.btn-okc-login:hover {
     color: #fff;
     background-color: #dc3545;
     border-color: #dc3545;
 }
 
-.footer-login{
+.footer-login {
     background: #f8f8f9;
     line-height: 1.5em;
     padding: 1em 1.5em;
     margin: 1em 0;
     border: 1px solid #ddd;
-    border-radius: .28571429rem;
+    border-radius: 0.28571429rem;
     text-align: center;
 }
-.footer-login a{
+.footer-login a {
     margin-left: 10px;
 }
 
-@media (max-width: 380px){
-    body .login-box{
+@media (max-width: 968px) {
+    body .login-box {
         width: 90vw;
     }
-    .login-box-body{
+    .login-box-body {
         padding: 30px;
     }
 }

@@ -98,7 +98,7 @@ body .login-box {
   margin-left: 10px;
 }
 
-@media (max-width: 380px) {
+@media (max-width: 968px) {
   body .login-box {
     width: 90vw;
   }
@@ -6500,7 +6500,7 @@ readers do not read off random characters that represent icons */
   font-style: normal;
   font-weight: 900;
   src: url(/fonts/fa-solid-900.eot?ea363ed422723673917901680be9b37c);
-  src: url(/fonts/fa-solid-900.eot?ea363ed422723673917901680be9b37c) format("embedded-opentype"), url(/fonts/fa-solid-900.woff2?b75b4bfe0d58faeced5006c785eaae23) format("woff2"), url(/fonts/fa-solid-900.woff?2d0415fa29ea596b7a02c78eddeede20) format("woff"), url(/fonts/fa-solid-900.ttf?132e9759d93e4eefd7cdde0d7a322991) format("truetype"), url(/fonts/fa-solid-900.svg?de1d242d8acb26ec43c0d071fe78e72d) format("svg");
+  src: url(/fonts/fa-solid-900.eot?ea363ed422723673917901680be9b37c) format("embedded-opentype"), url(/fonts/fa-solid-900.woff2?b75b4bfe0d58faeced5006c785eaae23) format("woff2"), url(/fonts/fa-solid-900.woff?2d0415fa29ea596b7a02c78eddeede20) format("woff"), url(/fonts/fa-solid-900.ttf?132e9759d93e4eefd7cdde0d7a322991) format("truetype"), url(/fonts/fa-solid-900.svg?61f3dc557b73138d5721767af3a2386e) format("svg");
 }
 
 .fa,
@@ -6519,7 +6519,7 @@ readers do not read off random characters that represent icons */
   font-style: normal;
   font-weight: normal;
   src: url(/fonts/fa-brands-400.eot?e8019d507e8cb51d169ab4f94a0cda12);
-  src: url(/fonts/fa-brands-400.eot?e8019d507e8cb51d169ab4f94a0cda12) format("embedded-opentype"), url(/fonts/fa-brands-400.woff2?6814d0e8136d34e313623eb7129d538e) format("woff2"), url(/fonts/fa-brands-400.woff?da408238128b876cbda6424391f1566f) format("woff"), url(/fonts/fa-brands-400.ttf?fdf44bc43e8fa2358bbb7d9165d78455) format("truetype"), url(/fonts/fa-brands-400.svg?83e6c29fb363b2f0ea6cc18fefff729c) format("svg");
+  src: url(/fonts/fa-brands-400.eot?e8019d507e8cb51d169ab4f94a0cda12) format("embedded-opentype"), url(/fonts/fa-brands-400.woff2?6814d0e8136d34e313623eb7129d538e) format("woff2"), url(/fonts/fa-brands-400.woff?da408238128b876cbda6424391f1566f) format("woff"), url(/fonts/fa-brands-400.ttf?fdf44bc43e8fa2358bbb7d9165d78455) format("truetype"), url(/fonts/fa-brands-400.svg?f79929bb75161e13a5e457dfdd50c75b) format("svg");
 }
 
 .fab {
