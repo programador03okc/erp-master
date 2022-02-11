@@ -5,6 +5,16 @@ $(function () {
     });
 });
 
+function limpiarTabla(idElement) {
+    let nodeTbody = document.querySelector("table[id='" + idElement + "'] tbody");
+    if (nodeTbody != null) {
+        while (nodeTbody.children.length > 0) {
+            nodeTbody.removeChild(nodeTbody.lastChild);
+        }
+
+    }
+}
+
 function guardarCuentaBancariaProveedor() {
     let idProveedor = document.querySelector("form[id='form-agregar-cuenta-bancaria-proveedor'] input[name='id_proveedor']").value;
     let banco = document.querySelector("form[id='form-agregar-cuenta-bancaria-proveedor'] select[name='banco']").value;
@@ -88,6 +98,12 @@ function guardarCuentaBancariaProveedor() {
 
 }
 
+function limpiarFormularioCuentaBancaria(){
+    document.querySelector("div[id='modal-agregar-cuenta-bancaria-proveedor']") ? document.querySelector("div[id='modal-agregar-cuenta-bancaria-proveedor'] input[name='nro_cuenta']").value='' : false;
+    document.querySelector("div[id='modal-agregar-cuenta-bancaria-proveedor']") ? document.querySelector("div[id='modal-agregar-cuenta-bancaria-proveedor'] input[name='nro_cuenta_interbancaria']").value='' : false;
+    document.querySelector("div[id='modal-agregar-cuenta-bancaria-proveedor']") ? document.querySelector("div[id='modal-agregar-cuenta-bancaria-proveedor'] input[name='swift']").value='' : false;
+}
+
 function agregar_cuenta_proveedor() {
 
     if($('.page-main').attr('type')=='lista_requerimiento_pago'){
@@ -103,7 +119,8 @@ function agregar_cuenta_proveedor() {
         $('#modal-agregar-cuenta-bancaria-proveedor').modal({
             show: true
         });
-       
+        limpiarFormularioCuentaBancaria();
+
         document.querySelector("div[id='modal-agregar-cuenta-bancaria-proveedor'] span[id='razon_social_proveedor']").textContent = razonSocialProveedor;
         document.querySelector("div[id='modal-agregar-cuenta-bancaria-proveedor'] input[name='id_proveedor']").value = id;
 
@@ -149,6 +166,7 @@ function cuentasBancariasModal() {
 
 
 function listarCuentasBancariasContribuyente(idProveedor) {
+    limpiarTabla('listaCuentasBancariasProveedor');
 
     getCuentasBancarias(idProveedor).then(function (res) {
         if (res[0].cuenta_contribuyente) {

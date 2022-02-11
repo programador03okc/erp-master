@@ -43,7 +43,7 @@
                             </select>
                         </div>
                         <div class="col-md-12">
-                            <h5>N° Cuenta</h5>
+                            <h5>N° Cuenta *</h5>
                             <input type="text" class="form-control icd-okc" name="nro_cuenta" />
                         </div>
                         <div class="col-md-12">

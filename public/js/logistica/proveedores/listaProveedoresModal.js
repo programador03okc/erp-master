@@ -88,9 +88,9 @@ function proveedorModal(){
     } else {
         listar_proveedores();
         if($('.page-main').attr('type')=='lista_requerimiento_pago'){
-            document.querySelector("div[id='modal-proveedores'] h3[class='modal-title']").textContent= "Lista de Destinatarios";
+            document.querySelector("div[id='modal-proveedores'] h3[class='modal-title']")? document.querySelector("div[id='modal-proveedores'] h3[class='modal-title']").textContent= "Lista de Destinatarios":false;
         }else{
-            document.querySelector("div[id='modal-proveedores'] h3[class='modal-title']").textContent= "Lista de Proveedores";
+            document.querySelector("div[id='modal-proveedores'] h3[class='modal-title']")? document.querySelector("div[id='modal-proveedores'] h3[class='modal-title']").textContent= "Lista de Proveedores":false;
 
         }
     }
