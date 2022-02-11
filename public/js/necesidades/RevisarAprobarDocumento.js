@@ -242,12 +242,12 @@ class RevisarAprobarDocumentoView {
                                     data-id-usuario-propietario-documento="${row.id_usuario ?? ''}"
                                     data-id-usuario-aprobante="${row.id_usuario_aprobante ?? ''}"
                                     `;
-                        let containerOpenBrackets = '<center><div class="btn-group btn-group-justified" role="group" >';
+                        let containerOpenBrackets = '<center><div style="display:flex;" >';
                         let containerCloseBrackets = '</div></center>';
-                        let btnVerEnModal = '<div class="btn-group" role="group"><button type="button" role="button" class="btn btn-xs btn-info handleClickVerEnVistaRapidaDocumento" name="btnVerEnVistaRapidaDocumento" ' + dataset + ' title="Vista rápida"><i class="fas fa-eye fa-xs"></i></button></div>';
-                        let btnAprobar = '<div class="btn-group" role="group"><button type="button" role="button" class="btn btn-xs btn-success handleClickAprobarDocumento" name="btnAprobarDocumento" ' + dataset + ' title="Aprobar"><i class="fas fa-check fa-xs"></i></button></div>';
-                        let btnObservar = '<div class="btn-group" role="group"><button type="button" role="button" class="btn btn-xs btn-warning handleClickObservarDocumento" name="btnObservarDocumento" ' + dataset + ' title="Observar"><i class="fas fa-exclamation fa-xs"></i></button></div>';
-                        let btnAnular = '<div class="btn-group" role="group"><button type="button"  role="button" class="btn btn-xs btn-danger handleClickRechazarDocumento" name="btnRechazarDocumento" ' + dataset + ' title="Rechazar"><i class="fas fa-ban fa-xs"></i></button></div>';
+                        let btnVerEnModal = '<button type="button" role="button" class="btn btn-flat btn-xs btn-info handleClickVerEnVistaRapidaDocumento" name="btnVerEnVistaRapidaDocumento" ' + dataset + ' title="Vista rápida"><i class="fas fa-eye"></i></button>';
+                        let btnAprobar = '<button type="button" role="button" class="btn btn-flat btn-xs btn-success handleClickAprobarDocumento" name="btnAprobarDocumento" ' + dataset + ' title="Aprobar"><i class="fas fa-check"></i></button>';
+                        let btnObservar = '<button type="button" role="button" class="btn btn-flat btn-xs btn-warning handleClickObservarDocumento" name="btnObservarDocumento" ' + dataset + ' title="Observar"><i class="fas fa-exclamation-circle"></i></button>';
+                        let btnAnular = '<button type="button" role="button" class="btn btn-flat btn-xs btn-danger handleClickRechazarDocumento" name="btnRechazarDocumento" ' + dataset + ' title="Rechazar"><i class="fas fa-ban"></i></button>';
 
                         return containerOpenBrackets + btnVerEnModal + btnAprobar + btnObservar + btnAnular + containerCloseBrackets;
                     }, targets: 14
