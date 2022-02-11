@@ -1675,10 +1675,10 @@ class ListarRequerimientoPagoView {
 
     anularRequerimientoPago(obj) {
         let idRequerimientoPago = obj.dataset.idRequerimientoPago;
-        let codigoRequerimiento = obj.dataset.codigo;
+        let codigoRequerimientoPago = obj.dataset.codigoRequerimientoPago;
         if (parseInt(idRequerimientoPago) > 0) {
             Swal.fire({
-                title: `Esta seguro que desea anular el requerimiento ${codigoRequerimiento}?`,
+                title: `Esta seguro que desea anular el requerimiento ${codigoRequerimientoPago.length > 0?codigoRequerimientoPago:''}?`,
                 text: "No podrás revertir esta acción",
                 icon: 'warning',
                 showCancelButton: true,
