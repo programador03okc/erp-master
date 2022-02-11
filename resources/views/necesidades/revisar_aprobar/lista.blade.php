@@ -22,7 +22,7 @@ Revisar/aprobar
 <div id="lista_documentos_para_revisar_aprobar">
     <div class="row">
         <div class="col-md-12">
-            <div class="box">
+            <div class="box box-widget">
                 <div class="box-body">
                     <div class="table-responsive">
                         <table class="mytable table table-hover table-condensed table-bordered table-okc-view" id="listaDocumetosParaRevisarAprobar" width="100%">
