@@ -272,7 +272,7 @@ function eventRegister(type, data, action, frm_active) {
             break;
         ////////////////////////// ALMACEN //////////////////////////
         case "tipo":
-            save_tipo(data, action);
+            guardarCategoria(data, action);
             break;
         case "categoria":
             save_categoria(data, action);
@@ -281,7 +281,7 @@ function eventRegister(type, data, action, frm_active) {
             save_subcategoria(data, action);
             break;
         case "clasificacion":
-            save_clasificacion(data, action);
+            guardarClasificacion(data, action);
             break;
         case "producto":
             if (frm_active == "form-general") {
@@ -596,7 +596,7 @@ function anularRegister(type, ids, active) {
             break;
         ////////////////////////// ALMACEN //////////////////////////
         case "tipo":
-            anular_tipo(ids);
+            anularCategoria(ids);
             break;
         case "categoria":
             anular_categoria(ids);
@@ -605,7 +605,7 @@ function anularRegister(type, ids, active) {
             anular_subcategoria(ids);
             break;
         case "clasificacion":
-            anular_clasificacion(ids);
+            anularClasificacion(ids);
             break;
         case "producto":
             if (active == "form-general") {

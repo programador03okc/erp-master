@@ -71,11 +71,11 @@ body .login-box{
     margin-left: 10px;
 }
 
-@media (max-width: 380px){
-    body .login-box{
+@media (max-width: 968px) {
+    body .login-box {
         width: 90vw;
     }
-    .login-box-body{
+    .login-box-body {
         padding: 30px;
     }
 }

@@ -157,7 +157,7 @@ Registro de pagos
         seleccionarMenu(window.location);
         vista_extendida();
 
-        let requerimientoPago=new RequerimientoPago('{{Auth::user()->tieneAccion(136)}}','{{Auth::user()->tieneAccion(137)}}','{{Auth::user()->tieneAccion(138)}}');
+        let requerimientoPago=new RequerimientoPago('{{Auth::user()->tieneAccion(137)}}','{{Auth::user()->tieneAccion(138)}}','{{Auth::user()->tieneAccion(139)}}');
         // let enviarAPago=new RequerimientoPago('{{Auth::user()->tieneAccion(137)}}');
         // let registrarPago=new RequerimientoPago('{{Auth::user()->tieneAccion(138)}}');
 
