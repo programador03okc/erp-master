@@ -23,29 +23,27 @@ Revisar/aprobar
     <div class="row">
         <div class="col-md-12">
             <fieldset class="group-table">
-                <div class="table-responsive">
-                    <table class="mytable table table-hover table-condensed table-bordered table-okc-view" id="listaDocumetosParaRevisarAprobar" width="100%">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th class="text-center">Prio.</th>
-                                <th class="text-center">Tipo doc.</th>
-                                <th class="text-center">Código</th>
-                                <th class="text-center">Concepto</th>
-                                <th class="text-center">Tipo Req.</th>
-                                <th class="text-center">Fecha registro</th>
-                                <th class="text-center">Empresa</th>
-                                <th class="text-center">Sede</th>
-                                <th class="text-center">Grupo</th>
-                                <th class="text-center">División</th>
-                                <th class="text-center">Monto Total</th>
-                                <th class="text-center">Creado por</th>
-                                <th class="text-center">Estado / Aprob.</th>
-                                <th class="text-center" style="width:10%">Acción</th>
-                            </tr>
-                        </thead>
-                    </table>
-                </div>
+                <table class="mytable table table-hover table-condensed table-bordered table-okc-view" id="listaDocumetosParaRevisarAprobar" width="100%">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th class="text-center">Prio.</th>
+                            <th class="text-center" >Tipo doc.</th>
+                            <th class="text-center">Código</th>
+                            <th class="text-center" >Concepto</th>
+                            <th class="text-center" >Tipo Req.</th>
+                            <th class="text-center">Fecha registro</th>
+                            <th class="text-center" >Empresa</th>
+                            <th class="text-center">Sede</th>
+                            <th class="text-center">Grupo</th>
+                            <th class="text-center">División</th>
+                            <th class="text-center">Monto Total</th>
+                            <th class="text-center">Creado por</th>
+                            <th class="text-center">Estado / Aprob.</th>
+                            <th class="text-center" style="width:10%">Acción</th>
+                        </tr>
+                    </thead>
+                </table>
             </fieldset>
         </div>
     </div>
@@ -85,10 +83,11 @@ Revisar/aprobar
     $(document).ready(function() {
         seleccionarMenu(window.location);
 
-        const revisarAprobarDocumentoView = new RevisarAprobarDocumentoView();
+        const revisarAprobarDocumentoView= new RevisarAprobarDocumentoView();
 
         revisarAprobarDocumentoView.listarDocumentosPendientesParaRevisarAprobar();
         revisarAprobarDocumentoView.initializeEventHandler();
     });
+
 </script>
 @endsection
