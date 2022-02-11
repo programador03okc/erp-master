@@ -22,7 +22,7 @@ Revisar/aprobar
 <div class="page-main" type="lista_documentos_para_revisar_aprobar">
     <div class="row">
         <div class="col-md-12">
-            <fieldset class="group-table">
+            <div class="group-table table-responsive">
                 <table class="mytable table table-hover table-condensed table-bordered table-okc-view" id="listaDocumetosParaRevisarAprobar" width="100%">
                     <thead>
                         <tr>
@@ -40,11 +40,11 @@ Revisar/aprobar
                             <th class="text-center">Monto Total</th>
                             <th class="text-center">Creado por</th>
                             <th class="text-center">Estado / Aprob.</th>
-                            <th class="text-center" style="width:10%">Acción</th>
+                            <th class="text-center" >Acción</th>
                         </tr>
                     </thead>
                 </table>
-            </fieldset>
+            </div>
         </div>
     </div>
 </div>
