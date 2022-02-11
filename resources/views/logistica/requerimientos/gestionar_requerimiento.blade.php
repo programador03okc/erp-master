@@ -18,7 +18,7 @@ Crear / editar requerimiento
 @section('breadcrumb')
 <ol class="breadcrumb">
     <li><a href="{{route('necesidades.index')}}"><i class="fas fa-tachometer-alt"></i> Necesidades</a></li>
-    <li>Requerimientos</li>
+    <li>Requerimientos de compra</li>
     <li class="active">Crear / editar</li>
 </ol>
 @endsection

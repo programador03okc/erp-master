@@ -1243,8 +1243,9 @@ class ListarRequerimientoPagoView {
                             delayIndicator: false,
                             msg: response.mensaje
                         });
-                        $("#ListaRequerimientoPago").DataTable().ajax.reload(null, false);
+                        $('#modal-requerimiento-pago').modal('hide');
                         this.resetearFormularioRequerimientoPago();
+                        $("#ListaRequerimientoPago").DataTable().ajax.reload(null, false);
 
                     } else {
                         $('#wrapper-okc').LoadingOverlay("hide", true);
@@ -1619,8 +1620,8 @@ class ListarRequerimientoPagoView {
 
                 document.querySelector("tbody[id='body_requerimiento_pago_detalle']").insertAdjacentHTML('beforeend', `<tr style="background-color:${data.detalle[i].id_estado == '7' ? '#f1d7d7' : ''}">
                 <td>${i + 1}</td>
-                <td>${data.detalle[i].partida ? data.detalle[i].partida.descripcion : ''}</td>
-                <td>${data.detalle[i].centro_costo ? data.detalle[i].centro_costo.descripcion : ''}</td>
+                <td>${data.detalle[i].partida ? data.detalle[i].partida.codigo : ''}</td>
+                <td>${data.detalle[i].centro_costo ? data.detalle[i].centro_costo.codigo : ''}</td>
                 <td name="descripcion_servicio">${data.detalle[i].descripcion != null ? data.detalle[i].descripcion : ''} </td>
                 <td>${data.detalle[i].unidad_medida != null ? data.detalle[i].unidad_medida.descripcion : ''}</td>
                 <td style="text-align:center;">${data.detalle[i].cantidad >= 0 ? data.detalle[i].cantidad : ''}</td>

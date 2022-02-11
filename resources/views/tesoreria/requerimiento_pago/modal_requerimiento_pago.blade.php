@@ -24,7 +24,7 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <h5>Concepto:</h5>
+                                            <h5>Concepto *:</h5>
                                             <input type="text" class="form-control activation handleCheckStatusValue" placeholder="Concepto/motivo" name="concepto">
                                             </select>
                                         </div>
@@ -63,7 +63,7 @@
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
-                                            <h5>Empresa</h5>
+                                            <h5>Empresa *</h5>
                                             <select class="form-control activation handleCheckStatusValue handleChangeOptEmpresa" name="empresa">
                                                 <option value="0">Elija una opción</option>
                                                 @foreach ($empresas as $empresa)
@@ -74,14 +74,14 @@
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
-                                            <h5>Sede</h5>
+                                            <h5>Sede *</h5>
                                             <select class="form-control activation handleCheckStatusValue" name="sede" disabled>
                                             </select>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
-                                            <h5>Grupo</h5>
+                                            <h5>Grupo *</h5>
                                             <select class="form-control activation handleCheckStatusValue handleChangeOptGrupo" name="grupo" disabled>
                                                 <option value="0">Elija una opción</option>
                                                 @foreach ($grupos as $grupo)
@@ -93,7 +93,7 @@
                                     <div class="col-md-3">
                                         <div class="form-group">
 
-                                            <h5>División</h5>
+                                            <h5>División*</h5>
                                             <select class="form-control activation handleCheckStatusValue" name="division" disabled>
                                             </select>
                                         </div>
@@ -153,7 +153,7 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <h5>Destinatario</h5>
+                                            <h5>Destinatario *</h5>
                                             <input type="text" class="oculto" name="idProveedor">
                                             <div style="display:flex;">
                                                 <input class="oculto" name="id_proveedor">
@@ -169,7 +169,7 @@
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
-                                            <h5>Cuenta bancaria</h5>
+                                            <h5>Cuenta bancaria *</h5>
                                             <div style="display:flex;">
                                                 <input class="oculto" name="id_cuenta_principal_proveedor">
                                                 <input type="text" class="form-control handleCheckStatusValue" name="nro_cuenta_principal_proveedor" readOnly>
