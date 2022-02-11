@@ -2918,7 +2918,8 @@ class RequerimientoPendienteView {
 
     descargarArchivoDetalleRequerimiento(obj){
         if (obj.dataset.idAdjunto > 0) {
-            window.open("/files/logistica/detalle_requerimiento/" + obj.dataset.archivo);
+            window.open("/files/necesidades/requerimientos/bienes_servicios/detalle/" + obj.dataset.archivo);
+
         }
 
     }
@@ -2960,7 +2961,7 @@ class RequerimientoPendienteView {
     }
     descargarArchivoRequerimiento(obj){
         if (obj.dataset.idAdjunto > 0) {
-            window.open("/files/logistica/requerimiento/" + obj.dataset.archivo);
+            window.open("/files/necesidades/requerimientos/bienes_servicios/cabecera/" + obj.dataset.archivo);
         }
 
     }
