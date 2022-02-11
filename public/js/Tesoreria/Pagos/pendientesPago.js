@@ -63,7 +63,7 @@ class RequerimientoPago {
                 {
                     'render':
                         function (data, type, row) {
-                            console.log(permisoVer);
+                            console.log(permisoEnviar);
                             return `<div class="btn-group" role="group">
                             ${((row['id_estado'] == 1 || row['id_estado'] == 2) && permisoEnviar == '1') ?
                                     `<button type="button" class="enviar btn btn-info boton" data-toggle="tooltip" 

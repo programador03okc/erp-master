@@ -6,7 +6,7 @@ $(function () {
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language': vardataTables[0],
-        'ajax': 'listar_tipos',
+        'ajax': 'listarCategorias',
         'columns': [
             { 'data': 'id_tipo_producto' },
             { 'data': 'clasificacion_descripcion' },
@@ -26,7 +26,7 @@ $(function () {
             }
             var id = $(this)[0].firstChild.innerHTML;
             clearForm(form);
-            mostrar_tipo(id);
+            mostrarCategoria(id);
             changeStateButton('historial');
         }
     });
@@ -34,8 +34,8 @@ $(function () {
 
 });
 
-function mostrar_tipo(id) {
-    baseUrl = 'mostrar_tipo/' + id;
+function mostrarCategoria(id) {
+    baseUrl = 'mostrarCategoria/' + id;
     $.ajax({
         type: 'GET',
         headers: { 'X-CSRF-TOKEN': token },
@@ -56,11 +56,11 @@ function mostrar_tipo(id) {
     });
 }
 
-function save_tipo(data, action) {
+function guardarCategoria(data, action) {
     if (action == 'register') {
-        baseUrl = 'guardar_tipo';
+        baseUrl = 'guardarCategoria';
     } else if (action == 'edition') {
-        baseUrl = 'actualizar_tipo';
+        baseUrl = 'actualizarCategoria';
     }
     $.ajax({
         type: 'POST',
@@ -88,8 +88,8 @@ function save_tipo(data, action) {
     });
 }
 
-function anular_tipo(ids) {
-    baseUrl = 'anular_tipo/' + ids;
+function anularCategoria(ids) {
+    baseUrl = 'anularCategoria/' + ids;
     // $.ajax({
     //     type: 'GET',
     //     headers: {'X-CSRF-TOKEN': token},
