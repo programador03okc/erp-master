@@ -36,7 +36,7 @@ function listar_proveedores(){
                         <button type="button" class="btn btn-success btn-sm" name="btnSeleccionarProveedor" title="Seleccionar proveedor" 
                         data-id-proveedor="${row.id_proveedor}"
                         data-id-contribuyente="${row.id_contribuyente}"
-                        data-tipo-documento-identidad="${row.contribuyente && row.contribuyente.tipo_documento_identidad !=null ?row.contribuyente.tipo_documento_identidad.descripcion:''}"
+                        data-tipo-documento-identidad="${row.contribuyente && row.contribuyente.tipo_documento_identidad !=null && row.contribuyente.tipo_documento_identidad.descripcion !=null ?row.contribuyente.tipo_documento_identidad.descripcion:''}"
                         data-numero-documento="${row.contribuyente && row.contribuyente.nro_documento !=null ?row.contribuyente.nro_documento:''}"
                         data-razon-social="${row.contribuyente && row.contribuyente.razon_social!=null?row.contribuyente.razon_social:''}"
                         data-direccion-fiscal="${row.contribuyente && row.contribuyente.direccion_fiscal!=null?row.contribuyente.direccion_fiscal:''}"
@@ -88,9 +88,9 @@ function proveedorModal(){
     } else {
         listar_proveedores();
         if($('.page-main').attr('type')=='lista_requerimiento_pago'){
-            document.querySelector("div[id='modal-proveedores'] h3[class='modal-title']").textContent= "Lista de Destinatarios";
+            document.querySelector("div[id='modal-proveedores'] h3[class='modal-title']")? document.querySelector("div[id='modal-proveedores'] h3[class='modal-title']").textContent= "Lista de Destinatarios":false;
         }else{
-            document.querySelector("div[id='modal-proveedores'] h3[class='modal-title']").textContent= "Lista de Proveedores";
+            document.querySelector("div[id='modal-proveedores'] h3[class='modal-title']")? document.querySelector("div[id='modal-proveedores'] h3[class='modal-title']").textContent= "Lista de Proveedores":false;
 
         }
     }
@@ -98,18 +98,18 @@ function proveedorModal(){
 
 function selectProveedor(obj){
     // console.log(obj);
-    let idProveedor= obj.dataset.idProveedor;
-    let idContribuyente= obj.dataset.idContribuyente;
-    let tipoDocumentoIdentidad= obj.dataset.tipoDocumentoIdentidad? obj.dataset.tipoDocumentoIdentidad:"";
-    let numeroDocumento= obj.dataset.numeroDocumento? obj.dataset.numeroDocumento:"";
-    let razonSocial= obj.dataset.razonSocial? obj.dataset.razonSocial:"";
+    let idProveedor= obj.dataset.idProveedor? obj.dataset.idProveedor: "";
+    let idContribuyente= obj.dataset.idContribuyente !=null ?obj.dataset.idContribuyente: "";
+    let tipoDocumentoIdentidad= obj.dataset.tipoDocumentoIdentidad !=null ? obj.dataset.tipoDocumentoIdentidad:"";
+    let numeroDocumento= obj.dataset.numeroDocumento !=null ? obj.dataset.numeroDocumento:"";
+    let razonSocial= obj.dataset.razonSocial !=null ? obj.dataset.razonSocial:"";
     // let ruc= obj.dataset.ruc;
-    let direccionFiscal= obj.dataset.direccionFiscal?obj.dataset.direccionFiscal:"";
+    let direccionFiscal= obj.dataset.direccionFiscal !=null ?obj.dataset.direccionFiscal:"";
     let telefono= obj.dataset.telefono?obj.dataset.telefono:"";
-    let ubigeoDescripcion= obj.dataset.ubigeoDescripcion?obj.dataset.ubigeoDescripcion:"";
-    let ubigeo= obj.dataset.ubigeo?obj.dataset.ubigeo:"";
-    let cuentaPrincipal= obj.dataset.cuentaPrincipal?obj.dataset.cuentaPrincipal:"";
-    let idCuentaPrincipal= obj.dataset.idCuentaPrincipal?obj.dataset.idCuentaPrincipal:"";
+    let ubigeoDescripcion= obj.dataset.ubigeoDescripcion !=null ?obj.dataset.ubigeoDescripcion:"";
+    let ubigeo= obj.dataset.ubigeo !=null?obj.dataset.ubigeo:"";
+    let cuentaPrincipal= obj.dataset.cuentaPrincipal !=null?obj.dataset.cuentaPrincipal:"";
+    let idCuentaPrincipal= obj.dataset.idCuentaPrincipal !=null?obj.dataset.idCuentaPrincipal:"";
 
     document.querySelector("input[name='id_proveedor']").value =idProveedor;
     document.querySelector("input[name='id_contrib']").value =idContribuyente;
