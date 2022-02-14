@@ -2366,7 +2366,7 @@ class ListarRequerimientoPagoView {
 
     
     mostrarInfoAdicionalCuentaSeleccionada(obj){
-
+        document.querySelector("div[id='modal-info-adicional-cuenta-seleccionada'] div[class='modal-body']").innerHTML='';
         let selectCuenta = document.querySelector("div[id='modal-requerimiento-pago'] select[name='id_cuenta']");
         if(selectCuenta.value > 0){
             $('#modal-info-adicional-cuenta-seleccionada').modal({
@@ -2611,7 +2611,7 @@ class ListarRequerimientoPagoView {
                 <tr class="handleClickSeleccionarDestinatario" style="cursor:pointer;"
                 data-id-persona="${element.id_persona!=null?element.id_persona:''}"
                 data-id-contribuyente="${element.id_contribuyente!=null?element.id_contribuyente:''}"
-                data-tipo-documento_identidad="${element.tipo_documento_identidad!=null?element.tipo_documento_identidad.descripcion:''}"
+                data-tipo-documento-identidad="${element.tipo_documento_identidad!=null?element.tipo_documento_identidad.descripcion:''}"
                 data-numero-documento="${element.nro_documento!=null?element.nro_documento:''}"
                 data-nombre-destinatario="${element.razon_social!=null?element.razon_social:''}"
                 data-cuenta="${JSON.stringify(element.cuenta_contribuyente)}"
