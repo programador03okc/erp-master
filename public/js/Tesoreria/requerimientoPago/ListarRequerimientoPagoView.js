@@ -1597,8 +1597,14 @@ class ListarRequerimientoPagoView {
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='fecha_registro']").textContent = '';
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='creado_por']").textContent = '';
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='periodo']").textContent = '';
-        document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='proveedor']").textContent = '';
-        document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='comentario']").textContent = '';
+        document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosDestinatario'] td[id='tipo_destinatario']").textContent ='';
+        document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosDestinatario'] td[id='destinatario']").textContent =  '';
+        document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosDestinatario'] td[id='banco']").textContent =  '';
+        document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosDestinatario'] td[id='tipo_cuenta']").textContent =  '';
+        document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosDestinatario'] td[id='moneda']").textContent =  '';
+        document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosDestinatario'] td[id='nro_cuenta']").textContent =  '';
+        document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosDestinatario'] td[id='nro_cci']").textContent =  '';
+          document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='comentario']").textContent = '';
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] span[name='simboloMoneda']").textContent = '';
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='listaDetalleRequerimientoPago'] span[name='simbolo_moneda']").textContent = '';
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='listaDetalleRequerimientoPago'] label[name='total']").textContent = '';
@@ -1619,6 +1625,22 @@ class ListarRequerimientoPagoView {
     mostrarDataEnVistaRapidaRequerimientoPago(data) {
         // console.log(data);
         // ### ==================== cabecera ====================== ###
+        var destinatario, banco,tipo_cuenta, tipo_cuenta, moneda, nro_cuenta, nro_cci = '';
+        if(data.id_tipo_destinatario ==1 || data.id_persona >0){
+            destinatario = data.persona !=null ? ((data.persona.nombres).concat(' ',data.persona.apellido_paterno).concat(' ', data.persona.apellido_materno)):'';
+            banco = data.cuenta_persona !=null ? (data.cuenta_persona.banco !=null && data.cuenta_persona.banco.contribuyente !=null ? data.cuenta_persona.banco.contribuyente.razon_social: '') :'';
+            tipo_cuenta =data.cuenta_persona !=null ? (data.cuenta_persona.tipo_cuenta !=null ? data.cuenta_persona.tipo_cuenta.descripcion: '') :''; 
+            moneda = data.cuenta_persona !=null ? (data.cuenta_persona.moneda !=null ? data.cuenta_persona.moneda.descripcion: '') :'';
+            nro_cuenta = data.cuenta_persona !=null ? data.cuenta_persona.nro_cuenta  :'';
+            nro_cci = data.cuenta_persona !=null ? data.cuenta_persona.nro_cci  :'';
+        }else if(data.id_tipo_destinatario ==2 || data.id_contribuyente >0){
+            destinatario = data.contribuyente !=null ? data.contribuyente.razon_social:'';
+            banco = data.cuenta_contribuyente != null ? (data.cuenta_contribuyente.banco !=null && data.cuenta_contribuyente.banco.contribuyente !=null ? data.cuenta_contribuyente.banco.contribuyente.razon_social: ''): '';
+            tipo_cuenta =data.cuenta_contribuyente !=null ? (data.cuenta_contribuyente.tipo_cuenta !=null ? data.cuenta_contribuyente.tipo_cuenta.descripcion: '') :''; 
+            moneda = data.cuenta_contribuyente !=null ? (data.cuenta_contribuyente.moneda !=null ? data.cuenta_contribuyente.moneda.descripcion: '') :'';;
+            nro_cuenta = data.cuenta_contribuyente !=null ? data.cuenta_contribuyente.nro_cuenta  :'';
+            nro_cci = data.cuenta_contribuyente !=null ? data.cuenta_contribuyente.nro_cuenta_interbancaria  :'';
+        }
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] input[name='id_requerimiento_pago']").value = data.id_requerimiento_pago;
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] input[name='id_estado']").value = data.id_estado;
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] input[name='id_usuario']").value = data.id_usuario;
@@ -1631,8 +1653,14 @@ class ListarRequerimientoPagoView {
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='fecha_registro']").textContent = data.fecha_registro;
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='creado_por']").textContent = data.creado_por != null && data.creado_por.nombre_corto != undefined ? data.creado_por.nombre_corto : '';
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='periodo']").textContent = data.periodo != null && data.periodo.descripcion != undefined ? data.periodo.descripcion : '';
-        document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='proveedor']").textContent = data.proveedor != null && data.proveedor.razon_social != undefined ? (data.proveedor.razon_social + ' - ' + data.proveedor.documento_identidad + ' ' + data.proveedor.nro_documento + '') : '';
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='comentario']").textContent = data.comentario;
+        document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosDestinatario'] td[id='tipo_destinatario']").textContent = data.tipo_destinatario !=null?data.tipo_destinatario.descripcion :'';
+        document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosDestinatario'] td[id='destinatario']").textContent =  destinatario;
+        document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosDestinatario'] td[id='banco']").textContent =  banco;
+        document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosDestinatario'] td[id='tipo_cuenta']").textContent =  tipo_cuenta;
+        document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosDestinatario'] td[id='moneda']").textContent =  moneda;
+        document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosDestinatario'] td[id='nro_cuenta']").textContent =  nro_cuenta;
+        document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosDestinatario'] td[id='nro_cci']").textContent =  nro_cci;
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] span[name='simboloMoneda']").textContent = data.moneda != null && data.moneda.simbolo != undefined ? data.moneda.simbolo : '';
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='listaDetalleRequerimientoPago'] span[name='simbolo_moneda']").textContent = data.moneda != null && data.moneda.simbolo != undefined ? data.moneda.simbolo : '';
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='listaDetalleRequerimientoPago'] label[name='total']").textContent = $.number(data.monto_total, 2) ;

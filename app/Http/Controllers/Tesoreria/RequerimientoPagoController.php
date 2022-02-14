@@ -627,7 +627,7 @@ class RequerimientoPagoController extends Controller
         ->get();
 
         $requerimientoPago = RequerimientoPago::where('id_requerimiento_pago', $idRequerimientoPago)
-            ->with('tipoRequerimientoPago', 'periodo', 'prioridad', 'moneda', 'creadoPor', 'empresa', 'sede', 'grupo', 'division', 
+            ->with('tipoRequerimientoPago', 'periodo', 'prioridad', 'moneda', 'creadoPor', 'empresa', 'sede', 'grupo', 'division', 'tipoDestinatario',
             'persona.tipoDocumentoIdentidad','cuentaPersona.banco.contribuyente', 'cuentaPersona.tipoCuenta', 'cuentaPersona.moneda',
             'contribuyente.tipoDocumentoIdentidad','contribuyente.tipoContribuyente','cuentaContribuyente.banco.contribuyente',
             'cuentaContribuyente.moneda','cuentaContribuyente.tipoCuenta','cuadroCostos', 'proyecto', 'adjunto')

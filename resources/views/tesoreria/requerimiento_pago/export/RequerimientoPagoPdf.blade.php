@@ -75,6 +75,7 @@
 if($requerimientoPago->id_tipo_destinatario ==1){
     $tipoDocumentoIdentidad= $requerimientoPago->persona !=null ? $requerimientoPago->persona['tipoDocumentoIdentidad']['descripcion']:'';
     $nroDocumento= $requerimientoPago->persona !=null ?$requerimientoPago->persona['nro_documento']:'';
+    $tipoDestinatario= $requerimientoPago->tipoDestinatario !=null ?$requerimientoPago->tipoDestinatario['descripcion']:'';
     $nombre=$requerimientoPago->persona !=null ?($requerimientoPago->persona['nombres'].' '.$requerimientoPago->persona['apellido_paterno'].' '.$requerimientoPago->persona['apellido_materno']):'';
     $banco=$requerimientoPago->cuentaPersona !=null  && $requerimientoPago->cuentaPersona['banco'] !=null ?$requerimientoPago->cuentaPersona['banco']['contribuyente']['razon_social']:'';
     $tipoCuenta=$requerimientoPago->cuentaPersona !=null  && $requerimientoPago->cuentaPersona['tipoCuenta'] !=null ?$requerimientoPago->cuentaPersona['tipoCuenta']['descripcion']:'';
@@ -84,6 +85,7 @@ if($requerimientoPago->id_tipo_destinatario ==1){
 }elseif($requerimientoPago->id_tipo_destinatario ==2){
     $tipoDocumentoIdentidad= $requerimientoPago->contribuyente !=null ? $requerimientoPago->contribuyente['tipoDocumentoIdentidad']['descripcion']:'';
     $nroDocumento= $requerimientoPago->contribuyente !=null ?$requerimientoPago->contribuyente['nro_documento']:'';
+    $tipoDestinatario= $requerimientoPago->tipoDestinatario !=null ?$requerimientoPago->tipoDestinatario['descripcion']:'';
     $nombre=$requerimientoPago->contribuyente !=null ? $requerimientoPago->contribuyente['razon_social']:'';
     $banco=$requerimientoPago->cuentaContribuyente !=null  && $requerimientoPago->cuentaContribuyente['banco'] !=null ?$requerimientoPago->cuentaContribuyente['banco']['contribuyente']['razon_social']:'';
     $tipoCuenta=$requerimientoPago->cuentaContribuyente !=null  && $requerimientoPago->cuentaContribuyente['tipoCuenta'] !=null ?$requerimientoPago->cuentaContribuyente['tipoCuenta']['descripcion']:'';
@@ -149,8 +151,8 @@ if($requerimientoPago->id_tipo_destinatario ==1){
     <table>
         <thead>
             <tr>
-                <th style="width: 15%" class="text-right">{{ $tipoDocumentoIdentidad ??'' }}:</th>
-                <td style="width: 35%">{{ $nroDocumento ?? '' }}</td>
+                <th style="width: 15%" class="text-right">Tipo:</th>
+                <td style="width: 35%">{{ $tipoDestinatario ?? '' }}</td>
                 <th style="width: 15%" class="text-right">Banco:</th>
                 <td style="width: 35%">{{ $banco ?? '' }}</td>
             </tr>
@@ -161,11 +163,14 @@ if($requerimientoPago->id_tipo_destinatario ==1){
                 <td style="width: 35%">{{ $numeroCuenta != ''? $numeroCuenta: '' }} {{$numeroCci !='' ? ' CCI:'.($numeroCci) : ''}}</td>
             </tr>
             <tr>
-                <th style="width: 15%" class="text-right">Moneda:</th>
-                <td style="width: 35%">{{ $moneda ?? '' }}</td>
+                <th style="width: 15%" class="text-right">{{ $tipoDocumentoIdentidad ??'' }}:</th>
+                <td style="width: 35%">{{ $nroDocumento ?? '' }}</td>
                 <th style="width: 15%" class="text-right">Tipo Cuenta:</th>
                 <td style="width: 35%">{{ $tipoCuenta ?? '' }}</td>
-
+            </tr>
+            <tr>
+                <th style="width: 15%" class="text-right">Moneda:</th>
+                <td style="width: 35%">{{ $moneda ?? '' }}</td>
             </tr>
           
 

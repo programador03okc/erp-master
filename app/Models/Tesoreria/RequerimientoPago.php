@@ -123,6 +123,10 @@ class RequerimientoPago extends Model
     {
         return $this->hasMany('App\Models\Tesoreria\RequerimientoPagoDetalle', 'id_requerimiento_pago', 'id_requerimiento_pago');
     }
+    public function tipoDestinatario()
+    {
+        return $this->hasOne('App\Models\Tesoreria\RequerimientoPagoTipoDestinatario', 'id_requerimiento_pago_tipo_destinatario', 'id_tipo_destinatario');
+    }
     public function persona()
     {
         return $this->hasOne('App\Models\Rrhh\Persona', 'id_persona', 'id_persona');
