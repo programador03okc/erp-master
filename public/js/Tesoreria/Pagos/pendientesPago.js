@@ -13,6 +13,10 @@ class RequerimientoPago {
         const permisoEnviar = this.permisoEnviar;
         const permisoRegistrar = this.permisoRegistrar;
 
+        console.log(permisoEnviar);
+        console.log(permisoRegistrar);
+        console.log(permisoVer);
+
         var vardataTables = funcDatatables();
 
         tableRequerimientos = $('#listaRequerimientos').DataTable({
@@ -63,7 +67,6 @@ class RequerimientoPago {
                 {
                     'render':
                         function (data, type, row) {
-                            console.log(permisoEnviar);
                             return `<div class="btn-group" role="group">
                             ${((row['id_estado'] == 1 || row['id_estado'] == 2) && permisoEnviar == '1') ?
                                     `<button type="button" class="enviar btn btn-info boton" data-toggle="tooltip" 
