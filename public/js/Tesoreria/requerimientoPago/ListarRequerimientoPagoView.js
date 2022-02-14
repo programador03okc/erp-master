@@ -1847,6 +1847,27 @@ class ListarRequerimientoPagoView {
         document.querySelector("div[id='modal-requerimiento-pago'] span[name='fecha_registro']").textContent = 'Fecha registro: ' + fechaRegistro;
         document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_contribuyente']").value = data.id_contribuyente!=null || data.id_contribuyente !=''?data.id_contribuyente:'';
         document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_persona']").value = data.id_persona!=null || data.id_persona !=''?data.id_persona:'';
+        document.querySelector("div[id='modal-requerimiento-pago'] select[name='id_tipo_destinatario']").value = data.id_tipo_destinatario;
+        if(data.id_tipo_destinatario ==1 && data.id_persona >0){
+            console.log(data);
+            document.querySelector("div[id='modal-requerimiento-pago'] input[name='tipo_documento_identidad']").value =data.persona !=null && data.persona.tipo_documento_identidad !=null ? data.persona.tipo_documento_identidad.descripcion:'';
+            document.querySelector("div[id='modal-requerimiento-pago'] input[name='nro_documento']").value =data.persona !=null && data.persona.nro_documento !=null ? data.persona.nro_documento:'';
+            document.querySelector("div[id='modal-requerimiento-pago'] input[name='nombre_destinatario']").value =data.persona !=null && data.persona.nombres !=null ? ((data.persona.nombres).concat(' ',data.persona.apellido_paterno).concat(' ',data.persona.apellido_materno)):'';
+            document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_cuenta_persona']").value =data.id_cuenta_persona !=null ? data.id_cuenta_persona:'';
+            
+            obtenerCuentasBancariasPersona(data.id_persona);
+            
+        }
+        if(data.id_tipo_destinatario ==2 && data.id_contribuyente >0){
+            
+            document.querySelector("div[id='modal-requerimiento-pago'] input[name='tipo_documento_identidad']").value =data.contribuyente !=null && data.contribuyente.tipo_documento_identidad !=null ? data.contribuyente.tipo_documento_identidad.descripcion:'';
+            document.querySelector("div[id='modal-requerimiento-pago'] input[name='nro_documento']").value =data.contribuyente !=null && data.contribuyente.nro_documento !=null ? data.contribuyente.nro_documento:'';
+            document.querySelector("div[id='modal-requerimiento-pago'] input[name='nombre_destinatario']").value =data.contribuyente !=null && data.contribuyente.razon_social !=null ? data.contribuyente.razon_social :'';
+            document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_cuenta_contribuyente']").value =data.id_cuenta_contribuyente !=null ? data.id_cuenta_contribuyente:'';
+
+            obtenerCuentasBancariasContribuyente(data.id_contribuyente);
+        }
+
         // document.querySelector("div[id='modal-requerimiento-pago'] input[name='nombre_destinatario']").value = data.proveedor != null ? data.proveedor.razon_social : '';
         // document.querySelector("div[id='modal-requerimiento-pago'] input[name='nro_documento']").value = data.proveedor != null ? data.proveedor.nro_documento : '';
         // document.querySelector("div[id='modal-requerimiento-pago'] input[name='tipo_documento_identidad']").value = data.proveedor != null ? data.proveedor.documento_identidad : '';
@@ -2707,7 +2728,7 @@ class ListarRequerimientoPagoView {
         if(obj.dataset.idPersona> 0){
             obtenerCuentasBancariasPersona(obj.dataset.idPersona);
         }else if(obj.dataset.idContribuyente> 0){
-            obtenerCuentasBancariasPersona(obj.dataset.idContribuyente);
+            obtenerCuentasBancariasContribuyente(obj.dataset.idContribuyente);
         }else{
 
             Swal.fire(
