@@ -17,15 +17,21 @@ use App\Models\Almacen\UnidadMedida;
 use App\Models\Configuracion\Grupo;
 use App\Models\Configuracion\Moneda;
 use App\Models\Contabilidad\Banco;
+use App\Models\Contabilidad\Contribuyente;
+use App\Models\Contabilidad\CuentaContribuyente;
 use App\Models\Contabilidad\Identidad;
 use App\Models\Contabilidad\TipoCuenta;
+use App\Models\Logistica\Proveedor;
 use App\Models\mgcp\CuadroCosto\CuadroCostoView;
+use App\Models\Rrhh\CuentaPersona;
+use App\Models\Rrhh\Persona;
 use App\Models\Tesoreria\RequerimientoPagoDetalle;
 use App\Models\Tesoreria\RequerimientoPago;
 use App\Models\Tesoreria\RequerimientoPagoAdjunto;
 use App\Models\Tesoreria\RequerimientoPagoAdjuntoDetalle;
 use App\Models\Tesoreria\RequerimientoPagoCategoriaAdjunto;
 use App\Models\Tesoreria\RequerimientoPagoTipo;
+use App\Models\Tesoreria\RequerimientoPagoTipoDestinatario;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -50,16 +56,17 @@ class RequerimientoPagoController extends Controller
         $periodos = Periodo::mostrar();
         $prioridades = Prioridad::mostrar();
         $gruposUsuario = Auth::user()->getAllGrupo();
-
+        
+        $tiposDestinatario = RequerimientoPagoTipoDestinatario::mostrar();
         $empresas = Empresa::mostrar();
         $grupos = Grupo::mostrar();
         $divisiones = DivisionArea::mostrar();
         $monedas = Moneda::mostrar();
         $unidadesMedida = UnidadMedida::mostrar();
-        $proyectos_activos = (new ProyectosController)->listar_proyectos_activos();
+        $proyectosActivos = (new ProyectosController)->listar_proyectos_activos();
         $bancos = Banco::mostrar();
         $tipo_cuenta = TipoCuenta::mostrar();
-        $tipos_requerimiento_pago = RequerimientoPagoTipo::mostrar();
+        $tiposRequerimientoPago = RequerimientoPagoTipo::mostrar();
         $tipos_documentos = Identidad::mostrar();
 
         return view(
@@ -68,36 +75,38 @@ class RequerimientoPagoController extends Controller
                 'prioridades',
                 'empresas',
                 'grupos',
-                'tipos_requerimiento_pago',
+                'tiposRequerimientoPago',
                 'periodos',
                 'monedas',
                 'unidadesMedida',
                 'divisiones',
                 'gruposUsuario',
-                'proyectos_activos',
+                'proyectosActivos',
                 'bancos',
                 'tipo_cuenta',
-                'tipos_documentos'
+                'tipos_documentos',
+                'tiposDestinatario'
             )
         );
     }
-    public function viewRevisarAprobarRequerimientoPago()
-    {
-        $periodos = Periodo::mostrar();
-        $prioridades = Prioridad::mostrar();
-        $gruposUsuario = Auth::user()->getAllGrupo();
+    // public function viewRevisarAprobarRequerimientoPago()
+    // {
+    //     $periodos = Periodo::mostrar();
+    //     $prioridades = Prioridad::mostrar();
+    //     $gruposUsuario = Auth::user()->getAllGrupo();
+        
+    //     $tipoDestinatario = RequerimientoPagoTipoDestinatario::mostrar();
+    //     $empresas = Empresa::mostrar();
+    //     $grupos = Grupo::mostrar();
+    //     $divisiones = DivisionArea::mostrar();
+    //     $monedas = Moneda::mostrar();
+    //     $unidadesMedida = UnidadMedida::mostrar();
+    //     $proyectosActivos = (new ProyectosController)->listar_proyectos_activos();
 
-        $empresas = Empresa::mostrar();
-        $grupos = Grupo::mostrar();
-        $divisiones = DivisionArea::mostrar();
-        $monedas = Moneda::mostrar();
-        $unidadesMedida = UnidadMedida::mostrar();
-        $proyectos_activos = (new ProyectosController)->listar_proyectos_activos();
 
 
-
-        return view('tesoreria/requerimiento_pago/revisar_aprobar', compact('prioridades', 'empresas', 'grupos', 'periodos', 'monedas', 'unidadesMedida', 'divisiones', 'gruposUsuario', 'proyectos_activos'));
-    }
+    //     return view('tesoreria/requerimiento_pago/revisar_aprobar', compact('prioridades', 'empresas', 'grupos', 'periodos', 'monedas', 'unidadesMedida', 'divisiones', 'gruposUsuario', 'proyectosActivos','tipoDestinatario'));
+    // }
     function listarRequerimientoPago(Request $request)
     {
         $mostrar = $request->meOrAll;
@@ -202,8 +211,11 @@ class RequerimientoPagoController extends Controller
             $requerimientoPago->id_sede = $request->sede > 0 ? $request->sede : null;
             $requerimientoPago->id_grupo = $request->grupo > 0 ? $request->grupo : null;
             $requerimientoPago->id_division = $request->division;
-            $requerimientoPago->id_proveedor = $request->id_proveedor > 0 ? $request->id_proveedor : null;
-            $requerimientoPago->id_cuenta_proveedor = $request->id_cuenta_principal_proveedor > 0 ? $request->id_cuenta_principal_proveedor : null;
+            $requerimientoPago->id_tipo_destinatario = $request->id_tipo_destinatario;
+            $requerimientoPago->id_cuenta_persona = $request->id_cuenta_persona > 0 ? $request->id_cuenta_persona : null;
+            $requerimientoPago->id_persona = $request->id_persona > 0 ? $request->id_persona : null;
+            $requerimientoPago->id_contribuyente = $request->id_contribuyente > 0 ? $request->id_contribuyente : null;
+            $requerimientoPago->id_cuenta_contribuyente = $request->id_cuenta_contribuyente > 0 ? $request->id_cuenta_contribuyente : null;
             // $requerimientoPago->confirmacion_pago = ($request->tipo_requerimiento == 2 ? ($request->fuente == 2 ? true : false) : true);
             $requerimientoPago->monto_total = $request->monto_total;
             $requerimientoPago->id_proyecto = $request->proyecto > 0 ? $request->proyecto : null;
@@ -382,8 +394,11 @@ class RequerimientoPagoController extends Controller
             $requerimientoPago->id_sede = $request->sede > 0 ? $request->sede : null;
             $requerimientoPago->id_grupo = $request->grupo > 0 ? $request->grupo : null;
             $requerimientoPago->id_division = $request->division;
-            $requerimientoPago->id_proveedor = $request->id_proveedor > 0 ? $request->id_proveedor : null;
-            $requerimientoPago->id_cuenta_proveedor = $request->id_cuenta_principal_proveedor > 0 ? $request->id_cuenta_principal_proveedor : null;
+            $requerimientoPago->id_tipo_destinatario = $request->id_tipo_destinatario;
+            $requerimientoPago->id_cuenta_persona = $request->id_cuenta_persona > 0 ? $request->id_cuenta_persona : null;
+            $requerimientoPago->id_persona = $request->id_persona > 0 ? $request->id_persona : null;
+            $requerimientoPago->id_contribuyente = $request->id_contribuyente > 0 ? $request->id_contribuyente : null;
+            $requerimientoPago->id_cuenta_contribuyente = $request->id_cuenta_contribuyente > 0 ? $request->id_cuenta_contribuyente : null;
             if ($request->id_estado == 3) { // levantar observación
                 $requerimientoPago->id_estado = 1;
                 // $trazabilidad = new Trazabilidad();
@@ -607,10 +622,15 @@ class RequerimientoPagoController extends Controller
     function mostrarRequerimientoPago($idRequerimientoPago)
     {
 
-        $detalleRequerimientoPagoList = RequerimientoPagoDetalle::with('unidadMedida', 'producto', 'partida.presupuesto', 'centroCosto', 'adjunto', 'estado')->where([['id_requerimiento_pago', $idRequerimientoPago]])->get();
+        $detalleRequerimientoPagoList = RequerimientoPagoDetalle::with('unidadMedida', 'producto', 'partida.presupuesto', 'centroCosto', 'adjunto', 'estado')
+        ->where([['id_requerimiento_pago', $idRequerimientoPago]])
+        ->get();
 
         $requerimientoPago = RequerimientoPago::where('id_requerimiento_pago', $idRequerimientoPago)
-            ->with('tipoRequerimientoPago', 'periodo', 'prioridad', 'moneda', 'creadoPor', 'empresa', 'sede', 'grupo', 'division', 'cuadroCostos', 'proyecto', 'adjunto')
+            ->with('tipoRequerimientoPago', 'periodo', 'prioridad', 'moneda', 'creadoPor', 'empresa', 'sede', 'grupo', 'division', 
+            'persona.tipoDocumentoIdentidad','cuentaPersona.banco.contribuyente', 'cuentaPersona.tipoCuenta', 'cuentaPersona.moneda',
+            'contribuyente.tipoDocumentoIdentidad','contribuyente.tipoContribuyente','cuentaContribuyente.banco.contribuyente',
+            'cuentaContribuyente.moneda','cuentaContribuyente.tipoCuenta','cuadroCostos', 'proyecto', 'adjunto')
             ->first();
 
         $documento = Documento::where([['id_tp_documento',11],['id_doc',$idRequerimientoPago]])->first();
@@ -651,6 +671,7 @@ class RequerimientoPagoController extends Controller
     {
 
         $requerimientoPago = $this->mostrarRequerimientoPago($idRequerimientoPago);
+       
         $vista = View::make(
             'tesoreria/requerimiento_pago/export/RequerimientoPagoPdf',
             compact('requerimientoPago')
@@ -662,4 +683,297 @@ class RequerimientoPagoController extends Controller
         return $pdf->stream();
         return $pdf->download('requerimiento-pago.pdf');
     }
+
+    function obtenerDestinatarioPorNumeroDeDocumento(Request $request)
+    {
+        $nroDocumento= $request->nroDocumento;
+        $idTipoDestinatario= $request->idTipoDestinatario;
+        $destinatario =[];
+        $tipo_estado='';
+        $mensaje='';
+
+        if($idTipoDestinatario == 1){ // tipo persona
+            $destinatario = Persona::with("tipoDocumentoIdentidad","cuentaPersona.banco.contribuyente","cuentaPersona.tipoCuenta","cuentaPersona.moneda")->where([["nro_documento",$nroDocumento],["estado","!=",7]])->get();
+
+            
+        }elseif($idTipoDestinatario ==2){ // tipo contribuyente
+            $destinatario=  Contribuyente::with("tipoDocumentoIdentidad","cuentaContribuyente.banco.contribuyente","cuentaContribuyente.tipoCuenta")->where([["nro_documento",$nroDocumento],["estado","!=",7]])->get();
+            
+            
+        }else{
+            $tipo_estado="error";
+            $mensaje='no se recibio un valor valido para tipo de destinatario';
+
+        }
+
+        if($destinatario->count() == 1){
+            $tipo_estado="success";
+            $mensaje='Destinatario encontrado';
+        }elseif($destinatario->count() >1){
+            $tipo_estado="success";
+            $mensaje='Se encontro más de un destinatario que coincide con el número de documento';
+        }else{
+            $tipo_estado="warning";
+            $mensaje='no se encontro un destinatario';
+        }
+
+
+
+        return ['data'=>$destinatario,'tipo_estado'=>$tipo_estado,'mensaje'=>$mensaje];
+    }
+
+    function obtenerDestinatarioPorNombre(Request $request)
+    {
+        $nombre= $request->nombreDestinatario;
+        $idTipoDestinatario= $request->idTipoDestinatario;
+        $destinatario =[];
+        $tipo_estado='';
+        $mensaje='';
+
+        if($idTipoDestinatario == 1){ // tipo persona
+            $destinatario = Persona::with("tipoDocumentoIdentidad","cuentaPersona.banco.contribuyente","cuentaPersona.tipoCuenta","cuentaPersona.moneda")->where([["nombres",'like','%'.strtoupper($nombre).'%'],["estado","!=",7]])
+            ->orWhere([["apellido_paterno",'like','%'.strtoupper($nombre).'%'],["estado","!=",7]])
+            ->orWhere([["apellido_materno",'like','%'.strtoupper($nombre).'%'],["estado","!=",7]])
+            ->get();
+
+            
+        }elseif($idTipoDestinatario ==2){ // tipo contribuyente
+            $destinatario=  Contribuyente::with("tipoDocumentoIdentidad","cuentaContribuyente.banco.contribuyente","cuentaContribuyente.tipoCuenta","tipoContribuyente")->where([["razon_social",'like','%'.$nombre.'%'],["estado","!=",7]])->get();
+            
+            
+        }else{
+            $tipo_estado="error";
+            $mensaje='no se recibio un valor valido para tipo de destinatario';
+
+        }
+
+        if($destinatario->count() == 1){
+            $tipo_estado="success";
+            $mensaje='Destinatario encontrado';
+        }elseif($destinatario->count() >1){
+            $tipo_estado="success";
+            $mensaje='Se encontro más de un destinatario que coincide con el número de documento';
+        }else{
+            $tipo_estado="warning";
+            $mensaje='no se encontro un destinatario';
+        }
+
+
+
+        return ['data'=>$destinatario,'tipo_estado'=>$tipo_estado,'mensaje'=>$mensaje];
+    }
+
+    function guardarContribuyente(Request $request){
+        try {
+            DB::beginTransaction();
+            $array = [];
+
+            $contribuyente = DB::table('contabilidad.adm_contri')
+                ->where('nro_documento', trim($request->nuevo_nro_documento))
+                ->first();
+
+            if ($contribuyente !== null) {
+                $array = array(
+                    'id_contribuyente' => 0,
+                    'tipo_estado' => 'warning',
+                    'mensaje' => 'Ya existe el número documento ingresado',
+                );
+            } else {
+                $idContribuyente = DB::table('contabilidad.adm_contri')
+                    ->insertGetId(
+                        [
+                            'nro_documento' => trim($request->nuevo_nro_documento),
+                            'id_doc_identidad' => $request->id_doc_identidad,
+                            'razon_social' => strtoupper(trim($request->nuevo_razon_social)),
+                            'telefono' => trim($request->telefono),
+                            'direccion_fiscal' => trim($request->direccion_fiscal),
+                            'fecha_registro' => date('Y-m-d H:i:s'),
+                            'estado' => 1,
+                            'transportista' => false
+                        ],
+                        'id_contribuyente'
+                    );
+
+                $array = array(
+                    'id_contribuyente' => $idContribuyente,
+                    'tipo_estado' => 'success',
+                    'mensaje' => 'Se guardó el contribuyente',
+                );
+            }
+            DB::commit();
+            return response()->json($array);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json(
+                array(
+                    'id_contribuyente' => '0',
+                    'tipo_estado' => 'error',
+                    'mensaje' => 'Hubo un problema. Por favor intente de nuevo',
+                    'error' => $e->getMessage()
+                )
+            );
+        }
+    }
+    function guardarPersona(Request $request){
+        try {
+            DB::beginTransaction();
+            $array = [];
+
+            $persona = DB::table('rrhh.rrhh_perso')
+                ->where('nro_documento', trim($request->nuevo_nro_documento))
+                ->first();
+
+            if ($persona !== null) {
+                $array = array(
+                    'id_persona' => 0,
+                    'tipo_estado' => 'warning',
+                    'mensaje' => 'Ya existe el número de documento ingresado',
+                );
+            } else {
+                $idPersona = DB::table('rrhh.rrhh_perso')
+                    ->insertGetId(
+                        [
+                            'nro_documento' => trim($request->nuevo_nro_documento),
+                            'id_documento_identidad' => $request->id_doc_identidad,
+                            'nombres' => strtoupper(trim($request->nuevo_nombres)),
+                            'apellido_paterno' => strtoupper(trim($request->apellido_paterno)),
+                            'apellido_materno' => strtoupper(trim($request->apellido_materno)),
+                            'telefono' => trim($request->telefono),
+                            'direccion' => trim($request->direccion),
+                            'fecha_registro' => date('Y-m-d H:i:s'),
+                            'estado' => 1,
+                        ],
+                        'id_persona'
+                    );
+
+                $array = array(
+                    'id_persona' => $idPersona,
+                    'tipo_estado' => 'success',
+                    'mensaje' => 'Se guardó la persona',
+                );
+            }
+            DB::commit();
+            return response()->json($array);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json(
+                array(
+                    'id_persona' => '0',
+                    'tipo_estado' => 'error',
+                    'mensaje' => 'Hubo un problema. Por favor intente de nuevo',
+                    'error' => $e->getMessage()
+                )
+            );
+        }
+    }
+    function guardarCuentaDestinatario(Request $request){ 
+        try {
+            DB::beginTransaction();
+            $array = [];
+
+            if($request->id_tipo_destinatario ==1){ //tipo persona
+                $idCuenta = DB::table('rrhh.rrhh_cta_banc')
+                    ->insertGetId(
+                        [
+                            'id_persona' => $request->id_persona,
+                            'id_banco' => $request->banco,
+                            'id_tipo_cuenta' => $request->tipo_cuenta_banco,
+                            'nro_cuenta' => trim($request->nro_cuenta),
+                            'nro_cci' => trim($request->nro_cuenta_interbancaria),
+                            'id_moneda' => $request->moneda,
+                            'fecha_registro' => date('Y-m-d H:i:s'),
+                            'estado' => 1,
+                        ],
+                        'id_cuenta_bancaria'
+                    );
+            }elseif($request->id_tipo_destinatario ==2){ //tipo contribuyente
+                $idCuenta = DB::table('contabilidad.adm_cta_contri')
+                ->insertGetId(
+                    [
+                        'id_contribuyente' => $request->id_contribuyente,
+                        'id_banco' => $request->banco,
+                        'id_tipo_cuenta' => $request->tipo_cuenta_banco,
+                        'nro_cuenta' => trim($request->nro_cuenta),
+                        'nro_cuenta_interbancaria' => trim($request->nro_cuenta_interbancaria),
+                        'moneda' => $request->moneda,
+                        'fecha_registro' => date('Y-m-d H:i:s'),
+                        'estado' => 1,
+                    ],
+                    'id_cuenta_contribuyente'
+                );
+            }
+ 
+
+            if ($idCuenta >0 ) {
+                $array = array(
+                    'id_cuenta' => $idCuenta,
+                    'id_tipo_destinatario' => $request->id_tipo_destinatario,
+                    'tipo_estado' => 'success',
+                    'mensaje' => 'Se guardó la cuenta',
+                );
+            } else {
+                $array = array(
+                    'id_cuenta' => 0,
+                    'id_tipo_destinatario' => $request->id_tipo_destinatario,
+                    'tipo_estado' => 'warning',
+                    'mensaje' => 'Hubo un problema al intentar guardar la cuenta',
+                );
+
+
+            }
+            DB::commit();
+            return response()->json($array);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json(
+                array(
+                    'id_cuenta' => 0,
+                    'id_tipo_destinatario' => 0,
+                    'tipo_estado' => 'error',
+                    'mensaje' => 'Hubo un problema. Por favor intente de nuevo',
+                    'error' => $e->getMessage()
+                )
+            );
+        }
+    }
+
+    function obtenerCuentaPersona($idPersona){
+        
+        $data= CuentaPersona::with("banco.contribuyente","moneda","tipoCuenta")->where([["id_persona",$idPersona],["estado","!=",7]])->get();
+        if(!empty($data) && $data->count() > 0){
+            $array=[
+            'tipo_estado'=>'success',
+            'data'=>$data,
+            'mensaje'=>'Ok',
+        ];
+
+        }else{
+            $array = [
+                'tipo_estado'=>'warning',
+                'data'=>[],
+                'mensaje'=>'Sin cuentas bancarias para mostrar',
+            ];
+        }
+        return $array;
+    }
+    function obtenerCuentaContribuyente($idContribuyente){
+
+        $data= CuentaContribuyente::with("banco.contribuyente","moneda","tipoCuenta")->where([["id_contribuyente",$idContribuyente],["estado","!=",7]])->get();
+        if(!empty($data) && $data->count() > 0){
+            $array=[
+            'tipo_estado'=>'success',
+            'data'=>$data,
+            'mensaje'=>'Ok',
+        ];
+
+        }else{
+            $array = [
+                'tipo_estado'=>'warning',
+                'data'=>[],
+                'mensaje'=>'Sin cuentas bancarias para mostrar',
+            ];
+        }
+        return $array;
+    }
+
 }

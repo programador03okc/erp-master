@@ -2,21 +2,18 @@
 
 namespace App\Models\Tesoreria;
 
+use Illuminate\Support\Facades\DB;
 use App\Models\Administracion\Documento;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
-use App\Models\Administracion\Estado;
-use App\Models\Configuracion\Usuario;
-use App\Models\Contabilidad\Contribuyente;
 use App\Models\Contabilidad\CuentaContribuyente;
 use Carbon\Carbon;
-use Debugbar;
+
 
 class RequerimientoPago extends Model
 {
     protected $table = 'tesoreria.requerimiento_pago';
     protected $primaryKey = 'id_requerimiento_pago';
-    protected $appends = ['id_documento', 'termometro', 'nombre_estado','proveedor'];
+    protected $appends = ['id_documento', 'termometro', 'nombre_estado'];
     public $timestamps = false;
 
 
@@ -45,25 +42,25 @@ class RequerimientoPago extends Model
 
     public function getNombreEstadoAttribute()
     {
-        $estado = Estado::join('tesoreria.requerimiento_pago', 'adm_estado_doc.id_estado_doc', '=', 'requerimiento_pago.id_estado')
+        $estado = RequerimientoPagoEstados::join('tesoreria.requerimiento_pago', 'requerimiento_pago_estado.id_requerimiento_pago_estado', '=', 'requerimiento_pago.id_estado')
             ->where('requerimiento_pago.id_requerimiento_pago', $this->attributes['id_requerimiento_pago'])
-            ->first()->estado_doc;
+            ->first()->descripcion;
         return $estado;
     }
-    public function getProveedorAttribute()
-    {
-        $proveedor = Proveedor::leftJoin('tesoreria.requerimiento_pago', 'requerimiento_pago.id_proveedor', '=', 'log_prove.id_proveedor')
-        ->leftJoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
-        ->leftJoin('contabilidad.sis_identi', 'sis_identi.id_doc_identidad', '=', 'adm_contri.id_doc_identidad')
-        ->where('requerimiento_pago.id_requerimiento_pago', $this->attributes['id_requerimiento_pago'])
-        ->select('adm_contri.id_contribuyente'
-            ,'log_prove.id_proveedor','adm_contri.id_doc_identidad','sis_identi.descripcion AS documento_identidad','adm_contri.razon_social','adm_contri.nro_documento')
-        ->first();
-        $cuentaContribuyente = CuentaContribuyente::with('banco.contribuyente','tipoCuenta','moneda')->where([['id_contribuyente',$proveedor->id_contribuyente],['estado','!=',7]])->get();
-        $proveedor->setAttribute('cuenta_contribuyente',$cuentaContribuyente);
+    // public function getProveedorAttribute()
+    // {
+    //     $proveedor = Proveedor::leftJoin('tesoreria.requerimiento_pago', 'requerimiento_pago.id_contribuyente', '=', 'log_prove.id_contribuyente')
+    //     ->leftJoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
+    //     ->leftJoin('contabilidad.sis_identi', 'sis_identi.id_doc_identidad', '=', 'adm_contri.id_doc_identidad')
+    //     ->where('requerimiento_pago.id_requerimiento_pago', $this->attributes['id_requerimiento_pago'])
+    //     ->select('adm_contri.id_contribuyente'
+    //         ,'log_prove.id_proveedor','adm_contri.id_doc_identidad','sis_identi.descripcion AS documento_identidad','adm_contri.razon_social','adm_contri.nro_documento')
+    //     ->first();
+    //     $cuentaContribuyente = CuentaContribuyente::with('banco.contribuyente','tipoCuenta','moneda')->where([['id_contribuyente',$proveedor->id_contribuyente],['estado','!=',7]])->get();
+    //     $proveedor->setAttribute('cuenta_contribuyente',$cuentaContribuyente);
         
-        return $proveedor;
-    }
+    //     return $proveedor;
+    // }
 
 
     public function getTermometroAttribute()
@@ -125,6 +122,26 @@ class RequerimientoPago extends Model
     public function detalle()
     {
         return $this->hasMany('App\Models\Tesoreria\RequerimientoPagoDetalle', 'id_requerimiento_pago', 'id_requerimiento_pago');
+    }
+    public function persona()
+    {
+        return $this->hasOne('App\Models\Rrhh\Persona', 'id_persona', 'id_persona');
+    }
+    public function contribuyente()
+    {
+        return $this->hasOne('App\Models\Contabilidad\Contribuyente', 'id_contribuyente', 'id_contribuyente');
+    }
+    public function cuentaContribuyente()
+    {
+        return $this->hasOne('App\Models\Contabilidad\CuentaContribuyente', 'id_cuenta_contribuyente', 'id_cuenta_contribuyente');
+    }
+    public function cuentaPersona()
+    {
+        return $this->hasOne('App\Models\Rrhh\CuentaPersona', 'id_cuenta_bancaria', 'id_cuenta_persona');
+    }
+    public function estado()
+    {
+        return $this->hasOne('App\Models\Tesoreria\RequerimientoPagoEstados', 'id_requerimiento_pago_estado', 'id_estado');
     }
     public function adjunto()
     {

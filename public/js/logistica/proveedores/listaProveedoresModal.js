@@ -81,6 +81,8 @@ function proveedorModal(){
     $('#modal-proveedores').modal({
         show: true
     });
+    console.log('modal lista proveedor abierto');
+
     var page = $('.page-main').attr('type');
 
     if (page == "ordenesDespacho"){

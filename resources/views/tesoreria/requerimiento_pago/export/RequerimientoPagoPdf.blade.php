@@ -72,8 +72,25 @@
     }
 </style>
 <?php
-
-
+if($requerimientoPago->id_tipo_destinatario ==1){
+    $tipoDocumentoIdentidad= $requerimientoPago->persona !=null ? $requerimientoPago->persona['tipoDocumentoIdentidad']['descripcion']:'';
+    $nroDocumento= $requerimientoPago->persona !=null ?$requerimientoPago->persona['nro_documento']:'';
+    $nombre=$requerimientoPago->persona !=null ?($requerimientoPago->persona['nombres'].' '.$requerimientoPago->persona['apellido_paterno'].' '.$requerimientoPago->persona['apellido_materno']):'';
+    $banco=$requerimientoPago->cuentaPersona !=null  && $requerimientoPago->cuentaPersona['banco'] !=null ?$requerimientoPago->cuentaPersona['banco']['contribuyente']['razon_social']:'';
+    $tipoCuenta=$requerimientoPago->cuentaPersona !=null  && $requerimientoPago->cuentaPersona['tipoCuenta'] !=null ?$requerimientoPago->cuentaPersona['tipoCuenta']['descripcion']:'';
+    $moneda=$requerimientoPago->cuentaPersona !=null  && $requerimientoPago->cuentaPersona['moneda'] !=null ?$requerimientoPago->cuentaPersona['moneda']['descripcion']:'';
+    $numeroCuenta=$requerimientoPago->cuentaPersona !=null ?$requerimientoPago->cuentaPersona['nro_cuenta']:'';
+    $numeroCci=$requerimientoPago->cuentaPersona !=null ?$requerimientoPago->cuentaPersona['nro_cci']:'';
+}elseif($requerimientoPago->id_tipo_destinatario ==2){
+    $tipoDocumentoIdentidad= $requerimientoPago->contribuyente !=null ? $requerimientoPago->contribuyente['tipoDocumentoIdentidad']['descripcion']:'';
+    $nroDocumento= $requerimientoPago->contribuyente !=null ?$requerimientoPago->contribuyente['nro_documento']:'';
+    $nombre=$requerimientoPago->contribuyente !=null ? $requerimientoPago->contribuyente['razon_social']:'';
+    $banco=$requerimientoPago->cuentaContribuyente !=null  && $requerimientoPago->cuentaContribuyente['banco'] !=null ?$requerimientoPago->cuentaContribuyente['banco']['contribuyente']['razon_social']:'';
+    $tipoCuenta=$requerimientoPago->cuentaContribuyente !=null  && $requerimientoPago->cuentaContribuyente['tipoCuenta'] !=null ?$requerimientoPago->cuentaContribuyente['tipoCuenta']['descripcion']:'';
+    $moneda=$requerimientoPago->cuentaContribuyente !=null  && $requerimientoPago->cuentaContribuyente['moneda'] !=null ?$requerimientoPago->cuentaContribuyente['moneda']['descripcion']:'';
+    $numeroCuenta=$requerimientoPago->cuentaContribuyente !=null ?$requerimientoPago->cuentaContribuyente['nro_cuenta']:'';
+    $numeroCci=$requerimientoPago->cuentaContribuyente !=null ?$requerimientoPago->cuentaContribuyente['nro_cuenta_interbancaria']:'';
+}
 ?>
 
 <body>
@@ -132,24 +149,26 @@
     <table>
         <thead>
             <tr>
-                <th style="width: 15%" class="text-right">{{ $requerimientoPago->proveedor !=null ? $requerimientoPago->proveedor['documento_identidad']:'' }}:</th>
-                <td style="width: 35%">{{ $requerimientoPago->proveedor !=null ? $requerimientoPago->proveedor['nro_documento']:'' }}</td>
+                <th style="width: 15%" class="text-right">{{ $tipoDocumentoIdentidad ??'' }}:</th>
+                <td style="width: 35%">{{ $nroDocumento ?? '' }}</td>
                 <th style="width: 15%" class="text-right">Banco:</th>
-                <td style="width: 35%">{{ $requerimientoPago->proveedor !=null ? $requerimientoPago->proveedor['cuenta_contribuyente'][0]['banco']['contribuyente']['razon_social']:'' }}</td>
+                <td style="width: 35%">{{ $banco ?? '' }}</td>
             </tr>
             <tr>
-                <th style="width: 15%" class="text-right">Razon social:</th>
-                <td style="width: 35%">{{ $requerimientoPago->proveedor!=null ? $requerimientoPago->proveedor['razon_social']:'' }}</td>
+                <th style="width: 15%" class="text-right">Destinatario:</th>
+                <td style="width: 35%">{{ $nombre ?? '' }}</td>
                 <th style="width: 15%" class="text-right">Cuenta Bancaria:</th>
-                <td style="width: 35%">{{ $requerimientoPago->proveedor !=null ? $requerimientoPago->proveedor['cuenta_contribuyente'][0]['nro_cuenta']:'' }}</td>
+                <td style="width: 35%">{{ $numeroCuenta != ''? $numeroCuenta: '' }} {{$numeroCci !='' ? ' CCI:'.($numeroCci) : ''}}</td>
             </tr>
             <tr>
                 <th style="width: 15%" class="text-right">Moneda:</th>
-                <td style="width: 35%">{{ $requerimientoPago->moneda!=null ? $requerimientoPago->moneda['descripcion']:'' }}</td>
+                <td style="width: 35%">{{ $moneda ?? '' }}</td>
                 <th style="width: 15%" class="text-right">Tipo Cuenta:</th>
-                <td style="width: 35%">{{ $requerimientoPago->proveedor !=null ? $requerimientoPago->proveedor['cuenta_contribuyente'][0]['tipoCuenta']['descripcion']:'' }}</td>
+                <td style="width: 35%">{{ $tipoCuenta ?? '' }}</td>
 
             </tr>
+          
+
         </thead>
     </table>
 
