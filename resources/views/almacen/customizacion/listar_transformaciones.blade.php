@@ -34,17 +34,17 @@ Gestión de Transformaciones
             <div class="col-md-12" id="tab-transformaciones" style="padding-top:10px;padding-bottom:10px;">
 
                 <ul class="nav nav-tabs" id="myTab">
-                    <li class="active"><a data-toggle="tab" href="#htp">Hojas de Transformación Pendientes</a></li>
-                    <li class=""><a data-toggle="tab" href="#htm">Hojas de Transformación Culminadas</a></li>
+                    <li class="active"><a data-toggle="tab" href="#pendientes">Ordenes de transformación pendientes</a></li>
+                    <li class=""><a data-toggle="tab" href="#procesadas">Ordenes de transformación procesadas</a></li>
                 </ul>
 
                 <div class="tab-content">
-                    <div id="htp" class="tab-pane fade in active">
+                    <div id="pendientes" class="tab-pane fade in active">
                         <br>
                         
                         <form id="formFiltrosTransformacionesPendientes" method="POST" target="_blank" action="{{route('almacen.movimientos.pendientes-ingreso.ordenesPendientesExcel')}}">
                             @csrf()
-                            <input type="hidden" name="select_mostrar_pendientes" value="2">
+                            {{-- <input type="hidden" name="select_mostrar_pendientes" value="0"> --}}
                         </form>
                         <div class="row">
                             <div class="col-md-12">
@@ -73,7 +73,7 @@ Gestión de Transformaciones
                         </div>
                         
                     </div>
-                    <div id="htm" class="tab-pane fade in ">
+                    <div id="procesadas" class="tab-pane fade in ">
                         <br>
                         <div class="row">
                             <div class="col-md-12">
@@ -118,7 +118,7 @@ Gestión de Transformaciones
 <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
 <script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
 <script src="{{ asset('datatables/Buttons/js/buttons.print.min.js') }}"></script>
-<script src="{{ asset('datatables/Buttons/js/buttons.html5.min.js') }}"></script>
+<script src="{{ asset('datatables/Buttons/js/buttons.procesadasl5.min.js') }}"></script>
 <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
 <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
 <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
@@ -136,14 +136,14 @@ Gestión de Transformaciones
 
         $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
             let tab = $(e.target).attr("href") // activated tab
-            if (tab == '#htp') {
+            if (tab == '#pendientes') {
                 if ($('#listaTransformacionesPendientes tbody tr').length > 0) {
                     // $('#listaTransformacionesPendientes').DataTable().ajax.reload();
                     $("#listaTransformacionesPendientes").DataTable().ajax.reload(null, false);
                 } else {
                     gestionCustomizacion.listarTransformacionesPendientes();
                 }
-            } else if (tab == '#htm') {
+            } else if (tab == '#procesadas') {
                 if ($('#listaTransformacionesMadres tbody tr').length > 0) {
                     $('#listaTransformacionesMadres').DataTable().ajax.reload();
                 } else {

@@ -9,7 +9,7 @@ function listarTransformaciones() {
         serverSide: true,
         // "scrollX": true,
         ajax: {
-            url: "listarTransformacionesProcesadas",
+            url: "listarTransformacionesFinalizadas",
             type: "POST"
         },
         columns: [
