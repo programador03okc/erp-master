@@ -31,23 +31,45 @@
                                 <td style="width:14%; font-weight:bold; text-align:right;">Fecha Registro</td>
                                 <td id="fecha_registro" style="width:10%;"></td>
                                 <td style="width:5%; font-weight:bold; text-align:right;">Creado por</td>
-                                <td id="creado_por" style="width:15%;"></td>
-                                <!--Elmer Figueroa Arce -->
+                                <td id="creado_por" style="width:10%;"></td>
                             </tr>
                             <tr>
                                 <td style="width:5%; font-weight:bold; text-align:right;">Tipo Req.</td>
                                 <td id="tipo_requerimiento" style="width:5%;"></td>
                                 <td style="width:5%; font-weight:bold; text-align:right;">Periodo</td>
                                 <td id="periodo" style="width:5%;"></td>
-                                <td style="width:10%; font-weight:bold; text-align:right;">Proveedor</td>
-                                <td id="proveedor" style="width:18%;"></td>
+                                <td style="width:5%; font-weight:bold; text-align:right;">Comentario</td>
+                                <td id="comentario" style="width:5%;"></td>
                                 <td style="width:10%; font-weight:bold; text-align:right;">Archivos adjuntos</td>
                                 <td id='adjuntosRequerimientoPago'>-</td>
                                 <td></td>
                             </tr>
+ 
+                        </tbody>
+                    </table>
+                </fieldset>
+                <fieldset class="group-importes">
+                    <legend>Datos destinatario de pago</legend>
+                    <table class="table" border="0" id="tablaDatosDestinatario">
+                        <tbody>
                             <tr>
-                                <td style="width:5%; font-weight:bold; text-align:right;">Comentario</td>
-                                <td id="comentario" style="width:95%;" colspan="7"></td>
+                                <td style="width:5%; font-weight:bold; text-align:right;">Tipo Destinatario</td>
+                                <td id="tipo_destinatario" style="width:5%;"></td>
+                                <td style="width:5%; font-weight:bold; text-align:right;">Nombre destinatario</td>
+                                <td id="destinatario" style="width:5%;"></td>
+                                <td style="width:10%; font-weight:bold; text-align:right;">Banco</td>
+                                <td id="banco" style="width:5%;"></td>
+                                <td style="width:5%; font-weight:bold; text-align:right;">Tipo Cuenta</td>
+                                <td id='tipo_cuenta' style="width:5%;"></td>
+                                
+                            </tr>
+                            <tr>
+                                <td style="width:5%; font-weight:bold; text-align:right;">Moneda</td>
+                                <td id="moneda" style="width:5%;"></td>
+                                <td style="width:5%; font-weight:bold; text-align:right;">Nro Cuenta</td>
+                                <td id="nro_cuenta" style="width:5%;"></td>
+                                <td style="width:5%; font-weight:bold; text-align:right;">CCI</td>
+                                <td id="nro_cci" style="width:5%;"></td>
                             </tr>
                         </tbody>
                     </table>

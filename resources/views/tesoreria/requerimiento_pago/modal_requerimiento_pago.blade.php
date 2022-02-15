@@ -34,7 +34,7 @@
 
                                             <h5>Tipo requerimiento</h5>
                                             <select class="form-control activation handleCheckStatusValue" name="tipo_requerimiento_pago">
-                                                @foreach ($tipos_requerimiento_pago as $tipo)
+                                                @foreach ($tiposRequerimientoPago as $tipo)
                                                 <option value="{{$tipo->id_requerimiento_pago_tipo}}">{{$tipo->descripcion}}</option>
                                                 @endforeach
                                             </select>
@@ -104,7 +104,7 @@
                                             <h5>Proyecto</h5>
                                             <select class="form-control activation handleCheckStatusValue" name="proyecto">
                                                 <option value="0">Seleccione un Proyecto</option>
-                                                @foreach ($proyectos_activos as $proyecto)
+                                                @foreach ($proyectosActivos as $proyecto)
                                                 <option value="{{$proyecto->id_proyecto}}" data-id-centro-costo="{{$proyecto->id_centro_costo}}" data-codigo-centro-costo="{{$proyecto->codigo_centro_costo}}" data-descripcion-centro-costo="{{$proyecto->descripcion_centro_costo}}" data-codigo="{{$proyecto->codigo}}">{{$proyecto->descripcion}}</option>
                                                 @endforeach
                                             </select>
@@ -151,49 +151,83 @@
                             <fieldset class="group-table">
                                 <h5><strong>Datos del destinatario de pago</strong></h5>
                                 <div class="row">
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <h5>Tipo Destinatario:</h5>
+                                            <div style="display:flex;">
+                                                <select class="form-control activation handleCheckStatusValue handleChangeTipoDestinatario" name="id_tipo_destinatario">
+                                                    @foreach ($tiposDestinatario as $tipo)
+                                                    <option value="{{$tipo->id_requerimiento_pago_tipo_destinatario}}">{{$tipo->descripcion}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <h5>Destinatario *</h5>
                                             <input type="text" class="oculto" name="idProveedor">
                                             <div style="display:flex;">
-                                                <input class="oculto" name="id_proveedor">
-                                                <input class="oculto" name="id_contrib">
-                                                <input type="text" class="form-control" name="tipo_documento_identidad" style="width:10%;" disabled>
-                                                <input type="text" class="form-control" name="nro_documento" style="width:30%;" disabled>
-                                                <input type="text" class="form-control handleCheckStatusValue" name="razon_social" style="width:60%;" disabled>
-                                                <button type="button" class="group-text" onClick="proveedorModal();">
-                                                    <i class="fa fa-search"></i>
+                                                <input class="oculto" name="id_persona">
+                                                <input class="oculto" name="id_contribuyente">
+                                                <input type="text" class="form-control" name="tipo_documento_identidad" placeholder="Tipo documento identidad" style="width:10%;" disabled>
+                                                <input type="text" class="form-control handleBlurBuscarDestinatarioPorNumeroDocumento" name="nro_documento" placeholder="Nro documento" style="width:30%;">
+                                                <input type="text" class="form-control handleKeyUpBuscarDestinatarioPorNombre handleFocusInputNombreDestinatario handleFocusOutInputNombreDestinatario" placeholder="Nombre destinatario" name="nombre_destinatario" style="width:60%;">
+                                                <button type="button" class="btn btn-sm btn-flat btn-primary" onClick="modalNuevoDestinatario();">
+                                                    <i class="fa fa-plus"></i>
                                                 </button>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="box box-solid box-default oculto" id="resultadoDestinatario" style="position: absolute; z-index: 999; overflow:scroll; height:20vh; box-shadow: rgb(9 30 66 / 25%) 0px 4px 8px, rgb(9 30 66 / 31%) 0px 0px 1px;">
+                                                    <div class="box-body">
+                                                        <ul class="nav nav-pills" role="tablist">
+                                                            <li>
+                                                                <h5>Resultados encontrados: <span class="badge" id="cantidadDestinatariosEncontrados">0</span></h5>
+                                                            </li>
+                                                        </ul>
+                                                        <table class="table table-striped table-hover" id="listaDestinatariosEncontrados"></table>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <h5>Cuenta bancaria *</h5>
                                             <div style="display:flex;">
-                                                <input class="oculto" name="id_cuenta_principal_proveedor">
-                                                <input type="text" class="form-control handleCheckStatusValue" name="nro_cuenta_principal_proveedor" readOnly>
-                                                <button type="button" class="group-text" onClick="cuentasBancariasModal();">
+                                                <input class="oculto" name="id_cuenta_persona">
+                                                <input class="oculto" name="id_cuenta_contribuyente">
+                                                <select class="form-control activation handleCheckStatusValue handleChangeCuenta" name="id_cuenta">
+
+                                                </select>
+                                                <!-- <input type="text" class="form-control handleCheckStatusValue" name="nro_cuenta_principal_proveedor" placeholder="Nro cuenta seleccionada" readOnly> -->
+                                                <!-- <button type="button" class="group-text" onClick="cuentasBancariasModal();">
                                                     <i class="fa fa-search"></i>
+                                                </button> -->
+                                                <button type="button" class="btn btn-sm btn-flat btn-primary" title="Agregar cuenta bancaria" onClick="modalNuevaCuentaDestinatario();">
+                                                    <i class="fas fa-plus"></i>
                                                 </button>
-                                                {{-- <button type="button" class="btn-primary" title="Agregar cuenta bancaria" onClick="agregar_cuenta_proveedor();"><i class="fas fa-plus"></i></button> --}}
+                                                <button type="button" class="btn btn-sm btn-flat btn-default handleClickInfoAdicionalCuentaSeleccionada">
+                                                    <i class="fas fa-question-circle"></i>
+                                                </button>
+
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-3">
-                                        {{-- <div class="form-group"> --}}
-                                        <h5>Monto Total:</h5>
-                                        <div style="display:flex;">
-                                            <!-- <div class="input-group-addon" name="montoMoneda" style="width: auto;">S/.</div> -->
-                                            <select class="form-control activation handleCheckStatusValue handleChangeUpdateMoneda" name="moneda" style="width:50%;">
-                                                @foreach ($monedas as $moneda)
-                                                <option data-simbolo="{{$moneda->simbolo}}" value="{{$moneda->id_moneda}}">{{$moneda->simbolo}}</option>
-                                                @endforeach
-                                            </select>
-                                            <input type="text" class="form-control oculto" name="monto_total" style="text-align: right;">
-                                            <input type="text" class="form-control activation handleCheckStatusValue" name="monto_total_read_only" readonly>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <h5>Monto Total:</h5>
+                                            <div style="display:flex;">
+                                                <!-- <div class="input-group-addon" name="montoMoneda" style="width: auto;">S/.</div> -->
+                                                <select class="form-control activation handleCheckStatusValue handleChangeUpdateMoneda" name="moneda" style="width:50%;">
+                                                    @foreach ($monedas as $moneda)
+                                                    <option data-simbolo="{{$moneda->simbolo}}" value="{{$moneda->id_moneda}}">{{$moneda->simbolo}}</option>
+                                                    @endforeach
+                                                </select>
+                                                <input type="text" class="form-control oculto" name="monto_total" style="text-align: right;">
+                                                <input type="text" class="form-control activation handleCheckStatusValue" name="monto_total_read_only" readonly>
+                                            </div>
                                         </div>
-                                        {{-- </div> --}}
                                     </div>
                                 </div>
                             </fieldset>
@@ -246,6 +280,25 @@
                     <button type="button" class="btn btn-sm btn-success handleClickRequerimientoPago oculto" id="btnActualizarRequerimientoPago" disabled>Actualizar</button>
                 </div>
             </form>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="modal-info-adicional-cuenta-seleccionada" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Información de cuenta</h4>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            </div>
         </div>
     </div>
 </div>

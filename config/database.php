@@ -91,6 +91,15 @@ return [
             'sslmode' => 'prefer',
         ],
 
+        'pgsql_rrhh' => [
+            'driver'    => env('DB_CONNECTION_RRHH'),
+            'host'      => env('DB_HOST_RRHH'),
+            'port'      => env('DB_PORT_RRHH'),
+            'database'  => env('DB_DATABASE_RRHH'),
+            'username'  => env('DB_USERNAME_RRHH'),
+            'password'  => env('DB_PASSWORD_RRHH'),
+        ],
+
         'sqlsrv' => [
             'driver' => 'sqlsrv',
             'url' => env('DATABASE_URL'),
