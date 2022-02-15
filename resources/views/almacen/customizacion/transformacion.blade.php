@@ -40,7 +40,7 @@ Orden de Transformación
                     <button type="button" class="btn btn-warning btn-sm btn-flat" onClick="openIniciar();" data-toggle="tooltip" data-placement="bottom" title="Iniciar Transformación">
                         Iniciar <i class="fas fa-step-forward"></i> </button>
                     <button type="button" class="btn btn-success btn-sm btn-flat" onClick="openProcesar();" data-toggle="tooltip" data-placement="bottom" title="Procesar Transformación">
-                        Procesar <i class="fas fa-step-forward"></i> </button>
+                        Finalizar <i class="fas fa-step-forward"></i> </button>
                 </div>
             </h4>
         </div>

@@ -145,7 +145,7 @@ class GestionCustomizacion {
                     data: 'fecha_inicio', name: 'transformacion.fecha_inicio', className: "text-center",
                     'render':
                         function (data, type, row) {
-                            return (formatDate(row['fecha_inicio']));
+                            return (row['fecha_inicio'] !== null ? formatDateHour(row['fecha_inicio']) : '');
                         }
                 },
                 { data: 'descripcion', name: 'alm_almacen.descripcion' },
@@ -200,33 +200,34 @@ class GestionCustomizacion {
                 { 'data': 'fecha_entrega_req' },
 
                 { 'data': 'orden_am', 'name': 'oc_propias.orden_am' },
-                // {'data': 'codigo_oportunidad', 'name': 'oportunidades.codigo_oportunidad'},
-                // {'data': 'oportunidad', 'name': 'oportunidades.oportunidad'},
                 { 'data': 'nombre', 'name': 'entidades.nombre' },
-                // {'render':
-                //     function (data, type, row){
-                //         return (formatDate(row['fecha_registro']));
-                //     }
-                // },
                 { 'data': 'codigo_req' },
-                { 'data': 'fecha_registro' },
-                { 'data': 'fecha_inicio' },
-                { 'data': 'fecha_transformacion' },
-                // {'render':
-                //     function (data, type, row){
-                //         return (formatDate(row['fecha_transformacion']));
-                //     }
-                // },
-                // {'data': 'codigo_oportunidad'},
+                // { 'data': 'fecha_registro' },
+                {
+                    data: 'fecha_registro', name: 'transformacion.fecha_registro', className: "text-center",
+                    'render':
+                        function (data, type, row) {
+                            return (row['fecha_registro'] !== null ? formatDateHour(row['fecha_registro']) : '');
+                        }
+                },
+                {
+                    data: 'fecha_inicio', name: 'transformacion.fecha_inicio', className: "text-center",
+                    'render':
+                        function (data, type, row) {
+                            return (row['fecha_inicio'] !== null ? formatDateHour(row['fecha_inicio']) : '');
+                        }
+                },
+                {
+                    data: 'fecha_transformacion', name: 'transformacion.fecha_transformacion', className: "text-center",
+                    'render':
+                        function (data, type, row) {
+                            return (row['fecha_transformacion'] !== null ? formatDateHour(row['fecha_transformacion']) : '');
+                        }
+                },
+                // { 'data': 'fecha_transformacion' },
                 { 'data': 'descripcion' },
                 { 'data': 'nombre_responsable' },
                 { 'data': 'observacion' },
-                // {'data': 'nombre_registrado'},
-                // {'render':
-                //     function (data, type, row){
-                //         return ('<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>');
-                //     }
-                // },
                 {
                     'render':
                         function (data, type, row) {

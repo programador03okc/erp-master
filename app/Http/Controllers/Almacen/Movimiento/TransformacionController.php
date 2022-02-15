@@ -43,7 +43,7 @@ class TransformacionController extends Controller
     {
         $almacenes = AlmacenController::mostrar_almacenes_cbo();
         $usuarios = GenericoAlmacenController::select_usuarios();
-        return view('almacen/customizacion/listar_transformaciones', compact('almacenes', 'usuarios'));
+        return view('almacen/customizacion/listarTransformaciones', compact('almacenes', 'usuarios'));
     }
 
     public function listar_transformaciones_pendientes(Request $request)
