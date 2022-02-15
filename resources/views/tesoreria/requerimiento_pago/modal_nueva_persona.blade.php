@@ -53,18 +53,6 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-8">
-                                <h5>Teléfono</h5>
-                                <input type="text" name="telefono" class="form-control limpiar" placeholder="Ingrese el teléfono" />
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <h5>Dirección</h5>
-                                <input type="text" name="direccion" class="form-control limpiar" placeholder="Ingrese la dirección" />
-                            </div>
-                        </div>
-                        <div class="row">
                             <div class="col-md-12">
                                 <h5>* Campos obligatorios</h5>
                             </div>

@@ -5,6 +5,7 @@ namespace App\Models\Rrhh;
 use Illuminate\Database\Eloquent\Model;
 
 class Persona extends Model {
+    protected $connection = 'pgsql_rrhh'; // *conexión con okcomput_rrhh  
     protected $table = 'rrhh.rrhh_perso';
     protected $primaryKey = 'id_persona';
     public $timestamps = false;

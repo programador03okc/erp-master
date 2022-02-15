@@ -5,6 +5,7 @@ namespace App\Models\Rrhh;
 use Illuminate\Database\Eloquent\Model;
 
 class CuentaPersona extends Model {
+    protected $connection = 'pgsql_rrhh'; // *conexión con okcomput_rrhh  
     protected $table = 'rrhh.rrhh_cta_banc';
     protected $primaryKey = 'id_cuenta_bancaria';
     public $timestamps = false;

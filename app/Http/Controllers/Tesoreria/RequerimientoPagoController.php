@@ -779,23 +779,20 @@ class RequerimientoPagoController extends Controller
                     'mensaje' => 'Ya existe el número documento ingresado',
                 );
             } else {
-                $idContribuyente = DB::table('contabilidad.adm_contri')
-                    ->insertGetId(
-                        [
-                            'nro_documento' => trim($request->nuevo_nro_documento),
-                            'id_doc_identidad' => $request->id_doc_identidad,
-                            'razon_social' => strtoupper(trim($request->nuevo_razon_social)),
-                            'telefono' => trim($request->telefono),
-                            'direccion_fiscal' => trim($request->direccion_fiscal),
-                            'fecha_registro' => date('Y-m-d H:i:s'),
-                            'estado' => 1,
-                            'transportista' => false
-                        ],
-                        'id_contribuyente'
-                    );
+
+                $contribuyente = new Contribuyente();
+                $contribuyente->nro_documento = trim($request->nuevo_nro_documento);
+                $contribuyente->id_doc_identidad = $request->id_doc_identidad;
+                $contribuyente->razon_social = strtoupper(trim($request->nuevo_razon_social));
+                $contribuyente->telefono = trim($request->telefono);
+                $contribuyente->direccion_fiscal = trim($request->direccion_fiscal);
+                $contribuyente->fecha_registro= date('Y-m-d H:i:s');
+                $contribuyente->estado= 1;
+                $contribuyente->transportista =false;
+                $contribuyente->save();
 
                 $array = array(
-                    'id_contribuyente' => $idContribuyente,
+                    'id_contribuyente' => $contribuyente->id_contribuyente,
                     'tipo_estado' => 'success',
                     'mensaje' => 'Se guardó el contribuyente',
                 );
@@ -830,24 +827,19 @@ class RequerimientoPagoController extends Controller
                     'mensaje' => 'Ya existe el número de documento ingresado',
                 );
             } else {
-                $idPersona = DB::table('rrhh.rrhh_perso')
-                    ->insertGetId(
-                        [
-                            'nro_documento' => trim($request->nuevo_nro_documento),
-                            'id_documento_identidad' => $request->id_doc_identidad,
-                            'nombres' => strtoupper(trim($request->nuevo_nombres)),
-                            'apellido_paterno' => strtoupper(trim($request->apellido_paterno)),
-                            'apellido_materno' => strtoupper(trim($request->apellido_materno)),
-                            'telefono' => trim($request->telefono),
-                            'direccion' => trim($request->direccion),
-                            'fecha_registro' => date('Y-m-d H:i:s'),
-                            'estado' => 1,
-                        ],
-                        'id_persona'
-                    );
+
+                $persona = New Persona();
+                $persona->nro_documento = trim($request->nuevo_nro_documento);
+                $persona->id_documento_identidad = $request->id_doc_identidad;
+                $persona->nombres = strtoupper(trim($request->nuevo_nombres));
+                $persona->apellido_paterno = strtoupper(trim($request->nuevo_apellido_paterno));
+                $persona->apellido_materno = strtoupper(trim($request->nuevo_apellido_materno));
+                $persona->fecha_registro =  date('Y-m-d H:i:s');
+                $persona->estado = 1;
+                $persona->save();
 
                 $array = array(
-                    'id_persona' => $idPersona,
+                    'id_persona' => $persona->id_persona,
                     'tipo_estado' => 'success',
                     'mensaje' => 'Se guardó la persona',
                 );
@@ -872,37 +864,35 @@ class RequerimientoPagoController extends Controller
             $array = [];
 
             if($request->id_tipo_destinatario ==1){ //tipo persona
-                $idCuenta = DB::table('rrhh.rrhh_cta_banc')
-                    ->insertGetId(
-                        [
-                            'id_persona' => $request->id_persona,
-                            'id_banco' => $request->banco,
-                            'id_tipo_cuenta' => $request->tipo_cuenta_banco,
-                            'nro_cuenta' => trim($request->nro_cuenta),
-                            'nro_cci' => trim($request->nro_cuenta_interbancaria),
-                            'id_moneda' => $request->moneda,
-                            'fecha_registro' => date('Y-m-d H:i:s'),
-                            'estado' => 1,
-                        ],
-                        'id_cuenta_bancaria'
-                    );
+
+                $cuentaPersona = new CuentaPersona();
+                $cuentaPersona->id_persona = $request->id_persona;
+                $cuentaPersona->id_banco = $request->banco;
+                $cuentaPersona->id_tipo_cuenta = $request->tipo_cuenta_banco;
+                $cuentaPersona->nro_cuenta = trim($request->nro_cuenta);
+                $cuentaPersona->nro_cci = trim($request->nro_cuenta_interbancaria);
+                $cuentaPersona->id_moneda = $request->moneda;
+                $cuentaPersona->fecha_registro = date('Y-m-d H:i:s');
+                $cuentaPersona->estado = 1;
+                $cuentaPersona->save();
+
+                $idCuenta = $cuentaPersona->id_cuenta_bancaria;
+
             }elseif($request->id_tipo_destinatario ==2){ //tipo contribuyente
-                $idCuenta = DB::table('contabilidad.adm_cta_contri')
-                ->insertGetId(
-                    [
-                        'id_contribuyente' => $request->id_contribuyente,
-                        'id_banco' => $request->banco,
-                        'id_tipo_cuenta' => $request->tipo_cuenta_banco,
-                        'nro_cuenta' => trim($request->nro_cuenta),
-                        'nro_cuenta_interbancaria' => trim($request->nro_cuenta_interbancaria),
-                        'id_moneda' => $request->moneda,
-                        'fecha_registro' => date('Y-m-d H:i:s'),
-                        'estado' => 1,
-                    ],
-                    'id_cuenta_contribuyente'
-                );
+
+                $cuentaContribuyente= new CuentaContribuyente();
+                $cuentaContribuyente->id_contribuyente =$request->id_contribuyente;
+                $cuentaContribuyente->id_banco= $request->banco;
+                $cuentaContribuyente->id_tipo_cuenta =$request->tipo_cuenta_banco;
+                $cuentaContribuyente->nro_cuenta = trim($request->nro_cuenta);
+                $cuentaContribuyente->nro_cuenta_interbancaria = trim($request->nro_cuenta_interbancaria);
+                $cuentaContribuyente->id_moneda = $request->moneda;
+                $cuentaContribuyente->fecha_registro= date('Y-m-d H:i:s');
+                $cuentaContribuyente->estado=1;
+                $cuentaContribuyente->save();
+
+                $idCuenta = $cuentaContribuyente->id_cuenta_contribuyente;
             }
- 
 
             if ($idCuenta >0 ) {
                 $array = array(
@@ -938,7 +928,8 @@ class RequerimientoPagoController extends Controller
     }
 
     function obtenerCuentaPersona($idPersona){
-        
+        // $data =DB::connection('pgsql_rrhh')->table('rrhh.rrhh_perso')->where('id_persona', $idPersona)->get();
+        // return $data;
         $data= CuentaPersona::with("banco.contribuyente","moneda","tipoCuenta")->where([["id_persona",$idPersona],["estado","!=",7]])->get();
         if(!empty($data) && $data->count() > 0){
             $array=[
