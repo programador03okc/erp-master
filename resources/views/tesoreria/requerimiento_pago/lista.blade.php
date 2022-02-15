@@ -70,11 +70,10 @@ Listado de requerimientos de pago
 @include('tesoreria.requerimiento_pago.modal_adjuntar_archivos_requerimiento_pago')
 @include('tesoreria.requerimiento_pago.modal_adjuntar_archivos_requerimiento_pago_detalle')
 
-@include('logistica.gestion_logistica.proveedores.modal_lista_proveedores')
-@include('logistica.gestion_logistica.proveedores.modal_cuentas_bancarias_proveedor')
-@include('logistica.gestion_logistica.proveedores.modal_agregar_cuenta_bancaria_proveedor')
 
-@include('tesoreria.requerimiento_pago.modal_nuevo_proveedor')
+@include('tesoreria.requerimiento_pago.modal_nuevo_contribuyente')
+@include('tesoreria.requerimiento_pago.modal_nueva_persona')
+@include('tesoreria.requerimiento_pago.modal_nueva_cuenta_bancaria_destinatario')
 
 @endsection
 
@@ -90,9 +89,8 @@ Listado de requerimientos de pago
 <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
 <script src="{{ asset('js/tesoreria/requerimientoPago/ListarRequerimientoPagoView.js')}}?v={{filemtime(public_path('js/Tesoreria/requerimientoPago/ListarRequerimientoPagoView.js'))}}"></script>
-<script src="{{ asset('js/tesoreria/requerimientoPago/nuevoProveedor.js')}}?v={{filemtime(public_path('js/Tesoreria/requerimientoPago/nuevoProveedor.js'))}}"></script>
-<script src="{{('/js/logistica/proveedores/listaProveedoresModal.js')}}?v={{filemtime(public_path('/js/logistica/proveedores/listaProveedoresModal.js'))}}"></script>
-<script src="{{('/js/logistica/proveedores/cuentasBancariasProveedor.js')}}?v={{filemtime(public_path('/js/logistica/proveedores/cuentasBancariasProveedor.js'))}}"></script>
+<script src="{{ asset('js/tesoreria/requerimientoPago/nuevoDestinatario.js')}}?v={{filemtime(public_path('js/Tesoreria/requerimientoPago/nuevoDestinatario.js'))}}"></script>
+<script src="{{ asset('js/tesoreria/requerimientoPago/nuevaCuentaBancariaDestinatario.js')}}?v={{filemtime(public_path('js/Tesoreria/requerimientoPago/nuevaCuentaBancariaDestinatario.js'))}}"></script>
 
 
 <script>

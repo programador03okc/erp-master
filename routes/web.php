@@ -752,12 +752,18 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('listar-cuentas-bancarias-proveedor/{idProveedor?}', 'OrdenController@listarCuentasBancariasProveedor')->name('listar-cuentas-bancarias-proveedor');
 				Route::post('guardar-cuenta-bancaria-proveedor', 'OrdenController@guardarCuentaBancariaProveedor');
 				Route::get('imprimir-requerimiento-pago-pdf/{id}', 'Tesoreria\RequerimientoPagoController@imprimirRequerimientoPagoPdf');
-
-				Route::post('guardarProveedor', 'Tesoreria\ProveedorController@guardarProveedor');
+				// Route::post('guardarProveedor', 'Tesoreria\ProveedorController@guardarProveedor');
+				Route::post('obtener-destinatario-por-nro-documento', 'Tesoreria\RequerimientoPagoController@obtenerDestinatarioPorNumeroDeDocumento');
+				Route::post('obtener-destinatario-por-nombre', 'Tesoreria\RequerimientoPagoController@obtenerDestinatarioPorNombre');
+				Route::post('guardar-contribuyente', 'Tesoreria\RequerimientoPagoController@guardarContribuyente');
+				Route::post('guardar-persona', 'Tesoreria\RequerimientoPagoController@guardarPersona');
+				Route::post('guardar-cuenta-destinatario', 'Tesoreria\RequerimientoPagoController@guardarCuentaDestinatario');
+				Route::get('obtener-cuenta-persona/{idPersona}', 'Tesoreria\RequerimientoPagoController@obtenerCuentaPersona');
+				Route::get('obtener-cuenta-contribuyente/{idContribuyente}', 'Tesoreria\RequerimientoPagoController@obtenerCuentaContribuyente');
 			});
-			Route::group(['as' => 'revisar_aprobar.', 'prefix' => 'revisar_aprobar'], function () {
-				Route::get('index', 'Tesoreria\RequerimientoPagoController@viewRevisarAprobarRequerimientoPago')->name('index');
-			});
+			// Route::group(['as' => 'revisar_aprobar.', 'prefix' => 'revisar_aprobar'], function () {
+			// 	Route::get('index', 'Tesoreria\RequerimientoPagoController@viewRevisarAprobarRequerimientoPago')->name('index');
+			// });
 		});
 		Route::group(['as' => 'revisar-aprobar.', 'prefix' => 'revisar-aprobar'], function () {
 			Route::group(['as' => 'listado.', 'prefix' => 'listado'], function () {
