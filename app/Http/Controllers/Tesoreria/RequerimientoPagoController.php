@@ -895,7 +895,7 @@ class RequerimientoPagoController extends Controller
                         'id_tipo_cuenta' => $request->tipo_cuenta_banco,
                         'nro_cuenta' => trim($request->nro_cuenta),
                         'nro_cuenta_interbancaria' => trim($request->nro_cuenta_interbancaria),
-                        'moneda' => $request->moneda,
+                        'id_moneda' => $request->moneda,
                         'fecha_registro' => date('Y-m-d H:i:s'),
                         'estado' => 1,
                     ],

@@ -7,6 +7,8 @@ function modalNuevaCuentaDestinatario() {
         $("#modal-nueva-cuenta-bancaria-destinatario").modal({
             show: true
         });
+
+        document.querySelector("div[id='modal-nueva-cuenta-bancaria-destinatario'] span[id='nombre_destinatario']").textContent = document.querySelector("div[id='modal-requerimiento-pago'] input[name='nombre_destinatario']").value;
         document.querySelector("div[id='modal-nueva-cuenta-bancaria-destinatario'] input[name='id_tipo_destinatario']").value = idTipoDestinatario;
         document.querySelector("div[id='modal-nueva-cuenta-bancaria-destinatario'] input[name='id_persona']").value = idPersona;
         document.querySelector("div[id='modal-nueva-cuenta-bancaria-destinatario'] input[name='id_contribuyente']").value = idContribuyente;
@@ -228,16 +230,17 @@ function obtenerCuentasBancariasContribuyente(id_contribuyente) {
                             selectCuenta.removeChild(selectCuenta.lastChild);
                         }
                     }
+                    console.log(response.data);
                     (response.data).forEach(element => {
                         document.querySelector("div[id='modal-requerimiento-pago'] select[name='id_cuenta']").insertAdjacentHTML('beforeend', `
                         <option 
                             data-nro-cuenta="${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : ''}" 
-                            data-nro-cci="${element.nro_cci != null && element.nro_cci != "" ? element.nro_cci : ''}" 
+                            data-nro-cci="${element.nro_cuenta_interbancaria != null && element.nro_cuenta_interbancaria != "" ? element.nro_cuenta_interbancaria : ''}" 
                             data-tipo-cuenta="${element.tipo_cuenta != null ? element.tipo_cuenta.descripcion : ''}" 
                             data-banco="${element.banco != null && element.banco.contribuyente != null ? element.banco.contribuyente.razon_social : ''}" 
                             data-moneda="${element.moneda != null ? element.moneda.descripcion : ''}" 
                             value="${element.id_cuenta_contribuyente}" ${element.id_cuenta_contribuyente ==idCuentePorDefecto?'selected':''}
-                            >${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : (element.nro_cci != null && element.nro_cci != "" ? (element.nro_cci + " (CCI)") : "")}</option>
+                            >${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : (element.nro_cuenta_interbancaria != null && element.nro_cuenta_interbancaria != "" ? (element.nro_cuenta_interbancaria + " (CCI)") : "")}</option>
                         `);
                     });
                     if(idCuentePorDefecto==null || idCuentePorDefecto==''){
