@@ -897,7 +897,16 @@ Route::group(['middleware' => ['auth']], function () {
 						Route::post('actualizar-estado-detalle', 'OrdenController@update_estado_item_orden')->name('actualizar-estado-detalle-orden');
 						Route::post('anular', 'OrdenController@anularOrden')->name('anular');
 						Route::get('documentos-vinculados/{id_orden?}', 'OrdenController@documentosVinculadosOrden')->name('documentos-vinculados');
-
+						Route::get('obtener-contribuyente-por-id-proveedor/{id_proveedor?}', 'OrdenController@obtenerContribuyentePorIdProveedor');
+						Route::get('obtener-cuenta-contribuyente/{idContribuyente}', 'Tesoreria\RequerimientoPagoController@obtenerCuentaContribuyente');
+						Route::get('obtener-cuenta-persona/{idPersona}', 'Tesoreria\RequerimientoPagoController@obtenerCuentaPersona');
+						Route::post('guardar-persona', 'Tesoreria\RequerimientoPagoController@guardarPersona');
+						Route::post('guardar-cuenta-destinatario', 'Tesoreria\RequerimientoPagoController@guardarCuentaDestinatario');
+						Route::post('registrar-envio-de-orden-a-pago', 'OrdenController@registrarEnvioDeOrdenAPagar');
+						Route::get('obtener-contribuyente/{id}', 'OrdenController@obtenerContribuyente');
+						Route::get('obtener-persona/{id}', 'OrdenController@obtenerPersona');
+						Route::post('obtener-destinatario-por-nro-documento', 'Tesoreria\RequerimientoPagoController@obtenerDestinatarioPorNumeroDeDocumento');
+						Route::post('obtener-destinatario-por-nombre', 'Tesoreria\RequerimientoPagoController@obtenerDestinatarioPorNombre');
 
 						// Route::put('guardar_aprobacion_orden/', 'LogisticaController@guardar_aprobacion_orden'); 
 						// Route::post('guardar_pago_orden', 'LogisticaController@guardar_pago_orden');

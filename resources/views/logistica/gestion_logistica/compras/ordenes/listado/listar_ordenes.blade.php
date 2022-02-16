@@ -101,6 +101,7 @@
 </div>
 
 
+
 @include('tesoreria.facturacion.archivos_oc_mgcp')
 @include('logistica.gestion_logistica.compras.ordenes.listado.modal_filtro_lista_ordenes_elaboradas')
 @include('logistica.gestion_logistica.compras.ordenes.listado.modal_filtro_lista_items_orden_elaboradas')
@@ -110,6 +111,27 @@
 @include('logistica.gestion_logistica.compras.ordenes.listado.modal_editar_estado_orden')
 @include('logistica.gestion_logistica.compras.ordenes.listado.modal_editar_estado_detalle_orden')
 @include('logistica.gestion_logistica.compras.ordenes.listado.modal_documentos_vinculados')
+
+@include('logistica.gestion_logistica.compras.ordenes.listado.modal_enviar_orden_a_pago')
+@include('tesoreria.requerimiento_pago.modal_nueva_cuenta_bancaria_destinatario')
+@include('tesoreria.requerimiento_pago.modal_nuevo_contribuyente')
+@include('tesoreria.requerimiento_pago.modal_nueva_persona')
+<!-- Modal -->
+<div class="modal fade" id="modal-info-adicional-cuenta-seleccionada" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Información de cuenta</h4>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 @endsection
 
@@ -127,6 +149,9 @@
     <script src="{{('/js/logistica/orden/listaOrdenView.js')}}?v={{filemtime(public_path('/js/logistica/orden/listaOrdenView.js'))}}"></script>
     <script src="{{('/js/logistica/orden/listaOrdenController.js')}}?v={{filemtime(public_path('/js/logistica/orden/listaOrdenController.js'))}}"></script>
     <script src="{{('/js/logistica/orden/listaOrdenModel.js')}}?v={{filemtime(public_path('/js/logistica/orden/listaOrdenModel.js'))}}"></script>
+    <script src="{{ asset('js/tesoreria/requerimientoPago/nuevaCuentaBancariaDestinatario.js')}}?v={{filemtime(public_path('js/Tesoreria/requerimientoPago/nuevaCuentaBancariaDestinatario.js'))}}"></script>
+    <script src="{{ asset('js/tesoreria/requerimientoPago/nuevoDestinatario.js')}}?v={{filemtime(public_path('js/Tesoreria/requerimientoPago/nuevoDestinatario.js'))}}"></script>
+
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
     <script src="{{ asset('template/plugins/datetime-moment.js') }}"></script>
     <script src="{{ asset('template/plugins/loadingoverlay.min.js') }}"></script>

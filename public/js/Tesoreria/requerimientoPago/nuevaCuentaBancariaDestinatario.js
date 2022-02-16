@@ -1,14 +1,18 @@
+var nombreModalPadre ='';
 function modalNuevaCuentaDestinatario() {
+    if(document.querySelector("div[class='modal fade in']").getAttribute("id")){
+        nombreModalPadre="div[id='"+document.querySelector("div[class='modal fade in']").getAttribute("id")+"']";
+    }
 
-    let idTipoDestinatario = document.querySelector("div[id='modal-requerimiento-pago'] select[name='id_tipo_destinatario']").value;
-    let idPersona = document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_persona']").value;
-    let idContribuyente = document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_contribuyente']").value;
+    let idTipoDestinatario = document.querySelector(nombreModalPadre+" select[name='id_tipo_destinatario']").value;
+    let idPersona = document.querySelector(nombreModalPadre+" input[name='id_persona']").value;
+    let idContribuyente = document.querySelector(nombreModalPadre+" input[name='id_contribuyente']").value;
     if (idTipoDestinatario > 0 && (idPersona > 0 || idContribuyente > 0)) {
         $("#modal-nueva-cuenta-bancaria-destinatario").modal({
             show: true
         });
 
-        document.querySelector("div[id='modal-nueva-cuenta-bancaria-destinatario'] span[id='nombre_destinatario']").textContent = document.querySelector("div[id='modal-requerimiento-pago'] input[name='nombre_destinatario']").value;
+        document.querySelector("div[id='modal-nueva-cuenta-bancaria-destinatario'] span[id='nombre_destinatario']").textContent = document.querySelector(nombreModalPadre+" input[name='nombre_destinatario']").value;
         document.querySelector("div[id='modal-nueva-cuenta-bancaria-destinatario'] input[name='id_tipo_destinatario']").value = idTipoDestinatario;
         document.querySelector("div[id='modal-nueva-cuenta-bancaria-destinatario'] input[name='id_persona']").value = idPersona;
         document.querySelector("div[id='modal-nueva-cuenta-bancaria-destinatario'] input[name='id_contribuyente']").value = idContribuyente;
@@ -67,11 +71,11 @@ function guardarCuentaBancariaDestinatario(data) {
             $('#modal-nueva-cuenta-bancaria-destinatario').modal('hide');
             if (response.id_cuenta > 0) {
                 if (response.id_tipo_destinatario == 1) {
-                    document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_cuenta_persona']").value = response.id_cuenta;
-                    obtenerCuentasBancariasPersona(document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_persona']").value);
+                    document.querySelector(nombreModalPadre+" input[name='id_cuenta_persona']").value = response.id_cuenta;
+                    obtenerCuentasBancariasPersona(document.querySelector(nombreModalPadre+" input[name='id_persona']").value);
                 } else if (response.id_tipo_destinatario == 2) {
-                    document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_cuenta_contribuyente']").value = response.id_cuenta;
-                    obtenerCuentasBancariasContribuyente(document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_contribuyente']").value);
+                    document.querySelector(nombreModalPadre+" input[name='id_cuenta_contribuyente']").value = response.id_cuenta;
+                    obtenerCuentasBancariasContribuyente(document.querySelector(nombreModalPadre+" input[name='id_contribuyente']").value);
                 }
 
 
@@ -110,6 +114,7 @@ function guardarCuentaBancariaDestinatario(data) {
 
 // ###=========== obtener y actualizar select cuenta bancaria ==========###
 function obtenerCuentasBancariasPersona(id_persona) {
+
     console.log(id_persona);
     if (id_persona > 0) {
         $.ajax({
@@ -131,16 +136,16 @@ function obtenerCuentasBancariasPersona(id_persona) {
                 if (response.data.length > 0) {
 
                     // llenar cuenta bancaria
-                    let idCuentePorDefecto =document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_cuenta_persona']").value;
-                    document.querySelector("div[id='modal-requerimiento-pago'] select[name='id_cuenta']").value = "";
-                    let selectCuenta = document.querySelector("div[id='modal-requerimiento-pago'] select[name='id_cuenta']");
+                    let idCuentePorDefecto =document.querySelector(nombreModalPadre+" input[name='id_cuenta_persona']").value;
+                    document.querySelector(nombreModalPadre+" select[name='id_cuenta']").value = "";
+                    let selectCuenta = document.querySelector(nombreModalPadre+" select[name='id_cuenta']");
                     if (selectCuenta != null) {
                         while (selectCuenta.children.length > 0) {
                             selectCuenta.removeChild(selectCuenta.lastChild);
                         }
                     }
                     (response.data).forEach(element => {
-                        document.querySelector("div[id='modal-requerimiento-pago'] select[name='id_cuenta']").insertAdjacentHTML('beforeend', `
+                        document.querySelector(nombreModalPadre+" select[name='id_cuenta']").insertAdjacentHTML('beforeend', `
                         <option 
                             data-nro-cuenta="${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : ''}" 
                             data-nro-cci="${element.nro_cci != null && element.nro_cci != "" ? element.nro_cci : ''}" 
@@ -153,7 +158,7 @@ function obtenerCuentasBancariasPersona(id_persona) {
                     });
 
                     if(idCuentePorDefecto==null || idCuentePorDefecto==''){
-                        document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_cuenta_persona']").value=document.querySelector("div[id='modal-requerimiento-pago'] select[name='id_cuenta']").value;
+                        document.querySelector(nombreModalPadre+" input[name='id_cuenta_persona']").value=document.querySelector(nombreModalPadre+" select[name='id_cuenta']").value;
                     }
 
 
@@ -169,7 +174,21 @@ function obtenerCuentasBancariasPersona(id_persona) {
 
             } else {
                 console.log(response);
-
+                //limpiar cuenta
+                document.querySelector(nombreModalPadre+" select[name='id_cuenta']").value = "";
+                let selectCuenta = document.querySelector(nombreModalPadre+" select[name='id_cuenta']");
+                if (selectCuenta != null) {
+                    while (selectCuenta.children.length > 0) {
+                        selectCuenta.removeChild(selectCuenta.lastChild);
+                    }
+                }
+                Lobibox.notify(response.tipo_estado, {
+                    size: "mini",
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    msg: response.mensaje
+                });
                 Lobibox.notify(response.tipo_estado, {
                     size: "mini",
                     rounded: true,
@@ -207,7 +226,7 @@ function obtenerCuentasBancariasPersona(id_persona) {
 
 }
 function obtenerCuentasBancariasContribuyente(id_contribuyente) {
-    console.log(id_contribuyente);
+    // console.log(id_contribuyente);
 
     if (id_contribuyente > 0) {
         $.ajax({
@@ -215,24 +234,24 @@ function obtenerCuentasBancariasContribuyente(id_contribuyente) {
             url: 'obtener-cuenta-contribuyente/' + id_contribuyente,
             dataType: 'JSON',
         }).done(function (response) {
-            console.log(response);
+            // console.log(response);
             if (response.tipo_estado == 'success') {
 
                 if (response.data.length > 0) {
                 
                     // llenar cuenta bancaria
-                    let idCuentePorDefecto =document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_cuenta_contribuyente']").value;
-
-                    document.querySelector("div[id='modal-requerimiento-pago'] select[name='id_cuenta']").value = "";
-                    let selectCuenta = document.querySelector("div[id='modal-requerimiento-pago'] select[name='id_cuenta']");
+                    
+                    let idCuentePorDefecto =document.querySelector(nombreModalPadre+" input[name='id_cuenta_contribuyente']").value;
+                    document.querySelector(nombreModalPadre+" select[name='id_cuenta']").value = "";
+                    let selectCuenta = document.querySelector(nombreModalPadre+" select[name='id_cuenta']");
                     if (selectCuenta != null) {
                         while (selectCuenta.children.length > 0) {
                             selectCuenta.removeChild(selectCuenta.lastChild);
                         }
                     }
-                    console.log(response.data);
+                    // console.log(response.data);
                     (response.data).forEach(element => {
-                        document.querySelector("div[id='modal-requerimiento-pago'] select[name='id_cuenta']").insertAdjacentHTML('beforeend', `
+                        document.querySelector(nombreModalPadre+" select[name='id_cuenta']").insertAdjacentHTML('beforeend', `
                         <option 
                             data-nro-cuenta="${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : ''}" 
                             data-nro-cci="${element.nro_cuenta_interbancaria != null && element.nro_cuenta_interbancaria != "" ? element.nro_cuenta_interbancaria : ''}" 
@@ -244,7 +263,7 @@ function obtenerCuentasBancariasContribuyente(id_contribuyente) {
                         `);
                     });
                     if(idCuentePorDefecto==null || idCuentePorDefecto==''){
-                        document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_cuenta_contribuyente']").value=document.querySelector("div[id='modal-requerimiento-pago'] select[name='id_cuenta']").value;
+                        document.querySelector(nombreModalPadre+" input[name='id_cuenta_contribuyente']").value=document.querySelector(nombreModalPadre+" select[name='id_cuenta']").value;
                     }
 
                 } else {
@@ -259,7 +278,14 @@ function obtenerCuentasBancariasContribuyente(id_contribuyente) {
 
             } else {
                 console.log(response);
-
+                //limpiar cuenta
+                document.querySelector(nombreModalPadre+" select[name='id_cuenta']").value = "";
+                let selectCuenta = document.querySelector(nombreModalPadre+" select[name='id_cuenta']");
+                if (selectCuenta != null) {
+                    while (selectCuenta.children.length > 0) {
+                        selectCuenta.removeChild(selectCuenta.lastChild);
+                    }
+                }
                 Lobibox.notify(response.tipo_estado, {
                     size: "mini",
                     rounded: true,

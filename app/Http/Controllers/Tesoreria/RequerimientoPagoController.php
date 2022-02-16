@@ -738,7 +738,8 @@ class RequerimientoPagoController extends Controller
 
             
         }elseif($idTipoDestinatario ==2){ // tipo contribuyente
-            $destinatario=  Contribuyente::with("tipoDocumentoIdentidad","cuentaContribuyente.banco.contribuyente","cuentaContribuyente.tipoCuenta","tipoContribuyente")->where([["razon_social",'like','%'.$nombre.'%'],["estado","!=",7]])->get();
+            $destinatario=  Contribuyente::with("tipoDocumentoIdentidad","cuentaContribuyente.banco.contribuyente","cuentaContribuyente.tipoCuenta","tipoContribuyente")
+            ->where([["razon_social",'like','%'.strtoupper($nombre).'%'],["estado","!=",7]])->get();
             
             
         }else{

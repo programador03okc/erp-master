@@ -27,6 +27,7 @@ use App\Mail\EmailOrdenAnulada;
 use App\Mail\EmailOrdenServicioOrdenTransformacion;
 use App\Models\Administracion\Empresa;
 use App\Models\Administracion\Estado;
+use App\Models\Administracion\Prioridad;
 use App\Models\Almacen\DetalleRequerimiento;
 use App\Models\Almacen\Requerimiento;
 use App\Models\almacen\Transformacion;
@@ -37,7 +38,9 @@ use App\Models\Configuracion\Grupo;
 use App\Models\Configuracion\Moneda;
 use App\Models\Configuracion\Usuario;
 use App\Models\Contabilidad\Banco;
+use App\Models\Contabilidad\Contribuyente;
 use App\Models\Contabilidad\CuentaContribuyente;
+use App\Models\Contabilidad\Identidad;
 use App\Models\Contabilidad\TipoCuenta;
 use App\Models\Logistica\CondicionSoftlink;
 use App\Models\Logistica\EstadoCompra;
@@ -46,6 +49,8 @@ use App\Models\Logistica\OrdenCompraDetalle;
 use App\Models\Logistica\Proveedor;
 use App\Models\mgcp\CuadroCosto\CuadroCosto;
 use App\Models\mgcp\CuadroCosto\CuadroCostoView;
+use App\Models\Rrhh\Persona;
+use App\Models\Tesoreria\RequerimientoPagoTipoDestinatario;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Mail;
@@ -919,9 +924,15 @@ class OrdenController extends Controller
         $empresas = Empresa::mostrar();
         $grupos = Grupo::mostrar();
         $estados = EstadoCompra::mostrar();
+        $prioridades = Prioridad::mostrar();
+        $tiposDestinatario = RequerimientoPagoTipoDestinatario::mostrar();
+        $bancos = Banco::mostrar();
+        $tipo_cuenta = TipoCuenta::mostrar();
+        $monedas = Moneda::mostrar();
+        $tipos_documentos = Identidad::mostrar();
 
 
-        return view('logistica/gestion_logistica/compras/ordenes/listado/listar_ordenes', compact('empresas', 'grupos', 'estados'));
+        return view('logistica/gestion_logistica/compras/ordenes/listado/listar_ordenes', compact('prioridades','empresas', 'grupos', 'estados','tiposDestinatario','bancos','tipo_cuenta','monedas','tipos_documentos'));
     }
 
     function consult_doc_aprob($id_doc, $tp_doc)
@@ -1110,8 +1121,11 @@ class OrdenController extends Controller
                     'dias_restantes' => $fechaLlegada->diffInDays($fechaHoy->toDateString()),
                     'monto_igv' => $element->monto_igv,
                     'monto_total' => $element->monto_total,
+                    'id_condicion' => $element->id_condicion,
                     'condicion' => $element->condicion,
                     'plazo_entrega' => $element->plazo_entrega,
+                    'id_proveedor' => $element->id_proveedor,
+                    'id_cta_principal' => $element->id_cta_principal,
                     'nro_cuenta_prin' => $element->nro_cuenta_prin,
                     'nro_cuenta_alter' => $element->nro_cuenta_alter,
                     'nro_cuenta_detra' => $element->nro_cuenta_detra,
@@ -1123,7 +1137,15 @@ class OrdenController extends Controller
                     'monto_total_presup' => $element->monto_total_presup,
                     'monto_total_orden' => $element->monto_total_orden,
                     'facturas' => $this->obtenerFacturas($element->id_orden_compra),
-                    'requerimientos' => $element->requerimientos
+                    'requerimientos' => $element->requerimientos,
+                    'estado_pago' => $element->estado_pago,
+                    'id_prioridad_pago' => $element->id_prioridad_pago,
+                    'id_tipo_destinatario_pago' => $element->id_tipo_destinatario_pago,
+                    'id_cuenta_contribuyente_pago' => $element->id_cuenta_contribuyente_pago,
+                    'id_contribuyente_pago' => $element->id_contribuyente_pago,
+                    'id_persona_pago' => $element->id_persona_pago,
+                    'id_cuenta_persona_pago' => $element->id_cuenta_persona_pago,
+                    'comentario_pago' => $element->comentario_pago
 
                 ];
             }
@@ -3988,4 +4010,96 @@ class OrdenController extends Controller
         }
     }
 
+
+    function obtenerContribuyentePorIdProveedor($idProveedor){
+        try {
+            DB::beginTransaction();
+
+            $proveedor = Proveedor::find($idProveedor);
+            if(!empty($proveedor) && $proveedor->id_proveedor >0){
+                $contribuyente = Contribuyente::with("tipoDocumentoIdentidad","cuentaContribuyente.banco.contribuyente","cuentaContribuyente.tipoCuenta")->find($proveedor->id_contribuyente);
+                if(!empty($contribuyente)){
+
+                    $arrayRspta = array(
+                        'tipo_estado' => 'success',
+                        'mensaje' => 'Ok',
+                        'data'=>$contribuyente
+                    );
+                }
+            }else{
+                $arrayRspta = array(
+                    'tipo_estado' => 'warning',
+                    'mensaje' => 'no se pudo obtener la data de contribuyente segun el id proveedor('.$idProveedor.') enviado',
+                    'data'=>[]
+                );
+            }
+
+            
+            DB::commit();
+            
+            return response()->json($arrayRspta, 200);
+        
+
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json(['tipo_estado'=>'error', 'data'=>[], 'mensaje' => 'Hubo un problema al intentar obtener la data del contribuyente. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
+        }
+    }
+
+    function registrarEnvioDeOrdenAPagar(Request $request){
+        try {
+            DB::beginTransaction();
+
+            $orden = Orden::find($request->id_orden_compra);
+
+
+            if(!empty($orden)){
+                
+                $orden->estado_pago = 8; //enviado a pago
+                $orden->id_tipo_destinatario_pago = $request->id_tipo_destinatario;
+                $orden->id_prioridad_pago = $request->id_prioridad;
+                $orden->id_contribuyente_pago = $request->id_contribuyente;
+                $orden->id_cuenta_contribuyente_pago = $request->id_cuenta_contribuyente;
+                $orden->id_persona_pago = $request->id_persona;
+                $orden->id_cuenta_persona_pago = $request->id_cuenta_persona;
+                $orden->comentario_pago = $request->comentario;;
+                $orden->save();
+
+                $arrayRspta = array(
+                    'tipo_estado' => 'success',
+                    'mensaje' => 'Pago enviado',
+                    'data'=>$orden
+                );
+
+            }else{
+                $arrayRspta = array(
+                    'tipo_estado' => 'warning',
+                    'mensaje' => 'no se pudo obtener registrar en envio de pago, no se encontro la orden',
+                    'data'=>[]
+                );
+            }
+
+            
+            DB::commit();
+            
+            return response()->json($arrayRspta, 200);
+        
+
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json(['tipo_estado'=>'error', 'data'=>[], 'mensaje' => 'Hubo un problema al intentar obtener la data del contribuyente. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
+        }
+    }
+
+
+    function obtenerContribuyente($idContribuyente){
+        return  Contribuyente::with("tipoDocumentoIdentidad","cuentaContribuyente.banco.contribuyente","cuentaContribuyente.tipoCuenta")->find($idContribuyente);
+
+    }
+    function obtenerPersona($idPersona){
+        return  Persona::with("tipoDocumentoIdentidad","cuentaPersona.banco.contribuyente","cuentaPersona.tipoCuenta","cuentaPersona.moneda")->find($idPersona);
+    }
+    
+ 
 }
+ 
