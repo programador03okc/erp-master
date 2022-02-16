@@ -51,8 +51,18 @@ class RequerimientoPago {
                 { 'data': 'codigo', 'name': 'requerimiento_pago.codigo', 'className': 'text-center' },
                 { 'data': 'grupo_descripcion', 'name': 'sis_grupo.descripcion' },
                 { 'data': 'concepto', 'name': 'requerimiento_pago.concepto' },
-                { 'data': 'nro_documento', 'name': 'adm_contri.nro_documento' },
-                { 'data': 'razon_social', 'name': 'adm_contri.razon_social' },
+                {
+                    'render': function (data, type, row) {
+                        return (row['persona'][0].nro_documento !== null ? row['persona'][0].nro_documento : row['nro_documento']);
+                    }, 'className': 'text-center', 'searchable': false
+                },
+                {
+                    'render': function (data, type, row) {
+                        return (row['persona'][0].nombre_completo !== null ? row['persona'][0].nombre_completo : row['razon_social']);
+                    }, 'searchable': false
+                },
+                // { 'data': 'nro_documento', 'name': 'adm_contri.nro_documento' },
+                // { 'data': 'razon_social', 'name': 'adm_contri.razon_social' },
                 {
                     'render': function (data, type, row) {
                         return (row['fecha_registro'] !== null ? formatDate(row['fecha_registro']) : '');
@@ -96,9 +106,13 @@ class RequerimientoPago {
                                     ${permisoRegistrar == '1' ?
                                         `<button type="button" class="pago btn btn-success boton" data-toggle="tooltip" data-placement="bottom" 
                                         data-id="${row['id_requerimiento_pago']}" data-cod="${row['codigo']}" data-tipo="requerimiento"
-                                        data-total="${row['monto_total']}" data-pago="${row['suma_pagado']}" data-nrodoc="${row['nro_documento']}"
-                                        data-moneda="${row['simbolo']}" data-prov="${encodeURIComponent(row['razon_social'])}" 
-                                        data-cta="${row['nro_cuenta']}" data-tpcta="${row['tipo_cuenta']}" title="Registrar Pago"> 
+                                        data-total="${row['monto_total']}" data-pago="${row['suma_pagado']}" data-moneda="${row['simbolo']}" 
+                                        data-nrodoc="${row['nro_documento'] !== null ? row['nro_documento'] : row['persona'][0].nro_documento}"
+                                        data-prov="${encodeURIComponent(row['razon_social'] !== null ? row['razon_social'] : row['persona'][0].nombre_completo)}" 
+                                        data-cta="${row['nro_cuenta'] !== null ? row['nro_cuenta'] : row['nro_cuenta_persona']}" 
+                                        data-cci="${row['nro_cuenta_interbancaria'] !== null ? row['nro_cuenta_interbancaria'] : row['nro_cci_persona']}" 
+                                        data-tpcta="${row['tipo_cuenta'] !== null ? row['tipo_cuenta'] : row['tipo_cuenta_persona']}" 
+                                        title="Registrar Pago"> 
                                     <i class="fas fa-hand-holding-usd"></i> </button>`
                                         : ''}`
                                     : ''

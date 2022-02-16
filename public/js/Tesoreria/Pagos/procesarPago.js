@@ -10,6 +10,7 @@ function openRegistroPago(data) {
     var prov = data.data('prov');
     var tpcta = data.data('tpcta');
     var cta = data.data('cta');
+    var cci = data.data('cci');
 
     var total_pago = formatDecimal(parseFloat(total) - pago);
     console.log(cta);
@@ -54,6 +55,7 @@ function openRegistroPago(data) {
     $('[name=razon_social]').text(decodeURIComponent(prov));
     $('[name=tp_cta_bancaria]').text(cta !== 'undefined' ? tpcta : '');
     $('[name=cta_bancaria]').text(cta !== 'undefined' ? cta : '');
+    $('[name=cta_cci]').text(cci !== 'undefined' ? cci : '');
 
     $('#submit_procesarPago').removeAttr('disabled');
 }

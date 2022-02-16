@@ -44,7 +44,7 @@ Registro de pagos
                                                 <th>Grupo</th>
                                                 <th>Concepto</th>
                                                 <th>Nro. Doc.</th>
-                                                <th>Razon social del proveedor</th>
+                                                <th>Destinatario</th>
                                                 <th>Fecha Emisión</th>
                                                 {{-- <th>Cta. Bancaria</th> --}}
                                                 <th>Mnd</th>
@@ -158,9 +158,8 @@ Registro de pagos
         seleccionarMenu(window.location);
         vista_extendida();
 
-        let requerimientoPago=new RequerimientoPago('{{Auth::user()->tieneAccion(137)}}','{{Auth::user()->tieneAccion(138)}}','{{Auth::user()->tieneAccion(139)}}');
-        // let enviarAPago=new RequerimientoPago('{{Auth::user()->tieneAccion(137)}}');
-        // let registrarPago=new RequerimientoPago('{{Auth::user()->tieneAccion(138)}}');
+        // let requerimientoPago=new RequerimientoPago('{{Auth::user()->tieneAccion(137)}}','{{Auth::user()->tieneAccion(138)}}','{{Auth::user()->tieneAccion(139)}}');
+        let requerimientoPago=new RequerimientoPago('1','1','1');
 
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
             let tab = $(e.target).attr("href") // activated tab
