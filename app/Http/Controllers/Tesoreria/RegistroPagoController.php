@@ -35,6 +35,7 @@ class RegistroPagoController extends Controller
         $data = DB::table('tesoreria.requerimiento_pago')
             ->select(
                 'requerimiento_pago.*',
+                'adm_prioridad.descripcion as prioridad',
                 'adm_contri.nro_documento',
                 'adm_contri.razon_social',
                 'empresa.razon_social as razon_social_empresa',
@@ -53,6 +54,7 @@ class RegistroPagoController extends Controller
             ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
             ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'requerimiento_pago.id_moneda')
             ->leftJoin('tesoreria.requerimiento_pago_estado', 'requerimiento_pago_estado.id_requerimiento_pago_estado', '=', 'requerimiento_pago.id_estado')
+            ->join('administracion.adm_prioridad', 'adm_prioridad.id_prioridad', '=', 'requerimiento_pago.id_prioridad')
             ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'requerimiento_pago.id_sede')
             ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'requerimiento_pago.id_empresa')
             ->join('contabilidad.adm_contri as empresa', 'empresa.id_contribuyente', '=', 'adm_empresa.id_contribuyente')

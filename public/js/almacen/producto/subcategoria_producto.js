@@ -24,7 +24,7 @@ function listarSubCategorias(){
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
         "bDestroy": true,
-        'ajax': 'listar_subcategorias',
+        'ajax': 'listarMarcas',
         'columns': [
             {'data': 'id_subcategoria'},
             // {'data': 'codigo'},
@@ -43,6 +43,7 @@ function mostrar_subcategoria(id){
         dataType: 'JSON',
         success: function(response){
             console.log(response[0]);
+            console.log(response[0].id_subcategoria);
             $('[name=id_subcategoria]').val(response[0].id_subcategoria);
             // $('[name=codigo]').val(response[0].codigo);
             $('[name=descripcion]').val(response[0].descripcion);

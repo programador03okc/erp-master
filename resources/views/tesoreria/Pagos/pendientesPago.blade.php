@@ -38,6 +38,7 @@ Registro de pagos
                                         <thead>
                                             <tr>
                                                 <th hidden>#</th>
+                                                <th>Prio.</th>
                                                 <th>Empresa</th>
                                                 <th>Código</th>
                                                 <th>Grupo</th>

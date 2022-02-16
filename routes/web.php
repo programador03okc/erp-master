@@ -1183,15 +1183,15 @@ Route::group(['middleware' => ['auth']], function () {
 
 			Route::group(['as' => 'sub-categorias.', 'prefix' => 'sub-categorias'], function () {
 				//Marca
-				Route::get('index', 'Almacen\Catalogo\SubCategoriaController@view_subcategoria')->name('index');
-				Route::get('listar_subcategorias', 'Almacen\Catalogo\SubCategoriaController@mostrar_sub_categorias');
-				Route::get('mostrar_subcategoria/{id}', 'Almacen\Catalogo\SubCategoriaController@mostrar_sub_categoria');
-				Route::post('guardar_subcategoria', 'Almacen\Catalogo\SubCategoriaController@guardar_sub_categoria');
-				Route::post('actualizar_subcategoria', 'Almacen\Catalogo\SubCategoriaController@update_sub_categoria');
-				Route::get('anular_subcategoria/{id}', 'Almacen\Catalogo\SubCategoriaController@anular_sub_categoria');
-				Route::get('revisarSubCat/{id}', 'Almacen\Catalogo\SubCategoriaController@subcat_revisar');
+				Route::get('index', 'Almacen\Catalogo\MarcaController@view_subcategoria')->name('index');
+				Route::get('listarMarcas', 'Almacen\Catalogo\MarcaController@listarMarcas');
+				Route::get('mostrar_subcategoria/{id}', 'Almacen\Catalogo\MarcaController@mostrar_sub_categoria');
+				Route::post('guardar_subcategoria', 'Almacen\Catalogo\MarcaController@guardar_sub_categoria');
+				Route::post('actualizar_subcategoria', 'Almacen\Catalogo\MarcaController@update_sub_categoria');
+				Route::get('anular_subcategoria/{id}', 'Almacen\Catalogo\MarcaController@anular_sub_categoria');
+				Route::get('revisarSubCat/{id}', 'Almacen\Catalogo\MarcaController@subcat_revisar');
 
-				Route::post('guardar-marca', 'Almacen\Catalogo\SubCategoriaController@guardar')->name('guardar-marca');
+				Route::post('guardar-marca', 'Almacen\Catalogo\MarcaController@guardar')->name('guardar-marca');
 			});
 
 			Route::group(['as' => 'clasificaciones.', 'prefix' => 'clasificaciones'], function () {
@@ -1329,7 +1329,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 				Route::post('detalleOrdenesSeleccionadas', 'Almacen\Movimiento\OrdenesPendientesController@detalleOrdenesSeleccionadas');
 				Route::get('detalleMovimiento/{id}', 'Almacen\Movimiento\OrdenesPendientesController@detalleMovimiento');
-				Route::post('listarTransformacionesProcesadas', 'Almacen\Movimiento\TransformacionController@listarTransformacionesProcesadas');
+				Route::post('listarTransformacionesFinalizadas', 'Almacen\Movimiento\TransformacionController@listarTransformacionesFinalizadas');
 				Route::get('listarDetalleTransformacion/{id}', 'Almacen\Movimiento\TransformacionController@listarDetalleTransformacion');
 				// Route::get('transferencia/{id}', 'Almacen\Movimiento\OrdenesPendientesController@transferencia');
 				Route::get('obtenerGuia/{id}', 'Almacen\Movimiento\OrdenesPendientesController@obtenerGuia');
@@ -1369,7 +1369,7 @@ Route::group(['middleware' => ['auth']], function () {
 				//Pendientes de Salida
 				Route::get('index', 'Almacen\Movimiento\SalidasPendientesController@view_despachosPendientes')->name('index');
 				Route::post('listarOrdenesDespachoPendientes', 'Almacen\Movimiento\SalidasPendientesController@listarOrdenesDespachoPendientes');
-				Route::post('guardar_guia_despacho', 'Almacen\Movimiento\SalidasPendientesController@guardar_guia_despacho');
+				Route::post('guardarSalidaGuiaDespacho', 'Almacen\Movimiento\SalidasPendientesController@guardarSalidaGuiaDespacho');
 				Route::post('listarSalidasDespacho', 'Almacen\Movimiento\SalidasPendientesController@listarSalidasDespacho');
 				Route::post('anular_salida', 'Almacen\Movimiento\SalidasPendientesController@anular_salida');
 				Route::post('cambio_serie_numero', 'Almacen\Movimiento\SalidasPendientesController@cambio_serie_numero');
@@ -1647,7 +1647,7 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::group(['as' => 'gestion-customizaciones.', 'prefix' => 'gestion-customizaciones'], function () {
 				//Transformaciones
 				Route::get('index', 'Almacen\Movimiento\TransformacionController@view_listar_transformaciones')->name('index');
-				Route::get('listar_todas_transformaciones', 'Almacen\Movimiento\TransformacionController@listar_todas_transformaciones');
+				Route::get('listarTransformacionesProcesadas', 'Almacen\Movimiento\TransformacionController@listarTransformacionesProcesadas');
 				Route::post('listar_transformaciones_pendientes', 'Almacen\Movimiento\TransformacionController@listar_transformaciones_pendientes');
 				Route::post('listarCuadrosCostos', 'Almacen\Movimiento\TransformacionController@listarCuadrosCostos');
 				Route::post('generarTransformacion', 'Almacen\Movimiento\TransformacionController@generarTransformacion');

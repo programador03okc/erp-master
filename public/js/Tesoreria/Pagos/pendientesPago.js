@@ -13,6 +13,10 @@ class RequerimientoPago {
         const permisoEnviar = this.permisoEnviar;
         const permisoRegistrar = this.permisoRegistrar;
 
+        console.log(permisoEnviar);
+        console.log(permisoRegistrar);
+        console.log(permisoVer);
+
         var vardataTables = funcDatatables();
 
         tableRequerimientos = $('#listaRequerimientos').DataTable({
@@ -27,13 +31,28 @@ class RequerimientoPago {
             },
             'columns': [
                 { 'data': 'id_requerimiento_pago', 'name': 'requerimiento_pago.id_requerimiento_pago' },
+                {
+                    'data': 'prioridad', 'name': 'adm_prioridad.descripcion',
+                    'render': function (data, type, row) {
+                        var imagen = '';
+                        if (row['prioridad'] == 'Normal') {
+                            imagen = '<i class="fas fa-thermometer-empty green" data-toggle="tooltip" data-placement="right" title="Normal"></i>';
+                        }
+                        else if (row['prioridad'] == 'Crítica') {
+                            imagen = '<i class="fas fa-thermometer-full red" data-toggle="tooltip" data-placement="right" title="Crítica"></i>';
+                        }
+                        else if (row['prioridad'] == 'Alta') {
+                            imagen = '<i class="fas fa-thermometer-half orange" data-toggle="tooltip" data-placement="right" title="Alta"></i>';
+                        }
+                        return imagen;
+                    }, 'className': 'text-center'
+                },
                 { 'data': 'razon_social_empresa', 'name': 'empresa.razon_social' },
                 { 'data': 'codigo', 'name': 'requerimiento_pago.codigo', 'className': 'text-center' },
                 { 'data': 'grupo_descripcion', 'name': 'sis_grupo.descripcion' },
                 { 'data': 'concepto', 'name': 'requerimiento_pago.concepto' },
                 { 'data': 'nro_documento', 'name': 'adm_contri.nro_documento' },
                 { 'data': 'razon_social', 'name': 'adm_contri.razon_social' },
-                // { 'data': 'fecha_registro', 'name': 'requerimiento_pago.fecha_registro', 'className': 'text-center' },
                 {
                     'render': function (data, type, row) {
                         return (row['fecha_registro'] !== null ? formatDate(row['fecha_registro']) : '');
@@ -63,9 +82,8 @@ class RequerimientoPago {
                 {
                     'render':
                         function (data, type, row) {
-                            console.log(permisoEnviar);
                             return `<div class="btn-group" role="group">
-                            ${((row['id_estado'] == 1 || row['id_estado'] == 2) && permisoEnviar == '1') ?
+                            ${(row['id_estado'] == 2 && permisoEnviar == '1') ?
                                     `<button type="button" class="enviar btn btn-info boton" data-toggle="tooltip" 
                                 data-placement="bottom" data-id="${row['id_requerimiento_pago']}" data-tipo="requerimiento"
                                 title="Autorizar pago"> <i class="fas fa-share"></i></button>`
@@ -83,12 +101,14 @@ class RequerimientoPago {
                                         data-cta="${row['nro_cuenta']}" data-tpcta="${row['tipo_cuenta']}" title="Registrar Pago"> 
                                     <i class="fas fa-hand-holding-usd"></i> </button>`
                                         : ''}`
-                                    : ''}
+                                    : ''
+                                }
                             ${row['suma_pagado'] > 0 && permisoVer == '1' ?
                                     `<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
                                     data-placement="bottom" data-id="${row['id_requerimiento_pago']}" title="Ver detalle de los pagos" >
-                                    <i class="fas fa-chevron-down"></i></button>`: ''}
-                            </div>`;
+                                    <i class="fas fa-chevron-down"></i></button>`: ''
+                                }
+                            </div > `;
 
                         }
                 },
@@ -150,8 +170,8 @@ class RequerimientoPago {
                 {
                     'render':
                         function (data, type, row) {
-                            return `<div class="btn-group" role="group">
-                            ${((row['estado_pago'] == 1 || row['estado_pago'] == 2) && permisoEnviar == '1') ?
+                            return `< div class= "btn-group" role = "group" >
+                ${((row['estado_pago'] == 1 || row['estado_pago'] == 2) && permisoEnviar == '1') ?
                                     `<button type="button" class="enviar btn btn-info boton" data-toggle="tooltip" 
                                 data-placement="bottom" data-id="${row['id_orden_compra']}" data-tipo="orden"
                                 title="Autorizar pago" >
@@ -170,12 +190,14 @@ class RequerimientoPago {
                                     data-cta="${row['nro_cuenta']}" data-tpcta="${row['tipo_cuenta']}"
                                     title="Registrar Pago"><i class="fas fa-hand-holding-usd"></i></button>`
                                         : ''}`
-                                    : ''}
+                                    : ''
+                                }
                             ${row['suma_pagado'] > 0 && permisoVer == '1' ?
                                     `<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
                                 data-placement="bottom" data-id="${row['id_orden_compra']}" title="Ver detalle de los pagos" >
-                                <i class="fas fa-chevron-down"></i></button>`: ''}
-                        </div>`;
+                                <i class="fas fa-chevron-down"></i></button>`: ''
+                                }
+                        </div > `;
                         }, 'searchable': false
                 },
             ],
@@ -227,19 +249,21 @@ class RequerimientoPago {
                 {
                     'render':
                         function (data, type, row) {
-                            return `<div class="btn-group" role="group">
-                            ${row['estado'] == 1 ?
+                            return `< div class= "btn-group" role = "group" >
+        ${row['estado'] == 1 ?
                                     `<button type="button" style="padding-left:8px;padding-right:7px;" class="pago btn btn-success boton" data-toggle="tooltip" data-placement="bottom" 
                                     data-id="${row['id_doc_com']}" data-cod="${row['serie'] + '-' + row['numero']}" data-tipo="comprobante"
                                     data-total="${row['total_a_pagar']}" data-pago="${row['suma_pagado']}" data-nrodoc="${row['nro_documento']}"
                                     data-moneda="${row['simbolo']}" data-prov="${encodeURIComponent(row['razon_social'])}" 
                                     data-cta="${row['nro_cuenta']}" title="Registrar Pago"> 
-                                    <i class="fas fa-hand-holding-usd"></i> </button>`: ''}
+                                    <i class="fas fa-hand-holding-usd"></i> </button>`: ''
+                                }
                             ${row['suma_pagado'] > 0 ?
                                     `<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
                                     data-placement="bottom" data-id="${row['id_doc_com']}" title="Ver detalle de los pagos" >
-                                    <i class="fas fa-chevron-down"></i></button>`: ''}
-                            </div>`;
+                                    <i class="fas fa-chevron-down"></i></button>`: ''
+                                }
+                            </div > `;
 
                         }
                 },
@@ -411,16 +435,16 @@ function formatPagos(table_id, id, row, tipo) {
                         '<td style="border: none; text-align: center">' + element.nombre_corto + '</td>' +
                         '<td style="border: none; text-align: center">' + formatDateHour(element.fecha_registro) + '</td>' +
                         '<td style="border: none; text-align: center">' +
-                        `<button type="button" class="btn btn-danger boton" data-toggle="tooltip" 
-                            data-placement="bottom" data-row="${row}"
-                            onClick="anularPago(${element.id_pago},'${tipo}')" title="Anular pago" >
-                            <i class="fas fa-trash"></i></button` +
+                        `< button type = "button" class= "btn btn-danger boton" data - toggle="tooltip" 
+                            data - placement="bottom" data - row="${row}"
+                            onClick = "anularPago(${element.id_pago},'${tipo}')" title = "Anular pago" >
+        <i class="fas fa-trash"></i></button` +
                         '</td>' +
                         '</tr>';
                     i++;
                 });
-                var tabla = `<table class="table table-sm" style="border: none;" 
-                id="detalle_${table_id}">
+                var tabla = `< table class= "table table-sm" style = "border: none;" 
+                id = "detalle_${table_id}" >
                 <thead style="color: black;background-color: #c7cacc;">
                     <tr>
                         <th style="border: none;">#</th>
@@ -436,15 +460,15 @@ function formatPagos(table_id, id, row, tipo) {
                     </tr>
                 </thead>
                 <tbody>${html}</tbody>
-                </table>`;
+                </table > `;
             }
             else {
-                var tabla = `<table class="table table-sm" style="border: none;" 
-                id="detalle_${table_id}">
-                <tbody>
-                    <tr><td>No hay registros para mostrar</td></tr>
-                </tbody>
-                </table>`;
+                var tabla = `< table class= "table table-sm" style = "border: none;" 
+                id = "detalle_${table_id}" >
+            <tbody>
+                <tr><td>No hay registros para mostrar</td></tr>
+            </tbody>
+                </table > `;
             }
             row.child(tabla).show();
         }
@@ -480,8 +504,8 @@ function formatPagosComprobante(table_id, id, row) {
                         '</tr>';
                     i++;
                 });
-                var tabla = `<table class="table table-sm" style="border: none;" 
-                id="detalle_${table_id}">
+                var tabla = `< table class= "table table-sm" style = "border: none;" 
+                id = "detalle_${table_id}" >
                 <thead style="color: black;background-color: #c7cacc;">
                     <tr>
                         <th style="border: none;">#</th>
@@ -495,15 +519,15 @@ function formatPagosComprobante(table_id, id, row) {
                     </tr>
                 </thead>
                 <tbody>${html}</tbody>
-                </table>`;
+                </table > `;
             }
             else {
-                var tabla = `<table class="table table-sm" style="border: none;" 
-                id="detalle_${table_id}">
-                <tbody>
-                    <tr><td>No hay registros para mostrar</td></tr>
-                </tbody>
-                </table>`;
+                var tabla = `< table class= "table table-sm" style = "border: none;" 
+                id = "detalle_${table_id}" >
+            <tbody>
+                <tr><td>No hay registros para mostrar</td></tr>
+            </tbody>
+                </table > `;
             }
             row.child(tabla).show();
         }
@@ -539,8 +563,8 @@ function formatPagosRequerimientos(table_id, id, row) {
                         '</tr>';
                     i++;
                 });
-                var tabla = `<table class="table table-sm" style="border: none;" 
-                id="detalle_${table_id}">
+                var tabla = `< table class= "table table-sm" style = "border: none;" 
+                id = "detalle_${table_id}" >
                 <thead style="color: black;background-color: #c7cacc;">
                     <tr>
                         <th style="border: none;">#</th>
@@ -554,15 +578,15 @@ function formatPagosRequerimientos(table_id, id, row) {
                     </tr>
                 </thead>
                 <tbody>${html}</tbody>
-                </table>`;
+                </table > `;
             }
             else {
-                var tabla = `<table class="table table-sm" style="border: none;" 
-                id="detalle_${table_id}">
-                <tbody>
-                    <tr><td>No hay registros para mostrar</td></tr>
-                </tbody>
-                </table>`;
+                var tabla = `< table class= "table table-sm" style = "border: none;" 
+                id = "detalle_${table_id}" >
+            <tbody>
+                <tr><td>No hay registros para mostrar</td></tr>
+            </tbody>
+                </table > `;
             }
             row.child(tabla).show();
         }

@@ -16,7 +16,7 @@
                     <input type="text" class="oculto" name="total" />
 
                     <fieldset class="group-table" id="fieldsetDatosProveedor">
-                        <h5 style="display:flex;justify-content: space-between;"><strong>Datos del proveedor</strong></h5>
+                        <h5 style="display:flex;justify-content: space-between;"><strong>Datos del destinatario</strong></h5>
                         <div class="row">
                             <div class="col-md-2">
                                 <span style="font-size: 14px;">Nro. documento: </span>

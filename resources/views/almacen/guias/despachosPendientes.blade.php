@@ -85,7 +85,7 @@ Atención de Salidas
                                             <th>Operación</th>
                                             <th>Req.</th>
                                             <th>Cliente</th>
-                                            <th>Concepto</th>
+                                            {{-- <th>Concepto</th> --}}
                                             <th>Responsable</th>
                                             <th width="70px"></th>
                                         </tr>

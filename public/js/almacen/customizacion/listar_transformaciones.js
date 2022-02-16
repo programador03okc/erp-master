@@ -50,24 +50,24 @@ class GestionCustomizacion {
                     table.search($input.val()).draw();
                 });
 
-                // const $form = $('#formFiltrosSalidasPendientes');
-                $('#listaTransformacionesPendientes_wrapper .dt-buttons').append(
-                    `<div style="display:flex">
-                        <label style="text-align: center;margin-top: 7px;margin-left: 10px;margin-right: 10px;">Mostrar: </label>
-                        <select class="form-control" id="selectMostrarPendientes">
-                            <option value="0" >Todos</option>
-                            <option value="1" >Priorizados</option>
-                            <option value="2" selected>Los de Hoy</option>
-                        </select>
-                    </div>`
-                );
 
-                $("#selectMostrarPendientes").on("change", function (e) {
-                    var sed = $(this).val();
-                    console.log('sel ' + sed);
-                    $('#formFiltrosTransformacionesPendientes').find('input[name=select_mostrar_pendientes]').val(sed);
-                    $("#listaTransformacionesPendientes").DataTable().ajax.reload(null, false);
-                });
+                // $('#listaTransformacionesPendientes_wrapper .dt-buttons').append(
+                //     `<div style="display:flex">
+                //         <label style="text-align: center;margin-top: 7px;margin-left: 10px;margin-right: 10px;">Mostrar: </label>
+                //         <select class="form-control" id="selectMostrarPendientes">
+                //             <option value="0" selected>Todos</option>
+                //             <option value="1" >Priorizados</option>
+                //             <option value="2" >Los de Hoy</option>
+                //         </select>
+                //     </div>`
+                // );
+
+                // $("#selectMostrarPendientes").on("change", function (e) {
+                //     var sed = $(this).val();
+                //     console.log('sel ' + sed);
+                //     $('#formFiltrosTransformacionesPendientes').find('input[name=select_mostrar_pendientes]').val(sed);
+                //     $("#listaTransformacionesPendientes").DataTable().ajax.reload(null, false);
+                // });
             },
             drawCallback: function (settings) {
                 $("#listaTransformacionesPendientes_filter input").prop("disabled", false);
@@ -79,8 +79,8 @@ class GestionCustomizacion {
                 url: 'listar_transformaciones_pendientes',
                 type: 'POST',
                 data: function (params) {
-                    var x = $('[name=select_mostrar_pendientes]').val();
-                    console.log(x);
+                    // var x = $('[name=select_mostrar_pendientes]').val();
+                    // console.log(x);
                     return Object.assign(params, objectifyForm($('#formFiltrosTransformacionesPendientes').serializeArray()))
                 }
             },
@@ -141,7 +141,13 @@ class GestionCustomizacion {
                             return (formatDate(row['fecha_despacho']));
                         }
                 },
-                { data: 'fecha_inicio' },
+                {
+                    data: 'fecha_inicio', name: 'transformacion.fecha_inicio', className: "text-center",
+                    'render':
+                        function (data, type, row) {
+                            return (formatDate(row['fecha_inicio']));
+                        }
+                },
                 { data: 'descripcion', name: 'alm_almacen.descripcion' },
                 {
                     data: 'estado_doc', name: 'adm_estado_doc.estado_doc',
@@ -178,7 +184,7 @@ class GestionCustomizacion {
             'buttons': vardataTables[2],
             'language': vardataTables[0],
             'destroy': true,
-            'ajax': 'listar_todas_transformaciones',
+            'ajax': 'listarTransformacionesProcesadas',
             // 'ajax': {
             //     url:'listar_transferencias_pendientes/'+alm_origen+'/'+alm_destino,
             //     dataSrc:''
