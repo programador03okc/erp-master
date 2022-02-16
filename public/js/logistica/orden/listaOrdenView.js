@@ -410,6 +410,7 @@ class ListaOrdenView {
         tablaListaOrdenes = $('#listaOrdenes').DataTable({
             'processing': true,
             'destroy': true,
+            'stateSave':true,
             'language': vardataTables[0],
             'buttons': [
                 {
@@ -1486,7 +1487,6 @@ class ListaOrdenView {
     // ###============  Inicia enviar orden a pago ============###
 
     limpiarFormEnviarOrdenAPago() {
-        document.querySelector("div[id='modal-enviar-orden-a-pago'] span[id='codigo_orden']").textContent = '';
         document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_proveedor']").value = '';
         document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_contribuyente']").value = '';
         document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_cuenta_contribuyente']").value = '';
@@ -1518,6 +1518,7 @@ class ListaOrdenView {
     }
 
     modalEnviarOrdenAPago(obj) {
+        document.querySelector("div[id='modal-enviar-orden-a-pago'] span[id='codigo_orden']").textContent = '';
         this.limpiarFormEnviarOrdenAPago();
         this.restablecerValoresPorDefectoFormEnviarOrdenAPago();
         $('#modal-enviar-orden-a-pago').modal({
@@ -1529,9 +1530,9 @@ class ListaOrdenView {
         document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_orden_compra']").value = obj.dataset.idOrdenCompra;
         document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_proveedor']").value = obj.dataset.idProveedor;
         document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_cuenta_contribuyente']").value = obj.dataset.idCuentaPrincipal;
-        document.querySelector("div[id='modal-enviar-orden-a-pago'] select[name='id_prioridad']").value = obj.dataset.idPrioridadPago;
         
         if(obj.dataset.estadoPago ==8){
+            document.querySelector("div[id='modal-enviar-orden-a-pago'] select[name='id_prioridad']").value = obj.dataset.idPrioridadPago;
             document.querySelector("div[id='modal-enviar-orden-a-pago'] select[name='id_tipo_destinatario']").value = obj.dataset.idTipoDestinatarioPago;
      
             if(obj.dataset.idTipoDestinatarioPago == 1){
@@ -2120,18 +2121,18 @@ class ListaOrdenView {
     }
 
     limpiarInputDestinatario(){
-        document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_persona']").value="";
-        document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_contribuyente']").value="";
-        document.querySelector("div[id='modal-requerimiento-pago'] input[name='nombre_destinatario']").value="";
-        document.querySelector("div[id='modal-requerimiento-pago'] input[name='nro_documento']").value="";
-        document.querySelector("div[id='modal-requerimiento-pago'] input[name='tipo_documento_identidad']").value= "";
+        document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_persona']").value="";
+        document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_contribuyente']").value="";
+        document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='nombre_destinatario']").value="";
+        document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='nro_documento']").value="";
+        document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='tipo_documento_identidad']").value= "";
 
         this.limpiarTabla("listaDestinatariosEncontrados");
-        document.querySelector("div[id='modal-requerimiento-pago'] span[id='cantidadDestinatariosEncontrados']").textContent= 0;
+        document.querySelector("div[id='modal-enviar-orden-a-pago'] span[id='cantidadDestinatariosEncontrados']").textContent= 0;
 
-        document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_cuenta_persona']").value= "";
-        document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_cuenta_contribuyente']").value= "";
-        let selectCuenta = document.querySelector("div[id='modal-requerimiento-pago'] select[name='id_cuenta']");
+        document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_cuenta_persona']").value= "";
+        document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_cuenta_contribuyente']").value= "";
+        let selectCuenta = document.querySelector("div[id='modal-enviar-orden-a-pago'] select[name='id_cuenta']");
         if (selectCuenta != null) {
             while (selectCuenta.children.length > 0) {
                 selectCuenta.removeChild(selectCuenta.lastChild);
