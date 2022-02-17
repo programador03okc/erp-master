@@ -543,7 +543,8 @@ class OrdenesDespachoExternoController extends Controller
         } catch (\PDOException $e) {
             DB::rollBack();
 
-            return response()->json(array('tipo' => 'error', 'mensaje' => 'Hubo un problema al enviar la orden. Por favor intente de nuevo', 'error' => $e->getMessage()), 200);
+            // return response()->json(array('tipo' => 'error', 'mensaje' => 'Hubo un problema al enviar la orden. Por favor intente de nuevo', 'error' => $e->getMessage()), 200);
+            return response()->json(['tipo' => 'error', 'mensaje' => 'Hubo un problema al enviar la orden. Por favor intente de nuevo', 'error' => $e->getMessage()], 200);
         }
     }
 
