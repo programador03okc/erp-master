@@ -99,12 +99,12 @@ function mostrar_detalle() {
         });
         html += `<tr>
         <td>${i}</td>
-        <td><a href="#" class="verProducto" data-id="${element.id_producto}" >${element.codigo}</a></td>
+        <td><a href="#" class="verProducto" data-id="${element.id_producto}" >${element.codigo !== null ? element.codigo : ''}</a></td>
         <td>${element.part_number !== null ? element.part_number : ''}</td>
-        <td>${element.descripcion}<br><strong>${html_series}</strong></td>
+        <td>${element.descripcion !== null ? element.descripcion : '(producto no mapeado)'}<br><strong>${html_series}</strong></td>
         <td>${element.cantidad}</td>
         <td>${element.suma_reservas !== null ? element.suma_reservas : ''}</td>
-        <td>${element.abreviatura}</td>
+        <td>${element.abreviatura !== null ? element.abreviatura : ''}</td>
         <td>
         ${element.control_series ? `<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series" 
         onClick="open_series(${element.id_producto},${element.id_od_detalle},${element.cantidad},${id_almacen});"></i>` : ''}
@@ -177,26 +177,26 @@ $("#form-guia_ven_create").on("submit", function (e) {
     var ser = $(this).serialize();
     var data = ser + '&detalle=' + JSON.stringify(lista_detalle);
     console.log(data);
-    guardar_guia_create(data);
+    guardarGuiaVenta(data);
 });
 
-function guardar_guia_create(data) {
+function guardarGuiaVenta(data) {
     $("#submit_guia").attr('disabled', 'true');
 
     $.ajax({
         type: 'POST',
-        url: 'guardar_guia_despacho',
+        url: 'guardarSalidaGuiaDespacho',
         data: data,
         dataType: 'JSON',
-        success: function (id_salida) {
-            console.log(id_salida);
-            Lobibox.notify("success", {
+        success: function (response) {
+            console.log(response);
+            Lobibox.notify(response.tipo, {
                 title: false,
                 size: "mini",
                 rounded: true,
                 sound: false,
                 delayIndicator: false,
-                msg: 'Salida de Almacén generada con éxito.'
+                msg: response.mensaje
             });
             $('#modal-guia_ven_create').modal('hide');
             $('#despachosPendientes').DataTable().ajax.reload();

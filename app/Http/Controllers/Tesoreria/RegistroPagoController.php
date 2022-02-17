@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Tesoreria;
 use App\Http\Controllers\AlmacenController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Rrhh\Persona;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -45,25 +46,45 @@ class RegistroPagoController extends Controller
                 'requerimiento_pago_estado.bootstrap_color',
                 'sis_sede.descripcion as sede_descripcion',
                 'adm_cta_contri.nro_cuenta',
+                'adm_cta_contri.nro_cuenta_interbancaria',
                 'adm_tp_cta.descripcion as tipo_cuenta',
+                'banco_contribuyente.razon_social as banco_contribuyente',
+                'rrhh_cta_banc.nro_cuenta as nro_cuenta_persona',
+                'rrhh_cta_banc.nro_cci as nro_cci_persona',
+                'tp_cta_persona.descripcion as tipo_cuenta_persona',
+                'banco_persona.razon_social as banco_persona',
                 DB::raw("(SELECT sum(total_pago) FROM tesoreria.registro_pago
                         WHERE registro_pago.id_requerimiento_pago = requerimiento_pago.id_requerimiento_pago
                         and registro_pago.estado != 7) AS suma_pagado")
             )
-            ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'requerimiento_pago.id_proveedor')
-            ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
+            // ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'requerimiento_pago.id_proveedor')
+            ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'requerimiento_pago.id_contribuyente')
+            ->leftjoin('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'requerimiento_pago.id_persona')
             ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'requerimiento_pago.id_moneda')
             ->leftJoin('tesoreria.requerimiento_pago_estado', 'requerimiento_pago_estado.id_requerimiento_pago_estado', '=', 'requerimiento_pago.id_estado')
             ->join('administracion.adm_prioridad', 'adm_prioridad.id_prioridad', '=', 'requerimiento_pago.id_prioridad')
             ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'requerimiento_pago.id_sede')
             ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'requerimiento_pago.id_empresa')
             ->join('contabilidad.adm_contri as empresa', 'empresa.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
-            ->leftJoin('contabilidad.adm_cta_contri', 'adm_cta_contri.id_cuenta_contribuyente', '=', 'requerimiento_pago.id_cuenta_proveedor')
+            ->leftJoin('contabilidad.adm_cta_contri', 'adm_cta_contri.id_cuenta_contribuyente', '=', 'requerimiento_pago.id_cuenta_contribuyente')
             ->leftJoin('contabilidad.adm_tp_cta', 'adm_tp_cta.id_tipo_cuenta', '=', 'adm_cta_contri.id_tipo_cuenta')
+            ->leftJoin('contabilidad.cont_banco as bco_contribuyente', 'bco_contribuyente.id_banco', '=', 'adm_cta_contri.id_banco')
+            ->leftJoin('contabilidad.adm_contri as banco_contribuyente', 'banco_contribuyente.id_contribuyente', '=', 'bco_contribuyente.id_contribuyente')
+            ->leftJoin('rrhh.rrhh_cta_banc', 'rrhh_cta_banc.id_cuenta_bancaria', '=', 'requerimiento_pago.id_cuenta_persona')
+            ->leftJoin('contabilidad.cont_banco as bco_persona', 'bco_persona.id_banco', '=', 'rrhh_cta_banc.id_banco')
+            ->leftJoin('contabilidad.adm_contri as banco_persona', 'banco_persona.id_contribuyente', '=', 'bco_persona.id_contribuyente')
+            ->leftJoin('contabilidad.adm_tp_cta as tp_cta_persona', 'tp_cta_persona.id_tipo_cuenta', '=', 'rrhh_cta_banc.id_tipo_cuenta')
             ->join('configuracion.sis_grupo', 'sis_grupo.id_grupo', '=', 'requerimiento_pago.id_grupo')
             ->where([['requerimiento_pago.id_estado', '!=', 7]]);
 
-        return datatables($data)->toJson();
+        return datatables($data)->addColumn('persona', function ($data) {
+            $persona = Persona::find($data->id_persona);
+            if (!empty($persona)) {
+                return ([$persona]);
+            } else {
+                return ([]);
+            };
+        })->toJson();
     }
 
     public function listarOrdenesCompra()
@@ -80,7 +101,13 @@ class RegistroPagoController extends Controller
                 'log_cdn_pago.descripcion AS condicion_pago',
                 'sis_sede.descripcion as sede_descripcion',
                 'adm_cta_contri.nro_cuenta',
+                'adm_cta_contri.nro_cuenta_interbancaria',
                 'adm_tp_cta.descripcion as tipo_cuenta',
+                'banco_contribuyente.razon_social as banco_contribuyente',
+                'rrhh_cta_banc.nro_cuenta as nro_cuenta_persona',
+                'rrhh_cta_banc.nro_cci as nro_cci_persona',
+                'tp_cta_persona.descripcion as tipo_cuenta_persona',
+                'banco_persona.razon_social as banco_persona',
                 DB::raw("(SELECT sum(subtotal) FROM logistica.log_det_ord_compra
                         WHERE log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra
                         and log_det_ord_compra.estado != 7) AS suma_total"),
@@ -98,9 +125,22 @@ class RegistroPagoController extends Controller
             ->join('contabilidad.adm_contri as empresa', 'empresa.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
             ->leftJoin('contabilidad.adm_cta_contri', 'adm_cta_contri.id_cuenta_contribuyente', '=', 'log_ord_compra.id_cta_principal')
             ->leftJoin('contabilidad.adm_tp_cta', 'adm_tp_cta.id_tipo_cuenta', '=', 'adm_cta_contri.id_tipo_cuenta')
-            ->where([['log_ord_compra.id_condicion', '=', 1], ['log_ord_compra.estado', '!=', 7]]);
+            ->leftJoin('contabilidad.cont_banco as bco_contribuyente', 'bco_contribuyente.id_banco', '=', 'adm_cta_contri.id_banco')
+            ->leftJoin('contabilidad.adm_contri as banco_contribuyente', 'banco_contribuyente.id_contribuyente', '=', 'bco_contribuyente.id_contribuyente')
+            ->leftJoin('rrhh.rrhh_cta_banc', 'rrhh_cta_banc.id_cuenta_bancaria', '=', 'log_ord_compra.id_persona_pago')
+            ->leftJoin('contabilidad.cont_banco as bco_persona', 'bco_persona.id_banco', '=', 'rrhh_cta_banc.id_banco')
+            ->leftJoin('contabilidad.adm_contri as banco_persona', 'banco_persona.id_contribuyente', '=', 'bco_persona.id_contribuyente')
+            ->leftJoin('contabilidad.adm_tp_cta as tp_cta_persona', 'tp_cta_persona.id_tipo_cuenta', '=', 'rrhh_cta_banc.id_tipo_cuenta')
+            ->where([['log_ord_compra.id_condicion', '=', 1], ['log_ord_compra.estado_pago', '=', 8]]);
 
-        return datatables($data)->toJson();
+        return datatables($data)->addColumn('persona', function ($data) {
+            $persona = Persona::find($data->id_persona_pago);
+            if (!empty($persona)) {
+                return ([$persona]);
+            } else {
+                return ([]);
+            };
+        })->toJson();
     }
 
     public function listarComprobantesPagos()

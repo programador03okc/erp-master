@@ -43,7 +43,7 @@ class TransformacionController extends Controller
     {
         $almacenes = AlmacenController::mostrar_almacenes_cbo();
         $usuarios = GenericoAlmacenController::select_usuarios();
-        return view('almacen/customizacion/listar_transformaciones', compact('almacenes', 'usuarios'));
+        return view('almacen/customizacion/listarTransformaciones', compact('almacenes', 'usuarios'));
     }
 
     public function listar_transformaciones_pendientes(Request $request)
@@ -79,7 +79,8 @@ class TransformacionController extends Controller
             ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'transformacion.estado')
             // ->leftjoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'transformacion.id_cc')
             ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
-            ->leftJoin('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'cc.id_oportunidad');
+            ->leftJoin('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'cc.id_oportunidad')
+            ->whereIn('transformacion.estado', [1, 25, 21, 24, 10]);
         // ->leftjoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
         // ->leftjoin('mgcp_acuerdo_marco.oc_propias', 'oc_propias.id_oportunidad', '=', 'oportunidades.id')
         // ->leftjoin('mgcp_acuerdo_marco.entidades', 'entidades.id', '=', 'oportunidades.id_entidad');
@@ -89,19 +90,19 @@ class TransformacionController extends Controller
         //     ['transformacion.estado', '!=', 10]
         // ]);
 
-        if ($request->select_mostrar_pendientes == 0) {
-            $data->whereIn('transformacion.estado', [1, 25, 21, 24, 9, 10]);
-        } else if ($request->select_mostrar_pendientes == 1) {
-            $data->where('transformacion.estado', 25);
-        } else if ($request->select_mostrar_pendientes == 2) {
-            $data->whereIn('transformacion.estado', [25, 21, 24]);
-            $data->whereDate('orden_despacho.fecha_despacho', (new Carbon())->format('Y-m-d'));
-        }
+        // if ($request->select_mostrar_pendientes == 0) {
+        //     $data->whereIn('transformacion.estado', [1, 25, 21, 24, 9]);
+        // } else if ($request->select_mostrar_pendientes == 1) {
+        //     $data->where('transformacion.estado', 25);
+        // } else if ($request->select_mostrar_pendientes == 2) {
+        //     $data->whereIn('transformacion.estado', [25, 21, 24]);
+        //     $data->whereDate('orden_despacho.fecha_despacho', (new Carbon())->format('Y-m-d'));
+        // }
         return datatables($data)->toJson();
         // return response()->json($data->get());
     }
 
-    public function listar_todas_transformaciones()
+    public function listarTransformacionesProcesadas()
     {
         $data = DB::table('almacen.transformacion')
             ->select(
@@ -144,14 +145,14 @@ class TransformacionController extends Controller
                 $join->where('salida.id_tp_mov', '=', 2);
                 $join->where('salida.estado', '!=', 7);
             })
-            ->whereIn('transformacion.estado', [9, 10])
+            ->where('transformacion.estado', 9)
             ->orderBy('fecha_registro', 'desc')
             ->get();
         $output['data'] = $data;
         return response()->json($output);
     }
 
-    public function listarTransformacionesProcesadas()
+    public function listarTransformacionesFinalizadas()
     {
         $data = DB::table('almacen.transformacion')
             ->select(
@@ -191,7 +192,7 @@ class TransformacionController extends Controller
             ->leftjoin('mgcp_acuerdo_marco.entidades', 'entidades.id', '=', 'oportunidades.id_entidad')
             ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'transformacion.estado')
             ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'transformacion.responsable')
-            ->where([['transformacion.estado', '=', 9]]);
+            ->where([['transformacion.estado', '=', 10]]);
 
         return datatables($data)->toJson();
     }
@@ -1020,7 +1021,7 @@ class TransformacionController extends Controller
             DB::table('almacen.transformacion')
                 ->where('id_transformacion', $request->id_transformacion)
                 ->update([
-                    'estado' => 9, //procesado
+                    'estado' => 10, //Culminado
                     'responsable' => $request->responsable,
                     'observacion' => $request->observacion,
                     'fecha_transformacion' => date('Y-m-d H:i:s')

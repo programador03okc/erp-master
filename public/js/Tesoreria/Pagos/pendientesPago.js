@@ -51,8 +51,18 @@ class RequerimientoPago {
                 { 'data': 'codigo', 'name': 'requerimiento_pago.codigo', 'className': 'text-center' },
                 { 'data': 'grupo_descripcion', 'name': 'sis_grupo.descripcion' },
                 { 'data': 'concepto', 'name': 'requerimiento_pago.concepto' },
-                { 'data': 'nro_documento', 'name': 'adm_contri.nro_documento' },
-                { 'data': 'razon_social', 'name': 'adm_contri.razon_social' },
+                {
+                    'render': function (data, type, row) {
+                        return (row['persona'][0].nro_documento !== null ? row['persona'][0].nro_documento : row['nro_documento']);
+                    }, 'className': 'text-center', 'searchable': false
+                },
+                {
+                    'render': function (data, type, row) {
+                        return (row['persona'][0].nombre_completo !== null ? row['persona'][0].nombre_completo : row['razon_social']);
+                    }, 'searchable': false
+                },
+                // { 'data': 'nro_documento', 'name': 'adm_contri.nro_documento' },
+                // { 'data': 'razon_social', 'name': 'adm_contri.razon_social' },
                 {
                     'render': function (data, type, row) {
                         return (row['fecha_registro'] !== null ? formatDate(row['fecha_registro']) : '');
@@ -84,7 +94,7 @@ class RequerimientoPago {
                         function (data, type, row) {
                             return `<div class="btn-group" role="group">
                             ${(row['id_estado'] == 2 && permisoEnviar == '1') ?
-                                    `<button type="button" class="enviar btn btn-info boton" data-toggle="tooltip" 
+                                    `<button type="button" class="autorizar btn btn-info boton" data-toggle="tooltip" 
                                 data-placement="bottom" data-id="${row['id_requerimiento_pago']}" data-tipo="requerimiento"
                                 title="Autorizar pago"> <i class="fas fa-share"></i></button>`
                                     : ''}
@@ -96,9 +106,14 @@ class RequerimientoPago {
                                     ${permisoRegistrar == '1' ?
                                         `<button type="button" class="pago btn btn-success boton" data-toggle="tooltip" data-placement="bottom" 
                                         data-id="${row['id_requerimiento_pago']}" data-cod="${row['codigo']}" data-tipo="requerimiento"
-                                        data-total="${row['monto_total']}" data-pago="${row['suma_pagado']}" data-nrodoc="${row['nro_documento']}"
-                                        data-moneda="${row['simbolo']}" data-prov="${encodeURIComponent(row['razon_social'])}" 
-                                        data-cta="${row['nro_cuenta']}" data-tpcta="${row['tipo_cuenta']}" title="Registrar Pago"> 
+                                        data-total="${row['monto_total']}" data-pago="${row['suma_pagado']}" data-moneda="${row['simbolo']}" 
+                                        data-nrodoc="${row['nro_documento'] !== null ? row['nro_documento'] : row['persona'][0].nro_documento}"
+                                        data-prov="${encodeURIComponent(row['razon_social'] !== null ? row['razon_social'] : row['persona'][0].nombre_completo)}" 
+                                        data-cta="${row['nro_cuenta'] !== null ? row['nro_cuenta'] : row['nro_cuenta_persona']}" 
+                                        data-cci="${row['nro_cuenta_interbancaria'] !== null ? row['nro_cuenta_interbancaria'] : row['nro_cci_persona']}" 
+                                        data-tpcta="${row['tipo_cuenta'] !== null ? row['tipo_cuenta'] : row['tipo_cuenta_persona']}" 
+                                        data-banco="${row['banco_persona'] !== null ? row['banco_persona'] : row['banco_contribuyente']}" 
+                                        title="Registrar Pago"> 
                                     <i class="fas fa-hand-holding-usd"></i> </button>`
                                         : ''}`
                                     : ''
@@ -108,7 +123,7 @@ class RequerimientoPago {
                                     data-placement="bottom" data-id="${row['id_requerimiento_pago']}" title="Ver detalle de los pagos" >
                                     <i class="fas fa-chevron-down"></i></button>`: ''
                                 }
-                            </div > `;
+                            </div> `;
 
                         }
                 },
@@ -170,34 +185,39 @@ class RequerimientoPago {
                 {
                     'render':
                         function (data, type, row) {
-                            return `< div class= "btn-group" role = "group" >
-                ${((row['estado_pago'] == 1 || row['estado_pago'] == 2) && permisoEnviar == '1') ?
-                                    `<button type="button" class="enviar btn btn-info boton" data-toggle="tooltip" 
+                            return `<div class="btn-group" role="group">
+                ${(row['estado_pago'] == 8 && permisoEnviar == '1') ?
+                                    `<button type="button" class="autorizar btn btn-info boton" data-toggle="tooltip" 
                                 data-placement="bottom" data-id="${row['id_orden_compra']}" data-tipo="orden"
                                 title="Autorizar pago" >
                                 <i class="fas fa-share"></i></button>`: ''}
                             ${row['estado_pago'] == 5 ?
-                                    `${permisoEnviar == '1' ?
+                                    (`${permisoEnviar == '1' ?
                                         `<button type="button" class="revertir btn btn-danger boton" data-toggle="tooltip" 
                                     data-placement="bottom" data-id="${row['id_orden_compra']}" data-tipo="orden"
                                     title="Revertir autorización"><i class="fas fa-undo-alt"></i></button>` : ''}
                                     
                                 ${permisoRegistrar == '1' ?
-                                        `<button type="button" class="pago btn btn-success boton" data-toggle="tooltip" data-placement="bottom" 
+                                            `<button type="button" class="pago btn btn-success boton" data-toggle="tooltip" data-placement="bottom" 
                                     data-id="${row['id_orden_compra']}" data-cod="${row['codigo']}" data-tipo="orden"
-                                    data-total="${row['suma_total']}" data-pago="${row['suma_pagado']}" data-nrodoc="${row['nro_documento']}" 
-                                    data-moneda="${row['simbolo']}" data-prov="${encodeURIComponent(row['razon_social'])}" 
-                                    data-cta="${row['nro_cuenta']}" data-tpcta="${row['tipo_cuenta']}"
-                                    title="Registrar Pago"><i class="fas fa-hand-holding-usd"></i></button>`
-                                        : ''}`
-                                    : ''
-                                }
+                                    data-total="${row['suma_total']}" data-pago="${row['suma_pagado']}" 
+                                    data-moneda="${row['simbolo']}" 
+
+                                    data-nrodoc="${row['nro_documento'] !== null ? row['nro_documento'] : row['persona'][0].nro_documento}"
+                                    data-prov="${encodeURIComponent(row['razon_social'] !== null ? row['razon_social'] : row['persona'][0].nombre_completo)}" 
+                                    data-cta="${row['nro_cuenta'] !== null ? row['nro_cuenta'] : row['nro_cuenta_persona']}" 
+                                    data-cci="${row['nro_cuenta_interbancaria'] !== null ? row['nro_cuenta_interbancaria'] : row['nro_cci_persona']}" 
+                                    data-tpcta="${row['tipo_cuenta'] !== null ? row['tipo_cuenta'] : row['tipo_cuenta_persona']}" 
+                                    data-banco="${row['banco_persona'] !== null ? row['banco_persona'] : row['banco_contribuyente']}" 
+
+                                    title="Registrar Pago"><i class="fas fa-hand-holding-usd"></i></button>`: ''}`)
+                                    : ''}
                             ${row['suma_pagado'] > 0 && permisoVer == '1' ?
                                     `<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
                                 data-placement="bottom" data-id="${row['id_orden_compra']}" title="Ver detalle de los pagos" >
-                                <i class="fas fa-chevron-down"></i></button>`: ''
-                                }
-                        </div > `;
+                                <i class="fas fa-chevron-down"></i></button>`
+                                    : ''}
+                        </div> `;
                         }, 'searchable': false
                 },
             ],
@@ -249,8 +269,8 @@ class RequerimientoPago {
                 {
                     'render':
                         function (data, type, row) {
-                            return `< div class= "btn-group" role = "group" >
-        ${row['estado'] == 1 ?
+                            return `<div class="btn-group" role="group">
+                            ${row['estado'] == 1 ?
                                     `<button type="button" style="padding-left:8px;padding-right:7px;" class="pago btn btn-success boton" data-toggle="tooltip" data-placement="bottom" 
                                     data-id="${row['id_doc_com']}" data-cod="${row['serie'] + '-' + row['numero']}" data-tipo="comprobante"
                                     data-total="${row['total_a_pagar']}" data-pago="${row['suma_pagado']}" data-nrodoc="${row['nro_documento']}"
@@ -263,7 +283,7 @@ class RequerimientoPago {
                                     data-placement="bottom" data-id="${row['id_doc_com']}" title="Ver detalle de los pagos" >
                                     <i class="fas fa-chevron-down"></i></button>`: ''
                                 }
-                            </div > `;
+                            </div> `;
 
                         }
                 },
@@ -287,13 +307,13 @@ $('#listaComprobantes tbody').on("click", "button.pago", function () {
     openRegistroPago($(this));
 });
 
-$('#listaRequerimientos tbody').on("click", "button.enviar", function () {
+$('#listaRequerimientos tbody').on("click", "button.autorizar", function () {
     var id = $(this).data('id');
     var tipo = $(this).data('tipo');
     enviarAPago(tipo, id);
 });
 
-$('#listaOrdenes tbody').on("click", "button.enviar", function () {
+$('#listaOrdenes tbody').on("click", "button.autorizar", function () {
     var id = $(this).data('id');
     var tipo = $(this).data('tipo');
     enviarAPago(tipo, id);

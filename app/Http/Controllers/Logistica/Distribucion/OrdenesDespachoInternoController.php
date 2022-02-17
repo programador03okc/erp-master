@@ -606,27 +606,38 @@ class OrdenesDespachoInternoController extends Controller
                 ->where('id_od', $request->id_od)->first();
 
             //actualiza datos de transformacion
-            if ($request->estado == 24) {
+            if ($request->estado == 24) { //iniciado
                 DB::table('almacen.transformacion')
                     ->where('id_transformacion', $request->id_transformacion)
                     ->update([
                         'estado' => $request->estado,
                         'fecha_inicio' => new Carbon()
                     ]);
-            } else if ($request->estado == 10) {
+            } else if ($request->estado == 10) { //finalizado
+                $usuario = Auth::user()->id_usuario;
                 DB::table('almacen.transformacion')
                     ->where('id_transformacion', $request->id_transformacion)
                     ->update([
                         'estado' => $request->estado,
+                        'responsable' => $usuario,
                         'fecha_transformacion' => new Carbon()
                     ]);
-            } else if ($request->estado == 21) {
+
+                DB::table('almacen.orden_despacho')
+                    ->where('id_od', $request->id_od)
+                    ->update([
+                        'estado' => 10, //Culminado
+                    ]);
+            } else if ($request->estado == 21) { //entregado
                 DB::table('almacen.transformacion')
                     ->where('id_transformacion', $request->id_transformacion)
-                    ->update(['estado' => $request->estado]);
+                    ->update([
+                        'fecha_entrega' => new Carbon(),
+                        'estado' => $request->estado,
+                    ]);
 
                 $this->actualizaNroOrden($od->fecha_despacho);
-            } else if ($request->estado == 1) {
+            } else if ($request->estado == 1) { //elaborado
                 DB::table('almacen.transformacion')
                     ->where('id_transformacion', $request->id_transformacion)
                     ->update(['estado' => $request->estado]);
@@ -635,11 +646,11 @@ class OrdenesDespachoInternoController extends Controller
             }
 
             //actualiza estado del requerimiento
-            if ($request->estado == 10) {
+            if ($request->estado == 10) { //finalizado
                 DB::table('almacen.alm_req')
                     ->where('id_requerimiento', $od->id_requerimiento)
                     ->update(['estado_despacho' => $request->estado]);
-            } else {
+            } else { //despacho interno
                 DB::table('almacen.alm_req')
                     ->where('id_requerimiento', $od->id_requerimiento)
                     ->update(['estado_despacho' => 22]);
