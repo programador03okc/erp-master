@@ -795,6 +795,17 @@ class RequerimientoPendienteView {
 
                     },
                     className: 'btn-default btn-sm'
+                },
+                {
+                    text: '<span class="far fa-file-excel" aria-hidden="true"></span> Descargar',
+                    attr: {
+                        id: 'btnExportarTablaRequerimientosAtendidosExcel'
+                    },
+                    action: () => {
+                        this.exportTablaRequerimientosAtentidosExcel();
+
+                    },
+                    className: 'btn-default btn-sm'
                 }
             ],
             'language': vardataTables[0],
@@ -1376,6 +1387,10 @@ class RequerimientoPendienteView {
         });
     }
 
+    exportTablaRequerimientosAtentidosExcel(){
+        window.open(`reporte-requerimientos-atendidos-excel/${this.ActualParametroEmpresa}/${this.ActualParametroSede}/${this.ActualParametroFechaDesde}/${this.ActualParametroFechaHasta}/${this.ActualParametroReserva}/${this.ActualParametroOrden}`);
+
+    }
     // chkEmpresa(e) {
 
     //     if (e.target.checked == true) {

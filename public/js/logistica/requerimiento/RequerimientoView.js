@@ -55,6 +55,9 @@ class RequerimientoView {
         $('#form-requerimiento').on("click","button.handleClickAgregarServicio", ()=>{
             this.agregarFilaServicio();
         });
+        // $('#form-requerimiento').on("change","select.handleChangeProyecto", (e)=>{
+        //     this.changeProyecto(e);
+        // });
 
         $('#listaRequerimiento tbody').on("click","button.handleClickCargarRequerimiento", (e)=>{
             this.cargarRequerimiento(e.target.dataset.idRequerimiento);
@@ -758,7 +761,6 @@ class RequerimientoView {
     }
 
     changeProyecto(event) {
-
         tempCentroCostoSelected = {
             'id': event.target.options[event.target.selectedIndex].getAttribute('data-id-centro-costo'),
             'codigo': event.target.options[event.target.selectedIndex].getAttribute('data-codigo-centro-costo'),

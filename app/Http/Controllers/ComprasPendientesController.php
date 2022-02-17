@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\reporteRequerimientosAtendidosExcel;
 use App\Helpers\Necesidad\RequerimientoHelper;
 use App\Http\Controllers\Almacen\Movimiento\OrdenesPendientesController;
 use App\Models\Almacen\Almacen;
@@ -34,6 +35,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Debugbar;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ComprasPendientesController extends Controller
 {
@@ -495,6 +497,136 @@ class ComprasPendientesController extends Controller
                 }
             })
             ->toJson();
+    }
+
+
+
+    public function obtenerRequerimientosAtendidos($empresa,$sede,$fechaRegistroDesde,$fechaRegistroHasta,$reserva,$orden)
+    {
+        $alm_req = Requerimiento::join('almacen.alm_tp_req', 'alm_req.id_tipo_requerimiento', '=', 'alm_tp_req.id_tipo_requerimiento')
+            ->leftJoin('almacen.tipo_cliente', 'tipo_cliente.id_tipo_cliente', '=', 'alm_req.tipo_cliente')
+            ->leftJoin('administracion.adm_estado_doc', 'alm_req.estado', '=', 'adm_estado_doc.id_estado_doc')
+            ->leftJoin('configuracion.sis_usua', 'alm_req.id_usuario', '=', 'sis_usua.id_usuario')
+            ->leftJoin('rrhh.rrhh_trab', 'sis_usua.id_trabajador', '=', 'rrhh_trab.id_trabajador')
+            ->leftJoin('rrhh.rrhh_postu', 'rrhh_postu.id_postulante', '=', 'rrhh_trab.id_postulante')
+            ->leftJoin('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'rrhh_postu.id_persona')
+            ->leftJoin('rrhh.rrhh_rol', 'alm_req.id_rol', '=', 'rrhh_rol.id_rol')
+            ->leftJoin('rrhh.rrhh_rol_concepto', 'rrhh_rol_concepto.id_rol_concepto', '=', 'rrhh_rol.id_rol_concepto')
+            ->leftJoin('administracion.adm_area', 'alm_req.id_area', '=', 'adm_area.id_area')
+            ->leftJoin('administracion.adm_grupo', 'adm_grupo.id_grupo', '=', 'alm_req.id_grupo')
+            ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_req.id_sede')
+            ->leftJoin('comercial.com_cliente', 'alm_req.id_cliente', '=', 'com_cliente.id_cliente')
+            ->leftJoin('contabilidad.adm_contri as contri_cliente', 'com_cliente.id_contribuyente', '=', 'contri_cliente.id_contribuyente')
+            ->leftJoin('rrhh.rrhh_perso as perso_natural', 'alm_req.id_persona', '=', 'perso_natural.id_persona')
+            ->leftJoin('configuracion.sis_moneda', 'alm_req.id_moneda', '=', 'sis_moneda.id_moneda')
+            ->leftJoin('rrhh.rrhh_trab as trab_solicitado_por', 'alm_req.trabajador_id', '=', 'trab_solicitado_por.id_trabajador')
+            ->leftJoin('rrhh.rrhh_postu as postu_solicitado_por', 'postu_solicitado_por.id_postulante', '=', 'trab_solicitado_por.id_postulante')
+            ->leftJoin('rrhh.rrhh_perso as perso_solicitado_por', 'perso_solicitado_por.id_persona', '=', 'postu_solicitado_por.id_persona')
+            ->leftJoin('mgcp_cuadro_costos.cc_view', 'cc_view.id', '=', 'alm_req.id_cc')
+
+
+            ->select(
+                'alm_req.id_requerimiento',
+                'alm_req.codigo',
+                'alm_req.concepto',
+                'alm_req.id_moneda',
+                'alm_req.fecha_entrega',
+                'sis_moneda.simbolo as simbolo_moneda',
+                'sis_moneda.descripcion as moneda',
+                'alm_req.fecha_requerimiento',
+                'alm_req.id_tipo_requerimiento',
+                'alm_tp_req.descripcion AS tipo_req_desc',
+                'alm_req.tipo_cliente',
+                'tipo_cliente.descripcion AS tipo_cliente_desc',
+                'sis_usua.usuario',
+                DB::raw("CONCAT(rrhh_perso.nombres,' ',rrhh_perso.apellido_paterno,' ',rrhh_perso.apellido_materno) as nombre_usuario"),
+                'rrhh_rol.id_area',
+                'adm_area.descripcion AS area_desc',
+                'rrhh_rol.id_rol',
+                'rrhh_rol.id_rol_concepto',
+                'rrhh_rol_concepto.descripcion AS rrhh_rol_concepto',
+                'alm_req.id_grupo',
+                'adm_grupo.descripcion AS adm_grupo_descripcion',
+                'alm_req.concepto AS alm_req_concepto',
+                'alm_req.id_cliente',
+                'contri_cliente.nro_documento as cliente_ruc',
+                'contri_cliente.razon_social as cliente_razon_social',
+                'alm_req.id_persona',
+                'perso_natural.nro_documento as dni_persona',
+                DB::raw("CONCAT(perso_natural.nombres,' ', perso_natural.apellido_paterno,' ', perso_natural.apellido_materno)  AS nombre_persona"),
+                'alm_req.id_prioridad',
+                'alm_req.fecha_registro',
+                'alm_req.trabajador_id',
+                DB::raw("CONCAT(perso_solicitado_por.nombres,' ', perso_solicitado_por.apellido_paterno,' ', perso_solicitado_por.apellido_materno)  AS solicitado_por"),
+                'cc_view.name as cc_solicitado_por',
+                'alm_req.estado',
+                'alm_req.id_empresa',
+                'alm_req.id_sede',
+                'alm_req.tiene_transformacion',
+                'sis_sede.descripcion as empresa_sede',
+                'adm_estado_doc.estado_doc',
+                'adm_estado_doc.bootstrap_color',
+                DB::raw("(CASE WHEN alm_req.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc"),
+                DB::raw("(SELECT  COUNT(alm_det_req.id_detalle_requerimiento) FROM almacen.alm_det_req
+                WHERE alm_det_req.id_requerimiento = alm_req.id_requerimiento and alm_det_req.tiene_transformacion=false)::integer as cantidad_items_base"),
+                DB::raw("(SELECT json_agg(DISTINCT nivel.unidad) FROM almacen.alm_det_req dr
+                INNER JOIN finanzas.cc_niveles_view nivel ON dr.centro_costo_id = nivel.id_centro_costo
+                WHERE dr.id_requerimiento = almacen.alm_req.id_requerimiento and dr.tiene_transformacion=false ) as division"),
+                DB::raw("(SELECT COUNT(*) FROM almacen.alm_det_req AS det
+                WHERE det.id_requerimiento = alm_req.id_requerimiento AND det.id_tipo_item =1
+                AND det.id_producto >0 and det.estado != 7 ) AS count_mapeados"),
+                DB::raw("(SELECT COUNT(*) FROM almacen.alm_det_req AS det
+                WHERE det.id_requerimiento = alm_req.id_requerimiento AND det.id_tipo_item =1
+                AND det.id_producto is null and det.estado !=7 ) AS count_pendientes"),
+                DB::raw("(SELECT COUNT(*) FROM almacen.alm_det_req AS det
+                INNER JOIN almacen.alm_reserva ON det.id_detalle_requerimiento = alm_reserva.id_detalle_requerimiento
+                WHERE det.id_requerimiento = alm_req.id_requerimiento AND alm_reserva.estado = 1
+                AND det.estado != 7) AS count_stock_comprometido")
+            )
+            ->when(($empresa >0), function ($query) use($empresa) {
+                return $query->where('alm_req.id_empresa','=',$empresa); 
+            })
+            ->when(($sede >0), function ($query) use($sede) {
+                return $query->where('alm_req.id_sede','=',$sede); 
+            })
+            ->when(($reserva == 'SIN_RESERVA'), function ($query) {
+                $query->leftJoin('almacen.alm_det_req', 'alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento');
+                return $query->whereRaw('alm_det_req.stock_comprometido isNULL'); 
+            })
+            ->when(($reserva == 'CON_RESERVA'), function ($query) {
+                $query->leftJoin('almacen.alm_det_req', 'alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento');
+                $query->leftJoin('almacen.alm_reserva', 'alm_reserva.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento');
+                return $query->whereRaw('alm_reserva.stock_comprometido >0 and alm_reserva.estado !=7'); 
+            })
+            ->when(($orden == 'CON_ORDEN'), function ($query) {
+                $query->Join('almacen.alm_det_req', 'alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento');
+                $query->Join('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento');
+                return $query->whereRaw('log_det_ord_compra.id_detalle_requerimiento > 0 and log_det_ord_compra.estado !=7 '); 
+            })
+            ->when(($orden == 'SIN_ORDEN'), function ($query) {
+                $query->Join('almacen.alm_det_req', 'alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento');
+                return $query->rightJoin('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento');
+            })
+            
+            ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta == 'SIN_FILTRO')), function ($query) use($fechaRegistroDesde) {
+                return $query->where('alm_req.fecha_requerimiento' ,'>=',$fechaRegistroDesde); 
+            })
+            ->when((($fechaRegistroDesde == 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use($fechaRegistroHasta) {
+                return $query->where('alm_req.fecha_requerimiento' ,'<=',$fechaRegistroHasta); 
+            })
+            ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use($fechaRegistroDesde,$fechaRegistroHasta) {
+                return $query->whereBetween('alm_req.fecha_requerimiento' ,[$fechaRegistroDesde,$fechaRegistroHasta]); 
+            })
+            ->where('alm_req.flg_compras','=',0)
+            ->whereNotIn('alm_req.estado', [1,2,3,4,7,12,13,15,27,28]);
+            
+            return $alm_req;
+            
+    }
+
+    public function reporteRequerimientosAtendidosExcel($idEmpresa, $idSede, $fechaRegistroDesde, $fechaRegistroHasta,$reserva,$orden){
+        return Excel::download(new reporteRequerimientosAtendidosExcel($idEmpresa, $idSede, $fechaRegistroDesde, $fechaRegistroHasta,$reserva,$orden), 'reporte_requerimientos_atendidos.xlsx');
+
     }
 
     public function get_lista_items_cuadro_costos_por_id_requerimiento(Request $request)
