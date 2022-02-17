@@ -179,7 +179,7 @@ class ListarRequerimientoPagoView {
         $('#modal-adjuntar-archivos-requerimiento-pago-detalle').on("change", "input.handleChangeAgregarAdjuntoDetalle", (e) => {
             this.agregarAdjuntoRequerimientoPagoDetalle(e.currentTarget);
         });
-        $('#modal-adjuntar-archivos-requerimiento-pago-detalle').on("change", "input.handleClickDescargarArchivoRequerimientoPagoDetalle", (e) => {
+        $('#modal-adjuntar-archivos-requerimiento-pago-detalle').on("click", "button.handleClickDescargarArchivoRequerimientoPagoDetalle", (e) => {
             this.descargarArchivoRequerimientoPagoDetalle(e.currentTarget);
         });
         $('#modal-adjuntar-archivos-requerimiento-pago-detalle').on("change", "input.handleClickEliminarArchivoRequerimientoPagoDetalle", (e) => {

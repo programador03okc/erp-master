@@ -1,7 +1,7 @@
 var vardataTables = funcDatatables();
 var cantidadFiltrosActivosCabecera = 0;
 var cantidadFiltrosActivosDetalle = 0;
-
+var tempDataProveedorParaPago = [];
 class ListaOrdenView {
     constructor(listaOrdenCtrl) {
         this.listaOrdenCtrl = listaOrdenCtrl;
@@ -66,8 +66,41 @@ class ListaOrdenView {
         $('#listaOrdenes').on("click", "a.handleClickEditarEstadoOrden", (e) => {
             this.editarEstadoOrden(e.currentTarget);
         });
+        $('#listaOrdenes').on("click", "button.handleClickModalEnviarOrdenAPago", (e) => {
+            this.modalEnviarOrdenAPago(e.currentTarget);
+        });
 
+        $('#modal-enviar-solicitud-pago').on("change", "select.handleChangeTipoDestinatario", (e) => {
+            this.changeTipoDestinatario(e.currentTarget);
+        });
 
+        $('#modal-enviar-solicitud-pago').on("click", "button.handleClickEnviarSolicitudDePago", (e) => {
+            this.registrarSolicitudDePago(e.currentTarget);
+        });
+        $('#modal-enviar-solicitud-pago').on("click", "button.handleClickInfoAdicionalCuentaSeleccionada", (e) => {
+            this.mostrarInfoAdicionalCuentaSeleccionada(e.currentTarget);
+        });
+
+        $('#modal-enviar-solicitud-pago').on("blur", "input.handleBlurBuscarDestinatarioPorNumeroDocumento", (e) => {
+            this.buscarDestinatarioPorNumeroDeDocumento(e.currentTarget);
+        });
+
+        $('#modal-enviar-solicitud-pago').on("focusin", "input.handleFocusInputNombreDestinatario", (e) => {
+            this.focusInputNombreDestinatario(e.currentTarget);
+        });
+        $('#modal-enviar-solicitud-pago').on("focusout", "input.handleFocusOutInputNombreDestinatario", (e) => {
+            this.focusOutInputNombreDestinatario(e.currentTarget);
+        });
+        $('#modal-enviar-solicitud-pago').on("keyup", "input.handleKeyUpBuscarDestinatarioPorNombre", (e) => {
+            this.buscarDestinatarioPorNombre(e.currentTarget);
+        });
+        $('#modal-enviar-solicitud-pago').on("change", "select.handleChangeCuenta", (e) => {
+            this.actualizarIdCuentaBancariaDeInput(e.currentTarget);
+        });
+
+        $('#listaDestinatariosEncontrados').on("click", "tr.handleClickSeleccionarDestinatario", (e) => {
+            this.seleccionarDestinatario(e.currentTarget);
+        });
 
         // $('#listaDetalleOrden tbody').on("click", "a.handleClickVerOrdenModal", (e) => {
         //     this.verOrdenModal(e.currentTarget);
@@ -128,6 +161,14 @@ class ListaOrdenView {
 
     }
 
+    limpiarTabla(idElement) {
+        let nodeTbody = document.querySelector("table[id='" + idElement + "'] tbody");
+        if (nodeTbody != null) {
+            while (nodeTbody.children.length > 0) {
+                nodeTbody.removeChild(nodeTbody.lastChild);
+            }
+        }
+    }
 
     vista_extendida() {
         let body = document.getElementsByTagName('body')[0];
@@ -372,6 +413,7 @@ class ListaOrdenView {
         tablaListaOrdenes = $('#listaOrdenes').DataTable({
             'processing': true,
             'destroy': true,
+            'stateSave': true,
             'language': vardataTables[0],
             'buttons': [
                 {
@@ -456,14 +498,14 @@ class ListaOrdenView {
                                 });
                             }
                             if (cantidadRequerimientosConEstadosPorRegularizarOenPausa > 0) {
-                                    return `<center><span class="label label-default" data-id-estado-orden-compra="${row.estado}" data-codigo-orden="${row.codigo}" data-id-orden-compra="${row.id_orden_compra}" >${row.estado_doc}</span></center>`;
-                                
+                                return `<center><span class="label label-default" data-id-estado-orden-compra="${row.estado}" data-codigo-orden="${row.codigo}" data-id-orden-compra="${row.id_orden_compra}" >${row.estado_doc}</span></center>`;
+
 
                             } else {
                                 if (estadoDetalleOrdenHabilitadasActualizar.includes(row.estado) == true) {
 
-                                return `<center><a class="handleClickEditarEstadoOrden" data-id-estado-orden-compra="${row.estado}" data-codigo-orden="${row.codigo}" data-id-orden-compra="${row.id_orden_compra}" style="cursor:pointer;">${row.estado_doc}</a></center>`;
-                                }else{
+                                    return `<center><a class="handleClickEditarEstadoOrden" data-id-estado-orden-compra="${row.estado}" data-codigo-orden="${row.codigo}" data-id-orden-compra="${row.id_orden_compra}" style="cursor:pointer;">${row.estado_doc}</a></center>`;
+                                } else {
                                     return `<center><span class="label label-default" data-id-estado-orden-compra="${row.estado}" data-codigo-orden="${row.codigo}" data-id-orden-compra="${row.id_orden_compra}" >${row.estado_doc}</span></center>`;
 
                                 }
@@ -590,6 +632,7 @@ class ListaOrdenView {
 
                             let containerOpenBrackets = '<div class="btn-group btn-group-xs" role="group" style="margin-bottom: 5px;display: flex;flex-direction: row;flex-wrap: nowrap;">';
                             let btnImprimirOrden = '<button type="button" class="btn btn-sm btn-warning boton handleClickAbrirOrdenPDF" title="Abrir orden PDF"  data-toggle="tooltip" data-placement="bottom" data-id-orden-compra="' + row.id_orden_compra + '"  data-id-pago=""> <i class="fas fa-file-pdf"></i> </button>';
+
                             let btnAnularOrden = '';
                             if (![6, 27, 28].includes(row.estado)) {
                                 if (cantidadRequerimientosConEstadosPorRegularizarOenPausa > 0) {
@@ -602,9 +645,31 @@ class ListaOrdenView {
                             let btnVerDetalle = `<button type="button" class="ver-detalle btn btn-sm btn-primary boton handleCliclVerDetalleOrden" data-toggle="tooltip" data-placement="bottom" title="Ver Detalle" data-id="${row.id_orden_compra}">
                         <i class="fas fa-chevron-down"></i>
                         </button>`;
+
+                            let btnEnviarAPago = '';
+                            if (row.id_condicion == 1) {
+                                btnEnviarAPago = `<button type="button" class="btn btn-sm btn-${(row.estado_pago == 8 ? 'success' : 'info')} boton handleClickModalEnviarOrdenAPago" name="btnEnviarOrdenAPago" title="${(row.estado_pago == 8 ? 'Ya se envió la solicitud de pago' : 'Solicitar pago')}" 
+                                data-id-orden-compra="${row.id_orden_compra ?? ''}" 
+                                data-codigo-orden="${row.codigo ?? ''}" 
+                                data-id-proveedor="${row.id_proveedor ?? ''}" 
+                                data-id-cuenta-principal="${row.id_cta_principal ?? ''}"
+                                data-estado-pago="${row.estado_pago ?? ''}"
+                                data-id-prioridad-pago="${row.id_prioridad_pago ?? ''}"
+                                data-id-tipo-destinatario-pago="${row.id_tipo_destinatario_pago ?? ''}"
+                                data-id-cuenta-contribuyente-pago="${row.id_cta_principal ?? ''}"
+                                data-id-contribuyente-pago="${row.id_contribuyente ?? ''}"
+
+                                data-id-persona-pago="${row.id_persona_pago ?? ''}"
+                                data-id-cuenta-persona-pago="${row.id_cuenta_persona_pago ?? ''}"
+                                data-comentario-pago="${row.comentario_pago ?? ''}" >
+                                    <i class="fas fa-money-check-alt fa-xs"></i>
+                                </button>`;
+
+                            }
+
                             let containerCloseBrackets = '</div>';
 
-                            return (containerOpenBrackets + btnVerDetalle + btnImprimirOrden + btnAnularOrden + containerCloseBrackets);
+                            return (containerOpenBrackets + btnVerDetalle + btnImprimirOrden + btnEnviarAPago + btnAnularOrden + containerCloseBrackets);
 
                         }
                 }
@@ -964,7 +1029,7 @@ class ListaOrdenView {
                         if (cantidadRequerimientosConEstadosPorRegularizarOenPausa > 0) {
                             return `<span class="" data-id-estado-detalle-orden-compra="${row.id_detalle_orden_estado}" data-id-orden-compra="${row.detalle_orden_id_orden_compra}" data-id-detalle-orden-compra="${row.detalle_orden_id_detalle_orden}" data-codigo-item="${row.alm_prod_codigo}" style="cursor: default;">${row.detalle_orden_estado}</span>`;
                         } else {
-                            
+
                             if (estadoDetalleOrdenHabilitadasActualizar.includes(row.id_detalle_orden_estado) == true) {
                                 return `<a class="handleClickEditarEstadoItemOrden" data-id-estado-detalle-orden-compra="${row.id_detalle_orden_estado}" data-id-orden-compra="${row.detalle_orden_id_orden_compra}" data-id-detalle-orden-compra="${row.detalle_orden_id_detalle_orden}" data-codigo-item="${row.alm_prod_codigo}" style="cursor: pointer;" title="Cambiar Estado de Item">${row.detalle_orden_estado}</a>`;
                             } else {
@@ -994,7 +1059,7 @@ class ListaOrdenView {
 
 
 
-                        return (containerOpenBrackets + btnImprimirOrden + btnDocumentosVinculados  + containerCloseBrackets);
+                        return (containerOpenBrackets + btnImprimirOrden + btnDocumentosVinculados + containerCloseBrackets);
 
 
 
@@ -1337,7 +1402,7 @@ class ListaOrdenView {
                                 }
 
                             } else {
-                                
+
                                 $("#wrapper-okc").LoadingOverlay("hide", true);
 
                                 Swal.fire(
@@ -1346,8 +1411,8 @@ class ListaOrdenView {
                                     res.tipo_estado
                                 );
 
-                                if(res.status_migracion_softlink != null){
-                                        
+                                if (res.status_migracion_softlink != null) {
+
                                     Lobibox.notify(res.status_migracion_softlink.tipo, {
                                         title: false,
                                         size: 'mini',
@@ -1356,7 +1421,7 @@ class ListaOrdenView {
                                         delayIndicator: false,
                                         msg: res.status_migracion_softlink.mensaje
                                     });
-                
+
                                 }
                                 console.log(res);
                             }
@@ -1419,5 +1484,725 @@ class ListaOrdenView {
         )
         tableDocumentosVinculados.childNodes[0].childNodes[0].hidden = true;
     }
+
+
+
+    // ###============  Inicia enviar orden a pago ============###
+
+    limpiarFormEnviarOrdenAPago() {
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_proveedor']").value = '';
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_contribuyente']").value = '';
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_contribuyente']").value = '';
+
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_persona']").value = '';
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_persona']").value = '';
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='tipo_documento_identidad']").value = '';
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='nro_documento']").value = '';
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='nombre_destinatario']").value = '';
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] textarea[name='comentario']").value = '';
+        this.limpiarTabla('listaDestinatariosEncontrados');
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] span[id='cantidadDestinatariosEncontrados']").textContent = 0;
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_contribuyente']").value = '';
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_persona']").value = '';
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']").value = "";
+        let selectCuenta = document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']");
+        if (selectCuenta != null) {
+            while (selectCuenta.children.length > 0) {
+                selectCuenta.removeChild(selectCuenta.lastChild);
+            }
+        }
+    }
+
+    restablecerValoresPorDefectoFormEnviarOrdenAPago() {
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_prioridad']").value = 1;
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_tipo_destinatario']").value = 2;
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='nro_documento']").setAttribute("disabled", true);
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='nombre_destinatario']").setAttribute("disabled", true);
+        tempDataProveedorParaPago = [];
+
+    }
+
+    modalEnviarOrdenAPago(obj) {
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] span[id='codigo_orden']").textContent = '';
+        this.limpiarFormEnviarOrdenAPago();
+        this.restablecerValoresPorDefectoFormEnviarOrdenAPago();
+        $('#modal-enviar-solicitud-pago').modal({
+            show: true,
+            backdrop: 'static'
+        });
+
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] span[id='codigo_orden']").textContent = obj.dataset.codigoOrden;
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_orden_compra']").value = obj.dataset.idOrdenCompra;
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_proveedor']").value = obj.dataset.idProveedor;
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_contribuyente']").value = obj.dataset.idCuentaPrincipal;
+
+        if (obj.dataset.estadoPago == 8) {
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_prioridad']").value = obj.dataset.idPrioridadPago;
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_tipo_destinatario']").value = obj.dataset.idTipoDestinatarioPago;
+
+            if (obj.dataset.idTipoDestinatarioPago == 1) {
+                document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='nro_documento']").removeAttribute("disabled");
+                document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='nombre_destinatario']").removeAttribute("disabled");
+                document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_persona']").value = obj.dataset.idPersonaPago;
+                document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_persona']").value = obj.dataset.idCuentaPersonaPago;
+                document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_contribuyente']").value = '';
+                document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_contribuyente']").value = '';
+                obtenerPersona(obj.dataset.idPersonaPago);
+                obtenerCuentasBancariasPersona(obj.dataset.idPersonaPago);
+
+
+            } else if (obj.dataset.idTipoDestinatarioPago == 2) {
+                document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_contribuyente']").value = obj.dataset.idContribuyentePago;
+                document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_contribuyente']").value = obj.dataset.idCuentaContribuyentePago;
+                document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_persona']").value = '';
+                document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_persona']").value = '';
+
+                obtenerContribuyente(obj.dataset.idContribuyentePago);
+                obtenerCuentasBancariasContribuyente(obj.dataset.idContribuyentePago);
+            }
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] textarea[name='comentario']").value = obj.dataset.comentarioPago != null ? obj.dataset.comentarioPago : '';
+        } else {
+            this.obtenerContribuyentePorIdProveedor(obj.dataset.idProveedor)
+        }
+
+    }
+
+    getContribuyentePorIdProveedor(id) {
+        return new Promise(function (resolve, reject) {
+            $.ajax({
+                type: 'GET',
+                url: `obtener-contribuyente-por-id-proveedor/${id}`,
+                dataType: 'JSON',
+                beforeSend: data => {
+                    $("#modal-enviar-solicitud-pago .modal-content").LoadingOverlay("show", {
+                        imageAutoResize: true,
+                        progress: true,
+                        imageColor: "#3c8dbc"
+                    });
+                },
+                success(response) {
+                    $("#modal-enviar-solicitud-pago .modal-content").LoadingOverlay("hide", true);
+                    resolve(response);
+                },
+                error: function (err) {
+                    $("#modal-enviar-solicitud-pago .modal-content").LoadingOverlay("hide", true);
+                    reject(err)
+                }
+            });
+        });
+    }
+
+
+    obtenerContribuyentePorIdProveedor(idProveedor) {
+        this.getContribuyentePorIdProveedor(idProveedor).then((res) => {
+            // console.log(res);
+            if (res.tipo_estado == 'success') {
+                tempDataProveedorParaPago = res.data;
+                this.llenarInputsDeDestinatario(res.data);
+            } else {
+                Lobibox.notify(res.tipo_estado, {
+                    title: false,
+                    size: 'mini',
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    msg: res.mensaje
+                });
+            }
+        }).catch(function (err) {
+            console.log(err)
+        })
+    }
+
+    llenarInputsDeDestinatario(data) {
+        // console.log(data);
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_tipo_destinatario']").value = 2;
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_contribuyente']").value = data.id_contribuyente != '' && data.id_contribuyente != null ? data.id_contribuyente : '';
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_persona']").value = '';
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='tipo_documento_identidad']").value = data.tipo_documento_identidad != null ? data.tipo_documento_identidad.descripcion : '';
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='nro_documento']").value = data.nro_documento != '' && data.nro_documento != null ? data.nro_documento : '';
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='nombre_destinatario']").value = data.razon_social != null && data.razon_social != '' ? data.razon_social : '';
+
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_persona']").value = '';
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']").value = "";
+        let selectCuenta = document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']");
+        if (selectCuenta != null) {
+            while (selectCuenta.children.length > 0) {
+                selectCuenta.removeChild(selectCuenta.lastChild);
+            }
+        }
+
+
+
+        if (data.id_contribuyente > 0) {
+            obtenerCuentasBancariasContribuyente(data.id_contribuyente);
+        }
+    }
+
+    // obtenerCuentasBancariasContribuyente(id_contribuyente) { // esta función es distinta a la de requerimiento de pago
+    //     // console.log(id_contribuyente);
+
+    //     if (id_contribuyente > 0) {
+    //         $.ajax({
+    //             type: 'GET',
+    //             url: 'obtener-cuenta-contribuyente/' + id_contribuyente,
+    //             dataType: 'JSON',
+    //         }).done(function (response) {
+    //             // console.log(response);
+    //             if (response.tipo_estado == 'success') {
+
+    //                 if (response.data.length > 0) {
+
+    //                     // llenar cuenta bancaria
+    //                     let idCuentePorDefecto = document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_contribuyente']").value;
+    //                     console.log(idCuentePorDefecto);
+
+    //                     document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']").value = "";
+    //                     let selectCuenta = document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']");
+    //                     if (selectCuenta != null) {
+    //                         while (selectCuenta.children.length > 0) {
+    //                             selectCuenta.removeChild(selectCuenta.lastChild);
+    //                         }
+    //                     }
+    //                     // console.log(response.data);
+    //                     (response.data).forEach(element => {
+    //                         document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']").insertAdjacentHTML('beforeend', `
+    //                         <option 
+    //                             data-nro-cuenta="${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : ''}" 
+    //                             data-nro-cci="${element.nro_cuenta_interbancaria != null && element.nro_cuenta_interbancaria != "" ? element.nro_cuenta_interbancaria : ''}" 
+    //                             data-tipo-cuenta="${element.tipo_cuenta != null ? element.tipo_cuenta.descripcion : ''}" 
+    //                             data-banco="${element.banco != null && element.banco.contribuyente != null ? element.banco.contribuyente.razon_social : ''}" 
+    //                             data-moneda="${element.moneda != null ? element.moneda.descripcion : ''}" 
+    //                             value="${element.id_cuenta_contribuyente}" ${element.id_cuenta_contribuyente == idCuentePorDefecto ? 'selected' : ''}
+    //                             >${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : (element.nro_cuenta_interbancaria != null && element.nro_cuenta_interbancaria != "" ? (element.nro_cuenta_interbancaria + " (CCI)") : "")}</option>
+    //                         `);
+    //                     });
+    //                     if (idCuentePorDefecto == null || idCuentePorDefecto == '') {
+    //                         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_contribuyente']").value = document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']").value;
+    //                     }
+
+    //                 } else {
+    //                     Lobibox.notify('error', {
+    //                         size: "mini",
+    //                         rounded: true,
+    //                         sound: false,
+    //                         delayIndicator: false,
+    //                         msg: 'Hubo un problema. no se encontró un id cuenta valido'
+    //                     });
+    //                 }
+
+    //             } else {
+    //                 console.log(response);
+
+    //                 Lobibox.notify(response.tipo_estado, {
+    //                     size: "mini",
+    //                     rounded: true,
+    //                     sound: false,
+    //                     delayIndicator: false,
+    //                     msg: response.mensaje
+    //                 });
+    //             }
+
+    //         }).always(function () {
+
+    //         }).fail(function (jqXHR) {
+    //             Lobibox.notify('error', {
+    //                 size: "mini",
+    //                 rounded: true,
+    //                 sound: false,
+    //                 delayIndicator: false,
+    //                 msg: 'Hubo un problema. Por favor actualice la página e intente de nuevo.'
+    //             });
+    //             console.log('Error devuelto: ' + jqXHR.responseText);
+    //         });
+    //     } else {
+    //         Lobibox.notify('error', {
+    //             size: "mini",
+    //             rounded: true,
+    //             sound: false,
+    //             delayIndicator: false,
+    //             msg: 'Hubo un problema. no se encontró un id persona valido para obtener una respuesta'
+    //         });
+    //     }
+    // }
+
+    changeTipoDestinatario(obj) {
+        if (obj.value == 1) { // tipo persona
+            this.limpiarFormEnviarOrdenAPago();
+
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] button[id='btnAgregarNuevoDestiantario']").removeAttribute("disabled");
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='nro_documento']").removeAttribute("disabled");
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='nombre_destinatario']").removeAttribute("disabled");
+        } else if (obj.value == 2) { // tipo contribuyente
+
+            this.limpiarFormEnviarOrdenAPago();
+
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] button[id='btnAgregarNuevoDestiantario']").setAttribute("disabled", true);
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='nro_documento']").setAttribute("disabled", true);
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='nombre_destinatario']").setAttribute("disabled", true);
+            this.llenarInputsDeDestinatario(tempDataProveedorParaPago);
+        }
+
+    }
+
+    validarFormularioEnvioOrdenAPago() {
+        let continuar = true;
+        if ((document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_proveedor']").value == '' &&
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_contribuyente']").value == '') &&
+            (document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_persona']").value == '')
+        ) {
+            continuar = false;
+        }
+
+        return continuar;
+    }
+
+    registrarSolicitudDePago() {
+        console.log('enviar a pago');
+
+        if (this.validarFormularioEnvioOrdenAPago()) {
+            let formData = new FormData($('#form-enviar_solicitud_pago')[0]);
+            $.ajax({
+                type: 'POST',
+                url: 'registrar-solicitud-de-pago',
+                data: formData,
+                processData: false,
+                contentType: false,
+                dataType: 'JSON',
+                beforeSend: (data) => {
+
+                    var customElement = $("<div>", {
+                        "css": {
+                            "font-size": "20px",
+                            "text-align": "center",
+                            "position": "absolute",
+                            "overflow": "auto",
+                            "top": "50%"
+                        },
+                        "class": "your-custom-class",
+                        "text": "Enviando Solicitud de pago"
+                    });
+
+                    $('#modal-enviar-solicitud-pago .modal-content').LoadingOverlay("show", {
+                        imageAutoResize: true,
+                        progress: true,
+                        custom: customElement,
+                        imageColor: "#3c8dbc"
+                    });
+                },
+                success: (response) => {
+                    $('#modal-enviar-solicitud-pago .modal-content').LoadingOverlay("hide", true);
+                    console.log(response);
+                    if (response.tipo_estado == 'success') {
+
+                        Lobibox.notify('success', {
+                            title: false,
+                            size: 'mini',
+                            rounded: true,
+                            sound: false,
+                            delayIndicator: false,
+                            msg: response.mensaje
+                        });
+                        $('#modal-enviar-solicitud-pago').modal('hide');
+
+                        this.tipoVistaPorCabecera();
+
+                    } else {
+                        $('#modal-enviar-solicitud-pago .modal-content').LoadingOverlay("hide", true);
+                        Swal.fire(
+                            '',
+                            response.mensaje,
+                            'error'
+                        );
+                    }
+                },
+                statusCode: {
+                    404: function () {
+                        $('#modal-enviar-solicitud-pago .modal-content').LoadingOverlay("hide", true);
+                        Swal.fire(
+                            'Error 404',
+                            'Lo sentimos hubo un problema con el servidor, la ruta a la que se quiere acceder para guardar no esta disponible, por favor vuelva a intentarlo más tarde.',
+                            'error'
+                        );
+                    }
+                },
+                fail: (jqXHR, textStatus, errorThrown) => {
+                    $('#modal-enviar-solicitud-pago .modal-content').LoadingOverlay("hide", true);
+                    Swal.fire(
+                        '',
+                        'Lo sentimos hubo un error en el servidor al intentar enviar la orden a pago, por favor vuelva a intentarlo',
+                        'error'
+                    );
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                }
+            });
+        } else {
+            Swal.fire(
+                '',
+                'Por favor ingrese los datos faltantes en el formulario',
+                'warning'
+            );
+        }
+    }
+
+    mostrarInfoAdicionalCuentaSeleccionada() {
+        document.querySelector("div[id='modal-info-adicional-cuenta-seleccionada'] div[class='modal-body']").innerHTML = '';
+        let selectCuenta = document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']");
+        if (selectCuenta.value > 0) {
+            $('#modal-info-adicional-cuenta-seleccionada').modal({
+                show: true
+            });
+            document.querySelector("div[id='modal-info-adicional-cuenta-seleccionada'] div[class='modal-body']").insertAdjacentHTML('beforeend', `<div>
+            
+            <dl>
+                <dt>Banco</dt>
+                <dd>${selectCuenta.options[(selectCuenta.selectedIndex)].dataset.banco}</dd>
+                <dt>Tipo Cuenta</dt>
+                <dd>${selectCuenta.options[(selectCuenta.selectedIndex)].dataset.tipoCuenta}</dd>
+                <dt>Moneda</dt>
+                <dd>${selectCuenta.options[(selectCuenta.selectedIndex)].dataset.moneda}</dd>
+                <dt>Nro cuenta</dt>
+                <dd>${selectCuenta.options[(selectCuenta.selectedIndex)].dataset.nroCuenta}</dd>
+                <dt>Nro CCI</dt>
+                <dd>${selectCuenta.options[(selectCuenta.selectedIndex)].dataset.nroCci}</dd>
+            </dl>
+            </div>`);
+        } else {
+            Swal.fire(
+                'Información de cuenta',
+                'Debe seleccionar una persona o contribuyente que cuente con información de cuenta bancaria',
+                'info'
+            );
+        }
+    }
+
+    buscarDestinatarioPorNumeroDeDocumento(obj) {
+        let idTipoDestinatario = parseInt(document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_tipo_destinatario']").value);
+        if (idTipoDestinatario == 1) {
+
+            let nroDocumento = (obj.value).trim();
+            if (nroDocumento.length > 0 && idTipoDestinatario > 0) {
+                $.ajax({
+                    type: 'POST',
+                    url: 'obtener-destinatario-por-nro-documento',
+                    data: { 'nroDocumento': nroDocumento, 'idTipoDestinatario': idTipoDestinatario },
+                    dataType: 'JSON',
+                    beforeSend: data => {
+
+                        $("input[name='nombre_destinatario']").LoadingOverlay("show", {
+                            imageAutoResize: true,
+                            progress: true,
+                            imageColor: "#3c8dbc"
+                        });
+                    },
+                    success: (response) => {
+                        $("input[name='nombre_destinatario']").LoadingOverlay("hide", true);
+
+
+                        if (response.tipo_estado == 'success') {
+                            if (response.data != null && response.data.length > 0) {
+                                if (idTipoDestinatario == 1) { // persona
+                                    document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='nombre_destinatario']").value = response.data[0]['nombre_completo'];
+                                    document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_persona']").value = response.data[0]['id_persona'];
+                                    if (response.data[0]['tipo_documento_identidad'] != null) {
+                                        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='tipo_documento_identidad']").value = (response.data[0]['tipo_documento_identidad']['descripcion']) != null ? response.data[0]['tipo_documento_identidad']['descripcion'] : '';
+                                    }
+
+                                    // llenar cuenta bancaria
+                                    document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']").value = "";
+                                    let selectCuenta = document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']");
+                                    if (selectCuenta != null) {
+                                        while (selectCuenta.children.length > 0) {
+                                            selectCuenta.removeChild(selectCuenta.lastChild);
+                                        }
+                                    }
+                                    (response.data[0].cuenta_persona).forEach(element => {
+                                        document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']").insertAdjacentHTML('beforeend', `
+                                        <option 
+                                            data-nro-cuenta="${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : ''}" 
+                                            data-nro-cci="${element.nro_cci != null && element.nro_cci != "" ? element.nro_cci : ''}" 
+                                            data-tipo-cuenta="${element.tipo_cuenta != null ? element.tipo_cuenta.descripcion : ''}" 
+                                            data-banco="${element.banco != null && element.banco.contribuyente != null ? element.banco.contribuyente.razon_social : ''}" 
+                                            data-moneda="${element.moneda != null ? element.moneda.descripcion : ''}" 
+                                            value="${element.id_cuenta_bancaria}"
+                                            >${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : (element.nro_cci != null && element.nro_cci != "" ? (element.nro_cci + " (CCI)") : "")}</option>
+                                        `);
+                                    });
+
+
+                                } else if (idTipoDestinatario == 2) { // contribuyente
+                                    document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='nombre_destinatario']").value = response.data[0]['razon_social'];
+                                    document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_contribuyente']").value = response.data[0]['id_contribuyente'];
+                                    if (response.data[0]['tipo_documento_identidad'] != null) {
+                                        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='tipo_documento_identidad']").value = (response.data[0]['tipo_documento_identidad']['descripcion']) != null ? response.data[0]['tipo_documento_identidad']['descripcion'] : '';
+                                    }
+                                    // llenar cuenta bancaria
+                                    document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']").value = "";
+                                    let selectCuenta = document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']");
+                                    if (selectCuenta != null) {
+                                        while (selectCuenta.children.length > 0) {
+                                            selectCuenta.removeChild(selectCuenta.lastChild);
+                                        }
+                                    }
+                                    (response.data[0].cuenta_contribuyente).forEach(element => {
+                                        document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']").insertAdjacentHTML('beforeend', `
+                                        <option 
+                                            data-nro-cuenta="${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : ''}" 
+                                            data-nro-cci="${element.nro_cuenta_interbancaria != null && element.nro_cuenta_interbancaria != "" ? element.nro_cuenta_interbancaria : ''}" 
+                                            data-tipo-cuenta="${element.tipo_cuenta != null ? element.tipo_cuenta.descripcion : ''}" 
+                                            data-banco="${element.banco != null && element.banco.contribuyente != null ? element.banco.contribuyente.razon_social : ''}" 
+                                            data-moneda="${element.moneda != null ? element.moneda.descripcion : ''}" 
+                                            value="${element.id_cuenta_contribuyente}"
+                                            >${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : (element.nro_cuenta_interbancaria != null && element.nro_cuenta_interbancaria != "" ? (element.nro_cuenta_interbancaria + " (CCI)") : "")}</option>
+                                        `);
+
+                                    });
+                                }
+                                this.listarEnResultadoDestinatario(response.data, idTipoDestinatario);
+                            } else {
+                                document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_persona']").value = "";
+                                document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_contribuyente']").value = "";
+                                document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='nombre_destinatario']").value = "";
+                                document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='tipo_documento_identidad']").value = "";
+                                document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_persona']").value = "";
+                                document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_contribuyente']").value = "";
+                                document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']").value = "";
+
+                                let selectCuenta = document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']");
+                                if (selectCuenta != null) {
+                                    while (selectCuenta.children.length > 0) {
+                                        selectCuenta.removeChild(selectCuenta.lastChild);
+                                    }
+                                }
+
+                            }
+                            Lobibox.notify(response.tipo_estado, {
+                                title: false,
+                                size: 'mini',
+                                rounded: true,
+                                sound: false,
+                                delayIndicator: false,
+                                msg: response.mensaje
+                            });
+                        } else {
+                            document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_persona']").value = "";
+                            document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_contribuyente']").value = "";
+                            document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='nombre_destinatario']").value = "";
+                            document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='tipo_documento_identidad']").value = "";
+                            document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']").value = "";
+                            document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_persona']").value = "";
+                            document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_contribuyente']").value = "";
+
+                            let selectCuenta = document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']");
+                            if (selectCuenta != null) {
+                                while (selectCuenta.children.length > 0) {
+                                    selectCuenta.removeChild(selectCuenta.lastChild);
+                                }
+                            }
+                        }
+
+                    }
+                }).fail((jqXHR, textStatus, errorThrown) => {
+                    $("input[name='nombre_destinatario']").LoadingOverlay("hide", true);
+
+                    Swal.fire(
+                        '',
+                        'Hubo un problema al intentar obtener la data, por favor vuelva a intentarlo.',
+                        'error'
+                    );
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                });
+            }
+        }
+    }
+
+    listarEnResultadoDestinatario(data, idTipoDestinatario) {
+
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] span[id='cantidadDestinatariosEncontrados']").textContent = data.length;
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] table[id='listaDestinatariosEncontrados']").innerHTML = '';
+        data.forEach(element => {
+            if (idTipoDestinatario == 1) {
+                document.querySelector("div[id='modal-enviar-solicitud-pago'] table[id='listaDestinatariosEncontrados']").insertAdjacentHTML('beforeend', `
+                <tr class="handleClickSeleccionarDestinatario" style="cursor:pointer;" 
+                data-id-persona="${element.id_persona != null ? element.id_persona : ''}"
+                data-id-contribuyente="${element.id_contribuyente != null ? element.id_contribuyente : ''}"
+                data-tipo-documento-identidad="${element.tipo_documento_identidad != null ? element.tipo_documento_identidad.descripcion : ''}"
+                data-numero-documento="${element.nro_documento != null ? element.nro_documento : ''}"
+                data-nombre-destinatario="${element.nombre_completo != null ? element.nombre_completo : ''}"
+                data-cuenta="${JSON.stringify(element.cuenta_persona)}"
+                >
+                <td>${element.tipo_documento_identidad != null ? element.tipo_documento_identidad.descripcion : ''}</td>
+                <td>${element.nro_documento != null ? element.nro_documento : ''}</td>
+                <td>${element.nombre_completo != null ? element.nombre_completo : ''}</td>
+                <td>${element.cuenta_persona.length > 0 ? '<span class="label label-success">Con cuenta</span>' : '<span class="label label-danger">Sin cuenta</span>'}</td>
+
+                </tr>
+                `);
+            }
+            if (idTipoDestinatario == 2) {
+                document.querySelector("div[id='modal-enviar-solicitud-pago'] table[id='listaDestinatariosEncontrados']").insertAdjacentHTML('beforeend', `
+                <tr class="handleClickSeleccionarDestinatario" style="cursor:pointer;"
+                data-id-persona="${element.id_persona != null ? element.id_persona : ''}"
+                data-id-contribuyente="${element.id_contribuyente != null ? element.id_contribuyente : ''}"
+                data-tipo-documento-identidad="${element.tipo_documento_identidad != null ? element.tipo_documento_identidad.descripcion : ''}"
+                data-numero-documento="${element.nro_documento != null ? element.nro_documento : ''}"
+                data-nombre-destinatario="${element.razon_social != null ? element.razon_social : ''}"
+                data-cuenta="${JSON.stringify(element.cuenta_contribuyente)}"
+                >
+                <td>${element.tipo_documento_identidad != null ? element.tipo_documento_identidad.descripcion : ''}</td>
+                <td>${element.nro_documento != null ? element.nro_documento : ''}</td>
+                <td>${element.razon_social ? element.razon_social : ''}</td>
+                <td>${element.cuenta_contribuyente.length > 0 ? '<span class="label label-success">Con cuenta</span>' : '<span class="label label-danger">Sin cuenta</span>'}</td>
+
+
+                </tr>
+                `);
+            }
+        });
+    }
+
+
+    focusInputNombreDestinatario(obj) {
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] div[id='resultadoDestinatario']").classList.remove("oculto");
+
+    }
+    focusOutInputNombreDestinatario(obj) {
+        setTimeout(() => {
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] div[id='resultadoDestinatario']").classList.add("oculto");
+        }, 500);
+    }
+
+    actualizarIdCuentaBancariaDeInput(obj) {
+        let idTipoDestinatario = parseInt(document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_tipo_destinatario']").value);
+        if (obj.value > 0) {
+            if (idTipoDestinatario == 1) {
+                document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_persona']").value = obj.value;
+            } else if (idTipoDestinatario == 2) {
+                document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_contribuyente']").value = obj.value;
+
+            } else {
+                Swal.fire(
+                    '',
+                    'Hubo un problema al intentar obtener el tipo de destinatario, por favor vuelva a intentarlo refrescando la página',
+                    'error'
+                );
+            }
+        } else {
+            Swal.fire(
+                '',
+                'Hubo un problema al intentar obtener el id de la cuenta seleccionada, por favor vuelva a intentarlo refrescando la página',
+                'error'
+            );
+        }
+    }
+    buscarDestinatarioPorNombre(obj) {
+        let nombreDestinatario = obj.value;
+        let idTipoDestinatario = parseInt(document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_tipo_destinatario']").value);
+
+        if (idTipoDestinatario == 1) {
+            if (!(nombreDestinatario).trim().length == 0) {
+                document.querySelector("div[id='modal-enviar-solicitud-pago'] div[id='resultadoDestinatario']").classList.remove("oculto");
+                $.ajax({
+                    type: 'POST',
+                    url: 'obtener-destinatario-por-nombre',
+                    data: { 'nombreDestinatario': nombreDestinatario, 'idTipoDestinatario': idTipoDestinatario },
+                    dataType: 'JSON',
+                    beforeSend: data => {
+
+                        $("input[name='nro_documento']").LoadingOverlay("show", {
+                            imageAutoResize: true,
+                            progress: true,
+                            imageColor: "#3c8dbc"
+                        });
+                        $("div[id='resultadoDestinatario']").LoadingOverlay("show", {
+                            imageAutoResize: true,
+                            progress: true,
+                            imageColor: "#3c8dbc"
+                        });
+                    },
+                    success: (response) => {
+                        $("input[name='nro_documento']").LoadingOverlay("hide", true);
+                        $("div[id='resultadoDestinatario']").LoadingOverlay("hide", true);
+
+
+                        if (response.tipo_estado == 'success') {
+                            if (response.data != null && response.data.length > 0) {
+                                this.listarEnResultadoDestinatario(response.data, idTipoDestinatario);
+
+                            }
+                        }
+
+                    }
+                }).fail((jqXHR, textStatus, errorThrown) => {
+                    $("input[name='nro_documento']").LoadingOverlay("hide", true);
+                    $("div[id='resultadoDestinatario']").LoadingOverlay("hide", true);
+
+                    Swal.fire(
+                        '',
+                        'Hubo un problema al intentar obtener la data, por favor vuelva a intentarlo.',
+                        'error'
+                    );
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                });
+
+            }
+
+            if ((nombreDestinatario).trim().length == 0 && (document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_persona']").value > 0 || document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_contribuyente']").value > 0)) {
+                this.limpiarInputDestinatario();
+            }
+        }
+
+    }
+
+    limpiarInputDestinatario() {
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_persona']").value = "";
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_contribuyente']").value = "";
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='nombre_destinatario']").value = "";
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='nro_documento']").value = "";
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='tipo_documento_identidad']").value = "";
+
+        this.limpiarTabla("listaDestinatariosEncontrados");
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] span[id='cantidadDestinatariosEncontrados']").textContent = 0;
+
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_persona']").value = "";
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_contribuyente']").value = "";
+        let selectCuenta = document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']");
+        if (selectCuenta != null) {
+            while (selectCuenta.children.length > 0) {
+                selectCuenta.removeChild(selectCuenta.lastChild);
+            }
+        }
+
+    }
+
+    seleccionarDestinatario(obj) {
+
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_persona']").value = obj.dataset.idPersona;
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_contribuyente']").value = obj.dataset.idContribuyente;
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='nro_documento']").value = obj.dataset.numeroDocumento;
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='nombre_destinatario']").value = obj.dataset.nombreDestinatario;
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='tipo_documento_identidad']").value = obj.dataset.tipoDocumentoIdentidad;
+
+        if (obj.dataset.idPersona > 0) {
+            obtenerCuentasBancariasPersona(obj.dataset.idPersona);
+        } else if (obj.dataset.idContribuyente > 0) {
+            obtenerCuentasBancariasContribuyente(obj.dataset.idContribuyente);
+        } else {
+
+            Swal.fire(
+                'Obtener cuenta bancaria',
+                'Hubo un problema. no se encontró un id persona o id contribuyente valido para poder obtener las cuentas bancarias',
+                'error'
+            );
+
+        }
+    }
+    // ###============ Fin enviar orden a pago ============###
 
 }
