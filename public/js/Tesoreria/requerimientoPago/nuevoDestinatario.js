@@ -1,6 +1,12 @@
+var nombreModalPadre= ''
+
 function modalNuevoDestinatario() {
 
-    let idTipoDestinatario = document.querySelector("div[id='modal-requerimiento-pago'] select[name='id_tipo_destinatario']").value;
+    if(document.querySelector("div[class='modal fade in']").getAttribute("id")){
+        nombreModalPadre="div[id='"+document.querySelector("div[class='modal fade in']").getAttribute("id")+"']";
+    }
+
+    let idTipoDestinatario = document.querySelector(nombreModalPadre+" select[name='id_tipo_destinatario']").value;
     if (idTipoDestinatario == 1) { // tipo persona
         $("#modal-nueva-persona").modal({
             show: true
@@ -46,6 +52,33 @@ $("#form-nuevo-contribuyente").on("submit", function (e) {
     }
 });
 
+function obtenerContribuyente(id) {
+
+    $.ajax({
+        type: 'GET',
+        url: 'obtener-contribuyente/'+id,
+        dataType: 'JSON',
+    }).done(function (response) {
+        // console.log(response);
+
+        document.querySelector(nombreModalPadre+" input[name='tipo_documento_identidad']").value = response.tipo_documento_identidad.descripcion;
+        document.querySelector(nombreModalPadre+" input[name='nro_documento']").value = response.nro_documento;
+        document.querySelector(nombreModalPadre+" input[name='nombre_destinatario']").value = response.razon_social;
+
+    }).always(function () {
+    
+    }).fail(function (jqXHR) {
+        Lobibox.notify('error', {
+            size: "mini",
+            rounded: true,
+            sound: false,
+            delayIndicator: false,
+            msg: 'Hubo un problema. Por favor actualice la página e intente de nuevo.'
+        });
+        console.log('Error devuelto: ' + jqXHR.responseText);
+    });
+}
+
 function guardarContribuyente(data) {
     const $button = $("#submit_nuevo_contribuyente");
     $button.prop('disabled', true);
@@ -67,10 +100,20 @@ function guardarContribuyente(data) {
         if (response.tipo_estado == 'success') {
             $('#modal-nuevo-contribuyente').modal('hide');
             if (response.id_contribuyente > 0) {
-                document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_contribuyente']").value = response.id_contribuyente;
-                document.querySelector("div[id='modal-requerimiento-pago'] input[name='tipo_documento_identidad']").value = document.querySelector("div[id='modal-nuevo-contribuyente'] select[name='id_doc_identidad']").options[document.querySelector("div[id='modal-nuevo-contribuyente'] select[name='id_doc_identidad']").selectedIndex].textContent;
-                document.querySelector("div[id='modal-requerimiento-pago'] input[name='nro_documento']").value = document.querySelector("div[id='modal-nuevo-contribuyente'] input[name='nuevo_nro_documento']").value;
-                document.querySelector("div[id='modal-requerimiento-pago'] input[name='nombre_destinatario']").value = document.querySelector("div[id='modal-nuevo-contribuyente'] input[name='nuevo_razon_social']").value;
+                document.querySelector(nombreModalPadre+" input[name='id_contribuyente']").value = response.id_contribuyente;
+                document.querySelector(nombreModalPadre+" input[name='tipo_documento_identidad']").value = document.querySelector("div[id='modal-nuevo-contribuyente'] select[name='id_doc_identidad']").options[document.querySelector("div[id='modal-nuevo-contribuyente'] select[name='id_doc_identidad']").selectedIndex].textContent;
+                document.querySelector(nombreModalPadre+" input[name='nro_documento']").value = document.querySelector("div[id='modal-nuevo-contribuyente'] input[name='nuevo_nro_documento']").value;
+                document.querySelector(nombreModalPadre+" input[name='nombre_destinatario']").value = document.querySelector("div[id='modal-nuevo-contribuyente'] input[name='nuevo_razon_social']").value;
+
+                // limpiar cuenta bancaria
+                document.querySelector(nombreModalPadre+" input[name='id_cuenta_contribuyente']").value='';
+                document.querySelector(nombreModalPadre+" select[name='id_cuenta']").value = "";
+                let selectCuenta = document.querySelector(nombreModalPadre+" select[name='id_cuenta']");
+                if (selectCuenta != null) {
+                    while (selectCuenta.children.length > 0) {
+                        selectCuenta.removeChild(selectCuenta.lastChild);
+                    }
+                }
             } else {
                 Lobibox.notify('error', {
                     size: "mini",
@@ -129,6 +172,32 @@ $("#form-nueva-persona").on("submit", function (e) {
     }
 });
 
+function obtenerPersona(id) {
+
+    $.ajax({
+        type: 'GET',
+        url: 'obtener-persona/'+id,
+        dataType: 'JSON',
+    }).done(function (response) {
+        // console.log(response);
+
+        document.querySelector(nombreModalPadre+" input[name='tipo_documento_identidad']").value = response.tipo_documento_identidad.descripcion;
+        document.querySelector(nombreModalPadre+" input[name='nro_documento']").value = response.nro_documento;
+        document.querySelector(nombreModalPadre+" input[name='nombre_destinatario']").value = response.nombre_completo;
+
+    }).always(function () {
+    
+    }).fail(function (jqXHR) {
+        Lobibox.notify('error', {
+            size: "mini",
+            rounded: true,
+            sound: false,
+            delayIndicator: false,
+            msg: 'Hubo un problema. Por favor actualice la página e intente de nuevo.'
+        });
+        console.log('Error devuelto: ' + jqXHR.responseText);
+    });
+}
 function guardarPersona(data) {
     const $button = $("#submit_nueva_persona");
     $button.prop('disabled', true);
@@ -150,10 +219,19 @@ function guardarPersona(data) {
         if (response.tipo_estado == 'success') {
             $('#modal-nueva-persona').modal('hide');
             if (response.id_persona > 0) {
-                document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_persona']").value = response.id_persona;
-                document.querySelector("div[id='modal-requerimiento-pago'] input[name='tipo_documento_identidad']").value = document.querySelector("div[id='modal-nueva-persona'] select[name='id_doc_identidad']").options[document.querySelector("div[id='modal-nueva-persona'] select[name='id_doc_identidad']").selectedIndex].textContent;
-                document.querySelector("div[id='modal-requerimiento-pago'] input[name='nro_documento']").value = document.querySelector("div[id='modal-nueva-persona'] input[name='nuevo_nro_documento']").value;
-                document.querySelector("div[id='modal-requerimiento-pago'] input[name='nombre_destinatario']").value = (document.querySelector("div[id='modal-nueva-persona'] input[name='nuevo_nombres']").value).concat(' ',document.querySelector("div[id='modal-nueva-persona'] input[name='nuevo_apellido_paterno']").value).concat(' ',document.querySelector("div[id='modal-nueva-persona'] input[name='nuevo_apellido_materno']").value ) ;
+                document.querySelector(nombreModalPadre+" input[name='id_persona']").value = response.id_persona;
+                document.querySelector(nombreModalPadre+" input[name='tipo_documento_identidad']").value = document.querySelector("div[id='modal-nueva-persona'] select[name='id_doc_identidad']").options[document.querySelector("div[id='modal-nueva-persona'] select[name='id_doc_identidad']").selectedIndex].textContent;
+                document.querySelector(nombreModalPadre+" input[name='nro_documento']").value = document.querySelector("div[id='modal-nueva-persona'] input[name='nuevo_nro_documento']").value;
+                document.querySelector(nombreModalPadre+" input[name='nombre_destinatario']").value = (document.querySelector("div[id='modal-nueva-persona'] input[name='nuevo_nombres']").value).concat(' ',document.querySelector("div[id='modal-nueva-persona'] input[name='nuevo_apellido_paterno']").value).concat(' ',document.querySelector("div[id='modal-nueva-persona'] input[name='nuevo_apellido_materno']").value ) ;
+                // limpiar cuenta bancaria
+                document.querySelector(nombreModalPadre+" input[name='id_cuenta_persona']").value='';
+                document.querySelector(nombreModalPadre+" select[name='id_cuenta']").value = "";
+                let selectCuenta = document.querySelector(nombreModalPadre+" select[name='id_cuenta']");
+                if (selectCuenta != null) {
+                    while (selectCuenta.children.length > 0) {
+                        selectCuenta.removeChild(selectCuenta.lastChild);
+                    }
+                }
             } else {
                 Lobibox.notify('error', {
                     size: "mini",
