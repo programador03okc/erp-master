@@ -202,7 +202,7 @@ class ListaOrdenView {
 
 
     exportTableToExcel() {
-        this.listaOrdenCtrl.descargarListaOrdenesVistaCabecera();
+        window.open('listar-ordenes-excel');
     }
 
     filtroTablaListaOrdenesVistaCabecera() {
