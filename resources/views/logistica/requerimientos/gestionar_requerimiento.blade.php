@@ -312,7 +312,7 @@ Crear / editar requerimiento
                                 <input type="hidden" class="form-control" name="descripcion_grupo">
                                 <input type="text" name="codigo_proyecto" class="form-control group-elemento" style="width:130px; text-align:center;" readonly>
                                 <div class="input-group-okc">
-                                    <select class="form-control activation" name="id_proyecto" onChange="requerimientoView.changeProyecto(event);">
+                                    <select class="form-control activation handleChangeProyecto" name="id_proyecto">
                                         <option value="0">Seleccione un Proyecto</option>
                                         @foreach ($proyectos_activos as $proyecto)
                                         <option value="{{$proyecto->id_proyecto}}" data-id-centro-costo="{{$proyecto->id_centro_costo}}" data-codigo-centro-costo="{{$proyecto->codigo_centro_costo}}" data-descripcion-centro-costo="{{$proyecto->descripcion_centro_costo}}" data-codigo="{{$proyecto->codigo}}">{{$proyecto->descripcion}}</option>
