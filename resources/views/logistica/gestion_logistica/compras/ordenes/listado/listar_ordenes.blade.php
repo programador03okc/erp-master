@@ -124,7 +124,7 @@ Gestión de estados
 @include('logistica.gestion_logistica.compras.ordenes.listado.modal_editar_estado_detalle_orden')
 @include('logistica.gestion_logistica.compras.ordenes.listado.modal_documentos_vinculados')
 
-@include('logistica.gestion_logistica.compras.ordenes.listado.modal_enviar_orden_a_pago')
+@include('logistica.gestion_logistica.compras.ordenes.listado.modal_enviar_solicitud_pago')
 @include('tesoreria.requerimiento_pago.modal_nueva_cuenta_bancaria_destinatario')
 @include('tesoreria.requerimiento_pago.modal_nuevo_contribuyente')
 @include('tesoreria.requerimiento_pago.modal_nueva_persona')
