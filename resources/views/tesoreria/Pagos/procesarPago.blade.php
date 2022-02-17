@@ -38,12 +38,12 @@
                             <div class="col-md-3">
                                 <label style="font-size: 14px;" name="tp_cta_bancaria"></label>
                             </div>
-                            {{-- <div class="col-md-2">
+                            <div class="col-md-2">
                                 <span style="font-size: 14px;">Banco: </span>
                             </div>
                             <div class="col-md-5">
-                                <label style="font-size: 14px;" name="cta_bancaria"></label>
-                            </div> --}}
+                                <label style="font-size: 14px;" name="banco"></label>
+                            </div>
                         </div>
                         <div class="row">
                             <div class="col-md-2">

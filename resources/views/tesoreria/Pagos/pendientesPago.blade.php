@@ -84,7 +84,7 @@ Registro de pagos
                                                 <th>Total</th>
                                                 <th>Saldo</th>
                                                 <th>Estado</th>
-                                                <th style="width:10%;">Acción</th>
+                                                <th style="width:80px;">Acción</th>
                                             </tr>
                                         </thead>
                                         <tbody></tbody>

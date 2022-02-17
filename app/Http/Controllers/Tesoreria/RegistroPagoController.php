@@ -131,7 +131,7 @@ class RegistroPagoController extends Controller
             ->leftJoin('contabilidad.cont_banco as bco_persona', 'bco_persona.id_banco', '=', 'rrhh_cta_banc.id_banco')
             ->leftJoin('contabilidad.adm_contri as banco_persona', 'banco_persona.id_contribuyente', '=', 'bco_persona.id_contribuyente')
             ->leftJoin('contabilidad.adm_tp_cta as tp_cta_persona', 'tp_cta_persona.id_tipo_cuenta', '=', 'rrhh_cta_banc.id_tipo_cuenta')
-            ->where([['log_ord_compra.id_condicion', '=', 1], ['log_ord_compra.estado', '!=', 7]]);
+            ->where([['log_ord_compra.id_condicion', '=', 1], ['log_ord_compra.estado_pago', '=', 8]]);
 
         return datatables($data)->addColumn('persona', function ($data) {
             $persona = Persona::find($data->id_persona_pago);
