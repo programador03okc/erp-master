@@ -94,6 +94,9 @@ class ListaOrdenView {
         $('#modal-enviar-orden-a-pago').on("keyup", "input.handleKeyUpBuscarDestinatarioPorNombre", (e) => {
             this.buscarDestinatarioPorNombre(e.currentTarget);
         });
+        $('#modal-enviar-orden-a-pago').on("change", "select.handleChangeCuenta", (e) => {
+            this.actualizarIdCuentaBancariaDeInput(e.currentTarget);
+        });
 
         $('#listaDestinatariosEncontrados').on("click", "tr.handleClickSeleccionarDestinatario", (e) => {
             this.seleccionarDestinatario(e.currentTarget);
@@ -653,8 +656,8 @@ class ListaOrdenView {
                                 data-estado-pago="${row.estado_pago??''}"
                                 data-id-prioridad-pago="${row.id_prioridad_pago ??''}"
                                 data-id-tipo-destinatario-pago="${row.id_tipo_destinatario_pago??''}"
-                                data-id-cuenta-contribuyente-pago="${row.id_cuenta_contribuyente_pago??''}"
-                                data-id-contribuyente-pago="${row.id_contribuyente_pago??''}"
+                                data-id-cuenta-contribuyente-pago="${row.id_cta_principal??''}"
+                                data-id-contribuyente-pago="${row.id_contribuyente??''}"
 
                                 data-id-persona-pago="${row.id_persona_pago??''}"
                                 data-id-cuenta-persona-pago="${row.id_cuenta_persona_pago??''}"
@@ -2062,6 +2065,29 @@ class ListaOrdenView {
         }, 500);
     }
 
+    actualizarIdCuentaBancariaDeInput(obj){
+        let idTipoDestinatario =  parseInt(document.querySelector("div[id='modal-enviar-orden-a-pago'] select[name='id_tipo_destinatario']").value);
+        if(obj.value>0){
+            if(idTipoDestinatario ==1){
+                document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_cuenta_persona']").value= obj.value;
+            }else if(idTipoDestinatario==2){
+                document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_cuenta_contribuyente']").value= obj.value;
+
+            }else{
+                Swal.fire(
+                    '',
+                    'Hubo un problema al intentar obtener el tipo de destinatario, por favor vuelva a intentarlo refrescando la página',
+                    'error'
+                );
+            }
+        }else{
+            Swal.fire(
+                '',
+                'Hubo un problema al intentar obtener el id de la cuenta seleccionada, por favor vuelva a intentarlo refrescando la página',
+                'error'
+            );
+        }
+    }
     buscarDestinatarioPorNombre(obj){
         let nombreDestinatario= obj.value;
         let idTipoDestinatario =  parseInt(document.querySelector("div[id='modal-enviar-orden-a-pago'] select[name='id_tipo_destinatario']").value);
