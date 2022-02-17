@@ -902,7 +902,7 @@ Route::group(['middleware' => ['auth']], function () {
 						Route::get('obtener-cuenta-persona/{idPersona}', 'Tesoreria\RequerimientoPagoController@obtenerCuentaPersona');
 						Route::post('guardar-persona', 'Tesoreria\RequerimientoPagoController@guardarPersona');
 						Route::post('guardar-cuenta-destinatario', 'Tesoreria\RequerimientoPagoController@guardarCuentaDestinatario');
-						Route::post('registrar-envio-de-orden-a-pago', 'OrdenController@registrarEnvioDeOrdenAPagar');
+						Route::post('registrar-solicitud-de-pago', 'OrdenController@registrarSolicitudDePagar');
 						Route::get('obtener-contribuyente/{id}', 'OrdenController@obtenerContribuyente');
 						Route::get('obtener-persona/{id}', 'OrdenController@obtenerPersona');
 						Route::post('obtener-destinatario-por-nro-documento', 'Tesoreria\RequerimientoPagoController@obtenerDestinatarioPorNumeroDeDocumento');

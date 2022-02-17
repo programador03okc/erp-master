@@ -1,11 +1,11 @@
 <!-- modal -->
-<div class="modal fade" tabindex="-1" role="dialog" id="modal-enviar-orden-a-pago" style="overflow-y: scroll;">
+<div class="modal fade" tabindex="-1" role="dialog" id="modal-enviar-solicitud-pago" style="overflow-y: scroll;">
     <div class="modal-dialog modal-md">
         <div class="modal-content">
-            <form id="form-enviar_orden_a_pago">
+            <form id="form-enviar_solicitud_pago">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
-                    <h3 class="modal-title">Enviar a pago <span class="text-primary" id="codigo_orden"></span></h3>
+                    <h3 class="modal-title">Enviar a solicitud de pago <span class="text-primary" id="codigo_orden"></span></h3>
                 </div>
                 <div class="modal-body">
                     <div class="row">
@@ -95,7 +95,7 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-sm btn-default" class="close" data-dismiss="modal">Cerrar</button>
-                    <button type="button" class="btn btn-sm btn-success handleClickEnviarOrdenAPago">Enviar</button>
+                    <button type="button" class="btn btn-sm btn-success handleClickEnviarSolicitudDePago">Enviar</button>
                 </div>
             </form>
         </div>

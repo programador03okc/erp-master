@@ -4045,7 +4045,7 @@ class OrdenController extends Controller
         }
     }
 
-    function registrarEnvioDeOrdenAPagar(Request $request){
+    function registrarSolicitudDePagar(Request $request){
         try {
             DB::beginTransaction();
 
@@ -4065,7 +4065,7 @@ class OrdenController extends Controller
 
                 $arrayRspta = array(
                     'tipo_estado' => 'success',
-                    'mensaje' => 'Pago enviado',
+                    'mensaje' => 'Solicitud de pago registrado',
                     'data'=>$orden
                 );
 

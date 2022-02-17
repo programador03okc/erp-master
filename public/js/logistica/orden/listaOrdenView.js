@@ -70,31 +70,31 @@ class ListaOrdenView {
             this.modalEnviarOrdenAPago(e.currentTarget);
         });
 
-        $('#modal-enviar-orden-a-pago').on("change", "select.handleChangeTipoDestinatario", (e) => {
+        $('#modal-enviar-solicitud-pago').on("change", "select.handleChangeTipoDestinatario", (e) => {
             this.changeTipoDestinatario(e.currentTarget);
         });
 
-        $('#modal-enviar-orden-a-pago').on("click", "button.handleClickEnviarOrdenAPago", (e) => {
-            this.registrarEnvioDeOrdenAPago(e.currentTarget);
+        $('#modal-enviar-solicitud-pago').on("click", "button.handleClickEnviarSolicitudDePago", (e) => {
+            this.registrarSolicitudDePago(e.currentTarget);
         });
-        $('#modal-enviar-orden-a-pago').on("click", "button.handleClickInfoAdicionalCuentaSeleccionada", (e) => {
+        $('#modal-enviar-solicitud-pago').on("click", "button.handleClickInfoAdicionalCuentaSeleccionada", (e) => {
             this.mostrarInfoAdicionalCuentaSeleccionada(e.currentTarget);
         });
 
-        $('#modal-enviar-orden-a-pago').on("blur", "input.handleBlurBuscarDestinatarioPorNumeroDocumento", (e) => {
+        $('#modal-enviar-solicitud-pago').on("blur", "input.handleBlurBuscarDestinatarioPorNumeroDocumento", (e) => {
             this.buscarDestinatarioPorNumeroDeDocumento(e.currentTarget);
         });
 
-        $('#modal-enviar-orden-a-pago').on("focusin", "input.handleFocusInputNombreDestinatario", (e) => {
+        $('#modal-enviar-solicitud-pago').on("focusin", "input.handleFocusInputNombreDestinatario", (e) => {
             this.focusInputNombreDestinatario(e.currentTarget);
         });
-        $('#modal-enviar-orden-a-pago').on("focusout", "input.handleFocusOutInputNombreDestinatario", (e) => {
+        $('#modal-enviar-solicitud-pago').on("focusout", "input.handleFocusOutInputNombreDestinatario", (e) => {
             this.focusOutInputNombreDestinatario(e.currentTarget);
         });
-        $('#modal-enviar-orden-a-pago').on("keyup", "input.handleKeyUpBuscarDestinatarioPorNombre", (e) => {
+        $('#modal-enviar-solicitud-pago').on("keyup", "input.handleKeyUpBuscarDestinatarioPorNombre", (e) => {
             this.buscarDestinatarioPorNombre(e.currentTarget);
         });
-        $('#modal-enviar-orden-a-pago').on("change", "select.handleChangeCuenta", (e) => {
+        $('#modal-enviar-solicitud-pago').on("change", "select.handleChangeCuenta", (e) => {
             this.actualizarIdCuentaBancariaDeInput(e.currentTarget);
         });
 
@@ -648,7 +648,7 @@ class ListaOrdenView {
 
                             let btnEnviarAPago = '';
                             if (row.id_condicion == 1) {
-                                btnEnviarAPago = `<button type="button" class="btn btn-sm btn-${(row.estado_pago == 8 ? 'success' : 'info')} boton handleClickModalEnviarOrdenAPago" name="btnEnviarOrdenAPago" title="${(row.estado_pago == 8 ? 'Se envió a pago' : 'Enviar a pago')}" 
+                                btnEnviarAPago = `<button type="button" class="btn btn-sm btn-${(row.estado_pago == 8 ? 'success' : 'info')} boton handleClickModalEnviarOrdenAPago" name="btnEnviarOrdenAPago" title="${(row.estado_pago == 8 ? 'Ya se envió la solicitud de pago' : 'Solicitar pago')}" 
                                 data-id-orden-compra="${row.id_orden_compra ?? ''}" 
                                 data-codigo-orden="${row.codigo ?? ''}" 
                                 data-id-proveedor="${row.id_proveedor ?? ''}" 
@@ -662,7 +662,7 @@ class ListaOrdenView {
                                 data-id-persona-pago="${row.id_persona_pago ?? ''}"
                                 data-id-cuenta-persona-pago="${row.id_cuenta_persona_pago ?? ''}"
                                 data-comentario-pago="${row.comentario_pago ?? ''}" >
-                                    <i class="fas fa-hand-holding-usd fa-xs"></i>
+                                    <i class="fas fa-money-check-alt fa-xs"></i>
                                 </button>`;
 
                             }
@@ -1490,22 +1490,22 @@ class ListaOrdenView {
     // ###============  Inicia enviar orden a pago ============###
 
     limpiarFormEnviarOrdenAPago() {
-        document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_proveedor']").value = '';
-        document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_contribuyente']").value = '';
-        document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_cuenta_contribuyente']").value = '';
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_proveedor']").value = '';
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_contribuyente']").value = '';
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_contribuyente']").value = '';
 
-        document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_persona']").value = '';
-        document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_cuenta_persona']").value = '';
-        document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='tipo_documento_identidad']").value = '';
-        document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='nro_documento']").value = '';
-        document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='nombre_destinatario']").value = '';
-        document.querySelector("div[id='modal-enviar-orden-a-pago'] textarea[name='comentario']").value = '';
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_persona']").value = '';
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_persona']").value = '';
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='tipo_documento_identidad']").value = '';
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='nro_documento']").value = '';
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='nombre_destinatario']").value = '';
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] textarea[name='comentario']").value = '';
         this.limpiarTabla('listaDestinatariosEncontrados');
-        document.querySelector("div[id='modal-enviar-orden-a-pago'] span[id='cantidadDestinatariosEncontrados']").textContent = 0;
-        document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_cuenta_contribuyente']").value = '';
-        document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_cuenta_persona']").value = '';
-        document.querySelector("div[id='modal-enviar-orden-a-pago'] select[name='id_cuenta']").value = "";
-        let selectCuenta = document.querySelector("div[id='modal-enviar-orden-a-pago'] select[name='id_cuenta']");
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] span[id='cantidadDestinatariosEncontrados']").textContent = 0;
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_contribuyente']").value = '';
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_persona']").value = '';
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']").value = "";
+        let selectCuenta = document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']");
         if (selectCuenta != null) {
             while (selectCuenta.children.length > 0) {
                 selectCuenta.removeChild(selectCuenta.lastChild);
@@ -1514,51 +1514,51 @@ class ListaOrdenView {
     }
 
     restablecerValoresPorDefectoFormEnviarOrdenAPago() {
-        document.querySelector("div[id='modal-enviar-orden-a-pago'] select[name='id_prioridad']").value = 1;
-        document.querySelector("div[id='modal-enviar-orden-a-pago'] select[name='id_tipo_destinatario']").value = 2;
-        document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='nro_documento']").setAttribute("disabled", true);
-        document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='nombre_destinatario']").setAttribute("disabled", true);
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_prioridad']").value = 1;
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_tipo_destinatario']").value = 2;
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='nro_documento']").setAttribute("disabled", true);
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='nombre_destinatario']").setAttribute("disabled", true);
         tempDataProveedorParaPago = [];
 
     }
 
     modalEnviarOrdenAPago(obj) {
-        document.querySelector("div[id='modal-enviar-orden-a-pago'] span[id='codigo_orden']").textContent = '';
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] span[id='codigo_orden']").textContent = '';
         this.limpiarFormEnviarOrdenAPago();
         this.restablecerValoresPorDefectoFormEnviarOrdenAPago();
-        $('#modal-enviar-orden-a-pago').modal({
+        $('#modal-enviar-solicitud-pago').modal({
             show: true,
             backdrop: 'static'
         });
 
-        document.querySelector("div[id='modal-enviar-orden-a-pago'] span[id='codigo_orden']").textContent = obj.dataset.codigoOrden;
-        document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_orden_compra']").value = obj.dataset.idOrdenCompra;
-        document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_proveedor']").value = obj.dataset.idProveedor;
-        document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_cuenta_contribuyente']").value = obj.dataset.idCuentaPrincipal;
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] span[id='codigo_orden']").textContent = obj.dataset.codigoOrden;
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_orden_compra']").value = obj.dataset.idOrdenCompra;
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_proveedor']").value = obj.dataset.idProveedor;
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_contribuyente']").value = obj.dataset.idCuentaPrincipal;
 
         if (obj.dataset.estadoPago == 8) {
-            document.querySelector("div[id='modal-enviar-orden-a-pago'] select[name='id_prioridad']").value = obj.dataset.idPrioridadPago;
-            document.querySelector("div[id='modal-enviar-orden-a-pago'] select[name='id_tipo_destinatario']").value = obj.dataset.idTipoDestinatarioPago;
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_prioridad']").value = obj.dataset.idPrioridadPago;
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_tipo_destinatario']").value = obj.dataset.idTipoDestinatarioPago;
 
             if (obj.dataset.idTipoDestinatarioPago == 1) {
-                document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_persona']").value = obj.dataset.idPersonaPago;
-                document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_cuenta_persona']").value = obj.dataset.idCuentaPersonaPago;
-                document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_contribuyente']").value = '';
-                document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_cuenta_contribuyente']").value = '';
+                document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_persona']").value = obj.dataset.idPersonaPago;
+                document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_persona']").value = obj.dataset.idCuentaPersonaPago;
+                document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_contribuyente']").value = '';
+                document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_contribuyente']").value = '';
                 obtenerPersona(obj.dataset.idPersonaPago);
                 obtenerCuentasBancariasPersona(obj.dataset.idPersonaPago);
 
 
             } else if (obj.dataset.idTipoDestinatarioPago == 2) {
-                document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_contribuyente']").value = obj.dataset.idContribuyentePago;
-                document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_cuenta_contribuyente']").value = obj.dataset.idCuentaContribuyentePago;
-                document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_persona']").value = '';
-                document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_cuenta_persona']").value = '';
+                document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_contribuyente']").value = obj.dataset.idContribuyentePago;
+                document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_contribuyente']").value = obj.dataset.idCuentaContribuyentePago;
+                document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_persona']").value = '';
+                document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_persona']").value = '';
 
                 obtenerContribuyente(obj.dataset.idContribuyentePago);
                 obtenerCuentasBancariasContribuyente(obj.dataset.idContribuyentePago);
             }
-            document.querySelector("div[id='modal-enviar-orden-a-pago'] textarea[name='comentario']").value = obj.dataset.comentarioPago != null ? obj.dataset.comentarioPago : '';
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] textarea[name='comentario']").value = obj.dataset.comentarioPago != null ? obj.dataset.comentarioPago : '';
         } else {
             this.obtenerContribuyentePorIdProveedor(obj.dataset.idProveedor)
         }
@@ -1572,18 +1572,18 @@ class ListaOrdenView {
                 url: `obtener-contribuyente-por-id-proveedor/${id}`,
                 dataType: 'JSON',
                 beforeSend: data => {
-                    $("#modal-enviar-orden-a-pago .modal-content").LoadingOverlay("show", {
+                    $("#modal-enviar-solicitud-pago .modal-content").LoadingOverlay("show", {
                         imageAutoResize: true,
                         progress: true,
                         imageColor: "#3c8dbc"
                     });
                 },
                 success(response) {
-                    $("#modal-enviar-orden-a-pago .modal-content").LoadingOverlay("hide", true);
+                    $("#modal-enviar-solicitud-pago .modal-content").LoadingOverlay("hide", true);
                     resolve(response);
                 },
                 error: function (err) {
-                    $("#modal-enviar-orden-a-pago .modal-content").LoadingOverlay("hide", true);
+                    $("#modal-enviar-solicitud-pago .modal-content").LoadingOverlay("hide", true);
                     reject(err)
                 }
             });
@@ -1614,16 +1614,16 @@ class ListaOrdenView {
 
     llenarInputsDeDestinatario(data) {
         // console.log(data);
-        document.querySelector("div[id='modal-enviar-orden-a-pago'] select[name='id_tipo_destinatario']").value = 2;
-        document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_contribuyente']").value = data.id_contribuyente != '' && data.id_contribuyente != null ? data.id_contribuyente : '';
-        document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_persona']").value = '';
-        document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='tipo_documento_identidad']").value = data.tipo_documento_identidad != null ? data.tipo_documento_identidad.descripcion : '';
-        document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='nro_documento']").value = data.nro_documento != '' && data.nro_documento != null ? data.nro_documento : '';
-        document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='nombre_destinatario']").value = data.razon_social != null && data.razon_social != '' ? data.razon_social : '';
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_tipo_destinatario']").value = 2;
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_contribuyente']").value = data.id_contribuyente != '' && data.id_contribuyente != null ? data.id_contribuyente : '';
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_persona']").value = '';
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='tipo_documento_identidad']").value = data.tipo_documento_identidad != null ? data.tipo_documento_identidad.descripcion : '';
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='nro_documento']").value = data.nro_documento != '' && data.nro_documento != null ? data.nro_documento : '';
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='nombre_destinatario']").value = data.razon_social != null && data.razon_social != '' ? data.razon_social : '';
 
-        document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_cuenta_persona']").value = '';
-        document.querySelector("div[id='modal-enviar-orden-a-pago'] select[name='id_cuenta']").value = "";
-        let selectCuenta = document.querySelector("div[id='modal-enviar-orden-a-pago'] select[name='id_cuenta']");
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_persona']").value = '';
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']").value = "";
+        let selectCuenta = document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']");
         if (selectCuenta != null) {
             while (selectCuenta.children.length > 0) {
                 selectCuenta.removeChild(selectCuenta.lastChild);
@@ -1652,11 +1652,11 @@ class ListaOrdenView {
     //                 if (response.data.length > 0) {
 
     //                     // llenar cuenta bancaria
-    //                     let idCuentePorDefecto = document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_cuenta_contribuyente']").value;
+    //                     let idCuentePorDefecto = document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_contribuyente']").value;
     //                     console.log(idCuentePorDefecto);
 
-    //                     document.querySelector("div[id='modal-enviar-orden-a-pago'] select[name='id_cuenta']").value = "";
-    //                     let selectCuenta = document.querySelector("div[id='modal-enviar-orden-a-pago'] select[name='id_cuenta']");
+    //                     document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']").value = "";
+    //                     let selectCuenta = document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']");
     //                     if (selectCuenta != null) {
     //                         while (selectCuenta.children.length > 0) {
     //                             selectCuenta.removeChild(selectCuenta.lastChild);
@@ -1664,7 +1664,7 @@ class ListaOrdenView {
     //                     }
     //                     // console.log(response.data);
     //                     (response.data).forEach(element => {
-    //                         document.querySelector("div[id='modal-enviar-orden-a-pago'] select[name='id_cuenta']").insertAdjacentHTML('beforeend', `
+    //                         document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']").insertAdjacentHTML('beforeend', `
     //                         <option 
     //                             data-nro-cuenta="${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : ''}" 
     //                             data-nro-cci="${element.nro_cuenta_interbancaria != null && element.nro_cuenta_interbancaria != "" ? element.nro_cuenta_interbancaria : ''}" 
@@ -1676,7 +1676,7 @@ class ListaOrdenView {
     //                         `);
     //                     });
     //                     if (idCuentePorDefecto == null || idCuentePorDefecto == '') {
-    //                         document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_cuenta_contribuyente']").value = document.querySelector("div[id='modal-enviar-orden-a-pago'] select[name='id_cuenta']").value;
+    //                         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_contribuyente']").value = document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']").value;
     //                     }
 
     //                 } else {
@@ -1728,16 +1728,16 @@ class ListaOrdenView {
         if (obj.value == 1) { // tipo persona
             this.limpiarFormEnviarOrdenAPago();
 
-            document.querySelector("div[id='modal-enviar-orden-a-pago'] button[id='btnAgregarNuevoDestiantario']").removeAttribute("disabled");
-            document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='nro_documento']").removeAttribute("disabled");
-            document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='nombre_destinatario']").removeAttribute("disabled");
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] button[id='btnAgregarNuevoDestiantario']").removeAttribute("disabled");
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='nro_documento']").removeAttribute("disabled");
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='nombre_destinatario']").removeAttribute("disabled");
         } else if (obj.value == 2) { // tipo contribuyente
 
             this.limpiarFormEnviarOrdenAPago();
 
-            document.querySelector("div[id='modal-enviar-orden-a-pago'] button[id='btnAgregarNuevoDestiantario']").setAttribute("disabled", true);
-            document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='nro_documento']").setAttribute("disabled", true);
-            document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='nombre_destinatario']").setAttribute("disabled", true);
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] button[id='btnAgregarNuevoDestiantario']").setAttribute("disabled", true);
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='nro_documento']").setAttribute("disabled", true);
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='nombre_destinatario']").setAttribute("disabled", true);
             this.llenarInputsDeDestinatario(tempDataProveedorParaPago);
         }
 
@@ -1745,9 +1745,9 @@ class ListaOrdenView {
 
     validarFormularioEnvioOrdenAPago() {
         let continuar = true;
-        if ((document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_proveedor']").value == '' &&
-            document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_contribuyente']").value == '') &&
-            (document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_persona']").value == '')
+        if ((document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_proveedor']").value == '' &&
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_contribuyente']").value == '') &&
+            (document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_persona']").value == '')
         ) {
             continuar = false;
         }
@@ -1755,14 +1755,14 @@ class ListaOrdenView {
         return continuar;
     }
 
-    registrarEnvioDeOrdenAPago() {
+    registrarSolicitudDePago() {
         console.log('enviar a pago');
 
         if (this.validarFormularioEnvioOrdenAPago()) {
-            let formData = new FormData($('#form-enviar_orden_a_pago')[0]);
+            let formData = new FormData($('#form-enviar_solicitud_pago')[0]);
             $.ajax({
                 type: 'POST',
-                url: 'registrar-envio-de-orden-a-pago',
+                url: 'registrar-solicitud-de-pago',
                 data: formData,
                 processData: false,
                 contentType: false,
@@ -1778,10 +1778,10 @@ class ListaOrdenView {
                             "top": "50%"
                         },
                         "class": "your-custom-class",
-                        "text": "Enviando orden a pago"
+                        "text": "Enviando Solicitud de pago"
                     });
 
-                    $('#modal-enviar-orden-a-pago .modal-content').LoadingOverlay("show", {
+                    $('#modal-enviar-solicitud-pago .modal-content').LoadingOverlay("show", {
                         imageAutoResize: true,
                         progress: true,
                         custom: customElement,
@@ -1789,7 +1789,7 @@ class ListaOrdenView {
                     });
                 },
                 success: (response) => {
-                    $('#modal-enviar-orden-a-pago .modal-content').LoadingOverlay("hide", true);
+                    $('#modal-enviar-solicitud-pago .modal-content').LoadingOverlay("hide", true);
                     console.log(response);
                     if (response.tipo_estado == 'success') {
 
@@ -1801,12 +1801,12 @@ class ListaOrdenView {
                             delayIndicator: false,
                             msg: response.mensaje
                         });
-                        $('#modal-enviar-orden-a-pago').modal('hide');
+                        $('#modal-enviar-solicitud-pago').modal('hide');
 
                         this.tipoVistaPorCabecera();
 
                     } else {
-                        $('#modal-enviar-orden-a-pago .modal-content').LoadingOverlay("hide", true);
+                        $('#modal-enviar-solicitud-pago .modal-content').LoadingOverlay("hide", true);
                         Swal.fire(
                             '',
                             response.mensaje,
@@ -1816,7 +1816,7 @@ class ListaOrdenView {
                 },
                 statusCode: {
                     404: function () {
-                        $('#modal-enviar-orden-a-pago .modal-content').LoadingOverlay("hide", true);
+                        $('#modal-enviar-solicitud-pago .modal-content').LoadingOverlay("hide", true);
                         Swal.fire(
                             'Error 404',
                             'Lo sentimos hubo un problema con el servidor, la ruta a la que se quiere acceder para guardar no esta disponible, por favor vuelva a intentarlo más tarde.',
@@ -1825,7 +1825,7 @@ class ListaOrdenView {
                     }
                 },
                 fail: (jqXHR, textStatus, errorThrown) => {
-                    $('#modal-enviar-orden-a-pago .modal-content').LoadingOverlay("hide", true);
+                    $('#modal-enviar-solicitud-pago .modal-content').LoadingOverlay("hide", true);
                     Swal.fire(
                         '',
                         'Lo sentimos hubo un error en el servidor al intentar enviar la orden a pago, por favor vuelva a intentarlo',
@@ -1847,7 +1847,7 @@ class ListaOrdenView {
 
     mostrarInfoAdicionalCuentaSeleccionada() {
         document.querySelector("div[id='modal-info-adicional-cuenta-seleccionada'] div[class='modal-body']").innerHTML = '';
-        let selectCuenta = document.querySelector("div[id='modal-enviar-orden-a-pago'] select[name='id_cuenta']");
+        let selectCuenta = document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']");
         if (selectCuenta.value > 0) {
             $('#modal-info-adicional-cuenta-seleccionada').modal({
                 show: true
@@ -1877,7 +1877,7 @@ class ListaOrdenView {
     }
 
     buscarDestinatarioPorNumeroDeDocumento(obj) {
-        let idTipoDestinatario = parseInt(document.querySelector("div[id='modal-enviar-orden-a-pago'] select[name='id_tipo_destinatario']").value);
+        let idTipoDestinatario = parseInt(document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_tipo_destinatario']").value);
         if (idTipoDestinatario == 1) {
 
             let nroDocumento = (obj.value).trim();
@@ -1902,22 +1902,22 @@ class ListaOrdenView {
                         if (response.tipo_estado == 'success') {
                             if (response.data != null && response.data.length > 0) {
                                 if (idTipoDestinatario == 1) { // persona
-                                    document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='nombre_destinatario']").value = response.data[0]['nombre_completo'];
-                                    document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_persona']").value = response.data[0]['id_persona'];
+                                    document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='nombre_destinatario']").value = response.data[0]['nombre_completo'];
+                                    document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_persona']").value = response.data[0]['id_persona'];
                                     if (response.data[0]['tipo_documento_identidad'] != null) {
-                                        document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='tipo_documento_identidad']").value = (response.data[0]['tipo_documento_identidad']['descripcion']) != null ? response.data[0]['tipo_documento_identidad']['descripcion'] : '';
+                                        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='tipo_documento_identidad']").value = (response.data[0]['tipo_documento_identidad']['descripcion']) != null ? response.data[0]['tipo_documento_identidad']['descripcion'] : '';
                                     }
 
                                     // llenar cuenta bancaria
-                                    document.querySelector("div[id='modal-enviar-orden-a-pago'] select[name='id_cuenta']").value = "";
-                                    let selectCuenta = document.querySelector("div[id='modal-enviar-orden-a-pago'] select[name='id_cuenta']");
+                                    document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']").value = "";
+                                    let selectCuenta = document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']");
                                     if (selectCuenta != null) {
                                         while (selectCuenta.children.length > 0) {
                                             selectCuenta.removeChild(selectCuenta.lastChild);
                                         }
                                     }
                                     (response.data[0].cuenta_persona).forEach(element => {
-                                        document.querySelector("div[id='modal-enviar-orden-a-pago'] select[name='id_cuenta']").insertAdjacentHTML('beforeend', `
+                                        document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']").insertAdjacentHTML('beforeend', `
                                         <option 
                                             data-nro-cuenta="${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : ''}" 
                                             data-nro-cci="${element.nro_cci != null && element.nro_cci != "" ? element.nro_cci : ''}" 
@@ -1931,21 +1931,21 @@ class ListaOrdenView {
 
 
                                 } else if (idTipoDestinatario == 2) { // contribuyente
-                                    document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='nombre_destinatario']").value = response.data[0]['razon_social'];
-                                    document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_contribuyente']").value = response.data[0]['id_contribuyente'];
+                                    document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='nombre_destinatario']").value = response.data[0]['razon_social'];
+                                    document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_contribuyente']").value = response.data[0]['id_contribuyente'];
                                     if (response.data[0]['tipo_documento_identidad'] != null) {
-                                        document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='tipo_documento_identidad']").value = (response.data[0]['tipo_documento_identidad']['descripcion']) != null ? response.data[0]['tipo_documento_identidad']['descripcion'] : '';
+                                        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='tipo_documento_identidad']").value = (response.data[0]['tipo_documento_identidad']['descripcion']) != null ? response.data[0]['tipo_documento_identidad']['descripcion'] : '';
                                     }
                                     // llenar cuenta bancaria
-                                    document.querySelector("div[id='modal-enviar-orden-a-pago'] select[name='id_cuenta']").value = "";
-                                    let selectCuenta = document.querySelector("div[id='modal-enviar-orden-a-pago'] select[name='id_cuenta']");
+                                    document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']").value = "";
+                                    let selectCuenta = document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']");
                                     if (selectCuenta != null) {
                                         while (selectCuenta.children.length > 0) {
                                             selectCuenta.removeChild(selectCuenta.lastChild);
                                         }
                                     }
                                     (response.data[0].cuenta_contribuyente).forEach(element => {
-                                        document.querySelector("div[id='modal-enviar-orden-a-pago'] select[name='id_cuenta']").insertAdjacentHTML('beforeend', `
+                                        document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']").insertAdjacentHTML('beforeend', `
                                         <option 
                                             data-nro-cuenta="${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : ''}" 
                                             data-nro-cci="${element.nro_cuenta_interbancaria != null && element.nro_cuenta_interbancaria != "" ? element.nro_cuenta_interbancaria : ''}" 
@@ -1960,15 +1960,15 @@ class ListaOrdenView {
                                 }
                                 this.listarEnResultadoDestinatario(response.data, idTipoDestinatario);
                             } else {
-                                document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_persona']").value = "";
-                                document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_contribuyente']").value = "";
-                                document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='nombre_destinatario']").value = "";
-                                document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='tipo_documento_identidad']").value = "";
-                                document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_cuenta_persona']").value = "";
-                                document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_cuenta_contribuyente']").value = "";
-                                document.querySelector("div[id='modal-enviar-orden-a-pago'] select[name='id_cuenta']").value = "";
+                                document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_persona']").value = "";
+                                document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_contribuyente']").value = "";
+                                document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='nombre_destinatario']").value = "";
+                                document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='tipo_documento_identidad']").value = "";
+                                document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_persona']").value = "";
+                                document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_contribuyente']").value = "";
+                                document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']").value = "";
 
-                                let selectCuenta = document.querySelector("div[id='modal-enviar-orden-a-pago'] select[name='id_cuenta']");
+                                let selectCuenta = document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']");
                                 if (selectCuenta != null) {
                                     while (selectCuenta.children.length > 0) {
                                         selectCuenta.removeChild(selectCuenta.lastChild);
@@ -1985,15 +1985,15 @@ class ListaOrdenView {
                                 msg: response.mensaje
                             });
                         } else {
-                            document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_persona']").value = "";
-                            document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_contribuyente']").value = "";
-                            document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='nombre_destinatario']").value = "";
-                            document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='tipo_documento_identidad']").value = "";
-                            document.querySelector("div[id='modal-enviar-orden-a-pago'] select[name='id_cuenta']").value = "";
-                            document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_cuenta_persona']").value = "";
-                            document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_cuenta_contribuyente']").value = "";
+                            document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_persona']").value = "";
+                            document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_contribuyente']").value = "";
+                            document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='nombre_destinatario']").value = "";
+                            document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='tipo_documento_identidad']").value = "";
+                            document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']").value = "";
+                            document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_persona']").value = "";
+                            document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_contribuyente']").value = "";
 
-                            let selectCuenta = document.querySelector("div[id='modal-enviar-orden-a-pago'] select[name='id_cuenta']");
+                            let selectCuenta = document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']");
                             if (selectCuenta != null) {
                                 while (selectCuenta.children.length > 0) {
                                     selectCuenta.removeChild(selectCuenta.lastChild);
@@ -2020,11 +2020,11 @@ class ListaOrdenView {
 
     listarEnResultadoDestinatario(data, idTipoDestinatario) {
 
-        document.querySelector("div[id='modal-enviar-orden-a-pago'] span[id='cantidadDestinatariosEncontrados']").textContent = data.length;
-        document.querySelector("div[id='modal-enviar-orden-a-pago'] table[id='listaDestinatariosEncontrados']").innerHTML = '';
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] span[id='cantidadDestinatariosEncontrados']").textContent = data.length;
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] table[id='listaDestinatariosEncontrados']").innerHTML = '';
         data.forEach(element => {
             if (idTipoDestinatario == 1) {
-                document.querySelector("div[id='modal-enviar-orden-a-pago'] table[id='listaDestinatariosEncontrados']").insertAdjacentHTML('beforeend', `
+                document.querySelector("div[id='modal-enviar-solicitud-pago'] table[id='listaDestinatariosEncontrados']").insertAdjacentHTML('beforeend', `
                 <tr class="handleClickSeleccionarDestinatario" style="cursor:pointer;" 
                 data-id-persona="${element.id_persona != null ? element.id_persona : ''}"
                 data-id-contribuyente="${element.id_contribuyente != null ? element.id_contribuyente : ''}"
@@ -2042,7 +2042,7 @@ class ListaOrdenView {
                 `);
             }
             if (idTipoDestinatario == 2) {
-                document.querySelector("div[id='modal-enviar-orden-a-pago'] table[id='listaDestinatariosEncontrados']").insertAdjacentHTML('beforeend', `
+                document.querySelector("div[id='modal-enviar-solicitud-pago'] table[id='listaDestinatariosEncontrados']").insertAdjacentHTML('beforeend', `
                 <tr class="handleClickSeleccionarDestinatario" style="cursor:pointer;"
                 data-id-persona="${element.id_persona != null ? element.id_persona : ''}"
                 data-id-contribuyente="${element.id_contribuyente != null ? element.id_contribuyente : ''}"
@@ -2065,22 +2065,22 @@ class ListaOrdenView {
 
 
     focusInputNombreDestinatario(obj) {
-        document.querySelector("div[id='modal-enviar-orden-a-pago'] div[id='resultadoDestinatario']").classList.remove("oculto");
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] div[id='resultadoDestinatario']").classList.remove("oculto");
 
     }
     focusOutInputNombreDestinatario(obj) {
         setTimeout(() => {
-            document.querySelector("div[id='modal-enviar-orden-a-pago'] div[id='resultadoDestinatario']").classList.add("oculto");
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] div[id='resultadoDestinatario']").classList.add("oculto");
         }, 500);
     }
 
     actualizarIdCuentaBancariaDeInput(obj) {
-        let idTipoDestinatario = parseInt(document.querySelector("div[id='modal-enviar-orden-a-pago'] select[name='id_tipo_destinatario']").value);
+        let idTipoDestinatario = parseInt(document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_tipo_destinatario']").value);
         if (obj.value > 0) {
             if (idTipoDestinatario == 1) {
-                document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_cuenta_persona']").value = obj.value;
+                document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_persona']").value = obj.value;
             } else if (idTipoDestinatario == 2) {
-                document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_cuenta_contribuyente']").value = obj.value;
+                document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_contribuyente']").value = obj.value;
 
             } else {
                 Swal.fire(
@@ -2099,11 +2099,11 @@ class ListaOrdenView {
     }
     buscarDestinatarioPorNombre(obj) {
         let nombreDestinatario = obj.value;
-        let idTipoDestinatario = parseInt(document.querySelector("div[id='modal-enviar-orden-a-pago'] select[name='id_tipo_destinatario']").value);
+        let idTipoDestinatario = parseInt(document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_tipo_destinatario']").value);
 
         if (idTipoDestinatario == 1) {
             if (!(nombreDestinatario).trim().length == 0) {
-                document.querySelector("div[id='modal-enviar-orden-a-pago'] div[id='resultadoDestinatario']").classList.remove("oculto");
+                document.querySelector("div[id='modal-enviar-solicitud-pago'] div[id='resultadoDestinatario']").classList.remove("oculto");
                 $.ajax({
                     type: 'POST',
                     url: 'obtener-destinatario-por-nombre',
@@ -2151,7 +2151,7 @@ class ListaOrdenView {
 
             }
 
-            if ((nombreDestinatario).trim().length == 0 && (document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_persona']").value > 0 || document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_contribuyente']").value > 0)) {
+            if ((nombreDestinatario).trim().length == 0 && (document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_persona']").value > 0 || document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_contribuyente']").value > 0)) {
                 this.limpiarInputDestinatario();
             }
         }
@@ -2159,18 +2159,18 @@ class ListaOrdenView {
     }
 
     limpiarInputDestinatario() {
-        document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_persona']").value = "";
-        document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_contribuyente']").value = "";
-        document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='nombre_destinatario']").value = "";
-        document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='nro_documento']").value = "";
-        document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='tipo_documento_identidad']").value = "";
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_persona']").value = "";
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_contribuyente']").value = "";
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='nombre_destinatario']").value = "";
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='nro_documento']").value = "";
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='tipo_documento_identidad']").value = "";
 
         this.limpiarTabla("listaDestinatariosEncontrados");
-        document.querySelector("div[id='modal-enviar-orden-a-pago'] span[id='cantidadDestinatariosEncontrados']").textContent = 0;
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] span[id='cantidadDestinatariosEncontrados']").textContent = 0;
 
-        document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_cuenta_persona']").value = "";
-        document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_cuenta_contribuyente']").value = "";
-        let selectCuenta = document.querySelector("div[id='modal-enviar-orden-a-pago'] select[name='id_cuenta']");
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_persona']").value = "";
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_contribuyente']").value = "";
+        let selectCuenta = document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']");
         if (selectCuenta != null) {
             while (selectCuenta.children.length > 0) {
                 selectCuenta.removeChild(selectCuenta.lastChild);
@@ -2181,11 +2181,11 @@ class ListaOrdenView {
 
     seleccionarDestinatario(obj) {
 
-        document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_persona']").value = obj.dataset.idPersona;
-        document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='id_contribuyente']").value = obj.dataset.idContribuyente;
-        document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='nro_documento']").value = obj.dataset.numeroDocumento;
-        document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='nombre_destinatario']").value = obj.dataset.nombreDestinatario;
-        document.querySelector("div[id='modal-enviar-orden-a-pago'] input[name='tipo_documento_identidad']").value = obj.dataset.tipoDocumentoIdentidad;
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_persona']").value = obj.dataset.idPersona;
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_contribuyente']").value = obj.dataset.idContribuyente;
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='nro_documento']").value = obj.dataset.numeroDocumento;
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='nombre_destinatario']").value = obj.dataset.nombreDestinatario;
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='tipo_documento_identidad']").value = obj.dataset.tipoDocumentoIdentidad;
 
         if (obj.dataset.idPersona > 0) {
             obtenerCuentasBancariasPersona(obj.dataset.idPersona);
