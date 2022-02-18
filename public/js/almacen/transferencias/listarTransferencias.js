@@ -134,7 +134,7 @@ function listarRequerimientosPendientes() {
                                 data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}">
                                 <i class="fas fa-chevron-down"></i></button>
                             <button type="button" class="transferencia btn btn-success btn-flat boton" data-toggle="tooltip"
-                                data-placement="bottom" 
+                                data-placement="bottom" ${(row['estado'] == 39 || row['estado'] == 38) ? 'disabled' : ''} 
                                 data-id="${row["id_requerimiento"]}"
                                 data-sede="${row["id_sede"]}" 
                                 title="Crear Transferencia(s)" >
