@@ -17,11 +17,10 @@ class MarcaController extends Controller
     {
         return view('almacen/producto/subcategoria');
     }
-
+    
     public static function mostrar_subcategorias_cbo()
     {
-        $data = DB::table('almacen.alm_subcat')
-            ->select('alm_subcat.id_subcategoria', 'alm_subcat.descripcion')
+        $data = Marca::select('alm_subcat.id_subcategoria', 'alm_subcat.descripcion')
             ->where([['alm_subcat.estado', '=', 1]])
             ->orderBy('descripcion')
             ->get();
@@ -35,10 +34,9 @@ class MarcaController extends Controller
         return response()->json($output);
     }
 
-    public function mostrar_sub_categoria($id)
+    public function mostrarMarca($id)
     {
-        $data = DB::table('almacen.alm_subcat')
-            ->select('alm_subcat.*', 'sis_usua.nombre_corto')
+        $data = Marca::select('alm_subcat.*', 'sis_usua.nombre_corto')
             ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'alm_subcat.registrado_por')
             ->where([['alm_subcat.id_subcategoria', '=', $id]])
             ->get();
@@ -47,70 +45,72 @@ class MarcaController extends Controller
 
     public function subcategoria_nextId($id_categoria)
     {
-        $cantidad = DB::table('almacen.alm_subcat')
-            ->where('estado', 1)->get()->count();
+        $cantidad = Marca::where('estado', 1)->get()->count();
         $nextId = AlmacenController::leftZero(3, $cantidad);
         return $nextId;
     }
 
-    public function guardar_sub_categoria(Request $request)
+    public function actualizarMarca(Request $request)
     {
-        // $codigo = $this->subcategoria_nextId($request->id_categoria);
-        $fecha = date('Y-m-d H:i:s');
-        $usuario = Auth::user()->id_usuario;
-        $msj = '';
-        $des = strtoupper($request->descripcion);
+        try{
+            DB::beginTransaction();
+            $msj = '';
+            $des = strtoupper($request->descripcion);
 
-        $count = DB::table('almacen.alm_subcat')
-            ->where([['descripcion', '=', $des], ['estado', '=', 1]])
-            ->count();
+            $count = Marca::where([['descripcion', '=', $des], ['estado', '=', 1]])
+                ->count();
 
-        if ($count == 0) {
-            $data = DB::table('almacen.alm_subcat')->insertGetId(
-                [
-                    // 'codigo' => $codigo,
-                    // 'id_categoria' => $request->id_categoria,
-                    'descripcion' => $des,
-                    'estado' => 1,
-                    'fecha_registro' => $fecha,
-                    'registrado_por' => $usuario
-                ],
-                'id_subcategoria'
-            );
-        } else {
-            $msj = 'No es posible guardar. Ya existe una subcategoria con dicha descripción';
+            if ($count <= 1) {
+                Marca::where('id_subcategoria', $request->id_subcategoria)
+                    ->update(['descripcion' => $des]);
+                    $msj= 'Se actualizo la marca correctamente';
+                    $status=200;
+                    $tipo='success';
+            } else {
+                $msj = 'No es posible actualizar. Ya existe una subcategoria con dicha descripción';
+                $status=204;
+                $tipo='warning';
+            }
+
+            DB::commit();
+            return response()->json(['tipo' => $tipo, 'status' => $status, 'mensaje' => $msj]);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json(['tipo' => 'error', 'mensaje' => 'Hubo un problema al actualizar. Por favor intente de nuevo', 'error' => $e->getMessage()], 200);
         }
-        return response()->json($msj);
     }
 
-    public function update_sub_categoria(Request $request)
+    public function anularMarca(Request $request, $id)
     {
-        $msj = '';
-        $des = strtoupper($request->descripcion);
-
-        $count = DB::table('almacen.alm_subcat')
-            ->where([['descripcion', '=', $des], ['estado', '=', 1]])
-            ->count();
-
-        if ($count <= 1) {
-            $id_sub_cat = DB::table('almacen.alm_subcat')
-                ->where('id_subcategoria', $request->id_subcategoria)
-                ->update(['descripcion' => $des]);
-        } else {
-            $msj = 'No es posible actualizar. Ya existe una subcategoria con dicha descripción';
+        try{
+            DB::beginTransaction();
+        $count = DB::table('almacen.alm_prod')
+        ->where([
+            ['id_subcategoria', '=', $id],
+            ['estado', '=', 1]
+        ])
+            ->get()->count();
+            if($count>=1){
+                $mensaje ='La marca ya fue relacionada';
+                $status=204;
+                $tipo='warning';
+            }
+            else{
+                $data = Marca::where('id_subcategoria', $id)
+                ->update(['estado' => 7]);
+                $mensaje = 'La marca se anulo correctamente';
+                $status=200;
+                $tipo='success';
+            }
+            DB::commit();
+            return response()->json(['tipo' => $tipo, 'status' => $status, 'mensaje' => $mensaje]);
+        }  catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json(['tipo' => 'error', 'mensaje' => 'Hubo un problema al anular. Por favor intente de nuevo', 'error' => $e->getMessage()], 200);
         }
-        return response()->json($msj);
     }
 
-    public function anular_sub_categoria(Request $request, $id)
-    {
-        $id_sub_cat = DB::table('almacen.alm_subcat')
-            ->where('id_subcategoria', $id)
-            ->update(['estado' => 7]);
-        return response()->json($id_sub_cat);
-    }
-
-    public function subcat_revisar($id)
+    public function revisarMarca($id)
     {
         $data = DB::table('almacen.alm_prod')
             ->where([
@@ -121,29 +121,39 @@ class MarcaController extends Controller
         return response()->json($data);
     }
 
-    public function guardar(Request $request)
+    public function guardarMarca(Request $request)
     {
-        $des = strtoupper($request->descripcion);
-        $msj = '';
-        $status = 0;
+        try{
+            DB::beginTransaction();
+            $des = strtoupper($request->descripcion);
+            $msj = '';
+            $status = 0;
+            $count = Marca::where([['descripcion', '=', $des], ['estado', '=', 1]])
+            ->count();
+            if ($count == 0) {
+                $subcategoria = new Marca();
+                //$subcategoria->codigo = Marca::nextId();
+                $subcategoria->descripcion = $des;
+                $subcategoria->estado = 1;
+                $subcategoria->fecha_registro = new Carbon();
+                $subcategoria->registrado_por = Auth::user()->id_usuario;
+                $subcategoria->save();
+    
+                $msj = 'Se guardo la marca correctamente';
+                $status= 200;
+                $tipo='success';
+            } else {
+                $msj = 'No es posible guardar. Ya existe una marca con dicha descripción';
+                $status = 204;
+                $tipo='warning';
+            }
 
-        if (SubCategoria::where([['descripcion', '=', $des], ['estado', '=', 1]])->count() == 0) {
-            $subcategoria = new SubCategoria();
-            $subcategoria->codigo = SubCategoria::nextId();
-            $subcategoria->descripcion = $des;
-            $subcategoria->estado = 1;
-            $subcategoria->fecha_registro = new Carbon();
-            $subcategoria->registrado_por = Auth::user()->id_usuario;
-            $subcategoria->save();
-
-            $status = 200;
-            $msj = 'Guardado';
-
-            $subcategoriaList = SubCategoria::mostrarSubcategorias();
-        } else {
-            $msj = 'No es posible guardar. Ya existe una subcategoria con dicha descripción';
-            $status = 204;
+            DB::commit();
+            return response()->json(['tipo' => $tipo, 'status' => $status, 'mensaje' => $msj]);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json(['tipo' => 'error', 'mensaje' => 'Hubo un problema al guardar. Por favor intente de nuevo', 'error' => $e->getMessage()], 200);
         }
-        return response()->json(['status' => $status, 'msj' => $msj, 'data' => $subcategoriaList]);
+    
     }
 }

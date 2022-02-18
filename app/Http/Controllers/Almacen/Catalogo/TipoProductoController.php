@@ -44,27 +44,38 @@ class TipoProductoController extends Controller
 
     public function guardarCategoria(Request $request)
     {
-        $fecha = date('Y-m-d H:i:s');
-        $msj = '';
-        $des = strtoupper($request->descripcion);
+        try{
+            DB::beginTransaction();
+            $fecha = date('Y-m-d H:i:s');
+            $msj = '';
+            $des = strtoupper($request->descripcion);
 
-        $count = Categoria::where([['descripcion', '=', $des], ['estado', '=', 1]])
-            ->count();
+            $count = Categoria::where([['descripcion', '=', $des], ['estado', '=', 1]])
+                ->count();
 
-        if ($count == 0) {
-            Categoria::insertGetId(
-                [
-                    'id_clasificacion' => $request->id_clasificacion,
-                    'descripcion' => $des,
-                    'estado' => 1,
-                    'fecha_registro' => $fecha
-                ],
-                'id_tipo_producto'
-            );
-        } else {
-            $msj = 'No es posible guardar. Ya existe ' . $count . ' tipo registrado con la misma descripción.';
+            if ($count == 0) {
+                Categoria::insertGetId(
+                    [
+                        'descripcion' => $des,
+                        'estado' => 1,
+                        'fecha_registro' => $fecha
+                    ],
+                    'id_tipo_producto'
+                );
+                $msj = 'Se guardo la categoria correctamente';
+                $status=200;
+                $tipo='success';
+            } else {
+                $msj = 'No es posible guardar. Ya existe una categoria con dicha descripción.';
+                $status=204;
+                $tipo='warning';
+            }
+            DB::commit();
+            return response()->json(['tipo' => $tipo, 'status' => $status, 'mensaje' => $msj]);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json(['tipo' => 'error', 'mensaje' => 'Hubo un problema al guardar. Por favor intente de nuevo', 'error' => $e->getMessage()], 200);
         }
-        return response()->json($msj);
     }
 
     public function actualizarCategoria(Request $request)

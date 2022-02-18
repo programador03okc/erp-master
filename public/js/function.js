@@ -20,9 +20,10 @@ function openModal(type, active) {
         case "categoria":
             categoriaModal();
             break;
-        case "subcategoria":
-            subCategoriaModal();
-            break;
+        //case "subcategoria":
+            //revisarMarca();
+            //subCategoriaModal();
+            //break;
         case "producto":
             productoModal();
             break;
@@ -278,7 +279,7 @@ function eventRegister(type, data, action, frm_active) {
             save_categoria(data, action);
             break;
         case "subcategoria":
-            save_subcategoria(data, action);
+            guardarMarca(data, action);
             break;
         case "clasificacion":
             guardarClasificacion(data, action);
@@ -602,7 +603,7 @@ function anularRegister(type, ids, active) {
             anular_categoria(ids);
             break;
         case "subcategoria":
-            anular_subcategoria(ids);
+            anularMarca(ids);
             break;
         case "clasificacion":
             anularClasificacion(ids);

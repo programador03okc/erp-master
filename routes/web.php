@@ -1185,13 +1185,13 @@ Route::group(['middleware' => ['auth']], function () {
 				//Marca
 				Route::get('index', 'Almacen\Catalogo\MarcaController@view_subcategoria')->name('index');
 				Route::get('listarMarcas', 'Almacen\Catalogo\MarcaController@listarMarcas');
-				Route::get('mostrar_subcategoria/{id}', 'Almacen\Catalogo\MarcaController@mostrar_sub_categoria');
-				Route::post('guardar_subcategoria', 'Almacen\Catalogo\MarcaController@guardar_sub_categoria');
-				Route::post('actualizar_subcategoria', 'Almacen\Catalogo\MarcaController@update_sub_categoria');
-				Route::get('anular_subcategoria/{id}', 'Almacen\Catalogo\MarcaController@anular_sub_categoria');
-				Route::get('revisarSubCat/{id}', 'Almacen\Catalogo\MarcaController@subcat_revisar');
+				Route::get('mostrarMarca/{id}', 'Almacen\Catalogo\MarcaController@mostrarMarca');
+				Route::post('guardarMarca', 'Almacen\Catalogo\MarcaController@guardarMarca');
+				Route::post('actualizarMarca', 'Almacen\Catalogo\MarcaController@actualizarMarca');
+				Route::get('anularMarca/{id}', 'Almacen\Catalogo\MarcaController@anularMarca');
+				Route::get('revisarMarca/{id}', 'Almacen\Catalogo\MarcaController@revisarMarca');
 
-				Route::post('guardar-marca', 'Almacen\Catalogo\MarcaController@guardar')->name('guardar-marca');
+				//Route::post('guardar-marca', 'Almacen\Catalogo\MarcaController@guardar')->name('guardar-marca');
 			});
 
 			Route::group(['as' => 'clasificaciones.', 'prefix' => 'clasificaciones'], function () {

@@ -64,22 +64,27 @@ function guardarCategoria(data, action) {
     }
     $.ajax({
         type: 'POST',
-        // headers: {'X-CSRF-TOKEN': token},
+        headers: {'X-CSRF-TOKEN': token},
         url: baseUrl,
         data: data,
         dataType: 'JSON',
         success: function (response) {
             console.log(response);
-            console.log(response.length);
-            if (response.length > 0) {
-                alert(response);
-            } else {
-                alert('Categoría registrada con éxito');
+            Lobibox.notify(response.tipo, {
+                title: false,
+                size: "mini",
+                rounded: true,
+                sound: false,
+                delayIndicator: false,
+                msg: response.mensaje
+            });
+
+            if (response.status==200)  {
                 $('#listaTipo').DataTable().ajax.reload();
                 changeStateButton('guardar');
                 $('#form-tipo').attr('type', 'register');
                 changeStateInput('form-tipo', true);
-            }
+            } 
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);

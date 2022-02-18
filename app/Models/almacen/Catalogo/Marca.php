@@ -11,11 +11,11 @@ class Marca extends Model
     public $timestamps=false;
     protected $primaryKey='id_subcategoria';
     
-    public static function nextId(){
-        $cantidad = SubCategoria::where('estado',1)->get()->count();
+    /*public static function nextId(){
+        //$cantidad = Marca::where('estado',1)->get()->count();
         $nextId = StringHelper::leftZero(3,$cantidad);
         return $nextId;
-    }
+    }*/
 
     public static function mostrarSubcategorias(){
         $data = SubCategoria::select('alm_subcat.id_subcategoria','alm_subcat.descripcion')
