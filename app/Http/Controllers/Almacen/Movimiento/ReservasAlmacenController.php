@@ -26,6 +26,8 @@ class ReservasAlmacenController extends Controller
                 'alm_prod.descripcion',
                 'alm_almacen.descripcion as almacen',
                 'alm_req.codigo as codigo_req',
+                'alm_req.estado as estado_requerimiento',
+                'alm_req.tiene_transformacion',
                 'adm_estado_doc.estado_doc',
                 'adm_estado_doc.bootstrap_color',
                 'sis_usua.nombre_corto',
