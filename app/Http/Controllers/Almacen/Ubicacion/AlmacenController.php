@@ -22,7 +22,7 @@ class AlmacenController extends Controller
         $data = DB::table('almacen.alm_almacen')
             ->select('alm_almacen.id_almacen', 'alm_almacen.codigo', 'alm_almacen.descripcion')
             ->where([['alm_almacen.estado', '=', 1]])
-            ->orderBy('codigo')
+            ->orderBy('descripcion')
             ->get();
         return $data;
     }

@@ -39,6 +39,7 @@ class SalidasPendientesController extends Controller
                 'alm_req.codigo as codigo_req',
                 'alm_req.concepto',
                 'alm_req.tiene_transformacion',
+                'alm_req.estado as estado_requerimiento',
                 'alm_req.obs_facturacion',
                 // 'sis_usua.nombre_corto', (orden_despacho.aplica_cambios==true ? false : alm_req.tiene_transformacion)
                 'adm_estado_doc.estado_doc',
@@ -292,7 +293,7 @@ class SalidasPendientesController extends Controller
                             // }
 
                         } else {
-                            $msj = $producto->codigo + ' - ' + $producto->descripcion + ' \n';
+                            $msj += $producto->codigo + ' - ' + $producto->descripcion + ' \n';
                         }
                     }
 
