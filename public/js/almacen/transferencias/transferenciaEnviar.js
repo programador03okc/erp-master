@@ -254,16 +254,15 @@ function salidaTransferencia(data) {
                     dataType: "JSON",
                     success: function (response) {
                         console.log(response);
-                        if (response > 0) {
-                            Lobibox.notify("success", {
-                                title: false,
-                                size: "mini",
-                                rounded: true,
-                                sound: false,
-                                delayIndicator: false,
-                                // width: 500,
-                                msg: "Salida de almacén generada con éxito."
-                            });
+                        Lobibox.notify(response.tipo, {
+                            title: false,
+                            size: "mini",
+                            rounded: true,
+                            sound: false,
+                            delayIndicator: false,
+                            msg: response.mensaje
+                        });
+                        if (response.tipo == 'success') {
                             $("#modal-transferenciaGuia").modal("hide");
                             $("#listaTransferenciasPorEnviar").DataTable().ajax.reload(null, false);
                             // var id = encode5t(response);

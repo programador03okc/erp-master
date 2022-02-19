@@ -158,8 +158,8 @@ Registro de pagos
         seleccionarMenu(window.location);
         vista_extendida();
 
-        // let requerimientoPago=new RequerimientoPago('{{Auth::user()->tieneAccion(137)}}','{{Auth::user()->tieneAccion(138)}}','{{Auth::user()->tieneAccion(139)}}');
-        let requerimientoPago=new RequerimientoPago('1','1','1');
+        let requerimientoPago=new RequerimientoPago('{{Auth::user()->tieneAccion(137)}}','{{Auth::user()->tieneAccion(138)}}','{{Auth::user()->tieneAccion(139)}}');
+        // let requerimientoPago=new RequerimientoPago('1','1','1');
 
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
             let tab = $(e.target).attr("href") // activated tab
