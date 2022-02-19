@@ -13,9 +13,9 @@ use App\Models\Almacen\Catalogo\Marca;
 
 class MarcaController extends Controller
 {
-    function view_subcategoria()
+    function viewMarca()
     {
-        return view('almacen/producto/subcategoria');
+        return view('almacen/producto/marca');
     }
     
     public static function mostrar_subcategorias_cbo()
@@ -63,11 +63,11 @@ class MarcaController extends Controller
             if ($count <= 1) {
                 Marca::where('id_subcategoria', $request->id_subcategoria)
                     ->update(['descripcion' => $des]);
-                    $msj= 'Se actualizo la marca correctamente';
+                    $msj= 'Se actualizó la marca correctamente';
                     $status=200;
                     $tipo='success';
             } else {
-                $msj = 'No es posible actualizar. Ya existe una subcategoria con dicha descripción';
+                $msj = 'No es posible actualizar. Ya existe una marca con dicha descripción';
                 $status=204;
                 $tipo='warning';
             }
@@ -98,7 +98,7 @@ class MarcaController extends Controller
             else{
                 $data = Marca::where('id_subcategoria', $id)
                 ->update(['estado' => 7]);
-                $mensaje = 'La marca se anulo correctamente';
+                $mensaje = 'La marca se anuló correctamente';
                 $status=200;
                 $tipo='success';
             }
@@ -125,9 +125,10 @@ class MarcaController extends Controller
     {
         try{
             DB::beginTransaction();
+            $fecha = date('Y-m-d H:i:s');
             $des = strtoupper($request->descripcion);
             $msj = '';
-            $status = 0;
+            
             $count = Marca::where([['descripcion', '=', $des], ['estado', '=', 1]])
             ->count();
             if ($count == 0) {
@@ -139,7 +140,7 @@ class MarcaController extends Controller
                 $subcategoria->registrado_por = Auth::user()->id_usuario;
                 $subcategoria->save();
     
-                $msj = 'Se guardo la marca correctamente';
+                $msj = 'Se guardó la marca correctamente';
                 $status= 200;
                 $tipo='success';
             } else {

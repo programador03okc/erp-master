@@ -60,7 +60,7 @@ class ClasificacionController extends Controller
                     ],
                     'id_clasificacion'
                 );
-                $msj = 'Se guardo la clasificacion correctamente';
+                $msj = 'Se guardó la clasificación correctamente';
                 $status=200;
                 $tipo='success';
             } else {
@@ -89,7 +89,7 @@ class ClasificacionController extends Controller
         if ($count <= 1) {
             $data = Clasificacion::where('id_clasificacion', $request->id_clasificacion)
                 ->update(['descripcion' => $des]);
-                $msj = 'Se actualizo la clasificacion correctamente';
+                $msj = 'Se actualizó la clasificación correctamente';
                 $status=200;
                 $tipo='success';
         } else {
@@ -115,14 +115,14 @@ class ClasificacionController extends Controller
         ])
             ->get()->count();
             if($count>=1){
-                $mensaje ='La clasificacion ya fue relacionada en un producto';
+                $mensaje ='La clasificación ya fue relacionada en un producto';
                 $status=204;
                 $tipo='warning';
             }
             else{
                 $data = Clasificacion::where('id_clasificacion', $id)
                 ->update(['estado' => 7]);
-                $mensaje = 'La clasificacion se anulo correctamente';
+                $mensaje = 'La clasificación se anuló correctamente';
                 $status=200;
                 $tipo='success';
             }

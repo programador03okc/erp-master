@@ -84,7 +84,7 @@
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script> -->
     
-    <script src="{{ asset('js/almacen/producto/subcategoria_producto.js')}}"></script>
+    <script src="{{ asset('js/almacen/producto/marca.js')}}"></script>
     <script>
     $(document).ready(function(){
         seleccionarMenu(window.location);
