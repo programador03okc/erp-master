@@ -125,7 +125,7 @@ function guardarCuentaBancariaDestinatario(data) {
 // ###=========== obtener y actualizar select cuenta bancaria ==========###
 function obtenerCuentasBancariasPersona(id_persona) {
 
-    console.log(id_persona);
+    // console.log(id_persona);
     if (id_persona > 0) {
         $.ajax({
             type: 'GET',
@@ -140,7 +140,7 @@ function obtenerCuentasBancariasPersona(id_persona) {
             },
         }).done(function (response) {
             $("select[name='id_cuenta']").LoadingOverlay("hide", true);
-            console.log(response);
+            // console.log(response);
             if (response.tipo_estado == 'success') {
 
                 if (response.data.length > 0) {

@@ -56,7 +56,7 @@ class RequerimientoPagoController extends Controller
         $periodos = Periodo::mostrar();
         $prioridades = Prioridad::mostrar();
         $gruposUsuario = Auth::user()->getAllGrupo();
-        
+
         $tiposDestinatario = RequerimientoPagoTipoDestinatario::mostrar();
         $empresas = Empresa::mostrar();
         $grupos = Grupo::mostrar();
@@ -94,7 +94,7 @@ class RequerimientoPagoController extends Controller
     //     $periodos = Periodo::mostrar();
     //     $prioridades = Prioridad::mostrar();
     //     $gruposUsuario = Auth::user()->getAllGrupo();
-        
+
     //     $tipoDestinatario = RequerimientoPagoTipoDestinatario::mostrar();
     //     $empresas = Empresa::mostrar();
     //     $grupos = Grupo::mostrar();
@@ -376,7 +376,7 @@ class RequerimientoPagoController extends Controller
             }
         }
     }
- 
+
 
     function actualizarRequerimientoPago(Request $request)
     {
@@ -408,23 +408,36 @@ class RequerimientoPagoController extends Controller
                 // $trazabilidad->descripcion = 'Sustentado por ' . $nombreCompletoUsuario ? $nombreCompletoUsuario : '';
                 // $trazabilidad->fecha_registro = new Carbon();
                 // $trazabilidad->save();
-    
+
                 $idDocumento = Documento::getIdDocAprob($requerimientoPago->id_requerimiento_pago, 11);
                 $ultimoVoBo = Aprobacion::getUltimoVoBo($idDocumento);
                 $aprobacion = Aprobacion::where("id_aprobacion", $ultimoVoBo->id_aprobacion)->first();
                 $aprobacion->tiene_sustento = true;
                 $aprobacion->save();
-    
+
                 // TODO:  enviaar notificación al usuario aprobante, asunto => se levanto la observación 
             }
             $requerimientoPago->monto_total = $request->monto_total;
             $requerimientoPago->id_proyecto = $request->proyecto > 0 ? $request->proyecto : null;
             $requerimientoPago->id_cc = $request->id_cc > 0 ? $request->id_cc : null;
             $requerimientoPago->save();
-            $requerimientoPago->adjuntoOtrosAdjuntos = $request->archivoAdjuntoRequerimientoPagoCabeceraFile1;
-            $requerimientoPago->adjuntoOrdenes = $request->archivoAdjuntoRequerimientoPagoCabeceraFile2;
-            $requerimientoPago->adjuntoComprobanteBancario = $request->archivoAdjuntoRequerimientoPagoCabeceraFile3;
-            $requerimientoPago->adjuntoComprobanteContable = $request->archivoAdjuntoRequerimientoPagoCabeceraFile4;
+
+            // guardar adjuntos
+            $requerimientoPago->adjuntoOtrosAdjuntosGuardar = $request->archivoAdjuntoRequerimientoPagoCabeceraFileGuardar1;
+            $requerimientoPago->adjuntoOrdenesGuardar = $request->archivoAdjuntoRequerimientoPagoCabeceraFileGuardar2;
+            $requerimientoPago->adjuntoComprobanteBancarioGuardar = $request->archivoAdjuntoRequerimientoPagoCabeceraFileGuardar3;
+            $requerimientoPago->adjuntoComprobanteContableGuardar = $request->archivoAdjuntoRequerimientoPagoCabeceraFileGuardar4;
+            // //? actualizar adjuntos, actualmente no se actualizan archivos por otros
+            // $requerimientoPago->adjuntoOtrosAdjuntosActualizar = $request->archivoAdjuntoRequerimientoPagoCabeceraFileActualizar1;
+            // $requerimientoPago->adjuntoOrdenesActualizar = $request->archivoAdjuntoRequerimientoPagoCabeceraFileActualizar2;
+            // $requerimientoPago->adjuntoComprobanteBancarioActualizar = $request->archivoAdjuntoRequerimientoPagoCabeceraFileActualizar3;
+            // $requerimientoPago->adjuntoComprobanteContableActualizar = $request->archivoAdjuntoRequerimientoPagoCabeceraFileActualizar4;
+            // //? eliminar adjuntos, actualmente no se elimina en disco 
+            // $requerimientoPago->adjuntoOtrosAdjuntosEliminar = $request->archivoAdjuntoRequerimientoPagoCabeceraFileEliminar1;
+            // $requerimientoPago->adjuntoOrdenesEliminar = $request->archivoAdjuntoRequerimientoPagoCabeceraFileEliminar2;
+            // $requerimientoPago->adjuntoComprobanteBancarioEliminar = $request->archivoAdjuntoRequerimientoPagoCabeceraFileEliminar3;
+            // $requerimientoPago->adjuntoComprobanteContableEliminar = $request->archivoAdjuntoRequerimientoPagoCabeceraFileEliminar4;
+
 
             $count = count($request->descripcion);
 
@@ -476,24 +489,36 @@ class RequerimientoPagoController extends Controller
                 }
             }
 
-            // adjuntos cabecera - actualizar categoria
+
+            // $this->guardarAdjuntoRequerimientoPagoCabecera($requerimientoPago, $requerimientoPago->codigo);
+            // guardando adjuntos nuevos
+            if (($requerimientoPago->adjuntoOtrosAdjuntosGuardar != null ? (count($requerimientoPago->adjuntoOtrosAdjuntosGuardar)) : 0) > 0) {
+                $this->subirYRegistrarArchivoCabecera($requerimientoPago->id_requerimiento_pago, $requerimientoPago->adjuntoOtrosAdjuntosGuardar, $requerimientoPago->codigo, 1);
+            }
+            if (($requerimientoPago->adjuntoOrdenesGuardar != null ? (count($requerimientoPago->adjuntoOrdenesGuardar)) : 0) > 0) {
+                $this->subirYRegistrarArchivoCabecera($requerimientoPago->id_requerimiento_pago, $requerimientoPago->adjuntoOrdenesGuardar, $requerimientoPago->codigo, 1);
+            }
+            if (($requerimientoPago->adjuntoComprobanteBancarioGuardar != null ? (count($requerimientoPago->adjuntoComprobanteBancarioGuardar)) : 0) > 0) {
+                $this->subirYRegistrarArchivoCabecera($requerimientoPago->id_requerimiento_pago, $requerimientoPago->adjuntoComprobanteBancarioGuardar, $requerimientoPago->codigo, 1);
+            }
+            if (($requerimientoPago->adjuntoComprobanteContableGuardar != null ? (count($requerimientoPago->adjuntoComprobanteContableGuardar)) : 0) > 0) {
+                $this->subirYRegistrarArchivoCabecera($requerimientoPago->id_requerimiento_pago, $requerimientoPago->adjuntoComprobanteContableGuardar, $requerimientoPago->codigo, 1);
+            }
+
+
+            // adjuntos cabecera - actualizar, anular adjuntos en tabla 
             $archivoAdjuntoRequerimientoPagoObject = json_decode($request->archivoAdjuntoRequerimientoPagoObject);
             if (count($archivoAdjuntoRequerimientoPagoObject) > 0) {
                 foreach ($archivoAdjuntoRequerimientoPagoObject as $ar) {
                     if (preg_match('/^[0-9]+$/', $ar->id)) {
-                        RequerimientoPagoAdjunto::where('id_requerimiento_pago_adjunto', '=', $ar->id)
-                            ->update(['id_categoria_adjunto' => $ar->category]);
-                    }
-                }
-            }
-
-            // adjuntos cabecera - actualizar a estado anulado 
-            $idArchivoAdjuntoRequerimientoPagoCabeceraParaElminar = json_decode($request->idArchivoAdjuntoRequerimientoPagoCabeceraParaElminar);
-            if (count($idArchivoAdjuntoRequerimientoPagoCabeceraParaElminar) > 0) {
-                foreach ($idArchivoAdjuntoRequerimientoPagoCabeceraParaElminar as $id) {
-                    if (preg_match('/^[0-9]+$/', $id)) {
-                        RequerimientoPagoAdjunto::where('id_requerimiento_pago_adjunto', '=', $id)
-                            ->update(['id_estado' => 7]);
+                        if ($ar->action == 'ACTUALIZAR') {
+                            RequerimientoPagoAdjunto::where('id_requerimiento_pago_adjunto', '=', $ar->id)
+                                ->update(['id_categoria_adjunto' => $ar->category]);
+                        }
+                        if ($ar->action == 'ELIMINAR') {
+                            RequerimientoPagoAdjunto::where('id_requerimiento_pago_adjunto', '=', $ar->id)
+                                ->update(['id_estado' => 7]);
+                        }
                     }
                 }
             }
@@ -502,11 +527,11 @@ class RequerimientoPagoController extends Controller
             // adjunto detalle - guardar adjuntos
             $adjuntoRequerimientoPagoDetalleArray = [];
 
-            if(count($detalleArray)>0){
+            if (count($detalleArray) > 0) {
                 for ($i = 0; $i < count($detalleArray); $i++) {
-    
-                    $archivos = $request->{"archivoAdjuntoRequerimientoPagoDetalle" . $detalleArray[$i]['idRegister']};
-    
+
+                    $archivos = $request->{"archivoAdjuntoRequerimientoPagoDetalleCrear" . $detalleArray[$i]['idRegister']};
+
                     if (isset($archivos)) {
                         foreach ($archivos as $archivo) {
                             $adjuntoRequerimientoPagoDetalleArray[] = [
@@ -517,27 +542,27 @@ class RequerimientoPagoController extends Controller
                         }
                     }
                 }
-
             }
 
 
+
+            // adjuntos detalle -anular adjuntos en tabla 
+            $archivoAdjuntoRequerimientoPagoDetalleObject = json_decode($request->archivoAdjuntoRequerimientoPagoDetalleObject);
+            if (count($archivoAdjuntoRequerimientoPagoDetalleObject) > 0) {
+                foreach ($archivoAdjuntoRequerimientoPagoDetalleObject as $ar) {
+                    if (preg_match('/^[0-9]+$/', $ar->id)) {
+                        if ($ar->action == 'ELIMINAR') {
+                            RequerimientoPagoAdjuntoDetalle::where('id_requerimiento_pago_detalle_adjunto', '=', $ar->id)
+                                ->update(['id_estado' => 7]);
+                        }
+                    }
+                }
+            }
 
             if (count($adjuntoRequerimientoPagoDetalleArray) > 0) {
                 $this->guardarAdjuntoRequerimientoPagoDetalle($adjuntoRequerimientoPagoDetalleArray, $requerimientoPago->codigo);
             }
 
-            // adjuntos detalle - actualizar a estado anulado 
-            $idArchivoAdjuntoRequerimientoPagoDetalleParaElminar = json_decode($request->idArchivoAdjuntoRequerimientoPagoDetalleParaElminar);
-            if (count($idArchivoAdjuntoRequerimientoPagoDetalleParaElminar) > 0) {
-                foreach ($idArchivoAdjuntoRequerimientoPagoDetalleParaElminar as $id) {
-                    if (preg_match('/^[0-9]+$/', $id)) {
-                        RequerimientoPagoAdjuntoDetalle::where('id_requerimiento_pago_detalle_adjunto', '=', $id)
-                            ->update(['id_estado' => 7]);
-                    }
-                }
-            }
-
-    
 
             DB::commit();
 
@@ -623,25 +648,45 @@ class RequerimientoPagoController extends Controller
     {
 
         $detalleRequerimientoPagoList = RequerimientoPagoDetalle::with('unidadMedida', 'producto', 'partida.presupuesto', 'centroCosto', 'adjunto', 'estado')
-        ->where([['id_requerimiento_pago', $idRequerimientoPago]])
-        ->get();
+            ->where([['id_requerimiento_pago', $idRequerimientoPago]])
+            ->get();
 
         $requerimientoPago = RequerimientoPago::where('id_requerimiento_pago', $idRequerimientoPago)
-            ->with('tipoRequerimientoPago', 'periodo', 'prioridad', 'moneda', 'creadoPor', 'empresa', 'sede', 'grupo', 'division', 'tipoDestinatario',
-            'persona.tipoDocumentoIdentidad','cuentaPersona.banco.contribuyente', 'cuentaPersona.tipoCuenta', 'cuentaPersona.moneda',
-            'contribuyente.tipoDocumentoIdentidad','contribuyente.tipoContribuyente','cuentaContribuyente.banco.contribuyente',
-            'cuentaContribuyente.moneda','cuentaContribuyente.tipoCuenta','cuadroCostos', 'proyecto', 'adjunto')
+            ->with(
+                'tipoRequerimientoPago',
+                'periodo',
+                'prioridad',
+                'moneda',
+                'creadoPor',
+                'empresa',
+                'sede',
+                'grupo',
+                'division',
+                'tipoDestinatario',
+                'persona.tipoDocumentoIdentidad',
+                'cuentaPersona.banco.contribuyente',
+                'cuentaPersona.tipoCuenta',
+                'cuentaPersona.moneda',
+                'contribuyente.tipoDocumentoIdentidad',
+                'contribuyente.tipoContribuyente',
+                'cuentaContribuyente.banco.contribuyente',
+                'cuentaContribuyente.moneda',
+                'cuentaContribuyente.tipoCuenta',
+                'cuadroCostos',
+                'proyecto',
+                'adjunto'
+            )
             ->first();
 
-        $documento = Documento::where([['id_tp_documento',11],['id_doc',$idRequerimientoPago]])->first();
-        if( !empty($documento)){
-            if($documento->id_doc_aprob > 0){
-                $aprobacion= Aprobacion::where('id_doc_aprob',$documento->id_doc_aprob)->with('usuario','VoBo')->get();
-            }else{
-                $aprobacion=[];
+        $documento = Documento::where([['id_tp_documento', 11], ['id_doc', $idRequerimientoPago]])->first();
+        if (!empty($documento)) {
+            if ($documento->id_doc_aprob > 0) {
+                $aprobacion = Aprobacion::where('id_doc_aprob', $documento->id_doc_aprob)->with('usuario', 'VoBo')->get();
+            } else {
+                $aprobacion = [];
             }
-        }else{
-            $aprobacion=[];
+        } else {
+            $aprobacion = [];
         }
         $requerimientoPago->setAttribute('aprobacion', $aprobacion);
 
@@ -671,7 +716,7 @@ class RequerimientoPagoController extends Controller
     {
 
         $requerimientoPago = $this->mostrarRequerimientoPago($idRequerimientoPago);
-       
+
         $vista = View::make(
             'tesoreria/requerimiento_pago/export/RequerimientoPagoPdf',
             compact('requerimientoPago')
@@ -686,85 +731,76 @@ class RequerimientoPagoController extends Controller
 
     function obtenerDestinatarioPorNumeroDeDocumento(Request $request)
     {
-        $nroDocumento= $request->nroDocumento;
-        $idTipoDestinatario= $request->idTipoDestinatario;
-        $destinatario =[];
-        $tipo_estado='';
-        $mensaje='';
+        $nroDocumento = $request->nroDocumento;
+        $idTipoDestinatario = $request->idTipoDestinatario;
+        $destinatario = [];
+        $tipo_estado = '';
+        $mensaje = '';
 
-        if($idTipoDestinatario == 1){ // tipo persona
-            $destinatario = Persona::with("tipoDocumentoIdentidad","cuentaPersona.banco.contribuyente","cuentaPersona.tipoCuenta","cuentaPersona.moneda")->where([["nro_documento",$nroDocumento],["estado","!=",7]])->get();
-
-            
-        }elseif($idTipoDestinatario ==2){ // tipo contribuyente
-            $destinatario=  Contribuyente::with("tipoDocumentoIdentidad","cuentaContribuyente.banco.contribuyente","cuentaContribuyente.tipoCuenta")->where([["nro_documento",$nroDocumento],["estado","!=",7]])->get();
-            
-            
-        }else{
-            $tipo_estado="error";
-            $mensaje='no se recibio un valor valido para tipo de destinatario';
-
+        if ($idTipoDestinatario == 1) { // tipo persona
+            $destinatario = Persona::with("tipoDocumentoIdentidad", "cuentaPersona.banco.contribuyente", "cuentaPersona.tipoCuenta", "cuentaPersona.moneda")->where([["nro_documento", $nroDocumento], ["estado", "!=", 7]])->get();
+        } elseif ($idTipoDestinatario == 2) { // tipo contribuyente
+            $destinatario =  Contribuyente::with("tipoDocumentoIdentidad", "cuentaContribuyente.banco.contribuyente", "cuentaContribuyente.tipoCuenta")->where([["nro_documento", $nroDocumento], ["estado", "!=", 7]])->get();
+        } else {
+            $tipo_estado = "error";
+            $mensaje = 'no se recibio un valor valido para tipo de destinatario';
         }
 
-        if($destinatario->count() == 1){
-            $tipo_estado="success";
-            $mensaje='Destinatario encontrado';
-        }elseif($destinatario->count() >1){
-            $tipo_estado="success";
-            $mensaje='Se encontro más de un destinatario que coincide con el número de documento';
-        }else{
-            $tipo_estado="warning";
-            $mensaje='no se encontro un destinatario';
+        if ($destinatario->count() == 1) {
+            $tipo_estado = "success";
+            $mensaje = 'Destinatario encontrado';
+        } elseif ($destinatario->count() > 1) {
+            $tipo_estado = "success";
+            $mensaje = 'Se encontro más de un destinatario que coincide con el número de documento';
+        } else {
+            $tipo_estado = "warning";
+            $mensaje = 'no se encontro un destinatario';
         }
 
 
 
-        return ['data'=>$destinatario,'tipo_estado'=>$tipo_estado,'mensaje'=>$mensaje];
+        return ['data' => $destinatario, 'tipo_estado' => $tipo_estado, 'mensaje' => $mensaje];
     }
 
     function obtenerDestinatarioPorNombre(Request $request)
     {
-        $nombre= $request->nombreDestinatario;
-        $idTipoDestinatario= $request->idTipoDestinatario;
-        $destinatario =[];
-        $tipo_estado='';
-        $mensaje='';
+        $nombre = $request->nombreDestinatario;
+        $idTipoDestinatario = $request->idTipoDestinatario;
+        $destinatario = [];
+        $tipo_estado = '';
+        $mensaje = '';
 
-        if($idTipoDestinatario == 1){ // tipo persona
-            $destinatario = Persona::with("tipoDocumentoIdentidad","cuentaPersona.banco.contribuyente","cuentaPersona.tipoCuenta","cuentaPersona.moneda")->where([["nombres",'like','%'.strtoupper($nombre).'%'],["estado","!=",7]])
-            ->orWhere([["apellido_paterno",'like','%'.strtoupper($nombre).'%'],["estado","!=",7]])
-            ->orWhere([["apellido_materno",'like','%'.strtoupper($nombre).'%'],["estado","!=",7]])
-            ->get();
-
-            
-        }elseif($idTipoDestinatario ==2){ // tipo contribuyente
-            $destinatario=  Contribuyente::with("tipoDocumentoIdentidad","cuentaContribuyente.banco.contribuyente","cuentaContribuyente.tipoCuenta","tipoContribuyente")
-            ->where([["razon_social",'like','%'.strtoupper($nombre).'%'],["estado","!=",7]])->get();
-            
-            
-        }else{
-            $tipo_estado="error";
-            $mensaje='no se recibio un valor valido para tipo de destinatario';
-
+        if ($idTipoDestinatario == 1) { // tipo persona
+            $destinatario = Persona::with("tipoDocumentoIdentidad", "cuentaPersona.banco.contribuyente", "cuentaPersona.tipoCuenta", "cuentaPersona.moneda")->where([["nombres", 'like', '%' . strtoupper($nombre) . '%'], ["estado", "!=", 7]])
+                ->orWhere([["apellido_paterno", 'like', '%' . strtoupper($nombre) . '%'], ["estado", "!=", 7]])
+                ->orWhere([["apellido_materno", 'like', '%' . strtoupper($nombre) . '%'], ["estado", "!=", 7]])
+                ->get();
+        } elseif ($idTipoDestinatario == 2) { // tipo contribuyente
+            $destinatario =  Contribuyente::with("tipoDocumentoIdentidad", "cuentaContribuyente.banco.contribuyente", "cuentaContribuyente.tipoCuenta", "tipoContribuyente")
+                ->where([["razon_social", 'like', '%' . strtoupper($nombre) . '%'], ["estado", "!=", 7]])->get();
+        } else {
+            $tipo_estado = "error";
+            $mensaje = 'no se recibio un valor valido para tipo de destinatario';
         }
 
-        if($destinatario->count() == 1){
-            $tipo_estado="success";
-            $mensaje='Destinatario encontrado';
-        }elseif($destinatario->count() >1){
-            $tipo_estado="success";
-            $mensaje='Se encontro más de un destinatario que coincide con el número de documento';
-        }else{
-            $tipo_estado="warning";
-            $mensaje='no se encontro un destinatario';
+        if ($destinatario->count() == 1) {
+            $tipo_estado = "success";
+            $mensaje = 'Destinatario encontrado';
+        } elseif ($destinatario->count() > 1) {
+            $tipo_estado = "success";
+            $mensaje = 'Se encontro más de un destinatario que coincide con el número de documento';
+        } else {
+            $tipo_estado = "warning";
+            $mensaje = 'no se encontro un destinatario';
         }
 
 
 
-        return ['data'=>$destinatario,'tipo_estado'=>$tipo_estado,'mensaje'=>$mensaje];
+        return ['data' => $destinatario, 'tipo_estado' => $tipo_estado, 'mensaje' => $mensaje];
     }
 
-    function guardarContribuyente(Request $request){
+    function guardarContribuyente(Request $request)
+    {
         try {
             DB::beginTransaction();
             $array = [];
@@ -787,9 +823,9 @@ class RequerimientoPagoController extends Controller
                 $contribuyente->razon_social = strtoupper(trim($request->nuevo_razon_social));
                 $contribuyente->telefono = trim($request->telefono);
                 $contribuyente->direccion_fiscal = trim($request->direccion_fiscal);
-                $contribuyente->fecha_registro= date('Y-m-d H:i:s');
-                $contribuyente->estado= 1;
-                $contribuyente->transportista =false;
+                $contribuyente->fecha_registro = date('Y-m-d H:i:s');
+                $contribuyente->estado = 1;
+                $contribuyente->transportista = false;
                 $contribuyente->save();
 
                 $array = array(
@@ -812,7 +848,8 @@ class RequerimientoPagoController extends Controller
             );
         }
     }
-    function guardarPersona(Request $request){
+    function guardarPersona(Request $request)
+    {
         try {
             DB::beginTransaction();
             $array = [];
@@ -829,7 +866,7 @@ class RequerimientoPagoController extends Controller
                 );
             } else {
 
-                $persona = New Persona();
+                $persona = new Persona();
                 $persona->nro_documento = trim($request->nuevo_nro_documento);
                 $persona->id_documento_identidad = $request->id_doc_identidad;
                 $persona->nombres = strtoupper(trim($request->nuevo_nombres));
@@ -859,12 +896,13 @@ class RequerimientoPagoController extends Controller
             );
         }
     }
-    function guardarCuentaDestinatario(Request $request){ 
+    function guardarCuentaDestinatario(Request $request)
+    {
         try {
             DB::beginTransaction();
             $array = [];
 
-            if($request->id_tipo_destinatario ==1){ //tipo persona
+            if ($request->id_tipo_destinatario == 1) { //tipo persona
 
                 $cuentaPersona = new CuentaPersona();
                 $cuentaPersona->id_persona = $request->id_persona;
@@ -878,24 +916,23 @@ class RequerimientoPagoController extends Controller
                 $cuentaPersona->save();
 
                 $idCuenta = $cuentaPersona->id_cuenta_bancaria;
+            } elseif ($request->id_tipo_destinatario == 2) { //tipo contribuyente
 
-            }elseif($request->id_tipo_destinatario ==2){ //tipo contribuyente
-
-                $cuentaContribuyente= new CuentaContribuyente();
-                $cuentaContribuyente->id_contribuyente =$request->id_contribuyente;
-                $cuentaContribuyente->id_banco= $request->banco;
-                $cuentaContribuyente->id_tipo_cuenta =$request->tipo_cuenta_banco;
+                $cuentaContribuyente = new CuentaContribuyente();
+                $cuentaContribuyente->id_contribuyente = $request->id_contribuyente;
+                $cuentaContribuyente->id_banco = $request->banco;
+                $cuentaContribuyente->id_tipo_cuenta = $request->tipo_cuenta_banco;
                 $cuentaContribuyente->nro_cuenta = trim($request->nro_cuenta);
                 $cuentaContribuyente->nro_cuenta_interbancaria = trim($request->nro_cuenta_interbancaria);
                 $cuentaContribuyente->id_moneda = $request->moneda;
-                $cuentaContribuyente->fecha_registro= date('Y-m-d H:i:s');
-                $cuentaContribuyente->estado=1;
+                $cuentaContribuyente->fecha_registro = date('Y-m-d H:i:s');
+                $cuentaContribuyente->estado = 1;
                 $cuentaContribuyente->save();
 
                 $idCuenta = $cuentaContribuyente->id_cuenta_contribuyente;
             }
 
-            if ($idCuenta >0 ) {
+            if ($idCuenta > 0) {
                 $array = array(
                     'id_cuenta' => $idCuenta,
                     'id_tipo_destinatario' => $request->id_tipo_destinatario,
@@ -909,8 +946,6 @@ class RequerimientoPagoController extends Controller
                     'tipo_estado' => 'warning',
                     'mensaje' => 'Hubo un problema al intentar guardar la cuenta',
                 );
-
-
             }
             DB::commit();
             return response()->json($array);
@@ -928,44 +963,43 @@ class RequerimientoPagoController extends Controller
         }
     }
 
-    function obtenerCuentaPersona($idPersona){
+    function obtenerCuentaPersona($idPersona)
+    {
         // $data =DB::connection('pgsql_rrhh')->table('rrhh.rrhh_perso')->where('id_persona', $idPersona)->get();
         // return $data;
-        $data= CuentaPersona::with("banco.contribuyente","moneda","tipoCuenta")->where([["id_persona",$idPersona],["estado","!=",7]])->get();
-        if(!empty($data) && $data->count() > 0){
-            $array=[
-            'tipo_estado'=>'success',
-            'data'=>$data,
-            'mensaje'=>'Ok',
-        ];
-
-        }else{
+        $data = CuentaPersona::with("banco.contribuyente", "moneda", "tipoCuenta")->where([["id_persona", $idPersona], ["estado", "!=", 7]])->get();
+        if (!empty($data) && $data->count() > 0) {
             $array = [
-                'tipo_estado'=>'warning',
-                'data'=>[],
-                'mensaje'=>'Sin cuentas bancarias para mostrar',
+                'tipo_estado' => 'success',
+                'data' => $data,
+                'mensaje' => 'Ok',
+            ];
+        } else {
+            $array = [
+                'tipo_estado' => 'warning',
+                'data' => [],
+                'mensaje' => 'Sin cuentas bancarias para mostrar',
             ];
         }
         return $array;
     }
-    function obtenerCuentaContribuyente($idContribuyente){
+    function obtenerCuentaContribuyente($idContribuyente)
+    {
 
-        $data= CuentaContribuyente::with("banco.contribuyente","moneda","tipoCuenta")->where([["id_contribuyente",$idContribuyente],["estado","!=",7]])->get();
-        if(!empty($data) && $data->count() > 0){
-            $array=[
-            'tipo_estado'=>'success',
-            'data'=>$data,
-            'mensaje'=>'Ok',
-        ];
-
-        }else{
+        $data = CuentaContribuyente::with("banco.contribuyente", "moneda", "tipoCuenta")->where([["id_contribuyente", $idContribuyente], ["estado", "!=", 7]])->get();
+        if (!empty($data) && $data->count() > 0) {
             $array = [
-                'tipo_estado'=>'warning',
-                'data'=>[],
-                'mensaje'=>'Sin cuentas bancarias para mostrar',
+                'tipo_estado' => 'success',
+                'data' => $data,
+                'mensaje' => 'Ok',
+            ];
+        } else {
+            $array = [
+                'tipo_estado' => 'warning',
+                'data' => [],
+                'mensaje' => 'Sin cuentas bancarias para mostrar',
             ];
         }
         return $array;
     }
-
 }
