@@ -597,7 +597,7 @@ class ListarRequerimientoPagoView {
     agregarServicio(data = null) {
         // console.log( data.adjunto);
         let idFila = data != null && data.id_requerimiento_pago_detalle > 0 ? data.id_requerimiento_pago_detalle : (this.makeId());
-        let cantidadAdjuntos = (data.adjunto).filter((element, i) => element.id_estado != 7).length;
+        let cantidadAdjuntos = data != null && data.adjunto ? (data.adjunto).filter((element, i) => element.id_estado != 7).length:0;
         
         document.querySelector("tbody[id='body_detalle_requerimiento_pago']").insertAdjacentHTML('beforeend', `<tr style="background-color:${data != null && data.id_estado == '7' ? '#f1d7d7' : ''}; text-align:center">
         <td>    
