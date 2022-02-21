@@ -650,23 +650,25 @@ class ListarRequerimientoPagoView {
         </td>
         </tr>`);
 
+        if(data != null && data.id_requerimiento_pago_detalle >0){
 
-        this.getAdjuntosRequerimientoPagoDetalle(data.id_requerimiento_pago_detalle).then((adjuntoList) => {
-            (adjuntoList).forEach(element => {
-                if(element.id_estado !=7){ // omitir anulados
-
-                tempArchivoAdjuntoRequerimientoPagoDetalleList.push({
-                    id: element.id_requerimiento_pago_detalle_adjunto,
-                    id_requerimiento_pago_detalle: element.id_requerimiento_pago_detalle,
-                    nameFile: element.archivo,
-                    action: '',
-                    file: []
+            this.getAdjuntosRequerimientoPagoDetalle(data.id_requerimiento_pago_detalle).then((adjuntoList) => {
+                (adjuntoList).forEach(element => {
+                    if(element.id_estado !=7){ // omitir anulados
+    
+                    tempArchivoAdjuntoRequerimientoPagoDetalleList.push({
+                        id: element.id_requerimiento_pago_detalle_adjunto,
+                        id_requerimiento_pago_detalle: element.id_requerimiento_pago_detalle,
+                        nameFile: element.archivo,
+                        action: '',
+                        file: []
+                    });
+                }
                 });
-            }
-            });
-        }).catch(function (err) {
-            console.log(err)
-        })
+            }).catch(function (err) {
+                console.log(err)
+            })
+        }
     }
 
 
