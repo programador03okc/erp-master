@@ -159,7 +159,6 @@ Listado de requerimientos de compra
 <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
 <script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
 
-<script src="{{ asset('js/logistica/requerimiento/ArchivoAdjunto.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/ArchivoAdjunto.js'))}}"></script>
 <!-- <script src="{{ asset('js/logistica/requerimiento/TrazabilidadRequerimientoView.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/TrazabilidadRequerimientoView.js'))}}"></script> -->
 <!-- <script src="{{ asset('js/logistica/requerimiento/AprobarRequerimientoView.js')}}"></script> -->
 <script src="{{ asset('js/logistica/requerimiento/ListarRequerimientoView.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/ListarRequerimientoView.js'))}}"></script>

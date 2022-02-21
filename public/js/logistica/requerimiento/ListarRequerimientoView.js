@@ -51,6 +51,12 @@ class ListarRequerimientoView {
         $('#ListaRequerimientosElaborados').on("click", "button.handleClickImprimirRequerimientoPdf", (e) => {
             this.imprimirRequerimientoPdf(e.currentTarget);
         });
+        $('#modal-adjuntar-archivos-requerimiento').on("click", "button.handleClickDescargarArchivoRequerimientoCabecera", (e) => {
+            this.descargarArchivoRequerimiento(e.currentTarget);
+        });
+        $('#modal-adjuntar-archivos-detalle-requerimiento').on("click", "button.handleClickDescargarArchivoRequerimientoDetalle", (e) => {
+            this.descargarArchivoItem(e.currentTarget);
+        });
 
 
 
@@ -658,7 +664,7 @@ class ListarRequerimientoView {
                     <td style="text-align:left;">${element.categoria_adjunto}</td>
                     <td style="text-align:center;">
                         <div class="btn-group" role="group">`;
-                    html += `<button type="button" class="btn btn-info btn-md" name="btnDescargarArchivoItem" title="Descargar" onclick="ArchivoAdjunto.descargarArchivoRequerimiento('${element.id}');" ><i class="fas fa-paperclip"></i></button>`;
+                    html += `<button type="button" class="btn btn-info btn-md handleClickDescargarArchivoRequerimientoCabecera" name="btnDescargarArchivoCabecera" title="Descargar" data-id="${element.id}" ><i class="fas fa-paperclip"></i></button>`;
                     html += `</div>
                     </td>
                     </tr>`;
@@ -669,6 +675,30 @@ class ListarRequerimientoView {
         document.querySelector("tbody[id='body_archivos_requerimiento']").insertAdjacentHTML('beforeend', html)
 
     }
+
+    descargarArchivoRequerimiento(obj) {
+        if(obj.dataset.id>0){
+            if (tempArchivoAdjuntoRequerimientoList.length > 0) {
+                tempArchivoAdjuntoRequerimientoList.forEach(element => {
+                    if (element.id == obj.dataset.id) {
+                        window.open("/files/necesidades/requerimientos/bienes_servicios/cabecera/" + element.nameFile);
+                    }
+                });
+            }
+        }
+    }
+
+    descargarArchivoItem(obj) {
+        if(obj.dataset.id>0){
+        if (tempArchivoAdjuntoItemList.length > 0) {
+            tempArchivoAdjuntoItemList.forEach(element => {
+                if (element.id == obj.dataset.id) {
+                    window.open("/files/necesidades/requerimientos/bienes_servicios/detalle/" + element.nameFile);
+                }
+            });
+        }
+    }
+}
 
     construirSeccionItemsDeRequerimiento(data, simboloMoneda) {
         this.limpiarTabla('listaDetalleRequerimientoModal');
@@ -737,7 +767,7 @@ class ListarRequerimientoView {
                 <td style="text-align:center;">
                     <div class="btn-group" role="group">`;
                 if (Number.isInteger(element.id)) {
-                    html += `<button type="button" class="btn btn-info btn-md" name="btnDescargarArchivoItem" title="Descargar" onclick="ArchivoAdjunto.descargarArchivoItem('${element.id}');" ><i class="fas fa-paperclip"></i></button>`;
+                    html += `<button type="button" class="btn btn-info btn-md handleClickDescargarArchivoRequerimientoDetalle" name="btnDescargarArchivoDetalle" title="Descargar" data-id="${element.id}" ><i class="fas fa-paperclip"></i></button>`;
                 }
                 html += `</div>
                 </td>
