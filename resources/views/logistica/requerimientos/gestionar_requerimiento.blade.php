@@ -79,8 +79,8 @@ Crear / editar requerimiento
                         <span class="label label-default" id="estado_doc"></span>
                         <span class="label label-success" id="nro_occ_softlink"></span>
                         <button type="button" name="btn-imprimir-requerimento-pdf" class="btn btn-info btn-sm handleClickImprimirRequerimientoPdf" title="Imprimir requerimiento en .pdf" disabled><i class="fas fa-print"></i> Imprimir</button>
-                        <button type="button" name="btn-adjuntos-requerimiento" class="btn btn-sm btn-warning handleClickAdjuntarArchivoRequerimiento" title="Archivos adjuntos" disabled><i class="fas fa-paperclip"></i>
-                            <span class="badge" name="cantidadAdjuntosRequerimiento" style="position:absolute; right: 74px; border: solid 0.1px;">0</span>
+                        <button type="button" name="btn-adjuntos-requerimiento" class="btn btn-sm btn-warning handleClickAdjuntarArchivoCabecera" title="Archivos adjuntos" disabled><i class="fas fa-paperclip"></i>
+                            <span class="badge" name="cantidadAdjuntosCabeceraRequerimiento" style="position:absolute; right: 74px; border: solid 0.1px;">0</span>
                             Adjuntos
                         </button>
                     </div>
@@ -660,7 +660,6 @@ Crear / editar requerimiento
 <script src="{{ asset('js/publico/consulta_sunat.js')}}"></script>
 <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
-<script src="{{ asset('js/logistica/requerimiento/ArchivoAdjunto.js?v=3')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/TrazabilidadRequerimientoView.js?v=3')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/RequerimientoView.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/RequerimientoView.js'))}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/RequerimientoController.js?v=3')}}"></script>

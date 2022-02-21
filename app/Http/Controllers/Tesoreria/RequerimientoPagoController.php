@@ -490,8 +490,7 @@ class RequerimientoPagoController extends Controller
             }
 
 
-            // $this->guardarAdjuntoRequerimientoPagoCabecera($requerimientoPago, $requerimientoPago->codigo);
-            // guardando adjuntos nuevos
+             // guardando adjuntos nuevos
             if (($requerimientoPago->adjuntoOtrosAdjuntosGuardar != null ? (count($requerimientoPago->adjuntoOtrosAdjuntosGuardar)) : 0) > 0) {
                 $this->subirYRegistrarArchivoCabecera($requerimientoPago->id_requerimiento_pago, $requerimientoPago->adjuntoOtrosAdjuntosGuardar, $requerimientoPago->codigo, 1);
             }
@@ -530,7 +529,7 @@ class RequerimientoPagoController extends Controller
             if (count($detalleArray) > 0) {
                 for ($i = 0; $i < count($detalleArray); $i++) {
 
-                    $archivos = $request->{"archivoAdjuntoRequerimientoPagoDetalleCrear" . $detalleArray[$i]['idRegister']};
+                    $archivos = $request->{"archivoAdjuntoRequerimientoPagoDetalleGuardar" . $detalleArray[$i]['idRegister']};
 
                     if (isset($archivos)) {
                         foreach ($archivos as $archivo) {

@@ -103,6 +103,17 @@ class RequerimientoController extends Controller
         return Presupuesto::mostrarPartidas($idGrupo, $idProyecto);
     }
 
+    function listaAdjuntosRequerimientoCabecera($idRequerimiento)
+    {
+        $data = AdjuntoRequerimiento::where([['id_requerimiento', $idRequerimiento], ['estado', '!=', 7]])->with('categoriaAdjunto')->get();
+        return response()->json($data);
+    }
+    function listaAdjuntosRequerimientoDetalle($idDetalleRequerimiento)
+    {
+        $data = AdjuntoDetalleRequerimiento::where([['id_detalle_requerimiento', $idDetalleRequerimiento], ['estado', '!=', 7]])->get();
+        return response()->json($data);
+    }
+
     public function mostrarCategoriaAdjunto()
     {
         return CategoriaAdjunto::mostrar();
@@ -682,24 +693,9 @@ class RequerimientoController extends Controller
             }
             $trazabilidad->save();
 
-            $adjuntosRequerimiento = $this->guardarAdjuntoNivelRequerimiento($requerimiento);
 
-            $adjuntoDetelleRequerimiento = [];
-            for ($i = 0; $i < count($detalleArray); $i++) {
-                $archivos = $request->{"archivoAdjuntoItem" . $detalleArray[$i]['idRegister']};
-                if (isset($archivos)) {
-                    foreach ($archivos as $archivo) {
-                        $adjuntoDetelleRequerimiento[] = [
-                            'id_detalle_requerimiento' => $detalleArray[$i]['id_detalle_requerimiento'],
-                            'nombre_archivo' => $archivo->getClientOriginalName(),
-                            'archivo' => $archivo
-                        ];
-                    }
-                }
-            }
-            if (count($adjuntoDetelleRequerimiento) > 0) {
-                $this->guardarAdjuntoNivelDetalleItem($adjuntoDetelleRequerimiento);
-            }
+
+ 
 
             // notificar al primer aprobante del requerimiento creado
 
@@ -730,10 +726,33 @@ class RequerimientoController extends Controller
             DB::commit();
 
             $codigo= Requerimiento::crearCodigo($request->tipo_requerimiento,$request->id_grupo, $requerimiento->id_requerimiento);
-            $requerimiento = Requerimiento::find($requerimiento->id_requerimiento);
-            $requerimiento->codigo =$codigo;
-            $requerimiento->save();
-    
+            $req= Requerimiento::find($requerimiento->id_requerimiento);
+            $req->codigo =$codigo;
+            $req->save();
+
+            $this->guardarAdjuntoNivelRequerimiento($requerimiento,$codigo);
+
+            $adjuntoDetelleRequerimiento = [];
+
+            for ($i = 0; $i < count($detalleArray); $i++) {
+
+                $archivos = $request->{"archivoAdjuntoRequerimientoDetalleGuardar" . $detalleArray[$i]['idRegister']};
+                if (isset($archivos)) {
+
+                    foreach ($archivos as $archivo) {
+                        $adjuntoDetelleRequerimiento[] = [
+                            'id_detalle_requerimiento' => $detalleArray[$i]['id_detalle_requerimiento'],
+                            'nombre_archivo' => $archivo->getClientOriginalName(),
+                            'archivo' => $archivo
+                        ];
+                    }
+                }
+            }
+
+            if (count($adjuntoDetelleRequerimiento) > 0) {
+                $this->guardarAdjuntoNivelDetalleItem($adjuntoDetelleRequerimiento,$codigo);
+            }
+
             return response()->json(['id_requerimiento' => $requerimiento->id_requerimiento, 'mensaje' => 'Se guardó el requerimiento '.$codigo]);
         } catch (Exception $e) {
             DB::rollBack();
@@ -821,130 +840,68 @@ class RequerimientoController extends Controller
         }
     }
 
-    public static function guardarAdjuntoNivelRequerimiento($requerimiento)
+    public function guardarAdjuntoNivelRequerimiento($requerimiento,$codigoRequerimiento)
     {
         $adjuntoOtrosAdjuntosLength = $requerimiento->adjuntoOtrosAdjuntos != null ? count($requerimiento->adjuntoOtrosAdjuntos) : 0;
+
         $adjuntoOrdenesLength = $requerimiento->adjuntoOrdenes != null ? count($requerimiento->adjuntoOrdenes) : 0;
         $adjuntoComprobanteContableLength = $requerimiento->adjuntoComprobanteContable != null ? count($requerimiento->adjuntoComprobanteContable) : 0;
         $adjuntoComprobanteBancarioLength = $requerimiento->adjuntoComprobanteBancario != null ? count($requerimiento->adjuntoComprobanteBancario) : 0;
 
-
         if ($adjuntoOtrosAdjuntosLength > 0) {
-            foreach ($requerimiento->adjuntoOtrosAdjuntos as $archivo) {
-                if ($archivo != null) {
-                    $fechaHoy = new Carbon();
-                    $sufijo = $fechaHoy->format('YmdHis');
-                    $file = $archivo->getClientOriginalName();
-                    $filename = pathinfo($file, PATHINFO_FILENAME);
-                    $extension = pathinfo($file, PATHINFO_EXTENSION);
-                    $newNameFile = $filename . '_' . $sufijo . '.' . $extension;
-                    $otrosAdjuntos = DB::table('almacen.alm_req_adjuntos')->insertGetId(
-                        [
-                            'id_requerimiento'          => $requerimiento->id_requerimiento,
-                            'archivo'                   => $newNameFile,
-                            'estado'                    => 1,
-                            'categoria_adjunto_id'      => 1,
-                            'fecha_registro'            => $fechaHoy
-                        ],
-                        'id_adjunto'
-                    );
-                    Storage::disk('archivos')->put("necesidades/requerimientos/bienes_servicios/cabecera/" . $newNameFile, File::get($archivo));
-                }
-            }
+            $this->subirYRegistrarArchivoCabeceraRequerimiento($requerimiento->id_requerimiento, $requerimiento->adjuntoOtrosAdjuntos, $codigoRequerimiento, 1);
         }
-        $ordenesAdjuntos = 0;
-        $comprobanteContableAdjuntos = 0;
-        $comprobanteBancarioAdjunto = 0;
-        $comprobanteBancarioAdjunto = 0;
-
         if ($adjuntoOrdenesLength > 0) {
-            foreach ($requerimiento->adjuntoOrdenes as $archivo) {
-                if ($archivo != null) {
-
-                    $fechaHoy = new Carbon();
-                    $sufijo = $fechaHoy->format('YmdHis');
-                    $file = $archivo->getClientOriginalName();
-                    $filename = pathinfo($file, PATHINFO_FILENAME);
-                    $extension = pathinfo($file, PATHINFO_EXTENSION);
-                    $newNameFile = $filename . '_' . $sufijo . '.' . $extension;
-                    $ordenesAdjuntos = DB::table('almacen.alm_req_adjuntos')->insertGetId(
-                        [
-                            'id_requerimiento'          => $requerimiento->id_requerimiento,
-                            'archivo'                   => $newNameFile,
-                            'estado'                    => 1,
-                            'categoria_adjunto_id'      => 2,
-                            'fecha_registro'            => $fechaHoy
-                        ],
-                        'id_adjunto'
-                    );
-                    Storage::disk('archivos')->put("necesidades/requerimientos/bienes_servicios/cabecera/" . $newNameFile, File::get($archivo));
-                }
-            }
+            $this->subirYRegistrarArchivoCabeceraRequerimiento($requerimiento->id_requerimiento, $requerimiento->adjuntoOrdenes, $codigoRequerimiento, 2);
         }
         if ($adjuntoComprobanteContableLength > 0) {
-            foreach ($requerimiento->adjuntoComprobanteContable as $archivo) {
-                if ($archivo != null) {
-                    $fechaHoy = new Carbon();
-                    $sufijo = $fechaHoy->format('YmdHis');
-                    $file = $archivo->getClientOriginalName();
-                    $filename = pathinfo($file, PATHINFO_FILENAME);
-                    $extension = pathinfo($file, PATHINFO_EXTENSION);
-                    $newNameFile = $filename . '_' . $sufijo . '.' . $extension;
-                    $comprobanteContableAdjuntos = DB::table('almacen.alm_req_adjuntos')->insertGetId(
-                        [
-                            'id_requerimiento'          => $requerimiento->id_requerimiento,
-                            'archivo'                   => $newNameFile,
-                            'estado'                    => 1,
-                            'categoria_adjunto_id'      => 3,
-                            'fecha_registro'            => $fechaHoy
-                        ],
-                        'id_adjunto'
-                    );
-                    Storage::disk('archivos')->put("necesidades/requerimientos/bienes_servicios/cabecera/" . $newNameFile, File::get($archivo));
-                }
-            }
+            $this->subirYRegistrarArchivoCabeceraRequerimiento($requerimiento->id_requerimiento, $requerimiento->adjuntoComprobanteContable, $codigoRequerimiento, 3);
         }
         if ($adjuntoComprobanteBancarioLength > 0) {
-            foreach ($requerimiento->adjuntoComprobanteBancario as $archivo) {
-                if ($archivo != null) {
-                    $fechaHoy = new Carbon();
-                    $sufijo = $fechaHoy->format('YmdHis');
-                    $file = $archivo->getClientOriginalName();
-                    $filename = pathinfo($file, PATHINFO_FILENAME);
-                    $extension = pathinfo($file, PATHINFO_EXTENSION);
-                    $newNameFile = $filename . '_' . $sufijo . '.' . $extension;
-                    $comprobanteBancarioAdjunto = DB::table('almacen.alm_req_adjuntos')->insertGetId(
-                        [
-                            'id_requerimiento'          => $requerimiento->id_requerimiento,
-                            'archivo'                   => $newNameFile,
-                            'estado'                    => 1,
-                            'categoria_adjunto_id'      => 4,
-                            'fecha_registro'            => $fechaHoy
-                        ],
-                        'id_adjunto'
-                    );
-                    Storage::disk('archivos')->put("necesidades/requerimientos/bienes_servicios/cabecera/" . $newNameFile, File::get($archivo));
-                }
-            }
+            $this->subirYRegistrarArchivoCabeceraRequerimiento($requerimiento->id_requerimiento, $requerimiento->adjuntoComprobanteBancario, $codigoRequerimiento, 4);
         }
-
-
-        return response()->json($ordenesAdjuntos);
     }
 
-    public static function guardarAdjuntoNivelDetalleItem($adjuntoDetelleRequerimiento)
+    function subirYRegistrarArchivoCabeceraRequerimiento($idRequerimiento, $adjunto, $codigoRequerimiento, $idCategoria)
+    {
+
+        foreach ($adjunto as $key => $archivo) {
+            if ($archivo != null) {
+                $fechaHoy = new Carbon();
+                $sufijo = $fechaHoy->format('YmdHis');
+                $file = $archivo->getClientOriginalName();
+                $codigo = $codigoRequerimiento;
+                $extension = pathinfo($file, PATHINFO_EXTENSION);
+                $newNameFile = $codigo . '_' . $key . $idCategoria . $sufijo . '.' . $extension;
+                Storage::disk('archivos')->put("necesidades/requerimientos/bienes_servicios/cabecera/" . $newNameFile, File::get($archivo));
+
+                DB::table('almacen.alm_req_adjuntos')->insertGetId(
+                    [
+                        'id_requerimiento'     => $idRequerimiento,
+                        'archivo'                   => $newNameFile,
+                        'estado'                 => 1,
+                        'categoria_adjunto_id'      => $idCategoria,
+                        'fecha_registro'            => $fechaHoy
+                    ],
+                    'id_adjunto'
+                );
+            }
+        }
+    }
+
+    public static function guardarAdjuntoNivelDetalleItem($adjuntoDetelleRequerimiento,$codigoRequerimiento)
     {
         $detalleAdjuntos = 0;
         if (count($adjuntoDetelleRequerimiento) > 0) {
-            foreach ($adjuntoDetelleRequerimiento as $adjunto) {
+            foreach ($adjuntoDetelleRequerimiento as $key => $adjunto) {
                 $fechaHoy = new Carbon();
                 $sufijo = $fechaHoy->format('YmdHis');
-                // $NameFile = $adjunto['nombre_archivo'];
-
                 $file = $adjunto['archivo']->getClientOriginalName();
-                $filename = pathinfo($file, PATHINFO_FILENAME);
+                // $filename = pathinfo($file, PATHINFO_FILENAME);
+                $codigo = $codigoRequerimiento;
+
                 $extension = pathinfo($file, PATHINFO_EXTENSION);
-                $newNameFile = $filename . '_' . $sufijo . '.' . $extension;
+                $newNameFile = $codigo . '_' . $key . $sufijo . '.' . $extension;
 
                 $detalleAdjuntos = DB::table('almacen.alm_det_req_adjuntos')->insertGetId(
                     [
@@ -1008,12 +965,12 @@ class RequerimientoController extends Controller
             $requerimiento->estado = 1;
         }
         $requerimiento->save();
-        $requerimiento->adjuntoOtrosAdjuntos = $request->archivoAdjuntoRequerimiento1;
-        $requerimiento->adjuntoOrdenes = $request->archivoAdjuntoRequerimiento2;
-        $requerimiento->adjuntoComprobanteBancario = $request->archivoAdjuntoRequerimiento3;
-        $requerimiento->adjuntoComprobanteContable = $request->archivoAdjuntoRequerimiento4;
+        $requerimiento->adjuntoOtrosAdjuntos = $request->archivoAdjuntoRequerimientoCabeceraFileGuardar1;
+        $requerimiento->adjuntoOrdenes = $request->archivoAdjuntoRequerimientoCabeceraFileGuardar2;
+        $requerimiento->adjuntoComprobanteBancario = $request->archivoAdjuntoRequerimientoCabeceraFileGuardar3;
+        $requerimiento->adjuntoComprobanteContable = $request->archivoAdjuntoRequerimientoCabeceraFileGuardar4;
 
-        $adjuntosRequerimiento = $this->guardarAdjuntoNivelRequerimiento($requerimiento);
+        $adjuntosRequerimiento = $this->guardarAdjuntoNivelRequerimiento($requerimiento,$requerimiento->codigo);
 
 
         $todoDetalleRequerimiento = DetalleRequerimiento::where("id_requerimiento", $requerimiento->id_requerimiento)->get();
@@ -1082,46 +1039,58 @@ class RequerimientoController extends Controller
 
         //si existe nuevos adjuntos de nuevos item
 
+        $adjuntoDetelleRequerimiento = [];
         if (isset($detalleArray) && count($detalleArray) > 0) {
-            $adjuntoDetelleRequerimiento = [];
             for ($i = 0; $i < count($detalleArray); $i++) {
-                $archivos = $request->{"archivoAdjuntoItem" . $detalleArray[$i]['idRegister']};
+                $archivos = $request->{"archivoAdjuntoRequerimientoDetalleGuardar" . $detalleArray[$i]['idRegister']};
                 if (isset($archivos)) {
                     foreach ($archivos as $archivo) {
                         if ($archivo != null) {
                             $adjuntoDetelleRequerimiento[] = [
                                 'id_detalle_requerimiento' => $detalleArray[$i]['id_detalle_requerimiento'],
-                                'nombre_archivo' => $archivo->getClientOriginalName(),
+                                // 'nombre_archivo' => $archivo->getClientOriginalName(),
                                 'archivo' => $archivo
                             ];
                         }
                     }
                 }
             }
-            if (count($adjuntoDetelleRequerimiento) > 0) {
-                $this->guardarAdjuntoNivelDetalleItem($adjuntoDetelleRequerimiento);
-            }
         }
 
-        // si existen adjuntos por eliminar
-        if (count($request->archivoAdjuntoRequerimientoToDelete) > 0) {
-            foreach ($request->archivoAdjuntoRequerimientoToDelete as $id) {
-                if (preg_match('/^[0-9]+$/', $id)) {
-                    AdjuntoRequerimiento::where('id_adjunto', '=', $id)
-                    ->update(['estado' => 7]);
+        if (count($adjuntoDetelleRequerimiento) > 0) {
+            $this->guardarAdjuntoNivelDetalleItem($adjuntoDetelleRequerimiento,$requerimiento->codigo);
+        }
+
+                // adjuntos cabecera - actualizar, anular adjuntos en tabla 
+                $archivoAdjuntoRequerimientoObject = json_decode($request->archivoAdjuntoRequerimientoObject);
+                if (count($archivoAdjuntoRequerimientoObject) > 0) {
+                    foreach ($archivoAdjuntoRequerimientoObject as $ar) {
+                        if (preg_match('/^[0-9]+$/', $ar->id)) {
+                            if ($ar->action == 'ACTUALIZAR') {
+                            AdjuntoRequerimiento::where('id_adjunto', '=', $ar->id)
+                                    ->update(['categoria_adjunto_id' => $ar->category]);
+                            }
+                            if ($ar->action == 'ELIMINAR') {
+                            AdjuntoRequerimiento::where('id_adjunto', '=', $ar->id)
+                                    ->update(['estado' => 7]);
+                            }
+                        }
+                    }
+                }
+
+
+            // adjuntos detalle -anular adjuntos en tabla 
+            $archivoAdjuntoRequerimientoDetalleObject = json_decode($request->archivoAdjuntoRequerimientoDetalleObject);
+            if (count($archivoAdjuntoRequerimientoDetalleObject) > 0) {
+                foreach ($archivoAdjuntoRequerimientoDetalleObject as $ar) {
+                    if (preg_match('/^[0-9]+$/', $ar->id)) {
+                        if ($ar->action == 'ELIMINAR') {
+                            AdjuntoDetalleRequerimiento::where('id_adjunto', '=', $ar->id)
+                                ->update(['estado' => 7]);
+                        }
+                    }
                 }
             }
-        }
-        if (count($request->archivoAdjuntoItemToDelete) > 0) {
-            foreach ($request->archivoAdjuntoItemToDelete as $id) {
-                if (preg_match('/^[0-9]+$/', $id)) {
-                    AdjuntoDetalleRequerimiento::where('id_adjunto', '=', $id)
-                    ->update(['estado' => 7]);
-                }
-            }
-        }
-
-
 
         $nombreCompletoUsuario = Usuario::find(Auth::user()->id_usuario)->trabajador->postulante->persona->nombre_completo;
 
