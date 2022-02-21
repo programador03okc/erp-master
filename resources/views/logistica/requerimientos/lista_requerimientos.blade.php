@@ -26,90 +26,95 @@ Listado de requerimientos de compra
         <div class="col-md-12">
             <fieldset class="group-table">
 
-                    <div class="row" hidden>
-                        <div class="col-md-2">
-                            <h5>Elaborado por</h5>
-                            <div style="display:flex;">
-                                <select class="form-control" name="mostrar_me_all" onChange="listarRequerimientoView.handleChangeFiltroListado();">
-                                    <option value="ALL">Todos</option>
-                                    <option value="ME">Elaborados por mi</option>
-                                    <option value="REVISADO_APROBADO">Revisado/aprobados por mi</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <h5>Empresa</h5>
-                            <div style="display:flex;">
-                                <select class="form-control" name="id_empresa_select" onChange="listarRequerimientoView.handleChangeFilterEmpresaListReqByEmpresa(event); listarRequerimientoView.handleChangeFiltroListado();">
-                                    <option value="0">Elija una opción</option>
-                                    @foreach ($empresas as $emp)
-                                    <option value="{{$emp->id_empresa}}" data-url-logo="{{$emp->logo_empresa}}">{{$emp->razon_social}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <h5>Sede</h5>
-                            <div style="display:flex;">
-                                <select class="form-control" name="id_sede_select" onChange="listarRequerimientoView.handleChangeFiltroListado();">
-                                    <option value="0">Todas</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <h5>Grupo</h5>
-                            <div style="display:flex;">
-                                <select class="form-control" name="id_grupo_select" onChange="listarRequerimientoView.handleChangeFiltroListado(); listarRequerimientoView.handleChangeGrupo(event);">
-                                    <option value="0">Todas</option>
-                                    @foreach ($grupos as $grupo)
-                                    <option value="{{$grupo->id_grupo}}" >{{$grupo->descripcion}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <h5>División</h5>
-                            <div style="display:flex;">
-                                <select class="form-control" name="division_select" onChange="listarRequerimientoView.handleChangeFiltroListado();">
-                                    <option value="0">Todas</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <h5>Prioridad</h5>
-                            <div style="display:flex;">
-                                <select class="form-control" name="id_prioridad_select" onChange="listarRequerimientoView.handleChangeFiltroListado();">
-                                    <option value="0">Todas</option>
-                                    @foreach ($prioridades as $prioridad)
-                                    <option value="{{$prioridad->id_prioridad}}">{{$prioridad->descripcion}}</option>
-                                    @endforeach
-                                </select>
-
-                            </div>
+                <div class="row" hidden>
+                    <div class="col-md-2">
+                        <h5>Elaborado por</h5>
+                        <div style="display:flex;">
+                            <select class="form-control" name="mostrar_me_all" onChange="listarRequerimientoView.handleChangeFiltroListado();">
+                                <option value="ALL">Todos</option>
+                                <option value="ME">Elaborados por mi</option>
+                                <option value="REVISADO_APROBADO">Revisado/aprobados por mi</option>
+                            </select>
                         </div>
                     </div>
-                    <table class="mytable table table-hover table-condensed table-bordered table-okc-view" id="ListaRequerimientosElaborados" width="100%">
-                        <thead>
-                            <tr>
-                                <th class="text-center"></th>
-                                <th class="text-center" style="width:2%">Prio.</th>
-                                <th class="text-center" style="width:8%">Código</th>
-                                <th class="text-center" style="width:20%">Concepto</th>
-                                <th class="text-center" style="width:8%">Fecha registro</th>
-                                <th class="text-center">Fecha entrega</th>
-                                <th class="text-center">Tipo</th>
-                                <th class="text-center" style="width:10%">Empresa</th>
-                                <th class="text-center">Grupo</th>
-                                <th class="text-center">División</th>
-                                <th class="text-center">Monto Total</th>
-                                <th class="text-center">Creado por</th>
-                                <th class="text-center" style="width:5%;">Estado</th>
-                                <th class="text-center" style="width:8%">Ordenes</th>
-                                <th class="text-center" style="width:10%">Acción</th>
-                            </tr>
-                        </thead>
-                    </table>
+                    <div class="col-md-2">
+                        <h5>Empresa</h5>
+                        <div style="display:flex;">
+                            <select class="form-control" name="id_empresa_select" onChange="listarRequerimientoView.handleChangeFilterEmpresaListReqByEmpresa(event); listarRequerimientoView.handleChangeFiltroListado();">
+                                <option value="0">Elija una opción</option>
+                                @foreach ($empresas as $emp)
+                                <option value="{{$emp->id_empresa}}" data-url-logo="{{$emp->logo_empresa}}">{{$emp->razon_social}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <h5>Sede</h5>
+                        <div style="display:flex;">
+                            <select class="form-control" name="id_sede_select" onChange="listarRequerimientoView.handleChangeFiltroListado();">
+                                <option value="0">Todas</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <h5>Grupo</h5>
+                        <div style="display:flex;">
+                            <select class="form-control" name="id_grupo_select" onChange="listarRequerimientoView.handleChangeFiltroListado(); listarRequerimientoView.handleChangeGrupo(event);">
+                                <option value="0">Todas</option>
+                                @foreach ($grupos as $grupo)
+                                <option value="{{$grupo->id_grupo}}">{{$grupo->descripcion}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <h5>División</h5>
+                        <div style="display:flex;">
+                            <select class="form-control" name="division_select" onChange="listarRequerimientoView.handleChangeFiltroListado();">
+                                <option value="0">Todas</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <h5>Prioridad</h5>
+                        <div style="display:flex;">
+                            <select class="form-control" name="id_prioridad_select" onChange="listarRequerimientoView.handleChangeFiltroListado();">
+                                <option value="0">Todas</option>
+                                @foreach ($prioridades as $prioridad)
+                                <option value="{{$prioridad->id_prioridad}}">{{$prioridad->descripcion}}</option>
+                                @endforeach
+                            </select>
 
+                        </div>
+                    </div>
+                </div>
+                <div class="box box-widget">
+                    <div class="box-body">
+                        <div class="table-responsive">
+                            <table class="mytable table table-hover table-condensed table-bordered table-okc-view" id="ListaRequerimientosElaborados" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center"></th>
+                                        <th class="text-center" style="width:2%">Prio.</th>
+                                        <th class="text-center" style="width:8%">Código</th>
+                                        <th class="text-center" style="width:20%">Concepto</th>
+                                        <th class="text-center" style="width:8%">Fecha registro</th>
+                                        <th class="text-center">Fecha entrega</th>
+                                        <th class="text-center">Tipo</th>
+                                        <th class="text-center" style="width:10%">Empresa</th>
+                                        <th class="text-center">Grupo</th>
+                                        <th class="text-center">División</th>
+                                        <th class="text-center">Monto Total</th>
+                                        <th class="text-center">Creado por</th>
+                                        <th class="text-center" style="width:5%;">Estado</th>
+                                        <th class="text-center" style="width:8%">Ordenes</th>
+                                        <th class="text-center" style="width:10%">Acción</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
 
             </fieldset>
         </div>
@@ -169,28 +174,26 @@ Listado de requerimientos de compra
 
 
 <script>
-
     var roles = JSON.parse('{!!$roles!!}');
     var grupos = JSON.parse('{!!$gruposUsuario!!}');
 
- 
+
 
     $(document).ready(function() {
         seleccionarMenu(window.location);
         const requerimientoModel = new RequerimientoModel();
         const requerimientoController = new RequerimientoCtrl(requerimientoModel);
         const listarRequerimientoView = new ListarRequerimientoView(requerimientoController);
-        
+
         listarRequerimientoView.mostrar('ALL');
-        
+
         listarRequerimientoView.initializeEventHandler();
- 
+
     });
 
 
     // window.onload = function() {
     //     listarRequerimientoView.mostrar('ALL');
     // };
-
 </script>
 @endsection

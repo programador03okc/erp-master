@@ -1,5 +1,5 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-requerimiento" style="overflow-y: scroll;">
-    <div class="modal-dialog modal-lg" style="width: 80%;">
+    <div class="modal-dialog modal-lg" style="width: 90%;">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
@@ -9,45 +9,51 @@
                 <input type="hidden" name="id_requerimiento">
                 <fieldset class="group-importes">
                     <legend>Datos generales</legend>
-                    <table class="table" border="0" id="tablaDatosGenerales">
-                        <tbody>
-                            <tr>
-                                <td style="width:5%; font-weight:bold; text-align:right;">Código</td>
-                                <td id="codigo" style="width:10%;"></td>
-                                <td style="width:5%; font-weight:bold; text-align:right;">Motivo</td>
-                                <td id="concepto" style="width:auto;" colspan="2"></td>
-                                <td></td>
-                                <td style="width:5%; font-weight:bold; text-align:right;">Empresa</td>
-                                <td id="razon_social_empresa" style="width:20%;"></td>
-                            </tr>
-                            <tr>
-                                <td style="width:5%; font-weight:bold; text-align:right;">División</td>
-                                <td id="division" style="width:10%;"></td>
-                                <td style="width:5%; font-weight:bold; text-align:right;">Prioridad</td>
-                                <td id="prioridad" style="width:10%;"></td>
-                                <td style="width:14%; font-weight:bold; text-align:right;">Fecha Entrega</td>
-                                <td id="fecha_entrega" style="width:10%;"></td>
-                                <td style="width:5%; font-weight:bold; text-align:right;">Solicitado por</td>
-                                <td id="solicitado_por" style="width:15%;"></td>
-                                <!--Elmer Figueroa Arce -->
-                            </tr>
-                            <tr>
-                                <td style="width:5%; font-weight:bold; text-align:right;">Tipo Req.</td>
-                                <td id="tipo_requerimiento" style="width:5%;"></td>
-                                <td style="width:5%; font-weight:bold; text-align:right;">Periodo</td>
-                                <td id="periodo" style="width:5%;"></td>
-                                <td style="width:10%; font-weight:bold; text-align:right;">Creado por</td>
-                                <td id="creado_por" style="width:18%;"></td>
-                                <td style="width:10%; font-weight:bold; text-align:right;">Archivos adjuntos</td>
-                                <td id='adjuntosRequerimiento'>-</td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td style="width:5%; font-weight:bold; text-align:right;">Observación</td>
-                                <td id="observacion" style="width:95%;" colspan="7"></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="box box-widget">
+                        <div class="box-body">
+                            <div class="table-responsive">
+                                <table class="table" border="0" id="tablaDatosGenerales">
+                                    <tbody>
+                                        <tr>
+                                            <td style="width:5%; font-weight:bold; text-align:right;">Código</td>
+                                            <td id="codigo" style="width:10%;"></td>
+                                            <td style="width:5%; font-weight:bold; text-align:right;">Motivo</td>
+                                            <td id="concepto" style="width:auto;" colspan="2"></td>
+                                            <td></td>
+                                            <td style="width:5%; font-weight:bold; text-align:right;">Empresa</td>
+                                            <td id="razon_social_empresa" style="width:20%;"></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="width:5%; font-weight:bold; text-align:right;">División</td>
+                                            <td id="division" style="width:10%;"></td>
+                                            <td style="width:5%; font-weight:bold; text-align:right;">Prioridad</td>
+                                            <td id="prioridad" style="width:10%;"></td>
+                                            <td style="width:14%; font-weight:bold; text-align:right;">Fecha Entrega</td>
+                                            <td id="fecha_entrega" style="width:10%;"></td>
+                                            <td style="width:5%; font-weight:bold; text-align:right;">Solicitado por</td>
+                                            <td id="solicitado_por" style="width:15%;"></td>
+                                            <!--Elmer Figueroa Arce -->
+                                        </tr>
+                                        <tr>
+                                            <td style="width:5%; font-weight:bold; text-align:right;">Tipo Req.</td>
+                                            <td id="tipo_requerimiento" style="width:5%;"></td>
+                                            <td style="width:5%; font-weight:bold; text-align:right;">Periodo</td>
+                                            <td id="periodo" style="width:5%;"></td>
+                                            <td style="width:10%; font-weight:bold; text-align:right;">Creado por</td>
+                                            <td id="creado_por" style="width:18%;"></td>
+                                            <td style="width:10%; font-weight:bold; text-align:right;">Archivos adjuntos</td>
+                                            <td id='adjuntosRequerimiento'>-</td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="width:5%; font-weight:bold; text-align:right;">Observación</td>
+                                            <td id="observacion" style="width:95%;" colspan="7"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </fieldset>
 
                 <br>
@@ -55,66 +61,77 @@
                     <legend>
                         Items de requerimiento
                     </legend>
-                    <table class="table table-striped table-condensed table-bordered" id="listaDetalleRequerimientoModal">
-                        <thead>
-                            <tr>
-                                <th style="width: 2%">#</th>
-                                <th style="width: 10%">Partida</th>
-                                <th style="width: 10%">C.Costo</th>
-                                <th style="width: 5%">Part number</th>
-                                <th style="width: 30%">Descripción de item</th>
-                                <th style="width: 5%">Unidad</th>
-                                <th style="width: 5%">Cantidad</th>
-                                <th style="width: 8%">Precio U. <span name="simboloMoneda">S/</span></th>
-                                <th style="width: 8%">Subtotal</th>
-                                <th style="width: 20%">Motivo</th>
-                                <th style="width: 10%">Estado</th>
-                                <th style="width: 2%">Adjuntos</th>
-                            </tr>
-                        </thead>
-                        <tbody id="body_item_requerimiento">
-                        </tbody>
-                        <tfoot>
-                                <tr>
-                                    <td colspan="8" class="text-right"><strong>Total:</strong></td>
-                                    <td class="text-right"><span name="simbolo_moneda">S/</span><label name="total"> 0.00</label></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                            </tfoot>
-                    </table>
-
+                    <div class="box box-widget">
+                        <div class="box-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-condensed table-bordered" id="listaDetalleRequerimientoModal">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 2%">#</th>
+                                            <th style="width: 10%">Partida</th>
+                                            <th style="width: 10%">C.Costo</th>
+                                            <th style="width: 5%">Part number</th>
+                                            <th style="width: 30%">Descripción de item</th>
+                                            <th style="width: 5%">Unidad</th>
+                                            <th style="width: 5%">Cantidad</th>
+                                            <th style="width: 8%">Precio U. <span name="simboloMoneda">S/</span></th>
+                                            <th style="width: 8%">Subtotal</th>
+                                            <th style="width: 20%">Motivo</th>
+                                            <th style="width: 10%">Estado</th>
+                                            <th style="width: 2%">Adjuntos</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="body_item_requerimiento">
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="8" class="text-right"><strong>Total:</strong></td>
+                                            <td class="text-right"><span name="simbolo_moneda">S/</span><label name="total"> 0.00</label></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </fieldset>
 
                 <fieldset class="group-importes">
                     <legend style="background:#b3a705;">Historial de revisiones/aprobaciones</legend>
                     <br>
-                    <table class="table table-bordered" id="listaHistorialRevision">
-                        <thead>
-                            <tr>
-                                <th>Revisado por</th>
-                                <th>Acción</th>
-                                <th>Comentario</th>
-                                <th>Fecha revisión</th>
-                            </tr>
-                        </thead>
-                        <tbody id="body_historial_revision"></tbody>
-                    </table>
+                    <div class="box box-widget">
+                        <div class="box-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="listaHistorialRevision">
+                                    <thead>
+                                        <tr>
+                                            <th>Revisado por</th>
+                                            <th>Acción</th>
+                                            <th>Comentario</th>
+                                            <th>Fecha revisión</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="body_historial_revision"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </fieldset>
 
                 <fieldset class="group-importes" id="group-acciones">
                     <legend>Revisar</legend>
                     <br>
                     <div class="form-horizontal">
-                    <input type="hidden" name="idRequerimiento">
-                    <input type="hidden" name="idDocumento">
-                    <input type="hidden" name="idUsuario">
-                    <input type="hidden" name="idRolAprobante">
-                    <input type="hidden" name="idFlujo">
-                    <input type="hidden" name="idOperacion">
-                    <input type="hidden" name="aprobacionFinalOPendiente">
-                    <input type="hidden" name="tieneRolConSiguienteAprobacion">
+                        <input type="hidden" name="idRequerimiento">
+                        <input type="hidden" name="idDocumento">
+                        <input type="hidden" name="idUsuario">
+                        <input type="hidden" name="idRolAprobante">
+                        <input type="hidden" name="idFlujo">
+                        <input type="hidden" name="idOperacion">
+                        <input type="hidden" name="aprobacionFinalOPendiente">
+                        <input type="hidden" name="tieneRolConSiguienteAprobacion">
                         <div class="form-group">
                             <label class="col-sm-5 control-label">Acción a realizar</label>
                             <div class="col-sm-4">
@@ -137,7 +154,7 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-primary" class="close" data-dismiss="modal">Cerrar</button>
-                <button class="btn btn-success handleClickRegistrarRespuesta" id="btnRegistrarRespuesta" >Registrar respuesta</button>
+                <button class="btn btn-success handleClickRegistrarRespuesta" id="btnRegistrarRespuesta">Registrar respuesta</button>
             </div>
         </div>
     </div>

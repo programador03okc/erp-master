@@ -1,6 +1,6 @@
 <!-- Modal Centro costos -->
 <div class="modal fade" role="dialog" id="modal-centro-costos" style="overflow-y: scroll;">
-	<div class="modal-dialog" style="width: 40%;">
+	<div class="modal-dialog modal-md" >
 		<div class="modal-content">
 			<div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal-centro-costos" onClick="$('#modal-centro-costos').modal('hide');"><span aria-hidden="true">&times;</span></button>

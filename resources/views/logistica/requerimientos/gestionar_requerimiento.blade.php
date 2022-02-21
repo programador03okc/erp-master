@@ -43,7 +43,7 @@ Crear / editar requerimiento
         <input type="text" class="oculto" name="tipo_cuadro">
         <input type="text" class="oculto" name="tiene_transformacion" value=false>
         <input type="text" class="oculto" name="justificacion_generar_requerimiento">
-        <input type="text" class="oculto" name="id_grupo">
+        <input type="hidden" class="" name="id_grupo">
         <input type="text" class="oculto" name="estado">
 
 
@@ -445,130 +445,136 @@ Crear / editar requerimiento
 
 
         <br>
+        <div class="row">
+            <div class="col-sm-12">
+                <h4 style="display:flex;justify-content: space-between;">Item's de requerimiento</h4>
+                <fieldset class="group-table">
+                    <div class="btn-group" role="group" aria-label="...">
+                        <button type="button" class="btn btn-xs btn-success activation handleClickAgregarProducto" id="btn-add-producto" data-toggle="tooltip" data-placement="bottom" title="Agregar Detalle" disabled><i class="fas fa-plus"></i> Producto
+                        </button> <!--  onClick="catalogoItemsModal();" -->
+                        <button type="button" class="btn btn-xs btn-primary activation handleClickAgregarServicio" id="btn-add-servicio" data-toggle="tooltip" data-placement="bottom" title="Agregar Detalle" disabled><i class="fas fa-plus"></i> Servicio
+                        </button>
+                    </div>
+                    <div class="box box-widget">
+                        <div class="box-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-condensed table-bordered" id="ListaDetalleRequerimiento" width="100%">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 3%">#</th>
+                                            <th style="width: 10%">Partida</th>
+                                            <th style="width: 10%">C.Costo</th>
+                                            <th style="width: 10%">Part number</th>
+                                            <th>Descripción de item</th>
+                                            <th style="width: 10%">Unidad</th>
+                                            <th style="width: 6%">Cantidad</th>
+                                            <th style="width: 8%">Precio Unit.<span name="simboloMoneda">S/</span> <em>(Sin IGV)</em></th>
+                                            <th style="width: 6%">Subtotal</th>
+                                            <th style="width: 15%">Motivo</th>
+                                            <th style="width: 7%">Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="body_detalle_requerimiento">
+
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="8" class="text-right"><strong>Total:</strong></td>
+                                            <td class="text-right"><span name="simboloMoneda">S/</span><label name="total"> 0.00</label></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+        <br>
+        <fieldset class="group-table" id="group-detalle-items-transformados" hidden>
             <div class="row">
                 <div class="col-sm-12">
-                    <h4 style="display:flex;justify-content: space-between;">Item's de requerimiento</h4>
-                    <fieldset class="group-table">
-                        <div class="btn-group" role="group" aria-label="...">
-                            <button type="button" class="btn btn-xs btn-success activation handleClickAgregarProducto" id="btn-add-producto" data-toggle="tooltip" data-placement="bottom" title="Agregar Detalle" disabled><i class="fas fa-plus"></i> Producto
-                            </button> <!--  onClick="catalogoItemsModal();" -->
-                            <button type="button" class="btn btn-xs btn-primary activation handleClickAgregarServicio" id="btn-add-servicio" data-toggle="tooltip" data-placement="bottom" title="Agregar Detalle" disabled><i class="fas fa-plus"></i> Servicio
-                            </button>
-                        </div>
-                        <table class="table table-striped table-condensed table-bordered" id="ListaDetalleRequerimiento" width="100%">
+                    <fieldset class="group-importes">
+                        <legend style="background: #968a30;">
+                            <h6 name='titulo_tabla_detalle_items_transfomados'>Detalles Items Transformados</h6>
+                        </legend>
+                        <table class="mytable table table-striped table-condensed table-bordered dataTable no-footer" id="ListaDetalleItemstransformado" width="100%" style="width: 100%;background: #968a30;">
                             <thead>
                                 <tr>
-                                    <th style="width: 3%">#</th>
-                                    <th style="width: 10%">Partida</th>
-                                    <th style="width: 10%">C.Costo</th>
-                                    <th style="width: 10%">Part number</th>
-                                    <th>Descripción de item</th>
-                                    <th style="width: 10%">Unidad</th>
-                                    <th style="width: 6%">Cantidad</th>
-                                    <th style="width: 8%">Precio Unit.<span name="simboloMoneda">S/</span> <em>(Sin IGV)</em></th>
-                                    <th style="width: 6%">Subtotal</th>
-                                    <th style="width: 15%">Motivo</th>
-                                    <th style="width: 7%">Acciones</th>
+                                    <th>Part No.</th>
+                                    <th>Descripción</th>
+                                    <th>Cant.</th>
+                                    <th>Comentario</th>
+                                    <th>Acción</th>
                                 </tr>
                             </thead>
-                            <tbody id="body_detalle_requerimiento">
-
+                            <tbody>
                             </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td colspan="8" class="text-right"><strong>Total:</strong></td>
-                                    <td class="text-right"><span name="simboloMoneda">S/</span><label name="total"> 0.00</label></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                            </tfoot>
                         </table>
-                    </fieldset>
                 </div>
             </div>
-            <br>
-            <fieldset class="group-table" id="group-detalle-items-transformados" hidden>
-                <div class="row">
-                    <div class="col-sm-12">
-                        <fieldset class="group-importes">
-                            <legend style="background: #968a30;">
-                                <h6 name='titulo_tabla_detalle_items_transfomados'>Detalles Items Transformados</h6>
-                            </legend>
-                            <table class="mytable table table-striped table-condensed table-bordered dataTable no-footer" id="ListaDetalleItemstransformado" width="100%" style="width: 100%;background: #968a30;">
-                                <thead>
-                                    <tr>
-                                        <th>Part No.</th>
-                                        <th>Descripción</th>
-                                        <th>Cant.</th>
-                                        <th>Comentario</th>
-                                        <th>Acción</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
-                    </div>
+        </fieldset>
+        <fieldset class="group-table" id="group-detalle-cuadro-costos" hidden>
+            <div class="row">
+                <div class="col-sm-12">
+                    <fieldset class="group-importes">
+                        <legend style="background: #5d4d6d;">
+                            <h6 name='titulo_tabla_detalle_cc'>Detalles de cuadro de Costos</h6>
+                        </legend>
+                        <table class="mytable table table-striped table-condensed table-bordered dataTable no-footer" id="ListaDetalleCuadroCostos" width="100%" style="width: 100%;background: #f8f3f9;">
+                            <thead>
+                                <tr>
+                                    <th>Part No.</th>
+                                    <th>Descripción</th>
+                                    <th>P.V.U. O/C (sinIGV) S/</th>
+                                    <th>Flete O/C (sinIGV) S/</th>
+                                    <th>Cant.</th>
+                                    <th>Garant. meses</th>
+                                    <th>Proveedor seleccionado</th>
+                                    <th>Creado Por</th>
+                                    <th>Fecha Creación</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
                 </div>
-            </fieldset>
-            <fieldset class="group-table" id="group-detalle-cuadro-costos" hidden>
-                <div class="row">
-                    <div class="col-sm-12">
-                        <fieldset class="group-importes">
-                            <legend style="background: #5d4d6d;">
-                                <h6 name='titulo_tabla_detalle_cc'>Detalles de cuadro de Costos</h6>
-                            </legend>
-                            <table class="mytable table table-striped table-condensed table-bordered dataTable no-footer" id="ListaDetalleCuadroCostos" width="100%" style="width: 100%;background: #f8f3f9;">
-                                <thead>
-                                    <tr>
-                                        <th>Part No.</th>
-                                        <th>Descripción</th>
-                                        <th>P.V.U. O/C (sinIGV) S/</th>
-                                        <th>Flete O/C (sinIGV) S/</th>
-                                        <th>Cant.</th>
-                                        <th>Garant. meses</th>
-                                        <th>Proveedor seleccionado</th>
-                                        <th>Creado Por</th>
-                                        <th>Fecha Creación</th>
-                                        <th>Acción</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
-                    </div>
-                </div>
-            </fieldset>
+            </div>
+        </fieldset>
 
         <div class="row">
             <div class="col-md-6">
-                    <h4 style="display:flex;justify-content: space-between;">Partidas activas</h4>
-                        <fieldset class="group-table">
-                            <table class="table table-striped table-bordered" id="listaPartidasActivas" width="100%">
-                                <thead>
-                                    <tr>
-                                        <th width="10">Codigo</th>
-                                        <th width="70">Descripción</th>
-                                        <th width="10">Presupuesto Total</th>
-                                        <th width="10">Presupuesto Utilizado</th>
-                                        <th width="10">Saldo</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="body_partidas_activas">
-                                </tbody>
-                            </table>
-                        </fieldset>
-                </div>
+                <h4 style="display:flex;justify-content: space-between;">Partidas activas</h4>
+                <fieldset class="group-table">
+                    <table class="table table-striped table-bordered" id="listaPartidasActivas" width="100%">
+                        <thead>
+                            <tr>
+                                <th width="10">Codigo</th>
+                                <th width="70">Descripción</th>
+                                <th width="10">Presupuesto Total</th>
+                                <th width="10">Presupuesto Utilizado</th>
+                                <th width="10">Saldo</th>
+                            </tr>
+                        </thead>
+                        <tbody id="body_partidas_activas">
+                        </tbody>
+                    </table>
+                </fieldset>
             </div>
+        </div>
 
-            <div class="row">
-                <div class="col-md-12">
-                    <button type="button" onclick="scrollToTheTopOfDocument()" id="btnVolverArriba" title="Volver Arriba"><i class="fas fa-arrow-circle-up"></i></button>
-                    <!-- <button type="submit" class="btn-okc" id="btnGuardar"><i class="fas fa-save fa-lg"></i> Guardar</button> -->
-                </div>
+        <div class="row">
+            <div class="col-md-12">
+                <button type="button" onclick="scrollToTheTopOfDocument()" id="btnVolverArriba" title="Volver Arriba"><i class="fas fa-arrow-circle-up"></i></button>
+                <!-- <button type="submit" class="btn-okc" id="btnGuardar"><i class="fas fa-save fa-lg"></i> Guardar</button> -->
             </div>
-            <br>
-            <div class="row" id="observaciones_requerimiento"></div>
+        </div>
+        <br>
+        <div class="row" id="observaciones_requerimiento"></div>
     </form>
 
 </div>
@@ -576,7 +582,7 @@ Crear / editar requerimiento
 <div class="hidden" id="divOculto">
     <select id="selectUnidadMedida">
         @foreach ($unidadesMedida as $unidad)
-            <option value="{{$unidad->id_unidad_medida}}">{{$unidad->descripcion}}</option>
+        <option value="{{$unidad->id_unidad_medida}}">{{$unidad->descripcion}}</option>
         @endforeach
     </select>
 </div>
@@ -691,7 +697,7 @@ Crear / editar requerimiento
         seleccionarMenu(window.location);
         var descripcion_grupo = '{{Auth::user()->getGrupo()->descripcion}}';
         var id_grupo = '{{Auth::user()->getGrupo()->id_grupo}}';
-        document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value = id_grupo;
+        document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value = id_grupo; // no borrar al limpiar con reset el form
 
 
         const requerimientoModel = new RequerimientoModel();
