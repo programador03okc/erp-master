@@ -33,18 +33,18 @@ Crear / editar requerimiento
 @section('content')
 <div class="page-main" type="requerimiento">
     <form id="form-requerimiento" type="register" enctype="multipart/form-data" form="formulario">
-        <input type="hidden" name="id_usuario_session">
-        <input type="hidden" name="id_usuario_req">
-        <input type="hidden" name="id_requerimiento" primary="ids">
-        <input type="hidden" name="cantidad_aprobaciones">
-        <input type="hidden" name="confirmacion_pago">
-        <input type="hidden" name="fecha_creacion_cc">
-        <input type="hidden" name="id_cc">
-        <input type="hidden" name="tipo_cuadro">
-        <input type="hidden" name="tiene_transformacion" value=false>
-        <input type="hidden" name="justificacion_generar_requerimiento">
-        <input type="hidden" name="id_grupo">
-        <input type="hidden" name="estado">
+        <input type="text" class="oculto" name="id_usuario_session">
+        <input type="text" class="oculto" name="id_usuario_req">
+        <input type="text" class="oculto" name="id_requerimiento" primary="ids">
+        <input type="text" class="oculto" name="cantidad_aprobaciones">
+        <input type="text" class="oculto" name="confirmacion_pago">
+        <input type="text" class="oculto" name="fecha_creacion_cc">
+        <input type="text" class="oculto" name="id_cc">
+        <input type="text" class="oculto" name="tipo_cuadro">
+        <input type="text" class="oculto" name="tiene_transformacion" value=false>
+        <input type="text" class="oculto" name="justificacion_generar_requerimiento">
+        <input type="text" class="oculto" name="id_grupo">
+        <input type="text" class="oculto" name="estado">
 
 
 
@@ -309,7 +309,7 @@ Crear / editar requerimiento
                         <div class="col-md-12">
                             <h5>Nombre</h5>
                             <div style="display:flex;">
-                                <input type="hidden" class="form-control" name="descripcion_grupo">
+                                <input type="text" class="form-control oculto" name="descripcion_grupo">
                                 <input type="text" name="codigo_proyecto" class="form-control group-elemento" style="width:130px; text-align:center;" readonly>
                                 <div class="input-group-okc">
                                     <select class="form-control activation handleChangeProyecto" name="id_proyecto">

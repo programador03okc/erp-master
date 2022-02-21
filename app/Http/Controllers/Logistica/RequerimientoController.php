@@ -2189,7 +2189,7 @@ class RequerimientoController extends Controller
         $num_doc = $this->consult_doc_aprob($req, 1);
         $total_aprob = Aprobacion::cantidadAprobaciones($num_doc);
         $total_flujo = $this->consult_tamaño_flujo($req);
-        $areaOfRolAprob = $this->getAreaOfRolAprob($num_doc, 1); //{num doc},{tp doc} 
+        $areaOfRolAprob = $this->getAreaOfRolAprob($num_doc, 1); //num doc,tp doc 
 
         $tp_doc = 1; // tipo de documento = requerimiento 
         $id_operacion = $this->get_id_operacion($id_grupo, $areaOfRolAprob['id'], $tp_doc);
@@ -2955,7 +2955,7 @@ class RequerimientoController extends Controller
 
         $num_doc = $this->consult_doc_aprob($id_requerimiento, 1);
         // $id_operacion=$this->get_id_operacion($id_grupo,$id_area,$tipo_documento);
-        $areaOfRolAprob = $this->getAreaOfRolAprob($num_doc, 1); //{num doc},{tp doc} 
+        $areaOfRolAprob = $this->getAreaOfRolAprob($num_doc, 1); //num doc,tp doc
 
         $id_operacion = $this->get_id_operacion($id_grupo, $areaOfRolAprob['id'], $tipo_documento);
 
