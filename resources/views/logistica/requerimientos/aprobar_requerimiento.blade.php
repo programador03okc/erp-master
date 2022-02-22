@@ -140,7 +140,6 @@ Revisar y aprobar requerimientos
 <script src="{{ asset('js/logistica/requerimiento/scrollToTheTopOfDocument.js') }}"></script>
 
  
-<script src="{{ asset('js/logistica/requerimiento/ArchivoAdjunto.js')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/AprobarRequerimientoView.js')}}"></script>
 <!-- <script src="{{ asset('js/logistica/requerimiento/RequerimientoView.js')}}"></script> -->
 <script src="{{ asset('js/logistica/requerimiento/RequerimientoController.js')}}"></script>

@@ -136,6 +136,16 @@ function listarDespachosPendientes(permiso) {
                     }
             },
             {
+                data: 'codigo_req', name: 'alm_req.codigo', className: "text-center",
+                'render': function (data, type, row) {
+                    return (row['codigo_req'] !== null ? row['codigo_req'] : '') + (row['estado_requerimiento'] == 38
+                        ? ' <i class="fas fa-exclamation-triangle red" data-toggle="tooltip" data-placement="bottom" title="Requerimiento por regularizar"></i> '
+                        : (row['estado_requerimiento'] == 39 ?
+                            ' <i class="fas fa-pause orange" data-toggle="tooltip" data-placement="bottom" title="Requerimiento en pausa"></i> ' : ''))
+                        + (row['tiene_transformacion'] ? ' <i class="fas fa-random red"></i>' : '');
+                }
+            },
+            {
                 data: 'fecha_despacho', name: 'orden_despacho.fecha_despacho', className: "text-center",
                 render:
                     function (data, type, row) {
@@ -158,7 +168,6 @@ function listarDespachosPendientes(permiso) {
             },
             { data: 'codigo_oportunidad', name: 'oc_propias_view.codigo_oportunidad', className: "text-center" },
             { 'data': 'razon_social', 'name': 'adm_contri.razon_social' },
-            { 'data': 'codigo_req', 'name': 'alm_req.codigo', className: "text-center" },
             { 'data': 'almacen_descripcion', 'name': 'alm_almacen.descripcion' },
             {
                 data: 'estado_doc', name: 'adm_estado_doc.bootstrap_color', className: "text-center",
@@ -173,23 +182,15 @@ function listarDespachosPendientes(permiso) {
             {
                 'render': function (data, type, row) {
 
-                    // if (permiso == '1') {
                     return `<button type="button" class="detalle btn btn-default btn-flat boton" data-toggle="tooltip"
-                                data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}">
-                                <i class="fas fa-chevron-down"></i></button>` +
+                            data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}">
+                            <i class="fas fa-chevron-down"></i></button>` +
 
-                        // (row['suma_reservas'] !== null && row['suma_cantidad'] !== null && row['suma_reservas'] >= row['suma_cantidad'] ?
-                        (`<button type="button" class="guia btn btn-warning btn-flat boton" data-toggle="tooltip" 
-                                data-placement="bottom" title="Generar Guía" >
-                                <i class="fas fa-sign-in-alt"></i></button>`)
-                    // : ''
-                    // );
+                        `<button type="button" class="guia btn btn-warning btn-flat boton" data-toggle="tooltip" 
+                            data-placement="bottom" title="Generar Guía" 
+                            ${(row['estado_requerimiento'] == 39 || row['estado_requerimiento'] == 38) ? 'disabled' : ''} >
+                            <i class="fas fa-sign-in-alt"></i></button>`
 
-                    // } else {
-                    //     return '<button type="button" class="detalle btn btn-primary btn-flat boton" data-toggle="tooltip" ' +
-                    //         'data-placement="bottom" title="Ver Detalle" >' +
-                    //         '<i class="fas fa-list-ul"></i></button>'
-                    // }
                 }, targets: 10
             }
         ],

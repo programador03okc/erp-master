@@ -82,13 +82,23 @@ function listarReservasAlmacen() {
         columns: [
             { data: 'id_reserva' },
             { data: 'codigo', className: "text-center" },
+            {
+                data: 'codigo_req', name: 'alm_req.codigo', className: "text-center",
+                'render': function (data, type, row) {
+                    return (row['codigo_req'] !== null ? row['codigo_req'] : '') + (row['estado_requerimiento'] == 38
+                        ? ' <i class="fas fa-exclamation-triangle red" data-toggle="tooltip" data-placement="bottom" title="Requerimiento por regularizar"></i> '
+                        : (row['estado_requerimiento'] == 39 ?
+                            ' <i class="fas fa-pause orange" data-toggle="tooltip" data-placement="bottom" title="Requerimiento en pausa"></i> ' : ''))
+                        + (row['tiene_transformacion'] ? ' <i class="fas fa-random red"></i>' : '');
+                }
+            },
             { data: 'part_number', name: 'alm_prod.part_number' },
             { data: 'descripcion', name: 'alm_prod.descripcion' },
             { data: 'almacen', name: 'alm_almacen.descripcion', className: "text-center" },
             { data: 'stock_comprometido', className: "text-center" },
             { data: 'nombre_corto', name: 'sis_usua.nombre_corto', className: "text-center" },
             { data: 'fecha_registro', className: "text-center" },
-            { data: 'codigo_req', name: 'alm_req.codigo', className: "text-center" },
+            // { data: 'codigo_req', name: 'alm_req.codigo', className: "text-center" },
             {
                 data: 'estado_doc', name: 'adm_estado_doc.bootstrap_color', className: "text-center",
                 'render': function (data, type, row) {

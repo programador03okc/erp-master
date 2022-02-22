@@ -24,28 +24,33 @@ Listado de requerimientos de pago
     <div class="row">
         <div class="col-md-12">
             <fieldset class="group-table">
-                    <table class="mytable table table-hover table-condensed table-bordered table-okc-view" id="ListaRequerimientoPago" width="100%">
-                        <thead>
-                            <tr>
-                                <th class="text-center"></th>
-                                <th class="text-center" style="width:2%">Prio.</th>
-                                <th class="text-center" style="width:8%">Código</th>
-                                <th class="text-center" style="width:20%">Concepto</th>
-                                <th class="text-center" style="width:15%">Tipo Req.</th>
-                                <th class="text-center" style="width:8%">Fecha registro</th>
-                                <th class="text-center" style="width:10%">Empresa</th>
-                                <th class="text-center" style="width:10%">Sede</th>
-                                <th class="text-center">Grupo</th>
-                                <th class="text-center">División</th>
-                                <th class="text-center">Monto Total</th>
-                                <th class="text-center">Creado por</th>
-                                <th class="text-center" style="width:5%;">Estado</th>
-                                <th class="text-center" style="width:10%">Acción</th>
-                            </tr>
-                        </thead>
-                    </table>
+                <div class="box box-widget">
+                    <div class="box-body">
+                        <div class="table-responsive">
+                            <table class="mytable table table-hover table-condensed table-bordered table-okc-view" id="ListaRequerimientoPago" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center"></th>
+                                        <th class="text-center" style="width:2%">Prio.</th>
+                                        <th class="text-center" style="width:8%">Código</th>
+                                        <th class="text-center" style="width:20%">Concepto</th>
+                                        <th class="text-center" style="width:15%">Tipo Req.</th>
+                                        <th class="text-center" style="width:8%">Fecha registro</th>
+                                        <th class="text-center" style="width:10%">Empresa</th>
+                                        <th class="text-center" style="width:10%">Sede</th>
+                                        <th class="text-center">Grupo</th>
+                                        <th class="text-center">División</th>
+                                        <th class="text-center">Monto Total</th>
+                                        <th class="text-center">Creado por</th>
+                                        <th class="text-center" style="width:5%;">Estado</th>
+                                        <th class="text-center" style="width:10%">Acción</th>
+                                    </tr>
+                                </thead>
+                            </table>
 
-
+                        </div>
+                    </div>
+                </div>
             </fieldset>
         </div>
     </div>
@@ -53,7 +58,7 @@ Listado de requerimientos de pago
 
 
 <div class="hidden" id="divOculto">
-    <select id="selectUnidadMedida"  onchange="updateUM(this);">
+    <select id="selectUnidadMedida" onchange="updateUM(this);">
         @foreach ($unidadesMedida as $unidad)
         <option value="{{$unidad->id_unidad_medida}}">{{$unidad->descripcion}}</option>
         @endforeach
@@ -94,8 +99,8 @@ Listado de requerimientos de pago
 
 
 <script>
-    function updateUM(val){
-        val.options[val.selectedIndex].setAttribute("selected","");
+    function updateUM(val) {
+        val.options[val.selectedIndex].setAttribute("selected", "");
     }
     var gruposUsuario = JSON.parse('{!!$gruposUsuario!!}');
 
@@ -103,15 +108,14 @@ Listado de requerimientos de pago
         seleccionarMenu(window.location);
 
         const listarRequerimientoPagoView = new ListarRequerimientoPagoView();
-        
+
         listarRequerimientoPagoView.mostrarListaRequerimientoPago('ALL');
-        
+
         listarRequerimientoPagoView.initializeEventHandler();
- 
+
     });
     // window.onload = function() {
     //     listarRequerimientoView.mostrar('ALL');
     // };
-
 </script>
 @endsection

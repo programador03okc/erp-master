@@ -602,7 +602,6 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('lista-divisiones', 'Logistica\RequerimientoController@listaDivisiones');
 				Route::get('mostrar-partidas/{idGrupo?}/{idProyecto?}', 'Logistica\RequerimientoController@mostrarPartidas')->name('mostrar-partidas');
 				Route::get('mostrar-centro-costos', 'Finanzas\CentroCosto\CentroCostoController@mostrarCentroCostosSegunGrupoUsuario')->name('mostrar-centro-costos');
-				Route::get('mostrar-categoria-adjunto', 'Logistica\RequerimientoController@mostrarCategoriaAdjunto')->name('mostrar-categoria-adjunto');
 				Route::post('guardar-requerimiento', 'Logistica\RequerimientoController@guardarRequerimiento')->name('guardar-requerimiento');
 				Route::post('actualizar-requerimiento', 'Logistica\RequerimientoController@actualizarRequerimiento')->name('actualizar-requerimiento');
 				Route::get('listar-sedes-por-empresa/{id?}', 'Logistica\RequerimientoController@listarSedesPorEmpresa')->name('listar-sedes-por-empresa');
@@ -611,6 +610,10 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('imprimir-requerimiento-pdf/{id}/{codigo}', 'Logistica\RequerimientoController@generar_requerimiento_pdf');
 				Route::put('anular-requerimiento/{id_requerimiento?}', 'Logistica\RequerimientoController@anularRequerimiento')->name('anular-requerimiento');
 
+				Route::get('mostrar-categoria-adjunto', 'Logistica\RequerimientoController@mostrarCategoriaAdjunto')->name('mostrar-categoria-adjunto');
+				Route::get('listar-adjuntos-requerimiento-cabecera/{idRequerimento}', 'Logistica\RequerimientoController@listaAdjuntosRequerimientoCabecera');
+				Route::get('listar-adjuntos-requerimiento-detalle/{idRequerimentoDetalle}', 'Logistica\RequerimientoController@listaAdjuntosRequerimientoDetalle');
+ 
 				Route::get('trazabilidad-detalle-requerimiento/{id}', 'Logistica\RequerimientoController@mostrarTrazabilidadDetalleRequerimiento');
 
 
@@ -829,7 +832,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('almacen-requeriento/{idRequerimiento?}', 'Logistica\RequerimientoController@obtenerAlmacenRequerimiento');
 					Route::get('historial-reserva-producto/{idDetalleRequerimiento?}', 'Logistica\RequerimientoController@historialReservaProducto')->name('historial-reserva-producto');
 					Route::get('todo-detalle-requeriento/{idRequerimiento?}/{transformadosONoTransformados?}', 'Logistica\RequerimientoController@todoDetalleRequerimiento')->name('todo-detalle-requerimiento');
-					Route::get('mostrar_tipos_clasificacion/{id}', 'Almacen\Catalogo\TipoProductoController@mostrar_tipos_clasificacion');
+					Route::get('mostrar_tipos_clasificacion/{id}', 'Almacen\Catalogo\TipoProductoController@mostrarCategoriasPorClasificacion');
 					Route::get('por-regularizar-cabecera/{id}', 'ComprasPendientesController@listarPorRegularizarCabecera');
 					Route::get('por-regularizar-detalle/{id}', 'ComprasPendientesController@listarPorRegularizarDetalle');
 					Route::post('realizar-remplazo-de-producto-comprometido-en-toda-orden', 'ComprasPendientesController@realizarRemplazoDeProductoEnTodaOrden');
@@ -1180,7 +1183,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('actualizar_categoria', 'Almacen\Catalogo\CategoriaController@update_categoria');
 				Route::get('anular_categoria/{id}', 'Almacen\Catalogo\CategoriaController@anular_categoria');
 				Route::get('revisarCat/{id}', 'Almacen\Catalogo\CategoriaController@cat_revisar');
-				Route::get('mostrar_tipos_clasificacion/{id}', 'Almacen\Catalogo\TipoProductoController@mostrar_tipos_clasificacion');
+				Route::get('mostrar_tipos_clasificacion/{id}', 'Almacen\Catalogo\TipoProductoController@mostrarCategoriasPorClasificacion');
 			});
 
 			Route::group(['as' => 'sub-categorias.', 'prefix' => 'sub-categorias'], function () {
@@ -1214,7 +1217,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('mostrar_prods_almacen/{id}', 'Almacen\Catalogo\ProductoController@mostrar_prods_almacen');
 				Route::get('mostrar_producto/{id}', 'Almacen\Catalogo\ProductoController@mostrar_producto');
 				Route::get('mostrar_categorias_tipo/{id}', 'Almacen\Catalogo\ProductoController@mostrar_categorias_tipo');
-				Route::get('mostrar_tipos_clasificacion/{id}', 'Almacen\Catalogo\TipoProductoController@mostrar_tipos_clasificacion');
+				Route::get('mostrar_tipos_clasificacion/{id}', 'Almacen\Catalogo\TipoProductoController@mostrarCategoriasPorClasificacion');
 				Route::post('guardar_producto', 'Almacen\Catalogo\ProductoController@guardar_producto');
 				Route::post('actualizar_producto', 'Almacen\Catalogo\ProductoController@update_producto');
 				Route::get('anular_producto/{id}', 'Almacen\Catalogo\ProductoController@anular_producto');
@@ -1356,7 +1359,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('listarProductosSugeridos', 'Almacen\Catalogo\ProductoController@listarProductosSugeridos');
 				Route::get('mostrar_prods_sugeridos/{part}/{desc}', 'Almacen\Catalogo\ProductoController@mostrar_prods_sugeridos');
 				Route::get('mostrar_categorias_tipo/{id}', 'Almacen\Catalogo\ProductoController@mostrar_categorias_tipo');
-				Route::get('mostrar_tipos_clasificacion/{id}', 'Almacen\Catalogo\TipoProductoController@mostrar_tipos_clasificacion');
+				Route::get('mostrar_tipos_clasificacion/{id}', 'Almacen\Catalogo\TipoProductoController@mostrarCategoriasPorClasificacion');
 
 				Route::get('sedesPorUsuario', 'Almacen\Movimiento\OrdenesPendientesController@sedesPorUsuario');
 				Route::post('actualizarFiltrosPendientes', 'Almacen\Movimiento\OrdenesPendientesController@actualizarFiltrosPendientes');
@@ -1468,6 +1471,7 @@ Route::group(['middleware' => ['auth']], function () {
 				// Route::get('listar_guias_compra', 'Almacen\Movimiento\TransferenciaController@listar_guias_compra');
 				Route::get('transferencia/{id}', 'Almacen\Movimiento\OrdenesPendientesController@transferencia');
 				Route::get('verGuiaCompraTransferencia/{id}', 'Almacen\Movimiento\TransferenciaController@verGuiaCompraTransferencia');
+
 				Route::get('verRequerimiento/{id}', 'Almacen\Movimiento\TransferenciaController@verRequerimiento');
 				Route::post('generarTransferenciaRequerimiento', 'Almacen\Movimiento\TransferenciaController@generarTransferenciaRequerimiento');
 				Route::get('listarSeriesGuiaVen/{id}/{alm}', 'Almacen\Movimiento\SalidasPendientesController@listarSeriesGuiaVen');

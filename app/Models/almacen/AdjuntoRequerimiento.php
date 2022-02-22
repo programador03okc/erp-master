@@ -10,4 +10,9 @@ class AdjuntoRequerimiento extends Model
     protected $primaryKey = 'id_adjunto';
     public $timestamps = false;
 
+
+    public function categoriaAdjunto()
+    {
+        return $this->belongsTo('App\Models\Almacen\CategoriaAdjunto', 'categoria_adjunto_id','id_categoria_adjunto');
+    }
 }

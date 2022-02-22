@@ -91,7 +91,7 @@ $(document).ready(function () {
 					const requerimientoView = new RequerimientoView(requerimientoController);
 					requerimientoView.RestablecerFormularioRequerimiento();
 					document.getElementsByName("btn-adjuntos-requerimiento")[0].removeAttribute('disabled');
-
+                    document.querySelector("form[id='form-requerimiento']").setAttribute('type','register');
 
 				}
 				else if (page == 'proveedores') {

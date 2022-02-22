@@ -36,10 +36,10 @@ class RequerimientoCtrl{
         return this.requerimientoModel.obtenerCentroCostos();
     }
 
-    getcategoriaAdjunto(){
-        return this.requerimientoModel.getcategoriaAdjunto();
+    // getcategoriaAdjunto(){
+    //     return this.requerimientoModel.getcategoriaAdjunto();
 
-    }
+    // }
     
     getRequerimiento(idRequerimiento){
         return this.requerimientoModel.getRequerimiento(idRequerimiento);

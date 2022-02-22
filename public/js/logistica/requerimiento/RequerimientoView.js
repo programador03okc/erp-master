@@ -1,13 +1,12 @@
 
 var tempObjectBtnPartida;
 var tempObjectBtnCentroCostos;
-var tempObjectBtnInputFile;
 var tempIdRegisterActive;
 var tempCentroCostoSelected;
-var tempArchivoAdjuntoItemList = [];
-var tempArchivoAdjuntoItemToDeleteList = [];
-var tempArchivoAdjuntoRequerimientoList = [];
-var tempArchivoAdjuntoRequerimientoToDeleteList = [];
+
+var tempArchivoAdjuntoRequerimientoCabeceraList =[];
+var tempArchivoAdjuntoRequerimientoDetalleList =[];
+var objBotonAdjuntoRequerimientoDetalleSeleccionado ='';
 class RequerimientoView {
     constructor(requerimientoCtrl){
         this.requerimientoCtrl = requerimientoCtrl;
@@ -36,8 +35,15 @@ class RequerimientoView {
 
     initializeEventHandler(){
         document.querySelector("button[class~='handleClickImprimirRequerimientoPdf']").addEventListener("click", this.imprimirRequerimientoPdf.bind(this), false);
-        document.querySelector("button[class~='handleClickAdjuntarArchivoRequerimiento']").addEventListener("click", this.adjuntarArchivoRequerimiento.bind(this), false);
 
+        $('#form-requerimiento').on("click", "button.handleClickAdjuntarArchivoCabecera", (e) => {
+            this.modalAdjuntarArchivosCabecera(e.currentTarget);
+        });
+
+        $('#modal-adjuntar-archivos-requerimiento').on("click", "button.handleClickEliminarArchivoCabeceraRequerimiento", (e) => {
+            this.eliminarArchivoRequerimientoCabecera(e.currentTarget);
+        });
+        
         document.querySelector("input[class~='handleChangeUpdateConcepto']").addEventListener("keyup", this.updateConcepto.bind(this), false);
         document.querySelector("select[class~='handleChangeUpdateMoneda']").addEventListener("change", this.changeMonedaSelect.bind(this), false);
         document.querySelector("select[class~='handleChangeOptEmpresa']").addEventListener("change", this.changeOptEmpresaSelect.bind(this), false);
@@ -67,8 +73,11 @@ class RequerimientoView {
             this.agregarAdjuntoRequerimiento(e.currentTarget);
         });
 
-        $('#modal-adjuntar-archivos-detalle-requerimiento').on("change","input.handleChangeAgregarAdjuntoItem", (e)=>{
-            this.agregarAdjuntoItem(e);
+        $('#modal-adjuntar-archivos-detalle-requerimiento').on("change","input.handleChangeAgregarAdjuntoDetalle", (e)=>{
+            this.agregarAdjuntoRequerimientoPagoDetalle(e.currentTarget);
+        });
+        $('#modal-adjuntar-archivos-detalle-requerimiento').on("click", "button.handleClickEliminarArchivoRequerimientoDetalle", (e) => {
+            this.eliminarArchivoRequerimientoDetalle(e.currentTarget);
         });
 
         $('#ListaDetalleRequerimiento tbody').on("click","button.handleClickCargarModalPartidas", (e)=>{
@@ -112,7 +121,7 @@ class RequerimientoView {
             this.updatePrecioItem(e.target);
         });
         $('#ListaDetalleRequerimiento tbody').on("click","button.handleClickAdjuntarArchivoItem", (e)=>{
-            this.adjuntarArchivoItem(e.currentTarget);
+            this.modalAdjuntarArchivosDetalle(e.currentTarget);
         });
         $('#ListaDetalleRequerimiento tbody').on("click","button.handleClickEliminarItem", (e)=>{
             this.eliminarItem(e);
@@ -273,8 +282,8 @@ class RequerimientoView {
 
     mostrarRequerimiento(data) {
         let hasDisabledInput='disabled';
-        tempArchivoAdjuntoRequerimientoToDeleteList=[];
-        tempArchivoAdjuntoItemToDeleteList=[];
+        tempArchivoAdjuntoRequerimientoCabeceraList=[];
+        tempArchivoAdjuntoRequerimientoDetalleList=[];
         if (data.hasOwnProperty('requerimiento')) {
         
             this.RestablecerFormularioRequerimiento();
@@ -412,20 +421,21 @@ class RequerimientoView {
         // document.querySelector("input[name='telefono_contacto']").value =data.
         // document.querySelector("input[name='direccion_contacto']").value =data.
         document.querySelector("textarea[name='observacion']").value = data.observacion;
-        tempArchivoAdjuntoRequerimientoList=[];
+        tempArchivoAdjuntoRequerimientoCabeceraList=[];
         if ((data.adjuntos).length > 0) {
             (data.adjuntos).forEach(element => {
-                tempArchivoAdjuntoRequerimientoList.push({
+                tempArchivoAdjuntoRequerimientoCabeceraList.push({
                     id: element.id_adjunto,
                     category: element.categoria_adjunto_id,
                     nameFile: element.archivo,
+                    action:'',
                     typeFile: null,
                     sizeFile: null,
                     file: []
                 });
 
             });
-            ArchivoAdjunto.updateContadorTotalAdjuntosRequerimiento();
+            this.updateContadorTotalAdjuntosRequerimientoCabecera();
 
         }
         let simboloMonedaPresupuestoUtilizado =document.querySelector("select[name='moneda']").options[document.querySelector("select[name='moneda']").selectedIndex].dataset.simbolo;
@@ -464,7 +474,8 @@ class RequerimientoView {
         vista_extendida();
 
         for (let i = 0; i < data.length; i++) {
-
+            // console.log(data);
+                let cantidadAdjuntos = data != null && data[i].adjuntos ? (data[i].adjuntos).filter((element, i) => element.estado != 7).length:0;
                 // fix unidad medida que toma el html de un select oculto y debe tener por defecto seleccionado el option que viene de data
                 let um=document.querySelector("select[id='selectUnidadMedida']").getElementsByTagName('option');
                 let indexUm=0;
@@ -477,6 +488,7 @@ class RequerimientoView {
                 }
                 document.querySelector("select[id='selectUnidadMedida']").getElementsByTagName('option')[indexUm].setAttribute("selected","");
                 //  fin fix unidad medida
+                let idFila = data[i].id_detalle_requerimiento > 0 ? data[i].id_detalle_requerimiento : (this.makeId());
 
                 if (data[i].id_tipo_item == 1) { // producto
                 document.querySelector("tbody[id='body_detalle_requerimiento']").insertAdjacentHTML('beforeend', `<tr style="text-align:center; background-color:${data[i].estado ==7?'#f5e4e4':''}; ">
@@ -515,10 +527,10 @@ class RequerimientoView {
                 <td>
                     <div class="btn-group" role="group">
                         <input type="hidden" class="tipoItem" name="tipoItem[]" value="1">
-                        <input type="hidden" class="idRegister" name="idRegister[]" value="${data[i].id_detalle_requerimiento}">
-                        <button type="button" class="btn btn-warning btn-xs  handleClickAdjuntarArchivoItem" name="btnAdjuntarArchivoItem[]" title="Adjuntos" >
+                        <input type="hidden" class="idRegister" name="idRegister[]" value="${idFila}">
+                        <button type="button" class="btn btn-warning btn-xs  handleClickAdjuntarArchivoItem"  data-id="${idFila}" name="btnAdjuntarArchivoItem[]" title="Adjuntos" >
                             <i class="fas fa-paperclip"></i>
-                            <span class="badge" name="cantidadAdjuntosItem" style="position:absolute; top:-10px; left:-10px; border: solid 0.1px;">0</span>    
+                            <span class="badge" name="cantidadAdjuntosItem" style="position:absolute; top:-10px; left:-10px; border: solid 0.1px;">${cantidadAdjuntos}</span>    
                         </button> 
                         <button type="button" class="btn btn-danger btn-xs activation handleClickEliminarItem" name="btnEliminarItem[]" title="Eliminar" ${hasDisabledInput}><i class="fas fa-trash-alt"></i></button>
                     </div>
@@ -558,10 +570,10 @@ class RequerimientoView {
                     <td>
                         <div class="btn-group" role="group">
                             <input type="hidden" class="tipoItem" name="tipoItem[]" value="1">
-                            <input type="hidden" class="idRegister" name="idRegister[]" value="${data[i].id_detalle_requerimiento}">
-                            <button type="button" class="btn btn-warning btn-xs  handleClickAdjuntarArchivoItem" name="btnAdjuntarArchivoItem[]" title="Adjuntos">
+                            <input type="hidden" class="idRegister" name="idRegister[]" value="${idFila}">
+                            <button type="button" class="btn btn-warning btn-xs  handleClickAdjuntarArchivoItem"  data-id="${idFila}" name="btnAdjuntarArchivoItem[]" title="Adjuntos">
                                 <i class="fas fa-paperclip"></i>
-                                <span class="badge" name="cantidadAdjuntosItem" style="position:absolute; top:-10px; left:-10px; border: solid 0.1px;">0</span>    
+                                <span class="badge" name="cantidadAdjuntosItem" style="position:absolute; top:-10px; left:-10px; border: solid 0.1px;">${cantidadAdjuntos}</span>    
                             </button> 
                             <button type="button" class="btn btn-danger btn-xs activation handleClickEliminarItem" name="btnEliminarItem[]" title="Eliminar" ${hasDisabledInput} ><i class="fas fa-trash-alt"></i></button>
                         </div>
@@ -574,14 +586,15 @@ class RequerimientoView {
         this.autoUpdateSubtotal();
         this.calcularTotal();
         this.calcularPresupuestoUtilizadoYSaldoPorPartida();
-        tempArchivoAdjuntoItemList=[];
+        tempArchivoAdjuntoRequerimientoDetalleList=[];
         data.forEach(element => {
             if (element.adjuntos.length > 0) {
                 (element.adjuntos).forEach(adjunto => {
-                    tempArchivoAdjuntoItemList.push({
+                    tempArchivoAdjuntoRequerimientoDetalleList.push({
                         id: adjunto.id_adjunto,
-                        idRegister: adjunto.id_detalle_requerimiento,
+                        id_detalle_requerimiento: adjunto.id_detalle_requerimiento,
                         nameFile: adjunto.archivo,
+                        action: '',
                         typeFile: null,
                         sizeFile: null,
                         file: []
@@ -592,21 +605,7 @@ class RequerimientoView {
 
         });
 
-        ArchivoAdjunto.updateContadorTotalAdjuntosPorItem();
-
     }
-
-    // getTipoCambioCompra(){
-    //     const now = new Date();
-    //     now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-    //     let fechaHoy =now.toISOString().slice(0, 10)
-        
-    //     this.requerimientoCtrl.getTipoCambioCompra(fechaHoy).then((tipoCambioCompra)=> {
-    //             document.querySelector("span[id='tipo_cambio_compra']").textContent= tipoCambioCompra;
-    //     }).catch(function(err) {
-    //         console.log(err)
-    //     })
-    // }
 
     imprimirRequerimientoPdf(){
         var id = document.getElementsByName("id_requerimiento")[0].value;
@@ -890,7 +889,7 @@ class RequerimientoView {
     agregarFilaProducto(){
         
         vista_extendida();
-
+            let idFila = this.makeId();
                 // fix unidad medida que toma el html de un select oculto y debe tener por defecto seleccionado el option que viene de data
                 let um=document.querySelector("select[id='selectUnidadMedida']").getElementsByTagName('option');
                 let indexUm=0;
@@ -937,8 +936,8 @@ class RequerimientoView {
         <td>
             <div class="btn-group" role="group">
                 <input type="hidden" class="tipoItem" name="tipoItem[]" value="1">
-                <input type="hidden" class="idRegister" name="idRegister[]" value="${this.makeId()}">
-                <button type="button" class="btn btn-warning btn-xs handleClickAdjuntarArchivoItem" name="btnAdjuntarArchivoItem[]" title="Adjuntos" >
+                <input type="hidden" class="idRegister" name="idRegister[]" value="${idFila}">
+                <button type="button" class="btn btn-warning btn-xs handleClickAdjuntarArchivoItem" name="btnAdjuntarArchivoItem[]" data-id="${idFila}" title="Adjuntos" >
                     <i class="fas fa-paperclip"></i>
                     <span class="badge" name="cantidadAdjuntosItem" style="position:absolute; top:-10px; left:-10px; border: solid 0.1px;">0</span>    
                 </button> 
@@ -951,6 +950,8 @@ class RequerimientoView {
     }
     agregarFilaServicio(){
         vista_extendida();
+            let idFila = this.makeId();
+
                 // fix unidad medida que toma el html de un select oculto y debe tener por defecto seleccionado el option que viene de data
                 let um=document.querySelector("select[id='selectUnidadMedida']").getElementsByTagName('option');
                 let indexUm=0;
@@ -996,8 +997,8 @@ class RequerimientoView {
         <td>
             <div class="btn-group" role="group">
                 <input type="hidden" class="tipoItem" name="tipoItem[]" value="2">
-                <input type="hidden" class="idRegister" name="idRegister[]" value="${this.makeId()}">
-                <button type="button" class="btn btn-warning btn-xs handleClickAdjuntarArchivoItem" name="btnAdjuntarArchivoItem[]" title="Adjuntos" >
+                <input type="hidden" class="idRegister" name="idRegister[]" value="${idFila}">
+                <button type="button" class="btn btn-warning btn-xs handleClickAdjuntarArchivoItem" name="btnAdjuntarArchivoItem[]"  data-id="${idFila}" title="Adjuntos" >
                     <i class="fas fa-paperclip"></i>
                     <span class="badge" name="cantidadAdjuntosItem" style="position:absolute; top:-10px; left:-10px; border: solid 0.1px;">0</span>    
                 </button>
@@ -1483,81 +1484,89 @@ class RequerimientoView {
     }
 
     //adjunto cabecera requerimiento 
+ 
 
-    adjuntarArchivoRequerimiento() {
+
+
+    modalAdjuntarArchivosCabecera(obj) { 
         $('#modal-adjuntar-archivos-requerimiento').modal({
             show: true
         });
         $(":file").filestyle('clear');
-
         document.querySelector("div[id='modal-adjuntar-archivos-requerimiento'] div[id='group-action-upload-file']").classList.remove("oculto");
-
-        this.limpiarTabla('listaArchivosRequerimiento');
-
-        this.listarAdjuntosDeCabecera();
-        this.actualizarEstadoBotonAdjuntarNuevoCabeceraRequerimiento();
+        let idRequerimiento =  document.querySelector("form[id='form-requerimiento'] input[name='id_requerimiento']").value;
+        this.listarAdjuntosDeCabecera(idRequerimiento);
     }
-    
-    actualizarEstadoBotonAdjuntarNuevoCabeceraRequerimiento(){
-        switch (document.querySelector("input[name='estado']").value) {
-            case '1':
-                if(document.querySelector("input[name='id_usuario_req']").value == auth_user.id_usuario){ //usuario en sesion == usuario requerimiento
-                    document.querySelector("div[id='modal-adjuntar-archivos-requerimiento'] div[id='group-action-upload-file']").classList.remove('oculto');
-                }else{
-                    document.querySelector("div[id='modal-adjuntar-archivos-requerimiento'] div[id='group-action-upload-file']").classList.add('oculto');
+
+    getAdjuntosRequerimientoCabecera(idRequerimiento) {
+        return new Promise(function (resolve, reject) {
+            $.ajax({
+                type: 'GET',
+                url: `listar-adjuntos-requerimiento-cabecera/${idRequerimiento}`,
+                dataType: 'JSON',
+                success(response) {
+                    resolve(response);
+                },
+                error: function (err) {
+                    reject(err)
                 }
-                break;
-        
-            case '2':
-                document.querySelector("div[id='modal-adjuntar-archivos-requerimiento'] div[id='group-action-upload-file']").classList.add('oculto');
-                break;
-        
-            case '3':
-                if(document.querySelector("input[name='id_usuario_req']").value == auth_user.id_usuario){ //usuario en sesion == usuario requerimiento
-                    document.querySelector("div[id='modal-adjuntar-archivos-requerimiento'] div[id='group-action-upload-file']").classList.remove('oculto');
-                }else{
-                    document.querySelector("div[id='modal-adjuntar-archivos-requerimiento'] div[id='group-action-upload-file']").classList.add('oculto');
-                }
-                
-                break;
-        
-            case '':
-                document.querySelector("div[id='modal-adjuntar-archivos-requerimiento'] div[id='group-action-upload-file']").classList.remove('oculto');
-                break;
-        
-            default:
-                document.querySelector("div[id='modal-adjuntar-archivos-requerimiento'] div[id='group-action-upload-file']").classList.add('oculto');
-                break;
+            });
+        });
+    }
+
+
+    listarAdjuntosDeCabecera(idRequerimiento){
+        if (idRequerimiento.length > 0) {
+        //     var regExp = /[a-zA-Z]/g; //expresión regular
+        //     if (regExp.test(idRequerimiento) == false) {
+        //             this.getAdjuntosRequerimientoCabecera(idRequerimiento).then((adjuntoList) => {
+        //                 tempArchivoAdjuntoRequerimientoCabeceraList = [];
+        //                 (adjuntoList).forEach(element => {
+        //                     tempArchivoAdjuntoRequerimientoCabeceraList.push({
+        //                         id: element.id_adjunto,
+        //                         category: element.categoria_adjunto_id,
+        //                         nameFile: element.archivo,
+        //                         action:'',
+        //                         file: []
+        //                     });
+
+        //                 });
+        //             }).catch(function (err) {
+        //                 console.log(err)
+        //             });
+        //     }
+
+            this.getcategoriaAdjunto().then((categoriaAdjuntoList) => {
+                this.construirTablaAdjuntosRequerimientoPagoCabecera(tempArchivoAdjuntoRequerimientoCabeceraList, categoriaAdjuntoList);
+            }).catch(function (err) {
+                console.log(err)
+            });
+
+
         }
     }
 
-    listarAdjuntosDeCabecera() {
-
-        this.requerimientoCtrl.getcategoriaAdjunto().then((categoriaAdjuntoList) => {
-            this.construirTablaAdjuntosRequerimiento(tempArchivoAdjuntoRequerimientoList, categoriaAdjuntoList);
-        }).catch(function (err) {
-            console.log(err)
-        })
-    }
-
-    construirTablaAdjuntosRequerimiento(data, categoriaAdjuntoList) {
+    construirTablaAdjuntosRequerimientoPagoCabecera(adjuntoList, categoriaAdjuntoList, tipoModal=null) {
+        this.limpiarTabla('listaArchivosRequerimiento');
         let html = '';
-        let hasDisableBtnEliminarArchivoRequerimiento= '';
-        let estadoActualRequerimiento = document.querySelector("input[name='estado']").value;
-        
-        if( estadoActualRequerimiento ==1 || estadoActualRequerimiento ==3 || estadoActualRequerimiento ==''){
-            if(document.querySelector("input[name='id_usuario_req']").value == auth_user.id_usuario){ //usuario en sesion == usuario requerimiento
-                hasDisableBtnEliminarArchivoRequerimiento = '';
-            }else{
-                hasDisableBtnEliminarArchivoRequerimiento = 'disabled';
+        let hasHiddenBtnEliminarArchivo = '';
+        let hasDisabledSelectTipoArchivo = '';
+        let estadoActual = document.querySelector("form[id='form-requerimiento'] input[name='estado']").value;
+
+        if (estadoActual == 1 || estadoActual == 3 || estadoActual == '') {
+             if (document.querySelector("form[id='form-requerimiento'] input[name='id_usuario_req']").value == auth_user.id_usuario) { //usuario en sesion == usuario requerimiento
+                hasHiddenBtnEliminarArchivo = '';
+            } else {
+                hasHiddenBtnEliminarArchivo = 'oculto';
+                hasDisabledSelectTipoArchivo = 'disabled';
             }
         }
 
-        data.forEach(element => {
+        adjuntoList.forEach(element => {
             html += `<tr id="${element.id}" style="text-align:center">
         <td style="text-align:left;">${element.nameFile}</td>
         <td>
-            <select class="form-control" name="categoriaAdjunto" onChange="ArchivoAdjunto.changeCategoriaAdjunto(this)" ${hasDisableBtnEliminarArchivoRequerimiento}>
+            <select class="form-control handleChangeCategoriaAdjunto" name="categoriaAdjunto" ${hasDisabledSelectTipoArchivo}>
         `;
             categoriaAdjuntoList.forEach(categoria => {
                 if (element.category == categoria.id_categoria_adjunto) {
@@ -1572,39 +1581,179 @@ class RequerimientoView {
         <td style="text-align:center;">
             <div class="btn-group" role="group">`;
             if (Number.isInteger(element.id)) {
-                html += `<button type="button" class="btn btn-info btn-md" name="btnDescargarArchivoRequerimiento" title="Descargar" onclick="ArchivoAdjunto.descargarArchivoRequerimiento('${element.id}');" ><i class="fas fa-paperclip"></i></button>`;
+                html += `<button type="button" class="btn btn-info btn-xs handleClickDescargarArchivoCabeceraRequerimiento" name="btnDescargarArchivoCabeceraRequerimiento" title="Descargar" data-id="${element.id}" ><i class="fas fa-paperclip"></i></button>`;
             }
-            html += `<button type="button" class="btn btn-danger btn-md" name="btnEliminarArchivoRequerimiento" title="Eliminar" onclick="ArchivoAdjunto.eliminarArchivoRequerimiento(this,'${element.id}');" ${hasDisableBtnEliminarArchivoRequerimiento} ><i class="fas fa-trash-alt"></i></button>
-            </div>
+            if (tipoModal != 'lectura') {
+                html += `<button type="button" class="btn btn-danger btn-xs handleClickEliminarArchivoCabeceraRequerimiento ${hasHiddenBtnEliminarArchivo}" name="btnEliminarArchivoRequerimiento" title="Eliminar" data-id="${element.id}" ><i class="fas fa-trash-alt"></i></button>`;
+            }
+            html += `</div>
         </td>
         </tr>`;
         });
         document.querySelector("tbody[id='body_archivos_requerimiento']").insertAdjacentHTML('beforeend', html);
+
     }
 
-    agregarAdjuntoRequerimiento(event) {
-        let archivoAdjunto = new ArchivoAdjunto(event.files,this);
-        archivoAdjunto.addFileLevelRequerimiento();
+
+
+    estaHabilitadoLaExtension(file) {
+        let extension = file.name.match(/(?<=\.)\w+$/g)[0].toLowerCase(); // assuming that this file has any extension
+        if (extension === 'dwg'
+            || extension === 'dwt'
+            || extension === 'cdr'
+            || extension === 'back'
+            || extension === 'backup'
+            || extension === 'psd'
+            || extension === 'sql'
+            || extension === 'exe'
+            || extension === 'html'
+            || extension === 'js'
+            || extension === 'php'
+            || extension === 'ai'
+            || extension === 'mp4'
+            || extension === 'mp3'
+            || extension === 'avi'
+            || extension === 'mkv'
+            || extension === 'flv'
+            || extension === 'mov'
+            || extension === 'wmv'
+        ) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    getcategoriaAdjunto() {
+        return new Promise(function (resolve, reject) {
+            $.ajax({
+                type: 'GET',
+                url: `mostrar-categoria-adjunto`,
+                dataType: 'JSON',
+                success(response) {
+                    resolve(response);
+                },
+                error: function (err) {
+                    reject(err)
+                }
+            });
+        });
+    }
+
+    addToTablaArchivosRequerimientoCabecera(payload) {
+        this.getcategoriaAdjunto().then((categoriaAdjuntoList) => {
+            this.agregarRegistroEnTablaAdjuntoRequerimientoCabecera(payload, categoriaAdjuntoList);
+
+        }).catch(function (err) {
+            console.log(err)
+        })
+    }
+
+    agregarRegistroEnTablaAdjuntoRequerimientoCabecera(payload, categoriaAdjuntoList) {
+        let html = '';
+        html = `<tr id="${payload.id}" style="text-align:center">
+        <td style="text-align:left;">${payload.nameFile}</td>
+        <td>
+            <select class="form-control handleChangeCategoriaAdjunto" name="categoriaAdjunto">
+        `;
+        categoriaAdjuntoList.forEach(element => {
+            if (element.id_requerimiento_pago_categoria_adjunto == payload.category) {
+                html += `<option value="${element.id_requerimiento_pago_categoria_adjunto}" selected>${element.descripcion}</option>`
+            } else {
+                html += `<option value="${element.id_requerimiento_pago_categoria_adjunto}">${element.descripcion}</option>`
+
+            }
+        });
+        html += `</select>
+        </td>
+        <td style="text-align:center;">
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-danger btn-xs handleClickEliminarArchivoCabeceraRequerimiento" name="btnEliminarArchivoRequerimiento" title="Eliminar" data-id="${payload.id}" ><i class="fas fa-trash-alt"></i></button>
+            </div>
+        </td>
+        </tr>`;
+
+        document.querySelector("tbody[id='body_archivos_requerimiento']").insertAdjacentHTML('beforeend', html);
+    }
+
+    updateContadorTotalAdjuntosRequerimientoCabecera(){
+        document.querySelector("span[name='cantidadAdjuntosCabeceraRequerimiento']").textContent = tempArchivoAdjuntoRequerimientoCabeceraList.filter((element, i) => element.action != 'ELIMINAR').length;
+        
+
+    }
+    
+    agregarAdjuntoRequerimiento(obj) {
+        this.updateContadorTotalAdjuntosRequerimientoCabecera();
+        if (obj.files != undefined && obj.files.length > 0) {
+            Array.prototype.forEach.call(obj.files, (file) => {
+
+                if (this.estaHabilitadoLaExtension(file) == true) {
+                    let payload = {
+                        id: this.makeId(),
+                        category: 1, //default: otros adjuntos
+                        nameFile: file.name,
+                        action: 'GUARDAR',
+                        file: file
+                    };
+                    this.addToTablaArchivosRequerimientoCabecera(payload);
+
+                    tempArchivoAdjuntoRequerimientoCabeceraList.push(payload);
+                } else {
+                    Swal.fire(
+                        'Este tipo de archivo no esta permitido adjuntar',
+                        file.name,
+                        'warning'
+                    );
+                }
+            });
+
+            this.updateContadorTotalAdjuntosRequerimientoCabecera();
+        }
+        return false;
+    }
+
+
+    eliminarArchivoRequerimientoCabecera(obj){
+        obj.closest("tr").remove();
+        
+        var regExp = /[a-zA-Z]/g; //expresión regular
+        if((regExp.test(obj.dataset.id) == true)){
+
+            tempArchivoAdjuntoRequerimientoCabeceraList = tempArchivoAdjuntoRequerimientoCabeceraList.filter((element, i) => element.id != obj.dataset.id);
+        }else{
+            if (tempArchivoAdjuntoRequerimientoCabeceraList.length > 0) {
+                let indice = tempArchivoAdjuntoRequerimientoCabeceraList.findIndex(elemnt => elemnt.id == obj.dataset.id);
+                tempArchivoAdjuntoRequerimientoCabeceraList[indice].action = 'ELIMINAR';
+            } else {
+                Swal.fire(
+                    '',
+                    'Hubo un error inesperado al intentar eliminar el adjunto, puede que no el objecto este vacio, elimine adjuntos y vuelva a seleccionar',
+                    'error'
+                );
+            }
+
+        }
+
+        this.updateContadorTotalAdjuntosRequerimientoCabecera();
     }
 
     // adjuntos detalle requerimiento
 
-    adjuntarArchivoItem(obj) {
+    modalAdjuntarArchivosDetalle(obj) {
 
-        tempIdRegisterActive = obj.closest('td').querySelector("input[class~='idRegister']").value;
-        tempObjectBtnInputFile = obj;
-
- 
         $('#modal-adjuntar-archivos-detalle-requerimiento').modal({
             show: true,
             backdrop: 'true'
         });
+        this.limpiarTabla('listaArchivos');
+
         $(":file").filestyle('clear');
 
-        document.querySelector("div[id='modal-adjuntar-archivos-detalle-requerimiento'] div[id='group-action-upload-file']").classList.remove('oculto');
+        tempIdRegisterActive = obj.closest('td').querySelector("input[class~='idRegister']").value;
 
-        this.limpiarTabla('listaArchivos');
-        this.listarAdjuntosDeItem();
+        objBotonAdjuntoRequerimientoDetalleSeleccionado = obj;
+        // document.querySelector("div[id='modal-adjuntar-archivos-detalle-requerimiento'] div[id='group-action-upload-file']").classList.remove('oculto');
+        this.listarArchivosAdjuntosDetalle(obj.dataset.id);
         this.actualizarEstadoBotonAdjuntarNuevoDetalleRequerimiento();
     }
 
@@ -1642,40 +1791,163 @@ class RequerimientoView {
         }
     }
 
-    listarAdjuntosDeItem() {
+
+    getAdjuntosRequerimientoDetalle(idDetalleRequerimiento){
+        return new Promise(function (resolve, reject) {
+            $.ajax({
+                type: 'GET',
+                url: `listar-adjuntos-requerimiento-detalle/${idDetalleRequerimiento}`,
+                dataType: 'JSON',
+                success(response) {
+                    resolve(response);
+                },
+                error: function (err) {
+                    reject(err)
+                }
+            });
+        });
+    }
+
+    construirTablaAdjuntosRequerimientoDetalle(adjuntoList , idDetalleRequerimiento=null) {
+        this.limpiarTabla('listaArchivos');
         let html = '';
-        let hasDisableBtnEliminarArchivoRequerimiento= '';
-        let estadoActualRequerimiento = document.querySelector("input[name='estado']").value;
-        if( estadoActualRequerimiento ==1 || estadoActualRequerimiento ==3 || estadoActualRequerimiento ==''){
-            if(document.querySelector("input[name='id_usuario_req']").value == auth_user.id_usuario){ //usuario en sesion == usuario requerimiento
-                hasDisableBtnEliminarArchivoRequerimiento = '';
-            }else{
-                hasDisableBtnEliminarArchivoRequerimiento = 'disabled';
+        let hasDisableBtnEliminarArchivo = '';
+        let estadoActual = document.querySelector("form[id='form-requerimiento'] input[name='estado']").value;
+
+        if (estadoActual == 1 || estadoActual == 3 || estadoActual == '') {
+            if (document.querySelector("form[id='form-requerimiento'] input[name='id_usuario_req']").value == auth_user.id_usuario) { //usuario en sesion == usuario requerimiento
+                hasDisableBtnEliminarArchivo = '';
+            } else {
+                hasDisableBtnEliminarArchivo = 'oculto';
             }
         }
-        tempArchivoAdjuntoItemList.forEach(element => {
-            if (tempIdRegisterActive == element.idRegister) {
-                html += `<tr>
-                <td style="text-align:left;">${element.nameFile}</td>
-                <td style="text-align:center;">
+
+        adjuntoList.forEach(element => {
+            if(idDetalleRequerimiento.length>0 && idDetalleRequerimiento== element.id_detalle_requerimiento){
+
+                html += `<tr id="${element.id}" style="text-align:center">
+            <td style="text-align:left;">${element.nameFile}</td>
+            <td style="text-align:center;">
                 <div class="btn-group" role="group">`;
                 if (Number.isInteger(element.id)) {
-                    html += `<button type="button" class="btn btn-info btn-md" name="btnDescargarArchivoItem" title="Descargar" onclick="ArchivoAdjunto.descargarArchivoItem('${element.id}');" ><i class="fas fa-paperclip"></i></button>`;
+                    html += `<button type="button" class="btn btn-info btn-xs handleClickDescargarArchivoRequerimientoDetalle" name="btnDescargarArchivoRequerimientoDetalle" title="Descargar" data-id="${element.id}" ><i class="fas fa-paperclip"></i></button>`;
                 }
-                html += `<button type="button" class="btn btn-danger btn-md" name="btnEliminarArchivoItem" title="Eliminar" onclick="ArchivoAdjunto.eliminarArchivoItem(this,'${element.id}');" ${hasDisableBtnEliminarArchivoRequerimiento}><i class="fas fa-trash-alt"></i></button>`;
-                html += `</div>
-                </td>
-                </tr>`;
+     
+                html += `<button type="button" class="btn btn-danger btn-xs handleClickEliminarArchivoRequerimientoDetalle" name="btnEliminarArchivoRequerimientoDetalle" title="Eliminar" data-id="${element.id}" ><i class="fas fa-trash-alt"></i></button>
+
+                </div>
+            </td>
+            </tr>`;
             }
         });
         document.querySelector("tbody[id='body_archivos_item']").insertAdjacentHTML('beforeend', html);
     }
 
-    agregarAdjuntoItem(event) {
-        let archivoAdjunto = new ArchivoAdjunto(event.target.files,this);
-        archivoAdjunto.addFileLevelItem();
+
+    listarArchivosAdjuntosDetalle(idDetalleRequerimiento) {
+        
+        if (idDetalleRequerimiento.length > 0) {
+        //     // this.limpiarTabla('listaArchivos');
+            
+        //     var regExp = /[a-zA-Z]/g; //expresión regular
+        //     if (regExp.test(idDetalleRequerimiento) == false) {
+        //         let tempArchivoAdjuntoRequerimientoDetalleList=[]
+        //         this.getAdjuntosRequerimientoDetalle(idDetalleRequerimiento).then((adjuntoList) => {
+        //             (adjuntoList).forEach(element => {
+        //                 if(element.id_estado !=7){ // omitir anulados
+
+        //                     tempArchivoAdjuntoRequerimientoDetalleList.push({
+        //                     id: element.id_adjunto,
+        //                     id_detalle_requerimiento: element.id_detalle_requerimiento,
+        //                     nameFile: element.archivo,
+        //                     action: '',
+        //                     file: []
+        //                 });
+        //             }
+        //             });
+        //         }).catch(function (err) {
+        //             console.log(err)
+        //         })
+        //     }
+
+    
+            this.construirTablaAdjuntosRequerimientoDetalle(tempArchivoAdjuntoRequerimientoDetalleList,idDetalleRequerimiento);
+
+
+        }
     }
 
+    agregarAdjuntoRequerimientoPagoDetalle(obj) {
+        if (obj.files != undefined && obj.files.length > 0) {
+            Array.prototype.forEach.call(obj.files, (file) => {
+                if (this.estaHabilitadoLaExtension(file) == true) {
+                    let payload = {
+                        id: this.makeId(),
+                        id_detalle_requerimiento: objBotonAdjuntoRequerimientoDetalleSeleccionado.dataset.id,
+                        nameFile: file.name,
+                        action:'GUARDAR',
+                        file: file
+                    };
+                    this.agregarRegistroEnTablaAdjuntoRequerimientoDetalle(payload);
+                    tempArchivoAdjuntoRequerimientoDetalleList.push(payload);
+                } else {
+                    Swal.fire(
+                        'Este tipo de archivo no esta permitido adjuntar',
+                        file.name,
+                        'warning'
+                    );
+                }
+            });
+            this.updateContadorTotalAdjuntosRequerimientoDetalle();
+        }
+        return false;
+    }
+    updateContadorTotalAdjuntosRequerimientoDetalle() {
+        if (typeof objBotonAdjuntoRequerimientoDetalleSeleccionado == 'object') {
+            objBotonAdjuntoRequerimientoDetalleSeleccionado.querySelector("span[name='cantidadAdjuntosItem']").textContent =tempArchivoAdjuntoRequerimientoDetalleList.filter((element, i) => (element.id_detalle_requerimiento==objBotonAdjuntoRequerimientoDetalleSeleccionado.dataset.id  && element.action != 'ELIMINAR')).length;
+        }
+
+    }
+    
+
+    agregarRegistroEnTablaAdjuntoRequerimientoDetalle(payload) {
+
+        let html = '';
+        html = `<tr id="${payload.id}" style="text-align:center">
+        <td style="text-align:left;">${payload.nameFile}</td>
+        <td style="text-align:center;">
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-danger btn-xs handleClickEliminarArchivoRequerimientoDetalle" name="btnEliminarArchivoRequerimientoDetalle" title="Eliminar" data-id="${payload.id}" ><i class="fas fa-trash-alt"></i></button>
+            </div>
+        </td>
+        </tr>`;
+
+        document.querySelector("tbody[id='body_archivos_item']").insertAdjacentHTML('beforeend', html);
+    }
+
+
+    eliminarArchivoRequerimientoDetalle(obj){
+        obj.closest("tr").remove();
+        // tempIdArchivoAdjuntoRequerimientoPagoDetalleToDeleteList.push(obj.dataset.id);
+        var regExp = /[a-zA-Z]/g; //expresión regular
+        if((regExp.test(obj.dataset.id) == true)){
+
+            tempArchivoAdjuntoRequerimientoDetalleList = tempArchivoAdjuntoRequerimientoDetalleList.filter((element, i) => element.id != obj.dataset.id);
+        }else{
+            if (tempArchivoAdjuntoRequerimientoDetalleList.length > 0) {
+                let indice = tempArchivoAdjuntoRequerimientoDetalleList.findIndex(elemnt => elemnt.id == obj.dataset.id);
+                tempArchivoAdjuntoRequerimientoDetalleList[indice].action = 'ELIMINAR';
+            } else {
+                Swal.fire(
+                    '',
+                    'Hubo un error inesperado al intentar eliminar el adjunto del item, puede que no el objecto este vacio, elimine adjuntos y vuelva a seleccionar',
+                    'error'
+                );
+            }
+
+        }
+        this.updateContadorTotalAdjuntosRequerimientoDetalle();
+    }
     // guardar requerimiento
 
     actionGuardarEditarRequerimiento() {
@@ -1828,49 +2100,30 @@ class RequerimientoView {
 
         if (continuar) {
             let formData = new FormData($('#form-requerimiento')[0]);
-            let ItemWithIdRegisterList = [];
-            if (tempArchivoAdjuntoItemList.length > 0) {
-                const inputIdRegister = document.querySelectorAll("input[class~='idRegister']");
-                inputIdRegister.forEach(element => {
-                    ItemWithIdRegisterList.push(element.value);
-                });
-                tempArchivoAdjuntoItemList.forEach(element => {
-                    if(ItemWithIdRegisterList.includes((element.idRegister).toString()) == true) {
-                        // formData.append(`archivoAdjuntoItem${element.idRegister}[]`, element.file, element.nameFile);
-                        formData.append(`archivoAdjuntoItem${element.idRegister}[]`, element.file);
+         
+            if (tempArchivoAdjuntoRequerimientoDetalleList.length > 0) {
+       
+                tempArchivoAdjuntoRequerimientoDetalleList.forEach(element => {
+                    if(element.action =='GUARDAR'){
+                        formData.append(`archivoAdjuntoRequerimientoDetalleGuardar${element.id_detalle_requerimiento}[]`, element.file);
                     }
                 });
 
             }
 
-            if(tempArchivoAdjuntoItemToDeleteList.length >0){
-                tempArchivoAdjuntoItemToDeleteList.forEach((element,index) => {
-                    formData.append(`archivoAdjuntoItemToDelete[${index}]`, element);
-                });
-                
-            }else{
-                formData.append(`archivoAdjuntoItemToDelete[]`, []);
-
-            }
-            
-
-
-            if (tempArchivoAdjuntoRequerimientoList.length > 0) {
-                tempArchivoAdjuntoRequerimientoList.forEach(element => {
-                    formData.append(`archivoAdjuntoRequerimiento${element.category}[]`, element.file);
+            if (tempArchivoAdjuntoRequerimientoCabeceraList.length > 0) {
+                tempArchivoAdjuntoRequerimientoCabeceraList.forEach(element => {
+                    if(element.action =='GUARDAR'){
+                        formData.append(`archivoAdjuntoRequerimiento${element.category}[]`, element.file);
+                        formData.append(`archivoAdjuntoRequerimientoCabeceraFileGuardar${element.category}[]`, element.file);
+                    }                    
                 });
 
             }
-            if(tempArchivoAdjuntoRequerimientoToDeleteList.length >0){
+    
+            formData.append(`archivoAdjuntoRequerimientoObject`, JSON.stringify(tempArchivoAdjuntoRequerimientoCabeceraList));
+            formData.append(`archivoAdjuntoRequerimientoDetalleObject`, JSON.stringify(tempArchivoAdjuntoRequerimientoDetalleList));
 
-                tempArchivoAdjuntoRequerimientoToDeleteList.forEach((element,index) => {
-                    
-                    formData.append(`archivoAdjuntoRequerimientoToDelete[${index}]`, element);
-                });
-            }else{
-                formData.append(`archivoAdjuntoRequerimientoToDelete[]`, []);
-
-            }
 
 
             let typeActionForm = document.querySelector("form[id='form-requerimiento']").getAttribute("type"); //  register | edition
@@ -2086,18 +2339,17 @@ class RequerimientoView {
         this.limpiarTabla('listaArchivos');
         this.limpiarTabla('listaPartidasActivas');
         this.limpiarMesajesValidacion();
-        tempArchivoAdjuntoItemList = [];
-        tempArchivoAdjuntoRequerimientoList = [];
-        tempArchivoAdjuntoRequerimientoToDeleteList=[];
-        tempArchivoAdjuntoItemToDeleteList=[];
+        tempArchivoAdjuntoRequerimientoCabeceraList = [];
+        tempArchivoAdjuntoRequerimientoDetalleList=[];
+        objBotonAdjuntoRequerimientoDetalleSeleccionado='';
         tempCentroCostoSelected=null;
         tempIdRegisterActive=null
         this.restaurarTotalMonedaDefault();
         this.calcularPresupuestoUtilizadoYSaldoPorPartida();
         document.querySelector("div[id='group-historial-revisiones']").setAttribute("hidden",true);
-        document.querySelector("span[name='cantidadAdjuntosRequerimiento']").textContent=0;
+        document.querySelector("span[name='cantidadAdjuntosCabeceraRequerimiento']").textContent=0;
         disabledControl(document.getElementsByName("btn-imprimir-requerimento-pdf"), true);
-        this.actualizarEstadoBotonAdjuntarNuevoCabeceraRequerimiento();
+        // this.actualizarEstadoBotonAdjuntarNuevoCabeceraRequerimiento();
         this.actualizarEstadoBotonAdjuntarNuevoDetalleRequerimiento();
     }
 

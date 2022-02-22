@@ -48,12 +48,12 @@ Atención de Salidas
                                         <tr>
                                             <th hidden></th>
                                             <th>Despacho</th>
+                                            <th>Cod.Req.</th>
                                             <th>Fecha Despacho</th>
                                             <th>Comentario</th>
                                             <th>OCAM</th>
                                             <th>CDP</th>
                                             <th>Cliente</th>
-                                            <th>Cod.Req.</th>
                                             <th>Almacén</th>
                                             <th>Estado</th>
                                             <!-- <th>Ubigeo</th>
