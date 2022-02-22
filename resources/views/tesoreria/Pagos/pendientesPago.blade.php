@@ -46,7 +46,6 @@ Registro de pagos
                                                 <th>Nro. Doc.</th>
                                                 <th>Destinatario</th>
                                                 <th>Fecha Emisión</th>
-                                                {{-- <th>Cta. Bancaria</th> --}}
                                                 <th>Mnd</th>
                                                 <th>Total</th>
                                                 <th>Saldo</th>
@@ -72,6 +71,7 @@ Registro de pagos
                                         <thead>
                                             <tr>
                                                 <th hidden></th>
+                                                <th>Prio.</th>
                                                 <th>Empresa</th>
                                                 <th>Codigo</th>
                                                 <th>Codigo SoftLink</th>
@@ -158,7 +158,7 @@ Registro de pagos
         seleccionarMenu(window.location);
         vista_extendida();
 
-        let requerimientoPago=new RequerimientoPago('{{Auth::user()->tieneAccion(137)}}','{{Auth::user()->tieneAccion(138)}}','{{Auth::user()->tieneAccion(139)}}');
+        let requerimientoPago=new RequerimientoPago('{{Auth::user()->tieneAccion(136)}}','{{Auth::user()->tieneAccion(137)}}','{{Auth::user()->tieneAccion(138)}}');
         // let requerimientoPago=new RequerimientoPago('1','1','1');
 
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {

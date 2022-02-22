@@ -17,10 +17,7 @@ class OrdenView {
 
     init() {
         var reqTrueList = JSON.parse(sessionStorage.getItem('reqCheckedList'));
-
-        console.log(sessionStorage.getItem('reqCheckedList'));
-        console.log(JSON.parse(sessionStorage.getItem('reqCheckedList')));
-        console.log(JSON.parse(sessionStorage.getItem('tipoOrden')));
+       
         var tipoOrden = sessionStorage.getItem('tipoOrden');
         if (reqTrueList != undefined && reqTrueList != null && (reqTrueList.length > 0)) {
             // ordenView.changeStateInput('form-crear-orden-requerimiento', false);

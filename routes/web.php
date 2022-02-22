@@ -1705,6 +1705,14 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('imprimir_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@imprimir_transformacion');
 			});
 		});
+
+		Route::group(['as' => 'garantias.', 'prefix' => 'garantias'], function () {
+
+			Route::group(['as' => 'incidencias.', 'prefix' => 'incidencias'], function () {
+
+				Route::get('index', 'Cas\IncidenciaController@view_incidencia')->name('index');
+			});
+		});
 	});
 
 	Route::group(['as' => 'finanzas.', 'prefix' => 'finanzas'], function () {

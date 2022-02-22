@@ -7774,7 +7774,8 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
             'sis_rol.descripcion as rol_concepto',
             'sis_rol.estado'
         )
-        ->leftJoin('configuracion.sis_rol', 'sis_rol.id_rol', '=', 'sis_acceso.id_rol')
+        ->leftJoin('configuracion.usuario_rol', 'usuario_rol.id_usuario', '=', 'sis_acceso.id_usuario')
+        ->leftJoin('configuracion.sis_rol', 'sis_rol.id_rol', '=', 'usuario_rol.id_rol')
         // ->where(function($q) use ($dateNow) {
         //     $q->where('rol_aprobacion.fecha_fin','>', $dateNow)
         //     ->orWhere('rol_aprobacion.fecha_fin', null);

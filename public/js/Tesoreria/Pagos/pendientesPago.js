@@ -151,6 +151,22 @@ class RequerimientoPago {
             },
             'columns': [
                 { 'data': 'id_orden_compra' },
+                {
+                    'data': 'prioridad', 'name': 'adm_prioridad.descripcion',
+                    'render': function (data, type, row) {
+                        var imagen = '';
+                        if (row['prioridad'] == 'Normal') {
+                            imagen = '<i class="fas fa-thermometer-empty green" data-toggle="tooltip" data-placement="right" title="Normal"></i>';
+                        }
+                        else if (row['prioridad'] == 'Crítica') {
+                            imagen = '<i class="fas fa-thermometer-full red" data-toggle="tooltip" data-placement="right" title="Crítica"></i>';
+                        }
+                        else if (row['prioridad'] == 'Alta') {
+                            imagen = '<i class="fas fa-thermometer-half orange" data-toggle="tooltip" data-placement="right" title="Alta"></i>';
+                        }
+                        return imagen;
+                    }, 'className': 'text-center'
+                },
                 { 'data': 'razon_social_empresa', 'name': 'empresa.razon_social' },
                 { 'data': 'codigo' },
                 { 'data': 'codigo_softlink' },
@@ -455,15 +471,15 @@ function formatPagos(table_id, id, row, tipo) {
                         '<td style="border: none; text-align: center">' + element.nombre_corto + '</td>' +
                         '<td style="border: none; text-align: center">' + formatDateHour(element.fecha_registro) + '</td>' +
                         '<td style="border: none; text-align: center">' +
-                        `< button type = "button" class= "btn btn-danger boton" data - toggle="tooltip" 
+                        `<button type = "button" class= "btn btn-danger boton" data - toggle="tooltip" 
                             data - placement="bottom" data - row="${row}"
-                            onClick = "anularPago(${element.id_pago},'${tipo}')" title = "Anular pago" >
+                            onClick = "anularPago(${element.id_pago},'${tipo}')" title = "Anular pago">
         <i class="fas fa-trash"></i></button` +
                         '</td>' +
                         '</tr>';
                     i++;
                 });
-                var tabla = `< table class= "table table-sm" style = "border: none;" 
+                var tabla = `<table class= "table table-sm" style = "border: none;" 
                 id = "detalle_${table_id}" >
                 <thead style="color: black;background-color: #c7cacc;">
                     <tr>
@@ -480,15 +496,15 @@ function formatPagos(table_id, id, row, tipo) {
                     </tr>
                 </thead>
                 <tbody>${html}</tbody>
-                </table > `;
+                </table> `;
             }
             else {
-                var tabla = `< table class= "table table-sm" style = "border: none;" 
+                var tabla = `<table class= "table table-sm" style = "border: none;" 
                 id = "detalle_${table_id}" >
             <tbody>
                 <tr><td>No hay registros para mostrar</td></tr>
             </tbody>
-                </table > `;
+                </table> `;
             }
             row.child(tabla).show();
         }
@@ -499,121 +515,3 @@ function formatPagos(table_id, id, row, tipo) {
     });
 
 }
-/*
-function formatPagosComprobante(table_id, id, row) {
-    $.ajax({
-        type: 'GET',
-        url: 'listarPagos/' + "comprobante" + id,
-        dataType: 'JSON',
-        success: function (response) {
-            console.log(response);
-            var html = '';
-            var i = 1;
-
-            if (response.length > 0) {
-                response.forEach(element => {
-                    html += '<tr id="' + element.id_pago + '">' +
-                        '<td style="border: none;">' + i + '</td>' +
-                        '<td style="border: none; text-align: center">' + (element.fecha_pago !== null ? formatDate(element.fecha_pago) : '') + '</td>' +
-                        '<td style="border: none; text-align: center">' + element.observacion + '</td>' +
-                        '<td style="border: none; text-align: right">' + element.simbolo + '</td>' +
-                        '<td style="border: none; text-align: right">' + formatDecimal(element.total_pago) + '</td>' +
-                        '<td style="border: none; text-align: center"><a href="/files/tesoreria/pagos/' + element.adjunto + '" target="_blank">' + (element.adjunto !== null ? element.adjunto : '') + '</a></td>' +
-                        '<td style="border: none; text-align: center">' + element.nombre_corto + '</td>' +
-                        '<td style="border: none; text-align: center">' + element.fecha_registro + '</td>' +
-                        '</tr>';
-                    i++;
-                });
-                var tabla = `< table class= "table table-sm" style = "border: none;" 
-                id = "detalle_${table_id}" >
-                <thead style="color: black;background-color: #c7cacc;">
-                    <tr>
-                        <th style="border: none;">#</th>
-                        <th style="border: none;">Fecha Pago</th>
-                        <th style="border: none;">Motivo</th>
-                        <th style="border: none;">Moneda</th>
-                        <th style="border: none;">Total Pago</th>
-                        <th style="border: none;">Adjunto</th>
-                        <th style="border: none;">Registrado por</th>
-                        <th style="border: none;">Fecha Registro</th>
-                    </tr>
-                </thead>
-                <tbody>${html}</tbody>
-                </table > `;
-            }
-            else {
-                var tabla = `< table class= "table table-sm" style = "border: none;" 
-                id = "detalle_${table_id}" >
-            <tbody>
-                <tr><td>No hay registros para mostrar</td></tr>
-            </tbody>
-                </table > `;
-            }
-            row.child(tabla).show();
-        }
-    }).fail(function (jqXHR, textStatus, errorThrown) {
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    });
-
-}
-
-function formatPagosRequerimientos(table_id, id, row) {
-    $.ajax({
-        type: 'GET',
-        url: 'listarPagos/' + "requerimiento" + id,
-        dataType: 'JSON',
-        success: function (response) {
-            console.log(response);
-            var html = '';
-            var i = 1;
-
-            if (response.length > 0) {
-                response.forEach(element => {
-                    html += '<tr id="' + element.id_pago + '">' +
-                        '<td style="border: none;">' + i + '</td>' +
-                        '<td style="border: none; text-align: center">' + (element.fecha_pago !== null ? formatDate(element.fecha_pago) : '') + '</td>' +
-                        '<td style="border: none; text-align: center">' + element.observacion + '</td>' +
-                        '<td style="border: none; text-align: right">' + element.simbolo + '</td>' +
-                        '<td style="border: none; text-align: right">' + formatDecimal(element.total_pago) + '</td>' +
-                        '<td style="border: none; text-align: center"><a href="/files/tesoreria/pagos/' + element.adjunto + '" target="_blank">' + (element.adjunto !== null ? element.adjunto : '') + '</a></td>' +
-                        '<td style="border: none; text-align: center">' + element.nombre_corto + '</td>' +
-                        '<td style="border: none; text-align: center">' + element.fecha_registro + '</td>' +
-                        '</tr>';
-                    i++;
-                });
-                var tabla = `< table class= "table table-sm" style = "border: none;" 
-                id = "detalle_${table_id}" >
-                <thead style="color: black;background-color: #c7cacc;">
-                    <tr>
-                        <th style="border: none;">#</th>
-                        <th style="border: none;">Fecha Pago</th>
-                        <th style="border: none;">Motivo</th>
-                        <th style="border: none;">Moneda</th>
-                        <th style="border: none;">Total Pago</th>
-                        <th style="border: none;">Adjunto</th>
-                        <th style="border: none;">Registrado por</th>
-                        <th style="border: none;">Fecha Registro</th>
-                    </tr>
-                </thead>
-                <tbody>${html}</tbody>
-                </table > `;
-            }
-            else {
-                var tabla = `< table class= "table table-sm" style = "border: none;" 
-                id = "detalle_${table_id}" >
-            <tbody>
-                <tr><td>No hay registros para mostrar</td></tr>
-            </tbody>
-                </table > `;
-            }
-            row.child(tabla).show();
-        }
-    }).fail(function (jqXHR, textStatus, errorThrown) {
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    });
-
-}*/
