@@ -2513,7 +2513,8 @@ class RequerimientoController extends Controller
                 ->join('rrhh.rrhh_postu', 'rrhh_postu.id_postulante', '=', 'rrhh_trab.id_postulante')
                 ->join('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'rrhh_postu.id_persona')
                 ->join('configuracion.sis_acceso', 'sis_acceso.id_usuario', '=', 'sis_usua.id_usuario')
-                ->join('configuracion.sis_rol', 'sis_rol.id_rol', '=', 'sis_acceso.id_rol')
+                ->join('configuracion.usuario_rol', 'usuario_rol.id_usuario', '=', 'sis_usua.id_usuario')
+                ->join('configuracion.sis_rol', 'sis_rol.id_rol', '=', 'usuario_rol.id_rol')
                 ->where('sis_acceso.id_rol', $sql->first()->id_rol)->first();
             $nombre = $trab->nombres . ' ' . $trab->apellido_paterno . ' - ' . $trab->rol;
         } else {
@@ -3009,8 +3010,9 @@ class RequerimientoController extends Controller
                 'adm_flujo.estado'
             )
             ->leftJoin('configuracion.sis_rol', 'sis_rol.id_rol', '=', 'adm_flujo.id_rol')
-            ->leftJoin('configuracion.sis_acceso', 'sis_acceso.id_rol', '=', 'sis_rol.id_rol')
-            ->leftJoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'sis_acceso.id_usuario')
+            
+            ->leftJoin('configuracion.usuario_rol', 'usuario_rol.id_rol', '=', 'sis_rol.id_rol')
+            ->leftJoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'usuario_rol.id_usuario')
             ->leftJoin('rrhh.rrhh_trab', 'rrhh_trab.id_trabajador', '=', 'sis_usua.id_trabajador')
             ->leftJoin('rrhh.rrhh_postu', 'rrhh_postu.id_postulante', '=', 'rrhh_trab.id_postulante')
             ->leftJoin('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'rrhh_postu.id_persona')
