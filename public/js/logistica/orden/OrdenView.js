@@ -27,8 +27,8 @@ class OrdenView {
             this.obtenerRequerimiento(reqTrueList, tipoOrden);
             let btnVinculoAReq = `<span class="text-info" id="text-info-req-vinculado" > <a onClick="window.location.reload();" style="cursor:pointer;" title="Recargar con Valores Iniciales del Requerimiento">(vinculado a un Requerimiento)</a> <span class="badge label-danger handleClickEliminarVinculoReq" style="position: absolute;margin-top: -5px;margin-left: 5px; cursor:pointer" title="Eliminar vínculo">×</span></span>`;
             document.querySelector("section[class='content-header']").children[0].innerHTML += btnVinculoAReq;
-            // sessionStorage.removeItem('reqCheckedList'); temporalmente
-            // sessionStorage.removeItem('tipoOrden'); // temporalmente 
+            sessionStorage.removeItem('reqCheckedList'); 
+            sessionStorage.removeItem('tipoOrden'); 
         }
         var idOrden = sessionStorage.getItem('idOrden');
         actionPage = sessionStorage.getItem('action');
