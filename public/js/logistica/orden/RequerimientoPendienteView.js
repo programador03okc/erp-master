@@ -582,7 +582,7 @@ class RequerimientoPendienteView {
                             let btnVerAdjuntos = '';
                             let btnAtenderAlmacen = '';
                             let btnCrearOrdenCompra = '';
-                            let btnCrearOrdenServicio = '';
+                            let btnCrearOrdenServicio = `<button type="button" class="btn btn-danger btn-xs handleClickCrearOrdenServicioPorRequerimiento" name="btnCrearOrdenServicioPorRequerimiento" title="Crear Orden de Servicio" data-id-requerimiento="' + row.id_requerimiento + '"  ><i class="fas fa-file-invoice fa-sm"></i></button>`;
                             if(row.cantidad_adjuntos_activos.cabecera >0 || row.cantidad_adjuntos_activos.detalle>0){ 
                                 btnVerAdjuntos = '<button type="button" class="btn btn-default btn-xs handleClickVerTodoAdjuntos" title="Ver adjuntos" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo="' + row.codigo + '"  ><i class="fas fa-folder"></i></button>';
 
@@ -597,7 +597,7 @@ class RequerimientoPendienteView {
                                 } else {
                                     btnAtenderAlmacen = '<button type="button" class="btn btn-primary btn-xs handleClickAtenderConAlmacen" name="btnOpenModalAtenderConAlmacen" title="Reserva en almacén" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo-requerimiento="' + row.codigo + '"><i class="fas fa-dolly fa-sm"></i></button>';
                                     btnCrearOrdenCompra = '<button type="button" class="btn btn-warning btn-xs handleClickCrearOrdenCompraPorRequerimiento" name="btnCrearOrdenCompraPorRequerimiento" title="Crear Orden de Compra" data-id-requerimiento="' + row.id_requerimiento + '"  ><i class="fas fa-file-invoice"></i></button>';
-                                    btnCrearOrdenServicio = '<button type="button" class="btn btn-danger btn-xs handleClickCrearOrdenServicioPorRequerimiento" name="btnCrearOrdenServicioPorRequerimiento" title="Crear Orden de Servicio" data-id-requerimiento="' + row.id_requerimiento + '"  ><i class="fas fa-file-invoice fa-sm"></i></button>';
+                                    
 
                                 }
                             }
