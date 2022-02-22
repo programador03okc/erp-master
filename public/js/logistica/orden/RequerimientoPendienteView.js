@@ -2647,6 +2647,7 @@ class RequerimientoPendienteView {
         if((idx == -1)){
             reqTrueList.push(parseInt(obj.dataset.idRequerimiento));
         }
+        console.log(reqTrueList);
         sessionStorage.removeItem('idOrden');
         sessionStorage.setItem('reqCheckedList', JSON.stringify(reqTrueList));
         sessionStorage.setItem('tipoOrden', 'SERVICIO');
