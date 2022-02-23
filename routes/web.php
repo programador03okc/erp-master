@@ -1708,6 +1708,15 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::group(['as' => 'incidencias.', 'prefix' => 'incidencias'], function () {
 
 				Route::get('index', 'Cas\IncidenciaController@view_incidencia')->name('index');
+				Route::get('listarSalidasVenta', 'Cas\IncidenciaController@listarSalidasVenta');
+
+				Route::post('verDatosContacto', 'Logistica\Distribucion\OrdenesDespachoExternoController@verDatosContacto');
+				Route::get('listarContactos/{id}', 'Logistica\Distribucion\OrdenesDespachoExternoController@listarContactos');
+				Route::post('actualizaDatosContacto', 'Logistica\Distribucion\OrdenesDespachoExternoController@actualizaDatosContacto');
+				Route::get('seleccionarContacto/{id}/{req}', 'Logistica\Distribucion\OrdenesDespachoExternoController@seleccionarContacto');
+				Route::get('mostrarContacto/{id}', 'Logistica\Distribucion\OrdenesDespachoExternoController@mostrarContacto');
+				Route::get('anularContacto/{id}', 'Logistica\Distribucion\OrdenesDespachoExternoController@anularContacto');
+				Route::get('listar_ubigeos', 'AlmacenController@listar_ubigeos');
 			});
 		});
 	});

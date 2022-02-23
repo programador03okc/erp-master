@@ -414,25 +414,18 @@ class SalidasPendientesController extends Controller
                 'guia_ven.numero',
                 'guia_ven.id_od',
                 'orden_despacho.codigo as codigo_od',
-                // DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_persona"),
                 'alm_req.codigo as codigo_requerimiento',
                 'alm_req.concepto',
                 'adm_contri.razon_social',
-                // 'req_trans.codigo as codigo_req_trans',
-                // 'req_trans.concepto as concepto_trans',
                 'alm_almacen.descripcion as almacen_descripcion',
                 'sis_usua.nombre_corto',
                 'tp_ope.descripcion as operacion',
                 'orden_despacho.aplica_cambios',
-                // 'trans.codigo as codigo_trans'
             )
             ->join('almacen.guia_ven', 'guia_ven.id_guia_ven', '=', 'mov_alm.id_guia_ven')
-            // ->leftjoin('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'guia_ven.id_persona')
             ->leftjoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'guia_ven.id_almacen')
             ->leftjoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'guia_ven.usuario')
             ->join('almacen.orden_despacho', 'orden_despacho.id_od', '=', 'guia_ven.id_od')
-            // ->leftjoin('almacen.trans', 'trans.id_guia_ven', '=', 'guia_ven.id_guia_ven')
-            // ->leftjoin('almacen.alm_req as req_trans', 'req_trans.id_requerimiento', '=', 'trans.id_requerimiento')
             ->leftjoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'orden_despacho.id_requerimiento')
             ->leftjoin('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'alm_req.id_cliente')
             ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
