@@ -25,7 +25,7 @@
             <i class="fas fa-medal"></i> <span>Garantías</span> <i class="fa fa-angle-left pull-right"></i>
         </a>
         <ul class="treeview-menu">
-            <li><a href="{{route('cas.garantias.incidencias.index')}}"> Incidencias </a></li>
+            <li><a href="{{route('cas.garantias.incidencias.index')}}"> Registro de incidencia </a></li>
         </ul>
     </li>
 </ul>

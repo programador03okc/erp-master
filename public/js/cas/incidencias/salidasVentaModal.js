@@ -29,7 +29,7 @@ $(function () {
         $(".cliente_razon_social").text(data.razon_social);
         $(".codigo_requerimiento").text(data.codigo_requerimiento);
         $(".concepto_requerimiento").text(data.concepto);
-        $(".fecha_salida").text(formatDate(data.fecha_emision));
+        $(".fecha_registro").text(formatDate(fecha_actual()));
 
         $(".nombre").text(data.nombre);
         $(".cargo").text(data.cargo);

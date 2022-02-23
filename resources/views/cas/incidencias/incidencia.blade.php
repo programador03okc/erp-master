@@ -71,23 +71,29 @@ Registro de incidencia
 
             <fieldset class="group-table" id="fieldsetDatosNegocio">
                 <div class="row">
-                    <div class="col-sm-3">
+                    <div class="col-sm-4">
                         <div class="form-horizontal">
                             <div class="form-group" style="margin-bottom:0px;">
-                                <label class="col-sm-6 control-label">Guía venta</label>
-                                <div class="col-sm-6">
+                                <label class="col-sm-4 control-label">Guía venta</label>
+                                <div class="col-sm-8">
                                     <div class="form-control-static limpiarIncidencia guia_venta"></div>
                                 </div>
                             </div>
                             <div class="form-group" style="margin-bottom:0px">
-                                <label class="col-sm-6 control-label">Requerimiento</label>
-                                <div class="col-sm-6">
+                                <label class="col-sm-4 control-label">Requerimiento</label>
+                                <div class="col-sm-8">
                                     <div class="form-control-static limpiarIncidencia codigo_requerimiento"></div>
+                                </div>
+                            </div>
+                            <div class="form-group" style="margin-bottom:0px">
+                                <label class="col-sm-4 control-label">Fecha reporte</label>
+                                <div class="col-sm-8">
+                                    <input type="date" class="form-control edition limpiarIncidencia" name="fecha_reporte"/>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-5">
+                    <div class="col-sm-4">
                         <div class="form-horizontal">
                             
                             <div class="form-group" style="margin-bottom:0px">
@@ -109,14 +115,19 @@ Registro de incidencia
                             <div class="form-group" style="margin-bottom:0px">
                                 <label class="col-sm-4 control-label">Sede cliente</label>
                                 <div class="col-sm-8">
-                                    {{-- <div class="form-control-static limpiarIncidencia fecha_salida"></div> --}}
-                                <input type="text" class="form-control edition limpiarIncidencia" name="sede_cliente"/>
+                                    <input type="text" class="form-control edition limpiarIncidencia" name="sede_cliente"/>
                                 </div>
                             </div>
                             <div class="form-group" style="margin-bottom:0px;">
-                                <label class="col-sm-4 control-label">Fecha salida</label>
+                                <label class="col-sm-4 control-label">Fecha registro</label>
                                 <div class="col-sm-8">
-                                    <div class="form-control-static limpiarIncidencia fecha_salida"></div>
+                                    <div class="form-control-static limpiarIncidencia fecha_registro"></div>
+                                </div>
+                            </div>
+                            <div class="form-group" style="margin-bottom:0px;">
+                                <label class="col-sm-4 control-label">Responsable</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control edition limpiarIncidencia" name="reponsable"/>
                                 </div>
                             </div>
                         </div>
@@ -210,6 +221,60 @@ Registro de incidencia
             </div>
             <fieldset class="group-table" id="fieldsetProductos">
 
+            </fieldset>
+
+            <br/>
+            <div class="row" style="margin-bottom:0px">
+                <div class="col-md-12">
+                    <label style="font-weight: bold;">Falla reportada:</label>
+                </div>
+            </div>
+            <fieldset class="group-table" id="fieldsetFallaReportada">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="form-horizontal">
+                            <div class="form-group " style="margin-bottom:0px;">
+                                <label class="col-sm-4 control-label">Tipo de falla</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control edition limpiarIncidencia" name="tipo_falla"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-horizontal">
+                            <div class="form-group " style="margin-bottom:0px;">
+                                <label class="col-sm-4 control-label">Tipo de servicio</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control edition limpiarIncidencia" name="tipo_falla"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-horizontal">
+                            <div class="form-group " style="margin-bottom:0px;">
+                                <label class="col-sm-6 control-label">Equipo operativo</label>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control edition limpiarIncidencia" name="tipo_falla"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-horizontal">
+                            <div class="form-group " style="margin-bottom:0px;">
+                                {{-- <label class="col-sm-4 control-label">Ingrese la falla reportada</label> --}}
+                                <div class="col-sm-12">
+                                    <textarea class="form-control" name="falla_reportada" placeholder="Ingrese la falla reportada"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
             </fieldset>
         </div>
         <div class="box-footer">
