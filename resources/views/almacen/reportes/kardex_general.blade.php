@@ -37,36 +37,38 @@ Kardex General
                 <div class="row">
                     <input type="hidden" name="_token" value="{{csrf_token()}}" id="token">
                     <div class="col-md-12">
-                        <table class="mytable table table-condensed table-bordered table-okc-view" 
-                            id="kardexGeneral">
-                            <thead>
-                                <tr>
-                                    <th hidden></th>
-                                    <th>Código</th>
-                                    <th>Part Number</th>
-                                    <th>Categoría</th>
-                                    <th>SubCategoría</th>
-                                    <th>Descripción</th>
-                                    <th>Fecha</th>
-                                    <th>Almacén</th>
-                                    <th>Und</th>
-                                    <th>Ing.</th>
-                                    <th>Sal.</th>
-                                    <th>Saldo</th>
-                                    <th>Ing.</th>
-                                    <th>Sal.</th>
-                                    <th>Valoriz.</th>
-                                    <th>Cod.Mov.</th>
-                                    <th>Op</th>
-                                    <th>Movimiento</th>
-                                    <th>Guía </th>
-                                    <th>Transf.</th>
-                                    <th>O.C.</th>
-                                    <th>Fact.</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
+                        <div class="table-responsive">
+                            <table class="mytable table table-condensed table-bordered table-okc-view" 
+                                id="kardexGeneral">
+                                <thead>
+                                    <tr>
+                                        <th hidden></th>
+                                        <th>Código</th>
+                                        <th>Part Number</th>
+                                        <th>Categoría</th>
+                                        <th>SubCategoría</th>
+                                        <th>Descripción</th>
+                                        <th>Fecha</th>
+                                        <th>Almacén</th>
+                                        <th>Und</th>
+                                        <th>Ing.</th>
+                                        <th>Sal.</th>
+                                        <th>Saldo</th>
+                                        <th>Ing.</th>
+                                        <th>Sal.</th>
+                                        <th>Valoriz.</th>
+                                        <th>Cod.Mov.</th>
+                                        <th>Op</th>
+                                        <th>Movimiento</th>
+                                        <th>Guía </th>
+                                        <th>Transf.</th>
+                                        <th>O.C.</th>
+                                        <th>Fact.</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
