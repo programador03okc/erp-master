@@ -208,8 +208,9 @@ class ListarRequerimientoPagoView {
                 {
                     text: '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Nuevo',
                     attr: {
-
-                        id: 'btnNuevoRequerimientoPago'
+                        id: 'btnNuevoRequerimientoPago',
+                        title:tieneAccionCrearRequerimientoPago>0?'Crear nuevo requerimiento de pago':'No tiene persmiso para crear un requerimiento de pago',
+                        disabled: tieneAccionCrearRequerimientoPago>0?false:true
                     },
                     action: () => {
                         this.nuevoRequerimientoPago();
