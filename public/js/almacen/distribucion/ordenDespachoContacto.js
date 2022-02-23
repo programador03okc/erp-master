@@ -1,6 +1,6 @@
 let listaContactos = [];
 
-function open_despacho_create(data) {
+function openDespachoContacto(data) {
 
     $('#modal-orden_despacho_contacto').modal('show');
     $("#submit_orden_despacho").removeAttr("disabled");
@@ -14,7 +14,29 @@ function open_despacho_create(data) {
     $('[name=id_contribuyente]').val(data.id_contribuyente ?? 0);
     $('[name=id_entidad]').val(data.id_entidad ?? '0');
     $('[name=id_contacto_od]').val(data.id_contacto ?? '');
+    $('[name=origen]').val('despacho');
 
+    $('#fieldsetCorreoLicencia').show();
+    $('#btn_enviar_correo').show();
+}
+
+function openDespachoContactoIncidencia(id_requerimiento, id_contribuyente, id_entidad, id_contacto, codigo) {
+
+    $('#modal-orden_despacho_contacto').modal('show');
+    $("#submit_orden_despacho").removeAttr("disabled");
+    $('#codigo_req').text(codigo);
+
+    $('.limpiar').text('');
+    $('#listaContactos tbody').html('');
+
+    $('[name=id_requerimiento]').val(id_requerimiento ?? 0);
+    $('[name=id_contribuyente]').val(id_contribuyente ?? 0);
+    $('[name=id_entidad]').val(id_entidad ?? '0');
+    $('[name=id_contacto_od]').val(id_contacto ?? '');
+    $('[name=origen]').val('incidencia');
+
+    $('#fieldsetCorreoLicencia').hide();
+    $('#btn_enviar_correo').hide();
 }
 
 $('#modal-orden_despacho_contacto').on('shown.bs.modal', function (e) {
@@ -56,8 +78,13 @@ function verDatosContacto(id_requerimiento, id_entidad) {
 
         $('#enviado').removeClass('label-success');
         $('#enviado').removeClass('label-default');
-        $('#enviado').addClass(response['contacto'].enviar_contacto ? 'label-success' : 'label-default');
-        $('#enviado').text(response['contacto'].enviar_contacto ? 'Enviado' : 'No Enviado');
+
+        if ($('[name=origen]').val() == 'despacho') {
+            $('#enviado').addClass(response['contacto'].enviar_contacto ? 'label-success' : 'label-default');
+            $('#enviado').text(response['contacto'].enviar_contacto ? 'Enviado' : 'No Enviado');
+        } else {
+            $('#enviado').text('');
+        }
 
         mostrarContactos();
 
@@ -92,6 +119,7 @@ function listarContactos(id_contribuyente) {
     }).done(function (response) {
         console.log('listarContactos');
         console.log(response);
+        console.log(response['lista']);
         listaContactos = response['lista'];
         mostrarContactos();
 

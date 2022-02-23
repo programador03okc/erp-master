@@ -11,6 +11,7 @@
                     <input type="text" class="oculto" name="id_contribuyente"/>
                     <input type="text" class="oculto" name="id_entidad"/>
                     <input type="text" class="oculto" name="id_contacto_od"/>
+                    <input type="text" class="oculto" name="origen"/>
                     
                     <fieldset class="group-table" id="fieldsetDetallesEntidad">
                         

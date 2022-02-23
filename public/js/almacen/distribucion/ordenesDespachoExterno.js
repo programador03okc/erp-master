@@ -621,7 +621,7 @@ $('#requerimientosEnProceso tbody').on("click", "button.contacto", function () {
     var data = $('#requerimientosEnProceso').DataTable().row($(this).parents("tr")).data();
     console.log(data);
     // tab_origen = 'enProceso';
-    open_despacho_create(data);
+    openDespachoContacto(data);
 });
 
 $('#requerimientosEnProceso tbody').on("click", "button.anular_od", function () {

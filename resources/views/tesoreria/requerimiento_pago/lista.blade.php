@@ -114,6 +114,9 @@ Listado de requerimientos de pago
         listarRequerimientoPagoView.initializeEventHandler();
 
     });
+
+    var tieneAccionCrearRequerimientoPago = '{{Auth::user()->tieneAccion(142) }}';
+  
     // window.onload = function() {
     //     listarRequerimientoView.mostrar('ALL');
     // };

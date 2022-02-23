@@ -567,9 +567,18 @@ class OrdenesDespachoExternoController extends Controller
 
                 if ($requerimiento !== null) {
                     $listaContactos = DB::table('contabilidad.adm_ctb_contac')
+                        ->leftjoin('configuracion.ubi_dis', 'ubi_dis.id_dis', '=', 'adm_ctb_contac.ubigeo')
+                        ->leftjoin('configuracion.ubi_prov', 'ubi_prov.id_prov', '=', 'ubi_dis.id_prov')
+                        ->leftjoin('configuracion.ubi_dpto', 'ubi_dpto.id_dpto', '=', 'ubi_prov.id_dpto')
+                        ->select(
+                            'adm_ctb_contac.*',
+                            'ubi_dis.descripcion as distrito',
+                            'ubi_prov.descripcion as provincia',
+                            'ubi_dpto.descripcion as departamento'
+                        )
                         ->where([
-                            ['id_contribuyente', '=', $requerimiento->id_contribuyente],
-                            ['estado', '!=', 7]
+                            ['adm_ctb_contac.id_contribuyente', '=', $requerimiento->id_contribuyente],
+                            ['adm_ctb_contac.estado', '!=', 7]
                         ])
                         ->orderBy('nombre')
                         ->get();
@@ -601,10 +610,19 @@ class OrdenesDespachoExternoController extends Controller
     public function listarContactos($id_contribuyente)
     {
         try {
-            $listaContactos = ContactoContribuyente::where([
-                ['id_contribuyente', '=', $id_contribuyente],
-                ['estado', '!=', 7]
-            ])
+            $listaContactos = ContactoContribuyente::leftjoin('configuracion.ubi_dis', 'ubi_dis.id_dis', '=', 'adm_ctb_contac.ubigeo')
+                ->leftjoin('configuracion.ubi_prov', 'ubi_prov.id_prov', '=', 'ubi_dis.id_prov')
+                ->leftjoin('configuracion.ubi_dpto', 'ubi_dpto.id_dpto', '=', 'ubi_prov.id_dpto')
+                ->where([
+                    ['adm_ctb_contac.id_contribuyente', '=', $id_contribuyente],
+                    ['adm_ctb_contac.estado', '!=', 7]
+                ])
+                ->select(
+                    'adm_ctb_contac.*',
+                    'ubi_dis.descripcion as distrito',
+                    'ubi_prov.descripcion as provincia',
+                    'ubi_dpto.descripcion as departamento'
+                )
                 ->orderBy('nombre')
                 ->get();
 
@@ -682,16 +700,31 @@ class OrdenesDespachoExternoController extends Controller
                     );
             }
 
-            DB::table('almacen.alm_req')
-                ->where('id_requerimiento', $request->id_requerimiento)
-                ->update(['id_contacto' => $id_contacto]);
+            if ($request->origen == 'despacho') {
+                DB::table('almacen.alm_req')
+                    ->where('id_requerimiento', $request->id_requerimiento)
+                    ->update(['id_contacto' => $id_contacto]);
+            }
+
+            $contacto = DB::table('contabilidad.adm_ctb_contac')
+                ->select(
+                    'adm_ctb_contac.*',
+                    'ubi_dis.descripcion as distrito',
+                    'ubi_prov.descripcion as provincia',
+                    'ubi_dpto.descripcion as departamento'
+                )
+                ->leftjoin('configuracion.ubi_dis', 'ubi_dis.id_dis', '=', 'adm_ctb_contac.ubigeo')
+                ->leftjoin('configuracion.ubi_prov', 'ubi_prov.id_prov', '=', 'ubi_dis.id_prov')
+                ->leftjoin('configuracion.ubi_dpto', 'ubi_dpto.id_dpto', '=', 'ubi_prov.id_dpto')
+                ->where('id_datos_contacto', $id_contacto)->first();
 
             DB::commit();
             return response()->json(
                 array(
                     'tipo' => 'success',
                     'mensaje' => 'Se ha ' . $texto . ' el contacto.',
-                    'id_contacto' => $id_contacto
+                    'id_contacto' => $id_contacto,
+                    'contacto' => $contacto,
                 ),
                 200
             );
