@@ -40,7 +40,7 @@ class Usuario extends Authenticatable
 	public function tieneAccion($id)
 	{
 
-		return Acceso::where('id_usuario', $this->id_usuario)->where('id_accion', $id)->first() != null;
+		return Acceso::where([['id_usuario', $this->id_usuario],['id_accion', $id],['sis_acceso.estado', 1]])->first() != null;
 
 		// return Acceso::join('configuracion.sis_rol', 'sis_acceso.id_rol', '=', 'sis_rol.id_rol')
 		// 	->join('configuracion.sis_accion_rol', 'sis_accion_rol.id_rol', '=', 'sis_rol.id_rol')
@@ -50,7 +50,7 @@ class Usuario extends Authenticatable
 	public function tieneAplicacion($id)
 	{
 		return Acceso::join('configuracion.sis_accion', 'sis_accion.id_accion', '=', 'sis_acceso.id_accion')
-			->where('sis_acceso.id_usuario', $this->id_usuario)->where('sis_accion.id_aplicacion', $id)->first() != null;
+			->where([['sis_acceso.id_usuario', $this->id_usuario],['sis_acceso.estado', 1]])->where('sis_accion.id_aplicacion', $id)->first() != null;
 
 		// return Acceso::join('configuracion.sis_rol', 'sis_acceso.id_rol', '=', 'sis_rol.id_rol')
 		// 	->join('configuracion.sis_accion_rol', 'sis_accion_rol.id_rol', '=', 'sis_rol.id_rol')
@@ -62,7 +62,7 @@ class Usuario extends Authenticatable
 	{
 		return Acceso::join('configuracion.sis_accion', 'sis_accion.id_accion', '=', 'sis_acceso.id_accion')
 			->join('configuracion.sis_aplicacion', 'sis_aplicacion.id_aplicacion', '=', 'sis_accion.id_aplicacion')
-			->where('sis_acceso.id_usuario', $this->id_usuario)->where('sis_aplicacion.id_sub_modulo', $id)->first() != null;
+			->where([['sis_acceso.id_usuario', $this->id_usuario],['sis_acceso.estado', 1]])->where('sis_aplicacion.id_sub_modulo', $id)->first() != null;
 
 
 		// return Acceso::join('configuracion.sis_rol', 'sis_acceso.id_rol', '=', 'sis_rol.id_rol')
@@ -77,7 +77,7 @@ class Usuario extends Authenticatable
 		return Acceso::join('configuracion.sis_accion', 'sis_accion.id_accion', '=', 'sis_acceso.id_accion')
 			->join('configuracion.sis_aplicacion', 'sis_aplicacion.id_aplicacion', '=', 'sis_accion.id_aplicacion')
 			->join('configuracion.sis_modulo', 'sis_modulo.id_modulo', '=', 'sis_aplicacion.id_sub_modulo')
-			->where('sis_acceso.id_usuario', $this->id_usuario)->where('sis_modulo.id_padre', $id)->first() != null;
+			->where([['sis_acceso.id_usuario', $this->id_usuario],['sis_acceso.estado', 1]])->where('sis_modulo.id_padre', $id)->first() != null;
 
 		// return Acceso::join('configuracion.sis_rol', 'sis_acceso.id_rol', '=', 'sis_rol.id_rol')
 		// ->join('configuracion.sis_accion_rol', 'sis_accion_rol.id_rol', '=', 'sis_rol.id_rol')
@@ -102,7 +102,7 @@ class Usuario extends Authenticatable
 		$roles = DB::table('configuracion.usuario_rol')
 			->select('sis_rol.*')
 			->join('configuracion.sis_rol', 'sis_rol.id_rol', '=', 'usuario_rol.id_rol')
-			->where('usuario_rol.id_usuario', $this->id_usuario)
+			->where([['usuario_rol.id_usuario', $this->id_usuario],['usuario_rol.estado',1]])
 			->get();
 		$texto = '';
 		foreach ($roles as $s) {
