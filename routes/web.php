@@ -1566,7 +1566,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('kardex_detallado/{id}/{alm}/{fini}/{ffin}', 'AlmacenController@download_kardex_producto');
 				Route::get('select_almacenes_empresa/{id}', 'AlmacenController@select_almacenes_empresa');
 				Route::get('datos_producto/{id}', 'Almacen\Reporte\KardexSerieController@datos_producto');
-				Route::get('mostrar_prods', 'Almacen\Catalogo\ProductoController@mostrar_prods');
+				Route::post('mostrar_prods', 'Almacen\Catalogo\ProductoController@mostrar_prods');
 				Route::get('mostrar_prods_almacen/{id}', 'Almacen\Catalogo\ProductoController@mostrar_prods_almacen');
 			});
 

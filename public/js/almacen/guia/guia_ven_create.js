@@ -198,8 +198,12 @@ function guardarGuiaVenta(data) {
                 delayIndicator: false,
                 msg: response.mensaje
             });
-            $('#modal-guia_ven_create').modal('hide');
-            $('#despachosPendientes').DataTable().ajax.reload();
+            $('#mensaje').text('*' + response.mensaje);
+
+            if (response.tipo == 'success') {
+                $('#modal-guia_ven_create').modal('hide');
+                $('#despachosPendientes').DataTable().ajax.reload(null, false);
+            }
             // var id = encode5t(id_salida);
             // window.open('imprimir_salida/'+id);                
         }
