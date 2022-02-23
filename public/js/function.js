@@ -276,7 +276,7 @@ function eventRegister(type, data, action, frm_active) {
             guardarCategoria(data, action);
             break;
         case "categoria":
-            save_categoria(data, action);
+            guardarSubCategoria(data, action);
             break;
         case "subcategoria":
             guardarMarca(data, action);
@@ -600,7 +600,7 @@ function anularRegister(type, ids, active) {
             anularCategoria(ids);
             break;
         case "categoria":
-            anular_categoria(ids);
+            anularSubCategoria(ids);//
             break;
         case "subcategoria":
             anularMarca(ids);

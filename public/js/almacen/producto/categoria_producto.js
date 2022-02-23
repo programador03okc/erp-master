@@ -5,7 +5,7 @@ $(function () {
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language': vardataTables[0],
-        'ajax': 'listar_categorias',
+        'ajax': 'listarSubCategorias',
         'columns': [
             { 'data': 'id_categoria' },
             { 'data': 'clasificacion_descripcion' },
@@ -28,16 +28,15 @@ $(function () {
             }
             var id = $(this)[0].firstChild.innerHTML;
             clearForm(form);
-            mostrar_categoria(id);
+            mostrarSubCategoria(id);
             changeStateButton('historial');
         }
     });
 
-
 });
 
-function mostrar_categoria(id) {
-    baseUrl = 'mostrar_categoria/' + id;
+function mostrarSubCategoria(id) {
+    baseUrl = 'mostrarSubCategoria/' + id;
     $.ajax({
         type: 'GET',
         headers: { 'X-CSRF-TOKEN': token },
@@ -60,11 +59,11 @@ function mostrar_categoria(id) {
     });
 }
 
-function save_categoria(data, action) {
+function guardarSubCategoria(data, action) {
     if (action == 'register') {
-        baseUrl = 'guardar_categoria';
+        baseUrl = 'guardarSubCategoria';
     } else if (action == 'edition') {
-        baseUrl = 'actualizar_categoria';
+        baseUrl = 'actualizarSubCategoria';
     }
     $.ajax({
         type: 'POST',
@@ -74,16 +73,20 @@ function save_categoria(data, action) {
         dataType: 'JSON',
         success: function (response) {
             console.log(response);
-            console.log(response.length);
-            if (response.length > 0) {
-                alert(response);
-            } else {
-                alert('SubCategoría registrado con éxito');
+            Lobibox.notify(response.tipo, {
+                title: false,
+                size: "mini",
+                rounded: true,
+                sound: false,
+                delayIndicator: false,
+                msg: response.mensaje
+            });
+
+            if (response.status==200){ 
                 $('#listaCategoria').DataTable().ajax.reload();
                 changeStateButton('guardar');
                 $('#form-categoria').attr('type', 'register');
                 changeStateInput('form-categoria', true);
-                $('[name=id_tipo_producto]').attr('disabled', true);
             }
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {
@@ -93,57 +96,46 @@ function save_categoria(data, action) {
     });
 }
 
-function anular_categoria(ids) {
-    baseUrl = 'anular_categoria/' + ids;
+function anularSubCategoria(ids) {
+
+    baseUrl = 'anularSubCategoria/'+ids;
     $.ajax({
         type: 'GET',
-        headers: { 'X-CSRF-TOKEN': token },
-        url: 'revisarCat/' + ids,
+        headers: {'X-CSRF-TOKEN': token},
+        url: baseUrl,
         dataType: 'JSON',
-        success: function (response) {
+        success: function(response) {
             console.log(response);
-            if (response >= 1) {
-                alert('No es posible anular. \nLa subcategoria seleccionada está relacionada con '
-                    + response + ' marca(s).');
-            }
-            else {
-                $.ajax({
-                    type: 'GET',
-                    headers: { 'X-CSRF-TOKEN': token },
-                    url: baseUrl,
-                    dataType: 'JSON',
-                    success: function (response) {
-                        console.log(response);
-                        if (response > 0) {
-                            alert('SubCategoría anulada con éxito');
-                            $('#listaCategoria').DataTable().ajax.reload();
-                            changeStateButton('anular');
-                            clearForm('form-categoria');
-                        }
-                    }
-                }).fail(function (jqXHR, textStatus, errorThrown) {
-                    console.log(jqXHR);
-                    console.log(textStatus);
-                    console.log(errorThrown);
-                });
+            Lobibox.notify(response.tipo, {
+                title: false,
+                size: "mini",
+                rounded: true,
+                sound: false,
+                delayIndicator: false,
+                msg: response.mensaje
+            });
+            if (response.status==200) {
+                $('#listaCategoria').DataTable().ajax.reload();
+                changeStateButton('anular');
+                clearForm('form-categoria');
             }
         }
-    }).fail(function (jqXHR, textStatus, errorThrown) {
+    }).fail( function( jqXHR, textStatus, errorThrown ){
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
     });
-
+    
 }
 
-$("[name=id_clasificacion]").on('change', function () {
+/*$("[name=id_clasificacion]").on('change', function () {
     var id_clasificacion = $(this).val();
     console.log(id_clasificacion);
     $('[name=id_tipo_producto]').html('');
     $.ajax({
         type: 'GET',
         headers: { 'X-CSRF-TOKEN': token },
-        url: 'mostrar_tipos_clasificacion/' + id_clasificacion,
+        url: 'mostrarCategoriasPorClasificacion/' + id_clasificacion,
         dataType: 'JSON',
         success: function (response) {
             console.log(response);
@@ -161,5 +153,5 @@ $("[name=id_clasificacion]").on('change', function () {
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
-    });
-});
+    })
+    });;*/
