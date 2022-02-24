@@ -102,16 +102,19 @@ let detalle = [];
 
 function ver_requerimiento(id_requerimiento) {
     $("#detalleRequerimiento tbody").html("");
+    $("[name=id_almacen_destino]").html("");
     detalle = [];
+    $("#modal-ver_requerimiento").modal({
+        show: true
+    });
+
     $.ajax({
         type: "GET",
         url: "verRequerimiento/" + id_requerimiento,
         dataType: "JSON",
         success: function (response) {
             console.log(response);
-            $("#modal-ver_requerimiento").modal({
-                show: true
-            });
+
             $("[name=id_requerimiento]").val(response["requerimiento"].id_requerimiento);
             $("[name=codigo_req]").text(response["requerimiento"].codigo);
             $("[name=concepto]").text(response["requerimiento"].concepto);
@@ -119,14 +122,21 @@ function ver_requerimiento(id_requerimiento) {
             $("[name=sede_requerimiento]").text(response["requerimiento"].sede_requerimiento);
             $("[name=estado_requerimiento]").text(response["requerimiento"].estado_doc);
 
-            $("#detalleRequerimiento tbody").html("");
-            detalle = [];
+            var option = '';
+            if (response["almacenes"].length == 1) {
+                option += `<option value="${response["almacenes"][0].id_almacen}" selected>${response["almacenes"][0].descripcion}</option>`;
+            } else {
+                response["almacenes"].forEach(element => {
+                    option += `<option value="${element.id_almacen}">${element.descripcion}</option>`;
+                });
+            }
+            $("[name=id_almacen_destino_create]").html(option);
+
             response["detalle"].forEach(element => {
                 if (element.sede !== "") {
                     detalle.push(element);
                 }
             });
-            // detalle = response["detalle"];
             mostrarDetalleRequerimiento();
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {
@@ -212,7 +222,8 @@ $("#form-ver_requerimiento").on("submit", function (e) {
         if (result.isConfirmed) {
             var data = $(this).serialize();
             console.log(data);
-            var id = $("[name=id_requerimiento]").val();
+            var id_requerimiento = $("[name=id_requerimiento]").val();
+            var id_almacen_destino = $("[name=id_almacen_destino_create]").val();
             var listaItemsDetalle = [];
 
             detalle.forEach(element => {
@@ -226,7 +237,8 @@ $("#form-ver_requerimiento").on("submit", function (e) {
                 listaItemsDetalle.push(nuevo);
             });
             var data = {
-                id_requerimiento: id,
+                id_requerimiento: id_requerimiento,
+                id_almacen_destino: id_almacen_destino,
                 detalle: listaItemsDetalle
             };
             console.log(data);
@@ -243,17 +255,18 @@ function generarTransferenciaRequerimiento(data) {
         dataType: "JSON",
         success: function (response) {
             console.log(response);
-            $("#modal-ver_requerimiento").modal("hide");
-            $("#listaRequerimientos").DataTable().ajax.reload(null, false);
-
-            Lobibox.notify("success", {
+            Lobibox.notify(response.tipo, {
                 title: false,
                 size: "mini",
                 rounded: true,
                 sound: false,
                 delayIndicator: false,
-                msg: response
+                msg: response.mensaje
             });
+            if (response.tipo == 'success') {
+                $("#modal-ver_requerimiento").modal("hide");
+                $("#listaRequerimientos").DataTable().ajax.reload(null, false);
+            }
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);

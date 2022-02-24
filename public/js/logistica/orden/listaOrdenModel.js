@@ -207,9 +207,5 @@ class ListaOrdenModel {
     }
 
 
-    descargarListaOrdenesVistaCabecera(){
-        // window.open('descargar-excel-listar-ordenes');
-        window.open('listar-ordenes-excel');
-    }
 }
 

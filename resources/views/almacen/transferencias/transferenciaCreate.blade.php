@@ -4,11 +4,20 @@
             <form id="form-ver_requerimiento">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
-                    <h3 class="modal-title">Requerimiento <label name="codigo_req"></label></h3>
+                    <h3 class="modal-title">Nueva Transferencia del <label name="codigo_req"></label></h3>
                 </div>
                 <div class="modal-body">
                     <input type="text" class="oculto" name="id_requerimiento">
                     <div class="row">
+                        <div class="col-md-3">
+                            <h5>Almacén Destino</h5>
+                            <select class="form-control js-example-basic-single" name="id_almacen_destino_create" required>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <h5>Sede Destino</h5>
+                            <label name="sede_requerimiento"></label>
+                        </div>
                         <div class="col-md-4">
                             <h5>Concepto</h5>
                             <label name="concepto"></label>
@@ -18,16 +27,11 @@
                             <label name="fecha_requerimiento"></label>
                             <!-- <input type="date" class="form-control" name="fecha_emision"> -->
                         </div>
-                        <div class="col-md-2">
-                            <h5>Sede Destino</h5>
-                            <label name="sede_requerimiento"></label>
-                            <!-- <input type="date" class="form-control" name="fecha_almacen"> -->
-                        </div>
-                        <div class="col-md-2">
+                        
+                        {{-- <div class="col-md-2">
                             <h5>Estado</h5>
                             <label name="estado_requerimiento"></label>
-                            <!-- <input type="date" class="form-control" name="fecha_almacen"> -->
-                        </div>
+                        </div> --}}
                     </div>
                     <div class="row">
                         <div class="col-md-12">

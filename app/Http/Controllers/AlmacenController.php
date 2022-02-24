@@ -2635,7 +2635,7 @@ class AlmacenController extends Controller
                 'alm_prod.part_number as prod_part_number',
                 'alm_cat_prod.descripcion as categoria',
                 'alm_subcat.descripcion as subcategoria',
-                'alm_prod.codigo_anexo',
+                // 'alm_prod.codigo_anexo',
                 'alm_und_medida.abreviatura',
                 'alm_ubi_posicion.codigo as posicion',
                 'tp_ope_com.cod_sunat as cod_sunat_com',
@@ -2698,13 +2698,13 @@ class AlmacenController extends Controller
             }
             $orden = '';
             $req = '';
+            $ordenes_array = [];
+            $comprobantes_array = [];
 
             if ($d->id_tp_mov == 1 || $d->id_tp_mov == 0) {
                 $saldo += $d->cantidad;
                 $saldo_valor += $d->valorizacion;
 
-                $ordenes_array = [];
-                $comprobantes_array = [];
 
                 if ($d->id_guia_com_det !== null) {
                     $ocs = DB::table('almacen.guia_com_det')
@@ -5499,7 +5499,7 @@ class AlmacenController extends Controller
                     'adm_contri.razon_social',
                     'adm_contri.nro_documento',
                     'alm_almacen.descripcion as alm_descripcion',
-                    'alm_prod.codigo_anexo',
+                    'alm_prod.part_number',
                     'alm_prod.codigo',
                     'alm_prod.descripcion',
                     'tp_ope.descripcion as ope_descripcion',
@@ -5533,7 +5533,7 @@ class AlmacenController extends Controller
                     'adm_contri.razon_social',
                     'adm_contri.nro_documento',
                     'alm_almacen.descripcion as alm_descripcion',
-                    'alm_prod.codigo_anexo',
+                    'alm_prod.part_number',
                     'alm_prod.codigo',
                     'alm_prod.descripcion',
                     'tp_ope.descripcion as ope_descripcion',

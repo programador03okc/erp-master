@@ -1,5 +1,17 @@
 var nombreModalPadre ='';
+
+function restablecerDefaultModalCuentaDestinatario(){
+    document.querySelector("div[id='modal-nueva-cuenta-bancaria-destinatario'] select[name='banco']").value = 1;
+    document.querySelector("div[id='modal-nueva-cuenta-bancaria-destinatario'] select[name='tipo_cuenta_banco']").value = 1;
+    document.querySelector("div[id='modal-nueva-cuenta-bancaria-destinatario'] select[name='moneda']").value = 1;
+    document.querySelector("div[id='modal-nueva-cuenta-bancaria-destinatario'] input[name='nro_cuenta']").value = '';
+    document.querySelector("div[id='modal-nueva-cuenta-bancaria-destinatario'] input[name='nro_cuenta_interbancaria']").value = '';
+    document.querySelector("div[id='modal-nueva-cuenta-bancaria-destinatario'] input[name='swift']").value = '';
+
+}
+
 function modalNuevaCuentaDestinatario() {
+    restablecerDefaultModalCuentaDestinatario();
     if(document.querySelector("div[class='modal fade in']").getAttribute("id")){
         nombreModalPadre="div[id='"+document.querySelector("div[class='modal fade in']").getAttribute("id")+"']";
     }
@@ -34,12 +46,10 @@ $("#form-nueva-cuenta-bancaria-destinatario").on("submit", function (e) {
     var data = $(this).serialize();
 
     let cta = ($('div[id="modal-nueva-cuenta-bancaria-destinatario"] [name=nro_cuenta]').val()).trim();
-    let cci = ($('div[id="modal-nueva-cuenta-bancaria-destinatario"] [name=nro_cuenta_interbancaria]').val()).trim();
     let txt = '';
 
-    if (cta == '' && cci == '' ) {
+    if (cta == '') {
         txt += (cta == '' ? (txt == '' ? 'cuenta ' : ', cuenta ') : '');
-        txt += (cci == '' ? (txt == '' ? 'cuenta interbancaria ' : ', cuenta interbancaria ') : '');
 
         Swal.fire({
             title: "Es necesario que ingrese por lo menos " + txt,
@@ -115,7 +125,7 @@ function guardarCuentaBancariaDestinatario(data) {
 // ###=========== obtener y actualizar select cuenta bancaria ==========###
 function obtenerCuentasBancariasPersona(id_persona) {
 
-    console.log(id_persona);
+    // console.log(id_persona);
     if (id_persona > 0) {
         $.ajax({
             type: 'GET',
@@ -130,7 +140,7 @@ function obtenerCuentasBancariasPersona(id_persona) {
             },
         }).done(function (response) {
             $("select[name='id_cuenta']").LoadingOverlay("hide", true);
-            console.log(response);
+            // console.log(response);
             if (response.tipo_estado == 'success') {
 
                 if (response.data.length > 0) {
@@ -182,13 +192,6 @@ function obtenerCuentasBancariasPersona(id_persona) {
                         selectCuenta.removeChild(selectCuenta.lastChild);
                     }
                 }
-                Lobibox.notify(response.tipo_estado, {
-                    size: "mini",
-                    rounded: true,
-                    sound: false,
-                    delayIndicator: false,
-                    msg: response.mensaje
-                });
                 Lobibox.notify(response.tipo_estado, {
                     size: "mini",
                     rounded: true,

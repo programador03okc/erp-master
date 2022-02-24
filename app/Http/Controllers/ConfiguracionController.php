@@ -659,7 +659,7 @@ class ConfiguracionController extends Controller{
                 'sis_usua.fecha_registro',
                 'sis_usua.estado',
                 'sis_acceso.id_acceso',
-                'sis_acceso.id_rol',
+                'usuario_rol.id_rol',
                 'sis_rol.descripcion as rol',
                 'rrhh_perso.nombres',
                 'rrhh_perso.apellido_paterno',
@@ -668,7 +668,8 @@ class ConfiguracionController extends Controller{
                 'rrhh_perso.email'
                     )
                     ->leftJoin('configuracion.sis_acceso', 'sis_acceso.id_usuario', '=', 'sis_usua.id_usuario')
-                    ->leftJoin('configuracion.sis_rol', 'sis_rol.id_rol', '=', 'sis_acceso.id_rol')
+                    ->leftJoin('configuracion.usuario_rol', 'usuario_rol.id_usuario', '=', 'sis_usua.id_usuario')
+                    ->leftJoin('configuracion.sis_rol', 'sis_rol.id_rol', '=', 'usuario_rol.id_rol')
             ->join('rrhh.rrhh_trab', 'sis_usua.id_trabajador', '=', 'rrhh_trab.id_trabajador')
             ->join('rrhh.rrhh_postu', 'rrhh_trab.id_postulante', '=', 'rrhh_postu.id_postulante')
             ->join('rrhh.rrhh_perso', 'rrhh_postu.id_persona', '=', 'rrhh_perso.id_persona')
@@ -706,13 +707,14 @@ class ConfiguracionController extends Controller{
                 'sis_usua.fecha_registro',
                 'sis_usua.estado',
                 'sis_acceso.id_acceso',
-                'sis_acceso.id_rol',
+                'usuario_rol.id_rol',
                 'sis_rol.descripcion as rol',
                 DB::raw("CONCAT(rrhh_perso.nombres,' ',rrhh_perso.apellido_paterno,' ',rrhh_perso.apellido_materno) as nombre_completo_usuario"),
                 'rrhh_perso.email'
                     )
                     ->leftJoin('configuracion.sis_acceso', 'sis_acceso.id_usuario', '=', 'sis_usua.id_usuario')
-                    ->leftJoin('configuracion.sis_rol', 'sis_rol.id_rol', '=', 'sis_acceso.id_rol')
+                    ->leftJoin('configuracion.usuario_rol', 'usuario_rol.id_usuario', '=', 'sis_usua.id_usuario')
+                    ->leftJoin('configuracion.sis_rol', 'sis_rol.id_rol', '=', 'usuario_rol.id_rol')
             ->join('rrhh.rrhh_trab', 'sis_usua.id_trabajador', '=', 'rrhh_trab.id_trabajador')
             ->join('rrhh.rrhh_postu', 'rrhh_trab.id_postulante', '=', 'rrhh_postu.id_postulante')
             ->join('rrhh.rrhh_perso', 'rrhh_postu.id_persona', '=', 'rrhh_perso.id_persona')

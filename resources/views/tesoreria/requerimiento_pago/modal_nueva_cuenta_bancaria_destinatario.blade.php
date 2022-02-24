@@ -49,7 +49,7 @@
                             <input type="text" class="form-control icd-okc" name="nro_cuenta" />
                         </div>
                         <div class="col-md-12">
-                            <h5>N° Cuenta Interbancaria *</h5>
+                            <h5>N° Cuenta Interbancaria</h5>
                             <input type="text" class="form-control icd-okc" name="nro_cuenta_interbancaria" />
                         </div>
                         <div class="col-md-12">

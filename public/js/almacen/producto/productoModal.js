@@ -53,10 +53,13 @@ function listarProductos() {
 
     var vardataTables = funcDatatables();
     $('#listaProducto').dataTable({
-        'dom': vardataTables[1],
-        'language': vardataTables[0],
-        'bDestroy': true,
-        'ajax': 'mostrar_prods',
+        dom: vardataTables[1],
+        language: vardataTables[0],
+        serverSide: true,
+        ajax: {
+            url: "mostrar_prods",
+            type: "POST"
+        },
         'columns': [
             { 'data': 'id_producto' },
             { 'data': 'codigo' },
@@ -64,13 +67,13 @@ function listarProductos() {
             { 'data': 'part_number' },
             { 'data': 'descripcion' },
             {
-                data: 'estado_doc',
+                data: 'estado_doc', name: 'adm_estado_doc.estado_doc',
                 'render': function (data, type, row) {
                     return '<span class="label label-' + row['bootstrap_color'] + '">' + (row['estado'] == 7 ? 'Dado de baja' : row['estado_doc']) + '</span>'
                 }
             },
             { 'data': 'id_unidad_medida' },
-            { 'data': 'abreviatura' },
+            { 'data': 'abreviatura', name: 'alm_und_medida.abreviatura' },
             { 'data': 'series' },
         ],
         'columnDefs': [{ 'aTargets': [0, 6, 7, 8], 'sClass': 'invisible' }],

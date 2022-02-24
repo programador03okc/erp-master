@@ -65,28 +65,24 @@ function listarRequerimientosPendientes(usuario) {
             });
 
             const $form = $('#formFiltrosDespachoExterno');
-            // const factual = fecha_actual();
 
-            // <input type="date" class="form-control " size="10" id="txtFechaPriorizacion" 
-            // style="background-color:#d2effa;" value="${factual}"/>
+            // $('#requerimientosEnProceso_wrapper .dt-buttons').append(
+            //     `<div style="display:flex">
+            //         <label style="text-align: center;margin-left: 20px;margin-top: 7px;margin-right: 10px;">Mostrar: </label>
+            //         <select class="form-control" id="selectMostrar">
+            //             <option value="0" selected>Todos</option>
+            //             <option value="1" >Priorizados</option>
+            //             <option value="2" >Los de Hoy</option>
+            //         </select>
 
-            $('#requerimientosEnProceso_wrapper .dt-buttons').append(
-                `<div style="display:flex">
-                    <label style="text-align: center;margin-left: 20px;margin-top: 7px;margin-right: 10px;">Mostrar: </label>
-                    <select class="form-control" id="selectMostrar">
-                        <option value="0" selected>Todos</option>
-                        <option value="1" >Priorizados</option>
-                        <option value="2" >Los de Hoy</option>
-                    </select>
-                    
-                </div>`
-            );
+            //     </div>`
+            // );
 
-            $("#selectMostrar").on("change", function (e) {
-                var sed = $(this).val();
-                $('#formFiltrosDespachoExterno').find('input[name=select_mostrar]').val(sed);
-                $("#requerimientosEnProceso").DataTable().ajax.reload(null, false);
-            });
+            // $("#selectMostrar").on("change", function (e) {
+            //     var sed = $(this).val();
+            //     $('#formFiltrosDespachoExterno').find('input[name=select_mostrar]').val(sed);
+            //     $("#requerimientosEnProceso").DataTable().ajax.reload(null, false);
+            // });
         },
         drawCallback: function (settings) {
             $("#requerimientosEnProceso_filter input").prop("disabled", false);
@@ -112,8 +108,8 @@ function listarRequerimientosPendientes(usuario) {
             {
                 data: 'codigo', name: 'alm_req.codigo', className: "text-center",
                 'render': function (data, type, row) {
-                    return (row['codigo'] !== null ? row['codigo'] : '') + (row['estado'] == 38 ?
-                        ' <i class="fas fa-exclamation-triangle red" data-toggle="tooltip" data-placement="bottom" title="Requerimiento por regularizar"></i> '
+                    return (row['codigo'] !== null ? row['codigo'] : '') + (row['estado'] == 38
+                        ? ' <i class="fas fa-exclamation-triangle red" data-toggle="tooltip" data-placement="bottom" title="Requerimiento por regularizar"></i> '
                         : (row['estado'] == 39 ?
                             ' <i class="fas fa-pause orange" data-toggle="tooltip" data-placement="bottom" title="Requerimiento en pausa"></i> ' : ''))
                         + (row['tiene_transformacion'] ? ' <i class="fas fa-random red"></i>' : '');
@@ -326,7 +322,7 @@ function listarRequerimientosPendientes(usuario) {
             }
         ],
         // select: "multi",
-        order: [[2, "desc"]], //, [0, "desc"]
+        order: [[0, "desc"]], //, [2, "desc"]
     });
     vista_extendida();
 
@@ -621,7 +617,7 @@ $('#requerimientosEnProceso tbody').on("click", "button.contacto", function () {
     var data = $('#requerimientosEnProceso').DataTable().row($(this).parents("tr")).data();
     console.log(data);
     // tab_origen = 'enProceso';
-    open_despacho_create(data);
+    openDespachoContacto(data);
 });
 
 $('#requerimientosEnProceso tbody').on("click", "button.anular_od", function () {

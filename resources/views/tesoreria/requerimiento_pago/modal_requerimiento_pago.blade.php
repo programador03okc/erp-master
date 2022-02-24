@@ -245,30 +245,36 @@
                                     <button type="button" class="btn btn-xs btn-primary activation handleCheckStatusValue handleClickAgregarServicio" id="btnAddServicio" data-toggle="tooltip" data-placement="bottom" title="Agregar Servicio"><i class="fas fa-plus"></i> Servicio
                                     </button>
                                 </div>
-                                <table class="table table-striped table-condensed table-bordered" id="ListaDetalleRequerimientoPago" width="100%">
-                                    <thead>
-                                        <tr>
-                                            <th style="width: 10%">Partida</th>
-                                            <th style="width: 10%">C.Costo</th>
-                                            <th>Descripción de item</th>
-                                            <th style="width: 10%">Unidad</th>
-                                            <th style="width: 6%">Cantidad</th>
-                                            <th style="width: 8%">Precio Unit.<span name="simboloMoneda">S/</span> <em>(Sin IGV)</em></th>
-                                            <th style="width: 6%">Subtotal</th>
-                                            <th style="width: 7%">Acciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="body_detalle_requerimiento_pago">
+                                <div class="box box-widget">
+                                    <div class="box-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-condensed table-bordered" id="ListaDetalleRequerimientoPago" width="100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="width: 10%">Partida</th>
+                                                        <th style="width: 10%">C.Costo</th>
+                                                        <th>Descripción de item</th>
+                                                        <th style="width: 10%">Unidad</th>
+                                                        <th style="width: 6%">Cantidad</th>
+                                                        <th style="width: 8%">Precio Unit.<span name="simboloMoneda">S/</span> <em>(Sin IGV)</em></th>
+                                                        <th style="width: 6%">Subtotal</th>
+                                                        <th style="width: 7%">Acciones</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="body_detalle_requerimiento_pago">
 
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <td colspan="6" class="text-right"><strong>Total:</strong></td>
-                                            <td class="text-right"><span name="simboloMoneda">S/</span><label name="total"> 0.00</label></td>
-                                            <td></td>
-                                        </tr>
-                                    </tfoot>
-                                </table>
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td colspan="6" class="text-right"><strong>Total:</strong></td>
+                                                        <td class="text-right"><span name="simboloMoneda">S/</span><label name="total"> 0.00</label></td>
+                                                        <td></td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
                             </fieldset>
                         </div>
 

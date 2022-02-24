@@ -33,18 +33,18 @@ Crear / editar requerimiento
 @section('content')
 <div class="page-main" type="requerimiento">
     <form id="form-requerimiento" type="register" enctype="multipart/form-data" form="formulario">
-        <input type="hidden" name="id_usuario_session">
-        <input type="hidden" name="id_usuario_req">
-        <input type="hidden" name="id_requerimiento" primary="ids">
-        <input type="hidden" name="cantidad_aprobaciones">
-        <input type="hidden" name="confirmacion_pago">
-        <input type="hidden" name="fecha_creacion_cc">
-        <input type="hidden" name="id_cc">
-        <input type="hidden" name="tipo_cuadro">
-        <input type="hidden" name="tiene_transformacion" value=false>
-        <input type="hidden" name="justificacion_generar_requerimiento">
-        <input type="hidden" name="id_grupo">
-        <input type="hidden" name="estado">
+        <input type="text" class="oculto" name="id_usuario_session">
+        <input type="text" class="oculto" name="id_usuario_req">
+        <input type="text" class="oculto" name="id_requerimiento" primary="ids">
+        <input type="text" class="oculto" name="cantidad_aprobaciones">
+        <input type="text" class="oculto" name="confirmacion_pago">
+        <input type="text" class="oculto" name="fecha_creacion_cc">
+        <input type="text" class="oculto" name="id_cc">
+        <input type="text" class="oculto" name="tipo_cuadro">
+        <input type="text" class="oculto" name="tiene_transformacion" value=false>
+        <input type="text" class="oculto" name="justificacion_generar_requerimiento">
+        <input type="hidden" class="" name="id_grupo">
+        <input type="text" class="oculto" name="estado">
 
 
 
@@ -79,8 +79,8 @@ Crear / editar requerimiento
                         <span class="label label-default" id="estado_doc"></span>
                         <span class="label label-success" id="nro_occ_softlink"></span>
                         <button type="button" name="btn-imprimir-requerimento-pdf" class="btn btn-info btn-sm handleClickImprimirRequerimientoPdf" title="Imprimir requerimiento en .pdf" disabled><i class="fas fa-print"></i> Imprimir</button>
-                        <button type="button" name="btn-adjuntos-requerimiento" class="btn btn-sm btn-warning handleClickAdjuntarArchivoRequerimiento" title="Archivos adjuntos" disabled><i class="fas fa-paperclip"></i>
-                            <span class="badge" name="cantidadAdjuntosRequerimiento" style="position:absolute; right: 74px; border: solid 0.1px;">0</span>
+                        <button type="button" name="btn-adjuntos-requerimiento" class="btn btn-sm btn-warning handleClickAdjuntarArchivoCabecera" title="Archivos adjuntos" disabled><i class="fas fa-paperclip"></i>
+                            <span class="badge" name="cantidadAdjuntosCabeceraRequerimiento" style="position:absolute; right: 74px; border: solid 0.1px;">0</span>
                             Adjuntos
                         </button>
                     </div>
@@ -309,10 +309,10 @@ Crear / editar requerimiento
                         <div class="col-md-12">
                             <h5>Nombre</h5>
                             <div style="display:flex;">
-                                <input type="hidden" class="form-control" name="descripcion_grupo">
+                                <input type="text" class="form-control oculto" name="descripcion_grupo">
                                 <input type="text" name="codigo_proyecto" class="form-control group-elemento" style="width:130px; text-align:center;" readonly>
                                 <div class="input-group-okc">
-                                    <select class="form-control activation" name="id_proyecto" onChange="requerimientoView.changeProyecto(event);">
+                                    <select class="form-control activation handleChangeProyecto" name="id_proyecto">
                                         <option value="0">Seleccione un Proyecto</option>
                                         @foreach ($proyectos_activos as $proyecto)
                                         <option value="{{$proyecto->id_proyecto}}" data-id-centro-costo="{{$proyecto->id_centro_costo}}" data-codigo-centro-costo="{{$proyecto->codigo_centro_costo}}" data-descripcion-centro-costo="{{$proyecto->descripcion_centro_costo}}" data-codigo="{{$proyecto->codigo}}">{{$proyecto->descripcion}}</option>
@@ -445,130 +445,136 @@ Crear / editar requerimiento
 
 
         <br>
+        <div class="row">
+            <div class="col-sm-12">
+                <h4 style="display:flex;justify-content: space-between;">Item's de requerimiento</h4>
+                <fieldset class="group-table">
+                    <div class="btn-group" role="group" aria-label="...">
+                        <button type="button" class="btn btn-xs btn-success activation handleClickAgregarProducto" id="btn-add-producto" data-toggle="tooltip" data-placement="bottom" title="Agregar Detalle" disabled><i class="fas fa-plus"></i> Producto
+                        </button> <!--  onClick="catalogoItemsModal();" -->
+                        <button type="button" class="btn btn-xs btn-primary activation handleClickAgregarServicio" id="btn-add-servicio" data-toggle="tooltip" data-placement="bottom" title="Agregar Detalle" disabled><i class="fas fa-plus"></i> Servicio
+                        </button>
+                    </div>
+                    <div class="box box-widget">
+                        <div class="box-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-condensed table-bordered" id="ListaDetalleRequerimiento" width="100%">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 3%">#</th>
+                                            <th style="width: 10%">Partida</th>
+                                            <th style="width: 10%">C.Costo</th>
+                                            <th style="width: 10%">Part number</th>
+                                            <th>Descripción de item</th>
+                                            <th style="width: 10%">Unidad</th>
+                                            <th style="width: 6%">Cantidad</th>
+                                            <th style="width: 8%">Precio Unit.<span name="simboloMoneda">S/</span> <em>(Sin IGV)</em></th>
+                                            <th style="width: 6%">Subtotal</th>
+                                            <th style="width: 15%">Motivo</th>
+                                            <th style="width: 7%">Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="body_detalle_requerimiento">
+
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="8" class="text-right"><strong>Total:</strong></td>
+                                            <td class="text-right"><span name="simboloMoneda">S/</span><label name="total"> 0.00</label></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+        <br>
+        <fieldset class="group-table" id="group-detalle-items-transformados" hidden>
             <div class="row">
                 <div class="col-sm-12">
-                    <h4 style="display:flex;justify-content: space-between;">Item's de requerimiento</h4>
-                    <fieldset class="group-table">
-                        <div class="btn-group" role="group" aria-label="...">
-                            <button type="button" class="btn btn-xs btn-success activation handleClickAgregarProducto" id="btn-add-producto" data-toggle="tooltip" data-placement="bottom" title="Agregar Detalle" disabled><i class="fas fa-plus"></i> Producto
-                            </button> <!--  onClick="catalogoItemsModal();" -->
-                            <button type="button" class="btn btn-xs btn-primary activation handleClickAgregarServicio" id="btn-add-servicio" data-toggle="tooltip" data-placement="bottom" title="Agregar Detalle" disabled><i class="fas fa-plus"></i> Servicio
-                            </button>
-                        </div>
-                        <table class="table table-striped table-condensed table-bordered" id="ListaDetalleRequerimiento" width="100%">
+                    <fieldset class="group-importes">
+                        <legend style="background: #968a30;">
+                            <h6 name='titulo_tabla_detalle_items_transfomados'>Detalles Items Transformados</h6>
+                        </legend>
+                        <table class="mytable table table-striped table-condensed table-bordered dataTable no-footer" id="ListaDetalleItemstransformado" width="100%" style="width: 100%;background: #968a30;">
                             <thead>
                                 <tr>
-                                    <th style="width: 3%">#</th>
-                                    <th style="width: 10%">Partida</th>
-                                    <th style="width: 10%">C.Costo</th>
-                                    <th style="width: 10%">Part number</th>
-                                    <th>Descripción de item</th>
-                                    <th style="width: 10%">Unidad</th>
-                                    <th style="width: 6%">Cantidad</th>
-                                    <th style="width: 8%">Precio Unit.<span name="simboloMoneda">S/</span> <em>(Sin IGV)</em></th>
-                                    <th style="width: 6%">Subtotal</th>
-                                    <th style="width: 15%">Motivo</th>
-                                    <th style="width: 7%">Acciones</th>
+                                    <th>Part No.</th>
+                                    <th>Descripción</th>
+                                    <th>Cant.</th>
+                                    <th>Comentario</th>
+                                    <th>Acción</th>
                                 </tr>
                             </thead>
-                            <tbody id="body_detalle_requerimiento">
-
+                            <tbody>
                             </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td colspan="8" class="text-right"><strong>Total:</strong></td>
-                                    <td class="text-right"><span name="simboloMoneda">S/</span><label name="total"> 0.00</label></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                            </tfoot>
                         </table>
-                    </fieldset>
                 </div>
             </div>
-            <br>
-            <fieldset class="group-table" id="group-detalle-items-transformados" hidden>
-                <div class="row">
-                    <div class="col-sm-12">
-                        <fieldset class="group-importes">
-                            <legend style="background: #968a30;">
-                                <h6 name='titulo_tabla_detalle_items_transfomados'>Detalles Items Transformados</h6>
-                            </legend>
-                            <table class="mytable table table-striped table-condensed table-bordered dataTable no-footer" id="ListaDetalleItemstransformado" width="100%" style="width: 100%;background: #968a30;">
-                                <thead>
-                                    <tr>
-                                        <th>Part No.</th>
-                                        <th>Descripción</th>
-                                        <th>Cant.</th>
-                                        <th>Comentario</th>
-                                        <th>Acción</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
-                    </div>
+        </fieldset>
+        <fieldset class="group-table" id="group-detalle-cuadro-costos" hidden>
+            <div class="row">
+                <div class="col-sm-12">
+                    <fieldset class="group-importes">
+                        <legend style="background: #5d4d6d;">
+                            <h6 name='titulo_tabla_detalle_cc'>Detalles de cuadro de Costos</h6>
+                        </legend>
+                        <table class="mytable table table-striped table-condensed table-bordered dataTable no-footer" id="ListaDetalleCuadroCostos" width="100%" style="width: 100%;background: #f8f3f9;">
+                            <thead>
+                                <tr>
+                                    <th>Part No.</th>
+                                    <th>Descripción</th>
+                                    <th>P.V.U. O/C (sinIGV) S/</th>
+                                    <th>Flete O/C (sinIGV) S/</th>
+                                    <th>Cant.</th>
+                                    <th>Garant. meses</th>
+                                    <th>Proveedor seleccionado</th>
+                                    <th>Creado Por</th>
+                                    <th>Fecha Creación</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
                 </div>
-            </fieldset>
-            <fieldset class="group-table" id="group-detalle-cuadro-costos" hidden>
-                <div class="row">
-                    <div class="col-sm-12">
-                        <fieldset class="group-importes">
-                            <legend style="background: #5d4d6d;">
-                                <h6 name='titulo_tabla_detalle_cc'>Detalles de cuadro de Costos</h6>
-                            </legend>
-                            <table class="mytable table table-striped table-condensed table-bordered dataTable no-footer" id="ListaDetalleCuadroCostos" width="100%" style="width: 100%;background: #f8f3f9;">
-                                <thead>
-                                    <tr>
-                                        <th>Part No.</th>
-                                        <th>Descripción</th>
-                                        <th>P.V.U. O/C (sinIGV) S/</th>
-                                        <th>Flete O/C (sinIGV) S/</th>
-                                        <th>Cant.</th>
-                                        <th>Garant. meses</th>
-                                        <th>Proveedor seleccionado</th>
-                                        <th>Creado Por</th>
-                                        <th>Fecha Creación</th>
-                                        <th>Acción</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
-                    </div>
-                </div>
-            </fieldset>
+            </div>
+        </fieldset>
 
         <div class="row">
             <div class="col-md-6">
-                    <h4 style="display:flex;justify-content: space-between;">Partidas activas</h4>
-                        <fieldset class="group-table">
-                            <table class="table table-striped table-bordered" id="listaPartidasActivas" width="100%">
-                                <thead>
-                                    <tr>
-                                        <th width="10">Codigo</th>
-                                        <th width="70">Descripción</th>
-                                        <th width="10">Presupuesto Total</th>
-                                        <th width="10">Presupuesto Utilizado</th>
-                                        <th width="10">Saldo</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="body_partidas_activas">
-                                </tbody>
-                            </table>
-                        </fieldset>
-                </div>
+                <h4 style="display:flex;justify-content: space-between;">Partidas activas</h4>
+                <fieldset class="group-table">
+                    <table class="table table-striped table-bordered" id="listaPartidasActivas" width="100%">
+                        <thead>
+                            <tr>
+                                <th width="10">Codigo</th>
+                                <th width="70">Descripción</th>
+                                <th width="10">Presupuesto Total</th>
+                                <th width="10">Presupuesto Utilizado</th>
+                                <th width="10">Saldo</th>
+                            </tr>
+                        </thead>
+                        <tbody id="body_partidas_activas">
+                        </tbody>
+                    </table>
+                </fieldset>
             </div>
+        </div>
 
-            <div class="row">
-                <div class="col-md-12">
-                    <button type="button" onclick="scrollToTheTopOfDocument()" id="btnVolverArriba" title="Volver Arriba"><i class="fas fa-arrow-circle-up"></i></button>
-                    <!-- <button type="submit" class="btn-okc" id="btnGuardar"><i class="fas fa-save fa-lg"></i> Guardar</button> -->
-                </div>
+        <div class="row">
+            <div class="col-md-12">
+                <button type="button" onclick="scrollToTheTopOfDocument()" id="btnVolverArriba" title="Volver Arriba"><i class="fas fa-arrow-circle-up"></i></button>
+                <!-- <button type="submit" class="btn-okc" id="btnGuardar"><i class="fas fa-save fa-lg"></i> Guardar</button> -->
             </div>
-            <br>
-            <div class="row" id="observaciones_requerimiento"></div>
+        </div>
+        <br>
+        <div class="row" id="observaciones_requerimiento"></div>
     </form>
 
 </div>
@@ -576,7 +582,7 @@ Crear / editar requerimiento
 <div class="hidden" id="divOculto">
     <select id="selectUnidadMedida">
         @foreach ($unidadesMedida as $unidad)
-            <option value="{{$unidad->id_unidad_medida}}">{{$unidad->descripcion}}</option>
+        <option value="{{$unidad->id_unidad_medida}}">{{$unidad->descripcion}}</option>
         @endforeach
     </select>
 </div>
@@ -660,7 +666,6 @@ Crear / editar requerimiento
 <script src="{{ asset('js/publico/consulta_sunat.js')}}"></script>
 <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
-<script src="{{ asset('js/logistica/requerimiento/ArchivoAdjunto.js?v=3')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/TrazabilidadRequerimientoView.js?v=3')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/RequerimientoView.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/RequerimientoView.js'))}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/RequerimientoController.js?v=3')}}"></script>
@@ -692,7 +697,7 @@ Crear / editar requerimiento
         seleccionarMenu(window.location);
         var descripcion_grupo = '{{Auth::user()->getGrupo()->descripcion}}';
         var id_grupo = '{{Auth::user()->getGrupo()->id_grupo}}';
-        document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value = id_grupo;
+        document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value = id_grupo; // no borrar al limpiar con reset el form
 
 
         const requerimientoModel = new RequerimientoModel();

@@ -28,9 +28,9 @@ Transferencias
             <div class="col-md-12" id="tab-transferencias" style="padding-top:10px;padding-bottom:10px;">
 
                 <ul class="nav nav-tabs" id="myTabTransferencias">
-                    <li class="active"><a data-toggle="tab" href="#requerimientos">Requerimientos Pendientes</a></li>
-                    <li class=""><a data-toggle="tab" href="#porEnviar">Transferencias por Enviar</a></li>
-                    <li class=""><a data-toggle="tab" href="#pendientes">Transferencias por Recibir</a></li>
+                    <li class="active"><a data-toggle="tab" href="#requerimientos">Requerimientos Pendientes <span id="nro_ordenes" class="badge badge-info">{{$nro_pendientes}}</span></a></li>
+                    <li class=""><a data-toggle="tab" href="#porEnviar">Transferencias por Enviar <span id="nro_ordenes" class="badge badge-info">{{$nro_por_enviar}}</span></a></li>
+                    <li class=""><a data-toggle="tab" href="#pendientes">Transferencias por Recibir <span id="nro_ordenes" class="badge badge-info">{{$nro_por_recibir}}</span></a></li>
                     <li class=""><a data-toggle="tab" href="#recibidas">Transferencias Recibidas</a></li>
                 </ul>
                 <div class="tab-content">

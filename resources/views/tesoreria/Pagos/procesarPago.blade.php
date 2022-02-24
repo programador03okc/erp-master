@@ -16,6 +16,25 @@
                     <input type="text" class="oculto" name="total" />
 
                     <fieldset class="group-table" id="fieldsetDatosProveedor">
+                        <h5 style="display:flex;justify-content: space-between;"><strong>Datos del documento</strong></h5>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <span style="font-size: 14px;">Empresa: </span>
+                            </div>
+                            <div class="col-md-3">
+                                <label style="font-size: 14px;" name="empresa_razon_social"></label>
+                            </div>
+                            <div class="col-md-2">
+                                <span style="font-size: 14px;">Motivo: </span>
+                            </div>
+                            <div class="col-md-5">
+                                <label style="font-size: 14px;" name="motivo"></label>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <br>
+
+                    <fieldset class="group-table" id="fieldsetDatosProveedor">
                         <h5 style="display:flex;justify-content: space-between;"><strong>Datos del destinatario</strong></h5>
                         <div class="row">
                             <div class="col-md-2">
@@ -25,7 +44,7 @@
                                 <label style="font-size: 14px;" name="nro_documento"></label>
                             </div>
                             <div class="col-md-2">
-                                <span style="font-size: 14px;">Razon social: </span>
+                                <span style="font-size: 14px;">Destinatario: </span>
                             </div>
                             <div class="col-md-5">
                                 <label style="font-size: 14px;" name="razon_social"></label>
@@ -39,10 +58,24 @@
                                 <label style="font-size: 14px;" name="tp_cta_bancaria"></label>
                             </div>
                             <div class="col-md-2">
-                                <span style="font-size: 14px;">Cuenta bancaria: </span>
+                                <span style="font-size: 14px;">Banco: </span>
                             </div>
                             <div class="col-md-5">
+                                <label style="font-size: 14px;" name="banco"></label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <span style="font-size: 14px;">Cuenta bancaria: </span>
+                            </div>
+                            <div class="col-md-3">
                                 <label style="font-size: 14px;" name="cta_bancaria"></label>
+                            </div>
+                            <div class="col-md-2">
+                                <span style="font-size: 14px;">Cuenta CCI: </span>
+                            </div>
+                            <div class="col-md-5">
+                                <label style="font-size: 14px;" name="cta_cci"></label>
                             </div>
                         </div>
                         <div class="row">

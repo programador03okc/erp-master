@@ -21,9 +21,9 @@ function openModal(type, active) {
             categoriaModal();
             break;
         //case "subcategoria":
-            //revisarMarca();
-            //subCategoriaModal();
-            //break;
+        //revisarMarca();
+        //subCategoriaModal();
+        //break;
         case "producto":
             productoModal();
             break;
@@ -272,13 +272,18 @@ function eventRegister(type, data, action, frm_active) {
             save_documento(data, action);
             break;
         ////////////////////////// ALMACEN //////////////////////////
-        case "tipo":
+        case "categoria":
             guardarCategoria(data, action);
             break;
+<<<<<<< HEAD
         case "categoria":
             guardarSubCategoria(data, action);
+=======
+        case "subCategoria":
+            save_categoria(data, action);
+>>>>>>> 0afa8485695289e3277a2ac8f01bf5e23e49492e
             break;
-        case "subcategoria":
+        case "marca":
             guardarMarca(data, action);
             break;
         case "clasificacion":
@@ -596,13 +601,18 @@ function anularRegister(type, ids, active) {
             anular_documento(ids);
             break;
         ////////////////////////// ALMACEN //////////////////////////
-        case "tipo":
+        case "categoria":
             anularCategoria(ids);
             break;
+<<<<<<< HEAD
         case "categoria":
             anularSubCategoria(ids);//
+=======
+        case "subCategoria":
+            anular_categoria(ids);
+>>>>>>> 0afa8485695289e3277a2ac8f01bf5e23e49492e
             break;
-        case "subcategoria":
+        case "marca":
             anularMarca(ids);
             break;
         case "clasificacion":

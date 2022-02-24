@@ -10,6 +10,11 @@ function openRegistroPago(data) {
     var prov = data.data('prov');
     var tpcta = data.data('tpcta');
     var cta = data.data('cta');
+    var cci = data.data('cci');
+    var banco = data.data('banco');
+    var empresa = data.data('empresa');
+    var idempresa = data.data('idempresa');
+    var motivo = data.data('motivo');
 
     var total_pago = formatDecimal(parseFloat(total) - pago);
     console.log(cta);
@@ -47,14 +52,19 @@ function openRegistroPago(data) {
     $('[name=monto_total]').text(formatNumber.decimal(total, moneda, -2));
 
     $('[name=observacion]').val('');
-    $('[name=id_empresa]').val('');
+    $('[name=id_empresa]').val(idempresa ?? '');
     $('[name=id_cuenta_origen]').val('');
     $('[name=simbolo]').val(moneda);
     $('[name=nro_documento]').text(nrodoc !== 'undefined' ? nrodoc : '');
     $('[name=razon_social]').text(decodeURIComponent(prov));
     $('[name=tp_cta_bancaria]').text(cta !== 'undefined' ? tpcta : '');
     $('[name=cta_bancaria]').text(cta !== 'undefined' ? cta : '');
+    $('[name=cta_cci]').text(cci !== 'undefined' ? cci : '');
+    $('[name=banco]').text(banco !== 'undefined' ? banco : '');
+    $('[name=empresa_razon_social]').text(empresa !== 'undefined' ? empresa : '');
+    $('[name=motivo]').text(motivo !== undefined ? motivo : '');
 
+    listarCuentasOrigen();
     $('#submit_procesarPago').removeAttr('disabled');
 }
 
@@ -158,13 +168,13 @@ function enviarAPago(tipo, id) {
     console.log(tipo);
 
     Swal.fire({
-        title: "¿Está seguro que desea enviar a pago?",
+        title: "¿Está seguro que desea autorizar el pago?",
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#3085d6", //"#00a65a",
         cancelButtonColor: "#d33",
         cancelButtonText: "Cancelar",
-        confirmButtonText: "Sí, Enviar"
+        confirmButtonText: "Sí, Autorizar"
     }).then(result => {
         if (result.isConfirmed) {
             $.ajax({

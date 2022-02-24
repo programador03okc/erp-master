@@ -71,11 +71,5 @@ class ListaOrdenCtrl {
         return this.listaOrdenModel.listarDocumentosVinculados(id);
     }
 
-
-    descargarListaOrdenesVistaCabecera(){
-        return this.listaOrdenModel.descargarListaOrdenesVistaCabecera();
-
-    }
-
 }
 

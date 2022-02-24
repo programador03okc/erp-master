@@ -88,9 +88,9 @@ Gestión de Transformaciones
                                             <th>Oportunidad</th> -->
                                             <th>Entidad</th>
                                             <th>Requerim.</th>
-                                            <th>Fecha Despacho</th>
-                                            <th>Fecha Inicio</th>
-                                            <th>Fecha Proceso</th>
+                                            <th>Fecha registro</th>
+                                            <th>Fecha inicio</th>
+                                            <th>Fecha fin</th>
                                             <th>Almacén</th>
                                             <th>Responsable</th>
                                             <th>Obs.</th>
@@ -126,7 +126,7 @@ Gestión de Transformaciones
 <script src="{{ asset('template/plugins/loadingoverlay.min.js') }}"></script>
 <script src="{{ asset('template/plugins/js-xlsx/xlsx.full.min.js') }}"></script>
 
-<script src="{{ asset('js/almacen/customizacion/listar_transformaciones.js')}}"></script>
+<script src="{{ asset('js/almacen/customizacion/listarTransformaciones.js')}}"></script>
 <script src="{{ asset('js/tesoreria/facturacion/archivosMgcp.js')}}"></script>
 <script>
     $(document).ready(function() {

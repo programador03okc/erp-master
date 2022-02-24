@@ -91,13 +91,13 @@ $(document).ready(function () {
 					const requerimientoView = new RequerimientoView(requerimientoController);
 					requerimientoView.RestablecerFormularioRequerimiento();
 					document.getElementsByName("btn-adjuntos-requerimiento")[0].removeAttribute('disabled');
-
+					document.querySelector("form[id='form-requerimiento']").setAttribute('type', 'register');
 
 				}
 				else if (page == 'proveedores') {
 					nuevo(forms);
 				}
-				else if (page == 'categoria') {
+				else if (page == 'subCategoria') {
 					$('[name=id_tipo_producto]').attr('disabled', false);
 				}
 				else if (page == 'presint') {
@@ -150,7 +150,7 @@ $(document).ready(function () {
 
 				if (forms !== "form-equi_cat" && forms !== "form-equi_sol" && forms !== "form-equi_tipo"
 					&& forms !== "form-mtto" && forms !== "form-tp_combustible" && forms !== "form-almacenes"
-					&& forms !== "form-tipo" && forms !== "form-categoria" && forms !== "form-clasificacion"
+					&& forms !== "form-categoria" && forms !== "form-subCategoria" && forms !== "form-clasificacion"
 					&& forms !== "form-producto" && forms !== "form-requerimiento" && forms !== "form-crear-orden-requerimiento" && forms !== "form-general"
 					&& forms !== "form-doc_venta" && forms !== "form-presint" && forms !== "form-preseje"
 					&& forms !== "form-cronopro" && forms !== "form-cronoeje" && forms !== "form-cronoint"
@@ -179,9 +179,9 @@ $(document).ready(function () {
 					else if (page == 'cuadro_comparativo') {
 						editValorizaciones();
 					}
-					else if (page == 'categoria') {
-						$('[name=id_tipo_producto]').attr('disabled', true);
-					}
+					// else if (page == 'subCategoria') {
+					// 	$('[name=id_tipo_producto]').attr('disabled', true);
+					// }
 					else if (page == 'guia_venta') {
 						$('[name=modo]').val('edicion');
 					}
@@ -239,9 +239,9 @@ $(document).ready(function () {
 				else if (page == 'proveedores') {
 
 				}
-				else if (page == 'categoria') {
-					$('[name=id_tipo_producto]').attr('disabled', true);
-				}
+				// else if (page == 'subCategoria') {
+				// 	$('[name=id_tipo_producto]').attr('disabled', true);
+				// }
 				else if (page == 'crear-orden-requerimiento') {
 					var reqTrueList = JSON.parse(sessionStorage.getItem('reqCheckedList'));
 					cancelarOrden()

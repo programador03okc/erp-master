@@ -37,33 +37,35 @@ Gestión de Despachos
                 </form>
                 <div class="row">
                     <div class="col-md-12">
-                        <table class="mytable table table-condensed table-bordered table-hover table-striped table-okc-view" 
-                            id="requerimientosEnProceso" style="font-size: 11px;">
-                            <thead>
-                                <tr>
-                                    <th hidden></th>
-                                    {{-- <th></th> --}}
-                                    <th>Cod.Req.</th>
-                                    <th>Fecha Fin Entrega</th>
-                                    <th>Nro O/C</th>
-                                    <th>Estado O/C</th>
-                                    <th>Monto total</th>
-                                    <th>OC.fís / SIAF</th>
-                                    <th>OCC</th>
-                                    <th>Cod.CDP</th>
-                                    <th width="30%">Cliente/Entidad</th>
-                                    <th>Generado por</th>
-                                    <th>Sede Req.</th>
-                                    <th>Fecha Despacho Real</th>
-                                    <th>Flete</th>
-                                    <th>Gasto Adic.</th>
-                                    <th>Fecha Entregada</th>
-                                    <th>Estado despacho</th>
-                                    <th width="60px">Acción</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
+                        <div class="table-responsive">
+                            <table class="mytable table table-condensed table-bordered table-hover table-striped table-okc-view" 
+                                id="requerimientosEnProceso" style="font-size: 11px;">
+                                <thead>
+                                    <tr>
+                                        <th hidden></th>
+                                        {{-- <th></th> --}}
+                                        <th>Cod.Req.</th>
+                                        <th>Fecha Fin Entrega</th>
+                                        <th>Nro O/C</th>
+                                        <th>Estado O/C</th>
+                                        <th>Monto total</th>
+                                        <th>OC.fís / SIAF</th>
+                                        <th>OCC</th>
+                                        <th>Cod.CDP</th>
+                                        <th width="30%">Cliente/Entidad</th>
+                                        <th>Generado por</th>
+                                        <th>Sede Req.</th>
+                                        <th>Fecha Despacho Real</th>
+                                        <th>Flete</th>
+                                        <th>Gasto Adic.</th>
+                                        <th>Fecha Entregada</th>
+                                        <th>Estado despacho</th>
+                                        <th width="10%">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 

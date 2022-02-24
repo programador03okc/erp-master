@@ -1125,10 +1125,6 @@ class OrdenController extends Controller
                     'condicion' => $element->condicion,
                     'plazo_entrega' => $element->plazo_entrega,
                     'id_proveedor' => $element->id_proveedor,
-                    'id_cta_principal' => $element->id_cta_principal,
-                    'nro_cuenta_prin' => $element->nro_cuenta_prin,
-                    'nro_cuenta_alter' => $element->nro_cuenta_alter,
-                    'nro_cuenta_detra' => $element->nro_cuenta_detra,
                     'codigo_cuadro_comparativo' => '',
                     'estado' => $element->estado,
                     'estado_doc' => $element->estado_doc,
@@ -1139,13 +1135,16 @@ class OrdenController extends Controller
                     'facturas' => $this->obtenerFacturas($element->id_orden_compra),
                     'requerimientos' => $element->requerimientos,
                     'estado_pago' => $element->estado_pago,
-                    'id_prioridad_pago' => $element->id_prioridad_pago,
-                    'id_tipo_destinatario_pago' => $element->id_tipo_destinatario_pago,
-                    'id_cuenta_contribuyente_pago' => $element->id_cuenta_contribuyente_pago,
-                    'id_contribuyente_pago' => $element->id_contribuyente_pago,
-                    'id_persona_pago' => $element->id_persona_pago,
-                    'id_cuenta_persona_pago' => $element->id_cuenta_persona_pago,
-                    'comentario_pago' => $element->comentario_pago
+                    'id_prioridad_pago' => $element->id_prioridad_pago, //util para envia a pago,
+                    'id_tipo_destinatario_pago' => $element->id_tipo_destinatario_pago, //util para envia a pago,
+                    'id_cta_principal' => $element->id_cta_principal, //util para envia a pago,  es del mismo proveedor, reutilizando  (nuevacuentaBancariaDestinatario.js,  nuevoDestiantario.js)
+                    'id_contribuyente' => $element->id_contribuyente, //util para envia a pago,  es del mismo proveedor, reutilizando  (nuevacuentaBancariaDestinatario.js,  nuevoDestiantario.js)
+                    'nro_cuenta_prin' => $element->nro_cuenta_prin,
+                    'nro_cuenta_alter' => $element->nro_cuenta_alter,
+                    'nro_cuenta_detra' => $element->nro_cuenta_detra,
+                    'id_persona_pago' => $element->id_persona_pago, //util para envia a pago,
+                    'id_cuenta_persona_pago' => $element->id_cuenta_persona_pago, //util para envia a pago,
+                    'comentario_pago' => $element->comentario_pago//util para envia a pago,
 
                 ];
             }
@@ -4046,7 +4045,7 @@ class OrdenController extends Controller
         }
     }
 
-    function registrarEnvioDeOrdenAPagar(Request $request){
+    function registrarSolicitudDePagar(Request $request){
         try {
             DB::beginTransaction();
 
@@ -4058,8 +4057,7 @@ class OrdenController extends Controller
                 $orden->estado_pago = 8; //enviado a pago
                 $orden->id_tipo_destinatario_pago = $request->id_tipo_destinatario;
                 $orden->id_prioridad_pago = $request->id_prioridad;
-                $orden->id_contribuyente_pago = $request->id_contribuyente;
-                $orden->id_cuenta_contribuyente_pago = $request->id_cuenta_contribuyente;
+                $orden->id_cta_principal = $request->id_cuenta_contribuyente;
                 $orden->id_persona_pago = $request->id_persona;
                 $orden->id_cuenta_persona_pago = $request->id_cuenta_persona;
                 $orden->comentario_pago = $request->comentario;;
@@ -4067,7 +4065,7 @@ class OrdenController extends Controller
 
                 $arrayRspta = array(
                     'tipo_estado' => 'success',
-                    'mensaje' => 'Pago enviado',
+                    'mensaje' => 'Solicitud de pago registrado',
                     'data'=>$orden
                 );
 
