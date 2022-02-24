@@ -64,6 +64,8 @@ Registro de incidencia
             </div>
 
             <input type="text" style="display:none;" name="id_incidencia">
+            <input type="text" style="display:none;" name="id_mov_alm">
+            <input type="text" style="display:none;" name="id_guia_ven">
             <input type="text" style="display:none;" name="id_requerimiento">
             <input type="text" style="display:none;" name="id_contribuyente">
             <input type="text" style="display:none;" name="codigo_oportunidad">
@@ -215,12 +217,23 @@ Registro de incidencia
                 <div class="col-md-12">
                     <label style="font-weight: bold;">Ingrese los datos de producto(s):</label>
                     <button type="button" class="btn btn-sm btn-secondary edition" data-toggle="tooltip" data-placement="bottom" 
-                        title="Buscar historial de registros" onClick="openContacto();">
+                        title="Buscar historial de registros" onClick="openSeriesProductosModal();">
                          Agregar </button>
                 </div>
             </div>
             <fieldset class="group-table" id="fieldsetProductos">
-
+                <table class="mytable table table-condensed table-bordered table-okc-view" width="100%" 
+                    id="seriesProductos" style="margin-top:10px;">
+                    <thead>
+                        <tr>
+                            <th>Serie</th>
+                            <th>Código</th>
+                            <th>PartNumber</th>
+                            <th>Descripción</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
             </fieldset>
 
             <br/>
@@ -236,7 +249,11 @@ Registro de incidencia
                             <div class="form-group " style="margin-bottom:0px;">
                                 <label class="col-sm-4 control-label">Tipo de falla</label>
                                 <div class="col-sm-8">
-                                    <input type="text" class="form-control edition limpiarIncidencia" name="tipo_falla"/>
+                                    <select class="form-control js-example-basic-single edition limpiarIncidencia" 
+                                        name="tipo_falla" required>
+                                        <option value="1">Software</option>
+                                        <option value="2">Hardware</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -246,7 +263,13 @@ Registro de incidencia
                             <div class="form-group " style="margin-bottom:0px;">
                                 <label class="col-sm-4 control-label">Tipo de servicio</label>
                                 <div class="col-sm-8">
-                                    <input type="text" class="form-control edition limpiarIncidencia" name="tipo_falla"/>
+                                    <select class="form-control js-example-basic-single edition limpiarIncidencia" 
+                                        name="tipo_falla" required>
+                                        <option value="1">Contrato</option>
+                                        <option value="2">Facturable</option>
+                                        <option value="2">Garantía</option>
+                                        <option value="2">Otros</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -254,10 +277,17 @@ Registro de incidencia
                     <div class="col-sm-4">
                         <div class="form-horizontal">
                             <div class="form-group " style="margin-bottom:0px;">
-                                <label class="col-sm-6 control-label">Equipo operativo</label>
+                                <div class="col-sm-6">
+                                <div class="icheckbox_flat-blue">
+                                    <label style="display:flex;">
+                                        <input type="checkbox" class="flat-red activation" name="equipo_operativo" value="0">
+                                    </label>
+                                </div> Equipo operativo
+                            </div>
+                                {{-- <label class="col-sm-6 control-label">Equipo operativo</label>
                                 <div class="col-sm-6">
                                     <input type="text" class="form-control edition limpiarIncidencia" name="tipo_falla"/>
-                                </div>
+                                </div> --}}
                             </div>
                         </div>
                     </div>
@@ -284,6 +314,7 @@ Registro de incidencia
 
 </div>
 @include('cas.incidencias.salidasVentaModal')
+@include('cas.incidencias.seriesProductosModal')
 @include('almacen.distribucion.ordenDespachoContacto')
 @include('almacen.distribucion.agregarContacto')
 @include('publico.ubigeoModal')
@@ -302,8 +333,10 @@ Registro de incidencia
 <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
 <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 <script src="{{ asset('template/plugins/loadingoverlay.min.js') }}"></script>
+<script src="{{ asset('template/plugins/iCheck/icheck.min.js') }}"></script>
 
 <script src="{{ asset('js/cas/incidencias/salidasVentaModal.js')}}?v={{filemtime(public_path('js/cas/incidencias/salidasVentaModal.js'))}}"></script>
+<script src="{{ asset('js/cas/incidencias/seriesProductosModal.js')}}?v={{filemtime(public_path('js/cas/incidencias/seriesProductosModal.js'))}}"></script>
 <script src="{{ asset('js/cas/incidencias/incidencia.js')}}?v={{filemtime(public_path('js/cas/incidencias/incidencia.js'))}}"></script>
 <script src="{{ asset('js/almacen/distribucion/ordenDespachoContacto.js?')}}?v={{filemtime(public_path('js/almacen/distribucion/ordenDespachoContacto.js'))}}"></script>
 <script src="{{ asset('js/almacen/distribucion/contacto.js?')}}?v={{filemtime(public_path('js/almacen/distribucion/contacto.js'))}}"></script>

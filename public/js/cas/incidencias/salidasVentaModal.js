@@ -17,8 +17,10 @@ $(function () {
         // var idreq = $(this)[0].childNodes[6].innerHTML;
 
         var data = $('#listaSalidasVenta').DataTable().row($(this)).data();
+        console.log(data);
 
         $("[name=id_mov_alm]").val(data.id_mov_alm);
+        $("[name=id_guia_ven]").val(data.id_guia_ven);
         $("[name=id_requerimiento]").val(data.id_requerimiento);
         $("[name=id_contribuyente]").val(data.id_contribuyente);
         $("[name=id_entidad]").val(data.id_entidad);

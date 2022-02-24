@@ -1,3 +1,5 @@
+let listaSeriesProductos = [];
+
 $(function () {
     $(".edition").attr('disabled', 'true');
     $(".guardar-incidencia").hide();
@@ -34,7 +36,17 @@ $(".nueva-incidencia").on('click', function () {
     $(".limpiarIncidencia").val("");
     $("[name=id_incidencia]").val("");
 
-    // $("#mostrar_checks").hide();
-    // $("#marcar_checks").show();
-
 });
+
+function mostrarListaSeriesProductos() {
+    var html = '';
+    listaSeriesProductos.forEach(function (element) {
+        html += `<tr>
+        <td>${element.serie}</td>
+        <td>${element.codigo}</td>
+        <td>${element.part_number}</td>
+        <td>${element.descripcion}</td>
+        </tr>`;
+    });
+    $('#seriesProductos tbody').html(html);
+}

@@ -67,7 +67,7 @@ function format(table_id, id, row) {
                             : ""
                         }</td>
                     <td style="border: none;"><label class="lbl-codigo" title="Abrir Requerimiento" onClick="abrir_requerimiento(${element.id_requerimiento
-                        })">${element.codigo_req}</label>${(element.tiene_transformacion ? ' <i class="fas fa-random red"></i> ' : '')}<br> ${element.sede_req}</td>
+                        })">${element.codigo_req ?? ''}</label>${(element.tiene_transformacion ? ' <i class="fas fa-random red"></i> ' : '')}<br> ${element.sede_req ?? ''}</td>
                     <td style="border: none;">${element.codigo}</td>
                     <td style="border: none;">${element.part_number !== null ? element.part_number : ""
                         }</td>
