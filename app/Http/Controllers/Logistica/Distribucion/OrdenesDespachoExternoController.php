@@ -48,7 +48,7 @@ class OrdenesDespachoExternoController extends Controller
 
     public function listarDespachosExternos(Request $request)
     {
-        $data = DB::table('mgcp_ordenes_compra.oc_propias_view')
+        $data = DB::table('almacen.alm_req')
             ->select(
                 'alm_req.id_requerimiento',
                 'alm_req.codigo',
@@ -130,9 +130,13 @@ class OrdenesDespachoExternoController extends Controller
                             and alm_det_req.estado != 7
                             and alm_det_req.id_producto is null) AS productos_no_mapeados")
             )
-            ->leftjoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'oc_propias_view.id_oportunidad')
-            ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id_oportunidad', '=', 'oportunidades.id')
-            ->leftJoin('almacen.alm_req', 'alm_req.id_cc', '=', 'cc.id')
+            ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
+            ->leftjoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
+            ->leftJoin('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'oportunidades.id')
+
+            // ->leftjoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'oc_propias_view.id_oportunidad')
+            // ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id_oportunidad', '=', 'oportunidades.id')
+            // ->leftJoin('almacen.alm_req', 'alm_req.id_cc', '=', 'cc.id')
             ->leftJoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'alm_req.id_usuario')
             ->leftJoin('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'alm_req.estado_despacho')
             ->leftJoin('administracion.sis_sede as sede_req', 'sede_req.id_sede', '=', 'alm_req.id_sede')
@@ -154,12 +158,12 @@ class OrdenesDespachoExternoController extends Controller
             ->leftJoin('almacen.estado_envio', 'estado_envio.id_estado', '=', 'orden_despacho.id_estado_envio')
             ->leftJoin('almacen.guia_ven', 'guia_ven.id_od', '=', 'orden_despacho.id_od');
 
-        if ($request->select_mostrar == 1) {
-            $data->where('orden_despacho.estado', 25);
-        } else if ($request->select_mostrar == 2) {
-            $data->where('orden_despacho.estado', 25);
-            $data->whereDate('orden_despacho.fecha_despacho', (new Carbon())->format('Y-m-d'));
-        }
+        // if ($request->select_mostrar == 1) {
+        //     $data->where('orden_despacho.estado', 25);
+        // } else if ($request->select_mostrar == 2) {
+        //     $data->where('orden_despacho.estado', 25);
+        //     $data->whereDate('orden_despacho.fecha_despacho', (new Carbon())->format('Y-m-d'));
+        // }
         return $data;
     }
 

@@ -65,28 +65,24 @@ function listarRequerimientosPendientes(usuario) {
             });
 
             const $form = $('#formFiltrosDespachoExterno');
-            // const factual = fecha_actual();
 
-            // <input type="date" class="form-control " size="10" id="txtFechaPriorizacion" 
-            // style="background-color:#d2effa;" value="${factual}"/>
+            // $('#requerimientosEnProceso_wrapper .dt-buttons').append(
+            //     `<div style="display:flex">
+            //         <label style="text-align: center;margin-left: 20px;margin-top: 7px;margin-right: 10px;">Mostrar: </label>
+            //         <select class="form-control" id="selectMostrar">
+            //             <option value="0" selected>Todos</option>
+            //             <option value="1" >Priorizados</option>
+            //             <option value="2" >Los de Hoy</option>
+            //         </select>
 
-            $('#requerimientosEnProceso_wrapper .dt-buttons').append(
-                `<div style="display:flex">
-                    <label style="text-align: center;margin-left: 20px;margin-top: 7px;margin-right: 10px;">Mostrar: </label>
-                    <select class="form-control" id="selectMostrar">
-                        <option value="0" selected>Todos</option>
-                        <option value="1" >Priorizados</option>
-                        <option value="2" >Los de Hoy</option>
-                    </select>
-                    
-                </div>`
-            );
+            //     </div>`
+            // );
 
-            $("#selectMostrar").on("change", function (e) {
-                var sed = $(this).val();
-                $('#formFiltrosDespachoExterno').find('input[name=select_mostrar]').val(sed);
-                $("#requerimientosEnProceso").DataTable().ajax.reload(null, false);
-            });
+            // $("#selectMostrar").on("change", function (e) {
+            //     var sed = $(this).val();
+            //     $('#formFiltrosDespachoExterno').find('input[name=select_mostrar]').val(sed);
+            //     $("#requerimientosEnProceso").DataTable().ajax.reload(null, false);
+            // });
         },
         drawCallback: function (settings) {
             $("#requerimientosEnProceso_filter input").prop("disabled", false);
@@ -326,7 +322,7 @@ function listarRequerimientosPendientes(usuario) {
             }
         ],
         // select: "multi",
-        order: [[2, "desc"]], //, [0, "desc"]
+        order: [[0, "desc"]], //, [2, "desc"]
     });
     vista_extendida();
 
