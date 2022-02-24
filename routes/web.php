@@ -1720,6 +1720,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('mostrarContacto/{id}', 'Logistica\Distribucion\OrdenesDespachoExternoController@mostrarContacto');
 				Route::get('anularContacto/{id}', 'Logistica\Distribucion\OrdenesDespachoExternoController@anularContacto');
 				Route::get('listar_ubigeos', 'AlmacenController@listar_ubigeos');
+
+				Route::get('listarSeriesProductos/{id}', 'Cas\IncidenciaController@listarSeriesProductos');
 			});
 		});
 	});

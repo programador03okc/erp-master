@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Cas;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Almacen\Movimiento;
+use Illuminate\Support\Facades\DB;
 
 class IncidenciaController extends Controller
 {
@@ -45,6 +46,25 @@ class IncidenciaController extends Controller
                 'oportunidades.codigo_oportunidad',
                 'oc_propias_view.id_entidad',
             );
+        return datatables($lista)->toJson();
+    }
+
+    function listarSeriesProductos($id_guia_ven)
+    {
+        $lista = DB::table('almacen.alm_prod_serie')
+            ->select(
+                'alm_prod_serie.id_prod_serie',
+                'alm_prod_serie.serie',
+                'alm_prod.codigo',
+                'alm_prod.part_number',
+                'alm_prod.descripcion',
+                'alm_prod_serie.id_guia_ven_det'
+            )
+            ->join('almacen.guia_ven_det', 'guia_ven_det.id_guia_ven_det', '=', 'alm_prod_serie.id_guia_ven_det')
+            ->join('almacen.guia_ven', 'guia_ven.id_guia_ven', '=', 'guia_ven_det.id_guia_ven')
+            ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_prod_serie.id_prod')
+            ->where('guia_ven.id_guia_ven', $id_guia_ven);
+
         return datatables($lista)->toJson();
     }
 }
