@@ -376,19 +376,19 @@ class OrdenesDespachoExternoController extends Controller
     //         return response()->json('Algo salio mal');
     //     }
     // }
-    private function enviarOrdenDespacho(Request $request, $oportunidad)
+    private function enviarOrdenDespacho(Request $request, $oportunidad, $requerimiento)
     {
-        // $requerimiento = Requerimiento::find($request->id_requerimiento);
-        // $cuadro = CuadroCosto::find($requerimiento->id_cc);
-        // $oportunidad = Oportunidad::find($cuadro->id_oportunidad);
-        $ordenView = $oportunidad->ordenCompraPropia;
         $archivosOc = [];
-        //Obtencion de archivos en carpeta temporal
-        if ($ordenView != null) {
-            if ($ordenView->tipo == 'am') {
-                $archivosOc = OrdenCompraAmHelper::descargarArchivos($ordenView->id);
-            } else {
-                $archivosOc = OrdenCompraDirectaHelper::copiarArchivos($ordenView->id);
+
+        if ($oportunidad !== null) {
+            $ordenView = $oportunidad->ordenCompraPropia;
+            //Obtencion de archivos en carpeta temporal
+            if ($ordenView != null) {
+                if ($ordenView->tipo == 'am') {
+                    $archivosOc = OrdenCompraAmHelper::descargarArchivos($ordenView->id);
+                } else {
+                    $archivosOc = OrdenCompraDirectaHelper::copiarArchivos($ordenView->id);
+                }
             }
         }
         //Guardar archivos subidos
@@ -400,21 +400,29 @@ class OrdenesDespachoExternoController extends Controller
             }
         }
         $correos = [];
+
         if (config('app.debug')) {
             $correos[] = config('global.correoDebug1');
         } else {
             $idUsuarios = Usuario::getAllIdUsuariosPorRol(26);
-            $usuario = DB::table('mgcp_usuarios.users')
-                ->where('id', $oportunidad->id_responsable)->first();
 
-            $correos[] = $usuario->email;
+            if ($oportunidad !== null) {
+                $usuario = DB::table('mgcp_usuarios.users')
+                    ->where('id', $oportunidad->id_responsable)->first();
+
+                $correos[] = $usuario->email;
+            } else if ($requerimiento !== null) {
+                $usuario = Usuario::find($requerimiento->id_usuario)->email;
+
+                $correos[] = $usuario->email;
+            }
             // $correos[] = Usuario::find($requerimiento->id_usuario)->email;
             foreach ($idUsuarios as $id) {
                 $correos[] = Usuario::find($id)->email;
             }
         }
 
-        Mail::to($correos)->send(new EmailOrdenDespacho($oportunidad, $request->mensaje, $archivosOc));
+        Mail::to($correos)->send(new EmailOrdenDespacho($oportunidad, $request->mensaje, $archivosOc, $requerimiento));
 
         foreach ($archivosOc as $archivo) {
             unlink($archivo);
@@ -426,8 +434,13 @@ class OrdenesDespachoExternoController extends Controller
         try {
             DB::beginTransaction();
             $ordenDespacho = null;
-            $cuadro = CuadroCosto::where('id_oportunidad', $request->id_oportunidad)->first();
-            $oportunidad = Oportunidad::find($cuadro->id_oportunidad);
+            $cuadro = null;
+            $oportunidad = null;
+
+            if ($request->id_oportunidad !== null) {
+                $cuadro = CuadroCosto::where('id_oportunidad', $request->id_oportunidad)->first();
+                $oportunidad = Oportunidad::find($cuadro->id_oportunidad);
+            }
 
             if ($request->id_requerimiento !== null) {
 
@@ -533,7 +546,7 @@ class OrdenesDespachoExternoController extends Controller
                 }
             }
             if ($request->envio == 'envio') {
-                $this->enviarOrdenDespacho($request, $oportunidad);
+                $this->enviarOrdenDespacho($request, $oportunidad, $requerimiento);
             }
 
             DB::commit();
