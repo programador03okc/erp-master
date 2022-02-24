@@ -42,30 +42,44 @@ class ClasificacionController extends Controller
 
     public function guardarClasificacion(Request $request)
     {
-        $fecha = date('Y-m-d H:i:s');
-        $msj = '';
-        $des = strtoupper($request->descripcion);
+        try{
+            DB::beginTransaction();
+            $fecha = date('Y-m-d H:i:s');
+            $msj = '';
+            $des = strtoupper($request->descripcion);
 
-        $count = Clasificacion::where([['descripcion', '=', $des], ['estado', '=', 1]])
-            ->count();
+            $count = Clasificacion::where([['descripcion', '=', $des], ['estado', '=', 1]])
+                ->count();
 
-        if ($count == 0) {
-            Clasificacion::insertGetId(
-                [
-                    'descripcion' => $des,
-                    'estado' => 1,
-                    'fecha_registro' => $fecha
-                ],
-                'id_clasificacion'
-            );
-        } else {
-            $msj = 'No es posible guardar. Ya existe una clasificación con dicha descripción.';
+            if ($count == 0) {
+                Clasificacion::insertGetId(
+                    [
+                        'descripcion' => $des,
+                        'estado' => 1,
+                        'fecha_registro' => $fecha
+                    ],
+                    'id_clasificacion'
+                );
+                $msj = 'Se guardó la clasificación correctamente';
+                $status=200;
+                $tipo='success';
+            } else {
+                $msj = 'No es posible guardar. Ya existe una clasificación con dicha descripción.';
+                $status=204;
+                $tipo='warning';
+            }
+            DB::commit();
+            return response()->json(['tipo' => $tipo, 'status' => $status, 'mensaje' => $msj]);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json(['tipo' => 'error', 'mensaje' => 'Hubo un problema al guardar. Por favor intente de nuevo', 'error' => $e->getMessage()], 200);
         }
-        return response()->json($msj);
     }
 
     public function actualizarClasificacion(Request $request)
     {
+        try{
+            DB::beginTransaction();
         $msj = '';
         $des = strtoupper($request->descripcion);
 
@@ -75,17 +89,49 @@ class ClasificacionController extends Controller
         if ($count <= 1) {
             $data = Clasificacion::where('id_clasificacion', $request->id_clasificacion)
                 ->update(['descripcion' => $des]);
+                $msj = 'Se actualizó la clasificación correctamente';
+                $status=200;
+                $tipo='success';
         } else {
-            $msj = 'No es posible guardar. Ya existe una clasificación con dicha descripción.';
+            $msj = 'No es posible actualizar. Ya existe una clasificación con dicha descripción.';
+            $status=204;
+            $tipo='warning';
         }
-        return response()->json($msj);
+        DB::commit();
+        return response()->json(['tipo' => $tipo, 'status' => $status, 'mensaje' => $msj]);
+    } catch (\PDOException $e) {
+        DB::rollBack();
+        return response()->json(['tipo' => 'error', 'mensaje' => 'Hubo un problema al actualizar. Por favor intente de nuevo', 'error' => $e->getMessage()], 200);
+    }
     }
 
     public function anularClasificacion(Request $request, $id)
     {
-        $data = Clasificacion::where('id_clasificacion', $id)
-            ->update(['estado' => 7]);
-        return response()->json($data);
+        try{
+            DB::beginTransaction();
+        $count = Producto::where([
+            ['id_clasif', '=', $id],
+            ['estado', '=', 1]
+        ])
+            ->get()->count();
+            if($count>=1){
+                $mensaje ='La clasificación ya fue relacionada en un producto';
+                $status=204;
+                $tipo='warning';
+            }
+            else{
+                $data = Clasificacion::where('id_clasificacion', $id)
+                ->update(['estado' => 7]);
+                $mensaje = 'La clasificación se anuló correctamente';
+                $status=200;
+                $tipo='success';
+            }
+            DB::commit();
+            return response()->json(['tipo' => $tipo, 'status' => $status, 'mensaje' => $mensaje]);
+        }  catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json(['tipo' => 'error', 'mensaje' => 'Hubo un problema al anular. Por favor intente de nuevo', 'error' => $e->getMessage()], 200);
+        }
     }
 
     public function revisarClasificacion($id)

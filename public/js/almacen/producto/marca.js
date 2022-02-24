@@ -12,7 +12,7 @@ $(function(){
             }
             var id = $(this)[0].firstChild.innerHTML;
             clearForm('form-subcategoria');
-            mostrar_subcategoria(id);
+            mostrarMarca(id);
             changeStateButton('historial');
         }
     });
@@ -24,7 +24,7 @@ function listarSubCategorias(){
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
         "bDestroy": true,
-        'ajax': 'listar_subcategorias',
+        'ajax': 'listarMarcas',
         'columns': [
             {'data': 'id_subcategoria'},
             // {'data': 'codigo'},
@@ -34,15 +34,14 @@ function listarSubCategorias(){
         'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
     });
 }
-function mostrar_subcategoria(id){
-    baseUrl = 'mostrar_subcategoria/'+id;
+function mostrarMarca(id){
+    baseUrl = 'mostrarMarca/'+id;
     $.ajax({
         type: 'GET',
         headers: {'X-CSRF-TOKEN': token},
         url: baseUrl,
         dataType: 'JSON',
         success: function(response){
-            console.log(response[0]);
             $('[name=id_subcategoria]').val(response[0].id_subcategoria);
             // $('[name=codigo]').val(response[0].codigo);
             $('[name=descripcion]').val(response[0].descripcion);
@@ -59,11 +58,11 @@ function mostrar_subcategoria(id){
     });
 }
 
-function save_subcategoria(data, action){
+function guardarMarca(data, action){
     if (action == 'register'){
-        baseUrl = 'guardar_subcategoria';
+        baseUrl = 'guardarMarca';
     } else if (action == 'edition'){
-        baseUrl = 'actualizar_subcategoria';
+        baseUrl = 'actualizarMarca';
     }
     $.ajax({
         type: 'POST',
@@ -73,15 +72,20 @@ function save_subcategoria(data, action){
         dataType: 'JSON',
         success: function(response){
             console.log(response);
-            if (response.length > 0){
-                alert(response);
-            } else { 
-                alert('Marca registrada con éxito');
+            Lobibox.notify(response.tipo, {
+                title: false,
+                size: "mini",
+                rounded: true,
+                sound: false,
+                delayIndicator: false,
+                msg: response.mensaje
+            });
+
+            if (response.status==200){ 
                 $('#listaSubCategoria').DataTable().ajax.reload();
                 changeStateButton('guardar');
                 $('#form-subcategoria').attr('type', 'register');
                 changeStateInput('form-subcategoria', true);
-
             }
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
@@ -91,39 +95,27 @@ function save_subcategoria(data, action){
     });
 }
 
-function anular_subcategoria(ids){
-    baseUrl = 'anular_subcategoria/'+ids;
+function anularMarca(ids){
+    baseUrl = 'anularMarca/'+ids;
     $.ajax({
         type: 'GET',
         headers: {'X-CSRF-TOKEN': token},
-        url: 'revisarSubCat/'+ids,
+        url: baseUrl,
         dataType: 'JSON',
-        success: function(response){
+        success: function(response) {
             console.log(response);
-            if (response >= 1){
-                alert('No es posible anular. \nLa marca seleccionada está relacionada con '
-                +response+' producto(s).');
-            }
-            else {
-                $.ajax({
-                    type: 'GET',
-                    headers: {'X-CSRF-TOKEN': token},
-                    url: baseUrl,
-                    dataType: 'JSON',
-                    success: function(response){
-                        console.log(response);
-                        if (response > 0){
-                            alert('Marca anulada con éxito');
-                            $('#listaSubCategoria').DataTable().ajax.reload();
-                            changeStateButton('anular');
-                            clearForm('form-subcategoria');
-                        }
-                    }
-                }).fail( function( jqXHR, textStatus, errorThrown ){
-                    console.log(jqXHR);
-                    console.log(textStatus);
-                    console.log(errorThrown);
-                });
+            Lobibox.notify(response.tipo, {
+                title: false,
+                size: "mini",
+                rounded: true,
+                sound: false,
+                delayIndicator: false,
+                msg: response.mensaje
+            });
+            if (response.status==200) {
+                $('#listaSubCategoria').DataTable().ajax.reload();
+                changeStateButton('anular');
+                clearForm('form-subcategoria');
             }
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){

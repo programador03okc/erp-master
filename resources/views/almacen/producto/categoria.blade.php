@@ -44,6 +44,7 @@ SubCategoría
         <div class="col-md-6">
             <form id="form-categoria" type="register" form="formulario">
                 <input type="hidden" name="_token" value="{{csrf_token()}}" id="token">
+                <input type="hidden" name="id_categoria" primary="ids">
                 <div class="row">
                     <div class="col-md-8">
                         <h5>Clasificación</h5>

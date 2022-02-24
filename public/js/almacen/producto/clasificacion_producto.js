@@ -79,10 +79,16 @@ function guardarClasificacion(data, action) {
         dataType: 'JSON',
         success: function (response) {
             console.log(response);
-            if (response.length > 0) {
-                alert(response);
-            } else {
-                alert('Clasificacion registrado con exito');
+            Lobibox.notify(response.tipo, {
+                title: false,
+                size: "mini",
+                rounded: true,
+                sound: false,
+                delayIndicator: false,
+                msg: response.mensaje
+            });
+
+            if (response.status==200) {
                 $('#listaClasificacion').DataTable().ajax.reload();
                 changeStateButton('guardar');
                 $('#form-clasificacion').attr('type', 'register');
@@ -101,34 +107,22 @@ function anularClasificacion(ids) {
     $.ajax({
         type: 'GET',
         headers: { 'X-CSRF-TOKEN': token },
-        url: 'revisarClasificacion/' + ids,
+        url: baseUrl,
         dataType: 'JSON',
         success: function (response) {
             console.log(response);
-            if (response >= 1) {
-                alert('No es posible anular. \nLa clasificacion seleccionada está relacionada con '
-                    + response + ' producto(s).');
-            }
-            else {
-                $.ajax({
-                    type: 'GET',
-                    headers: { 'X-CSRF-TOKEN': token },
-                    url: baseUrl,
-                    dataType: 'JSON',
-                    success: function (response) {
-                        console.log(response);
-                        if (response > 0) {
-                            alert('Clasificacion anulada con exito');
-                            $('#listaClasificacion').DataTable().ajax.reload();
-                            changeStateButton('anular');
-                            clearForm('form-clasificacion');
-                        }
-                    }
-                }).fail(function (jqXHR, textStatus, errorThrown) {
-                    console.log(jqXHR);
-                    console.log(textStatus);
-                    console.log(errorThrown);
-                });
+            Lobibox.notify(response.tipo, {
+                title: false,
+                size: "mini",
+                rounded: true,
+                sound: false,
+                delayIndicator: false,
+                msg: response.mensaje
+            });
+            if (response.status==200) {
+                $('#listaClasificacion').DataTable().ajax.reload();
+                changeStateButton('anular');
+                clearForm('form-clasificacion');
             }
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {
@@ -136,5 +130,4 @@ function anularClasificacion(ids) {
         console.log(textStatus);
         console.log(errorThrown);
     });
-
 }
