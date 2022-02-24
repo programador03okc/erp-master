@@ -5,21 +5,23 @@ namespace App\Http\Controllers\Almacen\Catalogo;
 use App\Http\Controllers\AlmacenController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\almacen\Catalogo\Categoria;
+use App\Models\almacen\Catalogo\Clasificacion;
+use App\Models\Almacen\Catalogo\SubCategoria;
 use Illuminate\Support\Facades\DB;
 
 class SubCategoriaController extends Controller
 {
     function view_sub_categoria()
     {
-        $clasificaciones = ClasificacionController::mostrar_clasificaciones_cbo();
-        $tipos = AlmacenController::mostrar_tipos_cbo();
+        $clasificaciones = Clasificacion::where('estado', 1)->get();
+        $tipos = Categoria::where('estado', 1)->get();
         return view('almacen/producto/subCategoria', compact('tipos', 'clasificaciones'));
     }
 
     public function mostrarSubCategoriasPorCategoria($id_tipo)
     {
-        $data = DB::table('almacen.alm_cat_prod')
-            ->where([['estado', '=', 1], ['id_tipo_producto', '=', $id_tipo]])
+        $data = SubCategoria::where([['estado', '=', 1], ['id_tipo_producto', '=', $id_tipo]])
             ->orderBy('descripcion')
             ->get();
         return response()->json($data);
@@ -27,8 +29,7 @@ class SubCategoriaController extends Controller
 
     public static function mostrar_categorias_cbo()
     {
-        $data = DB::table('almacen.alm_cat_prod')
-            ->select('alm_cat_prod.id_categoria', 'alm_cat_prod.descripcion')
+        $data = SubCategoria::select('alm_cat_prod.id_categoria', 'alm_cat_prod.descripcion')
             ->where([['alm_cat_prod.estado', '=', 1]])
             ->orderBy('descripcion')
             ->get();
@@ -38,12 +39,11 @@ class SubCategoriaController extends Controller
     //Categorias
     public function mostrar_categorias()
     {
-        $data = DB::table('almacen.alm_cat_prod')
-            ->select(
-                'alm_cat_prod.*',
-                'alm_tp_prod.descripcion as tipo_descripcion',
-                'alm_clasif.descripcion as clasificacion_descripcion'
-            )
+        $data = SubCategoria::select(
+            'alm_cat_prod.*',
+            'alm_tp_prod.descripcion as tipo_descripcion',
+            'alm_clasif.descripcion as clasificacion_descripcion'
+        )
             ->join('almacen.alm_tp_prod', 'alm_tp_prod.id_tipo_producto', '=', 'alm_cat_prod.id_tipo_producto')
             ->join('almacen.alm_clasif', 'alm_clasif.id_clasificacion', '=', 'alm_tp_prod.id_clasificacion')
             ->where([['alm_cat_prod.estado', '=', 1]])
@@ -55,8 +55,7 @@ class SubCategoriaController extends Controller
 
     public function mostrar_categorias_tipo($id_tipo)
     {
-        $data = DB::table('almacen.alm_cat_prod')
-            ->where([['estado', '=', 1], ['id_tipo_producto', '=', $id_tipo]])
+        $data = SubCategoria::where([['estado', '=', 1], ['id_tipo_producto', '=', $id_tipo]])
             ->orderBy('descripcion')
             ->get();
         return response()->json($data);
@@ -64,13 +63,12 @@ class SubCategoriaController extends Controller
 
     public function mostrar_categoria($id)
     {
-        $data = DB::table('almacen.alm_cat_prod')
-            ->select(
-                'alm_cat_prod.*',
-                'alm_tp_prod.descripcion as tipo_descripcion',
-                'alm_tp_prod.id_tipo_producto',
-                'alm_clasif.id_clasificacion',
-            )
+        $data = SubCategoria::select(
+            'alm_cat_prod.*',
+            'alm_tp_prod.descripcion as tipo_descripcion',
+            'alm_tp_prod.id_tipo_producto',
+            'alm_clasif.id_clasificacion',
+        )
             ->join('almacen.alm_tp_prod', 'alm_tp_prod.id_tipo_producto', '=', 'alm_cat_prod.id_tipo_producto')
             ->join('almacen.alm_clasif', 'alm_clasif.id_clasificacion', '=', 'alm_tp_prod.id_clasificacion')
             ->where([['alm_cat_prod.id_categoria', '=', $id]])
@@ -80,8 +78,7 @@ class SubCategoriaController extends Controller
 
     public function categoria_nextId($id_tipo_producto)
     {
-        $cantidad = DB::table('almacen.alm_cat_prod')
-            ->where('id_tipo_producto', $id_tipo_producto)
+        $cantidad = SubCategoria::where('id_tipo_producto', $id_tipo_producto)
             ->get()->count();
         $val = AlmacenController::leftZero(3, $cantidad);
         $nextId = "" . $id_tipo_producto . "" . $val;
@@ -95,12 +92,11 @@ class SubCategoriaController extends Controller
         $msj = '';
         $des = strtoupper($request->descripcion);
 
-        $count = DB::table('almacen.alm_cat_prod')
-            ->where([['descripcion', '=', $des], ['estado', '=', 1]])
+        $count = SubCategoria::where([['descripcion', '=', $des], ['estado', '=', 1]])
             ->count();
 
         if ($count == 0) {
-            DB::table('almacen.alm_cat_prod')->insertGetId(
+            SubCategoria::insertGetId(
                 [
                     // 'codigo' => $codigo,
                     'id_tipo_producto' => $request->id_tipo_producto,
@@ -121,13 +117,11 @@ class SubCategoriaController extends Controller
         $msj = '';
         $des = strtoupper($request->descripcion);
 
-        $count = DB::table('almacen.alm_cat_prod')
-            ->where([['descripcion', '=', $des], ['estado', '=', 1]])
+        $count = SubCategoria::where([['descripcion', '=', $des], ['estado', '=', 1]])
             ->count();
 
         if ($count <= 1) {
-            DB::table('almacen.alm_cat_prod')
-                ->where('id_categoria', $request->id_categoria)
+            SubCategoria::where('id_categoria', $request->id_categoria)
                 ->update(['descripcion' => $des]);
         } else {
             $msj = 'No puede actualizar. Ya existe dicha descripción.';
@@ -137,8 +131,7 @@ class SubCategoriaController extends Controller
 
     public function anular_categoria(Request $request, $id)
     {
-        $id_categoria = DB::table('almacen.alm_cat_prod')
-            ->where('id_categoria', $id)
+        $id_categoria = SubCategoria::where('id_categoria', $id)
             ->update(['estado' => 7]);
         return response()->json($id_categoria);
     }
