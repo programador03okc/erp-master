@@ -15,13 +15,13 @@
             <li><a href="{{route('almacen.catalogos.clasificaciones.index')}}"> Clasificación</a></li>
             @endif
             @if(Auth::user()->tieneAplicacion(70))
-            <li><a href="{{route('almacen.catalogos.tipos.index')}}"> Categoría </a></li>
+            <li><a href="{{route('almacen.catalogos.categorias.index')}}"> Categoría </a></li>
             @endif
             @if(Auth::user()->tieneAplicacion(71))
-            <li><a href="{{route('almacen.catalogos.categorias.index')}}"> SubCategoría</a></li>
+            <li><a href="{{route('almacen.catalogos.sub-categorias.index')}}"> SubCategoría</a></li>
             @endif
             @if(Auth::user()->tieneAplicacion(72))
-            <li><a href="{{route('almacen.catalogos.sub-categorias.index')}}"> Marca</a></li>
+            <li><a href="{{route('almacen.catalogos.marcas.index')}}"> Marca</a></li>
             @endif
             @if(Auth::user()->tieneAplicacion(74))
             <li><a href="{{route('almacen.catalogos.productos.index')}}"> Producto</a></li>

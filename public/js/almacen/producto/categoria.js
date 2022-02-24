@@ -2,7 +2,7 @@ $(function () {
     var vardataTables = funcDatatables();
     var form = $('.page-main form[type=register]').attr('id');
 
-    $('#listaTipo').dataTable({
+    $('#listaCategorias').dataTable({
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language': vardataTables[0],
@@ -64,7 +64,7 @@ function guardarCategoria(data, action) {
     }
     $.ajax({
         type: 'POST',
-        headers: {'X-CSRF-TOKEN': token},
+        headers: { 'X-CSRF-TOKEN': token },
         url: baseUrl,
         data: data,
         dataType: 'JSON',
@@ -79,12 +79,12 @@ function guardarCategoria(data, action) {
                 msg: response.mensaje
             });
 
-            if (response.status==200)  {
-                $('#listaTipo').DataTable().ajax.reload();
+            if (response.status == 200) {
+                $('#listaCategorias').DataTable().ajax.reload();
                 changeStateButton('guardar');
-                $('#form-tipo').attr('type', 'register');
-                changeStateInput('form-tipo', true);
-            } 
+                $('#form-categoria').attr('type', 'register');
+                changeStateInput('form-categoria', true);
+            }
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
@@ -97,7 +97,7 @@ function anularCategoria(ids) {
     baseUrl = 'anularCategoria/' + ids;
     $.ajax({
         type: 'GET',
-        headers: {'X-CSRF-TOKEN': token},
+        headers: { 'X-CSRF-TOKEN': token },
         url: baseUrl,
         dataType: 'JSON',
         success: function (response) {
@@ -110,8 +110,8 @@ function anularCategoria(ids) {
                 delayIndicator: false,
                 msg: response.mensaje
             });
-            if (response.status==200) {
-                $('#listaTipo').DataTable().ajax.reload();
+            if (response.status == 200) {
+                $('#listaCategorias').DataTable().ajax.reload();
                 changeStateButton('anular');
                 clearForm('form-tipo');
             }

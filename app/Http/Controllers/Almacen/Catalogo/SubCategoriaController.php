@@ -6,13 +6,23 @@ use App\Http\Controllers\AlmacenController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+
 class SubCategoriaController extends Controller
 {
-    function view_categoria()
+    function view_sub_categoria()
     {
         $clasificaciones = ClasificacionController::mostrar_clasificaciones_cbo();
         $tipos = AlmacenController::mostrar_tipos_cbo();
-        return view('almacen/producto/categoria', compact('tipos', 'clasificaciones'));
+        return view('almacen/producto/subCategoria', compact('tipos', 'clasificaciones'));
+    }
+
+    public function mostrarSubCategoriasPorCategoria($id_tipo)
+    {
+        $data = DB::table('almacen.alm_cat_prod')
+            ->where([['estado', '=', 1], ['id_tipo_producto', '=', $id_tipo]])
+            ->orderBy('descripcion')
+            ->get();
+        return response()->json($data);
     }
 
     public static function mostrar_categorias_cbo()

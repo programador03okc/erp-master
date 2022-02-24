@@ -1,7 +1,7 @@
 $(function () {
     var vardataTables = funcDatatables();
 
-    $('#listaCategoria').dataTable({
+    $('#listaSubCategorias').dataTable({
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language': vardataTables[0],
@@ -79,10 +79,10 @@ function save_categoria(data, action) {
                 alert(response);
             } else {
                 alert('SubCategoría registrado con éxito');
-                $('#listaCategoria').DataTable().ajax.reload();
+                $('#listaSubCategorias').DataTable().ajax.reload();
                 changeStateButton('guardar');
-                $('#form-categoria').attr('type', 'register');
-                changeStateInput('form-categoria', true);
+                $('#form-subCategoria').attr('type', 'register');
+                changeStateInput('form-subCategoria', true);
                 $('[name=id_tipo_producto]').attr('disabled', true);
             }
         }
@@ -116,7 +116,7 @@ function anular_categoria(ids) {
                         console.log(response);
                         if (response > 0) {
                             alert('SubCategoría anulada con éxito');
-                            $('#listaCategoria').DataTable().ajax.reload();
+                            $('#listaSubCategorias').DataTable().ajax.reload();
                             changeStateButton('anular');
                             clearForm('form-categoria');
                         }
