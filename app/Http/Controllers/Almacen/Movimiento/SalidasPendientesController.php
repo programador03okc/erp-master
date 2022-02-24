@@ -163,14 +163,18 @@ class SalidasPendientesController extends Controller
                             DB::table('almacen.transformacion')
                                 ->where('id_transformacion', $transformacion->id_transformacion)
                                 ->update([
-                                    'estado' => 21,
+                                    'estado' => 21, //Entregado
                                     'fecha_entrega' => date('Y-m-d H:i:s')
-                                ]); //Entregado
+                                ]);
 
-                            DB::table('almacen.orden_despacho')
-                                ->where('id_od', $request->id_od)
-                                ->update(['estado' => 21]);
+                            //     DB::table('almacen.orden_despacho')
+                            //         ->where('id_od', $request->id_od)
+                            //         ->update(['estado' => 21]); //Entregado
+                            // } else {
                         }
+                        DB::table('almacen.orden_despacho')
+                            ->where('id_od', $request->id_od)
+                            ->update(['estado' => 21]); //Entregado
 
                         $id_salida = DB::table('almacen.mov_alm')->insertGetId(
                             [
