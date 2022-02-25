@@ -16,9 +16,6 @@
             @if(Auth::user()->tieneAplicacion(103))
             <li><a href="{{route('necesidades.requerimiento.listado.index')}}"><i class="far fa-circle fa-xs"></i> Listado</a></li>
             @endif
-            <!-- @if(Auth::user()->tieneAplicacion(103))
-            <li><a href="{{route('necesidades.requerimiento.aprobar.index')}}"><i class="far fa-circle fa-xs"></i> Revisar / aprobar</a></li>
-            @endif -->
         </ul>
     </li>
     @endif
