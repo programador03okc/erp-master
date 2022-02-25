@@ -177,21 +177,30 @@ class RevisarAprobarController extends Controller{
         $mensaje=[];
 
         $pendiente_aprobacion = [];
+        
 
         foreach ($todosLosDocumentos as $element) {
             if (in_array($element->id_grupo, $idGrupoList) == true) {
                 $idDocumento = $element->id_doc_aprob;
                 $tipoDocumento = $element->id_tp_documento;
                 $idGrupo = $element->id_grupo;
-                $idTipoRequerimiento = $element->id_tp_documento == 1 ? $element->id_tipo_requerimiento:0;
+                $idTipoRequerimiento = $element->id_tipo_requerimiento > 0?$element->id_tipo_requerimiento:null;
                 $idPrioridad = $element->id_prioridad;
+                $idMoneda = $element->id_moneda;
                 $estado = $element->estado !=null ?$element->estado:$element->id_estado;
-                $idDivision = $element->division_id !=null ?$element->division_id:$element->id_division;                
-                $operaciones = Operacion::getOperacion($tipoDocumento, $idTipoRequerimiento, $idGrupo, $idDivision, $idPrioridad);
+                $idDivision = $element->division_id !=null ?$element->division_id:$element->id_division; 
+                $idTipoRequerimientoPago= $element->id_requerimiento_pago_tipo >0 ?$element->id_requerimiento_pago_tipo:null;
+                $montoTotal= 0;
+                $obtenerMontoTotal = $this->obtenerMontoTotalDocumento($tipoDocumento,$idDocumento);
+                if($obtenerMontoTotal['estado']=='success'){
+                    $montoTotal=$obtenerMontoTotal['monto'];
+                }
+
+                $operaciones = Operacion::getOperacion($tipoDocumento, $idTipoRequerimiento, $idGrupo, $idDivision, $idPrioridad, $idMoneda, $montoTotal, $idTipoRequerimientoPago);
                 // Debugbar::info($operaciones);
 
                 if($operaciones ==[]){
-                    $mensaje[]= "El requerimiento ".$element->codigo." no coincide con una operación valida, es omitido en la lista. Parametros para obtener operacion: tipoDocumento= ".$tipoDocumento.", tipoRequerimiento= ".$idTipoRequerimiento.",Grupo= ".$idGrupo.", Division= ".$idDivision.", Prioridad= ".$idPrioridad;
+                    $mensaje[]= "El requerimiento ".$element->codigo." no coincide con una operación valida, es omitido en la lista. Parametros para obtener operacion: tipoDocumento= ".$tipoDocumento.", tipoRequerimientoCompra= ".$idTipoRequerimiento.",Grupo= ".$idGrupo.", Division= ".$idDivision.", Prioridad= ".$idPrioridad.", Moneda=".$idMoneda.", Monto=".$montoTotal.", TipoRequerimientoPago=".$idTipoRequerimientoPago;
                 }else{
                     $flujoTotal = Flujo::getIdFlujo($operaciones[0]->id_operacion)['data'];
                     $tamañoFlujo = $flujoTotal ? count($flujoTotal) : 0;
