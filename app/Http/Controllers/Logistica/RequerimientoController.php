@@ -1379,6 +1379,11 @@ class RequerimientoController extends Controller
         $fechaRegistroHasta = $request->fechaRegistroHasta;
         $idEstado = $request->idEstado;
         // Debugbar::info($division);
+        $GrupoDeUsuarioEnSesionList= Auth::user()->getAllGrupo();
+        $idGrupoDeUsuarioEnSesionList = [];
+        foreach ($GrupoDeUsuarioEnSesionList as $grupo) {
+            $idGrupoDeUsuarioEnSesionList[] = $grupo->id_grupo; // lista de id_rol del usuario en sesion
+        }
 
         $requerimientos = Requerimiento::with('detalle')->leftJoin('administracion.adm_documentos_aprob', 'alm_req.id_requerimiento', '=', 'adm_documentos_aprob.id_doc')
             ->leftJoin('administracion.adm_estado_doc', 'alm_req.estado', '=', 'adm_estado_doc.id_estado_doc')
@@ -1484,7 +1489,8 @@ class RequerimientoController extends Controller
             ->when((intval($idEstado) > 0), function ($query)  use ($idEstado) {
                 return $query->whereRaw('alm_req.estado = ' . $idEstado);
             })
-            ->where('alm_req.flg_compras','=',0);
+            ->where('alm_req.flg_compras','=',0)
+            ->whereIn('alm_req.id_grupo',$idGrupoDeUsuarioEnSesionList);
 
         return datatables($requerimientos)
             ->filterColumn('nombre_usuario', function ($query, $keyword) {
