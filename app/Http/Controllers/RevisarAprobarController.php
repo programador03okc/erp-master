@@ -183,11 +183,19 @@ class RevisarAprobarController extends Controller{
                 $idDocumento = $element->id_doc_aprob;
                 $tipoDocumento = $element->id_tp_documento;
                 $idGrupo = $element->id_grupo;
-                $idTipoRequerimiento = $element->id_tp_documento == 1 ? $element->id_tipo_requerimiento:0;
+                $idTipoRequerimiento = $element->id_tipo_requerimiento > 0?$element->id_tipo_requerimiento:null;
                 $idPrioridad = $element->id_prioridad;
+                $idMoneda = $element->id_moneda;
                 $estado = $element->estado !=null ?$element->estado:$element->id_estado;
-                $idDivision = $element->division_id !=null ?$element->division_id:$element->id_division;                
-                $operaciones = Operacion::getOperacion($tipoDocumento, $idTipoRequerimiento, $idGrupo, $idDivision, $idPrioridad);
+                $idDivision = $element->division_id !=null ?$element->division_id:$element->id_division; 
+                $idTipoRequerimientoPago= $element->id_requerimiento_tipo >0 ?$element->id_requerimiento_tipo:null;
+                $montoTotal= 0;
+                $obtenerMontoTotal = $this->obtenerMontoTotalDocumento($tipoDocumento,$idDocumento);
+                if($obtenerMontoTotal['estado']=='success'){
+                    $montoTotal=$obtenerMontoTotal['monto'];
+                }
+
+                $operaciones = Operacion::getOperacion($tipoDocumento, $idTipoRequerimiento, $idGrupo, $idDivision, $idPrioridad, $idMoneda, $montoTotal, $idTipoRequerimientoPago);
                 // Debugbar::info($operaciones);
 
                 if($operaciones ==[]){

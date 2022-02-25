@@ -42,6 +42,7 @@ use App\Models\Almacen\Producto;
 use App\Models\Almacen\Transferencia;
 use App\Models\Configuracion\Grupo;
 use App\Models\Presupuestos\Presupuesto;
+use App\Models\Tesoreria\RequerimientoPago;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Auth;
@@ -591,7 +592,9 @@ class RequerimientoController extends Controller
         return $data;
     }
 
-
+    public function getOperacion($IdTipoDocumento,$idTipoRequerimientoCompra, $idGrupo, $idDivision, $idPrioridad, $idMoneda, $montoTotal,$idTipoRequerimientoPago){
+        return Operacion::getOperacion($IdTipoDocumento,$idTipoRequerimientoCompra, $idGrupo, $idDivision, $idPrioridad, $idMoneda, $montoTotal,$idTipoRequerimientoPago);
+    }
 
     public function guardarRequerimiento(Request $request)
     {
@@ -697,31 +700,31 @@ class RequerimientoController extends Controller
 
  
 
-            // notificar al primer aprobante del requerimiento creado
+            // TODO notificar al primer aprobante del requerimiento creado
 
 
-            $operaciones = Operacion::getOperacion(1, $request->tipo_requerimiento, $request->id_grupo, $request->division, $request->prioridad);
-            $flujoTotal = Flujo::getIdFlujo($operaciones[0]->id_operacion)['data'];
-            $idRolPrimerAprobante = 0;
-            foreach ($flujoTotal as $flujo) {
-                if ($flujo->orden == 1) {
-                    $idRolPrimerAprobante = $flujo->id_rol;
-                }
-            }
-            if ($idRolPrimerAprobante > 0) {
-                $idUsuariosList = Usuario::getAllIdUsuariosPorRol($idRolPrimerAprobante);
+            // $operaciones = Operacion::getOperacion(1, $request->tipo_requerimiento, $request->id_grupo, $request->division, $request->prioridad,$request->moneda,$montoTotal,null);
+            // $flujoTotal = Flujo::getIdFlujo($operaciones[0]->id_operacion)['data'];
+            // $idRolPrimerAprobante = 0;
+            // foreach ($flujoTotal as $flujo) {
+            //     if ($flujo->orden == 1) {
+            //         $idRolPrimerAprobante = $flujo->id_rol;
+            //     }
+            // }
+            // if ($idRolPrimerAprobante > 0) {
+            //     $idUsuariosList = Usuario::getAllIdUsuariosPorRol($idRolPrimerAprobante);
 
-                foreach ($idUsuariosList as $idUsuario) {
-                    if (config('app.debug')) {
-                        $correoUsuario = config('global.correoDebug2');
-                    }else{
-                        $correoUsuario = Usuario::find($idUsuario)->email;
-                    }
-                    if (!empty($correoUsuario)) {
-                        $this->enviarNotificacionPorCreacion($request, $correoUsuario, $requerimiento, $montoTotal);
-                    }
-                }
-            }
+            //     foreach ($idUsuariosList as $idUsuario) {
+            //         if (config('app.debug')) {
+            //             $correoUsuario = config('global.correoDebug2');
+            //         }else{
+            //             $correoUsuario = Usuario::find($idUsuario)->email;
+            //         }
+            //         if (!empty($correoUsuario)) {
+            //             $this->enviarNotificacionPorCreacion($request, $correoUsuario, $requerimiento, $montoTotal);
+            //         }
+            //     }
+            // }
 
             DB::commit();
 
@@ -1109,39 +1112,76 @@ class RequerimientoController extends Controller
             $aprobacion->tiene_sustento = true;
             $aprobacion->save();
 
-            // TODO:  enviaar notificación al usuario aprobante, asuto => se levanto la observación 
-            $idRolPrimerAprobante = 0;
-            $operaciones = Operacion::getOperacion(1, $request->tipo_requerimiento, $request->id_grupo, $request->division, $request->prioridad);
-            $flujoTotal = Flujo::getIdFlujo($operaciones[0]->id_operacion)['data'];
-            foreach ($flujoTotal as $flujo) {
-                if ($flujo->orden == 1) {
-                    $idRolPrimerAprobante = $flujo->id_rol;
-                }
-            }
-            if ($idRolPrimerAprobante > 0) {
+            // TODO:  enviar notificación al usuario aprobante, asuto => se levanto la observación 
+            // $idRolPrimerAprobante = 0;
+
+            // $montoTotal= 0;
+            // $obtenerMontoTotal = $this->obtenerMontoTotalDocumento(1,$idDocumento);
+            // if($obtenerMontoTotal['estado']=='success'){
+            //     $montoTotal=$obtenerMontoTotal['monto'];
+            // }
+
+            // $operaciones = Operacion::getOperacion(1, $request->tipo_requerimiento, $request->id_grupo, $request->division, $request->prioridad, $request->id_moneda ,$montoTotal, null);
+            // $flujoTotal = Flujo::getIdFlujo($operaciones[0]->id_operacion)['data'];
+            // foreach ($flujoTotal as $flujo) {
+            //     if ($flujo->orden == 1) {
+            //         $idRolPrimerAprobante = $flujo->id_rol;
+            //     }
+            // }
+            // if ($idRolPrimerAprobante > 0) {
 
 
-                $usuariosList = Usuario::getAllIdUsuariosPorRol($idRolPrimerAprobante);
-                if (config('app.debug')) {
-                    $correoUsuario = config('global.correoDebug2');
-                    if (!empty($correoUsuario)) {
-                        $this->enviarNotificacionPorActualizacion($request, $correoUsuario, $requerimiento);
-                    }
-                }else{
-                    foreach ($usuariosList as $idUsuario) {
-                        $correoUsuario = Usuario::find($idUsuario)->email;
-                        if (!empty($correoUsuario)) {
-                            $this->enviarNotificacionPorActualizacion($request, $correoUsuario, $requerimiento);
-                        }
-                    }
+            //     $usuariosList = Usuario::getAllIdUsuariosPorRol($idRolPrimerAprobante);
+            //     if (config('app.debug')) {
+            //         $correoUsuario = config('global.correoDebug2');
+            //         if (!empty($correoUsuario)) {
+            //             $this->enviarNotificacionPorActualizacion($request, $correoUsuario, $requerimiento);
+            //         }
+            //     }else{
+            //         foreach ($usuariosList as $idUsuario) {
+            //             $correoUsuario = Usuario::find($idUsuario)->email;
+            //             if (!empty($correoUsuario)) {
+            //                 $this->enviarNotificacionPorActualizacion($request, $correoUsuario, $requerimiento);
+            //             }
+            //         }
 
-                }
-            }
+            //     }
+            // }
         }
 
 
         return response()->json(['id_requerimiento' => $requerimiento->id_requerimiento, 'codigo' => $requerimiento->codigo]);
     }
+
+    public function obtenerMontoTotalDocumento($tipoDocumento, $idDocumento){
+
+        $montoTotal =0;
+        
+        if($tipoDocumento ==1){
+            $obtenerId = $this->obtenerRelacionadoAIdDocumento($tipoDocumento,$idDocumento);
+            if($obtenerId['estado']=='success'){
+                $requerimiento = Requerimiento::find($obtenerId['id']);
+                $detalle = $requerimiento->detalle;
+                $montoTotal = 0;
+                foreach ($detalle as $item) {
+                    $montoTotal += $item->cantidad * $item->precio_unitario;
+                }
+            }
+        }elseif($tipoDocumento ==11){
+
+            $obtenerId = $this->obtenerRelacionadoAIdDocumento($tipoDocumento,$idDocumento);
+            if($obtenerId['estado']=='success'){
+                $requerimientoPago = RequerimientoPago::find($obtenerId['id']);
+                $detalle = $requerimientoPago->detalle;
+                $montoTotal = 0;
+                foreach ($detalle as $item) {
+                    $montoTotal += $item->cantidad * $item->precio_unitario;
+                }
+            }
+        }
+        return ['monto'=>$montoTotal, 'estado'=>$obtenerId['estado'], 'mensaje'=>$obtenerId['mensaje']];
+    }
+
 
     private function enviarNotificacionPorActualizacion($request, $correoUsuario, $requerimiento)
     {
@@ -1495,414 +1535,414 @@ class RequerimientoController extends Controller
     }
 
 
-    public function viewAprobar(Request $request)
-    {
-        $gruposUsuario = Auth::user()->getAllGrupo();
-        $grupos = Grupo::mostrar();
-        $roles = Auth::user()->getAllRol();
-        $empresas = Empresa::mostrar();
-        $periodos = Periodo::mostrar();
-        $prioridades = Prioridad::mostrar();
+    // public function viewAprobar(Request $request)
+    // {
+    //     $gruposUsuario = Auth::user()->getAllGrupo();
+    //     $grupos = Grupo::mostrar();
+    //     $roles = Auth::user()->getAllRol();
+    //     $empresas = Empresa::mostrar();
+    //     $periodos = Periodo::mostrar();
+    //     $prioridades = Prioridad::mostrar();
 
 
-        return view('logistica/requerimientos/aprobar_requerimiento', compact('periodos', 'gruposUsuario', 'grupos', 'roles', 'empresas', 'prioridades'));
-    }
+    //     return view('logistica/requerimientos/aprobar_requerimiento', compact('periodos', 'gruposUsuario', 'grupos', 'roles', 'empresas', 'prioridades'));
+    // }
 
 
-    public function listadoAprobacion(Request $request)
-    {
+    // public function listadoAprobacion(Request $request)
+    // {
 
-        $idUsuarioAprobante = Auth::user()->id_usuario;
-        $allGrupo = Auth::user()->getAllGrupo();
-        $idGrupoList = [];
-        foreach ($allGrupo as $grupo) {
-            $idGrupoList[] = $grupo->id_grupo; // lista de id_rol del usuario en sesion
-        }
+    //     $idUsuarioAprobante = Auth::user()->id_usuario;
+    //     $allGrupo = Auth::user()->getAllGrupo();
+    //     $idGrupoList = [];
+    //     foreach ($allGrupo as $grupo) {
+    //         $idGrupoList[] = $grupo->id_grupo; // lista de id_rol del usuario en sesion
+    //     }
 
-        $allRol = Auth::user()->getAllRol();
-        $idRolUsuarioList = [];
-        foreach ($allRol as  $rol) {
-            $idRolUsuarioList[] = $rol->id_rol;
-        }
+    //     $allRol = Auth::user()->getAllRol();
+    //     $idRolUsuarioList = [];
+    //     foreach ($allRol as  $rol) {
+    //         $idRolUsuarioList[] = $rol->id_rol;
+    //     }
 
-        $divisiones = DivisionArea::mostrar();
-        $idDivisionList = [];
-        foreach ($divisiones as $value) {
-            $idDivisionList[] = $value->id_division; //lista de id del total de divisiones 
-        }
+    //     $divisiones = DivisionArea::mostrar();
+    //     $idDivisionList = [];
+    //     foreach ($divisiones as $value) {
+    //         $idDivisionList[] = $value->id_division; //lista de id del total de divisiones 
+    //     }
 
-        $divisionUsuarioNroOrdenUno = Division::mostrarDivisionUsuarioNroOrdenUno();
-        $idDivisionUsuarioList = [];
-        foreach ($divisionUsuarioNroOrdenUno as $value) {
-            $idDivisionUsuarioList[] = $value->id_division; //lista de id_division al que pertenece el usuario 
-        }
-
-
-        $idEmpresa = $request->idEmpresa;
-        $idSede = $request->idSede;
-        $idGrupo = $request->idGrupo;
-        $idPrioridad = $request->idPrioridad;
-        $usuarioSoloSiCorrespondeAprobacion = false;
-        // $compra =(new LogisticaController)->get_tipo_requerimiento('Compra');
-        // $tipo_requerimiento = 3; // Bienes y Servicios
-        $tipo_documento = 1; // Requerimientos
-
-        $requerimientos = Requerimiento::join('almacen.alm_tp_req', 'alm_req.id_tipo_requerimiento', '=', 'alm_tp_req.id_tipo_requerimiento')
-            ->leftJoin('almacen.tipo_cliente', 'alm_req.tipo_cliente', '=', 'tipo_cliente.id_tipo_cliente')
-            ->leftJoin('almacen.alm_almacen', 'alm_req.id_almacen', '=', 'alm_almacen.id_almacen')
-            ->leftJoin('configuracion.sis_grupo', 'sis_grupo.id_grupo', '=', 'alm_req.id_grupo')
-            ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_req.id_sede')
-            ->leftJoin('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
-            ->leftJoin('contabilidad.adm_contri as contrib', 'adm_empresa.id_contribuyente', '=', 'contrib.id_contribuyente')
-            ->leftJoin('administracion.adm_estado_doc', 'alm_req.estado', '=', 'adm_estado_doc.id_estado_doc')
-            ->leftJoin('configuracion.sis_usua', 'alm_req.id_usuario', '=', 'sis_usua.id_usuario')
-            ->leftJoin('rrhh.rrhh_trab', 'sis_usua.id_trabajador', '=', 'rrhh_trab.id_trabajador')
-            ->leftJoin('rrhh.rrhh_postu', 'rrhh_postu.id_postulante', '=', 'rrhh_trab.id_postulante')
-            ->leftJoin('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'rrhh_postu.id_persona')
-            // ->leftJoin('rrhh.rrhh_rol', 'alm_req.id_rol', '=', 'rrhh_rol.id_rol')
-            // ->leftJoin('rrhh.rrhh_rol_concepto', 'rrhh_rol_concepto.id_rol_concepto', '=', 'rrhh_rol.id_rol_concepto')
-            // ->leftJoin('administracion.adm_area', 'rrhh_rol.id_area', '=', 'adm_area.id_area')
-            // ->leftJoin('proyectos.proy_op_com', 'proy_op_com.id_op_com', '=', 'alm_req.id_op_com')
-            // ->leftJoin('proyectos.proy_presup', 'alm_req.id_presupuesto', '=', 'proy_presup.id_presupuesto')
-            ->leftJoin('comercial.com_cliente', 'alm_req.id_cliente', '=', 'com_cliente.id_cliente')
-            ->leftJoin('configuracion.ubi_dis', 'alm_req.id_ubigeo_entrega', '=', 'ubi_dis.id_dis')
-            ->leftJoin('configuracion.ubi_prov', 'ubi_dis.id_prov', '=', 'ubi_prov.id_prov')
-            ->leftJoin('configuracion.ubi_dpto', 'ubi_prov.id_dpto', '=', 'ubi_dpto.id_dpto')
-            ->leftJoin('configuracion.sis_moneda', 'alm_req.id_moneda', '=', 'sis_moneda.id_moneda')
-            ->leftJoin('administracion.adm_prioridad', 'alm_req.id_prioridad', '=', 'adm_prioridad.id_prioridad')
-            ->leftJoin('administracion.adm_periodo', 'alm_req.id_periodo', '=', 'adm_periodo.id_periodo')
-            ->leftJoin('configuracion.sis_rol', 'alm_req.id_rol', '=', 'sis_rol.id_rol')
-            ->leftJoin('administracion.adm_documentos_aprob', 'alm_req.id_requerimiento', '=', 'adm_documentos_aprob.id_doc')
-            ->leftJoin('administracion.division', 'division.id_division', '=', 'alm_req.division_id')
-
-            ->select(
-                'alm_req.id_requerimiento',
-                'adm_documentos_aprob.id_doc_aprob',
-                'alm_req.codigo',
-                'alm_req.concepto',
-                'alm_req.id_moneda',
-                'sis_moneda.descripcion as desrcipcion_moneda',
-                'sis_moneda.simbolo AS simbolo_moneda',
-                'alm_req.id_periodo',
-                'adm_periodo.descripcion as descripcion_periodo',
-                'alm_req.id_prioridad',
-                'adm_prioridad.descripcion as descripcion_prioridad',
-                'alm_req.estado',
-                'adm_estado_doc.estado_doc',
-                'adm_estado_doc.bootstrap_color',
-                'sis_sede.id_empresa',
-                'alm_req.id_grupo',
-                'sis_grupo.descripcion as descripcion_grupo',
-                'contrib.razon_social as razon_social_empresa',
-                'sis_sede.codigo as codigo_sede_empresa',
-                'adm_empresa.logo_empresa',
-                'alm_req.fecha_requerimiento',
-                'alm_req.id_tipo_requerimiento',
-                'alm_req.observacion',
-                'alm_tp_req.descripcion AS tipo_requerimiento',
-                'alm_req.id_usuario',
-                DB::raw("CONCAT(rrhh_perso.nombres, ' ',rrhh_perso.apellido_paterno, ' ', rrhh_perso.apellido_materno)  AS nombre_usuario"),
-                'sis_usua.usuario',
-                'alm_req.id_rol',
-                'sis_rol.descripcion as descripcion_rol',
-                // 'rrhh_rol.id_rol_concepto',
-                // 'rrhh_rol_concepto.descripcion AS rrhh_rol_concepto',
-                'alm_req.id_area',
-                // 'adm_area.descripcion AS area_descripcion',
-                // 'proy_op_com.codigo as codigo_op_com',
-                // 'proy_op_com.descripcion as descripcion_op_com',
-                'alm_req.fecha_registro',
-                'alm_req.id_sede',
-                'alm_req.tipo_cliente as id_tipo_cliente',
-                'tipo_cliente.descripcion as descripcion_tipo_cliente',
-                'alm_req.id_ubigeo_entrega',
-                DB::raw("(ubi_dis.descripcion) || ' ' || (ubi_prov.descripcion) || ' ' || (ubi_dpto.descripcion)  AS name_ubigeo"),
-                'alm_req.id_almacen',
-                'alm_almacen.descripcion as descripcion_almacen',
-                'alm_req.monto',
-                'alm_req.fecha_entrega',
-                'alm_req.division_id',
-                'division.descripcion as division',
-                DB::raw("(SELECT SUM(alm_det_req.cantidad * alm_det_req.precio_unitario) 
-                FROM almacen.alm_det_req 
-                WHERE   alm_det_req.id_requerimiento = alm_req.id_requerimiento AND
-                alm_det_req.estado != 7) AS monto_total")
-            )
-            ->where('alm_req.flg_compras','=',0)
-            // ->where([
-            // ['alm_req.id_tipo_requerimiento', '=', $tipo_requerimiento],
-            // ['alm_req.id_requerimiento', '=', '262']
-            // ['alm_req.codigo', '=', 'RC-210106']
-            // ['alm_req.tipo_cliente','=',$uso_administracion] // uso administracion
-            // ['alm_req.estado', '!=', 2], 
-            // ['alm_req.estado', '!=', 3], 
-            // ['alm_req.estado', '!=', 7] 
-            // ])
-            ->whereNotIn('alm_req.estado', [3, 7])
-            ->whereNotIn('alm_req.id_tipo_requerimiento', [1, 2, 3])
-            // ->when((count($idDivisionUsuarioList) > 0), function ($query)  use ($idDivisionUsuarioList) {
-            //     return $query->whereRaw('alm_req.division_id in (' . implode(",", $idDivisionUsuarioList) . ')');
-            // })
-            ->when((intval($idEmpresa) > 0), function ($query)  use ($idEmpresa) {
-                return $query->whereRaw('alm_req.id_empresa = ' . $idEmpresa);
-            })
-            ->when((intval($idSede) > 0), function ($query)  use ($idSede) {
-                return $query->whereRaw('alm_req.id_sede = ' . $idSede);
-            })
-            ->when((intval($idGrupo) > 0), function ($query)  use ($idGrupo) {
-                return $query->whereRaw('sis_grupo.id_grupo = ' . $idGrupo);
-            })
-            ->when((intval($idPrioridad) > 0), function ($query)  use ($idPrioridad) {
-                return $query->whereRaw('alm_req.id_prioridad = ' . $idPrioridad);
-            })
-            ->orderBy('alm_req.fecha_registro', 'desc')
-            ->get();
-
-        // return $requerimientos;
-        $payload = [];
-        $mensaje=[];
-        $operacion_selected = 0;
-        $flujo_list_selected = [];
-
-        $pendiente_aprobacion = [];
-
-        $list_req = [];
-        foreach ($requerimientos as $element) {
-
-            if (in_array($element->id_grupo, $idGrupoList) == true) {
-                // Debugbar::info($element->id_grupo);
-                $idDocumento = $element->id_doc_aprob;
-                $id_grupo_req = $element->id_grupo;
-                $id_tipo_requerimiento_req = $element->id_tipo_requerimiento;
-                $id_prioridad_req = $element->id_prioridad;
-                $estado_req = $element->estado;
-                $division_id = $element->division_id;
+    //     $divisionUsuarioNroOrdenUno = Division::mostrarDivisionUsuarioNroOrdenUno();
+    //     $idDivisionUsuarioList = [];
+    //     foreach ($divisionUsuarioNroOrdenUno as $value) {
+    //         $idDivisionUsuarioList[] = $value->id_division; //lista de id_division al que pertenece el usuario 
+    //     }
 
 
-                $operaciones = Operacion::getOperacion(1, $id_tipo_requerimiento_req, $id_grupo_req, $division_id, $id_prioridad_req);
-                // Debugbar::info($operaciones[0]->id_operacion);
-                if($operaciones ==[]){
-                    $mensaje[]= "El requerimiento ".$element->codigo." no coincide con una operación valida, es omitido en la lista. Parametros para obtener operacion: tipoDocumento= 1, tipoRequerimiento= ".$id_tipo_requerimiento_req.",Grupo= ".$id_grupo_req.", Division= ".$division_id.", Prioridad= ".$id_prioridad_req;
-                }else{
-                    $flujoTotal = Flujo::getIdFlujo($operaciones[0]->id_operacion)['data'];
+    //     $idEmpresa = $request->idEmpresa;
+    //     $idSede = $request->idSede;
+    //     $idGrupo = $request->idGrupo;
+    //     $idPrioridad = $request->idPrioridad;
+    //     $usuarioSoloSiCorrespondeAprobacion = false;
+    //     // $compra =(new LogisticaController)->get_tipo_requerimiento('Compra');
+    //     // $tipo_requerimiento = 3; // Bienes y Servicios
+    //     $tipo_documento = 1; // Requerimientos
 
-                    $tamañoFlujo = $flujoTotal ? count($flujoTotal) : 0;
+    //     $requerimientos = Requerimiento::join('almacen.alm_tp_req', 'alm_req.id_tipo_requerimiento', '=', 'alm_tp_req.id_tipo_requerimiento')
+    //         ->leftJoin('almacen.tipo_cliente', 'alm_req.tipo_cliente', '=', 'tipo_cliente.id_tipo_cliente')
+    //         ->leftJoin('almacen.alm_almacen', 'alm_req.id_almacen', '=', 'alm_almacen.id_almacen')
+    //         ->leftJoin('configuracion.sis_grupo', 'sis_grupo.id_grupo', '=', 'alm_req.id_grupo')
+    //         ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_req.id_sede')
+    //         ->leftJoin('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
+    //         ->leftJoin('contabilidad.adm_contri as contrib', 'adm_empresa.id_contribuyente', '=', 'contrib.id_contribuyente')
+    //         ->leftJoin('administracion.adm_estado_doc', 'alm_req.estado', '=', 'adm_estado_doc.id_estado_doc')
+    //         ->leftJoin('configuracion.sis_usua', 'alm_req.id_usuario', '=', 'sis_usua.id_usuario')
+    //         ->leftJoin('rrhh.rrhh_trab', 'sis_usua.id_trabajador', '=', 'rrhh_trab.id_trabajador')
+    //         ->leftJoin('rrhh.rrhh_postu', 'rrhh_postu.id_postulante', '=', 'rrhh_trab.id_postulante')
+    //         ->leftJoin('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'rrhh_postu.id_persona')
+    //         // ->leftJoin('rrhh.rrhh_rol', 'alm_req.id_rol', '=', 'rrhh_rol.id_rol')
+    //         // ->leftJoin('rrhh.rrhh_rol_concepto', 'rrhh_rol_concepto.id_rol_concepto', '=', 'rrhh_rol.id_rol_concepto')
+    //         // ->leftJoin('administracion.adm_area', 'rrhh_rol.id_area', '=', 'adm_area.id_area')
+    //         // ->leftJoin('proyectos.proy_op_com', 'proy_op_com.id_op_com', '=', 'alm_req.id_op_com')
+    //         // ->leftJoin('proyectos.proy_presup', 'alm_req.id_presupuesto', '=', 'proy_presup.id_presupuesto')
+    //         ->leftJoin('comercial.com_cliente', 'alm_req.id_cliente', '=', 'com_cliente.id_cliente')
+    //         ->leftJoin('configuracion.ubi_dis', 'alm_req.id_ubigeo_entrega', '=', 'ubi_dis.id_dis')
+    //         ->leftJoin('configuracion.ubi_prov', 'ubi_dis.id_prov', '=', 'ubi_prov.id_prov')
+    //         ->leftJoin('configuracion.ubi_dpto', 'ubi_prov.id_dpto', '=', 'ubi_dpto.id_dpto')
+    //         ->leftJoin('configuracion.sis_moneda', 'alm_req.id_moneda', '=', 'sis_moneda.id_moneda')
+    //         ->leftJoin('administracion.adm_prioridad', 'alm_req.id_prioridad', '=', 'adm_prioridad.id_prioridad')
+    //         ->leftJoin('administracion.adm_periodo', 'alm_req.id_periodo', '=', 'adm_periodo.id_periodo')
+    //         ->leftJoin('configuracion.sis_rol', 'alm_req.id_rol', '=', 'sis_rol.id_rol')
+    //         ->leftJoin('administracion.adm_documentos_aprob', 'alm_req.id_requerimiento', '=', 'adm_documentos_aprob.id_doc')
+    //         ->leftJoin('administracion.division', 'division.id_division', '=', 'alm_req.division_id')
+
+    //         ->select(
+    //             'alm_req.id_requerimiento',
+    //             'adm_documentos_aprob.id_doc_aprob',
+    //             'alm_req.codigo',
+    //             'alm_req.concepto',
+    //             'alm_req.id_moneda',
+    //             'sis_moneda.descripcion as desrcipcion_moneda',
+    //             'sis_moneda.simbolo AS simbolo_moneda',
+    //             'alm_req.id_periodo',
+    //             'adm_periodo.descripcion as descripcion_periodo',
+    //             'alm_req.id_prioridad',
+    //             'adm_prioridad.descripcion as descripcion_prioridad',
+    //             'alm_req.estado',
+    //             'adm_estado_doc.estado_doc',
+    //             'adm_estado_doc.bootstrap_color',
+    //             'sis_sede.id_empresa',
+    //             'alm_req.id_grupo',
+    //             'sis_grupo.descripcion as descripcion_grupo',
+    //             'contrib.razon_social as razon_social_empresa',
+    //             'sis_sede.codigo as codigo_sede_empresa',
+    //             'adm_empresa.logo_empresa',
+    //             'alm_req.fecha_requerimiento',
+    //             'alm_req.id_tipo_requerimiento',
+    //             'alm_req.observacion',
+    //             'alm_tp_req.descripcion AS tipo_requerimiento',
+    //             'alm_req.id_usuario',
+    //             DB::raw("CONCAT(rrhh_perso.nombres, ' ',rrhh_perso.apellido_paterno, ' ', rrhh_perso.apellido_materno)  AS nombre_usuario"),
+    //             'sis_usua.usuario',
+    //             'alm_req.id_rol',
+    //             'sis_rol.descripcion as descripcion_rol',
+    //             // 'rrhh_rol.id_rol_concepto',
+    //             // 'rrhh_rol_concepto.descripcion AS rrhh_rol_concepto',
+    //             'alm_req.id_area',
+    //             // 'adm_area.descripcion AS area_descripcion',
+    //             // 'proy_op_com.codigo as codigo_op_com',
+    //             // 'proy_op_com.descripcion as descripcion_op_com',
+    //             'alm_req.fecha_registro',
+    //             'alm_req.id_sede',
+    //             'alm_req.tipo_cliente as id_tipo_cliente',
+    //             'tipo_cliente.descripcion as descripcion_tipo_cliente',
+    //             'alm_req.id_ubigeo_entrega',
+    //             DB::raw("(ubi_dis.descripcion) || ' ' || (ubi_prov.descripcion) || ' ' || (ubi_dpto.descripcion)  AS name_ubigeo"),
+    //             'alm_req.id_almacen',
+    //             'alm_almacen.descripcion as descripcion_almacen',
+    //             'alm_req.monto',
+    //             'alm_req.fecha_entrega',
+    //             'alm_req.division_id',
+    //             'division.descripcion as division',
+    //             DB::raw("(SELECT SUM(alm_det_req.cantidad * alm_det_req.precio_unitario) 
+    //             FROM almacen.alm_det_req 
+    //             WHERE   alm_det_req.id_requerimiento = alm_req.id_requerimiento AND
+    //             alm_det_req.estado != 7) AS monto_total")
+    //         )
+    //         ->where('alm_req.flg_compras','=',0)
+    //         // ->where([
+    //         // ['alm_req.id_tipo_requerimiento', '=', $tipo_requerimiento],
+    //         // ['alm_req.id_requerimiento', '=', '262']
+    //         // ['alm_req.codigo', '=', 'RC-210106']
+    //         // ['alm_req.tipo_cliente','=',$uso_administracion] // uso administracion
+    //         // ['alm_req.estado', '!=', 2], 
+    //         // ['alm_req.estado', '!=', 3], 
+    //         // ['alm_req.estado', '!=', 7] 
+    //         // ])
+    //         ->whereNotIn('alm_req.estado', [3, 7])
+    //         ->whereNotIn('alm_req.id_tipo_requerimiento', [1, 2, 3])
+    //         // ->when((count($idDivisionUsuarioList) > 0), function ($query)  use ($idDivisionUsuarioList) {
+    //         //     return $query->whereRaw('alm_req.division_id in (' . implode(",", $idDivisionUsuarioList) . ')');
+    //         // })
+    //         ->when((intval($idEmpresa) > 0), function ($query)  use ($idEmpresa) {
+    //             return $query->whereRaw('alm_req.id_empresa = ' . $idEmpresa);
+    //         })
+    //         ->when((intval($idSede) > 0), function ($query)  use ($idSede) {
+    //             return $query->whereRaw('alm_req.id_sede = ' . $idSede);
+    //         })
+    //         ->when((intval($idGrupo) > 0), function ($query)  use ($idGrupo) {
+    //             return $query->whereRaw('sis_grupo.id_grupo = ' . $idGrupo);
+    //         })
+    //         ->when((intval($idPrioridad) > 0), function ($query)  use ($idPrioridad) {
+    //             return $query->whereRaw('alm_req.id_prioridad = ' . $idPrioridad);
+    //         })
+    //         ->orderBy('alm_req.fecha_registro', 'desc')
+    //         ->get();
+
+    //     // return $requerimientos;
+    //     $payload = [];
+    //     $mensaje=[];
+    //     $operacion_selected = 0;
+    //     $flujo_list_selected = [];
+
+    //     $pendiente_aprobacion = [];
+
+    //     $list_req = [];
+    //     foreach ($requerimientos as $element) {
+
+    //         if (in_array($element->id_grupo, $idGrupoList) == true) {
+    //             // Debugbar::info($element->id_grupo);
+    //             $idDocumento = $element->id_doc_aprob;
+    //             $id_grupo_req = $element->id_grupo;
+    //             $id_tipo_requerimiento_req = $element->id_tipo_requerimiento;
+    //             $id_prioridad_req = $element->id_prioridad;
+    //             $estado_req = $element->estado;
+    //             $division_id = $element->division_id;
+
+
+    //             $operaciones = Operacion::getOperacion(1, $id_tipo_requerimiento_req, $id_grupo_req, $division_id, $id_prioridad_req);
+    //             // Debugbar::info($operaciones[0]->id_operacion);
+    //             if($operaciones ==[]){
+    //                 $mensaje[]= "El requerimiento ".$element->codigo." no coincide con una operación valida, es omitido en la lista. Parametros para obtener operacion: tipoDocumento= 1, tipoRequerimiento= ".$id_tipo_requerimiento_req.",Grupo= ".$id_grupo_req.", Division= ".$division_id.", Prioridad= ".$id_prioridad_req;
+    //             }else{
+    //                 $flujoTotal = Flujo::getIdFlujo($operaciones[0]->id_operacion)['data'];
+
+    //                 $tamañoFlujo = $flujoTotal ? count($flujoTotal) : 0;
     
-                    $voboList = Aprobacion::getVoBo($idDocumento); // todas las vobo del documento
-                    $cantidadAprobacionesRealizadas = Aprobacion::getCantidadAprobacionesRealizadas($idDocumento);
-                    $ultimoVoBo = Aprobacion::getUltimoVoBo($idDocumento);
-                    // Debugbar::info($cantidadAprobacionesRealizadas);
+    //                 $voboList = Aprobacion::getVoBo($idDocumento); // todas las vobo del documento
+    //                 $cantidadAprobacionesRealizadas = Aprobacion::getCantidadAprobacionesRealizadas($idDocumento);
+    //                 $ultimoVoBo = Aprobacion::getUltimoVoBo($idDocumento);
+    //                 // Debugbar::info($cantidadAprobacionesRealizadas);
     
-                    $nextFlujo = [];
-                    $nextIdRolAprobante = 0;
-                    $nextIdFlujo = 0;
-                    $nextIdOperacion = 0;
-                    $nextNroOrden = 0;
-                    $aprobacionFinalOPendiente = '';
-                    $cantidadConSiguienteAprobacion=false;
-                    $tieneRolConSiguienteAprobacion='';
+    //                 $nextFlujo = [];
+    //                 $nextIdRolAprobante = 0;
+    //                 $nextIdFlujo = 0;
+    //                 $nextIdOperacion = 0;
+    //                 $nextNroOrden = 0;
+    //                 $aprobacionFinalOPendiente = '';
+    //                 $cantidadConSiguienteAprobacion=false;
+    //                 $tieneRolConSiguienteAprobacion='';
     
-                    if ($cantidadAprobacionesRealizadas > 0) {
+    //                 if ($cantidadAprobacionesRealizadas > 0) {
     
-                        // si existe data => evaluar si tiene aprobacion / Rechazado / observado.
-                        if (in_array($ultimoVoBo->id_vobo, [1, 5])) { // revisado o aprobado
-                            // next flujo y rol aprobante
-                            $ultimoIdFlujo = $ultimoVoBo->id_flujo;
+    //                     // si existe data => evaluar si tiene aprobacion / Rechazado / observado.
+    //                     if (in_array($ultimoVoBo->id_vobo, [1, 5])) { // revisado o aprobado
+    //                         // next flujo y rol aprobante
+    //                         $ultimoIdFlujo = $ultimoVoBo->id_flujo;
     
-                            foreach ($flujoTotal as $key => $flujo) {
-                                if ($flujo->id_flujo == $ultimoIdFlujo) {
-                                    $nroOrdenUltimoFlujo = $flujo->orden;
-                                    if ($nroOrdenUltimoFlujo != $tamañoFlujo) { // get next id_flujo
-                                        foreach ($flujoTotal as $key => $flujo) {
-                                            if ($flujo->estado == 1) {
-                                                if ($flujo->orden == $nroOrdenUltimoFlujo + 1) {
-                                                    $nextFlujo = $flujo;
-                                                    $nextIdFlujo = $flujo->id_flujo;
-                                                    $nextIdOperacion = $flujo->id_operacion;
-                                                    $nextIdRolAprobante = $flujo->id_rol;
-                                                    $aprobacionFinalOPendiente = $flujo->orden == $tamañoFlujo ? 'APROBACION_FINAL' : 'PENDIENTE'; // NEXT NRO ORDEN == TAMAÑO FLUJO?
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        if ($ultimoVoBo->id_vobo == 3 && $ultimoVoBo->id_sustentacion != null) { //observado con sustentacion
-                            foreach ($flujoTotal as $flujo) {
-                                if ($flujo->orden == 1) {
-                                    // Debugbar::info($flujo);
-                                    $nextFlujo = $flujo;
-                                    $nextNroOrden = $flujo->orden;
-                                    $nextIdOperacion = $flujo->id_operacion;
-                                    $nextIdFlujo = $flujo->id_flujo;
-                                    $nextIdRolAprobante = $flujo->id_rol;
-                                    $aprobacionFinalOPendiente = $flujo->orden == $tamañoFlujo ? 'APROBACION_FINAL' : 'PENDIENTE'; // NEXT NRO ORDEN == TAMAÑO FLUJO?
+    //                         foreach ($flujoTotal as $key => $flujo) {
+    //                             if ($flujo->id_flujo == $ultimoIdFlujo) {
+    //                                 $nroOrdenUltimoFlujo = $flujo->orden;
+    //                                 if ($nroOrdenUltimoFlujo != $tamañoFlujo) { // get next id_flujo
+    //                                     foreach ($flujoTotal as $key => $flujo) {
+    //                                         if ($flujo->estado == 1) {
+    //                                             if ($flujo->orden == $nroOrdenUltimoFlujo + 1) {
+    //                                                 $nextFlujo = $flujo;
+    //                                                 $nextIdFlujo = $flujo->id_flujo;
+    //                                                 $nextIdOperacion = $flujo->id_operacion;
+    //                                                 $nextIdRolAprobante = $flujo->id_rol;
+    //                                                 $aprobacionFinalOPendiente = $flujo->orden == $tamañoFlujo ? 'APROBACION_FINAL' : 'PENDIENTE'; // NEXT NRO ORDEN == TAMAÑO FLUJO?
+    //                                             }
+    //                                         }
+    //                                     }
+    //                                 }
+    //                             }
+    //                         }
+    //                     }
+    //                     if ($ultimoVoBo->id_vobo == 3 && $ultimoVoBo->id_sustentacion != null) { //observado con sustentacion
+    //                         foreach ($flujoTotal as $flujo) {
+    //                             if ($flujo->orden == 1) {
+    //                                 // Debugbar::info($flujo);
+    //                                 $nextFlujo = $flujo;
+    //                                 $nextNroOrden = $flujo->orden;
+    //                                 $nextIdOperacion = $flujo->id_operacion;
+    //                                 $nextIdFlujo = $flujo->id_flujo;
+    //                                 $nextIdRolAprobante = $flujo->id_rol;
+    //                                 $aprobacionFinalOPendiente = $flujo->orden == $tamañoFlujo ? 'APROBACION_FINAL' : 'PENDIENTE'; // NEXT NRO ORDEN == TAMAÑO FLUJO?
     
-                                }
-                            }
-                        }
-                    } else { //  no tiene aprobaciones, entonces es la PRIMERA APROBACIÓN de este req.
-                        // tiene observación?
+    //                             }
+    //                         }
+    //                     }
+    //                 } else { //  no tiene aprobaciones, entonces es la PRIMERA APROBACIÓN de este req.
+    //                     // tiene observación?
     
-                        //obtener rol del flujo de aprobacion con orden #1 y comprar con el rol del usuario en sesion
-                        foreach ($flujoTotal as $flujo) {
-                            if ($flujo->orden == 1) {
-                                // Debugbar::info($flujo);
-                                $nextFlujo = $flujo;
-                                $nextNroOrden = $flujo->orden;
-                                $nextIdOperacion = $flujo->id_operacion;
-                                $nextIdFlujo = $flujo->id_flujo;
-                                $nextIdRolAprobante = $flujo->id_rol;
-                                $aprobacionFinalOPendiente = $flujo->orden == $tamañoFlujo ? 'APROBACION_FINAL' : 'PENDIENTE'; // NEXT NRO ORDEN == TAMAÑO FLUJO?
+    //                     //obtener rol del flujo de aprobacion con orden #1 y comprar con el rol del usuario en sesion
+    //                     foreach ($flujoTotal as $flujo) {
+    //                         if ($flujo->orden == 1) {
+    //                             // Debugbar::info($flujo);
+    //                             $nextFlujo = $flujo;
+    //                             $nextNroOrden = $flujo->orden;
+    //                             $nextIdOperacion = $flujo->id_operacion;
+    //                             $nextIdFlujo = $flujo->id_flujo;
+    //                             $nextIdRolAprobante = $flujo->id_rol;
+    //                             $aprobacionFinalOPendiente = $flujo->orden == $tamañoFlujo ? 'APROBACION_FINAL' : 'PENDIENTE'; // NEXT NRO ORDEN == TAMAÑO FLUJO?
     
-                            }
-                        }
-                    }
-                    $numeroOrdenSiguienteAprobacion=0;
-                    foreach ($flujoTotal as $flujo) {
-                        if ($flujo->id_operacion == $nextIdOperacion) {
-                            if($flujo->orden == (intval($nextNroOrden)+1)){ // si existe una siguiente aprobacion (nro orden + 1 ) 
-                                if(in_array($flujo->id_rol, $idRolUsuarioList) == true){
-                                    $cantidadConSiguienteAprobacion=true;
-                                    $numeroOrdenSiguienteAprobacion= $flujo->orden;
-                                }
+    //                         }
+    //                     }
+    //                 }
+    //                 $numeroOrdenSiguienteAprobacion=0;
+    //                 foreach ($flujoTotal as $flujo) {
+    //                     if ($flujo->id_operacion == $nextIdOperacion) {
+    //                         if($flujo->orden == (intval($nextNroOrden)+1)){ // si existe una siguiente aprobacion (nro orden + 1 ) 
+    //                             if(in_array($flujo->id_rol, $idRolUsuarioList) == true){
+    //                                 $cantidadConSiguienteAprobacion=true;
+    //                                 $numeroOrdenSiguienteAprobacion= $flujo->orden;
+    //                             }
                                 
-                            }
+    //                         }
                             
-                        }
-                    }
+    //                     }
+    //                 }
     
-                    if($cantidadConSiguienteAprobacion ==true){
-                        $tieneRolConSiguienteAprobacion=true;
-                    }else{
-                        $tieneRolConSiguienteAprobacion=false;    
-                    }
+    //                 if($cantidadConSiguienteAprobacion ==true){
+    //                     $tieneRolConSiguienteAprobacion=true;
+    //                 }else{
+    //                     $tieneRolConSiguienteAprobacion=false;    
+    //                 }
           
-                    if ((in_array($nextIdRolAprobante, $idRolUsuarioList)) == true) {
-                        if ($nextNroOrden == 1) {
-                            // fitlar por division
-                            if (in_array($element->division_id, $idDivisionUsuarioList) == true) {
-                                $payload[] = [
-                                    'termometro' => $element->termometro,
-                                    'id_requerimiento' => $element->id_requerimiento,
-                                    'id_tipo_requerimiento' => $element->id_tipo_requerimiento,
-                                    'tipo_requerimiento' => $element->tipo_requerimiento,
-                                    'id_tipo_cliente' => $element->id_tipo_cliente,
-                                    'descripcion_tipo_cliente' => $element->descripcion_tipo_cliente,
-                                    'id_prioridad' => $element->id_prioridad,
-                                    'descripcion_prioridad' => $element->descripcion_prioridad,
-                                    'id_periodo' => $element->id_periodo,
-                                    'descripcion_periodo' => $element->descripcion_periodo,
-                                    'codigo' => $element->codigo,
-                                    'concepto' => $element->concepto,
-                                    'id_empresa' => $element->id_empresa,
-                                    'razon_social_empresa' => $element->razon_social_empresa,
-                                    'codigo_sede_empresa' => $element->codigo_sede_empresa,
-                                    'logo_empresa' => $element->logo_empresa,
-                                    'id_grupo' => $element->id_grupo,
-                                    'descripcion_grupo' => $element->descripcion_grupo,
-                                    'fecha_requerimiento' => $element->fecha_requerimiento,
-                                    'observacion' => $element->observacion,
-                                    'name_ubigeo' => $element->name_ubigeo,
-                                    'id_moneda' => $element->id_moneda,
-                                    'simbolo_moneda' => $element->simbolo_moneda,
-                                    'desrcipcion_moneda' => $element->desrcipcion_moneda,
-                                    'monto' => $element->monto,
-                                    'fecha_registro' => $element->fecha_registro,
-                                    'fecha_entrega' => $element->fecha_entrega,
-                                    'id_usuario' => $element->id_usuario,
-                                    'id_rol' => $element->id_rol,
-                                    'descripcion_rol' => $element->descripcion_rol,
-                                    'usuario' => $element->usuario,
-                                    'nombre_usuario' => $element->nombre_usuario,
-                                    'id_almacen' => $element->id_almacen,
-                                    'descripcion_almacen' => $element->descripcion_almacen,
-                                    'cantidad_aprobados_total_flujo' => ($cantidadAprobacionesRealizadas) . '/' . ($tamañoFlujo),
-                                    'aprobaciones' => $voboList,
-                                    'pendiente_aprobacion' => $pendiente_aprobacion,
-                                    // 'observaciones' => $observacion_list,
-                                    'observaciones' => [],
-                                    'estado' => $element->estado,
-                                    'estado_doc' => $element->estado_doc,
-                                    'division' => $element->division,
-                                    'id_flujo' => $nextIdFlujo,
-                                    'id_usuario_aprobante' => $idUsuarioAprobante,
-                                    'id_rol_aprobante' => $nextIdRolAprobante,
-                                    'aprobacion_final_o_pendiente' => $aprobacionFinalOPendiente,
-                                    'id_doc_aprob' => $idDocumento,
-                                    'monto_total' => $element->monto_total,
-                                    'id_operacion'=>$nextIdOperacion,
-                                    'tiene_rol_con_siguiente_aprobacion'=>$tieneRolConSiguienteAprobacion
+    //                 if ((in_array($nextIdRolAprobante, $idRolUsuarioList)) == true) {
+    //                     if ($nextNroOrden == 1) {
+    //                         // fitlar por division
+    //                         if (in_array($element->division_id, $idDivisionUsuarioList) == true) {
+    //                             $payload[] = [
+    //                                 'termometro' => $element->termometro,
+    //                                 'id_requerimiento' => $element->id_requerimiento,
+    //                                 'id_tipo_requerimiento' => $element->id_tipo_requerimiento,
+    //                                 'tipo_requerimiento' => $element->tipo_requerimiento,
+    //                                 'id_tipo_cliente' => $element->id_tipo_cliente,
+    //                                 'descripcion_tipo_cliente' => $element->descripcion_tipo_cliente,
+    //                                 'id_prioridad' => $element->id_prioridad,
+    //                                 'descripcion_prioridad' => $element->descripcion_prioridad,
+    //                                 'id_periodo' => $element->id_periodo,
+    //                                 'descripcion_periodo' => $element->descripcion_periodo,
+    //                                 'codigo' => $element->codigo,
+    //                                 'concepto' => $element->concepto,
+    //                                 'id_empresa' => $element->id_empresa,
+    //                                 'razon_social_empresa' => $element->razon_social_empresa,
+    //                                 'codigo_sede_empresa' => $element->codigo_sede_empresa,
+    //                                 'logo_empresa' => $element->logo_empresa,
+    //                                 'id_grupo' => $element->id_grupo,
+    //                                 'descripcion_grupo' => $element->descripcion_grupo,
+    //                                 'fecha_requerimiento' => $element->fecha_requerimiento,
+    //                                 'observacion' => $element->observacion,
+    //                                 'name_ubigeo' => $element->name_ubigeo,
+    //                                 'id_moneda' => $element->id_moneda,
+    //                                 'simbolo_moneda' => $element->simbolo_moneda,
+    //                                 'desrcipcion_moneda' => $element->desrcipcion_moneda,
+    //                                 'monto' => $element->monto,
+    //                                 'fecha_registro' => $element->fecha_registro,
+    //                                 'fecha_entrega' => $element->fecha_entrega,
+    //                                 'id_usuario' => $element->id_usuario,
+    //                                 'id_rol' => $element->id_rol,
+    //                                 'descripcion_rol' => $element->descripcion_rol,
+    //                                 'usuario' => $element->usuario,
+    //                                 'nombre_usuario' => $element->nombre_usuario,
+    //                                 'id_almacen' => $element->id_almacen,
+    //                                 'descripcion_almacen' => $element->descripcion_almacen,
+    //                                 'cantidad_aprobados_total_flujo' => ($cantidadAprobacionesRealizadas) . '/' . ($tamañoFlujo),
+    //                                 'aprobaciones' => $voboList,
+    //                                 'pendiente_aprobacion' => $pendiente_aprobacion,
+    //                                 // 'observaciones' => $observacion_list,
+    //                                 'observaciones' => [],
+    //                                 'estado' => $element->estado,
+    //                                 'estado_doc' => $element->estado_doc,
+    //                                 'division' => $element->division,
+    //                                 'id_flujo' => $nextIdFlujo,
+    //                                 'id_usuario_aprobante' => $idUsuarioAprobante,
+    //                                 'id_rol_aprobante' => $nextIdRolAprobante,
+    //                                 'aprobacion_final_o_pendiente' => $aprobacionFinalOPendiente,
+    //                                 'id_doc_aprob' => $idDocumento,
+    //                                 'monto_total' => $element->monto_total,
+    //                                 'id_operacion'=>$nextIdOperacion,
+    //                                 'tiene_rol_con_siguiente_aprobacion'=>$tieneRolConSiguienteAprobacion
     
-                                ];
-                            }
-                        } else {
-                            $payload[] = [
-                                'termometro' => $element->termometro,
-                                'id_requerimiento' => $element->id_requerimiento,
-                                'id_tipo_requerimiento' => $element->id_tipo_requerimiento,
-                                'tipo_requerimiento' => $element->tipo_requerimiento,
-                                'id_tipo_cliente' => $element->id_tipo_cliente,
-                                'descripcion_tipo_cliente' => $element->descripcion_tipo_cliente,
-                                'id_prioridad' => $element->id_prioridad,
-                                'descripcion_prioridad' => $element->descripcion_prioridad,
-                                'id_periodo' => $element->id_periodo,
-                                'descripcion_periodo' => $element->descripcion_periodo,
-                                'codigo' => $element->codigo,
-                                'concepto' => $element->concepto,
-                                'id_empresa' => $element->id_empresa,
-                                'razon_social_empresa' => $element->razon_social_empresa,
-                                'codigo_sede_empresa' => $element->codigo_sede_empresa,
-                                'logo_empresa' => $element->logo_empresa,
-                                'id_grupo' => $element->id_grupo,
-                                'descripcion_grupo' => $element->descripcion_grupo,
-                                'fecha_requerimiento' => $element->fecha_requerimiento,
-                                'observacion' => $element->observacion,
-                                'name_ubigeo' => $element->name_ubigeo,
-                                'id_moneda' => $element->id_moneda,
-                                'simbolo_moneda' => $element->simbolo_moneda,
-                                'desrcipcion_moneda' => $element->desrcipcion_moneda,
-                                'monto' => $element->monto,
-                                'fecha_registro' => $element->fecha_registro,
-                                'fecha_entrega' => $element->fecha_entrega,
-                                'id_usuario' => $element->id_usuario,
-                                'id_rol' => $element->id_rol,
-                                'descripcion_rol' => $element->descripcion_rol,
-                                'usuario' => $element->usuario,
-                                'nombre_usuario' => $element->nombre_usuario,
-                                'id_almacen' => $element->id_almacen,
-                                'descripcion_almacen' => $element->descripcion_almacen,
-                                'cantidad_aprobados_total_flujo' => ($cantidadAprobacionesRealizadas) . '/' . ($tamañoFlujo),
-                                'aprobaciones' => $voboList,
-                                'pendiente_aprobacion' => $pendiente_aprobacion,
-                                // 'observaciones' => $observacion_list,
-                                'observaciones' => [],
-                                'estado' => $element->estado,
-                                'estado_doc' => $element->estado_doc,
-                                'division' => $element->division,
-                                'id_flujo' => $nextIdFlujo,
-                                'id_usuario_aprobante' => $idUsuarioAprobante,
-                                'id_rol_aprobante' => $nextIdRolAprobante,
-                                'aprobacion_final_o_pendiente' => $aprobacionFinalOPendiente,
-                                'id_doc_aprob' => $idDocumento,
-                                'monto_total' => $element->monto_total,
-                                'id_operacion'=>$nextIdOperacion,
-                                'tiene_rol_con_siguiente_aprobacion'=>$tieneRolConSiguienteAprobacion
+    //                             ];
+    //                         }
+    //                     } else {
+    //                         $payload[] = [
+    //                             'termometro' => $element->termometro,
+    //                             'id_requerimiento' => $element->id_requerimiento,
+    //                             'id_tipo_requerimiento' => $element->id_tipo_requerimiento,
+    //                             'tipo_requerimiento' => $element->tipo_requerimiento,
+    //                             'id_tipo_cliente' => $element->id_tipo_cliente,
+    //                             'descripcion_tipo_cliente' => $element->descripcion_tipo_cliente,
+    //                             'id_prioridad' => $element->id_prioridad,
+    //                             'descripcion_prioridad' => $element->descripcion_prioridad,
+    //                             'id_periodo' => $element->id_periodo,
+    //                             'descripcion_periodo' => $element->descripcion_periodo,
+    //                             'codigo' => $element->codigo,
+    //                             'concepto' => $element->concepto,
+    //                             'id_empresa' => $element->id_empresa,
+    //                             'razon_social_empresa' => $element->razon_social_empresa,
+    //                             'codigo_sede_empresa' => $element->codigo_sede_empresa,
+    //                             'logo_empresa' => $element->logo_empresa,
+    //                             'id_grupo' => $element->id_grupo,
+    //                             'descripcion_grupo' => $element->descripcion_grupo,
+    //                             'fecha_requerimiento' => $element->fecha_requerimiento,
+    //                             'observacion' => $element->observacion,
+    //                             'name_ubigeo' => $element->name_ubigeo,
+    //                             'id_moneda' => $element->id_moneda,
+    //                             'simbolo_moneda' => $element->simbolo_moneda,
+    //                             'desrcipcion_moneda' => $element->desrcipcion_moneda,
+    //                             'monto' => $element->monto,
+    //                             'fecha_registro' => $element->fecha_registro,
+    //                             'fecha_entrega' => $element->fecha_entrega,
+    //                             'id_usuario' => $element->id_usuario,
+    //                             'id_rol' => $element->id_rol,
+    //                             'descripcion_rol' => $element->descripcion_rol,
+    //                             'usuario' => $element->usuario,
+    //                             'nombre_usuario' => $element->nombre_usuario,
+    //                             'id_almacen' => $element->id_almacen,
+    //                             'descripcion_almacen' => $element->descripcion_almacen,
+    //                             'cantidad_aprobados_total_flujo' => ($cantidadAprobacionesRealizadas) . '/' . ($tamañoFlujo),
+    //                             'aprobaciones' => $voboList,
+    //                             'pendiente_aprobacion' => $pendiente_aprobacion,
+    //                             // 'observaciones' => $observacion_list,
+    //                             'observaciones' => [],
+    //                             'estado' => $element->estado,
+    //                             'estado_doc' => $element->estado_doc,
+    //                             'division' => $element->division,
+    //                             'id_flujo' => $nextIdFlujo,
+    //                             'id_usuario_aprobante' => $idUsuarioAprobante,
+    //                             'id_rol_aprobante' => $nextIdRolAprobante,
+    //                             'aprobacion_final_o_pendiente' => $aprobacionFinalOPendiente,
+    //                             'id_doc_aprob' => $idDocumento,
+    //                             'monto_total' => $element->monto_total,
+    //                             'id_operacion'=>$nextIdOperacion,
+    //                             'tiene_rol_con_siguiente_aprobacion'=>$tieneRolConSiguienteAprobacion
      
-                            ];
-                        }
-                    }
-                }
+    //                         ];
+    //                     }
+    //                 }
+    //             }
 
 
-            }
-        }
+    //         }
+    //     }
 
 
-        $output = ['data' => $payload, 'mensaje'=>$mensaje];
-        return $output;
-    }
+    //     $output = ['data' => $payload, 'mensaje'=>$mensaje];
+    //     return $output;
+    // }
 
 
     public function registrarRespuesta($accion, $idFlujo, $idDocumento, $idUsuario,$comentario, $idRolAprobante){
