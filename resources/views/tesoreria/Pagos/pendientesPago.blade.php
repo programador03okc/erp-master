@@ -22,7 +22,7 @@ Registro de pagos
                 
                 <ul class="nav nav-tabs" id="myTab">
                     <li class="active"><a data-toggle="tab" href="#requerimientos">Requerimiento de pagos</a></li>
-                    <li class=""><a data-toggle="tab" href="#ordenes">Ordenes de compra</a></li>
+                    <li class=""><a data-toggle="tab" href="#ordenes">Ordenes Compra/Servicio</a></li>
                     {{-- <li class=""><a data-toggle="tab" href="#comprobantes">Comprobantes</a></li> --}}
                 </ul>
 
@@ -135,7 +135,6 @@ Registro de pagos
 </div>
 
 @include('tesoreria.pagos.procesarPago')
-    
 @endsection
 
 @section('scripts')
@@ -158,7 +157,7 @@ Registro de pagos
         seleccionarMenu(window.location);
         vista_extendida();
 
-        let requerimientoPago=new RequerimientoPago('{{Auth::user()->tieneAccion(136)}}','{{Auth::user()->tieneAccion(137)}}','{{Auth::user()->tieneAccion(138)}}');
+        let requerimientoPago=new RequerimientoPago('{{Auth::user()->tieneAccion(137)}}','{{Auth::user()->tieneAccion(138)}}','{{Auth::user()->tieneAccion(139)}}');
         // let requerimientoPago=new RequerimientoPago('1','1','1');
 
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {

@@ -22,29 +22,47 @@ function agregarContacto() {
 $('#listaContactos tbody').on("click", "button.seleccionar", function () {
     var id_contacto = $(this).data('id');
     var id_requerimiento = $('[name=id_requerimiento]').val();
+    var origen = $('[name=origen]').val();
     const $boton = $(this);
     $boton.prop('disabled', true);
 
-    $.ajax({
-        type: 'GET',
-        url: 'seleccionarContacto/' + id_contacto + '/' + id_requerimiento,
-        dataType: 'JSON',
-    }).done(function (response) {
+    if (origen == 'despacho') {
+        $.ajax({
+            type: 'GET',
+            url: 'seleccionarContacto/' + id_contacto + '/' + id_requerimiento,
+            dataType: 'JSON',
+        }).done(function (response) {
+            $('[name=id_contacto_od]').val(id_contacto);
+            mostrarContactos();
+
+        }).always(function () {
+            $boton.prop('disabled', false);
+
+        }).fail(function () {
+            alert("error")
+        });
+    } else {
         $('[name=id_contacto_od]').val(id_contacto);
+        $('[name=id_contacto]').val(id_contacto);
         mostrarContactos();
-
-    }).always(function () {
-        $boton.prop('disabled', false);
-
-    }).fail(function () {
-        //console.log('fail');
-        alert("error")
-        //Cerrar el modal
-    });
+        let contacto = listaContactos.find(element => element.id_datos_contacto == id_contacto);
+        console.log(contacto);
+        $(".nombre").text(contacto.nombre);
+        $(".cargo").text(contacto.cargo);
+        $(".telefono").text(contacto.telefono);
+        $(".direccion").text(contacto.direccion);
+        $(".horario").text(contacto.horario);
+        $(".email").text(contacto.email);
+        $(".ubigeo").text(contacto.departamento + '-' + contacto.provincia + '-' + contacto.distrito);
+    }
 });
 
 $('#listaContactos tbody').on("click", "button.editar", function () {
     var id_contacto = $(this).data('id');
+    mostrarContacto(id_contacto);
+});
+
+function mostrarContacto(id_contacto) {
     const $boton = $(this);
     $boton.prop('disabled', true);
     $.ajax({
@@ -79,7 +97,7 @@ $('#listaContactos tbody').on("click", "button.editar", function () {
         console.log(textStatus);
         console.log(errorThrown);
     });
-});
+}
 
 $('#listaContactos tbody').on("click", "button.anular", function () {
     var id_contacto = $(this).data('id');
@@ -128,15 +146,17 @@ $("#form-contacto").on("submit", function (e) {
     }
     else {
         var id_requerimiento = $('[name=id_requerimiento]').val();
+        var origen = $('[name=origen]').val();
         var data = $(this).serialize();
-        data += '&id_requerimiento=' + id_requerimiento;
-        actualizaContacto(data);
+        data += '&id_requerimiento=' + id_requerimiento
+            + '&origen=' + origen;
+        console.log(data);
+        actualizaContacto(data, origen);
     }
 });
 
-function actualizaContacto(data) {
+function actualizaContacto(data, origen) {
     $("#submit_contacto").attr('disabled', 'true');
-    console.log(data);
     $.ajax({
         type: 'POST',
         url: 'actualizaDatosContacto',
@@ -158,6 +178,17 @@ function actualizaContacto(data) {
                 var id_contribuyente = $('[name=id_contribuyente_contacto]').val();
                 $('[name=id_contacto_od]').val(response.id_contacto);
                 listarContactos(id_contribuyente);
+
+                if (origen == 'incidencia') {
+                    $('[name=id_contacto]').val(response.id_contacto);
+                    $(".nombre").text(response.contacto.nombre);
+                    $(".cargo").text(response.contacto.cargo);
+                    $(".telefono").text(response.contacto.telefono);
+                    $(".direccion").text(response.contacto.direccion);
+                    $(".horario").text(response.contacto.horario);
+                    $(".email").text(response.contacto.email);
+                    $(".ubigeo").text(response.contacto.departamento + '-' + response.contacto.provincia + '-' + response.contacto.distrito);
+                }
             }
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {

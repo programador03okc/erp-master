@@ -19,39 +19,43 @@ Detalle de Salidas
 
 @section('content')
 <div class="page-main" type="busqueda_salidas">
-    <div class="row" style="padding-left:0px;padding-right:0px;">
-        <div class="col-md-12">
-        <button type="button" class="btn btn-primary" data-toggle="tooltip" 
-                    data-placement="bottom" title="Ingrese los filtros" 
-                    onClick="open_filtros();">
-                    <i class="fas fa-search"></i>  Filtros</button>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <table class="mytable table table-condensed table-bordered table-okc-view" 
-                id="listaBusquedaSalidas">
-                <thead>
-                    <tr>
-                        <th hidden></th>
-                        <th>Tp</th>
-                        <th>Serie-Número</th>
-                        <th>Fecha Emisión</th>
-                        <th>RUC</th>
-                        <th>Razon Social</th>
-                        <th>Condición</th>
-                        <th>Código</th>
-                        <th>Cod.Anexo</th>
-                        <th width="30%">Descripción</th>
-                        <th>Cant.</th>
-                        <th>Estado</th>
-                        <th>Almacén</th>
-                        <th>Fecha Registro</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+    <div class="box box-solid">
+        <div class="box-body">
+            <div class="row" style="padding-left:0px;padding-right:0px;">
+                <div class="col-md-12">
+                <button type="button" class="btn btn-primary" data-toggle="tooltip" 
+                            data-placement="bottom" title="Ingrese los filtros" 
+                            onClick="open_filtros();">
+                            <i class="fas fa-search"></i>  Filtros</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="mytable table table-condensed table-bordered table-okc-view" 
+                        id="listaBusquedaSalidas">
+                        <thead>
+                            <tr>
+                                <th hidden></th>
+                                <th>Tp</th>
+                                <th>Serie-Número</th>
+                                <th>Fecha Emisión</th>
+                                <th>RUC</th>
+                                <th>Razon Social</th>
+                                <th>Condición</th>
+                                <th>Código</th>
+                                <th>Cod.Anexo</th>
+                                <th width="30%">Descripción</th>
+                                <th>Cant.</th>
+                                <th>Estado</th>
+                                <th>Almacén</th>
+                                <th>Fecha Registro</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </div>

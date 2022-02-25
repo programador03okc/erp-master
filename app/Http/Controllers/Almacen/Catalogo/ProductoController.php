@@ -58,7 +58,7 @@ class ProductoController extends Controller
 
     public function listarProductosSugeridos(Request $request)
     {
- 
+
         $data = DB::table('almacen.alm_prod')
             ->select(
                 'alm_prod.id_producto',
@@ -74,10 +74,10 @@ class ProductoController extends Controller
             ->leftjoin('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
             ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida');
 
-        if ($request->part_number!=null) {
+        if ($request->part_number != null) {
             // $data = $data->where('alm_prod.part_number', trim(session()->get('productFilter_partnumber')))->get();
             $data = $data->where('alm_prod.part_number', trim($request->part_number))->get();
-        } else if ($request->descripcion!=null) {
+        } else if ($request->descripcion != null) {
             // $data = $data->where('alm_prod.descripcion', trim(session()->get('productFilter_descripcion')))->get();
             $data = $data->where('alm_prod.descripcion', trim($request->descripcion))->get();
         }
@@ -175,15 +175,6 @@ class ProductoController extends Controller
             ->orderBy('cod_antiguo')->get();
 
         $data = ["producto" => $producto, "antiguos" => $antiguos];
-        return response()->json($data);
-    }
-
-    public function mostrar_categorias_tipo($id_tipo)
-    {
-        $data = DB::table('almacen.alm_cat_prod')
-            ->where([['estado', '=', 1], ['id_tipo_producto', '=', $id_tipo]])
-            ->orderBy('descripcion')
-            ->get();
         return response()->json($data);
     }
 

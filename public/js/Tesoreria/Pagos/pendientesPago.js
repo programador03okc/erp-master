@@ -2,7 +2,7 @@ class RequerimientoPago {
     constructor(permisoVer, permisoEnviar, permisoRegistrar) {
         this.permisoVer = permisoVer;
         this.permisoEnviar = permisoEnviar;
-        this.permisoRegistrar = permisoRegistrar;
+        this.permisoRegistrar = 1;
         this.listarRequerimientos();
         this.listarComprobantes();
         this.listarOrdenes();
@@ -92,7 +92,11 @@ class RequerimientoPago {
                 {
                     'render':
                         function (data, type, row) {
+                            // <button type="button" class="autorizar btn btn-default boton" data-toggle="tooltip" 
+                            //     data-placement="bottom" data-id="${row['id_requerimiento_pago']}" data-tipo="requerimiento"
+                            //     title="Ver requerimiento de pago"> <i class="fas fa-eye"></i></button>
                             return `<div class="btn-group" role="group">
+                            
                             ${(row['id_estado'] == 2 && permisoEnviar == '1') ?
                                     `<button type="button" class="autorizar btn btn-info boton" data-toggle="tooltip" 
                                 data-placement="bottom" data-id="${row['id_requerimiento_pago']}" data-tipo="requerimiento"
@@ -112,7 +116,9 @@ class RequerimientoPago {
                                         data-cta="${row['nro_cuenta'] !== null ? row['nro_cuenta'] : row['nro_cuenta_persona']}" 
                                         data-cci="${row['nro_cuenta_interbancaria'] !== null ? row['nro_cuenta_interbancaria'] : row['nro_cci_persona']}" 
                                         data-tpcta="${row['tipo_cuenta'] !== null ? row['tipo_cuenta'] : row['tipo_cuenta_persona']}" 
-                                        data-banco="${row['banco_persona'] !== null ? row['banco_persona'] : row['banco_contribuyente']}" 
+                                        data-banco="${row['banco_persona'] !== null ? row['banco_persona'] : row['banco_contribuyente']}"
+                                        data-empresa="${row['razon_social_empresa']}" data-idempresa="${row['id_empresa']}"
+                                        data-motivo="${encodeURIComponent(row['concepto'])}"
                                         title="Registrar Pago"> 
                                     <i class="fas fa-hand-holding-usd"></i> </button>`
                                         : ''}`
@@ -129,6 +135,7 @@ class RequerimientoPago {
                 },
             ],
             'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible' }],
+            'order': [[0, "desc"]]
         });
 
     }
@@ -225,6 +232,7 @@ class RequerimientoPago {
                                     data-cci="${row['nro_cuenta_interbancaria'] !== null ? row['nro_cuenta_interbancaria'] : row['nro_cci_persona']}" 
                                     data-tpcta="${row['tipo_cuenta'] !== null ? row['tipo_cuenta'] : row['tipo_cuenta_persona']}" 
                                     data-banco="${row['banco_persona'] !== null ? row['banco_persona'] : row['banco_contribuyente']}" 
+                                    data-empresa="${row['razon_social_empresa']}" data-idempresa="${row['id_empresa']}"
 
                                     title="Registrar Pago"><i class="fas fa-hand-holding-usd"></i></button>`: ''}`)
                                     : ''}

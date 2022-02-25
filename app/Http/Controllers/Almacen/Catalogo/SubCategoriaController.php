@@ -5,145 +5,145 @@ namespace App\Http\Controllers\Almacen\Catalogo;
 use App\Http\Controllers\AlmacenController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\almacen\Catalogo\Categoria;
+use App\Models\almacen\Catalogo\Clasificacion;
 use App\Models\Almacen\Catalogo\SubCategoria;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class SubCategoriaController extends Controller
 {
-    function view_subcategoria()
+    function view_sub_categoria()
     {
-        return view('almacen/producto/subcategoria');
+        $clasificaciones = Clasificacion::where('estado', 1)->get();
+        $tipos = Categoria::where('estado', 1)->get();
+        return view('almacen/producto/subCategoria', compact('tipos', 'clasificaciones'));
     }
 
-    public static function mostrar_subcategorias_cbo()
+    public function mostrarSubCategoriasPorCategoria($id_tipo)
     {
-        $data = DB::table('almacen.alm_subcat')
-            ->select('alm_subcat.id_subcategoria', 'alm_subcat.descripcion')
-            ->where([['alm_subcat.estado', '=', 1]])
+        $data = SubCategoria::where([['estado', '=', 1], ['id_tipo_producto', '=', $id_tipo]])
+            ->orderBy('descripcion')
+            ->get();
+        return response()->json($data);
+    }
+
+    public static function mostrar_categorias_cbo()
+    {
+        $data = SubCategoria::select('alm_cat_prod.id_categoria', 'alm_cat_prod.descripcion')
+            ->where([['alm_cat_prod.estado', '=', 1]])
             ->orderBy('descripcion')
             ->get();
         return $data;
     }
-    //SubCategorias
-    public function mostrar_sub_categorias()
+
+    //Categorias
+    public function mostrar_categorias()
     {
-        $data = DB::table('almacen.alm_subcat')
-            ->where('estado', 1)->get();
+        $data = SubCategoria::select(
+            'alm_cat_prod.*',
+            'alm_tp_prod.descripcion as tipo_descripcion',
+            'alm_clasif.descripcion as clasificacion_descripcion'
+        )
+            ->join('almacen.alm_tp_prod', 'alm_tp_prod.id_tipo_producto', '=', 'alm_cat_prod.id_tipo_producto')
+            ->join('almacen.alm_clasif', 'alm_clasif.id_clasificacion', '=', 'alm_tp_prod.id_clasificacion')
+            ->where([['alm_cat_prod.estado', '=', 1]])
+            ->orderBy('id_categoria')
+            ->get();
         $output['data'] = $data;
         return response()->json($output);
     }
 
-    public function mostrar_sub_categoria($id)
+    public function mostrar_categorias_tipo($id_tipo)
     {
-        $data = DB::table('almacen.alm_subcat')
-            ->select('alm_subcat.*', 'sis_usua.nombre_corto')
-            ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'alm_subcat.registrado_por')
-            ->where([['alm_subcat.id_subcategoria', '=', $id]])
+        $data = SubCategoria::where([['estado', '=', 1], ['id_tipo_producto', '=', $id_tipo]])
+            ->orderBy('descripcion')
             ->get();
         return response()->json($data);
     }
 
-    public function subcategoria_nextId($id_categoria)
+    public function mostrar_categoria($id)
     {
-        $cantidad = DB::table('almacen.alm_subcat')
-            ->where('estado', 1)->get()->count();
-        $nextId = AlmacenController::leftZero(3, $cantidad);
+        $data = SubCategoria::select(
+            'alm_cat_prod.*',
+            'alm_tp_prod.descripcion as tipo_descripcion',
+            'alm_tp_prod.id_tipo_producto',
+            'alm_clasif.id_clasificacion',
+        )
+            ->join('almacen.alm_tp_prod', 'alm_tp_prod.id_tipo_producto', '=', 'alm_cat_prod.id_tipo_producto')
+            ->join('almacen.alm_clasif', 'alm_clasif.id_clasificacion', '=', 'alm_tp_prod.id_clasificacion')
+            ->where([['alm_cat_prod.id_categoria', '=', $id]])
+            ->get();
+        return response()->json($data);
+    }
+
+    public function categoria_nextId($id_tipo_producto)
+    {
+        $cantidad = SubCategoria::where('id_tipo_producto', $id_tipo_producto)
+            ->get()->count();
+        $val = AlmacenController::leftZero(3, $cantidad);
+        $nextId = "" . $id_tipo_producto . "" . $val;
         return $nextId;
     }
 
-    public function guardar_sub_categoria(Request $request)
+    public function guardar_categoria(Request $request)
     {
-        // $codigo = $this->subcategoria_nextId($request->id_categoria);
+        // $codigo = $this->categoria_nextId($request->id_tipo_producto);
         $fecha = date('Y-m-d H:i:s');
-        $usuario = Auth::user()->id_usuario;
         $msj = '';
         $des = strtoupper($request->descripcion);
 
-        $count = DB::table('almacen.alm_subcat')
-            ->where([['descripcion', '=', $des], ['estado', '=', 1]])
+        $count = SubCategoria::where([['descripcion', '=', $des], ['estado', '=', 1]])
             ->count();
 
         if ($count == 0) {
-            $data = DB::table('almacen.alm_subcat')->insertGetId(
+            SubCategoria::insertGetId(
                 [
                     // 'codigo' => $codigo,
-                    // 'id_categoria' => $request->id_categoria,
+                    'id_tipo_producto' => $request->id_tipo_producto,
                     'descripcion' => $des,
                     'estado' => 1,
-                    'fecha_registro' => $fecha,
-                    'registrado_por' => $usuario
+                    'fecha_registro' => $fecha
                 ],
-                'id_subcategoria'
+                'id_categoria'
             );
         } else {
-            $msj = 'No es posible guardar. Ya existe una subcategoria con dicha descripción';
+            $msj = 'No puede guardar. Ya existe dicha descripción.';
         }
         return response()->json($msj);
     }
 
-    public function update_sub_categoria(Request $request)
+    public function update_categoria(Request $request)
     {
         $msj = '';
         $des = strtoupper($request->descripcion);
 
-        $count = DB::table('almacen.alm_subcat')
-            ->where([['descripcion', '=', $des], ['estado', '=', 1]])
+        $count = SubCategoria::where([['descripcion', '=', $des], ['estado', '=', 1]])
             ->count();
 
         if ($count <= 1) {
-            $id_sub_cat = DB::table('almacen.alm_subcat')
-                ->where('id_subcategoria', $request->id_subcategoria)
+            SubCategoria::where('id_categoria', $request->id_categoria)
                 ->update(['descripcion' => $des]);
         } else {
-            $msj = 'No es posible actualizar. Ya existe una subcategoria con dicha descripción';
+            $msj = 'No puede actualizar. Ya existe dicha descripción.';
         }
         return response()->json($msj);
     }
 
-    public function anular_sub_categoria(Request $request, $id)
+    public function anular_categoria(Request $request, $id)
     {
-        $id_sub_cat = DB::table('almacen.alm_subcat')
-            ->where('id_subcategoria', $id)
+        $id_categoria = SubCategoria::where('id_categoria', $id)
             ->update(['estado' => 7]);
-        return response()->json($id_sub_cat);
+        return response()->json($id_categoria);
     }
 
-    public function subcat_revisar($id)
+    public function cat_revisar($id)
     {
         $data = DB::table('almacen.alm_prod')
             ->where([
-                ['id_subcategoria', '=', $id],
+                ['id_categoria', '=', $id],
                 ['estado', '=', 1]
             ])
             ->get()->count();
         return response()->json($data);
-    }
-
-    public function guardar(Request $request)
-    {
-        $des = strtoupper($request->descripcion);
-        $msj = '';
-        $status = 0;
-
-        if (SubCategoria::where([['descripcion', '=', $des], ['estado', '=', 1]])->count() == 0) {
-            $subcategoria = new SubCategoria();
-            $subcategoria->codigo = SubCategoria::nextId();
-            $subcategoria->descripcion = $des;
-            $subcategoria->estado = 1;
-            $subcategoria->fecha_registro = new Carbon();
-            $subcategoria->registrado_por = Auth::user()->id_usuario;
-            $subcategoria->save();
-
-            $status = 200;
-            $msj = 'Guardado';
-
-            $subcategoriaList = SubCategoria::mostrarSubcategorias();
-        } else {
-            $msj = 'No es posible guardar. Ya existe una subcategoria con dicha descripción';
-            $status = 204;
-        }
-        return response()->json(['status' => $status, 'msj' => $msj, 'data' => $subcategoriaList]);
     }
 }

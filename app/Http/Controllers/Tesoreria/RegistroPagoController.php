@@ -94,6 +94,7 @@ class RegistroPagoController extends Controller
                 'log_ord_compra.*',
                 'adm_contri.nro_documento',
                 'adm_contri.razon_social',
+                'adm_empresa.id_empresa',
                 'empresa.razon_social as razon_social_empresa',
                 'requerimiento_pago_estado.descripcion as estado_doc',
                 'requerimiento_pago_estado.bootstrap_color',

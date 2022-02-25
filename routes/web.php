@@ -613,7 +613,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('mostrar-categoria-adjunto', 'Logistica\RequerimientoController@mostrarCategoriaAdjunto')->name('mostrar-categoria-adjunto');
 				Route::get('listar-adjuntos-requerimiento-cabecera/{idRequerimento}', 'Logistica\RequerimientoController@listaAdjuntosRequerimientoCabecera');
 				Route::get('listar-adjuntos-requerimiento-detalle/{idRequerimentoDetalle}', 'Logistica\RequerimientoController@listaAdjuntosRequerimientoDetalle');
- 
+
 				Route::get('trazabilidad-detalle-requerimiento/{id}', 'Logistica\RequerimientoController@mostrarTrazabilidadDetalleRequerimiento');
 
 
@@ -730,7 +730,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('listarProductosSugeridos', 'Almacen\Catalogo\ProductoController@listarProductosSugeridos');
 				Route::get('mostrar_prods_sugeridos/{part}/{desc}', 'Almacen\Catalogo\ProductoController@mostrar_prods_sugeridos');
 				Route::post('guardar_mapeo_productos', 'Logistica\Requerimientos\MapeoProductosController@guardar_mapeo_productos')->name('guardar-mapeo-productos');
-				Route::get('mostrar_categorias_tipo/{id}', 'Almacen\Catalogo\ProductoController@mostrar_categorias_tipo');
+				Route::get('mostrar_categorias_tipo/{id}', 'Almacen\Catalogo\SubCategoriaController@mostrarSubCategoriasPorCategoria');
 			});
 		});
 
@@ -827,13 +827,13 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('listarProductosSugeridos', 'Almacen\Catalogo\ProductoController@listarProductosSugeridos');
 					Route::get('mostrar_prods_sugeridos/{part}/{desc}', 'Almacen\Catalogo\ProductoController@mostrar_prods_sugeridos');
 					Route::post('guardar_mapeo_productos', 'Logistica\Requerimientos\MapeoProductosController@guardar_mapeo_productos')->name('guardar-mapeo-productos');
-					Route::get('mostrar_categorias_tipo/{id}', 'Almacen\Catalogo\ProductoController@mostrar_categorias_tipo');
+					Route::get('mostrar_categorias_tipo/{id}', 'Almacen\Catalogo\SubCategoriaController@mostrarSubCategoriasPorCategoria');
 					Route::get('detalle-requerimiento/{idRequerimiento?}', 'Logistica\RequerimientoController@detalleRequerimiento')->name('detalle-requerimientos');
 					Route::get('detalle-requeriento-para-reserva/{idDetalleRequerimiento?}', 'Logistica\RequerimientoController@detalleRequerimientoParaReserva')->name('detalle-requerimiento-para-reserva');
 					Route::get('almacen-requeriento/{idRequerimiento?}', 'Logistica\RequerimientoController@obtenerAlmacenRequerimiento');
 					Route::get('historial-reserva-producto/{idDetalleRequerimiento?}', 'Logistica\RequerimientoController@historialReservaProducto')->name('historial-reserva-producto');
 					Route::get('todo-detalle-requeriento/{idRequerimiento?}/{transformadosONoTransformados?}', 'Logistica\RequerimientoController@todoDetalleRequerimiento')->name('todo-detalle-requerimiento');
-					Route::get('mostrar_tipos_clasificacion/{id}', 'Almacen\Catalogo\TipoProductoController@mostrarCategoriasPorClasificacion');
+					Route::get('mostrar_tipos_clasificacion/{id}', 'Almacen\Catalogo\CategoriaController@mostrarCategoriasPorClasificacion');
 					Route::get('por-regularizar-cabecera/{id}', 'ComprasPendientesController@listarPorRegularizarCabecera');
 					Route::get('por-regularizar-detalle/{id}', 'ComprasPendientesController@listarPorRegularizarDetalle');
 					Route::post('realizar-remplazo-de-producto-comprometido-en-toda-orden', 'ComprasPendientesController@realizarRemplazoDeProductoEnTodaOrden');
@@ -1164,42 +1164,6 @@ Route::group(['middleware' => ['auth']], function () {
 
 		Route::group(['as' => 'catalogos.', 'prefix' => 'catalogos'], function () {
 
-			Route::group(['as' => 'tipos.', 'prefix' => 'tipos'], function () {
-				//Categoria
-				Route::get('index', 'Almacen\Catalogo\TipoProductoController@view_tipo')->name('index');
-				Route::get('listarCategorias', 'Almacen\Catalogo\TipoProductoController@listarCategorias');
-				Route::get('mostrarCategoria/{id}', 'Almacen\Catalogo\TipoProductoController@mostrarCategoria');
-				Route::post('guardarCategoria', 'Almacen\Catalogo\TipoProductoController@guardarCategoria');
-				Route::post('actualizarCategoria', 'Almacen\Catalogo\TipoProductoController@actualizarCategoria');
-				Route::get('anularCategoria/{id}', 'Almacen\Catalogo\TipoProductoController@anularCategoria');
-				Route::get('revisarCategoria/{id}', 'Almacen\Catalogo\TipoProductoController@revisarCategoria');
-			});
-
-			Route::group(['as' => 'categorias.', 'prefix' => 'categorias'], function () {
-				//SubCategoria
-				Route::get('index', 'Almacen\Catalogo\CategoriaController@view_categoria')->name('index');
-				Route::get('listar_categorias', 'Almacen\Catalogo\CategoriaController@mostrar_categorias');
-				Route::get('mostrar_categoria/{id}', 'Almacen\Catalogo\CategoriaController@mostrar_categoria');
-				Route::post('guardar_categoria', 'Almacen\Catalogo\CategoriaController@guardar_categoria');
-				Route::post('actualizar_categoria', 'Almacen\Catalogo\CategoriaController@update_categoria');
-				Route::get('anular_categoria/{id}', 'Almacen\Catalogo\CategoriaController@anular_categoria');
-				Route::get('revisarCat/{id}', 'Almacen\Catalogo\CategoriaController@cat_revisar');
-				Route::get('mostrar_tipos_clasificacion/{id}', 'Almacen\Catalogo\TipoProductoController@mostrarCategoriasPorClasificacion');
-			});
-
-			Route::group(['as' => 'sub-categorias.', 'prefix' => 'sub-categorias'], function () {
-				//Marca
-				Route::get('index', 'Almacen\Catalogo\SubCategoriaController@view_subcategoria')->name('index');
-				Route::get('listar_subcategorias', 'Almacen\Catalogo\SubCategoriaController@mostrar_sub_categorias');
-				Route::get('mostrar_subcategoria/{id}', 'Almacen\Catalogo\SubCategoriaController@mostrar_sub_categoria');
-				Route::post('guardar_subcategoria', 'Almacen\Catalogo\SubCategoriaController@guardar_sub_categoria');
-				Route::post('actualizar_subcategoria', 'Almacen\Catalogo\SubCategoriaController@update_sub_categoria');
-				Route::get('anular_subcategoria/{id}', 'Almacen\Catalogo\SubCategoriaController@anular_sub_categoria');
-				Route::get('revisarSubCat/{id}', 'Almacen\Catalogo\SubCategoriaController@subcat_revisar');
-
-				Route::post('guardar-marca', 'Almacen\Catalogo\SubCategoriaController@guardar')->name('guardar-marca');
-			});
-
 			Route::group(['as' => 'clasificaciones.', 'prefix' => 'clasificaciones'], function () {
 				//Clasificacion
 				Route::get('index', 'Almacen\Catalogo\ClasificacionController@view_clasificacion')->name('index');
@@ -1211,14 +1175,51 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('revisarClasificacion/{id}', 'Almacen\Catalogo\ClasificacionController@revisarClasificacion');
 			});
 
+			Route::group(['as' => 'categorias.', 'prefix' => 'categorias'], function () {
+				//Categoria
+				Route::get('index', 'Almacen\Catalogo\CategoriaController@view_categoria')->name('index');
+				Route::get('listarCategorias', 'Almacen\Catalogo\CategoriaController@listarCategorias');
+				Route::get('mostrarCategoria/{id}', 'Almacen\Catalogo\CategoriaController@mostrarCategoria');
+				Route::post('guardarCategoria', 'Almacen\Catalogo\CategoriaController@guardarCategoria');
+				Route::post('actualizarCategoria', 'Almacen\Catalogo\CategoriaController@actualizarCategoria');
+				Route::get('anularCategoria/{id}', 'Almacen\Catalogo\CategoriaController@anularCategoria');
+				Route::get('revisarCategoria/{id}', 'Almacen\Catalogo\CategoriaController@revisarCategoria');
+			});
+
+			Route::group(['as' => 'sub-categorias.', 'prefix' => 'sub-categorias'], function () {
+				//SubCategoria
+				Route::get('index', 'Almacen\Catalogo\SubCategoriaController@view_sub_categoria')->name('index');
+				Route::get('listar_categorias', 'Almacen\Catalogo\SubCategoriaController@mostrar_categorias');
+				Route::get('mostrar_categoria/{id}', 'Almacen\Catalogo\SubCategoriaController@mostrar_categoria');
+				Route::post('guardar_categoria', 'Almacen\Catalogo\SubCategoriaController@guardar_categoria');
+				Route::post('actualizar_categoria', 'Almacen\Catalogo\SubCategoriaController@update_categoria');
+				Route::get('anular_categoria/{id}', 'Almacen\Catalogo\SubCategoriaController@anular_categoria');
+				Route::get('revisarCat/{id}', 'Almacen\Catalogo\SubCategoriaController@cat_revisar');
+
+				Route::get('mostrar_tipos_clasificacion/{id}', 'Almacen\Catalogo\CategoriaController@mostrarCategoriasPorClasificacion');
+			});
+
+			Route::group(['as' => 'marcas.', 'prefix' => 'marcas'], function () {
+				//Marca
+				Route::get('index', 'Almacen\Catalogo\MarcaController@viewMarca')->name('index');
+				Route::get('listarMarcas', 'Almacen\Catalogo\MarcaController@listarMarcas');
+				Route::get('mostrarMarca/{id}', 'Almacen\Catalogo\MarcaController@mostrarMarca');
+				Route::post('guardarMarca', 'Almacen\Catalogo\MarcaController@guardarMarca');
+				Route::post('actualizarMarca', 'Almacen\Catalogo\MarcaController@actualizarMarca');
+				Route::get('anularMarca/{id}', 'Almacen\Catalogo\MarcaController@anularMarca');
+				Route::get('revisarMarca/{id}', 'Almacen\Catalogo\MarcaController@revisarMarca');
+
+				//Route::post('guardar-marca', 'Almacen\Catalogo\MarcaController@guardar')->name('guardar-marca');
+			});
+
 			Route::group(['as' => 'productos.', 'prefix' => 'productos'], function () {
 				//Producto
 				Route::get('index', 'Almacen\Catalogo\ProductoController@view_producto')->name('index');
-				Route::get('mostrar_prods', 'Almacen\Catalogo\ProductoController@mostrar_prods');
+				Route::post('mostrar_prods', 'Almacen\Catalogo\ProductoController@mostrar_prods');
 				Route::get('mostrar_prods_almacen/{id}', 'Almacen\Catalogo\ProductoController@mostrar_prods_almacen');
 				Route::get('mostrar_producto/{id}', 'Almacen\Catalogo\ProductoController@mostrar_producto');
-				Route::get('mostrar_categorias_tipo/{id}', 'Almacen\Catalogo\ProductoController@mostrar_categorias_tipo');
-				Route::get('mostrar_tipos_clasificacion/{id}', 'Almacen\Catalogo\TipoProductoController@mostrarCategoriasPorClasificacion');
+				Route::get('mostrarCategoriasPorClasificacion/{id}', 'Almacen\Catalogo\CategoriaController@mostrarCategoriasPorClasificacion');
+				Route::get('mostrarSubCategoriasPorCategoria/{id}', 'Almacen\Catalogo\SubCategoriaController@mostrarSubCategoriasPorCategoria');
 				Route::post('guardar_producto', 'Almacen\Catalogo\ProductoController@guardar_producto');
 				Route::post('actualizar_producto', 'Almacen\Catalogo\ProductoController@update_producto');
 				Route::get('anular_producto/{id}', 'Almacen\Catalogo\ProductoController@anular_producto');
@@ -1359,8 +1360,8 @@ Route::group(['middleware' => ['auth']], function () {
 
 				Route::post('listarProductosSugeridos', 'Almacen\Catalogo\ProductoController@listarProductosSugeridos');
 				Route::get('mostrar_prods_sugeridos/{part}/{desc}', 'Almacen\Catalogo\ProductoController@mostrar_prods_sugeridos');
-				Route::get('mostrar_categorias_tipo/{id}', 'Almacen\Catalogo\ProductoController@mostrar_categorias_tipo');
-				Route::get('mostrar_tipos_clasificacion/{id}', 'Almacen\Catalogo\TipoProductoController@mostrarCategoriasPorClasificacion');
+				Route::get('mostrar_categorias_tipo/{id}', 'Almacen\Catalogo\SubCategoriaController@mostrarSubCategoriasPorCategoria');
+				Route::get('mostrar_tipos_clasificacion/{id}', 'Almacen\Catalogo\CategoriaController@mostrarCategoriasPorClasificacion');
 
 				Route::get('sedesPorUsuario', 'Almacen\Movimiento\OrdenesPendientesController@sedesPorUsuario');
 				Route::post('actualizarFiltrosPendientes', 'Almacen\Movimiento\OrdenesPendientesController@actualizarFiltrosPendientes');
@@ -1567,7 +1568,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('kardex_detallado/{id}/{alm}/{fini}/{ffin}', 'AlmacenController@download_kardex_producto');
 				Route::get('select_almacenes_empresa/{id}', 'AlmacenController@select_almacenes_empresa');
 				Route::get('datos_producto/{id}', 'Almacen\Reporte\KardexSerieController@datos_producto');
-				Route::get('mostrar_prods', 'Almacen\Catalogo\ProductoController@mostrar_prods');
+				Route::post('mostrar_prods', 'Almacen\Catalogo\ProductoController@mostrar_prods');
 				Route::get('mostrar_prods_almacen/{id}', 'Almacen\Catalogo\ProductoController@mostrar_prods_almacen');
 			});
 
@@ -1712,6 +1713,17 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::group(['as' => 'incidencias.', 'prefix' => 'incidencias'], function () {
 
 				Route::get('index', 'Cas\IncidenciaController@view_incidencia')->name('index');
+				Route::get('listarSalidasVenta', 'Cas\IncidenciaController@listarSalidasVenta');
+
+				Route::post('verDatosContacto', 'Logistica\Distribucion\OrdenesDespachoExternoController@verDatosContacto');
+				Route::get('listarContactos/{id}', 'Logistica\Distribucion\OrdenesDespachoExternoController@listarContactos');
+				Route::post('actualizaDatosContacto', 'Logistica\Distribucion\OrdenesDespachoExternoController@actualizaDatosContacto');
+				Route::get('seleccionarContacto/{id}/{req}', 'Logistica\Distribucion\OrdenesDespachoExternoController@seleccionarContacto');
+				Route::get('mostrarContacto/{id}', 'Logistica\Distribucion\OrdenesDespachoExternoController@mostrarContacto');
+				Route::get('anularContacto/{id}', 'Logistica\Distribucion\OrdenesDespachoExternoController@anularContacto');
+				Route::get('listar_ubigeos', 'AlmacenController@listar_ubigeos');
+
+				Route::get('listarSeriesProductos/{id}', 'Cas\IncidenciaController@listarSeriesProductos');
 			});
 		});
 	});

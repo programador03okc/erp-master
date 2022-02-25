@@ -2,7 +2,7 @@ $(function () {
     var vardataTables = funcDatatables();
     var form = $('.page-main form[type=register]').attr('id');
 
-    $('#listaTipo').dataTable({
+    $('#listaCategorias').dataTable({
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language': vardataTables[0],
@@ -64,21 +64,26 @@ function guardarCategoria(data, action) {
     }
     $.ajax({
         type: 'POST',
-        // headers: {'X-CSRF-TOKEN': token},
+        headers: { 'X-CSRF-TOKEN': token },
         url: baseUrl,
         data: data,
         dataType: 'JSON',
         success: function (response) {
             console.log(response);
-            console.log(response.length);
-            if (response.length > 0) {
-                alert(response);
-            } else {
-                alert('Categoría registrada con éxito');
-                $('#listaTipo').DataTable().ajax.reload();
+            Lobibox.notify(response.tipo, {
+                title: false,
+                size: "mini",
+                rounded: true,
+                sound: false,
+                delayIndicator: false,
+                msg: response.mensaje
+            });
+
+            if (response.status == 200) {
+                $('#listaCategorias').DataTable().ajax.reload();
                 changeStateButton('guardar');
-                $('#form-tipo').attr('type', 'register');
-                changeStateInput('form-tipo', true);
+                $('#form-categoria').attr('type', 'register');
+                changeStateInput('form-categoria', true);
             }
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {
@@ -90,30 +95,23 @@ function guardarCategoria(data, action) {
 
 function anularCategoria(ids) {
     baseUrl = 'anularCategoria/' + ids;
-    // $.ajax({
-    //     type: 'GET',
-    //     headers: {'X-CSRF-TOKEN': token},
-    //     url: 'revisarTipo/'+ids,
-    //     dataType: 'JSON',
-    //     success: function(response){
-    //         console.log(response);
-    //         if (response >= 1){
-    //             alert('No es posible anular. \nEl tipo seleccionado está relacionado con '
-    //             +response+' categoría(s).');
-    //         }
-    //         else {
     $.ajax({
         type: 'GET',
-        // headers: {'X-CSRF-TOKEN': token},
+        headers: { 'X-CSRF-TOKEN': token },
         url: baseUrl,
         dataType: 'JSON',
         success: function (response) {
-            console.log(response.length);
-            if (response.length > 0) {
-                alert(response);
-            } else {
-                alert('Categoría anulada con éxito');
-                $('#listaTipo').DataTable().ajax.reload();
+            console.log(response);
+            Lobibox.notify(response.tipo, {
+                title: false,
+                size: "mini",
+                rounded: true,
+                sound: false,
+                delayIndicator: false,
+                msg: response.mensaje
+            });
+            if (response.status == 200) {
+                $('#listaCategorias').DataTable().ajax.reload();
                 changeStateButton('anular');
                 clearForm('form-tipo');
             }
@@ -123,12 +121,5 @@ function anularCategoria(ids) {
         console.log(textStatus);
         console.log(errorThrown);
     });
-    //         }
-    //     }
-    // }).fail( function( jqXHR, textStatus, errorThrown ){
-    //     console.log(jqXHR);
-    //     console.log(textStatus);
-    //     console.log(errorThrown);
-    // });
 
 }

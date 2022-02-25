@@ -48,7 +48,7 @@ class OrdenesDespachoExternoController extends Controller
 
     public function listarDespachosExternos(Request $request)
     {
-        $data = DB::table('mgcp_ordenes_compra.oc_propias_view')
+        $data = DB::table('almacen.alm_req')
             ->select(
                 'alm_req.id_requerimiento',
                 'alm_req.codigo',
@@ -130,9 +130,13 @@ class OrdenesDespachoExternoController extends Controller
                             and alm_det_req.estado != 7
                             and alm_det_req.id_producto is null) AS productos_no_mapeados")
             )
-            ->leftjoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'oc_propias_view.id_oportunidad')
-            ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id_oportunidad', '=', 'oportunidades.id')
-            ->leftJoin('almacen.alm_req', 'alm_req.id_cc', '=', 'cc.id')
+            ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
+            ->leftjoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
+            ->leftJoin('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'oportunidades.id')
+
+            // ->leftjoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'oc_propias_view.id_oportunidad')
+            // ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id_oportunidad', '=', 'oportunidades.id')
+            // ->leftJoin('almacen.alm_req', 'alm_req.id_cc', '=', 'cc.id')
             ->leftJoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'alm_req.id_usuario')
             ->leftJoin('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'alm_req.estado_despacho')
             ->leftJoin('administracion.sis_sede as sede_req', 'sede_req.id_sede', '=', 'alm_req.id_sede')
@@ -152,14 +156,15 @@ class OrdenesDespachoExternoController extends Controller
             ->leftJoin('contabilidad.adm_contri as transportista', 'transportista.id_contribuyente', '=', 'orden_despacho.id_transportista')
             ->leftJoin('administracion.adm_estado_doc as est_od', 'est_od.id_estado_doc', '=', 'orden_despacho.estado')
             ->leftJoin('almacen.estado_envio', 'estado_envio.id_estado', '=', 'orden_despacho.id_estado_envio')
-            ->leftJoin('almacen.guia_ven', 'guia_ven.id_od', '=', 'orden_despacho.id_od');
+            ->leftJoin('almacen.guia_ven', 'guia_ven.id_od', '=', 'orden_despacho.id_od')
+            ->where([['alm_req.estado', '!=', 7]]);
 
-        if ($request->select_mostrar == 1) {
-            $data->where('orden_despacho.estado', 25);
-        } else if ($request->select_mostrar == 2) {
-            $data->where('orden_despacho.estado', 25);
-            $data->whereDate('orden_despacho.fecha_despacho', (new Carbon())->format('Y-m-d'));
-        }
+        // if ($request->select_mostrar == 1) {
+        //     $data->where('orden_despacho.estado', 25);
+        // } else if ($request->select_mostrar == 2) {
+        //     $data->where('orden_despacho.estado', 25);
+        //     $data->whereDate('orden_despacho.fecha_despacho', (new Carbon())->format('Y-m-d'));
+        // }
         return $data;
     }
 
@@ -371,19 +376,19 @@ class OrdenesDespachoExternoController extends Controller
     //         return response()->json('Algo salio mal');
     //     }
     // }
-    private function enviarOrdenDespacho(Request $request, $oportunidad)
+    private function enviarOrdenDespacho(Request $request, $oportunidad, $requerimiento)
     {
-        // $requerimiento = Requerimiento::find($request->id_requerimiento);
-        // $cuadro = CuadroCosto::find($requerimiento->id_cc);
-        // $oportunidad = Oportunidad::find($cuadro->id_oportunidad);
-        $ordenView = $oportunidad->ordenCompraPropia;
         $archivosOc = [];
-        //Obtencion de archivos en carpeta temporal
-        if ($ordenView != null) {
-            if ($ordenView->tipo == 'am') {
-                $archivosOc = OrdenCompraAmHelper::descargarArchivos($ordenView->id);
-            } else {
-                $archivosOc = OrdenCompraDirectaHelper::copiarArchivos($ordenView->id);
+
+        if ($oportunidad !== null) {
+            $ordenView = $oportunidad->ordenCompraPropia;
+            //Obtencion de archivos en carpeta temporal
+            if ($ordenView != null) {
+                if ($ordenView->tipo == 'am') {
+                    $archivosOc = OrdenCompraAmHelper::descargarArchivos($ordenView->id);
+                } else {
+                    $archivosOc = OrdenCompraDirectaHelper::copiarArchivos($ordenView->id);
+                }
             }
         }
         //Guardar archivos subidos
@@ -395,21 +400,29 @@ class OrdenesDespachoExternoController extends Controller
             }
         }
         $correos = [];
+
         if (config('app.debug')) {
             $correos[] = config('global.correoDebug1');
         } else {
             $idUsuarios = Usuario::getAllIdUsuariosPorRol(26);
-            $usuario = DB::table('mgcp_usuarios.users')
-                ->where('id', $oportunidad->id_responsable)->first();
 
-            $correos[] = $usuario->email;
+            if ($oportunidad !== null) {
+                $usuario = DB::table('mgcp_usuarios.users')
+                    ->where('id', $oportunidad->id_responsable)->first();
+
+                $correos[] = $usuario->email;
+            } else if ($requerimiento !== null) {
+                $usuario = Usuario::find($requerimiento->id_usuario)->email;
+
+                $correos[] = $usuario->email;
+            }
             // $correos[] = Usuario::find($requerimiento->id_usuario)->email;
             foreach ($idUsuarios as $id) {
                 $correos[] = Usuario::find($id)->email;
             }
         }
 
-        Mail::to($correos)->send(new EmailOrdenDespacho($oportunidad, $request->mensaje, $archivosOc));
+        Mail::to($correos)->send(new EmailOrdenDespacho($oportunidad, $request->mensaje, $archivosOc, $requerimiento));
 
         foreach ($archivosOc as $archivo) {
             unlink($archivo);
@@ -421,8 +434,13 @@ class OrdenesDespachoExternoController extends Controller
         try {
             DB::beginTransaction();
             $ordenDespacho = null;
-            $cuadro = CuadroCosto::where('id_oportunidad', $request->id_oportunidad)->first();
-            $oportunidad = Oportunidad::find($cuadro->id_oportunidad);
+            $cuadro = null;
+            $oportunidad = null;
+
+            if ($request->id_oportunidad !== null) {
+                $cuadro = CuadroCosto::where('id_oportunidad', $request->id_oportunidad)->first();
+                $oportunidad = Oportunidad::find($cuadro->id_oportunidad);
+            }
 
             if ($request->id_requerimiento !== null) {
 
@@ -528,7 +546,7 @@ class OrdenesDespachoExternoController extends Controller
                 }
             }
             if ($request->envio == 'envio') {
-                $this->enviarOrdenDespacho($request, $oportunidad);
+                $this->enviarOrdenDespacho($request, $oportunidad, $requerimiento);
             }
 
             DB::commit();
@@ -567,9 +585,18 @@ class OrdenesDespachoExternoController extends Controller
 
                 if ($requerimiento !== null) {
                     $listaContactos = DB::table('contabilidad.adm_ctb_contac')
+                        ->leftjoin('configuracion.ubi_dis', 'ubi_dis.id_dis', '=', 'adm_ctb_contac.ubigeo')
+                        ->leftjoin('configuracion.ubi_prov', 'ubi_prov.id_prov', '=', 'ubi_dis.id_prov')
+                        ->leftjoin('configuracion.ubi_dpto', 'ubi_dpto.id_dpto', '=', 'ubi_prov.id_dpto')
+                        ->select(
+                            'adm_ctb_contac.*',
+                            'ubi_dis.descripcion as distrito',
+                            'ubi_prov.descripcion as provincia',
+                            'ubi_dpto.descripcion as departamento'
+                        )
                         ->where([
-                            ['id_contribuyente', '=', $requerimiento->id_contribuyente],
-                            ['estado', '!=', 7]
+                            ['adm_ctb_contac.id_contribuyente', '=', $requerimiento->id_contribuyente],
+                            ['adm_ctb_contac.estado', '!=', 7]
                         ])
                         ->orderBy('nombre')
                         ->get();
@@ -601,10 +628,19 @@ class OrdenesDespachoExternoController extends Controller
     public function listarContactos($id_contribuyente)
     {
         try {
-            $listaContactos = ContactoContribuyente::where([
-                ['id_contribuyente', '=', $id_contribuyente],
-                ['estado', '!=', 7]
-            ])
+            $listaContactos = ContactoContribuyente::leftjoin('configuracion.ubi_dis', 'ubi_dis.id_dis', '=', 'adm_ctb_contac.ubigeo')
+                ->leftjoin('configuracion.ubi_prov', 'ubi_prov.id_prov', '=', 'ubi_dis.id_prov')
+                ->leftjoin('configuracion.ubi_dpto', 'ubi_dpto.id_dpto', '=', 'ubi_prov.id_dpto')
+                ->where([
+                    ['adm_ctb_contac.id_contribuyente', '=', $id_contribuyente],
+                    ['adm_ctb_contac.estado', '!=', 7]
+                ])
+                ->select(
+                    'adm_ctb_contac.*',
+                    'ubi_dis.descripcion as distrito',
+                    'ubi_prov.descripcion as provincia',
+                    'ubi_dpto.descripcion as departamento'
+                )
                 ->orderBy('nombre')
                 ->get();
 
@@ -682,16 +718,31 @@ class OrdenesDespachoExternoController extends Controller
                     );
             }
 
-            DB::table('almacen.alm_req')
-                ->where('id_requerimiento', $request->id_requerimiento)
-                ->update(['id_contacto' => $id_contacto]);
+            if ($request->origen == 'despacho') {
+                DB::table('almacen.alm_req')
+                    ->where('id_requerimiento', $request->id_requerimiento)
+                    ->update(['id_contacto' => $id_contacto]);
+            }
+
+            $contacto = DB::table('contabilidad.adm_ctb_contac')
+                ->select(
+                    'adm_ctb_contac.*',
+                    'ubi_dis.descripcion as distrito',
+                    'ubi_prov.descripcion as provincia',
+                    'ubi_dpto.descripcion as departamento'
+                )
+                ->leftjoin('configuracion.ubi_dis', 'ubi_dis.id_dis', '=', 'adm_ctb_contac.ubigeo')
+                ->leftjoin('configuracion.ubi_prov', 'ubi_prov.id_prov', '=', 'ubi_dis.id_prov')
+                ->leftjoin('configuracion.ubi_dpto', 'ubi_dpto.id_dpto', '=', 'ubi_prov.id_dpto')
+                ->where('id_datos_contacto', $id_contacto)->first();
 
             DB::commit();
             return response()->json(
                 array(
                     'tipo' => 'success',
                     'mensaje' => 'Se ha ' . $texto . ' el contacto.',
-                    'id_contacto' => $id_contacto
+                    'id_contacto' => $id_contacto,
+                    'contacto' => $contacto,
                 ),
                 200
             );

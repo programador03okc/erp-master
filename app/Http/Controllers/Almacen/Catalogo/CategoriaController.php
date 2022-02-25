@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Almacen\Catalogo;
 use App\Http\Controllers\AlmacenController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\almacen\Catalogo\Categoria;
 use Illuminate\Support\Facades\DB;
 
 class CategoriaController extends Controller
@@ -12,133 +13,137 @@ class CategoriaController extends Controller
     function view_categoria()
     {
         $clasificaciones = ClasificacionController::mostrar_clasificaciones_cbo();
-        $tipos = AlmacenController::mostrar_tipos_cbo();
-        return view('almacen/producto/categoria', compact('tipos', 'clasificaciones'));
+        return view('almacen/producto/categoria', compact('clasificaciones'));
     }
 
-    public static function mostrar_categorias_cbo()
+    public function mostrarCategoriasPorClasificacion($id_clasificacion)
     {
-        $data = DB::table('almacen.alm_cat_prod')
-            ->select('alm_cat_prod.id_categoria', 'alm_cat_prod.descripcion')
-            ->where([['alm_cat_prod.estado', '=', 1]])
+        $data = Categoria::where([['estado', '=', 1], ['id_clasificacion', '=', $id_clasificacion]])
             ->orderBy('descripcion')
             ->get();
-        return $data;
+        return response()->json($data);
     }
 
     //Categorias
-    public function mostrar_categorias()
+    public function listarCategorias()
     {
-        $data = DB::table('almacen.alm_cat_prod')
-            ->select(
-                'alm_cat_prod.*',
-                'alm_tp_prod.descripcion as tipo_descripcion',
-                'alm_clasif.descripcion as clasificacion_descripcion'
-            )
-            ->join('almacen.alm_tp_prod', 'alm_tp_prod.id_tipo_producto', '=', 'alm_cat_prod.id_tipo_producto')
+        $data = Categoria::select('alm_tp_prod.*', 'alm_clasif.descripcion as clasificacion_descripcion')
             ->join('almacen.alm_clasif', 'alm_clasif.id_clasificacion', '=', 'alm_tp_prod.id_clasificacion')
-            ->where([['alm_cat_prod.estado', '=', 1]])
-            ->orderBy('id_categoria')
+            ->where([['alm_tp_prod.estado', '=', 1]])
+            ->orderBy('id_tipo_producto')
             ->get();
         $output['data'] = $data;
         return response()->json($output);
     }
 
-    public function mostrar_categorias_tipo($id_tipo)
+    public function mostrarCategoria($id)
     {
-        $data = DB::table('almacen.alm_cat_prod')
-            ->where([['estado', '=', 1], ['id_tipo_producto', '=', $id_tipo]])
-            ->orderBy('descripcion')
+        $data = Categoria::where([['alm_tp_prod.id_tipo_producto', '=', $id]])
             ->get();
         return response()->json($data);
     }
 
-    public function mostrar_categoria($id)
+    public function guardarCategoria(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            $fecha = date('Y-m-d H:i:s');
+            $msj = '';
+            $des = strtoupper($request->descripcion);
+
+            $count = Categoria::where([['descripcion', '=', $des], ['estado', '=', 1]])
+                ->count();
+
+            if ($count == 0) {
+                Categoria::insertGetId(
+                    [
+                        'id_clasificacion' => $request->id_clasificacion,
+                        'descripcion' => $des,
+                        'estado' => 1,
+                        'fecha_registro' => $fecha
+                    ],
+                    'id_tipo_producto'
+                );
+                $msj = 'Se guardó la categoría correctamente';
+                $status = 200;
+                $tipo = 'success';
+            } else {
+                $msj = 'No es posible guardar. Ya existe una categoría con dicha descripción.';
+                $status = 204;
+                $tipo = 'warning';
+            }
+            DB::commit();
+            return response()->json(['tipo' => $tipo, 'status' => $status, 'mensaje' => $msj]);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json(['tipo' => 'error', 'mensaje' => 'Hubo un problema al guardar. Por favor intente de nuevo', 'error' => $e->getMessage()], 200);
+        }
+    }
+
+    public function actualizarCategoria(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            $msj = '';
+            $des = strtoupper($request->descripcion);
+
+            $count = Categoria::where([['descripcion', '=', $des], ['estado', '=', 1]])
+                ->count();
+
+            if ($count <= 1) {
+                Categoria::where('id_tipo_producto', $request->id_tipo_producto)
+                    ->update(['descripcion' => $des]);
+                $msj = 'Se actualizó la categoría correctamente';
+                $status = 200;
+                $tipo = 'success';
+            } else {
+                $msj = 'No es posible actualizar. Ya existe una categoría con dicha descripción';
+                $status = 204;
+                $tipo = 'warning';
+            }
+
+            DB::commit();
+            return response()->json(['tipo' => $tipo, 'status' => $status, 'mensaje' => $msj]);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json(['tipo' => 'error', 'mensaje' => 'Hubo un problema al actualizar. Por favor intente de nuevo', 'error' => $e->getMessage()], 200);
+        }
+    }
+
+    public function anularCategoria(Request $request, $id)
+    {
+        try {
+            DB::beginTransaction();
+            $count = DB::table('almacen.alm_cat_prod')
+                ->where([
+                    ['id_tipo_producto', '=', $id],
+                    ['estado', '=', 1]
+                ])
+                ->get()->count();
+            if ($count >= 1) {
+                $mensaje = 'La categoría ya fue relacionada';
+                $status = 204;
+                $tipo = 'warning';
+            } else {
+                $data = Categoria::where('id_tipo_producto', $id)
+                    ->update(['estado' => 7]);
+                $mensaje = 'La categoría se anuló correctamente';
+                $status = 200;
+                $tipo = 'success';
+            }
+            DB::commit();
+            return response()->json(['tipo' => $tipo, 'status' => $status, 'mensaje' => $mensaje]);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json(['tipo' => 'error', 'mensaje' => 'Hubo un problema al anular. Por favor intente de nuevo', 'error' => $e->getMessage()], 200);
+        }
+    }
+
+    public function revisarCategoria($id)
     {
         $data = DB::table('almacen.alm_cat_prod')
-            ->select(
-                'alm_cat_prod.*',
-                'alm_tp_prod.descripcion as tipo_descripcion',
-                'alm_tp_prod.id_tipo_producto',
-                'alm_clasif.id_clasificacion',
-            )
-            ->join('almacen.alm_tp_prod', 'alm_tp_prod.id_tipo_producto', '=', 'alm_cat_prod.id_tipo_producto')
-            ->join('almacen.alm_clasif', 'alm_clasif.id_clasificacion', '=', 'alm_tp_prod.id_clasificacion')
-            ->where([['alm_cat_prod.id_categoria', '=', $id]])
-            ->get();
-        return response()->json($data);
-    }
-
-    public function categoria_nextId($id_tipo_producto)
-    {
-        $cantidad = DB::table('almacen.alm_cat_prod')
-            ->where('id_tipo_producto', $id_tipo_producto)
-            ->get()->count();
-        $val = AlmacenController::leftZero(3, $cantidad);
-        $nextId = "" . $id_tipo_producto . "" . $val;
-        return $nextId;
-    }
-
-    public function guardar_categoria(Request $request)
-    {
-        // $codigo = $this->categoria_nextId($request->id_tipo_producto);
-        $fecha = date('Y-m-d H:i:s');
-        $msj = '';
-        $des = strtoupper($request->descripcion);
-
-        $count = DB::table('almacen.alm_cat_prod')
-            ->where([['descripcion', '=', $des], ['estado', '=', 1]])
-            ->count();
-
-        if ($count == 0) {
-            DB::table('almacen.alm_cat_prod')->insertGetId(
-                [
-                    // 'codigo' => $codigo,
-                    'id_tipo_producto' => $request->id_tipo_producto,
-                    'descripcion' => $des,
-                    'estado' => 1,
-                    'fecha_registro' => $fecha
-                ],
-                'id_categoria'
-            );
-        } else {
-            $msj = 'No puede guardar. Ya existe dicha descripción.';
-        }
-        return response()->json($msj);
-    }
-
-    public function update_categoria(Request $request)
-    {
-        $msj = '';
-        $des = strtoupper($request->descripcion);
-
-        $count = DB::table('almacen.alm_cat_prod')
-            ->where([['descripcion', '=', $des], ['estado', '=', 1]])
-            ->count();
-
-        if ($count <= 1) {
-            DB::table('almacen.alm_cat_prod')
-                ->where('id_categoria', $request->id_categoria)
-                ->update(['descripcion' => $des]);
-        } else {
-            $msj = 'No puede actualizar. Ya existe dicha descripción.';
-        }
-        return response()->json($msj);
-    }
-
-    public function anular_categoria(Request $request, $id)
-    {
-        $id_categoria = DB::table('almacen.alm_cat_prod')
-            ->where('id_categoria', $id)
-            ->update(['estado' => 7]);
-        return response()->json($id_categoria);
-    }
-
-    public function cat_revisar($id)
-    {
-        $data = DB::table('almacen.alm_prod')
             ->where([
-                ['id_categoria', '=', $id],
+                ['id_tipo_producto', '=', $id],
                 ['estado', '=', 1]
             ])
             ->get()->count();

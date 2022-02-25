@@ -94,6 +94,7 @@ class SalidasPendientesController extends Controller
         try {
             DB::beginTransaction();
             $id_salida = null;
+            $mensaje = '';
 
             if ($request->id_od !== null) {
 
@@ -105,88 +106,111 @@ class SalidasPendientesController extends Controller
                     ->where('id_od', $request->id_od)
                     ->first();
 
-                if ($od !== null) { //crea la guia venta
-                    $id_guia_ven = DB::table('almacen.guia_ven')->insertGetId(
-                        [
-                            'id_tp_doc_almacen' => $id_tp_doc_almacen,
-                            'id_od' => $request->id_od,
-                            'serie' => $request->serie,
-                            'numero' => $request->numero,
-                            'id_sede' => $request->id_sede,
-                            'id_cliente' => $request->id_cliente,
-                            'id_persona' => $request->id_persona,
-                            'fecha_emision' => $request->fecha_emision,
-                            'fecha_almacen' => $request->fecha_emision,
-                            'id_almacen' => $request->id_almacen,
-                            'id_operacion' => $request->id_operacion,
-                            'usuario' => $id_usuario,
-                            'registrado_por' => $id_usuario,
-                            'estado' => 1,
-                            'fecha_registro' => $fecha_registro,
-                        ],
-                        'id_guia_ven'
-                    );
+                $detalle = json_decode($request->detalle);
 
-                    //Genero la salida
-                    $codigo = AlmacenController::nextMovimiento(
-                        2, //salida
-                        $request->fecha_emision,
-                        $request->id_almacen
-                    );
-
-                    $transformacion = DB::table('almacen.transformacion')
-                        ->select('id_transformacion')
-                        ->where('id_od', $request->id_od)
+                foreach ($detalle as $det) {
+                    $producto = DB::table('almacen.alm_prod')
+                        ->select('alm_prod.descripcion', 'alm_prod.codigo')
+                        ->where('id_producto', $det->id_producto)
                         ->first();
 
-                    if ($transformacion !== null) {
-                        DB::table('almacen.transformacion')
-                            ->where('id_transformacion', $transformacion->id_transformacion)
-                            ->update([
-                                'estado' => 21,
-                                'fecha_entrega' => date('Y-m-d H:i:s')
-                            ]); //Entregado
+                    $stockDisponible = $this->validaStockDisponible($det->id_producto, $request->id_almacen);
 
-                        DB::table('almacen.orden_despacho')
-                            ->where('id_od', $request->id_od)
-                            ->update(['estado' => 21]);
+                    if ($stockDisponible <= 0) {
+                        $mensaje .= $producto->codigo . ' - ' . $producto->descripcion . '
+                        ';
                     }
+                }
 
-                    $id_salida = DB::table('almacen.mov_alm')->insertGetId(
-                        [
-                            'id_almacen' => $request->id_almacen,
-                            'id_tp_mov' => 2, //Salidas
-                            'codigo' => $codigo,
-                            'fecha_emision' => $request->fecha_emision,
-                            'id_guia_ven' => $id_guia_ven,
-                            'id_operacion' => $request->id_operacion,
-                            'id_transformacion' => ($transformacion !== null ? $transformacion->id_transformacion : null),
-                            'revisado' => 0,
-                            'usuario' => $id_usuario,
-                            'estado' => 1,
-                            'fecha_registro' => $fecha_registro,
-                        ],
-                        'id_mov_alm'
-                    );
-                    //orden de despacho estado   procesado
-                    // $est = ($request->id_operacion == 27 ? 22 : 9);
-                    // $aplica_cambios = ($request->id_operacion == 27 ? true : false);
-                    // $count_est = 0;
-                    $detalle = json_decode($request->detalle); //No fucniona el json_decode
-                    // dd($detalle);
-                    // exit();
-                    // return  response()->json($detalles);
-                    $msj = '';
+                if ($mensaje == '') {
 
-                    foreach ($detalle as $det) {
-                        $producto = DB::table('almacen.alm_prod')
-                            ->select('alm_prod.descripcion', 'alm_prod.codigo')
-                            ->where('id_producto', $det->id_producto)
+
+                    if ($od !== null) { //crea la guia venta
+                        $id_guia_ven = DB::table('almacen.guia_ven')->insertGetId(
+                            [
+                                'id_tp_doc_almacen' => $id_tp_doc_almacen,
+                                'id_od' => $request->id_od,
+                                'serie' => $request->serie,
+                                'numero' => $request->numero,
+                                'id_sede' => $request->id_sede,
+                                'id_cliente' => $request->id_cliente,
+                                'id_persona' => $request->id_persona,
+                                'fecha_emision' => $request->fecha_emision,
+                                'fecha_almacen' => $request->fecha_emision,
+                                'id_almacen' => $request->id_almacen,
+                                'id_operacion' => $request->id_operacion,
+                                'usuario' => $id_usuario,
+                                'registrado_por' => $id_usuario,
+                                'estado' => 1,
+                                'fecha_registro' => $fecha_registro,
+                            ],
+                            'id_guia_ven'
+                        );
+
+                        //Genero la salida
+                        $codigo = AlmacenController::nextMovimiento(
+                            2, //salida
+                            $request->fecha_emision,
+                            $request->id_almacen
+                        );
+
+                        $transformacion = DB::table('almacen.transformacion')
+                            ->select('id_transformacion')
+                            ->where('id_od', $request->id_od)
                             ->first();
 
-                        $stockDisponible = $this->validaStockDisponible($det->id_producto, $request->id_almacen);
+                        if ($transformacion !== null) {
+                            DB::table('almacen.transformacion')
+                                ->where('id_transformacion', $transformacion->id_transformacion)
+                                ->update([
+                                    'estado' => 21, //Entregado
+                                    'fecha_entrega' => date('Y-m-d H:i:s')
+                                ]);
 
-                        if ($stockDisponible > 0) {
+                            //     DB::table('almacen.orden_despacho')
+                            //         ->where('id_od', $request->id_od)
+                            //         ->update(['estado' => 21]); //Entregado
+                            // } else {
+                        }
+                        DB::table('almacen.orden_despacho')
+                            ->where('id_od', $request->id_od)
+                            ->update(['estado' => 21]); //Entregado
+
+                        $id_salida = DB::table('almacen.mov_alm')->insertGetId(
+                            [
+                                'id_almacen' => $request->id_almacen,
+                                'id_tp_mov' => 2, //Salidas
+                                'codigo' => $codigo,
+                                'fecha_emision' => $request->fecha_emision,
+                                'id_guia_ven' => $id_guia_ven,
+                                'id_operacion' => $request->id_operacion,
+                                'id_transformacion' => ($transformacion !== null ? $transformacion->id_transformacion : null),
+                                'revisado' => 0,
+                                'usuario' => $id_usuario,
+                                'estado' => 1,
+                                'fecha_registro' => $fecha_registro,
+                            ],
+                            'id_mov_alm'
+                        );
+                        //orden de despacho estado   procesado
+                        // $est = ($request->id_operacion == 27 ? 22 : 9);
+                        // $aplica_cambios = ($request->id_operacion == 27 ? true : false);
+                        // $count_est = 0;
+
+                        // dd($detalle);
+                        // exit();
+                        // return  response()->json($detalles);
+
+
+                        foreach ($detalle as $det) {
+                            // $producto = DB::table('almacen.alm_prod')
+                            //     ->select('alm_prod.descripcion', 'alm_prod.codigo')
+                            //     ->where('id_producto', $det->id_producto)
+                            //     ->first();
+
+                            // $stockDisponible = $this->validaStockDisponible($det->id_producto, $request->id_almacen);
+
+                            // if ($stockDisponible > 0) {
                             //guardo los items de la guia ven
                             $id_guia_ven_det = DB::table('almacen.guia_ven_det')->insertGetId(
                                 [
@@ -292,85 +316,92 @@ class SalidasPendientesController extends Controller
                             //         ->update(['estado' => $est]);
                             // }
 
-                        } else {
-                            $msj += $producto->codigo + ' - ' + $producto->descripcion + ' \n';
+                            // } else {
+                            //     $mensaje .= $producto->codigo . ' - ' . $producto->descripcion . ' \n';
+                            // }
                         }
+
+                        // DB::table('almacen.orden_despacho')
+                        //     ->where('id_od', $request->id_od)
+                        //     ->update(['estado' => $est]);
+                        // //orden de despacho detalle estado   procesado
+                        // DB::table('almacen.orden_despacho_det')
+                        //     ->where('id_od', $request->id_od)
+                        //     ->update(['estado' => $est]);
+
+                        // $requerimiento = DB::table('almacen.alm_req')
+                        //     ->where('id_requerimiento', $request->id_requerimiento)
+                        //     ->first();
+                        // //requerimiento despachado
+                        // if ($requerimiento->tiene_transformacion) {
+                        //     if ($aplica_cambios) {
+                        //         $todo = DB::table('almacen.alm_det_req')
+                        //             ->where([
+                        //                 ['id_requerimiento', '=', $request->id_requerimiento],
+                        //                 ['tiene_transformacion', '=', false],
+                        //                 ['estado', '!=', 7]
+                        //             ])
+                        //             ->count();
+                        //     } else {
+                        //         $todo = DB::table('almacen.alm_det_req')
+                        //             ->where([
+                        //                 ['id_requerimiento', '=', $request->id_requerimiento],
+                        //                 ['tiene_transformacion', '=', true],
+                        //                 ['estado', '!=', 7]
+                        //             ])
+                        //             ->count();
+                        //     }
+                        // } else {
+                        //     $todo = DB::table('almacen.alm_det_req')
+                        //         ->where([
+                        //             ['id_requerimiento', '=', $request->id_requerimiento],
+                        //             ['tiene_transformacion', '=', false],
+                        //             ['estado', '!=', 7]
+                        //         ])
+                        //         ->count();
+                        // }
+                        // $desp = DB::table('almacen.alm_det_req')
+                        //     ->where([
+                        //         ['id_requerimiento', '=', $request->id_requerimiento],
+                        //         ['estado', '=', $est]
+                        //     ])
+                        //     ->count();
+
+                        // if ($desp == $todo) {
+                        //     DB::table('almacen.alm_req')
+                        //         ->where('id_requerimiento', $request->id_requerimiento)
+                        //         ->update(['estado' => $est]);
+                        // }
+                        //Agrega accion en requerimiento
+                        DB::table('almacen.alm_req_obs')
+                            ->insert([
+                                'id_requerimiento' => $request->id_requerimiento,
+                                'accion' => 'SALIDA DE ALMACÉN',
+                                'descripcion' => 'Se generó la Salida del Almacén con Guía ' . $request->serie . '-' . $request->numero,
+                                'id_usuario' => $id_usuario,
+                                'fecha_registro' => date('Y-m-d H:i:s')
+                            ]);
                     }
-
-                    // DB::table('almacen.orden_despacho')
-                    //     ->where('id_od', $request->id_od)
-                    //     ->update(['estado' => $est]);
-                    // //orden de despacho detalle estado   procesado
-                    // DB::table('almacen.orden_despacho_det')
-                    //     ->where('id_od', $request->id_od)
-                    //     ->update(['estado' => $est]);
-
-                    // $requerimiento = DB::table('almacen.alm_req')
-                    //     ->where('id_requerimiento', $request->id_requerimiento)
-                    //     ->first();
-                    // //requerimiento despachado
-                    // if ($requerimiento->tiene_transformacion) {
-                    //     if ($aplica_cambios) {
-                    //         $todo = DB::table('almacen.alm_det_req')
-                    //             ->where([
-                    //                 ['id_requerimiento', '=', $request->id_requerimiento],
-                    //                 ['tiene_transformacion', '=', false],
-                    //                 ['estado', '!=', 7]
-                    //             ])
-                    //             ->count();
-                    //     } else {
-                    //         $todo = DB::table('almacen.alm_det_req')
-                    //             ->where([
-                    //                 ['id_requerimiento', '=', $request->id_requerimiento],
-                    //                 ['tiene_transformacion', '=', true],
-                    //                 ['estado', '!=', 7]
-                    //             ])
-                    //             ->count();
-                    //     }
-                    // } else {
-                    //     $todo = DB::table('almacen.alm_det_req')
-                    //         ->where([
-                    //             ['id_requerimiento', '=', $request->id_requerimiento],
-                    //             ['tiene_transformacion', '=', false],
-                    //             ['estado', '!=', 7]
-                    //         ])
-                    //         ->count();
-                    // }
-                    // $desp = DB::table('almacen.alm_det_req')
-                    //     ->where([
-                    //         ['id_requerimiento', '=', $request->id_requerimiento],
-                    //         ['estado', '=', $est]
-                    //     ])
-                    //     ->count();
-
-                    // if ($desp == $todo) {
-                    //     DB::table('almacen.alm_req')
-                    //         ->where('id_requerimiento', $request->id_requerimiento)
-                    //         ->update(['estado' => $est]);
-                    // }
-                    //Agrega accion en requerimiento
-                    DB::table('almacen.alm_req_obs')
-                        ->insert([
-                            'id_requerimiento' => $request->id_requerimiento,
-                            'accion' => 'SALIDA DE ALMACÉN',
-                            'descripcion' => 'Se generó la Salida del Almacén con Guía ' . $request->serie . '-' . $request->numero,
-                            'id_usuario' => $id_usuario,
-                            'fecha_registro' => date('Y-m-d H:i:s')
-                        ]);
+                    $tipo = 'success';
+                    $mensaje = 'Se guardó correctamente la salida de almacén';
+                } else {
+                    $tipo = 'warning';
+                    $mensaje = 'No hay stock disponible para éstos productos: 
+                    ' . $mensaje;
                 }
             }
 
             DB::commit();
             return response()->json(
                 array(
-                    'tipo' => $msj == '' ? 'success' : 'warning',
-                    'mensaje' => ($msj == '' ? 'Se guardó la salida correctamente.' : $msj), 200
+                    'tipo' => $tipo,
+                    'mensaje' => $mensaje, 200
                 )
             );
         } catch (\PDOException $e) {
             // Woopsy
             DB::rollBack();
-            // return response()->json($e);
+            return response()->json(array('tipo' => 'error', 'mensaje' => 'Hubo un problema al generar la salida. Por favor intente de nuevo', 'error' => $e->getMessage()), 200);
         }
     }
 
@@ -414,25 +445,18 @@ class SalidasPendientesController extends Controller
                 'guia_ven.numero',
                 'guia_ven.id_od',
                 'orden_despacho.codigo as codigo_od',
-                // DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_persona"),
                 'alm_req.codigo as codigo_requerimiento',
                 'alm_req.concepto',
                 'adm_contri.razon_social',
-                // 'req_trans.codigo as codigo_req_trans',
-                // 'req_trans.concepto as concepto_trans',
                 'alm_almacen.descripcion as almacen_descripcion',
                 'sis_usua.nombre_corto',
                 'tp_ope.descripcion as operacion',
                 'orden_despacho.aplica_cambios',
-                // 'trans.codigo as codigo_trans'
             )
             ->join('almacen.guia_ven', 'guia_ven.id_guia_ven', '=', 'mov_alm.id_guia_ven')
-            // ->leftjoin('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'guia_ven.id_persona')
             ->leftjoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'guia_ven.id_almacen')
             ->leftjoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'guia_ven.usuario')
             ->join('almacen.orden_despacho', 'orden_despacho.id_od', '=', 'guia_ven.id_od')
-            // ->leftjoin('almacen.trans', 'trans.id_guia_ven', '=', 'guia_ven.id_guia_ven')
-            // ->leftjoin('almacen.alm_req as req_trans', 'req_trans.id_requerimiento', '=', 'trans.id_requerimiento')
             ->leftjoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'orden_despacho.id_requerimiento')
             ->leftjoin('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'alm_req.id_cliente')
             ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
