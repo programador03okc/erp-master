@@ -7,6 +7,7 @@ use App\Exports\OrdenesPendientesExport;
 use App\Exports\SeriesGuiaCompraDetalleExport;
 use App\Http\Controllers\Almacen\Catalogo\CategoriaController;
 use App\Http\Controllers\Almacen\Catalogo\ClasificacionController;
+use App\Http\Controllers\Almacen\Catalogo\MarcaController;
 use App\Http\Controllers\Almacen\Catalogo\SubCategoriaController;
 use App\Http\Controllers\Almacen\Ubicacion\AlmacenController;
 use App\Http\Controllers\Almacen\Movimiento\TransferenciaController;
@@ -45,15 +46,15 @@ class OrdenesPendientesController extends Controller
         $usuarios = GenericoAlmacenController::select_usuarios();
         $motivos_anu = GenericoAlmacenController::select_motivo_anu();
         $monedas = GenericoAlmacenController::mostrar_moneda_cbo();
-        $categorias = CategoriaController::mostrar_categorias_cbo();
-        $subcategorias = SubCategoriaController::mostrar_subcategorias_cbo();
         $clasificaciones = ClasificacionController::mostrar_clasificaciones_cbo();
+        $tipos = CategoriaController::mostrar_tipos_cbo();
+        $categorias = SubCategoriaController::mostrar_categorias_cbo();
+        $subcategorias = MarcaController::mostrar_subcategorias_cbo();
         $unidades = GenericoAlmacenController::mostrar_unidades_cbo();
         $condiciones = GenericoAlmacenController::mostrar_condiciones_cbo();
         $sedes = GenericoAlmacenController::mostrar_sedes_cbo();
         $fechaActual = new Carbon();
         $fechaActual2 = new Carbon();
-        $tipos = GenericoAlmacenController::mostrar_tipos_cbo();
         $nro_oc_pendientes = DB::table('logistica.log_ord_compra')
             ->where([
                 ['log_ord_compra.estado', '!=', 7],

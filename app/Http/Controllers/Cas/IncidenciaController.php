@@ -5,13 +5,22 @@ namespace App\Http\Controllers\Cas;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Almacen\Movimiento;
+use App\Models\Cas\Incidencia;
+use App\Models\Cas\IncidenciaProducto;
+use App\Models\Cas\TipoFalla;
+use App\Models\Cas\TipoServicio;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class IncidenciaController extends Controller
 {
     function view_incidencia()
     {
-        return view('cas/incidencias/incidencia');
+        $tipoFallas = TipoFalla::where('estado', 1)->get();
+        $tipoServicios = TipoServicio::where('estado', 1)->get();
+
+        return view('cas/incidencias/incidencia', compact('tipoFallas', 'tipoServicios'));
     }
 
     function listarSalidasVenta()
@@ -66,5 +75,54 @@ class IncidenciaController extends Controller
             ->where('guia_ven.id_guia_ven', $id_guia_ven);
 
         return datatables($lista)->toJson();
+    }
+
+    function guardarIncidencia(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            $mensaje = '';
+            $tipo = '';
+
+            $incidencia = new Incidencia();
+            $incidencia->codigo = Incidencia::nuevoCodigoIncidencia($request->id_empresa);
+            $incidencia->fecha_reporte = $request->fecha_reporte;
+            $incidencia->id_responsable = $request->id_responsable;
+            $incidencia->id_salida = $request->id_salida;
+            $incidencia->sede_cliente = $request->sede_cliente;
+            $incidencia->id_contribuyente = $request->id_contribuyente;
+            $incidencia->id_contacto = $request->id_contacto;
+            $incidencia->usuario_final = $request->usuario_final;
+            $incidencia->id_tipo_falla = $request->id_tipo_falla;
+            $incidencia->id_tipo_servicio = $request->id_tipo_servicio;
+            $incidencia->equipo_operativo = $request->equipo_operativo;
+            $incidencia->falla_reportada = $request->falla_reportada;
+            $incidencia->estado = 1;
+            $incidencia->fecha_registro = new Carbon();
+            $incidencia->save();
+
+            $detalle = json_decode($request->detalle);
+
+            foreach ($detalle as $det) {
+                $producto = new IncidenciaProducto();
+                $producto->id_incidencia = $incidencia->id_incidencia;
+                $producto->id_producto = $det->id_producto;
+                $producto->id_prod_serie = $det->id_prod_serie;
+                $producto->serie = $det->serie;
+                $producto->id_usuario = Auth::user()->id_usuario;
+                $producto->estado = 1;
+                $producto->fecha_registro = new Carbon();
+                $producto->save();
+            }
+
+            $mensaje = 'Se guardó la incidencia correctamente';
+            $tipo = 'success';
+
+            DB::commit();
+            return response()->json(['tipo' => $tipo, 'mensaje' => $mensaje]);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json(['tipo' => 'error', 'mensaje' => 'Hubo un problema al guardar. Por favor intente de nuevo', 'error' => $e->getMessage()], 200);
+        }
     }
 }

@@ -50,3 +50,42 @@ function mostrarListaSeriesProductos() {
     });
     $('#seriesProductos tbody').html(html);
 }
+
+$("#form-incidencia").on("submit", function (e) {
+    console.log('submit');
+    e.preventDefault();
+    var data = $(this).serialize();
+    Swal.fire({
+        title: "¿Está seguro que desea guardar la incidencia?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#00a65a", //"#3085d6",
+        cancelButtonColor: "#d33",
+        cancelButtonText: "Cancelar",
+        confirmButtonText: "Sí, Guardar"
+    }).then(result => {
+        if (result.isConfirmed) {
+            data += '&detalle=' + JSON.stringify(detalle);
+            console.log(data);
+            guardarIncidencia(data);
+        }
+    });
+});
+
+
+function guardarIncidencia(data) {
+    $("#submit_guia").attr('disabled', 'true');
+    $.ajax({
+        type: 'POST',
+        url: 'guardarIncidencia',
+        data: data,
+        dataType: 'JSON',
+        success: function (response) {
+            console.log(response);
+        }
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}

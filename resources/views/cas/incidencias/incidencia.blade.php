@@ -21,8 +21,10 @@ Registro de incidencia
 
 <div class="page-main" type="incidencia">
 
+    <form id="form-incidencia">
     <div class="box">
         <div class="box-header with-border">
+
             <h3 class="box-title">Incidencia N° <span class="badge badge-secondary" id="codigo_ficha">INC 22-001</span></h3>
             <div class="box-tools pull-right">
 
@@ -251,8 +253,9 @@ Registro de incidencia
                                 <div class="col-sm-8">
                                     <select class="form-control js-example-basic-single edition limpiarIncidencia" 
                                         name="tipo_falla" required>
-                                        <option value="1">Software</option>
-                                        <option value="2">Hardware</option>
+                                        @foreach ($tipoFallas as $falla)
+                                        <option value="{{$falla->id_tipo_falla}}">{{$falla->descripcion}}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
@@ -265,10 +268,9 @@ Registro de incidencia
                                 <div class="col-sm-8">
                                     <select class="form-control js-example-basic-single edition limpiarIncidencia" 
                                         name="tipo_falla" required>
-                                        <option value="1">Contrato</option>
-                                        <option value="2">Facturable</option>
-                                        <option value="2">Garantía</option>
-                                        <option value="2">Otros</option>
+                                        @foreach ($tipoServicios as $servicio)
+                                        <option value="{{$servicio->id_tipo_servicio}}">{{$servicio->descripcion}}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
@@ -311,7 +313,7 @@ Registro de incidencia
             Área de Cas - Garantías
         </div>
       </div>
-
+    </form>
 </div>
 @include('cas.incidencias.salidasVentaModal')
 @include('cas.incidencias.seriesProductosModal')
