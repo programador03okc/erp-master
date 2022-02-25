@@ -53,7 +53,7 @@ Registro de pagos
                                                 <th style="width:80px;">Acción</th>
                                             </tr>
                                         </thead>
-                                        <tbody></tbody>
+                                        <tbody style="font-size: 14px;"></tbody>
                                     </table>
                                 </div>
                             </div>
@@ -74,12 +74,12 @@ Registro de pagos
                                                 <th>Prio.</th>
                                                 <th>Empresa</th>
                                                 <th>Codigo</th>
-                                                <th>Codigo SoftLink</th>
+                                                {{-- <th>Codigo SoftLink</th> --}}
                                                 <th>Nro. Doc.</th>
                                                 <th>Razon social del proveedor</th>
                                                 <th>Fecha emisión</th>
-                                                <th>Condición Pago</th>
-                                                <th>Cta. Bancaria</th>
+                                                <th>Forma de Pago</th>
+                                                {{-- <th>Cta. Bancaria</th> --}}
                                                 <th>Mnd</th>
                                                 <th>Total</th>
                                                 <th>Saldo</th>
@@ -87,7 +87,7 @@ Registro de pagos
                                                 <th style="width:80px;">Acción</th>
                                             </tr>
                                         </thead>
-                                        <tbody></tbody>
+                                        <tbody style="font-size: 14px;"></tbody>
                                     </table>
                                 </div>
                             </div>

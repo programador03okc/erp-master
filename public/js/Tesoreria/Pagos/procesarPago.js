@@ -31,11 +31,13 @@ function openRegistroPago(data) {
         $('[name=id_requerimiento_pago]').val(id);
         $('[name=id_oc]').val('');
         $('[name=id_doc_com]').val('');
+        $('[name=titulo_motivo]').text('Motivo:');
     }
     else if (tipo == 'orden') {
         $('[name=id_requerimiento_pago]').val('');
         $('[name=id_oc]').val(id);
         $('[name=id_doc_com]').val('');
+        $('[name=titulo_motivo]').text('Forma de pago:');
     }
     else if (tipo == 'comprobante') {
         $('[name=id_requerimiento_pago]').val('');
@@ -62,7 +64,7 @@ function openRegistroPago(data) {
     $('[name=cta_cci]').text(cci !== 'undefined' ? cci : '');
     $('[name=banco]').text(banco !== 'undefined' ? banco : '');
     $('[name=empresa_razon_social]').text(empresa !== 'undefined' ? empresa : '');
-    $('[name=motivo]').text(motivo !== undefined ? motivo : '');
+    $('[name=motivo]').text(motivo !== undefined ? decodeURIComponent(motivo) : '');
 
     listarCuentasOrigen();
     $('#submit_procesarPago').removeAttr('disabled');

@@ -176,7 +176,7 @@ class RequerimientoPago {
                 },
                 { 'data': 'razon_social_empresa', 'name': 'empresa.razon_social' },
                 { 'data': 'codigo' },
-                { 'data': 'codigo_softlink' },
+                // { 'data': 'codigo_softlink' },
                 { 'data': 'nro_documento', 'name': 'adm_contri.nro_documento' },
                 { 'data': 'razon_social', 'name': 'adm_contri.razon_social' },
                 {
@@ -185,7 +185,7 @@ class RequerimientoPago {
                     }, 'className': 'text-center', 'searchable': false
                 },
                 { 'data': 'condicion_pago', 'name': 'log_cdn_pago.descripcion' },
-                { 'data': 'nro_cuenta', 'name': 'adm_cta_contri.nro_cuenta' },
+                // { 'data': 'nro_cuenta', 'name': 'adm_cta_contri.nro_cuenta' },
                 { 'data': 'simbolo', 'name': 'sis_moneda.simbolo', 'className': 'text-center' },
                 {
                     'render': function (data, type, row) {
@@ -233,7 +233,7 @@ class RequerimientoPago {
                                     data-tpcta="${row['tipo_cuenta'] !== null ? row['tipo_cuenta'] : row['tipo_cuenta_persona']}" 
                                     data-banco="${row['banco_persona'] !== null ? row['banco_persona'] : row['banco_contribuyente']}" 
                                     data-empresa="${row['razon_social_empresa']}" data-idempresa="${row['id_empresa']}"
-
+                                    data-motivo="${encodeURIComponent(row['condicion_pago'])}"
                                     title="Registrar Pago"><i class="fas fa-hand-holding-usd"></i></button>`: ''}`)
                                     : ''}
                             ${row['suma_pagado'] > 0 && permisoVer == '1' ?
