@@ -388,7 +388,7 @@ class RequerimientoView {
         document.querySelector("select[name='prioridad']").value = data.id_prioridad;
         document.querySelector("select[name='rol_usuario']").value = data.id_rol;
         document.querySelector("select[name='empresa']").value = data.id_empresa;
-        this.getDataSelectSede(data.id_empresa);
+        this.getDataSelectSede(data.id_empresa,data.id_sede);
         document.querySelector("select[name='sede']").value = data.id_sede;
         document.querySelector("input[name='fecha_entrega']").value = moment(data.fecha_entrega, "DD-MM-YYYY").format("YYYY-MM-DD");
         document.querySelector("select[name='division']").value = data.division_id;
@@ -650,10 +650,10 @@ class RequerimientoView {
 
     }
 
-    getDataSelectSede(idEmpresa = null) {
+    getDataSelectSede(idEmpresa = null, idSede=null) {
         if (idEmpresa > 0) {
             this.requerimientoCtrl.obtenerSede(idEmpresa).then((res)=> {
-                this.llenarSelectSede(res);
+                this.llenarSelectSede(res, idSede);
                 this.cargarAlmacenes($('[name=sede]').val());
                 this.seleccionarAlmacen();
                 this.llenarUbigeo();
@@ -666,8 +666,8 @@ class RequerimientoView {
         return false;
     }
 
-    llenarSelectSede(array) {
-
+    llenarSelectSede(array,idSede) {
+        console.log(idSede);
         let selectElement = document.querySelector("div[id='input-group-sede'] select[name='sede']");
         if (selectElement.options.length > 0) {
             let i, L = selectElement.options.length - 1;
@@ -681,7 +681,7 @@ class RequerimientoView {
             let option = document.createElement("option");
             option.text = element.descripcion;
             option.value = element.id_sede;
-            if (element.codigo == 'LIMA' || element.codigo == 'Lima') { // default sede lima
+            if (element.id_sede == idSede ) {
                 option.selected=true;
 
             }

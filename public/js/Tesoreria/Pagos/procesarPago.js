@@ -12,6 +12,9 @@ function openRegistroPago(data) {
     var cta = data.data('cta');
     var cci = data.data('cci');
     var banco = data.data('banco');
+    var empresa = data.data('empresa');
+    var idempresa = data.data('idempresa');
+    var motivo = data.data('motivo');
 
     var total_pago = formatDecimal(parseFloat(total) - pago);
     console.log(cta);
@@ -28,11 +31,13 @@ function openRegistroPago(data) {
         $('[name=id_requerimiento_pago]').val(id);
         $('[name=id_oc]').val('');
         $('[name=id_doc_com]').val('');
+        $('[name=titulo_motivo]').text('Motivo:');
     }
     else if (tipo == 'orden') {
         $('[name=id_requerimiento_pago]').val('');
         $('[name=id_oc]').val(id);
         $('[name=id_doc_com]').val('');
+        $('[name=titulo_motivo]').text('Forma de pago:');
     }
     else if (tipo == 'comprobante') {
         $('[name=id_requerimiento_pago]').val('');
@@ -49,7 +54,7 @@ function openRegistroPago(data) {
     $('[name=monto_total]').text(formatNumber.decimal(total, moneda, -2));
 
     $('[name=observacion]').val('');
-    $('[name=id_empresa]').val('');
+    $('[name=id_empresa]').val(idempresa ?? '');
     $('[name=id_cuenta_origen]').val('');
     $('[name=simbolo]').val(moneda);
     $('[name=nro_documento]').text(nrodoc !== 'undefined' ? nrodoc : '');
@@ -58,7 +63,10 @@ function openRegistroPago(data) {
     $('[name=cta_bancaria]').text(cta !== 'undefined' ? cta : '');
     $('[name=cta_cci]').text(cci !== 'undefined' ? cci : '');
     $('[name=banco]').text(banco !== 'undefined' ? banco : '');
+    $('[name=empresa_razon_social]').text(empresa !== 'undefined' ? empresa : '');
+    $('[name=motivo]').text(motivo !== undefined ? decodeURIComponent(motivo) : '');
 
+    listarCuentasOrigen();
     $('#submit_procesarPago').removeAttr('disabled');
 }
 

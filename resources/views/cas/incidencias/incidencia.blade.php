@@ -308,7 +308,7 @@ Registro de incidencia
             </fieldset>
         </div>
         <div class="box-footer">
-          The footer of the box
+            Área de Cas - Garantías
         </div>
       </div>
 

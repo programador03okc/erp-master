@@ -24,12 +24,12 @@
 @endsection
 
 @section('content')
-<div class="page-main" type="subcategoria">
+<div class="page-main" type="marca">
     <div class="row">
         <div class="col-md-6">
             <fieldset class="group-table">
                 <table class="mytable table table-condensed table-bordered table-okc-view" 
-                id="listaSubCategoria">
+                id="listaMarcas">
                     <thead>
                         <tr>
                             <th hidden>Id</th>
@@ -42,12 +42,12 @@
             </fieldset>
         </div>
         <div class="col-md-6">
-            <form id="form-subcategoria" type="register" form="formulario">
+            <form id="form-marca" type="register" form="formulario">
                 <input type="hidden" name="_token" value="{{csrf_token()}}" id="token">
+                <input type="hidden" class="form-control" name="id_subcategoria" primary="ids">
                 <!-- <div class="row">
                     <div class="col-md-6">
                         <h5>Codigo</h5>
-                        <input type="hidden" class="form-control" name="id_subcategoria" primary="ids">
                         <input type="text" class="form-control" readonly name="codigo">
                     </div>
                 </div> -->
@@ -84,7 +84,7 @@
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script> -->
     
-    <script src="{{ asset('js/almacen/producto/subcategoria_producto.js')}}"></script>
+    <script src="{{ asset('js/almacen/producto/marca.js')}}"></script>
     <script>
     $(document).ready(function(){
         seleccionarMenu(window.location);

@@ -16,6 +16,39 @@
                     <input type="text" class="oculto" name="total" />
 
                     <fieldset class="group-table" id="fieldsetDatosProveedor">
+                        <h5 style="display:flex;justify-content: space-between;"><strong>Datos del documento</strong></h5>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <span style="font-size: 14px;">Empresa: </span>
+                            </div>
+                            <div class="col-md-3">
+                                <label style="font-size: 14px;" name="empresa_razon_social"></label>
+                            </div>
+                            <div class="col-md-2">
+                                <span style="font-size: 14px;" name="titulo_motivo">Motivo: </span>
+                            </div>
+                            <div class="col-md-5">
+                                <label style="font-size: 14px;" name="motivo"></label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <span style="font-size: 14px;">Monto total: </span>
+                            </div>
+                            <div class="col-md-3">
+                                <label style="font-size: 14px;" name="monto_total"></label>
+                            </div>
+                            <div class="col-md-2">
+                                <span style="font-size: 14px;">Total pagado: </span>
+                            </div>
+                            <div class="col-md-5">
+                                <label style="font-size: 14px;" name="total_pagado"></label>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <br>
+
+                    <fieldset class="group-table" id="fieldsetDatosProveedor">
                         <h5 style="display:flex;justify-content: space-between;"><strong>Datos del destinatario</strong></h5>
                         <div class="row">
                             <div class="col-md-2">
@@ -57,20 +90,6 @@
                             </div>
                             <div class="col-md-5">
                                 <label style="font-size: 14px;" name="cta_cci"></label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-2">
-                                <span style="font-size: 14px;">Monto total: </span>
-                            </div>
-                            <div class="col-md-3">
-                                <label style="font-size: 14px;" name="monto_total"></label>
-                            </div>
-                            <div class="col-md-2">
-                                <span style="font-size: 14px;">Total pagado: </span>
-                            </div>
-                            <div class="col-md-5">
-                                <label style="font-size: 14px;" name="total_pagado"></label>
                             </div>
                         </div>
                     </fieldset>

@@ -158,7 +158,7 @@ $("[name=id_clasif]").on('change', function () {
     $.ajax({
         type: 'GET',
         headers: { 'X-CSRF-TOKEN': token },
-        url: 'mostrar_tipos_clasificacion/' + id_clasificacion,
+        url: 'mostrarCategoriasPorClasificacion/' + id_clasificacion,
         dataType: 'JSON',
         success: function (response) {
             console.log(response);
@@ -186,7 +186,7 @@ $("[name=id_tipo_producto]").on('change', function () {
     $.ajax({
         type: 'GET',
         headers: { 'X-CSRF-TOKEN': token },
-        url: 'mostrar_categorias_tipo/' + id_tipo,
+        url: 'mostrarSubCategoriasPorCategoria/' + id_tipo,
         dataType: 'JSON',
         success: function (response) {
             console.log(response);

@@ -22,7 +22,7 @@ Registro de pagos
                 
                 <ul class="nav nav-tabs" id="myTab">
                     <li class="active"><a data-toggle="tab" href="#requerimientos">Requerimiento de pagos</a></li>
-                    <li class=""><a data-toggle="tab" href="#ordenes">Ordenes de compra</a></li>
+                    <li class=""><a data-toggle="tab" href="#ordenes">Ordenes Compra/Servicio</a></li>
                     {{-- <li class=""><a data-toggle="tab" href="#comprobantes">Comprobantes</a></li> --}}
                 </ul>
 
@@ -53,7 +53,7 @@ Registro de pagos
                                                 <th style="width:80px;">Acción</th>
                                             </tr>
                                         </thead>
-                                        <tbody></tbody>
+                                        <tbody style="font-size: 14px;"></tbody>
                                     </table>
                                 </div>
                             </div>
@@ -74,12 +74,12 @@ Registro de pagos
                                                 <th>Prio.</th>
                                                 <th>Empresa</th>
                                                 <th>Codigo</th>
-                                                <th>Codigo SoftLink</th>
+                                                {{-- <th>Codigo SoftLink</th> --}}
                                                 <th>Nro. Doc.</th>
                                                 <th>Razon social del proveedor</th>
                                                 <th>Fecha emisión</th>
-                                                <th>Condición Pago</th>
-                                                <th>Cta. Bancaria</th>
+                                                <th>Forma de Pago</th>
+                                                {{-- <th>Cta. Bancaria</th> --}}
                                                 <th>Mnd</th>
                                                 <th>Total</th>
                                                 <th>Saldo</th>
@@ -87,7 +87,7 @@ Registro de pagos
                                                 <th style="width:80px;">Acción</th>
                                             </tr>
                                         </thead>
-                                        <tbody></tbody>
+                                        <tbody style="font-size: 14px;"></tbody>
                                     </table>
                                 </div>
                             </div>
@@ -135,7 +135,6 @@ Registro de pagos
 </div>
 
 @include('tesoreria.pagos.procesarPago')
-    
 @endsection
 
 @section('scripts')
