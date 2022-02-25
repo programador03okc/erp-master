@@ -15,7 +15,14 @@ class CategoriaController extends Controller
         $clasificaciones = ClasificacionController::mostrar_clasificaciones_cbo();
         return view('almacen/producto/categoria', compact('clasificaciones'));
     }
-
+    public static function mostrar_tipos_cbo()
+    {
+        $data = DB::table('almacen.alm_tp_prod')
+            ->select('alm_tp_prod.id_tipo_producto', 'alm_tp_prod.descripcion')
+            ->where('estado', '=', 1)
+            ->orderBy('alm_tp_prod.id_tipo_producto', 'asc')->get();
+        return $data;
+    }
     public function mostrarCategoriasPorClasificacion($id_clasificacion)
     {
         $data = Categoria::where([['estado', '=', 1], ['id_clasificacion', '=', $id_clasificacion]])
