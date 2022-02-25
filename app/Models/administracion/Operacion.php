@@ -40,8 +40,8 @@ class Operacion extends Model
                     if($o->tipo_requerimiento_id ==$idTipoRequerimientoCompra){
                         $operacionesCoincidenciaPorTipoRequerimiento[]= $o;
                     }
-                }elseif($o->id_equerimiento_pago_tipo  !=null){
-                    if($o->id_equerimiento_pago_tipo ==$idTipoRequerimientoPago){
+                }elseif($o->tipo_requerimiento_pago_id !=null){
+                    if($o->tipo_requerimiento_pago_id ==$idTipoRequerimientoPago){
                         $operacionesCoincidenciaPorTipoRequerimiento[]= $o;
                     }
 
@@ -51,6 +51,7 @@ class Operacion extends Model
             //$operacionesCoincidenciaTipoDocumentoGrupo solo tiene un valor
             return $operacionesCoincidenciaTipoDocumentoGrupo;
         }
+        // return $operacionesCoincidenciaPorTipoRequerimiento ;
 
         $operacionesCoincidenciaPorDivision=[];
         if(count($operacionesCoincidenciaPorTipoRequerimiento) !=1){

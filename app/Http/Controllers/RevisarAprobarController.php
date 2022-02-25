@@ -104,7 +104,8 @@ class RevisarAprobarController extends Controller{
             alm_det_req.estado != 7) AS monto_total")
         )
         ->where([['adm_documentos_aprob.id_tp_documento',1]]) //documento => requerimiento de B/S
-        ->whereIn('alm_req.estado',[1,12]) // elaborado, pendiente aprobación
+        ->whereIn('alm_req.estado',[100]) // elaborado, pendiente aprobación
+        // ->whereIn('alm_req.estado',[1,12]) // elaborado, pendiente aprobación
         // ->when((intval($idEmpresa) > 0), function ($query)  use ($idEmpresa) {
         //     return $query->whereRaw('requerimiento_pago.id_empresa = ' . $idEmpresa);
         // })
@@ -177,6 +178,7 @@ class RevisarAprobarController extends Controller{
         $mensaje=[];
 
         $pendiente_aprobacion = [];
+        
 
         foreach ($todosLosDocumentos as $element) {
             if (in_array($element->id_grupo, $idGrupoList) == true) {
@@ -188,7 +190,7 @@ class RevisarAprobarController extends Controller{
                 $idMoneda = $element->id_moneda;
                 $estado = $element->estado !=null ?$element->estado:$element->id_estado;
                 $idDivision = $element->division_id !=null ?$element->division_id:$element->id_division; 
-                $idTipoRequerimientoPago= $element->id_requerimiento_tipo >0 ?$element->id_requerimiento_tipo:null;
+                $idTipoRequerimientoPago= $element->id_requerimiento_pago_tipo >0 ?$element->id_requerimiento_pago_tipo:null;
                 $montoTotal= 0;
                 $obtenerMontoTotal = $this->obtenerMontoTotalDocumento($tipoDocumento,$idDocumento);
                 if($obtenerMontoTotal['estado']=='success'){
@@ -196,10 +198,10 @@ class RevisarAprobarController extends Controller{
                 }
 
                 $operaciones = Operacion::getOperacion($tipoDocumento, $idTipoRequerimiento, $idGrupo, $idDivision, $idPrioridad, $idMoneda, $montoTotal, $idTipoRequerimientoPago);
-                // Debugbar::info($operaciones);
+                Debugbar::info($operaciones);
 
                 if($operaciones ==[]){
-                    $mensaje[]= "El requerimiento ".$element->codigo." no coincide con una operación valida, es omitido en la lista. Parametros para obtener operacion: tipoDocumento= ".$tipoDocumento.", tipoRequerimiento= ".$idTipoRequerimiento.",Grupo= ".$idGrupo.", Division= ".$idDivision.", Prioridad= ".$idPrioridad;
+                    $mensaje[]= "El requerimiento ".$element->codigo." no coincide con una operación valida, es omitido en la lista. Parametros para obtener operacion: tipoDocumento= ".$tipoDocumento.", tipoRequerimientoCompra= ".$idTipoRequerimiento.",Grupo= ".$idGrupo.", Division= ".$idDivision.", Prioridad= ".$idPrioridad.", Moneda=".$idMoneda.", Monto=".$montoTotal.", TipoRequerimientoPago=".$idTipoRequerimientoPago;
                 }else{
                     $flujoTotal = Flujo::getIdFlujo($operaciones[0]->id_operacion)['data'];
                     $tamañoFlujo = $flujoTotal ? count($flujoTotal) : 0;

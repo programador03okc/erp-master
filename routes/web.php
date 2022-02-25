@@ -779,7 +779,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('listar-adjuntos-requerimiento-pago-cabecera/{idRequerimentoPago}', 'Tesoreria\RequerimientoPagoController@listaAdjuntosRequerimientoPagoCabecera');
 				Route::get('listar-adjuntos-requerimiento-pago-detalle/{idRequerimentoPagoDetalle}', 'Tesoreria\RequerimientoPagoController@listaAdjuntosRequerimientoPagoDetalle');
 				Route::get('mostrar-requerimiento/{id?}/{codigo?}', 'Logistica\RequerimientoController@mostrarRequerimiento')->name('mostrar-requerimiento');
-				Route::get('operacion/{idTipoDocumento}/{idTipoRequerimientoReq}/{idGrupo}/{idDivision}/{idPrioridad}/{idMoneda}/{montoTotal}', 'Logistica\RequerimientoController@getOperacion');
+				Route::get('test-operacion/{idTipoDocumento}/{idTipoRequerimientoCompra}/{idGrupo}/{idDivision}/{idPrioridad}/{idMoneda}/{montoTotal}/{idTipoRequerimientoPago}', 'Logistica\RequerimientoController@getOperacion'); // *solo para probar si retorna data correcta de la operacion que corresponda
 			});
 		});
 	});
