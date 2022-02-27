@@ -197,7 +197,7 @@ class RevisarAprobarController extends Controller{
                 }
 
                 $operaciones = Operacion::getOperacion($tipoDocumento, $idTipoRequerimiento, $idGrupo, $idDivision, $idPrioridad, $idMoneda, $montoTotal, $idTipoRequerimientoPago);
-                // Debugbar::info($operaciones);
+                // Debugbar::info($flujo->aprobar_sin_respetar_orden);
                 if(count($operaciones)>1){
                     $mensaje[]= "Se detecto que los criterios del requerimiento dan como resultado multibles operaciones :".$operaciones;
 
@@ -223,11 +223,17 @@ class RevisarAprobarController extends Controller{
                     $tieneRolConSiguienteAprobacion='';
                     
                     foreach ($flujoTotal as $flujo) { //obtener rol con privilegio de aprobar sin respetar orden
-                        if($flujo->aprobar_sin_respetar_orden ==true){
+
+                        if($flujo->aprobar_sin_respetar_orden =='true'){
                             $idRolAprobanteEnCualquierOrden= $flujo->id_rol;
                         }
                     }
- 
+
+                    if((in_array($idRolAprobanteEnCualquierOrden, $idRolUsuarioList))){
+                        $aprobarSinImportarOrden = true;
+
+                    }
+
 
                     if ($cantidadAprobacionesRealizadas > 0) {
     
@@ -247,7 +253,7 @@ class RevisarAprobarController extends Controller{
                                                     $nextIdFlujo = $flujo->id_flujo;
                                                     $nextIdOperacion = $flujo->id_operacion;
                                                     $nextIdRolAprobante = $flujo->id_rol;
-                                                    $aprobarSinImportarOrden = $flujo->aprobar_sin_respetar_orden;
+                                                    // $aprobarSinImportarOrden = $flujo->aprobar_sin_respetar_orden;
                                                     $aprobacionFinalOPendiente = $flujo->orden == $tamañoFlujo ? 'APROBACION_FINAL' : 'PENDIENTE'; // NEXT NRO ORDEN == TAMAÑO FLUJO?
                                                 }
                                             }
@@ -265,7 +271,8 @@ class RevisarAprobarController extends Controller{
                                     $nextIdOperacion = $flujo->id_operacion;
                                     $nextIdFlujo = $flujo->id_flujo;
                                     $nextIdRolAprobante = $flujo->id_rol;
-                                    $aprobarSinImportarOrden = $flujo->aprobar_sin_respetar_orden;
+                                    // $aprobarSinImportarOrden = $flujo->aprobar_sin_respetar_orden;
+
                                     $aprobacionFinalOPendiente = $flujo->orden == $tamañoFlujo ? 'APROBACION_FINAL' : 'PENDIENTE'; // NEXT NRO ORDEN == TAMAÑO FLUJO?
     
                                 }
@@ -282,7 +289,7 @@ class RevisarAprobarController extends Controller{
                                 $nextIdOperacion = $flujo->id_operacion;
                                 $nextIdFlujo = $flujo->id_flujo;
                                 $nextIdRolAprobante = $flujo->id_rol;
-                                $aprobarSinImportarOrden = $flujo->aprobar_sin_respetar_orden;
+                                // $aprobarSinImportarOrden = $flujo->aprobar_sin_respetar_orden;
                                 $aprobacionFinalOPendiente = $flujo->orden == $tamañoFlujo ? 'APROBACION_FINAL' : 'PENDIENTE'; // NEXT NRO ORDEN == TAMAÑO FLUJO?
     
                             }
@@ -324,7 +331,7 @@ class RevisarAprobarController extends Controller{
                             $element->setAttribute('id_flujo',$nextIdFlujo);
                             $element->setAttribute('id_usuario_aprobante',$idUsuarioAprobante);
                             $element->setAttribute('id_rol_aprobante',$nextIdRolAprobante);
-                            $element->setAttribute('aprobacion_final_o_pendiente',$aprobarSinImportarOrden =='false'?$aprobacionFinalOPendiente:'APROBACION_FINAL');
+                            $element->setAttribute('aprobacion_final_o_pendiente',$aprobarSinImportarOrden =='true'?'APROBACION_FINAL':$aprobacionFinalOPendiente);
                             $element->setAttribute('id_doc_aprob',$idDocumento);
                             $element->setAttribute('id_operacion',$nextIdOperacion);
                             $element->setAttribute('tiene_rol_con_siguiente_aprobacion',$tieneRolConSiguienteAprobacion);
