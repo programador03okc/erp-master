@@ -111,6 +111,18 @@ class RequerimientoPago extends Model
             $documento .= 'P';
             $num = RequerimientoPago::obtenerCantidadRegistros(3, $idRequerimientoPago); //tipo: BS, grupo: Proyectos
         }
+        if ($idGrupo == 4) {
+            $documento .= 'G';
+            $num = RequerimientoPago::obtenerCantidadRegistros(4, $idRequerimientoPago); //tipo: BS, grupo: Proyectos
+        }
+        if ($idGrupo == 5) {
+            $documento .= 'CI';
+            $num = RequerimientoPago::obtenerCantidadRegistros(5, $idRequerimientoPago); //tipo: BS, grupo: Proyectos
+        }
+        if ($idGrupo == 6) {
+            $documento .= 'M';
+            $num = RequerimientoPago::obtenerCantidadRegistros(6, $idRequerimientoPago); //tipo: BS, grupo: Proyectos
+        }
         $yy = date('y', strtotime("now"));
         $correlativo = sprintf('%04d', $num);
 
