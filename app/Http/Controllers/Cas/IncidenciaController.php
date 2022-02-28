@@ -9,6 +9,7 @@ use App\Models\Cas\Incidencia;
 use App\Models\Cas\IncidenciaProducto;
 use App\Models\Cas\TipoFalla;
 use App\Models\Cas\TipoServicio;
+use App\Models\Configuracion\Usuario;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -19,8 +20,10 @@ class IncidenciaController extends Controller
     {
         $tipoFallas = TipoFalla::where('estado', 1)->get();
         $tipoServicios = TipoServicio::where('estado', 1)->get();
+        $usuarios = Usuario::join('configuracion.usuario_rol', 'usuario_rol.id_usuario', '=', 'sis_usua.id_usuario')
+            ->where([['sis_usua.estado', '=', 1], ['usuario_rol.id_rol', '=', 20]])->get(); //20 CAS
 
-        return view('cas/incidencias/incidencia', compact('tipoFallas', 'tipoServicios'));
+        return view('cas/incidencias/incidencia', compact('tipoFallas', 'tipoServicios', 'usuarios'));
     }
 
     function listarSalidasVenta()
@@ -30,6 +33,7 @@ class IncidenciaController extends Controller
             ->leftjoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'orden_despacho.id_requerimiento')
             ->leftjoin('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'alm_req.id_cliente')
             ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
+            ->leftjoin('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'alm_req.id_empresa')
             ->leftjoin('contabilidad.adm_ctb_contac', 'adm_ctb_contac.id_datos_contacto', '=', 'alm_req.id_contacto')
             ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
             ->leftjoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
@@ -42,6 +46,7 @@ class IncidenciaController extends Controller
                 'guia_ven.id_od',
                 'adm_contri.razon_social',
                 'adm_contri.id_contribuyente',
+                'adm_empresa.id_empresa',
                 'alm_req.codigo as codigo_requerimiento',
                 'alm_req.id_requerimiento',
                 'alm_req.concepto',
@@ -64,6 +69,7 @@ class IncidenciaController extends Controller
             ->select(
                 'alm_prod_serie.id_prod_serie',
                 'alm_prod_serie.serie',
+                'alm_prod.id_producto',
                 'alm_prod.codigo',
                 'alm_prod.part_number',
                 'alm_prod.descripcion',
@@ -83,9 +89,10 @@ class IncidenciaController extends Controller
             DB::beginTransaction();
             $mensaje = '';
             $tipo = '';
+            $yyyy = date('Y', strtotime("now"));
 
             $incidencia = new Incidencia();
-            $incidencia->codigo = Incidencia::nuevoCodigoIncidencia($request->id_empresa);
+            $incidencia->codigo = Incidencia::nuevoCodigoIncidencia($request->id_empresa, $yyyy);
             $incidencia->fecha_reporte = $request->fecha_reporte;
             $incidencia->id_responsable = $request->id_responsable;
             $incidencia->id_salida = $request->id_salida;
@@ -97,6 +104,7 @@ class IncidenciaController extends Controller
             $incidencia->id_tipo_servicio = $request->id_tipo_servicio;
             $incidencia->equipo_operativo = $request->equipo_operativo;
             $incidencia->falla_reportada = $request->falla_reportada;
+            $incidencia->anio = $yyyy;
             $incidencia->estado = 1;
             $incidencia->fecha_registro = new Carbon();
             $incidencia->save();

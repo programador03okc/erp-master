@@ -55,12 +55,16 @@ class OrdenesPendientesController extends Controller
         $sedes = GenericoAlmacenController::mostrar_sedes_cbo();
         $fechaActual = new Carbon();
         $fechaActual2 = new Carbon();
+        $array_sedes = $this->sedesPorUsuarioArray();
+
         $nro_oc_pendientes = DB::table('logistica.log_ord_compra')
             ->where([
                 ['log_ord_compra.estado', '!=', 7],
                 ['log_ord_compra.en_almacen', '=', false],
                 ['log_ord_compra.id_tp_documento', '=', 2]
-            ])->count();
+            ])
+            ->whereIn('log_ord_compra.id_sede', $array_sedes)
+            ->count();
         $nro_ot_pendientes = DB::table('almacen.transformacion')
             ->join('almacen.guia_ven', function ($join) {
                 $join->on('guia_ven.id_od', '=', 'transformacion.id_od');
