@@ -1724,6 +1724,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('listar_ubigeos', 'AlmacenController@listar_ubigeos');
 
 				Route::get('listarSeriesProductos/{id}', 'Cas\IncidenciaController@listarSeriesProductos');
+				Route::post('guardarIncidencia', 'Cas\IncidenciaController@guardarIncidencia');
 			});
 		});
 	});

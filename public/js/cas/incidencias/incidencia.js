@@ -65,6 +65,14 @@ $("#form-incidencia").on("submit", function (e) {
         confirmButtonText: "Sí, Guardar"
     }).then(result => {
         if (result.isConfirmed) {
+            let detalle = [];
+            listaSeriesProductos.forEach(function (element) {
+                detalle.push({
+                    'id_producto': element.id_producto,
+                    'id_prod_serie': element.id_prod_serie,
+                    'serie': element.serie
+                });
+            })
             data += '&detalle=' + JSON.stringify(detalle);
             console.log(data);
             guardarIncidencia(data);
@@ -74,7 +82,7 @@ $("#form-incidencia").on("submit", function (e) {
 
 
 function guardarIncidencia(data) {
-    $("#submit_guia").attr('disabled', 'true');
+    $("#submit_incidencia").attr('disabled', 'true');
     $.ajax({
         type: 'POST',
         url: 'guardarIncidencia',
