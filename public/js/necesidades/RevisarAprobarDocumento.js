@@ -239,6 +239,7 @@ class RevisarAprobarDocumentoView {
                                     data-id-rol-aprobante="${row.id_rol_aprobante ?? ''}" 
                                     data-aprobacion-final-o-pendiente="${row.aprobacion_final_o_pendiente ?? ''}" 
                                     data-tiene-rol-con-siguiente-aprobacion="${row.tiene_rol_con_siguiente_aprobacion ?? ''}" 
+                                    data-aprobar-sin-importar-orden="${row.aprobar_sin_importar_orden ?? ''}" 
                                     data-id-usuario-propietario-documento="${row.id_usuario ?? ''}"
                                     data-id-usuario-aprobante="${row.id_usuario_aprobante ?? ''}"
                                     `;
@@ -1018,7 +1019,8 @@ class RevisarAprobarDocumentoView {
             'aprobacionFinalOPendiente': obj.dataset.aprobacionFinalOPendiente,
             'tieneRolConSiguienteAprobacion': obj.dataset.tieneRolConSiguienteAprobacion,
             'idUsuarioPropietarioDocumento': obj.dataset.idUsuarioPropietarioDocumento,
-            'idUsuarioAprobante': obj.dataset.idUsuarioAprobante
+            'idUsuarioAprobante': obj.dataset.idUsuarioAprobante,
+            'aprobarSinImportarOrden': obj.dataset.aprobarSinImportarOrden
         };
         return payload;
     }
