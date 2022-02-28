@@ -23,6 +23,7 @@ $(function () {
         $("[name=id_guia_ven]").val(data.id_guia_ven);
         $("[name=id_requerimiento]").val(data.id_requerimiento);
         $("[name=id_contribuyente]").val(data.id_contribuyente);
+        $("[name=id_empresa]").val(data.id_empresa);
         $("[name=id_entidad]").val(data.id_entidad);
         $("[name=id_contacto]").val(data.id_contacto);
         $("[name=codigo_oportunidad]").val(data.codigo_oportunidad);

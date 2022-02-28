@@ -70,6 +70,7 @@ Registro de incidencia
             <input type="text" style="display:none;" name="id_guia_ven">
             <input type="text" style="display:none;" name="id_requerimiento">
             <input type="text" style="display:none;" name="id_contribuyente">
+            <input type="text" style="display:none;" name="id_empresa">
             <input type="text" style="display:none;" name="codigo_oportunidad">
             <input type="text" style="display:none;" name="id_contacto">
 
@@ -131,7 +132,13 @@ Registro de incidencia
                             <div class="form-group" style="margin-bottom:0px;">
                                 <label class="col-sm-4 control-label">Responsable</label>
                                 <div class="col-sm-8">
-                                    <input type="text" class="form-control edition limpiarIncidencia" name="reponsable"/>
+                                    {{-- <input type="text" class="form-control edition limpiarIncidencia" name="reponsable"/> --}}
+                                    <select class="form-control js-example-basic-single edition limpiarIncidencia" 
+                                        name="id_responsable" required>
+                                        @foreach ($usuarios as $usuario)
+                                        <option value="{{$usuario->id_usuario}}">{{$usuario->nombre_corto}}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
                         </div>

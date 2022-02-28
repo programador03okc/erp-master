@@ -12,12 +12,11 @@ class Incidencia extends Model
     public $timestamps = false;
     protected $primaryKey = 'id_incidencia';
 
-    public static function nuevoCodigoIncidencia($id_empresa)
+    public static function nuevoCodigoIncidencia($id_empresa, $yyyy)
     {
-        $yyyy = date('Y', strtotime("now"));
         $yy = date('y', strtotime("now"));
 
-        $empresa = Empresa::findById($id_empresa);
+        $empresa = Empresa::find($id_empresa);
 
         $num = Incidencia::where([
             ['id_empresa', '=', $id_empresa],
