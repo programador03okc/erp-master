@@ -269,6 +269,18 @@ class Requerimiento extends Model
                     $documento .= 'P';
                     $num = Requerimiento::obtenerCantidadRegistros(3, $idRequerimiento); //tipo: BS, grupo: Proyectos
                 }
+                if ($idGrupo == 4) {
+                    $documento .= 'G';
+                    $num = Requerimiento::obtenerCantidadRegistros(4, $idRequerimiento); //tipo: BS, grupo: Proyectos
+                }
+                if ($idGrupo == 5) {
+                    $documento .= 'CI';
+                    $num = Requerimiento::obtenerCantidadRegistros(5, $idRequerimiento); //tipo: BS, grupo: Proyectos
+                }
+                if ($idGrupo == 6) {
+                    $documento .= 'M';
+                    $num = Requerimiento::obtenerCantidadRegistros(6, $idRequerimiento); //tipo: BS, grupo: Proyectos
+                }
                 break;
 
             default:
