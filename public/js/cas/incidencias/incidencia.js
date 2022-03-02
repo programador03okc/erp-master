@@ -100,7 +100,9 @@ $(".nueva-incidencia").on('click', function () {
     $("#codigo_ficha").text('');
 
     $(".limpiarIncidencia").val("");
+    $(".limpiarTexto").text("");
     $("[name=id_incidencia]").val("");
+    $("#seriesProductos tbody").html("");
 
 });
 
@@ -244,4 +246,50 @@ function mostrarListaSeriesProductos() {
         </tr>`;
     });
     $('#seriesProductos tbody').html(html);
+}
+
+function anularIncidencia() {
+
+    Swal.fire({
+        title: "¿Está seguro que desea anular ésta incidencia?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",//"#00a65a"
+        cancelButtonColor: "#d33",
+        cancelButtonText: "Cancelar",
+        confirmButtonText: "Sí, Anular"
+    }).then(result => {
+
+        if (result.isConfirmed) {
+
+            var id = $('[name=id_incidencia]').val();
+            $.ajax({
+                type: 'GET',
+                url: 'anularIncidencia/' + id,
+                dataType: 'JSON',
+                success: function (response) {
+                    console.log(response);
+                    Lobibox.notify(response.tipo, {
+                        title: false,
+                        size: "mini",
+                        rounded: true,
+                        sound: false,
+                        delayIndicator: false,
+                        msg: response.mensaje
+                    });
+                    $(".edition").removeAttr("disabled");
+                    $("#codigo_ficha").text('');
+
+                    $(".limpiarIncidencia").val("");
+                    $(".limpiarTexto").text("");
+                    $("[name=id_incidencia]").val("");
+                    $("#seriesProductos tbody").html("");
+                }
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            });
+        }
+    });
 }

@@ -41,8 +41,8 @@ Registro de incidencia
                     <i class="fas fa-pencil-alt"></i> Editar
                 </button>
 
-                <button type="button" class="btn btn-sm btn-danger anular-incidencia" 
-                    data-toggle="tooltip" data-placement="bottom" title="Anular Incidencia">
+                <button type="button" class="btn btn-sm btn-danger anular-incidencia" data-toggle="tooltip" data-placement="bottom" 
+                    title="Anular Incidencia" onClick="anularIncidencia();">
                     <i class="fas fa-trash"></i> Anular
                 </button>
 

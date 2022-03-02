@@ -1728,6 +1728,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('listarSeriesProductos/{id}', 'Cas\IncidenciaController@listarSeriesProductos');
 				Route::post('guardarIncidencia', 'Cas\IncidenciaController@guardarIncidencia');
 				Route::post('actualizarIncidencia', 'Cas\IncidenciaController@actualizarIncidencia');
+				Route::get('anularIncidencia/{id}', 'Cas\IncidenciaController@anularIncidencia');
 			});
 		});
 	});

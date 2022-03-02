@@ -242,4 +242,32 @@ class IncidenciaController extends Controller
             return response()->json(['tipo' => 'error', 'mensaje' => 'Hubo un problema al guardar. Por favor intente de nuevo', 'error' => $e->getMessage()], 200);
         }
     }
+
+    function anularIncidencia($id_incidencia)
+    {
+        try {
+            DB::beginTransaction();
+            $mensaje = '';
+            $tipo = '';
+
+            $incidencia = Incidencia::find($id_incidencia);
+
+            if ($incidencia !== null) {
+                $incidencia->estado = 7;
+                $incidencia->save();
+
+                $mensaje = 'Se anuló la incidencia correctamente.';
+                $tipo = 'success';
+            } else {
+                $mensaje = 'No existe la incidencia.';
+                $tipo = 'warning';
+            }
+
+            DB::commit();
+            return response()->json(['tipo' => $tipo, 'mensaje' => $mensaje]);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json(['tipo' => 'error', 'mensaje' => 'Hubo un problema al guardar. Por favor intente de nuevo', 'error' => $e->getMessage()], 200);
+        }
+    }
 }
