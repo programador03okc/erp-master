@@ -255,7 +255,7 @@ class ListarRequerimientoPagoView {
                 { 'data': 'prioridad', 'name': 'adm_prioridad.descripcion', 'className': 'text-center' },
                 { 'data': 'codigo', 'name': 'codigo', 'className': 'text-center' },
                 { 'data': 'concepto', 'name': 'concepto' },
-                { 'data': 'descripcion_requerimiento_pago_tipo', 'name': 'descripcion_requerimiento_pago_tipo' },
+                { 'data': 'descripcion_requerimiento_pago_tipo', 'name': 'requerimiento_pago_tipo.descripcion' },
                 { 'data': 'fecha_registro', 'name': 'requerimiento_pago.fecha_registro', 'className': 'text-center' },
                 { 'data': 'empresa_razon_social', 'name': 'adm_contri.razon_social', 'className': 'text-center' },
                 { 'data': 'sede', 'name': 'sis_sede.codigo', 'className': 'text-center' },
