@@ -1713,6 +1713,8 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::group(['as' => 'incidencias.', 'prefix' => 'incidencias'], function () {
 
 				Route::get('index', 'Cas\IncidenciaController@view_incidencia')->name('index');
+				Route::post('listarIncidencias', 'Cas\IncidenciaController@listarIncidencias');
+				Route::get('mostrarIncidencia/{id}', 'Cas\IncidenciaController@mostrarIncidencia');
 				Route::get('listarSalidasVenta', 'Cas\IncidenciaController@listarSalidasVenta');
 
 				Route::post('verDatosContacto', 'Logistica\Distribucion\OrdenesDespachoExternoController@verDatosContacto');
@@ -1725,6 +1727,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 				Route::get('listarSeriesProductos/{id}', 'Cas\IncidenciaController@listarSeriesProductos');
 				Route::post('guardarIncidencia', 'Cas\IncidenciaController@guardarIncidencia');
+				Route::post('actualizarIncidencia', 'Cas\IncidenciaController@actualizarIncidencia');
 			});
 		});
 	});
