@@ -14,6 +14,7 @@ use App\Models\Almacen\DetalleRequerimiento;
 use App\Models\Almacen\Requerimiento;
 use App\Models\Almacen\Trazabilidad;
 use App\Models\Configuracion\Usuario;
+use App\Models\Configuracion\UsuarioDivision;
 use App\Models\Tesoreria\RequerimientoPago;
 use App\Models\Tesoreria\RequerimientoPagoDetalle;
 use Carbon\Carbon;
@@ -57,11 +58,18 @@ class RevisarAprobarController extends Controller{
             $idDivisionList[] = $value->id_division; //lista de id del total de divisiones 
         }
 
-        $divisionUsuarioNroOrdenUno = Division::mostrarDivisionUsuarioNroOrdenUno();
+        // $divisionUsuarioNroOrdenUno = Division::mostrarDivisionUsuarioNroOrdenUno();
+        // $idDivisionUsuarioList = [];
+        // foreach ($divisionUsuarioNroOrdenUno as $value) {
+        //     $idDivisionUsuarioList[] = $value->id_division;
+        // }
         $idDivisionUsuarioList = [];
-        foreach ($divisionUsuarioNroOrdenUno as $value) {
-            $idDivisionUsuarioList[] = $value->id_division; //lista de id_division al que pertenece el usuario 
+
+        $usuarioDivision = UsuarioDivision::mostrarDivisionUsuarioAcceso();
+        foreach ($usuarioDivision as $value) {
+            $idDivisionUsuarioList[] = $value->id_division;
         }
+        // Debugbar::info($idDivisionUsuarioList);
 
 
         // $idEmpresa = $request->idEmpresa;
@@ -197,7 +205,7 @@ class RevisarAprobarController extends Controller{
                 }
 
                 $operaciones = Operacion::getOperacion($tipoDocumento, $idTipoRequerimiento, $idGrupo, $idDivision, $idPrioridad, $idMoneda, $montoTotal, $idTipoRequerimientoPago);
-                // Debugbar::info($flujo->aprobar_sin_respetar_orden);
+                // Debugbar::info($operaciones);
                 if(count($operaciones)>1){
                     $mensaje[]= "Se detecto que los criterios del requerimiento dan como resultado multibles operaciones :".$operaciones;
 
@@ -207,7 +215,13 @@ class RevisarAprobarController extends Controller{
                     $mensaje[]= "El requerimiento ".$element->codigo." no coincide con una operación valida, es omitido en la lista. Parametros para obtener operacion: tipoDocumento= ".$tipoDocumento.", tipoRequerimientoCompra= ".$idTipoRequerimiento.",Grupo= ".$idGrupo.", Division= ".$idDivision.", Prioridad= ".$idPrioridad.", Moneda=".$idMoneda.", Monto=".$montoTotal.", TipoRequerimientoPago=".$idTipoRequerimientoPago;
                 }else{
                     $flujoTotal = Flujo::getIdFlujo($operaciones[0]->id_operacion)['data'];
-                    $tamañoFlujo = $flujoTotal ? count($flujoTotal) : 0;
+                    $tamañoFlujo=0;
+                    foreach ($flujoTotal as $key => $f) {
+                        if($f->orden ==($key+1)){
+                            $tamañoFlujo++;
+                        }
+                    }
+                    // $tamañoFlujo = $flujoTotal ? count($flujoTotal) : 0;
                     $voboList = Aprobacion::getVoBo($idDocumento); // todas las vobo del documento
                     $cantidadAprobacionesRealizadas = Aprobacion::getCantidadAprobacionesRealizadas($idDocumento);
                     $ultimoVoBo = Aprobacion::getUltimoVoBo($idDocumento);
@@ -233,7 +247,7 @@ class RevisarAprobarController extends Controller{
                         $aprobarSinImportarOrden = true;
 
                     }
-
+                    
 
                     if ($cantidadAprobacionesRealizadas > 0) {
     
@@ -318,6 +332,7 @@ class RevisarAprobarController extends Controller{
                     $llenarCargaUtil=false;
 
                     if ((in_array($nextIdRolAprobante, $idRolUsuarioList)) == true || (in_array($idRolAprobanteEnCualquierOrden, $idRolUsuarioList)) == true) {
+                        Debugbar::info($idDivisionUsuarioList);
 
                         if ($nextNroOrden == 1) {
                             // fitlar por division
@@ -342,6 +357,8 @@ class RevisarAprobarController extends Controller{
                             $payload[] = $element;
                         }
                             } 
+                            Debugbar::info($llenarCargaUtil);
+
                     }
                             } 
                 }
