@@ -25,11 +25,11 @@ Registro de incidencia
     <div class="box">
         <div class="box-header with-border">
 
-            <h3 class="box-title">Incidencia N° <span class="badge badge-secondary" id="codigo_ficha">INC 22-001</span></h3>
+            <h3 class="box-title">Incidencia N° <span class="badge badge-secondary" id="codigo_ficha">INC 00-000</span></h3>
             <div class="box-tools pull-right">
 
-                <button type="button" class="btn btn-sm btn-warning nueva-incidencia" data-clipboard-text="Este texto sera copiado"
-                    data-toggle="tooltip" data-placement="bottom" title="Nueva Incidencia">
+                <button type="button" class="btn btn-sm btn-warning nueva-incidencia" data-toggle="tooltip" data-placement="bottom" 
+                    title="Nueva Incidencia">
                     <i class="fas fa-copy"></i> Nuevo
                 </button>
 
@@ -46,10 +46,13 @@ Registro de incidencia
                     <i class="fas fa-trash"></i> Anular
                 </button>
 
-                <button type="button" class="btn btn-sm btn-secondary buscar-incidencia" data-toggle="tooltip" data-placement="bottom" 
-                    title="Buscar historial de registros" onClick="openFichasModal();">
+                <button type="button" class="btn btn-sm btn-info buscar-incidencia" data-toggle="tooltip" data-placement="bottom" 
+                    title="Buscar historial de registros" onClick="abrirIncidenciaModal();">
                     <i class="fas fa-search"></i> Buscar</button>
 
+                <button type="button" class="btn btn-sm btn-secondary cancelar" data-toggle="tooltip" data-placement="bottom" 
+                    title="Cancelar" style="display: none;">
+                     Cancelar</button>
                 {{-- <button type="button" class="btn btn-sm btn-info" data-toggle="tooltip" data-placement="bottom" 
                     title="Imprimir ficha" onClick="imprimirFicha();"><i class="fas fa-print"></i> Imprimir</button> --}}
 
@@ -81,13 +84,13 @@ Registro de incidencia
                             <div class="form-group" style="margin-bottom:0px;">
                                 <label class="col-sm-4 control-label">Guía venta</label>
                                 <div class="col-sm-8">
-                                    <div class="form-control-static limpiarIncidencia guia_venta"></div>
+                                    <div class="form-control-static limpiarTexto guia_venta"></div>
                                 </div>
                             </div>
                             <div class="form-group" style="margin-bottom:0px">
                                 <label class="col-sm-4 control-label">Requerimiento</label>
                                 <div class="col-sm-8">
-                                    <div class="form-control-static limpiarIncidencia codigo_requerimiento"></div>
+                                    <div class="form-control-static limpiarTexto codigo_requerimiento"></div>
                                 </div>
                             </div>
                             <div class="form-group" style="margin-bottom:0px">
@@ -104,13 +107,13 @@ Registro de incidencia
                             <div class="form-group" style="margin-bottom:0px">
                                 <label class="col-sm-3 control-label">Cliente</label>
                                 <div class="col-sm-9">
-                                    <div class="form-control-static limpiarIncidencia cliente_razon_social"></div>
+                                    <div class="form-control-static limpiarTexto cliente_razon_social"></div>
                                 </div>
                             </div>
                             <div class="form-group" style="margin-bottom:0px">
                                 <label class="col-sm-3 control-label">Concepto</label>
                                 <div class="col-sm-9">
-                                    <div class="form-control-static limpiarIncidencia concepto_requerimiento"></div>
+                                    <div class="form-control-static limpiarTexto concepto_requerimiento"></div>
                                 </div>
                             </div>
                         </div>
@@ -126,7 +129,7 @@ Registro de incidencia
                             <div class="form-group" style="margin-bottom:0px;">
                                 <label class="col-sm-4 control-label">Fecha registro</label>
                                 <div class="col-sm-8">
-                                    <div class="form-control-static limpiarIncidencia fecha_registro"></div>
+                                    <div class="form-control-static limpiarTexto fecha_registro"></div>
                                 </div>
                             </div>
                             <div class="form-group" style="margin-bottom:0px;">
@@ -135,6 +138,7 @@ Registro de incidencia
                                     {{-- <input type="text" class="form-control edition limpiarIncidencia" name="reponsable"/> --}}
                                     <select class="form-control js-example-basic-single edition limpiarIncidencia" 
                                         name="id_responsable" required>
+                                        <option value="">Elija una opción</option>
                                         @foreach ($usuarios as $usuario)
                                         <option value="{{$usuario->id_usuario}}">{{$usuario->nombre_corto}}</option>
                                         @endforeach
@@ -162,13 +166,13 @@ Registro de incidencia
                             <div class="form-group" style="margin-bottom:0px;">
                                 <label class="col-sm-4 control-label">Nombre </label>
                                 <div class="col-sm-8">
-                                    <div class="form-control-static limpiarIncidencia nombre"></div>
+                                    <div class="form-control-static limpiarTexto nombre"></div>
                                 </div>
                             </div>
                             <div class="form-group" style="margin-bottom:0px">
                                 <label class="col-sm-4 control-label">Cargo</label>
                                 <div class="col-sm-8">
-                                    <div class="form-control-static limpiarIncidencia cargo"></div>
+                                    <div class="form-control-static limpiarTexto cargo"></div>
                                 </div>
                             </div>
                             <div class="form-group " style="margin-bottom:0px;">
@@ -185,19 +189,19 @@ Registro de incidencia
                             <div class="form-group" style="margin-bottom:0px">
                                 <label class="col-sm-3 control-label">Teléfono</label>
                                 <div class="col-sm-8">
-                                    <div class="form-control-static limpiarIncidencia telefono"></div>
+                                    <div class="form-control-static limpiarTexto telefono"></div>
                                 </div>
                             </div>
                             <div class="form-group" style="margin-bottom:0px">
                                 <label class="col-sm-3 control-label">Dirección</label>
                                 <div class="col-sm-8">
-                                    <div class="form-control-static limpiarIncidencia direccion"></div>
+                                    <div class="form-control-static limpiarTexto direccion"></div>
                                 </div>
                             </div>
                             <div class="form-group" style="margin-bottom:0px">
                                 <label class="col-sm-3 control-label">Ubigeo</label>
                                 <div class="col-sm-8">
-                                    <div class="form-control-static limpiarIncidencia ubigeo"></div>
+                                    <div class="form-control-static limpiarTexto ubigeo"></div>
                                 </div>
                             </div>
                         </div>
@@ -207,13 +211,13 @@ Registro de incidencia
                             <div class="form-group" style="margin-bottom:0px">
                                 <label class="col-sm-5 control-label">Horario</label>
                                 <div class="col-sm-7">
-                                    <div class="form-control-static limpiarIncidencia horario"></div>
+                                    <div class="form-control-static limpiarTexto horario"></div>
                                 </div>
                             </div>
                             <div class="form-group" style="margin-bottom:0px">
                                 <label class="col-sm-5 control-label">Correo electrónico</label>
                                 <div class="col-sm-7">
-                                    <div class="form-control-static limpiarIncidencia email"></div>
+                                    <div class="form-control-static limpiarTexto email"></div>
                                 </div>
                             </div>
                         </div>
@@ -232,7 +236,7 @@ Registro de incidencia
             </div>
             <fieldset class="group-table" id="fieldsetProductos">
                 <table class="mytable table table-condensed table-bordered table-okc-view" width="100%" 
-                    id="seriesProductos" style="margin-top:10px;">
+                    id="seriesProductos" style="margin-top:14px;">
                     <thead>
                         <tr>
                             <th>Serie</th>
@@ -259,7 +263,8 @@ Registro de incidencia
                                 <label class="col-sm-4 control-label">Tipo de falla</label>
                                 <div class="col-sm-8">
                                     <select class="form-control js-example-basic-single edition limpiarIncidencia" 
-                                        name="tipo_falla" required>
+                                        name="id_tipo_falla" required>
+                                        <option value="">Elija una opción</option>
                                         @foreach ($tipoFallas as $falla)
                                         <option value="{{$falla->id_tipo_falla}}">{{$falla->descripcion}}</option>
                                         @endforeach
@@ -274,7 +279,8 @@ Registro de incidencia
                                 <label class="col-sm-4 control-label">Tipo de servicio</label>
                                 <div class="col-sm-8">
                                     <select class="form-control js-example-basic-single edition limpiarIncidencia" 
-                                        name="tipo_falla" required>
+                                        name="id_tipo_servicio" required>
+                                        <option value="">Elija una opción</option>
                                         @foreach ($tipoServicios as $servicio)
                                         <option value="{{$servicio->id_tipo_servicio}}">{{$servicio->descripcion}}</option>
                                         @endforeach
@@ -307,7 +313,8 @@ Registro de incidencia
                             <div class="form-group " style="margin-bottom:0px;">
                                 {{-- <label class="col-sm-4 control-label">Ingrese la falla reportada</label> --}}
                                 <div class="col-sm-12">
-                                    <textarea class="form-control" name="falla_reportada" placeholder="Ingrese la falla reportada"></textarea>
+                                    <textarea class="form-control edition limpiarIncidencia" name="falla_reportada" 
+                                    placeholder="Ingrese la falla reportada"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -317,11 +324,12 @@ Registro de incidencia
             </fieldset>
         </div>
         <div class="box-footer">
-            Área de Cas - Garantías
+            
         </div>
       </div>
     </form>
 </div>
+@include('cas.incidencias.incidenciaModal')
 @include('cas.incidencias.salidasVentaModal')
 @include('cas.incidencias.seriesProductosModal')
 @include('almacen.distribucion.ordenDespachoContacto')
@@ -344,6 +352,7 @@ Registro de incidencia
 <script src="{{ asset('template/plugins/loadingoverlay.min.js') }}"></script>
 <script src="{{ asset('template/plugins/iCheck/icheck.min.js') }}"></script>
 
+<script src="{{ asset('js/cas/incidencias/incidenciaModal.js')}}?v={{filemtime(public_path('js/cas/incidencias/incidenciaModal.js'))}}"></script>
 <script src="{{ asset('js/cas/incidencias/salidasVentaModal.js')}}?v={{filemtime(public_path('js/cas/incidencias/salidasVentaModal.js'))}}"></script>
 <script src="{{ asset('js/cas/incidencias/seriesProductosModal.js')}}?v={{filemtime(public_path('js/cas/incidencias/seriesProductosModal.js'))}}"></script>
 <script src="{{ asset('js/cas/incidencias/incidencia.js')}}?v={{filemtime(public_path('js/cas/incidencias/incidencia.js'))}}"></script>

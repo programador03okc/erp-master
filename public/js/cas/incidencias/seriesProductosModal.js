@@ -9,18 +9,21 @@ $(function () {
         }
 
         var data = $('#listaSeriesProductos').DataTable().row($(this)).data();
+        var id = $('[name=id_incidencia]').val();
 
         let item = listaSeriesProductos.find(element => element.id_prod_serie == data.id_prod_serie);
 
         if (item == undefined) {
             listaSeriesProductos.push({
+                "id_incidencia_producto": 0,
+                "id_incidencia": $id,
                 "id_prod_serie": data.id_prod_serie,
                 "serie": data.serie,
                 "id_producto": data.id_producto,
                 "codigo": data.codigo,
                 "part_number": data.part_number,
                 "descripcion": data.descripcion,
-                "id_guia_ven_det": data.id_guia_ven_det,
+                // "id_guia_ven_det": data.id_guia_ven_det,
             });
         }
 
