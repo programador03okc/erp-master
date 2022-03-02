@@ -332,7 +332,7 @@ class RevisarAprobarController extends Controller{
                     $llenarCargaUtil=false;
 
                     if ((in_array($nextIdRolAprobante, $idRolUsuarioList)) == true || (in_array($idRolAprobanteEnCualquierOrden, $idRolUsuarioList)) == true) {
-                        // Debugbar::info($idDivisionUsuarioList);
+                        Debugbar::info($idDivisionUsuarioList);
 
                         if ($nextNroOrden == 1) {
                             // fitlar por division
@@ -357,6 +357,8 @@ class RevisarAprobarController extends Controller{
                             $payload[] = $element;
                         }
                             } 
+                            Debugbar::info($llenarCargaUtil);
+
                     }
                             } 
                 }
