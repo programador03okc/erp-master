@@ -63,6 +63,7 @@ class RevisarAprobarController extends Controller{
         // foreach ($divisionUsuarioNroOrdenUno as $value) {
         //     $idDivisionUsuarioList[] = $value->id_division;
         // }
+        $idDivisionUsuarioList = [];
 
         $usuarioDivision = UsuarioDivision::mostrarDivisionUsuarioAcceso();
         foreach ($usuarioDivision as $value) {
@@ -331,7 +332,7 @@ class RevisarAprobarController extends Controller{
                     $llenarCargaUtil=false;
 
                     if ((in_array($nextIdRolAprobante, $idRolUsuarioList)) == true || (in_array($idRolAprobanteEnCualquierOrden, $idRolUsuarioList)) == true) {
-                        Debugbar::info($idDivisionUsuarioList);
+                        // Debugbar::info($idDivisionUsuarioList);
 
                         if ($nextNroOrden == 1) {
                             // fitlar por division
