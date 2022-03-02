@@ -974,6 +974,8 @@ class OrdenesDespachoExternoController extends Controller
                     'fecha_despacho_real' => $request->fecha_despacho_real,
                     'codigo_envio' => $request->codigo_envio,
                     'importe_flete' => $request->importe_flete,
+                    'serie_guia_venta' => $request->serie_guia_venta,
+                    'numero_guia_venta' => $request->numero_guia_venta,
                     'id_estado_envio' => $id_estado_envio,
                     // 'propia'=>((isset($request->transporte_propio)&&$request->transporte_propio=='on')?true:false),
                     'credito' => ((isset($request->credito) && $request->credito == 'on') ? true : false),

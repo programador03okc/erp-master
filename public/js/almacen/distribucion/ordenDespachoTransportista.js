@@ -83,5 +83,15 @@ function ceros_numero(numero) {
         if (num !== '') {
             $("[name=serie]").val(leftZero(4, num));
         }
+    } else if (numero == "numero_gv") {
+        var num = $("[name=numero_guia_venta]").val();
+        if (num !== '') {
+            $("[name=numero_guia_venta]").val(leftZero(7, num));
+        }
+    } else if (numero == "serie_gv") {
+        var num = $("[name=serie_guia_venta]").val();
+        if (num !== '') {
+            $("[name=serie_guia_venta]").val(leftZero(4, num));
+        }
     }
 }
