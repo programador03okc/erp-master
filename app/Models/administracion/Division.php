@@ -34,7 +34,7 @@ class Division extends Model
             }
 
             $divisionUsuarioList = DB::table('administracion.adm_operacion')
-            ->select('division.id_division', 'division.descripcion as division')
+            ->select('division.id_division', 'division.descripcion as division','adm_operacion.id_operacion')
             ->join('administracion.division','division.id_division', '=', 'adm_operacion.division_id')
             ->whereIn('adm_operacion.id_operacion',$idOperacionList)
             ->where([['adm_operacion.estado', 1],['division.estado',1]])
