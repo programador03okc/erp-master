@@ -49,6 +49,14 @@ function listarIncidencias() {
                             <button type="button" class="agregar btn btn-success boton" data-toggle="tooltip" 
                             data-placement="bottom" data-id="${row['id_incidencia']}" title="Agregar ficha reporte" >
                             <i class="fas fa-plus"></i></button>
+
+                            <button type="button" class="cerrar btn btn-primary boton" data-toggle="tooltip" 
+                            data-placement="bottom" data-id="${row['id_incidencia']}" title="Cerrar incidencia" >
+                            <i class="fas fa-calendar-check"></i></button>
+
+                            <button type="button" class="cancelar btn btn-danger boton" data-toggle="tooltip" 
+                            data-placement="bottom" data-id="${row['id_incidencia']}" title="Cancelar incidencia" >
+                            <i class="fas fa-ban"></i></button>
                         </div>`;
                     }, className: "text-center"
             }
@@ -120,6 +128,7 @@ function guardarFichaReporte(data) {
             });
 
             $("#submit_guardar_reporte").attr('disabled', false);
+            $('#modal-fichaReporte').modal('hide');
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);

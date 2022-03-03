@@ -1776,9 +1776,9 @@ Route::group(['middleware' => ['auth']], function () {
 			//Centro de Costos
 			Route::get('index', 'Finanzas\CentroCosto\CentroCostoController@index')->name('index');
 			Route::get('mostrar-centro-costos', 'Finanzas\CentroCosto\CentroCostoController@mostrarCentroCostos')->name('mostrar-centro-costos');
-			Route::post('guardar-centro-costo', 'Finanzas\CentroCosto\CentroCostoController@store')->name('guardar-centro-costo');
-			Route::post('actualizar-centro-costo', 'Finanzas\CentroCosto\CentroCostoController@update')->name('actualizar-centro-costo');
-			Route::get('anular-centro-costo/{id}', 'Finanzas\CentroCosto\CentroCostoController@destroy')->name('anular-centro-costo');
+			Route::post('guardarCentroCosto', 'Finanzas\CentroCosto\CentroCostoController@guardarCentroCosto')->name('guardar-centro-costo');
+			Route::post('actualizar-centro-costo', 'Finanzas\CentroCosto\CentroCostoController@actualizarCentroCosto')->name('actualizar-centro-costo');
+			Route::get('anular-centro-costo/{id}', 'Finanzas\CentroCosto\CentroCostoController@anularCentroCosto')->name('anular-centro-costo');
 		});
 	});
 

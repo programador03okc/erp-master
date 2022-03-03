@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\Presupuestos\CentroCosto;
 use App\Http\Controllers\Controller;
+use App\Models\Administracion\Periodo;
+use App\Models\Configuracion\Grupo;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -18,28 +21,29 @@ class CentroCostoController extends Controller
 
     public function index()
     {
-        // $centro_costos = CentroCosto::orderBy('codigo','asc')->where('estado',1)->get();        
-        // return view('centro_costos.index',compact('centro_costos'));
-        return view('finanzas.centro_costos.index');
+        $grupos = Grupo::all();
+        $periodos = Periodo::all();
+        return view('finanzas.centro_costos.index', compact('grupos', 'periodos'));
     }
 
     public function mostrarCentroCostos()
     {
-        $anio = date('Y',strtotime(date('Y-m-d')));
-        $centro_costos = CentroCosto::orderBy('codigo','asc')
-        ->where('estado',1)
-        ->where('periodo',$anio)
-        ->get();
-        
+        $anio = date('Y', strtotime(date('Y-m-d')));
+        $centro_costos = CentroCosto::leftJoin('configuracion.sis_grupo', 'sis_grupo.id_grupo', '=', 'centro_costo.id_grupo')
+            ->select('centro_costo.*', 'sis_grupo.descripcion as grupo_descripcion')
+            ->where([['estado', '=', 1], ['periodo', '=', $anio]])
+            ->orderBy('codigo')
+            ->get();
+
         return response()->json($centro_costos);
     }
 
     public function mostrarCentroCostosSegunGrupoUsuario()
     {
         $grupos = Auth::user()->getAllGrupo();
-        
-        foreach($grupos as $grupo){
-            $idGrupoList[]=$grupo->id_grupo;
+
+        foreach ($grupos as $grupo) {
+            $idGrupoList[] = $grupo->id_grupo;
         }
 
         // $centro_costos = CentroCosto::orderBy('codigo','asc')
@@ -58,69 +62,71 @@ class CentroCostoController extends Controller
         return response()->json($centroCostos);
     }
 
-    public function store()
+    public function guardarCentroCosto(Request $request)
     {
-        $codigo = request('codigo');
+        $codigo = $request->codigo;
 
-        if (Str::contains($codigo,'.')){
-            
-            $cod_padre = substr($codigo, 0, (strlen($codigo)-3) );
-            
-            $cc_padre = CentroCosto::where('codigo',$cod_padre)->first();
-            $id_padre = ($cc_padre!==null ? $cc_padre->id_centro_costo : null);
-            
+        if (Str::contains($codigo, '.')) {
+            $cod_padre = substr($codigo, 0, (strlen($codigo) - 3));
+            $cc_padre = CentroCosto::where('codigo', $cod_padre)->first();
+            $id_padre = ($cc_padre !== null ? $cc_padre->id_centro_costo : null);
+
             $nivel = 2;
-        } 
-        else {
+        } else {
             $id_padre = null;
             $nivel = 1;
         }
 
-        $data = CentroCosto::create([
-            'codigo' => $codigo,
-            'descripcion' => request('descripcion'),
-            'id_padre' => $id_padre,
-            'nivel' => $nivel,
-            'estado' => 1
-        ]);
-
-        return response()->json($data);
-    }
-
-    public function update()
-    {
-        $cc = CentroCosto::findOrFail(request('id_centro_costo'));
-
-        $codigo = request('codigo');
-
-        if (Str::contains($codigo,'.')){
-            
-            $cod_padre = substr($codigo, 0, (strlen($codigo)-3) );
-            
-            $cc_padre = CentroCosto::where('codigo',$cod_padre)->first();
-            $id_padre = ($cc_padre!==null ? $cc_padre->id_centro_costo : null);
-            
-            $nivel = 2;
-        } 
-        else {
-            $id_padre = null;
-            $nivel = 1;
-        }
-
-        $cc->update([
-            'codigo' => $codigo,
-            'descripcion' => request('descripcion'),
-            'id_padre' => $id_padre,
-            'nivel' => $nivel
-        ]);
+        $cc = new CentroCosto();
+        $cc->codigo = trim($codigo);
+        $cc->descripcion = strtoupper(trim($request->descripcion));
+        $cc->id_grupo = $request->id_grupo;
+        $cc->periodo = $request->periodo;
+        $cc->id_padre = $id_padre;
+        $cc->nivel = $nivel;
+        $cc->version = 1;
+        $cc->estado = 1;
+        $cc->fecha_registro = new Carbon();
+        $cc->save();
 
         return response()->json($cc);
     }
 
-    public function destroy($id)
+    public function actualizarCentroCosto(Request $request)
+    {
+        $cc = CentroCosto::findOrFail($request->id_centro_costo);
+
+        $codigo = $request->codigo;
+
+        if (Str::contains($codigo, '.')) {
+
+            $cod_padre = substr($codigo, 0, (strlen($codigo) - 3));
+
+            $cc_padre = CentroCosto::where('codigo', $cod_padre)->first();
+            $id_padre = ($cc_padre !== null ? $cc_padre->id_centro_costo : null);
+
+            $nivel = 2;
+        } else {
+            $id_padre = null;
+            $nivel = 1;
+        }
+
+        $cc->codigo = trim($codigo);
+        $cc->descripcion = strtoupper(trim($request->descripcion));
+        $cc->id_grupo = $request->id_grupo;
+        $cc->periodo = $request->periodo;
+        $cc->id_padre = $id_padre;
+        $cc->nivel = $nivel;
+        $cc->save();
+
+        return response()->json($cc);
+    }
+
+    public function anularCentroCosto($id)
     {
         $cc = CentroCosto::findOrFail($id);
-        $cc->update(['estado' => 7]);
+        $cc->estado = 7;
+        $cc->save();
 
         return response()->json($cc);
     }
