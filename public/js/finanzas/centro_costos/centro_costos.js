@@ -82,9 +82,9 @@ $("#listaCentroCostos tbody").on('click', ".editar", function () {
     var id = $(this).data('id');
     var cod = $(this).data('codigo');
     var des = $(this).data('descripcion');
-    var grupo = $(this).data('id_grupo');
+    var grupo = $(this).data('grupo');
     var per = $(this).data('periodo');
-
+    console.log(grupo);
     $('#submit-cc').removeAttr('disabled');
 
     $('[name=id_centro_costo]').val(id);
