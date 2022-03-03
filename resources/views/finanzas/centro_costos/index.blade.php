@@ -34,6 +34,8 @@ Centros de Costos
                                 <th hidden></th>
                                 <th scope="col">Código</th>
                                 <th scope="col">Descripción</th>
+                                <th scope="col">Grupo</th>
+                                <th scope="col">Periodo</th>
                                 <th></th>
                             </tr>
                         </thead>

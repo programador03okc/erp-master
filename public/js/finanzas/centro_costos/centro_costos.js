@@ -11,10 +11,12 @@ function mostrarCentroCostos() {
                 html += `<tr ${element.id_padre == null ? 'style="background: LightCyan;"' : ''}>
                 <td width="15%">${element.codigo}</td>
                 <td>${element.descripcion}</td>
+                <td>${element.grupo_descripcion !== null ? element.grupo_descripcion : ''}</td>
+                <td>${element.periodo}</td>
                 <td width="15%" style="padding:0px;">
                     <button type="button" class="btn btn-box-tool btn-xs btn-info editar" data-toggle="tooltip" data-placement="bottom" 
                         title="Editar" data-id="${element.id_centro_costo}" data-codigo="${element.codigo}" data-descripcion="${element.descripcion}"
-                        data-codpadre="" data-despadre="">
+                        data-grupo="${element.id_grupo}" data-periodo="${element.periodo}" data-codpadre="" data-despadre="">
                         <i class="glyphicon glyphicon-pencil" aria-hidden="true"></i></button>
 
                     <button type="button" class="btn btn-box-tool btn-xs btn-danger anular" data-toggle="tooltip" data-placement="bottom" 
@@ -80,12 +82,16 @@ $("#listaCentroCostos tbody").on('click', ".editar", function () {
     var id = $(this).data('id');
     var cod = $(this).data('codigo');
     var des = $(this).data('descripcion');
+    var grupo = $(this).data('id_grupo');
+    var per = $(this).data('periodo');
 
     $('#submit-cc').removeAttr('disabled');
 
     $('[name=id_centro_costo]').val(id);
     $('[name=codigo]').val(cod);
     $('[name=descripcion]').val(des);
+    $('[name=id_grupo]').val(grupo);
+    $('[name=periodo]').val(per);
 
 });
 
