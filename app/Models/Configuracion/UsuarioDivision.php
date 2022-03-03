@@ -4,7 +4,6 @@
 namespace App\Models\Configuracion;
 
 use App\Models\Administracion\Division;
-use App\Models\Administracion\DivisionArea;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
