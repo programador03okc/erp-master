@@ -76,26 +76,26 @@ class CentroCostoController extends Controller
             $nivel = 1;
         }
 
-        $data = CentroCosto::create([
-            'codigo' => $codigo,
-            'descripcion' => $request->descripcion,
-            'id_grupo' => $request->id_grupo,
-            'periodo' => $request->periodo,
-            'id_padre' => $id_padre,
-            'nivel' => $nivel,
-            'version' => 1,
-            'estado' => 1,
-            'fecha_registro' => new Carbon(),
-        ]);
+        $cc = new CentroCosto();
+        $cc->codigo = trim($codigo);
+        $cc->descripcion = strtoupper(trim($request->descripcion));
+        $cc->id_grupo = $request->id_grupo;
+        $cc->periodo = $request->periodo;
+        $cc->id_padre = $id_padre;
+        $cc->nivel = $nivel;
+        $cc->version = 1;
+        $cc->estado = 1;
+        $cc->fecha_registro = new Carbon();
+        $cc->save();
 
-        return response()->json($data);
+        return response()->json($cc);
     }
 
-    public function update()
+    public function actualizarCentroCosto(Request $request)
     {
-        $cc = CentroCosto::findOrFail(request('id_centro_costo'));
+        $cc = CentroCosto::findOrFail($request->id_centro_costo);
 
-        $codigo = request('codigo');
+        $codigo = $request->codigo;
 
         if (Str::contains($codigo, '.')) {
 
@@ -110,20 +110,22 @@ class CentroCostoController extends Controller
             $nivel = 1;
         }
 
-        $cc->update([
-            'codigo' => $codigo,
-            'descripcion' => request('descripcion'),
-            'id_padre' => $id_padre,
-            'nivel' => $nivel
-        ]);
+        $cc->codigo = trim($codigo);
+        $cc->descripcion = strtoupper(trim($request->descripcion));
+        $cc->id_grupo = $request->id_grupo;
+        $cc->periodo = $request->periodo;
+        $cc->id_padre = $id_padre;
+        $cc->nivel = $nivel;
+        $cc->save();
 
         return response()->json($cc);
     }
 
-    public function destroy($id)
+    public function anularCentroCosto($id)
     {
         $cc = CentroCosto::findOrFail($id);
-        $cc->update(['estado' => 7]);
+        $cc->estado = 7;
+        $cc->save();
 
         return response()->json($cc);
     }
