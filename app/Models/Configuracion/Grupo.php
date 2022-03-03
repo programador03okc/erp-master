@@ -16,6 +16,7 @@ class Grupo extends Model {
         $data = Grupo::select(
                 'sis_grupo.*'
             )
+            ->where('id_estado','!=',7)
             ->orderBy('sis_grupo.descripcion', 'asc')
             ->get();
         return $data;
