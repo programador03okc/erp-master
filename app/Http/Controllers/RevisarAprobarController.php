@@ -344,6 +344,8 @@ class RevisarAprobarController extends Controller{
                         //     }
                         // } else {
                             $llenarCargaUtil=true;
+                        }else{
+                            $llenarCargaUtil=true;
                         }
                         if($llenarCargaUtil){
                             $element->setAttribute('id_flujo',$nextIdFlujo);
