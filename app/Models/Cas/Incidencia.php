@@ -57,7 +57,7 @@ class Incidencia extends Model
             ['anio', '=', $yyyy]
         ])->count();
 
-        $correlativo = StringHelper::leftZero(4, ($num++));
+        $correlativo = StringHelper::leftZero(4, ($num + 1));
 
         return 'INC-' . $empresa->codigo . '-' . $yy . $correlativo;
     }

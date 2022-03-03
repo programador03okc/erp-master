@@ -252,14 +252,14 @@ Registro de incidencia
             <br/>
             <div class="row" style="margin-bottom:0px">
                 <div class="col-md-12">
-                    <label style="font-weight: bold;">Falla reportada:</label>
+                    <label style="font-weight: bold;">Ingrese los datos de la avería:</label>
                 </div>
             </div>
             <fieldset class="group-table" id="fieldsetFallaReportada">
                 <div class="row">
                     <div class="col-sm-4">
                         <div class="form-horizontal">
-                            <div class="form-group " style="margin-bottom:0px;">
+                            <div class="form-group " style="margin-bottom:5px;">
                                 <label class="col-sm-4 control-label">Tipo de falla</label>
                                 <div class="col-sm-8">
                                     <select class="form-control js-example-basic-single edition limpiarIncidencia" 
@@ -271,11 +271,23 @@ Registro de incidencia
                                     </select>
                                 </div>
                             </div>
+                            <div class="form-group " style="margin-bottom:0px;">
+                                <label class="col-sm-4 control-label">División</label>
+                                <div class="col-sm-8">
+                                    <select class="form-control js-example-basic-single edition limpiarIncidencia" 
+                                        name="id_division" required>
+                                        <option value="">Elija una opción</option>
+                                        @foreach ($divisiones as $division)
+                                        <option value="{{$division->id_division}}">{{$division->descripcion}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="col-sm-4">
                         <div class="form-horizontal">
-                            <div class="form-group " style="margin-bottom:0px;">
+                            <div class="form-group " style="margin-bottom:5px;">
                                 <label class="col-sm-4 control-label">Tipo de servicio</label>
                                 <div class="col-sm-8">
                                     <select class="form-control js-example-basic-single edition limpiarIncidencia" 
@@ -287,22 +299,43 @@ Registro de incidencia
                                     </select>
                                 </div>
                             </div>
+                            <div class="form-group " style="margin-bottom:0px;">
+                                <label class="col-sm-4 control-label">Medio reporte</label>
+                                <div class="col-sm-8">
+                                    <select class="form-control js-example-basic-single edition limpiarIncidencia" 
+                                        name="id_medio" required>
+                                        <option value="">Elija una opción</option>
+                                        @foreach ($medios as $medio)
+                                        <option value="{{$medio->id_medio}}">{{$medio->descripcion}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="col-sm-4">
                         <div class="form-horizontal">
                             <div class="form-group " style="margin-bottom:0px;">
                                 <div class="col-sm-6">
-                                <div class="icheckbox_flat-blue">
-                                    <label style="display:flex;">
-                                        <input type="checkbox" class="flat-red activation" name="equipo_operativo" value="0">
-                                    </label>
-                                </div> Equipo operativo
+                                    <div class="icheckbox_flat-blue">
+                                        <label style="display:flex;">
+                                            {{-- <input type="checkbox" class="flat-red activation" name="equipo_operativo" value="0"> --}}
+                                            <span style="margin-top: 7px;margin-bottom: 10px;margin-right: 25px;">Equipo operativo</span>
+                                            <input type="checkbox" name="equipo_operativo" style="margin-top: 10px;"/>
+                                        </label>
+                                    </div> 
+                                </div>
                             </div>
-                                {{-- <label class="col-sm-6 control-label">Equipo operativo</label>
-                                <div class="col-sm-6">
-                                    <input type="text" class="form-control edition limpiarIncidencia" name="tipo_falla"/>
-                                </div> --}}
+                            <div class="form-group " style="margin-bottom:0px;">
+                                <label class="col-sm-4 control-label">Conformidad</label>
+                                <div class="col-sm-8">
+                                    <select class="form-control js-example-basic-single edition limpiarIncidencia" 
+                                        name="conformidad" required>
+                                        <option value="">Elija una opción</option>
+                                        <option value="PRE">PRE</option>
+                                        <option value="POST">POST</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                     </div>

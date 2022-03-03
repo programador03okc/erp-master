@@ -1730,6 +1730,15 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('actualizarIncidencia', 'Cas\IncidenciaController@actualizarIncidencia');
 				Route::get('anularIncidencia/{id}', 'Cas\IncidenciaController@anularIncidencia');
 			});
+
+			Route::group(['as' => 'fichas.', 'prefix' => 'fichas'], function () {
+
+				Route::get('index', 'Cas\FichaReporteController@view_ficha_reporte')->name('index');
+				Route::post('listarIncidencias', 'Cas\FichaReporteController@listarIncidencias');
+				Route::post('guardarFichaReporte', 'Cas\FichaReporteController@guardarFichaReporte');
+				Route::post('actualizarFichaReporte', 'Cas\FichaReporteController@actualizarFichaReporte');
+				Route::get('anularFichaReporte/{id}', 'Cas\FichaReporteController@anularFichaReporte');
+			});
 		});
 	});
 

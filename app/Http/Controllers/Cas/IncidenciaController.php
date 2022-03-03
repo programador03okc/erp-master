@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Cas;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Administracion\Division;
 use App\Models\Almacen\Movimiento;
 use App\Models\Cas\Incidencia;
 use App\Models\Cas\IncidenciaProducto;
+use App\Models\Cas\MedioReporte;
 use App\Models\Cas\TipoFalla;
 use App\Models\Cas\TipoServicio;
 use App\Models\Configuracion\Usuario;
@@ -20,10 +22,12 @@ class IncidenciaController extends Controller
     {
         $tipoFallas = TipoFalla::where('estado', 1)->get();
         $tipoServicios = TipoServicio::where('estado', 1)->get();
+        $divisiones = DB::table('administracion.division')->where([['estado', '=', 1], ['grupo_id', '=', 2]])->get();
         $usuarios = Usuario::join('configuracion.usuario_rol', 'usuario_rol.id_usuario', '=', 'sis_usua.id_usuario')
             ->where([['sis_usua.estado', '=', 1], ['usuario_rol.id_rol', '=', 20]])->get(); //20 CAS
+        $medios = MedioReporte::where('estado', 1)->get();
 
-        return view('cas/incidencias/incidencia', compact('tipoFallas', 'tipoServicios', 'usuarios'));
+        return view('cas/incidencias/incidencia', compact('tipoFallas', 'tipoServicios', 'usuarios', 'divisiones', 'medios'));
     }
 
     function listarSalidasVenta()
@@ -154,7 +158,11 @@ class IncidenciaController extends Controller
             $incidencia->usuario_final = $request->usuario_final;
             $incidencia->id_tipo_falla = $request->id_tipo_falla;
             $incidencia->id_tipo_servicio = $request->id_tipo_servicio;
-            $incidencia->equipo_operativo = $request->equipo_operativo;
+            $incidencia->id_division = $request->id_division;
+            $incidencia->id_medio = $request->id_medio;
+            $incidencia->conformidad = $request->conformidad;
+            // $incidencia->equipo_operativo = $request->equipo_operativo;
+            $incidencia->equipo_operativo = ((isset($request->equipo_operativo) && $request->equipo_operativo == 'on') ? true : false);
             $incidencia->falla_reportada = $request->falla_reportada;
             $incidencia->anio = $yyyy;
             $incidencia->estado = 1;
@@ -207,33 +215,40 @@ class IncidenciaController extends Controller
                 $incidencia->usuario_final = $request->usuario_final;
                 $incidencia->id_tipo_falla = $request->id_tipo_falla;
                 $incidencia->id_tipo_servicio = $request->id_tipo_servicio;
-                $incidencia->equipo_operativo = $request->equipo_operativo;
+                $incidencia->id_division = $request->id_division;
+                $incidencia->id_medio = $request->id_medio;
+                $incidencia->conformidad = $request->conformidad;
+                // $incidencia->equipo_operativo = $request->equipo_operativo;
+                $incidencia->equipo_operativo = ($request->equipo_operativo == 'on' ? true : false);
                 $incidencia->falla_reportada = $request->falla_reportada;
                 $incidencia->save();
-            }
 
-            $detalle = json_decode($request->detalle);
+                $detalle = json_decode($request->detalle);
 
-            foreach ($detalle as $det) {
+                foreach ($detalle as $det) {
 
-                $producto = IncidenciaProducto::where([['id_incidencia', '=', $det->id_incidencia], ['id_prod_serie', '=', $det->id_prod_serie]])
-                    ->first();
+                    $producto = IncidenciaProducto::where([['id_incidencia', '=', $det->id_incidencia], ['id_prod_serie', '=', $det->id_prod_serie]])
+                        ->first();
 
-                if ($producto == null) {
-                    $producto = new IncidenciaProducto();
-                    $producto->id_incidencia = $incidencia->id_incidencia;
-                    $producto->id_producto = $det->id_producto;
-                    $producto->id_prod_serie = $det->id_prod_serie;
-                    $producto->serie = $det->serie;
-                    $producto->id_usuario = Auth::user()->id_usuario;
-                    $producto->estado = 1;
-                    $producto->fecha_registro = new Carbon();
-                    $producto->save();
+                    if ($producto == null) {
+                        $producto = new IncidenciaProducto();
+                        $producto->id_incidencia = $incidencia->id_incidencia;
+                        $producto->id_producto = $det->id_producto;
+                        $producto->id_prod_serie = $det->id_prod_serie;
+                        $producto->serie = $det->serie;
+                        $producto->id_usuario = Auth::user()->id_usuario;
+                        $producto->estado = 1;
+                        $producto->fecha_registro = new Carbon();
+                        $producto->save();
+                    }
                 }
-            }
 
-            $mensaje = 'Se actualizó la incidencia correctamente';
-            $tipo = 'success';
+                $mensaje = 'Se actualizó la incidencia correctamente';
+                $tipo = 'success';
+            } else {
+                $mensaje = 'No existe la incidencia seleccionada';
+                $tipo = 'warning';
+            }
 
             DB::commit();
             return response()->json(['tipo' => $tipo, 'mensaje' => $mensaje]);
