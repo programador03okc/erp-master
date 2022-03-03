@@ -51,7 +51,7 @@ Gestión de fichas reporte
                                 <th>Responsable</th>
                                 <th>Falla</th>
                                 <th>Estado</th>
-                                <th width="90px">Acción</th>
+                                <th width="70px">Acción</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -65,6 +65,8 @@ Gestión de fichas reporte
         </div>
     </div>
 </div>
+
+@include('cas.fichasReporte.fichaReporteCreate')
 
 @endsection
 
@@ -88,6 +90,7 @@ Gestión de fichas reporte
 <script>
     $(document).ready(function() {
         seleccionarMenu(window.location);
+        vista_extendida();
         listarIncidencias();
     });
 </script>

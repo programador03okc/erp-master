@@ -40,6 +40,11 @@ function mostrarIncidencia(id) {
 
             $("[name=falla_reportada]").val(response.incidencia.falla_reportada);
             $("[name=fecha_reporte]").val(response.incidencia.fecha_reporte);
+            $("[name=id_division]").val(response.incidencia.id_division);
+            $("[name=id_medio]").val(response.incidencia.id_medio);
+            $("[name=conformidad]").val(response.incidencia.conformidad);
+
+            $('[name=equipo_operativo]').prop('checked', (response.incidencia.equipo_operativo ? true : false));
 
             $(".guia_venta").text(response.incidencia.serie + '-' + response.incidencia.numero);
             $(".cliente_razon_social").text(response.incidencia.razon_social);

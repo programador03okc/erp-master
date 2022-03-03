@@ -4,13 +4,21 @@ namespace App\Http\Controllers\Cas;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Cas\Incidencia;
+use App\Models\Cas\IncidenciaReporte;
+use App\Models\Cas\MedioReporte;
+use App\Models\Configuracion\Usuario;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class FichaReporteController extends Controller
 {
     function view_ficha_reporte()
     {
-        return view('cas/fichasReporte/fichaReporte');
+        $usuarios = Usuario::join('configuracion.usuario_rol', 'usuario_rol.id_usuario', '=', 'sis_usua.id_usuario')
+            ->where([['sis_usua.estado', '=', 1], ['usuario_rol.id_rol', '=', 20]])->get(); //20 CAS
+
+        return view('cas/fichasReporte/fichaReporte', compact('usuarios'));
     }
 
     function listarIncidencias()
@@ -50,10 +58,103 @@ class FichaReporteController extends Controller
             ->leftjoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'incidencia.id_responsable')
             ->leftjoin('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'incidencia.estado')
             ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'incidencia.id_contribuyente')
-            ->leftjoin('contabilidad.adm_ctb_contac', 'adm_ctb_contac.id_datos_contacto', '=', 'incidencia.id_contacto');
-        // ->where('incidencia.id_incidencia', $id)
-        // ->get();
+            ->leftjoin('contabilidad.adm_ctb_contac', 'adm_ctb_contac.id_datos_contacto', '=', 'incidencia.id_contacto')
+            ->where([['incidencia.estado', '!=', 7]]);
 
         return datatables($lista)->toJson();
+    }
+
+    function listarFichasReporte($id_incidencia)
+    {
+        $lista = IncidenciaReporte::where([
+            ['id_incidencia', '=', $id_incidencia], ['estado', '!=', 7]
+        ])->get();
+        return response()->json($lista);
+    }
+
+    function guardarFichaReporte(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            $mensaje = '';
+            $tipo = '';
+
+            $reporte = new IncidenciaReporte();
+            $reporte->codigo = IncidenciaReporte::nuevoCodigoFicha($request->padre_id_incidencia);
+            $reporte->id_incidencia = $request->padre_id_incidencia;
+            $reporte->fecha_reporte = $request->fecha_reporte;
+            $reporte->id_usuario = $request->id_usuario;
+            $reporte->acciones_realizadas = $request->acciones_realizadas;
+            $reporte->estado = 1;
+            $reporte->fecha_registro = new Carbon();
+            $reporte->save();
+
+            $mensaje = 'Se guardó la ficha reporte correctamente';
+            $tipo = 'success';
+
+            DB::commit();
+            return response()->json(['tipo' => $tipo, 'mensaje' => $mensaje]);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json(['tipo' => 'error', 'mensaje' => 'Hubo un problema al guardar. Por favor intente de nuevo', 'error' => $e->getMessage()], 200);
+        }
+    }
+
+    function actualizarFichaReporte(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            $mensaje = '';
+            $tipo = '';
+
+            $reporte = IncidenciaReporte::find($request->id_incidencia_reporte);
+
+            if ($reporte !== null) {
+                $reporte->fecha_reporte = $request->fecha_reporte;
+                $reporte->id_usuario = $request->id_usuario;
+                $reporte->acciones_realizadas = $request->acciones_realizadas;
+                $reporte->save();
+
+                $mensaje = 'Se actualizó la ficha reporte correctamente';
+                $tipo = 'success';
+            } else {
+                $mensaje = 'No existe la ficha reporte seleccionada';
+                $tipo = 'warning';
+            }
+
+            DB::commit();
+            return response()->json(['tipo' => $tipo, 'mensaje' => $mensaje]);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json(['tipo' => 'error', 'mensaje' => 'Hubo un problema al actualizar. Por favor intente de nuevo', 'error' => $e->getMessage()], 200);
+        }
+    }
+
+    function anularFichaReporte($id_reporte)
+    {
+        try {
+            DB::beginTransaction();
+            $mensaje = '';
+            $tipo = '';
+
+            $reporte = IncidenciaReporte::find($id_reporte);
+
+            if ($reporte !== null) {
+                $reporte->estado = 7;
+                $reporte->save();
+
+                $mensaje = 'Se anuló la ficha reporte correctamente.';
+                $tipo = 'success';
+            } else {
+                $mensaje = 'No existe la ficha reporte.';
+                $tipo = 'warning';
+            }
+
+            DB::commit();
+            return response()->json(['tipo' => $tipo, 'mensaje' => $mensaje]);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json(['tipo' => 'error', 'mensaje' => 'Hubo un problema al guardar. Por favor intente de nuevo', 'error' => $e->getMessage()], 200);
+        }
     }
 }
