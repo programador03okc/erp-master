@@ -603,7 +603,7 @@ class ListarRequerimientoPagoView {
         document.querySelector("tbody[id='body_detalle_requerimiento_pago']").insertAdjacentHTML('beforeend', `<tr style="background-color:${data != null && data.id_estado == '7' ? '#f1d7d7' : ''}; text-align:center">
         <td>    
             <input type="hidden"  class="idEstado" name="idEstado[]" value="${data != null && data.id_estado}">
-            <p class="descripcion-partida" title="${(data != null && data.partida != null ? data.partida.codigo : '')}">${(data != null && data.partida != null ? data.partida.descripcion : '(NO SELECCIONADO)')}</p>
+            <p class="descripcion-partida" title="${(data != null && data.partida != null ? data.partida.descripcion : '(NO SELECCIONADO)')}">${(data != null && data.partida != null ? data.partida.codigo : '(NO SELECCIONADO)')}</p>
             <button type="button" class="btn btn-xs btn-info handleClickCargarModalPartidas" name="partida">Seleccionar</button> 
             <div class="form-group">
                 <h5></h5>
@@ -611,7 +611,7 @@ class ListarRequerimientoPagoView {
             </div>
         </td>
         <td>
-            <p class="descripcion-centro-costo" title="${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.codigo : (data != null && data.centro_costo != null ? data.centro_costo.codigo : '')}">${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.descripcion : data != null && data.centro_costo != null ? data.centro_costo.descripcion : '(NO SELECCIONADO)'} </p>
+            <p class="descripcion-centro-costo" title="${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.descripcion : data != null && data.centro_costo != null ? data.centro_costo.descripcion : '(NO SELECCIONADO)'}">${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.codigo : (data != null && data.centro_costo != null ? data.centro_costo.codigo : '(NO SELECCIONADO)')}</p>
             <button type="button" class="btn btn-xs btn-primary handleClickCargarModalCentroCostos" name="centroCostos"  ${tempCentroCostoSelected != undefined ? 'disabled' : ''} title="${data != null && data.centro_costo != null ? data.centro_costo.codigo : ''}" >Seleccionar</button> 
             <div class="form-group">
                 <h5></h5>
@@ -871,9 +871,9 @@ class ListarRequerimientoPagoView {
 
         let tr = tempObjectBtnPartida.closest("tr");
         // tr.querySelector("p[class='descripcion-partida']").dataset.idPartida = idPartida;
-        tr.querySelector("p[class='descripcion-partida']").textContent = descripcion
+        tr.querySelector("p[class='descripcion-partida']").textContent = codigo
         // tr.querySelector("p[class='descripcion-partida']").dataset.presupuestoTotal = presupuestoTotal;
-        tr.querySelector("p[class='descripcion-partida']").setAttribute('title', codigo);
+        tr.querySelector("p[class='descripcion-partida']").setAttribute('title', descripcion);
 
         // this.checkStatusValue(tempObjectBtnPartida.nextElementSibling.querySelector("input"));
         $('#modal-partidas').modal('hide');
@@ -1018,8 +1018,8 @@ class ListarRequerimientoPagoView {
         tempObjectBtnCentroCostos.textContent = 'Cambiar';
 
         let tr = tempObjectBtnCentroCostos.closest("tr");
-        tr.querySelector("p[class='descripcion-centro-costo']").textContent = descripcion
-        tr.querySelector("p[class='descripcion-centro-costo']").setAttribute('title', codigo);
+        tr.querySelector("p[class='descripcion-centro-costo']").textContent = codigo
+        tr.querySelector("p[class='descripcion-centro-costo']").setAttribute('title', descripcion);
         this.checkStatusValue(tempObjectBtnCentroCostos.nextElementSibling.querySelector("input"));
         $('#modal-centro-costos').modal('hide');
         tempObjectBtnCentroCostos = null;
