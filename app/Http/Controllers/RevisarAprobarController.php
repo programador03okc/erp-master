@@ -6,7 +6,6 @@ use App\Helpers\NotificacionHelper;
 use App\Mail\EmailNotificarUsuarioPropietarioDeDocumento;
 use App\Models\Administracion\Aprobacion;
 use App\Models\Administracion\Division;
-use App\Models\Administracion\DivisionArea;
 use App\Models\Administracion\Documento;
 use App\Models\Administracion\Flujo;
 use App\Models\Administracion\Operacion;

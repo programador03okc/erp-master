@@ -13,7 +13,6 @@ use App\Http\Controllers\ProyectosController;
 use App\Models\Administracion\Aprobacion;
 use App\Models\Administracion\Area;
 use App\Models\Administracion\Division;
-use App\Models\Administracion\DivisionArea;
 use App\Models\Administracion\Documento;
 use App\Models\Administracion\Flujo;
 use App\Models\Administracion\Operacion;

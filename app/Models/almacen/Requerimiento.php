@@ -408,7 +408,7 @@ class Requerimiento extends Model
     }
     public function division()
     {
-        return $this->belongsTo('App\Models\Administracion\DivisionArea', 'division_id', 'id_division');
+        return $this->belongsTo('App\Models\Administracion\Division', 'division_id', 'id_division');
     }
     public function creadoPor()
     {

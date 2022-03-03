@@ -8,7 +8,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\ProyectosController;
 use App\Models\Administracion\Aprobacion;
 use App\Models\Administracion\Division;
-use App\Models\Administracion\DivisionArea;
 use App\Models\Administracion\Documento;
 use App\Models\Administracion\Empresa;
 use App\Models\Administracion\Periodo;
