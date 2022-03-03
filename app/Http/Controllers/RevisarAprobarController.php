@@ -52,7 +52,7 @@ class RevisarAprobarController extends Controller{
             $idRolUsuarioList[] = $rol->id_rol;
         }
 
-        $divisiones = DivisionArea::mostrar();
+        $divisiones = Division::mostrar();
         $idDivisionList = [];
         foreach ($divisiones as $value) {
             $idDivisionList[] = $value->id_division; //lista de id del total de divisiones 
@@ -69,7 +69,7 @@ class RevisarAprobarController extends Controller{
         foreach ($usuarioDivision as $value) {
             $idDivisionUsuarioList[] = $value->id_division;
         }
-        // Debugbar::info($idDivisionUsuarioList);
+        Debugbar::info($idDivisionUsuarioList);
 
 
         // $idEmpresa = $request->idEmpresa;
@@ -205,7 +205,7 @@ class RevisarAprobarController extends Controller{
                 }
 
                 $operaciones = Operacion::getOperacion($tipoDocumento, $idTipoRequerimiento, $idGrupo, $idDivision, $idPrioridad, $idMoneda, $montoTotal, $idTipoRequerimientoPago);
-                // Debugbar::info($operaciones);
+                Debugbar::info($operaciones);
                 if(count($operaciones)>1){
                     $mensaje[]= "Se detecto que los criterios del requerimiento dan como resultado multibles operaciones :".$operaciones;
 
@@ -330,16 +330,20 @@ class RevisarAprobarController extends Controller{
                     }
                     
                     $llenarCargaUtil=false;
+                
+                    Debugbar::info($nextIdRolAprobante);
 
                     if ((in_array($nextIdRolAprobante, $idRolUsuarioList)) == true || (in_array($idRolAprobanteEnCualquierOrden, $idRolUsuarioList)) == true) {
-                        Debugbar::info($idDivisionUsuarioList);
-
+                        // Debugbar::info($nextIdRolAprobante);
+                        // Debugbar::info($idRolUsuarioList);
                         if ($nextNroOrden == 1) {
                             // fitlar por division
-                            if (in_array($idDivision, $idDivisionUsuarioList) == true) {
-                                $llenarCargaUtil=true;
-                            }
-                        } else {
+                        //     Debugbar::info('division:'.$idDivision); // 10  rrhh
+                        //     Debugbar::info($idDivisionUsuarioList); // [9] contabilidad fiannzas
+                        //     if (in_array($idDivision, $idDivisionUsuarioList) == true) {
+                        //         $llenarCargaUtil=true;
+                        //     }
+                        // } else {
                             $llenarCargaUtil=true;
                         }
                         if($llenarCargaUtil){

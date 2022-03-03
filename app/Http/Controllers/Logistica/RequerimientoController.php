@@ -81,7 +81,7 @@ class RequerimientoController extends Controller
         $unidades = (new AlmacenController)->mostrar_unidades_cbo();
         $proyectos_activos = (new ProyectosController)->listar_proyectos_activos();
         $fuentes = Fuente::mostrar();
-        $divisiones = DivisionArea::mostrar();
+        $divisiones = Division::mostrar();
         $categoria_adjunto = CategoriaAdjunto::mostrar();
         $tipo_cambio = (new SaldosController)->tipo_cambio_compra(new Carbon());
 
@@ -97,7 +97,7 @@ class RequerimientoController extends Controller
 
     public function listaDivisiones()
     {
-        return DivisionArea::mostrar();
+        return Division::mostrar();
     }
     public function mostrarPartidas($idGrupo, $idProyecto = null)
     {
@@ -1571,7 +1571,7 @@ class RequerimientoController extends Controller
     //         $idRolUsuarioList[] = $rol->id_rol;
     //     }
 
-    //     $divisiones = DivisionArea::mostrar();
+    //     $divisiones = Division::mostrar();
     //     $idDivisionList = [];
     //     foreach ($divisiones as $value) {
     //         $idDivisionList[] = $value->id_division; //lista de id del total de divisiones 
@@ -2149,7 +2149,7 @@ class RequerimientoController extends Controller
 
     public function listarDivisionPorGrupo($idGrupo)
     {
-        return DivisionArea::listarDivisionPorGrupo($idGrupo);
+        return Division::listarDivisionPorGrupo($idGrupo);
     }
 
 
@@ -3036,7 +3036,7 @@ class RequerimientoController extends Controller
 
     public function mostrarDivisionesDeGrupo($idGrupo)
     {
-        $divisiones = DivisionArea::where("grupo_id", $idGrupo)->get();
+        $divisiones = Division::where("grupo_id", $idGrupo)->get();
 
         return $divisiones;
     }

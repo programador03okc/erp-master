@@ -7,6 +7,7 @@ use Illuminate\Http\RedirectResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ProyectosController;
 use App\Models\Administracion\Aprobacion;
+use App\Models\Administracion\Division;
 use App\Models\Administracion\DivisionArea;
 use App\Models\Administracion\Documento;
 use App\Models\Administracion\Empresa;
@@ -60,7 +61,7 @@ class RequerimientoPagoController extends Controller
         $tiposDestinatario = RequerimientoPagoTipoDestinatario::mostrar();
         $empresas = Empresa::mostrar();
         $grupos = Grupo::mostrar();
-        $divisiones = DivisionArea::mostrar();
+        $divisiones = Division::mostrar();
         $monedas = Moneda::mostrar();
         $unidadesMedida = UnidadMedida::mostrar();
         $proyectosActivos = (new ProyectosController)->listar_proyectos_activos();
@@ -98,7 +99,7 @@ class RequerimientoPagoController extends Controller
     //     $tipoDestinatario = RequerimientoPagoTipoDestinatario::mostrar();
     //     $empresas = Empresa::mostrar();
     //     $grupos = Grupo::mostrar();
-    //     $divisiones = DivisionArea::mostrar();
+    //     $divisiones = Division::mostrar();
     //     $monedas = Moneda::mostrar();
     //     $unidadesMedida = UnidadMedida::mostrar();
     //     $proyectosActivos = (new ProyectosController)->listar_proyectos_activos();
