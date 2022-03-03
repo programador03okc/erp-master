@@ -44,6 +44,27 @@ Centros de Costos
                     <form id="form-centro-costos" style="padding-right: 20px; padding-top: 10px;">
                         <input style="display: none" name="id_centro_costo"/> 
                         <div class="row">
+                            <div class="col-md-5">
+                                <h5>Grupo</h5>
+                                <select class="form-control" name="id_grupo" required>
+                                    <option value="">Elija una opción</option>
+                                    @foreach ($grupos as $grupo)
+                                    <option value="{{$grupo->id_grupo}}">{{$grupo->descripcion}}</option>
+                                    @endforeach
+                                </select>
+
+                            </div>
+                            <div class="col-md-5">
+                                <h5>Periodo</h5>
+                                <select class="form-control" name="periodo" required>
+                                    <option value="">Elija una opción</option>
+                                    @foreach ($periodos as $periodo)
+                                    <option value="{{$periodo->descripcion}}">{{$periodo->descripcion}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
                             <div class="col-md-4">
                                 <h5>Código</h5>
                                 <input type="text" name="codigo" class="form-control" required>
