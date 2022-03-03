@@ -51,7 +51,7 @@ class CentroCostoController extends Controller
         $centroCostos = CentroCosto::orderBy('codigo','asc')
         ->where('estado',1)
         ->whereIn('id_grupo',$idGrupoList)
-        ->whereRaw('centro_costo.version = (select max("version") from finanzas.centro_costo)')
+        ->whereRaw('centro_costo.periodo = (select max("periodo") from finanzas.centro_costo)')
         ->select(['*',DB::raw("CASE WHEN (SELECT cc.codigo FROM finanzas.centro_costo AS cc WHERE centro_costo.codigo!=cc.codigo AND cc.codigo LIKE centro_costo.codigo || '.%' 
         AND cc.version=centro_costo.version LIMIT 1) IS NULL THEN true ELSE false END AS seleccionable")])->get();
 
