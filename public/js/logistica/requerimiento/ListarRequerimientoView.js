@@ -701,6 +701,7 @@ class ListarRequerimientoView {
 }
 
     construirSeccionItemsDeRequerimiento(data, simboloMoneda) {
+        // console.log(data);
         this.limpiarTabla('listaDetalleRequerimientoModal');
         tempArchivoAdjuntoItemList = [];
         let html = '';
@@ -726,8 +727,8 @@ class ListarRequerimientoView {
                 }
                 document.querySelector("tbody[id='body_item_requerimiento']").insertAdjacentHTML('beforeend', `<tr>
                 <td>${i + 1}</td>
-                <td>${data[i].descripcion_partida ? data[i].descripcion_partida : ''}</td>
-                <td>${data[i].descripcion_centro_costo ? data[i].descripcion_centro_costo : ''}</td>
+                <td>${data[i].codigo_partida ? data[i].codigo_partida : ''}</td>
+                <td>${data[i].codigo_centro_costo ? data[i].codigo_centro_costo : ''}</td>
                 <td>${data[i].id_tipo_item == 1 ? (data[i].producto_part_number ? data[i].producto_part_number : data[i].part_number) : '(Servicio)'}${data[i].tiene_transformacion==true?'<br><span class="label label-default">Transformado</span>':''} </td>
                 <td>${data[i].producto_descripcion !=null ? data[i].producto_descripcion : (data[i].descripcion ? data[i].descripcion : '')} </td>
                 <td>${data[i].unidad_medida !=null ?data[i].unidad_medida:''}</td>

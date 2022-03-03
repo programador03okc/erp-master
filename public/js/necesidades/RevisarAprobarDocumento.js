@@ -660,6 +660,7 @@ class RevisarAprobarDocumentoView {
         // ### ==================== Detalle ====================== ###
 
         this.limpiarTabla('listaDetalleRequerimientoPago');
+        console.log(data);
         if (data.detalle.length > 0) {
             for (let i = 0; i < data.detalle.length; i++) {
                 let cantidadAdjuntosItem = 0;
@@ -667,8 +668,8 @@ class RevisarAprobarDocumentoView {
 
                 document.querySelector("tbody[id='body_requerimiento_pago_detalle']").insertAdjacentHTML('beforeend', `<tr style="background-color:${data.detalle[i].id_estado == '7' ? '#f1d7d7' : ''}">
                 <td>${i + 1}</td>
-                <td>${data.detalle[i].partida ? data.detalle[i].partida.descripcion : ''}</td>
-                <td>${data.detalle[i].centro_costo ? data.detalle[i].centro_costo.descripcion : ''}</td>
+                <td>${data.detalle[i].partida ? data.detalle[i].partida.codigo : ''}</td>
+                <td>${data.detalle[i].centro_costo ? data.detalle[i].centro_costo.codigo : ''}</td>
                 <td name="descripcion_servicio">${data.detalle[i].descripcion != null ? data.detalle[i].descripcion : ''} </td>
                 <td>${data.detalle[i].unidad_medida != null ? data.detalle[i].unidad_medida.descripcion : ''}</td>
                 <td style="text-align:center;">${data.detalle[i].cantidad >= 0 ? data.detalle[i].cantidad : ''}</td>
@@ -810,8 +811,8 @@ class RevisarAprobarDocumentoView {
                 }
                 document.querySelector("tbody[id='body_item_requerimiento']").insertAdjacentHTML('beforeend', `<tr>
                 <td>${i + 1}</td>
-                <td>${data[i].descripcion_partida ? data[i].descripcion_partida : ''}</td>
-                <td>${data[i].descripcion_centro_costo ? data[i].descripcion_centro_costo : ''}</td>
+                <td>${data[i].codigo_partida ? data[i].codigo_partida : ''}</td>
+                <td>${data[i].codigo_centro_costo ? data[i].codigo_centro_costo : ''}</td>
                 <td>${data[i].id_tipo_item == 1 ? (data[i].producto_part_number ? data[i].producto_part_number : data[i].part_number) : '(Servicio)'}${data[i].tiene_transformacion==true?'<br><span class="label label-default">Transformado</span>':''} </td>
                 <td>${data[i].producto_descripcion !=null ? data[i].producto_descripcion : (data[i].descripcion ? data[i].descripcion : '')} </td>
                 <td>${data[i].unidad_medida !=null ?data[i].unidad_medida:''}</td>
