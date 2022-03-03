@@ -465,9 +465,9 @@ class ListarRequerimientoPagoView {
         return false;
     }
 
-    construirOptSelectSede(idEmpresa) {
+    construirOptSelectSede(idEmpresa,idSede=null) {
         this.obtenerSede(idEmpresa).then((res) => {
-            this.llenarSelectSede(res);
+            this.llenarSelectSede(res,idSede);
         }).catch(function (err) {
             console.log(err)
         })
@@ -489,7 +489,7 @@ class ListarRequerimientoPagoView {
         });
     }
 
-    llenarSelectSede(array) {
+    llenarSelectSede(array,idSede=null) {
 
         let selectElement = document.querySelector("div[id='modal-requerimiento-pago'] select[name='sede']");
         if (selectElement.options.length > 0) {
@@ -504,7 +504,7 @@ class ListarRequerimientoPagoView {
             let option = document.createElement("option");
             option.text = element.descripcion;
             option.value = element.id_sede;
-            if (element.codigo == 'LIMA' || element.codigo == 'Lima') { // default sede lima
+            if (element.id_sede == idSede) {
                 option.selected = true;
 
             }
@@ -553,9 +553,9 @@ class ListarRequerimientoPagoView {
         return false;
     }
 
-    construirOptSelectDivision(idGrupo) {
+    construirOptSelectDivision(idGrupo, idDivision=null) {
         this.obtenerDivision(idGrupo).then((res) => {
-            this.llenarSelectDivision(res);
+            this.llenarSelectDivision(res, idDivision);
         }).catch(function (err) {
             console.log(err)
         })
@@ -576,7 +576,7 @@ class ListarRequerimientoPagoView {
         });
     }
 
-    llenarSelectDivision(array) {
+    llenarSelectDivision(array, idDivision=null) {
         let selectElement = document.querySelector("div[id='modal-requerimiento-pago'] select[name='division']");
         if (selectElement.options.length > 0) {
             let i, L = selectElement.options.length - 1;
@@ -590,6 +590,9 @@ class ListarRequerimientoPagoView {
             let option = document.createElement("option");
             option.text = element.descripcion;
             option.value = element.id_division;
+            if(element.id_division == idDivision){
+                option.selected=true;
+            }
 
             option.setAttribute('data-id-grupo', element.grupo_id);
             selectElement.add(option);
@@ -1969,10 +1972,10 @@ class ListarRequerimientoPagoView {
 
     mostrarRequerimientoPago(data) {
         if (data.id_empresa > 0) {
-            this.construirOptSelectSede(data.id_empresa);
+            this.construirOptSelectSede(data.id_empresa, data.id_sede);
         }
         if (data.id_grupo > 0) {
-            this.construirOptSelectDivision(data.id_grupo);
+            this.construirOptSelectDivision(data.id_grupo,data.id_division);
         }
 
         document.querySelector("div[id='modal-requerimiento-pago'] select[name='sede']").removeAttribute("disabled");
@@ -2025,6 +2028,7 @@ class ListarRequerimientoPagoView {
         document.querySelector("div[id='modal-requerimiento-pago'] select[name='empresa']").value = data.id_empresa;
         document.querySelector("div[id='modal-requerimiento-pago'] select[name='sede']").value = data.id_sede;
         document.querySelector("div[id='modal-requerimiento-pago'] select[name='grupo']").value = data.id_grupo;
+        console.log(data.id_division);
         document.querySelector("div[id='modal-requerimiento-pago'] select[name='division']").value = data.id_division;
         document.querySelector("div[id='modal-requerimiento-pago'] input[name='monto_total']").value = data.monto_total;
         document.querySelector("div[id='modal-requerimiento-pago'] input[name='monto_total_read_only']").value = $.number(data.monto_total, 2);
