@@ -25,6 +25,7 @@ use App\Models\Logistica\Proveedor;
 use App\Models\mgcp\CuadroCosto\CuadroCostoView;
 use App\Models\Rrhh\CuentaPersona;
 use App\Models\Rrhh\Persona;
+use App\Models\Tesoreria\RegistroPago;
 use App\Models\Tesoreria\RequerimientoPagoDetalle;
 use App\Models\Tesoreria\RequerimientoPago;
 use App\Models\Tesoreria\RequerimientoPagoAdjunto;
@@ -137,6 +138,7 @@ class RequerimientoPagoController extends Controller
             ->leftJoin('contabilidad.sis_identi', 'sis_identi.id_doc_identidad', '=', 'adm_contri.id_doc_identidad')
             ->leftJoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'requerimiento_pago.id_usuario')
             ->leftJoin('administracion.division', 'division.id_division', '=', 'requerimiento_pago.id_division')
+            
             ->select(
                 'requerimiento_pago.*',
                 'requerimiento_pago_tipo.descripcion as descripcion_requerimiento_pago_tipo',
@@ -150,7 +152,11 @@ class RequerimientoPagoController extends Controller
                 'adm_contri.razon_social as empresa_razon_social',
                 'adm_contri.nro_documento as empresa_nro_documento',
                 'sis_identi.descripcion as empresa_tipo_documento',
-                'sis_usua.nombre_corto as usuario_nombre_corto'
+                'sis_usua.nombre_corto as usuario_nombre_corto',
+                DB::raw("(SELECT COUNT(registro_pago.id_pago) 
+                FROM tesoreria.registro_pago 
+                WHERE  registro_pago.id_requerimiento_pago = requerimiento_pago.id_requerimiento_pago AND registro_pago.adjunto IS NOT NULL AND
+                registro_pago.estado != 7) AS cantidad_adjuntos_pago")
             )
             ->when(($mostrar === 'ME'), function ($query) {
                 $idUsuario = Auth::user()->id_usuario;
@@ -200,6 +206,11 @@ class RequerimientoPagoController extends Controller
             ->rawColumns(['termometro'])->toJson();
     }
 
+    function listarAdjuntosPago($idRequerimientoPago){
+        
+        $registrosPago = RegistroPago::where([["id_requerimiento_pago",$idRequerimientoPago],["adjunto",'!=',null]])->get();
+        return $registrosPago;
+    }
 
 
     function guardarRequerimientoPago(Request $request)
