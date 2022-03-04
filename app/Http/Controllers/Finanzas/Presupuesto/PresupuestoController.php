@@ -18,19 +18,19 @@ class PresupuestoController extends Controller
 
     public function index()
     {
-        $presupuestos = Presupuesto::all()->where('estado',1);
-    
-        return view('finanzas.presupuestos.index',compact('presupuestos'));
+        $presupuestos = Presupuesto::all()->where('estado', 1);
+
+        return view('finanzas.presupuestos.index', compact('presupuestos'));
     }
 
     public function create()
     {
-        $presupuesto = new Presupuesto;
+        $presupuesto = new Presupuesto();
         $grupos = Grupo::all();
         $monedas = Moneda::all();
-        $presupuestos = Presupuesto::all()->where('estado',1);
-        
-        return view('finanzas.presupuestos.create', compact('presupuesto','grupos','monedas','presupuestos'));
+        $presupuestos = Presupuesto::where('estado', 1)->get();
+
+        return view('finanzas.presupuestos.create', compact('presupuesto', 'grupos', 'monedas', 'presupuestos'));
     }
 
     public function mostrarPartidas($id)
@@ -47,19 +47,23 @@ class PresupuestoController extends Controller
     public function mostrarRequerimientosDetalle($id)
     {
         $detalle = DB::table('almacen.alm_det_req')
-                    ->select('alm_det_req.*','alm_req.codigo','alm_req.concepto','alm_req.fecha_requerimiento')
-                    ->join('almacen.alm_req','alm_req.id_requerimiento','=','alm_det_req.id_requerimiento')
-                    ->where([['alm_det_req.partida','=',$id],
-                             ['alm_det_req.estado','=',1]])
-                    ->get();
+            ->select('alm_det_req.*', 'alm_req.codigo', 'alm_req.concepto', 'alm_req.fecha_requerimiento')
+            ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+            ->where([
+                ['alm_det_req.partida', '=', $id],
+                ['alm_det_req.estado', '=', 1]
+            ])
+            ->get();
 
         return response()->json($detalle);
     }
 
     public function store()
     {
-        $codigo = $this->presupNextCodigo(  request('id_grupo'),
-                                            request('fecha_emision') );
+        $codigo = $this->presupNextCodigo(
+            request('id_grupo'),
+            request('fecha_emision')
+        );
 
         $data = Presupuesto::create([
             'id_empresa' => 4,
@@ -90,29 +94,32 @@ class PresupuestoController extends Controller
         return response()->json($data);
     }
 
-    public function presupNextCodigo($id_grupo,$fecha)
+    public function presupNextCodigo($id_grupo, $fecha)
     {
-        $yyyy = date('Y',strtotime($fecha));
-        $anio = date('y',strtotime($fecha));
+        $yyyy = date('Y', strtotime($fecha));
+        $anio = date('y', strtotime($fecha));
 
         $grupo = Grupo::findOrFail($id_grupo);
-        
-        $correlativo = Presupuesto::where([ ['id_grupo','=',$id_grupo],
-                                            ['estado','=',1] ])
-                                    ->whereYear('fecha_emision', '=', $yyyy)
-                                    ->count();
 
-        $next = $this->leftZero(3,$correlativo+1);
+        $correlativo = Presupuesto::where([
+            ['id_grupo', '=', $id_grupo],
+            ['estado', '=', 1]
+        ])
+            ->whereYear('fecha_emision', '=', $yyyy)
+            ->count();
 
-        return 'P'.$grupo->abreviatura.$anio.$next;
+        $next = $this->leftZero(3, $correlativo + 1);
+
+        return 'P' . $grupo->abreviatura . $anio . $next;
     }
 
-    public function leftZero($lenght, $number){
+    public function leftZero($lenght, $number)
+    {
         $nLen = strlen($number);
         $zeros = '';
-        for($i=0; $i<($lenght-$nLen); $i++){
-            $zeros = $zeros.'0';
+        for ($i = 0; $i < ($lenght - $nLen); $i++) {
+            $zeros = $zeros . '0';
         }
-        return $zeros.$number;
+        return $zeros . $number;
     }
 }
