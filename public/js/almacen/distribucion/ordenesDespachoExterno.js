@@ -215,7 +215,8 @@ function listarRequerimientosPendientes(usuario) {
             {
                 data: 'adjunto',
                 'render': function (data, type, row) {
-                    return (row['adjunto'] !== null ? 'Si' : 'No');
+                    return (row['adjunto'] !== null ?
+                        `<a target="_blank" href="/files/almacen/trazabilidad_envio/${row['adjunto']}">Adjunto</a>` : '');
                 }, className: "text-center", searchable: 'false', orderable: 'false'
             },
             {
@@ -229,25 +230,6 @@ function listarRequerimientosPendientes(usuario) {
         ],
         columnDefs: [
             { targets: [0], className: "invisible" },
-            // {
-            //     targets: 1,
-            //     searchable: false,
-            //     orderable: false,
-            //     className: "dt-body-center",
-            //     checkboxes: {
-            //         selectRow: true,
-            //         selectCallback: function (nodes, selected) {
-            //             $('input[type="checkbox"]', nodes).iCheck("update");
-            //         },
-            //         selectAllCallback: function (
-            //             nodes,
-            //             selected,
-            //             indeterminate
-            //         ) {
-            //             $('input[type="checkbox"]', nodes).iCheck("update");
-            //         }
-            //     }
-            // },
             {
                 render: function (data, type, row) {
                     if (row["codigo"] !== null) {

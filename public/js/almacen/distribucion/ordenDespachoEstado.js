@@ -130,6 +130,7 @@ function formatTimeLine(table_id, id, row) {
                             ${element.observacion !== null ? element.observacion + '<br>' : ''}
                             ${element.nombre_corto}<br>
                             ${element.gasto_extra !== null ? ('<strong>Gasto extra: S/' + element.gasto_extra + '</strong><br>') : ''}
+                            ${element.adjunto !== null ? (`<a target="_blank" href="/files/almacen/trazabilidad_envio/${element.adjunto}">Adjunto</a><br>`) : ''}
                             </small></p>
                             </div>
                         </div>
