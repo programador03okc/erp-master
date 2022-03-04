@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class IncidenciaReporte extends Model
 {
-    protected $table = 'almacen.incidencia_reporte';
+    protected $table = 'cas.incidencia_reporte';
     public $timestamps = false;
     protected $primaryKey = 'id_incidencia_reporte';
 

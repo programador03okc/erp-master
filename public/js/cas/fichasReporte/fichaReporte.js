@@ -11,7 +11,15 @@ function listarIncidencias() {
         },
         'columns': [
             { 'data': 'id_incidencia' },
-            { 'data': 'codigo' },
+            // { 'data': 'codigo' },
+            {
+                'data': 'codigo',
+                render: function (data, type, row) {
+                    return (
+                        `<a href="#" class="incidencia" data-id="${row["id_incidencia"]}">${row["codigo"]}</a>`
+                    );
+                }, className: "text-center"
+            },
             { 'data': 'empresa_razon_social', 'name': 'empresa.razon_social' },
             { 'data': 'razon_social', 'name': 'adm_contri.razon_social' },
             { 'data': 'concepto', 'name': 'alm_req.concepto' },
@@ -21,11 +29,32 @@ function listarIncidencias() {
                     return (row['serie'] !== null ? row['serie'] + '-' + row['numero'] : '');
                 }
             },
-            { 'data': 'nombre', name: 'adm_ctb_contac.nombre' },
-            { 'data': 'telefono', name: 'adm_ctb_contac.telefono' },
-            { 'data': 'cargo', name: 'adm_ctb_contac.cargo' },
-            { 'data': 'direccion', name: 'adm_ctb_contac.direccion' },
-            { 'data': 'horario', name: 'adm_ctb_contac.horario' },
+            // { 'data': 'nombre', name: 'adm_ctb_contac.nombre' },
+            {
+                'data': 'nombre', name: 'adm_ctb_contac.nombre',
+                render: function (data, type, row) {
+                    if (row["nombre"] == null) {
+                        return '';
+                    } else {
+                        return (
+                            `<a href="#" class="contacto" 
+                            data-nombre="${row["nombre"]}" 
+                            data-cargo="${row["cargo"]}"
+                            data-telefono="${row["telefono"]}"
+                            data-direccion="${row["direccion"]}"
+                            data-horario="${row["horario"]}"
+                            data-email="${row["email"]}"
+                            data-codigo="${row["codigo"]}"
+                            data-usuario="${row["usuario_final"]}"
+                            >${row["nombre"]}</a>`
+                        );
+                    }
+                }, className: "text-center"
+            },
+            // { 'data': 'telefono', name: 'adm_ctb_contac.telefono' },
+            // { 'data': 'cargo', name: 'adm_ctb_contac.cargo' },
+            // { 'data': 'direccion', name: 'adm_ctb_contac.direccion' },
+            // { 'data': 'horario', name: 'adm_ctb_contac.horario' },
             {
                 data: 'fecha_reporte',
                 'render': function (data, type, row) {
@@ -35,10 +64,9 @@ function listarIncidencias() {
             { 'data': 'nombre_corto', name: 'sis_usua.nombre_corto' },
             { 'data': 'falla_reportada' },
             {
-                'data': 'estado_doc', name: 'estado.estado_doc',
+                'data': 'estado_doc', name: 'incidencia_estado.descripcion',
                 'render': function (data, type, row) {
-                    return '<span class="label label-' + row['bootstrap_color'] + '">' +
-                        row['estado_doc'] + '</span>';
+                    return `<span class="label label-${row['bootstrap_color']}">${row['estado_doc']}</span>`;
                 }, className: "text-center"
             },
             {
@@ -78,6 +106,39 @@ $('#listaIncidencias tbody').on("click", "button.agregar", function (e) {
     $('.limpiarReporte').val('');
 });
 
+$("#listaIncidencias tbody").on("click", "a.incidencia", function (e) {
+    var id = $(this).data("id");
+    localStorage.setItem("id_incidencia", id);
+    var win = window.open("/cas/garantias/incidencias/index", '_blank');
+    win.focus();
+});
+
+$("#listaIncidencias tbody").on("click", "a.contacto", function (e) {
+    $(e.preventDefault());
+    $('.limpiarTexto').text();
+
+    $('#modal-datosContacto').modal({
+        show: true
+    });
+
+    var nombre = $(this).data("nombre");
+    var cargo = $(this).data("cargo");
+    var telefono = $(this).data("telefono");
+    var direccion = $(this).data("direccion");
+    var horario = $(this).data("horario");
+    var email = $(this).data("email");
+    var codigo = $(this).data("codigo");
+    var usuario = $(this).data("usuario");
+
+    $(".nombre").text(nombre);
+    $(".cargo").text(cargo);
+    $(".telefono").text(telefono);
+    $(".direccion").text(direccion);
+    $(".horario").text(horario);
+    $(".email").text(email);
+    $("#codigo_incidencia").text(codigo);
+    $(".usuario_final").text(usuario);
+});
 
 $("#form-fichaReporte").on("submit", function (e) {
     e.preventDefault();

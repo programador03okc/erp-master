@@ -16,7 +16,7 @@ $(function () {
         if (item == undefined) {
             listaSeriesProductos.push({
                 "id_incidencia_producto": 0,
-                "id_incidencia": $id,
+                "id_incidencia": id,
                 "id_prod_serie": data.id_prod_serie,
                 "serie": data.serie,
                 "id_producto": data.id_producto,
