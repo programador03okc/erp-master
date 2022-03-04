@@ -43,10 +43,10 @@ Gestión de fichas reporte
                                 <th>Concepto</th>
                                 <th>Guía Venta</th>
                                 <th>Nombre contacto</th>
-                                <th>Telf. contacto</th>
+                                {{-- <th>Telf. contacto</th>
                                 <th>Cargo contacto</th>
                                 <th>Dirección</th>
-                                <th>Horario</th>
+                                <th>Horario</th> --}}
                                 <th>Fecha reporte</th>
                                 <th>Responsable</th>
                                 <th>Falla</th>
@@ -67,6 +67,7 @@ Gestión de fichas reporte
 </div>
 
 @include('cas.fichasReporte.fichaReporteCreate')
+@include('cas.fichasReporte.verDatosContacto')
 
 @endsection
 

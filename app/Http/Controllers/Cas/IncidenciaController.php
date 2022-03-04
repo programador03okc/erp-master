@@ -96,7 +96,7 @@ class IncidenciaController extends Controller
     function mostrarIncidencia($id)
     {
         // $incidencia = Incidencia::with('contribuyente', 'contacto', 'responsable', 'estado')
-        $incidencia = DB::table('almacen.incidencia')
+        $incidencia = DB::table('cas.incidencia')
             ->select(
                 'incidencia.*',
                 'guia_ven.serie',
@@ -158,10 +158,9 @@ class IncidenciaController extends Controller
             $incidencia->usuario_final = $request->usuario_final;
             $incidencia->id_tipo_falla = $request->id_tipo_falla;
             $incidencia->id_tipo_servicio = $request->id_tipo_servicio;
-            $incidencia->id_division = $request->id_division;
+            // $incidencia->id_division = $request->id_division;
             $incidencia->id_medio = $request->id_medio;
             $incidencia->conformidad = $request->conformidad;
-            // $incidencia->equipo_operativo = $request->equipo_operativo;
             $incidencia->equipo_operativo = ((isset($request->equipo_operativo) && $request->equipo_operativo == 'on') ? true : false);
             $incidencia->falla_reportada = $request->falla_reportada;
             $incidencia->anio = $yyyy;
@@ -215,10 +214,9 @@ class IncidenciaController extends Controller
                 $incidencia->usuario_final = $request->usuario_final;
                 $incidencia->id_tipo_falla = $request->id_tipo_falla;
                 $incidencia->id_tipo_servicio = $request->id_tipo_servicio;
-                $incidencia->id_division = $request->id_division;
+                // $incidencia->id_division = $request->id_division;
                 $incidencia->id_medio = $request->id_medio;
                 $incidencia->conformidad = $request->conformidad;
-                // $incidencia->equipo_operativo = $request->equipo_operativo;
                 $incidencia->equipo_operativo = ($request->equipo_operativo == 'on' ? true : false);
                 $incidencia->falla_reportada = $request->falla_reportada;
                 $incidencia->save();

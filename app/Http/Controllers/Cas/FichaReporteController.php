@@ -23,7 +23,7 @@ class FichaReporteController extends Controller
 
     function listarIncidencias()
     {
-        $lista = DB::table('almacen.incidencia')
+        $lista = DB::table('cas.incidencia')
             ->select(
                 'incidencia.*',
                 'guia_ven.serie',
@@ -43,8 +43,8 @@ class FichaReporteController extends Controller
                 'adm_ctb_contac.horario',
                 'adm_ctb_contac.email',
                 'sis_usua.nombre_corto',
-                'adm_estado_doc.estado_doc',
-                'adm_estado_doc.bootstrap_color',
+                'incidencia_estado.descripcion as estado_doc',
+                'incidencia_estado.bootstrap_color',
             )
             ->leftjoin('almacen.mov_alm', 'mov_alm.id_mov_alm', '=', 'incidencia.id_salida')
             ->leftjoin('almacen.guia_ven', 'guia_ven.id_guia_ven', '=', 'mov_alm.id_guia_ven')
@@ -56,7 +56,7 @@ class FichaReporteController extends Controller
             ->leftjoin('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'incidencia.id_empresa')
             ->leftjoin('contabilidad.adm_contri as empresa', 'empresa.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
             ->leftjoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'incidencia.id_responsable')
-            ->leftjoin('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'incidencia.estado')
+            ->leftjoin('almacen.incidencia_estado', 'incidencia_estado.id_estado', '=', 'incidencia.estado')
             ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'incidencia.id_contribuyente')
             ->leftjoin('contabilidad.adm_ctb_contac', 'adm_ctb_contac.id_datos_contacto', '=', 'incidencia.id_contacto')
             ->where([['incidencia.estado', '!=', 7]]);
