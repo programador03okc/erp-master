@@ -64,11 +64,11 @@ class RevisarAprobarController extends Controller{
         // }
         $idDivisionUsuarioList = [];
 
-        $usuarioDivision = UsuarioDivision::mostrarDivisionUsuarioAcceso();
-        foreach ($usuarioDivision as $value) {
+        $usuarioDivisionAcceso = UsuarioDivision::mostrarDivisionUsuarioAcceso();
+        foreach ($usuarioDivisionAcceso as $value) {
             $idDivisionUsuarioList[] = $value->id_division;
         }
-        Debugbar::info($idDivisionUsuarioList);
+        // Debugbar::info($idDivisionUsuarioList);
 
 
         // $idEmpresa = $request->idEmpresa;
@@ -204,7 +204,7 @@ class RevisarAprobarController extends Controller{
                 }
 
                 $operaciones = Operacion::getOperacion($tipoDocumento, $idTipoRequerimiento, $idGrupo, $idDivision, $idPrioridad, $idMoneda, $montoTotal, $idTipoRequerimientoPago);
-                Debugbar::info($operaciones);
+                // Debugbar::info($operaciones);
                 if(count($operaciones)>1){
                     $mensaje[]= "Se detecto que los criterios del requerimiento dan como resultado multibles operaciones :".$operaciones;
 
@@ -225,9 +225,9 @@ class RevisarAprobarController extends Controller{
                     $cantidadAprobacionesRealizadas = Aprobacion::getCantidadAprobacionesRealizadas($idDocumento);
                     $ultimoVoBo = Aprobacion::getUltimoVoBo($idDocumento);
                     $nextFlujo = [];
-                    $nextIdRolAprobante = 0;
+                    $nextIdRolAprobanteList = [];
                     $aprobarSinImportarOrden = false;
-                    $idRolAprobanteEnCualquierOrden=0;
+                    $idRolAprobanteEnCualquierOrdenList=[];
                     $nextIdFlujo = 0;
                     $nextIdOperacion = 0;
                     $nextNroOrden = 0;
@@ -238,13 +238,12 @@ class RevisarAprobarController extends Controller{
                     foreach ($flujoTotal as $flujo) { //obtener rol con privilegio de aprobar sin respetar orden
 
                         if($flujo->aprobar_sin_respetar_orden =='true'){
-                            $idRolAprobanteEnCualquierOrden= $flujo->id_rol;
+                            $idRolAprobanteEnCualquierOrdenList[]= $flujo->id_rol;
                         }
                     }
 
-                    if((in_array($idRolAprobanteEnCualquierOrden, $idRolUsuarioList))){
+                    if(count(array_intersect($idRolAprobanteEnCualquierOrdenList,$idRolUsuarioList))>0){
                         $aprobarSinImportarOrden = true;
-
                     }
                     
 
@@ -265,8 +264,7 @@ class RevisarAprobarController extends Controller{
                                                     $nextFlujo = $flujo;
                                                     $nextIdFlujo = $flujo->id_flujo;
                                                     $nextIdOperacion = $flujo->id_operacion;
-                                                    $nextIdRolAprobante = $flujo->id_rol;
-                                                    // $aprobarSinImportarOrden = $flujo->aprobar_sin_respetar_orden;
+                                                    $nextIdRolAprobanteList[] = $flujo->id_rol;
                                                     $aprobacionFinalOPendiente = $flujo->orden == $tamañoFlujo ? 'APROBACION_FINAL' : 'PENDIENTE'; // NEXT NRO ORDEN == TAMAÑO FLUJO?
                                                 }
                                             }
@@ -278,14 +276,11 @@ class RevisarAprobarController extends Controller{
                         if ($ultimoVoBo->id_vobo == 3 && $ultimoVoBo->id_sustentacion != null) { //observado con sustentacion
                             foreach ($flujoTotal as $flujo) {
                                 if ($flujo->orden == 1) {
-                                    // Debugbar::info($flujo);
                                     $nextFlujo = $flujo;
                                     $nextNroOrden = $flujo->orden;
                                     $nextIdOperacion = $flujo->id_operacion;
                                     $nextIdFlujo = $flujo->id_flujo;
-                                    $nextIdRolAprobante = $flujo->id_rol;
-                                    // $aprobarSinImportarOrden = $flujo->aprobar_sin_respetar_orden;
-
+                                    $nextIdRolAprobanteList[] = $flujo->id_rol;
                                     $aprobacionFinalOPendiente = $flujo->orden == $tamañoFlujo ? 'APROBACION_FINAL' : 'PENDIENTE'; // NEXT NRO ORDEN == TAMAÑO FLUJO?
     
                                 }
@@ -301,8 +296,7 @@ class RevisarAprobarController extends Controller{
                                 $nextNroOrden = $flujo->orden;
                                 $nextIdOperacion = $flujo->id_operacion;
                                 $nextIdFlujo = $flujo->id_flujo;
-                                $nextIdRolAprobante = $flujo->id_rol;
-                                // $aprobarSinImportarOrden = $flujo->aprobar_sin_respetar_orden;
+                                $nextIdRolAprobanteList[] = $flujo->id_rol;
                                 $aprobacionFinalOPendiente = $flujo->orden == $tamañoFlujo ? 'APROBACION_FINAL' : 'PENDIENTE'; // NEXT NRO ORDEN == TAMAÑO FLUJO?
     
                             }
@@ -328,29 +322,26 @@ class RevisarAprobarController extends Controller{
                         $tieneRolConSiguienteAprobacion=false;    
                     }
                     
-                    $llenarCargaUtil=false;
-                
-                    Debugbar::info($nextIdRolAprobante);
+                    $idRolAprobanteIntersectSelected=0;
+                    $idRolAprobanteIntersectArray = array_intersect($nextIdRolAprobanteList, $idRolUsuarioList);
+                    foreach ($idRolAprobanteIntersectArray as $key => $value) {
+                        $idRolAprobanteIntersectSelected=$value;
+                    }
+                    if($idRolAprobanteIntersectSelected==0){ // en caso sea el usuario que puede aprobar en cualquier orden
+                        $idRolAprobanteCualquierOrdenIntersectArray = array_intersect($idRolAprobanteEnCualquierOrdenList, $idRolUsuarioList);
+                        foreach ($idRolAprobanteCualquierOrdenIntersectArray as $key => $value) {
+                            $idRolAprobanteIntersectSelected=$value;
+                    }
+                    }
 
-                    if ((in_array($nextIdRolAprobante, $idRolUsuarioList)) == true || (in_array($idRolAprobanteEnCualquierOrden, $idRolUsuarioList)) == true) {
-                        // Debugbar::info($nextIdRolAprobante);
-                        // Debugbar::info($idRolUsuarioList);
-                        if ($nextNroOrden == 1) {
-                            // fitlar por division
-                        //     Debugbar::info('division:'.$idDivision); // 10  rrhh
-                        //     Debugbar::info($idDivisionUsuarioList); // [9] contabilidad fiannzas
-                        //     if (in_array($idDivision, $idDivisionUsuarioList) == true) {
-                        //         $llenarCargaUtil=true;
-                        //     }
-                        // } else {
-                            $llenarCargaUtil=true;
-                        }else{
-                            $llenarCargaUtil=true;
-                        }
-                        if($llenarCargaUtil){
+
+                    // Debugbar::info($idRolUsuarioList);
+                    // Debugbar::info(array_intersect($idRolAprobanteEnCualquierOrdenList, $idRolUsuarioList));
+
+                    if (((count(array_intersect($nextIdRolAprobanteList, $idRolUsuarioList))) > 0) == true || (count(array_intersect($idRolAprobanteEnCualquierOrdenList, $idRolUsuarioList))) > 0) {                    
                             $element->setAttribute('id_flujo',$nextIdFlujo);
                             $element->setAttribute('id_usuario_aprobante',$idUsuarioAprobante);
-                            $element->setAttribute('id_rol_aprobante',$nextIdRolAprobante);
+                            $element->setAttribute('id_rol_aprobante',$idRolAprobanteIntersectSelected);
                             $element->setAttribute('aprobacion_final_o_pendiente',$aprobarSinImportarOrden =='true'?'APROBACION_FINAL':$aprobacionFinalOPendiente);
                             $element->setAttribute('id_doc_aprob',$idDocumento);
                             $element->setAttribute('id_operacion',$nextIdOperacion);
@@ -360,9 +351,8 @@ class RevisarAprobarController extends Controller{
                             $element->setAttribute('pendiente_aprobacion',$pendiente_aprobacion);
                             $element->setAttribute('aprobar_sin_importar_orden',$aprobarSinImportarOrden);
                             $payload[] = $element;
-                        }
+                        
                             } 
-                            Debugbar::info($llenarCargaUtil);
 
                     }
                             } 
