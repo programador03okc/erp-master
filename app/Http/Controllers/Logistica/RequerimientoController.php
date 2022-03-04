@@ -395,9 +395,9 @@ class RequerimientoController extends Controller
                 ->leftJoin('almacen.alm_und_medida as und_medida_det_req', 'alm_det_req.id_unidad_medida', '=', 'und_medida_det_req.id_unidad_medida')
                 ->leftJoin('logistica.equipo', 'alm_item.id_equipo', '=', 'equipo.id_equipo')
                 // ->leftJoin('almacen.alm_det_req_adjuntos', 'alm_det_req_adjuntos.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento')
-                ->leftJoin('finanzas.presup_par', 'presup_par.id_partida', '=', 'alm_det_req.partida')
-                ->leftJoin('finanzas.presup_titu', 'presup_titu.id_presup', '=', 'presup_par.id_presup')
-                ->leftJoin('finanzas.presup_pardet', 'presup_pardet.id_pardet', '=', 'presup_par.id_pardet')
+                // ->leftJoin('finanzas.presup_par', 'presup_par.id_partida', '=', 'alm_det_req.partida')
+                // ->leftJoin('finanzas.presup_titu', 'presup_titu.id_presup', '=', 'presup_par.id_presup')
+                // ->leftJoin('finanzas.presup_pardet', 'presup_pardet.id_pardet', '=', 'presup_par.id_pardet')
                 ->leftJoin('administracion.adm_estado_doc', 'alm_det_req.estado', '=', 'adm_estado_doc.id_estado_doc')
                 ->leftJoin('configuracion.sis_moneda', 'alm_det_req.id_moneda', '=', 'sis_moneda.id_moneda')
                 ->leftJoin('mgcp_cuadro_costos.cc_am_filas', 'cc_am_filas.id', '=', 'alm_det_req.id_cc_am_filas')
@@ -434,9 +434,9 @@ class RequerimientoController extends Controller
                     'adm_estado_doc.estado_doc',
                     'adm_estado_doc.bootstrap_color',
                     'alm_det_req.partida',
-                    'presup_par.codigo AS codigo_partida',
-                    'presup_pardet.descripcion AS descripcion_partida',
-                    'presup_par.importe_total AS presupuesto_total_partida',
+                    // 'presup_par.codigo AS codigo_partida',
+                    // 'presup_pardet.descripcion AS descripcion_partida',
+                    // 'presup_par.importe_total AS presupuesto_total_partida',
                     'alm_det_req.centro_costo_id as id_centro_costo',
                     'centro_costo.codigo as codigo_centro_costo',
                     'centro_costo.descripcion as descripcion_centro_costo',
@@ -464,7 +464,16 @@ class RequerimientoController extends Controller
                     DB::raw("(SELECT SUM(trans_detalle.cantidad) 
                     FROM almacen.trans_detalle 
                     WHERE   trans_detalle.id_requerimiento_detalle = alm_det_req.id_detalle_requerimiento AND
-                            trans_detalle.estado != 7) AS suma_transferencias")
+                            trans_detalle.estado != 7) AS suma_transferencias"),
+                    DB::raw("(SELECT (presup_par.codigo) 
+                    FROM finanzas.presup_par 
+                    WHERE  presup_par.id_partida = alm_det_req.partida ) AS codigo_partida"),
+                    DB::raw("(SELECT (presup_par.descripcion) 
+                    FROM finanzas.presup_par 
+                    WHERE  presup_par.id_partida = alm_det_req.partida ) AS descripcion_partida"),
+                    DB::raw("(SELECT (presup_par.importe_total) 
+                    FROM finanzas.presup_par 
+                    WHERE  presup_par.id_partida = alm_det_req.partida ) AS presupuesto_total_partida")
                 )
                 ->where([
                     ['alm_det_req.id_requerimiento', '=', $requerimiento[0]['id_requerimiento']]
@@ -473,14 +482,16 @@ class RequerimientoController extends Controller
                 ->orderBy('alm_item.id_item', 'asc')
                 ->get();
 
+                
+                // Debugbar::info($alm_det_req);
 
             if (isset($alm_det_req)) {
                 $lastId = "";
                 $detalle_requerimiento = [];
                 $idDetalleRequerimientoLis = [];
                 foreach ($alm_det_req as $data) {
-                    if ($data->id_detalle_requerimiento !== $lastId) {
-                        $idDetalleRequerimientoLis[] = $data->id_detalle_requerimiento;
+                    // if ($data->id_detalle_requerimiento !== $lastId) {
+                    //     $idDetalleRequerimientoLis[] = $data->id_detalle_requerimiento;
                         $detalle_requerimiento[] = [
                             'id_detalle_requerimiento'  => $data->id_detalle_requerimiento,
                             'id_requerimiento'          => $data->id_requerimiento,
@@ -532,8 +543,8 @@ class RequerimientoController extends Controller
                             'adjuntos'                      => []
 
                         ];
-                        $lastId = $data->id_detalle_requerimiento;
-                    }
+                        // $lastId = $data->id_detalle_requerimiento;
+                    // }
                 }
 
                 // insertar adjuntos
