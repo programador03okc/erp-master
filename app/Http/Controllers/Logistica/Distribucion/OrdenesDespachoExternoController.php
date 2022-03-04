@@ -108,6 +108,10 @@ class OrdenesDespachoExternoController extends Controller
                 DB::raw("(SELECT SUM(orden_despacho_obs.gasto_extra) FROM almacen.orden_despacho_obs where
                             orden_despacho_obs.id_od = orden_despacho.id_od
                             and orden_despacho.estado != 7) AS gasto_extra"),
+                DB::raw("(SELECT orden_despacho_obs.adjunto FROM almacen.orden_despacho_obs where
+                            orden_despacho_obs.id_od = orden_despacho.id_od
+                            and orden_despacho.estado != 7
+                            order by id_obs desc limit 1) AS adjunto"),
                 'oc_propias_view.nro_orden',
                 'oportunidades.codigo_oportunidad',
                 'oc_propias_view.id as id_oc_propia',
@@ -125,10 +129,12 @@ class OrdenesDespachoExternoController extends Controller
                 'oc_propias_view.tiene_comentarios',
                 'oc_propias_view.nombre_entidad',
                 'oc_propias_view.nombre_largo_responsable',
+                // 'trazabilidad.adjunto',
                 DB::raw("(SELECT COUNT(*) FROM almacen.alm_det_req where
                             alm_det_req.id_requerimiento = alm_req.id_requerimiento
                             and alm_det_req.estado != 7
-                            and alm_det_req.id_producto is null) AS productos_no_mapeados")
+                            and alm_det_req.id_producto is null) AS productos_no_mapeados"),
+
             )
             ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
             ->leftjoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
@@ -153,6 +159,11 @@ class OrdenesDespachoExternoController extends Controller
                 $join->where('despachoInterno.aplica_cambios', '=', true);
                 $join->where('despachoInterno.estado', '!=', 7);
             })
+            // ->leftJoin('almacen.orden_despacho_obs as trazabilidad', function ($join) {
+            //     $join->on('trazabilidad.id_od', '=', 'orden_despacho.id_od');
+            //     $join->orderBy('id_obs', 'desc');
+            //     $join->first();
+            // })
             ->leftJoin('contabilidad.adm_contri as transportista', 'transportista.id_contribuyente', '=', 'orden_despacho.id_transportista')
             ->leftJoin('administracion.adm_estado_doc as est_od', 'est_od.id_estado_doc', '=', 'orden_despacho.estado')
             ->leftJoin('almacen.estado_envio', 'estado_envio.id_estado', '=', 'orden_despacho.id_estado_envio')

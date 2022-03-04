@@ -213,6 +213,12 @@ function listarRequerimientosPendientes(usuario) {
                 }
             },
             {
+                data: 'adjunto',
+                'render': function (data, type, row) {
+                    return (row['adjunto'] !== null ? 'Si' : 'No');
+                }, className: "text-center", searchable: 'false', orderable: 'false'
+            },
+            {
                 'render': function (data, type, row) {
                     var color = row['estado_doc'] == 'Elaborado' || row['estado_doc'] == 'Aprobado';
                     return '<span class="label label-' + (color ? 'primary' : row['bootstrap_color']) + '">' +
@@ -318,7 +324,7 @@ function listarRequerimientosPendientes(usuario) {
                                    <i class="fas fa-file-upload"></i></button>`
                            : '')*/
                         `</div>`
-                }, targets: 17
+                }, targets: 18
             }
         ],
         // select: "multi",
