@@ -19,8 +19,8 @@ $(function () {
         var data = $('#listaSalidasVenta').DataTable().row($(this)).data();
         console.log(data);
 
-        $("[name=id_mov_alm]").val(data.id_mov_alm);
-        $("[name=id_guia_ven]").val(data.id_guia_ven);
+        // $("[name=id_mov_alm]").val(data.id_mov_alm);
+        // $("[name=id_guia_ven]").val(data.id_guia_ven);
         $("[name=id_requerimiento]").val(data.id_requerimiento);
         $("[name=id_contribuyente]").val(data.id_contribuyente);
         $("[name=id_empresa]").val(data.id_empresa);
@@ -28,7 +28,7 @@ $(function () {
         $("[name=id_contacto]").val(data.id_contacto);
         $("[name=codigo_oportunidad]").val(data.codigo_oportunidad);
 
-        $(".guia_venta").text(data.serie + '-' + data.numero);
+        // $(".guia_venta").text(data.serie + '-' + data.numero);
         $(".cliente_razon_social").text(data.razon_social);
         $(".codigo_requerimiento").text(data.codigo_requerimiento);
         $(".concepto_requerimiento").text(data.concepto);
@@ -55,25 +55,26 @@ function listarSalidasVenta() {
         bDestroy: true,
         ajax: "listarSalidasVenta",
         columns: [
-            { data: "id_mov_alm" },
-            {
-                data: 'numero', name: 'guia_ven.numero',
-                'render': function (data, type, row) {
-                    return (row['serie'] !== null ? row['serie'] + '-' + row['numero'] : '');
-                }
-            },
+            // { data: "id_mov_alm" },
+            { data: "id_od" },
+            // {
+            //     data: 'numero', name: 'guia_ven.numero',
+            //     'render': function (data, type, row) {
+            //         return (row['serie'] !== null ? row['serie'] + '-' + row['numero'] : '');
+            //     }
+            // },
             { data: "razon_social", name: 'adm_contri.razon_social' },
             { data: "codigo_requerimiento", name: 'alm_req.codigo' },
             { data: "concepto", name: 'alm_req.concepto' },
-            {
-                data: 'fecha_emision', name: 'mov_alm.fecha_emision',
-                'render': function (data, type, row) {
-                    return (row['fecha_emision'] !== undefined ? formatDate(row['fecha_emision']) : '');
-                }
-            },
+            // {
+            //     data: 'fecha_emision', name: 'mov_alm.fecha_emision',
+            //     'render': function (data, type, row) {
+            //         return (row['fecha_emision'] !== undefined ? formatDate(row['fecha_emision']) : '');
+            //     }
+            // },
             { data: "id_requerimiento", name: 'alm_req.id_requerimiento' },
         ],
-        columnDefs: [{ aTargets: [0, 6], sClass: "invisible" }],
+        columnDefs: [{ aTargets: [0, 4], sClass: "invisible" }],
         order: [[0, "desc"]]
     });
 }

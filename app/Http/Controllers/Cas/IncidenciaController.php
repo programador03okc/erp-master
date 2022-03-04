@@ -12,6 +12,7 @@ use App\Models\Cas\MedioReporte;
 use App\Models\Cas\TipoFalla;
 use App\Models\Cas\TipoServicio;
 use App\Models\Configuracion\Usuario;
+use App\Models\Distribucion\OrdenDespacho;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -32,9 +33,9 @@ class IncidenciaController extends Controller
 
     function listarSalidasVenta()
     {
-        $lista = Movimiento::join('almacen.guia_ven', 'guia_ven.id_guia_ven', '=', 'mov_alm.id_guia_ven')
-            ->join('almacen.orden_despacho', 'orden_despacho.id_od', '=', 'guia_ven.id_od')
-            ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'orden_despacho.id_requerimiento')
+        // join('almacen.guia_ven', 'guia_ven.id_guia_ven', '=', 'mov_alm.id_guia_ven')
+        // ->join('almacen.orden_despacho', 'orden_despacho.id_od', '=', 'guia_ven.id_od')
+        $lista = OrdenDespacho::join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'orden_despacho.id_requerimiento')
             ->join('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'alm_req.id_cliente')
             ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
             ->leftjoin('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'alm_req.id_empresa')
@@ -42,12 +43,13 @@ class IncidenciaController extends Controller
             ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
             ->leftjoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
             ->leftJoin('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'cc.id_oportunidad')
-            ->where([['mov_alm.estado', '!=', '7'], ['mov_alm.id_tp_mov', '=', 2], ['mov_alm.id_operacion', '=', '1']])
+            ->where([['orden_despacho.estado', '!=', '7'], ['orden_despacho.aplica_cambios', '=', false]])
+            // ->where([['mov_alm.estado', '!=', '7'], ['mov_alm.id_tp_mov', '=', 2], ['mov_alm.id_operacion', '=', '1']])
             ->select(
-                'mov_alm.*',
-                'guia_ven.serie',
-                'guia_ven.numero',
-                'guia_ven.id_od',
+                'orden_despacho.id_od',
+                // 'guia_ven.serie',
+                // 'guia_ven.numero',
+                // 'guia_ven.id_od',
                 'adm_contri.razon_social',
                 'adm_contri.id_contribuyente',
                 'adm_empresa.id_empresa',
