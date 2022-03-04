@@ -58,7 +58,7 @@ Gestión de Despachos
                                         <th>Fecha Despacho Real</th>
                                         <th>Flete</th>
                                         <th>Gasto Adic.</th>
-                                        <th>Fecha Entregada</th>
+                                        <th>Fecha Entrega</th>
                                         <th>Adj. Cargos.</th>
                                         <th>Estado despacho</th>
                                         <th width="10%">Acción</th>
