@@ -39,7 +39,7 @@ Gestión de Despachos
                     <div class="col-md-12">
                         <div class="table-responsive">
                             <table class="mytable table table-condensed table-bordered table-hover table-striped table-okc-view" 
-                                id="requerimientosEnProceso" style="font-size: 11px;">
+                                id="requerimientosEnProceso" style="font-size: 12px;">
                                 <thead>
                                     <tr>
                                         <th hidden></th>
@@ -47,14 +47,14 @@ Gestión de Despachos
                                         <th>Cod.Req.</th>
                                         <th>Fecha Fin Entrega</th>
                                         <th>Nro O/C</th>
-                                        <th>Estado O/C</th>
+                                        {{-- <th>Estado O/C</th> --}}
                                         <th>Monto total</th>
                                         <th>OC.fís / SIAF</th>
                                         <th>OCC</th>
                                         <th>Cod.CDP</th>
                                         <th width="30%">Cliente/Entidad</th>
                                         <th>Generado por</th>
-                                        <th>Sede Req.</th>
+                                        {{-- <th>Sede Req.</th> --}}
                                         <th>Fecha Despacho Real</th>
                                         <th>Flete</th>
                                         <th>Gasto Adic.</th>

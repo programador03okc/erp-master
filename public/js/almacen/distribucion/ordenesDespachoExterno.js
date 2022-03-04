@@ -112,7 +112,8 @@ function listarRequerimientosPendientes(usuario) {
                         ? ' <i class="fas fa-exclamation-triangle red" data-toggle="tooltip" data-placement="bottom" title="Requerimiento por regularizar"></i> '
                         : (row['estado'] == 39 ?
                             ' <i class="fas fa-pause orange" data-toggle="tooltip" data-placement="bottom" title="Requerimiento en pausa"></i> ' : ''))
-                        + (row['tiene_transformacion'] ? ' <i class="fas fa-random red"></i>' : '');
+                        + (row['tiene_transformacion'] ? ' <i class="fas fa-random red"></i>' : '')
+                        + ('<br>' + row['sede_descripcion_req']);
                 }
             },
             {
@@ -129,12 +130,12 @@ function listarRequerimientosPendientes(usuario) {
                     } else {
                         return (
                             '<a href="#" class="archivos" data-id="' + row["id_oc_propia"] + '" data-tipo="' + row["tipo"] + '">' +
-                            row["nro_orden"] + "</a>"
+                            row["nro_orden"] + "</a><br>" + row['estado_oc']
                         );
                     }
                 }, className: "text-center"
             },//
-            { data: 'estado_oc', name: 'oc_propias_view.estado_oc' },
+            // { data: 'estado_oc', name: 'oc_propias_view.estado_oc' },
             {
                 data: 'monto_total', name: 'oc_propias_view.monto_total',
                 render: function (data, type, row) {
@@ -186,7 +187,7 @@ function listarRequerimientosPendientes(usuario) {
                     }
                 }
             },
-            { data: 'sede_descripcion_req', name: 'sede_req.descripcion', className: "text-center" },
+            // { data: 'sede_descripcion_req', name: 'sede_req.descripcion', className: "text-center" },
             // { data: 'codigo_od', name: 'orden_despacho.codigo', className: "text-center" },
             {
                 data: 'fecha_despacho_real', name: 'orden_despacho.fecha_despacho_real',
@@ -220,6 +221,7 @@ function listarRequerimientosPendientes(usuario) {
                 }, className: "text-center", searchable: 'false', orderable: 'false'
             },
             {
+                data: 'estado_doc', name: 'adm_estado_doc.estado_doc',
                 'render': function (data, type, row) {
                     var color = row['estado_doc'] == 'Elaborado' || row['estado_doc'] == 'Aprobado';
                     return '<span class="label label-' + (color ? 'primary' : row['bootstrap_color']) + '">' +
@@ -306,7 +308,7 @@ function listarRequerimientosPendientes(usuario) {
                                    <i class="fas fa-file-upload"></i></button>`
                            : '')*/
                         `</div>`
-                }, targets: 18
+                }, targets: 16
             }
         ],
         // select: "multi",
