@@ -294,7 +294,7 @@ Orden de Transformación
 @include('almacen.customizacion.transformacionModal')
 @include('almacen.customizacion.transformacionProcesar')
 @include('almacen.producto.productoModal')
-@include('almacen.producto.productoCreate')
+{{-- @include('almacen.producto.productoCreate') --}}
 @include('logistica.servicioModal')
 @endsection
 

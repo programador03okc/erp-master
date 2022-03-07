@@ -28,14 +28,14 @@ class TransformacionController extends Controller
     {
         $almacenes = AlmacenController::mostrar_almacenes_cbo();
         $empresas = GenericoAlmacenController::select_empresa();
-        $clasificaciones = ClasificacionController::mostrar_clasificaciones_cbo();
-        $subcategorias = SubCategoriaController::mostrar_subcategorias_cbo();
-        $categorias = CategoriaController::mostrar_categorias_cbo();
+        // $clasificaciones = ClasificacionController::mostrar_clasificaciones_cbo();
+        // $subcategorias = SubCategoriaController::mostrar_subcategorias_cbo();
+        // $categorias = TipoProducController::mostrar_categorias_cbo();
         $unidades = GenericoAlmacenController::mostrar_unidades_cbo();
         $usuarios = GenericoAlmacenController::select_usuarios();
         return view(
             'almacen/customizacion/transformacion',
-            compact('almacenes', 'empresas', 'usuarios', 'categorias', 'subcategorias', 'unidades', 'clasificaciones')
+            compact('almacenes', 'empresas', 'usuarios', 'unidades')
         );
     }
 
