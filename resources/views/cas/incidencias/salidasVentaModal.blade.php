@@ -11,11 +11,11 @@
                     <thead>
                         <tr>
                             <th hidden>Id</th>
-                            <th>Guía venta</th>
+                            {{-- <th>Guía venta</th> --}}
                             <th>Cliente</th>
                             <th>Cod. Req.</th>
                             <th>Concepto</th>
-                            <th>Fecha salida</th>
+                            {{-- <th>Fecha salida</th> --}}
                             <th hidden>IdReq</th>
                         </tr>
                     </thead>
