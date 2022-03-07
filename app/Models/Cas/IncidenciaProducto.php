@@ -21,6 +21,11 @@ class IncidenciaProducto extends Model
         return $this->belongsTo(Producto::class, 'id_producto');
     }
 
+    public function tipo()
+    {
+        return $this->belongsTo(IncidenciaProducto::class, 'id_tipo');
+    }
+
     public function usuario()
     {
         return $this->hasOne(Usuario::class, 'id_usuario');

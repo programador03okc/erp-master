@@ -441,6 +441,13 @@ class OrdenesDespachoExternoController extends Controller
         }
     }
 
+    public function usuariosDespacho()
+    {
+        $usuarios = Usuario::getAllIdUsuariosPorRol(26);
+        return response()->json($usuarios);
+    }
+
+
     public function guardarOrdenDespachoExterno(Request $request)
     {
         try {
