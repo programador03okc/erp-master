@@ -462,7 +462,7 @@ class RevisarAprobarController extends Controller{
                 $requerimientoPago->id_estado = 3;
                 break;
             case '5':
-                $requerimientoPago->id_estado = 12;
+                $requerimientoPago->id_estado = 4;
                 break;
         }
         $requerimientoPago->save();
