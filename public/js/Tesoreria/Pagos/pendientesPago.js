@@ -48,7 +48,17 @@ class RequerimientoPago {
                     }, 'className': 'text-center'
                 },
                 { 'data': 'razon_social_empresa', 'name': 'empresa.razon_social' },
-                { 'data': 'codigo', 'name': 'requerimiento_pago.codigo', 'className': 'text-center' },
+                // { 'data': 'codigo', 'name': 'requerimiento_pago.codigo', 'className': 'text-center' },
+                {
+                    data: "codigo", name: "requerimiento_pago.codigo",
+                    render: function (data, type, row) {
+                        return (
+                            `<a href="#" class="verRequerimiento" data-id="${row["id_requerimiento_pago"]}" >
+                            ${row["codigo"]}</a>`
+                        );
+                    },
+                    className: "text-center"
+                },
                 { 'data': 'grupo_descripcion', 'name': 'sis_grupo.descripcion' },
                 { 'data': 'concepto', 'name': 'requerimiento_pago.concepto' },
                 {
@@ -175,7 +185,17 @@ class RequerimientoPago {
                     }, 'className': 'text-center'
                 },
                 { 'data': 'razon_social_empresa', 'name': 'empresa.razon_social' },
-                { 'data': 'codigo' },
+                // { 'data': 'codigo' },
+                {
+                    data: "codigo", name: "log_ord_compra.codigo",
+                    render: function (data, type, row) {
+                        return (
+                            `<a href="#" class="verOrden" data-id="${row["id_orden_compra"]}" >
+                            ${row["codigo"]}</a>`
+                        );
+                    },
+                    className: "text-center"
+                },
                 // { 'data': 'codigo_softlink' },
                 { 'data': 'nro_documento', 'name': 'adm_contri.nro_documento' },
                 { 'data': 'razon_social', 'name': 'adm_contri.razon_social' },
@@ -353,6 +373,26 @@ $('#listaOrdenes tbody').on("click", "button.revertir", function () {
     var id = $(this).data('id');
     var tipo = $(this).data('tipo');
     revertirEnvio(tipo, id);
+});
+
+$("#listaRequerimientos tbody").on("click", "a.verRequerimiento", function (e) {
+    $(e.preventDefault());
+    var id = $(this).data("id");
+    if (id !== "") {
+        let url = `/necesidades/pago/listado/imprimir-requerimiento-pago-pdf/${id}`;
+        var win = window.open(url, "_blank");
+        win.focus();
+    }
+});
+
+$("#listaOrdenes tbody").on("click", "a.verOrden", function (e) {
+    $(e.preventDefault());
+    var id = $(this).data("id");
+    if (id !== "") {
+        let url = `/logistica/gestion-logistica/compras/ordenes/listado/generar-orden-pdf/${id}`;
+        var win = window.open(url, "_blank");
+        win.focus();
+    }
 });
 
 var iTableCounter = 1;
