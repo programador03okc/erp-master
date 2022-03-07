@@ -41,6 +41,21 @@ class Incidencia extends Model
         return $this->belongsTo(TipoServicio::class, 'id_tipo_servicio');
     }
 
+    public function modo()
+    {
+        return $this->belongsTo(ModoIncidencia::class, 'id_modo');
+    }
+
+    public function atiende()
+    {
+        return $this->belongsTo(AtiendeIncidencia::class, 'id_atiende');
+    }
+
+    public function tipoGarantia()
+    {
+        return $this->belongsTo(TipoGarantia::class, 'id_tipo_garantia');
+    }
+
     public function estado()
     {
         return $this->belongsTo(IncidenciaEstado::class, 'id_estado', 'estado');
