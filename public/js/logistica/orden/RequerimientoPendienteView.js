@@ -1219,18 +1219,20 @@ class RequerimientoPendienteView {
     construirDetalleRequerimientoListaRequerimientosPendientes(table_id, row, response) {
 
         var html = '';
-        // console.log(response);
+        console.log(response);
         if (response.length > 0) {
             response.forEach(function (element) {
                 // if(element.tiene_transformacion==false){
                 let stockComprometido = 0;
                 (element.reserva).forEach(reserva => {
+                    if(reserva.estado !=7){
                         stockComprometido += parseFloat(reserva.stock_comprometido);
+                    }
                 });
 
                 let atencionOrden = 0;
                 let objOrdenList = [];
-                (element.ordenes_compra).forEach(orden => {
+                (element.ordenes_compra).forEach(orden => { // TODO: no incluir anulados
                         atencionOrden += parseFloat(orden.cantidad);
                         objOrdenList.push({'id_orden':orden.id_orden_compra,'codigo':orden.codigo });
                 });
