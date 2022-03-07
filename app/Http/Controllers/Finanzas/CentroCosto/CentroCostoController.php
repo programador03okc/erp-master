@@ -52,11 +52,11 @@ class CentroCostoController extends Controller
         // ->whereRaw('centro_costo.version = (select max("version") from finanzas.centro_costo)')
         // ->select(['*'])
         // ->get();
-        $centroCostos = CentroCosto::orderBy('codigo','asc')
-        ->where('estado',1)
-        ->whereIn('id_grupo',$idGrupoList)
-        ->whereRaw('centro_costo.periodo = (select max("periodo") from finanzas.centro_costo)')
-        ->select(['*',DB::raw("CASE WHEN (SELECT cc.codigo FROM finanzas.centro_costo AS cc WHERE centro_costo.codigo!=cc.codigo AND cc.codigo LIKE centro_costo.codigo || '.%' 
+        $centroCostos = CentroCosto::orderBy('codigo', 'asc')
+            ->where('estado', 1)
+            ->whereIn('id_grupo', $idGrupoList)
+            ->whereRaw('centro_costo.periodo = (select max("periodo") from finanzas.centro_costo)')
+            ->select(['*', DB::raw("CASE WHEN (SELECT cc.codigo FROM finanzas.centro_costo AS cc WHERE centro_costo.codigo!=cc.codigo AND cc.codigo LIKE centro_costo.codigo || '.%' 
         AND cc.version=centro_costo.version LIMIT 1) IS NULL THEN true ELSE false END AS seleccionable")])->get();
 
         return response()->json($centroCostos);
@@ -71,7 +71,29 @@ class CentroCostoController extends Controller
             $cc_padre = CentroCosto::where('codigo', $cod_padre)->first();
             $id_padre = ($cc_padre !== null ? $cc_padre->id_centro_costo : null);
 
-            $nivel = 2;
+            if (Str::contains($cod_padre, '.')) {
+                $cod_abuelo = substr($cod_padre, 0, (strlen($cod_padre) - 3));
+
+                if (Str::contains($cod_abuelo, '.')) {
+                    $cod_ta_abuelo = substr($cod_abuelo, 0, (strlen($cod_abuelo) - 3));
+
+                    if (Str::contains($cod_ta_abuelo, '.')) {
+                        $cod_tata_abuelo = substr($cod_ta_abuelo, 0, (strlen($cod_ta_abuelo) - 3));
+
+                        if (Str::contains($cod_tata_abuelo, '.')) {
+                            $nivel = 6;
+                        } else {
+                            $nivel = 5;
+                        }
+                    } else {
+                        $nivel = 4;
+                    }
+                } else {
+                    $nivel = 3;
+                }
+            } else {
+                $nivel = 2;
+            }
         } else {
             $id_padre = null;
             $nivel = 1;
