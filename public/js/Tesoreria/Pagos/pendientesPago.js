@@ -1,4 +1,4 @@
-class RequerimientoPago {
+﻿class RequerimientoPago {
     constructor(permisoVer, permisoEnviar, permisoRegistrar) {
         this.permisoVer = permisoVer;
         this.permisoEnviar = permisoEnviar;
@@ -60,12 +60,12 @@ class RequerimientoPago {
                 {
                     'render': function (data, type, row) {
                         console.log(row['persona']);
-                        return (row['persona'][0] !== null ? row['persona'][0].nro_documento : row['nro_documento']);
+                        return (row['persona'][0] !== undefined ? row['persona'][0].nro_documento : row['nro_documento']);
                     }, 'className': 'text-center', 'searchable': false
                 },
                 {
                     'render': function (data, type, row) {
-                        return (row['persona'][0] !== null ? row['persona'][0].nombre_completo : row['razon_social']);
+                        return (row['persona'][0] !== undefined ? row['persona'][0].nombre_completo : row['razon_social']);
                     }, 'searchable': false
                 },
                 // { 'data': 'nro_documento', 'name': 'adm_contri.nro_documento' },
