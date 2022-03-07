@@ -2,7 +2,7 @@ class RequerimientoPago {
     constructor(permisoVer, permisoEnviar, permisoRegistrar) {
         this.permisoVer = permisoVer;
         this.permisoEnviar = permisoEnviar;
-        this.permisoRegistrar = 1;
+        this.permisoRegistrar = permisoRegistrar;
         this.listarRequerimientos();
         this.listarComprobantes();
         this.listarOrdenes();
@@ -12,10 +12,6 @@ class RequerimientoPago {
         const permisoVer = this.permisoVer;
         const permisoEnviar = this.permisoEnviar;
         const permisoRegistrar = this.permisoRegistrar;
-
-        console.log(permisoEnviar);
-        console.log(permisoRegistrar);
-        console.log(permisoVer);
 
         var vardataTables = funcDatatables();
 
@@ -63,12 +59,13 @@ class RequerimientoPago {
                 { 'data': 'concepto', 'name': 'requerimiento_pago.concepto' },
                 {
                     'render': function (data, type, row) {
-                        return (row['persona'][0].nro_documento !== null ? row['persona'][0].nro_documento : row['nro_documento']);
+                        console.log(row['persona']);
+                        return (row['persona'][0] !== null ? row['persona'][0].nro_documento : row['nro_documento']);
                     }, 'className': 'text-center', 'searchable': false
                 },
                 {
                     'render': function (data, type, row) {
-                        return (row['persona'][0].nombre_completo !== null ? row['persona'][0].nombre_completo : row['razon_social']);
+                        return (row['persona'][0] !== null ? row['persona'][0].nombre_completo : row['razon_social']);
                     }, 'searchable': false
                 },
                 // { 'data': 'nro_documento', 'name': 'adm_contri.nro_documento' },
