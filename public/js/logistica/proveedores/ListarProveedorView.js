@@ -994,9 +994,9 @@ class ListarProveedorView {
 
         let ValorNroDocumento = document.querySelector("div[id='modal-proveedor'] input[name='nroDocumento']").value;
         let ValorRazonSocial= document.querySelector("div[id='modal-proveedor'] input[name='razonSocial']").value;
-        let ValorDireccion =document.querySelector("div[id='modal-proveedor'] input[name='direccion']").value;
-        let valorTelefono =document.querySelector("div[id='modal-proveedor'] input[name='telefono']").value;
-        let ValorEmail = document.querySelector("div[id='modal-proveedor'] input[name='email']").value;
+        // let ValorDireccion =document.querySelector("div[id='modal-proveedor'] input[name='direccion']").value;
+        // let valorTelefono =document.querySelector("div[id='modal-proveedor'] input[name='telefono']").value;
+        // let ValorEmail = document.querySelector("div[id='modal-proveedor'] input[name='email']").value;
 
         let CantidadRegistrosTablaListaContacto = document.querySelector("table[id='listaContactoProveedor']").tBodies.length??0;
 
@@ -1009,15 +1009,15 @@ class ListarProveedorView {
         if (ValorRazonSocial == null || ValorRazonSocial.trim() == '') {
             mensaje += '<li style="text-align: left;">Debe ingresar una razón social.</li>';
         }
-        if (ValorDireccion == null || ValorDireccion.trim() == '') {
-            mensaje += '<li style="text-align: left;">Debe ingresar una dirección.</li>';
-        }
-        if (valorTelefono == null || valorTelefono.trim() == '') {
-            mensaje += '<li style="text-align: left;">Debe ingresar un teléfono.</li>';
-        }
-        if (ValorEmail == null || ValorEmail.trim() == '') {
-            mensaje += '<li style="text-align: left;">Debe ingresar un email.</li>';
-        }
+        // if (ValorDireccion == null || ValorDireccion.trim() == '') {
+        //     mensaje += '<li style="text-align: left;">Debe ingresar una dirección.</li>';
+        // }
+        // if (valorTelefono == null || valorTelefono.trim() == '') {
+        //     mensaje += '<li style="text-align: left;">Debe ingresar un teléfono.</li>';
+        // }
+        // if (ValorEmail == null || ValorEmail.trim() == '') {
+        //     mensaje += '<li style="text-align: left;">Debe ingresar un email.</li>';
+        // }
         if (CantidadRegistrosTablaListaContacto ==0) {
             mensaje += '<li style="text-align: left;">Debe ingresar al menos un contacto.</li>';
         }
