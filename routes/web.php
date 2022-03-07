@@ -1808,6 +1808,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('revertirEnvio', 'Tesoreria\RegistroPagoController@revertirEnvio')->name('revertir-envio');
 
 				Route::get('mostrar-requerimiento-pago/{idRequerimientoPago}', 'Tesoreria\RequerimientoPagoController@mostrarRequerimientoPago');
+				Route::get('listar-categoria-adjunto', 'Tesoreria\RequerimientoPagoController@listaCategoriaAdjuntos');
 			});
 
 			Route::group(['as' => 'confirmacion-pagos.', 'prefix' => 'confirmacion-pagos'], function () {
