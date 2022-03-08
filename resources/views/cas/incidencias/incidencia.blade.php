@@ -272,13 +272,13 @@ Registro de incidencia
                                 </div>
                             </div>
                             <div class="form-group " style="margin-bottom:0px;">
-                                <label class="col-sm-4 control-label">División</label>
+                                <label class="col-sm-4 control-label">Modo</label>
                                 <div class="col-sm-8">
                                     <select class="form-control js-example-basic-single edition limpiarIncidencia" 
-                                        name="id_division" required>
+                                        name="id_modo" required>
                                         <option value="">Elija una opción</option>
-                                        @foreach ($divisiones as $division)
-                                        <option value="{{$division->id_division}}">{{$division->descripcion}}</option>
+                                        @foreach ($modos as $modo)
+                                        <option value="{{$modo->id_modo}}">{{$modo->descripcion}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -299,7 +299,7 @@ Registro de incidencia
                                     </select>
                                 </div>
                             </div>
-                            <div class="form-group " style="margin-bottom:0px;">
+                            <div class="form-group " style="margin-bottom:5px;">
                                 <label class="col-sm-4 control-label">Medio reporte</label>
                                 <div class="col-sm-8">
                                     <select class="form-control js-example-basic-single edition limpiarIncidencia" 
@@ -307,6 +307,18 @@ Registro de incidencia
                                         <option value="">Elija una opción</option>
                                         @foreach ($medios as $medio)
                                         <option value="{{$medio->id_medio}}">{{$medio->descripcion}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group " style="margin-bottom:5px;">
+                                <label class="col-sm-4 control-label">Atiende</label>
+                                <div class="col-sm-8">
+                                    <select class="form-control js-example-basic-single edition limpiarIncidencia" 
+                                        name="id_atiende" required>
+                                        <option value="">Elija una opción</option>
+                                        @foreach ($atiende as $at)
+                                        <option value="{{$at->id_atiende}}">{{$at->descripcion}}</option>
                                         @endforeach
                                     </select>
                                 </div>

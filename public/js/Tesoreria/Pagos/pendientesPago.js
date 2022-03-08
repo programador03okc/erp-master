@@ -431,15 +431,14 @@ $("#listaRequerimientos tbody").on("click", "a.verRequerimiento", function (e) {
     $(e.preventDefault());
     var id = $(this).data("id");
     if (id !== "") {
-        let url = `/necesidades/pago/listado/imprimir-requerimiento-pago-pdf/${id}`;
-        var win = window.open(url, "_blank");
-        win.focus();
-        // $('#modal-vista-rapida-requerimiento-pago').modal({
-        //     show: true 
-        //xxprueba
-        // });
-        // limpiarVistaRapidaRequerimientoPago();
-        // cargarDataRequerimientoPago(id);
+        // let url = `/necesidades/pago/listado/imprimir-requerimiento-pago-pdf/${id}`;
+        // var win = window.open(url, "_blank");
+        // win.focus();
+        $('#modal-vista-rapida-requerimiento-pago').modal({
+            show: true
+        });
+        limpiarVistaRapidaRequerimientoPago();
+        cargarDataRequerimientoPago(id);
     }
 });
 
