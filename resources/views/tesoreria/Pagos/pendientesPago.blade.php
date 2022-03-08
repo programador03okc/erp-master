@@ -135,6 +135,7 @@ Registro de pagos
 </div>
 
 @include('tesoreria.pagos.procesarPago')
+@include('tesoreria.pagos.verAdjuntos')
 @include('tesoreria.requerimiento_pago.modal_vista_rapida_requerimiento_pago')
 
 @endsection
@@ -154,6 +155,8 @@ Registro de pagos
 
     <script src="{{ asset('js/tesoreria/pagos/pendientesPago.js')}}"></script>
     <script src="{{ asset('js/tesoreria/pagos/procesarPago.js')}}"></script>
+    {{-- <script src="{{ asset('js/tesoreria/requerimientoPago/ListarRequerimientoPagoView.js')}}?v={{filemtime(public_path('js/Tesoreria/requerimientoPago/ListarRequerimientoPagoView.js'))}}"></script> --}}
+
     <script src="{{ asset('js/tesoreria/pagos/modalVistaRapidaRequerimiento.js')}}"></script>
     <script>
     $(document).ready(function(){

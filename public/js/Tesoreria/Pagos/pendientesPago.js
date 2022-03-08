@@ -135,7 +135,10 @@
                                     `<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
                                     data-placement="bottom" data-id="${row['id_requerimiento_pago']}" title="Ver detalle de los pagos" >
                                     <i class="fas fa-chevron-down"></i></button>`: ''
-                                }
+                                }´
+                                <button type="button" class="adjuntos btn btn-info boton" data-toggle="tooltip" 
+                                    data-placement="bottom" data-id="${row['id_requerimiento_pago']}" title="Ver adjuntos" >
+                                    <i class="fas fa-paperclip"></i></button>
                             </div> `;
 
                         }
@@ -324,6 +327,9 @@
                                     data-placement="bottom" data-id="${row['id_doc_com']}" title="Ver detalle de los pagos" >
                                     <i class="fas fa-chevron-down"></i></button>`: ''
                                 }
+                                <button type="button" class="adjuntos btn btn-info boton" data-toggle="tooltip" 
+                                    data-placement="bottom" data-id="${row['id_doc_com']}" title="Ver adjuntos" >
+                                    <i class="fas fa-paperclip"></i></button>
                             </div> `;
 
                         }
@@ -372,18 +378,62 @@ $('#listaOrdenes tbody').on("click", "button.revertir", function () {
     revertirEnvio(tipo, id);
 });
 
+$('#listaRequerimientos tbody').on("click", "button.adjuntos", function () {
+    var id = $(this).data('id');
+    verAdjuntos(id);
+});
+
+function verAdjuntos(id) {
+    $.ajax({
+        type: 'GET',
+        url: 'verAdjuntos/' + id,
+        dataType: 'JSON',
+        success: function (response) {
+            console.log(response);
+            $('#modal-verAdjuntos').modal({
+                show: true
+            });
+
+            if (response.adjuntoPadre.length > 0) {
+                var html = '';
+                response.adjuntoPadre.forEach(function (element) {
+                    html += `<tr>
+                        <td><a target="_blank" href="/files/necesidades/requerimientos/pago/cabecera/${element.archivo}">${element.archivo}</a></td>
+                    </tr>`;
+                });
+                $('#adjuntosCabecera tbody').html(html);
+            }
+
+            if (response.adjuntoDetalle.length > 0) {
+                var html = '';
+                response.adjuntoDetalle.forEach(function (element) {
+                    html += `<tr>
+                        <td><a target="_blank" href="/files/necesidades/requerimientos/pago/detalle/${element.archivo}">${element.archivo}</a></td>
+                    </tr>`;
+                });
+                $('#adjuntosDetalle tbody').html(html);
+            }
+        }
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
+
 $("#listaRequerimientos tbody").on("click", "a.verRequerimiento", function (e) {
     $(e.preventDefault());
     var id = $(this).data("id");
     if (id !== "") {
-        // let url = `/necesidades/pago/listado/imprimir-requerimiento-pago-pdf/${id}`;
-        // var win = window.open(url, "_blank");
-        // win.focus();
-        $('#modal-vista-rapida-requerimiento-pago').modal({
-            show: true
-        });
-        limpiarVistaRapidaRequerimientoPago();
-        cargarDataRequerimientoPago(id);
+        let url = `/necesidades/pago/listado/imprimir-requerimiento-pago-pdf/${id}`;
+        var win = window.open(url, "_blank");
+        win.focus();
+        // $('#modal-vista-rapida-requerimiento-pago').modal({
+        //     show: true 
+        //xxprueba
+        // });
+        // limpiarVistaRapidaRequerimientoPago();
+        // cargarDataRequerimientoPago(id);
     }
 });
 

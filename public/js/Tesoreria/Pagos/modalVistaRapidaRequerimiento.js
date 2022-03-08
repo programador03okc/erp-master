@@ -157,8 +157,16 @@ function mostrarDataEnVistaRapidaRequerimientoPago(data) {
 
         // ### ==================== Historia aprobación ====================== ###
         limpiarTabla('listaHistorialRevision');
-        data.aprobacion.forEach(element => {
-            this.agregarHistorialAprobacion(element);
+        data.aprobacion.forEach(data => {
+            // this.agregarHistorialAprobacion(element);
+
+            document.querySelector("tbody[id='body_requerimiento_pago_historial_revision']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
+                <td>${data.usuario != null ? data.usuario.nombre_corto : ''}</td>
+                <td>${data.vo_bo != null ? data.vo_bo.descripcion : ''}</td>
+                <td>${data.detalle_observacion != null ? data.detalle_observacion : ''}</td>
+                <td>${data.fecha_vobo != null ? data.fecha_vobo : ''}</td>
+                </tr>`);
+
         });
         // ### ==================== Historia aprobación ====================== ###
 
@@ -173,4 +181,102 @@ function limpiarTabla(idElement) {
         }
 
     }
+}
+
+function modalAdjuntarArchivosCabecera(obj) { // TODO pasar al btn el id y no usar de un input para ambos casos de mostrar solo lectura y mostrar con carga
+    $('#modal-adjuntar-archivos-requerimiento-pago').modal({
+        show: true
+    });
+    // this.limpiarTabla('listaArchivosRequerimientoPagoCabecera');
+
+    let idRequerimientoPago = null;
+    if (obj.dataset.tipoModal == "lectura") {
+        idRequerimientoPago = document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] input[name='id_requerimiento_pago']") != null ? document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] input[name='id_requerimiento_pago']").value : null;
+        listarArchivosAdjuntosCabecera(idRequerimientoPago, obj.dataset.tipoModal);
+        document.querySelector("div[id='modal-adjuntar-archivos-requerimiento-pago'] div[id='group-action-upload-file']").classList.add("oculto");
+    } else {
+        idRequerimientoPago = document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_requerimiento_pago']") != null ? document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_requerimiento_pago']").value : null
+        listarArchivosAdjuntosCabecera(idRequerimientoPago);
+
+        document.querySelector("div[id='modal-adjuntar-archivos-requerimiento-pago'] div[id='group-action-upload-file']").classList.remove("oculto");
+    }
+}
+
+function listarArchivosAdjuntosCabecera(idRequerimientoPago, tipoModal = null) {
+    // let idRequerimientoPago = document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_requerimiento_pago']").value.length > 0 ? document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_requerimiento_pago']").value : document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] input[name='id_requerimiento_pago']").value;
+    if (idRequerimientoPago.length > 0) {
+
+        var regExp = /[a-zA-Z]/g; //expresión regular
+
+        getcategoriaAdjunto().then((categoriaAdjuntoList) => {
+
+            construirTablaAdjuntosRequerimientoPagoCabecera(tempArchivoAdjuntoRequerimientoPagoCabeceraList, categoriaAdjuntoList, tipoModal);
+        });
+    }
+}
+
+function getcategoriaAdjunto() {
+    return new Promise(function (resolve, reject) {
+        $.ajax({
+            type: 'GET',
+            url: `listar-categoria-adjunto`,
+            dataType: 'JSON',
+            success(response) {
+                resolve(response);
+            },
+            error: function (err) {
+                reject(err)
+            }
+        });
+    });
+}
+
+function construirTablaAdjuntosRequerimientoPagoCabecera(adjuntoList, categoriaAdjuntoList, tipoModal) {
+    // console.log(adjuntoList,categoriaAdjuntoList);
+    limpiarTabla('listaArchivosRequerimientoPagoCabecera');
+
+    let html = '';
+    let hasHiddenBtnEliminarArchivo = '';
+    let hasDisabledSelectTipoArchivo = '';
+    let estadoActual = document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_estado']").value;
+
+    if (estadoActual == 1 || estadoActual == 3 || estadoActual == '') {
+        if (document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_usuario']").value == auth_user.id_usuario) { //usuario en sesion == usuario requerimiento
+            hasHiddenBtnEliminarArchivo = '';
+        } else {
+            hasHiddenBtnEliminarArchivo = 'oculto';
+            hasDisabledSelectTipoArchivo = 'disabled';
+        }
+    }
+
+    adjuntoList.forEach(element => {
+        html += `<tr id="${element.id}" style="text-align:center">
+    <td style="text-align:left;">${element.nameFile}</td>
+    <td>
+        <select class="form-control handleChangeCategoriaAdjunto" name="categoriaAdjunto" ${hasDisabledSelectTipoArchivo}>
+    `;
+        categoriaAdjuntoList.forEach(categoria => {
+            if (element.category == categoria.id_requerimiento_pago_categoria_adjunto) {
+                html += `<option value="${categoria.id_requerimiento_pago_categoria_adjunto}" selected >${categoria.descripcion}</option>`
+
+            } else {
+                html += `<option value="${categoria.id_requerimiento_pago_categoria_adjunto}">${categoria.descripcion}</option>`
+            }
+        });
+        html += `</select>
+    </td>
+    <td style="text-align:center;">
+        <div class="btn-group" role="group">`;
+        if (Number.isInteger(element.id)) {
+            html += `<button type="button" class="btn btn-info btn-xs handleClickDescargarArchivoCabeceraRequerimientoPago" name="btnDescargarArchivoCabeceraRequerimientoPago" title="Descargar" data-id="${element.id}" ><i class="fas fa-paperclip"></i></button>`;
+        }
+        if (tipoModal != 'lectura') {
+            html += `<button type="button" class="btn btn-danger btn-xs handleClickEliminarArchivoCabeceraRequerimientoPago ${hasHiddenBtnEliminarArchivo}" name="btnEliminarArchivoRequerimientoPago" title="Eliminar" data-id="${element.id}" ><i class="fas fa-trash-alt"></i></button>`;
+        }
+        html += `</div>
+    </td>
+    </tr>`;
+    });
+    document.querySelector("tbody[id='body_archivos_requerimiento_pago_cabecera']").insertAdjacentHTML('beforeend', html);
+
 }
