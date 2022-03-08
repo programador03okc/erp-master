@@ -854,6 +854,9 @@ class RequerimientoView {
         }
     }
     updateDivision(obj) {
+        let currentIdGrupo= obj.target.options[obj.target.selectedIndex].dataset.idGrupo;
+        document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value=currentIdGrupo;
+
         if (obj.target.value > 0) {
             obj.target.closest('div').classList.remove("has-error");
             if (obj.target.closest("div").querySelector("span")) {

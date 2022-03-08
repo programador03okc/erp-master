@@ -54,7 +54,7 @@ class Presupuesto extends Model
         return $this->hasMany(Titulo::class, 'id_presup')->where('estado', 1);
     }
 
-    public static function mostrarPartidas($id_grupo, $id_proyecto = null)
+    public static function mostrarPartidas($idGrupoList, $id_proyecto = null)
     {
         if ($id_proyecto != null || $id_proyecto != '') {
 
@@ -67,11 +67,11 @@ class Presupuesto extends Model
         } else {
 
             $presup = Presupuesto::where([
-                ['id_grupo', '=', $id_grupo],
+                // ['id_grupo', '=', $id_grupo],
                 ['id_proyecto', '=', null],
                 ['estado', '=', 1],
                 ['tp_presup', '=', 2]
-            ])
+            ])->whereIn('id_grupo',$idGrupoList)
                 ->get();
         }
 
