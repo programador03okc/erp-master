@@ -4061,7 +4061,7 @@ class OrdenController extends Controller
                 $orden->id_persona_pago = $request->id_persona;
                 $orden->id_cuenta_persona_pago = $request->id_cuenta_persona;
                 $orden->comentario_pago = $request->comentario;
-                // TODO agregar fecha de registro
+                $orden->fecha_solicitud_pago = Carbon::now();
                 $orden->save();
 
                 $arrayRspta = array(

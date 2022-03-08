@@ -189,11 +189,7 @@ Crear / editar requerimiento
                                 <select name="division" class="form-control activation handleChangeDivision">
                                     <option value="0">Elija una opción</option>
                                     @foreach ($divisiones as $division)
-                                    @if($division->id_division==4)
-                                    <option value="{{$division->id_division}}" selected>{{$division->descripcion}}</option>
-                                    @else
-                                    <option value="{{$division->id_division}}">{{$division->descripcion}}</option>
-                                    @endif
+                                    <option data-id-grupo="{{$division->grupo_id}}" value="{{$division->id_division}}">{{$division->descripcion}}</option>
                                     @endforeach
                                 </select>
                             </div>

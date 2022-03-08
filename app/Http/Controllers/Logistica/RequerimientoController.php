@@ -98,9 +98,15 @@ class RequerimientoController extends Controller
     {
         return Division::mostrar();
     }
-    public function mostrarPartidas($idGrupo, $idProyecto = null)
+    public function mostrarPartidas($idGrupo, $idProyecto = null) // * actualiar idgrupo, ya no es requerida esa variable
     {
-        return Presupuesto::mostrarPartidas($idGrupo, $idProyecto);
+        $allGrupo = Auth::user()->getAllGrupo();
+        $idGrupoList = [];
+        foreach ($allGrupo as $grupo) {
+            $idGrupoList[] = $grupo->id_grupo; // lista de id_rol del usuario en sesion
+        }
+
+        return Presupuesto::mostrarPartidas($idGrupoList, $idProyecto);
     }
 
     function listaAdjuntosRequerimientoCabecera($idRequerimiento)
