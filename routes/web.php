@@ -1803,12 +1803,11 @@ Route::group(['middleware' => ['auth']], function () {
 				// Route::get('pagosRequerimientos/{id}', 'Tesoreria\RegistroPagoController@pagosRequerimientos')->name('pagos-requerimientos');
 				Route::get('cuentasOrigen/{id}', 'Tesoreria\RegistroPagoController@cuentasOrigen')->name('cuentas-origen');
 				Route::get('anularPago/{id}', 'Tesoreria\RegistroPagoController@anularPago')->name('anular-pago');
-				// Route::get('enviarAPago/{tp}/{id}', 'Tesoreria\RegistroPagoController@enviarAPago')->name('enviar-pago');
 				Route::post('enviarAPago', 'Tesoreria\RegistroPagoController@enviarAPago')->name('enviar-pago');
 				Route::post('revertirEnvio', 'Tesoreria\RegistroPagoController@revertirEnvio')->name('revertir-envio');
+				Route::get('verAdjuntos/{id}', 'Tesoreria\RegistroPagoController@verAdjuntos')->name('ver-adjuntos');
 
 				Route::get('mostrar-requerimiento-pago/{idRequerimientoPago}', 'Tesoreria\RequerimientoPagoController@mostrarRequerimientoPago');
-				Route::get('listar-categoria-adjunto', 'Tesoreria\RequerimientoPagoController@listaCategoriaAdjuntos');
 			});
 
 			Route::group(['as' => 'confirmacion-pagos.', 'prefix' => 'confirmacion-pagos'], function () {

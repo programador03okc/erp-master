@@ -6,6 +6,9 @@ use App\Http\Controllers\AlmacenController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Rrhh\Persona;
+use App\Models\Tesoreria\RequerimientoPagoAdjunto;
+use App\Models\Tesoreria\RequerimientoPagoAdjuntoDetalle;
+use App\Models\Tesoreria\RequerimientoPagoCategoriaAdjunto;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -540,5 +543,15 @@ class RegistroPagoController extends Controller
         } catch (\PDOException $e) {
             DB::rollBack();
         }
+    }
+
+    function verAdjuntos($id_requerimiento_pago)
+    {
+        $adjuntoPadre = RequerimientoPagoAdjunto::where([['id_requerimiento_pago', $id_requerimiento_pago], ['id_estado', '!=', 7]])->with('categoriaAdjunto')->get();
+        $adjuntoDetalle = RequerimientoPagoAdjuntoDetalle::join('tesoreria.requerimiento_pago_detalle', 'requerimiento_pago_detalle.id_requerimiento_pago_detalle', '=', 'requerimiento_pago_detalle_adjunto.id_requerimiento_pago_detalle')
+            ->where([['requerimiento_pago_detalle.id_requerimiento_pago', $id_requerimiento_pago], ['requerimiento_pago_detalle_adjunto.id_estado', '!=', 7]])->get();
+        // $data = RequerimientoPagoCategoriaAdjunto::where("id_estado", '!=', 7)->get();
+
+        return response()->json(['adjuntoPadre' => $adjuntoPadre, 'adjuntoDetalle' => $adjuntoDetalle]);
     }
 }
