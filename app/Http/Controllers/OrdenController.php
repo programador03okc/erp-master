@@ -4060,7 +4060,8 @@ class OrdenController extends Controller
                 $orden->id_cta_principal = $request->id_cuenta_contribuyente;
                 $orden->id_persona_pago = $request->id_persona;
                 $orden->id_cuenta_persona_pago = $request->id_cuenta_persona;
-                $orden->comentario_pago = $request->comentario;;
+                $orden->comentario_pago = $request->comentario;
+                // TODO agregar fecha de registro
                 $orden->save();
 
                 $arrayRspta = array(
