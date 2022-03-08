@@ -1,5 +1,5 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-verAdjuntos" style="overflow-y:scroll;">
-    <div class="modal-dialog" style="width: 800px;">
+    <div class="modal-dialog" style="width: 500px;">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
@@ -35,10 +35,6 @@
                 </fieldset>
                 <br>
             </div>
-            <div class="modal-footer">
-                <input type="submit" id="submit_verAdjuntos" class="btn btn-success" value="Registrar pago" />
-            </div>
-            
         </div>
     </div>
 </div>

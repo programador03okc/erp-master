@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Tesoreria;
 use App\Http\Controllers\AlmacenController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Logistica\Orden;
 use App\Models\Rrhh\Persona;
 use App\Models\Tesoreria\RequerimientoPagoAdjunto;
 use App\Models\Tesoreria\RequerimientoPagoAdjuntoDetalle;
@@ -56,6 +57,17 @@ class RegistroPagoController extends Controller
                 'rrhh_cta_banc.nro_cci as nro_cci_persona',
                 'tp_cta_persona.descripcion as tipo_cuenta_persona',
                 'banco_persona.razon_social as banco_persona',
+                DB::raw("(SELECT count(archivo) FROM tesoreria.requerimiento_pago_adjunto
+                        WHERE requerimiento_pago_adjunto.id_requerimiento_pago = requerimiento_pago.id_requerimiento_pago
+                        and requerimiento_pago_adjunto.id_estado != 7) AS count_adjunto_cabecera"),
+
+                DB::raw("(SELECT count(archivo) FROM tesoreria.requerimiento_pago_detalle_adjunto
+                        INNER JOIN tesoreria.requerimiento_pago_detalle as detalle on(
+                            detalle.id_requerimiento_pago_detalle = requerimiento_pago_detalle_adjunto.id_requerimiento_pago_detalle
+                        )
+                        WHERE detalle.id_requerimiento_pago = requerimiento_pago.id_requerimiento_pago
+                        and requerimiento_pago_detalle_adjunto.id_estado != 7) AS count_adjunto_detalle"),
+
                 DB::raw("(SELECT sum(total_pago) FROM tesoreria.registro_pago
                         WHERE registro_pago.id_requerimiento_pago = requerimiento_pago.id_requerimiento_pago
                         and registro_pago.estado != 7) AS suma_pagado")
@@ -92,36 +104,33 @@ class RegistroPagoController extends Controller
 
     public function listarOrdenesCompra()
     {
-        $data = DB::table('logistica.log_ord_compra')
-            ->select(
-                'log_ord_compra.*',
-                'adm_contri.nro_documento',
-                'adm_contri.razon_social',
-                'adm_empresa.id_empresa',
-                'empresa.razon_social as razon_social_empresa',
-                'requerimiento_pago_estado.descripcion as estado_doc',
-                'requerimiento_pago_estado.bootstrap_color',
-                'sis_moneda.simbolo',
-                'log_cdn_pago.descripcion AS condicion_pago',
-                'sis_sede.descripcion as sede_descripcion',
-                'adm_cta_contri.nro_cuenta',
-                'adm_cta_contri.nro_cuenta_interbancaria',
-                'adm_tp_cta.descripcion as tipo_cuenta',
-                'banco_contribuyente.razon_social as banco_contribuyente',
-                'rrhh_cta_banc.nro_cuenta as nro_cuenta_persona',
-                'rrhh_cta_banc.nro_cci as nro_cci_persona',
-                'tp_cta_persona.descripcion as tipo_cuenta_persona',
-                'banco_persona.razon_social as banco_persona',
-                'adm_prioridad.descripcion as prioridad',
-                DB::raw("(SELECT sum(subtotal) FROM logistica.log_det_ord_compra
+        $data = Orden::select(
+            'log_ord_compra.*',
+            'adm_contri.nro_documento',
+            'adm_contri.razon_social',
+            'adm_empresa.id_empresa',
+            'empresa.razon_social as razon_social_empresa',
+            'requerimiento_pago_estado.descripcion as estado_doc',
+            'requerimiento_pago_estado.bootstrap_color',
+            'sis_moneda.simbolo',
+            'log_cdn_pago.descripcion AS condicion_pago',
+            'sis_sede.descripcion as sede_descripcion',
+            'adm_cta_contri.nro_cuenta',
+            'adm_cta_contri.nro_cuenta_interbancaria',
+            'adm_tp_cta.descripcion as tipo_cuenta',
+            'banco_contribuyente.razon_social as banco_contribuyente',
+            'rrhh_cta_banc.nro_cuenta as nro_cuenta_persona',
+            'rrhh_cta_banc.nro_cci as nro_cci_persona',
+            'tp_cta_persona.descripcion as tipo_cuenta_persona',
+            'banco_persona.razon_social as banco_persona',
+            'adm_prioridad.descripcion as prioridad',
+            DB::raw("(SELECT sum(subtotal) FROM logistica.log_det_ord_compra
                         WHERE log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra
                         and log_det_ord_compra.estado != 7) AS suma_total"),
-                DB::raw(
-                    "(SELECT sum(total_pago) FROM tesoreria.registro_pago
+            DB::raw("(SELECT sum(total_pago) FROM tesoreria.registro_pago
                         WHERE registro_pago.id_oc = log_ord_compra.id_orden_compra
-                        and registro_pago.estado != 7) AS suma_pagado"
-                )
-            )
+                        and registro_pago.estado != 7) AS suma_pagado")
+        )
             ->leftjoin('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
             ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
             ->leftjoin('tesoreria.requerimiento_pago_estado', 'requerimiento_pago_estado.id_requerimiento_pago_estado', '=', 'log_ord_compra.estado_pago')

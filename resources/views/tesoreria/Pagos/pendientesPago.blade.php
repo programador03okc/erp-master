@@ -72,6 +72,7 @@ Registro de pagos
                                             <tr>
                                                 <th hidden></th>
                                                 <th>Prio.</th>
+                                                <th>Cod.Req.</th>
                                                 <th>Empresa</th>
                                                 <th>Codigo</th>
                                                 {{-- <th>Codigo SoftLink</th> --}}

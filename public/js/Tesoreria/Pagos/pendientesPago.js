@@ -103,7 +103,11 @@
                             //     data-placement="bottom" data-id="${row['id_requerimiento_pago']}" data-tipo="requerimiento"
                             //     title="Ver requerimiento de pago"> <i class="fas fa-eye"></i></button>
                             return `<div class="btn-group" role="group">
-                            
+
+                            <button type="button" class="adjuntos btn btn-${(row['count_adjunto_cabecera'] + row['count_adjunto_detalle']) == 0 ? 'default' : 'warning'} boton" 
+                                data-toggle="tooltip" data-placement="bottom" data-id="${row['id_requerimiento_pago']}" data-codigo="${row['codigo']}" 
+                                title="Ver adjuntos"><i class="fas fa-paperclip"></i></button>
+
                             ${(row['id_estado'] == 2 && permisoEnviar == '1') ?
                                     `<button type="button" class="autorizar btn btn-info boton" data-toggle="tooltip" 
                                 data-placement="bottom" data-id="${row['id_requerimiento_pago']}" data-tipo="requerimiento"
@@ -135,10 +139,8 @@
                                     `<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
                                     data-placement="bottom" data-id="${row['id_requerimiento_pago']}" title="Ver detalle de los pagos" >
                                     <i class="fas fa-chevron-down"></i></button>`: ''
-                                }´
-                                <button type="button" class="adjuntos btn btn-info boton" data-toggle="tooltip" 
-                                    data-placement="bottom" data-id="${row['id_requerimiento_pago']}" title="Ver adjuntos" >
-                                    <i class="fas fa-paperclip"></i></button>
+                                }
+                                
                             </div> `;
 
                         }
@@ -184,6 +186,7 @@
                         return imagen;
                     }, 'className': 'text-center'
                 },
+                { 'data': 'requerimientos_codigo' },
                 { 'data': 'razon_social_empresa', 'name': 'empresa.razon_social' },
                 // { 'data': 'codigo' },
                 {
@@ -327,9 +330,6 @@
                                     data-placement="bottom" data-id="${row['id_doc_com']}" title="Ver detalle de los pagos" >
                                     <i class="fas fa-chevron-down"></i></button>`: ''
                                 }
-                                <button type="button" class="adjuntos btn btn-info boton" data-toggle="tooltip" 
-                                    data-placement="bottom" data-id="${row['id_doc_com']}" title="Ver adjuntos" >
-                                    <i class="fas fa-paperclip"></i></button>
                             </div> `;
 
                         }
@@ -380,25 +380,31 @@ $('#listaOrdenes tbody').on("click", "button.revertir", function () {
 
 $('#listaRequerimientos tbody').on("click", "button.adjuntos", function () {
     var id = $(this).data('id');
-    verAdjuntos(id);
+    var codigo = $(this).data('codigo');
+    verAdjuntos(id, codigo);
 });
 
-function verAdjuntos(id) {
+function verAdjuntos(id, codigo) {
+    $('#modal-verAdjuntos').modal({
+        show: true
+    });
+    $('[name=codigo_requerimiento_pago]').text(codigo);
+    $('#adjuntosCabecera tbody').html('');
+    $('#adjuntosDetalle tbody').html('');
+
     $.ajax({
         type: 'GET',
         url: 'verAdjuntos/' + id,
         dataType: 'JSON',
         success: function (response) {
             console.log(response);
-            $('#modal-verAdjuntos').modal({
-                show: true
-            });
 
             if (response.adjuntoPadre.length > 0) {
                 var html = '';
                 response.adjuntoPadre.forEach(function (element) {
                     html += `<tr>
                         <td><a target="_blank" href="/files/necesidades/requerimientos/pago/cabecera/${element.archivo}">${element.archivo}</a></td>
+                        <td>${element.categoria_adjunto !== null ? element.categoria_adjunto.descripcion : ''}</td>
                     </tr>`;
                 });
                 $('#adjuntosCabecera tbody').html(html);
