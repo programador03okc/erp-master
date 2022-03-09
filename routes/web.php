@@ -600,7 +600,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 				Route::get('tipo-cambio-compra/{fecha}', 'Almacen\Reporte\SaldosController@tipo_cambio_compra');
 				Route::get('lista-divisiones', 'Logistica\RequerimientoController@listaDivisiones');
-				Route::get('mostrar-partidas/{idGrupo?}/{idProyecto?}', 'Logistica\RequerimientoController@mostrarPartidas')->name('mostrar-partidas');
+				Route::get('mostrar-partidas/{idGrupo?}/{idProyecto?}', 'Finanzas\Presupuesto\PresupuestoController@mostrarPresupuestos')->name('mostrar-partidas');
 				Route::get('mostrar-centro-costos', 'Finanzas\CentroCosto\CentroCostoController@mostrarCentroCostosSegunGrupoUsuario')->name('mostrar-centro-costos');
 				Route::post('guardar-requerimiento', 'Logistica\RequerimientoController@guardarRequerimiento')->name('guardar-requerimiento');
 				Route::post('actualizar-requerimiento', 'Logistica\RequerimientoController@actualizarRequerimiento')->name('actualizar-requerimiento');

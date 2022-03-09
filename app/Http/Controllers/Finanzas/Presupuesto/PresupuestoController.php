@@ -8,6 +8,8 @@ use App\Models\Presupuestos\Presupuesto;
 use App\Models\Presupuestos\Grupo;
 use App\Models\Presupuestos\Moneda;
 use App\Http\Controllers\Controller;
+use App\Models\Configuracion\Usuario;
+use Illuminate\Support\Facades\Auth;
 
 class PresupuestoController extends Controller
 {
@@ -121,5 +123,68 @@ class PresupuestoController extends Controller
             $zeros = $zeros . '0';
         }
         return $zeros . $number;
+    }
+
+    function getAllGrupos()
+    {
+        $grupos = DB::table('configuracion.usuario_grupo')
+            ->join('configuracion.sis_grupo', 'sis_grupo.id_grupo', '=', 'usuario_grupo.id_grupo')
+            ->where('usuario_grupo.id_usuario', Auth::user()->id_usuario)
+            ->select('sis_grupo.*')
+            ->distinct('id_grupo')->get();
+
+        $array_grupos = [];
+        foreach ($grupos as $grupo) {
+            $array_grupos[] = [$grupo->id_grupo];
+        }
+        return $array_grupos;
+    }
+
+
+    public function mostrarPresupuestos($idGrupoList, $id_proyecto = null)
+    {
+        $presup = [];
+        $titulos = [];
+        $partidas = [];
+        $grupos = $this->getAllGrupos();
+
+        if ($id_proyecto != null || $id_proyecto != '') {
+
+            $presup = Presupuesto::where([
+                ['id_proyecto', '=', $id_proyecto],
+                ['estado', '=', 1],
+                ['tp_presup', '=', 4]
+            ])
+                ->get();
+        } else {
+
+            $presup = Presupuesto::where([
+                // ['id_grupo', '=', $id_grupo],
+                ['id_proyecto', '=', null],
+                ['estado', '=', 1],
+                ['tp_presup', '=', 2]
+            ])->whereIn('id_grupo', $grupos)
+                ->get();
+        }
+
+        foreach ($presup as $p) {
+            $titulos = DB::table('finanzas.presup_titu')
+                ->where([
+                    ['id_presup', '=', $p->id_presup],
+                    ['estado', '=', 1]
+                ])
+                ->orderBy('presup_titu.codigo')
+                ->get();
+            $partidas = DB::table('finanzas.presup_par')
+                ->select('presup_par.*')
+                ->where([
+                    ['presup_par.id_presup', '=', $p->id_presup],
+                    ['presup_par.estado', '=', 1]
+                ])
+                ->orderBy('presup_par.codigo')
+                ->get();
+        }
+
+        return response()->json(['presupuesto' => $presup, 'titulos' => $titulos, 'partidas' => $partidas]);
     }
 }
