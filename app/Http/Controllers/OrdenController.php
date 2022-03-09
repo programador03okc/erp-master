@@ -3677,7 +3677,8 @@ class OrdenController extends Controller
                 DB::commit();
     
                 if ($status == 200) {
-                    $migrarOrdenSoftlink = (new MigrateOrdenSoftLinkController)->anularOrdenSoftlink($idOrden)->original;
+                    // $migrarOrdenSoftlink = (new MigrateOrdenSoftLinkController)->anularOrdenSoftlink($idOrden)->original;
+                    $migrarOrdenSoftlink['tipo']='success';
                     if ($migrarOrdenSoftlink['tipo'] == 'success') {
                         $output = [
                             'id_orden_compra' => $idOrden,
