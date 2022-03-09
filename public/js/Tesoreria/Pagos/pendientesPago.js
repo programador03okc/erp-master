@@ -212,13 +212,13 @@
                 { 'data': 'simbolo', 'name': 'sis_moneda.simbolo', 'className': 'text-center' },
                 {
                     'render': function (data, type, row) {
-                        return (row['suma_total'] !== null ? formatNumber.decimal(row['suma_total'], '', -2) : '0.00');
+                        return (row['monto_total'] !== null ? formatNumber.decimal(row['monto_total'], '', -2) : '0.00');
                     }, 'className': 'text-right'
                 },
                 {
                     'render': function (data, type, row) {
                         var pagado = formatDecimal(row['suma_pagado'] !== null ? row['suma_pagado'] : 0);
-                        var total = formatDecimal(row['suma_total']);
+                        var total = formatDecimal(row['monto_total']);
                         var por_pagar = (total - pagado);
                         return por_pagar > 0 ? '<strong>' + formatNumber.decimal(por_pagar, '', -2) + '</strong>' : formatNumber.decimal(por_pagar, '', -2);
                     }, 'className': 'text-right celestito'
@@ -246,7 +246,7 @@
                                 ${permisoRegistrar == '1' ?
                                             `<button type="button" class="pago btn btn-success boton" data-toggle="tooltip" data-placement="bottom" 
                                     data-id="${row['id_orden_compra']}" data-cod="${row['codigo']}" data-tipo="orden"
-                                    data-total="${row['suma_total']}" data-pago="${row['suma_pagado']}" 
+                                    data-total="${row['monto_total']}" data-pago="${row['suma_pagado']}" 
                                     data-moneda="${row['simbolo']}" 
 
                                     data-nrodoc="${row['nro_documento'] !== null ? row['nro_documento'] : row['persona'][0].nro_documento}"
