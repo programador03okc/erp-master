@@ -143,38 +143,41 @@ class PresupuestoController extends Controller
 
     public function mostrarPresupuestos($idGrupoList, $id_proyecto = null)
     {
-        $presup = [];
+        $presupuestos = [];
         $titulos = [];
         $partidas = [];
         $grupos = $this->getAllGrupos();
 
         if ($id_proyecto != null || $id_proyecto != '') {
 
-            $presup = DB::table('finanzas.presup')->where([
-                ['id_proyecto', '=', $id_proyecto],
-                ['estado', '=', 1],
-                ['tp_presup', '=', 4]
-            ])
-                ->get();
+            $presupuestos = DB::table('finanzas.presup')
+                ->select('presup.id_presup')
+                ->where([
+                    ['id_proyecto', '=', $id_proyecto],
+                    ['estado', '=', 1],
+                    ['tp_presup', '=', 4]
+                ])->get();
         } else {
 
-            $presup = DB::table('finanzas.presup')->where([
-                // ['id_grupo', '=', $id_grupo],
-                ['id_proyecto', '=', null],
-                ['estado', '=', 1],
-                ['tp_presup', '=', 2]
-            ])->whereIn('id_grupo', $grupos)
-                ->get();
+            $presupuestos = DB::table('finanzas.presup')
+                ->select('presup.id_presup')
+                ->where([
+                    ['id_proyecto', '=', null],
+                    ['estado', '=', 1],
+                    ['tp_presup', '=', 2]
+                ])->whereIn('id_grupo', $grupos)->get();
         }
 
-        foreach ($presup as $p) {
+        foreach ($presupuestos as $p) {
             $titulos = DB::table('finanzas.presup_titu')
+                ->select('presup_titu.*')
                 ->where([
-                    ['id_presup', '=', $p->id_presup],
-                    ['estado', '=', 1]
+                    ['presup_titu.id_presup', '=', $p->id_presup],
+                    ['presup_titu.estado', '=', 1]
                 ])
                 ->orderBy('presup_titu.codigo')
                 ->get();
+
             $partidas = DB::table('finanzas.presup_par')
                 ->select('presup_par.*')
                 ->where([
@@ -185,6 +188,6 @@ class PresupuestoController extends Controller
                 ->get();
         }
 
-        return response()->json(['presupuesto' => $presup, 'titulos' => $titulos, 'partidas' => $partidas]);
+        return response()->json(['presupuesto' => $presupuestos, 'titulos' => $titulos, 'partidas' => $partidas]);
     }
 }
