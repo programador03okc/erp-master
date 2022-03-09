@@ -1335,6 +1335,9 @@ class OrdenController extends Controller
             'log_ord_compra.codigo as codigo_orden',
             'log_ord_compra.id_moneda',
             'log_ord_compra.incluye_igv',
+            'log_ord_compra.monto_subtotal',
+            'log_ord_compra.monto_igv',
+            'log_ord_compra.monto_total',
             'sis_moneda.simbolo as moneda_simbolo',
             'sis_moneda.descripcion as moneda_descripcion',
             'log_ord_compra.codigo_softlink',
@@ -2523,6 +2526,9 @@ class OrdenController extends Controller
                 $orden->id_usuario = Auth::user()->id_usuario;
                 $orden->id_moneda = $request->id_moneda ? $request->id_moneda : null;
                 $orden->incluye_igv = isset($request->incluye_igv) ? $request->incluye_igv : true;
+                $orden->monto_subtotal = isset($request->monto_subtotal) ? $request->monto_subtotal : null;
+                $orden->monto_igv = isset($request->monto_igv) ? $request->monto_igv : null;
+                $orden->monto_total = isset($request->monto_total) ? $request->monto_total : null;
                 $orden->id_proveedor = $request->id_proveedor;
                 $orden->id_cta_principal = isset($request->id_cuenta_principal_proveedor) ? $request->id_cuenta_principal_proveedor : null;
                 $orden->id_contacto = isset($request->id_contacto_proveedor) ? $request->id_contacto_proveedor : null;
@@ -2980,6 +2986,9 @@ class OrdenController extends Controller
                     $orden->id_moneda = $request->id_moneda ? $request->id_moneda : null;
                     $orden->fecha = $request->fecha_emision ? $request->fecha_emision : new Carbon();
                     $orden->incluye_igv = isset($request->incluye_igv) ? filter_var($request->incluye_igv, FILTER_VALIDATE_BOOLEAN) : true;
+                    $orden->monto_subtotal = isset($request->monto_subtotal) ? $request->monto_subtotal : null;
+                    $orden->monto_igv = isset($request->monto_igv) ? $request->monto_igv : null;
+                    $orden->monto_total = isset($request->monto_total) ? $request->monto_total : null;
                     $orden->id_proveedor = $request->id_proveedor;
                     $orden->id_cta_principal = isset($request->id_cuenta_principal_proveedor) ? $request->id_cuenta_principal_proveedor : null;
                     $orden->id_contacto = isset($request->id_contacto_proveedor) ? $request->id_contacto_proveedor : null;
