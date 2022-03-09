@@ -151,7 +151,7 @@ class PresupuestoController extends Controller
         if ($id_proyecto != null || $id_proyecto != '') {
 
             $presupuestos = DB::table('finanzas.presup')
-                ->select('presup.id_presup')
+                ->select('presup.*')
                 ->where([
                     ['id_proyecto', '=', $id_proyecto],
                     ['estado', '=', 1],
@@ -160,7 +160,7 @@ class PresupuestoController extends Controller
         } else {
 
             $presupuestos = DB::table('finanzas.presup')
-                ->select('presup.id_presup')
+                ->select('presup.*')
                 ->where([
                     ['id_proyecto', '=', null],
                     ['estado', '=', 1],
