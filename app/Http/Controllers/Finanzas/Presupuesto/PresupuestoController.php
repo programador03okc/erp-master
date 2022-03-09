@@ -57,7 +57,21 @@ class PresupuestoController extends Controller
             ])
             ->get();
 
-        return response()->json($detalle);
+        $pagos = DB::table('tesoreria.requerimiento_pago_detalle')
+            ->select(
+                'requerimiento_pago_detalle.*',
+                'requerimiento_pago.codigo',
+                'requerimiento_pago.concepto',
+                'requerimiento_pago.fecha_registro'
+            )
+            ->join('almacen.requerimiento_pago', 'requerimiento_pago.id_requerimiento', '=', 'requerimiento_pago_detalle.id_requerimiento')
+            ->where([
+                ['requerimiento_pago_detalle.id_partida', '=', $id],
+                ['requerimiento_pago_detalle.estado', '=', 1]
+            ])
+            ->get();
+
+        return response()->json(['req_compras' => $detalle, 'req_pagos' => $pagos]);
     }
 
     public function store()
