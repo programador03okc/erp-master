@@ -21,6 +21,9 @@ Orden de compra / servicio
     <form id="form-crear-orden-requerimiento" type="register" form="formulario">
         <input type="hidden" name="id_orden" primary="ids">
         <input type="hidden" name="tipo_cambio_compra">
+        <input class="oculto" name="monto_subtotal">
+        <input class="oculto" name="monto_igv">
+        <input class="oculto" name="monto_total">
 
         <div class="row">
             <div class="col-md-12">

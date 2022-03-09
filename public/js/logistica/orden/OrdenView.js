@@ -613,6 +613,7 @@ class OrdenView {
 
         this.updateSimboloMoneda();
         document.querySelector("label[name='montoNeto']").textContent = $.number((totalNeto), 2);
+        document.querySelector("input[name='monto_subtotal']").value = totalNeto;
 
         let incluyeIGV = document.querySelector("input[name='incluye_igv']").checked;
         if (incluyeIGV == true) {
@@ -621,10 +622,17 @@ class OrdenView {
             document.querySelector("label[name='igv']").textContent = $.number(igv, 2);
             document.querySelector("label[name='montoTotal']").textContent = $.number(MontoTotal, 2);
 
+            document.querySelector("input[name='monto_igv']").value = igv;
+            document.querySelector("input[name='monto_total']").value = MontoTotal;
+
         } else {
             let MontoTotal = parseFloat(totalNeto);
             document.querySelector("label[name='igv']").textContent = $.number(0, 2);
             document.querySelector("label[name='montoTotal']").textContent = $.number(MontoTotal, 2);
+
+            document.querySelector("input[name='monto_igv']").value = 0;
+            document.querySelector("input[name='monto_total']").value = MontoTotal;
+
         }
 
     }
@@ -840,6 +848,10 @@ class OrdenView {
         document.querySelector("label[name='montoNeto']").textContent = $.number(montoNeto, 2);
         document.querySelector("label[name='igv']").textContent = $.number(igv, 2);
         document.querySelector("label[name='montoTotal']").textContent = $.number(montoTotal, 2);
+
+        document.querySelector("input[name='monto_subtotal']").value = montoNeto;
+        document.querySelector("input[name='monto_igv']").value = igv;
+        document.querySelector("input[name='monto_total']").value = MontoTotal;
     }
 
     updateInObjSubtotal(id, valor) {
@@ -1852,6 +1864,9 @@ class OrdenView {
         document.querySelector("form[id='form-crear-orden-requerimiento'] span[name='codigo_orden_interno']").textContent = data.codigo_orden ? data.codigo_orden : '';
         // document.querySelector("form[id='form-crear-orden-requerimiento'] span[name='estado_orden']").textContent = data.estado_orden !=null?"(Estado: "+data.estado_orden+')':'';
         document.querySelector("form[id='form-crear-orden-requerimiento'] span[name='estado_orden']").textContent = data.estado_orden !=null?`(Estado: ${data.estado_orden})`:'';
+        document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='monto_subtotal']").value = data.monto_subtotal ? data.monto_subtotal : 0;
+        document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='monto_igv']").value = data.monto_igv ? data.monto_igv : 0;
+        document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='monto_total']").value = data.monto_total ? data.monto_total : 0;
         if(data.cuadro_costo !=null && data.cuadro_costo.length >0 ){
             document.querySelector("div[id='modal-estado-cuadro-presupuesto'] label[id='id_orden']").textContent= data.id_orden_compra ? data.id_orden_compra : '';
             data.cuadro_costo.map((element,index)=>{
