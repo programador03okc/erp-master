@@ -64,7 +64,7 @@ class PresupuestoController extends Controller
                 'requerimiento_pago.concepto',
                 'requerimiento_pago.fecha_registro'
             )
-            ->join('almacen.requerimiento_pago', 'requerimiento_pago.id_requerimiento', '=', 'requerimiento_pago_detalle.id_requerimiento')
+            ->join('tesoreria.requerimiento_pago', 'requerimiento_pago.id_requerimiento', '=', 'requerimiento_pago_detalle.id_requerimiento')
             ->where([
                 ['requerimiento_pago_detalle.id_partida', '=', $id],
                 ['requerimiento_pago_detalle.estado', '=', 1]
