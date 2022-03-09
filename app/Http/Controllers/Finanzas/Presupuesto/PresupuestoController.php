@@ -53,7 +53,7 @@ class PresupuestoController extends Controller
             ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
             ->where([
                 ['alm_det_req.partida', '=', $id],
-                ['alm_det_req.estado', '=', 1]
+                ['alm_det_req.estado', '!=', 7]
             ])
             ->get();
 
@@ -64,10 +64,10 @@ class PresupuestoController extends Controller
                 'requerimiento_pago.concepto',
                 'requerimiento_pago.fecha_registro'
             )
-            ->join('tesoreria.requerimiento_pago', 'requerimiento_pago.id_requerimiento', '=', 'requerimiento_pago_detalle.id_requerimiento')
+            ->join('tesoreria.requerimiento_pago', 'requerimiento_pago.id_requerimiento_pago', '=', 'requerimiento_pago_detalle.id_requerimiento_pago')
             ->where([
                 ['requerimiento_pago_detalle.id_partida', '=', $id],
-                ['requerimiento_pago_detalle.estado', '=', 1]
+                ['requerimiento_pago_detalle.id_estado', '!=', 7]
             ])
             ->get();
 
