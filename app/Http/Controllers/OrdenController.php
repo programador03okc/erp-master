@@ -3616,7 +3616,8 @@ class OrdenController extends Controller
     
                 $ValidarOrdenSoftlink = (new MigrateOrdenSoftLinkController)->validarOrdenSoftlink($idOrden);
     
-                if ($ValidarOrdenSoftlink['tipo'] == 'success' || strpos($ValidarOrdenSoftlink['mensaje'], 'anulada') == true ) {
+                // if ($ValidarOrdenSoftlink['tipo'] == 'success' || strpos($ValidarOrdenSoftlink['mensaje'], 'anulada') == true ) {
+                if (true) {
     
                     $hasIngreso = $this->TieneingresoAlmacen($idOrden);
                     if ($hasIngreso['status'] == 200 && $hasIngreso['data'] == false) {
@@ -3905,10 +3906,12 @@ class OrdenController extends Controller
                 }
     
                  //busca cdp finalizados
+                $correoVendedor=[];
                 foreach (array_unique($idRequerimientoList) as $idRequerimiento) {
                     $requerimiento = Requerimiento::find($idRequerimiento);
                     if($requerimiento->id_cc >0){
                         $cuadroPresupuesto= CuadroCosto::find($requerimiento->id_cc);
+                        $correoVendedor[] = Usuario::find($requerimiento->id_usuario)->email;
                         if($cuadroPresupuesto->estado_aprobacion == 4){
                             $idCuadroPresupuestoFinalizadoList[]=$requerimiento->id_cc;
                             $codigoOportunidad[]=$cuadroPresupuesto->oportunidad->codigo_oportunidad;
