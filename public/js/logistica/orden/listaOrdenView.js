@@ -648,7 +648,7 @@ class ListaOrdenView {
 
                             let btnEnviarAPago = '';
                             if (row.id_condicion == 1) {
-                                btnEnviarAPago = `<button type="button" class="btn btn-sm btn-${(row.estado_pago == 8 ? 'success' : 'info')} boton handleClickModalEnviarOrdenAPago" name="btnEnviarOrdenAPago" title="${(row.estado_pago == 8 ? 'Ya se envió la solicitud de pago' : 'Solicitar pago')}" 
+                                btnEnviarAPago = `<button type="button" class="btn btn-sm btn-${(row.estado_pago == 8 ? 'success' : 'info')} boton handleClickModalEnviarOrdenAPago" name="btnEnviarOrdenAPago" title="${(row.estado_pago == 8 ? 'Ya se envió a pago' : 'Enviar a pago?')}" 
                                 data-id-orden-compra="${row.id_orden_compra ?? ''}" 
                                 data-codigo-orden="${row.codigo ?? ''}" 
                                 data-id-proveedor="${row.id_proveedor ?? ''}" 
