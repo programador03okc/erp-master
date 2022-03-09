@@ -53,11 +53,25 @@ class PresupuestoController extends Controller
             ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
             ->where([
                 ['alm_det_req.partida', '=', $id],
-                ['alm_det_req.estado', '=', 1]
+                ['alm_det_req.estado', '!=', 7]
             ])
             ->get();
 
-        return response()->json($detalle);
+        $pagos = DB::table('tesoreria.requerimiento_pago_detalle')
+            ->select(
+                'requerimiento_pago_detalle.*',
+                'requerimiento_pago.codigo',
+                'requerimiento_pago.concepto',
+                'requerimiento_pago.fecha_registro'
+            )
+            ->join('tesoreria.requerimiento_pago', 'requerimiento_pago.id_requerimiento_pago', '=', 'requerimiento_pago_detalle.id_requerimiento_pago')
+            ->where([
+                ['requerimiento_pago_detalle.id_partida', '=', $id],
+                ['requerimiento_pago_detalle.id_estado', '!=', 7]
+            ])
+            ->get();
+
+        return response()->json(['req_compras' => $detalle, 'req_pagos' => $pagos]);
     }
 
     public function store()
