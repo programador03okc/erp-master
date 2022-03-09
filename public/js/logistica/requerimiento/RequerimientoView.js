@@ -1181,7 +1181,7 @@ class RequerimientoView {
                     if (titulo.codigo == partida.cod_padre) {
                         html += `<tr id="par-${partida.id_partida}">
                             <td style="width:15%; text-align:left;" name="codigo">${partida.codigo}</td>
-                            <td style="width:75%; text-align:left;" name="descripcion">${partida.des_pardet}</td>
+                            <td style="width:75%; text-align:left;" name="descripcion">${partida.descripcion}</td>
                             <td style="width:15%; text-align:right;" name="importe_total" class="right ${isVisible}" data-presupuesto-total="${partida.importe_total}" >S/${Util.formatoNumero(partida.importe_total, 2)}</td>
                             <td style="width:5%; text-align:center;"><button class="btn btn-success btn-xs handleClickSelectPartida" data-id-partida="${partida.id_partida}">Seleccionar</button></td>
                         </tr>`;

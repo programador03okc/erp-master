@@ -3616,8 +3616,8 @@ class OrdenController extends Controller
     
                 $ValidarOrdenSoftlink = (new MigrateOrdenSoftLinkController)->validarOrdenSoftlink($idOrden);
     
-                // if ($ValidarOrdenSoftlink['tipo'] == 'success' || strpos($ValidarOrdenSoftlink['mensaje'], 'anulada') == true ) {
-                if (true) {
+                if ($ValidarOrdenSoftlink['tipo'] == 'success' || strpos($ValidarOrdenSoftlink['mensaje'], 'anulada') == true ) {
+                // if (true) {
     
                     $hasIngreso = $this->TieneingresoAlmacen($idOrden);
                     if ($hasIngreso['status'] == 200 && $hasIngreso['data'] == false) {
@@ -3677,8 +3677,8 @@ class OrdenController extends Controller
                 DB::commit();
     
                 if ($status == 200) {
-                    // $migrarOrdenSoftlink = (new MigrateOrdenSoftLinkController)->anularOrdenSoftlink($idOrden)->original;
-                    $migrarOrdenSoftlink['tipo']='success';
+                    $migrarOrdenSoftlink = (new MigrateOrdenSoftLinkController)->anularOrdenSoftlink($idOrden)->original;
+                    // $migrarOrdenSoftlink['tipo']='success';
                     if ($migrarOrdenSoftlink['tipo'] == 'success') {
                         $output = [
                             'id_orden_compra' => $idOrden,
