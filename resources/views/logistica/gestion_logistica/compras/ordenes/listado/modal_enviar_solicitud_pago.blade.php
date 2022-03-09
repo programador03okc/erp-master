@@ -5,7 +5,7 @@
             <form id="form-enviar_solicitud_pago">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
-                    <h3 class="modal-title">Enviar a solicitud de pago <span class="text-primary" id="codigo_orden"></span></h3>
+                    <h3 class="modal-title">Enviar a pago <span class="text-primary" id="codigo_orden"></span></h3>
                 </div>
                 <div class="modal-body">
                     <div class="row">
