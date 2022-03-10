@@ -6,10 +6,14 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Administracion\Division;
 use App\Models\Almacen\Movimiento;
+use App\Models\Cas\AtiendeIncidencia;
 use App\Models\Cas\Incidencia;
 use App\Models\Cas\IncidenciaProducto;
+use App\Models\Cas\IncidenciaProductoTipo;
 use App\Models\Cas\MedioReporte;
+use App\Models\Cas\ModoIncidencia;
 use App\Models\Cas\TipoFalla;
+use App\Models\Cas\TipoGarantia;
 use App\Models\Cas\TipoServicio;
 use App\Models\Configuracion\Usuario;
 use App\Models\Distribucion\OrdenDespacho;
@@ -27,8 +31,22 @@ class IncidenciaController extends Controller
         $usuarios = Usuario::join('configuracion.usuario_rol', 'usuario_rol.id_usuario', '=', 'sis_usua.id_usuario')
             ->where([['sis_usua.estado', '=', 1], ['usuario_rol.id_rol', '=', 20]])->get(); //20 CAS
         $medios = MedioReporte::where('estado', 1)->get();
+        $modos = ModoIncidencia::where('estado', 1)->get();
+        $atiende = AtiendeIncidencia::where('estado', 1)->get();
+        $tiposGarantia = TipoGarantia::where('estado', 1)->get();
+        $tipoProducto = IncidenciaProductoTipo::where('estado', 1)->get();
 
-        return view('cas/incidencias/incidencia', compact('tipoFallas', 'tipoServicios', 'usuarios', 'divisiones', 'medios'));
+        return view('cas/incidencias/incidencia', compact(
+            'tipoFallas',
+            'tipoServicios',
+            'usuarios',
+            'divisiones',
+            'medios',
+            'modos',
+            'atiende',
+            'tiposGarantia',
+            'tiposProducto'
+        ));
     }
 
     function listarSalidasVenta()
@@ -160,11 +178,14 @@ class IncidenciaController extends Controller
             $incidencia->usuario_final = $request->usuario_final;
             $incidencia->id_tipo_falla = $request->id_tipo_falla;
             $incidencia->id_tipo_servicio = $request->id_tipo_servicio;
-            // $incidencia->id_division = $request->id_division;
             $incidencia->id_medio = $request->id_medio;
             $incidencia->conformidad = $request->conformidad;
             $incidencia->equipo_operativo = ((isset($request->equipo_operativo) && $request->equipo_operativo == 'on') ? true : false);
             $incidencia->falla_reportada = $request->falla_reportada;
+            $incidencia->id_modo = $request->id_modo;
+            $incidencia->id_tipo_garantia = $request->id_tipo_garantia;
+            $incidencia->id_atiende = $request->id_atiende;
+            $incidencia->numero_caso = $request->numero_caso;
             $incidencia->anio = $yyyy;
             $incidencia->estado = 1;
             $incidencia->fecha_registro = new Carbon();
@@ -221,6 +242,10 @@ class IncidenciaController extends Controller
                 $incidencia->conformidad = $request->conformidad;
                 $incidencia->equipo_operativo = ($request->equipo_operativo == 'on' ? true : false);
                 $incidencia->falla_reportada = $request->falla_reportada;
+                $incidencia->id_modo = $request->id_modo;
+                $incidencia->id_tipo_garantia = $request->id_tipo_garantia;
+                $incidencia->id_atiende = $request->id_atiende;
+                $incidencia->numero_caso = $request->numero_caso;
                 $incidencia->save();
 
                 $detalle = json_decode($request->detalle);
