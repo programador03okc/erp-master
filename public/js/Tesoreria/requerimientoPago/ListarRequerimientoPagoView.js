@@ -1994,11 +1994,20 @@ class ListarRequerimientoPagoView {
         document.querySelector("div[id='modal-requerimiento-pago'] span[name='codigo']").textContent = data.codigo;
 
         document.querySelector("div[id='modal-requerimiento-pago'] input[name='concepto']").value = data.concepto;
+        document.querySelector("div[id='modal-requerimiento-pago'] select[name='proyecto']").value = data.id_proyecto;
+        if(data.id_proyecto>0){
+            document.querySelector("div[id='modal-requerimiento-pago'] div[id='contenedor-proyecto']").classList.remove("oculto");
+        }else{
+            document.querySelector("div[id='modal-requerimiento-pago'] div[id='contenedor-proyecto']").classList.add("oculto");
+
+        }
+
         // document.querySelector("div[id='modal-requerimiento-pago'] input[name='fecha_registro']").value = fechaRegistro;
         document.querySelector("div[id='modal-requerimiento-pago'] span[name='fecha_registro']").textContent = 'Fecha registro: ' + fechaRegistro;
         document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_contribuyente']").value = data.id_contribuyente != null || data.id_contribuyente != '' ? data.id_contribuyente : '';
         document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_persona']").value = data.id_persona != null || data.id_persona != '' ? data.id_persona : '';
         document.querySelector("div[id='modal-requerimiento-pago'] select[name='id_tipo_destinatario']").value = data.id_tipo_destinatario;
+
         if (data.id_tipo_destinatario == 1 && data.id_persona > 0) {
             // console.log(data);
             document.querySelector("div[id='modal-requerimiento-pago'] input[name='tipo_documento_identidad']").value = data.persona != null && data.persona.tipo_documento_identidad != null ? data.persona.tipo_documento_identidad.descripcion : '';
