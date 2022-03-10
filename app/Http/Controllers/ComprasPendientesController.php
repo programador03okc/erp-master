@@ -62,7 +62,7 @@ class ComprasPendientesController extends Controller
 
         $unidades_medida = UnidadMedida::mostrar();
         $monedas = Moneda::mostrar();
-    // $sedes = Auth::user()->sedesAcceso();
+        // $sedes = Auth::user()->sedesAcceso();
 
         $tipos = AlmacenController::mostrar_tipos_cbo();
         $almacenes = Almacen::mostrar();
@@ -170,12 +170,12 @@ class ComprasPendientesController extends Controller
     public function listarRequerimientosPendientes(Request $request)
     {
 
-        $empresa = $request->idEmpresa??'SIN_FILTRO';
-        $sede = $request->idSede??'SIN_FILTRO';
-        $fechaRegistroDesde = $request->fechaRegistroDesde??'SIN_FILTRO';
-        $fechaRegistroHasta = $request->fechaRegistroHasta??'SIN_FILTRO';
-        $reserva = $request->reserva??'SIN_FILTRO';
-        $orden = $request->orden??'SIN_FILTRO';
+        $empresa = $request->idEmpresa ?? 'SIN_FILTRO';
+        $sede = $request->idSede ?? 'SIN_FILTRO';
+        $fechaRegistroDesde = $request->fechaRegistroDesde ?? 'SIN_FILTRO';
+        $fechaRegistroHasta = $request->fechaRegistroHasta ?? 'SIN_FILTRO';
+        $reserva = $request->reserva ?? 'SIN_FILTRO';
+        $orden = $request->orden ?? 'SIN_FILTRO';
 
 
         $alm_req = Requerimiento::join('almacen.alm_tp_req', 'alm_req.id_tipo_requerimiento', '=', 'alm_tp_req.id_tipo_requerimiento')
@@ -264,45 +264,45 @@ class ComprasPendientesController extends Controller
                 WHERE det.id_requerimiento = alm_req.id_requerimiento AND alm_reserva.estado = 1
                 AND det.estado != 7) AS count_stock_comprometido")
             )
-            ->when(($empresa >0), function ($query) use($empresa) {
-                return $query->where('alm_req.id_empresa','=',$empresa); 
+            ->when(($empresa > 0), function ($query) use ($empresa) {
+                return $query->where('alm_req.id_empresa', '=', $empresa);
             })
-            ->when(($sede >0), function ($query) use($sede) {
-                return $query->where('alm_req.id_sede','=',$sede); 
+            ->when(($sede > 0), function ($query) use ($sede) {
+                return $query->where('alm_req.id_sede', '=', $sede);
             })
             ->when(($reserva == 'SIN_RESERVA'), function ($query) {
                 $query->leftJoin('almacen.alm_det_req', 'alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento');
-                return $query->whereRaw('alm_det_req.stock_comprometido isNULL'); 
+                return $query->whereRaw('alm_det_req.stock_comprometido isNULL');
             })
             ->when(($reserva == 'CON_RESERVA'), function ($query) {
                 $query->leftJoin('almacen.alm_det_req', 'alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento');
                 $query->leftJoin('almacen.alm_reserva', 'alm_reserva.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento');
-                return $query->whereRaw('alm_reserva.stock_comprometido >0 and alm_reserva.estado !=7'); 
+                return $query->whereRaw('alm_reserva.stock_comprometido >0 and alm_reserva.estado !=7');
             })
             ->when(($orden == 'CON_ORDEN'), function ($query) {
                 $query->Join('almacen.alm_det_req', 'alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento');
                 $query->Join('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento');
-                return $query->whereRaw('log_det_ord_compra.id_detalle_requerimiento > 0 and log_det_ord_compra.estado !=7 '); 
+                return $query->whereRaw('log_det_ord_compra.id_detalle_requerimiento > 0 and log_det_ord_compra.estado !=7 ');
             })
             ->when(($orden == 'SIN_ORDEN'), function ($query) {
                 $query->Join('almacen.alm_det_req', 'alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento');
                 return $query->rightJoin('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento');
             })
-            
-            ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta == 'SIN_FILTRO')), function ($query) use($fechaRegistroDesde) {
-                return $query->where('alm_req.fecha_requerimiento' ,'>=',$fechaRegistroDesde); 
+
+            ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta == 'SIN_FILTRO')), function ($query) use ($fechaRegistroDesde) {
+                return $query->where('alm_req.fecha_requerimiento', '>=', $fechaRegistroDesde);
             })
-            ->when((($fechaRegistroDesde == 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use($fechaRegistroHasta) {
-                return $query->where('alm_req.fecha_requerimiento' ,'<=',$fechaRegistroHasta); 
+            ->when((($fechaRegistroDesde == 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use ($fechaRegistroHasta) {
+                return $query->where('alm_req.fecha_requerimiento', '<=', $fechaRegistroHasta);
             })
-            ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use($fechaRegistroDesde,$fechaRegistroHasta) {
-                return $query->whereBetween('alm_req.fecha_requerimiento' ,[$fechaRegistroDesde,$fechaRegistroHasta]); 
+            ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use ($fechaRegistroDesde, $fechaRegistroHasta) {
+                return $query->whereBetween('alm_req.fecha_requerimiento', [$fechaRegistroDesde, $fechaRegistroHasta]);
             })
 
-            ->whereIn('alm_req.estado', [2,15,27,38,39])
-            ->where('alm_req.flg_compras','=',0);
-            
-            return datatables($alm_req)
+            ->whereIn('alm_req.estado', [1, 3, 4, 12, 2, 15, 27, 38, 39])
+            ->where('alm_req.flg_compras', '=', 0);
+
+        return datatables($alm_req)
             ->filterColumn('alm_req.fecha_entrega', function ($query, $keyword) {
                 try {
                     $keywords = Carbon::createFromFormat('d-m-Y', trim($keyword));
@@ -320,7 +320,7 @@ class ComprasPendientesController extends Controller
             })
             // ->filterColumn('division', function ($query, $keyword) {
             //     try {
-                    
+
             //         $query->where('nivel.unidad', trim($keyword));
             //     } catch (\Throwable $th) {
             //     }
@@ -343,12 +343,12 @@ class ComprasPendientesController extends Controller
     public function listarRequerimientosAtendidos(Request $request)
     {
 
-        $empresa = $request->idEmpresa??'SIN_FILTRO';
-        $sede = $request->idSede??'SIN_FILTRO';
-        $fechaRegistroDesde = $request->fechaRegistroDesde??'SIN_FILTRO';
-        $fechaRegistroHasta = $request->fechaRegistroHasta??'SIN_FILTRO';
-        $reserva = $request->reserva??'SIN_FILTRO';
-        $orden = $request->orden??'SIN_FILTRO';
+        $empresa = $request->idEmpresa ?? 'SIN_FILTRO';
+        $sede = $request->idSede ?? 'SIN_FILTRO';
+        $fechaRegistroDesde = $request->fechaRegistroDesde ?? 'SIN_FILTRO';
+        $fechaRegistroHasta = $request->fechaRegistroHasta ?? 'SIN_FILTRO';
+        $reserva = $request->reserva ?? 'SIN_FILTRO';
+        $orden = $request->orden ?? 'SIN_FILTRO';
 
 
         $alm_req = Requerimiento::join('almacen.alm_tp_req', 'alm_req.id_tipo_requerimiento', '=', 'alm_tp_req.id_tipo_requerimiento')
@@ -431,44 +431,44 @@ class ComprasPendientesController extends Controller
                 WHERE det.id_requerimiento = alm_req.id_requerimiento AND alm_reserva.estado = 1
                 AND det.estado != 7) AS count_stock_comprometido")
             )
-            ->when(($empresa >0), function ($query) use($empresa) {
-                return $query->where('alm_req.id_empresa','=',$empresa); 
+            ->when(($empresa > 0), function ($query) use ($empresa) {
+                return $query->where('alm_req.id_empresa', '=', $empresa);
             })
-            ->when(($sede >0), function ($query) use($sede) {
-                return $query->where('alm_req.id_sede','=',$sede); 
+            ->when(($sede > 0), function ($query) use ($sede) {
+                return $query->where('alm_req.id_sede', '=', $sede);
             })
             ->when(($reserva == 'SIN_RESERVA'), function ($query) {
                 $query->leftJoin('almacen.alm_det_req', 'alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento');
-                return $query->whereRaw('alm_det_req.stock_comprometido isNULL'); 
+                return $query->whereRaw('alm_det_req.stock_comprometido isNULL');
             })
             ->when(($reserva == 'CON_RESERVA'), function ($query) {
                 $query->leftJoin('almacen.alm_det_req', 'alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento');
                 $query->leftJoin('almacen.alm_reserva', 'alm_reserva.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento');
-                return $query->whereRaw('alm_reserva.stock_comprometido >0 and alm_reserva.estado !=7'); 
+                return $query->whereRaw('alm_reserva.stock_comprometido >0 and alm_reserva.estado !=7');
             })
             ->when(($orden == 'CON_ORDEN'), function ($query) {
                 $query->Join('almacen.alm_det_req', 'alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento');
                 $query->Join('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento');
-                return $query->whereRaw('log_det_ord_compra.id_detalle_requerimiento > 0 and log_det_ord_compra.estado !=7 '); 
+                return $query->whereRaw('log_det_ord_compra.id_detalle_requerimiento > 0 and log_det_ord_compra.estado !=7 ');
             })
             ->when(($orden == 'SIN_ORDEN'), function ($query) {
                 $query->Join('almacen.alm_det_req', 'alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento');
                 return $query->rightJoin('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento');
             })
-            
-            ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta == 'SIN_FILTRO')), function ($query) use($fechaRegistroDesde) {
-                return $query->where('alm_req.fecha_requerimiento' ,'>=',$fechaRegistroDesde); 
+
+            ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta == 'SIN_FILTRO')), function ($query) use ($fechaRegistroDesde) {
+                return $query->where('alm_req.fecha_requerimiento', '>=', $fechaRegistroDesde);
             })
-            ->when((($fechaRegistroDesde == 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use($fechaRegistroHasta) {
-                return $query->where('alm_req.fecha_requerimiento' ,'<=',$fechaRegistroHasta); 
+            ->when((($fechaRegistroDesde == 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use ($fechaRegistroHasta) {
+                return $query->where('alm_req.fecha_requerimiento', '<=', $fechaRegistroHasta);
             })
-            ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use($fechaRegistroDesde,$fechaRegistroHasta) {
-                return $query->whereBetween('alm_req.fecha_requerimiento' ,[$fechaRegistroDesde,$fechaRegistroHasta]); 
+            ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use ($fechaRegistroDesde, $fechaRegistroHasta) {
+                return $query->whereBetween('alm_req.fecha_requerimiento', [$fechaRegistroDesde, $fechaRegistroHasta]);
             })
-            ->where('alm_req.flg_compras','=',0)
-            ->whereNotIn('alm_req.estado', [1,2,3,4,7,12,13,15,27,28]);
-            
-            return datatables($alm_req)
+            ->where('alm_req.flg_compras', '=', 0)
+            ->whereNotIn('alm_req.estado', [1, 2, 3, 4, 7, 12, 13, 15, 27, 28]);
+
+        return datatables($alm_req)
             ->filterColumn('alm_req.fecha_entrega', function ($query, $keyword) {
                 try {
                     $keywords = Carbon::createFromFormat('d-m-Y', trim($keyword));
@@ -501,7 +501,7 @@ class ComprasPendientesController extends Controller
 
 
 
-    public function obtenerRequerimientosAtendidos($empresa,$sede,$fechaRegistroDesde,$fechaRegistroHasta,$reserva,$orden)
+    public function obtenerRequerimientosAtendidos($empresa, $sede, $fechaRegistroDesde, $fechaRegistroHasta, $reserva, $orden)
     {
         $alm_req = Requerimiento::join('almacen.alm_tp_req', 'alm_req.id_tipo_requerimiento', '=', 'alm_tp_req.id_tipo_requerimiento')
             ->leftJoin('almacen.tipo_cliente', 'tipo_cliente.id_tipo_cliente', '=', 'alm_req.tipo_cliente')
@@ -583,50 +583,49 @@ class ComprasPendientesController extends Controller
                 WHERE det.id_requerimiento = alm_req.id_requerimiento AND alm_reserva.estado = 1
                 AND det.estado != 7) AS count_stock_comprometido")
             )
-            ->when(($empresa >0), function ($query) use($empresa) {
-                return $query->where('alm_req.id_empresa','=',$empresa); 
+            ->when(($empresa > 0), function ($query) use ($empresa) {
+                return $query->where('alm_req.id_empresa', '=', $empresa);
             })
-            ->when(($sede >0), function ($query) use($sede) {
-                return $query->where('alm_req.id_sede','=',$sede); 
+            ->when(($sede > 0), function ($query) use ($sede) {
+                return $query->where('alm_req.id_sede', '=', $sede);
             })
             ->when(($reserva == 'SIN_RESERVA'), function ($query) {
                 $query->leftJoin('almacen.alm_det_req', 'alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento');
-                return $query->whereRaw('alm_det_req.stock_comprometido isNULL'); 
+                return $query->whereRaw('alm_det_req.stock_comprometido isNULL');
             })
             ->when(($reserva == 'CON_RESERVA'), function ($query) {
                 $query->leftJoin('almacen.alm_det_req', 'alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento');
                 $query->leftJoin('almacen.alm_reserva', 'alm_reserva.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento');
-                return $query->whereRaw('alm_reserva.stock_comprometido >0 and alm_reserva.estado !=7'); 
+                return $query->whereRaw('alm_reserva.stock_comprometido >0 and alm_reserva.estado !=7');
             })
             ->when(($orden == 'CON_ORDEN'), function ($query) {
                 $query->Join('almacen.alm_det_req', 'alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento');
                 $query->Join('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento');
-                return $query->whereRaw('log_det_ord_compra.id_detalle_requerimiento > 0 and log_det_ord_compra.estado !=7 '); 
+                return $query->whereRaw('log_det_ord_compra.id_detalle_requerimiento > 0 and log_det_ord_compra.estado !=7 ');
             })
             ->when(($orden == 'SIN_ORDEN'), function ($query) {
                 $query->Join('almacen.alm_det_req', 'alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento');
                 return $query->rightJoin('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento');
             })
-            
-            ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta == 'SIN_FILTRO')), function ($query) use($fechaRegistroDesde) {
-                return $query->where('alm_req.fecha_requerimiento' ,'>=',$fechaRegistroDesde); 
+
+            ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta == 'SIN_FILTRO')), function ($query) use ($fechaRegistroDesde) {
+                return $query->where('alm_req.fecha_requerimiento', '>=', $fechaRegistroDesde);
             })
-            ->when((($fechaRegistroDesde == 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use($fechaRegistroHasta) {
-                return $query->where('alm_req.fecha_requerimiento' ,'<=',$fechaRegistroHasta); 
+            ->when((($fechaRegistroDesde == 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use ($fechaRegistroHasta) {
+                return $query->where('alm_req.fecha_requerimiento', '<=', $fechaRegistroHasta);
             })
-            ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use($fechaRegistroDesde,$fechaRegistroHasta) {
-                return $query->whereBetween('alm_req.fecha_requerimiento' ,[$fechaRegistroDesde,$fechaRegistroHasta]); 
+            ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use ($fechaRegistroDesde, $fechaRegistroHasta) {
+                return $query->whereBetween('alm_req.fecha_requerimiento', [$fechaRegistroDesde, $fechaRegistroHasta]);
             })
-            ->where('alm_req.flg_compras','=',0)
-            ->whereNotIn('alm_req.estado', [1,2,3,4,7,12,13,15,27,28]);
-            
-            return $alm_req;
-            
+            ->where('alm_req.flg_compras', '=', 0)
+            ->whereNotIn('alm_req.estado', [1, 2, 3, 4, 7, 12, 13, 15, 27, 28]);
+
+        return $alm_req;
     }
 
-    public function reporteRequerimientosAtendidosExcel($idEmpresa, $idSede, $fechaRegistroDesde, $fechaRegistroHasta,$reserva,$orden){
-        return Excel::download(new reporteRequerimientosAtendidosExcel($idEmpresa, $idSede, $fechaRegistroDesde, $fechaRegistroHasta,$reserva,$orden), 'reporte_requerimientos_atendidos.xlsx');
-
+    public function reporteRequerimientosAtendidosExcel($idEmpresa, $idSede, $fechaRegistroDesde, $fechaRegistroHasta, $reserva, $orden)
+    {
+        return Excel::download(new reporteRequerimientosAtendidosExcel($idEmpresa, $idSede, $fechaRegistroDesde, $fechaRegistroHasta, $reserva, $orden), 'reporte_requerimientos_atendidos.xlsx');
     }
 
     public function get_lista_items_cuadro_costos_por_id_requerimiento(Request $request)
@@ -692,32 +691,33 @@ class ComprasPendientesController extends Controller
         try {
             DB::beginTransaction();
 
-            $mensaje='';
-            $crearNuevaReserva=true;
-            $codigoOIdReservaAnulada= '';
-            $idRequerimientoList=[];
-            
+            $mensaje = '';
+            $crearNuevaReserva = true;
+            $codigoOIdReservaAnulada = '';
+            $idRequerimientoList = [];
+
 
             $requerimientoHelper = new RequerimientoHelper();
-            if($requerimientoHelper->EstaHabilitadoRequerimiento([$request->idDetalleRequerimiento])==true){
-                $ReservasProductoActivas = Reserva::where([['id_detalle_requerimiento',$request->idDetalleRequerimiento],['estado',1]])->get();
+            if ($requerimientoHelper->EstaHabilitadoRequerimiento([$request->idDetalleRequerimiento]) == true) {
+                $ReservasProductoActivas = Reserva::where([['id_detalle_requerimiento', $request->idDetalleRequerimiento], ['estado', 1]])->get();
                 foreach ($ReservasProductoActivas as $value) {
-                    if($value->id_almacen_reserva == $request->almacenReserva && $value->stock_comprometido == $request->cantidadReserva){
-                        $crearNuevaReserva=false;
-                        $mensaje.='No puede generar una reserva que actualmente existe con mismo almacén y misma cantidad a reservar';
+                    if ($value->id_almacen_reserva == $request->almacenReserva && $value->stock_comprometido == $request->cantidadReserva) {
+                        $crearNuevaReserva = false;
+                        $mensaje .= 'No puede generar una reserva que actualmente existe con mismo almacén y misma cantidad a reservar';
                     }
-                    if($value->id_almacen_reserva == $request->almacenReserva){
-                        $reservaMismoAlmacen = Reserva::where([['id_detalle_requerimiento',$request->idDetalleRequerimiento],['estado',1],
-                        ['id_almacen_reserva',$request->almacenReserva]])->first();
-                        $reservaMismoAlmacen->estado=7;
+                    if ($value->id_almacen_reserva == $request->almacenReserva) {
+                        $reservaMismoAlmacen = Reserva::where([
+                            ['id_detalle_requerimiento', $request->idDetalleRequerimiento], ['estado', 1],
+                            ['id_almacen_reserva', $request->almacenReserva]
+                        ])->first();
+                        $reservaMismoAlmacen->estado = 7;
                         $reservaMismoAlmacen->save();
-                        $codigoOIdReservaAnulada= $reservaMismoAlmacen->codigo?$reservaMismoAlmacen->codigo:$reservaMismoAlmacen->id_reserva;
-                        $crearNuevaReserva= true;
-    
+                        $codigoOIdReservaAnulada = $reservaMismoAlmacen->codigo ? $reservaMismoAlmacen->codigo : $reservaMismoAlmacen->id_reserva;
+                        $crearNuevaReserva = true;
                     }
                 }
                 $reserva = new Reserva();
-                if($crearNuevaReserva==true){
+                if ($crearNuevaReserva == true) {
                     $reserva->codigo = Reserva::crearCodigo();
                     $reserva->id_unidad_medida = $request->idUnidadMedida;
                     $reserva->id_detalle_requerimiento = $request->idDetalleRequerimiento;
@@ -728,140 +728,126 @@ class ComprasPendientesController extends Controller
                     $reserva->fecha_registro =  new Carbon();
                     $reserva->estado = 1;
                     $reserva->save();
-    
-                    if($request->idDetalleRequerimiento > 0){
-                        $idRequerimientoList[]= DetalleRequerimiento::find($request->idDetalleRequerimiento)->first()->id_requerimiento;
+
+                    if ($request->idDetalleRequerimiento > 0) {
+                        $idRequerimientoList[] = DetalleRequerimiento::find($request->idDetalleRequerimiento)->first()->id_requerimiento;
                     }
-        
                 }
-    
-                
-                if($reserva->id_reserva > 0){
-     
-                        $mensaje.=' Se creo nueva reserva '.$reserva->codigo;
-                
+
+
+                if ($reserva->id_reserva > 0) {
+
+                    $mensaje .= ' Se creo nueva reserva ' . $reserva->codigo;
+
                     OrdenesPendientesController::validaProdUbi($request->idProducto, $request->almacenReserva);
-                    if(strlen($codigoOIdReservaAnulada)>0){
-                        $mensaje.=' en remplazo por la reserva '.$codigoOIdReservaAnulada;
+                    if (strlen($codigoOIdReservaAnulada) > 0) {
+                        $mensaje .= ' en remplazo por la reserva ' . $codigoOIdReservaAnulada;
                     }
-                } 
-    
-                $ReservasProductoActualizadas = Reserva::with('almacen','usuario.trabajador.postulante.persona','estado')->where([['id_detalle_requerimiento',$request->idDetalleRequerimiento], ['estado',1]])->get();
-    
-    
-                
+                }
+
+                $ReservasProductoActualizadas = Reserva::with('almacen', 'usuario.trabajador.postulante.persona', 'estado')->where([['id_detalle_requerimiento', $request->idDetalleRequerimiento], ['estado', 1]])->get();
+
+
+
                 DB::commit();
-    
+
                 DetalleRequerimiento::actualizarEstadoDetalleRequerimientoAtendido($request->idDetalleRequerimiento);
                 // actualizar estado de requerimiento
-                $Requerimiento = DetalleRequerimiento::where('id_detalle_requerimiento',$request->idDetalleRequerimiento)->first();
-                $nuevoEstado=  Requerimiento::actualizarEstadoRequerimientoAtendido([$Requerimiento->id_requerimiento]);
-    
-                return response()->json(['id_reserva'=>$reserva->id_reserva,'codigo'=>$reserva->codigo,'lista_finalizados'=>$nuevoEstado['lista_finalizados'],'data'=>$ReservasProductoActualizadas,'tipo_estado'=>'success','estado_requerimiento'=>$nuevoEstado['estado_actual'] ,'mensaje'=>$mensaje]);
+                $Requerimiento = DetalleRequerimiento::where('id_detalle_requerimiento', $request->idDetalleRequerimiento)->first();
+                $nuevoEstado =  Requerimiento::actualizarEstadoRequerimientoAtendido([$Requerimiento->id_requerimiento]);
 
-            }else{
-                return response()->json(['id_reserva'=>'','codigo'=>'','lista_finalizados'=>[],'data'=>[],'tipo_estado'=>'warning','estado_requerimiento'=>null ,'mensaje'=>'No puede guardar la reserva, existe un requerimiento vinculado con estado "En pausa" o  "Por regularizar"']);
-
+                return response()->json(['id_reserva' => $reserva->id_reserva, 'codigo' => $reserva->codigo, 'lista_finalizados' => $nuevoEstado['lista_finalizados'], 'data' => $ReservasProductoActualizadas, 'tipo_estado' => 'success', 'estado_requerimiento' => $nuevoEstado['estado_actual'], 'mensaje' => $mensaje]);
+            } else {
+                return response()->json(['id_reserva' => '', 'codigo' => '', 'lista_finalizados' => [], 'data' => [], 'tipo_estado' => 'warning', 'estado_requerimiento' => null, 'mensaje' => 'No puede guardar la reserva, existe un requerimiento vinculado con estado "En pausa" o  "Por regularizar"']);
             }
-
-
         } catch (\PDOException $e) {
             DB::rollBack();
-            return response()->json(['id_reserva' => 0, 'codigo' => '','lista_finalizados'=>[], 'data'=>[],'estado_requerimiento'=>[] ,'tipo_estado'=>'error','mensaje' => 'Hubo un problema al guardar la reserva. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
-
+            return response()->json(['id_reserva' => 0, 'codigo' => '', 'lista_finalizados' => [], 'data' => [], 'estado_requerimiento' => [], 'tipo_estado' => 'error', 'mensaje' => 'Hubo un problema al guardar la reserva. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
         }
     }
 
 
-    function obtenerStockAlmacen(Request $request){
-            $stock=0;
-            $saldo=0;
+    function obtenerStockAlmacen(Request $request)
+    {
+        $stock = 0;
+        $saldo = 0;
 
-            $productoUbicacion=ProductoUbicacion::where([['id_producto',$request->idProducto],['id_almacen',$request->idAlmacen],['estado',1]])->first();
-            $cantidadReservadas=0;
-            $reservasActivas = Reserva::where([['id_producto',$request->idProducto],['estado',1]])->get();
-            foreach ($reservasActivas as $value) {
-                $cantidadReservadas+=floatval($value->stock_comprometido);
-            }
-            if(!empty($productoUbicacion)){
-                $stock= $productoUbicacion->stock;
-                $saldo = floatval($stock)  - floatval($cantidadReservadas);
-            }
-            return response()->json(['stock'=>$stock,'saldo'=>$saldo,'reservas'=>$cantidadReservadas]);
-
+        $productoUbicacion = ProductoUbicacion::where([['id_producto', $request->idProducto], ['id_almacen', $request->idAlmacen], ['estado', 1]])->first();
+        $cantidadReservadas = 0;
+        $reservasActivas = Reserva::where([['id_producto', $request->idProducto], ['estado', 1]])->get();
+        foreach ($reservasActivas as $value) {
+            $cantidadReservadas += floatval($value->stock_comprometido);
+        }
+        if (!empty($productoUbicacion)) {
+            $stock = $productoUbicacion->stock;
+            $saldo = floatval($stock)  - floatval($cantidadReservadas);
+        }
+        return response()->json(['stock' => $stock, 'saldo' => $saldo, 'reservas' => $cantidadReservadas]);
     }
 
     function anularReservaAlmacen(Request $request)
     {
-        
+
         try {
             DB::beginTransaction();
-        
-            $requerimientoHelper = new RequerimientoHelper();
-            if($requerimientoHelper->EstaHabilitadoRequerimiento([$request->idDetalleRequerimiento])==true){
 
-                $reserva = Reserva::where('id_reserva',$request->idReserva)->first();
-                $reserva->estado=7;
+            $requerimientoHelper = new RequerimientoHelper();
+            if ($requerimientoHelper->EstaHabilitadoRequerimiento([$request->idDetalleRequerimiento]) == true) {
+
+                $reserva = Reserva::where('id_reserva', $request->idReserva)->first();
+                $reserva->estado = 7;
                 $reserva->save();
-    
-            
-                $ReservasProductoActualizadas = Reserva::with('almacen','usuario.trabajador.postulante.persona','estado')->where([['id_detalle_requerimiento',$request->idDetalleRequerimiento], ['estado',1]])->get();
+
+
+                $ReservasProductoActualizadas = Reserva::with('almacen', 'usuario.trabajador.postulante.persona', 'estado')->where([['id_detalle_requerimiento', $request->idDetalleRequerimiento], ['estado', 1]])->get();
                 DetalleRequerimiento::actualizarEstadoDetalleRequerimientoAtendido($request->idDetalleRequerimiento);
                 // actualizar estado de requerimiento
-                $Requerimiento = DetalleRequerimiento::where('id_detalle_requerimiento',$request->idDetalleRequerimiento)->first();
-                $nuevoEstado= Requerimiento::actualizarEstadoRequerimientoAtendido([$Requerimiento->id_requerimiento]);
-    
-            //     (new LogisticaController)->generarTransferenciaRequerimiento($id_requerimiento, $id_sede, $data);
+                $Requerimiento = DetalleRequerimiento::where('id_detalle_requerimiento', $request->idDetalleRequerimiento)->first();
+                $nuevoEstado = Requerimiento::actualizarEstadoRequerimientoAtendido([$Requerimiento->id_requerimiento]);
+
+                //     (new LogisticaController)->generarTransferenciaRequerimiento($id_requerimiento, $id_sede, $data);
                 DB::commit();
-                return response()->json(['id_reserva'=>$reserva->id_reserva,'data'=>$ReservasProductoActualizadas, 'tipo_estado'=>'success', 'estado_requerimiento'=>$nuevoEstado['estado_actual'],'lista_finalizados'=>$nuevoEstado['lista_finalizados'],'lista_restablecidos'=>$nuevoEstado['lista_restablecidos']]);
-            }else{
-                return response()->json(['id_reserva'=>0,'data'=>[],'tipo_estado'=>'warning','mensaje'=>'No puede anular la reserva, existe un requerimiento vinculado con estado "En pausa" o  "Por regularizar"']);
-
+                return response()->json(['id_reserva' => $reserva->id_reserva, 'data' => $ReservasProductoActualizadas, 'tipo_estado' => 'success', 'estado_requerimiento' => $nuevoEstado['estado_actual'], 'lista_finalizados' => $nuevoEstado['lista_finalizados'], 'lista_restablecidos' => $nuevoEstado['lista_restablecidos']]);
+            } else {
+                return response()->json(['id_reserva' => 0, 'data' => [], 'tipo_estado' => 'warning', 'mensaje' => 'No puede anular la reserva, existe un requerimiento vinculado con estado "En pausa" o  "Por regularizar"']);
             }
-
-
         } catch (\PDOException $e) {
             DB::rollBack();
-            return response()->json(['id_reserva' => 0, 'data'=>[],'estado_requerimiento'=>[] ,'tipo_estado'=>'error', 'mensaje' => 'Hubo un problema en el servidor al intentar anular la reserva. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
-
+            return response()->json(['id_reserva' => 0, 'data' => [], 'estado_requerimiento' => [], 'tipo_estado' => 'error', 'mensaje' => 'Hubo un problema en el servidor al intentar anular la reserva. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
         }
     }
     function anularTodaReservaAlmacenDetalleRequerimiento(Request $request)
     {
-        
+
         try {
             DB::beginTransaction();
-            $tipo_estado='warning';
+            $tipo_estado = 'warning';
             $requerimientoHelper = new RequerimientoHelper();
-            if($requerimientoHelper->EstaHabilitadoRequerimiento([$request->idDetalleRequerimiento])==true){
+            if ($requerimientoHelper->EstaHabilitadoRequerimiento([$request->idDetalleRequerimiento]) == true) {
 
-                $reservas = Reserva::where([['id_detalle_requerimiento',$request->idDetalleRequerimiento],['estado','!=',7]])->get();
+                $reservas = Reserva::where([['id_detalle_requerimiento', $request->idDetalleRequerimiento], ['estado', '!=', 7]])->get();
                 foreach ($reservas as $r) {
-                    $reserva= Reserva::where('id_reserva',$r->id_reserva)->first();
-                    $reserva->estado=7;
+                    $reserva = Reserva::where('id_reserva', $r->id_reserva)->first();
+                    $reserva->estado = 7;
                     $reserva->save();
-                    $tipo_estado='success';
+                    $tipo_estado = 'success';
                 }
-    
-            
-                $ReservasProductoActualizadas = Reserva::with('almacen','usuario.trabajador.postulante.persona','estado')->where([['id_detalle_requerimiento',$request->idDetalleRequerimiento], ['estado',1]])->get();
+
+
+                $ReservasProductoActualizadas = Reserva::with('almacen', 'usuario.trabajador.postulante.persona', 'estado')->where([['id_detalle_requerimiento', $request->idDetalleRequerimiento], ['estado', 1]])->get();
                 DetalleRequerimiento::actualizarEstadoDetalleRequerimientoAtendido($request->idDetalleRequerimiento);
                 // actualizar estado de requerimiento
-                $Requerimiento = DetalleRequerimiento::where('id_detalle_requerimiento',$request->idDetalleRequerimiento)->first();
-                $nuevoEstado= Requerimiento::actualizarEstadoRequerimientoAtendido([$Requerimiento->id_requerimiento]);
-    
+                $Requerimiento = DetalleRequerimiento::where('id_detalle_requerimiento', $request->idDetalleRequerimiento)->first();
+                $nuevoEstado = Requerimiento::actualizarEstadoRequerimientoAtendido([$Requerimiento->id_requerimiento]);
+
                 DB::commit();
-                return response()->json(['data'=>$ReservasProductoActualizadas, 'tipo_estado'=>$tipo_estado, 'estado_requerimiento'=>$nuevoEstado['estado_actual'],'lista_finalizados'=>$nuevoEstado['lista_finalizados'],'lista_restablecidos'=>$nuevoEstado['lista_restablecidos']]);
-            }else{
-                return response()->json(['data'=>[],'tipo_estado'=>'warning','mensaje'=>'No puede anular la reserva, existe un requerimiento vinculado con estado "En pausa" o  "Por regularizar"']);
-
+                return response()->json(['data' => $ReservasProductoActualizadas, 'tipo_estado' => $tipo_estado, 'estado_requerimiento' => $nuevoEstado['estado_actual'], 'lista_finalizados' => $nuevoEstado['lista_finalizados'], 'lista_restablecidos' => $nuevoEstado['lista_restablecidos']]);
+            } else {
+                return response()->json(['data' => [], 'tipo_estado' => 'warning', 'mensaje' => 'No puede anular la reserva, existe un requerimiento vinculado con estado "En pausa" o  "Por regularizar"']);
             }
-
-
         } catch (\PDOException $e) {
             DB::rollBack();
-            return response()->json(['id_reserva' => 0, 'data'=>[],'estado_requerimiento'=>[] ,'tipo_estado'=>'error', 'mensaje' => 'Hubo un problema en el servidor al intentar anular la reserva. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
-
+            return response()->json(['id_reserva' => 0, 'data' => [], 'estado_requerimiento' => [], 'tipo_estado' => 'error', 'mensaje' => 'Hubo un problema en el servidor al intentar anular la reserva. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
         }
     }
 
@@ -994,347 +980,339 @@ class ComprasPendientesController extends Controller
     //     return $data;
     // }
 
-    function listarPorRegularizarCabecera($idRequerimiento){
-        $requerimiento=Requerimiento::find($idRequerimiento);
-        $cp= CuadroCosto::find($requerimiento->id_cc);
+    function listarPorRegularizarCabecera($idRequerimiento)
+    {
+        $requerimiento = Requerimiento::find($idRequerimiento);
+        $cp = CuadroCosto::find($requerimiento->id_cc);
         $oportunidad = Oportunidad::find($cp->id_oportunidad);
-        $cabecerra=['codigo_requerimiento'=>$requerimiento->codigo, 
-        'codigo_cuadro_presupuesto'=>$oportunidad->codigo_oportunidad];
+        $cabecerra = [
+            'codigo_requerimiento' => $requerimiento->codigo,
+            'codigo_cuadro_presupuesto' => $oportunidad->codigo_oportunidad
+        ];
         return $cabecerra;
     }
 
-    function listarPorRegularizarDetalle($idRequerimiento){
-        $detalleRequerimientoList=  DetalleRequerimiento::where([['id_requerimiento',$idRequerimiento],['estado','!=',7]])->with('producto','detalle_orden.orden','detalle_orden.guia_compra_detalle.movimiento_detalle.movimiento','reserva','unidadMedida')->get();
-        $requerimiento=Requerimiento::find($idRequerimiento);
-        
-        $detalle=[];
-        foreach ($detalleRequerimientoList as $detalleRequerimiento) {
-                $ccAmFila= CcAmFila::where([['id_cc_am',$requerimiento->id_cc],['id',$detalleRequerimiento->id_cc_am_filas]])->first();
-                $detalleRequerimiento->setAttribute('detalle_cc',$ccAmFila);
-                $detalle[]=$detalleRequerimiento;
-                
-                
-            }
+    function listarPorRegularizarDetalle($idRequerimiento)
+    {
+        $detalleRequerimientoList =  DetalleRequerimiento::where([['id_requerimiento', $idRequerimiento], ['estado', '!=', 7]])->with('producto', 'detalle_orden.orden', 'detalle_orden.guia_compra_detalle.movimiento_detalle.movimiento', 'reserva', 'unidadMedida')->get();
+        $requerimiento = Requerimiento::find($idRequerimiento);
 
-        return ['data'=>$detalle];
+        $detalle = [];
+        foreach ($detalleRequerimientoList as $detalleRequerimiento) {
+            $ccAmFila = CcAmFila::where([['id_cc_am', $requerimiento->id_cc], ['id', $detalleRequerimiento->id_cc_am_filas]])->first();
+            $detalleRequerimiento->setAttribute('detalle_cc', $ccAmFila);
+            $detalle[] = $detalleRequerimiento;
+        }
+
+        return ['data' => $detalle];
     }
 
- 
 
-    function restablecerEstadoDetalleRequerimiento($idDetalleRequerimiento){
+
+    function restablecerEstadoDetalleRequerimiento($idDetalleRequerimiento)
+    {
         $detalleRequerimiento = DetalleRequerimiento::find($idDetalleRequerimiento);
-        $ordenesCompraDetalle = OrdenCompraDetalle::where([['id_detalle_requerimiento',$idDetalleRequerimiento],['estado','!=',7]])->get();
-        $reservas = Reserva::where([['id_detalle_requerimiento',$idDetalleRequerimiento],['estado','!=',7]])->get();
-        $cantidadAtendidaOrden=0;
-        $cantidadAtendidaReserva=0;
-        $totalAtendido=0;
-        $estadoDetalle=1;
+        $ordenesCompraDetalle = OrdenCompraDetalle::where([['id_detalle_requerimiento', $idDetalleRequerimiento], ['estado', '!=', 7]])->get();
+        $reservas = Reserva::where([['id_detalle_requerimiento', $idDetalleRequerimiento], ['estado', '!=', 7]])->get();
+        $cantidadAtendidaOrden = 0;
+        $cantidadAtendidaReserva = 0;
+        $totalAtendido = 0;
+        $estadoDetalle = 1;
         foreach ($ordenesCompraDetalle as $ocd) {
-            $cantidadAtendidaOrden+=$ocd->cantidad;
-            $totalAtendido+=$ocd->cantidad;
-            
+            $cantidadAtendidaOrden += $ocd->cantidad;
+            $totalAtendido += $ocd->cantidad;
         }
         foreach ($reservas as $r) {
-            $cantidadAtendidaReserva+=$r->stock_comprometido;
-            $totalAtendido+=$r->stock_comprometido;
+            $cantidadAtendidaReserva += $r->stock_comprometido;
+            $totalAtendido += $r->stock_comprometido;
         }
-        if($cantidadAtendidaOrden >0 && $cantidadAtendidaReserva > 0){
+        if ($cantidadAtendidaOrden > 0 && $cantidadAtendidaReserva > 0) {
             // estado atendido parcial o atentido total
         }
-        if($cantidadAtendidaOrden > 0 && $cantidadAtendidaReserva ==0){
+        if ($cantidadAtendidaOrden > 0 && $cantidadAtendidaReserva == 0) {
             // estado atendido parcial o atentido total
 
         }
-        if($cantidadAtendidaOrden== 0 && $cantidadAtendidaReserva >0){
+        if ($cantidadAtendidaOrden == 0 && $cantidadAtendidaReserva > 0) {
             // estado atentido parcial o reserva total
         }
 
-        if($totalAtendido == $detalleRequerimiento->cantidad){
-            if($cantidadAtendidaReserva ==$detalleRequerimiento->cantidad){
-                $estadoDetalle= 28; // almacen total
+        if ($totalAtendido == $detalleRequerimiento->cantidad) {
+            if ($cantidadAtendidaReserva == $detalleRequerimiento->cantidad) {
+                $estadoDetalle = 28; // almacen total
             }
-            if($cantidadAtendidaOrden ==$detalleRequerimiento->cantidad){
-                $estadoDetalle= 5; // atendido total
+            if ($cantidadAtendidaOrden == $detalleRequerimiento->cantidad) {
+                $estadoDetalle = 5; // atendido total
             }
-            if(($cantidadAtendidaOrden+$cantidadAtendidaReserva) ==$detalleRequerimiento->cantidad){
-                $estadoDetalle= 5; // atendido total
+            if (($cantidadAtendidaOrden + $cantidadAtendidaReserva) == $detalleRequerimiento->cantidad) {
+                $estadoDetalle = 5; // atendido total
             }
-        }else{
-            $estadoDetalle= 15; // atendido parcial
+        } else {
+            $estadoDetalle = 15; // atendido parcial
         }
 
         $detalleRequerimiento->estado = $estadoDetalle;
         $detalleRequerimiento->save();
     }
-    
-    function existeDetalleRequerimientoPorRegularizar($idDetalleRequerimiento){
-        $cantidadPorRegularizar=0;
-        $detalleRequerimiento = DetalleRequerimiento::where('id_requerimiento',$idDetalleRequerimiento)->get();
+
+    function existeDetalleRequerimientoPorRegularizar($idDetalleRequerimiento)
+    {
+        $cantidadPorRegularizar = 0;
+        $detalleRequerimiento = DetalleRequerimiento::where('id_requerimiento', $idDetalleRequerimiento)->get();
         foreach ($detalleRequerimiento as $dr) {
-            if($dr->estado == 38){
+            if ($dr->estado == 38) {
                 $cantidadPorRegularizar++;
             }
         }
-        
-        return $cantidadPorRegularizar > 0 ? true:false;
 
+        return $cantidadPorRegularizar > 0 ? true : false;
     }
 
 
-    function realizarRemplazoDeProductoEnTodaOrden(Request $request){
+    function realizarRemplazoDeProductoEnTodaOrden(Request $request)
+    {
         DB::beginTransaction();
         try {
-        // $request->idDetalleRequerimiento;
-        $status=0;
-        $cambiaEstadoRequerimiento=false;
-        $detalleOrdenesAfectadas=[];
-        if($request->idDetalleRequerimiento > 0){
-            
-            // trazabilidad interna
+            // $request->idDetalleRequerimiento;
+            $status = 0;
+            $cambiaEstadoRequerimiento = false;
+            $detalleOrdenesAfectadas = [];
+            if ($request->idDetalleRequerimiento > 0) {
+
+                // trazabilidad interna
+                $detalleRequerimiento = DetalleRequerimiento::find($request->idDetalleRequerimiento);
+                $ordenDetalle = OrdenCompraDetalle::where([['id_detalle_requerimiento', $request->idDetalleRequerimiento], ['estado', '!=', 7]])->get();
+
+                $status = 200;
+                $mensaje = "Remplazo realizado con éxito";
+
+                foreach ($ordenDetalle as $ocd) {
+                    $detalleOrdenesAfectadas[] = [
+                        'id_detalle_orden' => $ocd->id_detalle_orden,
+                        'id_orden_compra' => $ocd->id_orden_compra,
+                        'id_producto' => $ocd->id_producto,
+                        'id_detalle_requerimiento' => $ocd->id_detalle_requerimiento
+                    ];
+                }
+
+                if (count($detalleOrdenesAfectadas) > 0) {
+                    $trazabilidad = new Trazabilidad();
+                    $trazabilidad->id_requerimiento = $detalleRequerimiento->id_requerimiento;
+                    $trazabilidad->id_usuario = Auth::user()->id_usuario;
+                    $trazabilidad->accion = 'Remplazo de producto';
+                    $trazabilidad->descripcion = 'Se remplazó el ID producto de las ordenes ' . json_encode($detalleOrdenesAfectadas);
+                    $trazabilidad->fecha_registro = new Carbon();
+                    $trazabilidad->save();
+                }
+                // fin trazabilidad 
+                OrdenCompraDetalle::where([['id_detalle_requerimiento', $request->idDetalleRequerimiento], ['estado', '!=', 7]])->update(['id_producto' => $detalleRequerimiento->id_producto]);
+                DetalleRequerimiento::actualizarEstadoDetalleRequerimientoAtendido($request->idDetalleRequerimiento);
+            } else {
+                $mensaje = "el ID enviado no es valido, que no fue posible realizar el remplazo";
+                $status = 202;
+            }
+
+            DB::commit();
             $detalleRequerimiento = DetalleRequerimiento::find($request->idDetalleRequerimiento);
-            $ordenDetalle=OrdenCompraDetalle::where([['id_detalle_requerimiento',$request->idDetalleRequerimiento],['estado','!=',7]])->get();
 
-            $status=200;
-            $mensaje="Remplazo realizado con éxito";
-
-            foreach ($ordenDetalle as $ocd) {
-                $detalleOrdenesAfectadas[]= [
-                    'id_detalle_orden'=>$ocd->id_detalle_orden,
-                    'id_orden_compra'=>$ocd->id_orden_compra,
-                    'id_producto'=>$ocd->id_producto,
-                    'id_detalle_requerimiento'=>$ocd->id_detalle_requerimiento
-                ];
+            if ($this->existeDetalleRequerimientoPorRegularizar($detalleRequerimiento->id_requerimiento) == false) {
+                Requerimiento::actualizarEstadoRequerimientoAtendido([$detalleRequerimiento->id_requerimiento]);
+                $cambiaEstadoRequerimiento = true;
             }
 
-            if(count($detalleOrdenesAfectadas)>0){
-                $trazabilidad = new Trazabilidad();
-                $trazabilidad->id_requerimiento = $detalleRequerimiento->id_requerimiento;
-                $trazabilidad->id_usuario = Auth::user()->id_usuario;
-                $trazabilidad->accion = 'Remplazo de producto';
-                $trazabilidad->descripcion = 'Se remplazó el ID producto de las ordenes '.json_encode($detalleOrdenesAfectadas);
-                $trazabilidad->fecha_registro = new Carbon();
-                $trazabilidad->save();
 
-            }
-            // fin trazabilidad 
-            OrdenCompraDetalle::where([['id_detalle_requerimiento',$request->idDetalleRequerimiento],['estado','!=',7]])->update(['id_producto' => $detalleRequerimiento->id_producto]);
-            DetalleRequerimiento::actualizarEstadoDetalleRequerimientoAtendido($request->idDetalleRequerimiento);
-
-        }else{
-            $mensaje="el ID enviado no es valido, que no fue posible realizar el remplazo";
-            $status=202;
-        }
-
-        DB::commit();
-        $detalleRequerimiento = DetalleRequerimiento::find($request->idDetalleRequerimiento);
-
-        if($this->existeDetalleRequerimientoPorRegularizar($detalleRequerimiento->id_requerimiento)==false){
-            Requerimiento::actualizarEstadoRequerimientoAtendido([$detalleRequerimiento->id_requerimiento]);
-            $cambiaEstadoRequerimiento=true;
-        }
-     
-
-        return response()->json(['status' => $status,'cambiaEstadoRequerimiento'=>$cambiaEstadoRequerimiento,'mensaje'=>$mensaje]);
-    } catch (Exception $e) {
-        DB::rollBack();
-        return response()->json(['status' => $status,'cambiaEstadoRequerimiento'=>$cambiaEstadoRequerimiento, 'mensaje' => 'Hubo un problema al remplazar el item en todas las orden relacionadas. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
-    }
-    }
-
-
-    function realizarLiberacionDeProductoEnTodaOrden(Request $request){
-        DB::beginTransaction();
-        try {
-         // $request->idDetalleRequerimiento;
-        $status=0;
-        $cambiaEstadoRequerimiento=false;
-        if($request->idDetalleRequerimiento > 0){
-
-            // trazabilidad interna
-            $detalleRequerimiento = DetalleRequerimiento::find($request->idDetalleRequerimiento);
-            $ordenDetalle=OrdenCompraDetalle::where([['id_detalle_requerimiento',$request->idDetalleRequerimiento],['estado','!=',7]])->get();
-            foreach ($ordenDetalle as $ocd) {
-                $detalleOrdenesAfectadas[]= [
-                    'id_detalle_orden'=>$ocd->id_detalle_orden,
-                    'id_orden_compra'=>$ocd->id_orden_compra,
-                    'id_producto'=>$ocd->id_producto,
-                    'id_detalle_requerimiento'=>$ocd->id_detalle_requerimiento
-                ];
-            }
-            if(count($detalleOrdenesAfectadas)>0){
-                $trazabilidad = new Trazabilidad();
-                $trazabilidad->id_requerimiento = $detalleRequerimiento->id_requerimiento;
-                $trazabilidad->id_usuario = Auth::user()->id_usuario;
-                $trazabilidad->accion = 'Liberación de producto';
-                $trazabilidad->descripcion = 'Se liberó el ID producto de las ordenes '.json_encode($detalleOrdenesAfectadas);
-                $trazabilidad->fecha_registro = new Carbon();
-                $trazabilidad->save();
-            }
-            // fin trazabilidad 
-            OrdenCompraDetalle::where([['id_detalle_requerimiento',$request->idDetalleRequerimiento],['estado','!=',7]])->update(['id_producto' => null]);
-            DetalleRequerimiento::actualizarEstadoDetalleRequerimientoAtendido($request->idDetalleRequerimiento);
-            $status=200;
-            $mensaje='Liberación realizada con éxito';
-            
-        }else{
-            $mensaje="El ID enviado no es valido, que no fue posible realizar la liberación";
-            $status=202;
-        }
-        DB::commit();
-
-        $detalleRequerimiento = DetalleRequerimiento::find($request->idDetalleRequerimiento);
-
-        if($this->existeDetalleRequerimientoPorRegularizar($detalleRequerimiento->id_requerimiento)==false){
-            Requerimiento::actualizarEstadoRequerimientoAtendido([$detalleRequerimiento->id_requerimiento]);
-            $cambiaEstadoRequerimiento=true;
-
-        }
-
-        return response()->json(['status' => $status,'cambiaEstadoRequerimiento'=>$cambiaEstadoRequerimiento,'mensaje'=>$mensaje]);
+            return response()->json(['status' => $status, 'cambiaEstadoRequerimiento' => $cambiaEstadoRequerimiento, 'mensaje' => $mensaje]);
         } catch (Exception $e) {
             DB::rollBack();
-            return response()->json(['status' => $status,'cambiaEstadoRequerimiento'=>$cambiaEstadoRequerimiento, 'mensaje' => 'Hubo un problema al remplazar liberar el item. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
+            return response()->json(['status' => $status, 'cambiaEstadoRequerimiento' => $cambiaEstadoRequerimiento, 'mensaje' => 'Hubo un problema al remplazar el item en todas las orden relacionadas. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
         }
     }
 
-    function realizarAnularItemEnTodaOrdenYReservas(Request $request){
+
+    function realizarLiberacionDeProductoEnTodaOrden(Request $request)
+    {
         DB::beginTransaction();
         try {
-         // $request->idDetalleRequerimiento;
-        $status=0;
-        $cambiaEstadoRequerimiento=false;
-        $detalleOrdenesAfectadas=[];
-        $reservasAfectadas=[];
-        if($request->idDetalleRequerimiento > 0){
+            // $request->idDetalleRequerimiento;
+            $status = 0;
+            $cambiaEstadoRequerimiento = false;
+            if ($request->idDetalleRequerimiento > 0) {
 
-            // trazabilidad interna
-            $ordenDetalle=OrdenCompraDetalle::where([['id_detalle_requerimiento',$request->idDetalleRequerimiento],['estado','!=',7]])->get();
-            $reservas=Reserva::where([['id_detalle_requerimiento',$request->idDetalleRequerimiento],['estado','!=',7]])->get();
+                // trazabilidad interna
+                $detalleRequerimiento = DetalleRequerimiento::find($request->idDetalleRequerimiento);
+                $ordenDetalle = OrdenCompraDetalle::where([['id_detalle_requerimiento', $request->idDetalleRequerimiento], ['estado', '!=', 7]])->get();
+                foreach ($ordenDetalle as $ocd) {
+                    $detalleOrdenesAfectadas[] = [
+                        'id_detalle_orden' => $ocd->id_detalle_orden,
+                        'id_orden_compra' => $ocd->id_orden_compra,
+                        'id_producto' => $ocd->id_producto,
+                        'id_detalle_requerimiento' => $ocd->id_detalle_requerimiento
+                    ];
+                }
+                if (count($detalleOrdenesAfectadas) > 0) {
+                    $trazabilidad = new Trazabilidad();
+                    $trazabilidad->id_requerimiento = $detalleRequerimiento->id_requerimiento;
+                    $trazabilidad->id_usuario = Auth::user()->id_usuario;
+                    $trazabilidad->accion = 'Liberación de producto';
+                    $trazabilidad->descripcion = 'Se liberó el ID producto de las ordenes ' . json_encode($detalleOrdenesAfectadas);
+                    $trazabilidad->fecha_registro = new Carbon();
+                    $trazabilidad->save();
+                }
+                // fin trazabilidad 
+                OrdenCompraDetalle::where([['id_detalle_requerimiento', $request->idDetalleRequerimiento], ['estado', '!=', 7]])->update(['id_producto' => null]);
+                DetalleRequerimiento::actualizarEstadoDetalleRequerimientoAtendido($request->idDetalleRequerimiento);
+                $status = 200;
+                $mensaje = 'Liberación realizada con éxito';
+            } else {
+                $mensaje = "El ID enviado no es valido, que no fue posible realizar la liberación";
+                $status = 202;
+            }
+            DB::commit();
+
             $detalleRequerimiento = DetalleRequerimiento::find($request->idDetalleRequerimiento);
-            foreach ($ordenDetalle as $ocd) {
-                $detalleOrdenesAfectadas[]= [
-                    'id_detalle_orden'=>$ocd->id_detalle_orden,
-                    'id_orden_compra'=>$ocd->id_orden_compra,
-                    'id_producto'=>$ocd->id_producto,
-                    'id_detalle_requerimiento'=>$ocd->id_detalle_requerimiento
-                ];
+
+            if ($this->existeDetalleRequerimientoPorRegularizar($detalleRequerimiento->id_requerimiento) == false) {
+                Requerimiento::actualizarEstadoRequerimientoAtendido([$detalleRequerimiento->id_requerimiento]);
+                $cambiaEstadoRequerimiento = true;
             }
-            foreach ($reservas as $re) {
-                $reservasAfectadas[]= [
-                    'id_reserva'=>$re->id_reserva,
-                    'id_producto'=>$re->id_producto,
-                    'id_detalle_requerimiento'=>$re->id_detalle_requerimiento
-                ];
-            }
-            // Debugbar::info($detalleOrdenesAfectadas);
-            // Debugbar::info($reservasAfectadas);
 
-            if(count($detalleOrdenesAfectadas)>0){
-                $trazabilidad = new Trazabilidad();
-                $trazabilidad->id_requerimiento = $detalleRequerimiento->id_requerimiento;
-                $trazabilidad->id_usuario = Auth::user()->id_usuario;
-                $trazabilidad->accion = 'Anulación de item - ordenes';
-                $trazabilidad->descripcion = 'Se anuló el item de las ordenes '.json_encode($detalleOrdenesAfectadas);
-                $trazabilidad->fecha_registro = new Carbon();
-                $trazabilidad->save();
-            }
-            if(count($reservasAfectadas)>0){
-                $trazabilidad = new Trazabilidad();
-                $trazabilidad->id_requerimiento = $detalleRequerimiento->id_requerimiento;
-                $trazabilidad->id_usuario = Auth::user()->id_usuario;
-                $trazabilidad->accion = 'Anulación de item - reservas';
-                $trazabilidad->descripcion = 'Se anuló el item de la reservas '.json_encode($reservasAfectadas);
-                $trazabilidad->fecha_registro = new Carbon();
-                $trazabilidad->save();
-            }
-            // fin trazabilidad 
-
-            OrdenCompraDetalle::where([['id_detalle_requerimiento',$request->idDetalleRequerimiento]])->update(['estado' => 7]);
-            Reserva::where([['id_detalle_requerimiento',$request->idDetalleRequerimiento]])->update(['estado' => 7]);
-            DetalleRequerimiento::actualizarEstadoDetalleRequerimientoAtendido($request->idDetalleRequerimiento);
-
-            $status=200;
-            $mensaje='Anulación realizada con éxito';
-        }else{
-            $status=202;
-            $mensaje="El ID enviado no es valido, que no fue posible realizar la anulación";
-        }
-        DB::commit();
-        $detalleRequerimiento = DetalleRequerimiento::find($request->idDetalleRequerimiento);
-
-        if($this->existeDetalleRequerimientoPorRegularizar($detalleRequerimiento->id_requerimiento)==false){
-            Requerimiento::actualizarEstadoRequerimientoAtendido([$detalleRequerimiento->id_requerimiento]);
-            $cambiaEstadoRequerimiento=true;
-        }
-
-        return response()->json(['status' => $status,'cambiaEstadoRequerimiento'=>$cambiaEstadoRequerimiento,'mensaje'=>$mensaje]);
+            return response()->json(['status' => $status, 'cambiaEstadoRequerimiento' => $cambiaEstadoRequerimiento, 'mensaje' => $mensaje]);
         } catch (Exception $e) {
             DB::rollBack();
-            return response()->json(['status' => $status,'cambiaEstadoRequerimiento'=>$cambiaEstadoRequerimiento, 'mensaje' => 'Hubo un problema al intentar anular. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
+            return response()->json(['status' => $status, 'cambiaEstadoRequerimiento' => $cambiaEstadoRequerimiento, 'mensaje' => 'Hubo un problema al remplazar liberar el item. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
         }
     }
 
-    function itemsOrdenItemsReservaPorDetalleRequerimiento($idDetalleRequerimiento){
+    function realizarAnularItemEnTodaOrdenYReservas(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            // $request->idDetalleRequerimiento;
+            $status = 0;
+            $cambiaEstadoRequerimiento = false;
+            $detalleOrdenesAfectadas = [];
+            $reservasAfectadas = [];
+            if ($request->idDetalleRequerimiento > 0) {
+
+                // trazabilidad interna
+                $ordenDetalle = OrdenCompraDetalle::where([['id_detalle_requerimiento', $request->idDetalleRequerimiento], ['estado', '!=', 7]])->get();
+                $reservas = Reserva::where([['id_detalle_requerimiento', $request->idDetalleRequerimiento], ['estado', '!=', 7]])->get();
+                $detalleRequerimiento = DetalleRequerimiento::find($request->idDetalleRequerimiento);
+                foreach ($ordenDetalle as $ocd) {
+                    $detalleOrdenesAfectadas[] = [
+                        'id_detalle_orden' => $ocd->id_detalle_orden,
+                        'id_orden_compra' => $ocd->id_orden_compra,
+                        'id_producto' => $ocd->id_producto,
+                        'id_detalle_requerimiento' => $ocd->id_detalle_requerimiento
+                    ];
+                }
+                foreach ($reservas as $re) {
+                    $reservasAfectadas[] = [
+                        'id_reserva' => $re->id_reserva,
+                        'id_producto' => $re->id_producto,
+                        'id_detalle_requerimiento' => $re->id_detalle_requerimiento
+                    ];
+                }
+                // Debugbar::info($detalleOrdenesAfectadas);
+                // Debugbar::info($reservasAfectadas);
+
+                if (count($detalleOrdenesAfectadas) > 0) {
+                    $trazabilidad = new Trazabilidad();
+                    $trazabilidad->id_requerimiento = $detalleRequerimiento->id_requerimiento;
+                    $trazabilidad->id_usuario = Auth::user()->id_usuario;
+                    $trazabilidad->accion = 'Anulación de item - ordenes';
+                    $trazabilidad->descripcion = 'Se anuló el item de las ordenes ' . json_encode($detalleOrdenesAfectadas);
+                    $trazabilidad->fecha_registro = new Carbon();
+                    $trazabilidad->save();
+                }
+                if (count($reservasAfectadas) > 0) {
+                    $trazabilidad = new Trazabilidad();
+                    $trazabilidad->id_requerimiento = $detalleRequerimiento->id_requerimiento;
+                    $trazabilidad->id_usuario = Auth::user()->id_usuario;
+                    $trazabilidad->accion = 'Anulación de item - reservas';
+                    $trazabilidad->descripcion = 'Se anuló el item de la reservas ' . json_encode($reservasAfectadas);
+                    $trazabilidad->fecha_registro = new Carbon();
+                    $trazabilidad->save();
+                }
+                // fin trazabilidad 
+
+                OrdenCompraDetalle::where([['id_detalle_requerimiento', $request->idDetalleRequerimiento]])->update(['estado' => 7]);
+                Reserva::where([['id_detalle_requerimiento', $request->idDetalleRequerimiento]])->update(['estado' => 7]);
+                DetalleRequerimiento::actualizarEstadoDetalleRequerimientoAtendido($request->idDetalleRequerimiento);
+
+                $status = 200;
+                $mensaje = 'Anulación realizada con éxito';
+            } else {
+                $status = 202;
+                $mensaje = "El ID enviado no es valido, que no fue posible realizar la anulación";
+            }
+            DB::commit();
+            $detalleRequerimiento = DetalleRequerimiento::find($request->idDetalleRequerimiento);
+
+            if ($this->existeDetalleRequerimientoPorRegularizar($detalleRequerimiento->id_requerimiento) == false) {
+                Requerimiento::actualizarEstadoRequerimientoAtendido([$detalleRequerimiento->id_requerimiento]);
+                $cambiaEstadoRequerimiento = true;
+            }
+
+            return response()->json(['status' => $status, 'cambiaEstadoRequerimiento' => $cambiaEstadoRequerimiento, 'mensaje' => $mensaje]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json(['status' => $status, 'cambiaEstadoRequerimiento' => $cambiaEstadoRequerimiento, 'mensaje' => 'Hubo un problema al intentar anular. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
+        }
+    }
+
+    function itemsOrdenItemsReservaPorDetalleRequerimiento($idDetalleRequerimiento)
+    {
         DB::beginTransaction();
         try {
 
-        $status=0;
-        $mensaje='';
-        $reservas=[];
-        $detalleOrdenes=[];
-        $data=[];
-        if($idDetalleRequerimiento > 0){
-            $detalleOrdenes=    OrdenCompraDetalle::with('orden','producto.subcategoria','unidad_medida','estado_orden')->where([['id_detalle_requerimiento',$idDetalleRequerimiento],['estado','!=',7]])->get();
-            $reservas = Reserva::with('producto.subcategoria','unidad_medida')->where([['id_detalle_requerimiento',$idDetalleRequerimiento],['estado','!=',7]])->get();
+            $status = 0;
+            $mensaje = '';
+            $reservas = [];
+            $detalleOrdenes = [];
+            $data = [];
+            if ($idDetalleRequerimiento > 0) {
+                $detalleOrdenes =    OrdenCompraDetalle::with('orden', 'producto.subcategoria', 'unidad_medida', 'estado_orden')->where([['id_detalle_requerimiento', $idDetalleRequerimiento], ['estado', '!=', 7]])->get();
+                $reservas = Reserva::with('producto.subcategoria', 'unidad_medida')->where([['id_detalle_requerimiento', $idDetalleRequerimiento], ['estado', '!=', 7]])->get();
 
-            foreach ($detalleOrdenes as $do) {
-                $data[]=[
-                    'id_detalle_orden'=>$do->id_detalle_orden,
-                    'id_reserva'=>null,
-                    'codigo_documento'=>$do->orden->codigo,
-                    'part_number'=>$do->producto->part_number??'',
-                    'descripcion'=>$do->producto->descripcion??'',
-                    'unidad_medida'=>$do->unidad_medida->abreviatura??'',
-                    'cantidad'=>$do->cantidad??'',
-                    'estado'=>$do->estado_orden->descripcion??''
-                ];
+                foreach ($detalleOrdenes as $do) {
+                    $data[] = [
+                        'id_detalle_orden' => $do->id_detalle_orden,
+                        'id_reserva' => null,
+                        'codigo_documento' => $do->orden->codigo,
+                        'part_number' => $do->producto->part_number ?? '',
+                        'descripcion' => $do->producto->descripcion ?? '',
+                        'unidad_medida' => $do->unidad_medida->abreviatura ?? '',
+                        'cantidad' => $do->cantidad ?? '',
+                        'estado' => $do->estado_orden->descripcion ?? ''
+                    ];
+                }
+                foreach ($reservas as $r) {
+                    $data[] = [
+                        'id_detalle_orden' => null,
+                        'id_reserva' => $r->id_reserva,
+                        'codigo_documento' => $r->codigo,
+                        'part_number' => $r->producto->part_number ?? '',
+                        'descripcion' => $r->producto->descripcion ?? '',
+                        'unidad_medida' => $r->unidad_medida->abreviatura ?? '',
+                        'cantidad' => $r->stock_comprometido ?? '',
+                        'estado' => $r->nombre_estado
+                    ];
+                }
+
+                $status = 200;
+                $mensaje = 'OK';
+            } else {
+                $status = 201;
+                $mensaje = 'El id enviado no es valido';
             }
-            foreach ($reservas as $r) {
-                $data[]=[
-                    'id_detalle_orden'=>null,
-                    'id_reserva'=>$r->id_reserva,
-                    'codigo_documento'=>$r->codigo,
-                    'part_number'=>$r->producto->part_number??'',
-                    'descripcion'=>$r->producto->descripcion??'',
-                    'unidad_medida'=>$r->unidad_medida->abreviatura??'',
-                    'cantidad'=>$r->stock_comprometido??'',
-                    'estado'=>$r->nombre_estado
-                ];
-            }
+            DB::commit();
 
-            $status=200;
-            $mensaje='OK';
 
-        }else{
-            $status=201;
-            $mensaje='El id enviado no es valido';
-
+            return response()->json(['status' => $status, 'mensaje' => $mensaje, 'data' => $data]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json(['status' => $status, 'mensaje' => 'Hubo un problema al intentar obtener lista detalle de orden y reservas. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage(), 'data' => []]);
         }
-        DB::commit();
-
-
-        return response()->json(['status' => $status,'mensaje'=>$mensaje,'data'=>$data]);
-    } catch (Exception $e) {
-        DB::rollBack();
-        return response()->json(['status' => $status, 'mensaje' => 'Hubo un problema al intentar obtener lista detalle de orden y reservas. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage(),'data'=>[]]);
     }
-    }
-
-
-
-
-
 }
-
-
- 

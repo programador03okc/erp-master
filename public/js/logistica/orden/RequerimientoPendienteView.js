@@ -23,7 +23,7 @@ class RequerimientoPendienteView {
         this.requerimientoPendienteCtrl = requerimientoPendienteCtrl;
         $.fn.dataTable.Buttons.defaults.dom.button.className = 'btn';
         vista_extendida();
-        
+
         this.ActualParametroEmpresa = 'SIN_FILTRO';
         this.ActualParametroSede = 'SIN_FILTRO';
         this.ActualParametroFechaDesde = 'SIN_FILTRO';
@@ -86,9 +86,9 @@ class RequerimientoPendienteView {
         $('#listaRequerimientosAtendidos tbody').on("click", "button.handleClickVerDetalleRequerimiento", (e) => {
             this.verDetalleRequerimientoAtendidos(e.currentTarget);
         });
-        
 
-        
+
+
         $('body').on("click", "span.handleClickModalVerOrdenDeRequerimiento", (e) => { // tab para lista pendiente tab lista atendidos
             this.modalVerOrdenDeRequerimiento(e.currentTarget);
         });
@@ -101,11 +101,11 @@ class RequerimientoPendienteView {
         $('#listaRequerimientosPendientes tbody').on("click", "button.handleClickAtenderConAlmacen", (e) => {
             this.atenderConAlmacen(e.currentTarget);
         });
- 
+
         $('#listaRequerimientosAtendidos tbody').on("click", "button.handleClickAtenderConAlmacen", (e) => {
             this.atenderConAlmacen(e.currentTarget);
         });
- 
+
 
         $('#listaRequerimientosPendientes tbody').on("click", "button.handleClickOpenModalCuadroCostos", (e) => {
             this.openModalCuadroCostos(e.currentTarget);
@@ -218,12 +218,12 @@ class RequerimientoPendienteView {
         });
 
         // Handle click on checkbox
-        $('#listaRequerimientosPendientes').on('click', 'input[type="checkbox"]',   (e) =>{
+        $('#listaRequerimientosPendientes').on('click', 'input[type="checkbox"]', (e) => {
 
             let that = this;
             // var $row = $(this).closest('tr');
             var $row = e.currentTarget.closest('tr');
-            
+
             // Get row data
             var data = $tablaListaRequerimientosPendientes.row($row).data();
             // Get row ID
@@ -245,7 +245,7 @@ class RequerimientoPendienteView {
                     'warning'
                 );
             }
-            if ((cantidadMapeados == 0 && cantidadTipoProducto >0) || (cantidadTipoServicio==0)) {
+            if ((cantidadMapeados == 0 && cantidadTipoProducto > 0) || (cantidadTipoServicio == 0)) {
                 e.currentTarget.checked = false;
                 Swal.fire(
                     '',
@@ -253,11 +253,11 @@ class RequerimientoPendienteView {
                     'warning'
                 );
             }
-             
+
             // If checkbox is checked and row ID is not in list of selected row IDs
             if (e.currentTarget.checked && index === -1) {
-                let idx=reqTrueList.indexOf(parseInt(rowId));
-                if((idx == -1)){
+                let idx = reqTrueList.indexOf(parseInt(rowId));
+                if ((idx == -1)) {
                     reqTrueList.push(parseInt(rowId));
                 }
 
@@ -292,12 +292,12 @@ class RequerimientoPendienteView {
     }
 
 
-    tabRequerimientosPendientes(){
-        this.renderRequerimientoPendienteList('SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO');
+    tabRequerimientosPendientes() {
+        this.renderRequerimientoPendienteList('SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO');
     }
 
-    tabRequerimientosAtendidos(){
-        this.renderRequerimientoAtendidosList('SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO');
+    tabRequerimientosAtendidos() {
+        this.renderRequerimientoAtendidosList('SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO');
 
     }
 
@@ -503,7 +503,7 @@ class RequerimientoPendienteView {
             'bLengthChange': false,
             'serverSide': true,
             'destroy': true,
-            'stateSave':true,
+            'stateSave': true,
             'ajax': {
                 'url': 'requerimientos-pendientes',
                 'type': 'POST',
@@ -542,7 +542,7 @@ class RequerimientoPendienteView {
                 },
                 {
                     'render': function (data, type, row) {
-                        return `${row.estado == 38 ? '<i class="fas fa-exclamation-triangle '+(row.count_pendientes>0?'red':'orange')+' handleClickAbrirModalPorRegularizar" style="cursor:pointer;" title="Por regularizar'+(row.count_pendientes>0?'(Tiene '+row.count_pendientes+' item(s) pendientes por mapear)':'')+'" data-id-requerimiento="' + row.id_requerimiento + '" ></i> &nbsp;' : ''}<a href="/necesidades/requerimiento/elaboracion/index?id=${row.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${row.codigo}</a> ${row.tiene_transformacion == true ? '<i class="fas fa-random text-danger" title="Con transformación"></i>' : ''} `;
+                        return `${row.estado == 38 ? '<i class="fas fa-exclamation-triangle ' + (row.count_pendientes > 0 ? 'red' : 'orange') + ' handleClickAbrirModalPorRegularizar" style="cursor:pointer;" title="Por regularizar' + (row.count_pendientes > 0 ? '(Tiene ' + row.count_pendientes + ' item(s) pendientes por mapear)' : '') + '" data-id-requerimiento="' + row.id_requerimiento + '" ></i> &nbsp;' : ''}<a href="/necesidades/requerimiento/elaboracion/index?id=${row.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${row.codigo}</a> ${row.tiene_transformacion == true ? '<i class="fas fa-random text-danger" title="Con transformación"></i>' : ''} `;
                     }, targets: 2
                 },
                 {
@@ -557,7 +557,7 @@ class RequerimientoPendienteView {
                 },
                 {
                     'render': function (data, type, row) {
-                        return '<span class="label label-default estadoRequerimiento" title="'+(row['estado_doc']=='En pausa'?'Retiro de aprobación por actualización de CDP':'')+'">' + row['estado_doc'] + '</span>';
+                        return '<span class="label label-default estadoRequerimiento" title="' + (row['estado_doc'] == 'En pausa' ? 'Retiro de aprobación por actualización de CDP' : '') + '">' + row['estado_doc'] + '</span>';
                     }, targets: 9
                 },
                 {
@@ -585,12 +585,12 @@ class RequerimientoPendienteView {
                             let btnAtenderAlmacen = '';
                             let btnCrearOrdenCompra = '';
                             let btnCrearOrdenServicio = '<button type="button" class="btn btn-warning btn-xs handleClickCrearOrdenServicioPorRequerimiento" name="btnCrearOrdenServicioPorRequerimiento" title="Crear Orden de Servicio" data-id-requerimiento="' + row.id_requerimiento + '"  >OS</button>';
-                            if(row.cantidad_adjuntos_activos.cabecera >0 || row.cantidad_adjuntos_activos.detalle>0){ 
+                            if (row.cantidad_adjuntos_activos.cabecera > 0 || row.cantidad_adjuntos_activos.detalle > 0) {
                                 btnVerAdjuntos = '<button type="button" class="btn btn-default btn-xs handleClickVerTodoAdjuntos" title="Ver adjuntos" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo="' + row.codigo + '"  ><i class="fas fa-folder"></i></button>';
 
                             }
-                                if (row.count_mapeados > 0) {
-                                if (row.estado == 38 || row.estado ==39 ) { // estado por regularizar | estado  en pausa
+                            if (row.count_mapeados > 0) {
+                                if (row.estado == 38 || row.estado == 39) { // estado por regularizar | estado  en pausa
 
                                     btnAtenderAlmacen = '<button type="button" class="btn btn-primary btn-xs handleClickAtenderConAlmacen" name="btnOpenModalAtenderConAlmacen" title="Reserva en almacén" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo-requerimiento="' + row.codigo + '" disabled><i class="fas fa-dolly fa-sm"></i></button>';
                                     btnCrearOrdenCompra = '<button type="button" class="btn btn-warning btn-xs handleClickCrearOrdenCompraPorRequerimiento" name="btnCrearOrdenCompraPorRequerimiento" title="Crear Orden de Compra" data-id-requerimiento="' + row.id_requerimiento + '"  disabled>OC</button>';
@@ -599,7 +599,7 @@ class RequerimientoPendienteView {
                                 } else {
                                     btnAtenderAlmacen = '<button type="button" class="btn btn-primary btn-xs handleClickAtenderConAlmacen" name="btnOpenModalAtenderConAlmacen" title="Reserva en almacén" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo-requerimiento="' + row.codigo + '"><i class="fas fa-dolly fa-sm"></i></button>';
                                     btnCrearOrdenCompra = '<button type="button" class="btn btn-warning btn-xs handleClickCrearOrdenCompraPorRequerimiento" name="btnCrearOrdenCompraPorRequerimiento" title="Crear Orden de Compra" data-id-requerimiento="' + row.id_requerimiento + '"  >OC</button>';
-                                    
+
 
                                 }
                             }
@@ -612,12 +612,21 @@ class RequerimientoPendienteView {
 
 
                             let closeDiv = '</div>';
+                            let botones = '';
 
-                            if (row.cantidad_tipo_servicio > 0) {
-                                return (openDiv + btnVerDetalleRequerimiento + btnAtenderAlmacen + btnMapearProductos + btnCrearOrdenCompra + btnCrearOrdenServicio + btnVercuadroCostos +btnVerAdjuntos+ closeDiv);
+                            if (row.estado == 1 || row.estado == 3 || row.estado == 4 || row.estado == 12) {
+                                botones = openDiv + btnVerDetalleRequerimiento + closeDiv;
                             } else {
-                                return (openDiv + btnVerDetalleRequerimiento + btnAtenderAlmacen + btnMapearProductos + btnCrearOrdenCompra + btnVercuadroCostos +btnVerAdjuntos+ closeDiv);
+                                botones = openDiv + btnVerDetalleRequerimiento + btnAtenderAlmacen + btnMapearProductos +
+                                    btnCrearOrdenCompra + btnVercuadroCostos + btnVerAdjuntos;
+
+                                if (row.cantidad_tipo_servicio > 0) {
+                                    botones += btnCrearOrdenServicio + closeDiv;
+                                } else {
+                                    botones += closeDiv;
+                                }
                             }
+                            return botones;
                         }
 
                     }, targets: 10
@@ -718,7 +727,7 @@ class RequerimientoPendienteView {
 
                 const $filter = document.querySelector("div[id='listaRequerimientosPendientes_wrapper'] div[class~='btn-group']");
 
-                if(!document.querySelector("button[id='btnLimpiarRequerimientosPendientesSeleccionados']")){
+                if (!document.querySelector("button[id='btnLimpiarRequerimientosPendientesSeleccionados']")) {
                     $filter.insertAdjacentHTML('afterbegin', `<button class="btn btn-sm btn-default handleClickLimpiarRequerimientosPendientesSeleccionadosConCheck" type="button" id="btnLimpiarRequerimientosPendientesSeleccionados" disabled>
                     Limpiar Seleccionados <span class="badge" id='contadorRequerimientosPendientesSeleccionados'>${reqTrueList.length}</span>
                     </button>`);
@@ -731,33 +740,33 @@ class RequerimientoPendienteView {
         });
     }
 
-    updateContadorRequerimientosPendientesSeleccionados(){
+    updateContadorRequerimientosPendientesSeleccionados() {
         const contador = document.querySelector("span[id='contadorRequerimientosPendientesSeleccionados']");
         contador.textContent = reqTrueList.length;
 
-        if(reqTrueList.length >0){
-            
+        if (reqTrueList.length > 0) {
+
             document.querySelector("button[id='btnLimpiarRequerimientosPendientesSeleccionados']").removeAttribute("disabled");
-            document.querySelector("button[id='btnLimpiarRequerimientosPendientesSeleccionados']").classList.replace('btn-default','btn-info');
+            document.querySelector("button[id='btnLimpiarRequerimientosPendientesSeleccionados']").classList.replace('btn-default', 'btn-info');
             //asegurar que este el check marcado en la pagina actual
-            let trs= document.querySelector("table[id='listaRequerimientosPendientes'] tbody").children;
+            let trs = document.querySelector("table[id='listaRequerimientosPendientes'] tbody").children;
 
             for (let index = 1; index < trs.length; index++) {
                 console.log(reqTrueList.includes(parseInt(trs[index].querySelector("input[type='checkbox']"))));
-                if( trs[index].querySelector("input[type='checkbox']")? reqTrueList.includes(parseInt(trs[index].querySelector("input[type='checkbox']").dataset.idRequerimiento)) : false){
+                if (trs[index].querySelector("input[type='checkbox']") ? reqTrueList.includes(parseInt(trs[index].querySelector("input[type='checkbox']").dataset.idRequerimiento)) : false) {
                     trs[index].querySelector("input[type='checkbox']").checked = true;
                 }
             }
-        }else{
-            document.querySelector("button[id='btnLimpiarRequerimientosPendientesSeleccionados']").setAttribute("disabled",true);
-            document.querySelector("button[id='btnLimpiarRequerimientosPendientesSeleccionados']").classList.replace('btn-info','btn-default');
+        } else {
+            document.querySelector("button[id='btnLimpiarRequerimientosPendientesSeleccionados']").setAttribute("disabled", true);
+            document.querySelector("button[id='btnLimpiarRequerimientosPendientesSeleccionados']").classList.replace('btn-info', 'btn-default');
 
 
         }
     }
 
-    limpiarRequerimientosPendientesSeleccionadosConCheck(){
-        
+    limpiarRequerimientosPendientesSeleccionadosConCheck() {
+
         Swal.fire({
             title: 'Esta seguro que desea limpiar todas las selecciones?',
             text: "Se quitara el check de seleccion a todo los requerimientos",
@@ -770,11 +779,11 @@ class RequerimientoPendienteView {
 
         }).then((result) => {
             if (result.isConfirmed) {
-                reqTrueList=[];
+                reqTrueList = [];
                 sessionStorage.removeItem('idOrden');
                 sessionStorage.removeItem('reqCheckedList');
                 sessionStorage.removeItem('tipoOrden');
-                $tablaListaRequerimientosPendientes.ajax.reload(null,false);                
+                $tablaListaRequerimientosPendientes.ajax.reload(null, false);
 
             }
         });
@@ -848,7 +857,7 @@ class RequerimientoPendienteView {
 
                 {
                     'render': function (data, type, row) {
-                        return `${row.estado == 38 ? '<i class="fas fa-exclamation-triangle '+(row.count_pendientes>0?'red':'orange')+' handleClickAbrirModalPorRegularizar" style="cursor:pointer;" title="Por regularizar'+(row.count_pendientes>0?'(Tiene '+row.count_pendientes+' item(s) pendientes por mapear)':'')+'" data-id-requerimiento="' + row.id_requerimiento + '" ></i> &nbsp;' : ''}<a href="/necesidades/requerimiento/elaboracion/index?id=${row.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${row.codigo}</a> ${row.tiene_transformacion == true ? '<i class="fas fa-random text-danger" title="Con transformación"></i>' : ''} `;
+                        return `${row.estado == 38 ? '<i class="fas fa-exclamation-triangle ' + (row.count_pendientes > 0 ? 'red' : 'orange') + ' handleClickAbrirModalPorRegularizar" style="cursor:pointer;" title="Por regularizar' + (row.count_pendientes > 0 ? '(Tiene ' + row.count_pendientes + ' item(s) pendientes por mapear)' : '') + '" data-id-requerimiento="' + row.id_requerimiento + '" ></i> &nbsp;' : ''}<a href="/necesidades/requerimiento/elaboracion/index?id=${row.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${row.codigo}</a> ${row.tiene_transformacion == true ? '<i class="fas fa-random text-danger" title="Con transformación"></i>' : ''} `;
                     }, targets: 1
                 },
                 {
@@ -863,7 +872,7 @@ class RequerimientoPendienteView {
                 },
                 {
                     'render': function (data, type, row) {
-                        return '<span class="label label-default estadoRequerimiento" title="'+(row['estado_doc']=='En pausa'?'Retiro de aprobación por actualización de CDP':'')+'">' + row['estado_doc'] + '</span>';
+                        return '<span class="label label-default estadoRequerimiento" title="' + (row['estado_doc'] == 'En pausa' ? 'Retiro de aprobación por actualización de CDP' : '') + '">' + row['estado_doc'] + '</span>';
                     }, targets: 8
                 },
                 {
@@ -888,18 +897,18 @@ class RequerimientoPendienteView {
                             // let btnAgregarItemBase = '<button type="button" class="btn btn-success btn-xs" name="btnAgregarItemBase" title="Mapear productos" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.openModalAgregarItemBase(this);"  ><i class="fas fa-sign-out-alt"></i></button>';
                             let btnVerAdjuntos = '';
                             let btnAtenderAlmacen = '';
-                            if(row.cantidad_adjuntos_activos.cabecera >0 || row.cantidad_adjuntos_activos.detalle>0){ 
+                            if (row.cantidad_adjuntos_activos.cabecera > 0 || row.cantidad_adjuntos_activos.detalle > 0) {
                                 btnVerAdjuntos = '<button type="button" class="btn btn-default btn-xs handleClickVerTodoAdjuntos" title="Ver adjuntos" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo="' + row.codigo + '"  ><i class="fas fa-folder"></i></button>';
 
                             }
-                                if (row.count_mapeados > 0) {
-                                if (row.estado == 38 || row.estado ==39 ) { // estado por regularizar | estado  en pausa
+                            if (row.count_mapeados > 0) {
+                                if (row.estado == 38 || row.estado == 39) { // estado por regularizar | estado  en pausa
 
                                     btnAtenderAlmacen = '<button type="button" class="btn btn-primary btn-xs handleClickAtenderConAlmacen" name="btnOpenModalAtenderConAlmacen" title="Reserva en almacén" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo-requerimiento="' + row.codigo + '" disabled><i class="fas fa-dolly fa-sm"></i></button>';
- 
+
                                 } else {
                                     btnAtenderAlmacen = '<button type="button" class="btn btn-primary btn-xs handleClickAtenderConAlmacen" name="btnOpenModalAtenderConAlmacen" title="Reserva en almacén" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo-requerimiento="' + row.codigo + '"><i class="fas fa-dolly fa-sm"></i></button>';
- 
+
                                 }
                             }
 
@@ -913,9 +922,9 @@ class RequerimientoPendienteView {
                             let closeDiv = '</div>';
 
                             if (row.cantidad_tipo_servicio > 0) {
-                                return (openDiv + btnVerDetalleRequerimiento + btnAtenderAlmacen + btnVercuadroCostos +btnVerAdjuntos+ closeDiv);
+                                return (openDiv + btnVerDetalleRequerimiento + btnAtenderAlmacen + btnVercuadroCostos + btnVerAdjuntos + closeDiv);
                             } else {
-                                return (openDiv + btnVerDetalleRequerimiento + btnAtenderAlmacen + btnVercuadroCostos +btnVerAdjuntos+ closeDiv);
+                                return (openDiv + btnVerDetalleRequerimiento + btnAtenderAlmacen + btnVercuadroCostos + btnVerAdjuntos + closeDiv);
                             }
                         }
 
@@ -1086,7 +1095,7 @@ class RequerimientoPendienteView {
         win.focus();
     }
 
- 
+
 
 
     verDetalleRequerimiento(obj) {
@@ -1177,44 +1186,44 @@ class RequerimientoPendienteView {
     }
 
 
-    modalVerOrdenDeRequerimiento(obj){
-        
+    modalVerOrdenDeRequerimiento(obj) {
+
         $('#modal-ver-orden-de-requerimiento').modal({
             show: true,
             backdrop: 'static'
         });
 
-        document.querySelector("div[id='modal-ver-orden-de-requerimiento'] span[id='codigo']").textContent='';
-        document.querySelector("div[id='modal-ver-orden-de-requerimiento'] div[id='contenedor-ordenes-de-requerimiento']").innerHTML='';
+        document.querySelector("div[id='modal-ver-orden-de-requerimiento'] span[id='codigo']").textContent = '';
+        document.querySelector("div[id='modal-ver-orden-de-requerimiento'] div[id='contenedor-ordenes-de-requerimiento']").innerHTML = '';
 
-        let linkOrden=[];
-        if(JSON.parse(obj.dataset.orden).length >0){
+        let linkOrden = [];
+        if (JSON.parse(obj.dataset.orden).length > 0) {
             (JSON.parse(obj.dataset.orden)).forEach(element => {
                 linkOrden.push(`<label class='lbl-codigo handleClickAbrirOrden' title='Ir a orden' data-id-orden='${element.id_orden}'>${element.codigo}</label>`);
-    
+
             });
-            document.querySelector("div[id='modal-ver-orden-de-requerimiento'] div[id='contenedor-ordenes-de-requerimiento']").innerHTML=linkOrden.toString();            
+            document.querySelector("div[id='modal-ver-orden-de-requerimiento'] div[id='contenedor-ordenes-de-requerimiento']").innerHTML = linkOrden.toString();
         }
 
-        document.querySelector("div[id='modal-ver-orden-de-requerimiento'] span[id='codigo']").textContent=obj.dataset.codigoRequerimiento !=null ?obj.dataset.codigoRequerimiento:'';
+        document.querySelector("div[id='modal-ver-orden-de-requerimiento'] span[id='codigo']").textContent = obj.dataset.codigoRequerimiento != null ? obj.dataset.codigoRequerimiento : '';
 
     }
 
-    abrirOrden(obj){
-        if(obj.dataset.idOrden>0){
-                sessionStorage.removeItem('reqCheckedList');
-                sessionStorage.removeItem('tipoOrden');
-                sessionStorage.setItem("idOrden", obj.dataset.idOrden);
-                sessionStorage.setItem("action", 'historial');
-        
-                let url = "/logistica/gestion-logistica/compras/ordenes/elaborar/index";
-                var win = window.open(url, '_blank');
-                win.focus();
+    abrirOrden(obj) {
+        if (obj.dataset.idOrden > 0) {
+            sessionStorage.removeItem('reqCheckedList');
+            sessionStorage.removeItem('tipoOrden');
+            sessionStorage.setItem("idOrden", obj.dataset.idOrden);
+            sessionStorage.setItem("action", 'historial');
+
+            let url = "/logistica/gestion-logistica/compras/ordenes/elaborar/index";
+            var win = window.open(url, '_blank');
+            win.focus();
         }
     }
 
 
- 
+
 
     construirDetalleRequerimientoListaRequerimientosPendientes(table_id, row, response) {
 
@@ -1225,7 +1234,7 @@ class RequerimientoPendienteView {
                 // if(element.tiene_transformacion==false){
                 let stockComprometido = 0;
                 (element.reserva).forEach(reserva => {
-                    if(reserva.estado !=7){
+                    if (reserva.estado != 7) {
                         stockComprometido += parseFloat(reserva.stock_comprometido);
                     }
                 });
@@ -1233,15 +1242,15 @@ class RequerimientoPendienteView {
                 let atencionOrden = 0;
                 let objOrdenList = [];
                 (element.ordenes_compra).forEach(orden => { // TODO: no incluir anulados
-                        atencionOrden += parseFloat(orden.cantidad);
-                        objOrdenList.push({'id_orden':orden.id_orden_compra,'codigo':orden.codigo });
+                    atencionOrden += parseFloat(orden.cantidad);
+                    objOrdenList.push({ 'id_orden': orden.id_orden_compra, 'codigo': orden.codigo });
                 });
 
                 let cantidadAdjuntosDetalleRequerimiento = 0;
                 (element.adjunto_detalle_requerimiento).forEach(adjuntoItem => {
-                        cantidadAdjuntosDetalleRequerimiento ++;
+                    cantidadAdjuntosDetalleRequerimiento++;
                 });
-//                
+                //                
                 html += `<tr>
                         <td style="border: none; text-align:center;" data-part-number="${element.part_number}" data-producto-part-number="${element.producto_part_number}">${(element.producto_part_number != null ? element.producto_part_number : (element.part_number != null ? element.part_number : ''))} ${element.tiene_transformacion == true ? '<br><span class="label label-default">Transformado</span>' : ''}</td>
                         <td style="border: none; text-align:left;">${element.producto_codigo != null ? element.producto_codigo : ''}</td>
@@ -1252,10 +1261,10 @@ class RequerimientoPendienteView {
                         <td style="border: none; text-align:center;">${(element.precio_unitario > 0 ? ((element.moneda_simbolo ? element.moneda_simbolo : ((element.moneda_simbolo ? element.moneda_simbolo : '') + '0.00')) + $.number(element.precio_unitario, 2)) : (element.moneda_simbolo ? element.moneda_simbolo : '') + '0.00')}</td>
                         <td style="border: none; text-align:center;">${(parseFloat(element.subtotal) > 0 ? ((element.moneda_simbolo ? element.moneda_simbolo : '') + $.number(element.subtotal, 2)) : ((element.moneda_simbolo ? element.moneda_simbolo : '') + $.number((element.cantidad * element.precio_unitario), 2)))}</td>
                         <td style="border: none; text-align:center;">${element.motivo != null ? element.motivo : ''}</td>
-                        <td style="border: none; text-align:center;">${stockComprometido!=null && stockComprometido >0 ? stockComprometido : '0'}</td>
-                        <td style="border: none; text-align:center;">${atencionOrden != null && atencionOrden >0 ? `<span class="label label-info handleClickModalVerOrdenDeRequerimiento" data-codigo-requerimiento="${element.codigo_requerimiento}" data-orden=${JSON.stringify(objOrdenList)} style="cursor:pointer;" >${atencionOrden}</span>`  : '0'} </td>
+                        <td style="border: none; text-align:center;">${stockComprometido != null && stockComprometido > 0 ? stockComprometido : '0'}</td>
+                        <td style="border: none; text-align:center;">${atencionOrden != null && atencionOrden > 0 ? `<span class="label label-info handleClickModalVerOrdenDeRequerimiento" data-codigo-requerimiento="${element.codigo_requerimiento}" data-orden=${JSON.stringify(objOrdenList)} style="cursor:pointer;" >${atencionOrden}</span>` : '0'} </td>
                         <td style="border: none; text-align:center;">${element.estado_doc != null && element.tiene_transformacion == false ? element.estado_doc : ''}</td>
-                        <td style="border: none; text-align:center;">${cantidadAdjuntosDetalleRequerimiento >0 ?`<button type="button" class="btn btn-default btn-xs handleClickVerAdjuntoDetalleRequerimiento" name="btnVerAdjuntoDetalleRequerimiento" title="Ver adjuntos" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-descripcion="${element.producto_descripcion != null ? element.producto_descripcion : (element.descripcion ? element.descripcion : '')}" ><i class="fas fa-paperclip"></i></button>`:''}</td>
+                        <td style="border: none; text-align:center;">${cantidadAdjuntosDetalleRequerimiento > 0 ? `<button type="button" class="btn btn-default btn-xs handleClickVerAdjuntoDetalleRequerimiento" name="btnVerAdjuntoDetalleRequerimiento" title="Ver adjuntos" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-descripcion="${element.producto_descripcion != null ? element.producto_descripcion : (element.descripcion ? element.descripcion : '')}" ><i class="fas fa-paperclip"></i></button>` : ''}</td>
                         </tr>`;
                 // }
             });
@@ -1300,21 +1309,21 @@ class RequerimientoPendienteView {
                 // if(element.tiene_transformacion==false){
                 let stockComprometido = 0;
                 (element.reserva).forEach(reserva => {
-                        stockComprometido += parseFloat(reserva.stock_comprometido);
+                    stockComprometido += parseFloat(reserva.stock_comprometido);
                 });
 
                 let atencionOrden = 0;
                 let objOrdenList = [];
                 (element.ordenes_compra).forEach(orden => {
-                        atencionOrden += parseFloat(orden.cantidad);
-                        objOrdenList.push({'id_orden':orden.id_orden_compra,'codigo':orden.codigo });
+                    atencionOrden += parseFloat(orden.cantidad);
+                    objOrdenList.push({ 'id_orden': orden.id_orden_compra, 'codigo': orden.codigo });
 
 
                 });
 
                 let cantidadAdjuntosDetalleRequerimiento = 0;
                 (element.adjunto_detalle_requerimiento).forEach(adjuntoItem => {
-                        cantidadAdjuntosDetalleRequerimiento ++;
+                    cantidadAdjuntosDetalleRequerimiento++;
                 });
 
                 html += `<tr>
@@ -1328,15 +1337,15 @@ class RequerimientoPendienteView {
                         <td style="border: none; text-align:center;">${(parseFloat(element.subtotal) > 0 ? ((element.moneda_simbolo ? element.moneda_simbolo : '') + $.number(element.subtotal, 2)) : ((element.moneda_simbolo ? element.moneda_simbolo : '') + $.number((element.cantidad * element.precio_unitario), 2)))}</td>
                         <td style="border: none; text-align:center;">${element.motivo != null ? element.motivo : ''}</td>
                         <td style="border: none; text-align:center;">
-                            ${stockComprometido != null && parseInt(stockComprometido) >0 ? '<span class="label label-default">'+stockComprometido+'</span>' : '0'}
+                            ${stockComprometido != null && parseInt(stockComprometido) > 0 ? '<span class="label label-default">' + stockComprometido + '</span>' : '0'}
                         </td>
                         <td style="border: none; text-align:center;">
-                            ${atencionOrden != null && atencionOrden>0 ? `<span class="label label-info handleClickModalVerOrdenDeRequerimiento" data-codigo-requerimiento="${element.codigo_requerimiento}" data-orden=${JSON.stringify(objOrdenList)}  style="cursor:pointer;">${atencionOrden}</span>` : '0'}
+                            ${atencionOrden != null && atencionOrden > 0 ? `<span class="label label-info handleClickModalVerOrdenDeRequerimiento" data-codigo-requerimiento="${element.codigo_requerimiento}" data-orden=${JSON.stringify(objOrdenList)}  style="cursor:pointer;">${atencionOrden}</span>` : '0'}
                         </td>
                         <td style="border: none; text-align:center;">${element.estado_doc != null && element.tiene_transformacion == false ? element.estado_doc : ''}</td>
                         <td style="border: none; text-align:center;">
-                        ${cantidadAdjuntosDetalleRequerimiento >0 ?`<button type="button" class="btn btn-default btn-xs handleClickVerAdjuntoDetalleRequerimiento" name="btnVerAdjuntoDetalleRequerimiento" title="Ver adjuntos" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-descripcion="${element.producto_descripcion != null ? element.producto_descripcion : 'no mapeado'}" ><i class="fas fa-paperclip"></i></button>`:''}
-                        ${stockComprometido != null && parseInt(stockComprometido) >0 ? `<button type="button" class="btn btn-danger btn-xs handleClickAnularReservaActiva" name="btnAnularReservaAtendida" title="Anular reserva" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-descripcion="${element.producto_descripcion != null ? element.producto_descripcion : 'no mapeado'}" ><i class="fas fa-minus-circle"></i></button>`:''}
+                        ${cantidadAdjuntosDetalleRequerimiento > 0 ? `<button type="button" class="btn btn-default btn-xs handleClickVerAdjuntoDetalleRequerimiento" name="btnVerAdjuntoDetalleRequerimiento" title="Ver adjuntos" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-descripcion="${element.producto_descripcion != null ? element.producto_descripcion : 'no mapeado'}" ><i class="fas fa-paperclip"></i></button>` : ''}
+                        ${stockComprometido != null && parseInt(stockComprometido) > 0 ? `<button type="button" class="btn btn-danger btn-xs handleClickAnularReservaActiva" name="btnAnularReservaAtendida" title="Anular reserva" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-descripcion="${element.producto_descripcion != null ? element.producto_descripcion : 'no mapeado'}" ><i class="fas fa-minus-circle"></i></button>` : ''}
 
 
                         </td>
@@ -1391,7 +1400,7 @@ class RequerimientoPendienteView {
         });
     }
 
-    exportTablaRequerimientosAtentidosExcel(){
+    exportTablaRequerimientosAtentidosExcel() {
         window.open(`reporte-requerimientos-atendidos-excel/${this.ActualParametroEmpresa}/${this.ActualParametroSede}/${this.ActualParametroFechaDesde}/${this.ActualParametroFechaHasta}/${this.ActualParametroReserva}/${this.ActualParametroOrden}`);
 
     }
@@ -1580,14 +1589,14 @@ class RequerimientoPendienteView {
                     render: function (data, type, row) {
                         if (row.id_producto > 0) {
 
-                            if(document.querySelector("li[class~='handleClickTabRequerimientosAtendidos']").classList.contains("active") ==true){
+                            if (document.querySelector("li[class~='handleClickTabRequerimientosAtendidos']").classList.contains("active") == true) {
                                 return `<center><div class="btn-group" role="group" style="margin-bottom: 5px;">
                                 <button type="button" class="btn btn-xs btn-info btnHistorialReserva handleClickAbrirModaHistorialReserva" 
                                     data-codigo-requerimiento="${document.querySelector("span[id='codigo_requerimiento']").textContent}" 
                                     data-id-detalle-requerimiento="${row.id_detalle_requerimiento}" 
                                     title="Historial reserva" ><i class="fas fa-eye fa-xs"></i></button>
                                 </div></center>`;
-                            }else{
+                            } else {
 
                                 return `<center><div class="btn-group" role="group" style="margin-bottom: 5px;">
                                 <button type="button" class="btn btn-xs btn-success btnNuevaReserva handleClickAbrirModalNuevaReserva" 
@@ -1750,7 +1759,7 @@ class RequerimientoPendienteView {
         document.querySelector("div[id='modal-nueva-reserva'] span[id='codigoRequerimiento']").textContent = obj.dataset.codigoRequerimiento;
         // console.log(obj);
         if (parseInt(obj.dataset.idDetalleRequerimiento) > 0) {
-            
+
             this.requerimientoPendienteCtrl.obtenerDetalleRequerimientoParaReserva(obj.dataset.idDetalleRequerimiento).then((res1) => {
 
                 this.requerimientoPendienteCtrl.obtenerAlmacenPorDefectoRequerimiento(obj.dataset.idRequerimiento).then((res2) => {
@@ -1784,9 +1793,9 @@ class RequerimientoPendienteView {
 
         }
     }
-    seleccionarAlmacenPorDefectoRequerimientoParaReserva(data){
-        if(data.id_almacen >0){
-            document.querySelector("div[id='modal-nueva-reserva'] select[name='almacenReserva']").value=data.id_almacen;
+    seleccionarAlmacenPorDefectoRequerimientoParaReserva(data) {
+        if (data.id_almacen > 0) {
+            document.querySelector("div[id='modal-nueva-reserva'] select[name='almacenReserva']").value = data.id_almacen;
         }
     }
 
@@ -1801,7 +1810,7 @@ class RequerimientoPendienteView {
             document.querySelector("form[id='form-nueva-reserva'] label[id='descripcion']").textContent = data.producto.descripcion != null ? data.producto.descripcion : (data.descripcion != null ? data.descripcion : '');
             document.querySelector("form[id='form-nueva-reserva'] label[id='cantidad']").textContent = data.cantidad;
             document.querySelector("form[id='form-nueva-reserva'] label[id='unidadMedida']").textContent = data.unidad_medida.descripcion;
-            document.querySelector("form[id='form-nueva-reserva'] label[id='cantidadEnOrdenes']").textContent = data.ordenes_compra != null && data.ordenes_compra.length >0 ? data.ordenes_compra.reduce((a, b) => +a + +b.cantidad, 0) :'0';
+            document.querySelector("form[id='form-nueva-reserva'] label[id='cantidadEnOrdenes']").textContent = data.ordenes_compra != null && data.ordenes_compra.length > 0 ? data.ordenes_compra.reduce((a, b) => +a + +b.cantidad, 0) : '0';
             document.querySelector("div[id='modal-nueva-reserva'] input[name='cantidadReserva']").value = parseFloat(document.querySelector("div[id='modal-nueva-reserva'] label[id='cantidad']").textContent) > 0 ? document.querySelector("div[id='modal-nueva-reserva'] label[id='cantidad']").textContent : 0;
 
             this.listarTablaListaConReserva(data.reserva);
@@ -1913,7 +1922,7 @@ class RequerimientoPendienteView {
                     },
                     success: (response) => {
                         // console.log(response);
-                        if (response.id_reserva >0) {
+                        if (response.id_reserva > 0) {
                             $('#modal-nueva-reserva .modal-content').LoadingOverlay("hide", true);
 
                             Lobibox.notify('success', {
@@ -1931,11 +1940,11 @@ class RequerimientoPendienteView {
 
                         } else {
                             $('#modal-nueva-reserva .modal-content').LoadingOverlay("hide", true);
-                                Swal.fire(
-                                    '',
-                                    response.mensaje,
-                                    response.tipo_estado
-                                );
+                            Swal.fire(
+                                '',
+                                response.mensaje,
+                                response.tipo_estado
+                            );
                             console.log(response);
                         }
 
@@ -1978,11 +1987,11 @@ class RequerimientoPendienteView {
     }
 
     handleChangeObtenerStockAlmacen() {
-       let idAlmacen= document.getElementsByName("almacenReserva")[0].value;
-       let cantidadReservar =document.getElementsByName("cantidadReserva")[0].value;
+        let idAlmacen = document.getElementsByName("almacenReserva")[0].value;
+        let cantidadReservar = document.getElementsByName("cantidadReserva")[0].value;
         if (idAlmacen > 0) {
             if (!cantidadReservar > 0) {
-                Swal.fire({ 
+                Swal.fire({
                     icon: 'warning',
                     title: 'Oops...',
                     text: 'Primero debe ingresar una cantidad a reservar que sea mayor a cero',
@@ -2002,9 +2011,9 @@ class RequerimientoPendienteView {
                 }).done((response) => {
 
                     document.querySelector("div[id='modal-nueva-reserva'] div[id='contenedor-info-stock']").classList.remove('oculto');
-                    document.querySelector("div[id='modal-nueva-reserva'] div[id='contenedor-info-stock'] span[id='info-stock-almacen']").textContent=response.stock;
-                    document.querySelector("div[id='modal-nueva-reserva'] div[id='contenedor-info-stock'] span[id='info-reservas-activas']").textContent=response.reservas;
-                    document.querySelector("div[id='modal-nueva-reserva'] div[id='contenedor-info-stock'] span[id='info-saldo-disponible']").textContent=response.saldo;
+                    document.querySelector("div[id='modal-nueva-reserva'] div[id='contenedor-info-stock'] span[id='info-stock-almacen']").textContent = response.stock;
+                    document.querySelector("div[id='modal-nueva-reserva'] div[id='contenedor-info-stock'] span[id='info-reservas-activas']").textContent = response.reservas;
+                    document.querySelector("div[id='modal-nueva-reserva'] div[id='contenedor-info-stock'] span[id='info-saldo-disponible']").textContent = response.saldo;
 
                 }).fail((jqXHR, textStatus, errorThrown) => {
                     Swal.fire(
@@ -2018,7 +2027,7 @@ class RequerimientoPendienteView {
                 });
             }
 
-        }else{
+        } else {
             document.querySelector("div[id='modal-nueva-reserva'] div[id='contenedor-info-stock']").classList.add('oculto');
 
         }
@@ -2091,12 +2100,12 @@ class RequerimientoPendienteView {
                     } else {
                         $('#modal-nueva-reserva .modal-content').LoadingOverlay("hide", true);
                         // console.log(response);
-                            Swal.fire(
-                                '',
-                                response.mensaje,
-                                response.tipo_estado
-                            );
-                        
+                        Swal.fire(
+                            '',
+                            response.mensaje,
+                            response.tipo_estado
+                        );
+
                         obj.removeAttribute("disabled");
                         console.log(response);
                     }
@@ -2631,8 +2640,8 @@ class RequerimientoPendienteView {
 
     // Crear orden por requerimiento
     crearOrdenCompraPorRequerimiento(obj) {
-        let idx=reqTrueList.indexOf(parseInt(obj.dataset.idRequerimiento));
-        if((idx == -1)){
+        let idx = reqTrueList.indexOf(parseInt(obj.dataset.idRequerimiento));
+        if ((idx == -1)) {
             reqTrueList.push(parseInt(obj.dataset.idRequerimiento));
         }
         console.log(reqTrueList);
@@ -2640,23 +2649,23 @@ class RequerimientoPendienteView {
         sessionStorage.setItem('reqCheckedList', JSON.stringify(reqTrueList));
         sessionStorage.setItem('tipoOrden', 'COMPRA');
         sessionStorage.setItem('action', 'register');
-        let url ="/logistica/gestion-logistica/compras/ordenes/elaborar/index";
-        var win = location.href=url;
+        let url = "/logistica/gestion-logistica/compras/ordenes/elaborar/index";
+        var win = location.href = url;
         this.updateContadorRequerimientosPendientesSeleccionados();
 
     }
     // Crear orden de servicio por requerimiento
     crearOrdenServicioPorRequerimiento(obj) {
-        let idx=reqTrueList.indexOf(parseInt(obj.dataset.idRequerimiento));
-        if((idx == -1)){
+        let idx = reqTrueList.indexOf(parseInt(obj.dataset.idRequerimiento));
+        if ((idx == -1)) {
             reqTrueList.push(parseInt(obj.dataset.idRequerimiento));
         }
         console.log(reqTrueList);
         sessionStorage.removeItem('idOrden');
         sessionStorage.setItem('reqCheckedList', JSON.stringify(reqTrueList));
         sessionStorage.setItem('tipoOrden', 'SERVICIO');
-        let url ="/logistica/gestion-logistica/compras/ordenes/elaborar/index";
-        var win = location.href=url;
+        let url = "/logistica/gestion-logistica/compras/ordenes/elaborar/index";
+        var win = location.href = url;
         this.updateContadorRequerimientosPendientesSeleccionados();
 
 
@@ -2668,7 +2677,7 @@ class RequerimientoPendienteView {
     }
 
 
-    verAdjuntoDetalleRequerimiento(obj){
+    verAdjuntoDetalleRequerimiento(obj) {
 
         $('#modal-adjuntos-detalle-requerimiento').modal({
             show: true,
@@ -2680,7 +2689,7 @@ class RequerimientoPendienteView {
 
     }
 
-    anularReservaActiva(obj){
+    anularReservaActiva(obj) {
 
         Swal.fire({
             title: '¿Está seguro que desea anular la reserva ?',
@@ -2691,7 +2700,7 @@ class RequerimientoPendienteView {
             cancelButtonColor: '#d33',
             cancelButtonText: 'Cancelar',
             confirmButtonText: 'Si, anular reserva'
-    
+
         }).then((result) => {
             if (result.isConfirmed) {
                 let formData = new FormData();
@@ -2714,7 +2723,7 @@ class RequerimientoPendienteView {
                     },
                     success: (response) => {
                         // console.log(response);
-                        if (response.tipo_estado =='success') {
+                        if (response.tipo_estado == 'success') {
                             $('#wrapper-okc').LoadingOverlay("hide", true);
 
                             Lobibox.notify('success', {
@@ -2726,15 +2735,15 @@ class RequerimientoPendienteView {
                                 msg: `Las reservas del producto fueron anuladas`
                             });
 
-                            $tablaListaRequerimientosAtendidos.ajax.reload(null,false);                
+                            $tablaListaRequerimientosAtendidos.ajax.reload(null, false);
 
                         } else {
                             $('#wrapper-okc').LoadingOverlay("hide", true);
-                                Swal.fire(
-                                    '',
-                                    response.mensaje,
-                                    response.tipo_estado
-                                );
+                            Swal.fire(
+                                '',
+                                response.mensaje,
+                                response.tipo_estado
+                            );
                             console.log(response);
                         }
 
@@ -2756,19 +2765,19 @@ class RequerimientoPendienteView {
         });
     }
 
-    listarArchivosAdjuntosDetalleRequerimiento(idDetalleRequerimiento){
+    listarArchivosAdjuntosDetalleRequerimiento(idDetalleRequerimiento) {
 
         $.ajax({
             type: 'GET',
             url: 'mostrar-archivos-adjuntos-detalle-requerimiento/' + idDetalleRequerimiento,
             dataType: 'JSON',
-        }).done( (response)=> {
+        }).done((response) => {
             this.construirTablaAdjuntoDetalleRequerimiento(response);
 
-    
-        }).always( ()=> {
-    
-        }).fail((jqXHR)=> {
+
+        }).always(() => {
+
+        }).fail((jqXHR) => {
             Swal.fire(
                 '',
                 'Hubo un problema al intentar mostrar los adjuntos, por favor vuelva a intentarlo.',
@@ -2780,7 +2789,7 @@ class RequerimientoPendienteView {
     }
 
 
-    construirTablaAdjuntoDetalleRequerimiento(data){
+    construirTablaAdjuntoDetalleRequerimiento(data) {
         // console.log(data);
         $('#listaAdjuntosDetalleRequerimiento').dataTable({
             'dom': vardataTables[1],
@@ -2793,7 +2802,7 @@ class RequerimientoPendienteView {
             // "pageLength": 3,
             'data': data,
             'order': [[0, 'desc']],
- 
+
             'columns': [
 
                 {
@@ -2805,27 +2814,27 @@ class RequerimientoPendienteView {
                     render: function (data, type, row) {
                         return (row.fecha_registro != null ? row.fecha_registro : '');
                     }
-                }, 
+                },
                 {
                     render: function (data, type, row) {
 
                         return `<button type="button" class="btn btn-success btn-sm handleClickDescargarArchivoDetalleRequerimiento" name="btnDescargarArchivoDetalleRequerimiento" title="Descargar"  data-id-adjunto="${row.id_adjunto}" data-archivo="${row.archivo}" >Descargar</button>`;
                     }
-                } 
+                }
             ],
 
             'columnDefs': [
-                { 'targets': 0, 'className': "text-left","width": "70%" },
-                { 'targets': 1, 'className': "text-left","width": "15%" },
-                { 'targets': 2, 'className': "text-center","width": "15%" } 
+                { 'targets': 0, 'className': "text-left", "width": "70%" },
+                { 'targets': 1, 'className': "text-left", "width": "15%" },
+                { 'targets': 2, 'className': "text-center", "width": "15%" }
             ],
             'initComplete': function () {
 
 
-            } 
+            }
         });
     }
-    construirTablaTodoAdjuntoDetalleRequerimiento(data){
+    construirTablaTodoAdjuntoDetalleRequerimiento(data) {
         // console.log(data);
         $('#listaTodoAdjuntosDetalleRequerimiento').dataTable({
             'dom': vardataTables[1],
@@ -2838,7 +2847,7 @@ class RequerimientoPendienteView {
             // "pageLength": 3,
             'data': data,
             'order': [[0, 'desc']],
- 
+
             'columns': [
 
                 {
@@ -2866,30 +2875,30 @@ class RequerimientoPendienteView {
                     render: function (data, type, row) {
                         return (row.fecha_registro != null ? row.fecha_registro : '');
                     }
-                }, 
+                },
                 {
                     render: function (data, type, row) {
 
                         return `<button type="button" class="btn btn-success btn-sm handleClickDescargarArchivoDetalleRequerimiento" name="btnDescargarArchivoDetalleRequerimiento" title="Descargar"  data-id-adjunto="${row.id_adjunto}" data-archivo="${row.archivo}" >Descargar</button>`;
                     }
-                } 
+                }
             ],
 
             'columnDefs': [
-                { 'targets': 0, 'className': "text-center","width": "10%" },
-                { 'targets': 1, 'className': "text-center","width": "10%" },
-                { 'targets': 2, 'className': "text-left","width": "40%" },
-                { 'targets': 3, 'className': "text-left","width": "20%" },
-                { 'targets': 4, 'className': "text-center","width": "10%" }, 
-                { 'targets': 5, 'className': "text-center","width": "10%" } 
+                { 'targets': 0, 'className': "text-center", "width": "10%" },
+                { 'targets': 1, 'className': "text-center", "width": "10%" },
+                { 'targets': 2, 'className': "text-left", "width": "40%" },
+                { 'targets': 3, 'className': "text-left", "width": "20%" },
+                { 'targets': 4, 'className': "text-center", "width": "10%" },
+                { 'targets': 5, 'className': "text-center", "width": "10%" }
             ],
             'initComplete': function () {
 
 
-            } 
+            }
         });
     }
-    construirTablaAdjuntoRequerimiento(data){
+    construirTablaAdjuntoRequerimiento(data) {
         // console.log(data);
         $('#listaAdjuntosRequerimiento').dataTable({
             'dom': vardataTables[1],
@@ -2902,7 +2911,7 @@ class RequerimientoPendienteView {
             // "pageLength": 3,
             'data': data,
             'order': [[0, 'desc']],
- 
+
             'columns': [
 
                 {
@@ -2914,29 +2923,29 @@ class RequerimientoPendienteView {
                     render: function (data, type, row) {
                         return (row.fecha_registro != null ? row.fecha_registro : '');
                     }
-                }, 
+                },
                 {
                     render: function (data, type, row) {
 
                         return `<button type="button" class="btn btn-success btn-sm handleClickDescargarArchivoRequerimiento" name="btnDescargarArchivoRequerimiento" title="Descargar"  data-id-adjunto="${row.id_adjunto}" data-archivo="${row.archivo}" >Descargar</button>`;
                     }
-                } 
+                }
             ],
 
             'columnDefs': [
-                { 'targets': 0, 'className': "text-left","width": "70%" },
-                { 'targets': 1, 'className': "text-left","width": "15%" },
-                { 'targets': 2, 'className': "text-center","width": "15%" } 
+                { 'targets': 0, 'className': "text-left", "width": "70%" },
+                { 'targets': 1, 'className': "text-left", "width": "15%" },
+                { 'targets': 2, 'className': "text-center", "width": "15%" }
             ],
             'initComplete': function () {
 
 
-            } 
+            }
         });
     }
 
 
-    descargarArchivoDetalleRequerimiento(obj){
+    descargarArchivoDetalleRequerimiento(obj) {
         if (obj.dataset.idAdjunto > 0) {
             window.open("/files/necesidades/requerimientos/bienes_servicios/detalle/" + obj.dataset.archivo);
 
@@ -2946,7 +2955,7 @@ class RequerimientoPendienteView {
 
 
 
-    verTodoAdjuntos(obj){
+    verTodoAdjuntos(obj) {
 
         $('#modal-todo-adjuntos').modal({
             show: true,
@@ -2958,19 +2967,19 @@ class RequerimientoPendienteView {
 
     }
 
-    listarTodoArchivosAdjuntos(idRequerimiento){
+    listarTodoArchivosAdjuntos(idRequerimiento) {
         $.ajax({
             type: 'GET',
             url: 'mostrar-todo-adjuntos-requerimiento/' + idRequerimiento,
             dataType: 'JSON',
-        }).done( (response)=> {
+        }).done((response) => {
             // console.log(response);
             this.construirTablaAdjuntoRequerimiento(response.adjunto_requerimiento);
             this.construirTablaTodoAdjuntoDetalleRequerimiento(response.adjuntos_detalle_requerimiento);
 
-        }).always( ()=> {
-    
-        }).fail((jqXHR)=> {
+        }).always(() => {
+
+        }).fail((jqXHR) => {
             Swal.fire(
                 '',
                 'Hubo un problema al intentar mostrar los adjuntos, por favor vuelva a intentarlo.',
@@ -2979,7 +2988,7 @@ class RequerimientoPendienteView {
             console.log('Error devuelto: ' + jqXHR.responseText);
         });
     }
-    descargarArchivoRequerimiento(obj){
+    descargarArchivoRequerimiento(obj) {
         if (obj.dataset.idAdjunto > 0) {
             window.open("/files/necesidades/requerimientos/bienes_servicios/cabecera/" + obj.dataset.archivo);
         }

@@ -271,7 +271,7 @@ Registro de incidencia
                                     </select>
                                 </div>
                             </div>
-                            <div class="form-group " style="margin-bottom:0px;">
+                            <div class="form-group " style="margin-bottom:5px;">
                                 <label class="col-sm-4 control-label">Modo</label>
                                 <div class="col-sm-8">
                                     <select class="form-control js-example-basic-single edition limpiarIncidencia" 
@@ -279,6 +279,18 @@ Registro de incidencia
                                         <option value="">Elija una opción</option>
                                         @foreach ($modos as $modo)
                                         <option value="{{$modo->id_modo}}">{{$modo->descripcion}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group " style="margin-bottom:5px;">
+                                <label class="col-sm-4 control-label">Tipo garantía</label>
+                                <div class="col-sm-8">
+                                    <select class="form-control js-example-basic-single edition limpiarIncidencia" 
+                                        name="id_tipo_garantia" required>
+                                        <option value="">Elija una opción</option>
+                                        @foreach ($tiposGarantia as $tipo)
+                                        <option value="{{$tipo->id_tipo_garantia}}">{{$tipo->descripcion}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -327,7 +339,7 @@ Registro de incidencia
                     </div>
                     <div class="col-sm-4">
                         <div class="form-horizontal">
-                            <div class="form-group " style="margin-bottom:0px;">
+                            <div class="form-group " style="margin-bottom:5px;">
                                 <div class="col-sm-6">
                                     <div class="icheckbox_flat-blue">
                                         <label style="display:flex;">
@@ -338,7 +350,7 @@ Registro de incidencia
                                     </div> 
                                 </div>
                             </div>
-                            <div class="form-group " style="margin-bottom:0px;">
+                            <div class="form-group " style="margin-bottom:5px;">
                                 <label class="col-sm-4 control-label">Conformidad</label>
                                 <div class="col-sm-8">
                                     <select class="form-control js-example-basic-single edition limpiarIncidencia" 
@@ -347,6 +359,12 @@ Registro de incidencia
                                         <option value="PRE">PRE</option>
                                         <option value="POST">POST</option>
                                     </select>
+                                </div>
+                            </div>
+                            <div class="form-group " style="margin-bottom:5px;">
+                                <label class="col-sm-4 control-label">Nro. de caso</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control edition limpiarIncidencia" name="numero_caso"/>
                                 </div>
                             </div>
                         </div>
