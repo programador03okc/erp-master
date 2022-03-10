@@ -2,7 +2,7 @@
     constructor(permisoVer, permisoEnviar, permisoRegistrar) {
         this.permisoVer = permisoVer;
         this.permisoEnviar = permisoEnviar;
-        this.permisoRegistrar = permisoRegistrar;
+        this.permisoRegistrar = 1;
         this.listarRequerimientos();
         this.listarComprobantes();
         this.listarOrdenes();
@@ -572,7 +572,7 @@ function formatPagos(table_id, id, row, tipo) {
                         '<td style="border: none; text-align: center">' + element.nro_cuenta + '</td>' +
                         '<td style="border: none; text-align: center">' + element.observacion + '</td>' +
                         '<td style="border: none; text-align: center">' + element.simbolo + ' ' + formatDecimal(element.total_pago) + '</td>' +
-                        '<td style="border: none; text-align: center"><a href="/files/tesoreria/pagos/' + element.adjunto + '" target="_blank">' + (element.adjunto !== null ? element.adjunto : '') + '</a></td>' +
+                        '<td style="border: none; text-align: center">' + (element.count_adjuntos > 0 ? '<a href="#" onClick="verAdjuntosPago(' + element.id_pago + ');">' + element.count_adjuntos + ' archivos adjuntos </a>' : '') + '</td>' +
                         '<td style="border: none; text-align: center">' + element.nombre_corto + '</td>' +
                         '<td style="border: none; text-align: center">' + formatDateHour(element.fecha_registro) + '</td>' +
                         '<td style="border: none; text-align: center">' +
@@ -619,4 +619,36 @@ function formatPagos(table_id, id, row, tipo) {
         console.log(errorThrown);
     });
 
+}
+
+function verAdjuntosPago(id_pago) {
+
+    if (id_pago !== "") {
+        $('#modal-verAdjuntosPago').modal({
+            show: true
+        });
+        $('#adjuntosPago tbody').html('');
+
+        $.ajax({
+            type: 'GET',
+            url: 'verAdjuntosPago/' + id_pago,
+            dataType: 'JSON',
+            success: function (response) {
+                console.log(response);
+                if (response.length > 0) {
+                    var html = '';
+                    response.forEach(function (element) {
+                        html += `<tr>
+                            <td><a target="_blank" href="/files/tesoreria/pagos/${element.adjunto}">${element.adjunto}</a></td>
+                        </tr>`;
+                    });
+                    $('#adjuntosPago tbody').html(html);
+                }
+            }
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        });
+    }
 }

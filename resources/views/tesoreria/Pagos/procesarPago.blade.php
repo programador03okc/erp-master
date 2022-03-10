@@ -132,8 +132,9 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12">
-                                <h5>Adjuntar Archivo</h5>
-                                <input type="file" name="adjunto" id="adjunto" class="filestyle" data-buttonName="btn-primary" data-buttonText="Adjuntar" data-size="sm" data-iconName="fa fa-folder-open" data-disabled="false">
+                                <h5>Adjuntar Archivo(s)</h5>
+                                {{-- <input type="file" name="adjunto" id="adjunto" class="filestyle" data-buttonName="btn-primary" data-buttonText="Adjuntar" data-size="sm" data-iconName="fa fa-folder-open" data-disabled="false"> --}}
+                                <input type="file" name="archivos[]" multiple="true" class="form-control">
                             </div>
                         </div>
                     </fieldset>

@@ -227,7 +227,10 @@ class RegistroPagoController extends Controller
                 'sis_usua.nombre_corto',
                 'sis_moneda.simbolo',
                 'adm_contri.razon_social as razon_social_empresa',
-                'adm_cta_contri.nro_cuenta'
+                'adm_cta_contri.nro_cuenta',
+                DB::raw("(SELECT count(adjunto) FROM tesoreria.registro_pago_adjuntos
+                      WHERE registro_pago_adjuntos.id_pago = registro_pago.id_pago
+                        and registro_pago_adjuntos.estado != 7) AS count_adjuntos")
             )
             ->leftJoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'registro_pago.registrado_por')
             ->leftJoin('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'registro_pago.id_empresa')
@@ -253,6 +256,15 @@ class RegistroPagoController extends Controller
 
         return response()->json($query);
     }
+
+    public function verAdjuntosPago($id)
+    {
+        $adjuntos = DB::table('tesoreria.registro_pago_adjuntos')
+            ->where('id_pago', $id)
+            ->get();
+        return response()->json($adjuntos);
+    }
+
     /*
     public function pagosRequerimientos($id_requerimiento_pago)
     {
@@ -345,7 +357,6 @@ class RegistroPagoController extends Controller
             DB::beginTransaction();
 
             $id_usuario = Auth::user()->id_usuario;
-            $file = $request->file('adjunto');
 
             $id_pago = DB::table('tesoreria.registro_pago')
                 ->insertGetId([
@@ -362,18 +373,45 @@ class RegistroPagoController extends Controller
                     'fecha_registro' => date('Y-m-d H:i:s')
                 ], 'id_pago');
 
-            if (isset($file)) {
-                //obtenemos el nombre del archivo
-                $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
-                $nombre = $request->codigo . '.' . $id_pago . '.' . $extension;
-                //indicamos que queremos guardar un nuevo archivo en el disco local
-                File::delete(public_path('tesoreria/pagos/' . $nombre));
-                Storage::disk('archivos')->put('tesoreria/pagos/' . $nombre, File::get($file));
+            //Guardar archivos subidos
+            if ($request->hasFile('archivos')) {
+                $archivos = $request->file('archivos');
 
-                DB::table('tesoreria.registro_pago')
-                    ->where('id_pago', $id_pago)
-                    ->update(['adjunto' => $nombre]);
+                foreach ($archivos as $archivo) {
+                    $id_adjunto = DB::table('tesoreria.registro_pago_adjuntos')
+                        ->insertGetId([
+                            'id_pago' => $id_pago,
+                            // 'adjunto' => $nombre,
+                            'estado' => 1,
+                        ], 'id_adjunto');
+
+                    //obtenemos el nombre del archivo
+                    $extension = pathinfo($archivo->getClientOriginalName(), PATHINFO_EXTENSION);
+                    $nombre = $id_adjunto . '.' . $request->codigo . '.' . $extension;
+
+                    //indicamos que queremos guardar un nuevo archivo en el disco local
+                    File::delete(public_path('tesoreria/pagos/' . $nombre));
+                    Storage::disk('archivos')->put('tesoreria/pagos/' . $nombre, File::get($archivo));
+
+                    DB::table('tesoreria.registro_pago_adjuntos')
+                        ->where('id_adjunto', $id_adjunto)
+                        ->update(['adjunto' => $nombre]);
+                }
             }
+
+            // $file = $request->file('adjunto');
+            // if (isset($file)) {
+            //     //obtenemos el nombre del archivo
+            //     $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
+            //     $nombre = $request->codigo . '.' . $id_pago . '.' . $extension;
+            //     //indicamos que queremos guardar un nuevo archivo en el disco local
+            //     File::delete(public_path('tesoreria/pagos/' . $nombre));
+            //     Storage::disk('archivos')->put('tesoreria/pagos/' . $nombre, File::get($file));
+
+            //     DB::table('tesoreria.registro_pago')
+            //         ->where('id_pago', $id_pago)
+            //         ->update(['adjunto' => $nombre]);
+            // }
 
             if (floatval($request->total_pago) >= floatval(round($request->total, 2))) {
 

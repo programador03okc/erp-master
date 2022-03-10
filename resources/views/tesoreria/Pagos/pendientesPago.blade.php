@@ -137,6 +137,7 @@ Registro de pagos
 
 @include('tesoreria.pagos.procesarPago')
 @include('tesoreria.pagos.verAdjuntos')
+@include('tesoreria.pagos.verAdjuntosPago')
 @include('tesoreria.requerimiento_pago.modal_vista_rapida_requerimiento_pago')
 
 @endsection
