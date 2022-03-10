@@ -41,7 +41,7 @@ Gestión de fichas reporte
                                 <th>Empresa</th>
                                 <th>Cliente</th>
                                 <th>Concepto</th>
-                                <th>Guía Venta</th>
+                                <th>Factura</th>
                                 <th>Nombre contacto</th>
                                 {{-- <th>Telf. contacto</th>
                                 <th>Cargo contacto</th>
@@ -87,6 +87,7 @@ Gestión de fichas reporte
 <script src="{{ asset('template/plugins/iCheck/icheck.min.js') }}"></script>
 
 <script src="{{ asset('js/cas/fichasReporte/fichaReporte.js')}}?v={{filemtime(public_path('js/cas/fichasReporte/fichaReporte.js'))}}"></script>
+<script src="{{ asset('js/cas/fichasReporte/verDetalleReportes.js')}}?v={{filemtime(public_path('js/cas/fichasReporte/verDetalleReportes.js'))}}"></script>
 
 <script>
     $(document).ready(function() {

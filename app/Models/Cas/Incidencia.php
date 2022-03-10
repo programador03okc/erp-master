@@ -58,7 +58,7 @@ class Incidencia extends Model
 
     public function estado()
     {
-        return $this->belongsTo(IncidenciaEstado::class, 'id_estado', 'estado');
+        return $this->belongsTo(IncidenciaEstado::class, 'estado', 'id_estado');
     }
 
     public static function nuevoCodigoIncidencia($id_empresa, $yyyy)

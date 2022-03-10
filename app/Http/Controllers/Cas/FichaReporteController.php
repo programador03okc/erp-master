@@ -66,7 +66,7 @@ class FichaReporteController extends Controller
 
     function listarFichasReporte($id_incidencia)
     {
-        $lista = IncidenciaReporte::where([
+        $lista = IncidenciaReporte::with('usuario')->where([
             ['id_incidencia', '=', $id_incidencia], ['estado', '!=', 7]
         ])->get();
         return response()->json($lista);

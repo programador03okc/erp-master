@@ -23,9 +23,14 @@ function mostrarIncidencia(id) {
 
             $("[name=id_incidencia]").val(response.incidencia.id_incidencia);
             $("#codigo_ficha").text(response.incidencia.codigo);
+            $("[name=factura]").val(response.incidencia.factura);
             $("[name=id_responsable]").val(response.incidencia.id_responsable);
             $("[name=id_tipo_falla]").val(response.incidencia.id_tipo_falla);
             $("[name=id_tipo_servicio]").val(response.incidencia.id_tipo_servicio);
+            $("[name=id_modo]").val(response.incidencia.id_modo);
+            $("[name=id_tipo_garantia]").val(response.incidencia.id_tipo_garantia);
+            $("[name=id_atiende]").val(response.incidencia.id_atiende);
+            $("[name=numero_caso]").val(response.incidencia.numero_caso);
             $("[name=sede_cliente]").val(response.incidencia.sede_cliente);
             $("[name=usuario_final]").val(response.incidencia.usuario_final);
 
@@ -64,12 +69,15 @@ function mostrarIncidencia(id) {
                 listaSeriesProductos.push({
                     "id_incidencia_producto": element.id_incidencia_producto,
                     "id_incidencia": element.id_incidencia,
-                    "id_prod_serie": element.id_prod_serie,
+                    "id_prod_serie": element.id_prod_serie ?? null,
                     "serie": element.serie,
-                    "id_producto": element.id_producto,
-                    "codigo": element.producto.codigo,
-                    "part_number": element.producto.part_number,
-                    "descripcion": element.producto.descripcion,
+                    "id_producto": element.id_producto ?? null,
+                    "codigo": element.producto.codigo ?? null,
+                    "part_number": element.producto.part_number ?? null,
+                    "descripcion": element.producto !== null ? element.producto : element.producto.descripcion,
+                    "id_tipo": element.id_tipo,
+                    "marca": element.marca,
+                    "modelo": element.modelo,
                 });
             });
             mostrarListaSeriesProductos();
@@ -184,7 +192,11 @@ $("#form-incidencia").on("submit", function (e) {
                     'id_incidencia': element.id_incidencia,
                     'id_producto': element.id_producto,
                     'id_prod_serie': element.id_prod_serie,
-                    'serie': element.serie
+                    'serie': element.serie,
+                    'producto': element.descripcion,
+                    'marca': element.marca,
+                    'modelo': element.modelo,
+                    'id_tipo': element.id_tipo,
                 });
             })
             data += '&detalle=' + JSON.stringify(detalle);
@@ -242,12 +254,13 @@ function guardarIncidencia(data) {
 
 function mostrarListaSeriesProductos() {
     var html = '';
+    $('#seriesProductos tbody').html(html);
     listaSeriesProductos.forEach(function (element) {
         html += `<tr>
-        <td>${element.serie}</td>
-        <td>${element.codigo}</td>
-        <td>${element.part_number}</td>
-        <td>${element.descripcion}</td>
+        <td style="text-align:center">${element.serie}</td>
+        <td style="text-align:center">${element.descripcion ?? ''}</td>
+        <td style="text-align:center">${element.marca ?? ''}</td>
+        <td style="text-align:center">${element.modelo ?? ''}</td>
         </tr>`;
     });
     $('#seriesProductos tbody').html(html);

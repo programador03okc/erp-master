@@ -34,7 +34,7 @@ class IncidenciaController extends Controller
         $modos = ModoIncidencia::where('estado', 1)->get();
         $atiende = AtiendeIncidencia::where('estado', 1)->get();
         $tiposGarantia = TipoGarantia::where('estado', 1)->get();
-        $tipoProducto = IncidenciaProductoTipo::where('estado', 1)->get();
+        $tiposProducto = IncidenciaProductoTipo::where('estado', 1)->get();
 
         return view('cas/incidencias/incidencia', compact(
             'tipoFallas',
@@ -151,8 +151,10 @@ class IncidenciaController extends Controller
             ->where('incidencia.id_incidencia', $id)
             ->first();
 
-        $productos = IncidenciaProducto::with('producto')
-            ->where([['id_incidencia', '=', $id], ['estado', '!=', 7]])
+        // $productos = IncidenciaProducto::with('producto')
+        //     ->where([['id_incidencia', '=', $id], ['estado', '!=', 7]])
+        //     ->get();
+        $productos = IncidenciaProducto::where([['id_incidencia', '=', $id], ['estado', '!=', 7]])
             ->get();
 
         return response()->json(['incidencia' => $incidencia, 'productos' => $productos]);
@@ -173,6 +175,7 @@ class IncidenciaController extends Controller
             $incidencia->id_salida = $request->id_mov_alm;
             $incidencia->id_empresa = $request->id_empresa;
             $incidencia->sede_cliente = $request->sede_cliente;
+            $incidencia->factura = $request->factura;
             $incidencia->id_contribuyente = $request->id_contribuyente;
             $incidencia->id_contacto = $request->id_contacto;
             $incidencia->usuario_final = $request->usuario_final;
@@ -200,6 +203,10 @@ class IncidenciaController extends Controller
                 $producto->id_prod_serie = $det->id_prod_serie;
                 $producto->serie = $det->serie;
                 $producto->id_usuario = Auth::user()->id_usuario;
+                $producto->producto = $det->producto;
+                $producto->marca = $det->marca;
+                $producto->modelo = $det->modelo;
+                $producto->id_tipo = $det->id_tipo;
                 $producto->estado = 1;
                 $producto->fecha_registro = new Carbon();
                 $producto->save();
@@ -230,14 +237,13 @@ class IncidenciaController extends Controller
                 $incidencia->fecha_reporte = $request->fecha_reporte;
                 $incidencia->id_responsable = $request->id_responsable;
                 $incidencia->id_salida = $request->id_mov_alm;
-                // $incidencia->id_empresa = $request->id_empresa;
                 $incidencia->sede_cliente = $request->sede_cliente;
+                $incidencia->factura = $request->factura;
                 $incidencia->id_contribuyente = $request->id_contribuyente;
                 $incidencia->id_contacto = $request->id_contacto;
                 $incidencia->usuario_final = $request->usuario_final;
                 $incidencia->id_tipo_falla = $request->id_tipo_falla;
                 $incidencia->id_tipo_servicio = $request->id_tipo_servicio;
-                // $incidencia->id_division = $request->id_division;
                 $incidencia->id_medio = $request->id_medio;
                 $incidencia->conformidad = $request->conformidad;
                 $incidencia->equipo_operativo = ($request->equipo_operativo == 'on' ? true : false);
@@ -251,23 +257,32 @@ class IncidenciaController extends Controller
                 $detalle = json_decode($request->detalle);
 
                 foreach ($detalle as $det) {
-
-                    $producto = IncidenciaProducto::where([['id_incidencia', '=', $det->id_incidencia], ['id_prod_serie', '=', $det->id_prod_serie]])
-                        ->first();
+                    // $producto = IncidenciaProducto::where([['id_incidencia', '=', $det->id_incidencia], ['id_prod_serie', '=', $det->id_prod_serie]])->first();
+                    $producto = IncidenciaProducto::where('id_incidencia_producto', $det->id_incidencia_producto)->first();
 
                     if ($producto == null) {
                         $producto = new IncidenciaProducto();
                         $producto->id_incidencia = $incidencia->id_incidencia;
                         $producto->id_producto = $det->id_producto;
                         $producto->id_prod_serie = $det->id_prod_serie;
-                        $producto->serie = $det->serie;
                         $producto->id_usuario = Auth::user()->id_usuario;
+                        $producto->serie = $det->serie;
+                        $producto->producto = $det->producto;
+                        $producto->marca = $det->marca;
+                        $producto->modelo = $det->modelo;
+                        $producto->id_tipo = $det->id_tipo;
                         $producto->estado = 1;
                         $producto->fecha_registro = new Carbon();
                         $producto->save();
+                    } else {
+                        $producto->serie = $det->serie;
+                        $producto->producto = $det->producto;
+                        $producto->marca = $det->marca;
+                        $producto->modelo = $det->modelo;
+                        $producto->id_tipo = $det->id_tipo;
+                        $producto->save();
                     }
                 }
-
                 $mensaje = 'Se actualizó la incidencia correctamente';
                 $tipo = 'success';
             } else {
