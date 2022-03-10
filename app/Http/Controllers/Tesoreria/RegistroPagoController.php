@@ -57,6 +57,7 @@ class RegistroPagoController extends Controller
                 'rrhh_cta_banc.nro_cci as nro_cci_persona',
                 'tp_cta_persona.descripcion as tipo_cuenta_persona',
                 'banco_persona.razon_social as banco_persona',
+                'sis_usua.nombre_corto',
                 DB::raw("(SELECT count(archivo) FROM tesoreria.requerimiento_pago_adjunto
                         WHERE requerimiento_pago_adjunto.id_requerimiento_pago = requerimiento_pago.id_requerimiento_pago
                         and requerimiento_pago_adjunto.id_estado != 7) AS count_adjunto_cabecera"),
@@ -90,6 +91,7 @@ class RegistroPagoController extends Controller
             ->leftJoin('contabilidad.adm_contri as banco_persona', 'banco_persona.id_contribuyente', '=', 'bco_persona.id_contribuyente')
             ->leftJoin('contabilidad.adm_tp_cta as tp_cta_persona', 'tp_cta_persona.id_tipo_cuenta', '=', 'rrhh_cta_banc.id_tipo_cuenta')
             ->join('configuracion.sis_grupo', 'sis_grupo.id_grupo', '=', 'requerimiento_pago.id_grupo')
+            ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'requerimiento_pago.id_usuario')
             ->whereIn('requerimiento_pago.id_estado', [6, 2, 5, 8]);
         // ->where([['requerimiento_pago.id_estado', '!=', 7], ['requerimiento_pago.id_estado', '!=', 1]]);
 

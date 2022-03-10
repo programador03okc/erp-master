@@ -43,6 +43,7 @@ Registro de pagos
                                                 <th>Código</th>
                                                 <th>Grupo</th>
                                                 <th>Concepto</th>
+                                                <th>Elaborado por</th>
                                                 <th>Nro. Doc.</th>
                                                 <th>Destinatario</th>
                                                 <th>Fecha Emisión</th>
