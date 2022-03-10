@@ -57,6 +57,7 @@
                 },
                 { 'data': 'grupo_descripcion', 'name': 'sis_grupo.descripcion' },
                 { 'data': 'concepto', 'name': 'requerimiento_pago.concepto' },
+                { 'data': 'nombre_corto', 'name': 'sis_usua.nombre_corto' },
                 {
                     'render': function (data, type, row) {
                         console.log(row['persona']);
