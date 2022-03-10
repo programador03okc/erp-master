@@ -58,19 +58,17 @@
                 { 'data': 'grupo_descripcion', 'name': 'sis_grupo.descripcion' },
                 { 'data': 'concepto', 'name': 'requerimiento_pago.concepto' },
                 { 'data': 'nombre_corto', 'name': 'sis_usua.nombre_corto' },
-                {
-                    'render': function (data, type, row) {
-                        console.log(row['persona']);
-                        return (row['persona'][0] !== undefined ? row['persona'][0].nro_documento : row['nro_documento']);
-                    }, 'className': 'text-center', 'searchable': false
-                },
+                // {
+                //     'render': function (data, type, row) {
+                //         console.log(row['persona']);
+                //         return (row['persona'][0] !== undefined ? row['persona'][0].nro_documento : row['nro_documento']);
+                //     }, 'className': 'text-center', 'searchable': false
+                // },
                 {
                     'render': function (data, type, row) {
                         return (row['persona'][0] !== undefined ? row['persona'][0].nombre_completo : row['razon_social']);
                     }, 'searchable': false
                 },
-                // { 'data': 'nro_documento', 'name': 'adm_contri.nro_documento' },
-                // { 'data': 'razon_social', 'name': 'adm_contri.razon_social' },
                 {
                     'render': function (data, type, row) {
                         return (row['fecha_registro'] !== null ? formatDate(row['fecha_registro']) : '');
