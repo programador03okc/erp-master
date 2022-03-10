@@ -366,6 +366,23 @@ class RequerimientoView {
                 'waning'
             );
         }
+        
+        this.limpiarTabla('listaHistorialAprobacion');
+        if (data.hasOwnProperty('historial_aprobacion')) {
+            if(data['historial_aprobacion'].length>0){
+                console.log(data['historial_aprobacion']);
+                let html = '';
+                    for (let i = 0; i < data['historial_aprobacion'].length; i++) {
+                        html += `<tr>
+                            <td style="text-align:center;">${data['historial_aprobacion'][i].nombre_corto ? data['historial_aprobacion'][i].nombre_corto : ''}</td>
+                            <td style="text-align:center;">${data['historial_aprobacion'][i].accion ? data['historial_aprobacion'][i].accion : ''}${data['historial_aprobacion'][i].tiene_sustento ==true ? ' (Tiene sustento)': ''}</td>
+                            <td style="text-align:left;">${data['historial_aprobacion'][i].detalle_observacion ? data['historial_aprobacion'][i].detalle_observacion : ''}</td>
+                            <td style="text-align:center;">${data['historial_aprobacion'][i].fecha_vobo ? data['historial_aprobacion'][i].fecha_vobo : ''}</td>
+                        </tr>`;
+                    }
+                document.querySelector("tbody[id='body_historial_aprobacion']").insertAdjacentHTML('beforeend', html)
+            }
+        }
     }
 
     
@@ -667,7 +684,7 @@ class RequerimientoView {
     }
 
     llenarSelectSede(array,idSede) {
-        console.log(idSede);
+        // console.log(idSede);
         let selectElement = document.querySelector("div[id='input-group-sede'] select[name='sede']");
         if (selectElement.options.length > 0) {
             let i, L = selectElement.options.length - 1;
