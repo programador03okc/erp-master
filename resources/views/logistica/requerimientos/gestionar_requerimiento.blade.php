@@ -561,6 +561,23 @@ Crear / editar requerimiento
                     </table>
                 </fieldset>
             </div>
+            <div class="col-md-6">
+                <h4 style="display:flex;justify-content: space-between;">Historial Aprobación</h4>
+                <fieldset class="group-table">
+                    <table class="table table-striped table-bordered" id="listaHistorialAprobacion" width="100%">
+                        <thead>
+                            <tr>
+                                <th width="30">Revisado por</th>
+                                <th width="10">Acción</th>
+                                <th width="70">Comentario</th>
+                                <th width="10">Fecha revisión</th>
+                            </tr>
+                        </thead>
+                        <tbody id="body_historial_aprobacion">
+                        </tbody>
+                    </table>
+                </fieldset>
+            </div>
         </div>
 
         <div class="row">
