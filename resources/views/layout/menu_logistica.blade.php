@@ -22,7 +22,7 @@
             
                 @endif
                 @if(Auth::user()->tieneAplicacion(109))
-                    <li><a href="{{route('logistica.gestion-logistica.compras.ordenes.listado.index')}}"><i class="far fa-circle fa-xs"></i> Gestión de estados</a></li>
+                    <li><a href="{{route('logistica.gestion-logistica.compras.ordenes.listado.index')}}"><i class="far fa-circle fa-xs"></i> Gestión de ordenes</a></li>
                 @endif
             @endif
             <!-- <li><a href="{{route('logistica.distribucion.ordenes-transformacion.index')}}"><i class="far fa-circle fa-xs"></i> Envío de transformaciones </a></li> -->
