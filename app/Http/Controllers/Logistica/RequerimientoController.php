@@ -497,7 +497,7 @@ class RequerimientoController extends Controller
                 $idDetalleRequerimientoLis = [];
                 foreach ($alm_det_req as $data) {
                     // if ($data->id_detalle_requerimiento !== $lastId) {
-                    //     $idDetalleRequerimientoLis[] = $data->id_detalle_requerimiento;
+                        $idDetalleRequerimientoLis[] = $data->id_detalle_requerimiento;
                         $detalle_requerimiento[] = [
                             'id_detalle_requerimiento'  => $data->id_detalle_requerimiento,
                             'id_requerimiento'          => $data->id_requerimiento,
