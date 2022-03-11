@@ -191,6 +191,14 @@ class RevisarAprobarController extends Controller{
                 $idDocumento = $element->id_doc_aprob;
                 $tipoDocumento = $element->id_tp_documento;
                 $idGrupo = $element->id_grupo;
+               
+
+                $idRolUsuarioDocList=[];
+                $allRolUsuarioDocList = Auth::user()->getAllRolUser($element->id_usuario);
+                foreach ($allRolUsuarioDocList as $allroldoc) {
+                    $idRolUsuarioDocList[]=$allroldoc->id_rol;
+                }
+ 
                 $idTipoRequerimiento = $element->id_tipo_requerimiento > 0?$element->id_tipo_requerimiento:null;
                 $idPrioridad = $element->id_prioridad;
                 $idMoneda = $element->id_moneda;
@@ -202,8 +210,8 @@ class RevisarAprobarController extends Controller{
                 if($obtenerMontoTotal['estado']=='success'){
                     $montoTotal=$obtenerMontoTotal['monto'];
                 }
-
-                $operaciones = Operacion::getOperacion($tipoDocumento, $idTipoRequerimiento, $idGrupo, $idDivision, $idPrioridad, $idMoneda, $montoTotal, $idTipoRequerimientoPago);
+                
+                $operaciones = Operacion::getOperacion($tipoDocumento, $idTipoRequerimiento, $idGrupo, $idDivision, $idPrioridad, $idMoneda, $montoTotal, $idTipoRequerimientoPago,$idRolUsuarioDocList);
                 // Debugbar::info($operaciones);
                 if(count($operaciones)>1){
                     $mensaje[]= "Se detecto que los criterios del requerimiento dan como resultado multibles operaciones :".$operaciones;
@@ -237,10 +245,11 @@ class RevisarAprobarController extends Controller{
                     
                     foreach ($flujoTotal as $flujo) { //obtener rol con privilegio de aprobar sin respetar orden
 
-                        if($flujo->aprobar_sin_respetar_orden =='true'){
+                        if($flujo->aprobar_sin_respetar_orden ==true || $flujo->aprobar_sin_respetar_orden >0){
                             $idRolAprobanteEnCualquierOrdenList[]= $flujo->id_rol;
                         }
                     }
+                // Debugbar::info($flujo->aprobar_sin_respetar_orden);
 
                     if(count(array_intersect($idRolAprobanteEnCualquierOrdenList,$idRolUsuarioList))>0){
                         $aprobarSinImportarOrden = true;
@@ -335,10 +344,12 @@ class RevisarAprobarController extends Controller{
                     }
 
 
-                    // Debugbar::info($idRolUsuarioList);
-                    // Debugbar::info(array_intersect($idRolAprobanteEnCualquierOrdenList, $idRolUsuarioList));
+                    Debugbar::info($idRolUsuarioList);
+                    Debugbar::info(array_intersect($idRolAprobanteEnCualquierOrdenList, $idRolUsuarioList));
 
                     if (((count(array_intersect($nextIdRolAprobanteList, $idRolUsuarioList))) > 0) == true || (count(array_intersect($idRolAprobanteEnCualquierOrdenList, $idRolUsuarioList))) > 0) {                    
+
+
                             $element->setAttribute('id_flujo',$nextIdFlujo);
                             $element->setAttribute('id_usuario_aprobante',$idUsuarioAprobante);
                             $element->setAttribute('id_rol_aprobante',$idRolAprobanteIntersectSelected);
@@ -350,12 +361,15 @@ class RevisarAprobarController extends Controller{
                             $element->setAttribute('aprobaciones',$voboList);
                             $element->setAttribute('pendiente_aprobacion',$pendiente_aprobacion);
                             $element->setAttribute('aprobar_sin_importar_orden',$aprobarSinImportarOrden);
-                            $payload[] = $element;
-                        
+
+                            if(!(in_array(36,$idRolUsuarioDocList) && (in_array(21,$idRolUsuarioList) || in_array(22,$idRolUsuarioList) ))){ //filtro residente no mostrar a jefes de planificacion y jefe de ejecición de proyectos
+                                $payload[] = $element;
+                            } 
                             } 
 
                     }
                             } 
+
                 }
 
 

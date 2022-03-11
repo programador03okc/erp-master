@@ -4,6 +4,7 @@ namespace App\Models\Administracion;
 use Debugbar;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Operacion extends Model
 {
@@ -11,10 +12,10 @@ class Operacion extends Model
     protected $primaryKey = 'id_operacion';
     public $timestamps = false;
 
-    public static function getOperacion($IdTipoDocumento,$idTipoRequerimientoCompra, $idGrupo, $idDivision, $idPrioridad, $idMoneda, $montoTotal, $idTipoRequerimientoPago)
+    public static function getOperacion($IdTipoDocumento,$idTipoRequerimientoCompra, $idGrupo, $idDivision, $idPrioridad, $idMoneda, $montoTotal, $idTipoRequerimientoPago,$idRolUsuarioDocList)
     {
-
-         
+        
+        // return ([$IdTipoDocumento,$idTipoRequerimientoCompra, $idGrupo, $idDivision, $idPrioridad, $idMoneda, $montoTotal, $idTipoRequerimientoPago,$idRolUsuarioDocList]);
         $montoTotalDolares=0;
         $montoTotalSoles=0;
         if($idMoneda ==1){ // soles convertir a dolares
@@ -24,8 +25,30 @@ class Operacion extends Model
             $montoTotalDolares=$montoTotal;
             $montoTotalSoles = floatval($montoTotal)*3.7;
         }
+        // para residente de obra
+        $allRol = Auth::user()->getAllRol();
+        $idRolConFlujo=0;
+        // $idRolUsuarioList = [];
+        foreach ($allRol as  $rol) {
+            if($rol->id_rol == 36 || $rol->id_rol ==9){
+                $idRolConFlujo=36;
+            }
+            // $idRolUsuarioList[] = $rol->id_rol;
+        }
+
+        if(in_array($idRolConFlujo,$idRolUsuarioDocList)){
+            $totalOperaciones = Operacion::where([["estado","!=",7],['id_rol',$idRolConFlujo]])->get();
+        }else{
+            $totalOperaciones = Operacion::where([["estado","!=",7],['id_rol',null]])->get();
+
+        }
         
-        $totalOperaciones = Operacion::where("estado","!=",7)->get();
+       
+        
+        // para residente de obra
+
+
+        // $totalOperaciones = Operacion::where("estado","!=",7)->get();
         $operacionesCoincidenciaTipoDocumentoGrupo=[];
         foreach ($totalOperaciones as $k => $o) {
             if($o->id_tp_documento ==$IdTipoDocumento && $o->id_grupo ==$idGrupo){
@@ -103,9 +126,11 @@ class Operacion extends Model
                     return $operacionPropuestaPorMonto3;
                 }
             }
+            
         }else{
             return $operacionesCoincidenciaPorDivision;
         }
+
 
 
     }
