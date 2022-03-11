@@ -66,6 +66,7 @@ Listado de requerimientos de pago
 </div>
 
 @include('tesoreria.requerimiento_pago.modal_ver_adjuntos_pago')
+
 @include('tesoreria.requerimiento_pago.modal_vista_rapida_requerimiento_pago')
 @include('tesoreria.requerimiento_pago.modal_requerimiento_pago')
 @include('tesoreria.requerimiento_pago.modal_lista_cuadro_presupuesto')
@@ -75,6 +76,9 @@ Listado de requerimientos de pago
 
 @include('tesoreria.requerimiento_pago.modal_adjuntar_archivos_requerimiento_pago')
 @include('tesoreria.requerimiento_pago.modal_adjuntar_archivos_requerimiento_pago_detalle')
+
+@include('tesoreria.requerimiento_pago.modal_ver_adjuntos_requerimiento_pago_cabecera')
+@include('tesoreria.requerimiento_pago.modal_ver_adjuntos_requerimiento_pago_detalle')
 
 
 @include('tesoreria.requerimiento_pago.modal_nuevo_contribuyente')
