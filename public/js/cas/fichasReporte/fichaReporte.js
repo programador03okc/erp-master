@@ -1,6 +1,6 @@
 function listarIncidencias() {
     var vardataTables = funcDatatables();
-    $('#listaIncidencias').dataTable({
+    tableIncidencias = $('#listaIncidencias').dataTable({
         dom: vardataTables[1],
         buttons: [],
         language: vardataTables[0],
@@ -16,20 +16,24 @@ function listarIncidencias() {
                 'data': 'codigo',
                 render: function (data, type, row) {
                     return (
-                        `<a href="#" class="incidencia" data-id="${row["id_incidencia"]}">${row["codigo"]}</a>`
+                        `<button type="button" class="detalle btn btn-primary btn-xs" data-toggle="tooltip" 
+                            data-placement="bottom" data-id="${row['id_incidencia']}" title="Ver fichas reporte" >
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <a href="#" class="incidencia" data-id="${row["id_incidencia"]}">${row["codigo"]}</a>`
                     );
                 }, className: "text-center"
             },
             { 'data': 'empresa_razon_social', 'name': 'empresa.razon_social' },
             { 'data': 'razon_social', 'name': 'adm_contri.razon_social' },
             { 'data': 'concepto', 'name': 'alm_req.concepto' },
-            {
-                data: 'numero', name: 'guia_ven.numero',
-                'render': function (data, type, row) {
-                    return (row['serie'] !== null ? row['serie'] + '-' + row['numero'] : '');
-                }
-            },
-            // { 'data': 'nombre', name: 'adm_ctb_contac.nombre' },
+            // {
+            //     data: 'numero', name: 'guia_ven.numero',
+            //     'render': function (data, type, row) {
+            //         return (row['serie'] !== null ? row['serie'] + '-' + row['numero'] : '');
+            //     }
+            // },
+            { 'data': 'factura' },
             {
                 'data': 'nombre', name: 'adm_ctb_contac.nombre',
                 render: function (data, type, row) {

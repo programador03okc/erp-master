@@ -40,7 +40,7 @@ function listarIncidencias() {
             { 'data': 'contribuyente.razon_social' },
             { 'data': 'fecha_reporte' },
             { 'data': 'responsable.nombre_corto' },
-            { 'data': 'estado.estado_doc' },
+            { 'data': 'estado.descripcion' },
         ],
         'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible' }],
     });

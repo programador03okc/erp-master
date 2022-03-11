@@ -64,7 +64,7 @@ Registro de incidencia
                     <label style="font-weight: bold;">Seleccione los datos del negocio:</label>
                     <button type="button" class="btn btn-sm btn-secondary edition" data-toggle="tooltip" data-placement="bottom" 
                         title="Buscar historial de registros" onClick="openSalidasVentaModal();">
-                         Buscar guias </button>
+                         Buscar </button>
                 </div>
             </div>
 
@@ -81,10 +81,16 @@ Registro de incidencia
                 <div class="row">
                     <div class="col-sm-4">
                         <div class="form-horizontal">
-                            <div class="form-group" style="margin-bottom:0px;">
+                            {{-- <div class="form-group" style="margin-bottom:0px;">
                                 <label class="col-sm-4 control-label">Guía venta</label>
                                 <div class="col-sm-8">
                                     <div class="form-control-static limpiarTexto guia_venta"></div>
+                                </div>
+                            </div> --}}
+                            <div class="form-group" style="margin-bottom:0px;">
+                                <label class="col-sm-4 control-label">Factura venta</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control edition limpiarIncidencia" name="factura"/>
                                 </div>
                             </div>
                             <div class="form-group" style="margin-bottom:0px">
@@ -230,7 +236,7 @@ Registro de incidencia
                 <div class="col-md-12">
                     <label style="font-weight: bold;">Ingrese los datos de producto(s):</label>
                     <button type="button" class="btn btn-sm btn-secondary edition" data-toggle="tooltip" data-placement="bottom" 
-                        title="Buscar historial de registros" onClick="openSeriesProductosModal();">
+                        title="Buscar historial de registros" onClick="incidenciaProductoCreate();">
                          Agregar </button>
                 </div>
             </div>
@@ -240,9 +246,11 @@ Registro de incidencia
                     <thead>
                         <tr>
                             <th>Serie</th>
-                            <th>Código</th>
-                            <th>PartNumber</th>
-                            <th>Descripción</th>
+                            {{-- <th>Código</th> --}}
+                            {{-- <th>PartNumber</th> --}}
+                            <th>Producto</th>
+                            <th>Marca</th>
+                            <th>Modelo</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -395,6 +403,7 @@ Registro de incidencia
 @include('cas.incidencias.incidenciaModal')
 @include('cas.incidencias.salidasVentaModal')
 @include('cas.incidencias.seriesProductosModal')
+@include('cas.incidencias.incidenciaProductoCreate')
 @include('almacen.distribucion.ordenDespachoContacto')
 @include('almacen.distribucion.agregarContacto')
 @include('publico.ubigeoModal')
@@ -416,6 +425,7 @@ Registro de incidencia
 <script src="{{ asset('template/plugins/iCheck/icheck.min.js') }}"></script>
 
 <script src="{{ asset('js/cas/incidencias/incidenciaModal.js')}}?v={{filemtime(public_path('js/cas/incidencias/incidenciaModal.js'))}}"></script>
+<script src="{{ asset('js/cas/incidencias/incidenciaProductoCreate.js')}}?v={{filemtime(public_path('js/cas/incidencias/incidenciaProductoCreate.js'))}}"></script>
 <script src="{{ asset('js/cas/incidencias/salidasVentaModal.js')}}?v={{filemtime(public_path('js/cas/incidencias/salidasVentaModal.js'))}}"></script>
 <script src="{{ asset('js/cas/incidencias/seriesProductosModal.js')}}?v={{filemtime(public_path('js/cas/incidencias/seriesProductosModal.js'))}}"></script>
 <script src="{{ asset('js/cas/incidencias/incidencia.js')}}?v={{filemtime(public_path('js/cas/incidencias/incidencia.js'))}}"></script>

@@ -44,7 +44,7 @@ Registro de pagos
                                                 <th>Grupo</th>
                                                 <th>Concepto</th>
                                                 <th>Elaborado por</th>
-                                                <th>Nro. Doc.</th>
+                                                {{-- <th>Nro. Doc.</th> --}}
                                                 <th>Destinatario</th>
                                                 <th>Fecha Emisión</th>
                                                 <th>Mnd</th>
