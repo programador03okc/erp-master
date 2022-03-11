@@ -1,6 +1,6 @@
 function listarIncidencias() {
     var vardataTables = funcDatatables();
-    tableIncidencias = $('#listaIncidencias').dataTable({
+    tableIncidenciasx = $('#listaIncidencias').DataTable({
         dom: vardataTables[1],
         buttons: [],
         language: vardataTables[0],
@@ -22,7 +22,7 @@ function listarIncidencias() {
                         </button>
                         <a href="#" class="incidencia" data-id="${row["id_incidencia"]}">${row["codigo"]}</a>`
                     );
-                }, className: "text-center"
+                }
             },
             { 'data': 'empresa_razon_social', 'name': 'empresa.razon_social' },
             { 'data': 'razon_social', 'name': 'adm_contri.razon_social' },
@@ -105,9 +105,12 @@ $('#listaIncidencias tbody').on("click", "button.agregar", function (e) {
     $('#modal-fichaReporte').modal({
         show: true
     });
-    $('[name=padre_id_incidencia]').val(data.id_incidencia);
     $('[name=id_incidencia_reporte]').val('');
     $('.limpiarReporte').val('');
+
+    $('[name=padre_id_incidencia]').val(data.id_incidencia);
+    $('[name=id_usuario]').val(data.id_responsable);
+    $('[name=fecha_reporte]').val(fecha_actual());
 });
 
 $("#listaIncidencias tbody").on("click", "a.incidencia", function (e) {

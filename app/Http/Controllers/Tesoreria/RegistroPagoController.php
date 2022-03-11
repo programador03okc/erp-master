@@ -600,8 +600,17 @@ class RegistroPagoController extends Controller
         $adjuntoPadre = RequerimientoPagoAdjunto::where([['id_requerimiento_pago', $id_requerimiento_pago], ['id_estado', '!=', 7]])->with('categoriaAdjunto')->get();
         $adjuntoDetalle = RequerimientoPagoAdjuntoDetalle::join('tesoreria.requerimiento_pago_detalle', 'requerimiento_pago_detalle.id_requerimiento_pago_detalle', '=', 'requerimiento_pago_detalle_adjunto.id_requerimiento_pago_detalle')
             ->where([['requerimiento_pago_detalle.id_requerimiento_pago', $id_requerimiento_pago], ['requerimiento_pago_detalle_adjunto.id_estado', '!=', 7]])->get();
-        // $data = RequerimientoPagoCategoriaAdjunto::where("id_estado", '!=', 7)->get();
 
         return response()->json(['adjuntoPadre' => $adjuntoPadre, 'adjuntoDetalle' => $adjuntoDetalle]);
+    }
+
+    function listarAdjuntosPago($id_requerimiento_pago)
+    {
+        $adjuntos = DB::table('tesoreria.registro_pago_adjuntos')
+            ->join('tesoreria.registro_pago', 'registro_pago.id_pago', '=', 'registro_pago_adjuntos.id_pago')
+            ->where('registro_pago.id_requerimiento_pago', $id_requerimiento_pago)
+            ->get();
+
+        return response()->json($adjuntos);
     }
 }

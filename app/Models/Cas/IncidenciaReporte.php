@@ -3,6 +3,7 @@
 namespace App\Models\Cas;
 
 use App\Helpers\StringHelper;
+use App\Models\Configuracion\Usuario;
 use Illuminate\Database\Eloquent\Model;
 
 class IncidenciaReporte extends Model
@@ -18,12 +19,7 @@ class IncidenciaReporte extends Model
 
     public function usuario()
     {
-        return $this->hasOne(Usuario::class, 'id_usuario');
-    }
-
-    public function estado()
-    {
-        return $this->belongsTo(Estado::class, 'estado');
+        return $this->belongsTo(Usuario::class, 'id_usuario');
     }
 
     public static function nuevoCodigoFicha($id_incidencia)
@@ -32,6 +28,6 @@ class IncidenciaReporte extends Model
         $num = IncidenciaReporte::where('id_incidencia', $id_incidencia)->count();
         $correlativo = StringHelper::leftZero(4, (intval($num) + 1));
 
-        return 'R' . $yy . $correlativo;
+        return 'FR-' . $yy . $correlativo;
     }
 }

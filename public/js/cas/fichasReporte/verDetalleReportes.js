@@ -1,11 +1,11 @@
 
 var iTableCounter = 1;
 var oInnerTable;
-var tableIncidencias;
+var tableIncidenciasx;
 
 $('#listaIncidencias tbody').on('click', 'td button.detalle', function () {
     var tr = $(this).closest('tr');
-    var row = tableIncidencias.row(tr);
+    var row = tableIncidenciasx.row(tr);
     var id = $(this).data('id');
 
     if (row.child.isShown()) {
@@ -46,20 +46,22 @@ function formatReportes(table_id, id, row) {
 
             if (response.length > 0) {
                 response.forEach(element => {
-                    html += '<tr id="' + element.id_incidencia_reporte + '">' +
-                        '<td style="border: none;">' + i + '</td>' +
-                        '<td style="border: none; text-align: center">' + element.codigo + '</td>' +
-                        '<td style="border: none; text-align: center">' + (element.fecha_reporte !== null ? formatDate(element.fecha_reporte) : '') + '</td>' +
-                        '<td style="border: none; text-align: center">' + element.usuario.nombre_corto + '</td>' +
-                        '<td style="border: none; text-align: center">' + element.acciones_realizadas + '</td>' +
-                        '<td style="border: none; text-align: center">' + formatDateHour(element.fecha_registro) + '</td>' +
-                        '<td style="border: none; text-align: center">' +
-                        `<button type = "button" class= "btn btn-danger boton" data - toggle="tooltip" 
-                            data - placement="bottom" data - row="${row}"
-                            onClick = "anularFichaReporte(${element.id_incidencia_reporte})" title = "Anular Ficha Reporte">
-                            <i class="fas fa-trash"></i></button` +
-                        '</td>' +
-                        '</tr>';
+                    html += `<tr id="${element.id_incidencia_reporte}">
+                        <td style="border: none;"> ${i}</td>
+                        <td style="border: none; text-align: center">
+                            <a href="#" onClick="imprimirFichaReporte(${element.id_incidencia_reporte})">${element.codigo}</a></td>
+                        <td style="border: none; text-align: center">${(element.fecha_reporte !== null ? formatDate(element.fecha_reporte) : '')}</td>
+                        <td style="border: none; text-align: center">${element.usuario.nombre_corto}</td>
+                        <td style="border: none; text-align: center">${element.acciones_realizadas}</td>
+                        <td style="border: none; text-align: center">${formatDateHour(element.fecha_registro)}</td>
+                        <td style="border: none; text-align: center">
+                            <button type="button" class= "btn btn-danger boton" data-toggle="tooltip" 
+                                data-placement="bottom" onClick="anularFichaReporte(${element.id_incidencia_reporte})" 
+                                title="Anular Ficha Reporte">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                        </tr>`;
                     i++;
                 });
                 var tabla = `<table class= "table table-sm" style = "border: none;" 
@@ -94,4 +96,10 @@ function formatReportes(table_id, id, row) {
         console.log(errorThrown);
     });
 
+}
+
+function imprimirFichaReporte(id_ficha) {
+    if (id_ficha !== null && id_ficha !== '') {
+        window.open("imprimirFichaReporte/" + id_ficha);
+    }
 }

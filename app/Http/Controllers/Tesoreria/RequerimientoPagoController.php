@@ -119,12 +119,12 @@ class RequerimientoPagoController extends Controller
         $fechaRegistroHasta = $request->fechaRegistroHasta;
         $idEstado = $request->idEstado;
 
-        $GrupoDeUsuarioEnSesionList= Auth::user()->getAllGrupo();
+        $GrupoDeUsuarioEnSesionList = Auth::user()->getAllGrupo();
         $idGrupoDeUsuarioEnSesionList = [];
         foreach ($GrupoDeUsuarioEnSesionList as $grupo) {
             $idGrupoDeUsuarioEnSesionList[] = $grupo->id_grupo; // lista de id_rol del usuario en sesion
         }
-        
+
         $data = RequerimientoPago::with('detalle')
             ->leftJoin('tesoreria.requerimiento_pago_tipo', 'requerimiento_pago_tipo.id_requerimiento_pago_tipo', '=', 'requerimiento_pago.id_requerimiento_pago_tipo')
             ->leftJoin('administracion.adm_estado_doc', 'requerimiento_pago.id_estado', '=', 'adm_estado_doc.id_estado_doc')
@@ -138,7 +138,7 @@ class RequerimientoPagoController extends Controller
             ->leftJoin('contabilidad.sis_identi', 'sis_identi.id_doc_identidad', '=', 'adm_contri.id_doc_identidad')
             ->leftJoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'requerimiento_pago.id_usuario')
             ->leftJoin('administracion.division', 'division.id_division', '=', 'requerimiento_pago.id_division')
-            
+
             ->select(
                 'requerimiento_pago.*',
                 'requerimiento_pago_tipo.descripcion as descripcion_requerimiento_pago_tipo',
@@ -190,9 +190,9 @@ class RequerimientoPagoController extends Controller
             ->when((intval($idEstado) > 0), function ($query)  use ($idEstado) {
                 return $query->whereRaw('requerimiento_pago.id_estado = ' . $idEstado);
             })
-            
-            ->whereIn('requerimiento_pago.id_grupo',$idGrupoDeUsuarioEnSesionList);
-            
+
+            ->whereIn('requerimiento_pago.id_grupo', $idGrupoDeUsuarioEnSesionList);
+
 
         return datatables($data)
             ->filterColumn('requerimiento_pago.fecha_registro', function ($query, $keyword) {
@@ -206,9 +206,10 @@ class RequerimientoPagoController extends Controller
             ->rawColumns(['termometro'])->toJson();
     }
 
-    function listarAdjuntosPago($idRequerimientoPago){
-        
-        $registrosPago = RegistroPago::where([["id_requerimiento_pago",$idRequerimientoPago],["adjunto",'!=',null]])->get();
+    function listarAdjuntosPago($idRequerimientoPago)
+    {
+
+        $registrosPago = RegistroPago::where([["id_requerimiento_pago", $idRequerimientoPago], ["adjunto", '!=', null]])->get();
         return $registrosPago;
     }
 
@@ -510,7 +511,7 @@ class RequerimientoPagoController extends Controller
             }
 
 
-             // guardando adjuntos nuevos
+            // guardando adjuntos nuevos
             if (($requerimientoPago->adjuntoOtrosAdjuntosGuardar != null ? (count($requerimientoPago->adjuntoOtrosAdjuntosGuardar)) : 0) > 0) {
                 $this->subirYRegistrarArchivoCabecera($requerimientoPago->id_requerimiento_pago, $requerimientoPago->adjuntoOtrosAdjuntosGuardar, $requerimientoPago->codigo, 1);
             }

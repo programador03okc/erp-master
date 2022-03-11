@@ -184,7 +184,7 @@ Registro de incidencia
                             <div class="form-group " style="margin-bottom:0px;">
                                 <label class="col-sm-4 control-label">Usuario final</label>
                                 <div class="col-sm-8">
-                                    <input type="text" class="form-control edition limpiarIncidencia" name="sede_cliente"/>
+                                    <input type="text" class="form-control edition limpiarIncidencia" name="usuario_final"/>
                                 </div>
                             </div>
                         </div>

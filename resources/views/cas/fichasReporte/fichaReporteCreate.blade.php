@@ -1,10 +1,10 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-fichaReporte" style="overflow-y:scroll;">
-    <div class="modal-dialog"  style="width: 800px;">
+    <div class="modal-dialog"  style="width: 700px;">
         <div class="modal-content">
             <form id="form-fichaReporte">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">Ficha Reporte - <label id="codigo_ficha" >R22001</label></h4>
+                    <h4 class="modal-title">Ficha Reporte - <label id="codigo_ficha" >FR-22000</label></h4>
                 </div>
                 <div class="modal-body">
                     <input type="text" class="oculto" name="id_incidencia_reporte">
@@ -63,8 +63,7 @@
                     
                 </div>
                 <div class="modal-footer">
-                    <button id="btn_cerrar" class="btn btn-default" onClick="cerrarFicha();">Cerrar</button>
-                    {{-- <button id="submit_guardar_reporte" class="btn btn-success" onClick="guardarFichaReporte();">Guardar reporte</button> --}}
+                    {{-- <button id="btn_cerrar" class="btn btn-default" onClick="cerrarFicha();">Cerrar</button> --}}
                     <input type="submit" id="submit_guardar_reporte" class="btn btn-success" value="Guardar ficha reporte"/>
                 </div>
             </form>
