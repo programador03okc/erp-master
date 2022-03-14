@@ -53,8 +53,12 @@ Registro de incidencia
                 <button type="button" class="btn btn-sm btn-secondary cancelar" data-toggle="tooltip" data-placement="bottom" 
                     title="Cancelar" style="display: none;">
                      Cancelar</button>
-                {{-- <button type="button" class="btn btn-sm btn-info" data-toggle="tooltip" data-placement="bottom" 
-                    title="Imprimir ficha" onClick="imprimirFicha();"><i class="fas fa-print"></i> Imprimir</button> --}}
+                     |
+                <button type="button" class="btn btn-sm btn-default" data-toggle="tooltip" data-placement="bottom" 
+                    title="Imprimir incidencia" onClick="imprimirIncidencia();"><i class="fas fa-file-pdf"></i> Imprimir</button>
+
+                <button type="button" class="btn btn-sm btn-default" data-toggle="tooltip" data-placement="bottom" 
+                    title="Ficha de atención en blanco" onClick="imprimirFichaAtencionBlanco();"><i class="fas fa-file-pdf"></i> Ficha Atención</button>
 
             </div>
         </div>

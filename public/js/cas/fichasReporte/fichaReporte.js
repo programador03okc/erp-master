@@ -94,6 +94,7 @@ function listarIncidencias() {
             }
         ],
         'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible' }],
+        order: [[0, "desc"]],
     });
 }
 
@@ -164,6 +165,7 @@ $("#form-fichaReporte").on("submit", function (e) {
             var data = $(this).serialize();
             console.log(data);
             guardarFichaReporte(data);
+            $("#listaIncidencias").DataTable().ajax.reload(null, false);
         }
     });
 });
