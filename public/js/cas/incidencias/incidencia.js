@@ -311,3 +311,10 @@ function anularIncidencia() {
         }
     });
 }
+
+function imprimirIncidencia() {
+    var id_incidencia = $('[name=id_incidencia]').val();
+    if (id_incidencia !== null && id_incidencia !== '') {
+        window.open("imprimirIncidencia/" + id_incidencia);
+    }
+}

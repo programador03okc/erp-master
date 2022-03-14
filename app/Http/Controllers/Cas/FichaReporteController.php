@@ -92,6 +92,10 @@ class FichaReporteController extends Controller
             $reporte->fecha_registro = new Carbon();
             $reporte->save();
 
+            $incidencia = Incidencia::find($request->padre_id_incidencia);
+            $incidencia->estado = 2;
+            $incidencia->save();
+
             $mensaje = 'Se guardó la ficha reporte correctamente';
             $tipo = 'success';
 
@@ -186,6 +190,7 @@ class FichaReporteController extends Controller
                 'incidencia_modo.descripcion as modo_descripcion',
                 'incidencia_medio.descripcion as medio_descripcion',
                 'incidencia_atiende.descripcion as atiende_descripcion',
+                'incidencia_estado.descripcion as estado_descripcion',
                 DB::raw("(ubi_dpto.descripcion)||' '||(ubi_prov.descripcion)||' '||(ubi_dis.descripcion) as ubigeo_descripcion")
             )
             // ->leftjoin('almacen.mov_alm', 'mov_alm.id_mov_alm', '=', 'incidencia.id_salida')
@@ -201,6 +206,7 @@ class FichaReporteController extends Controller
             ->leftjoin('cas.incidencia_modo', 'incidencia_modo.id_modo', '=', 'incidencia.id_modo')
             ->leftjoin('cas.incidencia_medio', 'incidencia_medio.id_medio', '=', 'incidencia.id_medio')
             ->leftjoin('cas.incidencia_atiende', 'incidencia_atiende.id_atiende', '=', 'incidencia.id_atiende')
+            ->leftjoin('cas.incidencia_estado', 'incidencia_estado.id_estado', '=', 'incidencia.estado')
             ->leftjoin('configuracion.ubi_dis', 'ubi_dis.id_dis', '=', 'adm_ctb_contac.ubigeo')
             ->leftjoin('configuracion.ubi_prov', 'ubi_prov.id_prov', '=', 'ubi_dis.id_prov')
             ->leftjoin('configuracion.ubi_dpto', 'ubi_dpto.id_dpto', '=', 'ubi_prov.id_dpto')

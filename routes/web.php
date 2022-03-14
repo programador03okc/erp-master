@@ -1730,6 +1730,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('guardarIncidencia', 'Cas\IncidenciaController@guardarIncidencia');
 				Route::post('actualizarIncidencia', 'Cas\IncidenciaController@actualizarIncidencia');
 				Route::get('anularIncidencia/{id}', 'Cas\IncidenciaController@anularIncidencia');
+
+				Route::get('imprimirIncidencia/{id}', 'Cas\IncidenciaController@imprimirIncidencia');
 			});
 
 			Route::group(['as' => 'fichas.', 'prefix' => 'fichas'], function () {
