@@ -92,7 +92,6 @@ function verAgregarAdjuntosRequerimientoPago(idRequerimientoPago) {
                 for (let i = 0; i < res.length; i++) {
                     document.querySelector("div[id='modal-ver-agregar-adjuntos-requerimiento-pago'] tbody[id='body_archivos_pago']").insertAdjacentHTML('beforeend', `<tr>
                     <td><a href="/files/tesoreria/pagos/${res[i].adjunto}" target="_blank">${res[i].adjunto ? res[i].adjunto : ''}</a></td>
-                    <td>${res[i].fecha_registro ? res[i].fecha_registro : ''}</td>
                     <td>${res[i].fecha_pago ? res[i].fecha_pago : ''}</td>
                     <td>${res[i].observacion ? res[i].observacion : ''}</td>
                     </tr>`);

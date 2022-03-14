@@ -26,7 +26,6 @@
                                     <thead>
                                         <tr>
                                             <th>Adjunto</th>
-                                            <th>Fecha registro</th>
                                             <th>Fecha pago</th>
                                             <th>Observación</th>
                                         </tr>
