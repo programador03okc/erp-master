@@ -26,7 +26,7 @@
         </a>
         <ul class="treeview-menu">
             <li><a href="{{route('cas.garantias.incidencias.index')}}"> Registro de incidencia </a></li>
-            <li><a href="{{route('cas.garantias.fichas.index')}}"> Gestión de fichas reporte </a></li>
+            <li><a href="{{route('cas.garantias.fichas.index')}}"> Gestión de incidencias </a></li>
         </ul>
     </li>
 </ul>

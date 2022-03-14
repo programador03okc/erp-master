@@ -2,7 +2,7 @@
 @include('layout.menu_cas')
 
 @section('cabecera')
-Gestión de fichas reporte
+Gestión de incidencias
 @endsection
 
 @section('estilos')

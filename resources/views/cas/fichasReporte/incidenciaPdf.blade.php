@@ -101,15 +101,15 @@
             </td>
         </tr>
     </table>
-    {{-- <h4 style="text-align: center;
+    <h4 style="text-align: center;
         padding-top: 5px;
         padding-bottom: 5px;
         border-bottom: 1px solid black;
         border-top: 1px solid black;
         background-color: #acf2bf;
-        font-size: 22px;margin:0px; padding:0px;">Ficha Reporte</h4> --}}
-    <h4 class="text-center" style="margin:0px; padding:0px;">Ficha Reporte</h4>
-    <h4 class="text-center" style="margin:0px; padding:0px;">{{$incidencia->codigo}} - {{$reporte->codigo}}</h4>
+        font-size: 22px;margin:0px; padding:0px;">Reporte de Incidencia</h4>
+    {{-- <h4 class="text-center" style="margin:0px; padding:0px;"></h4> --}}
+    <h4 class="text-center" style="margin:0px; padding:0px;">{{$incidencia->codigo}}</h4>
 
     <div class="seccion-hoja">
         <h4 style="font-size: 14px;">Datos Generales</h4>
@@ -125,14 +125,18 @@
             <tr>
                 <th style="width: 25%" class="text-right">Sede cliente:</th>
                 <td style="width: 35%">{{$incidencia->sede_cliente}}</td>
-                <th style="width: 25%" class="text-right">Cod. Reporte:</th>
-                <td style="width: 35%">{{$reporte->codigo}}</td>
+                <th style="width: 25%" class="text-right">Factura:</th>
+                <td style="width: 35%">{{$incidencia->factura}}</td>
             </tr>
             <tr>
-                <th style="width: 25%" class="text-right">Factura:</th>
-                <td style="width: 35%">{{$reporte->factura}}</td>
+                <th style="width: 25%" class="text-right">Cod. Requerimiento:</th>
+                <td style="width: 35%">{{$incidencia->codigo_requerimiento}}</td>
                 <th style="width: 25%" class="text-right">Fecha reporte:</th>
                 <td style="width: 35%">{{$incidencia->fecha_reporte}}</td>
+            </tr>
+            <tr>
+                <th style="width: 25%" class="text-right">Concepto:</th>
+                <td style="width: 35%" colspan="3">{{$incidencia->concepto}}</td>
             </tr>
         </thead>
     </table>
@@ -218,30 +222,23 @@
     <table>
         <thead>
             <tr>
-                <td style="width: 100%">{{$reporte->acciones_realizadas}}</td>
+                <th style="width: 10%">Fecha</th>
+                <th style="width: 10%">Código</th>
+                <th style="width: 10%">Responsable</th>
+                <th style="width: 70%">Acciones realizadas</th>
             </tr>
+            @foreach ($reportes as $reporte)
             <tr>
-                <th style="width: 30%" class="text-right">Estado de la atención:</th>
+                <td style="width: 10%" class="text-center">{{$reporte->fecha_reporte}}</td>
+                <td style="width: 10%" class="text-center">{{$reporte->codigo}}</td>
+                <td style="width: 10%" class="text-center">{{$reporte->usuario->nombre_corto}}</td>
+                <td style="width: 70%">{{$reporte->acciones_realizadas}}</td>
+            </tr>
+            @endforeach
+            <tr><td></td></tr>
+            <tr>
+                <th style="width: 30%" colspan="3" class="text-right">Estado de la atención:</th>
                 <td style="width: 25%">{{$incidencia->estado_descripcion}}</td>
-            </tr>
-        </thead>
-    </table>
-    <table>
-        <thead>
-            <tr>
-                <th style="height: 80px;" colspan="2" ></th>
-            </tr>
-            <tr>
-                <th style="width: 50%" class="text-center">___________________________________</th>
-                <th style="width: 50%" class="text-center">___________________________________</th>
-            </tr>
-            <tr>
-                <th style="width: 50%" class="text-center">Cliente</th>
-                <th style="width: 50%" class="text-center">Representante de servicios</th>
-            </tr>
-            <tr>
-                <th style="width: 50%" class="text-center">{{$incidencia->nombre}}</th>
-                <th style="width: 50%" class="text-center">{{$reporte->usuario->nombre_corto}}</th>
             </tr>
         </thead>
     </table>

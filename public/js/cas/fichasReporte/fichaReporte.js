@@ -79,7 +79,7 @@ function listarIncidencias() {
                         return `
                         <div class="btn-group" role="group">
                             <button type="button" class="agregar btn btn-success boton" data-toggle="tooltip" 
-                            data-placement="bottom" data-id="${row['id_incidencia']}" title="Agregar ficha reporte" >
+                            data-placement="bottom" data-id="${row['id_incidencia']}" title="Agregar ficha de atención" >
                             <i class="fas fa-plus"></i></button>
 
                             <button type="button" class="cerrar btn btn-primary boton" data-toggle="tooltip" 
@@ -94,6 +94,7 @@ function listarIncidencias() {
             }
         ],
         'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible' }],
+        order: [[0, "desc"]],
     });
 }
 
@@ -164,6 +165,7 @@ $("#form-fichaReporte").on("submit", function (e) {
             var data = $(this).serialize();
             console.log(data);
             guardarFichaReporte(data);
+            $("#listaIncidencias").DataTable().ajax.reload(null, false);
         }
     });
 });

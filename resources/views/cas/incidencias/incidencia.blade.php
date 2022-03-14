@@ -53,8 +53,12 @@ Registro de incidencia
                 <button type="button" class="btn btn-sm btn-secondary cancelar" data-toggle="tooltip" data-placement="bottom" 
                     title="Cancelar" style="display: none;">
                      Cancelar</button>
-                {{-- <button type="button" class="btn btn-sm btn-info" data-toggle="tooltip" data-placement="bottom" 
-                    title="Imprimir ficha" onClick="imprimirFicha();"><i class="fas fa-print"></i> Imprimir</button> --}}
+                     |
+                <button type="button" class="btn btn-sm btn-default" data-toggle="tooltip" data-placement="bottom" 
+                    title="Imprimir incidencia" onClick="imprimirIncidencia();"><i class="fas fa-file-pdf"></i> Imprimir</button>
+
+                <button type="button" class="btn btn-sm btn-default" data-toggle="tooltip" data-placement="bottom" 
+                    title="Ficha de atención en blanco" onClick="imprimirFichaAtencionBlanco();"><i class="fas fa-file-pdf"></i> Ficha Atención</button>
 
             </div>
         </div>
@@ -271,7 +275,7 @@ Registro de incidencia
                                 <label class="col-sm-4 control-label">Tipo de falla</label>
                                 <div class="col-sm-8">
                                     <select class="form-control js-example-basic-single edition limpiarIncidencia" 
-                                        name="id_tipo_falla" required>
+                                        name="id_tipo_falla">
                                         <option value="">Elija una opción</option>
                                         @foreach ($tipoFallas as $falla)
                                         <option value="{{$falla->id_tipo_falla}}">{{$falla->descripcion}}</option>
@@ -283,7 +287,7 @@ Registro de incidencia
                                 <label class="col-sm-4 control-label">Modo</label>
                                 <div class="col-sm-8">
                                     <select class="form-control js-example-basic-single edition limpiarIncidencia" 
-                                        name="id_modo" required>
+                                        name="id_modo">
                                         <option value="">Elija una opción</option>
                                         @foreach ($modos as $modo)
                                         <option value="{{$modo->id_modo}}">{{$modo->descripcion}}</option>
@@ -295,7 +299,7 @@ Registro de incidencia
                                 <label class="col-sm-4 control-label">Tipo garantía</label>
                                 <div class="col-sm-8">
                                     <select class="form-control js-example-basic-single edition limpiarIncidencia" 
-                                        name="id_tipo_garantia" required>
+                                        name="id_tipo_garantia">
                                         <option value="">Elija una opción</option>
                                         @foreach ($tiposGarantia as $tipo)
                                         <option value="{{$tipo->id_tipo_garantia}}">{{$tipo->descripcion}}</option>
@@ -311,7 +315,7 @@ Registro de incidencia
                                 <label class="col-sm-4 control-label">Tipo de servicio</label>
                                 <div class="col-sm-8">
                                     <select class="form-control js-example-basic-single edition limpiarIncidencia" 
-                                        name="id_tipo_servicio" required>
+                                        name="id_tipo_servicio">
                                         <option value="">Elija una opción</option>
                                         @foreach ($tipoServicios as $servicio)
                                         <option value="{{$servicio->id_tipo_servicio}}">{{$servicio->descripcion}}</option>
@@ -323,7 +327,7 @@ Registro de incidencia
                                 <label class="col-sm-4 control-label">Medio reporte</label>
                                 <div class="col-sm-8">
                                     <select class="form-control js-example-basic-single edition limpiarIncidencia" 
-                                        name="id_medio" required>
+                                        name="id_medio">
                                         <option value="">Elija una opción</option>
                                         @foreach ($medios as $medio)
                                         <option value="{{$medio->id_medio}}">{{$medio->descripcion}}</option>
@@ -335,7 +339,7 @@ Registro de incidencia
                                 <label class="col-sm-4 control-label">Atiende</label>
                                 <div class="col-sm-8">
                                     <select class="form-control js-example-basic-single edition limpiarIncidencia" 
-                                        name="id_atiende" required>
+                                        name="id_atiende">
                                         <option value="">Elija una opción</option>
                                         @foreach ($atiende as $at)
                                         <option value="{{$at->id_atiende}}">{{$at->descripcion}}</option>
@@ -362,7 +366,7 @@ Registro de incidencia
                                 <label class="col-sm-4 control-label">Conformidad</label>
                                 <div class="col-sm-8">
                                     <select class="form-control js-example-basic-single edition limpiarIncidencia" 
-                                        name="conformidad" required>
+                                        name="conformidad">
                                         <option value="">Elija una opción</option>
                                         <option value="PRE">PRE</option>
                                         <option value="POST">POST</option>
