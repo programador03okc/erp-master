@@ -154,14 +154,19 @@ class RegistroPagoController extends Controller
             ->where([['log_ord_compra.id_condicion', '=', 1]])
             ->whereIn('log_ord_compra.estado_pago', [8, 5, 6]);
 
-        return datatables($data)->addColumn('persona', function ($data) {
+        return datatables($data)
+        ->addColumn('persona', function ($data) {
             $persona = Persona::find($data->id_persona_pago);
             if (!empty($persona)) {
                 return ([$persona]);
             } else {
                 return ([]);
             };
-        })->toJson();
+        })
+        ->addColumn('requerimientos_codigo', function(Orden $orden) {
+            return $orden->requerimientos_codigo;
+        })
+        ->toJson();
     }
 
     public function listarComprobantesPagos()
