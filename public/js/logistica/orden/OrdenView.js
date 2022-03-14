@@ -48,7 +48,7 @@ class OrdenView {
 
     setStatusPage() {
         if (actionPage != undefined && actionPage != null) {
-            // console.log(actionPage);
+            console.log(actionPage);
             switch (actionPage) {
                 case 'register':
                     changeStateButton('nuevo');
