@@ -47,8 +47,8 @@ class OrdenView {
     }
 
     setStatusPage() {
+        console.log(actionPage);
         if (actionPage != undefined && actionPage != null) {
-            console.log(actionPage);
             switch (actionPage) {
                 case 'register':
                     changeStateButton('nuevo');
@@ -333,6 +333,7 @@ class OrdenView {
                         }
                     });
                 });
+                console.log(detalleOrdenList);
                 if (detalleOrdenList.length == 0) {
                     Swal.fire(
                         '',
