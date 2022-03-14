@@ -30,6 +30,14 @@ class ListarRequerimientoView {
     //     })
 
     // }
+    limpiarTabla(idElement) {
+        let nodeTbody = document.querySelector("table[id='" + idElement + "'] tbody");
+        if (nodeTbody != null) {
+            while (nodeTbody.children.length > 0) {
+                nodeTbody.removeChild(nodeTbody.lastChild);
+            }
+        }
+    }
 
     initializeEventHandler() {
         // document.querySelector("button[class~='handleClickImprimirRequerimientoPdf']").addEventListener("click", this.imprimirRequerimientoPdf.bind(this), false);
