@@ -120,6 +120,9 @@ class RequerimientoPendienteView {
         $('#listaRequerimientosPendientes tbody').on("click", "button.handleClickCrearOrdenServicioPorRequerimiento", (e) => {
             this.crearOrdenServicioPorRequerimiento(e.currentTarget);
         });
+        $('#listaRequerimientosPendientes tbody').on("click", "button.handleClickSolicitudCotizacionExcel", (e) => {
+            this.solicitudCotizacionExcel(e.currentTarget);
+        });
         $('#listaRequerimientosPendientes tbody').on("click", "button.handleClickVerAdjuntoDetalleRequerimiento", (e) => {
             this.verAdjuntoDetalleRequerimiento(e.currentTarget);
         });
@@ -585,6 +588,7 @@ class RequerimientoPendienteView {
                             let btnAtenderAlmacen = '';
                             let btnCrearOrdenCompra = '';
                             let btnCrearOrdenServicio = '<button type="button" class="btn btn-warning btn-xs handleClickCrearOrdenServicioPorRequerimiento" name="btnCrearOrdenServicioPorRequerimiento" title="Crear Orden de Servicio" data-id-requerimiento="' + row.id_requerimiento + '"  >OS</button>';
+                            let btnExportarExcel = '<button type="button" class="btn btn-default btn-xs handleClickSolicitudCotizacionExcel" name="btnSolicitudCotizacionExcel" title="Solicitud cotización excel" data-id-requerimiento="' + row.id_requerimiento + '" style="color:green;" ><i class="far fa-file-excel"></i></button>';
                             if (row.cantidad_adjuntos_activos.cabecera > 0 || row.cantidad_adjuntos_activos.detalle > 0) {
                                 btnVerAdjuntos = '<button type="button" class="btn btn-default btn-xs handleClickVerTodoAdjuntos" title="Ver adjuntos" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo="' + row.codigo + '"  ><i class="fas fa-folder"></i></button>';
 
@@ -615,7 +619,7 @@ class RequerimientoPendienteView {
                             let botones = '';
 
                             if (row.estado == 1 || row.estado == 3 || row.estado == 4 || row.estado == 12) {
-                                botones = openDiv + btnVerDetalleRequerimiento + closeDiv;
+                                botones = openDiv + btnVerDetalleRequerimiento+btnExportarExcel + closeDiv;
                             } else {
                                 botones = openDiv + btnVerDetalleRequerimiento + btnAtenderAlmacen + btnMapearProductos +
                                     btnCrearOrdenCompra + btnVercuadroCostos + btnVerAdjuntos;
@@ -2654,6 +2658,12 @@ class RequerimientoPendienteView {
         this.updateContadorRequerimientosPendientesSeleccionados();
 
     }
+
+    solicitudCotizacionExcel(obj){
+        window.open(`solicitud-cotizacion-excel/${obj.dataset.idRequerimiento}`);
+
+    }
+
     // Crear orden de servicio por requerimiento
     crearOrdenServicioPorRequerimiento(obj) {
         let idx = reqTrueList.indexOf(parseInt(obj.dataset.idRequerimiento));

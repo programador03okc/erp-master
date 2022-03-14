@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\reporteRequerimientosAtendidosExcel;
+use App\Exports\solicitudCotizacionExcel;
 use App\Helpers\Necesidad\RequerimientoHelper;
 use App\Http\Controllers\Almacen\Movimiento\OrdenesPendientesController;
 use App\Models\Almacen\Almacen;
@@ -623,6 +624,10 @@ class ComprasPendientesController extends Controller
         return $alm_req;
     }
 
+    public function solicitudCotizacionExcel($idRequerimiento)
+    {
+        return Excel::download(new solicitudCotizacionExcel($idRequerimiento), 'solicitud_cotización.xlsx');
+    }
     public function reporteRequerimientosAtendidosExcel($idEmpresa, $idSede, $fechaRegistroDesde, $fechaRegistroHasta, $reserva, $orden)
     {
         return Excel::download(new reporteRequerimientosAtendidosExcel($idEmpresa, $idSede, $fechaRegistroDesde, $fechaRegistroHasta, $reserva, $orden), 'reporte_requerimientos_atendidos.xlsx');

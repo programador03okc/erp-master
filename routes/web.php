@@ -813,6 +813,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('requerimientos-pendientes', 'ComprasPendientesController@listarRequerimientosPendientes')->name('requerimientos-pendientes');
 					Route::post('requerimientos-atendidos', 'ComprasPendientesController@listarRequerimientosAtendidos')->name('requerimientos-atendidos');
 					Route::get('reporte-requerimientos-atendidos-excel/{Empresa}/{Sede}/{FechaDesde}/{FechaHasta}/{Reserva}/{Orden}', 'ComprasPendientesController@reporteRequerimientosAtendidosExcel');
+					Route::get('solicitud-cotizacion-excel/{id}', 'ComprasPendientesController@solicitudCotizacionExcel');
 
 					// Route::post('lista_items-cuadro-costos-por-requerimiento-pendiente-compra', 'ComprasPendientesController@get_lista_items_cuadro_costos_por_id_requerimiento_pendiente_compra')->name('lista_items-cuadro-costos-por-requerimiento-pendiente-compra');
 					// Route::post('tiene-items-para-compra', 'ComprasPendientesController@tieneItemsParaCompra')->name('tiene-items-para-compra');
