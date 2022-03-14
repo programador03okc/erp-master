@@ -110,7 +110,7 @@ class RevisarAprobarController extends Controller{
             WHERE   alm_det_req.id_requerimiento = alm_req.id_requerimiento AND
             alm_det_req.estado != 7) AS monto_total")
         )
-        ->where([['adm_documentos_aprob.id_tp_documento',1]]) //documento => requerimiento de B/S
+        ->where([['adm_documentos_aprob.id_tp_documento',1],['flg_compras',0]]) //documento => requerimiento de B/S
         ->whereIn('alm_req.estado',[1,12]) // elaborado, pendiente aprobación
         // ->when((intval($idEmpresa) > 0), function ($query)  use ($idEmpresa) {
         //     return $query->whereRaw('requerimiento_pago.id_empresa = ' . $idEmpresa);
