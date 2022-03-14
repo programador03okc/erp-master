@@ -607,6 +607,7 @@ class RegistroPagoController extends Controller
     function listarAdjuntosPago($id_requerimiento_pago)
     {
         $adjuntos = DB::table('tesoreria.registro_pago_adjuntos')
+            ->select('registro_pago_adjuntos.*', 'registro_pago.fecha_pago', 'registro_pago.observacion')
             ->join('tesoreria.registro_pago', 'registro_pago.id_pago', '=', 'registro_pago_adjuntos.id_pago')
             ->where('registro_pago.id_requerimiento_pago', $id_requerimiento_pago)
             ->get();
