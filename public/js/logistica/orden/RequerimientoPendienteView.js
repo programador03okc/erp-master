@@ -621,7 +621,7 @@ class RequerimientoPendienteView {
                             if (row.estado == 1 || row.estado == 3 || row.estado == 4 || row.estado == 12) {
                                 botones = openDiv + btnVerDetalleRequerimiento+btnExportarExcel + closeDiv;
                             } else {
-                                botones = openDiv + btnVerDetalleRequerimiento + btnAtenderAlmacen + btnMapearProductos +
+                                botones = openDiv + btnVerDetalleRequerimiento +btnExportarExcel+ btnAtenderAlmacen + btnMapearProductos +
                                     btnCrearOrdenCompra + btnVercuadroCostos + btnVerAdjuntos;
 
                                 if (row.cantidad_tipo_servicio > 0) {
