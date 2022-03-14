@@ -2664,6 +2664,7 @@ class RequerimientoPendienteView {
         sessionStorage.removeItem('idOrden');
         sessionStorage.setItem('reqCheckedList', JSON.stringify(reqTrueList));
         sessionStorage.setItem('tipoOrden', 'SERVICIO');
+        sessionStorage.setItem('action', 'register');
         let url = "/logistica/gestion-logistica/compras/ordenes/elaborar/index";
         var win = location.href = url;
         this.updateContadorRequerimientosPendientesSeleccionados();
