@@ -416,7 +416,7 @@ class ListarRequerimientoView {
                     'render': function (data, type, row) {
                         let labelOrdenes = '';
                         (row['ordenes_compra']).forEach(element => {
-                            labelOrdenes += `<label class="lbl-codigo handleClickAbrirOrden" data-id-orden-compra=${element.id_orden_compra} title="Abrir orden">${element.codigo}</label>`;
+                            labelOrdenes += `<label class="lbl-codigo handleClickAbrirOrdenPDF" data-id-orden-compra=${element.id_orden_compra} title="Abrir orden">${element.codigo}</label>`;
                         });
                         return labelOrdenes;
                     }, targets: 13, className: 'text-center'
@@ -479,10 +479,10 @@ class ListarRequerimientoView {
                     $tablaListaRequerimientosElaborados.search($input.val()).draw();
                 })
                 //Fin boton de busqueda
-                // $('#ListaRequerimientosElaborados tbody').on("click", "label.handleClickAbrirOrden", function () {
-                //     let idOrdenCompra = $('#ListaRequerimientosElaborados').DataTable().row($(this).parents("tr")).node().querySelector("label[class~='handleClickAbrirOrden']").dataset.idOrdenCompra;
-                //     that.trazabilidadRequerimiento.abrirOrden(idOrdenCompra);
-                // });
+ 
+                $('#ListaRequerimientosElaborados tbody').on("click", "label.handleClickAbrirOrdenPDF", function (e) {
+                    that.abrirOrdenPDF(e.currentTarget.dataset.idOrdenCompra);
+                });
                 $('#ListaRequerimientosElaborados tbody').on("click", ".handleClickAbrirRequerimiento", function () {
                     let data = $('#ListaRequerimientosElaborados').DataTable().row($(this).parents("tr")).data();
                     that.abrirRequerimiento(data.id_requerimiento);
@@ -814,6 +814,12 @@ class ListarRequerimientoView {
     //         console.log(err)
     //     })
     // }
+    abrirOrdenPDF(idOrden){
+        console.log(idOrden);
+        let url = `/logistica/gestion-logistica/compras/ordenes/listado/generar-orden-pdf/${idOrden}`;
+        var win = window.open(url, "_blank");
+        win.focus();
+    }
 
     abrirRequerimiento(idRequerimiento) {
         localStorage.setItem('idRequerimiento', idRequerimiento);
