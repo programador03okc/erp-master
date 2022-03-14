@@ -894,7 +894,7 @@ class RequerimientoController extends Controller
                 $newNameFile = $codigo . '_' . $key . $idCategoria . $sufijo . '.' . $extension;
                 Storage::disk('archivos')->put("necesidades/requerimientos/bienes_servicios/cabecera/" . $newNameFile, File::get($archivo));
 
-                DB::table('almacen.alm_req_adjuntos')->insertGetId(
+                $idAdjunto = DB::table('almacen.alm_req_adjuntos')->insertGetId(
                     [
                         'id_requerimiento'     => $idRequerimiento,
                         'archivo'                   => $newNameFile,
@@ -904,6 +904,7 @@ class RequerimientoController extends Controller
                     ],
                     'id_adjunto'
                 );
+                return $idAdjunto;
             }
         }
     }
@@ -3761,5 +3762,63 @@ class RequerimientoController extends Controller
         return Excel::download(new reporteRequerimientosBienesServiciosExcel($meOrAll,$idEmpresa, $idSede,$idGrupo,$idDivision, $fechaRegistroDesde, $fechaRegistroHasta,$idEstado), 'reporte_requerimientos_bienes_servicios.xlsx');
 
     }
-    
+
+    public function listarTodoArchivoAdjunto($idRequerimiento){
+
+        $detalleRequerimientoList=DetalleRequerimiento::where([["id_requerimiento",$idRequerimiento],["estado","!=",7]])->get();
+        $idDetalleRequerimientoList=[];
+        foreach ($detalleRequerimientoList as $dr) {
+            $idDetalleRequerimientoList[]=$dr->id_detalle_requerimiento;
+        }
+        $ajuntosCabeceraList = AdjuntoRequerimiento::with("categoriaAdjunto")->where([["id_requerimiento",$idRequerimiento],["estado","!=",7]])->get();
+        if(count($idDetalleRequerimientoList)>0){
+            $adjuntoDetalleList = AdjuntoDetalleRequerimiento::whereIn("id_detalle_requerimiento",$idDetalleRequerimientoList)->where("estado","!=",7)->get();
+        }
+
+        return ["adjuntos_cabecera"=>$ajuntosCabeceraList??[],"adjuntos_detalle"=>$adjuntoDetalleList??[]];
+    }
+
+    function guardarAdjuntosAdicionales(Request $request){
+        DB::beginTransaction();
+        try {
+        $requerimiento = Requerimiento::where("id_requerimiento", $request->id_requerimiento)->first();
+ 
+        $adjuntoOtrosAdjuntosLength = $request->archivoAdjuntoRequerimientoCabeceraFileGuardar1 != null ? count($request->archivoAdjuntoRequerimientoCabeceraFileGuardar1) : 0;
+        $adjuntoOrdenesLength = $request->archivoAdjuntoRequerimientoCabeceraFileGuardar2 != null ? count($request->archivoAdjuntoRequerimientoCabeceraFileGuardar2) : 0;
+        $adjuntoComprobanteContableLength = $request->archivoAdjuntoRequerimientoCabeceraFileGuardar3 != null ? count($request->archivoAdjuntoRequerimientoCabeceraFileGuardar3) : 0;
+        $adjuntoComprobanteBancarioLength = $request->archivoAdjuntoRequerimientoCabeceraFileGuardar4 != null ? count($request->archivoAdjuntoRequerimientoCabeceraFileGuardar4) : 0;
+
+        $idAdjunto=[];
+        if ($adjuntoOtrosAdjuntosLength > 0) {
+            $idAdjunto[]=$this->subirYRegistrarArchivoCabeceraRequerimiento($requerimiento->id_requerimiento, $request->archivoAdjuntoRequerimientoCabeceraFileGuardar1, $requerimiento->codigo, 1);
+        }
+        if ($adjuntoOrdenesLength > 0) {
+            $idAdjunto[]=$this->subirYRegistrarArchivoCabeceraRequerimiento($requerimiento->id_requerimiento, $request->archivoAdjuntoRequerimientoCabeceraFileGuardar2, $requerimiento->codigo, 2);
+        }
+        if ($adjuntoComprobanteContableLength > 0) {
+            $idAdjunto[]=$this->subirYRegistrarArchivoCabeceraRequerimiento($requerimiento->id_requerimiento,$request->archivoAdjuntoRequerimientoCabeceraFileGuardar3, $requerimiento->codigo, 3);
+        }
+        if ($adjuntoComprobanteBancarioLength > 0) {
+            $idAdjunto[]=$this->subirYRegistrarArchivoCabeceraRequerimiento($requerimiento->id_requerimiento,$request->archivoAdjuntoRequerimientoCabeceraFileGuardar4, $requerimiento->codigo, 4);
+        }
+        $estado_accion='error';
+        if(count($idAdjunto)>0){
+            $mensaje = 'Adjuntos guardos';
+            $estado_accion='success';
+        }else{
+            $mensaje = 'Hubo un problema y no se pudo guardo los adjuntos';
+            $estado_accion='warning';
+            
+        }
+            DB::commit();
+
+        return response()->json(['status' => $estado_accion, 'mensaje' => $mensaje]);
+    } catch (Exception $e) {
+        DB::rollBack();
+        return response()->json(['status' => 'error', 'mensaje' => 'Hubo un problema al guardar los adjuntos. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
+    }
+
+    }
+
+
 }

@@ -355,7 +355,7 @@ class RequerimientoPagoController extends Controller
                 $newNameFile = $codigo . '_' . $key . $idCategoria . $sufijo . '.' . $extension;
                 Storage::disk('archivos')->put("necesidades/requerimientos/pago/cabecera/" . $newNameFile, File::get($archivo));
 
-                $adjuntoRequerimientoPago = DB::table('tesoreria.requerimiento_pago_adjunto')->insertGetId(
+                $idAdjuntoRequerimientoPago = DB::table('tesoreria.requerimiento_pago_adjunto')->insertGetId(
                     [
                         'id_requerimiento_pago'     => $idRequerimientoPago,
                         'archivo'                   => $newNameFile,
@@ -365,6 +365,8 @@ class RequerimientoPagoController extends Controller
                     ],
                     'id_requerimiento_pago_adjunto'
                 );
+
+                return $idAdjuntoRequerimientoPago;
             }
         }
     }
@@ -1022,4 +1024,62 @@ class RequerimientoPagoController extends Controller
         }
         return $array;
     }
+
+    public function listarTodoArchivoAdjunto($idRequerimientoPago){
+
+        $detalleRequerimientoPagoList=RequerimientoPagoDetalle::where([["id_requerimiento_pago",$idRequerimientoPago],["id_estado","!=",7]])->get();
+        $idDetalleRequerimientoPagoList=[];
+        foreach ($detalleRequerimientoPagoList as $dr) {
+            $idDetalleRequerimientoPagoList[]=$dr->id_detalle_requerimiento;
+        }
+        $ajuntosCabeceraList = RequerimientoPagoAdjunto::with("categoriaAdjunto")->where([["id_requerimiento_pago",$idRequerimientoPago],["id_estado","!=",7]])->get();
+        if(count($idDetalleRequerimientoPagoList)>0){
+            $adjuntoDetalleList = RequerimientoPagoDetalle::whereIn("id_requerimiento_pago_detalle",$idDetalleRequerimientoPagoList)->where("id_estado","!=",7)->get();
+        }
+
+        return ["adjuntos_cabecera"=>$ajuntosCabeceraList??[],"adjuntos_detalle"=>$adjuntoDetalleList??[]];
+    }
+
+    function guardarAdjuntosAdicionales(Request $request){
+        DB::beginTransaction();
+        try {
+        $requerimientoPago = RequerimientoPago::where("id_requerimiento_pago", $request->id_requerimiento_pago)->first();
+ 
+        $adjuntoOtrosAdjuntosLength = $request->archivoAdjuntoRequerimientoPagoCabeceraFileGuardar1 != null ? count($request->archivoAdjuntoRequerimientoPagoCabeceraFileGuardar1) : 0;
+        $adjuntoOrdenesLength = $request->archivoAdjuntoRequerimientoPagoCabeceraFileGuardar2 != null ? count($request->archivoAdjuntoRequerimientoPagoCabeceraFileGuardar2) : 0;
+        $adjuntoComprobanteContableLength = $request->archivoAdjuntoRequerimientoPagoCabeceraFileGuardar3 != null ? count($request->archivoAdjuntoRequerimientoPagoCabeceraFileGuardar3) : 0;
+        $adjuntoComprobanteBancarioLength = $request->archivoAdjuntoRequerimientoPagoCabeceraFileGuardar4 != null ? count($request->archivoAdjuntoRequerimientoPagoCabeceraFileGuardar4) : 0;
+
+        $idAdjunto=[];
+        if ($adjuntoOtrosAdjuntosLength > 0) {
+            $idAdjunto[]=$this->subirYRegistrarArchivoCabecera($requerimientoPago->id_requerimiento_pago, $request->archivoAdjuntoRequerimientoPagoCabeceraFileGuardar1, $requerimientoPago->codigo, 1);
+        }
+        if ($adjuntoOrdenesLength > 0) {
+            $idAdjunto[]=$this->subirYRegistrarArchivoCabecera($requerimientoPago->id_requerimiento_pago, $request->archivoAdjuntoRequerimientoPagoCabeceraFileGuardar2, $requerimientoPago->codigo, 2);
+        }
+        if ($adjuntoComprobanteContableLength > 0) {
+            $idAdjunto[]=$this->subirYRegistrarArchivoCabecera($requerimientoPago->id_requerimiento_pago,$request->archivoAdjuntoRequerimientoPagoCabeceraFileGuardar3, $requerimientoPago->codigo, 3);
+        }
+        if ($adjuntoComprobanteBancarioLength > 0) {
+            $idAdjunto[]=$this->subirYRegistrarArchivoCabecera($requerimientoPago->id_requerimiento_pago,$request->archivoAdjuntoRequerimientoPagoCabeceraFileGuardar4, $requerimientoPago->codigo, 4);
+        }
+        $estado_accion='error';
+        if(count($idAdjunto)>0){
+            $mensaje = 'Adjuntos guardos';
+            $estado_accion='success';
+        }else{
+            $mensaje = 'Hubo un problema y no se pudo guardo los adjuntos';
+            $estado_accion='warning';
+            
+        }
+            DB::commit();
+
+        return response()->json(['status' => $estado_accion, 'mensaje' => $mensaje]);
+    } catch (Exception $e) {
+        DB::rollBack();
+        return response()->json(['status' => 'error', 'mensaje' => 'Hubo un problema al guardar los adjuntos. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
+    }
+
+    }
+    
 }

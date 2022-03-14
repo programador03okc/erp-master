@@ -10,14 +10,14 @@ class ListarRequerimientoView {
     constructor(requerimientoCtrl) {
         this.requerimientoCtrl = requerimientoCtrl;
         // this.trazabilidadRequerimiento = new TrazabilidadRequerimiento(requerimientoCtrl);
-        this.ActualParametroAllOrMe= 'SIN_FILTRO';
-        this.ActualParametroEmpresa= 'SIN_FILTRO';
-        this.ActualParametroSede= 'SIN_FILTRO';
-        this.ActualParametroGrupo= 'SIN_FILTRO';
-        this.ActualParametroDivision= 'SIN_FILTRO';
-        this.ActualParametroFechaDesde= 'SIN_FILTRO';
-        this.ActualParametroFechaHasta= 'SIN_FILTRO';
-        this.ActualParametroEstado= 'SIN_FILTRO';
+        this.ActualParametroAllOrMe = 'SIN_FILTRO';
+        this.ActualParametroEmpresa = 'SIN_FILTRO';
+        this.ActualParametroSede = 'SIN_FILTRO';
+        this.ActualParametroGrupo = 'SIN_FILTRO';
+        this.ActualParametroDivision = 'SIN_FILTRO';
+        this.ActualParametroFechaDesde = 'SIN_FILTRO';
+        this.ActualParametroFechaHasta = 'SIN_FILTRO';
+        this.ActualParametroEstado = 'SIN_FILTRO';
 
     }
 
@@ -37,7 +37,7 @@ class ListarRequerimientoView {
         $('#modal-filtro-requerimientos-elaborados').on("change", "select.handleChangeUpdateValorFiltroRequerimientosElaborados", (e) => {
             this.updateValorFiltroRequerimientosElaborados();
         });
-   
+
         $('#modal-filtro-requerimientos-elaborados').on("click", "input[type=checkbox]", (e) => {
             this.estadoCheckFiltroRequerimientosElaborados(e);
         });
@@ -60,26 +60,26 @@ class ListarRequerimientoView {
 
 
 
-        $('#modal-filtro-requerimientos-elaborados').on('hidden.bs.modal', ()=> {
+        $('#modal-filtro-requerimientos-elaborados').on('hidden.bs.modal', () => {
             this.updateValorFiltroRequerimientosElaborados();
 
-            if(this.updateContadorFiltroRequerimientosElaborados() ==0){
-                this.mostrar('SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO');
-            }else{
-    
-                this.mostrar(this.ActualParametroAllOrMe,this.ActualParametroEmpresa,this.ActualParametroSede,this.ActualParametroGrupo,this.ActualParametroDivision,this.ActualParametroFechaDesde,this.ActualParametroFechaHasta,this.ActualParametroEstado);
+            if (this.updateContadorFiltroRequerimientosElaborados() == 0) {
+                this.mostrar('SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO');
+            } else {
+
+                this.mostrar(this.ActualParametroAllOrMe, this.ActualParametroEmpresa, this.ActualParametroSede, this.ActualParametroGrupo, this.ActualParametroDivision, this.ActualParametroFechaDesde, this.ActualParametroFechaHasta, this.ActualParametroEstado);
 
             }
 
 
-            
+
         });
 
     }
 
-    
+
     estadoCheckFiltroRequerimientosElaborados(e) {
-        const modalFiltrosRequerimientosElaborados =document.querySelector("div[id='modal-filtro-requerimientos-elaborados']");
+        const modalFiltrosRequerimientosElaborados = document.querySelector("div[id='modal-filtro-requerimientos-elaborados']");
         switch (e.currentTarget.getAttribute('name')) {
             case 'chkElaborado':
                 if (e.currentTarget.checked == true) {
@@ -135,7 +135,7 @@ class ListarRequerimientoView {
             default:
                 break;
         }
-        
+
     }
 
     getDataSelectSede(idEmpresa) {
@@ -187,7 +187,7 @@ class ListarRequerimientoView {
 
     }
 
-    getDataSelectDivision(idGrupo){
+    getDataSelectDivision(idGrupo) {
 
         if (idGrupo > 0) {
             this.requerimientoCtrl.getListaDivisionesDeGrupo(idGrupo).then((res) => {
@@ -213,7 +213,7 @@ class ListarRequerimientoView {
     }
 
 
-    llenarSelectFiltroDivision(array){
+    llenarSelectFiltroDivision(array) {
         // console.log(array);
         let selectElement = document.querySelector("div[id='modal-filtro-requerimientos-elaborados'] select[name='division']");
         if (selectElement.options.length > 0) {
@@ -231,63 +231,56 @@ class ListarRequerimientoView {
     }
 
 
-    updateValorFiltroRequerimientosElaborados(){
+    updateValorFiltroRequerimientosElaborados() {
         const modalRequerimientosElaborados = document.querySelector("div[id='modal-filtro-requerimientos-elaborados']");
-        if(modalRequerimientosElaborados.querySelector("select[name='elaborado']").getAttribute("readonly") ==null){
-            this.ActualParametroAllOrMe=modalRequerimientosElaborados.querySelector("select[name='elaborado']").value;
+        if (modalRequerimientosElaborados.querySelector("select[name='elaborado']").getAttribute("readonly") == null) {
+            this.ActualParametroAllOrMe = modalRequerimientosElaborados.querySelector("select[name='elaborado']").value;
         }
-        if(modalRequerimientosElaborados.querySelector("select[name='empresa']").getAttribute("readonly") ==null){
-            this.ActualParametroEmpresa=modalRequerimientosElaborados.querySelector("select[name='empresa']").value;
+        if (modalRequerimientosElaborados.querySelector("select[name='empresa']").getAttribute("readonly") == null) {
+            this.ActualParametroEmpresa = modalRequerimientosElaborados.querySelector("select[name='empresa']").value;
         }
-        if(modalRequerimientosElaborados.querySelector("select[name='sede']").getAttribute("readonly") ==null){
-            this.ActualParametroSede=modalRequerimientosElaborados.querySelector("select[name='sede']").value;
+        if (modalRequerimientosElaborados.querySelector("select[name='sede']").getAttribute("readonly") == null) {
+            this.ActualParametroSede = modalRequerimientosElaborados.querySelector("select[name='sede']").value;
         }
-        if(modalRequerimientosElaborados.querySelector("select[name='grupo']").getAttribute("readonly") ==null){
-            this.ActualParametroGrupo=modalRequerimientosElaborados.querySelector("select[name='grupo']").value;
+        if (modalRequerimientosElaborados.querySelector("select[name='grupo']").getAttribute("readonly") == null) {
+            this.ActualParametroGrupo = modalRequerimientosElaborados.querySelector("select[name='grupo']").value;
         }
-        if(modalRequerimientosElaborados.querySelector("select[name='division']").getAttribute("readonly") ==null){
-            this.ActualParametroDivision=modalRequerimientosElaborados.querySelector("select[name='division']").value;
+        if (modalRequerimientosElaborados.querySelector("select[name='division']").getAttribute("readonly") == null) {
+            this.ActualParametroDivision = modalRequerimientosElaborados.querySelector("select[name='division']").value;
         }
-        if(modalRequerimientosElaborados.querySelector("input[name='fechaRegistroDesde']").getAttribute("readonly") ==null){
-            this.ActualParametroFechaDesde=modalRequerimientosElaborados.querySelector("input[name='fechaRegistroDesde']").value.length>0?modalRequerimientosElaborados.querySelector("input[name='fechaRegistroDesde']").value:'SIN_FILTRO';
+        if (modalRequerimientosElaborados.querySelector("input[name='fechaRegistroDesde']").getAttribute("readonly") == null) {
+            this.ActualParametroFechaDesde = modalRequerimientosElaborados.querySelector("input[name='fechaRegistroDesde']").value.length > 0 ? modalRequerimientosElaborados.querySelector("input[name='fechaRegistroDesde']").value : 'SIN_FILTRO';
         }
-        if(modalRequerimientosElaborados.querySelector("input[name='fechaRegistroHasta']").getAttribute("readonly") ==null){
-            this.ActualParametroFechaHasta=modalRequerimientosElaborados.querySelector("input[name='fechaRegistroHasta']").value.length>0?modalRequerimientosElaborados.querySelector("input[name='fechaRegistroHasta']").value:'SIN_FILTRO';
+        if (modalRequerimientosElaborados.querySelector("input[name='fechaRegistroHasta']").getAttribute("readonly") == null) {
+            this.ActualParametroFechaHasta = modalRequerimientosElaborados.querySelector("input[name='fechaRegistroHasta']").value.length > 0 ? modalRequerimientosElaborados.querySelector("input[name='fechaRegistroHasta']").value : 'SIN_FILTRO';
         }
-        if(modalRequerimientosElaborados.querySelector("select[name='estado']").getAttribute("readonly") ==null){
-            this.ActualParametroEstado=modalRequerimientosElaborados.querySelector("select[name='estado']").value;
+        if (modalRequerimientosElaborados.querySelector("select[name='estado']").getAttribute("readonly") == null) {
+            this.ActualParametroEstado = modalRequerimientosElaborados.querySelector("select[name='estado']").value;
         }
     }
 
-    updateContadorFiltroRequerimientosElaborados(){
+    updateContadorFiltroRequerimientosElaborados() {
 
-        let contadorCheckActivo= 0;
+        let contadorCheckActivo = 0;
         const allCheckBoxFiltroRequerimientosElaborados = document.querySelectorAll("div[id='modal-filtro-requerimientos-elaborados'] input[type='checkbox']");
         allCheckBoxFiltroRequerimientosElaborados.forEach(element => {
-            if(element.checked==true){
+            if (element.checked == true) {
                 contadorCheckActivo++;
             }
         });
-        document.querySelector("button[id='btnFiltrosListaRequerimientosElaborados'] span").innerHTML ='<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : '+contadorCheckActivo
+        document.querySelector("button[id='btnFiltrosListaRequerimientosElaborados'] span").innerHTML = '<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : ' + contadorCheckActivo
         return contadorCheckActivo;
     }
 
     imprimirRequerimientoPdf(obj) {
-        if(obj.dataset.idRequerimiento >0){
+        if (obj.dataset.idRequerimiento > 0) {
             window.open('imprimir-requerimiento-pdf/' + obj.dataset.idRequerimiento + '/0');
 
         }
-         
+
     }
 
-    limpiarTabla(idElement) {
-        let nodeTbody = document.querySelector("table[id='" + idElement + "'] tbody");
-        if (nodeTbody != null) {
-            while (nodeTbody.children.length > 0) {
-                nodeTbody.removeChild(nodeTbody.lastChild);
-            }
-        }
-    }
+
 
     abrirModalFiltrosRequerimientosElaborados() {
         $('#modal-filtro-requerimientos-elaborados').modal({
@@ -296,17 +289,17 @@ class ListarRequerimientoView {
         });
     }
 
-    descargarListaRequerimientosElaboradosExcel(){
+    descargarListaRequerimientosElaboradosExcel() {
         window.open(`reporte-requerimientos-bienes-servicios-excel/${this.ActualParametroAllOrMe}/${this.ActualParametroEmpresa}/${this.ActualParametroSede}/${this.ActualParametroGrupo}/${this.ActualParametroDivision}/${this.ActualParametroFechaDesde}/${this.ActualParametroFechaHasta}/${this.ActualParametroEstado}`);
 
     }
 
-    mostrar(meOrAll='SIN_FILTRO',idEmpresa='SIN_FILTRO',idSede='SIN_FILTRO',idGrupo='SIN_FILTRO',idDivision='SIN_FILTRO',fechaRegistroDesde='SIN_FILTRO',fechaRegistroHasta='SIN_FILTRO',idEstado='SIN_FILTRO') {
+    mostrar(meOrAll = 'SIN_FILTRO', idEmpresa = 'SIN_FILTRO', idSede = 'SIN_FILTRO', idGrupo = 'SIN_FILTRO', idDivision = 'SIN_FILTRO', fechaRegistroDesde = 'SIN_FILTRO', fechaRegistroHasta = 'SIN_FILTRO', idEstado = 'SIN_FILTRO') {
         // console.log(meOrAll,idEmpresa,idSede,idGrupo,idDivision,fechaRegistroDesde,fechaRegistroHasta,idEstado);
         let that = this;
         vista_extendida();
         var vardataTables = funcDatatables();
-        $tablaListaRequerimientosElaborados= $('#ListaRequerimientosElaborados').DataTable({
+        $tablaListaRequerimientosElaborados = $('#ListaRequerimientosElaborados').DataTable({
             'dom': vardataTables[1],
             'buttons': [
                 {
@@ -340,9 +333,9 @@ class ListarRequerimientoView {
             'ajax': {
                 'url': 'elaborados',
                 'type': 'POST',
-                'data':{'meOrAll':meOrAll,'idEmpresa':idEmpresa,'idSede':idSede,'idGrupo':idGrupo,'idDivision':idDivision,'fechaRegistroDesde':fechaRegistroDesde,'fechaRegistroHasta':fechaRegistroHasta,'idEstado':idEstado},
+                'data': { 'meOrAll': meOrAll, 'idEmpresa': idEmpresa, 'idSede': idSede, 'idGrupo': idGrupo, 'idDivision': idDivision, 'fechaRegistroDesde': fechaRegistroDesde, 'fechaRegistroHasta': fechaRegistroHasta, 'idEstado': idEstado },
                 beforeSend: data => {
-    
+
                     $("#ListaRequerimientosElaborados").LoadingOverlay("show", {
                         imageAutoResize: true,
                         progress: true,
@@ -365,7 +358,7 @@ class ListarRequerimientoView {
                 { 'data': 'razon_social', 'name': 'adm_contri.razon_social', 'className': 'text-center' },
                 { 'data': 'grupo', 'name': 'sis_grupo.descripcion', 'className': 'text-center' },
                 { 'data': 'division', 'name': 'division.descripcion', 'className': 'text-center' },
-                { 'data': 'monto_total', 'name': 'monto_total', 'defaultContent':'', 'className': 'text-right' },
+                { 'data': 'monto_total', 'name': 'monto_total', 'defaultContent': '', 'className': 'text-right' },
                 { 'data': 'nombre_usuario', 'name': 'nombre_usuario' },
                 { 'data': 'estado_doc', 'name': 'adm_estado_doc.estado_doc' },
                 { 'data': 'id_requerimiento' }
@@ -380,19 +373,19 @@ class ListarRequerimientoView {
                 {
                     'render': function (data, type, row) {
                         // return `<label class="lbl-codigo handleClickAbrirRequerimiento" title="Abrir Requerimiento">${row.codigo}</label>`;
-                        return `<a href="/necesidades/requerimiento/elaboracion/index?id=${row.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${row.codigo}</a> ${row.tiene_transformacion==true?'<i class="fas fa-random text-danger" title="Con transformación"></i>':''} `;
+                        return `<a href="/necesidades/requerimiento/elaboracion/index?id=${row.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${row.codigo}</a> ${row.tiene_transformacion == true ? '<i class="fas fa-random text-danger" title="Con transformación"></i>' : ''} `;
                     }, targets: 2
                 },
                 {
                     'render': function (data, type, row) {
-                    let sumTotal=0;
-                        if(row.detalle != undefined && row.detalle.length >0){
+                        let sumTotal = 0;
+                        if (row.detalle != undefined && row.detalle.length > 0) {
                             (row.detalle).forEach(element => {
-                                sumTotal+=( parseFloat(element.cantidad) * parseFloat(element.precio_unitario) );
+                                sumTotal += (parseFloat(element.cantidad) * parseFloat(element.precio_unitario));
                             });
                             return (row['simbolo_moneda']) + (Util.formatoNumero(sumTotal, 2));
                         }
-                    }, targets: 10,orderable:false, searchable:false
+                    }, targets: 10, orderable: false, searchable: false
                 },
                 {
                     'render': function (data, type, row) {
@@ -430,13 +423,14 @@ class ListarRequerimientoView {
                 },
                 {
                     'render': function (data, type, row) {
-                        let containerOpenBrackets = '<center><div class="btn-group" role="group" style="margin-bottom: 5px;">';
-                        let containerCloseBrackets = '</div></center>';
+                        let containerOpenBrackets = '<div class="btn-group" role="group" style="margin-bottom: 5px;">';
+                        let containerCloseBrackets = '</div>';
                         let btnEditar = '';
                         let btnAnular = '';
                         // let btnMandarAPago = '';
+                        let btnVerAdjuntosModal = '<button type="button" class="btn btn-xs btn-info  handleClickVerAgregarAdjuntosRequerimiento" name="btnVerAgregarAdjuntosRequerimiento" data-id-requerimiento="' + row['id_requerimiento'] + '" title="Ver archivos adjuntos"><i class="fas fa-paperclip fa-xs"></i></button>';
                         let btnDetalleRapido = '<button type="button" class="btn btn-xs btn-primary btnVerDetalle handleClickVerDetalleRequerimientoSoloLectura" data-id-requerimiento="' + row['id_requerimiento'] + '" title="Ver detalle" ><i class="fas fa-eye fa-xs"></i></button>';
-                        let btnImprimirEnPdf = '<button type="button" class="btn btn-xs btn-info handleClickImprimirRequerimientoPdf" data-id-requerimiento="' + row['id_requerimiento'] + '" title="Imprimir en PDF" ><i class="fas fa-print fa-xs"></i></button>';
+                        let btnImprimirEnPdf = '<button type="button" class="btn btn-xs btn-default handleClickImprimirRequerimientoPdf" data-id-requerimiento="' + row['id_requerimiento'] + '" title="Imprimir en PDF" ><i class="fas fa-print fa-xs"></i></button>';
                         let btnTrazabilidad = '<button type="button" class="btn btn-xs btn-default btnVerTrazabilidad handleClickVerTrazabilidadRequerimiento" title="Trazabilidad"><i class="fas fa-route fa-xs"></i></button>';
                         // if(row.estado ==2){
                         //         btnMandarAPago = '<button type="button" class="btn btn-xs btn-success" title="Mandar a pago" onClick="listarRequerimientoView.requerimientoAPago(' + row['id_requerimiento'] + ');"><i class="fas fa-hand-holding-usd fa-xs"></i></button>';
@@ -450,7 +444,20 @@ class ListarRequerimientoView {
                         // </button>`;
 
 
-                        return containerOpenBrackets + btnDetalleRapido +btnImprimirEnPdf+ btnTrazabilidad + btnEditar + btnAnular + containerCloseBrackets;
+                        // return containerOpenBrackets + btnDetalleRapido + btnVerAdjuntosModal +btnTrazabilidad + btnEditar + btnAnular +btnImprimirEnPdf+ containerCloseBrackets;
+                        let botoneraPrimaria = containerOpenBrackets
+                            .concat(btnDetalleRapido)
+                            .concat(btnVerAdjuntosModal)
+                            .concat(btnTrazabilidad)
+                            .concat(btnImprimirEnPdf)
+                            .concat(containerCloseBrackets);
+
+                        let botoneraSecundaria = containerOpenBrackets
+                            .concat(btnEditar)
+                            .concat(btnAnular)
+                            .concat(containerCloseBrackets);
+
+                        return botoneraPrimaria + botoneraSecundaria
                     }, targets: 14
                 },
 
@@ -482,7 +489,7 @@ class ListarRequerimientoView {
                 });
                 $('#ListaRequerimientosElaborados tbody').on("click", "button.handleClickAnularRequerimiento", function () {
                     let data = $('#ListaRequerimientosElaborados').DataTable().row($(this).parents("tr")).data();
-                    that.anularRequerimiento(this,data.id_requerimiento,data.codigo);
+                    that.anularRequerimiento(this, data.id_requerimiento, data.codigo);
                 });
 
                 $('#ListaRequerimientosElaborados tbody').on("click", "button.handleClickVerTrazabilidadRequerimiento", function () {
@@ -496,22 +503,22 @@ class ListarRequerimientoView {
                     let data = $('#ListaRequerimientosElaborados').DataTable().row($(this).parents("tr")).data();
                     that.verDetalleRequerimientoSoloLectura(data, that);
                 });
-                
+
                 // $('#ListaRequerimientosElaborados tbody').on("click", "button.handleClickDesplegarDetalleRequerimiento", function(e) {
                 //     that.desplegarDetalleRequerimiento(e.currentTarget);
                 // });
-                
+
             },
-            "drawCallback": function( settings ) {
-                if($tablaListaRequerimientosElaborados.rows().data().length==0){
+            "drawCallback": function (settings) {
+                if ($tablaListaRequerimientosElaborados.rows().data().length == 0) {
                     Lobibox.notify('info', {
-                        title:false,
+                        title: false,
                         size: 'mini',
                         rounded: true,
                         sound: false,
                         delayIndicator: false,
                         msg: `No se encontro data disponible para mostrar`
-                        }); 
+                    });
                 }
                 //Botón de búsqueda
                 $('#ListaRequerimientosElaborados_filter input').prop('disabled', false);
@@ -532,7 +539,7 @@ class ListarRequerimientoView {
         });
     }
 
-    limpiarVistaRapidaRequerimientoBienesServicios(){
+    limpiarVistaRapidaRequerimientoBienesServicios() {
         document.querySelector("div[id='modal-requerimiento'] input[name='id_requerimiento']").value = '';
         document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='codigo']").textContent = '';
         document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='concepto']").textContent = '';
@@ -565,14 +572,14 @@ class ListarRequerimientoView {
         document.querySelector("div[id='modal-requerimiento'] fieldset[id='group-acciones']").classList.add("oculto");
         document.querySelector("div[id='modal-requerimiento'] button[id='btnRegistrarRespuesta']").classList.add("oculto");
 
-        if(idRequerimiento >0){
+        if (idRequerimiento > 0) {
 
             $('#modal-requerimiento .modal-content').LoadingOverlay("show", {
                 imageAutoResize: true,
                 progress: true,
                 imageColor: "#3c8dbc"
             });
-    
+
             that.requerimientoCtrl.getRequerimiento(idRequerimiento).then((res) => {
                 $('#modal-requerimiento .modal-content').LoadingOverlay("hide", true);
 
@@ -580,7 +587,7 @@ class ListarRequerimientoView {
                 that.construirSeccionItemsDeRequerimiento(res['det_req'], res['requerimiento'][0]['simbolo_moneda']);
                 that.construirSeccionHistorialAprobacion(res['historial_aprobacion']);
                 $('#modal-requerimiento div.modal-body').LoadingOverlay("hide", true);
-    
+
             }).catch(function (err) {
                 $('#modal-requerimiento .modal-content').LoadingOverlay("hide", true);
 
@@ -594,7 +601,7 @@ class ListarRequerimientoView {
         document.querySelector("div[id='modal-requerimiento'] input[name='id_requerimiento']").value = data.id_requerimiento;
         document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='codigo']").textContent = data.codigo;
         document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='concepto']").textContent = data.concepto;
-        document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='razon_social_empresa']").textContent = data.razon_social_empresa +' ('+data.codigo_sede_empresa+')' ;
+        document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='razon_social_empresa']").textContent = data.razon_social_empresa + ' (' + data.codigo_sede_empresa + ')';
         document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='division']").textContent = data.division;
         document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='tipo_requerimiento']").textContent = data.tipo_requerimiento;
         document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='prioridad']").textContent = data.prioridad;
@@ -677,7 +684,7 @@ class ListarRequerimientoView {
     }
 
     descargarArchivoRequerimiento(obj) {
-        if(obj.dataset.id>0){
+        if (obj.dataset.id > 0) {
             if (tempArchivoAdjuntoRequerimientoList.length > 0) {
                 tempArchivoAdjuntoRequerimientoList.forEach(element => {
                     if (element.id == obj.dataset.id) {
@@ -689,16 +696,16 @@ class ListarRequerimientoView {
     }
 
     descargarArchivoItem(obj) {
-        if(obj.dataset.id>0){
-        if (tempArchivoAdjuntoItemList.length > 0) {
-            tempArchivoAdjuntoItemList.forEach(element => {
-                if (element.id == obj.dataset.id) {
-                    window.open("/files/necesidades/requerimientos/bienes_servicios/detalle/" + element.nameFile);
-                }
-            });
+        if (obj.dataset.id > 0) {
+            if (tempArchivoAdjuntoItemList.length > 0) {
+                tempArchivoAdjuntoItemList.forEach(element => {
+                    if (element.id == obj.dataset.id) {
+                        window.open("/files/necesidades/requerimientos/bienes_servicios/detalle/" + element.nameFile);
+                    }
+                });
+            }
         }
     }
-}
 
     construirSeccionItemsDeRequerimiento(data, simboloMoneda) {
         // console.log(data);
@@ -729,14 +736,14 @@ class ListarRequerimientoView {
                 <td>${i + 1}</td>
                 <td>${data[i].codigo_partida ? data[i].codigo_partida : ''}</td>
                 <td>${data[i].codigo_centro_costo ? data[i].codigo_centro_costo : ''}</td>
-                <td>${data[i].id_tipo_item == 1 ? (data[i].producto_part_number ? data[i].producto_part_number : data[i].part_number) : '(Servicio)'}${data[i].tiene_transformacion==true?'<br><span class="label label-default">Transformado</span>':''} </td>
-                <td>${data[i].producto_descripcion !=null ? data[i].producto_descripcion : (data[i].descripcion ? data[i].descripcion : '')} </td>
-                <td>${data[i].unidad_medida !=null ?data[i].unidad_medida:''}</td>
-                <td style="text-align:center;">${data[i].cantidad>=0?data[i].cantidad:''}</td>
+                <td>${data[i].id_tipo_item == 1 ? (data[i].producto_part_number ? data[i].producto_part_number : data[i].part_number) : '(Servicio)'}${data[i].tiene_transformacion == true ? '<br><span class="label label-default">Transformado</span>' : ''} </td>
+                <td>${data[i].producto_descripcion != null ? data[i].producto_descripcion : (data[i].descripcion ? data[i].descripcion : '')} </td>
+                <td>${data[i].unidad_medida != null ? data[i].unidad_medida : ''}</td>
+                <td style="text-align:center;">${data[i].cantidad >= 0 ? data[i].cantidad : ''}</td>
                 <td style="text-align:right;">${simboloMoneda}${Util.formatoNumero(data[i].precio_unitario, 2)}</td>
                 <td style="text-align:right;">${simboloMoneda}${(data[i].subtotal ? Util.formatoNumero(data[i].subtotal, 2) : (Util.formatoNumero((data[i].cantidad * data[i].precio_unitario), 2)))}</td>
-                <td>${data[i].motivo !=null ? data[i].motivo : ''}</td>
-                <td>${data[i].estado_doc !=null ? data[i].estado_doc : ''}</td>
+                <td>${data[i].motivo != null ? data[i].motivo : ''}</td>
+                <td>${data[i].estado_doc != null ? data[i].estado_doc : ''}</td>
                 <td style="text-align: center;"> 
                     ${cantidadAdjuntosItem > 0 ? '<a title="Ver archivos adjuntos de item" style="cursor:pointer;" class="handleClickVerAdjuntosItem' + i + '" >Ver (<span name="cantidadAdjuntosItem">' + cantidadAdjuntosItem + '</span>)</a>' : '-'}
                 </td>
@@ -816,9 +823,9 @@ class ListarRequerimientoView {
     }
 
 
-    anularRequerimiento(obj,idRequerimiento,codigo) {
+    anularRequerimiento(obj, idRequerimiento, codigo) {
         Swal.fire({
-            title: 'Esta seguro que desea anular el requerimiento '+codigo+'?',
+            title: 'Esta seguro que desea anular el requerimiento ' + codigo + '?',
             text: "No podrás revertir esto.",
             icon: 'warning',
             showCancelButton: true,
@@ -834,9 +841,9 @@ class ListarRequerimientoView {
                 this.requerimientoCtrl.anularRequerimiento(idRequerimiento).then(function (res) {
                     if (res.estado == 7) {
                         $('#wrapper-okc').LoadingOverlay("hide", true);
-                        obj.closest('tr').querySelector("span[class~='labelEstado']").setAttribute('class','labelEstado label label-danger');
-                        obj.closest('tr').querySelector("span[class~='labelEstado']").textContent= 'Anulado';
-                        obj.closest('tr').querySelector("span[class~='labelEstado']").setAttribute('class','labelEstado label label-danger');
+                        obj.closest('tr').querySelector("span[class~='labelEstado']").setAttribute('class', 'labelEstado label label-danger');
+                        obj.closest('tr').querySelector("span[class~='labelEstado']").textContent = 'Anulado';
+                        obj.closest('tr').querySelector("span[class~='labelEstado']").setAttribute('class', 'labelEstado label label-danger');
                         obj.closest('tr').querySelector("button[class~='btnEditarRequerimiento']").remove();
                         obj.closest('tr').querySelector("button[class~='btnAnularRequerimiento']").remove();
                         Swal.fire(

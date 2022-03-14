@@ -43,12 +43,6 @@ class ListarRequerimientoPagoView {
         $('#ListaRequerimientoPago tbody').on("click", "button.handleClickVerEnVistaRapidaRequerimientoPago", (e) => {
             this.verEnVistaRapidaRequerimientoPago(e.currentTarget);
         });
-        $('#ListaRequerimientoPago tbody').on("click", "button.handleClickVerAdjuntosPago", (e) => {
-            this.verEnAdjuntosPago(e.currentTarget);
-        });
-        $('#modal-ver-adjuntos-pago tbody').on("click", "button.handleClickDescargarArchivoPago", (e) => {
-            this.descargarAdjuntosPago(e.currentTarget);
-        });
 
         $('#modal-requerimiento-pago').on("change", "select.handleChangeOptEmpresa", (e) => {
             this.changeOptEmpresaSelect(e.currentTarget);
@@ -322,7 +316,7 @@ class ListarRequerimientoPagoView {
                         let containerOpenBrackets = '<center><div class="btn-group" role="group" style="margin-bottom: 5px;">';
                         let containerCloseBrackets = '</div></center>';
                         let btnVerEnModal = '<button type="button" class="btn btn-xs btn-primary  handleClickVerEnVistaRapidaRequerimientoPago" name="btnVerEnVistaRapidaRequerimientoPago" data-id-requerimiento-pago="' + row.id_requerimiento_pago + '" data-codigo-requerimiento-pago="' + row.codigo + '" title="Vista rápida"><i class="fas fa-eye fa-xs"></i></button>';
-                        let btnVerAdjuntosModal = '<button type="button" class="btn btn-xs btn-info  handleClickVerAdjuntosPago" name="btnVerAdjuntosRequerimientoPago" data-id-requerimiento-pago="' + row.id_requerimiento_pago + '" data-codigo-requerimiento-pago="' + row.codigo + '" title="Ver archivos adjuntos"><i class="fas fa-paperclip fa-xs"></i></button>';
+                        let btnVerAdjuntosModal = '<button type="button" class="btn btn-xs btn-info  handleClickVerAgregarAdjuntosRequerimiento" name="btnVerAdjuntosRequerimientoPago" data-id-requerimiento-pago="' + row.id_requerimiento_pago + '" data-codigo-requerimiento-pago="' + row.codigo + '" title="Ver archivos adjuntos"><i class="fas fa-paperclip fa-xs"></i></button>';
                         let btnEditar = '<button type="button" class="btn btn-xs btn-warning  handleClickEditarRequerimientoPago" name="btnEditarRequerimientoPago" data-id-requerimiento-pago="' + row.id_requerimiento_pago + '" data-codigo-requerimiento-pago="' + row.codigo + '" title="Editar"><i class="fas fa-edit fa-xs"></i></button>';
                         let btnAnular = '<button type="button" class="btn btn-xs btn-danger  handleClickAnularRequerimientoPago" name="btnAnularRapidaRequerimientoPago" data-id-requerimiento-pago="' + row.id_requerimiento_pago + '" data-codigo-requerimiento-pago="' + row.codigo + '" title="Anular"><i class="fas fa-ban fa-xs"></i></button>';
                         let btnImprimirEnPdf = `<button type="button" class="btn btn-xs btn-default handleClickimprimirRequerimientoPagoEnPdf" name="btnImprimirRequerimientoPagoEnPdf" data-toggle="tooltip" data-placement="bottom" title="Imprimir en PDF" data-id-requerimiento-pago="${row.id_requerimiento_pago}">
@@ -333,9 +327,9 @@ class ListarRequerimientoPagoView {
                         if (row.id_usuario == auth_user.id_usuario && (row.id_estado == 1 || row.id_estado == 3)) {
                             botonera += btnEditar + btnAnular;
                         }
-                        if (row.cantidad_adjuntos_pago > 0) {
+                        // if (row.cantidad_adjuntos_pago > 0) {
                             botonera += btnVerAdjuntosModal;
-                        }
+                        // }
 
                         botonera += containerCloseBrackets;
 
@@ -1678,76 +1672,6 @@ class ListarRequerimientoPagoView {
         });
         this.limpiarVistaRapidaRequerimientoPago();
         this.cargarDataRequerimientoPago(obj.dataset.idRequerimientoPago);
-    }
-    verEnAdjuntosPago(obj) {
-        $('#modal-ver-adjuntos-pago').modal({
-            show: true
-        });
-        this.limpiarTabla('listaAdjuntosPago');
-        this.listarAdjuntosPago(obj.dataset.idRequerimientoPago);
-    }
-
-    obtenerListaAdjuntosPago(idRequerimientoPago) {
-        return new Promise(function (resolve, reject) {
-            $.ajax({
-                type: 'GET',
-                url: `lista-adjuntos-pago/${idRequerimientoPago}`,
-                dataType: 'JSON',
-                beforeSend: function (data) {
-
-                    $('#modal-ver-adjuntos-pago').LoadingOverlay("show", {
-                        imageAutoResize: true,
-                        progress: true,
-                        imageColor: "#3c8dbc"
-                    });
-                },
-                success(response) {
-                    resolve(response);
-                    $('#modal-ver-adjuntos-pago').LoadingOverlay("hide", true);
-
-                },
-                fail: function (jqXHR, textStatus, errorThrown) {
-                    $('#modal-ver-adjuntos-pago').LoadingOverlay("hide", true);
-                    alert("Hubo un problema al cargar los adjuntos. Por favor actualice la página e intente de nuevo");
-                    console.log(jqXHR);
-                    console.log(textStatus);
-                    console.log(errorThrown);
-                }
-            });
-        });
-    }
-
-    listarAdjuntosPago(idRequerimientoPago) {
-        this.obtenerListaAdjuntosPago(idRequerimientoPago).then((res) => {
-            // console.log(res);
-            this.construirTablaListaAdjuntosPago(res);
-        }).catch(function (err) {
-            console.log(err)
-        })
-    }
-
-    construirTablaListaAdjuntosPago(data) {
-        if (data.length > 0) {
-            for (let i = 0; i < data.length; i++) {
-                document.querySelector("tbody[id='body_adjuntos_pago']").insertAdjacentHTML('beforeend', `<tr>
-                <td>${data[i].adjunto ? data[i].adjunto : ''}</td>
-                <td>${data[i].fecha_registro ? data[i].fecha_registro : ''}</td>
-                <td>${data[i].fecha_pago ? data[i].fecha_pago : ''}</td>
-                <td>${data[i].observacion ? data[i].observacion : ''}</td>
-                <td style="text-align: center;"> 
-                    <button type="button" class="btn btn-info btn-xs handleClickDescargarArchivoPago" name="btnDescargarArchivoPago" title="Descargar" data-id-pago="${data[i].id_pago}" data-adjunto="${data[i].adjunto}" ><i class="fas fa-paperclip"></i></button>
-                </td>
-                </tr>`);
-            }
-
-        }
-    }
-
-    descargarAdjuntosPago(obj) {
-        // console.log(obj);
-        if (obj.dataset.idPago > 0) {
-            window.open("/files/tesoreria//pagos/" + obj.dataset.adjunto);
-        }
     }
 
     mostrarDataEnVistaRapidaRequerimientoPago(data) {

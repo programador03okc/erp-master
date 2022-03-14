@@ -108,7 +108,7 @@ Listado de requerimientos de compra
                                         <th class="text-center">Creado por</th>
                                         <th class="text-center" style="width:5%;">Estado</th>
                                         <th class="text-center" style="width:8%">Ordenes</th>
-                                        <th class="text-center" style="width:10%">Acción</th>
+                                        <th class="text-center" style="width:8%">Acción</th>
                                     </tr>
                                 </thead>
                             </table>
@@ -149,6 +149,7 @@ Listado de requerimientos de compra
 
 @include('logistica.requerimientos.modal_requerimiento')
 
+@include('logistica.requerimientos.modal_ver_agregar_adjuntos_requerimiento_compra')
 @include('logistica.requerimientos.modal_adjuntar_archivos_requerimiento')
 @include('logistica.requerimientos.modal_adjuntar_archivos_detalle_requerimiento')
 @include('logistica.requerimientos.modal_filtro_requerimientos_elaborados')
@@ -171,6 +172,7 @@ Listado de requerimientos de compra
 <script src="{{ asset('js/logistica/requerimiento/RequerimientoController.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/RequerimientoController.js'))}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/RequerimientoModel.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/RequerimientoModel.js'))}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/trazabilidad.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/trazabilidad.js'))}}"></script>
+<script src="{{ asset('js/logistica/requerimiento/verTodoAdjuntosYAdicionalesRequerimientoCompra.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/verTodoAdjuntosYAdicionalesRequerimientoCompra.js'))}}"></script>
 
 
 <script>

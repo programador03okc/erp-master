@@ -85,6 +85,8 @@ Listado de requerimientos de pago
 @include('tesoreria.requerimiento_pago.modal_nueva_persona')
 @include('tesoreria.requerimiento_pago.modal_nueva_cuenta_bancaria_destinatario')
 
+@include('tesoreria.requerimiento_pago.modal_ver_agregar_adjuntos_requerimiento_pago')
+
 @endsection
 
 @section('scripts')
@@ -101,6 +103,7 @@ Listado de requerimientos de pago
 <script src="{{ asset('js/tesoreria/requerimientoPago/ListarRequerimientoPagoView.js')}}?v={{filemtime(public_path('js/Tesoreria/requerimientoPago/ListarRequerimientoPagoView.js'))}}"></script>
 <script src="{{ asset('js/tesoreria/requerimientoPago/nuevoDestinatario.js')}}?v={{filemtime(public_path('js/Tesoreria/requerimientoPago/nuevoDestinatario.js'))}}"></script>
 <script src="{{ asset('js/tesoreria/requerimientoPago/nuevaCuentaBancariaDestinatario.js')}}?v={{filemtime(public_path('js/Tesoreria/requerimientoPago/nuevaCuentaBancariaDestinatario.js'))}}"></script>
+<script src="{{ asset('js/tesoreria/requerimientoPago/verTodoAdjuntosYAdicionalesRequerimientoPago.js')}}?v={{filemtime(public_path('js/Tesoreria/requerimientoPago/verTodoAdjuntosYAdicionalesRequerimientoPago.js'))}}"></script>
 
 
 <script>
