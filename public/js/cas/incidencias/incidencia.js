@@ -318,3 +318,10 @@ function imprimirIncidencia() {
         window.open("imprimirIncidencia/" + id_incidencia);
     }
 }
+
+function imprimirFichaAtencionBlanco() {
+    var id_incidencia = $('[name=id_incidencia]').val();
+    if (id_incidencia !== null && id_incidencia !== '') {
+        window.open("imprimirFichaAtencionBlanco/" + id_incidencia);
+    }
+}

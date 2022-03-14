@@ -58,7 +58,7 @@ Registro de incidencia
                     title="Imprimir incidencia" onClick="imprimirIncidencia();"><i class="fas fa-file-pdf"></i> Imprimir</button>
 
                 <button type="button" class="btn btn-sm btn-default" data-toggle="tooltip" data-placement="bottom" 
-                    title="Ficha de atención en blanco" onClick="imprimirFicha();"><i class="fas fa-file-pdf"></i> Ficha Atención</button>
+                    title="Ficha de atención en blanco" onClick="imprimirFichaAtencionBlanco();"><i class="fas fa-file-pdf"></i> Ficha Atención</button>
 
             </div>
         </div>

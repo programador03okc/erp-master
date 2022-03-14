@@ -101,15 +101,14 @@
             </td>
         </tr>
     </table>
-    <h4 style="text-align: center;
+    {{-- <h4 style="text-align: center;
         padding-top: 5px;
         padding-bottom: 5px;
         border-bottom: 1px solid black;
         border-top: 1px solid black;
         background-color: #acf2bf;
-        font-size: 22px;margin:0px; padding:0px;">Reporte de Incidencia</h4>
-    {{-- <h4 class="text-center" style="margin:0px; padding:0px;"></h4> --}}
-    <h4 class="text-center" style="margin:0px; padding:0px;">{{$incidencia->codigo}}</h4>
+        font-size: 22px;margin:0px; padding:0px;">Ficha Reporte</h4> --}}
+    <h4 class="text-center" style="margin:0px; padding:0px;">Ficha de Atención</h4>
 
     <div class="seccion-hoja">
         <h4 style="font-size: 14px;">Datos Generales</h4>
@@ -186,7 +185,6 @@
                 <th style="width: 25%" class="text-right">Serie:</th>
                 <td style="width: 35%">{{$prod->serie}}</td>
             </tr>
-            <tr><td colspan="4"><br></td></tr>
             @endforeach
         </thead>
     </table>
@@ -196,23 +194,12 @@
     <table>
         <thead>
             <tr>
-                <td style="width: 100%" colspan="6">{{$incidencia->falla_reportada}}<br></td>
+                <td style="width: 100%" colspan="4">{{$incidencia->falla_reportada}}<br></td>
             </tr>
             <tr>
-                <th style="width: 30%" class="text-right">Tipo de falla:</th>
-                <td style="width: 25%">{{$incidencia->tipo_falla_descripcion}}</td>
-                <th style="width: 25%" class="text-right">Tipo servicio:</th>
-                <td style="width: 35%">{{$incidencia->tipo_servicio_descripcion}}</td>
-                <th style="width: 25%" class="text-right">Tipo garantía:</th>
-                <td style="width: 35%">{{$incidencia->tipo_garantia_descripcion}}</td>
-            </tr>
-            <tr>
-                <th style="width: 30%" class="text-right">Equipo operativo:</th>
-                <td style="width: 25%">{{$incidencia->equipo_operativo?'SI':'NO'}}</td>
-                <th style="width: 25%" class="text-right">Atiende:</th>
-                <td style="width: 35%">{{$incidencia->atiende_descripcion}}</td>
-                <th style="width: 25%" class="text-right">Nro. de caso:</th>
-                <td style="width: 35%">{{$incidencia->numero_caso}}</td>
+                <td style="width: 30%">Tipo de falla:</td>
+                <td style="width: 25%">(  ) Software</td>
+                <td style="width: 25%" colspan="2">(  ) Hardware</td>
             </tr>
         </thead>
     </table>
@@ -222,23 +209,65 @@
     <table>
         <thead>
             <tr>
-                <th style="width: 10%">Fecha</th>
-                <th style="width: 10%">Código</th>
-                <th style="width: 10%">Responsable</th>
-                <th style="width: 70%">Acciones realizadas</th>
+                <td style="width: 100%; border-bottom: 1px solid rgb(156, 156, 156);color: white;" colspan="4">X</td>
             </tr>
-            @foreach ($reportes as $reporte)
             <tr>
-                <td style="width: 10%" class="text-center">{{$reporte->fecha_reporte}}</td>
-                <td style="width: 10%" class="text-center">{{$reporte->codigo}}</td>
-                <td style="width: 10%" class="text-center">{{$reporte->usuario->nombre_corto}}</td>
-                <td style="width: 70%">{{$reporte->acciones_realizadas}}</td>
+                <td style="width: 100%; border-bottom: 1px solid rgb(156, 156, 156);color: white;" colspan="4">X</td>
             </tr>
-            @endforeach
-            <tr><td></td></tr>
             <tr>
-                <th style="width: 30%" colspan="3" class="text-right">Estado de la atención:</th>
-                <td style="width: 25%">{{$incidencia->estado_descripcion}}</td>
+                <td style="width: 100%; border-bottom: 1px solid rgb(156, 156, 156);color: white;" colspan="4">X</td>
+            </tr>
+            <tr>
+                <td style="color: white;" colspan="4">X</td>
+            </tr>
+            <tr>
+                <td style="width: 30%">Estado de atención:</td>
+                <td style="width: 25%">(  ) Cerrado</td>
+                <td style="width: 25%">(  ) Pendiente</td>
+                <td style="width: 25%">(  ) Cancelado</td>
+            </tr>
+            <tr>
+                <td style="width: 30%">Equipo operativo:</td>
+                <td style="width: 25%" >(  ) SI</td>
+                <td style="width: 25%" colspan="2">(  ) NO</td>
+            </tr>
+        </thead>
+    </table>
+    <div class="seccion-hoja">
+        <h4 style="font-size: 14px;">Comentarios del cierre</h4>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <td style="width: 100%; border-bottom: 1px solid rgb(156, 156, 156);color: white;" colspan="4">X</td>
+            </tr>
+            <tr>
+                <td style="width: 100%; border-bottom: 1px solid rgb(156, 156, 156);color: white;" colspan="4">X</td>
+            </tr>
+            <tr>
+                <td style="color: white;" colspan="4">X</td>
+            </tr>
+            <tr>
+                <td style="width: 30%">Hora llegada: __________</td>
+                <td style="width: 25%">Hora inicio: __________</td>
+                <td style="width: 25%">Hora final: __________</td>
+                <td style="width: 25%">Hora salida: __________</td>
+            </tr>
+        </thead>
+    </table>
+
+    <table>
+        <thead>
+            <tr>
+                <th style="height: 80px;" colspan="2" ></th>
+            </tr>
+            <tr>
+                <th style="width: 50%" class="text-center">___________________________________</th>
+                <th style="width: 50%" class="text-center">___________________________________</th>
+            </tr>
+            <tr>
+                <th style="width: 50%" class="text-center">Cliente</th>
+                <th style="width: 50%" class="text-center">Representante de servicios</th>
             </tr>
         </thead>
     </table>

@@ -1732,6 +1732,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('anularIncidencia/{id}', 'Cas\IncidenciaController@anularIncidencia');
 
 				Route::get('imprimirIncidencia/{id}', 'Cas\IncidenciaController@imprimirIncidencia');
+				Route::get('imprimirFichaAtencionBlanco/{id}', 'Cas\IncidenciaController@imprimirFichaAtencionBlanco');
 			});
 
 			Route::group(['as' => 'fichas.', 'prefix' => 'fichas'], function () {

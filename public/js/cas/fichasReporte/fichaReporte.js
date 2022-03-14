@@ -94,6 +94,7 @@ function listarIncidencias() {
             }
         ],
         'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible' }],
+        order: [[0, "desc"]],
     });
 }
 
