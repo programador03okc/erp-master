@@ -50,7 +50,7 @@ function obtenerListaAdjuntosPago(idRequerimientoPago) {
             dataType: 'JSON',
             beforeSend: function (data) {
 
-                $('#modal-ver-adjuntos-pago').LoadingOverlay("show", {
+                $('#adjuntosPago').LoadingOverlay("show", {
                     imageAutoResize: true,
                     progress: true,
                     imageColor: "#3c8dbc"
@@ -58,11 +58,11 @@ function obtenerListaAdjuntosPago(idRequerimientoPago) {
             },
             success(response) {
                 resolve(response);
-                $('#modal-ver-adjuntos-pago').LoadingOverlay("hide", true);
+                $('#adjuntosPago').LoadingOverlay("hide", true);
 
             },
             fail: function (jqXHR, textStatus, errorThrown) {
-                $('#modal-ver-adjuntos-pago').LoadingOverlay("hide", true);
+                $('#adjuntosPago').LoadingOverlay("hide", true);
                 alert("Hubo un problema al cargar los adjuntos. Por favor actualice la página e intente de nuevo");
                 console.log(jqXHR);
                 console.log(textStatus);

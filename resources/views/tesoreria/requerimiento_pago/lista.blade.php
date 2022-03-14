@@ -65,7 +65,6 @@ Listado de requerimientos de pago
     </select>
 </div>
 
-@include('tesoreria.requerimiento_pago.modal_ver_adjuntos_pago')
 
 @include('tesoreria.requerimiento_pago.modal_vista_rapida_requerimiento_pago')
 @include('tesoreria.requerimiento_pago.modal_requerimiento_pago')
