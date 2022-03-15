@@ -1911,6 +1911,11 @@ class ListarRequerimientoPagoView {
         if (data.id_grupo > 0) {
             this.construirOptSelectDivision(data.id_grupo, data.id_division);
         }
+      
+        if(data.id_grupo ==2){
+            document.querySelector("div[id='modal-requerimiento-pago'] div[id='contenedor-cdp']").classList.remove("oculto");
+
+        }
 
         document.querySelector("div[id='modal-requerimiento-pago'] select[name='sede']").removeAttribute("disabled");
         document.querySelector("div[id='modal-requerimiento-pago'] select[name='grupo']").removeAttribute("disabled");
@@ -1923,6 +1928,8 @@ class ListarRequerimientoPagoView {
         document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_estado']").value = data.id_estado;
         // document.querySelector("div[id='modal-requerimiento-pago'] input[name='codigo']").value = data.codigo;
         document.querySelector("div[id='modal-requerimiento-pago'] span[name='codigo']").textContent = data.codigo;
+        document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_cc']").value = data.id_cc;
+        document.querySelector("div[id='modal-requerimiento-pago'] input[name='codigo_oportunidad']").value = data.codigo_oportunidad??data.id_cc;
 
         document.querySelector("div[id='modal-requerimiento-pago'] input[name='concepto']").value = data.concepto;
         document.querySelector("div[id='modal-requerimiento-pago'] select[name='proyecto']").value = data.id_proyecto;
