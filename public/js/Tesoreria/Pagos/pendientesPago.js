@@ -91,6 +91,7 @@
                     }, 'className': 'text-right celestito'
                 },
                 {
+                    'data': 'estado_doc', 'name': 'requerimiento_pago_estado.descripcion',
                     'render': function (data, type, row) {
                         return '<span class="label label-' + row['bootstrap_color'] + '">' + row['estado_doc'] + '</span>'
                     }
@@ -146,7 +147,7 @@
                 },
             ],
             'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible' }],
-            'order': [[0, "desc"]]
+            'order': [[12, "asc"]]
         });
 
     }
@@ -223,6 +224,7 @@
                     }, 'className': 'text-right celestito'
                 },
                 {
+                    'data': 'estado_doc', 'name': 'requerimiento_pago_estado.descripcion',
                     'render': function (data, type, row) {
                         return '<span class="label label-' + row['bootstrap_color'] + '">' + row['estado_doc'] + '</span>'
                     }
@@ -270,6 +272,7 @@
             'columnDefs': [
                 { 'aTargets': [0], 'sClass': 'invisible' }
             ],
+            'order': [[12, "asc"]]
         });
 
     }
