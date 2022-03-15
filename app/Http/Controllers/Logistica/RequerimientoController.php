@@ -886,6 +886,7 @@ class RequerimientoController extends Controller
     function subirYRegistrarArchivoCabeceraRequerimiento($idRequerimiento, $adjunto, $codigoRequerimiento, $idCategoria)
     {
 
+        $idAdjuntoList=[];
         foreach ($adjunto as $key => $archivo) {
             if ($archivo != null) {
                 $fechaHoy = new Carbon();
@@ -906,9 +907,13 @@ class RequerimientoController extends Controller
                     ],
                     'id_adjunto'
                 );
-                return $idAdjunto;
+
+                $idAdjuntoList[]=$idAdjunto;
             }
         }
+
+        return $idAdjuntoList;
+
     }
 
     public static function guardarAdjuntoNivelDetalleItem($adjuntoDetelleRequerimiento,$codigoRequerimiento)
