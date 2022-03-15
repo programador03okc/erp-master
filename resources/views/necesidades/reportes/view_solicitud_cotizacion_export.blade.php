@@ -86,7 +86,7 @@
             <td style="width:20px;">TIPO DE COMPROBANTE</td>
         </tr>
         <tr>
-            <td style="width:20px;">CONDICIÓN DE COMPRA</td>
+            <td style="width:20px;">CONDICIÓN DE COMPRA (contado/crédito)</td>
         </tr>
         <tr>
             <td style="width:20px;">N° DE CUENTA EMPRESA</td>
