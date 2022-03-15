@@ -32,6 +32,10 @@ Gestión de incidencias
         <div class="box-body">
             <div class="row">
                 <div class="col-md-12">
+                    <form id="formFiltrosIncidencias" method="POST" target="_blank" 
+                    action="{{route('cas.garantias.fichas.incidenciasExcel')}}">
+                        @csrf()
+                    </form>
                     <table class="mytable table table-condensed table-bordered table-okc-view" 
                         id="listaIncidencias" style="width:100%;">
                         <thead>
@@ -76,9 +80,10 @@ Gestión de incidencias
 @section('scripts')
 <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
-<!-- <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
-    <script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
-    <script src="{{ asset('datatables/Buttons/js/buttons.print.min.js') }}"></script>
+<script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
+<script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
+
+<!-- <script src="{{ asset('datatables/Buttons/js/buttons.print.min.js') }}"></script>
     <script src="{{ asset('datatables/Buttons/js/buttons.html5.min.js') }}"></script>
     <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
@@ -97,6 +102,7 @@ Gestión de incidencias
 <script>
     $(document).ready(function() {
         seleccionarMenu(window.location);
+        $.fn.dataTable.Buttons.defaults.dom.button.className = 'btn';
         vista_extendida();
         listarIncidencias();
     });

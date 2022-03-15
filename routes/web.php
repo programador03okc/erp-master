@@ -1753,6 +1753,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('cancelarIncidencia', 'Cas\FichaReporteController@cancelarIncidencia');
 
 				Route::get('imprimirFichaReporte/{id}', 'Cas\FichaReporteController@imprimirFichaReporte');
+				Route::post('incidenciasExcel', 'Cas\FichaReporteController@incidenciasExcel')->name('incidenciasExcel');
 			});
 		});
 	});

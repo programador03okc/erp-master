@@ -1,13 +1,24 @@
 function listarIncidencias() {
     var vardataTables = funcDatatables();
+    let botones = [];
+    botones.push({
+        text: ' Exportar Excel',
+        action: function () {
+            exportarIncidencias();
+        }, className: 'btn-success btnExportarIncidencias'
+    });
+
     tableIncidenciasx = $('#listaIncidencias').DataTable({
         dom: vardataTables[1],
-        buttons: [],
+        buttons: botones,
         language: vardataTables[0],
         serverSide: true,
         ajax: {
             url: "listarIncidencias",
-            type: "POST"
+            type: "POST",
+            data: function (params) {
+                return Object.assign(params, objectifyForm($('#formFiltrosIncidencias').serializeArray()))
+            }
         },
         'columns': [
             { 'data': 'id_incidencia' },
@@ -181,3 +192,7 @@ $("#listaIncidencias tbody").on("click", "a.contacto", function (e) {
     $("#codigo_incidencia").text(codigo);
     $(".usuario_final").text(usuario);
 });
+
+function exportarIncidencias() {
+    $('#formFiltrosIncidencias').trigger('submit');
+}

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cas;
 
+use App\Exports\IncidenciasExport;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Cas\Incidencia;
@@ -13,6 +14,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
+use Maatwebsite\Excel\Facades\Excel;
 
 class FichaReporteController extends Controller
 {
@@ -24,7 +26,7 @@ class FichaReporteController extends Controller
         return view('cas/fichasReporte/fichaReporte', compact('usuarios'));
     }
 
-    function listarIncidencias()
+    function incidencias()
     {
         $lista = DB::table('cas.incidencia')
             ->select(
@@ -64,7 +66,22 @@ class FichaReporteController extends Controller
             ->leftjoin('contabilidad.adm_ctb_contac', 'adm_ctb_contac.id_datos_contacto', '=', 'incidencia.id_contacto')
             ->where([['incidencia.estado', '!=', 7]]);
 
-        return datatables($lista)->toJson();
+        return $lista;
+    }
+    public function listarIncidencias(Request $request)
+    {
+        $query = $this->incidencias();
+        return datatables($query)->toJson();
+    }
+
+    public function incidenciasExcel(Request $request)
+    {
+        $data = $this->incidencias();
+        return Excel::download(new IncidenciasExport(
+            $data,
+            // $request->fecha_inicio,
+            // $request->fecha_fin
+        ), 'incidencias.xlsx');
     }
 
     function listarFichasReporte($id_incidencia)
