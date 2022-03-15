@@ -282,7 +282,7 @@ class ListarRequerimientoPagoView {
                 },
                 {
                     'render': function (data, type, row) {
-                        return row['simbolo_moneda'].concat(' ', row['monto_total']);
+                        return row['simbolo_moneda'].concat(' ', $.number(row['monto_total'],2));
                     }, targets: 10
                 },
                 {
