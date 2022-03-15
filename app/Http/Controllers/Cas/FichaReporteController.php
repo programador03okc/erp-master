@@ -165,6 +165,68 @@ class FichaReporteController extends Controller
         }
     }
 
+    function cancelarIncidencia(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            $mensaje = '';
+            $tipo = '';
+
+            $incidencia = Incidencia::find($request->id_incidencia_cancelacion);
+
+            if ($incidencia !== null) {
+                $incidencia->fecha_cancelacion = $request->fecha_cancelacion;
+                $incidencia->comentarios_cancelacion = $request->comentarios_cancelacion;
+                $incidencia->estado = 4;
+                $incidencia->save();
+
+                $mensaje = 'Se canceló la incidencia.';
+                $tipo = 'success';
+            } else {
+                $mensaje = 'No existe la incidencia.';
+                $tipo = 'warning';
+            }
+
+            DB::commit();
+            return response()->json(['tipo' => $tipo, 'mensaje' => $mensaje]);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json(['tipo' => 'error', 'mensaje' => 'Hubo un problema al guardar. Por favor intente de nuevo', 'error' => $e->getMessage()], 200);
+        }
+    }
+
+    function cerrarIncidencia(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            $mensaje = '';
+            $tipo = '';
+
+            $incidencia = Incidencia::find($request->id_incidencia_cierre);
+
+            if ($incidencia !== null) {
+                $incidencia->fecha_cierre = $request->fecha_cierre;
+                $incidencia->importe_gastado = $request->importe_gastado;
+                $incidencia->comentarios_cierre = $request->comentarios_cierre;
+                $incidencia->parte_reemplazada = $request->parte_reemplazada;
+                $incidencia->estado = 3;
+                $incidencia->save();
+
+                $mensaje = 'Se cerró satisfactoriamente la incidencia.';
+                $tipo = 'success';
+            } else {
+                $mensaje = 'No existe la incidencia.';
+                $tipo = 'warning';
+            }
+
+            DB::commit();
+            return response()->json(['tipo' => $tipo, 'mensaje' => $mensaje]);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json(['tipo' => 'error', 'mensaje' => 'Hubo un problema al guardar. Por favor intente de nuevo', 'error' => $e->getMessage()], 200);
+        }
+    }
+
     function imprimirFichaReporte($id)
     {
         $reporte = IncidenciaReporte::with('usuario')->where('id_incidencia_reporte', $id)->first();

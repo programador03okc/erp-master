@@ -769,7 +769,6 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('obtener-cuenta-contribuyente/{idContribuyente}', 'Tesoreria\RequerimientoPagoController@obtenerCuentaContribuyente');
 				Route::get('listar-todo-archivos-adjuntos/{id}', 'Tesoreria\RequerimientoPagoController@listarTodoArchivoAdjunto');
 				Route::post('guardar-adjuntos-adicionales-requerimiento-pago', 'Tesoreria\RequerimientoPagoController@guardarAdjuntosAdicionales');
-
 			});
 			// Route::group(['as' => 'revisar_aprobar.', 'prefix' => 'revisar_aprobar'], function () {
 			// 	Route::get('index', 'Tesoreria\RequerimientoPagoController@viewRevisarAprobarRequerimientoPago')->name('index');
@@ -1749,6 +1748,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('actualizarFichaReporte', 'Cas\FichaReporteController@actualizarFichaReporte');
 				Route::get('anularFichaReporte/{id}', 'Cas\FichaReporteController@anularFichaReporte');
 				Route::get('listarFichasReporte/{id}', 'Cas\FichaReporteController@listarFichasReporte');
+				Route::post('cerrarIncidencia', 'Cas\FichaReporteController@cerrarIncidencia');
+				Route::post('cancelarIncidencia', 'Cas\FichaReporteController@cancelarIncidencia');
 
 				Route::get('imprimirFichaReporte/{id}', 'Cas\FichaReporteController@imprimirFichaReporte');
 			});

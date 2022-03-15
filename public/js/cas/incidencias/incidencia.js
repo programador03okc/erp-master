@@ -33,6 +33,8 @@ function mostrarIncidencia(id) {
             $("[name=numero_caso]").val(response.incidencia.numero_caso);
             $("[name=sede_cliente]").val(response.incidencia.sede_cliente);
             $("[name=usuario_final]").val(response.incidencia.usuario_final);
+            $("[name=importe_gastado]").val(response.incidencia.importe_gastado);
+            $("[name=comentarios_cierre]").val(response.incidencia.comentarios_cierre);
 
             $("[name=id_mov_alm]").val(response.incidencia.id_salida);
             $("[name=id_guia_ven]").val(response.incidencia.id_guia_ven);

@@ -38,6 +38,7 @@ Gestión de incidencias
                             <tr>
                                 <th hidden></th>
                                 <th>Código</th>
+                                <th>Estado</th>
                                 <th>Empresa</th>
                                 <th>Cliente</th>
                                 <th>Concepto</th>
@@ -50,7 +51,6 @@ Gestión de incidencias
                                 <th>Fecha reporte</th>
                                 <th>Responsable</th>
                                 <th>Falla</th>
-                                <th>Estado</th>
                                 <th width="70px">Acción</th>
                             </tr>
                         </thead>
@@ -67,6 +67,8 @@ Gestión de incidencias
 </div>
 
 @include('cas.fichasReporte.fichaReporteCreate')
+@include('cas.fichasReporte.cierreIncidencia')
+@include('cas.fichasReporte.cancelarIncidencia')
 @include('cas.fichasReporte.verDatosContacto')
 
 @endsection
@@ -87,6 +89,9 @@ Gestión de incidencias
 <script src="{{ asset('template/plugins/iCheck/icheck.min.js') }}"></script>
 
 <script src="{{ asset('js/cas/fichasReporte/fichaReporte.js')}}?v={{filemtime(public_path('js/cas/fichasReporte/fichaReporte.js'))}}"></script>
+<script src="{{ asset('js/cas/fichasReporte/fichaReporteCreate.js')}}?v={{filemtime(public_path('js/cas/fichasReporte/fichaReporteCreate.js'))}}"></script>
+<script src="{{ asset('js/cas/fichasReporte/cierreIncidencia.js')}}?v={{filemtime(public_path('js/cas/fichasReporte/cierreIncidencia.js'))}}"></script>
+<script src="{{ asset('js/cas/fichasReporte/cancelarIncidencia.js')}}?v={{filemtime(public_path('js/cas/fichasReporte/cancelarIncidencia.js'))}}"></script>
 <script src="{{ asset('js/cas/fichasReporte/verDetalleReportes.js')}}?v={{filemtime(public_path('js/cas/fichasReporte/verDetalleReportes.js'))}}"></script>
 
 <script>

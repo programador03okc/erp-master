@@ -4,7 +4,7 @@
             <form id="form-fichaReporte">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">Ficha Reporte - <label id="codigo_ficha" >FR-22000</label></h4>
+                    <h4 class="modal-title">Ficha de atención</h4>
                 </div>
                 <div class="modal-body">
                     <input type="text" class="oculto" name="id_incidencia_reporte">

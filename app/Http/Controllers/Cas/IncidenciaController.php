@@ -193,6 +193,9 @@ class IncidenciaController extends Controller
             $incidencia->id_tipo_garantia = $request->id_tipo_garantia;
             $incidencia->id_atiende = $request->id_atiende;
             $incidencia->numero_caso = $request->numero_caso;
+            $incidencia->importe_gastado = $request->importe_gastado;
+            $incidencia->comentarios_cierre = $request->comentarios_cierre;
+            $incidencia->parte_reemplazada = $request->parte_reemplazada;
             $incidencia->anio = $yyyy;
             $incidencia->estado = 1;
             $incidencia->fecha_registro = new Carbon();
@@ -257,6 +260,9 @@ class IncidenciaController extends Controller
                 $incidencia->id_tipo_garantia = $request->id_tipo_garantia;
                 $incidencia->id_atiende = $request->id_atiende;
                 $incidencia->numero_caso = $request->numero_caso;
+                $incidencia->importe_gastado = $request->importe_gastado;
+                $incidencia->comentarios_cierre = $request->comentarios_cierre;
+                $incidencia->parte_reemplazada = $request->parte_reemplazada;
                 $incidencia->save();
 
                 $detalle = json_decode($request->detalle);

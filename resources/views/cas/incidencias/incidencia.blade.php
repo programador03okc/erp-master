@@ -395,7 +395,49 @@ Registro de incidencia
                         </div>
                     </div>
                 </div>
-                
+            </fieldset>
+            <br/>
+            <div class="row" style="margin-bottom:0px">
+                <div class="col-md-12">
+                    <label style="font-weight: bold;">Cierre de la incidencia:</label>
+                </div>
+            </div>
+            <fieldset class="group-table" id="fieldsetComentariosCierre">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-horizontal">
+                            <div class="form-group " style="margin-bottom:5px;">
+                                <label class="col-sm-6 control-label">Costo del servicio contratado (S/)</label>
+                                <div class="col-sm-6">
+                                    <input type="number" class="form-control edition limpiarIncidencia" name="importe_gastado"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-horizontal">
+                            <div class="form-group " style="margin-bottom:5px;">
+                                <label class="col-sm-6 control-label">Parte reemplazada</label>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control edition limpiarReporte" name="parte_reemplazada"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-horizontal">
+                            <div class="form-group " style="margin-bottom:0px;">
+                                {{-- <label class="col-sm-4 control-label">Ingrese la falla reportada</label> --}}
+                                <div class="col-sm-12">
+                                    <textarea class="form-control edition limpiarIncidencia" name="comentarios_cierre" 
+                                    placeholder="Ingrese los comentarios del cierre"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </fieldset>
         </div>
         <div class="box-footer">

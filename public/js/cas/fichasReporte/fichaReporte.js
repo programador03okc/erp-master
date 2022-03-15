@@ -24,6 +24,12 @@ function listarIncidencias() {
                     );
                 }
             },
+            {
+                'data': 'estado_doc', name: 'incidencia_estado.descripcion',
+                'render': function (data, type, row) {
+                    return `<span class="label label-${row['bootstrap_color']}">${row['estado_doc']}</span>`;
+                }, className: "text-center"
+            },
             { 'data': 'empresa_razon_social', 'name': 'empresa.razon_social' },
             { 'data': 'razon_social', 'name': 'adm_contri.razon_social' },
             { 'data': 'concepto', 'name': 'alm_req.concepto' },
@@ -67,29 +73,28 @@ function listarIncidencias() {
             },
             { 'data': 'nombre_corto', name: 'sis_usua.nombre_corto' },
             { 'data': 'falla_reportada' },
-            {
-                'data': 'estado_doc', name: 'incidencia_estado.descripcion',
-                'render': function (data, type, row) {
-                    return `<span class="label label-${row['bootstrap_color']}">${row['estado_doc']}</span>`;
-                }, className: "text-center"
-            },
+
             {
                 'render':
                     function (data, type, row) {
-                        return `
-                        <div class="btn-group" role="group">
-                            <button type="button" class="agregar btn btn-success boton" data-toggle="tooltip" 
-                            data-placement="bottom" data-id="${row['id_incidencia']}" title="Agregar ficha de atención" >
-                            <i class="fas fa-plus"></i></button>
-
-                            <button type="button" class="cerrar btn btn-primary boton" data-toggle="tooltip" 
-                            data-placement="bottom" data-id="${row['id_incidencia']}" title="Cerrar incidencia" >
-                            <i class="fas fa-calendar-check"></i></button>
-
-                            <button type="button" class="cancelar btn btn-danger boton" data-toggle="tooltip" 
-                            data-placement="bottom" data-id="${row['id_incidencia']}" title="Cancelar incidencia" >
-                            <i class="fas fa-ban"></i></button>
-                        </div>`;
+                        if (row['estado'] == 1 || row['estado'] == 2) {
+                            return `
+                            <div class="btn-group" role="group">
+                                <button type="button" class="agregar btn btn-success boton" data-toggle="tooltip" 
+                                data-placement="bottom" data-id="${row['id_incidencia']}" title="Agregar ficha de atención" >
+                                <i class="fas fa-plus"></i></button>
+    
+                                <button type="button" class="cerrar btn btn-primary boton" data-toggle="tooltip" 
+                                data-placement="bottom" data-id="${row['id_incidencia']}" title="Cerrar incidencia" >
+                                <i class="fas fa-calendar-check"></i></button>
+    
+                                <button type="button" class="cancelar btn btn-danger boton" data-toggle="tooltip" 
+                                data-placement="bottom" data-id="${row['id_incidencia']}" title="Cancelar incidencia" >
+                                <i class="fas fa-ban"></i></button>
+                            </div>`;
+                        } else {
+                            return '';
+                        }
                     }, className: "text-center"
             }
         ],
@@ -112,6 +117,35 @@ $('#listaIncidencias tbody').on("click", "button.agregar", function (e) {
     $('[name=padre_id_incidencia]').val(data.id_incidencia);
     $('[name=id_usuario]').val(data.id_responsable);
     $('[name=fecha_reporte]').val(fecha_actual());
+});
+
+$('#listaIncidencias tbody').on("click", "button.cerrar", function (e) {
+    $(e.preventDefault());
+    var data = $('#listaIncidencias').DataTable().row($(this).parents("tr")).data();
+    console.log(data);
+
+    $('#modal-cierreIncidencia').modal({
+        show: true
+    });
+    // $('[name=id_incidencia_cierre]').val('');
+    $('.limpiarReporte').val('');
+
+    $('[name=id_incidencia_cierre]').val(data.id_incidencia);
+    $('[name=fecha_cierre]').val(fecha_actual());
+});
+
+$('#listaIncidencias tbody').on("click", "button.cancelar", function (e) {
+    $(e.preventDefault());
+    var data = $('#listaIncidencias').DataTable().row($(this).parents("tr")).data();
+    console.log(data);
+
+    $('#modal-cancelarIncidencia').modal({
+        show: true
+    });
+    $('.limpiarReporte').val('');
+
+    $('[name=id_incidencia_cancelacion]').val(data.id_incidencia);
+    $('[name=fecha_cancelacion]').val(fecha_actual());
 });
 
 $("#listaIncidencias tbody").on("click", "a.incidencia", function (e) {
@@ -147,62 +181,3 @@ $("#listaIncidencias tbody").on("click", "a.contacto", function (e) {
     $("#codigo_incidencia").text(codigo);
     $(".usuario_final").text(usuario);
 });
-
-$("#form-fichaReporte").on("submit", function (e) {
-    e.preventDefault();
-
-    Swal.fire({
-        title: "¿Está seguro que desea guardar la ficha reporte?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#00a65a", //"#3085d6",
-        cancelButtonColor: "#d33",
-        cancelButtonText: "Cancelar",
-        confirmButtonText: "Sí, Guardar"
-    }).then(result => {
-
-        if (result.isConfirmed) {
-            var data = $(this).serialize();
-            console.log(data);
-            guardarFichaReporte(data);
-            $("#listaIncidencias").DataTable().ajax.reload(null, false);
-        }
-    });
-});
-
-function guardarFichaReporte(data) {
-    $("#submit_guardar_reporte").attr('disabled', true);
-    var id = $('[name=id_incidencia_reporte]').val();
-    var url = '';
-
-    if (id !== '') {
-        url = 'actualizarFichaReporte';
-    } else {
-        url = 'guardarFichaReporte';
-    }
-
-    $.ajax({
-        type: 'POST',
-        url: url,
-        data: data,
-        dataType: 'JSON',
-        success: function (response) {
-            console.log(response);
-            Lobibox.notify(response.tipo, {
-                title: false,
-                size: "mini",
-                rounded: true,
-                sound: false,
-                delayIndicator: false,
-                msg: response.mensaje
-            });
-
-            $("#submit_guardar_reporte").attr('disabled', false);
-            $('#modal-fichaReporte').modal('hide');
-        }
-    }).fail(function (jqXHR, textStatus, errorThrown) {
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    });
-}
