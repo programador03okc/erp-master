@@ -74,6 +74,7 @@ Gestión de incidencias
 @include('cas.fichasReporte.cierreIncidencia')
 @include('cas.fichasReporte.cancelarIncidencia')
 @include('cas.fichasReporte.verDatosContacto')
+@include('cas.fichasReporte.verAdjuntosFicha')
 
 @endsection
 

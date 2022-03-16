@@ -1752,6 +1752,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('cerrarIncidencia', 'Cas\FichaReporteController@cerrarIncidencia');
 				Route::post('cancelarIncidencia', 'Cas\FichaReporteController@cancelarIncidencia');
 
+				Route::get('verAdjuntosFicha/{id}', 'Cas\FichaReporteController@verAdjuntosFicha')->name('ver-adjuntos-ficha');
+
 				Route::get('imprimirFichaReporte/{id}', 'Cas\FichaReporteController@imprimirFichaReporte');
 				Route::post('incidenciasExcel', 'Cas\FichaReporteController@incidenciasExcel')->name('incidenciasExcel');
 			});
