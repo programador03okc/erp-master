@@ -4,7 +4,7 @@
     @if(Auth::user()->tieneSubModulo(51))
     <li class=" treeview ">
         <a href="#">
-            <i class="fas fa-file-prescription"></i> <span>Requerimiento de compra</span>
+            <i class="fas fa-file-prescription"></i> <span>Requerimiento logístico</span>
             <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
             </span>
