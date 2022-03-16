@@ -77,7 +77,7 @@ Registro de incidencia
             <input type="text" style="display:none;" name="id_guia_ven">
             <input type="text" style="display:none;" name="id_requerimiento">
             <input type="text" style="display:none;" name="id_contribuyente">
-            <input type="text" style="display:none;" name="id_empresa">
+            {{-- <input type="text" style="display:none;" name="id_empresa"> --}}
             <input type="text" style="display:none;" name="codigo_oportunidad">
             <input type="text" style="display:none;" name="id_contacto">
 
@@ -85,46 +85,43 @@ Registro de incidencia
                 <div class="row">
                     <div class="col-sm-4">
                         <div class="form-horizontal">
-                            {{-- <div class="form-group" style="margin-bottom:0px;">
-                                <label class="col-sm-4 control-label">Guía venta</label>
+                            <div class="form-group" style="margin-bottom:10px;">
+                                <label class="col-sm-4 control-label">Empresa</label>
                                 <div class="col-sm-8">
-                                    <div class="form-control-static limpiarTexto guia_venta"></div>
+                                    <select class="form-control js-example-basic-single edition limpiarIncidencia" 
+                                        name="id_empresa" required>
+                                        <option value="">Elija una opción</option>
+                                        @foreach ($empresas as $empresa)
+                                        <option value="{{$empresa->id_empresa}}">{{$empresa->razon_social}}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
-                            </div> --}}
-                            <div class="form-group" style="margin-bottom:0px;">
+                            </div>
+                            <div class="form-group" style="margin-bottom:15px;">
                                 <label class="col-sm-4 control-label">Factura venta</label>
                                 <div class="col-sm-8">
                                     <input type="text" class="form-control edition limpiarIncidencia" name="factura" placeholder="000-0000"/>
                                 </div>
                             </div>
-                            <div class="form-group" style="margin-top:15px">
+                            <div class="form-group" style="margin-top:5px">
                                 <label class="col-sm-4 control-label">Fecha reporte</label>
                                 <div class="col-sm-8">
                                     <input type="date" class="form-control edition limpiarIncidencia" name="fecha_reporte"/>
-                                </div>
-                            </div>
-                            <div class="form-group " style="margin-top:0px;">
-                                <label class="col-sm-4 control-label">Quien reporta</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control edition limpiarIncidencia" name="usuario_final"/>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-sm-4">
                         <div class="form-horizontal">
-                            
                             <div class="form-group" style="margin-bottom:10px">
                                 <label class="col-sm-3 control-label">Cliente</label>
                                 <div class="col-sm-9">
-                                    {{-- <div class="form-control-static limpiarTexto cliente_razon_social"></div> --}}
                                     <input type="text" class="form-control edition limpiarIncidencia" name="cliente_razon_social"/>
                                 </div>
                             </div>
                             <div class="form-group" style="margin-bottom:15px">
                                 <label class="col-sm-3 control-label">Nro Orden</label>
                                 <div class="col-sm-9">
-                                    {{-- <div class="form-control-static limpiarTexto concepto_requerimiento"></div> --}}
                                     <input type="text" class="form-control edition limpiarIncidencia" name="nro_orden"/>
                                 </div>
                             </div>
@@ -153,7 +150,6 @@ Registro de incidencia
                             <div class="form-group" style="margin-bottom:0px;">
                                 <label class="col-sm-4 control-label">Responsable</label>
                                 <div class="col-sm-8">
-                                    {{-- <input type="text" class="form-control edition limpiarIncidencia" name="reponsable"/> --}}
                                     <select class="form-control js-example-basic-single edition limpiarIncidencia" 
                                         name="id_responsable" required>
                                         <option value="">Elija una opción</option>
@@ -181,8 +177,14 @@ Registro de incidencia
                 <div class="row">
                     <div class="col-sm-4">
                         <div class="form-horizontal">
+                            <div class="form-group " style="margin-bottom:5px;">
+                                <label class="col-sm-4 control-label">Quien reporta</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control edition limpiarIncidencia" name="usuario_final"/>
+                                </div>
+                            </div>
                             <div class="form-group" style="margin-bottom:5px;">
-                                <label class="col-sm-4 control-label">Nombre </label>
+                                <label class="col-sm-4 control-label">Contacto </label>
                                 <div class="col-sm-8">
                                     {{-- <div class="form-control-static limpiarTexto nombre_contacto"></div> --}}
                                     <input type="text" class="form-control edition limpiarIncidencia" name="nombre_contacto"/>
@@ -193,13 +195,6 @@ Registro de incidencia
                                 <div class="col-sm-8">
                                     {{-- <div class="form-control-static limpiarTexto cargo_contacto"></div> --}}
                                     <input type="text" class="form-control edition limpiarIncidencia" name="cargo_contacto"/>
-                                </div>
-                            </div>
-                            <div class="form-group" style="margin-bottom:5px">
-                                <label class="col-sm-4 control-label">Teléfono</label>
-                                <div class="col-sm-8">
-                                    {{-- <div class="form-control-static limpiarTexto telefono_contacto"></div> --}}
-                                    <input type="text" class="form-control edition limpiarIncidencia" name="telefono_contacto"/>
                                 </div>
                             </div>
                             
@@ -225,10 +220,12 @@ Registro de incidencia
                                         <i class="fa fa-search"></i>
                                     </button>
                                 </div>
-                                {{-- <div class="col-sm-10">
-                                    <input type="text" style="display:none;" name="id_ubigeo_contacto"/>
-                                    <input type="text" class="form-control" name="ubigeo_contacto" disabled/>
-                                </div> --}}
+                            </div>
+                            <div class="form-group" style="margin-bottom:5px">
+                                <label class="col-sm-2 control-label">Teléfono</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control edition limpiarIncidencia" name="telefono_contacto"/>
+                                </div>
                             </div>
                         </div>
                     </div>

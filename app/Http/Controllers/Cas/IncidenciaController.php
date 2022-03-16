@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Cas;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Administracion\Division;
+use App\Models\Administracion\Empresa;
 use App\Models\Almacen\Movimiento;
 use App\Models\Cas\AtiendeIncidencia;
 use App\Models\Cas\Incidencia;
@@ -38,6 +39,7 @@ class IncidenciaController extends Controller
         $atiende = AtiendeIncidencia::where('estado', 1)->get();
         $tiposGarantia = TipoGarantia::where('estado', 1)->get();
         $tiposProducto = IncidenciaProductoTipo::where('estado', 1)->get();
+        $empresas = Empresa::mostrar();
 
         return view('cas/incidencias/incidencia', compact(
             'tipoFallas',
@@ -48,7 +50,8 @@ class IncidenciaController extends Controller
             'modos',
             'atiende',
             'tiposGarantia',
-            'tiposProducto'
+            'tiposProducto',
+            'empresas'
         ));
     }
 
