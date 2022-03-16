@@ -117,7 +117,7 @@
         <thead>
             <tr>
                 <th style="width: 25%" class="text-right">Cliente:</th>
-                <td style="width: 35%">{{$incidencia->razon_social}}</td>
+                <td style="width: 35%">{{$incidencia->cliente}}</td>
                 <th style="width: 25%" class="text-right">Cod. Incidencia:</th>
                 <td style="width: 35%">{{$incidencia->codigo}}</td>
             </tr>

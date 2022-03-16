@@ -255,14 +255,8 @@ class FichaReporteController extends Controller
                 'adm_contri.id_contribuyente',
                 'adm_empresa.id_empresa',
                 'adm_empresa.logo_empresa',
-                // 'alm_req.concepto',
-                // 'alm_req.id_contacto',
-                'adm_ctb_contac.nombre',
-                'adm_ctb_contac.telefono',
-                'adm_ctb_contac.cargo',
-                'adm_ctb_contac.direccion',
-                'adm_ctb_contac.horario',
-                'adm_ctb_contac.email',
+                'alm_req.codigo as codigo_requerimiento',
+                'alm_req.concepto',
                 'incidencia_tipo_falla.descripcion as tipo_falla_descripcion',
                 'incidencia_tipo_servicio.descripcion as tipo_servicio_descripcion',
                 'incidencia_tipo_garantia.descripcion as tipo_garantia_descripcion',
@@ -270,12 +264,16 @@ class FichaReporteController extends Controller
                 'incidencia_medio.descripcion as medio_descripcion',
                 'incidencia_atiende.descripcion as atiende_descripcion',
                 'incidencia_estado.descripcion as estado_descripcion',
+                'oportunidades.codigo_oportunidad',
+                'incidencia_producto_tipo.descripcion as tipo_descripcion',
                 DB::raw("(ubi_dpto.descripcion)||' '||(ubi_prov.descripcion)||' '||(ubi_dis.descripcion) as ubigeo_descripcion")
             )
             // ->leftjoin('almacen.mov_alm', 'mov_alm.id_mov_alm', '=', 'incidencia.id_salida')
             // ->leftjoin('almacen.guia_ven', 'guia_ven.id_guia_ven', '=', 'mov_alm.id_guia_ven')
             // ->leftjoin('almacen.orden_despacho', 'orden_despacho.id_od', '=', 'guia_ven.id_od')
-            // ->leftjoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'orden_despacho.id_requerimiento')
+            ->leftjoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'incidencia.id_requerimiento')
+            ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
+            ->leftjoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
             ->leftjoin('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'incidencia.id_empresa')
             ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'incidencia.id_contribuyente')
             ->leftjoin('contabilidad.adm_ctb_contac', 'adm_ctb_contac.id_datos_contacto', '=', 'incidencia.id_contacto')
@@ -286,9 +284,10 @@ class FichaReporteController extends Controller
             ->leftjoin('cas.incidencia_medio', 'incidencia_medio.id_medio', '=', 'incidencia.id_medio')
             ->leftjoin('cas.incidencia_atiende', 'incidencia_atiende.id_atiende', '=', 'incidencia.id_atiende')
             ->leftjoin('cas.incidencia_estado', 'incidencia_estado.id_estado', '=', 'incidencia.estado')
-            ->leftjoin('configuracion.ubi_dis', 'ubi_dis.id_dis', '=', 'adm_ctb_contac.ubigeo')
+            ->leftjoin('configuracion.ubi_dis', 'ubi_dis.id_dis', '=', 'incidencia.id_ubigeo_contacto')
             ->leftjoin('configuracion.ubi_prov', 'ubi_prov.id_prov', '=', 'ubi_dis.id_prov')
             ->leftjoin('configuracion.ubi_dpto', 'ubi_dpto.id_dpto', '=', 'ubi_prov.id_dpto')
+            ->leftjoin('cas.incidencia_producto_tipo', 'incidencia_producto_tipo.id_tipo', '=', 'incidencia.id_tipo')
             ->where('incidencia.id_incidencia', $reporte->id_incidencia)
             ->first();
 
