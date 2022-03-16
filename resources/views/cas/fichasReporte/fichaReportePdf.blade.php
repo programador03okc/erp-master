@@ -247,10 +247,6 @@
                 <th style="width: 50%" class="text-center">Cliente</th>
                 <th style="width: 50%" class="text-center">Representante de servicios</th>
             </tr>
-            <tr>
-                <th style="width: 50%" class="text-center">{{$incidencia->nombre}}</th>
-                <th style="width: 50%" class="text-center">{{$reporte->usuario->nombre_corto}}</th>
-            </tr>
         </thead>
     </table>
     <footer style="position:absolute;bottom:0px;right:0px;">
