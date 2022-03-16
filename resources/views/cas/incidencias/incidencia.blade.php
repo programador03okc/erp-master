@@ -73,13 +73,13 @@ Registro de incidencia
             </div>
 
             <input type="text" style="display:none;" name="id_incidencia">
-            <input type="text" style="display:none;" name="id_mov_alm">
-            <input type="text" style="display:none;" name="id_guia_ven">
-            <input type="text" style="display:none;" name="id_requerimiento">
-            <input type="text" style="display:none;" name="id_contribuyente">
+            <input type="text" style="display:none;" name="id_mov_alm" class="limpiarIncidencia">
+            <input type="text" style="display:none;" name="id_guia_ven" class="limpiarIncidencia">
+            <input type="text" style="display:none;" name="id_requerimiento" class="limpiarIncidencia">
+            <input type="text" style="display:none;" name="id_contribuyente" class="limpiarIncidencia">
             {{-- <input type="text" style="display:none;" name="id_empresa"> --}}
-            <input type="text" style="display:none;" name="codigo_oportunidad">
-            <input type="text" style="display:none;" name="id_contacto">
+            <input type="text" style="display:none;" name="codigo_oportunidad" class="limpiarIncidencia">
+            <input type="text" style="display:none;" name="id_contacto" class="limpiarIncidencia">
 
             <fieldset class="group-table" id="fieldsetDatosNegocio">
                 <div class="row">
