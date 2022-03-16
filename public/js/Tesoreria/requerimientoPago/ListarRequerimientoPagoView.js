@@ -1717,6 +1717,21 @@ class ListarRequerimientoPagoView {
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='listaDetalleRequerimientoPago'] span[name='simbolo_moneda']").textContent = data.moneda != null && data.moneda.simbolo != undefined ? data.moneda.simbolo : '';
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='listaDetalleRequerimientoPago'] label[name='total']").textContent = $.number(data.monto_total, 2);
 
+        if(data.id_cc>0){
+            document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='codigo_cdp']").textContent = data.cuadro_presupuesto.codigo_oportunidad??'';
+            document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] tr[id='contenedor_cdp']").classList.remove("oculto");
+        }else{
+            document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] tr[id='contenedor_cdp']").classList.add("oculto");
+
+        }
+        if(data.id_proyecto>0){
+            document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='proyecto_presupuesto']").textContent = data.proyecto.descripcion??'';
+            document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] tr[id='contenedor_proyecto']").classList.remove("oculto");
+        }else{
+            document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] tr[id='contenedor_proyecto']").classList.add("oculto");
+
+        }
+
 
         if (data.adjunto.length > 0) {
             document.querySelector("td[id='adjuntosRequerimientoPago']").innerHTML = `<a title="Ver archivos adjuntos de requerimiento pago" style="cursor:pointer;" data-tipo-modal="lectura" class="handleClickAdjuntarArchivoCabecera"  data-id-requerimiento-pago="${data.id_requerimiento_pago}">
@@ -1929,7 +1944,7 @@ class ListarRequerimientoPagoView {
         // document.querySelector("div[id='modal-requerimiento-pago'] input[name='codigo']").value = data.codigo;
         document.querySelector("div[id='modal-requerimiento-pago'] span[name='codigo']").textContent = data.codigo;
         document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_cc']").value = data.id_cc;
-        document.querySelector("div[id='modal-requerimiento-pago'] input[name='codigo_oportunidad']").value = data.codigo_oportunidad??data.id_cc;
+        document.querySelector("div[id='modal-requerimiento-pago'] input[name='codigo_oportunidad']").value = data.cuadro_presupuesto.codigo_oportunidad??'';
 
         document.querySelector("div[id='modal-requerimiento-pago'] input[name='concepto']").value = data.concepto;
         document.querySelector("div[id='modal-requerimiento-pago'] select[name='proyecto']").value = data.id_proyecto;

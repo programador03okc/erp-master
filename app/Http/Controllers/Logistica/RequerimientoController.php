@@ -215,6 +215,7 @@ class RequerimientoController extends Controller
             ->leftJoin('administracion.adm_periodo', 'adm_periodo.id_periodo', '=', 'alm_req.id_periodo')
             ->leftJoin('administracion.division', 'division.id_division', '=', 'alm_req.division_id')
             ->leftJoin('configuracion.sis_moneda', 'alm_req.id_moneda', '=', 'sis_moneda.id_moneda')
+            ->leftJoin('mgcp_cuadro_costos.cc_view', 'cc_view.id', '=', 'alm_req.id_cc')
 
 
             ->select(
@@ -223,6 +224,8 @@ class RequerimientoController extends Controller
                 'alm_req.concepto',
                 'alm_req.id_moneda',
                 'sis_moneda.simbolo as simbolo_moneda',
+                'alm_req.id_cc',
+                'cc_view.codigo_oportunidad',
                 'alm_req.id_proyecto',
                 'proy_proyecto.codigo as codigo_proyecto',
                 'proy_proyecto.descripcion as descripcion_proyecto',
@@ -310,6 +313,8 @@ class RequerimientoController extends Controller
                     'concepto' => $data->concepto,
                     'id_moneda' => $data->id_moneda,
                     'simbolo_moneda' => $data->simbolo_moneda,
+                    'id_cc' => $data->id_cc,
+                    'codigo_oportunidad' => $data->codigo_oportunidad,
                     'id_proyecto' => $data->id_proyecto,
                     'codigo_proyecto' => $data->codigo_proyecto,
                     'descripcion_proyecto' => $data->descripcion_proyecto,

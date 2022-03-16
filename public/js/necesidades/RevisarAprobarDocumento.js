@@ -572,6 +572,7 @@ class RevisarAprobarDocumentoView {
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] span[name='simboloMoneda']").textContent = '';
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='listaDetalleRequerimientoPago'] span[name='simbolo_moneda']").textContent = '';
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='listaDetalleRequerimientoPago'] label[name='total']").textContent = '';
+        
         document.querySelector("td[id='adjuntosRequerimientoPago']").innerHTML='';
         this.limpiarTabla('listaDetalleRequerimientoPago');
         this.limpiarTabla('listaHistorialRevision');
@@ -635,7 +636,20 @@ class RevisarAprobarDocumentoView {
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] span[name='simboloMoneda']").textContent = data.moneda != null && data.moneda.simbolo != undefined ? data.moneda.simbolo : '';
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='listaDetalleRequerimientoPago'] span[name='simbolo_moneda']").textContent = data.moneda != null && data.moneda.simbolo != undefined ? data.moneda.simbolo : '';
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='listaDetalleRequerimientoPago'] label[name='total']").textContent = data.monto_total;
+        if(data.id_cc>0){
+            document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='codigo_cdp']").textContent = data.cuadro_presupuesto.codigo_oportunidad??'';
+            document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] tr[id='contenedor_cdp']").classList.remove("oculto");
+        }else{
+            document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] tr[id='contenedor_cdp']").classList.add("oculto");
 
+        }
+        if(data.id_proyecto>0){
+            document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='proyecto_presupuesto']").textContent = data.proyecto.descripcion??'';
+            document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] tr[id='contenedor_proyecto']").classList.remove("oculto");
+        }else{
+            document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] tr[id='contenedor_proyecto']").classList.add("oculto");
+
+        }
 
         if (data.adjunto.length > 0) {
             document.querySelector("td[id='adjuntosRequerimientoPago']").innerHTML = `<a title="Ver archivos adjuntos de requerimiento pago" style="cursor:pointer;" data-tipo-modal="lectura" class="handleClickAdjuntarArchivoCabecera"  data-id-requerimiento-pago="">
@@ -746,6 +760,21 @@ class RevisarAprobarDocumentoView {
         document.querySelector("div[id='modal-requerimiento'] table[id='listaDetalleRequerimientoModal'] span[name='simbolo_moneda']").textContent = data.simbolo_moneda;
         document.querySelector("div[id='modal-requerimiento'] table[id='listaDetalleRequerimientoModal'] label[name='total']").textContent = data.monto_total;
 
+        if(data.id_cc>0){
+            document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='codigo_cdp']").textContent = data.codigo_oportunidad??'';
+            document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] tr[id='contenedor_cdp']").classList.remove("oculto");
+        }else{
+            document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] tr[id='contenedor_cdp']").classList.add("oculto");
+
+        }
+        if(data.id_proyecto>0){
+            document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='proyecto_presupuesto']").textContent = data.descripcion_proyecto??'';
+            document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] tr[id='contenedor_proyecto']").classList.remove("oculto");
+        }else{
+            document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] tr[id='contenedor_proyecto']").classList.add("oculto");
+
+        }
+        
         tempArchivoAdjuntoRequerimientoList = [];
         if (data.adjuntos.length > 0) {
             document.querySelector("td[id='adjuntosRequerimiento']").innerHTML = `<a title="Ver archivos adjuntos de requerimiento" style="cursor:pointer;"  class="handleClickVerAdjuntosRequerimiento" >

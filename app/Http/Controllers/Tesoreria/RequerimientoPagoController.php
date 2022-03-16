@@ -686,6 +686,7 @@ class RequerimientoPagoController extends Controller
                 'sede',
                 'grupo',
                 'division',
+                'cuadroPresupuesto',
                 'tipoDestinatario',
                 'persona.tipoDocumentoIdentidad',
                 'cuentaPersona.banco.contribuyente',

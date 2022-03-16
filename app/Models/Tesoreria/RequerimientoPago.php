@@ -139,6 +139,10 @@ class RequerimientoPago extends Model
     {
         return $this->hasOne('App\Models\Tesoreria\RequerimientoPagoTipoDestinatario', 'id_requerimiento_pago_tipo_destinatario', 'id_tipo_destinatario');
     }
+    public function cuadroPresupuesto()
+    {
+        return $this->hasOne('App\Models\mgcp\CuadroCosto\CuadroCostoView', 'id', 'id_cc');
+    }
     public function persona()
     {
         return $this->hasOne('App\Models\Rrhh\Persona', 'id_persona', 'id_persona');

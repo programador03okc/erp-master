@@ -47,6 +47,14 @@
                                             <td id='adjuntosRequerimientoPago'>-</td>
                                             <td></td>
                                         </tr>
+                                        <tr class="oculto" id="contenedor_cdp">
+                                            <td style="width:5%; font-weight:bold; text-align:right;">CDP</td>
+                                            <td id="codigo_cdp" style="width:5%;"></td>
+                                        </tr>
+                                        <tr class="oculto" id="contenedor_proyecto">
+                                            <td style="width:5%; font-weight:bold; text-align:right;">Proyecto</td>
+                                            <td id="proyecto_presupuesto" style="width:5%;" colspan="6"></td>
+                                        </tr>
 
                                     </tbody>
                                 </table>
