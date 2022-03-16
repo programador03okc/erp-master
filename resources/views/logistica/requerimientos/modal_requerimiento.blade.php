@@ -45,10 +45,19 @@
                                             <td id='adjuntosRequerimiento'>-</td>
                                             <td></td>
                                         </tr>
+                                        <tr class="oculto" id="contenedor_cdp">
+                                            <td style="width:5%; font-weight:bold; text-align:right;">CDP</td>
+                                            <td id="codigo_cdp" style="width:5%;"></td>
+                                        </tr>
+                                        <tr class="oculto" id="contenedor_proyecto">
+                                            <td style="width:5%; font-weight:bold; text-align:right;">Proyecto</td>
+                                            <td id="proyecto_presupuesto" style="width:5%;" colspan="7"></td>
+                                        </tr>
                                         <tr>
                                             <td style="width:5%; font-weight:bold; text-align:right;">Observación</td>
                                             <td id="observacion" style="width:95%;" colspan="7"></td>
                                         </tr>
+
                                     </tbody>
                                 </table>
                             </div>

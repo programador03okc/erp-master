@@ -9,6 +9,12 @@
         </tr>
         <tr>
             <td style="width:5px;"></td>
+            <td style="width:20px;"><strong>RUC: {{$requerimiento['requerimiento'][0]['nro_documento_empresa'] !=null ?$requerimiento['requerimiento'][0]['nro_documento_empresa']:''}}</strong></td>
+            <td style="width:30px;"></td>
+            <td style="width:10px;"></td>
+        </tr>
+        <tr>
+            <td style="width:5px;"></td>
             <td style="width:20px;"></td>
             <td style="width:30px; font-size:20px;"><strong>SOLICITUD DE COTIZACION N°</strong></td>
             <td style="width:10px;"></td>
@@ -64,9 +70,32 @@
              </tr>
 
         @endforeach
-
         </tbody>
  
+
     </table>
-   
- 
+    <div class="seccion">
+        <table border="1">
+        <tr>
+            <td style="width:20px;"><strong>DEBE ADJUNTAR:</strong></td>
+        </tr>
+        <tr>
+            <td style="width:20px;"><strong>* CONDICIONES COMERCIALES GENERALES</strong></td>
+        </tr>
+        <tr>
+            <td style="width:20px;">TIPO DE COMPROBANTE</td>
+        </tr>
+        <tr>
+            <td style="width:20px;">CONDICIÓN DE COMPRA (contado/crédito)</td>
+        </tr>
+        <tr>
+            <td style="width:20px;">N° DE CUENTA EMPRESA</td>
+        </tr>
+        <tr>
+            <td style="width:20px;">N° DE CUENTA DETRACCIONES</td>
+        </tr>
+        </table>
+
+
+        <p>* GARANTIA Y FICHA TECNICA DEL BIEN</p>
+    </div>

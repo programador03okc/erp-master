@@ -107,12 +107,18 @@ class OrdenView {
         $('#form-crear-orden-requerimiento').on("click", "button.handleClickCatalogoProductosModal", () => {
             this.catalogoProductosModal();
         });
+        $('#form-crear-orden-requerimiento').on("click", "button.handleClickCatalogoProductosObsequioModal", () => {
+            this.catalogoProductosObsequioModal();
+        });
 
         $('#form-crear-orden-requerimiento').on("click", "button.handleClickAgregarServicio", () => {
             this.agregarServicio();
         });
         $('#form-crear-orden-requerimiento').on("click", "button.handleClickVincularRequerimientoAOrdenModal", () => {
             this.vincularRequerimientoAOrdenModal();
+        });
+        $('#listaCatalogoProductos tbody').on("click", "button.handleClickSelectProducto", (e) => {
+            this.selectProducto(e.currentTarget);
         });
         $('#listaCatalogoProductos tbody').on("click", "button.handleClickSelectObsequio", (e) => {
             this.selectObsequio(e.currentTarget);
@@ -695,9 +701,23 @@ class OrdenView {
 
 
 
+    catalogoProductosModal() {
+        document.querySelector("div[id='modal-catalogo-items'] h3[class='modal-title']").textContent = "Lista de productos";
+        $('#modal-catalogo-items').modal({
+            show: true,
+            backdrop: 'true',
+            keyboard: true
+
+        });
+        this.limpiarTabla('listaItems');
+        this.ocultarBtnCrearProducto();
+        this.listarCatalogoProductos('PRODUCTOS');
+    
+
+    }
 
     // modal agregar producto en orden 
-    catalogoProductosModal() {
+    catalogoProductosObsequioModal() {
         document.querySelector("div[id='modal-catalogo-items'] h3[class='modal-title']").textContent = "Lista de productos para obsequio";
         $('#modal-catalogo-items').modal({
             show: true,
@@ -707,7 +727,7 @@ class OrdenView {
         });
         this.limpiarTabla('listaItems');
         this.ocultarBtnCrearProducto();
-        this.listarCatalogoProductos();
+        this.listarCatalogoProductos('OBSEQUIOS');
     
 
     }
@@ -716,7 +736,7 @@ class OrdenView {
         cambiarVisibilidadBtn("btn-crear-producto", "ocultar");
     }
 
-    listarCatalogoProductos(){
+    listarCatalogoProductos(tipo){
         $tablaListaCatalogoProductos = $('#listaCatalogoProductos').DataTable({
             'dom': 'Bfrtip',
             'language': vardataTables[0],
@@ -791,26 +811,49 @@ class OrdenView {
                 { 'aTargets': [2], 'className': "text-center", 'sWidth': '5%' },
                 { 'aTargets': [3], 'className': "text-left", 'sWidth': '40%' },
                 { 'aTargets': [4], 'className': "text-center", 'sWidth': '5%' },
+                { 'aTargets': [5], 'className': "text-center", 'sWidth': '20%' },
                 {
                     'render':
                     function (data, type, row) {
-                        if (row.id_unidad_medida == 1) {
-                        let btnSeleccionar = `<button class="btn btn-success btn-xs handleClickSelectObsequio" 
-                        data-id-producto="${row.id_producto}"
-                        data-codigo="${row.codigo}"
-                        data-codigo-softlink="${row.cod_softlink}"
-                        data-part-number="${row.part_number}"
-                        data-descripcion="${row.descripcion}"
-                        data-unidad-medida="${row.abreviatura_unidad_medida}"
-                        data-id-unidad-medida="${row.id_unidad_medida}"
-                        
-                        >Seleccionar</button>`;
-                        // let btnVerSaldo = `<button class="btn btn-sm btn-info" onClick="verSaldoProducto('${row.id_producto}');">Stock</button>')`;
-                        return btnSeleccionar;
+                        switch (tipo) {
+                            case 'OBSEQUIOS':
+                                if (row.id_unidad_medida == 1) {
 
-                        } else {
-                        return '';
+                                    let btnProductoObsequioSeleccionar = `<button class="btn btn-success btn-xs handleClickSelectObsequio" 
+                                    data-id-producto="${row.id_producto}"
+                                    data-codigo="${row.codigo}"
+                                    data-codigo-softlink="${row.cod_softlink}"
+                                    data-part-number="${row.part_number}"
+                                    data-descripcion="${row.descripcion}"
+                                    data-unidad-medida="${row.abreviatura_unidad_medida}"
+                                    data-id-unidad-medida="${row.id_unidad_medida}"
+                                    
+                                    >Agregar obsequio</button>`;
+                                    // let btnVerSaldo = `<button class="btn btn-sm btn-info" onClick="verSaldoProducto('${row.id_producto}');">Stock</button>')`;
+                                    return btnProductoObsequioSeleccionar;
+        
+                                } else {
+                                return '';
+                                }     
+                                break;
+                            case 'PRODUCTOS':
+                                
+                                let btnProductoSeleccionar = `<button class="btn btn-success btn-xs handleClickSelectProducto" 
+                                data-id-producto="${row.id_producto}"
+                                data-codigo="${row.codigo}"
+                                data-codigo-softlink="${row.cod_softlink}"
+                                data-part-number="${row.part_number}"
+                                data-descripcion="${row.descripcion}"
+                                data-unidad-medida="${row.abreviatura_unidad_medida}"
+                                data-id-unidad-medida="${row.id_unidad_medida}"
+                                
+                                >Agregar producto</button>`;
+                                // let btnVerSaldo = `<button class="btn btn-sm btn-info" onClick="verSaldoProducto('${row.id_producto}');">Stock</button>')`;
+                                return btnProductoSeleccionar;
+                                break;
+                    
                         }
+
                     },targets: 5, className: "text-center", sWidth: '8%'
                 }
             ]
@@ -865,6 +908,39 @@ class OrdenView {
 
 
 
+    selectProducto(obj) {
+        let tr = obj.closest('tr');
+
+        this.agregarProducto([{
+            'id': this.makeId(),
+            'cantidad': 1,
+            'cantidad_a_comprar': 1,
+            'codigo_producto': obj.dataset.codigo,
+            'codigo_softlink': obj.dataset.codigoSoftlink,
+            'codigo_requerimiento': null,
+            'descripcion_producto': obj.dataset.descripcion,
+            'descripcion': null,
+            'estado': 0,
+            'garantia': null,
+            'id_detalle_orden': null,
+            'id_detalle_requerimiento': null,
+            'id_tipo_item': 1,
+            'id_producto': obj.dataset.idProducto,
+            'id_requerimiento': null,
+            'id_unidad_medida': obj.dataset.idUnidadMedida,
+            'lugar_despacho': null,
+            'part_number': obj.dataset.partNumber,
+            'precio_unitario': 0,
+            'id_moneda': 1,
+            'stock_comprometido': null,
+            'subtotal': 0,
+            'tiene_transformacion': false,
+            'producto_regalo': false,
+            'unidad_medida': obj.dataset.unidadMedida
+        }],'OBSEQUIO');
+        $('#modal-catalogo-items').modal('hide');
+
+    }
     selectObsequio(obj) {
         let tr = obj.closest('tr');
 

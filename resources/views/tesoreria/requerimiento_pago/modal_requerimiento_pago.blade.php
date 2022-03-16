@@ -35,7 +35,22 @@
                                             <h5>Tipo requerimiento</h5>
                                             <select class="form-control activation handleCheckStatusValue" name="tipo_requerimiento_pago">
                                                 @foreach ($tiposRequerimientoPago as $tipo)
-                                                <option value="{{$tipo->id_requerimiento_pago_tipo}}">{{$tipo->descripcion}}</option>
+                                                    @if((in_array(Auth::user()->id_usuario,[
+                                                    4, 
+                                                    24,
+                                                    99,
+                                                    54, 
+                                                    22, 
+                                                    32, 
+                                                    77, 
+                                                    3, 
+                                                    17,
+                                                    27
+                                                    ])))
+                                                        <option value="{{$tipo->id_requerimiento_pago_tipo}}">{{$tipo->descripcion}}</option>
+                                                    @elseif(($tipo->id_requerimiento_pago_tipo != 4))
+                                                        <option value="{{$tipo->id_requerimiento_pago_tipo}}">{{$tipo->descripcion}}</option>
+                                                    @endif
                                                 @endforeach
                                             </select>
                                         </div>
