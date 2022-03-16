@@ -262,6 +262,8 @@ function guardarIncidencia(data) {
             $(".buscar-incidencia").show();
 
             $("[name=modo]").val("");
+            $("[name=id_incidencia]").val(response.incidencia.id_incidencia);
+            $("#codigo_ficha").text(response.incidencia.codigo);
 
             $("#submit_incidencia").attr('disabled', false);
         }

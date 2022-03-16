@@ -236,7 +236,7 @@ class IncidenciaController extends Controller
             $tipo = 'success';
 
             DB::commit();
-            return response()->json(['tipo' => $tipo, 'mensaje' => $mensaje]);
+            return response()->json(['incidencia' => $incidencia, 'tipo' => $tipo, 'mensaje' => $mensaje]);
         } catch (\PDOException $e) {
             DB::rollBack();
             return response()->json(['tipo' => 'error', 'mensaje' => 'Hubo un problema al guardar. Por favor intente de nuevo', 'error' => $e->getMessage()], 200);
@@ -327,7 +327,7 @@ class IncidenciaController extends Controller
             }
 
             DB::commit();
-            return response()->json(['tipo' => $tipo, 'mensaje' => $mensaje]);
+            return response()->json(['incidencia' => $incidencia, 'tipo' => $tipo, 'mensaje' => $mensaje]);
         } catch (\PDOException $e) {
             DB::rollBack();
             return response()->json(['tipo' => 'error', 'mensaje' => 'Hubo un problema al guardar. Por favor intente de nuevo', 'error' => $e->getMessage()], 200);
