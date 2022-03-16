@@ -103,7 +103,7 @@ function openContacto() {
     var id_contacto = $("[name=id_contacto]").val();
     var codigo = $("[name=codigo_oportunidad]").val() + ' - ' + $(".codigo_requerimiento").text();
 
-    if (id_contribuyente !== null) {
+    if (id_contribuyente !== '') {
         openDespachoContactoIncidencia(id_requerimiento, id_contribuyente, id_entidad, id_contacto, codigo);
     } else {
         Lobibox.notify('warning', {
