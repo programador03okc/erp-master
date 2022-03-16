@@ -13,7 +13,7 @@
 
                 </div>
             </div>
-                <table class="table table-condensed table-bordered table-okc-view" id="listaCatalogoProductos" width="100%">
+                <table class="table table-condensed table-bordered table-okc-view dataTable no-footer" id="listaCatalogoProductos" width="100%">
                     <thead>
                         <tr>
                             <th style="width: 5%">Cód. producto</th>
@@ -21,7 +21,7 @@
                             <th style="width: 5%">Part number</th>
                             <th style="width: 40%">Descripción</th>
                             <th style="width: 5%">Unidad</th>
-                            <th style="width: 8%"> Acción</th>
+                            <th style="width: 25%">Acción</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
