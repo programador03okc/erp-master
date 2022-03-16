@@ -186,14 +186,12 @@ Registro de incidencia
                             <div class="form-group" style="margin-bottom:5px;">
                                 <label class="col-sm-4 control-label">Contacto </label>
                                 <div class="col-sm-8">
-                                    {{-- <div class="form-control-static limpiarTexto nombre_contacto"></div> --}}
                                     <input type="text" class="form-control edition limpiarIncidencia" name="nombre_contacto"/>
                                 </div>
                             </div>
                             <div class="form-group" style="margin-bottom:5px">
                                 <label class="col-sm-4 control-label">Cargo / Área</label>
                                 <div class="col-sm-8">
-                                    {{-- <div class="form-control-static limpiarTexto cargo_contacto"></div> --}}
                                     <input type="text" class="form-control edition limpiarIncidencia" name="cargo_contacto"/>
                                 </div>
                             </div>
@@ -206,7 +204,6 @@ Registro de incidencia
                             <div class="form-group" style="margin-bottom:5px">
                                 <label class="col-sm-2 control-label">Dirección</label>
                                 <div class="col-sm-10">
-                                    {{-- <div class="form-control-static limpiarTexto direccion_contacto"></div> --}}
                                     <input type="text" class="form-control edition limpiarIncidencia" name="direccion_contacto"/>
                                 </div>
                             </div>
