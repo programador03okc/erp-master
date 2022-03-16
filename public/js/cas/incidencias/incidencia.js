@@ -54,7 +54,7 @@ function mostrarIncidencia(id) {
 
             $('[name=equipo_operativo]').prop('checked', (response.incidencia.equipo_operativo ? true : false));
             // $(".guia_venta").text(response.incidencia.serie + '-' + response.incidencia.numero);
-            $("[name=cliente_razon_social]").val(response.incidencia.razon_social);
+            $("[name=cliente_razon_social]").val(response.incidencia.cliente);
             $(".codigo_oportunidad").text(response.incidencia.codigo_oportunidad);
             $("[name=nro_orden]").val(response.incidencia.nro_orden);
             $(".fecha_registro").text(response.incidencia.fecha_registro);
