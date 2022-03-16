@@ -45,7 +45,7 @@ Gestión de incidencias
                                 <th>Estado</th>
                                 <th>Empresa</th>
                                 <th>Cliente</th>
-                                <th>Concepto</th>
+                                <th>Nro Orden</th>
                                 <th>Factura</th>
                                 <th>Nombre contacto</th>
                                 {{-- <th>Telf. contacto</th>

@@ -43,5 +43,6 @@ function listarIncidencias() {
             { 'data': 'estado.descripcion' },
         ],
         'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible' }],
+        order: [[3, "desc"]],
     });
 }

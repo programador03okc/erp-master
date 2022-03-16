@@ -47,13 +47,14 @@ $('#listaContactos tbody').on("click", "button.seleccionar", function () {
         mostrarContactos();
         let contacto = listaContactos.find(element => element.id_datos_contacto == id_contacto);
         console.log(contacto);
-        $(".nombre").text(contacto.nombre);
-        $(".cargo").text(contacto.cargo);
-        $(".telefono").text(contacto.telefono);
-        $(".direccion").text(contacto.direccion);
-        $(".horario").text(contacto.horario);
-        $(".email").text(contacto.email);
-        $(".ubigeo").text(contacto.departamento + '-' + contacto.provincia + '-' + contacto.distrito);
+        $("[name=nombre_contacto]").val(contacto.nombre);
+        $("[name=cargo_contacto]").val(contacto.cargo);
+        $("[name=telefono_contacto]").val(contacto.telefono);
+        $("[name=direccion_contacto]").val(contacto.direccion);
+        $("[name=id_ubigeo_contacto]").val(contacto.ubigeo);
+        $("[name=ubigeo_contacto]").val(contacto.departamento !== null ? (contacto.departamento + '-' + contacto.provincia + '-' + contacto.distrito) : '');
+        $(".horario_contacto").text(contacto.horario);
+        $(".email_contacto").text(contacto.email);
     }
 });
 
@@ -181,13 +182,14 @@ function actualizaContacto(data, origen) {
 
                 if (origen == 'incidencia') {
                     $('[name=id_contacto]').val(response.id_contacto);
-                    $(".nombre").text(response.contacto.nombre);
-                    $(".cargo").text(response.contacto.cargo);
-                    $(".telefono").text(response.contacto.telefono);
-                    $(".direccion").text(response.contacto.direccion);
-                    $(".horario").text(response.contacto.horario);
-                    $(".email").text(response.contacto.email);
-                    $(".ubigeo").text(response.contacto.departamento + '-' + response.contacto.provincia + '-' + response.contacto.distrito);
+                    $("[name=nombre_contacto]").val(response.contacto.nombre);
+                    $("[name=cargo_contacto]").val(response.contacto.cargo);
+                    $("[name=telefono_contacto]").val(response.contacto.telefono);
+                    $("[name=direccion_contacto]").val(response.contacto.direccion);
+                    $("[name=id_ubigeo_contacto]").val(response.contacto.ubigeo);
+                    $("[name=ubigeo_contacto]").text(response.contacto.departamento !== null ? (response.contacto.departamento + '-' + response.contacto.provincia + '-' + response.contacto.distrito) : '');
+                    $(".horario_contacto").text(response.contacto.horario);
+                    $(".email_contacto").text(response.contacto.email);
                 }
             }
         }

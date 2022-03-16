@@ -9,6 +9,21 @@
             <div class="modal-body">
                 <input type="text" style="display:none;" name="id_incidencia_producto">
                 <div class="row">
+                    <div class="col-md-6">
+                        <h5>Serie</h5>
+                        <input type="text" class="form-control" name="serie">
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Tipo</h5>
+                        <select class="form-control js-example-basic-single" name="id_tipo" required>
+                            <option value="0">Elija una opción</option>
+                            @foreach ($tiposProducto as $tp)
+                            <option value="{{$tp->id_tipo}}">{{$tp->descripcion}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
                     <div class="col-md-12">
                         <h5>Producto</h5>
                         <input type="text" class="form-control" name="producto">
@@ -22,21 +37,6 @@
                     <div class="col-md-6">
                         <h5>Modelo</h5>
                         <input type="text" class="form-control" name="modelo">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <h5>Serie</h5>
-                        <input type="text" class="form-control" name="serie">
-                    </div>
-                    <div class="col-md-6">
-                        <h5>Tipo</h5>
-                        <select class="form-control js-example-basic-single" name="id_tipo" required>
-                            <option value="0">Elija una opción</option>
-                            @foreach ($tiposProducto as $tp)
-                            <option value="{{$tp->id_tipo}}">{{$tp->descripcion}}</option>
-                            @endforeach
-                        </select>
                     </div>
                 </div>
             </div>

@@ -54,38 +54,39 @@ class IncidenciaController extends Controller
 
     function listarSalidasVenta()
     {
-        // join('almacen.guia_ven', 'guia_ven.id_guia_ven', '=', 'mov_alm.id_guia_ven')
-        // ->join('almacen.orden_despacho', 'orden_despacho.id_od', '=', 'guia_ven.id_od')
-        $lista = OrdenDespacho::join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'orden_despacho.id_requerimiento')
-            ->join('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'alm_req.id_cliente')
+        $lista = DB::table('mgcp_ordenes_compra.oc_propias_view')
+            ->leftjoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'oc_propias_view.id_oportunidad')
+            ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id_oportunidad', '=', 'oportunidades.id')
+            ->leftjoin('almacen.alm_req', 'alm_req.id_cc', '=', 'cc.id')
+
+            ->leftjoin('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'alm_req.id_cliente')
             ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
             ->leftjoin('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'alm_req.id_empresa')
             ->leftjoin('contabilidad.adm_ctb_contac', 'adm_ctb_contac.id_datos_contacto', '=', 'alm_req.id_contacto')
-            ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
-            ->leftjoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
-            ->leftJoin('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'cc.id_oportunidad')
-            ->where([['orden_despacho.estado', '!=', '7'], ['orden_despacho.aplica_cambios', '=', false]])
+            // ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
+            // ->leftjoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
+            // ->leftJoin('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'cc.id_oportunidad')
+            // ->where([['orden_despacho.estado', '!=', '7'], ['orden_despacho.aplica_cambios', '=', false]])
             // ->where([['mov_alm.estado', '!=', '7'], ['mov_alm.id_tp_mov', '=', 2], ['mov_alm.id_operacion', '=', '1']])
             ->select(
-                'orden_despacho.id_od',
-                // 'guia_ven.serie',
-                // 'guia_ven.numero',
-                // 'guia_ven.id_od',
-                'adm_contri.razon_social',
-                'adm_contri.id_contribuyente',
-                'adm_empresa.id_empresa',
+                // 'orden_despacho.id_od',
+                // 'adm_contri.razon_social',
+                'oc_propias_view.id',
+                'oc_propias_view.nro_orden',
+                'oc_propias_view.nombre_entidad as razon_social',
+                'oc_propias_view.id_empresa',
+                'oc_propias_view.id_entidad',
+                'oportunidades.codigo_oportunidad',
                 'alm_req.codigo as codigo_requerimiento',
                 'alm_req.id_requerimiento',
-                'alm_req.concepto',
                 'alm_req.id_contacto',
+                'adm_contri.id_contribuyente',
                 'adm_ctb_contac.nombre',
                 'adm_ctb_contac.telefono',
                 'adm_ctb_contac.cargo',
                 'adm_ctb_contac.direccion',
                 'adm_ctb_contac.horario',
                 'adm_ctb_contac.email',
-                'oportunidades.codigo_oportunidad',
-                'oc_propias_view.id_entidad',
             );
         return datatables($lista)->toJson();
     }
@@ -122,35 +123,34 @@ class IncidenciaController extends Controller
         $incidencia = DB::table('cas.incidencia')
             ->select(
                 'incidencia.*',
-                'guia_ven.serie',
-                'guia_ven.numero',
-                'guia_ven.id_od',
                 'adm_contri.razon_social',
                 'adm_contri.id_contribuyente',
                 'adm_empresa.id_empresa',
                 'alm_req.codigo as codigo_requerimiento',
-                'alm_req.id_requerimiento',
                 'alm_req.concepto',
-                'alm_req.id_contacto',
-                'adm_ctb_contac.nombre',
-                'adm_ctb_contac.telefono',
-                'adm_ctb_contac.cargo',
-                'adm_ctb_contac.direccion',
-                'adm_ctb_contac.horario',
-                'adm_ctb_contac.email',
+                // 'adm_ctb_contac.nombre',
+                // 'adm_ctb_contac.telefono',
+                // 'adm_ctb_contac.cargo',
+                // 'adm_ctb_contac.direccion',
+                // 'adm_ctb_contac.horario',
+                // 'adm_ctb_contac.email',
                 'oportunidades.codigo_oportunidad',
-                'oc_propias_view.id_entidad'
+                'oc_propias_view.id_entidad',
+                DB::raw("(ubi_dpto.descripcion)||' '||(ubi_prov.descripcion)||' '||(ubi_dis.descripcion) as ubigeo_descripcion")
             )
-            ->leftjoin('almacen.mov_alm', 'mov_alm.id_mov_alm', '=', 'incidencia.id_salida')
-            ->leftjoin('almacen.guia_ven', 'guia_ven.id_guia_ven', '=', 'mov_alm.id_guia_ven')
-            ->leftjoin('almacen.orden_despacho', 'orden_despacho.id_od', '=', 'guia_ven.id_od')
-            ->leftjoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'orden_despacho.id_requerimiento')
+            // ->leftjoin('almacen.mov_alm', 'mov_alm.id_mov_alm', '=', 'incidencia.id_salida')
+            // ->leftjoin('almacen.guia_ven', 'guia_ven.id_guia_ven', '=', 'mov_alm.id_guia_ven')
+            // ->leftjoin('almacen.orden_despacho', 'orden_despacho.id_od', '=', 'guia_ven.id_od')
+            ->leftjoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'incidencia.id_requerimiento')
             ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
             ->leftjoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
             ->leftJoin('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'cc.id_oportunidad')
             ->leftjoin('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'incidencia.id_empresa')
             ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'incidencia.id_contribuyente')
-            ->leftjoin('contabilidad.adm_ctb_contac', 'adm_ctb_contac.id_datos_contacto', '=', 'incidencia.id_contacto')
+            // ->leftjoin('contabilidad.adm_ctb_contac', 'adm_ctb_contac.id_datos_contacto', '=', 'incidencia.id_contacto')
+            ->leftjoin('configuracion.ubi_dis', 'ubi_dis.id_dis', '=', 'incidencia.id_ubigeo_contacto')
+            ->leftjoin('configuracion.ubi_prov', 'ubi_prov.id_prov', '=', 'ubi_dis.id_prov')
+            ->leftjoin('configuracion.ubi_dpto', 'ubi_dpto.id_dpto', '=', 'ubi_prov.id_dpto')
             ->where('incidencia.id_incidencia', $id)
             ->first();
 
@@ -196,28 +196,41 @@ class IncidenciaController extends Controller
             $incidencia->importe_gastado = $request->importe_gastado;
             $incidencia->comentarios_cierre = $request->comentarios_cierre;
             $incidencia->parte_reemplazada = $request->parte_reemplazada;
+            $incidencia->cliente = $request->cliente_razon_social;
+            $incidencia->nro_orden = $request->nro_orden;
+            $incidencia->nombre_contacto = $request->nombre_contacto;
+            $incidencia->cargo_contacto = $request->cargo_contacto;
+            $incidencia->id_ubigeo_contacto = $request->id_ubigeo_contacto;
+            $incidencia->telefono_contacto = $request->telefono_contacto;
+            $incidencia->direccion_contacto = $request->direccion_contacto;
             $incidencia->anio = $yyyy;
             $incidencia->estado = 1;
             $incidencia->fecha_registro = new Carbon();
+
+            $incidencia->serie = $request->serie;
+            $incidencia->producto = $request->producto;
+            $incidencia->marca = $request->marca;
+            $incidencia->modelo = $request->modelo;
+            $incidencia->id_tipo = $request->id_tipo;
             $incidencia->save();
 
-            $detalle = json_decode($request->detalle);
+            // $detalle = json_decode($request->detalle);
 
-            foreach ($detalle as $det) {
-                $producto = new IncidenciaProducto();
-                $producto->id_incidencia = $incidencia->id_incidencia;
-                $producto->id_producto = $det->id_producto;
-                $producto->id_prod_serie = $det->id_prod_serie;
-                $producto->serie = $det->serie;
-                $producto->id_usuario = Auth::user()->id_usuario;
-                $producto->producto = $det->producto;
-                $producto->marca = $det->marca;
-                $producto->modelo = $det->modelo;
-                $producto->id_tipo = $det->id_tipo;
-                $producto->estado = 1;
-                $producto->fecha_registro = new Carbon();
-                $producto->save();
-            }
+            // foreach ($detalle as $det) {
+            //     $producto = new IncidenciaProducto();
+            //     $producto->id_incidencia = $incidencia->id_incidencia;
+            //     $producto->id_producto = $det->id_producto;
+            //     $producto->id_prod_serie = $det->id_prod_serie;
+            //     $producto->id_usuario = Auth::user()->id_usuario;
+            //     $producto->serie = $det->serie;
+            //     $producto->producto = $det->producto;
+            //     $producto->marca = $det->marca;
+            //     $producto->modelo = $det->modelo;
+            //     $producto->id_tipo = $det->id_tipo;
+            //     $producto->estado = 1;
+            //     $producto->fecha_registro = new Carbon();
+            //     $producto->save();
+            // }
 
             $mensaje = 'Se guardó la incidencia correctamente';
             $tipo = 'success';
@@ -263,37 +276,49 @@ class IncidenciaController extends Controller
                 $incidencia->importe_gastado = $request->importe_gastado;
                 $incidencia->comentarios_cierre = $request->comentarios_cierre;
                 $incidencia->parte_reemplazada = $request->parte_reemplazada;
+                $incidencia->cliente = $request->cliente_razon_social;
+                $incidencia->nro_orden = $request->nro_orden;
+                $incidencia->nombre_contacto = $request->nombre_contacto;
+                $incidencia->cargo_contacto = $request->cargo_contacto;
+                $incidencia->id_ubigeo_contacto = $request->id_ubigeo_contacto;
+                $incidencia->telefono_contacto = $request->telefono_contacto;
+                $incidencia->direccion_contacto = $request->direccion_contacto;
+
+                $incidencia->serie = $request->serie;
+                $incidencia->producto = $request->producto;
+                $incidencia->marca = $request->marca;
+                $incidencia->modelo = $request->modelo;
+                $incidencia->id_tipo = $request->id_tipo;
                 $incidencia->save();
 
-                $detalle = json_decode($request->detalle);
+                // $detalle = json_decode($request->detalle);
 
-                foreach ($detalle as $det) {
-                    // $producto = IncidenciaProducto::where([['id_incidencia', '=', $det->id_incidencia], ['id_prod_serie', '=', $det->id_prod_serie]])->first();
-                    $producto = IncidenciaProducto::where('id_incidencia_producto', $det->id_incidencia_producto)->first();
+                // foreach ($detalle as $det) {
+                //     $producto = IncidenciaProducto::where('id_incidencia_producto', $det->id_incidencia_producto)->first();
 
-                    if ($producto == null) {
-                        $producto = new IncidenciaProducto();
-                        $producto->id_incidencia = $incidencia->id_incidencia;
-                        $producto->id_producto = $det->id_producto;
-                        $producto->id_prod_serie = $det->id_prod_serie;
-                        $producto->id_usuario = Auth::user()->id_usuario;
-                        $producto->serie = $det->serie;
-                        $producto->producto = $det->producto;
-                        $producto->marca = $det->marca;
-                        $producto->modelo = $det->modelo;
-                        $producto->id_tipo = $det->id_tipo;
-                        $producto->estado = 1;
-                        $producto->fecha_registro = new Carbon();
-                        $producto->save();
-                    } else {
-                        $producto->serie = $det->serie;
-                        $producto->producto = $det->producto;
-                        $producto->marca = $det->marca;
-                        $producto->modelo = $det->modelo;
-                        $producto->id_tipo = $det->id_tipo;
-                        $producto->save();
-                    }
-                }
+                //     if ($producto == null) {
+                //         $producto = new IncidenciaProducto();
+                //         $producto->id_incidencia = $incidencia->id_incidencia;
+                //         $producto->id_producto = $det->id_producto;
+                //         $producto->id_prod_serie = $det->id_prod_serie;
+                //         $producto->id_usuario = Auth::user()->id_usuario;
+                //         $producto->serie = $det->serie;
+                //         $producto->producto = $det->producto;
+                //         $producto->marca = $det->marca;
+                //         $producto->modelo = $det->modelo;
+                //         $producto->id_tipo = $det->id_tipo;
+                //         $producto->estado = 1;
+                //         $producto->fecha_registro = new Carbon();
+                //         $producto->save();
+                //     } else {
+                //         $producto->serie = $det->serie;
+                //         $producto->producto = $det->producto;
+                //         $producto->marca = $det->marca;
+                //         $producto->modelo = $det->modelo;
+                //         $producto->id_tipo = $det->id_tipo;
+                //         $producto->save();
+                //     }
+                // }
                 $mensaje = 'Se actualizó la incidencia correctamente';
                 $tipo = 'success';
             } else {
@@ -348,13 +373,6 @@ class IncidenciaController extends Controller
                 'adm_empresa.logo_empresa',
                 'alm_req.codigo as codigo_requerimiento',
                 'alm_req.concepto',
-                // 'alm_req.id_contacto',
-                'adm_ctb_contac.nombre',
-                'adm_ctb_contac.telefono',
-                'adm_ctb_contac.cargo',
-                'adm_ctb_contac.direccion',
-                'adm_ctb_contac.horario',
-                'adm_ctb_contac.email',
                 'incidencia_tipo_falla.descripcion as tipo_falla_descripcion',
                 'incidencia_tipo_servicio.descripcion as tipo_servicio_descripcion',
                 'incidencia_tipo_garantia.descripcion as tipo_garantia_descripcion',
@@ -362,12 +380,16 @@ class IncidenciaController extends Controller
                 'incidencia_medio.descripcion as medio_descripcion',
                 'incidencia_atiende.descripcion as atiende_descripcion',
                 'incidencia_estado.descripcion as estado_descripcion',
+                'oportunidades.codigo_oportunidad',
+                'incidencia_producto_tipo.descripcion as tipo_descripcion',
                 DB::raw("(ubi_dpto.descripcion)||' '||(ubi_prov.descripcion)||' '||(ubi_dis.descripcion) as ubigeo_descripcion")
             )
             // ->leftjoin('almacen.mov_alm', 'mov_alm.id_mov_alm', '=', 'incidencia.id_salida')
             // ->leftjoin('almacen.guia_ven', 'guia_ven.id_guia_ven', '=', 'mov_alm.id_guia_ven')
             // ->leftjoin('almacen.orden_despacho', 'orden_despacho.id_od', '=', 'guia_ven.id_od')
             ->leftjoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'incidencia.id_requerimiento')
+            ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
+            ->leftjoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
             ->leftjoin('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'incidencia.id_empresa')
             ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'incidencia.id_contribuyente')
             ->leftjoin('contabilidad.adm_ctb_contac', 'adm_ctb_contac.id_datos_contacto', '=', 'incidencia.id_contacto')
@@ -378,9 +400,10 @@ class IncidenciaController extends Controller
             ->leftjoin('cas.incidencia_medio', 'incidencia_medio.id_medio', '=', 'incidencia.id_medio')
             ->leftjoin('cas.incidencia_atiende', 'incidencia_atiende.id_atiende', '=', 'incidencia.id_atiende')
             ->leftjoin('cas.incidencia_estado', 'incidencia_estado.id_estado', '=', 'incidencia.estado')
-            ->leftjoin('configuracion.ubi_dis', 'ubi_dis.id_dis', '=', 'adm_ctb_contac.ubigeo')
+            ->leftjoin('configuracion.ubi_dis', 'ubi_dis.id_dis', '=', 'incidencia.id_ubigeo_contacto')
             ->leftjoin('configuracion.ubi_prov', 'ubi_prov.id_prov', '=', 'ubi_dis.id_prov')
             ->leftjoin('configuracion.ubi_dpto', 'ubi_dpto.id_dpto', '=', 'ubi_prov.id_dpto')
+            ->leftjoin('cas.incidencia_producto_tipo', 'incidencia_producto_tipo.id_tipo', '=', 'incidencia.id_tipo')
             ->where('incidencia.id_incidencia', $id_incidencia)
             ->first();
 
@@ -425,12 +448,6 @@ class IncidenciaController extends Controller
                 'adm_empresa.logo_empresa',
                 'alm_req.codigo as codigo_requerimiento',
                 'alm_req.concepto',
-                'adm_ctb_contac.nombre',
-                'adm_ctb_contac.telefono',
-                'adm_ctb_contac.cargo',
-                'adm_ctb_contac.direccion',
-                'adm_ctb_contac.horario',
-                'adm_ctb_contac.email',
                 'incidencia_tipo_falla.descripcion as tipo_falla_descripcion',
                 'incidencia_tipo_servicio.descripcion as tipo_servicio_descripcion',
                 'incidencia_tipo_garantia.descripcion as tipo_garantia_descripcion',
@@ -438,12 +455,16 @@ class IncidenciaController extends Controller
                 'incidencia_medio.descripcion as medio_descripcion',
                 'incidencia_atiende.descripcion as atiende_descripcion',
                 'incidencia_estado.descripcion as estado_descripcion',
+                'oportunidades.codigo_oportunidad',
+                'incidencia_producto_tipo.descripcion as tipo_descripcion',
                 DB::raw("(ubi_dpto.descripcion)||' '||(ubi_prov.descripcion)||' '||(ubi_dis.descripcion) as ubigeo_descripcion")
             )
             // ->leftjoin('almacen.mov_alm', 'mov_alm.id_mov_alm', '=', 'incidencia.id_salida')
             // ->leftjoin('almacen.guia_ven', 'guia_ven.id_guia_ven', '=', 'mov_alm.id_guia_ven')
             // ->leftjoin('almacen.orden_despacho', 'orden_despacho.id_od', '=', 'guia_ven.id_od')
             ->leftjoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'incidencia.id_requerimiento')
+            ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
+            ->leftjoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
             ->leftjoin('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'incidencia.id_empresa')
             ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'incidencia.id_contribuyente')
             ->leftjoin('contabilidad.adm_ctb_contac', 'adm_ctb_contac.id_datos_contacto', '=', 'incidencia.id_contacto')
@@ -454,9 +475,10 @@ class IncidenciaController extends Controller
             ->leftjoin('cas.incidencia_medio', 'incidencia_medio.id_medio', '=', 'incidencia.id_medio')
             ->leftjoin('cas.incidencia_atiende', 'incidencia_atiende.id_atiende', '=', 'incidencia.id_atiende')
             ->leftjoin('cas.incidencia_estado', 'incidencia_estado.id_estado', '=', 'incidencia.estado')
-            ->leftjoin('configuracion.ubi_dis', 'ubi_dis.id_dis', '=', 'adm_ctb_contac.ubigeo')
+            ->leftjoin('configuracion.ubi_dis', 'ubi_dis.id_dis', '=', 'incidencia.id_ubigeo_contacto')
             ->leftjoin('configuracion.ubi_prov', 'ubi_prov.id_prov', '=', 'ubi_dis.id_prov')
             ->leftjoin('configuracion.ubi_dpto', 'ubi_dpto.id_dpto', '=', 'ubi_prov.id_dpto')
+            ->leftjoin('cas.incidencia_producto_tipo', 'incidencia_producto_tipo.id_tipo', '=', 'incidencia.id_tipo')
             ->where('incidencia.id_incidencia', $id_incidencia)
             ->first();
 

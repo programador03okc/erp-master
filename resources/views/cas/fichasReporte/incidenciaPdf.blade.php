@@ -108,7 +108,6 @@
         border-top: 1px solid black;
         background-color: #acf2bf;
         font-size: 22px;margin:0px; padding:0px;">Reporte de Incidencia</h4>
-    {{-- <h4 class="text-center" style="margin:0px; padding:0px;"></h4> --}}
     <h4 class="text-center" style="margin:0px; padding:0px;">{{$incidencia->codigo}}</h4>
 
     <div class="seccion-hoja">
@@ -118,7 +117,7 @@
         <thead>
             <tr>
                 <th style="width: 25%" class="text-right">Cliente:</th>
-                <td style="width: 35%">{{$incidencia->razon_social}}</td>
+                <td style="width: 35%">{{$incidencia->cliente}}</td>
                 <th style="width: 25%" class="text-right">Cod. Incidencia:</th>
                 <td style="width: 35%">{{$incidencia->codigo}}</td>
             </tr>
@@ -129,14 +128,16 @@
                 <td style="width: 35%">{{$incidencia->factura}}</td>
             </tr>
             <tr>
-                <th style="width: 25%" class="text-right">Cod. Requerimiento:</th>
-                <td style="width: 35%">{{$incidencia->codigo_requerimiento}}</td>
+                <th style="width: 25%" class="text-right">Nro orden:</th>
+                <td style="width: 35%">{{$incidencia->nro_orden}}</td>
                 <th style="width: 25%" class="text-right">Fecha reporte:</th>
                 <td style="width: 35%">{{$incidencia->fecha_reporte}}</td>
             </tr>
             <tr>
-                <th style="width: 25%" class="text-right">Concepto:</th>
-                <td style="width: 35%" colspan="3">{{$incidencia->concepto}}</td>
+                <th style="width: 25%" class="text-right">Requerimiento:</th>
+                <td style="width: 35%">{{$incidencia->codigo_requerimiento}}</td>
+                <th style="width: 25%" class="text-right">Cod. CDP:</th>
+                <td style="width: 35%">{{$incidencia->codigo_oportunidad}}</td>
             </tr>
         </thead>
     </table>
@@ -148,15 +149,15 @@
         <thead>
             <tr>
                 <th style="width: 25%" class="text-right">Nombre contacto:</th>
-                <td style="width: 35%">{{$incidencia->nombre}}</td>
+                <td style="width: 35%">{{$incidencia->nombre_contacto}}</td>
                 <th style="width: 25%" class="text-right">Cargo:</th>
-                <td style="width: 35%">{{$incidencia->cargo}}</td>
+                <td style="width: 35%">{{$incidencia->cargo_contacto}}</td>
             </tr>
             <tr>
                 <th style="width: 25%" class="text-right">Dirección contacto:</th>
-                <td style="width: 35%">{{$incidencia->direccion}}</td>
+                <td style="width: 35%">{{$incidencia->direccion_contacto}}</td>
                 <th style="width: 25%" class="text-right">Teléfono:</th>
-                <td style="width: 35%">{{$incidencia->telefono}}</td>
+                <td style="width: 35%">{{$incidencia->telefono_contacto}}</td>
             </tr>
             <tr>
                 <th style="width: 25%" class="text-right">Usuario final:</th>
@@ -168,26 +169,27 @@
     </table>
 
     <div class="seccion-hoja">
-        <h4 style="font-size: 14px;">Descripción del producto(s)</h4>
+        <h4 style="font-size: 14px;">Descripción del producto</h4>
     </div>
     
     <table>
         <thead>
-            @foreach ($productos as $prod)
+            {{-- @foreach ($productos as $prod) --}}
             <tr>
-                <th style="width: 25%" class="text-right">Tipo Producto:</th>
-                <td style="width: 35%">{{$prod->producto}}</td>
+                <th style="width: 25%" class="text-right">Serie:</th>
+                <td style="width: 35%">{{$incidencia->serie}}</td>
+                <th style="width: 25%" class="text-right">Producto:</th>
+                <td style="width: 35%">{{$incidencia->producto}}</td>
                 <th style="width: 25%" class="text-right">Marca:</th>
-                <td style="width: 35%">{{$prod->marca}}</td>
+                <td style="width: 35%">{{$incidencia->marca}}</td>
             </tr>
             <tr>
                 <th style="width: 25%" class="text-right">Modelo:</th>
-                <td style="width: 35%">{{$prod->modelo}}</td>
-                <th style="width: 25%" class="text-right">Serie:</th>
-                <td style="width: 35%">{{$prod->serie}}</td>
+                <td style="width: 35%">{{$incidencia->modelo}}</td>
+                <th style="width: 25%" class="text-right">Tipo Producto:</th>
+                <td style="width: 35%">{{$incidencia->tipo_descripcion}}</td>
             </tr>
-            <tr><td colspan="4"><br></td></tr>
-            @endforeach
+            {{-- @endforeach --}}
         </thead>
     </table>
     <div class="seccion-hoja">

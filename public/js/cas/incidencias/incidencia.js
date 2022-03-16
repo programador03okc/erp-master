@@ -1,4 +1,5 @@
 let listaSeriesProductos = [];
+let ubigeoOrigen = '';
 
 $(function () {
     $(".edition").attr('disabled', 'true');
@@ -35,6 +36,7 @@ function mostrarIncidencia(id) {
             $("[name=usuario_final]").val(response.incidencia.usuario_final);
             $("[name=importe_gastado]").val(response.incidencia.importe_gastado);
             $("[name=comentarios_cierre]").val(response.incidencia.comentarios_cierre);
+            $("[name=parte_reemplazada]").val(response.incidencia.parte_reemplazada);
 
             $("[name=id_mov_alm]").val(response.incidencia.id_salida);
             $("[name=id_guia_ven]").val(response.incidencia.id_guia_ven);
@@ -43,7 +45,6 @@ function mostrarIncidencia(id) {
             $("[name=id_empresa]").val(response.incidencia.id_empresa);
             $("[name=id_entidad]").val(response.incidencia.id_entidad);
             $("[name=id_contacto]").val(response.incidencia.id_contacto);
-            $("[name=codigo_oportunidad]").val(response.incidencia.codigo_oportunidad);
 
             $("[name=falla_reportada]").val(response.incidencia.falla_reportada);
             $("[name=fecha_reporte]").val(response.incidencia.fecha_reporte);
@@ -52,37 +53,41 @@ function mostrarIncidencia(id) {
             $("[name=conformidad]").val(response.incidencia.conformidad);
 
             $('[name=equipo_operativo]').prop('checked', (response.incidencia.equipo_operativo ? true : false));
+            // $(".guia_venta").text(response.incidencia.serie + '-' + response.incidencia.numero);
+            $("[name=cliente_razon_social]").val(response.incidencia.razon_social);
+            $(".codigo_oportunidad").text(response.incidencia.codigo_oportunidad);
+            $("[name=nro_orden]").val(response.incidencia.nro_orden);
+            $(".fecha_registro").text(response.incidencia.fecha_registro);
 
-            $(".guia_venta").text(response.incidencia.serie + '-' + response.incidencia.numero);
-            $(".cliente_razon_social").text(response.incidencia.razon_social);
-            $(".codigo_requerimiento").text(response.incidencia.codigo_requerimiento);
-            $(".concepto_requerimiento").text(response.incidencia.concepto);
-            $(".fecha_registro").text(formatDate(fecha_actual()));
+            $("[name=nombre_contacto]").val(response.incidencia.nombre_contacto);
+            $("[name=cargo_contacto]").val(response.incidencia.cargo_contacto);
+            $("[name=telefono_contacto]").val(response.incidencia.telefono_contacto);
+            $("[name=direccion_contacto]").val(response.incidencia.direccion_contacto);
+            $("[name=id_ubigeo_contacto]").val(response.incidencia.id_ubigeo_contacto);
+            $("[name=ubigeo_contacto]").val(response.incidencia.ubigeo_descripcion);
+            $(".horario_contacto").text(response.incidencia.horario);
+            $(".email_contacto").text(response.incidencia.email);
 
-            $(".nombre").text(response.incidencia.nombre);
-            $(".cargo").text(response.incidencia.cargo);
-            $(".telefono").text(response.incidencia.telefono);
-            $(".direccion").text(response.incidencia.direccion);
-            $(".horario").text(response.incidencia.horario);
-            $(".email").text(response.incidencia.email);
+            $("[name=serie]").val(response.incidencia.serie);
+            $("[name=producto]").val(response.incidencia.producto);
+            $("[name=marca]").val(response.incidencia.marca);
+            $("[name=modelo]").val(response.incidencia.modelo);
+            $("[name=id_tipo]").val(response.incidencia.id_tipo);
+            // response.productos.forEach(function (element) {
 
-            response.productos.forEach(function (element) {
-
-                listaSeriesProductos.push({
-                    "id_incidencia_producto": element.id_incidencia_producto,
-                    "id_incidencia": element.id_incidencia,
-                    "id_prod_serie": element.id_prod_serie ?? null,
-                    "serie": element.serie,
-                    "id_producto": element.id_producto ?? null,
-                    // "codigo": element.producto.codigo ?? null,
-                    // "part_number": element.producto.part_number ?? null,
-                    "descripcion": element.producto !== null ? element.producto : '',
-                    "id_tipo": element.id_tipo,
-                    "marca": element.marca,
-                    "modelo": element.modelo,
-                });
-            });
-            mostrarListaSeriesProductos();
+            //     listaSeriesProductos.push({
+            //         "id_incidencia_producto": element.id_incidencia_producto,
+            //         "id_incidencia": element.id_incidencia,
+            //         "id_prod_serie": element.id_prod_serie ?? null,
+            //         "serie": element.serie,
+            //         "id_producto": element.id_producto ?? null,
+            //         "descripcion": element.producto !== null ? element.producto : '',
+            //         "id_tipo": element.id_tipo,
+            //         "marca": element.marca,
+            //         "modelo": element.modelo,
+            //     });
+            // });
+            // mostrarListaSeriesProductos();
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
@@ -98,7 +103,18 @@ function openContacto() {
     var id_contacto = $("[name=id_contacto]").val();
     var codigo = $("[name=codigo_oportunidad]").val() + ' - ' + $(".codigo_requerimiento").text();
 
-    openDespachoContactoIncidencia(id_requerimiento, id_contribuyente, id_entidad, id_contacto, codigo);
+    if (id_contribuyente !== null) {
+        openDespachoContactoIncidencia(id_requerimiento, id_contribuyente, id_entidad, id_contacto, codigo);
+    } else {
+        Lobibox.notify('warning', {
+            title: false,
+            size: "mini",
+            rounded: true,
+            sound: false,
+            delayIndicator: false,
+            msg: 'No existe un contribuyente.'
+        });
+    }
 }
 
 $(".nueva-incidencia").on('click', function () {
@@ -111,13 +127,15 @@ $(".nueva-incidencia").on('click', function () {
     $(".edit-incidencia").hide();
     $(".buscar-incidencia").hide();
 
-    $("[name=modo]").val("edicion");
     $("#codigo_ficha").text('');
-
     $(".limpiarIncidencia").val("");
     $(".limpiarTexto").text("");
-    $("[name=id_incidencia]").val("");
     $("#seriesProductos tbody").html("");
+
+    $("[name=modo]").val("edicion");
+    $("[name=id_incidencia]").val("");
+    $("[name=fecha_reporte]").val(fecha_actual());
+
 
 });
 
@@ -254,19 +272,19 @@ function guardarIncidencia(data) {
     });
 }
 
-function mostrarListaSeriesProductos() {
-    var html = '';
-    $('#seriesProductos tbody').html(html);
-    listaSeriesProductos.forEach(function (element) {
-        html += `<tr>
-        <td style="text-align:center">${element.serie}</td>
-        <td style="text-align:center">${element.descripcion ?? ''}</td>
-        <td style="text-align:center">${element.marca ?? ''}</td>
-        <td style="text-align:center">${element.modelo ?? ''}</td>
-        </tr>`;
-    });
-    $('#seriesProductos tbody').html(html);
-}
+// function mostrarListaSeriesProductos() {
+//     var html = '';
+//     $('#seriesProductos tbody').html(html);
+//     listaSeriesProductos.forEach(function (element) {
+//         html += `<tr>
+//         <td style="text-align:center">${element.serie}</td>
+//         <td style="text-align:center">${element.descripcion ?? ''}</td>
+//         <td style="text-align:center">${element.marca ?? ''}</td>
+//         <td style="text-align:center">${element.modelo ?? ''}</td>
+//         </tr>`;
+//     });
+//     $('#seriesProductos tbody').html(html);
+// }
 
 function anularIncidencia() {
 
@@ -326,4 +344,10 @@ function imprimirFichaAtencionBlanco() {
     if (id_incidencia !== null && id_incidencia !== '') {
         window.open("imprimirFichaAtencionBlanco/" + id_incidencia);
     }
+}
+
+function abrirUbigeoModal(origen) {
+    ubigeoOrigen = origen;
+    console.log(ubigeoOrigen);
+    ubigeoModal();
 }

@@ -42,8 +42,8 @@ function listarIncidencias() {
                 }, className: "text-center"
             },
             { 'data': 'empresa_razon_social', 'name': 'empresa.razon_social' },
-            { 'data': 'razon_social', 'name': 'adm_contri.razon_social' },
-            { 'data': 'concepto', 'name': 'alm_req.concepto' },
+            { 'data': 'cliente' },
+            { 'data': 'nro_orden' },
             // {
             //     data: 'numero', name: 'guia_ven.numero',
             //     'render': function (data, type, row) {
@@ -52,22 +52,22 @@ function listarIncidencias() {
             // },
             { 'data': 'factura' },
             {
-                'data': 'nombre', name: 'adm_ctb_contac.nombre',
+                'data': 'nombre_contacto',
                 render: function (data, type, row) {
-                    if (row["nombre"] == null) {
+                    if (row["nombre_contacto"] == null) {
                         return '';
                     } else {
                         return (
                             `<a href="#" class="contacto" 
-                            data-nombre="${row["nombre"]}" 
-                            data-cargo="${row["cargo"]}"
-                            data-telefono="${row["telefono"]}"
-                            data-direccion="${row["direccion"]}"
+                            data-nombre="${row["nombre_contacto"]}" 
+                            data-cargo="${row["cargo_contacto"]}"
+                            data-telefono="${row["telefono_contacto"]}"
+                            data-direccion="${row["direccion_contacto"]}"
                             data-horario="${row["horario"]}"
                             data-email="${row["email"]}"
                             data-codigo="${row["codigo"]}"
                             data-usuario="${row["usuario_final"]}"
-                            >${row["nombre"]}</a>`
+                            >${row["nombre_contacto"]}</a>`
                         );
                     }
                 }, className: "text-center"
@@ -174,10 +174,10 @@ $("#listaIncidencias tbody").on("click", "a.contacto", function (e) {
         show: true
     });
 
-    var nombre = $(this).data("nombre");
-    var cargo = $(this).data("cargo");
-    var telefono = $(this).data("telefono");
-    var direccion = $(this).data("direccion");
+    var nombre = $(this).data("nombre_contacto");
+    var cargo = $(this).data("cargo_contacto");
+    var telefono = $(this).data("telefono_contacto");
+    var direccion = $(this).data("direccion_contacto");
     var horario = $(this).data("horario");
     var email = $(this).data("email");
     var codigo = $(this).data("codigo");
