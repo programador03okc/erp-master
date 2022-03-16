@@ -1282,7 +1282,7 @@ class RequerimientoController extends Controller
 
             }
 
-            // DB::commit();
+            DB::commit();
             return response()->json(['estado' => $requerimiento->estado, 'mensaje' => $mensaje,'tipo_mensaje'=>$tipoMensaje]);
         } catch (Exception $e) {
             DB::rollBack();
