@@ -11,19 +11,16 @@ $("#form-fichaReporte").on("submit", function (e) {
         cancelButtonText: "Cancelar",
         confirmButtonText: "Sí, Guardar"
     }).then(result => {
-
         if (result.isConfirmed) {
-            var data = $(this).serialize();
-            console.log(data);
-            guardarFichaReporte(data);
-            $("#listaIncidencias").DataTable().ajax.reload(null, false);
+            guardarFichaReporte();
         }
     });
 });
 
-function guardarFichaReporte(data) {
+function guardarFichaReporte() {
     $("#submit_guardar_reporte").attr('disabled', true);
     var id = $('[name=id_incidencia_reporte]').val();
+    var formData = new FormData($('#form-fichaReporte')[0]);
     var url = '';
 
     if (id !== '') {
@@ -35,7 +32,10 @@ function guardarFichaReporte(data) {
     $.ajax({
         type: 'POST',
         url: url,
-        data: data,
+        data: formData,
+        cache: false,
+        contentType: false,
+        processData: false,
         dataType: 'JSON',
         success: function (response) {
             console.log(response);
@@ -48,6 +48,7 @@ function guardarFichaReporte(data) {
                 msg: response.mensaje
             });
 
+            $("#listaIncidencias").DataTable().ajax.reload(null, false);
             $("#submit_guardar_reporte").attr('disabled', false);
             $('#modal-fichaReporte').modal('hide');
         }

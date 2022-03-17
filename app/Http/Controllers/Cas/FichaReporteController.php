@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Cas\Incidencia;
 use App\Models\Cas\IncidenciaProducto;
 use App\Models\Cas\IncidenciaReporte;
+use App\Models\Cas\IncidenciaReporteAdjunto;
 use App\Models\Cas\MedioReporte;
 use App\Models\Configuracion\Usuario;
 use Carbon\Carbon;
@@ -15,6 +16,8 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 class FichaReporteController extends Controller
 {
@@ -77,19 +80,27 @@ class FichaReporteController extends Controller
     public function incidenciasExcel(Request $request)
     {
         $data = $this->incidencias();
+        $fecha = new Carbon();
         return Excel::download(new IncidenciasExport(
             $data,
             // $request->fecha_inicio,
             // $request->fecha_fin
-        ), 'incidencias.xlsx');
+        ), 'Reporte de incidencias al ' . $fecha . '.xlsx');
     }
 
     function listarFichasReporte($id_incidencia)
     {
-        $lista = IncidenciaReporte::with('usuario')->where([
+        $lista = IncidenciaReporte::with('usuario', 'adjuntos')->where([
             ['id_incidencia', '=', $id_incidencia], ['estado', '!=', 7]
         ])->get();
         return response()->json($lista);
+    }
+
+    public function verAdjuntosFicha($id)
+    {
+        $adjuntos = IncidenciaReporteAdjunto::where('id_incidencia_reporte', $id)
+            ->get();
+        return response()->json($adjuntos);
     }
 
     function guardarFichaReporte(Request $request)
@@ -112,6 +123,31 @@ class FichaReporteController extends Controller
             $incidencia = Incidencia::find($request->padre_id_incidencia);
             $incidencia->estado = 2;
             $incidencia->save();
+
+            //Guardar archivos subidos
+            if ($request->hasFile('archivos')) {
+                $archivos = $request->file('archivos');
+
+                foreach ($archivos as $archivo) {
+                    $id_adjunto = DB::table('cas.incidencia_reporte_adjuntos')
+                        ->insertGetId([
+                            'id_incidencia_reporte' => $reporte->id_incidencia_reporte,
+                            'estado' => 1,
+                        ], 'id_adjunto');
+
+                    //obtenemos el nombre del archivo
+                    $extension = pathinfo($archivo->getClientOriginalName(), PATHINFO_EXTENSION);
+                    $nombre = $id_adjunto . '.' . $reporte->codigo . '.' . $extension;
+
+                    //indicamos que queremos guardar un nuevo archivo en el disco local
+                    File::delete(public_path('cas/incidencias/fichas/' . $nombre));
+                    Storage::disk('archivos')->put('cas/incidencias/fichas/' . $nombre, File::get($archivo));
+
+                    DB::table('cas.incidencia_reporte_adjuntos')
+                        ->where('id_adjunto', $id_adjunto)
+                        ->update(['adjunto' => $nombre]);
+                }
+            }
 
             $mensaje = 'Se guardó la ficha reporte correctamente';
             $tipo = 'success';

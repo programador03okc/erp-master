@@ -22,6 +22,11 @@ class IncidenciaReporte extends Model
         return $this->belongsTo(Usuario::class, 'id_usuario');
     }
 
+    public function adjuntos()
+    {
+        return $this->hasMany(IncidenciaReporteAdjunto::class, 'id_incidencia_reporte');
+    }
+
     public static function nuevoCodigoFicha($id_incidencia)
     {
         $yy = date('y', strtotime("now"));

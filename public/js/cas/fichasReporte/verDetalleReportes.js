@@ -53,15 +53,17 @@ function formatReportes(table_id, id, row) {
                         <td style="border: none; text-align: center">${(element.fecha_reporte !== null ? formatDate(element.fecha_reporte) : '')}</td>
                         <td style="border: none; text-align: center">${element.usuario.nombre_corto}</td>
                         <td style="border: none; text-align: center">${element.acciones_realizadas}</td>
+                        <td style="border: none; text-align: center">${(element.adjuntos.length > 0 ? '<a href="#" onClick="verAdjuntosFicha(' + element.id_incidencia_reporte + ');">' + element.adjuntos.length + ' archivos adjuntos </a>' : '')}</td>
                         <td style="border: none; text-align: center">${formatDateHour(element.fecha_registro)}</td>
-                        <td style="border: none; text-align: center">
-                            <button type="button" class= "btn btn-danger boton" data-toggle="tooltip" 
-                                data-placement="bottom" onClick="anularFichaReporte(${element.id_incidencia_reporte})" 
-                                title="Anular Ficha Reporte">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </td>
+                        
                         </tr>`;
+                    // <td style="border: none; text-align: center">
+                    //     <button type="button" class= "btn btn-danger boton" data-toggle="tooltip" 
+                    //         data-placement="bottom" onClick="anularFichaReporte(${element.id_incidencia_reporte})" 
+                    //         title="Anular Ficha Reporte">
+                    //         <i class="fas fa-trash"></i>
+                    //     </button>
+                    // </td>
                     i++;
                 });
                 var tabla = `<table class= "table table-sm" style = "border: none;" 
@@ -73,8 +75,8 @@ function formatReportes(table_id, id, row) {
                         <th style="border: none;">Fecha Reporte</th>
                         <th style="border: none;">Responsable</th>
                         <th style="border: none;">Acciones realizadas</th>
+                        <th style="border: none;">Adjunto(s)</th>
                         <th style="border: none;">Fecha registro</th>
-                        <th style="border: none;">Anular</th>
                     </tr>
                 </thead>
                 <tbody>${html}</tbody>
@@ -96,6 +98,38 @@ function formatReportes(table_id, id, row) {
         console.log(errorThrown);
     });
 
+}
+
+function verAdjuntosFicha(id_incidencia_reporte) {
+
+    if (id_incidencia_reporte !== "") {
+        $('#modal-verAdjuntosFicha').modal({
+            show: true
+        });
+        $('#adjuntosFicha tbody').html('');
+
+        $.ajax({
+            type: 'GET',
+            url: 'verAdjuntosFicha/' + id_incidencia_reporte,
+            dataType: 'JSON',
+            success: function (response) {
+                console.log(response);
+                if (response.length > 0) {
+                    var html = '';
+                    response.forEach(function (element) {
+                        html += `<tr>
+                            <td><a target="_blank" href="/files/cas/incidencias/fichas/${element.adjunto}">${element.adjunto}</a></td>
+                        </tr>`;
+                    });
+                    $('#adjuntosFicha tbody').html(html);
+                }
+            }
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        });
+    }
 }
 
 function imprimirFichaReporte(id_ficha) {
