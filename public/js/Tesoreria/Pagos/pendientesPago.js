@@ -2,7 +2,7 @@
     constructor(permisoVer, permisoEnviar, permisoRegistrar) {
         this.permisoVer = permisoVer;
         this.permisoEnviar = permisoEnviar;
-        this.permisoRegistrar = 1;
+        this.permisoRegistrar = permisoRegistrar;
         this.listarRequerimientos();
         this.listarComprobantes();
         this.listarOrdenes();
@@ -204,7 +204,7 @@
                 { 'data': 'razon_social', 'name': 'adm_contri.razon_social' },
                 {
                     'render': function (data, type, row) {
-                        return (row['fecha'] !== null ? formatDate(row['fecha']) : '');
+                        return (row['fecha'] !== null ? (row['fecha']) : '');
                     }, 'className': 'text-center', 'searchable': false
                 },
                 { 'data': 'condicion_pago', 'name': 'log_cdn_pago.descripcion' },

@@ -109,7 +109,7 @@ class OrdenController extends Controller
         $tipo_cuenta = TipoCuenta::mostrar();
         $empresas = $this->select_mostrar_empresas();
 
-        return view('logistica/gestion_logistica/compras/ordenes/elaborar/crear_orden_requerimiento', compact('empresas','bancos', 'tipo_cuenta', 'sedes', 'sis_identidad', 'tp_documento', 'tp_moneda', 'tp_doc', 'condiciones', 'condiciones_softlink', 'clasificaciones', 'subcategorias', 'categorias', 'unidades', 'unidades_medida', 'monedas'));
+        return view('logistica/gestion_logistica/compras/ordenes/elaborar/crear_orden_requerimiento', compact('empresas', 'bancos', 'tipo_cuenta', 'sedes', 'sis_identidad', 'tp_documento', 'tp_moneda', 'tp_doc', 'condiciones', 'condiciones_softlink', 'clasificaciones', 'subcategorias', 'categorias', 'unidades', 'unidades_medida', 'monedas'));
     }
 
     function lista_contactos_proveedor($id_proveedor)
@@ -195,7 +195,7 @@ class OrdenController extends Controller
     public function select_mostrar_empresas()
     {
         $data = DB::table('administracion.adm_empresa')
-            ->select('adm_empresa.id_empresa','adm_empresa.codigo', 'adm_empresa.logo_empresa', 'adm_contri.nro_documento', 'adm_contri.razon_social')
+            ->select('adm_empresa.id_empresa', 'adm_empresa.codigo', 'adm_empresa.logo_empresa', 'adm_contri.nro_documento', 'adm_contri.razon_social')
             ->join('contabilidad.adm_contri', 'adm_empresa.id_contribuyente', '=', 'adm_contri.id_contribuyente')
             ->where('adm_empresa.estado', '=', 1)
             ->orderBy('adm_contri.razon_social', 'asc')
@@ -932,7 +932,7 @@ class OrdenController extends Controller
         $tipos_documentos = Identidad::mostrar();
 
 
-        return view('logistica/gestion_logistica/compras/ordenes/listado/listar_ordenes', compact('prioridades','empresas', 'grupos', 'estados','tiposDestinatario','bancos','tipo_cuenta','monedas','tipos_documentos'));
+        return view('logistica/gestion_logistica/compras/ordenes/listado/listar_ordenes', compact('prioridades', 'empresas', 'grupos', 'estados', 'tiposDestinatario', 'bancos', 'tipo_cuenta', 'monedas', 'tipos_documentos'));
     }
 
     function consult_doc_aprob($id_doc, $tp_doc)
@@ -1144,7 +1144,7 @@ class OrdenController extends Controller
                     'nro_cuenta_detra' => $element->nro_cuenta_detra,
                     'id_persona_pago' => $element->id_persona_pago, //util para envia a pago,
                     'id_cuenta_persona_pago' => $element->id_cuenta_persona_pago, //util para envia a pago,
-                    'comentario_pago' => $element->comentario_pago//util para envia a pago,
+                    'comentario_pago' => $element->comentario_pago //util para envia a pago,
 
                 ];
             }
@@ -2060,12 +2060,12 @@ class OrdenController extends Controller
                 </tr>
                 <tr>
                     <td width="15%" class="verticalTop subtitle">-CDP / Req.: </td>
-                    <td class="verticalTop">' . ($ordenArray['head']['codigo_cc'] ? $ordenArray['head']['codigo_cc'].'/' : '').($ordenArray['head']['codigo_requerimiento'] ? $ordenArray['head']['codigo_requerimiento'] : '') . '</td
+                    <td class="verticalTop">' . ($ordenArray['head']['codigo_cc'] ? $ordenArray['head']['codigo_cc'] . '/' : '') . ($ordenArray['head']['codigo_requerimiento'] ? $ordenArray['head']['codigo_requerimiento'] : '') . '</td
         
                 </tr>
                 <tr>
                     <td width="15%" class="verticalTop subtitle">-Cod. Softlink: </td>
-                    <td class="verticalTop">' .  ($ordenArray['head']['condicion_compra']['codigo_softlink']?$ordenArray['head']['condicion_compra']['codigo_softlink']:'') . '</td
+                    <td class="verticalTop">' .  ($ordenArray['head']['condicion_compra']['codigo_softlink'] ? $ordenArray['head']['condicion_compra']['codigo_softlink'] : '') . '</td
         
                 </tr>
                 </table>
@@ -2500,22 +2500,22 @@ class OrdenController extends Controller
 
         try {
             DB::beginTransaction();
-            $idOrden='';
-            $codigoOrden='';
-            $statusMigracionSoftlink=null;
+            $idOrden = '';
+            $codigoOrden = '';
+            $statusMigracionSoftlink = null;
             $actualizarEstados = [];
 
-            $idDetalleRequerimientoList=[];
+            $idDetalleRequerimientoList = [];
             $count = count($request->descripcion);
             for ($i = 0; $i < $count; $i++) {
-                if($request->idDetalleRequerimiento[$i]>0){
-                    $idDetalleRequerimientoList[]=$request->idDetalleRequerimiento[$i];
+                if ($request->idDetalleRequerimiento[$i] > 0) {
+                    $idDetalleRequerimientoList[] = $request->idDetalleRequerimiento[$i];
                 }
             }
 
             $requerimientoHelper = new RequerimientoHelper();
-            if($requerimientoHelper->EstaHabilitadoRequerimiento($idDetalleRequerimientoList)==true){ // buscar el requerimiento de cada detalle requerimiento y devolver si esta habilitado para acción de guardar, estado en pausa y por regularizar no es posible realizar acción de guardar
-                
+            if ($requerimientoHelper->EstaHabilitadoRequerimiento($idDetalleRequerimientoList) == true) { // buscar el requerimiento de cada detalle requerimiento y devolver si esta habilitado para acción de guardar, estado en pausa y por regularizar no es posible realizar acción de guardar
+
                 $orden = new Orden();
                 $tp_doc = ($request->id_tp_documento !== null ? $request->id_tp_documento : 2);
                 $orden->codigo =  Orden::nextCodigoOrden($tp_doc);
@@ -2578,53 +2578,50 @@ class OrdenController extends Controller
 
                 }
 
-                $idOrden=$orden->id_orden_compra;
-                $codigoOrden=$orden->codigo;
+                $idOrden = $orden->id_orden_compra;
+                $codigoOrden = $orden->codigo;
 
                 DB::commit();
 
                 if (isset($orden->id_orden_compra) and $orden->id_orden_compra > 0) {
                     $actualizarEstados = $this->actualizarNuevoEstadoRequerimiento($orden->id_orden_compra, $orden->codigo);
                 }
-                
 
-                if($request->migrar_oc_softlink ==true){
-                    
-                    $statusMigracionSoftlink= (new MigrateOrdenSoftLinkController)->migrarOrdenCompra($idOrden)->original ?? null; //tipo : success , warning, error, mensaje : ""
+
+                if ($request->migrar_oc_softlink == true) {
+
+                    $statusMigracionSoftlink = (new MigrateOrdenSoftLinkController)->migrarOrdenCompra($idOrden)->original ?? null; //tipo : success , warning, error, mensaje : ""
                 }
- 
+
 
 
                 return response()->json([
                     'id_orden_compra' => $idOrden,
                     'codigo' => $codigoOrden,
-                    'mensaje'=>$request->migrar_oc_softlink ==true?'OK':'',
-                    'tipo_estado'=>'success',
+                    'mensaje' => $request->migrar_oc_softlink == true ? 'OK' : '',
+                    'tipo_estado' => 'success',
                     'lista_estado_requerimiento' => $actualizarEstados['lista_estado_requerimiento'],
                     'lista_finalizados' => $actualizarEstados['lista_finalizados'],
                     'status_migracion_softlink' => $statusMigracionSoftlink
-    
-                ]);
 
-            }// si el estado de algun requerimiento viculado no esta habilitado, esta con estado 38 o 39
-            else{
+                ]);
+            } // si el estado de algun requerimiento viculado no esta habilitado, esta con estado 38 o 39
+            else {
 
                 return response()->json([
                     'id_orden_compra' => null,
                     'codigo' => null,
-                    'mensaje'=>'No puede guardar la orden, existe un requerimiento vinculado con estado "En pausa" o "Por regularizar"',
-                    'tipo_estado'=>'warning',
+                    'mensaje' => 'No puede guardar la orden, existe un requerimiento vinculado con estado "En pausa" o "Por regularizar"',
+                    'tipo_estado' => 'warning',
                     'lista_estado_requerimiento' => null,
                     'lista_finalizados' => null,
                     'status_migracion_softlink' => null
-    
+
                 ]);
-
             }
-
         } catch (Exception $e) {
             DB::rollBack();
-            return response()->json(['id_orden_compra' => $idOrden, 'codigo' => $codigoOrden, 'tipo_estado'=>'error' ,'lista_finalizados' => ($actualizarEstados!=null?$actualizarEstados['lista_finalizados']:[]), 'status_migracion_softlink' => $statusMigracionSoftlink, 'mensaje' => 'Mensaje de error: ' . $e->getMessage()]);
+            return response()->json(['id_orden_compra' => $idOrden, 'codigo' => $codigoOrden, 'tipo_estado' => 'error', 'lista_finalizados' => ($actualizarEstados != null ? $actualizarEstados['lista_finalizados'] : []), 'status_migracion_softlink' => $statusMigracionSoftlink, 'mensaje' => 'Mensaje de error: ' . $e->getMessage()]);
         }
     }
 
@@ -2718,7 +2715,7 @@ class OrdenController extends Controller
             ->select(
                 'log_det_ord_compra.*'
             )
-            ->where([['log_det_ord_compra.id_orden_compra', '!=', $idOrden],['log_det_ord_compra.estado', '!=', 7]])
+            ->where([['log_det_ord_compra.id_orden_compra', '!=', $idOrden], ['log_det_ord_compra.estado', '!=', 7]])
             ->whereIn('log_det_ord_compra.id_detalle_requerimiento', $idDetalleOrdenList)
             ->get();
 
@@ -2809,7 +2806,7 @@ class OrdenController extends Controller
                     if ($itemBase['id_detalle_requerimiento'] == $ordenHoy['id_detalle_requerimiento']) {
                         $itemBaseList[$keyItemBase]['cantidad_atendida'] += intval($ordenHoy['cantidad']);
                         $itemBaseList[$keyItemBase]['update'] = true;
-                        if($ordenHoy['estado']==7){
+                        if ($ordenHoy['estado'] == 7) {
                             $itemBaseList[$keyItemBase]['cantidad_atendida'] = 0;
                         }
                     }
@@ -2853,7 +2850,7 @@ class OrdenController extends Controller
 
                 } elseif (($itemBase['cantidad_atendida'] > 0) && ($itemBase['cantidad'] > $itemBase['cantidad_atendida'])) {
                     $itemBaseList[$keyItemBase]['estado'] = 15; //atendido parcial
-                }elseif (($itemBase['cantidad_atendida'] == 0) && ($itemBase['cantidad'] > 0)) {
+                } elseif (($itemBase['cantidad_atendida'] == 0) && ($itemBase['cantidad'] > 0)) {
                     $itemBaseList[$keyItemBase]['estado'] = 1; //elaborado
                 }
             }
@@ -2918,7 +2915,7 @@ class OrdenController extends Controller
         Debugbar::info($itemBaseList);
         // Debugbar::info($itemBaseEnOtrasOrdenesGeneradasList);
         Debugbar::info($detalleOrdenGeneradaList);
-    //     Debugbar::info($itemAtendidoParcialOSinAtender);
+        //     Debugbar::info($itemAtendidoParcialOSinAtender);
         // }
 
 
@@ -2966,16 +2963,16 @@ class OrdenController extends Controller
             $data = [];
             $status = 0;
 
-            $idDetalleRequerimientoList=[];
+            $idDetalleRequerimientoList = [];
             $count = count($request->descripcion);
             for ($i = 0; $i < $count; $i++) {
-                if($request->idDetalleRequerimiento[$i]>0){
-                    $idDetalleRequerimientoList[]=$request->idDetalleRequerimiento[$i];
+                if ($request->idDetalleRequerimiento[$i] > 0) {
+                    $idDetalleRequerimientoList[] = $request->idDetalleRequerimiento[$i];
                 }
             }
 
             $requerimientoHelper = new RequerimientoHelper();
-            if($requerimientoHelper->EstaHabilitadoRequerimiento($idDetalleRequerimientoList)==true){ 
+            if ($requerimientoHelper->EstaHabilitadoRequerimiento($idDetalleRequerimientoList) == true) {
 
                 $ValidarOrdenSoftlink = (new MigrateOrdenSoftLinkController)->validarOrdenSoftlink($request->id_orden);
                 if ($ValidarOrdenSoftlink['tipo'] == 'success') {
@@ -3008,11 +3005,11 @@ class OrdenController extends Controller
                     $orden->observacion = isset($request->observacion) ? $request->observacion : null;
                     $orden->tipo_cambio_compra = isset($request->tipo_cambio_compra) ? $request->tipo_cambio_compra : true;
                     $orden->save();
-    
+
                     $idDetalleProcesado = [];
-    
+
                     if (isset($request->cantidadAComprarRequerida)) {
-    
+
                         $count = count($request->cantidadAComprarRequerida);
                         for ($i = 0; $i < $count; $i++) {
                             $id = $request->idRegister[$i];
@@ -3036,10 +3033,9 @@ class OrdenController extends Controller
                                         $detalle = OrdenCompraDetalle::where("id_detalle_orden", $id)->first();
                                         $detalle->estado = 7;
                                         $detalle->save();
-
                                     }
                                 } else {
-    
+
                                     $detalle = OrdenCompraDetalle::where("id_detalle_orden", $id)->first();
                                     $detalle->id_producto = $request->idProducto[$i];
                                     $detalle->id_detalle_requerimiento = $request->idDetalleRequerimiento[$i];
@@ -3050,47 +3046,47 @@ class OrdenController extends Controller
                                     $detalle->subtotal = floatval($request->cantidadAComprarRequerida[$i] * $request->precioUnitario[$i]);
                                     $detalle->tipo_item_id = $request->idTipoItem[$i];
                                     $detalle->save();
-    
+
                                     $idDetalleProcesado[] = $detalle->id_detalle_orden;
                                 }
                             }
                         }
                     }
-    
-    
+
+
                     $data = [
                         'id_orden_compra' => $orden->id_orden_compra,
                         'codigo' => $orden->codigo,
-                        'mensaje'=>$ValidarOrdenSoftlink['mensaje'],
+                        'mensaje' => $ValidarOrdenSoftlink['mensaje'],
                         'status_migracion_softlink' => $ValidarOrdenSoftlink,
                     ];
-    
+
                     $status = 200;
                 } else {
                     $data = [
                         'id_orden_compra' => 0,
                         'codigo' => '',
-                        'mensaje'=>$ValidarOrdenSoftlink['mensaje'],
+                        'mensaje' => $ValidarOrdenSoftlink['mensaje'],
                         'status_migracion_softlink' => $ValidarOrdenSoftlink,
                     ];
                     $status = 204;
                 }
-    
-    
-    
+
+
+
                 DB::commit();
                 if (isset($request->id_orden) and $request->id_orden > 0) {
                     $this->actualizarNuevoEstadoRequerimiento($request->id_orden, null);
                 }
 
-                if (str_contains($data['mensaje'],'No existe un id_softlink en la OC seleccionada')) {
+                if (str_contains($data['mensaje'], 'No existe un id_softlink en la OC seleccionada')) {
                     $migrarOrdenSoftlink = (new MigrateOrdenSoftLinkController)->migrarOrdenCompra($request->id_orden)->original;
                     if ($migrarOrdenSoftlink['tipo'] == 'success') {
                         $data = [
                             'id_orden_compra' => 0,
                             'codigo' => '',
                             'tipo_estado' => 'success',
-                            'mensaje'=>'Se a obtenido una respuesta satisfactoria al intentar migrar la orden a softlink',
+                            'mensaje' => 'Se a obtenido una respuesta satisfactoria al intentar migrar la orden a softlink',
                             'status_migracion_softlink' => $migrarOrdenSoftlink,
                         ];
                     }
@@ -3102,7 +3098,7 @@ class OrdenController extends Controller
                             'id_orden_compra' => $orden->id_orden_compra,
                             'codigo' => $orden->codigo,
                             'tipo_estado' => 'success',
-                            'mensaje'=>'Se a obtenido una respuesta satisfactoria al intentar migrar la orden a softlink',
+                            'mensaje' => 'Se a obtenido una respuesta satisfactoria al intentar migrar la orden a softlink',
                             'status_migracion_softlink' => $migrarOrdenSoftlink,
                         ];
                     } else {
@@ -3115,18 +3111,14 @@ class OrdenController extends Controller
                         ];
                     }
                 }
-    
+
                 return response()->json($data);
-
-            }else{
-                return response()->json(['id_orden_compra' => 0, 'codigo' => '','tipo_estado'=>'warning', 'status_migracion_softlink' => null, 'mensaje' => 'No puede actualizar la orden, existe un requerimiento vinculado con estado "En pausa" o  "Por regularizar"']);
-
+            } else {
+                return response()->json(['id_orden_compra' => 0, 'codigo' => '', 'tipo_estado' => 'warning', 'status_migracion_softlink' => null, 'mensaje' => 'No puede actualizar la orden, existe un requerimiento vinculado con estado "En pausa" o  "Por regularizar"']);
             }
-
-
         } catch (\PDOException $e) {
             DB::rollBack();
-            return response()->json(['id_orden_compra' => 0, 'codigo' => '','tipo_estado'=>'error', 'status_migracion_softlink' => null, 'mensaje' => 'Hubo un problema al actualizar la orden. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
+            return response()->json(['id_orden_compra' => 0, 'codigo' => '', 'tipo_estado' => 'error', 'status_migracion_softlink' => null, 'mensaje' => 'Hubo un problema al actualizar la orden. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
         }
     }
 
@@ -3137,9 +3129,9 @@ class OrdenController extends Controller
             DB::beginTransaction();
 
             $ValidarOrdenSoftlink = (new MigrateOrdenSoftLinkController)->validarOrdenSoftlink($request->idOrden);
-       
+
             DB::commit();
- 
+
 
             return response()->json($ValidarOrdenSoftlink);
         } catch (\PDOException $e) {
@@ -3536,7 +3528,7 @@ class OrdenController extends Controller
                         } else {
 
                             // $correosAnulaciónOrden[] = Auth::user()->email; //usuario en sessión que genero la acción
-                            $idUsuariosAlAnularOrden = Usuario::getAllIdUsuariosPorRol(27);// Usuarios que reciben correo al anula rorden
+                            $idUsuariosAlAnularOrden = Usuario::getAllIdUsuariosPorRol(27); // Usuarios que reciben correo al anula rorden
                             foreach ($idUsuariosAlAnularOrden as $id) {
                                 $correosAnulaciónOrden[] = Usuario::find($id)->email;
                             }
@@ -3558,10 +3550,10 @@ class OrdenController extends Controller
 
 
                     }
-                } 
+                }
                 // else {
-                    // $status = 204;
-                    // $msj[] = 'hubo un problema, no se pudo restablecer el estado del requerimientos';
+                // $status = 204;
+                // $msj[] = 'hubo un problema, no se pudo restablecer el estado del requerimientos';
                 // }
             } //-> si no se encuentra req
             else {
@@ -3605,29 +3597,29 @@ class OrdenController extends Controller
         try {
             DB::beginTransaction();
 
-            $idDetalleRequerimientoList=[];
-            $detalleOrden= OrdenCompraDetalle::where([["id_orden_compra",$request->idOrden],["estado","!=",7]])->get();
+            $idDetalleRequerimientoList = [];
+            $detalleOrden = OrdenCompraDetalle::where([["id_orden_compra", $request->idOrden], ["estado", "!=", 7]])->get();
             foreach ($detalleOrden as $do) {
-                if($do->id_detalle_requerimiento>0){
-                    $idDetalleRequerimientoList[]=$do->id_detalle_requerimiento;
+                if ($do->id_detalle_requerimiento > 0) {
+                    $idDetalleRequerimientoList[] = $do->id_detalle_requerimiento;
                 }
             }
 
             $requerimientoHelper = new RequerimientoHelper();
-            if($requerimientoHelper->EstaHabilitadoRequerimiento($idDetalleRequerimientoList)==true){ 
+            if ($requerimientoHelper->EstaHabilitadoRequerimiento($idDetalleRequerimientoList) == true) {
                 $idOrden = $request->idOrden;
                 $sustento =  $request->sustento != null ? trim(strtoupper($request->sustento)) : null;
-    
+
                 $status = 0;
                 $msj = [];
                 $output = [];
                 $requerimientoIdList = [];
-    
+
                 $ValidarOrdenSoftlink = (new MigrateOrdenSoftLinkController)->validarOrdenSoftlink($idOrden);
-    
-                if ($ValidarOrdenSoftlink['tipo'] == 'success' || strpos($ValidarOrdenSoftlink['mensaje'], 'anulada') == true ) {
-                // if (true) {
-    
+
+                if ($ValidarOrdenSoftlink['tipo'] == 'success' || strpos($ValidarOrdenSoftlink['mensaje'], 'anulada') == true) {
+                    // if (true) {
+
                     $hasIngreso = $this->TieneingresoAlmacen($idOrden);
                     if ($hasIngreso['status'] == 200 && $hasIngreso['data'] == false) {
                         $makeRevertirOrden = $this->makeRevertirOrden($idOrden, $sustento);
@@ -3647,7 +3639,7 @@ class OrdenController extends Controller
                         )
                             ->where('log_ord_compra.id_orden_compra', $idOrden)
                             ->first();
-    
+
                         for ($i = 0; $i < count($requerimientoIdList); $i++) {
                             DB::table('almacen.alm_req_obs')
                                 ->insert([
@@ -3665,7 +3657,7 @@ class OrdenController extends Controller
                         'id_orden_compra' => $idOrden,
                         'codigo' => $orden->codigo,
                         'status' => $status,
-                        'tipo_estado'=>'success',
+                        'tipo_estado' => 'success',
                         'mensaje' => $msj,
                         'status_migracion_softlink' => $ValidarOrdenSoftlink,
                     ];
@@ -3675,16 +3667,16 @@ class OrdenController extends Controller
                         'id_orden_compra' => 0,
                         'codigo' => '',
                         'status' => 204,
-                        'tipo_estado'=>'warning',
+                        'tipo_estado' => 'warning',
                         'mensaje' => 'No se pudo anular la orden',
                         'status_migracion_softlink' => $ValidarOrdenSoftlink,
                     ];
                     $status = 204;
                 }
-    
-    
+
+
                 DB::commit();
-    
+
                 if ($status == 200) {
                     $migrarOrdenSoftlink = (new MigrateOrdenSoftLinkController)->anularOrdenSoftlink($idOrden)->original;
                     // $migrarOrdenSoftlink['tipo']='success';
@@ -3693,7 +3685,7 @@ class OrdenController extends Controller
                             'id_orden_compra' => $idOrden,
                             'codigo' => $orden->codigo,
                             'status' => 200,
-                            'tipo_estado'=>'success',
+                            'tipo_estado' => 'success',
                             'mensaje' => $msj,
                             'status_migracion_softlink' => $migrarOrdenSoftlink,
                         ];
@@ -3702,22 +3694,19 @@ class OrdenController extends Controller
                             'id_orden_compra' => 0,
                             'codigo' => '',
                             'status' => 204,
-                            'tipo_estado'=>'warning',
+                            'tipo_estado' => 'warning',
                             'mensaje' => 'No se pudo anular la orden',
                             'status_migracion_softlink' => $migrarOrdenSoftlink,
                         ];
                     }
                 }
                 return response()->json($output);
-            }else{
-                return response()->json(['id_orden_compra' => 0, 'codigo' => '','tipo_estado'=>'warning', 'status_migracion_softlink' => null, 'mensaje' => 'No puede anular la orden, existe un requerimiento vinculado con estado "En pausa" o  "Por regularizar"']);
-
+            } else {
+                return response()->json(['id_orden_compra' => 0, 'codigo' => '', 'tipo_estado' => 'warning', 'status_migracion_softlink' => null, 'mensaje' => 'No puede anular la orden, existe un requerimiento vinculado con estado "En pausa" o  "Por regularizar"']);
             }
-
         } catch (\PDOException $e) {
             DB::rollBack();
-            return response()->json(['id_orden_compra' => 0, 'codigo' => '','tipo_estado'=>'error', 'status_migracion_softlink' => null, 'mensaje' => 'Hubo un problema al anular la orden. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
-
+            return response()->json(['id_orden_compra' => 0, 'codigo' => '', 'tipo_estado' => 'error', 'status_migracion_softlink' => null, 'mensaje' => 'Hubo un problema al anular la orden. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
         }
     }
     public function anularItemOrden(Request $request)
@@ -3887,122 +3876,119 @@ class OrdenController extends Controller
     }
 
 
-    public function enviarNotificacionFinalizacionCDP(Request $request){
+    public function enviarNotificacionFinalizacionCDP(Request $request)
+    {
         try {
             DB::beginTransaction();
-        $idOrden= $request->idOrden;
-        $idDetalleRequerimientoList=[];
-        $idRequerimientoList=[];
-        $idCuadroPresupuestoFinalizadoList=[];
-        $codigoOportunidad=[];
-        $payloadCuadroPresupuestoFinalizado=[];
-        $tipoStatus="";
-        $mensaje="";
+            $idOrden = $request->idOrden;
+            $idDetalleRequerimientoList = [];
+            $idRequerimientoList = [];
+            $idCuadroPresupuestoFinalizadoList = [];
+            $codigoOportunidad = [];
+            $payloadCuadroPresupuestoFinalizado = [];
+            $tipoStatus = "";
+            $mensaje = "";
 
-        if($idOrden >0){
-            $detalleOrden =OrdenCompraDetalle::where('id_orden_compra',$idOrden)->get();
-            foreach ($detalleOrden as $do) {
-                if($do->id_detalle_requerimiento >0){
-                    $idDetalleRequerimientoList[]=$do->id_detalle_requerimiento;
-                }
-            }
-            if(count($idDetalleRequerimientoList)==0){
-                $tipoStatus="error";
-                $mensaje="No se encontro Id detalle requerimiento en el detalle de la orden";
-            }else{
-                $detalleRequerimiento = DetalleRequerimiento::whereIn('id_detalle_requerimiento',$idDetalleRequerimientoList)->get();
-                foreach ($detalleRequerimiento as $dr) {
-                    $idRequerimientoList[]=$dr->id_requerimiento;
-                }
-    
-                 //busca cdp finalizados
-                $correoVendedor=[];
-                foreach (array_unique($idRequerimientoList) as $idRequerimiento) {
-                    $requerimiento = Requerimiento::find($idRequerimiento);
-                    if($requerimiento->id_cc >0){
-                        $cuadroPresupuesto= CuadroCosto::find($requerimiento->id_cc);
-                        $correoVendedor[] = Usuario::find($requerimiento->id_usuario)->email;
-                        if($cuadroPresupuesto->estado_aprobacion == 4){
-                            $idCuadroPresupuestoFinalizadoList[]=$requerimiento->id_cc;
-                            $codigoOportunidad[]=$cuadroPresupuesto->oportunidad->codigo_oportunidad;
-                            $payloadCuadroPresupuestoFinalizado[] = [
-                                'requerimiento' => $requerimiento,
-                                'cuadro_presupuesto' => $cuadroPresupuesto,
-                                'orden_compra_propia' => $cuadroPresupuesto->oportunidad->ordenCompraPropia,
-                                'oportunidad' => $cuadroPresupuesto->oportunidad
-                            ];                    
-                        }
+            if ($idOrden > 0) {
+                $detalleOrden = OrdenCompraDetalle::where('id_orden_compra', $idOrden)->get();
+                foreach ($detalleOrden as $do) {
+                    if ($do->id_detalle_requerimiento > 0) {
+                        $idDetalleRequerimientoList[] = $do->id_detalle_requerimiento;
                     }
                 }
-    
-                // si existe CDP finalizados (estado_aprobacion = 4), preparar correo y enviar
-                if($idCuadroPresupuestoFinalizadoList>0){
-                    $correosOrdenServicioTransformacion = [];
-                    $correoFinalizacionCuadroPresupuesto=[];
-    
-                    if (config('app.debug')) {
-                        $correosOrdenServicioTransformacion[] = config('global.correoDebug2');
-                        $correoFinalizacionCuadroPresupuesto[]= config('global.correoDebug2');
-    
+                if (count($idDetalleRequerimientoList) == 0) {
+                    $tipoStatus = "error";
+                    $mensaje = "No se encontro Id detalle requerimiento en el detalle de la orden";
+                } else {
+                    $detalleRequerimiento = DetalleRequerimiento::whereIn('id_detalle_requerimiento', $idDetalleRequerimientoList)->get();
+                    foreach ($detalleRequerimiento as $dr) {
+                        $idRequerimientoList[] = $dr->id_requerimiento;
+                    }
+
+                    //busca cdp finalizados
+                    $correoVendedor = [];
+                    foreach (array_unique($idRequerimientoList) as $idRequerimiento) {
+                        $requerimiento = Requerimiento::find($idRequerimiento);
+                        if ($requerimiento->id_cc > 0) {
+                            $cuadroPresupuesto = CuadroCosto::find($requerimiento->id_cc);
+                            $correoVendedor[] = Usuario::find($requerimiento->id_usuario)->email;
+                            if ($cuadroPresupuesto->estado_aprobacion == 4) {
+                                $idCuadroPresupuestoFinalizadoList[] = $requerimiento->id_cc;
+                                $codigoOportunidad[] = $cuadroPresupuesto->oportunidad->codigo_oportunidad;
+                                $payloadCuadroPresupuestoFinalizado[] = [
+                                    'requerimiento' => $requerimiento,
+                                    'cuadro_presupuesto' => $cuadroPresupuesto,
+                                    'orden_compra_propia' => $cuadroPresupuesto->oportunidad->ordenCompraPropia,
+                                    'oportunidad' => $cuadroPresupuesto->oportunidad
+                                ];
+                            }
+                        }
+                    }
+
+                    // si existe CDP finalizados (estado_aprobacion = 4), preparar correo y enviar
+                    if ($idCuadroPresupuestoFinalizadoList > 0) {
+                        $correosOrdenServicioTransformacion = [];
+                        $correoFinalizacionCuadroPresupuesto = [];
+
+                        if (config('app.debug')) {
+                            $correosOrdenServicioTransformacion[] = config('global.correoDebug2');
+                            $correoFinalizacionCuadroPresupuesto[] = config('global.correoDebug2');
+                        } else {
+                            $idUsuarios = Usuario::getAllIdUsuariosPorRol(25); //Rol de usuario de despacho externo
+                            foreach ($idUsuarios as $id) {
+                                $correosOrdenServicioTransformacion[] = Usuario::find($id)->email;
+                            }
+
+                            //$correoUsuarioEnSession=Auth::user()->email;
+                            $correoFinalizacionCuadroPresupuesto[] = Auth::user()->email;
+                            $correoFinalizacionCuadroPresupuesto[] = Usuario::find($requerimiento->id_usuario)->email;
+                        }
+
+                        Mail::to(array_unique($correoFinalizacionCuadroPresupuesto))->send(new EmailFinalizacionCuadroPresupuesto($codigoOportunidad, $payloadCuadroPresupuestoFinalizado, Auth::user()->nombre_corto));
+                        $tipoStatus = "success";
+                        $mensaje = "La notificación fue enviada";
+
+                        foreach ($payloadCuadroPresupuestoFinalizado as $pl) { // enviar orde servicio / transformacion a multiples usuarios
+                            $transformacion =  Transformacion::select('transformacion.codigo', 'cc.id_oportunidad', 'adm_empresa.logo_empresa')
+                                ->leftjoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'transformacion.id_cc')
+                                ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'transformacion.id_almacen')
+                                ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_almacen.id_sede')
+                                ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
+                                ->where('cc.id', $pl['cuadro_presupuesto']->id)
+                                ->first();
+                            $logoEmpresa = empty($transformacion->logo_empresa) ? null : $transformacion->logo_empresa;
+                            $codigoTransformacion = empty($transformacion->codigo) ? null : $transformacion->codigo;
+                            Mail::to($correosOrdenServicioTransformacion)->send(new EmailOrdenServicioOrdenTransformacion($pl['oportunidad'], $logoEmpresa, $codigoTransformacion));
+                        }
                     } else {
-                        $idUsuarios = Usuario::getAllIdUsuariosPorRol(25); //Rol de usuario de despacho externo
-                        foreach ($idUsuarios as $id) {
-                            $correosOrdenServicioTransformacion[] = Usuario::find($id)->email;
-                        }
-    
-                        //$correoUsuarioEnSession=Auth::user()->email;
-                        $correoFinalizacionCuadroPresupuesto[]=Auth::user()->email;
-                        $correoFinalizacionCuadroPresupuesto[]=Usuario::find($requerimiento->id_usuario)->email;
+                        $tipoStatus = "warning";
+                        $mensaje = "La notificación no puedo ser enviada, debido al estado actual del CDP";
                     }
-                    
-                    Mail::to(array_unique($correoFinalizacionCuadroPresupuesto))->send(new EmailFinalizacionCuadroPresupuesto($codigoOportunidad,$payloadCuadroPresupuestoFinalizado,Auth::user()->nombre_corto));
-                    $tipoStatus ="success";
-                    $mensaje="La notificación fue enviada";
-    
-                    foreach ($payloadCuadroPresupuestoFinalizado as $pl) { // enviar orde servicio / transformacion a multiples usuarios
-                        $transformacion =  Transformacion::select('transformacion.codigo', 'cc.id_oportunidad', 'adm_empresa.logo_empresa')
-                        ->leftjoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'transformacion.id_cc')
-                        ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'transformacion.id_almacen')
-                        ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_almacen.id_sede')
-                        ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
-                        ->where('cc.id', $pl['cuadro_presupuesto']->id)
-                        ->first();
-                        $logoEmpresa=empty($transformacion->logo_empresa)?null:$transformacion->logo_empresa;
-                        $codigoTransformacion=empty($transformacion->codigo)?null:$transformacion->codigo;
-                        Mail::to($correosOrdenServicioTransformacion)->send(new EmailOrdenServicioOrdenTransformacion($pl['oportunidad'],$logoEmpresa,$codigoTransformacion));
-                    }
-    
-                }else{
-                    $tipoStatus="warning";
-                    $mensaje="La notificación no puedo ser enviada, debido al estado actual del CDP";
-    
                 }
+            } else {
+                $mensaje = "No se encontro un id de orden valido";
+                $tipoStatus = "error";
             }
 
-        }else{
-            $mensaje="No se encontro un id de orden valido";
-            $tipoStatus="error";
+            DB::commit();
+            return ['tipo_estado' => $tipoStatus, 'mensaje' => $mensaje];
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json(['tipo_estado' => 'error',  'mensaje' => 'Mensaje de error: ' . $e->getMessage()]);
         }
-
-        DB::commit();
-        return ['tipo_estado'=>$tipoStatus,'mensaje'=>$mensaje];
-
-    } catch (Exception $e) {
-        DB::rollBack();
-        return response()->json(['tipo_estado'=>'error',  'mensaje' => 'Mensaje de error: ' . $e->getMessage()]);
-    }
     }
 
 
-    public function vincularOcSoftlink(Request $request){
+    public function vincularOcSoftlink(Request $request)
+    {
         // $request->idOrden;
         // $request->movId;
         try {
             DB::beginTransaction();
-            
-       
+
+
             $orden = Orden::where("id_orden_compra", $request->idOrden)->first();
-            $orden->id_softlink =$request->movId;
+            $orden->id_softlink = $request->movId;
             $orden->save();
 
             $arrayRspta = array(
@@ -4010,108 +3996,117 @@ class OrdenController extends Controller
                 'mensaje' => 'Se vinculó correctamente la orden ' . $orden->codigo . ' con id ' . $request->movId,
                 'ocAgile' => array('cabecera' => $orden),
             );
-            
-            DB::commit();
-            
-            return response()->json($arrayRspta, 200);
-        
 
+            DB::commit();
+
+            return response()->json($arrayRspta, 200);
         } catch (\PDOException $e) {
             DB::rollBack();
-            return response()->json(['tipo_estado'=>'error', 'ocAgile' => null, 'mensaje' => 'Hubo un problema al actualizar la orden. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
+            return response()->json(['tipo_estado' => 'error', 'ocAgile' => null, 'mensaje' => 'Hubo un problema al actualizar la orden. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
         }
     }
 
 
-    function obtenerContribuyentePorIdProveedor($idProveedor){
+    function obtenerContribuyentePorIdProveedor($idProveedor)
+    {
         try {
             DB::beginTransaction();
 
             $proveedor = Proveedor::find($idProveedor);
-            if(!empty($proveedor) && $proveedor->id_proveedor >0){
-                $contribuyente = Contribuyente::with("tipoDocumentoIdentidad","cuentaContribuyente.banco.contribuyente","cuentaContribuyente.tipoCuenta")->find($proveedor->id_contribuyente);
-                if(!empty($contribuyente)){
+            if (!empty($proveedor) && $proveedor->id_proveedor > 0) {
+                $contribuyente = Contribuyente::with("tipoDocumentoIdentidad", "cuentaContribuyente.banco.contribuyente", "cuentaContribuyente.tipoCuenta")->find($proveedor->id_contribuyente);
+                if (!empty($contribuyente)) {
 
                     $arrayRspta = array(
                         'tipo_estado' => 'success',
                         'mensaje' => 'Ok',
-                        'data'=>$contribuyente
+                        'data' => $contribuyente
                     );
                 }
-            }else{
+            } else {
                 $arrayRspta = array(
                     'tipo_estado' => 'warning',
-                    'mensaje' => 'no se pudo obtener la data de contribuyente segun el id proveedor('.$idProveedor.') enviado',
-                    'data'=>[]
+                    'mensaje' => 'no se pudo obtener la data de contribuyente segun el id proveedor(' . $idProveedor . ') enviado',
+                    'data' => []
                 );
             }
 
-            
-            DB::commit();
-            
-            return response()->json($arrayRspta, 200);
-        
 
+            DB::commit();
+
+            return response()->json($arrayRspta, 200);
         } catch (\PDOException $e) {
             DB::rollBack();
-            return response()->json(['tipo_estado'=>'error', 'data'=>[], 'mensaje' => 'Hubo un problema al intentar obtener la data del contribuyente. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
+            return response()->json(['tipo_estado' => 'error', 'data' => [], 'mensaje' => 'Hubo un problema al intentar obtener la data del contribuyente. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
         }
     }
 
-    function registrarSolicitudDePagar(Request $request){
+    function registrarSolicitudDePagar(Request $request)
+    {
         try {
             DB::beginTransaction();
 
             $orden = Orden::find($request->id_orden_compra);
 
+            if (!empty($orden)) {
+                //ya fue autorizado?
+                if ($orden->estado_pago !== 5) {
+                    //ya fue pagado?
+                    if ($orden->estado_pago !== 6) {
 
-            if(!empty($orden)){
-                
-                $orden->estado_pago = 8; //enviado a pago
-                $orden->id_tipo_destinatario_pago = $request->id_tipo_destinatario;
-                $orden->id_prioridad_pago = $request->id_prioridad;
-                $orden->id_cta_principal = $request->id_cuenta_contribuyente;
-                $orden->id_persona_pago = $request->id_persona;
-                $orden->id_cuenta_persona_pago = $request->id_cuenta_persona;
-                $orden->comentario_pago = $request->comentario;
-                $orden->fecha_solicitud_pago = Carbon::now();
-                $orden->save();
+                        $orden->estado_pago = 8; //enviado a pago
+                        $orden->id_tipo_destinatario_pago = $request->id_tipo_destinatario;
+                        $orden->id_prioridad_pago = $request->id_prioridad;
+                        $orden->id_cta_principal = $request->id_cuenta_contribuyente;
+                        $orden->id_persona_pago = $request->id_persona;
+                        $orden->id_cuenta_persona_pago = $request->id_cuenta_persona;
+                        $orden->comentario_pago = $request->comentario;
+                        $orden->fecha_solicitud_pago = Carbon::now();
+                        $orden->save();
 
-                $arrayRspta = array(
-                    'tipo_estado' => 'success',
-                    'mensaje' => 'Solicitud de pago registrado',
-                    'data'=>$orden
-                );
-
-            }else{
+                        $arrayRspta = array(
+                            'tipo_estado' => 'success',
+                            'mensaje' => 'Solicitud de pago registrado.',
+                            'data' => $orden
+                        );
+                    } else {
+                        $arrayRspta = array(
+                            'tipo_estado' => 'warning',
+                            'mensaje' => 'Ésta orden ya fue pagada.',
+                            'data' => $orden
+                        );
+                    }
+                } else {
+                    $arrayRspta = array(
+                        'tipo_estado' => 'warning',
+                        'mensaje' => 'Ésta orden ya fue autorizada.',
+                        'data' => $orden
+                    );
+                }
+            } else {
                 $arrayRspta = array(
                     'tipo_estado' => 'warning',
-                    'mensaje' => 'no se pudo obtener registrar en envio de pago, no se encontro la orden',
-                    'data'=>[]
+                    'mensaje' => 'No se encontro la orden',
+                    'data' => []
                 );
             }
 
-            
             DB::commit();
-            
-            return response()->json($arrayRspta, 200);
-        
 
+            return response()->json($arrayRspta, 200);
         } catch (\PDOException $e) {
             DB::rollBack();
-            return response()->json(['tipo_estado'=>'error', 'data'=>[], 'mensaje' => 'Hubo un problema al intentar obtener la data del contribuyente. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
+            return response()->json(['tipo_estado' => 'error', 'data' => [], 'mensaje' => 'Hubo un problema al intentar obtener la data del contribuyente. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
         }
     }
 
 
-    function obtenerContribuyente($idContribuyente){
-        return  Contribuyente::with("tipoDocumentoIdentidad","cuentaContribuyente.banco.contribuyente","cuentaContribuyente.tipoCuenta")->find($idContribuyente);
-
+    function obtenerContribuyente($idContribuyente)
+    {
+        return  Contribuyente::with("tipoDocumentoIdentidad", "cuentaContribuyente.banco.contribuyente", "cuentaContribuyente.tipoCuenta")->find($idContribuyente);
     }
-    function obtenerPersona($idPersona){
-        return  Persona::with("tipoDocumentoIdentidad","cuentaPersona.banco.contribuyente","cuentaPersona.tipoCuenta","cuentaPersona.moneda")->find($idPersona);
+    function obtenerPersona($idPersona)
+    {
+        return  Persona::with("tipoDocumentoIdentidad", "cuentaPersona.banco.contribuyente", "cuentaPersona.tipoCuenta", "cuentaPersona.moneda")->find($idPersona);
     }
-    
- 
 }
- 

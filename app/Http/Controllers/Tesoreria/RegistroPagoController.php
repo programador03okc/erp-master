@@ -155,18 +155,18 @@ class RegistroPagoController extends Controller
             ->whereIn('log_ord_compra.estado_pago', [8, 5, 6]);
 
         return datatables($data)
-        ->addColumn('persona', function ($data) {
-            $persona = Persona::find($data->id_persona_pago);
-            if (!empty($persona)) {
-                return ([$persona]);
-            } else {
-                return ([]);
-            };
-        })
-        ->addColumn('requerimientos_codigo', function(Orden $orden) {
-            return $orden->requerimientos_codigo;
-        })
-        ->toJson();
+            ->addColumn('persona', function ($data) {
+                $persona = Persona::find($data->id_persona_pago);
+                if (!empty($persona)) {
+                    return ([$persona]);
+                } else {
+                    return ([]);
+                };
+            })
+            ->addColumn('requerimientos_codigo', function (Orden $orden) {
+                return $orden->requerimientos_codigo;
+            })
+            ->toJson();
     }
 
     public function listarComprobantesPagos()
@@ -433,7 +433,7 @@ class RegistroPagoController extends Controller
                 } else if ($request->id_requerimiento_pago !== null) {
                     DB::table('tesoreria.requerimiento_pago')
                         ->where('id_requerimiento_pago', $request->id_requerimiento_pago)
-                        ->update(['id_estado' => 6]); //procesado
+                        ->update(['id_estado' => 6]); //pagada
                 }
             }
 
