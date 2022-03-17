@@ -1109,6 +1109,7 @@ class OrdenController extends Controller
                     'id_orden_compra' => $element->id_orden_compra,
                     'id_tp_documento' => $element->id_tp_documento,
                     'fecha' => $element->fecha,
+                    'fecha_formato' => $element->fecha_formato,
                     'codigo' => $element->codigo,
                     'descripcion_sede_empresa' => $element->descripcion_sede_empresa,
                     'nro_documento' => $element->nro_documento,

@@ -548,8 +548,8 @@ class ListaOrdenView {
                             let output = 'No aplica';
                             if (row.id_tp_documento == 2) { // orden de compra
 
-                                let estimatedTimeOfArrive = moment(row['fecha'], 'DD-MM-YYYY').add(row['plazo_entrega'], 'days').format('DD-MM-YYYY');
-                                let sumaFechaConPlazo = moment(row['fecha'], "DD-MM-YYYY").add(row['plazo_entrega'], 'days').format("DD-MM-YYYY").toString();
+                                let estimatedTimeOfArrive = moment(row['fecha_formato'], 'DD-MM-YYYY').add(row['plazo_entrega'], 'days').format('DD-MM-YYYY');
+                                let sumaFechaConPlazo = moment(row['fecha_formato'], "DD-MM-YYYY").add(row['plazo_entrega'], 'days').format("DD-MM-YYYY").toString();
                                 let fechaActual = moment().format('DD-MM-YYYY').toString();
                                 let dias_restantes = moment(sumaFechaConPlazo, 'DD-MM-YYYY').diff(moment(fechaActual, 'DD-MM-YYYY'), 'days');
                                 let porc = dias_restantes * 100 / (parseFloat(row['plazo_entrega'])).toFixed(2);
@@ -992,8 +992,8 @@ class ListaOrdenView {
 
                         let output = 'No aplica';
                         if (row['id_tp_documento'] == 2) { // orden de compra
-                            let estimatedTimeOfArrive = moment(row['fecha'], 'DD-MM-YYYY').add(row['plazo_entrega'], 'days').format('DD-MM-YYYY');
-                            let sumaFechaConPlazo = moment(row['fecha'], "DD-MM-YYYY").add(row['plazo_entrega'], 'days').format("DD-MM-YYYY").toString();
+                            let estimatedTimeOfArrive = moment(row['fecha_formato'], 'DD-MM-YYYY').add(row['plazo_entrega'], 'days').format('DD-MM-YYYY');
+                            let sumaFechaConPlazo = moment(row['fecha_formato'], "DD-MM-YYYY").add(row['plazo_entrega'], 'days').format("DD-MM-YYYY").toString();
                             let fechaActual = moment().format('DD-MM-YYYY').toString();
                             let dias_restantes = moment(sumaFechaConPlazo, 'DD-MM-YYYY').diff(moment(fechaActual, 'DD-MM-YYYY'), 'days');
                             let porc = dias_restantes * 100 / (parseFloat(row['plazo_entrega'])).toFixed(2);

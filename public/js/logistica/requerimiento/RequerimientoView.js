@@ -301,7 +301,7 @@ class RequerimientoView {
             let optionSelectDivisionHTML='';
             this.requerimientoCtrl.getDivisiones().then((res)=> {
                 res.forEach(element => {
-                        optionSelectDivisionHTML += `<option value="${element.id_division}">${element.descripcion}</option> `;
+                        optionSelectDivisionHTML += `<option data-id-grupo="${element.grupo_id}" value="${element.id_division}">${element.descripcion}</option> `;
                 });
                 document.querySelector("select[name='division']").innerHTML=optionSelectDivisionHTML;
                 this.mostrarCabeceraRequerimiento(data['requerimiento'][0]);

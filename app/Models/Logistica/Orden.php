@@ -21,11 +21,11 @@ class Orden extends Model
 
     protected $table = 'logistica.log_ord_compra';
     protected $primaryKey = 'id_orden_compra';
-    protected $appends = ['cuadro_costo', 'monto', 'requerimientos', 'oportunidad', 'tiene_transformacion', 'cantidad_equipos', 'estado_orden', 'requerimientos_codigo'];
+    protected $appends = ['cuadro_costo', 'monto','fecha_formato', 'requerimientos', 'oportunidad', 'tiene_transformacion', 'cantidad_equipos', 'estado_orden', 'requerimientos_codigo'];
 
     public $timestamps = false;
 
-    public function getFechaAttribute()
+    public function getFechaFormatoAttribute()
     {
         $fecha = new Carbon($this->attributes['fecha']);
         return $fecha->format('d-m-Y h:m');

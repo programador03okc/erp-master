@@ -1828,7 +1828,7 @@ class OrdenView {
             },
             'columns': [
                 { 'data': 'id_orden_compra', 'name': 'log_ord_compra.id_orden_compra', 'visible': false },
-                { 'data': 'fecha', 'name': 'log_ord_compra.fecha', 'className': 'text-center' },
+                { 'data': 'fecha_formato', 'name': 'log_ord_compra.fecha_formato', 'className': 'text-center' },
                 { 'data': 'codigo', 'name': 'log_ord_compra.codigo', 'className': 'text-center' },
                 { 'data': 'codigo_softlink', 'name': 'log_ord_compra.codigo_softlink', 'className': 'text-center' },
                 { 'data': 'nro_documento', 'name': 'adm_contri.nro_documento', 'className': 'text-center' },
@@ -1970,7 +1970,7 @@ class OrdenView {
 
         }
         document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='codigo_orden']").value = data.codigo_softlink ? data.codigo_softlink : '';
-        document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='fecha_emision']").value = data.fecha ? moment(data.fecha, 'DD-MM-YYYY h:m').format('YYYY-MM-DDThh:mm') : '';
+        document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='fecha_emision']").value = data.fecha_formato ? moment(data.fecha_formato, 'DD-MM-YYYY h:m').format('YYYY-MM-DDThh:mm') : '';
         document.querySelector("form[id='form-crear-orden-requerimiento'] select[name='id_sede']").value = data.id_sede ? data.id_sede : '';
         document.querySelector("form[id='form-crear-orden-requerimiento'] img[id='logo_empresa']").setAttribute("src", data.logo_empresa);
         document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='incluye_igv']").checked = data.incluye_igv;
