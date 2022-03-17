@@ -1710,7 +1710,7 @@ class ListarRequerimientoPagoView {
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosDestinatario'] td[id='destinatario']").textContent = destinatario;
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosDestinatario'] td[id='banco']").textContent = banco;
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosDestinatario'] td[id='tipo_cuenta']").textContent = tipo_cuenta;
-        document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosDestinatario'] td[id='moneda']").textContent = moneda;
+        document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosDestinatario'] td[id='moneda']").textContent = data.moneda != null && data.moneda.descripcion != undefined ? data.moneda.descripcion : '';
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosDestinatario'] td[id='nro_cuenta']").textContent = nro_cuenta;
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosDestinatario'] td[id='nro_cci']").textContent = nro_cci;
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] span[name='simboloMoneda']").textContent = data.moneda != null && data.moneda.simbolo != undefined ? data.moneda.simbolo : '';
@@ -1944,7 +1944,7 @@ class ListarRequerimientoPagoView {
         // document.querySelector("div[id='modal-requerimiento-pago'] input[name='codigo']").value = data.codigo;
         document.querySelector("div[id='modal-requerimiento-pago'] span[name='codigo']").textContent = data.codigo;
         document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_cc']").value = data.id_cc;
-        document.querySelector("div[id='modal-requerimiento-pago'] input[name='codigo_oportunidad']").value = data.cuadro_presupuesto.codigo_oportunidad??'';
+        document.querySelector("div[id='modal-requerimiento-pago'] input[name='codigo_oportunidad']").value = data.cuadro_presupuesto != null ? data.cuadro_presupuesto.codigo_oportunidad:'';
 
         document.querySelector("div[id='modal-requerimiento-pago'] input[name='concepto']").value = data.concepto;
         document.querySelector("div[id='modal-requerimiento-pago'] select[name='proyecto']").value = data.id_proyecto;
