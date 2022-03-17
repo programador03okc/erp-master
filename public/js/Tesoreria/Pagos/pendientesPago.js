@@ -186,7 +186,7 @@
                         return imagen;
                     }, 'className': 'text-center'
                 },
-                { 'data': 'requerimientos_codigo', orderable: false },
+                { 'data': 'requerimientos', orderable: false, filterable: true },
                 { 'data': 'razon_social_empresa', 'name': 'empresa.razon_social' },
                 // { 'data': 'codigo' },
                 {
@@ -273,6 +273,7 @@
                 { 'aTargets': [0], 'sClass': 'invisible' },
                 {
                     render: function (data, type, row) {
+                        console.log(row.requerimientos_codigo);
                         return row.requerimientos_codigo;
                     },
                     targets: 2
