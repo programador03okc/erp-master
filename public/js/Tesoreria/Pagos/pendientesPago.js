@@ -147,7 +147,7 @@
                 },
             ],
             'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible' }],
-            'order': [[12, "asc"]]
+            'order': [[12, "asc"], [0, "desc"]]
         });
 
     }
