@@ -154,19 +154,39 @@ class RegistroPagoController extends Controller
             ->where([['log_ord_compra.id_condicion', '=', 1]])
             ->whereIn('log_ord_compra.estado_pago', [8, 5, 6]);
 
-        return datatables($data)
-            ->addColumn('persona', function ($data) {
-                $persona = Persona::find($data->id_persona_pago);
-                if (!empty($persona)) {
-                    return ([$persona]);
-                } else {
-                    return ([]);
-                };
-            })
-            ->addColumn('requerimientos_codigo', function (Orden $orden) {
-                return $orden->requerimientos_codigo;
-            })
-            ->toJson();
+        // return datatables($data)
+        //     ->addColumn('persona', function ($data) {
+        //         $persona = Persona::find($data->id_persona_pago);
+        //         if (!empty($persona)) {
+        //             return ([$persona]);
+        //         } else {
+        //             return ([]);
+        //         };
+        //     })
+        // ->filterColumn('requerimientos', function (Orden $orden) {
+        //     return $orden->requerimientos_codigo;
+        // })->toJson();
+
+        return DataTables::eloquent($data)
+            // ->addColumn('persona', function ($data) {
+            //     $persona = Persona::find($data->id_persona_pago);
+            //     if (!empty($persona)) {
+            //         return ([$persona]);
+            //     } else {
+            //         return ([]);
+            //     };
+            // })
+            ->filterColumn('requerimientos', function ($query, $keyword) {
+                $sql_oc = "id_orden_compra IN (
+                SELECT log_det_ord_compra.id_orden_compra FROM logistica.log_det_ord_compra 
+                INNER JOIN almacen.alm_det_req ON
+                 log_det_ord_compra.id_detalle_requerimiento = alm_det_req.id_detalle_requerimiento
+                INNER JOIN almacen.alm_req ON
+                 alm_req.id_requerimiento = alm_det_req.id_requerimiento
+                 WHERE   UPPER(alm_req.codigo) LIKE ? )
+                    ";
+                $query->whereRaw($sql_oc, ['%' . strtoupper($keyword) . '%']);
+            })->toJson();
     }
 
     public function listarComprobantesPagos()

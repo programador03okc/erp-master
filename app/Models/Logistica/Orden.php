@@ -506,6 +506,6 @@ class Orden extends Model
         foreach ($requerimientos as $req) {
             array_push($resultado, $req->codigo);
         }
-        return $resultado;
+        return implode(', ', $resultado);
     }
 }
