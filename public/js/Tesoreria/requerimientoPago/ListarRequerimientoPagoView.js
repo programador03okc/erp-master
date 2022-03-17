@@ -1944,7 +1944,7 @@ class ListarRequerimientoPagoView {
         // document.querySelector("div[id='modal-requerimiento-pago'] input[name='codigo']").value = data.codigo;
         document.querySelector("div[id='modal-requerimiento-pago'] span[name='codigo']").textContent = data.codigo;
         document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_cc']").value = data.id_cc;
-        document.querySelector("div[id='modal-requerimiento-pago'] input[name='codigo_oportunidad']").value = data.cuadro_presupuesto.codigo_oportunidad??'';
+        document.querySelector("div[id='modal-requerimiento-pago'] input[name='codigo_oportunidad']").value = data.cuadro_presupuesto != null ? data.cuadro_presupuesto.codigo_oportunidad:'';
 
         document.querySelector("div[id='modal-requerimiento-pago'] input[name='concepto']").value = data.concepto;
         document.querySelector("div[id='modal-requerimiento-pago'] select[name='proyecto']").value = data.id_proyecto;
