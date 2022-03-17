@@ -412,7 +412,7 @@ class IncidenciaController extends Controller
 
         $productos = IncidenciaProducto::where([['id_incidencia', '=', $id_incidencia], ['estado', '!=', 7]])->get();
 
-        $reportes = IncidenciaReporte::with('usuario')->where('id_incidencia_reporte', $id_incidencia)->get();
+        $reportes = IncidenciaReporte::with('usuario')->where('id_incidencia', $id_incidencia)->get();
 
         $logo_empresa = ".$incidencia->logo_empresa";
         $fecha_registro =  (new Carbon($incidencia->fecha_registro))->format('d-m-Y');
