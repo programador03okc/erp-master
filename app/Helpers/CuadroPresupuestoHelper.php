@@ -31,6 +31,7 @@ class CuadroPresupuestoHelper
         $payloadRestablecido=[];
         $codigoOportunidad=[];
         $destinatarios=[];
+        $correoVendedor='';
         // $listaRestablecidos = [];
         $error = '';
         try {
@@ -71,6 +72,9 @@ class CuadroPresupuestoHelper
                             $ordenPropia->save();*/
 
                             $codigoOportunidad[]=$cuadroPresupuesto->oportunidad->codigo_oportunidad;
+                            $usuarioResponsable = DB::table('mgcp_usuarios.users')->where('id',$cuadroPresupuesto->oportunidad->id_responsable)->first();
+                            $correoVendedor = $usuarioResponsable->email??'';
+                            
                             $payload[] = [
                                 'requerimiento' => $requerimiento,
                                 'cuadro_presupuesto' => $cuadroPresupuesto,
@@ -104,6 +108,9 @@ class CuadroPresupuestoHelper
                                 $correoFinalizacionCuadroPresupuesto[]= config('global.correoDebug2');
 
                             } else {
+                                if($correoVendedor != '' || $correoVendedor !=null){
+                                    $correosOrdenServicioTransformacion[] = $correoVendedor; // agregar correo de vendedor
+                                }
                                 $idUsuarios = Usuario::getAllIdUsuariosPorRol(25); //Rol de usuario de despacho externo
                                 foreach ($idUsuarios as $id) {
                                     $correosOrdenServicioTransformacion[] = Usuario::find($id)->email;

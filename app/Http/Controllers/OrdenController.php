@@ -3907,15 +3907,18 @@ class OrdenController extends Controller
                     }
 
                     //busca cdp finalizados
-                    $correoVendedor = [];
+                    $correoVendedor = '';
                     foreach (array_unique($idRequerimientoList) as $idRequerimiento) {
                         $requerimiento = Requerimiento::find($idRequerimiento);
                         if ($requerimiento->id_cc > 0) {
                             $cuadroPresupuesto = CuadroCosto::find($requerimiento->id_cc);
-                            $correoVendedor[] = Usuario::find($requerimiento->id_usuario)->email;
                             if ($cuadroPresupuesto->estado_aprobacion == 4) {
                                 $idCuadroPresupuestoFinalizadoList[] = $requerimiento->id_cc;
                                 $codigoOportunidad[] = $cuadroPresupuesto->oportunidad->codigo_oportunidad;
+                                // obtener correo vendedor 
+                                $usuarioResponsable = DB::table('mgcp_usuarios.users')->where('id',$cuadroPresupuesto->oportunidad->id_responsable)->first();
+                                $correoVendedor = $usuarioResponsable->email??'';
+
                                 $payloadCuadroPresupuestoFinalizado[] = [
                                     'requerimiento' => $requerimiento,
                                     'cuadro_presupuesto' => $cuadroPresupuesto,
@@ -3935,6 +3938,9 @@ class OrdenController extends Controller
                             $correosOrdenServicioTransformacion[] = config('global.correoDebug2');
                             $correoFinalizacionCuadroPresupuesto[] = config('global.correoDebug2');
                         } else {
+                            if($correoVendedor != '' || $correoVendedor !=null){
+                                $correosOrdenServicioTransformacion[] = $correoVendedor; // agregar correo de vendedor
+                            }
                             $idUsuarios = Usuario::getAllIdUsuariosPorRol(25); //Rol de usuario de despacho externo
                             foreach ($idUsuarios as $id) {
                                 $correosOrdenServicioTransformacion[] = Usuario::find($id)->email;
