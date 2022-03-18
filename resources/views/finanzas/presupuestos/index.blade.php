@@ -27,20 +27,20 @@ Lista de Presupuestos
         <div class="box-header with-border">
             <h3 class="box-title">Datos Generales</h3>
             <div class="box-tools pull-right">
-                <button type="button" data-toggle="modal" data-target="actualizarPartidas" 
+                {{-- <button type="button" data-toggle="modal" data-target="actualizarPartidas" 
                     title="Actualizar descripcion de partidas" class="btn btn-box-tool btn-sm btn-info"
                     onClick="actualizarPartidas();">
                     <i class="fas fa-sync-alt"></i>
-                </button>
+                </button> --}}
             </div>
         </div>
         <div class="box-body">
             <div class="row">
                 <div class="col-md-12">
-                    <table class="table table-sm table-hover table-bordered dt-responsive nowrap" 
+                    <table class="mytable table table-condensed table-bordered table-okc-view" 
                         id="listaPresupuestos">
                         <thead>
-                            <tr style="background: gainsboro;">
+                            <tr>
                                 <th hidden></th>
                                 <th scope="col">Código</th>
                                 <th scope="col">Descripción</th>
