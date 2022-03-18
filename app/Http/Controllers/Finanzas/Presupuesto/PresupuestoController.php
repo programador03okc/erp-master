@@ -126,7 +126,7 @@ class PresupuestoController extends Controller
 
         $next = $this->leftZero(3, $correlativo + 1);
 
-        return 'P' . $grupo->abreviatura . $anio . $next;
+        return 'P' . $grupo->abreviatura . '-' . $anio . '-' . $next;
     }
 
     public function leftZero($lenght, $number)
@@ -182,7 +182,7 @@ class PresupuestoController extends Controller
                 ])->whereIn('id_grupo', $grupos)->get();
         }
 
- 
+
         foreach ($presupuestos as $p) {
             $resTitulos = DB::table('finanzas.presup_titu')
                 ->select('presup_titu.*')
@@ -194,7 +194,7 @@ class PresupuestoController extends Controller
                 ->get();
 
             foreach ($resTitulos as $titulo) {
-                array_push($titulos,$titulo);
+                array_push($titulos, $titulo);
             }
 
             $resPartidas = DB::table('finanzas.presup_par')
@@ -206,13 +206,13 @@ class PresupuestoController extends Controller
                 ->orderBy('presup_par.codigo')
                 ->get();
 
-                foreach ($resPartidas as $partida) {
-                    array_push($partidas,$partida);
-                }
+            foreach ($resPartidas as $partida) {
+                array_push($partidas, $partida);
+            }
         }
 
 
- 
+
         return response()->json(['presupuesto' => $presupuestos, 'titulos' => $titulos, 'partidas' => $partidas]);
     }
 }
