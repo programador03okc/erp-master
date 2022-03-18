@@ -366,6 +366,7 @@ class ListarRequerimientoView {
                 { 'data': 'razon_social', 'name': 'adm_contri.razon_social', 'className': 'text-center' },
                 { 'data': 'grupo', 'name': 'sis_grupo.descripcion', 'className': 'text-center' },
                 { 'data': 'division', 'name': 'division.descripcion', 'className': 'text-center' },
+                { 'data': 'monto_subtotal', 'name': 'monto_subtotal', 'defaultContent': '', 'className': 'text-right' },
                 { 'data': 'monto_total', 'name': 'monto_total', 'defaultContent': '', 'className': 'text-right' },
                 { 'data': 'nombre_usuario', 'name': 'nombre_usuario' },
                 { 'data': 'estado_doc', 'name': 'adm_estado_doc.estado_doc' },
@@ -386,15 +387,25 @@ class ListarRequerimientoView {
                 },
                 {
                     'render': function (data, type, row) {
-                        let sumTotal = 0;
-                        if (row.detalle != undefined && row.detalle.length > 0) {
-                            (row.detalle).forEach(element => {
-                                sumTotal += (parseFloat(element.cantidad) * parseFloat(element.precio_unitario));
-                            });
-                            return (row['simbolo_moneda']) + (Util.formatoNumero(sumTotal, 2));
-                        }
-                    }, targets: 10, orderable: false, searchable: false
+                        return (row['simbolo_moneda']) + (Util.formatoNumero(row.monto_subtotal, 2));
+                    }, targets: 10
                 },
+                {
+                    'render': function (data, type, row) {
+                        return (row['simbolo_moneda']) + (Util.formatoNumero(row.monto_total, 2));
+                    }, targets: 11
+                },
+                // {
+                //     'render': function (data, type, row) {
+                //         let sumTotal = 0;
+                //         if (row.detalle != undefined && row.detalle.length > 0) {
+                //             (row.detalle).forEach(element => {
+                //                 sumTotal += (parseFloat(element.cantidad) * parseFloat(element.precio_unitario));
+                //             });
+                //             return (row['simbolo_moneda']) + (Util.formatoNumero(sumTotal, 2));
+                //         }
+                //     }, targets: 10, orderable: false, searchable: false
+                // },
                 {
                     'render': function (data, type, row) {
                         switch (row['estado']) {
@@ -418,7 +429,7 @@ class ListarRequerimientoView {
                                 break;
 
                         }
-                    }, targets: 12, className: 'text-center'
+                    }, targets: 13, className: 'text-center'
                 },
                 {
                     'render': function (data, type, row) {
@@ -427,7 +438,7 @@ class ListarRequerimientoView {
                             labelOrdenes += `<label class="lbl-codigo handleClickAbrirOrdenPDF" data-id-orden-compra=${element.id_orden_compra} title="Abrir orden">${element.codigo}</label>`;
                         });
                         return labelOrdenes;
-                    }, targets: 13, className: 'text-center'
+                    }, targets: 14, className: 'text-center'
                 },
                 {
                     'render': function (data, type, row) {
@@ -466,7 +477,7 @@ class ListarRequerimientoView {
                             .concat(containerCloseBrackets);
 
                         return botoneraPrimaria + botoneraSecundaria
-                    }, targets: 14
+                    }, targets: 15
                 },
 
             ],

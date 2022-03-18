@@ -126,6 +126,9 @@ class RequerimientoView {
         $('#ListaDetalleRequerimiento tbody').on("click","button.handleClickEliminarItem", (e)=>{
             this.eliminarItem(e);
         });
+        $('#ListaDetalleRequerimiento').on("click", "input.handleClickIncluyeIGV", (e) => {
+            this.actualizarValorIncluyeIGV(e.currentTarget);
+        });
     }
 
     editRequerimiento(){
@@ -397,6 +400,9 @@ class RequerimientoView {
         document.querySelector("input[name='id_grupo']").value = data.id_grupo;
         document.querySelector("input[name='estado']").value = data.estado;
         document.querySelector("span[id='estado_doc']").textContent = data.estado_doc;
+        document.querySelector("input[name='monto_subtotal']").textContent = data.monto_subtotal;
+        document.querySelector("input[name='monto_igv']").textContent = data.monto_igv;
+        document.querySelector("input[name='monto_total']").textContent = data.monto_total;
         document.querySelector("span[id='nro_occ_softlink']").textContent = data.nro_occ_softlink !=null ?'OCC: '+data.nro_occ_softlink:'';
         document.querySelector("input[name='fecha_requerimiento']").value = data.fecha_requerimiento;
         document.querySelector("input[name='concepto']").value = data.concepto;
@@ -508,7 +514,7 @@ class RequerimientoView {
                 let idFila = data[i].id_detalle_requerimiento > 0 ? data[i].id_detalle_requerimiento : (this.makeId());
 
                 if (data[i].id_tipo_item == 1) { // producto
-                document.querySelector("tbody[id='body_detalle_requerimiento']").insertAdjacentHTML('beforeend', `<tr style="text-align:center; background-color:${data[i].estado ==7?'#f5e4e4':''}; ">
+                document.querySelector("tbody[id='body_detalle_requerimiento']").insertAdjacentHTML('beforeend', `<tr data-estado="${data[i].estado}" style="text-align:center; background-color:${data[i].estado ==7?'#f5e4e4':''}; ">
                 <td></td>
                 <td><p class="descripcion-partida" data-id-partida="${data[i].id_partida}" data-presupuesto-total="${data[i].presupuesto_total_partida}" title="${data[i].descripcion_partida ?? '(NO SELECCIONADO)'}" >${data[i].codigo_partida ?? ''}</p><button type="button" class="btn btn-xs btn-info activation handleClickCargarModalPartidas" name="partida" ${hasDisabledInput}>Seleccionar</button> 
                     <div class="form-group">
@@ -554,7 +560,7 @@ class RequerimientoView {
                 </td>
                 </tr>`);
                 } else { // servicio
-                    document.querySelector("tbody[id='body_detalle_requerimiento']").insertAdjacentHTML('beforeend', `<tr style="text-align:center;  background-color:${data[i].estado ==7?'#f5e4e4':''};">
+                    document.querySelector("tbody[id='body_detalle_requerimiento']").insertAdjacentHTML('beforeend', `<tr data-estado="${data[i].estado}" style="text-align:center;  background-color:${data[i].estado ==7?'#f5e4e4':''};">
                     <td></td>
                     <td><p class="descripcion-partida" data-id-partida="${data[i].id_partida}" data-presupuesto-total="${data[i].presupuesto_total_partida}" title="${data[i].descripcion_partida != null ? data[i].descripcion_partida : '(NO SELECCIONADO)'}" >${data[i].codigo_partida != null ? data[i].codigo_partida : '(NO SELECCIONADO)'}</p><button type="button" class="btn btn-xs btn-info activation handleClickCargarModalPartidas" name="partida" ${hasDisabledInput}>Seleccionar</button> 
                         <div class="form-group">
@@ -1120,14 +1126,32 @@ class RequerimientoView {
     calcularTotal() {
         let TableTBody = document.querySelector("tbody[id='body_detalle_requerimiento']");
         let childrenTableTbody = TableTBody.children;
-        let total = 0;
+        let monto_subtotal = 0;
         for (let index = 0; index < childrenTableTbody.length; index++) {
-            // console.log(childrenTableTbody[index]);
-            let cantidad = parseFloat(childrenTableTbody[index].querySelector("input[class~='cantidad']").value ? childrenTableTbody[index].querySelector("input[class~='cantidad']").value : 0);
-            let precioUnitario = parseFloat(childrenTableTbody[index].querySelector("input[class~='precio']").value ? childrenTableTbody[index].querySelector("input[class~='precio']").value : 0);
-            total += (cantidad * precioUnitario);
+            if(childrenTableTbody[index].dataset.estado !=7){
+                // console.log(childrenTableTbody[index]);
+                let cantidad = parseFloat(childrenTableTbody[index].querySelector("input[class~='cantidad']").value ? childrenTableTbody[index].querySelector("input[class~='cantidad']").value : 0);
+                let precioUnitario = parseFloat(childrenTableTbody[index].querySelector("input[class~='precio']").value ? childrenTableTbody[index].querySelector("input[class~='precio']").value : 0);
+                monto_subtotal += (cantidad * precioUnitario);
+            }
         }
-        document.querySelector("label[name='total']").textContent = Util.formatoNumero(total, 2);
+        let monto_igv=0;
+
+        let incluyeIGV = document.querySelector("input[name='incluye_igv']").checked;
+        if (incluyeIGV == true) {
+            monto_igv= monto_subtotal*0.18;
+        }
+        let monto_total= monto_subtotal+monto_igv;
+        document.querySelector("label[name='monto_subtotal']").textContent = Util.formatoNumero(monto_subtotal, 2);
+        document.querySelector("input[name='monto_subtotal']").value = monto_subtotal;
+        document.querySelector("label[name='monto_igv']").textContent = Util.formatoNumero(monto_igv, 2);
+        document.querySelector("input[name='monto_igv']").value = monto_igv;
+        document.querySelector("label[name='monto_total']").textContent = Util.formatoNumero(monto_total, 2);
+        document.querySelector("input[name='monto_total']").value = monto_total;
+    }
+    
+    actualizarValorIncluyeIGV(){
+        this.calcularTotal();
     }
 
     // partidas 
@@ -2395,7 +2419,7 @@ class RequerimientoView {
     }
 
     restaurarTotalMonedaDefault(){
-        let allSelectorTotal= document.getElementsByName("total");
+        let allSelectorTotal= document.getElementsByName("monto_subtotal");
         let simboloMonedaPresupuestoUtilizado =document.querySelector("select[name='moneda']").options[document.querySelector("select[name='moneda']").selectedIndex].dataset.simbolo
         let allSelectorSimboloMoneda = document.getElementsByName("simboloMoneda");
         if(allSelectorSimboloMoneda.length >0){

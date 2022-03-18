@@ -205,6 +205,7 @@ class ComprasPendientesController extends Controller
                 'alm_req.id_requerimiento',
                 'alm_req.codigo',
                 'alm_req.concepto',
+                'alm_req.observacion',
                 'alm_req.id_moneda',
                 'alm_req.fecha_entrega',
                 'sis_moneda.simbolo as simbolo_moneda',

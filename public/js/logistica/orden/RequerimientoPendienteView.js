@@ -531,6 +531,7 @@ class RequerimientoPendienteView {
                 { 'data': 'tipo_req_desc', 'name': 'alm_tp_req.descripcion', 'className': 'text-center' },
                 { 'data': 'division', 'name': 'division.descripcion', 'className': 'text-center', "searchable": false },
                 { 'data': 'cc_solicitado_por', 'name': 'cc_view.name', 'className': 'text-center' },
+                { 'data': 'observacion', 'name': 'alm_req.observacion', 'className': 'text-center' },
                 { 'data': 'estado_doc', 'name': 'adm_estado_doc.estado_doc', 'className': 'text-center' },
                 { 'data': 'id_requerimiento', 'name': 'alm_req.id_requerimiento', 'className': 'text-center', "searchable": false }
 
@@ -561,7 +562,7 @@ class RequerimientoPendienteView {
                 {
                     'render': function (data, type, row) {
                         return '<span class="label label-default estadoRequerimiento" title="' + (row['estado_doc'] == 'En pausa' ? 'Retiro de aprobación por actualización de CDP' : '') + '">' + row['estado_doc'] + '</span>';
-                    }, targets: 9
+                    }, targets: 10
                 },
                 {
                     'render': function (data, type, row) {
@@ -633,7 +634,7 @@ class RequerimientoPendienteView {
                             return botones;
                         }
 
-                    }, targets: 10
+                    }, targets: 11
                 }
 
             ],

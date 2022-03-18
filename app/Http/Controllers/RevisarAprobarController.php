@@ -104,11 +104,11 @@ class RevisarAprobarController extends Controller{
             'division.descripcion as division_descripcion',
             'sis_usua.nombre_corto as usuario_nombre_corto',
             'adm_estado_doc.estado_doc as estado_descripcion',
-            'adm_estado_doc.bootstrap_color',
-            DB::raw("(SELECT SUM(alm_det_req.cantidad * alm_det_req.precio_unitario) 
-            FROM almacen.alm_det_req 
-            WHERE   alm_det_req.id_requerimiento = alm_req.id_requerimiento AND
-            alm_det_req.estado != 7) AS monto_total")
+            'adm_estado_doc.bootstrap_color'
+            // DB::raw("(SELECT SUM(alm_det_req.cantidad * alm_det_req.precio_unitario) 
+            // FROM almacen.alm_det_req 
+            // WHERE   alm_det_req.id_requerimiento = alm_req.id_requerimiento AND
+            // alm_det_req.estado != 7) AS monto_total")
         )
         ->where([['adm_documentos_aprob.id_tp_documento',1],['flg_compras',0]]) //documento => requerimiento de B/S
         ->whereIn('alm_req.estado',[1,12]) // elaborado, pendiente aprobación

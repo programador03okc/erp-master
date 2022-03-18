@@ -104,6 +104,7 @@ Listado de requerimientos logísticos
                                         <th class="text-center" style="width:10%">Empresa</th>
                                         <th class="text-center">Grupo</th>
                                         <th class="text-center">División</th>
+                                        <th class="text-center">Monto Subtotal</th>
                                         <th class="text-center">Monto Total</th>
                                         <th class="text-center">Creado por</th>
                                         <th class="text-center" style="width:5%;">Estado</th>

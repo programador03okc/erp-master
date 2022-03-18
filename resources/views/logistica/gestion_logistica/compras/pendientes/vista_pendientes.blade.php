@@ -51,6 +51,7 @@ Requerimientos pendientes
                                                         <th style="text-align:center;">Tipo Req.</th>
                                                         <th style="text-align:center;">División</th>
                                                         <th style="text-align:center;">Solicitado por</th>
+                                                        <th style="text-align:center;">Observación</th>
                                                         <th style="text-align:center;">Estado</th>
                                                         <th style="text-align:center;width:7%;">Acción</th>
                                                     </tr>

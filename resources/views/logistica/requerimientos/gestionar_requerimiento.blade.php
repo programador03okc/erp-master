@@ -45,6 +45,10 @@ Crear / editar requerimiento
         <input type="text" class="oculto" name="justificacion_generar_requerimiento">
         <input type="hidden" class="" name="id_grupo">
         <input type="text" class="oculto" name="estado">
+        <input type="text" class="oculto" name="monto_subtotal">
+        <input type="text" class="oculto" name="monto_igv">
+        <input type="text" class="oculto" name="monto_total">
+
 
 
 
@@ -475,8 +479,26 @@ Crear / editar requerimiento
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <td colspan="8" class="text-right"><strong>Total:</strong></td>
-                                            <td class="text-right"><span name="simboloMoneda">S/</span><label name="total"> 0.00</label></td>
+                                            <td colspan="8" class="text-right"><strong>Monto neto:</strong></td>
+                                            <td class="text-right"><span name="simboloMoneda">S/</span><label name="monto_subtotal"> 0.00</label></td>
+
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="8" class="text-right">
+                                                <input class="activation handleClickIncluyeIGV" type="checkbox" name="incluye_igv" checked> <strong>Incluye IGV</strong>
+                                            </td>
+                                            <td class="text-right"><span name="simboloMoneda">S/</span><label name="monto_igv"> 0.00</label></td>
+
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="8" class="text-right"><strong>Monto Total:</strong></td>
+                                            <td class="text-right"><span name="simboloMoneda">S/</span><label name="monto_total"> 0.00</label></td>
                                             <td></td>
                                             <td></td>
                                             <td></td>

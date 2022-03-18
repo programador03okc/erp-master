@@ -615,8 +615,8 @@ class RequerimientoController extends Controller
         return $data;
     }
 
-    public function getOperacion($IdTipoDocumento,$idTipoRequerimientoCompra, $idGrupo, $idDivision, $idPrioridad, $idMoneda, $montoTotal,$idTipoRequerimientoPago){
-        return Operacion::getOperacion($IdTipoDocumento,$idTipoRequerimientoCompra, $idGrupo, $idDivision, $idPrioridad, $idMoneda, $montoTotal,$idTipoRequerimientoPago);
+    public function getOperacion($IdTipoDocumento,$idTipoRequerimientoCompra, $idGrupo, $idDivision, $idPrioridad, $idMoneda, $montoTotal,$idTipoRequerimientoPago,$idRolUsuarioDocList){
+        return Operacion::getOperacion($IdTipoDocumento,$idTipoRequerimientoCompra, $idGrupo, $idDivision, $idPrioridad, $idMoneda, $montoTotal,$idTipoRequerimientoPago,$idRolUsuarioDocList);
     }
 
     public function guardarRequerimiento(Request $request)
@@ -656,7 +656,9 @@ class RequerimientoController extends Controller
             $requerimiento->id_ubigeo_entrega = $request->id_ubigeo_entrega;
             $requerimiento->id_almacen = $request->id_almacen > 0 ? $request->id_almacen : null;
             $requerimiento->confirmacion_pago = ($request->tipo_requerimiento == 2 ? ($request->fuente == 2 ? true : false) : true);
-            $requerimiento->monto = $request->monto;
+            $requerimiento->monto_subtotal = $request->monto_subtotal;
+            $requerimiento->monto_igv = $request->monto_igv;
+            $requerimiento->monto_total = $request->monto_total;
             $requerimiento->fecha_entrega = $request->fecha_entrega;
             $requerimiento->id_cc = $request->id_cc;
             $requerimiento->tipo_cuadro = $request->tipo_cuadro;
@@ -983,7 +985,9 @@ class RequerimientoController extends Controller
         $requerimiento->id_ubigeo_entrega = $request->id_ubigeo_entrega;
         $requerimiento->id_almacen = $request->id_almacen;
         $requerimiento->confirmacion_pago = ($request->tipo_requerimiento == 2 ? ($request->fuente == 2 ? true : false) : true);
-        $requerimiento->monto = $request->monto;
+        $requerimiento->monto_subtotal = $request->monto_subtotal;
+        $requerimiento->monto_igv = $request->monto_igv;
+        $requerimiento->monto_total = $request->monto_total;
         $requerimiento->fecha_entrega = $request->fecha_entrega;
         $requerimiento->id_cc = $request->id_cc;
         $requerimiento->tipo_cuadro = $request->tipo_cuadro;
@@ -1473,11 +1477,11 @@ class RequerimientoController extends Controller
                 DB::raw("(SELECT COUNT(adm_aprobacion.id_aprobacion) 
                 FROM administracion.adm_aprobacion 
                 WHERE   adm_aprobacion.id_vobo = 3 AND
-                adm_aprobacion.tiene_sustento = true AND adm_aprobacion.id_doc_aprob = adm_documentos_aprob.id_doc_aprob) AS cantidad_sustentos"),
-                DB::raw("(SELECT SUM(alm_det_req.cantidad * alm_det_req.precio_unitario) 
-                FROM almacen.alm_det_req 
-                WHERE   alm_det_req.id_requerimiento = alm_req.id_requerimiento AND
-                alm_det_req.estado != 7) AS monto_total")
+                adm_aprobacion.tiene_sustento = true AND adm_aprobacion.id_doc_aprob = adm_documentos_aprob.id_doc_aprob) AS cantidad_sustentos")
+                // DB::raw("(SELECT SUM(alm_det_req.cantidad * alm_det_req.precio_unitario) 
+                // FROM almacen.alm_det_req 
+                // WHERE   alm_det_req.id_requerimiento = alm_req.id_requerimiento AND
+                // alm_det_req.estado != 7) AS monto_total")
 
             )
 
