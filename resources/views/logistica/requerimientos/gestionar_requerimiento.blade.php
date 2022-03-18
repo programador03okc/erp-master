@@ -487,7 +487,7 @@ Crear / editar requerimiento
                                             <th>Descripción de item</th>
                                             <th style="width: 10%">Unidad</th>
                                             <th style="width: 6%">Cantidad</th>
-                                            <th style="width: 8%">Precio Unit.<span name="simboloMoneda">S/</span></th>
+                                            <th style="width: 8%">Precio Unit.<span name="simboloMoneda">S/</span><em>(Sin IGV)</em></th>
                                             <th style="width: 6%">Subtotal</th>
                                             <th style="width: 15%">Motivo</th>
                                             <th style="width: 7%">Acciones</th>
