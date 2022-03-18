@@ -93,7 +93,14 @@
                 {
                     'data': 'estado_doc', 'name': 'requerimiento_pago_estado.descripcion',
                     'render': function (data, type, row) {
-                        return '<span class="label label-' + row['bootstrap_color'] + '">' + row['estado_doc'] + '</span>'
+                        var pagado = formatDecimal(row['suma_pagado'] !== null ? row['suma_pagado'] : 0);
+                        var total = formatDecimal(row['monto_total']);
+                        var por_pagar = (total - pagado);
+                        if (por_pagar > 0 && por_pagar < total) {
+                            return '<span class="label label-danger">Saldo por pagar</span>';
+                        } else {
+                            return '<span class="label label-' + row['bootstrap_color'] + '">' + row['estado_doc'] + '</span>';
+                        }
                     }
                 },
                 {
