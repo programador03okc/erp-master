@@ -488,7 +488,7 @@ Crear / editar requerimiento
                                         </tr>
                                         <tr>
                                             <td colspan="8" class="text-right">
-                                                <input class="activation handleClickIncluyeIGV" type="checkbox" name="incluye_igv" checked> <strong>Incluye IGV</strong>
+                                                <strong>IGV 18% </strong><input class="activation handleClickIncluyeIGV" type="checkbox" name="incluye_igv" checked>
                                             </td>
                                             <td class="text-right"><span name="simboloMoneda">S/</span><label name="monto_igv"> 0.00</label></td>
 
