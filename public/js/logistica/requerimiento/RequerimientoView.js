@@ -290,6 +290,12 @@ class RequerimientoView {
         if (data.hasOwnProperty('requerimiento')) {
         
             this.RestablecerFormularioRequerimiento();
+
+            if(parseFloat(data.requerimiento[0].monto_igv)>0){
+                document.querySelector("input[name='incluye_igv']").checked=true;
+            }else{
+                document.querySelector("input[name='incluye_igv']").checked=false;
+            }
             var btnImprimirRequerimiento = document.getElementsByName("btn-imprimir-requerimento-pdf");
             var btnAdjuntosRequerimiento = document.getElementsByName("btn-adjuntos-requerimiento");
             // let allButtonAdjuntarNuevo = document.querySelectorAll("input[name='nombre_archivo']");
@@ -1126,6 +1132,7 @@ class RequerimientoView {
     }
 
     calcularTotal() {
+        
         let TableTBody = document.querySelector("tbody[id='body_detalle_requerimiento']");
         let childrenTableTbody = TableTBody.children;
         let monto_subtotal = 0;
