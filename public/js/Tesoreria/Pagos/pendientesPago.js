@@ -227,8 +227,10 @@
                     'data': 'estado_doc', 'name': 'requerimiento_pago_estado.descripcion',
                     'render': function (data, type, row) {
                         var pagado = formatDecimal(row['suma_pagado'] !== null ? row['suma_pagado'] : 0);
-                        if (pagado > 0) {
-                            return '<span class="label label-danger">Pendiente por pagar</span>';
+                        var total = formatDecimal(row['monto_total']);
+                        var por_pagar = (total - pagado);
+                        if (por_pagar > 0 && por_pagar < total) {
+                            return '<span class="label label-danger">Saldo por pagar</span>';
                         } else {
                             return '<span class="label label-' + row['bootstrap_color'] + '">' + row['estado_doc'] + '</span>';
                         }
