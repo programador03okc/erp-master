@@ -182,8 +182,9 @@ class PresupuestoController extends Controller
                 ])->whereIn('id_grupo', $grupos)->get();
         }
 
+ 
         foreach ($presupuestos as $p) {
-            $titulos = DB::table('finanzas.presup_titu')
+            $resTitulos = DB::table('finanzas.presup_titu')
                 ->select('presup_titu.*')
                 ->where([
                     ['presup_titu.id_presup', '=', $p->id_presup],
@@ -192,7 +193,11 @@ class PresupuestoController extends Controller
                 ->orderBy('presup_titu.codigo')
                 ->get();
 
-            $partidas = DB::table('finanzas.presup_par')
+            foreach ($resTitulos as $titulo) {
+                array_push($titulos,$titulo);
+            }
+
+            $resPartidas = DB::table('finanzas.presup_par')
                 ->select('presup_par.*')
                 ->where([
                     ['presup_par.id_presup', '=', $p->id_presup],
@@ -200,8 +205,14 @@ class PresupuestoController extends Controller
                 ])
                 ->orderBy('presup_par.codigo')
                 ->get();
+
+                foreach ($resPartidas as $partida) {
+                    array_push($partidas,$partida);
+                }
         }
 
+
+ 
         return response()->json(['presupuesto' => $presupuestos, 'titulos' => $titulos, 'partidas' => $partidas]);
     }
 }

@@ -816,41 +816,44 @@ class ListarRequerimientoPagoView {
     }
 
     construirListaPartidas(data) {
-
+        // console.log(data);
         let html = '';
         let isVisible = '';
-        data['presupuesto'].forEach(resup => {
+        data['presupuesto'].forEach(presupuesto => {
             html += ` 
-            <div id='${resup.codigo}' class="panel panel-primary" style="width:100%; overflow: auto;">
-                <h5 class="panel-heading handleClickapertura" data-id-presup="${resup.id_presup}" style="margin: 0; cursor: pointer;">
+            <div id='${presupuesto.codigo}' class="panel panel-primary" style="width:100%; overflow: auto;">
+                <h5 class="panel-heading handleClickapertura" data-id-presup="${presupuesto.id_presup}" style="margin: 0; cursor: pointer;">
                 <i class="fas fa-chevron-right"></i>
-                    &nbsp; ${resup.descripcion} 
+                    &nbsp; ${presupuesto.descripcion} 
                 </h5>
-                <div id="pres-${resup.id_presup}" class="oculto" style="width:100%;">
+                <div id="pres-${presupuesto.id_presup}" class="oculto" style="width:100%;">
                     <table class="table table-bordered table-condensed partidas" id="listaPartidas" width="100%" style="font-size:0.9em">
                         <tbody> 
             `;
 
-
-
             data['titulos'].forEach(titulo => {
-                html += `
-                <tr id="com-${titulo.id_titulo}">
-                    <td><strong>${titulo.codigo}</strong></td>
-                    <td><strong>${titulo.descripcion}</strong></td>
-                    <td class="right ${isVisible}"><strong>S/${Util.formatoNumero(titulo.total, 2)}</strong></td>
-                </tr> `;
+                if(titulo.id_presup ==presupuesto.id_presup){
+                    html += `
+                    <tr id="com-${titulo.id_titulo}">
+                        <td><strong>${titulo.codigo}</strong></td>
+                        <td><strong>${titulo.descripcion}</strong></td>
+                        <td class="right ${isVisible}"><strong>S/${Util.formatoNumero(titulo.total, 2)}</strong></td>
+                    </tr> `;
+    
+                    data['partidas'].forEach(partida => {
+                        if(partida.id_presup == presupuesto.id_presup){
+                            if (titulo.codigo == partida.cod_padre) {
+                                html += `<tr id="par-${partida.id_partida}">
+                                    <td style="width:15%; text-align:left;" name="codigo">${partida.codigo}</td>
+                                    <td style="width:75%; text-align:left;" name="descripcion">${partida.descripcion}</td>
+                                    <td style="width:15%; text-align:right;" name="importe_total" class="right ${isVisible}" data-presupuesto-total="${partida.importe_total}" >S/${Util.formatoNumero(partida.importe_total, 2)}</td>
+                                    <td style="width:5%; text-align:center;"><button class="btn btn-success btn-xs handleClickSelectPartida" data-id-partida="${partida.id_partida}">Seleccionar</button></td>
+                                </tr>`;
+                            }
+                        }
+                    });
 
-                data['partidas'].forEach(partida => {
-                    if (titulo.codigo == partida.cod_padre) {
-                        html += `<tr id="par-${partida.id_partida}">
-                            <td style="width:15%; text-align:left;" name="codigo">${partida.codigo}</td>
-                            <td style="width:75%; text-align:left;" name="descripcion">${partida.descripcion}</td>
-                            <td style="width:15%; text-align:right;" name="importe_total" class="right ${isVisible}" data-presupuesto-total="${partida.importe_total}" >S/${Util.formatoNumero(partida.importe_total, 2)}</td>
-                            <td style="width:5%; text-align:center;"><button class="btn btn-success btn-xs handleClickSelectPartida" data-id-partida="${partida.id_partida}">Seleccionar</button></td>
-                        </tr>`;
-                    }
-                });
+                }
 
 
             });
