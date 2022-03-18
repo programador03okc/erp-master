@@ -271,7 +271,9 @@ class RequerimientoController extends Controller
                 'alm_req.telefono',
                 'alm_req.email',
                 'alm_req.id_almacen',
-                'alm_req.monto',
+                'alm_req.monto_subtotal',
+                'alm_req.monto_igv',
+                'alm_req.monto_total',
                 'alm_req.fecha_entrega',
                 'alm_req.id_cuenta',
                 'adm_cta_contri.id_tipo_cuenta',
@@ -286,11 +288,11 @@ class RequerimientoController extends Controller
                 'division.descripcion as division',
                 'alm_req.trabajador_id',
                 DB::raw("concat(perso_asignado.nombres, ' ' ,perso_asignado.apellido_paterno, ' ' ,perso_asignado.apellido_materno)  AS nombre_trabajador"),
-                DB::raw("(CASE WHEN alm_req.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc"),
-                DB::raw("(SELECT SUM(alm_det_req.cantidad * alm_det_req.precio_unitario) 
-                FROM almacen.alm_det_req 
-                WHERE   alm_det_req.id_requerimiento = alm_req.id_requerimiento AND
-                alm_det_req.estado != 7) AS monto_total")
+                DB::raw("(CASE WHEN alm_req.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc")
+                // DB::raw("(SELECT SUM(alm_det_req.cantidad * alm_det_req.precio_unitario) 
+                // FROM almacen.alm_det_req 
+                // WHERE   alm_det_req.id_requerimiento = alm_req.id_requerimiento AND
+                // alm_det_req.estado != 7) AS monto_total")
             )
             ->where([
                 $theWhere
@@ -367,8 +369,9 @@ class RequerimientoController extends Controller
                     'telefono' => $data->telefono,
                     'email' => $data->email,
                     'id_almacen' => $data->id_almacen,
-                    'monto' => $data->monto,
-                    'monto_total' => number_format($data->monto_total, 2),
+                    'monto_subtotal' => $data->monto_subtotal,
+                    'monto_igv' => $data->monto_igv,
+                    'monto_total' => $data->monto_total,
                     'fuente_id' => $data->fuente_id,
                     'fuente_det_id' => $data->fuente_det_id,
                     'tiene_transformacion' => $data->tiene_transformacion,

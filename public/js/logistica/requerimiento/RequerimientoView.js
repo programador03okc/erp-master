@@ -400,9 +400,9 @@ class RequerimientoView {
         document.querySelector("input[name='id_grupo']").value = data.id_grupo;
         document.querySelector("input[name='estado']").value = data.estado;
         document.querySelector("span[id='estado_doc']").textContent = data.estado_doc;
-        document.querySelector("input[name='monto_subtotal']").textContent = data.monto_subtotal;
-        document.querySelector("input[name='monto_igv']").textContent = data.monto_igv;
-        document.querySelector("input[name='monto_total']").textContent = data.monto_total;
+        document.querySelector("input[name='monto_subtotal']").value = data.monto_subtotal;
+        document.querySelector("input[name='monto_igv']").value = data.monto_igv;
+        document.querySelector("input[name='monto_total']").value = data.monto_total;
         document.querySelector("span[id='nro_occ_softlink']").textContent = data.nro_occ_softlink !=null ?'OCC: '+data.nro_occ_softlink:'';
         document.querySelector("input[name='fecha_requerimiento']").value = data.fecha_requerimiento;
         document.querySelector("input[name='concepto']").value = data.concepto;
@@ -2378,6 +2378,10 @@ class RequerimientoView {
         document.querySelector("span[id='codigo_requerimiento']").textContent='';
         document.querySelector("span[id='estado_doc']").textContent='';
         document.querySelector("span[id='nro_occ_softlink']").textContent='';
+        document.querySelector("input[name='id_grupo']").value='';
+        document.querySelector("input[name='monto_subtotal']").value='';
+        document.querySelector("input[name='monto_igv']").value='';
+        document.querySelector("input[name='monto_total']").value='';
         this.limpiarTabla('ListaDetalleRequerimiento');
         this.limpiarTabla('listaArchivosRequerimiento');
         this.limpiarTabla('listaArchivos');

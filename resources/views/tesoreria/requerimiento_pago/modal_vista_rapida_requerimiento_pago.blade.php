@@ -122,7 +122,7 @@
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <td colspan="7" class="text-right"><strong>Total:</strong></td>
+                                            <td colspan="7" class="text-right"><strong>Monto total:</strong></td>
                                             <td class="text-right"><span name="simbolo_moneda">S/</span><label name="total"> 0.00</label></td>
                                             <td></td>
                                         </tr>
