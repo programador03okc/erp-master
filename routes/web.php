@@ -669,6 +669,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('actualizar-detalle-fuente', 'LogisticaController@actualizarDetalleFuente')->name('actualizar-detalle-fuente');
 				Route::get('buscar-stock-almacenes/{id_item?}', 'RequerimientoController@buscarStockEnAlmacenes')->name('buscar-stock-almacenes');
 				Route::get('listar_trabajadores', 'ProyectosController@listar_trabajadores');
+				Route::post('lista-cuadro-presupuesto', 'Tesoreria\RequerimientoPagoController@listaCuadroPresupuesto');
+
 			});
 
 			Route::group(['as' => 'listado.', 'prefix' => 'listado'], function () {

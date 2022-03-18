@@ -140,12 +140,14 @@ function cambiarTipoFormulario(tipo=null){
 
 
 function mostrarTipoForm(tipo){
+
     switch (tipo) {
         case 'MGCP': //Mgcp - comercial
             hiddeElement('ocultar','form-requerimiento',[
                 'input-group-rol-usuario',
                 'input-group-almacen',
                 'input-group-proyecto',
+                'input-group-cdp',
                 'input-group-fuente',
                 // 'input-group-para_stock_almacen',
                 'input-group-aprobante'
@@ -241,6 +243,8 @@ function mostrarTipoForm(tipo){
                 'input-group-aprobante'
                 
             ]); 
+
+
             cambiarVisibilidadBtn("btn-add-servicio","mostrar");
             cambiarVisibilidadBtn("btn-crear-producto","ocultar");
 
@@ -270,6 +274,7 @@ function mostrarTipoForm(tipo){
                 'input-group-telefono-contacto',
                 'input-group-direccion-contacto',
                 'input-group-fuente',
+                'input-group-cdp'
             ]);
             hiddeElement('mostrar','form-requerimiento',[
                 'input-group-moneda',

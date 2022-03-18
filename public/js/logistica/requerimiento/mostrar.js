@@ -1,5 +1,5 @@
 function mostrar_requerimiento(IdorCode){
-    // console.log("mostrar_requeriniento");
+    console.log("mostrar_requeriniento");
 
     document.getElementById('btnCopiar').removeAttribute("disabled");
     if (! /^[a-zA-Z0-9]+$/.test(IdorCode)) { // si tiene texto

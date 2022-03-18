@@ -663,7 +663,7 @@ class RequerimientoController extends Controller
             $requerimiento->monto_igv = $request->monto_igv;
             $requerimiento->monto_total = $request->monto_total;
             $requerimiento->fecha_entrega = $request->fecha_entrega;
-            $requerimiento->id_cc = $request->id_cc;
+            $requerimiento->id_cc = $request->id_cc >0 ?$request->id_cc:null;
             $requerimiento->tipo_cuadro = $request->tipo_cuadro;
             $requerimiento->tiene_transformacion = $request->tiene_transformacion ? $request->tiene_transformacion : false;
             $requerimiento->fuente_id = $request->fuente;
@@ -992,7 +992,7 @@ class RequerimientoController extends Controller
         $requerimiento->monto_igv = $request->monto_igv;
         $requerimiento->monto_total = $request->monto_total;
         $requerimiento->fecha_entrega = $request->fecha_entrega;
-        $requerimiento->id_cc = $request->id_cc;
+        $requerimiento->id_cc = $request->id_cc >0 ?$request->id_cc:null;
         $requerimiento->tipo_cuadro = $request->tipo_cuadro;
         $requerimiento->tiene_transformacion = $request->tiene_transformacion ? $request->tiene_transformacion : false;
         $requerimiento->fuente_id = $request->fuente;

@@ -39,7 +39,6 @@ Crear / editar requerimiento
         <input type="text" class="oculto" name="cantidad_aprobaciones">
         <input type="text" class="oculto" name="confirmacion_pago">
         <input type="text" class="oculto" name="fecha_creacion_cc">
-        <input type="text" class="oculto" name="id_cc">
         <input type="text" class="oculto" name="tipo_cuadro">
         <input type="text" class="oculto" name="tiene_transformacion" value=false>
         <input type="text" class="oculto" name="justificacion_generar_requerimiento">
@@ -299,7 +298,27 @@ Crear / editar requerimiento
                 </fieldset>
             </div>
         </div>
+        
+        <div class="row" id="input-group-cdp">
+        <div class="col-md-12">
+                <h4 style="display:flex;justify-content: space-between;">Cuadro de presupuesto</h4>
+                <fieldset class="group-table">
+                    <div class="row">
+                        <div class="col-md-3">
+                        <h5>Código</h5>
+                        <div style="display:flex;">
+                            <input type="text" class="form-control oculto" name="id_cc">
+                            <input type="text" class="form-control" name="codigo_oportunidad" readonly>
 
+                            <button type="button" class="btn-primary handleClickModalListaCuadroDePresupuesto activation" title="Buscar cuadro de presupuesto" placeholder="Código CDP" name="btnSearchCDP" disabled>
+                                <i class=" fas fa-search"></i>
+                            </button>
+                        </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
 
         <div class="row" id="input-group-proyecto">
             <div class="col-md-12">
@@ -622,6 +641,8 @@ Crear / editar requerimiento
     </select>
 </div>
 <!-- @include('logistica.requerimientos.modal_buscar_stock_almacenes') -->
+@include('tesoreria.requerimiento_pago.modal_lista_cuadro_presupuesto')
+
 @include('logistica.requerimientos.modal_loader')
 @include('logistica.requerimientos.modal_lista_trabajadores')
 @include('logistica.requerimientos.modal_trazabilidad_requerimiento')
@@ -679,8 +700,9 @@ Crear / editar requerimiento
 <script src="{{ asset('js/logistica/requerimiento/duplicar_requerimiento.js') }}"></script>
 <script src="{{ asset('js/logistica/requerimiento/historial.js') }}"></script>
 <script src="{{ asset('js/logistica/requerimiento/modal_detalle_requerimiento.js') }}"></script>
-<script src="{{ asset('js/logistica/requerimiento/mostrar.js') }}"></script>
-<script src="{{ asset('js/logistica/requerimiento/tipo_formulario.js') }}"></script>
+<script src="{{ asset('js/logistica/requerimiento/mostrar.js') }}?v={{filemtime(public_path('js/logistica/requerimiento/mostrar.js'))}}"></script>
+ 
+<script src="{{ asset('js/logistica/requerimiento/tipo_formulario.js') }}?v={{filemtime(public_path('js/logistica/requerimiento/tipo_formulario.js'))}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/cabecera_detalle.js') }}"></script>
 <!-- <script src="{{ asset('js/logistica/requerimiento/inicializar.js') }}"></script> -->
 <script src="{{ asset('js/logistica/requerimiento/modal_almacen_reserva.js')}}"></script>
@@ -688,7 +710,7 @@ Crear / editar requerimiento
 <script src="{{ asset('js/logistica/requerimiento/modal_seleccionar_crear_proveedor.js')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/public.js') }}"></script>
 <script src="{{ asset('js/logistica/adjuntar_archivos_req.js') }}"></script>
-<script src="{{ asset('js/publico/modal_area.js')}}"></script>
+<script src="{{ asset('js/publico/modal_area.js')}}?v={{filemtime(public_path('js/publico/modal_area.js'))}}"></script>
 <!-- <script src="{{ asset('js/proyectos/opcion/opcionModal.js')}}"></script> -->
 <script src="{{ asset('js/publico/ubigeoModal.js')}}"></script>
 <script src="{{ asset('js/publico/personaModal.js')}}"></script>
@@ -705,6 +727,7 @@ Crear / editar requerimiento
 <script src="{{ asset('js/logistica/requerimiento/RequerimientoView.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/RequerimientoView.js'))}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/RequerimientoController.js?v=3')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/RequerimientoModel.js?v=3')}}"></script>
+<script src="{{ asset('js/logistica/requerimiento/modalCuadroPresupuesto.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/modalCuadroPresupuesto.js'))}}"></script>
 
 <script>
     var grupos = JSON.parse('{!!$grupos!!}');
@@ -714,6 +737,25 @@ Crear / editar requerimiento
         id_grupo_usuario_sesion_list.push(element.id_grupo);
     });
 
+    if(id_grupo_usuario_sesion_list.includes(2)){
+        hiddeElement('mostrar','form-requerimiento',[
+        'input-group-cdp'
+        ]); 
+    }else{
+        hiddeElement('ocultar','form-requerimiento',[
+        'input-group-cdp'
+        ]); 
+    }
+
+    if(id_grupo_usuario_sesion_list.includes(3)){
+        hiddeElement('mostrar','form-requerimiento',[
+        'input-group-proyecto'
+        ]); 
+    }else{
+        hiddeElement('ocultar','form-requerimiento',[
+        'input-group-proyecto'
+        ]); 
+    }
     autoSelectTipoRequerimientoPorDefecto();
     // grupos.forEach(element => {
     //     if(element.id_grupo ==3){ // proyectos

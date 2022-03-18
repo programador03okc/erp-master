@@ -20,7 +20,7 @@ function showEfectOkc(id){
 }
 
 function areaSelectModal(sede, grupo, area, text){
-    // console.log('sede:'+sede+' grupo:'+grupo+' area:'+area + 'text: '+ text);
+    console.log('sede:'+sede+' grupo:'+grupo+' area:'+area + 'text: '+ text);
     $('[name=id_grupo]').val(grupo);
     $('[name=id_area]').val(area);
     $('[name=nombre_area]').val(text);
@@ -34,7 +34,7 @@ function areaSelectModal(sede, grupo, area, text){
         }
         if(text == 'COMERCIAL' ||  text == 'DPTO. VENTAS'){
             // document.getElementById('section-comercial').setAttribute('class', 'col');
-            document.querySelector("form[id='form-requerimiento'] div[id='input-group-comercial']").removeAttribute('hidden');
+            document.querySelector("form[id='form-requerimiento'] div[id='input-group-cdp']").removeAttribute('hidden');
 
         }
     }

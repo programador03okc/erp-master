@@ -397,6 +397,8 @@ class RequerimientoView {
         document.querySelector("input[name='id_usuario_req']").value = data.id_usuario;
         document.querySelector("input[name='id_requerimiento']").value = data.id_requerimiento;
         document.querySelector("span[id='codigo_requerimiento']").textContent = data.codigo;
+        document.querySelector("input[name='id_cc']").value = data.id_cc??'';
+        document.querySelector("input[name='codigo_oportunidad']").value = data.codigo_oportunidad??'';
         document.querySelector("input[name='id_grupo']").value = data.id_grupo;
         document.querySelector("input[name='estado']").value = data.estado;
         document.querySelector("span[id='estado_doc']").textContent = data.estado_doc;
@@ -421,7 +423,7 @@ class RequerimientoView {
         document.querySelector("select[name='fuente_id']").value = data.fuente_id;
         document.querySelector("select[name='fuente_det_id']").value = data.fuente_det_id;
         // document.querySelector("input[name='montoMoneda']").textContent =data.
-        document.querySelector("input[name='monto']").value = data.monto;
+        document.querySelector("input[name='monto']").value = data.monto_total;
         document.querySelector("select[name='id_almacen']").value = data.id_almacen;
         // document.querySelector("input[name='descripcion_grupo']").value =data.
         document.querySelector("input[name='codigo_proyecto']").value = data.codigo_proyecto;
