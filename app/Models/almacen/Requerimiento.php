@@ -278,7 +278,7 @@ class Requerimiento extends Model
                     $num = Requerimiento::obtenerCantidadRegistros(5, $idRequerimiento); //tipo: BS, grupo: Proyectos
                 }
                 if ($idGrupo == 6) {
-                    $documento .= 'M';
+                    $documento .= 'MK';
                     $num = Requerimiento::obtenerCantidadRegistros(6, $idRequerimiento); //tipo: BS, grupo: Proyectos
                 }
                 break;

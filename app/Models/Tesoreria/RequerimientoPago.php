@@ -120,7 +120,7 @@ class RequerimientoPago extends Model
             $num = RequerimientoPago::obtenerCantidadRegistros(5, $idRequerimientoPago); //tipo: BS, grupo: Proyectos
         }
         if ($idGrupo == 6) {
-            $documento .= 'M';
+            $documento .= 'MK';
             $num = RequerimientoPago::obtenerCantidadRegistros(6, $idRequerimientoPago); //tipo: BS, grupo: Proyectos
         }
         $yy = date('y', strtotime("now"));
