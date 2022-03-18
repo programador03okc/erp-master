@@ -31,8 +31,10 @@ function listarItemsRequerimientoMapeo(id_requerimiento) {
                         'id_detalle_requerimiento': element.id_detalle_requerimiento,
                         'id_producto': element.id_producto,
                         'codigo': element.codigo,
-                        'part_number': (element.id_producto !== null ? element.part_number_prod : element.part_number),
-                        'descripcion': (element.id_producto !== null ? element.descripcion_prod : element.descripcion),
+                        'part_number_requerimiento': (element.part_number !== null ? element.part_number : ''),
+                        'part_number': (element.id_producto !== null ? element.part_number_prod : ''),
+                        'descripcion': (element.id_producto !== null ? element.descripcion_prod : ''),
+                        'descripcion_requerimiento': (element.descripcion !== null ? element.descripcion : ''),
                         'cantidad': element.cantidad,
                         'tiene_transformacion': element.tiene_transformacion,
                         'abreviatura': (element.abreviatura !== null ? element.abreviatura : ''),
@@ -62,7 +64,7 @@ function listarItemsRequerimientoMapeo(id_requerimiento) {
 function mostrar_detalle() {
     var html = '';
     var i = 1;
-
+    // console.log(detalle);
     detalle.forEach(element => {
         var pn = element.part_number ?? '';
         var dsc = encodeURIComponent(element.descripcion);
@@ -94,8 +96,8 @@ function mostrar_detalle() {
             <td style="display:flex;">
                 <button type="button" style="padding-left:8px;padding-right:7px;" 
                     class="asignar btn btn-xs btn-info boton" data-toggle="tooltip" 
-                    data-placement="bottom" data-partnumber="${element.part_number}" 
-                    data-desc="${encodeURIComponent(element.descripcion)}" data-id="${element.id_detalle_requerimiento}"
+                    data-placement="bottom" data-partnumber="${element.part_number_requerimiento}" 
+                    data-desc="${encodeURIComponent(element.descripcion_requerimiento)}" data-id="${element.id_detalle_requerimiento}"
                     title="Asignar producto" >
                     <i class="fas fa-angle-double-right"></i>
                 </button>`;
@@ -103,8 +105,8 @@ function mostrar_detalle() {
             html += `
                 <button type="button" style="padding-left:8px;padding-right:7px;" 
                     class="anular btn btn-xs btn-danger boton oculto" data-toggle="tooltip" 
-                    data-placement="bottom" data-partnumber="${element.part_number}" 
-                    data-desc="${encodeURIComponent(element.descripcion)}" data-id="${element.id_detalle_requerimiento}"
+                    data-placement="bottom" data-partnumber="${element.part_number_requerimiento}" 
+                    data-desc="${encodeURIComponent(element.descripcion_requerimiento)}" data-id="${element.id_detalle_requerimiento}"
                     title="Anular" >
                     <i class="fas fa-times"></i>
                 </button>
@@ -115,8 +117,8 @@ function mostrar_detalle() {
             html += `
                 <button type="button" style="padding-left:8px;padding-right:7px;" 
                     class="anular btn btn-xs btn-danger boton" data-toggle="tooltip" 
-                    data-placement="bottom" data-partnumber="${element.part_number}" 
-                    data-desc="${encodeURIComponent(element.descripcion)}" data-id="${element.id_detalle_requerimiento}"
+                    data-placement="bottom" data-partnumber="${element.part_number_requerimiento}" 
+                    data-desc="${encodeURIComponent(element.descripcion_requerimiento)}" data-id="${element.id_detalle_requerimiento}"
                     title="Anular" >
                     <i class="fas fa-times"></i>
                 </button>

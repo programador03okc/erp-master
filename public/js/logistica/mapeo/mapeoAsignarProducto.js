@@ -72,6 +72,7 @@ function listarProductosCatalogo() {
  
 
 function listarProductosSugeridos(part_number, descripcion, type) {
+    // console.log(part_number, descripcion, type);
     var pn = '', ds = '';
     if (type == 1) {
         pn = part_number;
@@ -100,7 +101,7 @@ function listarProductosSugeridos(part_number, descripcion, type) {
                 descripcion: ds
             },
             success: function (response) {
-                console.log(response);
+                // console.log(response);
                 if (response.length >0) {
                     listarSugeridos(response);
                 }
@@ -111,7 +112,7 @@ function listarProductosSugeridos(part_number, descripcion, type) {
 }
 
 function listarSugeridos(data) {
-    console.log(data);
+    // console.log(data);
             html = '';
             if (data.length > 0) {
                 data.forEach(function (element) {
