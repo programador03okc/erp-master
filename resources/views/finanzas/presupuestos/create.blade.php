@@ -29,18 +29,18 @@ Presupuesto
         <div class="box-tools pull-right">
             <div class="btn-group" role="group">
                 <button data-toggle="modal" title="Nuevo Presupuesto" 
-                    class="btn btn-box-tool btn-sm btn-success nuevo-presupuesto">
+                    class="btn btn-sm btn-success nuevo-presupuesto">
                     <i class="glyphicon glyphicon-plus" aria-hidden="true"></i>
                 </button>
                 <button data-toggle="modal" title="Editar Datos Generales" 
-                    class="btn btn-box-tool btn-sm btn-warning editar-presupuesto">
+                    class="btn btn-sm btn-warning editar-presupuesto">
                     <i class="glyphicon glyphicon-pencil" aria-hidden="true"></i>
                 </button>
                 <button type="button" data-toggle="modal" data-target="#presupuestosModal" 
-                    title="Buscar Presupuesto" class="btn btn-box-tool btn-sm btn-info">
+                    title="Buscar Presupuesto" class="btn btn-sm btn-info">
                     <i class="glyphicon glyphicon-search" aria-hidden="true"></i>
                 </button>
-                <!-- <a target="_blank" href="#" title="Imprimir" class="btn btn-box-tool">
+                <!-- <a target="_blank" href="#" title="Imprimir" class="btn">
                     <i class="glyphicon glyphicon-search" aria-hidden="true"></i>
                 </a> -->
             </div>
@@ -89,7 +89,7 @@ Presupuesto
         <div class="box-tools pull-right">
             <div class="btn-group" role="group">
                 <button data-toggle="tooltip" data-placement="bottom" title="Nuevo Título" 
-                    class="btn btn-box-tool btn-success btn-sm nuevo-titulo">
+                    class="btn btn-success btn-sm nuevo-titulo">
                     <i class="glyphicon glyphicon-plus" aria-hidden="true"></i>
                 </button>
             </div>

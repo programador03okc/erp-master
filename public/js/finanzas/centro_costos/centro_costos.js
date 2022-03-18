@@ -14,12 +14,12 @@ function mostrarCentroCostos() {
                 <td>${element.grupo_descripcion !== null ? element.grupo_descripcion : ''}</td>
                 <td>${element.periodo}</td>
                 <td width="15%" style="padding:0px;">
-                    <button type="button" class="btn btn-box-tool btn-xs btn-info editar" data-toggle="tooltip" data-placement="bottom" 
+                    <button type="button" class="btn btn-xs btn-info editar" data-toggle="tooltip" data-placement="bottom" 
                         title="Editar" data-id="${element.id_centro_costo}" data-codigo="${element.codigo}" data-descripcion="${element.descripcion}"
                         data-grupo="${element.id_grupo}" data-periodo="${element.periodo}" data-codpadre="" data-despadre="">
                         <i class="glyphicon glyphicon-pencil" aria-hidden="true"></i></button>
 
-                    <button type="button" class="btn btn-box-tool btn-xs btn-danger anular" data-toggle="tooltip" data-placement="bottom" 
+                    <button type="button" class="btn btn-xs btn-danger anular" data-toggle="tooltip" data-placement="bottom" 
                         title="Anular" data-id="${element.id_centro_costo}">
                         <i class="glyphicon glyphicon-remove" aria-hidden="true"></i></button>
                 </td>`;
