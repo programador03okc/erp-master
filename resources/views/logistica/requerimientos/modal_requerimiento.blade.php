@@ -102,14 +102,14 @@
                                         </tr>
                                         <tr>
                                             <td colspan="8" class="text-right"><strong>IGV 18%:</strong></td>
-                                            <td class="text-right"><span name="simbolo_moneda">S/</span><label name="monto_igv"> 0.00</label></td>
+                                            <td class="text-right"><span name="simbolo_moneda"></span><label name="monto_igv"> 0.00</label></td>
                                             <td></td>
                                             <td></td>
                                             <td></td>
                                         </tr>
                                         <tr>
                                             <td colspan="8" class="text-right"><strong>Monto Total:</strong></td>
-                                            <td class="text-right"><span name="simbolo_moneda">S/</span><label name="monto_total"> 0.00</label></td>
+                                            <td class="text-right"><span name="simbolo_moneda"></span><label name="monto_total"> 0.00</label></td>
                                             <td></td>
                                             <td></td>
                                             <td></td>

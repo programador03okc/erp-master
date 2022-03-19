@@ -73,14 +73,17 @@
                                             <td style="width:5%; font-weight:bold; text-align:right;">Tipo Destinatario</td>
                                             <td id="tipo_destinatario" style="width:5%;"></td>
                                             <td style="width:5%; font-weight:bold; text-align:right;">Nombre destinatario</td>
-                                            <td id="destinatario" style="width:5%;"></td>
+                                            <td id="destinatario" style="width:10%;"></td>
+                                            <td id="tipo_documento_destinatario" style="width:5%; font-weight:bold; text-align:right;">Doc.</td>
+                                            <td id="nro_documento_destinatario" style="width:5%;"></td>
                                             <td style="width:10%; font-weight:bold; text-align:right;">Banco</td>
-                                            <td id="banco" style="width:5%;"></td>
-                                            <td style="width:5%; font-weight:bold; text-align:right;">Tipo Cuenta</td>
-                                            <td id='tipo_cuenta' style="width:5%;"></td>
+                                            <td id="banco" style="width:10%;"></td>
+
 
                                         </tr>
                                         <tr>
+                                            <td style="width:5%; font-weight:bold; text-align:right;">Tipo Cuenta</td>
+                                            <td id='tipo_cuenta' style="width:5%;"></td>
                                             <td style="width:5%; font-weight:bold; text-align:right;">Moneda</td>
                                             <td id="moneda" style="width:5%;"></td>
                                             <td style="width:5%; font-weight:bold; text-align:right;">Nro Cuenta</td>
