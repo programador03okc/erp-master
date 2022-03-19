@@ -44,6 +44,38 @@ class ListarRequerimientoPagoView {
             this.verEnVistaRapidaRequerimientoPago(e.currentTarget);
         });
 
+        document.onkeydown = function(evt) {
+            evt = evt || window.event;
+            var isEscape = false;
+            if ("key" in evt) {
+                isEscape = (evt.key === "Escape" || evt.key === "Esc");
+            } else {
+                isEscape = (evt.keyCode === 27);
+            }
+            if (isEscape) {
+                if(document.querySelector("div[id='modal-requerimiento-pago']").classList.contains("in")){
+                    Swal.fire({
+                        title: 'Esta seguro que desea cerrar el modal "Nuevo requerimiento de pago"?',
+                        text: "Si acepta, se cerrará el modal",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        cancelButtonText: 'cancelar',
+                        confirmButtonText: 'Si, cerrar'
+            
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $('#modal-requerimiento-pago').modal('hide');
+
+                        }
+                    })
+                }
+                
+            }
+        };
+
+  
         $('#modal-requerimiento-pago').on("change", "select.handleChangeOptEmpresa", (e) => {
             this.changeOptEmpresaSelect(e.currentTarget);
         });
@@ -437,7 +469,9 @@ class ListarRequerimientoPagoView {
     nuevoRequerimientoPago() {
         this.resetearFormularioRequerimientoPago();
         $('#modal-requerimiento-pago').modal({
-            show: true
+            show: true,
+            backdrop: 'static',
+            keyboard:false
         });
         document.querySelector("div[id='modal-requerimiento-pago'] form[id='form-requerimiento-pago']").setAttribute("type", 'register');
         document.querySelector("div[id='modal-requerimiento-pago'] span[id='titulo-modal']").textContent = "Nuevo requerimiento de pago";
