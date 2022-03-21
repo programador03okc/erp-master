@@ -123,12 +123,21 @@ class RequerimientoView {
         $('#ListaDetalleRequerimiento tbody').on("click","button.handleClickAdjuntarArchivoItem", (e)=>{
             this.modalAdjuntarArchivosDetalle(e.currentTarget);
         });
+
+        $('body').on("click", "button.handleClickDescargarArchivoCabeceraRequerimiento", (e) => {
+            this.descargarArchivoRequerimiento(e.currentTarget);
+        });
+        $('body').on("click", "button.handleClickDescargarArchivoRequerimientoDetalle", (e) => {
+            this.descargarArchivoItem(e.currentTarget);
+        });
+
         $('#ListaDetalleRequerimiento tbody').on("click","button.handleClickEliminarItem", (e)=>{
             this.eliminarItem(e);
         });
         $('#ListaDetalleRequerimiento').on("click", "input.handleClickIncluyeIGV", (e) => {
             this.actualizarValorIncluyeIGV(e.currentTarget);
         });
+
     }
 
     editRequerimiento(){
@@ -290,6 +299,12 @@ class RequerimientoView {
         if (data.hasOwnProperty('requerimiento')) {
         
             this.RestablecerFormularioRequerimiento();
+
+            if(parseFloat(data.requerimiento[0].monto_igv)>0){
+                document.querySelector("input[name='incluye_igv']").checked=true;
+            }else{
+                document.querySelector("input[name='incluye_igv']").checked=false;
+            }
             var btnImprimirRequerimiento = document.getElementsByName("btn-imprimir-requerimento-pdf");
             var btnAdjuntosRequerimiento = document.getElementsByName("btn-adjuntos-requerimiento");
             // let allButtonAdjuntarNuevo = document.querySelectorAll("input[name='nombre_archivo']");
@@ -1126,6 +1141,7 @@ class RequerimientoView {
     }
 
     calcularTotal() {
+        
         let TableTBody = document.querySelector("tbody[id='body_detalle_requerimiento']");
         let childrenTableTbody = TableTBody.children;
         let monto_subtotal = 0;
@@ -1630,10 +1646,10 @@ class RequerimientoView {
         <td style="text-align:center;">
             <div class="btn-group" role="group">`;
             if (Number.isInteger(element.id)) {
-                html += `<button type="button" class="btn btn-info btn-xs handleClickDescargarArchivoCabeceraRequerimiento" name="btnDescargarArchivoCabeceraRequerimiento" title="Descargar" data-id="${element.id}" ><i class="fas fa-paperclip"></i></button>`;
+                html += `<button type="button" class="btn btn-info btn-md handleClickDescargarArchivoCabeceraRequerimiento" name="btnDescargarArchivoCabeceraRequerimiento" title="Descargar" data-id="${element.id}" ><i class="fas fa-paperclip"></i></button>`;
             }
             if (tipoModal != 'lectura') {
-                html += `<button type="button" class="btn btn-danger btn-xs handleClickEliminarArchivoCabeceraRequerimiento ${hasHiddenBtnEliminarArchivo}" name="btnEliminarArchivoRequerimiento" title="Eliminar" data-id="${element.id}" ><i class="fas fa-trash-alt"></i></button>`;
+                html += `<button type="button" class="btn btn-danger btn-md handleClickEliminarArchivoCabeceraRequerimiento ${hasHiddenBtnEliminarArchivo}" name="btnEliminarArchivoRequerimiento" title="Eliminar" data-id="${element.id}" ><i class="fas fa-trash-alt"></i></button>`;
             }
             html += `</div>
         </td>
@@ -1761,6 +1777,18 @@ class RequerimientoView {
         return false;
     }
 
+    descargarArchivoRequerimiento(obj) {
+        console.log(obj);
+        if (obj.dataset.id > 0) {
+            if (tempArchivoAdjuntoRequerimientoCabeceraList.length > 0) {
+                tempArchivoAdjuntoRequerimientoCabeceraList.forEach(element => {
+                    if (element.id == obj.dataset.id) {
+                        window.open("/files/necesidades/requerimientos/bienes_servicios/cabecera/" + element.nameFile);
+                    }
+                });
+            }
+        }
+    }
 
     eliminarArchivoRequerimientoCabecera(obj){
         obj.closest("tr").remove();
@@ -1804,6 +1832,18 @@ class RequerimientoView {
         // document.querySelector("div[id='modal-adjuntar-archivos-detalle-requerimiento'] div[id='group-action-upload-file']").classList.remove('oculto');
         this.listarArchivosAdjuntosDetalle(obj.dataset.id);
         this.actualizarEstadoBotonAdjuntarNuevoDetalleRequerimiento();
+    }
+
+    descargarArchivoItem(obj) {
+        if (obj.dataset.id > 0) {
+            if (tempArchivoAdjuntoRequerimientoDetalleList.length > 0) {
+                tempArchivoAdjuntoRequerimientoDetalleList.forEach(element => {
+                    if (element.id == obj.dataset.id) {
+                        window.open("/files/necesidades/requerimientos/bienes_servicios/detalle/" + element.nameFile);
+                    }
+                });
+            }
+        }
     }
 
     actualizarEstadoBotonAdjuntarNuevoDetalleRequerimiento(){
@@ -1879,10 +1919,10 @@ class RequerimientoView {
             <td style="text-align:center;">
                 <div class="btn-group" role="group">`;
                 if (Number.isInteger(element.id)) {
-                    html += `<button type="button" class="btn btn-info btn-xs handleClickDescargarArchivoRequerimientoDetalle" name="btnDescargarArchivoRequerimientoDetalle" title="Descargar" data-id="${element.id}" ><i class="fas fa-paperclip"></i></button>`;
+                    html += `<button type="button" class="btn btn-info btn-md handleClickDescargarArchivoRequerimientoDetalle" name="btnDescargarArchivoRequerimientoDetalle" title="Descargar" data-id="${element.id}" ><i class="fas fa-paperclip"></i></button>`;
                 }
      
-                html += `<button type="button" class="btn btn-danger btn-xs handleClickEliminarArchivoRequerimientoDetalle" name="btnEliminarArchivoRequerimientoDetalle" title="Eliminar" data-id="${element.id}" ><i class="fas fa-trash-alt"></i></button>
+                html += `<button type="button" class="btn btn-danger btn-md handleClickEliminarArchivoRequerimientoDetalle" name="btnEliminarArchivoRequerimientoDetalle" title="Eliminar" data-id="${element.id}" ><i class="fas fa-trash-alt"></i></button>
 
                 </div>
             </td>

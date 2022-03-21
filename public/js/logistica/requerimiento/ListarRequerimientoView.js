@@ -571,6 +571,7 @@ class ListarRequerimientoView {
         document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='periodo']").textContent = '';
         document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='creado_por']").textContent = '';
         document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='observacion']").textContent = '';
+        document.querySelector("div[id='modal-requerimiento'] td[id='adjuntosRequerimiento']").innerHTML = '';
         document.querySelector("div[id='modal-requerimiento'] span[name='simboloMoneda']").textContent = '';
         document.querySelector("div[id='modal-requerimiento'] table[id='listaDetalleRequerimientoModal'] span[name='simbolo_moneda']").textContent = '';
         document.querySelector("div[id='modal-requerimiento'] table[id='listaDetalleRequerimientoModal'] label[name='monto_subtotal']").textContent = '';
@@ -632,7 +633,11 @@ class ListarRequerimientoView {
         document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='creado_por']").textContent = data.persona;
         document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='observacion']").textContent = data.observacion;
         document.querySelector("div[id='modal-requerimiento'] span[name='simboloMoneda']").textContent = data.simbolo_moneda;
-        document.querySelector("div[id='modal-requerimiento'] table[id='listaDetalleRequerimientoModal'] span[name='simbolo_moneda']").textContent = data.simbolo_moneda;
+
+        let selectorSpanSimboloMoneda =document.querySelectorAll("div[id='modal-requerimiento'] table[id='listaDetalleRequerimientoModal'] span[name='simbolo_moneda']")
+        selectorSpanSimboloMoneda.forEach(element => {
+            element.textContent=data.simbolo_moneda;
+        });
         document.querySelector("div[id='modal-requerimiento'] table[id='listaDetalleRequerimientoModal'] label[name='monto_subtotal']").textContent =$.number(data.monto_subtotal,2);
         document.querySelector("div[id='modal-requerimiento'] table[id='listaDetalleRequerimientoModal'] label[name='monto_igv']").textContent = $.number(data.monto_igv,2);
         document.querySelector("div[id='modal-requerimiento'] table[id='listaDetalleRequerimientoModal'] label[name='monto_total']").textContent = $.number(data.monto_total,2);
@@ -734,10 +739,12 @@ class ListarRequerimientoView {
     }
 
     descargarArchivoItem(obj) {
+        console.log(obj);
         if (obj.dataset.id > 0) {
             if (tempArchivoAdjuntoItemList.length > 0) {
                 tempArchivoAdjuntoItemList.forEach(element => {
                     if (element.id == obj.dataset.id) {
+                        console.log(element);
                         window.open("/files/necesidades/requerimientos/bienes_servicios/detalle/" + element.nameFile);
                     }
                 });

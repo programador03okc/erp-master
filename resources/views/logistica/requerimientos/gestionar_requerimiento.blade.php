@@ -469,7 +469,7 @@ Crear / editar requerimiento
                 <h4 style="display:flex;justify-content: space-between;">Item's de requerimiento</h4>
                 <fieldset class="group-table">
                     <div class="btn-group" role="group" aria-label="...">
-                        <button type="button" class="btn btn-xs btn-success activation handleClickAgregarProducto" id="btn-add-producto" data-toggle="tooltip" data-placement="bottom" title="Agregar Detalle" disabled><i class="fas fa-plus"></i> Producto
+                        <button type="button" class="btn btn-xs btn-success activation handleClickAgregarProducto" id="btn-add-producto" data-toggle="tooltip" data-placement="bottom" title="Agregar Detalle" disabled><i class="fas fa-plus"></i> Bien
                         </button> <!--  onClick="catalogoItemsModal();" -->
                         <button type="button" class="btn btn-xs btn-primary activation handleClickAgregarServicio" id="btn-add-servicio" data-toggle="tooltip" data-placement="bottom" title="Agregar Detalle" disabled><i class="fas fa-plus"></i> Servicio
                         </button>
@@ -487,7 +487,7 @@ Crear / editar requerimiento
                                             <th>Descripción de item</th>
                                             <th style="width: 10%">Unidad</th>
                                             <th style="width: 6%">Cantidad</th>
-                                            <th style="width: 8%">Precio Unit.<span name="simboloMoneda">S/</span></th>
+                                            <th style="width: 8%">Precio Unit.<span name="simboloMoneda">S/</span><em>(Sin IGV)</em></th>
                                             <th style="width: 6%">Subtotal</th>
                                             <th style="width: 15%">Motivo</th>
                                             <th style="width: 7%">Acciones</th>
