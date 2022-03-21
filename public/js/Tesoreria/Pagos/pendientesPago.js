@@ -288,7 +288,13 @@
                 {
                     render: function (data, type, row) {
                         console.log(row.requerimientos_codigo);
-                        return row.requerimientos_codigo;
+                        console.log(row.requerimientos);
+                        var text = '';
+                        row.requerimientos.forEach(element => {
+                            text += `<a href="/necesidades/requerimiento/elaboracion/index?id=${element.id_requerimiento}" 
+                            target="_blank" title="Abrir Requerimiento">${element.codigo}</a>`;
+                        });
+                        return text;
                     },
                     targets: 2
                 },
