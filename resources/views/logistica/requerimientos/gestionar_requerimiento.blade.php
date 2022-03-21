@@ -469,7 +469,7 @@ Crear / editar requerimiento
                 <h4 style="display:flex;justify-content: space-between;">Item's de requerimiento</h4>
                 <fieldset class="group-table">
                     <div class="btn-group" role="group" aria-label="...">
-                        <button type="button" class="btn btn-xs btn-success activation handleClickAgregarProducto" id="btn-add-producto" data-toggle="tooltip" data-placement="bottom" title="Agregar Detalle" disabled><i class="fas fa-plus"></i> Producto
+                        <button type="button" class="btn btn-xs btn-success activation handleClickAgregarProducto" id="btn-add-producto" data-toggle="tooltip" data-placement="bottom" title="Agregar Detalle" disabled><i class="fas fa-plus"></i> Bien
                         </button> <!--  onClick="catalogoItemsModal();" -->
                         <button type="button" class="btn btn-xs btn-primary activation handleClickAgregarServicio" id="btn-add-servicio" data-toggle="tooltip" data-placement="bottom" title="Agregar Detalle" disabled><i class="fas fa-plus"></i> Servicio
                         </button>
