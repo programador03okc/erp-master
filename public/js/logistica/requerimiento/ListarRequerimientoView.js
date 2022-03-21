@@ -739,10 +739,12 @@ class ListarRequerimientoView {
     }
 
     descargarArchivoItem(obj) {
+        console.log(obj);
         if (obj.dataset.id > 0) {
             if (tempArchivoAdjuntoItemList.length > 0) {
                 tempArchivoAdjuntoItemList.forEach(element => {
                     if (element.id == obj.dataset.id) {
+                        console.log(element);
                         window.open("/files/necesidades/requerimientos/bienes_servicios/detalle/" + element.nameFile);
                     }
                 });
