@@ -23,7 +23,6 @@ Registro de pagos
                 <ul class="nav nav-tabs" id="myTab">
                     <li class="active"><a data-toggle="tab" href="#requerimientos">Requerimiento de pagos</a></li>
                     <li class=""><a data-toggle="tab" href="#ordenes">Ordenes Compra/Servicio</a></li>
-                    {{-- <li class=""><a data-toggle="tab" href="#comprobantes">Comprobantes</a></li> --}}
                 </ul>
 
                 <div class="tab-content">

@@ -2,9 +2,9 @@
 
 // });
 
-$(function(){
+$(function () {
     var id_presup = localStorage.getItem("id_presup");
-    if (id_presup !== null){
+    if (id_presup !== null) {
         mostrarPartidas(id_presup);
         localStorage.removeItem("id_presup");
     }
@@ -14,24 +14,25 @@ $(function(){
         // 'language' : idioma,
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
-        'language' : vardataTables[0],
-        'destroy' : true,
+        'language': vardataTables[0],
+        'destroy': true,
     });
 
 });
 
-$('#listaPresupuestos tbody tr').on('click', function(){
+$('#listaPresupuestos tbody tr').on('click', function () {
     var id = $(this).attr('value');
-    
+
     $('#presupuestosModal').modal('hide');
     mostrarPartidas(id);
+    mostrarCuadroGastos(id);
 });
 
-$(".nuevo-presupuesto").on('click',function(){
+$(".nuevo-presupuesto").on('click', function () {
     $('#presupuestoCreate').modal({
         show: true
     });
-    
+
     $('#submit-presupuestoCreate').removeAttr('disabled');
 
     $('[name=id_presup]').val('');
@@ -41,14 +42,14 @@ $(".nuevo-presupuesto").on('click',function(){
     $('[name=id_grupo]').val('0');
 });
 
-$(".editar-presupuesto").on('click', function(){
+$(".editar-presupuesto").on('click', function () {
     $('#presupuestoCreate').modal({
         show: true
     });
-    
+
     $('#submit-presupuestoCreate').removeAttr('disabled');
-    
-    if (presupuesto !== null){
+
+    if (presupuesto !== null) {
         $('[name=id_presup]').val(presupuesto.id_presup);
         $('#cod_presup').text(presupuesto.codigo);
         $('[name=moneda]').val(presupuesto.moneda);
@@ -58,14 +59,14 @@ $(".editar-presupuesto").on('click', function(){
     }
 });
 
-$("#form-presupuestoCreate").on("submit", function(e){
+$("#form-presupuestoCreate").on("submit", function (e) {
     e.preventDefault();
     var data = $(this).serialize();
     var id = $('[name=id_presup]').val();
     var url = '';
-    $('#submit-presupuestoCreate').attr('disabled','true');
-    
-    if (id == ''){
+    $('#submit-presupuestoCreate').attr('disabled', 'true');
+
+    if (id == '') {
         url = 'guardar-presupuesto';
     } else {
         url = 'actualizar-presupuesto';
@@ -76,19 +77,19 @@ $("#form-presupuestoCreate").on("submit", function(e){
     $('#presupuestoCreate').modal('hide');
 });
 
-function guardar_presupuesto(data, url){
+function guardar_presupuesto(data, url) {
     $.ajax({
         type: 'POST',
         // headers: {'X-CSRF-TOKEN': csrf_token},
         url: url,
         data: data,
         dataType: 'JSON',
-        success: function(response){
+        success: function (response) {
             console.log(response);
             nuevo_id_titulo = '';
             mostrarPartidas(response.id_presup);
         }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
+    }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
@@ -98,13 +99,13 @@ function guardar_presupuesto(data, url){
 let nuevo_id_titulo = '';
 let presupuesto = null;
 
-function mostrarPartidas(id){
+function mostrarPartidas(id) {
     $.ajax({
         type: 'GET',
         // headers: {'X-CSRF-TOKEN': csrf_token},
-        url: 'mostrarPartidas/'+id,
+        url: 'mostrarPartidas/' + id,
         dataType: 'JSON',
-        success: function(response){
+        success: function (response) {
             console.log(response);
             presupuesto = response;
 
@@ -115,24 +116,24 @@ function mostrarPartidas(id){
             $('[name=fecha_emision]').text(response.fecha_emision);
             $('[name=name_moneda]').text(response.moneda_seleccionada['descripcion']);
 
-            var html = ''; 
+            var html = '';
 
-            response.titulos.sort(function(a, b) {
+            response.titulos.sort(function (a, b) {
                 if (a.codigo > b.codigo) {
-                  return 1;
+                    return 1;
                 }
                 if (a.codigo < b.codigo) {
-                  return -1;
+                    return -1;
                 }
                 return 0;
             });
 
-            response.partidas.sort(function(a, b) {
+            response.partidas.sort(function (a, b) {
                 if (a.codigo > b.codigo) {
-                  return 1;
+                    return 1;
                 }
                 if (a.codigo < b.codigo) {
-                  return -1;
+                    return -1;
                 }
                 return 0;
             });
@@ -158,7 +159,7 @@ function mostrarPartidas(id){
 
                             <button type="button" class="btn btn-box-tool btn-xs btn-info editar-titulo" data-toggle="tooltip" data-placement="bottom" 
                                 title="Editar SubTitulo" data-id="${element.id_titulo}" data-codigo="${element.codigo}" data-descripcion="${element.descripcion}"
-                                data-codpadre="${element.cod_padre}" data-despadre="${(desPadre!==undefined ? desPadre.descripcion : '')}">
+                                data-codpadre="${element.cod_padre}" data-despadre="${(desPadre !== undefined ? desPadre.descripcion : '')}">
                                 <i class="glyphicon glyphicon-pencil" aria-hidden="true"></i></button>
 
                             <button type="button" class="btn btn-box-tool btn-xs btn-danger anular-titulo" data-toggle="tooltip" data-placement="bottom" 
@@ -172,8 +173,8 @@ function mostrarPartidas(id){
 
                 response.partidas.forEach(partida => {
 
-                    if (element.codigo == partida.cod_padre){
-                        
+                    if (element.codigo == partida.cod_padre) {
+
                         html += `<tr>
                             <td><a name="${partida.id_partida}"></a>${partida.codigo}</td>
                             <td>${partida.descripcion}</td>
@@ -210,31 +211,31 @@ function mostrarPartidas(id){
                             </td>
                         </tr>`;
                     }
-                    
+
                 });
             });
             $('#listaPartidas tbody').html(html);
-            
-            if (nuevo_id_titulo !== ''){
-                location.href = "#"+nuevo_id_titulo;
+
+            if (nuevo_id_titulo !== '') {
+                location.href = "#" + nuevo_id_titulo;
             }
             // else if (nueva_id_partida !== ''){
             //     location.href = "#"+nueva_id_partida;
             // }
         }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
+    }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
     });
 }
 
-function leftZero(canti, number){
+function leftZero(canti, number) {
     let vLen = number.toString();
     let nLen = vLen.length;
     let zeros = '';
-    for(var i=0; i<(canti-nLen); i++){
-        zeros = zeros+'0';
+    for (var i = 0; i < (canti - nLen); i++) {
+        zeros = zeros + '0';
     }
-    return zeros+number;
+    return zeros + number;
 }
