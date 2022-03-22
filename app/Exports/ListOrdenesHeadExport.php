@@ -4,7 +4,7 @@ namespace App\Exports;
 use App\Models\Logistica\Orden;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
-// use App\Http\Controllers\OrdenController;
+use App\Http\Controllers\OrdenController;
 class ListOrdenesHeadExport implements FromCollection, WithHeadings
 {
     /**
@@ -12,8 +12,8 @@ class ListOrdenesHeadExport implements FromCollection, WithHeadings
     */
     public function collection()
     {
-        $data =Orden::reporteListaOrdenes();
-        // $data = (new OrdenController)->listarOrdenes(null, null, null, null, null, null, null, null, null)['data']->get(['codigo']);
+        // $data =Orden::reporteListaOrdenes();
+        $data =(new OrdenController)->reporteListaOrdenes();
         return collect($data);
 
 
