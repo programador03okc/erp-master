@@ -1326,6 +1326,14 @@ class OrdenController extends Controller
                 } catch (\Throwable $th) {
                 }
             })
+            ->filterColumn('log_ord_compra.fecha_formato', function ($query, $keyword) {
+                try {
+                    $desde = Carbon::createFromFormat('d-m-Y', trim($keyword))->hour(0)->minute(0)->second(0);
+                    $hasta = Carbon::createFromFormat('d-m-Y', trim($keyword));
+                    $query->whereBetween('log_ord_compra.fecha', [$desde, $hasta->addDay()->addSeconds(-1)]);
+                } catch (\Throwable $th) {
+                }
+            })
             ->filterColumn('moneda_descripcion', function ($query, $keyword) {
                 $keywords = trim(strtoupper($keyword));
                 $query->whereRaw("sis_moneda.descripcion LIKE ?", ["%{$keywords}%"]);
