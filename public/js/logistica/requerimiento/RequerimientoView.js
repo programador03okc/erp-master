@@ -1170,6 +1170,8 @@ class RequerimientoView {
     
     actualizarValorIncluyeIGV(){
         this.calcularTotal();
+        this.calcularPresupuestoUtilizadoYSaldoPorPartida();
+
     }
 
     // partidas 
@@ -1342,10 +1344,15 @@ class RequerimientoView {
                         'saldo': 0
                     });
                 }
+                
+                let subtotal = (tbodyChildren[index].querySelector("input[class~='cantidad']").value > 0 ? tbodyChildren[index].querySelector("input[class~='cantidad']").value : 0) * (tbodyChildren[index].querySelector("input[class~='precio']").value > 0 ? tbodyChildren[index].querySelector("input[class~='precio']").value : 0);
+                if(document.querySelector("input[name='incluye_igv']").checked ==true){
+                    subtotal= (subtotal *0.18) + subtotal;
+                }
 
                 subtotalItemList.push({
                     'id_partida': tbodyChildren[index].querySelector("p[class='descripcion-partida']").dataset.idPartida,
-                    'subtotal': (tbodyChildren[index].querySelector("input[class~='cantidad']").value > 0 ? tbodyChildren[index].querySelector("input[class~='cantidad']").value : 0) * (tbodyChildren[index].querySelector("input[class~='precio']").value > 0 ? tbodyChildren[index].querySelector("input[class~='precio']").value : 0)
+                    'subtotal': subtotal
                 });
 
             }
