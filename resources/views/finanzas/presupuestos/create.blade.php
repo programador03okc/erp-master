@@ -85,31 +85,100 @@ Presupuesto
 
 <div class="box box-solid">
     <div class="box-header with-border">
-        <h3 class="box-title">Partidas</h3>
-        <div class="box-tools pull-right">
-            <div class="btn-group" role="group">
-                <button data-toggle="tooltip" data-placement="bottom" title="Nuevo Título" 
-                    class="btn btn-success btn-sm nuevo-titulo">
-                    <i class="glyphicon glyphicon-plus" aria-hidden="true"></i>
-                </button>
+        <div class="col-md-12" id="tab-partidas">
+
+            <ul class="nav nav-tabs" id="myTabPartidas">
+                <li class="active"><a data-toggle="tab" href="#partidas">Detalle </a></li>
+                <li class=""><a data-toggle="tab" href="#gastos">Gastos por partidas</a></li>
+            </ul>
+            <div class="tab-content">
+                <div id="partidas" class="tab-pane fade in active">
+                    
+                    {{-- <div class="row" >
+                        <div class="col-md-12"> --}}
+
+                            <div class="box box-solid">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">Partidas</h3>
+                                    <div class="box-tools pull-right">
+                                        <div class="btn-group" role="group">
+                                            <button data-toggle="tooltip" data-placement="bottom" title="Nuevo Título" 
+                                                class="btn btn-success btn-sm nuevo-titulo">
+                                                <i class="glyphicon glyphicon-plus" aria-hidden="true"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="box-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <table class="table table-sm table-hover table-bordered dt-responsive nowrap" id="listaPartidas">
+                                                <thead style="background: gainsboro;">
+                                                    <tr>
+                                                        <th>Codigo</th>
+                                                        <th>Descripción</th>
+                                                        <th>Total</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        {{-- </div>
+                    </div> --}}
+
+                </div>
+                <div id="gastos" class="tab-pane fade ">
+
+                    <div class="box box-solid">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Cuadro de Gastos</h3>
+                            <div class="box-tools pull-right">
+                                <div class="btn-group" role="group">
+                                    {{-- <button data-toggle="tooltip" data-placement="bottom" title="Nuevo Título" 
+                                        class="btn btn-success btn-sm nuevo-titulo">
+                                        <i class="glyphicon glyphicon-plus" aria-hidden="true"></i>
+                                    </button> --}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <table class="table table-sm table-hover table-bordered dt-responsive nowrap" id="listaGastosPartidas">
+                                        <thead style="background: gainsboro;">
+                                            <tr>
+                                                <th>Empresa</th>
+                                                <th>Fecha de pago</th>
+                                                <th>Requerimiento</th>
+                                                <th>OC/OS</th>
+                                                <th>Titulo</th>
+                                                <th>Partida</th>
+                                                {{-- <th>Proveedor o persona asignada</th> --}}
+                                                <th>Descripción</th>
+                                                <th>Cant.</th>
+                                                <th>Unid.</th>
+                                                {{-- <th>Mnd.</th> --}}
+                                                <th>P. Unitario</th>
+                                                <th>SubTotal</th>
+                                                <th>I.G.V.</th>
+                                                <th>P. Compra</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
             </div>
-        </div>
-    </div>
-    <div class="box-body">
-        <div class="row">
-            <div class="col-md-12">
-                <table class="table table-sm table-hover table-bordered dt-responsive nowrap" id="listaPartidas">
-                    <thead style="background: gainsboro;">
-                        <tr>
-                            <th>Codigo</th>
-                            <th>Descripción</th>
-                            <th>Total</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
+
         </div>
     </div>
 </div>
@@ -140,6 +209,7 @@ Presupuesto
     <script src="{{('/js/finanzas/presupuestos/titulo.js')}}"></script>
     <script src="{{('/js/finanzas/presupuestos/partida.js')}}"></script>
     <script src="{{('/js/finanzas/presupuestos/detalle.js')}}"></script>
+    <script src="{{('/js/finanzas/presupuestos/cuadroGastos.js')}}"></script>
     <script>
         $(document).ready(function () {
             seleccionarMenu(window.location);

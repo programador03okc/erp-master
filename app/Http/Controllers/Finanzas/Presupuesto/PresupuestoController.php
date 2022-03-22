@@ -74,6 +74,64 @@ class PresupuestoController extends Controller
         return response()->json(['req_compras' => $detalle, 'req_pagos' => $pagos]);
     }
 
+    public function mostrarGastosPorPresupuesto($id_presupuesto)
+    {
+        $detalle = DB::table('logistica.log_det_ord_compra')
+            ->select(
+                'log_det_ord_compra.*',
+                'alm_req.codigo',
+                'alm_req.concepto',
+                'alm_req.fecha_requerimiento',
+                'adm_contri.razon_social',
+                'registro_pago.fecha_pago',
+                'alm_und_medida.abreviatura',
+                'log_ord_compra.codigo as codigo_oc',
+                'presup_par.descripcion as partida_descripcion',
+                'presup_titu.descripcion as titulo_descripcion'
+            )
+            ->join('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
+            ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+            ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'alm_req.id_empresa')
+            ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
+            ->join('finanzas.presup_par', 'presup_par.id_partida', '=', 'alm_det_req.partida')
+            ->join('finanzas.presup_titu', 'presup_titu.codigo', '=', 'presup_par.cod_padre')
+            ->join('logistica.log_ord_compra', 'log_ord_compra.id_orden_compra', '=', 'log_det_ord_compra.id_orden_compra')
+            ->join('tesoreria.registro_pago', 'registro_pago.id_oc', '=', 'log_det_ord_compra.id_orden_compra')
+            ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_det_req.id_unidad_medida')
+            ->where([
+                ['presup_par.id_presup', '=', $id_presupuesto],
+                ['log_det_ord_compra.estado', '!=', 7]
+            ])
+            ->get();
+
+        $pagos = DB::table('tesoreria.requerimiento_pago_detalle')
+            ->select(
+                'requerimiento_pago_detalle.*',
+                'requerimiento_pago.codigo',
+                'requerimiento_pago.concepto',
+                'requerimiento_pago.fecha_registro',
+                'adm_contri.razon_social',
+                'registro_pago.fecha_pago',
+                'alm_und_medida.abreviatura',
+                'presup_par.descripcion as partida_descripcion',
+                'presup_titu.descripcion as titulo_descripcion'
+            )
+            ->join('tesoreria.requerimiento_pago', 'requerimiento_pago.id_requerimiento_pago', '=', 'requerimiento_pago_detalle.id_requerimiento_pago')
+            ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'requerimiento_pago.id_empresa')
+            ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
+            ->join('tesoreria.registro_pago', 'registro_pago.id_requerimiento_pago', '=', 'requerimiento_pago.id_requerimiento_pago')
+            ->join('finanzas.presup_par', 'presup_par.id_partida', '=', 'requerimiento_pago_detalle.id_partida')
+            ->join('finanzas.presup_titu', 'presup_titu.codigo', '=', 'presup_par.cod_padre')
+            ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'requerimiento_pago_detalle.id_unidad_medida')
+            ->where([
+                ['presup_par.id_presup', '=', $id_presupuesto],
+                ['requerimiento_pago_detalle.id_estado', '!=', 7]
+            ])
+            ->get();
+
+        return response()->json(['req_compras' => $detalle, 'req_pagos' => $pagos]);
+    }
+
     public function store()
     {
         $codigo = $this->presupNextCodigo(

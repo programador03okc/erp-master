@@ -670,7 +670,6 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('buscar-stock-almacenes/{id_item?}', 'RequerimientoController@buscarStockEnAlmacenes')->name('buscar-stock-almacenes');
 				Route::get('listar_trabajadores', 'ProyectosController@listar_trabajadores');
 				Route::post('lista-cuadro-presupuesto', 'Tesoreria\RequerimientoPagoController@listaCuadroPresupuesto');
-
 			});
 
 			Route::group(['as' => 'listado.', 'prefix' => 'listado'], function () {
@@ -1789,6 +1788,8 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::post('guardar-partida', 'Finanzas\Presupuesto\PartidaController@store')->name('guardar-partida');
 			Route::post('actualizar-partida', 'Finanzas\Presupuesto\PartidaController@update')->name('actualizar-partida');
 			Route::get('anular-partida/{id}', 'Finanzas\Presupuesto\PartidaController@destroy')->name('anular-partida');
+
+			Route::get('mostrarGastosPorPresupuesto/{id}', 'Finanzas\Presupuesto\PresupuestoController@mostrarGastosPorPresupuesto')->name('mostrar-gastos-presupuesto');
 		});
 
 		Route::group(['as' => 'centro-costos.', 'prefix' => 'centro-costos'], function () {
