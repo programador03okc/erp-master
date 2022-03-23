@@ -256,6 +256,7 @@ class Requerimiento extends Model
             case 4:
             case 5:
             case 6:
+            case 8:
             case 7: #tipo:Bienes y Servicios, Compra para stock,Compra para activos,Compra para garantías,Otros
                 if ($idGrupo == 1) {
                     $documento .= 'A';

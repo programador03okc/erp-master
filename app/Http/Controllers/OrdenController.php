@@ -1062,48 +1062,15 @@ class OrdenController extends Controller
 
 
             ->where([
-                // ['log_ord_compra.codigo', '=', 'OC-21090191'],
-                ['log_ord_compra.estado', '!=', 7],
-                // ['log_ord_compra.id_grupo_cotizacion', '=', null]
-                // $tipoOrden >0 ? ['log_ord_compra.id_tp_documento',$tipoOrden]:[null],
-                // $empresa >0 ? ['sis_sede.id_empresa',$empresa]:[null],
-                // $sede >0 ? ['sis_sede.id_sede',$sede]:[null],
-                // ($tipoProveedor =='NACIONAL') ? ['adm_contri.id_pais','=','170']:($tipoProveedor =='EXTRANJERO' ? ['adm_contri.id_pais','=','170']:[null]),
-                // $estado >0 ? ['log_ord_compra.estado',$estado]:[null]
-                // $montoOrden >0 ? ['suma_subtotal','>',$montoOrden]:[null]
+                ['log_ord_compra.estado', '!=', 7]
+   
 
             ])
-
-            // ->when(($vinculadoPor !='null' && $vinculadoPor !=null), function($query) use ($vinculadoPor)  {
-            //     if($vinculadoPor== 'REQUERIMIENTO'){
-            //         $whereVinculadoPor='log_det_ord_compra.id_detalle_requerimiento > 0';
-            //     }elseif($vinculadoPor == 'CUADRO_COMPARATIVO'){
-            //         $whereVinculadoPor='log_det_ord_compra.detalle_cuadro_comparativo_id > 0';
-            //     }
-            //     return $query->WhereIn('log_ord_compra.id_orden_compra', function($query) use ($whereVinculadoPor)
-            //     {
-            //         $query->select('log_det_ord_compra.id_orden_compra')
-            //         ->from('logistica.log_det_ord_compra')
-            //         ->whereRaw($whereVinculadoPor);
-            //     });
-            // })
-
-            // ->when(($enAlmacen =='true'), function($query)  {
-            //     return $query->WhereIn('log_ord_compra.id_orden_compra', function($query)
-            //     {
-            //         $query->select('log_det_ord_compra.id_orden_compra')
-            //             ->from('logistica.log_det_ord_compra')
-            //             ->leftjoin('almacen.guia_com_det', 'guia_com_det.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden')
-            //             ->whereRaw('guia_com_det.id_guia_com_det > 0');
-            //     });
-            // })
+ 
 
             ->orderBy('log_ord_compra.fecha', 'desc')
 
-            // ->whereRaw('(SELECT  coalesce(sum((log_det_ord_compra.cantidad * log_det_ord_compra.precio))*1.18 ,0)
-            // FROM logistica.log_det_ord_compra 
-            // WHERE   log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra AND
-            //         log_det_ord_compra.estado != 7) '.$simboloMontoOrden.' '.$montoOrden)
+       
             ->get();
 
 
@@ -1143,7 +1110,8 @@ class OrdenController extends Controller
                     'archivo_adjunto' => $element->archivo_adjunto,
                     'monto_total_presup' => $element->monto_total_presup,
                     'monto_total_orden' => $element->monto_total_orden,
-                    'facturas' => (new OrdenController)->reporteListaOrdenes($element->id_orden_compra),
+                    //  'facturas' => (new OrdenController)->reporteListaOrdenes($element->id_orden_compra),
+                    'facturas' => [],
                     'requerimientos' => $element->requerimientos,
                     'estado_pago' => $element->estado_pago,
                     'id_prioridad_pago' => $element->id_prioridad_pago, //util para envia a pago,
@@ -1160,7 +1128,7 @@ class OrdenController extends Controller
                 ];
             }
         }
-
+ 
         $detalle_orden = Orden::select(
             'log_ord_compra.id_orden_compra',
             'log_det_ord_compra.id_detalle_orden',
