@@ -2961,7 +2961,9 @@ class OrdenController extends Controller
             $requerimientoHelper = new RequerimientoHelper();
             if ($requerimientoHelper->EstaHabilitadoRequerimiento($idDetalleRequerimientoList) == true) {
 
-                $ValidarOrdenSoftlink = (new MigrateOrdenSoftLinkController)->validarOrdenSoftlink($request->id_orden);
+                // $ValidarOrdenSoftlink = (new MigrateOrdenSoftLinkController)->validarOrdenSoftlink($request->id_orden);
+                $ValidarOrdenSoftlink['tipo']='success';
+                $ValidarOrdenSoftlink['mensaje']='ok';
                 if ($ValidarOrdenSoftlink['tipo'] == 'success') {
                     $orden = Orden::where("id_orden_compra", $request->id_orden)->first();
                     $orden->id_grupo_cotizacion = $request->id_grupo_cotizacion ? $request->id_grupo_cotizacion : null;
@@ -3079,7 +3081,8 @@ class OrdenController extends Controller
                     }
                 }
                 if ($status == 200) {
-                    $migrarOrdenSoftlink = (new MigrateOrdenSoftLinkController)->migrarOrdenCompra($request->id_orden)->original;
+                    // $migrarOrdenSoftlink = (new MigrateOrdenSoftLinkController)->migrarOrdenCompra($request->id_orden)->original;
+                    $migrarOrdenSoftlink['tipo'] = 'success';
                     if ($migrarOrdenSoftlink['tipo'] == 'success') {
                         $data = [
                             'id_orden_compra' => $orden->id_orden_compra,
