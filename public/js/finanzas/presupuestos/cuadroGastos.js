@@ -10,26 +10,27 @@ function mostrarCuadroGastos(id) {
             success: function (response) {
                 console.log(response);
                 var html = '';
+                var total_sin_igv = 0;
                 var total = 0;
 
                 response.req_compras.forEach(element => {
                     var sub_total = parseFloat(element.precio) * parseFloat(element.cantidad);
                     var igv = sub_total * 0.18;
-                    total += parseFloat(sub_total);
+                    total_sin_igv += parseFloat(sub_total);
+                    total += (sub_total + igv);
                     html += `<tr>
-                            <td>${element.razon_social}</td>
+                            <td>${element.razon_social ?? ''}</td>
                             <td>${element.fecha_pago}</td>
                             <td>${element.codigo}</td>
-                            <td>${element.codigo_oc}</td>
                             <td>${element.titulo_descripcion}</td>
                             <td>${element.partida_descripcion}</td>
                             <td>${element.descripcion_adicional}</td>
                             <td>${element.cantidad}</td>
                             <td>${element.abreviatura}</td>
-                            <td>${element.precio}</td>
-                            <td>${element.subtotal}</td>
-                            <td>${igv}</td>
-                            <td>${sub_total + igv}</td>
+                            <td style="text-align:right">${formatNumber.decimal(element.precio, '', -2)}</td>
+                            <td style="text-align:right">${formatNumber.decimal(element.subtotal, '', -2)}</td>
+                            <td style="text-align:right">${formatNumber.decimal(igv, '', -2)}</td>
+                            <td style="text-align:right">${formatNumber.decimal((sub_total + igv), '', -2)}</td>
                             </tr>`;
                     // <td width="50px" style="text-align:right;">${formatter.format(sub_total)}</td>
                 });
@@ -37,27 +38,29 @@ function mostrarCuadroGastos(id) {
                 response.req_pagos.forEach(element => {
                     var sub_total = parseFloat(element.precio_unitario) * parseFloat(element.cantidad);
                     var igv = sub_total * 0.18;
-                    total += parseFloat(sub_total);
+                    total_sin_igv += parseFloat(sub_total);
+                    total += (sub_total + igv);
                     html += `<tr>
-                            <td>${element.razon_social}</td>
-                            <td>${element.fecha_pago}</td>
-                            <td>${element.codigo}</td>
-                            <td></td>
-                            <td>${element.titulo_descripcion}</td>
-                            <td>${element.partida_descripcion}</td>
-                            <td>${element.descripcion}</td>
-                            <td>${element.cantidad}</td>
-                            <td>${element.abreviatura}</td>
-                            <td>${element.precio_unitario}</td>
-                            <td>${element.subtotal}</td>
-                            <td>${igv}</td>
-                            <td>${sub_total + igv}</td>
+                            <td>${element.razon_social ?? ''}</td>
+                            <td>${formatDate(element.fecha_pago) ?? ''}</td>
+                            <td>${element.codigo ?? ''}</td>
+                            <td>${element.titulo_descripcion ?? ''}</td>
+                            <td>${element.partida_descripcion ?? ''}</td>
+                            <td>${element.descripcion ?? ''}</td>
+                            <td>${element.cantidad ?? ''}</td>
+                            <td>${element.abreviatura ?? ''}</td>
+                            <td style="text-align:right">${formatNumber.decimal(element.precio_unitario ?? '', '', -2)}</td>
+                            <td style="text-align:right">${formatNumber.decimal(element.subtotal ?? '', '', -2)}</td>
+                            <td style="text-align:right">${formatNumber.decimal(igv, '', -2)}</td>
+                            <td style="text-align:right">${formatNumber.decimal(sub_total + igv, '', -2)}</td>
                             </tr>`;
                 });
 
                 html += `<tr>
-                        <td colSpan="2"></td>
+                        <td colSpan="8"></td>
                         <td style="font-size: 14px;"><strong>Total Consumido</strong></td>
+                        <td style="font-size: 14px; text-align:right;"><strong>${formatter.format(total_sin_igv)}</strong></td>
+                        <td style="font-size: 14px; text-align:right;"></td>
                         <td style="font-size: 14px; text-align:right;"><strong>${formatter.format(total)}</strong></td>
                     </tr>`;
 

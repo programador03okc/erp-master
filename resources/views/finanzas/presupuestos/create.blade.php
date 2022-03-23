@@ -149,13 +149,14 @@ Presupuesto
                         <div class="box-body">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <table class="table table-sm table-hover table-bordered dt-responsive nowrap" id="listaGastosPartidas">
+                                    <table class="table table-sm table-hover table-bordered dt-responsive nowrap" 
+                                    id="listaGastosPartidas" style="font-size: 13px">
                                         <thead style="background: gainsboro;">
                                             <tr>
                                                 <th>Empresa</th>
-                                                <th>Fecha de pago</th>
-                                                <th>Requerimiento</th>
-                                                <th>OC/OS</th>
+                                                <th>Fecha pago</th>
+                                                <th>Cod.Req.</th>
+                                                {{-- <th>OC/OS</th> --}}
                                                 <th>Titulo</th>
                                                 <th>Partida</th>
                                                 {{-- <th>Proveedor o persona asignada</th> --}}

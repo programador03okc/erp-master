@@ -94,12 +94,13 @@ class PresupuestoController extends Controller
             ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'alm_req.id_empresa')
             ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
             ->join('finanzas.presup_par', 'presup_par.id_partida', '=', 'alm_det_req.partida')
+            ->join('finanzas.presup', 'presup.id_presup', '=', 'presup_par.id_presup')
             ->join('finanzas.presup_titu', 'presup_titu.codigo', '=', 'presup_par.cod_padre')
             ->join('logistica.log_ord_compra', 'log_ord_compra.id_orden_compra', '=', 'log_det_ord_compra.id_orden_compra')
             ->join('tesoreria.registro_pago', 'registro_pago.id_oc', '=', 'log_det_ord_compra.id_orden_compra')
             ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_det_req.id_unidad_medida')
             ->where([
-                ['presup_par.id_presup', '=', $id_presupuesto],
+                ['presup.id_presup', '=', $id_presupuesto],
                 ['log_det_ord_compra.estado', '!=', 7]
             ])
             ->get();
@@ -111,21 +112,32 @@ class PresupuestoController extends Controller
                 'requerimiento_pago.concepto',
                 'requerimiento_pago.fecha_registro',
                 'adm_contri.razon_social',
-                'registro_pago.fecha_pago',
+                // 'registro_pago.fecha_pago',
                 'alm_und_medida.abreviatura',
                 'presup_par.descripcion as partida_descripcion',
-                'presup_titu.descripcion as titulo_descripcion'
+                DB::raw("(SELECT presup_titu.descripcion FROM finanzas.presup_titu
+                WHERE presup_titu.codigo = presup_par.cod_padre
+                and presup_titu.id_presup = presup_par.id_presup) AS titulo_descripcion"),
+                DB::raw("(SELECT registro_pago.fecha_pago FROM tesoreria.registro_pago
+                WHERE registro_pago.id_requerimiento_pago = requerimiento_pago.id_requerimiento_pago
+                limit 1) AS fecha_pago"),
+                // 'presup_titu.descripcion as titulo_descripcion'
             )
+            // ->join('tesoreria.requerimiento_pago', 'requerimiento_pago.id_requerimiento_pago', '=', 'registro_pago.id_requerimiento_pago')
             ->join('tesoreria.requerimiento_pago', 'requerimiento_pago.id_requerimiento_pago', '=', 'requerimiento_pago_detalle.id_requerimiento_pago')
             ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'requerimiento_pago.id_empresa')
             ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
-            ->join('tesoreria.registro_pago', 'registro_pago.id_requerimiento_pago', '=', 'requerimiento_pago.id_requerimiento_pago')
             ->join('finanzas.presup_par', 'presup_par.id_partida', '=', 'requerimiento_pago_detalle.id_partida')
-            ->join('finanzas.presup_titu', 'presup_titu.codigo', '=', 'presup_par.cod_padre')
+            // ->join('finanzas.presup_titu', 'presup_titu.codigo', '=', 'presup_par.cod_padre')
+            // ->leftJoin('finanzas.presup_titu', function ($join) {
+            //     $join->on('presup_titu.codigo', '=', 'presup_par.cod_padre');
+            //     $join->where('presup_titu.id_presup', '=', 'presup_par.id_presup');
+            // })
             ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'requerimiento_pago_detalle.id_unidad_medida')
             ->where([
                 ['presup_par.id_presup', '=', $id_presupuesto],
-                ['requerimiento_pago_detalle.id_estado', '!=', 7]
+                // ['registro_pago.estado', '!=', 7],
+                ['requerimiento_pago_detalle.id_estado', '!=', 7],
             ])
             ->get();
 
