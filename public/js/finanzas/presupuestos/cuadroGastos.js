@@ -20,7 +20,7 @@ function mostrarCuadroGastos(id) {
                     total += (sub_total + igv);
                     html += `<tr>
                             <td>${element.razon_social ?? ''}</td>
-                            <td>${element.fecha_pago}</td>
+                            <td>${element.fecha_pago !== null ? formatDate(element.fecha_pago) : ''}</td>
                             <td>${element.codigo}</td>
                             <td>${element.titulo_descripcion}</td>
                             <td>${element.partida_descripcion}</td>
@@ -42,7 +42,7 @@ function mostrarCuadroGastos(id) {
                     total += (sub_total + igv);
                     html += `<tr>
                             <td>${element.razon_social ?? ''}</td>
-                            <td>${formatDate(element.fecha_pago) ?? ''}</td>
+                            <td>${element.fecha_pago !== null ? formatDate(element.fecha_pago) : ''}</td>
                             <td>${element.codigo ?? ''}</td>
                             <td>${element.titulo_descripcion ?? ''}</td>
                             <td>${element.partida_descripcion ?? ''}</td>

@@ -80,14 +80,18 @@ class PresupuestoController extends Controller
             ->select(
                 'log_det_ord_compra.*',
                 'alm_req.codigo',
-                'alm_req.concepto',
                 'alm_req.fecha_requerimiento',
                 'adm_contri.razon_social',
-                'registro_pago.fecha_pago',
+                // 'registro_pago.fecha_pago',
                 'alm_und_medida.abreviatura',
                 'log_ord_compra.codigo as codigo_oc',
                 'presup_par.descripcion as partida_descripcion',
-                'presup_titu.descripcion as titulo_descripcion'
+                DB::raw("(SELECT presup_titu.descripcion FROM finanzas.presup_titu
+                WHERE presup_titu.codigo = presup_par.cod_padre
+                and presup_titu.id_presup = presup_par.id_presup) AS titulo_descripcion"),
+                DB::raw("(SELECT registro_pago.fecha_pago FROM tesoreria.registro_pago
+                WHERE registro_pago.id_oc = log_ord_compra.id_orden_compra
+                limit 1) AS fecha_pago"),
             )
             ->join('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
             ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
@@ -95,7 +99,7 @@ class PresupuestoController extends Controller
             ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
             ->join('finanzas.presup_par', 'presup_par.id_partida', '=', 'alm_det_req.partida')
             ->join('finanzas.presup', 'presup.id_presup', '=', 'presup_par.id_presup')
-            ->join('finanzas.presup_titu', 'presup_titu.codigo', '=', 'presup_par.cod_padre')
+            // ->join('finanzas.presup_titu', 'presup_titu.codigo', '=', 'presup_par.cod_padre')
             ->join('logistica.log_ord_compra', 'log_ord_compra.id_orden_compra', '=', 'log_det_ord_compra.id_orden_compra')
             ->join('tesoreria.registro_pago', 'registro_pago.id_oc', '=', 'log_det_ord_compra.id_orden_compra')
             ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_det_req.id_unidad_medida')
