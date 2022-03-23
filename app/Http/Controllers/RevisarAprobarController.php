@@ -212,7 +212,7 @@ class RevisarAprobarController extends Controller{
                 }
                 
                 $operaciones = Operacion::getOperacion($tipoDocumento, $idTipoRequerimiento, $idGrupo, $idDivision, $idPrioridad, $idMoneda, $montoTotal, $idTipoRequerimientoPago,$idRolUsuarioDocList);
-                // Debugbar::info($operaciones);
+                // Debugbar::info($tipoDocumento, $idTipoRequerimiento, $idGrupo, $idDivision, $idPrioridad, $idMoneda, $montoTotal, $idTipoRequerimientoPago,$idRolUsuarioDocList);
                 if(count($operaciones)>1){
                     $mensaje[]= "Se detecto que los criterios del requerimiento dan como resultado multibles operaciones :".$operaciones;
 
@@ -344,8 +344,8 @@ class RevisarAprobarController extends Controller{
                     }
 
 
-                    Debugbar::info($idRolUsuarioList);
-                    Debugbar::info(array_intersect($idRolAprobanteEnCualquierOrdenList, $idRolUsuarioList));
+                    // Debugbar::info($idRolUsuarioList);
+                    // Debugbar::info(array_intersect($idRolAprobanteEnCualquierOrdenList, $idRolUsuarioList));
 
                     if (((count(array_intersect($nextIdRolAprobanteList, $idRolUsuarioList))) > 0) == true || (count(array_intersect($idRolAprobanteEnCualquierOrdenList, $idRolUsuarioList))) > 0) {                    
 
