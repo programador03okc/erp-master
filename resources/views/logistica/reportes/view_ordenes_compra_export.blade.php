@@ -4,6 +4,7 @@
             <th>Requerimiento</th>
             <th>Cuadro costos</th>
             <th>Orden compra</th>
+            <th>Cod. Softlink</th>
             <th>Empresa - Sede</th>
             <th>Estado</th>
             <th>Fecha vencimiento CC</th>
@@ -24,6 +25,7 @@
             <td>{{ $orden["requerimientos"] }}</td>
             <td>{{ $orden["codigo_oportunidad"] }}</td>
             <td>{{ $orden["codigo"] }}</td>
+            <td>{{ $orden["codigo_softlink"] }}</td>
             <td>{{ $orden["sede"] }}</td>
             <td>{{ $orden["estado"] }}</td>
             <td>{{ $orden["cuadro_costo_fecha_limite"] }}</td>

@@ -52,6 +52,7 @@ class ReporteOrdenesCompraExcel implements FromView
                 'requerimientos'=> implode(",", $codigoRequerimiento),
                 'codigo_oportunidad'=> $element->cuadro_costo?($element->cuadro_costo)[0]['codigo_oportunidad']:'',
                 'codigo'=> $element->codigo,
+                'codigo_softlink'=> $element->codigo_softlink,
                 'sede'=> $element->sede->descripcion,
                 'estado'=> $element->estado_orden,
                 'cuadro_costo_fecha_limite'=>  $element->cuadro_costo?(($element->cuadro_costo)[0]['fecha_limite']??''):'',

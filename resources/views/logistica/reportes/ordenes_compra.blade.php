@@ -31,6 +31,7 @@ Reportes de ordenes compra
                             <th style="text-align:center;">Req.</th>
                             <th style="text-align:center;">Cuadro costos</th>
                             <th style="text-align:center;">Orden compra</th>
+                            <th style="text-align:center;">Cod. Softlink</th>
                             <th style="text-align:center;">Empresa - Sede</th>
                             <th style="text-align:center;">Estado</th>
                             <th style="text-align:center;">Fecha vencimiento CC</th>
