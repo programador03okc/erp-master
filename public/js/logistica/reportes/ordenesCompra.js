@@ -223,7 +223,7 @@ class OrdenesCompra {
                 { 'data': 'id_orden_compra', 'name': 'id_orden_compra', 'className': 'text-center' },
                 { 'data': 'id_orden_compra', 'name': 'id_orden_compra', 'className': 'text-center' },
                 { 'data': 'codigo', 'name': 'log_ord_compra.codigo', 'className': 'text-center' },
-                { 'data': 'codigo_softlink', 'name': 'log_ord_compra.codigo_softlink', 'className': 'text-center' },
+                { 'data': 'codigo_softlink', 'name': 'log_ord_compra.codigo', 'className': 'text-center' },
                 { 'data': 'sede.descripcion', 'name': 'sede.descripcion',  'defaultContent':'' ,'className': 'text-center' },
                 { 'data': 'estado.descripcion', 'name': 'estado.descripcion', 'className': 'text-center' },
                 { 'data': 'id_orden_compra', 'name': 'id_orden_compra', 'className': 'text-center' },
@@ -255,27 +255,27 @@ class OrdenesCompra {
                 {
                     'render': function (data, type, row) {
                         return  (row.cuadro_costo)!=null && ((row.cuadro_costo)).length >0 ? (moment((row.cuadro_costo)[0].fecha_limite, "DD-MM-YYYY").format("DD-MM-YYYY").toString() ):'';
-                    }, targets: 5
-                },
-                {
-                    'render': function (data, type, row) {
-                        return (row.cuadro_costo)!=null && ((row.cuadro_costo)).length >0 && (row.cuadro_costo)[0].estado_aprobacion_cuadro != null?(row.cuadro_costo)[0].estado_aprobacion_cuadro:'(No aplica)';
                     }, targets: 6
                 },
                 {
                     'render': function (data, type, row) {
-                        return (row.cuadro_costo)!=null && ((row.cuadro_costo)).length >0 ?(moment((row.cuadro_costo)[0].fecha_aprobacion, "DD-MM-YYYY").format("DD-MM-YYYY").toString()):'';
+                        return (row.cuadro_costo)!=null && ((row.cuadro_costo)).length >0 && (row.cuadro_costo)[0].estado_aprobacion_cuadro != null?(row.cuadro_costo)[0].estado_aprobacion_cuadro:'(No aplica)';
                     }, targets: 7
+                },
+                {
+                    'render': function (data, type, row) {
+                        return (row.cuadro_costo)!=null && ((row.cuadro_costo)).length >0 ?(moment((row.cuadro_costo)[0].fecha_aprobacion, "DD-MM-YYYY").format("DD-MM-YYYY").toString()):'';
+                    }, targets: 8
                 },
                 {
                     'render': function (data, type, row) {
                         // console.log(row.cuadro_costo);
                         let fecha_aprobacion_cc = (row.cuadro_costo)!=null && ((row.cuadro_costo).length) >0 ?(row.cuadro_costo)[0].fecha_aprobacion:'';
-                        let fecha_oc = row.fecha != null ?row.fecha:'';
+                        let fecha_oc = row.fecha_formato != null ?row.fecha_formato:'';
                         let dias_restantes = moment(fecha_oc, 'DD-MM-YYYY').diff(moment(fecha_aprobacion_cc, 'DD-MM-YYYY'), 'days'); 
                         // console.log(dias_restantes);
                         return dias_restantes;
-                    }, targets: 8
+                    }, targets: 9
                 },
 
                 {
@@ -286,20 +286,20 @@ class OrdenesCompra {
 
                         
                         return (dias_restantes <=1?'ATENDIDO A TIEMPO':'ATENDIDO FUERA DE TIEMPO');
-                    }, targets: 9
-                },
-                {
-                    'render': function (data, type, row) {
-                        return moment(row['fecha'], "DD-MM-YYYY").format("DD-MM-YYYY").toString();
                     }, targets: 10
                 },
                 {
                     'render': function (data, type, row) {
-                        let fechaPlazoEntrega = moment(row['fecha'], "DD-MM-YYYY").add(row['plazo_entrega'], 'days').format("DD-MM-YYYY").toString();
+                        return moment(row['fecha_formato'], "DD-MM-YYYY").format("DD-MM-YYYY").toString();
+                    }, targets: 11
+                },
+                {
+                    'render': function (data, type, row) {
+                        let fechaPlazoEntrega = moment(row['fecha_formato'], "DD-MM-YYYY").add(row['plazo_entrega'], 'days').format("DD-MM-YYYY").toString();
                         // console.log(row['fecha']);
                         // console.log(row['plazo_entrega']);
                         // console.log(fechaPlazoEntrega);
-                        let dias_restantes = moment(fechaPlazoEntrega, 'DD-MM-YYYY').diff(moment( row['fecha'], 'DD-MM-YYYY'), 'days');
+                        let dias_restantes = moment(fechaPlazoEntrega, 'DD-MM-YYYY').diff(moment( row['fecha_formato'], 'DD-MM-YYYY'), 'days');
                         // console.log(dias_restantes);
 
                         // var fecha = row['fecha'];
@@ -319,21 +319,21 @@ class OrdenesCompra {
                         // console.log(fechaDif);
 
                         return dias_restantes;
-                    }, targets: 11
-                },
-                {
-                    'render': function (data, type, row) {
-                        let fechaPlazoEntrega = moment(row['fecha'], "DD-MM-YYYY").add(row['plazo_entrega'], 'days').format("DD-MM-YYYY").toString();
-                        let dias_restantes = moment(fechaPlazoEntrega, 'DD-MM-YYYY').diff(moment( row['fecha'], 'DD-MM-YYYY'), 'days');
-
-                        return (dias_restantes <=2?'ATENDIDO A TIEMPO':(dias_restantes>=15?'IMPORTACIÓN':'ATENDIDO FUERA DE TIEMPO'));
                     }, targets: 12
                 },
                 {
                     'render': function (data, type, row) {
-                        let fechaPlazoEntrega = moment(row['fecha'], "DD-MM-YYYY").add(row['plazo_entrega'], 'days').format("DD-MM-YYYY").toString();
-                        return fechaPlazoEntrega;
+                        let fechaPlazoEntrega = moment(row['fecha_formato'], "DD-MM-YYYY").add(row['plazo_entrega'], 'days').format("DD-MM-YYYY").toString();
+                        let dias_restantes = moment(fechaPlazoEntrega, 'DD-MM-YYYY').diff(moment( row['fecha_formato'], 'DD-MM-YYYY'), 'days');
+
+                        return (dias_restantes <=2?'ATENDIDO A TIEMPO':(dias_restantes>=15?'IMPORTACIÓN':'ATENDIDO FUERA DE TIEMPO'));
                     }, targets: 13
+                },
+                {
+                    'render': function (data, type, row) {
+                        let fechaPlazoEntrega = moment(row['fecha_formato'], "DD-MM-YYYY").add(row['plazo_entrega'], 'days').format("DD-MM-YYYY").toString();
+                        return fechaPlazoEntrega;
+                    }, targets: 14
                 },
    
                 // {

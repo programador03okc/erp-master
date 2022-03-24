@@ -18,6 +18,7 @@ use PDO;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ListOrdenesHeadExport;
 use App\Exports\ReporteOrdenesCompraExcel;
+use App\Exports\ReporteOrdenesServicioExcel;
 use App\Exports\ReporteTransitoOrdenesCompraExcel;
 use App\Helpers\CuadroPresupuestoHelper;
 use App\Helpers\Necesidad\RequerimientoHelper;
@@ -3802,6 +3803,10 @@ class OrdenController extends Controller
     public function reporteOrdenesCompraExcel($idEmpresa, $idSede, $fechaRegistroDesde, $fechaRegistroHasta)
     {
         return Excel::download(new ReporteOrdenesCompraExcel($idEmpresa, $idSede, $fechaRegistroDesde, $fechaRegistroHasta), 'reporte_ordenes_compra.xlsx');
+    }
+    public function reporteOrdenesServicioExcel($idEmpresa, $idSede, $fechaRegistroDesde, $fechaRegistroHasta)
+    {
+        return Excel::download(new ReporteOrdenesServicioExcel($idEmpresa, $idSede, $fechaRegistroDesde, $fechaRegistroHasta), 'reporte_ordenes_servicio.xlsx');
     }
     public function reporteTransitoOrdenesCompraExcel($idEmpresa, $idSede, $fechaRegistroDesde, $fechaRegistroHasta)
     {
