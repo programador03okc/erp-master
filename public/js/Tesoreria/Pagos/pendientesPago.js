@@ -272,6 +272,7 @@
                                     data-banco="${row['banco_persona'] !== null ? row['banco_persona'] : row['banco_contribuyente']}" 
                                     data-empresa="${row['razon_social_empresa']}" data-idempresa="${row['id_empresa']}"
                                     data-motivo="${encodeURIComponent(row['condicion_pago'])}"
+                                    data-comentario-pago-logistica="${row['comentario_pago']}"
                                     title="Registrar Pago"><i class="fas fa-hand-holding-usd"></i></button>`: ''}`)
                                     : ''}
                             ${row['suma_pagado'] > 0 && permisoVer == '1' ?

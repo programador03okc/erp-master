@@ -92,6 +92,14 @@
                                 <label style="font-size: 14px;" name="cta_cci"></label>
                             </div>
                         </div>
+                        <div class="row">
+                        <div class="col-md-2 oculto" id="contenedor_comentario_pago_logistica">
+                                <span style="font-size: 14px;">Comentario pago logística: </span>
+                            </div>
+                            <div class="col-md-10">
+                                <label style="font-size: 14px;" name="comentario_pago_logistica"></label>
+                            </div>
+                        </div>
                     </fieldset>
                     <br>
                     <fieldset class="group-table" id="fieldsetDatosPago">

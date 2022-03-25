@@ -15,6 +15,7 @@ function openRegistroPago(data) {
     var empresa = data.data('empresa');
     var idempresa = data.data('idempresa');
     var motivo = data.data('motivo');
+    var comentarioPagoLogistica = data.data('comentarioPagoLogistica');
 
     var total_pago = formatDecimal(parseFloat(total) - pago);
     console.log(cta);
@@ -65,6 +66,13 @@ function openRegistroPago(data) {
     $('[name=banco]').text(banco !== 'undefined' ? banco : '');
     $('[name=empresa_razon_social]').text(empresa !== 'undefined' ? empresa : '');
     $('[name=motivo]').text(motivo !== undefined ? decodeURIComponent(motivo) : '');
+    $('[name=comentario_pago_logistica]').text(comentarioPagoLogistica??'');
+
+    if(comentarioPagoLogistica!=undefined && comentarioPagoLogistica!=''){
+        document.querySelector("div[id='modal-procesarPago'] div[id='contenedor_comentario_pago_logistica']").classList.remove("oculto");
+    }else{
+        document.querySelector("div[id='modal-procesarPago'] div[id='contenedor_comentario_pago_logistica']").classList.add("oculto");
+    }
 
     listarCuentasOrigen();
     $('#submit_procesarPago').removeAttr('disabled');
