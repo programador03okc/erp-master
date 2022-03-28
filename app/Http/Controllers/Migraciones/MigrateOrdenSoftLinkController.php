@@ -1184,4 +1184,29 @@ class MigrateOrdenSoftLinkController extends Controller
             return response()->json(array('tipo' => 'error', 'mensaje' => 'Hubo un problema al anular la orden. Por favor intente de nuevo', 'error' => $e->getMessage()));
         }
     }
+
+    public function listarOrdenesPendientesMigrar()
+    {
+        $ordenes = DB::table('logistica.log_ord_compra')
+            ->select('id_orden_compra', 'codigo')
+            ->where([['id_usuario', '=', 14], ['estado', '!=', 7]])
+            ->whereNull('id_softlink')
+            ->orderBy('id_orden_compra', 'asc')
+            ->get();
+        return response()->json($ordenes);
+    }
+
+    public function ordenesPendientesMigrar()
+    {
+        $ordenes = DB::table('logistica.log_ord_compra')
+            ->select('id_orden_compra')
+            ->where([['id_usuario', '=', 14], ['estado', '!=', 7]])
+            ->whereNull('id_softlink')
+            ->orderBy('id_orden_compra', 'asc')
+            ->get();
+
+        foreach ($ordenes as $oc) {
+            $this->migrarOrdenCompra($oc->id_orden_compra);
+        }
+    }
 }

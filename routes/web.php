@@ -787,7 +787,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('listar-adjuntos-requerimiento-pago-detalle/{idRequerimentoPagoDetalle}', 'Tesoreria\RequerimientoPagoController@listaAdjuntosRequerimientoPagoDetalle');
 				Route::get('mostrar-requerimiento/{id?}/{codigo?}', 'Logistica\RequerimientoController@mostrarRequerimiento')->name('mostrar-requerimiento');
 				Route::get('test-operacion/{idTipoDocumento}/{idTipoRequerimientoCompra}/{idGrupo}/{idDivision}/{idPrioridad}/{idMoneda}/{montoTotal}/{idTipoRequerimientoPago}/{idRolUsuarioDocList}', 'Logistica\RequerimientoController@getOperacion'); // *solo para probar si retorna data correcta de la operacion que corresponda
- 
+
 			});
 		});
 	});
@@ -885,6 +885,8 @@ Route::group(['middleware' => ['auth']], function () {
 						Route::get('listar-cuentas-bancarias-proveedor/{idProveedor?}', 'OrdenController@listarCuentasBancariasProveedor')->name('listar-cuentas-bancarias-proveedor');
 						Route::post('guardar-cuenta-bancaria-proveedor', 'OrdenController@guardarCuentaBancariaProveedor');
 						Route::get('migrarOrdenCompra/{id}', 'Migraciones\MigrateOrdenSoftLinkController@migrarOrdenCompra');
+						Route::get('listarOrdenesPendientesMigrar', 'Migraciones\MigrateOrdenSoftLinkController@listarOrdenesPendientesMigrar');
+						Route::get('ordenesPendientesMigrar', 'Migraciones\MigrateOrdenSoftLinkController@ordenesPendientesMigrar');
 						Route::get('listarOrdenesSoftlinkNoVinculadas/{cod}/{ini}/{fin}', 'Migraciones\MigrateOrdenSoftLinkController@listarOrdenesSoftlinkNoVinculadas');
 						// Route::get('migrarOrdenCompra/{id}', 'Migraciones\MigrateOrdenSoftLinkController@migrarOrdenCompra');
 						Route::post('mostrar-catalogo-productos', 'Logistica\RequerimientoController@mostrarCatalogoProductos');
