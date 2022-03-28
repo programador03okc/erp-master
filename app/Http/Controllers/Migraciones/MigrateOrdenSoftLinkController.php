@@ -101,6 +101,7 @@ class MigrateOrdenSoftLinkController extends Controller
                     'log_ord_compra.observacion',
                     'log_ord_compra.plazo_entrega',
                     'log_ord_compra.direccion_destino',
+                    'log_ord_compra.incluye_igv',
                     DB::raw("(ubi_dis.descripcion) || ' - ' || (ubi_prov.descripcion) || ' - ' || (ubi_dpto.descripcion) AS ubigeo_destino"),
                     'alm_almacen.codigo as codigo_almacen',
                     'adm_contri.nro_documento as ruc',
