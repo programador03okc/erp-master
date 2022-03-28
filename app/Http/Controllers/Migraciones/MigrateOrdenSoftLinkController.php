@@ -1205,8 +1205,11 @@ class MigrateOrdenSoftLinkController extends Controller
             ->orderBy('id_orden_compra', 'asc')
             ->get();
 
+        $respuestas = [];
+
         foreach ($ordenes as $oc) {
-            $this->migrarOrdenCompra($oc->id_orden_compra);
+            array_push($respuestas, $this->migrarOrdenCompra($oc->id_orden_compra));
         }
+        return response()->json($respuestas);
     }
 }
