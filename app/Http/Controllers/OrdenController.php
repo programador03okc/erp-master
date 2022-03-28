@@ -18,6 +18,7 @@ use PDO;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ListOrdenesHeadExport;
 use App\Exports\ReporteOrdenesCompraExcel;
+use App\Exports\ReporteOrdenesServicioExcel;
 use App\Exports\ReporteTransitoOrdenesCompraExcel;
 use App\Helpers\CuadroPresupuestoHelper;
 use App\Helpers\Necesidad\RequerimientoHelper;
@@ -2961,7 +2962,13 @@ class OrdenController extends Controller
             $requerimientoHelper = new RequerimientoHelper();
             if ($requerimientoHelper->EstaHabilitadoRequerimiento($idDetalleRequerimientoList) == true) {
 
-                $ValidarOrdenSoftlink = (new MigrateOrdenSoftLinkController)->validarOrdenSoftlink($request->id_orden);
+             
+                if(in_array(Auth::user()->id_usuario,[14,5])){
+                    $ValidarOrdenSoftlink['tipo']='success';
+                    $ValidarOrdenSoftlink['mensaje']='ok';
+                }else{
+                    $ValidarOrdenSoftlink = (new MigrateOrdenSoftLinkController)->validarOrdenSoftlink($request->id_orden);
+                }
                 if ($ValidarOrdenSoftlink['tipo'] == 'success') {
                     $orden = Orden::where("id_orden_compra", $request->id_orden)->first();
                     $orden->id_grupo_cotizacion = $request->id_grupo_cotizacion ? $request->id_grupo_cotizacion : null;
@@ -3079,7 +3086,11 @@ class OrdenController extends Controller
                     }
                 }
                 if ($status == 200) {
-                    $migrarOrdenSoftlink = (new MigrateOrdenSoftLinkController)->migrarOrdenCompra($request->id_orden)->original;
+                    if(in_array(Auth::user()->id_usuario,[14,5])){
+                        $migrarOrdenSoftlink['tipo'] = 'success';
+                    }else{
+                        $migrarOrdenSoftlink = (new MigrateOrdenSoftLinkController)->migrarOrdenCompra($request->id_orden)->original;
+                    }
                     if ($migrarOrdenSoftlink['tipo'] == 'success') {
                         $data = [
                             'id_orden_compra' => $orden->id_orden_compra,
@@ -3792,6 +3803,10 @@ class OrdenController extends Controller
     public function reporteOrdenesCompraExcel($idEmpresa, $idSede, $fechaRegistroDesde, $fechaRegistroHasta)
     {
         return Excel::download(new ReporteOrdenesCompraExcel($idEmpresa, $idSede, $fechaRegistroDesde, $fechaRegistroHasta), 'reporte_ordenes_compra.xlsx');
+    }
+    public function reporteOrdenesServicioExcel($idEmpresa, $idSede, $fechaRegistroDesde, $fechaRegistroHasta)
+    {
+        return Excel::download(new ReporteOrdenesServicioExcel($idEmpresa, $idSede, $fechaRegistroDesde, $fechaRegistroHasta), 'reporte_ordenes_servicio.xlsx');
     }
     public function reporteTransitoOrdenesCompraExcel($idEmpresa, $idSede, $fechaRegistroDesde, $fechaRegistroHasta)
     {

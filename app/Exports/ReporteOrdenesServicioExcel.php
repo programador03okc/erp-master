@@ -9,7 +9,7 @@ use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 use Carbon\Carbon;
 
-class ReporteOrdenesCompraExcel implements FromView
+class ReporteOrdenesServicioExcel implements FromView
 {
 
 
@@ -26,7 +26,7 @@ class ReporteOrdenesCompraExcel implements FromView
         $idSede = $this->idsede;
         $fechaRegistroDesde = $this->fechaRegistroDesde;
         $fechaRegistroHasta = $this->fechaRegistroHasta;
-        $ordenes = (new ReporteLogisticaController)->obtenerDataOrdenesCompra($idEmpresa,$idSede,$fechaRegistroDesde,$fechaRegistroHasta)->orderBy('fecha','desc')->get();
+        $ordenes = (new ReporteLogisticaController)->obtenerDataOrdenesServicio($idEmpresa,$idSede,$fechaRegistroDesde,$fechaRegistroHasta)->orderBy('fecha','desc')->get();
         $data=[];
         foreach($ordenes as $element){
             $fechaOrden = Carbon::create($element['fecha']);
@@ -50,15 +50,10 @@ class ReporteOrdenesCompraExcel implements FromView
 
             $data[]=[
                 'requerimientos'=> implode(",", $codigoRequerimiento),
-                'codigo_oportunidad'=> $element->cuadro_costo?($element->cuadro_costo)[0]['codigo_oportunidad']:'',
                 'codigo'=> $element->codigo,
                 'codigo_softlink'=> $element->codigo_softlink,
                 'sede'=> $element->sede->descripcion,
                 'estado'=> $element->estado_orden,
-                'cuadro_costo_fecha_limite'=>  $element->cuadro_costo?(($element->cuadro_costo)[0]['fecha_limite']??''):'',
-                'cuadro_costo_estado_aprobacion_cuadro'=> $element->cuadro_costo?(($element->cuadro_costo)[0]['estado_aprobacion_cuadro']??''):'',
-                'cuadro_costo_estado_fecha_estado'=> $element->cuadro_costo?(($element->cuadro_costo)[0]['fecha_aprobacion']??''):'',
-                'dias_restantes_atencion_cc'=> $diasRestantes,
                 'condicion1'=> $condicion,
                 'fecha'=> $element->fecha,
                 'dias_entrega'=> $diasEntrega,
@@ -68,7 +63,7 @@ class ReporteOrdenesCompraExcel implements FromView
 
             ];
         }
-        return view('logistica.reportes.view_ordenes_compra_export', [
+        return view('logistica.reportes.view_ordenes_servicio_export', [
             'ordenes' => $data
         ]);
     }

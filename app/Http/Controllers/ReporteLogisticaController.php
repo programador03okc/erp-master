@@ -21,6 +21,12 @@ class ReporteLogisticaController extends Controller{
 
 		return view('logistica/reportes/ordenes_compra',compact('empresas','grupos'));
 	}
+    public function viewReporteOrdenesServicio(){
+		$empresas = Empresa::mostrar();
+        $grupos = Grupo::mostrar();
+
+		return view('logistica/reportes/ordenes_servicio',compact('empresas','grupos'));
+	}
 	
     public function viewReporteTransitoOrdenesCompra(){
 		$empresas = Empresa::mostrar();
@@ -77,6 +83,39 @@ class ReporteLogisticaController extends Controller{
 		return $data;
 	}
 
+	public function obtenerDataOrdenesServicio($idEmpresa,$idSede,$fechaRegistroDesde,$fechaRegistroHasta){
+		$data = Orden::with([
+			'sede'=> function($q){
+				$q->where([['sis_sede.estado', '!=', 7]]);
+			},
+			'estado'
+		])
+		->when(($idEmpresa > 0), function ($query) use($idEmpresa) {
+			$sedes= Sede::where('id_empresa',$idEmpresa)->get();
+			$idSedeList=[];
+			foreach($sedes as $sede){
+				$idSedeList[]=$sede->id_sede;
+			}
+            return $query->whereIn('id_sede', $idSedeList);
+        })
+        ->when(($idSede > 0), function ($query) use($idSede) {
+            return $query->where('id_sede',$idSede);
+        })
+
+        ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta == 'SIN_FILTRO')), function ($query) use($fechaRegistroDesde) {
+            return $query->where('log_ord_compra.fecha' ,'>=',$fechaRegistroDesde); 
+        })
+        ->when((($fechaRegistroDesde == 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use($fechaRegistroHasta) {
+            return $query->where('log_ord_compra.fecha' ,'<=',$fechaRegistroHasta); 
+        })
+        ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use($fechaRegistroDesde,$fechaRegistroHasta) {
+            return $query->whereBetween('log_ord_compra.fecha' ,[$fechaRegistroDesde,$fechaRegistroHasta]); 
+        })
+		->where([['log_ord_compra.id_tp_documento', '=', 3],['log_ord_compra.estado', '!=', 7]]);
+
+		return $data;
+	}
+
  
 	public function listaOrdenesCompra(Request $request){
 		
@@ -92,6 +131,19 @@ class ReporteLogisticaController extends Controller{
 		// ->filterColumn('codigo_requerimiento', function ($query, $keyword) {
 		// 	$query->where('alm_req.codigo', $keyword);
 		// })
+		->rawColumns(['requerimientos','cuadro_costo'])->toJson();
+
+	}
+	public function listaOrdenesServicio(Request $request){
+		
+		$idEmpresa = $request->idEmpresa;
+        $idSede = $request->idSede;
+		$fechaRegistroDesde = $request->fechaRegistroDesde;
+        $fechaRegistroHasta = $request->fechaRegistroHasta;
+
+		$data = $this->obtenerDataOrdenesServicio($idEmpresa,$idSede,$fechaRegistroDesde,$fechaRegistroHasta);
+		
+		return datatables($data)
 		->rawColumns(['requerimientos','cuadro_costo'])->toJson();
 
 	}

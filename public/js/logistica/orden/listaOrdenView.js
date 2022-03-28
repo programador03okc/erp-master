@@ -1530,11 +1530,12 @@ class ListaOrdenView {
             show: true,
             backdrop: 'static'
         });
-
+        
         document.querySelector("div[id='modal-enviar-solicitud-pago'] span[id='codigo_orden']").textContent = obj.dataset.codigoOrden;
         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_orden_compra']").value = obj.dataset.idOrdenCompra;
         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_proveedor']").value = obj.dataset.idProveedor;
         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_contribuyente']").value = obj.dataset.idCuentaPrincipal;
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] textarea[name='comentario']").value = obj.dataset.comentarioPago != null ? obj.dataset.comentarioPago : '';
 
         if (obj.dataset.estadoPago == 8) {
             document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_prioridad']").value = obj.dataset.idPrioridadPago;
@@ -1560,7 +1561,6 @@ class ListaOrdenView {
                 obtenerContribuyente(obj.dataset.idContribuyentePago);
                 obtenerCuentasBancariasContribuyente(obj.dataset.idContribuyentePago);
             }
-            document.querySelector("div[id='modal-enviar-solicitud-pago'] textarea[name='comentario']").value = obj.dataset.comentarioPago != null ? obj.dataset.comentarioPago : '';
         } else {
             this.obtenerContribuyentePorIdProveedor(obj.dataset.idProveedor)
         }
@@ -1746,19 +1746,31 @@ class ListaOrdenView {
     }
 
     validarFormularioEnvioOrdenAPago() {
-        let continuar = true;
-        if ((document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_proveedor']").value == '' &&
-            document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_contribuyente']").value == '') &&
-            (document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_persona']").value == '')
-        ) {
-            continuar = false;
-        }
+        let continuar = false;
+        let menseje=[];
 
+        if(document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_contribuyente']").value == '' && document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_persona']").value == ''){
+            menseje.push('Debe seleccionar una persona o un contribuyente');
+        }else{
+            if(document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']").value == ''){
+                menseje.push('Debe seleccionar una cuanta bancaria');
+            }else{
+                continuar = true;
+            }
+        } 
+
+        if(menseje.length>0){
+            Swal.fire(
+                '',
+                menseje.toString(),
+                'warning'
+            );
+        }
         return continuar;
     }
 
     registrarSolicitudDePago() {
-        console.log('enviar a pago');
+        // console.log('enviar a pago');
 
         if (this.validarFormularioEnvioOrdenAPago()) {
             let formData = new FormData($('#form-enviar_solicitud_pago')[0]);
@@ -1838,12 +1850,6 @@ class ListaOrdenView {
                     console.log(errorThrown);
                 }
             });
-        } else {
-            Swal.fire(
-                '',
-                'Por favor ingrese los datos faltantes en el formulario',
-                'warning'
-            );
         }
     }
 

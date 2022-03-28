@@ -155,8 +155,8 @@ Registro de pagos
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
     <script src="{{ asset('template/plugins/loadingoverlay.min.js') }}"></script>
 
-    <script src="{{ asset('js/tesoreria/pagos/pendientesPago.js')}}"></script>
-    <script src="{{ asset('js/tesoreria/pagos/procesarPago.js')}}"></script>
+    <script src="{{ asset('js/tesoreria/pagos/pendientesPago.js')}}?v={{filemtime(public_path('js/tesoreria/pagos/pendientesPago.js'))}}"></script>
+    <script src="{{ asset('js/tesoreria/pagos/procesarPago.js')}}?v={{filemtime(public_path('js/tesoreria/pagos/procesarPago.js'))}}"></script>
     {{-- <script src="{{ asset('js/tesoreria/requerimientoPago/ListarRequerimientoPagoView.js')}}?v={{filemtime(public_path('js/Tesoreria/requerimientoPago/ListarRequerimientoPagoView.js'))}}"></script> --}}
 
     <script src="{{ asset('js/tesoreria/pagos/modalVistaRapidaRequerimiento.js')}}"></script>

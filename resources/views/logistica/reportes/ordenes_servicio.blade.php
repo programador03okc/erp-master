@@ -5,7 +5,7 @@
 @endsection
 
 @section('cabecera')
-Reportes de ordenes compra
+Reportes de ordenes servicio
 @endsection
 
 @section('estilos')
@@ -16,33 +16,25 @@ Reportes de ordenes compra
 <ol class="breadcrumb">
     <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> Logística</a></li>
     <li>Reportes</li>
-    <li class="active">Ordenes de compra</li>
+    <li class="active">Ordenes de servicio</li>
 </ol>
 @endsection
 
 @section('content')
-<div class="page-main" type="reporte_ordenes_compra">
+<div class="page-main" type="reporte_ordenes_servicio">
     <div class="row">
         <div class="col-md-12">
             <fieldset class="group-table">
-                <table class="mytable table table-condensed table-striped table-hover table-bordered table-okc-view" id="listaOrdenesCompra">
+                <table class="mytable table table-condensed table-striped table-hover table-bordered table-okc-view" id="listaOrdenesServicio">
                     <thead>
                         <tr>
                             <th style="text-align:center;">Req.</th>
-                            <th style="text-align:center;">Cuadro costos</th>
                             <th style="text-align:center;">Orden compra</th>
                             <th style="text-align:center;">Cod. Softlink</th>
                             <th style="text-align:center;">Empresa - Sede</th>
                             <th style="text-align:center;">Estado</th>
-                            <th style="text-align:center;">Fecha vencimiento CC</th>
-                            <th style="text-align:center;">Estado aprobación CC</th>
-                            <th style="text-align:center;">Fecha aprobación CC</th>
-                            <th style="text-align:center;">Días de atención CC</th>
-                            <th style="text-align:center;">Condición</th>
-                            <th style="text-align:center;">Fecha generación OC</th>
-                            <th style="text-align:center;">Días de entrega</th>
-                            <th style="text-align:center;">Condición 2</th>
-                            <th style="text-align:center;">Fecha entrega</th>
+                            <th style="text-align:center;">Fecha generación OS</th>
+                            <th style="text-align:center;">Fecha entrega servicio</th>
                             <th style="text-align:center;">Observacion</th>
                         </tr>
                     </thead>
@@ -73,16 +65,16 @@ Reportes de ordenes compra
 <script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
 <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 <script src="{{ asset('template/plugins/datetime-moment.js') }}"></script>
-<script src="{{('/js/logistica/reportes/ordenesCompra.js')}}?v={{filemtime(public_path('/js/logistica/reportes/ordenesCompra.js'))}}"></script>
+<script src="{{('/js/logistica/reportes/ordenesServicio.js')}}?v={{filemtime(public_path('/js/logistica/reportes/ordenesServicio.js'))}}"></script>
 
 
 
 <script>
     $(document).ready(function() {
         seleccionarMenu(window.location);
-        const ordenesCompra = new OrdenesCompra();
-        ordenesCompra.mostrar();
-        ordenesCompra.initializeEventHandler();
+        const ordenesServicio = new OrdenesServicio();
+        ordenesServicio.mostrar();
+        ordenesServicio.initializeEventHandler();
     });
 </script>
 

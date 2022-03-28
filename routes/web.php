@@ -944,10 +944,13 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::group(['as' => 'reportes.', 'prefix' => 'reportes'], function () {
 				Route::get('listar-sedes-por-empresa/{id?}', 'Logistica\RequerimientoController@listarSedesPorEmpresa')->name('listar-sedes-por-empresa');
 				Route::get('ordenes-compra', 'ReporteLogisticaController@viewReporteOrdenesCompra')->name('ordenes-compra');
+				Route::get('ordenes-servicio', 'ReporteLogisticaController@viewReporteOrdenesServicio')->name('ordenes-servicio');
 				Route::post('lista-ordenes-compra', 'ReporteLogisticaController@listaOrdenesCompra')->name('lista-ordenes-compra');
+				Route::post('lista-ordenes-servicio', 'ReporteLogisticaController@listaOrdenesServicio')->name('lista-ordenes-servicio');
 				Route::get('transito-ordenes-compra', 'ReporteLogisticaController@viewReporteTransitoOrdenesCompra')->name('transito-ordenes-compra');
 				Route::post('lista-transito-ordenes-compra', 'ReporteLogisticaController@listaTransitoOrdenesCompra')->name('lista-transito-ordenes-compra');
 				Route::get('reporte-ordenes-compra-excel/{idEmpresa?}/{idSede?}/{fechaDesde?}/{fechaHasta?}', 'OrdenController@reporteOrdenesCompraExcel')->name('reporte-ordenes-compra-excel');
+				Route::get('reporte-ordenes-servicio-excel/{idEmpresa?}/{idSede?}/{fechaDesde?}/{fechaHasta?}', 'OrdenController@reporteOrdenesServicioExcel')->name('reporte-ordenes-servicio-excel');
 				Route::get('reporte-transito-ordenes-compra-excel/{idEmpresa?}/{idSede?}/{fechaDesde?}/{fechaHasta?}', 'OrdenController@reporteTransitoOrdenesCompraExcel')->name('reporte-transito-ordenes-compra-excel');
 			});
 			Route::group(['as' => 'cotizacion.', 'prefix' => 'cotizacion'], function () {
