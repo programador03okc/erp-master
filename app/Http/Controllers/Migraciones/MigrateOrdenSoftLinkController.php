@@ -358,8 +358,13 @@ class MigrateOrdenSoftLinkController extends Controller
                     $mov_id = $this->leftZero(10, (intval($count) + 1));
 
                     $hoy = date('Y-m-d'); //Carbon::now()
-                    //obtiene el año a 2 digitos y le aumenta 2 ceros adelante
-                    $yy = $this->leftZero(4, intval(date('y', strtotime($hoy))));
+
+                    if ($oc->codvend_softlink == '000055' || $oc->codvend_softlink == '000022') { //si es deza o dorado
+                        $yy = 'P022';
+                    } else {
+                        //obtiene el año a 2 digitos y le aumenta 2 ceros adelante
+                        $yy = $this->leftZero(4, intval(date('y', strtotime($hoy))));
+                    }
                     //obtiene el ultimo registro
                     $ult_mov = DB::connection('soft')->table('movimien')
                         ->where([
