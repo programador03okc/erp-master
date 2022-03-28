@@ -85,6 +85,8 @@ class PresupuestoController extends Controller
                 // 'registro_pago.fecha_pago',
                 'alm_und_medida.abreviatura',
                 'log_ord_compra.codigo as codigo_oc',
+                'proveedor.nro_documento',
+                'proveedor.razon_social as proveedor_razon_social',
                 'presup_par.descripcion as partida_descripcion',
                 DB::raw("(SELECT presup_titu.descripcion FROM finanzas.presup_titu
                 WHERE presup_titu.codigo = presup_par.cod_padre
@@ -101,6 +103,8 @@ class PresupuestoController extends Controller
             ->join('finanzas.presup', 'presup.id_presup', '=', 'presup_par.id_presup')
             // ->join('finanzas.presup_titu', 'presup_titu.codigo', '=', 'presup_par.cod_padre')
             ->join('logistica.log_ord_compra', 'log_ord_compra.id_orden_compra', '=', 'log_det_ord_compra.id_orden_compra')
+            ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
+            ->join('contabilidad.adm_contri as proveedor', 'proveedor.id_proveedor', '=', 'log_prove.id_contribuyente')
             ->join('tesoreria.registro_pago', 'registro_pago.id_oc', '=', 'log_det_ord_compra.id_orden_compra')
             ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_det_req.id_unidad_medida')
             ->where([

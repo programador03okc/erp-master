@@ -1,11 +1,8 @@
-// $(document).ready(function () {
-
-// });
-
 $(function () {
     var id_presup = localStorage.getItem("id_presup");
     if (id_presup !== null) {
         mostrarPartidas(id_presup);
+        mostrarCuadroGastos(id_presup);
         localStorage.removeItem("id_presup");
     }
     var vardataTables = funcDatatables();
