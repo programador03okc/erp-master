@@ -178,16 +178,31 @@ class MigrateOrdenSoftLinkController extends Controller
 
             if ($oc !== null && count($detalles) > 0) {
 
-                $empresas_soft = [
-                    ['id' => 1, 'nombre' => 'OKC', 'cod_docu' => 'OC'],
-                    ['id' => 2, 'nombre' => 'PYC', 'cod_docu' => 'O3'],
-                    ['id' => 3, 'nombre' => 'SVS', 'cod_docu' => 'O2'],
-                    ['id' => 4, 'nombre' => 'JEDR', 'cod_docu' => 'O5'],
-                    ['id' => 5, 'nombre' => 'RBDB', 'cod_docu' => 'O4'],
-                    ['id' => 6, 'nombre' => 'PTEC', 'cod_docu' => 'O6']
-                ];
+                if ($oc->id_tp_documento == 2) { //Compra
+
+                    $empresas_soft = [
+                        ['id' => 1, 'nombre' => 'OKC', 'cod_docu' => 'OC'],
+                        ['id' => 2, 'nombre' => 'PYC', 'cod_docu' => 'O3'],
+                        ['id' => 3, 'nombre' => 'SVS', 'cod_docu' => 'O2'],
+                        ['id' => 4, 'nombre' => 'JEDR', 'cod_docu' => 'O5'],
+                        ['id' => 5, 'nombre' => 'RBDB', 'cod_docu' => 'O4'],
+                        ['id' => 6, 'nombre' => 'PTEC', 'cod_docu' => 'O6']
+                    ];
+                } else if ($oc->id_tp_documento == 3) { //Servicio
+
+                    $empresas_soft = [
+                        ['id' => 1, 'nombre' => 'OKC', 'cod_docu' => 'OS'],
+                        ['id' => 2, 'nombre' => 'PYC', 'cod_docu' => 'OP'],
+                        ['id' => 3, 'nombre' => 'SVS', 'cod_docu' => 'OV'],
+                        ['id' => 4, 'nombre' => 'JEDR', 'cod_docu' => 'OJ'],
+                        ['id' => 5, 'nombre' => 'RBDB', 'cod_docu' => 'OR'],
+                        ['id' => 6, 'nombre' => 'PTEC', 'cod_docu' => 'OA']
+                    ];
+                }
+
                 $cod_suc = '';
                 $cod_docu = '';
+
                 foreach ($empresas_soft as $emp) {
                     if ($emp['nombre'] == $oc->codigo_emp) {
                         $cod_suc = $emp['id'];
@@ -206,7 +221,11 @@ class MigrateOrdenSoftLinkController extends Controller
                 //obtiene o crea el proveedor
                 $cod_auxi = $this->obtenerProveedor($oc->ruc, $oc->razon_social, $doc_tipo, $cod);
                 //Calcular IGV
-                $mon_impto = (floatval($oc->total_precio) * ($igv / 100));
+                if ($oc->incluye_igv) {
+                    $mon_impto = (floatval($oc->total_precio) * ($igv / 100));
+                } else {
+                    $mon_impto = 0;
+                }
 
                 $fecha = date("Y-m-d", strtotime($oc->fecha));
 
