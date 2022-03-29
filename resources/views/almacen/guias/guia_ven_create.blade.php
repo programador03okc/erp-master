@@ -1,5 +1,5 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-guia_ven_create" style="overflow-y: scroll;">
-    <div class="modal-dialog" style="width:80%;">
+    <div class="modal-dialog" style="width:85%;">
         <div class="modal-content">
             <form id="form-guia_ven_create">
                 <div class="modal-header">
@@ -16,7 +16,7 @@
                     <input type="text" class="oculto" name="id_requerimiento">
                     <div class="row">
                         <input type="hidden" name="_token" value="{{csrf_token()}}" id="token_guia">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <h5>Serie-Número</h5>
                             <div class="input-group">
                                 <input type="text" class="oculto" name="id_serie_numero">
@@ -26,22 +26,26 @@
                                 <!-- onBlur="ceros_numero_guia();"  -->
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <h5>Fecha de Emisión</h5>
                             <input type="date" class="form-control" name="fecha_emision" value="<?= date('Y-m-d'); ?>" required>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
+                            <h5>Fecha de Salida</h5>
+                            <input type="date" class="form-control" name="fecha_almacen" value="<?= date('Y-m-d'); ?>" required>
+                        </div>
+                        <div class="col-md-3">
                             <h5>Almacén</h5>
                             <input type="text" class="oculto " name="id_almacen" required>
                             <input type="text" class="form-control " name="almacen_descripcion" readOnly>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <h5>Cliente</h5>
                             <input type="text" class="form-control" name="razon_social_cliente" disabled>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <h5>Tipo de Operación</h5>
                             <select class="form-control js-example-basic-single" name="id_operacion" required readOnly>
                                 <option value="0">Elija una opción</option>
@@ -50,7 +54,15 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
+                            <h5>Punto de partida</h5>
+                            <input type="text" class="form-control" name="punto_partida">
+                        </div>
+                        <div class="col-md-3">
+                            <h5>Punto de llegada</h5>
+                            <input type="text" class="form-control" name="punto_llegada">
+                        </div>
+                        {{-- <div class="col-md-3">
                             <h5>Clasif. de los Bienes y Servicios</h5>
                             <select class="form-control" name="id_guia_clas" required>
                                 <option value="0">Elija una opción</option>
@@ -58,10 +70,12 @@
                                 <option value="{{$clas->id_clasificacion}}">{{$clas->descripcion}}</option>
                                 @endforeach
                             </select>
-                        </div>
+                        </div> --}}
                     </div>
                     <div class="row">
                         <div class="col-md-12">
+                            <br>
+                            <label>* Marque con un check los items que va a dar salida.</label>
                             <table class="mytable table table-condensed table-bordered table-okc-view" width="100%" id="detalleGuiaVenta" style="margin-top:10px;">
                                 <thead>
                                     <tr>
@@ -69,8 +83,9 @@
                                         <th>Código</th>
                                         <th>PartNumber</th>
                                         <th>Descripción</th>
-                                        <th>Cantidad</th>
                                         <th>Reserva</th>
+                                        <th>Cant. despachada</th>
+                                        <th>Cantidad</th>
                                         <th>Unid</th>
                                         <th>Series</th>
                                     </tr>

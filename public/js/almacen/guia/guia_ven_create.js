@@ -48,28 +48,42 @@ function listarDetalleOrdenDespacho(id_od, aplica_cambios, tiene_transformacion)
         dataType: 'JSON',
         success: function (response) {
             console.log(response);
-            response.forEach(element => {
-                detalle.push({
-                    'id_od_detalle': element.id_od_detalle,
-                    'id_detalle_requerimiento': element.id_detalle_requerimiento,
-                    'id_producto': element.id_producto,
-                    'id_unidad_medida': element.id_unidad_medida,
-                    'codigo': element.codigo,
-                    'part_number': element.part_number,
-                    'descripcion': element.descripcion,
-                    'cantidad': element.cantidad,
-                    'abreviatura': element.abreviatura,
-                    'control_series': element.control_series,
-                    'suma_reservas': element.suma_reservas,
-                    'series': []
-                });
-                console.log(element.codigo + ': ' + element.suma_reservas + '!== ' + element.cantidad);
+            var cantidad_despacho = 0;
+            var items_para_despachar = 0;
 
-                if (parseFloat(element.suma_reservas) !== parseFloat(element.cantidad)) {
-                    $("#submit_guia").attr('disabled', 'true');
-                    $("#mensaje").text('*Aún no hay saldo de todos los productos, no es posible generar la salida.');
+            response.forEach(element => {
+                cantidad_despacho = (element.cantidad - element.cantidad_despachada);
+
+                if (cantidad_despacho > 0) {
+                    detalle.push({
+                        'id_od_detalle': element.id_od_detalle,
+                        'id_detalle_requerimiento': element.id_detalle_requerimiento,
+                        'id_producto': element.id_producto,
+                        'id_unidad_medida': element.id_unidad_medida,
+                        'codigo': element.codigo,
+                        'part_number': element.part_number,
+                        'descripcion': element.descripcion,
+                        'cantidad_despachada': element.cantidad_despachada ?? 0,
+                        'cantidad_despacho': cantidad_despacho,
+                        'cantidad': cantidad_despacho,
+                        'abreviatura': element.abreviatura,
+                        'control_series': element.control_series,
+                        'suma_reservas': element.suma_reservas ?? 0,
+                        'series': []
+                    });
+                    console.log(element.codigo + ': ' + element.suma_reservas + '!== ' + element.cantidad);
+
+                    if (parseFloat(element.suma_reservas) >= parseFloat(element.cantidad)) {
+                        items_para_despachar++;
+                    }
+                    if (parseFloat(element.suma_reservas) !== parseFloat(element.cantidad)) {
+                        $("#mensaje").text('*Aún no hay saldo de todos los productos, no es posible generar la salida.');
+                    }
                 }
             });
+            if (items_para_despachar == 0) {
+                $("#submit_guia").attr('disabled', 'true');
+            }
             // detalle = response;
             mostrar_detalle();
         }
@@ -83,7 +97,6 @@ function listarDetalleOrdenDespacho(id_od, aplica_cambios, tiene_transformacion)
 function mostrar_detalle() {
     var html = '';
     var html_series = '';
-    var i = 1;
     var id_almacen = parseInt($('[name=id_almacen]').val());
 
     detalle.forEach(element => {
@@ -98,22 +111,43 @@ function mostrar_detalle() {
             }
         });
         html += `<tr>
-        <td>${i}</td>
+        <td>${element.suma_reservas > 0 ? `<input type="checkbox" value="${element.id_od_detalle}" checked/>` : ''}</td>
         <td><a href="#" class="verProducto" data-id="${element.id_producto}" >${element.codigo !== null ? element.codigo : ''}</a></td>
         <td>${element.part_number !== null ? element.part_number : ''}</td>
         <td>${element.descripcion !== null ? element.descripcion : '(producto no mapeado)'}<br><strong>${html_series}</strong></td>
-        <td>${element.cantidad}</td>
         <td>${element.suma_reservas !== null ? element.suma_reservas : ''}</td>
+        <td>${element.cantidad_despachada}</td>
+        <td><input class="right cantidad" type="number" value="${element.cantidad}" min="1" name="cantidad" style="width:80px;"
+        step=".01" max="${element.cantidad}" data-id="${element.id_od_detalle}"/></td>
         <td>${element.abreviatura !== null ? element.abreviatura : ''}</td>
         <td>
         ${element.control_series ? `<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series" 
         onClick="open_series(${element.id_producto},${element.id_od_detalle},${element.cantidad},${id_almacen});"></i>` : ''}
         </td>
         </tr>`;
-        i++;
     });
     $('#detalleGuiaVenta tbody').html(html);
 }
+
+$("#detalleGuiaVenta tbody").on("change", ".cantidad", function (e) {
+    var cantidad = parseFloat($(this).val());
+    var id = $(this).data('id');
+    var res = detalle.find(element => element.id_od_detalle == id);
+    if (res.cantidad_despacho >= cantidad) {
+        res.cantidad = cantidad;
+        mostrar_detalle();
+    } else {
+        $(this).parents("tr").find('input[name=cantidad]').val(res.cantidad_despacho);
+        Lobibox.notify("warning", {
+            title: false,
+            size: "mini",
+            rounded: true,
+            sound: false,
+            delayIndicator: false,
+            msg: 'No puede ingresar una cantidad mayor a ' + res.cantidad_despacho
+        });
+    }
+});
 
 $("#detalleGuiaVenta tbody").on("click", "a.verProducto", function (e) {
     $(e.preventDefault());
@@ -158,26 +192,47 @@ $("#form-guia_ven_create").on("submit", function (e) {
     console.log('submit');
     e.preventDefault();
     var lista_detalle = [];
-    detalle.forEach(element => {
-        lista_detalle.push({
-            'id_od_detalle': element.id_od_detalle,
-            'id_producto': element.id_producto,
-            'cantidad': element.cantidad,
-            'id_unidad_medida': element.id_unidad_medida,
-            'id_detalle_requerimiento': element.id_detalle_requerimiento,
-            'id_guia_com_det': element.id_guia_com_det,
-            // 'codigo'                    : element.codigo,
-            // 'part_number'               : element.part_number,
-            // 'descripcion'               : element.descripcion,
-            // 'abreviatura'               : element.abreviatura,
-            // 'descripcion'               : encodeURIComponent(element.descripcion),
-            'series': element.series
+
+    $("#detalleGuiaVenta input[type=checkbox]:checked").each(function () {
+        var id = $(this).val();
+
+        detalle.forEach(element => {
+
+            if (id == element.id_od_detalle && element.cantidad > 0) {
+                lista_detalle.push({
+                    'id_od_detalle': element.id_od_detalle,
+                    'id_producto': element.id_producto,
+                    'cantidad': element.cantidad,
+                    'id_unidad_medida': element.id_unidad_medida,
+                    'id_detalle_requerimiento': element.id_detalle_requerimiento,
+                    'id_guia_com_det': element.id_guia_com_det,
+                    // 'codigo'                    : element.codigo,
+                    // 'part_number'               : element.part_number,
+                    // 'descripcion'               : element.descripcion,
+                    // 'abreviatura'               : element.abreviatura,
+                    // 'descripcion'               : encodeURIComponent(element.descripcion),
+                    'series': element.series
+                });
+            }
         });
     });
-    var ser = $(this).serialize();
-    var data = ser + '&detalle=' + JSON.stringify(lista_detalle);
-    console.log(data);
-    guardarGuiaVenta(data);
+    console.log(lista_detalle);
+
+    if (lista_detalle.length == 0) {
+        Lobibox.notify('warning', {
+            title: false,
+            size: "mini",
+            rounded: true,
+            sound: false,
+            delayIndicator: false,
+            msg: 'No es posible realizar una salida sin items.'
+        });
+    } else {
+        var ser = $(this).serialize();
+        var data = ser + '&detalle=' + JSON.stringify(lista_detalle);
+        console.log(data);
+        guardarGuiaVenta(data);
+    }
 });
 
 function guardarGuiaVenta(data) {

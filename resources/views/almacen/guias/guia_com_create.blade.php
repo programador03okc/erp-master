@@ -65,6 +65,8 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12">
+                            <br>
+                            <label>* Marque con un check los items que va a dar ingreso.</label>
                             <table class="mytable table table-condensed table-bordered table-okc-view" width="100%" id="detalleOrdenSeleccionadas" style="margin-top:10px;">
                                 <thead>
                                     <tr>
