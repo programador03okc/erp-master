@@ -10,7 +10,7 @@
     <tbody>
         <tr>
             <td colspan="9"></td>
-            <td colspan="4" style="text-align: left;">GR0000-000000</td>
+            <td colspan="2" style="text-align: left;">GR0000-000000</td>
         </tr>
         <tr>
             <th></th>
@@ -21,19 +21,19 @@
         <tr>
             <td colspan="3"></td>
             <td colspan="3" style="text-align: left;">24/03/2022</td>
-            <td colspan="6"></td>
+            <td colspan="4"></td>
         </tr>
         <tr>
             <td colspan="2"></td>
             <td colspan="4" style="text-align: left;">00OK COMPUTER E.I.R.L.00</td>
             <td></td>
-            <td colspan="6" style="text-align: left;">00MUNICIPALIDAD PROV000. CAR LOS F. FITZCARRALD000000000000000000000</td>
+            <td colspan="4" style="text-align: left;">00MUNICIPALIDAD PROV000. CAR LOS F. FITZCARRALD000000000000000000000</td>
         </tr>
         <tr>
             <td colspan="2"></td>
             <td colspan="4" style="text-align: left;">CA LAS CASTAÑITAS N° 00127, 00SANISIDRO,0000LIMA00000000</td>
             <td></td>
-            <td colspan="6" style="text-align: left;">0000000000000JR. FITZCARRALD Nº 50400- SAN 0LUIS, 00000000000 000FITZCARRALD</td>
+            <td colspan="4" style="text-align: left;">0000000000000JR. FITZCARRALD Nº 50400- SAN 0LUIS, 00000000000 000FITZCARRALD</td>
         </tr>
         <tr>
             <td colspan="2"></td>
@@ -52,8 +52,8 @@
         <tr>
             <td colspan="2"></td>
             <td colspan="6" style="text-align: left;">INGRESAR NOMBRE DE TRANSPORTISTA00000000</td>
-            <td colspan="3"></td>
-            <td colspan="2" style="text-align: left;">LICENCIA</td>
+            <td colspan="2"></td>
+            <td colspan="1" style="text-align: left;">LICENCIA</td>
         </tr>
         <tr>
             <td></td>
@@ -61,9 +61,15 @@
         <tr>
             <td colspan="2"></td>
             <td colspan="4" style="text-align: left;">RUC TRANS</td>
-            <td colspan="4" style="text-align: left;">INGRESAR MARCA VEHICU</td>
+            <td colspan="3" style="text-align: left;">INGRESAR MARCA VEHICU</td>
             <td></td>
-            <td colspan="2" style="text-align: left;">PLACA TRA</td>
+            <td colspan="1" style="text-align: left;">PLACA TRA</td>
+        </tr>
+        <tr>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
         </tr>
         <tr>
             <td></td>
@@ -77,7 +83,7 @@
             <td style="text-align: left;">00'000,000</td>
             <td></td>
             <td style="text-align: left;">UND0000</td>
-            <td colspan="8" style="text-align: left;">COMPUTAD ORA PORTATIL</td>
+            <td colspan="5" style="text-align: left;">COMPUTAD ORA PORTATIL</td>
         </tr>
         <tr>
             <td style="text-align: left;"></td>
@@ -85,7 +91,7 @@
             <td style="text-align: left;"></td>
             <td></td>
             <td style="text-align: left;"></td>
-            <td colspan="8" style="text-align: left;">MARCA: HP</td>
+            <td colspan="5" style="text-align: left;">MARCA: HP</td>
         </tr>
         <tr>
             <td style="text-align: left;"></td>
@@ -93,7 +99,7 @@
             <td style="text-align: left;"></td>
             <td></td>
             <td style="text-align: left;"></td>
-            <td colspan="8" style="text-align: left;">MODELO: 250 G8</td>
+            <td colspan="5" style="text-align: left;">MODELO: 250 G8</td>
         </tr>
         <tr>
             <td style="text-align: left;"></td>
@@ -101,7 +107,7 @@
             <td style="text-align: left;"></td>
             <td></td>
             <td style="text-align: left;"></td>
-            <td colspan="8" style="text-align: left;">NUMERO DE PARTE: 2 P 5 M 3 LT# ABM - W</td>
+            <td colspan="5" style="text-align: left;">NUMERO DE PARTE: 2 P 5 M 3 LT# ABM - W</td>
         </tr>
         <tr>
             <td style="text-align: left;"></td>
@@ -109,7 +115,7 @@
             <td style="text-align: left;"></td>
             <td></td>
             <td style="text-align: left;"></td>
-            <td colspan="6" style="text-align: left; height:100;">COMP UTADORA PORTATIL: PROCESADOR: INTEL CORE I 7 - 1065 G 7 1 . 30 GHz RAM: 8 GB DDR 4 2666 333 MHz ALMACENAMIENTO: 1 TB HDD 5400 RPMPANTALLA: LCD CON RETROILUMINACION LED 15 . 6 " 1366 X 768 PIXELES LAN: SI WLAN: SI BLUETOOTH: SI V GA: NO HDMI: SI SIST. OPER: WINDOWS 10 P RO 64 BITS ESPAÑOL BATERIA: LI- ION 3 CELDAS PESO: 1 . 74 kg UNIDAD OPTICA: NO CAMARA WEB: SI SUITE OFIMATICA: NO G. F: 36 MESES ON- SITE</td>
+            <td colspan="5" style="text-align: left; white-space: initial">COMP UTADORA PORTATIL: PROCESADOR: INTEL CORE I 7 - 1065 G 7 1 . 30 GHz RAM: 8 GB DDR 4 2666 333 MHz ALMACENAMIENTO: 1 TB HDD 5400 RPMPANTALLA: LCD CON RETROILUMINACION LED 15 . 6 " 1366 X 768 PIXELES LAN: SI WLAN: SI BLUETOOTH: SI V GA: NO HDMI: SI SIST. OPER: WINDOWS 10 P RO 64 BITS ESPAÑOL BATERIA: LI- ION 3 CELDAS PESO: 1 . 74 kg UNIDAD OPTICA: NO CAMARA WEB: SI SUITE OFIMATICA: NO G. F: 36 MESES ON- SITE</td>
         </tr>
         <tr>
             <td style="text-align: left;"></td>
@@ -117,7 +123,7 @@
             <td style="text-align: left;"></td>
             <td></td>
             <td style="text-align: left;"></td>
-            <td colspan="8" style="text-align: left;"></td>
+            <td colspan="5" style="text-align: left;"></td>
         </tr>
         <tr>
             <td style="text-align: left;"></td>
@@ -125,7 +131,7 @@
             <td style="text-align: left;"></td>
             <td></td>
             <td style="text-align: left;"></td>
-            <td colspan="8" style="text-align: left;">S/ N:</td>
+            <td colspan="5" style="text-align: left;">S/ N:</td>
         </tr>
         <tr>
             <td style="text-align: left;"></td>
