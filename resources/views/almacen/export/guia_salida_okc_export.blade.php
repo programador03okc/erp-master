@@ -6,15 +6,6 @@
         <tr>
             <th></th>
         </tr>
-        <tr>
-            <th></th>
-        </tr>
-        <tr>
-            <th></th>
-        </tr>
-        <tr>
-            <th></th>
-        </tr>
     </thead>
     <tbody>
         <tr>
