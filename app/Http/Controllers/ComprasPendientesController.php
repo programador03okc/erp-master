@@ -760,7 +760,7 @@ class ComprasPendientesController extends Controller
                 DetalleRequerimiento::actualizarEstadoDetalleRequerimientoAtendido($request->idDetalleRequerimiento);
                 // actualizar estado de requerimiento
                 $Requerimiento = DetalleRequerimiento::where('id_detalle_requerimiento', $request->idDetalleRequerimiento)->first();
-                $nuevoEstado =  Requerimiento::actualizarEstadoRequerimientoAtendido([$Requerimiento->id_requerimiento]);
+                $nuevoEstado =  Requerimiento::actualizarEstadoRequerimientoAtendido('CREAR',[$Requerimiento->id_requerimiento]);
 
                 return response()->json(['id_reserva' => $reserva->id_reserva, 'codigo' => $reserva->codigo, 'lista_finalizados' => $nuevoEstado['lista_finalizados'], 'data' => $ReservasProductoActualizadas, 'tipo_estado' => 'success', 'estado_requerimiento' => $nuevoEstado['estado_actual'], 'mensaje' => $mensaje]);
             } else {
@@ -809,7 +809,7 @@ class ComprasPendientesController extends Controller
                 DetalleRequerimiento::actualizarEstadoDetalleRequerimientoAtendido($request->idDetalleRequerimiento);
                 // actualizar estado de requerimiento
                 $Requerimiento = DetalleRequerimiento::where('id_detalle_requerimiento', $request->idDetalleRequerimiento)->first();
-                $nuevoEstado = Requerimiento::actualizarEstadoRequerimientoAtendido([$Requerimiento->id_requerimiento]);
+                $nuevoEstado = Requerimiento::actualizarEstadoRequerimientoAtendido('ANULAR',[$Requerimiento->id_requerimiento]);
 
                 //     (new LogisticaController)->generarTransferenciaRequerimiento($id_requerimiento, $id_sede, $data);
                 DB::commit();
@@ -844,7 +844,7 @@ class ComprasPendientesController extends Controller
                 DetalleRequerimiento::actualizarEstadoDetalleRequerimientoAtendido($request->idDetalleRequerimiento);
                 // actualizar estado de requerimiento
                 $Requerimiento = DetalleRequerimiento::where('id_detalle_requerimiento', $request->idDetalleRequerimiento)->first();
-                $nuevoEstado = Requerimiento::actualizarEstadoRequerimientoAtendido([$Requerimiento->id_requerimiento]);
+                $nuevoEstado = Requerimiento::actualizarEstadoRequerimientoAtendido('ANULAR',[$Requerimiento->id_requerimiento]);
 
                 DB::commit();
                 return response()->json(['data' => $ReservasProductoActualizadas, 'tipo_estado' => $tipo_estado, 'estado_requerimiento' => $nuevoEstado['estado_actual'], 'lista_finalizados' => $nuevoEstado['lista_finalizados'], 'lista_restablecidos' => $nuevoEstado['lista_restablecidos']]);
@@ -1122,7 +1122,7 @@ class ComprasPendientesController extends Controller
             $detalleRequerimiento = DetalleRequerimiento::find($request->idDetalleRequerimiento);
 
             if ($this->existeDetalleRequerimientoPorRegularizar($detalleRequerimiento->id_requerimiento) == false) {
-                Requerimiento::actualizarEstadoRequerimientoAtendido([$detalleRequerimiento->id_requerimiento]);
+                Requerimiento::actualizarEstadoRequerimientoAtendido('ACTUALIZAR',[$detalleRequerimiento->id_requerimiento]);
                 $cambiaEstadoRequerimiento = true;
             }
 
@@ -1178,7 +1178,7 @@ class ComprasPendientesController extends Controller
             $detalleRequerimiento = DetalleRequerimiento::find($request->idDetalleRequerimiento);
 
             if ($this->existeDetalleRequerimientoPorRegularizar($detalleRequerimiento->id_requerimiento) == false) {
-                Requerimiento::actualizarEstadoRequerimientoAtendido([$detalleRequerimiento->id_requerimiento]);
+                Requerimiento::actualizarEstadoRequerimientoAtendido('ACTUALIZAR',[$detalleRequerimiento->id_requerimiento]);
                 $cambiaEstadoRequerimiento = true;
             }
 
@@ -1256,7 +1256,7 @@ class ComprasPendientesController extends Controller
             $detalleRequerimiento = DetalleRequerimiento::find($request->idDetalleRequerimiento);
 
             if ($this->existeDetalleRequerimientoPorRegularizar($detalleRequerimiento->id_requerimiento) == false) {
-                Requerimiento::actualizarEstadoRequerimientoAtendido([$detalleRequerimiento->id_requerimiento]);
+                Requerimiento::actualizarEstadoRequerimientoAtendido('ANULAR',[$detalleRequerimiento->id_requerimiento]);
                 $cambiaEstadoRequerimiento = true;
             }
 

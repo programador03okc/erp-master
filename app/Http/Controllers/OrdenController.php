@@ -2572,7 +2572,7 @@ class OrdenController extends Controller
                 DB::commit();
 
                 if (isset($orden->id_orden_compra) and $orden->id_orden_compra > 0) {
-                    $actualizarEstados = $this->actualizarNuevoEstadoRequerimiento($orden->id_orden_compra, $orden->codigo);
+                    $actualizarEstados = $this->actualizarNuevoEstadoRequerimiento('CREAR',$orden->id_orden_compra, $orden->codigo);
                 }
 
 
@@ -2888,7 +2888,7 @@ class OrdenController extends Controller
 
 
 
-    function actualizarNuevoEstadoRequerimiento($idOrden, $codigo)
+    function actualizarNuevoEstadoRequerimiento($tipoPeticion,$idOrden, $codigo)
     {
 
         $idRequerimientoList = $this->obtenerIdRequerimientoList($idOrden);
@@ -2900,9 +2900,9 @@ class OrdenController extends Controller
         // if(config('app.debug')){
         // Debugbar::info($idRequerimientoList);
         // Debugbar::info($detalleRequerimiento);
-        Debugbar::info($itemBaseList);
+        // Debugbar::info($itemBaseList);
         // Debugbar::info($itemBaseEnOtrasOrdenesGeneradasList);
-        Debugbar::info($detalleOrdenGeneradaList);
+        // Debugbar::info($detalleOrdenGeneradaList);
         //     Debugbar::info($itemAtendidoParcialOSinAtender);
         // }
 
@@ -2934,7 +2934,7 @@ class OrdenController extends Controller
         }
 
 
-        $finalizadosORestablecido = CuadroPresupuestoHelper::finalizar(array_unique($idRequerimientoList));
+        $finalizadosORestablecido = CuadroPresupuestoHelper::finalizar($tipoPeticion,array_unique($idRequerimientoList));
 
 
         return ['lista_estado_requerimiento' => $nuevoEstadoCabeceraRequerimiento, 'lista_finalizados' => $finalizadosORestablecido['lista_finalizados'], 'lista_restablecidos' => $finalizadosORestablecido['lista_restablecidos']];
@@ -3070,7 +3070,7 @@ class OrdenController extends Controller
 
                 DB::commit();
                 if (isset($request->id_orden) and $request->id_orden > 0) {
-                    $this->actualizarNuevoEstadoRequerimiento($request->id_orden, null);
+                    $this->actualizarNuevoEstadoRequerimiento('ACTUALIZAR',$request->id_orden, null);
                 }
 
                 if (str_contains($data['mensaje'], 'No existe un id_softlink en la OC seleccionada')) {
@@ -3511,7 +3511,7 @@ class OrdenController extends Controller
                     }
                     $status = 200;
                     $msj[] = 'se restableció el estado del requerimiento';
-                    $finalizadosORestablecido = CuadroPresupuestoHelper::finalizar($id_requerimiento_list);
+                    $finalizadosORestablecido = CuadroPresupuestoHelper::finalizar('ANULAR',$id_requerimiento_list);
 
                     if ($finalizadosORestablecido['lista_restablecidos']  && count($finalizadosORestablecido['lista_restablecidos']) > 0) {
                         foreach ($finalizadosORestablecido['lista_restablecidos'] as $lr) {

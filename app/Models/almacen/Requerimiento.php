@@ -294,7 +294,7 @@ class Requerimiento extends Model
         return "{$documento}-{$yy}{$correlativo}";
     }
 
-    public static function actualizarEstadoRequerimientoAtendido($id_requerimiento_list)
+    public static function actualizarEstadoRequerimientoAtendido($tipoPeticion,$id_requerimiento_list)
     {
 
         $id_requerimiento_unique_list =  array_unique($id_requerimiento_list);
@@ -388,7 +388,7 @@ class Requerimiento extends Model
                 }
             }
 
-            $finalizadosORestablecido = CuadroPresupuestoHelper::finalizar($id_requerimiento_unique_list);
+            $finalizadosORestablecido = CuadroPresupuestoHelper::finalizar($tipoPeticion,$id_requerimiento_unique_list);
 
         }
         // return ['estado_actual'=>$estadoActual,'lista_finalizados'=>[],'lista_restablecidos'=>[]];
