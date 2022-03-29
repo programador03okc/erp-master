@@ -2963,12 +2963,12 @@ class OrdenController extends Controller
             if ($requerimientoHelper->EstaHabilitadoRequerimiento($idDetalleRequerimientoList) == true) {
 
              
-                if(in_array(Auth::user()->id_usuario,[14,5])){
-                    $ValidarOrdenSoftlink['tipo']='success';
-                    $ValidarOrdenSoftlink['mensaje']='ok';
-                }else{
+                // if(in_array(Auth::user()->id_usuario,[14,5])){
+                //     $ValidarOrdenSoftlink['tipo']='success';
+                //     $ValidarOrdenSoftlink['mensaje']='ok';
+                // }else{
                     $ValidarOrdenSoftlink = (new MigrateOrdenSoftLinkController)->validarOrdenSoftlink($request->id_orden);
-                }
+                // }
                 if ($ValidarOrdenSoftlink['tipo'] == 'success') {
                     $orden = Orden::where("id_orden_compra", $request->id_orden)->first();
                     $orden->id_grupo_cotizacion = $request->id_grupo_cotizacion ? $request->id_grupo_cotizacion : null;
@@ -3086,11 +3086,11 @@ class OrdenController extends Controller
                     }
                 }
                 if ($status == 200) {
-                    if(in_array(Auth::user()->id_usuario,[14,5])){
-                        $migrarOrdenSoftlink['tipo'] = 'success';
-                    }else{
+                    // if(in_array(Auth::user()->id_usuario,[14,5])){
+                    //     $migrarOrdenSoftlink['tipo'] = 'success';
+                    // }else{
                         $migrarOrdenSoftlink = (new MigrateOrdenSoftLinkController)->migrarOrdenCompra($request->id_orden)->original;
-                    }
+                    // }
                     if ($migrarOrdenSoftlink['tipo'] == 'success') {
                         $data = [
                             'id_orden_compra' => $orden->id_orden_compra,
