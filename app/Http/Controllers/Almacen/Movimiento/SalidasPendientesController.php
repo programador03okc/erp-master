@@ -111,19 +111,19 @@ class SalidasPendientesController extends Controller
 
                 $detalle = json_decode($request->detalle);
 
-                foreach ($detalle as $det) {
-                    $producto = DB::table('almacen.alm_prod')
-                        ->select('alm_prod.descripcion', 'alm_prod.codigo')
-                        ->where('id_producto', $det->id_producto)
-                        ->first();
+                // foreach ($detalle as $det) {
+                //     $producto = DB::table('almacen.alm_prod')
+                //         ->select('alm_prod.descripcion', 'alm_prod.codigo')
+                //         ->where('id_producto', $det->id_producto)
+                //         ->first();
 
-                    $stockDisponible = $this->validaStockDisponible($det->id_producto, $request->id_almacen);
+                //     $stockDisponible = $this->validaStockDisponible($det->id_producto, $request->id_almacen);
 
-                    if ($stockDisponible <= 0) {
-                        $mensaje .= $producto->codigo . ' - ' . $producto->descripcion . '
-                        ';
-                    }
-                }
+                //     if ($stockDisponible <= 0) {
+                //         $mensaje .= $producto->codigo . ' - ' . $producto->descripcion . '
+                //         ';
+                //     }
+                // }
 
                 if ($mensaje == '') {
 
