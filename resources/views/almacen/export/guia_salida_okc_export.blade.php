@@ -71,6 +71,8 @@
                 <td></td>
                 <td></td>
                 <td></td>
+                <td></td>
+                <td></td>
                 <td colspan="3" style="text-align: left;">20202020098</td>
             </tr>
             <tr>
