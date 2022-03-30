@@ -16,7 +16,7 @@
     <tbody>
         <tr>
             <td colspan="9"></td>
-            <td colspan="2" style="text-align: left;">GR0000-000000</td>
+            <td colspan="4" style="text-align: center;">GR0000-000000</td>
         </tr>
         <tr>
             <th></th>
@@ -31,13 +31,13 @@
         <tr>
             <td colspan="3"></td>
             <td colspan="4" style="text-align: left;">00OK COMPUTER E.I.R.L.00</td>
-            <td colspan="2"></td>
+            <td colspan="3"></td>
             <td colspan="4" style="text-align: left; word-wrap:break-word;vertical-align:top;">00MUNICIPALIDAD PROV000. CAR LOS F. FITZCARRALD000000000000000000000</td>
         </tr>
         <tr>
             <td colspan="2"></td>
             <td colspan="4" style="text-align: left;">CA LAS CASTAÑITAS N° 00127, 00SANISIDRO,0000LIMA00000000</td>
-            <td colspan="3"></td>
+            <td colspan="4"></td>
             <td colspan="4" style="text-align: left; word-wrap:break-word;">0000000000000JR. FITZCARRALD Nº 50400- SAN 0LUIS, 00000000000 000FITZCARRALD</td>
         </tr>
         <tr>
@@ -50,6 +50,7 @@
             <td colspan="3" style="text-align: left;">24/03/2022</td>
             <td></td>
             <td></td>
+            <td></td>
             <td colspan="2" style="text-align: center;">20202020098</td>
         </tr>
         <tr>
@@ -58,12 +59,14 @@
         <tr>
             <td colspan="2"></td>
             <td colspan="9" style="text-align: center;">INGRESAR NOMBRE DE TRANSPORTISTA00000000</td>
+            <td></td>
             <td colspan="2" style="text-align: left;">LICENCIA</td>
         </tr>
         <tr>
             <td colspan="2"></td>
             <td colspan="4" style="text-align: left;">RUC TRANS</td>
             <td colspan="5" style="text-align: left;">INGRESAR MARCA VEHICU</td>
+            <td></td>
             <td colspan="2" style="text-align: left;">PLACA TRA</td>
         </tr>
         <tr>
