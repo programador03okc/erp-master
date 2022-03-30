@@ -61,7 +61,7 @@ class GuiaSalidaOKCExcel implements FromView, WithEvents
                 $event->sheet->getStyle('J7:J8')->getAlignment()->setWrapText(true);
                 $event->sheet->getStyle('D17')->getAlignment()->setWrapText(true);
                 $event->sheet->getDelegate()->getRowDimension(2)->setRowHeight(11);
-                $event->sheet->getDelegate()->getRowDimension(11)->setRowHeight(11);
+                $event->sheet->getDelegate()->getRowDimension(5)->setRowHeight(11);
 
                 $style = array(
                     'alignment' => array(

@@ -40,8 +40,8 @@
                 <td></td>
                 <td></td>
                 <td colspan="6" style="text-align: left;">00OK COMPUTER E.I.R.L.00</td>
-                <td colspan="4"></td>
-                <td colspan="9" style="text-align: left; word-wrap:break-word;vertical-align:top;">00MUNICIPALIDAD PROV000.</td>
+                <td colspan="5"></td>
+                <td colspan="8" style="text-align: left; word-wrap:break-word;vertical-align:top;">00MUNICIPALIDAD PROV000.</td>
             </tr>
             <tr>
                 <td></td>
@@ -66,8 +66,8 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <td></td>
                 <td colspan="3" style="text-align: left;">24/03/2022</td>
+                <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -79,15 +79,13 @@
             <tr>
                 <td></td>
                 <td></td>
-                <td></td>
-                <td colspan="10" style="text-align: left;">INGRESAR NOMBRE DE TRANSPORTISTA00000000</td>
+                <td colspan="11" style="text-align: left;">INGRESAR NOMBRE DE TRANSPORTISTA00000000</td>
                 <td colspan="7"></td>
                 <td colspan="3" style="text-align: left;">LICENCIA</td>
             </tr>
             <tr>
                 <td></td>
-                <td></td>
-                <td colspan="9" style="text-align: left;">RUC TRANS</td>
+                <td colspan="10" style="text-align: left;">RUC TRANS</td>
                 <td colspan="8" style="text-align: left;">INGRESAR MARCA VEHICU</td>
                 <td colspan="3" style="text-align: left;">PLACA TRA</td>
             </tr>
