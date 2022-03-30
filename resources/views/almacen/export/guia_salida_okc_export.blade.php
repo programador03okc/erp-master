@@ -46,8 +46,7 @@
             <tr>
                 <td></td>
                 <td></td>
-                <td></td>
-                <td colspan="7" style="text-align: left;">CA LAS CASTAÑITAS N° 00127, 00SANISIDRO,0000LIMA00000000</td>
+                <td colspan="8" style="text-align: left;">CA LAS CASTAÑITAS N° 00127, 00SANISIDRO,0000LIMA00000000</td>
                 <td colspan="3"></td>
                 <td colspan="10" style="text-align: left; word-wrap:break-word;"> CAR LOS F. FITZCARRALD000000000000000000000</td>
             </tr>
@@ -55,8 +54,7 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <td></td>
-                <td colspan="3" style="text-align: left;">20519865476</td>
+                <td colspan="4" style="text-align: left;">20519865476</td>
                 <td colspan="6"></td>
                 <td colspan="10">0000000000000JR. FITZCARRALD Nº 50400- SAN 0LUIS, 00000000000 000FITZCARRALD</td>
 
