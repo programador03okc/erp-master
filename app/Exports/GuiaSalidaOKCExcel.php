@@ -37,7 +37,7 @@ class GuiaSalidaOKCExcel implements FromView, WithEvents
                 $event->sheet->getDelegate()->getColumnDimension('c')->setWidth(4);
                 $event->sheet->getDelegate()->getColumnDimension('D')->setWidth(4);
                 $event->sheet->getDelegate()->getColumnDimension('F')->setWidth(4);
-                $event->sheet->getDelegate()->getColumnDimension('H')->setWidth(8);
+                $event->sheet->getDelegate()->getColumnDimension('H')->setWidth(4);
                 $event->sheet->getDelegate()->getColumnDimension('I')->setWidth(4);
                 $event->sheet->getDelegate()->getColumnDimension('J')->setWidth(4);
                 $event->sheet->getDelegate()->getColumnDimension('K')->setWidth(4);
