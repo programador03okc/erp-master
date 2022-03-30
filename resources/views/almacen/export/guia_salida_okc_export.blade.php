@@ -1,3 +1,9 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
 <table>
     <thead>
         <tr>
@@ -26,13 +32,13 @@
             <td colspan="3"></td>
             <td colspan="4" style="text-align: left;">00OK COMPUTER E.I.R.L.00</td>
             <td colspan="2"></td>
-            <td colspan="4" style="text-align: left;">00MUNICIPALIDAD PROV000. CAR LOS F. FITZCARRALD000000000000000000000</td>
+            <td colspan="4" style="text-align: left; word-wrap:break-word;vertical-align:top;">00MUNICIPALIDAD PROV000. CAR LOS F. FITZCARRALD000000000000000000000</td>
         </tr>
         <tr>
             <td colspan="2"></td>
             <td colspan="4" style="text-align: left;">CA LAS CASTAÑITAS N° 00127, 00SANISIDRO,0000LIMA00000000</td>
             <td colspan="3"></td>
-            <td colspan="4" style="text-align: left;">0000000000000JR. FITZCARRALD Nº 50400- SAN 0LUIS, 00000000000 000FITZCARRALD</td>
+            <td colspan="4" style="text-align: left; word-wrap:break-word;">0000000000000JR. FITZCARRALD Nº 50400- SAN 0LUIS, 00000000000 000FITZCARRALD</td>
         </tr>
         <tr>
             <td colspan="2"></td>
@@ -94,7 +100,7 @@
             <td colspan="3" style="text-align: left;"></td>
             <td colspan="2" style="text-align: left;"></td>
             <td colspan="2" style="text-align: left;"></td>
-            <td colspan="6" style="text-align: left; white-space: initial">COMP UTADORA PORTATIL: PROCESADOR: INTEL CORE I 7 - 1065 G 7 1 . 30 GHz RAM: 8 GB DDR 4 2666 333 MHz ALMACENAMIENTO: 1 TB HDD 5400 RPMPANTALLA: LCD CON RETROILUMINACION LED 15 . 6 " 1366 X 768 PIXELES LAN: SI WLAN: SI BLUETOOTH: SI V GA: NO HDMI: SI SIST. OPER: WINDOWS 10 P RO 64 BITS ESPAÑOL BATERIA: LI- ION 3 CELDAS PESO: 1 . 74 kg UNIDAD OPTICA: NO CAMARA WEB: SI SUITE OFIMATICA: NO G. F: 36 MESES ON- SITE</td>
+            <td colspan="6" style="text-align: left; word-wrap:break-word;">COMP UTADORA PORTATIL: PROCESADOR: INTEL CORE I 7 - 1065 G 7 1 . 30 GHz RAM: 8 GB DDR 4 2666 333 MHz ALMACENAMIENTO: 1 TB HDD 5400 RPMPANTALLA: LCD CON RETROILUMINACION LED 15 . 6 " 1366 X 768 PIXELES LAN: SI WLAN: SI BLUETOOTH: SI V GA: NO HDMI: SI SIST. OPER: WINDOWS 10 P RO 64 BITS ESPAÑOL BATERIA: LI- ION 3 CELDAS PESO: 1 . 74 kg UNIDAD OPTICA: NO CAMARA WEB: SI SUITE OFIMATICA: NO G. F: 36 MESES ON- SITE</td>
         </tr>
         <tr>
             <td colspan="3" style="text-align: left;"></td>
@@ -159,3 +165,5 @@
         </tr>
     </tbody>
 </table>
+</body>
+</html>
