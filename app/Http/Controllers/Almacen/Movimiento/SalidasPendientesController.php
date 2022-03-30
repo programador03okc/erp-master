@@ -1062,7 +1062,7 @@ class SalidasPendientesController extends Controller
         }
     }
 
-    public function detalleMovimientoSalida($id_guia_ven)
+    public function listarDetalleGuiaSalida($id_guia_ven)
     {
         $detalle = DB::table('almacen.guia_ven_det')
             ->select(
@@ -1108,6 +1108,12 @@ class SalidasPendientesController extends Controller
                 'series' => $series
             ]);
         }
+        return $lista;
+    }
+
+    public function detalleMovimientoSalida($id_guia_ven)
+    {
+        $lista = $this->listarDetalleGuiaSalida($id_guia_ven);
         return response()->json($lista);
     }
 
@@ -1209,6 +1215,31 @@ class SalidasPendientesController extends Controller
             DB::rollBack();
             return response()->json('Algo salió mal. Inténtelo nuevamente.');
         }
+    }
+
+    public function obtenerGuiaVenta($id_guia_ven)
+    {
+        $guia = DB::table('almacen.guia_ven')
+            ->select(
+                'guia_ven.*',
+                'adm_empresa.id_empresa',
+                'empresa.nro_documento as empresa_nro_documento',
+                'empresa.razon_social as empresa_razon_social',
+                'cliente.nro_documento as cliente_nro_documento',
+                'cliente.razon_social as cliente_razon_social'
+            )
+            ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'guia_ven.id_almacen')
+            ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_almacen.id_sede')
+            ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_sede')
+            ->join('contabilidad.adm_contri as empresa', 'empresa.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
+            ->join('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'guia_ven.id_cliente')
+            ->join('contabilidad.adm_contri as cliente', 'cliente.id_contribuyente', '=', 'com_cliente.id_contribuyente')
+            ->where('guia_ven.id_guia_ven', $id_guia_ven)
+            ->first();
+
+        $detalle = $this->listarDetalleGuiaSalida($id_guia_ven);
+
+        return ['guia' => $guia, 'detalle' => $detalle];
     }
 
     public function guiaSalidaOKCExcel()
