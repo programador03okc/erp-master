@@ -107,6 +107,7 @@ Atención de Salidas
 @include('almacen.guias.guia_ven_obs')
 @include('almacen.guias.guia_ven_cambio')
 @include('almacen.guias.guia_ven_series')
+@include('almacen.guias.salidaAlmacen')
 @include('tesoreria.facturacion.archivos_oc_mgcp')
 @endsection
 
@@ -131,6 +132,7 @@ Atención de Salidas
 <script src="{{ asset('js/almacen/distribucion/despachoDetalle.js')}}"></script>
 <script src="{{ asset('js/almacen/guia/guia_ven_cambio.js')}}"></script>
 <script src="{{ asset('js/almacen/guia/guia_ven_series.js')}}"></script>
+<script src="{{ asset('js/almacen/guia/salidaAlmacen.js')}}"></script>
 <script src="{{ asset('js/almacen/distribucion/verDetalleRequerimiento.js')}}"></script>
 <script src="{{ asset('js/tesoreria/facturacion/archivosMgcp.js')}}"></script>
 <script>

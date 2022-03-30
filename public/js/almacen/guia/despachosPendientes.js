@@ -385,6 +385,10 @@ function listarDespachosEntregados(permiso) {
                     if (permiso == '1') {
                         return row['id_operacion'] == 11 ? '' :
                             `<div style="display:flex;">
+                                <button type="button" class="editar btn btn-primary btn-flat boton" data-toggle="tooltip" 
+                                data-placement="bottom" title="Editar Guía de Salida" data-id="${row['id_mov_alm']}" data-guia="${row['id_guia_ven']}"
+                                data-od="${row['id_od']}"><i class="fas fa-edit"></i></button>
+
                                 <button type="button" class="anular btn btn-danger btn-flat boton" data-toggle="tooltip" 
                                 data-placement="bottom" title="Anular Salida" data-id="${row['id_mov_alm']}" data-guia="${row['id_guia_ven']}"
                                 data-od="${row['id_od']}"><i class="fas fa-trash"></i></button>
@@ -403,11 +407,11 @@ function listarDespachosEntregados(permiso) {
     });
 }
 
-// $('#despachosEntregados tbody').on("click","button.salida", function(){
-//     var id_mov_alm = $(this).data('id');
-//     var id = encode5t(id_mov_alm);
-//     window.open('imprimir_salida/'+id);
-// });
+$('#despachosEntregados tbody').on("click", "button.editar", function () {
+    var data = $("#despachosEntregados").DataTable().row($(this).parents("tr")).data();
+    console.log(data);
+    abrirSalidaAlmacen(data);
+});
 
 function abrir_salida(id_mov_alm) {
     // var id = encode5t(id_mov_alm);

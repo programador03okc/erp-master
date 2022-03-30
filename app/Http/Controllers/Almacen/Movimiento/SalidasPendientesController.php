@@ -373,7 +373,10 @@ class SalidasPendientesController extends Controller
                 'mov_alm.*',
                 'guia_ven.serie',
                 'guia_ven.numero',
+                'guia_ven.fecha_emision as fecha_emision_guia',
                 'guia_ven.id_od',
+                'guia_ven.punto_partida',
+                'guia_ven.punto_llegada',
                 'orden_despacho.codigo as codigo_od',
                 'alm_req.codigo as codigo_requerimiento',
                 'alm_req.concepto',
@@ -401,7 +404,6 @@ class SalidasPendientesController extends Controller
 
     public function anular_salida(Request $request)
     {
-
         try {
             DB::beginTransaction();
 
@@ -1048,6 +1050,155 @@ class SalidasPendientesController extends Controller
         } catch (\PDOException $e) {
             DB::rollBack();
             return response()->json(':(');
+        }
+    }
+
+    public function detalleMovimientoSalida($id_guia_ven)
+    {
+        $detalle = DB::table('almacen.guia_ven_det')
+            ->select(
+                'guia_ven_det.*',
+                'alm_prod.codigo',
+                'alm_prod.part_number',
+                'alm_prod.descripcion',
+                'alm_prod.series as serie',
+                'alm_und_medida.abreviatura',
+                // 'guia_ven.serie',
+                // 'guia_ven.numero',
+                'guia_ven.id_almacen'
+            )
+            ->leftjoin('almacen.guia_ven', 'guia_ven.id_guia_ven', '=', 'guia_ven_det.id_guia_ven')
+            ->leftjoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'guia_ven_det.id_producto')
+            ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
+            ->where([['guia_ven_det.id_guia_ven', '=', $id_guia_ven], ['guia_ven_det.estado', '!=', 7]])
+            ->get();
+
+        $lista = [];
+
+        foreach ($detalle as $det) {
+
+            $series = DB::table('almacen.alm_prod_serie')
+                ->select('alm_prod_serie.*')
+                ->where([
+                    ['alm_prod_serie.id_guia_ven_det', '=', $det->id_guia_ven_det],
+                    ['alm_prod_serie.estado', '=', 1]
+                ])
+                ->get();
+
+            array_push($lista, [
+                'id_guia_ven_det' => $det->id_guia_ven_det,
+                'id_almacen' => $det->id_almacen,
+                'id_producto' => $det->id_producto,
+                'codigo' => $det->codigo,
+                'part_number' => $det->part_number,
+                'descripcion' => $det->descripcion,
+                'cantidad' => $det->cantidad,
+                'abreviatura' => $det->abreviatura,
+                // 'serie' => $det->serie,
+                // 'numero' => $det->numero,
+                'series' => $series
+            ]);
+        }
+        return response()->json($lista);
+    }
+
+    public function actualizarSalida(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            $salida = DB::table('almacen.guia_ven')
+                ->select('guia_ven.fecha_almacen', 'guia_ven.id_almacen')
+                ->where('id_guia_ven', $request->id_guia_ven)
+                ->first();
+
+            $fecha_anterior = $salida->fecha_almacen;
+            $id_usuario = Auth::user()->id_usuario;
+
+            DB::table('almacen.guia_ven')->where('id_guia_ven', $request->id_guia_ven)
+                ->update(
+                    [
+                        'serie' => $request->salida_serie,
+                        'numero' => $request->salida_numero,
+                        'fecha_emision' => $request->salida_fecha_emision,
+                        'fecha_almacen' => $request->salida_fecha_almacen,
+                        'punto_partida' => $request->salida_punto_partida,
+                        'punto_llegada' => $request->salida_punto_llegada,
+                    ]
+                );
+
+            //Agrega motivo anulacion a la guia
+            DB::table('almacen.guia_ven_obs')->insert(
+                [
+                    'id_guia_ven' => $request->id_guia_ven,
+                    'observacion' => $request->observacion,
+                    'registrado_por' => $id_usuario,
+                    'id_motivo_anu' => $request->id_motivo_cambio,
+                    'fecha_registro' => date('Y-m-d H:i:s')
+                ]
+            );
+
+            $productos_en_negativo = '';
+
+            if ($salida->fecha_almacen !== $request->salida_fecha_almacen) {
+                DB::table('almacen.mov_alm')
+                    ->where([
+                        ['id_guia_ven', '=', $request->id_guia_ven],
+                        ['estado', '!=', 7]
+                    ])
+                    ->update(['fecha_emision' => $request->salida_fecha_almacen]);
+
+                //Validacion por cambio de fecha
+                if ($request->salida_fecha_almacen > $salida->fecha_almacen) {
+                    $productos = DB::table('almacen.guia_ven_det')
+                        ->select('guia_ven_det.id_producto', 'alm_prod.descripcion')
+                        ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'guia_ven_det.id_producto')
+                        ->where([
+                            ['guia_ven_det.id_guia_ven', '=', $request->id_guia_ven],
+                            ['guia_ven_det.estado', '!=', 7]
+                        ])
+                        ->get();
+                    $anio = (new Carbon($request->salida_fecha_almacen))->format('Y');
+
+                    foreach ($productos as $prod) {
+                        $alerta_negativo = ValidaMovimientosController::validaNegativosHistoricoKardex(
+                            $prod->id_producto,
+                            $salida->id_almacen,
+                            $anio
+                        );
+
+                        if ($alerta_negativo > 0) {
+                            $productos_en_negativo .= $prod->descripcion . ' Genera ' . $alerta_negativo . ' movimiento(s) negativo(s).<br>';
+                        }
+                    }
+                }
+            }
+
+            $msj = '';
+            if ($productos_en_negativo !== '') {
+                // DB::beginTransaction();
+
+                DB::table('almacen.mov_alm')
+                    ->where([
+                        ['id_guia_ven', '=', $request->id_guia_ven],
+                        ['estado', '!=', 7]
+                    ])
+                    ->update(['fecha_emision' => $fecha_anterior]);
+
+                DB::table('almacen.guia_ven')->where('id_guia_ven', $request->id_guia_ven)
+                    ->update(['fecha_almacen' => $fecha_anterior]);
+
+                // DB::commit();
+                $msj = 'No es posible realizar el cambio de fecha de ingreso porque genera negativos en el histórico del kardex.<br>' . $productos_en_negativo;
+            } else {
+
+                $msj = 'ok';
+            }
+            DB::commit();
+            return response()->json($msj);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json('Algo salió mal. Inténtelo nuevamente.');
         }
     }
 }

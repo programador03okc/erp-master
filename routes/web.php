@@ -1401,6 +1401,9 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('listarSeriesGuiaVen/{id}/{alm}', 'Almacen\Movimiento\SalidasPendientesController@listarSeriesGuiaVen');
 				Route::get('verDetalleRequerimientoDI/{id}', 'Logistica\Distribucion\OrdenesTransformacionController@verDetalleRequerimientoDI');
 				Route::post('obtenerArchivosOc', 'Tesoreria\Facturacion\PendientesFacturacionController@obtenerArchivosOc')->name('obtener-archivos-oc');
+
+				Route::post('actualizarSalida', 'Almacen\Movimiento\SalidasPendientesController@actualizarSalida')->name('actualizar-salida');
+				Route::get('detalleMovimientoSalida/{id}', 'Almacen\Movimiento\SalidasPendientesController@detalleMovimientoSalida');
 			});
 
 			Route::group(['as' => 'prorrateo.', 'prefix' => 'prorrateo'], function () {
