@@ -85,8 +85,8 @@
             </tr>
             <tr>
                 <td></td>
-                <td colspan="10" style="text-align: left;">RUC TRANS</td>
-                <td colspan="8" style="text-align: left;">INGRESAR MARCA VEHICU</td>
+                <td colspan="11" style="text-align: left;">RUC TRANS</td>
+                <td colspan="7" style="text-align: left;">INGRESAR MARCA VEHICU</td>
                 <td colspan="3" style="text-align: left;">PLACA TRA</td>
             </tr>
             <tr>
