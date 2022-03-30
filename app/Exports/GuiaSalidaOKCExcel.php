@@ -59,12 +59,10 @@ class GuiaSalidaOKCExcel implements FromView, WithEvents
                 $event->sheet->getStyle('H16:H20')->getAlignment()->setWrapText(true);
                 $event->sheet->getStyle('J7:J8')->getAlignment()->setWrapText(true);
                 $event->sheet->getStyle('D17')->getAlignment()->setWrapText(true);
-                $event->sheet->getDelegate()->getRowDimension(2)->setRowHeight(11);
                 $event->sheet->getDelegate()->getRowDimension(5)->setRowHeight(11);
 
                 $style = array(
                     'alignment' => array(
-                        'name'      =>  'Calibri',
                         'wrap' => true,
                         'font-size'=>10
                     )
