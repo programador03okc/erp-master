@@ -23,7 +23,7 @@ use Debugbar;
 class CuadroPresupuestoHelper
 {
 
-    static public function finalizar($listaRequerimientosParaFinalizar)
+    static public function finalizar($tipoPeticion,$listaRequerimientosParaFinalizar)
     {
 
 
@@ -97,71 +97,9 @@ class CuadroPresupuestoHelper
                             }
                         }
                         // preparar correo
- 
-                        if (count($payload) > 0) {  // cuando tiene CDP finalizados
- 
-                            $correosOrdenServicioTransformacion = [];
-                            $correoFinalizacionCuadroPresupuesto=[];
-
-                            if (config('app.debug')) {
-                                $correosOrdenServicioTransformacion[] = config('global.correoDebug2');
-                                $correoFinalizacionCuadroPresupuesto[]= config('global.correoDebug2');
-
-                            } else {
-                                if($correoVendedor != '' || $correoVendedor !=null){
-                                    $correosOrdenServicioTransformacion[] = $correoVendedor; // agregar correo de vendedor
-                                }
-                                $idUsuarios = Usuario::getAllIdUsuariosPorRol(25); //Rol de usuario de despacho externo
-                                foreach ($idUsuarios as $id) {
-                                    $correosOrdenServicioTransformacion[] = Usuario::find($id)->email;
-                                }
-
-                                //$correoUsuarioEnSession=Auth::user()->email;
-                                $correoFinalizacionCuadroPresupuesto[]=Auth::user()->email;
-                                $correoFinalizacionCuadroPresupuesto[]=Usuario::find($requerimiento->id_usuario)->email;
-                            }
-                            
-                            //$nombreUsuarioEnSession=Auth::user()->nombre_corto;
-                            //$correoUsuarioEnSession=Auth::user()->email;
-                            //$correoFinalizacionCuadroPresupuesto[]=$correoUsuarioEnSession;
-                            
-                            Mail::to(array_unique($correoFinalizacionCuadroPresupuesto))->send(new EmailFinalizacionCuadroPresupuesto($codigoOportunidad,$payload,Auth::user()->nombre_corto));
-
-
-                            foreach ($payload as $pl) { // enviar orde servicio / transformacion a multiples usuarios
-                                $transformacion =  Transformacion::select('transformacion.codigo', 'cc.id_oportunidad', 'adm_empresa.logo_empresa')
-                                ->leftjoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'transformacion.id_cc')
-                                ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'transformacion.id_almacen')
-                                ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_almacen.id_sede')
-                                ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
-                                ->where('cc.id', $pl['cuadro_presupuesto']->id)
-                                ->first();
-                                $logoEmpresa=empty($transformacion->logo_empresa)?null:$transformacion->logo_empresa;
-                                $codigoTransformacion=empty($transformacion->codigo)?null:$transformacion->codigo;
-    
-                                Mail::to($correosOrdenServicioTransformacion)->send(new EmailOrdenServicioOrdenTransformacion($pl['oportunidad'],$logoEmpresa,$codigoTransformacion));
-                            }
-
-
+                        if($tipoPeticion=='CREAR'){
+                            CuadroPresupuestoHelper::enviarEmailNotificaciónFinalizaciónYOrdenServicio($requerimiento,$codigoOportunidad,$payload,$correoVendedor);
                         }
-                        // fin preparar correo finalizados
-                        // if(count($payloadRestablecido)>0){
-                        
-                        //     $correosDesfinalizarCuadroPresupuesto = [];
-
-                        //     if (config('app.debug')) {
-                        //         $correosDesfinalizarCuadroPresupuesto[] = config('global.correoDebug2');
-
-                        //     } else {
-                        //         $idUsuarios = Usuario::getAllIdUsuariosPorRol(25); //Rol de usuario de despacho externo
-                        //         foreach ($idUsuarios as $id) {
-                        //             $correosDesfinalizarCuadroPresupuesto[] = Usuario::find($id)->email;
-                        //         }
-
-                        //         $correosDesfinalizarCuadroPresupuesto[]=Auth::user()->email; //usuario en sessión que genero la acción
-                        //         $correosDesfinalizarCuadroPresupuesto[]=Usuario::find($requerimiento->id_usuario)->email; // usuario dueño del requerimieto
-                        //     }
-                        // }
                     }
                 }
             }
@@ -171,4 +109,49 @@ class CuadroPresupuestoHelper
         return ['lista_finalizados' => $payload, 'lista_restablecidos' => $payloadRestablecido, 'error' => $error];
     }
 
+
+    public static function enviarEmailNotificaciónFinalizaciónYOrdenServicio($requerimiento,$codigoOportunidad,$payload,$correoVendedor){
+        if (count($payload) > 0) {  // cuando tiene CDP finalizados
+ 
+            $correosOrdenServicioTransformacion = [];
+            $correoFinalizacionCuadroPresupuesto=[];
+
+            if (config('app.debug')) {
+                $correosOrdenServicioTransformacion[] = config('global.correoDebug2');
+                $correoFinalizacionCuadroPresupuesto[]= config('global.correoDebug2');
+
+            } else {
+                if($correoVendedor != '' || $correoVendedor !=null){
+                    $correosOrdenServicioTransformacion[] = $correoVendedor; // agregar correo de vendedor
+                }
+                $idUsuarios = Usuario::getAllIdUsuariosPorRol(25); //Rol de usuario de despacho externo
+                foreach ($idUsuarios as $id) {
+                    $correosOrdenServicioTransformacion[] = Usuario::find($id)->email;
+                }
+
+                //$correoUsuarioEnSession=Auth::user()->email;
+                $correoFinalizacionCuadroPresupuesto[]=Auth::user()->email;
+                $correoFinalizacionCuadroPresupuesto[]=Usuario::find($requerimiento->id_usuario)->email;
+            }
+            
+            Mail::to(array_unique($correoFinalizacionCuadroPresupuesto))->send(new EmailFinalizacionCuadroPresupuesto($codigoOportunidad,$payload,Auth::user()->nombre_corto));
+
+
+            foreach ($payload as $pl) { // enviar orde servicio / transformacion a multiples usuarios
+                $transformacion =  Transformacion::select('transformacion.codigo', 'cc.id_oportunidad', 'adm_empresa.logo_empresa')
+                ->leftjoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'transformacion.id_cc')
+                ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'transformacion.id_almacen')
+                ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_almacen.id_sede')
+                ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
+                ->where('cc.id', $pl['cuadro_presupuesto']->id)
+                ->first();
+                $logoEmpresa=empty($transformacion->logo_empresa)?null:$transformacion->logo_empresa;
+                $codigoTransformacion=empty($transformacion->codigo)?null:$transformacion->codigo;
+
+                Mail::to($correosOrdenServicioTransformacion)->send(new EmailOrdenServicioOrdenTransformacion($pl['oportunidad'],$logoEmpresa,$codigoTransformacion));
+            }
+
+
+        }
+    }
 }
