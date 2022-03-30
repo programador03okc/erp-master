@@ -139,9 +139,9 @@ Presupuesto
                             <h3 class="box-title">Cuadro de Gastos</h3>
                             <div class="box-tools pull-right">
                                 <div class="btn-group" role="group">
-                                    {{-- <button data-toggle="tooltip" data-placement="bottom" title="Nuevo Título" 
-                                        class="btn btn-success btn-sm nuevo-titulo">
-                                        <i class="glyphicon glyphicon-plus" aria-hidden="true"></i>
+                                    {{-- <button data-toggle="tooltip" data-placement="bottom" title="Exportar a excel" 
+                                        class="btn btn-success btn-sm exportar" style="color:#fff !important;" onClick="exportarCuadroCostos()">
+                                        <i class="fas fa-file-excel"></i> Exportar a excel
                                     </button> --}}
                                 </div>
                             </div>

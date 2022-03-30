@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Finanzas\Presupuesto;
 
+use App\Exports\CuadroGastosExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Presupuestos\Presupuesto;
@@ -10,6 +11,7 @@ use App\Models\Presupuestos\Moneda;
 use App\Http\Controllers\Controller;
 use App\Models\Configuracion\Usuario;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PresupuestoController extends Controller
 {
@@ -104,7 +106,7 @@ class PresupuestoController extends Controller
             // ->join('finanzas.presup_titu', 'presup_titu.codigo', '=', 'presup_par.cod_padre')
             ->join('logistica.log_ord_compra', 'log_ord_compra.id_orden_compra', '=', 'log_det_ord_compra.id_orden_compra')
             ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
-            ->join('contabilidad.adm_contri as proveedor', 'proveedor.id_proveedor', '=', 'log_prove.id_contribuyente')
+            ->join('contabilidad.adm_contri as proveedor', 'proveedor.id_contribuyente', '=', 'log_prove.id_contribuyente')
             ->join('tesoreria.registro_pago', 'registro_pago.id_oc', '=', 'log_det_ord_compra.id_orden_compra')
             ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_det_req.id_unidad_medida')
             ->where([
@@ -150,6 +152,15 @@ class PresupuestoController extends Controller
             ->get();
 
         return response()->json(['req_compras' => $detalle, 'req_pagos' => $pagos]);
+    }
+
+    public function cuadroGastosExcel($id_presupuesto)
+    {
+        $data = $this->mostrarGastosPorPresupuesto($id_presupuesto);
+        return Excel::download(new CuadroGastosExport(
+            $data->req_compras,
+            $data->req_pagos
+        ), 'cuadroGastos.xlsx');
     }
 
     public function store()

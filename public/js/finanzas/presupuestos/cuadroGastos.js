@@ -73,3 +73,7 @@ function mostrarCuadroGastos(id) {
         });
     }
 }
+
+function exportarCuadroCostos() {
+
+}
