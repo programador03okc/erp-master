@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Almacen\Movimiento;
 
+use App\Exports\GuiaSalidaOKCExcel;
 use App\Http\Controllers\AlmacenController as GenericoAlmacenController;
 use App\Http\Controllers\AlmacenController;
 use Illuminate\Http\Request;
@@ -10,6 +11,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
+
 
 class SalidasPendientesController extends Controller
 {
@@ -1206,5 +1209,10 @@ class SalidasPendientesController extends Controller
             DB::rollBack();
             return response()->json('Algo salió mal. Inténtelo nuevamente.');
         }
+    }
+
+    public function guiaSalidaOKCExcel()
+    {
+        return Excel::download(new GuiaSalidaOKCExcel(), 'guia_salida_okc.xlsx');
     }
 }
