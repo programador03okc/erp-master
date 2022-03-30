@@ -37,11 +37,12 @@ class GuiaSalidaOKCExcel implements FromView, WithEvents
                 $event->sheet->getDelegate()->getColumnDimension('B')->setWidth(4);
 
                 $event->sheet->getDelegate()->getColumnDimension('D')->setWidth(4);
-                // $event->sheet->getDelegate()->getColumnDimension('G')->setWidth(14);
-                // $event->sheet->getDelegate()->getColumnDimension('H')->setWidth(1);
-                $event->sheet->getStyle('F19:F29')->getAlignment()->setWrapText(true);
-                $event->sheet->getStyle('H16:H17')->getAlignment()->setWrapText(true);
-                $event->sheet->getStyle('C17')->getAlignment()->setWrapText(true);
+                $event->sheet->getDelegate()->getColumnDimension('F')->setWidth(4);
+                $event->sheet->getDelegate()->getColumnDimension('H')->setWidth(8);
+                $event->sheet->getDelegate()->getColumnDimension('I')->setWidth(4);
+                $event->sheet->getStyle('H16:H20')->getAlignment()->setWrapText(true);
+                $event->sheet->getStyle('J7:J8')->getAlignment()->setWrapText(true);
+                $event->sheet->getStyle('D17')->getAlignment()->setWrapText(true);
                 
             },
 
