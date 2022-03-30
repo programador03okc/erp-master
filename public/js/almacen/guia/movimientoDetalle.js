@@ -20,6 +20,7 @@ function open_detalle_movimiento(data) {
     $('[name=id_motivo_cambio]').val('');
     $('[name=observacion]').val('');
     $('#responsable_nombre').text(data.nombre_corto);
+    $('#fecha_registro').text(data.fecha_registro);
     $('#requerimientos').val(data.requerimientos);
     // $('#ordenes_soft_link').text(data.ordenes_soft_link);
     $("#submit_ingreso").removeAttr("disabled");
@@ -67,7 +68,7 @@ function listar_detalle_movimiento(id_guia_com_detalle) {
                             (element.codigo_trans !== null ? element.codigo_trans : ''))}</td>
                 <td>${element.codigo_req !== null ? element.codigo_req : ''}</td>
                 <td><strong>${element.sede_req !== null ? element.sede_req : ''}</strong></td>
-                <td>${html_ser == '' ? ''
+                <td>${html_ser == '' ? '(no aplica)'
                         : `<i class="fas fa-edit icon-tabla boton blue" data-toggle="tooltip" data-placement="bottom" 
                     title="Editar Series" onClick="open_guia_series_edit(${element.id_guia_com_det});"></i>
                     <i class="fas fa-file-excel icon-tabla boton green" data-toggle="tooltip" data-placement="bottom" 
