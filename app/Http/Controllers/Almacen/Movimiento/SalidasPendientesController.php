@@ -424,13 +424,19 @@ class SalidasPendientesController extends Controller
                         ->where('id_od', $request->id_od)
                         ->first();
                     //si la orden de despacho es Procesado
-                    if ($od->estado == 9 || $od->estado == 23) {
+                    if ($od->estado == 21) {
                         //Anula salida
-                        $update = DB::table('almacen.mov_alm')
+                        DB::table('almacen.mov_alm')
                             ->where('id_mov_alm', $request->id_salida)
-                            ->update(['estado' => 7]);
+                            ->update([
+                                'estado' => 7,
+                                'fecha_anulacion' => new Carbon(),
+                                'usuario_anulacion' => $id_usuario,
+                                'comentario_anulacion' => $request->observacion_guia_ven,
+                                'id_motivo_anulacion' => $request->id_motivo_obs_ven,
+                            ]);
                         //Anula el detalle
-                        $update = DB::table('almacen.mov_alm_det')
+                        DB::table('almacen.mov_alm_det')
                             ->where('id_mov_alm', $request->id_salida)
                             ->update(['estado' => 7]);
                         //Agrega motivo anulacion a la guia
@@ -444,11 +450,11 @@ class SalidasPendientesController extends Controller
                             ]
                         );
                         //Anula la Guia
-                        $update = DB::table('almacen.guia_ven')
+                        DB::table('almacen.guia_ven')
                             ->where('id_guia_ven', $request->id_guia_ven)
                             ->update(['estado' => 7]);
                         //Anula la Guia Detalle
-                        $update = DB::table('almacen.guia_ven_det')
+                        DB::table('almacen.guia_ven_det')
                             ->where('id_guia_ven', $request->id_guia_ven)
                             ->update(['estado' => 7]);
                         //Quita estado de la orden
