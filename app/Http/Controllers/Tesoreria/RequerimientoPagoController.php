@@ -789,20 +789,22 @@ class RequerimientoPagoController extends Controller
 
     function obtenerDestinatarioPorNombre(Request $request)
     {
-        $nombre = $request->nombreDestinatario;
+        $nombreCompleto =   '%'.(strtoupper($request->nombreDestinatario)).'%';
         $idTipoDestinatario = $request->idTipoDestinatario;
         $destinatario = [];
         $tipo_estado = '';
         $mensaje = '';
+        
 
         if ($idTipoDestinatario == 1) { // tipo persona
-            $destinatario = Persona::with("tipoDocumentoIdentidad", "cuentaPersona.banco.contribuyente", "cuentaPersona.tipoCuenta", "cuentaPersona.moneda")->where([["nombres", 'like', '%' . strtoupper($nombre) . '%'], ["estado", "!=", 7]])
-                ->orWhere([["apellido_paterno", 'like', '%' . strtoupper($nombre) . '%'], ["estado", "!=", 7]])
-                ->orWhere([["apellido_materno", 'like', '%' . strtoupper($nombre) . '%'], ["estado", "!=", 7]])
+            $destinatario = Persona::with("tipoDocumentoIdentidad", "cuentaPersona.banco.contribuyente", "cuentaPersona.tipoCuenta", "cuentaPersona.moneda")
+            ->whereRaw("UPPER(nombres) LIKE '".$nombreCompleto."' AND estado != 7")
+            ->orWhereRaw("UPPER(apellido_paterno) LIKE '".$nombreCompleto."' AND estado != 7")
+            ->orWhereRaw("UPPER(apellido_materno) LIKE '".$nombreCompleto."' AND estado != 7")
                 ->get();
         } elseif ($idTipoDestinatario == 2) { // tipo contribuyente
             $destinatario =  Contribuyente::with("tipoDocumentoIdentidad", "cuentaContribuyente.banco.contribuyente", "cuentaContribuyente.tipoCuenta", "tipoContribuyente")
-                ->where([["razon_social", 'like', '%' . strtoupper($nombre) . '%'], ["estado", "!=", 7]])->get();
+                ->where([['UPPER(razon_social)', 'LIKE', $nombreCompleto], ['estado', '!=', 7]])->get();
         } else {
             $tipo_estado = "error";
             $mensaje = 'no se recibio un valor valido para tipo de destinatario';

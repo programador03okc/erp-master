@@ -31,8 +31,7 @@ class GuiaSalidaOKCExcel implements FromView, WithEvents
         return [
             AfterSheet::class    => function (AfterSheet $event) {
                 $event->sheet->getDelegate()->getStyle('A1:U29')->getFont()->setSize(10);
-                // $sheet = $event->sheet->getDelegate();
-                // $sheet->getStyle('3')->getFont()->setSize(10);
+                $event->sheet->getDelegate()->getStyle('A1:U29')->getFont()->setName('Times New Roman');
 
                 $event->sheet->getDelegate()->getColumnDimension('A')->setWidth(4);
                 $event->sheet->getDelegate()->getColumnDimension('B')->setWidth(4);
@@ -60,9 +59,7 @@ class GuiaSalidaOKCExcel implements FromView, WithEvents
                 $event->sheet->getStyle('H16:H20')->getAlignment()->setWrapText(true);
                 $event->sheet->getStyle('J7:J8')->getAlignment()->setWrapText(true);
                 $event->sheet->getStyle('D17')->getAlignment()->setWrapText(true);
-                $event->sheet->getDelegate()->getRowDimension(1)->setRowHeight(11);
-                $event->sheet->getDelegate()->getRowDimension(2)->setRowHeight(11);
-                $event->sheet->getDelegate()->getRowDimension(11)->setRowHeight(11);
+                $event->sheet->getDelegate()->getRowDimension(5)->setRowHeight(11);
 
                 $style = array(
                     'alignment' => array(

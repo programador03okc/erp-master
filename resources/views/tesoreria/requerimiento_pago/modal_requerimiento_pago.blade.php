@@ -193,7 +193,7 @@
                                                 </button>
                                             </div>
                                             <div class="form-group">
-                                                <div class="box box-solid box-default oculto" id="resultadoDestinatario" style="position: absolute; z-index: 999; overflow:scroll; height:20vh; box-shadow: rgb(9 30 66 / 25%) 0px 4px 8px, rgb(9 30 66 / 31%) 0px 0px 1px;">
+                                                <div class="box box-solid box-default oculto" id="resultadoDestinatario" style="position: absolute; z-index: 999; overflow:scroll; height:30vh; box-shadow: rgb(9 30 66 / 25%) 0px 4px 8px, rgb(9 30 66 / 31%) 0px 0px 1px;">
                                                     <div class="box-body">
                                                         <ul class="nav nav-pills" role="tablist">
                                                             <li>
