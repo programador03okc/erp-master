@@ -73,8 +73,8 @@ class GuiaSalidaOKCExcel implements FromView, WithEvents
                 );
                 $event->sheet->getStyle("H16:H20")->applyFromArray($style);
                 $event->sheet->getStyle("J7:J8")->applyFromArray($style);
-                $event->sheet->getDelegate()->getStyle('D7')->getAlignment()->setVertical("TOP");
-                $event->sheet->getDelegate()->getStyle('C8')->getAlignment()->setVertical("TOP");
+                $event->sheet->getDelegate()->getStyle('E7')->getAlignment()->setVertical("TOP");
+                $event->sheet->getDelegate()->getStyle('N8')->getAlignment()->setVertical("TOP");
             },
 
 

@@ -1033,6 +1033,7 @@ class SalidasPendientesController extends Controller
                 'codigo' => $det->codigo,
                 'part_number' => $det->part_number,
                 'descripcion' => $det->descripcion,
+                'marca' => $det->marca,
                 'cantidad' => $det->cantidad,
                 'abreviatura' => $det->abreviatura,
                 // 'serie' => $det->serie,
@@ -1170,6 +1171,7 @@ class SalidasPendientesController extends Controller
             ->first();
 
         $detalle = $this->listarDetalleGuiaSalida($id_guia_ven);
+        // dd($detalle);
         //OKC PYC SVS PTEC
         if ($guia->id_empresa == 1 || $guia->id_empresa == 2 || $guia->id_empresa == 3 || $guia->id_empresa == 6) {
             return Excel::download(new GuiaSalidaOKCExcel($guia, $detalle), 'guia_salida_okc.xlsx');
