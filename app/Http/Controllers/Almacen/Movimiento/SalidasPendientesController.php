@@ -581,7 +581,8 @@ class SalidasPendientesController extends Controller
                 ['orden_despacho_det.id_od', '=', $id_od],
                 ['orden_despacho_det.estado', '!=', 7],
                 ['alm_det_req.estado', '!=', 7],
-                ['orden_despacho_det.transformado', '=', ($aplica_cambios == 'si' ? false : ($tiene_transformacion == 'si' ? true : false))]
+                ['alm_det_req.entrega_cliente', '=', true],
+                // ['orden_despacho_det.transformado', '=', ($aplica_cambios == 'si' ? false : ($tiene_transformacion == 'si' ? true : false))]
             ])
             ->get();
 
