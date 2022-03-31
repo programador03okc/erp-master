@@ -100,7 +100,7 @@
                 <td colspan="3" style="text-align: left;">{{$d['codigo']}}</td>
                 <td colspan="3" style="text-align: left;">{{$d['cantidad']}}</td>
                 <td colspan="3" style="text-align: left;">{{strtoupper($d['abreviatura'])??''}}</td>
-                <td colspan="14" style="text-align: left;">CATEGORÍA</td>
+                <td colspan="14" style="text-align: left;">CATEGORÍA:</td>
             </tr>
             <tr>
                 <td colspan="3" style="text-align: left;"></td>
