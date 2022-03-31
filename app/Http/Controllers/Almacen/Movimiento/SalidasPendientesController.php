@@ -573,30 +573,10 @@ class SalidasPendientesController extends Controller
                             and reserva.estado != 5
                             and reserva.id_almacen_reserva = orden_despacho.id_almacen) AS suma_reservas")
             )
-
             ->join('almacen.orden_despacho', 'orden_despacho.id_od', '=', 'orden_despacho_det.id_od')
             ->join('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'orden_despacho_det.id_detalle_requerimiento')
             ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_det_req.id_producto')
             ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
-            // ->leftJoin('logistica.log_det_ord_compra', function ($join) {
-            //     $join->on('log_det_ord_compra.id_detalle_requerimiento', '=', 'orden_despacho_det.id_detalle_requerimiento');
-            //     $join->where('log_det_ord_compra.estado', '!=', 7);
-            // })
-            // ->leftJoin('almacen.guia_com_det as guia_oc', function ($join) {
-            //     $join->on('guia_oc.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden');
-            //     $join->where('guia_oc.estado', '!=', 7);
-            // })
-            // ->leftjoin('almacen.guia_com as goc', 'goc.id_guia', '=', 'guia_oc.id_guia_com')
-            // ->leftjoin('almacen.trans_detalle', 'trans_detalle.id_requerimiento_detalle', '=', 'orden_despacho_det.id_detalle_requerimiento')
-            // ->leftJoin('almacen.guia_ven_det', function ($join) {
-            //     $join->on('guia_ven_det.id_trans_det', '=', 'trans_detalle.id_trans_detalle');
-            //     $join->where('guia_ven_det.estado', '!=', 7);
-            // })
-            // ->leftJoin('almacen.guia_com_det as guia_trans', function ($join) {
-            //     $join->on('guia_trans.id_guia_ven_det', '=', 'guia_ven_det.id_guia_ven_det');
-            //     $join->where('guia_trans.estado', '!=', 7);
-            // })
-            // ->leftjoin('almacen.guia_com as gtr', 'gtr.id_guia', '=', 'guia_trans.id_guia_com')
             ->where([
                 ['orden_despacho_det.id_od', '=', $id_od],
                 ['orden_despacho_det.estado', '!=', 7],
@@ -604,56 +584,6 @@ class SalidasPendientesController extends Controller
                 ['orden_despacho_det.transformado', '=', ($aplica_cambios == 'si' ? false : ($tiene_transformacion == 'si' ? true : false))]
             ])
             ->get();
-
-        // $lista = [];
-
-        // foreach ($data as $det) {
-
-        //     $series = [];
-        //     $exist = false;
-
-        //     foreach ($lista as $item) {
-        //         if ($item['id_od_detalle'] == $det->id_od_detalle) {
-        //             $exist = true;
-        //         }
-        //     }
-
-        //     if (!$exist) {
-
-        // if (
-        //     $det->id_guia_oc_det !== null && $det->id_almacen_oc !== null &&
-        //     $det->id_almacen_oc == $det->id_almacen
-        // ) {
-        //     $id_guia_com_det = $det->id_guia_oc_det;
-        //     $series = DB::table('almacen.alm_prod_serie')
-        //         ->where('id_guia_com_det', $det->id_guia_oc_det)
-        //         ->get();
-        // } else if (
-        //     $det->id_guia_trans_det !== null && $det->id_almacen_tr !== null &&
-        //     $det->id_almacen_tr == $det->id_almacen
-        // ) {
-        //     $id_guia_com_det = $det->id_guia_trans_det;
-        //     $series = DB::table('almacen.alm_prod_serie')
-        //         ->where('id_guia_com_det', $det->id_guia_trans_det)
-        //         ->get();
-        // }
-
-        //         array_push($lista, [
-        //             'id_od_detalle' => $det->id_od_detalle,
-        //             'id_detalle_requerimiento' => $det->id_detalle_requerimiento,
-        //             // 'id_guia_com_det' => $id_guia_com_det,
-        //             'id_producto' => $det->id_producto,
-        //             'id_unidad_medida' => $det->id_unidad_medida,
-        //             'codigo' => $det->codigo,
-        //             'part_number' => $det->part_number,
-        //             'descripcion' => $det->descripcion,
-        //             'cantidad' => $det->cantidad,
-        //             'abreviatura' => $det->abreviatura,
-        //             'control_series' => $det->series,
-        //             'series' => []
-        //         ]);
-        //     }
-        // }
 
         return response()->json($data);
     }
@@ -1072,12 +1002,14 @@ class SalidasPendientesController extends Controller
                 'alm_prod.descripcion',
                 'alm_prod.series as serie',
                 'alm_und_medida.abreviatura',
+                'alm_subcat.descripcion as marca',
                 // 'guia_ven.serie',
                 // 'guia_ven.numero',
                 'guia_ven.id_almacen'
             )
             ->leftjoin('almacen.guia_ven', 'guia_ven.id_guia_ven', '=', 'guia_ven_det.id_guia_ven')
             ->leftjoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'guia_ven_det.id_producto')
+            ->leftjoin('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
             ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
             ->where([['guia_ven_det.id_guia_ven', '=', $id_guia_ven], ['guia_ven_det.estado', '!=', 7]])
             ->get();
