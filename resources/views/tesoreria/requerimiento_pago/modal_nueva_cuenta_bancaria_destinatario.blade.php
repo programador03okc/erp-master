@@ -60,7 +60,7 @@
 
                 </div>
                 <div class="modal-footer">
-                    <input type="submit" class="btn btn-success boton" value="Guardar"/>
+                    <input type="submit" id="submit_nuevo_contribuyente" class="btn btn-success boton" value="Guardar"/>
                 </div>
             </form>
         </div>
