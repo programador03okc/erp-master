@@ -393,9 +393,9 @@ function listarDespachosEntregados(permiso) {
                                 data-placement="bottom" title="Anular Salida" data-id="${row['id_mov_alm']}" data-guia="${row['id_guia_ven']}"
                                 data-od="${row['id_od']}"><i class="fas fa-trash"></i></button>
                                 
-                                <button type="button" class="imprimir btn btn-warning btn-flat boton" data-toggle="tooltip" 
+                                <button type="button" class="imprimir btn btn-info btn-flat boton" data-toggle="tooltip" 
                                 data-placement="bottom" title="Descargar formato de impresión" data-guia="${row['id_guia_ven']}">
-                                <i class="fas fa-sync-alt"></i></button>
+                                <i class="fas fa-print"></i></button>
                             </div>`;
                     }
                 }, targets: 10
