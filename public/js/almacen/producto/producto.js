@@ -122,6 +122,7 @@ function mostrar_producto(id) {
             $('[name=notas]').val(response['producto'][0].notas);
             $('[name=id_moneda]').val(response['producto'][0].id_moneda);
             $('#usuario_registro').text(response['producto'][0].nombre_corto);
+            $('#fecha_registro').text(formatDateHour(response['producto'][0].fecha_registro));
 
             if (response['producto'][0].imagen !== "" &&
                 response['producto'][0].imagen !== null) {

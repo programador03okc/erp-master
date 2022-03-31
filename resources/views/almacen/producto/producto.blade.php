@@ -221,6 +221,7 @@ Producto
 
                                             <h5>Creado por:</h5>
                                             <label id="usuario_registro"></label>
+                                            <label id="fecha_registro"></label>
                                         </div>
                                         <div class="col-md-8">
                                             <h5>Especificaciones del Producto</h5>
