@@ -393,9 +393,9 @@ function listarDespachosEntregados(permiso) {
                                 data-placement="bottom" title="Anular Salida" data-id="${row['id_mov_alm']}" data-guia="${row['id_guia_ven']}"
                                 data-od="${row['id_od']}"><i class="fas fa-trash"></i></button>
                                 
-                                <button type="button" class="cambio btn btn-warning btn-flat boton" data-toggle="tooltip" 
-                                data-placement="bottom" title="Cambiar Serie-Número" data-id="${row['id_mov_alm']}" data-guia="${row['id_guia_ven']}"
-                                data-od="${row['id_od']}"><i class="fas fa-sync-alt"></i></button>
+                                <button type="button" class="imprimir btn btn-warning btn-flat boton" data-toggle="tooltip" 
+                                data-placement="bottom" title="Descargar formato de impresión" data-guia="${row['id_guia_ven']}">
+                                <i class="fas fa-sync-alt"></i></button>
                             </div>`;
                     }
                 }, targets: 10
@@ -467,6 +467,14 @@ function anular_salida(data) {
         console.log(errorThrown);
     });
 }
+
+$('#despachosEntregados tbody').on("click", "button.imprimir", function () {
+    var id_guia = $(this).data('guia');
+    // Abrir nuevo tab
+    let url = "/almacen/movimientos/pendientes-salida/guia-salida-excel/" + id_guia;
+    var win = window.open(url, '_blank');
+    win.focus();
+});
 
 $('#despachosEntregados tbody').on("click", "button.cambio", function () {
     var id_mov_alm = $(this).data('id');
