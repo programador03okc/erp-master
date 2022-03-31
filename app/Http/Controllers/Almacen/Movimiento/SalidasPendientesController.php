@@ -1242,7 +1242,7 @@ class SalidasPendientesController extends Controller
         return ['guia' => $guia, 'detalle' => $detalle];
     }
 
-    public function guiaSalidaOKCExcel()
+    public function guiaSalidaExcel($idGuia)
     {
         return Excel::download(new GuiaSalidaOKCExcel(), 'guia_salida_okc.xlsx');
     }
