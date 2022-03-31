@@ -1565,7 +1565,13 @@ class OrdenesPendientesController extends Controller
                             //Anula ingreso
                             DB::table('almacen.mov_alm')
                                 ->where('id_mov_alm', $request->id_mov_alm)
-                                ->update(['estado' => 7]);
+                                ->update([
+                                    'estado' => 7,
+                                    'fecha_anulacion' => new Carbon(),
+                                    'usuario_anulacion' => $id_usuario,
+                                    'comentario_anulacion' => $request->observacion,
+                                    'id_motivo_anulacion' => $request->id_motivo_obs,
+                                ]);
                             //Anula el detalle
                             DB::table('almacen.mov_alm_det')
                                 ->where('id_mov_alm', $request->id_mov_alm)
@@ -1592,7 +1598,7 @@ class OrdenesPendientesController extends Controller
                             if ($ing->id_transformacion !== null) {
                                 DB::table('almacen.transformacion')
                                     ->where('id_transformacion', $ing->id_transformacion)
-                                    ->update(['estado' => 9]); //procesado
+                                    ->update(['estado' => 10]); //finalizado
                             }
 
                             $requerimientos = [];
