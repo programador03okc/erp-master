@@ -11,17 +11,21 @@ use Maatwebsite\Excel\Events\BeforeExport;
 
 class GuiaSalidaOKCExcel implements FromView, WithEvents
 {
+    public $guia;
+    public $detalle;
 
-
-    public function __construct()
+    public function __construct($guia, $detalle)
     {
+        $this->guia = $guia;
+        $this->detalle = $detalle;
     }
 
     public function view(): View
     {
 
         return view('almacen.export.guia_salida_okc_export', [
-            'data' => []
+            'guia' => $this->guia,
+            'detalle' => $this->detalle,
         ]);
     }
 
@@ -35,7 +39,7 @@ class GuiaSalidaOKCExcel implements FromView, WithEvents
 
                 $event->sheet->getDelegate()->getColumnDimension('A')->setWidth(4);
                 $event->sheet->getDelegate()->getColumnDimension('B')->setWidth(4);
-                $event->sheet->getDelegate()->getColumnDimension('c')->setWidth(4);
+                $event->sheet->getDelegate()->getColumnDimension('C')->setWidth(4);
                 $event->sheet->getDelegate()->getColumnDimension('D')->setWidth(4);
                 $event->sheet->getDelegate()->getColumnDimension('E')->setWidth(4);
                 $event->sheet->getDelegate()->getColumnDimension('F')->setWidth(4);
@@ -64,20 +68,17 @@ class GuiaSalidaOKCExcel implements FromView, WithEvents
                 $style = array(
                     'alignment' => array(
                         'wrap' => true,
-                        'font-size'=>10
+                        'font-size' => 10
                     )
                 );
                 $event->sheet->getStyle("H16:H20")->applyFromArray($style);
                 $event->sheet->getStyle("J7:J8")->applyFromArray($style);
                 $event->sheet->getDelegate()->getStyle('D7')->getAlignment()->setVertical("TOP");
                 $event->sheet->getDelegate()->getStyle('C8')->getAlignment()->setVertical("TOP");
-          
             },
 
 
 
         ];
     }
-
-
 }

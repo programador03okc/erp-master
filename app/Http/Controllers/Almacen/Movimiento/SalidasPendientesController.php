@@ -1217,7 +1217,7 @@ class SalidasPendientesController extends Controller
         }
     }
 
-    public function obtenerGuiaVenta($id_guia_ven)
+    public function guiaSalidaExcel($id_guia_ven)
     {
         $guia = DB::table('almacen.guia_ven')
             ->select(
@@ -1230,7 +1230,7 @@ class SalidasPendientesController extends Controller
             )
             ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'guia_ven.id_almacen')
             ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_almacen.id_sede')
-            ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_sede')
+            ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
             ->join('contabilidad.adm_contri as empresa', 'empresa.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
             ->join('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'guia_ven.id_cliente')
             ->join('contabilidad.adm_contri as cliente', 'cliente.id_contribuyente', '=', 'com_cliente.id_contribuyente')
@@ -1238,12 +1238,11 @@ class SalidasPendientesController extends Controller
             ->first();
 
         $detalle = $this->listarDetalleGuiaSalida($id_guia_ven);
-
-        return ['guia' => $guia, 'detalle' => $detalle];
-    }
-
-    public function guiaSalidaExcel($idGuia)
-    {
-        return Excel::download(new GuiaSalidaOKCExcel(), 'guia_salida_okc.xlsx');
+        //OKC PYC SVS PTEC
+        if ($guia->id_empresa == 1 || $guia->id_empresa == 2 || $guia->id_empresa == 3 || $guia->id_empresa == 6) {
+            return Excel::download(new GuiaSalidaOKCExcel($guia, $detalle), 'guia_salida_okc.xlsx');
+        } else {
+            return ['guia' => $guia, 'detalle' => $detalle];
+        }
     }
 }
