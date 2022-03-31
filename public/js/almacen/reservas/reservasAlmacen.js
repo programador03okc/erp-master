@@ -85,11 +85,19 @@ function listarReservasAlmacen() {
             {
                 data: 'codigo_req', name: 'alm_req.codigo', className: "text-center",
                 'render': function (data, type, row) {
-                    return (row['codigo_req'] !== null ? row['codigo_req'] : '') + (row['estado_requerimiento'] == 38
-                        ? ' <i class="fas fa-exclamation-triangle red" data-toggle="tooltip" data-placement="bottom" title="Requerimiento por regularizar"></i> '
-                        : (row['estado_requerimiento'] == 39 ?
-                            ' <i class="fas fa-pause orange" data-toggle="tooltip" data-placement="bottom" title="Requerimiento en pausa"></i> ' : ''))
+                    return (row['codigo_req'] !== null ? `<a href="/necesidades/requerimiento/elaboracion/index?id=${row['id_requerimiento']}" 
+                        target="_blank" title="Abrir Requerimiento">${row['codigo_req'] ?? ''}</a>` : '') +
+                        (row['estado_requerimiento'] == 38
+                            ? ' <i class="fas fa-exclamation-triangle red" data-toggle="tooltip" data-placement="bottom" title="Requerimiento por regularizar"></i> '
+                            : (row['estado_requerimiento'] == 39 ?
+                                ' <i class="fas fa-pause orange" data-toggle="tooltip" data-placement="bottom" title="Requerimiento en pausa"></i> ' : ''))
                         + (row['tiene_transformacion'] ? ' <i class="fas fa-random red"></i>' : '');
+                }
+            },
+            {
+                data: 'codigo_producto', name: 'alm_prod.codigo',
+                'render': function (data, type, row) {
+                    return `<a href="#" class="verProducto" data-id="${row['id_producto']}" >${row['codigo_producto']}</a>`
                 }
             },
             { data: 'part_number', name: 'alm_prod.part_number' },
@@ -124,5 +132,13 @@ function listarReservasAlmacen() {
             // }
         ],
         'order': [[0, "desc"]],
+    });
+
+    $("#reservasAlmacen tbody").on("click", "a.verProducto", function (e) {
+        $(e.preventDefault());
+        var id = $(this).data("id");
+        localStorage.setItem("id_producto", id);
+        var win = window.open("/almacen/catalogos/productos/index", '_blank');
+        win.focus();
     });
 }
