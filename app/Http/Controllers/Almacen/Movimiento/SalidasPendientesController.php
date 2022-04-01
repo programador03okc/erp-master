@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Almacen\Movimiento;
 
 use App\Exports\GuiaSalidaOKCExcel;
+use App\Exports\GuiaSalidaSVSExcel;
 use App\Http\Controllers\AlmacenController as GenericoAlmacenController;
 use App\Http\Controllers\AlmacenController;
 use Illuminate\Http\Request;
@@ -1173,10 +1174,28 @@ class SalidasPendientesController extends Controller
         $detalle = $this->listarDetalleGuiaSalida($id_guia_ven);
         // dd($detalle);
         //OKC PYC SVS PTEC
-        if ($guia->id_empresa == 1 || $guia->id_empresa == 2 || $guia->id_empresa == 3 || $guia->id_empresa == 6) {
-            return Excel::download(new GuiaSalidaOKCExcel($guia, $detalle), 'guia_salida_okc.xlsx');
-        } else {
-            return ['guia' => $guia, 'detalle' => $detalle];
+        switch ($guia->id_empresa) {
+            case 1: //OKC
+            case 2: //PYC
+            case 6: //PTEC
+                return Excel::download(new GuiaSalidaOKCExcel($guia, $detalle), 'guia_salida_okc.xlsx');
+                break;
+            case 3: //SVS
+                return Excel::download(new GuiaSalidaSVSExcel($guia, $detalle), 'guia_salida_svs.xlsx');
+                break;
+            case 5: //RBDB
+                return Excel::download(new GuiaSalidaOKCExcel($guia, $detalle), 'guia_salida_rbdb.xlsx');
+                break;
+            
+            default:
+                return ['guia' => $guia, 'detalle' => $detalle];
+                break;
         }
+
+        // if ($guia->id_empresa == 1 || $guia->id_empresa == 2 || $guia->id_empresa == 6) {
+        //     return Excel::download(new GuiaSalidaOKCExcel($guia, $detalle), 'guia_salida_okc.xlsx');
+        // } else if($guia->id_empresa == 3) {
+        //     return ['guia' => $guia, 'detalle' => $detalle];
+        // }
     }
 }
