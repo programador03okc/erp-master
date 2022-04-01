@@ -63,10 +63,8 @@ function listar_detalle_movimiento(id_guia_ven) {
                 <td>${element.cantidad}</td>
                 <td>${element.abreviatura}</td>
                 <td>${html_ser == '' ? ''
-                        : `<i class="fas fa-edit icon-tabla boton blue" data-toggle="tooltip" data-placement="bottom" 
-                    title="Editar Series" onClick="open_guia_series_edit(${element.id_guia_ven_det});"></i>
-                    <i class="fas fa-file-excel icon-tabla boton green" data-toggle="tooltip" data-placement="bottom" 
-                    title="Exportar a Excel Series" onClick="exportarSeries(${element.id_guia_ven_det});"></i>`}
+                        : `<i class="fas fa-file-excel icon-tabla boton green" data-toggle="tooltip" data-placement="bottom" 
+                    title="Exportar a Excel Series" onClick="exportarSeriesVenta(${element.id_guia_ven_det});"></i>`}
                 </td>
                 </tr>`;
                 i++;
@@ -80,6 +78,10 @@ function listar_detalle_movimiento(id_guia_ven) {
         console.log(textStatus);
         console.log(errorThrown);
     });
+}
+
+function exportarSeriesVenta(id_guia_ven_det) {
+    window.location.href = 'seriesVentaExcel/' + id_guia_ven_det;
 }
 
 $("#form-salidaAlmacen").on("submit", function (e) {

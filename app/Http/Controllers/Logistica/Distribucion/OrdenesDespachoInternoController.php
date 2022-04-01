@@ -258,26 +258,24 @@ class OrdenesDespachoInternoController extends Controller
 
                     foreach ($detalles as $i) {
 
-                        $id_od_detalle = DB::table('almacen.orden_despacho_det')
-                            ->insertGetId(
-                                [
-                                    'id_od' => $id_od,
-                                    // 'id_producto' => ($i->id_producto !== null ? $i->id_producto : null),
-                                    // 'descripcion_producto' => $i->descripcion,
-                                    'id_detalle_requerimiento' => $i->id_detalle_requerimiento,
-                                    'cantidad' => $i->cantidad,
-                                    'transformado' => $i->tiene_transformacion,
-                                    'estado' => 1,
-                                    'fecha_registro' => $fechaRegistro
-                                ],
-                                'id_od_detalle'
-                            );
+                        if ($i->tiene_transformacion && $i->entrega_cliente) {
 
-                        if ($i->tiene_transformacion) {
+                            $id_od_detalle = DB::table('almacen.orden_despacho_det')
+                                ->insertGetId(
+                                    [
+                                        'id_od' => $id_od,
+                                        'id_detalle_requerimiento' => $i->id_detalle_requerimiento,
+                                        'cantidad' => $i->cantidad,
+                                        'transformado' => $i->tiene_transformacion,
+                                        'estado' => 1,
+                                        'fecha_registro' => $fechaRegistro
+                                    ],
+                                    'id_od_detalle'
+                                );
+
                             DB::table('almacen.transfor_transformado')
                                 ->insert([
                                     'id_transformacion' => $id_transformacion,
-                                    // 'id_producto' => ($i->id_producto !== null ? $i->id_producto : null),
                                     'id_od_detalle' => $id_od_detalle,
                                     'cantidad' => $i->cantidad,
                                     'valor_unitario' => 0,
@@ -285,11 +283,24 @@ class OrdenesDespachoInternoController extends Controller
                                     'estado' => 1,
                                     'fecha_registro' => $fechaRegistro
                                 ]);
-                        } else {
+                        } else if ($i->tiene_transformacion == false && $i->entrega_cliente == false) {
+
+                            $id_od_detalle = DB::table('almacen.orden_despacho_det')
+                                ->insertGetId(
+                                    [
+                                        'id_od' => $id_od,
+                                        'id_detalle_requerimiento' => $i->id_detalle_requerimiento,
+                                        'cantidad' => $i->cantidad,
+                                        'transformado' => $i->tiene_transformacion,
+                                        'estado' => 1,
+                                        'fecha_registro' => $fechaRegistro
+                                    ],
+                                    'id_od_detalle'
+                                );
+
                             DB::table('almacen.transfor_materia')
                                 ->insert([
                                     'id_transformacion' => $id_transformacion,
-                                    // 'id_producto' => ($i->id_producto !== null ? $i->id_producto : null),
                                     'cantidad' => $i->cantidad,
                                     'id_od_detalle' => $id_od_detalle,
                                     'valor_unitario' => 0, //($val / $i->cantidad),

@@ -121,7 +121,8 @@ function mostrar_detalle() {
         step=".01" max="${element.cantidad}" data-id="${element.id_od_detalle}"/></td>
         <td>${element.abreviatura !== null ? element.abreviatura : ''}</td>
         <td>
-        ${element.control_series ? `<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series" 
+        ${element.control_series ?
+                `<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series" 
         onClick="open_series(${element.id_producto},${element.id_od_detalle},${element.cantidad},${id_almacen});"></i>` : ''}
         </td>
         </tr>`;

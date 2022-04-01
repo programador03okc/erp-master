@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Almacen\Movimiento;
 
 use App\Exports\GuiaSalidaOKCExcel;
+use App\Exports\SeriesGuiaVentaDetalleExport;
 use App\Http\Controllers\AlmacenController as GenericoAlmacenController;
 use App\Http\Controllers\AlmacenController;
 use Illuminate\Http\Request;
@@ -230,6 +231,8 @@ class SalidasPendientesController extends Controller
                                     ['id_almacen', '=', $request->id_almacen]
                                 ])
                                 ->first();
+
+                            $valorizacion = ($saldos_ubi !== null ? ($saldos_ubi->costo_promedio * $det->cantidad) : 0);
                             //Guardo los items de la salida
                             DB::table('almacen.mov_alm_det')->insertGetId(
                                 [
@@ -237,7 +240,7 @@ class SalidasPendientesController extends Controller
                                     'id_producto' => $det->id_producto,
                                     // 'id_posicion' => $det->id_posicion,
                                     'cantidad' => $det->cantidad,
-                                    'valorizacion' => ($saldos_ubi !== null ? ($saldos_ubi->costo_promedio * $det->cantidad) : 0),
+                                    'valorizacion' => $valorizacion,
                                     'usuario' => $id_usuario,
                                     'id_guia_ven_det' => $id_guia_ven_det,
                                     'estado' => 1,
@@ -245,6 +248,25 @@ class SalidasPendientesController extends Controller
                                 ],
                                 'id_mov_alm_det'
                             );
+
+                            if ($request->id_operacion == 27) {
+                                //Actualiza costos en la OT
+                                if ($despacho_detalle->transformado) {
+                                    DB::table('almacen.transfor_transformado')
+                                        ->where('id_od_detalle', $despacho_detalle->id_od_detalle)
+                                        ->update([
+                                            'valor_total' => $valorizacion,
+                                            'valor_unitario' => ($despacho_detalle->cantidad > 0 ? ($valorizacion / $despacho_detalle->cantidad) : 0)
+                                        ]);
+                                } else {
+                                    DB::table('almacen.transfor_materia')
+                                        ->where('id_od_detalle', $despacho_detalle->id_od_detalle)
+                                        ->update([
+                                            'valor_total' => $valorizacion,
+                                            'valor_unitario' => ($despacho_detalle->cantidad > 0 ? ($valorizacion / $despacho_detalle->cantidad) : 0)
+                                        ]);
+                                }
+                            }
 
                             //Actualizo los saldos del producto
                             //Obtengo el registro de saldos
@@ -583,12 +605,19 @@ class SalidasPendientesController extends Controller
                 ['orden_despacho_det.id_od', '=', $id_od],
                 ['orden_despacho_det.estado', '!=', 7],
                 ['alm_det_req.estado', '!=', 7],
-                ['alm_det_req.entrega_cliente', '=', true],
+                // ['alm_det_req.entrega_cliente', '=', true],
                 // ['orden_despacho_det.transformado', '=', ($aplica_cambios == 'si' ? false : ($tiene_transformacion == 'si' ? true : false))]
-            ])
-            ->get();
+            ]);
 
-        return response()->json($data);
+        if ($aplica_cambios == true) {
+            $lista = $data->where([['orden_despacho_det.transformado', '=', ($aplica_cambios == 'si' ? false : ($tiene_transformacion == 'si' ? true : false))]])
+                ->get();
+        } else {
+            $lista = $data->where([['alm_det_req.entrega_cliente', '=', true]])
+                ->get();
+        }
+
+        return response()->json($lista);
     }
 
     public function imprimir_salida($id_sal)
@@ -945,9 +974,9 @@ class SalidasPendientesController extends Controller
                 'alm_prod_serie.*',
                 DB::raw("(tp_doc_almacen.abreviatura) || '-' || (guia_com.serie) || '-' || (guia_com.numero) as guia_com")
             )
-            ->join('almacen.guia_com_det', 'guia_com_det.id_guia_com_det', '=', 'alm_prod_serie.id_guia_com_det')
-            ->join('almacen.guia_com', 'guia_com.id_guia', '=', 'guia_com_det.id_guia_com')
-            ->join('almacen.tp_doc_almacen', 'tp_doc_almacen.id_tp_doc_almacen', '=', 'guia_com.id_tp_doc_almacen')
+            ->leftjoin('almacen.guia_com_det', 'guia_com_det.id_guia_com_det', '=', 'alm_prod_serie.id_guia_com_det')
+            ->leftjoin('almacen.guia_com', 'guia_com.id_guia', '=', 'guia_com_det.id_guia_com')
+            ->leftjoin('almacen.tp_doc_almacen', 'tp_doc_almacen.id_tp_doc_almacen', '=', 'guia_com.id_tp_doc_almacen')
             ->where([
                 ['alm_prod_serie.id_prod', '=', $id_producto],
                 ['alm_prod_serie.id_almacen', '=', $id_almacen],
@@ -1181,5 +1210,17 @@ class SalidasPendientesController extends Controller
         } else {
             return ['guia' => $guia, 'detalle' => $detalle];
         }
+    }
+
+    public function seriesVentaExcel($id_guia_ven_det)
+    {
+        $data = DB::table('almacen.alm_prod_serie')
+            ->select('alm_prod_serie.*')
+            ->where([
+                ['alm_prod_serie.id_guia_ven_det', '=', $id_guia_ven_det],
+                ['alm_prod_serie.estado', '=', 1]
+            ])
+            ->get();
+        return Excel::download(new SeriesGuiaVentaDetalleExport($data), 'series-' . $data[0]->id_prod . '.xlsx');
     }
 }
