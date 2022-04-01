@@ -38,7 +38,7 @@ class MigrateOrdenSoftLinkController extends Controller
                     if ($guia_referen !== null) {
                         $arrayRspta = array(
                             'tipo' => 'warning',
-                            'id_softlink'=>0,
+                            'id_softlink' => 0,
                             'mensaje' => 'Ésta orden ya fue referenciada en Softlink.',
                             'ocSoftlink' => array('cabecera' => $oc_softlink),
                             'ocAgile' => array('cabecera' => $oc),
@@ -48,7 +48,7 @@ class MigrateOrdenSoftLinkController extends Controller
                     else if ($oc_softlink->flg_anulado > 0) {
                         $arrayRspta = array(
                             'tipo' => 'error',
-                            'id_softlink'=>null,
+                            'id_softlink' => null,
                             'mensaje' => 'Ésta orden ya fue anulada en Softlink.',
                             'ocSoftlink' => array('cabecera' => $oc_softlink),
                             'ocAgile' => array('cabecera' => $oc),
@@ -56,7 +56,7 @@ class MigrateOrdenSoftLinkController extends Controller
                     } else {
                         $arrayRspta = array(
                             'tipo' => 'success',
-                            'id_softlink'=>$oc_softlink->mov_id,
+                            'id_softlink' => $oc_softlink->mov_id,
                             'mensaje' => 'Se actualizó ésta OC en softlink. Con Nro. ' . $oc_softlink->num_docu . ' con id ' . $oc_softlink->mov_id,
                             'ocSoftlink' => array('cabecera' => $oc_softlink),
                             'ocAgile' => array('cabecera' => $oc),
@@ -65,7 +65,7 @@ class MigrateOrdenSoftLinkController extends Controller
                 } else {
                     $arrayRspta = array(
                         'tipo' => 'error',
-                        'id_softlink'=>null,
+                        'id_softlink' => null,
                         'mensaje' => 'No existe dicho id en Softlink. Id: ' . $oc->id_softlink,
                         'ocSoftlink' => array('cabecera' => $oc_softlink),
                         'ocAgile' => array('cabecera' => $oc),
@@ -74,7 +74,7 @@ class MigrateOrdenSoftLinkController extends Controller
             } else {
                 $arrayRspta = array(
                     'tipo' => 'error',
-                    'id_softlink'=>null,
+                    'id_softlink' => null,
                     'mensaje' => 'No existe un id_softlink en la OC seleccionada. Id: ' . $id_orden_compra
                 );
             }
@@ -720,7 +720,7 @@ class MigrateOrdenSoftLinkController extends Controller
                     'fec_ingre' => date('Y-m-d'),
                     'flg_descargo' => 1,
                     'tip_moneda' => $det->id_moneda,
-                    'flg_serie' => ($det->series ? '1' : '0'), //Revisar
+                    'flg_serie' => ($det->series ? 1 : 0), //Revisar
                     'txt_observa' => ($det->notas !== null ? $det->notas : ''),
                     'flg_afecto' => 1,
                     'flg_suspen' => 0,

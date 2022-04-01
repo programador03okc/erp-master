@@ -449,10 +449,10 @@ class SalidasPendientesController extends Controller
                     $od = DB::table('almacen.orden_despacho')
                         ->select('orden_despacho.*', 'adm_estado_doc.estado_doc')
                         ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'orden_despacho.estado')
-                        ->where('id_od', $request->id_od)
+                        ->where('orden_despacho.id_od', $request->id_od)
                         ->first();
                     //si la orden de despacho es Procesado
-                    if ($od->estado == 21) {
+                    if ($od->estado == 21) { //entregado
                         //Anula salida
                         DB::table('almacen.mov_alm')
                             ->where('id_mov_alm', $request->id_salida)
@@ -490,25 +490,35 @@ class SalidasPendientesController extends Controller
                             ->where('id_od', $request->id_od)
                             ->update(['estado' => 1]);
 
-                        if ($od->id_requerimiento !== null) {
-                            //Requerimiento regresa a por despachar
-                            DB::table('almacen.alm_req')
-                                ->where('id_requerimiento', $od->id_requerimiento)
-                                ->update(['estado' => 29]); //por despachar
+                        $detalle = DB::table('almacen.guia_ven_det')
+                            ->where('id_guia_ven', $request->id_guia_ven)
+                            ->get();
 
-                            DB::table('almacen.alm_det_req')
-                                ->where('id_requerimiento', $od->id_requerimiento)
-                                ->update(['estado' => 29]); //por despachar
-                            //Agrega accion en requerimiento
-                            DB::table('almacen.alm_req_obs')
-                                ->insert([
-                                    'id_requerimiento' => $od->id_requerimiento,
-                                    'accion' => 'SALIDA ANULADA',
-                                    'descripcion' => 'Requerimiento regresa a Reservado',
-                                    'id_usuario' => $id_usuario,
-                                    'fecha_registro' => date('Y-m-d H:i:s')
-                                ]);
+                        foreach ($detalle as $det) {
+                            DB::table('almacen.alm_prod_serie')
+                                ->where('id_guia_ven_det', $det->id_guia_ven_det)
+                                ->update(['id_guia_ven_det' => null]);
                         }
+
+                        // if ($od->id_requerimiento !== null) {
+                        //     //Requerimiento regresa a por despachar
+                        //     DB::table('almacen.alm_req')
+                        //         ->where('id_requerimiento', $od->id_requerimiento)
+                        //         ->update(['estado' => 29]); //por despachar
+
+                        //     DB::table('almacen.alm_det_req')
+                        //         ->where('id_requerimiento', $od->id_requerimiento)
+                        //         ->update(['estado' => 29]); //por despachar
+                        //     //Agrega accion en requerimiento
+                        //     DB::table('almacen.alm_req_obs')
+                        //         ->insert([
+                        //             'id_requerimiento' => $od->id_requerimiento,
+                        //             'accion' => 'SALIDA ANULADA',
+                        //             'descripcion' => 'Requerimiento regresa a Reservado',
+                        //             'id_usuario' => $id_usuario,
+                        //             'fecha_registro' => date('Y-m-d H:i:s')
+                        //         ]);
+                        // }
                     } else {
                         $msj = 'La Orden de Despacho ya está con ' . $od->estado_doc;
                     }

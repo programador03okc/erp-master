@@ -460,12 +460,26 @@ function anular_salida(data) {
         success: function (response) {
             console.log(response);
             if (response.length > 0) {
-                alert(response);
+                Lobibox.notify('warning', {
+                    title: false,
+                    size: "mini",
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    msg: response
+                });
                 $('#modal-guia_ven_obs').modal('hide');
             } else {
-                alert('Salida Almacén anulada con éxito');
+                Lobibox.notify('success', {
+                    title: false,
+                    size: "mini",
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    msg: 'Anulado correctamente.'
+                });
                 $('#modal-guia_ven_obs').modal('hide');
-                $('#despachosEntregados').DataTable().ajax.reload();
+                $('#despachosEntregados').DataTable().ajax.reload(null, false);
             }
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {
