@@ -185,8 +185,8 @@ class MigrateOrdenSoftLinkController extends Controller
                         ['id' => 1, 'nombre' => 'OKC', 'cod_docu' => 'OC'],
                         ['id' => 2, 'nombre' => 'PYC', 'cod_docu' => 'O3'],
                         ['id' => 3, 'nombre' => 'SVS', 'cod_docu' => 'O2'],
-                        ['id' => 4, 'nombre' => 'JEDR', 'cod_docu' => 'O5'],
-                        ['id' => 5, 'nombre' => 'RBDB', 'cod_docu' => 'O4'],
+                        ['id' => 4, 'nombre' => 'RBDB', 'cod_docu' => 'O4'],
+                        ['id' => 5, 'nombre' => 'JEDR', 'cod_docu' => 'O5'],
                         ['id' => 6, 'nombre' => 'PTEC', 'cod_docu' => 'O6']
                     ];
                 } else if ($oc->id_tp_documento == 3) { //Servicio
@@ -195,8 +195,8 @@ class MigrateOrdenSoftLinkController extends Controller
                         ['id' => 1, 'nombre' => 'OKC', 'cod_docu' => 'OS'],
                         ['id' => 2, 'nombre' => 'PYC', 'cod_docu' => 'OP'],
                         ['id' => 3, 'nombre' => 'SVS', 'cod_docu' => 'OV'],
-                        ['id' => 4, 'nombre' => 'JEDR', 'cod_docu' => 'OJ'],
-                        ['id' => 5, 'nombre' => 'RBDB', 'cod_docu' => 'OR'],
+                        ['id' => 4, 'nombre' => 'RBDB', 'cod_docu' => 'OR'],
+                        ['id' => 5, 'nombre' => 'JEDR', 'cod_docu' => 'OJ'],
                         ['id' => 6, 'nombre' => 'PTEC', 'cod_docu' => 'OA']
                     ];
                 }
