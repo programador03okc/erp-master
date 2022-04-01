@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Almacen\Movimiento;
 
 use App\Exports\GuiaSalidaOKCExcel;
+use App\Exports\GuiaSalidaSVSExcel;
 use App\Exports\SeriesGuiaVentaDetalleExport;
 use App\Http\Controllers\AlmacenController as GenericoAlmacenController;
 use App\Http\Controllers\AlmacenController;
