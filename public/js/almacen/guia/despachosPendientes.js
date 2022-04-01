@@ -138,10 +138,11 @@ function listarDespachosPendientes(permiso) {
             {
                 data: 'codigo_req', name: 'alm_req.codigo', className: "text-center",
                 'render': function (data, type, row) {
-                    return (row['codigo_req'] !== null ? row['codigo_req'] : '') + (row['estado_requerimiento'] == 38
-                        ? ' <i class="fas fa-exclamation-triangle red" data-toggle="tooltip" data-placement="bottom" title="Requerimiento por regularizar"></i> '
-                        : (row['estado_requerimiento'] == 39 ?
-                            ' <i class="fas fa-pause orange" data-toggle="tooltip" data-placement="bottom" title="Requerimiento en pausa"></i> ' : ''))
+                    return (row['codigo_req'] !== null ? `<a href="/necesidades/requerimiento/elaboracion/index?id=${row['id_requerimiento']}" 
+                    target="_blank" title="Abrir Requerimiento">${row['codigo_req'] ?? ''}</a>` : '') + (row['estado_requerimiento'] == 38
+                            ? ' <i class="fas fa-exclamation-triangle red" data-toggle="tooltip" data-placement="bottom" title="Requerimiento por regularizar"></i> '
+                            : (row['estado_requerimiento'] == 39 ?
+                                ' <i class="fas fa-pause orange" data-toggle="tooltip" data-placement="bottom" title="Requerimiento en pausa"></i> ' : ''))
                         + (row['tiene_transformacion'] ? ' <i class="fas fa-random red"></i>' : '');
                 }
             },
@@ -318,7 +319,12 @@ function listarDespachosEntregados(permiso) {
                         // }
                     }
             },
-            // { 'data': 'fecha_emision' },
+            {
+                data: 'numero',
+                'render': function (data, type, row) {
+                    return row['serie'] + '-' + row['numero'];
+                }
+            },
             {
                 data: 'fecha_emision', name: 'orden_despacho.fecha_emision', className: "text-center",
                 render:
@@ -335,17 +341,18 @@ function listarDespachosEntregados(permiso) {
                         : '');
                 }
             },
-            {
-                'render': function (data, type, row) {
-                    return row['serie'] + '-' + row['numero'];
-                }
-            },
             { 'data': 'operacion', 'name': 'tp_ope.descripcion' },
             // {'data': 'codigo_requerimiento', 'name': 'alm_req.codigo'},
             {
                 'render': function (data, type, row) {
                     if (row['codigo_requerimiento'] !== null) {
-                        return row['codigo_requerimiento'];
+                        // return row['codigo_requerimiento'];
+                        return (row['codigo_requerimiento'] !== null ? `<a href="/necesidades/requerimiento/elaboracion/index?id=${row['id_requerimiento']}" 
+                    target="_blank" title="Abrir Requerimiento">${row['codigo_requerimiento'] ?? ''}</a>` : '') + (row['estado_requerimiento'] == 38
+                                ? ' <i class="fas fa-exclamation-triangle red" data-toggle="tooltip" data-placement="bottom" title="Requerimiento por regularizar"></i> '
+                                : (row['estado_requerimiento'] == 39 ?
+                                    ' <i class="fas fa-pause orange" data-toggle="tooltip" data-placement="bottom" title="Requerimiento en pausa"></i> ' : ''))
+                            + (row['tiene_transformacion'] ? ' <i class="fas fa-random red"></i>' : '');
                     }
                     // else if (row['codigo_req_trans'] !== null) {
                     //     return row['codigo_req_trans'];

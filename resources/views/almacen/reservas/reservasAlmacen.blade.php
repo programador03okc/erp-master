@@ -37,14 +37,15 @@ Reservas de almacén
                         <thead>
                             <tr>
                                 <th hidden></th>
+                                <th>Reserva</th>
+                                <th>Requerimiento</th>
                                 <th>Código</th>
                                 <th>Part Number</th>
                                 <th>Descripción del producto</th>
                                 <th>Almacén de reserva</th>
-                                <th>Stock comprometido</th>
+                                <th>Stock comprom.</th>
                                 <th>Usuario que la registró</th>
                                 <th>Fecha de registro</th>
-                                <th>Requerimiento</th>
                                 <th>Estado</th>
                             </tr>
                         </thead>

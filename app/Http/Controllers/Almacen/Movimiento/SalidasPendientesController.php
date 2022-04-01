@@ -382,8 +382,10 @@ class SalidasPendientesController extends Controller
                 'guia_ven.punto_partida',
                 'guia_ven.punto_llegada',
                 'orden_despacho.codigo as codigo_od',
+                'alm_req.id_requerimiento',
                 'alm_req.codigo as codigo_requerimiento',
                 'alm_req.concepto',
+                'alm_req.estado as estado_requerimiento',
                 'adm_contri.razon_social',
                 'alm_almacen.descripcion as almacen_descripcion',
                 'sis_usua.nombre_corto',
@@ -582,7 +584,8 @@ class SalidasPendientesController extends Controller
                 ['orden_despacho_det.id_od', '=', $id_od],
                 ['orden_despacho_det.estado', '!=', 7],
                 ['alm_det_req.estado', '!=', 7],
-                ['orden_despacho_det.transformado', '=', ($aplica_cambios == 'si' ? false : ($tiene_transformacion == 'si' ? true : false))]
+                ['alm_det_req.entrega_cliente', '=', true],
+                // ['orden_despacho_det.transformado', '=', ($aplica_cambios == 'si' ? false : ($tiene_transformacion == 'si' ? true : false))]
             ])
             ->get();
 

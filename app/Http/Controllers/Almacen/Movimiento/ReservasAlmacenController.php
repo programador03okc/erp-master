@@ -22,9 +22,11 @@ class ReservasAlmacenController extends Controller
         $lista = DB::table('almacen.alm_reserva')
             ->select(
                 'alm_reserva.*',
+                'alm_prod.codigo as codigo_producto',
                 'alm_prod.part_number',
                 'alm_prod.descripcion',
                 'alm_almacen.descripcion as almacen',
+                'alm_req.id_requerimiento',
                 'alm_req.codigo as codigo_req',
                 'alm_req.estado as estado_requerimiento',
                 'alm_req.tiene_transformacion',
