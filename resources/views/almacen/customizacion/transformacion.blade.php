@@ -139,15 +139,6 @@ Orden de Transformación
                             <th>Unid.</th>
                             <th>Unit.</th>
                             <th>Total</th>
-                            <!-- <th style="background:Plum;">PartNumber</th>
-                            <th style="background:Plum;">Descripción</th>
-                            <th style="background:Plum;">Cantidad</th>
-                            <th style="background:Plum;">Comentario</th> -->
-                            <th>Series
-                                <!-- <i class="fas fa-plus-square icon-tabla green boton" 
-                                    id="addMateriaPrima" data-toggle="tooltip" data-placement="bottom" 
-                                    title="Agregar Producto" onClick="openProductoMateriaModal();"></i> -->
-                            </th>
                         </tr>
                     </thead>
                     <tbody></tbody>

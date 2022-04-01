@@ -106,26 +106,25 @@ function listar_materias(id_transformacion) {
             // var est = $('[name=id_estado]').val();
             console.log(response);
             response.forEach(element => {
-                html_series = '';
-                element.series.forEach(ser => {
-                    if (html_series == '') {
-                        html_series += ser.serie;
+                html_ser = '';
+                element.series.forEach(function (item) {
+                    if (html_ser == '') {
+                        html_ser += '<br>' + item.serie;
                     } else {
-                        html_series += '<br>' + ser.serie;
+                        html_ser += ',  ' + item.serie;
                     }
                 });
                 suma_materias += parseFloat(element.valor_total);
                 html += `<tr id="${element.id_materia}">
                     <td class="text-center">${element.codigo !== null ? element.codigo : ''}</td>
                     <td class="text-center">${element.part_number !== null ? element.part_number : (element.part_number_req !== undefined ? element.part_number_req : '')}</td>
-                    <td>${element.descripcion !== null ? element.descripcion : (element.descripcion_req !== undefined ? element.descripcion_req : '')}</td>
+                    <td>${(element.descripcion !== null ? element.descripcion :
+                        (element.descripcion_req !== undefined ? element.descripcion_req : '')) +
+                    '<strong>' + html_ser + '</strong>'}</td>
                     <td class="text-right">${element.cantidad}</td>
                     <td>${element.abreviatura !== null ? element.abreviatura : ''}</td>
                     <td class="text-right">${formatNumber.decimal(element.valor_unitario, '', -2)}</td>
                     <td class="text-right">${formatNumber.decimal(element.valor_total, '', -2)}</td>
-                    <td style="padding:0px;">
-                        ${html_series}
-                    </td>
                 </tr>`;
             });
             // ${(est == 24) ? `<i class="fas fa-trash icon-tabla red boton delete" 

@@ -395,12 +395,14 @@ class TransformacionController extends Controller
                 'alm_prod.part_number',
                 'alm_und_medida.abreviatura',
                 'alm_prod.series',
+                'guia_ven_det.id_guia_ven_det',
                 'transformacion.id_almacen',
                 'alm_det_req.part_number as part_number_req',
                 'alm_det_req.descripcion as descripcion_req',
             )
 
             ->join('almacen.orden_despacho_det', 'orden_despacho_det.id_od_detalle', '=', 'transfor_materia.id_od_detalle')
+            ->leftjoin('almacen.guia_ven_det', 'guia_ven_det.id_od_det', '=', 'orden_despacho_det.id_od_detalle')
             ->join('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'orden_despacho_det.id_detalle_requerimiento')
             ->leftjoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_det_req.id_producto')
             ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_det_req.id_unidad_medida')
@@ -415,66 +417,12 @@ class TransformacionController extends Controller
 
         foreach ($data as $det) {
 
-            $guias = DB::table('almacen.transfor_materia')
-                ->select(
-                    'guia_oc.id_guia_com_det as id_guia_oc_det',
-                    // 'goc.id_almacen as id_almacen_oc',
-                    'guia_trans.id_guia_ven_det as id_guia_trans_det',
-                    // 'gtr.id_almacen as id_almacen_tr'
-                )
-                ->leftjoin('almacen.orden_despacho_det', 'orden_despacho_det.id_od_detalle', '=', 'transfor_materia.id_od_detalle')
-                ->leftJoin('logistica.log_det_ord_compra', function ($join) {
-                    $join->on('log_det_ord_compra.id_detalle_requerimiento', '=', 'orden_despacho_det.id_detalle_requerimiento');
-                    $join->where('log_det_ord_compra.estado', '!=', 7);
-                })
-                ->leftJoin('almacen.guia_com_det as guia_oc', function ($join) {
-                    $join->on('guia_oc.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden');
-                    $join->where('guia_oc.estado', '!=', 7);
-                })
-                ->leftjoin('almacen.guia_com as goc', 'goc.id_guia', '=', 'guia_oc.id_guia_com')
-                ->leftjoin('almacen.trans_detalle', 'trans_detalle.id_requerimiento_detalle', '=', 'orden_despacho_det.id_detalle_requerimiento')
-                ->leftJoin('almacen.guia_ven_det', function ($join) {
-                    $join->on('guia_ven_det.id_trans_det', '=', 'trans_detalle.id_trans_detalle');
-                    $join->where('guia_ven_det.estado', '!=', 7);
-                })
-                ->leftJoin('almacen.guia_com_det as guia_trans', function ($join) {
-                    $join->on('guia_trans.id_guia_ven_det', '=', 'guia_ven_det.id_guia_ven_det');
-                    $join->where('guia_trans.estado', '!=', 7);
-                })
-                ->leftjoin('almacen.guia_com as gtr', 'gtr.id_guia', '=', 'guia_trans.id_guia_com')
-                ->where('id_materia', $det->id_materia)
-                ->where('goc.id_almacen', $det->id_almacen)
-                ->where('gtr.id_almacen', $det->id_almacen)
+            $series = DB::table('almacen.alm_prod_serie')
+                ->where([
+                    ['id_guia_ven_det', '=', $det->id_guia_ven_det],
+                    ['estado', '!=', 7]
+                ])
                 ->get();
-
-            $guias_oc = [];
-            $guias_tra = [];
-
-            foreach ($guias as $guia) {
-                if ($guia->id_guia_oc_det !== null) {
-                    array_push($guias_oc, $guia->id_guia_oc_det);
-                } else if ($guia->id_guia_trans_det !== null) {
-                    array_push($guias_tra, $guia->id_guia_trans_det);
-                }
-            }
-
-            $series = [];
-
-            if (count($guias_oc) > 0) {
-                // $det->id_guia_oc_det !== null && $det->id_almacen_oc !== null &&
-                // $det->id_almacen_oc == $det->id_almacen
-
-                $series = DB::table('almacen.alm_prod_serie')
-                    ->whereIn('id_guia_com_det', $guias_oc)
-                    ->get();
-            } else if (count($guias_tra) > 0) {
-                // $det->id_guia_trans_det !== null && $det->id_almacen_tr !== null &&
-                // $det->id_almacen_tr == $det->id_almacen
-
-                $series = DB::table('almacen.alm_prod_serie')
-                    ->whereIn('id_guia_com_det', $guias_tra)
-                    ->get();
-            }
 
             array_push($lista, [
                 'id_materia' => $det->id_materia,
