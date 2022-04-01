@@ -3612,17 +3612,31 @@ class OrdenController extends Controller
                 $msj = [];
                 $output = [];
                 $requerimientoIdList = [];
+                $anulacion ='';
 
                 $ValidarOrdenSoftlink = (new MigrateOrdenSoftLinkController)->validarOrdenSoftlink($idOrden);
+                    if ($ValidarOrdenSoftlink['tipo'] == 'success' || $ValidarOrdenSoftlink['tipo'] == 'error') {
+                        $anulacion='OK';
 
-                if ($ValidarOrdenSoftlink['tipo'] == 'success' || strpos($ValidarOrdenSoftlink['mensaje'], 'anulada') == true) {
-                    // if (true) {
+                    } else {
+                        $output = [
+                            'id_orden_compra' => 0,
+                            'codigo' => '',
+                            'status' => 204,
+                            'tipo_estado' => 'warning',
+                            'mensaje' => 'No se puede anular la orden',
+                            'status_migracion_softlink' => $ValidarOrdenSoftlink,
+                        ];
+                        $status = 204;
+                    }
 
+                // proceso anulación
+                if($anulacion=='OK'){
                     $hasIngreso = $this->TieneingresoAlmacen($idOrden);
                     if ($hasIngreso['status'] == 200 && $hasIngreso['data'] == false) {
                         $makeRevertirOrden = $this->makeRevertirOrden($idOrden, $sustento);
                         // Debugbar::info($makeRevertirOrden);
-
+    
                         $status = $makeRevertirOrden['status'];
                         $msj[] = $makeRevertirOrden['mensaje'];
                         $requerimientoIdList = $makeRevertirOrden['requerimientoIdList'];
@@ -3630,14 +3644,14 @@ class OrdenController extends Controller
                         $status = $hasIngreso['status'];
                         $msj[] = $hasIngreso['mensaje'];
                     }
-
+    
                     if ($status == 200) {
                         $orden = Orden::select(
                             'log_ord_compra.codigo'
                         )
                             ->where('log_ord_compra.id_orden_compra', $idOrden)
                             ->first();
-
+    
                         for ($i = 0; $i < count($requerimientoIdList); $i++) {
                             DB::table('almacen.alm_req_obs')
                                 ->insert([
@@ -3650,7 +3664,7 @@ class OrdenController extends Controller
                         }
                     }
                     // Debugbar::info($status);
-
+    
                     $output = [
                         'id_orden_compra' => $idOrden,
                         'codigo' => $orden->codigo,
@@ -3660,24 +3674,15 @@ class OrdenController extends Controller
                         'status_migracion_softlink' => $ValidarOrdenSoftlink,
                     ];
                     $status = 200;
-                } else {
-                    $output = [
-                        'id_orden_compra' => 0,
-                        'codigo' => '',
-                        'status' => 204,
-                        'tipo_estado' => 'warning',
-                        'mensaje' => 'No se pudo anular la orden',
-                        'status_migracion_softlink' => $ValidarOrdenSoftlink,
-                    ];
-                    $status = 204;
-                }
+                }  
+
+                // proceso anulación
 
 
                 DB::commit();
 
-                if ($status == 200) {
+                if ($ValidarOrdenSoftlink['tipo'] == 'success') {
                     $migrarOrdenSoftlink = (new MigrateOrdenSoftLinkController)->anularOrdenSoftlink($idOrden)->original;
-                    // $migrarOrdenSoftlink['tipo']='success';
                     if ($migrarOrdenSoftlink['tipo'] == 'success') {
                         $output = [
                             'id_orden_compra' => $idOrden,
