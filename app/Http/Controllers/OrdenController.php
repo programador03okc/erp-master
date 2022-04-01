@@ -2908,9 +2908,9 @@ class OrdenController extends Controller
 
 
         $nuevoEstadoDetalleRequerimiento = $this->obtenerNuevoEstadoDetalleRequerimiento($itemBaseList, $itemBaseEnOtrasOrdenesGeneradasList, $detalleOrdenGeneradaList, $itemAtendidoParcialOSinAtender);
-        Debugbar::info($nuevoEstadoDetalleRequerimiento);
+        // Debugbar::info($nuevoEstadoDetalleRequerimiento);
         $nuevoEstadoCabeceraRequerimiento = $this->obtenerNuevoEstadoCabeceraRequerimiento($idRequerimientoList, $nuevoEstadoDetalleRequerimiento);
-        Debugbar::info($nuevoEstadoCabeceraRequerimiento);
+        // Debugbar::info($nuevoEstadoCabeceraRequerimiento);
 
 
         // actualizar cabecera requerimiento
@@ -2934,7 +2934,22 @@ class OrdenController extends Controller
         }
 
 
-        $finalizadosORestablecido = CuadroPresupuestoHelper::finalizar($tipoPeticion,array_unique($idRequerimientoList));
+        // evaluar si requerimiento requere finalizar CDP
+        $CantidadRequerimientoConCDP=0;
+        foreach ($idRequerimientoList as $key => $idRequerimiento) {
+            $requerimientoOrden =Requerimiento::find($idRequerimiento);
+            if($requerimientoOrden->id_cc >0){
+                $CantidadRequerimientoConCDP+=1;
+            }
+        }
+
+        if($CantidadRequerimientoConCDP>0){
+            $finalizadosORestablecido = CuadroPresupuestoHelper::finalizar($tipoPeticion,array_unique($idRequerimientoList));
+        }else{
+            $finalizadosORestablecido['lista_finalizados']=[];
+            $finalizadosORestablecido['lista_restablecidos']=[];
+        }
+
 
 
         return ['lista_estado_requerimiento' => $nuevoEstadoCabeceraRequerimiento, 'lista_finalizados' => $finalizadosORestablecido['lista_finalizados'], 'lista_restablecidos' => $finalizadosORestablecido['lista_restablecidos']];
