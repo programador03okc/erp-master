@@ -371,12 +371,12 @@ class MigrateOrdenSoftLinkController extends Controller
                             ['num_docu', '>', $yy . '0000000'],
                             ['num_docu', '<', $yy . '9999999'],
                             ['cod_suc', '=', $cod_suc],
-                            ['tipo', '=', 1], //compra
+                            ['tipo', '=', 1], //ingreso
                             ['cod_docu', '=', $cod_docu]
                         ])
                         ->orderBy('num_docu', 'desc')->first();
                     //obtiene el correlativo
-                    $num_ult_mov = substr($ult_mov->num_docu, 4);
+                    $num_ult_mov = substr(($ult_mov !== null ? $ult_mov->num_docu : 0), 4);
                     //crea el correlativo del documento
                     $nro_mov = $this->leftZero(7, (intval($num_ult_mov) + 1));
                     //anida el anio con el numero de documento
