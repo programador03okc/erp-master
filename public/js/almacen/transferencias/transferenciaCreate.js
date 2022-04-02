@@ -63,40 +63,40 @@ function ver_transferencia(id_guia) {
     });
 }
 
-$("#form-guia_com_ver").on("submit", function (e) {
-    e.preventDefault();
-    var data = $(this).serialize();
-    console.log(data);
-    $("#submit_guia_transferencia").attr("disabled", "true");
-    generar_transferencia();
-});
+// $("#form-guia_com_ver").on("submit", function (e) {
+//     e.preventDefault();
+//     var data = $(this).serialize();
+//     console.log(data);
+//     $("#submit_guia_transferencia").attr("disabled", "true");
+//     generar_transferencia();
+// });
 
-function generar_transferencia() {
-    var id_guia = $("[name=id_guia_com]").val();
-    $.ajax({
-        type: "GET",
-        url: "transferencia/" + id_guia,
-        dataType: "JSON",
-        success: function (response) {
-            console.log(response);
-            alert(response);
-            $("#modal-guia_com_ver").modal("hide");
-            let formName = document
-                .getElementsByClassName("page-main")[0]
-                .getAttribute("type");
+// function generar_transferencia() {
+//     var id_guia = $("[name=id_guia_com]").val();
+//     $.ajax({
+//         type: "GET",
+//         url: "transferencia/" + id_guia,
+//         dataType: "JSON",
+//         success: function (response) {
+//             console.log(response);
+//             alert(response);
+//             $("#modal-guia_com_ver").modal("hide");
+//             let formName = document
+//                 .getElementsByClassName("page-main")[0]
+//                 .getAttribute("type");
 
-            if (formName == "transferencias") {
-                listarTransferenciasPorEnviar();
-            } else if (formName == "ordenesPendientes") {
-                $("#listaIngresosAlmacen").DataTable().ajax.reload(null, false);//no reiniciar paginacion
-            }
-        }
-    }).fail(function (jqXHR, textStatus, errorThrown) {
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    });
-}
+//             if (formName == "transferencias") {
+//                 listarTransferenciasPorEnviar();
+//             } else if (formName == "ordenesPendientes") {
+//                 $("#listaIngresosAlmacen").DataTable().ajax.reload(null, false);//no reiniciar paginacion
+//             }
+//         }
+//     }).fail(function (jqXHR, textStatus, errorThrown) {
+//         console.log(jqXHR);
+//         console.log(textStatus);
+//         console.log(errorThrown);
+//     });
+// }
 
 let detalle = [];
 
@@ -231,6 +231,7 @@ $("#form-ver_requerimiento").on("submit", function (e) {
                     id_reserva: element.id_reserva,
                     id_detalle_requerimiento: element.id_detalle_requerimiento,
                     id_producto: element.id_producto,
+                    id_guia_com_det: element.id_guia_com_det,
                     stock_comprometido: element.stock_comprometido,
                     id_almacen_reserva: element.id_almacen_reserva
                 };

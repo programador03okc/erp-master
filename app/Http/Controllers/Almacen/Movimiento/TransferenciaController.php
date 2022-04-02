@@ -766,7 +766,7 @@ class TransferenciaController extends Controller
 
                 if ($det !== null) {
 
-                    $unitario = ((floatval($det->cant_mov) > 0 ? (floatval($det->valorizacion) / floatval($det->cant_mov)) : 0) * floatval($d->cantidad_recibida));
+                    $unitario = (floatval($det->cant_mov) > 0 ? (floatval($det->valorizacion) / floatval($det->cant_mov)) : 0);
 
                     $id_guia_com_det = DB::table('almacen.guia_com_det')->insertGetId(
                         [
@@ -822,7 +822,7 @@ class TransferenciaController extends Controller
                             'id_mov_alm' => $id_ingreso,
                             'id_producto' => $det->id_producto,
                             'cantidad' => $d->cantidad_recibida,
-                            'valorizacion' => $unitario,
+                            'valorizacion' => $unitario * floatval($d->cantidad_recibida),
                             'usuario' => $usuario->id_usuario,
                             'id_guia_com_det' => $id_guia_com_det,
                             'estado' => 1,
@@ -976,7 +976,8 @@ class TransferenciaController extends Controller
                     'guia_com_det.id_guia_com_det',
                     'guia_oc.id_guia_com_det as id_guia_oc_det',
                     // DB::raw('(mov_alm_det.valorizacion / mov_alm_det.cantidad) as unitario'),
-                    DB::raw('CASE WHEN mov_alm_det.cantidad=0 THEN 0 ELSE (mov_alm_det.valorizacion / mov_alm_det.cantidad) END as unitario'),
+                    DB::raw('CASE WHEN mov_alm_det.cantidad=0 THEN 0 
+                    ELSE (mov_alm_det.valorizacion / mov_alm_det.cantidad) END as unitario'),
                     DB::raw('(mov_oc.valorizacion / mov_oc.cantidad) as unitario_oc')
                 )
                 ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'trans_detalle.id_producto')
@@ -1146,7 +1147,8 @@ class TransferenciaController extends Controller
                             'id_producto' => $det->id_producto,
                             // 'id_posicion' => $det->id_posicion,
                             'cantidad' => $det->cantidad,
-                            'valorizacion' => ($det->unitario_oc !== null ? ($det->unitario_oc * $det->cantidad) : ($det->unitario !== null ? ($det->cantidad * $det->unitario) : 0)),
+                            'valorizacion' => ($det->unitario !== null ? ($det->cantidad * $det->unitario) : ($det->unitario_oc !== null ?
+                                ($det->unitario_oc * $det->cantidad) : 0)),
                             'usuario' => $usuario,
                             'id_guia_ven_det' => $id_guia_ven_det,
                             'estado' => 1,
@@ -1579,7 +1581,8 @@ class TransferenciaController extends Controller
                                             'cantidad' => $item['stock_comprometido'],
                                             'estado' => 1,
                                             'fecha_registro' => $fecha,
-                                            'id_requerimiento_detalle' => $item['id_detalle_requerimiento']
+                                            'id_requerimiento_detalle' => $item['id_detalle_requerimiento'],
+                                            'id_guia_com_det' => $item['id_guia_com_det'],
                                         ],
                                         'id_trans_detalle'
                                     );
@@ -1712,6 +1715,7 @@ class TransferenciaController extends Controller
                         'id_reserva' => $det->id_reserva,
                         'id_almacen_reserva' => $det->id_almacen_reserva,
                         'almacen_descripcion' => $det->almacen_descripcion,
+                        'id_guia_com_det' => $det->id_guia_com_det,
                         'series' => $series
                     ];
 
