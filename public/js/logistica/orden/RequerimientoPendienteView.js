@@ -1247,8 +1247,10 @@ class RequerimientoPendienteView {
                 let atencionOrden = 0;
                 let objOrdenList = [];
                 (element.ordenes_compra).forEach(orden => { // TODO: no incluir anulados
+                    if(orden.estado !=7){
                     atencionOrden += parseFloat(orden.cantidad);
                     objOrdenList.push({ 'id_orden': orden.id_orden_compra, 'codigo': orden.codigo });
+                    }
                 });
 
                 let cantidadAdjuntosDetalleRequerimiento = 0;
@@ -1314,15 +1316,18 @@ class RequerimientoPendienteView {
                 // if(element.tiene_transformacion==false){
                 let stockComprometido = 0;
                 (element.reserva).forEach(reserva => {
-                    stockComprometido += parseFloat(reserva.stock_comprometido);
+                    if(reserva.estado !=7){
+                        stockComprometido += parseFloat(reserva.stock_comprometido);
+                    }
                 });
 
                 let atencionOrden = 0;
                 let objOrdenList = [];
                 (element.ordenes_compra).forEach(orden => {
+                    if(orden.estado !=7){
                     atencionOrden += parseFloat(orden.cantidad);
                     objOrdenList.push({ 'id_orden': orden.id_orden_compra, 'codigo': orden.codigo });
-
+                    }
 
                 });
 
