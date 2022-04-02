@@ -400,13 +400,24 @@ class TransformacionController extends Controller
                 'alm_det_req.part_number as part_number_req',
                 'alm_det_req.descripcion as descripcion_req',
             )
-
-            ->join('almacen.orden_despacho_det', 'orden_despacho_det.id_od_detalle', '=', 'transfor_materia.id_od_detalle')
-            ->leftjoin('almacen.guia_ven_det', 'guia_ven_det.id_od_det', '=', 'orden_despacho_det.id_od_detalle')
-            ->join('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'orden_despacho_det.id_detalle_requerimiento')
+            // ->join('almacen.orden_despacho_det', 'orden_despacho_det.id_od_detalle', '=', 'transfor_materia.id_od_detalle')
+            ->join('almacen.orden_despacho_det', function ($join) {
+                $join->on('orden_despacho_det.id_od_detalle', '=', 'transfor_materia.id_od_detalle');
+                $join->where('orden_despacho_det.estado', '!=', 7);
+            })
+            // ->leftjoin('almacen.guia_ven_det', 'guia_ven_det.id_od_det', '=', 'orden_despacho_det.id_od_detalle')
+            ->join('almacen.guia_ven_det', function ($join) {
+                $join->on('guia_ven_det.id_od_det', '=', 'orden_despacho_det.id_od_detalle');
+                $join->where('guia_ven_det.estado', '!=', 7);
+            })
+            // ->join('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'orden_despacho_det.id_detalle_requerimiento')
+            ->join('almacen.alm_det_req', function ($join) {
+                $join->on('alm_det_req.id_detalle_requerimiento', '=', 'orden_despacho_det.id_detalle_requerimiento');
+                $join->where('alm_det_req.estado', '!=', 7);
+            })
             ->leftjoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_det_req.id_producto')
-            ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_det_req.id_unidad_medida')
-            ->leftjoin('almacen.transformacion', 'transformacion.id_transformacion', '=', 'transfor_materia.id_transformacion')
+            ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
+            ->join('almacen.transformacion', 'transformacion.id_transformacion', '=', 'transfor_materia.id_transformacion')
             ->where([
                 ['transfor_materia.id_transformacion', '=', $id_transformacion],
                 ['transfor_materia.estado', '!=', 7]
