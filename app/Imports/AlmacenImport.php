@@ -106,32 +106,35 @@ class AlmacenImport implements ToCollection, WithHeadingRow
                     $query_cla = DB::table('almacen.alm_clasif')->where('cod_softlink', $row['cod_clasi'])->first();
                     $query_cat = DB::table('almacen.alm_cat_prod')->where('cod_softlink', $row['cod_cate'])->first();
                     $query_sub = DB::table('almacen.alm_subcat')->where('cod_softlink', $row['cod_subc'])->first();
-                    $query_und = DB::table('almacen.alm_und_medida')->where('cod_softlink', $row['cod_unidad'])->first();
+                    $query_und = DB::table('almacen.alm_und_medida')->where('cod_softlink', $row['cod_unid'])->first();
 
                     $id_cla = ($query_cla != '') ? $query_cla->id_clasificacion : null;
                     $id_cat = ($query_cat != '') ? $query_cat->id_categoria : null;
                     $id_sub = ($query_sub != '') ? $query_sub->id_subcategoria : null;
                     $id_und = ($query_und != '') ? $query_und->id_unidad_medida : null;
 
+                    $flg_serie = ($row['flg_serie'] == 't') ? true : false;
+                    $flg_afect = ($row['flg_afecto_igv'] == 't') ? true : false;
+
                     $producto = DB::table('almacen.alm_prod')->insertGetId([
                         'cod_softlink'      => $row['cod_prod'],
                         'part_number'       => $part_no,
-                        'id_subcategoria'   => $$id_sub,
-                        'id_clasificacion'  => $id_cla,
+                        'id_subcategoria'   => $id_sub,
+                        'id_clasif'         => $id_cla,
                         'descripcion'       => $descripcion,
                         'id_unidad_medida'  => $id_und,
-                        'series'            => $row['flg_serie'],
-                        'afecto_igv'        => $row['flg_afecto_igv'],
+                        'series'            => $flg_serie,
+                        'afecto_igv'        => $flg_afect,
                         'estado'            => 1,
                         'fecha_registro'    => date('Y-m-d', strtotime($row['ult_edicion'])),
-                        'id_moneda'         => ($row['tipo_moneda'] != '') ? $row['tipo_moneda'] : null,
+                        'id_moneda'         => ($row['tip_moneda'] != '') ? $row['tip_moneda'] : null,
                         'notas'             => ($row['txt_observa'] != '') ? $row['txt_observa'] : null,
                         'id_categoria'      => $id_cat,
                         'id_usuario'        => 1,
-                        'afecto_kardex'     => true,
+                        'afecta_kardex'     => true,
                         'cod_cate'          => $row['cod_cate'],
                         'cod_subcate'       => $row['cod_subc'],
-                        'cod_unid'          => $row['cod_unidad']
+                        'cod_unid'          => $row['cod_unid']
                     ], 'id_producto');
                     
                     $code = $this->leftZero(7, $producto);
@@ -141,7 +144,7 @@ class AlmacenImport implements ToCollection, WithHeadingRow
                 }
             } else if ($this->type == 6) {
                 $query_alm = DB::table('almacen.alm_almacen')->where('codigo', $row['cod_alma'])->first();
-                $query_pro = DB::table('almacen.alm_prod')->where('cod_softlink', $row['cod_pro'])->first();
+                $query_pro = DB::table('almacen.alm_prod')->where('cod_softlink', $row['cod_prod'])->first();
 
                 $id_alm = ($query_alm != '') ? $query_alm->id_almacen : null;
                 $id_pro = ($query_pro != '') ? $query_pro->id_producto : null;
@@ -157,7 +160,7 @@ class AlmacenImport implements ToCollection, WithHeadingRow
                 $this->numRows++;
             } else if ($this->type == 7) {
                 $query_alm = DB::table('almacen.alm_almacen')->where('codigo', $row['cod_alma'])->first();
-                $query_pro = DB::table('almacen.alm_prod')->where('cod_softlink', $row['cod_pro'])->first();
+                $query_pro = DB::table('almacen.alm_prod')->where('cod_softlink', $row['cod_prod'])->first();
 
                 $id_alm = ($query_alm != '') ? $query_alm->id_almacen : null;
                 $id_pro = ($query_pro != '') ? $query_pro->id_producto : null;
