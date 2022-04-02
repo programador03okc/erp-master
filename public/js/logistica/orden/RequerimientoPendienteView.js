@@ -1247,8 +1247,10 @@ class RequerimientoPendienteView {
                 let atencionOrden = 0;
                 let objOrdenList = [];
                 (element.ordenes_compra).forEach(orden => { // TODO: no incluir anulados
+                    if(orden.estado !=7){
                     atencionOrden += parseFloat(orden.cantidad);
                     objOrdenList.push({ 'id_orden': orden.id_orden_compra, 'codigo': orden.codigo });
+                    }
                 });
 
                 let cantidadAdjuntosDetalleRequerimiento = 0;
