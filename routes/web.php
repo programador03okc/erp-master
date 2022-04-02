@@ -1874,7 +1874,13 @@ Route::group(['middleware' => ['auth']], function () {
 		});
 	});
 
+	Route::group(['as' => 'migracion.', 'prefix' => 'migracion'], function () {
 
+        Route::get('index', 'Migraciones\MigracionAlmacenSoftLinkController@index')->name('index');
+
+        Route::post('importar', 'Migraciones\MigracionAlmacenSoftLinkController@importar')->name('importar');
+
+    });
 	Route::get('listarUsu', 'Almacen\Movimiento\TransferenciaController@listarUsu');
 
 	Route::get('migrar_venta_directa/{id}', 'Migraciones\MigrateRequerimientoSoftLinkController@migrar_venta_directa');
