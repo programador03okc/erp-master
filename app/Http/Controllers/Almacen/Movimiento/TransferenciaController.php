@@ -1656,7 +1656,6 @@ class TransferenciaController extends Controller
                         and trans_detalle.estado != 7) AS cantidad_transferida"),
                 DB::raw("(SELECT sum(alm_reserva.stock_comprometido) FROM almacen.alm_reserva
                         WHERE alm_reserva.id_detalle_requerimiento = alm_det_req.id_detalle_requerimiento
-                        and alm_reserva.id_almacen_reserva = guia_com.id_almacen
                         and alm_reserva.estado = 1) AS stock_comprometido")
             )
             ->leftjoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'alm_reserva.id_detalle_requerimiento')
@@ -1681,6 +1680,7 @@ class TransferenciaController extends Controller
                 ['alm_reserva.estado', '=', 1]
             ])
             ->get();
+        // and alm_reserva.id_almacen_reserva = guia_com.id_almacen
 
         $items = [];
 
