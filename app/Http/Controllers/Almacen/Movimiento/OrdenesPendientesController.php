@@ -1139,7 +1139,12 @@ class OrdenesPendientesController extends Controller
 
         if ($det->id_detalle_requerimiento !== null) {
             $dreq = DB::table('almacen.alm_det_req')
-                ->select('alm_req.id_requerimiento', 'alm_det_req.cantidad', 'alm_req.id_tipo_requerimiento')
+                ->select(
+                    'alm_req.id_requerimiento',
+                    'alm_req.id_almacen',
+                    'alm_det_req.cantidad',
+                    'alm_req.id_tipo_requerimiento'
+                )
                 ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
                 ->where('id_detalle_requerimiento', $det->id_detalle_requerimiento)
                 ->first();
@@ -1204,6 +1209,21 @@ class OrdenesPendientesController extends Controller
                                 'usuario_registro' => $id_usuario,
                                 'fecha_registro' => date('Y-m-d H:i:s'),
                             ]);
+                    } else {
+                        if ($id_almacen !== $dreq->id_almacen) {
+                            DB::table('almacen.alm_reserva')
+                                ->insert([
+                                    'codigo' => Reserva::crearCodigo($id_almacen),
+                                    'id_producto' => $det->id_producto,
+                                    'stock_comprometido' => $cantidad,
+                                    'id_almacen_reserva' => $id_almacen,
+                                    'id_detalle_requerimiento' => $det->id_detalle_requerimiento,
+                                    'id_guia_com_det' => $id_guia_com_det,
+                                    'estado' => 1,
+                                    'usuario_registro' => $id_usuario,
+                                    'fecha_registro' => date('Y-m-d H:i:s'),
+                                ]);
+                        }
                     }
                 }
             }
