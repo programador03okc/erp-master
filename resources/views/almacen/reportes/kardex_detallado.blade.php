@@ -96,7 +96,7 @@ Kardex por Producto
                                     <th>Ingreso</th>
                                     <th>Salida</th>
                                     <th>Valorizacion</th>
-                                    <th>Posicion</th>
+                                    <th>Costo unitario</th>
                                     <th>Ope</th>
                                     <th>Tipo de Operacion</th>
                                 </tr>

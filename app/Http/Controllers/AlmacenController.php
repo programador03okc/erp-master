@@ -4846,7 +4846,7 @@ class AlmacenController extends Controller
                         <td class="right" style="background:#d8fcfc;">' . number_format($d->valorizacion, 2, ".", ",") . '</td>
                         <td class="right" style="background:#d8fcfc;">0</td>
                         <td class="right" style="background:#d8fcfc;">' . number_format($saldo_valor, 2, ".", ",") . '</td>
-                        <td>' . $d->cod_posicion . '</td>
+                        <td>' . ($saldo > 0 ? number_format($saldo_valor / $saldo, 2, ".", ",") : 0) . '</td>
                         <td>' . ($d->cod_sunat_ope_com !== null ? $d->cod_sunat_ope_com : '') . '</td>
                         <td>' . $d->des_ope_com . '</td>
                     </tr>';
@@ -4863,7 +4863,7 @@ class AlmacenController extends Controller
                         <td class="right" style="background:#d8fcfc;">0</td>
                         <td class="right" style="background:#d8fcfc;">' . number_format($d->valorizacion, 2, ".", ",") . '</td>
                         <td class="right" style="background:#d8fcfc;">' . number_format($saldo_valor, 2, ".", ",") . '</td>
-                        <td>' . $d->cod_posicion . '</td>
+                        <td>' . ($saldo > 0 ? number_format($saldo_valor / $saldo, 2, ".", ",") : 0) . '</td>
                         <td>' . $d->cod_sunat_ope_ven . '</td>
                         <td>' . $d->des_ope_ven . '</td>
                     </tr>';
