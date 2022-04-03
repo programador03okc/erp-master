@@ -306,6 +306,7 @@ function listarDespachosEntregados(permiso) {
         'columns': [
             { 'data': 'id_mov_alm' },
             {
+                'data': 'codigo_od', name: 'orden_despacho.codigo',
                 'render':
                     function (data, type, row) {
                         // if (row['codigo_od'] !== null) {
@@ -320,21 +321,21 @@ function listarDespachosEntregados(permiso) {
                     }
             },
             {
-                data: 'numero',
+                data: 'numero', name: 'guia_ven.numero',
                 'render': function (data, type, row) {
                     return row['serie'] + '-' + row['numero'];
                 }
             },
             {
-                data: 'fecha_emision', name: 'orden_despacho.fecha_emision', className: "text-center",
+                data: 'fecha_emision', className: "text-center",
                 render:
                     function (data, type, row) {
                         return formatDate(row['fecha_emision']);
                     }
             },
             { 'data': 'almacen_descripcion', 'name': 'alm_almacen.descripcion' },
-            // {'data': 'codigo'},
             {
+                data: 'codigo',
                 'render': function (data, type, row) {
                     return (row['codigo'] !== null ?
                         ('<label class="lbl-codigo" title="Abrir Salida" onClick="abrir_salida(' + row['id_mov_alm'] + ')">' + row['codigo'] + '</label>')
@@ -344,6 +345,7 @@ function listarDespachosEntregados(permiso) {
             { 'data': 'operacion', 'name': 'tp_ope.descripcion' },
             // {'data': 'codigo_requerimiento', 'name': 'alm_req.codigo'},
             {
+                data: 'codigo_requerimiento', name: 'alm_req.codigo',
                 'render': function (data, type, row) {
                     if (row['codigo_requerimiento'] !== null) {
                         // return row['codigo_requerimiento'];
