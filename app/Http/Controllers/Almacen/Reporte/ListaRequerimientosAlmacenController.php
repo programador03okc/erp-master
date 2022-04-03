@@ -23,7 +23,10 @@ class ListaRequerimientosAlmacenController extends Controller
                 'adm_estado_doc.estado_doc',
                 'adm_estado_doc.bootstrap_color',
                 'sis_usua.nombre_corto',
-                'estado_despacho.estado_doc as estado_despacho_descripcion'
+                'estado_despacho.estado_doc as estado_despacho_descripcion',
+                DB::raw("(SELECT count(*) from almacen.trans
+                    where trans.id_requerimiento = alm_req.id_requerimiento
+                    and trans.estado != 7) AS count_transferencias")
             )
             ->join('configuracion.sis_grupo', 'sis_grupo.id_grupo', '=', 'alm_req.id_grupo')
             ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_req.id_almacen')

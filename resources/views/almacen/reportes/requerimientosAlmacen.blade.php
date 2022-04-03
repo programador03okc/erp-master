@@ -46,7 +46,7 @@ Estado de Atención de Requerimientos
                                     <th>Estado</th>
                                     <th>Registrado por</th>
                                     <th>Estado despacho</th>
-                                    <th></th>
+                                    <th width="7%"></th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
@@ -58,6 +58,7 @@ Estado de Atención de Requerimientos
         </div>
     </div>
 </div>
+@include('almacen.transferencias.verTransferenciasPorRequerimiento')
 @endsection
 
 @section('scripts')

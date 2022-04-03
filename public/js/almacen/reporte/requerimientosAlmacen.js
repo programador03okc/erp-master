@@ -119,7 +119,13 @@ function listarRequerimientosAlmacen() {
 
                     return `<button type="button" class="detalle btn btn-default btn-flat btn-xs " data-toggle="tooltip"
                     data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}">
-                    <i class="fas fa-chevron-down"></i></button>`;
+                    <i class="fas fa-chevron-down"></i></button>
+                    
+                    ${row['count_transferencias'] > 0 ?
+                            `<button type="button" class="transferencia btn btn-success btn-flat btn-xs " data-toggle="tooltip"
+                    data-placement="bottom" title="Ver transferencias" data-id="${row['id_requerimiento']}">
+                    <i class="fas fa-exchange-alt"></i></button>`: ''
+                        }`;
 
                 }, targets: 9
             }
@@ -128,6 +134,29 @@ function listarRequerimientosAlmacen() {
     });
     vista_extendida();
 }
+
+$('#requerimientosAlmacen tbody').on("click", "button.transferencia", function () {
+    var id = $(this).data('id');
+    if (id !== null) {
+
+        $.ajax({
+            type: 'GET',
+            url: 'listarDetalleTransferencias/' + id,
+            dataType: 'JSON',
+            success: function (response) {
+                console.log(response);
+                $('#modal-verTransferenciasPorRequerimiento').modal({
+                    show: true
+                });
+                $('#transferenciasPorRequerimiento tbody').html(response);
+            }
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        });
+    }
+});
 
 var iTableCounter = 1;
 var oInnerTable;
