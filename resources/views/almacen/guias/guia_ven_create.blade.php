@@ -4,8 +4,8 @@
             <form id="form-guia_ven_create">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
-                    <h3 class="modal-title">Generar Guia de Venta - <strong><span id="name_title"></span></strong> 
-                        <strong><span id="codigo_req"></span></strong></h3>
+                    <h3 class="modal-title">Guia de Venta - <strong><span id="name_title"></span></strong> 
+                        <strong><span id="codigo_req"></span></strong> (<span id="almacen_req"></span>)</h3>
                         <span id="mensaje" class="red"></span>
                 </div>
                 <div class="modal-body">
@@ -83,6 +83,7 @@
                                         <th>Código</th>
                                         <th>PartNumber</th>
                                         <th>Descripción</th>
+                                        <th>Alm. Reserva</th>
                                         <th>Reserva</th>
                                         <th>Cant. despachada</th>
                                         <th>Cantidad</th>

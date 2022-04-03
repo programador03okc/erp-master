@@ -17,6 +17,7 @@ function open_guia_create(data) {
     }
     console.log(data);
     $('#codigo_req').text(data.codigo_req);
+    $('#almacen_req').text(data.almacen_descripcion);
     $('[name=id_guia_clas]').val(1);
     $('[name=id_od]').val(data.id_od);
     $('[name=id_almacen]').val(data.id_almacen);
@@ -50,6 +51,10 @@ function listarDetalleOrdenDespacho(id_od, aplica_cambios, tiene_transformacion)
             console.log(response);
             var cantidad_despacho = 0;
             var items_para_despachar = 0;
+            var almacen_diferentes = 0;
+            var id_almacen = response[0].id_almacen_reserva;
+            var almacen_descripcion = response[0].almacen_reserva;
+            var msj = '';
 
             response.forEach(element => {
                 cantidad_despacho = (element.cantidad - element.cantidad_despachada);
@@ -68,23 +73,40 @@ function listarDetalleOrdenDespacho(id_od, aplica_cambios, tiene_transformacion)
                         'cantidad': cantidad_despacho,
                         'abreviatura': element.abreviatura,
                         'control_series': element.control_series,
-                        'suma_reservas': element.suma_reservas ?? 0,
+                        'suma_reservas': element.stock_comprometido ?? 0,
+                        'id_almacen_reserva': element.id_almacen_reserva,
+                        'almacen_reserva': element.almacen_reserva,
                         'series': []
                     });
-                    console.log(element.codigo + ': ' + element.suma_reservas + '!== ' + element.cantidad);
+                    console.log(element.codigo + ': ' + element.stock_comprometido + '!== ' + element.cantidad);
 
-                    if (parseFloat(element.suma_reservas) >= parseFloat(element.cantidad)) {
+                    if (parseFloat(element.stock_comprometido) >= parseFloat(element.cantidad)) {
                         items_para_despachar++;
                     }
-                    if (parseFloat(element.suma_reservas) !== parseFloat(element.cantidad)) {
-                        $("#mensaje").text('*Aún no hay saldo de todos los productos, no es posible generar la salida.');
+                    if (parseFloat(element.stock_comprometido) == 0) {
+                        msj = '*Aún no hay saldo de todos los productos. ';
+                    }
+                    if (element.id_almacen_reserva !== null && (id_almacen == null || id_almacen == '')) {
+                        id_almacen = element.id_almacen_reserva;
+                        almacen_descripcion = element.almacen_reserva;
+                    }
+                    if (element.id_almacen_reserva !== null && element.id_almacen_reserva !== id_almacen) {
+                        almacen_diferentes++;
                     }
                 }
             });
             if (items_para_despachar == 0) {
                 $("#submit_guia").attr('disabled', 'true');
             }
-            // detalle = response;
+            if (almacen_diferentes > 0) {
+                // $("#submit_guia").attr('disabled', 'true');
+                msj += 'Los almacenes de reserva son diferentes.';
+            } else {
+                $('[name=id_almacen]').val(id_almacen);
+                $('[name=almacen_descripcion]').val(almacen_descripcion);
+            }
+            $("#mensaje").text(msj);
+
             mostrar_detalle();
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {
@@ -115,6 +137,7 @@ function mostrar_detalle() {
         <td><a href="#" class="verProducto" data-id="${element.id_producto}" >${element.codigo !== null ? element.codigo : ''}</a></td>
         <td>${element.part_number !== null ? element.part_number : ''}</td>
         <td>${element.descripcion !== null ? element.descripcion : '(producto no mapeado)'}<br><strong>${html_series}</strong></td>
+        <td>${element.almacen_reserva ?? ''}</td>
         <td>${element.suma_reservas !== null ? element.suma_reservas : ''}</td>
         <td>${element.cantidad_despachada}</td>
         <td><input class="right cantidad" type="number" value="${element.cantidad}" min="1" name="cantidad" style="width:80px;"
@@ -207,6 +230,7 @@ $("#form-guia_ven_create").on("submit", function (e) {
                     'id_unidad_medida': element.id_unidad_medida,
                     'id_detalle_requerimiento': element.id_detalle_requerimiento,
                     'id_guia_com_det': element.id_guia_com_det,
+                    'id_almacen_reserva': element.id_almacen_reserva,
                     // 'codigo'                    : element.codigo,
                     // 'part_number'               : element.part_number,
                     // 'descripcion'               : element.descripcion,
@@ -218,21 +242,40 @@ $("#form-guia_ven_create").on("submit", function (e) {
         });
     });
     console.log(lista_detalle);
+    var id_almacen = lista_detalle[0].id_almacen_reserva;
+    var almacen_diferentes = 0;
 
-    if (lista_detalle.length == 0) {
+    lista_detalle.forEach(element => {
+        if (element.id_almacen_reserva !== id_almacen) {
+            almacen_diferentes++;
+        }
+    });
+
+    if (almacen_diferentes > 0) {
         Lobibox.notify('warning', {
             title: false,
             size: "mini",
             rounded: true,
             sound: false,
             delayIndicator: false,
-            msg: 'No es posible realizar una salida sin items.'
+            msg: 'No es posible realizar una salida seleccionando stock de varios almacenes.'
         });
     } else {
-        var ser = $(this).serialize();
-        var data = ser + '&detalle=' + JSON.stringify(lista_detalle);
-        console.log(data);
-        guardarGuiaVenta(data);
+        if (lista_detalle.length == 0) {
+            Lobibox.notify('warning', {
+                title: false,
+                size: "mini",
+                rounded: true,
+                sound: false,
+                delayIndicator: false,
+                msg: 'No es posible realizar una salida sin items.'
+            });
+        } else {
+            var ser = $(this).serialize();
+            var data = ser + '&detalle=' + JSON.stringify(lista_detalle);
+            console.log(data);
+            guardarGuiaVenta(data);
+        }
     }
 });
 

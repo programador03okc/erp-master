@@ -584,7 +584,7 @@ class SalidasPendientesController extends Controller
         }
     }
 
-    public function verDetalleDespacho($id_od, $aplica_cambios, $tiene_transformacion)
+    public function verDetalleDespachox($id_od, $aplica_cambios, $tiene_transformacion)
     {
         $data = DB::table('almacen.orden_despacho_det')
             ->select(
@@ -618,6 +618,61 @@ class SalidasPendientesController extends Controller
                 ['alm_det_req.estado', '!=', 7],
                 // ['alm_det_req.entrega_cliente', '=', true],
                 // ['orden_despacho_det.transformado', '=', ($aplica_cambios == 'si' ? false : ($tiene_transformacion == 'si' ? true : false))]
+            ]);
+
+        if ($aplica_cambios == true) {
+            $lista = $data->where([['orden_despacho_det.transformado', '=', ($aplica_cambios == 'si' ? false : ($tiene_transformacion == 'si' ? true : false))]])
+                ->get();
+        } else {
+            $lista = $data->where([['alm_det_req.entrega_cliente', '=', true]])
+                ->get();
+        }
+
+        return response()->json($lista);
+    }
+
+    public function verDetalleDespacho($id_od, $aplica_cambios, $tiene_transformacion)
+    {
+        $data = DB::table('almacen.orden_despacho_det')
+            ->select(
+                'orden_despacho_det.*',
+                'alm_prod.id_producto',
+                'alm_prod.codigo',
+                'alm_prod.descripcion',
+                'alm_prod.series as control_series',
+                'alm_prod.part_number',
+                'alm_prod.id_unidad_medida',
+                'alm_und_medida.abreviatura',
+                'orden_despacho.id_almacen',
+                DB::raw("(SELECT SUM(guia_ven_det.cantidad) 
+                        FROM almacen.guia_ven_det
+                        WHERE guia_ven_det.id_od_det = orden_despacho_det.id_od_detalle
+                            and guia_ven_det.estado != 7) as cantidad_despachada"),
+                'alm_reserva.id_reserva',
+                'alm_reserva.id_almacen_reserva',
+                'alm_almacen.descripcion as almacen_reserva',
+                'alm_reserva.stock_comprometido'
+                // DB::raw("(SELECT SUM(reserva.stock_comprometido) 
+                //         FROM almacen.alm_reserva AS reserva
+                //         WHERE reserva.id_detalle_requerimiento = orden_despacho_det.id_detalle_requerimiento
+                //             and reserva.estado != 7
+                //             and reserva.estado != 5
+                //             and reserva.id_almacen_reserva = orden_despacho.id_almacen) AS suma_reservas")
+            )
+            ->join('almacen.orden_despacho', 'orden_despacho.id_od', '=', 'orden_despacho_det.id_od')
+            ->join('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'orden_despacho_det.id_detalle_requerimiento')
+            ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_det_req.id_producto')
+            ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
+            ->leftJoin('almacen.alm_reserva', function ($join) {
+                $join->on('alm_reserva.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento');
+                $join->where('alm_reserva.estado', '!=', 7);
+                $join->where('alm_reserva.estado', '!=', 5);
+            })
+            ->leftJoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_reserva.id_almacen_reserva')
+            ->where([
+                ['orden_despacho_det.id_od', '=', $id_od],
+                ['orden_despacho_det.estado', '!=', 7],
+                ['alm_det_req.estado', '!=', 7],
             ]);
 
         if ($aplica_cambios == true) {
