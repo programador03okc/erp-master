@@ -199,6 +199,12 @@ function listarDespachosPendientes(permiso) {
     });
 }
 
+$("#despachosPendientes tbody").on("click", "a.archivos", function (e) {
+    $(e.preventDefault());
+    var id = $(this).data("id");
+    var tipo = $(this).data("tipo");
+    obtenerArchivosMgcp(id, tipo);
+});
 // ${row['estado_doc'] == 'Priorizado' ?
 //      `<button type="button" class="despachado btn btn-success btn-flat boton" data-toggle="tooltip"
 //      data-placement="bottom" title="Marcar como despachado" data-id="${row['id_requerimiento']}">
