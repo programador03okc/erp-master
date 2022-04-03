@@ -82,7 +82,7 @@ Reservas de almacén
 <script src="{{ asset('template/plugins/loadingoverlay.min.js') }}"></script>
 <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
 
-<script src="{{ asset('js/almacen/reservas/reservasAlmacen.js') }}"></script>
+<script src="{{ asset('js/almacen/reservas/reservasAlmacen.js') }}?v={{filemtime(public_path('js/almacen/reservas/reservasAlmacen.js'))}}"></script>
 
 <script>
     $(document).ready(function() {
