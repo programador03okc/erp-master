@@ -1267,13 +1267,13 @@ class SalidasPendientesController extends Controller
             ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_almacen.id_sede')
             ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
             ->join('contabilidad.adm_contri as empresa', 'empresa.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
-            ->join('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'guia_ven.id_cliente')
-            ->join('contabilidad.adm_contri as cliente', 'cliente.id_contribuyente', '=', 'com_cliente.id_contribuyente')
+            ->leftjoin('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'guia_ven.id_cliente')
+            ->leftjoin('contabilidad.adm_contri as cliente', 'cliente.id_contribuyente', '=', 'com_cliente.id_contribuyente')
             ->where('guia_ven.id_guia_ven', $id_guia_ven)
             ->first();
 
         $detalle = $this->listarDetalleGuiaSalida($id_guia_ven);
-        // dd($detalle);
+        // dd($guia);
         //OKC PYC SVS PTEC
         switch ($guia->id_empresa) {
             case 1: //OKC

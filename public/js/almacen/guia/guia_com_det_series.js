@@ -439,9 +439,9 @@ $(document).ready(function () {
             var items = cant_items;
             var cant = $('#listaBarras tbody tr').length;
             var msj = false;
-            var imp = cant + result.Hoja1.length;
-            console.log('items' + items + ' imp' + imp + ' length' + result.Hoja1.length);
-            console.log(result.Hoja1);
+            var imp = cant + (result.Hoja1 !== undefined ? result.Hoja1.length : result.Worksheet.length);
+            console.log('items' + items + ' imp' + imp + ' length' + (result.Hoja1 !== undefined ? result.Hoja1.length : result.Worksheet.length));
+            console.log((result.Hoja1 !== undefined ? result.Hoja1 : result.Worksheet));
             var rspta = true;
 
             if (imp > items) {
@@ -459,9 +459,11 @@ $(document).ready(function () {
                 });
             }
             if (rspta) {
-                for (i = 0; i < result.Hoja1.length; i++) {
-                    console.log(result.Hoja1[i].serie);
-                    var serie = result.Hoja1[i].serie;
+                var hoja = (result.Hoja1 !== undefined ? result.Hoja1 : result.Worksheet);
+                console.log(hoja);
+                for (i = 0; i < hoja.length; i++) {
+                    console.log(hoja[i].serie);
+                    var serie = hoja[i].serie;
                     var agrega = false;
 
                     if (json_series.length > 0) {
