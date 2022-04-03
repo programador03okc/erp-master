@@ -177,8 +177,9 @@
                 <th class="text-center cabecera-producto" style="width: 10%">Part Number</th>
                 <th class="text-center cabecera-producto">Descripción del producto</th>
                 <th class="text-center cabecera-producto" style="width: 5%">Cant.</th>
-                <th class="text-center cabecera-producto" style="width: 5%">Unid.</th>
+                <th class="text-center cabecera-producto" style="width: 5%">Und.</th>
                 <th class="text-center cabecera-producto" style="width: 5%">Mnd.</th>
+                <th class="text-center cabecera-producto" style="width: 5%">Unit.</th>
                 <th class="text-center cabecera-producto" style="width: 5%">SubTotal</th>
                 <th class="text-center cabecera-producto" style="width: 5%">Adic.</th>
                 <th class="text-center cabecera-producto" style="width: 5%">Total</th>
@@ -213,10 +214,10 @@
                 }
                 // $series = (count($series_array)>1 ? implode(",", $series_array) : '');
             }
-
-            $valorizacion = ($prod->precio_unitario !== null
+            $unitario = ($prod->precio_unitario !== null
                             ? $prod->precio_unitario
-                            : $prod->unitario) * ($prod->cantidad);
+                            : $prod->unitario);
+            $valorizacion = ($unitario) * ($prod->cantidad);
 
             $adic_valor = DB::table('almacen.guia_com_prorrateo_det')
                 ->where([['id_guia_com_det','=',$prod->id_guia_com_det],
@@ -240,6 +241,7 @@
                 <td class="text-center">{{$prod->cantidad}}</td>
                 <td class="text-center">{{$prod->abreviatura}}</td>
                 <td class="text-right">{{$prod->moneda_doc!==null?$prod->moneda_doc:($prod->moneda_oc!==null?$prod->moneda_oc:'')}}</td>
+                <td class="text-right">{{round($unitario,2,PHP_ROUND_HALF_UP)}}</td>
                 <td class="text-right">{{round($valorizacion,2,PHP_ROUND_HALF_UP)}}</td>
                 <td class="text-right">{{round($adicional,2,PHP_ROUND_HALF_UP)}}</td>
                 <td class="text-right">{{round(($valorizacion + $adicional),2,PHP_ROUND_HALF_UP)}}</td>

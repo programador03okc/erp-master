@@ -2286,8 +2286,9 @@ class OrdenesPendientesController extends Controller
                             <th>PartNumber</th>
                             <th width=50% >Descripción</th>
                             <th>Cant.</th>
-                            <th>Unid.</th>
-                            <th>Valor.</th>
+                            <th>Und.</th>
+                            <th>Unitario</th>
+                            <th>Total</th>
                         </tr>
                     </thead>
                     <tbody>';
@@ -2319,7 +2320,8 @@ class OrdenesPendientesController extends Controller
                             <td>' . $det->descripcion . ' <strong>' . $series . '</strong></td>
                             <td class="right">' . $det->cantidad . '</td>
                             <td>' . $det->abreviatura . '</td>
-                            <td class="right">' . $det->valorizacion . '</td>
+                            <td>' . round(($det->valorizacion / $det->cantidad), 4, PHP_ROUND_HALF_UP) . '</td>
+                            <td class="right">' . round($det->valorizacion, 4, PHP_ROUND_HALF_UP) . '</td>
                         </tr>';
             $i++;
         }
