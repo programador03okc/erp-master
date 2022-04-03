@@ -98,6 +98,15 @@ function mostrar_detalle_transformacion() {
     var html_ser = '';
     var i = 1;
 
+    var opt_monedas = ``;
+    monedas.forEach(moneda => {
+        if (moneda.id_moneda == 1) {
+            opt_monedas += `<option value="${moneda.id_moneda}" selected>${moneda.simbolo}</option>`;
+        } else {
+            opt_monedas += `<option value="${moneda.id_moneda}" >${moneda.simbolo}</option>`;
+        }
+    });
+
     series_transformacion.forEach(function (element) {
         html_ser = '';
         element.series.forEach(function (serie) {
@@ -108,15 +117,6 @@ function mostrar_detalle_transformacion() {
             }
         });
         console.log('cod_prod: ' + element.cod_prod);
-        // var opt_monedas = `<option value="0" ${element.id_moneda == 0 ? 'selected' : ''}>Ninguno</option>`;
-        var opt_monedas = ``;
-        monedas.forEach(moneda => {
-            if (element.id_moneda == moneda.id_moneda) {
-                opt_monedas += `<option value="${moneda.id_moneda}" selected>${moneda.simbolo}</option>`;
-            } else {
-                opt_monedas += `<option value="${moneda.id_moneda}" >${moneda.simbolo}</option>`;
-            }
-        });
         html_monedas = `<select class="form-control moneda" style="width:70px" data-id="${element.id}">${opt_monedas}</select>`;
 
         html += `<tr>
