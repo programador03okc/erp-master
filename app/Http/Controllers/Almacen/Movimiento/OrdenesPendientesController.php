@@ -489,11 +489,11 @@ class OrdenesPendientesController extends Controller
             ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'log_det_ord_compra.id_unidad_medida')
             ->leftjoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'log_ord_compra.id_moneda')
             ->whereIn('log_det_ord_compra.id_orden_compra', $ordenes)
+            ->whereNotNull('log_det_ord_compra.id_producto')
             ->where([
                 ['log_det_ord_compra.estado', '!=', 7],
                 ['log_det_ord_compra.estado', '!=', 28]
             ])
-            ->whereNotNull('log_det_ord_compra.id_producto')
             ->get();
 
         return response()->json($detalle);
@@ -554,7 +554,6 @@ class OrdenesPendientesController extends Controller
             ->leftjoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'guia_com_det.id_producto')
             ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
             ->where([['guia_com_det.id_guia_com', '=', $id_guia], ['guia_com_det.estado', '!=', 7]])
-            ->whereNotNull('log_det_ord_compra.id_producto')
             ->get();
 
         $lista = [];

@@ -71,7 +71,7 @@
                             <fieldset class="group-table" id="fieldsetDatosDetalle">
                                 <h5 style="display:flex;justify-content: space-between;"><strong>Items del documento</strong></h5>
 
-                                <table class="mytable table table-condensed table-bordered table-okc-view" width="100%" id="detalleMovimiento" style="margin-top:10px;">
+                                <table class="mytable table table-condensed table-bordered table-okc-view" width="100%" id="detalleMovimientoIngreso" style="margin-top:10px;">
                                     <thead>
                                         <tr>
                                             <th>#</th>
