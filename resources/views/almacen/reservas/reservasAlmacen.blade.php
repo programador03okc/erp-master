@@ -32,26 +32,33 @@ Reservas de almacén
         <div class="page-main" type="reservasAlmacen">
             <div class="row" style="padding-top:10px;padding-right:10px;padding-left:10px;">
                 <div class="col-md-12">
-                    <table class="mytable table table-condensed table-bordered table-okc-view" 
-                        id="reservasAlmacen" style="width:100%;">
-                        <thead>
-                            <tr>
-                                <th hidden></th>
-                                <th>Reserva</th>
-                                <th>Requerimiento</th>
-                                <th>Código</th>
-                                <th>Part Number</th>
-                                <th>Descripción del producto</th>
-                                <th>Almacén de reserva</th>
-                                <th>Stock comprom.</th>
-                                <th>Usuario que la registró</th>
-                                <th>Fecha de registro</th>
-                                <th>Estado</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                        <tfoot></tfoot>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="mytable table table-condensed table-bordered table-okc-view" 
+                            id="reservasAlmacen" style="width:100%;">
+                            <thead>
+                                <tr>
+                                    <th hidden></th>
+                                    <th>Reserva</th>
+                                    <th>Requerimiento</th>
+                                    <th>Código</th>
+                                    <th>Part Number</th>
+                                    <th>Descripción del producto</th>
+                                    <th>Almacén de reserva</th>
+                                    <th>Stock comprom.</th>
+                                    <th>Guía compra</th>
+                                    <th>Transf.</th>
+                                    <th>Item Trans.</th>
+                                    <th>Item Base</th>
+                                    <th>Registrado por</th>
+                                    <th>Fecha de registro</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                            <tfoot></tfoot>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
