@@ -39,54 +39,65 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <td colspan="6" style="text-align: left;">{{strtoupper($guia->empresa_razon_social)??''}}</td>
+                <td colspan="6" style="text-align: left;"></td>
                 <td colspan="5"></td>
-                <td colspan="8" style="text-align: left; word-wrap:break-word;vertical-align:top;">{{strtoupper($guia->cliente_razon_social)??''}}</td>
+                <td colspan="8" rowspan="2" style="text-align: left; word-wrap:break-word;vertical-align:top;">CA LAS CASTAÑITAS N° 0000000000127, 00SANISIDRO,0000LIMA0000000000000</td>
             </tr>
             <tr>
                 <td></td>
                 <td></td>
-                <td colspan="8" style="text-align: left;">{{strtoupper($guia->punto_partida)??''}}</td>
+                <td colspan="10" rowspan="2" style="text-align: left; word-wrap:break-word;vertical-align:top;">00MUNICIPALIDAD PROV000. CAR LOS F. FITZCARRALD000000000000000000</td>
                 <td colspan="3"></td>
-                <td colspan="10" rowspan="2" style="text-align: left; word-wrap:break-word;">{{strtoupper($guia->punto_llegada)??''}}</td>
+                <td colspan="8" style="text-align: left;"></td>
+            </tr>
+            <tr>
+            <td></td>
             </tr>
             <tr>
                 <td></td>
                 <td></td>
                 <td></td>
-                <td colspan="4" style="text-align: left;">{{$guia->empresa_nro_documento??''}}</td>
-                <td colspan="6"></td>
+                <td></td>
+                <td colspan="8" rowspan="2" style="text-align: left; word-wrap:break-word;">0000000000JR. FITZCARRALD Nº 50400- SAN 0LUIS, FITZCARRALD</td>
+                <td colspan="3"></td>
+                <td colspan="5" style="text-align: left;"></td>
+                <td colspan="5" style="text-align: left;">INGRESAR MARCA VEHICU</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td colspan="4" style="text-align: left;"></td>
+                <td colspan="8"></td>
+                <td colspan="4" style="text-align: left;">PLACA TRA</td>
  
             </tr>
             <tr>
                 <td></td>
                 <td></td>
                 <td></td>
-                <td></td>
-                <td colspan="3" style="text-align: left;">{{$guia->fecha_emision??''}}</td>
-                <td></td>
+                <td colspan="3" style="text-align: left;">20519865476</td>
                 <td></td>
                 <td></td>
                 <td></td>
+                <td colspan="3" style="text-align: left;">74064499</td>
                 <td></td>
                 <td></td>
-                <td colspan="3" style="text-align: left;">{{$guia->cliente_nro_documento??''}}</td>
-            </tr>
-            <tr>
-                <td></td>
-            </tr>
-            <tr>
                 <td></td>
                 <td></td>
-                <td colspan="11" style="text-align: left;">INGRESAR NOMBRE DE TRANSPORTISTA00000000</td>
-                <td colspan="7"></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
                 <td colspan="3" style="text-align: left;">LICENCIA</td>
             </tr>
             <tr>
                 <td></td>
-                <td colspan="11" style="text-align: left;">RUC TRANS</td>
-                <td colspan="7" style="text-align: left;">INGRESAR MARCA VEHICU</td>
-                <td colspan="3" style="text-align: left;">PLACA TRA</td>
+            </tr>
+            <tr>
+                <td></td>
             </tr>
             <tr>
                 <td></td>
@@ -174,6 +185,16 @@
                 <td colspan="4" style="text-align: left;"></td>
                 <td></td>
                 <td colspan="4" style="text-align: left;"></td>
+            </tr>
+            <tr>
+            <td></td>
+            </tr>
+            <tr>
+                <td colspan="3" style="text-align: left;"></td>
+                <td colspan="3" style="text-align: left;"></td>
+                <td colspan="12" style="text-align: left;">DENOMINACIÓN TRANSPORTISTA, APELLIDOS Y NOMBRES</td>
+                <td></td>
+                <td colspan="4" style="text-align: left;">RUC TRANSPORTISTA</td>
             </tr>
         </tbody>
     </table>

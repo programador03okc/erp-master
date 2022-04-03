@@ -1405,6 +1405,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('actualizarSalida', 'Almacen\Movimiento\SalidasPendientesController@actualizarSalida')->name('actualizar-salida');
 				Route::get('detalleMovimientoSalida/{id}', 'Almacen\Movimiento\SalidasPendientesController@detalleMovimientoSalida');
 				Route::get('guia-salida-excel/{idGuia}', 'Almacen\Movimiento\SalidasPendientesController@guiaSalidaExcel');
+				Route::get('export', 'Almacen\Movimiento\ExportaGuiaSalidaOKCController@excel');
+
 
 				Route::get('seriesVentaExcel/{id}', 'Almacen\Movimiento\SalidasPendientesController@seriesVentaExcel');
 			});
