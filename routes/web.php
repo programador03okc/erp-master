@@ -1877,7 +1877,7 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::group(['as' => 'migracion.', 'prefix' => 'migracion'], function () {
 
         Route::get('index', 'Migraciones\MigracionAlmacenSoftLinkController@index')->name('index');
-
+		Route::get('movimientos', 'Migraciones\MigracionAlmacenSoftLinkController@movimientos')->name('movimientos');
         Route::post('importar', 'Migraciones\MigracionAlmacenSoftLinkController@importar')->name('importar');
 
     });
