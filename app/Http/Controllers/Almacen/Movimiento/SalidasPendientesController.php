@@ -308,12 +308,16 @@ class SalidasPendientesController extends Controller
                                 ->where('id_transformacion', $transformacion->id_transformacion)
                                 ->update([
                                     'estado' => 21, //Entregado
-                                    'fecha_entrega' => $request->fecha_almacen
+                                    'fecha_entrega' => $request->fecha_almacen,
+                                    'id_almacen' => $request->id_almacen
                                 ]);
 
                             DB::table('almacen.orden_despacho')
                                 ->where('id_od', $request->id_od)
-                                ->update(['estado' => 21]); //Entregado
+                                ->update([
+                                    'estado' => 21,
+                                    'id_almacen' => $request->id_almacen
+                                ]); //Entregado
                         } else {
                             $count_entregados = DB::table('almacen.orden_despacho_det')
                                 ->where([['id_od', '=', $request->id_od], ['estado', '=', 21]])

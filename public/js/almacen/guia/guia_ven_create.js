@@ -271,6 +271,7 @@ $("#form-guia_ven_create").on("submit", function (e) {
                 msg: 'No es posible realizar una salida sin items.'
             });
         } else {
+            $('[name=id_almacen]').val(id_almacen);
             var ser = $(this).serialize();
             var data = ser + '&detalle=' + JSON.stringify(lista_detalle);
             console.log(data);
