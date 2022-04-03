@@ -1431,6 +1431,13 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('listarReservasAlmacen', 'Almacen\Movimiento\ReservasAlmacenController@listarReservasAlmacen')->name('listarReservasAlmacen');
 				Route::get('anularReserva/{id}', 'Almacen\Movimiento\ReservasAlmacenController@anularReserva');
 			});
+
+			Route::group(['as' => 'requerimientos-almacen.', 'prefix' => 'requerimientos-almacen'], function () {
+				//Pendientes de Salida
+				Route::get('index', 'Almacen\Reporte\ListaRequerimientosAlmacenController@viewRequerimientosAlmacen')->name('index');
+				Route::post('listarRequerimientosAlmacen', 'Almacen\Reporte\ListaRequerimientosAlmacenController@listarRequerimientosAlmacen')->name('listarRequerimientosAlmacen');
+				Route::get('verDetalleRequerimientoDI/{id}', 'Logistica\Distribucion\OrdenesTransformacionController@verDetalleRequerimientoDI');
+			});
 		});
 
 		Route::group(['as' => 'comprobantes.', 'prefix' => 'comprobantes'], function () {
