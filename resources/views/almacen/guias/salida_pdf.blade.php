@@ -201,10 +201,10 @@
                 }
             }
 
-            $unitario = ($prod->precio_unitario !== null
-                            ? $prod->precio_unitario
+            $unitario = ($prod->cantidad !== null
+                            ? ($prod->valorizacion / $prod->cantidad)
                             : 0);
-            $valorizacion = $unitario * ($prod->cantidad);
+            // $valorizacion = $unitario * ($prod->cantidad);
 
             ?>
             <tr>
@@ -215,7 +215,7 @@
                 <td class="text-center">{{$prod->abreviatura}}</td>
                 <td class="text-right">{{$prod->moneda_doc!==null?$prod->moneda_doc:'S/'}}</td>
                 <td class="text-right">{{round($unitario,2,PHP_ROUND_HALF_UP)}}</td>
-                <td class="text-right">{{round($valorizacion,2,PHP_ROUND_HALF_UP)}}</td>
+                <td class="text-right">{{round($prod->valorizacion,2,PHP_ROUND_HALF_UP)}}</td>
             </tr>
             @endforeach
         </tbody>
