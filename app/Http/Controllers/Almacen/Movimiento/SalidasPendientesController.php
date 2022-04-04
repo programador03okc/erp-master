@@ -332,6 +332,21 @@ class SalidasPendientesController extends Controller
                                     ->update(['estado' => 21]); //Entregado
                             }
                         }
+                        //Envia requerimiento a facturacion
+                        $req = DB::table('almacen.alm_req')
+                            ->where('id_requerimiento', $request->id_requerimiento)
+                            ->first();
+
+                        if (!$req->enviar_facturacion) {
+                            DB::table('almacen.alm_req')
+                                ->where('id_requerimiento', $request->id_requerimiento)
+                                ->update([
+                                    'enviar_facturacion' => true,
+                                    'fecha_facturacion' => $request->fecha_emision,
+                                    'obs_facturacion' => 'Enviado automáticamente al generar la guia venta',
+                                ]);
+                        }
+
                         //Agrega accion en requerimiento
                         DB::table('almacen.alm_req_obs')
                             ->insert([
