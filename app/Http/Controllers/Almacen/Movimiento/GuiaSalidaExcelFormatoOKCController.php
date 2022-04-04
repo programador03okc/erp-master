@@ -11,90 +11,138 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class GuiaSalidaExcelFormatoOKCController extends Controller
 {
-    public function insertarSeccionCabecera($sheet)
+    public static function insertarSeccionGuia($sheet,$guia)
     {
         $sheet->getDefaultColumnDimension()->setWidth(2, 'pt');
         $sheet->getRowDimension(1)->setRowHeight(65, 'pt');
         $sheet->getRowDimension(3)->setRowHeight(25, 'pt');
         $sheet->getRowDimension(10)->setRowHeight(1.8, 'pt');
-        $sheet->getColumnDimension('A')->setWidth(9);
+   
 
         $sheet->setCellValue('AR1', '');
 
-        $sheet->setCellValue('AF2', 'GR0000-000000');
-        $sheet->mergeCells('AF2:AK2');
+        $sheet->setCellValue('AJ2', 'GR'.($guia['serie'].'-'.$guia['numero']));
+        $sheet->mergeCells('AJ2:AQ2');
 
-        $sheet->setCellValue('E4', '24/03/2022');
-        $sheet->mergeCells('E4:K4');
+        $sheet->setCellValue('I4', $guia['fecha_emision']);
+        $sheet->mergeCells('I4:P4');
 
-        $sheet->setCellValue('G5', '00OK COMPUTER E.I.R.L.00');
-        $sheet->getStyle('G5')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('G5:V5');
-        $sheet->getStyle('G5')->getAlignment()->setWrapText(true);
+        $sheet->setCellValue('K5', $guia['empresa_razon_social']);
+        $sheet->getStyle('K5')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('K5:Z5');
+        $sheet->getStyle('K5')->getAlignment()->setWrapText(true);
 
-        $sheet->setCellValue('AA5', '00MUNICIPALIDAD PROV000. CAR LOS F. FITZCARRALD 00000 00000000');
-        $sheet->getStyle('AA5')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('AA5:AR6');
-        $sheet->getStyle('AA5')->getAlignment()->setWrapText(true);
-
-
-        $sheet->setCellValue('G8', '20519865476');
-        $sheet->getStyle('G8')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('G8:L8');
+        $sheet->setCellValue('AD5', $guia['cliente_razon_social']);
+        $sheet->getStyle('AD5')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('AD5:AU6');
+        $sheet->getStyle('AD5')->getAlignment()->setWrapText(true);
 
 
-        $sheet->setCellValue('Z7', '0000000000000JR. FITZCARRALD Nº 50400- SAN 0LUIS, 00000000000 000FITZCARRALD');
-        $sheet->getStyle('Z7')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('Z7:AR7');
-        $sheet->getStyle('Z7')->getAlignment()->setWrapText(true);
+        $sheet->setCellValue('K8', $guia['empresa_nro_documento']);
+        $sheet->getStyle('K8')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('K8:P8');
+
+
+        $sheet->setCellValue('AD7', $guia['punto_llegada']);
+        $sheet->getStyle('AD7')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('AD7:AU7');
+        $sheet->getStyle('AD7')->getAlignment()->setWrapText(true);
 
 
 
-        $sheet->setCellValue('G9', '24/03/2022');
-        $sheet->getStyle('G9')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('G9:K9');
+        $sheet->setCellValue('K9', $guia['fecha_emision']);
+        $sheet->getStyle('K9')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('K9:P9');
 
-        $sheet->setCellValue('X8', '20519865476');
-        $sheet->getStyle('X8')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('X8:AC8');
+        $sheet->setCellValue('AA8', $guia['cliente_nro_documento']);
+        $sheet->getStyle('AA8')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('AA8:AH8');
 
-        
-        $sheet->setCellValue('B6', 'CA LAS CASTAÑITAS N° 00127, 00SANISIDRO,0000 LIMA00000000');
-        $sheet->getStyle('B6')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('B6:V7');
-        $sheet->getStyle('B6')->getAlignment()->setWrapText(true);
 
- 
-        $sheet->setCellValue('D11', 'INGRESAR NOMBRE DE TRANSPORTISTA00000000');
-        $sheet->getStyle('D11')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('D11:Y11');
+        $sheet->setCellValue('F6', $guia['punto_partida']);
+        $sheet->getStyle('F6')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('F6:Z7');
+        $sheet->getStyle('F6')->getAlignment()->setWrapText(true);
+
+
+        $sheet->setCellValue('I11', 'INGRESAR NOMBRE DE TRANSPORTISTA');
+        $sheet->getStyle('I11')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('I11:AC11');
         // $sheet->getStyle('D11')->getAlignment()->setWrapText(true);
 
-        $sheet->setCellValue('AK11', 'LICENCIA');
-        $sheet->getStyle('AK11')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('AK11:AR11');
+        $sheet->setCellValue('AO11', 'LICENCIA');
+        $sheet->getStyle('AO11')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('AO11:AU11');
         // $sheet->getStyle('AJ11')->getAlignment()->setWrapText(true);
 
-        $sheet->setCellValue('E12', 'RUC TRANS');
-        $sheet->getStyle('E12')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('E12:K12');
+        $sheet->setCellValue('I12', 'RUC TRA');
+        $sheet->getStyle('I12')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('I12:O12');
         // $sheet->getStyle('E13')->getAlignment()->setWrapText(true);
 
-        $sheet->setCellValue('V12', 'INGRESAR MARCA VEHICU');
-        $sheet->getStyle('V12')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('V12:AE12');
+        $sheet->setCellValue('Z12', 'INGRESAR MARCA VEHICULO');
+        $sheet->getStyle('Z12')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('Z12:AI12');
         // $sheet->getStyle('X13')->getAlignment()->setWrapText(true);
 
- 
-        $sheet->setCellValue('AJ12', 'PLACA TRA');
-        $sheet->getStyle('AJ12')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('AJ12:AR12');
+
+        $sheet->setCellValue('AM12', 'PLACA TRA');
+        $sheet->getStyle('AM12')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('AM12:AU12');
         // $sheet->getStyle('AJ13')->getAlignment()->setWrapText(true);
 
- 
 
-        // $sheet->insertNewRowBefore(11, 4);
+    }
 
+    public static function insertarSeccionDetalle($sheet, $detalle)
+    {
+        $pageMaxHeight = 1008;
+        $ColumnaInicioItem = 1;
+        $filaInicioItem = 15;
+        $keySerietemp = 0;
+        $aux=0;
+        foreach ($detalle as $key1 => $item) {
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*1, $filaInicioItem, $item['codigo']);
+            // $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*1).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*1)+4).$filaInicioItem);
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*8, $filaInicioItem, $item['cantidad']);
+            // $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*4).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*4)+4).$filaInicioItem);
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*12, $filaInicioItem, $item['abreviatura']);
+            
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*16, $filaInicioItem, $item['descripcion']);
+            $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*16).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*16)+31).$filaInicioItem);
+            $sheet->getStyle(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*16).$filaInicioItem)->getAlignment()->setWrapText(true);
+            $filaInicioItem++;
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*16, $filaInicioItem, 'CATEGORÍA: ');
+            $filaInicioItem++;
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*16, $filaInicioItem, 'MARCA: '.$item['marca']);
+            $filaInicioItem++;
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*16, $filaInicioItem, 'MODELO: ');
+            $filaInicioItem++;
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*16, $filaInicioItem, 'NÚMERO DE PARTE: '.$item['part_number']);
+            $filaInicioItem++;
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*16, $filaInicioItem, 'S/N:');
+            $filaInicioItem++;
+
+            $filaInicioItem++;
+            $ColumnaInicioSerie=$ColumnaInicioItem*16;
+            $aux=$ColumnaInicioItem*16;
+            $i=0;
+            foreach ($item['series'] as $key2 => $serie) {
+
+                $sheet->setCellValueByColumnAndRow($ColumnaInicioSerie+$i, $filaInicioItem, $serie['serie']);
+                $i=$i+8;
+                if (($key2 + 1) % 3 == 0) {
+                    $filaInicioItem++;
+                    $ColumnaInicioSerie = $ColumnaInicioSerie;
+                    $i=0;
+                }
+                
+            }
+            
+            $filaInicioItem++;
+
+        }
+        return false;
         $sheet->setCellValue('A15', '0010966800');
         $sheet->mergeCells('A15:B15');
 
@@ -121,18 +169,12 @@ class GuiaSalidaExcelFormatoOKCController extends Controller
         $sheet->mergeCells('M19:AR19');
         $sheet->getStyle('M19')->getAlignment()->setWrapText(true);
 
-
         $sheet->setCellValue('M20', 'S/N:');
-    }
 
-    public function insertarSeccionListaProductos($sheet, $newArraySeries)
-    {
-        $pageMaxHeight = 1008;
         $ColumnaInicioSerie = 13;
         $filaInicioSerie = 21;
         $combinacionCeldaSerie = 8;
         $keySerietemp = 0;
-
         foreach ($newArraySeries as $key => $serie) {
 
             $sheet->setCellValueByColumnAndRow($ColumnaInicioSerie, $filaInicioSerie, $serie);
@@ -151,10 +193,146 @@ class GuiaSalidaExcelFormatoOKCController extends Controller
                 }
             }
         }
+        $this->seCompletoImpresionDeSerie($newArraySeries, $keySerietemp);
     }
 
-    public function construirExcel()
+    public function seCompletoImpresionDeSerie($newArraySeries, $keySerietemp)
     {
+        if ($keySerietemp > 0) {
+            $this->crearNuevaHoja($newArraySeries, $keySerietemp);
+        }
+    }
+
+    // public function crearNuevaHoja($newArraySeries, $keySerietemp)
+    // {
+    //     $spreadsheet = new Spreadsheet();
+    //     $spreadsheet->createSheet();
+    //     $spreadsheet->setActiveSheetIndex(1);
+    //     $sheetCount = $spreadsheet->getSheetCount(); 
+    //     $spreadsheet->getActiveSheet()->setTitle('Guia '+$sheetCount);
+    //     $spreadsheet->getActiveSheet()->getPageMargins()->setLeft(0.55);
+    //     $spreadsheet->getDefaultStyle()->getFont()->setSize(10);
+    //     $spreadsheet->getDefaultStyle()->getFont()->setName('Times New Roman');
+    //     $spreadsheet->getActiveSheet()->getPageSetup()->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_PORTRAIT);
+    //     $spreadsheet->getActiveSheet()->getPageSetup()->setPaperSize(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::PAPERSIZE_A4);
+    //     $sheet = $spreadsheet->getActiveSheet();
+    //     $this->insertarSeccionGuia($sheet, $data);
+    //     $this->insertarSeccionDetalle($sheet, $newArraySeries);
+    // }
+
+    public static function construirExcel($data)
+    {
+        $data = [
+            "guia" => [
+                "id_guia_ven" => 51,
+                "serie" => "0012",
+                "numero" => "0001234",
+                "fecha_emision" => "2022-03-31",
+                "fecha_almacen" => "2022-03-31",
+                "id_almacen" => 2,
+                "usuario" => 3,
+                "estado" => 1,
+                "fecha_registro" => "2022-03-31 14:56:18",
+                "id_sede" => 4,
+                "punto_partida" => "calle Arica Mz.M Lt.145",
+                "punto_llegada" => "Villas del sol Mz.T L.500",
+                "transportista" => null,
+                "fecha_traslado" => null,
+                "tra_serie" => null,
+                "tra_numero" => null,
+                "placa" => null,
+                "id_tp_doc_almacen" => 2,
+                "id_operacion" => 1,
+                "id_cliente" => 2121,
+                "registrado_por" => 3,
+                "id_guia_com" => null,
+                "id_od" => 1409,
+                "id_persona" => null,
+                "id_transferencia" => null,
+                "id_empresa" => 1,
+                "empresa_nro_documento" => "20519865476",
+                "empresa_razon_social" => "OK COMPUTER E.I.R.L.",
+                "cliente_nro_documento" => "20605944061",
+                "cliente_razon_social" => "HV INDUSTRIAL S.A.C - HV INDUSTRIAL"
+            ],
+            "detalle" => [
+                [
+                    "id_guia_ven_det" => 79,
+                    "id_almacen" => 2,
+                    "id_producto" => 10824,
+                    "codigo" => "010824",
+                    "part_number" => "751859552",
+                    "descripcion" => "DELL LATITUDE 5500 I7 8665U 16GB 1TB W10PRO 15.6\"",
+                    "marca" => "DELL",
+                    "cantidad" => "5",
+                    "abreviatura" => "CJA",
+                    "series" => [
+                        [
+                            "id_prod_serie" => 1233,
+                            "id_prod" => 10824,
+                            "serie" => "SPF2N46KV",
+                            "estado" => 1,
+                            "fecha_registro" => "2021-09-13 15:37:13",
+                            "id_guia_com_det" => 297,
+                            "id_almacen" => 2,
+                            "id_guia_ven_det" => 79
+                        ], [
+                            "id_prod_serie" => 1232,
+                            "id_prod" => 10824,
+                            "serie" => "SPF2N3V9C",
+                            "estado" => 1,
+                            "fecha_registro" => "2021-09-13 15:37:13",
+                            "id_guia_com_det" => 297,
+                            "id_almacen" => 2,
+                            "id_guia_ven_det" => 79
+                        ],
+                        [
+                            "id_prod_serie" => 1231,
+                            "id_prod" => 10824,
+                            "serie" => "SPF2N2LS3",
+                            "estado" => 1,
+                            "fecha_registro" => "2021-09-13 15:37:13",
+                            "id_guia_com_det" => 297,
+                            "id_almacen" => 2,
+                            "id_guia_ven_det" => 79
+                        ],
+                        [
+                            "id_prod_serie" => 1230,
+                            "id_prod" => 10824,
+                            "serie" => "SPF2N2K3M",
+                            "estado" => 1,
+                            "fecha_registro" => "2021-09-13 15:37:13",
+                            "id_guia_com_det" => 297,
+                            "id_almacen" => 2,
+                            "id_guia_ven_det" => 79
+                        ],
+                        [
+                            "id_prod_serie" => 1229,
+                            "id_prod" => 10824,
+                            "serie" => "SPF2N1WEL",
+                            "estado" => 1,
+                            "fecha_registro" => "2021-09-13 15:37:13",
+                            "id_guia_com_det" => 297,
+                            "id_almacen" => 2,
+                            "id_guia_ven_det" => 79
+                        ]
+                    ]
+                ],
+                [
+                    "id_guia_ven_det" => 80,
+                    "id_almacen" => 2,
+                    "id_producto" => 12447,
+                    "codigo" => "012447",
+                    "part_number" => "12471",
+                    "descripcion" => "MOCHILA LENOVO B210 NEGRA",
+                    "marca" => "LENOVO",
+                    "cantidad" => "1",
+                    "abreviatura" => "UND",
+                    "series" => []
+                ]
+            ]
+        ];
+        
         $spreadsheet = new Spreadsheet();
         $spreadsheet->getActiveSheet()->getPageMargins()->setLeft(0.55);
         $spreadsheet->getDefaultStyle()->getFont()->setSize(10);
@@ -162,17 +340,12 @@ class GuiaSalidaExcelFormatoOKCController extends Controller
         $spreadsheet->getActiveSheet()->getPageSetup()->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_PORTRAIT);
         $spreadsheet->getActiveSheet()->getPageSetup()->setPaperSize(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::PAPERSIZE_A4);
         // ->setPaperSize(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::PAPERSIZE_LETTER);
-        $spreadsheet->getActiveSheet()->setTitle('Guia 1');
+        $sheetCount = $spreadsheet->getSheetCount(); 
+        $spreadsheet->getActiveSheet()->setTitle('Guia '.$sheetCount);
         $spreadsheet->setActiveSheetIndex(0);
 
         $sheet = $spreadsheet->getActiveSheet();
-
-        $this->insertarSeccionCabecera($sheet);
-        // $this->insertarSeccionProductos($sheet);
-        // $this->insertarSeccionSeries($sheet);
-
-
-        $seriesArray = [
+        $productosArray = [
             'CND127H0TZ11', 'CND127H0TZ11', 'CND127H0TZ11',
             'CND127H0TZ12', 'CND127H0TZ12', 'CND127H0TZ12',
             'CND127H0TZ13', 'CND127H0TZ13', 'CND127H0TZ13',
@@ -214,67 +387,70 @@ class GuiaSalidaExcelFormatoOKCController extends Controller
             'CND127H0TZ49', 'CND127H0TZ49', 'CND127H0TZ49',
             'CND127H0TZ50', 'CND127H0TZ50', 'CND127H0TZ50'
         ];
-        $headerRowsHeight = 0; // calculated height of header and images of the top
-        $pageHeight = 0; //Current used page height Header + Footer + $headerRowsHeight
-        $reset = $pageHeight; //If you will have the firstpage diffrent change reset value and/or pageheight
-        $pageMaxHeight = 1040; //Maximale page height
-        $pageClearance = 2; //Clearance of footer
+        GuiaSalidaExcelFormatoOKCController::insertarSeccionGuia($sheet, $data['guia']);
+        GuiaSalidaExcelFormatoOKCController::insertarSeccionDetalle($sheet, $data['detalle']);
 
 
-        // $LetraColumnaPartidaParaSerie = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(16);
-        // $LetraColumnaLlegadaParaSerie = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(24);
-        $ColumnaInicioSerie = 13;
-        $filaInicioSerie = 21;
-        $combinacionCeldaSerie = 8;
-        $keySerietemp = 0;
-        foreach ($seriesArray as $key => $serie) {
-            $height = 13; // row height
-            $pageHeight = $pageHeight + $height;
+        // $headerRowsHeight = 0; // calculated height of header and images of the top
+        // $pageHeight = 0; //Current used page height Header + Footer + $headerRowsHeight
+        // $reset = $pageHeight; //If you will have the firstpage diffrent change reset value and/or pageheight
+        // $pageMaxHeight = 1040; //Maximale page height
+        // $pageClearance = 2; //Clearance of footer
+
+
+        // // $LetraColumnaPartidaParaSerie = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(16);
+        // // $LetraColumnaLlegadaParaSerie = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(24);
+        // $ColumnaInicioSerie = 13;
+        // $filaInicioSerie = 21;
+        // $combinacionCeldaSerie = 8;
+        // $keySerietemp = 0;
+        // foreach ($productosArray as $key => $serie) {
+        //     $height = 13; // row height
+        //     $pageHeight = $pageHeight + $height;
 
 
 
-            $sheet->setCellValueByColumnAndRow($ColumnaInicioSerie, $filaInicioSerie, ($pageMaxHeight - $pageHeight) . $serie);
-            // $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioSerie).$filaInicioSerie.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioSerie+$combinacionCeldaSerie).$filaInicioSerie);
-            $ColumnaInicioSerie = $ColumnaInicioSerie + $combinacionCeldaSerie;
-            if (($key + 1) % 3 == 0) {
-                $filaInicioSerie++;
-                $ColumnaInicioSerie = 13;
-            }
+        //     $sheet->setCellValueByColumnAndRow($ColumnaInicioSerie, $filaInicioSerie, ($pageMaxHeight - $pageHeight) . $serie);
+        //     // $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioSerie).$filaInicioSerie.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioSerie+$combinacionCeldaSerie).$filaInicioSerie);
+        //     $ColumnaInicioSerie = $ColumnaInicioSerie + $combinacionCeldaSerie;
+        //     if (($key + 1) % 3 == 0) {
+        //         $filaInicioSerie++;
+        //         $ColumnaInicioSerie = 13;
+        //     }
 
-            //Check if the space is still in the range of page 
-            $leftOverSpace = $pageMaxHeight - $pageHeight;
-            if ($leftOverSpace < $pageClearance) {
-                $spreadsheet->createSheet();
-                $spreadsheet->setActiveSheetIndex(1);
-                $spreadsheet->getActiveSheet()->setTitle('Guia 2');
-                $spreadsheet->getDefaultStyle()->getFont()->setSize(10);
-                $spreadsheet->getDefaultStyle()->getFont()->setName('Times New Roman');
-                if (($key + 1) % 3 == 0) {
-                    $keySerietemp = $key;
-                    break;
-                }
-            }
+        //     //Check if the space is still in the range of page 
+        //     $leftOverSpace = $pageMaxHeight - $pageHeight;
+        //     if ($leftOverSpace < $pageClearance) {
+        //         $spreadsheet->createSheet();
+        //         $spreadsheet->setActiveSheetIndex(1);
+        //         $spreadsheet->getActiveSheet()->setTitle('Guia 2');
+        //         $spreadsheet->getDefaultStyle()->getFont()->setSize(10);
+        //         $spreadsheet->getDefaultStyle()->getFont()->setName('Times New Roman');
+        //         if (($key + 1) % 3 == 0) {
+        //             $keySerietemp = $key;
+        //             break;
+        //         }
+        //     }
+        // }
 
-        }
+        // if ($keySerietemp > 0) {
 
-        if ($keySerietemp > 0) {
+        //     $newArraySeries = [];
+        //     for ($i = $keySerietemp + 1; $i < count($productosArray); $i++) {
+        //         $newArraySeries[] = $productosArray[$i];
+        //     }
 
-            $newArraySeries = [];
-            for ($i = $keySerietemp + 1; $i < count($seriesArray); $i++) {
-                $newArraySeries[] = $seriesArray[$i];
-            }
-
-            $spreadsheet->createSheet();
-            $spreadsheet->setActiveSheetIndex(1);
-            $spreadsheet->getActiveSheet()->setTitle('Guia 2');
-            $spreadsheet->getDefaultStyle()->getFont()->setSize(10);
-            $spreadsheet->getDefaultStyle()->getFont()->setName('Times New Roman');
-            $spreadsheet->getActiveSheet()->getPageSetup()->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_PORTRAIT);
-            $spreadsheet->getActiveSheet()->getPageSetup()->setPaperSize(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::PAPERSIZE_A4);
-            $sheet = $spreadsheet->getActiveSheet();
-            $this->insertarSeccionCabecera($sheet);
-            $this->insertarSeccionListaProductos($sheet, $newArraySeries);
-        }
+        //     $spreadsheet->createSheet();
+        //     $spreadsheet->setActiveSheetIndex(1);
+        //     $spreadsheet->getActiveSheet()->setTitle('Guia 2');
+        //     $spreadsheet->getDefaultStyle()->getFont()->setSize(10);
+        //     $spreadsheet->getDefaultStyle()->getFont()->setName('Times New Roman');
+        //     $spreadsheet->getActiveSheet()->getPageSetup()->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_PORTRAIT);
+        //     $spreadsheet->getActiveSheet()->getPageSetup()->setPaperSize(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::PAPERSIZE_A4);
+        //     $sheet = $spreadsheet->getActiveSheet();
+        //     $this->insertarSeccionGuia($sheet);
+        //     $this->insertarSeccionDetalle($sheet, $newArraySeries);
+        // }
 
 
 
