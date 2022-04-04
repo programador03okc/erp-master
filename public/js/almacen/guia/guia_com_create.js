@@ -212,16 +212,16 @@ $("#form-guia_create").on("submit", function (e) {
             if (element.control_series) {
                 // var part_number = $(this).parent().parent().find('td input[id=series]').data('partnumber');
                 if (element.series.length == 0) {
-                    validaCampos += 'Es necesario que agregue series al producto ' + (element.part_number !== null ? element.part_number : element.descripcion) + '.\n';
+                    validaCampos += 'Es necesario que agregue series al producto ' + (element.cod_prod) + '.\n';
                 }
                 else if (element.series.length > 0 && element.series.length < parseFloat(element.cantidad)) {
                     var dif = parseFloat(element.cantidad) - element.series.length;
-                    validaCampos += 'El producto ' + (element.part_number !== null ? element.part_number : element.descripcion) + ' requiere que se agreguen ' + dif + ' series.\n';
+                    validaCampos += 'El producto ' + (element.codigo) + ' requiere que se agreguen ' + dif + ' series.\n';
                 }
             }
 
             if (element.id_producto == null && element.id_categoria == null && element.id_subcategoria == null) {
-                validaCampos += 'Falta mapear el producto ' + (element.part_number !== null ? element.part_number : element.descripcion) + '.\n';
+                validaCampos += 'Falta mapear el producto ' + (element.codigo) + '.\n';
             }
             detalle.push({
                 'id': element.id_detalle,

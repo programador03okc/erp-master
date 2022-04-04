@@ -23,7 +23,8 @@ function open_transformacion_guia_create(data) {
     $('#detalleOrdenSeleccionadas tbody').html('');
     cargar_almacenes(data.id_sede, data.id_almacen);
     $("#id_almacen").attr('disabled', 'true');
-
+    $(".orden_transformacion").html(`<h5>Orden de Transformación</h5><label class="lbl-codigo" title="Abrir Transformación" 
+    onClick="abrir_transformacion(${data.id_transformacion})">${data.codigo}</label>`);
     listar_detalle_transformacion(data.id_transformacion);
 }
 
