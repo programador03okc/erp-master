@@ -211,22 +211,37 @@ function mostrarDetalleTransferencia() {
 // }
 
 $("#form-transferenciaGuia").on("submit", function (e) {
-    console.log("submit_transferencia");
+
     e.preventDefault();
     let data = $(this).serialize();
     console.log(data);
     let detalle = [];
+    let prod_sin_series = 0;
 
     listaDetalle.forEach(element => {
         detalle.push({
             id_trans_detalle: element.id_trans_detalle,
             series: element.series
         });
+        if (element.control_series && element.series.length == 0) {
+            prod_sin_series++;
+        }
     });
 
-    data += "&trans_seleccionadas=" + JSON.stringify(id_trans_seleccionadas) +
-        "&detalle=" + JSON.stringify(detalle);
-    salidaTransferencia(data);
+    if (prod_sin_series > 0) {
+        Lobibox.notify('warning', {
+            title: false,
+            size: "mini",
+            rounded: true,
+            sound: false,
+            delayIndicator: false,
+            msg: 'Falta agregar series a ' + prod_sin_series + ' productos.'
+        });
+    } else {
+        data += "&trans_seleccionadas=" + JSON.stringify(id_trans_seleccionadas) +
+            "&detalle=" + JSON.stringify(detalle);
+        salidaTransferencia(data);
+    }
 
 });
 

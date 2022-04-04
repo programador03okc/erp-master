@@ -1331,6 +1331,7 @@ class TransferenciaController extends Controller
                 'descripcion' => $det->descripcion,
                 'cantidad' => $det->cantidad,
                 'abreviatura' => $det->abreviatura,
+                'control_series' => $det->series,
                 'series' => $series
             ]);
         }
