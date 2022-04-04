@@ -15,8 +15,8 @@ class GuiaSalidaExcelFormatoOKCController extends Controller
     {
         $sheet->getDefaultColumnDimension()->setWidth(2, 'pt');
         $sheet->getRowDimension(1)->setRowHeight(65, 'pt');
-        $sheet->getRowDimension(3)->setRowHeight(30, 'pt');
-        $sheet->getRowDimension(12)->setRowHeight(1.8, 'pt');
+        $sheet->getRowDimension(3)->setRowHeight(25, 'pt');
+        $sheet->getRowDimension(10)->setRowHeight(1.8, 'pt');
         $sheet->getColumnDimension('A')->setWidth(9);
 
         $sheet->setCellValue('AR1', '');
@@ -29,7 +29,7 @@ class GuiaSalidaExcelFormatoOKCController extends Controller
 
         $sheet->setCellValue('G5', '00OK COMPUTER E.I.R.L.00');
         $sheet->getStyle('G5')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('G5:X5');
+        $sheet->mergeCells('G5:V5');
         $sheet->getStyle('G5')->getAlignment()->setWrapText(true);
 
         $sheet->setCellValue('AA5', '00MUNICIPALIDAD PROV000. CAR LOS F. FITZCARRALD 00000 00000000');
@@ -45,22 +45,24 @@ class GuiaSalidaExcelFormatoOKCController extends Controller
 
         $sheet->setCellValue('Z7', '0000000000000JR. FITZCARRALD Nº 50400- SAN 0LUIS, 00000000000 000FITZCARRALD');
         $sheet->getStyle('Z7')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('Z7:AR8');
+        $sheet->mergeCells('Z7:AR7');
+        $sheet->getStyle('Z7')->getAlignment()->setWrapText(true);
+
 
 
         $sheet->setCellValue('G9', '24/03/2022');
         $sheet->getStyle('G9')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
         $sheet->mergeCells('G9:K9');
 
-        $sheet->setCellValue('X9', '20519865476');
-        $sheet->getStyle('X9')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('X9:AC9');
+        $sheet->setCellValue('X8', '20519865476');
+        $sheet->getStyle('X8')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('X8:AC8');
 
         
-        $sheet->setCellValue('D6', 'CA LAS CASTAÑITAS N° 00127, 00SANISIDRO,0000 LIMA00000000');
-        $sheet->getStyle('D6')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('D6:X7');
-        $sheet->getStyle('D6')->getAlignment()->setWrapText(true);
+        $sheet->setCellValue('B6', 'CA LAS CASTAÑITAS N° 00127, 00SANISIDRO,0000 LIMA00000000');
+        $sheet->getStyle('B6')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('B6:V7');
+        $sheet->getStyle('B6')->getAlignment()->setWrapText(true);
 
  
         $sheet->setCellValue('D11', 'INGRESAR NOMBRE DE TRANSPORTISTA00000000');
@@ -73,20 +75,20 @@ class GuiaSalidaExcelFormatoOKCController extends Controller
         $sheet->mergeCells('AK11:AR11');
         // $sheet->getStyle('AJ11')->getAlignment()->setWrapText(true);
 
-        $sheet->setCellValue('E13', 'RUC TRANS');
-        $sheet->getStyle('E13')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('E13:K13');
+        $sheet->setCellValue('E12', 'RUC TRANS');
+        $sheet->getStyle('E12')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('E12:K12');
         // $sheet->getStyle('E13')->getAlignment()->setWrapText(true);
 
-        $sheet->setCellValue('V13', 'INGRESAR MARCA VEHICU');
-        $sheet->getStyle('V13')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('V13:AE13');
+        $sheet->setCellValue('V12', 'INGRESAR MARCA VEHICU');
+        $sheet->getStyle('V12')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('V12:AE12');
         // $sheet->getStyle('X13')->getAlignment()->setWrapText(true);
 
  
-        $sheet->setCellValue('AJ13', 'PLACA TRA');
-        $sheet->getStyle('AJ13')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('AJ13:AR13');
+        $sheet->setCellValue('AJ12', 'PLACA TRA');
+        $sheet->getStyle('AJ12')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('AJ12:AR12');
         // $sheet->getStyle('AJ13')->getAlignment()->setWrapText(true);
 
  
@@ -166,6 +168,8 @@ class GuiaSalidaExcelFormatoOKCController extends Controller
         $sheet = $spreadsheet->getActiveSheet();
 
         $this->insertarSeccionCabecera($sheet);
+        // $this->insertarSeccionProductos($sheet);
+        // $this->insertarSeccionSeries($sheet);
 
 
         $seriesArray = [
