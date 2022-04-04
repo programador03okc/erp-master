@@ -1609,8 +1609,8 @@ class TransferenciaController extends Controller
             ->first();
 
         $almacenes = DB::table('almacen.alm_almacen')
-            ->select('alm_almacen.id_almacen', 'alm_almacen.descripcion')
-            ->where([['alm_almacen.id_sede', '=', $req->id_sede], ['alm_almacen.estado', '=', 1]])
+            ->select('alm_almacen.id_almacen', 'alm_almacen.descripcion', 'alm_almacen.id_tipo_almacen')
+            ->where([['alm_almacen.id_sede', '=', $req->id_sede], ['alm_almacen.estado', '!=', 7]])
             ->orderBy('descripcion')
             ->get();
 

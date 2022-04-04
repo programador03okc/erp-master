@@ -38,10 +38,7 @@
                     <div class="row">
                         <div class="col-md-3">
                             <h5>Almacén</h5>
-                            <select class="form-control js-example-basic-single" name="id_almacen" required>
-                                <!-- @foreach ($almacenes as $alm)
-                                    <option value="{{$alm->id_almacen}}">{{$alm->codigo}} - {{$alm->descripcion}}</option>
-                                @endforeach -->
+                            <select class="form-control js-example-basic-single" name="id_almacen" id="id_almacen" required>
                             </select>
                         </div>
                         <div class="col-md-3">

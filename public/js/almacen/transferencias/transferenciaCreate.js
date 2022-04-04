@@ -1,67 +1,67 @@
-function ver_transferencia(id_guia) {
-    $("#submit_guia_transferencia").removeAttr("disabled");
-    $.ajax({
-        type: "GET",
-        url: "verGuiaCompraTransferencia/" + id_guia,
-        dataType: "JSON",
-        success: function (response) {
-            console.log(response);
-            $("#modal-guia_com_ver").modal({
-                show: true
-            });
-            $("[name=id_guia_com]").val(response["guia"].id_guia);
-            $("[name=serie_numero]").text(
-                response["guia"].serie + "-" + response["guia"].numero
-            );
-            $("[name=fecha_emision]").text(response["guia"].fecha_emision);
-            $("[name=fecha_almacen]").text(response["guia"].fecha_almacen);
-            $("[name=almacen]").text(response["guia"].almacen_descripcion);
-            $("[name=operacion]").text(response["guia"].operacion);
-            $("[name=clasificacion]").text(response["guia"].clasificacion);
+// function ver_transferencia(id_guia) {
+//     $("#submit_guia_transferencia").removeAttr("disabled");
+//     $.ajax({
+//         type: "GET",
+//         url: "verGuiaCompraTransferencia/" + id_guia,
+//         dataType: "JSON",
+//         success: function (response) {
+//             console.log(response);
+//             $("#modal-guia_com_ver").modal({
+//                 show: true
+//             });
+//             $("[name=id_guia_com]").val(response["guia"].id_guia);
+//             $("[name=serie_numero]").text(
+//                 response["guia"].serie + "-" + response["guia"].numero
+//             );
+//             $("[name=fecha_emision]").text(response["guia"].fecha_emision);
+//             $("[name=fecha_almacen]").text(response["guia"].fecha_almacen);
+//             $("[name=almacen]").text(response["guia"].almacen_descripcion);
+//             $("[name=operacion]").text(response["guia"].operacion);
+//             $("[name=clasificacion]").text(response["guia"].clasificacion);
 
-            var html = "";
-            var html_serie = "";
-            var i = 1;
+//             var html = "";
+//             var html_serie = "";
+//             var i = 1;
 
-            response["detalle"].forEach(element => {
-                html_serie = "";
-                element.series.forEach(ser => {
-                    if (html_serie == "") {
-                        html_serie += "<br>" + ser.serie;
-                    } else {
-                        html_serie += ", " + ser.serie;
-                    }
-                });
+//             response["detalle"].forEach(element => {
+//                 html_serie = "";
+//                 element.series.forEach(ser => {
+//                     if (html_serie == "") {
+//                         html_serie += "<br>" + ser.serie;
+//                     } else {
+//                         html_serie += ", " + ser.serie;
+//                     }
+//                 });
 
-                html += `<tr>
-                <td>${i}</td>
-                <td>${element.codigo_orden !== null
-                        ? element.codigo_orden
-                        : element.codigo_transfor !== null
-                            ? element.codigo_transfor
-                            : ""
-                    }</td>
-                <td>${element.codigo_req !== null ? element.codigo_req : ""
-                    }</td>
-                <td><strong>${element.sede_req !== null ? element.sede_req : ""
-                    }</strong></td>
-                <td>${element.codigo}</td>
-                <td>${element.part_number !== null ? element.part_number : ""
-                    }</td>
-                <td>${element.descripcion} <strong>${html_serie}</strong></td>
-                <td>${element.cantidad}</td>
-                <td>${element.abreviatura}</td>
-                </tr>`;
-                i++;
-            });
-            $("#detalleGuiaCompra tbody").html(html);
-        }
-    }).fail(function (jqXHR, textStatus, errorThrown) {
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    });
-}
+//                 html += `<tr>
+//                 <td>${i}</td>
+//                 <td>${element.codigo_orden !== null
+//                         ? element.codigo_orden
+//                         : element.codigo_transfor !== null
+//                             ? element.codigo_transfor
+//                             : ""
+//                     }</td>
+//                 <td>${element.codigo_req !== null ? element.codigo_req : ""
+//                     }</td>
+//                 <td><strong>${element.sede_req !== null ? element.sede_req : ""
+//                     }</strong></td>
+//                 <td>${element.codigo}</td>
+//                 <td>${element.part_number !== null ? element.part_number : ""
+//                     }</td>
+//                 <td>${element.descripcion} <strong>${html_serie}</strong></td>
+//                 <td>${element.cantidad}</td>
+//                 <td>${element.abreviatura}</td>
+//                 </tr>`;
+//                 i++;
+//             });
+//             $("#detalleGuiaCompra tbody").html(html);
+//         }
+//     }).fail(function (jqXHR, textStatus, errorThrown) {
+//         console.log(jqXHR);
+//         console.log(textStatus);
+//         console.log(errorThrown);
+//     });
+// }
 
 // $("#form-guia_com_ver").on("submit", function (e) {
 //     e.preventDefault();
@@ -127,7 +127,11 @@ function ver_requerimiento(id_requerimiento) {
                 option += `<option value="${response["almacenes"][0].id_almacen}" selected>${response["almacenes"][0].descripcion}</option>`;
             } else {
                 response["almacenes"].forEach(element => {
-                    option += `<option value="${element.id_almacen}">${element.descripcion}</option>`;
+                    if (element.id_tipo_almacen == 1) {//almacen principal sugerido
+                        option += `<option value="${element.id_almacen}" selected>${element.descripcion}</option>`;
+                    } else {
+                        option += `<option value="${element.id_almacen}">${element.descripcion}</option>`;
+                    }
                 });
             }
             $("[name=id_almacen_destino_create]").html(option);

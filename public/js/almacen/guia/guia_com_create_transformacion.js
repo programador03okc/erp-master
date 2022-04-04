@@ -21,7 +21,8 @@ function open_transformacion_guia_create(data) {
 
     $('.agregarSobrante').show();
     $('#detalleOrdenSeleccionadas tbody').html('');
-    cargar_almacenes(data.id_sede, 'id_almacen');
+    cargar_almacenes(data.id_sede, data.id_almacen);
+    $("#id_almacen").attr('disabled', 'true');
 
     listar_detalle_transformacion(data.id_transformacion);
 }
@@ -97,8 +98,10 @@ function mostrar_detalle_transformacion() {
     var html = '';
     var html_ser = '';
     var i = 1;
-
+    var total = 0;
+    var subtotal = 0;
     var opt_monedas = ``;
+
     monedas.forEach(moneda => {
         if (moneda.id_moneda == 1) {
             opt_monedas += `<option value="${moneda.id_moneda}" selected>${moneda.simbolo}</option>`;
@@ -118,6 +121,8 @@ function mostrar_detalle_transformacion() {
         });
         console.log('cod_prod: ' + element.cod_prod);
         html_monedas = `<select class="form-control moneda" style="width:70px" data-id="${element.id}">${opt_monedas}</select>`;
+        subtotal = element.cantidad * element.valor_unitario;
+        total += subtotal;
 
         html += `<tr>
             <td>${i}</td>
@@ -137,7 +142,7 @@ function mostrar_detalle_transformacion() {
              data-id="${element.id}" data-tipo="${element.tipo}" step="0.001" 
                 value="${element.valor_unitario}" /></div>
             </td>
-            <td  class="text-right">${formatNumber.decimal((element.cantidad * element.valor_unitario), '', -4)}</td>
+            <td  class="text-right">${formatNumber.decimal((subtotal), '', -4)}</td>
             <td width="8%">
                 ${element.tipo == 'sobrante' ?
                 `<button type="button" style="padding-left:8px;padding-right:7px;" 
@@ -155,6 +160,13 @@ function mostrar_detalle_transformacion() {
             </tr>`;
         i++;
     });
+
+    html += `<tr>
+        <td colSpan="8"></td>
+        <td><strong>${formatNumber.decimal((total), '', -4)}</strong></td>
+        <td></td>
+    </tr>`;
+
     $('#detalleOrdenSeleccionadas tbody').html(html);
 }
 

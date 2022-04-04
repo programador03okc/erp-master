@@ -24,7 +24,9 @@ function open_guia_create(data, $fila) {
 
     $('#serie').text('');
     $('#numero').text('');
-    cargar_almacenes(data.id_sede, 'id_almacen');
+    cargar_almacenes(data.id_sede, 0);
+    $("#id_almacen").removeAttr("disabled");
+
     var data = 'oc_seleccionadas=' + JSON.stringify([data.id_orden_compra]);
     listar_detalle_ordenes_seleccionadas(data);
 }
@@ -91,7 +93,9 @@ function open_guia_create_seleccionadas() {
 
             $('#serie').text('');
             $('#numero').text('');
-            cargar_almacenes(sede, 'id_almacen');
+            cargar_almacenes(sede, 0);
+            $("#id_almacen").removeAttr("disabled");
+
             var data = 'oc_seleccionadas=' + JSON.stringify(id_oc_seleccionadas);
             listar_detalle_ordenes_seleccionadas(data);
         }
