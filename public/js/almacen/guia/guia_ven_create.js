@@ -83,7 +83,7 @@ function listarDetalleOrdenDespacho(id_od, aplica_cambios, tiene_transformacion)
                     if (parseFloat(element.stock_comprometido) >= parseFloat(element.cantidad)) {
                         items_para_despachar++;
                     }
-                    if (parseFloat(element.stock_comprometido) == 0) {
+                    if (parseFloat(element.stock_comprometido) == 0 || element.stock_comprometido == null) {
                         msj = '*Aún no hay saldo de todos los productos. ';
                     }
                     if (element.id_almacen_reserva !== null && (id_almacen == null || id_almacen == '')) {
@@ -216,6 +216,7 @@ $("#form-guia_ven_create").on("submit", function (e) {
     console.log('submit');
     e.preventDefault();
     var lista_detalle = [];
+    let prod_sin_series = 0;
 
     $("#detalleGuiaVenta input[type=checkbox]:checked").each(function () {
         var id = $(this).val();
@@ -231,13 +232,12 @@ $("#form-guia_ven_create").on("submit", function (e) {
                     'id_detalle_requerimiento': element.id_detalle_requerimiento,
                     'id_guia_com_det': element.id_guia_com_det,
                     'id_almacen_reserva': element.id_almacen_reserva,
-                    // 'codigo'                    : element.codigo,
-                    // 'part_number'               : element.part_number,
-                    // 'descripcion'               : element.descripcion,
-                    // 'abreviatura'               : element.abreviatura,
-                    // 'descripcion'               : encodeURIComponent(element.descripcion),
                     'series': element.series
                 });
+
+                if (element.control_series && element.series.length == 0) {
+                    prod_sin_series++;
+                }
             }
         });
     });
@@ -251,6 +251,8 @@ $("#form-guia_ven_create").on("submit", function (e) {
         }
     });
 
+    var valida = 0;
+
     if (almacen_diferentes > 0) {
         Lobibox.notify('warning', {
             title: false,
@@ -260,23 +262,36 @@ $("#form-guia_ven_create").on("submit", function (e) {
             delayIndicator: false,
             msg: 'No es posible realizar una salida seleccionando stock de varios almacenes.'
         });
-    } else {
-        if (lista_detalle.length == 0) {
-            Lobibox.notify('warning', {
-                title: false,
-                size: "mini",
-                rounded: true,
-                sound: false,
-                delayIndicator: false,
-                msg: 'No es posible realizar una salida sin items.'
-            });
-        } else {
-            $('[name=id_almacen]').val(id_almacen);
-            var ser = $(this).serialize();
-            var data = ser + '&detalle=' + JSON.stringify(lista_detalle);
-            console.log(data);
-            guardarGuiaVenta(data);
-        }
+        valida++;
+    }
+    if (lista_detalle.length == 0) {
+        Lobibox.notify('warning', {
+            title: false,
+            size: "mini",
+            rounded: true,
+            sound: false,
+            delayIndicator: false,
+            msg: 'No es posible realizar una salida sin items.'
+        });
+        valida++;
+    }
+    if (prod_sin_series > 0) {
+        Lobibox.notify('warning', {
+            title: false,
+            size: "mini",
+            rounded: true,
+            sound: false,
+            delayIndicator: false,
+            msg: 'Falta agregar series a ' + prod_sin_series + ' productos.'
+        });
+        valida++;
+    }
+    if (valida == 0) {
+        $('[name=id_almacen]').val(id_almacen);
+        var ser = $(this).serialize();
+        var data = ser + '&detalle=' + JSON.stringify(lista_detalle);
+        console.log(data);
+        guardarGuiaVenta(data);
     }
 });
 
