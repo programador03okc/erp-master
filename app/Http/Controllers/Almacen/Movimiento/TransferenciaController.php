@@ -641,7 +641,8 @@ class TransferenciaController extends Controller
             $usuario = Auth::user();
             $fecha = date('Y-m-d H:i:s');
 
-            DB::table('almacen.trans')->where('id_guia_ven', $request->id_guia_ven)
+            DB::table('almacen.trans')
+                ->where('id_guia_ven', $request->id_guia_ven)
                 ->update(['responsable_destino' => $request->responsable_destino]);
 
             $guia_ven = DB::table('almacen.guia_ven')
@@ -649,47 +650,28 @@ class TransferenciaController extends Controller
                     'guia_ven.*',
                     'adm_empresa.id_contribuyente as empresa_contribuyente',
                     'log_prove.id_proveedor as empresa_proveedor',
-                    'com_cliente.id_contribuyente as cliente_contribuyente',
-                    'prove_cliente.id_proveedor as cliente_proveedor',
                     'adm_empresa.id_empresa'
                 )
-                ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'guia_ven.id_sede')
+                ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'guia_ven.id_almacen')
+                ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_almacen.id_sede')
                 ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
                 ->leftJoin('logistica.log_prove', 'log_prove.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
-                ->leftJoin('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'guia_ven.id_cliente')
-                ->leftJoin('logistica.log_prove as prove_cliente', 'prove_cliente.id_contribuyente', '=', 'com_cliente.id_contribuyente')
                 ->where('guia_ven.id_guia_ven', $request->id_guia_ven)
                 ->first();
 
             $id_proveedor = null;
 
-            if ($guia_ven->id_cliente !== null) {
-                //si existe, copia el id_proveedor
-                if ($guia_ven->cliente_proveedor !== null) {
-                    $id_proveedor = $guia_ven->cliente_proveedor;
-                } else if ($guia_ven->cliente_contribuyente !== null) {
-                    $id_proveedor = DB::table('logistica.log_prove')->insertGetId(
-                        [
-                            'id_contribuyente' => $guia_ven->cliente_contribuyente,
-                            'estado' => 1,
-                            'fecha_registro' => $fecha,
-                        ],
-                        'id_proveedor'
-                    );
-                } //si no existe proveedor, id_empresa
-            } else {
-                if ($guia_ven->empresa_proveedor !== null) {
-                    $id_proveedor = $guia_ven->empresa_proveedor;
-                } else if ($guia_ven->empresa_contribuyente !== null) {
-                    $id_proveedor = DB::table('logistica.log_prove')->insertGetId(
-                        [
-                            'id_contribuyente' => $guia_ven->empresa_contribuyente,
-                            'estado' => 1,
-                            'fecha_registro' => $fecha,
-                        ],
-                        'id_proveedor'
-                    );
-                }
+            if ($guia_ven->empresa_proveedor !== null) {
+                $id_proveedor = $guia_ven->empresa_proveedor;
+            } else if ($guia_ven->empresa_contribuyente !== null) {
+                $id_proveedor = DB::table('logistica.log_prove')->insertGetId(
+                    [
+                        'id_contribuyente' => $guia_ven->empresa_contribuyente,
+                        'estado' => 1,
+                        'fecha_registro' => $fecha,
+                    ],
+                    'id_proveedor'
+                );
             }
 
             $destino_emp = DB::table('almacen.alm_almacen')
