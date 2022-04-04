@@ -202,7 +202,6 @@ $("#form-guia_create").on("submit", function (e) {
     console.log('submit');
     e.preventDefault();
 
-    var data = $(this).serialize();
     var detalle = [];
     var validaCampos = '';
     var ope = $('[name=id_operacion]').val();
@@ -289,6 +288,9 @@ $("#form-guia_create").on("submit", function (e) {
             confirmButtonText: "Sí, Guardar"
         }).then(result => {
             if (result.isConfirmed) {
+                $("#id_almacen").removeAttr("disabled");
+
+                var data = $(this).serialize();
                 data += '&detalle=' + JSON.stringify(detalle);
                 console.log(data);
                 guardar_guia_create(data);
