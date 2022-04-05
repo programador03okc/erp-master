@@ -1290,17 +1290,12 @@ class SalidasPendientesController extends Controller
             ->first();
 
         $detalle = $this->listarDetalleGuiaSalida($id_guia_ven);
-        // return (['guia' => $guia, 'detalle' => $detalle]);
         //OKC PYC SVS PTEC
         switch ($guia->id_empresa) {
             case 1: //OKC
             case 2: //PYC
             case 6: //PTEC
-                // return Excel::download(new GuiaSalidaOKCExcel($guia, $detalle), 'guia_salida_okc.xlsx'); //! descomentar luego de prueba con la siguiente linea
-                // return Excel::download(new GuiaSalidaSVSExcel($guia, $detalle), 'guia_salida_svs.xlsx'); // * probando con svs pero eliminar esta linea
-                // (new GuiaSalidaExcelFormatoOKCController)->construirExcel(['guia' => $guia, 'detalle' => $detalle]);
                 GuiaSalidaExcelFormatoOKCController::construirExcel(['guia' => $guia, 'detalle' => $detalle]);
-
                 break;
             case 3: //SVS
                 return Excel::download(new GuiaSalidaSVSExcel($guia, $detalle), 'guia_salida_svs.xlsx');
@@ -1314,11 +1309,6 @@ class SalidasPendientesController extends Controller
                 break;
         }
 
-        // if ($guia->id_empresa == 1 || $guia->id_empresa == 2 || $guia->id_empresa == 6) {
-        //     return Excel::download(new GuiaSalidaOKCExcel($guia, $detalle), 'guia_salida_okc.xlsx');
-        // } else if($guia->id_empresa == 3) {
-        //     return ['guia' => $guia, 'detalle' => $detalle];
-        // }
     }
 
     public function seriesVentaExcel($id_guia_ven_det)
