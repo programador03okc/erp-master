@@ -219,7 +219,10 @@ class TransformacionController extends Controller
             ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'transfor_sobrante.id_producto')
             ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
             ->join('almacen.transformacion', 'transformacion.id_transformacion', '=', 'transfor_sobrante.id_transformacion')
-            ->where('transfor_sobrante.id_transformacion', $id_transformacion)
+            ->where([
+                ['transfor_sobrante.id_transformacion', '=', $id_transformacion],
+                ['transfor_sobrante.estado', '!=', 7]
+            ])
             ->get();
 
         $transformados = DB::table('almacen.transfor_transformado')
@@ -245,7 +248,10 @@ class TransformacionController extends Controller
             ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_det_req.id_producto')
             ->join('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
             ->join('almacen.transformacion', 'transformacion.id_transformacion', '=', 'transfor_transformado.id_transformacion')
-            ->where('transfor_transformado.id_transformacion', $id_transformacion)
+            ->where([
+                ['transfor_transformado.id_transformacion', '=', $id_transformacion],
+                ['transfor_transformado.estado', '!=', 7]
+            ])
             ->get();
 
         $monedas = DB::table('configuracion.sis_moneda')->where('estado', 1)->get();
