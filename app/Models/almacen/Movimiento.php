@@ -30,6 +30,17 @@ class Movimiento extends Model
             ])
             ->select(['alm_req.codigo'])->distinct()->get();
 
+        if (count($requerimientos) == 0) {
+            $requerimientos = Movimiento::join('almacen.transformacion', 'transformacion.id_transformacion', 'mov_alm.id_transformacion')
+                ->join('almacen.orden_despacho', 'orden_despacho.id_od', 'transformacion.id_od')
+                ->join('almacen.alm_req', 'alm_req.id_requerimiento', 'orden_despacho.id_requerimiento')
+                ->where([
+                    ['mov_alm.id_mov_alm', '=', $this->attributes['id_mov_alm']],
+                    ['alm_req.estado', '!=', 7]
+                ])
+                ->select(['alm_req.codigo'])->distinct()->get();
+        }
+
         $resultado = [];
         foreach ($requerimientos as $req) {
             array_push($resultado, $req->codigo);

@@ -93,22 +93,31 @@ function listarRequerimientosAlmacen() {
                         + (row['tiene_transformacion'] ? ' <i class="fas fa-random red"></i>' : '');
                 }
             },
-            { data: 'concepto' },
-            { data: 'grupo_descripcion', name: 'sis_grupo.descripcion' },
-            { data: 'almacen_descripcion', name: 'alm_almacen.descripcion', className: "text-center" },
-            { data: 'fecha_entrega', name: 'alm_req.fecha_entrega', className: "text-center" },
-            // { data: 'estado_doc', name: 'adm_estado_doc.estado_doc', className: "text-center" },
             {
                 data: 'estado_doc', name: 'adm_estado_doc.estado_doc', className: "text-center",
                 'render': function (data, type, row) {
                     return '<span class="label label-' + row['bootstrap_color'] + '">' + row['estado_doc'] + '</span>'
                 }
             },
+            { data: 'concepto' },
+            { data: 'grupo_descripcion', name: 'sis_grupo.descripcion' },
+            { data: 'almacen_descripcion', name: 'alm_almacen.descripcion', className: "text-center" },
+            { data: 'fecha_entrega', name: 'alm_req.fecha_entrega', className: "text-center" },
+            // { data: 'estado_doc', name: 'adm_estado_doc.estado_doc', className: "text-center" },
             { data: 'nombre_corto', name: 'sis_usua.nombre_corto', className: "text-center" },
+            {
+                data: 'codigo_despacho_interno', name: 'despachoInterno.codigo', className: "text-center",
+                'render': function (data, type, row) {
+                    return (row['codigo_despacho_interno'] ?? '') + (row['codigo_transformacion'] !== null ? `<br><label class="lbl-codigo" title="Abrir Transformación" 
+                    onClick="abrir_transformacion(${row['id_transformacion']})">${row['codigo_transformacion']}</label>` : '')
+                        + (row['estado_di'] ?? '');
+                }
+            },
+            { data: 'codigo_despacho_externo', name: 'orden_despacho.codigo', className: "text-center" },
             {
                 data: 'estado_despacho_descripcion', name: 'estado_despacho.estado_doc', className: "text-center",
                 'render': function (data, type, row) {
-                    return '<span class="label label-default">' + row['estado_despacho_descripcion'] + '</span>'
+                    return '<span class="label label-default">' + (row['estado_despacho_descripcion'] == 'Aprobado' ? 'Pendiente' : row['estado_despacho_descripcion']) + '</span>'
                 }
             },
         ],
@@ -127,7 +136,7 @@ function listarRequerimientosAlmacen() {
                     <i class="fas fa-exchange-alt"></i></button>`: ''
                         }`;
 
-                }, targets: 9
+                }, targets: 11
             }
         ],
         'order': [[0, "desc"]],
@@ -157,6 +166,13 @@ $('#requerimientosAlmacen tbody').on("click", "button.transferencia", function (
         });
     }
 });
+
+function abrir_transformacion(id_transformacion) {
+    console.log('abrir_transformacio' + id_transformacion);
+    localStorage.setItem("id_transfor", id_transformacion);
+    var win = window.open("/cas/customizacion/hoja-transformacion/index", '_blank');
+    win.focus();
+}
 
 var iTableCounter = 1;
 var oInnerTable;
