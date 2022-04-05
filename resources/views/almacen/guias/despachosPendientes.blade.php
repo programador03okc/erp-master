@@ -78,13 +78,14 @@ Atención de Salidas
                                         <tr>
                                             <th hidden></th>
                                             <th>Orden Despacho</th>
+                                            <th>Req.</th>
+                                            <th>Cliente</th>
+                                            <th>OCAM</th>
                                             <th>Guia venta</th>
                                             <th>Fecha Salida</th>
                                             <th>Almacén</th>
                                             <th>Salida</th>
                                             <th>Operación</th>
-                                            <th>Req.</th>
-                                            <th>Cliente</th>
                                             <th>Responsable</th>
                                             <th width="70px"></th>
                                         </tr>

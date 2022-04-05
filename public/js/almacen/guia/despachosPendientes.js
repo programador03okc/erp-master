@@ -327,30 +327,6 @@ function listarDespachosEntregados(permiso) {
                     }
             },
             {
-                data: 'numero', name: 'guia_ven.numero',
-                'render': function (data, type, row) {
-                    return row['serie'] + '-' + row['numero'];
-                }
-            },
-            {
-                data: 'fecha_emision', className: "text-center",
-                render:
-                    function (data, type, row) {
-                        return formatDate(row['fecha_emision']);
-                    }
-            },
-            { 'data': 'almacen_descripcion', 'name': 'alm_almacen.descripcion' },
-            {
-                data: 'codigo',
-                'render': function (data, type, row) {
-                    return (row['codigo'] !== null ?
-                        ('<label class="lbl-codigo" title="Abrir Salida" onClick="abrir_salida(' + row['id_mov_alm'] + ')">' + row['codigo'] + '</label>')
-                        : '');
-                }
-            },
-            { 'data': 'operacion', 'name': 'tp_ope.descripcion' },
-            // {'data': 'codigo_requerimiento', 'name': 'alm_req.codigo'},
-            {
                 data: 'codigo_requerimiento', name: 'alm_req.codigo',
                 'render': function (data, type, row) {
                     if (row['codigo_requerimiento'] !== null) {
@@ -379,17 +355,43 @@ function listarDespachosEntregados(permiso) {
                         }
                     }
             },
-            // {'data': 'concepto', 'name': 'alm_req.concepto'},
-            // {
-            //     'render': function (data, type, row) {
-            //         if (row['concepto'] !== null) {
-            //             return row['concepto'];
-            //         }
-            //         else if (row['concepto_trans'] !== null) {
-            //             return row['concepto_trans'];
-            //         }
-            //     }
-            // },
+            {
+                data: 'nro_orden', name: 'oc_propias_view.nro_orden',
+                render: function (data, type, row) {
+                    if (row["nro_orden"] == null) {
+                        return '';
+                    } else {
+                        return (
+                            `<a href="#" class="archivos" data-id="${row["id_oc_propia"]}" data-tipo="${row["tipo"]}">
+                            ${row["nro_orden"]}</a>`
+                        );
+                    }
+                }, className: "text-center"
+            },
+            {
+                data: 'numero', name: 'guia_ven.numero',
+                'render': function (data, type, row) {
+                    return row['serie'] + '-' + row['numero'];
+                }
+            },
+            {
+                data: 'fecha_emision', className: "text-center",
+                render:
+                    function (data, type, row) {
+                        return formatDate(row['fecha_emision']);
+                    }
+            },
+            { 'data': 'almacen_descripcion', 'name': 'alm_almacen.descripcion' },
+            {
+                data: 'codigo',
+                'render': function (data, type, row) {
+                    return (row['codigo'] !== null ?
+                        ('<label class="lbl-codigo" title="Abrir Salida" onClick="abrir_salida(' + row['id_mov_alm'] + ')">' + row['codigo'] + '</label>')
+                        : '');
+                }
+            },
+            { 'data': 'operacion', 'name': 'tp_ope.descripcion' },
+            // {'data': 'codigo_requerimiento', 'name': 'alm_req.codigo'},
             { 'data': 'nombre_corto', 'name': 'sis_usua.nombre_corto' }
         ],
         'order': [[0, "desc"]],
@@ -413,7 +415,7 @@ function listarDespachosEntregados(permiso) {
                                 <i class="fas fa-print"></i></button>
                             </div>`;
                     }
-                }, targets: 10
+                }, targets: 11
                 // '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
                 //     'data-placement="bottom" title="Ver Detalle" data-id="'+row.id_mov_alm+'">'+
                 //     '<i class="fas fa-list-ul"></i></button>'+
@@ -421,6 +423,13 @@ function listarDespachosEntregados(permiso) {
         ],
     });
 }
+
+$("#despachosEntregados tbody").on("click", "a.archivos", function (e) {
+    $(e.preventDefault());
+    var id = $(this).data("id");
+    var tipo = $(this).data("tipo");
+    obtenerArchivosMgcp(id, tipo);
+});
 
 $('#despachosEntregados tbody').on("click", "button.editar", function () {
     var data = $("#despachosEntregados").DataTable().row($(this).parents("tr")).data();

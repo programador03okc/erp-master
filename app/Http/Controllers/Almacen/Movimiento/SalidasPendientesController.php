@@ -432,12 +432,18 @@ class SalidasPendientesController extends Controller
                 'sis_usua.nombre_corto',
                 'tp_ope.descripcion as operacion',
                 'orden_despacho.aplica_cambios',
+                'oc_propias_view.nro_orden',
+                'oc_propias_view.codigo_oportunidad',
+                'oc_propias_view.id as id_oc_propia',
+                'oc_propias_view.tipo',
             )
             ->join('almacen.guia_ven', 'guia_ven.id_guia_ven', '=', 'mov_alm.id_guia_ven')
             ->leftjoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'guia_ven.id_almacen')
             ->leftjoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'guia_ven.usuario')
             ->join('almacen.orden_despacho', 'orden_despacho.id_od', '=', 'guia_ven.id_od')
             ->leftjoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'orden_despacho.id_requerimiento')
+            ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
+            ->leftJoin('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'cc.id_oportunidad')
             ->leftjoin('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'alm_req.id_cliente')
             ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
             ->join('almacen.tp_ope', 'tp_ope.id_operacion', '=', 'mov_alm.id_operacion')
