@@ -26,39 +26,48 @@ class MigracionAlmacenSoftLinkController extends Controller
     {
         try {
             $type = $request->tipo;
+            $mode = $request->modelo;
             $file = $request->file('archivo');
-            $text = '';
+            $text_new = '';
+            $text_upt = '';
 
-            $import = new AlmacenImport($type);
+            $import = new AlmacenImport($type, $mode);
             Excel::import($import, $file);
 
             switch ($type) {
                 case 1:
-                    $text = ' almacenes nuevos';
+                    $text_new = ' almacenes nuevos';
+                    $text_upt = ' almacenes actualizados';
                 break;
                 case 2:
-                    $text = ' categorías nuevas';
+                    $text_new = ' categorías nuevas';
+                    $text_upt = ' categorías actualizadas';
                 break;
                 case 3:
-                    $text = ' sub categorías nuevas';
+                    $text_new = ' sub categorías nuevas';
+                    $text_upt = ' sub categorías actualizadas';
                 break;
                 case 4:
-                    $text = ' unidades de medida nuevas';
+                    $text_new = ' unidades de medida nuevas';
+                    $text_upt = ' unidades de medida actualizadas';
                 break;
                 case 5:
-                    $text = ' productos nuevos';
+                    $text_new = ' productos nuevos';
+                    $text_upt = ' productos actualizados';
                 break;
                 case 6:
-                    $text = ' series de productos cargados';
+                    $text_new = ' series de productos cargados';
+                    $text_upt = ' series de productos actualizados';
                 break;
                 case 7:
-                    $text = ' saldos de productos cargados';
+                    $text_new = ' saldos de productos cargados';
+                    $text_upt = ' saldos de productos actualizados';
                 break;
             }
 
             $response = 'ok';
             $alert = 'success';
-            $msj = 'Se ha importado '.$import->getRowCount().$text;
+            $msj = 'Se ha importado '.$import->getRowCount(1).$text_new.' y '.$import->getRowCount(2).$text_upt;
             $error = '';
         } catch (Exception $ex) {
             $response = 'error';
