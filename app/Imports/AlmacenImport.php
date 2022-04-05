@@ -40,8 +40,8 @@ class AlmacenImport implements ToCollection, WithHeadingRow
                     $this->saveSubCategoria($row['cod_subc'], $descripcion, $this->model);
                 break;
                 case 4:
-                    $descripcion = trim($row['descripcion']);
-                    $this->saveUnidad($row['cod_uni'], $descripcion, $this->model);
+                    $descripcion = trim($row['nom_unid']);
+                    $this->saveUnidad($row['cod_unid'], $descripcion, $this->model);
                 break;
                 case 5:
                     $descripcion = trim($row['nom_prod']);
@@ -55,28 +55,6 @@ class AlmacenImport implements ToCollection, WithHeadingRow
                     $this->saveSaldo($row['cod_alma'], $row['cod_prod'], $row['stock'], $row['costo_promedio'], $row['valorizacion']);
                 break;
             }
-
-            // if ($this->type == 1) {
-            //     $descripcion = trim($row['descripcion']);
-            //     $this->saveAlmacen($row['cod_alma'], $row['cod_suc'], $row['sede'], $descripcion, $row['direccion'], $this->model);
-            // } else if ($this->type == 2) {
-            //     $descripcion = trim($row['descripcion']);
-            //     $this->saveCategoria($row['cod_cate'], $descripcion, $this->model);
-            // } else if ($this->type == 3) {
-            //     $descripcion = trim($row['descripcion']);
-            //     $this->saveSubCategoria($row['cod_subc'], $descripcion, $this->model);
-            // } else if ($this->type == 4) {
-            //     $descripcion = trim($row['descripcion']);
-            //     $this->saveUnidad($row['cod_uni'], $descripcion, $this->model);
-            // } else if ($this->type == 5) {
-            //     $descripcion = trim($row['nom_prod']);
-            //     $part_no = trim($row['cod_espe']);
-            //     $this->saveProducto($row['cod_prod'], $part_no, $descripcion, $row['cod_clasi'], $row['cod_cate'], $row['cod_subc'], $row['cod_unid'], $row['tip_moneda'], $row['flg_serie'], $row['flg_afecto_igv'], $row['txt_observa'], $row['ult_edicion'], $this->model);
-            // } else if ($this->type == 6) {
-            //     $this->saveSerie($row['cod_alma'], $row['cod_prod'], $row['serie']);
-            // } else if ($this->type == 7) {
-            //     $this->saveSaldo($row['cod_alma'], $row['cod_prod'], $row['stock'], $row['costo_promedio'], $row['valorizacion']);
-            // }
         }
     }
 
