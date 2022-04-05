@@ -775,12 +775,13 @@ class RequerimientoView {
                 // console.log(res);
                 let option = '';
                 for (let i = 0; i < res.length; i++) {
-                    if (res.length == 1) {
-                        option += '<option data-id-sede="' + res[i].id_sede + '" data-id-empresa="' + res[i].id_empresa + '" value="' + res[i].id_almacen + '" selected>' + res[i].codigo + ' - ' + res[i].descripcion + '</option>';
-
-                    } else {
-                        option += '<option data-id-sede="' + res[i].id_sede + '" data-id-empresa="' + res[i].id_empresa + '" value="' + res[i].id_almacen + '">' + res[i].codigo + ' - ' + res[i].descripcion + '</option>';
-
+                    if(res.estado !=7 && res.id_tipo_almacen ==1){
+                        if (res.length == 1) {
+                            option += '<option data-id-sede="' + res[i].id_sede + '" data-id-empresa="' + res[i].id_empresa + '" data-id-tipo-almacen="' + res[i].id_tipo_almacen + '" value="' + res[i].id_almacen + '" selected>' + res[i].codigo + ' - ' + res[i].descripcion + '</option>';
+                        } else {
+                            option += '<option data-id-sede="' + res[i].id_sede + '" data-id-empresa="' + res[i].id_empresa + '" value="' + res[i].id_almacen + '">' + res[i].codigo + ' - ' + res[i].descripcion + '</option>';
+    
+                        }
                     }
                 }
                 $('[name=id_almacen]').html('<option value="0" disabled selected>Elija una opción</option>' + option);

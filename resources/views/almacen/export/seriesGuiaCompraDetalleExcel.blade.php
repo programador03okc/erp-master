@@ -4,12 +4,10 @@
     <meta charset="UTF-8">
 </head>
 <body>
-    <h2>Lista de Series</h2>
-    <br>
     <table>
         <thead>
             <tr>
-                <th style="background-color: #cccccc;" width="18"><b>Serie</b></th>
+                <th style="background-color: #cccccc;" width="18">serie</th>
             </tr>
         </thead>
         <tbody>

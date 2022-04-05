@@ -77,7 +77,7 @@ function listar_detalle_movimiento(id_guia_com_detalle) {
                 </tr>`;
                 i++;
             });
-            $('#detalleMovimiento tbody').html(html);
+            $('#detalleMovimientoIngreso tbody').html(html);
             // <i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" 
             // title="Agregar Series" onClick="agrega_series_guia(${element.id_guia_com_det},${element.cantidad},${element.id_producto},${element.id_almacen});"></i>
         }

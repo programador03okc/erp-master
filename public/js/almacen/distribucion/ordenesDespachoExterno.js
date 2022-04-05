@@ -244,7 +244,7 @@ function listarRequerimientosPendientes(usuario) {
                 }, targets: 1
             },
             {
-                'render': function (data, type, row) {//
+                'render': function (data, type, row) {
                     return `<div>
                     <div style="display:flex;"> 
                         <button type="button" class="detalle btn btn-default btn-flat btn-xs " data-toggle="tooltip"
@@ -423,8 +423,26 @@ $('#requerimientosEnProceso tbody').on("click", "button.envio_od", function (e) 
     $(e.preventDefault());
     var data = $('#requerimientosEnProceso').DataTable().row($(this).parents("tr")).data();
     console.log(data);
-    $('[name=envio]').val('envio');
-    openOrdenDespachoEnviar(data);
+
+    if (data.tiene_transformacion) {
+
+        if (data.codigo_despacho_interno !== null) {
+            $('[name=envio]').val('envio');
+            openOrdenDespachoEnviar(data);
+        } else {
+            Lobibox.notify('warning', {
+                title: false,
+                size: "mini",
+                rounded: true,
+                sound: false,
+                delayIndicator: false,
+                msg: 'Aún le falta emitir el Despacho Interno.'
+            });
+        }
+    } else {
+        $('[name=envio]').val('envio');
+        openOrdenDespachoEnviar(data);
+    }
 });
 
 $('#requerimientosEnProceso tbody').on("click", "button.interno", function (e) {

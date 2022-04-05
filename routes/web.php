@@ -1432,6 +1432,15 @@ Route::group(['middleware' => ['auth']], function () {
 				//Pendientes de Salida
 				Route::get('index', 'Almacen\Movimiento\ReservasAlmacenController@viewReservasAlmacen')->name('index');
 				Route::post('listarReservasAlmacen', 'Almacen\Movimiento\ReservasAlmacenController@listarReservasAlmacen')->name('listarReservasAlmacen');
+				Route::get('anularReserva/{id}', 'Almacen\Movimiento\ReservasAlmacenController@anularReserva');
+			});
+
+			Route::group(['as' => 'requerimientos-almacen.', 'prefix' => 'requerimientos-almacen'], function () {
+				//Pendientes de Salida
+				Route::get('index', 'Almacen\Reporte\ListaRequerimientosAlmacenController@viewRequerimientosAlmacen')->name('index');
+				Route::post('listarRequerimientosAlmacen', 'Almacen\Reporte\ListaRequerimientosAlmacenController@listarRequerimientosAlmacen')->name('listarRequerimientosAlmacen');
+				Route::get('verDetalleRequerimientoDI/{id}', 'Logistica\Distribucion\OrdenesTransformacionController@verDetalleRequerimientoDI');
+				Route::get('listarDetalleTransferencias/{id}', 'Almacen\Movimiento\TransferenciaController@listarDetalleTransferencias');
 			});
 		});
 
@@ -1877,7 +1886,13 @@ Route::group(['middleware' => ['auth']], function () {
 		});
 	});
 
+	Route::group(['as' => 'migracion.', 'prefix' => 'migracion'], function () {
 
+        Route::get('index', 'Migraciones\MigracionAlmacenSoftLinkController@index')->name('index');
+		Route::get('movimientos', 'Migraciones\MigracionAlmacenSoftLinkController@movimientos')->name('movimientos');
+        Route::post('importar', 'Migraciones\MigracionAlmacenSoftLinkController@importar')->name('importar');
+
+    });
 	Route::get('listarUsu', 'Almacen\Movimiento\TransferenciaController@listarUsu');
 
 	Route::get('migrar_venta_directa/{id}', 'Migraciones\MigrateRequerimientoSoftLinkController@migrar_venta_directa');

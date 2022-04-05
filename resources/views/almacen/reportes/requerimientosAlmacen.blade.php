@@ -2,7 +2,7 @@
 @include('layout.menu_almacen')
 
 @section('cabecera')
-Reservas de almacén
+Estado de Atención de Requerimientos
 @endsection
 
 @section('estilos')
@@ -29,30 +29,24 @@ Reservas de almacén
 @section('content')
 <div class="box box-solid">
     <div class="box-body">
-        <div class="page-main" type="reservasAlmacen">
+        <div class="page-main" type="requerimientosAlmacen">
             <div class="row" style="padding-top:10px;padding-right:10px;padding-left:10px;">
                 <div class="col-md-12">
                     <div class="table-responsive">
                         <table class="mytable table table-condensed table-bordered table-okc-view" 
-                            id="reservasAlmacen" style="width:100%;">
+                            id="requerimientosAlmacen" style="width:100%;">
                             <thead>
                                 <tr>
                                     <th hidden></th>
-                                    <th>Reserva</th>
-                                    <th>Requerimiento</th>
-                                    <th>Código</th>
-                                    <th>Part Number</th>
-                                    <th>Descripción del producto</th>
-                                    <th>Almacén de reserva</th>
-                                    <th>Stock comprom.</th>
-                                    <th>Guía compra</th>
-                                    <th>Transf.</th>
-                                    <th>Item Trans.</th>
-                                    <th>Item Base</th>
-                                    <th>Registrado por</th>
-                                    <th>Fecha de registro</th>
+                                    <th>Codigo</th>
+                                    <th>Concepto</th>
+                                    <th>Grupo</th>
+                                    <th>Almacen</th>
+                                    <th>Fecha entrega</th>
                                     <th>Estado</th>
-                                    <th>Acciones</th>
+                                    <th>Registrado por</th>
+                                    <th>Estado despacho</th>
+                                    <th width="7%"></th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
@@ -64,6 +58,7 @@ Reservas de almacén
         </div>
     </div>
 </div>
+@include('almacen.transferencias.verTransferenciasPorRequerimiento')
 @endsection
 
 @section('scripts')
@@ -82,12 +77,13 @@ Reservas de almacén
 <script src="{{ asset('template/plugins/loadingoverlay.min.js') }}"></script>
 <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
 
-<script src="{{ asset('js/almacen/reservas/reservasAlmacen.js') }}?v={{filemtime(public_path('js/almacen/reservas/reservasAlmacen.js'))}}"></script>
+<script src="{{ asset('js/almacen/reporte/requerimientosAlmacen.js') }}?v={{filemtime(public_path('js/almacen/reporte/requerimientosAlmacen.js'))}}"></script>
+<script src="{{ asset('js/almacen/distribucion/verDetalleRequerimiento.js?') }}?v={{filemtime(public_path('js/almacen/distribucion/verDetalleRequerimiento.js'))}}"></script>
 
 <script>
     $(document).ready(function() {
         seleccionarMenu(window.location);
-        listarReservasAlmacen();
+        listarRequerimientosAlmacen();
         // $.fn.dataTable.Buttons.defaults.dom.button.className = 'btn';
     //     iniciar('{{Auth::user()->tieneAccion(85)}}');
     });

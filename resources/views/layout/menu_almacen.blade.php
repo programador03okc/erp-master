@@ -82,6 +82,7 @@
             @endif
             <li><a href="{{route('almacen.movimientos.prorrateo.index')}}"> Prorrateo de Costos </a></li>
             <li><a href="{{route('almacen.movimientos.reservas.index')}}"> Reservas de almacén </a></li>
+            <li><a href="{{route('almacen.movimientos.requerimientos-almacen.index')}}"> Estado de Requerimientos </a></li>
         </ul>
     </li>
     @endif

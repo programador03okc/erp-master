@@ -222,16 +222,16 @@ Transferencias
 <script src="{{ asset('template/plugins/jquery-datatables-checkboxes/js/dataTables.checkboxes.min.js') }}"></script>
 <script src="{{ asset('template/plugins/loadingoverlay.min.js') }}"></script>
 
-<script src="{{ asset('js/almacen/transferencias/listarTransferencias.js')}}"></script>
-<script src="{{ asset('js/almacen/transferencias/transferenciasRecibidas.js')}}"></script>
-<script src="{{ asset('js/almacen/transferencias/transferenciaCreate.js')}}"></script>
-<script src="{{ asset('js/almacen/transferencias/transferenciaRecibir.js')}}"></script>
-<script src="{{ asset('js/almacen/transferencias/transferenciaEnviar.js')}}"></script>
-<script src="{{ asset('js/almacen/transferencias/transportistaModal.js')}}"></script>
-<script src="{{ asset('js/almacen/transferencias/verDocsAutogenerados.js')}}"></script>
-<script src="{{ asset('js/almacen/distribucion/verDetalleRequerimiento.js')}}"></script>
-<script src="{{ asset('js/almacen/guia/guia_ven_series.js')}}"></script>
-<script src="{{ asset('js/tesoreria/facturacion/archivosMgcp.js')}}"></script>
+<script src="{{ asset('js/almacen/transferencias/listarTransferencias.js')}}?v={{filemtime(public_path('js/almacen/transferencias/listarTransferencias.js'))}}"></script>
+<script src="{{ asset('js/almacen/transferencias/transferenciasRecibidas.js')}}?v={{filemtime(public_path('js/almacen/transferencias/transferenciasRecibidas.js'))}}"></script>
+<script src="{{ asset('js/almacen/transferencias/transferenciaCreate.js')}}?v={{filemtime(public_path('js/almacen/transferencias/transferenciaCreate.js'))}}"></script>
+<script src="{{ asset('js/almacen/transferencias/transferenciaRecibir.js')}}?v={{filemtime(public_path('js/almacen/transferencias/transferenciaRecibir.js'))}}"></script>
+<script src="{{ asset('js/almacen/transferencias/transferenciaEnviar.js')}}?v={{filemtime(public_path('js/almacen/transferencias/transferenciaEnviar.js'))}}"></script>
+<script src="{{ asset('js/almacen/transferencias/transportistaModal.js')}}?v={{filemtime(public_path('js/almacen/transferencias/transportistaModal.js'))}}"></script>
+<script src="{{ asset('js/almacen/transferencias/verDocsAutogenerados.js')}}?v={{filemtime(public_path('js/almacen/transferencias/verDocsAutogenerados.js'))}}"></script>
+<script src="{{ asset('js/almacen/distribucion/verDetalleRequerimiento.js')}}?v={{filemtime(public_path('js/almacen/distribucion/verDetalleRequerimiento.js'))}}"></script>
+<script src="{{ asset('js/almacen/guia/guia_ven_series.js')}}?v={{filemtime(public_path('js/almacen/guia/guia_ven_series.js'))}}"></script>
+<script src="{{ asset('js/tesoreria/facturacion/archivosMgcp.js')}}?v={{filemtime(public_path('js/tesoreria/facturacion/archivosMgcp.js'))}}"></script>
 
 <script>
     $(document).ready(function() {

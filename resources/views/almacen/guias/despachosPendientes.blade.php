@@ -126,14 +126,14 @@ Atención de Salidas
 <script src="{{ asset('template/plugins/loadingoverlay.min.js') }}"></script>
 <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
 
-<script src="{{ asset('js/almacen/guia/despachosPendientes.js')}}"></script>
-<script src="{{ asset('js/almacen/guia/guia_ven_create.js')}}"></script>
-<script src="{{ asset('js/almacen/distribucion/despachoDetalle.js')}}"></script>
-<script src="{{ asset('js/almacen/guia/guia_ven_cambio.js')}}"></script>
-<script src="{{ asset('js/almacen/guia/guia_ven_series.js')}}"></script>
-<script src="{{ asset('js/almacen/guia/salidaAlmacen.js')}}"></script>
-<script src="{{ asset('js/almacen/distribucion/verDetalleRequerimiento.js')}}"></script>
-<script src="{{ asset('js/tesoreria/facturacion/archivosMgcp.js')}}"></script>
+<script src="{{ asset('js/almacen/guia/despachosPendientes.js')}}?v={{filemtime(public_path('js/almacen/guia/despachosPendientes.js'))}}"></script>
+<script src="{{ asset('js/almacen/guia/guia_ven_create.js')}}?v={{filemtime(public_path('js/almacen/guia/guia_ven_create.js'))}}"></script>
+<script src="{{ asset('js/almacen/distribucion/despachoDetalle.js')}}?v={{filemtime(public_path('js/almacen/distribucion/despachoDetalle.js'))}}"></script>
+<script src="{{ asset('js/almacen/guia/guia_ven_cambio.js')}}?v={{filemtime(public_path('js/almacen/guia/guia_ven_cambio.js'))}}"></script>
+<script src="{{ asset('js/almacen/guia/guia_ven_series.js')}}?v={{filemtime(public_path('js/almacen/guia/guia_ven_series.js'))}}"></script>
+<script src="{{ asset('js/almacen/guia/salidaAlmacen.js')}}?v={{filemtime(public_path('js/almacen/guia/salidaAlmacen.js'))}}"></script>
+<script src="{{ asset('js/almacen/distribucion/verDetalleRequerimiento.js')}}?v={{filemtime(public_path('js/almacen/distribucion/verDetalleRequerimiento.js'))}}"></script>
+<script src="{{ asset('js/tesoreria/facturacion/archivosMgcp.js')}}?v={{filemtime(public_path('js/tesoreria/facturacion/archivosMgcp.js'))}}"></script>
 <script>
     $(document).ready(function() {
         seleccionarMenu(window.location);

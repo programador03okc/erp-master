@@ -24,7 +24,9 @@ function open_guia_create(data, $fila) {
 
     $('#serie').text('');
     $('#numero').text('');
-    cargar_almacenes(data.id_sede, 'id_almacen');
+    cargar_almacenes(data.id_sede, 0);
+    $("#id_almacen").removeAttr("disabled");
+
     var data = 'oc_seleccionadas=' + JSON.stringify([data.id_orden_compra]);
     listar_detalle_ordenes_seleccionadas(data);
 }
@@ -91,7 +93,9 @@ function open_guia_create_seleccionadas() {
 
             $('#serie').text('');
             $('#numero').text('');
-            cargar_almacenes(sede, 'id_almacen');
+            cargar_almacenes(sede, 0);
+            $("#id_almacen").removeAttr("disabled");
+
             var data = 'oc_seleccionadas=' + JSON.stringify(id_oc_seleccionadas);
             listar_detalle_ordenes_seleccionadas(data);
         }
@@ -198,7 +202,6 @@ $("#form-guia_create").on("submit", function (e) {
     console.log('submit');
     e.preventDefault();
 
-    var data = $(this).serialize();
     var detalle = [];
     var validaCampos = '';
     var ope = $('[name=id_operacion]').val();
@@ -208,16 +211,16 @@ $("#form-guia_create").on("submit", function (e) {
             if (element.control_series) {
                 // var part_number = $(this).parent().parent().find('td input[id=series]').data('partnumber');
                 if (element.series.length == 0) {
-                    validaCampos += 'Es necesario que agregue series al producto ' + (element.part_number !== null ? element.part_number : element.descripcion) + '.\n';
+                    validaCampos += 'Es necesario que agregue series al producto ' + (element.cod_prod) + '.\n';
                 }
                 else if (element.series.length > 0 && element.series.length < parseFloat(element.cantidad)) {
                     var dif = parseFloat(element.cantidad) - element.series.length;
-                    validaCampos += 'El producto ' + (element.part_number !== null ? element.part_number : element.descripcion) + ' requiere que se agreguen ' + dif + ' series.\n';
+                    validaCampos += 'El producto ' + (element.codigo) + ' requiere que se agreguen ' + dif + ' series.\n';
                 }
             }
 
             if (element.id_producto == null && element.id_categoria == null && element.id_subcategoria == null) {
-                validaCampos += 'Falta mapear el producto ' + (element.part_number !== null ? element.part_number : element.descripcion) + '.\n';
+                validaCampos += 'Falta mapear el producto ' + (element.codigo) + '.\n';
             }
             detalle.push({
                 'id': element.id_detalle,
@@ -285,6 +288,9 @@ $("#form-guia_create").on("submit", function (e) {
             confirmButtonText: "Sí, Guardar"
         }).then(result => {
             if (result.isConfirmed) {
+                $("#id_almacen").removeAttr("disabled");
+
+                var data = $(this).serialize();
                 data += '&detalle=' + JSON.stringify(detalle);
                 console.log(data);
                 guardar_guia_create(data);

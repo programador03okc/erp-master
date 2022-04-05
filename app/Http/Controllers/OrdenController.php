@@ -4225,7 +4225,8 @@ class OrdenController extends Controller
                     'monto_total_orden' => $element->monto_total_orden,
                     'monto_total_presup' => $element->monto_total_presup,
                     'tipo_cambio_compra' => $element->tipo_cambio_compra,
-                    'facturas' => implode(',', (new OrdenController)->reporteListaOrdenes($element->id_orden_compra)),
+                    // 'facturas' => implode(',', (new OrdenController)->reporteListaOrdenes($element->id_orden_compra)),
+                    'facturas' => [],
                     'codigo_requerimiento' => []
 
                 ];

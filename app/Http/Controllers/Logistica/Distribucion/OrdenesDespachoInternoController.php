@@ -201,6 +201,7 @@ class OrdenesDespachoInternoController extends Controller
                                 'id_sede' => $req->id_sede,
                                 'id_requerimiento' => $req->id_requerimiento,
                                 'id_almacen' => $req->id_almacen,
+                                'id_cliente' => $req->id_cliente,
                                 'codigo' => $codigo,
                                 'fecha_despacho' => $request->fecha_despacho,
                                 'comentario' => trim($request->comentario),
@@ -322,7 +323,7 @@ class OrdenesDespachoInternoController extends Controller
 
                     $arrayRspta = array(
                         'tipo' => 'success',
-                        'mensaje' => 'Se generó correctamente la Orden de Transformación. Para el ' . ($req->codigo_oportunidad !== null ? $req->codigo_oportunidad : $req->codigo)
+                        'mensaje' => 'Se generó correctamente la Orden de Transformación. Para el ' . $req->codigo . ' ' . ($req->codigo_oportunidad !== null ? $req->codigo_oportunidad : '')
                     );
                 }
             } else {

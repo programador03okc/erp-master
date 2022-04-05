@@ -28,7 +28,7 @@ function listarReservasAlmacen() {
         buttons: botones,
         language: vardataTables[0],
         // destroy: true,
-        pageLength: 50,
+        pageLength: 10,
         serverSide: true,
         initComplete: function (settings, json) {
             const $filter = $("#reservasAlmacen_filter");
@@ -104,6 +104,16 @@ function listarReservasAlmacen() {
             { data: 'descripcion', name: 'alm_prod.descripcion' },
             { data: 'almacen', name: 'alm_almacen.descripcion', className: "text-center" },
             { data: 'stock_comprometido', className: "text-center" },
+            // { data: 'numero', name: 'guia_com.numero', className: "text-center" },
+            {
+                data: 'numero', name: 'guia_com.numero', className: "text-center",
+                'render': function (data, type, row) {
+                    return row['numero'] !== null ? (row['serie'] + '-' + row['numero']) : '';
+                }
+            },
+            { data: 'codigo_transferencia', name: 'trans.codigo', className: "text-center" },
+            { data: 'codigo_transformado', name: 'transformacion.codigo', className: "text-center" },
+            { data: 'codigo_materia', name: 'materia.codigo', className: "text-center" },
             { data: 'nombre_corto', name: 'sis_usua.nombre_corto', className: "text-center" },
             { data: 'fecha_registro', className: "text-center" },
             // { data: 'codigo_req', name: 'alm_req.codigo', className: "text-center" },
@@ -116,29 +126,67 @@ function listarReservasAlmacen() {
         ],
         columnDefs: [
             { 'aTargets': [0], 'sClass': 'invisible' },
-            // {
-            //     'render': function (data, type, row) {
+            {
+                'render': function (data, type, row) {
 
-            //         return `<button type="button" class="detalle btn btn-default btn-flat boton" data-toggle="tooltip"
-            //                     data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}">
-            //                     <i class="fas fa-chevron-down"></i></button>` +
+                    return `<button type="button" class="anular btn btn-danger btn-flat boton" data-toggle="tooltip" 
+                            data-placement="bottom" title="Anular Reserva"  data-id="${row['id_reserva']}">
+                            <i class="fas fa-trash"></i></button>`;
 
-            //             (row['suma_reservas'] !== null && row['suma_cantidad'] !== null && row['suma_reservas'] >= row['suma_cantidad'] ?
-            //                 (`<button type="button" class="guia btn btn-warning btn-flat boton" data-toggle="tooltip" 
-            //                     data-placement="bottom" title="Generar Guía" >
-            //                     <i class="fas fa-sign-in-alt"></i></button>`) : '');
-
-            //     }, targets: 10
-            // }
+                }, targets: 15
+            }
         ],
         'order': [[0, "desc"]],
     });
-
-    $("#reservasAlmacen tbody").on("click", "a.verProducto", function (e) {
-        $(e.preventDefault());
-        var id = $(this).data("id");
-        localStorage.setItem("id_producto", id);
-        var win = window.open("/almacen/catalogos/productos/index", '_blank');
-        win.focus();
-    });
+    vista_extendida();
 }
+
+$("#reservasAlmacen tbody").on("click", "a.verProducto", function (e) {
+    $(e.preventDefault());
+    var id = $(this).data("id");
+    localStorage.setItem("id_producto", id);
+    var win = window.open("/almacen/catalogos/productos/index", '_blank');
+    win.focus();
+});
+
+$("#reservasAlmacen tbody").on("click", "button.anular", function () {
+    Swal.fire({
+        title: "¿Está seguro que desea anular ésta reserva?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#00a65a", //"#3085d6",
+        cancelButtonColor: "#d33",
+        cancelButtonText: "Cancelar",
+        confirmButtonText: "Sí, Anular"
+    }).then(result => {
+
+        if (result.isConfirmed) {
+            var id = $(this).data("id");
+
+            $.ajax({
+                type: 'GET',
+                url: 'anularReserva/' + id,
+                dataType: 'JSON',
+                success: function (response) {
+                    console.log(response);
+                    if (response > 0) {
+                        Lobibox.notify("success", {
+                            title: false,
+                            size: "mini",
+                            rounded: true,
+                            sound: false,
+                            delayIndicator: false,
+                            msg: 'Se anuló correctamente.'
+                        });
+                        $('#reservasAlmacen').DataTable().ajax.reload(null, false);
+                    }
+                }
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            });
+        }
+    });
+
+});

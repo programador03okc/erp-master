@@ -289,7 +289,7 @@ $("#ordenesPendientes tbody").on("click", "button.guia", function () {
     open_guia_create(data, $(this).closest("tr"));
 });
 
-function cargar_almacenes(sede) {
+function cargar_almacenes(sede, id_almacen) {
     if (sede !== "") {
         $.ajax({
             type: "GET",
@@ -298,18 +298,36 @@ function cargar_almacenes(sede) {
             success: function (response) {
                 console.log(response);
                 var option = "";
+
+
                 for (var i = 0; i < response.length; i++) {
-                    if (response.length == 1) {
-                        option +=
-                            '<option data-id-sede="' + response[i].id_sede + '" data-id-empresa="' +
-                            response[i].id_empresa + '" value="' + response[i].id_almacen +
-                            '" selected>' + response[i].codigo + " - " + response[i].descripcion +
-                            "</option>";
+
+                    if (id_almacen == 0) {
+                        if (response[i].id_tipo_almacen == 1) {//principal sugerido
+                            option +=
+                                '<option data-id-sede="' + response[i].id_sede + '" data-id-empresa="' +
+                                response[i].id_empresa + '" value="' + response[i].id_almacen +
+                                '" selected>' + response[i].codigo + " - " + response[i].descripcion +
+                                "</option>";
+                        } else {
+                            option +=
+                                '<option data-id-sede="' + response[i].id_sede + '" data-id-empresa="' +
+                                response[i].id_empresa + '" value="' + response[i].id_almacen + '">' +
+                                response[i].codigo + " - " + response[i].descripcion + "</option>";
+                        }
                     } else {
-                        option +=
-                            '<option data-id-sede="' + response[i].id_sede + '" data-id-empresa="' +
-                            response[i].id_empresa + '" value="' + response[i].id_almacen + '">' +
-                            response[i].codigo + " - " + response[i].descripcion + "</option>";
+                        if (response[i].id_almacen == id_almacen) {
+                            option +=
+                                '<option data-id-sede="' + response[i].id_sede + '" data-id-empresa="' +
+                                response[i].id_empresa + '" value="' + response[i].id_almacen +
+                                '" selected>' + response[i].codigo + " - " + response[i].descripcion +
+                                "</option>";
+                        } else {
+                            option +=
+                                '<option data-id-sede="' + response[i].id_sede + '" data-id-empresa="' +
+                                response[i].id_empresa + '" value="' + response[i].id_almacen + '">' +
+                                response[i].codigo + " - " + response[i].descripcion + "</option>";
+                        }
                     }
                 }
                 $("[name=id_almacen]").html(option);

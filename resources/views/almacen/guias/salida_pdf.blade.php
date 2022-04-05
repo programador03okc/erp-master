@@ -169,8 +169,9 @@
                 <th class="text-center cabecera-producto" style="width: 10%">Part Number</th>
                 <th class="text-center cabecera-producto">Descripción del producto</th>
                 <th class="text-center cabecera-producto" style="width: 5%">Cant.</th>
-                <th class="text-center cabecera-producto" style="width: 5%">Unid.</th>
+                <th class="text-center cabecera-producto" style="width: 5%">Und.</th>
                 <th class="text-center cabecera-producto" style="width: 5%">Mnd.</th>
+                <th class="text-center cabecera-producto" style="width: 5%">Unit.</th>
                 <th class="text-center cabecera-producto" style="width: 5%">Total</th>
             </tr>
         </thead>
@@ -200,9 +201,10 @@
                 }
             }
 
-            $valorizacion = ($prod->precio_unitario !== null
-                            ? $prod->precio_unitario
-                            : 0) * ($prod->cantidad);
+            $unitario = ($prod->cantidad !== null
+                            ? ($prod->valorizacion / $prod->cantidad)
+                            : 0);
+            // $valorizacion = $unitario * ($prod->cantidad);
 
             ?>
             <tr>
@@ -212,7 +214,8 @@
                 <td class="text-center">{{$prod->cantidad}}</td>
                 <td class="text-center">{{$prod->abreviatura}}</td>
                 <td class="text-right">{{$prod->moneda_doc!==null?$prod->moneda_doc:'S/'}}</td>
-                <td class="text-right">{{round($valorizacion,2,PHP_ROUND_HALF_UP)}}</td>
+                <td class="text-right">{{round($unitario,2,PHP_ROUND_HALF_UP)}}</td>
+                <td class="text-right">{{round($prod->valorizacion,2,PHP_ROUND_HALF_UP)}}</td>
             </tr>
             @endforeach
         </tbody>

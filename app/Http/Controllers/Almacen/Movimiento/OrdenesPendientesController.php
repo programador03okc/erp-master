@@ -489,11 +489,11 @@ class OrdenesPendientesController extends Controller
             ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'log_det_ord_compra.id_unidad_medida')
             ->leftjoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'log_ord_compra.id_moneda')
             ->whereIn('log_det_ord_compra.id_orden_compra', $ordenes)
+            ->whereNotNull('log_det_ord_compra.id_producto')
             ->where([
                 ['log_det_ord_compra.estado', '!=', 7],
                 ['log_det_ord_compra.estado', '!=', 28]
             ])
-            ->whereNotNull('log_det_ord_compra.id_producto')
             ->get();
 
         return response()->json($detalle);
@@ -554,7 +554,6 @@ class OrdenesPendientesController extends Controller
             ->leftjoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'guia_com_det.id_producto')
             ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
             ->where([['guia_com_det.id_guia_com', '=', $id_guia], ['guia_com_det.estado', '!=', 7]])
-            ->whereNotNull('log_det_ord_compra.id_producto')
             ->get();
 
         $lista = [];
@@ -1139,7 +1138,12 @@ class OrdenesPendientesController extends Controller
 
         if ($det->id_detalle_requerimiento !== null) {
             $dreq = DB::table('almacen.alm_det_req')
-                ->select('alm_req.id_requerimiento', 'alm_det_req.cantidad', 'alm_req.id_tipo_requerimiento')
+                ->select(
+                    'alm_req.id_requerimiento',
+                    'alm_req.id_almacen',
+                    'alm_det_req.cantidad',
+                    'alm_req.id_tipo_requerimiento'
+                )
                 ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
                 ->where('id_detalle_requerimiento', $det->id_detalle_requerimiento)
                 ->first();
@@ -1204,6 +1208,21 @@ class OrdenesPendientesController extends Controller
                                 'usuario_registro' => $id_usuario,
                                 'fecha_registro' => date('Y-m-d H:i:s'),
                             ]);
+                    } else {
+                        if ($id_almacen !== $dreq->id_almacen) {
+                            DB::table('almacen.alm_reserva')
+                                ->insert([
+                                    'codigo' => Reserva::crearCodigo($id_almacen),
+                                    'id_producto' => $det->id_producto,
+                                    'stock_comprometido' => $cantidad,
+                                    'id_almacen_reserva' => $id_almacen,
+                                    'id_detalle_requerimiento' => $det->id_detalle_requerimiento,
+                                    'id_guia_com_det' => $id_guia_com_det,
+                                    'estado' => 1,
+                                    'usuario_registro' => $id_usuario,
+                                    'fecha_registro' => date('Y-m-d H:i:s'),
+                                ]);
+                        }
                     }
                 }
             }
@@ -2267,8 +2286,9 @@ class OrdenesPendientesController extends Controller
                             <th>PartNumber</th>
                             <th width=50% >Descripción</th>
                             <th>Cant.</th>
-                            <th>Unid.</th>
-                            <th>Valor.</th>
+                            <th>Und.</th>
+                            <th>Unitario</th>
+                            <th>Total</th>
                         </tr>
                     </thead>
                     <tbody>';
@@ -2300,7 +2320,8 @@ class OrdenesPendientesController extends Controller
                             <td>' . $det->descripcion . ' <strong>' . $series . '</strong></td>
                             <td class="right">' . $det->cantidad . '</td>
                             <td>' . $det->abreviatura . '</td>
-                            <td class="right">' . $det->valorizacion . '</td>
+                            <td>' . round(($det->valorizacion / $det->cantidad), 4, PHP_ROUND_HALF_UP) . '</td>
+                            <td class="right">' . round($det->valorizacion, 4, PHP_ROUND_HALF_UP) . '</td>
                         </tr>';
             $i++;
         }
