@@ -432,10 +432,15 @@ class SalidasPendientesController extends Controller
                 'sis_usua.nombre_corto',
                 'tp_ope.descripcion as operacion',
                 'orden_despacho.aplica_cambios',
+                'orden_despacho.estado as estado_od',
                 'oc_propias_view.nro_orden',
                 'oc_propias_view.codigo_oportunidad',
                 'oc_propias_view.id as id_oc_propia',
                 'oc_propias_view.tipo',
+                // DB::raw("(SELECT ingreso.codigo FROM almacen.mov_alm as ingreso
+                // where ingreso.id_transformacion = mov_alm.id_transformacion
+                //   and ingreso.id_tp_mov = 1
+                //   and ingreso.estado != 7) AS tiene_ingreso_transformacion")
             )
             ->join('almacen.guia_ven', 'guia_ven.id_guia_ven', '=', 'mov_alm.id_guia_ven')
             ->leftjoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'guia_ven.id_almacen')

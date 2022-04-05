@@ -321,9 +321,6 @@ function listarDespachosEntregados(permiso) {
                         } else {
                             return '<span class="label label-primary">' + row['codigo_od'] + '</span>';
                         }
-                        // } else {
-                        //     return '<span class="label label-success">' + row['codigo_trans'] + '</span>';
-                        // }
                     }
             },
             {
@@ -406,9 +403,10 @@ function listarDespachosEntregados(permiso) {
                                 data-placement="bottom" title="Editar Guía de Salida" data-id="${row['id_mov_alm']}" data-guia="${row['id_guia_ven']}"
                                 data-od="${row['id_od']}"><i class="fas fa-edit"></i></button>
 
-                                <button type="button" class="anular btn btn-danger btn-flat boton" data-toggle="tooltip" 
-                                data-placement="bottom" title="Anular Salida" data-id="${row['id_mov_alm']}" data-guia="${row['id_guia_ven']}"
-                                data-od="${row['id_od']}"><i class="fas fa-trash"></i></button>
+                                ${row['estado_od'] == 21 ?
+                                `<button type="button" class="anular btn btn-danger btn-flat boton" data-toggle="tooltip" 
+                                    data-placement="bottom" title="Anular Salida" data-id="${row['id_mov_alm']}" data-guia="${row['id_guia_ven']}"
+                                    data-od="${row['id_od']}"><i class="fas fa-trash"></i></button>` : ''}
                                 
                                 <button type="button" class="imprimir btn btn-info btn-flat boton" data-toggle="tooltip" 
                                 data-placement="bottom" title="Descargar formato de impresión" data-guia="${row['id_guia_ven']}">
