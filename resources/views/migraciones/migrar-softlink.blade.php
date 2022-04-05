@@ -41,6 +41,15 @@
                         </div>
                         <div class="col-md-12">
                             <div class="form-group">
+                                <h6>Tipo de acción</h6>
+                                <select name="modelo" class="form-control input-sm">
+                                    <option value="1">Nuevos registros</option>
+                                    <option value="2">Actualizar estados</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
                                 <h6>Seleccione el archivo (Excel)</h6>
                                 <input type="file" name="archivo" class="form-control input-sm">
                             </div>
@@ -53,7 +62,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-6 col-md-offset-3" id="divMensaje"></div>
+            <div class="col-md-8 col-md-offset-2" id="divMensaje"></div>
         </div>
     </div>
 </div>
@@ -81,9 +90,7 @@
                     dataType: "JSON",
                     success: function (response) {
                         Util.mensaje('#divMensaje', response.alert, response.message);
-                        setTimeout(function(){
-                            window.location.href = routeLink
-                        }, 2000);
+                        setTimeout(function(){ window.location.href = routeLink }, 2000);
                     }
                 }).fail( function(jqXHR, textStatus, errorThrown) {
                     console.log(jqXHR);
