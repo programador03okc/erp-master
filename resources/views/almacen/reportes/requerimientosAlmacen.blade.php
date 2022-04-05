@@ -39,12 +39,14 @@ Estado de Atención de Requerimientos
                                 <tr>
                                     <th hidden></th>
                                     <th>Codigo</th>
+                                    <th>Estado</th>
                                     <th>Concepto</th>
                                     <th>Grupo</th>
                                     <th>Almacen</th>
                                     <th>Fecha entrega</th>
-                                    <th>Estado</th>
                                     <th>Registrado por</th>
+                                    <th>Despacho Interno</th>
+                                    <th>Despacho Externo</th>
                                     <th>Estado despacho</th>
                                     <th width="7%"></th>
                                 </tr>
