@@ -79,6 +79,7 @@ function verAgregarAdjuntosRequerimientoPago(idRequerimientoPago) {
         backdrop: 'static'
     });
     $(":file").filestyle('clear');
+    tempArchivoAdjuntoRequerimientoPagoCabeceraList=[];
 
     document.querySelector("div[id='modal-ver-agregar-adjuntos-requerimiento-pago'] input[name='id_requerimiento_pago']").value =idRequerimientoPago;
     if (idRequerimientoPago > 0) {
@@ -335,7 +336,6 @@ function guardarAdjuntos(){
                         msg: response.mensaje
                     });
                     $('#modal-ver-agregar-adjuntos-requerimiento-pago').modal('hide');
-
                 } else {
                     $('#modal-ver-agregar-adjuntos-requerimiento-pago .modal-content').LoadingOverlay("hide", true);
                     console.log(response);
@@ -345,6 +345,8 @@ function guardarAdjuntos(){
                         'error'
                     );
                 }
+                tempArchivoAdjuntoRequerimientoPagoCabeceraList=[];
+
             },
             fail:  (jqXHR, textStatus, errorThrown) =>{
                 $('#modal-ver-agregar-adjuntos-requerimiento-pago .modal-content').LoadingOverlay("hide", true);

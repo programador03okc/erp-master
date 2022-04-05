@@ -779,7 +779,7 @@ class ListarRequerimientoPagoView {
         let id_grupo = document.querySelector("form[id='form-requerimiento-pago'] select[name='grupo']").value;
         let id_proyecto = document.querySelector("form[id='form-requerimiento-pago'] select[name='proyecto']").value;
         let usuarioProyectos = false;
-        console.log(gruposUsuario);
+        // console.log(gruposUsuario);
         gruposUsuario.forEach(element => {
             if (element.id_grupo == 3) { // proyectos
                 usuarioProyectos = true
