@@ -1222,6 +1222,7 @@ class SalidasPendientesController extends Controller
             case 6: //PTEC
                 // return Excel::download(new GuiaSalidaOKCExcel($guia, $detalle), 'guia_salida_okc.xlsx'); //! descomentar luego de prueba con la siguiente linea
                 // return Excel::download(new GuiaSalidaSVSExcel($guia, $detalle), 'guia_salida_svs.xlsx'); // * probando con svs pero eliminar esta linea
+                // (new GuiaSalidaExcelFormatoOKCController)->construirExcel(['guia' => $guia, 'detalle' => $detalle]);
                 GuiaSalidaExcelFormatoOKCController::construirExcel(['guia' => $guia, 'detalle' => $detalle]);
 
                 break;
