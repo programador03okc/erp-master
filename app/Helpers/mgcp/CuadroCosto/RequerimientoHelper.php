@@ -220,7 +220,7 @@ class RequerimientoHelper
         $requerimiento->tipo_cliente = 2; //Cliente persona jurídica
         $requerimiento->direccion_entrega = $ordenCompra == null ? 'CONSULTAR CON EL CORPORATIVO' : $ordenCompra->lugar_entrega;
 
-        $requerimiento->id_almacen = $ordenCompra == null ? 2 : $this->obtenerIdAlmacen($ordenCompra->id_empresa); //id del almacen que va a atender
+        $requerimiento->id_almacen = $ordenCompra == null ? 2 : $this->obtenerIdAlmacen($requerimiento->id_sede); //id del almacen que va a atender con id_sede
         $requerimiento->confirmacion_pago = true;
         $requerimiento->fecha_entrega = ($ordenCompra == null ? (new Carbon()) : $ordenCompra->fecha_entrega);
         $requerimiento->id_cc = $cuadro->id;
@@ -321,30 +321,17 @@ class RequerimientoHelper
     /**
      * Obtiene el ID del almacén en Lima de la empresa especificada
      */
-    private function obtenerIdAlmacen($idEmpresa)
+    private function obtenerIdAlmacen($idSede)
     {
-        $id = null;
-        switch ($idEmpresa) {
-            case 1:
-                $id = 2;
-                break;
-            case 2:
-                $id = 8;
-                break;
-            case 3:
-                $id = 9;
-                break;
-            case 4:
-                $id = 10;
-                break;
-            case 5:
-                $id = 11;
-                break;
-            case 6:
-                $id = 12;
-                break;
-        }
-        return $id;
+    $almacenSeleccionado= DB::table('almacen.alm_almacen')
+            ->select('alm_almacen.id_almacen')
+            ->where([
+                ['alm_almacen.estado', '!=', 7],
+                ['alm_almacen.id_tipo_almacen', '=', 1],
+                ['alm_almacen.id_sede', '=', $idSede]
+            ])
+            ->first();
+        return $almacenSeleccionado->id_almacen;
     }
 
     private function crearDetalles($cabecera, $cuadro)

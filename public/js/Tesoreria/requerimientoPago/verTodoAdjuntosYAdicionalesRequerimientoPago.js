@@ -104,7 +104,6 @@ function verAgregarAdjuntosRequerimientoPago(idRequerimientoPago) {
         })
 
         obteneTodoAdjuntosRequerimientoPago(idRequerimientoPago).then((res) => {
-            // console.log(res);
             // llenar tabla cabecera
             let htmlCabecera = '';
             if (res.adjuntos_cabecera.length > 0) {

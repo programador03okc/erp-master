@@ -1035,11 +1035,11 @@ class RequerimientoPagoController extends Controller
         $detalleRequerimientoPagoList=RequerimientoPagoDetalle::where([["id_requerimiento_pago",$idRequerimientoPago],["id_estado","!=",7]])->get();
         $idDetalleRequerimientoPagoList=[];
         foreach ($detalleRequerimientoPagoList as $dr) {
-            $idDetalleRequerimientoPagoList[]=$dr->id_detalle_requerimiento;
+            $idDetalleRequerimientoPagoList[]=$dr->id_requerimiento_pago_detalle;
         }
         $ajuntosCabeceraList = RequerimientoPagoAdjunto::with("categoriaAdjunto")->where([["id_requerimiento_pago",$idRequerimientoPago],["id_estado","!=",7]])->get();
         if(count($idDetalleRequerimientoPagoList)>0){
-            $adjuntoDetalleList = RequerimientoPagoDetalle::whereIn("id_requerimiento_pago_detalle",$idDetalleRequerimientoPagoList)->where("id_estado","!=",7)->get();
+            $adjuntoDetalleList = RequerimientoPagoAdjuntoDetalle::whereIn("id_requerimiento_pago_detalle",$idDetalleRequerimientoPagoList)->where("id_estado","!=",7)->get();
         }
 
         return ["adjuntos_cabecera"=>$ajuntosCabeceraList??[],"adjuntos_detalle"=>$adjuntoDetalleList??[]];
