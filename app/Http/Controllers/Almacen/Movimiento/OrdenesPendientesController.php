@@ -386,15 +386,24 @@ class OrdenesPendientesController extends Controller
         })->filterColumn('requerimientos', function ($query, $keyword) {
             $sql_req = "id_mov_alm IN (
                 SELECT mov_alm_det.id_mov_alm FROM almacen.mov_alm_det 
-                INNER JOIN almacen.guia_com_det ON 
+                LEFT JOIN almacen.guia_com_det ON 
                     guia_com_det.id_guia_com_det=mov_alm_det.id_guia_com_det 
-                INNER JOIN logistica.log_det_ord_compra ON 
+                LEFT JOIN logistica.log_det_ord_compra ON 
                     log_det_ord_compra.id_detalle_orden=guia_com_det.id_oc_det
-                INNER JOIN almacen.alm_det_req ON 
+                LEFT JOIN almacen.alm_det_req ON 
                     alm_det_req.id_detalle_requerimiento=log_det_ord_compra.id_detalle_requerimiento
-                INNER JOIN almacen.alm_req ON 
+                LEFT JOIN almacen.alm_req ON 
                     alm_req.id_requerimiento=alm_det_req.id_requerimiento
-                WHERE   UPPER(alm_req.codigo) LIKE ? )
+                LEFT JOIN almacen.mov_alm ON
+                        mov_alm.id_mov_alm=mov_alm_det.id_mov_alm
+                LEFT JOIN almacen.transformacion ON 
+                    transformacion.id_transformacion=mov_alm.id_transformacion 
+                LEFT JOIN almacen.orden_despacho ON 
+                    orden_despacho.id_od=transformacion.id_od
+                LEFT JOIN almacen.alm_req as req_trans ON 
+                    req_trans.id_requerimiento=orden_despacho.id_requerimiento
+                WHERE   mov_alm.id_tp_mov = 1 and mov_alm.estado !=7 and
+								CONCAT(UPPER(req_trans.codigo),UPPER(alm_req.codigo)) LIKE ? )
                 ";
             $query->whereRaw($sql_req, ['%' . strtoupper($keyword) . '%']);
         })->toJson();
