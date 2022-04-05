@@ -101,7 +101,7 @@ class AlmacenImport implements ToCollection, WithHeadingRow
 
     public function saveCategoria($cod_cate, $descripcion, $tipo)
     {
-        $query = DB::table('almacen.alm_cat_prod')->where('descripcion', $descripcion)->where('cod_softlink', $cod_cate);
+        $query = DB::table('almacen.alm_cat_prod')->where('cod_softlink', $cod_cate);
         if ($query->count() == 0) {
             DB::table('almacen.alm_cat_prod')->insertGetId([
                 'id_tipo_producto'  => 8,
@@ -126,7 +126,7 @@ class AlmacenImport implements ToCollection, WithHeadingRow
 
     public function saveSubCategoria($cod_subc, $descripcion, $tipo)
     {
-        $query = DB::table('almacen.alm_subcat')->where('descripcion', $descripcion)->where('cod_softlink', $cod_subc);
+        $query = DB::table('almacen.alm_subcat')->where('cod_softlink', $cod_subc);
         if ($query->count() == 0) {
             DB::table('almacen.alm_subcat')->insertGetId([
                 'cod_softlink'      => $cod_subc,
@@ -151,7 +151,7 @@ class AlmacenImport implements ToCollection, WithHeadingRow
 
     public function saveUnidad($cod_unid, $descripcion, $tipo)
     {
-        $query = DB::table('almacen.alm_und_medida')->where('descripcion', $descripcion)->where('cod_softlink', $cod_unid);
+        $query = DB::table('almacen.alm_und_medida')->where('cod_softlink', $cod_unid);
         if ($query->count() == 0) {
             DB::table('almacen.alm_und_medida')->insertGetId([
                 'descripcion'   => $descripcion,
@@ -175,7 +175,7 @@ class AlmacenImport implements ToCollection, WithHeadingRow
 
     public function saveProducto($cod_prod, $part_no, $descripcion, $cod_clasi, $cod_cate, $cod_subc, $cod_unid, $tip_moneda, $flg_serie, $flg_afecto_igv,  $txt_observa, $ult_edicion, $tipo)
     {
-        $query = DB::table('almacen.alm_prod')->where('descripcion', $descripcion) ->where('cod_softlink', $cod_prod)->orWhere('part_number', $part_no);
+        $query = DB::table('almacen.alm_prod')->where('cod_softlink', $cod_prod);
         if ($query->count() == 0) {
             $query_cla = DB::table('almacen.alm_clasif')->where('cod_softlink', $cod_clasi)->first();
             $query_cat = DB::table('almacen.alm_cat_prod')->where('cod_softlink', $cod_cate)->first();
