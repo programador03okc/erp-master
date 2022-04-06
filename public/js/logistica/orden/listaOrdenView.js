@@ -634,20 +634,18 @@ class ListaOrdenView {
                             let btnImprimirOrden = '<button type="button" class="btn btn-sm btn-warning boton handleClickAbrirOrdenPDF" title="Abrir orden PDF"  data-toggle="tooltip" data-placement="bottom" data-id-orden-compra="' + row.id_orden_compra + '"  data-id-pago=""> <i class="fas fa-file-pdf"></i> </button>';
 
                             let btnAnularOrden = '';
-                            if (![6, 27, 28].includes(row.estado)) {
-                                if (cantidadRequerimientosConEstadosPorRegularizarOenPausa > 0) {
-                                    btnAnularOrden = '<button type="button" class="btn btn-sm btn-danger boton handleClickAnularOrden" name="btnAnularOrden" title="Anular orden" data-codigo-orden="' + row.codigo + '" data-id-orden-compra="' + row.id_orden_compra + '" disabled ><i class="fas fa-backspace fa-xs"></i></button>';
-                                } else {
-                                    btnAnularOrden = '<button type="button" class="btn btn-sm btn-danger boton handleClickAnularOrden" name="btnAnularOrden" title="Anular orden" data-codigo-orden="' + row.codigo + '" data-id-orden-compra="' + row.id_orden_compra + '"><i class="fas fa-backspace fa-xs"></i></button>';
+                            if (row.cantidad_ingresos_almacen >0) {
+                                btnAnularOrden = '<button type="button" class="btn btn-sm btn-default boton" name="btnAnularOrden" title="Tiene uno/varios ingresos a almacén" data-codigo-orden="' + row.codigo + '" data-id-orden-compra="' + row.id_orden_compra + '" disabled ><i class="fas fa-backspace fa-xs"></i></button>';
+                            } else {
+                                btnAnularOrden = '<button type="button" class="btn btn-sm btn-danger boton handleClickAnularOrden" name="btnAnularOrden" title="Anular orden" data-codigo-orden="' + row.codigo + '" data-id-orden-compra="' + row.id_orden_compra + '"><i class="fas fa-backspace fa-xs"></i></button>';
 
-                                }
                             }
                             let btnVerDetalle = `<button type="button" class="ver-detalle btn btn-sm btn-primary boton handleCliclVerDetalleOrden" data-toggle="tooltip" data-placement="bottom" title="Ver Detalle" data-id="${row.id_orden_compra}">
                         <i class="fas fa-chevron-down"></i>
                         </button>`;
 
                             let btnEnviarAPago = '';
-                            if (row.id_condicion == 1) {
+                           
                                 btnEnviarAPago = `<button type="button" class="btn btn-sm btn-${([5,6,8].includes((row.estado_pago)) ? 'success' : 'info')} boton handleClickModalEnviarOrdenAPago" name="btnEnviarOrdenAPago" title="${([5,6,8].includes((row.estado_pago)) ? 'Ya se envió a pago' : 'Enviar a pago?')}" 
                                 data-id-orden-compra="${row.id_orden_compra ?? ''}" 
                                 data-codigo-orden="${row.codigo ?? ''}" 
@@ -665,7 +663,7 @@ class ListaOrdenView {
                                     <i class="fas fa-money-check-alt fa-xs"></i>
                                 </button>`;
 
-                            }
+                            
 
                             let containerCloseBrackets = '</div>';
 
