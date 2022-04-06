@@ -112,7 +112,7 @@ Almacenes
                                     <th>Crear/Editar</th>
                                     <th>Ver</th>
                                     <th>
-                                        <i class="fas fa-plus-circle icon-tabla green boton text-center" style="padding: 0px;" data-toggle="tooltip" data-placement="bottom" title="Agregar Usuario" onClick="openAlmacenUsuario();"></i>
+                                        <i class="fas fa-plus-circle icon-tabla green boton text-center" style="padding: 0px;" data-toggle="tooltip" data-placement="bottom" title="Agregar Usuario" onClick="usuarioModal();"></i>
                                     </th>
                                 </tr>
                             </thead>

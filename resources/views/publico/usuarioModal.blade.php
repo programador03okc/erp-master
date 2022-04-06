@@ -10,6 +10,7 @@
                     <thead>
                         <tr>
                             <th hidden>Id</th>
+                            <th>Nombre Corto</th>
                             <th>Nombre Completo</th>
                         </tr>
                     </thead>
