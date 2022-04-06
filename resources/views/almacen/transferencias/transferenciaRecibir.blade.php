@@ -1,4 +1,4 @@
-<div class="modal fade" tabindex="-1" role="dialog" id="modal-transferencia_detalle">
+<div class="modal fade" tabindex="-1" role="dialog" id="modal-transferencia_detalle" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog" style="width:90%;">
         <div class="modal-content">
             <div class="modal-header">

@@ -1,4 +1,4 @@
-<div class="modal fade" tabindex="-1" role="dialog" id="modal-ver_requerimiento" style="overflow-y: scroll;">
+<div class="modal fade" tabindex="-1" role="dialog" id="modal-ver_requerimiento" data-backdrop="static" data-keyboard="false" style="overflow-y: scroll;">
     <div class="modal-dialog" style="width:90%;">
         <div class="modal-content">
             <form id="form-ver_requerimiento">

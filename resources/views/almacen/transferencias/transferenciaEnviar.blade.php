@@ -1,4 +1,4 @@
-<div class="modal fade" tabindex="-1" role="dialog" id="modal-transferenciaGuia" style="overflow-y: scroll;">
+<div class="modal fade" tabindex="-1" role="dialog" id="modal-transferenciaGuia" data-backdrop="static" data-keyboard="false" style="overflow-y: scroll;">
     <div class="modal-dialog" style="width:90%;">
         <div class="modal-content">
             <form id="form-transferenciaGuia">
