@@ -474,27 +474,19 @@ function anular_salida(data) {
         dataType: 'JSON',
         success: function (response) {
             console.log(response);
-            if (response.length > 0) {
-                Lobibox.notify('warning', {
-                    title: false,
-                    size: "mini",
-                    rounded: true,
-                    sound: false,
-                    delayIndicator: false,
-                    msg: response
-                });
-                $('#modal-guia_ven_obs').modal('hide');
-            } else {
-                Lobibox.notify('success', {
-                    title: false,
-                    size: "mini",
-                    rounded: true,
-                    sound: false,
-                    delayIndicator: false,
-                    msg: 'Anulado correctamente.'
-                });
-                $('#modal-guia_ven_obs').modal('hide');
+            Lobibox.notify(response.tipo, {
+                title: false,
+                size: "mini",
+                rounded: true,
+                sound: false,
+                delayIndicator: false,
+                msg: response.mensaje
+            });
+            $('#modal-guia_ven_obs').modal('hide');
+
+            if (response.tipo == 'success') {
                 $('#despachosEntregados').DataTable().ajax.reload(null, false);
+                $('#nro_despachos').text(response.nroDespachosPendientes);
             }
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {

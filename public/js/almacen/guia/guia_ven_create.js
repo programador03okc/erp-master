@@ -318,6 +318,7 @@ function guardarGuiaVenta(data) {
             if (response.tipo == 'success') {
                 $('#modal-guia_ven_create').modal('hide');
                 $('#despachosPendientes').DataTable().ajax.reload(null, false);
+                $('#nro_despachos').text(response.nroDespachosPendientes);
             }
             // var id = encode5t(id_salida);
             // window.open('imprimir_salida/'+id);                

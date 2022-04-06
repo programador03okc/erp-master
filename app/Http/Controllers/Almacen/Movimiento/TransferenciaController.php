@@ -1398,8 +1398,12 @@ class TransferenciaController extends Controller
             ->whereYear('fecha_registro', '=', $yyyy)
             ->get()->count();
 
+        $alm = DB::table('almacen.alm_almacen')
+            ->select('codigo')
+            ->where('id_almacen', $id_alm_origen)->first();
+
         $val = GenericoAlmacenController::leftZero(3, ($cantidad + 1));
-        $nextId = "TR-" . $id_alm_origen . "-" . $anio . $val;
+        $nextId = "TR-" . $alm->codigo . "-" . $anio . $val;
 
         return $nextId;
     }

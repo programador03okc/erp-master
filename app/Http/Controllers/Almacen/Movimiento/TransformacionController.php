@@ -308,10 +308,11 @@ class TransformacionController extends Controller
             ->get()->count();
 
         $val = GenericoAlmacenController::leftZero(3, ($cantidad + 1));
-        $nextId = "OT-" . $almacen->codigo . "-" . $val;
+        $nextId = "OT-" . $almacen->codigo . "-" . $yyyy . $val;
 
         return $nextId;
     }
+
     public function guardar_transformacion(Request $request)
     {
         $usuario = Auth::user();
