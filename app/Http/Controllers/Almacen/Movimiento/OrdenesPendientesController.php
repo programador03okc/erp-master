@@ -55,22 +55,10 @@ class OrdenesPendientesController extends Controller
         $sedes = GenericoAlmacenController::mostrar_sedes_cbo();
         $fechaActual = new Carbon();
         $fechaActual2 = new Carbon();
-        $array_sedes = $this->sedesPorUsuarioArray();
+        // $array_sedes = $this->sedesPorUsuarioArray();
 
-        $nro_oc_pendientes = DB::table('logistica.log_ord_compra')
-            ->where([
-                ['log_ord_compra.estado', '!=', 7],
-                ['log_ord_compra.en_almacen', '=', false],
-                ['log_ord_compra.id_tp_documento', '=', 2]
-            ])
-            ->whereIn('log_ord_compra.id_sede', $array_sedes)
-            ->count();
-        $nro_ot_pendientes = DB::table('almacen.transformacion')
-            ->join('almacen.guia_ven', function ($join) {
-                $join->on('guia_ven.id_od', '=', 'transformacion.id_od');
-                $join->where('guia_ven.estado', '!=', 7);
-            })
-            ->where([['transformacion.estado', '=', 10]])->count();
+        $nro_oc_pendientes = $this->nroOrdenesPendientes();
+        $nro_ot_pendientes = $this->nroTransformacionesPendientes();
 
         return view('almacen/guias/ordenesPendientes', compact(
             'almacenes',
@@ -92,6 +80,32 @@ class OrdenesPendientesController extends Controller
             'nro_oc_pendientes',
             'nro_ot_pendientes',
         ));
+    }
+
+    public function nroOrdenesPendientes()
+    {
+        $array_sedes = $this->sedesPorUsuarioArray();
+        $nro_oc_pendientes = DB::table('logistica.log_ord_compra')
+            ->where([
+                ['log_ord_compra.estado', '!=', 7],
+                ['log_ord_compra.en_almacen', '=', false],
+                ['log_ord_compra.id_tp_documento', '=', 2]
+            ])
+            ->whereIn('log_ord_compra.id_sede', $array_sedes)
+            ->count();
+        return $nro_oc_pendientes;
+    }
+
+    public function nroTransformacionesPendientes()
+    {
+        // $array_sedes = $this->sedesPorUsuarioArray();
+        $nro_ot_pendientes = DB::table('almacen.transformacion')
+            ->join('almacen.guia_ven', function ($join) {
+                $join->on('guia_ven.id_od', '=', 'transformacion.id_od');
+                $join->where('guia_ven.estado', '!=', 7);
+            })
+            ->where([['transformacion.estado', '=', 10]])->count();
+        return $nro_ot_pendientes;
     }
 
     function sedesPorUsuario()
@@ -1065,10 +1079,17 @@ class OrdenesPendientesController extends Controller
                 }
             }
             DB::commit();
-            return response()->json(['id_ingreso' => $id_ingreso, 'id_guia' => $id_guia]);
+            return response()->json([
+                'tipo' => 'success',
+                'mensaje' => 'Se proceso el ingreso correctamente.',
+                'id_ingreso' => $id_ingreso, 'id_guia' => $id_guia,
+                'nroOrdenesPendientes' => $this->nroOrdenesPendientes(),
+                'nroTransformacionesPendientes' => $this->nroTransformacionesPendientes(), 200
+            ]);
         } catch (\PDOException $e) {
             // Woopsy
             DB::rollBack();
+            return response()->json(['tipo' => 'error', 'mensaje' => 'Hubo un problema al guardar el ingreso. Por favor intente de nuevo', 'error' => $e->getMessage()], 200);
         }
     }
 
@@ -1532,12 +1553,12 @@ class OrdenesPendientesController extends Controller
 
     public function anular_ingreso(Request $request)
     {
-
         try {
             DB::beginTransaction();
 
             $id_usuario = Auth::user()->id_usuario;
             $msj = '';
+            $tipo = '';
 
             $ing = DB::table('almacen.mov_alm')
                 ->select('mov_alm.*', 'guia_com.serie', 'guia_com.numero')
@@ -1582,7 +1603,7 @@ class OrdenesPendientesController extends Controller
                         //     $join->where('orden_despacho.estado', '!=', 7);
                         // })
                         ->leftJoin('almacen.trans_detalle', function ($join) {
-                            $join->on('trans_detalle.id_guia_com_det', '=', 'guia_com_det.id_guia_com_det');
+                            $join->on('trans_detalle.id_requerimiento_detalle', '=', 'alm_det_req.id_detalle_requerimiento');
                             $join->where('trans_detalle.estado', '!=', 7);
                         })
                         ->leftjoin('almacen.trans', 'trans.id_transferencia', '=', 'trans_detalle.id_transferencia')
@@ -1712,23 +1733,34 @@ class OrdenesPendientesController extends Controller
                                         'fecha_registro' => date('Y-m-d H:i:s')
                                     ]);
                             }
+                            $msj = 'Se proceso el ingreso correctamente.';
+                            $tipo = 'success';
                         } else {
                             $msj = 'El ingreso ya fue procesado con una Orden de Despacho o una Transferencia.';
+                            $tipo = 'warning';
                         }
                     } else {
                         $msj = 'Count detalle ' . count($detalle);
+                        $tipo = 'warning';
                     }
                 } else {
                     $msj = 'No es posible anular. El ingreso fue prorrateado.';
+                    $tipo = 'warning';
                 }
             } else {
                 $msj = 'El ingreso ya fue revisado por el Jefe de Almacén';
+                $tipo = 'warning';
             }
             DB::commit();
-            return response()->json($msj);
+            return response()->json([
+                'tipo' => $tipo,
+                'mensaje' => $msj,
+                'nroOrdenesPendientes' => $this->nroOrdenesPendientes(),
+                'nroTransformacionesPendientes' => $this->nroTransformacionesPendientes(), 200
+            ]);
         } catch (\PDOException $e) {
-
             DB::rollBack();
+            return response()->json(['tipo' => 'error', 'mensaje' => 'Hubo un problema al anular el ingreso. Por favor intente de nuevo', 'error' => $e->getMessage()], 200);
         }
     }
 

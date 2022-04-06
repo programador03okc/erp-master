@@ -336,20 +336,21 @@ function anular_ingreso(data) {
         dataType: "JSON",
         success: function (response) {
             console.log(response);
-            if (response.length > 0) {
-                Swal.fire(response, "", "warning");
-                $("#modal-guia_com_obs").modal("hide");
-            } else {
-                Lobibox.notify("success", {
-                    title: false,
-                    size: "mini",
-                    rounded: true,
-                    sound: false,
-                    delayIndicator: false,
-                    msg: 'Ingreso Almacén anulado con éxito.'
-                });
-                $("#modal-guia_com_obs").modal("hide");
+
+            Lobibox.notify(response.tipo, {
+                title: false,
+                size: "mini",
+                rounded: true,
+                sound: false,
+                delayIndicator: false,
+                msg: response.mensaje
+            });
+            $("#modal-guia_com_obs").modal("hide");
+
+            if (response.tipo == 'success') {
                 $("#listaIngresosAlmacen").DataTable().ajax.reload(null, false);
+                $('#nro_ordenes').text(response.nroOrdenesPendientes);
+                $('#nro_transformaciones').text(response.nroTransformacionesPendientes);
             }
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {

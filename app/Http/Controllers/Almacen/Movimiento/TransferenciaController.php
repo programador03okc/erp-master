@@ -487,7 +487,7 @@ class TransferenciaController extends Controller
         } catch (\PDOException $e) {
             // Woopsy
             DB::rollBack();
-            return response()->json('Hubo un problem  al procesar los datos, por favor intente de nuevo. Mensaje de error: ' . $e->getMessage());
+            return response()->json('Hubo un problema  al procesar los datos, por favor intente de nuevo. Mensaje de error: ' . $e->getMessage());
             // return response()->json($e);
         }
     }
