@@ -195,19 +195,18 @@ function recibir() {
                     dataType: "JSON",
                     success: function (response) {
                         console.log(response);
-                        if (response > 0) {
-                            Lobibox.notify("success", {
-                                title: false,
-                                size: "mini",
-                                rounded: true,
-                                sound: false,
-                                delayIndicator: false,
-                                msg: "Ingreso a almacén generado con éxito."
-                            });
-                            $("#modal-transferencia_detalle").modal("hide");
-                            // listarTransferenciasPorRecibir();
-                            $("#listaTransferenciasPorRecibir").DataTable().ajax.reload(null, false);
-                        }
+                        Lobibox.notify(response.tipo, {
+                            title: false,
+                            size: "mini",
+                            rounded: true,
+                            sound: false,
+                            delayIndicator: false,
+                            msg: response.mensaje
+                        });
+                        $("#modal-transferencia_detalle").modal("hide");
+                        // listarTransferenciasPorRecibir();
+                        $("#listaTransferenciasPorRecibir").DataTable().ajax.reload(null, false);
+                        $("#nro_por_recibir").text(response.nroPorRecibir);
                     }
                 }).fail(function (jqXHR, textStatus, errorThrown) {
                     console.log(jqXHR);

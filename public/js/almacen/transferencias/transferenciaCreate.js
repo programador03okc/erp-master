@@ -271,6 +271,7 @@ function generarTransferenciaRequerimiento(data) {
             if (response.tipo == 'success') {
                 $("#modal-ver_requerimiento").modal("hide");
                 $("#listaRequerimientos").DataTable().ajax.reload(null, false);
+                $("#nro_pendientes").text(response.nroPendientes);
             }
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {

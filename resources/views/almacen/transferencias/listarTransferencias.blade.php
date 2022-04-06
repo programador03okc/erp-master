@@ -28,9 +28,9 @@ Transferencias
             <div class="col-md-12" id="tab-transferencias" style="padding-top:10px;padding-bottom:10px;">
 
                 <ul class="nav nav-tabs" id="myTabTransferencias">
-                    <li class="active"><a data-toggle="tab" href="#requerimientos">Transferencias sugeridas <span id="nro_ordenes" class="badge badge-info">{{$nro_pendientes}}</span></a></li>
-                    <li class=""><a data-toggle="tab" href="#porEnviar">Transferencias por Enviar <span id="nro_ordenes" class="badge badge-info">{{$nro_por_enviar}}</span></a></li>
-                    <li class=""><a data-toggle="tab" href="#pendientes">Transferencias por Recibir <span id="nro_ordenes" class="badge badge-info">{{$nro_por_recibir}}</span></a></li>
+                    <li class="active"><a data-toggle="tab" href="#requerimientos">Transferencias sugeridas <span id="nro_pendientes" class="badge badge-info">{{$nro_pendientes}}</span></a></li>
+                    <li class=""><a data-toggle="tab" href="#porEnviar">Transferencias por Enviar <span id="nro_por_enviar" class="badge badge-info">{{$nro_por_enviar}}</span></a></li>
+                    <li class=""><a data-toggle="tab" href="#pendientes">Transferencias por Recibir <span id="nro_por_recibir" class="badge badge-info">{{$nro_por_recibir}}</span></a></li>
                     <li class=""><a data-toggle="tab" href="#recibidas">Transferencias Recibidas</a></li>
                 </ul>
                 <div class="tab-content">
@@ -90,7 +90,7 @@ Transferencias
                                             <th width="10%">Codigo Req.</th>
                                             <th width="20%">Concepto</th>
                                             <th width="10%">Elaborado Por</th>
-                                            <th width="10%">Guía Venta</th>
+                                            <th width="10%">Guía salida</th>
                                             <th width="6%">Estado</th>
                                             <th width="6%">Acción</th>
                                         </tr>
@@ -127,7 +127,7 @@ Transferencias
                                                 <th hidden></th>
                                                 <th width="8%">Tipo</th>
                                                 <th width="8%">Código</th>
-                                                <th width="10%">Guía Venta</th>
+                                                <th width="10%">Guía salida</th>
                                                 <th width="8%">Requerimiento</th>
                                                 <th width="15%">Almacén Origen</th>
                                                 <th width="15%">Almacén Destino</th>
@@ -168,8 +168,8 @@ Transferencias
                                                 <th hidden></th>
                                                 <th width="5%">Tipo</th>
                                                 <th width="8%">Trans.</th>
-                                                <th width="8%">Guía Venta</th>
-                                                <th width="8%">Guía Compra</th>
+                                                <th width="8%">Guía salida</th>
+                                                <th width="8%">Guía ingreso</th>
                                                 <th width="8%">Doc Venta</th>
                                                 <th width="8%">Doc Compra</th>
                                                 <th width="10%">Almacén Origen</th>
