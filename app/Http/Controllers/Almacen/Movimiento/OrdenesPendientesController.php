@@ -114,8 +114,10 @@ class OrdenesPendientesController extends Controller
             ->select('sis_sede.*')
             ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_almacen_usuario.id_almacen')
             ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_almacen.id_sede')
-            ->where('alm_almacen_usuario.id_usuario', Auth::user()->id_usuario)
-            ->where('alm_almacen_usuario.estado', 1)
+            ->where([
+                ['alm_almacen_usuario.id_usuario', '=', Auth::user()->id_usuario],
+                ['alm_almacen_usuario.estado', '!=', 7]
+            ])
             ->get();
     }
 
