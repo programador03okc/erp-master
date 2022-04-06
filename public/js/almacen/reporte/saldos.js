@@ -26,6 +26,8 @@ function listarSaldos(almacen) {
             { 'data': 'descripcion' },
             { 'data': 'abreviatura' },
             { 'data': 'stock', 'class': 'text-center' },
+            { 'data': 'valorizacion', 'class': 'text-center' },
+            { 'data': 'costo_promedio', 'class': 'text-center' },
             {
                 'render':
                     function (data, type, row) {

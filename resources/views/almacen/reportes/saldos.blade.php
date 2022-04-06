@@ -50,6 +50,8 @@ Saldos Actuales
                                     <th width="40%">Descripción</th>
                                     <th>Und</th>
                                     <th>Stock Actual</th>
+                                    <th>Valorización</th>
+                                    <th>Costo promedio</th>
                                     <th>Reserva</th>
                                     <th>Disponible</th>
                                     <th width="15%">Almacén</th>
