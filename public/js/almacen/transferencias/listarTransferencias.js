@@ -248,7 +248,7 @@ function listarTransferenciasPorEnviar() {
         dom: vardataTables[1],
         buttons: botones,
         language: vardataTables[0],
-        lengthChange: false,
+        // lengthChange: false,
         serverSide: true,
         pageLength: 20,
         initComplete: function (settings, json) {
@@ -322,6 +322,7 @@ function listarTransferenciasPorEnviar() {
             { data: "nombre_corto", name: "sis_usua.nombre_corto" },
             { data: "guia_ven", className: "text-center" },
             {
+                data: "estado_doc", name: "adm_estado_doc.estado_doc",
                 render: function (data, type, row) {
                     return (
                         '<span class="label label-' + row["bootstrap_color"] + '">' +
@@ -435,6 +436,7 @@ $("#listaTransferenciasPorEnviar tbody").on("click", "button.anular", function (
                     });
                     // listarTransferenciasPorEnviar();
                     $("#listaTransferenciasPorEnviar").DataTable().ajax.reload(null, false);
+                    $("#nro_por_enviar").text(response.nroPorEnviar);
                 }
             }).fail(function (jqXHR, textStatus, errorThrown) {
                 console.log(jqXHR);
@@ -506,31 +508,22 @@ function anularTransferenciaSalida(data) {
         data: data,
         dataType: "JSON",
         success: function (response) {
-            if (response.length > 0) {
-                Lobibox.notify("warning", {
-                    title: false,
-                    size: "mini",
-                    rounded: true,
-                    sound: false,
-                    delayIndicator: false,
-                    // width: 500,
-                    msg: response
-                });
-                $("#modal-guia_ven_obs").modal("hide");
-            } else {
-                Lobibox.notify("success", {
-                    title: false,
-                    size: "mini",
-                    rounded: true,
-                    sound: false,
-                    delayIndicator: false,
-                    msg:
-                        "Salida anulada con éxito. La transferencia ha regresado a la lista de pendientes de envío."
-                });
+
+            Lobibox.notify(response.tipo, {
+                title: false,
+                size: "mini",
+                rounded: true,
+                sound: false,
+                delayIndicator: false,
+                msg: response.mensaje
+            });
+            if (response.tipo == 'success') {
                 $("#modal-guia_ven_obs").modal("hide");
                 // listarTransferenciasPorEnviar();
                 $("#listaTransferenciasPorEnviar").DataTable().ajax.reload(null, false);
+                $("#nro_por_enviar").text(response.nroPorEnviar);
             }
+
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
