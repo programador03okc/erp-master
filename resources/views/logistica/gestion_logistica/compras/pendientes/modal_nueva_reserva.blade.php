@@ -3,7 +3,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal-nueva-reserva" onClick="$('#modal-nueva-reserva').modal('hide');"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title">Nueva Reserva en almacén <span id="codigoRequerimiento"></span></h3>
+                <h3 class="modal-title">Nueva Reserva en almacén <span id="codigoRequerimiento"></span> (<span id="almacenRequerimiento"></span>)</h3>
             </div>
             <div class="modal-body">
             <form id="form-nueva-reserva" type="register" form="formulario"> 
@@ -12,7 +12,7 @@
                 <input type="hidden" name="idDetalleRequerimiento">
                 <input type="hidden" name="idUnidadMedida">
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-4">
                         <h4 style="display:flex;justify-content: space-between;">Producto</h4>
                         <fieldset class="group-table" style="padding-top: 20px;">
                         <div class="row">
@@ -41,6 +41,27 @@
                         </div>
                         </fieldset>
                     </div>
+                    <div class="col-md-8">
+                        <h4 style="display:flex;justify-content: space-between;">Almacenes con stock disponible</h4>
+                        <fieldset class="group-table" style="padding-top: 20px;">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <table class="mytable table table-condensed table-bordered table-okc-view" id="listaAlmacenesConStockDeProducto" wdith="100%">
+                                    <thead>
+                                        <tr style="background: grey;">
+                                            <th width="80%" style="text-align:center;">Almacén</th>
+                                            <th width="10%" style="text-align:center;">Saldo</th>
+                                            <th width="10%" style="text-align:center;">Stock comprometido</th>
+                                            <th width="10%" style="text-align:center;">Stock disponible</th>
+                                            <th width="10%" style="text-align:center;">Acción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="bodyListaAlmacenesConStockDeProducto"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                        </fieldset>
+                    </div>
                 </div>
 
                 <div class="row">
@@ -58,13 +79,16 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="exampleInputName2">Almacén </label>
-                                    <select class="form-control activation handleChangeObtenerStockAlmacen" name="almacenReserva">
+                                    <label for="exampleInputName2">Almacén seleccionado</label>
+                                    <input type="hidden" name="almacenReserva">
+                                    <input type="text" class="form-control" name="nombreAlmacenReserva" readonly>
+
+                                    <!-- <select class="form-control activation handleChangeObtenerStockAlmacen" name="almacenReserva">
                                         <option value="0">Seleccione un Almacén</option>
                                         @foreach ($almacenes as $almacen)
                                         <option value="{{$almacen->id_almacen}}" >{{$almacen->descripcion}}</option>
                                         @endforeach
-                                    </select>
+                                    </select> -->
                                 </div>
                             </div>
                             <div class="col-md-3">
@@ -75,13 +99,13 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-12 oculto" id="contenedor-info-stock">
+                            <!-- <div class="col-md-12 oculto" id="contenedor-info-stock">
                                 <ul class="list-inline">
                                     <li style="font-weight: bold; color:#356ed5;">Stock total en almacén: <span id="info-stock-almacen"></span></li>
                                     <li style="font-weight: bold; color:#d535c1;">Reservas activas: <span id="info-reservas-activas"></span</li>
                                     <li style="font-weight: bold; color:#00a65a;">Saldo disponible: <span id="info-saldo-disponible"></span</li>
                                 </ul>
-                            </div>
+                            </div> -->
                         </div>
 
 

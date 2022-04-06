@@ -180,6 +180,7 @@ class ComprasPendientesController extends Controller
 
 
         $alm_req = Requerimiento::join('almacen.alm_tp_req', 'alm_req.id_tipo_requerimiento', '=', 'alm_tp_req.id_tipo_requerimiento')
+            ->leftJoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_req.id_almacen')
             ->leftJoin('almacen.tipo_cliente', 'tipo_cliente.id_tipo_cliente', '=', 'alm_req.tipo_cliente')
             ->leftJoin('administracion.adm_estado_doc', 'alm_req.estado', '=', 'adm_estado_doc.id_estado_doc')
             ->leftJoin('configuracion.sis_usua', 'alm_req.id_usuario', '=', 'sis_usua.id_usuario')
@@ -207,6 +208,8 @@ class ComprasPendientesController extends Controller
                 'alm_req.concepto',
                 'alm_req.observacion',
                 'alm_req.id_moneda',
+                'alm_req.id_almacen',
+                DB::raw("CONCAT(alm_almacen.codigo,'-',alm_almacen.descripcion) as almacen_requerimiento"),
                 'alm_req.fecha_entrega',
                 'sis_moneda.simbolo as simbolo_moneda',
                 'sis_moneda.descripcion as moneda',
@@ -354,6 +357,7 @@ class ComprasPendientesController extends Controller
 
 
         $alm_req = Requerimiento::join('almacen.alm_tp_req', 'alm_req.id_tipo_requerimiento', '=', 'alm_tp_req.id_tipo_requerimiento')
+            ->leftJoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_req.id_almacen')
             ->leftJoin('almacen.tipo_cliente', 'tipo_cliente.id_tipo_cliente', '=', 'alm_req.tipo_cliente')
             ->leftJoin('administracion.adm_estado_doc', 'alm_req.estado', '=', 'adm_estado_doc.id_estado_doc')
             ->leftJoin('configuracion.sis_usua', 'alm_req.id_usuario', '=', 'sis_usua.id_usuario')
@@ -380,6 +384,8 @@ class ComprasPendientesController extends Controller
                 'alm_req.codigo',
                 'alm_req.concepto',
                 'alm_req.id_moneda',
+                'alm_req.id_almacen',
+                DB::raw("CONCAT(alm_almacen.codigo,'-',alm_almacen.descripcion) as almacen_requerimiento"),
                 'alm_req.fecha_entrega',
                 'sis_moneda.simbolo as simbolo_moneda',
                 'sis_moneda.descripcion as moneda',
@@ -506,6 +512,7 @@ class ComprasPendientesController extends Controller
     public function obtenerRequerimientosAtendidos($empresa, $sede, $fechaRegistroDesde, $fechaRegistroHasta, $reserva, $orden)
     {
         $alm_req = Requerimiento::join('almacen.alm_tp_req', 'alm_req.id_tipo_requerimiento', '=', 'alm_tp_req.id_tipo_requerimiento')
+            ->leftJoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_req.id_almacen')
             ->leftJoin('almacen.tipo_cliente', 'tipo_cliente.id_tipo_cliente', '=', 'alm_req.tipo_cliente')
             ->leftJoin('administracion.adm_estado_doc', 'alm_req.estado', '=', 'adm_estado_doc.id_estado_doc')
             ->leftJoin('configuracion.sis_usua', 'alm_req.id_usuario', '=', 'sis_usua.id_usuario')
@@ -1319,6 +1326,45 @@ class ComprasPendientesController extends Controller
         } catch (Exception $e) {
             DB::rollBack();
             return response()->json(['status' => $status, 'mensaje' => 'Hubo un problema al intentar obtener lista detalle de orden y reservas. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage(), 'data' => []]);
+        }
+    }
+
+    public function mostrarAlmacenesConStockDisponible($idProducto){
+        DB::beginTransaction();
+        try {
+
+            $status = 0;
+            $mensaje = '';
+            $data = [];
+            if ($idProducto > 0) {
+                $data = ProductoUbicacion::select('alm_prod_ubi.id_almacen','alm_almacen.codigo','alm_almacen.descripcion','alm_prod_ubi.stock',
+                DB::raw("(SELECT  SUM(alm_reserva.stock_comprometido) FROM almacen.alm_reserva
+                WHERE alm_reserva.id_producto = ".$idProducto."
+                AND alm_reserva.id_almacen_reserva = alm_prod_ubi.id_almacen
+                AND (alm_reserva.estado = 1 OR alm_reserva.estado = 17)) AS cantidad_stock_comprometido"))
+                ->where([['alm_prod_ubi.id_producto', $idProducto], ['alm_prod_ubi.estado', 1]])
+                ->leftJoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_prod_ubi.id_almacen')
+                ->get();
+                
+                if(count($data)>0){
+                    $mensaje = 'OK';
+                    $status=200;
+                }else{
+                    $mensaje = 'Sin data para mostrar';
+
+                }
+
+            } else {
+                $status = 201;
+                $mensaje = 'El ID producto no es valido';
+            }
+            DB::commit();
+
+
+            return response()->json(['status' => $status, 'mensaje' => $mensaje, 'data' => $data]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json(['status' => $status, 'mensaje' => 'Hubo un problema al intentar obtener lista de almacenes. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage(), 'data' => []]);
         }
     }
 }

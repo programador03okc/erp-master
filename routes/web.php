@@ -821,7 +821,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('lista_items-cuadro-costos-por-requerimiento', 'ComprasPendientesController@get_lista_items_cuadro_costos_por_id_requerimiento')->name('lista_items-cuadro-costos-por-requerimiento');
 					Route::get('grupo-select-item-para-compra', 'ComprasPendientesController@getGrupoSelectItemParaCompra')->name('grupo-select-item-para-compra');
 					Route::post('guardar-reserva-almacen', 'ComprasPendientesController@guardarReservaAlmacen')->name('guardar-reserva-almacen');
-					Route::post('obtener-stock-almacen', 'ComprasPendientesController@obtenerStockAlmacen')->name('obtener-stock-almacen');
+					// Route::post('obtener-stock-almacen', 'ComprasPendientesController@obtenerStockAlmacen')->name('obtener-stock-almacen');
 					Route::post('anular-reserva-almacen', 'ComprasPendientesController@anularReservaAlmacen');
 					Route::post('anular-toda-reserva-detalle-requerimiento', 'ComprasPendientesController@anularTodaReservaAlmacenDetalleRequerimiento');
 					Route::post('buscar-item-catalogo', 'ComprasPendientesController@buscarItemCatalogo')->name('buscar-item-catalogo');
@@ -853,6 +853,8 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('finalizar-cuadro/{id}', 'OrdenController@finalizarCuadroPresupuesto');
 					Route::get('mostrar-archivos-adjuntos-detalle-requerimiento/{id_detalle_requerimiento}', 'Logistica\RequerimientoController@mostrarArchivosAdjuntos');
 					Route::get('mostrar-todo-adjuntos-requerimiento/{id_requerimiento}', 'Logistica\RequerimientoController@mostrarTodoAdjuntos');
+					Route::get('almacenes-con-stock-disponible/{idProducto}', 'ComprasPendientesController@mostrarAlmacenesConStockDisponible');
+
 				});
 
 				Route::group(['as' => 'ordenes.', 'prefix' => 'ordenes'], function () {
