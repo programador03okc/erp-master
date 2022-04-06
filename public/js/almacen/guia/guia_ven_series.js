@@ -55,7 +55,7 @@ function listarSeries(id_producto, id_almacen) {
                     ${value !== undefined ? "checked" : ""}/></td>
                 <td class="numero">${i}</td>
                 <td class="serie">${element.serie}</td>
-                <td>${element.guia_com ?? ''}</td>
+                <td>${element.guia_com ?? 'STOCK INICIAL'}</td>
                 </tr>`;
 
                 i++;
