@@ -71,6 +71,7 @@ class SaldosController extends Controller
                 'abreviatura' => $d->abreviatura,
                 'id_unidad_medida' => $d->id_unidad_medida,
                 'stock' => $d->stock,
+                'valorizacion' => $d->valorizacion,
                 'simbolo' => $d->simbolo,
                 'id_moneda' => $d->id_moneda,
                 'costo_promedio' => round($d->costo_promedio, 4, PHP_ROUND_HALF_UP),

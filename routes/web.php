@@ -1384,6 +1384,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('ingresosProcesadosExcel', 'Almacen\Movimiento\OrdenesPendientesController@ingresosProcesadosExcel')->name('ingresosProcesadosExcel');
 				Route::get('seriesExcel/{id}', 'Almacen\Movimiento\OrdenesPendientesController@seriesExcel');
 				Route::post('actualizarIngreso', 'Almacen\Movimiento\OrdenesPendientesController@actualizarIngreso');
+
+				Route::get('sedesPorUsuarioArray', 'Almacen\Movimiento\OrdenesPendientesController@sedesPorUsuarioArray');
 			});
 
 			Route::group(['as' => 'pendientes-salida.', 'prefix' => 'pendientes-salida'], function () {
@@ -1888,11 +1890,10 @@ Route::group(['middleware' => ['auth']], function () {
 
 	Route::group(['as' => 'migracion.', 'prefix' => 'migracion'], function () {
 
-        Route::get('index', 'Migraciones\MigracionAlmacenSoftLinkController@index')->name('index');
+		Route::get('index', 'Migraciones\MigracionAlmacenSoftLinkController@index')->name('index');
 		Route::get('movimientos', 'Migraciones\MigracionAlmacenSoftLinkController@movimientos')->name('movimientos');
-        Route::post('importar', 'Migraciones\MigracionAlmacenSoftLinkController@importar')->name('importar');
-
-    });
+		Route::post('importar', 'Migraciones\MigracionAlmacenSoftLinkController@importar')->name('importar');
+	});
 	Route::get('listarUsu', 'Almacen\Movimiento\TransferenciaController@listarUsu');
 
 	Route::get('migrar_venta_directa/{id}', 'Migraciones\MigrateRequerimientoSoftLinkController@migrar_venta_directa');

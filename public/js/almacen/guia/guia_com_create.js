@@ -346,6 +346,8 @@ function guardar_guia_create(data) {
                     // listarOrdenesPendientes();
                     $("#ordenesPendientes").DataTable().ajax.reload(null, false);
                 }
+                $('#nro_ordenes').text(response.nroOrdenesPendientes);
+                $('#nro_transformaciones').text(response.nroTransformacionesPendientes);
                 $('#modal-guia_create').modal('hide');
             }
         }

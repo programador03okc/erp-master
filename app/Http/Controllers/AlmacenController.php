@@ -1239,12 +1239,13 @@ class AlmacenController extends Controller
             // ->whereMonth('fecha_emision','=',$mes)
             ->count();
 
-        // $alm = DB::table('almacen.alm_almacen')
-        // ->where('id_almacen',$id_alm)->first();
+        $alm = DB::table('almacen.alm_almacen')
+            ->select('codigo')
+            ->where('id_almacen', $id_alm)->first();
 
         $correlativo = AlmacenController::leftZero(3, $data + 1);
 
-        $codigo = $tp . '-' . $id_alm . '-' . $anio . '-' . $correlativo;
+        $codigo = $tp . '-' . $alm->codigo . '-' . $anio . $correlativo;
 
         return $codigo;
     }

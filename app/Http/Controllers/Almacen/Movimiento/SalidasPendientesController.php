@@ -24,14 +24,21 @@ class SalidasPendientesController extends Controller
         $clasificaciones = AlmacenController::mostrar_guia_clas_cbo();
         $usuarios = AlmacenController::select_usuarios();
         $motivos_anu = AlmacenController::select_motivo_anu();
-        $nro_od_pendientes = DB::table('almacen.orden_despacho')
-            ->where('orden_despacho.estado', 1)
-            ->where('orden_despacho.flg_despacho', 0)
-            ->count();
+        $nro_od_pendientes = $this->nroDespachosPendientes();
         return view(
             'almacen/guias/despachosPendientes',
             compact('tp_operacion', 'clasificaciones', 'usuarios', 'motivos_anu', 'nro_od_pendientes')
         );
+    }
+
+    public function nroDespachosPendientes()
+    {
+        // $array_sedes = $this->sedesPorUsuarioArray();
+        $nro_od_pendientes = DB::table('almacen.orden_despacho')
+            ->where('orden_despacho.estado', 1)
+            ->where('orden_despacho.flg_despacho', 0)
+            ->count();
+        return $nro_od_pendientes;
     }
 
     public function listarOrdenesDespachoPendientes(Request $request)
@@ -370,7 +377,8 @@ class SalidasPendientesController extends Controller
             return response()->json(
                 array(
                     'tipo' => $tipo,
-                    'mensaje' => $mensaje, 200
+                    'mensaje' => $mensaje,
+                    'nroDespachosPendientes' => $this->nroDespachosPendientes(), 200
                 )
             );
         } catch (\PDOException $e) {
@@ -467,6 +475,7 @@ class SalidasPendientesController extends Controller
 
             $id_usuario = Auth::user()->id_usuario;
             $msj = '';
+            $tipo = '';
 
             $sal = DB::table('almacen.mov_alm')
                 ->where('id_mov_alm', $request->id_salida)
@@ -549,20 +558,29 @@ class SalidasPendientesController extends Controller
                         //             'fecha_registro' => date('Y-m-d H:i:s')
                         //         ]);
                         // }
+                        $msj = 'Se anuló correctamente la salida.';
+                        $tipo = 'success';
                     } else {
                         $msj = 'La Orden de Despacho ya está con ' . $od->estado_doc;
+                        $tipo = 'warning';
                     }
                 } else {
                     $msj = 'No existe una orden de despacho enlazada';
+                    $tipo = 'warning';
                 }
             } else {
                 $msj = 'La salida ya fue revisada por el Jefe de Almacén';
+                $tipo = 'warning';
             }
             DB::commit();
-            return response()->json($msj);
+            return response()->json([
+                'tipo' => $tipo,
+                'mensaje' => $msj,
+                'nroDespachosPendientes' => $this->nroDespachosPendientes(), 200
+            ]);
         } catch (\PDOException $e) {
-
             DB::rollBack();
+            return response()->json(['tipo' => 'error', 'mensaje' => 'Hubo un problema al anular la salida. Por favor intente de nuevo', 'error' => $e->getMessage()], 200);
         }
     }
 
@@ -1319,7 +1337,6 @@ class SalidasPendientesController extends Controller
                 return ['guia' => $guia, 'detalle' => $detalle];
                 break;
         }
-
     }
 
     public function seriesVentaExcel($id_guia_ven_det)

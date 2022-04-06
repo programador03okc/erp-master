@@ -115,7 +115,7 @@ Atención de Ingresos
                                             <th>Fecha Ingreso</th>
                                             <th>Ingreso</th>
                                             <th>Guía Compra</th>
-                                            <th>Razon Social</th>
+                                            <th>Proveedor</th>
                                             <th>Operación</th>
                                             <th width="70px">Almacén</th>
                                             <th>Responsable</th>
