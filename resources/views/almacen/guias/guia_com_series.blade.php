@@ -1,4 +1,4 @@
-<div class="modal fade" tabindex="-1" role="dialog" id="modal-guia_com_barras">
+<div class="modal fade" tabindex="-1" role="dialog" id="modal-guia_com_barras" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog" style="width:35%;">
         <div class="modal-content">
             <div class="modal-header">

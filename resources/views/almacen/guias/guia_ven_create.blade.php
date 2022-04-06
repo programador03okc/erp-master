@@ -1,4 +1,4 @@
-<div class="modal fade" tabindex="-1" role="dialog" id="modal-guia_ven_create" style="overflow-y: scroll;">
+<div class="modal fade" tabindex="-1" role="dialog" id="modal-guia_ven_create" data-backdrop="static" data-keyboard="false" style="overflow-y: scroll;">
     <div class="modal-dialog" style="width:85%;">
         <div class="modal-content">
             <form id="form-guia_ven_create">

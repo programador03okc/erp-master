@@ -1,4 +1,4 @@
-<div class="modal fade" tabindex="-1" role="dialog" id="modal-guia_ven_series">
+<div class="modal fade" tabindex="-1" role="dialog" id="modal-guia_ven_series" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog" style="width: 500px;">
         <div class="modal-content">
             <div class="modal-header">
