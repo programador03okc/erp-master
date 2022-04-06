@@ -111,14 +111,14 @@ class OrdenesPendientesController extends Controller
     function sedesPorUsuario()
     {
         return DB::table('almacen.alm_almacen_usuario')
-            ->select('sis_sede.*')
+            ->select('sis_sede.id_sede')
             ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_almacen_usuario.id_almacen')
             ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_almacen.id_sede')
             ->where([
                 ['alm_almacen_usuario.id_usuario', '=', Auth::user()->id_usuario],
                 ['alm_almacen_usuario.estado', '!=', 7]
             ])
-            ->get();
+            ->distinct()->get();
     }
 
     function sedesPorUsuarioArray()
@@ -127,9 +127,9 @@ class OrdenesPendientesController extends Controller
 
         $array_sedes = [];
         foreach ($sedes as $sede) {
-            if (!array_key_exists($sede->id_sede, $array_sedes)) {
-                $array_sedes[] = [$sede->id_sede];
-            }
+            // if (!array_key_exists($sede->id_sede, $array_sedes)) {
+            $array_sedes[] = [$sede->id_sede];
+            // }
         }
 
         return $array_sedes;
