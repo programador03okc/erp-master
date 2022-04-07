@@ -93,7 +93,7 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group" style="margin-top: 25px;">
-                                <button class="btn btn-sm btn-success handleClickAgregarReserva" type="button" id="btnAgregarReserva">
+                                <button class="btn btn-sm btn-success handleClickAgregarReserva" type="button" id="btnAgregarReserva" disabled>
                                         <i class="fas fa-plus"></i> Agregar y Guardar
                                     </button>
                                 </div>
