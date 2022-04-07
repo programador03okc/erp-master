@@ -80,6 +80,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="exampleInputName2">Almacén seleccionado</label>
+                                    <input type="hidden" name="stockDisponible">
                                     <input type="hidden" name="almacenReserva">
                                     <input type="text" class="form-control" name="nombreAlmacenReserva" readonly>
 
@@ -93,7 +94,7 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group" style="margin-top: 25px;">
-                                <button class="btn btn-sm btn-success handleClickAgregarReserva" type="button" id="btnAgregarReserva" disabled>
+                                <button class="btn btn-sm btn-success handleClickAgregarReserva" type="button" id="btnAgregarReserva">
                                         <i class="fas fa-plus"></i> Agregar y Guardar
                                     </button>
                                 </div>

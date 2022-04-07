@@ -1369,7 +1369,7 @@ class RequerimientoPendienteView {
                         <td style="border: none; text-align:center;">${element.estado_doc != null && element.tiene_transformacion == false ? element.estado_doc : ''}</td>
                         <td style="border: none; text-align:center;">
                         ${cantidadAdjuntosDetalleRequerimiento > 0 ? `<button type="button" class="btn btn-default btn-xs handleClickVerAdjuntoDetalleRequerimiento" name="btnVerAdjuntoDetalleRequerimiento" title="Ver adjuntos" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-descripcion="${element.producto_descripcion != null ? element.producto_descripcion : 'no mapeado'}" ><i class="fas fa-paperclip"></i></button>` : ''}
-                        ${stockComprometido != null && parseInt(stockComprometido) > 0 ? `<button type="button" class="btn btn-danger btn-xs handleClickAnularReservaActiva" name="btnAnularReservaAtendida" title="Anular reserva" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-descripcion="${element.producto_descripcion != null ? element.producto_descripcion : 'no mapeado'}" ><i class="fas fa-minus-circle"></i></button>` : ''}
+                        ${stockComprometido != null && parseInt(stockComprometido) > 0 ? `<button type="button" class="btn btn-default btn-xs handleClickAnularReservaActiva" name="btnAnularReservaAtendida" title="Deshabilitado temporalmente anular reserva" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-descripcion="${element.producto_descripcion != null ? element.producto_descripcion : 'no mapeado'}" disabled ><i class="fas fa-minus-circle"></i></button>` : ''}
 
 
                         </td>
@@ -1910,6 +1910,7 @@ class RequerimientoPendienteView {
                     <button type="button" class="btn btn-xs btn-success handleClickSeleccionarAlmacenParaReserva" 
                         data-id-almacen="${row.id_almacen??''}" 
                         data-almacen-requerimiento="${row.codigo}-${row.descripcion}" 
+                        data-stock-disponible="${(row.stock - row.cantidad_stock_comprometido)}" 
                         title="Agregar y guardar" >Seleccionar</button>
                     </div></center>`;
 
@@ -2014,6 +2015,9 @@ class RequerimientoPendienteView {
         }
         if ((parseFloat(cantidadReserva) + parseFloat(document.querySelector("form[id='form-nueva-reserva'] label[name='totalReservado']").textContent)) > parseFloat(document.querySelector("form[id='form-nueva-reserva'] label[id='cantidad']").textContent)) {
             mensaje += '<li style="text-align: left;">La cantidad a reservar con la cantidad total reservada supera la cantidad solicitada, debe Ingresar un valor menor.</li>';
+        }
+        if ((parseFloat(cantidadReserva)) > parseFloat(document.querySelector("form[id='form-nueva-reserva'] input[name='stockDisponible']").value)) {
+            mensaje += '<li style="text-align: left;">La cantidad a reservar no puede ser mayor a la cantidad disponible en stock.</li>';
         }
         if (!parseFloat(almacenReserva) > 0) {
             mensaje += '<li style="text-align: left;">Debe seleccionar un almacén.</li>';
@@ -2174,6 +2178,7 @@ class RequerimientoPendienteView {
     seleccionarAlmacenParaReserva(obj){
         console.log(obj);
         document.querySelector("div[id='modal-nueva-reserva'] input[name='almacenReserva']").value = obj.dataset.idAlmacen;
+        document.querySelector("div[id='modal-nueva-reserva'] input[name='stockDisponible']").value = obj.dataset.stockDisponible;
         document.querySelector("div[id='modal-nueva-reserva'] input[name='nombreAlmacenReserva']").value = obj.dataset.almacenRequerimiento;
     }
 
