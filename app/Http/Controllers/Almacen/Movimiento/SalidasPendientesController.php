@@ -120,19 +120,19 @@ class SalidasPendientesController extends Controller
 
                 $detalle = json_decode($request->detalle);
 
-                // foreach ($detalle as $det) {
-                //     $producto = DB::table('almacen.alm_prod')
-                //         ->select('alm_prod.descripcion', 'alm_prod.codigo')
-                //         ->where('id_producto', $det->id_producto)
-                //         ->first();
+                foreach ($detalle as $det) {
+                    $producto = DB::table('almacen.alm_prod')
+                        ->select('alm_prod.descripcion', 'alm_prod.codigo')
+                        ->where('id_producto', $det->id_producto)
+                        ->first();
 
-                //     $stockDisponible = $this->validaStockDisponible($det->id_producto, $request->id_almacen);
+                    $stockDisponible = $this->validaStockDisponible($det->id_producto, $request->id_almacen);
 
-                //     if ($stockDisponible <= 0) {
-                //         $mensaje .= $producto->codigo . ' - ' . $producto->descripcion . '
-                //         ';
-                //     }
-                // }
+                    if ($stockDisponible <= 0) {
+                        $mensaje .= $producto->codigo . ' - ' . $producto->descripcion . '
+                        ';
+                    }
+                }
 
                 if ($mensaje == '') {
 
@@ -1313,7 +1313,7 @@ class SalidasPendientesController extends Controller
                 INNER JOIN almacen.alm_det_req ON alm_det_req.id_detalle_requerimiento = orden_despacho_det.id_detalle_requerimiento
                 INNER JOIN almacen.alm_req ON alm_req.id_requerimiento = alm_det_req.id_requerimiento
                 WHERE guia_ven.id_guia_ven = almacen.guia_ven_det.id_guia_ven ) as codigos_requerimiento"),
-        
+
             )
             ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'guia_ven.id_almacen')
             ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_almacen.id_sede')
@@ -1335,7 +1335,7 @@ class SalidasPendientesController extends Controller
                 GuiaSalidaExcelFormatoSVSController::construirExcel(['guia' => $guia, 'detalle' => $detalle]);
                 break;
             case 5: //RBDB
-                return ['guia' => $guia, 'detalle' => $detalle];//! no esta implementado un formato
+                return ['guia' => $guia, 'detalle' => $detalle]; //! no esta implementado un formato
                 break;
 
             default:
