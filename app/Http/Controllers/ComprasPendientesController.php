@@ -836,12 +836,12 @@ class ComprasPendientesController extends Controller
             DB::beginTransaction();
             $tipo_estado = 'warning';
             $requerimientoHelper = new RequerimientoHelper();
+            $cantidadAnulados=0;
+            $cantidadNoAnulados=0;
+            $totalItem=0;
             if ($requerimientoHelper->EstaHabilitadoRequerimiento([$request->idDetalleRequerimiento]) == true) {
 
                 $reservas = Reserva::where([['id_detalle_requerimiento', $request->idDetalleRequerimiento], ['estado', '!=', 7]])->get();
-                $cantidadAnulados=0;
-                $cantidadNoAnulados=0;
-                $totalItem=0;
                 foreach ($reservas as $r) {
                     $totalItem++;
                     if($r->estado==1){
