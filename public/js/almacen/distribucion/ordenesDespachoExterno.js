@@ -103,8 +103,6 @@ function listarRequerimientosPendientes(usuario) {
         },
         columns: [
             { data: 'id_requerimiento', name: 'alm_req.id_requerimiento' },
-            // { data: 'id_od', name: 'orden_despacho.id_od' },
-            // { data: 'codigo', name: 'alm_req.codigo', className: "text-center" },
             {
                 data: 'codigo', name: 'alm_req.codigo', className: "text-center",
                 'render': function (data, type, row) {
@@ -116,6 +114,7 @@ function listarRequerimientosPendientes(usuario) {
                         + ('<br>' + row['sede_descripcion_req']);
                 }
             },
+            { data: 'tipo_requerimiento_descripcion', name: 'alm_tp_req.descripcion', className: "text-center" },
             {
                 data: 'fecha_entrega', name: 'oc_propias_view.fecha_entrega',
                 'render': function (data, type, row) {
@@ -260,9 +259,9 @@ function listarRequerimientosPendientes(usuario) {
                             
                         ${row['id_requerimiento'] !== null ?
                             `<button type="button" class="envio_od btn btn-${row['id_od'] !== null ? 'warning' : 'default'} btn-flat btn-xs " data-toggle="tooltip"
-                            data-placement="bottom" title="Orden de Despacho" data-id="${row['id_requerimiento']}"
+                            data-placement="bottom" title="Orden de Despacho" data-id="${row['id_requerimiento']}" data-tipo="${row['id_tipo_requerimiento']}"
                             data-fentrega="${row['fecha_entrega']}" data-cdp="${row['codigo_oportunidad']}">
-                            <i class="far fa-envelope"></i></button>
+                            <strong>ODE</strong></button>
                             `: ''}
                         `+
 
@@ -308,7 +307,7 @@ function listarRequerimientosPendientes(usuario) {
                                    <i class="fas fa-file-upload"></i></button>`
                            : '')*/
                         `</div>`
-                }, targets: 16
+                }, targets: 17
             }
         ],
         // select: "multi",
