@@ -45,6 +45,7 @@ Gestión de Despachos
                                         <th hidden></th>
                                         {{-- <th></th> --}}
                                         <th>Cod.Req.</th>
+                                        <th>Tipo Req.</th>
                                         <th>Fecha Fin Entrega</th>
                                         <th>Nro O/C</th>
                                         {{-- <th>Estado O/C</th> --}}

@@ -51,6 +51,7 @@ class OrdenesDespachoExternoController extends Controller
         $data = DB::table('almacen.alm_req')
             ->select(
                 'alm_req.id_requerimiento',
+                'alm_req.id_tipo_requerimiento',
                 'alm_req.codigo',
                 'alm_req.concepto',
                 'oc_propias_view.fecha_entrega',
@@ -67,6 +68,7 @@ class OrdenesDespachoExternoController extends Controller
                 'alm_req.enviar_contacto',
                 'alm_req.estado',
                 'alm_req.estado_despacho',
+                'alm_tp_req.descripcion as tipo_requerimiento_descripcion',
                 'sis_usua.nombre_corto as responsable',
                 'adm_estado_doc.estado_doc',
                 'adm_estado_doc.bootstrap_color',
@@ -144,6 +146,7 @@ class OrdenesDespachoExternoController extends Controller
             // ->leftjoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'oc_propias_view.id_oportunidad')
             // ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id_oportunidad', '=', 'oportunidades.id')
             // ->leftJoin('almacen.alm_req', 'alm_req.id_cc', '=', 'cc.id')
+            ->leftJoin('almacen.alm_tp_req', 'alm_tp_req.id_tipo_requerimiento', '=', 'alm_req.id_tipo_requerimiento')
             ->leftJoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'alm_req.id_usuario')
             ->leftJoin('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'alm_req.estado_despacho')
             ->leftJoin('administracion.sis_sede as sede_req', 'sede_req.id_sede', '=', 'alm_req.id_sede')
@@ -456,11 +459,6 @@ class OrdenesDespachoExternoController extends Controller
             $cuadro = null;
             $oportunidad = null;
 
-            if ($request->id_oportunidad !== null) {
-                $cuadro = CuadroCosto::where('id_oportunidad', $request->id_oportunidad)->first();
-                $oportunidad = Oportunidad::find($cuadro->id_oportunidad);
-            }
-
             if ($request->id_requerimiento !== null) {
 
                 $requerimiento = Requerimiento::where('id_requerimiento', $request->id_requerimiento)->first();
@@ -565,6 +563,12 @@ class OrdenesDespachoExternoController extends Controller
                 }
             }
             if ($request->envio == 'envio') {
+
+                if ($request->id_oportunidad !== null) {
+                    $cuadro = CuadroCosto::where('id_oportunidad', $request->id_oportunidad)->first();
+                    $oportunidad = Oportunidad::find($cuadro->id_oportunidad);
+                }
+
                 $this->enviarOrdenDespacho($request, $oportunidad, $requerimiento);
             }
 
