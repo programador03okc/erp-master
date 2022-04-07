@@ -66,13 +66,14 @@ function listarDespachosInternos() {
                     </div>
                     <a href="#" class="small-box-footer" style="cursor: auto;">
                         ${page == 'tableroTransformaciones' ?
-                        `<i class="fa fa-arrow-circle-left"  style="cursor: pointer;" data-toggle="tooltip"
-                            data-placement="bottom" title="Anterior" onClick="anterior(${element.estado},${element.id_od},${element.id_transformacion})"></i>
+                        `
                             <i class="fa fa-arrow-circle-right"  style="cursor: pointer;" data-toggle="tooltip"
                             data-placement="bottom" title="Siguiente" onClick="siguiente(${element.estado},${element.id_od},${element.id_transformacion})"></i>`
                         : ''}
                     </a>
                 </div> `;
+                // <i class="fa fa-arrow-circle-left"  style="cursor: pointer;" data-toggle="tooltip"
+                //             data-placement="bottom" title="Anterior" onClick="anterior(${element.estado},${element.id_od},${element.id_transformacion})"></i>
             });
             $('#listaPendientes').html(html);
 
