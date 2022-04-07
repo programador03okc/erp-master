@@ -96,89 +96,114 @@ class GuiaSalidaExcelFormatoOKCController extends Controller
 
     }
 
-    public static function insertarSeccionDetalle($spreadsheet, $data, $idSerieInterrumpido)
+    public static function insertarSeccionDetalle($spreadsheet, $data, $idItemInterrumpido, $idSerieInterrumpido)
     {
         $sheet = $spreadsheet->getActiveSheet();
         $detalle = $data['detalle'];
         $pageMaxHeight = 1008;
         $ColumnaInicioItem = 1;
         $filaInicioItem = 15;
-        $idItemInterrumpido = 0;
         // $idSerieInterrumpido = 0;
-        foreach ($detalle as $key1 => $item) {
-            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*1, $filaInicioItem, $item['codigo']);
-            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*8, $filaInicioItem, $item['cantidad']);
-            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*12, $filaInicioItem, $item['abreviatura']);
+        // $idItemInterrumpido = 0;
+        // foreach ($detalle as $key1 => $item) {
+            for ($i=$idItemInterrumpido; $i < count($detalle); $i++) { 
+                
             
-            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*16, $filaInicioItem, $item['descripcion']);
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*1, $filaInicioItem, $detalle[$i]['codigo']);
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*8, $filaInicioItem, $detalle[$i]['cantidad']);
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*12, $filaInicioItem, $detalle[$i]['abreviatura']);
+            
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*16, $filaInicioItem, $detalle[$i]['descripcion']);
             $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*16).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*16)+31).$filaInicioItem);
             $sheet->getStyle(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*16).$filaInicioItem)->getAlignment()->setWrapText(true);
             $filaInicioItem++;
             $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*16, $filaInicioItem, 'CATEGORÍA: ');
             $filaInicioItem++;
-            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*16, $filaInicioItem, 'MARCA: '.$item['marca']);
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*16, $filaInicioItem, 'MARCA: '.$detalle[$i]['marca']);
             $filaInicioItem++;
             $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*16, $filaInicioItem, 'MODELO: ');
             $filaInicioItem++;
-            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*16, $filaInicioItem, 'NÚMERO DE PARTE: '.$item['part_number']);
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*16, $filaInicioItem, 'NÚMERO DE PARTE: '.$detalle[$i]['part_number']);
             $filaInicioItem++;
             $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*16, $filaInicioItem, 'S/N:');
             $filaInicioItem++;
 
             $filaInicioItem++;
             $ColumnaInicioSerie=$ColumnaInicioItem*16;
-            $i=0;
-            foreach ($item['series'] as $key2 => $serie) {
+            $ii=0;
+            // foreach ($detalle[$i]['series'] as $key2 => $serie) {
+            for ($j=$idSerieInterrumpido; $j < count($detalle[$i]['series']) ; $j++) { 
+                
 
-                $sheet->setCellValueByColumnAndRow($ColumnaInicioSerie+$i, $filaInicioItem, $serie->serie);
-                $i=$i+8;
-                if (($key2 + 1) % 3 == 0) {
+                $sheet->setCellValueByColumnAndRow($ColumnaInicioSerie+$ii, $filaInicioItem, $detalle[$i]['series'][$j]->serie);
+                $ii=$ii+8;
+                if (($j + 1) % 3 == 0) {
                     $filaInicioItem++;
                     $ColumnaInicioSerie = $ColumnaInicioSerie;
-                    $i=0;
+                    $ii=0;
                 }
 
                 // inica evaluar altura de pagina actual, si series excede la pagina
-                $ActualNumeroFilaRecorrida = $sheet->getHighestRow();
-                if (($ActualNumeroFilaRecorrida * 13) >= ($pageMaxHeight - 400)) {
-                    if (($key2 + 1) % 3 == 0) {
-                        $idSerieInterrumpido = $key2;
-                        break;
-                    }
-                }
+                // $ActualNumeroFilaRecorrida = $sheet->getHighestRow();
+                // if (($ActualNumeroFilaRecorrida * 13) >= ($pageMaxHeight - 400)) {
+                //     if (($j + 1) % 3 == 0) {
+
+                //         $idItemInterrumpido = $i;
+                //         $idSerieInterrumpido = $j;
+                //         break;
+                //     }
+                // }
                 // fin evaluar altura de pagina actual, si series excede la pagina
                 
             }
 
             // inica evaluar altura de pagina actual, considerando itme y si series excede la pagina
-            if($idSerieInterrumpido>0){
-                GuiaSalidaExcelFormatoOKCController::crearNuevaHoja($spreadsheet,$data, $idSerieInterrumpido);
-                break;
+            // if($idSerieInterrumpido>0 ){
+            //     $nuevoDetalle=[];
+            //     foreach ($data['detalle'] as $keyi => $det) {
+                    
+            //         if($keyi==$idItemInterrumpido){
+            //             $tempDetalle=$det;
+            //             $serieRestantesArray=[];
+            //             foreach ($det['series'] as $keys => $serie) {
+            //                 // $serieRestantesArray[]=$serie;
+            //                 if($keys>$idSerieInterrumpido){
+            //                     $serieRestantesArray[]=$serie;
+            //                 }
+            //             }
+            //             $tempDetalle['series']=$serieRestantesArray;
+            //             $nuevoDetalle[]=$tempDetalle;
+            //         }
+            //     }
+            //     $data=['guia'=>$data['guia'],'detalle'=>$nuevoDetalle];
+            //     // dd($data);   
+            //     GuiaSalidaExcelFormatoOKCController::crearNuevaHoja($spreadsheet,$data,$idItemInterrumpido, $idSerieInterrumpido);
+            //     return false;
 
-            }
+            // }
             // fin evaluar altura de pagina actual, considerando itme y si series excede la pagina
             
             $filaInicioItem++;
         }
     }
 
-    public static function crearNuevaHoja($spreadsheet,$data, $idSerieInterrumpido=null)
-    {
+    // public static function crearNuevaHoja($spreadsheet,$data, $idItemInterrumpido,$idSerieInterrumpido)
+    // {
 
-        $spreadsheet->createSheet();
-        $spreadsheet->setActiveSheetIndex(1);
+    //     $spreadsheet->createSheet();
+    //     $spreadsheet->setActiveSheetIndex(1);
 
-        $spreadsheet->getActiveSheet()->getPageMargins()->setLeft(0.55);
-        $spreadsheet->getDefaultStyle()->getFont()->setSize(10);
-        $spreadsheet->getDefaultStyle()->getFont()->setName('Times New Roman');
-        $spreadsheet->getActiveSheet()->getPageSetup()->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_PORTRAIT);
-        $spreadsheet->getActiveSheet()->getPageSetup()->setPaperSize(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::PAPERSIZE_A4);
-        $sheet = $spreadsheet->getActiveSheet();
-        $sheetCount = $spreadsheet->getSheetCount(); 
-        $spreadsheet->getActiveSheet()->setTitle('Guia '.$sheetCount);
-        GuiaSalidaExcelFormatoOKCController::insertarSeccionGuia($spreadsheet, $data);
-        // GuiaSalidaExcelFormatoOKCController::insertarSeccionDetalle($spreadsheet, $data, $idSerieInterrumpido );
-    }
+    //     $spreadsheet->getActiveSheet()->getPageMargins()->setLeft(0.55);
+    //     $spreadsheet->getDefaultStyle()->getFont()->setSize(10);
+    //     $spreadsheet->getDefaultStyle()->getFont()->setName('Times New Roman');
+    //     $spreadsheet->getActiveSheet()->getPageSetup()->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_PORTRAIT);
+    //     $spreadsheet->getActiveSheet()->getPageSetup()->setPaperSize(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::PAPERSIZE_A4);
+    //     $sheet = $spreadsheet->getActiveSheet();
+    //     $sheetCount = $spreadsheet->getSheetCount(); 
+    //     $spreadsheet->getActiveSheet()->setTitle('Guia '.$sheetCount);
+    //     GuiaSalidaExcelFormatoOKCController::insertarSeccionGuia($spreadsheet, $data);
+    //     GuiaSalidaExcelFormatoOKCController::insertarSeccionDetalle($spreadsheet, $data, $idItemInterrumpido,$idSerieInterrumpido );
+    // }
 
     public static function construirExcel($data)
     {
@@ -194,18 +219,20 @@ class GuiaSalidaExcelFormatoOKCController extends Controller
         $sheetCount = $spreadsheet->getSheetCount(); 
         $spreadsheet->getActiveSheet()->setTitle('Guia '.$sheetCount);
         GuiaSalidaExcelFormatoOKCController::insertarSeccionGuia($spreadsheet, $data);
-        GuiaSalidaExcelFormatoOKCController::insertarSeccionDetalle($spreadsheet, $data, null);
+        GuiaSalidaExcelFormatoOKCController::insertarSeccionDetalle($spreadsheet, $data, 0,0);
 
+        $fileName = 'FORMATO-OKC-GR'.$data['guia']->serie.'-'.$data['guia']->numero.'-'.json_decode($data['guia']->codigos_requerimiento)[0].'-'.$data['guia']->cliente_razon_social."-okc";
+        // header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        // header('Content-Disposition: attachment;filename="' . $fileName . '.xlsx"');
+        // header('Content-Transfer-Encoding: binary');
+        // header('Cache-Control: must-revalidate');
+        // // header('Cache-Control: max-age=0');
+        // $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        // $writer->save('php://output');
 
-        // $spreadsheet->setActiveSheetIndex(0);
-
-        $fileName = "guia-salida-okc";
+        $writer = new Xlsx($spreadsheet);
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment;filename="' . $fileName . '.xlsx"');
-        header('Cache-Control: max-age=0');
-
-        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
-
+        header('Content-Disposition: attachment; filename="'. urlencode($fileName).'.xlsx"');
         $writer->save('php://output');
     }
 }

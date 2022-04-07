@@ -1307,7 +1307,13 @@ class SalidasPendientesController extends Controller
                 'empresa.nro_documento as empresa_nro_documento',
                 'empresa.razon_social as empresa_razon_social',
                 'cliente.nro_documento as cliente_nro_documento',
-                'cliente.razon_social as cliente_razon_social'
+                'cliente.razon_social as cliente_razon_social',
+                DB::raw("(SELECT json_agg(DISTINCT alm_req.codigo) FROM almacen.guia_ven_det
+                INNER JOIN almacen.orden_despacho_det ON orden_despacho_det.id_od_detalle = guia_ven_det.id_od_det
+                INNER JOIN almacen.alm_det_req ON alm_det_req.id_detalle_requerimiento = orden_despacho_det.id_detalle_requerimiento
+                INNER JOIN almacen.alm_req ON alm_req.id_requerimiento = alm_det_req.id_requerimiento
+                WHERE guia_ven.id_guia_ven = almacen.guia_ven_det.id_guia_ven ) as codigos_requerimiento"),
+        
             )
             ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'guia_ven.id_almacen')
             ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_almacen.id_sede')
@@ -1317,7 +1323,6 @@ class SalidasPendientesController extends Controller
             ->leftjoin('contabilidad.adm_contri as cliente', 'cliente.id_contribuyente', '=', 'com_cliente.id_contribuyente')
             ->where('guia_ven.id_guia_ven', $id_guia_ven)
             ->first();
-
         $detalle = $this->listarDetalleGuiaSalida($id_guia_ven);
         //OKC PYC SVS PTEC
         switch ($guia->id_empresa) {
@@ -1327,10 +1332,10 @@ class SalidasPendientesController extends Controller
                 GuiaSalidaExcelFormatoOKCController::construirExcel(['guia' => $guia, 'detalle' => $detalle]);
                 break;
             case 3: //SVS
-                return Excel::download(new GuiaSalidaSVSExcel($guia, $detalle), 'guia_salida_svs.xlsx');
+                GuiaSalidaExcelFormatoSVSController::construirExcel(['guia' => $guia, 'detalle' => $detalle]);
                 break;
             case 5: //RBDB
-                return Excel::download(new GuiaSalidaOKCExcel($guia, $detalle), 'guia_salida_rbdb.xlsx');
+                return ['guia' => $guia, 'detalle' => $detalle];//! no esta implementado un formato
                 break;
 
             default:
