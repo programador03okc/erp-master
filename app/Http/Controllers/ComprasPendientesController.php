@@ -839,11 +839,21 @@ class ComprasPendientesController extends Controller
             if ($requerimientoHelper->EstaHabilitadoRequerimiento([$request->idDetalleRequerimiento]) == true) {
 
                 $reservas = Reserva::where([['id_detalle_requerimiento', $request->idDetalleRequerimiento], ['estado', '!=', 7]])->get();
+                $cantidadAnulados=0;
+                $cantidadNoAnulados=0;
+                $totalItem=0;
                 foreach ($reservas as $r) {
-                    $reserva = Reserva::where('id_reserva', $r->id_reserva)->first();
-                    $reserva->estado = 7;
-                    $reserva->save();
-                    $tipo_estado = 'success';
+                    $totalItem++;
+                    if($r->estado==1){
+                        $reserva = Reserva::where('id_reserva', $r->id_reserva)->first();
+                        $reserva->estado = 7;
+                        $reserva->save();
+                        $tipo_estado = 'success';
+                        $cantidadAnulados++;
+                    }else{
+                        $cantidadNoAnulados++;
+
+                    }
                 }
 
 
@@ -854,7 +864,7 @@ class ComprasPendientesController extends Controller
                 $nuevoEstado = Requerimiento::actualizarEstadoRequerimientoAtendido('ANULAR',[$Requerimiento->id_requerimiento]);
 
                 DB::commit();
-                return response()->json(['data' => $ReservasProductoActualizadas, 'tipo_estado' => $tipo_estado, 'estado_requerimiento' => $nuevoEstado['estado_actual'], 'lista_finalizados' => $nuevoEstado['lista_finalizados'], 'lista_restablecidos' => $nuevoEstado['lista_restablecidos']]);
+                return response()->json(['data' => $ReservasProductoActualizadas,'cantidad_total_item'=>$totalItem,'cantidad_item_anulados'=>$cantidadAnulados,'cantidad_item_no_anulados'=>$cantidadNoAnulados, 'tipo_estado' => $tipo_estado, 'estado_requerimiento' => $nuevoEstado['estado_actual'], 'lista_finalizados' => $nuevoEstado['lista_finalizados'], 'lista_restablecidos' => $nuevoEstado['lista_restablecidos']]);
             } else {
                 return response()->json(['data' => [], 'tipo_estado' => 'warning', 'mensaje' => 'No puede anular la reserva, existe un requerimiento vinculado con estado "En pausa" o  "Por regularizar"']);
             }
