@@ -1124,7 +1124,8 @@ class OrdenController extends Controller
                     'nro_cuenta_detra' => $element->nro_cuenta_detra,
                     'id_persona_pago' => $element->id_persona_pago, //util para envia a pago,
                     'id_cuenta_persona_pago' => $element->id_cuenta_persona_pago, //util para envia a pago,
-                    'comentario_pago' => $element->comentario_pago //util para envia a pago,
+                    'comentario_pago' => $element->comentario_pago, //util para envia a pago,
+                    'cantidad_ingresos_almacen' => $element->cantidad_ingresos_almacen
 
                 ];
             }
