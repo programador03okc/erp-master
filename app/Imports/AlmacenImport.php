@@ -29,7 +29,7 @@ class AlmacenImport implements ToCollection, WithHeadingRow
             switch ($this->type) {
                 case 1:
                     $descripcion = trim($row['descripcion']);
-                    $this->saveAlmacen($row['cod_alma'], $row['cod_suc'], $row['sede'], $descripcion, $row['direccion'], $this->model);
+                    $this->saveAlmacen($row['codigo'], $row['id_sede'], $row['id_tipo_almacen'], $descripcion, $row['ubicacion'], $this->model);
                 break;
                 case 2:
                     $descripcion = trim($row['descripcion']);
@@ -64,37 +64,30 @@ class AlmacenImport implements ToCollection, WithHeadingRow
         return $total;
     }
 
-    public function saveAlmacen($cod_alma, $cod_suc, $sede, $descripcion, $direccion, $tipo)
+    public function saveAlmacen($codigo, $sede, $tipo_almacen, $descripcion, $direccion, $tipo)
     {
-        $query = DB::table('almacen.alm_almacen')->where('codigo', $cod_alma)->where('estado', 1);
+        $query = DB::table('almacen.alm_almacen')->where('codigo', $codigo);
         if ($query->count() == 0) {
-            $cod_empresa = $this->getCodigoEmpresa($cod_suc);
-
-            $query_emp = DB::table('administracion.adm_empresa')->where('codigo', $cod_empresa)->first();
-                $id_empresa = $query_emp->id_empresa;
-            $query_sede = DB::table('administracion.sis_sede')->where('id_empresa', $id_empresa)->where('codigo', $sede);
-
-            if ($query_sede->count() > 0) {
-                $id_sede = $query_sede->first()->id_sede;
-
-                DB::table('almacen.alm_almacen')->insertGetId([
-                    'id_sede'           => $id_sede,
-                    'descripcion'       => $descripcion,
-                    'ubicacion'         => ($direccion != '') ? $direccion : null,
-                    'id_tipo_almacen'   => 1,
-                    'estado'            => 1,
-                    'codigo'            => $cod_alma,
-                    'registrado_por'    => 1,
-                    'fecha_registro'    => new Carbon()
-                ], 'id_almacen');
-                
-                $this->numRows++;
-            }
+            DB::table('almacen.alm_almacen')->insertGetId([
+                'id_sede'           => $sede,
+                'descripcion'       => $descripcion,
+                'ubicacion'         => ($direccion != '') ? $direccion : null,
+                'id_tipo_almacen'   => $tipo_almacen,
+                'estado'            => 1,
+                'codigo'            => $codigo,
+                'registrado_por'    => 1,
+                'fecha_registro'    => new Carbon()
+            ], 'id_almacen');
+            
+            $this->numRows++;
         } else {
             if ($tipo == 2) {
-                $id_almacen = $query->first()->id_almacen;
-                DB::table('almacen.alm_almacen')->where('id_almacen', $id_almacen)->update(['estado' => 1]);
-                $this->numRowsStatus++;
+                $estado = $query->first()->estado;
+                if ($estado == 7) {
+                    $id_almacen = $query->first()->id_almacen;
+                    DB::table('almacen.alm_almacen')->where('id_almacen', $id_almacen)->update(['estado' => 1]);
+                    $this->numRowsStatus++;
+                }
             }
         }
     }
@@ -258,7 +251,7 @@ class AlmacenImport implements ToCollection, WithHeadingRow
             'id_producto'       => $id_pro,
             'stock'             => $stock,
             'estado'            => 1,
-            'fecha_registro'    => new Carbon(),
+            'fecha_registro'    => new Carbon(), ///// 01/04
             'costo_promedio'    => $costo_promedio,
             'id_almacen'        => $id_alm,
             'valorizacion'      => $valorizacion
