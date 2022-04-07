@@ -34,14 +34,15 @@ function listarDespachosInternos() {
                         <p style="margin-bottom:0px;">${element.nombre_entidad}</p>
                         ${element.comentario !== null ? '<p style="margin-bottom:0px;font-size: 13px;">' + element.comentario + '</p>' : ""}
                     </div >
-                    <a href="#" class="small-box-footer" style="cursor: auto;">
-                        ${page == 'tableroTransformaciones' ?
-                        `<i class="fa fa-arrow-circle-right" style="cursor: pointer;" data-toggle="tooltip"
-                        data-placement="bottom" title="Siguiente" onClick="siguiente(${element.estado},${element.id_od},${element.id_transformacion})"></i>` : ''
-                    }
-                    </a>
                 </div> `;
             });
+
+            //     <a href="#" class="small-box-footer" style="cursor: auto;">
+            //     ${page == 'tableroTransformaciones' ?
+            //     `<i class="fa fa-arrow-circle-right" style="cursor: pointer;" data-toggle="tooltip"
+            //     data-placement="bottom" title="Siguiente" onClick="siguiente(${element.estado},${element.id_od},${element.id_transformacion})"></i>` : ''
+            // }
+            // </a>
             $('#listaProgramados').html(html);
 
             html = '';
