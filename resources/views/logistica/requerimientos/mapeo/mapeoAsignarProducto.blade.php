@@ -127,7 +127,7 @@
 
                                                 <div class="col-md-4" style="display:none;">
                                                     <h5>Clasificación</h5>
-                                                    <select class="form-control activation js-example-basic-single" name="id_clasif" required>
+                                                    <select class="form-control activation js-example-basic-single" name="id_clasif" >
                                                         <!-- <option value="0">Elija una opción</option> -->
                                                         @foreach ($clasificaciones as $clasif)
                                                         <option value="{{$clasif->id_clasificacion}}">{{$clasif->descripcion}}</option>
@@ -136,7 +136,7 @@
                                                 </div>
                                                 <div class="col-md-4" style="display:none;">
                                                     <h5>Categoría</h5>
-                                                    <select class="form-control activation js-example-basic-single" name="id_tipo_producto" required>
+                                                    <select class="form-control activation js-example-basic-single" name="id_tipo_producto" >
                                                         <!-- <option value="0">Elija una opción</option> -->
                                                         @foreach ($tipos as $cat)
                                                         <option value="{{$cat->id_tipo_producto}}">{{$cat->descripcion}}</option>

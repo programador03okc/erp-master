@@ -791,7 +791,7 @@ class OrdenesPendientesController extends Controller
                                         'part_number' => $det->part_number,
                                         'id_categoria' => $det->id_categoria,
                                         'id_subcategoria' => $det->id_subcategoria,
-                                        'id_clasif' => $det->id_clasif,
+                                        'id_clasif' => 2, //$det->id_clasif,
                                         'descripcion' => strtoupper($det->descripcion),
                                         'id_unidad_medida' => $det->id_unidad_medida,
                                         'series' => $det->control_series,
