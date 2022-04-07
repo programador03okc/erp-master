@@ -21,7 +21,7 @@ class Orden extends Model
 
     protected $table = 'logistica.log_ord_compra';
     protected $primaryKey = 'id_orden_compra';
-    protected $appends = ['cuadro_costo', 'monto','fecha_formato', 'requerimientos', 'oportunidad', 'tiene_transformacion', 'cantidad_equipos', 'estado_orden', 'requerimientos_codigo'];
+    protected $appends = ['cuadro_costo', 'monto','fecha_formato', 'requerimientos', 'oportunidad', 'tiene_transformacion', 'cantidad_equipos', 'estado_orden', 'requerimientos_codigo','cantidad_ingresos_almacen'];
 
     public $timestamps = false;
 
@@ -45,6 +45,30 @@ class Orden extends Model
     {
         $fecha = new Carbon($this->attributes['fecha_ingreso_almacen']);
         return $fecha->format('d-m-Y');
+    }
+    public function getCantidadIngresosAlmacenAttribute()
+    {
+        $cantidadIngresos = 0;
+        $id_detalle_orden_list=[];
+        $detalleOrdenCompra = OrdenCompraDetalle::where([['id_orden_compra',$this->attributes['id_orden_compra']],['estado','!=',7]])->get();
+        if (count($detalleOrdenCompra) > 0) {
+            foreach ($detalleOrdenCompra as $do) {
+                $id_detalle_orden_list[] = $do->id_detalle_orden;
+            }
+        }
+        if(count($id_detalle_orden_list)>0){
+            $guia_com_det = DB::table('almacen.guia_com_det')
+            ->select(
+                'guia_com_det.*'
+            )
+            ->whereIn('guia_com_det.id_oc_det', $id_detalle_orden_list)
+            ->where('guia_com_det.estado', 1)
+            ->get();
+        $cantidadIngresos =count($guia_com_det);
+        }
+        
+        return $cantidadIngresos;
+
     }
     public function getEstadoOrdenAttribute()
     {
