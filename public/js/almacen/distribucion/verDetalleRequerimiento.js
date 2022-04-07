@@ -19,6 +19,7 @@ function format(table_id, id, row, $boton) {
                             '<td style="border: none;">' + (element.producto_descripcion !== null ? element.producto_descripcion : (element.descripcion !== null ? element.descripcion : '')) + '</td>' +
                             '<td style="border: none;text-align:center">' + element.cantidad + '</td>' +
                             '<td style="border: none;text-align:center">' + (element.abreviatura !== null ? element.abreviatura : '') + '</td>' +
+                            '<td style="border: none;text-align:center">' + (element.cantidad_orden ?? '') + '</td>' +
                             // '<td style="border: none;">'+(element.suma_transferencias!==null?element.suma_transferencias:'')+'</td>'+
                             // '<td style="border: none;">' + (element.almacen_guia_com_descripcion !== null ? element.almacen_guia_com_descripcion : '') + '</td>' +
                             // '<td style="border: none;">' + (element.suma_ingresos !== null ? element.suma_ingresos : '0') + '</td>' +
@@ -40,6 +41,7 @@ function format(table_id, id, row, $boton) {
                             <th style="border: none;">Descripción</th>
                             <th style="border: none;">Cantidad</th>
                             <th style="border: none;">Unid.</th>
+                            <th style="border: none;">Orden Compra</th>
                             <th style="border: none;">Alm.Reserva</th>
                             <th style="border: none;">Reservado</th>
                             <th style="border: none;">Transformación</th>
