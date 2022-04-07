@@ -169,12 +169,12 @@ class AlmacenImport implements ToCollection, WithHeadingRow
     public function saveProducto($cod_prod, $part_no, $descripcion, $cod_clasi, $cod_cate, $cod_subc, $cod_unid, $tip_moneda, $flg_serie, $flg_afecto_igv,  $txt_observa, $ult_edicion, $tipo)
     {
         $query = DB::table('almacen.alm_prod')->where('cod_softlink', $cod_prod);
-        if ($query->count() == 0) {
-            $query_cla = DB::table('almacen.alm_clasif')->where('cod_softlink', $cod_clasi)->first();
-            $query_cat = DB::table('almacen.alm_cat_prod')->where('cod_softlink', $cod_cate)->first();
-            $query_sub = DB::table('almacen.alm_subcat')->where('cod_softlink', $cod_subc)->first();
-            $query_und = DB::table('almacen.alm_und_medida')->where('cod_softlink', $cod_unid)->first();
+        $query_cla = DB::table('almacen.alm_clasif')->where('cod_softlink', $cod_clasi)->first();
+        $query_cat = DB::table('almacen.alm_cat_prod')->where('cod_softlink', $cod_cate)->first();
+        $query_sub = DB::table('almacen.alm_subcat')->where('cod_softlink', $cod_subc)->first();
+        $query_und = DB::table('almacen.alm_und_medida')->where('cod_softlink', $cod_unid)->first();
 
+        if ($query->count() == 0) {
             $id_cla = ($query_cla != '') ? $query_cla->id_clasificacion : null;
             $id_cat = ($query_cat != '') ? $query_cat->id_categoria : null;
             $id_sub = ($query_sub != '') ? $query_sub->id_subcategoria : null;
@@ -211,11 +211,14 @@ class AlmacenImport implements ToCollection, WithHeadingRow
         } else {
             if ($tipo == 2) {
                 $estado = $query->first()->estado;
+                $id_producto = $query->first()->id_producto;
                 if ($estado == 7) {
-                    $id_producto = $query->first()->id_producto;
                     DB::table('almacen.alm_prod')->where('id_producto', $id_producto)->update(['estado' => 1]);
-                    $this->numRowsStatus++;
+                } else if ($estado == 1) {
+                    $id_und = ($query_und != '') ? $query_und->id_unidad_medida : null;
+                    DB::table('almacen.alm_prod')->where('id_producto', $id_producto)->update(['id_unidad_medida' => $id_und, 'id_moneda' => $tip_moneda]);
                 }
+                $this->numRowsStatus++;
             }
         }
     }
@@ -251,7 +254,7 @@ class AlmacenImport implements ToCollection, WithHeadingRow
             'id_producto'       => $id_pro,
             'stock'             => $stock,
             'estado'            => 1,
-            'fecha_registro'    => new Carbon(), ///// 01/04
+            'fecha_registro'    => new Carbon(),
             'costo_promedio'    => $costo_promedio,
             'id_almacen'        => $id_alm,
             'valorizacion'      => $valorizacion
@@ -268,31 +271,5 @@ class AlmacenImport implements ToCollection, WithHeadingRow
             $zeros = $zeros . '0';
         }
         return $zeros . $number;
-    }
-
-    public function getCodigoEmpresa($valor)
-    {
-        $codigo = '';
-        switch ($valor) {
-            case 1:
-                $codigo = 'OKC';
-            break;
-            case 2:
-                $codigo = 'PYC';
-            break;
-            case 3:
-                $codigo = 'SVS';
-            break;
-            case 4:
-                $codigo = 'RBDB';
-            break;
-            case 5:
-                $codigo = 'JEDR';
-            break;
-            case 6:
-                $codigo = 'PTEC';
-            break;
-        }
-        return $codigo;
     }
 }
