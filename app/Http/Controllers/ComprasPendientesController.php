@@ -834,28 +834,34 @@ class ComprasPendientesController extends Controller
 
         try {
             DB::beginTransaction();
-            $tipo_estado = 'warning';
+            $tipo_estado = '';
+            $mensaje = '';
             $requerimientoHelper = new RequerimientoHelper();
-            $cantidadAnulados=0;
-            $cantidadNoAnulados=0;
-            $totalItem=0;
+            $cantidadReservasAnuladas=0;
+            $totalReservas=0;
             if ($requerimientoHelper->EstaHabilitadoRequerimiento([$request->idDetalleRequerimiento]) == true) {
 
                 $reservas = Reserva::where([['id_detalle_requerimiento', $request->idDetalleRequerimiento], ['estado', '!=', 7]])->get();
                 foreach ($reservas as $r) {
-                    $totalItem++;
+                    $totalReservas++;
                     if($r->estado==1){
                         $reserva = Reserva::where('id_reserva', $r->id_reserva)->first();
                         $reserva->estado = 7;
                         $reserva->save();
                         $tipo_estado = 'success';
-                        $cantidadAnulados++;
-                    }else{
-                        $cantidadNoAnulados++;
-
+                        $cantidadReservasAnuladas++;
+                        $mensaje='Reserva Anulada';
                     }
                 }
 
+                if(($cantidadReservasAnuladas>0) && ($totalReservas==$cantidadReservasAnuladas)){
+                    $mensaje='Se anuló todas las reservas correspondientes al producto';
+                }else if($cantidadReservasAnuladas < $totalReservas){
+                    $mensaje='Se anuló '.$cantidadReservasAnuladas.'/'.$totalReservas.' reserva(s)';
+                }else if($cantidadReservasAnuladas==0){
+                    $tipo_estado = 'warning';
+                    $mensaje='No se pudo anular la reserva';
+                }
 
                 $ReservasProductoActualizadas = Reserva::with('almacen', 'usuario.trabajador.postulante.persona', 'estado')->where([['id_detalle_requerimiento', $request->idDetalleRequerimiento], ['estado', 1]])->get();
                 DetalleRequerimiento::actualizarEstadoDetalleRequerimientoAtendido($request->idDetalleRequerimiento);
@@ -864,9 +870,9 @@ class ComprasPendientesController extends Controller
                 $nuevoEstado = Requerimiento::actualizarEstadoRequerimientoAtendido('ANULAR',[$Requerimiento->id_requerimiento]);
 
                 DB::commit();
-                return response()->json(['data' => $ReservasProductoActualizadas,'cantidad_total_item'=>$totalItem,'cantidad_item_anulados'=>$cantidadAnulados,'cantidad_item_no_anulados'=>$cantidadNoAnulados, 'tipo_estado' => $tipo_estado, 'estado_requerimiento' => $nuevoEstado['estado_actual'], 'lista_finalizados' => $nuevoEstado['lista_finalizados'], 'lista_restablecidos' => $nuevoEstado['lista_restablecidos']]);
+                return response()->json(['data' => $ReservasProductoActualizadas, 'tipo_estado' => $tipo_estado, 'mensaje' => $mensaje, 'estado_requerimiento' => $nuevoEstado['estado_actual'], 'lista_finalizados' => $nuevoEstado['lista_finalizados'], 'lista_restablecidos' => $nuevoEstado['lista_restablecidos']]);
             } else {
-                return response()->json(['data' => [], 'tipo_estado' => 'warning', 'mensaje' => 'No puede anular la reserva, existe un requerimiento vinculado con estado "En pausa" o  "Por regularizar"']);
+                return response()->json(['data' => [],'tipo_estado' => 'warning', 'mensaje' => 'No puede anular la reserva, existe un requerimiento vinculado con estado "En pausa" o  "Por regularizar"']);
             }
         } catch (\PDOException $e) {
             DB::rollBack();

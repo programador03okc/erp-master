@@ -2892,7 +2892,7 @@ class RequerimientoPendienteView {
                         });
                     },
                     success: (response) => {
-                        // console.log(response);
+                        console.log(response);
                         if (response.tipo_estado == 'success') {
                             $('#wrapper-okc').LoadingOverlay("hide", true);
 
@@ -2902,7 +2902,8 @@ class RequerimientoPendienteView {
                                 rounded: true,
                                 sound: false,
                                 delayIndicator: false,
-                                msg: `Las reservas del producto fueron anuladas`
+                                delay: 5000,
+                                msg: response.mensaje
                             });
 
                             $tablaListaRequerimientosAtendidos.ajax.reload(null, false);
