@@ -1995,6 +1995,8 @@ class RequerimientoPendienteView {
         document.querySelector("form[id='form-nueva-reserva'] label[id='unidadMedida']").textContent = '';
         document.querySelector("form[id='form-nueva-reserva'] input[name='cantidadReserva']").value = '';
         document.querySelector("form[id='form-nueva-reserva'] input[name='almacenReserva']").value = 0;
+        document.querySelector("form[id='form-nueva-reserva'] input[name='nombreAlmacenReserva']").value = '';
+        document.querySelector("form[id='form-nueva-reserva'] input[name='stockDisponible']").value = 0;
         this.requerimientoPendienteCtrl.limpiarTabla('listaConReserva');
         // document.querySelector("form[id='form-nueva-reserva'] label[id='totalCantidadAtendidoConOrden']").textContent='';
         // document.querySelector("form[id='form-nueva-reserva'] label[id='totalCantidadConReserva']").textContent='';
@@ -2176,10 +2178,23 @@ class RequerimientoPendienteView {
     // }
 
     seleccionarAlmacenParaReserva(obj){
-        console.log(obj);
-        document.querySelector("div[id='modal-nueva-reserva'] input[name='almacenReserva']").value = obj.dataset.idAlmacen;
-        document.querySelector("div[id='modal-nueva-reserva'] input[name='stockDisponible']").value = obj.dataset.stockDisponible;
-        document.querySelector("div[id='modal-nueva-reserva'] input[name='nombreAlmacenReserva']").value = obj.dataset.almacenRequerimiento;
+
+        let idAlmacen = obj.dataset.idAlmacen;
+        let almacenRequerimiento = obj.dataset.almacenRequerimiento;
+        let stockDisponible = parseFloat(obj.dataset.stockDisponible);
+        let cantidadSolicitada = parseFloat(document.querySelector("div[id='modal-nueva-reserva'] label[id='cantidad']").textContent);
+        let cantidadReservada= parseFloat(document.querySelector("form[id='form-nueva-reserva'] label[name='totalReservado']").textContent);
+        let cantidadAReservar = parseFloat(document.querySelector("div[id='modal-nueva-reserva'] input[name='cantidadReserva']").value);
+
+        if(stockDisponible<=cantidadSolicitada){
+            document.querySelector("div[id='modal-nueva-reserva'] input[name='cantidadReserva']").value= stockDisponible;
+        }else if(stockDisponible>cantidadSolicitada){
+            document.querySelector("div[id='modal-nueva-reserva'] input[name='cantidadReserva']").value= cantidadSolicitada;
+        }
+
+        document.querySelector("div[id='modal-nueva-reserva'] input[name='almacenReserva']").value = idAlmacen;
+        document.querySelector("div[id='modal-nueva-reserva'] input[name='stockDisponible']").value = stockDisponible;
+        document.querySelector("div[id='modal-nueva-reserva'] input[name='nombreAlmacenReserva']").value = almacenRequerimiento;
     }
 
     agregarReserva(obj) {
