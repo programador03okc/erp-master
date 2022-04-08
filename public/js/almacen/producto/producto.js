@@ -506,15 +506,18 @@ function migrarProductoSoftlink() {
             dataType: 'JSON',
             success: function (response) {
                 console.log(response);
-                $('#codigo_softlink').text(response);
-                Lobibox.notify("success", {
+                Lobibox.notify(response.tipo, {
                     title: false,
                     size: "mini",
                     rounded: true,
                     sound: false,
                     delayIndicator: false,
-                    msg: 'Se migró correctamente el producto a Softlink con cod: ' + response
+                    msg: response.mensaje
                 });
+
+                if (response.tipo == 'success') {
+                    $('#codigo_softlink').text(response.codigo_softlink);
+                }
             }
         }).fail(function (jqXHR, textStatus, errorThrown) {
             console.log(jqXHR);
