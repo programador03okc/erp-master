@@ -506,6 +506,7 @@ function migrarProductoSoftlink() {
             dataType: 'JSON',
             success: function (response) {
                 console.log(response);
+                $('#codigo_softlink').text(response);
                 Lobibox.notify("success", {
                     title: false,
                     size: "mini",

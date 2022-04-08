@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Migraciones;
 
+use App\Helpers\StringHelper;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
@@ -68,7 +69,7 @@ class MigrateProductoSoftlinkController extends Controller
                 ->orderBy('cod_prod', 'desc')
                 ->first();
 
-            $cod_prod = $this->leftZero(6, (intval($ultimo->cod_prod) + 1));
+            $cod_prod = StringHelper::leftZero(6, (intval($ultimo->cod_prod) + 1));
 
             $cod_clasi = $this->obtenerClasificacion($producto->clasificacion);
 
