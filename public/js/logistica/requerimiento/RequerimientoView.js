@@ -773,6 +773,7 @@ class RequerimientoView {
         if (sede !== '') {
             this.requerimientoCtrl.obtenerAlmacenes(sede).then((res)=> {
                 let option = '';
+                console.log(res);
                 if(res.length>0){
                     for (let i = 0; i < 1; i++) {
                         if(res[i].estado !=7 && res[i].id_tipo_almacen ==1){
