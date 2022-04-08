@@ -103,6 +103,8 @@ class GuiaSalidaExcelFormatoOKCController extends Controller
         $pageMaxHeight = 1008;
         $ColumnaInicioItem = 1;
         $filaInicioItem = 15;
+        $filaLimiteParaImprimir = 0;
+        $filaLimiteMarcada = false;
         // $idSerieInterrumpido = 0;
         // $idItemInterrumpido = 0;
         // foreach ($detalle as $key1 => $item) {
@@ -129,30 +131,38 @@ class GuiaSalidaExcelFormatoOKCController extends Controller
             $filaInicioItem++;
 
             $filaInicioItem++;
-            $ColumnaInicioSerie=$ColumnaInicioItem*16;
+
+            $cantidadColumnasPorFilaSerie=3;
+            $anchoDeSerie=8;
+            $cantidadTotalSeries =count($detalle[$i]['series']);
+            if($cantidadTotalSeries>100){
+                $ColumnaInicioSerie=$ColumnaInicioItem*8;
+                $cantidadColumnasPorFilaSerie=4;
+                $anchoDeSerie=10;
+            }else{
+                $ColumnaInicioSerie=$ColumnaInicioItem*16;
+            }
             $ii=0;
             // foreach ($detalle[$i]['series'] as $key2 => $serie) {
             for ($j=$idSerieInterrumpido; $j < count($detalle[$i]['series']) ; $j++) { 
                 
 
                 $sheet->setCellValueByColumnAndRow($ColumnaInicioSerie+$ii, $filaInicioItem, $detalle[$i]['series'][$j]->serie);
-                $ii=$ii+8;
-                if (($j + 1) % 3 == 0) {
+                $ii=$ii+$anchoDeSerie;
+                if (($j + 1) % $cantidadColumnasPorFilaSerie == 0) {
                     $filaInicioItem++;
                     $ColumnaInicioSerie = $ColumnaInicioSerie;
                     $ii=0;
                 }
 
                 // inica evaluar altura de pagina actual, si series excede la pagina
-                // $ActualNumeroFilaRecorrida = $sheet->getHighestRow();
-                // if (($ActualNumeroFilaRecorrida * 13) >= ($pageMaxHeight - 400)) {
-                //     if (($j + 1) % 3 == 0) {
-
-                //         $idItemInterrumpido = $i;
-                //         $idSerieInterrumpido = $j;
-                //         break;
-                //     }
-                // }
+                if($filaLimiteMarcada==false){
+                    $ActualNumeroFilaRecorrida = $sheet->getHighestRow();
+                    if (($ActualNumeroFilaRecorrida * 13) >= ($pageMaxHeight - 400)) {
+                        $filaLimiteParaImprimir= $ActualNumeroFilaRecorrida;
+                        $filaLimiteMarcada=true;
+                    }
+                }
                 // fin evaluar altura de pagina actual, si series excede la pagina
                 
             }
@@ -185,6 +195,9 @@ class GuiaSalidaExcelFormatoOKCController extends Controller
             
             $filaInicioItem++;
         }
+        
+        $sheet->getComment('AU'.$filaLimiteParaImprimir)->getText()->createTextRun('Hasta esta fila se sugiere imprimir');
+
     }
 
     // public static function crearNuevaHoja($spreadsheet,$data, $idItemInterrumpido,$idSerieInterrumpido)
