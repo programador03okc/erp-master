@@ -50,7 +50,8 @@ class ProductoController extends Controller
             )
             ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
             ->leftjoin('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
-            ->leftjoin('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'alm_prod.estado');
+            ->leftjoin('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'alm_prod.estado')
+            ->where('alm_prod.estado',1);
         return datatables($prod)->toJson();
     }
 
@@ -72,7 +73,8 @@ class ProductoController extends Controller
                 'alm_subcat.descripcion as marca'
             )
             ->leftjoin('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
-            ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida');
+            ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
+            ->where('alm_prod.estado',1);
 
         if ($request->part_number != null) {
             // $data = $data->where('alm_prod.part_number', trim(session()->get('productFilter_partnumber')))->get();
