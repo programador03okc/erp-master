@@ -495,3 +495,39 @@ function crear_promocion(id_seleccionado) {
         console.log(errorThrown);
     });
 }
+
+function migrarProductoSoftlink() {
+    var id_producto = $('[name=id_producto]').val();
+
+    if (id_producto !== '') {
+        $.ajax({
+            type: 'GET',
+            url: 'obtenerProductoSoftlink/' + id_producto,
+            dataType: 'JSON',
+            success: function (response) {
+                console.log(response);
+                Lobibox.notify("success", {
+                    title: false,
+                    size: "mini",
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    msg: 'Se migró correctamente el producto a Softlink con cod: ' + response
+                });
+            }
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        });
+    } else {
+        Lobibox.notify("warning", {
+            title: false,
+            size: "mini",
+            rounded: true,
+            sound: false,
+            delayIndicator: false,
+            msg: 'Debe seleccionar un producto'
+        });
+    }
+}

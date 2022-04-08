@@ -109,6 +109,11 @@ Producto
                                                 <li><label id="cat_descripcion"></label></li>
                                                 <li><label id="subcat_descripcion"></label></li>
                                                 <li><span id="estado" class="label "></span></li>
+                                                <li>
+                                                    <button type="button" class="btn btn-success btn-sm btn-flat" onClick="migrarProductoSoftlink();" 
+                                                        data-toggle="tooltip" data-placement="bottom" title="Migrar producto a Softlink">
+                                                        Migrar a Softlink <i class="fas fa-step-forward"></i> </button>
+                                                </li>
                                             </ol>
                                         </div>
                                         <div class="col-md-4">

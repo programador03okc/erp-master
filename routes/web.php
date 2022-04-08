@@ -854,7 +854,6 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('mostrar-archivos-adjuntos-detalle-requerimiento/{id_detalle_requerimiento}', 'Logistica\RequerimientoController@mostrarArchivosAdjuntos');
 					Route::get('mostrar-todo-adjuntos-requerimiento/{id_requerimiento}', 'Logistica\RequerimientoController@mostrarTodoAdjuntos');
 					Route::get('almacenes-con-stock-disponible/{idProducto}', 'ComprasPendientesController@mostrarAlmacenesConStockDisponible');
-
 				});
 
 				Route::group(['as' => 'ordenes.', 'prefix' => 'ordenes'], function () {
@@ -1256,6 +1255,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('guardar_serie', 'Almacen\Catalogo\ProductoController@guardar_serie');
 				Route::post('actualizar_serie', 'Almacen\Catalogo\ProductoController@update_serie');
 				Route::get('anular_serie/{id}', 'Almacen\Catalogo\ProductoController@anular_serie');
+
+				Route::get('obtenerProductoSoftlink/{id}', 'Migraciones\MigrateProductoSoftlinkController@obtenerProductoSoftlink');
 			});
 
 			Route::group(['as' => 'catalogo-productos.', 'prefix' => 'catalogo-productos'], function () {
