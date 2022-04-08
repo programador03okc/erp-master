@@ -62,13 +62,13 @@
                         <div class="col-md-2 transformacion">
                             <h5>Moneda/Tipo cambio</h5>
                             <div style="display: flex;">
-                                <select class="form-control" name="moneda_transformacion" required>
+                                <select class="form-control" name="moneda_transformacion" >
                                     <option value="">Elija una opción</option>
                                     @foreach ($monedas as $clas)
                                     <option value="{{$clas->id_moneda}}">{{$clas->descripcion}}</option>
                                     @endforeach
                                 </select>
-                                <input type="number" class="form-control" name="tipo_cambio_transformacion" step="0.01" required/>
+                                <input type="number" class="form-control" name="tipo_cambio_transformacion" step="0.01" />
                             </div>
                         </div>
                         <div class="col-md-1 orden_transformacion">
