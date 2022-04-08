@@ -111,7 +111,7 @@ class OrdenesPendientesController extends Controller
     function sedesPorUsuario()
     {
         return DB::table('almacen.alm_almacen_usuario')
-            ->select('sis_sede.id_sede')
+            ->select('sis_sede.id_sede', 'sis_sede.descripcion')
             ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_almacen_usuario.id_almacen')
             ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_almacen.id_sede')
             ->where([
