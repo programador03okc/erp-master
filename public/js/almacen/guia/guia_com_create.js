@@ -28,6 +28,7 @@ function open_guia_create(data, $fila) {
     $("#id_almacen").removeAttr("disabled");
 
     $(".orden_transformacion").html('');
+    $(".transformacion").hide();
 
     var data = 'oc_seleccionadas=' + JSON.stringify([data.id_orden_compra]);
     listar_detalle_ordenes_seleccionadas(data);

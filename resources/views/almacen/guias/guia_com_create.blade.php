@@ -59,8 +59,8 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-2">
-                            <h5>Moneda</h5>
+                        <div class="col-md-2 transformacion">
+                            <h5>Moneda/Tipo cambio</h5>
                             <div style="display: flex;">
                                 <select class="form-control" name="moneda_transformacion" required>
                                     <option value="">Elija una opción</option>

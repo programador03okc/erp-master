@@ -29,6 +29,7 @@ function open_transformacion_guia_create(data) {
     <label class="lbl-codigo" title="Abrir Transformación" onClick="abrir_transformacion(${data.id_transformacion})">
     ${data.codigo}</label>
     </div>`);
+    $(".transformacion").show();
 
     listar_detalle_transformacion(data.id_transformacion);
 }
