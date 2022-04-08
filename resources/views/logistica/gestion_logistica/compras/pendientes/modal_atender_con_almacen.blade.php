@@ -17,6 +17,7 @@
                             <thead>
                                 <tr >
                                     <th>Código</th>
+                                    <th>Cód. Softlink</th>
                                     <th>Part number</th>
                                     <th style="width: 280px;">Descripción</th>
                                     <th>Unidad</th>
