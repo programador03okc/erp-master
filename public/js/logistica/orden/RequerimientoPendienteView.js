@@ -1369,7 +1369,7 @@ class RequerimientoPendienteView {
                         <td style="border: none; text-align:center;">${element.estado_doc != null && element.tiene_transformacion == false ? element.estado_doc : ''}</td>
                         <td style="border: none; text-align:center;">
                         ${cantidadAdjuntosDetalleRequerimiento > 0 ? `<button type="button" class="btn btn-default btn-xs handleClickVerAdjuntoDetalleRequerimiento" name="btnVerAdjuntoDetalleRequerimiento" title="Ver adjuntos" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-descripcion="${element.producto_descripcion != null ? element.producto_descripcion : 'no mapeado'}" ><i class="fas fa-paperclip"></i></button>` : ''}
-                        ${stockComprometido != null && parseInt(stockComprometido) > 0 ? `<button type="button" class="btn btn-default btn-xs handleClickAnularReservaActiva" name="btnAnularReservaAtendida" title="Deshabilitado temporalmente anular reserva" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-descripcion="${element.producto_descripcion != null ? element.producto_descripcion : 'no mapeado'}" disabled ><i class="fas fa-minus-circle"></i></button>` : ''}
+                        ${stockComprometido != null && parseInt(stockComprometido) > 0 ? `<button type="button" class="btn btn-danger btn-xs handleClickAnularReservaActiva" name="btnAnularReservaAtendida" title="Deshabilitado temporalmente anular reserva" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-descripcion="${element.producto_descripcion != null ? element.producto_descripcion : 'no mapeado'}" ><i class="fas fa-minus-circle"></i></button>` : ''}
 
 
                         </td>
@@ -2892,7 +2892,7 @@ class RequerimientoPendienteView {
                         });
                     },
                     success: (response) => {
-                        // console.log(response);
+                        console.log(response);
                         if (response.tipo_estado == 'success') {
                             $('#wrapper-okc').LoadingOverlay("hide", true);
 
@@ -2902,7 +2902,8 @@ class RequerimientoPendienteView {
                                 rounded: true,
                                 sound: false,
                                 delayIndicator: false,
-                                msg: `Las reservas del producto fueron anuladas`
+                                delay: 5000,
+                                msg: response.mensaje
                             });
 
                             $tablaListaRequerimientosAtendidos.ajax.reload(null, false);
