@@ -828,11 +828,10 @@ class MigrateOrdenSoftLinkController extends Controller
                     );
                 }
             }
-
-            DB::table('almacen.alm_prod')
-                ->where('id_producto', $det->id_producto)
-                ->update(['cod_softlink' => $cod_prod]);
         }
+        DB::table('almacen.alm_prod')
+            ->where('id_producto', $det->id_producto)
+            ->update(['cod_softlink' => $cod_prod]);
         return $cod_prod;
     }
 
