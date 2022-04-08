@@ -214,10 +214,16 @@
                 }
                 // $series = (count($series_array)>1 ? implode(",", $series_array) : '');
             }
-            $unitario = ($prod->precio_unitario !== null
-                            ? $prod->precio_unitario
-                            : $prod->unitario);
-            $valorizacion = ($unitario) * ($prod->cantidad);
+            // $unitario = ($prod->precio_unitario !== null
+            //                 ? $prod->precio_unitario
+            //                 : $prod->unitario);
+            // $valorizacion = ($unitario) * ($prod->cantidad);
+
+            $unitario = ($prod->cantidad !== null
+                            ? ($prod->valorizacion / $prod->cantidad)
+                            : 0);
+
+            $valorizacion = $prod->valorizacion;
 
             $adic_valor = DB::table('almacen.guia_com_prorrateo_det')
                 ->where([['id_guia_com_det','=',$prod->id_guia_com_det],

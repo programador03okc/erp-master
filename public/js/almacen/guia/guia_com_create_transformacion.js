@@ -24,8 +24,11 @@ function open_transformacion_guia_create(data) {
     cargar_almacenes(data.id_sede, data.id_almacen);
     $("#id_almacen").attr('disabled', 'true');
 
-    $(".orden_transformacion").html(`<h5>Orden de Transformación</h5><label class="lbl-codigo" title="Abrir Transformación" 
-    onClick="abrir_transformacion(${data.id_transformacion})">${data.codigo}</label>`);
+    $(".orden_transformacion").html(`<h5></h5>
+    <div style="display:flex;">
+    <label class="lbl-codigo" title="Abrir Transformación" onClick="abrir_transformacion(${data.id_transformacion})">
+    ${data.codigo}</label>
+    </div>`);
 
     listar_detalle_transformacion(data.id_transformacion);
 }
@@ -103,15 +106,9 @@ function mostrar_detalle_transformacion() {
     var i = 1;
     var total = 0;
     var subtotal = 0;
-    var opt_monedas = ``;
+    var mnd = $('[name=moneda_transformacion]').val();
 
-    monedas.forEach(moneda => {
-        if (moneda.id_moneda == 1) {
-            opt_monedas += `<option value="${moneda.id_moneda}" selected>${moneda.simbolo}</option>`;
-        } else {
-            opt_monedas += `<option value="${moneda.id_moneda}" >${moneda.simbolo}</option>`;
-        }
-    });
+    var moneda = (mnd == 1 ? 'S/' : (mnd == 2 ? '$' : ''));
 
     series_transformacion.forEach(function (element) {
         html_ser = '';
@@ -123,7 +120,16 @@ function mostrar_detalle_transformacion() {
             }
         });
         console.log('cod_prod: ' + element.cod_prod);
-        html_monedas = `<select class="form-control moneda" style="width:70px" data-id="${element.id}">${opt_monedas}</select>`;
+
+        // monedas.forEach(moneda => {
+        //     if (moneda.id_moneda == element.id_moneda) {
+        //         opt_monedas += `<option value="${moneda.id_moneda}" selected>${moneda.simbolo}</option>`;
+        //     } else {
+        //         opt_monedas += `<option value="${moneda.id_moneda}" >${moneda.simbolo}</option>`;
+        //     }
+        // });
+
+        // html_monedas = `<select class="form-control moneda" style="width:70px" data-id="${element.id}">${opt_monedas}</select>`;
         subtotal = element.cantidad * element.valor_unitario;
         total += subtotal;
 
@@ -141,11 +147,12 @@ function mostrar_detalle_transformacion() {
                 value="${element.cantidad}"/>` : element.cantidad}
             </td>
             <td>${element.abreviatura !== null ? element.abreviatura : ''}</td>
-            <td><div style="display:flex;width:160px;">${html_monedas}<input type="number" class="form-control unitario" style="text-align: right;"
-             data-id="${element.id}" data-tipo="${element.tipo}" step="0.001" 
-                value="${element.valor_unitario}" /></div>
+            <td>
+                <div style="display:flex;width:90px;">
+                    <input type="number" class="form-control unitario" style="text-align: right;"
+                    data-id="${element.id}" data-tipo="${element.tipo}" step="0.001" value="${element.valor_unitario}" /></div>
             </td>
-            <td  class="text-right">${formatNumber.decimal((subtotal), '', -4)}</td>
+            <td class="text-right">${moneda + formatNumber.decimal((subtotal), '', -2)}</td>
             <td width="8%">
                 ${element.tipo == 'sobrante' ?
                 `<button type="button" style="padding-left:8px;padding-right:7px;" 
@@ -166,7 +173,7 @@ function mostrar_detalle_transformacion() {
 
     html += `<tr>
         <td colSpan="8"></td>
-        <td><strong>${formatNumber.decimal((total), '', -4)}</strong></td>
+        <td><strong>${(moneda) + (formatNumber.decimal((total), '', -2))}</strong></td>
         <td></td>
     </tr>`;
 
@@ -205,19 +212,18 @@ $('#detalleOrdenSeleccionadas tbody').on("change", ".unitario", function () {
     mostrar_detalle_transformacion();
 });
 
-$('#detalleOrdenSeleccionadas tbody').on("change", ".moneda", function () {
-
+$("[name=moneda_transformacion]").on('change', function () {
     // let tipo = $(this).data('tipo');
-    let id = $(this).data('id');
-    let moneda = parseFloat($(this).val());
-    console.log('moneda: ' + moneda);
+    // let id = $(this).data('id');
+    // let moneda = parseFloat($(this).val());
+    console.log($('[name=id_moneda]').val());
 
-    series_transformacion.forEach(element => {
-        if (element.id == id) {
-            element.id_moneda = moneda;
-        }
-    });
-    console.log(series_transformacion);
+    // series_transformacion.forEach(element => {
+    //     if (element.id == id) {
+    //         element.id_moneda = moneda;
+    //     }
+    // });
+    // console.log(series_transformacion);
     mostrar_detalle_transformacion();
 });
 

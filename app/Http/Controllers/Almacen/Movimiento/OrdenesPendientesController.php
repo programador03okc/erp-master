@@ -781,6 +781,7 @@ class OrdenesPendientesController extends Controller
                     foreach ($detalle_oc as $det) {
                         //Agrega sobrante
                         $id_sobrante = null;
+                        $unitario = $request->moneda_transformacion == 2 ? ($det->unitario * $request->tipo_cambio_transformacion) : $det->unitario;
 
                         if ($det->tipo == "sobrante") {
 
@@ -829,16 +830,16 @@ class OrdenesPendientesController extends Controller
                                 ->update([
                                     'id_producto' => $id_producto,
                                     'cantidad' => $det->cantidad,
-                                    'valor_unitario' => $det->unitario,
-                                    'valor_total' => (floatval($det->unitario) * floatval($det->cantidad))
+                                    'valor_unitario' => $unitario,
+                                    'valor_total' => (floatval($unitario) * floatval($det->cantidad))
                                 ]);
                         } else if ($det->tipo == "transformado") {
 
                             DB::table('almacen.transfor_transformado')
                                 ->where('id_transformado', $det->id)
                                 ->update([
-                                    'valor_unitario' => $det->unitario,
-                                    'valor_total' => (floatval($det->unitario) * floatval($det->cantidad))
+                                    'valor_unitario' => $unitario,
+                                    'valor_total' => (floatval($unitario) * floatval($det->cantidad))
                                 ]);
 
                             if ($id_requerimiento !== null) {
@@ -884,8 +885,8 @@ class OrdenesPendientesController extends Controller
                                 "id_transformado" => ($det->tipo == "transformado" ? $det->id : null),
                                 "id_sobrante" => ($det->tipo == "sobrante" ? $det->id : null),
                                 "id_moneda" => $det->id_moneda,
-                                "unitario" => $det->unitario,
-                                "total" => (floatval($det->unitario) * floatval($det->cantidad)),
+                                "unitario" => $unitario,
+                                "total" => (floatval($unitario) * floatval($det->cantidad)),
                                 "unitario_adicional" => 0,
                                 'estado' => 1,
                                 'fecha_registro' => $fecha_registro,
@@ -915,7 +916,7 @@ class OrdenesPendientesController extends Controller
                                 'id_producto' => $id_producto,
                                 // 'id_posicion' => $det->id_posicion,
                                 'cantidad' => $det->cantidad,
-                                'valorizacion' => (floatval($det->unitario) * floatval($det->cantidad)),
+                                'valorizacion' => (floatval($unitario) * floatval($det->cantidad)),
                                 'usuario' => $id_usuario,
                                 'id_guia_com_det' => $id_guia_com_det,
                                 'estado' => 1,

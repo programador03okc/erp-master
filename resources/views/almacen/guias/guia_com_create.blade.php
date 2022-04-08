@@ -59,7 +59,19 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-3 orden_transformacion">
+                        <div class="col-md-2">
+                            <h5>Moneda</h5>
+                            <div style="display: flex;">
+                                <select class="form-control" name="moneda_transformacion" required>
+                                    <option value="">Elija una opción</option>
+                                    @foreach ($monedas as $clas)
+                                    <option value="{{$clas->id_moneda}}">{{$clas->descripcion}}</option>
+                                    @endforeach
+                                </select>
+                                <input type="number" class="form-control" name="tipo_cambio_transformacion" step="0.01" required/>
+                            </div>
+                        </div>
+                        <div class="col-md-1 orden_transformacion">
                             
                         </div>
                     </div>
