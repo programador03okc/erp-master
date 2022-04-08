@@ -773,10 +773,12 @@ class RequerimientoView {
         if (sede !== '') {
             this.requerimientoCtrl.obtenerAlmacenes(sede).then((res)=> {
                 let option = '';
-                console.log(res);
                 if(res.length>0){
                     for (let i = 0; i < 1; i++) {
+                        
                         if(res[i].estado !=7 && res[i].id_tipo_almacen ==1){
+                            console.log(res);
+
                                 option += '<option data-id-sede="' + res[i].id_sede + '" data-id-empresa="' + res[i].id_empresa + '" data-id-tipo-almacen="' + res[i].id_tipo_almacen + '" value="' + res[i].id_almacen + '" selected>' + res[i].codigo + ' - ' + res[i].descripcion + '</option>';
                         }
                     }
@@ -787,6 +789,7 @@ class RequerimientoView {
                         'warning'
                     );  
                 }
+                console.log(option);
                 $('[name=id_almacen]').html('<option value="0" disabled selected>Elija una opción</option>' + option);
             }).catch(function (err) {
                 console.log(err)
