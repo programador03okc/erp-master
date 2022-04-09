@@ -383,6 +383,7 @@ function validaProducto() {
     var id_clasif = $('[name=id_clasif]').val();
     var descripcion = $('[name=descripcion]').val();
     var id_unidad_medida = $('[name=id_unidad_medida]').val();
+    var id_moneda = $('[name=id_moneda]').val();
     var msj = '';
 
     if (id_categoria == '' || id_categoria == '0') {
@@ -399,6 +400,9 @@ function validaProducto() {
     }
     if (id_unidad_medida == '0') {
         msj += (msj == '' ? 'Es necesario que seleccione una Unidad de Medida' : ', una unidad de medida');
+    }
+    if (id_moneda == '') {
+        msj += (msj == '' ? 'Es necesario que seleccione una moneda' : ', una moneda');
     }
     return msj;
 }

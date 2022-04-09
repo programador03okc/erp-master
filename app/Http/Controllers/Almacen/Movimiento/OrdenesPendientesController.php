@@ -781,7 +781,16 @@ class OrdenesPendientesController extends Controller
                     foreach ($detalle_oc as $det) {
                         //Agrega sobrante
                         $id_sobrante = null;
-                        $unitario = $request->moneda_transformacion == 2 ? ($det->unitario * $request->tipo_cambio_transformacion) : $det->unitario;
+                        if ($det->id_moneda == $request->moneda_transformacion) {
+                            $unitario = $det->unitario;
+                        } else {
+                            if ($det->id_moneda == 1) { //soles
+                                $unitario = $det->unitario * $request->tipo_cambio_transformacion;
+                            } else { //dolares
+                                $unitario = $det->unitario / $request->tipo_cambio_transformacion;
+                            }
+                        }
+                        // $unitario = $request->moneda_transformacion == 2 ? ($det->unitario * $request->tipo_cambio_transformacion) : $det->unitario;
 
                         if ($det->tipo == "sobrante") {
 
@@ -796,6 +805,7 @@ class OrdenesPendientesController extends Controller
                                         'descripcion' => strtoupper($det->descripcion),
                                         'id_unidad_medida' => $det->id_unidad_medida,
                                         'series' => $det->control_series,
+                                        'id_moneda' => $det->id_moneda,
                                         'id_usuario' => $id_usuario,
                                         'estado' => 1,
                                         'fecha_registro' => date('Y-m-d H:i:s')

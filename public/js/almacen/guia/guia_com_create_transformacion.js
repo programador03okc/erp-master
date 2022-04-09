@@ -30,6 +30,8 @@ function open_transformacion_guia_create(data) {
     ${data.codigo}</label>
     </div>`);
     $(".transformacion").show();
+    $('[name=moneda_transformacion]').val('');
+    $('[name=tipo_cambio_transformacion]').val('');
 
     listar_detalle_transformacion(data.id_transformacion);
 }
@@ -62,7 +64,7 @@ function listar_detalle_transformacion(id) {
                     'part_number': element.part_number_sobrante,
                     'descripcion': element.descripcion_sobrante,
                     'abreviatura': element.abreviatura,
-                    'id_moneda': 1,
+                    'id_moneda': element.id_moneda,
                     'valor_unitario': element.valor_unitario,
                     'valor_total': element.valor_total
                 });
@@ -81,7 +83,7 @@ function listar_detalle_transformacion(id) {
                     'part_number': element.part_number,
                     'descripcion': element.descripcion,
                     'abreviatura': element.abreviatura,
-                    'id_moneda': 1,
+                    'id_moneda': element.id_moneda,
                     'valor_unitario': (element.suma_materia / element.cantidad),
                     'valor_total': element.suma_materia
                 });

@@ -210,8 +210,8 @@ Producto
                                     <div class="row">
                                         <div class="col-sm-4">
                                             <h5>Moneda</h5>
-                                            <select class="form-control group-elemento activation" name="id_moneda" disabled="true">
-                                                <option value="0">Elija una opción</option>
+                                            <select class="form-control group-elemento activation" name="id_moneda" required>
+                                                <option value='' selected>Elija una opción</option>
                                                 @foreach ($monedas as $mon)
                                                 <option value="{{$mon->id_moneda}}">{{$mon->descripcion}}</option>
                                                 @endforeach

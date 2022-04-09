@@ -23,15 +23,15 @@ function listarProductosCatalogo() {
         },
         'columns': [
             { 'data': 'id_producto', 'name': 'alm_prod.id_producto', "searchable": false },
-            { 'data': 'codigo', 'name': 'alm_prod.codigo'},
-            { 'data': 'cod_softlink', 'name': 'alm_prod.cod_softlink'},
-            { 'data': 'part_number', 'name': 'alm_prod.part_number'},
-            { 'data': 'marca', 'name': 'alm_subcat.descripcion'},
-            { 'data': 'descripcion', 'name': 'alm_prod.descripcion'},
+            { 'data': 'codigo', 'name': 'alm_prod.codigo' },
+            { 'data': 'cod_softlink', 'name': 'alm_prod.cod_softlink' },
+            { 'data': 'part_number', 'name': 'alm_prod.part_number' },
+            { 'data': 'marca', 'name': 'alm_subcat.descripcion' },
+            { 'data': 'descripcion', 'name': 'alm_prod.descripcion' },
             { 'data': 'id_producto', 'name': 'alm_prod.id_producto', "searchable": false }
         ],
         'columnDefs': [
-            { 'aTargets': [0], 'sClass': 'invisible','sWidth': '5%' },
+            { 'aTargets': [0], 'sClass': 'invisible', 'sWidth': '5%' },
             { 'aTargets': [1], 'className': "text-center", 'sWidth': '5%' },
             { 'aTargets': [2], 'className': "text-center", 'sWidth': '5%' },
             { 'aTargets': [3], 'className': "text-center", 'sWidth': '5%' },
@@ -44,12 +44,12 @@ function listarProductosCatalogo() {
                             <button type="button" class="btn btn-success btn-xs" name="btnSeleccionarUbigeo" title="Seleccionar Producto" 
                                 data-codigo="${row.codigo}" data-id="${row.id_producto}" 
                                 data-partnumber="${row.part_number}" data-descripcion="${encodeURIComponent(row.descripcion)}" 
-                                data-abreviatura="${row.abreviatura}" data-series="${row.series}"
+                                data-abreviatura="${row.abreviatura}" data-series="${row.series}" data-moneda="${row.moneda}"
                                 onclick="selectProductoAsignado(this);">
                                 <i class="fas fa-check"></i>
                             </button>
                         `;
-                    },'aTargets': 6 ,'className': "text-center", 'sWidth': '5%'
+                    }, 'aTargets': 6, 'className': "text-center", 'sWidth': '5%'
             }
         ],
         initComplete: function (settings, json) {
@@ -63,13 +63,13 @@ function listarProductosCatalogo() {
             // $('#productosCatalogo_wrapper .row ')[0].firstChild.append(lblTitulo);
         },
         "drawCallback": function (settings) {
- 
+
             $("#productosCatalogo").LoadingOverlay("hide", true);
         },
     });
 }
 
- 
+
 
 function listarProductosSugeridos(part_number, descripcion, type) {
     // console.log(part_number, descripcion, type);
@@ -92,31 +92,31 @@ function listarProductosSugeridos(part_number, descripcion, type) {
         }
     }
 
-        $('#productosSugeridos tbody').html('');
-        $.ajax({
-            type: 'POST',
-            url: 'listarProductosSugeridos',
-            data: {
-                part_number: pn,
-                descripcion: ds
-            },
-            success: function (response) {
-                // console.log(response);
-                if (response.length >0) {
-                    listarSugeridos(response);
-                }
+    $('#productosSugeridos tbody').html('');
+    $.ajax({
+        type: 'POST',
+        url: 'listarProductosSugeridos',
+        data: {
+            part_number: pn,
+            descripcion: ds
+        },
+        success: function (response) {
+            // console.log(response);
+            if (response.length > 0) {
+                listarSugeridos(response);
             }
-        });
-    
+        }
+    });
+
 
 }
 
 function listarSugeridos(data) {
     // console.log(data);
-            html = '';
-            if (data.length > 0) {
-                data.forEach(function (element) {
-                    html += `
+    html = '';
+    if (data.length > 0) {
+        data.forEach(function (element) {
+            html += `
                     <tr>
                     <td>${element.codigo ?? ''}</td>
                     <td>${element.cod_softlink ?? ''}</td>
@@ -127,30 +127,30 @@ function listarSugeridos(data) {
                         <button type="button" class="btn btn-success btn-xs" title="Seleccionar Producto" 
                             data-codigo="${element.codigo}" data-id="${element.id_producto}" 
                             data-partnumber="${element.part_number}" data-descripcion="${encodeURIComponent(element.descripcion)}" 
-                            data-abreviatura="${element.abreviatura}" data-series="${element.series}"
+                            data-abreviatura="${element.abreviatura}" data-series="${element.series}" data-moneda="${element.id_moneda}"
                             onclick="selectProductoAsignado(this);">
                             <i class="fas fa-check"></i>
                         </button>
                     </td>
                     </tr>`;
-                });
-            } else {
-                html = '<tr><td colSpan="5" class="text-center">No hay datos para mostrar</td></tr>';
-            }
-            $('#productosSugeridos tbody').html(html);
+        });
+    } else {
+        html = '<tr><td colSpan="5" class="text-center">No hay datos para mostrar</td></tr>';
+    }
+    $('#productosSugeridos tbody').html(html);
 }
 
 function selectProductoAsignado(obj) {
-    // console.log(obj);
+
     let id = obj.dataset.id;
     let codigo = obj.dataset.codigo;
     let partnumber = obj.dataset.partnumber;
     let descripcion = obj.dataset.descripcion;
     let abreviatura = obj.dataset.abreviatura;
     let series = obj.dataset.series;
+    let moneda = obj.dataset.moneda;
     let id_detalle = $('[name=id_detalle_requerimiento]').val();
 
-    // console.log('selectProductoAsignado');
     var page = $('.page-main').attr('type');
 
     if (page == "ordenesPendientes") {
@@ -161,9 +161,7 @@ function selectProductoAsignado(obj) {
         det.descripcion = decodeURIComponent(descripcion);
         det.abreviatura = abreviatura;
         det.control_series = series;
-        // console.log('--------------');
-        // console.log(det);
-        // console.log(series_transformacion);
+        det.id_moneda = moneda;
         $('#modal-mapeoAsignarProducto').modal('hide');
         mostrar_detalle_transformacion();
     } else {
@@ -192,6 +190,7 @@ $("#form-crear").on("submit", function (e) {
     let descripcion = $('[name=descripcion]').val();
     let id_detalle = $('[name=id_detalle_requerimiento]').val();
     let serie = $('[name=series]').is(':checked');
+    let id_moneda = $('[name=id_moneda_producto]').val();
 
     var page = $('.page-main').attr('type');
 
@@ -207,6 +206,7 @@ $("#form-crear").on("submit", function (e) {
         det.id_unidad_medida = id_unid;
         det.abreviatura = abreviatura;
         det.control_series = serie;
+        det.id_moneda = id_moneda;
 
         $('#modal-mapeoAsignarProducto').modal('hide');
         mostrar_detalle_transformacion();

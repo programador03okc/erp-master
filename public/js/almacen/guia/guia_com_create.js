@@ -280,30 +280,66 @@ $("#form-guia_create").on("submit", function (e) {
     if (validaCampos.length > 0) {
         Swal.fire(validaCampos, "", "warning");
     } else {
-        Swal.fire({
-            title: "¿Está seguro que desea guardar ésta Guía?",
-            // text: "",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#00a65a", //"#3085d6",
-            cancelButtonColor: "#d33",
-            cancelButtonText: "Cancelar",
-            confirmButtonText: "Sí, Guardar"
-        }).then(result => {
-            if (result.isConfirmed) {
-                $("#id_almacen").removeAttr("disabled");
+        var tra = $('[name=id_transformacion]').val();
+        var no_procede = 0;
 
-                var data = $(this).serialize();
-                data += '&detalle=' + JSON.stringify(detalle);
-                console.log(data);
-                guardar_guia_create(data);
+        if (tra !== '') {
+            var mnd = $('[name=moneda_transformacion]').val();
+            var tipo = $('[name=tipo_cambio_transformacion]').val();
+
+            if (mnd == '') {
+                Lobibox.notify("warning", {
+                    title: false,
+                    size: "mini",
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    msg: 'Debe ingresar una moneda para el cálculo.'
+                });
+                no_procede++;
             }
-        });
+            if (tipo == '') {
+                Lobibox.notify("warning", {
+                    title: false,
+                    size: "mini",
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    msg: 'Debe ingresar un tipo de cambio para el cálculo.'
+                });
+                no_procede++;
+            }
+        }
+
+        if (no_procede == 0) {
+            Swal.fire({
+                title: "¿Está seguro que desea guardar ésta Guía?",
+                // text: "",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#00a65a", //"#3085d6",
+                cancelButtonColor: "#d33",
+                cancelButtonText: "Cancelar",
+                confirmButtonText: "Sí, Guardar"
+            }).then(result => {
+                if (result.isConfirmed) {
+                    $("#id_almacen").removeAttr("disabled");
+
+                    var data = $(this).serialize();
+                    data += '&detalle=' + JSON.stringify(detalle);
+                    console.log(data);
+                    guardar_guia_create(data);
+                }
+            });
+        }
     }
 });
 
 function guardar_guia_create(data) {
+
     $("#submit_guia").attr('disabled', 'true');
+
+
     $.ajax({
         type: 'POST',
         url: 'guardar_guia_com_oc',
@@ -328,7 +364,6 @@ function guardar_guia_create(data) {
                     delayIndicator: false,
                     msg: 'Ingreso Almacén generado con éxito.'
                 });
-
                 var tra = $('[name=id_transformacion]').val();
                 if (tra !== '') {
                     listarTransformaciones();
@@ -359,6 +394,7 @@ function guardar_guia_create(data) {
         console.log(textStatus);
         console.log(errorThrown);
     });
+
 }
 /*
 function agregarProducto(producto) {

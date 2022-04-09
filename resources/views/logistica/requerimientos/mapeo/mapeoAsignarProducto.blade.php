@@ -119,12 +119,26 @@
                                                         @endforeach
                                                     </select>
                                                 </div>
-                                                <div class="col-md-12">
+                                            </div>
+                                            
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <h5>Moneda</h5>
+                                                    <select class="form-control activation " name="id_moneda_producto" required>
+                                                        <option value="">Elija una opción</option>
+                                                        @foreach ($monedas as $mnd)
+                                                        <option value="{{$mnd->id_moneda}}">{{$mnd->descripcion}}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-3">
                                                     <h5></h5>
                                                     <input type="checkbox" class="flat-red" name="series" style="padding-left: 0px;" />
                                                     Control de series
                                                 </div>
+                                            </div>
 
+                                            <div class="row">
                                                 <div class="col-md-4" style="display:none;">
                                                     <h5>Clasificación</h5>
                                                     <select class="form-control activation js-example-basic-single" name="id_clasif" >
