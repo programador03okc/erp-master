@@ -16,6 +16,7 @@
                                     <tr>
                                         <th>#</th>
                                         <th>Código</th>
+                                        <th>Cód. Softlink</th>
                                         <th>PartNumber</th>
                                         <th>Descripción</th>
                                         <th>Cantidad</th>

@@ -51,7 +51,7 @@ class MapeoProductosController extends Controller
     public function itemsRequerimiento($id)
     {
         $detalles = DB::table('almacen.alm_det_req')
-            ->select('alm_det_req.*','alm_prod.codigo','alm_prod.part_number as part_number_prod',
+            ->select('alm_det_req.*','alm_prod.codigo','alm_prod.cod_softlink','alm_prod.part_number as part_number_prod',
             'alm_prod.descripcion as descripcion_prod','alm_und_medida.abreviatura')
             ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_det_req.id_producto')
             ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_det_req.id_unidad_medida')

@@ -30,6 +30,7 @@ function listarItemsRequerimientoMapeo(id_requerimiento) {
                     detalle.push({
                         'id_detalle_requerimiento': element.id_detalle_requerimiento,
                         'id_producto': element.id_producto,
+                        'cod_softlink': element.cod_softlink,
                         'codigo': element.codigo,
                         'part_number_requerimiento': (element.part_number !== null ? element.part_number : ''),
                         'part_number': (element.id_producto !== null ? element.part_number_prod : (element.part_number !== null ? element.part_number : '')),
@@ -88,7 +89,8 @@ function mostrar_detalle() {
         html += `<tr ${element.estado == 7 ? 'class="bg-danger"' : ''}>
             <td>${i}</td>
             <td>${(element.codigo !== null && element.codigo !== '') ? element.codigo :
-                ((element.id_categoria !== null && element.id_producto == null) ? '(Por crear)' : '')}</td>
+            ((element.id_categoria !== null && element.id_producto == null) ? '(Por crear)' : '')}</td>
+            <td>${element.cod_softlink??''}</td>
             <td>`+ link_pn + (element.tiene_transformacion ? ' <span class="badge badge-secondary">Transformado</span> ' : '') + `</td>
             <td>`+ link_des + `</td>
             <td>${element.cantidad !== null ? element.cantidad : ''}</td>

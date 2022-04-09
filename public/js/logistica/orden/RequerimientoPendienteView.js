@@ -1558,6 +1558,11 @@ class RequerimientoPendienteView {
                 },
                 {
                     render: function (data, type, row) {
+                        return (row.producto != null ? row.producto.cod_softlink : '');
+                    }
+                },
+                {
+                    render: function (data, type, row) {
                         return (row.producto != null ? row.producto.part_number : '');
                     }
                 },

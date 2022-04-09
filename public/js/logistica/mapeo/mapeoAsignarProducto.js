@@ -42,7 +42,7 @@ function listarProductosCatalogo() {
                     function (data, type, row) {
                         return `
                             <button type="button" class="btn btn-success btn-xs" name="btnSeleccionarUbigeo" title="Seleccionar Producto" 
-                                data-codigo="${row.codigo}" data-id="${row.id_producto}" 
+                                data-codigo="${row.codigo}" data-id="${row.id_producto}"  data-cod-softlink="${row.cod_softlink}"
                                 data-partnumber="${row.part_number}" data-descripcion="${encodeURIComponent(row.descripcion)}" 
                                 data-abreviatura="${row.abreviatura}" data-series="${row.series}" data-moneda="${row.moneda}"
                                 onclick="selectProductoAsignado(this);">
@@ -144,6 +144,7 @@ function selectProductoAsignado(obj) {
 
     let id = obj.dataset.id;
     let codigo = obj.dataset.codigo;
+    let cod_softlink = obj.dataset.codSoftlink;
     let partnumber = obj.dataset.partnumber;
     let descripcion = obj.dataset.descripcion;
     let abreviatura = obj.dataset.abreviatura;
@@ -169,6 +170,7 @@ function selectProductoAsignado(obj) {
 
         det.id_producto = id;
         det.codigo = codigo;
+        det.cod_softlink = cod_softlink;
         det.part_number = partnumber;
         det.descripcion = decodeURIComponent(descripcion);
         $('#modal-mapeoAsignarProducto').modal('hide');

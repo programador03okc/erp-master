@@ -772,7 +772,7 @@ class RequerimientoView {
         // console.log(sede);
         if (sede !== '') {
             this.requerimientoCtrl.obtenerAlmacenes(sede).then((res)=> {
-                console.log(res);
+                // console.log(res);
                 let option = '';
                 if(res.length>0){
                     for (let i = 0; i < res.length; i++) {
