@@ -42,6 +42,7 @@ class ProductoController extends Controller
                 'alm_prod.part_number',
                 'alm_prod.id_unidad_medida',
                 'alm_prod.id_moneda',
+                'sis_moneda.descripcion as descripcion_moneda',
                 'alm_prod.series',
                 'alm_prod.estado',
                 'adm_estado_doc.estado_doc',
@@ -52,6 +53,7 @@ class ProductoController extends Controller
             ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
             ->leftjoin('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
             ->leftjoin('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'alm_prod.estado')
+            ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'alm_prod.id_moneda')
             ->where('alm_prod.estado', 1);
         return datatables($prod)->toJson();
     }
@@ -70,12 +72,14 @@ class ProductoController extends Controller
                 'alm_prod.part_number',
                 'alm_prod.id_unidad_medida',
                 'alm_prod.id_moneda',
+                'sis_moneda.descripcion as descripcion_moneda',
                 'alm_prod.series',
                 'alm_und_medida.abreviatura',
                 'alm_subcat.descripcion as marca'
             )
             ->leftjoin('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
             ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
+            ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'alm_prod.id_moneda')
             ->where('alm_prod.estado', 1);
 
         if ($request->part_number != null) {

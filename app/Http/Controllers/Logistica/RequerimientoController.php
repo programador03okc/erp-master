@@ -3679,7 +3679,7 @@ class RequerimientoController extends Controller
             ->when(($transformadosONoTransformados === 'CON_TRANSFORMACION'), function ($query) {
                 return $query->where('tiene_transformacion', true);
             })
-            ->with(['unidadMedida', 'producto', 'reserva' => function ($q) {
+            ->with(['unidadMedida', 'producto','producto.moneda', 'reserva' => function ($q) {
                 $q->where('alm_reserva.estado', '=', 1);
             }, 'reserva.almacen', 'reserva.usuario', 'reserva.usuario.trabajador.postulante.persona', 'reserva.estado', 'estado'])
             ->get();

@@ -21,6 +21,7 @@
                                         <th>Descripción</th>
                                         <th>Cantidad</th>
                                         <th>Unid</th>
+                                        <th>Moneda</th>
                                         <th width="5%">Asignar</th>
                                     </tr>
                                 </thead>

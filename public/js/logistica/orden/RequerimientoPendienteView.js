@@ -1583,6 +1583,11 @@ class RequerimientoPendienteView {
                 },
                 {
                     render: function (data, type, row) {
+                        return (row.producto != null ? (row.producto.moneda!=null ?row.producto.moneda.descripcion:'') : '');
+                    }
+                },
+                {
+                    render: function (data, type, row) {
                         return row.proveedor_seleccionado != null ? row.proveedor_seleccionado : '';
                     }
                 },

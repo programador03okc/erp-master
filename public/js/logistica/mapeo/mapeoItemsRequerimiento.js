@@ -37,6 +37,7 @@ function listarItemsRequerimientoMapeo(id_requerimiento) {
                         'descripcion': (element.id_producto !== null ? element.descripcion_prod : (element.descripcion !== null ? element.descripcion : '')),
                         'descripcion_requerimiento': (element.descripcion !== null ? element.descripcion : ''),
                         'cantidad': element.cantidad,
+                        'descripcion_moneda': element.descripcion_moneda??'',
                         'tiene_transformacion': element.tiene_transformacion,
                         'abreviatura': (element.abreviatura !== null ? element.abreviatura : ''),
                         'id_categoria': null,
@@ -65,7 +66,7 @@ function listarItemsRequerimientoMapeo(id_requerimiento) {
 function mostrar_detalle() {
     var html = '';
     var i = 1;
-    // console.log(detalle);
+    console.log(detalle);
     detalle.forEach(element => {
         var pn = element.part_number ?? '';
         var dsc = encodeURIComponent(element.descripcion);
@@ -95,6 +96,7 @@ function mostrar_detalle() {
             <td>`+ link_des + `</td>
             <td>${element.cantidad !== null ? element.cantidad : ''}</td>
             <td>${element.abreviatura !== null ? element.abreviatura : ''}</td>
+            <td>${element.descripcion_moneda !== null ? element.descripcion_moneda : ''}</td>
             <td style="display:flex;">
                 <button type="button" style="padding-left:8px;padding-right:7px;" 
                     class="asignar btn btn-xs btn-info boton" data-toggle="tooltip" 
@@ -283,6 +285,7 @@ $("#form-mapeoItemsRequerimiento").on("submit", function (e) {
                     'codigo': element.codigo,
                     'cantidad': element.cantidad,
                     'abreviatura': element.abreviatura,
+                    'id_moneda': element.id_moneda,
                     'id_categoria': element.id_categoria,
                     'id_clasif': element.id_clasif,
                     'id_subcategoria': element.id_subcategoria,

@@ -28,6 +28,7 @@ function listarProductosCatalogo() {
             { 'data': 'part_number', 'name': 'alm_prod.part_number' },
             { 'data': 'marca', 'name': 'alm_subcat.descripcion' },
             { 'data': 'descripcion', 'name': 'alm_prod.descripcion' },
+            { 'data': 'descripcion_moneda', 'name': 'sis_moneda.descripcion' },
             { 'data': 'id_producto', 'name': 'alm_prod.id_producto', "searchable": false }
         ],
         'columnDefs': [
@@ -37,6 +38,7 @@ function listarProductosCatalogo() {
             { 'aTargets': [3], 'className': "text-center", 'sWidth': '5%' },
             { 'aTargets': [4], 'className': "text-center", 'sWidth': '5%' },
             { 'aTargets': [5], 'className': "text-left", 'sWidth': '70%' },
+            { 'aTargets': [6], 'className': "text-center", 'sWidth': '5%' },
             {
                 'render':
                     function (data, type, row) {
@@ -49,7 +51,7 @@ function listarProductosCatalogo() {
                                 <i class="fas fa-check"></i>
                             </button>
                         `;
-                    }, 'aTargets': 6, 'className': "text-center", 'sWidth': '5%'
+                    }, 'aTargets': 7, 'className': "text-center", 'sWidth': '5%'
             }
         ],
         initComplete: function (settings, json) {
@@ -123,6 +125,7 @@ function listarSugeridos(data) {
                     <td>${element.part_number ?? ''}</td>
                     <td>${element.marca ?? ''}</td>
                     <td>${element.descripcion ?? ''}</td>
+                    <td>${element.descripcion_moneda ?? ''}</td>
                     <td>
                         <button type="button" class="btn btn-success btn-xs" title="Seleccionar Producto" 
                             data-codigo="${element.codigo}" data-id="${element.id_producto}" 
@@ -193,6 +196,7 @@ $("#form-crear").on("submit", function (e) {
     let id_detalle = $('[name=id_detalle_requerimiento]').val();
     let serie = $('[name=series]').is(':checked');
     let id_moneda = $('[name=id_moneda_producto]').val();
+    let descripcion_moneda = $('[name=id_moneda_producto] option').filter(':selected').text();
 
     var page = $('.page-main').attr('type');
 
@@ -224,6 +228,9 @@ $("#form-crear").on("submit", function (e) {
         det.id_unidad_medida = id_unid;
         det.control_series = serie;
         det.series = serie;
+        det.id_moneda = id_moneda;
+        det.descripcion_moneda = descripcion_moneda;
+
 
         $('#modal-mapeoAsignarProducto').modal('hide');
         mostrar_detalle();
