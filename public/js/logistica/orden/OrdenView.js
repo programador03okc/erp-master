@@ -534,7 +534,7 @@ class OrdenView {
                 }
             } else { //servicio
                 document.querySelector("tbody[id='body_detalle_orden']").insertAdjacentHTML('beforeend', `<tr style="text-align:center;" class="${data[i].estado == 7 ? 'danger textRedStrikeHover' : ''};">
-                    <td>${data[i].codigo_requerimiento ? data[i].codigo_requerimiento : ''} <input type="hidden"  name="idRegister[]" value="${data[i].id_detalle_orden ? data[i].id_detalle_orden : this.makeId()}"><input type="hidden"  class="idEstado" name="idEstado[]"> <input type="hidden"  name="idDetalleRequerimiento[]" value="${data[i].id_detalle_requerimiento ? data[i].id_detalle_requerimiento : ''}"> <input type="hidden"  name="idTipoItem[]" value="1"></td>
+                    <td>${data[i].codigo_requerimiento ? data[i].codigo_requerimiento : ''} <input type="hidden"  name="idRegister[]" value="${data[i].id_detalle_orden ? data[i].id_detalle_orden : this.makeId()}"><input type="hidden"  class="idEstado" name="idEstado[]"> <input type="hidden"  name="idDetalleRequerimiento[]" value="${data[i].id_detalle_requerimiento ? data[i].id_detalle_requerimiento : ''}"> <input type="hidden"  name="idTipoItem[]" value="2"></td>
                     <td>(No aplica) <input type="hidden" value=""></td>
                     <td>(No aplica) <input type="hidden" value=""></td>
                     <td>(No aplica) <input type="hidden"  name="idProducto[]" value=""></td>
