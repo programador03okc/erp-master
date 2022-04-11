@@ -46,7 +46,7 @@ function listarProductosCatalogo() {
                             <button type="button" class="btn btn-success btn-xs" name="btnSeleccionarUbigeo" title="Seleccionar Producto" 
                                 data-codigo="${row.codigo}" data-id="${row.id_producto}"  data-cod-softlink="${row.cod_softlink}"
                                 data-partnumber="${row.part_number}" data-descripcion="${encodeURIComponent(row.descripcion)}" 
-                                data-abreviatura="${row.abreviatura}" data-series="${row.series}" data-moneda="${row.moneda}"
+                                data-abreviatura="${row.abreviatura}" data-series="${row.series}" data-moneda="${row.id_moneda}"
                                 onclick="selectProductoAsignado(this);">
                                 <i class="fas fa-check"></i>
                             </button>
