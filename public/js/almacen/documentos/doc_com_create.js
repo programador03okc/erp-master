@@ -349,6 +349,7 @@ $("#form-doc_create").on("submit", function (e) {
                         'descripcion': (element.id_producto == null ? element.descripcion : ''),
                         'cantidad': element.cantidad,
                         'id_unid_med': element.id_unid_med,
+                        'id_moneda_producto': element.id_moneda_producto,
                         'precio': element.precio,
                         'sub_total': element.sub_total,
                         'porcentaje_dscto': element.porcentaje_dscto,

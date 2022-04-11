@@ -178,8 +178,8 @@ function mostrar_ordenes_seleccionadas() {
             <td><input class="right" type="number" id="${element.id_oc_det !== null ? element.id_oc_det : 'p' + element.id_producto}cantidad" value="${element.cantidad}" 
                 min="1" ${element.id_oc_det !== null ? `max="${element.cantidad}"` : ''} style="width:80px;"/></td>
             <td>${element.abreviatura}</td>
-            <td class="text-right">${formatNumber.decimal(element.precio, element.simbolo + ' ', -4)}</td>
-            <td class="text-right">${formatNumber.decimal((element.cantidad * element.precio), element.simbolo + ' ', -4)}</td>
+            <td class="text-right">${formatNumber.decimal(element.precio, element.simbolo, -4)}</td>
+            <td class="text-right">${formatNumber.decimal((element.cantidad * element.precio), element.simbolo, -4)}</td>
             <td>
                 <input type="text" class="oculto" id="series" value="${element.series}" 
                 data-partnumber="${element.part_number !== null ? element.part_number : element.codigo}"/>

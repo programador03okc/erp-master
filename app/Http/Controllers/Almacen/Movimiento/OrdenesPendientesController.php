@@ -20,6 +20,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Almacen\Movimiento;
 use App\Models\Almacen\MovimientoDetalle;
 use App\Models\almacen\Reserva;
+use App\Models\Tesoreria\TipoCambio;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
@@ -1006,7 +1007,9 @@ class OrdenesPendientesController extends Controller
                     $detalle = DB::table('logistica.log_det_ord_compra')
                         ->select(
                             'log_det_ord_compra.*',
+                            'log_ord_compra.id_moneda as id_moneda_orden',
                             'alm_prod.id_producto',
+                            'alm_prod.id_moneda as id_moneda_producto',
                             'alm_req.id_sede',
                             'alm_req.id_requerimiento',
                             'alm_req.id_almacen as id_almacen_destino'
@@ -1022,6 +1025,9 @@ class OrdenesPendientesController extends Controller
                     $padres_oc = [];
                     $padres_req = [];
 
+                    $tipo_cambio = TipoCambio::where([['moneda', '=', 2], ['fecha', '<=', $request->fecha_almacen]])
+                        ->orderBy('fecha', 'DESC')->first();
+
                     foreach ($detalle as $det) {
 
                         if (!in_array($det->id_orden_compra, $padres_oc)) {
@@ -1036,6 +1042,16 @@ class OrdenesPendientesController extends Controller
                                 $cantidad = $d->cantidad;
                                 $series = $d->series;
                                 break;
+                            }
+                        }
+                        //conversion de moneda
+                        if ($det->id_moneda_producto == $det->id_moneda_orden) {
+                            $unitario = floatval($det->precio);
+                        } else {
+                            if ($det->id_moneda_producto == 1) { //soles
+                                $unitario = floatval($det->precio) * $tipo_cambio->venta;
+                            } else { //dolares
+                                $unitario = floatval($det->precio) / $tipo_cambio->venta;
                             }
                         }
                         //Guardo los items de la guia
@@ -1074,7 +1090,7 @@ class OrdenesPendientesController extends Controller
                                 'id_mov_alm' => $id_ingreso,
                                 'id_producto' => $det->id_producto,
                                 'cantidad' => $cantidad,
-                                'valorizacion' => (floatval($det->precio) * floatval($cantidad)),
+                                'valorizacion' => (floatval($unitario) * floatval($cantidad)),
                                 'usuario' => $id_usuario,
                                 'id_guia_com_det' => $id_guia_com_det,
                                 'estado' => 1,
@@ -1800,6 +1816,7 @@ class OrdenesPendientesController extends Controller
                 'alm_prod.codigo',
                 'alm_prod.descripcion',
                 'alm_prod.part_number',
+                'alm_prod.id_moneda as id_moneda_producto',
                 'alm_und_medida.abreviatura',
                 'log_det_ord_compra.precio',
                 'log_ord_compra.id_condicion',
@@ -1835,6 +1852,7 @@ class OrdenesPendientesController extends Controller
                 'alm_prod.codigo',
                 'alm_prod.descripcion',
                 'alm_prod.part_number',
+                'alm_prod.id_moneda as id_moneda_producto',
                 'alm_und_medida.abreviatura',
                 'log_det_ord_compra.precio',
                 'log_ord_compra.id_condicion',
@@ -1891,7 +1909,8 @@ class OrdenesPendientesController extends Controller
 
             $id_usuario = Auth::user()->id_usuario;
             $fecha = date('Y-m-d H:i:s');
-            $tc = OrdenesPendientesController::tipo_cambio_compra($request->fecha_emision_doc);
+            $tc = TipoCambio::where([['moneda', '=', 2], ['fecha', '<=', $request->fecha_emision_doc]])
+                ->orderBy('fecha', 'DESC')->first();
 
             $id_doc = DB::table('almacen.doc_com')->insertGetId(
                 [
@@ -1905,7 +1924,7 @@ class OrdenesPendientesController extends Controller
                     'credito_dias' => $request->credito_dias,
                     'id_sede' => $request->id_sede,
                     'moneda' => $request->moneda,
-                    'tipo_cambio' => $tc,
+                    'tipo_cambio' => $tc->venta,
                     'sub_total' => $request->sub_total,
                     // 'total_descuento' => $request->total_descuento,
                     // 'porcen_descuento' => $request->porcen_descuento,
@@ -1959,36 +1978,50 @@ class OrdenesPendientesController extends Controller
                     $suma_servicio += floatval($item->total);
                 }
             }
-            if ($suma_servicio != null && $suma_servicio > 0) {
-                $factor = floatval(($suma_servicio !== '' && $suma_servicio !== null) ? $suma_servicio : 0) / ($suma_total > 0 ? $suma_total : 1);
-                foreach ($items as $item) {
 
-                    if ($item->id_producto !== null) {
+            // if ($suma_servicio != null && $suma_servicio > 0) {
 
-                        $adicional = floatval($item->total) * $factor;
-                        $nuevo_total = floatval($item->total) + $adicional;
+            $factor = floatval(($suma_servicio !== '' && $suma_servicio !== null) ? $suma_servicio : 0) / ($suma_total > 0 ? $suma_total : 1);
 
-                        if ($request->moneda == 2) {
-                            $valor = floatval($tc * $nuevo_total);
-                        } else {
-                            $valor = floatval($nuevo_total);
+            foreach ($items as $item) {
+
+                if ($item->id_producto !== null) {
+
+                    $adicional = floatval($item->total) * $factor;
+                    $nuevo_total = floatval($item->total) + $adicional;
+
+                    //conversion de moneda
+                    if ($item->id_moneda_producto == $request->moneda) {
+                        $valor = $nuevo_total;
+                    } else {
+                        if ($item->id_moneda_producto == 1) { //soles
+                            $valor = $nuevo_total * $tc->venta;
+                        } else { //dolares
+                            $valor = $nuevo_total / $tc->venta;
                         }
-
-                        DB::table('almacen.guia_com_det')
-                            ->where('id_guia_com_det', $item->id_guia_com_det)
-                            ->update([
-                                'unitario_adicional' => $adicional,
-                                'id_moneda' => $request->moneda
-                            ]);
-
-                        DB::table('almacen.mov_alm_det')
-                            ->where('id_guia_com_det', $item->id_guia_com_det)
-                            ->update(['valorizacion' => $valor]);
-
-                        OrdenesPendientesController::actualiza_prod_ubi($item->id_producto, $request->id_almacen_doc);
                     }
+
+                    // if ($request->moneda == 2) {
+                    //     $valor = floatval($tc * $nuevo_total);
+                    // } else {
+                    //     $valor = floatval($nuevo_total);
+                    // }
+
+                    DB::table('almacen.guia_com_det')
+                        ->where('id_guia_com_det', $item->id_guia_com_det)
+                        ->update([
+                            'unitario_adicional' => $adicional,
+                            'id_moneda' => $request->moneda
+                        ]);
+
+                    DB::table('almacen.mov_alm_det')
+                        ->where('id_guia_com_det', $item->id_guia_com_det)
+                        ->update(['valorizacion' => $valor]);
+
+                    OrdenesPendientesController::actualiza_prod_ubi($item->id_producto, $request->id_almacen_doc);
                 }
             }
+            // }
             DB::commit();
             return response()->json(['id_doc' => $id_doc]);
         } catch (\PDOException $e) {
