@@ -61,6 +61,7 @@ Estado de Atención de Requerimientos
     </div>
 </div>
 @include('almacen.transferencias.verTransferenciasPorRequerimiento')
+@include('almacen.reportes.cambioRequerimiento')
 @endsection
 
 @section('scripts')

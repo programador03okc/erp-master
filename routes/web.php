@@ -1447,6 +1447,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('listarRequerimientosAlmacen', 'Almacen\Reporte\ListaRequerimientosAlmacenController@listarRequerimientosAlmacen')->name('listarRequerimientosAlmacen');
 				Route::get('verDetalleRequerimientoDI/{id}', 'Logistica\Distribucion\OrdenesTransformacionController@verDetalleRequerimientoDI');
 				Route::get('listarDetalleTransferencias/{id}', 'Almacen\Movimiento\TransferenciaController@listarDetalleTransferencias');
+				Route::get('cambioAlmacen/{id}/{alm}', 'Almacen\Reporte\ListaRequerimientosAlmacenController@cambioAlmacen');
 			});
 		});
 

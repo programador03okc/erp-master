@@ -4,13 +4,15 @@ namespace App\Http\Controllers\Almacen\Reporte;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Almacen\Almacen;
 use Illuminate\Support\Facades\DB;
 
 class ListaRequerimientosAlmacenController extends Controller
 {
     function viewRequerimientosAlmacen()
     {
-        return view('almacen/reportes/requerimientosAlmacen');
+        $almacenes = Almacen::where('estado', 1)->get();
+        return view('almacen/reportes/requerimientosAlmacen', compact('almacenes'));
     }
 
     function listarRequerimientosAlmacen()
@@ -56,5 +58,22 @@ class ListaRequerimientosAlmacenController extends Controller
             ->get();
 
         return datatables($lista)->toJson();
+    }
+
+    function cambioAlmacen($id_requerimiento, $id_almacen)
+    {
+        $alm = DB::table('almacen.alm_almacen')
+            ->select('alm_almacen.*')
+            ->where('id_almacen', $id_almacen)
+            ->first();
+
+        DB::table('almacen.alm_req')
+            ->where('id_requerimiento', $id_requerimiento)
+            ->update([
+                'id_almacen' => $id_almacen,
+                'id_sede' => $alm->id_sede
+            ]);
+
+        return response()->json($alm);
     }
 }

@@ -134,7 +134,12 @@ function listarRequerimientosAlmacen() {
                             `<button type="button" class="transferencia btn btn-success btn-flat btn-xs " data-toggle="tooltip"
                     data-placement="bottom" title="Ver transferencias" data-id="${row['id_requerimiento']}">
                     <i class="fas fa-exchange-alt"></i></button>`: ''
-                        }`;
+                        }
+                        
+                    <button type="button" class="cambio btn btn-warning btn-flat btn-xs " data-toggle="tooltip"
+                    data-placement="bottom" title="Cambio de almacén" data-id="${row['id_requerimiento']}" 
+                    data-almacen="${row['id_almacen']}" data-codigo="${row['codigo']}">
+                    <i class="fas fa-sync-alt"></i></button>`;
 
                 }, targets: 11
             }
@@ -165,6 +170,52 @@ $('#requerimientosAlmacen tbody').on("click", "button.transferencia", function (
             console.log(errorThrown);
         });
     }
+});
+
+$('#requerimientosAlmacen tbody').on("click", "button.cambio", function () {
+    var id = $(this).data('id');
+    var alm = $(this).data('almacen');
+    var cod = $(this).data('codigo');
+
+    $('[name=id_requerimiento]').val(id);
+    $('[name=id_almacen]').val(alm);
+    $('#codigo_req').text(cod);
+
+    if (id !== null) {
+        $('#modal-cambio_requerimiento').modal({
+            show: true
+        });
+    }
+});
+
+$("#form-cambio_requerimiento").on("submit", function (e) {
+
+    e.preventDefault();
+    var id = $('[name=id_almacen]').val();
+    var req = $('[name=id_requerimiento]').val();
+
+    $.ajax({
+        type: 'GET',
+        url: 'cambioAlmacen/' + req + '/' + id,
+        dataType: 'JSON',
+        success: function (response) {
+            console.log(response);
+            Lobibox.notify("success", {
+                title: false,
+                size: "mini",
+                rounded: true,
+                sound: false,
+                delayIndicator: false,
+                msg: 'Se actualizó al almacén: ' + response.codigo + '-' + response.descripcion
+            });
+            $('#modal-cambio_requerimiento').modal('hide');
+            $("#requerimientosAlmacen").DataTable().ajax.reload(null, false);
+        }
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
 });
 
 function abrir_transformacion(id_transformacion) {
