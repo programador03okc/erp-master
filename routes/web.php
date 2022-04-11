@@ -854,6 +854,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('mostrar-archivos-adjuntos-detalle-requerimiento/{id_detalle_requerimiento}', 'Logistica\RequerimientoController@mostrarArchivosAdjuntos');
 					Route::get('mostrar-todo-adjuntos-requerimiento/{id_requerimiento}', 'Logistica\RequerimientoController@mostrarTodoAdjuntos');
 					Route::get('almacenes-con-stock-disponible/{idProducto}', 'ComprasPendientesController@mostrarAlmacenesConStockDisponible');
+					Route::post('actualizar-tipo-item-detalle-requerimiento', 'ComprasPendientesController@actualizarTipoItemDetalleRequerimiento');
 				});
 
 				Route::group(['as' => 'ordenes.', 'prefix' => 'ordenes'], function () {
