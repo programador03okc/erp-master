@@ -125,6 +125,9 @@ class RequerimientoPendienteView {
         $('#listaRequerimientosPendientes tbody').on("click", "button.handleClickVerAdjuntoDetalleRequerimiento", (e) => {
             this.verAdjuntoDetalleRequerimiento(e.currentTarget);
         });
+        $('#listaRequerimientosPendientes tbody').on("click", "button.handleClickActualizarTipoItem", (e) => {
+            this.actualizarTipoItem(e.currentTarget);
+        });
         $('#listaRequerimientosAtendidos tbody').on("click", "button.handleClickVerAdjuntoDetalleRequerimiento", (e) => {
             this.verAdjuntoDetalleRequerimiento(e.currentTarget);
         });
@@ -1285,7 +1288,11 @@ class RequerimientoPendienteView {
                         <td style="border: none; text-align:center;">${stockComprometido != null && stockComprometido > 0 ? stockComprometido : '0'}</td>
                         <td style="border: none; text-align:center;">${atencionOrden != null && atencionOrden > 0 ? `<span class="label label-info handleClickModalVerOrdenDeRequerimiento" data-codigo-requerimiento="${element.codigo_requerimiento}" data-orden=${JSON.stringify(objOrdenList)} style="cursor:pointer;" >${atencionOrden}</span>` : '0'} </td>
                         <td style="border: none; text-align:center;">${element.estado_doc != null && element.tiene_transformacion == false ? element.estado_doc : ''}</td>
-                        <td style="border: none; text-align:center;">${cantidadAdjuntosDetalleRequerimiento > 0 ? `<button type="button" class="btn btn-default btn-xs handleClickVerAdjuntoDetalleRequerimiento" name="btnVerAdjuntoDetalleRequerimiento" title="Ver adjuntos" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-descripcion="${element.producto_descripcion != null ? element.producto_descripcion : (element.descripcion ? element.descripcion : '')}" ><i class="fas fa-paperclip"></i></button>` : ''}</td>
+                        <td style="border: none; text-align:center;"> <div style="display:flex;">
+                            ${cantidadAdjuntosDetalleRequerimiento > 0 ? `<button type="button" class="btn btn-default btn-xs handleClickVerAdjuntoDetalleRequerimiento" name="btnVerAdjuntoDetalleRequerimiento" title="Ver adjuntos" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-descripcion="${element.producto_descripcion != null ? element.producto_descripcion : (element.descripcion ? element.descripcion : '')}" ><i class="fas fa-paperclip"></i></button>` : ''}
+                            <button type="button" class="btn btn-primary btn-xs handleClickActualizarTipoItem" name="btnActualizarTipoItem" title="Tipo Item: ${element.id_tipo_item ==1?'Producto':(element.id_tipo_item==2?'Servicio':'')}" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-descripcion="${element.producto_descripcion != null ? element.producto_descripcion : (element.descripcion ? element.descripcion : '')}" >${element.id_tipo_item ==1?'P':(element.id_tipo_item==2?'S':'')}</button>
+                            </div>
+                        </td>
                         </tr>`;
                 // }
             });
@@ -1305,7 +1312,7 @@ class RequerimientoPendienteView {
                         <th style="border: none; text-align:center;">Reserva almacén</th>
                         <th style="border: none; text-align:center;">Atención Orden</th>
                         <th style="border: none; text-align:center;">Estado</th>
-                        <th style="border: none; text-align:center;">Adjuntos</th>
+                        <th style="border: none; text-align:center;">Acción</th>
                     </tr>
                 </thead>
                 <tbody style="background: #e7e8ea;">${html}</tbody>
@@ -2867,6 +2874,82 @@ class RequerimientoPendienteView {
         this.listarArchivosAdjuntosDetalleRequerimiento(obj.dataset.idDetalleRequerimiento);
         document.querySelector("div[id='modal-adjuntos-detalle-requerimiento'] small[id='descripcion-item']").textContent = obj.dataset.descripcion;
 
+    }
+
+    actualizarTipoItem(obj){
+        Swal.fire({
+            title: 'Actualizar tipo de ítem',
+            text: obj.dataset.descripcion,
+            showDenyButton: true,
+            showCancelButton: false,
+            confirmButtonText: 'Servicio',
+            denyButtonColor: '#3085d6',
+            denyButtonText: `Producto`,
+        }).then((result) => {
+            let tipoItem='';
+            if (result.isConfirmed) {
+                // actualizar a servicio
+                tipoItem=2;
+            } else if (result.isDenied) {
+                // actualizar a producto
+                tipoItem=1;
+            }
+
+            if(tipoItem>0){
+                $.ajax({
+                    type: 'POST',
+                    url: 'actualizar-tipo-item-detalle-requerimiento',
+                    data: {'idDetalleRequerimiento':obj.dataset.idDetalleRequerimiento, 'idTipoItem':tipoItem},
+                    dataType: 'JSON',
+                    beforeSend: (data) => { 
+                        $('#wrapper-okc').LoadingOverlay("show", {
+                            imageAutoResize: true,
+                            progress: true,
+                            imageColor: "#3c8dbc"
+                        });
+                    },
+                    success: (response) => {
+                        $('#wrapper-okc').LoadingOverlay("hide", true);
+    
+                        if (response.tipo_estado == 'success') {
+                            Lobibox.notify('success', {
+                                title: false,
+                                size: 'mini',
+                                rounded: true,
+                                sound: false,
+                                delayIndicator: false,
+                                delay: 5000,
+                                msg: response.mensaje
+                            });
+    
+                            $tablaListaRequerimientosPendientes.ajax.reload(null, false);
+    
+                        } else {
+                            Swal.fire(
+                                '',
+                                response.mensaje,
+                                response.tipo_estado
+                            );
+                            console.log(response);
+                        }
+    
+    
+                    },
+                    fail: (jqXHR, textStatus, errorThrown) => {
+                        $('#wrapper-okc').LoadingOverlay("hide", true);
+                        Swal.fire(
+                            '',
+                            'Lo sentimos hubo un problema en el servidor al intentar actualizar el tipo de item, por favor vuelva a intentarlo',
+                            'error'
+                        );
+                        console.log(jqXHR);
+                        console.log(textStatus);
+                        console.log(errorThrown);
+                    }
+                });
+            }
+
+        })
     }
 
     anularReservaActiva(obj) {

@@ -1383,4 +1383,34 @@ class ComprasPendientesController extends Controller
             return response()->json(['status' => $status, 'mensaje' => 'Hubo un problema al intentar obtener lista de almacenes. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage(), 'data' => []]);
         }
     }
+
+    function actualizarTipoItemDetalleRequerimiento(Request $request){
+        DB::beginTransaction();
+        try {
+            $tipoEstado = '';
+         
+            if ($request->idDetalleRequerimiento > 0) {
+                $detalleRequerimiento = DetalleRequerimiento::find($request->idDetalleRequerimiento);
+                $detalleRequerimiento->id_tipo_item= $request->idTipoItem;
+                $detalleRequerimiento->save();
+                $tipoEstado = 'success';
+            } else {
+                $tipoEstado = 'error';
+                $mensaje = "El ID enviado no es valido, que no fue posible realizar la actualización";
+            }
+            DB::commit();
+            $nuevoDetalleRequerimiento = DetalleRequerimiento::find($request->idDetalleRequerimiento);
+            if($nuevoDetalleRequerimiento->id_tipo_item ==1){
+                $mensaje = 'Se actualizó el tipo de item a producto';
+            }elseif($nuevoDetalleRequerimiento->id_tipo_item ==2){
+                $mensaje = 'Se actualizó el tipo de item a servicio';
+            }
+
+
+            return response()->json(['tipo_estado' => $tipoEstado, 'mensaje' => $mensaje]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json(['tipo_estado' => $tipoEstado, 'mensaje' => 'Hubo un problema al intentar anular. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
+        }
+    }
 }
