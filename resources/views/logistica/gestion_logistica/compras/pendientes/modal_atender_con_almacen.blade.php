@@ -22,6 +22,7 @@
                                     <th style="width: 280px;">Descripción</th>
                                     <th>Unidad</th>
                                     <th>Cantidad</th>
+                                    <th>Moneda</th>
                                     <th>Proveedor</th>
                                     <th>Estado actual</th>
                                     <th>Cantidad reservada</th>

@@ -48,6 +48,7 @@
                                                                 <th>PartNumber</th>
                                                                 <th>Marca</th>
                                                                 <th style="width: 70%;">Descripción</th>
+                                                                <th style="width: 5%;">Moneda</th>
                                                                 <th></th>
                                                             </tr>
                                                         </thead>
@@ -67,6 +68,7 @@
                                                                 <th style="width: 5%">PartNumber</th>
                                                                 <th style="width: 5%">Marca</th>
                                                                 <th style="width: 70%;">Descripción</th>
+                                                                <th style="width: 5%;">Moneda</th>
                                                                 <th style="width: 5%"></th>
                                                             </tr>
                                                         </thead>
