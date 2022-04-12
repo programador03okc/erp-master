@@ -64,6 +64,7 @@ Reservas de almacén
         </div>
     </div>
 </div>
+@include('almacen.reservas.editarReserva')
 @endsection
 
 @section('scripts')
@@ -87,7 +88,7 @@ Reservas de almacén
 <script>
     $(document).ready(function() {
         seleccionarMenu(window.location);
-        listarReservasAlmacen();
+        listarReservasAlmacen('{{Auth::user()->id_usuario}}');
         // $.fn.dataTable.Buttons.defaults.dom.button.className = 'btn';
     //     iniciar('{{Auth::user()->tieneAccion(85)}}');
     });

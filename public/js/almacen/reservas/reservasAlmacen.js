@@ -1,6 +1,6 @@
 let $tableReservas;
 
-function listarReservasAlmacen() {
+function listarReservasAlmacen(id_usuario) {
     console.log('list');
     var vardataTables = funcDatatables();
     let botones = [];
@@ -129,9 +129,16 @@ function listarReservasAlmacen() {
             {
                 'render': function (data, type, row) {
 
-                    return `<button type="button" class="anular btn btn-danger btn-flat boton" data-toggle="tooltip" 
-                            data-placement="bottom" title="Anular Reserva"  data-id="${row['id_reserva']}">
-                            <i class="fas fa-trash"></i></button>`;
+                    return `${id_usuario == '3' || id_usuario == '17' ?
+                        `<button type="button" class="editar btn btn-primary btn-flat boton" data-toggle="tooltip" 
+                    data-placement="bottom" title="Editar Reserva"  data-id="${row['id_reserva']}"
+                    data-almacen="${row['id_almacen_reserva']}"  data-stock="${row['stock_comprometido']}"
+                    data-codigo="${row['codigo_req']}">
+                    <i class="fas fa-edit"></i></button>`: ''
+                        }
+                    <button type="button" class="anular btn btn-danger btn-flat boton" data-toggle="tooltip" 
+                        data-placement="bottom" title="Anular Reserva"  data-id="${row['id_reserva']}">
+                        <i class="fas fa-trash"></i></button>`;
 
                 }, targets: 15
             }
@@ -141,13 +148,67 @@ function listarReservasAlmacen() {
     vista_extendida();
 }
 
-$("#reservasAlmacen tbody").on("click", "a.verProducto", function (e) {
-    $(e.preventDefault());
+$("#reservasAlmacen tbody").on("click", "button.editar", function () {
     var id = $(this).data("id");
-    localStorage.setItem("id_producto", id);
-    var win = window.open("/almacen/catalogos/productos/index", '_blank');
-    win.focus();
+    var alm = $(this).data("almacen");
+    var stock = $(this).data("stock");
+    var codigo = $(this).data("codigo");
+
+    $('#modal-editarReserva').modal({
+        show: true
+    });
+
+    $('[name=id_reserva]').val(id);
+    $('[name=id_almacen_reserva]').val(alm);
+    $('[name=stock_comprometido]').val(stock);
+    $('#codigo_req').text(codigo);
 });
+
+
+$("#form-editarReserva").on("submit", function (e) {
+    e.preventDefault();
+
+    Swal.fire({
+        title: "¿Está seguro que desea guardar los cambios?",
+        text: "Los cambios son irreversibles",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#00a65a", //"#3085d6",
+        cancelButtonColor: "#d33",
+        cancelButtonText: "Cancelar",
+        confirmButtonText: "Sí, Guardar"
+    }).then(result => {
+        if (result.isConfirmed) {
+
+            var data = $(this).serialize();
+
+            $.ajax({
+                type: 'POST',
+                url: 'actualizarReserva',
+                data: data,
+                dataType: 'JSON',
+                success: function (response) {
+                    console.log(response);
+                    Lobibox.notify("success", {
+                        title: false,
+                        size: "mini",
+                        rounded: true,
+                        sound: false,
+                        delayIndicator: false,
+                        msg: 'Se actualizó correctamente'
+                    });
+                    $('#modal-editarReserva').modal('hide');
+                    $("#reservasAlmacen").DataTable().ajax.reload(null, false);
+                }
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            });
+        }
+    });
+});
+
 
 $("#reservasAlmacen tbody").on("click", "button.anular", function () {
     Swal.fire({
@@ -189,4 +250,12 @@ $("#reservasAlmacen tbody").on("click", "button.anular", function () {
         }
     });
 
+});
+
+$("#reservasAlmacen tbody").on("click", "a.verProducto", function (e) {
+    $(e.preventDefault());
+    var id = $(this).data("id");
+    localStorage.setItem("id_producto", id);
+    var win = window.open("/almacen/catalogos/productos/index", '_blank');
+    win.focus();
 });

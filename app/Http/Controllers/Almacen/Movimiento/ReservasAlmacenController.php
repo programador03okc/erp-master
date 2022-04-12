@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Almacen\Movimiento;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Almacen\Almacen;
 use Illuminate\Support\Facades\DB;
 
 class ReservasAlmacenController extends Controller
@@ -13,8 +14,8 @@ class ReservasAlmacenController extends Controller
         // if (!Auth::user()->tieneAccion(83)) {
         //     return 'No autorizado';
         // }
-
-        return view('almacen/reservas/reservasAlmacen');
+        $almacenes = Almacen::where('estado', 1)->orderBy('codigo')->get();
+        return view('almacen/reservas/reservasAlmacen', compact('almacenes'));
     }
 
     function listarReservasAlmacen()
@@ -64,6 +65,18 @@ class ReservasAlmacenController extends Controller
         $rspta = DB::table('almacen.alm_reserva')
             ->where('id_reserva', $id_reserva)
             ->update(['estado' => 7]);
+
+        return response()->json($rspta);
+    }
+
+    function actualizarReserva(Request $request)
+    {
+        $rspta = DB::table('almacen.alm_reserva')
+            ->where('id_reserva', $request->id_reserva)
+            ->update([
+                'id_almacen_reserva' => $request->id_almacen_reserva,
+                'stock_comprometido' => $request->stock_comprometido,
+            ]);
 
         return response()->json($rspta);
     }
