@@ -10,10 +10,7 @@
                     <div class="col-md-12">
                         <div class="panel panel-default">
                             <div class="panel-heading" id="nombreEstado">Requerimientos</div>
-                            <!-- <div class="panel-body">
-                                <p id="nombreEstado"></p>
-                            </div> -->
-                            <table id="listaRequerimientosEstado" class="table">
+                            <table id="listaRequerimientosEstado" class="table" style="font-size: smaller">
                                 <thead>
                                     <tr style="background-color: lightblue;">
                                         <th>Código</th>
@@ -27,7 +24,7 @@
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
-                                <tfoot></tfoot>
+                                <tfoot style="background-color: #f5f5f5; font-weight: bold"></tfoot>
                             </table>
                         </div>
                     </div>

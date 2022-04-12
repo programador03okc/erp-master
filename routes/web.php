@@ -1534,10 +1534,18 @@ Route::group(['middleware' => ['auth']], function () {
 
 			Route::group(['as' => 'saldos.', 'prefix' => 'saldos'], function () {
 
-				Route::get('index', 'Almacen\Reporte\SaldosController@view_saldos')->name('index');
-				Route::get('listar_saldos/{id}', 'Almacen\Reporte\SaldosController@listar_saldos');
-				Route::get('verRequerimientosReservados/{id}/{alm}', 'Almacen\Reporte\SaldosController@verRequerimientosReservados');
+				// Route::get('index', 'Almacen\Reporte\SaldosController@view_saldos')->name('index');
+				// Route::get('listar_saldos/{id}', 'Almacen\Reporte\SaldosController@listar_saldos');
+				// Route::get('verRequerimientosReservados/{id}/{alm}', 'Almacen\Reporte\SaldosController@verRequerimientosReservados');
 				Route::get('tipo_cambio_compra/{fecha}', 'Almacen\Reporte\SaldosController@tipo_cambio_compra');
+
+				Route::get('index', 'Almacen\Reporte\ReportesController@view_saldos')->name('index');
+				Route::post('filtrar', 'Almacen\Reporte\ReportesController@filtrar')->name('filtrar');
+				Route::post('listar', 'Almacen\Reporte\ReportesController@listar')->name('listar');
+				Route::get('verRequerimientosReservados/{id}/{alm}', 'Almacen\Reporte\ReportesController@verRequerimientosReservados');
+				Route::get('exportar', 'Almacen\Reporte\ReportesController@exportar')->name('exportar');
+				Route::get('prueba_saldo', 'Almacen\Reporte\ReportesController@pruebaSaldo')->name('prueba_saldo');
+				Route::post('exportar-valorizacion', 'Almacen\Reporte\ReportesController@valorizacion')->name('exportar-valorizacion');
 			});
 
 			Route::group(['as' => 'lista-ingresos.', 'prefix' => 'lista-ingresos'], function () {
