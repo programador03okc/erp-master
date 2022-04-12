@@ -21,6 +21,7 @@ function open_guia_create(data, $fila) {
     $('[name=fecha_almacen]').val(fecha_actual());
     $('#detalleOrdenSeleccionadas tbody').html('');
     $('.agregarSobrante').hide();
+    $('[name=comentario]').val('');
 
     $('#serie').text('');
     $('#numero').text('');
@@ -93,6 +94,7 @@ function open_guia_create_seleccionadas() {
 
             $('#detalleOrdenSeleccionadas tbody').html('');
             $('.agregarSobrante').hide();
+            $('[name=comentario]').val('');
 
             $('#serie').text('');
             $('#numero').text('');

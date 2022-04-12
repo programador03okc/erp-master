@@ -29,6 +29,7 @@ function open_guia_create(data) {
     $('[name=almacen_descripcion]').val(data.almacen_descripcion);
     $('[name=serie]').val('');
     $('[name=numero]').val('');
+    $('[name=comentario]').val('');
     // $('#serie').text('');
     // $('#numero').text('');
     detalle = [];
