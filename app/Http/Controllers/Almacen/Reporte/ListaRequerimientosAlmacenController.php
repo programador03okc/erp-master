@@ -5,13 +5,15 @@ namespace App\Http\Controllers\Almacen\Reporte;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Almacen\Almacen;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ListaRequerimientosAlmacenController extends Controller
 {
     function viewRequerimientosAlmacen()
     {
-        $almacenes = Almacen::where('estado', 1)->get();
+        $almacenes = Almacen::where('estado', 1)->orderBy('codigo')->get();
         return view('almacen/reportes/requerimientosAlmacen', compact('almacenes'));
     }
 
@@ -60,20 +62,77 @@ class ListaRequerimientosAlmacenController extends Controller
         return datatables($lista)->toJson();
     }
 
-    function cambioAlmacen($id_requerimiento, $id_almacen)
+    function listarDetalleRequerimiento($id_requerimiento)
     {
-        $alm = DB::table('almacen.alm_almacen')
-            ->select('alm_almacen.*')
-            ->where('id_almacen', $id_almacen)
-            ->first();
+        $lista = DB::table('almacen.alm_det_req')
+            ->select(
+                'alm_det_req.id_detalle_requerimiento',
+                'alm_det_req.id_producto',
+                'alm_det_req.cantidad',
+                'alm_det_req.entrega_cliente',
+                'alm_det_req.tiene_transformacion',
+                'alm_prod.codigo',
+                'alm_prod.part_number',
+                'alm_prod.descripcion'
+            )
+            ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_det_req.id_producto')
+            ->where([
+                ['alm_det_req.id_requerimiento', '=', $id_requerimiento],
+                ['alm_det_req.estado', '!=', 7]
+            ])
+            ->get();
 
-        DB::table('almacen.alm_req')
-            ->where('id_requerimiento', $id_requerimiento)
-            ->update([
-                'id_almacen' => $id_almacen,
-                'id_sede' => $alm->id_sede
-            ]);
+        return response()->json($lista);
+    }
 
-        return response()->json($alm);
+    function cambioAlmacen(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            $alm = DB::table('almacen.alm_almacen')
+                ->select('alm_almacen.*')
+                ->where('id_almacen', $request->id_almacen)
+                ->first();
+
+            $req_anterior = DB::table('almacen.alm_req')
+                ->select('alm_req.id_almacen')
+                ->where('id_requerimiento', $request->id_requerimiento)
+                ->first();
+
+            DB::table('almacen.alm_req')
+                ->where('id_requerimiento', $request->id_requerimiento)
+                ->update([
+                    'id_almacen' => $request->id_almacen,
+                    'id_sede' => $alm->id_sede
+                ]);
+
+            $detalle = json_decode($request->detalle);
+
+            foreach ($detalle as $det) {
+                DB::table('almacen.alm_det_req')
+                    ->where('id_detalle_requerimiento', $det->id_detalle_requerimiento)
+                    ->update([
+                        'tiene_transformacion' => $det->tiene_transformacion,
+                        'entrega_cliente' => $det->entrega_cliente,
+                    ]);
+            }
+
+            DB::table('almacen.alm_req_obs')
+                ->insert([
+                    'id_requerimiento' => $request->id_requerimiento,
+                    'accion' => 'CAMBIO',
+                    'descripcion' => 'Almacén de ' . $req_anterior->id_almacen . ' a ' . $request->id_almacen,
+                    'id_usuario' => Auth::user()->id_usuario,
+                    'fecha_registro' => new Carbon()
+                ]);
+
+            DB::commit();
+            return response()->json($alm);
+        } catch (\PDOException $e) {
+            // Woopsy
+            DB::rollBack();
+            return response()->json(['tipo' => 'error', 'mensaje' => 'Hubo un problema al guardar el ingreso. Por favor intente de nuevo', 'error' => $e->getMessage()], 200);
+        }
     }
 }

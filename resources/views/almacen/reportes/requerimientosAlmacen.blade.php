@@ -81,6 +81,7 @@ Estado de Atención de Requerimientos
 <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
 
 <script src="{{ asset('js/almacen/reporte/requerimientosAlmacen.js') }}?v={{filemtime(public_path('js/almacen/reporte/requerimientosAlmacen.js'))}}"></script>
+<script src="{{ asset('js/almacen/reporte/cambioRequerimiento.js') }}?v={{filemtime(public_path('js/almacen/reporte/cambioRequerimiento.js'))}}"></script>
 <script src="{{ asset('js/almacen/distribucion/verDetalleRequerimiento.js?') }}?v={{filemtime(public_path('js/almacen/distribucion/verDetalleRequerimiento.js'))}}"></script>
 
 <script>

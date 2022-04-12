@@ -185,37 +185,8 @@ $('#requerimientosAlmacen tbody').on("click", "button.cambio", function () {
         $('#modal-cambio_requerimiento').modal({
             show: true
         });
+        listarDetalleRequerimiento(id);
     }
-});
-
-$("#form-cambio_requerimiento").on("submit", function (e) {
-
-    e.preventDefault();
-    var id = $('[name=id_almacen]').val();
-    var req = $('[name=id_requerimiento]').val();
-
-    $.ajax({
-        type: 'GET',
-        url: 'cambioAlmacen/' + req + '/' + id,
-        dataType: 'JSON',
-        success: function (response) {
-            console.log(response);
-            Lobibox.notify("success", {
-                title: false,
-                size: "mini",
-                rounded: true,
-                sound: false,
-                delayIndicator: false,
-                msg: 'Se actualizó al almacén: ' + response.codigo + '-' + response.descripcion
-            });
-            $('#modal-cambio_requerimiento').modal('hide');
-            $("#requerimientosAlmacen").DataTable().ajax.reload(null, false);
-        }
-    }).fail(function (jqXHR, textStatus, errorThrown) {
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    });
 });
 
 function abrir_transformacion(id_transformacion) {

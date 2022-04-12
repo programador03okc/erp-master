@@ -1,5 +1,5 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-cambio_requerimiento" style="overflow-y: scroll;">
-    <div class="modal-dialog" style="width:40%;">
+    <div class="modal-dialog" style="width:60%;">
         <div class="modal-content">
             <form id="form-cambio_requerimiento">
                 <div class="modal-header">
@@ -17,6 +17,25 @@
                                 <option value="{{$tp->id_almacen}}">{{$tp->codigo}} - {{$tp->descripcion}}</option>
                                 @endforeach
                             </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h5>Detalle de items</h5>
+                            <table class="mytable table table-condensed table-bordered table-okc-view" 
+                            width="100%" id="detalleRequerimiento" style="margin-top:10px;">
+                                <thead>
+                                    <tr>
+                                        <th>Código</th>
+                                        <th>Part Number</th>
+                                        <th>Descripción</th>
+                                        <th>Cantidad</th>
+                                        <th>Transformación</th>
+                                        <th>Entrega cliente</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
