@@ -728,7 +728,7 @@ class SalidasPendientesController extends Controller
             $lista = $data->where([['alm_det_req.tiene_transformacion', '=', ($aplica_cambios == 'si' ? false : ($tiene_transformacion == 'si' ? true : false))]])
                 ->get();
         } else {
-            $lista = $data->where([['alm_det_req.entrega_cliente', '=', ($tiene_transformacion == 'si' ? true : false)]])
+            $lista = $data->where([['alm_det_req.entrega_cliente', '=', true]])
                 ->get();
         }
 
