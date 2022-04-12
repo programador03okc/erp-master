@@ -128,7 +128,7 @@ class SalidasPendientesController extends Controller
 
                     $stockDisponible = $this->validaStockDisponible($det->id_producto, $request->id_almacen);
 
-                    if ($stockDisponible <= 0) {
+                    if ($stockDisponible >= $det->cantidad) {
                         $mensaje .= $producto->codigo . ' - ' . $producto->descripcion . '
                         ';
                     }
@@ -152,6 +152,7 @@ class SalidasPendientesController extends Controller
                                 'id_operacion' => $request->id_operacion,
                                 'punto_partida' => $request->punto_partida,
                                 'punto_llegada' => $request->punto_llegada,
+                                'comentario' => $request->comentario,
                                 'usuario' => $id_usuario,
                                 'registrado_por' => $id_usuario,
                                 'estado' => 1,
