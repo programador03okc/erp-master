@@ -133,13 +133,14 @@ Saldos Actuales
 
         function procesar() {
             var almacen = $(".selectpicker").val();
+            var fecha = $("[name=fecha]").val();
             $(".export").removeAttr('disabled');
 
             if (almacen.length > 0) {
                 $.ajax({
                     type: "POST",
                     url : "{{ route('almacen.reportes.saldos.filtrar') }}",
-                    data: {almacen: almacen},
+                    data: {almacen: almacen, fecha: fecha},
                     dataType: "JSON",
                     success: function (response) {
                         listar(2);

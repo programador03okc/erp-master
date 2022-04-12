@@ -34,6 +34,12 @@ class ReportesController extends Controller
             $request->session()->forget('filtroAlmacen');
         }
 
+        if (isset($request->fecha)) {
+            $request->session()->put('filtroFecha', $request->fecha);
+        } else {
+            $request->session()->forget('filtroFecha');
+        }
+
         return response()->json(session()->get('filtroAlmacen'), 200);
     }
 
@@ -56,6 +62,11 @@ class ReportesController extends Controller
 
             if ($request->session()->has('filtroAlmacen')) {
                 $data->whereIn('alm_prod_ubi.id_almacen', $request->session()->get('filtroAlmacen'));
+            }
+            if ($request->session()->has('filtroFecha')) {
+                $nfecha = $request->session()->get('filtroFecha').' 23:00:00';
+                $ft_fecha = date('Y-m-d', strtotime($nfecha));
+                $data->where('alm_prod_ubi.fecha_registro', '<=', $ft_fecha);
             }
             $data->get();
         }
