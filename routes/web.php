@@ -1414,6 +1414,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('guia-salida-excel-formato-okc', 'Almacen\Movimiento\GuiaSalidaExcelFormatoOKCController@construirExcel');
 				Route::get('guia-salida-excel-formato-svs', 'Almacen\Movimiento\GuiaSalidaExcelFormatoSVSController@construirExcel');
 
+				Route::get('validaStockDisponible/{id}/{alm}', 'Almacen\Movimiento\SalidasPendientesController@validaStockDisponible');
 
 				Route::get('seriesVentaExcel/{id}', 'Almacen\Movimiento\SalidasPendientesController@seriesVentaExcel');
 			});
