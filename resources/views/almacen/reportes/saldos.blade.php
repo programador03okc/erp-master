@@ -190,18 +190,18 @@ Saldos Actuales
                     headers: {'X-CSRF-TOKEN': csrf_token}
                 },
                 columns: [
-                    {data: 'codigo'},
-                    {data: 'cod_softlink'},
-                    {data: 'part_number'},
-                    {data: 'descripcion'},
-                    {data: 'simbolo', className: 'text-center'},
+                    {data: 'codigo', name: 'alm_prod.codigo'},
+                    {data: 'cod_softlink', name: 'alm_prod.cod_softlink'},
+                    {data: 'part_number', name: 'alm_prod.part_number'},
+                    {data: 'producto', name: 'alm_prod.descripcion'},
+                    {data: 'simbolo', name: 'sis_moneda.simbolo', className: 'text-center'},
                     {data: 'valorizacion', className: 'text-right'},
                     {data: 'costo_promedio', className: 'text-right'},
-                    {data: 'abreviatura', className: 'text-center'},
+                    {data: 'abreviatura', name: 'alm_und_medida.abreviatura', className: 'text-center'},
                     {data: 'stock', className: 'text-center', searchable: false, orderable: false},
                     {data: 'reserva', className: 'text-center', searchable: false, orderable: false},
                     {data: 'disponible', className: 'text-center', searchable: false, orderable: false},
-                    {data: 'almacen_descripcion'}
+                    {data: 'almacen_descripcion', name: 'alm_almacen.descripcion'}
                 ],
             });
             $tabla.on('search.dt', function() {

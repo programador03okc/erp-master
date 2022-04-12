@@ -49,10 +49,10 @@ class ReportesController extends Controller
 
         if ($request->type == 2) {
             $data = DB::table('almacen.alm_prod_ubi')
-                ->select('alm_prod_ubi.*', 'alm_prod.codigo', 'alm_prod.cod_softlink', 'alm_prod.descripcion', 'alm_und_medida.abreviatura', 'alm_prod.part_number',
-                    'sis_moneda.simbolo', 'alm_prod.id_moneda', 'alm_prod.id_unidad_medida', 'alm_almacen.descripcion as almacen_descripcion',
+                ->select('alm_prod_ubi.*', 'alm_prod.codigo', 'alm_prod.cod_softlink', 'alm_prod.descripcion AS producto', 'alm_und_medida.abreviatura', 'alm_prod.part_number',
+                    'sis_moneda.simbolo', 'alm_prod.id_moneda', 'alm_prod.id_unidad_medida', 'alm_almacen.descripcion AS almacen_descripcion',
                     DB::raw("(SELECT SUM(alm_reserva.stock_comprometido) FROM almacen.alm_reserva WHERE alm_reserva.id_producto = alm_prod_ubi.id_producto
-                    AND alm_reserva.id_almacen_reserva = alm_prod_ubi.id_almacen AND (alm_reserva.estado = 1 OR alm_reserva.estado = 17) ) as cantidad_reserva")
+                    AND alm_reserva.id_almacen_reserva = alm_prod_ubi.id_almacen AND (alm_reserva.estado = 1 OR alm_reserva.estado = 17) ) AS cantidad_reserva")
                 )
                 ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_prod_ubi.id_almacen')
                 ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_prod_ubi.id_producto')
@@ -76,7 +76,7 @@ class ReportesController extends Controller
             return number_format($data->valorizacion, 3);
         })
         ->editColumn('costo_promedio', function ($data) {
-            return number_format($data->valorizacion, 3);
+            return number_format($data->costo_promedio, 3);
         })
         ->addColumn('reserva', function ($data) {
             $reserva = '';
