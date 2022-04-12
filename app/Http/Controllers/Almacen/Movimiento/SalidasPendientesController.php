@@ -679,11 +679,14 @@ class SalidasPendientesController extends Controller
         return response()->json($lista);
     }
 
-    public function verDetalleDespacho($id_od, $aplica_cambios, $tiene_transformacion)
+    public function verDetalleDespacho($id_req, $id_od, $aplica_cambios, $tiene_transformacion)
     {
-        $data = DB::table('almacen.orden_despacho_det')
+        $data = DB::table('almacen.alm_det_req')
             ->select(
-                'orden_despacho_det.*',
+                'alm_det_req.id_detalle_requerimiento',
+                'alm_det_req.cantidad',
+                'alm_det_req.id_detalle_requerimiento',
+                'orden_despacho_det.id_od_detalle',
                 'alm_prod.id_producto',
                 'alm_prod.codigo',
                 'alm_prod.descripcion',
@@ -691,7 +694,7 @@ class SalidasPendientesController extends Controller
                 'alm_prod.part_number',
                 'alm_prod.id_unidad_medida',
                 'alm_und_medida.abreviatura',
-                'orden_despacho.id_almacen',
+                'alm_req.id_almacen',
                 DB::raw("(SELECT SUM(guia_ven_det.cantidad) 
                         FROM almacen.guia_ven_det
                         WHERE guia_ven_det.id_od_det = orden_despacho_det.id_od_detalle
@@ -700,15 +703,14 @@ class SalidasPendientesController extends Controller
                 'alm_reserva.id_almacen_reserva',
                 'alm_almacen.descripcion as almacen_reserva',
                 'alm_reserva.stock_comprometido'
-                // DB::raw("(SELECT SUM(reserva.stock_comprometido) 
-                //         FROM almacen.alm_reserva AS reserva
-                //         WHERE reserva.id_detalle_requerimiento = orden_despacho_det.id_detalle_requerimiento
-                //             and reserva.estado != 7
-                //             and reserva.estado != 5
-                //             and reserva.id_almacen_reserva = orden_despacho.id_almacen) AS suma_reservas")
             )
-            ->join('almacen.orden_despacho', 'orden_despacho.id_od', '=', 'orden_despacho_det.id_od')
-            ->join('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'orden_despacho_det.id_detalle_requerimiento')
+            // ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+            ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+            ->leftJoin('almacen.orden_despacho_det', function ($join) use ($id_od) {
+                $join->on('orden_despacho_det.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento');
+                $join->where('orden_despacho_det.id_od', '=', $id_od);
+                $join->where('orden_despacho_det.estado', '!=', 7);
+            })
             ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_det_req.id_producto')
             ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
             ->leftJoin('almacen.alm_reserva', function ($join) {
@@ -718,16 +720,15 @@ class SalidasPendientesController extends Controller
             })
             ->leftJoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_reserva.id_almacen_reserva')
             ->where([
-                ['orden_despacho_det.id_od', '=', $id_od],
-                ['orden_despacho_det.estado', '!=', 7],
+                ['alm_det_req.id_requerimiento', '=', $id_req],
                 ['alm_det_req.estado', '!=', 7],
             ]);
 
-        if ($aplica_cambios == true) {
-            $lista = $data->where([['orden_despacho_det.transformado', '=', ($aplica_cambios == 'si' ? false : ($tiene_transformacion == 'si' ? true : false))]])
+        if ($aplica_cambios == 'si') {
+            $lista = $data->where([['alm_det_req.tiene_transformacion', '=', ($aplica_cambios == 'si' ? false : ($tiene_transformacion == 'si' ? true : false))]])
                 ->get();
         } else {
-            $lista = $data->where([['alm_det_req.entrega_cliente', '=', true]])
+            $lista = $data->where([['alm_det_req.entrega_cliente', '=', ($tiene_transformacion == 'si' ? true : false)]])
                 ->get();
         }
 
