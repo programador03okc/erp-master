@@ -1328,9 +1328,7 @@ class SalidasPendientesController extends Controller
         //OKC PYC SVS PTEC
         switch ($guia->id_empresa) {
             case 1: //OKC
-                // GuiaSalidaExcelFormatoOKCController::construirExcel(['guia' => $guia, 'detalle' => $detalle]);
-                GuiaSalidaExcelFormatoPYCController::construirExcel(['guia' => $guia, 'detalle' => $detalle]);
-
+                GuiaSalidaExcelFormatoOKCController::construirExcel(['guia' => $guia, 'detalle' => $detalle]);
                 break;
             case 2: //PYC
                 GuiaSalidaExcelFormatoPYCController::construirExcel(['guia' => $guia, 'detalle' => $detalle]);
