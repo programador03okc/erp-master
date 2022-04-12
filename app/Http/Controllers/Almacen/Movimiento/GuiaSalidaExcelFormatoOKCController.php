@@ -18,7 +18,7 @@ class GuiaSalidaExcelFormatoOKCController extends Controller
         $sheet->getDefaultColumnDimension()->setWidth(2, 'pt');
         $sheet->getRowDimension(1)->setRowHeight(65, 'pt');
         $sheet->getRowDimension(3)->setRowHeight(25, 'pt');
-        $sheet->getRowDimension(10)->setRowHeight(1.8, 'pt');
+        $sheet->getRowDimension(9)->setRowHeight(1.8, 'pt');
    
 
         $sheet->setCellValue('AR1', '');
@@ -40,9 +40,9 @@ class GuiaSalidaExcelFormatoOKCController extends Controller
         $sheet->getStyle('AD5')->getAlignment()->setWrapText(true);
 
 
-        $sheet->setCellValue('K8', $guia->empresa_nro_documento);
-        $sheet->getStyle('K8')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('K8:P8');
+        $sheet->setCellValue('K7', $guia->empresa_nro_documento);
+        $sheet->getStyle('K7')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('K7:P7');
 
 
         $sheet->setCellValue('AD7', $guia->punto_llegada);
@@ -52,9 +52,9 @@ class GuiaSalidaExcelFormatoOKCController extends Controller
 
 
 
-        $sheet->setCellValue('K9', $guia->fecha_emision);
-        $sheet->getStyle('K9')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('K9:P9');
+        $sheet->setCellValue('K8', $guia->fecha_emision);
+        $sheet->getStyle('K8')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('K8:P8');
 
         $sheet->setCellValue('AA8', $guia->cliente_nro_documento);
         $sheet->getStyle('AA8')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
@@ -63,34 +63,34 @@ class GuiaSalidaExcelFormatoOKCController extends Controller
 
         $sheet->setCellValue('F6', $guia->punto_partida);
         $sheet->getStyle('F6')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('F6:Z7');
+        $sheet->mergeCells('F6:Z6');
         $sheet->getStyle('F6')->getAlignment()->setWrapText(true);
 
 
-        $sheet->setCellValue('I11', 'INGRESAR NOMBRE DE TRANSPORTISTA');
-        $sheet->getStyle('I11')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('I11:AC11');
+        $sheet->setCellValue('I10', 'INGRESAR NOMBRE DE TRANSPORTISTA');
+        $sheet->getStyle('I10')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('I10:AC10');
         // $sheet->getStyle('D11')->getAlignment()->setWrapText(true);
 
-        $sheet->setCellValue('AO11', 'LICENCIA');
-        $sheet->getStyle('AO11')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('AO11:AU11');
+        $sheet->setCellValue('AO10', 'LICENCIA');
+        $sheet->getStyle('AO10')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('AO10:AU10');
         // $sheet->getStyle('AJ11')->getAlignment()->setWrapText(true);
 
-        $sheet->setCellValue('I12', 'RUC TRA');
-        $sheet->getStyle('I12')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('I12:O12');
+        $sheet->setCellValue('I11', 'RUC TRA');
+        $sheet->getStyle('I11')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('I11:O11');
         // $sheet->getStyle('E13')->getAlignment()->setWrapText(true);
 
-        $sheet->setCellValue('Z12', 'INGRESAR MARCA VEHICULO');
-        $sheet->getStyle('Z12')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('Z12:AI12');
+        $sheet->setCellValue('Z11', 'INGRESAR MARCA VEHICULO');
+        $sheet->getStyle('Z11')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('Z11:AI11');
         // $sheet->getStyle('X13')->getAlignment()->setWrapText(true);
 
 
-        $sheet->setCellValue('AM12', 'PLACA TRA');
-        $sheet->getStyle('AM12')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('AM12:AU12');
+        $sheet->setCellValue('AM11', 'PLACA TRA');
+        $sheet->getStyle('AM11')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('AM11:AU11');
         // $sheet->getStyle('AJ13')->getAlignment()->setWrapText(true);
 
 

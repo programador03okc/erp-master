@@ -1329,10 +1329,10 @@ class SalidasPendientesController extends Controller
             case 1: //OKC
             case 2: //PYC
             case 6: //PTEC
-                GuiaSalidaExcelFormatoOKCController::construirExcel(['guia' => $guia, 'detalle' => $detalle]);
+                    GuiaSalidaExcelFormatoOKCController::construirExcel(['guia' => $guia, 'detalle' => $detalle]);
                 break;
-            case 3: //SVS
-                GuiaSalidaExcelFormatoSVSController::construirExcel(['guia' => $guia, 'detalle' => $detalle]);
+                case 3: //SVS
+                    GuiaSalidaExcelFormatoSVSController::construirExcel(['guia' => $guia, 'detalle' => $detalle]);
                 break;
             case 5: //RBDB
                 return ['guia' => $guia, 'detalle' => $detalle]; //! no esta implementado un formato
