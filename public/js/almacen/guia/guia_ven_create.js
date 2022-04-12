@@ -32,7 +32,7 @@ function open_guia_create(data) {
     // $('#serie').text('');
     // $('#numero').text('');
     detalle = [];
-    listarDetalleOrdenDespacho(data.id_od, (data.aplica_cambios ? 'si' : 'no'), (data.tiene_transformacion ? 'si' : 'no'));
+    listarDetalleOrdenDespacho(data.id_requerimiento, data.id_od, (data.aplica_cambios ? 'si' : 'no'), (data.tiene_transformacion ? 'si' : 'no'));
     // cargar_almacenes(data.id_sede, 'id_almacen');
     // var tp_doc_almacen = 2;//guia venta
     // next_serie_numero(data.id_sede,tp_doc_almacen);
@@ -40,60 +40,60 @@ function open_guia_create(data) {
 
 let detalle = [];
 
-function listarDetalleOrdenDespacho(id_od, aplica_cambios, tiene_transformacion) {
+function listarDetalleOrdenDespacho(id_requerimiento, id_od, aplica_cambios, tiene_transformacion) {
     detalle = [];
-    console.log('verDetalleDespacho/' + id_od + '/' + aplica_cambios);
+    console.log('verDetalleDespacho/' + id_requerimiento + '/' + id_od + '/' + aplica_cambios + '/' + tiene_transformacion);
     $.ajax({
         type: 'GET',
-        url: 'verDetalleDespacho/' + id_od + '/' + aplica_cambios + '/' + tiene_transformacion,
+        url: 'verDetalleDespacho/' + id_requerimiento + '/' + id_od + '/' + aplica_cambios + '/' + tiene_transformacion,
         dataType: 'JSON',
         success: function (response) {
             console.log(response);
             var cantidad_despacho = 0;
             var items_para_despachar = 0;
             var almacen_diferentes = 0;
-            var id_almacen = response[0].id_almacen_reserva;
-            var almacen_descripcion = response[0].almacen_reserva;
+            var id_almacen = (response.length > 0 ? response[0].id_almacen_reserva : null);
+            var almacen_descripcion = (response.length > 0 ? response[0].almacen_reserva : null);
             var msj = '';
 
             response.forEach(element => {
-                cantidad_despacho = (element.cantidad - element.cantidad_despachada);
+                cantidad_despacho = (element.cantidad - (element.cantidad_despachada ?? 0));
 
-                if (cantidad_despacho > 0) {
-                    detalle.push({
-                        'id_od_detalle': element.id_od_detalle,
-                        'id_detalle_requerimiento': element.id_detalle_requerimiento,
-                        'id_producto': element.id_producto,
-                        'id_unidad_medida': element.id_unidad_medida,
-                        'codigo': element.codigo,
-                        'part_number': element.part_number,
-                        'descripcion': element.descripcion,
-                        'cantidad_despachada': element.cantidad_despachada ?? 0,
-                        'cantidad_despacho': cantidad_despacho,
-                        'cantidad': cantidad_despacho,
-                        'abreviatura': element.abreviatura,
-                        'control_series': element.control_series,
-                        'suma_reservas': element.stock_comprometido ?? 0,
-                        'id_almacen_reserva': element.id_almacen_reserva,
-                        'almacen_reserva': element.almacen_reserva,
-                        'series': []
-                    });
-                    console.log(element.codigo + ': ' + element.stock_comprometido + '!== ' + element.cantidad);
+                // if (cantidad_despacho > 0) {
+                detalle.push({
+                    'id_od_detalle': element.id_od_detalle,
+                    'id_detalle_requerimiento': element.id_detalle_requerimiento,
+                    'id_producto': element.id_producto,
+                    'id_unidad_medida': element.id_unidad_medida,
+                    'codigo': element.codigo,
+                    'part_number': element.part_number,
+                    'descripcion': element.descripcion,
+                    'cantidad_despachada': element.cantidad_despachada ?? 0,
+                    'cantidad_despacho': cantidad_despacho,
+                    'cantidad': cantidad_despacho,
+                    'abreviatura': element.abreviatura,
+                    'control_series': element.control_series,
+                    'suma_reservas': element.stock_comprometido ?? 0,
+                    'id_almacen_reserva': element.id_almacen_reserva,
+                    'almacen_reserva': element.almacen_reserva,
+                    'series': []
+                });
+                console.log(element.codigo + ': ' + element.stock_comprometido + '!== ' + element.cantidad);
 
-                    if (parseFloat(element.stock_comprometido) >= parseFloat(element.cantidad)) {
-                        items_para_despachar++;
-                    }
-                    if (parseFloat(element.stock_comprometido) == 0 || element.stock_comprometido == null) {
-                        msj = '*Aún no hay saldo de todos los productos. ';
-                    }
-                    if (element.id_almacen_reserva !== null && (id_almacen == null || id_almacen == '')) {
-                        id_almacen = element.id_almacen_reserva;
-                        almacen_descripcion = element.almacen_reserva;
-                    }
-                    if (element.id_almacen_reserva !== null && element.id_almacen_reserva !== id_almacen) {
-                        almacen_diferentes++;
-                    }
+                if (parseFloat(element.stock_comprometido) >= parseFloat(element.cantidad)) {
+                    items_para_despachar++;
                 }
+                if (parseFloat(element.stock_comprometido) == 0 || element.stock_comprometido == null) {
+                    msj = '*Aún no hay saldo de todos los productos. ';
+                }
+                if (element.id_almacen_reserva !== null && (id_almacen == null || id_almacen == '')) {
+                    id_almacen = element.id_almacen_reserva;
+                    almacen_descripcion = element.almacen_reserva;
+                }
+                if (element.id_almacen_reserva !== null && element.id_almacen_reserva !== id_almacen) {
+                    almacen_diferentes++;
+                }
+                // }
             });
             if (items_para_despachar == 0) {
                 $("#submit_guia").attr('disabled', 'true');

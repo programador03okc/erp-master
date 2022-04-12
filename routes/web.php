@@ -1400,7 +1400,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('listarSalidasDespacho', 'Almacen\Movimiento\SalidasPendientesController@listarSalidasDespacho');
 				Route::post('anular_salida', 'Almacen\Movimiento\SalidasPendientesController@anular_salida');
 				Route::post('cambio_serie_numero', 'Almacen\Movimiento\SalidasPendientesController@cambio_serie_numero');
-				Route::get('verDetalleDespacho/{id}/{ac}/{tra}', 'Almacen\Movimiento\SalidasPendientesController@verDetalleDespacho');
+				Route::get('verDetalleDespacho/{id}/{od}/{ac}/{tra}', 'Almacen\Movimiento\SalidasPendientesController@verDetalleDespacho');
 				Route::get('marcar_despachado/{id}/{tra}', 'Almacen\Movimiento\SalidasPendientesController@marcar_despachado');
 				Route::get('imprimir_salida/{id}', 'Almacen\Movimiento\SalidaPdfController@imprimir_salida');
 				// Route::get('anular_orden_despacho/{id}', 'Almacen\Movimiento\SalidasPendientesController@anular_orden_despacho');
