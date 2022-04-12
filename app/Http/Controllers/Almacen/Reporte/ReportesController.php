@@ -114,7 +114,7 @@ class ReportesController extends Controller
 
     public function valorizacion(Request $request)
     {
-        $productos = $this->listar_productos($request->almacen);
+        $productos = $this->listar_productos($request->almacen, $request->fecha);
         $data = [];
         $alm = DB::table('almacen.alm_almacen')->where('id_almacen', $request->almacen)->first();
         $tca = DB::table('contabilidad.cont_tp_cambio')->where('fecha', $request->fecha);
@@ -128,9 +128,9 @@ class ReportesController extends Controller
             ->select('mov_alm.codigo', 'mov_alm.id_tp_mov', 'mov_alm.fecha_emision', 'mov_alm_det.id_producto', 'mov_alm_det.cantidad', 'mov_alm_det.valorizacion')
             ->where('mov_alm.id_almacen', $request->almacen)->where('mov_alm.fecha_emision', '<=', $request->fecha)->where('mov_alm_det.id_producto', $value);
 
-            $prod = DB::table('almacen.alm_prod')->where('id_producto', $value)->first();
-                            
             if ($movimientos->count() > 0) {
+                $prod = DB::table('almacen.alm_prod')->where('id_producto', $value)->first();
+
                 foreach ($movimientos->get() as $key) {
                     if ($key->id_tp_mov == 0 || $key->id_tp_mov == 1) {
                         $sum_ing += (float) $key->cantidad;
@@ -140,14 +140,15 @@ class ReportesController extends Controller
                     $sum_val_sol += (float) $key->valorizacion;
                     $count++;
                 }
+
                 $sum_stock = $sum_ing - $sum_sal;
                 $sum_valor_sol = $sum_val_sol / $count;
                 $sum_valor_dol = $sum_valor_sol / $tc;
                 
                 $data[] = [
                     'id_producto'       => $value,
-                    'codigo'            => $prod->codigo,
-                    'codigo_softlink'   => $prod->cod_softlink,
+                    'codigo'            => ($prod->codigo != null) ?  $prod->codigo : '',
+                    'codigo_softlink'   => ($prod->cod_softlink != null) ?  $prod->cod_softlink : '',
                     'producto'          => $prod->descripcion,
                     'stock'             => $sum_stock,
                     'valorizacion_sol'  => $sum_valor_sol,
@@ -155,19 +156,20 @@ class ReportesController extends Controller
                 ];
             }
         }
-        // return response()->json($data, 200);
         return Excel::download(new ValorizacionExport($data, $alm->descripcion, $request->fecha, $tc), 'valorizacion.xlsx');
     }
 
-    public function listar_productos($id_almacen)
+    public function listar_productos($id_almacen, $fecha)
     {
         $productos = [];
-        $query_mov = DB::table('almacen.mov_alm')->where('id_almacen', $id_almacen)->get();
+        $query_mov = DB::table('almacen.mov_alm')->where('id_almacen', $id_almacen)->where('mov_alm.fecha_emision', '<=', $fecha)->get();
 
         foreach ($query_mov as $mov) {
             $query_pro = DB::table('almacen.mov_alm_det')->select('id_producto')->where('id_mov_alm', $mov->id_mov_alm)->get();
             foreach ($query_pro as $pro) {
-                array_push($productos, $pro->id_producto);
+                if ($pro->id_producto != null) {
+                    array_push($productos, $pro->id_producto);
+                }
             }
         }
         sort($productos, SORT_ASC);
