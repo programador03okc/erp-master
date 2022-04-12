@@ -50,11 +50,11 @@ class GuiaSalidaExcelFormatoSVSController extends Controller
         $sheet->setCellValue('AH10', 'PLACA TRA');
         $sheet->mergeCells('AH10:AR10');
 
-        $sheet->setCellValue('C11', $guia->cliente_nro_documento);
-        $sheet->mergeCells('C11:H11');
+        $sheet->setCellValue('B11', $guia->cliente_nro_documento);
+        $sheet->mergeCells('B11:H11');
 
-        $sheet->setCellValue('T11', 'NRO DNI');
-        $sheet->mergeCells('T11:X11');
+        $sheet->setCellValue('S11', 'NRO DNI');
+        $sheet->mergeCells('S11:X11');
 
         $sheet->setCellValue('AK11', 'LICENCIA');
         $sheet->mergeCells('AK11:AR11');
@@ -69,6 +69,9 @@ class GuiaSalidaExcelFormatoSVSController extends Controller
         $pageMaxHeight = 1008;
         $ColumnaInicioItem = 1;
         $filaInicioItem = 15;
+        $filaLimiteParaImprimir = 0;
+        $filaLimiteMarcada = false;
+
             for ($i=$idItemInterrumpido; $i < count($detalle); $i++) { 
                 
             
@@ -92,22 +95,37 @@ class GuiaSalidaExcelFormatoSVSController extends Controller
             $filaInicioItem++;
 
             $filaInicioItem++;
+
+            $cantidadColumnasPorFilaSerie=3;
+            $anchoDeSerie=8;
             $ColumnaInicioSerie=$ColumnaInicioItem*16;
             $ii=0;
             for ($j=$idSerieInterrumpido; $j < count($detalle[$i]['series']) ; $j++) { 
                 
-
                 $sheet->setCellValueByColumnAndRow($ColumnaInicioSerie+$ii, $filaInicioItem, $detalle[$i]['series'][$j]->serie);
-                $ii=$ii+8;
-                if (($j + 1) % 3 == 0) {
+                $ii=$ii+$anchoDeSerie;
+                if (($j + 1) % $cantidadColumnasPorFilaSerie == 0) {
                     $filaInicioItem++;
                     $ColumnaInicioSerie = $ColumnaInicioSerie;
                     $ii=0;
                 }
             
-            $filaInicioItem++;
+            // inica evaluar altura de pagina actual, si series excede la pagina
+            if($filaLimiteMarcada==false){
+                $ActualNumeroFilaRecorrida = $sheet->getHighestRow();
+                if (($ActualNumeroFilaRecorrida * 13) >= ($pageMaxHeight - 400)) {
+                    $filaLimiteParaImprimir= $ActualNumeroFilaRecorrida;
+                    $filaLimiteMarcada=true;
+                }
+            }
+            // fin evaluar altura de pagina actual, si series excede la pagina
+                
+                                
         }
+        $filaInicioItem++;
+        
     }
+    $sheet->getComment('AR'.$filaLimiteParaImprimir)->getText()->createTextRun('Hasta esta fila se sugiere imprimir');
     }
 
     public static function construirExcel($data)
@@ -121,20 +139,19 @@ class GuiaSalidaExcelFormatoSVSController extends Controller
         $sheet = $spreadsheet->getActiveSheet();
         $sheetCount = $spreadsheet->getSheetCount(); 
         $spreadsheet->getActiveSheet()->setTitle('Guia '.$sheetCount);
-        GuiaSalidaExcelFormatoOKCController::insertarSeccionGuia($spreadsheet, $data);
-        GuiaSalidaExcelFormatoOKCController::insertarSeccionDetalle($spreadsheet, $data, 0,0);
+        GuiaSalidaExcelFormatoSVSController::insertarSeccionGuia($spreadsheet, $data);
+        GuiaSalidaExcelFormatoSVSController::insertarSeccionDetalle($spreadsheet, $data, 0,0);
 
         $fileName = 'FORMATO-SVS-GR'.$data['guia']->serie.'-'.$data['guia']->numero.'-'.json_decode($data['guia']->codigos_requerimiento)[0].'-'.$data['guia']->cliente_razon_social."-okc";
         // header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         // header('Content-Disposition: attachment;filename="' . $fileName . '.xlsx"');
         // header('Cache-Control: must-revalidate');
         // $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        // $writer->save('php://output');
 
         $writer = new Xlsx($spreadsheet);
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment; filename="'. urlencode($fileName).'.xlsx"');
-        $writer->save('php://output');
-
         $writer->save('php://output');
     }
 }
