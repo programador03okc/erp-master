@@ -76,7 +76,7 @@ class ReportesController extends Controller
             return number_format($data->valorizacion, 3);
         })
         ->editColumn('costo_promedio', function ($data) {
-            return number_format($data->valorizacion, 3);
+            return number_format($data->costo_promedio, 3);
         })
         ->addColumn('reserva', function ($data) {
             $reserva = '';
