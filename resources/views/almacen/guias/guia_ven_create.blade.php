@@ -47,7 +47,7 @@
                         </div>
                         <div class="col-md-3">
                             <h5>Tipo de Operación</h5>
-                            <select class="form-control js-example-basic-single" name="id_operacion" required readOnly>
+                            <select class="form-control js-example-basic-single" name="id_operacion" required >
                                 <option value="0">Elija una opción</option>
                                 @foreach ($tp_operacion as $tp)
                                 <option value="{{$tp->id_operacion}}">{{$tp->cod_sunat}} - {{$tp->descripcion}}</option>
