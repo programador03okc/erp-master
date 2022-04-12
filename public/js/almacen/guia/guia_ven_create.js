@@ -29,6 +29,7 @@ function open_guia_create(data) {
     $('[name=almacen_descripcion]').val(data.almacen_descripcion);
     $('[name=serie]').val('');
     $('[name=numero]').val('');
+    $('[name=comentario]').val('');
     // $('#serie').text('');
     // $('#numero').text('');
     detalle = [];
@@ -146,7 +147,7 @@ function mostrar_detalle() {
         <td>
         ${element.control_series ?
                 `<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series" 
-        onClick="open_series(${element.id_producto},${element.id_detalle_requerimiento},${element.cantidad},${id_almacen});"></i>` : ''}
+        onClick="open_series(${element.id_producto},${element.id_od_detalle},${element.cantidad},${id_almacen});"></i>` : ''}
         </td>
         </tr>`;
     });

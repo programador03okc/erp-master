@@ -734,6 +734,7 @@ class OrdenesPendientesController extends Controller
                         'id_almacen' => $request->id_almacen,
                         'id_guia_clas' => $request->id_guia_clas,
                         'id_operacion' => $request->id_operacion,
+                        'comentario' => $request->comentario,
                         // 'id_oc' => $request->id_orden_compra,
                         'usuario' => $id_usuario,
                         'registrado_por' => $id_usuario,
