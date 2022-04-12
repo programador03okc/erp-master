@@ -193,9 +193,8 @@ class PendientesFacturacionController extends Controller
             ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'doc_ven.usuario')
             ->join('contabilidad.cont_tp_doc', 'cont_tp_doc.id_tp_doc', '=', 'doc_ven.id_tp_doc')
             ->join('logistica.log_cdn_pago', 'log_cdn_pago.id_condicion_pago', '=', 'doc_ven.id_condicion')
-            ->where('alm_req.id_requerimiento', $id_requerimiento)
-            ->where([['doc_ven.estado', '!=', 7]])
-            ->get();
+            ->where([['alm_req.id_requerimiento', '=', $id_requerimiento], ['doc_ven.estado', '!=', 7]])
+            ->distinct()->get();
         return response()->json($data);
     }
 
