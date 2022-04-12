@@ -133,7 +133,7 @@ function mostrar_detalle() {
             }
         });
         html += `<tr>
-        <td>${element.suma_reservas > 0 ? `<input type="checkbox" value="${element.id_od_detalle}" checked/>` : ''}</td>
+        <td>${element.suma_reservas > 0 ? `<input type="checkbox" value="${element.id_detalle_requerimiento}" checked/>` : ''}</td>
         <td><a href="#" class="verProducto" data-id="${element.id_producto}" >${element.codigo !== null ? element.codigo : ''}</a></td>
         <td>${element.part_number !== null ? element.part_number : ''}</td>
         <td>${element.descripcion !== null ? element.descripcion : '(producto no mapeado)'}<br><strong>${html_series}</strong></td>
@@ -141,12 +141,12 @@ function mostrar_detalle() {
         <td>${element.suma_reservas !== null ? element.suma_reservas : ''}</td>
         <td>${element.cantidad_despachada}</td>
         <td><input class="right cantidad" type="number" value="${element.cantidad}" min="1" name="cantidad" style="width:80px;"
-        step=".01" max="${element.cantidad}" data-id="${element.id_od_detalle}"/></td>
+        step=".01" max="${element.cantidad}" data-id="${element.id_detalle_requerimiento}"/></td>
         <td>${element.abreviatura !== null ? element.abreviatura : ''}</td>
         <td>
         ${element.control_series ?
                 `<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series" 
-        onClick="open_series(${element.id_producto},${element.id_od_detalle},${element.cantidad},${id_almacen});"></i>` : ''}
+        onClick="open_series(${element.id_producto},${element.id_detalle_requerimiento},${element.cantidad},${id_almacen});"></i>` : ''}
         </td>
         </tr>`;
     });
@@ -156,7 +156,7 @@ function mostrar_detalle() {
 $("#detalleGuiaVenta tbody").on("change", ".cantidad", function (e) {
     var cantidad = parseFloat($(this).val());
     var id = $(this).data('id');
-    var res = detalle.find(element => element.id_od_detalle == id);
+    var res = detalle.find(element => element.id_detalle_requerimiento == id);
     if (res.cantidad_despacho >= cantidad) {
         res.cantidad = cantidad;
         mostrar_detalle();
@@ -223,7 +223,7 @@ $("#form-guia_ven_create").on("submit", function (e) {
 
         detalle.forEach(element => {
 
-            if (id == element.id_od_detalle && element.cantidad > 0) {
+            if (id == element.id_detalle_requerimiento && element.cantidad > 0) {
                 lista_detalle.push({
                     'id_od_detalle': element.id_od_detalle,
                     'id_producto': element.id_producto,
@@ -242,7 +242,7 @@ $("#form-guia_ven_create").on("submit", function (e) {
         });
     });
     console.log(lista_detalle);
-    var id_almacen = lista_detalle[0].id_almacen_reserva;
+    var id_almacen = (lista_detalle.length > 0 ? lista_detalle[0].id_almacen_reserva : null);
     var almacen_diferentes = 0;
 
     lista_detalle.forEach(element => {

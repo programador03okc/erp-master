@@ -499,14 +499,23 @@ class OrdenesDespachoExternoController extends Controller
                             'fecha_registro' => $fechaRegistro
                         ]);
 
-                    $detalle = DB::table('almacen.alm_det_req')
-                        ->where([
-                            ['id_requerimiento', '=', $requerimiento->id_requerimiento],
-                            // ['tiene_transformacion', '=', $requerimiento->tiene_transformacion],
-                            ['entrega_cliente', '=', true],
-                            ['estado', '!=', 7]
-                        ])
-                        ->get();
+                    if ($requerimiento->id_tipo_requerimiento == 1) {
+
+                        $detalle = DB::table('almacen.alm_det_req')
+                            ->where([
+                                ['id_requerimiento', '=', $requerimiento->id_requerimiento],
+                                ['entrega_cliente', '=', true],
+                                ['estado', '!=', 7]
+                            ])
+                            ->get();
+                    } else {
+                        $detalle = DB::table('almacen.alm_det_req')
+                            ->where([
+                                ['id_requerimiento', '=', $requerimiento->id_requerimiento],
+                                ['estado', '!=', 7]
+                            ])
+                            ->get();
+                    }
 
                     foreach ($detalle as $d) {
                         DB::table('almacen.orden_despacho_det')
