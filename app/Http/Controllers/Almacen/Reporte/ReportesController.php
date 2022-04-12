@@ -117,8 +117,8 @@ class ReportesController extends Controller
         $productos = $this->listar_productos($request->almacen);
         $data = [];
         $alm = DB::table('almacen.alm_almacen')->where('id_almacen', $request->almacen)->first();
-        $tca = DB::table('contabilidad.cont_tp_cambio')->where('fecha', $request->fecha)->first();
-        $tc = (float) $tca->compra;
+        $tca = DB::table('contabilidad.cont_tp_cambio')->where('fecha', $request->fecha);
+        $tc = ($tca->count() > 0) ? (float) $tca->first()->compra : 1 ;
         
         foreach ($productos as $row => $value) {
             $sum_ing = 0; $sum_sal = 0; $sum_val_sol = 0; $count = 0;
