@@ -193,7 +193,7 @@ class ReportesController extends Controller
         return DB::table('almacen.alm_almacen_usuario')
             ->select('alm_almacen.*')
             ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_almacen_usuario.id_almacen')
-            // ->where('alm_almacen_usuario.id_usuario', Auth::user()->id_usuario)
+            ->where('alm_almacen_usuario.id_usuario', Auth::user()->id_usuario)
             ->where('alm_almacen_usuario.estado', 1)
             ->get();
     }
