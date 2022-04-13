@@ -609,7 +609,7 @@ class RequerimientoView {
                     <td><textarea class="form-control activation input-sm" name="motivo[]"  value="${data[i].motivo ?? ''}" placeholder="Motivo de requerimiento de item (opcional)" ${hasDisabledInput} >${data[i].motivo ?? ''}</textarea></td>
                     <td>
                         <div class="btn-group" role="group">
-                            <input type="hidden" class="tipoItem" name="tipoItem[]" value="1">
+                            <input type="hidden" class="tipoItem" name="tipoItem[]" value="2">
                             <input type="hidden" class="idRegister" name="idRegister[]" value="${idFila}">
                             <button type="button" class="btn btn-warning btn-xs  handleClickAdjuntarArchivoItem"  data-id="${idFila}" name="btnAdjuntarArchivoItem[]" title="Adjuntos">
                                 <i class="fas fa-paperclip"></i>
