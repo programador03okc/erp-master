@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Debugbar;
 use Illuminate\Database\Eloquent\Scope;
+use Illuminate\Support\Facades\Auth;
 
 class Requerimiento extends Model
 {
@@ -387,8 +388,12 @@ class Requerimiento extends Model
                     $estadoActual = ['id' => 28, 'descripcion' => 'Almacén total'];
                 }
             }
-
-            $finalizadosORestablecido = CuadroPresupuestoHelper::finalizar($tipoPeticion,$id_requerimiento_unique_list);
+            if(Auth::user()->id_usuario==17){ // si usuario es rhuancac, no finalizar CDP
+                $finalizadosORestablecido['lista_finalizados']=[];
+                $finalizadosORestablecido['lista_restablecidos']=[];
+            }else{
+                $finalizadosORestablecido = CuadroPresupuestoHelper::finalizar($tipoPeticion,$id_requerimiento_unique_list);
+            }
 
         }
         // return ['estado_actual'=>$estadoActual,'lista_finalizados'=>[],'lista_restablecidos'=>[]];
