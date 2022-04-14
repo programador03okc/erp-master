@@ -3,7 +3,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title">Archivos adjuntos de requerimiento de compra/servicio</h3>
+                <h3 class="modal-title">Archivos adjuntos de requerimiento logístico</h3>
             </div>
             <div class="modal-body">
                 <form id="form_ver_agregar_adjuntos_requerimiento_compra">
@@ -19,7 +19,7 @@
                     </fieldset>
                     <br>
                     <fieldset class="group-table">
-                        <h5 style="display:flex;justify-content: space-between;"><strong>Adjuntos de la cabecera</strong></h5>
+                        <h5 style="display:flex;justify-content: space-between;"><strong>Adjuntos de la cabecera requerimiento</strong></h5>
                         <div class="row">
                             <div class="col-md-12">
                                 <table id="adjuntosCabecera" class="mytable table table-condensed table-bordered table-okc-view">
@@ -30,11 +30,22 @@
                     </fieldset>
                     <br>
                     <fieldset class="group-table">
-                        <h5 style="display:flex;justify-content: space-between;"><strong>Adjuntos en el detalle</strong></h5>
+                        <h5 style="display:flex;justify-content: space-between;"><strong>Adjuntos Items requerimiento</strong></h5>
                         <div class="row">
                             <div class="col-md-12">
                                 <table id="adjuntosDetalle" class="mytable table table-condensed table-bordered table-okc-view">
                                     <tbody id="body_archivos_requerimiento_compra_detalle"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <br>
+                    <fieldset class="group-table">
+                        <h5 style="display:flex;justify-content: space-between;"><strong>Adjuntos de pago</strong></h5>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <table id="adjuntosDePagos" class="mytable table table-condensed table-bordered table-okc-view">
+                                    <tbody id="body_archivos_pagos"></tbody>
                                 </table>
                             </div>
                         </div>

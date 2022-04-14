@@ -619,7 +619,7 @@ class ListarRequerimientoView {
     }
 
     construirSeccionDatosGenerales(data) {
-        console.log(data);
+        // console.log(data);
         document.querySelector("div[id='modal-requerimiento'] input[name='id_requerimiento']").value = data.id_requerimiento;
         document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='codigo']").textContent = data.codigo;
         document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='concepto']").textContent = data.concepto;

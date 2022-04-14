@@ -1030,7 +1030,7 @@ class RequerimientoPagoController extends Controller
         return $array;
     }
 
-    public function listarTodoArchivoAdjunto($idRequerimientoPago){
+    public function listarTodoArchivoAdjuntoRequerimientoPago($idRequerimientoPago){
 
         $detalleRequerimientoPagoList=RequerimientoPagoDetalle::where([["id_requerimiento_pago",$idRequerimientoPago],["id_estado","!=",7]])->get();
         $idDetalleRequerimientoPagoList=[];

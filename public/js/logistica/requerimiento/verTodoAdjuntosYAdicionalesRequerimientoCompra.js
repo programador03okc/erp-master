@@ -30,12 +30,52 @@ function obteneTodoAdjuntosRequerimiento(idRequerimiento) {
     return new Promise(function (resolve, reject) {
         $.ajax({
             type: 'GET',
-            url: `listar-todo-archivos-adjuntos/${idRequerimiento}`,
+            url: `listar-todo-archivos-adjuntos-requerimiento-logistico/${idRequerimiento}`,
             dataType: 'JSON',
+            beforeSend: (data) => {
+            $('#modal-ver-agregar-adjuntos-requerimiento-compra #adjuntosCabecera').LoadingOverlay("show", {
+                imageAutoResize: true,
+                progress: true,
+                imageColor: "#3c8dbc"
+            });
+            $('#modal-ver-agregar-adjuntos-requerimiento-compra #adjuntosDetalle').LoadingOverlay("show", {
+                imageAutoResize: true,
+                progress: true,
+                imageColor: "#3c8dbc"
+            });
+        },
             success(response) {
+                $('#modal-ver-agregar-adjuntos-requerimiento-compra #adjuntosCabecera').LoadingOverlay("hide", true);
+                $('#modal-ver-agregar-adjuntos-requerimiento-compra #adjuntosDetalle').LoadingOverlay("hide", true);
                 resolve(response);
             },
             error: function (err) {
+                $('#modal-ver-agregar-adjuntos-requerimiento-compra #adjuntosCabecera').LoadingOverlay("hide", true);
+                $('#modal-ver-agregar-adjuntos-requerimiento-compra #adjuntosDetalle').LoadingOverlay("hide", true);
+                reject(err)
+            }
+        });
+    });
+}
+function obteneAdjuntosPago(idRequerimiento) {
+    return new Promise(function (resolve, reject) {
+        $.ajax({
+            type: 'GET',
+            url: `listar-archivos-adjuntos-pago/${idRequerimiento}`,
+            dataType: 'JSON',
+            beforeSend: (data) => {
+            $('#modal-ver-agregar-adjuntos-requerimiento-compra #adjuntosDePagos').LoadingOverlay("show", {
+                imageAutoResize: true,
+                progress: true,
+                imageColor: "#3c8dbc"
+            });
+        },
+            success(response) {
+                $('#modal-ver-agregar-adjuntos-requerimiento-compra #adjuntosDePagos').LoadingOverlay("hide", true);
+                resolve(response);
+            },
+            error: function (err) {
+                $('#modal-ver-agregar-adjuntos-requerimiento-compra #adjuntosDePagos').LoadingOverlay("hide", true);
                 reject(err)
             }
         });
@@ -53,6 +93,7 @@ function verAgregarAdjuntosRequerimiento(idRequerimiento) {
     if (idRequerimiento > 0) {
         limpiarTabla('adjuntosCabecera');
         limpiarTabla('adjuntosDetalle');
+        limpiarTabla('adjuntosDePagos');
 
         obteneTodoAdjuntosRequerimiento(idRequerimiento).then((res) => {
             // console.log(res);
@@ -68,6 +109,10 @@ function verAgregarAdjuntosRequerimiento(idRequerimiento) {
 
                     }
                 });
+            }else{
+                htmlCabecera += `<tr>
+                <td style="text-align:center;" colspan="2">Sin adjuntos para mostrar</td>
+                </tr>`;
             }
             document.querySelector("div[id='modal-ver-agregar-adjuntos-requerimiento-compra'] tbody[id='body_archivos_requerimiento_compra_cabecera']").insertAdjacentHTML('beforeend', htmlCabecera);
 
@@ -82,6 +127,10 @@ function verAgregarAdjuntosRequerimiento(idRequerimiento) {
 
                     }
                 });
+            }else{
+                htmlDetalle += `<tr>
+                <td style="text-align:center;" colspan="2">Sin adjuntos para mostrar</td>
+                </tr>`; 
             }
             document.querySelector("div[id='modal-ver-agregar-adjuntos-requerimiento-compra'] tbody[id='body_archivos_requerimiento_compra_detalle']").insertAdjacentHTML('beforeend', htmlDetalle);
 
@@ -89,6 +138,36 @@ function verAgregarAdjuntosRequerimiento(idRequerimiento) {
         }).catch(function (err) {
             console.log(err)
         })
+
+
+        obteneAdjuntosPago(idRequerimiento).then((res) => {
+            // console.log(res.data);
+            let htmlPago = '';
+            if (res.data.length > 0) {
+                (res.data).forEach(element => {
+                        htmlPago += `<tr>
+                        <td style="text-align:left;">${element.codigo_orden}</td>
+                        <td style="text-align:left;">`;
+                        (element.adjuntos).forEach(archivo => {
+                            htmlPago+=`<p><a href="/files/tesoreria/pagos/${archivo}" target="_blank">${archivo}</a></p>`;
+                        });
+                        `</td>
+                        </tr>`;
+
+                });
+            }else{
+                htmlPago += `<tr>
+                <td style="text-align:center;" colspan="2">Sin adjuntos para mostrar</td>
+                </tr>`;
+            }
+            document.querySelector("div[id='modal-ver-agregar-adjuntos-requerimiento-compra'] tbody[id='body_archivos_pagos']").insertAdjacentHTML('beforeend', htmlPago);
+
+
+        }).catch(function (err) {
+            console.log(err)
+        })
+
+
     }
 
 }
