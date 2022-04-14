@@ -146,7 +146,7 @@ function verAgregarAdjuntosRequerimiento(idRequerimiento) {
             if (res.data.length > 0) {
                 (res.data).forEach(element => {
                         htmlPago += `<tr>
-                        <td style="text-align:left;">${element.codigo_orden}</td>
+                        <td style="text-align:left;"><a href="/logistica/gestion-logistica/compras/ordenes/listado/generar-orden-pdf/${element.id_orden}" target="_blank">${element.codigo_orden}</a></td>
                         <td style="text-align:left;">`;
                         (element.adjuntos).forEach(archivo => {
                             htmlPago+=`<p><a href="/files/tesoreria/pagos/${archivo}" target="_blank">${archivo}</a></p>`;
