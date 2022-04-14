@@ -126,12 +126,12 @@ class TransferenciaController extends Controller
                 DB::raw("CONCAT(guia_ven.serie, '-', guia_ven.numero) as guia_ven"),
                 'guia_ven.id_guia_ven',
                 'mov_alm.id_mov_alm as id_salida',
-                'sede_solicita.id_empresa as id_empresa_destino',
-                'sede_almacen.id_empresa as id_empresa_origen',
-                'sede_solicita.id_sede as id_sede_destino',
-                'sede_almacen.id_sede as id_sede_origen',
-                'sede_solicita.descripcion as sede_descripcion',
-                'sede_almacen.descripcion as sede_almacen_descripcion',
+                'sede_origen.id_empresa as id_empresa_origen',
+                'sede_origen.id_sede as id_sede_origen',
+                'sede_origen.descripcion as sede_origen_descripcion',
+                'sede_destino.id_empresa as id_empresa_destino',
+                'sede_destino.id_sede as id_sede_destino',
+                'sede_destino.descripcion as sede_destino_descripcion',
                 'origen.descripcion as alm_origen_descripcion',
                 'destino.descripcion as alm_destino_descripcion',
                 'origen.ubicacion as alm_origen_direccion',
@@ -141,10 +141,11 @@ class TransferenciaController extends Controller
                 'adm_estado_doc.estado_doc',
             )
             ->leftjoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'trans.id_requerimiento')
-            ->leftjoin('administracion.sis_sede as sede_solicita', 'sede_solicita.id_sede', '=', 'alm_req.id_sede')
+            // ->leftjoin('administracion.sis_sede as sede_solicita', 'sede_solicita.id_sede', '=', 'alm_req.id_sede')
             ->join('almacen.alm_almacen as origen', 'origen.id_almacen', '=', 'trans.id_almacen_origen')
-            ->join('administracion.sis_sede as sede_almacen', 'sede_almacen.id_sede', '=', 'origen.id_sede')
+            ->join('administracion.sis_sede as sede_origen', 'sede_origen.id_sede', '=', 'origen.id_sede')
             ->join('almacen.alm_almacen as destino', 'destino.id_almacen', '=', 'trans.id_almacen_destino')
+            ->join('administracion.sis_sede as sede_destino', 'sede_destino.id_sede', '=', 'destino.id_sede')
             ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'trans.responsable_origen')
             ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'trans.estado')
             ->leftJoin('almacen.guia_ven', 'guia_ven.id_guia_ven', '=', 'trans.id_guia_ven')
@@ -733,6 +734,7 @@ class TransferenciaController extends Controller
                     'fecha_emision' => $guia_ven->fecha_emision,
                     'fecha_almacen' => $request->fecha_almacen,
                     'id_almacen' => $request->id_almacen_destino,
+                    'comentario' => $request->comentario_recibir,
                     // 'id_motivo' => $guia_ven->id_motivo,
                     'id_guia_clas' => 1,
                     'id_operacion' => $ope,
@@ -1067,6 +1069,7 @@ class TransferenciaController extends Controller
                         'placa' => $request->placa,
                         'punto_partida' => $request->punto_partida,
                         'punto_llegada' => $request->punto_llegada,
+                        'comentario' => $request->comentario_enviar,
                         'id_cliente' => ($destino_emp->id_cliente !== null ? $destino_emp->id_cliente : null),
                         'usuario' => $usuario,
                         'estado' => 1,
@@ -1665,8 +1668,6 @@ class TransferenciaController extends Controller
             DB::beginTransaction();
 
             $id_usuario = Auth::user()->id_usuario;
-            $mensaje = '';
-            $tipo = '';
 
             $codigo = TransferenciaController::transferencia_nextId($request->id_almacen_origen);
 

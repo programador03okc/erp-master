@@ -177,6 +177,7 @@ function recibir() {
                 var id_almacen_destino = $("[name=id_almacen_destino]").val();
                 var responsable_destino = $("[name=responsable_destino]").val();
                 var guia_ingreso_compra = $("[name=guia_ingreso_compra]").val();
+                var comentario_recibir = $("[name=comentario_recibir]").val();
 
                 var data = "id_transferencia=" + id_transferencia +
                     "&id_guia_ven=" + id_guia_ven +
@@ -185,6 +186,7 @@ function recibir() {
                     "&responsable_destino=" + responsable_destino +
                     "&id_almacen_destino=" + id_almacen_destino +
                     "&guia_ingreso_compra=" + guia_ingreso_compra +
+                    "&comentario_recibir=" + comentario_recibir +
                     "&detalle=" + JSON.stringify(detalle);
                 console.log(data);
 

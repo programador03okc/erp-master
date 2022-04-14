@@ -114,6 +114,12 @@
                             </table>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h5>Comentario</h5>
+                            <textarea class="form-control" name="comentario_enviar"></textarea>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <input type="submit" id="submit_transferencia" class="btn btn-success" value="Guardar" />

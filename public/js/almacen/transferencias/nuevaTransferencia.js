@@ -174,7 +174,7 @@ $("#form-nuevaTransferencia").on("submit", function (e) {
     if (error_stock == 0 && cero == 0) {
         var id_almacen_origen = $("[name=id_almacen_origen_nueva]").val();
         var id_almacen_destino = $("[name=id_almacen_destino_nueva]").val();
-        var concepto = $("[name=concepto]").val();
+        var concepto = $("[name=concepto_nuevo]").val();
 
         var data = {
             id_almacen_origen: id_almacen_origen,

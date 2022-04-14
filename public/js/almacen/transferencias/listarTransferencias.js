@@ -333,11 +333,12 @@ function listarTransferenciasPorEnviar() {
                 }
             },
             { data: "cod_req", name: "alm_req.codigo", className: "text-center" },
+            // { data: "concepto", className: "text-center" },
             {
                 data: "concepto_req", name: "alm_req.concepto",
                 'render': function (data, type, row) {
                     return (row['concepto_req'] !== null ? row['concepto_req'] : row['concepto']);
-                }
+                }, searchable: false, orderable: false
             },
             { data: "nombre_corto", name: "sis_usua.nombre_corto" },
             { data: "guia_ven", className: "text-center" },

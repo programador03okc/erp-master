@@ -50,6 +50,13 @@
                     </thead>
                     <tbody></tbody>
                 </table>
+                
+                <div class="row">
+                    <div class="col-md-12">
+                        <h5>Comentario</h5>
+                        <textarea class="form-control" name="comentario_recibir"></textarea>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <label id="mid_det" style="display: none;"></label>

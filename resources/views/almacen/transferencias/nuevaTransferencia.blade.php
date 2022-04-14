@@ -29,7 +29,7 @@
                         </div>
                         <div class="col-md-6">
                             <h5>Concepto</h5>
-                            <input type="text" class="form-control" name="concepto" required>
+                            <input type="text" class="form-control" name="concepto_nuevo" required>
                         </div>
                         
                     </div>
