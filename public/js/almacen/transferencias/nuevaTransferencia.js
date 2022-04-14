@@ -33,10 +33,10 @@ function listarAlmacenesSegunOrigen(id) {
             response.forEach(element => {
                 if (response.length == 1) {
                     option +=
-                        '<option value="' + element.id_almacen + '" selected>' + element.descripcion + "</option>";
+                        '<option value="' + element.id_almacen + '" selected>' + element.codigo + ' - ' + element.descripcion + "</option>";
                 } else {
                     option +=
-                        '<option value="' + element.id_almacen + '">' + element.descripcion + "</option>";
+                        '<option value="' + element.id_almacen + '">' + element.codigo + ' - ' + element.descripcion + "</option>";
                 }
             });
             $('[name=id_almacen_destino_nueva]').html(option);
@@ -50,11 +50,14 @@ function listarAlmacenesSegunOrigen(id) {
 
 function agregarProducto() {
     var id_almacen = $('[name=id_almacen_origen_nueva]').val();
+    var almacen_descripcion = $('select[name="id_almacen_origen_nueva"] option:selected').text();
+    console.log(almacen_descripcion);
 
     if (id_almacen !== '') {
         $("#modal-productosAlmacen").modal({
             show: true
         });
+        $('#titulo_almacen').text(almacen_descripcion);
         listarSaldosProductoAlmacen();
     } else {
         Lobibox.notify("warning", {

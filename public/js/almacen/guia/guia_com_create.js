@@ -23,6 +23,12 @@ function open_guia_create(data, $fila) {
     $('.agregarSobrante').hide();
     $('[name=comentario]').val('');
 
+    if (data.id_tp_documento == 12) {
+        $('#titulo').text('Ingresar Hoja de Importación');
+    } else {
+        $('#titulo').text('Ingresar Guía de Compra');
+    }
+
     $('#serie').text('');
     $('#numero').text('');
     cargar_almacenes(data.id_sede, 0);
@@ -95,6 +101,12 @@ function open_guia_create_seleccionadas() {
             $('#detalleOrdenSeleccionadas tbody').html('');
             $('.agregarSobrante').hide();
             $('[name=comentario]').val('');
+
+            if (data.id_tp_documento == 12) {
+                $('#titulo').text('Ingresar Hoja de Importación');
+            } else {
+                $('#titulo').text('Ingresar Guía de Compra');
+            }
 
             $('#serie').text('');
             $('#numero').text('');
