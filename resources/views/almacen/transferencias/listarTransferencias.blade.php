@@ -87,6 +87,7 @@ Transferencias
                                             <th width="8%">Código</th>
                                             <th width="12%">Almacén Origen</th>
                                             <th width="12%">Almacén Destino</th>
+                                            <th width="10%">Fecha</th>
                                             <th width="10%">Codigo Req.</th>
                                             <th width="20%">Concepto</th>
                                             <th width="10%">Elaborado Por</th>
@@ -199,6 +200,8 @@ Transferencias
 @include('almacen.transferencias.ver_series')
 @include('almacen.transferencias.transportistaModal')
 @include('almacen.transferencias.verDocumentosAutogenerados')
+@include('almacen.transferencias.nuevaTransferencia')
+@include('almacen.transferencias.productosAlmacenModal')
 @include('almacen.guias.guia_com_obs')
 @include('almacen.guias.guia_ven_obs')
 @include('almacen.guias.guia_ven_series')
@@ -229,6 +232,8 @@ Transferencias
 <script src="{{ asset('js/almacen/transferencias/transferenciaEnviar.js')}}?v={{filemtime(public_path('js/almacen/transferencias/transferenciaEnviar.js'))}}"></script>
 <script src="{{ asset('js/almacen/transferencias/transportistaModal.js')}}?v={{filemtime(public_path('js/almacen/transferencias/transportistaModal.js'))}}"></script>
 <script src="{{ asset('js/almacen/transferencias/verDocsAutogenerados.js')}}?v={{filemtime(public_path('js/almacen/transferencias/verDocsAutogenerados.js'))}}"></script>
+<script src="{{ asset('js/almacen/transferencias/nuevaTransferencia.js')}}?v={{filemtime(public_path('js/almacen/transferencias/nuevaTransferencia.js'))}}"></script>
+<script src="{{ asset('js/almacen/transferencias/productosAlmacenModal.js')}}?v={{filemtime(public_path('js/almacen/transferencias/productosAlmacenModal.js'))}}"></script>
 <script src="{{ asset('js/almacen/distribucion/verDetalleRequerimiento.js')}}?v={{filemtime(public_path('js/almacen/distribucion/verDetalleRequerimiento.js'))}}"></script>
 <script src="{{ asset('js/almacen/guia/guia_ven_series.js')}}?v={{filemtime(public_path('js/almacen/guia/guia_ven_series.js'))}}"></script>
 <script src="{{ asset('js/tesoreria/facturacion/archivosMgcp.js')}}?v={{filemtime(public_path('js/tesoreria/facturacion/archivosMgcp.js'))}}"></script>

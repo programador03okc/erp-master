@@ -56,9 +56,19 @@ function listarRequerimientosPendientes() {
             $(e.currentTarget).LoadingOverlay("hide", true);
         }
     });
+
+    let botones = [];
+
+    botones.push({
+        text: ' Nueva Transferencia',
+        action: function () {
+            openNuevaTransferencia();
+        }, className: 'btn-success btnTransferenciaCreate'
+    });
+
     $tableRequerimientos = $("#listaRequerimientos").DataTable({
         dom: vardataTables[1],
-        buttons: [],
+        buttons: botones,
         language: vardataTables[0],
         pageLength: 20,
         serverSide: true,
@@ -315,10 +325,20 @@ function listarTransferenciasPorEnviar() {
             { data: "codigo", className: "text-center" },
             { data: "alm_origen_descripcion", name: "origen.descripcion" },
             { data: "alm_destino_descripcion", name: "destino.descripcion" },
+            // { data: "fecha_transferencia", className: "text-center" },
             {
-                data: "cod_req", name: "alm_req.codigo", className: "text-center"
+                data: "fecha_transferencia",
+                'render': function (data, type, row) {
+                    return formatDate(row['fecha_transferencia']);
+                }
             },
-            { data: "concepto", name: "alm_req.concepto" },
+            { data: "cod_req", name: "alm_req.codigo", className: "text-center" },
+            {
+                data: "concepto_req", name: "alm_req.concepto",
+                'render': function (data, type, row) {
+                    return (row['concepto_req'] !== null ? row['concepto_req'] : row['concepto']);
+                }
+            },
             { data: "nombre_corto", name: "sis_usua.nombre_corto" },
             { data: "guia_ven", className: "text-center" },
             {
