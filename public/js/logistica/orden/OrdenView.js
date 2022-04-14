@@ -88,6 +88,9 @@ class OrdenView {
         $('#form-crear-orden-requerimiento').on("click", "button.handleClickEstadoCuadroPresupuesto", () => {
             this.estadoCuadroPresupuesto();
         });
+        $('#form-crear-orden-requerimiento').on("change", "select.handleChangeTipoOrden", (e) => {
+            this.cambiarTipoOrden(e.currentTarget);
+        });
         $('#modal-estado-cuadro-presupuesto').on("click", "button.handleClickEnviarNotificacionEmailCuadroPresupuestoFinalizado", () => {
             this.enviarNotificacionEmailCuadroPresupuestoFinalizado();
         });
@@ -192,6 +195,22 @@ class OrdenView {
             keyboard: true
 
         });
+    }
+
+    cambiarTipoOrden(obj){
+        switch (obj.value) {
+            case 2:// orden de compra
+                document.querySelector("input[name='incluye_igv']").checked=true;
+                this.calcularMontosTotales();
+                break;
+            case 3:// orden de servicio
+            case 12:// orden de importacion
+                document.querySelector("input[name='incluye_igv']").checked=false;
+                this.calcularMontosTotales();
+                break;
+            default:
+                break;
+        }
     }
 
     enviarNotificacionEmailCuadroPresupuestoFinalizado(){

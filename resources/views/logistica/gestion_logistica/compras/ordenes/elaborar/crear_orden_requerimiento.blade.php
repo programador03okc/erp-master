@@ -42,7 +42,7 @@ Orden de compra / servicio
                     <div class="row">
                         <div class="col-md-2" id="group-tipo_orden">
                             <h5>Tipo de orden</h5>
-                            <select class="form-control activation" name="id_tp_documento">
+                            <select class="form-control handleChangeTipoOrden activation" name="id_tp_documento">
                                 <option value="0">Elija una opción</option>
                                 @foreach ($tp_documento as $tp)
                                 @if($tp->descripcion == 'Orden de Compra')
