@@ -1528,6 +1528,10 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('verDetalleRequerimientoDI/{id}', 'Logistica\Distribucion\OrdenesTransformacionController@verDetalleRequerimientoDI');
 				Route::get('almacenesPorUsuario', 'Almacen\Movimiento\TransferenciaController@almacenesPorUsuario');
 
+				Route::post('listarProductosAlmacen', 'Almacen\Movimiento\SaldoProductoController@listarProductosAlmacen');
+				Route::post('nuevaTransferencia', 'Almacen\Movimiento\TransferenciaController@nuevaTransferencia');
+
+				Route::get('getAlmacenesPorEmpresa/{id}', 'Almacen\Movimiento\TransferenciaController@getAlmacenesPorEmpresa');
 				Route::get('imprimir_transferencia/{id}', 'Almacen\Movimiento\TransferenciaController@imprimir_transferencia');
 			});
 		});

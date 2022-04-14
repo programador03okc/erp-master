@@ -4771,6 +4771,7 @@ class AlmacenController extends Controller
         $data = DB::table('almacen.mov_alm_det')
             ->select(
                 'mov_alm_det.*',
+                'sis_moneda.simbolo',
                 'alm_ubi_posicion.codigo as cod_posicion',
                 'mov_alm.fecha_emision',
                 'mov_alm.id_tp_mov',
@@ -4787,6 +4788,8 @@ class AlmacenController extends Controller
                 'adm_contri.razon_social'
             )
             ->join('almacen.mov_alm', 'mov_alm.id_mov_alm', '=', 'mov_alm_det.id_mov_alm')
+            ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'mov_alm_det.id_producto')
+            ->leftjoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'alm_prod.id_moneda')
             ->leftjoin('almacen.alm_ubi_posicion', 'alm_ubi_posicion.id_posicion', '=', 'mov_alm_det.id_posicion')
             // ->leftjoin('almacen.alm_ubi_nivel','alm_ubi_nivel.id_nivel','=','alm_ubi_posicion.id_nivel')
             // ->leftjoin('almacen.alm_ubi_estante','alm_ubi_estante.id_estante','=','alm_ubi_nivel.id_estante')
@@ -4854,10 +4857,10 @@ class AlmacenController extends Controller
                         <td class="right" style="background:#ffffb0;">' . $d->cantidad . '</td>
                         <td class="right" style="background:#ffffb0;">0</td>
                         <td class="right" style="background:#ffffb0;">' . $saldo . '</td>
-                        <td class="right" style="background:#d8fcfc;">' . number_format($d->valorizacion, 2, ".", ",") . '</td>
+                        <td class="right" style="background:#d8fcfc;">' . $d->simbolo . number_format($d->valorizacion, 2, ".", ",") . '</td>
                         <td class="right" style="background:#d8fcfc;">0</td>
-                        <td class="right" style="background:#d8fcfc;">' . number_format($saldo_valor, 2, ".", ",") . '</td>
-                        <td>' . ($saldo > 0 ? number_format($saldo_valor / $saldo, 2, ".", ",") : 0) . '</td>
+                        <td class="right" style="background:#d8fcfc;">' . $d->simbolo . number_format($saldo_valor, 2, ".", ",") . '</td>
+                        <td>' . $d->simbolo . ($saldo > 0 ? number_format($saldo_valor / $saldo, 2, ".", ",") : 0) . '</td>
                         <td>' . ($d->cod_sunat_ope_com !== null ? $d->cod_sunat_ope_com : '') . '</td>
                         <td>' . $d->des_ope_com . '</td>
                     </tr>';
@@ -4872,9 +4875,9 @@ class AlmacenController extends Controller
                         <td class="right" style="background:#ffffb0;">' . $d->cantidad . '</td>
                         <td class="right" style="background:#ffffb0;">' . $saldo . '</td>
                         <td class="right" style="background:#d8fcfc;">0</td>
-                        <td class="right" style="background:#d8fcfc;">' . number_format($valor_salida, 2, ".", ",") . '</td>
-                        <td class="right" style="background:#d8fcfc;">' . number_format($saldo_valor, 2, ".", ",") . '</td>
-                        <td>' . ($saldo > 0 ? number_format($saldo_valor / $saldo, 2, ".", ",") : 0) . '</td>
+                        <td class="right" style="background:#d8fcfc;">' . $d->simbolo . number_format($valor_salida, 2, ".", ",") . '</td>
+                        <td class="right" style="background:#d8fcfc;">' . $d->simbolo . number_format($saldo_valor, 2, ".", ",") . '</td>
+                        <td>' . $d->simbolo . ($saldo > 0 ? number_format($saldo_valor / $saldo, 2, ".", ",") : 0) . '</td>
                         <td>' . $d->cod_sunat_ope_ven . '</td>
                         <td>' . $d->des_ope_ven . '</td>
                     </tr>';
