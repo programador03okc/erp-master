@@ -4817,23 +4817,33 @@ class AlmacenController extends Controller
         if (isset($data)) {
             $saldo = 0;
             $saldo_valor = 0;
+            $costo_promedio = 0;
+            $valor_salida = 0;
+
             $suma_ing_cant = 0;
             $suma_sal_cant = 0;
             $suma_ing_val = 0;
             $suma_sal_val = 0;
 
             foreach ($data as $d) {
+
                 if ($d->id_tp_mov == 1 || $d->id_tp_mov == 0) { //ingreso o inicial
                     $saldo += $d->cantidad;
                     $saldo_valor += $d->valorizacion;
+
                     $suma_ing_cant += $d->cantidad;
                     $suma_ing_val += $d->valorizacion;
                 } else if ($d->id_tp_mov == 2) { //salida
                     $saldo -= $d->cantidad;
-                    $saldo_valor -= $d->valorizacion;
+                    $valor_salida = $costo_promedio * $d->cantidad;
+                    $saldo_valor -= $valor_salida;
+
                     $suma_sal_cant += $d->cantidad;
-                    $suma_sal_val += $d->valorizacion;
+                    $suma_sal_val += $valor_salida;
                 }
+
+                $costo_promedio = ($saldo == 0 ? 0 : $saldo_valor / $saldo);
+
                 if ($d->id_tp_mov == 1 || $d->id_tp_mov == 0) {
                     $html .= '
                     <tr id="' . $d->id_mov_alm_det . '">
@@ -4862,7 +4872,7 @@ class AlmacenController extends Controller
                         <td class="right" style="background:#ffffb0;">' . $d->cantidad . '</td>
                         <td class="right" style="background:#ffffb0;">' . $saldo . '</td>
                         <td class="right" style="background:#d8fcfc;">0</td>
-                        <td class="right" style="background:#d8fcfc;">' . number_format($d->valorizacion, 2, ".", ",") . '</td>
+                        <td class="right" style="background:#d8fcfc;">' . number_format($valor_salida, 2, ".", ",") . '</td>
                         <td class="right" style="background:#d8fcfc;">' . number_format($saldo_valor, 2, ".", ",") . '</td>
                         <td>' . ($saldo > 0 ? number_format($saldo_valor / $saldo, 2, ".", ",") : 0) . '</td>
                         <td>' . $d->cod_sunat_ope_ven . '</td>
