@@ -30,7 +30,7 @@ function obteneTodoAdjuntosRequerimientoPago(idRequerimientoPago) {
     return new Promise(function (resolve, reject) {
         $.ajax({
             type: 'GET',
-            url: `listar-todo-archivos-adjuntos/${idRequerimientoPago}`,
+            url: `listar-todo-archivos-adjuntos-requerimiento-pago/${idRequerimientoPago}`,
             dataType: 'JSON',
             success(response) {
                 resolve(response);

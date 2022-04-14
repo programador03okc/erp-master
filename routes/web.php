@@ -702,7 +702,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('imprimir_salida/{id}', 'Almacen\Movimiento\SalidasPendientesController@imprimir_salida');
 				Route::get('imprimir_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@imprimir_transformacion');
 				Route::get('reporte-requerimientos-bienes-servicios-excel/{meOrAll}/{Empresa}/{Sede}/{Grupo}/{Division}/{FechaDesde}/{FechaHasta}/{Estado}', 'Logistica\RequerimientoController@reporteRequerimientosBienesServiciosExcel');
-				Route::get('listar-todo-archivos-adjuntos/{id}', 'Logistica\RequerimientoController@listarTodoArchivoAdjunto');
+				Route::get('listar-todo-archivos-adjuntos-requerimiento-logistico/{id}', 'Logistica\RequerimientoController@listarTodoArchivoAdjuntoRequerimientoLogistico');
+				Route::get('listar-archivos-adjuntos-pago/{id}', 'Logistica\RequerimientoController@listarArchivoAdjuntoPago');
 				Route::get('listar-categoria-adjunto', 'Logistica\RequerimientoController@mostrarCategoriaAdjunto');
 				Route::post('guardar-adjuntos-adicionales-requerimiento-compra', 'Logistica\RequerimientoController@guardarAdjuntosAdicionales');
 
@@ -768,7 +769,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('guardar-cuenta-destinatario', 'Tesoreria\RequerimientoPagoController@guardarCuentaDestinatario');
 				Route::get('obtener-cuenta-persona/{idPersona}', 'Tesoreria\RequerimientoPagoController@obtenerCuentaPersona');
 				Route::get('obtener-cuenta-contribuyente/{idContribuyente}', 'Tesoreria\RequerimientoPagoController@obtenerCuentaContribuyente');
-				Route::get('listar-todo-archivos-adjuntos/{id}', 'Tesoreria\RequerimientoPagoController@listarTodoArchivoAdjunto');
+				Route::get('listar-todo-archivos-adjuntos-requerimiento-pago/{id}', 'Tesoreria\RequerimientoPagoController@listarTodoArchivoAdjuntoRequerimientoPago');
 				Route::post('guardar-adjuntos-adicionales-requerimiento-pago', 'Tesoreria\RequerimientoPagoController@guardarAdjuntosAdicionales');
 			});
 			// Route::group(['as' => 'revisar_aprobar.', 'prefix' => 'revisar_aprobar'], function () {

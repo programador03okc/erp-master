@@ -40,7 +40,11 @@ use App\Models\Almacen\Almacen;
 use App\Models\Almacen\Producto;
 use App\Models\Almacen\Transferencia;
 use App\Models\Configuracion\Grupo;
+use App\Models\Logistica\Orden;
+use App\Models\Logistica\OrdenCompraDetalle;
 use App\Models\Presupuestos\Presupuesto;
+use App\Models\Tesoreria\RegistroPago;
+use App\Models\Tesoreria\RegistroPagoAdjuntos;
 use App\Models\Tesoreria\RequerimientoPago;
 use Carbon\Carbon;
 use Exception;
@@ -3782,7 +3786,7 @@ class RequerimientoController extends Controller
 
     }
 
-    public function listarTodoArchivoAdjunto($idRequerimiento){
+    public function listarTodoArchivoAdjuntoRequerimientoLogistico($idRequerimiento){
 
         $detalleRequerimientoList=DetalleRequerimiento::where([["id_requerimiento",$idRequerimiento],["estado","!=",7]])->get();
         $idDetalleRequerimientoList=[];
@@ -3795,6 +3799,63 @@ class RequerimientoController extends Controller
         }
 
         return ["adjuntos_cabecera"=>$ajuntosCabeceraList??[],"adjuntos_detalle"=>$adjuntoDetalleList??[]];
+    }
+
+    public function listarArchivoAdjuntoPago($idRequerimiento){
+
+        $detalleRequerimientoList=DetalleRequerimiento::where([["id_requerimiento",$idRequerimiento],["estado","!=",7]])->get();
+        $idDetalleRequerimientoList=[];
+        $idOrdenList=[];
+        $idRegistroPagoList=[];
+        $mensaje='';
+        $output=[];
+        
+        foreach ($detalleRequerimientoList as $dr) {
+            $idDetalleRequerimientoList[]= $dr->id_detalle_requerimiento;
+        }
+        if(count($idDetalleRequerimientoList)>0){
+            $detalleYOrdenList = OrdenCompraDetalle::with('orden')->whereIn('id_detalle_requerimiento',$idDetalleRequerimientoList)->get();
+            foreach ($detalleYOrdenList as $dyo) {
+                $idOrdenList[]=$dyo->id_orden_compra;
+            }
+            if(count($idOrdenList)>0){
+                $dataOrden= DB::table('logistica.log_ord_compra')->select(
+                    'log_ord_compra.id_orden_compra',
+                    'log_ord_compra.codigo AS codigo_orden',
+                    'registro_pago_adjuntos.adjunto'
+
+                )
+                ->leftJoin('tesoreria.registro_pago', 'registro_pago.id_oc', '=', 'log_ord_compra.id_orden_compra')
+                ->leftJoin('tesoreria.registro_pago_adjuntos', 'registro_pago_adjuntos.id_pago', '=', 'registro_pago.id_pago')
+                ->where([['log_ord_compra.estado','!=',7],['registro_pago.estado','!=',7],['registro_pago_adjuntos.estado','!=',7]])
+                ->whereIn('log_ord_compra.id_orden_compra',$idOrdenList)
+                ->get();
+                $tempIdAgregadoAData=[];
+                foreach ($dataOrden as $do) {
+                    if(!in_array($do->id_orden_compra,$tempIdAgregadoAData)){
+                        $output[]=array('id_orden'=>$do->id_orden_compra,'codigo_orden'=>$do->codigo_orden,'adjuntos'=>[]);
+                        $tempIdAgregadoAData[]=$do->id_orden_compra;
+                    }
+                }
+
+                foreach ($dataOrden as $keyDo => $do) {
+                    foreach ($output as $keyOp => $op) {
+                        if($do->id_orden_compra==$op['id_orden']){
+                            $output[$keyOp]['adjuntos'][]= $do->adjunto;
+                        }
+                    }
+                }
+
+            }else{
+                $mensaje='Sin ordenes';
+            }
+            
+
+        }else{
+            $mensaje='Sin detalle requerimiento';
+        }
+
+        return ["data"=>$output,"mensaje"=>$mensaje];
     }
 
     function guardarAdjuntosAdicionales(Request $request){
