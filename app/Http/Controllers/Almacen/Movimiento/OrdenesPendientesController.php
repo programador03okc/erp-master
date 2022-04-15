@@ -195,9 +195,9 @@ class OrdenesPendientesController extends Controller
             ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'log_ord_compra.id_sede')
             ->where([
                 ['log_ord_compra.estado', '!=', 7],
-                ['log_ord_compra.en_almacen', '=', false],
-                ['log_ord_compra.id_tp_documento', '=', 2]
-            ]);
+                ['log_ord_compra.en_almacen', '=', false]
+            ])
+            ->whereIn('log_ord_compra.id_tp_documento', [2, 12]);
         // whereBetween('created_at', ['2018/11/10 12:00', '2018/11/11 10:30'])
         $array_sedes = [];
         if ($request->ordenes_fecha_inicio !== null) {
@@ -353,7 +353,7 @@ class OrdenesPendientesController extends Controller
             ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'mov_alm.usuario')
             ->join('almacen.tp_ope', 'tp_ope.id_operacion', '=', 'mov_alm.id_operacion')
             ->where([['mov_alm.estado', '!=', 7], ['mov_alm.id_tp_mov', '=', 1]])
-            ->whereIn('mov_alm.id_operacion', [2, 26]);
+            ->whereIn('mov_alm.id_operacion', [2, 26, 18]);
 
         $array_sedes = [];
         if ($request->ingreso_fecha_inicio !== null) {
