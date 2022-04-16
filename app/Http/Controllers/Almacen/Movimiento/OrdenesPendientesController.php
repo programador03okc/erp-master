@@ -771,7 +771,10 @@ class OrdenesPendientesController extends Controller
                 if ($request->id_transformacion !== null) {
                     DB::table('almacen.transformacion')
                         ->where('id_transformacion', $request->id_transformacion)
-                        ->update(['estado' => 9]); //Procesado
+                        ->update([
+                            'estado' => 9,
+                            'id_moneda' => $request->moneda_transformacion
+                        ]); //Procesado
                 }
                 $detalle_oc = json_decode($request->detalle);
 
