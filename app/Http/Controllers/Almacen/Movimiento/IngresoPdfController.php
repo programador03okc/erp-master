@@ -68,6 +68,7 @@ class IngresoPdfController extends Controller
                 // 'log_det_ord_compra.subtotal',
                 'log_det_ord_compra.precio as unitario',
                 'guia_com_det.unitario_adicional',
+                'guia_com_det.unitario as unitario_guia',
                 'log_ord_compra.codigo as codigo_oc',
                 'log_ord_compra.codigo_softlink',
                 'doc_com.fecha_emision',

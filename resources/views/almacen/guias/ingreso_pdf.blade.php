@@ -220,7 +220,7 @@
                 }
                 $unitario = ($prod->precio_unitario !== null
                                 ? $prod->precio_unitario
-                                : $prod->unitario);
+                                : ($prod->unitario!==null?$prod->unitario:$prod->unitario_guia));
                 $valorizacion = ($unitario) * ($prod->cantidad);
 
                 // $unitario = ($prod->cantidad !== null
