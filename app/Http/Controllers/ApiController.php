@@ -48,6 +48,7 @@ class ApiController extends Controller
         $fecha = date('Y-m-d');
         $compra = 0;
         $venta = 0;
+        $data = [];
         $query = DB::table('contabilidad.cont_tp_cambio')->where('fecha', $fecha);
         
         if ($query->count() > 0) {
@@ -59,8 +60,20 @@ class ApiController extends Controller
             $apiQ = json_decode($this->consultaSunat('https://api.apis.net.pe/v1/tipo-cambio-sunat'));
             $compra = (float) $apiQ->compra;
             $venta = (float) $apiQ->venta;
+            $promedio = ($compra + $venta) / 2;
+
+            DB::table('contabilidad.cont_tp_cambio')->insertGetId([
+                'fecha'     => $fecha,
+                'moneda'    => 2,
+                'compra'    => $compra,
+                'venta'     => $venta,
+                'estado'    => 1,
+                'promedio'  => $promedio
+            ], 'id_tp_cambio');
+
+            $data[] = ['fecha' => $fecha, 'compra' => $compra, 'venta' => $venta];
         }
-        return response()->json(array('response' => $rpta, 'compra' => $compra, 'venta' => $venta), 200);
+        return response()->json(array('response' => $rpta, 'data' => $data), 200);
     }
 
     public function consultaSunat($url)
