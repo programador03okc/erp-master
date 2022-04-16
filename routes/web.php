@@ -1907,6 +1907,13 @@ Route::group(['middleware' => ['auth']], function () {
 
 			Route::get('autogenerarDocumentosCompra/{id}', 'Tesoreria\Facturacion\VentasInternasController@autogenerarDocumentosCompra')->name('autogenerarDocumentosCompra');
 		});
+		
+		Route::group(['as' => 'tipo-cambio.', 'prefix' => 'tipo-cambio'], function () {
+			Route::get('index', 'Tesoreria\TipoCambioController@index')->name('index');
+			Route::post('listar', 'Tesoreria\TipoCambioController@listar')->name('listar');
+			Route::post('editar', 'Tesoreria\TipoCambioController@editar')->name('editar');
+			Route::post('guardar', 'Tesoreria\TipoCambioController@guardar')->name('guardar');
+		});
 	});
 
 	Route::group(['as' => 'migracion.', 'prefix' => 'migracion'], function () {

@@ -18,15 +18,22 @@ use Yajra\DataTables\Facades\DataTables;
 
 class RegistroPagoController extends Controller
 {
-    function view_main_tesoreria()
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+    
+    public function view_main_tesoreria()
     {
         $pagos_pendientes = DB::table('almacen.alm_req')
             ->where('estado', 8)->count();
 
         $confirmaciones_pendientes = DB::table('almacen.alm_req')
             ->where([['estado', '=', 19], ['confirmacion_pago', '=', false]])->count();
+        
+        $tipo_cambio = DB::table('contabilidad.cont_tp_cambio')->orderBy('fecha', 'desc')->first();
 
-        return view('tesoreria/main', compact('pagos_pendientes', 'confirmaciones_pendientes'));
+        return view('tesoreria/main', get_defined_vars());
     }
 
     function view_pendientes_pago()

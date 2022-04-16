@@ -49,7 +49,7 @@ class AlmacenImport implements ToCollection, WithHeadingRow
                     $this->saveProducto($row['cod_prod'], $part_no, $descripcion, $row['cod_clasi'], $row['cod_cate'], $row['cod_subc'], $row['cod_unid'], $row['tip_moneda'], $row['flg_serie'], $row['flg_afecto_igv'], $row['txt_observa'], $row['ult_edicion'], $this->model);
                 break;
                 case 6:
-                    $this->saveSerie($row['cod_alma'], $row['cod_prod'], $row['serie']);
+                    $this->saveSerie($row['cod_alma'], $row['cod_prod'], $row['serie'], $this->model);
                 break;
                 case 7:
                     $this->saveSaldo($row['cod_alma'], $row['cod_prod'], $row['stock'], $row['costo_promedio'], $row['valorizacion']);
@@ -223,7 +223,7 @@ class AlmacenImport implements ToCollection, WithHeadingRow
         }
     }
     
-    public function saveSerie($cod_alma, $cod_prod, $serie)
+    public function saveSerie($cod_alma, $cod_prod, $serie, $tipo)
     {
         $query_alm = DB::table('almacen.alm_almacen')->where('codigo', $cod_alma)->first();
         $query_pro = DB::table('almacen.alm_prod')->where('cod_softlink', $cod_prod)->first();
@@ -231,15 +231,29 @@ class AlmacenImport implements ToCollection, WithHeadingRow
         $id_alm = ($query_alm != '') ? $query_alm->id_almacen : null;
         $id_pro = ($query_pro != '') ? $query_pro->id_producto : null;
 
-        DB::table('almacen.alm_prod_serie')->insertGetId([
-            'id_prod'           => $id_pro,
-            'serie'             => $serie,
-            'estado'            => 1,
-            'fecha_registro'    => new Carbon(),
-            'id_almacen'        => $id_alm
-        ], 'id_prod_serie');
+        $query = DB::table('almacen.alm_prod_serie')->where([['id_prod', $id_pro], ['id_almacen', $id_alm], ['serie', $serie]]);
 
-        $this->numRows++;
+        if ($query->count() == 0) {
+            DB::table('almacen.alm_prod_serie')->insertGetId([
+                'id_prod'           => $id_pro,
+                'serie'             => $serie,
+                'estado'            => 1,
+                'fecha_registro'    => new Carbon(),
+                'id_almacen'        => $id_alm
+            ], 'id_prod_serie');
+    
+            $this->numRows++;
+        } else {
+            if ($tipo == 2) {
+                $estado = $query->first()->estado;
+                if ($estado == 7) {
+                    $id_prod_serie = $query->first()->id_prod_serie;
+                    DB::table('almacen.alm_prod_serie')->where('id_prod_serie', $id_prod_serie)->update(['estado' => 1]);
+                    $this->numRowsStatus++;
+                }
+            }
+        }
+
     }
 
     public function saveSaldo($cod_alma, $cod_prod, $stock, $costo_promedio, $valorizacion)
