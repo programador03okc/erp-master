@@ -783,6 +783,9 @@ class OrdenesPendientesController extends Controller
                     $id_od = $request->id_od;
                     $id_requerimiento = $request->id_requerimiento;
 
+                    $tipo_cambio = TipoCambio::where([['moneda', '=', 2], ['fecha', '<=', $request->fecha_emision]])
+                        ->orderBy('fecha', 'DESC')->first();
+
                     foreach ($detalle_oc as $det) {
                         //Agrega sobrante
                         $id_sobrante = null;
@@ -790,9 +793,9 @@ class OrdenesPendientesController extends Controller
                             $unitario = $det->unitario;
                         } else {
                             if ($det->id_moneda == 1) { //soles
-                                $unitario = $det->unitario * $request->tipo_cambio_transformacion;
+                                $unitario = $det->unitario * $tipo_cambio->venta; //$request->tipo_cambio_transformacion;
                             } else { //dolares
-                                $unitario = $det->unitario / $request->tipo_cambio_transformacion;
+                                $unitario = $det->unitario / $tipo_cambio->venta; //$request->tipo_cambio_transformacion;
                             }
                         }
                         // $unitario = $request->moneda_transformacion == 2 ? ($det->unitario * $request->tipo_cambio_transformacion) : $det->unitario;
