@@ -75,6 +75,11 @@ function listar_kardex_serie(serie, id_prod) {
                 <td>${element.operacion_compra ?? ''}</td>
                 <td>${element.responsable_compra ?? ''}</td>
                 </tr>`: ''}
+                ${element.id_guia_com_det == null ?
+                        `<tr>
+                <td><span class="ver label label-success" data-id="${element.id_prod}" >I</span></td>
+                <td colSpan="8">STOCK INICIAL</td>
+                </tr>`: ''}
                 ${element.id_guia_ven_det !== null ?
                         `<tr>
                 <td><span class="ver label label-danger" data-id="${element.id_prod}" >S</span></td>
@@ -87,11 +92,7 @@ function listar_kardex_serie(serie, id_prod) {
                 <td>${element.operacion_venta ?? ''}</td>
                 <td>${element.responsable_venta ?? ''}</td>
                 </tr>` : ''}
-                ${element.id_guia_com_det == null ?
-                        `<tr>
-                    <td><span class="ver label label-success" data-id="${element.id_prod}" >I</span></td>
-                    <td colSpan="8">STOCK INICIAL</td>
-                    </tr>`: ''}`;
+                `;
             });
             $('#listaMovimientosSerie tbody').html(html);
         }
