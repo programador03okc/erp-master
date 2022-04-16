@@ -61,6 +61,10 @@ Route::get('cargar_usuarios/{user}', 'LoginController@mostrar_roles');
 Route::get('mostrar-version-actual', 'ConfiguracionController@mostrarVersionActual')->name('mostrar-version-actual');
 Route::get('socket_setting/{option}', 'ConfiguracionController@socket_setting');
 
+Route::group(['as' => 'api-consulta.', 'prefix' => 'api-consulta'], function () {
+	Route::get('tipo_cambio_masivo/{desde}/{hasta}', 'ApiController@tipoCambioMasivo')->name('tipo_cambio_masivo');
+	Route::get('tipo_cambio_actual', 'ApiController@tipoCambioActual')->name('tipo_cambio_actual');
+});
 
 Auth::routes();
 
@@ -1906,6 +1910,13 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::post('obtenerArchivosOc', 'Tesoreria\Facturacion\PendientesFacturacionController@obtenerArchivosOc')->name('obtener-archivos-oc');
 
 			Route::get('autogenerarDocumentosCompra/{id}', 'Tesoreria\Facturacion\VentasInternasController@autogenerarDocumentosCompra')->name('autogenerarDocumentosCompra');
+		});
+
+		Route::group(['as' => 'tipo-cambio.', 'prefix' => 'tipo-cambio'], function () {
+			Route::get('index', 'Tesoreria\TipoCambioController@index')->name('index');
+			Route::post('listar', 'Tesoreria\TipoCambioController@listar')->name('listar');
+			Route::post('editar', 'Tesoreria\TipoCambioController@editar')->name('editar');
+			Route::post('guardar', 'Tesoreria\TipoCambioController@guardar')->name('guardar');
 		});
 	});
 
