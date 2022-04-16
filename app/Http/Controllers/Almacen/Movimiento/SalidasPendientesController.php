@@ -700,7 +700,7 @@ class SalidasPendientesController extends Controller
                         FROM almacen.guia_ven_det
                         WHERE guia_ven_det.id_od_det = orden_despacho_det.id_od_detalle
                             and guia_ven_det.estado != 7) as cantidad_despachada"),
-                'alm_reserva.id_reserva',
+                // 'alm_reserva.id_reserva',
                 'alm_reserva.id_almacen_reserva',
                 'alm_almacen.descripcion as almacen_reserva',
                 'alm_reserva.stock_comprometido'
@@ -727,10 +727,10 @@ class SalidasPendientesController extends Controller
 
         if ($aplica_cambios == 'si') {
             $lista = $data->where([['alm_det_req.tiene_transformacion', '=', ($aplica_cambios == 'si' ? false : ($tiene_transformacion == 'si' ? true : false))]])
-                ->get();
+                ->distinct()->get();
         } else {
             $lista = $data->where([['alm_det_req.entrega_cliente', '=', true]])
-                ->get();
+                ->distinct()->get();
         }
 
         return response()->json($lista);
