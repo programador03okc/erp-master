@@ -18,7 +18,7 @@ class ApiController extends Controller
         $venta = 0;
         $data = [];
 
-        for ($i = $fini; $i < $ffin; $i->modify('+1 day')) {
+        for ($i = $fini; $i <= $ffin; $i->modify('+1 day')) {
             $fecha = $i->format('Y-m-d');
             $query = DB::table('contabilidad.cont_tp_cambio')->where('fecha', $fecha);
 

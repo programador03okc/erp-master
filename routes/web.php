@@ -63,6 +63,7 @@ Route::get('socket_setting/{option}', 'ConfiguracionController@socket_setting');
 
 Route::group(['as' => 'api-consulta.', 'prefix' => 'api-consulta'], function () {
 	Route::get('tipo_cambio_masivo/{desde}/{hasta}', 'ApiController@tipoCambioMasivo')->name('tipo_cambio_masivo');
+	Route::get('tipo_cambio_actual', 'ApiController@tipoCambioActual')->name('tipo_cambio_actual');
 });
 
 Auth::routes();
