@@ -87,7 +87,7 @@ function listar_kardex_serie(serie, id_prod) {
                 <td>${element.operacion_venta ?? ''}</td>
                 <td>${element.responsable_venta ?? ''}</td>
                 </tr>` : ''}
-                ${element.id_guia_com_det == null && element.id_guia_ven_det == null ?
+                ${element.id_guia_com_det == null ?
                         `<tr>
                     <td><span class="ver label label-success" data-id="${element.id_prod}" >I</span></td>
                     <td colSpan="8">STOCK INICIAL</td>
