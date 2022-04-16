@@ -33,14 +33,16 @@ class KardexSerieController extends Controller
                 'alm_prod_serie.id_prod_serie',
                 'alm_prod_serie.id_prod',
                 'alm_prod_serie.serie',
+                'alm_almacen.descripcion as almacen_descripcion',
                 'alm_prod.descripcion',
                 'alm_prod.codigo',
                 'alm_prod.part_number'
             )
             ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_prod_serie.id_prod')
+            ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_prod_serie.id_almacen')
             ->where([
                 ['alm_prod_serie.estado', '=', 1],
-                ['alm_prod.estado', '=', 1]
+                // ['alm_prod.estado', '=', 1]
             ])
             ->where($hasWhere)
             ->distinct()
@@ -102,10 +104,10 @@ class KardexSerieController extends Controller
             ->where([
                 ['alm_prod_serie.serie', '=', $serie],
                 ['alm_prod_serie.id_prod', '=', $id_prod],
-                ['alm_prod.estado', '=', 1],
+                // ['alm_prod.estado', '=', 1],
                 ['alm_prod_serie.estado', '=', 1],
             ])
-            ->orderBy('guia_com.fecha_emision')
+            ->orderBy('alm_prod_serie.fecha_registro')
             ->get();
 
         return response()->json($data);

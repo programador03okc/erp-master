@@ -63,7 +63,8 @@ Búsqueda sensitiva de Series
                                     <th>Serie</th>
                                     <th>Código</th>
                                     <th>Part Number</th>
-                                    <th width="70%">Descripción</th>
+                                    <th width="50%">Descripción</th>
+                                    <th>Almacén</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
