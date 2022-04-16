@@ -181,79 +181,92 @@
                 <th class="text-center cabecera-producto" style="width: 5%">Mnd.</th>
                 <th class="text-center cabecera-producto" style="width: 5%">Unit.</th>
                 <th class="text-center cabecera-producto" style="width: 5%">SubTotal</th>
-                <th class="text-center cabecera-producto" style="width: 5%">Adic.</th>
-                <th class="text-center cabecera-producto" style="width: 5%">Total</th>
+                {{-- <th class="text-center cabecera-producto" style="width: 5%">Adic.</th>
+                <th class="text-center cabecera-producto" style="width: 5%">Total</th> --}}
             </tr>
         </thead>
         <tbody>
+            @php
+            $total=0;
+            $moneda='';
+            @endphp
             @foreach ($detalle as $prod)
-            <?php
-            
-            $det_series = DB::table('almacen.alm_prod_serie')
-                ->select('alm_prod_serie.serie')
-                ->where([
-                    ['alm_prod_serie.id_prod', '=', $prod->id_producto],
-                    ['alm_prod_serie.id_guia_com_det', '=', $prod->id_guia_com_det],
-                    ['alm_prod_serie.estado', '!=', 7]
-                ])
-                ->get();
+                <?php
+                
+                $det_series = DB::table('almacen.alm_prod_serie')
+                    ->select('alm_prod_serie.serie')
+                    ->where([
+                        ['alm_prod_serie.id_prod', '=', $prod->id_producto],
+                        ['alm_prod_serie.id_guia_com_det', '=', $prod->id_guia_com_det],
+                        ['alm_prod_serie.estado', '!=', 7]
+                    ])
+                    ->get();
 
-            $series_array = [];
-            $series = '';
+                $series_array = [];
+                $series = '';
 
-            if ($det_series!==null) {
-                foreach ($det_series as $s) {
-                    // if (!in_array($s->serie, $series_array)) {
-                    // array_push($series_array, $s->serie);
-                    // }
-                    if ($series !== '') {
-                        $series .= ', ' . $s->serie;
-                    } else {
-                        $series = 'Serie(s): ' . $s->serie;
+                if ($det_series!==null) {
+                    foreach ($det_series as $s) {
+                        // if (!in_array($s->serie, $series_array)) {
+                        // array_push($series_array, $s->serie);
+                        // }
+                        if ($series !== '') {
+                            $series .= ', ' . $s->serie;
+                        } else {
+                            $series = 'Serie(s): ' . $s->serie;
+                        }
                     }
+                    // $series = (count($series_array)>1 ? implode(",", $series_array) : '');
                 }
-                // $series = (count($series_array)>1 ? implode(",", $series_array) : '');
-            }
-            // $unitario = ($prod->precio_unitario !== null
-            //                 ? $prod->precio_unitario
-            //                 : $prod->unitario);
-            // $valorizacion = ($unitario) * ($prod->cantidad);
+                $unitario = ($prod->precio_unitario !== null
+                                ? $prod->precio_unitario
+                                : $prod->unitario);
+                $valorizacion = ($unitario) * ($prod->cantidad);
 
-            $unitario = ($prod->cantidad !== null
-                            ? ($prod->valorizacion / $prod->cantidad)
-                            : 0);
+                // $unitario = ($prod->cantidad !== null
+                //                 ? ($prod->valorizacion / $prod->cantidad)
+                //                 : 0);
 
-            $valorizacion = $prod->valorizacion;
+                // $valorizacion = $prod->valorizacion;
 
-            $adic_valor = DB::table('almacen.guia_com_prorrateo_det')
-                ->where([['id_guia_com_det','=',$prod->id_guia_com_det],
-                        ['estado','!=',7]])
-                ->sum('adicional_valor');
+                $total += $valorizacion;
+                $moneda = $prod->moneda_doc!==null ? $prod->moneda_doc : ($prod->moneda_oc!==null?$prod->moneda_oc:'');
 
-            $adic_peso = DB::table('almacen.guia_com_prorrateo_det')
-                ->where([['id_guia_com_det','=',$prod->id_guia_com_det],
-                        ['estado','!=',7]])
-                ->sum('adicional_peso');
+                $adic_valor = DB::table('almacen.guia_com_prorrateo_det')
+                    ->where([['id_guia_com_det','=',$prod->id_guia_com_det],
+                            ['estado','!=',7]])
+                    ->sum('adicional_valor');
 
-            $adicional = ($prod->unitario_adicional!==null ? $prod->unitario_adicional : 0) +
-                $adic_valor + $adic_peso;
+                $adic_peso = DB::table('almacen.guia_com_prorrateo_det')
+                    ->where([['id_guia_com_det','=',$prod->id_guia_com_det],
+                            ['estado','!=',7]])
+                    ->sum('adicional_peso');
 
-            ?>
-            <tr>
-                <td class="text-center">{{$prod->codigo}}</td>
-                <td class="text-center">{{$prod->part_number}}</td>
-                {{-- <td>{{$prod->descripcion}} <br><strong> {{$series_array!==[]?('Series(s): '+implode(" - ", $series_array)):''}}</strong></td> --}}
-                <td>{{$prod->descripcion}} <br><strong> {{$series}}</strong></td>
-                <td class="text-center">{{$prod->cantidad}}</td>
-                <td class="text-center">{{$prod->abreviatura}}</td>
-                <td class="text-right">{{$prod->moneda_doc!==null?$prod->moneda_doc:($prod->moneda_oc!==null?$prod->moneda_oc:'')}}</td>
-                <td class="text-right">{{round($unitario,2,PHP_ROUND_HALF_UP)}}</td>
-                <td class="text-right">{{round($valorizacion,2,PHP_ROUND_HALF_UP)}}</td>
-                <td class="text-right">{{round($adicional,2,PHP_ROUND_HALF_UP)}}</td>
-                <td class="text-right">{{round(($valorizacion + $adicional),2,PHP_ROUND_HALF_UP)}}</td>
-            </tr>
+                $adicional = ($prod->unitario_adicional!==null ? $prod->unitario_adicional : 0) +
+                    $adic_valor + $adic_peso;
+
+                ?>
+                <tr>
+                    <td class="text-center">{{$prod->codigo}}</td>
+                    <td class="text-center">{{$prod->part_number}}</td>
+                    {{-- <td>{{$prod->descripcion}} <br><strong> {{$series_array!==[]?('Series(s): '+implode(" - ", $series_array)):''}}</strong></td> --}}
+                    <td>{{$prod->descripcion}} <br><strong> {{$series}}</strong></td>
+                    <td class="text-center">{{$prod->cantidad}}</td>
+                    <td class="text-center">{{$prod->abreviatura}}</td>
+                    <td class="text-right">{{$moneda}}</td>
+                    <td class="text-right">{{round($unitario,2,PHP_ROUND_HALF_UP)}}</td>
+                    <td class="text-right">{{round($valorizacion,2,PHP_ROUND_HALF_UP)}}</td>
+                    {{-- <td class="text-right">{{round($adicional,2,PHP_ROUND_HALF_UP)}}</td>
+                    <td class="text-right">{{round(($valorizacion + $adicional),2,PHP_ROUND_HALF_UP)}}</td> --}}
+                </tr>
             @endforeach
         </tbody>
+        <tfoot>
+            <tr>
+                <th class="text-right" colspan="7">{{$moneda}}</th>
+                <th class="text-right">{{$total}}</th>
+            </tr>
+        </tfoot>
     </table>
     <br>
 
