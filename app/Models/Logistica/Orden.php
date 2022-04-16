@@ -152,6 +152,8 @@ class Orden extends Model
             $codigoOrden = "OC-{$anio}{$mes}{$correlativo}";
         } else if ($id_tp_docum == 3) {
             $codigoOrden = "OS-{$anio}{$mes}{$correlativo}";
+        } else if ($id_tp_docum == 12) {
+            $codigoOrden = "OI-{$anio}{$mes}{$correlativo}";
         } else {
             $codigoOrden = "-{$anio}{$mes}{$correlativo}";
         }
