@@ -703,7 +703,11 @@ class SalidasPendientesController extends Controller
                 // 'alm_reserva.id_reserva',
                 'alm_reserva.id_almacen_reserva',
                 'alm_almacen.descripcion as almacen_reserva',
-                'alm_reserva.stock_comprometido'
+                DB::raw("(SELECT SUM(alm_reserva.stock_comprometido) 
+                        FROM almacen.alm_reserva
+                        WHERE alm_reserva.id_detalle_requerimiento = alm_det_req.id_detalle_requerimiento
+                            and alm_reserva.estado = 1) as stock_comprometido"),
+                // 'alm_reserva.stock_comprometido'
             )
             // ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
             ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
