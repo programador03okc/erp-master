@@ -105,7 +105,6 @@ Saldos Actuales
             </div>
         </div>
     </div>
-
 </div>
 @include('almacen.reportes.verRequerimientoReservas')
 @endsection
@@ -190,18 +189,25 @@ Saldos Actuales
                     headers: {'X-CSRF-TOKEN': csrf_token}
                 },
                 columns: [
-                    {data: 'codigo', name: 'alm_prod.codigo'},
-                    {data: 'cod_softlink', name: 'alm_prod.cod_softlink'},
-                    {data: 'part_number', name: 'alm_prod.part_number'},
-                    {data: 'producto', name: 'alm_prod.descripcion'},
-                    {data: 'simbolo', name: 'sis_moneda.simbolo', className: 'text-center'},
-                    {data: 'valorizacion', className: 'text-right'},
-                    {data: 'costo_promedio', className: 'text-right'},
-                    {data: 'abreviatura', name: 'alm_und_medida.abreviatura', className: 'text-center'},
+                    {data: 'codigo'},
+                    {data: 'cod_softlink'},
+                    {data: 'part_number'},
+                    {data: 'producto'},
+                    {data: 'simbolo', className: 'text-center'},
+                    {data: 'valorizacion', className: 'text-right', searchable: false, orderable: false},
+                    {data: 'costo_promedio', className: 'text-right', searchable: false, orderable: false},
+                    {data: 'abreviatura', className: 'text-center'},
                     {data: 'stock', className: 'text-center', searchable: false, orderable: false},
-                    {data: 'reserva', className: 'text-center', searchable: false, orderable: false},
+                    {
+                        render: function (data, type, row) {
+                            return `
+                            <a class="label label-danger" 
+                                onclick="verRequerimiento(`+ row['id_producto'] +`, `+ row['id_almacen'] +`);" style="font-size: 11px">`+ row['reserva'] +`
+                            </a>`;
+                        }, className: 'text-center', searchable: false, orderable: false
+                    },
                     {data: 'disponible', className: 'text-center', searchable: false, orderable: false},
-                    {data: 'almacen_descripcion', name: 'alm_almacen.descripcion'}
+                    {data: 'almacen_descripcion'}
                 ],
             });
             $tabla.on('search.dt', function() {
@@ -229,6 +235,7 @@ Saldos Actuales
         function verRequerimientosReservados(id_producto, id_almacen) {
             var baseUrl = 'verRequerimientosReservados/' + id_producto + '/' + id_almacen;
             var html = '';
+            var footer = '';
             var total = 0;
 
             $.ajax({
@@ -257,10 +264,12 @@ Saldos Actuales
                             </tr>`;
                             total += parseFloat(element.stock_comprometido);
                         });
-                        var footer = `<tr><td colSpan="3"></td><td class="text-center">`+ total +`</td><td colSpan="4"></td></tr>`;
-                        $('#listaRequerimientosEstado tbody').html(html);
-                        $('#listaRequerimientosEstado tfoot').html(footer);
+                        footer += `<tr><td colspan="3"></td><td class="text-center">`+ total +`</td><td colSpan="4"></td></tr>`;
+                    } else {
+                        html += '<tr><td colspan="8">No se encontraron requerimientos para reserva</td></tr>';
                     }
+                    $('#listaRequerimientosEstado tbody').html(html);
+                    $('#listaRequerimientosEstado tfoot').html(footer);
                 }
             }).fail(function (jqXHR, textStatus, errorThrown) {
                 console.log(jqXHR);
