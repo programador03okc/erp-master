@@ -222,7 +222,7 @@ function listarIngresos() {
                                                 data-guia="${row["id_guia_com"]}" data-oc="${row["id_orden_compra"]}">
                                                 <i class="fas fa-trash"></i></button>`
                             }` +
-                            (row["id_operacion"] == 2
+                            (row["id_operacion"] == 2 || row["id_operacion"] == 18
                                 ? `<button type="button" class="${row["count_facturas"] > 0 ? "ver_doc" : "doc"} btn btn-${row["count_facturas"] > 0 ? "info" : "default"
                                 } btn-xs btn-flat" data-toggle="tooltip" data-placement="bottom" title="Generar Factura" data-guia="${row["id_guia_com"]
                                 }" data-doc="${row["id_doc_com"]}"><i class="fas fa-file-medical"></i></button>
