@@ -1818,7 +1818,6 @@ class ListaOrdenView {
                         this.tipoVistaPorCabecera();
 
                     } else {
-                        $('#modal-enviar-solicitud-pago .modal-content').LoadingOverlay("hide", true);
                         Swal.fire(
                             '',
                             response.mensaje,
@@ -1826,16 +1825,16 @@ class ListaOrdenView {
                         );
                     }
                 },
-                statusCode: {
-                    404: function () {
-                        $('#modal-enviar-solicitud-pago .modal-content').LoadingOverlay("hide", true);
-                        Swal.fire(
-                            'Error 404',
-                            'Lo sentimos hubo un problema con el servidor, la ruta a la que se quiere acceder para guardar no esta disponible, por favor vuelva a intentarlo más tarde.',
-                            'error'
-                        );
-                    }
-                },
+                // statusCode: {
+                //     404: function () {
+                //         $('#modal-enviar-solicitud-pago .modal-content').LoadingOverlay("hide", true);
+                //         Swal.fire(
+                //             'Error 404',
+                //             'Lo sentimos hubo un problema con el servidor, la ruta a la que se quiere acceder para guardar no esta disponible, por favor vuelva a intentarlo más tarde.',
+                //             'error'
+                //         );
+                //     }
+                // },
                 fail: (jqXHR, textStatus, errorThrown) => {
                     $('#modal-enviar-solicitud-pago .modal-content').LoadingOverlay("hide", true);
                     Swal.fire(

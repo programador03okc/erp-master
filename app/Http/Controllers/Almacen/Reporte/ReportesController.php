@@ -18,7 +18,7 @@ class ReportesController extends Controller
     {
         $this->middleware('auth');
     }
-    
+
     public function view_saldos(Request $request)
     {
         $fecha = new Carbon();
@@ -48,54 +48,109 @@ class ReportesController extends Controller
         $data = [];
 
         if ($request->type == 2) {
-            $data = DB::table('almacen.alm_prod_ubi')
-                ->select('alm_prod_ubi.*', 'alm_prod.codigo', 'alm_prod.cod_softlink', 'alm_prod.descripcion AS producto', 'alm_und_medida.abreviatura', 'alm_prod.part_number',
-                    'sis_moneda.simbolo', 'alm_prod.id_moneda', 'alm_prod.id_unidad_medida', 'alm_almacen.descripcion AS almacen_descripcion',
-                    DB::raw("(SELECT SUM(alm_reserva.stock_comprometido) FROM almacen.alm_reserva WHERE alm_reserva.id_producto = alm_prod_ubi.id_producto
-                    AND alm_reserva.id_almacen_reserva = alm_prod_ubi.id_almacen AND (alm_reserva.estado = 1 OR alm_reserva.estado = 17) ) AS cantidad_reserva")
+            $nfecha = $request->session()->get('filtroFecha') . ' 23:59:59';
+            $ft_fecha = date('Y-m-d', strtotime($nfecha));
+
+            $query = DB::table('almacen.alm_prod_ubi')
+                ->select(
+                    'alm_prod_ubi.*',
+                    'alm_prod.codigo',
+                    'alm_prod.cod_softlink',
+                    'alm_prod.descripcion AS producto',
+                    'alm_und_medida.abreviatura',
+                    'alm_prod.part_number',
+                    'sis_moneda.simbolo',
+                    'alm_prod.id_moneda',
+                    'alm_prod.id_unidad_medida',
+                    'alm_almacen.descripcion AS almacen_descripcion',
+                    DB::raw("(SELECT SUM(alm_reserva.stock_comprometido) 
+                        FROM almacen.alm_reserva 
+                        WHERE alm_reserva.id_producto = alm_prod_ubi.id_producto
+                        AND alm_reserva.id_almacen_reserva = alm_prod_ubi.id_almacen 
+                        AND (alm_reserva.estado = 1 OR alm_reserva.estado = 17)
+                        AND alm_reserva.fecha_registro <= '" . $ft_fecha . "') AS cantidad_reserva")
                 )
                 ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_prod_ubi.id_almacen')
                 ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_prod_ubi.id_producto')
                 ->join('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
                 ->leftjoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'alm_prod.id_moneda')
-                ->where([['alm_prod_ubi.estado', '=', 1]]);
+                ->where([['alm_prod_ubi.estado', '=', 1], ['alm_prod.estado', '=', 1]]);
 
             if ($request->session()->has('filtroAlmacen')) {
-                $data->whereIn('alm_prod_ubi.id_almacen', $request->session()->get('filtroAlmacen'));
+                $query = $query->whereIn('alm_prod_ubi.id_almacen', $request->session()->get('filtroAlmacen'));
             }
-            if ($request->session()->has('filtroFecha')) {
-                $nfecha = $request->session()->get('filtroFecha').' 23:00:00';
-                $ft_fecha = date('Y-m-d', strtotime($nfecha));
-                $data->where('alm_prod_ubi.fecha_registro', '<=', $ft_fecha);
+            $query = $query->get();
+
+            foreach ($query as $d) {
+                $movimientos = DB::table('almacen.mov_alm')
+                    ->join('almacen.mov_alm_det', 'mov_alm_det.id_mov_alm', '=', 'mov_alm.id_mov_alm')
+                    ->select(
+                        'mov_alm.codigo',
+                        'mov_alm.id_tp_mov',
+                        'mov_alm.fecha_emision',
+                        'mov_alm_det.id_producto',
+                        'mov_alm_det.cantidad',
+                        'mov_alm_det.valorizacion'
+                    )
+                    ->where('mov_alm.id_almacen', $d->id_almacen)
+                    ->where('mov_alm.fecha_emision', '<=', $request->session()->get('filtroFecha'))
+                    ->where('mov_alm_det.id_producto', $d->id_producto)
+                    ->orderBy('mov_alm.fecha_emision');
+
+                if ($movimientos->count() > 0) {
+                    $saldo = 0;
+                    $saldo_valor = 0;
+                    $costo_promedio = 0;
+
+                    foreach ($movimientos->get() as $key) {
+                        if ($key->id_tp_mov == 0 || $key->id_tp_mov == 1) {
+                            $saldo += (float) $key->cantidad;
+                            $saldo_valor += (float) $key->valorizacion;
+                        } else if ($key->id_tp_mov == 2) {
+                            $saldo -= (float) $key->cantidad;
+                            $valor_salida = $costo_promedio * (float) $key->cantidad;
+                            $saldo_valor -= (float) $valor_salida;
+                        }
+                        $costo_promedio = (float) ($saldo == 0 ? 0 : $saldo_valor / $saldo);
+                    }
+
+                    $reserva = ($d->cantidad_reserva == null) ? 0 : $d->cantidad_reserva;
+                    $data[] = [
+                        'id_producto'           => $d->id_producto,
+                        'id_almacen'            => $d->id_almacen,
+                        'codigo'                => ($d->codigo != null) ?  $d->codigo : '',
+                        'cod_softlink'          => ($d->cod_softlink != null) ?  $d->cod_softlink : '',
+                        'part_number'           => ($d->part_number != null) ?  $d->part_number : '',
+                        'producto'              => $d->producto,
+                        'simbolo'               => ($d->simbolo != null) ?  $d->simbolo : '',
+                        'valorizacion'          => $saldo_valor,
+                        'costo_promedio'        => $costo_promedio,
+                        'abreviatura'           => ($d->abreviatura != null) ?  $d->abreviatura : '',
+                        'stock'                 => $saldo,
+                        'reserva'               => $reserva,
+                        'disponible'            => ($saldo - $reserva),
+                        'almacen_descripcion'   => ($d->almacen_descripcion != null) ?  $d->almacen_descripcion : '',
+                    ];
+                }
             }
-            $data->get();
         }
-        
-        return DataTables::of($data)
-        ->editColumn('valorizacion', function ($data) {
-            return number_format($data->valorizacion, 3);
-        })
-        ->editColumn('costo_promedio', function ($data) {
-            return number_format($data->costo_promedio, 3);
-        })
-        ->addColumn('reserva', function ($data) {
-            $reserva = '';
-            if ($data->cantidad_reserva) {
-                $reserva .= '<a class="label label-danger" onclick="verRequerimiento('.$data->id_producto.', '.$data->id_almacen.');" style="font-size: 11px">'.$data->cantidad_reserva.'</a>';
-            }
-            return $reserva;
-        })
-        ->addColumn('disponible' , function ($data) {
-            $reservas = ($data->cantidad_reserva != null) ? $data->cantidad_reserva : 0;
-            return ($data->stock - $reservas);
-        })->rawColumns(['reserva'])->make(true);
+        return DataTables::of($data)->make(true);
     }
 
     public function verRequerimientosReservados($id, $almacen)
     {
         $detalles = DB::table('almacen.alm_reserva')
-            ->select('alm_reserva.stock_comprometido','alm_req.id_requerimiento','alm_req.codigo','alm_req.concepto', 'sis_usua.nombre_corto','alm_almacen.descripcion as almacen_descripcion',
-                DB::raw("CONCAT(guia_com.serie,'-',guia_com.numero) as guia_com"), 'trans.codigo as codigo_trans', 'transformacion.codigo as codigo_transfor_materia', 'transformado.codigo as codigo_transfor_transformado',
+            ->select(
+                'alm_reserva.stock_comprometido',
+                'alm_req.id_requerimiento',
+                'alm_req.codigo',
+                'alm_req.concepto',
+                'sis_usua.nombre_corto',
+                'alm_almacen.descripcion as almacen_descripcion',
+                DB::raw("CONCAT(guia_com.serie,'-',guia_com.numero) as guia_com"),
+                'trans.codigo as codigo_trans',
+                'transformacion.codigo as codigo_transfor_materia',
+                'transformado.codigo as codigo_transfor_transformado',
             )
             ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_reserva.id_almacen_reserva')
             ->leftjoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'alm_reserva.id_detalle_requerimiento')
@@ -129,15 +184,18 @@ class ReportesController extends Controller
         $data = [];
         $alm = DB::table('almacen.alm_almacen')->where('id_almacen', $request->almacen)->first();
         $tca = DB::table('contabilidad.cont_tp_cambio')->where('fecha', $request->fecha);
-        $tc = ($tca->count() > 0) ? (float) $tca->first()->compra : 1 ;
-        
+        $tc = ($tca->count() > 0) ? (float) $tca->first()->compra : 1;
+
         foreach ($productos as $row => $value) {
-            $sum_ing = 0; $sum_sal = 0; $sum_val_sol = 0; $count = 0;
+            $sum_ing = 0;
+            $sum_sal = 0;
+            $sum_val_sol = 0;
+            $count = 0;
 
             $movimientos = DB::table('almacen.mov_alm')
-            ->join('almacen.mov_alm_det', 'mov_alm_det.id_mov_alm', '=', 'mov_alm.id_mov_alm')
-            ->select('mov_alm.codigo', 'mov_alm.id_tp_mov', 'mov_alm.fecha_emision', 'mov_alm_det.id_producto', 'mov_alm_det.cantidad', 'mov_alm_det.valorizacion')
-            ->where('mov_alm.id_almacen', $request->almacen)->where('mov_alm.fecha_emision', '<=', $request->fecha)->where('mov_alm_det.id_producto', $value);
+                ->join('almacen.mov_alm_det', 'mov_alm_det.id_mov_alm', '=', 'mov_alm.id_mov_alm')
+                ->select('mov_alm.codigo', 'mov_alm.id_tp_mov', 'mov_alm.fecha_emision', 'mov_alm_det.id_producto', 'mov_alm_det.cantidad', 'mov_alm_det.valorizacion')
+                ->where('mov_alm.id_almacen', $request->almacen)->where('mov_alm.fecha_emision', '<=', $request->fecha)->where('mov_alm_det.id_producto', $value);
 
             if ($movimientos->count() > 0) {
                 $prod = DB::table('almacen.alm_prod')->where('id_producto', $value)->first();
@@ -155,7 +213,7 @@ class ReportesController extends Controller
                 $sum_stock = $sum_ing - $sum_sal;
                 $sum_valor_sol = $sum_val_sol / $count;
                 $sum_valor_dol = $sum_valor_sol / $tc;
-                
+
                 $data[] = [
                     'id_producto'       => $value,
                     'codigo'            => ($prod->codigo != null) ?  $prod->codigo : '',

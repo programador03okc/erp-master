@@ -804,7 +804,7 @@ class RequerimientoPagoController extends Controller
                 ->get();
         } elseif ($idTipoDestinatario == 2) { // tipo contribuyente
             $destinatario =  Contribuyente::with("tipoDocumentoIdentidad", "cuentaContribuyente.banco.contribuyente", "cuentaContribuyente.tipoCuenta", "tipoContribuyente")
-                ->where([['UPPER(razon_social)', 'LIKE', $nombreCompleto], ['estado', '!=', 7]])->get();
+                ->whereRaw("UPPER(razon_social) LIKE '". $nombreCompleto. "'AND estado !=  7")->get();
         } else {
             $tipo_estado = "error";
             $mensaje = 'no se recibio un valor valido para tipo de destinatario';

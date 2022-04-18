@@ -23,23 +23,19 @@
         </thead>
         <tbody>
         @foreach($saldos as $item)
-            @php
-                $reservas = ($item->cantidad_reserva != null) ? $item->cantidad_reserva : 0;
-                $disponible = ($item->stock - $reservas);
-            @endphp
             <tr>
-                <td>{{ $item->codigo }}</td>
-                <td>{{ $item->cod_softlink }}</td>
-                <td>{{ $item->part_number }}</td>
-                <td>{{ $item->descripcion }}</td>
-                <td>{{ $item->simbolo }}</td>
-                <td>{{ $item->valorizacion }}</td>
-                <td>{{ $item->costo_promedio }}</td>
-                <td>{{ $item->abreviatura }}</td>
-                <td>{{ $item->cantidad_reserva }}</td>
-                <td>{{ $reservas }}</td>
-                <td>{{ $disponible }}</td>
-                <td>{{ $item->almacen_descripcion }}</td>
+                <td>{{ $item['codigo'] }}</td>
+                <td>{{ $item['cod_softlink'] }}</td>
+                <td>{{ $item['part_number'] }}</td>
+                <td>{{ $item['producto'] }}</td>
+                <td>{{ $item['simbolo'] }}</td>
+                <td>{{ $item['valorizacion'] }}</td>
+                <td>{{ $item['costo_promedio'] }}</td>
+                <td>{{ $item['abreviatura'] }}</td>
+                <td>{{ $item['stock'] }}</td>
+                <td>{{ $item['reserva'] }}</td>
+                <td>{{ $item['disponible'] }}</td>
+                <td>{{ $item['almacen_descripcion'] }}</td>
             </tr>
         @endforeach
         </tbody>
