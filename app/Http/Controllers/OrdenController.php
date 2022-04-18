@@ -1651,6 +1651,7 @@ class OrdenController extends Controller
                     'moneda_simbolo' => $data->moneda_simbolo,
                     'incluye_igv' => $data->incluye_igv,
                     'observacion' => $data->observacion,
+                    'estado' => $data->estado,
                     // 'monto_igv' => $data->monto_igv,
                     // 'monto_total' => $data->monto_total,
                     // 'moneda_descripcion' => $data->moneda_descripcion 
@@ -1909,14 +1910,16 @@ class OrdenController extends Controller
 
             </style>
             </head>
-            <body>';
-
+            <body>
+            
+        ';
+        
         if (isset($ordenArray['head']['logo_empresa']) && ($ordenArray['head']['logo_empresa'] != null)) {
-            $html .= '<img src=".' . $ordenArray['head']['logo_empresa'] . '" alt="Logo" height="75px">';
+            $html .= '<div style="display:flex;"><img src=".' . $ordenArray['head']['logo_empresa'] . '" alt="Logo" height="75px">'.( (isset($ordenArray['head']['estado']) && $ordenArray['head']['estado']==7)?'<center><h1 style="color:red;">ORDEN ANULADA</h2></cent>':'').'</div>';
         }
 
         $html .= '
-            
+        </div>
                 <br>
                 <hr>
                 <h1><center>' . ($ordenArray['head']['id_tp_documento']==12?'PURCHASE ORDER - IMPORT':$ordenArray['head']['tipo_documento'] ). '<br>' . $ordenArray['head']['codigo'] . '</center></h1>
