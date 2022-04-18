@@ -363,7 +363,7 @@ $("#form-mapeoItemsRequerimiento").on("submit", function (e) {
                                     btnCrearOrdenCompraPorRequerimiento.className = "btn btn-warning btn-xs handleClickCrearOrdenCompraPorRequerimiento";
                                     btnCrearOrdenCompraPorRequerimiento.title = "Crear Orden de Compra";
                                     btnCrearOrdenCompraPorRequerimiento.dataset.idRequerimiento = idRequerimiento;
-                                    btnCrearOrdenCompraPorRequerimiento.innerHTML = "<i class='fas fa-file-invoice'></i>";
+                                    btnCrearOrdenCompraPorRequerimiento.innerHTML = "OC";
                                     divBtnGroup.appendChild(btnCrearOrdenCompraPorRequerimiento);
 
                                 }
