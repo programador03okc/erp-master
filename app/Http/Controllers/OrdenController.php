@@ -1644,6 +1644,7 @@ class OrdenController extends Controller
                     'logo_empresa' => $data->logo_empresa,
                     'codigo' => $data->codigo,
                     'fecha_orden' => $data->fecha_orden,
+                    'id_tp_documento' => $data->id_tp_documento,
                     'tipo_documento' => $data->tipo_documento,
                     // 'codigo_requerimiento' => $data->codigo_requerimiento,
                     'fecha_registro' => $data->fecha,
@@ -1918,22 +1919,22 @@ class OrdenController extends Controller
             
                 <br>
                 <hr>
-                <h1><center>' . $ordenArray['head']['tipo_documento'] . '<br>' . $ordenArray['head']['codigo'] . '</center></h1>
+                <h1><center>' . ($ordenArray['head']['id_tp_documento']==12?'PURCHASE ORDER - IMPORT':$ordenArray['head']['tipo_documento'] ). '<br>' . $ordenArray['head']['codigo'] . '</center></h1>
                 <table border="0" >
                     <tr>
                         <td nowrap  width="15%" class="subtitle verticalTop">Sr.(s):</td>
                         <td width="50%" class="verticalTop">' . $ordenArray['head']['proveedor']['nro_documento_proveedor'] . ' - ' . $ordenArray['head']['proveedor']['razon_social_proveedor'] . '</td>
-                        <td nowrap  width="15%" class="subtitle verticalTop">Fecha de emisión:</td>
+                        <td nowrap  width="15%" class="subtitle verticalTop">'.($ordenArray['head']['id_tp_documento']==12?'Order date':'Fecha de emisión').':</td>
                         <td>' . substr($ordenArray['head']['fecha_orden'], 0, 11) . '</td>
                     </tr>
                     <tr>
-                        <td nowrap  width="15%" class="subtitle">Dirección:</td>
+                        <td nowrap  width="15%" class="subtitle"> '.($ordenArray['head']['id_tp_documento']==12?'Address':'Dirección').':</td>
                         <td class="verticalTop">' . $ordenArray['head']['proveedor']['direccion_fiscal_proveedor'] . '<br>' . $ordenArray['head']['proveedor']['ubigeo_proveedor'] . '</td>
-                        <td nowrap  width="15%" class="subtitle verticalTop"> Teléfono:</td>
+                        <td nowrap  width="15%" class="subtitle verticalTop"> '.($ordenArray['head']['id_tp_documento']==12?'Phone number':'Teléfono').':</td>
                         <td class="verticalTop">' . $ordenArray['head']['proveedor']['telefono_proveedor'] . '</td>
                     </tr>
                     <tr>
-                        <td nowrap  width="15%" class="subtitle">Contacto:</td>
+                        <td nowrap  width="15%" class="subtitle"> '.($ordenArray['head']['id_tp_documento']==12?'Sales person':'Contacto').':</td>
                         <td class="verticalTop">' . $ordenArray['head']['proveedor']['contacto']['nombre_contacto'] . ' - ' . $ordenArray['head']['proveedor']['contacto']['cargo_contacto'] . '</td>
                          
                     </tr>
@@ -1964,14 +1965,14 @@ class OrdenController extends Controller
                 <table class="tablePDF" style="border:0; font-size:8px;">
                 <thead>
                     <tr class="subtitle">
-                        <td style="width:5px; text-align:center;">Código</td>
+                        <td style="width:5px; text-align:center;">'.($ordenArray['head']['id_tp_documento']==12?'Product code':'Código').'</td>
                         <td style="width:5px; text-align:center;">Part number</td>
-                        <td style="width:280px; text-align:center;">Descripción</td>
+                        <td style="width:280px; text-align:center;">'.($ordenArray['head']['id_tp_documento']==12?'Product description':'Descripción').'</td>
                         <td style="width:15px; text-align:center;">Und</td>
-                        <td style="width:5px; text-align:center;">Cant.</td>
-                        <td style="width:15px; text-align:center;">Precio</td>
-                        <td style="width:5px; text-align:center;">Descuento</td>
-                        <td style="width:15px; text-align:center;">Total</td>
+                        <td style="width:5px; text-align:center;">'.($ordenArray['head']['id_tp_documento']==12?'Quantity':'Cant').'</td>
+                        <td style="width:15px; text-align:center;">'.($ordenArray['head']['id_tp_documento']==12?'Unit price':'Precio').'</td>
+                        <td style="width:5px; text-align:center;">'.($ordenArray['head']['id_tp_documento']==12?'Discount':'Descuento').'</td>
+                        <td style="width:15px; text-align:center;">'.($ordenArray['head']['id_tp_documento']==12?'Total item':'Total').'</td>
                     </tr>   
                 </thead>';
 
@@ -2017,15 +2018,15 @@ class OrdenController extends Controller
 
         $html .= '
                 <tr>
-                    <td class="right noBorder textBold"  colspan="7">Monto neto ' . $ordenArray['head']['moneda_simbolo'] . '</td>
+                    <td class="right noBorder textBold"  colspan="7"> '.($ordenArray['head']['id_tp_documento']==12?'Total price before taxes ':'Monto neto ') . $ordenArray['head']['moneda_simbolo'] . '</td>
                     <td class="right  noBorder textBold">' . number_format($monto_neto, 2) . '</td>
                 </tr>
                 <tr>
-                    <td class="right noBorder textBold"  colspan="7">IGV ' . $ordenArray['head']['moneda_simbolo'] . '</td>
+                    <td class="right noBorder textBold"  colspan="7"> '.($ordenArray['head']['id_tp_documento']==12?'Taxes ':'IGV ') . $ordenArray['head']['moneda_simbolo'] . '</td>
                     <td class="right noBorder textBold">' . number_format($igv, 2) . '</td>
                 </tr>
                 <tr>
-                    <td class="right noBorder textBold"  colspan="7">Monto total ' . $ordenArray['head']['moneda_simbolo'] . '</td>
+                    <td class="right noBorder textBold"  colspan="7"> '.($ordenArray['head']['id_tp_documento']==12?'Total price after taxes ':'Monto total ') . $ordenArray['head']['moneda_simbolo'] . '</td>
                     <td class="right noBorder textBold">' . number_format($monto_total, 2) . '</td>
                 </tr>
                 </table>
@@ -2035,15 +2036,15 @@ class OrdenController extends Controller
 
         $html .= '
                 <table width="100%" border=0>
-                <caption class="left subtitle" style="padding-bottom:10px; font-size:0.7rem">Condición de compra:</caption>
+                <caption class="left subtitle" style="padding-bottom:10px; font-size:0.7rem">'.($ordenArray['head']['id_tp_documento']==12?'Puchase details':'Condición de compra').':</caption>
 
                 <tr>
-                <td nowrap  width="15%" class="subtitle">-Forma de pago: </td>
+                <td nowrap  width="15%" class="subtitle">-'.($ordenArray['head']['id_tp_documento']==12?'Payment details':'Forma de pago').': </td>
                 <td  class="verticalTop left">' . $ordenArray['head']['condicion_compra']['condicion_pago'] . ' ' . (($ordenArray['head']['condicion_compra']['id_condicion'] == 2) ? $ordenArray['head']['condicion_compra']['plazo_dias'] . ' días' : '') . '</td>';
 
 
         $html .= ' 
-                    <td width="15%" class="verticalTop subtitle">-Plazo de entrega: </td>
+                    <td width="15%" class="verticalTop subtitle">-'.($ordenArray['head']['id_tp_documento']==12?'Delivery time':'Plazo de entrega').': </td>
                     <td class="verticalTop">' . $ordenArray['head']['condicion_compra']['plazo_entrega'] . ' Días</td>
             
                 </tr>
@@ -2066,16 +2067,16 @@ class OrdenController extends Controller
 
         $html .= '
                 <table width="100%" border=0>
-                <caption class="left subtitle" style="padding-bottom:10px; font-size:0.7rem">Datos para el despacho:</caption>
+                <caption class="left subtitle" style="padding-bottom:10px; font-size:0.7rem">'.($ordenArray['head']['id_tp_documento']==12?'Shipping details':'Datos para el despacho').':</caption>
 
                 <tr>
-                    <td nowrap  width="15%" class="verticalTop subtitle">-Dirección entrega: </td>
+                    <td nowrap  width="15%" class="verticalTop subtitle">-'.($ordenArray['head']['id_tp_documento']==12?'Delivery address':'Dirección entrega').': </td>
                     <td class="verticalTop">' . $ordenArray['head']['datos_para_despacho']['direccion_destino'] . '<br>' . $ordenArray['head']['datos_para_despacho']['ubigeo_destino'] . '</td>
-                    <td width="15%" class="verticalTop subtitle">-Personal autorizado:</td>
+                    <td width="15%" class="verticalTop subtitle">-'.($ordenArray['head']['id_tp_documento']==12?'Authorized receiver':'Personal autorizado').':</td>
                     <td class="verticalTop">' . $personal_autorizado_1 . ($personal_autorizado_2 ? ("<br>" . $personal_autorizado_2) : "") . '</td>
                 </tr>
                 <tr>
-                    <td nowrap  width="15%" class="subtitle">-Observación:</td>
+                    <td nowrap  width="15%" class="subtitle">-'.($ordenArray['head']['id_tp_documento']==12?'Comments':'Observación').':</td>
                     <td class="verticalTop">' . $ordenArray['head']['observacion'] . '</td>
                 </tr>
                 </table>
@@ -2085,18 +2086,18 @@ class OrdenController extends Controller
 
         $html .= '
             <table width="100%" border=0>
-                <caption class="left subtitle" style="padding-bottom:10px; font-size:0.7rem">Facturar a nombre:</caption>
+                <caption class="left subtitle" style="padding-bottom:10px; font-size:0.7rem">'.($ordenArray['head']['id_tp_documento']==12?'Invoice details':'Facturar a nombre').':</caption>
 
                 <tr>
-                    <td nowrap  width="15%" class="verticalTop subtitle">-Razón social: </td>
+                    <td nowrap  width="15%" class="verticalTop subtitle">-'.($ordenArray['head']['id_tp_documento']==12?'Company\'s name':'Razón social').': </td>
                     <td class="verticalTop">' . $ordenArray['head']['facturar_a_nombre']['razon_social_empresa'] . '</td>
                 </tr>
                 <tr>
-                    <td nowrap  width="15%" class="verticalTop subtitle">-RUC: </td>
+                    <td nowrap  width="15%" class="verticalTop subtitle">-'.($ordenArray['head']['id_tp_documento']==12?'Tax ID':'RUC').': </td>
                     <td class="verticalTop">' . $ordenArray['head']['facturar_a_nombre']['nro_documento_empresa'] . '</td>
                 </tr>
                 <tr>
-                    <td nowrap  width="15%" class="verticalTop subtitle">-Dirección: </td>
+                    <td nowrap  width="15%" class="verticalTop subtitle">-'.($ordenArray['head']['id_tp_documento']==12?'Invoice address':'Dirección').': </td>
                     <td class="verticalTop">' . $ordenArray['head']['facturar_a_nombre']['direccion_fiscal_empresa'] . ', ' . $ordenArray['head']['facturar_a_nombre']['ubigeo_empresa'] . '</td>
 
                 </tr>
@@ -2107,9 +2108,9 @@ class OrdenController extends Controller
         $html .= '<br>
 
                     <footer>
-                        <p style="font-size:9px; " class="pie_de_pagina">Generado por: ' . ucwords(strtolower($ordenArray['head']['nombre_usuario'])) .  '<br>'
-            . 'Fecha registro: ' . $ordenArray['head']['fecha_registro'] . '<br>'
-            . 'Versión del sistema: ' . config('global.nombreSistema') . ' '  . config('global.version') . ' </p>
+                        <p style="font-size:9px; " class="pie_de_pagina"> '.($ordenArray['head']['id_tp_documento']==12?'Document made by ':'Generado por '). ucwords(strtolower($ordenArray['head']['nombre_usuario'])) .  '<br>'
+            .($ordenArray['head']['id_tp_documento']==12?'Register date':'Fecha registro'). ': ' . $ordenArray['head']['fecha_registro'] . '<br>'
+            .($ordenArray['head']['id_tp_documento']==12?'System version':'Versión del sistema'). ': ' . config('global.nombreSistema') . ' '  . config('global.version') . ' </p>
                     </footer>
                 
             </body>
