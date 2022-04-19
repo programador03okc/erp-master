@@ -4850,6 +4850,7 @@ class AlmacenController extends Controller
                 if ($d->id_tp_mov == 1 || $d->id_tp_mov == 0) {
                     $html .= '
                     <tr id="' . $d->id_mov_alm_det . '">
+                        <td>' . $d->codigo . '</td>
                         <td>' . $d->fecha_emision . '</td>
                         <td>' . ($d->guia_com == null ? $d->codigo : $d->guia_com) . '</td>
                         <td></td>
@@ -4867,6 +4868,7 @@ class AlmacenController extends Controller
                 } else if ($d->id_tp_mov == 2) {
                     $html .= '
                     <tr id="' . $d->id_mov_alm_det . '">
+                        <td>' . $d->codigo . '</td>
                         <td>' . $d->fecha_emision . '</td>
                         <td>' . $d->guia_ven . '</td>
                         <td></td>

@@ -86,6 +86,7 @@ Kardex por Producto
                         <table class="mytable table table-condensed table-bordered table-okc-view" id="kardex_producto">
                             <thead>
                                 <tr>
+                                    <th>Movimiento</th>
                                     <th>Fecha</th>
                                     <th>Documento</th>
                                     <th>Factura</th>
