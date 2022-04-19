@@ -103,12 +103,12 @@ function open_guia_create_seleccionadas() {
             $('.agregarSobrante').hide();
             $('[name=comentario]').val('');
 
-            if (data.id_tp_documento == 12) {
-                $('#titulo').text('Ingresar Hoja de Importación');
-                $('[name=id_operacion]').val(18).trigger('change.select2');
-            } else {
-                $('#titulo').text('Ingresar Guía de Compra');
-            }
+            // if (data.id_tp_documento == 12) {
+            //     $('#titulo').text('Ingresar Hoja de Importación');
+            //     $('[name=id_operacion]').val(18).trigger('change.select2');
+            // } else {
+            $('#titulo').text('Ingresar Guía de Compra');
+            // }
 
             $('#serie').text('');
             $('#numero').text('');
