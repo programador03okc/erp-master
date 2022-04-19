@@ -111,7 +111,7 @@ class AlmacenController extends Controller
         $ingresos = $ordenes + $transformaciones;
 
         $salidas = DB::table('almacen.orden_despacho')
-            ->where('estado', 1)
+            ->where([['estado', '=', 1], ['flg_despacho', '=', 0]])
             ->count();
 
         $transferencias = DB::table('almacen.trans')
