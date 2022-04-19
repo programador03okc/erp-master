@@ -267,7 +267,7 @@ class TransformacionController extends Controller
         ]);
     }
 
-    public function getTipoCambio($fecha)
+    public function getTipoCambioVenta($fecha)
     {
         $tc = TipoCambio::where([['moneda', '=', 2], ['fecha', '<=', $fecha]])
             ->orderBy('fecha', 'DESC')->first();

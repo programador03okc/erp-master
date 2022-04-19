@@ -783,7 +783,7 @@ class OrdenesPendientesController extends Controller
                     $id_od = $request->id_od;
                     $id_requerimiento = $request->id_requerimiento;
 
-                    $tipo_cambio = TipoCambio::where([['moneda', '=', 2], ['fecha', '<=', $request->fecha_emision]])
+                    $tipo_cambio = TipoCambio::where([['moneda', '=', 2], ['fecha', '<=', $request->fecha_almacen]])
                         ->orderBy('fecha', 'DESC')->first();
 
                     foreach ($detalle_oc as $det) {
