@@ -2156,7 +2156,7 @@ class OrdenView {
                             $('[name=codigo_orden]').val(response.status_migracion_softlink.orden_softlink??"");
         
                             Lobibox.notify(response.status_migracion_softlink.tipo, {
-                                title: false,
+                                title: 'Migración Softlink',
                                 size: 'mini',
                                 rounded: true,
                                 sound: false,
@@ -2180,7 +2180,7 @@ class OrdenView {
                         if(response.status_migracion_softlink != null){
                                         
                             Lobibox.notify(response.status_migracion_softlink.tipo, {
-                                title: false,
+                                title: 'Migración Softlink',
                                 size: 'mini',
                                 rounded: true,
                                 sound: false,

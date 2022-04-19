@@ -53,8 +53,9 @@ class ApiController extends Controller
         
         if ($query->count() > 0) {
             $rpta = 'exist';
-            $compra = $query->latest()->first()->compra;
-            $venta = $query->latest()->first()->venta;
+            $compra = $query->orderBy('id_tp_cambio', 'desc')->first()->compra;
+            $venta = $query->orderBy('id_tp_cambio', 'desc')->first()->venta;
+            $promedio = $query->orderBy('id_tp_cambio', 'desc')->first()->promedio;
         } else{
             $rpta = 'null';
             $apiQ = json_decode($this->consultaSunat('https://api.apis.net.pe/v1/tipo-cambio-sunat'));
@@ -71,8 +72,9 @@ class ApiController extends Controller
                 'promedio'  => $promedio
             ], 'id_tp_cambio');
 
-            $data[] = ['fecha' => $fecha, 'compra' => $compra, 'venta' => $venta];
         }
+        
+        $data[] = ['fecha' => $fecha, 'compra' => $compra, 'venta' => $venta];
         return response()->json(array('response' => $rpta, 'data' => $data), 200);
     }
 
