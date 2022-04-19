@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\App;
 use App\Http\Controllers\Controller;
 use App\Models\mgcp\Oportunidad\Oportunidad;
+use App\Models\Tesoreria\TipoCambio;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\View;
 
@@ -257,10 +258,22 @@ class TransformacionController extends Controller
             ->get();
 
         $monedas = DB::table('configuracion.sis_moneda')->where('estado', 1)->get();
+        $tc = TipoCambio::where([['moneda', '=', 2], ['fecha', '<=', new Carbon()]])
+            ->orderBy('fecha', 'DESC')->first();
 
-        return response()->json(['sobrantes' => $sobrantes, 'transformados' => $transformados, 'monedas' => $monedas]);
+        return response()->json([
+            'sobrantes' => $sobrantes, 'transformados' => $transformados,
+            'monedas' => $monedas, 'tipo_cambio' => $tc->venta
+        ]);
     }
 
+    public function getTipoCambio($fecha)
+    {
+        $tc = TipoCambio::where([['moneda', '=', 2], ['fecha', '<=', $fecha]])
+            ->orderBy('fecha', 'DESC')->first();
+
+        return response()->json($tc->venta);
+    }
     public function mostrar_transformacion($id_transformacion)
     {
         $data = DB::table('almacen.transformacion')

@@ -56,15 +56,14 @@ class SalidaPdfController extends Controller
             ->where('mov_alm.id_mov_alm', $id_salida)
             ->first();
 
-        $detalle = DB::table('almacen.mov_alm_det')
+        $lista = DB::table('almacen.mov_alm_det')
             ->select(
                 'mov_alm_det.*',
                 'alm_prod.codigo',
                 'alm_prod.part_number',
                 'alm_prod.descripcion',
-                // 'alm_ubi_posicion.codigo as cod_posicion',
                 'alm_und_medida.abreviatura',
-                // 'alm_prod.series',
+                'sis_moneda.simbolo',
                 'trans.codigo as cod_trans',
                 'doc_ven.fecha_emision',
                 'doc_ven_det.precio_unitario',
@@ -72,8 +71,8 @@ class SalidaPdfController extends Controller
                 DB::raw("(cont_tp_doc.abreviatura) || '-' ||(doc_ven.serie) || '-' || (doc_ven.numero) as doc")
             )
             ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'mov_alm_det.id_producto')
+            ->leftjoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'alm_prod.id_moneda')
             ->join('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
-            // ->leftjoin('almacen.alm_ubi_posicion', 'alm_ubi_posicion.id_posicion', '=', 'mov_alm_det.id_posicion')
             ->join('almacen.guia_ven_det', 'guia_ven_det.id_guia_ven_det', '=', 'mov_alm_det.id_guia_ven_det')
             ->leftjoin('almacen.doc_ven_det', function ($join) {
                 $join->on('doc_ven_det.id_guia_ven_det', '=', 'guia_ven_det.id_guia_ven_det');
@@ -99,15 +98,35 @@ class SalidaPdfController extends Controller
 
         $docs_array = [];
         $docs_fecha_array = [];
+        $detalle = [];
 
         if ($salida !== null) {
-            foreach ($detalle as $det) {
+            foreach ($lista as $det) {
+
                 if (!in_array($det->doc, $docs_array)) {
                     array_push($docs_array, $det->doc);
                 }
                 if (!in_array($det->fecha_emision, $docs_fecha_array)) {
                     array_push($docs_fecha_array, $det->fecha_emision);
                 }
+                //corregir fecha inicial tengo sueño
+                $costo_promedio = $this->obtenerCostoPromedioSalida($det->id_producto, $salida->id_almacen, '2022-01-01', $salida->fecha_emision);
+
+                array_push(
+                    $detalle,
+                    [
+                        'id_guia_ven_det' => $det->id_guia_ven_det,
+                        'id_producto' => $det->id_producto,
+                        'cantidad' => $det->cantidad,
+                        'costo_promedio' => $costo_promedio,
+                        'valorizacion' => ($costo_promedio * $det->cantidad),
+                        'codigo' => $det->codigo,
+                        'part_number' => $det->part_number,
+                        'descripcion' => $det->descripcion,
+                        'abreviatura' => $det->abreviatura,
+                        'simbolo' => $det->simbolo
+                    ]
+                );
             }
         }
 
@@ -136,5 +155,48 @@ class SalidaPdfController extends Controller
 
         return $pdf->stream();
         return $pdf->download($salida->codigo . '.pdf');
+    }
+
+    public function obtenerCostoPromedioSalida($id_producto, $almacen, $finicio, $ffin)
+    {
+        $data = DB::table('almacen.mov_alm_det')
+            ->select(
+                'mov_alm_det.*',
+                // 'sis_moneda.simbolo',
+                'mov_alm.fecha_emision',
+                'mov_alm.id_tp_mov',
+            )
+            ->join('almacen.mov_alm', 'mov_alm.id_mov_alm', '=', 'mov_alm_det.id_mov_alm')
+            // ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'mov_alm_det.id_producto')
+            ->where([
+                ['mov_alm_det.id_producto', '=', $id_producto],
+                ['mov_alm.fecha_emision', '>=', $finicio],
+                ['mov_alm.fecha_emision', '<=', $ffin],
+                ['mov_alm.id_almacen', '=', $almacen],
+                ['mov_alm_det.estado', '=', 1]
+            ])
+            ->orderBy('mov_alm.fecha_emision', 'asc')
+            ->orderBy('mov_alm.id_tp_mov', 'asc')
+            ->get();
+
+        $saldo = 0;
+        $saldo_valor = 0;
+        $costo_promedio = 0;
+        $valor_salida = 0;
+
+        foreach ($data as $d) {
+
+            if ($d->id_tp_mov == 1 || $d->id_tp_mov == 0) { //ingreso o inicial
+                $saldo += $d->cantidad;
+                $saldo_valor += $d->valorizacion;
+            } else if ($d->id_tp_mov == 2) { //salida
+                $saldo -= $d->cantidad;
+                $valor_salida = $costo_promedio * $d->cantidad;
+                $saldo_valor -= $valor_salida;
+            }
+
+            $costo_promedio = ($saldo == 0 ? 0 : $saldo_valor / $saldo);
+        }
+        return $costo_promedio;
     }
 }
