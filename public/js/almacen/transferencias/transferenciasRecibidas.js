@@ -97,7 +97,20 @@ function listarTransferenciasRecibidas() {
                     );
                 }
             },
-            { data: "codigo_req", name: "alm_req.codigo" },
+            {
+                data: "codigo_req", name: "alm_req.codigo",
+                render: function (data, type, row) {
+                    if (row["codigo_req"] !== null) {
+                        return (
+                            `<label class="lbl-codigo" title="Abrir Guía" onClick="abrirRequerimiento(${row["id_requerimiento"]})">
+                        ${row["codigo_req"]}</label>`
+                        );
+                    } else {
+                        return "";
+                    }
+                }, className: "text-center"
+
+            },
             { data: "concepto_req", name: "alm_req.concepto" },
             {
                 orderable: false, searchable: false,
@@ -158,19 +171,19 @@ function listarTransferenciasRecibidas() {
                 }, targets: 6, className: "text-center"
 
             },
-            {
-                render: function (data, type, row) {
-                    if (row["codigo_req"] !== null) {
-                        return (
-                            `<label class="lbl-codigo" title="Abrir Guía" onClick="abrirRequerimiento(${row["id_requerimiento"]})">
-                            ${row["codigo_req"]}</label>`
-                        );
-                    } else {
-                        return "";
-                    }
-                }, targets: 10, className: "text-center"
+            // {
+            //     render: function (data, type, row) {
+            //         if (row["codigo_req"] !== null) {
+            //             return (
+            //                 `<label class="lbl-codigo" title="Abrir Guía" onClick="abrirRequerimiento(${row["id_requerimiento"]})">
+            //                 ${row["codigo_req"]}</label>`
+            //             );
+            //         } else {
+            //             return "";
+            //         }
+            //     }, targets: 10, className: "text-center"
 
-            },
+            // },
         ],
         order: [[0, "desc"]]
     });
