@@ -2452,6 +2452,7 @@ class OrdenesPendientesController extends Controller
                     [
                         'serie' => $request->ingreso_serie,
                         'numero' => $request->ingreso_numero,
+                        'comentario' => $request->ingreso_comentario,
                         'fecha_emision' => $request->ingreso_fecha_emision,
                         'fecha_almacen' => $request->ingreso_fecha_almacen,
                     ]

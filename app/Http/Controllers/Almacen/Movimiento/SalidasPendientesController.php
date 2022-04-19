@@ -429,6 +429,7 @@ class SalidasPendientesController extends Controller
                 'guia_ven.numero',
                 'guia_ven.fecha_emision as fecha_emision_guia',
                 'guia_ven.id_od',
+                'guia_ven.comentario',
                 'guia_ven.punto_partida',
                 'guia_ven.punto_llegada',
                 'orden_despacho.codigo as codigo_od',
@@ -1222,6 +1223,7 @@ class SalidasPendientesController extends Controller
                     [
                         'serie' => $request->salida_serie,
                         'numero' => $request->salida_numero,
+                        'comentario' => $request->salida_comentario,
                         'fecha_emision' => $request->salida_fecha_emision,
                         'fecha_almacen' => $request->salida_fecha_almacen,
                         'punto_partida' => $request->salida_punto_partida,

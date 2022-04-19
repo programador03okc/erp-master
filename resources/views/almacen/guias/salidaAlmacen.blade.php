@@ -94,6 +94,12 @@
                                     <tbody></tbody>
                                     <tfoot></tfoot>
                                 </table>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <h5>Comentario</h5>
+                                        <textarea class="form-control" name="salida_comentario"></textarea>
+                                    </div>
+                                </div>
                             </fieldset>
                             <br>
                             <fieldset class="group-table" id="fieldsetDatosAuditoria">

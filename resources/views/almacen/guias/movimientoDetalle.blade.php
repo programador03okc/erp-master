@@ -93,7 +93,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <h5>Comentario</h5>
-                                        <textarea class="form-control" name="comentario"></textarea>
+                                        <textarea class="form-control" name="ingreso_comentario"></textarea>
                                     </div>
                                 </div>
                             </fieldset>

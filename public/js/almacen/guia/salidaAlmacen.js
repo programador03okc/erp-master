@@ -27,6 +27,7 @@ function abrirSalidaAlmacen(data) {
 
     $('[name=id_motivo_cambio]').val('');
     $('[name=observacion]').val('');
+    $('[name=salida_comentario]').val(data.comentario);
 
     $("#submit_salidaAlmacen").removeAttr("disabled");
 
