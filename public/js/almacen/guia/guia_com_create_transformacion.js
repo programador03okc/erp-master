@@ -23,6 +23,7 @@ function open_transformacion_guia_create(data) {
     $('#detalleOrdenSeleccionadas tbody').html('');
     cargar_almacenes(data.id_sede, data.id_almacen);
     $("#id_almacen").attr('disabled', 'true');
+    $('[name=comentario]').val('');
 
     $(".orden_transformacion").html(`<h5></h5>
     <div style="display:flex;">
