@@ -1538,6 +1538,7 @@ class OrdenController extends Controller
             'log_ord_compra.fecha AS fecha_orden',
             'sis_moneda.descripcion as moneda_descripcion',
             'log_ord_compra.id_contacto',
+            'log_ord_compra.sustento_anulacion',
             'adm_ctb_contac.nombre as nombre_contacto',
             'adm_ctb_contac.telefono as telefono_contacto',
             'adm_ctb_contac.email as email_contacto',
@@ -1651,6 +1652,7 @@ class OrdenController extends Controller
                     'moneda_simbolo' => $data->moneda_simbolo,
                     'incluye_igv' => $data->incluye_igv,
                     'observacion' => $data->observacion,
+                    'sustento_anulacion' => $data->sustento_anulacion,
                     'estado' => $data->estado,
                     // 'monto_igv' => $data->monto_igv,
                     // 'monto_total' => $data->monto_total,
@@ -1821,6 +1823,12 @@ class OrdenController extends Controller
 
         $now = new \DateTime();
 
+        $logoEmpresa= '';
+        if (isset($ordenArray['head']['logo_empresa']) && ($ordenArray['head']['logo_empresa'] != null)) {
+            $logoEmpresa=$ordenArray['head']['logo_empresa']?'<div><img src=".' . $ordenArray['head']['logo_empresa'] . '" alt="Logo" height="75px"></div>':'<div></div>';
+        }
+        $EstadoSiOrdenAnulada='<div style="position:absolute;" class="right">'.( (isset($ordenArray['head']['estado']) && $ordenArray['head']['estado']==7)?'<h1 style=" color:red; ">ORDEN ANULADA </h2>':'').'</div>';
+        $sustentoSiOrdenAnulada=  ((isset($ordenArray['head']['estado']) && $ordenArray['head']['estado']==7)?'<div class="right" style="position:relative; color:red; font-size:1.5em;">Sustento de anulación: '.( (isset($ordenArray['head']['sustento_anulacion']) && strlen($ordenArray['head']['sustento_anulacion'])>0 )?$ordenArray['head']['sustento_anulacion']:'(Sin sustento)').' </div>':'');
         $html = '
         <html>
             <head>
@@ -1913,11 +1921,8 @@ class OrdenController extends Controller
             <body>
             
         ';
-        
-        if (isset($ordenArray['head']['logo_empresa']) && ($ordenArray['head']['logo_empresa'] != null)) {
-            $html .= '<div style="display:flex;"><img src=".' . $ordenArray['head']['logo_empresa'] . '" alt="Logo" height="75px">'.( (isset($ordenArray['head']['estado']) && $ordenArray['head']['estado']==7)?'<center><h1 style="color:red;">ORDEN ANULADA</h2></cent>':'').'</div>';
-        }
-
+        $html .='<div style="display:flex; position:relative; justify-content: space-between;">'.$logoEmpresa.$EstadoSiOrdenAnulada.'</div>'.$sustentoSiOrdenAnulada;
+    
         $html .= '
         </div>
                 <br>
