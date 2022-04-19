@@ -3404,6 +3404,7 @@ class OrdenController extends Controller
         $status = 0;
         $msj = [];
         $data = [];
+        $tipo_estado='';
         // buscar en detalle_orden los id_detalle_requerimiento
         $log_det_ord_compra = DB::table('logistica.log_det_ord_compra')
             ->select(
@@ -3429,22 +3430,65 @@ class OrdenController extends Controller
                 ->get();
             if (count($guia_com_det) > 0) {
                 $status = 401;
-                $msj[] = 'No se puede reverir. La orden tiene items ingresados a almacén';
+                $tipo_estado = 'warning';
+                $msj[] = 'No se puede anular. La orden tiene items ingresados a almacén';
                 $data = true;
             } else {
                 $status = 200;
+                $tipo_estado = 'success';
                 $msj[] = 'La orden no tiene items ingresados a almacén';
                 $data = false;
             }
         } else {
             $status = 204;
+            $tipo_estado = 'warning';
             $msj[] = 'la orden no tiene detalle';
             $data = false;
         }
 
-        $output = ['status' => $status, 'mensaje' => $msj, 'data' => $data];
+        $output = ['status' => $status,'tipo_estado'=>$tipo_estado, 'mensaje' => $msj, 'data' => $data];
         return $output;
     }
+
+    function tienePagoAutorizado($id_orden){
+        $status = 0;
+        $msj = [];
+        $data = [];
+        $tipo_estado='';
+        // buscar en detalle_orden los id_detalle_requerimiento
+        $log_ord_compra = DB::table('logistica.log_ord_compra')
+            ->select(
+                'log_ord_compra.*'
+            )
+            ->where([
+                ['log_ord_compra.id_orden_compra', '=', $id_orden]
+            ])
+            ->get();
+
+        if (count($log_ord_compra) > 0) {
+            if($log_ord_compra->first()->estado_pago ==5){ // verificar si tiene autorizado el pago
+                $status = 401;
+                $tipo_estado = 'warning';
+                $msj[] = 'No se puede anular la orden tiene autorizado el pago';
+                $data = false;
+            }else{
+                $status = 200;
+                $tipo_estado = 'success';
+                $msj[] = 'La orden no tiene pago autorizado';
+                $data = false;
+
+            }
+        } else {
+            $status = 204;
+            $tipo_estado = 'warning';
+            $msj[] = 'la orden no se encontró';
+            $data = false;
+        }
+
+        $output = ['status' => $status,'tipo_estado'=>$tipo_estado, 'mensaje' => $msj, 'data' => $data];
+        return $output;
+    }
+
 
     function makeRevertirOrden($id_orden, $sustento)
     {
@@ -3453,6 +3497,7 @@ class OrdenController extends Controller
         $output = [];
         $id_requerimiento_list = [];
         $id_usuario_list = [];
+        $tipo_estado='';
 
         $revertirOrden = DB::table('logistica.log_ord_compra') //revertir orden
             ->where([
@@ -3476,16 +3521,20 @@ class OrdenController extends Controller
             );
         if ($revertirOrden > 0) {
             $status = 200;
+            $tipo_estado='success';
             $msj[] = 'Orden Anulada';
         } else {
             $status = 204;
+            $tipo_estado='warning';
             $msj[] = 'hubo un problema al tratar de anular la orden';
         }
         if ($revertirDetalleOrden > 0) {
             $status = 200;
+            $tipo_estado='success';
             // $msj[]='Detalle Orden Revertida';
         } else {
             $status = 204;
+            $tipo_estado='warning';
             $msj[] = 'hubo un problema al tratar de anular el detalle de la orden';
         }
         // revertir requerimiento y detalle requerimiento ==>
@@ -3535,6 +3584,7 @@ class OrdenController extends Controller
                         }
                     }
                     $status = 200;
+                    $tipo_estado='success';
                     $msj[] = 'se restableció el estado del requerimiento';
                     $finalizadosORestablecido = CuadroPresupuestoHelper::finalizar('ANULAR',$id_requerimiento_list);
 
@@ -3586,10 +3636,11 @@ class OrdenController extends Controller
         } // -> si no tiene detalle la orden
         else {
             $status = 204;
+            $tipo_estado='warning';
             $msj[] = 'no se encontro el detalle de la orden';
         }
 
-        $output = ['status' => $status, 'mensaje' => $msj, 'requerimientoIdList' => $id_requerimiento_list];
+        $output = ['status' => $status,'tipo_estado'=>$tipo_estado, 'mensaje' => $msj, 'requerimientoIdList' => $id_requerimiento_list];
         return $output;
     }
 
@@ -3622,6 +3673,7 @@ class OrdenController extends Controller
 
             $idDetalleRequerimientoList = [];
             $detalleOrden = OrdenCompraDetalle::where([["id_orden_compra", $request->idOrden], ["estado", "!=", 7]])->get();
+            $orden = Orden::where("id_orden_compra", $request->idOrden)->first();
             foreach ($detalleOrden as $do) {
                 if ($do->id_detalle_requerimiento > 0) {
                     $idDetalleRequerimientoList[] = $do->id_detalle_requerimiento;
@@ -3634,6 +3686,7 @@ class OrdenController extends Controller
                 $sustento =  $request->sustento != null ? trim(strtoupper($request->sustento)) : null;
 
                 $status = 0;
+                $tipo_estado = '';
                 $msj = [];
                 $output = [];
                 $requerimientoIdList = [];
@@ -3657,18 +3710,27 @@ class OrdenController extends Controller
 
                 // proceso anulación
                 if($anulacion=='OK'){
-                    $hasIngreso = $this->TieneingresoAlmacen($idOrden);
-                    if ($hasIngreso['status'] == 200 && $hasIngreso['data'] == false) {
-                        $makeRevertirOrden = $this->makeRevertirOrden($idOrden, $sustento);
-                        // Debugbar::info($makeRevertirOrden);
-    
+                    $hasIngreso = $this->tieneingresoAlmacen($idOrden);
+                    $hasPagoAutorizado = $this->tienePagoAutorizado($idOrden);
+                    if (($hasIngreso['status'] == 200 && $hasIngreso['data'] == false) && ($hasPagoAutorizado['status'] == 200 && $hasPagoAutorizado['data'] == false)) {
+                        $makeRevertirOrden = $this->makeRevertirOrden($idOrden, $sustento);    
                         $status = $makeRevertirOrden['status'];
+                        $tipo_estado = $makeRevertirOrden['tipo_estado'];
                         $msj[] = $makeRevertirOrden['mensaje'];
                         $requerimientoIdList = $makeRevertirOrden['requerimientoIdList'];
                     } else {
-                        $status = $hasIngreso['status'];
+                        if($hasIngreso['status'] != 200){
+                            $status = $hasIngreso['status'];
+                            $tipo_estado = $hasIngreso['tipo_estado'];
+                        }elseif($hasPagoAutorizado['status'] !=200){
+                            $status = $hasPagoAutorizado['status'];
+                            $tipo_estado = $hasPagoAutorizado['tipo_estado'];
+                        }
+
                         $msj[] = $hasIngreso['mensaje'];
+                        $msj[] = $hasPagoAutorizado['mensaje'];
                     }
+
     
                     if ($status == 200) {
                         $orden = Orden::select(
@@ -3694,7 +3756,7 @@ class OrdenController extends Controller
                         'id_orden_compra' => $idOrden,
                         'codigo' => $orden->codigo,
                         'status' => $status,
-                        'tipo_estado' => 'success',
+                        'tipo_estado' => $tipo_estado,
                         'mensaje' => $msj,
                         'status_migracion_softlink' => $ValidarOrdenSoftlink,
                     ];
