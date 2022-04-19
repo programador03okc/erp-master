@@ -15,6 +15,7 @@ function format(table_id, id, row, $boton) {
                         html += '<tr ' + (element.tiene_transformacion ? ' style="background-color: gainsboro;" ' : '') + ' id="' + element.id_detalle_requerimiento + '">' +
                             '<td style="border: none;">' + i + '</td>' +
                             '<td style="border: none;text-align:center">' + (element.producto_codigo !== null ? element.producto_codigo : '(producto no mapeado)') + (element.tiene_transformacion ? ' <span class="badge badge-secondary">Transformado</span> ' : '') + '</td>' +
+                            '<td style="border: none;text-align:center">' + (element.cod_softlink !== null ? element.cod_softlink : '') + '</td>' +
                             '<td style="border: none;text-align:center">' + (element.part_number !== null ? element.part_number : '') + '</td>' +
                             '<td style="border: none;">' + (element.producto_descripcion !== null ? element.producto_descripcion : (element.descripcion !== null ? element.descripcion : '')) + '</td>' +
                             '<td style="border: none;text-align:center">' + element.cantidad + '</td>' +
@@ -37,6 +38,7 @@ function format(table_id, id, row, $boton) {
                         <tr>
                             <th style="border: none;">#</th>
                             <th style="border: none;">Cod.Prod.</th>
+                            <th style="border: none;">Cod.Softlink</th>
                             <th style="border: none;">PartNumber</th>
                             <th style="border: none;">Descripción</th>
                             <th style="border: none;">Cantidad</th>
