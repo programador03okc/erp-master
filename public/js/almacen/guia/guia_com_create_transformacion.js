@@ -23,6 +23,7 @@ function open_transformacion_guia_create(data) {
     $('#detalleOrdenSeleccionadas tbody').html('');
     cargar_almacenes(data.id_sede, data.id_almacen);
     $("#id_almacen").attr('disabled', 'true');
+    $('[name=comentario]').val('');
 
     $(".orden_transformacion").html(`<h5></h5>
     <div style="display:flex;">
@@ -94,6 +95,7 @@ function listar_detalle_transformacion(id) {
                     'simbolo': element.simbolo
                 });
             });
+            $('[name=tipo_cambio_transformacion]').val(response['tipo_cambio']);
             mostrar_detalle_transformacion();
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {
@@ -245,4 +247,23 @@ $('#detalleOrdenSeleccionadas tbody').on("change", ".cantidad", function () {
     });
     console.log(series_transformacion);
     mostrar_detalle_transformacion();
+});
+
+
+$("[name=fecha_almacen]").on('change', function () {
+    var fecha = $(this).val();
+    $.ajax({
+        type: 'GET',
+        // headers: { 'X-CSRF-TOKEN': token },
+        url: 'getTipoCambioVenta/' + fecha,
+        dataType: 'JSON',
+        success: function (response) {
+            console.log(response);
+            $('[name=tipo_cambio_transformacion]').val(response);
+        }
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
 });

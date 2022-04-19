@@ -182,8 +182,8 @@
             $det_series = DB::table('almacen.alm_prod_serie')
                 ->select('alm_prod_serie.serie')
                 ->where([
-                    ['alm_prod_serie.id_prod', '=', $prod->id_producto],
-                    ['alm_prod_serie.id_guia_ven_det', '=', $prod->id_guia_ven_det],
+                    ['alm_prod_serie.id_prod', '=', $prod['id_producto']],
+                    ['alm_prod_serie.id_guia_ven_det', '=', $prod['id_guia_ven_det']],
                     ['alm_prod_serie.estado', '!=', 7]
                 ])
                 ->get();
@@ -201,21 +201,22 @@
                 }
             }
 
-            $unitario = ($prod->cantidad !== null
-                            ? ($prod->valorizacion / $prod->cantidad)
-                            : 0);
+            // $unitario = ($prod->cantidad !== null
+            //                 ? ($prod->valorizacion / $prod->cantidad)
+            //                 : 0);
             // $valorizacion = $unitario * ($prod->cantidad);
 
             ?>
             <tr>
-                <td class="text-center">{{$prod->codigo}}</td>
-                <td class="text-center">{{$prod->part_number}}</td>
-                <td>{{$prod->descripcion}} <br><strong> {{$series}}</strong></td>
-                <td class="text-center">{{$prod->cantidad}}</td>
-                <td class="text-center">{{$prod->abreviatura}}</td>
-                <td class="text-right">{{$prod->moneda_doc!==null?$prod->moneda_doc:'S/'}}</td>
-                <td class="text-right">{{round($unitario,2,PHP_ROUND_HALF_UP)}}</td>
-                <td class="text-right">{{round($prod->valorizacion,2,PHP_ROUND_HALF_UP)}}</td>
+                <td class="text-center">{{$prod['codigo']}}</td>
+                <td class="text-center">{{$prod['part_number']}}</td>
+                <td>{{$prod['descripcion']}} <br><strong> {{$series}}</strong></td>
+                <td class="text-center">{{$prod['cantidad']}}</td>
+                <td class="text-center">{{$prod['abreviatura']}}</td>
+                {{-- <td class="text-right">{{$prod->moneda_doc!==null?$prod->moneda_doc:'S/'}}</td> --}}
+                <td class="text-right">{{$prod['simbolo']}}</td>
+                <td class="text-right">{{round($prod['costo_promedio'],2,PHP_ROUND_HALF_UP)}}</td>
+                <td class="text-right">{{round($prod['valorizacion'],2,PHP_ROUND_HALF_UP)}}</td>
             </tr>
             @endforeach
         </tbody>

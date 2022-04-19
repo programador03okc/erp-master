@@ -68,7 +68,7 @@
                                     <option value="{{$clas->id_moneda}}">{{$clas->descripcion}}</option>
                                     @endforeach
                                 </select>
-                                <input type="number" class="form-control" name="tipo_cambio_transformacion" step="0.01" />
+                                <input type="number" class="form-control" name="tipo_cambio_transformacion" step="0.0001" readonly/>
                             </div>
                         </div>
                         <div class="col-md-1 orden_transformacion">
