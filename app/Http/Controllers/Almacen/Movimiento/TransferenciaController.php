@@ -241,10 +241,11 @@ class TransferenciaController extends Controller
             ->join('almacen.mov_alm as salida', 'salida.id_guia_ven', '=', 'trans.id_guia_ven')
             ->join('almacen.guia_ven', 'guia_ven.id_guia_ven', '=', 'trans.id_guia_ven')
             ->join('almacen.guia_com', 'guia_com.id_guia', '=', 'trans.id_guia_com')
-            ->leftJoin('almacen.alm_req', function ($join) {
-                $join->on('alm_req.id_requerimiento', '=', 'trans.id_requerimiento');
-                $join->where('alm_req.estado', '!=', 7);
-            })
+            ->leftjoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'trans.id_requerimiento')
+            // ->leftJoin('almacen.alm_req', function ($join) {
+            //     $join->on('alm_req.id_requerimiento', '=', 'trans.id_requerimiento');
+            //     $join->where('alm_req.estado', '!=', 7);
+            // })
             ->join('almacen.alm_almacen as alm_origen', 'alm_origen.id_almacen', '=', 'trans.id_almacen_origen')
             ->join('almacen.alm_almacen as alm_destino', 'alm_destino.id_almacen', '=', 'trans.id_almacen_destino')
             ->join('administracion.sis_sede as sede_origen', 'sede_origen.id_sede', '=', 'alm_origen.id_sede')
