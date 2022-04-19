@@ -48,8 +48,8 @@ function verDocumentosAutogenerados(id_doc_com) {
 
 function verIngreso(idIngreso) {
     if (idIngreso !== "") {
-        var id = encode5t(idIngreso);
-        window.open("imprimir_ingreso/" + id);
+        // var id = encode5t(idIngreso);
+        window.open("imprimir_ingreso/" + idIngreso);
     }
 }
 

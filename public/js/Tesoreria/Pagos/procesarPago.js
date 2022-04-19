@@ -18,7 +18,7 @@ function openRegistroPago(data) {
     var comentarioPagoLogistica = data.data('comentarioPagoLogistica');
 
     var total_pago = formatDecimal(parseFloat(total) - pago);
-    console.log(cta);
+    console.log(data);
 
     const $modal = $('#modal-procesarPago');
     $modal.modal({
@@ -66,11 +66,11 @@ function openRegistroPago(data) {
     $('[name=banco]').text(banco !== 'undefined' ? banco : '');
     $('[name=empresa_razon_social]').text(empresa !== 'undefined' ? empresa : '');
     $('[name=motivo]').text(motivo !== undefined ? decodeURIComponent(motivo) : '');
-    $('[name=comentario_pago_logistica]').text(comentarioPagoLogistica??'');
+    $('[name=comentario_pago_logistica]').text(comentarioPagoLogistica ?? '');
 
-    if(comentarioPagoLogistica!=undefined && comentarioPagoLogistica!=''){
+    if (comentarioPagoLogistica != undefined && comentarioPagoLogistica != '') {
         document.querySelector("div[id='modal-procesarPago'] div[id='contenedor_comentario_pago_logistica']").classList.remove("oculto");
-    }else{
+    } else {
         document.querySelector("div[id='modal-procesarPago'] div[id='contenedor_comentario_pago_logistica']").classList.add("oculto");
     }
 
@@ -128,6 +128,25 @@ function procesarPago() {
         console.log(errorThrown);
     });
 }
+
+// function obtenerObservacionRequerimiento() {
+//     $.ajax({
+//         type: 'GET',
+//         url: 'obtenerObserva/' + id,
+//         dataType: 'JSON',
+//         success: function (response) {
+//             console.log(response);
+//             $('#modal-verTransferenciasPorRequerimiento').modal({
+//                 show: true
+//             });
+//             $('#transferenciasPorRequerimiento tbody').html(response);
+//         }
+//     }).fail(function (jqXHR, textStatus, errorThrown) {
+//         console.log(jqXHR);
+//         console.log(textStatus);
+//         console.log(errorThrown);
+//     });
+// }
 
 function listarCuentasOrigen() {
     var id_empresa = $('[name=id_empresa]').val();
