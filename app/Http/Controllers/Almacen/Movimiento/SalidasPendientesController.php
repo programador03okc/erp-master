@@ -739,7 +739,7 @@ class SalidasPendientesController extends Controller
             $lista = $data->where([['alm_det_req.tiene_transformacion', '=', ($aplica_cambios == 'si' ? false : ($tiene_transformacion == 'si' ? true : false))]])
                 ->distinct()->get();
         } else {
-            $valor = $requerimiento->id_tipo_requerimiento == 1 ? true : false;
+            $valor = $requerimiento->id_tipo_requerimiento == 1 ? true : null;
             $lista = $data->where([['alm_det_req.entrega_cliente', '=', $valor]])
                 ->distinct()->get();
         }
