@@ -240,6 +240,7 @@ $("#form-transferenciaGuia").on("submit", function (e) {
     } else {
         data += "&trans_seleccionadas=" + JSON.stringify(id_trans_seleccionadas) +
             "&detalle=" + JSON.stringify(detalle);
+        console.log(data);
         salidaTransferencia(data);
     }
 
