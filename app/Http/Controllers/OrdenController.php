@@ -2504,7 +2504,7 @@ class OrdenController extends Controller
             $actualizarEstados = [];
 
             $idDetalleRequerimientoList = [];
-            $count = count($request->descripcion);
+            $count = count($request->precioUnitario);
             for ($i = 0; $i < $count; $i++) {
                 if ($request->idDetalleRequerimiento[$i] > 0) {
                     $idDetalleRequerimientoList[] = $request->idDetalleRequerimiento[$i];
@@ -2561,7 +2561,8 @@ class OrdenController extends Controller
                     $detalle->cantidad = $request->cantidadAComprarRequerida[$i];
                     $detalle->id_unidad_medida = $request->unidad[$i];
                     $detalle->precio = $request->precioUnitario[$i];
-                    $detalle->descripcion_adicional = $request->descripcion[$i] != null ? trim(strtoupper($request->descripcion[$i])) : null;
+                    // $detalle->descripcion_adicional = (isset($request->descripcion[$i]) && $request->descripcion[$i] != null) ? trim(strtoupper($request->descripcion[$i])) : null;
+                    $detalle->descripcion_adicional = ($request->descripcion[$i] != null) ? trim(strtoupper(utf8_encode($request->descripcion[$i]))) : null;
                     $detalle->subtotal = floatval($request->cantidadAComprarRequerida[$i] * $request->precioUnitario[$i]);
                     $detalle->tipo_item_id = $request->idTipoItem[$i];
                     $detalle->estado = 1;
