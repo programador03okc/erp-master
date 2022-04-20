@@ -60,41 +60,41 @@ function listarDetalleOrdenDespacho(id_requerimiento, id_od, aplica_cambios, tie
             response.forEach(element => {
                 cantidad_despacho = (element.cantidad - (element.cantidad_despachada ?? 0));
 
-                // if (cantidad_despacho > 0) {
-                detalle.push({
-                    'id_od_detalle': element.id_od_detalle,
-                    'id_detalle_requerimiento': element.id_detalle_requerimiento,
-                    'id_producto': element.id_producto,
-                    'id_unidad_medida': element.id_unidad_medida,
-                    'codigo': element.codigo,
-                    'part_number': element.part_number,
-                    'descripcion': element.descripcion,
-                    'cantidad_despachada': element.cantidad_despachada ?? 0,
-                    'cantidad_despacho': cantidad_despacho,
-                    'cantidad': cantidad_despacho,
-                    'abreviatura': element.abreviatura,
-                    'control_series': element.control_series,
-                    'suma_reservas': element.stock_comprometido ?? 0,
-                    'id_almacen_reserva': element.id_almacen_reserva,
-                    'almacen_reserva': element.almacen_reserva,
-                    'series': []
-                });
-                console.log(element.codigo + ': ' + element.stock_comprometido + '!== ' + element.cantidad);
+                if (cantidad_despacho > 0) {
+                    detalle.push({
+                        'id_od_detalle': element.id_od_detalle,
+                        'id_detalle_requerimiento': element.id_detalle_requerimiento,
+                        'id_producto': element.id_producto,
+                        'id_unidad_medida': element.id_unidad_medida,
+                        'codigo': element.codigo,
+                        'part_number': element.part_number,
+                        'descripcion': element.descripcion,
+                        'cantidad_despachada': element.cantidad_despachada ?? 0,
+                        'cantidad_despacho': cantidad_despacho,
+                        'cantidad': cantidad_despacho,
+                        'abreviatura': element.abreviatura,
+                        'control_series': element.control_series,
+                        'suma_reservas': element.stock_comprometido ?? 0,
+                        'id_almacen_reserva': element.id_almacen_reserva,
+                        'almacen_reserva': element.almacen_reserva,
+                        'series': []
+                    });
+                    console.log(element.codigo + ': ' + element.stock_comprometido + '!== ' + element.cantidad);
 
-                if (parseFloat(element.stock_comprometido) > 0) {
-                    items_para_despachar++;
+                    if (parseFloat(element.stock_comprometido) > 0) {
+                        items_para_despachar++;
+                    }
+                    if (parseFloat(element.stock_comprometido) == 0 || element.stock_comprometido == null) {
+                        msj = '*Aún no hay saldo de todos los productos. ';
+                    }
+                    if (element.id_almacen_reserva !== null && (id_almacen == null || id_almacen == '')) {
+                        id_almacen = element.id_almacen_reserva;
+                        almacen_descripcion = element.almacen_reserva;
+                    }
+                    if (element.id_almacen_reserva !== null && element.id_almacen_reserva !== id_almacen) {
+                        almacen_diferentes++;
+                    }
                 }
-                if (parseFloat(element.stock_comprometido) == 0 || element.stock_comprometido == null) {
-                    msj = '*Aún no hay saldo de todos los productos. ';
-                }
-                if (element.id_almacen_reserva !== null && (id_almacen == null || id_almacen == '')) {
-                    id_almacen = element.id_almacen_reserva;
-                    almacen_descripcion = element.almacen_reserva;
-                }
-                if (element.id_almacen_reserva !== null && element.id_almacen_reserva !== id_almacen) {
-                    almacen_diferentes++;
-                }
-                // }
             });
             if (items_para_despachar == 0) {
                 $("#submit_guia").attr('disabled', 'true');
