@@ -60,7 +60,7 @@ function listarDetalleOrdenDespacho(id_requerimiento, id_od, aplica_cambios, tie
             response.forEach(element => {
                 cantidad_despacho = (element.cantidad - (element.cantidad_despachada ?? 0));
 
-                if (cantidad_despacho > 0) {
+                if (cantidad_despacho > 0 && parseFloat(element.stock_comprometido) > 0) {
                     detalle.push({
                         'id_od_detalle': element.id_od_detalle,
                         'id_detalle_requerimiento': element.id_detalle_requerimiento,
