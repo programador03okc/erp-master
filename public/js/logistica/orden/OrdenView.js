@@ -211,7 +211,6 @@ class OrdenView {
                 break;
 
             case 12:// orden de importacion
-                console.log('orden');
                 document.querySelector("input[name='migrar_oc_softlink']").checked = false;
                 document.querySelector("input[name='incluye_igv']").checked = false;
 
@@ -313,7 +312,7 @@ class OrdenView {
             data: { 'requerimientoList': reqTrueList },
             dataType: 'JSON',
             success: (response) => {
-                console.log(response);
+                // console.log(response);
                 response.forEach(req => {
                     req.detalle.forEach(det => {
                         if (det.cantidad > 0 && (![28, 5].includes(det.estado)) && det.id_tipo_item == idTipoItem) {
@@ -367,7 +366,7 @@ class OrdenView {
                         }
                     });
                 });
-                console.log(detalleOrdenList);
+                // console.log(detalleOrdenList);
                 if (detalleOrdenList.length == 0) {
                     Swal.fire(
                         '',
@@ -532,12 +531,13 @@ class OrdenView {
         for (let i = 0; i < data.length; i++) {
             if (data[i].id_tipo_item == 1) { // producto
                 if (data[i].id_producto > 0) {
+                    console.log((data[i].descripcion_producto ? data[i].descripcion_producto : data[i].descripcion));
                     document.querySelector("tbody[id='body_detalle_orden']").insertAdjacentHTML('beforeend', `<tr style="text-align:center;" class="${data[i].estado == 7 ? 'danger textRedStrikeHover' : ''};">
                         <td class="text-center">${data[i].codigo_requerimiento ? data[i].codigo_requerimiento : ''} <input type="hidden"  name="idRegister[]" value="${data[i].id_detalle_orden ? data[i].id_detalle_orden : this.makeId()}"> <input type="hidden"  class="idEstado" name="idEstado[]"> <input type="hidden"  name="idDetalleRequerimiento[]" value="${data[i].id_detalle_requerimiento ? data[i].id_detalle_requerimiento : ''}">  <input type="hidden"  name="idTipoItem[]" value="1"></td>
                         <td class="text-center">${data[i].codigo_producto ? data[i].codigo_producto : ''} </td>
                         <td class="text-center">${data[i].codigo_softlink ? data[i].codigo_softlink : ''} </td>
                         <td class="text-center">${data[i].part_number ? data[i].part_number : ''} <input type="hidden"  name="idProducto[]" value="${(data[i].id_producto ? data[i].id_producto : data[i].id_producto)}"></td>
-                        <td class="text-left">${(data[i].descripcion_producto ? data[i].descripcion_producto : (data[i].descripcion != null ? data[i].descripcion : ''))} <input type="hidden"  name="descripcion[]" value="${(data[i].descripcion_producto ? data[i].descripcion_producto : data[i].descripcion)} "></td>
+                        <td class="text-left">${(data[i].descripcion_producto ? data[i].descripcion_producto : (data[i].descripcion != null ? data[i].descripcion : ''))} <textarea style="display:none;"  name="descripcion[]">${(data[i].descripcion_producto ? data[i].descripcion_producto : data[i].descripcion)}</textarea></td>
                         <td><select name="unidad[]" class="form-control ${(data[i].estado_guia_com_det > 0 && data[i].estado_guia_com_det != 7 ? '' : 'activation')} input-sm unidadMedida" data-valor="${data[i].id_unidad_medida}" disabled>${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
                         <td>${(data[i].cantidad ? data[i].cantidad : '')}</td>
                         <td>${(data[i].cantidad_atendido_almacen ? data[i].cantidad_atendido_almacen : '')}</td>
