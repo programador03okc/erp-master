@@ -81,7 +81,7 @@ function listarDetalleOrdenDespacho(id_requerimiento, id_od, aplica_cambios, tie
                 });
                 console.log(element.codigo + ': ' + element.stock_comprometido + '!== ' + element.cantidad);
 
-                if (parseFloat(element.stock_comprometido) >= parseFloat(element.cantidad)) {
+                if (parseFloat(element.stock_comprometido) > 0) {
                     items_para_despachar++;
                 }
                 if (parseFloat(element.stock_comprometido) == 0 || element.stock_comprometido == null) {
