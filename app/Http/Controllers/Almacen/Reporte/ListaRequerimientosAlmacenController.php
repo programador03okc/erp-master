@@ -107,6 +107,19 @@ class ListaRequerimientosAlmacenController extends Controller
                     'id_sede' => $alm->id_sede
                 ]);
 
+            $od = DB::table('almacen.orden_despacho')
+                ->where([
+                    ['id_requerimiento', '=', $request->id_requerimiento],
+                    ['estado', '=', 1]
+                ])
+                ->first();
+
+            if ($od !== null) {
+                DB::table('almacen.orden_despacho')
+                    ->where('id_od', $od->id_od)
+                    ->update(['id_almacen' => $request->id_almacen]);
+            }
+
             $detalle = json_decode($request->detalle);
 
             foreach ($detalle as $det) {
