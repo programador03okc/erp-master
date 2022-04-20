@@ -17,7 +17,7 @@ class OrdenView {
 
     init() {
         var reqTrueList = JSON.parse(sessionStorage.getItem('reqCheckedList'));
-       
+
         var tipoOrden = sessionStorage.getItem('tipoOrden');
         if (reqTrueList != undefined && reqTrueList != null && (reqTrueList.length > 0)) {
             // ordenView.changeStateInput('form-crear-orden-requerimiento', false);
@@ -27,8 +27,8 @@ class OrdenView {
             this.obtenerRequerimiento(reqTrueList, tipoOrden);
             let btnVinculoAReq = `<span class="text-info" id="text-info-req-vinculado" > <a onClick="window.location.reload();" style="cursor:pointer;" title="Recargar con Valores Iniciales del Requerimiento">(vinculado a un Requerimiento)</a> <span class="badge label-danger handleClickEliminarVinculoReq" style="position: absolute;margin-top: -5px;margin-left: 5px; cursor:pointer" title="Eliminar vínculo">×</span></span>`;
             document.querySelector("section[class='content-header']").children[0].innerHTML += btnVinculoAReq;
-            sessionStorage.removeItem('reqCheckedList'); 
-            sessionStorage.removeItem('tipoOrden'); 
+            sessionStorage.removeItem('reqCheckedList');
+            sessionStorage.removeItem('tipoOrden');
         }
         var idOrden = sessionStorage.getItem('idOrden');
         actionPage = sessionStorage.getItem('action');
@@ -188,7 +188,7 @@ class OrdenView {
 
     }
 
-    estadoCuadroPresupuesto(){
+    estadoCuadroPresupuesto() {
         $('#modal-estado-cuadro-presupuesto').modal({
             show: true,
             backdrop: 'true',
@@ -197,15 +197,24 @@ class OrdenView {
         });
     }
 
-    cambiarTipoOrden(obj){
-        switch (obj.value) {
+    cambiarTipoOrden(obj) {
+        switch (parseInt(obj.value)) {
             case 2:// orden de compra
-                document.querySelector("input[name='incluye_igv']").checked=true;
+                document.querySelector("input[name='incluye_igv']").checked = true;
                 this.calcularMontosTotales();
                 break;
             case 3:// orden de servicio
+                document.querySelector("input[name='migrar_oc_softlink']").checked = true;
+                document.querySelector("input[name='incluye_igv']").checked = false;
+                this.calcularMontosTotales();
+
+                break;
+
             case 12:// orden de importacion
-                document.querySelector("input[name='incluye_igv']").checked=false;
+                console.log('orden');
+                document.querySelector("input[name='migrar_oc_softlink']").checked = false;
+                document.querySelector("input[name='incluye_igv']").checked = false;
+
                 this.calcularMontosTotales();
                 break;
             default:
@@ -213,10 +222,10 @@ class OrdenView {
         }
     }
 
-    enviarNotificacionEmailCuadroPresupuestoFinalizado(){
-        let idOrden =document.querySelector("div[id='modal-estado-cuadro-presupuesto'] label[id='id_orden']").textContent;
+    enviarNotificacionEmailCuadroPresupuestoFinalizado() {
+        let idOrden = document.querySelector("div[id='modal-estado-cuadro-presupuesto'] label[id='id_orden']").textContent;
 
-        if(idOrden >0){
+        if (idOrden > 0) {
             Swal.fire({
                 title: '¿Esta seguro de querer enviarle una notificar a los usuarios de la finalización de cuadro de presupuesto?',
                 text: "Solo se considera de los cuadros finalizados vinculados a la orden",
@@ -226,13 +235,13 @@ class OrdenView {
                 cancelButtonColor: '#d33',
                 cancelButtonText: 'Cancelar',
                 confirmButtonText: 'Si, enviar email'
-    
+
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
                         type: 'POST',
                         url: 'enviar-notificacion-finalizacion-cdp',
-                        data:{'idOrden':idOrden},
+                        data: { 'idOrden': idOrden },
                         dataType: 'JSON',
                         beforeSend: data => {
 
@@ -246,14 +255,14 @@ class OrdenView {
                             $("#modal-estado-cuadro-presupuesto .modal-content").LoadingOverlay("hide", true);
 
                             console.log(response);
-                                Lobibox.notify(response.tipo_estado, {
-                                    title: false,
-                                    size: 'mini',
-                                    rounded: true,
-                                    sound: false,
-                                    delayIndicator: false,
-                                    msg: response.mensaje
-                                });
+                            Lobibox.notify(response.tipo_estado, {
+                                title: false,
+                                size: 'mini',
+                                rounded: true,
+                                sound: false,
+                                delayIndicator: false,
+                                msg: response.mensaje
+                            });
 
                         }
                     }).fail((jqXHR, textStatus, errorThrown) => {
@@ -272,7 +281,7 @@ class OrdenView {
 
                 }
             });
-        }else{
+        } else {
             Lobibox.notify('warning', {
                 title: false,
                 size: 'mini',
@@ -337,10 +346,10 @@ class OrdenView {
                                         'cantidad_a_comprar': !(cantidadAAtender >= 0) ? '' : cantidadAAtender,
                                         'cantidad_atendido_almacen': cantidad_atendido_almacen,
                                         'cantidad_atendido_orden': cantidad_atendido_orden,
-                                        'descripcion_producto': det.producto !=null? det.producto.descripcion:'',
-                                        'codigo_producto': det.producto !=null? det.producto.codigo:'',
-                                        'part_number': det.producto !=null? det.producto.part_number:'',
-                                        'codigo_softlink': det.producto !=null? det.producto.cod_softlink:'',
+                                        'descripcion_producto': det.producto != null ? det.producto.descripcion : '',
+                                        'codigo_producto': det.producto != null ? det.producto.codigo : '',
+                                        'part_number': det.producto != null ? det.producto.part_number : '',
+                                        'codigo_softlink': det.producto != null ? det.producto.cod_softlink : '',
                                         'descripcion': det.descripcion,
                                         'estado': det.estado.id_estado_doc,
                                         'fecha_registro': det.fecha_registro,
@@ -465,11 +474,11 @@ class OrdenView {
         // let descripcion_condicion_softlink = condicion_softlink.options[condicion_softlink.selectedIndex].text;
         let dias_condicion_softlink = condicion_softlink.options[condicion_softlink.selectedIndex].dataset.dias;
 
-        if(dias_condicion_softlink>0){
+        if (dias_condicion_softlink > 0) {
             document.getElementsByName('id_condicion')[0].value = 2;
             document.getElementsByName('plazo_dias')[0].value = dias_condicion_softlink;
 
-        }else{
+        } else {
             document.getElementsByName('id_condicion')[0].value = 1;
             document.getElementsByName('plazo_dias')[0].value = 0;
 
@@ -509,7 +518,7 @@ class OrdenView {
         document.querySelector("input[name='ubigeo_destino']").value = data[0].sede ? data[0].sede.ubigeo_completo : '';
         document.querySelector("select[name='id_sede']").value = data[0].id_sede ? data[0].id_sede : '';
         document.querySelector("select[name='id_moneda']").value = data[0].id_moneda ? data[0].id_moneda : 1;
-        document.querySelector("input[name='id_cc']").value = data[0].id_cc ? data[0].id_cc:'';
+        document.querySelector("input[name='id_cc']").value = data[0].id_cc ? data[0].id_cc : '';
         document.querySelector("textarea[name='observacion']").value = '';
 
         this.updateAllSimboloMoneda();
@@ -617,7 +626,7 @@ class OrdenView {
     }
 
 
-    actualizarValorIncluyeIGV(obj){
+    actualizarValorIncluyeIGV(obj) {
         this.calcularMontosTotales();
 
     }
@@ -628,9 +637,9 @@ class OrdenView {
 
         let totalNeto = 0;
         for (let index = 0; index < childrenTableTbody.length; index++) {
-  
-            if(childrenTableTbody[index].classList.contains("danger") ==false){
-                
+
+            if (childrenTableTbody[index].classList.contains("danger") == false) {
+
                 let cantidad = parseFloat(childrenTableTbody[index].querySelector("input[class~='cantidad_a_comprar']").value ? childrenTableTbody[index].querySelector("input[class~='cantidad_a_comprar']").value : 0);
                 let precioUnitario = parseFloat(childrenTableTbody[index].querySelector("input[class~='precio']").value ? childrenTableTbody[index].querySelector("input[class~='precio']").value : 0);
                 totalNeto += (cantidad * precioUnitario);
@@ -692,14 +701,14 @@ class OrdenView {
                 let tr = obj.closest("tr");
                 var regExp = /[a-zA-Z]/g; //expresión regular
 
-                if(regExp.test(tr.querySelector("input[name='idRegister[]']").value) ==true ){
+                if (regExp.test(tr.querySelector("input[name='idRegister[]']").value) == true) {
                     tr.remove();
                     this.calcularMontosTotales();
-    
-                }else{
-                    tr.querySelector("input[class~='idEstado']").value=7;
-                    tr.classList.add("danger","textRedStrikeHover");
-                    tr.querySelector("button[name='btnOpenModalEliminarItemOrden']").setAttribute("disabled",true);
+
+                } else {
+                    tr.querySelector("input[class~='idEstado']").value = 7;
+                    tr.classList.add("danger", "textRedStrikeHover");
+                    tr.querySelector("button[name='btnOpenModalEliminarItemOrden']").setAttribute("disabled", true);
                     this.calcularMontosTotales(); // considere las filas anuladas
                 }
 
@@ -731,7 +740,7 @@ class OrdenView {
         this.limpiarTabla('listaItems');
         this.ocultarBtnCrearProducto();
         this.listarCatalogoProductos('PRODUCTOS');
-    
+
 
     }
 
@@ -747,7 +756,7 @@ class OrdenView {
         this.limpiarTabla('listaItems');
         this.ocultarBtnCrearProducto();
         this.listarCatalogoProductos('OBSEQUIOS');
-    
+
 
     }
 
@@ -755,7 +764,7 @@ class OrdenView {
         cambiarVisibilidadBtn("btn-crear-producto", "ocultar");
     }
 
-    listarCatalogoProductos(tipo){
+    listarCatalogoProductos(tipo) {
         $tablaListaCatalogoProductos = $('#listaCatalogoProductos').DataTable({
             'dom': 'Bfrtip',
             'language': vardataTables[0],
@@ -780,7 +789,7 @@ class OrdenView {
                 { 'data': 'codigo', 'name': 'alm_prod.codigo' },
                 { 'data': 'cod_softlink', 'name': 'alm_prod.cod_softlink' },
                 { 'data': 'part_number', 'name': 'alm_prod.part_number' },
-                { 'data': 'descripcion', 'name':'alm_prod.descripcion' },
+                { 'data': 'descripcion', 'name': 'alm_prod.descripcion' },
                 { 'data': 'abreviatura_unidad_medida', 'name': 'alm_und_medida.abreviatura' },
                 { 'data': 'id_producto', 'name': 'alm_prod.id_producto', "searchable": false }
 
@@ -833,12 +842,12 @@ class OrdenView {
                 { 'aTargets': [5], 'className': "text-center", 'sWidth': '20%' },
                 {
                     'render':
-                    function (data, type, row) {
-                        switch (tipo) {
-                            case 'OBSEQUIOS':
-                                if (row.id_unidad_medida == 1) {
+                        function (data, type, row) {
+                            switch (tipo) {
+                                case 'OBSEQUIOS':
+                                    if (row.id_unidad_medida == 1) {
 
-                                    let btnProductoObsequioSeleccionar = `<button class="btn btn-success btn-xs handleClickSelectObsequio" 
+                                        let btnProductoObsequioSeleccionar = `<button class="btn btn-success btn-xs handleClickSelectObsequio" 
                                     data-id-producto="${row.id_producto}"
                                     data-codigo="${row.codigo}"
                                     data-codigo-softlink="${row.cod_softlink}"
@@ -848,16 +857,16 @@ class OrdenView {
                                     data-id-unidad-medida="${row.id_unidad_medida}"
                                     
                                     >Agregar obsequio</button>`;
-                                    // let btnVerSaldo = `<button class="btn btn-sm btn-info" onClick="verSaldoProducto('${row.id_producto}');">Stock</button>')`;
-                                    return btnProductoObsequioSeleccionar;
-        
-                                } else {
-                                return '';
-                                }     
-                                break;
-                            case 'PRODUCTOS':
-                                
-                                let btnProductoSeleccionar = `<button class="btn btn-success btn-xs handleClickSelectProducto" 
+                                        // let btnVerSaldo = `<button class="btn btn-sm btn-info" onClick="verSaldoProducto('${row.id_producto}');">Stock</button>')`;
+                                        return btnProductoObsequioSeleccionar;
+
+                                    } else {
+                                        return '';
+                                    }
+                                    break;
+                                case 'PRODUCTOS':
+
+                                    let btnProductoSeleccionar = `<button class="btn btn-success btn-xs handleClickSelectProducto" 
                                 data-id-producto="${row.id_producto}"
                                 data-codigo="${row.codigo}"
                                 data-codigo-softlink="${row.cod_softlink}"
@@ -867,13 +876,13 @@ class OrdenView {
                                 data-id-unidad-medida="${row.id_unidad_medida}"
                                 
                                 >Agregar producto</button>`;
-                                // let btnVerSaldo = `<button class="btn btn-sm btn-info" onClick="verSaldoProducto('${row.id_producto}');">Stock</button>')`;
-                                return btnProductoSeleccionar;
-                                break;
-                    
-                        }
+                                    // let btnVerSaldo = `<button class="btn btn-sm btn-info" onClick="verSaldoProducto('${row.id_producto}');">Stock</button>')`;
+                                    return btnProductoSeleccionar;
+                                    break;
 
-                    },targets: 5, className: "text-center", sWidth: '8%'
+                            }
+
+                        }, targets: 5, className: "text-center", sWidth: '8%'
                 }
             ]
 
@@ -956,7 +965,7 @@ class OrdenView {
             'tiene_transformacion': false,
             'producto_regalo': false,
             'unidad_medida': obj.dataset.unidadMedida
-        }],'OBSEQUIO');
+        }], 'OBSEQUIO');
         $('#modal-catalogo-items').modal('hide');
 
     }
@@ -981,7 +990,7 @@ class OrdenView {
             'id_requerimiento': null,
             'id_unidad_medida': obj.dataset.idUnidadMedida,
             'lugar_despacho': null,
-            'part_number': obj.dataset.partNumber+'<br><span class="label label-default">Obsequio</span>',
+            'part_number': obj.dataset.partNumber + '<br><span class="label label-default">Obsequio</span>',
             'precio_unitario': 0,
             'id_moneda': 1,
             'stock_comprometido': null,
@@ -989,7 +998,7 @@ class OrdenView {
             'tiene_transformacion': false,
             'producto_regalo': true,
             'unidad_medida': obj.dataset.unidadMedida
-        }],'OBSEQUIO');
+        }], 'OBSEQUIO');
         $('#modal-catalogo-items').modal('hide');
 
     }
@@ -997,7 +1006,7 @@ class OrdenView {
     UpdateSelectUnidadMedida() {
         const AllTrTbodyListaDetalleOrden = document.querySelectorAll("table[id='listaDetalleOrden'] tbody tr");
         AllTrTbodyListaDetalleOrden.forEach(fila => {
-            if(fila.querySelector("select[class~='unidadMedida']")){
+            if (fila.querySelector("select[class~='unidadMedida']")) {
                 let valorUnidad = fila.querySelector("select[class~='unidadMedida']").dataset.valor;
                 fila.querySelector("select[class~='unidadMedida']").value = valorUnidad;
             }
@@ -1035,7 +1044,7 @@ class OrdenView {
 
         this.autoUpdateSubtotal();
         this.UpdateSelectUnidadMedida();
-        if (data.length > 0 && tipo =='OBSEQUIO') {
+        if (data.length > 0 && tipo == 'OBSEQUIO') {
             Lobibox.notify('success', {
                 title: false,
                 size: 'mini',
@@ -1100,7 +1109,7 @@ class OrdenView {
         });
 
         this.ConstruirlistarRequerimientosPendientesParaVincularConOrden();
-  
+
 
     }
 
@@ -1131,8 +1140,8 @@ class OrdenView {
                 { 'data': 'concepto', 'name': 'alm_req.concepto', 'className': 'text-left' },
                 { 'data': 'fecha_registro', 'name': 'alm_req.fecha_registro', 'className': 'text-center' },
                 { 'data': 'tipo_req_desc', 'name': 'alm_tp_req.descripcion', 'className': 'text-center' },
-                { 'data': 'moneda','name':'sis_moneda.descripcion','className': 'text-center' },
-                { 'data': 'cliente_razon_social', 'name':'contri_cliente.razon_social','className': 'text-left' },
+                { 'data': 'moneda', 'name': 'sis_moneda.descripcion', 'className': 'text-center' },
+                { 'data': 'cliente_razon_social', 'name': 'contri_cliente.razon_social', 'className': 'text-left' },
                 { 'data': 'empresa_sede', 'name': 'sis_sede.descripcion', 'className': 'text-center' },
                 { 'data': 'cc_solicitado_por', 'name': 'cc_view.name', 'className': 'text-center' },
                 { 'data': 'estado_doc', 'name': 'adm_estado_doc.estado_doc', 'className': 'text-center' },
@@ -1190,15 +1199,15 @@ class OrdenView {
                 { 'aTargets': [8], 'className': "text-center", 'sWidth': '4%' },
                 {
                     'render':
-                    function (data, type, row) {
-                        let containerOpenBrackets = `<div class="btn-group" role="group" style="display: flex;flex-direction: row;flex-wrap: nowrap;">`;
-                        let btnVerDetalle = `<button type="button" class="ver-detalle btn btn-default boton handleClickVerDetalleRequerimientoModalVincularRequerimiento" data-id-requerimiento="${row.id_requerimiento}"  data-toggle="tooltip" data-placement="bottom" title="Ver detalle requerimiento" data-id="${row.id_orden_compra}"> <i class="fas fa-chevron-down fa-sm"></i> </button>`;
-                        let btnSeleccionar = `<button type="button" class="ver-detalle btn btn-${row.count_pendientes >0?'default':'success'} boton handleClickVincularRequerimiento" data-toggle="tooltip" data-placement="bottom" title="${(row.estado == 38 || row.estado ==39?'Este requerimiento tiene un estado por regularizar / en pausa':'Seleccionar')}" data-id-requerimiento="${row.id_requerimiento}" data-id="${row.id_orden_compra}" ${(row.estado == 38 || row.estado ==39?'disabled':'')}> Seleccionar </button>`;
-                        let containerCloseBrackets = `</div>`;
-                        let infoPorMapear =`<small class="text-${row.count_pendientes >0?'danger':'success'}">${row.count_pendientes >0?('Mapeos pendientes: '+row.count_pendientes):''}</small>
+                        function (data, type, row) {
+                            let containerOpenBrackets = `<div class="btn-group" role="group" style="display: flex;flex-direction: row;flex-wrap: nowrap;">`;
+                            let btnVerDetalle = `<button type="button" class="ver-detalle btn btn-default boton handleClickVerDetalleRequerimientoModalVincularRequerimiento" data-id-requerimiento="${row.id_requerimiento}"  data-toggle="tooltip" data-placement="bottom" title="Ver detalle requerimiento" data-id="${row.id_orden_compra}"> <i class="fas fa-chevron-down fa-sm"></i> </button>`;
+                            let btnSeleccionar = `<button type="button" class="ver-detalle btn btn-${row.count_pendientes > 0 ? 'default' : 'success'} boton handleClickVincularRequerimiento" data-toggle="tooltip" data-placement="bottom" title="${(row.estado == 38 || row.estado == 39 ? 'Este requerimiento tiene un estado por regularizar / en pausa' : 'Seleccionar')}" data-id-requerimiento="${row.id_requerimiento}" data-id="${row.id_orden_compra}" ${(row.estado == 38 || row.estado == 39 ? 'disabled' : '')}> Seleccionar </button>`;
+                            let containerCloseBrackets = `</div>`;
+                            let infoPorMapear = `<small class="text-${row.count_pendientes > 0 ? 'danger' : 'success'}">${row.count_pendientes > 0 ? ('Mapeos pendientes: ' + row.count_pendientes) : ''}</small>
                         `;
-                        return (containerOpenBrackets + btnVerDetalle + btnSeleccionar + containerCloseBrackets+infoPorMapear);
-                    },targets: 9, className: "text-center", sWidth: '10%'
+                            return (containerOpenBrackets + btnVerDetalle + btnSeleccionar + containerCloseBrackets + infoPorMapear);
+                        }, targets: 9, className: "text-center", sWidth: '10%'
                 }
             ]
 
@@ -1263,7 +1272,7 @@ class OrdenView {
                     }
 
                     html += `<tr>
-                        <td style="border: none; text-align:center;">${(element.producto_part_number != null ? element.producto_part_number :'')}</td>
+                        <td style="border: none; text-align:center;">${(element.producto_part_number != null ? element.producto_part_number : '')}</td>
                         <td style="border: none; text-align:center;">${(element.producto_codigo != null ? element.producto_codigo : '')}</td>
                         <td style="border: none; text-align:center;">${(element.producto_codigo_softlink != null ? element.producto_codigo_softlink : '')}</td>
                         <td style="border: none; text-align:left;">${element.producto_descripcion != null ? element.producto_descripcion : (element.descripcion ? element.descripcion : '')}</td>
@@ -1308,8 +1317,8 @@ class OrdenView {
     }
 
     vincularRequerimiento(obj) {
-        obj.setAttribute("disabled",true);
-        let idRequerimiento=obj.dataset.idRequerimiento;
+        obj.setAttribute("disabled", true);
+        let idRequerimiento = obj.dataset.idRequerimiento;
         let i = 0;
         let cantidadItemSinMapear = 0;
         this.ordenCtrl.obtenerRequerimiento(idRequerimiento).then((res) => {
@@ -1318,7 +1327,7 @@ class OrdenView {
 
             (res.detalle).forEach((element) => {
                 if (element.tiene_transformacion == false) {
-                    if (element.id_producto > 0 && (![5,28,7].includes(element.id_estado))) {
+                    if (element.id_producto > 0 && (![5, 28, 7].includes(element.id_estado))) {
                         i++;
 
                         let cantidad_atendido_almacen = 0;
@@ -1367,7 +1376,7 @@ class OrdenView {
                             'producto_regalo': false,
                             'tiene_transformacion': element.tiene_transformacion,
                             'unidad_medida': element.unidad_medida.descripcion
-                        }],'DETALLE_REQUERIMIENTO');
+                        }], 'DETALLE_REQUERIMIENTO');
 
                     } else {
                         cantidadItemSinMapear++;
@@ -1514,7 +1523,7 @@ class OrdenView {
         if (!id_condicion_softlink > 0) {
             msj += 'Es necesario que seleccione una forma de pago.<br>';
         }
-        if (!id_proveedor >0) {
+        if (!id_proveedor > 0) {
             msj += 'Es necesario que seleccione un Proveedor.<br>';
         }
         if (id_tp_documento != '3' && plazo_entrega == '') {
@@ -1566,7 +1575,7 @@ class OrdenView {
 
     guardar_orden_requerimiento(action) {
         // console.log(action);
-        let that= this;
+        let that = this;
         let formData = new FormData($('#form-crear-orden-requerimiento')[0]);
         formData.set('incluye_igv', (document.querySelector("input[name='incluye_igv']").checked));
         var msj = this.validaOrdenRequerimiento();
@@ -1611,10 +1620,10 @@ class OrdenView {
                                 delay: 5000,
                                 msg: `Orden ${response.codigo} creada.`
                             });
-                            
-                            if(response.status_migracion_softlink != null){
-                                
-                                $('[name=codigo_orden]').val(response.status_migracion_softlink.orden_softlink??"");
+
+                            if (response.status_migracion_softlink != null) {
+
+                                $('[name=codigo_orden]').val(response.status_migracion_softlink.orden_softlink ?? "");
 
                                 Lobibox.notify(response.status_migracion_softlink.tipo, {
                                     title: false,
@@ -1626,8 +1635,8 @@ class OrdenView {
                                     msg: response.status_migracion_softlink.mensaje
                                 });
 
-                            }else{
-                                if(response.mensaje.length >0){
+                            } else {
+                                if (response.mensaje.length > 0) {
                                     Lobibox.notify(response.tipo_estado, {
                                         title: false,
                                         size: 'normal',
@@ -1652,7 +1661,7 @@ class OrdenView {
                             document.querySelector("button[name='btn-relacionar-a-oc-softlink']").removeAttribute("disabled");
 
                             // finalidados
-                            if(response.lista_finalizados.length > 0){
+                            if (response.lista_finalizados.length > 0) {
                                 response.lista_finalizados.forEach(element => {
                                     Swal.fire({
                                         title: '',
@@ -1663,13 +1672,13 @@ class OrdenView {
                             }
 
                         } else {
-                                $("#wrapper-okc").LoadingOverlay("hide", true);
-                                Swal.fire(
-                                    '',
-                                    response.mensaje,
-                                    response.tipo_estado
-                                );
-                            
+                            $("#wrapper-okc").LoadingOverlay("hide", true);
+                            Swal.fire(
+                                '',
+                                response.mensaje,
+                                response.tipo_estado
+                            );
+
                         }
                     }
                 }).fail(function (jqXHR, textStatus, errorThrown) {
@@ -1695,7 +1704,7 @@ class OrdenView {
                     contentType: false,
                     dataType: 'JSON',
                     beforeSend: data => {
-    
+
                         $("#wrapper-okc").LoadingOverlay("show", {
                             imageAutoResize: true,
                             progress: true,
@@ -1720,9 +1729,9 @@ class OrdenView {
                                 msg: `Orden ${response.codigo} actualizada`
                             });
 
-                            if(response.status_migracion_softlink != null){
-                                
-                                $('[name=codigo_orden]').val(response.status_migracion_softlink.orden_softlink??"");
+                            if (response.status_migracion_softlink != null) {
+
+                                $('[name=codigo_orden]').val(response.status_migracion_softlink.orden_softlink ?? "");
 
                                 Lobibox.notify(response.status_migracion_softlink.tipo, {
                                     title: false,
@@ -1734,11 +1743,11 @@ class OrdenView {
                                 });
 
                             }
-                            
+
                             changeStateButton('guardar');
                             $('#form-crear-orden-requerimiento').attr('type', 'register');
                             changeStateInput('form-crear-orden-requerimiento', true);
-                        }else{
+                        } else {
                             $("#wrapper-okc").LoadingOverlay("hide", true);
 
                             Lobibox.notify('error', {
@@ -1756,8 +1765,8 @@ class OrdenView {
                                 response.tipo_estado
                             );
 
-                            if(response.status_migracion_softlink != null){
-                                
+                            if (response.status_migracion_softlink != null) {
+
                                 Lobibox.notify(response.status_migracion_softlink.tipo, {
                                     title: false,
                                     size: 'mini',
@@ -1824,7 +1833,7 @@ class OrdenView {
 
     listarOrdenesElaboradas() {
         var vardataTables = funcDatatables();
-        $tablaHistorialOrdenesElaboradas= $('#listaOrdenesElaboradas').DataTable({
+        $tablaHistorialOrdenesElaboradas = $('#listaOrdenesElaboradas').DataTable({
             'dom': vardataTables[1],
             'buttons': [],
             'language': vardataTables[0],
@@ -1836,7 +1845,7 @@ class OrdenView {
                 'url': 'listar-historial-ordenes-elaboradas',
                 'type': 'POST',
                 beforeSend: data => {
-    
+
                     $("#listaOrdenesElaboradas").LoadingOverlay("show", {
                         imageAutoResize: true,
                         progress: true,
@@ -1855,26 +1864,26 @@ class OrdenView {
                 { 'data': 'moneda_descripcion', 'name': 'sis_moneda.descripcion', 'className': 'text-center' },
                 { 'data': 'descripcion_sede_empresa', 'name': 'sis_sede.descripcion', 'className': 'text-center' },
                 { 'data': 'estado_doc', 'name': 'estados_compra.descripcion', 'className': 'text-center' },
-                { 'data': 'id_orden_compra' , 'name': 'log_ord_compra.id_orden_compra','className': 'text-center'}
+                { 'data': 'id_orden_compra', 'name': 'log_ord_compra.id_orden_compra', 'className': 'text-center' }
             ],
             'columnDefs': [
                 {
                     'render': function (data, type, row) {
-                        let cantidadRequerimientosPorRegularizar=0;
-                        let cantidadRequerimientosEnPausa=0;
-                        if(row.requerimientos && row.requerimientos.length>0){
+                        let cantidadRequerimientosPorRegularizar = 0;
+                        let cantidadRequerimientosEnPausa = 0;
+                        if (row.requerimientos && row.requerimientos.length > 0) {
                             row.requerimientos.forEach(element => {
-                                if(element.estado == 38){ // por regularizar
+                                if (element.estado == 38) { // por regularizar
                                     cantidadRequerimientosPorRegularizar++
-                                } 
-                                if(element.estado == 39){ // en pausa
+                                }
+                                if (element.estado == 39) { // en pausa
                                     cantidadRequerimientosEnPausa++
-                                } 
+                                }
                             });
 
                         }
                         return `<center><div class="btn-group" role="group" style="margin-bottom: 5px;">
-                        <button type="button" class="btn btn-xs btn-success handleClickSelectOrden" data-id-orden="${row.id_orden_compra}" title="${(cantidadRequerimientosPorRegularizar>0 || cantidadRequerimientosEnPausa >0?'Tiene requerimientos en pausa o por regularizar':'seleccionar')}" ${(cantidadRequerimientosPorRegularizar>0 || cantidadRequerimientosEnPausa >0?'disabled':'')}>
+                        <button type="button" class="btn btn-xs btn-success handleClickSelectOrden" data-id-orden="${row.id_orden_compra}" title="${(cantidadRequerimientosPorRegularizar > 0 || cantidadRequerimientosEnPausa > 0 ? 'Tiene requerimientos en pausa o por regularizar' : 'seleccionar')}" ${(cantidadRequerimientosPorRegularizar > 0 || cantidadRequerimientosEnPausa > 0 ? 'disabled' : '')}>
                             Seleccionar
                         </button>
                         </div></center>`;
@@ -1897,18 +1906,18 @@ class OrdenView {
                     $tablaHistorialOrdenesElaboradas.search($input.val()).draw();
                 })
                 //Fin boton de busqueda
-                
+
             },
-            "drawCallback": function( settings ) {
-                if($tablaHistorialOrdenesElaboradas.rows().data().length==0){
+            "drawCallback": function (settings) {
+                if ($tablaHistorialOrdenesElaboradas.rows().data().length == 0) {
                     Lobibox.notify('info', {
-                        title:false,
+                        title: false,
                         size: 'mini',
                         rounded: true,
                         sound: false,
                         delayIndicator: false,
                         msg: `No se encontro data disponible para mostrar`
-                        }); 
+                    });
                 }
                 //Botón de búsqueda
                 $('#listaOrdenesElaboradas_filter input').prop('disabled', false);
@@ -1959,17 +1968,17 @@ class OrdenView {
         document.querySelector("form[id='form-crear-orden-requerimiento'] select[name='id_moneda']").value = data.id_moneda ? data.id_moneda : '';
         document.querySelector("form[id='form-crear-orden-requerimiento'] span[name='codigo_orden_interno']").textContent = data.codigo_orden ? data.codigo_orden : '';
         // document.querySelector("form[id='form-crear-orden-requerimiento'] span[name='estado_orden']").textContent = data.estado_orden !=null?"(Estado: "+data.estado_orden+')':'';
-        document.querySelector("form[id='form-crear-orden-requerimiento'] span[name='estado_orden']").textContent = data.estado_orden !=null?`(Estado: ${data.estado_orden})`:'';
+        document.querySelector("form[id='form-crear-orden-requerimiento'] span[name='estado_orden']").textContent = data.estado_orden != null ? `(Estado: ${data.estado_orden})` : '';
         document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='monto_subtotal']").value = data.monto_subtotal ? data.monto_subtotal : 0;
         document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='monto_igv']").value = data.monto_igv ? data.monto_igv : 0;
         document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='monto_total']").value = data.monto_total ? data.monto_total : 0;
-        if(data.cuadro_costo !=null && data.cuadro_costo.length >0 ){
-            document.querySelector("div[id='modal-estado-cuadro-presupuesto'] label[id='id_orden']").textContent= data.id_orden_compra ? data.id_orden_compra : '';
-            data.cuadro_costo.map((element,index)=>{
+        if (data.cuadro_costo != null && data.cuadro_costo.length > 0) {
+            document.querySelector("div[id='modal-estado-cuadro-presupuesto'] label[id='id_orden']").textContent = data.id_orden_compra ? data.id_orden_compra : '';
+            data.cuadro_costo.map((element, index) => {
                 console.log(element);
-                if(element.id_estado_aprobacion ==4){ //finalizado
+                if (element.id_estado_aprobacion == 4) { //finalizado
                     document.querySelector("button[id='btn-enviar-email-finalizacion-cuadro-presupuesto']").classList.remove("oculto");
-                    document.querySelector("div[id='contenedor-detalle-estado-cdp']").innerHTML='';
+                    document.querySelector("div[id='contenedor-detalle-estado-cdp']").innerHTML = '';
                     document.querySelector("div[id='contenedor-detalle-estado-cdp']").insertAdjacentHTML('beforeend', `<div class="panel panel-default">
                     <div class="panel-body">
                     
@@ -1981,7 +1990,7 @@ class OrdenView {
                     </div>
                 </div>`);
 
-                }else{
+                } else {
                     document.querySelector("button[id='btn-enviar-email-finalizacion-cuadro-presupuesto']").classList.add("oculto");
 
                 }
@@ -2010,8 +2019,8 @@ class OrdenView {
         document.querySelector("form[id='form-crear-orden-requerimiento'] select[name='id_condicion']").value = data.id_condicion ? data.id_condicion : '';
         document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='plazo_dias']").value = data.plazo_dias ? data.plazo_dias : '';
         document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='plazo_entrega']").value = data.plazo_entrega ? data.plazo_entrega : '';
-        document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='cdc_req']").value = data.oportunidad.length>0 ? ((data.oportunidad).map(x=>x.codigo_oportunidad).toString()) : ((data.requerimientos).map(x=>x.codigo).toString());
-        document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='ejecutivo_responsable']").value = data.oportunidad.length>0 ? ((data.oportunidad).map(x=>x.responsable).toString()) : '';
+        document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='cdc_req']").value = data.oportunidad.length > 0 ? ((data.oportunidad).map(x => x.codigo_oportunidad).toString()) : ((data.requerimientos).map(x => x.codigo).toString());
+        document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='ejecutivo_responsable']").value = data.oportunidad.length > 0 ? ((data.oportunidad).map(x => x.responsable).toString()) : '';
         document.querySelector("form[id='form-crear-orden-requerimiento'] select[name='id_tp_doc']").value = data.id_tp_doc ? data.id_tp_doc : '';
 
         document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='direccion_destino']").value = data.direccion_destino ? data.direccion_destino : '';
@@ -2025,13 +2034,13 @@ class OrdenView {
 
         document.querySelector("button[name='btn-imprimir-orden-pdf']").removeAttribute("disabled");
         document.querySelector("button[name='btn-relacionar-a-oc-softlink']").removeAttribute("disabled");
- 
+
 
         // construir detalle 
 
         this.limpiarTabla('listaDetalleOrden');
         vista_extendida();
-        let detalle =data.detalle;
+        let detalle = data.detalle;
 
         for (let i = 0; i < detalle.length; i++) {
 
@@ -2047,7 +2056,7 @@ class OrdenView {
             if (detalle[i].detalle_requerimiento && detalle[i].detalle_requerimiento.ordenes_compra.length > 0) {
                 (detalle[i].detalle_requerimiento.ordenes_compra).forEach(orden => {
                     if (orden.estado == 1) {
-                    cantidad_atendido_orden += parseFloat(orden.cantidad);
+                        cantidad_atendido_orden += parseFloat(orden.cantidad);
                     }
                 });
             }
@@ -2060,22 +2069,22 @@ class OrdenView {
                         <td class="text-center">${detalle[i].producto.cod_softlink ? detalle[i].producto.cod_softlink : ''} </td>
                         <td class="text-center">${detalle[i].producto.part_number ? detalle[i].producto.part_number : ''} <input type="hidden"  name="idProducto[]" value="${(detalle[i].id_producto ? detalle[i].id_producto : detalle[i].id_producto)} "></td>
                         <td class="text-left">${(detalle[i].producto.descripcion ? detalle[i].producto.descripcion : (detalle[i].descripcion != null ? detalle[i].descripcion : ''))} <input type="hidden"  name="descripcion[]" value="${(detalle[i].producto.descripcion ? detalle[i].producto.descripcion : detalle[i].descripcion)} "></td>
-                        <td><select name="unidad[]" class="form-control ${(detalle[i].guia_compra_detalle !=null && detalle[i].guia_compra_detalle.length > 0 ? '' : 'activation')} input-sm unidadMedida" data-valor="${detalle[i].id_unidad_medida}" disabled>${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
+                        <td><select name="unidad[]" class="form-control ${(detalle[i].guia_compra_detalle != null && detalle[i].guia_compra_detalle.length > 0 ? '' : 'activation')} input-sm unidadMedida" data-valor="${detalle[i].id_unidad_medida}" disabled>${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
                         <td>${(detalle[i].detalle_requerimiento ? detalle[i].detalle_requerimiento.cantidad : '')}</td>
-                        <td>${(cantidad_atendido_almacen >0 ? cantidad_atendido_almacen : '')}</td> 
-                        <td>${(cantidad_atendido_orden >0 ? cantidad_atendido_orden : '')}</td>
+                        <td>${(cantidad_atendido_almacen > 0 ? cantidad_atendido_almacen : '')}</td> 
+                        <td>${(cantidad_atendido_orden > 0 ? cantidad_atendido_orden : '')}</td>
                         <td>
-                            <input class="form-control cantidad_a_comprar input-sm text-right ${(detalle[i].guia_compra_detalle !=null && detalle[i].guia_compra_detalle.length > 0 ? '' : 'activation')}  handleBurUpdateSubtotal"  data-id-tipo-item="1" type="number" min="0" name="cantidadAComprarRequerida[]"  placeholder="" value="${detalle[i].cantidad ? detalle[i].cantidad : 0}" disabled>
+                            <input class="form-control cantidad_a_comprar input-sm text-right ${(detalle[i].guia_compra_detalle != null && detalle[i].guia_compra_detalle.length > 0 ? '' : 'activation')}  handleBurUpdateSubtotal"  data-id-tipo-item="1" type="number" min="0" name="cantidadAComprarRequerida[]"  placeholder="" value="${detalle[i].cantidad ? detalle[i].cantidad : 0}" disabled>
                         </td>
                         <td>
                             <div class="input-group">
                                 <div class="input-group-addon" style="background:lightgray;" name="simboloMoneda">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</div>
-                                <input class="form-control precio input-sm text-right ${(detalle[i].guia_compra_detalle !=null && detalle[i].guia_compra_detalle.length > 0 ? '' : 'activation')}  handleBurUpdateSubtotal" data-id-tipo-item="1" data-producto-regalo="${(detalle[i].producto_regalo ? detalle[i].producto_regalo : false)}" type="number" min="0" name="precioUnitario[]"  placeholder="" value="${detalle[i].precio ? detalle[i].precio : 0}" disabled>
+                                <input class="form-control precio input-sm text-right ${(detalle[i].guia_compra_detalle != null && detalle[i].guia_compra_detalle.length > 0 ? '' : 'activation')}  handleBurUpdateSubtotal" data-id-tipo-item="1" data-producto-regalo="${(detalle[i].producto_regalo ? detalle[i].producto_regalo : false)}" type="number" min="0" name="precioUnitario[]"  placeholder="" value="${detalle[i].precio ? detalle[i].precio : 0}" disabled>
                             </div>
                         </td>
                         <td style="text-align:right;"><span class="moneda" name="simboloMoneda">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</span><span class="subtotal" name="subtotal[]">0.00</span></td>
                         <td>
-                            <button type="button" class="btn btn-danger btn-sm ${(detalle[i].guia_compra_detalle !=null && detalle[i].guia_compra_detalle.length > 0 ? '' : 'activation')} handleClickOpenModalEliminarItemOrden" name="btnOpenModalEliminarItemOrden" title="Eliminar Item" disabled>
+                            <button type="button" class="btn btn-danger btn-sm ${(detalle[i].guia_compra_detalle != null && detalle[i].guia_compra_detalle.length > 0 ? '' : 'activation')} handleClickOpenModalEliminarItemOrden" name="btnOpenModalEliminarItemOrden" title="Eliminar Item" disabled>
                             <i class="fas fa-trash fa-sm"></i>
                             </button>
                         </td>
@@ -2120,7 +2129,7 @@ class OrdenView {
 
     anularOrden(id) {
 
-        let sustentoAnularOrden='';
+        let sustentoAnularOrden = '';
         Swal.fire({
             title: 'Sustente el motivo de la anulación de la orden',
             input: 'textarea',
@@ -2129,15 +2138,15 @@ class OrdenView {
             },
             showCancelButton: true,
             confirmButtonText: 'Registrar',
-      
+
             allowOutsideClick: () => !Swal.isLoading()
         }).then((result) => {
             if (result.isConfirmed) {
-                sustentoAnularOrden =result.value;
+                sustentoAnularOrden = result.value;
                 // inicio enviar anular orden
-                this.ordenCtrl.anularOrden(id,sustentoAnularOrden).then((response) => {
+                this.ordenCtrl.anularOrden(id, sustentoAnularOrden).then((response) => {
                     $("#wrapper-okc").LoadingOverlay("hide", true);
-        
+
                     console.log(response);
                     if (response.status == 200) {
                         this.restablecerFormularioOrden();
@@ -2149,12 +2158,12 @@ class OrdenView {
                             delayIndicator: false,
                             msg: response.mensaje.toString()
                         });
-                        
-        
-                        if(response.status_migracion_softlink != null){
-                                        
-                            $('[name=codigo_orden]').val(response.status_migracion_softlink.orden_softlink??"");
-        
+
+
+                        if (response.status_migracion_softlink != null) {
+
+                            $('[name=codigo_orden]').val(response.status_migracion_softlink.orden_softlink ?? "");
+
                             Lobibox.notify(response.status_migracion_softlink.tipo, {
                                 title: 'Migración Softlink',
                                 size: 'mini',
@@ -2163,9 +2172,9 @@ class OrdenView {
                                 delayIndicator: false,
                                 msg: response.status_migracion_softlink.mensaje
                             });
-        
+
                         }
-        
+
                     } else {
                         $("#wrapper-okc").LoadingOverlay("hide", true);
 
@@ -2174,11 +2183,11 @@ class OrdenView {
                             response.mensaje.toString(),
                             response.tipo_estado
                         );
-                    
+
                         console.log(response);
-        
-                        if(response.status_migracion_softlink != null){
-                                        
+
+                        if (response.status_migracion_softlink != null) {
+
                             Lobibox.notify(response.status_migracion_softlink.tipo, {
                                 title: 'Migración Softlink',
                                 size: 'mini',
@@ -2187,9 +2196,9 @@ class OrdenView {
                                 delayIndicator: false,
                                 msg: response.status_migracion_softlink.mensaje
                             });
-        
+
                         }
-        
+
                     }
                 }).catch((err) => {
                     $("#wrapper-okc").LoadingOverlay("hide", true);
@@ -2203,7 +2212,7 @@ class OrdenView {
                 // fon enviar anular orden
             }
         })
-        
+
 
     }
 
@@ -2223,17 +2232,17 @@ class OrdenView {
 
 
 
-    validarOrdenAgilOrdenSoftlink(){
+    validarOrdenAgilOrdenSoftlink() {
         let idOrden = document.querySelector("input[name='id_orden']").value;
-        if(idOrden >0){
+        if (idOrden > 0) {
             $.ajax({
                 type: 'POST',
                 url: 'validar-orden-agil-orden-softlink',
-                data:{'idOrden':idOrden},
+                data: { 'idOrden': idOrden },
                 dataType: 'JSON',
                 success: (response) => {
                     console.log(response);
-                    if(response.tipo =='warning'){
+                    if (response.tipo == 'warning') {
                         Lobibox.notify('warning', {
                             title: false,
                             size: 'mini',
@@ -2254,7 +2263,7 @@ class OrdenView {
                 console.log(textStatus);
                 console.log(errorThrown);
             });
-        }else{
+        } else {
             Lobibox.notify('warning', {
                 title: false,
                 size: 'mini',
