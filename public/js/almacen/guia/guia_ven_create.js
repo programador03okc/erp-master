@@ -58,7 +58,14 @@ function listarDetalleOrdenDespacho(id_requerimiento, id_od, aplica_cambios, tie
             var msj = '';
 
             response.forEach(element => {
-                cantidad_despacho = (element.cantidad - (element.cantidad_despachada ?? 0));
+                despacho = (element.cantidad - (element.cantidad_despachada ?? 0));
+
+                var cantidad_despacho = 0;
+                if (parseFloat(element.stock_comprometido) < despacho) {
+                    cantidad_despacho = parseFloat(element.stock_comprometido);
+                } else {
+                    cantidad_despacho = cantidad_despacho;
+                }
 
                 if (cantidad_despacho > 0 && parseFloat(element.stock_comprometido) > 0) {
                     detalle.push({
@@ -218,6 +225,7 @@ $("#form-guia_ven_create").on("submit", function (e) {
     e.preventDefault();
     var lista_detalle = [];
     let prod_sin_series = 0;
+    let cantidad_sobregirada = 0;
 
     $("#detalleGuiaVenta input[type=checkbox]:checked").each(function () {
         var id = $(this).val();
@@ -236,6 +244,9 @@ $("#form-guia_ven_create").on("submit", function (e) {
                     'series': element.series
                 });
 
+                if (element.cantidad > element.cantidad_despacho) {
+                    cantidad_sobregirada++;
+                }
                 if (element.control_series && element.series.length == 0) {
                     prod_sin_series++;
                 }
@@ -284,6 +295,17 @@ $("#form-guia_ven_create").on("submit", function (e) {
             sound: false,
             delayIndicator: false,
             msg: 'Falta agregar series a ' + prod_sin_series + ' productos.'
+        });
+        valida++;
+    }
+    if (cantidad_sobregirada > 0) {
+        Lobibox.notify('warning', {
+            title: false,
+            size: "mini",
+            rounded: true,
+            sound: false,
+            delayIndicator: false,
+            msg: 'Ingreso una cantidad mayor a la que puede despachar en ' + cantidad_sobregirada + ' productos.'
         });
         valida++;
     }
