@@ -1380,14 +1380,14 @@ class TransferenciaController extends Controller
             $existe = false;
             $det_existente = null;
 
-            foreach ($lista_detalle as $d) {
-                if ($d->id_trans_detalle == $det->id_trans_detalle) {
-                    $existe = true;
-                    $det_existente = $d;
-                }
-            }
+            // foreach ($lista_detalle as $d) {
+            //     if (floatval($d->id_trans_detalle) == floatval($det->id_trans_detalle)) {
+            //         $existe = true;
+            //         $det_existente = $d;
+            //     }
+            // }
 
-            if ($existe) {
+            if ($existe == true) {
                 // array_push($det_existente->series, $series);
                 // $det_existente->series = $series;
             } else {
