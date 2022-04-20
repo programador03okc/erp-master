@@ -253,7 +253,18 @@ class ProductoController extends Controller
 
             return response()->json(['msj' => $msj, 'id_item' => 0, 'id_producto' => $id_producto, 'producto' => $producto]);
         } else {
-            $msj = 'No es posible guardar. Ya existe un producto con dicha descripción y/o Part Number.';
+            $prod = DB::table('almacen.alm_prod')
+                ->select('codigo')
+                ->where([['part_number', '=', $pn], ['estado', '=', 1]])
+                ->first();
+
+            if ($prod == null) {
+                $prod = DB::table('almacen.alm_prod')
+                    ->select('codigo')
+                    ->where([['descripcion', '=', $des], ['estado', '=', 1]])
+                    ->first();
+            }
+            $msj = 'No es posible guardar. Ya existe un producto con dicha descripción y/o Part Number. ' . ($prod !== null ? $prod->codigo : '');
 
             return response()->json(['msj' => $msj]);
         }

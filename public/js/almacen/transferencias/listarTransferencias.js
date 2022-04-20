@@ -393,7 +393,7 @@ function listarTransferenciasPorEnviar() {
                     return (row["guia_ven"] == '-' ? row["guia_ven"]
                         : '<a href="#" class="salida" data-id-salida="' + row["id_salida"] + '" title="Ver Salida">' + row["guia_ven"] + "</a>"
                     );
-                }, targets: 8
+                }, targets: 9
             },
         ],
         select: "multi",
