@@ -45,7 +45,13 @@
                                     </div>
                                     <div class="col-md-3">
                                         <h5>Tipo de Operación</h5>
-                                        <input type="text" class="form-control" id="operacion_descripcion" disabled>
+                                        {{-- <input type="text" class="form-control" id="operacion_descripcion" disabled> --}}
+                                        <select class="form-control js-example-basic-single" name="id_operacion_salida" required >
+                                            <option value="0">Elija una opción</option>
+                                            @foreach ($tp_operacion as $tp)
+                                            <option value="{{$tp->id_operacion}}">{{$tp->cod_sunat}} - {{$tp->descripcion}}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                     <div class="col-md-3">
                                         <h5>Punto de partida</h5>

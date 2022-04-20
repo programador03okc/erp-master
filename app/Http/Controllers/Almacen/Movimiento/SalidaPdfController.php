@@ -195,7 +195,9 @@ class SalidaPdfController extends Controller
                 $saldo_valor -= $valor_salida;
             }
 
-            $costo_promedio = ($saldo == 0 ? 0 : $saldo_valor / $saldo);
+            if ($saldo !== 0) {
+                $costo_promedio = ($saldo == 0 ? 0 : $saldo_valor / $saldo);
+            }
         }
         return $costo_promedio;
     }

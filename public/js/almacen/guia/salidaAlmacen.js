@@ -16,6 +16,7 @@ function abrirSalidaAlmacen(data) {
     $('[name=salida_punto_llegada]').val(data.punto_llegada);
     $('[name=salida_fecha_emision]').val(moment(data.fecha_emision_guia).format("YYYY-MM-DD"));
     $('[name=salida_fecha_almacen]').val(moment(data.fecha_emision).format("YYYY-MM-DD"));
+    $('[name=id_operacion_salida]').val(data.id_operacion);
 
     $('#almacen_descripcion').val(data.almacen_descripcion);
     $('#cliente_razon_social').val(data.razon_social);

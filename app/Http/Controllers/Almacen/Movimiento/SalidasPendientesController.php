@@ -683,6 +683,11 @@ class SalidasPendientesController extends Controller
 
     public function verDetalleDespacho($id_req, $id_od, $aplica_cambios, $tiene_transformacion)
     {
+        $requerimiento = DB::table('almacen.alm_req')
+            ->select('alm_req.id_tipo_requerimiento')
+            ->where('id_requerimiento', $id_req)
+            ->first();
+
         $data = DB::table('almacen.alm_det_req')
             ->select(
                 'alm_det_req.id_detalle_requerimiento',
@@ -734,8 +739,13 @@ class SalidasPendientesController extends Controller
             $lista = $data->where([['alm_det_req.tiene_transformacion', '=', ($aplica_cambios == 'si' ? false : ($tiene_transformacion == 'si' ? true : false))]])
                 ->distinct()->get();
         } else {
-            $lista = $data->where([['alm_det_req.entrega_cliente', '=', true]])
-                ->distinct()->get();
+            // $valor = $requerimiento->id_tipo_requerimiento == 1 ? true : null;
+            if ($requerimiento->id_tipo_requerimiento == 1) {
+                $lista = $data->where([['alm_det_req.entrega_cliente', '=', true]])
+                    ->distinct()->get();
+            } else {
+                $lista = $data->distinct()->get();
+            }
         }
 
         return response()->json($lista);
