@@ -403,20 +403,20 @@ function listarDespachosEntregados(permiso) {
                                 data-placement="bottom" title="Editar Guía de Salida" data-id="${row['id_mov_alm']}" data-guia="${row['id_guia_ven']}"
                                 data-od="${row['id_od']}"><i class="fas fa-edit"></i></button>
 
-                                ${row['estado_od'] == 21 ?
-                                `<button type="button" class="anular btn btn-danger btn-flat boton" data-toggle="tooltip" 
+                                <button type="button" class="anular btn btn-danger btn-flat boton" data-toggle="tooltip" 
                                     data-placement="bottom" title="Anular Salida" data-id="${row['id_mov_alm']}" data-guia="${row['id_guia_ven']}"
-                                    data-od="${row['id_od']}"><i class="fas fa-trash"></i></button>` : ''}
+                                    data-od="${row['id_od']}"><i class="fas fa-trash"></i></button>
                                 
                                 <button type="button" class="imprimir btn btn-info btn-flat boton" data-toggle="tooltip" 
                                 data-placement="bottom" title="Descargar formato de impresión" data-guia="${row['id_guia_ven']}">
                                 <i class="fas fa-print"></i></button>
                             </div>`;
+
                     }
                 }, targets: 11
                 // '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
                 //     'data-placement="bottom" title="Ver Detalle" data-id="'+row.id_mov_alm+'">'+
-                //     '<i class="fas fa-list-ul"></i></button>'+
+                //     '<i class="fas fa-list-ul"></i></button>'+   row['estado_od'] == 21 
             }
         ],
     });
