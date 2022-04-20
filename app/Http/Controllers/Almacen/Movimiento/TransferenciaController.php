@@ -1324,8 +1324,8 @@ class TransferenciaController extends Controller
                 'alm_prod.codigo',
                 'alm_prod.descripcion',
                 'alm_prod.series',
-                'alm_cat_prod.descripcion as categoria',
-                'alm_subcat.descripcion as subcategoria',
+                // 'alm_cat_prod.descripcion as categoria',
+                // 'alm_subcat.descripcion as subcategoria',
                 'alm_prod.part_number',
                 'alm_und_medida.abreviatura',
                 'trans.codigo as codigo_trans',
@@ -1337,8 +1337,8 @@ class TransferenciaController extends Controller
             ->join('almacen.trans', 'trans.id_transferencia', '=', 'trans_detalle.id_transferencia')
             ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'trans_detalle.id_producto')
             ->join('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
-            ->join('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
-            ->join('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
+            // ->join('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
+            // ->join('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
             ->leftJoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'trans_detalle.id_requerimiento_detalle')
             ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
             ->leftJoin('logistica.log_det_ord_compra', function ($join) {
@@ -1377,21 +1377,36 @@ class TransferenciaController extends Controller
                 $series = [];
             }
 
-            array_push($lista_detalle, [
-                'id_guia_com_det' => $det->id_guia_com_det,
-                'id_trans_detalle' => $det->id_trans_detalle,
-                'id_producto' => $det->id_producto,
-                'codigo_trans' => $det->codigo_trans,
-                'codigo_req' => $det->codigo_req,
-                'concepto' => $det->concepto,
-                'codigo' => $det->codigo,
-                'part_number' => $det->part_number,
-                'descripcion' => $det->descripcion,
-                'cantidad' => $det->cantidad,
-                'abreviatura' => $det->abreviatura,
-                'control_series' => $det->series,
-                'series' => $series
-            ]);
+            $existe = false;
+            $det_existente = null;
+
+            foreach ($lista_detalle as $d) {
+                if ($d->id_trans_detalle == $det->id_trans_detalle) {
+                    $existe = true;
+                    $det_existente = $d;
+                }
+            }
+
+            if ($existe) {
+                array_push($series, $det_existente->series);
+                $det_existente->series = $series;
+            } else {
+                array_push($lista_detalle, [
+                    'id_guia_com_det' => $det->id_guia_com_det,
+                    'id_trans_detalle' => $det->id_trans_detalle,
+                    'id_producto' => $det->id_producto,
+                    'codigo_trans' => $det->codigo_trans,
+                    'codigo_req' => $det->codigo_req,
+                    'concepto' => $det->concepto,
+                    'codigo' => $det->codigo,
+                    'part_number' => $det->part_number,
+                    'descripcion' => $det->descripcion,
+                    'cantidad' => $det->cantidad,
+                    'abreviatura' => $det->abreviatura,
+                    'control_series' => $det->series,
+                    'series' => $series
+                ]);
+            }
         }
 
         return response()->json($lista_detalle);
