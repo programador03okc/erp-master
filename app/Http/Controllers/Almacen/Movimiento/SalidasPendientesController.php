@@ -493,7 +493,7 @@ class SalidasPendientesController extends Controller
                         ->where('orden_despacho.id_od', $request->id_od)
                         ->first();
                     //si la orden de despacho es Procesado
-                    if ($od->estado == 21) { //entregado
+                    if ($od->estado == 21 || $od->estado == 1) { //entregado
                         //Anula salida
                         DB::table('almacen.mov_alm')
                             ->where('id_mov_alm', $request->id_salida)
