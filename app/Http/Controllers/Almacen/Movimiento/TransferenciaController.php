@@ -1632,12 +1632,20 @@ class TransferenciaController extends Controller
                                     'id_trans_detalle'
                                 );
                                 //envia la reserva
-                                DB::table('almacen.alm_reserva')
-                                    ->where('id_reserva', $item['id_reserva'])
-                                    ->update([
-                                        'estado' => 17,
-                                        'id_trans_detalle' => $id_trans_detalle
-                                    ]);
+                                // DB::table('almacen.alm_reserva')
+                                //     ->where('id_reserva', $item['id_reserva'])
+                                //     ->update([
+                                //         'estado' => 17,
+                                //         'id_trans_detalle' => $id_trans_detalle
+                                //     ]);
+                                if ($item['id_detalle_requerimiento'] !== null) {
+                                    DB::table('almacen.alm_reserva')
+                                        ->where('id_detalle_requerimiento', $item['id_detalle_requerimiento'])
+                                        ->update([
+                                            'estado' => 17,
+                                            'id_trans_detalle' => $id_trans_detalle
+                                        ]);
+                                }
                             }
                         }
                     }
