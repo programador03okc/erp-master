@@ -4776,6 +4776,8 @@ class AlmacenController extends Controller
                 'mov_alm.fecha_emision',
                 'mov_alm.id_tp_mov',
                 'mov_alm.codigo',
+                'trans.codigo as codigo_trans',
+                'transformacion.codigo as codigo_transformacion',
                 DB::raw("(tp_doc_com.abreviatura) || '-' || (guia_com.serie) || '-' || (guia_com.numero) as guia_com"),
                 'tp_doc_com.cod_sunat as cod_sunat_doc_com',
                 'tp_ope_com.cod_sunat as cod_sunat_ope_com',
@@ -4789,6 +4791,8 @@ class AlmacenController extends Controller
             )
             ->join('almacen.mov_alm', 'mov_alm.id_mov_alm', '=', 'mov_alm_det.id_mov_alm')
             ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'mov_alm_det.id_producto')
+            ->leftjoin('almacen.trans', 'trans.id_transferencia', '=', 'mov_alm.id_transferencia')
+            ->leftjoin('almacen.transformacion', 'transformacion.id_transformacion', '=', 'mov_alm.id_transformacion')
             ->leftjoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'alm_prod.id_moneda')
             ->leftjoin('almacen.alm_ubi_posicion', 'alm_ubi_posicion.id_posicion', '=', 'mov_alm_det.id_posicion')
             // ->leftjoin('almacen.alm_ubi_nivel','alm_ubi_nivel.id_nivel','=','alm_ubi_posicion.id_nivel')
@@ -4864,6 +4868,8 @@ class AlmacenController extends Controller
                         <td>' . $d->simbolo . ($saldo > 0 ? number_format($saldo_valor / $saldo, 2, ".", ",") : 0) . '</td>
                         <td>' . ($d->cod_sunat_ope_com !== null ? $d->cod_sunat_ope_com : '') . '</td>
                         <td>' . $d->des_ope_com . '</td>
+                        <td>' . ($d->codigo_trans !== null ? $d->codigo_trans : '') . '</td>
+                        <td>' . ($d->codigo_transformacion !== null ? $d->codigo_transformacion : '') . '</td>
                     </tr>';
                 } else if ($d->id_tp_mov == 2) {
                     $html .= '
@@ -4882,6 +4888,8 @@ class AlmacenController extends Controller
                         <td>' . $d->simbolo . ($saldo > 0 ? number_format($saldo_valor / $saldo, 2, ".", ",") : 0) . '</td>
                         <td>' . $d->cod_sunat_ope_ven . '</td>
                         <td>' . $d->des_ope_ven . '</td>
+                        <td>' . ($d->codigo_trans !== null ? $d->codigo_trans : '') . '</td>
+                        <td>' . ($d->codigo_transformacion !== null ? $d->codigo_transformacion : '') . '</td>
                     </tr>';
                 }
             }

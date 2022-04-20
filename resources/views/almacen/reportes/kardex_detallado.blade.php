@@ -100,6 +100,8 @@ Kardex por Producto
                                     <th>Costo unitario</th>
                                     <th>Ope</th>
                                     <th>Tipo de Operacion</th>
+                                    <th>Transferencia</th>
+                                    <th>Transformación</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
