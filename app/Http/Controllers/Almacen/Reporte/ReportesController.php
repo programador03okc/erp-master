@@ -68,7 +68,7 @@ class ReportesController extends Controller
                         WHERE alm_reserva.id_producto = alm_prod_ubi.id_producto
                         AND alm_reserva.id_almacen_reserva = alm_prod_ubi.id_almacen 
                         AND (alm_reserva.estado = 1 OR alm_reserva.estado = 17)
-                        AND alm_reserva.fecha_registro <= '" . $ft_fecha . "') AS cantidad_reserva")
+                        AND alm_reserva.fecha_registro <= '" . $nfecha . "') AS cantidad_reserva")
                 )
                 ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_prod_ubi.id_almacen')
                 ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_prod_ubi.id_producto')
