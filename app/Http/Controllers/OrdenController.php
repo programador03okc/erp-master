@@ -1627,8 +1627,8 @@ class OrdenController extends Controller
             ->leftJoin('rrhh.rrhh_postu as post_aut', 'post_aut.id_postulante', '=', 'trab_aut.id_postulante')
             ->leftJoin('rrhh.rrhh_perso as pers_aut', 'pers_aut.id_persona', '=', 'post_aut.id_persona')
             ->where([
-                ['log_det_ord_compra.id_orden_compra', '=', $id_orden_compra]
-                // ['log_det_ord_compra.estado', '!=', 7]
+                ['log_det_ord_compra.id_orden_compra', '=', $id_orden_compra],
+                ['log_det_ord_compra.estado', '!=', 7]
             ])
             ->orderby('log_det_ord_compra.id_detalle_orden', 'asc')
 
