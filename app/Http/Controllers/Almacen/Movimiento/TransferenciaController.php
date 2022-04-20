@@ -1395,7 +1395,7 @@ class TransferenciaController extends Controller
                 foreach ($series as $se) {
                     array_push($nueva_series, $se);
                 }
-                $det_existente->series = $nueva_series;
+                $det_existente['series'] = $nueva_series;
             } else {
                 array_push($lista_detalle, [
                     'id_guia_com_det' => $det->id_guia_com_det,
