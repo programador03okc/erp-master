@@ -51,6 +51,7 @@ function listarDetalleOrdenDespacho(id_requerimiento, id_od, aplica_cambios, tie
         success: function (response) {
             console.log(response);
             var cantidad_despacho = 0;
+            var despacho = 0;
             var items_para_despachar = 0;
             var almacen_diferentes = 0;
             var id_almacen = (response.length > 0 ? response[0].id_almacen_reserva : null);
@@ -60,11 +61,11 @@ function listarDetalleOrdenDespacho(id_requerimiento, id_od, aplica_cambios, tie
             response.forEach(element => {
                 despacho = (element.cantidad - (element.cantidad_despachada ?? 0));
 
-                var cantidad_despacho = 0;
+                // var cantidad_despacho = 0;
                 if (parseFloat(element.stock_comprometido) < despacho) {
                     cantidad_despacho = parseFloat(element.stock_comprometido);
                 } else {
-                    cantidad_despacho = cantidad_despacho;
+                    cantidad_despacho = despacho;
                 }
 
                 if (cantidad_despacho > 0 && parseFloat(element.stock_comprometido) > 0) {
