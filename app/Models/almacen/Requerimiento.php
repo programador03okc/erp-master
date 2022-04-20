@@ -388,7 +388,7 @@ class Requerimiento extends Model
                     $estadoActual = ['id' => 28, 'descripcion' => 'Almacén total'];
                 }
             }
-            if(Auth::user()->id_usuario==17){ // si usuario es rhuancac, no finalizar CDP
+            if(Auth::user()->id_usuario==17 || Auth::user()->id_usuario==3){ // si usuario es rhuancac, reconodir no finalizar CDP
                 $finalizadosORestablecido['lista_finalizados']=[];
                 $finalizadosORestablecido['lista_restablecidos']=[];
             }else{
