@@ -991,6 +991,7 @@ class OrdenController extends Controller
 
         $ord_compra = Orden::select(
             'log_ord_compra.*',
+            'log_ord_compra.monto_total as monto_total_orden',
             'sis_sede.descripcion as descripcion_sede_empresa',
 
             // 'log_cdn_pago.descripcion as condicion',
@@ -1012,10 +1013,11 @@ class OrdenController extends Controller
             'log_ord_compra_pago.id_pago',
             'log_ord_compra_pago.detalle_pago',
             'log_ord_compra_pago.archivo_adjunto',
-            DB::raw("(SELECT  coalesce(sum((log_det_ord_compra.cantidad * log_det_ord_compra.precio))*1.18 ,0) AS monto_total_orden
-            FROM logistica.log_det_ord_compra 
-            WHERE   log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra AND
-                    log_det_ord_compra.estado != 7) AS monto_total_orden"),
+            
+            // DB::raw("(SELECT  coalesce(sum((log_det_ord_compra.cantidad * log_det_ord_compra.precio))*1.18 ,0) AS monto_total_orden
+            // FROM logistica.log_det_ord_compra 
+            // WHERE   log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra AND
+            //         log_det_ord_compra.estado != 7) AS monto_total_orden"),
             DB::raw("(SELECT  coalesce(oc_propias_view.monto_soles) AS monto_total_presup
             FROM logistica.log_det_ord_compra 
             INNER JOIN almacen.alm_det_req on alm_det_req.id_detalle_requerimiento = log_det_ord_compra.id_detalle_requerimiento
@@ -4217,6 +4219,7 @@ class OrdenController extends Controller
     {
         $ord_compra = Orden::select(
             'log_ord_compra.*',
+            'log_ord_compra.monto_total as monto_total_orden',
             'sis_sede.descripcion as descripcion_sede_empresa',
             DB::raw("(CASE 
             WHEN log_ord_compra.id_condicion = 1 THEN log_cdn_pago.descripcion 
@@ -4235,10 +4238,10 @@ class OrdenController extends Controller
             'log_ord_compra_pago.archivo_adjunto',
 
 
-            DB::raw("(SELECT  coalesce(sum((log_det_ord_compra.cantidad * log_det_ord_compra.precio))*1.18 ,0) AS monto_total_orden
-            FROM logistica.log_det_ord_compra 
-            WHERE   log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra AND
-                    log_det_ord_compra.estado != 7) AS monto_total_orden"),
+            // DB::raw("(SELECT  coalesce(sum((log_det_ord_compra.cantidad * log_det_ord_compra.precio))*1.18 ,0) AS monto_total_orden
+            // FROM logistica.log_det_ord_compra 
+            // WHERE   log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra AND
+            //         log_det_ord_compra.estado != 7) AS monto_total_orden"),
 
             DB::raw("(SELECT  coalesce(oc_propias_view.monto_soles) AS monto_total_presup
             FROM logistica.log_det_ord_compra 
