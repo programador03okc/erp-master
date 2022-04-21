@@ -236,11 +236,11 @@ class GuiaSalidaExcelFormatoOKCController extends Controller
 
         $fileName = 'FORMATO-OKC-GR'.$data['guia']->serie.'-'.$data['guia']->numero.'-'.json_decode($data['guia']->codigos_requerimiento)[0].'-'.$data['guia']->cliente_razon_social."-okc";
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment;filename="' . $fileName . '.xlsx"');
+        header('Content-Disposition: attachment;filename="' . $fileName . '.xls"');
         header('Content-Transfer-Encoding: binary');
         header('Cache-Control: must-revalidate');
         // header('Cache-Control: max-age=0');
-        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $writer = IOFactory::createWriter($spreadsheet, 'Xls');
         $writer->save('php://output');
 
         // $writer = new Xlsx($spreadsheet);
