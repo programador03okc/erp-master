@@ -1770,15 +1770,41 @@ class OrdenesPendientesController extends Controller
                                         'fecha_registro' => date('Y-m-d H:i:s')
                                     ]);
                             }
-                            $msj = 'Se proceso el ingreso correctamente.';
+                            $msj = 'Se anuló el ingreso correctamente.';
                             $tipo = 'success';
                         } else {
                             $msj = 'El ingreso ya fue procesado con una Orden de Despacho o una Transferencia.';
                             $tipo = 'warning';
                         }
                     } else {
-                        $msj = 'Count detalle ' . count($detalle);
-                        $tipo = 'warning';
+                        //Anula ingreso
+                        DB::table('almacen.mov_alm')
+                            ->where('id_mov_alm', $request->id_mov_alm)
+                            ->update([
+                                'estado' => 7,
+                                'fecha_anulacion' => new Carbon(),
+                                'usuario_anulacion' => $id_usuario,
+                                'comentario_anulacion' => $request->observacion,
+                                'id_motivo_anulacion' => $request->id_motivo_obs,
+                            ]);
+
+                        //Anula la Guia
+                        DB::table('almacen.guia_com')
+                            ->where('id_guia', $request->id_guia_com)
+                            ->update(['estado' => 7]);
+                        //Anula la Guia Detalle
+                        DB::table('almacen.guia_com_det')
+                            ->where('id_guia_com', $request->id_guia_com)
+                            ->update(['estado' => 7]);
+
+                        if ($ing->id_transformacion !== null) {
+                            DB::table('almacen.transformacion')
+                                ->where('id_transformacion', $ing->id_transformacion)
+                                ->update(['estado' => 10]); //finalizado
+                        }
+
+                        $msj = 'Se anuló correctamente. No se encontró items de dicho ingreso ' . count($detalle);
+                        $tipo = 'success';
                     }
                 } else {
                     $msj = 'No es posible anular. El ingreso fue prorrateado.';
