@@ -126,6 +126,10 @@ class OrdenesTransformacionController extends Controller
                               and od.estado != 7
                               and gv.estado != 7
                               and od.aplica_cambios = false) AS cantidad_despachada"),
+                DB::raw("(SELECT SUM(alm_reserva.stock_comprometido) 
+                        FROM almacen.alm_reserva
+                        WHERE alm_reserva.id_detalle_requerimiento = alm_det_req.id_detalle_requerimiento
+                            and alm_reserva.estado = 1) as stock_comprometido"),
                 // DB::raw("(SELECT SUM(guia_ven_det.cantidad) 
                 //         FROM almacen.guia_ven_det
                 //         WHERE guia_ven_det.id_od_det = orden_despacho_det.id_od_detalle
@@ -150,15 +154,15 @@ class OrdenesTransformacionController extends Controller
                 // 'almacen_guia.descripcion as almacen_guia_com_descripcion',
                 'almacen_reserva.descripcion as almacen_reserva_descripcion',
                 // 'mov_alm_det.valorizacion',
-                'cc_am_filas.part_no_producto_transformado as cc_pn',
-                'cc_am_filas.descripcion_producto_transformado as cc_des',
-                'cc_am_filas.comentario_producto_transformado as cc_com',
+                // 'cc_am_filas.part_no_producto_transformado as cc_pn',
+                // 'cc_am_filas.descripcion_producto_transformado as cc_des',
+                // 'cc_am_filas.comentario_producto_transformado as cc_com',
                 'alm_reserva.id_reserva',
-                'alm_reserva.id_almacen_reserva',
-                'alm_reserva.stock_comprometido'
+                'alm_reserva.id_almacen_reserva'
+                // 'alm_reserva.stock_comprometido'
             )
             // ->leftJoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_det_req.id_almacen_reserva')
-            ->leftJoin('mgcp_cuadro_costos.cc_am_filas', 'cc_am_filas.id', '=', 'alm_det_req.id_cc_am_filas')
+            // ->leftJoin('mgcp_cuadro_costos.cc_am_filas', 'cc_am_filas.id', '=', 'alm_det_req.id_cc_am_filas')
             ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_det_req.id_producto')
             ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_det_req.id_unidad_medida')
             ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'alm_det_req.estado')
@@ -167,12 +171,8 @@ class OrdenesTransformacionController extends Controller
                 $join->on('alm_reserva.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento');
                 $join->where('alm_reserva.estado', '!=', 7);
                 $join->where('alm_reserva.estado', '!=', 5);
+                $join->first();
             })
-            // ->leftJoin('almacen.orden_despacho', function ($join) {
-            //     $join->on('orden_despacho.id_requerimiento', '=', 'alm_req.id_requerimiento');
-            //     $join->where('orden_despacho.aplica_cambios', '=', false);
-            //     $join->where('orden_despacho.estado', '!=', 7);
-            // })
             ->leftJoin('almacen.alm_almacen as almacen_reserva', 'almacen_reserva.id_almacen', '=', 'alm_reserva.id_almacen_reserva')
             ->where([
                 ['alm_det_req.id_requerimiento', '=', $id_requerimiento],
