@@ -129,7 +129,8 @@ class OrdenesTransformacionController extends Controller
                 DB::raw("(SELECT SUM(alm_reserva.stock_comprometido) 
                         FROM almacen.alm_reserva
                         WHERE alm_reserva.id_detalle_requerimiento = alm_det_req.id_detalle_requerimiento
-                            and alm_reserva.estado = 1) as stock_comprometido"),
+                        and alm_reserva.estado = 1) as stock_comprometido"),
+                'almacen_reserva.descripcion as almacen_reserva_descripcion',
                 // DB::raw("(SELECT SUM(guia_ven_det.cantidad) 
                 //         FROM almacen.guia_ven_det
                 //         WHERE guia_ven_det.id_od_det = orden_despacho_det.id_od_detalle
@@ -152,13 +153,12 @@ class OrdenesTransformacionController extends Controller
                 //             and oc.estado != 7) AS suma_ingresos"),
                 // 'almacen_guia.id_almacen as id_almacen_guia_com',
                 // 'almacen_guia.descripcion as almacen_guia_com_descripcion',
-                'almacen_reserva.descripcion as almacen_reserva_descripcion',
                 // 'mov_alm_det.valorizacion',
                 // 'cc_am_filas.part_no_producto_transformado as cc_pn',
                 // 'cc_am_filas.descripcion_producto_transformado as cc_des',
                 // 'cc_am_filas.comentario_producto_transformado as cc_com',
-                'alm_reserva.id_reserva',
-                'alm_reserva.id_almacen_reserva'
+                // 'alm_reserva.id_reserva',
+                // 'alm_reserva.id_almacen_reserva'
                 // 'alm_reserva.stock_comprometido'
             )
             // ->leftJoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_det_req.id_almacen_reserva')
@@ -177,7 +177,7 @@ class OrdenesTransformacionController extends Controller
                 ['alm_det_req.id_requerimiento', '=', $id_requerimiento],
                 ['alm_det_req.estado', '!=', 7],
             ])
-            ->get();
+            ->distinct()->get();
 
         return response()->json($detalles);
     }
