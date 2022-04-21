@@ -17,14 +17,14 @@ class GuiaSalidaExcelFormatoOKCController extends Controller
         $guia=$data['guia'];
         $sheet->getDefaultColumnDimension()->setWidth(8, 'pt');
         $sheet->getRowDimension(1)->setRowHeight(65, 'pt');
-        $sheet->getRowDimension(3)->setRowHeight(25, 'pt');
+        $sheet->getRowDimension(3)->setRowHeight(26, 'pt');
         $sheet->getRowDimension(9)->setRowHeight(1.8, 'pt');
    
 
         $sheet->setCellValue('BB1', '');
 
         $sheet->setCellValue('AR2', 'GR'.($guia->serie.'-'.$guia->numero));
-        $sheet->mergeCells('AR2:AU2');
+        $sheet->mergeCells('AR2:BA2');
 
         $sheet->setCellValue('I4', $guia->fecha_emision);
         $sheet->mergeCells('I4:P4');
