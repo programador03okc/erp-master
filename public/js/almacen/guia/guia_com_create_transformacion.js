@@ -5,7 +5,8 @@ function open_transformacion_guia_create(data) {
         show: true
     });
     $("#submit_guia").removeAttr("disabled");
-    $('[name=id_operacion]').val(26).trigger('change.select2');
+    $('[name=id_operacion]').val(26);
+    $('[name=nombre_operacion]').val('ENTRADA POR SERVICIO DE PRODUCCION');
     $('[name=id_guia_clas]').val(1);
     $('[name=id_proveedor]').val(data.id_proveedor);
     $('[name=razon_social_proveedor]').val(data.razon_social);

@@ -6,7 +6,8 @@ function open_guia_create(data, $fila) {
     });
     $filaActual = $fila;
     $("#submit_guia").removeAttr("disabled");
-    $('[name=id_operacion]').val(2).trigger('change.select2');
+    $('[name=id_operacion]').val(2);
+    $('[name=nombre_operacion]').val('COMPRA NACIONAL');
     $('[name=id_guia_clas]').val(1);
     $('[name=id_proveedor]').val(data.id_proveedor);
     $('[name=razon_social_proveedor]').val(data.razon_social);
@@ -25,7 +26,8 @@ function open_guia_create(data, $fila) {
 
     if (data.id_tp_documento == 12) {
         $('#titulo').text('Ingresar Hoja de Importación');
-        $('[name=id_operacion]').val(18).trigger('change.select2');
+        $('[name=id_operacion]').val(18);
+        $('[name=nombre_operacion]').val('IMPORTACIÓN');
     } else {
         $('#titulo').text('Ingresar Guía de Compra');
     }
