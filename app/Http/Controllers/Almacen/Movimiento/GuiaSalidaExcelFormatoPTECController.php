@@ -15,7 +15,7 @@ class GuiaSalidaExcelFormatoPTECController extends Controller
     {
         $sheet = $spreadsheet->getActiveSheet();
         $guia=$data['guia'];
-        $sheet->getDefaultColumnDimension()->setWidth(2, 'pt');
+        $sheet->getDefaultColumnDimension()->setWidth(8, 'pt');
         $sheet->getRowDimension(1)->setRowHeight(70, 'pt');
         $sheet->getRowDimension(3)->setRowHeight(25, 'pt');
         $sheet->getRowDimension(9)->setRowHeight(1.8, 'pt');
@@ -235,17 +235,17 @@ class GuiaSalidaExcelFormatoPTECController extends Controller
         GuiaSalidaExcelFormatoPTECController::insertarSeccionDetalle($spreadsheet, $data, 0,0);
 
         $fileName = 'FORMATO-PTEC-GR'.$data['guia']->serie.'-'.$data['guia']->numero.'-'.json_decode($data['guia']->codigos_requerimiento)[0].'-'.$data['guia']->cliente_razon_social."-okc";
-        // header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        // header('Content-Disposition: attachment;filename="' . $fileName . '.xlsx"');
-        // header('Content-Transfer-Encoding: binary');
-        // header('Cache-Control: must-revalidate');
-        // // header('Cache-Control: max-age=0');
-        // $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
-        // $writer->save('php://output');
-
-        $writer = new Xlsx($spreadsheet);
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment; filename="'. urlencode($fileName).'.xlsx"');
+        header('Content-Disposition: attachment;filename="' . $fileName . '.xls"');
+        header('Content-Transfer-Encoding: binary');
+        header('Cache-Control: must-revalidate');
+        // header('Cache-Control: max-age=0');
+        $writer = IOFactory::createWriter($spreadsheet, 'Xls');
         $writer->save('php://output');
+
+        // $writer = new Xlsx($spreadsheet);
+        // header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        // header('Content-Disposition: attachment; filename="'. urlencode($fileName).'.xlsx"');
+        // $writer->save('php://output');
     }
 }
