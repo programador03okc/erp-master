@@ -315,11 +315,14 @@ function listarDespachosEntregados(permiso) {
                 'data': 'codigo_od', name: 'orden_despacho.codigo',
                 'render':
                     function (data, type, row) {
-                        // if (row['codigo_od'] !== null) {
-                        if (row['aplica_cambios']) {
-                            return '<span class="label label-danger">' + row['codigo_od'] + '</span>';
+                        if (row['codigo_od'] !== null) {
+                            if (row['aplica_cambios']) {
+                                return '<span class="label label-danger">' + row['codigo_od'] + '</span>';
+                            } else {
+                                return '<span class="label label-primary">' + row['codigo_od'] + '</span>';
+                            }
                         } else {
-                            return '<span class="label label-primary">' + row['codigo_od'] + '</span>';
+                            return '<span class="label label-success">Transferencia</span>';
                         }
                     }
             },
@@ -335,9 +338,9 @@ function listarDespachosEntregados(permiso) {
                                     ' <i class="fas fa-pause orange" data-toggle="tooltip" data-placement="bottom" title="Requerimiento en pausa"></i> ' : ''))
                             + (row['tiene_transformacion'] ? ' <i class="fas fa-random red"></i>' : '');
                     }
-                    // else if (row['codigo_req_trans'] !== null) {
-                    //     return row['codigo_req_trans'];
-                    // }
+                    else {
+                        return '';
+                    }
                 }
             },
             {
@@ -388,7 +391,6 @@ function listarDespachosEntregados(permiso) {
                 }
             },
             { 'data': 'operacion', 'name': 'tp_ope.descripcion' },
-            // {'data': 'codigo_requerimiento', 'name': 'alm_req.codigo'},
             { 'data': 'nombre_corto', 'name': 'sis_usua.nombre_corto' }
         ],
         'order': [[0, "desc"]],
@@ -397,8 +399,7 @@ function listarDespachosEntregados(permiso) {
             {
                 'render': function (data, type, row) {
                     if (permiso == '1') {
-                        return row['id_operacion'] == 11 ? '' :
-                            `<div style="display:flex;">
+                        return `<div style="display:flex;">
                                 <button type="button" class="editar btn btn-primary btn-flat boton" data-toggle="tooltip" 
                                 data-placement="bottom" title="Editar Guía de Salida" data-id="${row['id_mov_alm']}" data-guia="${row['id_guia_ven']}"
                                 data-od="${row['id_od']}"><i class="fas fa-edit"></i></button>
@@ -412,11 +413,10 @@ function listarDespachosEntregados(permiso) {
                                 data-placement="bottom" title="Descargar formato de impresión" data-guia="${row['id_guia_ven']}">
                                 <i class="fas fa-print"></i></button>
                             </div>`;
+                    } else {
+                        return '';
                     }
                 }, targets: 11
-                // '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
-                //     'data-placement="bottom" title="Ver Detalle" data-id="'+row.id_mov_alm+'">'+
-                //     '<i class="fas fa-list-ul"></i></button>'+
             }
         ],
     });
