@@ -297,14 +297,17 @@ class OrdenView {
         this.limpiarTabla('listaDetalleOrden');
         let idTipoItem = 0;
         let idTipoOrden = 0;
+        let ambosTipos=false;
         if (tipoOrden == 'COMPRA') {
             idTipoItem = 1;
             idTipoOrden = 2;
         } else if (tipoOrden == 'SERVICIO') {
             idTipoItem = 2;
             idTipoOrden = 3;
-
+        }else if(tipoOrden == 'COMPRA_SERVICIO'){
+            ambosTipos=true;
         }
+
         detalleOrdenList = [];
         $.ajax({
             type: 'POST',
@@ -315,7 +318,7 @@ class OrdenView {
                 // console.log(response);
                 response.forEach(req => {
                     req.detalle.forEach(det => {
-                        if (det.cantidad > 0 && (![28, 5].includes(det.estado)) && det.id_tipo_item == idTipoItem) {
+                        if (det.cantidad > 0 && (![28, 5].includes(det.estado)) && (det.id_tipo_item == idTipoItem || ambosTipos==true )) {
                             let cantidad_atendido_almacen = 0;
                             if (det.reserva.length > 0) {
                                 (det.reserva).forEach(reserva => {
@@ -1517,7 +1520,7 @@ class OrdenView {
         // var id_cuenta_principal_proveedor = $('[name=id_cuenta_principal_proveedor]').val();
         var msj = '';
 
-        if (!id_tp_documento > 0) {
+        if (!parseInt(id_tp_documento) > 0) {
             msj += 'Es necesario que seleccione un tipo de orden.<br>';
         }
         if (!id_condicion_softlink > 0) {
@@ -1526,7 +1529,7 @@ class OrdenView {
         if (!id_proveedor > 0) {
             msj += 'Es necesario que seleccione un Proveedor.<br>';
         }
-        if (id_tp_documento != '3' && plazo_entrega == '') {
+        if (parseInt(id_tp_documento) != 3 && plazo_entrega == '') {
             msj += 'Es necesario que ingrese un plazo de entrega.<br>';
         }
         // if (!id_cuenta_principal_proveedor >0) {

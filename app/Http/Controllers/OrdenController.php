@@ -2803,7 +2803,7 @@ class OrdenController extends Controller
             foreach ($itemBaseList as $keyItemBase => $itemBase) {
                 foreach ($itemsOrdenGeneradaHoy as $keyOrdenHoy => $ordenHoy) {
                     if ($itemBase['id_detalle_requerimiento'] == $ordenHoy['id_detalle_requerimiento']) {
-                        $itemBaseList[$keyItemBase]['cantidad_atendida'] += intval($ordenHoy['cantidad']);
+                        $itemBaseList[$keyItemBase]['cantidad_atendida'] += floatval($ordenHoy['cantidad']);
                         $itemBaseList[$keyItemBase]['update'] = true;
                         if ($ordenHoy['estado'] == 7) {
                             $itemBaseList[$keyItemBase]['cantidad_atendida'] = 0;
@@ -2817,7 +2817,7 @@ class OrdenController extends Controller
             foreach ($itemBaseList as $keyItemBase => $itemBase) {
                 foreach ($itemsReqSinAtenderYParciales as $keySinAtenderYParcial => $itemSinAtenderYParcial) {
                     if ($itemBase['id_detalle_requerimiento'] == $itemSinAtenderYParcial['id_detalle_requerimiento']) {
-                        $itemBaseList[$keyItemBase]['cantidad_atendida'] += intval($itemSinAtenderYParcial['stock_comprometido']);
+                        $itemBaseList[$keyItemBase]['cantidad_atendida'] += floatval($itemSinAtenderYParcial['stock_comprometido']);
 
                         if ($itemBase['estado'] != 1) {
                             $itemBaseList[$keyItemBase]['update'] = true;
@@ -2832,7 +2832,7 @@ class OrdenController extends Controller
             foreach ($itemBaseList as $keyItemBase => $itemBase) {
                 foreach ($itemBaseEnOtrasOrdenesGeneradasList as $keyItemOtrasOrdenes => $itemOtrasOrdenes) {
                     if ($itemBase['id_detalle_requerimiento'] == $itemOtrasOrdenes['id_detalle_requerimiento']) {
-                        $itemBaseList[$keyItemBase]['cantidad_atendida'] += intval($itemOtrasOrdenes['cantidad']);
+                        $itemBaseList[$keyItemBase]['cantidad_atendida'] += floatval($itemOtrasOrdenes['cantidad']);
                         $itemBaseList[$keyItemBase]['update'] = true;
                     }
                 }

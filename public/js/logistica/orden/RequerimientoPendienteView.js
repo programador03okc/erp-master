@@ -255,7 +255,7 @@ class RequerimientoPendienteView {
                     'warning'
                 );
             }
-            if ((cantidadMapeados == 0 && cantidadTipoProducto > 0) || (cantidadTipoServicio == 0)) {
+            if ((cantidadMapeados == 0 && cantidadTipoProducto > 0)) {
                 e.currentTarget.checked = false;
                 Swal.fire(
                     '',
