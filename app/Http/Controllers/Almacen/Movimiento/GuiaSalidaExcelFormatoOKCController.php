@@ -21,7 +21,7 @@ class GuiaSalidaExcelFormatoOKCController extends Controller
         $sheet->getRowDimension(9)->setRowHeight(1.8, 'pt');
    
 
-        $sheet->setCellValue('AR1', '');
+        $sheet->setCellValue('BB1', '');
 
         $sheet->setCellValue('AJ2', 'GR'.($guia->serie.'-'.$guia->numero));
         $sheet->mergeCells('AJ2:AQ2');
@@ -112,8 +112,14 @@ class GuiaSalidaExcelFormatoOKCController extends Controller
                 
             
             $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*1, $filaInicioItem, $detalle[$i]['codigo']);
+            $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*1).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*16)+31).$filaInicioItem);
+
             $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*8, $filaInicioItem, $detalle[$i]['cantidad']);
+            $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*8).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*16)+31).$filaInicioItem);
+
             $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*12, $filaInicioItem, $detalle[$i]['abreviatura']);
+            $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*12).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*16)+31).$filaInicioItem);
+
             
             $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*16, $filaInicioItem, $detalle[$i]['descripcion']);
             $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*16).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*16)+31).$filaInicioItem);
