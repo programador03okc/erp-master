@@ -114,6 +114,19 @@ class OrdenesTransformacionController extends Controller
                 DB::raw("(SELECT SUM(cantidad) FROM logistica.log_det_ord_compra
                         WHERE log_det_ord_compra.id_detalle_requerimiento = alm_det_req.id_detalle_requerimiento
                           and log_det_ord_compra.estado != 7) AS cantidad_orden"),
+                DB::raw("(SELECT SUM(gv.cantidad) 
+                        FROM almacen.guia_ven_det AS gv
+                        INNER JOIN almacen.orden_despacho_det AS odd
+                              on(gv.id_od_det = odd.id_od_detalle)
+                        INNER JOIN almacen.orden_despacho AS od
+                              on(odd.id_od = od.id_od)
+                        WHERE odd.id_detalle_requerimiento = alm_det_req.id_detalle_requerimiento
+                              and odd.estado != 7
+                              and od.aplica_cambios = false) AS cantidad_despachada"),
+                // DB::raw("(SELECT SUM(guia_ven_det.cantidad) 
+                //         FROM almacen.guia_ven_det
+                //         WHERE guia_ven_det.id_od_det = orden_despacho_det.id_od_detalle
+                //             and guia_ven_det.estado != 7) as cantidad_despachada"),
                 // DB::raw("(SELECT SUM(cantidad) 
                 //         FROM almacen.orden_despacho_det AS odd
                 //         INNER JOIN almacen.orden_despacho AS od
@@ -152,6 +165,11 @@ class OrdenesTransformacionController extends Controller
                 $join->where('alm_reserva.estado', '!=', 7);
                 $join->where('alm_reserva.estado', '!=', 5);
             })
+            // ->leftJoin('almacen.orden_despacho', function ($join) {
+            //     $join->on('orden_despacho.id_requerimiento', '=', 'alm_req.id_requerimiento');
+            //     $join->where('orden_despacho.aplica_cambios', '=', false);
+            //     $join->where('orden_despacho.estado', '!=', 7);
+            // })
             ->leftJoin('almacen.alm_almacen as almacen_reserva', 'almacen_reserva.id_almacen', '=', 'alm_reserva.id_almacen_reserva')
             ->where([
                 ['alm_det_req.id_requerimiento', '=', $id_requerimiento],

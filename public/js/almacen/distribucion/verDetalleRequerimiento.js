@@ -27,7 +27,7 @@ function format(table_id, id, row, $boton) {
                             '<td style="border: none;text-align:center">' + (element.almacen_reserva_descripcion !== null ? element.almacen_reserva_descripcion : '') + '</td>' +
                             '<td style="border: none;text-align:center">' + (element.stock_comprometido !== null ? element.stock_comprometido : '0') + '</td>' +
                             '<td style="border: none;text-align:center">' + (element.suma_despachos_internos !== null ? element.suma_despachos_internos : '0') + '</td>' +
-                            // '<td style="border: none;">' + (element.suma_despachos_externos !== null ? element.suma_despachos_externos : '0') + '</td>' +
+                            '<td style="border: none;text-align:center">' + (element.cantidad_despachada !== null ? element.cantidad_despachada : '0') + '</td>' +
                             '<td style="border: none;"><span class="label label-' + element.bootstrap_color + '">' + element.estado_doc + '</span></td>' +
                             '</tr>';
                         i++;
@@ -47,6 +47,7 @@ function format(table_id, id, row, $boton) {
                             <th style="border: none;">Alm.Reserva</th>
                             <th style="border: none;">Reservado</th>
                             <th style="border: none;">Transformación</th>
+                            <th style="border: none;">Despachado</th>
                             <th style="border: none;">Estado</th>
                         </tr>
                     </thead>
