@@ -62,13 +62,13 @@ function listarDetalleOrdenDespacho(id_requerimiento, id_od, aplica_cambios, tie
                 despacho = (element.cantidad - (element.cantidad_despachada ?? 0));
 
                 // var cantidad_despacho = 0;
-                if (parseFloat(element.stock_comprometido) < despacho) {
+                if (parseFloat(element.stock_comprometido ?? 0) < despacho) {
                     cantidad_despacho = parseFloat(element.stock_comprometido);
                 } else {
                     cantidad_despacho = despacho;
                 }
 
-                if (cantidad_despacho > 0 && parseFloat(element.stock_comprometido) > 0) {
+                if (cantidad_despacho > 0 && parseFloat(element.stock_comprometido ?? 0) > 0) {
                     detalle.push({
                         'id_od_detalle': element.id_od_detalle,
                         'id_detalle_requerimiento': element.id_detalle_requerimiento,
