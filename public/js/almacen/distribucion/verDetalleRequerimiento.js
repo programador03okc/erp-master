@@ -45,9 +45,9 @@ function format(table_id, id, row, $boton) {
                             <th style="border: none;">Unid.</th>
                             <th style="border: none;">Orden Compra</th>
                             <th style="border: none;">Alm.Reserva</th>
-                            <th style="border: none;">Reservado</th>
-                            <th style="border: none;">Transformación</th>
-                            <th style="border: none;">Despachado</th>
+                            <th style="border: none;">Cant. Reservada</th>
+                            <th style="border: none;">En transformación</th>
+                            <th style="border: none;">Cant. Despachada</th>
                             <th style="border: none;">Estado</th>
                         </tr>
                     </thead>
