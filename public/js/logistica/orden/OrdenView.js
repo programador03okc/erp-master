@@ -22,7 +22,7 @@ class OrdenView {
         if (reqTrueList != undefined && reqTrueList != null && (reqTrueList.length > 0)) {
             // ordenView.changeStateInput('form-crear-orden-requerimiento', false);
             // ordenView.changeStateButton('editar');
-            document.querySelector("div[id='group-migrar-oc-softlink']").classList.remove("oculto");
+            // document.querySelector("div[id='group-migrar-oc-softlink']").classList.remove("oculto");
             this.obtenerRequerimiento(reqTrueList, tipoOrden);
             let btnVinculoAReq = `<span class="text-info" id="text-info-req-vinculado" > <a onClick="window.location.reload();" style="cursor:pointer;" title="Recargar con Valores Iniciales del Requerimiento">(vinculado a un Requerimiento)</a> <span class="badge label-danger handleClickEliminarVinculoReq" style="position: absolute;margin-top: -5px;margin-left: 5px; cursor:pointer" title="Eliminar vínculo">×</span></span>`;
             document.querySelector("section[class='content-header']").children[0].innerHTML += btnVinculoAReq;
@@ -37,7 +37,7 @@ class OrdenView {
             this.mostrarOrden(idOrden);
             sessionStorage.removeItem('idOrden');
             sessionStorage.removeItem('action');
-            document.querySelector("div[id='group-migrar-oc-softlink']").classList.remove("oculto");
+            // document.querySelector("div[id='group-migrar-oc-softlink']").classList.remove("oculto");
 
         }
 
@@ -2321,7 +2321,7 @@ function cancelarOrden() {
     const ordenView = new OrdenView(ordenController);
     ordenView.restablecerFormularioOrden();
     document.querySelector("span[id='text-info-req-vinculado']") ? document.querySelector("span[id='text-info-req-vinculado']").remove() : false;
-    document.querySelector("div[id='group-migrar-oc-softlink']").classList.add("oculto");
+    // document.querySelector("div[id='group-migrar-oc-softlink']").classList.add("oculto");
 
 }
 
@@ -2330,6 +2330,6 @@ function editarOrden() {
     const ordenController = new OrdenCtrl(ordenModel);
     const ordenView = new OrdenView(ordenController);
     ordenView.validarOrdenAgilOrdenSoftlink();
-    document.querySelector("div[id='group-migrar-oc-softlink']").classList.add("oculto");
+    // document.querySelector("div[id='group-migrar-oc-softlink']").classList.add("oculto");
 
 }
