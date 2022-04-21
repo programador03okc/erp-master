@@ -462,8 +462,8 @@ class SalidasPendientesController extends Controller
             ->leftjoin('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'alm_req.id_cliente')
             ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
             ->join('almacen.tp_ope', 'tp_ope.id_operacion', '=', 'mov_alm.id_operacion')
-            ->where([['mov_alm.estado', '!=', '7']])
-            ->whereIn('mov_alm.id_operacion', [1, 27, 36]);
+            ->where([['mov_alm.estado', '!=', '7'], ['mov_alm.id_tp_mov', '=', 2]]);
+        // ->whereIn('mov_alm.id_operacion', [1, 27, 36]);
         // ->get();
         // return response()->json($data);
         return datatables($data)->toJson();
