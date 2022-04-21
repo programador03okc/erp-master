@@ -110,6 +110,7 @@ class OrdenesTransformacionController extends Controller
                             on(odd.id_od = od.id_od)
                         WHERE odd.id_detalle_requerimiento = alm_det_req.id_detalle_requerimiento
                             and odd.estado != 7
+                            and od.estado != 7
                             and od.aplica_cambios = true) AS suma_despachos_internos"),
                 DB::raw("(SELECT SUM(cantidad) FROM logistica.log_det_ord_compra
                         WHERE log_det_ord_compra.id_detalle_requerimiento = alm_det_req.id_detalle_requerimiento
