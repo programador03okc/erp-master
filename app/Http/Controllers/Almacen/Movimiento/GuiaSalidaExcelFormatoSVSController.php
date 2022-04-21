@@ -15,7 +15,7 @@ class GuiaSalidaExcelFormatoSVSController extends Controller
     {
         $sheet = $spreadsheet->getActiveSheet();
         $guia=$data['guia'];
-        $sheet->getDefaultColumnDimension()->setWidth(2, 'pt');
+        $sheet->getDefaultColumnDimension()->setWidth(8, 'pt');
         $sheet->getRowDimension(1)->setRowHeight(55, 'pt');
         $sheet->getRowDimension(3)->setRowHeight(45, 'pt');
         $sheet->getRowDimension(12)->setRowHeight(1.8, 'pt');
@@ -143,15 +143,15 @@ class GuiaSalidaExcelFormatoSVSController extends Controller
         GuiaSalidaExcelFormatoSVSController::insertarSeccionDetalle($spreadsheet, $data, 0,0);
 
         $fileName = 'FORMATO-SVS-GR'.$data['guia']->serie.'-'.$data['guia']->numero.'-'.json_decode($data['guia']->codigos_requerimiento)[0].'-'.$data['guia']->cliente_razon_social."-okc";
-        // header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        // header('Content-Disposition: attachment;filename="' . $fileName . '.xlsx"');
-        // header('Cache-Control: must-revalidate');
-        // $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
-        // $writer->save('php://output');
-
-        $writer = new Xlsx($spreadsheet);
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment; filename="'. urlencode($fileName).'.xlsx"');
+        header('Content-Disposition: attachment;filename="' . $fileName . '.xls"');
+        header('Cache-Control: must-revalidate');
+        $writer = IOFactory::createWriter($spreadsheet, 'Xls');
         $writer->save('php://output');
+
+        // $writer = new Xlsx($spreadsheet);
+        // header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        // header('Content-Disposition: attachment; filename="'. urlencode($fileName).'.xlsx"');
+        // $writer->save('php://output');
     }
 }
