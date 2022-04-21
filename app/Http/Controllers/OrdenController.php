@@ -2502,7 +2502,6 @@ class OrdenController extends Controller
             DB::beginTransaction();
             $idOrden = '';
             $codigoOrden = '';
-            $statusMigracionSoftlink = null;
             $actualizarEstados = [];
 
             $idDetalleRequerimientoList = [];
@@ -2589,21 +2588,20 @@ class OrdenController extends Controller
                 }
 
 
-                if ($request->migrar_oc_softlink == true) {
+                // if ($request->migrar_oc_softlink == true) {
 
-                    $statusMigracionSoftlink = (new MigrateOrdenSoftLinkController)->migrarOrdenCompra($idOrden)->original ?? null; //tipo : success , warning, error, mensaje : ""
-                }
+                //     $statusMigracionSoftlink = (new MigrateOrdenSoftLinkController)->migrarOrdenCompra($idOrden)->original ?? null; //tipo : success , warning, error, mensaje : ""
+                // }
 
 
 
                 return response()->json([
                     'id_orden_compra' => $idOrden,
                     'codigo' => $codigoOrden,
-                    'mensaje' => $request->migrar_oc_softlink == true ? 'OK' : '',
+                    'mensaje' =>  'OK',
                     'tipo_estado' => 'success',
                     'lista_estado_requerimiento' => $actualizarEstados['lista_estado_requerimiento'],
-                    'lista_finalizados' => $actualizarEstados['lista_finalizados'],
-                    'status_migracion_softlink' => $statusMigracionSoftlink
+                    'lista_finalizados' => $actualizarEstados['lista_finalizados']
 
                 ]);
             } // si el estado de algun requerimiento viculado no esta habilitado, esta con estado 38 o 39
@@ -2615,14 +2613,12 @@ class OrdenController extends Controller
                     'mensaje' => 'No puede guardar la orden, existe un requerimiento vinculado con estado "En pausa" o "Por regularizar"',
                     'tipo_estado' => 'warning',
                     'lista_estado_requerimiento' => null,
-                    'lista_finalizados' => null,
-                    'status_migracion_softlink' => null
-
+                    'lista_finalizados' => null
                 ]);
             }
         } catch (Exception $e) {
             DB::rollBack();
-            return response()->json(['id_orden_compra' => $idOrden, 'codigo' => $codigoOrden, 'tipo_estado' => 'error', 'lista_finalizados' => ($actualizarEstados != null ? $actualizarEstados['lista_finalizados'] : []), 'status_migracion_softlink' => $statusMigracionSoftlink, 'mensaje' => 'Mensaje de error: ' . $e->getMessage()]);
+            return response()->json(['id_orden_compra' => $idOrden, 'codigo' => $codigoOrden, 'tipo_estado' => 'error', 'lista_finalizados' => ($actualizarEstados != null ? $actualizarEstados['lista_finalizados'] : []), 'mensaje' => 'Mensaje de error: ' . $e->getMessage()]);
         }
     }
 

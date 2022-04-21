@@ -22,8 +22,7 @@ class OrdenView {
         if (reqTrueList != undefined && reqTrueList != null && (reqTrueList.length > 0)) {
             // ordenView.changeStateInput('form-crear-orden-requerimiento', false);
             // ordenView.changeStateButton('editar');
-            document.querySelector("div[id='group-migrar-oc-softlink']").classList.remove("oculto");
-            console.log(reqTrueList, tipoOrden);
+            // document.querySelector("div[id='group-migrar-oc-softlink']").classList.remove("oculto");
             this.obtenerRequerimiento(reqTrueList, tipoOrden);
             let btnVinculoAReq = `<span class="text-info" id="text-info-req-vinculado" > <a onClick="window.location.reload();" style="cursor:pointer;" title="Recargar con Valores Iniciales del Requerimiento">(vinculado a un Requerimiento)</a> <span class="badge label-danger handleClickEliminarVinculoReq" style="position: absolute;margin-top: -5px;margin-left: 5px; cursor:pointer" title="Eliminar vínculo">×</span></span>`;
             document.querySelector("section[class='content-header']").children[0].innerHTML += btnVinculoAReq;
@@ -38,7 +37,7 @@ class OrdenView {
             this.mostrarOrden(idOrden);
             sessionStorage.removeItem('idOrden');
             sessionStorage.removeItem('action');
-            document.querySelector("div[id='group-migrar-oc-softlink']").classList.remove("oculto");
+            // document.querySelector("div[id='group-migrar-oc-softlink']").classList.remove("oculto");
 
         }
 
@@ -47,7 +46,7 @@ class OrdenView {
     }
 
     setStatusPage() {
-        console.log(actionPage);
+        // console.log(actionPage);
         if (actionPage != undefined && actionPage != null) {
             switch (actionPage) {
                 case 'register':
@@ -84,6 +83,9 @@ class OrdenView {
         });
         $('#form-crear-orden-requerimiento').on("click", "button.handleClickImprimirOrdenPdf", () => {
             this.imprimirOrdenPDF();
+        });
+        $('#form-crear-orden-requerimiento').on("click", "button.handleClickMigrarOrdenASoftlink", () => {
+            this.migrarOrdenASoftlink();
         });
         $('#form-crear-orden-requerimiento').on("click", "button.handleClickEstadoCuadroPresupuesto", () => {
             this.estadoCuadroPresupuesto();
@@ -188,6 +190,61 @@ class OrdenView {
 
     }
 
+    migrarOrdenASoftlink(){
+        let idOrden= parseInt(document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_orden']").value);
+        let that= this;
+        if(idOrden>0){
+            $.ajax({
+                type: 'GET',
+                url: '/migrar_orden_compra/'+idOrden,
+                processData: false,
+                contentType: false,
+                dataType: 'JSON',
+                beforeSend: data => {
+
+                    $("#wrapper-okc").LoadingOverlay("show", {
+                        imageAutoResize: true,
+                        progress: true,
+                        imageColor: "#3c8dbc"
+                    });
+                },
+                success: function (response) {
+                    console.log(response);
+                    $("#wrapper-okc").LoadingOverlay("hide", true);
+                        that.mostrarOrden(response.ocAgile.cabecera.id_orden_compra);
+                        actionPage = 'historial';
+
+                        Lobibox.notify(response.tipo, {
+                            title: false,
+                            size: 'mini',
+                            rounded: true,
+                            sound: false,
+                            delayIndicator: false,
+                            delay: 5000,
+                            msg: `${response.mensaje}`
+                        });
+                }
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                $("#wrapper-okc").LoadingOverlay("hide", true);
+
+                Swal.fire(
+                    '',
+                    'Hubo un problema al intentar migrar la orden, por favor vuelva a seleccionar la orden',
+                    'error'
+                );
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            });
+        }else{
+            Swal.fire(
+                '',
+                'No se pudo encontrar un ID de orden valido, vuelva a cargar la orden en el formulario y vuelva a intentar',
+                'warning'
+            );
+        }
+    }
+
     estadoCuadroPresupuesto() {
         $('#modal-estado-cuadro-presupuesto').modal({
             show: true,
@@ -204,14 +261,14 @@ class OrdenView {
                 this.calcularMontosTotales();
                 break;
             case 3:// orden de servicio
-                document.querySelector("input[name='migrar_oc_softlink']").checked = true;
+                // document.querySelector("input[name='migrar_oc_softlink']").checked = true;
                 document.querySelector("input[name='incluye_igv']").checked = false;
                 this.calcularMontosTotales();
 
                 break;
 
             case 12:// orden de importacion
-                document.querySelector("input[name='migrar_oc_softlink']").checked = false;
+                // document.querySelector("input[name='migrar_oc_softlink']").checked = false;
                 document.querySelector("input[name='incluye_igv']").checked = false;
 
                 this.calcularMontosTotales();
@@ -534,7 +591,6 @@ class OrdenView {
         for (let i = 0; i < data.length; i++) {
             if (data[i].id_tipo_item == 1) { // producto
                 if (data[i].id_producto > 0) {
-                    console.log((data[i].descripcion_producto ? data[i].descripcion_producto : data[i].descripcion));
                     document.querySelector("tbody[id='body_detalle_orden']").insertAdjacentHTML('beforeend', `<tr style="text-align:center;" class="${data[i].estado == 7 ? 'danger textRedStrikeHover' : ''};">
                         <td class="text-center">${data[i].codigo_requerimiento ? data[i].codigo_requerimiento : ''} <input type="hidden"  name="idRegister[]" value="${data[i].id_detalle_orden ? data[i].id_detalle_orden : this.makeId()}"> <input type="hidden"  class="idEstado" name="idEstado[]"> <input type="hidden"  name="idDetalleRequerimiento[]" value="${data[i].id_detalle_requerimiento ? data[i].id_detalle_requerimiento : ''}">  <input type="hidden"  name="idTipoItem[]" value="1"></td>
                         <td class="text-center">${data[i].codigo_producto ? data[i].codigo_producto : ''} </td>
@@ -1624,33 +1680,6 @@ class OrdenView {
                                 msg: `Orden ${response.codigo} creada.`
                             });
 
-                            if (response.status_migracion_softlink != null) {
-
-                                $('[name=codigo_orden]').val(response.status_migracion_softlink.orden_softlink ?? "");
-
-                                Lobibox.notify(response.status_migracion_softlink.tipo, {
-                                    title: false,
-                                    size: 'mini',
-                                    rounded: true,
-                                    sound: false,
-                                    delayIndicator: false,
-                                    delay: 5000,
-                                    msg: response.status_migracion_softlink.mensaje
-                                });
-
-                            } else {
-                                if (response.mensaje.length > 0) {
-                                    Lobibox.notify(response.tipo_estado, {
-                                        title: false,
-                                        size: 'normal',
-                                        rounded: true,
-                                        sound: false,
-                                        delay: 10000,
-                                        delayIndicator: false,
-                                        msg: `Migrar la OC: ${response.mensaje}`
-                                    });
-                                }
-                            }
                             changeStateButton('guardar');
                             $('#form-crear-orden-requerimiento').attr('type', 'register');
                             changeStateInput('form-crear-orden-requerimiento', true);
@@ -1661,6 +1690,7 @@ class OrdenView {
                             document.querySelector("span[name='codigo_orden_interno']").textContent = response.codigo;
                             document.querySelector("input[name='id_orden']").value = response.id_orden_compra;
                             document.querySelector("button[name='btn-imprimir-orden-pdf']").removeAttribute("disabled");
+                            document.querySelector("button[name='btn-migrar-orden-softlink']").removeAttribute("disabled");
                             document.querySelector("button[name='btn-relacionar-a-oc-softlink']").removeAttribute("disabled");
 
                             // finalidados
@@ -1689,7 +1719,7 @@ class OrdenView {
 
                     Swal.fire(
                         '',
-                        'Hubo un problema al intentar guardar la orden, por favor vuelva a intentarlo',
+                        'Hubo un problema al intentar guardar la orden, por favor verifique si la orden fue creada en el historial/listado',
                         'error'
                     );
                     console.log(jqXHR);
@@ -2036,6 +2066,7 @@ class OrdenView {
         document.querySelector("form[id='form-crear-orden-requerimiento'] textarea[name='observacion']").value = data.observacion ? data.observacion : '';
 
         document.querySelector("button[name='btn-imprimir-orden-pdf']").removeAttribute("disabled");
+        document.querySelector("button[name='btn-migrar-orden-softlink']").removeAttribute("disabled");
         document.querySelector("button[name='btn-relacionar-a-oc-softlink']").removeAttribute("disabled");
 
 
@@ -2226,6 +2257,7 @@ class OrdenView {
         this.fechaHoy();
         document.querySelector("span[name='codigo_orden_interno']").textContent = '';
         document.querySelector("button[name='btn-imprimir-orden-pdf']").setAttribute("disabled", true);
+        document.querySelector("button[name='btn-migrar-orden-softlink']").setAttribute("disabled", true);
         document.querySelector("button[name='btn-enviar-email-finalizacion-cuadro-presupuesto']").setAttribute("disabled", true);
         document.querySelector("button[name='btn-relacionar-a-oc-softlink']").setAttribute("disabled", true);
         sessionStorage.removeItem('reqCheckedList');
@@ -2289,7 +2321,7 @@ function cancelarOrden() {
     const ordenView = new OrdenView(ordenController);
     ordenView.restablecerFormularioOrden();
     document.querySelector("span[id='text-info-req-vinculado']") ? document.querySelector("span[id='text-info-req-vinculado']").remove() : false;
-    document.querySelector("div[id='group-migrar-oc-softlink']").classList.add("oculto");
+    // document.querySelector("div[id='group-migrar-oc-softlink']").classList.add("oculto");
 
 }
 
@@ -2298,6 +2330,6 @@ function editarOrden() {
     const ordenController = new OrdenCtrl(ordenModel);
     const ordenView = new OrdenView(ordenController);
     ordenView.validarOrdenAgilOrdenSoftlink();
-    document.querySelector("div[id='group-migrar-oc-softlink']").classList.add("oculto");
+    // document.querySelector("div[id='group-migrar-oc-softlink']").classList.add("oculto");
 
 }
