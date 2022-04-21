@@ -33,8 +33,9 @@ Orden de compra / servicio
                     </div>
                     <div>
                         <button type="button" name="btn-imprimir-orden-pdf" class="btn btn-info btn-sm handleClickImprimirOrdenPdf" title="Imprimir orden en .pdf" disabled><i class="fas fa-print"></i> Imprimir</button>
+                        <button type="button" name="btn-migrar-orden-softlink" class="btn btn-warning btn-sm handleClickMigrarOrdenASoftlink" title="Migrar orden a softlink" disabled><i class="fad fa-clone"></i>  Migrar Orden a soflink</button>
                         <button type="button" name="btn-enviar-email-finalizacion-cuadro-presupuesto" class="btn btn-default btn-sm handleClickEstadoCuadroPresupuesto oculto" id="btn-enviar-email-finalizacion-cuadro-presupuesto" style="background-color: #9b659b; color:#fff;" title="Enviar email finalización CDP"><i class="fas fa-info-circle"></i> Estado CDP</button>
-                        <button type="button" name="btn-relacionar-a-oc-softlink" id="btn-relacionar-a-oc-softlink" class="btn btn-success btn-sm" title="Relacionar a OC de Softlink" onclick="listarOcSoftlink(event);" disabled> Relacionar a OC de softlink</button>
+                        <button type="button" name="btn-relacionar-a-oc-softlink" id="btn-relacionar-a-oc-softlink" class="btn btn-success btn-sm" title="Relacionar a OC de Softlink" onclick="listarOcSoftlink(event);" disabled><i class="fas fa-object-group"></i> Relacionar a OC de softlink</button>
 
                     </div>
                 </h4>
@@ -89,7 +90,7 @@ Orden de compra / servicio
                             <img id="logo_empresa" src="/images/img-wide.png" alt="" style="height:56px;!important;width:100%;!important;margin-top:-20px;">
                         </div>
 
-                        <div class="col-md-2 oculto" id="group-migrar-oc-softlink">
+                        <!-- <div class="col-md-2 oculto" id="group-migrar-oc-softlink">
                             <h5>&nbsp;</h5>
                             <div class="checkbox">
                                 <label>
@@ -97,7 +98,7 @@ Orden de compra / servicio
                                     Migrar orden a softlink
                                 </label>
                             </div>
-                        </div>
+                        </div> -->
 
                     </div>
                 </fieldset>

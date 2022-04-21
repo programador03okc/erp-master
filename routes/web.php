@@ -1930,7 +1930,7 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::get('listarUsu', 'Almacen\Movimiento\TransferenciaController@listarUsu');
 
 	Route::get('migrar_venta_directa/{id}', 'Migraciones\MigrateRequerimientoSoftLinkController@migrar_venta_directa');
-	Route::get('migrar_orden_compra/{id}', 'Migraciones\MigrateOrdenSoftLinkController@migrar_orden_compra');
+	Route::get('migrar_orden_compra/{id}', 'Migraciones\MigrateOrdenSoftLinkController@migrarOrdenCompra');
 	Route::get('prue/{id}', 'OrdenesPendientesController@prue');
 	Route::get('anular_presup', 'ProyectosController@anular_presup');
 
