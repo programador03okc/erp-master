@@ -169,9 +169,8 @@ class OrdenesTransformacionController extends Controller
             ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
             ->leftJoin('almacen.alm_reserva', function ($join) {
                 $join->on('alm_reserva.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento');
-                $join->where('alm_reserva.estado', '!=', 7);
-                $join->where('alm_reserva.estado', '!=', 5);
-                $join->first();
+                $join->where('alm_reserva.estado', '=', 1);
+                $join->limit(1);
             })
             ->leftJoin('almacen.alm_almacen as almacen_reserva', 'almacen_reserva.id_almacen', '=', 'alm_reserva.id_almacen_reserva')
             ->where([
