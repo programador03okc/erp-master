@@ -106,6 +106,14 @@ function listarDetalleOrdenDespacho(id_requerimiento, id_od, aplica_cambios, tie
             });
             if (items_para_despachar == 0) {
                 $("#submit_guia").attr('disabled', 'true');
+                Lobibox.notify("info", {
+                    title: false,
+                    size: "mini",
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    msg: 'No hay items para despachar. Para mas información, revise el detalle de items.'
+                });
             }
             if (almacen_diferentes > 0) {
                 // $("#submit_guia").attr('disabled', 'true');

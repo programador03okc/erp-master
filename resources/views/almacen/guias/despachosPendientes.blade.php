@@ -55,7 +55,7 @@ Atención de Salidas
                                             <th>CDP</th>
                                             <th>Cliente</th>
                                             <th>Almacén</th>
-                                            <th>Estado</th>
+                                            {{-- <th>Estado</th> --}}
                                             <!-- <th>Ubigeo</th>
                                             <th>Dirección Destino</th> -->
                                             {{-- <th>Fecha Entrega</th>

@@ -170,13 +170,13 @@ function listarDespachosPendientes(permiso) {
             { data: 'codigo_oportunidad', name: 'oc_propias_view.codigo_oportunidad', className: "text-center" },
             { 'data': 'razon_social', 'name': 'adm_contri.razon_social' },
             { 'data': 'almacen_descripcion', 'name': 'alm_almacen.descripcion' },
-            {
-                data: 'estado_doc', name: 'adm_estado_doc.bootstrap_color', className: "text-center",
-                'render': function (data, type, row) {
-                    return '<span class="label label-' + row['bootstrap_color'] + '">' + row['estado_doc'] + '</span>';
-                    // row['suma_reservas'] + ' ' + row['suma_cantidad']
-                }
-            },
+            // {
+            //     data: 'estado_doc', name: 'adm_estado_doc.bootstrap_color', className: "text-center",
+            //     'render': function (data, type, row) {
+            //         return '<span class="label label-' + row['bootstrap_color'] + '">' + row['estado_doc'] + '</span>';
+            //         // row['suma_reservas'] + ' ' + row['suma_cantidad']
+            //     }
+            // },
         ],
         'columnDefs': [
             { 'aTargets': [0], 'sClass': 'invisible' },
@@ -192,7 +192,7 @@ function listarDespachosPendientes(permiso) {
                             ${(row['estado_requerimiento'] == 39 || row['estado_requerimiento'] == 38) ? 'disabled' : ''} >
                             <i class="fas fa-sign-in-alt"></i></button>`
 
-                }, targets: 10
+                }, targets: 9
             }
         ],
         'order': [[0, "desc"]],
