@@ -23,8 +23,8 @@ class GuiaSalidaExcelFormatoOKCController extends Controller
 
         $sheet->setCellValue('BB1', '');
 
-        $sheet->setCellValue('AJ2', 'GR'.($guia->serie.'-'.$guia->numero));
-        $sheet->mergeCells('AJ2:AQ2');
+        $sheet->setCellValue('AR2', 'GR'.($guia->serie.'-'.$guia->numero));
+        $sheet->mergeCells('AR2:AU2');
 
         $sheet->setCellValue('I4', $guia->fecha_emision);
         $sheet->mergeCells('I4:P4');
