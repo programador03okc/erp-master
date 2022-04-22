@@ -142,7 +142,7 @@ class GuiaSalidaExcelFormatoSVSController extends Controller
         GuiaSalidaExcelFormatoSVSController::insertarSeccionGuia($spreadsheet, $data);
         GuiaSalidaExcelFormatoSVSController::insertarSeccionDetalle($spreadsheet, $data, 0,0);
 
-        $fileName = 'FORMATO-SVS-GR'.$data['guia']->serie.'-'.$data['guia']->numero.'-'.json_decode($data['guia']->codigos_requerimiento)[0].'-'.$data['guia']->cliente_razon_social."-okc";
+        $fileName = 'FORMATO-SVS-GR'.($data['guia']->serie??'').'-'.($data['guia']->numero??'').'-'.( $data['guia']->codigos_requerimiento !=null? json_decode($data['guia']->codigos_requerimiento)[0]:'').'-'.($data['guia']->cliente_razon_social??'');
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="' . $fileName . '.xls"');
         header('Cache-Control: must-revalidate');
