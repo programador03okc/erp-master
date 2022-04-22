@@ -255,7 +255,7 @@ function listarRequerimientosPendientes(usuario) {
                             data-placement="bottom" title="Despacho Interno" data-id="${row['id_requerimiento']}" 
                             data-estado="${row['estado_di']}" data-estado-despacho="${row['estado_despacho']}"
                             data-idod="${row['id_despacho_interno']}" >
-                            <i class="fas fa-random"></i></button>` : ''}
+                            <strong>ODI</strong></button>` : ''}
                             
                         ${row['id_requerimiento'] !== null ?
                             `<button type="button" class="envio_od btn btn-${row['id_od'] !== null ? 'warning' : 'default'} btn-flat btn-xs " data-toggle="tooltip"
@@ -453,18 +453,18 @@ $('#requerimientosEnProceso tbody').on("click", "button.interno", function (e) {
     console.log(estado);
     var msj = '';
 
-    if (estado_despacho == 23) {
-        msj = 'Ya se generó un despacho externo. No es posible modificar.';
+    // if (estado_despacho == 23) {
+    //     msj = 'Ya se generó un despacho externo. No es posible modificar.';
+    // }
+    // else {
+    if (estado == null || estado == 1) {
+        openFechaProgramada(id, od);
+    } else if (estado == 10) {
+        msj = 'Ya se finalizó el proceso de transformación. No es posible modificar.';
+    } else {
+        msj = 'Ya se inició el proceso de transformación. No es posible modificar.';
     }
-    else {
-        if (estado == null || estado == 1) {
-            openFechaProgramada(id, od);
-        } else if (estado == 10) {
-            msj = 'Ya se finalizó el proceso de transformación. No es posible modificar.';
-        } else {
-            msj = 'Ya se inició el proceso de transformación. No es posible modificar.';
-        }
-    }
+    // }
     if (msj !== '') {
         Lobibox.notify('warning', {
             title: false,

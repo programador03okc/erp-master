@@ -87,7 +87,7 @@ Estado de Atención de Requerimientos
 <script>
     $(document).ready(function() {
         seleccionarMenu(window.location);
-        listarRequerimientosAlmacen();
+        listarRequerimientosAlmacen('{{Auth::user()->id_usuario}}');
         // $.fn.dataTable.Buttons.defaults.dom.button.className = 'btn';
     //     iniciar('{{Auth::user()->tieneAccion(85)}}');
     });

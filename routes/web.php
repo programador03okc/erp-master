@@ -1457,6 +1457,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('listarDetalleTransferencias/{id}', 'Almacen\Movimiento\TransferenciaController@listarDetalleTransferencias');
 				Route::post('cambioAlmacen', 'Almacen\Reporte\ListaRequerimientosAlmacenController@cambioAlmacen');
 				Route::get('listarDetalleRequerimiento/{id}', 'Almacen\Reporte\ListaRequerimientosAlmacenController@listarDetalleRequerimiento');
+				Route::post('anularDespachoInterno', 'Logistica\Distribucion\OrdenesDespachoInternoController@anularDespachoInterno')->name('anularDespachoInterno');
 			});
 		});
 

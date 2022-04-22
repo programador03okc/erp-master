@@ -1,6 +1,6 @@
 let $tableRequerimientos;
 
-function listarRequerimientosAlmacen() {
+function listarRequerimientosAlmacen(id_usuario) {
     console.log('list');
     var vardataTables = funcDatatables();
     let botones = [];
@@ -108,12 +108,28 @@ function listarRequerimientosAlmacen() {
             {
                 data: 'codigo_despacho_interno', name: 'despachoInterno.codigo', className: "text-center",
                 'render': function (data, type, row) {
-                    return (row['codigo_despacho_interno'] ?? '') + (row['codigo_transformacion'] !== null ? `<br><label class="lbl-codigo" title="Abrir Transformación" 
-                    onClick="abrir_transformacion(${row['id_transformacion']})">${row['codigo_transformacion']}</label>` : '')
+                    return (row['codigo_despacho_interno'] ?? '') + (row['codigo_transformacion'] !== null ? `<br>
+                    ${id_usuario == '3' || id_usuario == '17' || id_usuario == '93' ?
+                            `<button type="button" class="anular_odi btn btn-danger btn-flat btn-xs" data-toggle="tooltip"
+                        data-placement="bottom" title="Anular Despacho Interno" data-id="${row['id_despacho_interno']}" 
+                        data-codigo="${row['codigo_despacho_interno']}" data-idreq="${row['id_requerimiento']}">
+                        <i class="fas fa-trash"></i></button>`: ''}<br>
+                        <label class="lbl-codigo" title="Abrir Transformación" 
+                    onClick="abrir_transformacion(${row['id_transformacion']})">${row['codigo_transformacion']}</label>
+                    ` : '')
                         + (row['estado_di'] ?? '');
                 }
             },
-            { data: 'codigo_despacho_externo', name: 'orden_despacho.codigo', className: "text-center" },
+            {
+                data: 'codigo_despacho_externo', name: 'orden_despacho.codigo', className: "text-center",
+                'render': function (data, type, row) {
+                    return (row['codigo_despacho_externo'] !== null ? row['codigo_despacho_externo'] + `<br>
+                    <button type="button" class="anular_ode btn btn-danger btn-flat btn-xs" data-toggle="tooltip"
+                        data-placement="bottom" title="Anular Despacho Externo" data-id="${row['id_despacho_externo']}" 
+                        data-codigo="${row['codigo_despacho_externo']}" data-idreq="${row['id_requerimiento']}">
+                        <i class="fas fa-trash"></i></button>` : '');
+                }
+            },
             {
                 data: 'estado_despacho_descripcion', name: 'estado_despacho.estado_doc', className: "text-center",
                 'render': function (data, type, row) {
@@ -188,6 +204,84 @@ $('#requerimientosAlmacen tbody').on("click", "button.cambio", function () {
         listarDetalleRequerimiento(id);
     }
 });
+
+$('#requerimientosAlmacen tbody').on("click", "button.anular_odi", function () {
+    var id_odi = $(this).data('id');
+    var id_req = $(this).data('idreq');
+    var cod = $(this).data('codigo');
+
+    if (id_odi !== null) {
+        Swal.fire({
+            title: "¿Está seguro que desea anular ésta " + cod + "?",
+            // text: "",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#00a65a", //"#3085d6",
+            cancelButtonColor: "#d33",
+            cancelButtonText: "Cancelar",
+            confirmButtonText: "Sí, Anular"
+        }).then(result => {
+            if (result.isConfirmed) {
+                var data = 'id_od=' + id_odi + '&id_requerimiento=' + id_req;
+                console.log(data);
+                anularDespacho(data);
+            }
+        });
+    }
+});
+
+$('#requerimientosAlmacen tbody').on("click", "button.anular_ode", function () {
+    var id_ode = $(this).data('id');
+    var id_req = $(this).data('idreq');
+    var cod = $(this).data('codigo');
+
+    if (id_ode !== null) {
+        Swal.fire({
+            title: "¿Está seguro que desea anular ésta " + cod + "?",
+            // text: "",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#00a65a", //"#3085d6",
+            cancelButtonColor: "#d33",
+            cancelButtonText: "Cancelar",
+            confirmButtonText: "Sí, Anular"
+        }).then(result => {
+            if (result.isConfirmed) {
+                var data = 'id_od=' + id_ode + '&id_requerimiento=' + id_req;
+                console.log(data);
+                anularDespacho(data);
+            }
+        });
+    }
+});
+
+function anularDespacho(data) {
+    $.ajax({
+        type: 'POST',
+        url: 'anularDespachoInterno',
+        data: data,
+        dataType: 'JSON',
+        success: function (response) {
+            console.log(response);
+            Lobibox.notify(response.tipo, {
+                title: false,
+                size: "mini",
+                rounded: true,
+                sound: false,
+                delayIndicator: false,
+                msg: response.mensaje
+            });
+
+            if (response.tipo == 'success') {
+                $("#requerimientosAlmacen").DataTable().ajax.reload(null, false);
+            }
+        }
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
 
 function abrir_transformacion(id_transformacion) {
     console.log('abrir_transformacio' + id_transformacion);
