@@ -63,7 +63,7 @@ function listarSaldosProductoAlmacen() {
         columns: [
             { 'data': 'id_producto' },
             { 'data': 'codigo', name: 'alm_prod.codigo' },
-            { 'data': 'cod_softlink', name: 'alm_prod.codigo_softlink' },
+            { 'data': 'cod_softlink', name: 'alm_prod.cod_softlink' },
             { 'data': 'part_number', name: 'alm_prod.part_number' },
             { 'data': 'descripcion', name: 'alm_prod.descripcion' },
             { 'data': 'stock' },

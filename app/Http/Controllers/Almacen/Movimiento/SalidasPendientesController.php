@@ -170,7 +170,7 @@ class SalidasPendientesController extends Controller
 
                         $transformacion = DB::table('almacen.transformacion')
                             ->select('id_transformacion')
-                            ->where('id_od', $request->id_od)
+                            ->where([['id_od', '=', $request->id_od], ['estado', '!=', 7]])
                             ->first();
 
                         $id_salida = DB::table('almacen.mov_alm')->insertGetId(
@@ -308,6 +308,41 @@ class SalidasPendientesController extends Controller
                                     'estado' => 1,
                                     'fecha_registro' => $fecha_registro
                                 ]);
+                            }
+
+                            //Cantidad atendida con otras guias
+                            $atendido = DB::table('almacen.alm_reserva')
+                                ->select(DB::raw('SUM(guia_ven_det.cantidad) as cantidad_atendida'))
+                                ->where([
+                                    ['alm_reserva.id_detalle_requerimiento', '=', $det->id_detalle_requerimiento],
+                                    ['alm_reserva.id_almacen_reserva', '=', $request->id_almacen]
+                                ])
+                                ->join('almacen.orden_despacho_det', 'orden_despacho_det.id_detalle_requerimiento', '=', 'alm_reserva.id_detalle_requerimiento')
+                                ->join('almacen.guia_ven_det', function ($join) {
+                                    $join->on('guia_ven_det.id_od_det', '=', 'orden_despacho_det.id_od_detalle');
+                                    $join->where('guia_ven_det.estado', '!=', 7);
+                                })
+                                ->first();
+
+                            $reservas_pendientes = DB::table('almacen.alm_reserva')
+                                ->where([
+                                    ['alm_reserva.id_detalle_requerimiento', '=', $det->id_detalle_requerimiento],
+                                    ['alm_reserva.id_almacen_reserva', '=', $request->id_almacen],
+                                    ['alm_reserva.estado', '=', 1],
+                                ])
+                                ->get();
+
+                            $cantidad_acumulada = 0;
+
+                            foreach ($reservas_pendientes as $res) {
+                                $cantidad_acumulada += $res->stock_comprometido;
+
+                                if ($atendido->cantidad_atendida >= $cantidad_acumulada) {
+                                    //atiende la reserva
+                                    DB::table('almacen.alm_reserva')
+                                        ->where('id_reserva', $res->id_reserva)
+                                        ->update(['estado' => 5]);
+                                }
                             }
                         }
 
