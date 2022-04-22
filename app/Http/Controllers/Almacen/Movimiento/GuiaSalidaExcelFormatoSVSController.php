@@ -76,7 +76,7 @@ class GuiaSalidaExcelFormatoSVSController extends Controller
                 
             
             $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*1, $filaInicioItem, $detalle[$i]['codigo']);
-            $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*1).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*1)+6).$filaInicioItem);
+            $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*1).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*1)+3).$filaInicioItem);
 
             $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*8, $filaInicioItem, $detalle[$i]['cantidad']);
             $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*8).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*8)+3).$filaInicioItem);
@@ -85,26 +85,26 @@ class GuiaSalidaExcelFormatoSVSController extends Controller
             $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*12).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*12)+4).$filaInicioItem);
 
             
-            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*16, $filaInicioItem, $detalle[$i]['descripcion']);
-            $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*16).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*16)+31).$filaInicioItem);
-            $sheet->getStyle(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*16).$filaInicioItem)->getAlignment()->setWrapText(true);
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*17, $filaInicioItem, $detalle[$i]['descripcion']);
+            $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*17).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*17)+31).$filaInicioItem);
+            $sheet->getStyle(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*17).$filaInicioItem)->getAlignment()->setWrapText(true);
             $filaInicioItem++;
-            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*16, $filaInicioItem, 'CATEGORÍA: ');
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*17, $filaInicioItem, 'CATEGORÍA: ');
             $filaInicioItem++;
-            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*16, $filaInicioItem, 'MARCA: '.$detalle[$i]['marca']);
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*17, $filaInicioItem, 'MARCA: '.$detalle[$i]['marca']);
             $filaInicioItem++;
-            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*16, $filaInicioItem, 'MODELO: ');
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*17, $filaInicioItem, 'MODELO: ');
             $filaInicioItem++;
-            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*16, $filaInicioItem, 'NÚMERO DE PARTE: '.$detalle[$i]['part_number']);
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*17, $filaInicioItem, 'NÚMERO DE PARTE: '.$detalle[$i]['part_number']);
             $filaInicioItem++;
-            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*16, $filaInicioItem, 'S/N:');
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*17, $filaInicioItem, 'S/N:');
             $filaInicioItem++;
 
             $filaInicioItem++;
 
             $cantidadColumnasPorFilaSerie=3;
             $anchoDeSerie=8;
-            $ColumnaInicioSerie=$ColumnaInicioItem*16;
+            $ColumnaInicioSerie=$ColumnaInicioItem*17;
             $ii=0;
             for ($j=$idSerieInterrumpido; $j < count($detalle[$i]['series']) ; $j++) { 
                 
