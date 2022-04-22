@@ -17,27 +17,27 @@ class GuiaSalidaExcelFormatoOKCController extends Controller
         $guia=$data['guia'];
         $sheet->getDefaultColumnDimension()->setWidth(8, 'pt');
         $sheet->getRowDimension(1)->setRowHeight(65, 'pt');
-        $sheet->getRowDimension(3)->setRowHeight(25, 'pt');
-        $sheet->getRowDimension(9)->setRowHeight(1.8, 'pt');
+        $sheet->getRowDimension(3)->setRowHeight(28, 'pt');
+        $sheet->getRowDimension(14)->setRowHeight(1, 'pt');
    
 
-        $sheet->setCellValue('BB1', '');
+        $sheet->setCellValue('BH1', '');
 
-        $sheet->setCellValue('AJ2', 'GR'.($guia->serie.'-'.$guia->numero));
-        $sheet->mergeCells('AJ2:AQ2');
+        $sheet->setCellValue('AR2', 'GR'.($guia->serie.'-'.$guia->numero));
+        $sheet->mergeCells('AR2:BA2');
 
         $sheet->setCellValue('I4', $guia->fecha_emision);
         $sheet->mergeCells('I4:P4');
 
-        $sheet->setCellValue('K5', $guia->empresa_razon_social);
-        $sheet->getStyle('K5')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('K5:Z5');
-        $sheet->getStyle('K5')->getAlignment()->setWrapText(true);
+        $sheet->setCellValue('M5', $guia->empresa_razon_social);
+        $sheet->getStyle('M5')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('M5:Z5');
+        $sheet->getStyle('M5')->getAlignment()->setWrapText(true);
 
-        $sheet->setCellValue('AD5', $guia->cliente_razon_social);
-        $sheet->getStyle('AD5')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('AD5:AU6');
-        $sheet->getStyle('AD5')->getAlignment()->setWrapText(true);
+        $sheet->setCellValue('AN5', $guia->cliente_razon_social);
+        $sheet->getStyle('AN5')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('AN5:BH6');
+        $sheet->getStyle('AN5')->getAlignment()->setWrapText(true);
 
 
         $sheet->setCellValue('K7', $guia->empresa_nro_documento);
@@ -45,10 +45,10 @@ class GuiaSalidaExcelFormatoOKCController extends Controller
         $sheet->mergeCells('K7:P7');
 
 
-        $sheet->setCellValue('AD7', $guia->punto_llegada);
-        $sheet->getStyle('AD7')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('AD7:AU7');
-        $sheet->getStyle('AD7')->getAlignment()->setWrapText(true);
+        $sheet->setCellValue('AM7', $guia->punto_llegada);
+        $sheet->getStyle('AM7')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('AM7:AU7');
+        $sheet->getStyle('AM7')->getAlignment()->setWrapText(true);
 
 
 
@@ -56,9 +56,9 @@ class GuiaSalidaExcelFormatoOKCController extends Controller
         $sheet->getStyle('K8')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
         $sheet->mergeCells('K8:P8');
 
-        $sheet->setCellValue('AA8', $guia->cliente_nro_documento);
-        $sheet->getStyle('AA8')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('AA8:AH8');
+        $sheet->setCellValue('AH8', $guia->cliente_nro_documento);
+        $sheet->getStyle('AH8')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('AH8:AP8');
 
 
         $sheet->setCellValue('F6', $guia->punto_partida);
@@ -72,25 +72,25 @@ class GuiaSalidaExcelFormatoOKCController extends Controller
         $sheet->mergeCells('I10:AC10');
         // $sheet->getStyle('D11')->getAlignment()->setWrapText(true);
 
-        $sheet->setCellValue('AO10', 'LICENCIA');
-        $sheet->getStyle('AO10')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('AO10:AU10');
+        $sheet->setCellValue('AZ10', 'LICENCIA');
+        $sheet->getStyle('AZ10')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('AZ10:BH10');
         // $sheet->getStyle('AJ11')->getAlignment()->setWrapText(true);
 
-        $sheet->setCellValue('I11', 'RUC TRA');
-        $sheet->getStyle('I11')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('I11:O11');
+        $sheet->setCellValue('F11', 'RUC TRA');
+        $sheet->getStyle('F11')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('F11:O11');
         // $sheet->getStyle('E13')->getAlignment()->setWrapText(true);
 
-        $sheet->setCellValue('Z11', 'INGRESAR MARCA VEHICULO');
-        $sheet->getStyle('Z11')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('Z11:AI11');
+        $sheet->setCellValue('AE11', 'INGRESAR MARCA VEHICULO');
+        $sheet->getStyle('AE11')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('AE11:AQ11');
         // $sheet->getStyle('X13')->getAlignment()->setWrapText(true);
 
 
-        $sheet->setCellValue('AM11', 'PLACA TRA');
-        $sheet->getStyle('AM11')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('AM11:AU11');
+        $sheet->setCellValue('AX11', 'PLACA TRA');
+        $sheet->getStyle('AX11')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('AX11:BH11');
         // $sheet->getStyle('AJ13')->getAlignment()->setWrapText(true);
 
 
@@ -115,10 +115,10 @@ class GuiaSalidaExcelFormatoOKCController extends Controller
             $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*1).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*1)+6).$filaInicioItem);
 
             $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*8, $filaInicioItem, $detalle[$i]['cantidad']);
-            $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*8).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*8)+2).$filaInicioItem);
+            $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*8).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*8)+3).$filaInicioItem);
 
-            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*12, $filaInicioItem, $detalle[$i]['abreviatura']);
-            $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*12).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*12)+4).$filaInicioItem);
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*14, $filaInicioItem, $detalle[$i]['abreviatura']);
+            $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*14).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*14)+4).$filaInicioItem);
 
             
             $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*20, $filaInicioItem, $detalle[$i]['descripcion']);
@@ -202,7 +202,7 @@ class GuiaSalidaExcelFormatoOKCController extends Controller
             $filaInicioItem++;
         }
         
-        $sheet->getComment('AU'.$filaLimiteParaImprimir)->getText()->createTextRun('Hasta esta fila se sugiere imprimir');
+        $sheet->setCellValue('AY'.$filaLimiteParaImprimir,'Hasta aquí se sugiere imprimir');
 
     }
 
@@ -240,7 +240,7 @@ class GuiaSalidaExcelFormatoOKCController extends Controller
         GuiaSalidaExcelFormatoOKCController::insertarSeccionGuia($spreadsheet, $data);
         GuiaSalidaExcelFormatoOKCController::insertarSeccionDetalle($spreadsheet, $data, 0,0);
 
-        $fileName = 'FORMATO-OKC-GR'.$data['guia']->serie.'-'.$data['guia']->numero.'-'.json_decode($data['guia']->codigos_requerimiento)[0].'-'.$data['guia']->cliente_razon_social."-okc";
+        $fileName = 'FORMATO-OKC-GR'.($data['guia']->serie??'').'-'.($data['guia']->numero??'').'-'.($data['guia']->codigos_requerimiento!=null ?json_decode($data['guia']->codigos_requerimiento)[0]:'').'-'.($data['guia']->cliente_razon_social??'');
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="' . $fileName . '.xls"');
         header('Content-Transfer-Encoding: binary');

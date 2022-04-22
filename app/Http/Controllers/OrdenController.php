@@ -3465,7 +3465,7 @@ class OrdenController extends Controller
             ->get();
 
         if (count($log_ord_compra) > 0) {
-            if($log_ord_compra->first()->estado_pago ==5){ // verificar si tiene autorizado el pago
+            if($log_ord_compra->first()->estado_pago >=5){ // verificar si tiene autorizado el pago
                 $status = 401;
                 $tipo_estado = 'warning';
                 $msj[] = 'No se puede anular la orden tiene autorizado el pago';
