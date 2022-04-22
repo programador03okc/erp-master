@@ -17,8 +17,8 @@ class GuiaSalidaExcelFormatoOKCController extends Controller
         $guia=$data['guia'];
         $sheet->getDefaultColumnDimension()->setWidth(8, 'pt');
         $sheet->getRowDimension(1)->setRowHeight(65, 'pt');
-        $sheet->getRowDimension(3)->setRowHeight(26, 'pt');
-        $sheet->getRowDimension(9)->setRowHeight(1.8, 'pt');
+        $sheet->getRowDimension(3)->setRowHeight(28, 'pt');
+        $sheet->getRowDimension(14)->setRowHeight(1, 'pt');
    
 
         $sheet->setCellValue('BB1', '');
@@ -34,10 +34,10 @@ class GuiaSalidaExcelFormatoOKCController extends Controller
         $sheet->mergeCells('M5:Z5');
         $sheet->getStyle('M5')->getAlignment()->setWrapText(true);
 
-        $sheet->setCellValue('AM5', $guia->cliente_razon_social);
-        $sheet->getStyle('AM5')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('AM5:AU6');
-        $sheet->getStyle('AM5')->getAlignment()->setWrapText(true);
+        $sheet->setCellValue('AN5', $guia->cliente_razon_social);
+        $sheet->getStyle('AN5')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('AN5:BB6');
+        $sheet->getStyle('AN5')->getAlignment()->setWrapText(true);
 
 
         $sheet->setCellValue('K7', $guia->empresa_nro_documento);
