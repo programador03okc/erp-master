@@ -21,7 +21,7 @@ class GuiaSalidaExcelFormatoOKCController extends Controller
         $sheet->getRowDimension(14)->setRowHeight(1, 'pt');
    
 
-        $sheet->setCellValue('BB1', '');
+        $sheet->setCellValue('BH1', '');
 
         $sheet->setCellValue('AR2', 'GR'.($guia->serie.'-'.$guia->numero));
         $sheet->mergeCells('AR2:BA2');
@@ -36,7 +36,7 @@ class GuiaSalidaExcelFormatoOKCController extends Controller
 
         $sheet->setCellValue('AN5', $guia->cliente_razon_social);
         $sheet->getStyle('AN5')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('AN5:BB6');
+        $sheet->mergeCells('AN5:BH6');
         $sheet->getStyle('AN5')->getAlignment()->setWrapText(true);
 
 
@@ -72,9 +72,9 @@ class GuiaSalidaExcelFormatoOKCController extends Controller
         $sheet->mergeCells('I10:AC10');
         // $sheet->getStyle('D11')->getAlignment()->setWrapText(true);
 
-        $sheet->setCellValue('AU10', 'LICENCIA');
-        $sheet->getStyle('AU10')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('AU10:BB10');
+        $sheet->setCellValue('AZ10', 'LICENCIA');
+        $sheet->getStyle('AZ10')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('AZ10:BH10');
         // $sheet->getStyle('AJ11')->getAlignment()->setWrapText(true);
 
         $sheet->setCellValue('F11', 'RUC TRA');
@@ -82,15 +82,15 @@ class GuiaSalidaExcelFormatoOKCController extends Controller
         $sheet->mergeCells('F11:O11');
         // $sheet->getStyle('E13')->getAlignment()->setWrapText(true);
 
-        $sheet->setCellValue('AB11', 'INGRESAR MARCA VEHICULO');
-        $sheet->getStyle('AB11')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('AB11:AL11');
+        $sheet->setCellValue('AE11', 'INGRESAR MARCA VEHICULO');
+        $sheet->getStyle('AE11')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('AE11:AQ11');
         // $sheet->getStyle('X13')->getAlignment()->setWrapText(true);
 
 
-        $sheet->setCellValue('AT11', 'PLACA TRA');
-        $sheet->getStyle('AT11')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('AT11:BB11');
+        $sheet->setCellValue('AX11', 'PLACA TRA');
+        $sheet->getStyle('AX11')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('AX11:BH11');
         // $sheet->getStyle('AJ13')->getAlignment()->setWrapText(true);
 
 
@@ -202,7 +202,7 @@ class GuiaSalidaExcelFormatoOKCController extends Controller
             $filaInicioItem++;
         }
         
-        $sheet->getComment('AU'.$filaLimiteParaImprimir)->getText()->createTextRun('Hasta esta fila se sugiere imprimir');
+        $sheet->getComment('AY'.$filaLimiteParaImprimir)->getText()->createTextRun('Hasta esta fila se sugiere imprimir');
 
     }
 
