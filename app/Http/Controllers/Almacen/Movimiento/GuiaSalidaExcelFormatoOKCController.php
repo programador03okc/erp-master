@@ -29,15 +29,15 @@ class GuiaSalidaExcelFormatoOKCController extends Controller
         $sheet->setCellValue('I4', $guia->fecha_emision);
         $sheet->mergeCells('I4:P4');
 
-        $sheet->setCellValue('K5', $guia->empresa_razon_social);
-        $sheet->getStyle('K5')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('K5:Z5');
-        $sheet->getStyle('K5')->getAlignment()->setWrapText(true);
+        $sheet->setCellValue('M5', $guia->empresa_razon_social);
+        $sheet->getStyle('M5')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('M5:Z5');
+        $sheet->getStyle('M5')->getAlignment()->setWrapText(true);
 
-        $sheet->setCellValue('AD5', $guia->cliente_razon_social);
-        $sheet->getStyle('AD5')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('AD5:AU6');
-        $sheet->getStyle('AD5')->getAlignment()->setWrapText(true);
+        $sheet->setCellValue('AM5', $guia->cliente_razon_social);
+        $sheet->getStyle('AM5')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('AM5:AU6');
+        $sheet->getStyle('AM5')->getAlignment()->setWrapText(true);
 
 
         $sheet->setCellValue('K7', $guia->empresa_nro_documento);
@@ -45,10 +45,10 @@ class GuiaSalidaExcelFormatoOKCController extends Controller
         $sheet->mergeCells('K7:P7');
 
 
-        $sheet->setCellValue('AD7', $guia->punto_llegada);
-        $sheet->getStyle('AD7')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('AD7:AU7');
-        $sheet->getStyle('AD7')->getAlignment()->setWrapText(true);
+        $sheet->setCellValue('AM7', $guia->punto_llegada);
+        $sheet->getStyle('AM7')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('AM7:AU7');
+        $sheet->getStyle('AM7')->getAlignment()->setWrapText(true);
 
 
 
@@ -56,9 +56,9 @@ class GuiaSalidaExcelFormatoOKCController extends Controller
         $sheet->getStyle('K8')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
         $sheet->mergeCells('K8:P8');
 
-        $sheet->setCellValue('AA8', $guia->cliente_nro_documento);
-        $sheet->getStyle('AA8')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('AA8:AH8');
+        $sheet->setCellValue('AH8', $guia->cliente_nro_documento);
+        $sheet->getStyle('AH8')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('AH8:AP8');
 
 
         $sheet->setCellValue('F6', $guia->punto_partida);
@@ -115,10 +115,10 @@ class GuiaSalidaExcelFormatoOKCController extends Controller
             $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*1).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*1)+6).$filaInicioItem);
 
             $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*8, $filaInicioItem, $detalle[$i]['cantidad']);
-            $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*8).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*8)+2).$filaInicioItem);
+            $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*8).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*8)+3).$filaInicioItem);
 
             $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*12, $filaInicioItem, $detalle[$i]['abreviatura']);
-            $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*12).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*12)+4).$filaInicioItem);
+            $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*14).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*14)+4).$filaInicioItem);
 
             
             $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*20, $filaInicioItem, $detalle[$i]['descripcion']);
