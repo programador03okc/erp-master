@@ -202,7 +202,7 @@ class GuiaSalidaExcelFormatoOKCController extends Controller
             $filaInicioItem++;
         }
         
-        $sheet->getComment('AY'.$filaLimiteParaImprimir)->getText()->createTextRun('Hasta esta fila se sugiere imprimir');
+        $sheet->setCellValue('AY'.$filaLimiteParaImprimir,'<- Hasta aquí se sugiere imprimir');
 
     }
 
