@@ -1284,11 +1284,7 @@ class OrdenController extends Controller
             ->leftjoin('logistica.log_ord_compra_pago', 'log_ord_compra_pago.id_orden_compra', '=', 'log_ord_compra.id_orden_compra')
             ->leftJoin('configuracion.ubi_dis as dis_destino', 'log_ord_compra.ubigeo_destino', '=', 'dis_destino.id_dis')
             ->leftJoin('configuracion.ubi_prov as prov_destino', 'dis_destino.id_prov', '=', 'prov_destino.id_prov')
-            ->leftJoin('configuracion.ubi_dpto as dpto_destino', 'prov_destino.id_dpto', '=', 'dpto_destino.id_dpto')
-
-            ->where([
-                ['log_ord_compra.estado', '!=', 7]
-            ]);
+            ->leftJoin('configuracion.ubi_dpto as dpto_destino', 'prov_destino.id_dpto', '=', 'dpto_destino.id_dpto');
         return datatables($ordenes)
             ->filterColumn('log_ord_compra.fecha', function ($query, $keyword) {
                 try {
