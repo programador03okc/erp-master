@@ -121,30 +121,50 @@ class OrdenesDespachoInternoController extends Controller
         try {
             DB::beginTransaction();
             $usuario = Auth::user()->id_usuario;
+            $rspta = [];
 
-            DB::table('almacen.orden_despacho')
-                ->where('id_od', $request->id_od)
-                ->update([
-                    'estado' => 7,
-                    'usuario_anula' => $usuario
-                ]);
+            $salidas = DB::table('almacen.guia_ven_det')
+                ->leftJoin('almacen.orden_despacho_det', function ($join) {
+                    $join->on('guia_ven_det.id_od_det', '=', 'orden_despacho_det.id_od_detalle');
+                    $join->where('guia_ven_det.estado', '!=', 7);
+                })
+                ->where('orden_despacho_det.id_od', $request->id_od)
+                ->get()->count();
 
-            DB::table('almacen.transformacion')
-                ->where('id_od', $request->id_od)
-                ->update([
-                    'estado' => 7,
-                    'usuario_anula' => $usuario
-                ]);
+            if ($salidas > 0) {
+                $rspta = [
+                    'tipo' => 'warning',
+                    'mensaje' => 'Almacén ya generó salida de dichos productos.'
+                ];
+            } else {
+                DB::table('almacen.orden_despacho')
+                    ->where('id_od', $request->id_od)
+                    ->update([
+                        'estado' => 7,
+                        'usuario_anula' => $usuario,
+                        'fecha_anulacion' => new Carbon(),
+                    ]);
 
-            DB::table('almacen.alm_req')
-                ->where('id_requerimiento', $request->id_requerimiento)
-                ->update(['estado_despacho' => 2]); //aprobado
+                DB::table('almacen.transformacion')
+                    ->where('id_od', $request->id_od)
+                    ->update([
+                        'estado' => 7,
+                        'usuario_anula' => $usuario,
+                        'fecha_anulacion' => new Carbon(),
+                    ]);
 
-            DB::commit();
-            return response()->json(array(
-                'tipo' => 'success',
-                'mensaje' => 'El Despacho Interno ha sido anulado.'
-            ));
+                DB::table('almacen.alm_req')
+                    ->where('id_requerimiento', $request->id_requerimiento)
+                    ->update(['estado_despacho' => 2]); //aprobado
+
+                DB::commit();
+                $rspta = [
+                    'tipo' => 'success',
+                    'mensaje' => 'El Despacho Interno ha sido anulado.'
+                ];
+            }
+
+            return response()->json($rspta);
         } catch (\PDOException $e) {
             DB::rollBack();
             return array('tipo' => 'error', 'mensaje' => 'Hubo un problema al enviar la orden. Por favor intente de nuevo', 'error' => $e->getMessage());
