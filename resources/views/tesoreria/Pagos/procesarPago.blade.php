@@ -45,6 +45,14 @@
                                 <label style="font-size: 14px;" name="total_pagado"></label>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-md-2 oculto" id="contenedor_observacion_requerimiento">
+                                <span style="font-size: 14px;">Observación <small>(original de requerimiento)</small></span>
+                            </div>
+                            <div class="col-md-10">
+                                <label style="font-size: 14px;" name="observacion_requerimiento"></label>
+                            </div>
+                        </div>
                     </fieldset>
                     <br>
 
@@ -93,7 +101,7 @@
                             </div>
                         </div>
                         <div class="row">
-                        <div class="col-md-2 oculto" id="contenedor_comentario_pago_logistica">
+                            <div class="col-md-2 oculto" id="contenedor_comentario_pago_logistica">
                                 <span style="font-size: 14px;">Comentario pago logística: </span>
                             </div>
                             <div class="col-md-10">
@@ -112,8 +120,7 @@
                             <div class="col-md-6">
                                 <h5>Cuenta origen</h5>
                                 <div style="display:flex;">
-                                    <select class="form-control js-example-basic-single" name="id_empresa" id="id_empresa" 
-                                        onchange="listarCuentasOrigen()" required>
+                                    <select class="form-control js-example-basic-single" name="id_empresa" id="id_empresa" onchange="listarCuentasOrigen()" required>
                                         <option value="">Elija una opción</option>
                                         @foreach ($empresas as $empresa)
                                         <option value="{{$empresa->id_empresa}}">{{$empresa->razon_social}}</option>
