@@ -771,8 +771,16 @@ class SalidasPendientesController extends Controller
             ]);
 
         if ($aplica_cambios == 'si') {
-            $lista = $data->where([['alm_det_req.tiene_transformacion', '=', ($aplica_cambios == 'si' ? false : ($tiene_transformacion == 'si' ? true : false))]])
-                ->distinct()->get();
+            if ($requerimiento->id_tipo_requerimiento == 1) {
+                $lista = $data->where([
+                    ['alm_det_req.tiene_transformacion', '=', ($aplica_cambios == 'si' ? false : ($tiene_transformacion == 'si' ? true : false))],
+                    ['alm_det_req.entrega_cliente', '=', false]
+                ])
+                    ->distinct()->get();
+            } else {
+                $lista = $data->where([['alm_det_req.tiene_transformacion', '=', ($aplica_cambios == 'si' ? false : ($tiene_transformacion == 'si' ? true : false))]])
+                    ->distinct()->get();
+            }
         } else {
             // $valor = $requerimiento->id_tipo_requerimiento == 1 ? true : null;
             if ($requerimiento->id_tipo_requerimiento == 1) {
