@@ -259,3 +259,27 @@ $("#reservasAlmacen tbody").on("click", "a.verProducto", function (e) {
     var win = window.open("/almacen/catalogos/productos/index", '_blank');
     win.focus();
 });
+
+function actualizarReservas() {
+    $.ajax({
+        type: 'GET',
+        url: 'actualizarReservas',
+        dataType: 'JSON',
+        success: function (response) {
+            console.log(response);
+            Lobibox.notify("success", {
+                title: false,
+                size: "mini",
+                rounded: true,
+                sound: false,
+                delayIndicator: false,
+                msg: 'Se actualizaron ' + response.reservas_actualizadas + ' reservas correctamente.'
+            });
+            $('#reservasAlmacen').DataTable().ajax.reload(null, false);
+        }
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}

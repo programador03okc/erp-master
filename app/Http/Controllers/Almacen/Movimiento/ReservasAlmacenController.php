@@ -80,4 +80,68 @@ class ReservasAlmacenController extends Controller
 
         return response()->json($rspta);
     }
+
+    function actualizarReservas()
+    {
+        $lista = DB::table('almacen.alm_reserva')
+            ->where([['alm_reserva.estado', '=', 1]])
+            ->get();
+
+        $reservas_actualizadas = 0;
+        $lista_reservas_actualizadas = [];
+
+        foreach ($lista as $reserva) {
+            //Cantidad atendida con guias
+            $atendido = DB::table('almacen.alm_reserva')
+                ->select(DB::raw('SUM(guia_ven_det.cantidad) as cantidad_atendida'))
+                ->where([
+                    ['alm_reserva.id_detalle_requerimiento', '=', $reserva->id_detalle_requerimiento],
+                    ['alm_reserva.id_almacen_reserva', '=', $reserva->id_almacen_reserva]
+                ])
+                ->join('almacen.orden_despacho_det', 'orden_despacho_det.id_detalle_requerimiento', '=', 'alm_reserva.id_detalle_requerimiento')
+                ->join('almacen.guia_ven_det', function ($join) {
+                    $join->on('guia_ven_det.id_od_det', '=', 'orden_despacho_det.id_od_detalle');
+                    $join->where('guia_ven_det.estado', '!=', 7);
+                })
+                ->first();
+
+            $reservas_pendientes = DB::table('almacen.alm_reserva')
+                ->select('alm_reserva.*', 'alm_req.codigo as codigo_req')
+                ->join('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'alm_reserva.id_detalle_requerimiento')
+                ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+                ->where([
+                    ['alm_reserva.id_detalle_requerimiento', '=', $reserva->id_detalle_requerimiento],
+                    ['alm_reserva.id_almacen_reserva', '=', $reserva->id_almacen_reserva],
+                    ['alm_reserva.estado', '=', 1],
+                ])
+                ->get();
+
+            $cantidad_acumulada = 0;
+
+            foreach ($reservas_pendientes as $res) {
+                $cantidad_acumulada += $res->stock_comprometido;
+
+                if ($atendido->cantidad_atendida >= $cantidad_acumulada) {
+                    //atiende la reserva
+                    DB::table('almacen.alm_reserva')
+                        ->where('id_reserva', $res->id_reserva)
+                        ->update(['estado' => 5]);
+
+                    $reservas_actualizadas++;
+
+                    array_push($lista_reservas_actualizadas, [
+                        'codigo_requerimiento' => $res->codigo_req,
+                        'codigo_reserva' => $res->codigo,
+                        'codigo_req' => $res->codigo_req,
+                        'cantidad_atendida_en_guias_ven' => $atendido->cantidad_atendida,
+                        'stock_comprometido' => $res->stock_comprometido,
+                    ]);
+                }
+            }
+        }
+        return response()->json([
+            'reservas_actualizadas' => $reservas_actualizadas,
+            'lista_reservas_actualizadas' => $lista_reservas_actualizadas
+        ]);
+    }
 }

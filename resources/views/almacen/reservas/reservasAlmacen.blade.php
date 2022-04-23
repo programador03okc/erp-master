@@ -32,6 +32,9 @@ Reservas de almacén
         <div class="page-main" type="reservasAlmacen">
             <div class="row" style="padding-top:10px;padding-right:10px;padding-left:10px;">
                 <div class="col-md-12">
+                    @if (Auth::user()->id_usuario == 3)
+                    <button id="btn_actualizar_reservas" class="btn btn-default" onClick="actualizarReservas();">Actualizar Reservas</button>
+                    @endif
                     <div class="table-responsive">
                         <table class="mytable table table-condensed table-bordered table-okc-view" 
                             id="reservasAlmacen" style="width:100%;">
