@@ -302,6 +302,8 @@ $("#form-mapeoItemsRequerimiento").on("submit", function (e) {
                 data: {
                     detalle: lista
                 },
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+
                 dataType: 'JSON',
                 beforeSend: data => {
     
