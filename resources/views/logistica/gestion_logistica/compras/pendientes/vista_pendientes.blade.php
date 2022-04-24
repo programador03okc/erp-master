@@ -130,6 +130,9 @@ Requerimientos pendientes
 @include('logistica.gestion_logistica.compras.pendientes.modal_historial_reserva')
 @include('logistica.gestion_logistica.compras.pendientes.modal_ver_orden_de_requerimiento')
 
+@include('logistica.gestion_logistica.compras.pendientes.modal_gestionar_estado_requerimiento')
+
+
 @endsection
 
 @section('scripts')
