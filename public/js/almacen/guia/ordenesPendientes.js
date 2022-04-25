@@ -290,7 +290,7 @@ $("#ordenesPendientes tbody").on("click", "button.guia", function () {
 });
 
 function cargar_almacenes(sede, id_almacen) {
-    if (sede !== "") {
+    if (sede !== "" && sede !== undefined) {
         $.ajax({
             type: "GET",
             url: "cargar_almacenes/" + sede,
