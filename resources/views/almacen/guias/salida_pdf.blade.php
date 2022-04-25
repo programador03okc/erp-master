@@ -172,6 +172,9 @@
                 <th class="text-center cabecera-producto" style="width: 5%">Und.</th>
                 <th class="text-center cabecera-producto" style="width: 5%">Mnd.</th>
                 <th class="text-center cabecera-producto" style="width: 5%">Unit.</th>
+                @if($salida->id_operacion == 27)
+                <th class="text-center cabecera-producto" style="width: 5%">Unit.$</th>
+                @endif
                 <th class="text-center cabecera-producto" style="width: 5%">Total</th>
             </tr>
         </thead>
@@ -216,6 +219,9 @@
                 {{-- <td class="text-right">{{$prod->moneda_doc!==null?$prod->moneda_doc:'S/'}}</td> --}}
                 <td class="text-right">{{$prod['simbolo']}}</td>
                 <td class="text-right">{{round($prod['costo_promedio'],2,PHP_ROUND_HALF_UP)}}</td>
+                @if($salida->id_operacion == 27)
+                <td class="text-right">{{round($prod['valor_dolar'],2,PHP_ROUND_HALF_UP)}}</td>
+                @endif
                 <td class="text-right">{{round($prod['valorizacion'],2,PHP_ROUND_HALF_UP)}}</td>
             </tr>
             @endforeach
@@ -225,11 +231,11 @@
 
     <footer style="position:absolute;bottom:0px;right:0px;">
         <p style="text-align:right;font-size:10px;margin-bottom:0px;">
-        {{'Registrado por: ' . $salida->nombre_corto }}
+            {{'Registrado por: ' . $salida->nombre_corto }}
         </p>
         <p style="text-align:right;font-size:10px;margin-bottom:0px;margin-top:0px;">
             {{'Fecha registro: ' . $fecha_registro . ' ' . $hora_registro }}
-            </p>
+        </p>
         <p style="text-align:right;font-size:10px;margin-top:0px;">
             <strong>{{config('global.nombreSistema') . ' '  . config('global.version')}}</strong>
         </p>

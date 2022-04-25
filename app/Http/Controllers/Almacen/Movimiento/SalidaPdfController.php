@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Almacen\Movimiento;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Tesoreria\TipoCambio;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
@@ -62,6 +63,7 @@ class SalidaPdfController extends Controller
                 'alm_prod.codigo',
                 'alm_prod.part_number',
                 'alm_prod.descripcion',
+                'alm_prod.id_moneda',
                 'alm_und_medida.abreviatura',
                 'sis_moneda.simbolo',
                 'trans.codigo as cod_trans',
@@ -99,6 +101,7 @@ class SalidaPdfController extends Controller
         $docs_array = [];
         $docs_fecha_array = [];
         $detalle = [];
+        $valor_dolar = 0;
 
         if ($salida !== null) {
             foreach ($lista as $det) {
@@ -112,6 +115,19 @@ class SalidaPdfController extends Controller
                 //corregir fecha inicial tengo sueño
                 $costo_promedio = $this->obtenerCostoPromedioSalida($det->id_producto, $salida->id_almacen, '2022-01-01', $salida->fecha_emision);
 
+                if ($salida->id_operacion == 27) {
+                    $tipo_cambio = TipoCambio::where([
+                        ['moneda', '=', 2],
+                        ['fecha', '<=', $salida->fecha_emision]
+                    ])->orderBy('fecha', 'DESC')->first();
+
+                    if ($det->id_moneda == 2) {
+                        $valor_dolar = $costo_promedio;
+                    } else {
+                        $valor_dolar = ($costo_promedio > 0 ? floatval($tipo_cambio->venta) / floatval($costo_promedio) : 0);
+                    }
+                }
+
                 array_push(
                     $detalle,
                     [
@@ -124,7 +140,8 @@ class SalidaPdfController extends Controller
                         'part_number' => $det->part_number,
                         'descripcion' => $det->descripcion,
                         'abreviatura' => $det->abreviatura,
-                        'simbolo' => $det->simbolo
+                        'simbolo' => $det->simbolo,
+                        'valor_dolar' => $valor_dolar,
                     ]
                 );
             }
