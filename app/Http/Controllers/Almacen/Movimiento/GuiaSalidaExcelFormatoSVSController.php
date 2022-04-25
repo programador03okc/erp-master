@@ -16,7 +16,7 @@ class GuiaSalidaExcelFormatoSVSController extends Controller
         $sheet = $spreadsheet->getActiveSheet();
         $guia=$data['guia'];
         $sheet->getDefaultColumnDimension()->setWidth(8, 'pt');
-        $sheet->getRowDimension(1)->setRowHeight(55, 'pt');
+        $sheet->getRowDimension(1)->setRowHeight(58, 'pt');
         $sheet->getRowDimension(3)->setRowHeight(45, 'pt');
         $sheet->getRowDimension(12)->setRowHeight(1.8, 'pt');
         // $sheet->getColumnDimension('A')->setWidth(9);
