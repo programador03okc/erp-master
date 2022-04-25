@@ -112,7 +112,8 @@ class GuiaSalidaExcelFormatoSVSController extends Controller
             $ColumnaInicioSerie=$ColumnaInicioItem*18;
             $ii=0;
             for ($j=$idSerieInterrumpido; $j < count($detalle[$i]['series']) ; $j++) { 
-                
+                $sheet->setCellValue('AX'.$j,$filaLimiteMarcada);
+
                 $sheet->setCellValueByColumnAndRow($ColumnaInicioSerie+$ii, $filaInicioItem, $detalle[$i]['series'][$j]->serie);
                 $ii=$ii+$anchoDeSerie;
                 if (($j + 1) % $cantidadColumnasPorFilaSerie == 0) {
