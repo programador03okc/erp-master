@@ -71,7 +71,7 @@ class GuiaSalidaExcelFormatoSVSController extends Controller
         $ColumnaInicioItem = 1;
         $filaInicioItem = 15;
         $filaLimiteParaImprimir = 0;
-        $filaLimiteMarcada = 'NO';
+        $filaLimiteMarcada = false;
 
             for ($i=$idItemInterrumpido; $i < count($detalle); $i++) { 
                 
@@ -122,14 +122,12 @@ class GuiaSalidaExcelFormatoSVSController extends Controller
             
             // inica evaluar altura de pagina actual, si series excede la pagina
 
-            if($filaLimiteMarcada=='NO'){
+            if($filaLimiteMarcada==false){
                 if (($sheet->getHighestRow() * 12) >= ($pageMaxHeight - 400)) {
                     $filaLimiteParaImprimir= $sheet->getHighestRow();
-                    $filaLimiteMarcada='SI';
+                    $filaLimiteMarcada=true;
                 }
             }
-            $sheet->getCell('BH2')->setValue(($filaLimiteMarcada=='NO'?$sheet->getHighestRow():'1').'filaLimiteMarcada');
-
             // fin evaluar altura de pagina actual, si series excede la pagina
                 
                                 
@@ -137,12 +135,8 @@ class GuiaSalidaExcelFormatoSVSController extends Controller
         $filaInicioItem++;
         
     }
-    if($filaLimiteParaImprimir==0){
-        $sheet->getCell('BH1')->setValue($filaLimiteParaImprimir.'Hasta aquí se sugiere imprimir');
-
-    }else{
+    if($filaLimiteParaImprimir>0){
         $sheet->getCell('BH'.$filaLimiteParaImprimir)->setValue($filaLimiteParaImprimir.'Hasta aquí se sugiere imprimir');
-
     }
 
     }

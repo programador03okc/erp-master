@@ -202,8 +202,10 @@ class GuiaSalidaExcelFormatoOKCController extends Controller
             $filaInicioItem++;
         }
         
-        $sheet->setCellValue('AY'.$filaLimiteParaImprimir,'Hasta aquí se sugiere imprimir');
-
+        if($filaLimiteParaImprimir>0){
+            $sheet->getCell('BH'.$filaLimiteParaImprimir)->setValue($filaLimiteParaImprimir.'Hasta aquí se sugiere imprimir');
+        }
+        
     }
 
     // public static function crearNuevaHoja($spreadsheet,$data, $idItemInterrumpido,$idSerieInterrumpido)
