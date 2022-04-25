@@ -84,32 +84,32 @@ class GuiaSalidaExcelFormatoSVSController extends Controller
             $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*6).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*6)+3).$filaInicioItem);
             $sheet->getStyle(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*6).$filaInicioItem)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 
-            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*10, $filaInicioItem, $detalle[$i]['abreviatura']);
-            $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*10).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*10)+4).$filaInicioItem);
-            $sheet->getStyle(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*10).$filaInicioItem)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*11, $filaInicioItem, $detalle[$i]['abreviatura']);
+            $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*11).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*11)+4).$filaInicioItem);
+            $sheet->getStyle(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*11).$filaInicioItem)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 
-            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*17, $filaInicioItem, $detalle[$i]['descripcion']);
-            $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*17).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*17)+31).$filaInicioItem);
-            $sheet->getStyle(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*17).$filaInicioItem)->getAlignment()->setWrapText(true);
-            $sheet->getStyle(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*17).$filaInicioItem)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*18, $filaInicioItem, $detalle[$i]['descripcion']);
+            $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*18).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*18)+31).$filaInicioItem);
+            $sheet->getStyle(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*18).$filaInicioItem)->getAlignment()->setWrapText(true);
+            $sheet->getStyle(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*18).$filaInicioItem)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
 
             $filaInicioItem++;
-            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*17, $filaInicioItem, 'CATEGORÍA: ');
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*18, $filaInicioItem, 'CATEGORÍA: ');
             $filaInicioItem++;
-            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*17, $filaInicioItem, 'MARCA: '.$detalle[$i]['marca']);
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*18, $filaInicioItem, 'MARCA: '.$detalle[$i]['marca']);
             $filaInicioItem++;
-            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*17, $filaInicioItem, 'MODELO: ');
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*18, $filaInicioItem, 'MODELO: ');
             $filaInicioItem++;
-            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*17, $filaInicioItem, 'NÚMERO DE PARTE: '.$detalle[$i]['part_number']);
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*18, $filaInicioItem, 'NÚMERO DE PARTE: '.$detalle[$i]['part_number']);
             $filaInicioItem++;
-            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*17, $filaInicioItem, 'S/N:');
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*18, $filaInicioItem, 'S/N:');
             $filaInicioItem++;
 
             $filaInicioItem++;
 
             $cantidadColumnasPorFilaSerie=3;
             $anchoDeSerie=8;
-            $ColumnaInicioSerie=$ColumnaInicioItem*17;
+            $ColumnaInicioSerie=$ColumnaInicioItem*18;
             $ii=0;
             for ($j=$idSerieInterrumpido; $j < count($detalle[$i]['series']) ; $j++) { 
                 
