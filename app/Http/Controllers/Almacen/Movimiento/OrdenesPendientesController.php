@@ -188,8 +188,16 @@ class OrdenesPendientesController extends Controller
             ->join('logistica.log_ord_compra', 'log_ord_compra.id_orden_compra', '=', 'log_det_ord_compra.id_orden_compra')
             ->join('logistica.estados_compra', 'estados_compra.id_estado', '=', 'log_ord_compra.estado')
             ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
-            ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
-            ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'log_ord_compra.id_usuario')
+            // ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
+            ->join('contabilidad.adm_contri', function ($join) {
+                $join->on('adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente');
+                $join->where('adm_contri.estado', '!=', 7);
+            })
+            // ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'log_ord_compra.id_usuario')
+            ->join('configuracion.sis_usua', function ($join) {
+                $join->on('sis_usua.id_usuario', '=', 'log_ord_compra.id_usuario');
+                $join->where('sis_usua.estado', '!=', 7);
+            })
             // ->leftjoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
             ->leftJoin('almacen.alm_det_req', function ($join) {
                 $join->on('alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento');
