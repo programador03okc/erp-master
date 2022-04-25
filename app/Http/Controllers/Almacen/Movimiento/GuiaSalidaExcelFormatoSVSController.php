@@ -17,8 +17,8 @@ class GuiaSalidaExcelFormatoSVSController extends Controller
         $guia=$data['guia'];
         $sheet->getDefaultColumnDimension()->setWidth(8, 'pt');
         $sheet->getRowDimension(1)->setRowHeight(58, 'pt');
-        $sheet->getRowDimension(3)->setRowHeight(43, 'pt');
-        $sheet->getRowDimension(12)->setRowHeight(1.8, 'pt');
+        $sheet->getRowDimension(3)->setRowHeight(44, 'pt');
+        $sheet->getRowDimension(12)->setRowHeight(1.9, 'pt');
         // $sheet->getColumnDimension('A')->setWidth(9);
 
         $sheet->setCellValue('BH1', '');
@@ -39,10 +39,10 @@ class GuiaSalidaExcelFormatoSVSController extends Controller
         $sheet->mergeCells('AM5:BF6');
         $sheet->getStyle('AM5')->getAlignment()->setWrapText(true);
 
-        $sheet->setCellValue('K8', $guia->punto_llegada);
-        $sheet->getStyle('K8')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('K8:AB10');
-        $sheet->getStyle('K8')->getAlignment()->setWrapText(true);
+        $sheet->setCellValue('K9', $guia->punto_llegada);
+        $sheet->getStyle('K9')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('K9:AB10');
+        $sheet->getStyle('K9')->getAlignment()->setWrapText(true);
 
         $sheet->setCellValue('AU9', 'INGRESAR MARCA VEHICU');
         $sheet->mergeCells('AU9:BF9');
