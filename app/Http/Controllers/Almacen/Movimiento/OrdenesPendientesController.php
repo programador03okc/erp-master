@@ -222,6 +222,9 @@ class OrdenesPendientesController extends Controller
         $data = DB::table('logistica.log_det_ord_compra')
             ->select(
                 'log_ord_compra.id_orden_compra',
+                'log_ord_compra.id_tp_documento',
+                'log_ord_compra.id_proveedor',
+                'log_ord_compra.id_sede',
                 'log_ord_compra.fecha',
                 'log_ord_compra.codigo as codigo_orden',
                 'log_ord_compra.codigo_softlink',
