@@ -183,11 +183,15 @@ class OrdenesPendientesController extends Controller
                 'alm_req.codigo as codigo_requerimiento',
                 'alm_req.concepto',
                 'alm_req.id_almacen',
-                'sis_usua.nombre_corto'
+                // 'sis_usua.nombre_corto'
             )
             ->join('logistica.log_ord_compra', 'log_ord_compra.id_orden_compra', '=', 'log_det_ord_compra.id_orden_compra')
             ->join('logistica.estados_compra', 'estados_compra.id_estado', '=', 'log_ord_compra.estado')
-            ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
+            // ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
+            ->join('logistica.log_prove', function ($join) {
+                $join->on('log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor');
+                $join->where('log_prove.estado', '!=', 7);
+            })
             // ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
             ->join('contabilidad.adm_contri', function ($join) {
                 $join->on('adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente');
@@ -203,7 +207,11 @@ class OrdenesPendientesController extends Controller
                 $join->on('alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento');
                 $join->where('alm_det_req.estado', '!=', 7);
             })
-            ->leftjoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+            // ->leftjoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+            ->leftJoin('almacen.alm_req', function ($join) {
+                $join->on('alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento');
+                $join->where('alm_req.estado', '!=', 7);
+            })
             ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'log_ord_compra.id_sede')
             ->where([
                 ['log_ord_compra.estado', '!=', 7],
