@@ -12,6 +12,7 @@
         <thead>
             <tr>
                 <th style="background-color: #cccccc;" width="18"><b>Orden SoftLink</b></th>
+                <th style="background-color: #cccccc;" width="18"><b>Id Orden</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Código Orden</b></th>
                 <th style="background-color: #cccccc;" width="30"><b>Proveedor</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Fecha emisión</b></th>
@@ -24,7 +25,8 @@
             @foreach ($data as $d)
             <tr>
                 <td>{{$d->codigo_softlink}}</td>
-                <td>{{$d->codigo}}</td>
+                <td>{{$d->id_orden_compra}}</td>
+                <td>{{$d->codigo_orden}}</td>
                 <td>{{$d->razon_social}}</td>
                 <td>{{date('d-m-Y H:i', strtotime($d->fecha))}}</td>
                 <td>{{$d->sede_descripcion}}</td>

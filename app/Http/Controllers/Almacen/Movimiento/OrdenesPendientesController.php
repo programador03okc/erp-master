@@ -220,6 +220,8 @@ class OrdenesPendientesController extends Controller
             ->whereIn('log_ord_compra.id_tp_documento', [2, 12]);
         // whereBetween('created_at', ['2018/11/10 12:00', '2018/11/11 10:30'])
         $array_sedes = [];
+        $result = [];
+
         if ($request->ordenes_fecha_inicio !== null) {
             $data = $data->whereDate('log_ord_compra.fecha', '>=', (new Carbon($request->ordenes_fecha_inicio))->format('Y-m-d'));
         }
@@ -234,7 +236,8 @@ class OrdenesPendientesController extends Controller
             }
             $data = $data->whereIn('log_ord_compra.id_sede', $array_sedes);
         }
-        return $data->distinct();
+        $result = $data->distinct();
+        return $result;
     }
 
     public function listarOrdenesPendientes(Request $request)
@@ -246,6 +249,7 @@ class OrdenesPendientesController extends Controller
     public function ordenesPendientesExcel(Request $request)
     {
         $data = $this->ordenesPendientesLista($request);
+        // return $data;
         return Excel::download(new OrdenesPendientesExport(
             $data,
             $request->fecha_inicio,
