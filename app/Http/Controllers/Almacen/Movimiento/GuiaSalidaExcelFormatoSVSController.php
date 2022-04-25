@@ -17,7 +17,7 @@ class GuiaSalidaExcelFormatoSVSController extends Controller
         $guia=$data['guia'];
         $sheet->getDefaultColumnDimension()->setWidth(8, 'pt');
         $sheet->getRowDimension(1)->setRowHeight(58, 'pt');
-        $sheet->getRowDimension(3)->setRowHeight(44, 'pt');
+        $sheet->getRowDimension(3)->setRowHeight(45, 'pt');
         $sheet->getRowDimension(12)->setRowHeight(1.9, 'pt');
         // $sheet->getColumnDimension('A')->setWidth(9);
 
@@ -136,7 +136,8 @@ class GuiaSalidaExcelFormatoSVSController extends Controller
         $filaInicioItem++;
         
     }
-    $sheet->getComment('AR'.$filaLimiteParaImprimir)->getText()->createTextRun('Hasta esta fila se sugiere imprimir');
+    $sheet->setCellValue('AY'.$filaLimiteParaImprimir,'Hasta aquí se sugiere imprimir');
+
     }
 
     public static function construirExcel($data)
