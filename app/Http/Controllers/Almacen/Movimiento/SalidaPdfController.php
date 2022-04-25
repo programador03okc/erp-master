@@ -121,10 +121,10 @@ class SalidaPdfController extends Controller
                         ['fecha', '<=', $salida->fecha_emision]
                     ])->orderBy('fecha', 'DESC')->first();
 
-                    if ($det->id_moneda == 2) {
+                    if (intval($det->id_moneda) == 2) {
                         $valor_dolar = $costo_promedio;
                     } else {
-                        $valor_dolar = ($costo_promedio > 0 ? floatval($tipo_cambio->venta) / floatval($costo_promedio) : 0);
+                        $valor_dolar = (floatval($costo_promedio) > 0 ? floatval($tipo_cambio->venta) / floatval($costo_promedio) : 0);
                     }
                 }
 
