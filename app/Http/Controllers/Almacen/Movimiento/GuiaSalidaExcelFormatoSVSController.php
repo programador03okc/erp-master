@@ -29,20 +29,20 @@ class GuiaSalidaExcelFormatoSVSController extends Controller
         $sheet->setCellValue('N4', $guia->fecha_emision);
         $sheet->mergeCells('N4:T4');
 
-        $sheet->setCellValue('G6', $guia->cliente_razon_social);
-        $sheet->getStyle('G6')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('G6:AB7');
-        $sheet->getStyle('G6')->getAlignment()->setWrapText(true);
+        $sheet->setCellValue('I6', $guia->cliente_razon_social);
+        $sheet->getStyle('I6')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('I6:AB7');
+        $sheet->getStyle('I6')->getAlignment()->setWrapText(true);
 
-        $sheet->setCellValue('AK5', $guia->punto_partida);
-        $sheet->getStyle('AK5')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('AK5:BF6');
-        $sheet->getStyle('AK5')->getAlignment()->setWrapText(true);
+        $sheet->setCellValue('AM5', $guia->punto_partida);
+        $sheet->getStyle('AM5')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('AM5:BF6');
+        $sheet->getStyle('AM5')->getAlignment()->setWrapText(true);
 
-        $sheet->setCellValue('J8', $guia->punto_llegada);
-        $sheet->getStyle('J8')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('J8:AB10');
-        $sheet->getStyle('J8')->getAlignment()->setWrapText(true);
+        $sheet->setCellValue('K8', $guia->punto_llegada);
+        $sheet->getStyle('K8')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('K8:AB10');
+        $sheet->getStyle('K8')->getAlignment()->setWrapText(true);
 
         $sheet->setCellValue('AU9', 'INGRESAR MARCA VEHICU');
         $sheet->mergeCells('AU9:BF9');
@@ -57,8 +57,8 @@ class GuiaSalidaExcelFormatoSVSController extends Controller
         $sheet->setCellValue('AC11', 'NRO DNI');
         $sheet->mergeCells('AC11:AH11');
 
-        $sheet->setCellValue('AQ11', 'LICENCIA');
-        $sheet->mergeCells('AQ11:BH11');
+        $sheet->setCellValue('AZ11', 'LICENCIA');
+        $sheet->mergeCells('AZ11:BH11');
 
 
     }
@@ -86,7 +86,7 @@ class GuiaSalidaExcelFormatoSVSController extends Controller
 
             $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*10, $filaInicioItem, $detalle[$i]['abreviatura']);
             $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*10).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*10)+4).$filaInicioItem);
-            $sheet->getStyle(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*10).$filaInicioItem)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+            $sheet->getStyle(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*10).$filaInicioItem)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 
             $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*17, $filaInicioItem, $detalle[$i]['descripcion']);
             $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*17).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*17)+31).$filaInicioItem);
@@ -142,7 +142,7 @@ class GuiaSalidaExcelFormatoSVSController extends Controller
     public static function construirExcel($data)
     {
         $spreadsheet = new Spreadsheet();
-        $spreadsheet->getActiveSheet()->getPageMargins()->setLeft(0.40);
+        $spreadsheet->getActiveSheet()->getPageMargins()->setLeft(0.35);
         $spreadsheet->getDefaultStyle()->getFont()->setSize(10);
         $spreadsheet->getDefaultStyle()->getFont()->setName('Times New Roman');
         $spreadsheet->getActiveSheet()->getPageSetup()->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_PORTRAIT);
