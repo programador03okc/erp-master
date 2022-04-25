@@ -174,7 +174,13 @@ function listarIngresos() {
             },
             {
                 render: function (data, type, row) {
-                    return row.ordenes_compra;
+                    console.log(row.ordenes_compra_ids);
+                    var ocs = '';
+                    row.ordenes_compra_ids.forEach(element => {
+                        ocs += `<a href="#" class="verOrden" data-id="${element.id_orden_compra}" >
+                        ${element.codigo}</a>`;
+                    });
+                    return ocs;
                 },
                 targets: 9
             },
@@ -272,6 +278,16 @@ function listarIngresos() {
         }
     });
 }
+
+$("#listaIngresosAlmacen tbody").on("click", "a.verOrden", function (e) {
+    $(e.preventDefault());
+    var id = $(this).data("id");
+    if (id !== "") {
+        let url = `/logistica/gestion-logistica/compras/ordenes/listado/generar-orden-pdf/${id}`;
+        var win = window.open(url, "_blank");
+        win.focus();
+    }
+});
 
 $("#listaIngresosAlmacen tbody").on("click", "button.transferencia", function () {
     var id_guia_com = $(this).data("guia");

@@ -10,7 +10,7 @@ class Movimiento extends Model
     protected $table = 'almacen.mov_alm';
     protected $primaryKey = 'id_mov_alm';
     public $timestamps = false;
-    protected $appends = ['ordenes_compra', 'comprobantes', 'ordenes_soft_link', 'requerimientos'];
+    protected $appends = ['ordenes_compra', 'ordenes_compra_ids', 'comprobantes', 'ordenes_soft_link', 'requerimientos'];
 
     public function getFechaEmisionAttribute()
     {
@@ -64,6 +64,24 @@ class Movimiento extends Model
             array_push($resultado, $oc->codigo);
         }
         return implode(', ', $resultado);
+    }
+
+    public function getOrdenesCompraIdsAttribute()
+    {
+        $ordenes = MovimientoDetalle::join('almacen.guia_com_det', 'guia_com_det.id_guia_com_det', 'mov_alm_det.id_guia_com_det')
+            ->join('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_orden', 'guia_com_det.id_oc_det')
+            ->join('logistica.log_ord_compra', 'log_ord_compra.id_orden_compra', 'log_det_ord_compra.id_orden_compra')
+            ->where([
+                ['mov_alm_det.id_mov_alm', '=', $this->attributes['id_mov_alm']],
+                ['log_ord_compra.estado', '!=', 7]
+            ])
+            ->select(['log_ord_compra.codigo', 'log_ord_compra.id_orden_compra'])->distinct()->get();
+
+        // $resultado = [];
+        // foreach ($ordenes as $oc) {
+        //     array_push($resultado, $oc->codigo);
+        // }
+        return $ordenes;
     }
 
     public function getOrdenesSoftLinkAttribute()
