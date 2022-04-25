@@ -630,7 +630,7 @@ class RequerimientoPendienteView {
                                     }
                                     btnCrearOrdenCompra = '<button type="button" class="btn btn-warning btn-xs handleClickCrearOrdenCompraPorRequerimiento" name="btnCrearOrdenCompraPorRequerimiento" title="Crear Orden de Compra" data-id-requerimiento="' + row.id_requerimiento + '"  >OC</button>';
                                     if(row.id_tipo_requerimiento !=1)// diferentes a; tipo Atención inmediata (MGCP)
-                                    btnGestionarEstadoRequerimiento = '<button type="button" class="btn btn-danger btn-xs handleClickGestionarEstadoRequerimiento" name="btnCrearGestionarEstadoRequerimiento" title="Gestionar estado de requerimiento" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo-requerimiento="' + row.codigo +'" data-estado-requerimiento="' + row.estado_doc + '"> <i class="fas fa-crop-alt"></i></button>';
+                                    btnGestionarEstadoRequerimiento = '<button type="button" class="btn btn-danger btn-xs handleClickGestionarEstadoRequerimiento" name="btnCrearGestionarEstadoRequerimiento" title="Gestionar estado de requerimiento" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo-requerimiento="' + row.codigo +'" data-estado-requerimiento="' + row.estado_doc + '" disabled> <i class="fas fa-crop-alt"></i></button>';
                                 }
                             }
 
