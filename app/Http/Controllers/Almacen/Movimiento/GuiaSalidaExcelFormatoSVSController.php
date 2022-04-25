@@ -112,8 +112,6 @@ class GuiaSalidaExcelFormatoSVSController extends Controller
             $ColumnaInicioSerie=$ColumnaInicioItem*18;
             $ii=0;
             for ($j=$idSerieInterrumpido; $j < count($detalle[$i]['series']) ; $j++) { 
-                $sheet->setCellValue('AX'.$j,$filaLimiteMarcada);
-
                 $sheet->setCellValueByColumnAndRow($ColumnaInicioSerie+$ii, $filaInicioItem, $detalle[$i]['series'][$j]->serie);
                 $ii=$ii+$anchoDeSerie;
                 if (($j + 1) % $cantidadColumnasPorFilaSerie == 0) {
@@ -123,13 +121,11 @@ class GuiaSalidaExcelFormatoSVSController extends Controller
                 }
             
             // inica evaluar altura de pagina actual, si series excede la pagina
-            $sheet->setCellValue('AY'.$j,$filaLimiteMarcada);
             
             if($filaLimiteMarcada==false){
                 $ActualNumeroFilaRecorrida = $sheet->getHighestRow();
                 if (($ActualNumeroFilaRecorrida * 13) >= ($pageMaxHeight - 400)) {
                     $filaLimiteParaImprimir= $ActualNumeroFilaRecorrida;
-                    $sheet->setCellValue('AZ'.$j,$ActualNumeroFilaRecorrida);
                     $filaLimiteMarcada=true;
                 }
             }
@@ -140,7 +136,7 @@ class GuiaSalidaExcelFormatoSVSController extends Controller
         $filaInicioItem++;
         
     }
-    $sheet->setCellValue('AY'.$filaLimiteParaImprimir,'Hasta aquí se sugiere imprimir');
+    // $sheet->setCellValue('AY'.$filaLimiteParaImprimir,'Hasta aquí se sugiere imprimir');
 
     }
 
