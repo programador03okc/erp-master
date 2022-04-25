@@ -10,6 +10,7 @@ Requerimientos pendientes
 
 @section('estilos')
 <link rel="stylesheet" href="{{ asset('template/plugins/iCheck/all.css') }}">
+<link rel="stylesheet" href="{{ asset('template/plugins/bootstrap-select/dist/css/bootstrap-select.min.css') }}">
 @endsection
 
 @section('breadcrumb')
@@ -146,6 +147,9 @@ Requerimientos pendientes
 <script src="{{ asset('template/plugins/iCheck/icheck.min.js') }}"></script>
 <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
 <script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
+
+<script src="{{ asset('template/plugins/bootstrap-select/dist/js/bootstrap-select.min.js') }}"></script>
+<script src="{{ asset('template/plugins/bootstrap-select/dist/js/i18n/defaults-es_ES.min.js') }}"></script>
 
 <script src="{{('/js/logistica/orden/RequerimientoPendienteModel.js')}}?v={{filemtime(public_path('/js/logistica/orden/RequerimientoPendienteModel.js'))}}"></script>
 <script src="{{('/js/logistica/orden/RequerimientoPendienteView.js')}}?v={{filemtime(public_path('/js/logistica/orden/RequerimientoPendienteView.js'))}}"></script>
