@@ -39,10 +39,10 @@ class GuiaSalidaExcelFormatoSVSController extends Controller
         $sheet->mergeCells('AM5:BF6');
         $sheet->getStyle('AM5')->getAlignment()->setWrapText(true);
 
-        $sheet->setCellValue('K9', $guia->punto_llegada);
-        $sheet->getStyle('K9')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('K9:AB10');
-        $sheet->getStyle('K9')->getAlignment()->setWrapText(true);
+        $sheet->setCellValue('B9', $guia->punto_llegada);
+        $sheet->getStyle('B9')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('B9:AB10');
+        $sheet->getStyle('B9')->getAlignment()->setWrapText(true);
 
         $sheet->setCellValue('AU9', 'INGRESAR MARCA VEHICU');
         $sheet->mergeCells('AU9:BF9');
