@@ -136,7 +136,13 @@ class GuiaSalidaExcelFormatoSVSController extends Controller
         $filaInicioItem++;
         
     }
-    $sheet->getCell('BH'.$filaLimiteParaImprimir)->setValue($filaLimiteParaImprimir.'Hasta aquí se sugiere imprimir');
+    if($filaLimiteParaImprimir==0){
+        $sheet->getCell('BH1')->setValue($filaLimiteParaImprimir.'Hasta aquí se sugiere imprimir');
+
+    }else{
+        $sheet->getCell('BH'.$filaLimiteParaImprimir)->setValue($filaLimiteParaImprimir.'Hasta aquí se sugiere imprimir');
+
+    }
 
     }
 
