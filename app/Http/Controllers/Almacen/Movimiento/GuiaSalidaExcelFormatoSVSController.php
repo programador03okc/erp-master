@@ -142,7 +142,7 @@ class GuiaSalidaExcelFormatoSVSController extends Controller
     public static function construirExcel($data)
     {
         $spreadsheet = new Spreadsheet();
-        $spreadsheet->getActiveSheet()->getPageMargins()->setLeft(0.55);
+        $spreadsheet->getActiveSheet()->getPageMargins()->setLeft(0.45);
         $spreadsheet->getDefaultStyle()->getFont()->setSize(10);
         $spreadsheet->getDefaultStyle()->getFont()->setName('Times New Roman');
         $spreadsheet->getActiveSheet()->getPageSetup()->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_PORTRAIT);
