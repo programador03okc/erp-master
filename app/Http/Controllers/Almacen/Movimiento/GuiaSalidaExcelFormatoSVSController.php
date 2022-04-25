@@ -23,8 +23,8 @@ class GuiaSalidaExcelFormatoSVSController extends Controller
 
         $sheet->setCellValue('BH1', '');
 
-        $sheet->setCellValue('AR2', 'GR'.($guia->serie.'-'.$guia->numero));
-        $sheet->mergeCells('AR2:BA2');
+        $sheet->setCellValue('AQ2', 'GR'.($guia->serie.'-'.$guia->numero));
+        $sheet->mergeCells('AQ2:BA2');
 
         $sheet->setCellValue('H4', $guia->fecha_emision);
         $sheet->mergeCells('H4:N4');
@@ -34,30 +34,31 @@ class GuiaSalidaExcelFormatoSVSController extends Controller
         $sheet->mergeCells('D6:X7');
         $sheet->getStyle('D6')->getAlignment()->setWrapText(true);
 
-        $sheet->setCellValue('AH5', $guia->punto_partida);
-        $sheet->getStyle('AH5')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('AH5:BH6');
-        $sheet->getStyle('AH5')->getAlignment()->setWrapText(true);
+        $sheet->setCellValue('AF5', $guia->punto_partida);
+        $sheet->getStyle('AF5')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('AF5:BH6');
+        $sheet->getStyle('AF5')->getAlignment()->setWrapText(true);
 
         $sheet->setCellValue('G8', $guia->punto_llegada);
         $sheet->getStyle('G8')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
         $sheet->mergeCells('G8:X10');
         $sheet->getStyle('G8')->getAlignment()->setWrapText(true);
 
-        $sheet->setCellValue('AM9', 'INGRESAR MARCA VEHICU');
-        $sheet->mergeCells('AM9:BH9');
+        $sheet->setCellValue('AO9', 'INGRESAR MARCA VEHICU');
+        $sheet->mergeCells('AO9:BH9');
 
-        $sheet->setCellValue('AM10', 'PLACA TRA');
-        $sheet->mergeCells('AM10:BH10');
+        $sheet->setCellValue('AO10', 'PLACA TRA');
+        $sheet->mergeCells('AO10:BH10');
 
         $sheet->setCellValue('B11', $guia->cliente_nro_documento);
         $sheet->mergeCells('B11:M11');
+        $sheet->getStyle('B11')->getAlignment()->setWrapText(true);
 
-        $sheet->setCellValue('U11', 'NRO DNI');
-        $sheet->mergeCells('U11:Z11');
+        $sheet->setCellValue('V11', 'NRO DNI');
+        $sheet->mergeCells('V11:Z11');
 
-        $sheet->setCellValue('AO11', 'LICENCIA');
-        $sheet->mergeCells('AO11:BH11');
+        $sheet->setCellValue('AQ11', 'LICENCIA');
+        $sheet->mergeCells('AQ11:BH11');
 
 
     }
@@ -77,14 +78,16 @@ class GuiaSalidaExcelFormatoSVSController extends Controller
             
             $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*1, $filaInicioItem, $detalle[$i]['codigo']);
             $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*1).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*1)+3).$filaInicioItem);
+            $sheet->getStyle(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*1).$filaInicioItem)->getAlignment()->setWrapText(true);
 
             $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*6, $filaInicioItem, $detalle[$i]['cantidad']);
             $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*6).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*6)+3).$filaInicioItem);
+            $sheet->getStyle(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*6).$filaInicioItem)->getAlignment()->setWrapText(true);
 
             $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*12, $filaInicioItem, $detalle[$i]['abreviatura']);
             $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*12).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*12)+4).$filaInicioItem);
+            $sheet->getStyle(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*12).$filaInicioItem)->getAlignment()->setWrapText(true);
 
-            
             $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*17, $filaInicioItem, $detalle[$i]['descripcion']);
             $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*17).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*17)+31).$filaInicioItem);
             $sheet->getStyle(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*17).$filaInicioItem)->getAlignment()->setWrapText(true);
