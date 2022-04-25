@@ -378,7 +378,14 @@ function listarDespachosEntregados(permiso) {
                 data: 'fecha_emision', className: "text-center",
                 render:
                     function (data, type, row) {
-                        return formatDate(row['fecha_emision']);
+                        return (row['fecha_emision'] !== null ? formatDate(row['fecha_emision']) : '');
+                    }
+            },
+            {
+                data: "comprobantes_venta", orderable: false, className: "text-center",
+                render:
+                    function (data, type, row) {
+                        return row.comprobantes_venta;
                     }
             },
             { 'data': 'almacen_descripcion', 'name': 'alm_almacen.descripcion' },
@@ -416,7 +423,7 @@ function listarDespachosEntregados(permiso) {
                     } else {
                         return '';
                     }
-                }, targets: 11
+                }, targets: 12
             }
         ],
     });

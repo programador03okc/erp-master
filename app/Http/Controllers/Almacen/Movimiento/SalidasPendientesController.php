@@ -9,6 +9,7 @@ use App\Http\Controllers\AlmacenController as GenericoAlmacenController;
 use App\Http\Controllers\AlmacenController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Almacen\Movimiento;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
@@ -457,36 +458,35 @@ class SalidasPendientesController extends Controller
 
     public function listarSalidasDespacho(Request $request)
     {
-        $data = DB::table('almacen.mov_alm')
-            ->select(
-                'mov_alm.*',
-                'guia_ven.serie',
-                'guia_ven.numero',
-                'guia_ven.fecha_emision as fecha_emision_guia',
-                'guia_ven.id_od',
-                'guia_ven.comentario',
-                'guia_ven.punto_partida',
-                'guia_ven.punto_llegada',
-                'orden_despacho.codigo as codigo_od',
-                'alm_req.id_requerimiento',
-                'alm_req.codigo as codigo_requerimiento',
-                'alm_req.concepto',
-                'alm_req.estado as estado_requerimiento',
-                'adm_contri.razon_social',
-                'alm_almacen.descripcion as almacen_descripcion',
-                'sis_usua.nombre_corto',
-                'tp_ope.descripcion as operacion',
-                'orden_despacho.aplica_cambios',
-                'orden_despacho.estado as estado_od',
-                'oc_propias_view.nro_orden',
-                'oc_propias_view.codigo_oportunidad',
-                'oc_propias_view.id as id_oc_propia',
-                'oc_propias_view.tipo',
-                // DB::raw("(SELECT ingreso.codigo FROM almacen.mov_alm as ingreso
-                // where ingreso.id_transformacion = mov_alm.id_transformacion
-                //   and ingreso.id_tp_mov = 1
-                //   and ingreso.estado != 7) AS tiene_ingreso_transformacion")
-            )
+        $data = Movimiento::select(
+            'mov_alm.*',
+            'guia_ven.serie',
+            'guia_ven.numero',
+            'guia_ven.fecha_emision as fecha_emision_guia',
+            'guia_ven.id_od',
+            'guia_ven.comentario',
+            'guia_ven.punto_partida',
+            'guia_ven.punto_llegada',
+            'orden_despacho.codigo as codigo_od',
+            'alm_req.id_requerimiento',
+            'alm_req.codigo as codigo_requerimiento',
+            'alm_req.concepto',
+            'alm_req.estado as estado_requerimiento',
+            'adm_contri.razon_social',
+            'alm_almacen.descripcion as almacen_descripcion',
+            'sis_usua.nombre_corto',
+            'tp_ope.descripcion as operacion',
+            'orden_despacho.aplica_cambios',
+            'orden_despacho.estado as estado_od',
+            'oc_propias_view.nro_orden',
+            'oc_propias_view.codigo_oportunidad',
+            'oc_propias_view.id as id_oc_propia',
+            'oc_propias_view.tipo',
+            // DB::raw("(SELECT ingreso.codigo FROM almacen.mov_alm as ingreso
+            // where ingreso.id_transformacion = mov_alm.id_transformacion
+            //   and ingreso.id_tp_mov = 1
+            //   and ingreso.estado != 7) AS tiene_ingreso_transformacion")
+        )
             ->join('almacen.guia_ven', 'guia_ven.id_guia_ven', '=', 'mov_alm.id_guia_ven')
             ->leftjoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'guia_ven.id_almacen')
             ->leftjoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'guia_ven.usuario')

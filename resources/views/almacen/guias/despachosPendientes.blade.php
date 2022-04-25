@@ -83,6 +83,7 @@ Atención de Salidas
                                             <th>OCAM</th>
                                             <th>Guia venta</th>
                                             <th>Fecha Salida</th>
+                                            <th>Comprobantes</th>
                                             <th>Almacén</th>
                                             <th>Salida</th>
                                             <th>Operación</th>

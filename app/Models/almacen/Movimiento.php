@@ -10,7 +10,7 @@ class Movimiento extends Model
     protected $table = 'almacen.mov_alm';
     protected $primaryKey = 'id_mov_alm';
     public $timestamps = false;
-    protected $appends = ['ordenes_compra', 'ordenes_compra_ids', 'comprobantes', 'ordenes_soft_link', 'requerimientos'];
+    protected $appends = ['ordenes_compra', 'ordenes_compra_ids', 'comprobantes', 'ordenes_soft_link', 'requerimientos', 'comprobantes_venta'];
 
     public function getFechaEmisionAttribute()
     {
@@ -144,6 +144,24 @@ class Movimiento extends Model
             ];
         }
         return ['codigo' => $codigoComprobanteList, 'empresa_sede' => $empresaSedeComprobante, 'moneda' => $monedaComprobante, 'condicion' => $condicionComprobante, 'montos' => $montosList];
+    }
+
+    public function getComprobantesVentaAttribute()
+    {
+        $ventas_vinculadas = MovimientoDetalle::join('almacen.guia_ven_det', 'guia_ven_det.id_guia_ven_det', 'mov_alm_det.id_guia_ven_det')
+            ->join('almacen.doc_ven_det', 'doc_ven_det.id_guia_ven_det', 'guia_ven_det.id_guia_ven_det')
+            ->join('almacen.doc_ven', 'doc_ven.id_doc_ven', 'doc_ven_det.id_doc')
+            ->where([
+                ['mov_alm_det.id_mov_alm', '=', $this->attributes['id_mov_alm']],
+                ['doc_ven.estado', '!=', 7]
+            ])
+            ->select('doc_ven.serie', 'doc_ven.numero')->distinct()->get();
+
+        $resultado = [];
+        foreach ($ventas_vinculadas as $doc) {
+            array_push($resultado, $doc->serie . '-' . $doc->numero);
+        }
+        return implode(', ', $resultado);
     }
 
     // public function getMonedaComprobantesAttribute()
