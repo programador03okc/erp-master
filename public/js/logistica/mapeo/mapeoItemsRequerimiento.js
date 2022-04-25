@@ -243,10 +243,10 @@ function openAsignarProducto(partnumber, desc, id, type) {
     $('[name=part_number]').val(partnumber);
     $('[name=descripcion]').val(decodeURIComponent(desc));
     $('[name=id_tipo_producto]').val(8);
-    $('[name=id_categoria]').val('');
-    $('[name=id_subcategoria]').val('');
+    $('[name=id_categoria]').selectpicker('val', ''); // $('[name=id_categoria]').val('');
+    $('[name=id_subcategoria]').selectpicker('val', ''); //  $('[name=id_subcategoria]').val('');
     $('[name=id_clasif]').val(2);
-    $('[name=id_unidad_medida]').val(1);
+    $('[name=id_unidad_medida]').selectpicker('val', '1'); // $('[name=id_unidad_medida]').val(1);
     $('[name=series]').iCheck('uncheck');
 
     listarProductosCatalogo();

@@ -246,6 +246,9 @@
                 {
                     'render':
                         function (data, type, row) {
+
+                        let observacionRequerimiento= row.requerimientos !=null && row.requerimientos.length>0 ? row.requerimientos.map(e => (e.observacion)).join(",") : '';
+
                             return `<div class="btn-group" role="group">
                 ${(row['estado_pago'] == 8 && permisoEnviar == '1') ?
                                     `<button type="button" class="autorizar btn btn-info boton" data-toggle="tooltip" 
@@ -265,7 +268,7 @@
                                     data-moneda="${row['simbolo']}" 
 
                                     data-nrodoc="${row['nro_documento'] !== null ? row['nro_documento'] : row['persona'][0].nro_documento}"
-                                    data-prov="${encodeURIComponent(row['razon_social'] !== null ? row['razon_social'] : row['persona'][0].nombre_completo)}" 
+                                    data-prov="${encodeURIComponent(row['razon_social'] !== null ? ((row['razon_social']).toUpperCase()) : ((row['persona'][0].nombre_completo).toUpperCase()))}" 
                                     data-cta="${row['nro_cuenta'] !== null ? row['nro_cuenta'] : row['nro_cuenta_persona']}" 
                                     data-cci="${row['nro_cuenta_interbancaria'] !== null ? row['nro_cuenta_interbancaria'] : row['nro_cci_persona']}" 
                                     data-tpcta="${row['tipo_cuenta'] !== null ? row['tipo_cuenta'] : row['tipo_cuenta_persona']}" 
@@ -273,6 +276,7 @@
                                     data-empresa="${row['razon_social_empresa']}" data-idempresa="${row['id_empresa']}"
                                     data-motivo="${encodeURIComponent(row['condicion_pago'])}"
                                     data-comentario-pago-logistica="${row['comentario_pago']}"
+                                    data-observacion-requerimiento="${observacionRequerimiento}"
                                     title="Registrar Pago"><i class="fas fa-hand-holding-usd"></i></button>`: ''}`)
                                     : ''}
                             ${row['suma_pagado'] > 0 && permisoVer == '1' ?

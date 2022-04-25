@@ -1413,4 +1413,55 @@ class ComprasPendientesController extends Controller
             return response()->json(['tipo_estado' => $tipoEstado, 'mensaje' => 'Hubo un problema al intentar anular. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
         }
     }
+
+
+    public function actualizarAjusteEstadoRequerimiento(Request $request){
+        DB::beginTransaction();
+        try {
+            $mensaje = '';
+            $tipoEstado = '';
+            $arrayDetalleRequerimientoActualizados=[];
+
+            if(intval($request->idRequerimiento) >0){
+                $count = count($request->idDetalleRequerimiento);
+                for ($i=0; $i < $count; $i++) { 
+                    
+                    $detalleRequerimiento = DetalleRequerimiento::find(intval($request->idDetalleRequerimiento[$i]));
+                    if($detalleRequerimiento->cantidad_solicitada_original ==null){
+                        $detalleRequerimiento->cantidad_solicitada_original = $request->cantidadOriginal[$i];
+                    }
+                    $detalleRequerimiento->cantidad = floatval($detalleRequerimiento->cantidad)-floatval($request->cantidadParaAnular[$i]);
+                    if(floatval($detalleRequerimiento->cantidad)-floatval($request->cantidadParaAnular[$i]) ==0){
+                        $detalleRequerimiento->estado =7;
+                    }
+                    $detalleRequerimiento->razon_ajuste_cantidad_solicitada = $request->razonesDeAjusteDeCantidad[$i];
+                    $detalleRequerimiento->save();
+                    $arrayDetalleRequerimientoActualizados[]=$detalleRequerimiento->id_detalle_requerimiento;                    
+                }
+                
+                if ($count == count($arrayDetalleRequerimientoActualizados)) {
+                    $tipoEstado = 'success';
+                    $requerimiento = Requerimiento::find(intval($request->idRequerimiento));
+                    $requerimiento->estado = $request->idNuevoEstado;
+                    $requerimiento->ajuste_necesidad = true;
+                    $requerimiento->save();
+                    $mensaje = 'Se actualizo el estado del requerimiento '.$requerimiento->codigo;
+    
+                } else {
+                    $tipoEstado = 'error';
+                    $mensaje = "Hubo un problema al actualizar, solo se proceso ".count($arrayDetalleRequerimientoActualizados).' items';
+                }
+            }else {
+                $tipoEstado = 'error';
+                $mensaje = "El ID enviado no es valido, que no fue posible realizar la actualización";
+            }
+
+            DB::commit();
+
+            return response()->json(['tipo_estado' => $tipoEstado, 'mensaje' => $mensaje]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json(['tipo_estado' => $tipoEstado, 'mensaje' => 'Hubo un problema al intentar actualizar. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
+        }
+    }
 }

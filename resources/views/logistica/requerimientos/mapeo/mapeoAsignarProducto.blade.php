@@ -90,19 +90,17 @@
                                             <div class="row">
                                                 <div class="col-md-4">
                                                     <h5>SubCategoría</h5>
-                                                    <select class="form-control activation js-example-basic-single" name="id_categoria" required>
-                                                        <!-- <option value="0">Elija una opción</option> -->
+                                                    <select class="selectpicker activation" title="Elija una opción" data-width="100%" data-live-search="true" name="id_categoria" required>
+                                                    <!-- <option value="">Elija una opción</option> -->
                                                         @foreach ($categorias as $cat)
                                                         <option value="{{$cat->id_categoria}}">{{$cat->descripcion}}</option>
                                                         @endforeach
                                                     </select>
                                                 </div>
-                                            
-                                           
                                                 <div class="col-md-3">
                                                     <h5>Marca</h5>
-                                                    <select class="form-control activation js-example-basic-single" name="id_subcategoria" required>
-                                                        <!-- <option value="0">Elija una opción</option> -->
+                                                    <select class="selectpicker activation" title="Elija una opción" data-width="100%" data-live-search="true" name="id_subcategoria" required>
+                                                        <!-- <option value="">Elija una opción</option> -->
                                                         @foreach ($subcategorias as $subcat)
                                                         <option value="{{$subcat->id_subcategoria}}">{{$subcat->descripcion}}</option>
                                                         @endforeach
@@ -114,8 +112,7 @@
                                                 </div>
                                                 <div class="col-md-2">
                                                     <h5>Unidad Medida</h5>
-                                                    <select class="form-control activation " name="id_unidad_medida" required>
-                                                        <!-- <option value="0">Elija una opción</option> -->
+                                                    <select class="selectpicker activation" title="Elija una opción" data-width="100%" data-live-search="true" name="id_unidad_medida" required>
                                                         @foreach ($unidades as $unid)
                                                         <option value="{{$unid->id_unidad_medida}}">{{$unid->abreviatura}}</option>
                                                         @endforeach
@@ -126,8 +123,8 @@
                                             <div class="row">
                                                 <div class="col-md-3">
                                                     <h5>Moneda</h5>
-                                                    <select class="form-control activation " name="id_moneda_producto" required>
-                                                        <option value="">Elija una opción</option>
+                                                    <select class="selectpicker activation" data-width="100%" name="id_moneda_producto" required>
+                                                        <!-- <option value="">Elija una opción</option> -->
                                                         @foreach ($monedas as $mnd)
                                                         <option value="{{$mnd->id_moneda}}">{{$mnd->descripcion}}</option>
                                                         @endforeach

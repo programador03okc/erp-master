@@ -16,48 +16,49 @@ class GuiaSalidaExcelFormatoSVSController extends Controller
         $sheet = $spreadsheet->getActiveSheet();
         $guia=$data['guia'];
         $sheet->getDefaultColumnDimension()->setWidth(8, 'pt');
-        $sheet->getRowDimension(1)->setRowHeight(55, 'pt');
+        $sheet->getRowDimension(1)->setRowHeight(58, 'pt');
         $sheet->getRowDimension(3)->setRowHeight(45, 'pt');
-        $sheet->getRowDimension(12)->setRowHeight(1.8, 'pt');
-        $sheet->getColumnDimension('A')->setWidth(9);
+        $sheet->getRowDimension(12)->setRowHeight(1.9, 'pt');
+        // $sheet->getColumnDimension('A')->setWidth(9);
 
         $sheet->setCellValue('BH1', '');
 
-        $sheet->setCellValue('AR2', 'GR'.($guia->serie.'-'.$guia->numero));
-        $sheet->mergeCells('AR2:BA2');
+        $sheet->setCellValue('AW2', 'GR'.($guia->serie.'-'.$guia->numero));
+        $sheet->mergeCells('AW2:BF2');
 
-        $sheet->setCellValue('H4', $guia->fecha_emision);
-        $sheet->mergeCells('H4:N4');
+        $sheet->setCellValue('N4', $guia->fecha_emision);
+        $sheet->mergeCells('N4:T4');
 
-        $sheet->setCellValue('D6', $guia->cliente_razon_social);
-        $sheet->getStyle('D6')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('D6:X7');
-        $sheet->getStyle('D6')->getAlignment()->setWrapText(true);
+        $sheet->setCellValue('I6', $guia->cliente_razon_social);
+        $sheet->getStyle('I6')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('I6:AB7');
+        $sheet->getStyle('I6')->getAlignment()->setWrapText(true);
 
-        $sheet->setCellValue('AH5', $guia->punto_partida);
-        $sheet->getStyle('AH5')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('AH5:BH6');
-        $sheet->getStyle('AH5')->getAlignment()->setWrapText(true);
+        $sheet->setCellValue('AM5', $guia->punto_partida);
+        $sheet->getStyle('AM5')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('AM5:BF6');
+        $sheet->getStyle('AM5')->getAlignment()->setWrapText(true);
 
-        $sheet->setCellValue('G8', $guia->punto_llegada);
-        $sheet->getStyle('G8')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('G8:X10');
-        $sheet->getStyle('G8')->getAlignment()->setWrapText(true);
+        $sheet->setCellValue('B9', $guia->punto_llegada);
+        $sheet->getStyle('B9')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('B9:AB10');
+        $sheet->getStyle('B9')->getAlignment()->setWrapText(true);
 
-        $sheet->setCellValue('AM9', 'INGRESAR MARCA VEHICU');
-        $sheet->mergeCells('AM9:BH9');
+        $sheet->setCellValue('AU9', 'INGRESAR MARCA VEHICU');
+        $sheet->mergeCells('AU9:BF9');
 
-        $sheet->setCellValue('AM10', 'PLACA TRA');
-        $sheet->mergeCells('AM10:BH10');
+        $sheet->setCellValue('AU10', 'PLACA TRA');
+        $sheet->mergeCells('AU10:BF10');
 
-        $sheet->setCellValue('B11', $guia->cliente_nro_documento);
-        $sheet->mergeCells('B11:M11');
+        $sheet->setCellValue('G11', $guia->cliente_nro_documento);
+        $sheet->mergeCells('G11:P11');
+        $sheet->getStyle('G11')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
 
-        $sheet->setCellValue('U11', 'NRO DNI');
-        $sheet->mergeCells('U11:Z11');
+        $sheet->setCellValue('AC11', 'NRO DNI');
+        $sheet->mergeCells('AC11:AH11');
 
-        $sheet->setCellValue('AO11', 'LICENCIA');
-        $sheet->mergeCells('AO11:BH11');
+        $sheet->setCellValue('AZ11', 'LICENCIA');
+        $sheet->mergeCells('AZ11:BH11');
 
 
     }
@@ -76,38 +77,41 @@ class GuiaSalidaExcelFormatoSVSController extends Controller
                 
             
             $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*1, $filaInicioItem, $detalle[$i]['codigo']);
-            $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*1).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*1)+3).$filaInicioItem);
+            $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*1).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*1)+4).$filaInicioItem);
+            $sheet->getStyle(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*1).$filaInicioItem)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
 
             $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*6, $filaInicioItem, $detalle[$i]['cantidad']);
             $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*6).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*6)+3).$filaInicioItem);
+            $sheet->getStyle(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*6).$filaInicioItem)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 
-            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*12, $filaInicioItem, $detalle[$i]['abreviatura']);
-            $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*12).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*12)+4).$filaInicioItem);
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*11, $filaInicioItem, $detalle[$i]['abreviatura']);
+            $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*11).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*11)+4).$filaInicioItem);
+            $sheet->getStyle(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*11).$filaInicioItem)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 
-            
-            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*17, $filaInicioItem, $detalle[$i]['descripcion']);
-            $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*17).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*17)+31).$filaInicioItem);
-            $sheet->getStyle(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*17).$filaInicioItem)->getAlignment()->setWrapText(true);
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*18, $filaInicioItem, $detalle[$i]['descripcion']);
+            $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*18).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*18)+31).$filaInicioItem);
+            $sheet->getStyle(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*18).$filaInicioItem)->getAlignment()->setWrapText(true);
+            $sheet->getStyle(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*18).$filaInicioItem)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+
             $filaInicioItem++;
-            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*17, $filaInicioItem, 'CATEGORÍA: ');
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*18, $filaInicioItem, 'CATEGORÍA: ');
             $filaInicioItem++;
-            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*17, $filaInicioItem, 'MARCA: '.$detalle[$i]['marca']);
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*18, $filaInicioItem, 'MARCA: '.$detalle[$i]['marca']);
             $filaInicioItem++;
-            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*17, $filaInicioItem, 'MODELO: ');
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*18, $filaInicioItem, 'MODELO: ');
             $filaInicioItem++;
-            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*17, $filaInicioItem, 'NÚMERO DE PARTE: '.$detalle[$i]['part_number']);
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*18, $filaInicioItem, 'NÚMERO DE PARTE: '.$detalle[$i]['part_number']);
             $filaInicioItem++;
-            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*17, $filaInicioItem, 'S/N:');
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*18, $filaInicioItem, 'S/N:');
             $filaInicioItem++;
 
             $filaInicioItem++;
 
             $cantidadColumnasPorFilaSerie=3;
             $anchoDeSerie=8;
-            $ColumnaInicioSerie=$ColumnaInicioItem*17;
+            $ColumnaInicioSerie=$ColumnaInicioItem*18;
             $ii=0;
             for ($j=$idSerieInterrumpido; $j < count($detalle[$i]['series']) ; $j++) { 
-                
                 $sheet->setCellValueByColumnAndRow($ColumnaInicioSerie+$ii, $filaInicioItem, $detalle[$i]['series'][$j]->serie);
                 $ii=$ii+$anchoDeSerie;
                 if (($j + 1) % $cantidadColumnasPorFilaSerie == 0) {
@@ -117,10 +121,10 @@ class GuiaSalidaExcelFormatoSVSController extends Controller
                 }
             
             // inica evaluar altura de pagina actual, si series excede la pagina
+
             if($filaLimiteMarcada==false){
-                $ActualNumeroFilaRecorrida = $sheet->getHighestRow();
-                if (($ActualNumeroFilaRecorrida * 13) >= ($pageMaxHeight - 400)) {
-                    $filaLimiteParaImprimir= $ActualNumeroFilaRecorrida;
+                if (($sheet->getHighestRow() * 12) >= ($pageMaxHeight - 400)) {
+                    $filaLimiteParaImprimir= $sheet->getHighestRow();
                     $filaLimiteMarcada=true;
                 }
             }
@@ -131,13 +135,16 @@ class GuiaSalidaExcelFormatoSVSController extends Controller
         $filaInicioItem++;
         
     }
-    $sheet->getComment('AR'.$filaLimiteParaImprimir)->getText()->createTextRun('Hasta esta fila se sugiere imprimir');
+    if($filaLimiteParaImprimir>0){
+        $sheet->getCell('BH'.$filaLimiteParaImprimir)->setValue($filaLimiteParaImprimir.'Hasta aquí se sugiere imprimir');
+    }
+
     }
 
     public static function construirExcel($data)
     {
         $spreadsheet = new Spreadsheet();
-        $spreadsheet->getActiveSheet()->getPageMargins()->setLeft(0.55);
+        $spreadsheet->getActiveSheet()->getPageMargins()->setLeft(0.35);
         $spreadsheet->getDefaultStyle()->getFont()->setSize(10);
         $spreadsheet->getDefaultStyle()->getFont()->setName('Times New Roman');
         $spreadsheet->getActiveSheet()->getPageSetup()->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_PORTRAIT);

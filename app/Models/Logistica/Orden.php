@@ -203,7 +203,7 @@ class Orden extends Model
             ->Join('almacen.alm_req', 'alm_req.id_requerimiento', 'alm_det_req.id_requerimiento')
             ->leftJoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'alm_req.id_usuario')
             ->where('log_det_ord_compra.id_orden_compra', $this->attributes['id_orden_compra'])
-            ->select(['alm_req.id_requerimiento', 'alm_req.codigo', 'alm_req.estado', 'sis_usua.nombre_corto'])->distinct()->get();
+            ->select(['alm_req.id_requerimiento', 'alm_req.codigo', 'alm_req.estado', 'sis_usua.nombre_corto','alm_req.observacion'])->distinct()->get();
         return $requerimientos;
     }
 

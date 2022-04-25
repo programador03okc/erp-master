@@ -116,6 +116,18 @@ class RequerimientoPendienteView {
         $('#listaRequerimientosPendientes tbody').on("click", "button.handleClickCrearOrdenCompraPorRequerimiento", (e) => {
             this.crearOrdenCompraPorRequerimiento(e.currentTarget);
         });
+        $('#listaRequerimientosPendientes tbody').on("click", "button.handleClickGestionarEstadoRequerimiento", (e) => {
+            this.gestionarEstadoRequerimiento(e.currentTarget);
+        });
+        $('#modal-gestionar-estado-requerimiento').on("click", "button.handleClickAutoAjustarCantidad", (e) => {
+            this.autoAjustarCantidadSolicitada();
+        });
+        $('#modal-gestionar-estado-requerimiento').on("blur", "input.handleBlurUpdateValorNuevaCantidad", (e) => {
+            this.updateValorNuevaCantidad(e.currentTarget);
+        });
+        $('#modal-gestionar-estado-requerimiento').on("click", "button.handleClickActualizarGestionEstadoRequerimiento", () => {
+            this.actualizarGestionEstadoRequerimiento();
+        });
         $('#listaRequerimientosPendientes tbody').on("click", "button.handleClickCrearOrdenServicioPorRequerimiento", (e) => {
             this.crearOrdenServicioPorRequerimiento(e.currentTarget);
         });
@@ -595,6 +607,7 @@ class RequerimientoPendienteView {
                             let btnVerAdjuntos = '';
                             let btnAtenderAlmacen = '';
                             let btnCrearOrdenCompra = '';
+                            let btnGestionarEstadoRequerimiento = '';
                             let btnCrearOrdenServicio = '<button type="button" class="btn btn-warning btn-xs handleClickCrearOrdenServicioPorRequerimiento" name="btnCrearOrdenServicioPorRequerimiento" title="Crear Orden de Servicio" data-id-requerimiento="' + row.id_requerimiento + '"  >OS</button>';
                             let btnExportarExcel = '<button type="button" class="btn btn-default btn-xs handleClickSolicitudCotizacionExcel" name="btnSolicitudCotizacionExcel" title="Solicitud cotización excel" data-id-requerimiento="' + row.id_requerimiento + '" style="color:green;" ><i class="far fa-file-excel"></i></button>';
                             if (row.cantidad_adjuntos_activos.cabecera > 0 || row.cantidad_adjuntos_activos.detalle > 0) {
@@ -616,8 +629,8 @@ class RequerimientoPendienteView {
                                         btnAtenderAlmacen = '<button type="button" class="btn btn-primary btn-xs handleClickAtenderConAlmacen" name="btnOpenModalAtenderConAlmacen" title="Reserva en almacén" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo-requerimiento="' + row.codigo + '" data-almacen-requerimiento="'+row.almacen_requerimiento+'"><i class="fas fa-dolly fa-sm"></i></button>';
                                     }
                                     btnCrearOrdenCompra = '<button type="button" class="btn btn-warning btn-xs handleClickCrearOrdenCompraPorRequerimiento" name="btnCrearOrdenCompraPorRequerimiento" title="Crear Orden de Compra" data-id-requerimiento="' + row.id_requerimiento + '"  >OC</button>';
-
-
+                                    if(row.id_tipo_requerimiento !=1)// diferentes a; tipo Atención inmediata (MGCP)
+                                    btnGestionarEstadoRequerimiento = '<button type="button" class="btn btn-danger btn-xs handleClickGestionarEstadoRequerimiento" name="btnCrearGestionarEstadoRequerimiento" title="Gestionar estado de requerimiento" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo-requerimiento="' + row.codigo +'" data-estado-requerimiento="' + row.estado_doc + '"> <i class="fas fa-crop-alt"></i></button>';
                                 }
                             }
 
@@ -635,7 +648,7 @@ class RequerimientoPendienteView {
                                 botones = openDiv + btnVerDetalleRequerimiento+btnExportarExcel + closeDiv;
                             } else {
                                 botones = openDiv + btnVerDetalleRequerimiento +btnExportarExcel+ btnAtenderAlmacen + btnMapearProductos +
-                                    btnCrearOrdenCompra + btnVercuadroCostos + btnVerAdjuntos;
+                                    btnCrearOrdenCompra + btnVercuadroCostos + btnVerAdjuntos+btnGestionarEstadoRequerimiento;
 
                                 if (row.cantidad_tipo_servicio > 0) {
                                     botones += btnCrearOrdenServicio + closeDiv;
@@ -1368,7 +1381,7 @@ class RequerimientoPendienteView {
                         <td style="border: none; text-align:center;">${(parseFloat(element.subtotal) > 0 ? ((element.moneda_simbolo ? element.moneda_simbolo : '') + $.number(element.subtotal, 2)) : ((element.moneda_simbolo ? element.moneda_simbolo : '') + $.number((element.cantidad * element.precio_unitario), 2)))}</td>
                         <td style="border: none; text-align:center;">${element.motivo != null ? element.motivo : ''}</td>
                         <td style="border: none; text-align:center;">
-                            ${stockComprometido != null && parseInt(stockComprometido) > 0 ? '<span class="label label-default">' + stockComprometido + '</span>' : '0'}
+                            ${stockComprometido != null && parseFloat(stockComprometido) > 0 ? '<span class="label label-default">' + stockComprometido + '</span>' : '0'}
                         </td>
                         <td style="border: none; text-align:center;">
                             ${atencionOrden != null && atencionOrden > 0 ? `<span class="label label-info handleClickModalVerOrdenDeRequerimiento" data-codigo-requerimiento="${element.codigo_requerimiento}" data-orden=${JSON.stringify(objOrdenList)}  style="cursor:pointer;">${atencionOrden}</span>` : '0'}
@@ -1376,7 +1389,7 @@ class RequerimientoPendienteView {
                         <td style="border: none; text-align:center;">${element.estado_doc != null && element.tiene_transformacion == false ? element.estado_doc : ''}</td>
                         <td style="border: none; text-align:center;">
                         ${cantidadAdjuntosDetalleRequerimiento > 0 ? `<button type="button" class="btn btn-default btn-xs handleClickVerAdjuntoDetalleRequerimiento" name="btnVerAdjuntoDetalleRequerimiento" title="Ver adjuntos" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-descripcion="${element.producto_descripcion != null ? element.producto_descripcion : 'no mapeado'}" ><i class="fas fa-paperclip"></i></button>` : ''}
-                        <button type="button" class="btn btn-danger btn-xs handleClickAnularReservaActiva" name="btnAnularReservaAtendida" title="${stockComprometido != null && parseInt(stockComprometido) > 0 ? 'Anular reserva' : 'Sin reservas'}" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-descripcion="${element.producto_descripcion != null ? element.producto_descripcion : 'no mapeado'}" ${stockComprometido != null && parseInt(stockComprometido) > 0 ? '' : 'disabled'} ><i class="fas fa-minus-circle"></i></button>
+                        <button type="button" class="btn btn-danger btn-xs handleClickAnularReservaActiva" name="btnAnularReservaAtendida" title="${stockComprometido != null && parseFloat(stockComprometido) > 0 ? 'Anular reserva' : 'Sin reservas'}" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-descripcion="${element.producto_descripcion != null ? element.producto_descripcion : 'no mapeado'}" ${stockComprometido != null && parseFloat(stockComprometido) > 0 ? '' : 'disabled'} ><i class="fas fa-minus-circle"></i></button>
                         </td>
                         </tr>`;
                 // }
@@ -2814,6 +2827,226 @@ class RequerimientoPendienteView {
         // dataTablelistaModalVerCuadroCostos.buttons().destroy();
         document.querySelector("table[id='listaModalVerCuadroCostos'] thead").style.backgroundColor = "#5d4d6d";
         $('#listaModalVerCuadroCostos tr').css('cursor', 'default');
+    }
+    updateValorNuevaCantidad(obj){
+        // let cantidadAtendida =parseFloat(obj.closest('tr').querySelector("input[class~='atencionOrden']").value);
+        // let cantidadReserva =parseFloat(obj.closest('tr').querySelector("input[class~='stockComprometido']").value);
+        if(parseFloat(obj.value)>= parseFloat(obj.getAttribute("min"))){
+            if(parseFloat(obj.value) <= parseFloat(obj.getAttribute("max"))){
+            }else{
+                Swal.fire(
+                    '',
+                    'La cantidad no puede superar la cantidad solicitada ('+parseFloat(obj.getAttribute("max"))+')',
+                    'warning'
+                    ); 
+                obj.value=parseFloat(obj.getAttribute("min"));
+
+                }
+            }else{
+                Swal.fire(
+                '',
+                'La cantidad no puede ser menor a '+obj.getAttribute("min"),
+                'warning'
+                ); 
+
+                obj.value=parseFloat(obj.getAttribute("min"));
+
+        }
+        this.determinarNuevoEstadoPorAjuste();
+
+    }
+
+    gestionarEstadoRequerimiento(obj){
+        $('#modal-gestionar-estado-requerimiento').modal({
+            show: true,
+            backdrop: 'true'
+        });
+
+        document.querySelector("div[id='modal-gestionar-estado-requerimiento'] form[id='form-gestionar-estado-requerimiento'] input[name='idRequerimiento']").value = obj.dataset.idRequerimiento;
+        document.querySelector("div[id='modal-gestionar-estado-requerimiento'] span[id='codigoRequerimiento']").textContent = obj.dataset.codigoRequerimiento;
+        document.querySelector("div[id='modal-gestionar-estado-requerimiento'] span[id='estadoActualRequerimiento']").textContent = obj.dataset.estadoRequerimiento;
+        document.querySelector("div[id='modal-gestionar-estado-requerimiento'] span[id='estadoVirtualRequerimiento']").textContent = obj.dataset.estadoRequerimiento;
+        
+        this.requerimientoPendienteCtrl.obtenerDetalleRequerimientos(obj.dataset.idRequerimiento).then((res) => {
+            this.construirTablaDetalleRequerimientoPendientesParaAjustarNecesidad(res);
+        }).catch((err) => {
+            console.log(err)
+        })
+    }
+
+    construirTablaDetalleRequerimientoPendientesParaAjustarNecesidad(response){
+        this.requerimientoPendienteCtrl.limpiarTabla('listaItemsRequerimientoPendientesParaAjustarCantidadSolicitada');
+        let cantidadTotalItems =response.length;        
+        if (cantidadTotalItems> 0) {    
+            response.forEach(function (element) {
+                if(element.tiene_transformacion==false || element.tiene_transformacion ==null || element.tiene_transformacion ==''){
+                let stockComprometido = 0;
+                (element.reserva).forEach(reserva => {
+                    if(reserva.estado !=7){
+                        stockComprometido += parseFloat(reserva.stock_comprometido);
+                    }
+                });
+                let atencionOrden = 0;
+                let objOrdenList = [];
+                (element.ordenes_compra).forEach(orden => {
+                    if(orden.estado !=7){
+                    atencionOrden += parseFloat(orden.cantidad);
+                    objOrdenList.push({ 'id_orden': orden.id_orden_compra, 'codigo': orden.codigo });
+                    }
+
+                });
+
+                if(parseFloat(atencionOrden+stockComprometido) < (element.cantidad > 0 ? element.cantidad:0)){ //considerar solo no atendidos menores a la cantidad solicitada
+
+                    document.querySelector("tbody[id='tbody_listaItemsRequerimientoPendientesParaAjustarCantidadSolicitada']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
+                    <td style="border: none; text-align:center; vertical-align: middle;" data-part-number="${element.part_number}" data-producto-part-number="${element.producto_part_number}">${(element.producto_part_number != null ? element.producto_part_number : (element.part_number != null ? element.part_number : ''))} ${element.tiene_transformacion == true ? '<br><span class="label label-default">Transformado</span>' : ''}
+                    <input type="text" name="idDetalleRequerimiento[]" value="${element.id_detalle_requerimiento}" hidden>
+                    </td>
+                    <td style="border: none; text-align:left; vertical-align: middle;">${element.producto_codigo != null ? element.producto_codigo : ''}</td>
+                    <td style="border: none; text-align:left; vertical-align: middle;">${element.producto_codigo_softlink != null ? element.producto_codigo_softlink : ''}</td>
+                    <td style="border: none; text-align:left; vertical-align: middle;">${element.producto_descripcion != null ? element.producto_descripcion : (element.descripcion ? element.descripcion : '')}</td>
+                    <td style="border: none; text-align:center; vertical-align: middle;">${element.abreviatura != null ? element.abreviatura : ''}</td>
+                    <td style="border: none; text-align:center; vertical-align: middle;">${element.cantidad > 0 ? element.cantidad : ''} <input type="text" class="cantidadOriginal" name="cantidadOriginal[]" value="${element.cantidad > 0 ? element.cantidad : ''}" hidden></td>
+                    <td style="border: none; text-align:center; vertical-align: middle;"><input type="number" min="1" max="${element.cantidad > 0 ? element.cantidad : 0}" class="form-control cantidadParaAnular handleBlurUpdateValorNuevaCantidad" name="cantidadParaAnular[]"></td>
+                    <td style="border: none; text-align:center; vertical-align: middle;"><textarea type="text" class="form-control razonesDeAjusteDeCantidad" name="razonesDeAjusteDeCantidad[]" placeholder="ejm: Ajuste a pedido del area usuario / ajuste por compra eficiente" style="height: 60px;overflow: scroll;width: 200px;"></textarea></td>
+                    <td style="border: none; text-align:center; vertical-align: middle;">
+                        ${stockComprometido != null && parseFloat(stockComprometido) > 0 ? stockComprometido : '0'} <input type="text" class="stockComprometido" name="stockComprometido[]" value="${stockComprometido != null && parseFloat(stockComprometido) > 0 ? stockComprometido : 0}" hidden>
+                    </td>
+                    <td style="border: none; text-align:center; vertical-align: middle;">
+                        ${atencionOrden != null && atencionOrden > 0 ? atencionOrden : '0'} <input type="text" class="atencionOrden" name="atencionOrden[]" value="${atencionOrden != null && atencionOrden > 0 ? atencionOrden : 0}" hidden>
+                    </td>
+                    <td style="border: none; text-align:center; vertical-align: middle;"><span style="color:blue;" name="[]"></span> </td>
+                    </tr>`);
+                }
+            }
+            
+            });
+            this.autoAjustarCantidadSolicitada();
+        }
+    }
+
+    autoAjustarCantidadSolicitada(){
+        (document.querySelector("tbody[id='tbody_listaItemsRequerimientoPendientesParaAjustarCantidadSolicitada']").childNodes).forEach(element => {
+            let cantidadOriginal =element.querySelector("input[class~='cantidadOriginal']").value;
+            let cantidadAtendidaTotal = parseFloat(element.querySelector("input[class~='atencionOrden']").value) + parseFloat(element.querySelector("input[class~='stockComprometido']").value)
+            let cantidadParaAnular=cantidadOriginal-cantidadAtendidaTotal;
+            if(typeof cantidadParaAnular === 'number' && Math.sign(cantidadParaAnular) === -1){
+                cantidadParaAnular=1;
+            }
+            element.querySelector("input[class~='cantidadParaAnular']").value = cantidadParaAnular;
+        });
+
+        this.determinarNuevoEstadoPorAjuste();
+
+    }
+
+    determinarNuevoEstadoPorAjuste(){
+        let cantidadTotalItem= 0;
+        let cantidadConEstadoAtencionTotal= 0;
+        (document.querySelector("tbody[id='tbody_listaItemsRequerimientoPendientesParaAjustarCantidadSolicitada']").childNodes).forEach(element => {
+            cantidadTotalItem++;
+            let cantidadOriginal =element.querySelector("input[class~='cantidadOriginal']").value;
+            let cantidadAtendidaTotal = parseFloat(element.querySelector("input[class~='atencionOrden']").value) + parseFloat(element.querySelector("input[class~='stockComprometido']").value)
+            let cantidadParaAnular=parseFloat(element.querySelector("input[class~='cantidadParaAnular']").value);
+ 
+            if(cantidadOriginal <= parseFloat(cantidadAtendidaTotal+cantidadParaAnular)){
+                cantidadConEstadoAtencionTotal++;
+            }
+        });
+        if(cantidadTotalItem == cantidadConEstadoAtencionTotal){
+            document.querySelector("div[id='modal-gestionar-estado-requerimiento'] span[id='estadoVirtualRequerimiento']").textContent = 'Atención total';
+            document.querySelector("div[id='modal-gestionar-estado-requerimiento'] input[name='idNuevoEstado']").value = 5;
+        }else{
+            document.querySelector("div[id='modal-gestionar-estado-requerimiento'] span[id='estadoVirtualRequerimiento']").textContent = 'Atención parcial';
+            document.querySelector("div[id='modal-gestionar-estado-requerimiento'] input[name='idNuevoEstado']").value = 15;
+        }
+    }
+
+    validarModalGestionarEstadoRequerimiento(){
+        let mensajes=[];
+        let estado='success';
+        let cantidadInpuCantidadAnuladaSinData=0;
+        let cantidadTextAreaRazonDeAjusteSinData=0;
+        (document.querySelector("tbody[id='tbody_listaItemsRequerimientoPendientesParaAjustarCantidadSolicitada']").childNodes).forEach(element => {
+            if(!element.querySelector("input[class~='cantidadParaAnular']").value>0){
+                estado='warning';
+                cantidadInpuCantidadAnuladaSinData++;
+            }
+            if(!element.querySelector("textarea[class~='razonesDeAjusteDeCantidad']").value!=''){
+                estado='warning';
+                cantidadTextAreaRazonDeAjusteSinData++;
+            }
+        });
+        
+        if(cantidadInpuCantidadAnuladaSinData>0){
+            mensajes.push(`Le falta completar ${cantidadInpuCantidadAnuladaSinData} campo(s), en la cantidad que mayor que debe ser mayor cero`);   
+        }
+        if(cantidadTextAreaRazonDeAjusteSinData>0){
+            mensajes.push(`Le falta completar ${cantidadTextAreaRazonDeAjusteSinData} campo(s) en la razon para anulación`);
+        }
+        return {mensajes,estado};
+    }
+
+    actualizarGestionEstadoRequerimiento(){
+        let validacion =this.validarModalGestionarEstadoRequerimiento();
+        if(validacion.estado == 'success'){
+            let formData = new FormData($('#form-gestionar-estado-requerimiento')[0]);
+            // for (var pair of formData.entries()) {
+            //     console.log(pair[0]+ ', ' + pair[1]); 
+            // }
+            $.ajax({
+                type: 'POST',
+                url: 'actualizar-ajuste-estado-requerimiento',
+                data: formData,
+                processData: false,
+                contentType: false,
+                dataType: 'JSON',
+                beforeSend: (data) => {
+                    $('#modal-gestionar-estado-requerimiento .modal-content').LoadingOverlay("show", {
+                        imageAutoResize: true,
+                        progress: true,
+                        imageColor: "#3c8dbc"
+                    });
+                },
+                success: (response) => {
+                    console.log(response);
+                        $('#modal-gestionar-estado-requerimiento .modal-content').LoadingOverlay("hide", true);
+                        Lobibox.notify(response.tipo_estado, {
+                            title: false,
+                            size: 'mini',
+                            rounded: true,
+                            sound: false,
+                            delayIndicator: false,
+                            msg: `${response.mensaje}`
+                        });
+                        if(response.tipo_estado=='success'){
+                            $('#modal-gestionar-estado-requerimiento').modal('hide');
+                        }
+                        $tablaListaRequerimientosPendientes.ajax.reload(null, false);
+
+                },
+                fail: (jqXHR, textStatus, errorThrown) => {
+                    $('#modal-gestionar-estado-requerimiento .modal-content').LoadingOverlay("hide", true);
+                    Swal.fire(
+                        '',
+                        'Lo sentimos hubo un error en el servidor al intentar actualizar, por favor vuelva a intentarlo',
+                        'error'
+                    );
+                    obj.removeAttribute("disabled");
+
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                }
+            });
+        }else{
+            Swal.fire(
+                '',
+                validacion.mensajes.toString()
+                ,
+                'warning'
+                ); 
+        }
     }
 
     // Crear orden por requerimiento
