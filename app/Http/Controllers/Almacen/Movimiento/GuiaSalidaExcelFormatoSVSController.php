@@ -121,14 +121,16 @@ class GuiaSalidaExcelFormatoSVSController extends Controller
                 }
             
             // inica evaluar altura de pagina actual, si series excede la pagina
-            
+
             if($filaLimiteMarcada==false){
                 $ActualNumeroFilaRecorrida = $sheet->getHighestRow();
-                if (($ActualNumeroFilaRecorrida * 13) >= ($pageMaxHeight - 400)) {
+                if (($ActualNumeroFilaRecorrida * 12) >= ($pageMaxHeight - 400)) {
                     $filaLimiteParaImprimir= $ActualNumeroFilaRecorrida;
                     $filaLimiteMarcada=true;
                 }
             }
+            $sheet->getCell('BH2')->setValue($filaLimiteMarcada.'filaLimiteMarcada');
+
             // fin evaluar altura de pagina actual, si series excede la pagina
                 
                                 
