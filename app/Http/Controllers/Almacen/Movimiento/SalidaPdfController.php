@@ -124,7 +124,7 @@ class SalidaPdfController extends Controller
                     if (intval($det->id_moneda) == 2) {
                         $valor_dolar = $costo_promedio;
                     } else {
-                        $valor_dolar = (floatval($costo_promedio) > 0 ? floatval($tipo_cambio->venta) / floatval($costo_promedio) : 0);
+                        $valor_dolar = (floatval($costo_promedio) > 0 ? floatval($costo_promedio) / floatval($tipo_cambio->venta) : 0);
                     }
                 }
 
