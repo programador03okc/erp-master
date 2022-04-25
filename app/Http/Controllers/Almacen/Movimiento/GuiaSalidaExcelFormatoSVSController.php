@@ -23,39 +23,39 @@ class GuiaSalidaExcelFormatoSVSController extends Controller
 
         $sheet->setCellValue('BH1', '');
 
-        $sheet->setCellValue('AQ2', 'GR'.($guia->serie.'-'.$guia->numero));
-        $sheet->mergeCells('AQ2:BA2');
+        $sheet->setCellValue('AW2', 'GR'.($guia->serie.'-'.$guia->numero));
+        $sheet->mergeCells('AW2:BF2');
 
-        $sheet->setCellValue('H4', $guia->fecha_emision);
-        $sheet->mergeCells('H4:N4');
+        $sheet->setCellValue('N4', $guia->fecha_emision);
+        $sheet->mergeCells('N4:T4');
 
-        $sheet->setCellValue('D6', $guia->cliente_razon_social);
-        $sheet->getStyle('D6')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('D6:X7');
-        $sheet->getStyle('D6')->getAlignment()->setWrapText(true);
+        $sheet->setCellValue('G6', $guia->cliente_razon_social);
+        $sheet->getStyle('G6')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('G6:AB7');
+        $sheet->getStyle('G6')->getAlignment()->setWrapText(true);
 
-        $sheet->setCellValue('AF5', $guia->punto_partida);
-        $sheet->getStyle('AF5')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('AF5:BH6');
-        $sheet->getStyle('AF5')->getAlignment()->setWrapText(true);
+        $sheet->setCellValue('AK5', $guia->punto_partida);
+        $sheet->getStyle('AK5')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('AK5:BF6');
+        $sheet->getStyle('AK5')->getAlignment()->setWrapText(true);
 
-        $sheet->setCellValue('G8', $guia->punto_llegada);
-        $sheet->getStyle('G8')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('G8:X10');
-        $sheet->getStyle('G8')->getAlignment()->setWrapText(true);
+        $sheet->setCellValue('J8', $guia->punto_llegada);
+        $sheet->getStyle('J8')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('J8:AB10');
+        $sheet->getStyle('J8')->getAlignment()->setWrapText(true);
 
-        $sheet->setCellValue('AO9', 'INGRESAR MARCA VEHICU');
-        $sheet->mergeCells('AO9:BH9');
+        $sheet->setCellValue('AU9', 'INGRESAR MARCA VEHICU');
+        $sheet->mergeCells('AU9:BF9');
 
-        $sheet->setCellValue('AO10', 'PLACA TRA');
-        $sheet->mergeCells('AO10:BH10');
+        $sheet->setCellValue('AU10', 'PLACA TRA');
+        $sheet->mergeCells('AU10:BF10');
 
-        $sheet->setCellValue('B11', $guia->cliente_nro_documento);
-        $sheet->mergeCells('B11:M11');
-        $sheet->getStyle('B11')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+        $sheet->setCellValue('G11', $guia->cliente_nro_documento);
+        $sheet->mergeCells('G11:P11');
+        $sheet->getStyle('G11')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
 
-        $sheet->setCellValue('V11', 'NRO DNI');
-        $sheet->mergeCells('V11:AC11');
+        $sheet->setCellValue('AC', 'NRO DNI');
+        $sheet->mergeCells('AC11:AH11');
 
         $sheet->setCellValue('AQ11', 'LICENCIA');
         $sheet->mergeCells('AQ11:BH11');
@@ -142,7 +142,7 @@ class GuiaSalidaExcelFormatoSVSController extends Controller
     public static function construirExcel($data)
     {
         $spreadsheet = new Spreadsheet();
-        $spreadsheet->getActiveSheet()->getPageMargins()->setLeft(0.45);
+        $spreadsheet->getActiveSheet()->getPageMargins()->setLeft(0.40);
         $spreadsheet->getDefaultStyle()->getFont()->setSize(10);
         $spreadsheet->getDefaultStyle()->getFont()->setName('Times New Roman');
         $spreadsheet->getActiveSheet()->getPageSetup()->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_PORTRAIT);
