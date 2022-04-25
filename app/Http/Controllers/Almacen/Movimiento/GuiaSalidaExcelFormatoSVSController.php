@@ -54,7 +54,7 @@ class GuiaSalidaExcelFormatoSVSController extends Controller
         $sheet->mergeCells('G11:P11');
         $sheet->getStyle('G11')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
 
-        $sheet->setCellValue('AC', 'NRO DNI');
+        $sheet->setCellValue('AC11', 'NRO DNI');
         $sheet->mergeCells('AC11:AH11');
 
         $sheet->setCellValue('AQ11', 'LICENCIA');
