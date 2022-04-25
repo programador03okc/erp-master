@@ -1397,6 +1397,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 				Route::get('sedesPorUsuarioArray', 'Almacen\Movimiento\OrdenesPendientesController@sedesPorUsuarioArray');
 				Route::get('getTipoCambioVenta/{fec}', 'Almacen\Movimiento\TransformacionController@getTipoCambioVenta');
+				Route::get('pruebaOrdenesPendientesLista', 'Almacen\Movimiento\OrdenesPendientesController@pruebaOrdenesPendientesLista');
 			});
 
 			Route::group(['as' => 'pendientes-salida.', 'prefix' => 'pendientes-salida'], function () {
