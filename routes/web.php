@@ -1621,6 +1621,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('kardex_general/{id}/{fini}/{ffin}', 'AlmacenController@kardex_general');
 				Route::get('kardex_sunat/{id}/{fini}/{ffin}', 'AlmacenController@download_kardex_sunat');
 				// Route::get('kardex_sunatx/{id}', 'AlmacenController@kardex_sunat');
+				Route::get('exportar_kardex_general/{id}/{fini}/{ffin}', 'Almacen\Reporte\ReportesController@exportarKardex');
 
 			});
 

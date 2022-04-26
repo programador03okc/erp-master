@@ -9,9 +9,9 @@
                 <div class="row">
                     <div class="col-md-12">
                         <h5>Almacén</h5>
-                        <select class="form-control" name="almacen" multiple>
-                            @foreach ($almacenes as $alm)
-                                <option value="{{$alm->id_almacen}}">{{$alm->descripcion}}</option>
+                        <select name="almacen" class="selectpicker" data-live-search="true" data-width="100%" data-actions-box="true" data-size="10">
+                            @foreach ($almacenes as $item)
+                                <option value="{{ $item->id_almacen }}">{{ $item->descripcion }}</option>
                             @endforeach
                         </select>
                     </div>
