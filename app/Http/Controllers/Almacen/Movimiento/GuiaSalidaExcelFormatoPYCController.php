@@ -21,7 +21,7 @@ class GuiaSalidaExcelFormatoPYCController extends Controller
         $sheet->getRowDimension(9)->setRowHeight(2.5, 'pt');
    
 
-        $sheet->setCellValue('AR1', '');
+        $sheet->setCellValue('BH1', '');
 
         $sheet->setCellValue('AJ2', 'GR'.($guia->serie.'-'.$guia->numero));
         $sheet->mergeCells('AJ2:AQ2');
@@ -196,8 +196,9 @@ class GuiaSalidaExcelFormatoPYCController extends Controller
             $filaInicioItem++;
         }
         
-        $sheet->getComment('AU'.$filaLimiteParaImprimir)->getText()->createTextRun('Hasta esta fila se sugiere imprimir');
-
+        if($filaLimiteParaImprimir>0){
+            $sheet->getCell('BH'.$filaLimiteParaImprimir)->setValue($filaLimiteParaImprimir.'Hasta aquí se sugiere imprimir');
+        }
     }
 
     // public static function crearNuevaHoja($spreadsheet,$data, $idItemInterrumpido,$idSerieInterrumpido)
