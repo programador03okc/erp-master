@@ -1762,21 +1762,6 @@ class OrdenView {
                                 msg: `Orden ${response.codigo} actualizada`
                             });
 
-                            if (response.status_migracion_softlink != null) {
-
-                                $('[name=codigo_orden]').val(response.status_migracion_softlink.orden_softlink ?? "");
-
-                                Lobibox.notify(response.status_migracion_softlink.tipo, {
-                                    title: false,
-                                    size: 'mini',
-                                    rounded: true,
-                                    sound: false,
-                                    delayIndicator: false,
-                                    msg: response.status_migracion_softlink.mensaje
-                                });
-
-                            }
-
                             changeStateButton('guardar');
                             $('#form-crear-orden-requerimiento').attr('type', 'register');
                             changeStateInput('form-crear-orden-requerimiento', true);
@@ -1798,18 +1783,6 @@ class OrdenView {
                                 response.tipo_estado
                             );
 
-                            if (response.status_migracion_softlink != null) {
-
-                                Lobibox.notify(response.status_migracion_softlink.tipo, {
-                                    title: false,
-                                    size: 'mini',
-                                    rounded: true,
-                                    sound: false,
-                                    delayIndicator: false,
-                                    msg: response.status_migracion_softlink.mensaje
-                                });
-
-                            }
                         }
                     }
                 }).fail(function (jqXHR, textStatus, errorThrown) {
@@ -2102,7 +2075,7 @@ class OrdenView {
                         <td class="text-center">${detalle[i].producto.codigo ? detalle[i].producto.codigo : ''} </td>
                         <td class="text-center">${detalle[i].producto.cod_softlink ? detalle[i].producto.cod_softlink : ''} </td>
                         <td class="text-center">${detalle[i].producto.part_number ? detalle[i].producto.part_number : ''} <input type="hidden"  name="idProducto[]" value="${(detalle[i].id_producto ? detalle[i].id_producto : detalle[i].id_producto)} "></td>
-                        <td class="text-left">${(detalle[i].producto.descripcion ? detalle[i].producto.descripcion : (detalle[i].descripcion != null ? detalle[i].descripcion : ''))} <input type="hidden"  name="descripcion[]" value="${(detalle[i].producto.descripcion ? detalle[i].producto.descripcion : detalle[i].descripcion)} "></td>
+                        <td class="text-left">${(detalle[i].producto.descripcion ? detalle[i].producto.descripcion : (detalle[i].descripcion != null ? detalle[i].descripcion : ''))} <textarea style="display:none;"  name="descripcion[]">${(detalle[i].producto.descripcion ? detalle[i].producto.descripcion : detalle[i].descripcion)}</textarea></td>
                         <td><select name="unidad[]" class="form-control ${(detalle[i].guia_compra_detalle != null && detalle[i].guia_compra_detalle.length > 0 ? '' : 'activation')} input-sm unidadMedida" data-valor="${detalle[i].id_unidad_medida}" disabled>${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
                         <td>${(detalle[i].detalle_requerimiento ? detalle[i].detalle_requerimiento.cantidad : '')}</td>
                         <td>${(cantidad_atendido_almacen > 0 ? cantidad_atendido_almacen : '')}</td> 
