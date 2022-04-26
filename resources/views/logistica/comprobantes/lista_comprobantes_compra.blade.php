@@ -29,11 +29,11 @@
                                     <th>Tipo Doc.</th>
                                     <th>Serie</th>
                                     <th>Número</th>
-                                    {{-- <th>Proveedor</th> --}}
+                                    <th>Proveedor</th>
                                     <th>Fecha Emisión</th>
-                                    {{-- <th>Condición</th> --}}
+                                    <th>Condición</th>
                                     <th>Fecha Vencimiento</th>
-                                    {{-- <th>Mnd</th> --}}
+                                    <th>Mnd</th>
                                     <th>Total a Pagar</th>
                                     {{-- <th>Estado</th> --}}
                                     <th>Acción</th>
@@ -70,7 +70,7 @@
     <script>
         $(document).ready(function() {
             seleccionarMenu(window.location);
-            $.fn.dataTable.Buttons.defaults.dom.button.className = 'btn';
+            // $.fn.dataTable.Buttons.defaults.dom.button.className = 'btn';
             // iniciar('{{Auth::user()->tieneAccion(83)}}');
             listar_doc_compra();
         });
