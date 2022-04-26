@@ -376,7 +376,7 @@ function listarDespachosEntregados(permiso) {
             },
             { data: 'fecha_emision', className: "text-center" },
             {
-                data: "comprobantes_venta", orderable: false, className: "text-center",
+                orderable: false, filterable: false, className: "text-center",
                 render:
                     function (data, type, row) {
                         return row.comprobantes_venta;
