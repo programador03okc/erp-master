@@ -2974,7 +2974,7 @@ class OrdenController extends Controller
             $status = 0;
 
             $idDetalleRequerimientoList = [];
-            $count = count($request->descripcion);
+            $count = count($request->precioUnitario);
             for ($i = 0; $i < $count; $i++) {
                 if ($request->idDetalleRequerimiento[$i] > 0) {
                     $idDetalleRequerimientoList[] = $request->idDetalleRequerimiento[$i];
@@ -2986,12 +2986,12 @@ class OrdenController extends Controller
 
              
                 // if(in_array(Auth::user()->id_usuario,[14,5])){
-                //     $ValidarOrdenSoftlink['tipo']='success';
-                //     $ValidarOrdenSoftlink['mensaje']='ok';
+                    // $ValidarOrdenSoftlink['tipo']='success';
+                    // $ValidarOrdenSoftlink['mensaje']='ok';
                 // }else{
-                    $ValidarOrdenSoftlink = (new MigrateOrdenSoftLinkController)->validarOrdenSoftlink($request->id_orden);
+                    // $ValidarOrdenSoftlink = (new MigrateOrdenSoftLinkController)->validarOrdenSoftlink($request->id_orden);
                 // }
-                if ($ValidarOrdenSoftlink['tipo'] == 'success') {
+                // if ($ValidarOrdenSoftlink['tipo'] == 'success') {
                     $orden = Orden::where("id_orden_compra", $request->id_orden)->first();
                     $orden->id_grupo_cotizacion = $request->id_grupo_cotizacion ? $request->id_grupo_cotizacion : null;
                     $orden->id_tp_documento = ($request->id_tp_documento !== null ? $request->id_tp_documento : 2);
@@ -3058,7 +3058,7 @@ class OrdenController extends Controller
                                     $detalle->cantidad = $request->cantidadAComprarRequerida[$i];
                                     $detalle->id_unidad_medida = $request->unidad[$i];
                                     $detalle->precio = $request->precioUnitario[$i];
-                                    $detalle->descripcion_adicional = $request->descripcion[$i] != null ? trim(strtoupper($request->descripcion[$i])) : null;
+                                    $detalle->descripcion_adicional = ($request->descripcion[$i] != null) ? trim(strtoupper(utf8_encode($request->descripcion[$i]))) : null;
                                     $detalle->subtotal = floatval($request->cantidadAComprarRequerida[$i] * $request->precioUnitario[$i]);
                                     $detalle->tipo_item_id = $request->idTipoItem[$i];
                                     $detalle->save();
@@ -3073,20 +3073,22 @@ class OrdenController extends Controller
                     $data = [
                         'id_orden_compra' => $orden->id_orden_compra,
                         'codigo' => $orden->codigo,
-                        'mensaje' => $ValidarOrdenSoftlink['mensaje'],
-                        'status_migracion_softlink' => $ValidarOrdenSoftlink,
+                        'tipo_estado' => 'success',
+                        'mensaje' => 'Orden actualizada'
+                        // 'mensaje' => $ValidarOrdenSoftlink['mensaje']
+                        // 'status_migracion_softlink' => $ValidarOrdenSoftlink,
                     ];
 
-                    $status = 200;
-                } else {
-                    $data = [
-                        'id_orden_compra' => 0,
-                        'codigo' => '',
-                        'mensaje' => $ValidarOrdenSoftlink['mensaje'],
-                        'status_migracion_softlink' => $ValidarOrdenSoftlink,
-                    ];
-                    $status = 204;
-                }
+                    // $status = 200;
+                // } else {
+                //     $data = [
+                //         'id_orden_compra' => 0,
+                //         'codigo' => '',
+                //         'mensaje' => $ValidarOrdenSoftlink['mensaje'],
+                //         'status_migracion_softlink' => $ValidarOrdenSoftlink,
+                //     ];
+                //     $status = 204;
+                // }
 
 
 
@@ -3095,50 +3097,50 @@ class OrdenController extends Controller
                     $this->actualizarNuevoEstadoRequerimiento('ACTUALIZAR',$request->id_orden, null);
                 }
 
-                if (str_contains($data['mensaje'], 'No existe un id_softlink en la OC seleccionada')) {
-                    $migrarOrdenSoftlink = (new MigrateOrdenSoftLinkController)->migrarOrdenCompra($request->id_orden)->original;
-                    if ($migrarOrdenSoftlink['tipo'] == 'success') {
-                        $data = [
-                            'id_orden_compra' => 0,
-                            'codigo' => '',
-                            'tipo_estado' => 'success',
-                            'mensaje' => 'Se a obtenido una respuesta satisfactoria al intentar migrar la orden a softlink',
-                            'status_migracion_softlink' => $migrarOrdenSoftlink,
-                        ];
-                    }
-                }
-                if ($status == 200) {
-                    // if(in_array(Auth::user()->id_usuario,[14,5])){
-                    //     $migrarOrdenSoftlink['tipo'] = 'success';
-                    // }else{
-                        $migrarOrdenSoftlink = (new MigrateOrdenSoftLinkController)->migrarOrdenCompra($request->id_orden)->original;
-                    // }
-                    if ($migrarOrdenSoftlink['tipo'] == 'success') {
-                        $data = [
-                            'id_orden_compra' => $orden->id_orden_compra,
-                            'codigo' => $orden->codigo,
-                            'tipo_estado' => 'success',
-                            'mensaje' => 'Se a obtenido una respuesta satisfactoria al intentar migrar la orden a softlink',
-                            'status_migracion_softlink' => $migrarOrdenSoftlink,
-                        ];
-                    } else {
-                        $data = [
-                            'id_orden_compra' => 0,
-                            'codigo' => '',
-                            'tipo_estado' => 'warning',
-                            'mensaje' => 'Se a obtenido una respuesta de advertencia o error al intentar migrar la orden a softlink',
-                            'status_migracion_softlink' => $migrarOrdenSoftlink,
-                        ];
-                    }
-                }
+                // if (str_contains($data['mensaje'], 'No existe un id_softlink en la OC seleccionada')) {
+                //     $migrarOrdenSoftlink = (new MigrateOrdenSoftLinkController)->migrarOrdenCompra($request->id_orden)->original;
+                //     if ($migrarOrdenSoftlink['tipo'] == 'success') {
+                //         $data = [
+                //             'id_orden_compra' => 0,
+                //             'codigo' => '',
+                //             'tipo_estado' => 'success',
+                //             'mensaje' => 'Se a obtenido una respuesta satisfactoria al intentar migrar la orden a softlink',
+                //             'status_migracion_softlink' => $migrarOrdenSoftlink,
+                //         ];
+                //     }
+                // }
+                // if ($status == 200) {
+                //     // if(in_array(Auth::user()->id_usuario,[14,5])){
+                //     //     $migrarOrdenSoftlink['tipo'] = 'success';
+                //     // }else{
+                //         $migrarOrdenSoftlink = (new MigrateOrdenSoftLinkController)->migrarOrdenCompra($request->id_orden)->original;
+                //     // }
+                //     if ($migrarOrdenSoftlink['tipo'] == 'success') {
+                //         $data = [
+                //             'id_orden_compra' => $orden->id_orden_compra,
+                //             'codigo' => $orden->codigo,
+                //             'tipo_estado' => 'success',
+                //             'mensaje' => 'Se a obtenido una respuesta satisfactoria al intentar migrar la orden a softlink',
+                //             'status_migracion_softlink' => $migrarOrdenSoftlink,
+                //         ];
+                //     } else {
+                //         $data = [
+                //             'id_orden_compra' => 0,
+                //             'codigo' => '',
+                //             'tipo_estado' => 'warning',
+                //             'mensaje' => 'Se a obtenido una respuesta de advertencia o error al intentar migrar la orden a softlink',
+                //             'status_migracion_softlink' => $migrarOrdenSoftlink,
+                //         ];
+                //     }
+                // }
 
                 return response()->json($data);
-            } else {
-                return response()->json(['id_orden_compra' => 0, 'codigo' => '', 'tipo_estado' => 'warning', 'status_migracion_softlink' => null, 'mensaje' => 'No puede actualizar la orden, existe un requerimiento vinculado con estado "En pausa" o  "Por regularizar"']);
+            // } else {
+                // return response()->json(['id_orden_compra' => 0, 'codigo' => '', 'tipo_estado' => 'warning', 'status_migracion_softlink' => null, 'mensaje' => 'No puede actualizar la orden, existe un requerimiento vinculado con estado "En pausa" o  "Por regularizar"']);
             }
         } catch (\PDOException $e) {
             DB::rollBack();
-            return response()->json(['id_orden_compra' => 0, 'codigo' => '', 'tipo_estado' => 'error', 'status_migracion_softlink' => null, 'mensaje' => 'Hubo un problema al actualizar la orden. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
+            return response()->json(['id_orden_compra' => 0, 'codigo' => '', 'tipo_estado' => 'error',  'mensaje' => 'Hubo un problema al actualizar la orden. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
         }
     }
 
