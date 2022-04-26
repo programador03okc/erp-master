@@ -16,9 +16,9 @@ class GuiaSalidaExcelFormatoPTECController extends Controller
         $sheet = $spreadsheet->getActiveSheet();
         $guia=$data['guia'];
         $sheet->getDefaultColumnDimension()->setWidth(8, 'pt');
-        $sheet->getRowDimension(1)->setRowHeight(66, 'pt');
-        $sheet->getRowDimension(3)->setRowHeight(27, 'pt');
-        $sheet->getRowDimension(9)->setRowHeight(2, 'pt');
+        $sheet->getRowDimension(1)->setRowHeight(67, 'pt');
+        $sheet->getRowDimension(3)->setRowHeight(26, 'pt');
+        $sheet->getRowDimension(9)->setRowHeight(2.5, 'pt');
    
 
         $sheet->setCellValue('BH1', '');
@@ -45,10 +45,10 @@ class GuiaSalidaExcelFormatoPTECController extends Controller
         $sheet->mergeCells('I7:P7');
 
 
-        $sheet->setCellValue('AM7', $guia->punto_llegada);
-        $sheet->getStyle('AM7')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('AM7:BG7');
-        $sheet->getStyle('AM7')->getAlignment()->setWrapText(true);
+        $sheet->setCellValue('AJ7', $guia->punto_llegada);
+        $sheet->getStyle('AJ7')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('AJ7:BG7');
+        $sheet->getStyle('AJ7')->getAlignment()->setWrapText(true);
 
 
 
@@ -56,9 +56,9 @@ class GuiaSalidaExcelFormatoPTECController extends Controller
         $sheet->getStyle('K8')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
         $sheet->mergeCells('K8:Q8');
 
-        $sheet->setCellValue('AK8', $guia->cliente_nro_documento);
-        $sheet->getStyle('AK8')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('AK8:AT8');
+        $sheet->setCellValue('AH8', $guia->cliente_nro_documento);
+        $sheet->getStyle('AH8')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('AH8:AT8');
 
 
         $sheet->setCellValue('G6', $guia->punto_partida);
