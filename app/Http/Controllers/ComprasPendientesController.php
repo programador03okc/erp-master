@@ -1421,45 +1421,52 @@ class ComprasPendientesController extends Controller
             $mensaje = '';
             $tipoEstado = '';
             $arrayDetalleRequerimientoActualizados=[];
-
+            $estadoOriginalRequerimiento =0;
             if(intval($request->idRequerimiento) >0){
+                $requerimiento = Requerimiento::find(intval($request->idRequerimiento));
+                $estadoOriginalRequerimiento =$requerimiento->estado;
                 if(isset($request->idDetalleRequerimiento)){
                     $count = count($request->idDetalleRequerimiento);
                     for ($i=0; $i < $count; $i++) { 
                     
-                        $detalleRequerimiento = DetalleRequerimiento::find(intval($request->idDetalleRequerimiento[$i]));
-                        if($detalleRequerimiento->cantidad_solicitada_original ==null){
-                            $detalleRequerimiento->cantidad_solicitada_original = $request->cantidadOriginal[$i];
+                        
+                        if((($request->cantidadParaAnular[$i]!=null) && floatval($request->cantidadParaAnular[$i])>0) || ((isset($request->estadoAtendidoTotal[$i])) && $request->estadoAtendidoTotal[$i] ==true)){
+                            $detalleRequerimiento = DetalleRequerimiento::find(intval($request->idDetalleRequerimiento[$i]));
+                            if($detalleRequerimiento->cantidad_solicitada_original ==null){
+                                $detalleRequerimiento->cantidad_solicitada_original = $request->cantidadOriginal[$i];
+                            }
+                            $detalleRequerimiento->cantidad = floatval($detalleRequerimiento->cantidad)-floatval($request->cantidadParaAnular[$i]);
+
+                            if(floatval($detalleRequerimiento->cantidad) == 0){
+                                $detalleRequerimiento->estado =7;
+                            }
+        
+                            if( (isset($request->estadoAtendidoTotal[$i]) && $request->estadoAtendidoTotal[$i] ==true) || ($detalleRequerimiento->cantidad ==  (floatval($request->atencionOrden[$i])+floatval($request->stockComprometido[$i])) ) ){
+                                $detalleRequerimiento->estado =5;
+                            }
+                            $detalleRequerimiento->razon_ajuste_necesidad = ($request->razonesDeAjusteDeNecesidad[$i]!=null?$request->razonesDeAjusteDeNecesidad[$i]:'Sin justificar');
+                            $detalleRequerimiento->save();
+                            $arrayDetalleRequerimientoActualizados[]=$detalleRequerimiento->id_detalle_requerimiento;                    
                         }
-                        $detalleRequerimiento->cantidad = floatval($detalleRequerimiento->cantidad)-floatval($request->cantidadParaAnular[$i]);
-                        if(floatval($detalleRequerimiento->cantidad)-floatval($request->cantidadParaAnular[$i]) ==0){
-                            $detalleRequerimiento->estado =7;
-                        }
-                        $detalleRequerimiento->razon_ajuste_cantidad_solicitada = $request->razonesDeAjusteDeCantidad[$i];
-                        $detalleRequerimiento->save();
-                        $arrayDetalleRequerimientoActualizados[]=$detalleRequerimiento->id_detalle_requerimiento;                    
+
+                    
                     }
                     
-                    if ($count == count($arrayDetalleRequerimientoActualizados)) {
+                    if (count($arrayDetalleRequerimientoActualizados)>0) {
                         $requerimiento = Requerimiento::find(intval($request->idRequerimiento));
                         $requerimiento->estado = $request->idNuevoEstado;
                         $requerimiento->ajuste_necesidad = true;
                         $requerimiento->save();
                         $tipoEstado = 'success';
-                        $mensaje = 'Se actualizo el estado del requerimiento '.$requerimiento->codigo;
+                        $mensaje = 'Se actualizo el requerimiento '.$requerimiento->codigo;
         
                     } else {
-                        $tipoEstado = 'error';
-                        $mensaje = "Hubo un problema al actualizar, solo se proceso ".count($arrayDetalleRequerimientoActualizados).' items';
+                        $tipoEstado = 'warning';
+                        $mensaje = "Solo se puede actualizar si existen cambios en cantidad de items o check de atención total";
                     }
                 }else{
-
-                    $requerimiento = Requerimiento::find(intval($request->idRequerimiento));
-                    $requerimiento->estado = $request->idNuevoEstado;
-                    $requerimiento->ajuste_necesidad = true;
-                    $requerimiento->save();
-                    $tipoEstado = 'success';
-                    $mensaje = "Requerimiento actualizado, sin cambios en items";
+                    $tipoEstado = 'warning';
+                    $mensaje = "No se pudo actualizar, no se detectaron items con cambios para actualizar";
                 }
 
 
