@@ -56,9 +56,9 @@ class GuiaSalidaExcelFormatoPTECController extends Controller
         $sheet->getStyle('K8')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
         $sheet->mergeCells('K8:Q8');
 
-        $sheet->setCellValue('AF8', $guia->cliente_nro_documento);
-        $sheet->getStyle('AF8')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('AF8:AK8');
+        $sheet->setCellValue('AN8', $guia->cliente_nro_documento);
+        $sheet->getStyle('AN8')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('AN8:AU8');
 
 
         $sheet->setCellValue('F6', $guia->punto_partida);
