@@ -16,18 +16,18 @@ class GuiaSalidaExcelFormatoPYCController extends Controller
         $sheet = $spreadsheet->getActiveSheet();
         $guia=$data['guia'];
         $sheet->getDefaultColumnDimension()->setWidth(8, 'pt');
-        $sheet->getRowDimension(1)->setRowHeight(70, 'pt');
-        $sheet->getRowDimension(3)->setRowHeight(27, 'pt');
-        // $sheet->getRowDimension(9)->setRowHeight(2.4, 'pt');
+        $sheet->getRowDimension(1)->setRowHeight(68, 'pt');
+        $sheet->getRowDimension(3)->setRowHeight(28, 'pt');
+        $sheet->getRowDimension(9)->setRowHeight(2, 'pt');
    
 
         $sheet->setCellValue('BH1', '');
 
         $sheet->setCellValue('AQ2', 'GR'.($guia->serie.'-'.$guia->numero));
-        $sheet->mergeCells('AQ2:AY2');
+        $sheet->mergeCells('AQ2:BA2');
 
         $sheet->setCellValue('I4', $guia->fecha_emision);
-        $sheet->mergeCells('I4:P4');
+        $sheet->mergeCells('I4:Q4');
 
         $sheet->setCellValue('K5', $guia->empresa_razon_social);
         $sheet->getStyle('K5')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
@@ -117,8 +117,8 @@ class GuiaSalidaExcelFormatoPYCController extends Controller
             $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*8, $filaInicioItem, $detalle[$i]['cantidad']);
             $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*8).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*8)+3).$filaInicioItem);
 
-            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*12, $filaInicioItem, $detalle[$i]['abreviatura']);
-            $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*12).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*12)+4).$filaInicioItem);
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*14, $filaInicioItem, $detalle[$i]['abreviatura']);
+            $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*14).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*14)+4).$filaInicioItem);
 
             
             $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*20, $filaInicioItem, $detalle[$i]['descripcion']);
