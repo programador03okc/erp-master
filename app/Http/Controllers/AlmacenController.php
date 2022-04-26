@@ -111,7 +111,7 @@ class AlmacenController extends Controller
         $ingresos = $ordenes + $transformaciones;
 
         $salidas = DB::table('almacen.orden_despacho')
-            ->where([['estado', '=', 1], ['flg_despacho', '=', 0]])
+            ->where('estado', 1)
             ->count();
 
         $transferencias = DB::table('almacen.trans')
@@ -1239,13 +1239,12 @@ class AlmacenController extends Controller
             // ->whereMonth('fecha_emision','=',$mes)
             ->count();
 
-        $alm = DB::table('almacen.alm_almacen')
-            ->select('codigo')
-            ->where('id_almacen', $id_alm)->first();
+        // $alm = DB::table('almacen.alm_almacen')
+        // ->where('id_almacen',$id_alm)->first();
 
         $correlativo = AlmacenController::leftZero(3, $data + 1);
 
-        $codigo = $tp . '-' . $alm->codigo . '-' . $anio . $correlativo;
+        $codigo = $tp . '-' . $id_alm . '-' . $anio . '-' . $correlativo;
 
         return $codigo;
     }
@@ -2625,81 +2624,66 @@ class AlmacenController extends Controller
     {
         $alm_array = explode(',', $almacenes);
 
-        $data = DB::table('almacen.mov_alm_det')
-            ->select(
-                'mov_alm_det.*',
-                'mov_alm.fecha_emision',
-                'mov_alm.id_tp_mov',
-                'mov_alm.codigo',
-                'alm_prod.descripcion as prod_descripcion',
-                'alm_prod.codigo as prod_codigo',
-                'alm_prod.part_number as prod_part_number',
-                'alm_cat_prod.descripcion as categoria',
-                'alm_subcat.descripcion as subcategoria',
-                // 'alm_prod.codigo_anexo',
-                'alm_und_medida.abreviatura',
-                'alm_ubi_posicion.codigo as posicion',
-                'tp_ope_com.cod_sunat as cod_sunat_com',
-                'tp_ope_com.descripcion as tp_com_descripcion',
-                'tp_ope_ven.cod_sunat as cod_sunat_ven',
-                'tp_ope_ven.descripcion as tp_ven_descripcion',
-                DB::raw("(tp_guia_com.abreviatura) || '-' || (guia_com.serie) || '-' || (guia_com.numero) as guia_com"),
-                DB::raw("(tp_guia_ven.abreviatura) || '-' || (guia_ven.serie) || '-' || (guia_ven.numero) as guia_ven"),
-                // DB::raw("(tp_doc_com.abreviatura) || '-' || (doc_com.serie) || '-' || (doc_com.numero) as doc_com"),
-                // DB::raw("(tp_doc_ven.abreviatura) || '-' || (doc_ven.serie) || '-' || (doc_ven.numero) as doc_ven"),
-                'guia_com.id_guia',
-                'guia_ven.id_guia_ven',
-                'alm_almacen.descripcion as almacen_descripcion',
-                // 'doc_com.id_doc_com','doc_ven.id_doc_ven',
-                'transformacion.codigo as cod_transformacion',
-                'trans.codigo as cod_transferencia'
-            )
-            ->join('almacen.mov_alm', 'mov_alm.id_mov_alm', '=', 'mov_alm_det.id_mov_alm')
-            ->leftjoin('almacen.transformacion', 'transformacion.id_transformacion', '=', 'mov_alm.id_transformacion')
-            // ->join('almacen.tp_mov','tp_mov.id_tp_mov','=','mov_alm.id_tp_mov')
-            ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'mov_alm_det.id_producto')
-            ->join('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
-            ->join('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
-            ->join('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
-            ->leftjoin('almacen.alm_ubi_posicion', 'alm_ubi_posicion.id_posicion', '=', 'mov_alm_det.id_posicion')
-            ->leftjoin('almacen.guia_com', 'guia_com.id_guia', '=', 'mov_alm.id_guia_com')
-            ->leftjoin('almacen.tp_doc_almacen as tp_guia_com', 'tp_guia_com.id_tp_doc_almacen', '=', 'guia_com.id_tp_doc_almacen')
-            ->leftjoin('almacen.tp_ope as tp_ope_com', 'tp_ope_com.id_operacion', '=', 'mov_alm.id_operacion')
-            // ->leftjoin('almacen.doc_com','doc_com.id_doc_com','=','mov_alm.id_doc_com')
-            // ->leftjoin('contabilidad.cont_tp_doc as tp_doc_com','tp_doc_com.id_tp_doc','=','doc_com.id_tp_doc')
-            ->leftjoin('almacen.guia_ven', 'guia_ven.id_guia_ven', '=', 'mov_alm.id_guia_ven')
-            ->leftjoin('almacen.tp_doc_almacen as tp_guia_ven', 'tp_guia_ven.id_tp_doc_almacen', '=', 'guia_ven.id_tp_doc_almacen')
-            ->leftjoin('almacen.tp_ope as tp_ope_ven', 'tp_ope_ven.id_operacion', '=', 'mov_alm.id_operacion')
-            // ->leftjoin('almacen.doc_ven','doc_ven.id_doc_ven','=','mov_alm.id_doc_ven')
-            // ->leftjoin('contabilidad.cont_tp_doc as tp_doc_ven','tp_doc_ven.id_tp_doc','=','doc_ven.id_tp_doc')
-            // ->leftjoin('almacen.alm_req','alm_req.id_requerimiento','=','mov_alm.id_req')
-            ->leftjoin('almacen.trans', 'trans.id_transferencia', '=', 'mov_alm.id_transferencia')
-            ->leftjoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'mov_alm.id_almacen')
-            ->where([
-                ['mov_alm.fecha_emision', '>=', $finicio],
-                ['mov_alm.fecha_emision', '<=', $ffin],
-                ['mov_alm_det.estado', '=', 1]
-            ])
-            ->whereIn('mov_alm.id_almacen', $alm_array)
-            ->orderBy('alm_prod.codigo', 'asc')
-            ->orderBy('mov_alm.fecha_emision', 'asc')
-            ->orderBy('mov_alm.id_tp_mov', 'asc')
-            ->get();
+        $query = MovimientoDetalle::select(
+            'mov_alm_det.*',
+            'mov_alm.fecha_emision',
+            'mov_alm.id_tp_mov',
+            'mov_alm.codigo',
+            'alm_prod.descripcion as prod_descripcion',
+            'alm_prod.codigo as prod_codigo',
+            'alm_prod.part_number as prod_part_number',
+            'alm_cat_prod.descripcion as categoria',
+            'alm_subcat.descripcion as subcategoria',
+            'alm_und_medida.abreviatura',
+            'tp_ope_com.cod_sunat as cod_sunat_com',
+            'tp_ope_com.descripcion as tp_com_descripcion',
+            'tp_ope_ven.cod_sunat as cod_sunat_ven',
+            'tp_ope_ven.descripcion as tp_ven_descripcion',
+            DB::raw("(tp_guia_com.abreviatura) || '-' || (guia_com.serie) || '-' || (guia_com.numero) as guia_com"),
+            DB::raw("(tp_guia_ven.abreviatura) || '-' || (guia_ven.serie) || '-' || (guia_ven.numero) as guia_ven"),
+            'guia_com.id_guia',
+            'guia_ven.id_guia_ven',
+            'alm_almacen.descripcion as almacen_descripcion',
+            'transformacion.codigo as cod_transformacion',
+            'trans.codigo as cod_transferencia'
+        )
+        ->join('almacen.mov_alm', 'mov_alm.id_mov_alm', '=', 'mov_alm_det.id_mov_alm')
+        ->leftjoin('almacen.transformacion', 'transformacion.id_transformacion', '=', 'mov_alm.id_transformacion')
+        ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'mov_alm_det.id_producto')
+        ->join('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
+        ->join('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
+        ->join('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
+        ->leftjoin('almacen.guia_com', 'guia_com.id_guia', '=', 'mov_alm.id_guia_com')
+        ->leftjoin('almacen.tp_doc_almacen as tp_guia_com', 'tp_guia_com.id_tp_doc_almacen', '=', 'guia_com.id_tp_doc_almacen')
+        ->leftjoin('almacen.tp_ope as tp_ope_com', 'tp_ope_com.id_operacion', '=', 'mov_alm.id_operacion')
+        ->leftjoin('almacen.guia_ven', 'guia_ven.id_guia_ven', '=', 'mov_alm.id_guia_ven')
+        ->leftjoin('almacen.tp_doc_almacen as tp_guia_ven', 'tp_guia_ven.id_tp_doc_almacen', '=', 'guia_ven.id_tp_doc_almacen')
+        ->leftjoin('almacen.tp_ope as tp_ope_ven', 'tp_ope_ven.id_operacion', '=', 'mov_alm.id_operacion')
+        ->leftjoin('almacen.trans', 'trans.id_transferencia', '=', 'mov_alm.id_transferencia')
+        ->leftjoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'mov_alm.id_almacen')
+        ->where([
+            ['mov_alm.fecha_emision', '>=', $finicio],
+            ['mov_alm.fecha_emision', '<=', $ffin],
+            ['mov_alm_det.estado', '=', 1]
+        ])
+        ->whereIn('mov_alm.id_almacen', $alm_array)
+        ->orderBy('alm_prod.codigo', 'asc')
+        ->orderBy('mov_alm.fecha_emision', 'asc')
+        ->orderBy('mov_alm.id_tp_mov', 'asc')
+        ->get();
 
         $saldo = 0;
         $saldo_valor = 0;
         $movimientos = [];
         $codigo = '';
 
-        foreach ($data as $d) {
+        foreach ($query as $d) {
 
             if ($d->prod_codigo !== $codigo) {
                 $saldo = 0;
                 $saldo_valor = 0;
             }
-            $orden = '';
-            $req = '';
-            $ordenes_array = [];
+            $ordenes = "";
             $comprobantes_array = [];
 
             if ($d->id_tp_mov == 1 || $d->id_tp_mov == 0) {
@@ -2708,29 +2692,8 @@ class AlmacenController extends Controller
 
 
                 if ($d->id_guia_com_det !== null) {
-                    $ocs = DB::table('almacen.guia_com_det')
-                        ->select('log_ord_compra.codigo as cod_orden')
-                        ->join('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_orden', '=', 'guia_com_det.id_oc_det')
-                        ->join('logistica.log_ord_compra', 'log_ord_compra.id_orden_compra', '=', 'log_det_ord_compra.id_orden_compra')
-                        // ->join('logistica.log_valorizacion_cotizacion','log_valorizacion_cotizacion.id_valorizacion_cotizacion','=','log_det_ord_compra.id_valorizacion_cotizacion')
-                        // ->join('almacen.alm_det_req','alm_det_req.id_detalle_requerimiento','=','log_valorizacion_cotizacion.id_detalle_requerimiento')
-                        // ->join('almacen.alm_req','alm_req.id_requerimiento','=','log_ord_compra.id_requerimiento')
-                        ->where('guia_com_det.id_guia_com_det', $d->id_guia_com_det)
-                        ->get();
+                    $ordenes = $d->movimiento->requerimientos;
 
-                    $ordenes = MovimientoDetalle::join('almacen.guia_com_det', 'guia_com_det.id_guia_com_det', 'mov_alm_det.id_guia_com_det')
-                        ->join('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_orden', 'guia_com_det.id_oc_det')
-                        ->join('logistica.log_ord_compra', 'log_ord_compra.id_orden_compra', 'log_det_ord_compra.id_orden_compra')
-                        ->where('mov_alm_det.id_mov_alm', $d->id_mov_alm)
-                        ->select(['log_ord_compra.codigo'])->distinct()->get();
-
-                    foreach ($ordenes as $oc) {
-                        array_push($ordenes_array, $oc->codigo);
-                    }
-                    // if (isset($ocs)){
-                    //     $orden = $ocs->cod_orden;
-                    //     $req = $ocs->cod_req;
-                    // }
                     $comprobantes = MovimientoDetalle::join('almacen.guia_com_det', 'guia_com_det.id_guia_com_det', 'mov_alm_det.id_guia_com_det')
                         ->join('almacen.doc_com_det', 'doc_com_det.id_guia_com_det', 'guia_com_det.id_guia_com_det')
                         ->join('almacen.doc_com', 'doc_com.id_doc_com', 'doc_com_det.id_doc')
@@ -2784,15 +2747,11 @@ class AlmacenController extends Controller
                 "tp_ven_descripcion" => $d->tp_ven_descripcion,
                 "id_guia_com" => $d->id_guia,
                 "id_guia_ven" => $d->id_guia_ven,
-                // "id_doc_com"=>$d->id_doc_com,
-                // "id_doc_ven"=>$d->id_doc_ven,
-                // "doc_com"=>$d->doc_com,
-                // "doc_ven"=>$d->doc_ven,
                 "guia_com" => $d->guia_com,
                 "guia_ven" => $d->guia_ven,
                 "cod_transformacion" => $d->cod_transformacion,
                 "cod_transferencia" => $d->cod_transferencia,
-                "orden" => implode(', ', $ordenes_array),
+                "orden" => $ordenes,
                 "docs" => implode(', ', $comprobantes_array),
             ];
             array_push($movimientos, $nuevo);
@@ -4771,13 +4730,10 @@ class AlmacenController extends Controller
         $data = DB::table('almacen.mov_alm_det')
             ->select(
                 'mov_alm_det.*',
-                'sis_moneda.simbolo',
                 'alm_ubi_posicion.codigo as cod_posicion',
                 'mov_alm.fecha_emision',
                 'mov_alm.id_tp_mov',
                 'mov_alm.codigo',
-                'trans.codigo as codigo_trans',
-                'transformacion.codigo as codigo_transformacion',
                 DB::raw("(tp_doc_com.abreviatura) || '-' || (guia_com.serie) || '-' || (guia_com.numero) as guia_com"),
                 'tp_doc_com.cod_sunat as cod_sunat_doc_com',
                 'tp_ope_com.cod_sunat as cod_sunat_ope_com',
@@ -4790,10 +4746,6 @@ class AlmacenController extends Controller
                 'adm_contri.razon_social'
             )
             ->join('almacen.mov_alm', 'mov_alm.id_mov_alm', '=', 'mov_alm_det.id_mov_alm')
-            ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'mov_alm_det.id_producto')
-            ->leftjoin('almacen.trans', 'trans.id_transferencia', '=', 'mov_alm.id_transferencia')
-            ->leftjoin('almacen.transformacion', 'transformacion.id_transformacion', '=', 'mov_alm.id_transformacion')
-            ->leftjoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'alm_prod.id_moneda')
             ->leftjoin('almacen.alm_ubi_posicion', 'alm_ubi_posicion.id_posicion', '=', 'mov_alm_det.id_posicion')
             // ->leftjoin('almacen.alm_ubi_nivel','alm_ubi_nivel.id_nivel','=','alm_ubi_posicion.id_nivel')
             // ->leftjoin('almacen.alm_ubi_estante','alm_ubi_estante.id_estante','=','alm_ubi_nivel.id_estante')
@@ -4824,37 +4776,26 @@ class AlmacenController extends Controller
         if (isset($data)) {
             $saldo = 0;
             $saldo_valor = 0;
-            $costo_promedio = 0;
-            $valor_salida = 0;
-
             $suma_ing_cant = 0;
             $suma_sal_cant = 0;
             $suma_ing_val = 0;
             $suma_sal_val = 0;
 
             foreach ($data as $d) {
-
                 if ($d->id_tp_mov == 1 || $d->id_tp_mov == 0) { //ingreso o inicial
                     $saldo += $d->cantidad;
                     $saldo_valor += $d->valorizacion;
-
                     $suma_ing_cant += $d->cantidad;
                     $suma_ing_val += $d->valorizacion;
                 } else if ($d->id_tp_mov == 2) { //salida
                     $saldo -= $d->cantidad;
-                    $valor_salida = $costo_promedio * $d->cantidad;
-                    $saldo_valor -= $valor_salida;
-
+                    $saldo_valor -= $d->valorizacion;
                     $suma_sal_cant += $d->cantidad;
-                    $suma_sal_val += $valor_salida;
+                    $suma_sal_val += $d->valorizacion;
                 }
-
-                $costo_promedio = ($saldo == 0 ? 0 : $saldo_valor / $saldo);
-
                 if ($d->id_tp_mov == 1 || $d->id_tp_mov == 0) {
                     $html .= '
                     <tr id="' . $d->id_mov_alm_det . '">
-                        <td>' . $d->codigo . '</td>
                         <td>' . $d->fecha_emision . '</td>
                         <td>' . ($d->guia_com == null ? $d->codigo : $d->guia_com) . '</td>
                         <td></td>
@@ -4862,19 +4803,16 @@ class AlmacenController extends Controller
                         <td class="right" style="background:#ffffb0;">' . $d->cantidad . '</td>
                         <td class="right" style="background:#ffffb0;">0</td>
                         <td class="right" style="background:#ffffb0;">' . $saldo . '</td>
-                        <td class="right" style="background:#d8fcfc;">' . $d->simbolo . number_format($d->valorizacion, 2, ".", ",") . '</td>
+                        <td class="right" style="background:#d8fcfc;">' . number_format($d->valorizacion, 2, ".", ",") . '</td>
                         <td class="right" style="background:#d8fcfc;">0</td>
-                        <td class="right" style="background:#d8fcfc;">' . $d->simbolo . number_format($saldo_valor, 2, ".", ",") . '</td>
-                        <td>' . $d->simbolo . ($saldo > 0 ? number_format($saldo_valor / $saldo, 2, ".", ",") : 0) . '</td>
+                        <td class="right" style="background:#d8fcfc;">' . number_format($saldo_valor, 2, ".", ",") . '</td>
+                        <td>' . $d->cod_posicion . '</td>
                         <td>' . ($d->cod_sunat_ope_com !== null ? $d->cod_sunat_ope_com : '') . '</td>
                         <td>' . $d->des_ope_com . '</td>
-                        <td>' . ($d->codigo_trans !== null ? $d->codigo_trans : '') . '</td>
-                        <td>' . ($d->codigo_transformacion !== null ? $d->codigo_transformacion : '') . '</td>
                     </tr>';
                 } else if ($d->id_tp_mov == 2) {
                     $html .= '
                     <tr id="' . $d->id_mov_alm_det . '">
-                        <td>' . $d->codigo . '</td>
                         <td>' . $d->fecha_emision . '</td>
                         <td>' . $d->guia_ven . '</td>
                         <td></td>
@@ -4883,13 +4821,11 @@ class AlmacenController extends Controller
                         <td class="right" style="background:#ffffb0;">' . $d->cantidad . '</td>
                         <td class="right" style="background:#ffffb0;">' . $saldo . '</td>
                         <td class="right" style="background:#d8fcfc;">0</td>
-                        <td class="right" style="background:#d8fcfc;">' . $d->simbolo . number_format($valor_salida, 2, ".", ",") . '</td>
-                        <td class="right" style="background:#d8fcfc;">' . $d->simbolo . number_format($saldo_valor, 2, ".", ",") . '</td>
-                        <td>' . $d->simbolo . ($saldo > 0 ? number_format($saldo_valor / $saldo, 2, ".", ",") : 0) . '</td>
+                        <td class="right" style="background:#d8fcfc;">' . number_format($d->valorizacion, 2, ".", ",") . '</td>
+                        <td class="right" style="background:#d8fcfc;">' . number_format($saldo_valor, 2, ".", ",") . '</td>
+                        <td>' . $d->cod_posicion . '</td>
                         <td>' . $d->cod_sunat_ope_ven . '</td>
                         <td>' . $d->des_ope_ven . '</td>
-                        <td>' . ($d->codigo_trans !== null ? $d->codigo_trans : '') . '</td>
-                        <td>' . ($d->codigo_transformacion !== null ? $d->codigo_transformacion : '') . '</td>
                     </tr>';
                 }
             }

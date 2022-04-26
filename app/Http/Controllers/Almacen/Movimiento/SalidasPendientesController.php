@@ -1396,8 +1396,11 @@ class SalidasPendientesController extends Controller
             case 3: //SVS
                 GuiaSalidaExcelFormatoSVSController::construirExcel(['guia' => $guia, 'detalle' => $detalle]);
                 break;
+            case 4: //JEDR
+                GuiaSalidaExcelFormatoJEDRController::construirExcel(['guia' => $guia, 'detalle' => $detalle]);
+                break;
             case 5: //RBDB
-                return ['guia' => $guia, 'detalle' => $detalle]; //! no esta implementado un formato
+                    GuiaSalidaExcelFormatoRBDBController::construirExcel(['guia' => $guia, 'detalle' => $detalle]);
                 break;
             case 6: //PTEC
                 GuiaSalidaExcelFormatoPTECController::construirExcel(['guia' => $guia, 'detalle' => $detalle]);

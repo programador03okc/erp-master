@@ -23,11 +23,9 @@ function listarKardexGeneral(almacenes, fini, ffin) {
     var vardataTables = funcDatatables();
     var tabla = $('#kardexGeneral').DataTable({
         'destroy': true,
-        'dom': vardataTables[1],
-        'buttons': vardataTables[2],
+        'dom': 'frtip',
         'language': vardataTables[0],
-        // "scrollX": true,
-        'pageLength': 10,
+        'pageLength': 20,
         'ajax': {
             url: 'kardex_general/' + almacenes + '/' + fini + '/' + ffin,
             dataSrc: ''
@@ -127,6 +125,7 @@ function listarKardexGeneral(almacenes, fini, ffin) {
     // atender("#kardexGeneral tbody", tabla);
     // anular("#kardexGeneral tbody", tabla);
 }
+
 function ver(tbody, tabla) {
     console.log("ver");
     $(tbody).on("click", "button.ver", function () {
@@ -163,4 +162,11 @@ function open_filtros() {
 function vista_extendida() {
     let body = document.getElementsByTagName('body')[0];
     body.classList.add("sidebar-collapse");
+}
+
+function exportar() {
+    var alm = $('[name=almacen]').val();
+    var fini = $('[name=fecha_inicio]').val();
+    var ffin = $('[name=fecha_fin]').val();
+    window.open('exportar_kardex_general/' + alm + '/' + fini + '/' + ffin);
 }

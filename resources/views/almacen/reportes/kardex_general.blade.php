@@ -1,12 +1,22 @@
 @extends('layout.main')
 @include('layout.menu_almacen')
 
-@section('cabecera')
-Kardex General
-@endsection
+@section('cabecera') Kardex General @endsection
 
 @section('estilos')
-<link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
+    <link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
+    <link rel="stylesheet" href="{{ asset('template/plugins/bootstrap-select/dist/css/bootstrap-select.min.css') }}">
+    <style>
+        button.botones {
+            margin-top: 35px;
+        }
+        table {
+            font-size: smaller;
+        }
+        table.table-bordered.dataTable tbody td {
+            vertical-align: middle;
+        }
+    </style>
 @endsection
 
 @section('breadcrumb')
@@ -28,18 +38,23 @@ Kardex General
                     <div class="col-md-12">
                         <button type="submit" class="btn btn-success" data-toggle="tooltip" 
                             data-placement="bottom" title="Descargar Kardex Sunat" 
-                            onClick="downloadKardexSunat();">Kardex Sunat</button>
-                        <button type="button" class="btn btn-primary" data-toggle="tooltip" 
+                            onClick="exportar();"> <i class="fas fa-file-excel"></i> Exportar Excel
+                        </button>
+                        <button type="submit" class="btn btn-primary" data-toggle="tooltip" 
+                            data-placement="bottom" title="Descargar Kardex Sunat" 
+                            onClick="downloadKardexSunat();"> <i class="fas fa-download"></i> Kardex Sunat
+                        </button>
+                        <button type="button" class="btn btn-default" data-toggle="tooltip" 
                             data-placement="bottom" title="Ingrese los filtros" 
-                            onClick="open_filtros();">Filtros</button>
+                            onClick="open_filtros();"> <i class="fas fa-filter"></i> Filtros
+                        </button>
                     </div>
                 </div>
                 <div class="row">
                     <input type="hidden" name="_token" value="{{csrf_token()}}" id="token">
                     <div class="col-md-12">
                         <div class="table-responsive">
-                            <table class="mytable table table-condensed table-bordered table-okc-view" 
-                                id="kardexGeneral">
+                            <table class="mytable table table-condensed table-bordered table-okc-view" id="kardexGeneral">
                                 <thead>
                                     <tr>
                                         <th hidden></th>
@@ -90,6 +105,8 @@ Kardex General
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
     <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/bootstrap-select/dist/js/bootstrap-select.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/bootstrap-select/dist/js/i18n/defaults-es_ES.min.js') }}"></script>
 
     <script src="{{ asset('js/almacen/reporte/kardex_general.js')}}"></script>
     <script>
