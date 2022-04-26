@@ -197,7 +197,8 @@ class ComprobanteCompraController extends Controller
                 'adm_estado_doc.estado_doc',
                 'adm_estado_doc.bootstrap_color',
                 'sis_moneda.simbolo',
-                'log_cdn_pago.descripcion AS condicion_pago',
+                // 'log_cdn_pago.descripcion AS condicion_pago',
+                'condicion_softlink.descripcion AS condicion_pago',
                 'cont_tp_doc.descripcion as tipo_documento'
             )
             ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'doc_com.id_proveedor')
@@ -205,6 +206,7 @@ class ComprobanteCompraController extends Controller
             ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'doc_com.estado')
             ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'doc_com.moneda')
             ->leftJoin('logistica.log_cdn_pago', 'log_cdn_pago.id_condicion_pago', '=', 'doc_com.id_condicion')
+            ->leftJoin('logistica.condicion_softlink', 'condicion_softlink.id_condicion_softlink', '=', 'doc_com.id_condicion_softlink')
             ->leftJoin('contabilidad.cont_tp_doc', 'cont_tp_doc.id_tp_doc', '=', 'doc_com.id_tp_doc')
             ->where('doc_com.estado', '!=', 7);
 
