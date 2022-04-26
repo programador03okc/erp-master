@@ -16,8 +16,8 @@ class GuiaSalidaExcelFormatoPTECController extends Controller
         $sheet = $spreadsheet->getActiveSheet();
         $guia=$data['guia'];
         $sheet->getDefaultColumnDimension()->setWidth(8, 'pt');
-        $sheet->getRowDimension(1)->setRowHeight(70, 'pt');
-        $sheet->getRowDimension(3)->setRowHeight(25, 'pt');
+        $sheet->getRowDimension(1)->setRowHeight(65, 'pt');
+        $sheet->getRowDimension(3)->setRowHeight(28, 'pt');
         $sheet->getRowDimension(9)->setRowHeight(1.8, 'pt');
    
 
@@ -34,9 +34,9 @@ class GuiaSalidaExcelFormatoPTECController extends Controller
         $sheet->mergeCells('K5:Z5');
         $sheet->getStyle('K5')->getAlignment()->setWrapText(true);
 
-        $sheet->setCellValue('AD5', $guia->cliente_razon_social);
-        $sheet->getStyle('AD5')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('AD5:AU6');
+        $sheet->setCellValue('AN5', $guia->cliente_razon_social);
+        $sheet->getStyle('AN5')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('AD5:BH6');
         $sheet->getStyle('AD5')->getAlignment()->setWrapText(true);
 
 
@@ -45,10 +45,10 @@ class GuiaSalidaExcelFormatoPTECController extends Controller
         $sheet->mergeCells('I7:P7');
 
 
-        $sheet->setCellValue('AD7', $guia->punto_llegada);
-        $sheet->getStyle('AD7')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('AD7:AU7');
-        $sheet->getStyle('AD7')->getAlignment()->setWrapText(true);
+        $sheet->setCellValue('AN7', $guia->punto_llegada);
+        $sheet->getStyle('AN7')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('AN7:BH7');
+        $sheet->getStyle('AN7')->getAlignment()->setWrapText(true);
 
 
 
@@ -72,9 +72,9 @@ class GuiaSalidaExcelFormatoPTECController extends Controller
         $sheet->mergeCells('I10:AC10');
         // $sheet->getStyle('D11')->getAlignment()->setWrapText(true);
 
-        $sheet->setCellValue('AO10', 'LICENCIA');
-        $sheet->getStyle('AO10')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('AO10:AU10');
+        $sheet->setCellValue('AZ10', 'LICENCIA');
+        $sheet->getStyle('AZ10')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('AZ10:BH10');
         // $sheet->getStyle('AJ11')->getAlignment()->setWrapText(true);
 
         $sheet->setCellValue('I11', 'RUC TRA');
@@ -88,9 +88,9 @@ class GuiaSalidaExcelFormatoPTECController extends Controller
         // $sheet->getStyle('X13')->getAlignment()->setWrapText(true);
 
 
-        $sheet->setCellValue('AM11', 'PLACA TRA');
-        $sheet->getStyle('AM11')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('AM11:AU11');
+        $sheet->setCellValue('AX11', 'PLACA TRA');
+        $sheet->getStyle('AX11')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('AX11:BH11');
         // $sheet->getStyle('AJ13')->getAlignment()->setWrapText(true);
 
 
@@ -229,7 +229,7 @@ class GuiaSalidaExcelFormatoPTECController extends Controller
     {
         
         $spreadsheet = new Spreadsheet();
-        $spreadsheet->getActiveSheet()->getPageMargins()->setLeft(0.55);
+        $spreadsheet->getActiveSheet()->getPageMargins()->setLeft(0.58);
         $spreadsheet->getDefaultStyle()->getFont()->setSize(10);
         $spreadsheet->getDefaultStyle()->getFont()->setName('Times New Roman');
         $spreadsheet->getActiveSheet()->getPageSetup()->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_PORTRAIT);
