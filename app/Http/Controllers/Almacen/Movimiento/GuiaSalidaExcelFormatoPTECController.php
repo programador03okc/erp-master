@@ -24,7 +24,7 @@ class GuiaSalidaExcelFormatoPTECController extends Controller
         $sheet->setCellValue('BH1', '');
 
         $sheet->setCellValue('AJ2', 'GR'.($guia->serie.'-'.$guia->numero));
-        $sheet->mergeCells('AJ2:AQ2');
+        $sheet->mergeCells('AJ2:BA2');
 
         $sheet->setCellValue('I4', $guia->fecha_emision);
         $sheet->mergeCells('I4:P4');
@@ -40,9 +40,9 @@ class GuiaSalidaExcelFormatoPTECController extends Controller
         $sheet->getStyle('AD5')->getAlignment()->setWrapText(true);
 
 
-        $sheet->setCellValue('K7', $guia->empresa_nro_documento);
-        $sheet->getStyle('K7')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('K7:P7');
+        $sheet->setCellValue('I7', $guia->empresa_nro_documento);
+        $sheet->getStyle('I7')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('I7:P7');
 
 
         $sheet->setCellValue('AD7', $guia->punto_llegada);
@@ -54,7 +54,7 @@ class GuiaSalidaExcelFormatoPTECController extends Controller
 
         $sheet->setCellValue('K8', $guia->fecha_emision);
         $sheet->getStyle('K8')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('K8:P8');
+        $sheet->mergeCells('K8:Q8');
 
         $sheet->setCellValue('AA8', $guia->cliente_nro_documento);
         $sheet->getStyle('AA8')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
