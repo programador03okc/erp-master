@@ -16,7 +16,7 @@ class GuiaSalidaExcelFormatoPYCController extends Controller
         $sheet = $spreadsheet->getActiveSheet();
         $guia=$data['guia'];
         $sheet->getDefaultColumnDimension()->setWidth(8, 'pt');
-        $sheet->getRowDimension(1)->setRowHeight(65, 'pt');
+        $sheet->getRowDimension(1)->setRowHeight(66, 'pt');
         $sheet->getRowDimension(3)->setRowHeight(28, 'pt');
         // $sheet->getRowDimension(9)->setRowHeight(5, 'pt');
    
