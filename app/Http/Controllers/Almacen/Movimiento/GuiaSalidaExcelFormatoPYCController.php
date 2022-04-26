@@ -16,7 +16,7 @@ class GuiaSalidaExcelFormatoPYCController extends Controller
         $sheet = $spreadsheet->getActiveSheet();
         $guia=$data['guia'];
         $sheet->getDefaultColumnDimension()->setWidth(8, 'pt');
-        $sheet->getRowDimension(1)->setRowHeight(68, 'pt');
+        $sheet->getRowDimension(1)->setRowHeight(65, 'pt');
         $sheet->getRowDimension(3)->setRowHeight(28, 'pt');
         $sheet->getRowDimension(9)->setRowHeight(2, 'pt');
    
@@ -229,7 +229,7 @@ class GuiaSalidaExcelFormatoPYCController extends Controller
     {
         
         $spreadsheet = new Spreadsheet();
-        $spreadsheet->getActiveSheet()->getPageMargins()->setLeft(0.55);
+        $spreadsheet->getActiveSheet()->getPageMargins()->setLeft(0.58);
         $spreadsheet->getDefaultStyle()->getFont()->setSize(10);
         $spreadsheet->getDefaultStyle()->getFont()->setName('Times New Roman');
         $spreadsheet->getActiveSheet()->getPageSetup()->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_PORTRAIT);
