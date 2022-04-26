@@ -18,10 +18,10 @@ class GuiaSalidaExcelFormatoPYCController extends Controller
         $sheet->getDefaultColumnDimension()->setWidth(8, 'pt');
         $sheet->getRowDimension(1)->setRowHeight(66, 'pt');
         $sheet->getRowDimension(3)->setRowHeight(28, 'pt');
-        // $sheet->getRowDimension(9)->setRowHeight(5, 'pt');
+        $sheet->getRowDimension(9)->setRowHeight(5, 'pt');
    
 
-        $sheet->setCellValue('BH1', '');
+        $sheet->setCellValue('BG1', '');
 
         $sheet->setCellValue('AQ2', 'GR'.($guia->serie.'-'.$guia->numero));
         $sheet->mergeCells('AQ2:BA2');
@@ -36,7 +36,7 @@ class GuiaSalidaExcelFormatoPYCController extends Controller
 
         $sheet->setCellValue('AQ5', $guia->cliente_razon_social);
         $sheet->getStyle('AQ5')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('AQ5:BH6');
+        $sheet->mergeCells('AQ5:BG6');
         $sheet->getStyle('AQ5')->getAlignment()->setWrapText(true);
 
 
@@ -47,7 +47,7 @@ class GuiaSalidaExcelFormatoPYCController extends Controller
 
         $sheet->setCellValue('AL7', $guia->punto_llegada);
         $sheet->getStyle('AL7')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('AL7:BH7');
+        $sheet->mergeCells('AL7:BG7');
         $sheet->getStyle('AL7')->getAlignment()->setWrapText(true);
 
 
@@ -74,7 +74,7 @@ class GuiaSalidaExcelFormatoPYCController extends Controller
 
         $sheet->setCellValue('AY10', 'LICENCIA');
         $sheet->getStyle('AY10')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('AY10:BH10');
+        $sheet->mergeCells('AY10:BG10');
         // $sheet->getStyle('AJ11')->getAlignment()->setWrapText(true);
 
         $sheet->setCellValue('I11', 'RUC TRA');
@@ -90,7 +90,7 @@ class GuiaSalidaExcelFormatoPYCController extends Controller
 
         $sheet->setCellValue('AX11', 'PLACA TRA');
         $sheet->getStyle('AX11')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('AX11:BH11');
+        $sheet->mergeCells('AX11:BG11');
         // $sheet->getStyle('AJ13')->getAlignment()->setWrapText(true);
 
 
@@ -203,7 +203,7 @@ class GuiaSalidaExcelFormatoPYCController extends Controller
         }
         
         if($filaLimiteParaImprimir>0){
-            $sheet->getCell('BH'.$filaLimiteParaImprimir)->setValue($filaLimiteParaImprimir.'Hasta aquí se sugiere imprimir');
+            $sheet->getCell('BG'.$filaLimiteParaImprimir)->setValue($filaLimiteParaImprimir.'Hasta aquí se sugiere imprimir');
         }
     }
 
@@ -229,7 +229,7 @@ class GuiaSalidaExcelFormatoPYCController extends Controller
     {
         
         $spreadsheet = new Spreadsheet();
-        $spreadsheet->getActiveSheet()->getPageMargins()->setLeft(0.58);
+        $spreadsheet->getActiveSheet()->getPageMargins()->setLeft(0.60);
         $spreadsheet->getDefaultStyle()->getFont()->setSize(10);
         $spreadsheet->getDefaultStyle()->getFont()->setName('Times New Roman');
         $spreadsheet->getActiveSheet()->getPageSetup()->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_PORTRAIT);
