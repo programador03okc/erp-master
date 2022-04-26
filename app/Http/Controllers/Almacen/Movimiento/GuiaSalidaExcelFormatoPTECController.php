@@ -18,7 +18,7 @@ class GuiaSalidaExcelFormatoPTECController extends Controller
         $sheet->getDefaultColumnDimension()->setWidth(8, 'pt');
         $sheet->getRowDimension(1)->setRowHeight(67, 'pt');
         $sheet->getRowDimension(3)->setRowHeight(26, 'pt');
-        $sheet->getRowDimension(9)->setRowHeight(2.5, 'pt');
+        $sheet->getRowDimension(9)->setRowHeight(2.9, 'pt');
    
 
         $sheet->setCellValue('BH1', '');
@@ -58,7 +58,7 @@ class GuiaSalidaExcelFormatoPTECController extends Controller
 
         $sheet->setCellValue('AH8', $guia->cliente_nro_documento);
         $sheet->getStyle('AH8')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('AH8:AT8');
+        $sheet->mergeCells('AH8:AO8');
 
 
         $sheet->setCellValue('G6', $guia->punto_partida);
