@@ -16,9 +16,9 @@ class GuiaSalidaExcelFormatoPTECController extends Controller
         $sheet = $spreadsheet->getActiveSheet();
         $guia=$data['guia'];
         $sheet->getDefaultColumnDimension()->setWidth(8, 'pt');
-        $sheet->getRowDimension(1)->setRowHeight(65, 'pt');
-        $sheet->getRowDimension(3)->setRowHeight(28, 'pt');
-        $sheet->getRowDimension(9)->setRowHeight(1.8, 'pt');
+        $sheet->getRowDimension(1)->setRowHeight(66, 'pt');
+        $sheet->getRowDimension(3)->setRowHeight(27, 'pt');
+        $sheet->getRowDimension(9)->setRowHeight(2, 'pt');
    
 
         $sheet->setCellValue('BH1', '');
@@ -36,7 +36,7 @@ class GuiaSalidaExcelFormatoPTECController extends Controller
 
         $sheet->setCellValue('AL5', $guia->cliente_razon_social);
         $sheet->getStyle('AL5')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('AL5:BH6');
+        $sheet->mergeCells('AL5:BG6');
         $sheet->getStyle('AL5')->getAlignment()->setWrapText(true);
 
 
@@ -45,10 +45,10 @@ class GuiaSalidaExcelFormatoPTECController extends Controller
         $sheet->mergeCells('I7:P7');
 
 
-        $sheet->setCellValue('AL7', $guia->punto_llegada);
-        $sheet->getStyle('AL7')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('AL7:BH7');
-        $sheet->getStyle('AL7')->getAlignment()->setWrapText(true);
+        $sheet->setCellValue('AM7', $guia->punto_llegada);
+        $sheet->getStyle('AM7')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('AM7:BG7');
+        $sheet->getStyle('AM7')->getAlignment()->setWrapText(true);
 
 
 
@@ -56,15 +56,15 @@ class GuiaSalidaExcelFormatoPTECController extends Controller
         $sheet->getStyle('K8')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
         $sheet->mergeCells('K8:Q8');
 
-        $sheet->setCellValue('AN8', $guia->cliente_nro_documento);
-        $sheet->getStyle('AN8')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('AN8:AU8');
+        $sheet->setCellValue('AK8', $guia->cliente_nro_documento);
+        $sheet->getStyle('AK8')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('AK8:AT8');
 
 
-        $sheet->setCellValue('F6', $guia->punto_partida);
-        $sheet->getStyle('F6')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('F6:Z6');
-        $sheet->getStyle('F6')->getAlignment()->setWrapText(true);
+        $sheet->setCellValue('G6', $guia->punto_partida);
+        $sheet->getStyle('G6')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('G6:Z6');
+        $sheet->getStyle('G6')->getAlignment()->setWrapText(true);
 
 
         $sheet->setCellValue('I10', 'INGRESAR NOMBRE DE TRANSPORTISTA');
@@ -74,7 +74,7 @@ class GuiaSalidaExcelFormatoPTECController extends Controller
 
         $sheet->setCellValue('AZ10', 'LICENCIA');
         $sheet->getStyle('AZ10')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('AZ10:BH10');
+        $sheet->mergeCells('AZ10:BG10');
         // $sheet->getStyle('AJ11')->getAlignment()->setWrapText(true);
 
         $sheet->setCellValue('I11', 'RUC TRA');
@@ -90,7 +90,7 @@ class GuiaSalidaExcelFormatoPTECController extends Controller
 
         $sheet->setCellValue('AX11', 'PLACA TRA');
         $sheet->getStyle('AX11')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('AX11:BH11');
+        $sheet->mergeCells('AX11:BG11');
         // $sheet->getStyle('AJ13')->getAlignment()->setWrapText(true);
 
 
@@ -102,7 +102,7 @@ class GuiaSalidaExcelFormatoPTECController extends Controller
         $detalle = $data['detalle'];
         $pageMaxHeight = 1008;
         $ColumnaInicioItem = 1;
-        $filaInicioItem = 15;
+        $filaInicioItem = 14;
         $filaLimiteParaImprimir = 0;
         $filaLimiteMarcada = false;
         // $idSerieInterrumpido = 0;
@@ -203,7 +203,7 @@ class GuiaSalidaExcelFormatoPTECController extends Controller
         }
         
         if($filaLimiteParaImprimir>0){
-            $sheet->getCell('BH'.$filaLimiteParaImprimir)->setValue($filaLimiteParaImprimir.'Hasta aquí se sugiere imprimir');
+            $sheet->getCell('BG'.$filaLimiteParaImprimir)->setValue($filaLimiteParaImprimir.'Hasta aquí se sugiere imprimir');
         }
     }
 
