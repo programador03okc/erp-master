@@ -87,4 +87,14 @@ class MigrateFacturasSoftlinkController extends Controller
             return array('tipo' => 'error', 'mensaje' => 'Hubo un problema al enviar la orden. Por favor intente de nuevo', 'error' => $e->getMessage());
         }
     }
+
+    public function agregarCondicionesSoftlink()
+    {
+        $docs = DB::table('almacen.doc_com')
+            ->whereNull('id_sede')
+            ->get();
+
+
+        return $docs;
+    }
 }
