@@ -15,13 +15,19 @@
                 <form id="form-gestionar-estado-requerimiento" type="register" form="formulario">
                     <input type="hidden" name="idRequerimiento">
                     <input type="hidden" name="idNuevoEstado">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h5>En este formulario puede ajustar la cantidad solicitada de cada item de requerimiento con pendientes por atención (se considera la cantidad atendida).
+                                Considere si la "cantidad solicitada" sea igual a la "cantidad para anulada" y el item NO TIENE atención, el item tedrá un estado "anulado", de lo contrario si TIENE alguna atención el item, el estado será "atendido total".
+                                Si desea establecer el estado de item como "atendido total" haga clic en el check (tenga encuenta que si tiene una cantidad anulada y marcado el check, ambos se condierarán en la actualización).</h5>
+                        </div>
+                    </div>
 
                     <div class="row">
                         <div class="col-md-12">
-                        <p>En este formulario puede ajustar la cantidad de cada item de requerimiento con pendientes por atención, puede anular cierta cantidad, que no supere la sumatoría de la cantidad solicitada más la cantidad atendida( atención por orden o por reserva). Si la cantidad a anular es todo lo pendiente por atender se marcará como anulado</p>
                             <div style="display: flex; justify-content: space-between;">
-                                <h4>Ajuste de cantidades solicitadas por item</h4>
-                                <button class="btn btn-sm btn-primary handleClickAutoAjustarCantidad" type="button" id="btnAutoAjustarCantidad"><i class="fas fa-magic"></i>Ajustar a estado atención total</button>
+                                <h4>Ajuste en items</h4>
+                                <button class="btn btn-sm btn-primary handleClickControlTodoCheckEnAtencionTotal" type="button" id="btnControlTodoCheckEnAtencionTotal"><i class="far fa-square" id="icoEstadoCheck"></i> Todo en atención total</button>
                             </div>
                             <fieldset class="group-table" style="padding-top: 20px;">
                                 <table class="mytable table table-condensed table-striped table-hover table-bordered table-okc-view dataTable no-footer" id="listaItemsRequerimientoPendientesParaAjustarCantidadSolicitada" width="100%">
@@ -34,7 +40,8 @@
                                             <th>Unidad</th>
                                             <th>Cantidad original</th>
                                             <th>Cantidad para anular</th>
-                                            <th>Razones de anulación</th>
+                                            <th>Atención total ?</th>
+                                            <th>Razones de ajuste</th>
                                             <th>Reserva almacén</th>
                                             <th>Atención orden</th>
                                         </tr>

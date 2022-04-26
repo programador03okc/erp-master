@@ -119,8 +119,11 @@ class RequerimientoPendienteView {
         $('#listaRequerimientosPendientes tbody').on("click", "button.handleClickGestionarEstadoRequerimiento", (e) => {
             this.gestionarEstadoRequerimiento(e.currentTarget);
         });
-        $('#modal-gestionar-estado-requerimiento').on("click", "button.handleClickAutoAjustarCantidad", (e) => {
-            this.autoAjustarCantidadSolicitada();
+        $('#modal-gestionar-estado-requerimiento').on("click", "button.handleClickControlTodoCheckEnAtencionTotal", (e) => {
+            this.controlCheckEnAtencionTotal(e.currentTarget);
+        });
+        $('#modal-gestionar-estado-requerimiento').on("click", "input.handleCheckPressMarcarItemAtendidoTotal", (e) => {
+            this.checkPressItemAtendidoTotal(e.currentTarget);
         });
         $('#modal-gestionar-estado-requerimiento').on("blur", "input.handleBlurUpdateValorNuevaCantidad", (e) => {
             this.updateValorNuevaCantidad(e.currentTarget);
@@ -617,20 +620,20 @@ class RequerimientoPendienteView {
                             if (row.count_mapeados > 0) {
                                 if (row.estado == 38 || row.estado == 39) { // estado por regularizar | estado  en pausa
 
-                                    btnAtenderAlmacen = '<button type="button" class="btn btn-primary btn-xs" name="btnOpenModalAtenderConAlmacen" title="Reserva en almacén" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo-requerimiento="' + row.codigo + '" data-almacen-requerimiento="'+row.almacen_requerimiento+'" disabled><i class="fas fa-dolly fa-sm"></i></button>';
+                                    btnAtenderAlmacen = '<button type="button" class="btn btn-primary btn-xs" name="btnOpenModalAtenderConAlmacen" title="Reserva en almacén" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo-requerimiento="' + row.codigo + '" data-almacen-requerimiento="' + row.almacen_requerimiento + '" disabled><i class="fas fa-dolly fa-sm"></i></button>';
                                     btnCrearOrdenCompra = '<button type="button" class="btn btn-warning btn-xs" name="btnCrearOrdenCompraPorRequerimiento" title="Crear Orden de Compra" data-id-requerimiento="' + row.id_requerimiento + '"  disabled>OC</button>';
                                     btnCrearOrdenServicio = '<button type="button" class="btn btn-danger btn-xs" name="btnCrearOrdenServicioPorRequerimiento" title="Crear Orden de Servicio" data-id-requerimiento="' + row.id_requerimiento + '" disabled >OS</button>';
 
                                 } else {
-                                    if(row.id_tipo_requerimiento==4){ //tipo de compras para stock
-                                        btnAtenderAlmacen = '<button type="button" class="btn btn-primary btn-xs" name="btnOpenModalAtenderConAlmacen" title="El requerimiento es de tipo compras para stock" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo-requerimiento="' + row.codigo + '" data-almacen-requerimiento="'+row.almacen_requerimiento+'" disabled><i class="fas fa-dolly fa-sm"></i></button>';
+                                    if (row.id_tipo_requerimiento == 4) { //tipo de compras para stock
+                                        btnAtenderAlmacen = '<button type="button" class="btn btn-primary btn-xs" name="btnOpenModalAtenderConAlmacen" title="El requerimiento es de tipo compras para stock" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo-requerimiento="' + row.codigo + '" data-almacen-requerimiento="' + row.almacen_requerimiento + '" disabled><i class="fas fa-dolly fa-sm"></i></button>';
 
-                                    }else{
-                                        btnAtenderAlmacen = '<button type="button" class="btn btn-primary btn-xs handleClickAtenderConAlmacen" name="btnOpenModalAtenderConAlmacen" title="Reserva en almacén" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo-requerimiento="' + row.codigo + '" data-almacen-requerimiento="'+row.almacen_requerimiento+'"><i class="fas fa-dolly fa-sm"></i></button>';
+                                    } else {
+                                        btnAtenderAlmacen = '<button type="button" class="btn btn-primary btn-xs handleClickAtenderConAlmacen" name="btnOpenModalAtenderConAlmacen" title="Reserva en almacén" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo-requerimiento="' + row.codigo + '" data-almacen-requerimiento="' + row.almacen_requerimiento + '"><i class="fas fa-dolly fa-sm"></i></button>';
                                     }
                                     btnCrearOrdenCompra = '<button type="button" class="btn btn-warning btn-xs handleClickCrearOrdenCompraPorRequerimiento" name="btnCrearOrdenCompraPorRequerimiento" title="Crear Orden de Compra" data-id-requerimiento="' + row.id_requerimiento + '"  >OC</button>';
-                                    if(row.id_tipo_requerimiento !=1)// diferentes a; tipo Atención inmediata (MGCP)
-                                    btnGestionarEstadoRequerimiento = '<button type="button" class="btn btn-danger btn-xs handleClickGestionarEstadoRequerimiento" name="btnCrearGestionarEstadoRequerimiento" title="Gestionar estado de requerimiento" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo-requerimiento="' + row.codigo +'" data-estado-requerimiento="' + row.estado_doc + '" disabled> <i class="fas fa-crop-alt"></i></button>';
+                                    if (row.id_tipo_requerimiento != 1)// diferentes a; tipo Atención inmediata (MGCP)
+                                        btnGestionarEstadoRequerimiento = '<button type="button" class="btn btn-danger btn-xs handleClickGestionarEstadoRequerimiento" name="btnCrearGestionarEstadoRequerimiento" title="Gestionar estado de requerimiento" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo-requerimiento="' + row.codigo + '" data-estado-requerimiento="' + row.estado_doc + '"> <i class="fas fa-crop-alt"></i></button>';
                                 }
                             }
 
@@ -645,10 +648,10 @@ class RequerimientoPendienteView {
                             let botones = '';
 
                             if (row.estado == 1 || row.estado == 3 || row.estado == 4 || row.estado == 12) {
-                                botones = openDiv + btnVerDetalleRequerimiento+btnExportarExcel + closeDiv;
+                                botones = openDiv + btnVerDetalleRequerimiento + btnExportarExcel + closeDiv;
                             } else {
-                                botones = openDiv + btnVerDetalleRequerimiento +btnExportarExcel+ btnAtenderAlmacen + btnMapearProductos +
-                                    btnCrearOrdenCompra + btnVercuadroCostos + btnVerAdjuntos+btnGestionarEstadoRequerimiento;
+                                botones = openDiv + btnVerDetalleRequerimiento + btnExportarExcel + btnAtenderAlmacen + btnMapearProductos +
+                                    btnCrearOrdenCompra + btnVercuadroCostos + btnVerAdjuntos + btnGestionarEstadoRequerimiento;
 
                                 if (row.cantidad_tipo_servicio > 0) {
                                     botones += btnCrearOrdenServicio + closeDiv;
@@ -934,14 +937,14 @@ class RequerimientoPendienteView {
                             if (row.count_mapeados > 0) {
                                 if (row.estado == 38 || row.estado == 39) { // estado por regularizar | estado  en pausa
 
-                                    btnAtenderAlmacen = '<button type="button" class="btn btn-primary btn-xs" name="btnOpenModalAtenderConAlmacen" title="Reserva en almacén" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo-requerimiento="' + row.codigo + '" data-almacen-requerimiento="'+row.almacen_requerimiento+'" disabled><i class="fas fa-dolly fa-sm"></i></button>';
-                                
+                                    btnAtenderAlmacen = '<button type="button" class="btn btn-primary btn-xs" name="btnOpenModalAtenderConAlmacen" title="Reserva en almacén" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo-requerimiento="' + row.codigo + '" data-almacen-requerimiento="' + row.almacen_requerimiento + '" disabled><i class="fas fa-dolly fa-sm"></i></button>';
+
                                 } else {
-                                    if(row.id_tipo_requerimiento==4){ //tipo de compras para stock
+                                    if (row.id_tipo_requerimiento == 4) { //tipo de compras para stock
                                         btnAtenderAlmacen = '<button type="button" class="btn btn-primary btn-xs" name="btnOpenModalAtenderConAlmacen" title="El requerimiento es de tipo compras para stock"  disabled><i class="fas fa-dolly fa-sm"></i></button>';
 
-                                    }else{
-                                        btnAtenderAlmacen = '<button type="button" class="btn btn-primary btn-xs handleClickAtenderConAlmacen" name="btnOpenModalAtenderConAlmacen" title="Reserva en almacén" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo-requerimiento="' + row.codigo + '" data-almacen-requerimiento="'+row.almacen_requerimiento+'"><i class="fas fa-dolly fa-sm"></i></button>';
+                                    } else {
+                                        btnAtenderAlmacen = '<button type="button" class="btn btn-primary btn-xs handleClickAtenderConAlmacen" name="btnOpenModalAtenderConAlmacen" title="Reserva en almacén" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo-requerimiento="' + row.codigo + '" data-almacen-requerimiento="' + row.almacen_requerimiento + '"><i class="fas fa-dolly fa-sm"></i></button>';
                                     }
 
                                 }
@@ -1277,9 +1280,9 @@ class RequerimientoPendienteView {
                 let atencionOrden = 0;
                 let objOrdenList = [];
                 (element.ordenes_compra).forEach(orden => { // TODO: no incluir anulados
-                    if(orden.estado !=7){
-                    atencionOrden += parseFloat(orden.cantidad);
-                    objOrdenList.push({ 'id_orden': orden.id_orden_compra, 'codigo': orden.codigo });
+                    if (orden.estado != 7) {
+                        atencionOrden += parseFloat(orden.cantidad);
+                        objOrdenList.push({ 'id_orden': orden.id_orden_compra, 'codigo': orden.codigo });
                     }
                 });
 
@@ -1303,7 +1306,7 @@ class RequerimientoPendienteView {
                         <td style="border: none; text-align:center;">${element.estado_doc != null && element.tiene_transformacion == false ? element.estado_doc : ''}</td>
                         <td style="border: none; text-align:center;"> <div style="display:flex;">
                             ${cantidadAdjuntosDetalleRequerimiento > 0 ? `<button type="button" class="btn btn-default btn-xs handleClickVerAdjuntoDetalleRequerimiento" name="btnVerAdjuntoDetalleRequerimiento" title="Ver adjuntos" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-descripcion="${element.producto_descripcion != null ? element.producto_descripcion : (element.descripcion ? element.descripcion : '')}" ><i class="fas fa-paperclip"></i></button>` : ''}
-                            <button type="button" class="btn btn-primary btn-xs handleClickActualizarTipoItem" name="btnActualizarTipoItem" title="Tipo Item: ${element.id_tipo_item ==1?'Producto':(element.id_tipo_item==2?'Servicio':'')}" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-descripcion="${element.producto_descripcion != null ? element.producto_descripcion : (element.descripcion ? element.descripcion : '')}" >${element.id_tipo_item ==1?'P':(element.id_tipo_item==2?'S':'')}</button>
+                            <button type="button" class="btn btn-primary btn-xs handleClickActualizarTipoItem" name="btnActualizarTipoItem" title="Tipo Item: ${element.id_tipo_item == 1 ? 'Producto' : (element.id_tipo_item == 2 ? 'Servicio' : '')}" data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" data-descripcion="${element.producto_descripcion != null ? element.producto_descripcion : (element.descripcion ? element.descripcion : '')}" >${element.id_tipo_item == 1 ? 'P' : (element.id_tipo_item == 2 ? 'S' : '')}</button>
                             </div>
                         </td>
                         </tr>`;
@@ -1350,7 +1353,7 @@ class RequerimientoPendienteView {
                 // if(element.tiene_transformacion==false){
                 let stockComprometido = 0;
                 (element.reserva).forEach(reserva => {
-                    if(reserva.estado !=7){
+                    if (reserva.estado != 7) {
                         stockComprometido += parseFloat(reserva.stock_comprometido);
                     }
                 });
@@ -1358,9 +1361,9 @@ class RequerimientoPendienteView {
                 let atencionOrden = 0;
                 let objOrdenList = [];
                 (element.ordenes_compra).forEach(orden => {
-                    if(orden.estado !=7){
-                    atencionOrden += parseFloat(orden.cantidad);
-                    objOrdenList.push({ 'id_orden': orden.id_orden_compra, 'codigo': orden.codigo });
+                    if (orden.estado != 7) {
+                        atencionOrden += parseFloat(orden.cantidad);
+                        objOrdenList.push({ 'id_orden': orden.id_orden_compra, 'codigo': orden.codigo });
                     }
 
                 });
@@ -1601,7 +1604,7 @@ class RequerimientoPendienteView {
                 },
                 {
                     render: function (data, type, row) {
-                        return (row.producto != null ? (row.producto.moneda!=null ?row.producto.moneda.descripcion:'') : '');
+                        return (row.producto != null ? (row.producto.moneda != null ? row.producto.moneda.descripcion : '') : '');
                     }
                 },
                 {
@@ -1816,23 +1819,23 @@ class RequerimientoPendienteView {
         });
         document.querySelector("div[id='modal-nueva-reserva'] span[id='codigoRequerimiento']").textContent = obj.dataset.codigoRequerimiento;
         document.querySelector("div[id='modal-nueva-reserva'] span[id='almacenRequerimiento']").textContent = obj.dataset.almacenRequerimiento;
-       
+
         if (parseInt(obj.dataset.idDetalleRequerimiento) > 0) {
 
             this.requerimientoPendienteCtrl.obtenerDetalleRequerimientoParaReserva(obj.dataset.idDetalleRequerimiento).then((res1) => {
 
                 // this.requerimientoPendienteCtrl.obtenerAlmacenPorDefectoRequerimiento(obj.dataset.idRequerimiento).then((res2) => {
-                    // console.log(res1);
-                    // console.log(res2);
-                    $('#modal-nueva-reserva .modal-content').LoadingOverlay("hide", true);
-                    if (res1.status == 200) {
-                        this.llenarModalNuevaReserva(res1.data);
-                    }
-                    // if (res2.status == 200) {
-                    //     this.seleccionarAlmacenPorDefectoRequerimientoParaReserva(res2.data)
-                    //     // this.handleChangeObtenerStockAlmacen();
+                // console.log(res1);
+                // console.log(res2);
+                $('#modal-nueva-reserva .modal-content').LoadingOverlay("hide", true);
+                if (res1.status == 200) {
+                    this.llenarModalNuevaReserva(res1.data);
+                }
+                // if (res2.status == 200) {
+                //     this.seleccionarAlmacenPorDefectoRequerimientoParaReserva(res2.data)
+                //     // this.handleChangeObtenerStockAlmacen();
 
-                    // }
+                // }
                 // }).catch(function (err) {
                 //     Swal.fire(
                 //         '',
@@ -1865,7 +1868,7 @@ class RequerimientoPendienteView {
             //     );
             // })
             //fin obtener lista de almacenes con stock del producto selecciondo
-            
+
 
 
         }
@@ -1880,7 +1883,7 @@ class RequerimientoPendienteView {
     //             contentType: false,
     //             dataType: 'JSON',
     //             beforeSend:  (data)=> { 
- 
+
     //             },
     //             success: (response) =>{
     //                 resolve(response);
@@ -1899,8 +1902,8 @@ class RequerimientoPendienteView {
     //         });
     // }
 
-    construirTablaAlmacenesConStockDisponible(idProducto){
- 
+    construirTablaAlmacenesConStockDisponible(idProducto) {
+
         $('#listaAlmacenesConStockDeProducto').dataTable({
             'dom': vardataTables[1],
             'buttons': [],
@@ -1911,7 +1914,7 @@ class RequerimientoPendienteView {
             "pageLength": 5,
             "autoWidth": false,
             'ajax': {
-                'url': 'almacenes-con-stock-disponible/'+idProducto,
+                'url': 'almacenes-con-stock-disponible/' + idProducto,
                 'type': 'GET',
                 beforeSend: data => {
 
@@ -1919,24 +1922,26 @@ class RequerimientoPendienteView {
 
             },
             'columns': [
-                { 'data': 'descripcion', 'name': 'alm_almacen.descripcion',
-                render: function (data, type, row) {
-                    return ((row.codigo != null || row.descripcion != null) ? row.codigo+' - '+row.descripcion : '');
-                }
-            },
-            { 'data': 'stock', 'className': "text-center"},
-            { 'data': 'cantidad_stock_comprometido', 'className': "text-center", 'searchable':false, 'orderable':false},
-            { 'searchable':false, 'orderable':false,
-            render: function (data, type, row) {
-                return (row.stock - row.cantidad_stock_comprometido);
-                }
-            },
-        
+                {
+                    'data': 'descripcion', 'name': 'alm_almacen.descripcion',
+                    render: function (data, type, row) {
+                        return ((row.codigo != null || row.descripcion != null) ? row.codigo + ' - ' + row.descripcion : '');
+                    }
+                },
+                { 'data': 'stock', 'className': "text-center" },
+                { 'data': 'cantidad_stock_comprometido', 'className': "text-center", 'searchable': false, 'orderable': false },
+                {
+                    'searchable': false, 'orderable': false,
+                    render: function (data, type, row) {
+                        return (row.stock - row.cantidad_stock_comprometido);
+                    }
+                },
+
                 {
                     render: function (data, type, row) {
-                    return `<center><div class="btn-group" role="group" style="margin-bottom: 5px;">
+                        return `<center><div class="btn-group" role="group" style="margin-bottom: 5px;">
                     <button type="button" class="btn btn-xs btn-success handleClickSeleccionarAlmacenParaReserva" 
-                        data-id-almacen="${row.id_almacen??''}" 
+                        data-id-almacen="${row.id_almacen ?? ''}" 
                         data-almacen-requerimiento="${row.codigo}-${row.descripcion}" 
                         data-stock-disponible="${(row.stock - row.cantidad_stock_comprometido)}" 
                         title="Agregar y guardar" >Seleccionar</button>
@@ -1948,13 +1953,13 @@ class RequerimientoPendienteView {
 
             'columnDefs': [
                 { 'targets': 0, "width": "80%" },
-                { 'targets': 1, "width": "10%",'className': "text-center"},
-                { 'targets': 2, "width": "10%", 'className': "text-center"}
+                { 'targets': 1, "width": "10%", 'className': "text-center" },
+                { 'targets': 2, "width": "10%", 'className': "text-center" }
 
             ]
         });
     }
-    
+
 
     // seleccionarAlmacenPorDefectoRequerimientoParaReserva(data) {
     //     if (data.id_almacen > 0) {
@@ -2205,19 +2210,19 @@ class RequerimientoPendienteView {
 
     // }
 
-    seleccionarAlmacenParaReserva(obj){
+    seleccionarAlmacenParaReserva(obj) {
 
         let idAlmacen = obj.dataset.idAlmacen;
         let almacenRequerimiento = obj.dataset.almacenRequerimiento;
         let stockDisponible = parseFloat(obj.dataset.stockDisponible);
         let cantidadSolicitada = parseFloat(document.querySelector("div[id='modal-nueva-reserva'] label[id='cantidad']").textContent);
-        let cantidadReservada= parseFloat(document.querySelector("form[id='form-nueva-reserva'] label[name='totalReservado']").textContent);
+        let cantidadReservada = parseFloat(document.querySelector("form[id='form-nueva-reserva'] label[name='totalReservado']").textContent);
         let cantidadAReservar = parseFloat(document.querySelector("div[id='modal-nueva-reserva'] input[name='cantidadReserva']").value);
 
-        if(stockDisponible<=cantidadSolicitada){
-            document.querySelector("div[id='modal-nueva-reserva'] input[name='cantidadReserva']").value= stockDisponible;
-        }else if(stockDisponible>cantidadSolicitada){
-            document.querySelector("div[id='modal-nueva-reserva'] input[name='cantidadReserva']").value= cantidadSolicitada;
+        if (stockDisponible <= cantidadSolicitada) {
+            document.querySelector("div[id='modal-nueva-reserva'] input[name='cantidadReserva']").value = stockDisponible;
+        } else if (stockDisponible > cantidadSolicitada) {
+            document.querySelector("div[id='modal-nueva-reserva'] input[name='cantidadReserva']").value = cantidadSolicitada;
         }
 
         document.querySelector("div[id='modal-nueva-reserva'] input[name='almacenReserva']").value = idAlmacen;
@@ -2828,35 +2833,26 @@ class RequerimientoPendienteView {
         document.querySelector("table[id='listaModalVerCuadroCostos'] thead").style.backgroundColor = "#5d4d6d";
         $('#listaModalVerCuadroCostos tr').css('cursor', 'default');
     }
-    updateValorNuevaCantidad(obj){
-        // let cantidadAtendida =parseFloat(obj.closest('tr').querySelector("input[class~='atencionOrden']").value);
-        // let cantidadReserva =parseFloat(obj.closest('tr').querySelector("input[class~='stockComprometido']").value);
-        if(parseFloat(obj.value)>= parseFloat(obj.getAttribute("min"))){
-            if(parseFloat(obj.value) <= parseFloat(obj.getAttribute("max"))){
-            }else{
+    updateValorNuevaCantidad(obj) {
+        if(obj.value != '' || parseFloat(obj.value) >0){
+            let cantidadAtendidaTotal = parseFloat(obj.closest('tr').querySelector("input[class~='atencionOrden']").value) + parseFloat(obj.closest('tr').querySelector("input[class~='stockComprometido']").value)
+            let maximaCantidadToleradaParaAnular= (parseFloat(obj.getAttribute("max"))-cantidadAtendidaTotal);
+            if ((parseFloat(obj.value)+cantidadAtendidaTotal) <= parseFloat(obj.getAttribute("max"))) {
+            } else {
                 Swal.fire(
-                    '',
-                    'La cantidad no puede superar la cantidad solicitada ('+parseFloat(obj.getAttribute("max"))+')',
+                    'Considere la cantidad atendida',
+                    'La cantidad para anular ingresada ('+obj.value+') no es valida, la "cantidad solicitada" (' +obj.getAttribute("max")+') menos(-) la "atención total" ('+ cantidadAtendidaTotal+') da como máximo para anular '+maximaCantidadToleradaParaAnular,
                     'warning'
-                    ); 
-                obj.value=parseFloat(obj.getAttribute("min"));
-
-                }
-            }else{
-                Swal.fire(
-                '',
-                'La cantidad no puede ser menor a '+obj.getAttribute("min"),
-                'warning'
-                ); 
-
-                obj.value=parseFloat(obj.getAttribute("min"));
-
+                );
+                obj.value = maximaCantidadToleradaParaAnular;
+    
+            }
         }
         this.determinarNuevoEstadoPorAjuste();
 
     }
 
-    gestionarEstadoRequerimiento(obj){
+    gestionarEstadoRequerimiento(obj) {
         $('#modal-gestionar-estado-requerimiento').modal({
             show: true,
             backdrop: 'true'
@@ -2866,7 +2862,7 @@ class RequerimientoPendienteView {
         document.querySelector("div[id='modal-gestionar-estado-requerimiento'] span[id='codigoRequerimiento']").textContent = obj.dataset.codigoRequerimiento;
         document.querySelector("div[id='modal-gestionar-estado-requerimiento'] span[id='estadoActualRequerimiento']").textContent = obj.dataset.estadoRequerimiento;
         document.querySelector("div[id='modal-gestionar-estado-requerimiento'] span[id='estadoVirtualRequerimiento']").textContent = obj.dataset.estadoRequerimiento;
-        
+
         this.requerimientoPendienteCtrl.obtenerDetalleRequerimientos(obj.dataset.idRequerimiento).then((res) => {
             this.construirTablaDetalleRequerimientoPendientesParaAjustarNecesidad(res);
         }).catch((err) => {
@@ -2874,31 +2870,31 @@ class RequerimientoPendienteView {
         })
     }
 
-    construirTablaDetalleRequerimientoPendientesParaAjustarNecesidad(response){
+    construirTablaDetalleRequerimientoPendientesParaAjustarNecesidad(response) {
         this.requerimientoPendienteCtrl.limpiarTabla('listaItemsRequerimientoPendientesParaAjustarCantidadSolicitada');
-        let cantidadTotalItems =response.length;        
-        if (cantidadTotalItems> 0) {    
+        let cantidadTotalItems = response.length;
+        if (cantidadTotalItems > 0) {
             response.forEach(function (element) {
-                if(element.tiene_transformacion==false || element.tiene_transformacion ==null || element.tiene_transformacion ==''){
-                let stockComprometido = 0;
-                (element.reserva).forEach(reserva => {
-                    if(reserva.estado !=7){
-                        stockComprometido += parseFloat(reserva.stock_comprometido);
-                    }
-                });
-                let atencionOrden = 0;
-                let objOrdenList = [];
-                (element.ordenes_compra).forEach(orden => {
-                    if(orden.estado !=7){
-                    atencionOrden += parseFloat(orden.cantidad);
-                    objOrdenList.push({ 'id_orden': orden.id_orden_compra, 'codigo': orden.codigo });
-                    }
+                if (([1,15].includes(element.estado)) && (element.tiene_transformacion == false || element.tiene_transformacion == null || element.tiene_transformacion == '')) {
+                    let stockComprometido = 0;
+                    (element.reserva).forEach(reserva => {
+                        if (reserva.estado != 7) {
+                            stockComprometido += parseFloat(reserva.stock_comprometido);
+                        }
+                    });
+                    let atencionOrden = 0;
+                    let objOrdenList = [];
+                    (element.ordenes_compra).forEach(orden => {
+                        if (orden.estado != 7) {
+                            atencionOrden += parseFloat(orden.cantidad);
+                            objOrdenList.push({ 'id_orden': orden.id_orden_compra, 'codigo': orden.codigo });
+                        }
 
-                });
+                    });
 
-                if(parseFloat(atencionOrden+stockComprometido) < (element.cantidad > 0 ? element.cantidad:0)){ //considerar solo no atendidos menores a la cantidad solicitada
+                    // if (parseFloat(atencionOrden + stockComprometido) < (element.cantidad > 0 ? element.cantidad : 0)) { //considerar solo no atendidos menores a la cantidad solicitada
 
-                    document.querySelector("tbody[id='tbody_listaItemsRequerimientoPendientesParaAjustarCantidadSolicitada']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
+                        document.querySelector("tbody[id='tbody_listaItemsRequerimientoPendientesParaAjustarCantidadSolicitada']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
                     <td style="border: none; text-align:center; vertical-align: middle;" data-part-number="${element.part_number}" data-producto-part-number="${element.producto_part_number}">${(element.producto_part_number != null ? element.producto_part_number : (element.part_number != null ? element.part_number : ''))} ${element.tiene_transformacion == true ? '<br><span class="label label-default">Transformado</span>' : ''}
                     <input type="text" name="idDetalleRequerimiento[]" value="${element.id_detalle_requerimiento}" hidden>
                     </td>
@@ -2907,8 +2903,12 @@ class RequerimientoPendienteView {
                     <td style="border: none; text-align:left; vertical-align: middle;">${element.producto_descripcion != null ? element.producto_descripcion : (element.descripcion ? element.descripcion : '')}</td>
                     <td style="border: none; text-align:center; vertical-align: middle;">${element.abreviatura != null ? element.abreviatura : ''}</td>
                     <td style="border: none; text-align:center; vertical-align: middle;">${element.cantidad > 0 ? element.cantidad : ''} <input type="text" class="cantidadOriginal" name="cantidadOriginal[]" value="${element.cantidad > 0 ? element.cantidad : ''}" hidden></td>
-                    <td style="border: none; text-align:center; vertical-align: middle;"><input type="number" min="1" max="${element.cantidad > 0 ? element.cantidad : 0}" class="form-control cantidadParaAnular handleBlurUpdateValorNuevaCantidad" name="cantidadParaAnular[]"></td>
-                    <td style="border: none; text-align:center; vertical-align: middle;"><textarea type="text" class="form-control razonesDeAjusteDeCantidad" name="razonesDeAjusteDeCantidad[]" placeholder="ejm: Ajuste a pedido del area usuario / ajuste por compra eficiente" style="height: 60px;overflow: scroll;width: 200px;"></textarea></td>
+                    <td style="border: none; text-align:center; vertical-align: middle;"><input type="number" max="${element.cantidad > 0 ? element.cantidad : 0}" class="form-control cantidadParaAnular handleBlurUpdateValorNuevaCantidad" name="cantidadParaAnular[]"></td>
+                    <td style="border: none; text-align:center; vertical-align: middle;"><input type="checkbox" class="checkEstadoAtendidoTotal handleCheckPressMarcarItemAtendidoTotal" name="estadoAtendidoTotal[]"></td>
+                    <td style="border: none; text-align:center; vertical-align: middle;">
+                        <div class="form-group">
+                            <textarea type="text" class="form-control razonesDeAjusteDeNecesidad" name="razonesDeAjusteDeNecesidad[]" placeholder="ejm: Ajuste a pedido del area usuario / ajuste por compra eficiente" style="height: 60px;overflow: scroll;width: 200px;"></textarea></td>
+                        </div>
                     <td style="border: none; text-align:center; vertical-align: middle;">
                         ${stockComprometido != null && parseFloat(stockComprometido) > 0 ? stockComprometido : '0'} <input type="text" class="stockComprometido" name="stockComprometido[]" value="${stockComprometido != null && parseFloat(stockComprometido) > 0 ? stockComprometido : 0}" hidden>
                     </td>
@@ -2917,79 +2917,118 @@ class RequerimientoPendienteView {
                     </td>
                     <td style="border: none; text-align:center; vertical-align: middle;"><span style="color:blue;" name="[]"></span> </td>
                     </tr>`);
+                    // }
                 }
-            }
-            
+
             });
-            this.autoAjustarCantidadSolicitada();
+            this.autoAjustarEnAtencionTotal();
         }
     }
 
-    autoAjustarCantidadSolicitada(){
+    autoAjustarEnAtencionTotal() {
         (document.querySelector("tbody[id='tbody_listaItemsRequerimientoPendientesParaAjustarCantidadSolicitada']").childNodes).forEach(element => {
-            let cantidadOriginal =element.querySelector("input[class~='cantidadOriginal']").value;
+            let cantidadOriginal = element.querySelector("input[class~='cantidadOriginal']").value;
             let cantidadAtendidaTotal = parseFloat(element.querySelector("input[class~='atencionOrden']").value) + parseFloat(element.querySelector("input[class~='stockComprometido']").value)
-            let cantidadParaAnular=cantidadOriginal-cantidadAtendidaTotal;
-            if(typeof cantidadParaAnular === 'number' && Math.sign(cantidadParaAnular) === -1){
-                cantidadParaAnular=1;
+            let cantidadParaAnular = cantidadOriginal - cantidadAtendidaTotal;
+            if (typeof cantidadParaAnular === 'number' && Math.sign(cantidadParaAnular) === -1) {
+                cantidadParaAnular = 1;
             }
-            element.querySelector("input[class~='cantidadParaAnular']").value = cantidadParaAnular;
+            element.querySelector("input[class~='cantidadParaAnular']").setAttribute("placeholder",cantidadParaAnular);
         });
 
         this.determinarNuevoEstadoPorAjuste();
 
     }
+    controlCheckEnAtencionTotal(obj) {
+        obj.classList.toggle("active");
+        if (obj.classList.contains("active")) {
+            obj.childNodes[0].classList.replace("far", "fas");
+            obj.childNodes[0].classList.replace("fa-square", "fa-check-square");
+            (document.querySelector("tbody[id='tbody_listaItemsRequerimientoPendientesParaAjustarCantidadSolicitada']").childNodes).forEach(element => {
+                element.querySelector("input[class~='checkEstadoAtendidoTotal']").checked = true;
+                document.querySelector("div[id='modal-gestionar-estado-requerimiento'] span[id='estadoVirtualRequerimiento']").textContent = 'Atención total';
+                document.querySelector("div[id='modal-gestionar-estado-requerimiento'] input[name='idNuevoEstado']").value = 5;
+            });
+        } else {
+            obj.childNodes[0].classList.replace("fas", "far");
+            obj.childNodes[0].classList.replace("fa-check-square", "fa-square");
+            (document.querySelector("tbody[id='tbody_listaItemsRequerimientoPendientesParaAjustarCantidadSolicitada']").childNodes).forEach(element => {
+                element.querySelector("input[class~='checkEstadoAtendidoTotal']").checked = false;
+                this.determinarNuevoEstadoPorAjuste();
 
-    determinarNuevoEstadoPorAjuste(){
-        let cantidadTotalItem= 0;
-        let cantidadConEstadoAtencionTotal= 0;
+            });
+        }
+    }
+
+
+    checkPressItemAtendidoTotal() {
+        let cantidadCheckedMarcadoAtencionTotal = 0;
+        let cantidadTotalItem = document.querySelector("tbody[id='tbody_listaItemsRequerimientoPendientesParaAjustarCantidadSolicitada']").childNodes.length;
         (document.querySelector("tbody[id='tbody_listaItemsRequerimientoPendientesParaAjustarCantidadSolicitada']").childNodes).forEach(element => {
-            cantidadTotalItem++;
-            let cantidadOriginal =element.querySelector("input[class~='cantidadOriginal']").value;
-            let cantidadAtendidaTotal = parseFloat(element.querySelector("input[class~='atencionOrden']").value) + parseFloat(element.querySelector("input[class~='stockComprometido']").value)
-            let cantidadParaAnular=parseFloat(element.querySelector("input[class~='cantidadParaAnular']").value);
- 
-            if(cantidadOriginal <= parseFloat(cantidadAtendidaTotal+cantidadParaAnular)){
-                cantidadConEstadoAtencionTotal++;
+            if (element.querySelector("input[class~='checkEstadoAtendidoTotal']").checked == true) {
+                cantidadCheckedMarcadoAtencionTotal++;
             }
         });
-        if(cantidadTotalItem == cantidadConEstadoAtencionTotal){
+        if (cantidadTotalItem == cantidadCheckedMarcadoAtencionTotal) {
             document.querySelector("div[id='modal-gestionar-estado-requerimiento'] span[id='estadoVirtualRequerimiento']").textContent = 'Atención total';
             document.querySelector("div[id='modal-gestionar-estado-requerimiento'] input[name='idNuevoEstado']").value = 5;
-        }else{
+        } else {
             document.querySelector("div[id='modal-gestionar-estado-requerimiento'] span[id='estadoVirtualRequerimiento']").textContent = 'Atención parcial';
             document.querySelector("div[id='modal-gestionar-estado-requerimiento'] input[name='idNuevoEstado']").value = 15;
         }
     }
 
-    validarModalGestionarEstadoRequerimiento(){
-        let mensajes=[];
-        let estado='success';
-        let cantidadInpuCantidadAnuladaSinData=0;
-        let cantidadTextAreaRazonDeAjusteSinData=0;
+
+
+    determinarNuevoEstadoPorAjuste() {
+        let cantidadTotalItem = 0;
+        let cantidadConEstadoAtencionTotal = 0;
         (document.querySelector("tbody[id='tbody_listaItemsRequerimientoPendientesParaAjustarCantidadSolicitada']").childNodes).forEach(element => {
-            if(!element.querySelector("input[class~='cantidadParaAnular']").value>0){
-                estado='warning';
-                cantidadInpuCantidadAnuladaSinData++;
-            }
-            if(!element.querySelector("textarea[class~='razonesDeAjusteDeCantidad']").value!=''){
-                estado='warning';
-                cantidadTextAreaRazonDeAjusteSinData++;
+            cantidadTotalItem++;
+            let cantidadOriginal = element.querySelector("input[class~='cantidadOriginal']").value;
+            let cantidadAtendidaTotal = parseFloat(element.querySelector("input[class~='atencionOrden']").value) + parseFloat(element.querySelector("input[class~='stockComprometido']").value)
+            let cantidadParaAnular = parseFloat(element.querySelector("input[class~='cantidadParaAnular']").value);
+
+            if (cantidadOriginal <= parseFloat(cantidadAtendidaTotal + cantidadParaAnular)) {
+                cantidadConEstadoAtencionTotal++;
             }
         });
-        
-        if(cantidadInpuCantidadAnuladaSinData>0){
-            mensajes.push(`Le falta completar ${cantidadInpuCantidadAnuladaSinData} campo(s), en la cantidad que mayor que debe ser mayor cero`);   
+        if (cantidadTotalItem == cantidadConEstadoAtencionTotal) {
+            document.querySelector("div[id='modal-gestionar-estado-requerimiento'] span[id='estadoVirtualRequerimiento']").textContent = 'Atención total';
+            document.querySelector("div[id='modal-gestionar-estado-requerimiento'] input[name='idNuevoEstado']").value = 5;
+        } else {
+            document.querySelector("div[id='modal-gestionar-estado-requerimiento'] span[id='estadoVirtualRequerimiento']").textContent = 'Atención parcial';
+            document.querySelector("div[id='modal-gestionar-estado-requerimiento'] input[name='idNuevoEstado']").value = 15;
         }
-        if(cantidadTextAreaRazonDeAjusteSinData>0){
-            mensajes.push(`Le falta completar ${cantidadTextAreaRazonDeAjusteSinData} campo(s) en la razon para anulación`);
-        }
-        return {mensajes,estado};
     }
 
-    actualizarGestionEstadoRequerimiento(){
-        let validacion =this.validarModalGestionarEstadoRequerimiento();
-        if(validacion.estado == 'success'){
+    validarModalGestionarEstadoRequerimiento() {
+        let mensajes = [];
+        let estado = 'success';
+        let cantidadTextAreaRazonDeAjusteSinData = 0;
+        (document.querySelector("tbody[id='tbody_listaItemsRequerimientoPendientesParaAjustarCantidadSolicitada']").childNodes).forEach(element => {
+            if ((element.querySelector("input[class~='cantidadParaAnular']").value > 0) || (element.querySelector("input[class~='checkEstadoAtendidoTotal']").checked == true)) {
+                if (!element.querySelector("textarea[class~='razonesDeAjusteDeNecesidad']").value != '') {
+                    estado = 'warning';
+                    cantidadTextAreaRazonDeAjusteSinData++;
+                    element.querySelector("textarea[class~='razonesDeAjusteDeNecesidad']").closest("div").classList.add("has-error");
+                } else {
+                    element.querySelector("textarea[class~='razonesDeAjusteDeNecesidad']").closest("div").classList.remove("has-error");
+
+                }
+            }
+
+        });
+
+        if (cantidadTextAreaRazonDeAjusteSinData > 0) {
+            mensajes.push(`Le falta completar ${cantidadTextAreaRazonDeAjusteSinData} campo(s) en la razon para anulación`);
+        }
+        return { mensajes, estado };
+    }
+
+    actualizarGestionEstadoRequerimiento() {
+        let validacion = this.validarModalGestionarEstadoRequerimiento();
+        if (validacion.estado == 'success') {
             let formData = new FormData($('#form-gestionar-estado-requerimiento')[0]);
             // for (var pair of formData.entries()) {
             //     console.log(pair[0]+ ', ' + pair[1]); 
@@ -3010,19 +3049,19 @@ class RequerimientoPendienteView {
                 },
                 success: (response) => {
                     console.log(response);
-                        $('#modal-gestionar-estado-requerimiento .modal-content').LoadingOverlay("hide", true);
-                        Lobibox.notify(response.tipo_estado, {
-                            title: false,
-                            size: 'mini',
-                            rounded: true,
-                            sound: false,
-                            delayIndicator: false,
-                            msg: `${response.mensaje}`
-                        });
-                        if(response.tipo_estado=='success'){
-                            $('#modal-gestionar-estado-requerimiento').modal('hide');
-                        }
-                        $tablaListaRequerimientosPendientes.ajax.reload(null, false);
+                    $('#modal-gestionar-estado-requerimiento .modal-content').LoadingOverlay("hide", true);
+                    Lobibox.notify(response.tipo_estado, {
+                        title: false,
+                        size: 'mini',
+                        rounded: true,
+                        sound: false,
+                        delayIndicator: false,
+                        msg: `${response.mensaje}`
+                    });
+                    if (response.tipo_estado == 'success') {
+                        $('#modal-gestionar-estado-requerimiento').modal('hide');
+                    }
+                    $tablaListaRequerimientosPendientes.ajax.reload(null, false);
 
                 },
                 fail: (jqXHR, textStatus, errorThrown) => {
@@ -3039,13 +3078,13 @@ class RequerimientoPendienteView {
                     console.log(errorThrown);
                 }
             });
-        }else{
+        } else {
             Swal.fire(
                 '',
                 validacion.mensajes.toString()
                 ,
                 'warning'
-                ); 
+            );
         }
     }
 
@@ -3066,7 +3105,7 @@ class RequerimientoPendienteView {
 
     }
 
-    solicitudCotizacionExcel(obj){
+    solicitudCotizacionExcel(obj) {
         window.open(`solicitud-cotizacion-excel/${obj.dataset.idRequerimiento}`);
 
     }
@@ -3107,7 +3146,7 @@ class RequerimientoPendienteView {
 
     }
 
-    actualizarTipoItem(obj){
+    actualizarTipoItem(obj) {
         Swal.fire({
             title: 'Actualizar tipo de ítem',
             text: obj.dataset.descripcion,
@@ -3117,22 +3156,22 @@ class RequerimientoPendienteView {
             denyButtonColor: '#3085d6',
             denyButtonText: `Producto`,
         }).then((result) => {
-            let tipoItem='';
+            let tipoItem = '';
             if (result.isConfirmed) {
                 // actualizar a servicio
-                tipoItem=2;
+                tipoItem = 2;
             } else if (result.isDenied) {
                 // actualizar a producto
-                tipoItem=1;
+                tipoItem = 1;
             }
 
-            if(tipoItem>0){
+            if (tipoItem > 0) {
                 $.ajax({
                     type: 'POST',
                     url: 'actualizar-tipo-item-detalle-requerimiento',
-                    data: {'idDetalleRequerimiento':obj.dataset.idDetalleRequerimiento, 'idTipoItem':tipoItem},
+                    data: { 'idDetalleRequerimiento': obj.dataset.idDetalleRequerimiento, 'idTipoItem': tipoItem },
                     dataType: 'JSON',
-                    beforeSend: (data) => { 
+                    beforeSend: (data) => {
                         $('#wrapper-okc').LoadingOverlay("show", {
                             imageAutoResize: true,
                             progress: true,
@@ -3141,7 +3180,7 @@ class RequerimientoPendienteView {
                     },
                     success: (response) => {
                         $('#wrapper-okc').LoadingOverlay("hide", true);
-    
+
                         if (response.tipo_estado == 'success') {
                             Lobibox.notify('success', {
                                 title: false,
@@ -3152,9 +3191,9 @@ class RequerimientoPendienteView {
                                 delay: 5000,
                                 msg: response.mensaje
                             });
-    
+
                             $tablaListaRequerimientosPendientes.ajax.reload(null, false);
-    
+
                         } else {
                             Swal.fire(
                                 '',
@@ -3163,8 +3202,8 @@ class RequerimientoPendienteView {
                             );
                             console.log(response);
                         }
-    
-    
+
+
                     },
                     fail: (jqXHR, textStatus, errorThrown) => {
                         $('#wrapper-okc').LoadingOverlay("hide", true);

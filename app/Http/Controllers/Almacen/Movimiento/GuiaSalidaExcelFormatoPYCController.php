@@ -16,39 +16,39 @@ class GuiaSalidaExcelFormatoPYCController extends Controller
         $sheet = $spreadsheet->getActiveSheet();
         $guia=$data['guia'];
         $sheet->getDefaultColumnDimension()->setWidth(8, 'pt');
-        $sheet->getRowDimension(1)->setRowHeight(70, 'pt');
-        $sheet->getRowDimension(3)->setRowHeight(25, 'pt');
-        $sheet->getRowDimension(9)->setRowHeight(2.5, 'pt');
+        $sheet->getRowDimension(1)->setRowHeight(66, 'pt');
+        $sheet->getRowDimension(3)->setRowHeight(28, 'pt');
+        $sheet->getRowDimension(9)->setRowHeight(5, 'pt');
    
 
-        $sheet->setCellValue('AR1', '');
+        $sheet->setCellValue('BG1', '');
 
-        $sheet->setCellValue('AJ2', 'GR'.($guia->serie.'-'.$guia->numero));
-        $sheet->mergeCells('AJ2:AQ2');
+        $sheet->setCellValue('AQ2', 'GR'.($guia->serie.'-'.$guia->numero));
+        $sheet->mergeCells('AQ2:BA2');
 
         $sheet->setCellValue('I4', $guia->fecha_emision);
-        $sheet->mergeCells('I4:P4');
+        $sheet->mergeCells('I4:Q4');
 
         $sheet->setCellValue('K5', $guia->empresa_razon_social);
         $sheet->getStyle('K5')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
         $sheet->mergeCells('K5:Z5');
         $sheet->getStyle('K5')->getAlignment()->setWrapText(true);
 
-        $sheet->setCellValue('AD5', $guia->cliente_razon_social);
-        $sheet->getStyle('AD5')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('AD5:AU6');
-        $sheet->getStyle('AD5')->getAlignment()->setWrapText(true);
+        $sheet->setCellValue('AO5', $guia->cliente_razon_social);
+        $sheet->getStyle('AO5')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('AO5:BG6');
+        $sheet->getStyle('AO5')->getAlignment()->setWrapText(true);
 
 
-        $sheet->setCellValue('K7', $guia->empresa_nro_documento);
-        $sheet->getStyle('K7')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('K7:P7');
+        $sheet->setCellValue('F7', $guia->empresa_nro_documento );
+        $sheet->getStyle('F7')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('F7:P7');
 
 
-        $sheet->setCellValue('AD7', $guia->punto_llegada);
-        $sheet->getStyle('AD7')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('AD7:AU7');
-        $sheet->getStyle('AD7')->getAlignment()->setWrapText(true);
+        $sheet->setCellValue('AK7', $guia->punto_llegada);
+        $sheet->getStyle('AK7')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('AK7:BG7');
+        $sheet->getStyle('AK7')->getAlignment()->setWrapText(true);
 
 
 
@@ -56,15 +56,15 @@ class GuiaSalidaExcelFormatoPYCController extends Controller
         $sheet->getStyle('K8')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
         $sheet->mergeCells('K8:P8');
 
-        $sheet->setCellValue('AA8', $guia->cliente_nro_documento);
-        $sheet->getStyle('AA8')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('AA8:AH8');
+        $sheet->setCellValue('AK8', $guia->cliente_nro_documento);
+        $sheet->getStyle('AK8')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('AK8:AQ8');
 
 
-        $sheet->setCellValue('F6', $guia->punto_partida);
-        $sheet->getStyle('F6')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('F6:Z6');
-        $sheet->getStyle('F6')->getAlignment()->setWrapText(true);
+        $sheet->setCellValue('G6', $guia->punto_partida);
+        $sheet->getStyle('G6')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('G6:AC6');
+        $sheet->getStyle('G6')->getAlignment()->setWrapText(true);
 
 
         $sheet->setCellValue('I10', 'INGRESAR NOMBRE DE TRANSPORTISTA');
@@ -72,9 +72,9 @@ class GuiaSalidaExcelFormatoPYCController extends Controller
         $sheet->mergeCells('I10:AC10');
         // $sheet->getStyle('D11')->getAlignment()->setWrapText(true);
 
-        $sheet->setCellValue('AO10', 'LICENCIA');
-        $sheet->getStyle('AO10')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('AO10:AU10');
+        $sheet->setCellValue('AY10', 'LICENCIA');
+        $sheet->getStyle('AY10')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('AY10:BG10');
         // $sheet->getStyle('AJ11')->getAlignment()->setWrapText(true);
 
         $sheet->setCellValue('I11', 'RUC TRA');
@@ -82,15 +82,15 @@ class GuiaSalidaExcelFormatoPYCController extends Controller
         $sheet->mergeCells('I11:O11');
         // $sheet->getStyle('E13')->getAlignment()->setWrapText(true);
 
-        $sheet->setCellValue('Z11', 'INGRESAR MARCA VEHICULO');
-        $sheet->getStyle('Z11')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('Z11:AI11');
+        $sheet->setCellValue('AI11', 'INGRESAR MARCA VEHICULO');
+        $sheet->getStyle('AI11')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('AI11:AS11');
         // $sheet->getStyle('X13')->getAlignment()->setWrapText(true);
 
 
-        $sheet->setCellValue('AM11', 'PLACA TRA');
-        $sheet->getStyle('AM11')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('AM11:AU11');
+        $sheet->setCellValue('AX11', 'PLACA TRA');
+        $sheet->getStyle('AX11')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('AX11:BG11');
         // $sheet->getStyle('AJ13')->getAlignment()->setWrapText(true);
 
 
@@ -102,7 +102,7 @@ class GuiaSalidaExcelFormatoPYCController extends Controller
         $detalle = $data['detalle'];
         $pageMaxHeight = 1008;
         $ColumnaInicioItem = 1;
-        $filaInicioItem = 15;
+        $filaInicioItem = 14;
         $filaLimiteParaImprimir = 0;
         $filaLimiteMarcada = false;
         // $idSerieInterrumpido = 0;
@@ -112,22 +112,28 @@ class GuiaSalidaExcelFormatoPYCController extends Controller
                 
             
             $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*1, $filaInicioItem, $detalle[$i]['codigo']);
+            $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*1).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*1)+6).$filaInicioItem);
+
             $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*8, $filaInicioItem, $detalle[$i]['cantidad']);
-            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*12, $filaInicioItem, $detalle[$i]['abreviatura']);
+            $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*8).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*8)+3).$filaInicioItem);
+
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*14, $filaInicioItem, $detalle[$i]['abreviatura']);
+            $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*14).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*14)+4).$filaInicioItem);
+
             
-            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*16, $filaInicioItem, $detalle[$i]['descripcion']);
-            $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*16).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*16)+31).$filaInicioItem);
-            $sheet->getStyle(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*16).$filaInicioItem)->getAlignment()->setWrapText(true);
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*20, $filaInicioItem, $detalle[$i]['descripcion']);
+            $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*20).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*20)+31).$filaInicioItem);
+            $sheet->getStyle(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*20).$filaInicioItem)->getAlignment()->setWrapText(true);
             $filaInicioItem++;
-            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*16, $filaInicioItem, 'CATEGORÍA: ');
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*20, $filaInicioItem, 'CATEGORÍA: ');
             $filaInicioItem++;
-            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*16, $filaInicioItem, 'MARCA: '.$detalle[$i]['marca']);
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*20, $filaInicioItem, 'MARCA: '.$detalle[$i]['marca']);
             $filaInicioItem++;
-            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*16, $filaInicioItem, 'MODELO: ');
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*20, $filaInicioItem, 'MODELO: ');
             $filaInicioItem++;
-            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*16, $filaInicioItem, 'NÚMERO DE PARTE: '.$detalle[$i]['part_number']);
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*20, $filaInicioItem, 'NÚMERO DE PARTE: '.$detalle[$i]['part_number']);
             $filaInicioItem++;
-            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*16, $filaInicioItem, 'S/N:');
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*20, $filaInicioItem, 'S/N:');
             $filaInicioItem++;
 
             $filaInicioItem++;
@@ -140,7 +146,7 @@ class GuiaSalidaExcelFormatoPYCController extends Controller
                 $cantidadColumnasPorFilaSerie=4;
                 $anchoDeSerie=10;
             }else{
-                $ColumnaInicioSerie=$ColumnaInicioItem*16;
+                $ColumnaInicioSerie=$ColumnaInicioItem*20;
             }
             $ii=0;
             // foreach ($detalle[$i]['series'] as $key2 => $serie) {
@@ -196,8 +202,9 @@ class GuiaSalidaExcelFormatoPYCController extends Controller
             $filaInicioItem++;
         }
         
-        $sheet->getComment('AU'.$filaLimiteParaImprimir)->getText()->createTextRun('Hasta esta fila se sugiere imprimir');
-
+        if($filaLimiteParaImprimir>0){
+            $sheet->getCell('BG'.$filaLimiteParaImprimir)->setValue($filaLimiteParaImprimir.'Hasta aquí se sugiere imprimir');
+        }
     }
 
     // public static function crearNuevaHoja($spreadsheet,$data, $idItemInterrumpido,$idSerieInterrumpido)
@@ -222,7 +229,7 @@ class GuiaSalidaExcelFormatoPYCController extends Controller
     {
         
         $spreadsheet = new Spreadsheet();
-        $spreadsheet->getActiveSheet()->getPageMargins()->setLeft(0.55);
+        $spreadsheet->getActiveSheet()->getPageMargins()->setLeft(0.60);
         $spreadsheet->getDefaultStyle()->getFont()->setSize(10);
         $spreadsheet->getDefaultStyle()->getFont()->setName('Times New Roman');
         $spreadsheet->getActiveSheet()->getPageSetup()->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_PORTRAIT);
@@ -234,7 +241,8 @@ class GuiaSalidaExcelFormatoPYCController extends Controller
         GuiaSalidaExcelFormatoPYCController::insertarSeccionGuia($spreadsheet, $data);
         GuiaSalidaExcelFormatoPYCController::insertarSeccionDetalle($spreadsheet, $data, 0,0);
 
-        $fileName = 'FORMATO-PYC-GR'.$data['guia']->serie.'-'.$data['guia']->numero.'-'.json_decode($data['guia']->codigos_requerimiento)[0].'-'.$data['guia']->cliente_razon_social."-okc";
+        $fileName = 'FORMATO-PYC-GR'.($data['guia']->serie??'').'-'.($data['guia']->numero??'').'-'.($data['guia']->codigos_requerimiento!=null ?json_decode($data['guia']->codigos_requerimiento)[0]:'').'-'.($data['guia']->cliente_razon_social??'');
+
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="' . $fileName . '.xls"');
         header('Content-Transfer-Encoding: binary');
