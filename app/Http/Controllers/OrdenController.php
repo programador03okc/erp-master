@@ -2503,7 +2503,7 @@ class OrdenController extends Controller
             $actualizarEstados = [];
 
             $idDetalleRequerimientoList = [];
-            $count = count($request->precioUnitario);
+            $count = count($request->idDetalleRequerimiento);
             for ($i = 0; $i < $count; $i++) {
                 if ($request->idDetalleRequerimiento[$i] > 0) {
                     $idDetalleRequerimientoList[] = $request->idDetalleRequerimiento[$i];
@@ -2974,7 +2974,7 @@ class OrdenController extends Controller
             $status = 0;
 
             $idDetalleRequerimientoList = [];
-            $count = count($request->precioUnitario);
+            $count = count($request->idDetalleRequerimiento);
             for ($i = 0; $i < $count; $i++) {
                 if ($request->idDetalleRequerimiento[$i] > 0) {
                     $idDetalleRequerimientoList[] = $request->idDetalleRequerimiento[$i];

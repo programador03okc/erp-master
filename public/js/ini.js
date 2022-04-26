@@ -81,7 +81,7 @@ $(document).ready(function () {
 					const ordenController = new OrdenCtrl(ordenModel);
 					const ordenView = new OrdenView(ordenController);
 					ordenView.nuevaOrden();
-					document.querySelector("div[id='group-migrar-oc-softlink']").classList.remove("oculto");
+					// document.querySelector("div[id='group-migrar-oc-softlink']").classList.remove("oculto");
 
 
 				}
