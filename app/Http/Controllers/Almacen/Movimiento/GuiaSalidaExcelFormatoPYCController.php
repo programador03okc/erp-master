@@ -121,19 +121,19 @@ class GuiaSalidaExcelFormatoPYCController extends Controller
             $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*12).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*12)+4).$filaInicioItem);
 
             
-            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*16, $filaInicioItem, $detalle[$i]['descripcion']);
-            $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*16).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*16)+31).$filaInicioItem);
-            $sheet->getStyle(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*16).$filaInicioItem)->getAlignment()->setWrapText(true);
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*20, $filaInicioItem, $detalle[$i]['descripcion']);
+            $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*20).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*20)+31).$filaInicioItem);
+            $sheet->getStyle(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*20).$filaInicioItem)->getAlignment()->setWrapText(true);
             $filaInicioItem++;
-            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*16, $filaInicioItem, 'CATEGORÍA: ');
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*20, $filaInicioItem, 'CATEGORÍA: ');
             $filaInicioItem++;
-            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*16, $filaInicioItem, 'MARCA: '.$detalle[$i]['marca']);
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*20, $filaInicioItem, 'MARCA: '.$detalle[$i]['marca']);
             $filaInicioItem++;
-            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*16, $filaInicioItem, 'MODELO: ');
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*20, $filaInicioItem, 'MODELO: ');
             $filaInicioItem++;
-            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*16, $filaInicioItem, 'NÚMERO DE PARTE: '.$detalle[$i]['part_number']);
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*20, $filaInicioItem, 'NÚMERO DE PARTE: '.$detalle[$i]['part_number']);
             $filaInicioItem++;
-            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*16, $filaInicioItem, 'S/N:');
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*20, $filaInicioItem, 'S/N:');
             $filaInicioItem++;
 
             $filaInicioItem++;
@@ -146,7 +146,7 @@ class GuiaSalidaExcelFormatoPYCController extends Controller
                 $cantidadColumnasPorFilaSerie=4;
                 $anchoDeSerie=10;
             }else{
-                $ColumnaInicioSerie=$ColumnaInicioItem*16;
+                $ColumnaInicioSerie=$ColumnaInicioItem*20;
             }
             $ii=0;
             // foreach ($detalle[$i]['series'] as $key2 => $serie) {
