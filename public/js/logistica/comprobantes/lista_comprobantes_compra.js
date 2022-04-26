@@ -1,37 +1,33 @@
-$(function () {
-    listar_doc_compra();
-});
-
 function listar_doc_compra() {
 
     var vardataTables = funcDatatables();
     $('#listaComprobantesCompra').DataTable({
-        'dom': vardataTables[1],
-        'buttons': vardataTables[2],
-        'language': vardataTables[0],
+        dom: vardataTables[1],
+        buttons: vardataTables[2],
+        language: vardataTables[0],
         // 'destroy': true,
-        'serverSide': true,
-        'ajax': {
+        serverSide: true,
+        ajax: {
             url: 'listar_docs_compra',
             type: 'POST'
         },
-        'columns': [
+        columns: [
             { 'data': 'id_doc_com' },
             { 'data': 'tipo_documento', 'name': 'cont_tp_doc.descripcion' },
             { 'data': 'serie' },
             { 'data': 'numero' },
-            { 'data': 'razon_social', 'name': 'adm_contri.razon_social' },
+            // { 'data': 'razon_social', 'name': 'adm_contri.razon_social' },
             { 'data': 'fecha_emision' },
-            { 'data': 'condicion_pago', 'name': 'log_cdn_pago.descripcion' },
+            // { 'data': 'condicion_pago', 'name': 'log_cdn_pago.descripcion' },
             { 'data': 'fecha_vcmto' },
-            { 'data': 'simbolo', 'name': 'sis_moneda.simbolo' },
+            // { 'data': 'simbolo', 'name': 'sis_moneda.simbolo' },
             { 'data': 'total_a_pagar' },
-            {
-                data: 'estado_doc', name: 'adm_estado_doc.estado_doc',
-                'render': function (data, type, row) {
-                    return '<span class="label label-' + row['bootstrap_color'] + '">' + row['estado_doc'] + '</span>'
-                }
-            },
+            // {
+            //     data: 'estado_doc', name: 'adm_estado_doc.estado_doc',
+            //     'render': function (data, type, row) {
+            //         return '<span class="label label-' + row['bootstrap_color'] + '">' + row['estado_doc'] + '</span>'
+            //     }
+            // },
             {
                 'render':
                     function (data, type, row) {

@@ -29,13 +29,13 @@
                                     <th>Tipo Doc.</th>
                                     <th>Serie</th>
                                     <th>Número</th>
-                                    <th>Proveedor</th>
+                                    {{-- <th>Proveedor</th> --}}
                                     <th>Fecha Emisión</th>
-                                    <th>Condición</th>
+                                    {{-- <th>Condición</th> --}}
                                     <th>Fecha Vencimiento</th>
-                                    <th>Mnd</th>
+                                    {{-- <th>Mnd</th> --}}
                                     <th>Total a Pagar</th>
-                                    <th>Estado</th>
+                                    {{-- <th>Estado</th> --}}
                                     <th>Acción</th>
                                 </tr>
                             </thead>
@@ -67,5 +67,13 @@
     <!-- <script src="{{('/js/logistica/comprobantes/doc_compra.js')}}"></script> -->
     <script src="{{ asset('js/almacen/documentos/doc_com_ver.js')}}"></script>
 
+    <script>
+        $(document).ready(function() {
+            seleccionarMenu(window.location);
+            $.fn.dataTable.Buttons.defaults.dom.button.className = 'btn';
+            // iniciar('{{Auth::user()->tieneAccion(83)}}');
+            listar_doc_compra();
+        });
+    </script>
 
 @endsection
