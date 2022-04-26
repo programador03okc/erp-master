@@ -9,7 +9,7 @@ function listar_doc_compra() {
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language': vardataTables[0],
-        'destroy': true,
+        // 'destroy': true,
         'serverSide': true,
         'ajax': {
             url: 'listar_docs_compra',
@@ -27,6 +27,7 @@ function listar_doc_compra() {
             { 'data': 'simbolo', 'name': 'sis_moneda.simbolo' },
             { 'data': 'total_a_pagar' },
             {
+                data: 'estado_doc', name: 'adm_estado_doc.estado_doc',
                 'render': function (data, type, row) {
                     return '<span class="label label-' + row['bootstrap_color'] + '">' + row['estado_doc'] + '</span>'
                 }

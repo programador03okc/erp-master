@@ -2,7 +2,7 @@
 @include('layout.menu_tesoreria')
 
 @section('cabecera')
-    Reporte de Comprobantes
+    Reporte de Comprobantes de Compra
 @endsection
 @section('breadcrumb')
 <ol class="breadcrumb">
