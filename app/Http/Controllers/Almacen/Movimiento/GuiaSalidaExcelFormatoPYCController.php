@@ -34,10 +34,10 @@ class GuiaSalidaExcelFormatoPYCController extends Controller
         $sheet->mergeCells('K5:Z5');
         $sheet->getStyle('K5')->getAlignment()->setWrapText(true);
 
-        $sheet->setCellValue('AQ5', $guia->cliente_razon_social);
-        $sheet->getStyle('AQ5')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('AQ5:BG6');
-        $sheet->getStyle('AQ5')->getAlignment()->setWrapText(true);
+        $sheet->setCellValue('AO5', $guia->cliente_razon_social);
+        $sheet->getStyle('AO5')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('AO5:BG6');
+        $sheet->getStyle('AO5')->getAlignment()->setWrapText(true);
 
 
         $sheet->setCellValue('F7', $guia->empresa_nro_documento );
@@ -45,10 +45,10 @@ class GuiaSalidaExcelFormatoPYCController extends Controller
         $sheet->mergeCells('F7:P7');
 
 
-        $sheet->setCellValue('AL7', $guia->punto_llegada);
-        $sheet->getStyle('AL7')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('AL7:BG7');
-        $sheet->getStyle('AL7')->getAlignment()->setWrapText(true);
+        $sheet->setCellValue('AK7', $guia->punto_llegada);
+        $sheet->getStyle('AK7')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('AK7:BG7');
+        $sheet->getStyle('AK7')->getAlignment()->setWrapText(true);
 
 
 
@@ -56,9 +56,9 @@ class GuiaSalidaExcelFormatoPYCController extends Controller
         $sheet->getStyle('K8')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
         $sheet->mergeCells('K8:P8');
 
-        $sheet->setCellValue('AH8', $guia->cliente_nro_documento);
-        $sheet->getStyle('AH8')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-        $sheet->mergeCells('AH8:AQ8');
+        $sheet->setCellValue('AK8', $guia->cliente_nro_documento);
+        $sheet->getStyle('AK8')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        $sheet->mergeCells('AK8:AQ8');
 
 
         $sheet->setCellValue('G6', $guia->punto_partida);
@@ -102,7 +102,7 @@ class GuiaSalidaExcelFormatoPYCController extends Controller
         $detalle = $data['detalle'];
         $pageMaxHeight = 1008;
         $ColumnaInicioItem = 1;
-        $filaInicioItem = 15;
+        $filaInicioItem = 14;
         $filaLimiteParaImprimir = 0;
         $filaLimiteMarcada = false;
         // $idSerieInterrumpido = 0;
