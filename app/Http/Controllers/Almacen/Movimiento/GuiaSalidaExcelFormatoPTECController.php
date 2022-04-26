@@ -18,7 +18,7 @@ class GuiaSalidaExcelFormatoPTECController extends Controller
         $sheet->getDefaultColumnDimension()->setWidth(8, 'pt');
         $sheet->getRowDimension(1)->setRowHeight(67, 'pt');
         $sheet->getRowDimension(3)->setRowHeight(26, 'pt');
-        $sheet->getRowDimension(9)->setRowHeight(2.9, 'pt');
+        $sheet->getRowDimension(9)->setRowHeight(3, 'pt');
    
 
         $sheet->setCellValue('BH1', '');
