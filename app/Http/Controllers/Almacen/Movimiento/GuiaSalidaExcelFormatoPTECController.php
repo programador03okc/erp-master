@@ -21,7 +21,7 @@ class GuiaSalidaExcelFormatoPTECController extends Controller
         $sheet->getRowDimension(9)->setRowHeight(1.8, 'pt');
    
 
-        $sheet->setCellValue('AR1', '');
+        $sheet->setCellValue('BH1', '');
 
         $sheet->setCellValue('AJ2', 'GR'.($guia->serie.'-'.$guia->numero));
         $sheet->mergeCells('AJ2:AQ2');
@@ -112,22 +112,28 @@ class GuiaSalidaExcelFormatoPTECController extends Controller
                 
             
             $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*1, $filaInicioItem, $detalle[$i]['codigo']);
+            $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*1).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*1)+6).$filaInicioItem);
+
             $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*8, $filaInicioItem, $detalle[$i]['cantidad']);
-            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*12, $filaInicioItem, $detalle[$i]['abreviatura']);
+            $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*8).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*8)+3).$filaInicioItem);
+
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*14, $filaInicioItem, $detalle[$i]['abreviatura']);
+            $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*14).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*14)+4).$filaInicioItem);
+
             
-            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*16, $filaInicioItem, $detalle[$i]['descripcion']);
-            $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*16).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*16)+31).$filaInicioItem);
-            $sheet->getStyle(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*16).$filaInicioItem)->getAlignment()->setWrapText(true);
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*20, $filaInicioItem, $detalle[$i]['descripcion']);
+            $sheet->mergeCells(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*20).$filaInicioItem.':'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(($ColumnaInicioItem*20)+31).$filaInicioItem);
+            $sheet->getStyle(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ColumnaInicioItem*20).$filaInicioItem)->getAlignment()->setWrapText(true);
             $filaInicioItem++;
-            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*16, $filaInicioItem, 'CATEGORÍA: ');
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*20, $filaInicioItem, 'CATEGORÍA: ');
             $filaInicioItem++;
-            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*16, $filaInicioItem, 'MARCA: '.$detalle[$i]['marca']);
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*20, $filaInicioItem, 'MARCA: '.$detalle[$i]['marca']);
             $filaInicioItem++;
-            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*16, $filaInicioItem, 'MODELO: ');
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*20, $filaInicioItem, 'MODELO: ');
             $filaInicioItem++;
-            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*16, $filaInicioItem, 'NÚMERO DE PARTE: '.$detalle[$i]['part_number']);
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*20, $filaInicioItem, 'NÚMERO DE PARTE: '.$detalle[$i]['part_number']);
             $filaInicioItem++;
-            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*16, $filaInicioItem, 'S/N:');
+            $sheet->setCellValueByColumnAndRow($ColumnaInicioItem*20, $filaInicioItem, 'S/N:');
             $filaInicioItem++;
 
             $filaInicioItem++;
@@ -140,7 +146,7 @@ class GuiaSalidaExcelFormatoPTECController extends Controller
                 $cantidadColumnasPorFilaSerie=4;
                 $anchoDeSerie=10;
             }else{
-                $ColumnaInicioSerie=$ColumnaInicioItem*16;
+                $ColumnaInicioSerie=$ColumnaInicioItem*20;
             }
             $ii=0;
             // foreach ($detalle[$i]['series'] as $key2 => $serie) {
@@ -196,8 +202,9 @@ class GuiaSalidaExcelFormatoPTECController extends Controller
             $filaInicioItem++;
         }
         
-        $sheet->getComment('AU'.$filaLimiteParaImprimir)->getText()->createTextRun('Hasta esta fila se sugiere imprimir');
-
+        if($filaLimiteParaImprimir>0){
+            $sheet->getCell('BH'.$filaLimiteParaImprimir)->setValue($filaLimiteParaImprimir.'Hasta aquí se sugiere imprimir');
+        }
     }
 
     // public static function crearNuevaHoja($spreadsheet,$data, $idItemInterrumpido,$idSerieInterrumpido)
@@ -234,7 +241,8 @@ class GuiaSalidaExcelFormatoPTECController extends Controller
         GuiaSalidaExcelFormatoPTECController::insertarSeccionGuia($spreadsheet, $data);
         GuiaSalidaExcelFormatoPTECController::insertarSeccionDetalle($spreadsheet, $data, 0,0);
 
-        $fileName = 'FORMATO-PTEC-GR'.$data['guia']->serie.'-'.$data['guia']->numero.'-'.json_decode($data['guia']->codigos_requerimiento)[0].'-'.$data['guia']->cliente_razon_social."-okc";
+        $fileName = 'FORMATO-PTEC-GR'.($data['guia']->serie??'').'-'.($data['guia']->numero??'').'-'.($data['guia']->codigos_requerimiento!=null ?json_decode($data['guia']->codigos_requerimiento)[0]:'').'-'.($data['guia']->cliente_razon_social??'');
+
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="' . $fileName . '.xls"');
         header('Content-Transfer-Encoding: binary');
