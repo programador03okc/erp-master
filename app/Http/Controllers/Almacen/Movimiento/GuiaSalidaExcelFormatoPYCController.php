@@ -235,7 +235,8 @@ class GuiaSalidaExcelFormatoPYCController extends Controller
         GuiaSalidaExcelFormatoPYCController::insertarSeccionGuia($spreadsheet, $data);
         GuiaSalidaExcelFormatoPYCController::insertarSeccionDetalle($spreadsheet, $data, 0,0);
 
-        $fileName = 'FORMATO-PYC-GR'.$data['guia']->serie.'-'.$data['guia']->numero.'-'.json_decode($data['guia']->codigos_requerimiento)[0].'-'.$data['guia']->cliente_razon_social."-okc";
+        $fileName = 'FORMATO-PYC-GR'.($data['guia']->serie??'').'-'.($data['guia']->numero??'').'-'.($data['guia']->codigos_requerimiento!=null ?json_decode($data['guia']->codigos_requerimiento)[0]:'').'-'.($data['guia']->cliente_razon_social??'');
+
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="' . $fileName . '.xls"');
         header('Content-Transfer-Encoding: binary');
