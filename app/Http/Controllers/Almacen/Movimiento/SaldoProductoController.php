@@ -39,7 +39,7 @@ class SaldoProductoController extends Controller
         $lista = [];
 
         foreach ($data as $det) {
-            $stock = (new SalidaPdfController)->obtenerSaldo($det->id_producto, $det->id_producto, '2022-01-01', new Carbon()); //falta corregir la fecha
+            $stock = (new SalidaPdfController)->obtenerSaldo($det->id_producto, $det->id_almacen, '2022-01-01', new Carbon()); //falta corregir la fecha
             array_push(
                 $lista,
                 [
