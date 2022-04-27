@@ -43,7 +43,7 @@ class SaldoProductoController extends Controller
                 )
                 WHERE mov_alm_det.id_producto = alm_prod_ubi.id_producto
                 AND mov_alm.id_almacen = alm_prod_ubi.id_almacen
-                AND (mov_alm.id_tp_mov = 2)) AS suma_salidas")
+                AND (mov_alm.id_tp_mov = 2) AS suma_salidas")
             )
             ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_prod_ubi.id_producto')
             ->join('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
