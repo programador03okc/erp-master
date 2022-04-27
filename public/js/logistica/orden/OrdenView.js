@@ -2023,8 +2023,8 @@ class OrdenView {
 
         document.querySelector("form[id='form-crear-orden-requerimiento'] select[name='id_condicion_softlink']").value = data.id_condicion_softlink ? data.id_condicion_softlink : '';
         document.querySelector("form[id='form-crear-orden-requerimiento'] select[name='id_condicion']").value = data.id_condicion ? data.id_condicion : '';
-        document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='plazo_dias']").value = data.plazo_dias ? data.plazo_dias : '';
-        document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='plazo_entrega']").value = data.plazo_entrega ? data.plazo_entrega : '';
+        document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='plazo_dias']").value = parseInt(data.plazo_dias) >=0 ? parseInt(data.plazo_dias) : '';
+        document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='plazo_entrega']").value = parseInt(data.plazo_entrega) >=0 ? parseInt(data.plazo_entrega) : '';
         document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='cdc_req']").value = data.oportunidad.length > 0 ? ((data.oportunidad).map(x => x.codigo_oportunidad).toString()) : ((data.requerimientos).map(x => x.codigo).toString());
         document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='ejecutivo_responsable']").value = data.oportunidad.length > 0 ? ((data.oportunidad).map(x => x.responsable).toString()) : '';
         document.querySelector("form[id='form-crear-orden-requerimiento'] select[name='id_tp_doc']").value = data.id_tp_doc ? data.id_tp_doc : '';
