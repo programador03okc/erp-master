@@ -383,8 +383,7 @@ class TransferenciaController extends Controller
                 DB::table('almacen.alm_reserva')
                     ->where('id_trans_detalle', $det->id_trans_detalle)
                     ->update([
-                        'estado' => 1,
-                        'id_trans_detalle' => null
+                        'estado' => 7
                     ]);
             }
 
@@ -498,6 +497,18 @@ class TransferenciaController extends Controller
                         // DB::table('almacen.alm_det_req')
                         //     ->where('id_requerimiento', $tra->id_requerimiento)
                         //     ->update(['estado' => 17]); //Enviado
+                        $detalle = DB::table('almacen.trans_detalle')
+                            ->where('id_transferencia', $tra->id_transferencia)
+                            ->get();
+
+                        foreach ($detalle as $det) {
+                            DB::table('almacen.alm_reserva')
+                                ->where('id_trans_detalle', $det->id_trans_detalle)
+                                ->update([
+                                    'estado' => 17,
+                                ]);
+                        }
+
                         //Agrega accion en requerimiento
                         DB::table('almacen.alm_req_obs')
                             ->insert([
