@@ -86,8 +86,8 @@ Kardex por Producto
                         <table class="mytable table table-condensed table-bordered table-okc-view" id="kardex_producto">
                             <thead>
                                 <tr>
-                                    <th>Movimiento</th>
                                     <th>Fecha</th>
+                                    <th>Movimiento</th>
                                     <th>Documento</th>
                                     <th>Factura</th>
                                     <th>Proveedor</th>
@@ -106,13 +106,13 @@ Kardex por Producto
                             </thead>
                             <tbody></tbody>
                             <tfoot>
-                                <th colSpan="4"></th>
+                                <th colSpan="5"></th>
                                 <th class="right"><label name="suma_ing_cant"></label></th>
                                 <th class="right"><label name="suma_sal_cant"></label></th>
                                 <th></th>
                                 <th class="right"><label name="suma_ing_val"></label></th>
                                 <th class="right"><label name="suma_sal_val"></label></th>
-                                <th colSpan="4"></th>
+                                <th colSpan="5"></th>
                             </tfoot>
                         </table>
                     </div>
