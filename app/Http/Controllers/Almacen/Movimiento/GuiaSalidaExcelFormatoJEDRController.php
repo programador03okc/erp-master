@@ -16,7 +16,7 @@ class GuiaSalidaExcelFormatoJEDRController extends Controller
         $sheet = $spreadsheet->getActiveSheet();
         $guia=$data['guia'];
         $sheet->getDefaultColumnDimension()->setWidth(8, 'pt');
-        $sheet->getRowDimension(1)->setRowHeight(45, 'pt');
+        $sheet->getRowDimension(1)->setRowHeight(48, 'pt');
         $sheet->getRowDimension(3)->setRowHeight(25, 'pt');
 
         $sheet->setCellValue('BM1', '');
