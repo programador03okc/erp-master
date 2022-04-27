@@ -1487,6 +1487,6 @@ class SalidasPendientesController extends Controller
 
         return Excel::download(new SalidasPendientesExport(
             $data,
-        ), 'SalidasPendientes.xlsx');
+        ), 'Salidas Pendientes al ' . new Carbon() . '.xlsx');
     }
 }
