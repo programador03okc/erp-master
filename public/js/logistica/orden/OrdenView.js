@@ -1914,6 +1914,11 @@ class OrdenView {
                 //Fin boton de busqueda
 
             },
+            "createdRow": function (row, data, dataIndex) {
+                if (data.estado == 7) {
+                    $(row.childNodes[7]).css('color', '#d92b60');
+                }
+            },
             "drawCallback": function (settings) {
                 if ($tablaHistorialOrdenesElaboradas.rows().data().length == 0) {
                     Lobibox.notify('info', {
