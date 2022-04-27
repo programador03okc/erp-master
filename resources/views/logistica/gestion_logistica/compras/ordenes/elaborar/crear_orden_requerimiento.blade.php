@@ -200,7 +200,7 @@ Orden de compra / servicio
                         <div class="col-md-2" id="group-condicion_compra-plazo_entrega">
                             <h5>Plazo entrega</h5>
                             <div style="display:flex;">
-                                <input type="number" name="plazo_entrega" class="form-control group-elemento activation" style="text-align:right;">
+                                <input type="number" name="plazo_entrega" min="0" class="form-control group-elemento activation" style="text-align:right;">
                                 <input type="text" value="días" class="form-control group-elemento" style="width:60px;text-align:center;" readOnly>
                             </div>
                         </div>
