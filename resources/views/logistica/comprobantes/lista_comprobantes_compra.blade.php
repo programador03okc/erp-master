@@ -29,6 +29,7 @@
                                     <th>Tipo Doc.</th>
                                     <th>Serie</th>
                                     <th>Número</th>
+                                    <th>Cód. Softlink</th>
                                     <th>Proveedor</th>
                                     <th>Fecha Emisión</th>
                                     <th>Condición</th>

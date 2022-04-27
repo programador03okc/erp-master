@@ -44,12 +44,12 @@ function listarDespachosPendientes(permiso) {
     var vardataTables = funcDatatables();
     let botones = [];
     // if (acceso == '1') {
-    // botones.push({
-    //     text: ' Exportar a Excel',
-    //     action: function () {
-    //         priorizar();
-    //     }, className: 'btn-success btnExportarPendientes'
-    // });
+    botones.push({
+        text: ' Exportar a Excel',
+        action: function () {
+            exportarDespachosPendientes();
+        }, className: 'btn-success btnExportarPendientes'
+    });
     // }
 
     $("#despachosPendientes").on('search.dt', function () {
@@ -522,3 +522,7 @@ $('#despachosEntregados tbody').on("click", "button.cambio", function () {
 
     $("#submit_guia_ven_cambio").removeAttr("disabled");
 });
+
+function exportarDespachosPendientes() {
+    $('#formFiltrosSalidasPendientes').trigger('submit');
+}

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Almacen\Movimiento;
 
 use App\Exports\GuiaSalidaOKCExcel;
 use App\Exports\GuiaSalidaSVSExcel;
+use App\Exports\SalidasPendientesExport;
 use App\Exports\SeriesGuiaVentaDetalleExport;
 use App\Http\Controllers\AlmacenController as GenericoAlmacenController;
 use App\Http\Controllers\AlmacenController;
@@ -737,7 +738,7 @@ class SalidasPendientesController extends Controller
                 'alm_prod.id_unidad_medida',
                 'alm_und_medida.abreviatura',
                 'alm_req.id_almacen',
-                DB::raw("(SELECT SUM(guia_ven_det.cantidad) 
+                DB::raw("(SELECT SUM(guia_ven_det.cantidad)
                         FROM almacen.guia_ven_det
                         WHERE guia_ven_det.id_od_det = orden_despacho_det.id_od_detalle
                             and guia_ven_det.estado != 7) as cantidad_despachada"),
@@ -1400,7 +1401,7 @@ class SalidasPendientesController extends Controller
                 GuiaSalidaExcelFormatoJEDRController::construirExcel(['guia' => $guia, 'detalle' => $detalle]);
                 break;
             case 5: //RBDB
-                    GuiaSalidaExcelFormatoRBDBController::construirExcel(['guia' => $guia, 'detalle' => $detalle]);
+                GuiaSalidaExcelFormatoRBDBController::construirExcel(['guia' => $guia, 'detalle' => $detalle]);
                 break;
             case 6: //PTEC
                 GuiaSalidaExcelFormatoPTECController::construirExcel(['guia' => $guia, 'detalle' => $detalle]);
@@ -1422,5 +1423,70 @@ class SalidasPendientesController extends Controller
             ])
             ->get();
         return Excel::download(new SeriesGuiaVentaDetalleExport($data), 'series-' . $data[0]->id_prod . '.xlsx');
+    }
+
+    public function salidasPendientesExcel()
+    {
+        $data = DB::table('almacen.orden_despacho_det')
+            ->select(
+                'orden_despacho.*',
+                'adm_contri.nro_documento',
+                'adm_contri.razon_social',
+                'alm_req.codigo as codigo_req',
+                'alm_req.concepto',
+                'alm_req.tiene_transformacion',
+                'alm_req.estado as estado_requerimiento',
+                'alm_req.obs_facturacion',
+                'adm_estado_doc.estado_doc',
+                'adm_estado_doc.bootstrap_color',
+                'transformacion.id_transformacion',
+                'oc_propias_view.nro_orden',
+                'oc_propias_view.codigo_oportunidad',
+                'oc_propias_view.id as id_oc_propia',
+                'oc_propias_view.tipo',
+                'alm_almacen.descripcion as almacen_descripcion',
+                'alm_prod.id_producto',
+                'alm_prod.codigo as codigo_producto',
+                'alm_prod.descripcion',
+                'alm_prod.series as control_series',
+                'alm_prod.part_number',
+                'alm_prod.id_unidad_medida',
+                'alm_det_req.cantidad',
+                'alm_und_medida.abreviatura',
+                DB::raw("(SELECT SUM(guia_ven_det.cantidad)
+                        FROM almacen.guia_ven_det
+                        WHERE guia_ven_det.id_od_det = orden_despacho_det.id_od_detalle
+                            and guia_ven_det.estado != 7) as cantidad_despachada"),
+                'alm_reserva.id_almacen_reserva',
+                'alm_almacen.descripcion as almacen_reserva',
+                DB::raw("(SELECT SUM(alm_reserva.stock_comprometido) 
+                        FROM almacen.alm_reserva
+                        WHERE alm_reserva.id_detalle_requerimiento = alm_det_req.id_detalle_requerimiento
+                            and alm_reserva.estado = 1) as stock_comprometido")
+            )
+            ->join('almacen.orden_despacho', 'orden_despacho.id_od', '=', 'orden_despacho_det.id_od')
+            ->join('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'orden_despacho_det.id_detalle_requerimiento')
+            ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_det_req.id_producto')
+            ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
+            ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'orden_despacho.id_requerimiento')
+            ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
+            ->leftJoin('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'cc.id_oportunidad')
+            ->leftjoin('almacen.transformacion', 'transformacion.id_od', '=', 'orden_despacho.id_od')
+            ->leftjoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'orden_despacho.id_almacen')
+            ->leftjoin('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'alm_req.id_cliente')
+            ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
+            ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'orden_despacho.estado')
+            ->leftJoin('almacen.alm_reserva', function ($join) {
+                $join->on('alm_reserva.id_detalle_requerimiento', '=', 'orden_despacho_det.id_detalle_requerimiento');
+                $join->where('alm_reserva.estado', '!=', 7);
+                $join->where('alm_reserva.estado', '!=', 5);
+            })
+            ->whereIn('orden_despacho.estado', [1, 25])
+            ->where('orden_despacho.flg_despacho', 0)
+            ->get();
+
+        return Excel::download(new SalidasPendientesExport(
+            $data,
+        ), 'SalidasPendientes.xlsx');
     }
 }
