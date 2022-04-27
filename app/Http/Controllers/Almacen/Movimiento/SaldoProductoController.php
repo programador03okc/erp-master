@@ -30,15 +30,15 @@ class SaldoProductoController extends Controller
                 AND (alm_reserva.estado != 7 AND alm_reserva.estado != 5) ) as stock_comprometido"),
 
                 DB::raw("(SELECT SUM(mov_alm_det.cantidad) FROM almacen.mov_alm_det
-                JOIN almacen.mov_alm on(
+                INNER JOIN almacen.mov_alm on(
                     mov_alm_det.id_mov_alm = mov_alm.id_mov_alm
                 )
                 WHERE mov_alm_det.id_producto = alm_prod_ubi.id_producto
                 AND mov_alm.id_almacen = alm_prod_ubi.id_almacen
-                AND (mov_alm.id_tp_mov = 0 OR mov_alm.id_tp_mov = 1)) AS suma_ingresos"),
+                AND (mov_alm.id_tp_mov != 2)) AS suma_ingresos"),
 
                 DB::raw("(SELECT SUM(mov_alm_det.cantidad) FROM almacen.mov_alm_det
-                JOIN almacen.mov_alm on(
+                INNER JOIN almacen.mov_alm on(
                     mov_alm_det.id_mov_alm = mov_alm.id_mov_alm
                 )
                 WHERE mov_alm_det.id_producto = alm_prod_ubi.id_producto
