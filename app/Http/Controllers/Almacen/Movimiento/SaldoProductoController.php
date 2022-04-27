@@ -34,18 +34,18 @@ class SaldoProductoController extends Controller
                     mov_alm_det.id_mov_alm = mov_alm.id_mov_alm
                 )
                 WHERE mov_alm_det.id_producto = alm_prod_ubi.id_producto
+                AND mov_alm_det.estado = 1
                 AND mov_alm.id_almacen = alm_prod_ubi.id_almacen
-                AND mov_alm.id_tp_mov != 2
-                AND mov_alm_det.estado != 7) as suma_ingresos"),
+                AND mov_alm.id_tp_mov != 2) as suma_ingresos"),
 
                 DB::raw("(SELECT SUM(mov_alm_det.cantidad) FROM almacen.mov_alm_det
                 INNER JOIN almacen.mov_alm ON(
                     mov_alm_det.id_mov_alm = mov_alm.id_mov_alm
                 )
                 WHERE mov_alm_det.id_producto = alm_prod_ubi.id_producto
+                AND mov_alm_det.estado = 1
                 AND mov_alm.id_almacen = alm_prod_ubi.id_almacen
-                AND mov_alm.id_tp_mov = 2
-                AND mov_alm_det.estado != 7) as suma_salidas")
+                AND mov_alm.id_tp_mov = 2) as suma_salidas")
             )
             ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_prod_ubi.id_producto')
             ->join('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
