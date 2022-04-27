@@ -24,7 +24,7 @@ $(function () {
                 "descripcion": data.descripcion,
                 "abreviatura": data.abreviatura,
                 "cantidad": 0,
-                "stock_disponible": (parseFloat(data.suma_ingresos) - parseFloat(data.suma_salidas)) - parseFloat(data.stock_comprometido ?? 0),
+                "stock_disponible": (parseFloat(data.suma_ingresos ?? 0) - parseFloat(data.suma_salidas ?? 0)) - parseFloat(data.stock_comprometido ?? 0),
             });
         } else {
             Lobibox.notify("warning", {
