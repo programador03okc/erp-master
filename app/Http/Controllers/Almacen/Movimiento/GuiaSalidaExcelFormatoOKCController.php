@@ -16,7 +16,7 @@ class GuiaSalidaExcelFormatoOKCController extends Controller
         $sheet = $spreadsheet->getActiveSheet();
         $guia=$data['guia'];
         $sheet->getDefaultColumnDimension()->setWidth(8, 'pt');
-        $sheet->getRowDimension(1)->setRowHeight(65, 'pt');
+        $sheet->getRowDimension(1)->setRowHeight(67, 'pt');
         $sheet->getRowDimension(3)->setRowHeight(28, 'pt');
         $sheet->getRowDimension(14)->setRowHeight(1, 'pt');
    
