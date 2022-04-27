@@ -1493,6 +1493,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 			Route::get('lista_comprobante_compra', 'ComprobanteCompraController@view_lista_comprobantes_compra')->name('lista_comprobante_compra');
 			Route::get('documentoAPago/{id}', 'ComprobanteCompraController@documentoAPago');
+			Route::get('enviarComprobanteSoftlink/{id}', 'Migraciones\MigrateFacturasSoftlinkController@enviarComprobanteSoftlink');
 			Route::get('documentos_ver/{id}', 'Almacen\Movimiento\OrdenesPendientesController@documentos_ver');
 		});
 
@@ -1539,6 +1540,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 				Route::post('listarProductosAlmacen', 'Almacen\Movimiento\SaldoProductoController@listarProductosAlmacen');
 				Route::post('nuevaTransferencia', 'Almacen\Movimiento\TransferenciaController@nuevaTransferencia');
+				Route::get('pruebaSaldos', 'Almacen\Movimiento\SaldoProductoController@pruebaSaldos');
 
 				Route::get('getAlmacenesPorEmpresa/{id}', 'Almacen\Movimiento\TransferenciaController@getAlmacenesPorEmpresa');
 				Route::get('imprimir_transferencia/{id}', 'Almacen\Movimiento\TransferenciaController@imprimir_transferencia');
@@ -1622,7 +1624,6 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('kardex_sunat/{id}/{fini}/{ffin}', 'AlmacenController@download_kardex_sunat');
 				// Route::get('kardex_sunatx/{id}', 'AlmacenController@kardex_sunat');
 				Route::get('exportar_kardex_general/{id}/{fini}/{ffin}', 'Almacen\Reporte\ReportesController@exportarKardex');
-
 			});
 
 			Route::group(['as' => 'kardex-productos.', 'prefix' => 'kardex-productos'], function () {
