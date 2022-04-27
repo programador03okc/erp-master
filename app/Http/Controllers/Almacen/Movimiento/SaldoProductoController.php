@@ -30,20 +30,20 @@ class SaldoProductoController extends Controller
                 AND (alm_reserva.estado != 7 AND alm_reserva.estado != 5) ) as stock_comprometido"),
 
                 DB::raw("(SELECT SUM(mov_alm_det.cantidad) FROM almacen.mov_alm_det
-                INNER JOIN almacen.mov_alm on(
+                INNER JOIN almacen.mov_alm ON(
                     mov_alm_det.id_mov_alm = mov_alm.id_mov_alm
                 )
                 WHERE mov_alm_det.id_producto = alm_prod_ubi.id_producto
                 AND mov_alm.id_almacen = alm_prod_ubi.id_almacen
-                AND (mov_alm.id_tp_mov != 2)) AS suma_ingresos"),
+                AND (mov_alm.id_tp_mov != 2)) as suma_ingresos"),
 
                 DB::raw("(SELECT SUM(mov_alm_det.cantidad) FROM almacen.mov_alm_det
-                INNER JOIN almacen.mov_alm on(
+                INNER JOIN almacen.mov_alm ON(
                     mov_alm_det.id_mov_alm = mov_alm.id_mov_alm
                 )
                 WHERE mov_alm_det.id_producto = alm_prod_ubi.id_producto
                 AND mov_alm.id_almacen = alm_prod_ubi.id_almacen
-                AND (mov_alm.id_tp_mov = 2) AS suma_salidas")
+                AND mov_alm.id_tp_mov = 2) as suma_salidas")
             )
             ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_prod_ubi.id_producto')
             ->join('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
@@ -72,5 +72,51 @@ class SaldoProductoController extends Controller
         //     );
         // }
         return datatables($data)->toJson();
+    }
+
+    public function pruebaSaldos()
+    {
+        $data = DB::table('almacen.alm_prod_ubi')
+            ->select(
+                'alm_prod_ubi.id_producto',
+                'alm_prod_ubi.id_almacen',
+                'alm_prod.codigo',
+                'alm_prod.cod_softlink',
+                'alm_prod.part_number',
+                'alm_prod.descripcion',
+                'alm_und_medida.abreviatura',
+                // 'sis_moneda.simbolo',
+                'alm_prod.id_moneda',
+                'alm_prod.id_unidad_medida',
+
+                DB::raw("(SELECT SUM(alm_reserva.stock_comprometido) FROM almacen.alm_reserva 
+                WHERE alm_reserva.id_producto = alm_prod_ubi.id_producto
+                AND alm_reserva.id_almacen_reserva = alm_prod_ubi.id_almacen
+                AND (alm_reserva.estado != 7 AND alm_reserva.estado != 5) ) as stock_comprometido"),
+
+                DB::raw("(SELECT SUM(mov_alm_det.cantidad) FROM almacen.mov_alm_det
+                INNER JOIN almacen.mov_alm ON(
+                    mov_alm_det.id_mov_alm = mov_alm.id_mov_alm
+                )
+                WHERE mov_alm_det.id_producto = alm_prod_ubi.id_producto
+                AND mov_alm.id_almacen = alm_prod_ubi.id_almacen
+                AND (mov_alm.id_tp_mov != 2)) as suma_ingresos"),
+
+                DB::raw("(SELECT SUM(mov_alm_det.cantidad) FROM almacen.mov_alm_det
+                INNER JOIN almacen.mov_alm ON(
+                    mov_alm_det.id_mov_alm = mov_alm.id_mov_alm
+                )
+                WHERE mov_alm_det.id_producto = alm_prod_ubi.id_producto
+                AND mov_alm.id_almacen = alm_prod_ubi.id_almacen
+                AND mov_alm.id_tp_mov = 2) as suma_salidas")
+            )
+            ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_prod_ubi.id_producto')
+            ->join('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
+            ->where([
+                ['alm_prod_ubi.estado', '=', 1],
+                ['alm_prod_ubi.id_almacen', '=', 1]
+            ])->get();
+
+        return response()->json($data);
     }
 }
