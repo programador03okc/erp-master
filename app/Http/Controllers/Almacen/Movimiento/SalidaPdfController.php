@@ -218,4 +218,49 @@ class SalidaPdfController extends Controller
         }
         return $costo_promedio;
     }
+
+    public function obtenerSaldo($id_producto, $almacen, $finicio, $ffin)
+    {
+        $data = DB::table('almacen.mov_alm_det')
+            ->select(
+                'mov_alm_det.*',
+                // 'sis_moneda.simbolo',
+                'mov_alm.fecha_emision',
+                'mov_alm.id_tp_mov',
+            )
+            ->join('almacen.mov_alm', 'mov_alm.id_mov_alm', '=', 'mov_alm_det.id_mov_alm')
+            // ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'mov_alm_det.id_producto')
+            ->where([
+                ['mov_alm_det.id_producto', '=', $id_producto],
+                ['mov_alm.fecha_emision', '>=', $finicio],
+                ['mov_alm.fecha_emision', '<=', $ffin],
+                ['mov_alm.id_almacen', '=', $almacen],
+                ['mov_alm_det.estado', '=', 1]
+            ])
+            ->orderBy('mov_alm.fecha_emision', 'asc')
+            ->orderBy('mov_alm.id_tp_mov', 'asc')
+            ->get();
+
+        $saldo = 0;
+        $saldo_valor = 0;
+        $costo_promedio = 0;
+        $valor_salida = 0;
+
+        foreach ($data as $d) {
+
+            if ($d->id_tp_mov == 1 || $d->id_tp_mov == 0) { //ingreso o inicial
+                $saldo += $d->cantidad;
+                // $saldo_valor += $d->valorizacion;
+            } else if ($d->id_tp_mov == 2) { //salida
+                $saldo -= $d->cantidad;
+                // $valor_salida = $costo_promedio * $d->cantidad;
+                // $saldo_valor -= $valor_salida;
+            }
+
+            // if ($saldo !== 0) {
+            //     $costo_promedio = ($saldo == 0 ? 0 : $saldo_valor / $saldo);
+            // }
+        }
+        return $saldo;
+    }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Almacen\Movimiento;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class SaldoProductoController extends Controller
@@ -12,7 +13,8 @@ class SaldoProductoController extends Controller
     {
         $data = DB::table('almacen.alm_prod_ubi')
             ->select(
-                'alm_prod_ubi.*',
+                'alm_prod_ubi.id_producto',
+                'alm_prod_ubi.id_almacen',
                 'alm_prod.codigo',
                 'alm_prod.cod_softlink',
                 'alm_prod.part_number',
@@ -31,7 +33,28 @@ class SaldoProductoController extends Controller
             ->where([
                 ['alm_prod_ubi.estado', '=', 1],
                 ['alm_prod_ubi.id_almacen', '=', $request->id_almacen_origen_nueva]
-            ]);
-        return datatables($data)->toJson();
+            ])
+            ->get();
+
+        $lista = [];
+
+        foreach ($data as $det) {
+            $stock = (new SalidaPdfController)->obtenerSaldo($det->id_producto, $det->id_producto, '2022-01-01', new Carbon()); //falta corregir la fecha
+            array_push(
+                $lista,
+                [
+                    'id_producto' => $det->id_producto,
+                    'codigo' => $det->codigo,
+                    'cod_softlink' => $det->cod_softlink,
+                    'part_number' => $det->part_number,
+                    'descripcion' => $det->descripcion,
+                    'stock' => $stock,
+                    'stock_comprometido' => $det->stock_comprometido,
+                    'id_almacen' => $det->id_almacen,
+                    'abreviatura' => $det->abreviatura,
+                ]
+            );
+        }
+        return datatables($lista)->toJson();
     }
 }
