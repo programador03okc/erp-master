@@ -24,7 +24,7 @@ class SaldoProductoController extends Controller
                 DB::raw("(SELECT SUM(alm_reserva.stock_comprometido) FROM almacen.alm_reserva 
                 WHERE alm_reserva.id_producto = alm_prod_ubi.id_producto
                 AND alm_reserva.id_almacen_reserva = alm_prod_ubi.id_almacen
-                AND (alm_reserva.estado = 1 OR alm_reserva.estado = 17) ) as stock_comprometido")
+                AND (alm_reserva.estado != 7 AND alm_reserva.estado != 5) ) as stock_comprometido")
             )
             ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_prod_ubi.id_producto')
             ->join('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
