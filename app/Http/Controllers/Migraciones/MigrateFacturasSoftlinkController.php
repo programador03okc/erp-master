@@ -353,7 +353,7 @@ class MigrateFacturasSoftlinkController extends Controller
                 'cod_auxi' => trim($det->abreviatura),
                 'cod_prod' => $cod_prod,
                 // 'nom_prod' => $det->descripcion,
-                'nom_prod' => ($cod_prod == '005675' ? 'OTROS SERVICIOS - ' . $det->servicio_descripcion : ''),
+                'nom_prod' => ($cod_prod == '005675' ? 'OTROS SERVICIOS - ' . $det->servicio_descripcion : $det->descripcion),
                 'can_pedi' => $det->cantidad,
                 'sal_pedi' => $det->cantidad,
                 'can_devo' => $i, //numeracion del item 
