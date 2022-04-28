@@ -89,8 +89,15 @@ function enviarComprobanteSoftlink(id) {
         dataType: 'JSON',
         success: function (response) {
             console.log(response);
-
-            // $('#listaComprobantesCompra').DataTable().ajax.reload(null, false);
+            Lobibox.notify(response.tipo, {
+                title: false,
+                size: "mini",
+                rounded: true,
+                sound: false,
+                delayIndicator: false,
+                msg: response.mensaje
+            });
+            $('#listaComprobantesCompra').DataTable().ajax.reload(null, false);
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
