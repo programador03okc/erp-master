@@ -173,7 +173,7 @@ class MigrateFacturasSoftlinkController extends Controller
                 //obtiene el correlativo
                 // $num_ult_mov = substr(($ult_mov !== null ? $ult_mov->num_docu : 0), 4);
                 //crea el correlativo del documento
-                $nro_mov = $this->leftZero(7, (intval($doc->numero) + 1));
+                $nro_mov = $this->leftZero(7, (intval($doc->numero)));
                 //anida el anio con el numero de documento
                 // $num_docu = $yy . $nro_mov;
                 $num_docu = $doc->serie . $nro_mov;

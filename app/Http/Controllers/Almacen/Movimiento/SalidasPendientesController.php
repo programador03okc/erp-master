@@ -728,7 +728,6 @@ class SalidasPendientesController extends Controller
             ->select(
                 'alm_det_req.id_detalle_requerimiento',
                 'alm_det_req.cantidad',
-                'alm_det_req.id_detalle_requerimiento',
                 'orden_despacho_det.id_od_detalle',
                 'alm_prod.id_producto',
                 'alm_prod.codigo',
