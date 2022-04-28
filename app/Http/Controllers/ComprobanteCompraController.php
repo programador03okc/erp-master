@@ -193,6 +193,7 @@ class ComprobanteCompraController extends Controller
         $data = DB::table('almacen.doc_com')
             ->select(
                 'doc_com.*',
+                'adm_contri.nro_documento',
                 'adm_contri.razon_social',
                 'adm_estado_doc.estado_doc',
                 'adm_estado_doc.bootstrap_color',

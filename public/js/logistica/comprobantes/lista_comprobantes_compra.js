@@ -17,6 +17,7 @@ function listar_doc_compra() {
             { data: 'serie' },
             { data: 'numero' },
             { data: 'codigo_softlink' },
+            { data: 'nro_documento', name: 'adm_contri.nro_documento' },
             { data: 'razon_social', name: 'adm_contri.razon_social' },
             { data: 'fecha_emision' },
             { data: 'condicion_pago', name: 'log_cdn_pago.descripcion' },
