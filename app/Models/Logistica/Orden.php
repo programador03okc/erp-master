@@ -21,7 +21,7 @@ class Orden extends Model
 
     protected $table = 'logistica.log_ord_compra';
     protected $primaryKey = 'id_orden_compra';
-    protected $appends = ['cuadro_costo','monto_total_presup', 'monto','fecha_formato', 'requerimientos', 'oportunidad', 'tiene_transformacion', 'cantidad_equipos', 'estado_orden', 'requerimientos_codigo','cantidad_ingresos_almacen'];
+    protected $appends = ['cuadro_costo', 'monto','fecha_formato', 'requerimientos', 'oportunidad', 'tiene_transformacion', 'cantidad_equipos', 'estado_orden', 'requerimientos_codigo','cantidad_ingresos_almacen'];
 
     public $timestamps = false;
 
@@ -46,50 +46,50 @@ class Orden extends Model
         $fecha = new Carbon($this->attributes['fecha_ingreso_almacen']);
         return $fecha->format('d-m-Y');
     }
-    public function getMontoTotalPresupAttribute()
-    {
+    // public function getMontoTotalPresupAttribute()
+    // {
         
-        $idDetalleRequerimientoList=[];
-        $idRequerimientoList=[];
-        $idCCList=[];
-        $ccList=[];
-        $Montototal=0;
-        $detalleOrdenCompra = OrdenCompraDetalle::where([['id_orden_compra',$this->attributes['id_orden_compra']],['estado','!=',7]])->get();
-        if (count($detalleOrdenCompra) > 0) {
-            foreach ($detalleOrdenCompra as $do) {
-                $idDetalleRequerimientoList[] = $do->id_detalle_requerimiento;
-            }
-        }
-        if(count($idDetalleRequerimientoList)>0){
-                $detalleRequerimiento= DetalleRequerimiento::whereIn('id_detalle_requerimiento',$idDetalleRequerimientoList)->get();
-                foreach ($detalleRequerimiento as $dr) {
-                    $idRequerimientoList[] = $dr->id_requerimiento;
-                }
-                if(count($idRequerimientoList)>0){
-                    $requerimiento= Requerimiento::whereIn('id_requerimiento',$idRequerimientoList)->get();
+    //     $idDetalleRequerimientoList=[];
+    //     $idRequerimientoList=[];
+    //     $idCCList=[];
+    //     $ccList=[];
+    //     $Montototal=0;
+    //     $detalleOrdenCompra = OrdenCompraDetalle::where([['id_orden_compra',$this->attributes['id_orden_compra']],['estado','!=',7]])->get();
+    //     if (count($detalleOrdenCompra) > 0) {
+    //         foreach ($detalleOrdenCompra as $do) {
+    //             $idDetalleRequerimientoList[] = $do->id_detalle_requerimiento;
+    //         }
+    //     }
+    //     if(count($idDetalleRequerimientoList)>0){
+    //             $detalleRequerimiento= DetalleRequerimiento::whereIn('id_detalle_requerimiento',$idDetalleRequerimientoList)->get();
+    //             foreach ($detalleRequerimiento as $dr) {
+    //                 $idRequerimientoList[] = $dr->id_requerimiento;
+    //             }
+    //             if(count($idRequerimientoList)>0){
+    //                 $requerimiento= Requerimiento::whereIn('id_requerimiento',$idRequerimientoList)->get();
                     
-                    foreach ($requerimiento as $r) {
-                        if($r->id_cc!=null){
-                            $idCCList[]=$r->id_cc;
-                        }
-                    }
-                    if(count($idCCList)>0){
-                        $ccList=CuadroCosto::whereIn('id',$idCCList)->get();
+    //                 foreach ($requerimiento as $r) {
+    //                     if($r->id_cc!=null){
+    //                         $idCCList[]=$r->id_cc;
+    //                     }
+    //                 }
+    //                 if(count($idCCList)>0){
+    //                     $ccList=CuadroCosto::whereIn('id',$idCCList)->get();
                         
-                        if(count($ccList)>0){
-                            foreach ($ccList as $cc) {
-                                $ordenCompraMGCP= OrdenCompraPropiaView::where('id_oportunidad',$cc->id_oportunidad)->first();
-                                $Montototal=$ordenCompraMGCP->monto_soles??0;
-                            }
-                        }
+    //                     if(count($ccList)>0){
+    //                         foreach ($ccList as $cc) {
+    //                             $ordenCompraMGCP= OrdenCompraPropiaView::where('id_oportunidad',$cc->id_oportunidad)->first();
+    //                             $Montototal=$ordenCompraMGCP->monto_soles??0;
+    //                         }
+    //                     }
 
-                    }
-                }
-        }
+    //                 }
+    //             }
+    //     }
         
-        return $Montototal;
+    //     return $Montototal;
 
-    }
+    // }
     public function getCantidadIngresosAlmacenAttribute()
     {
         $cantidadIngresos = 0;
