@@ -16,7 +16,7 @@ class GuiaSalidaExcelFormatoOKCController extends Controller
         $sheet = $spreadsheet->getActiveSheet();
         $guia=$data['guia'];
         $sheet->getDefaultColumnDimension()->setWidth(8, 'pt');
-        $sheet->getRowDimension(1)->setRowHeight(65, 'pt');
+        $sheet->getRowDimension(1)->setRowHeight(68, 'pt');
         $sheet->getRowDimension(3)->setRowHeight(28, 'pt');
         $sheet->getRowDimension(14)->setRowHeight(1, 'pt');
    
@@ -139,7 +139,7 @@ class GuiaSalidaExcelFormatoOKCController extends Controller
             $filaInicioItem++;
 
             $cantidadColumnasPorFilaSerie=3;
-            $anchoDeSerie=8;
+            $anchoDeSerie=12;
             $cantidadTotalSeries =count($detalle[$i]['series']);
             if($cantidadTotalSeries>100){
                 $ColumnaInicioSerie=$ColumnaInicioItem*8;
