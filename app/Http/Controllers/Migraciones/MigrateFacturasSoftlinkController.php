@@ -205,7 +205,7 @@ class MigrateFacturasSoftlinkController extends Controller
                     $this->agregarDetalleComprobante($det, $mov_id, $cod_prod, $cod_docu, $num_docu, $fecha, $igv, $i);
                     // $this->actualizaStockEnTransito($doc, $cod_prod, $det, $cod_suc);
                 }
-                // $this->agregarAudita($doc, $yy, $nro_mov);
+                $this->agregarAudita($doc, $doc->serie, $doc->numero);
 
                 $soc = DB::connection('soft')->table('movimien')->where('mov_id', $mov_id)->first();
                 $sdet = DB::connection('soft')->table('detmov')->where('mov_id', $mov_id)->get();
@@ -227,6 +227,26 @@ class MigrateFacturasSoftlinkController extends Controller
             DB::rollBack();
             return array('tipo' => 'error', 'mensaje' => 'Hubo un problema al enviar el documento. Por favor intente de nuevo', 'error' => $e->getMessage());
         }
+    }
+
+    public function agregarAudita($doc, $yy, $nro_mov)
+    {
+        $vendedor = DB::connection('soft')->table('vendedor')
+            ->select('usuario')
+            ->where('codvend', $doc->codvend_softlink)
+            ->first();
+
+        $count = DB::connection('soft')->table('audita')->count();
+
+        //Agrega registro de auditoria
+        DB::connection('soft')->table('audita')
+            ->insert([
+                'unico' => sprintf('%010d', $count + 1),
+                'usuario' => $doc->codvend_softlink,
+                'terminal' => $vendedor->usuario,
+                'fecha_hora' => new Carbon(),
+                'accion' => 'COMPROBANTE MIGRADO DE AGILE ' . $yy . '-' . $nro_mov
+            ]);
     }
 
     public function agregarComprobante($mov_id, $cod_suc, $doc, $cod_docu, $num_docu, $fecha, $cod_auxi, $igv, $mon_impto, $tp_cambio, $id_doc_com)
@@ -305,7 +325,7 @@ class MigrateFacturasSoftlinkController extends Controller
                 'imp_comi' => '0.00',
                 'ptosbonus' => '0',
                 'canjepedtran' => 0,
-                'cod_clasi' => '',
+                'cod_clasi' => 1,
                 'doc_elec' => '',
                 'cod_nota' => '',
                 'hashcpe' => '',
@@ -394,7 +414,7 @@ class MigrateFacturasSoftlinkController extends Controller
                 'por_detrac' => 0,
                 'cod_detrac' => '',
                 'mon_detrac' => 0,
-                'tipoprecio' => '6'
+                'tipoprecio' => ''
             ]
         );
         DB::table('almacen.doc_com_det')
