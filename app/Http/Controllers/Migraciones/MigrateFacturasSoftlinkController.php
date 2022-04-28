@@ -177,7 +177,7 @@ class MigrateFacturasSoftlinkController extends Controller
                                         'fec_vcto' => $doc->fecha_vcmto,
                                         'cod_auxi' => $cod_auxi,
                                         'cod_vend' => $doc->codvend_softlink,
-                                        'tip_mone' => $doc->id_moneda,
+                                        'tip_mone' => $doc->moneda,
                                         'tip_codicion' => $doc->id_condicion_softlink,
                                         'impto1' => $igv,
                                         'mon_bruto' => $doc->sub_total,
