@@ -975,7 +975,7 @@ class OrdenController extends Controller
         }
         return array_values(array_unique($facturas));
     }
-
+    
     public function listarOrdenes(Request $request)
     {
 
@@ -1012,21 +1012,21 @@ class OrdenController extends Controller
             'log_ord_compra.estado',
             'log_ord_compra_pago.id_pago',
             'log_ord_compra_pago.detalle_pago',
-            'log_ord_compra_pago.archivo_adjunto',
+            'log_ord_compra_pago.archivo_adjunto'
             
             // DB::raw("(SELECT  coalesce(sum((log_det_ord_compra.cantidad * log_det_ord_compra.precio))*1.18 ,0) AS monto_total_orden
             // FROM logistica.log_det_ord_compra 
             // WHERE   log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra AND
             //         log_det_ord_compra.estado != 7) AS monto_total_orden"),
-            DB::raw("(SELECT  coalesce(oc_propias_view.monto_soles) AS monto_total_presup
-            FROM logistica.log_det_ord_compra 
-            INNER JOIN almacen.alm_det_req on alm_det_req.id_detalle_requerimiento = log_det_ord_compra.id_detalle_requerimiento
-            INNER JOIN almacen.alm_req on alm_req.id_requerimiento = alm_det_req.id_requerimiento
-            INNER JOIN mgcp_cuadro_costos.cc on cc.id = alm_req.id_cc
-            INNER JOIN mgcp_ordenes_compra.oc_propias_view on oc_propias_view.id_oportunidad = cc.id_oportunidad
+            // DB::raw("(SELECT  coalesce(oc_propias_view.monto_soles) AS monto_total_presup
+            // FROM logistica.log_det_ord_compra 
+            // INNER JOIN almacen.alm_det_req on alm_det_req.id_detalle_requerimiento = log_det_ord_compra.id_detalle_requerimiento
+            // INNER JOIN almacen.alm_req on alm_req.id_requerimiento = alm_det_req.id_requerimiento
+            // INNER JOIN mgcp_cuadro_costos.cc on cc.id = alm_req.id_cc
+            // INNER JOIN mgcp_ordenes_compra.oc_propias_view on oc_propias_view.id_oportunidad = cc.id_oportunidad
     
-            WHERE log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra AND
-            logistica.log_det_ord_compra.estado != 7 LIMIT 1) AS monto_total_presup")
+            // WHERE log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra AND
+            // logistica.log_det_ord_compra.estado != 7 LIMIT 1) AS monto_total_presup")
         )
             ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'log_ord_compra.id_sede')
             ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
