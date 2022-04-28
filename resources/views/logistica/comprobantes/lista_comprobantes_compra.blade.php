@@ -26,10 +26,12 @@
                             <thead>
                                 <tr>
                                     <th hidden>#</th>
+                                    <th>Empresa</th>
                                     <th>Tipo Doc.</th>
                                     <th>Serie</th>
                                     <th>Número</th>
                                     <th>Cód. Softlink</th>
+                                    <th>RUC</th>
                                     <th>Proveedor</th>
                                     <th>Fecha Emisión</th>
                                     <th>Condición</th>

@@ -13,10 +13,12 @@ function listar_doc_compra() {
         },
         columns: [
             { data: 'id_doc_com' },
+            { data: 'razon_social_empresa', name: 'empresa.razon_social' },
             { data: 'tipo_documento', name: 'cont_tp_doc.descripcion' },
             { data: 'serie' },
             { data: 'numero' },
             { data: 'codigo_softlink' },
+            { data: 'nro_documento', name: 'adm_contri.nro_documento' },
             { data: 'razon_social', name: 'adm_contri.razon_social' },
             { data: 'fecha_emision' },
             { data: 'condicion_pago', name: 'log_cdn_pago.descripcion' },
@@ -55,12 +57,21 @@ function listar_doc_compra() {
 
     $('#listaComprobantesCompra tbody').on("click", "button.enviar", function () {
         var id = $(this).data('id');
-        var cod = $(this).data('cod');
-        var rspta = confirm('¿Está seguro que desea enviar a Softlink?');
 
-        if (rspta) {
-            enviarComprobanteSoftlink(id);
-        }
+        Swal.fire({
+            title: "¿Está seguro que desea enviar el documento a Softlink?",
+            // text: "",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#00a65a", //"#3085d6",
+            cancelButtonColor: "#d33",
+            cancelButtonText: "Cancelar",
+            confirmButtonText: "Sí, Enviar"
+        }).then(result => {
+            if (result.isConfirmed) {
+                enviarComprobanteSoftlink(id);
+            }
+        });
     });
 
     $('#listaComprobantesCompra tbody').on("click", "button.pago", function () {
@@ -87,8 +98,15 @@ function enviarComprobanteSoftlink(id) {
         dataType: 'JSON',
         success: function (response) {
             console.log(response);
-
-            // $('#listaComprobantesCompra').DataTable().ajax.reload(null, false);
+            Lobibox.notify(response.tipo, {
+                title: false,
+                size: "mini",
+                rounded: true,
+                sound: false,
+                delayIndicator: false,
+                msg: response.mensaje
+            });
+            $('#listaComprobantesCompra').DataTable().ajax.reload(null, false);
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);

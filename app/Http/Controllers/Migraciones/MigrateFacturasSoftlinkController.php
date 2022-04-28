@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Migraciones;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Tesoreria\TipoCambio;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -44,6 +45,7 @@ class MigrateFacturasSoftlinkController extends Controller
                 ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
                 ->leftJoin('almacen.alm_almacen', function ($join) {
                     $join->on('alm_almacen.id_sede', '=', 'doc_com.id_sede');
+                    $join->where('alm_almacen.id_tipo_almacen', '=', 1);
                     $join->where('alm_almacen.estado', '!=', 7);
                     $join->orderBy('alm_almacen.codigo');
                     $join->limit(1);
@@ -58,6 +60,7 @@ class MigrateFacturasSoftlinkController extends Controller
             $detalles = DB::table('almacen.doc_com_det')
                 ->select(
                     'doc_com_det.*',
+                    'alm_prod.id_producto',
                     'alm_prod.part_number',
                     'alm_prod.descripcion',
                     'alm_und_medida.abreviatura',
@@ -66,7 +69,7 @@ class MigrateFacturasSoftlinkController extends Controller
                     'alm_subcat.id_subcategoria',
                     'alm_subcat.descripcion as subcategoria',
                     'alm_clasif.descripcion as clasificacion',
-                    'doc_com.moneda',
+                    'doc_com.moneda as id_moneda',
                     'alm_prod.series',
                     'alm_prod.notas',
                 )
@@ -110,12 +113,11 @@ class MigrateFacturasSoftlinkController extends Controller
                 }
 
                 $cod_suc = '';
-                $cod_docu = '';
+                $cod_docu = 'FA';
 
                 foreach ($empresas_soft as $emp) {
                     if ($emp['nombre'] == $doc->codigo_emp) {
                         $cod_suc = $emp['id'];
-                        $cod_docu = 'FA';
                     }
                 }
 
@@ -139,10 +141,12 @@ class MigrateFacturasSoftlinkController extends Controller
                 $fecha = date("Y-m-d", strtotime($doc->fecha_emision));
 
                 //obtiene el tipo de cambio
-                $tp_cambio = DB::connection('soft')->table('tcambio')
-                    ->where([['dfecha', '<=', new Carbon($doc->fecha_emision)]])
-                    ->orderBy('dfecha', 'desc')
-                    ->first();
+                // $tp_cambio = DB::connection('soft')->table('tcambio')
+                //     ->where([['dfecha', '<=', new Carbon($doc->fecha_emision)]])
+                //     ->orderBy('dfecha', 'desc')
+                //     ->first();
+                $tp_cambio = TipoCambio::where([['moneda', '=', 2], ['fecha', '<=', $doc->fecha_emision]])
+                    ->orderBy('fecha', 'DESC')->first();
 
                 //////////////////////////
                 $count = DB::connection('soft')->table('movimien')->count();
@@ -170,10 +174,10 @@ class MigrateFacturasSoftlinkController extends Controller
                 //obtiene el correlativo
                 // $num_ult_mov = substr(($ult_mov !== null ? $ult_mov->num_docu : 0), 4);
                 //crea el correlativo del documento
-                // $nro_mov = $this->leftZero(7, (intval($num_ult_mov) + 1));
+                $nro_mov = $this->leftZero(7, (intval($doc->numero)));
                 //anida el anio con el numero de documento
                 // $num_docu = $yy . $nro_mov;
-                $num_docu = $doc->serie . $doc->numero;
+                $num_docu = $doc->serie . $nro_mov;
 
                 $this->agregarComprobante(
                     $mov_id,
@@ -190,17 +194,17 @@ class MigrateFacturasSoftlinkController extends Controller
                 );
 
                 $i = 0;
-                // foreach ($detalles as $det) {
-                //     $cod_prod = null;
-                //     //Obtiene y/o crea el producto
-                //     if ($det->id_producto !== null) {
-                //         $cod_prod = $this->obtenerProducto($det);
-                //     } else {
-                //         $cod_prod = '005675'; //OTROS SERVICIOS - DEFAULT
-                //     }
-                //     $this->agregarDetalleOrden($det, $mov_id, $cod_prod, $cod_docu, $num_docu, $fecha, $igv, $i);
-                //     $this->actualizaStockEnTransito($doc, $cod_prod, $det, $cod_suc);
-                // }
+                foreach ($detalles as $det) {
+                    $cod_prod = null;
+                    //Obtiene y/o crea el producto
+                    if ($det->id_producto !== null) {
+                        $cod_prod = (new MigrateOrdenSoftLinkController)->obtenerProducto($det);
+                    } else {
+                        $cod_prod = '005675'; //OTROS SERVICIOS - DEFAULT
+                    }
+                    $this->agregarDetalleComprobante($det, $mov_id, $cod_prod, $cod_docu, $num_docu, $fecha, $igv, $i);
+                    // $this->actualizaStockEnTransito($doc, $cod_prod, $det, $cod_suc);
+                }
                 // $this->agregarAudita($doc, $yy, $nro_mov);
 
                 $soc = DB::connection('soft')->table('movimien')->where('mov_id', $mov_id)->first();
@@ -208,8 +212,8 @@ class MigrateFacturasSoftlinkController extends Controller
 
                 $arrayRspta = array(
                     'tipo' => 'success',
-                    'mensaje' => 'Se migró correctamente la OC Nro. ' . $num_docu . ' con id ' . $mov_id,
-                    'orden_softlink' => $num_docu, //($yy . '-' . $nro_mov),
+                    'mensaje' => 'Se migró correctamente el comprobante ' . $doc->serie . $doc->numero . ' con id ' . $mov_id,
+                    'orden_softlink' => $num_docu,
                     'ocSoftlink' => array('cabecera' => $soc, 'detalle' => $sdet),
                     'ocAgile' => array('cabecera' => $doc, 'detalle' => $detalles),
                 );
@@ -221,7 +225,7 @@ class MigrateFacturasSoftlinkController extends Controller
             return $arrayRspta;
         } catch (\PDOException $e) {
             DB::rollBack();
-            return array('tipo' => 'error', 'mensaje' => 'Hubo un problema al enviar la orden. Por favor intente de nuevo', 'error' => $e->getMessage());
+            return array('tipo' => 'error', 'mensaje' => 'Hubo un problema al enviar el documento. Por favor intente de nuevo', 'error' => $e->getMessage());
         }
     }
 
@@ -259,7 +263,7 @@ class MigrateFacturasSoftlinkController extends Controller
                 'tot_cargo' => '0.00',
                 'tot_percep' => '0.00',
                 'tip_codicion' => $doc->id_condicion_softlink,
-                'txt_observa' => '', //($doc->observacion !== null ? $doc->observacion : ''),
+                'txt_observa' => '',
                 'flg_kardex' => 0,
                 'flg_anulado' => 0,
                 'flg_referen' => 0,
@@ -267,7 +271,7 @@ class MigrateFacturasSoftlinkController extends Controller
                 'cod_user' => $doc->codvend_softlink,
                 'programa' => '',
                 'txt_nota' => '',
-                'tip_cambio' => $tp_cambio->cambio3, //tipo cambio venta
+                'tip_cambio' => $tp_cambio->venta, //tipo cambio venta
                 'tdflags' => 'NSSNNSSNSS',
                 'numlet' => '',
                 'impdcto' => '0.0000',
@@ -292,7 +296,7 @@ class MigrateFacturasSoftlinkController extends Controller
                 'ndocu1' => ($doc->credito_dias !== null ? $doc->credito_dias . ' DIAS' : ''),
                 'ndocu2' => '',
                 'ndocu3' => '',
-                'flg_logis' => 1,
+                'flg_logis' => 0,
                 'cod_recep' => '',
                 'flg_aprueba' => 0,
                 'fec_aprueba' => '0000-00-00 00:00:00.000000',
@@ -301,7 +305,7 @@ class MigrateFacturasSoftlinkController extends Controller
                 'imp_comi' => '0.00',
                 'ptosbonus' => '0',
                 'canjepedtran' => 0,
-                'cod_clasi' => 1, //mercaderias
+                'cod_clasi' => '',
                 'doc_elec' => '',
                 'cod_nota' => '',
                 'hashcpe' => '',
@@ -327,6 +331,75 @@ class MigrateFacturasSoftlinkController extends Controller
                 'codigo_softlink' => $num_docu, //($yy . '-' . $nro_mov),
                 'id_doc_softlink' => $mov_id
             ]);
+    }
+
+    public function agregarDetalleComprobante($det, $mov_id, $cod_prod, $cod_docu, $num_docu, $fecha, $igv, $i)
+    {
+        //cuenta los registros
+        $count_det = DB::connection('soft')->table('detmov')->count();
+        //aumenta uno y completa los 10 digitos
+        $mov_det_id = $this->leftZero(10, (intval($count_det) + 1));
+        //Obtiene y/o crea el producto
+        // $cod_prod = $this->obtenerProducto($det);
+
+        DB::connection('soft')->table('detmov')->insert(
+            [
+                'unico' => $mov_det_id,
+                'mov_id' => $mov_id,
+                'tipo' => '1', //Compra 
+                'cod_docu' => $cod_docu,
+                'num_docu' => $num_docu,
+                'fec_pedi' => $fecha,
+                'cod_auxi' => trim($det->abreviatura),
+                'cod_prod' => $cod_prod,
+                // 'nom_prod' => $det->descripcion,
+                'nom_prod' => ($cod_prod == '005675' ? 'OTROS SERVICIOS - ' . $det->servicio_descripcion : $det->descripcion),
+                'can_pedi' => $det->cantidad,
+                'sal_pedi' => $det->cantidad,
+                'can_devo' => $i, //numeracion del item 
+                'pre_prod' => ($det->precio_unitario !== null ? $det->precio_unitario : 0),
+                'dscto_condi' => '0.000',
+                'dscto_categ' => '0.000',
+                'pre_neto' => ($det->precio_unitario !== null ? ($det->precio_unitario * $det->cantidad) : 0),
+                'igv_inclu' => 0,
+                'cod_igv' => '',
+                'impto1' => $igv,
+                'impto2' => '0.00',
+                'imp_item' => ($det->precio_unitario !== null ? ($det->precio_unitario * $det->cantidad) : 0),
+                'pre_gratis' => '0.0000',
+                'descargo' => '*',
+                'trecord' => '',
+                'cod_model' => '',
+                'flg_serie' => ($cod_prod == '005675' ? 0 : ($det->series ? 1 : 0)),
+                'series' => '',
+                'entrega' => 0,
+                'notas' => '',
+                'flg_percep' => 0,
+                'por_percep' => 0,
+                'mon_percep' => 0,
+                'ok_stk' => 1,
+                'ok_serie' => 1,
+                'lStock' => 0,
+                'no_calc' => 0,
+                'promo' => 0,
+                'seriesprod' => '',
+                'pre_anexa' => 0,
+                'dsctocompra' => 0,
+                'cod_prov' => '',
+                'costo_unit' => 0,
+                'margen' => 0,
+                'gasto1' => 0,
+                'gasto2' => 0,
+                'flg_detrac' => 0,
+                'por_detrac' => 0,
+                'cod_detrac' => '',
+                'mon_detrac' => 0,
+                'tipoprecio' => '6'
+            ]
+        );
+        DB::table('almacen.doc_com_det')
+            ->where('id_doc_det', $det->id_doc_det)
+            ->update(['id_doc_det_softlink' => $mov_det_id]);
     }
 
     public function leftZero($lenght, $number)
