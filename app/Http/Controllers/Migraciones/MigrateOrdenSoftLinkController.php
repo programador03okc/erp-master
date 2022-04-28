@@ -127,6 +127,7 @@ class MigrateOrdenSoftLinkController extends Controller
                 ->leftJoin('configuracion.ubi_dpto', 'ubi_dpto.id_dpto', '=', 'ubi_prov.id_dpto')
                 ->leftJoin('almacen.alm_almacen', function ($join) {
                     $join->on('alm_almacen.id_sede', '=', 'log_ord_compra.id_sede');
+                    $join->where('alm_almacen.id_tipo_almacen', '=', 1);
                     $join->where('alm_almacen.estado', '!=', 7);
                     $join->orderBy('alm_almacen.codigo');
                     $join->limit(1);

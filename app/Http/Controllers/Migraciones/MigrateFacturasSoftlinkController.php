@@ -45,6 +45,7 @@ class MigrateFacturasSoftlinkController extends Controller
                 ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
                 ->leftJoin('almacen.alm_almacen', function ($join) {
                     $join->on('alm_almacen.id_sede', '=', 'doc_com.id_sede');
+                    $join->where('alm_almacen.id_tipo_almacen', '=', 1);
                     $join->where('alm_almacen.estado', '!=', 7);
                     $join->orderBy('alm_almacen.codigo');
                     $join->limit(1);
