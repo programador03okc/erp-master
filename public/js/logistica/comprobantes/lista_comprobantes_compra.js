@@ -58,11 +58,21 @@ function listar_doc_compra() {
     $('#listaComprobantesCompra tbody').on("click", "button.enviar", function () {
         var id = $(this).data('id');
         var cod = $(this).data('cod');
-        var rspta = confirm('¿Está seguro que desea enviar a Softlink?');
 
-        if (rspta) {
-            enviarComprobanteSoftlink(id);
-        }
+        Swal.fire({
+            title: "¿Está seguro que desea enviar el documento " + cod + " a Softlink?",
+            // text: "",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#00a65a", //"#3085d6",
+            cancelButtonColor: "#d33",
+            cancelButtonText: "Cancelar",
+            confirmButtonText: "Sí, Enviar"
+        }).then(result => {
+            if (result.isConfirmed) {
+                enviarComprobanteSoftlink(id);
+            }
+        });
     });
 
     $('#listaComprobantesCompra tbody').on("click", "button.pago", function () {
