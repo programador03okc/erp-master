@@ -578,7 +578,12 @@ class RequerimientoPendienteView {
                 },
                 {
                     'render': function (data, type, row) {
-                        return row.cc_solicitado_por != null ? row.cc_solicitado_por : (row.solicitado_por != null ? row.solicitado_por : '');
+                        if(row.id_tipo_requerimiento !=1){
+                            return row.solicitado_por != null ? row.solicitado_por : '';
+
+                        }else{
+                            return row.cc_solicitado_por != null ? row.cc_solicitado_por : '';
+                        }
                     }, targets: 8
                 },
                 {
