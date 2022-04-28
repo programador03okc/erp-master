@@ -195,6 +195,7 @@ class ComprobanteCompraController extends Controller
                 'doc_com.*',
                 'adm_contri.nro_documento',
                 'adm_contri.razon_social',
+                'empresa.razon_social as razon_social_empresa',
                 'adm_estado_doc.estado_doc',
                 'adm_estado_doc.bootstrap_color',
                 'sis_moneda.simbolo',
@@ -205,6 +206,9 @@ class ComprobanteCompraController extends Controller
             ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'doc_com.id_proveedor')
             ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
             ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'doc_com.estado')
+            ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'doc_com.id_sede')
+            ->leftJoin('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
+            ->leftJoin('contabilidad.adm_contri as empresa', 'empresa.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
             ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'doc_com.moneda')
             ->leftJoin('logistica.log_cdn_pago', 'log_cdn_pago.id_condicion_pago', '=', 'doc_com.id_condicion')
             ->leftJoin('logistica.condicion_softlink', 'condicion_softlink.id_condicion_softlink', '=', 'doc_com.id_condicion_softlink')

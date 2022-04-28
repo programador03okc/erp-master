@@ -13,6 +13,7 @@ function listar_doc_compra() {
         },
         columns: [
             { data: 'id_doc_com' },
+            { data: 'razon_social_empresa', name: 'empresa.razon_social' },
             { data: 'tipo_documento', name: 'cont_tp_doc.descripcion' },
             { data: 'serie' },
             { data: 'numero' },

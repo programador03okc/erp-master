@@ -26,6 +26,7 @@
                             <thead>
                                 <tr>
                                     <th hidden>#</th>
+                                    <th>Empresa</th>
                                     <th>Tipo Doc.</th>
                                     <th>Serie</th>
                                     <th>Número</th>
