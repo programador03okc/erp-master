@@ -57,10 +57,9 @@ function listar_doc_compra() {
 
     $('#listaComprobantesCompra tbody').on("click", "button.enviar", function () {
         var id = $(this).data('id');
-        var cod = $(this).data('cod');
 
         Swal.fire({
-            title: "¿Está seguro que desea enviar el documento " + cod + " a Softlink?",
+            title: "¿Está seguro que desea enviar el documento a Softlink?",
             // text: "",
             icon: "warning",
             showCancelButton: true,
