@@ -14,6 +14,7 @@ class SaldosController extends Controller
         $almacenes = DB::table('almacen.alm_almacen')
             ->select('alm_almacen.*')
             ->where('alm_almacen.estado', '=', 1)
+            ->orderBy('codigo')
             ->get();
         return view('almacen/reportes/saldos', compact('almacenes'));
     }
