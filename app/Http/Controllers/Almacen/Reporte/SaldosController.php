@@ -15,7 +15,6 @@ class SaldosController extends Controller
             ->select('alm_almacen.*')
             ->where('alm_almacen.estado', 1)
             ->get();
-        // $almacenes = Almacen::where('estado', 1)->get();
         return view('almacen/reportes/saldos', compact('almacenes'));
     }
 
