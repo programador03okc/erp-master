@@ -4814,13 +4814,13 @@ class AlmacenController extends Controller
                         <td>' . ($d->guia_com !== null ? $d->guia_com : '') . '</td>
                         <td></td>
                         <td>' . ($d->razon_social !== null ? $d->razon_social : '') . '</td>
-                        <td class="right" style="background:#ffffb0;">' . $d->cantidad . '</td>
-                        <td class="right" style="background:#ffffb0;">0</td>
-                        <td class="right" style="background:#ffffb0;">' . $saldo . '</td>
-                        <td class="right" style="background:#d8fcfc;">' . number_format($d->valorizacion, 2, ".", ",") . '</td>
-                        <td class="right" style="background:#d8fcfc;">0</td>
-                        <td class="right" style="background:#d8fcfc;">' . number_format($saldo_valor, 2, ".", ",") . '</td>
-                        <td class="right" style="background:#d8fcfc;">' . number_format($costo_promedio, 4, ".", ",") . '</td>
+                        <td class="left" style="background:#ffffb0;">' . $d->cantidad . '</td>
+                        <td class="left" style="background:#ffffb0;">0</td>
+                        <td class="left" style="background:#ffffb0;">' . $saldo . '</td>
+                        <td class="left" style="background:#d8fcfc;">' . number_format($d->valorizacion, 2, ".", ",") . '</td>
+                        <td class="left" style="background:#d8fcfc;">0</td>
+                        <td class="left" style="background:#d8fcfc;">' . number_format($saldo_valor, 2, ".", ",") . '</td>
+                        <td class="left" style="background:#d8fcfc;">' . number_format($costo_promedio, 4, ".", ",") . '</td>
                         <td>' . ($d->cod_sunat_ope_com !== null ? $d->cod_sunat_ope_com : '') . '</td>
                         <td>' . $d->des_ope_com . '</td>
                         <td>' . $d->codigo_transferencia . '</td>
@@ -4834,13 +4834,13 @@ class AlmacenController extends Controller
                         <td>' . ($d->guia_ven !== null ? $d->guia_ven : '') . '</td>
                         <td></td>
                         <td></td>
-                        <td class="right" style="background:#ffffb0;">0</td>
-                        <td class="right" style="background:#ffffb0;">' . $d->cantidad . '</td>
-                        <td class="right" style="background:#ffffb0;">' . $saldo . '</td>
-                        <td class="right" style="background:#d8fcfc;">0</td>
-                        <td class="right" style="background:#d8fcfc;">' . number_format($valor_salida, 2, ".", ",") . '</td>
-                        <td class="right" style="background:#d8fcfc;">' . number_format($saldo_valor, 2, ".", ",") . '</td>
-                        <td class="right" style="background:#d8fcfc;">' . number_format($costo_promedio, 4, ".", ",") . '</td>
+                        <td class="left" style="background:#ffffb0;">0</td>
+                        <td class="left" style="background:#ffffb0;">' . $d->cantidad . '</td>
+                        <td class="left" style="background:#ffffb0;">' . $saldo . '</td>
+                        <td class="left" style="background:#d8fcfc;">0</td>
+                        <td class="left" style="background:#d8fcfc;">' . number_format($valor_salida, 2, ".", ",") . '</td>
+                        <td class="left" style="background:#d8fcfc;">' . number_format($saldo_valor, 2, ".", ",") . '</td>
+                        <td class="left" style="background:#d8fcfc;">' . number_format($costo_promedio, 4, ".", ",") . '</td>
                         <td>' . $d->cod_sunat_ope_ven . '</td>
                         <td>' . $d->des_ope_ven . '</td>
                         <td>' . $d->codigo_transferencia . '</td>
