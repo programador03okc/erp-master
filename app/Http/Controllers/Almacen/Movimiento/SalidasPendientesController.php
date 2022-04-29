@@ -1457,7 +1457,7 @@ class SalidasPendientesController extends Controller
                         WHERE guia_ven_det.id_od_det = orden_despacho_det.id_od_detalle
                             and guia_ven_det.estado != 7) as cantidad_despachada"),
                 'alm_reserva.id_almacen_reserva',
-                'alm_reserva.descripcion as almacen_reserva',
+                'almacen_reserva.descripcion as almacen_reserva',
                 DB::raw("(SELECT SUM(alm_reserva.stock_comprometido) 
                         FROM almacen.alm_reserva
                         WHERE alm_reserva.id_detalle_requerimiento = alm_det_req.id_detalle_requerimiento
@@ -1480,6 +1480,7 @@ class SalidasPendientesController extends Controller
                 $join->where('alm_reserva.estado', '!=', 7);
                 $join->where('alm_reserva.estado', '!=', 5);
             })
+            ->leftjoin('almacen.alm_almacen as almacen_reserva', 'almacen_reserva.id_almacen', '=', 'alm_reserva.id_almacen_reserva')
             ->whereIn('orden_despacho.estado', [1, 25])
             ->where('orden_despacho.flg_despacho', 0)
             ->get();
