@@ -42,7 +42,7 @@ Saldos Actuales
                                     <h5>Almacén</h5>
                                     <select name="almacen[]" class="selectpicker" data-live-search="true" data-width="100%" data-actions-box="true" multiple data-size="10">
                                         @foreach ($almacenes as $item)
-                                            <option value="{{ $item->id_almacen }}">{{ $item->descripcion }}</option>
+                                            <option value="{{ $item->id_almacen }}">{{ $item->codigo }}-{{ $item->descripcion }}</option>
                                         @endforeach
                                     </select>
                                 </div>

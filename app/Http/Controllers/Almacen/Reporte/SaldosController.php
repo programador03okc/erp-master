@@ -11,8 +11,11 @@ class SaldosController extends Controller
 {
     function view_saldos()
     {
-        // $almacenes = $this->almacenesPorUsuario();
-        $almacenes = Almacen::where('estado', 1)->get();
+        $almacenes = DB::table('almacen.alm_almacen')
+            ->select('alm_almacen.*')
+            ->where('alm_almacen.estado', 1)
+            ->get();
+        // $almacenes = Almacen::where('estado', 1)->get();
         return view('almacen/reportes/saldos', compact('almacenes'));
     }
 
