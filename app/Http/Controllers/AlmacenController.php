@@ -4743,9 +4743,13 @@ class AlmacenController extends Controller
                 'tp_doc_ven.cod_sunat as cod_sunat_doc_ven',
                 'tp_ope_ven.cod_sunat as cod_sunat_ope_ven',
                 'tp_ope_ven.descripcion as des_ope_ven',
-                'adm_contri.razon_social'
+                'adm_contri.razon_social',
+                'trans.codigo as codigo_transferencia',
+                'transformacion.codigo as codigo_transformacion',
             )
             ->join('almacen.mov_alm', 'mov_alm.id_mov_alm', '=', 'mov_alm_det.id_mov_alm')
+            ->leftjoin('almacen.trans', 'trans.id_transferencia', '=', 'mov_alm.id_transferencia')
+            ->leftjoin('almacen.transformacion', 'transformacion.id_transformacion', '=', 'mov_alm.id_transformacion')
             ->leftjoin('almacen.alm_ubi_posicion', 'alm_ubi_posicion.id_posicion', '=', 'mov_alm_det.id_posicion')
             // ->leftjoin('almacen.alm_ubi_nivel','alm_ubi_nivel.id_nivel','=','alm_ubi_posicion.id_nivel')
             // ->leftjoin('almacen.alm_ubi_estante','alm_ubi_estante.id_estante','=','alm_ubi_nivel.id_estante')
@@ -4819,6 +4823,8 @@ class AlmacenController extends Controller
                         <td class="right" style="background:#d8fcfc;">' . $costo_promedio . '</td>
                         <td>' . ($d->cod_sunat_ope_com !== null ? $d->cod_sunat_ope_com : '') . '</td>
                         <td>' . $d->des_ope_com . '</td>
+                        <td>' . $d->codigo_transferencia . '</td>
+                        <td>' . $d->codigo_transformacion . '</td>
                     </tr>';
                 } else if ($d->id_tp_mov == 2) {
                     $html .= '
@@ -4837,6 +4843,8 @@ class AlmacenController extends Controller
                         <td class="right" style="background:#d8fcfc;">' . $costo_promedio . '</td>
                         <td>' . $d->cod_sunat_ope_ven . '</td>
                         <td>' . $d->des_ope_ven . '</td>
+                        <td>' . $d->codigo_transferencia . '</td>
+                        <td>' . $d->codigo_transformacion . '</td>
                     </tr>';
                 }
             }
