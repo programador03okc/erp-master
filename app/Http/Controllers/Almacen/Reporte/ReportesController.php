@@ -96,8 +96,10 @@ class ReportesController extends Controller
                         'mov_alm_det.valorizacion'
                     )
                     ->where('mov_alm.id_almacen', $d->id_almacen)
+                    ->where('mov_alm.estado', 1)
                     ->where('mov_alm.fecha_emision', '<=', $request->session()->get('filtroFecha'))
                     ->where('mov_alm_det.id_producto', $d->id_producto)
+                    ->where('mov_alm_det.estado', 1)
                     ->orderBy('mov_alm.fecha_emision');
 
                 if ($movimientos->count() > 0) {
