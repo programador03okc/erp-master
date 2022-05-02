@@ -203,10 +203,10 @@ class MigrateFacturasSoftlinkController extends Controller
                                     $cod_prod = '005675'; //OTROS SERVICIOS - DEFAULT
                                 }
 
-                                if ($det->id_oc_det_softlink !== null) {
+                                if ($det->id_doc_det_softlink !== null) {
                                     //actualiza el detalle
                                     DB::connection('soft')->table('detmov')
-                                        ->where('unico', $det->id_oc_det_softlink)
+                                        ->where('unico', $det->id_doc_det_softlink)
                                         ->update([
                                             'fec_pedi' => $fecha,
                                             'cod_auxi' => trim($det->abreviatura),
