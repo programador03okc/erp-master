@@ -523,15 +523,15 @@ class MigrateFacturasSoftlinkController extends Controller
             ->get();
 
         foreach ($docs as $doc) {
-            $detalle = DB::table('almacen.doc_ven_det')
+            $detalle = DB::table('almacen.doc_com_det')
                 ->select(
                     'guia_com.id_almacen',
                     'alm_almacen.id_sede',
                 )
-                ->join('almacen.guia_com_det', 'guia_com_det.id_guia_ven_det', '=', 'doc_ven_det.id_guia_ven_det')
+                ->join('almacen.guia_com_det', 'guia_com_det.id_guia_com_det', '=', 'doc_com_det.id_guia_com_det')
                 ->join('almacen.guia_com', 'guia_com.id_guia', '=', 'guia_com_det.id_guia_com')
                 ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'guia_com.id_almacen')
-                ->where('doc_ven_det.id_doc', $doc->id)
+                ->where('doc_com_det.id_doc', $doc->id_doc_com)
                 ->first();
 
             DB::table('almacen.doc_com')
