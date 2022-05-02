@@ -134,6 +134,30 @@ function documentoAPago(id) {
     });
 }
 
+function actualizarSedesFaltantes() {
+    $.ajax({
+        type: 'GET',
+        url: 'actualizarSedesFaltantes',
+        dataType: 'JSON',
+        success: function (response) {
+            console.log(response);
+            Lobibox.notify("success", {
+                title: false,
+                size: "mini",
+                rounded: true,
+                sound: false,
+                delayIndicator: false,
+                msg: 'Se actualizaron ' + response['nro_docs'] + ' comprobantes correctamente.'
+            });
+            $('#listaComprobantesCompra').DataTable().ajax.reload(null, false);
+        }
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
+
 function anularComprobanteCompra(obj) {
     let id_doc_com = obj.dataset.idDocCom;
     anular_doc_compra(id_doc_com);

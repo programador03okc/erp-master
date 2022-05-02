@@ -516,13 +516,29 @@ class MigrateFacturasSoftlinkController extends Controller
         return $zeros . $number;
     }
 
-    public function agregarCondicionesSoftlink()
+    public function actualizarSedesFaltantes()
     {
         $docs = DB::table('almacen.doc_com')
             ->whereNull('id_sede')
             ->get();
 
+        foreach ($docs as $doc) {
+            $detalle = DB::table('almacen.doc_ven_det')
+                ->select(
+                    'guia_com.id_almacen',
+                    'alm_almacen.id_sede',
+                )
+                ->join('almacen.guia_com_det', 'guia_com_det.id_guia_ven_det', '=', 'doc_ven_det.id_guia_ven_det')
+                ->join('almacen.guia_com', 'guia_com.id_guia', '=', 'guia_com_det.id_guia_com')
+                ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'guia_com.id_almacen')
+                ->where('doc_ven_det.id_doc', $doc->id)
+                ->first();
 
-        return $docs;
+            DB::table('almacen.doc_com')
+                ->where('id_doc_com', $doc->id_doc_com)
+                ->update(['id_sede' => $detalle->first()->id_sede]);
+        }
+
+        return response()->json(['nro_docs' => $docs->count(), 'docs' => $docs]);
     }
 }

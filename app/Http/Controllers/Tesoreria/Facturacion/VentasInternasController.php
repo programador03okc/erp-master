@@ -39,7 +39,6 @@ class VentasInternasController extends Controller
                     'alm_almacen.id_sede',
                     'alm_prod.id_unidad_medida'
                 )
-                // ->join('almacen.guia_ven_det', 'guia_ven_det.id_guia_ven_det', '=', 'doc_ven_det.id_guia_ven_det')
                 ->join('almacen.guia_com_det', 'guia_com_det.id_guia_ven_det', '=', 'doc_ven_det.id_guia_ven_det')
                 ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'doc_ven_det.id_item')
                 ->join('almacen.guia_com', 'guia_com.id_guia', '=', 'guia_com_det.id_guia_com')
@@ -60,7 +59,6 @@ class VentasInternasController extends Controller
                         'fecha_vcmto' => $doc_ven->fecha_vcmto,
                         'id_condicion' => $doc_ven->id_condicion,
                         'credito_dias' => $doc_ven->credito_dias,
-                        'id_sede' => $doc_ven->id_sede,
                         'moneda' => $doc_ven->moneda,
                         // 'tipo_cambio' => $tc,
                         'sub_total' => $doc_ven->sub_total,
