@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Tesoreria\TipoCambio;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class MigrateFacturasSoftlinkController extends Controller
@@ -147,8 +148,8 @@ class MigrateFacturasSoftlinkController extends Controller
                 //     ->first();
                 $tp_cambio = TipoCambio::where([['moneda', '=', 2], ['fecha', '<=', $doc->fecha_emision]])
                     ->orderBy('fecha', 'DESC')->first();
-
                 //////////////////////////
+                $id_usuario = Auth::user()->id_usuario;
 
                 //si existe un id_doc_softlink
                 if ($doc->id_doc_softlink !== null) {
@@ -238,7 +239,9 @@ class MigrateFacturasSoftlinkController extends Controller
                                 ->where('id_doc_com', $id_doc_com)
                                 ->update([
                                     'codigo_softlink' => $doc_softlink->num_docu,
-                                    'id_softlink' => $doc_softlink->mov_id
+                                    'id_softlink' => $doc_softlink->mov_id,
+                                    'fecha_migracion' => new Carbon(),
+                                    'usuario_migracion' => $id_usuario,
                                 ]);
                         }
                     } else {
@@ -279,7 +282,9 @@ class MigrateFacturasSoftlinkController extends Controller
                             ->where('id_doc_com', $id_doc_com)
                             ->update([
                                 'codigo_softlink' => $num_docu,
-                                'id_doc_softlink' => $mov_id
+                                'id_doc_softlink' => $mov_id,
+                                'fecha_migracion' => new Carbon(),
+                                'usuario_migracion' => $id_usuario,
                             ]);
                     } else {
                         $this->agregarComprobante(
@@ -449,12 +454,15 @@ class MigrateFacturasSoftlinkController extends Controller
                 'placa' => ''
             ]
         );
+        $id_usuario = Auth::user()->id_usuario;
         //Actualiza la oc softlink eb agile
         DB::table('almacen.doc_com')
             ->where('id_doc_com', $id_doc_com)
             ->update([
                 'codigo_softlink' => $num_docu,
-                'id_doc_softlink' => $mov_id
+                'id_doc_softlink' => $mov_id,
+                'fecha_migracion' => new Carbon(),
+                'usuario_migracion' => $id_usuario,
             ]);
     }
 
