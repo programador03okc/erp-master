@@ -587,6 +587,7 @@ class MigrateFacturasSoftlinkController extends Controller
             ->where('estado', 1)
             ->whereNull('id_doc_softlink')
             ->orderBy('id_doc_com', 'asc')
+            ->limit(80)
             ->get();
 
         $respuestas = [];
