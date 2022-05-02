@@ -583,26 +583,17 @@ class MigrateFacturasSoftlinkController extends Controller
 
     public function migrarComprobantesSoftlink()
     {
-        try {
-            DB::beginTransaction();
+        $docs = DB::table('almacen.doc_com')
+            ->where('estado', 1)
+            ->whereNull('id_doc_softlink')
+            ->orderBy('id_doc_com', 'asc')
+            ->get();
 
-            $docs = DB::table('almacen.doc_com')
-                ->where('estado', 1)
-                ->whereNull('id_doc_softlink')
-                ->orderBy('id_doc_com', 'asc')
-                ->get();
+        $respuestas = [];
 
-            $respuestas = [];
-
-            foreach ($docs as $doc) {
-                array_push($respuestas, $this->enviarComprobanteSoftlink($doc->id_doc_com));
-            }
-
-            DB::commit();
-            return response()->json(['respuestas' => $respuestas, 'nro_docs' => $docs->count()], 200);
-        } catch (\PDOException $e) {
-            DB::rollBack();
-            return array('tipo' => 'error', 'mensaje' => 'Hubo un problema al actualizar las sedes. Por favor intente de nuevo', 'error' => $e->getMessage());
+        foreach ($docs as $doc) {
+            array_push($respuestas, $this->enviarComprobanteSoftlink($doc->id_doc_com));
         }
+        return response()->json(['respuestas' => $respuestas, 'nro_docs' => $docs->count()], 200);
     }
 }
