@@ -20,7 +20,11 @@ function format(table_id, id, row, $boton) {
                             '<td style="border: none;">' + (element.producto_descripcion !== null ? element.producto_descripcion : (element.descripcion !== null ? element.descripcion : '')) + '</td>' +
                             '<td style="border: none;text-align:center">' + element.cantidad + '</td>' +
                             '<td style="border: none;text-align:center">' + (element.abreviatura !== null ? element.abreviatura : '') + '</td>' +
-                            '<td style="border: none;text-align:center">' + (element.cantidad_orden ?? '') + '</td>' +
+                            // '<td style="border: none;text-align:center">' + (element.cantidad_orden ?? '') + '</td>' +
+                            `<td style="border: none;text-align:center">${element.cantidad_orden != null && element.cantidad_orden > 0 ?
+                                `<span class="label label-info" onClick="verOrdenesDeRequerimiento(this)"
+                                data-codigo-requerimiento="${element.codigo_requerimiento}" data-orden=${JSON.stringify(element.ordenes_compra)} 
+                                style="cursor:pointer;" >${element.cantidad_orden}</span>` : '0'} </td>` +
                             // '<td style="border: none;">'+(element.suma_transferencias!==null?element.suma_transferencias:'')+'</td>'+
                             // '<td style="border: none;">' + (element.almacen_guia_com_descripcion !== null ? element.almacen_guia_com_descripcion : '') + '</td>' +
                             // '<td style="border: none;">' + (element.suma_ingresos !== null ? element.suma_ingresos : '0') + '</td>' +
@@ -80,5 +84,38 @@ function format(table_id, id, row, $boton) {
 
         // $boton.prop('disabled', false);
         row.child(tabla).show();
+    }
+}
+
+function verOrdenesDeRequerimiento(obj) {
+
+    $('#modal-ver-orden-de-requerimiento').modal({
+        show: true,
+        backdrop: 'static'
+    });
+
+    console.log(obj);
+    $('#codigo').text(obj.dataset.codigoRequerimiento != null ? obj.dataset.codigoRequerimiento : '');
+
+    let linkOrden = [];
+    if (JSON.parse(obj.dataset.orden).length > 0) {
+        (JSON.parse(obj.dataset.orden)).forEach(element => {
+            linkOrden.push(`<label class='lbl-codigo' onClick="abrirOrden(this)" title='Ir a orden' data-id-orden='${element.id_orden_compra}'>${element.codigo}</label>`);
+
+        });
+        $('#contenedor-ordenes-de-requerimiento').html(linkOrden);
+    }
+}
+
+function abrirOrden(obj) {
+    if (obj.dataset.idOrden > 0) {
+        sessionStorage.removeItem('reqCheckedList');
+        sessionStorage.removeItem('tipoOrden');
+        sessionStorage.setItem("idOrden", obj.dataset.idOrden);
+        sessionStorage.setItem("action", 'historial');
+
+        let url = "/logistica/gestion-logistica/compras/ordenes/elaborar/index";
+        var win = window.open(url, '_blank');
+        win.focus();
     }
 }

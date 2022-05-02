@@ -206,7 +206,7 @@ Transferencias
 @include('almacen.guias.guia_ven_obs')
 @include('almacen.guias.guia_ven_series')
 @include('tesoreria.facturacion.archivos_oc_mgcp')
-
+@include('logistica.gestion_logistica.compras.pendientes.modal_ver_orden_de_requerimiento')
 @endsection
 
 @section('scripts')

@@ -1496,6 +1496,8 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::get('documentoAPago/{id}', 'ComprobanteCompraController@documentoAPago');
 			Route::get('enviarComprobanteSoftlink/{id}', 'Migraciones\MigrateFacturasSoftlinkController@enviarComprobanteSoftlink');
 			Route::get('documentos_ver/{id}', 'Almacen\Movimiento\OrdenesPendientesController@documentos_ver');
+			Route::get('actualizarSedesFaltantes', 'Migraciones\MigrateFacturasSoftlinkController@actualizarSedesFaltantes');
+			Route::get('migrarComprobantesSoftlink', 'Migraciones\MigrateFacturasSoftlinkController@migrarComprobantesSoftlink');
 		});
 
 		Route::group(['as' => 'transferencias.', 'prefix' => 'transferencias'], function () {

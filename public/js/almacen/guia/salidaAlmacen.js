@@ -3,7 +3,7 @@ function abrirSalidaAlmacen(data) {
         show: true
     });
     console.log(data);
-    console.log(moment(data.fecha_emision).format("YYYY-MM-DD"));
+    console.log(moment(data.fecha_almacen).format("YYYY-MM-DD"));
 
     $('#codigo_salida').text(data.codigo);
     $('#guia_ven').text(data.serie + '-' + data.numero);
@@ -15,7 +15,7 @@ function abrirSalidaAlmacen(data) {
     $('[name=salida_punto_partida]').val(data.punto_partida);
     $('[name=salida_punto_llegada]').val(data.punto_llegada);
     $('[name=salida_fecha_emision]').val(moment(data.fecha_emision_guia).format("YYYY-MM-DD"));
-    $('[name=salida_fecha_almacen]').val(moment(data.fecha_emision).format("YYYY-MM-DD"));
+    $('[name=salida_fecha_almacen]').val(moment(data.fecha_almacen).format("YYYY-MM-DD"));
     $('[name=id_operacion_salida]').val(data.id_operacion);
 
     $('#almacen_descripcion').val(data.almacen_descripcion);

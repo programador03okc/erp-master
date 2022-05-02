@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Almacen\Reporte;
 
 use App\Http\Controllers\Controller;
+use App\Models\Almacen\Almacen;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -10,7 +11,11 @@ class SaldosController extends Controller
 {
     function view_saldos()
     {
-        $almacenes = $this->almacenesPorUsuario();
+        $almacenes = DB::table('almacen.alm_almacen')
+            ->select('alm_almacen.*')
+            ->where('alm_almacen.estado', 1)
+            ->orderBy('codigo')
+            ->get();
         return view('almacen/reportes/saldos', compact('almacenes'));
     }
 

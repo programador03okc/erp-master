@@ -17,7 +17,10 @@
     <div class="box box-solid">
         <div class="box-body">
             <div class="col-md-12" style="padding-top:10px;padding-bottom:10px;">
- 
+                @if (Auth::user()->id_usuario == 3)
+                <button id="btn_actualizar_sedes" class="btn btn-default" onClick="actualizarSedesFaltantes();">Actualizar Sedes</button>
+                <button id="btn_migrar_comprobantes" class="btn btn-success" onClick="migrarComprobantesSoftlink();">Migrar a Softlink</button>
+                @endif
                 <div class="row">
                     <div class="col-sm-12">
                         <!-- <caption>Requerimientos: Registrados | Aprobados</caption> -->

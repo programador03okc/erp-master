@@ -168,55 +168,6 @@ class OrdenesPendientesController extends Controller
         );*/
     }
 
-    public function pruebaOrdenesPendientesLista()
-    {
-        $data = DB::table('logistica.log_det_ord_compra')
-            ->select(
-                'log_ord_compra.id_orden_compra',
-                'log_ord_compra.codigo as codigo_orden',
-                'log_ord_compra.codigo_softlink',
-                'estados_compra.descripcion as estado_doc',
-                'adm_contri.razon_social',
-                'sis_usua.nombre_corto',
-                'alm_req.fecha_entrega',
-                'alm_req.id_requerimiento',
-                'sis_sede.descripcion as sede_descripcion',
-                'alm_req.codigo as codigo_requerimiento',
-                'alm_req.concepto',
-                'alm_req.id_almacen',
-            )
-            ->join('logistica.log_ord_compra', 'log_ord_compra.id_orden_compra', '=', 'log_det_ord_compra.id_orden_compra')
-            ->join('logistica.estados_compra', 'estados_compra.id_estado', '=', 'log_ord_compra.estado')
-            ->join('logistica.log_prove', function ($join) {
-                $join->on('log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor');
-                $join->where('log_prove.estado', '!=', 7);
-            })
-            ->join('contabilidad.adm_contri', function ($join) {
-                $join->on('adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente');
-                $join->where('adm_contri.estado', '!=', 7);
-            })
-            ->join('configuracion.sis_usua', function ($join) {
-                $join->on('sis_usua.id_usuario', '=', 'log_ord_compra.id_usuario');
-                $join->where('sis_usua.estado', '!=', 7);
-            })
-            ->leftJoin('almacen.alm_det_req', function ($join) {
-                $join->on('alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento');
-                $join->where('alm_det_req.estado', '!=', 7);
-            })
-            ->join('almacen.alm_req', function ($join) {
-                $join->on('alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento');
-                $join->where('alm_req.estado', '!=', 7);
-            })
-            ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'log_ord_compra.id_sede')
-            ->where([
-                ['log_ord_compra.estado', '!=', 7],
-                ['log_ord_compra.en_almacen', '=', false]
-            ])
-            ->whereIn('log_ord_compra.id_tp_documento', [2, 12])->distinct()->get();
-
-        return response()->json($data);
-    }
-
     public function ordenesPendientesLista(Request $request)
     {
         $data = DB::table('logistica.log_det_ord_compra')

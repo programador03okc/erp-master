@@ -25,7 +25,7 @@ class ReportesController extends Controller
     public function view_saldos(Request $request)
     {
         $fecha = new Carbon();
-        $almacenes = $this->almacenesPorUsuario();
+        $almacenes = DB::table('almacen.alm_almacen')->where('estado', 1)->orderBy('codigo', 'asc')->get();
         return view('almacen/reportes/saldos', get_defined_vars());
     }
 
@@ -96,8 +96,10 @@ class ReportesController extends Controller
                         'mov_alm_det.valorizacion'
                     )
                     ->where('mov_alm.id_almacen', $d->id_almacen)
+                    ->where('mov_alm.estado', 1)
                     ->where('mov_alm.fecha_emision', '<=', $request->session()->get('filtroFecha'))
                     ->where('mov_alm_det.id_producto', $d->id_producto)
+                    ->where('mov_alm_det.estado', 1)
                     ->orderBy('mov_alm.fecha_emision');
 
                 if ($movimientos->count() > 0) {
@@ -263,28 +265,28 @@ class ReportesController extends Controller
     {
         $alm_array = explode(',', $almacen);
         $query = MovimientoDetalle::select(
-                'mov_alm_det.*',
-                'mov_alm.fecha_emision',
-                'mov_alm.id_tp_mov',
-                'mov_alm.codigo',
-                'alm_prod.descripcion as prod_descripcion',
-                'alm_prod.codigo as prod_codigo',
-                'alm_prod.part_number as prod_part_number',
-                'alm_cat_prod.descripcion as categoria',
-                'alm_subcat.descripcion as subcategoria',
-                'alm_und_medida.abreviatura',
-                'tp_ope_com.cod_sunat as cod_sunat_com',
-                'tp_ope_com.descripcion as tp_com_descripcion',
-                'tp_ope_ven.cod_sunat as cod_sunat_ven',
-                'tp_ope_ven.descripcion as tp_ven_descripcion',
-                DB::raw("(tp_guia_com.abreviatura) || '-' || (guia_com.serie) || '-' || (guia_com.numero) as guia_com"),
-                DB::raw("(tp_guia_ven.abreviatura) || '-' || (guia_ven.serie) || '-' || (guia_ven.numero) as guia_ven"),
-                'guia_com.id_guia',
-                'guia_ven.id_guia_ven',
-                'alm_almacen.descripcion as almacen_descripcion',
-                'transformacion.codigo as cod_transformacion',
-                'trans.codigo as cod_transferencia'
-            )
+            'mov_alm_det.*',
+            'mov_alm.fecha_emision',
+            'mov_alm.id_tp_mov',
+            'mov_alm.codigo',
+            'alm_prod.descripcion as prod_descripcion',
+            'alm_prod.codigo as prod_codigo',
+            'alm_prod.part_number as prod_part_number',
+            'alm_cat_prod.descripcion as categoria',
+            'alm_subcat.descripcion as subcategoria',
+            'alm_und_medida.abreviatura',
+            'tp_ope_com.cod_sunat as cod_sunat_com',
+            'tp_ope_com.descripcion as tp_com_descripcion',
+            'tp_ope_ven.cod_sunat as cod_sunat_ven',
+            'tp_ope_ven.descripcion as tp_ven_descripcion',
+            DB::raw("(tp_guia_com.abreviatura) || '-' || (guia_com.serie) || '-' || (guia_com.numero) as guia_com"),
+            DB::raw("(tp_guia_ven.abreviatura) || '-' || (guia_ven.serie) || '-' || (guia_ven.numero) as guia_ven"),
+            'guia_com.id_guia',
+            'guia_ven.id_guia_ven',
+            'alm_almacen.descripcion as almacen_descripcion',
+            'transformacion.codigo as cod_transformacion',
+            'trans.codigo as cod_transferencia'
+        )
             ->join('almacen.mov_alm', 'mov_alm.id_mov_alm', '=', 'mov_alm_det.id_mov_alm')
             ->leftjoin('almacen.transformacion', 'transformacion.id_transformacion', '=', 'mov_alm.id_transformacion')
             ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'mov_alm_det.id_producto')
@@ -308,7 +310,7 @@ class ReportesController extends Controller
             ->orderBy('alm_prod.codigo', 'asc')
             ->orderBy('mov_alm.fecha_emision', 'asc')
             ->orderBy('mov_alm.id_tp_mov', 'asc')
-        ->get();
+            ->get();
 
         $saldo = 0;
         $saldo_valor = 0;

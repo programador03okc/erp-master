@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Logistica\Distribucion;
 use App\Http\Controllers\AlmacenController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Almacen\DetalleRequerimiento;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -91,20 +92,19 @@ class OrdenesTransformacionController extends Controller
     }
 
     public function verDetalleRequerimientoDI($id_requerimiento)
-    { //agregar precios a items base
-        $detalles = DB::table('almacen.alm_det_req')
-            ->select(
-                'alm_det_req.*',
-                'adm_estado_doc.estado_doc',
-                'adm_estado_doc.bootstrap_color',
-                'alm_prod.descripcion as producto_descripcion',
-                'alm_prod.codigo as producto_codigo',
-                'alm_prod.cod_softlink',
-                'alm_prod.series',
-                'alm_req.id_almacen',
-                'alm_und_medida.abreviatura',
-                'alm_prod.part_number',
-                DB::raw("(SELECT SUM(cantidad) 
+    { //agregar precios a items base  DB::table('almacen.alm_det_req')
+        $detalles = DetalleRequerimiento::select(
+            'alm_det_req.*',
+            'adm_estado_doc.estado_doc',
+            'adm_estado_doc.bootstrap_color',
+            'alm_prod.descripcion as producto_descripcion',
+            'alm_prod.codigo as producto_codigo',
+            'alm_prod.cod_softlink',
+            'alm_prod.series',
+            'alm_req.id_almacen',
+            'alm_und_medida.abreviatura',
+            'alm_prod.part_number',
+            DB::raw("(SELECT SUM(cantidad) 
                         FROM almacen.orden_despacho_det AS odd
                         INNER JOIN almacen.orden_despacho AS od
                             on(odd.id_od = od.id_od)
@@ -112,10 +112,10 @@ class OrdenesTransformacionController extends Controller
                             and odd.estado != 7
                             and od.estado != 7
                             and od.aplica_cambios = true) AS suma_despachos_internos"),
-                DB::raw("(SELECT SUM(cantidad) FROM logistica.log_det_ord_compra
+            DB::raw("(SELECT SUM(cantidad) FROM logistica.log_det_ord_compra
                         WHERE log_det_ord_compra.id_detalle_requerimiento = alm_det_req.id_detalle_requerimiento
                           and log_det_ord_compra.estado != 7) AS cantidad_orden"),
-                DB::raw("(SELECT SUM(gv.cantidad) 
+            DB::raw("(SELECT SUM(gv.cantidad) 
                         FROM almacen.guia_ven_det AS gv
                         INNER JOIN almacen.orden_despacho_det AS odd
                               on(gv.id_od_det = odd.id_od_detalle)
@@ -126,41 +126,41 @@ class OrdenesTransformacionController extends Controller
                               and od.estado != 7
                               and gv.estado != 7
                               and od.aplica_cambios = false) AS cantidad_despachada"),
-                DB::raw("(SELECT SUM(alm_reserva.stock_comprometido) 
+            DB::raw("(SELECT SUM(alm_reserva.stock_comprometido) 
                         FROM almacen.alm_reserva
                         WHERE alm_reserva.id_detalle_requerimiento = alm_det_req.id_detalle_requerimiento
                         and alm_reserva.estado = 1) as stock_comprometido"),
-                'almacen_reserva.descripcion as almacen_reserva_descripcion',
-                // DB::raw("(SELECT SUM(guia_ven_det.cantidad) 
-                //         FROM almacen.guia_ven_det
-                //         WHERE guia_ven_det.id_od_det = orden_despacho_det.id_od_detalle
-                //             and guia_ven_det.estado != 7) as cantidad_despachada"),
-                // DB::raw("(SELECT SUM(cantidad) 
-                //         FROM almacen.orden_despacho_det AS odd
-                //         INNER JOIN almacen.orden_despacho AS od
-                //             on(odd.id_od = od.id_od)
-                //         WHERE odd.id_detalle_requerimiento = alm_det_req.id_detalle_requerimiento
-                //             and odd.estado != 7
-                //             and od.aplica_cambios = false) AS suma_despachos_externos"),
-                // DB::raw("(SELECT SUM(guia.cantidad) 
-                //         FROM almacen.guia_com_det AS guia
-                //         INNER JOIN logistica.log_det_ord_compra AS oc
-                //             on(guia.id_oc_det = oc.id_detalle_orden)
-                //         INNER JOIN almacen.alm_det_req AS req
-                //             on(oc.id_detalle_requerimiento = req.id_detalle_requerimiento)
-                //         WHERE req.id_detalle_requerimiento = alm_det_req.id_detalle_requerimiento
-                //             and guia.estado != 7
-                //             and oc.estado != 7) AS suma_ingresos"),
-                // 'almacen_guia.id_almacen as id_almacen_guia_com',
-                // 'almacen_guia.descripcion as almacen_guia_com_descripcion',
-                // 'mov_alm_det.valorizacion',
-                // 'cc_am_filas.part_no_producto_transformado as cc_pn',
-                // 'cc_am_filas.descripcion_producto_transformado as cc_des',
-                // 'cc_am_filas.comentario_producto_transformado as cc_com',
-                // 'alm_reserva.id_reserva',
-                // 'alm_reserva.id_almacen_reserva'
-                // 'alm_reserva.stock_comprometido'
-            )
+            'almacen_reserva.descripcion as almacen_reserva_descripcion',
+            // DB::raw("(SELECT SUM(guia_ven_det.cantidad) 
+            //         FROM almacen.guia_ven_det
+            //         WHERE guia_ven_det.id_od_det = orden_despacho_det.id_od_detalle
+            //             and guia_ven_det.estado != 7) as cantidad_despachada"),
+            // DB::raw("(SELECT SUM(cantidad) 
+            //         FROM almacen.orden_despacho_det AS odd
+            //         INNER JOIN almacen.orden_despacho AS od
+            //             on(odd.id_od = od.id_od)
+            //         WHERE odd.id_detalle_requerimiento = alm_det_req.id_detalle_requerimiento
+            //             and odd.estado != 7
+            //             and od.aplica_cambios = false) AS suma_despachos_externos"),
+            // DB::raw("(SELECT SUM(guia.cantidad) 
+            //         FROM almacen.guia_com_det AS guia
+            //         INNER JOIN logistica.log_det_ord_compra AS oc
+            //             on(guia.id_oc_det = oc.id_detalle_orden)
+            //         INNER JOIN almacen.alm_det_req AS req
+            //             on(oc.id_detalle_requerimiento = req.id_detalle_requerimiento)
+            //         WHERE req.id_detalle_requerimiento = alm_det_req.id_detalle_requerimiento
+            //             and guia.estado != 7
+            //             and oc.estado != 7) AS suma_ingresos"),
+            // 'almacen_guia.id_almacen as id_almacen_guia_com',
+            // 'almacen_guia.descripcion as almacen_guia_com_descripcion',
+            // 'mov_alm_det.valorizacion',
+            // 'cc_am_filas.part_no_producto_transformado as cc_pn',
+            // 'cc_am_filas.descripcion_producto_transformado as cc_des',
+            // 'cc_am_filas.comentario_producto_transformado as cc_com',
+            // 'alm_reserva.id_reserva',
+            // 'alm_reserva.id_almacen_reserva'
+            // 'alm_reserva.stock_comprometido'
+        )
             // ->leftJoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_det_req.id_almacen_reserva')
             // ->leftJoin('mgcp_cuadro_costos.cc_am_filas', 'cc_am_filas.id', '=', 'alm_det_req.id_cc_am_filas')
             ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_det_req.id_producto')
