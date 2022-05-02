@@ -1420,6 +1420,7 @@ class ComprasPendientesController extends Controller
         try {
             $mensaje = '';
             $tipoEstado = '';
+            $forzarActualizarEstadoRequerimiento = $request->forzarActualizarEstadoRequerimiento;
             $arrayDetalleRequerimientoActualizados=[];
             $estadoOriginalRequerimiento =0;
             if(intval($request->idRequerimiento) >0){
@@ -1452,23 +1453,21 @@ class ComprasPendientesController extends Controller
                     
                     }
                     
-                    if (count($arrayDetalleRequerimientoActualizados)>0) {
-                        $requerimiento = Requerimiento::find(intval($request->idRequerimiento));
-                        $requerimiento->estado = $request->idNuevoEstado;
-                        $requerimiento->ajuste_necesidad = true;
-                        $requerimiento->save();
-                        $tipoEstado = 'success';
-                        $mensaje = 'Se actualizo el requerimiento '.$requerimiento->codigo;
-        
-                    } else {
-                        $tipoEstado = 'warning';
-                        $mensaje = "Solo se puede actualizar si existen cambios en cantidad de items o check de atención total";
-                    }
+                    $forzarActualizarEstadoRequerimiento="SI";
                 }else{
-                    $tipoEstado = 'warning';
+                    $tipoEstado = 'info';
                     $mensaje = "No se pudo actualizar, no se detectaron items con cambios para actualizar";
                 }
 
+                if ($forzarActualizarEstadoRequerimiento=='SI') {
+                    $requerimiento = Requerimiento::find(intval($request->idRequerimiento));
+                    $requerimiento->estado = $request->idNuevoEstado;
+                    $requerimiento->ajuste_necesidad = true;
+                    $requerimiento->save();
+                    $tipoEstado = 'success';
+                    $mensaje = 'Se actualizo el requerimiento '.$requerimiento->codigo;
+                }
+                
 
             }else {
                 $tipoEstado = 'error';

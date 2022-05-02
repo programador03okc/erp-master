@@ -3068,10 +3068,32 @@ class RequerimientoPendienteView {
                         delayIndicator: false,
                         msg: `${response.mensaje}`
                     });
+
                     if (response.tipo_estado == 'success') {
                         $('#modal-gestionar-estado-requerimiento').modal('hide');
+                        $tablaListaRequerimientosPendientes.ajax.reload(null, false);
                     }
-                    $tablaListaRequerimientosPendientes.ajax.reload(null, false);
+
+                    if (response.tipo_estado == 'info') {
+                        Swal.fire({
+                            title: 'Desea actualizar de todas forma el estado del requerimiento?',
+                            text: "No podrás revertir esto.",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            cancelButtonText: 'Cancelar',
+                            confirmButtonText: 'Si, actualizar'
+                
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // inicio
+                                document.querySelector("input[name='forzarActualizarEstadoRequerimiento']").value ='SI';
+                                this.actualizarGestionEstadoRequerimiento();
+                                // fin    
+                            }
+                        })
+                    }
 
                 },
                 fail: (jqXHR, textStatus, errorThrown) => {
