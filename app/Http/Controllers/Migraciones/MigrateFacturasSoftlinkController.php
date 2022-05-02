@@ -539,7 +539,7 @@ class MigrateFacturasSoftlinkController extends Controller
                 if ($detalle !== null) {
                     DB::table('almacen.doc_com')
                         ->where('id_doc_com', $doc->id_doc_com)
-                        ->update(['id_sede' => $detalle['id_sede']]);
+                        ->update(['id_sede' => $detalle->id_sede]);
                     $actualizaciones++;
                 }
             }
