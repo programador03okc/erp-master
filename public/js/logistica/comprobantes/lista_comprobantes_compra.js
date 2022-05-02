@@ -147,7 +147,7 @@ function actualizarSedesFaltantes() {
                 rounded: true,
                 sound: false,
                 delayIndicator: false,
-                msg: 'Se actualizaron ' + response['nro_docs'] + ' comprobantes correctamente.'
+                msg: 'Se encontraron ' + response['nro_docs'] + ' documentos. Se actualizaron ' + response['actualizaciones'] + ' comprobantes correctamente.'
             });
             $('#listaComprobantesCompra').DataTable().ajax.reload(null, false);
         }

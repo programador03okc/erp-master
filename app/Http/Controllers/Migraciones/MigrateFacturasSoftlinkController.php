@@ -520,6 +520,7 @@ class MigrateFacturasSoftlinkController extends Controller
     {
         try {
             DB::beginTransaction();
+            $actualizaciones = 0;
 
             $docs = DB::table('almacen.doc_com')
                 ->whereNull('id_sede')
@@ -533,17 +534,18 @@ class MigrateFacturasSoftlinkController extends Controller
                     ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'guia_com.id_almacen')
                     ->where('doc_com_det.id_doc', $doc->id_doc_com)
                     ->get();
-                dd($detalle);
+                // dd($detalle);
 
                 if ($detalle !== null) {
                     DB::table('almacen.doc_com')
                         ->where('id_doc_com', $doc->id_doc_com)
                         ->update(['id_sede' => $detalle->first()->id_sede]);
+                    $actualizaciones++;
                 }
             }
 
             DB::commit();
-            return response()->json(['nro_docs' => $docs->count(), 'docs' => $docs], 200);
+            return response()->json(['nro_docs' => $docs->count(), 'actualizaciones' => $actualizaciones, 'docs' => $docs], 200);
         } catch (\PDOException $e) {
             DB::rollBack();
             return array('tipo' => 'error', 'mensaje' => 'Hubo un problema al actualizar las sedes. Por favor intente de nuevo', 'error' => $e->getMessage());
