@@ -463,6 +463,7 @@ class SalidasPendientesController extends Controller
             'mov_alm.*',
             'guia_ven.serie',
             'guia_ven.numero',
+            'guia_ven.fecha_almacen',
             'guia_ven.fecha_emision as fecha_emision_guia',
             'guia_ven.id_od',
             'guia_ven.comentario',
