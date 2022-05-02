@@ -261,34 +261,55 @@ class MigrateFacturasSoftlinkController extends Controller
                     //anida el anio con el numero de documento
                     // $num_docu = $yy . $nro_mov;
                     $num_docu = $doc->serie . $nro_mov;
+                    //buscar si existe el comprobante en sofltink
+                    $doc_softlink = DB::connection('soft')->table('movimien')
+                        ->where([
+                            ['cod_suc', '=', $cod_suc],
+                            ['cod_auxi', '=', $cod_auxi],
+                            ['num_docu', '=', $num_docu],
+                            ['mon_total', '<=', (floatval($doc->total_a_pagar) + 0.1)],
+                            ['mon_total', '>=', (floatval($doc->total_a_pagar) - 0.1)]
+                        ])
+                        ->first();
 
-                    $this->agregarComprobante(
-                        $mov_id,
-                        $cod_suc,
-                        $doc,
-                        $cod_docu,
-                        $num_docu,
-                        $fecha,
-                        $cod_auxi,
-                        $igv,
-                        $mon_impto,
-                        $tp_cambio,
-                        $id_doc_com
-                    );
+                    if ($doc_softlink !== null) {
+                        $mov_id = $doc_softlink->mov_id;
+                        //Actualiza la oc softlink eb agile
+                        DB::table('almacen.doc_com')
+                            ->where('id_doc_com', $id_doc_com)
+                            ->update([
+                                'codigo_softlink' => $num_docu,
+                                'id_doc_softlink' => $mov_id
+                            ]);
+                    } else {
+                        $this->agregarComprobante(
+                            $mov_id,
+                            $cod_suc,
+                            $doc,
+                            $cod_docu,
+                            $num_docu,
+                            $fecha,
+                            $cod_auxi,
+                            $igv,
+                            $mon_impto,
+                            $tp_cambio,
+                            $id_doc_com
+                        );
 
-                    $i = 0;
-                    foreach ($detalles as $det) {
-                        $cod_prod = null;
-                        //Obtiene y/o crea el producto
-                        if ($det->id_producto !== null) {
-                            $cod_prod = (new MigrateOrdenSoftLinkController)->obtenerProducto($det);
-                        } else {
-                            $cod_prod = '005675'; //OTROS SERVICIOS - DEFAULT
+                        $i = 0;
+                        foreach ($detalles as $det) {
+                            $cod_prod = null;
+                            //Obtiene y/o crea el producto
+                            if ($det->id_producto !== null) {
+                                $cod_prod = (new MigrateOrdenSoftLinkController)->obtenerProducto($det);
+                            } else {
+                                $cod_prod = '005675'; //OTROS SERVICIOS - DEFAULT
+                            }
+                            $this->agregarDetalleComprobante($det, $mov_id, $cod_prod, $cod_docu, $num_docu, $fecha, $igv, $i);
+                            // $this->actualizaStockEnTransito($doc, $cod_prod, $det, $cod_suc);
                         }
-                        $this->agregarDetalleComprobante($det, $mov_id, $cod_prod, $cod_docu, $num_docu, $fecha, $igv, $i);
-                        // $this->actualizaStockEnTransito($doc, $cod_prod, $det, $cod_suc);
+                        $this->agregarAudita($doc, $doc->serie, $doc->numero);
                     }
-                    $this->agregarAudita($doc, $doc->serie, $doc->numero);
 
                     $soc = DB::connection('soft')->table('movimien')->where('mov_id', $mov_id)->first();
                     $sdet = DB::connection('soft')->table('detmov')->where('mov_id', $mov_id)->get();
