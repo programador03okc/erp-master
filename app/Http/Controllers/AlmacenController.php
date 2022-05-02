@@ -33,6 +33,7 @@ class AlmacenController extends Controller
         $cantidad_requerimientos = $cantidades['requerimientos'];
         $cantidad_ordenes_pendientes = $almacenDashboardHelper->obtenerOrdenes(); //$cantidades['orden'];
         $cantidad_despachos_pendientes = $cantidades['despachos'];
+
         $cantidad_ingresos_pendientes = $cantidades['ingresos'];
         $cantidad_salidas_pendientes = $cantidades['salidas'];
         $cantidad_transferencias_pendientes = $cantidades['transferencias'];
@@ -99,13 +100,17 @@ class AlmacenController extends Controller
         $ordenes = DB::table('logistica.log_ord_compra')
             ->where([
                 ['log_ord_compra.estado', '!=', 7],
-                ['log_ord_compra.en_almacen', '=', false],
-                ['log_ord_compra.id_tp_documento', '=', 2]
+                ['log_ord_compra.en_almacen', '=', false]
             ])
+            ->whereIn('log_ord_compra.id_tp_documento', [2, 12])
             ->count();
 
         $transformaciones = DB::table('almacen.transformacion')
-            ->where([['transformacion.estado', '=', 9]])
+            ->join('almacen.guia_ven', function ($join) {
+                $join->on('guia_ven.id_od', '=', 'transformacion.id_od');
+                $join->where('guia_ven.estado', '!=', 7);
+            })
+            ->where([['transformacion.estado', '=', 10]])
             ->count();
 
         $ingresos = $ordenes + $transformaciones;
