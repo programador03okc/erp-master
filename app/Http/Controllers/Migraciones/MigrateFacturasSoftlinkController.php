@@ -532,11 +532,11 @@ class MigrateFacturasSoftlinkController extends Controller
                     ->join('almacen.guia_com', 'guia_com.id_guia', '=', 'guia_com_det.id_guia_com')
                     ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'guia_com.id_almacen')
                     ->where('doc_com_det.id_doc', $doc->id_doc_com)
-                    ->first();
+                    ->get();
 
                 DB::table('almacen.doc_com')
                     ->where('id_doc_com', $doc->id_doc_com)
-                    ->update(['id_sede' => $detalle['id_sede']]);
+                    ->update(['id_sede' => $detalle->first()->id_sede]);
             }
 
             DB::commit();
