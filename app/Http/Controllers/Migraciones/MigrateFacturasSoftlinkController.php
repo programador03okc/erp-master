@@ -533,7 +533,7 @@ class MigrateFacturasSoftlinkController extends Controller
 
             DB::table('almacen.doc_com')
                 ->where('id_doc_com', $doc->id_doc_com)
-                ->update(['id_sede' => $detalle->id_sede]);
+                ->update(['id_sede' => $detalle['id_sede']]);
         }
 
         return response()->json(['nro_docs' => $docs->count(), 'docs' => $docs]);
