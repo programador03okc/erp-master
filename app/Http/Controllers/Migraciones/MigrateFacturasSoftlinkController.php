@@ -518,24 +518,32 @@ class MigrateFacturasSoftlinkController extends Controller
 
     public function actualizarSedesFaltantes()
     {
-        $docs = DB::table('almacen.doc_com')
-            ->whereNull('id_sede')
-            ->get();
+        try {
+            DB::beginTransaction();
 
-        foreach ($docs as $doc) {
-            $detalle = DB::table('almacen.doc_com_det')
-                ->select('alm_almacen.id_sede')
-                ->join('almacen.guia_com_det', 'guia_com_det.id_guia_com_det', '=', 'doc_com_det.id_guia_com_det')
-                ->join('almacen.guia_com', 'guia_com.id_guia', '=', 'guia_com_det.id_guia_com')
-                ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'guia_com.id_almacen')
-                ->where('doc_com_det.id_doc', $doc->id_doc_com)
-                ->first();
+            $docs = DB::table('almacen.doc_com')
+                ->whereNull('id_sede')
+                ->get();
 
-            DB::table('almacen.doc_com')
-                ->where('id_doc_com', $doc->id_doc_com)
-                ->update(['id_sede' => $detalle['id_sede']]);
+            foreach ($docs as $doc) {
+                $detalle = DB::table('almacen.doc_com_det')
+                    ->select('alm_almacen.id_sede')
+                    ->join('almacen.guia_com_det', 'guia_com_det.id_guia_com_det', '=', 'doc_com_det.id_guia_com_det')
+                    ->join('almacen.guia_com', 'guia_com.id_guia', '=', 'guia_com_det.id_guia_com')
+                    ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'guia_com.id_almacen')
+                    ->where('doc_com_det.id_doc', $doc->id_doc_com)
+                    ->first();
+
+                DB::table('almacen.doc_com')
+                    ->where('id_doc_com', $doc->id_doc_com)
+                    ->update(['id_sede' => $detalle['id_sede']]);
+            }
+
+            DB::commit();
+            return response()->json(['nro_docs' => $docs->count(), 'docs' => $docs], 200);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return array('tipo' => 'error', 'mensaje' => 'Hubo un problema al actualizar las sedes. Por favor intente de nuevo', 'error' => $e->getMessage());
         }
-
-        return response()->json(['nro_docs' => $docs->count(), 'docs' => $docs]);
     }
 }
