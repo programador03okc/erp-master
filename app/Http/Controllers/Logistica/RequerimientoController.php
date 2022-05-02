@@ -155,7 +155,9 @@ class RequerimientoController extends Controller
 
     public function detalleRequerimiento($id_requerimiento)
     {
-        $detalles = DetalleRequerimiento::with('adjuntoDetalleRequerimiento','reserva')->select(
+        $detalles = DetalleRequerimiento::with(['adjuntoDetalleRequerimiento','reserva'=> function($q){
+            $q->where([['alm_reserva.estado', '!=', 7]]);
+        }])->select(
             'alm_req.codigo as codigo_requerimiento',
             'alm_det_req.*',
             'sis_moneda.simbolo as moneda_simbolo',

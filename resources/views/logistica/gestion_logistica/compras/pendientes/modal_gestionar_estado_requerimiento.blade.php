@@ -15,6 +15,7 @@
                 <form id="form-gestionar-estado-requerimiento" type="register" form="formulario">
                     <input type="hidden" name="idRequerimiento">
                     <input type="hidden" name="idNuevoEstado">
+                    <input type="hidden" name="forzarActualizarEstadoRequerimiento" value="NO">
                     <div class="row">
                         <div class="col-md-12">
                             <h5>En este formulario puede ajustar la cantidad solicitada de cada item de requerimiento con pendientes por atención (se considera la cantidad atendida).
