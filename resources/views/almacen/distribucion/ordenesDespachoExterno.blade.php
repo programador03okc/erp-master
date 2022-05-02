@@ -89,7 +89,7 @@ Gestión de Despachos
 @include('publico.ubigeoModal')
 @include('almacen.transferencias.transportistaModal')
 @include('almacen.distribucion.agregarTransportista')
-{{-- @include('logistica.requerimientos.trazabilidad.modal_trazabilidad') --}}
+@include('logistica.gestion_logistica.compras.pendientes.modal_ver_orden_de_requerimiento')
 
 @endsection
 
