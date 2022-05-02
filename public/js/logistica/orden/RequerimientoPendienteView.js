@@ -2867,6 +2867,7 @@ class RequerimientoPendienteView {
             show: true,
             backdrop: 'true'
         });
+        document.querySelector("input[name='forzarActualizarEstadoRequerimiento']").value ='NO';
 
         document.querySelector("div[id='modal-gestionar-estado-requerimiento'] form[id='form-gestionar-estado-requerimiento'] input[name='idRequerimiento']").value = obj.dataset.idRequerimiento;
         document.querySelector("div[id='modal-gestionar-estado-requerimiento'] span[id='codigoRequerimiento']").textContent = obj.dataset.codigoRequerimiento;
