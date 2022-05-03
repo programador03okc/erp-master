@@ -142,12 +142,12 @@ class MigrateFacturasSoftlinkController extends Controller
                 $fecha = date("Y-m-d", strtotime($doc->fecha_emision));
 
                 //obtiene el tipo de cambio
-                // $tp_cambio = DB::connection('soft')->table('tcambio')
-                //     ->where([['dfecha', '<=', new Carbon($doc->fecha_emision)]])
-                //     ->orderBy('dfecha', 'desc')
-                //     ->first();
-                $tp_cambio = TipoCambio::where([['moneda', '=', 2], ['fecha', '<=', $doc->fecha_emision]])
-                    ->orderBy('fecha', 'DESC')->first();
+                $tp_cambio = DB::connection('soft')->table('tcambio')
+                    ->where([['dfecha', '<=', new Carbon($doc->fecha_emision)]])
+                    ->orderBy('dfecha', 'desc')
+                    ->first();
+                // $tp_cambio = TipoCambio::where([['moneda', '=', 2], ['fecha', '<=', $doc->fecha_emision]])
+                //     ->orderBy('fecha', 'DESC')->first();
                 //////////////////////////
                 $id_usuario = Auth::user()->id_usuario;
 
@@ -186,7 +186,7 @@ class MigrateFacturasSoftlinkController extends Controller
                                         'mon_total' => $doc->total_a_pagar,
                                         'txt_observa' => '',
                                         'cod_user' => $doc->codvend_softlink,
-                                        'tip_cambio' => $tp_cambio->venta, //tipo cambio venta
+                                        'tip_cambio' => $tp_cambio->cambio3, //tipo cambio venta
                                         'ndocu1' => ($doc->credito_dias !== null ? $doc->credito_dias . ' DIAS' : ''),
                                         'ndocu2' => '',
                                         'ndocu3' => ''
@@ -401,7 +401,7 @@ class MigrateFacturasSoftlinkController extends Controller
                 'cod_user' => $doc->codvend_softlink,
                 'programa' => '',
                 'txt_nota' => '',
-                'tip_cambio' => $tp_cambio->venta, //tipo cambio venta
+                'tip_cambio' => $tp_cambio->cambio3, //tipo cambio venta
                 'tdflags' => 'NSSNNSSNSS',
                 'numlet' => '',
                 'impdcto' => '0.0000',
