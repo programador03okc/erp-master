@@ -194,8 +194,16 @@ Saldos Actuales
                     {data: 'part_number'},
                     {data: 'producto'},
                     {data: 'simbolo', className: 'text-center'},
-                    {data: 'valorizacion', className: 'text-right', searchable: false, orderable: false},
-                    {data: 'costo_promedio', className: 'text-right', searchable: false, orderable: false},
+                    {
+                        render: function (data, type, row) {
+                            return $.number(row['valorizacion'], 2, '.', ',');
+                        }, className: 'text-right', searchable: false, orderable: false
+                    },
+                    {
+                        render: function (data, type, row) {
+                            return $.number(row['costo_promedio'], 2, '.', ',');
+                        }, className: 'text-right', searchable: false, orderable: false
+                    },
                     {data: 'abreviatura', className: 'text-center'},
                     {data: 'stock', className: 'text-center', searchable: false, orderable: false},
                     {

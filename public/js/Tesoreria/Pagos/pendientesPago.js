@@ -4,8 +4,8 @@
         this.permisoEnviar = permisoEnviar;
         this.permisoRegistrar = permisoRegistrar;
         this.listarRequerimientos();
-        this.listarComprobantes();
         this.listarOrdenes();
+        // this.listarComprobantes();
     }
 
     listarRequerimientos() {
@@ -247,7 +247,7 @@
                     'render':
                         function (data, type, row) {
 
-                        let observacionRequerimiento= row.requerimientos !=null && row.requerimientos.length>0 ? row.requerimientos.map(e => (e.observacion)).join(",") : '';
+                            let observacionRequerimiento = row.requerimientos != null && row.requerimientos.length > 0 ? row.requerimientos.map(e => (e.observacion)).join(",") : '';
 
                             return `<div class="btn-group" role="group">
                 ${(row['estado_pago'] == 8 && permisoEnviar == '1') ?

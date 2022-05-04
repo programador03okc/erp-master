@@ -367,24 +367,36 @@ class TransferenciaController extends Controller
         try {
             DB::beginTransaction();
 
-            $trans = DB::table('almacen.trans')
+            DB::table('almacen.trans')
                 ->where('id_transferencia', $id_transferencia)
                 ->update(['estado' => 7]);
 
-            $trans = DB::table('almacen.trans_detalle')
+            DB::table('almacen.trans_detalle')
                 ->where('id_transferencia', $id_transferencia)
                 ->update(['estado' => 7]);
 
             $detalle = DB::table('almacen.trans_detalle')
+                ->select('trans_detalle.*', 'trans.id_requerimiento')
+                ->join('almacen.trans', 'trans.id_transferencia', '=', 'trans_detalle.id_transferencia')
                 ->where('id_transferencia', $id_transferencia)
                 ->get();
 
             foreach ($detalle as $det) {
-                DB::table('almacen.alm_reserva')
-                    ->where('id_trans_detalle', $det->id_trans_detalle)
-                    ->update([
-                        'estado' => 7
-                    ]);
+                //es transferencia por requerimiento?
+                if ($det->id_requerimiento !== null) {
+                    DB::table('almacen.alm_reserva')
+                        ->where('id_trans_detalle', $det->id_trans_detalle)
+                        ->update([
+                            'estado' => 1
+                        ]);
+                    //es transferencia directa?
+                } else {
+                    DB::table('almacen.alm_reserva')
+                        ->where('id_trans_detalle', $det->id_trans_detalle)
+                        ->update([
+                            'estado' => 7
+                        ]);
+                }
             }
 
             DB::commit();

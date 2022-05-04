@@ -95,11 +95,23 @@
 <?php
 
 use App\Models\mgcp\CuadroCosto\CcAmFila;
+use App\Models\almacen\DetalleRequerimiento;
 use App\Models\mgcp\CuadroCosto\CcFilaMovimientoTransformacion;
 use App\Models\mgcp\CuadroCosto\CuadroCosto;
 
 $cuadroCosto = $oportunidad->cuadroCosto;
-$filasCuadro = CcAmFila::where('id_cc_am', $cuadroCosto->id)->orderBy('id', 'asc')->get();
+$filasCuadro = CcAmFila::join('almacen.alm_det_req', function ($join) {
+                $join->on('alm_det_req.id_cc_am_filas', '=', 'cc_am_filas.id');
+                $join->where('alm_det_req.tiene_transformacion', '=', false);
+            })
+->join('almacen.alm_prod','alm_prod.id_producto','=','alm_det_req.id_producto')
+->join('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
+->select('cc_am_filas.*','alm_prod.codigo as codigo_agile','alm_prod.cod_softlink',
+'alm_prod.part_number','alm_prod.descripcion as producto_descripcion_agile',
+'alm_subcat.descripcion as marca_agile')
+->where('cc_am_filas.id_cc_am', $cuadroCosto->id)
+->orderBy('cc_am_filas.id', 'asc')->distinct()->get();
+
 $ordenCompra = $oportunidad->ordenCompraPropia;
 ?>
 
@@ -162,6 +174,8 @@ $ordenCompra = $oportunidad->ordenCompraPropia;
         <thead>
             <tr>
                 <th class="text-center cabecera-producto" style="width: 7%">Cant.</th>
+                <th class="text-center cabecera-producto" style="width: 8%">Cod. Agile</th>
+                <th class="text-center cabecera-producto" style="width: 8%">Cod. SoftLink</th>
                 <th class="text-center cabecera-producto" style="width: 15%">Nro. parte</th>
                 <th class="text-center cabecera-producto" style="width: 15%">Marca</th>
                 <th class="text-center cabecera-producto">Descripción del producto</th>
@@ -170,9 +184,11 @@ $ordenCompra = $oportunidad->ordenCompraPropia;
         <tbody>
             <tr>
                 <td class="text-center">{{$fila->cantidad}}</td>
-                <td class="text-center">{{$fila->part_no}}</td>
-                <td class="text-center">{{$fila->marca}}</td>
-                <td>{{$fila->descripcion}}</td>
+                <td class="text-center">{{$fila->codigo_agile}}</td>
+                <td class="text-center">{{$fila->cod_softlink}}</td>
+                <td class="text-center">{{$fila->part_number}}</td>
+                <td class="text-center">{{$fila->marca_agile}}</td>
+                <td>{{$fila->producto_descripcion_agile}}</td>
             </tr>
         </tbody>
     </table>
@@ -212,6 +228,8 @@ $ordenCompra = $oportunidad->ordenCompraPropia;
     <table class="bordered" style="margin-bottom: 15px">
         <thead>
             <tr>
+                <th class="text-center cabecera-producto" style="width: 12%">Cod. Agile</th>
+                <th class="text-center cabecera-producto" style="width: 12%">Cod. SoftLink</th>
                 <th class="text-center cabecera-producto" style="width: 33%">Ingresa</th>
                 <th class="text-center cabecera-producto" style="width: 33%">Sale</th>
                 <th class="text-center cabecera-producto" style="width: 34%">Comentario</th>
@@ -219,7 +237,12 @@ $ordenCompra = $oportunidad->ordenCompraPropia;
         </thead>
         <tbody>
             <?php
-            $movimientos = CcFilaMovimientoTransformacion::where('id_fila_base', $fila->id)->orderBy('id', 'asc')->get();
+            $movimientos = CcFilaMovimientoTransformacion::join('almacen.alm_det_req','alm_det_req.id_cc_am_filas','=','cc_fila_movimientos_transformacion.id_fila_ingresa')
+->join('almacen.alm_prod','alm_prod.id_producto','=','alm_det_req.id_producto')
+->select('cc_fila_movimientos_transformacion.*','alm_prod.codigo as codigo_agile','alm_prod.cod_softlink',
+'alm_prod.part_number','alm_prod.descripcion as producto_descripcion_agile')
+            ->where('cc_fila_movimientos_transformacion.id_fila_base', $fila->id)
+            ->orderBy('cc_fila_movimientos_transformacion.id', 'asc')->get();
             ?>
             @if ($movimientos->count()==0)
             <tr>
@@ -228,7 +251,9 @@ $ordenCompra = $oportunidad->ordenCompraPropia;
             @endif
             @foreach ($movimientos as $movimiento)
             <tr>
-                <td>{{$movimiento->filaCuadro == null ? '' : $movimiento->filaCuadro->descripcion}}</td>
+                <td>{{$movimiento->id_fila_ingresa!==null ? $movimiento->codigo_agile : ''}}</td>
+                <td>{{$movimiento->id_fila_ingresa!==null ? $movimiento->cod_softlink : ''}}</td>
+                <td>{{$movimiento->id_fila_ingresa!==null ? $movimiento->producto_descripcion_agile : ''}}</td>
                 <td>{{$movimiento->sale}}</td>
                 <td>{{$movimiento->comentario}}</td>
             </tr>

@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\App;
 use App\Http\Controllers\Controller;
+use App\Models\Almacen\DetalleRequerimiento;
 use App\Models\mgcp\Oportunidad\Oportunidad;
 use App\Models\Tesoreria\TipoCambio;
 use Carbon\Carbon;
@@ -1549,22 +1550,30 @@ class TransformacionController extends Controller
         </html>';
 */
         $transformacion = DB::table('almacen.transformacion')
-            ->select('transformacion.codigo', 'cc.id_oportunidad', 'adm_empresa.logo_empresa')
+            ->select(
+                'transformacion.codigo',
+                'cc.id_oportunidad',
+                'adm_empresa.logo_empresa',
+                'alm_req.id_requerimiento'
+            )
             ->leftjoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'transformacion.id_cc')
             ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'transformacion.id_almacen')
             ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_almacen.id_sede')
             ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
+            ->join('almacen.orden_despacho', 'orden_despacho.id_od', '=', 'transformacion.id_od')
+            ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'orden_despacho.id_requerimiento')
             ->where('transformacion.id_transformacion', $id_transformacion)
             ->first();
 
         $oportunidad = Oportunidad::find($transformacion->id_oportunidad);
-        // $logo_empresa = $transformacion->logo_empresa;
+        $detalleRequerimiento = DetalleRequerimiento::where([['id_requerimiento', '=', $transformacion->id_requerimiento], ['estado', '!=', 7]])->get();
+
         $codigo = $transformacion->codigo;
         $logo_empresa = ".$transformacion->logo_empresa";
-        //return view('almacen/customizacion/hoja-transformacion')->with(compact('oportunidad'));
+
         $vista = View::make(
             'almacen/customizacion/hoja-transformacion',
-            compact('oportunidad', 'logo_empresa', 'codigo')
+            compact('oportunidad', 'detalleRequerimiento', 'logo_empresa', 'codigo')
         )->render();
         $pdf = App::make('dompdf.wrapper');
         $pdf->loadHTML($vista);
