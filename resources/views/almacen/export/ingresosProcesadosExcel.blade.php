@@ -20,6 +20,7 @@
                 <th style="background-color: #cccccc;" width="18"><b>Responsable</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Ordenes</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Facturas</b></th>
+                <th style="background-color: #cccccc;" width="18"><b>Facturas</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Requerimientos</b></th>
             </tr>
         </thead>
@@ -35,6 +36,7 @@
                 <td>{{$d->nombre_corto}}</td>
                 <td>{{$d->ordenes_compra}}</td>
                 <td>{{implode(', ', $d->comprobantes['codigo'])}}</td>
+                <td>{{implode(', ', $d->comprobantes['codigo_concat'])}}</td>
                 <td>{{$d->requerimientos}}</td>
             </tr>
             @endforeach
