@@ -64,11 +64,12 @@
                 //         return (row['persona'][0] !== undefined ? row['persona'][0].nro_documento : row['nro_documento']);
                 //     }, 'className': 'text-center', 'searchable': false
                 // },
-                {
-                    'render': function (data, type, row) {
-                        return (row['persona'][0] !== undefined ? row['persona'][0].nombre_completo : row['razon_social']);
-                    }, 'searchable': false
-                },
+                // {
+                //     'render': function (data, type, row) {
+                //         return (row['persona'][0] !== undefined ? row['persona'][0].nombre_completo : row['razon_social']);
+                //     }, 'searchable': false
+                // },
+                { data: 'persona' },
                 {
                     'render': function (data, type, row) {
                         return (row['fecha_registro'] !== null ? formatDate(row['fecha_registro']) : '');

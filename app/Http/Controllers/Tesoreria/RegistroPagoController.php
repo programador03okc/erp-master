@@ -22,7 +22,7 @@ class RegistroPagoController extends Controller
     {
         $this->middleware('auth');
     }
-    
+
     public function view_main_tesoreria()
     {
         $pagos_pendientes = DB::table('almacen.alm_req')
@@ -30,7 +30,7 @@ class RegistroPagoController extends Controller
 
         $confirmaciones_pendientes = DB::table('almacen.alm_req')
             ->where([['estado', '=', 19], ['confirmacion_pago', '=', false]])->count();
-        
+
         $tipo_cambio = DB::table('contabilidad.cont_tp_cambio')->orderBy('fecha', 'desc')->first();
 
         return view('tesoreria/main', get_defined_vars());
@@ -65,6 +65,7 @@ class RegistroPagoController extends Controller
                 'tp_cta_persona.descripcion as tipo_cuenta_persona',
                 'banco_persona.razon_social as banco_persona',
                 'sis_usua.nombre_corto',
+                DB::raw("concat(rrhh_perso.nombres, ' ' ,rrhh_perso.apellido_paterno, ' ' ,rrhh_perso.apellido_materno) AS persona"),
                 DB::raw("(SELECT count(archivo) FROM tesoreria.requerimiento_pago_adjunto
                         WHERE requerimiento_pago_adjunto.id_requerimiento_pago = requerimiento_pago.id_requerimiento_pago
                         and requerimiento_pago_adjunto.id_estado != 7) AS count_adjunto_cabecera"),
@@ -102,13 +103,9 @@ class RegistroPagoController extends Controller
             ->whereIn('requerimiento_pago.id_estado', [6, 2, 5, 8]);
         // ->where([['requerimiento_pago.id_estado', '!=', 7], ['requerimiento_pago.id_estado', '!=', 1]]);
 
-        return datatables($data)->addColumn('persona', function ($data) {
-            $persona = Persona::find($data->id_persona);
-            if (!empty($persona)) {
-                return ([$persona]);
-            } else {
-                return ([]);
-            };
+        return datatables($data)->filterColumn('persona', function ($query, $keyword) {
+            $keywords = trim(strtoupper($keyword));
+            $query->whereRaw("UPPER(CONCAT(rrhh_perso.nombres,' ',rrhh_perso.apellido_paterno,' ',rrhh_perso.apellido_materno)) LIKE ?", ["%{$keywords}%"]);
         })->toJson();
     }
 
