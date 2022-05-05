@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Almacen\Movimiento;
 use App\Exports\GuiaSalidaOKCExcel;
 use App\Exports\GuiaSalidaSVSExcel;
 use App\Exports\SalidasPendientesExport;
+use App\Exports\SalidasProcesadasExport;
 use App\Exports\SeriesGuiaVentaDetalleExport;
 use App\Http\Controllers\AlmacenController as GenericoAlmacenController;
 use App\Http\Controllers\AlmacenController;
@@ -457,7 +458,7 @@ class SalidasPendientesController extends Controller
         return $stockDisponible;
     }
 
-    public function listarSalidasDespacho(Request $request)
+    public function listarSalidasProcesadas()
     {
         $data = Movimiento::select(
             'mov_alm.*',
@@ -500,9 +501,12 @@ class SalidasPendientesController extends Controller
             ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
             ->join('almacen.tp_ope', 'tp_ope.id_operacion', '=', 'mov_alm.id_operacion')
             ->where([['mov_alm.estado', '!=', '7'], ['mov_alm.id_tp_mov', '=', 2]]);
-        // ->whereIn('mov_alm.id_operacion', [1, 27, 36]);
-        // ->get();
-        // return response()->json($data);
+        return $data;
+    }
+
+    public function listarSalidasDespacho(Request $request)
+    {
+        $data = $this->listarSalidasProcesadas();
         return datatables($data)->toJson();
     }
 
@@ -1489,5 +1493,13 @@ class SalidasPendientesController extends Controller
         return Excel::download(new SalidasPendientesExport(
             $data,
         ), 'Salidas Pendientes al ' . new Carbon() . '.xlsx');
+    }
+
+    public function salidasProcesadasExcel()
+    {
+        $data = $this->listarSalidasProcesadas();
+        return Excel::download(new SalidasProcesadasExport(
+            $data->get(),
+        ), 'Salidas Procesadas al ' . new Carbon() . '.xlsx');
     }
 }

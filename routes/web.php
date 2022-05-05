@@ -1426,6 +1426,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 				Route::get('seriesVentaExcel/{id}', 'Almacen\Movimiento\SalidasPendientesController@seriesVentaExcel');
 				Route::post('salidasPendientesExcel', 'Almacen\Movimiento\SalidasPendientesController@salidasPendientesExcel')->name('salidasPendientesExcel');
+				Route::post('salidasProcesadasExcel', 'Almacen\Movimiento\SalidasPendientesController@salidasProcesadasExcel')->name('salidasProcesadasExcel');
 			});
 
 			Route::group(['as' => 'prorrateo.', 'prefix' => 'prorrateo'], function () {

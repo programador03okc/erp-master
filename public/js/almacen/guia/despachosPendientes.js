@@ -298,13 +298,20 @@ $('#despachosPendientes tbody').on('click', 'td button.detalle', function () {
 
 function listarDespachosEntregados(permiso) {
     var vardataTables = funcDatatables();
+    let botones = [];
+    botones.push({
+        text: ' Exportar Excel',
+        action: function () {
+            exportarSalidasProcesadas();
+        }, className: 'btn-success btnExportarSalidasProcesadas'
+    });
     $('#despachosEntregados').DataTable({
         'dom': vardataTables[1],
-        'buttons': vardataTables[2],
+        'buttons': botones,
         'language': vardataTables[0],
         'destroy': true,
         'serverSide': true,
-        // "scrollX": true,
+        pageLength: 20,
         'ajax': {
             url: 'listarSalidasDespacho',
             type: 'POST'
@@ -525,4 +532,8 @@ $('#despachosEntregados tbody').on("click", "button.cambio", function () {
 
 function exportarDespachosPendientes() {
     $('#formFiltrosSalidasPendientes').trigger('submit');
+}
+
+function exportarSalidasProcesadas() {
+    $('#formFiltrosSalidasProcesadas').trigger('submit');
 }
