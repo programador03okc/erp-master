@@ -18,7 +18,9 @@
                 <th style="background-color: #cccccc;" width="30"><b>Operación</b></th>
                 <th style="background-color: #cccccc;" width="30"><b>Almacén</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Responsable</b></th>
-                {{-- <th style="background-color: #cccccc;" width="18"><b>Ordenes</b></th> --}}
+                <th style="background-color: #cccccc;" width="18"><b>Ordenes</b></th>
+                <th style="background-color: #cccccc;" width="18"><b>Facturas</b></th>
+                <th style="background-color: #cccccc;" width="18"><b>requerimientos</b></th>
             </tr>
         </thead>
         <tbody>
@@ -31,6 +33,9 @@
                 <td>{{$d->operacion_descripcion}}</td>
                 <td>{{$d->almacen_descripcion}}</td>
                 <td>{{$d->nombre_corto}}</td>
+                <td>{{$d->ordenes_compra}}</td>
+                <td>{{implode(', ', $d->comprobantes['codigo'])}}</td>
+                <td>{{$d->requerimientos}}</td>
             </tr>
             @endforeach
         </tbody>
