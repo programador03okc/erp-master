@@ -20,7 +20,7 @@
                 <th style="background-color: #cccccc;" width="18"><b>Responsable</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Ordenes</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Facturas</b></th>
-                <th style="background-color: #cccccc;" width="18"><b>requerimientos</b></th>
+                <th style="background-color: #cccccc;" width="18"><b>Requerimientos</b></th>
             </tr>
         </thead>
         <tbody>
