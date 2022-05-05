@@ -18,6 +18,7 @@
                 <th style="background-color: #cccccc;" width="30"><b>Almacén</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Responsable</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Facturas</b></th>
+                <th style="background-color: #cccccc;" width="18"><b>Facturas</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Requerimientos</b></th>
             </tr>
         </thead>
@@ -33,6 +34,7 @@
                 <td>{{$d->almacen_descripcion}}</td>
                 <td>{{$d->nombre_corto}}</td>
                 <td>{{$d->comprobantes_venta}}</td>
+                <td>{{$d->comprobantes_venta_concat}}</td>
                 <td>{{$d->codigo_requerimiento}}</td>
             </tr>
             @endforeach
