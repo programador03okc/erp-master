@@ -158,6 +158,30 @@ function actualizarSedesFaltantes() {
     });
 }
 
+function actualizarProveedores() {
+    $.ajax({
+        type: 'GET',
+        url: 'actualizarProveedorComprobantes',
+        dataType: 'JSON',
+        success: function (response) {
+            console.log(response);
+            Lobibox.notify("success", {
+                title: false,
+                size: "mini",
+                rounded: true,
+                sound: false,
+                delayIndicator: false,
+                msg: 'Se actualizaron ' + response['nro_docs'] + ' documentos.'
+            });
+            $('#listaComprobantesCompra').DataTable().ajax.reload(null, false);
+        }
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
+
 function migrarComprobantesSoftlink() {
     $.ajax({
         type: 'GET',

@@ -1498,6 +1498,7 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::get('enviarComprobanteSoftlink/{id}', 'Migraciones\MigrateFacturasSoftlinkController@enviarComprobanteSoftlink');
 			Route::get('documentos_ver/{id}', 'Almacen\Movimiento\OrdenesPendientesController@documentos_ver');
 			Route::get('actualizarSedesFaltantes', 'Migraciones\MigrateFacturasSoftlinkController@actualizarSedesFaltantes');
+			Route::get('actualizarProveedorComprobantes', 'Migraciones\MigrateFacturasSoftlinkController@actualizarProveedorComprobantes');
 			Route::get('migrarComprobantesSoftlink', 'Migraciones\MigrateFacturasSoftlinkController@migrarComprobantesSoftlink');
 		});
 
