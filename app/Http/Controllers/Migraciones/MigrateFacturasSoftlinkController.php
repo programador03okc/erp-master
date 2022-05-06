@@ -642,7 +642,7 @@ class MigrateFacturasSoftlinkController extends Controller
 
                     DB::table('almacen.doc_com')
                         ->where('id_doc_com', $doc->id_doc_com)
-                        ->update(['id_proveedor' => $doc_ven->id_proveedor]);
+                        ->update(['id_proveedor' => $doc_ven['id_proveedor']]);
 
                     $count_docs++;
                     array_push($respuestas, [
@@ -650,7 +650,7 @@ class MigrateFacturasSoftlinkController extends Controller
                         'serie' => $doc->serie,
                         'numero' => $doc->numero,
                         'id_proveedor_anterior' => $doc->id_contri_proveedor,
-                        'id_proveedor_nuevo' => $doc_ven->id_proveedor,
+                        'id_proveedor_nuevo' => $doc_ven['id_proveedor'],
                     ]);
                 }
             }
