@@ -601,6 +601,9 @@ class MigrateFacturasSoftlinkController extends Controller
     {
         $docs = DB::table('almacen.doc_com')
             ->select(
+                'doc_com.id_doc_com',
+                'doc_com.serie',
+                'doc_com.numero',
                 'adm_contri.id_contribuyente as id_contri_proveedor',
                 'contri_empresa.id_contribuyente as id_contri_empresa',
                 'adm_empresa.id_empresa'
