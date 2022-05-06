@@ -584,6 +584,7 @@ class MigrateFacturasSoftlinkController extends Controller
     {
         $docs = DB::table('almacen.doc_com')
             ->where('estado', 1)
+            ->where('id_tp_doc', 2)
             ->whereNull('id_doc_softlink')
             ->orderBy('id_doc_com', 'asc')
             ->limit(80)
