@@ -91,30 +91,31 @@ class MigrateFacturasSoftlinkController extends Controller
 
             if ($doc !== null && count($detalles) > 0) {
 
-                if ($doc->id_tp_doc == 2) { //Factura
+                // if ($doc->id_tp_doc == 2) { //Factura
 
-                    $empresas_soft = [
-                        ['id' => 1, 'nombre' => 'OKC'],
-                        ['id' => 2, 'nombre' => 'PYC'],
-                        ['id' => 3, 'nombre' => 'SVS'],
-                        ['id' => 4, 'nombre' => 'RBDB'],
-                        ['id' => 5, 'nombre' => 'JEDR'],
-                        ['id' => 6, 'nombre' => 'PTEC']
-                    ];
-                    // } else if ($doc->id_tp_doc == 3) { //Servicio
+                $empresas_soft = [
+                    ['id' => 1, 'nombre' => 'OKC'],
+                    ['id' => 2, 'nombre' => 'PYC'],
+                    ['id' => 3, 'nombre' => 'SVS'],
+                    ['id' => 4, 'nombre' => 'RBDB'],
+                    ['id' => 5, 'nombre' => 'JEDR'],
+                    ['id' => 6, 'nombre' => 'PTEC']
+                ];
+                // } else if ($doc->id_tp_doc == 3) { //Servicio
 
-                    //     $empresas_soft = [
-                    //         ['id' => 1, 'nombre' => 'OKC', 'cod_docu' => 'OS'],
-                    //         ['id' => 2, 'nombre' => 'PYC', 'cod_docu' => 'OP'],
-                    //         ['id' => 3, 'nombre' => 'SVS', 'cod_docu' => 'OV'],
-                    //         ['id' => 4, 'nombre' => 'RBDB', 'cod_docu' => 'OR'],
-                    //         ['id' => 5, 'nombre' => 'JEDR', 'cod_docu' => 'OJ'],
-                    //         ['id' => 6, 'nombre' => 'PTEC', 'cod_docu' => 'OA']
-                    //     ];
-                }
+                //     $empresas_soft = [
+                //         ['id' => 1, 'nombre' => 'OKC', 'cod_docu' => 'OS'],
+                //         ['id' => 2, 'nombre' => 'PYC', 'cod_docu' => 'OP'],
+                //         ['id' => 3, 'nombre' => 'SVS', 'cod_docu' => 'OV'],
+                //         ['id' => 4, 'nombre' => 'RBDB', 'cod_docu' => 'OR'],
+                //         ['id' => 5, 'nombre' => 'JEDR', 'cod_docu' => 'OJ'],
+                //         ['id' => 6, 'nombre' => 'PTEC', 'cod_docu' => 'OA']
+                //     ];
+                // }
 
                 $cod_suc = '';
-                $cod_docu = 'FA';
+                //pendiente corregir tipo docu
+                $cod_docu = ($doc->id_tp_doc == 2 ? 'FA' : ($doc->id_tp_doc == 4 ? 'BV' : ''));
 
                 foreach ($empresas_soft as $emp) {
                     if ($emp['nombre'] == $doc->codigo_emp) {
