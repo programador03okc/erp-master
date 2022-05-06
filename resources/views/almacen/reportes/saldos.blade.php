@@ -193,7 +193,7 @@ Saldos Actuales
                     {data: 'codigo'},
                     {data: 'cod_softlink'},
                     {data: 'part_number'},
-                    {data: 'subcategoria'},
+                    {data: 'categoria'},
                     {data: 'producto'},
                     {data: 'simbolo', className: 'text-center'},
                     {
