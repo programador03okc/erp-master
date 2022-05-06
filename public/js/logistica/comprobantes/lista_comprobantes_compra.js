@@ -171,7 +171,7 @@ function actualizarProveedores() {
                 rounded: true,
                 sound: false,
                 delayIndicator: false,
-                msg: 'Se actualizaron ' + response['nro_docs'] + ' documentos.'
+                msg: 'Se encontraron ' + response['nro_docs'] + ' documentos. Se actualizaron ' + response['nro_actualizados'] + ' documentos.'
             });
             $('#listaComprobantesCompra').DataTable().ajax.reload(null, false);
         }

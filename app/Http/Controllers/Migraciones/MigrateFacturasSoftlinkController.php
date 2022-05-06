@@ -609,19 +609,21 @@ class MigrateFacturasSoftlinkController extends Controller
                     'doc_com.numero',
                     'adm_contri.id_contribuyente as id_contri_proveedor',
                     'contri_empresa.id_contribuyente as id_contri_empresa',
-                    'adm_empresa.id_empresa'
+                    'com_cliente.id_cliente'
                 )
                 ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'doc_com.id_proveedor')
                 ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
                 ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'doc_com.id_sede')
                 ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
                 ->join('contabilidad.adm_contri as contri_empresa', 'contri_empresa.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
+                ->join('comercial.com_cliente', 'com_cliente.id_contribuyente', '=', 'contri_empresa.id_contribuyente')
                 ->where('doc_com.estado', 1)
                 ->orderBy('doc_com.id_doc_com', 'asc')
                 ->get();
 
             $respuestas = [];
             $count_docs = 0;
+            $count_docs_actualizados = 0;
 
             foreach ($docs as $doc) {
 
@@ -633,29 +635,34 @@ class MigrateFacturasSoftlinkController extends Controller
                         ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
                         ->join('logistica.log_prove', 'log_prove.id_contribuyente', '=', 'adm_contri.id_contribuyente')
                         ->where([
-                            ['doc_ven.id_empresa', '=', $doc->id_empresa],
+                            ['doc_ven.id_cliente', '=', $doc->id_cliente],
                             ['doc_ven.serie', '=', $doc->serie],
                             ['doc_ven.numero', '=', $doc->numero],
                             ['doc_ven.estado', '=', 1]
                         ])
-                        ->first();
+                        ->get();
 
-                    DB::table('almacen.doc_com')
-                        ->where('id_doc_com', $doc->id_doc_com)
-                        ->update(['id_proveedor' => $doc_ven['id_proveedor']]);
+                    if ($doc_ven !== null && count($doc_ven) == 1) {
+                        $dv = $doc_ven->first();
+                        DB::table('almacen.doc_com')
+                            ->where('id_doc_com', $doc->id_doc_com)
+                            ->update(['id_proveedor' => $dv->id_proveedor]);
 
+                        $count_docs_actualizados++;
+                        array_push($respuestas, [
+                            'id_doc_com' => $doc->id_doc_com,
+                            'serie' => $doc->serie,
+                            'numero' => $doc->numero,
+                            'id_proveedor_anterior' => $doc->id_contri_proveedor,
+                            // 'id_empresa' => $doc->id_cliente,
+                            'id_proveedor_nuevo' => $dv->id_proveedor,
+                        ]);
+                    }
                     $count_docs++;
-                    array_push($respuestas, [
-                        'id_doc_com' => $doc->id_doc_com,
-                        'serie' => $doc->serie,
-                        'numero' => $doc->numero,
-                        'id_proveedor_anterior' => $doc->id_contri_proveedor,
-                        'id_proveedor_nuevo' => $doc_ven['id_proveedor'],
-                    ]);
                 }
             }
             DB::commit();
-            return response()->json(['respuestas' => $respuestas, 'nro_docs' => $count_docs], 200);
+            return response()->json(['respuestas' => $respuestas, 'nro_docs' => $count_docs,  'nro_actualizados' => $count_docs_actualizados], 200);
         } catch (\PDOException $e) {
             DB::rollBack();
             return array('tipo' => 'error', 'mensaje' => 'Hubo un problema al actualizar las sedes. Por favor intente de nuevo', 'error' => $e->getMessage());
