@@ -844,7 +844,7 @@ class ComprasPendientesController extends Controller
                 $reservas = Reserva::where([['id_detalle_requerimiento', $request->idDetalleRequerimiento], ['estado', '!=', 7]])->get();
                 foreach ($reservas as $r) {
                     $totalReservas++;
-                    if($r->estado==1){
+                    if($r->estado==1 && $r->id_guia_com_det==null && $r->id_trans_detalle ==null && $r->id_transformado ==null){
                         $reserva = Reserva::where('id_reserva', $r->id_reserva)->first();
                         $reserva->estado = 7;
                         $reserva->save();
