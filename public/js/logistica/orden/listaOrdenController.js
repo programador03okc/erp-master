@@ -18,14 +18,14 @@ class ListaOrdenCtrl {
     }
 
     
-    obtenerListaOrdenesElaboradas(tipoOrden, idEmpresa, idSede, fechaRegistroDesde, fechaRegistroHasta, idEstado) {
-        return this.listaOrdenModel.obtenerListaOrdenesElaboradas(tipoOrden, idEmpresa, idSede, fechaRegistroDesde, fechaRegistroHasta, idEstado);
+    // obtenerListaOrdenesElaboradas(tipoOrden, idEmpresa, idSede, fechaRegistroDesde, fechaRegistroHasta, idEstado) {
+    //     return this.listaOrdenModel.obtenerListaOrdenesElaboradas(tipoOrden, idEmpresa, idSede, fechaRegistroDesde, fechaRegistroHasta, idEstado);
 
-    }
+    // }
 
-    obtenerDetalleOrdenElaboradas(id) {
-        return this.listaOrdenModel.obtenerDetalleOrdenElaboradas(id);
-    }
+    // obtenerDetalleOrdenElaboradas(id) {
+    //     return this.listaOrdenModel.obtenerDetalleOrdenElaboradas(id);
+    // }
 
 
 

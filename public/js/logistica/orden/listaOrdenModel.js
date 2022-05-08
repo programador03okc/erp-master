@@ -26,51 +26,51 @@ class ListaOrdenModel {
     } 
     // 
 
-    obtenerListaOrdenesElaboradas(tipoOrden, idEmpresa, idSede, fechaRegistroDesde, fechaRegistroHasta, idEstado){
-        return new Promise(function(resolve, reject) {
-            $.ajax({
-                type: 'POST',
-                url:`listar-ordenes`,
-                dataType: 'JSON',
-                data:{'tipoOrden':tipoOrden,'idEmpresa':idEmpresa,'idSede':idSede,'fechaRegistroDesde':fechaRegistroDesde,'fechaRegistroHasta':fechaRegistroHasta,'idEstado':idEstado},
+    // obtenerListaOrdenesElaboradas(tipoOrden, idEmpresa, idSede, fechaRegistroDesde, fechaRegistroHasta, idEstado){
+    //     return new Promise(function(resolve, reject) {
+    //         $.ajax({
+    //             type: 'POST',
+    //             url:`listar-ordenes`,
+    //             dataType: 'JSON',
+    //             data:{'tipoOrden':tipoOrden,'idEmpresa':idEmpresa,'idSede':idSede,'fechaRegistroDesde':fechaRegistroDesde,'fechaRegistroHasta':fechaRegistroHasta,'idEstado':idEstado},
 
-                beforeSend:  (data)=> {
+    //             beforeSend:  (data)=> {
     
-                $('#listaOrdenes').LoadingOverlay("show", {
-                    imageAutoResize: true,
-                    progress: true,
-                    imageColor: "#3c8dbc"
-                });
-            },
-                success(response) {
-                    resolve(response.data);
-                    $('#listaOrdenes').LoadingOverlay("hide", true);
+    //             $('#listaOrdenes').LoadingOverlay("show", {
+    //                 imageAutoResize: true,
+    //                 progress: true,
+    //                 imageColor: "#3c8dbc"
+    //             });
+    //         },
+    //             success(response) {
+    //                 resolve(response.data);
+    //                 $('#listaOrdenes').LoadingOverlay("hide", true);
 
-                },
-                error: function(err) {
-                reject(err) // Reject the promise and go to catch()
-                },
-                "drawCallback": function( settings ) {
-                    $('#listaOrdenes').LoadingOverlay("hide", true);
-                }
-                });
-            });
-    }
-    obtenerDetalleOrdenElaboradas(id){
-        return new Promise(function(resolve, reject) {
-            $.ajax({
-                type: 'GET',
-                url:`detalle-orden/${id}`,
-                dataType: 'JSON',
-                success(response) {
-                    resolve(response);
-                },
-                error: function(err) {
-                reject(err) // Reject the promise and go to catch()
-                }
-                });
-            });
-    }
+    //             },
+    //             error: function(err) {
+    //             reject(err) // Reject the promise and go to catch()
+    //             },
+    //             "drawCallback": function( settings ) {
+    //                 $('#listaOrdenes').LoadingOverlay("hide", true);
+    //             }
+    //             });
+    //         });
+    // }
+    // obtenerDetalleOrdenElaboradas(id){
+    //     return new Promise(function(resolve, reject) {
+    //         $.ajax({
+    //             type: 'GET',
+    //             url:`detalle-orden/${id}`,
+    //             dataType: 'JSON',
+    //             success(response) {
+    //                 resolve(response);
+    //             },
+    //             error: function(err) {
+    //             reject(err) // Reject the promise and go to catch()
+    //             }
+    //             });
+    //         });
+    // }
 
 
     // lista por item
