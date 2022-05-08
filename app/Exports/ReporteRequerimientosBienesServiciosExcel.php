@@ -46,6 +46,7 @@ class reporteRequerimientosBienesServiciosExcel implements FromView
                 'razon_social'=> $element->razon_social,
                 'grupo'=> $element->grupo,
                 'division'=> $element->division,
+                'descripcion_proyecto'=> $element->descripcion_proyecto,
                 'simbolo_moneda'=> $element->simbolo_moneda,
                 'monto_total'=> number_format($element->monto_total,2),
                 'observacion'=> $element->observacion,

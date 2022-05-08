@@ -96,14 +96,15 @@ Listado de requerimientos logísticos
                                     <tr>
                                         <th class="text-center"></th>
                                         <th class="text-center" style="width:2%">Prio.</th>
-                                        <th class="text-center" style="width:8%">Código</th>
+                                        <th class="text-center" style="width:10%">Código</th>
                                         <th class="text-center" style="width:20%">Concepto</th>
                                         <th class="text-center" style="width:8%">Fecha registro</th>
                                         <th class="text-center">Fecha entrega</th>
                                         <th class="text-center">Tipo</th>
-                                        <th class="text-center" style="width:10%">Empresa</th>
+                                        <th class="text-center" style="width:10%">Empresa - sede</th>
                                         <th class="text-center">Grupo</th>
                                         <th class="text-center">División</th>
+                                        <th class="text-center">Proyecto/presupuesto</th>
                                         <th class="text-center">Monto Subtotal</th>
                                         <th class="text-center">Monto Total</th>
                                         <th class="text-center">Creado por</th>

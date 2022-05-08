@@ -291,15 +291,15 @@ class ListarRequerimientoPagoView {
             },
             'columns': [
                 { 'data': 'id_requerimiento_pago', 'name': 'requerimiento_pago.id_requerimiento_pago', 'visible': false },
-                { 'data': 'prioridad', 'name': 'adm_prioridad.descripcion', 'className': 'text-center' },
+                { 'data': 'prioridad', 'name': 'adm_prioridad.descripcion', 'className': 'text-center','visible': false },
                 { 'data': 'codigo', 'name': 'codigo', 'className': 'text-center' },
                 { 'data': 'concepto', 'name': 'concepto' },
                 { 'data': 'descripcion_requerimiento_pago_tipo', 'name': 'requerimiento_pago_tipo.descripcion' },
                 { 'data': 'fecha_registro', 'name': 'requerimiento_pago.fecha_registro', 'className': 'text-center' },
-                { 'data': 'empresa_razon_social', 'name': 'adm_contri.razon_social', 'className': 'text-center' },
-                { 'data': 'sede', 'name': 'sis_sede.codigo', 'className': 'text-center' },
+                { 'data': 'descripcion_empresa_sede', 'name': 'sis_sede.descripcion', 'className': 'text-center' },
                 { 'data': 'grupo', 'name': 'sis_grupo.descripcion', 'className': 'text-center' },
                 { 'data': 'division', 'name': 'division.descripcion', 'className': 'text-center' },
+                { 'data': 'descripcion_proyecto', 'name': 'proy_proyecto.descripcion', 'className': 'text-center' },
                 { 'data': 'monto_total', 'name': 'requerimiento_pago.monto_total', 'defaultContent': '', 'className': 'text-right' },
                 { 'data': 'usuario_nombre_corto', 'name': 'sis_usua.nombre_corto' },
                 { 'data': 'nombre_estado', 'name': 'adm_estado_doc.estado_doc' },
@@ -307,10 +307,16 @@ class ListarRequerimientoPagoView {
             ],
             'columnDefs': [
 
+                // {
+                //     'render': function (data, type, row) {
+                //         return row['termometro'];
+                //     }, targets: 1
+                // },
                 {
                     'render': function (data, type, row) {
-                        return row['termometro'];
-                    }, targets: 1
+                        // return `<label class="lbl-codigo handleClickAbrirRequerimiento" title="Abrir Requerimiento">${row.codigo}</label>`;
+                        return `<div style="display:flex;">${row['termometro']} &nbsp; ${row.codigo} </div>`;
+                    }, targets: 2
                 },
                 {
                     'render': function (data, type, row) {
