@@ -25,8 +25,8 @@ class VentasInternasController extends Controller
 
             $doc_ven = DB::table('almacen.doc_ven')
                 ->select('doc_ven.*', 'log_prove.id_proveedor')
-                ->join('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'doc_ven.id_cliente')
-                ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
+                ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'doc_ven.id_empresa')
+                ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
                 ->join('logistica.log_prove', 'log_prove.id_contribuyente', '=', 'adm_contri.id_contribuyente')
                 ->where('id_doc_ven', $id)
                 ->first();

@@ -71,6 +71,9 @@ Atención de Salidas
                     </div>
                     
                     <div id="salidas" class="tab-pane fade ">
+                        <form id="formFiltrosSalidasProcesadas" method="POST" target="_blank" action="{{route('almacen.movimientos.pendientes-salida.salidasProcesadasExcel')}}">
+                            @csrf()
+                        </form>
                         <div class="row">
                             <div class="col-md-12">
                                 <table class="mytable table table-condensed table-bordered table-okc-view" id="despachosEntregados">

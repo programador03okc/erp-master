@@ -65,6 +65,7 @@ class RegistroPagoController extends Controller
                 'tp_cta_persona.descripcion as tipo_cuenta_persona',
                 'banco_persona.razon_social as banco_persona',
                 'sis_usua.nombre_corto',
+                'rrhh_perso.nro_documento as dni_persona',
                 DB::raw("concat(rrhh_perso.nombres, ' ' ,rrhh_perso.apellido_paterno, ' ' ,rrhh_perso.apellido_materno) AS persona"),
                 DB::raw("(SELECT count(archivo) FROM tesoreria.requerimiento_pago_adjunto
                         WHERE requerimiento_pago_adjunto.id_requerimiento_pago = requerimiento_pago.id_requerimiento_pago

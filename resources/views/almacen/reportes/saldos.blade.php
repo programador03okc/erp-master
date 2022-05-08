@@ -87,6 +87,7 @@ Saldos Actuales
                                     <th>Código</th>
                                     <th>Cód. SoftLink</th>
                                     <th>Part Number</th>
+                                    <th>SubCategoría</th>
                                     <th width="40%">Descripción</th>
                                     <th>Mon</th>
                                     <th>Valorizacion</th>
@@ -192,6 +193,7 @@ Saldos Actuales
                     {data: 'codigo'},
                     {data: 'cod_softlink'},
                     {data: 'part_number'},
+                    {data: 'categoria'},
                     {data: 'producto'},
                     {data: 'simbolo', className: 'text-center'},
                     {

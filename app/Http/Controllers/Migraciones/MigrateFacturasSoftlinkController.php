@@ -91,30 +91,31 @@ class MigrateFacturasSoftlinkController extends Controller
 
             if ($doc !== null && count($detalles) > 0) {
 
-                if ($doc->id_tp_doc == 2) { //Factura
+                // if ($doc->id_tp_doc == 2) { //Factura
 
-                    $empresas_soft = [
-                        ['id' => 1, 'nombre' => 'OKC'],
-                        ['id' => 2, 'nombre' => 'PYC'],
-                        ['id' => 3, 'nombre' => 'SVS'],
-                        ['id' => 4, 'nombre' => 'RBDB'],
-                        ['id' => 5, 'nombre' => 'JEDR'],
-                        ['id' => 6, 'nombre' => 'PTEC']
-                    ];
-                    // } else if ($doc->id_tp_doc == 3) { //Servicio
+                $empresas_soft = [
+                    ['id' => 1, 'nombre' => 'OKC'],
+                    ['id' => 2, 'nombre' => 'PYC'],
+                    ['id' => 3, 'nombre' => 'SVS'],
+                    ['id' => 4, 'nombre' => 'RBDB'],
+                    ['id' => 5, 'nombre' => 'JEDR'],
+                    ['id' => 6, 'nombre' => 'PTEC']
+                ];
+                // } else if ($doc->id_tp_doc == 3) { //Servicio
 
-                    //     $empresas_soft = [
-                    //         ['id' => 1, 'nombre' => 'OKC', 'cod_docu' => 'OS'],
-                    //         ['id' => 2, 'nombre' => 'PYC', 'cod_docu' => 'OP'],
-                    //         ['id' => 3, 'nombre' => 'SVS', 'cod_docu' => 'OV'],
-                    //         ['id' => 4, 'nombre' => 'RBDB', 'cod_docu' => 'OR'],
-                    //         ['id' => 5, 'nombre' => 'JEDR', 'cod_docu' => 'OJ'],
-                    //         ['id' => 6, 'nombre' => 'PTEC', 'cod_docu' => 'OA']
-                    //     ];
-                }
+                //     $empresas_soft = [
+                //         ['id' => 1, 'nombre' => 'OKC', 'cod_docu' => 'OS'],
+                //         ['id' => 2, 'nombre' => 'PYC', 'cod_docu' => 'OP'],
+                //         ['id' => 3, 'nombre' => 'SVS', 'cod_docu' => 'OV'],
+                //         ['id' => 4, 'nombre' => 'RBDB', 'cod_docu' => 'OR'],
+                //         ['id' => 5, 'nombre' => 'JEDR', 'cod_docu' => 'OJ'],
+                //         ['id' => 6, 'nombre' => 'PTEC', 'cod_docu' => 'OA']
+                //     ];
+                // }
 
                 $cod_suc = '';
-                $cod_docu = 'FA';
+                //pendiente corregir tipo docu
+                $cod_docu = ($doc->id_tp_doc == 2 ? 'FA' : ($doc->id_tp_doc == 4 ? 'BV' : ''));
 
                 foreach ($empresas_soft as $emp) {
                     if ($emp['nombre'] == $doc->codigo_emp) {
@@ -261,8 +262,7 @@ class MigrateFacturasSoftlinkController extends Controller
                     // $num_ult_mov = substr(($ult_mov !== null ? $ult_mov->num_docu : 0), 4);
                     //crea el correlativo del documento
                     $nro_mov = $this->leftZero(7, (intval($doc->numero)));
-                    //anida el anio con el numero de documento
-                    // $num_docu = $yy . $nro_mov;
+                    //anida la serie con el numero de documento
                     $num_docu = $doc->serie . $nro_mov;
                     //buscar si existe el comprobante en sofltink
                     $doc_softlink = DB::connection('soft')->table('movimien')
@@ -585,6 +585,7 @@ class MigrateFacturasSoftlinkController extends Controller
     {
         $docs = DB::table('almacen.doc_com')
             ->where('estado', 1)
+            ->where('id_tp_doc', 2)
             ->whereNull('id_doc_softlink')
             ->orderBy('id_doc_com', 'asc')
             ->limit(80)
@@ -596,5 +597,77 @@ class MigrateFacturasSoftlinkController extends Controller
             array_push($respuestas, $this->enviarComprobanteSoftlink($doc->id_doc_com));
         }
         return response()->json(['respuestas' => $respuestas, 'nro_docs' => $docs->count()], 200);
+    }
+
+    public function actualizarProveedorComprobantes()
+    {
+        try {
+            DB::beginTransaction();
+
+            $docs = DB::table('almacen.doc_com')
+                ->select(
+                    'doc_com.id_doc_com',
+                    'doc_com.serie',
+                    'doc_com.numero',
+                    'adm_contri.id_contribuyente as id_contri_proveedor',
+                    'contri_empresa.id_contribuyente as id_contri_empresa',
+                    'com_cliente.id_cliente'
+                )
+                ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'doc_com.id_proveedor')
+                ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
+                ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'doc_com.id_sede')
+                ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
+                ->join('contabilidad.adm_contri as contri_empresa', 'contri_empresa.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
+                ->join('comercial.com_cliente', 'com_cliente.id_contribuyente', '=', 'contri_empresa.id_contribuyente')
+                ->where('doc_com.estado', 1)
+                ->orderBy('doc_com.id_doc_com', 'asc')
+                ->get();
+
+            $respuestas = [];
+            $count_docs = 0;
+            $count_docs_actualizados = 0;
+
+            foreach ($docs as $doc) {
+
+                if (intval($doc->id_contri_proveedor) == intval($doc->id_contri_empresa)) {
+
+                    $doc_ven = DB::table('almacen.doc_ven')
+                        ->select('doc_ven.*', 'log_prove.id_proveedor')
+                        ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'doc_ven.id_empresa')
+                        ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
+                        ->join('logistica.log_prove', 'log_prove.id_contribuyente', '=', 'adm_contri.id_contribuyente')
+                        ->where([
+                            ['doc_ven.id_cliente', '=', $doc->id_cliente],
+                            ['doc_ven.serie', '=', $doc->serie],
+                            ['doc_ven.numero', '=', $doc->numero],
+                            ['doc_ven.estado', '=', 1]
+                        ])
+                        ->get();
+
+                    if ($doc_ven !== null && count($doc_ven) == 1) {
+                        $dv = $doc_ven->first();
+                        DB::table('almacen.doc_com')
+                            ->where('id_doc_com', $doc->id_doc_com)
+                            ->update(['id_proveedor' => $dv->id_proveedor]);
+
+                        $count_docs_actualizados++;
+                        array_push($respuestas, [
+                            'id_doc_com' => $doc->id_doc_com,
+                            'serie' => $doc->serie,
+                            'numero' => $doc->numero,
+                            'id_proveedor_anterior' => $doc->id_contri_proveedor,
+                            // 'id_empresa' => $doc->id_cliente,
+                            'id_proveedor_nuevo' => $dv->id_proveedor,
+                        ]);
+                    }
+                    $count_docs++;
+                }
+            }
+            DB::commit();
+            return response()->json(['respuestas' => $respuestas, 'nro_docs' => $count_docs,  'nro_actualizados' => $count_docs_actualizados], 200);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return array('tipo' => 'error', 'mensaje' => 'Hubo un problema al actualizar las sedes. Por favor intente de nuevo', 'error' => $e->getMessage());
+        }
     }
 }

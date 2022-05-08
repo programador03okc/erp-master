@@ -1428,6 +1428,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 				Route::get('seriesVentaExcel/{id}', 'Almacen\Movimiento\SalidasPendientesController@seriesVentaExcel');
 				Route::post('salidasPendientesExcel', 'Almacen\Movimiento\SalidasPendientesController@salidasPendientesExcel')->name('salidasPendientesExcel');
+				Route::post('salidasProcesadasExcel', 'Almacen\Movimiento\SalidasPendientesController@salidasProcesadasExcel')->name('salidasProcesadasExcel');
 			});
 
 			Route::group(['as' => 'prorrateo.', 'prefix' => 'prorrateo'], function () {
@@ -1499,6 +1500,7 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::get('enviarComprobanteSoftlink/{id}', 'Migraciones\MigrateFacturasSoftlinkController@enviarComprobanteSoftlink');
 			Route::get('documentos_ver/{id}', 'Almacen\Movimiento\OrdenesPendientesController@documentos_ver');
 			Route::get('actualizarSedesFaltantes', 'Migraciones\MigrateFacturasSoftlinkController@actualizarSedesFaltantes');
+			Route::get('actualizarProveedorComprobantes', 'Migraciones\MigrateFacturasSoftlinkController@actualizarProveedorComprobantes');
 			Route::get('migrarComprobantesSoftlink', 'Migraciones\MigrateFacturasSoftlinkController@migrarComprobantesSoftlink');
 		});
 

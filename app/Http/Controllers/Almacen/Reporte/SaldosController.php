@@ -58,6 +58,7 @@ class SaldosController extends Controller
                     'alm_prod.codigo',
                     'alm_prod.cod_softlink',
                     'alm_prod.descripcion AS producto',
+                    'alm_cat_prod.descripcion AS categoria',
                     'alm_und_medida.abreviatura',
                     'alm_prod.part_number',
                     'sis_moneda.simbolo',
@@ -73,6 +74,7 @@ class SaldosController extends Controller
                 )
                 ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_prod_ubi.id_almacen')
                 ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_prod_ubi.id_producto')
+                ->join('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
                 ->join('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
                 ->leftjoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'alm_prod.id_moneda')
                 ->where([['alm_prod_ubi.estado', '=', 1], ['alm_prod.estado', '=', 1]]);
@@ -124,6 +126,7 @@ class SaldosController extends Controller
                         'codigo'                => ($d->codigo != null) ?  $d->codigo : '',
                         'cod_softlink'          => ($d->cod_softlink != null) ?  $d->cod_softlink : '',
                         'part_number'           => ($d->part_number != null) ?  $d->part_number : '',
+                        'categoria'             => $d->categoria,
                         'producto'              => $d->producto,
                         'simbolo'               => ($d->simbolo != null) ?  $d->simbolo : '',
                         'valorizacion'          => $saldo_valor,
