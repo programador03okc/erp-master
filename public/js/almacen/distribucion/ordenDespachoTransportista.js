@@ -10,6 +10,9 @@ function openAgenciaTransporte(data) {
     $("[name=tr_razon_social]").val(data.transportista_razon_social !== null ? data.transportista_razon_social : '');
     $("[name=serie]").val(data.serie_tra !== null ? data.serie_tra : '');
     $("[name=numero]").val(data.numero_tra !== null ? data.numero_tra : '');
+    $("[name=serie_guia_venta]").val(data.serie_guia !== null ? data.serie_guia : '');
+    $("[name=numero_guia_venta]").val(data.numero_guia !== null ? data.numero_guia : '');
+
     $("[name=fecha_transportista]").val(data.fecha_transportista !== null ? data.fecha_transportista : '');
     $("[name=fecha_despacho_real]").val(data.fecha_despacho_real !== null ? data.fecha_despacho_real : '');
     $("[name=importe_flete]").val(data.importe_flete !== null ? data.importe_flete : '');

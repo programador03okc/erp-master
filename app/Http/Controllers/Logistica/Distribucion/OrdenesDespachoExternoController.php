@@ -89,6 +89,8 @@ class OrdenesDespachoExternoController extends Controller
                 'orden_despacho.estado as estado_od',
                 'orden_despacho.serie as serie_tra',
                 'orden_despacho.numero as numero_tra',
+                'orden_despacho.serie_guia_venta as serie_guia',
+                'orden_despacho.numero_guia_venta as numero_guia',
                 'orden_despacho.fecha_transportista',
                 'orden_despacho.codigo_envio',
                 'orden_despacho.credito',
@@ -137,7 +139,6 @@ class OrdenesDespachoExternoController extends Controller
                             alm_det_req.id_requerimiento = alm_req.id_requerimiento
                             and alm_det_req.estado != 7
                             and alm_det_req.id_producto is null) AS productos_no_mapeados"),
-
             )
             ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
             ->leftjoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
