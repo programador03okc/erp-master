@@ -205,7 +205,7 @@ class Facturacion {
                     render: function (data, type, row) {
                         console.log(row["items_restantes"]);
                         return `<div style="display: flex;">
-                            ${parseInt(row["items_restantes"]) > 0
+                            ${(parseInt(row["items_restantes"]) - parseInt(row["count_facturas"])) > 0
                                 ? `<button type="button" class="doc btn btn-success btn-xs btn-flat" data-toggle="tooltip" 
                             data-placement="bottom" title="Generar Factura" 
                             data-req="${row["id_requerimiento"]}"

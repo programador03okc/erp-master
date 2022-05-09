@@ -142,13 +142,11 @@ class PendientesFacturacionController extends Controller
                 'alm_req.codigo as codigo_req',
                 'oc_propias_view.moneda_oc',
 
-                DB::raw("(SELECT count(distinct id_doc_ven) FROM almacen.doc_ven AS d
-                    INNER JOIN almacen.alm_det_req AS req
-                        on( req.id_requerimiento = alm_req.id_requerimiento)
-                    INNER JOIN almacen.doc_ven_det AS doc
-                        on( doc.id_detalle_requerimiento = req.id_detalle_requerimiento 
-                            and doc.estado != 7)
-                    WHERE d.id_doc_ven = doc.id_doc) AS count_facturas"),
+                DB::raw("(SELECT count(distinct doc.id_doc_det) FROM almacen.doc_ven_det AS doc
+                INNER JOIN almacen.alm_det_req AS req
+                    on( req.id_requerimiento = alm_req.id_requerimiento and
+                    doc.id_detalle_requerimiento = req.id_detalle_requerimiento)
+                WHERE  doc.estado != 7) AS count_facturas"),
 
                 DB::raw("(SELECT count(alm_det_req.id_detalle_requerimiento) FROM almacen.alm_det_req 
                     LEFT JOIN almacen.doc_ven_det
