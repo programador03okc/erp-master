@@ -455,7 +455,7 @@ class OrdenesPendientesController extends Controller
             $data,
             $request->fecha_inicio,
             $request->fecha_fin
-        ), 'ingresosProcesados.xlsx');
+        ), 'Ingresos Procesados al ' . new Carbon() . '.xlsx');
     }
 
     public function detalleOrden($id_orden)
