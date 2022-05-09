@@ -162,9 +162,33 @@ class Movimiento extends Model
             ])
             ->select('doc_ven.serie', 'doc_ven.numero')->distinct()->get();
 
+        $ventas_externas = MovimientoDetalle::join('almacen.guia_ven_det', 'guia_ven_det.id_guia_ven_det', 'mov_alm_det.id_guia_ven_det')
+            ->join('almacen.orden_despacho_det', 'orden_despacho_det.id_od_detalle', 'guia_ven_det.id_od_det')
+            ->join('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', 'orden_despacho_det.id_detalle_requerimiento')
+            ->join('almacen.doc_ven_det', 'doc_ven_det.id_detalle_requerimiento', 'alm_det_req.id_detalle_requerimiento')
+            ->join('almacen.doc_ven', 'doc_ven.id_doc_ven', 'doc_ven_det.id_doc')
+            ->where([
+                ['mov_alm_det.id_mov_alm', '=', $this->attributes['id_mov_alm']],
+                ['doc_ven.estado', '!=', 7]
+            ])
+            ->select('doc_ven.serie', 'doc_ven.numero')->distinct()->get();
+
         $resultado = [];
+
         foreach ($ventas_vinculadas as $doc) {
-            array_push($resultado, $doc->serie . '-' . $doc->numero);
+            $serie_numero = $doc->serie . '-' . str_pad(intval($doc->numero), 7, "0", STR_PAD_LEFT);
+
+            if (!in_array($serie_numero, $resultado)) {
+                array_push($resultado, $serie_numero);
+            }
+        }
+
+        foreach ($ventas_externas as $doc) {
+            $serie_numero = $doc->serie . '-' . str_pad(intval($doc->numero), 7, "0", STR_PAD_LEFT);
+
+            if (!in_array($serie_numero, $resultado)) {
+                array_push($resultado, $serie_numero);
+            }
         }
         return implode(', ', $resultado);
     }
@@ -196,7 +220,7 @@ class Movimiento extends Model
         foreach ($ventas_vinculadas as $doc) {
             $serie_numero = $doc->serie . str_pad(intval($doc->numero), 7, "0", STR_PAD_LEFT);
 
-            if (!in_array($serie_numero, $resultado)) {
+            if (in_array($serie_numero, $resultado) == false) {
                 array_push($resultado, $serie_numero);
             }
         }
@@ -204,7 +228,7 @@ class Movimiento extends Model
         foreach ($ventas_externas as $doc) {
             $serie_numero = $doc->serie . str_pad(intval($doc->numero), 7, "0", STR_PAD_LEFT);
 
-            if (!in_array($serie_numero, $resultado)) {
+            if (in_array($serie_numero, $resultado) == false) {
                 array_push($resultado, $serie_numero);
             }
         }
