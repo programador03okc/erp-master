@@ -152,10 +152,10 @@ class PendientesFacturacionController extends Controller
 
                 DB::raw("(SELECT count(alm_det_req.id_detalle_requerimiento) FROM almacen.alm_det_req 
                     LEFT JOIN almacen.doc_ven_det
-                    on( alm_det_req.id_detalle_requerimiento = doc_ven_det.id_detalle_requerimiento )
+                    on( alm_det_req.id_detalle_requerimiento = doc_ven_det.id_detalle_requerimiento
+                    and doc_ven_det.id_detalle_requerimiento is null )
                     WHERE alm_det_req.id_requerimiento = alm_req.id_requerimiento
-                    and alm_det_req.entrega_cliente = true
-                    and doc_ven_det.id_detalle_requerimiento is null) AS items_restantes")
+                    and alm_det_req.entrega_cliente = true) AS items_restantes")
 
             )
             ->join('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'alm_req.id_cliente')
