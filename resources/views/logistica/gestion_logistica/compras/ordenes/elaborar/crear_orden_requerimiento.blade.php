@@ -303,7 +303,7 @@ Orden de compra / servicio
                             <h6>Item's de requerimiento</h6>
                         </legend>
                         <div class="btn-group" role="group" aria-label="...">
-                        @if((in_array(Auth::user()->id_usuario,[14,5])))
+                        @if((in_array(Auth::user()->id_usuario,[14,5,122])))
                             <button type="button" class="btn btn-xs btn-success activation handleClickCatalogoProductosModal" id="btnAgregarProducto" data-toggle="tooltip" data-placement="bottom" title="Agregar producto"><i class="fas fa-plus"></i> Productos</button>
                         @endif
                             <button type="button" class="btn btn-xs btn-info activation handleClickCatalogoProductosObsequioModal" id="btnAgregarProductoObsequio" data-toggle="tooltip" data-placement="bottom" title="Agregar producto para obsequio"><i class="fas fa-plus"></i> Productos para obsequio</button>
