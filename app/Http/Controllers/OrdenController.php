@@ -3623,10 +3623,19 @@ class OrdenController extends Controller
                             // $correosAnulaciónOrden[] = Auth::user()->email; //usuario en sessión que genero la acción
                             $idUsuariosAlAnularOrden = Usuario::getAllIdUsuariosPorRol(27); // Usuarios que reciben correo al anula rorden
                             foreach ($idUsuariosAlAnularOrden as $id) {
-                                $correosAnulaciónOrden[] = Usuario::find($id)->email;
+                                if( Usuario::find($id)!=null){
+                                    if(Usuario::find($id)->email!=null){
+                                        $correosAnulaciónOrden[] =Usuario::find($id)->email;
+                                    }
+                                }
+                                    
                             }
                             foreach ($id_usuario_list as $idUsu) {
-                                $correosAnulaciónOrden[] = Usuario::find($idUsu)->email; // usuario dueño del requerimiento(s)
+                                if(Usuario::find($idUsu)!=null){
+                                    if(Usuario::find($idUsu)->email!=null){
+                                        $correosAnulaciónOrden[] = Usuario::find($idUsu)->email; // usuario dueño del requerimiento(s)
+                                    }
+                                }
                             }
                         }
                         $orden = Orden::with('sede')->find($id_orden);
