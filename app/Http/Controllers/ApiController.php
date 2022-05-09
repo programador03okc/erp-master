@@ -27,7 +27,7 @@ class ApiController extends Controller
                 $compra = (float) $apiQ->compra;
                 $venta = (float) $apiQ->venta;
                 $promedio = ($compra + $venta) / 2;
-    
+
                 DB::table('contabilidad.cont_tp_cambio')->insertGetId([
                     'fecha'     => $fecha,
                     'moneda'    => 2,
@@ -36,7 +36,7 @@ class ApiController extends Controller
                     'estado'    => 1,
                     'promedio'  => $promedio
                 ], 'id_tp_cambio');
-    
+
                 $data[] = ['fecha' => $fecha, 'compra' => $compra, 'venta' => $venta];
             }
         }
@@ -50,13 +50,13 @@ class ApiController extends Controller
         $venta = 0;
         $data = [];
         $query = DB::table('contabilidad.cont_tp_cambio')->where('fecha', $fecha);
-        
+
         if ($query->count() > 0) {
             $rpta = 'exist';
             $compra = $query->orderBy('id_tp_cambio', 'desc')->first()->compra;
             $venta = $query->orderBy('id_tp_cambio', 'desc')->first()->venta;
             $promedio = $query->orderBy('id_tp_cambio', 'desc')->first()->promedio;
-        } else{
+        } else {
             $rpta = 'null';
             $apiQ = json_decode($this->consultaSunat('https://api.apis.net.pe/v1/tipo-cambio-sunat'));
             $compra = (float) $apiQ->compra;
@@ -71,19 +71,19 @@ class ApiController extends Controller
                 'estado'    => 1,
                 'promedio'  => $promedio
             ], 'id_tp_cambio');
-
         }
-        
-        $data[] = ['fecha' => $fecha, 'compra' => $compra, 'venta' => $venta];
-        return response()->json(array('response' => $rpta, 'data' => $data), 200);
+        // $data[] = ['fecha' => $fecha, 'compra' => $compra, 'venta' => $venta];
+        // return response()->json(array('response' => $rpta, 'data' => $data), 200);
+
+        die('***FIN DEL PROCESO. TIPO DE CAMBIO ACTUAL: ' . $fecha . '***');
     }
 
     public function consultaSunat($url)
     {
         $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $url); 
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true); 
-        curl_setopt($curl, CURLOPT_HEADER, 0); 
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_HEADER, 0);
         return curl_exec($curl);
     }
 }

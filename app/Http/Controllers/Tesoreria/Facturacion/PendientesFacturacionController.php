@@ -345,7 +345,7 @@ class PendientesFacturacionController extends Controller
             $id_doc = DB::table('almacen.doc_ven')->insertGetId(
                 [
                     'serie' => strtoupper($request->serie_doc),
-                    'numero' => $request->numero_doc,
+                    'numero' => str_pad(intval($request->numero_doc), 7, "0", STR_PAD_LEFT),
                     'id_tp_doc' => $request->id_tp_doc,
                     'id_cliente' => $request->id_cliente,
                     'fecha_emision' => $request->fecha_emision_doc,
