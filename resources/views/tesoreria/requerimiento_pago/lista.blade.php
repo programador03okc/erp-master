@@ -36,10 +36,10 @@ Listado de requerimientos de pago
                                         <th class="text-center" style="width:20%">Concepto</th>
                                         <th class="text-center" style="width:15%">Tipo Req.</th>
                                         <th class="text-center" style="width:8%">Fecha registro</th>
-                                        <th class="text-center" style="width:10%">Empresa</th>
-                                        <th class="text-center" style="width:10%">Sede</th>
+                                        <th class="text-center" style="width:10%">Empresa - sede</th>
                                         <th class="text-center">Grupo</th>
                                         <th class="text-center">División</th>
+                                        <th class="text-center">Proyecto/presupuesto</th>
                                         <th class="text-center">Monto Total</th>
                                         <th class="text-center">Creado por</th>
                                         <th class="text-center" style="width:5%;">Estado</th>

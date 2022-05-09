@@ -1321,6 +1321,7 @@ class RequerimientoController extends Controller
             ->leftJoin('rrhh.rrhh_postu as post', 'post.id_postulante', '=', 'trab.id_postulante')
             ->leftJoin('rrhh.rrhh_perso as pers', 'pers.id_persona', '=', 'post.id_persona')
             ->leftJoin('administracion.division', 'division.id_division', '=', 'alm_req.division_id')
+            ->leftJoin('proyectos.proy_proyecto', 'proy_proyecto.id_proyecto', '=', 'alm_req.id_proyecto')
 
             ->select(
                 'alm_req.id_requerimiento',
@@ -1351,6 +1352,7 @@ class RequerimientoController extends Controller
                 'alm_tp_req.descripcion AS tipo_requerimiento',
                 'adm_prioridad.descripcion AS priori',
                 'sis_grupo.descripcion AS grupo',
+                'proy_proyecto.descripcion AS descripcion_proyecto',
                 'adm_area.descripcion AS area',
                 'sis_moneda.simbolo AS simbolo_moneda',
                 'alm_req.fecha_registro',
@@ -1445,6 +1447,7 @@ class RequerimientoController extends Controller
             ->leftJoin('rrhh.rrhh_perso as pers', 'pers.id_persona', '=', 'post.id_persona')
             ->leftJoin('administracion.division', 'division.id_division', '=', 'alm_req.division_id')
             // ->leftJoin('administracion.adm_aprobacion', 'adm_aprobacion.id_doc_aprob', '=', 'adm_documentos_aprob.id_doc_aprob')
+            ->leftJoin('proyectos.proy_proyecto', 'proy_proyecto.id_proyecto', '=', 'alm_req.id_proyecto')
 
             ->select(
                 'alm_req.id_requerimiento',
@@ -1460,6 +1463,7 @@ class RequerimientoController extends Controller
                 'alm_req.concepto',
                 'alm_req.id_grupo',
                 'alm_req.id_empresa',
+                'sis_sede.descripcion as descripcion_empresa_sede',
                 'adm_contri.razon_social',
                 'adm_contri.nro_documento',
                 'adm_contri.id_doc_identidad',
@@ -1477,6 +1481,7 @@ class RequerimientoController extends Controller
                 'alm_tp_req.descripcion AS tipo_requerimiento',
                 'adm_prioridad.descripcion AS priori',
                 'sis_grupo.descripcion AS grupo',
+                'proy_proyecto.descripcion AS descripcion_proyecto',
                 'adm_area.descripcion AS area',
                 'sis_moneda.simbolo AS simbolo_moneda',
                 'alm_req.fecha_registro',

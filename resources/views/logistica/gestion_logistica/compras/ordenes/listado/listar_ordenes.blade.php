@@ -39,31 +39,27 @@ Gestión de estados
                 <div class="box box-widget">
                     <div class="box-body">
                         <div class="table-responsive">
-                            <table class="mytable table table-condensed table-bordered table-okc-view" id="listaOrdenes" style="font-size: 0.9rem;">
+                            <table class="mytable table table-condensed table-bordered table-okc-view" id="listaOrdenes">
                                 <thead>
-                                    <tr>
-                                        <th></th>
-                                        <th>Cuadro de presupuesto</th>
-                                        <th>Proveedor</th>
-                                        <th>Nro.orden</th>
-                                        <th>Req.</th>
-                                        <th style="width:5%">Estado</th>
-                                        <th>Fecha vencimiento</th>
-                                        <th>Fecha llegada</th>
-                                        <th>Estado aprobación CC</th>
-                                        <th>Fecha aprobación CC</th>
-                                        <th>Fecha Requerimiento</th>
-                                        <th style="width:20%">Leadtime</th>
-                                        <th>Empresa / Sede</th>
-                                        <th>Condición</th>
-                                        <th>Fecha em.</th>
-                                        <th style="width:5%">Tiem. Atenc. Log.</th>
-                                        <th style="width:5%">Tiem. Atenc. Prov.</th>
-                                        <th>Facturas</th>
-                                        <th>Monto Presup. CDP</th>
-                                        <th>Monto Orden</th>
-                                        <th>Acción</th>
-                                    </tr>
+                                <tr>
+                                <th>cod. ord.</th>
+                                <th>Cod. softlink</th>
+                                <th>Cod. req.</th>
+                                <th>Cod. CDP</th>
+                                <th>Empresa - sede</th>
+                                <th>Mnd.</th>
+                                <th>Fech. emisión</th>
+                                <th>Fech. llegada</th>
+                                <th>Tiempo Atención Log.</th>
+                                <th>Proveedor</th>
+                                <th>Condicón</th>
+                                <th>Estado de orden</th>
+                                <th>Estado del pago</th>
+                                <th>Importe total orden</th>
+                                <th>Importe total CDP</th>
+                                <th>Acción</th>
+                                </tr>
+ 
                                 </thead>
                                 <tbody></tbody>
                             </table>
@@ -78,25 +74,28 @@ Gestión de estados
                 <div class="box box-widget">
                     <div class="box-body">
                         <div class="table-responsive">
-                            <table class="mytable table table-condensed table-bordered table-okc-view" id="listaDetalleOrden" style="font-size: 0.9rem;">
+                            <table class="mytable table table-condensed table-bordered table-okc-view" id="listaItemsOrden" style="font-size: 0.9rem;">
                                 <thead>
                                     <tr>
-                                        <th>OC</th>
-                                        <th>Req.</th>
-                                        <th>OC Softlink</th>
-                                        <th>OCAM</th>
+                                        <th>cod. ord.</th>
+                                        <th>Cod. req.</th>
+                                        <th>Cod OC Soft.</th>
+                                        <th>Concepto Req.</th>
                                         <th>Cliente</th>
                                         <th>Proveedor</th>
                                         <th>Marca</th>
                                         <th>Categoría</th>
-                                        <th>Part Number</th>
+                                        <th>Cod. prod.</th>
+                                        <th>Part number</th>
+                                        <th>Cod. soft.</th>
                                         <th>Descripción</th>
-                                        <th>Precio Orden</th>
-                                        <th>Precio CC</th>
-                                        <th>Fecha Emisión</th>
-                                        <th>Plazo Entrega</th>
-                                        <th style="width:15%">ETA</th>
-                                        <th>Sede - Empresa</th>
+                                        <th>Precio Un.</th>
+                                        <th>Precio Un. CDP</th>
+                                        <th>Fecha emisión ord.</th>
+                                        <th>Plazo entrega</th>
+                                        <th>Fecha ingreso almacén</th>
+                                        <th>Tiempo atención Prov.</th>
+                                        <th>Empresa - sede</th>
                                         <th>Estado</th>
                                         <th style="width:5%">Acción</th>
                                     </tr>

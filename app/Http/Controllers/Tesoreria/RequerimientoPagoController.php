@@ -138,6 +138,7 @@ class RequerimientoPagoController extends Controller
             ->leftJoin('contabilidad.sis_identi', 'sis_identi.id_doc_identidad', '=', 'adm_contri.id_doc_identidad')
             ->leftJoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'requerimiento_pago.id_usuario')
             ->leftJoin('administracion.division', 'division.id_division', '=', 'requerimiento_pago.id_division')
+            ->leftJoin('proyectos.proy_proyecto', 'proy_proyecto.id_proyecto', '=', 'requerimiento_pago.id_proyecto')
 
             ->select(
                 'requerimiento_pago.*',
@@ -148,7 +149,9 @@ class RequerimientoPagoController extends Controller
                 'adm_prioridad.descripcion as prioridad',
                 'sis_grupo.descripcion as grupo',
                 'sis_sede.codigo as sede',
+                'sis_sede.descripcion as descripcion_empresa_sede',
                 'division.descripcion as division',
+                'proy_proyecto.descripcion AS descripcion_proyecto',
                 'adm_contri.razon_social as empresa_razon_social',
                 'adm_contri.nro_documento as empresa_nro_documento',
                 'sis_identi.descripcion as empresa_tipo_documento',

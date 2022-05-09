@@ -357,43 +357,44 @@ class ListarRequerimientoView {
             },
             'columns': [
                 { 'data': 'id_requerimiento', 'name': 'alm_req.id_requerimiento', 'visible': false },
-                { 'data': 'priori', 'name': 'adm_prioridad.descripcion', 'className': 'text-center' },
+                { 'data': 'priori', 'name': 'adm_prioridad.descripcion', 'className': 'text-center','visible': false },
                 { 'data': 'codigo', 'name': 'codigo', 'className': 'text-center' },
                 { 'data': 'concepto', 'name': 'concepto' },
                 { 'data': 'fecha_registro', 'name': 'alm_req.fecha_registro', 'className': 'text-center' },
                 { 'data': 'fecha_entrega', 'name': 'alm_req.fecha_entrega', 'className': 'text-center' },
                 { 'data': 'tipo_requerimiento', 'name': 'alm_tp_req.descripcion', 'className': 'text-center' },
-                { 'data': 'razon_social', 'name': 'adm_contri.razon_social', 'className': 'text-center' },
+                { 'data': 'descripcion_empresa_sede', 'name': 'sis_sede.descripcion', 'className': 'text-center' },
                 { 'data': 'grupo', 'name': 'sis_grupo.descripcion', 'className': 'text-center' },
                 { 'data': 'division', 'name': 'division.descripcion', 'className': 'text-center' },
+                { 'data': 'descripcion_proyecto', 'name': 'proy_proyecto.descripcion', 'className': 'text-center' },
                 { 'data': 'monto_subtotal', 'name': 'monto_subtotal', 'defaultContent': '', 'className': 'text-right' },
                 { 'data': 'monto_total', 'name': 'monto_total', 'defaultContent': '', 'className': 'text-right' },
                 { 'data': 'nombre_usuario', 'name': 'nombre_usuario' },
                 { 'data': 'estado_doc', 'name': 'adm_estado_doc.estado_doc' },
-                { 'data': 'id_requerimiento' }
+                { 'data': 'id_requerimiento' ,'visible': false }
             ],
             'columnDefs': [
 
-                {
-                    'render': function (data, type, row) {
-                        return row['termometro'];
-                    }, targets: 1
-                },
+                // {
+                //     'render': function (data, type, row) {
+                //         return row['termometro'];
+                //     }, targets: 1
+                // },
                 {
                     'render': function (data, type, row) {
                         // return `<label class="lbl-codigo handleClickAbrirRequerimiento" title="Abrir Requerimiento">${row.codigo}</label>`;
-                        return `<a href="/necesidades/requerimiento/elaboracion/index?id=${row.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${row.codigo}</a> ${row.tiene_transformacion == true ? '<i class="fas fa-random text-danger" title="Con transformación"></i>' : ''} `;
+                        return `<div style="display:flex;">${row['termometro']} &nbsp;<a href="/necesidades/requerimiento/elaboracion/index?id=${row.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${row.codigo}</a> ${row.tiene_transformacion == true ? '<i class="fas fa-random text-danger" title="Con transformación"></i>' : ''} </div>`;
                     }, targets: 2
                 },
                 {
                     'render': function (data, type, row) {
                         return (row['simbolo_moneda']) + (Util.formatoNumero(row.monto_subtotal, 2));
-                    }, targets: 10
+                    }, targets: 11
                 },
                 {
                     'render': function (data, type, row) {
                         return (row['simbolo_moneda']) + (Util.formatoNumero(row.monto_total, 2));
-                    }, targets: 11
+                    }, targets: 12
                 },
                 // {
                 //     'render': function (data, type, row) {
@@ -429,7 +430,7 @@ class ListarRequerimientoView {
                                 break;
 
                         }
-                    }, targets: 13, className: 'text-center'
+                    }, targets: 14, className: 'text-center'
                 },
                 {
                     'render': function (data, type, row) {
@@ -438,7 +439,7 @@ class ListarRequerimientoView {
                             labelOrdenes += `<label class="lbl-codigo handleClickAbrirOrdenPDF" data-id-orden-compra=${element.id_orden_compra} title="Abrir orden">${element.codigo}</label>`;
                         });
                         return labelOrdenes;
-                    }, targets: 14, className: 'text-center'
+                    }, targets: 15, className: 'text-center'
                 },
                 {
                     'render': function (data, type, row) {
@@ -477,7 +478,7 @@ class ListarRequerimientoView {
                             .concat(containerCloseBrackets);
 
                         return botoneraPrimaria + botoneraSecundaria
-                    }, targets: 15
+                    }, targets: 16
                 },
 
             ],

@@ -45,8 +45,10 @@ use App\Models\Contabilidad\Identidad;
 use App\Models\Contabilidad\TipoCuenta;
 use App\Models\Logistica\CondicionSoftlink;
 use App\Models\Logistica\EstadoCompra;
+use App\Models\Logistica\ItemsOrdenesView;
 use App\Models\Logistica\Orden;
 use App\Models\Logistica\OrdenCompraDetalle;
+use App\Models\Logistica\OrdenesView;
 use App\Models\Logistica\Proveedor;
 use App\Models\mgcp\CuadroCosto\CuadroCosto;
 use App\Models\mgcp\CuadroCosto\CuadroCostoView;
@@ -270,160 +272,160 @@ class OrdenController extends Controller
 
 
 
-    public function listarDetalleOrden(Request $request)
-    {
+    // public function listarDetalleOrden(Request $request)
+    // {
 
-        $idEmpresa = $request->idEmpresa;
-        $idSede = $request->idSede;
-        $fechaRegistroDesde = $request->fechaRegistroDesde;
-        $fechaRegistroHasta = $request->fechaRegistroHasta;
-        $idEstado = $request->idEstado;
+    //     $idEmpresa = $request->idEmpresa;
+    //     $idSede = $request->idSede;
+    //     $fechaRegistroDesde = $request->fechaRegistroDesde;
+    //     $fechaRegistroHasta = $request->fechaRegistroHasta;
+    //     $idEstado = $request->idEstado;
 
 
-        $orden_obj = Orden::select(
-            'log_ord_compra.id_orden_compra as id_orden_compra',
-            'log_ord_compra.id_grupo_cotizacion',
-            'log_ord_compra.id_tp_documento',
-            'log_ord_compra.fecha',
-            'log_ord_compra.incluye_igv',
-            'log_ord_compra.id_usuario',
-            'log_ord_compra.id_moneda',
-            'sis_moneda.simbolo as simbolo_moneda',
-            'log_ord_compra.igv_porcentaje',
-            'log_ord_compra.monto_subtotal',
-            'log_ord_compra.monto_igv',
-            'log_ord_compra.monto_total',
-            'log_ord_compra.estado',
-            'log_ord_compra.id_proveedor',
-            'log_ord_compra.codigo',
-            'log_ord_compra.id_cotizacion',
-            'log_ord_compra.id_condicion',
-            'log_ord_compra.plazo_dias',
-            'log_ord_compra.id_cta_principal',
-            'log_ord_compra.id_cta_alternativa',
-            'log_ord_compra.id_cta_detraccion',
-            'log_ord_compra.personal_autorizado_1',
-            'log_ord_compra.personal_autorizado_2',
-            'log_ord_compra.plazo_entrega',
-            'log_ord_compra.en_almacen',
-            'log_ord_compra.id_occ',
-            'log_ord_compra.id_sede',
-            'log_ord_compra.codigo_softlink',
-            'log_ord_compra.observacion',
-            'adm_contri.id_contribuyente',
-            'adm_contri.razon_social',
-            'adm_contri.nro_documento',
-            'sis_sede.descripcion as empresa_sede',
-            'log_det_ord_compra.id_detalle_orden as detalle_orden_id_detalle_orden',
-            'log_det_ord_compra.id_orden_compra as detalle_orden_id_orden_compra',
-            'log_det_ord_compra.id_item as detalle_orden_id_item',
-            'log_det_ord_compra.garantia as detalle_orden_garantia',
-            'log_det_ord_compra.id_valorizacion_cotizacion as detalle_orden_id_valorizacion_cotizacion',
-            'log_det_ord_compra.estado as id_detalle_orden_estado',
-            'estados_compra.descripcion as detalle_orden_estado',
-            'log_det_ord_compra.personal_autorizado as detalle_orden_personal_autorizado',
-            'log_det_ord_compra.lugar_despacho as detalle_orden_lugar_despacho',
-            'log_det_ord_compra.descripcion_adicional as detalle_orden_descripcion_adicional',
-            'log_det_ord_compra.cantidad as detalle_orden_cantidad',
-            'log_det_ord_compra.precio as detalle_orden_precio',
-            'cc_am.moneda_pvu',
-            'cc_am_filas.cantidad as cdc_cantidad',
-            'cc_am_filas.pvu_oc as cdc_precio',
-            'log_det_ord_compra.id_unidad_medida as detalle_orden_id_unidad_medida',
-            'log_det_ord_compra.subtotal as detalle_orden_subtotal',
-            'log_det_ord_compra.id_detalle_requerimiento as detalle_orden_id_detalle_requerimiento',
-            'log_det_ord_compra.tipo_item_id',
-            'alm_det_req.observacion as observacion_requerimiento',
-            'alm_req.concepto',
-            'alm_req.id_cliente',
-            'contri_cli.razon_social as razon_social_cliente',
-            'alm_req.id_requerimiento',
-            'alm_req.codigo as codigo_requerimiento',
-            'alm_prod.codigo AS alm_prod_codigo',
-            'alm_prod.part_number',
-            'alm_cat_prod.descripcion as categoria',
-            'alm_subcat.descripcion as subcategoria',
-            'alm_prod.descripcion AS alm_prod_descripcion'
-        )
+    //     $orden_obj = Orden::select(
+    //         'log_ord_compra.id_orden_compra as id_orden_compra',
+    //         'log_ord_compra.id_grupo_cotizacion',
+    //         'log_ord_compra.id_tp_documento',
+    //         'log_ord_compra.fecha',
+    //         'log_ord_compra.incluye_igv',
+    //         'log_ord_compra.id_usuario',
+    //         'log_ord_compra.id_moneda',
+    //         'sis_moneda.simbolo as simbolo_moneda',
+    //         'log_ord_compra.igv_porcentaje',
+    //         'log_ord_compra.monto_subtotal',
+    //         'log_ord_compra.monto_igv',
+    //         'log_ord_compra.monto_total',
+    //         'log_ord_compra.estado',
+    //         'log_ord_compra.id_proveedor',
+    //         'log_ord_compra.codigo',
+    //         'log_ord_compra.id_cotizacion',
+    //         'log_ord_compra.id_condicion',
+    //         'log_ord_compra.plazo_dias',
+    //         'log_ord_compra.id_cta_principal',
+    //         'log_ord_compra.id_cta_alternativa',
+    //         'log_ord_compra.id_cta_detraccion',
+    //         'log_ord_compra.personal_autorizado_1',
+    //         'log_ord_compra.personal_autorizado_2',
+    //         'log_ord_compra.plazo_entrega',
+    //         'log_ord_compra.en_almacen',
+    //         'log_ord_compra.id_occ',
+    //         'log_ord_compra.id_sede',
+    //         'log_ord_compra.codigo_softlink',
+    //         'log_ord_compra.observacion',
+    //         'adm_contri.id_contribuyente',
+    //         'adm_contri.razon_social',
+    //         'adm_contri.nro_documento',
+    //         'sis_sede.descripcion as empresa_sede',
+    //         'log_det_ord_compra.id_detalle_orden as detalle_orden_id_detalle_orden',
+    //         'log_det_ord_compra.id_orden_compra as detalle_orden_id_orden_compra',
+    //         'log_det_ord_compra.id_item as detalle_orden_id_item',
+    //         'log_det_ord_compra.garantia as detalle_orden_garantia',
+    //         'log_det_ord_compra.id_valorizacion_cotizacion as detalle_orden_id_valorizacion_cotizacion',
+    //         'log_det_ord_compra.estado as id_detalle_orden_estado',
+    //         'estados_compra.descripcion as detalle_orden_estado',
+    //         'log_det_ord_compra.personal_autorizado as detalle_orden_personal_autorizado',
+    //         'log_det_ord_compra.lugar_despacho as detalle_orden_lugar_despacho',
+    //         'log_det_ord_compra.descripcion_adicional as detalle_orden_descripcion_adicional',
+    //         'log_det_ord_compra.cantidad as detalle_orden_cantidad',
+    //         'log_det_ord_compra.precio as detalle_orden_precio',
+    //         'cc_am.moneda_pvu',
+    //         'cc_am_filas.cantidad as cdc_cantidad',
+    //         'cc_am_filas.pvu_oc as cdc_precio',
+    //         'log_det_ord_compra.id_unidad_medida as detalle_orden_id_unidad_medida',
+    //         'log_det_ord_compra.subtotal as detalle_orden_subtotal',
+    //         'log_det_ord_compra.id_detalle_requerimiento as detalle_orden_id_detalle_requerimiento',
+    //         'log_det_ord_compra.tipo_item_id',
+    //         'alm_det_req.observacion as observacion_requerimiento',
+    //         'alm_req.concepto',
+    //         'alm_req.id_cliente',
+    //         'contri_cli.razon_social as razon_social_cliente',
+    //         'alm_req.id_requerimiento',
+    //         'alm_req.codigo as codigo_requerimiento',
+    //         'alm_prod.codigo AS alm_prod_codigo',
+    //         'alm_prod.part_number',
+    //         'alm_cat_prod.descripcion as categoria',
+    //         'alm_subcat.descripcion as subcategoria',
+    //         'alm_prod.descripcion AS alm_prod_descripcion'
+    //     )
 
-            ->leftJoin('logistica.log_det_ord_compra', 'log_det_ord_compra.id_orden_compra', '=', 'log_ord_compra.id_orden_compra')
-            ->leftJoin('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
-            ->leftJoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
-            ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'log_ord_compra.id_sede')
-            ->leftJoin('configuracion.sis_moneda', 'log_ord_compra.id_moneda', '=', 'sis_moneda.id_moneda')
-            ->leftJoin('logistica.estados_compra', 'log_det_ord_compra.estado', '=', 'estados_compra.id_estado')
-            ->leftJoin('almacen.alm_prod', 'log_det_ord_compra.id_producto', '=', 'alm_prod.id_producto')
-            ->leftJoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
-            ->leftJoin('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
-            ->leftJoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
-            ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
-            ->leftJoin('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'alm_req.id_cliente')
-            ->leftJoin('contabilidad.adm_contri as contri_cli', 'contri_cli.id_contribuyente', '=', 'com_cliente.id_contribuyente')
-            ->leftJoin('mgcp_cuadro_costos.cc_am_filas', 'cc_am_filas.id', '=', 'alm_det_req.id_cc_am_filas')
-            ->leftJoin('mgcp_cuadro_costos.cc_am', 'cc_am_filas.id_cc_am', '=', 'cc_am.id_cc')
+    //         ->leftJoin('logistica.log_det_ord_compra', 'log_det_ord_compra.id_orden_compra', '=', 'log_ord_compra.id_orden_compra')
+    //         ->leftJoin('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
+    //         ->leftJoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
+    //         ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'log_ord_compra.id_sede')
+    //         ->leftJoin('configuracion.sis_moneda', 'log_ord_compra.id_moneda', '=', 'sis_moneda.id_moneda')
+    //         ->leftJoin('logistica.estados_compra', 'log_det_ord_compra.estado', '=', 'estados_compra.id_estado')
+    //         ->leftJoin('almacen.alm_prod', 'log_det_ord_compra.id_producto', '=', 'alm_prod.id_producto')
+    //         ->leftJoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
+    //         ->leftJoin('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
+    //         ->leftJoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
+    //         ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+    //         ->leftJoin('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'alm_req.id_cliente')
+    //         ->leftJoin('contabilidad.adm_contri as contri_cli', 'contri_cli.id_contribuyente', '=', 'com_cliente.id_contribuyente')
+    //         ->leftJoin('mgcp_cuadro_costos.cc_am_filas', 'cc_am_filas.id', '=', 'alm_det_req.id_cc_am_filas')
+    //         ->leftJoin('mgcp_cuadro_costos.cc_am', 'cc_am_filas.id_cc_am', '=', 'cc_am.id_cc')
 
-            ->when(($idEmpresa > 0), function ($query) use ($idEmpresa) {
-                return $query->whereRaw('sis_sede.id_empresa = ' . $idEmpresa);
-            })
-            ->when(($idSede > 0), function ($query) use ($idSede) {
-                return $query->whereRaw('sis_sede.id_sede = ' . $idSede);
-            })
+    //         ->when(($idEmpresa > 0), function ($query) use ($idEmpresa) {
+    //             return $query->whereRaw('sis_sede.id_empresa = ' . $idEmpresa);
+    //         })
+    //         ->when(($idSede > 0), function ($query) use ($idSede) {
+    //             return $query->whereRaw('sis_sede.id_sede = ' . $idSede);
+    //         })
 
-            ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta == 'SIN_FILTRO')), function ($query) use ($fechaRegistroDesde) {
-                return $query->where('log_ord_compra.fecha', '>=', $fechaRegistroDesde);
-            })
-            ->when((($fechaRegistroDesde == 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use ($fechaRegistroHasta) {
-                return $query->where('log_ord_compra.fecha', '<=', $fechaRegistroHasta);
-            })
-            ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use ($fechaRegistroDesde, $fechaRegistroHasta) {
-                return $query->whereBetween('log_ord_compra.fecha', [$fechaRegistroDesde, $fechaRegistroHasta]);
-            })
+    //         ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta == 'SIN_FILTRO')), function ($query) use ($fechaRegistroDesde) {
+    //             return $query->where('log_ord_compra.fecha', '>=', $fechaRegistroDesde);
+    //         })
+    //         ->when((($fechaRegistroDesde == 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use ($fechaRegistroHasta) {
+    //             return $query->where('log_ord_compra.fecha', '<=', $fechaRegistroHasta);
+    //         })
+    //         ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use ($fechaRegistroDesde, $fechaRegistroHasta) {
+    //             return $query->whereBetween('log_ord_compra.fecha', [$fechaRegistroDesde, $fechaRegistroHasta]);
+    //         })
 
-            ->when(($idEstado > 0), function ($query) use ($idEstado) {
-                return $query->whereRaw('log_ord_compra.estado = ' . $idEstado);
-            })
+    //         ->when(($idEstado > 0), function ($query) use ($idEstado) {
+    //             return $query->whereRaw('log_ord_compra.estado = ' . $idEstado);
+    //         })
 
-            ->where([
-                // ['log_ord_compra.codigo', '=', 'OC-21080176'],
-                ['log_ord_compra.estado', '!=', 7],
-                // $tipoOrden >0 ? ['log_ord_compra.id_tp_documento',$tipoOrden]:[null],
-                // $empresa >0 ? ['sis_sede.id_empresa',$empresa]:[null],
-                // $sede >0 ? ['sis_sede.id_sede',$sede]:[null],
-                // ($tipoProveedor =='NACIONAL') ? ['adm_contri.id_pais','=','170']:($tipoProveedor =='EXTRANJERO' ? ['adm_contri.id_pais','=','170']:[null]),
-                // $estado >0 ? ['log_ord_compra.estado',$estado]:[null]
-            ])
-            // ->when(($vinculadoPor !='null'), function($query) use ($vinculadoPor)  {
-            //     if($vinculadoPor== 'REQUERIMIENTO'){
-            //         $whereVinculadoPor='log_det_ord_compra.id_detalle_requerimiento > 0';
-            //     }elseif($vinculadoPor == 'CUADRO_COMPARATIVO'){
-            //         $whereVinculadoPor='log_det_ord_compra.detalle_cuadro_comparativo_id > 0';
-            //     }
-            //     return $query->WhereIn('log_ord_compra.id_orden_compra', function($query) use ($whereVinculadoPor)
-            //     {
-            //         $query->select('log_det_ord_compra.id_orden_compra')
-            //         ->from('logistica.log_det_ord_compra')
-            //         ->whereRaw($whereVinculadoPor);
-            //     });
-            // })
-            // ->when(($enAlmacen =='true'), function($query)  {
-            //     return $query->WhereIn('log_ord_compra.id_orden_compra', function($query)
-            //     {
-            //         $query->select('log_det_ord_compra.id_orden_compra')
-            //             ->from('logistica.log_det_ord_compra')
-            //             ->leftjoin('almacen.guia_com_det', 'guia_com_det.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden')
-            //             ->whereRaw('guia_com_det.id_guia_com_det > 0');
-            //     });
-            // })
-            ->orderBy('log_ord_compra.fecha', 'desc')
-            // ->whereRaw('coalesce((log_det_ord_compra.cantidad * log_det_ord_compra.precio) ,0) '.$simboloSubtotal.' '.$subtotal)
-            ->get();
+    //         ->where([
+    //             // ['log_ord_compra.codigo', '=', 'OC-21080176'],
+    //             ['log_ord_compra.estado', '!=', 7],
+    //             // $tipoOrden >0 ? ['log_ord_compra.id_tp_documento',$tipoOrden]:[null],
+    //             // $empresa >0 ? ['sis_sede.id_empresa',$empresa]:[null],
+    //             // $sede >0 ? ['sis_sede.id_sede',$sede]:[null],
+    //             // ($tipoProveedor =='NACIONAL') ? ['adm_contri.id_pais','=','170']:($tipoProveedor =='EXTRANJERO' ? ['adm_contri.id_pais','=','170']:[null]),
+    //             // $estado >0 ? ['log_ord_compra.estado',$estado]:[null]
+    //         ])
+    //         // ->when(($vinculadoPor !='null'), function($query) use ($vinculadoPor)  {
+    //         //     if($vinculadoPor== 'REQUERIMIENTO'){
+    //         //         $whereVinculadoPor='log_det_ord_compra.id_detalle_requerimiento > 0';
+    //         //     }elseif($vinculadoPor == 'CUADRO_COMPARATIVO'){
+    //         //         $whereVinculadoPor='log_det_ord_compra.detalle_cuadro_comparativo_id > 0';
+    //         //     }
+    //         //     return $query->WhereIn('log_ord_compra.id_orden_compra', function($query) use ($whereVinculadoPor)
+    //         //     {
+    //         //         $query->select('log_det_ord_compra.id_orden_compra')
+    //         //         ->from('logistica.log_det_ord_compra')
+    //         //         ->whereRaw($whereVinculadoPor);
+    //         //     });
+    //         // })
+    //         // ->when(($enAlmacen =='true'), function($query)  {
+    //         //     return $query->WhereIn('log_ord_compra.id_orden_compra', function($query)
+    //         //     {
+    //         //         $query->select('log_det_ord_compra.id_orden_compra')
+    //         //             ->from('logistica.log_det_ord_compra')
+    //         //             ->leftjoin('almacen.guia_com_det', 'guia_com_det.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden')
+    //         //             ->whereRaw('guia_com_det.id_guia_com_det > 0');
+    //         //     });
+    //         // })
+    //         ->orderBy('log_ord_compra.fecha', 'desc')
+    //         // ->whereRaw('coalesce((log_det_ord_compra.cantidad * log_det_ord_compra.precio) ,0) '.$simboloSubtotal.' '.$subtotal)
+    //         ->get();
 
-        // $orden_list = collect($orden_obj)->map(function($x){ return (array) $x; })->toArray(); 
-        // Debugbar::info($orden_obj);
+    //     // $orden_list = collect($orden_obj)->map(function($x){ return (array) $x; })->toArray(); 
+    //     // Debugbar::info($orden_obj);
 
-        $output['data'] = $orden_obj;
-        return $output;
-    }
+    //     $output['data'] = $orden_obj;
+    //     return $output;
+    // }
 
     function documentosVinculadosOrden($id_orden)
     {
@@ -975,231 +977,250 @@ class OrdenController extends Controller
         }
         return array_values(array_unique($facturas));
     }
-    
-    public function listarOrdenes(Request $request)
-    {
+    public function listaOrdenesElaboradas(Request $request){
 
-        $tipoOrden = $request->tipoOrden;
-        $idEmpresa = $request->idEmpresa;
-        $idSede = $request->idSede;
-        // $idGrupo = $request->idGrupo;
-        // $division = $request->idDivision;
-        $fechaRegistroDesde = $request->fechaRegistroDesde;
-        $fechaRegistroHasta = $request->fechaRegistroHasta;
-        $idEstado = $request->idEstado;
+        $ordenes = OrdenesView::where('id_estado','>=',1);       
+        return datatables($ordenes)
+        ->filterColumn('codigo_requerimiento', function ($query, $keyword) {
+            $query->whereHas('data_requerimiento.codigo_requerimiento', function ($q) use ($keyword) {
+            $q->where('codigo_requerimiento', 'LIKE', "%{$keyword}%");
+            });
+        })
+
+        ->toJson();
+    }
+
+    public function listaItemsOrdenesElaboradas(Request $request){
+
+        $itemsOrdenes = ItemsOrdenesView::where('id_estado','>=',1);       
+        return datatables($itemsOrdenes)
+
+        ->toJson();
+    }
+    // public function listarOrdenes(Request $request)
+    // {
+
+    //     $tipoOrden = $request->tipoOrden;
+    //     $idEmpresa = $request->idEmpresa;
+    //     $idSede = $request->idSede;
+    //     // $idGrupo = $request->idGrupo;
+    //     // $division = $request->idDivision;
+    //     $fechaRegistroDesde = $request->fechaRegistroDesde;
+    //     $fechaRegistroHasta = $request->fechaRegistroHasta;
+    //     $idEstado = $request->idEstado;
 
 
-        $ord_compra = Orden::select(
-            'log_ord_compra.*',
-            'log_ord_compra.monto_total as monto_total_orden',
-            'sis_sede.descripcion as descripcion_sede_empresa',
+    //     $ord_compra = Orden::select(
+    //         'log_ord_compra.*',
+    //         'log_ord_compra.monto_total as monto_total_orden',
+    //         'sis_sede.descripcion as descripcion_sede_empresa',
 
-            // 'log_cdn_pago.descripcion as condicion',
-            DB::raw("(CASE 
-            WHEN log_ord_compra.id_condicion = 1 THEN log_cdn_pago.descripcion 
-            WHEN log_ord_compra.id_condicion = 2 THEN log_cdn_pago.descripcion || ' ' || log_ord_compra.plazo_dias  || ' Días'
-            ELSE null END) AS condicion
-            "),
-            'sis_moneda.simbolo as moneda_simbolo',
-            'sis_moneda.descripcion as moneda_descripcion',
-            'adm_contri.id_contribuyente',
-            'adm_contri.razon_social',
-            'adm_contri.nro_documento',
-            'cta_prin.nro_cuenta as nro_cuenta_prin',
-            'cta_alter.nro_cuenta as nro_cuenta_alter',
-            'cta_detra.nro_cuenta as nro_cuenta_detra',
-            'estados_compra.descripcion as estado_doc',
-            'log_ord_compra.estado',
-            'log_ord_compra_pago.id_pago',
-            'log_ord_compra_pago.detalle_pago',
-            'log_ord_compra_pago.archivo_adjunto'
+    //         // 'log_cdn_pago.descripcion as condicion',
+    //         DB::raw("(CASE 
+    //         WHEN log_ord_compra.id_condicion = 1 THEN log_cdn_pago.descripcion 
+    //         WHEN log_ord_compra.id_condicion = 2 THEN log_cdn_pago.descripcion || ' ' || log_ord_compra.plazo_dias  || ' Días'
+    //         ELSE null END) AS condicion
+    //         "),
+    //         'sis_moneda.simbolo as moneda_simbolo',
+    //         'sis_moneda.descripcion as moneda_descripcion',
+    //         'adm_contri.id_contribuyente',
+    //         'adm_contri.razon_social',
+    //         'adm_contri.nro_documento',
+    //         'cta_prin.nro_cuenta as nro_cuenta_prin',
+    //         'cta_alter.nro_cuenta as nro_cuenta_alter',
+    //         'cta_detra.nro_cuenta as nro_cuenta_detra',
+    //         'estados_compra.descripcion as estado_doc',
+    //         'log_ord_compra.estado',
+    //         'log_ord_compra_pago.id_pago',
+    //         'log_ord_compra_pago.detalle_pago',
+    //         'log_ord_compra_pago.archivo_adjunto'
             
-            // DB::raw("(SELECT  coalesce(sum((log_det_ord_compra.cantidad * log_det_ord_compra.precio))*1.18 ,0) AS monto_total_orden
-            // FROM logistica.log_det_ord_compra 
-            // WHERE   log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra AND
-            //         log_det_ord_compra.estado != 7) AS monto_total_orden"),
-            // DB::raw("(SELECT  coalesce(oc_propias_view.monto_soles) AS monto_total_presup
-            // FROM logistica.log_det_ord_compra 
-            // INNER JOIN almacen.alm_det_req on alm_det_req.id_detalle_requerimiento = log_det_ord_compra.id_detalle_requerimiento
-            // INNER JOIN almacen.alm_req on alm_req.id_requerimiento = alm_det_req.id_requerimiento
-            // INNER JOIN mgcp_cuadro_costos.cc on cc.id = alm_req.id_cc
-            // INNER JOIN mgcp_ordenes_compra.oc_propias_view on oc_propias_view.id_oportunidad = cc.id_oportunidad
+    //         // DB::raw("(SELECT  coalesce(sum((log_det_ord_compra.cantidad * log_det_ord_compra.precio))*1.18 ,0) AS monto_total_orden
+    //         // FROM logistica.log_det_ord_compra 
+    //         // WHERE   log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra AND
+    //         //         log_det_ord_compra.estado != 7) AS monto_total_orden"),
+    //         // DB::raw("(SELECT  coalesce(oc_propias_view.monto_soles) AS monto_total_presup
+    //         // FROM logistica.log_det_ord_compra 
+    //         // INNER JOIN almacen.alm_det_req on alm_det_req.id_detalle_requerimiento = log_det_ord_compra.id_detalle_requerimiento
+    //         // INNER JOIN almacen.alm_req on alm_req.id_requerimiento = alm_det_req.id_requerimiento
+    //         // INNER JOIN mgcp_cuadro_costos.cc on cc.id = alm_req.id_cc
+    //         // INNER JOIN mgcp_ordenes_compra.oc_propias_view on oc_propias_view.id_oportunidad = cc.id_oportunidad
     
-            // WHERE log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra AND
-            // logistica.log_det_ord_compra.estado != 7 LIMIT 1) AS monto_total_presup")
-        )
-            ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'log_ord_compra.id_sede')
-            ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
-            ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
-            ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'log_ord_compra.id_moneda')
-            ->leftjoin('logistica.log_cdn_pago', 'log_cdn_pago.id_condicion_pago', '=', 'log_ord_compra.id_condicion')
-            ->leftjoin('contabilidad.adm_cta_contri as cta_prin', 'cta_prin.id_cuenta_contribuyente', '=', 'log_ord_compra.id_cta_principal')
-            ->leftjoin('contabilidad.adm_cta_contri as cta_alter', 'cta_alter.id_cuenta_contribuyente', '=', 'log_ord_compra.id_cta_alternativa')
-            ->leftjoin('contabilidad.adm_cta_contri as cta_detra', 'cta_detra.id_cuenta_contribuyente', '=', 'log_ord_compra.id_cta_detraccion')
-            ->leftjoin('logistica.estados_compra', 'estados_compra.id_estado', '=', 'log_ord_compra.estado')
-            ->leftjoin('logistica.log_ord_compra_pago', 'log_ord_compra_pago.id_orden_compra', '=', 'log_ord_compra.id_orden_compra')
+    //         // WHERE log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra AND
+    //         // logistica.log_det_ord_compra.estado != 7 LIMIT 1) AS monto_total_presup")
+    //     )
+    //         ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'log_ord_compra.id_sede')
+    //         ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
+    //         ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
+    //         ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'log_ord_compra.id_moneda')
+    //         ->leftjoin('logistica.log_cdn_pago', 'log_cdn_pago.id_condicion_pago', '=', 'log_ord_compra.id_condicion')
+    //         ->leftjoin('contabilidad.adm_cta_contri as cta_prin', 'cta_prin.id_cuenta_contribuyente', '=', 'log_ord_compra.id_cta_principal')
+    //         ->leftjoin('contabilidad.adm_cta_contri as cta_alter', 'cta_alter.id_cuenta_contribuyente', '=', 'log_ord_compra.id_cta_alternativa')
+    //         ->leftjoin('contabilidad.adm_cta_contri as cta_detra', 'cta_detra.id_cuenta_contribuyente', '=', 'log_ord_compra.id_cta_detraccion')
+    //         ->leftjoin('logistica.estados_compra', 'estados_compra.id_estado', '=', 'log_ord_compra.estado')
+    //         ->leftjoin('logistica.log_ord_compra_pago', 'log_ord_compra_pago.id_orden_compra', '=', 'log_ord_compra.id_orden_compra')
 
-            ->when(($tipoOrden > 0), function ($query) use ($tipoOrden) {
-                return $query->whereRaw('log_ord_compra.id_tp_documento = ' . $tipoOrden);
-            })
-            ->when(($idEmpresa > 0), function ($query) use ($idEmpresa) {
-                return $query->whereRaw('sis_sede.id_empresa = ' . $idEmpresa);
-            })
-            ->when(($idSede > 0), function ($query) use ($idSede) {
-                return $query->whereRaw('sis_sede.id_sede = ' . $idSede);
-            })
+    //         ->when(($tipoOrden > 0), function ($query) use ($tipoOrden) {
+    //             return $query->whereRaw('log_ord_compra.id_tp_documento = ' . $tipoOrden);
+    //         })
+    //         ->when(($idEmpresa > 0), function ($query) use ($idEmpresa) {
+    //             return $query->whereRaw('sis_sede.id_empresa = ' . $idEmpresa);
+    //         })
+    //         ->when(($idSede > 0), function ($query) use ($idSede) {
+    //             return $query->whereRaw('sis_sede.id_sede = ' . $idSede);
+    //         })
 
-            ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta == 'SIN_FILTRO')), function ($query) use ($fechaRegistroDesde) {
-                return $query->where('log_ord_compra.fecha', '>=', $fechaRegistroDesde);
-            })
-            ->when((($fechaRegistroDesde == 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use ($fechaRegistroHasta) {
-                return $query->where('log_ord_compra.fecha', '<=', $fechaRegistroHasta);
-            })
-            ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use ($fechaRegistroDesde, $fechaRegistroHasta) {
-                return $query->whereBetween('log_ord_compra.fecha', [$fechaRegistroDesde, $fechaRegistroHasta]);
-            })
+    //         ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta == 'SIN_FILTRO')), function ($query) use ($fechaRegistroDesde) {
+    //             return $query->where('log_ord_compra.fecha', '>=', $fechaRegistroDesde);
+    //         })
+    //         ->when((($fechaRegistroDesde == 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use ($fechaRegistroHasta) {
+    //             return $query->where('log_ord_compra.fecha', '<=', $fechaRegistroHasta);
+    //         })
+    //         ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use ($fechaRegistroDesde, $fechaRegistroHasta) {
+    //             return $query->whereBetween('log_ord_compra.fecha', [$fechaRegistroDesde, $fechaRegistroHasta]);
+    //         })
 
-            ->when(($idEstado > 0), function ($query) use ($idEstado) {
-                return $query->whereRaw('log_ord_compra.estado = ' . $idEstado);
-            })
+    //         ->when(($idEstado > 0), function ($query) use ($idEstado) {
+    //             return $query->whereRaw('log_ord_compra.estado = ' . $idEstado);
+    //         })
 
 
-            ->where([
-                ['log_ord_compra.estado', '!=', 7]
+    //         ->where([
+    //             ['log_ord_compra.estado', '!=', 7]
    
 
-            ])
+    //         ])
  
 
-            ->orderBy('log_ord_compra.fecha', 'desc')
+    //         ->orderBy('log_ord_compra.fecha', 'desc')
 
        
-            ->get();
+    //         ->get();
 
 
-        $data_orden = [];
-        if (count($ord_compra) > 0) {
-            foreach ($ord_compra as $element) {
+    //     $data_orden = [];
+    //     if (count($ord_compra) > 0) {
+    //         foreach ($ord_compra as $element) {
 
-                $fechaHoy = Carbon::now();
-                $fechaOrden = Carbon::create($element->fecha);
-                $fechaLlegada = $fechaOrden->addDays($element->plazo_entrega);
+    //             $fechaHoy = Carbon::now();
+    //             $fechaOrden = Carbon::create($element->fecha);
+    //             $fechaLlegada = $fechaOrden->addDays($element->plazo_entrega);
 
-                $data_orden[] = [
-                    'id_orden_compra' => $element->id_orden_compra,
-                    'id_tp_documento' => $element->id_tp_documento,
-                    'fecha' => $element->fecha,
-                    'fecha_formato' => $element->fecha_formato,
-                    'codigo' => $element->codigo,
-                    'descripcion_sede_empresa' => $element->descripcion_sede_empresa,
-                    'nro_documento' => $element->nro_documento,
-                    'razon_social' => $element->razon_social,
-                    'id_moneda' => $element->id_moneda,
-                    'tipo_cambio_compra' => $element->tipo_cambio_compra,
-                    'moneda_simbolo' => $element->moneda_simbolo,
-                    'incluye_igv' => $element->incluye_igv,
-                    'leadtime' => $fechaLlegada->toDateString(),
-                    'dias_restantes' => $fechaLlegada->diffInDays($fechaHoy->toDateString()),
-                    'monto_igv' => $element->monto_igv,
-                    'monto_total' => $element->monto_total,
-                    'id_condicion' => $element->id_condicion,
-                    'condicion' => $element->condicion,
-                    'plazo_entrega' => $element->plazo_entrega,
-                    'id_proveedor' => $element->id_proveedor,
-                    'codigo_cuadro_comparativo' => '',
-                    'estado' => $element->estado,
-                    'estado_doc' => $element->estado_doc,
-                    'detalle_pago' => $element->detalle_pago,
-                    'archivo_adjunto' => $element->archivo_adjunto,
-                    'monto_total_presup' => $element->monto_total_presup,
-                    'monto_total_orden' => $element->monto_total_orden,
-                    //  'facturas' => (new OrdenController)->reporteListaOrdenes($element->id_orden_compra),
-                    'facturas' => [],
-                    'requerimientos' => $element->requerimientos,
-                    'estado_pago' => $element->estado_pago,
-                    'id_prioridad_pago' => $element->id_prioridad_pago, //util para envia a pago,
-                    'id_tipo_destinatario_pago' => $element->id_tipo_destinatario_pago, //util para envia a pago,
-                    'id_cta_principal' => $element->id_cta_principal, //util para envia a pago,  es del mismo proveedor, reutilizando  (nuevacuentaBancariaDestinatario.js,  nuevoDestiantario.js)
-                    'id_contribuyente' => $element->id_contribuyente, //util para envia a pago,  es del mismo proveedor, reutilizando  (nuevacuentaBancariaDestinatario.js,  nuevoDestiantario.js)
-                    'nro_cuenta_prin' => $element->nro_cuenta_prin,
-                    'nro_cuenta_alter' => $element->nro_cuenta_alter,
-                    'nro_cuenta_detra' => $element->nro_cuenta_detra,
-                    'id_persona_pago' => $element->id_persona_pago, //util para envia a pago,
-                    'id_cuenta_persona_pago' => $element->id_cuenta_persona_pago, //util para envia a pago,
-                    'comentario_pago' => $element->comentario_pago, //util para envia a pago,
-                    'cantidad_ingresos_almacen' => $element->cantidad_ingresos_almacen
+    //             $data_orden[] = [
+    //                 'id_orden_compra' => $element->id_orden_compra,
+    //                 'id_tp_documento' => $element->id_tp_documento,
+    //                 'fecha' => $element->fecha,
+    //                 'fecha_formato' => $element->fecha_formato,
+    //                 'codigo' => $element->codigo,
+    //                 'descripcion_sede_empresa' => $element->descripcion_sede_empresa,
+    //                 'nro_documento' => $element->nro_documento,
+    //                 'razon_social' => $element->razon_social,
+    //                 'id_moneda' => $element->id_moneda,
+    //                 'tipo_cambio_compra' => $element->tipo_cambio_compra,
+    //                 'moneda_simbolo' => $element->moneda_simbolo,
+    //                 'incluye_igv' => $element->incluye_igv,
+    //                 'leadtime' => $fechaLlegada->toDateString(),
+    //                 'dias_restantes' => $fechaLlegada->diffInDays($fechaHoy->toDateString()),
+    //                 'monto_igv' => $element->monto_igv,
+    //                 'monto_total' => $element->monto_total,
+    //                 'id_condicion' => $element->id_condicion,
+    //                 'condicion' => $element->condicion,
+    //                 'plazo_entrega' => $element->plazo_entrega,
+    //                 'id_proveedor' => $element->id_proveedor,
+    //                 'codigo_cuadro_comparativo' => '',
+    //                 'estado' => $element->estado,
+    //                 'estado_doc' => $element->estado_doc,
+    //                 'detalle_pago' => $element->detalle_pago,
+    //                 'archivo_adjunto' => $element->archivo_adjunto,
+    //                 'monto_total_presup' => $element->monto_total_presup,
+    //                 'monto_total_orden' => $element->monto_total_orden,
+    //                 //  'facturas' => (new OrdenController)->reporteListaOrdenes($element->id_orden_compra),
+    //                 'facturas' => [],
+    //                 'requerimientos' => $element->requerimientos,
+    //                 'estado_pago' => $element->estado_pago,
+    //                 'id_prioridad_pago' => $element->id_prioridad_pago, //util para envia a pago,
+    //                 'id_tipo_destinatario_pago' => $element->id_tipo_destinatario_pago, //util para envia a pago,
+    //                 'id_cta_principal' => $element->id_cta_principal, //util para envia a pago,  es del mismo proveedor, reutilizando  (nuevacuentaBancariaDestinatario.js,  nuevoDestiantario.js)
+    //                 'id_contribuyente' => $element->id_contribuyente, //util para envia a pago,  es del mismo proveedor, reutilizando  (nuevacuentaBancariaDestinatario.js,  nuevoDestiantario.js)
+    //                 'nro_cuenta_prin' => $element->nro_cuenta_prin,
+    //                 'nro_cuenta_alter' => $element->nro_cuenta_alter,
+    //                 'nro_cuenta_detra' => $element->nro_cuenta_detra,
+    //                 'id_persona_pago' => $element->id_persona_pago, //util para envia a pago,
+    //                 'id_cuenta_persona_pago' => $element->id_cuenta_persona_pago, //util para envia a pago,
+    //                 'comentario_pago' => $element->comentario_pago, //util para envia a pago,
+    //                 'cantidad_ingresos_almacen' => $element->cantidad_ingresos_almacen
 
-                ];
-            }
-        }
+    //             ];
+    //         }
+    //     }
  
-        $detalle_orden = Orden::select(
-            'log_ord_compra.id_orden_compra',
-            'log_det_ord_compra.id_detalle_orden',
-            'alm_req.id_requerimiento',
-            'alm_req.codigo as codigo_requerimiento',
-            'alm_req.fecha_registro as fecha_registro_requerimiento',
-            'cc_view.codigo_oportunidad',
-            'oc_propias_view.fecha_entrega',
-            'guia_com_det.fecha_registro as fecha_ingreso_almacen',
-            'oc_propias_view.fecha_estado',
-            'oc_propias_view.estado_aprobacion_cuadro'
-        )
-            ->leftJoin('logistica.log_det_ord_compra', 'log_det_ord_compra.id_orden_compra', '=', 'log_ord_compra.id_orden_compra')
-            ->leftJoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
-            ->leftJoin('almacen.guia_com_det', 'guia_com_det.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden')
-            ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
-            ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
-            ->leftJoin('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'cc.id_oportunidad')
-            ->leftJoin('mgcp_cuadro_costos.cc_view', 'cc_view.id_oportunidad', '=', 'cc.id_oportunidad')
-            ->where([
-                ['log_ord_compra.estado', '!=', 7],
-                ['log_det_ord_compra.id_detalle_requerimiento', '>', 0]
-            ])
-            ->orderBy('log_ord_compra.fecha', 'desc')
-            ->get();
+    //     $detalle_orden = Orden::select(
+    //         'log_ord_compra.id_orden_compra',
+    //         'log_det_ord_compra.id_detalle_orden',
+    //         'alm_req.id_requerimiento',
+    //         'alm_req.codigo as codigo_requerimiento',
+    //         'alm_req.fecha_registro as fecha_registro_requerimiento',
+    //         'cc_view.codigo_oportunidad',
+    //         'oc_propias_view.fecha_entrega',
+    //         'guia_com_det.fecha_registro as fecha_ingreso_almacen',
+    //         'oc_propias_view.fecha_estado',
+    //         'oc_propias_view.estado_aprobacion_cuadro'
+    //     )
+    //         ->leftJoin('logistica.log_det_ord_compra', 'log_det_ord_compra.id_orden_compra', '=', 'log_ord_compra.id_orden_compra')
+    //         ->leftJoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
+    //         ->leftJoin('almacen.guia_com_det', 'guia_com_det.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden')
+    //         ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+    //         ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
+    //         ->leftJoin('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'cc.id_oportunidad')
+    //         ->leftJoin('mgcp_cuadro_costos.cc_view', 'cc_view.id_oportunidad', '=', 'cc.id_oportunidad')
+    //         ->where([
+    //             ['log_ord_compra.estado', '!=', 7],
+    //             ['log_det_ord_compra.id_detalle_requerimiento', '>', 0]
+    //         ])
+    //         ->orderBy('log_ord_compra.fecha', 'desc')
+    //         ->get();
 
-        $data_detalle_orden = [];
-        if (count($ord_compra) > 0) {
-            foreach ($detalle_orden as $element) {
+    //     $data_detalle_orden = [];
+    //     if (count($ord_compra) > 0) {
+    //         foreach ($detalle_orden as $element) {
 
-                $data_detalle_orden[] = [
-                    'id_orden_compra' => $element->id_orden_compra,
-                    'id_detalle_orden' => $element->id_detalle_orden,
-                    'id_requerimiento' => $element->id_requerimiento,
-                    'codigo_requerimiento' => $element->codigo_requerimiento,
-                    'codigo_oportunidad' => $element->codigo_oportunidad,
-                    'fecha_entrega' => $element->fecha_entrega,
-                    'fecha_ingreso_almacen' => $element->fecha_ingreso_almacen,
-                    'estado_aprobacion' => $element->estado_aprobacion_cuadro,
-                    'fecha_estado' => $element->fecha_estado,
-                    'fecha_registro_requerimiento' => $element->fecha_registro_requerimiento
-                ];
-            }
-        }
+    //             $data_detalle_orden[] = [
+    //                 'id_orden_compra' => $element->id_orden_compra,
+    //                 'id_detalle_orden' => $element->id_detalle_orden,
+    //                 'id_requerimiento' => $element->id_requerimiento,
+    //                 'codigo_requerimiento' => $element->codigo_requerimiento,
+    //                 'codigo_oportunidad' => $element->codigo_oportunidad,
+    //                 'fecha_entrega' => $element->fecha_entrega,
+    //                 'fecha_ingreso_almacen' => $element->fecha_ingreso_almacen,
+    //                 'estado_aprobacion' => $element->estado_aprobacion_cuadro,
+    //                 'fecha_estado' => $element->fecha_estado,
+    //                 'fecha_registro_requerimiento' => $element->fecha_registro_requerimiento
+    //             ];
+    //         }
+    //     }
 
 
-        // Debugbar::info($data_detalle_orden);
+    //     // Debugbar::info($data_detalle_orden);
 
-        foreach ($data_orden as $ordenKey => $ordenValue) {
-            foreach ($data_detalle_orden as $detalleOrdnKey => $detalleOrdenValue) {
-                if ($ordenValue['id_orden_compra'] == $detalleOrdenValue['id_orden_compra']) {
-                    // if(in_array($detalleOrdenValue['codigo_requerimiento'],$data_orden[$ordenKey]['codigo_requerimiento'])==false){
-                    // $data_orden[$ordenKey]['requerimientos'][]=['id_requerimiento'=>$detalleOrdenValue['id_requerimiento'], 'codigo'=> $detalleOrdenValue['codigo_requerimiento']];
-                    $data_orden[$ordenKey]['codigo_oportunidad'] = $detalleOrdenValue['codigo_oportunidad'];
-                    $data_orden[$ordenKey]['fecha_vencimiento_ocam'] = $detalleOrdenValue['fecha_entrega'];
-                    $data_orden[$ordenKey]['fecha_ingreso_almacen'] = $detalleOrdenValue['fecha_ingreso_almacen'];
-                    $data_orden[$ordenKey]['estado_aprobacion_cc'] = $detalleOrdenValue['estado_aprobacion'];
-                    $data_orden[$ordenKey]['fecha_estado'] = $detalleOrdenValue['fecha_estado'];
-                    $data_orden[$ordenKey]['fecha_registro_requerimiento'] = $detalleOrdenValue['fecha_registro_requerimiento'];
-                    // }
-                }
-            }
-        }
+    //     foreach ($data_orden as $ordenKey => $ordenValue) {
+    //         foreach ($data_detalle_orden as $detalleOrdnKey => $detalleOrdenValue) {
+    //             if ($ordenValue['id_orden_compra'] == $detalleOrdenValue['id_orden_compra']) {
+    //                 // if(in_array($detalleOrdenValue['codigo_requerimiento'],$data_orden[$ordenKey]['codigo_requerimiento'])==false){
+    //                 // $data_orden[$ordenKey]['requerimientos'][]=['id_requerimiento'=>$detalleOrdenValue['id_requerimiento'], 'codigo'=> $detalleOrdenValue['codigo_requerimiento']];
+    //                 $data_orden[$ordenKey]['codigo_oportunidad'] = $detalleOrdenValue['codigo_oportunidad'];
+    //                 $data_orden[$ordenKey]['fecha_vencimiento_ocam'] = $detalleOrdenValue['fecha_entrega'];
+    //                 $data_orden[$ordenKey]['fecha_ingreso_almacen'] = $detalleOrdenValue['fecha_ingreso_almacen'];
+    //                 $data_orden[$ordenKey]['estado_aprobacion_cc'] = $detalleOrdenValue['estado_aprobacion'];
+    //                 $data_orden[$ordenKey]['fecha_estado'] = $detalleOrdenValue['fecha_estado'];
+    //                 $data_orden[$ordenKey]['fecha_registro_requerimiento'] = $detalleOrdenValue['fecha_registro_requerimiento'];
+    //                 // }
+    //             }
+    //         }
+    //     }
 
-        $output['data'] = $data_orden;
-        return $output;
-    }
+    //     $output['data'] = $data_orden;
+    //     return $output;
+    // }
 
     public function detalleOrden($idOrden)
     {

@@ -908,16 +908,18 @@ Route::group(['middleware' => ['auth']], function () {
 						Route::get('generar-orden-pdf/{id?}', 'OrdenController@generar_orden_por_requerimiento_pdf')->name('generar-orden-por-requerimiento-pdf'); // PDF
 						Route::get('facturas/{id_orden}', 'OrdenController@obtenerFacturas');
 						//nivel cabecera 
-						Route::post('listar-ordenes', 'OrdenController@listarOrdenes');
+						// Route::post('listar-ordenes', 'OrdenController@listarOrdenes');
+						Route::post('lista-ordenes-elaboradas', 'OrdenController@listaOrdenesElaboradas');
 						Route::get('detalle-orden/{id_orden}', 'OrdenController@detalleOrden');
 						Route::post('obtenerArchivosOc', 'Tesoreria\Facturacion\PendientesFacturacionController@obtenerArchivosOc')->name('obtener-archivos-oc');
 						// Route::get('generar_orden_pdf/{id}', 'OrdenController@generar_orden_pdf'); // PDF
 						Route::get('verSession', 'LogisticaController@verSession');
 						// Route::get('explorar-orden/{id_orden}', 'LogisticaController@explorar_orden'); 
 						Route::get('listar-ordenes-excel', 'OrdenController@exportExcelListaOrdenes')->name('listar-ordenes-excel');
-
+						
 						// nivel item
-						Route::post('listar-detalle-orden', 'OrdenController@listarDetalleOrden')->name('ordenes-en-proceso');
+						Route::post('lista-items-ordenes-elaboradas', 'OrdenController@listaItemsOrdenesElaboradas');
+						// Route::post('listar-detalle-orden', 'OrdenController@listarDetalleOrden')->name('ordenes-en-proceso');
 						Route::post('actualizar-estado', 'OrdenController@update_estado_orden')->name('actualizar-estado-orden');
 						Route::post('actualizar-estado-detalle', 'OrdenController@update_estado_item_orden')->name('actualizar-estado-detalle-orden');
 						Route::post('anular', 'OrdenController@anularOrden')->name('anular');

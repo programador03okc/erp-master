@@ -2,6 +2,9 @@ var vardataTables = funcDatatables();
 var cantidadFiltrosActivosCabecera = 0;
 var cantidadFiltrosActivosDetalle = 0;
 var tempDataProveedorParaPago = [];
+let $tablaListaOrdenesElaborados;
+let $tablaListaItemsOrdenesElaborados;
+
 class ListaOrdenView {
     constructor(listaOrdenCtrl) {
         this.listaOrdenCtrl = listaOrdenCtrl;
@@ -102,20 +105,20 @@ class ListaOrdenView {
             this.seleccionarDestinatario(e.currentTarget);
         });
 
-        // $('#listaDetalleOrden tbody').on("click", "a.handleClickVerOrdenModal", (e) => {
+        // $('#listaItemsOrden tbody').on("click", "a.handleClickVerOrdenModal", (e) => {
         //     this.verOrdenModal(e.currentTarget);
         // });
-        $('#listaDetalleOrden tbody').on("click", "a.handleClickEditarEstadoItemOrden", (e) => {
+        $('#listaItemsOrden tbody').on("click", "a.handleClickEditarEstadoItemOrden", (e) => {
             this.editarEstadoItemOrden(e.currentTarget);
         });
 
-        $('#listaDetalleOrden tbody').on("click", "button.handleClickAbrirOrdenPDF", (e) => {
+        $('#listaItemsOrden tbody').on("click", "button.handleClickAbrirOrdenPDF", (e) => {
             this.abrirOrdenPDF(e.currentTarget.dataset.idOrdenCompra);
         });
-        $('#listaDetalleOrden tbody').on("click", "button.handleClickAbrirOrden", (e) => {
+        $('#listaItemsOrden tbody').on("click", "button.handleClickAbrirOrden", (e) => {
             this.abrirOrden(e.currentTarget.dataset.idOrdenCompra);
         });
-        $('#listaDetalleOrden tbody').on("click", "button.handleClickDocumentosVinculados", (e) => {
+        $('#listaItemsOrden tbody').on("click", "button.handleClickDocumentosVinculados", (e) => {
             this.documentosVinculados(e.currentTarget);
         });
 
@@ -135,9 +138,9 @@ class ListaOrdenView {
         $('#modal-filtro-lista-ordenes-elaboradas').on('hidden.bs.modal', () => {
             this.updateValorFiltroOrdenesElaboradas();
             if (this.updateContadorFiltroOrdenesElaboradas() == 0) {
-                this.obtenerListaOrdenesElaboradas('SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO');
+                // this.obtenerListaOrdenesElaboradas('SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO');
             } else {
-                this.obtenerListaOrdenesElaboradas(this.ActualParametroTipoOrdenCabecera, this.ActualParametroEmpresaCabecera, this.ActualParametroSedeCabecera, this.ActualParametroFechaDesdeCabecera, this.ActualParametroFechaHastaCabecera, this.ActualParametroEstadoCabecera);
+                // this.obtenerListaOrdenesElaboradas(this.ActualParametroTipoOrdenCabecera, this.ActualParametroEmpresaCabecera, this.ActualParametroSedeCabecera, this.ActualParametroFechaDesdeCabecera, this.ActualParametroFechaHastaCabecera, this.ActualParametroEstadoCabecera);
             }
         });
 
@@ -151,10 +154,10 @@ class ListaOrdenView {
         $('#modal-filtro-lista-items-orden-elaboradas').on('hidden.bs.modal', () => {
             this.updateValorFiltroDetalleOrdenesElaboradas();
             if (this.updateContadorFiltroDetalleOrdenesElaboradas() == 0) {
-                this.obtenerListaDetalleOrdenesElaboradas('SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO');
+                // this.obtenerListaDetalleOrdenesElaboradas('SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO');
 
             } else {
-                this.obtenerListaDetalleOrdenesElaboradas(this.ActualParametroEmpresaDetalle, this.ActualParametroSedeDetalle, this.ActualParametroFechaDesdeDetalle, this.ActualParametroFechaHastaDetalle, this.ActualParametroEstadoDetalle);
+                // this.obtenerListaDetalleOrdenesElaboradas(this.ActualParametroEmpresaDetalle, this.ActualParametroSedeDetalle, this.ActualParametroFechaDesdeDetalle, this.ActualParametroFechaHastaDetalle, this.ActualParametroEstadoDetalle);
 
             }
         });
@@ -184,7 +187,8 @@ class ListaOrdenView {
         document.querySelector("div[id='contenedor-tabla-nivel-cabecera']").classList.remove('oculto');
         document.querySelector("div[id='contenedor-tabla-nivel-item']").classList.add('oculto');
         if (this.updateContadorFiltroOrdenesElaboradas() == 0) {
-            this.obtenerListaOrdenesElaboradas('SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO');
+            // this.obtenerListaOrdenesElaboradas('SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO');
+            this.mostrarListaOrdenesElaboradas();
 
         }
     }
@@ -194,7 +198,8 @@ class ListaOrdenView {
         document.querySelector("div[id='contenedor-tabla-nivel-cabecera']").classList.add('oculto');
         document.querySelector("div[id='contenedor-tabla-nivel-item']").classList.remove('oculto');
         if (this.updateContadorFiltroDetalleOrdenesElaboradas() == 0) {
-            this.obtenerListaDetalleOrdenesElaboradas('SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO');
+            // this.obtenerListaDetalleOrdenesElaboradas('SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO');
+            this.mostrarListaItemsOrdenesElaboradas();
         }
     }
 
@@ -397,321 +402,14 @@ class ListaOrdenView {
         }
     }
 
-    obtenerListaOrdenesElaboradas(tipoOrden = 'SIN_FILTRO', idEmpresa = 'SIN_FILTRO', idSede = 'SIN_FILTRO', fechaRegistroDesde = 'SIN_FILTRO', fechaRegistroHasta = 'SIN_FILTRO', idEstado = 'SIN_FILTRO') {
-        this.listaOrdenCtrl.obtenerListaOrdenesElaboradas(tipoOrden, idEmpresa, idSede, fechaRegistroDesde, fechaRegistroHasta, idEstado).then((res) => {
-            this.construirTablaListaOrdenesElaboradas(res);
-        }).catch((err) => {
-            console.log(err)
-        })
-    }
+    // obtenerListaOrdenesElaboradas(tipoOrden = 'SIN_FILTRO', idEmpresa = 'SIN_FILTRO', idSede = 'SIN_FILTRO', fechaRegistroDesde = 'SIN_FILTRO', fechaRegistroHasta = 'SIN_FILTRO', idEstado = 'SIN_FILTRO') {
+    //     this.listaOrdenCtrl.obtenerListaOrdenesElaboradas(tipoOrden, idEmpresa, idSede, fechaRegistroDesde, fechaRegistroHasta, idEstado).then((res) => {
+    //         this.construirTablaListaOrdenesElaboradas(res);
+    //     }).catch((err) => {
+    //         console.log(err)
+    //     })
+    // }
 
-
-
-    construirTablaListaOrdenesElaboradas(data) {
-        // console.log(data);
-        let that = this;
-        tablaListaOrdenes = $('#listaOrdenes').DataTable({
-            'processing': true,
-            'destroy': true,
-            'stateSave': true,
-            'language': vardataTables[0],
-            'buttons': [
-                {
-                    text: '<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : 0',
-                    attr: {
-                        id: 'btnFiltroListaOrdenCabecera'
-                    },
-                    action: () => {
-                        this.filtroTablaListaOrdenesVistaCabecera();
-
-                    },
-                    className: 'btn-default btn-sm'
-                },
-                {
-                    text: '<span class="far fa-file-excel" aria-hidden="true"></span> Descargar',
-                    attr: {
-                        id: 'btnExportarAExcel'
-                    },
-                    action: () => {
-                        this.exportTableToExcel();
-
-                    },
-                    className: 'btn-default btn-sm'
-                }
-            ],
-            'data': data,
-            "order": [[0, "desc"]],
-
-            // "dataSrc":'',
-            'dom': 'Bfrtip',
-            'scrollX': false,
-            'columns': [
-                { 'data': 'id_orden_compra' },
-                {
-                    'render':
-                        function (data, type, row, meta) {
-                            return `${(row.codigo_oportunidad ?? '')}`;
-                        }
-                },
-                {
-                    'render':
-                        function (data, type, row, meta) {
-                            return (row.razon_social + ' - RUC:' + row.nro_documento)
-                        }
-                },
-                {
-                    'render':
-                        function (data, type, row, meta) {
-                            return '<label class="lbl-codigo handleClickAbrirOrden" title="Ir a orden" data-id-orden="' + row.id_orden_compra + '">' + (row.codigo ?? '') + '</label>';
-                        }
-                },
-                {
-                    'render': function (data, type, row) {
-                        let labelRequerimiento = '';
-                        if (row.requerimientos != undefined && row.requerimientos.length > 0) {
-                            (row.requerimientos).forEach(element => {
-                                labelRequerimiento += `${(element.estado == 38 || element.estado == 39) ? `<i class="fas fa-exclamation-triangle orange" title="${element.estado == 38 ? 'Por regularizar' : (element.estado == 38 ? 'En pausa' : '')}" data-id-requerimiento="${element.id_requerimiento}"></i>` : ''} <a href="/necesidades/requerimiento/elaboracion/index?id=${element.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${element.codigo ?? ''}</a>`;
-
-
-                            });
-                            return labelRequerimiento;
-
-                        } else {
-                            return '';
-                        }
-
-                    }
-                },
-
-                {
-                    'render':
-                        function (data, type, row, meta) {
-                            let cantidadRequerimientosConEstadosPorRegularizarOenPausa = 0;
-                            let estadoDetalleOrdenHabilitadasActualizar = [1, 2, 3, 4, 5, 6, 15];
-
-
-                            if (row.requerimientos != undefined && row.requerimientos.length > 0) {
-                                (row.requerimientos).forEach(element => {
-                                    if (element.estado == 38 || element.estado == 39) {
-                                        cantidadRequerimientosConEstadosPorRegularizarOenPausa++;
-                                    }
-                                });
-                            }
-                            if (cantidadRequerimientosConEstadosPorRegularizarOenPausa > 0) {
-                                return `<center><span class="label label-default" data-id-estado-orden-compra="${row.estado}" data-codigo-orden="${row.codigo}" data-id-orden-compra="${row.id_orden_compra}" >${row.estado_doc}</span></center>`;
-
-
-                            } else {
-                                if (estadoDetalleOrdenHabilitadasActualizar.includes(row.estado) == true) {
-
-                                    return `<center><a class="handleClickEditarEstadoOrden" data-id-estado-orden-compra="${row.estado}" data-codigo-orden="${row.codigo}" data-id-orden-compra="${row.id_orden_compra}" style="cursor:pointer;">${row.estado_doc}</a></center>`;
-                                } else {
-                                    return `<center><span class="label label-default" data-id-estado-orden-compra="${row.estado}" data-codigo-orden="${row.codigo}" data-id-orden-compra="${row.id_orden_compra}" >${row.estado_doc}</span></center>`;
-
-                                }
-                            }
-                        }
-                },
-                {
-                    'render':
-                        function (data, type, row, meta) {
-                            return `${(row.fecha_vencimiento_ocam ?? '')}`;
-                        }
-                },
-                {
-                    'render':
-                        function (data, type, row, meta) {
-                            return `${(row.fecha_ingreso_almacen ?? '')}`;
-                        }
-                },
-                {
-                    'render':
-                        function (data, type, row, meta) {
-                            return `${(row.estado_aprobacion_cc ?? '')}`;
-                        }
-                },
-                {
-                    'render':
-                        function (data, type, row, meta) {
-                            return `${(row.fecha_estado ?? '')}`;
-                        }
-                },
-                {
-                    'render':
-                        function (data, type, row, meta) {
-                            return `${(row.fecha_registro_requerimiento ?? '')}`;
-                        }
-                },
-                {
-                    'render':
-                        function (data, type, row, meta) {
-                            let output = 'No aplica';
-                            if (row.id_tp_documento == 2) { // orden de compra
-
-                                let estimatedTimeOfArrive = moment(row['fecha_formato'], 'DD-MM-YYYY').add(row['plazo_entrega'], 'days').format('DD-MM-YYYY');
-                                let sumaFechaConPlazo = moment(row['fecha_formato'], "DD-MM-YYYY").add(row['plazo_entrega'], 'days').format("DD-MM-YYYY").toString();
-                                let fechaActual = moment().format('DD-MM-YYYY').toString();
-                                let dias_restantes = moment(sumaFechaConPlazo, 'DD-MM-YYYY').diff(moment(fechaActual, 'DD-MM-YYYY'), 'days');
-                                let porc = dias_restantes * 100 / (parseFloat(row['plazo_entrega'])).toFixed(2);
-                                let color = (porc > 50 ? 'success' : ((porc <= 50 && porc > 20) ? 'warning' : 'danger'));
-                                output = `<div class="progress-group">
-                            <span class="progress-text">${estimatedTimeOfArrive} <br> Nro días Restantes</span>
-                            <span class="float-right"><b>${dias_restantes > 0 ? dias_restantes : '0'}</b></span>
-                            <div class="progress progress-sm">
-                                <div class="progress-bar bg-${color}" style="width: ${(porc < 1) ? '100' : porc}%"></div>
-                            </div>
-                        </div>`;
-
-                            }
-                            return output;
-                        }
-                },
-                { 'data': 'descripcion_sede_empresa' },
-                { 'data': 'condicion' },
-                { 'data': 'fecha' },
-                {
-                    'render':
-                        function (data, type, row, meta) {
-                            let fechaOrden = moment(row.fecha);
-                            let fechaRequerimiento = moment(row.fecha_registro_requerimiento);
-                            let tiempoAtencionLogistica = fechaOrden.diff((fechaRequerimiento), 'days');
-                            return `${tiempoAtencionLogistica > 0 ? (tiempoAtencionLogistica + ' días') : '0 días'} `;
-                        }
-                },
-                {
-                    'render':
-                        function (data, type, row, meta) {
-                            let fechaIngresoAlmacen = moment(row.fecha_ingreso_almacen);
-                            let fechaOrden = moment(row.fecha);
-                            let tiempoAtencionProveedor = fechaOrden.diff((fechaIngresoAlmacen), 'days');
-                            if (row.fecha_ingreso_almacen != null) {
-                                return `${tiempoAtencionProveedor > 0 ? (tiempoAtencionProveedor + ' días') : '0 días'}`;
-                            } else {
-                                return '';
-                            }
-                        }
-                },
-                { 'data': 'facturas' },
-                {
-                    'render':
-                        function (data, type, row, meta) {
-                            return row.monto_total_presup > 0 ? (parseFloat(row.monto_total_presup)).toFixed(2) : '(No aplica)';
-
-                        }
-                },
-                {
-                    'render':
-                        function (data, type, row, meta) {
-                            let total = 0;
-                            if (row.id_moneda == 2) {
-                                if (parseFloat(row.tipo_cambio_compra) > 0) {
-                                    total = '<span title="$' + row.monto_total_orden + '">' + "S/" + ($.number((row.monto_total_orden * row.tipo_cambio_compra), 2)) + '</span>';
-                                } else {
-                                    total = (row.moneda_simbolo + (($.number(row.monto_total_orden, 2))));
-
-                                }
-                            } else {
-                                total = (row.moneda_simbolo + (($.number(row.monto_total_orden, 2))));
-
-                            }
-                            return total;
-                        }
-                },
-                {
-                    'render':
-                        function (data, type, row, meta) {
-
-                            let cantidadRequerimientosConEstadosPorRegularizarOenPausa = 0;
-                            if (row.requerimientos != undefined && row.requerimientos.length > 0) {
-                                (row.requerimientos).forEach(element => {
-                                    if (element.estado == 38 || element.estado == 39) {
-                                        cantidadRequerimientosConEstadosPorRegularizarOenPausa++;
-                                    }
-                                });
-                            }
-
-                            let containerOpenBrackets = '<div class="btn-group btn-group-xs" role="group" style="margin-bottom: 5px;display: flex;flex-direction: row;flex-wrap: nowrap;">';
-                            let btnImprimirOrden = '<button type="button" class="btn btn-sm btn-warning boton handleClickAbrirOrdenPDF" title="Abrir orden PDF"  data-toggle="tooltip" data-placement="bottom" data-id-orden-compra="' + row.id_orden_compra + '"  data-id-pago=""> <i class="fas fa-file-pdf"></i> </button>';
-
-                            let btnAnularOrden = '';
-                            if (row.cantidad_ingresos_almacen >0) {
-                                btnAnularOrden = '<button type="button" class="btn btn-sm btn-default boton" name="btnAnularOrden" title="Tiene uno/varios ingresos a almacén" data-codigo-orden="' + row.codigo + '" data-id-orden-compra="' + row.id_orden_compra + '" disabled ><i class="fas fa-backspace fa-xs"></i></button>';
-                            } else {
-                                btnAnularOrden = '<button type="button" class="btn btn-sm btn-danger boton handleClickAnularOrden" name="btnAnularOrden" title="Anular orden" data-codigo-orden="' + row.codigo + '" data-id-orden-compra="' + row.id_orden_compra + '"><i class="fas fa-backspace fa-xs"></i></button>';
-
-                            }
-                            let btnVerDetalle = `<button type="button" class="ver-detalle btn btn-sm btn-primary boton handleCliclVerDetalleOrden" data-toggle="tooltip" data-placement="bottom" title="Ver Detalle" data-id="${row.id_orden_compra}">
-                        <i class="fas fa-chevron-down"></i>
-                        </button>`;
-
-                            let btnEnviarAPago = '';
-                           
-                                btnEnviarAPago = `<button type="button" class="btn btn-sm btn-${([5,6,8].includes((row.estado_pago)) ? 'success' : 'info')} boton handleClickModalEnviarOrdenAPago" name="btnEnviarOrdenAPago" title="${([5,6,8].includes((row.estado_pago)) ? 'Ya se envió a pago' : 'Enviar a pago?')}" 
-                                data-id-orden-compra="${row.id_orden_compra ?? ''}" 
-                                data-codigo-orden="${row.codigo ?? ''}" 
-                                data-id-proveedor="${row.id_proveedor ?? ''}" 
-                                data-id-cuenta-principal="${row.id_cta_principal ?? ''}"
-                                data-estado-pago="${row.estado_pago ?? ''}"
-                                data-id-prioridad-pago="${row.id_prioridad_pago ?? ''}"
-                                data-id-tipo-destinatario-pago="${row.id_tipo_destinatario_pago ?? ''}"
-                                data-id-cuenta-contribuyente-pago="${row.id_cta_principal ?? ''}"
-                                data-id-contribuyente-pago="${row.id_contribuyente ?? ''}"
-
-                                data-id-persona-pago="${row.id_persona_pago ?? ''}"
-                                data-id-cuenta-persona-pago="${row.id_cuenta_persona_pago ?? ''}"
-                                data-comentario-pago="${row.comentario_pago ?? ''}" >
-                                    <i class="fas fa-money-check-alt fa-xs"></i>
-                                </button>`;
-
-                            
-
-                            let containerCloseBrackets = '</div>';
-
-                            return (containerOpenBrackets + btnVerDetalle + btnImprimirOrden + btnEnviarAPago + btnAnularOrden + containerCloseBrackets);
-
-                        }
-                }
-
-            ],
-            'columnDefs': [
-                { 'aTargets': [0], 'visible': false, 'searchable': false },
-                { 'aTargets': [1], 'className': "text-center" },
-                { 'aTargets': [3], 'className': "text-center" },
-                { 'aTargets': [4], 'className': "text-center" },
-                { 'aTargets': [5], 'className': "text-center" },
-                { 'aTargets': [6], 'className': "text-center" },
-                { 'aTargets': [7], 'className': "text-center" },
-                { 'aTargets': [8], 'className': "text-center" },
-                { 'aTargets': [9], 'className': "text-center" },
-                { 'aTargets': [10], 'className': "text-center" },
-                { 'aTargets': [12], 'className': "text-center" },
-                { 'aTargets': [13], 'className': "text-center" },
-                { 'aTargets': [14], 'className': "text-center" },
-                { 'aTargets': [15], 'className': "text-center" },
-                { 'aTargets': [16], 'className': "text-center" },
-                { 'aTargets': [17], 'className': "text-right" },
-                { 'aTargets': [18], 'className': "text-right" },
-                { 'aTargets': [19], 'className': "text-right" },
-                { 'aTargets': [20], 'className': "text-center" }
-            ]
-            , "initComplete": function () {
-
-                that.updateContadorFiltroOrdenesElaboradas();
-
-            },
-            "createdRow": function (row, data, dataIndex) {
-
-                $(row.childNodes[14]).css('background-color', '#b4effd');
-                $(row.childNodes[14]).css('font-weight', 'bold');
-                $(row.childNodes[15]).css('background-color', '#b4effd');
-                $(row.childNodes[15]).css('font-weight', 'bold');
-
-
-            }
-        });
-
-
-    }
 
 
     updateContadorFiltroOrdenesElaboradas() {
@@ -836,7 +534,7 @@ class ListaOrdenView {
 
     verDetalleOrden(obj) {
         let tr = obj.closest('tr');
-        var row = tablaListaOrdenes.row(tr);
+        var row = $tablaListaOrdenesElaborados.row(tr);
         var id = obj.dataset.id;
         if (row.child.isShown()) {
             //  This row is already open - close it
@@ -878,336 +576,6 @@ class ListaOrdenView {
             console.log(err)
         })
     }
-
-    // vista nivel de items
-
-    obtenerListaDetalleOrdenesElaboradas(idEmpresa = 'SIN_FILTRO', idSede = 'SIN_FILTRO', fechaRegistroDesde = 'SIN_FILTRO', fechaRegistroHasta = 'SIN_FILTRO', idEstado = 'SIN_FILTRO') {
-        this.listaOrdenCtrl.obtenerListaDetalleOrdenesElaboradas(idEmpresa, idSede, fechaRegistroDesde, fechaRegistroHasta, idEstado).then((res) => {
-            this.construirTablaListaDetalleOrdenesElaboradas(res);
-        }).catch((err) => {
-            console.log(err)
-        })
-    }
-
-    construirTablaListaDetalleOrdenesElaboradas(data) {
-        let that = this;
-        $('#listaDetalleOrden').DataTable({
-            'processing': true,
-            'destroy': true,
-            'language': vardataTables[0],
-            'dom': 'Bfrtip',
-            'buttons': [
-                {
-                    text: '<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : 0',
-                    attr: {
-                        id: 'btnFiltroListaOrdenDetalle'
-                    },
-                    action: () => {
-                        this.filtroTablaListaOrdenesVistaDetalle();
-
-                    },
-                    className: 'btn-default btn-sm'
-                },
-            ],
-            'scrollX': false,
-            'order': [13, 'desc'],
-            'data': data,
-            'columns': [
-                {
-                    render: function (data, type, row) {
-                        return `<label class="lbl-codigo handleClickAbrirOrden"  data-id-orden="${row.id_orden_compra}" data-id-detalle-orden-compra="${row.detalle_orden_id_detalle_orden}"  style="cursor: pointer;" title="Ver Orden">${row.codigo}</label>`;
-                    }
-                },
-                {
-                    render: function (data, type, row) {
-                        return `${row.codigo_requerimiento ? row.codigo_requerimiento : ''}`;
-                    }
-                },
-                {
-                    render: function (data, type, row) {
-                        return `${row.codigo_softlink ? row.codigo_softlink : ''}`;
-
-                    }
-                },
-                {
-                    render: function (data, type, row) {
-                        return `${row.concepto ? row.concepto : ''}`;
-                    }
-                },
-                {
-                    render: function (data, type, row) {
-                        return `${row.razon_social_cliente ? row.razon_social_cliente : ''}`;
-                    }
-                },
-                {
-                    render: function (data, type, row) {
-                        return `${row.razon_social ? row.razon_social : ''}`;
-                    }
-                },
-                {
-                    render: function (data, type, row) {
-                        return `${row.subcategoria ? row.subcategoria : ''}`;
-                    }
-                },
-                {
-                    render: function (data, type, row) {
-                        return `${row.categoria ? row.categoria : ''}`;
-                    }
-                },
-                {
-                    render: function (data, type, row) {
-                        return `${row.part_number ? row.part_number : ''}`;
-                    }
-                },
-                {
-                    render: function (data, type, row) {
-                        return `${row.alm_prod_descripcion ? row.alm_prod_descripcion : ''}`;
-                    }
-                },
-                {
-                    render: function (data, type, row) {
-                        return `${row.detalle_orden_precio ? (row.simbolo_moneda + Util.formatoNumero(row.detalle_orden_precio, 2)) : ''}`;
-                    }
-                },
-                {
-                    render: function (data, type, row) {
-                        return `${row.cdc_precio ? ((row.moneda_pvu == 's' ? 'S/' : row.moneda_pvu == 'd' ? '$' : '') + Util.formatoNumero(row.cdc_precio, 2)) : ''}`;
-                    }
-                },
-                {
-                    render: function (data, type, row) {
-                        // return `${row.fecha ? moment(row.fecha).format('YYYY-MM-DD') : ''}`;
-                        return `${row.fecha ? row.fecha : ''}`;
-                    }
-                },
-                {
-                    render: function (data, type, row) {
-                        return `${row.plazo_entrega > 0 ? row.plazo_entrega + ' días' : ''}`;
-                    }
-                },
-                {
-                    render: function (data, type, row) {
-
-                        let output = 'No aplica';
-                        if (row['id_tp_documento'] == 2) { // orden de compra
-                            let estimatedTimeOfArrive = moment(row['fecha_formato'], 'DD-MM-YYYY').add(row['plazo_entrega'], 'days').format('DD-MM-YYYY');
-                            let sumaFechaConPlazo = moment(row['fecha_formato'], "DD-MM-YYYY").add(row['plazo_entrega'], 'days').format("DD-MM-YYYY").toString();
-                            let fechaActual = moment().format('DD-MM-YYYY').toString();
-                            let dias_restantes = moment(sumaFechaConPlazo, 'DD-MM-YYYY').diff(moment(fechaActual, 'DD-MM-YYYY'), 'days');
-                            let porc = dias_restantes * 100 / (parseFloat(row['plazo_entrega'])).toFixed(2);
-                            let color = (porc > 50 ? 'success' : ((porc <= 50 && porc > 20) ? 'warning' : 'danger'));
-                            output = `<div class="progress-group">
-                        <span class="progress-text">${estimatedTimeOfArrive} <br> Nro días Restantes</span>
-                        <span class="float-right"><b>${dias_restantes > 0 ? dias_restantes : '0'}</b></span>
-                        <div class="progress progress-sm">
-                            <div class="progress-bar bg-${color}" style="width: ${(porc < 1) ? '100' : porc}%"></div>
-                        </div>
-                    </div>`;
-
-                        }
-                        return output;
-                    }
-                },
-                {
-                    render: function (data, type, row) {
-                        return `${row.empresa_sede ? row.empresa_sede : ''}`;
-                    }
-                },
-                {
-                    render: function (data, type, row) {
-                        let cantidadRequerimientosConEstadosPorRegularizarOenPausa = 0;
-                        if (row.requerimientos != undefined && row.requerimientos.length > 0) {
-                            (row.requerimientos).forEach(element => {
-                                if (element.estado == 38 || element.estado == 39) {
-                                    cantidadRequerimientosConEstadosPorRegularizarOenPausa++;
-                                }
-                            });
-                        }
-                        let estadoDetalleOrdenHabilitadasActualizar = [1, 2, 3, 4, 5, 6, 15];
-                        if (cantidadRequerimientosConEstadosPorRegularizarOenPausa > 0) {
-                            return `<span class="" data-id-estado-detalle-orden-compra="${row.id_detalle_orden_estado}" data-id-orden-compra="${row.detalle_orden_id_orden_compra}" data-id-detalle-orden-compra="${row.detalle_orden_id_detalle_orden}" data-codigo-item="${row.alm_prod_codigo}" style="cursor: default;">${row.detalle_orden_estado}</span>`;
-                        } else {
-
-                            if (estadoDetalleOrdenHabilitadasActualizar.includes(row.id_detalle_orden_estado) == true) {
-                                return `<a class="handleClickEditarEstadoItemOrden" data-id-estado-detalle-orden-compra="${row.id_detalle_orden_estado}" data-id-orden-compra="${row.detalle_orden_id_orden_compra}" data-id-detalle-orden-compra="${row.detalle_orden_id_detalle_orden}" data-codigo-item="${row.alm_prod_codigo}" style="cursor: pointer;" title="Cambiar Estado de Item">${row.detalle_orden_estado}</a>`;
-                            } else {
-                                return `<span class="" data-id-estado-detalle-orden-compra="${row.id_detalle_orden_estado}" data-id-orden-compra="${row.detalle_orden_id_orden_compra}" data-id-detalle-orden-compra="${row.detalle_orden_id_detalle_orden}" data-codigo-item="${row.alm_prod_codigo}" style="cursor: default;">${row.detalle_orden_estado}</span>`;
-                            }
-
-                        }
-
-                    }
-                },
-                {
-                    render: function (data, type, row) {
-
-                        let cantidadRequerimientosConEstadosPorRegularizarOenPausa = 0;
-                        if (row.requerimientos != undefined && row.requerimientos.length > 0) {
-                            (row.requerimientos).forEach(element => {
-                                if (element.estado == 38 || element.estado == 39) {
-                                    cantidadRequerimientosConEstadosPorRegularizarOenPausa++;
-                                }
-                            });
-                        }
-
-                        let containerOpenBrackets = '<div class="btn-group btn-group-xs" role="group" style="margin-bottom: 5px;display: flex;flex-direction: row;flex-wrap: nowrap;">';
-                        let btnImprimirOrden = '<button type="button" class="btn btn-sm btn-warning boton handleClickAbrirOrdenPDF" name="btnGenerarOrdenRequerimientoPDF" title="Abrir orden PDF" data-id-requerimiento="' + row.id_requerimiento + '"  data-codigo-requerimiento="' + row.codigo_requerimiento + '" data-id-orden-compra="' + row.id_orden_compra + '"><i class="fas fa-file-download fa-xs"></i></button>';
-                        let btnDocumentosVinculados = '<button type="button" class="btn btn-sm btn-primary boton handleClickDocumentosVinculados" name="btnDocumentosVinculados" title="Ver documentos vinculados" data-id-requerimiento="' + row.id_requerimiento + '"  data-codigo-requerimiento="' + row.codigo_requerimiento + '" data-id-orden-compra="' + row.id_orden_compra + '"><i class="fas fa-folder fa-xs"></i></button>';
-                        let containerCloseBrackets = '</div>';
-
-
-
-                        return (containerOpenBrackets + btnImprimirOrden + btnDocumentosVinculados + containerCloseBrackets);
-
-
-
-                    }
-                }
-            ],
-            'columnDefs': [
-                { 'aTargets': [0], 'className': "text-center" },
-                { 'aTargets': [1], 'className': "text-center" },
-                { 'aTargets': [2], 'className': "text-center" },
-                { 'aTargets': [3], 'className': "text-left" },
-                { 'aTargets': [4], 'className': "text-center" },
-                { 'aTargets': [5], 'className': "text-center" },
-                { 'aTargets': [6], 'className': "text-center" },
-                { 'aTargets': [7], 'className': "text-center" },
-                { 'aTargets': [8], 'className': "text-center" },
-                { 'aTargets': [9], 'className': "text-left" },
-                { 'aTargets': [10], 'className': "text-right" },
-                { 'aTargets': [11], 'className': "text-right" },
-                { 'aTargets': [12], 'className': "text-center" },
-                { 'aTargets': [13], 'className': "text-center" },
-                { 'aTargets': [14], 'className': "text-center" },
-                { 'aTargets': [15], 'className': "text-center" },
-                { 'aTargets': [16], 'className': "text-center" },
-                { 'aTargets': [17], 'className': "text-center" }
-            ],
-
-            "initComplete": function () {
-                that.updateContadorFiltroDetalleOrdenesElaboradas();
-
-            }
-            // 'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
-        });
-    }
-
-    // verOrdenModal(obj) {
-    //     // let codigo = obj.dataset.codigoOrdenCompra;
-    //     let id_orden = obj.dataset.idOrdenCompra;
-    //     // let id_estado_actual = obj.dataset.idEstadoOrdenCompra;
-    //     // console.log(id_orden);
-
-    //     $('#modal-ver-orden').modal({
-    //         show: true,
-    //         backdrop: 'true'
-    //     });
-    //     this.listaOrdenCtrl.mostrarOrden(id_orden).then((res) => {
-    //         console.log(res);
-    //         if (res.status == 200) {
-    //             this.llenarCabeceraOrden(res.head);
-    //             this.llenarTablaItemsOrden(res.detalle);
-    //         } else {
-    //             Swal.fire(
-    //                 '',
-    //                 'Sin data para mostrar',
-    //                 'info'
-    //             );
-    //         }
-    //     }).catch((err) => {
-    //         console.log(err)
-    //     })
-    // }
-
-    // llenarTablaItemsOrden(data) {
-    //     let that = this;
-    //     $('#tablaItemOrdenCompra').dataTable({
-    //         bDestroy: true,
-    //         order: [[0, 'asc']],
-    //         info: true,
-    //         iDisplayLength: 2,
-    //         paging: true,
-    //         searching: false,
-    //         language: vardataTables[0],
-    //         processing: true,
-    //         bDestroy: true,
-    //         data: data,
-    //         columns: [
-    //             {
-    //                 'render':
-    //                     function (data, type, row, meta) {
-    //                         return meta.row + 1;
-    //                     }
-    //             },
-
-    //             { data: 'codigo_producto' },
-    //             { data: 'part_number' },
-    //             { data: 'descripcion' },
-    //             { data: 'unidad_medida' },
-    //             { data: 'cantidad' },
-    //             {
-    //                 'render':
-    //                     function (data, type, row) {
-    //                         return `${row.precio_unitario ? ((row.simbolo_moneda ? row.simbolo_moneda : '') + Util.formatoNumero(row.precio_unitario, 2)) : ''}`;
-    //                     }
-    //             },
-    //             {
-    //                 'render':
-    //                     function (data, type, row) {
-    //                         return `${row.subtotal ? ((row.simbolo_moneda ? row.simbolo_moneda : '') + Util.formatoNumero(row.subtotal, 2)) : ''}`;
-    //                     }
-    //             },
-    //             {
-    //                 'render':
-    //                     function (data, type, row, meta) {
-
-    //                         return row.estado_detalle_orden ?? '';
-    //                         // let estadoDetalleOrdenHabilitadasActualizar=[1,2,3,4,5,6,15];
-
-    //                         // if(estadoDetalleOrdenHabilitadasActualizar.includes(row.id_estado_detalle_orden)==true){
-    //                         //     return `<span class="label label-default handleClickEditarEstadoItemOrden" data-id-estado-detalle-orden-compra="${row.id_estado_detalle_orden}" data-id-orden-compra="${row.id_orden_compra}" data-id-detalle-orden-compra="${row.id_detalle_orden}" data-codigo-item="${row.codigo_item}" style="cursor: pointer;" title="Cambiar Estado de Item">${row.estado_detalle_orden}</span>`;
-    //                         // }else{
-    //                         //     return `<span class="label label-default" data-id-estado-detalle-orden-compra="${row.id_estado_detalle_orden}" data-id-orden-compra="${row.id_orden_compra}" data-id-detalle-orden-compra="${row.id_detalle_orden}" data-codigo-item="${row.codigo_item}" style="cursor: default;" >${row.estado_detalle_orden}</span>`;
-    //                         // }
-    //                     }
-    //             },
-    //         ],
-    //         'columnDefs': [
-    //             { 'aTargets': [0], 'className': "text-center" },
-    //             { 'aTargets': [1], 'className': "text-center" },
-    //             { 'aTargets': [2], 'className': "text-center" },
-    //             { 'aTargets': [3], 'className': "text-left" },
-    //             { 'aTargets': [4], 'className': "text-center" },
-    //             { 'aTargets': [5], 'className': "text-center" },
-    //             { 'aTargets': [6], 'className': "text-right" },
-    //             { 'aTargets': [7], 'className': "text-right" },
-    //             { 'aTargets': [8], 'className': "text-center" }
-    //         ],
-    //         "initComplete": function () {
-
-    //             $('#tablaItemOrdenCompra tbody').on("click", "span.handleClickEditarEstadoItemOrden", function (e) {
-    //                 that.editarEstadoItemOrden(e.currentTarget);
-    //             });
-    //         },
-    //     })
-
-    //     let tablelistaitem = document.getElementById('tablaItemOrdenCompra_wrapper');
-    //     tablelistaitem.childNodes[0].childNodes[0].hidden = true;
-    // }
-
-    // llenarCabeceraOrden(data) {
-    //     // console.log(data);
-    //     document.querySelector("span[id='inputCodigo']").textContent = data.codigo_orden;
-    //     document.querySelector("p[id='inputProveedor']").textContent = data.razon_social + ' RUC: ' + data.nro_documento;
-    //     document.querySelector("p[id='inputFecha']").textContent = data.fecha;
-    //     document.querySelector("p[id='inputMoneda']").textContent = data.moneda_descripcion;
-    //     document.querySelector("p[id='inputCondicion']").textContent = data.condicion;
-    //     document.querySelector("p[id='inputPlazoEntrega']").textContent = data.plazo_entrega;
-    //     document.querySelector("p[id='inputCodigoSoftlink']").textContent = data.codigo_softlink;
-    //     document.querySelector("p[id='inputEstado']").textContent = data.estado_doc;
-
-    // }
 
     editarEstadoOrden(obj) {
         let id_orden = obj.dataset.idOrdenCompra;
@@ -1528,7 +896,7 @@ class ListaOrdenView {
             show: true,
             backdrop: 'static'
         });
-        
+
         document.querySelector("div[id='modal-enviar-solicitud-pago'] span[id='codigo_orden']").textContent = obj.dataset.codigoOrden;
         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_orden_compra']").value = obj.dataset.idOrdenCompra;
         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_proveedor']").value = obj.dataset.idProveedor;
@@ -1637,92 +1005,6 @@ class ListaOrdenView {
         }
     }
 
-    // obtenerCuentasBancariasContribuyente(id_contribuyente) { // esta función es distinta a la de requerimiento de pago
-    //     // console.log(id_contribuyente);
-
-    //     if (id_contribuyente > 0) {
-    //         $.ajax({
-    //             type: 'GET',
-    //             url: 'obtener-cuenta-contribuyente/' + id_contribuyente,
-    //             dataType: 'JSON',
-    //         }).done(function (response) {
-    //             // console.log(response);
-    //             if (response.tipo_estado == 'success') {
-
-    //                 if (response.data.length > 0) {
-
-    //                     // llenar cuenta bancaria
-    //                     let idCuentePorDefecto = document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_contribuyente']").value;
-    //                     console.log(idCuentePorDefecto);
-
-    //                     document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']").value = "";
-    //                     let selectCuenta = document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']");
-    //                     if (selectCuenta != null) {
-    //                         while (selectCuenta.children.length > 0) {
-    //                             selectCuenta.removeChild(selectCuenta.lastChild);
-    //                         }
-    //                     }
-    //                     // console.log(response.data);
-    //                     (response.data).forEach(element => {
-    //                         document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']").insertAdjacentHTML('beforeend', `
-    //                         <option 
-    //                             data-nro-cuenta="${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : ''}" 
-    //                             data-nro-cci="${element.nro_cuenta_interbancaria != null && element.nro_cuenta_interbancaria != "" ? element.nro_cuenta_interbancaria : ''}" 
-    //                             data-tipo-cuenta="${element.tipo_cuenta != null ? element.tipo_cuenta.descripcion : ''}" 
-    //                             data-banco="${element.banco != null && element.banco.contribuyente != null ? element.banco.contribuyente.razon_social : ''}" 
-    //                             data-moneda="${element.moneda != null ? element.moneda.descripcion : ''}" 
-    //                             value="${element.id_cuenta_contribuyente}" ${element.id_cuenta_contribuyente == idCuentePorDefecto ? 'selected' : ''}
-    //                             >${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : (element.nro_cuenta_interbancaria != null && element.nro_cuenta_interbancaria != "" ? (element.nro_cuenta_interbancaria + " (CCI)") : "")}</option>
-    //                         `);
-    //                     });
-    //                     if (idCuentePorDefecto == null || idCuentePorDefecto == '') {
-    //                         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_contribuyente']").value = document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']").value;
-    //                     }
-
-    //                 } else {
-    //                     Lobibox.notify('error', {
-    //                         size: "mini",
-    //                         rounded: true,
-    //                         sound: false,
-    //                         delayIndicator: false,
-    //                         msg: 'Hubo un problema. no se encontró un id cuenta valido'
-    //                     });
-    //                 }
-
-    //             } else {
-    //                 console.log(response);
-
-    //                 Lobibox.notify(response.tipo_estado, {
-    //                     size: "mini",
-    //                     rounded: true,
-    //                     sound: false,
-    //                     delayIndicator: false,
-    //                     msg: response.mensaje
-    //                 });
-    //             }
-
-    //         }).always(function () {
-
-    //         }).fail(function (jqXHR) {
-    //             Lobibox.notify('error', {
-    //                 size: "mini",
-    //                 rounded: true,
-    //                 sound: false,
-    //                 delayIndicator: false,
-    //                 msg: 'Hubo un problema. Por favor actualice la página e intente de nuevo.'
-    //             });
-    //             console.log('Error devuelto: ' + jqXHR.responseText);
-    //         });
-    //     } else {
-    //         Lobibox.notify('error', {
-    //             size: "mini",
-    //             rounded: true,
-    //             sound: false,
-    //             delayIndicator: false,
-    //             msg: 'Hubo un problema. no se encontró un id persona valido para obtener una respuesta'
-    //         });
-    //     }
-    // }
 
     changeTipoDestinatario(obj) {
         if (obj.value == 1) { // tipo persona
@@ -1745,19 +1027,19 @@ class ListaOrdenView {
 
     validarFormularioEnvioOrdenAPago() {
         let continuar = false;
-        let menseje=[];
+        let menseje = [];
 
-        if(document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_contribuyente']").value == '' && document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_persona']").value == ''){
+        if (document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_contribuyente']").value == '' && document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_persona']").value == '') {
             menseje.push('Debe seleccionar una persona o un contribuyente');
-        }else{
-            if(document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']").value == ''){
+        } else {
+            if (document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']").value == '') {
                 menseje.push('Debe seleccionar una cuanta bancaria');
-            }else{
+            } else {
                 continuar = true;
             }
-        } 
+        }
 
-        if(menseje.length>0){
+        if (menseje.length > 0) {
             Swal.fire(
                 '',
                 menseje.toString(),
@@ -2208,4 +1490,407 @@ class ListaOrdenView {
     }
     // ###============ Fin enviar orden a pago ============###
 
+
+    mostrarListaOrdenesElaboradas(meOrAll = 'SIN_FILTRO', idEmpresa = 'SIN_FILTRO', idSede = 'SIN_FILTRO', idGrupo = 'SIN_FILTRO', idDivision = 'SIN_FILTRO', fechaRegistroDesde = 'SIN_FILTRO', fechaRegistroHasta = 'SIN_FILTRO', idEstado = 'SIN_FILTRO') {
+        let that = this;
+        vista_extendida();
+        var vardataTables = funcDatatables();
+        $tablaListaOrdenesElaborados = $('#listaOrdenes').DataTable({
+            'dom': vardataTables[1],
+            'buttons': [
+                {
+                    text: '<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : 0',
+                    attr: {
+                        id: 'btnFiltrosListaOrdenesElaboradas',
+                        disabled: true
+                    },
+                    action: () => {
+                        // this.abrirModalFiltrosRequerimientosElaborados();
+
+                    },
+                    className: 'btn-default btn-sm'
+                },
+                {
+                    text: '<span class="far fa-file-excel" aria-hidden="true"></span> Descargar',
+                    attr: {
+                        id: 'btnDescargarListaOrdenesElaboradasExcel',
+                        disabled: true
+
+                    },
+                    action: () => {
+                        // this.descargarListaRequerimientosElaboradosExcel();
+
+                    },
+                    className: 'btn-default btn-sm'
+                }
+            ],
+            'language': vardataTables[0],
+            'order': [[6, 'desc']],
+            'bLengthChange': false,
+            'serverSide': true,
+            'destroy': true,
+            'ajax': {
+                'url': 'lista-ordenes-elaboradas',
+                'type': 'POST',
+                'data': { 'meOrAll': meOrAll, 'idEmpresa': idEmpresa, 'idSede': idSede, 'idGrupo': idGrupo, 'idDivision': idDivision, 'fechaRegistroDesde': fechaRegistroDesde, 'fechaRegistroHasta': fechaRegistroHasta, 'idEstado': idEstado },
+                beforeSend: data => {
+                    $("#listaOrdenes").LoadingOverlay("show", {
+                        imageAutoResize: true,
+                        progress: true,
+                        imageColor: "#3c8dbc"
+                    });
+                },
+            },
+            'columns': [
+                {
+                    'data': 'codigo',
+                    render: function (data, type, row) {
+                        return `<label class="lbl-codigo handleClickAbrirOrden" title="Ir a orden" data-id-orden="${row.id}">${row.codigo}</label>`;
+                    }
+                },
+                { 'data': 'codigo_softlink', 'name': 'codigo_softlink' },
+                {
+                    'data': 'data_requerimiento',
+                    render: function (data, type, row) {
+                        if (data != null && data.length > 0) {
+                            return (data).map(e => (`<a href="/necesidades/requerimiento/elaboracion/index?id=${e.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${e.codigo_requerimiento}</a>`)).join(",");
+                        } else {
+                            return 'Sin Código';
+                        }
+                    }
+                },
+                {
+                    'data': 'data_requerimiento',"searchable": false,
+                    render: function (data) {
+                        if (data != null && data.length > 0) {
+                            
+                            return data.map(e => e.id_cc >0 ?(e.cc_codigo_oportunidad):'').join(",");
+                        } else {
+                            return 'Sin Código';
+                        }
+                    }
+                },
+                { 'data': 'descripcion_sede_empresa', 'name': 'descripcion_sede_empresa','className': 'text-center' },
+                { 'data': 'simbolo_moneda', 'name': 'simbolo_moneda','className': 'text-center' },
+                { 'data': 'fecha_emision', 'name': 'fecha_emision','className': 'text-center' },
+                { 'data': 'fecha_llegada',
+                    render: function (data, type, row) {
+                        return row.fecha_llegada !=null?(row.fecha_llegada + " / " + row.dias_restantes+' días'):'';
+                    }
+                },
+                { 'data': 'data_requerimiento', 'className': 'text-center', 'searchable': false,
+                    render: function (data) {
+                        if (data != null && data.length > 0) {
+                            return data.map(e => (e.atencion_logistica)).join(", ");
+                        } else {
+                            return 'Sin determinar';
+                        }
+                    }
+                },
+                { 'data': 'razon_social_proveedor',
+                    render: function (data, type, row) {
+                        return row.razon_social_proveedor + " RUC:" + row.nro_documento_proveedor;
+                    }
+                },
+                { 'data': 'condicion', 'name': 'condicion' },
+                { 'data': 'razon_social_proveedor',
+                    render: function (data, type, row) {
+                        return `<a class="handleClickEditarEstadoOrden" data-id-estado-orden-compra="${row.id_estado}" data-codigo-orden="${row.codigo}" data-id-orden-compra="${row.id}" style="cursor:pointer;">${row.descripcion_estado}</a>`;
+                    }
+                },
+                { 'data': 'descripcion_estado_pago', 'name': 'descripcion_estado_pago','className': 'text-center' },
+                { 'data': 'monto_total', 'className': 'text-right',
+                    render: function (data, type, row) {
+                        return row.simbolo_moneda + $.number(row.monto_total,2);
+                    }
+                },
+                {
+                    'data': 'data_requerimiento','searchable': false,
+                    render: function (data) {
+                        if (data != null && data.length > 0) {
+                            
+                            return data.map(e => e.id_cc >0 ?(e.cc_moneda_oportunidad=='s'?('S/'+$.number(e.cc_importe_oportunidad,2)):('$'+$.number(e.cc_importe_oportunidad,2))):'').join(",");
+                        } else {
+                            return 'Sin Código';
+                        }
+                    }
+                },
+                {
+                    'searchable': false,'render':
+                        function (data, type, row, meta) {
+                            // let cantidadRequerimientosConEstadosPorRegularizarOenPausa = 0;
+                            // if(row.data_requerimiento !=null && row.data_requerimiento.length>0){
+                            //     (row.data_requerimiento).forEach(element => {
+                            //         if([38,39].includes(element.id_estado)==true){
+                            //             cantidadRequerimientosConEstadosPorRegularizarOenPausa++;
+                            //         }
+                            //     });
+
+                            // }
+    
+                            let containerOpenBrackets = '<div class="btn-group btn-group-xs" role="group" style="margin-bottom: 5px;display: flex;flex-direction: row;flex-wrap: nowrap;">';
+                            let btnImprimirOrden = '<button type="button" class="btn btn-sm btn-warning boton handleClickAbrirOrdenPDF" title="Abrir orden PDF"  data-toggle="tooltip" data-placement="bottom" data-id-orden-compra="' + row.id + '"  data-id-pago=""> <i class="fas fa-file-pdf"></i> </button>';
+
+                            let btnAnularOrden = '';
+                            if (row.fecha_ultimo_ingreso_almacen != null || [5,6,8].includes(row.estado_pago) ==true) {
+                                btnAnularOrden = '<button type="button" class="btn btn-sm btn-default boton" name="btnAnularOrden" title="Anular orden" data-codigo-orden="' + row.codigo + '" data-id-orden-compra="' + row.id + '" disabled ><i class="fas fa-backspace fa-xs"></i></button>';
+                            } else {
+                                btnAnularOrden = '<button type="button" class="btn btn-sm btn-danger boton handleClickAnularOrden" name="btnAnularOrden" title="Anular orden" data-codigo-orden="' + row.codigo + '" data-id-orden-compra="' + row.id + '"><i class="fas fa-backspace fa-xs"></i></button>';
+                            }
+                            let btnVerDetalle = `<button type="button" class="ver-detalle btn btn-sm btn-primary boton handleCliclVerDetalleOrden" data-toggle="tooltip" data-placement="bottom" title="Ver Detalle" data-id="${row.id}">
+                                                <i class="fas fa-chevron-down"></i>
+                                                </button>`;
+                            let btnEnviarAPago = `<button type="button" class="btn btn-sm btn-${([5, 6, 8].includes((row.estado_pago)) ? 'success' : 'info')} boton handleClickModalEnviarOrdenAPago" name="btnEnviarOrdenAPago" title="${([5, 6, 8].includes((row.estado_pago)) ? 'Ya se envió a pago' : 'Enviar a pago?')}" 
+                                data-id-orden-compra="${row.id ?? ''}" 
+                                data-codigo-orden="${row.codigo ?? ''}" 
+                                data-id-proveedor="${row.id_proveedor ?? ''}" 
+                                data-id-cuenta-principal="${row.id_cta_principal ?? ''}"
+                                data-estado-pago="${row.estado_pago ?? ''}"
+                                data-id-prioridad-pago="${row.id_prioridad_pago ?? ''}"
+                                data-id-tipo-destinatario-pago="${row.id_tipo_destinatario_pago ?? ''}"
+                                data-id-cuenta-contribuyente-pago="${row.id_cta_principal ?? ''}"
+                                data-id-contribuyente-pago="${row.id_contribuyente ?? ''}"
+
+                                data-id-persona-pago="${row.id_persona_pago ?? ''}"
+                                data-id-cuenta-persona-pago="${row.id_cuenta_persona_pago ?? ''}"
+                                data-comentario-pago="${row.comentario_pago ?? ''}" >
+                                    <i class="fas fa-money-check-alt fa-xs"></i>
+                                </button>`;
+                            let containerCloseBrackets = '</div>';
+                            return (containerOpenBrackets + btnVerDetalle + btnImprimirOrden + btnEnviarAPago + btnAnularOrden + containerCloseBrackets);
+
+                        }
+                }
+            ],
+        
+            'columnDefs': [
+
+
+            ],
+            'initComplete': function () {
+                // that.updateContadorFiltroRequerimientosElaborados();
+
+                //Boton de busqueda
+                const $filter = $('#listaOrdenes_filter');
+                const $input = $filter.find('input');
+                $filter.append('<button id="btnBuscarOrden" class="btn btn-default btn-sm pull-right" type="button"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>');
+                $input.off();
+                $input.on('keyup', (e) => {
+                    if (e.key == 'Enter') {
+                        $('#btnBuscarOrden').trigger('click');
+                    }
+                });
+                $('#btnBuscarOrden').on('click', (e) => {
+                    $tablaListaOrdenesElaborados.search($input.val()).draw();
+                })
+                //Fin boton de busqueda
+
+            },
+            "drawCallback": function (settings) {
+                if ($tablaListaOrdenesElaborados.rows().data().length == 0) {
+                    Lobibox.notify('info', {
+                        title: false,
+                        size: 'mini',
+                        rounded: true,
+                        sound: false,
+                        delayIndicator: false,
+                        msg: `No se encontro data disponible para mostrar`
+                    });
+                }
+                //Botón de búsqueda
+                $('#listaOrdenes_filter input').prop('disabled', false);
+                $('#btnBuscarOrden').html('<span class="glyphicon glyphicon-search" aria-hidden="true"></span>').prop('disabled', false);
+                $('#listaOrdenes_filter input').trigger('focus');
+                //fin botón búsqueda
+                $("#listaOrdenes").LoadingOverlay("hide", true);
+            },
+            "createdRow": function (row, data, dataIndex) {
+
+                $(row.childNodes[8]).css('background-color', '#b4effd');
+                // $(row.childNodes[8]).css('font-weight', 'bold');
+
+
+            }
+        });
+        //Desactiva el buscador del DataTable al realizar una busqueda
+        $tablaListaOrdenesElaborados.on('search.dt', function () {
+            $('#tableDatos_filter input').prop('disabled', true);
+            $('#btnBuscar').html('<span class="glyphicon glyphicon-time" aria-hidden="true"></span>').attr('disabled', true);
+        });
+    }
+
+
+
+
+    mostrarListaItemsOrdenesElaboradas(meOrAll = 'SIN_FILTRO', idEmpresa = 'SIN_FILTRO', idSede = 'SIN_FILTRO', idGrupo = 'SIN_FILTRO', idDivision = 'SIN_FILTRO', fechaRegistroDesde = 'SIN_FILTRO', fechaRegistroHasta = 'SIN_FILTRO', idEstado = 'SIN_FILTRO') {
+        let that = this;
+        vista_extendida();
+        var vardataTables = funcDatatables();
+        $tablaListaItemsOrdenesElaborados = $('#listaItemsOrden').DataTable({
+            'dom': vardataTables[1],
+            'buttons': [
+                {
+                    text: '<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : 0',
+                    attr: {
+                        id: 'btnFiltrosListaItemsOrdenesElaboradas',
+                        disabled: true
+                    },
+                    action: () => {
+                        // this.abrirModalFiltrosRequerimientosElaborados();
+
+                    },
+                    className: 'btn-default btn-sm'
+                },
+                {
+                    text: '<span class="far fa-file-excel" aria-hidden="true"></span> Descargar',
+                    attr: {
+                        id: 'btnDescargarListaItemsOrdenesElaboradasExcel',
+                        disabled: true
+
+                    },
+                    action: () => {
+                        // this.descargarListaRequerimientosElaboradosExcel();
+
+                    },
+                    className: 'btn-default btn-sm'
+                }
+            ],
+            'language': vardataTables[0],
+            'order': [[15, 'desc']],
+            'bLengthChange': false,
+            'serverSide': true,
+            'destroy': true,
+            'ajax': {
+                'url': 'lista-items-ordenes-elaboradas',
+                'type': 'POST',
+                'data': { 'meOrAll': meOrAll, 'idEmpresa': idEmpresa, 'idSede': idSede, 'idGrupo': idGrupo, 'idDivision': idDivision, 'fechaRegistroDesde': fechaRegistroDesde, 'fechaRegistroHasta': fechaRegistroHasta, 'idEstado': idEstado },
+                beforeSend: data => {
+                    $("#listaItemsOrden").LoadingOverlay("show", {
+                        imageAutoResize: true,
+                        progress: true,
+                        imageColor: "#3c8dbc"
+                    });
+                },
+            },
+            'columns': [
+                {
+                    'data': 'codigo_orden','className': 'text-center',
+                    render: function (data, type, row) {
+                        return `<label class="lbl-codigo handleClickAbrirOrden" title="Ir a orden" data-id-orden="${row.id_orden}">${row.codigo_orden}</label>`;
+                    }
+                },
+                {
+                    'data': 'codigo_requerimiento','className': 'text-center',
+                    render: function (data,type, row) {
+                        if (row.codigo_requerimiento != null && row.codigo_requerimiento.length > 0) {
+                            return `<a href="/necesidades/requerimiento/elaboracion/index?id=${row.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${row.codigo_requerimiento}</a>`;
+                        } else {
+                            return 'Sin Código';
+                        }
+                    }
+                },
+                { 'data': 'codigo_softlink', 'name': 'codigo_softlink' ,'className': 'text-center'},
+                { 'data': 'concepto_requerimiento', 'name': 'concepto_requerimiento','className': 'text-center' },
+                { 'data': 'razon_social_cliente', 'name': 'razon_social_cliente' },
+                { 'data': 'razon_social_proveedor', 'name': 'razon_social_proveedor' },
+                { 'data': 'descripcion_subcategoria', 'name': 'descripcion_subcategoria' },
+                { 'data': 'descripcion_categoria', 'name': 'descripcion_categoria' },
+                { 'data': 'codigo_producto', 'name': 'codigo_producto' },
+                { 'data': 'part_number_producto', 'name': 'part_number_producto' },
+                { 'data': 'cod_softlink_producto', 'name': 'cod_softlink_producto' },
+                { 'data': 'descripcion_producto', 'name': 'descripcion_producto' },
+                { 'data': 'precio', 'className': 'text-right',
+                render: function (data, type, row) {
+                    return row.simbolo_moneda_orden + $.number(row.precio,2);
+                    }
+                },
+                { 'data': 'cc_fila_precio', 'className': 'text-right',
+                render: function (data, type, row) {
+                    return (row.cc_moneda =='s'?'S/':(row.cc_moneda=='d'?'$':'')) + $.number(row.cc_fila_precio,2);
+                    }
+                },
+                { 'data': 'fecha_emision', 'name': 'fecha_emision','className': 'text-center' },
+                { 'data': 'plazo_entrega', 'name': 'plazo_entrega','className': 'text-center' },
+                { 'data': 'fecha_ingreso_almacen', 'name': 'fecha_ingreso_almacen' ,'className': 'text-center'},
+                { 'data': 'tiempo_atencion_proveedor', 'name': 'tiempo_atencion_proveedor' },
+                { 'data': 'descripcion_sede_empresa', 'name': 'descripcion_sede_empresa' },
+                { 'data': 'descripcion_estado', 'className': 'text-center',
+                render: function (data, type, row) {
+                    let estadoDetalleOrdenHabilitadasActualizar = [1, 2, 3, 4, 5, 6, 15];
+                    if (estadoDetalleOrdenHabilitadasActualizar.includes(row.id_estado) == true) {
+                        return `<a class="handleClickEditarEstadoItemOrden" data-id-estado-detalle-orden-compra="${row.id_estado}" data-id-orden-compra="${row.id_orden}" data-id-detalle-orden-compra="${row.id_detalle_orden}" data-codigo-item="${row.codigo_producto}" style="cursor: pointer;" title="Cambiar Estado de Item">${row.descripcion_estado}</a>`;
+                    } else {
+                        return `<span class="" data-id-estado-detalle-orden-compra="${row.id_estado}" data-id-orden-compra="${row.id_orden}" data-id-detalle-orden-compra="${row.id_detalle_orden}" data-codigo-item="${row.codigo_producto}" style="cursor: default;">${row.descripcion_estado}</span>`;
+                    }
+
+                    }
+                },
+                {
+                    'render':
+                        function (data, type, row, meta) {
+    
+                            let containerOpenBrackets = '<div class="btn-group btn-group-xs" role="group" style="margin-bottom: 5px;display: flex;flex-direction: row;flex-wrap: nowrap;">';
+                            let btnImprimirOrden = '<button type="button" class="btn btn-sm btn-warning boton handleClickAbrirOrdenPDF" name="btnGenerarOrdenRequerimientoPDF" title="Abrir orden PDF" data-id-requerimiento="' + row.id_requerimiento + '"  data-codigo-requerimiento="' + row.codigo_requerimiento + '" data-id-orden-compra="' + row.id_orden + '"><i class="fas fa-file-download fa-xs"></i></button>';
+                            let btnDocumentosVinculados = '<button type="button" class="btn btn-sm btn-primary boton handleClickDocumentosVinculados" name="btnDocumentosVinculados" title="Ver documentos vinculados" data-id-requerimiento="' + row.id_requerimiento + '"  data-codigo-requerimiento="' + row.codigo_requerimiento + '" data-id-orden-compra="' + row.id_orden + '"><i class="fas fa-folder fa-xs"></i></button>';
+                            let containerCloseBrackets = '</div>';
+    
+                            return (containerOpenBrackets + btnImprimirOrden + btnDocumentosVinculados + containerCloseBrackets);
+    
+
+                        }
+                }
+            ],
+        
+            'columnDefs': [
+
+
+            ],
+            'initComplete': function () {
+
+                //Boton de busqueda
+                const $filter = $('#listaItemsOrden_filter');
+                const $input = $filter.find('input');
+                $filter.append('<button id="btnBuscarItemOrden" class="btn btn-default btn-sm pull-right" type="button"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>');
+                $input.off();
+                $input.on('keyup', (e) => {
+                    if (e.key == 'Enter') {
+                        $('#btnBuscarItemOrden').trigger('click');
+                    }
+                });
+                $('#btnBuscarItemOrden').on('click', (e) => {
+                    $tablaListaItemsOrdenesElaborados.search($input.val()).draw();
+                })
+                //Fin boton de busqueda
+
+            },
+            "drawCallback": function (settings) {
+                if ($tablaListaItemsOrdenesElaborados.rows().data().length == 0) {
+                    Lobibox.notify('info', {
+                        title: false,
+                        size: 'mini',
+                        rounded: true,
+                        sound: false,
+                        delayIndicator: false,
+                        msg: `No se encontro data disponible para mostrar`
+                    });
+                }
+                //Botón de búsqueda
+                $('#listaItemsOrden_filter input').prop('disabled', false);
+                $('#btnBuscarItemOrden').html('<span class="glyphicon glyphicon-search" aria-hidden="true"></span>').prop('disabled', false);
+                $('#listaItemsOrden_filter input').trigger('focus');
+                //fin botón búsqueda
+                $("#listaItemsOrden").LoadingOverlay("hide", true);
+            },
+            "createdRow": function (row, data, dataIndex) {
+
+                $(row.childNodes[16]).css('background-color', '#b4effd');
+
+            }
+        });
+        //Desactiva el buscador del DataTable al realizar una busqueda
+        $tablaListaItemsOrdenesElaborados.on('search.dt', function () {
+            $('#tableDatos_filter input').prop('disabled', true);
+            $('#btnBuscarItemOrden').html('<span class="glyphicon glyphicon-time" aria-hidden="true"></span>').attr('disabled', true);
+        });
+    }
 }
