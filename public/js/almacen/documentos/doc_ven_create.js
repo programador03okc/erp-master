@@ -339,16 +339,16 @@ function mostrarListaItems() {
             data-id="${element.id_detalle_requerimiento !== undefined
                 ? element.id_detalle_requerimiento
                 : element.id_guia_ven_det
-            }" min="0" step="0.0001"/>
+            }" min="0" step="0.0000000001"/>
         </td>
-        <td  style="text-align:right">${formatNumber.decimal(element.sub_total, "", -4)}</td>
+        <td  style="text-align:right">${formatNumber.decimal(element.sub_total, "", -10)}</td>
         <td>
             <input type="number"  style="text-align:right" class="form-control  porcentaje_dscto" value="${element.porcentaje_dscto
             }" 
             data-id="${element.id_detalle_requerimiento !== undefined
                 ? element.id_detalle_requerimiento
                 : element.id_guia_ven_det
-            }" min="0" step="0.0001"/>
+            }" min="0" step="0.0000000001"/>
         </td>
         <td>
             <input type="number" style="text-align:right" class="form-control  total_dscto" value="${element.total_dscto
@@ -356,9 +356,9 @@ function mostrarListaItems() {
             data-id="${element.id_detalle_requerimiento !== undefined
                 ? element.id_detalle_requerimiento
                 : element.id_guia_ven_det
-            }" min="0" step="0.0001"/>
+            }" min="0" step="0.0000000001"/>
         </td>
-        <td  style="text-align:right">${formatNumber.decimal(element.total, "", -4)}</td>
+        <td  style="text-align:right">${formatNumber.decimal(element.total, "", -10)}</td>
         <td>
         <button type="button" class="quitar btn btn-danger btn-xs" data-toggle="tooltip" 
             data-placement="bottom" title="Quitar item" 
@@ -398,8 +398,7 @@ function mostrarListaItems() {
         )}</th>
     </tr>
     <tr>
-        <th colSpan="11" class="text-right"> Total <label name="sim">${totales.simbolo
-        }</label></th>
+        <th colSpan="11" class="text-right"> Total <label name="sim">${totales.simbolo}</label></th>
         <th class="text-right" colSpan="2">${formatNumber.decimal(
             totales.total,
             "",
