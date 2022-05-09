@@ -63,8 +63,9 @@ class Facturacion {
                 { data: "codigo_trans", name: "trans.codigo" },
                 {
                     render: function (data, type, row) {
+                        console.log(row);
                         return `<div style="display: flex;">
-                        ${row["items_restantes"] > 0
+                        ${parseInt(row["items_restantes"]) > 0
                                 ? `<button type="button" class="doc btn btn-success btn-xs btn-flat" data-toggle="tooltip" 
                             data-placement="bottom" title="Generar Factura" 
                             data-guia="${row["id_guia_ven"]}"
@@ -72,7 +73,7 @@ class Facturacion {
                             <i class="fas fa-plus"></i></button>`
                                 : ""
                             }
-                        ${row["count_facturas"] > 0
+                        ${parseInt(row["count_facturas"]) > 0
                                 ? `<button type="button" class="detalle btn btn-primary btn-xs btn-flat" data-toggle="tooltip" 
                                 data-placement="bottom" data-id="${row["id_guia_ven"]}" title="Ver Detalle" >
                                 <i class="fas fa-chevron-down"></i></button>`
