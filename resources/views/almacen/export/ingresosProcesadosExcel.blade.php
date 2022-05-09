@@ -5,8 +5,6 @@
 </head>
 <body>
     <h2>Reporte de Ingresos Procesados</h2>
-    <label>Del {{date('d-m-Y', strtotime($finicio))}} al {{date('d-m-Y', strtotime($ffin))}}</label>
-    <br>
     <br>
     <table>
         <thead>
@@ -21,6 +19,7 @@
                 <th style="background-color: #cccccc;" width="18"><b>Ordenes</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Facturas</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Facturas</b></th>
+                <th style="background-color: #cccccc;" width="18"><b>Fecha Facturas</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Requerimientos</b></th>
             </tr>
         </thead>
@@ -37,6 +36,7 @@
                 <td>{{$d->ordenes_compra}}</td>
                 <td>{{implode(', ', $d->comprobantes['codigo'])}}</td>
                 <td>{{implode(', ', $d->comprobantes['codigo_concat'])}}</td>
+                <td>{{implode(', ', $d->comprobantes['fechas_emision'])}}</td>
                 <td>{{$d->requerimientos}}</td>
             </tr>
             @endforeach

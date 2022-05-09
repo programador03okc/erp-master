@@ -121,6 +121,7 @@ class Movimiento extends Model
             ->select([
                 'doc_com.serie',
                 'doc_com.numero',
+                'doc_com.fecha_emision',
                 'sis_sede.descripcion as empresa_sede',
                 'sis_moneda.simbolo',
                 'log_cdn_pago.descripcion as condicion_descripcion',
@@ -131,6 +132,7 @@ class Movimiento extends Model
 
         $codigoComprobanteList = [];
         $codigoComprobanteConcatList = [];
+        $fechaComprobanteList = [];
         $montosList = [];
         $empresaSedeComprobante = '';
         $monedaComprobante = '';
@@ -139,6 +141,7 @@ class Movimiento extends Model
         foreach ($comprobantes as $doc) {
             $codigoComprobanteList[] = ($doc->serie . '-' . $doc->numero);
             $codigoComprobanteConcatList[] = ($doc->serie . str_pad(intval($doc->numero), 7, "0", STR_PAD_LEFT));
+            $fechaComprobanteList[] = date("d/m/Y", strtotime($doc->fecha_emision));
             $empresaSedeComprobante = $doc->empresa_sede;
             $monedaComprobante = $doc->simbolo;
             $condicionComprobante = $doc->condicion_descripcion;
@@ -148,7 +151,11 @@ class Movimiento extends Model
                 'total_a_pagar' => $doc->total_a_pagar ?? 0
             ];
         }
-        return ['codigo' => $codigoComprobanteList, 'codigo_concat' => $codigoComprobanteConcatList, 'empresa_sede' => $empresaSedeComprobante, 'moneda' => $monedaComprobante, 'condicion' => $condicionComprobante, 'montos' => $montosList];
+        return [
+            'codigo' => $codigoComprobanteList, 'codigo_concat' => $codigoComprobanteConcatList,
+            'fechas_emision' => $fechaComprobanteList, 'empresa_sede' => $empresaSedeComprobante,
+            'moneda' => $monedaComprobante, 'condicion' => $condicionComprobante, 'montos' => $montosList
+        ];
     }
 
     public function getComprobantesVentaAttribute()
