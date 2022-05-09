@@ -204,15 +204,16 @@ class Facturacion {
                 {
                     render: function (data, type, row) {
                         console.log(row["items_restantes"]);
-                        return `<div style="display: flex;">${row["items_restantes"] > 0
-                            ? `<button type="button" class="doc btn btn-success btn-xs btn-flat" data-toggle="tooltip" 
+                        return `<div style="display: flex;">
+                            ${parseInt(row["items_restantes"]) > 0
+                                ? `<button type="button" class="doc btn btn-success btn-xs btn-flat" data-toggle="tooltip" 
                             data-placement="bottom" title="Generar Factura" 
                             data-req="${row["id_requerimiento"]}"
                             data-doc="${row["id_doc_ven"]}">
                             <i class="fas fa-plus"></i></button>`
-                            : ""
+                                : ""
                             }
-                            ${row["count_facturas"] > 0
+                            ${parseInt(row["count_facturas"]) > 0
                                 ? `<button type="button" class="detalle btn btn-primary btn-xs btn-flat" data-toggle="tooltip" 
                                     data-placement="bottom" data-id="${row["id_requerimiento"]}" title="Ver Detalle" >
                                     <i class="fas fa-chevron-down"></i></button>`
