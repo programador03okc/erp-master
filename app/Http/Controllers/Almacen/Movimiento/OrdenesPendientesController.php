@@ -278,7 +278,7 @@ class OrdenesPendientesController extends Controller
             'guia_com.fecha_almacen as fecha_almacen_guia',
             'guia_com.comentario',
             'tp_ope.descripcion as operacion_descripcion',
-
+            'trans.codigo as codigo_trans',
             DB::raw("(SELECT count(distinct id_doc_com) FROM almacen.doc_com AS d
                     INNER JOIN almacen.guia_com_det AS guia
                         on(guia.id_guia_com = mov_alm.id_guia_com)
@@ -368,6 +368,7 @@ class OrdenesPendientesController extends Controller
                             od.estado != 1) AS count_despachos_oc")
         )
             ->join('almacen.guia_com', 'guia_com.id_guia', '=', 'mov_alm.id_guia_com')
+            ->leftjoin('almacen.trans', 'trans.id_transferencia', '=', 'mov_alm.id_transferencia')
             ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'guia_com.id_almacen')
             ->join('administracion.sis_sede as sede_guia', 'sede_guia.id_sede', '=', 'alm_almacen.id_sede')
             ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'guia_com.id_proveedor')

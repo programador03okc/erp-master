@@ -145,6 +145,7 @@ function listarIngresos() {
             { data: "operacion_descripcion", name: "tp_ope.descripcion" },
             { data: "almacen_descripcion", name: "alm_almacen.descripcion" },
             { data: "nombre_corto", name: "sis_usua.nombre_corto" },
+            { data: "codigo_trans", name: "trans.codigo" },
             { data: "ordenes", orderable: false },//Órdenes
             { data: "ordenes", orderable: false },//dta
             { data: "facturas", orderable: false },//dta
