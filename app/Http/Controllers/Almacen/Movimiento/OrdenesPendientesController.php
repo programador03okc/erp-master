@@ -375,7 +375,7 @@ class OrdenesPendientesController extends Controller
             ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'mov_alm.usuario')
             ->join('almacen.tp_ope', 'tp_ope.id_operacion', '=', 'mov_alm.id_operacion')
             ->where([['mov_alm.estado', '!=', 7], ['mov_alm.id_tp_mov', '=', 1]])
-            ->whereIn('mov_alm.id_operacion', [2, 26, 18]);
+            ->whereIn('mov_alm.id_operacion', [2, 26, 18, 21]);
 
         $array_sedes = [];
         if ($request->ingreso_fecha_inicio !== null) {
