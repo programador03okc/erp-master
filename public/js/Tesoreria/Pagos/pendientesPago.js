@@ -170,6 +170,7 @@
             'dom': vardataTables[1],
             'buttons': vardataTables[2],
             'language': vardataTables[0],
+            'pageLength': 15,
             'destroy': true,
             'serverSide': true,
             'ajax': {
