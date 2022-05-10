@@ -119,11 +119,11 @@ Atención de Ingresos
                                             <th>Operación</th>
                                             <th width="70px">Almacén</th>
                                             <th>Responsable</th>
-                                            <th>Transferencia</th>
                                             <th>Ordenes</th>
                                             <th>OC SoftLink</th>
                                             <th>Facturas</th>
                                             <th>Requerim.</th>
+                                            <th>Transferencia</th>
                                             <th width="100px"></th>
                                         </tr>
                                     </thead>

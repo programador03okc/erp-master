@@ -1,11 +1,19 @@
 @extends('layout.main')
-@include('layout.menu_contabilidad')
+@include('layout.menu_tesoreria')
 @section('option')
     @include('layout.option')
 @endsection
 
 @section('cabecera')
-    Generar Comprobante de Compra
+    Comprobante de Compra
+@endsection
+
+@section('breadcrumb')
+<ol class="breadcrumb">
+    <li><a href="{{route('tesoreria.index')}}"><i class="fas fa-tachometer-alt"></i> Tesorería</a></li>
+    <li>Comprobantes</li>
+    <li class="active">@yield('cabecera')</li>
+</ol>
 @endsection
 
 @section('content')
@@ -267,6 +275,6 @@
     <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
-    <script src="{{('/js/contabilidad/comprobante_compra.js')}}"></script>
+    {{-- <script src="{{('/js/contabilidad/comprobante_compra.js')}}"></script> --}}
 
 @endsection

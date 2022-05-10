@@ -145,11 +145,11 @@ function listarIngresos() {
             { data: "operacion_descripcion", name: "tp_ope.descripcion" },
             { data: "almacen_descripcion", name: "alm_almacen.descripcion" },
             { data: "nombre_corto", name: "sis_usua.nombre_corto" },
-            { data: "codigo_trans", name: "trans.codigo" },
             { data: "ordenes", orderable: false },//Órdenes
             { data: "ordenes", orderable: false },//dta
             { data: "facturas", orderable: false },//dta
             { data: "requerimientos", orderable: false },
+            { data: "codigo_trans", name: "trans.codigo" },
             { data: "id_mov_alm", searchable: false }
         ],
         columnDefs: [
@@ -183,25 +183,25 @@ function listarIngresos() {
                     });
                     return ocs;
                 },
-                targets: 10
+                targets: 9
             },
             {
                 render: function (data, type, row) {
                     return row.ordenes_soft_link;
                 },
-                targets: 11
+                targets: 10
             },
             {
                 render: function (data, type, row) {
                     return row.comprobantes.codigo;
                 },
-                targets: 12
+                targets: 11
             },
             {
                 render: function (data, type, row) {
                     return row.requerimientos;
                 },
-                targets: 13
+                targets: 12
             },
             {
                 render: function (data, type, row) {

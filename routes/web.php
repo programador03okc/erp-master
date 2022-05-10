@@ -916,7 +916,7 @@ Route::group(['middleware' => ['auth']], function () {
 						Route::get('verSession', 'LogisticaController@verSession');
 						// Route::get('explorar-orden/{id_orden}', 'LogisticaController@explorar_orden'); 
 						Route::get('listar-ordenes-excel', 'OrdenController@exportExcelListaOrdenes')->name('listar-ordenes-excel');
-						
+
 						// nivel item
 						Route::post('lista-items-ordenes-elaboradas', 'OrdenController@listaItemsOrdenesElaboradas');
 						// Route::post('listar-detalle-orden', 'OrdenController@listarDetalleOrden')->name('ordenes-en-proceso');
@@ -1923,6 +1923,13 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::get('autogenerarDocumentosCompra/{id}', 'Tesoreria\Facturacion\VentasInternasController@autogenerarDocumentosCompra')->name('autogenerarDocumentosCompra');
 		});
 
+		Route::group(['as' => 'comprobante-compra.', 'prefix' => 'comprobante-compra'], function () {
+			Route::get('index', 'ContabilidadController@view_comprobante_compra');
+			Route::get('ordenes_sin_facturar/{id_empresa}/{all_or_id_orden}', 'ContabilidadController@ordenes_sin_facturar');
+			Route::post('guardar_comprobante_compra', 'ContabilidadController@guardar_comprobante_compra');
+			Route::get('lista_comprobante_compra/{id_sede}/{all_or_id_doc_com}', 'ContabilidadController@lista_comprobante_compra');
+		});
+
 		Route::group(['as' => 'tipo-cambio.', 'prefix' => 'tipo-cambio'], function () {
 			Route::get('index', 'Tesoreria\TipoCambioController@index')->name('index');
 			Route::post('listar', 'Tesoreria\TipoCambioController@listar')->name('listar');
@@ -2456,10 +2463,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 	Route::get('cta_contable', 'ContabilidadController@view_cta_contable');
 	Route::get('mostrar_cta_contables', 'ContabilidadController@mostrar_cuentas_contables');
-	Route::get('comprobante_compra', 'ContabilidadController@view_comprobante_compra');
-	Route::get('ordenes_sin_facturar/{id_empresa}/{all_or_id_orden}', 'ContabilidadController@ordenes_sin_facturar');
-	Route::post('guardar_comprobante_compra', 'ContabilidadController@guardar_comprobante_compra');
-	Route::get('lista_comprobante_compra/{id_sede}/{all_or_id_doc_com}', 'ContabilidadController@lista_comprobante_compra');
+
 
 	// APIs de Terceros
 	Route::get('consulta_sunat/{nro_documento?}', 'HynoTechController@consulta_sunat');
