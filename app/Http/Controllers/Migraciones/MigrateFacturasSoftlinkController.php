@@ -199,7 +199,8 @@ class MigrateFacturasSoftlinkController extends Controller
                                 $i++;
                                 //Obtiene y/o crea el producto
                                 if ($det->id_producto !== null) {
-                                    $cod_prod = (new MigrateOrdenSoftLinkController)->obtenerProducto($det);
+                                    // $cod_prod = (new MigrateOrdenSoftLinkController)->obtenerProducto($det);
+                                    $cod_prod = '009585'; //OTROS SERVICIOS - DEFAULT
                                 } else {
                                     $cod_prod = '005675'; //OTROS SERVICIOS - DEFAULT
                                 }
@@ -306,7 +307,8 @@ class MigrateFacturasSoftlinkController extends Controller
                             $cod_prod = null;
                             //Obtiene y/o crea el producto
                             if ($det->id_producto !== null) {
-                                $cod_prod = (new MigrateOrdenSoftLinkController)->obtenerProducto($det);
+                                // $cod_prod = (new MigrateOrdenSoftLinkController)->obtenerProducto($det);
+                                $cod_prod = '009585'; //OTROS SERVICIOS - DEFAULT
                             } else {
                                 $cod_prod = '005675'; //OTROS SERVICIOS - DEFAULT
                             }
