@@ -149,7 +149,7 @@ function listarIngresos() {
             { data: "ordenes", orderable: false },//dta
             { data: "facturas", orderable: false },//dta
             { data: "requerimientos", orderable: false },
-            { data: "codigo_trans", name: "trans.codigo" },
+            // { data: "codigo_trans", name: "trans.codigo" },
             { data: "id_mov_alm", searchable: false }
         ],
         columnDefs: [
@@ -249,7 +249,7 @@ function listarIngresos() {
                         );
                     }
                 },
-                targets: 14
+                targets: 13
             }
         ],
         select: "multi",

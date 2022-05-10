@@ -123,7 +123,7 @@ Atención de Ingresos
                                             <th>OC SoftLink</th>
                                             <th>Facturas</th>
                                             <th>Requerim.</th>
-                                            <th>Transferencia</th>
+                                            {{-- <th>Transferencia</th> --}}
                                             <th width="100px"></th>
                                         </tr>
                                     </thead>
