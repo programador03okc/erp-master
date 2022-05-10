@@ -184,7 +184,7 @@ class TransformacionController extends Controller
             ->leftjoin('logistica.log_prove', 'log_prove.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
             ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
             ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'orden_despacho.id_requerimiento')
-            ->join('almacen.guia_ven', function ($join) {
+            ->leftjoin('almacen.guia_ven', function ($join) {
                 $join->on('guia_ven.id_od', '=', 'transformacion.id_od');
                 $join->where('guia_ven.estado', '!=', 7);
                 $join->limit(1);
