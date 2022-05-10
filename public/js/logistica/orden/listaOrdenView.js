@@ -1550,15 +1550,15 @@ class ListaOrdenView {
                 },
                 { 'data': 'codigo_softlink', 'name': 'codigo_softlink' },
                 {
-                    'data': 'data_requerimiento',
-                    render: function (data, type, row) {
-                        if (data != null && data.length > 0) {
-                            return (data).map(e => (`<a href="/necesidades/requerimiento/elaboracion/index?id=${e.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${e.codigo_requerimiento}</a>`)).join(",");
-                        } else {
-                            return 'Sin Código';
-                        }
+                'data': 'data_requerimiento',
+                render: function (data, type, row) {
+                    if (data != null && data.length > 0) {
+                        return (data).map(e => (`<a href="/necesidades/requerimiento/elaboracion/index?id=${e.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${e.codigo_requerimiento}</a>`)).join(",");
+                    } else {
+                        return 'Sin Código';
                     }
-                },
+                }
+            },
                 {
                     'data': 'data_requerimiento',"searchable": false,
                     render: function (data) {

@@ -980,14 +980,27 @@ class OrdenController extends Controller
     public function listaOrdenesElaboradas(Request $request){
 
         $ordenes = OrdenesView::where('id_estado','>=',1);       
+        // return datatables($ordenes)
+        // ->filterColumn('codigo_requerimiento', function ($query, $keyword) {
+        //     $query->whereHas('data_requerimiento.codigo_requerimiento', function ($q) use ($keyword) {
+        //     $q->where('codigo_requerimiento', 'LIKE', "%{$keyword}%");
+        //     });
+        // })
         return datatables($ordenes)
+        // ->editColumn('codigo_requerimiento', function($ordenes){
+        //     $payload='';
+        //     foreach ($ordenes->data_requerimiento as $key) {
+        //         $payload.= '<a href="/necesidades/requerimiento/elaboracion/index?id='.$key['id_requerimiento'].'" target="_blank" title="Abrir Requerimiento">'.$key['codigo_requerimiento'].'</a>';
+        //     }
+        //     return $payload;
+        // })
         ->filterColumn('codigo_requerimiento', function ($query, $keyword) {
-            $query->whereHas('data_requerimiento.codigo_requerimiento', function ($q) use ($keyword) {
-            $q->where('codigo_requerimiento', 'LIKE', "%{$keyword}%");
-            });
+            $query->whereJsonContains('data_requerimiento', ['codigo_requerimiento'=> $keyword]);
+            
         })
-
+        // ->rawColumns(['codigo_requerimiento'])
         ->toJson();
+
     }
 
     public function listaItemsOrdenesElaboradas(Request $request){
