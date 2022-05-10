@@ -557,6 +557,7 @@ class OrdenesDespachoExternoController extends Controller
                             ->where('id_obs', $obs->id_obs)
                             ->update([
                                 'observacion' => 'Fue despachado con ' . $ordenDespacho->codigo,
+                                'fecha_estado' => $fechaRegistro,
                                 'registrado_por' => $usuario,
                                 'fecha_registro' => $fechaRegistro
                             ]);
@@ -566,6 +567,7 @@ class OrdenesDespachoExternoController extends Controller
                             ->insert([
                                 'id_od' => $ordenDespacho->id_od,
                                 'accion' => $id_estado_envio,
+                                'fecha_estado' => $fechaRegistro,
                                 'observacion' => 'Fue despachado con ' . $ordenDespacho->codigo,
                                 'registrado_por' => $usuario,
                                 'fecha_registro' => $fechaRegistro
@@ -1098,6 +1100,7 @@ class OrdenesDespachoExternoController extends Controller
                         ->where('id_obs', $obs->id_obs)
                         ->update([
                             'observacion' => 'Guía N° ' . $request->serie . '-' . $request->numero,
+                            'fecha_estado' => $request->fecha_transportista,
                             'registrado_por' => $id_usuario,
                             'fecha_registro' => $fecha_registro
                         ]);
@@ -1107,6 +1110,7 @@ class OrdenesDespachoExternoController extends Controller
                         ->insert([
                             'id_od' => $request->id_od,
                             'accion' => $id_estado_envio,
+                            'fecha_estado' => $request->fecha_transportista,
                             'observacion' => 'Guía N° ' . $request->serie . '-' . $request->numero,
                             'registrado_por' => $id_usuario,
                             'fecha_registro' => $fecha_registro

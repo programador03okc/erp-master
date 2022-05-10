@@ -1788,6 +1788,7 @@ class DistribucionController extends Controller
                 'orden_despacho_obs.*',
                 'transportista.razon_social as razon_social_transportista',
                 'orden_despacho.fecha_despacho',
+                'orden_despacho.fecha_despacho_real',
                 'orden_despacho.codigo_envio',
                 'orden_despacho.fecha_transportista',
                 'orden_despacho.importe_flete',
@@ -1801,7 +1802,7 @@ class DistribucionController extends Controller
             ->leftjoin('contabilidad.transportistas', 'transportistas.id_contribuyente', '=', 'orden_despacho.id_transportista')
             ->leftjoin('contabilidad.adm_contri as transportista', 'transportista.id_contribuyente', '=', 'transportistas.id_contribuyente')
             ->where('orden_despacho_obs.id_od', $id_od)
-            ->orderBy('orden_despacho_obs.id_obs')
+            ->orderBy('orden_despacho_obs.fecha_estado')
             ->get();
         return response()->json($obs);
     }
