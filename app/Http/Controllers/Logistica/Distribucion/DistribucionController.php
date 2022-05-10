@@ -1920,7 +1920,7 @@ class DistribucionController extends Controller
             ])
             ->first();
 
-        if ($request->estado == 8) {
+        if ($request->estado == 8 || $request->estado == 7 || $request->estado == 6) {
 
             $estado = new Carbon($request->fecha_estado);
             $entrega = new Carbon($od->fecha_entrega);
