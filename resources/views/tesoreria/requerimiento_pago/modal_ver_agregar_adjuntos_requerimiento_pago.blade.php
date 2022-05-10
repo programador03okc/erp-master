@@ -3,7 +3,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title">Archivos adjuntos de requerimiento de pago</h3>
+                <h3 class="modal-title">Adjuntos de requerimiento de pago</h3>
             </div>
             <div class="modal-body">
                 <form id="form_ver_agregar_adjuntos_requerimiento_pago">

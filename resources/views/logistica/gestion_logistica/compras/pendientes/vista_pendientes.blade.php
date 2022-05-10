@@ -112,8 +112,7 @@ Requerimientos pendientes
 @include('logistica.requerimientos.mapeo.mapeoItemsRequerimiento')
 @include('logistica.requerimientos.mapeo.mapeoAsignarProducto')
 @include('logistica.gestion_logistica.compras.pendientes.modal_opciones_para_regularizar_item')
-
-@include('logistica.gestion_logistica.compras.pendientes.modal_todo_adjuntos')
+@include('logistica.requerimientos.modal_ver_agregar_adjuntos_requerimiento_compra')
 @include('logistica.gestion_logistica.compras.pendientes.modal_adjuntos_detalle_requerimiento')
 @include('logistica.gestion_logistica.compras.pendientes.modal_observar_requerimiento_logistica')
 @include('logistica.gestion_logistica.compras.pendientes.modal_filtro_requerimientos_pendientes')
@@ -158,6 +157,7 @@ Requerimientos pendientes
 
 <script src="{{ asset('js/logistica/mapeo/mapeoItemsRequerimiento.js')}}?v={{filemtime(public_path('js/logistica/mapeo/mapeoItemsRequerimiento.js'))}}"></script>
 <script src="{{ asset('js/logistica/mapeo/mapeoAsignarProducto.js')}}?v={{filemtime(public_path('js/logistica/mapeo/mapeoAsignarProducto.js'))}}"></script>
+<script src="{{ asset('js/logistica/requerimiento/verTodoAdjuntosYAdicionalesRequerimientoCompra.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/verTodoAdjuntosYAdicionalesRequerimientoCompra.js'))}}"></script>
 
 
 <script>

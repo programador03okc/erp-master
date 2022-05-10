@@ -1,7 +1,7 @@
 var tempArchivoAdjuntoRequerimientoCabeceraList=[];
 
-$('#ListaRequerimientosElaborados').on("click", "button.handleClickVerAgregarAdjuntosRequerimiento", (e) => {
-    verAgregarAdjuntosRequerimiento(e.currentTarget.dataset.idRequerimiento);
+$('table').on("click", "button.handleClickVerAgregarAdjuntosRequerimiento", (e) => {
+    verAgregarAdjuntosRequerimiento(e.currentTarget);
 });
 
 $('#modal-ver-agregar-adjuntos-requerimiento-compra').on("change", "input.handleChangeAgregarAdjuntoRequerimientoCompraCabecera", (e) => {
@@ -82,7 +82,10 @@ function obteneAdjuntosPago(idRequerimiento) {
     });
 }
 
-function verAgregarAdjuntosRequerimiento(idRequerimiento) {
+function verAgregarAdjuntosRequerimiento(obj) {
+    let idRequerimiento= obj.dataset.idRequerimiento;
+    let codigoRequerimiento= obj.dataset.codigoRequerimiento;
+
     $('#modal-ver-agregar-adjuntos-requerimiento-compra').modal({
         show: true,
         backdrop: 'static'
@@ -90,6 +93,7 @@ function verAgregarAdjuntosRequerimiento(idRequerimiento) {
     $(":file").filestyle('clear');
 
     document.querySelector("div[id='modal-ver-agregar-adjuntos-requerimiento-compra'] input[name='id_requerimiento']").value =idRequerimiento;
+    document.querySelector("div[id='modal-ver-agregar-adjuntos-requerimiento-compra'] span[id='codigo_requerimiento']").textContent =codigoRequerimiento;
     if (idRequerimiento > 0) {
         limpiarTabla('adjuntosCabecera');
         limpiarTabla('adjuntosDetalle');
