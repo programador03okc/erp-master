@@ -187,6 +187,7 @@ class TransformacionController extends Controller
             ->join('almacen.guia_ven', function ($join) {
                 $join->on('guia_ven.id_od', '=', 'transformacion.id_od');
                 $join->where('guia_ven.estado', '!=', 7);
+                $join->limit(1);
             })
             ->leftjoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'transformacion.id_cc')
             ->leftjoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')

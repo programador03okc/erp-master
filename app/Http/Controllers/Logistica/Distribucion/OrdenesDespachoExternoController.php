@@ -114,7 +114,7 @@ class OrdenesDespachoExternoController extends Controller
                             and orden_despacho.estado != 7) AS gasto_extra"),
                 DB::raw("(SELECT orden_despacho_obs.adjunto FROM almacen.orden_despacho_obs where
                             orden_despacho_obs.id_od = orden_despacho.id_od
-                            and orden_despacho_obs.accion = 8
+                            and (orden_despacho_obs.accion = 8 or orden_despacho_obs.accion = 7 or orden_despacho_obs.accion = 6)
                             and orden_despacho.estado != 7
                             order by id_obs desc limit 1) AS adjunto"),
                 'oc_propias_view.nro_orden',
