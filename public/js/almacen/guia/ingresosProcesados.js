@@ -183,25 +183,25 @@ function listarIngresos() {
                     });
                     return ocs;
                 },
-                targets: 9
+                targets: 10
             },
             {
                 render: function (data, type, row) {
                     return row.ordenes_soft_link;
                 },
-                targets: 10
+                targets: 11
             },
             {
                 render: function (data, type, row) {
                     return row.comprobantes.codigo;
                 },
-                targets: 11
+                targets: 12
             },
             {
                 render: function (data, type, row) {
                     return row.requerimientos;
                 },
-                targets: 12
+                targets: 13
             },
             {
                 render: function (data, type, row) {
@@ -249,7 +249,7 @@ function listarIngresos() {
                         );
                     }
                 },
-                targets: 13
+                targets: 14
             }
         ],
         select: "multi",
