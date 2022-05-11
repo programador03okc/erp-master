@@ -573,6 +573,9 @@ class SalidasPendientesController extends Controller
                             ->update(['estado' => 1]);
 
                         $detalle = DB::table('almacen.guia_ven_det')
+                            ->select('guia_ven_det.id_guia_ven_det', 'alm_det_req.id_detalle_requerimiento')
+                            ->leftjoin('almacen.orden_despacho_det', 'orden_despacho_det.id_od_detalle', '=', 'guia_ven_det.id_od_det')
+                            ->leftjoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'orden_despacho_det.id_detalle_requerimiento')
                             ->where('id_guia_ven', $request->id_guia_ven)
                             ->get();
 
@@ -580,6 +583,23 @@ class SalidasPendientesController extends Controller
                             DB::table('almacen.alm_prod_serie')
                                 ->where('id_guia_ven_det', $det->id_guia_ven_det)
                                 ->update(['id_guia_ven_det' => null]);
+
+                            if ($det->id_detalle_requerimiento !== null) {
+                                //obtiene la reserva
+                                $res = DB::table('almacen.alm_reserva')
+                                    ->where([
+                                        ['id_detalle_requerimiento', $det->id_detalle_requerimiento],
+                                        ['id_almacen_reserva', $sal->id_almacen]
+                                    ])
+                                    ->first();
+
+                                if ($res !== null) {
+                                    //revierte la reserva
+                                    DB::table('almacen.alm_reserva')
+                                        ->where('id_reserva', $res->id_reserva)
+                                        ->update(['estado' => 1]);
+                                }
+                            }
                         }
 
                         // if ($od->id_requerimiento !== null) {
