@@ -612,16 +612,17 @@ class RequerimientoPendienteView {
 
                             // let btnAgregarItemBase = '<button type="button" class="btn btn-success btn-xs" name="btnAgregarItemBase" title="Mapear productos" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.openModalAgregarItemBase(this);"  ><i class="fas fa-sign-out-alt"></i></button>';
                             let btnMapearProductos = '<button type="button" class="mapeo btn btn-success btn-xs" title="Mapear productos" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo="' + row.codigo + '"  ><i class="fas fa-sign-out-alt"></i> <span class="badge" title="Cantidad items sin mapear" name="cantidadAdjuntosRequerimiento" style="position:absolute;border: solid 0.1px;z-index: 9;top: -9px;left: 0px;font-size: 0.9rem;">' + row.count_pendientes + '</span></button>';
-                            let btnVerAdjuntos = '';
+                            let btnVerAdjuntosModal = '<button type="button" class="btn btn-xs btn-default  handleClickVerAgregarAdjuntosRequerimiento" name="btnVerAgregarAdjuntosRequerimiento" data-id-requerimiento="' + row['id_requerimiento'] + '" data-codigo-requerimiento="' + row.codigo + '" title="Ver archivos adjuntos"><i class="fas fa-paperclip fa-xs"></i></button>';
                             let btnAtenderAlmacen = '';
                             let btnCrearOrdenCompra = '';
                             let btnGestionarEstadoRequerimiento = '';
                             let btnCrearOrdenServicio = '<button type="button" class="btn btn-warning btn-xs handleClickCrearOrdenServicioPorRequerimiento" name="btnCrearOrdenServicioPorRequerimiento" title="Crear Orden de Servicio" data-id-requerimiento="' + row.id_requerimiento + '"  >OS</button>';
                             let btnExportarExcel = '<button type="button" class="btn btn-default btn-xs handleClickSolicitudCotizacionExcel" name="btnSolicitudCotizacionExcel" title="Solicitud cotización excel" data-id-requerimiento="' + row.id_requerimiento + '" style="color:green;" ><i class="far fa-file-excel"></i></button>';
-                            if (row.cantidad_adjuntos_activos.cabecera > 0 || row.cantidad_adjuntos_activos.detalle > 0) {
-                                btnVerAdjuntos = '<button type="button" class="btn btn-default btn-xs handleClickVerTodoAdjuntos" title="Ver adjuntos" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo="' + row.codigo + '"  ><i class="fas fa-folder"></i></button>';
+                            // if (row.cantidad_adjuntos_activos.cabecera > 0 || row.cantidad_adjuntos_activos.detalle > 0) {
+                                // btnVerAdjuntosModal = '<button type="button" class="btn btn-xs btn-default  handleClickVerAgregarAdjuntosRequerimiento" name="btnVerAgregarAdjuntosRequerimiento" data-id-requerimiento="' + row['id_requerimiento'] + '" data-codigo-requerimiento="' + row.codigo + '" title="Ver archivos adjuntos"><i class="fas fa-paperclip fa-xs"></i></button>';
+                                
 
-                            }
+                            // }
                             if (row.count_mapeados > 0) {
                                 if (row.estado == 38 || row.estado == 39) { // estado por regularizar | estado  en pausa
 
@@ -645,7 +646,7 @@ class RequerimientoPendienteView {
 
                             let btnVercuadroCostos = '';
                             if (row.id_tipo_requerimiento == 1) {
-                                btnVercuadroCostos = '<button type="button" class="btn btn-info btn-xs handleClickOpenModalCuadroCostos" name="btnVercuadroCostos" title="Ver Cuadro Costos" data-id-requerimiento="' + row.id_requerimiento + '" ><i class="fas fa-eye fa-sm"></i></button>';
+                                btnVercuadroCostos = '<button type="button" class="btn btn-default btn-xs handleClickOpenModalCuadroCostos" name="btnVercuadroCostos" title="Ver Cuadro Costos" data-id-requerimiento="' + row.id_requerimiento + '" ><i class="fas fa-eye fa-sm"></i></button>';
                             }
 
 
@@ -656,7 +657,7 @@ class RequerimientoPendienteView {
                                 botones = openDiv + btnVerDetalleRequerimiento + btnExportarExcel + closeDiv;
                             } else {
                                 botones = openDiv + btnVerDetalleRequerimiento + btnExportarExcel + btnAtenderAlmacen + btnMapearProductos +
-                                    btnCrearOrdenCompra + btnVercuadroCostos + btnVerAdjuntos + btnGestionarEstadoRequerimiento;
+                                    btnCrearOrdenCompra + btnVercuadroCostos + btnVerAdjuntosModal + btnGestionarEstadoRequerimiento;
 
                                 if (row.cantidad_tipo_servicio > 0) {
                                     botones += btnCrearOrdenServicio + closeDiv;
@@ -938,12 +939,12 @@ class RequerimientoPendienteView {
                             // let btnObservarRequerimientoLogistica= '<button type="button" class="btn btn-default btn-xs handleClickObservarRequerimientoLogistica" name="btnObservarRequerimientoLogistica" title="Observar requerimiento" data-id-requerimiento="' + row.id_requerimiento + '" style="background: gold;" ><i class="fas fa-exclamation-triangle fa-sm"></i></button>';
 
                             // let btnAgregarItemBase = '<button type="button" class="btn btn-success btn-xs" name="btnAgregarItemBase" title="Mapear productos" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.openModalAgregarItemBase(this);"  ><i class="fas fa-sign-out-alt"></i></button>';
-                            let btnVerAdjuntos = '';
+                            let btnVerAdjuntosModal = '<button type="button" class="btn btn-xs btn-default  handleClickVerAgregarAdjuntosRequerimiento" name="btnVerAgregarAdjuntosRequerimiento" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo-requerimiento="' + row.codigo + '" title="Ver archivos adjuntos"><i class="fas fa-paperclip fa-xs"></i></button>';
                             let btnAtenderAlmacen = '';
-                            if (row.cantidad_adjuntos_activos.cabecera > 0 || row.cantidad_adjuntos_activos.detalle > 0) {
-                                btnVerAdjuntos = '<button type="button" class="btn btn-default btn-xs handleClickVerTodoAdjuntos" title="Ver adjuntos" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo="' + row.codigo + '"  ><i class="fas fa-folder"></i></button>';
+                            // if (row.cantidad_adjuntos_activos.cabecera > 0 || row.cantidad_adjuntos_activos.detalle > 0) {
+                            //     btnVerAdjuntosModal = '<button type="button" class="btn btn-xs btn-default  handleClickVerAgregarAdjuntosRequerimiento" name="btnVerAgregarAdjuntosRequerimiento" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo-requerimiento="' + row.codigo + '" title="Ver archivos adjuntos"><i class="fas fa-paperclip fa-xs"></i></button>';
 
-                            }
+                            // }
                             if (row.count_mapeados > 0) {
                                 if (row.estado == 38 || row.estado == 39) { // estado por regularizar | estado  en pausa
 
@@ -963,16 +964,16 @@ class RequerimientoPendienteView {
 
                             let btnVercuadroCostos = '';
                             if (row.id_tipo_requerimiento == 1) {
-                                btnVercuadroCostos = '<button type="button" class="btn btn-info btn-xs handleClickOpenModalCuadroCostos" name="btnVercuadroCostos" title="Ver Cuadro Costos" data-id-requerimiento="' + row.id_requerimiento + '" ><i class="fas fa-eye fa-sm"></i></button>';
+                                btnVercuadroCostos = '<button type="button" class="btn btn-default btn-xs handleClickOpenModalCuadroCostos" name="btnVercuadroCostos" title="Ver Cuadro Costos" data-id-requerimiento="' + row.id_requerimiento + '" ><i class="fas fa-eye fa-sm"></i></button>';
                             }
 
 
                             let closeDiv = '</div>';
 
                             if (row.cantidad_tipo_servicio > 0) {
-                                return (openDiv + btnVerDetalleRequerimiento + btnAtenderAlmacen + btnVercuadroCostos + btnVerAdjuntos + closeDiv);
+                                return (openDiv + btnVerDetalleRequerimiento + btnAtenderAlmacen + btnVercuadroCostos + btnVerAdjuntosModal + closeDiv);
                             } else {
-                                return (openDiv + btnVerDetalleRequerimiento + btnAtenderAlmacen + btnVercuadroCostos + btnVerAdjuntos + closeDiv);
+                                return (openDiv + btnVerDetalleRequerimiento + btnAtenderAlmacen + btnVercuadroCostos + btnVerAdjuntosModal + closeDiv);
                             }
                         }
 
@@ -3521,45 +3522,45 @@ class RequerimientoPendienteView {
 
     }
 
+ 
 
+    // verTodoAdjuntos(obj) {
 
-    verTodoAdjuntos(obj) {
+    //     $('#modal-todo-adjuntos').modal({
+    //         show: true,
+    //         backdrop: 'true'
+    //     });
 
-        $('#modal-todo-adjuntos').modal({
-            show: true,
-            backdrop: 'true'
-        });
+    //     document.querySelector("div[id='modal-todo-adjuntos'] span[id='codigo-requerimiento']").textContent = obj.dataset.codigo;
+    //     this.listarTodoArchivosAdjuntos(obj.dataset.idRequerimiento);
 
-        document.querySelector("div[id='modal-todo-adjuntos'] span[id='codigo-requerimiento']").textContent = obj.dataset.codigo;
-        this.listarTodoArchivosAdjuntos(obj.dataset.idRequerimiento);
+    // }
 
-    }
+    // listarTodoArchivosAdjuntos(idRequerimiento) {
+    //     $.ajax({
+    //         type: 'GET',
+    //         url: 'mostrar-todo-adjuntos-requerimiento/' + idRequerimiento,
+    //         dataType: 'JSON',
+    //     }).done((response) => {
+    //         // console.log(response);
+    //         this.construirTablaAdjuntoRequerimiento(response.adjunto_requerimiento);
+    //         this.construirTablaTodoAdjuntoDetalleRequerimiento(response.adjuntos_detalle_requerimiento);
 
-    listarTodoArchivosAdjuntos(idRequerimiento) {
-        $.ajax({
-            type: 'GET',
-            url: 'mostrar-todo-adjuntos-requerimiento/' + idRequerimiento,
-            dataType: 'JSON',
-        }).done((response) => {
-            // console.log(response);
-            this.construirTablaAdjuntoRequerimiento(response.adjunto_requerimiento);
-            this.construirTablaTodoAdjuntoDetalleRequerimiento(response.adjuntos_detalle_requerimiento);
+    //     }).always(() => {
 
-        }).always(() => {
+    //     }).fail((jqXHR) => {
+    //         Swal.fire(
+    //             '',
+    //             'Hubo un problema al intentar mostrar los adjuntos, por favor vuelva a intentarlo.',
+    //             'error'
+    //         );
+    //         console.log('Error devuelto: ' + jqXHR.responseText);
+    //     });
+    // }
+    // descargarArchivoRequerimiento(obj) {
+    //     if (obj.dataset.idAdjunto > 0) {
+    //         window.open("/files/necesidades/requerimientos/bienes_servicios/cabecera/" + obj.dataset.archivo);
+    //     }
 
-        }).fail((jqXHR) => {
-            Swal.fire(
-                '',
-                'Hubo un problema al intentar mostrar los adjuntos, por favor vuelva a intentarlo.',
-                'error'
-            );
-            console.log('Error devuelto: ' + jqXHR.responseText);
-        });
-    }
-    descargarArchivoRequerimiento(obj) {
-        if (obj.dataset.idAdjunto > 0) {
-            window.open("/files/necesidades/requerimientos/bienes_servicios/cabecera/" + obj.dataset.archivo);
-        }
-
-    }
+    // }
 }

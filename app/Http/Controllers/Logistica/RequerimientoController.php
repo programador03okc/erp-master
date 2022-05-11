@@ -3748,26 +3748,26 @@ class RequerimientoController extends Controller
         return response()->json(['data'=>$data]);
     }
 
-    public function mostrarTodoAdjuntos($idRequerimiento)
-    {
+    // public function mostrarTodoAdjuntos($idRequerimiento)
+    // {
 
-        $adjuntosCabecera = AdjuntoRequerimiento::where([['id_requerimiento',$idRequerimiento],['estado','!=',7]])->get();
+    //     $adjuntosCabecera = AdjuntoRequerimiento::where([['id_requerimiento',$idRequerimiento],['estado','!=',7]])->get();
 
-        $detalleRequerimiento=DetalleRequerimiento::where('id_requerimiento',$idRequerimiento)->get();
-        $idDetalleRequerimientoList=[];
-        foreach ($detalleRequerimiento as $dr) {
-            $idDetalleRequerimientoList[]=$dr->id_detalle_requerimiento;
-        }
+    //     $detalleRequerimiento=DetalleRequerimiento::where('id_requerimiento',$idRequerimiento)->get();
+    //     $idDetalleRequerimientoList=[];
+    //     foreach ($detalleRequerimiento as $dr) {
+    //         $idDetalleRequerimientoList[]=$dr->id_detalle_requerimiento;
+    //     }
 
         
-        $adjuntosDetalle= AdjuntoDetalleRequerimiento::whereIn('id_detalle_requerimiento',$idDetalleRequerimientoList)->where([['estado',1]])->with(['detalleRequerimiento'=>function ($q) {
-            $q->where('alm_det_req.estado', '=', 1);
-        },'detalleRequerimiento.producto'])->get();
+    //     $adjuntosDetalle= AdjuntoDetalleRequerimiento::whereIn('id_detalle_requerimiento',$idDetalleRequerimientoList)->where([['estado',1]])->with(['detalleRequerimiento'=>function ($q) {
+    //         $q->where('alm_det_req.estado', '=', 1);
+    //     },'detalleRequerimiento.producto'])->get();
 
 
 
-        return response()->json(['adjunto_requerimiento'=>$adjuntosCabecera,'adjuntos_detalle_requerimiento'=>$adjuntosDetalle]);
-    }
+    //     return response()->json(['adjunto_requerimiento'=>$adjuntosCabecera,'adjuntos_detalle_requerimiento'=>$adjuntosDetalle]);
+    // }
 
     public function mostrarCatalogoProductos(){
         
