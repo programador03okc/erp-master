@@ -1691,6 +1691,7 @@ class ListarRequerimientoPagoView {
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='prioridad']").textContent = '';
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='fecha_registro']").textContent = '';
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='creado_por']").textContent = '';
+        document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='solicitado_por']").textContent = '';
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='periodo']").textContent = '';
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosDestinatario'] td[id='tipo_destinatario']").textContent = '';
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosDestinatario'] td[id='destinatario']").textContent = '';
@@ -1751,6 +1752,7 @@ class ListarRequerimientoPagoView {
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='prioridad']").textContent = data.prioridad != null && data.prioridad.descripcion != undefined ? data.prioridad.descripcion : '';
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='fecha_registro']").textContent = data.fecha_registro;
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='creado_por']").textContent = data.creado_por != null && data.creado_por.nombre_corto != undefined ? data.creado_por.nombre_corto : '';
+        document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='solicitado_por']").textContent = data.nombre_trabajador!= null && data.nombre_trabajador != undefined ? data.nombre_trabajador : '';
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='periodo']").textContent = data.periodo != null && data.periodo.descripcion != undefined ? data.periodo.descripcion : '';
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='comentario']").textContent = data.comentario;
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosDestinatario'] td[id='tipo_destinatario']").textContent = data.tipo_destinatario != null ? data.tipo_destinatario.descripcion : '';
@@ -2003,6 +2005,9 @@ class ListarRequerimientoPagoView {
             document.querySelector("div[id='modal-requerimiento-pago'] div[id='contenedor-proyecto']").classList.add("oculto");
 
         }
+
+        document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_trabajador']").value = data.id_trabajador;
+        document.querySelector("div[id='modal-requerimiento-pago'] input[name='nombre_trabajador']").value = data.nombre_trabajador;
 
         // document.querySelector("div[id='modal-requerimiento-pago'] input[name='fecha_registro']").value = fechaRegistro;
         document.querySelector("div[id='modal-requerimiento-pago'] span[name='fecha_registro']").textContent = 'Fecha registro: ' + fechaRegistro;

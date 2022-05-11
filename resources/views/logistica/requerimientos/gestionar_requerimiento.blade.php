@@ -107,7 +107,7 @@ Crear / editar requerimiento
 
                         <div class="col-md-6">
                             <div class="form-group">
-                                <h5>Concepto/Motivo</h5>
+                                <h5>Concepto/Motivo *</h5>
                                 <input type="text" class="form-control activation handleChangeUpdateConcepto" name="concepto">
                             </div>
                         </div>
@@ -160,7 +160,7 @@ Crear / editar requerimiento
 
                         <div class="col-md-2" id="input-group-empresa">
                             <div class="form-group">
-                                <h5>Empresa</h5>
+                                <h5>Empresa *</h5>
                                 <select name="empresa" id="empresa" class="form-control activation handleChangeOptEmpresa handleChangeUpdateEmpresa">
                                     <option value="0">Elija una opción</option>
                                     @foreach ($empresas as $empresa)
@@ -172,7 +172,7 @@ Crear / editar requerimiento
 
                         <div class="col-md-2" id="input-group-sede">
                             <div class="form-group">
-                                <h5>Sede</h5>
+                                <h5>Sede *</h5>
                                 <select id="sede" name="sede" class="form-control activation handleChangeOptUbigeo handleChangeUpdateSede">
                                     <option value="0">Elija una opción</option>
                                 </select>
@@ -188,7 +188,7 @@ Crear / editar requerimiento
 
                         <div class="col-md-2" id="input-group-aprobante">
                             <div class="form-group">
-                                <h5>División</h5>
+                                <h5>División *</h5>
                                 <select name="division" class="form-control activation handleChangeDivision">
                                     <option value="0">Elija una opción</option>
                                     @foreach ($divisiones as $division)
@@ -199,7 +199,7 @@ Crear / editar requerimiento
                         </div>
                         <div class="col-md-2" id="input-group-tipo-requerimiento">
                             <div class="form-group">
-                                <h5>Tipo Requerimiento</h5>
+                                <h5>Tipo Requerimiento *</h5>
                                 <select class="form-control input-sm activation handleChangeTipoRequerimiento" name="tipo_requerimiento">
                                     <option value="0">Elija una opción</option>
                                     @foreach ($tipo_requerimiento as $tipo)

@@ -69,6 +69,9 @@ class RequerimientoPagoController extends Controller
         $tipo_cuenta = TipoCuenta::mostrar();
         $tiposRequerimientoPago = RequerimientoPagoTipo::mostrar();
         $tipos_documentos = Identidad::mostrar();
+        $idTrabajador = Auth::user()->id_trabajador;
+        $idUsuario = Auth::user()->id_usuario;
+        $nombreUsuario = Auth::user()->trabajador->postulante->persona->nombre_completo;
 
         return view(
             'tesoreria/requerimiento_pago/lista',
@@ -86,7 +89,10 @@ class RequerimientoPagoController extends Controller
                 'bancos',
                 'tipo_cuenta',
                 'tipos_documentos',
-                'tiposDestinatario'
+                'tiposDestinatario',
+                'idUsuario',
+                'idTrabajador',
+                'nombreUsuario'
             )
         );
     }
@@ -245,6 +251,8 @@ class RequerimientoPagoController extends Controller
             $requerimientoPago->id_proyecto = $request->proyecto > 0 ? $request->proyecto : null;
             $requerimientoPago->id_cc = $request->id_cc > 0 ? $request->id_cc : null;
             $requerimientoPago->id_estado = 1;
+            $requerimientoPago->id_trabajador = $request->id_trabajador > 0 ? $request->id_trabajador : null;
+
             $requerimientoPago->save();
             $requerimientoPago->adjuntoOtrosAdjuntos = $request->archivoAdjuntoRequerimientoPagoCabeceraFile1;
             $requerimientoPago->adjuntoOrdenes = $request->archivoAdjuntoRequerimientoPagoCabeceraFile2;
@@ -448,6 +456,7 @@ class RequerimientoPagoController extends Controller
             $requerimientoPago->monto_total = $request->monto_total;
             $requerimientoPago->id_proyecto = $request->proyecto > 0 ? $request->proyecto : null;
             $requerimientoPago->id_cc = $request->id_cc > 0 ? $request->id_cc : null;
+            $requerimientoPago->id_trabajador = $request->id_trabajador > 0 ? $request->id_trabajador : null;
             $requerimientoPago->save();
 
             // guardar adjuntos

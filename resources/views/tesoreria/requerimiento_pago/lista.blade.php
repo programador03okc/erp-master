@@ -85,6 +85,7 @@ Listado de requerimientos de pago
 @include('tesoreria.requerimiento_pago.modal_nueva_cuenta_bancaria_destinatario')
 
 @include('tesoreria.requerimiento_pago.modal_ver_agregar_adjuntos_requerimiento_pago')
+@include('logistica.requerimientos.modal_lista_trabajadores')
 
 @endsection
 
@@ -103,6 +104,7 @@ Listado de requerimientos de pago
 <script src="{{ asset('js/tesoreria/requerimientoPago/nuevoDestinatario.js')}}?v={{filemtime(public_path('js/Tesoreria/requerimientoPago/nuevoDestinatario.js'))}}"></script>
 <script src="{{ asset('js/tesoreria/requerimientoPago/nuevaCuentaBancariaDestinatario.js')}}?v={{filemtime(public_path('js/Tesoreria/requerimientoPago/nuevaCuentaBancariaDestinatario.js'))}}"></script>
 <script src="{{ asset('js/tesoreria/requerimientoPago/verTodoAdjuntosYAdicionalesRequerimientoPago.js')}}?v={{filemtime(public_path('js/Tesoreria/requerimientoPago/verTodoAdjuntosYAdicionalesRequerimientoPago.js'))}}"></script>
+<script src="{{ asset('js/logistica/requerimiento/modal_lista_trabajadores.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/modal_lista_trabajadores.js'))}}"></script>
 
 
 <script>

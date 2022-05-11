@@ -67,7 +67,7 @@ function listarTrabajadores(){
 function selectTrabajador(obj){
     let idTrabajador= obj.dataset.idTrabajador;
     let nombreTrabajador= obj.dataset.nombreTrabajador;
-    document.querySelector("form[id='form-requerimiento'] input[name='id_trabajador']").value =idTrabajador;
-    document.querySelector("form[id='form-requerimiento'] input[name='nombre_trabajador']").value =nombreTrabajador;
+    document.querySelector("form input[name='id_trabajador']").value =idTrabajador;
+    document.querySelector("form input[name='nombre_trabajador']").value =nombreTrabajador;
     $('#modal-lista-trabajadores').modal('hide');
 }
