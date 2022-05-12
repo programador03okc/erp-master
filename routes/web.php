@@ -775,6 +775,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('obtener-cuenta-contribuyente/{idContribuyente}', 'Tesoreria\RequerimientoPagoController@obtenerCuentaContribuyente');
 				Route::get('listar-todo-archivos-adjuntos-requerimiento-pago/{id}', 'Tesoreria\RequerimientoPagoController@listarTodoArchivoAdjuntoRequerimientoPago');
 				Route::post('guardar-adjuntos-adicionales-requerimiento-pago', 'Tesoreria\RequerimientoPagoController@guardarAdjuntosAdicionales');
+				Route::get('listar_trabajadores', 'ProyectosController@listar_trabajadores');
+
 			});
 			// Route::group(['as' => 'revisar_aprobar.', 'prefix' => 'revisar_aprobar'], function () {
 			// 	Route::get('index', 'Tesoreria\RequerimientoPagoController@viewRevisarAprobarRequerimientoPago')->name('index');

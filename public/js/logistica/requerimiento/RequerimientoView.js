@@ -2098,17 +2098,17 @@ class RequerimientoView {
 
         }
 
-        if (document.querySelector("input[name='fecha_entrega']").value == '') {
-            continuar = false;
-            if (document.querySelector("input[name='fecha_entrega']").closest('div').querySelector("span") == null) {
-                let newSpanInfo = document.createElement("span");
-                newSpanInfo.classList.add('text-danger');
-                newSpanInfo.textContent = '(Seleccione una fecha de entrega)';
-                document.querySelector("input[name='fecha_entrega']").closest('div').querySelector("h5").appendChild(newSpanInfo);
-                document.querySelector("input[name='fecha_entrega']").closest('div').classList.add('has-error');
-            }
+        // if (document.querySelector("input[name='fecha_entrega']").value == '') {
+        //     continuar = false;
+        //     if (document.querySelector("input[name='fecha_entrega']").closest('div').querySelector("span") == null) {
+        //         let newSpanInfo = document.createElement("span");
+        //         newSpanInfo.classList.add('text-danger');
+        //         newSpanInfo.textContent = '(Seleccione una fecha de entrega)';
+        //         document.querySelector("input[name='fecha_entrega']").closest('div').querySelector("h5").appendChild(newSpanInfo);
+        //         document.querySelector("input[name='fecha_entrega']").closest('div').classList.add('has-error');
+        //     }
 
-        }
+        // }
 
         if (document.querySelector("select[name='tipo_requerimiento']").value == 0) {
             continuar = false;

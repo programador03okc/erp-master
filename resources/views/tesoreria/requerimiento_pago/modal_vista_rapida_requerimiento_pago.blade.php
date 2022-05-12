@@ -25,22 +25,25 @@
                                             <td></td>
                                             <td style="width:5%; font-weight:bold; text-align:right;">Empresa</td>
                                             <td id="razon_social_empresa" style="width:20%;"></td>
-                                        </tr>
-                                        <tr>
                                             <td style="width:5%; font-weight:bold; text-align:right;">Grupo/División</td>
                                             <td id="grupo_division" style="width:10%;"></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="width:5%; font-weight:bold; text-align:right;">Periodo</td>
+                                            <td id="periodo" style="width:5%;"></td>
+                                            <td style="width:5%; font-weight:bold; text-align:right;">Tipo Req.</td>
+                                            <td id="tipo_requerimiento" style="width:5%;"></td>
                                             <td style="width:5%; font-weight:bold; text-align:right;">Prioridad</td>
                                             <td id="prioridad" style="width:10%;"></td>
                                             <td style="width:14%; font-weight:bold; text-align:right;">Fecha Registro</td>
                                             <td id="fecha_registro" style="width:10%;"></td>
                                             <td style="width:5%; font-weight:bold; text-align:right;">Creado por</td>
                                             <td id="creado_por" style="width:10%;"></td>
+
                                         </tr>
                                         <tr>
-                                            <td style="width:5%; font-weight:bold; text-align:right;">Tipo Req.</td>
-                                            <td id="tipo_requerimiento" style="width:5%;"></td>
-                                            <td style="width:5%; font-weight:bold; text-align:right;">Periodo</td>
-                                            <td id="periodo" style="width:5%;"></td>
+                                            <td style="width:5%; font-weight:bold; text-align:right;">Solicitado por</td>
+                                            <td id="solicitado_por" style="width:10%;"></td>
                                             <td style="width:5%; font-weight:bold; text-align:right;">Comentario</td>
                                             <td id="comentario" style="width:5%;"></td>
                                             <td style="width:10%; font-weight:bold; text-align:right;">Archivos adjuntos</td>

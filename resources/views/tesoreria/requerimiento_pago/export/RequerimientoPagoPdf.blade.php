@@ -141,7 +141,10 @@ if($requerimientoPago->id_tipo_destinatario ==1){
                 <th style="width: 15%" class="text-right">Fecha registro:</th>
                 <td style="width: 35%">{{$requerimientoPago->fecha_registro!=null ? $requerimientoPago->fecha_registro:''}}</td>
             </tr>
-
+            <tr>
+                <th style="width: 15%" class="text-right">Solicitado por:</th>
+                <td style="width: 35%">{{$requerimientoPago->nombre_trabajador!=null ? $requerimientoPago->nombre_trabajador:'' }}</td>
+            </tr>
         </thead>
     </table>
 

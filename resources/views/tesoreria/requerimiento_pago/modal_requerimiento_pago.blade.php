@@ -140,11 +140,24 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-
                                             <h5>Comentario</h5>
                                             <textarea class="form-control activation handleCheckStatusValue" name="comentario" placeholder="Comentario/observación (opcional)" cols="100" rows="100" style="height:50px;"></textarea>
                                         </div>
                                     </div>
+
+                                    <div class="col-md-3" id="input-group-asignar_trabajador">
+                                        <div class="form-group">
+                                            <h5>Solicitado por</h5>
+                                            <div style="display:flex;">
+                                                <input class="oculto" name="id_trabajador" value="{{$idTrabajador}}">
+                                                <input type="text" name="nombre_trabajador" class="form-control group-elemento" placeholder="Trabajador" value="{{$nombreUsuario}}" readonly="">
+                                                <button type="button" class="group-tex btn-primary activation" onclick="listaTrabajadoresModal();">
+                                                    <i class="fa fa-search"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <div class="col-md-2">
                                         <h5>&nbsp;</h5>
                                         <div style="display:flex; position:relative;">

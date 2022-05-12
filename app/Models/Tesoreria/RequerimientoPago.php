@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Administracion\Documento;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Contabilidad\CuentaContribuyente;
+use App\Models\Rrhh\Persona;
 use Carbon\Carbon;
 
 
@@ -13,7 +14,7 @@ class RequerimientoPago extends Model
 {
     protected $table = 'tesoreria.requerimiento_pago';
     protected $primaryKey = 'id_requerimiento_pago';
-    protected $appends = ['id_documento', 'termometro', 'nombre_estado'];
+    protected $appends = ['id_documento', 'termometro', 'nombre_estado','nombre_trabajador'];
     public $timestamps = false;
 
 
@@ -46,6 +47,14 @@ class RequerimientoPago extends Model
             ->where('requerimiento_pago.id_requerimiento_pago', $this->attributes['id_requerimiento_pago'])
             ->first()->descripcion;
         return $estado;
+    }
+    public function getNombreTrabajadorAttribute()
+    {
+        $trabajador = Persona::join('rrhh.rrhh_postu', 'rrhh_postu.id_persona', '=', 'rrhh_perso.id_persona')
+        ->join('rrhh.rrhh_trab', 'rrhh_trab.id_postulante', '=', 'rrhh_postu.id_postulante')
+        ->where('rrhh_trab.id_trabajador', $this->attributes['id_trabajador'])
+        ->first();
+        return $trabajador !=null ?$trabajador->nombre_completo:'';
     }
     // public function getProveedorAttribute()
     // {

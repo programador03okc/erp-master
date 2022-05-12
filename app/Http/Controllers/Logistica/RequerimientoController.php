@@ -3529,7 +3529,7 @@ class RequerimientoController extends Controller
                 <tr>
                     <td class="subtitle">Solicitante</td>
                     <td class="subtitle verticalTop">:</td>
-                    <td class="verticalTop">' . $requerimiento['requerimiento'][0]['persona'] . '</td>
+                    <td class="verticalTop">' . $requerimiento['requerimiento'][0]['nombre_trabajador'] . '</td>
                     <td class="subtitle verticalTop">Prioridad</td>
                     <td class="subtitle verticalTop">:</td>
                     <td>' . $requerimiento['requerimiento'][0]['prioridad'] . '</td>

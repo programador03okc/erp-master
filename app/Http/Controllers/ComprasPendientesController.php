@@ -839,28 +839,61 @@ class ComprasPendientesController extends Controller
             $requerimientoHelper = new RequerimientoHelper();
             $cantidadReservasAnuladas=0;
             $totalReservas=0;
+            $CantidadGuiaComDet=0;
+            $CantidadTransDetalle=0;
+            $CantidadTransformado=0;
+            $cantidadEstadoElaborado=0;
+            $mensajeAdicional='';
             if ($requerimientoHelper->EstaHabilitadoRequerimiento([$request->idDetalleRequerimiento]) == true) {
 
                 $reservas = Reserva::where([['id_detalle_requerimiento', $request->idDetalleRequerimiento], ['estado', '!=', 7]])->get();
                 foreach ($reservas as $r) {
                     $totalReservas++;
-                    if($r->estado==1 && $r->id_guia_com_det==null && $r->id_trans_detalle ==null && $r->id_transformado ==null){
-                        $reserva = Reserva::where('id_reserva', $r->id_reserva)->first();
-                        $reserva->estado = 7;
-                        $reserva->save();
-                        $tipo_estado = 'success';
-                        $cantidadReservasAnuladas++;
-                        $mensaje='Reserva Anulada';
+                    if($r->estado==1 ){
+                        if($r->id_guia_com_det>0){
+                            $CantidadGuiaComDet++;
+                        }
+                        if($r->id_trans_detalle>0){
+                            $CantidadTransDetalle++;
+                        }
+                        if($r->id_transformado>0){
+                            $CantidadTransformado++;
+                        }
+                        if($r->id_guia_com_det==null && $r->id_trans_detalle ==null && $r->id_transformado ==null){
+                            $reserva = Reserva::where('id_reserva', $r->id_reserva)->first();
+                            $reserva->estado = 7;
+                            $reserva->save();
+                            $tipo_estado = 'success';
+                            $cantidadReservasAnuladas++;
+                            $mensaje='Reserva Anulada';
+                        }
+                    }else{
+                        $cantidadEstadoElaborado++;
                     }
                 }
 
+                if($cantidadEstadoElaborado>0){
+                    $mensajeAdicional.=' Estados de reserva no permitido para anular.';
+                }
+                if($CantidadGuiaComDet>0){
+                    $mensajeAdicional.=' Vínculo con guía.';
+                }
+                if($CantidadTransDetalle>0){
+                    $mensajeAdicional.=' Vínculo con trasnferencia.';
+                    
+                }
+                if($CantidadTransformado>0){
+                    $mensajeAdicional.=' Vínculo con item transformado.';
+                    
+                }
+
                 if(($cantidadReservasAnuladas>0) && ($totalReservas==$cantidadReservasAnuladas)){
-                    $mensaje='Se anuló todas las reservas correspondientes al producto';
-                }else if($cantidadReservasAnuladas < $totalReservas){
-                    $mensaje='Se anuló '.$cantidadReservasAnuladas.'/'.$totalReservas.' reserva(s)';
+                    $mensaje='Se anuló todas las reservas correspondientes al producto. ';
+                }else if($cantidadReservasAnuladas < $totalReservas && $cantidadReservasAnuladas!=0){
+                    $mensaje='Se puedo anular '.$cantidadReservasAnuladas.' reserva(s). '.$mensajeAdicional;
                 }else if($cantidadReservasAnuladas==0){
                     $tipo_estado = 'warning';
-                    $mensaje='No se pudo anular la reserva';
+                    $mensaje='No se pudo anular la reserva. '.$mensajeAdicional;
                 }
 
                 $ReservasProductoActualizadas = Reserva::with('almacen', 'usuario.trabajador.postulante.persona', 'estado')->where([['id_detalle_requerimiento', $request->idDetalleRequerimiento], ['estado', 1]])->get();
