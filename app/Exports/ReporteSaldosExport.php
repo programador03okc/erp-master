@@ -13,7 +13,7 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class ReporteSaldosExport implements FromView, WithColumnFormatting, WithStyles
 {
-    public function view() : View
+    public function view(): View
     {
         $nfecha = session()->get('filtroFecha') . ' 23:59:59';
         $ft_fecha = date('Y-m-d', strtotime($nfecha));
@@ -87,8 +87,8 @@ class ReporteSaldosExport implements FromView, WithColumnFormatting, WithStyles
                     'id_almacen'            => $d->id_almacen,
                     'codigo'                => ($d->codigo != null) ?  $d->codigo : '',
                     'cod_softlink'          => ($d->cod_softlink != null) ?  $d->cod_softlink : '',
-                    'part_number'           => ($d->part_number != null) ?  $d->part_number : '',
-                    'producto'              => $d->producto,
+                    'part_number'           => ($d->part_number != null) ?  trim($d->part_number) : '',
+                    'producto'              => trim($d->producto),
                     'simbolo'               => ($d->simbolo != null) ?  $d->simbolo : '',
                     'valorizacion'          => $saldo_valor,
                     'costo_promedio'        => $costo_promedio,
@@ -105,7 +105,7 @@ class ReporteSaldosExport implements FromView, WithColumnFormatting, WithStyles
 
     public function styles(Worksheet $sheet)
     {
-        $sheet->getStyle('D2:D'.$sheet->getHighestRow())->getAlignment()->setWrapText(true);
+        $sheet->getStyle('D2:D' . $sheet->getHighestRow())->getAlignment()->setWrapText(true);
         $sheet->getStyle('A:L')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
     }
 

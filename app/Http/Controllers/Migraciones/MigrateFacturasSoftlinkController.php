@@ -189,8 +189,6 @@ class MigrateFacturasSoftlinkController extends Controller
                                         'cod_user' => $doc->codvend_softlink,
                                         'tip_cambio' => $tp_cambio->cambio3, //tipo cambio venta
                                         'ndocu1' => ($doc->credito_dias !== null ? $doc->credito_dias . ' DIAS' : ''),
-                                        'ndocu2' => '',
-                                        'ndocu3' => ''
                                     ]
                                 );
 
@@ -199,8 +197,8 @@ class MigrateFacturasSoftlinkController extends Controller
                                 $i++;
                                 //Obtiene y/o crea el producto
                                 if ($det->id_producto !== null) {
-                                    // $cod_prod = (new MigrateOrdenSoftLinkController)->obtenerProducto($det);
-                                    $cod_prod = '009585'; //OTROS SERVICIOS - DEFAULT
+                                    $cod_prod = (new MigrateOrdenSoftLinkController)->obtenerProducto($det);
+                                    // $cod_prod = '009585'; //OTROS SERVICIOS - DEFAULT
                                 } else {
                                     $cod_prod = '005675'; //OTROS SERVICIOS - DEFAULT
                                 }
@@ -217,10 +215,10 @@ class MigrateFacturasSoftlinkController extends Controller
                                             'can_pedi' => $det->cantidad,
                                             'sal_pedi' => $det->cantidad,
                                             'can_devo' => $i, //numeracion del item 
-                                            'pre_prod' => ($det->precio !== null ? $det->precio : 0),
-                                            'pre_neto' => ($det->precio !== null ? ($det->precio * $det->cantidad) : 0),
+                                            'pre_prod' => ($det->precio_unitario !== null ? $det->precio_unitario : 0),
+                                            'pre_neto' => ($det->precio_unitario !== null ? ($det->precio_unitario * $det->cantidad) : 0),
                                             'impto1' => $igv,
-                                            'imp_item' => ($det->precio !== null ? ($det->precio * $det->cantidad) : 0),
+                                            'imp_item' => ($det->precio_unitario !== null ? ($det->precio_unitario * $det->cantidad) : 0),
                                             'flg_serie' => ($cod_prod == '005675' ? 0 : ($det->series ? 1 : 0)),
                                             // 'ok_serie' => ($det->series ? '1' : '0'),
                                         ]);
@@ -307,8 +305,8 @@ class MigrateFacturasSoftlinkController extends Controller
                             $cod_prod = null;
                             //Obtiene y/o crea el producto
                             if ($det->id_producto !== null) {
-                                // $cod_prod = (new MigrateOrdenSoftLinkController)->obtenerProducto($det);
-                                $cod_prod = '009585'; //OTROS SERVICIOS - DEFAULT
+                                $cod_prod = (new MigrateOrdenSoftLinkController)->obtenerProducto($det);
+                                // $cod_prod = '009585'; //OTROS SERVICIOS - DEFAULT
                             } else {
                                 $cod_prod = '005675'; //OTROS SERVICIOS - DEFAULT
                             }
@@ -404,7 +402,7 @@ class MigrateFacturasSoftlinkController extends Controller
                 'programa' => '',
                 'txt_nota' => '',
                 'tip_cambio' => $tp_cambio->cambio3, //tipo cambio venta
-                'tdflags' => 'NSSNNSSNSS',
+                'tdflags' => 'NSSNNSSSSS',
                 'numlet' => '',
                 'impdcto' => '0.0000',
                 'impanticipos' => '0.0000',
@@ -672,4 +670,101 @@ class MigrateFacturasSoftlinkController extends Controller
             return array('tipo' => 'error', 'mensaje' => 'Hubo un problema al actualizar las sedes. Por favor intente de nuevo', 'error' => $e->getMessage());
         }
     }
+
+    // public function actualizaItemsComprobante($doc)
+    // {
+    //     //obtiene oc softlink
+    //     $doc_softlink = DB::connection('soft')->table('movimien')->where('mov_id', $doc->id_doc_softlink)->first();
+
+    //     if ($doc_softlink !== null) {
+    //         //pregunta si fue anulada en softlink
+    //         if ($doc_softlink->flg_anulado == 1) {
+    //             $arrayRspta = array(
+    //                 'tipo' => 'warning',
+    //                 'mensaje' => 'Éste documento ya fue anulado en Softlink.',
+    //                 'ocSoftlink' => array('cabecera' => $doc_softlink),
+    //                 'ocAgile' => array('cabecera' => $doc),
+    //             );
+    //         } else {
+    //             //actualiza orden
+    //             DB::connection('soft')->table('movimien')
+    //                 ->where('mov_id', $doc_softlink->mov_id)
+    //                 ->update(
+    //                     [
+    //                         'cod_suc' => $cod_suc,
+    //                         'cod_alma' => $doc->codigo_almacen,
+    //                         'fec_docu' => $doc->fecha_emision,
+    //                         'fec_entre' => $doc->fecha_emision,
+    //                         'fec_vcto' => $doc->fecha_vcmto,
+    //                         'cod_auxi' => $cod_auxi,
+    //                         'cod_vend' => $doc->codvend_softlink,
+    //                         'tip_mone' => $doc->moneda,
+    //                         'tip_codicion' => $doc->id_condicion_softlink,
+    //                         'impto1' => $igv,
+    //                         'mon_bruto' => $doc->sub_total,
+    //                         'mon_impto1' => $doc->total_igv,
+    //                         'mon_total' => $doc->total_a_pagar,
+    //                         'txt_observa' => '',
+    //                         'cod_user' => $doc->codvend_softlink,
+    //                         'tip_cambio' => $tp_cambio->cambio3, //tipo cambio venta
+    //                         'ndocu1' => ($doc->credito_dias !== null ? $doc->credito_dias . ' DIAS' : ''),
+    //                         'ndocu2' => '',
+    //                         'ndocu3' => ''
+    //                     ]
+    //                 );
+
+    //             $i = 0;
+    //             foreach ($detalles as $det) {
+    //                 $i++;
+    //                 //Obtiene y/o crea el producto
+    //                 if ($det->id_producto !== null) {
+    //                     // $cod_prod = (new MigrateOrdenSoftLinkController)->obtenerProducto($det);
+    //                     $cod_prod = '009585'; //OTROS SERVICIOS - DEFAULT
+    //                 } else {
+    //                     $cod_prod = '005675'; //OTROS SERVICIOS - DEFAULT
+    //                 }
+
+    //                 if ($det->id_doc_det_softlink !== null) {
+    //                     //actualiza el detalle
+    //                     DB::connection('soft')->table('detmov')
+    //                         ->where('unico', $det->id_doc_det_softlink)
+    //                         ->update([
+    //                             'fec_pedi' => $fecha,
+    //                             'cod_auxi' => trim($det->abreviatura),
+    //                             'cod_prod' => $cod_prod,
+    //                             'nom_prod' => ($cod_prod == '005675' ? 'OTROS SERVICIOS - ' . $det->descripcion_adicional : $det->descripcion),
+    //                             'can_pedi' => $det->cantidad,
+    //                             'sal_pedi' => $det->cantidad,
+    //                             'can_devo' => $i, //numeracion del item 
+    //                             'pre_prod' => ($det->precio !== null ? $det->precio : 0),
+    //                             'pre_neto' => ($det->precio !== null ? ($det->precio * $det->cantidad) : 0),
+    //                             'impto1' => $igv,
+    //                             'imp_item' => ($det->precio !== null ? ($det->precio * $det->cantidad) : 0),
+    //                             'flg_serie' => ($cod_prod == '005675' ? 0 : ($det->series ? 1 : 0)),
+    //                             // 'ok_serie' => ($det->series ? '1' : '0'),
+    //                         ]);
+    //                 } else {
+
+    //                     $this->agregarDetalleComprobante($det, $doc->id_doc_softlink, $cod_prod, $doc_softlink->cod_docu, $doc_softlink->num_docu, $fecha, $igv, $i);
+    //                 }
+    //             }
+    //             $arrayRspta = array(
+    //                 'tipo' => 'success',
+    //                 'mensaje' => 'Se actualizó el comprobante en softlink. Con Nro. ' . $doc_softlink->num_docu . ' con id ' . $doc_softlink->mov_id,
+    //                 'orden_softlink' => $doc_softlink->num_docu,
+    //                 'ocSoftlink' => array('cabecera' => $doc_softlink),
+    //                 'ocAgile' => array('cabecera' => $doc),
+    //             );
+    //             //Actualiza la oc softlink eb agile
+    //             DB::table('almacen.doc_com')
+    //                 ->where('id_doc_com', $id_doc_com)
+    //                 ->update([
+    //                     'codigo_softlink' => $doc_softlink->num_docu,
+    //                     'id_softlink' => $doc_softlink->mov_id,
+    //                     'fecha_migracion' => new Carbon(),
+    //                     'usuario_migracion' => $id_usuario,
+    //                 ]);
+    //         }
+    //     }
+    // }
 }
