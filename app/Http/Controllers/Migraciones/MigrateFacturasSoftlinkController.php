@@ -404,7 +404,7 @@ class MigrateFacturasSoftlinkController extends Controller
                 'programa' => '',
                 'txt_nota' => '',
                 'tip_cambio' => $tp_cambio->cambio3, //tipo cambio venta
-                'tdflags' => 'NSSNNSSNSS',
+                'tdflags' => 'NSSNNSSSSS',
                 'numlet' => '',
                 'impdcto' => '0.0000',
                 'impanticipos' => '0.0000',
