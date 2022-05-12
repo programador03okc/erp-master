@@ -189,8 +189,6 @@ class MigrateFacturasSoftlinkController extends Controller
                                         'cod_user' => $doc->codvend_softlink,
                                         'tip_cambio' => $tp_cambio->cambio3, //tipo cambio venta
                                         'ndocu1' => ($doc->credito_dias !== null ? $doc->credito_dias . ' DIAS' : ''),
-                                        'ndocu2' => '',
-                                        'ndocu3' => ''
                                     ]
                                 );
 
@@ -217,10 +215,10 @@ class MigrateFacturasSoftlinkController extends Controller
                                             'can_pedi' => $det->cantidad,
                                             'sal_pedi' => $det->cantidad,
                                             'can_devo' => $i, //numeracion del item 
-                                            'pre_prod' => ($det->precio !== null ? $det->precio : 0),
-                                            'pre_neto' => ($det->precio !== null ? ($det->precio * $det->cantidad) : 0),
+                                            'pre_prod' => ($det->precio_unitario !== null ? $det->precio_unitario : 0),
+                                            'pre_neto' => ($det->precio_unitario !== null ? ($det->precio_unitario * $det->cantidad) : 0),
                                             'impto1' => $igv,
-                                            'imp_item' => ($det->precio !== null ? ($det->precio * $det->cantidad) : 0),
+                                            'imp_item' => ($det->precio_unitario !== null ? ($det->precio_unitario * $det->cantidad) : 0),
                                             'flg_serie' => ($cod_prod == '005675' ? 0 : ($det->series ? 1 : 0)),
                                             // 'ok_serie' => ($det->series ? '1' : '0'),
                                         ]);
