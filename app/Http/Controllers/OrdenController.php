@@ -4045,7 +4045,7 @@ class OrdenController extends Controller
                     $correoVendedor = '';
                     foreach (array_unique($idRequerimientoList) as $idRequerimiento) {
                         $requerimiento = Requerimiento::find($idRequerimiento);
-                        if ($requerimiento->id_cc > 0) {
+                        if ($requerimiento->id_cc > 0 && $requerimiento->id_tipo_requerimiento ==1) {
                             $cuadroPresupuesto = CuadroCosto::find($requerimiento->id_cc);
                             if ($cuadroPresupuesto->estado_aprobacion == 4) {
                                 $idCuadroPresupuestoFinalizadoList[] = $requerimiento->id_cc;
