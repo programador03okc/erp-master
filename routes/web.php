@@ -776,7 +776,6 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('listar-todo-archivos-adjuntos-requerimiento-pago/{id}', 'Tesoreria\RequerimientoPagoController@listarTodoArchivoAdjuntoRequerimientoPago');
 				Route::post('guardar-adjuntos-adicionales-requerimiento-pago', 'Tesoreria\RequerimientoPagoController@guardarAdjuntosAdicionales');
 				Route::get('listar_trabajadores', 'ProyectosController@listar_trabajadores');
-
 			});
 			// Route::group(['as' => 'revisar_aprobar.', 'prefix' => 'revisar_aprobar'], function () {
 			// 	Route::get('index', 'Tesoreria\RequerimientoPagoController@viewRevisarAprobarRequerimientoPago')->name('index');
@@ -864,7 +863,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('listar-archivos-adjuntos-pago/{id}', 'Logistica\RequerimientoController@listarArchivoAdjuntoPago');
 					Route::get('listar-categoria-adjunto', 'Logistica\RequerimientoController@mostrarCategoriaAdjunto');
 					Route::post('guardar-adjuntos-adicionales-requerimiento-compra', 'Logistica\RequerimientoController@guardarAdjuntosAdicionales');
-					
+
 					Route::get('almacenes-con-stock-disponible/{idProducto}', 'ComprasPendientesController@mostrarAlmacenesConStockDisponible');
 					Route::post('actualizar-tipo-item-detalle-requerimiento', 'ComprasPendientesController@actualizarTipoItemDetalleRequerimiento');
 					Route::post('actualizar-ajuste-estado-requerimiento', 'ComprasPendientesController@actualizarAjusteEstadoRequerimiento');
@@ -1509,6 +1508,7 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::get('actualizarSedesFaltantes', 'Migraciones\MigrateFacturasSoftlinkController@actualizarSedesFaltantes');
 			Route::get('actualizarProveedorComprobantes', 'Migraciones\MigrateFacturasSoftlinkController@actualizarProveedorComprobantes');
 			Route::get('migrarComprobantesSoftlink', 'Migraciones\MigrateFacturasSoftlinkController@migrarComprobantesSoftlink');
+			Route::get('migrarItemsComprobantesSoftlink', 'Migraciones\MigrateFacturasSoftlinkController@migrarItemsComprobantesSoftlink');
 		});
 
 		Route::group(['as' => 'transferencias.', 'prefix' => 'transferencias'], function () {
