@@ -678,7 +678,7 @@ class MigrateFacturasSoftlinkController extends Controller
             ->where('id_tp_doc', 2)
             // ->whereNull('id_doc_softlink')
             ->orderBy('id_doc_com', 'asc')
-            ->limit(2)
+            // ->limit(2)
             ->get();
 
         $respuestas = [];
@@ -734,19 +734,8 @@ class MigrateFacturasSoftlinkController extends Controller
                             DB::connection('soft')->table('detmov')
                                 ->where('unico', $det->id_doc_det_softlink)
                                 ->update([
-                                    // 'fec_pedi' => $fecha,
-                                    // 'cod_auxi' => trim($det->abreviatura),
                                     'cod_prod' => $cod_prod,
                                     'nom_prod' => ($cod_prod == '005675' ? 'OTROS SERVICIOS - ' . $det->descripcion_adicional : $det->descripcion),
-                                    // 'can_pedi' => $det->cantidad,
-                                    // 'sal_pedi' => $det->cantidad,
-                                    // 'can_devo' => $i, //numeracion del item 
-                                    // 'pre_prod' => ($det->precio !== null ? $det->precio : 0),
-                                    // 'pre_neto' => ($det->precio !== null ? ($det->precio * $det->cantidad) : 0),
-                                    // 'impto1' => $igv,
-                                    // 'imp_item' => ($det->precio !== null ? ($det->precio * $det->cantidad) : 0),
-                                    // 'flg_serie' => ($cod_prod == '005675' ? 0 : ($det->series ? 1 : 0)),
-                                    // // 'ok_serie' => ($det->series ? '1' : '0'),
                                 ]);
                         }
                     }
