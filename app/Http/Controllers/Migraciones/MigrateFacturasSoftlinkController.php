@@ -671,100 +671,92 @@ class MigrateFacturasSoftlinkController extends Controller
         }
     }
 
-    // public function actualizaItemsComprobante($doc)
-    // {
-    //     //obtiene oc softlink
-    //     $doc_softlink = DB::connection('soft')->table('movimien')->where('mov_id', $doc->id_doc_softlink)->first();
+    public function migrarItemsComprobantesSoftlink()
+    {
+        $docs = DB::table('almacen.doc_com')
+            ->where('estado', 1)
+            ->where('id_tp_doc', 2)
+            // ->whereNull('id_doc_softlink')
+            ->orderBy('id_doc_com', 'asc')
+            // ->limit(2)
+            ->get();
 
-    //     if ($doc_softlink !== null) {
-    //         //pregunta si fue anulada en softlink
-    //         if ($doc_softlink->flg_anulado == 1) {
-    //             $arrayRspta = array(
-    //                 'tipo' => 'warning',
-    //                 'mensaje' => 'Éste documento ya fue anulado en Softlink.',
-    //                 'ocSoftlink' => array('cabecera' => $doc_softlink),
-    //                 'ocAgile' => array('cabecera' => $doc),
-    //             );
-    //         } else {
-    //             //actualiza orden
-    //             DB::connection('soft')->table('movimien')
-    //                 ->where('mov_id', $doc_softlink->mov_id)
-    //                 ->update(
-    //                     [
-    //                         'cod_suc' => $cod_suc,
-    //                         'cod_alma' => $doc->codigo_almacen,
-    //                         'fec_docu' => $doc->fecha_emision,
-    //                         'fec_entre' => $doc->fecha_emision,
-    //                         'fec_vcto' => $doc->fecha_vcmto,
-    //                         'cod_auxi' => $cod_auxi,
-    //                         'cod_vend' => $doc->codvend_softlink,
-    //                         'tip_mone' => $doc->moneda,
-    //                         'tip_codicion' => $doc->id_condicion_softlink,
-    //                         'impto1' => $igv,
-    //                         'mon_bruto' => $doc->sub_total,
-    //                         'mon_impto1' => $doc->total_igv,
-    //                         'mon_total' => $doc->total_a_pagar,
-    //                         'txt_observa' => '',
-    //                         'cod_user' => $doc->codvend_softlink,
-    //                         'tip_cambio' => $tp_cambio->cambio3, //tipo cambio venta
-    //                         'ndocu1' => ($doc->credito_dias !== null ? $doc->credito_dias . ' DIAS' : ''),
-    //                         'ndocu2' => '',
-    //                         'ndocu3' => ''
-    //                     ]
-    //                 );
+        $respuestas = [];
 
-    //             $i = 0;
-    //             foreach ($detalles as $det) {
-    //                 $i++;
-    //                 //Obtiene y/o crea el producto
-    //                 if ($det->id_producto !== null) {
-    //                     // $cod_prod = (new MigrateOrdenSoftLinkController)->obtenerProducto($det);
-    //                     $cod_prod = '009585'; //OTROS SERVICIOS - DEFAULT
-    //                 } else {
-    //                     $cod_prod = '005675'; //OTROS SERVICIOS - DEFAULT
-    //                 }
+        try {
+            DB::beginTransaction();
 
-    //                 if ($det->id_doc_det_softlink !== null) {
-    //                     //actualiza el detalle
-    //                     DB::connection('soft')->table('detmov')
-    //                         ->where('unico', $det->id_doc_det_softlink)
-    //                         ->update([
-    //                             'fec_pedi' => $fecha,
-    //                             'cod_auxi' => trim($det->abreviatura),
-    //                             'cod_prod' => $cod_prod,
-    //                             'nom_prod' => ($cod_prod == '005675' ? 'OTROS SERVICIOS - ' . $det->descripcion_adicional : $det->descripcion),
-    //                             'can_pedi' => $det->cantidad,
-    //                             'sal_pedi' => $det->cantidad,
-    //                             'can_devo' => $i, //numeracion del item 
-    //                             'pre_prod' => ($det->precio !== null ? $det->precio : 0),
-    //                             'pre_neto' => ($det->precio !== null ? ($det->precio * $det->cantidad) : 0),
-    //                             'impto1' => $igv,
-    //                             'imp_item' => ($det->precio !== null ? ($det->precio * $det->cantidad) : 0),
-    //                             'flg_serie' => ($cod_prod == '005675' ? 0 : ($det->series ? 1 : 0)),
-    //                             // 'ok_serie' => ($det->series ? '1' : '0'),
-    //                         ]);
-    //                 } else {
+            foreach ($docs as $doc) {
+                if ($doc->id_doc_softlink !== null) {
 
-    //                     $this->agregarDetalleComprobante($det, $doc->id_doc_softlink, $cod_prod, $doc_softlink->cod_docu, $doc_softlink->num_docu, $fecha, $igv, $i);
-    //                 }
-    //             }
-    //             $arrayRspta = array(
-    //                 'tipo' => 'success',
-    //                 'mensaje' => 'Se actualizó el comprobante en softlink. Con Nro. ' . $doc_softlink->num_docu . ' con id ' . $doc_softlink->mov_id,
-    //                 'orden_softlink' => $doc_softlink->num_docu,
-    //                 'ocSoftlink' => array('cabecera' => $doc_softlink),
-    //                 'ocAgile' => array('cabecera' => $doc),
-    //             );
-    //             //Actualiza la oc softlink eb agile
-    //             DB::table('almacen.doc_com')
-    //                 ->where('id_doc_com', $id_doc_com)
-    //                 ->update([
-    //                     'codigo_softlink' => $doc_softlink->num_docu,
-    //                     'id_softlink' => $doc_softlink->mov_id,
-    //                     'fecha_migracion' => new Carbon(),
-    //                     'usuario_migracion' => $id_usuario,
-    //                 ]);
-    //         }
-    //     }
-    // }
+                    $detalles = DB::table('almacen.doc_com_det')
+                        ->select(
+                            'doc_com_det.*',
+                            'alm_prod.id_producto',
+                            'alm_prod.part_number',
+                            'alm_prod.descripcion',
+                            'alm_und_medida.abreviatura',
+                            'alm_cat_prod.id_categoria',
+                            'alm_cat_prod.descripcion as categoria',
+                            'alm_subcat.id_subcategoria',
+                            'alm_subcat.descripcion as subcategoria',
+                            'alm_clasif.descripcion as clasificacion',
+                            'doc_com.moneda as id_moneda',
+                            'alm_prod.series',
+                            'alm_prod.notas',
+                        )
+                        ->join('almacen.doc_com', 'doc_com.id_doc_com', '=', 'doc_com_det.id_doc')
+                        ->leftjoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'doc_com_det.id_item')
+                        ->leftjoin('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
+                        ->leftjoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
+                        ->leftjoin('almacen.alm_tp_prod', 'alm_tp_prod.id_tipo_producto', '=', 'alm_cat_prod.id_tipo_producto')
+                        ->leftjoin('almacen.alm_clasif', 'alm_clasif.id_clasificacion', '=', 'alm_tp_prod.id_clasificacion')
+                        ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
+                        ->where([
+                            ['doc_com_det.id_doc', '=', $doc->id_doc_com],
+                            ['doc_com_det.estado', '!=', 7]
+                        ])
+                        ->get();
+
+                    $i = 0;
+                    foreach ($detalles as $det) {
+                        $i++;
+                        //Obtiene y/o crea el producto
+                        if ($det->id_producto !== null) {
+                            $cod_prod = (new MigrateOrdenSoftLinkController)->obtenerProducto($det);
+                            // $cod_prod = '009585'; //OTROS SERVICIOS - DEFAULT
+                        } else {
+                            $cod_prod = '005675'; //OTROS SERVICIOS - DEFAULT
+                        }
+
+                        if ($det->id_doc_det_softlink !== null) {
+                            //actualiza el detalle
+                            DB::connection('soft')->table('detmov')
+                                ->where('unico', $det->id_doc_det_softlink)
+                                ->update([
+                                    'cod_prod' => $cod_prod,
+                                    'nom_prod' => ($cod_prod == '005675' ? 'OTROS SERVICIOS - ' . $det->descripcion_adicional : $det->descripcion),
+                                ]);
+                        }
+                    }
+                    $arrayRspta = array(
+                        'tipo' => 'success',
+                        'mensaje' => 'Se actualizó el comprobante en softlink. Con Nro. ' . $doc->codigo_softlink . ' con id ' . $doc->id_doc_softlink,
+                        'docAgile' => array('cabecera' => $doc),
+                    );
+                    array_push($respuestas, [
+                        'id_doc_com' => $doc->id_doc_com,
+                        'serie' => $doc->serie,
+                        'numero' => $doc->numero,
+                        'respuesta' => $arrayRspta,
+                    ]);
+                }
+            }
+            DB::commit();
+            return response()->json(['respuestas' => $respuestas], 200);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return array('tipo' => 'error', 'mensaje' => 'Hubo un problema al actualizar los items. Por favor intente de nuevo', 'error' => $e->getMessage());
+        }
+    }
 }
