@@ -239,7 +239,7 @@ class MigrateFacturasSoftlinkController extends Controller
                                 ->where('id_doc_com', $id_doc_com)
                                 ->update([
                                     'codigo_softlink' => $doc_softlink->num_docu,
-                                    'id_softlink' => $doc_softlink->mov_id,
+                                    'id_doc_softlink' => $doc_softlink->mov_id,
                                     'fecha_migracion' => new Carbon(),
                                     'usuario_migracion' => $id_usuario,
                                 ]);
@@ -402,7 +402,7 @@ class MigrateFacturasSoftlinkController extends Controller
                 'programa' => '',
                 'txt_nota' => '',
                 'tip_cambio' => $tp_cambio->cambio3, //tipo cambio venta
-                'tdflags' => 'NSSNNSSSSS',
+                'tdflags' => 'NSSNNSSSSN',
                 'numlet' => '',
                 'impdcto' => '0.0000',
                 'impanticipos' => '0.0000',
