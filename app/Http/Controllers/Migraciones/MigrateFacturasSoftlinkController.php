@@ -735,7 +735,7 @@ class MigrateFacturasSoftlinkController extends Controller
                                 ->where('unico', $det->id_doc_det_softlink)
                                 ->update([
                                     'cod_prod' => $cod_prod,
-                                    'nom_prod' => ($cod_prod == '005675' ? 'OTROS SERVICIOS - ' . $det->descripcion_adicional : $det->descripcion),
+                                    // 'nom_prod' => ($cod_prod == '005675' ? 'OTROS SERVICIOS - ' . $det->descripcion_adicional : $det->descripcion),
                                 ]);
                         }
                     }
