@@ -219,7 +219,7 @@ function migrarItemsComprobantesSoftlink() {
                 rounded: true,
                 sound: false,
                 delayIndicator: false,
-                msg: 'Se enviaron ' + response['respuestas'].size + ' documentos.'
+                msg: 'Se enviaron ' + response['respuestas'].size() + ' documentos.'
             });
             $('#listaComprobantesCompra').DataTable().ajax.reload(null, false);
         }
