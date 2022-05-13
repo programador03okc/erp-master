@@ -229,6 +229,7 @@ function migrarItemsComprobantesSoftlink() {
         console.log(errorThrown);
     });
 }
+
 function anularComprobanteCompra(obj) {
     let id_doc_com = obj.dataset.idDocCom;
     anular_doc_compra(id_doc_com);

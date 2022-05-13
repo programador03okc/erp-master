@@ -20,7 +20,7 @@
                 @if (Auth::user()->id_usuario == 3)
                 <button id="btn_actualizar_sedes" class="btn btn-default" onClick="actualizarSedesFaltantes();">Actualizar Sedes</button>
                 <button id="btn_actualizar_proveedores" class="btn btn-default" onClick="actualizarProveedores();">Actualizar Proveedores</button>
-                <button id="btn_actualizar_items" class="btn btn-default" onClick="migrarComprobantesSoftlink();">Actualizar Items</button>
+                <button id="btn_actualizar_items" class="btn btn-default" onClick="migrarItemsComprobantesSoftlink();">Actualizar Items</button>
                 <button id="btn_migrar_comprobantes" class="btn btn-success" onClick="migrarComprobantesSoftlink();">Migrar a Softlink</button>
                 @endif
                 <div class="row">
