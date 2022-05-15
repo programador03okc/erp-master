@@ -206,9 +206,7 @@ class ListaOrdenView {
     // filtros
 
 
-    exportTableToExcel() {
-        window.open('listar-ordenes-excel');
-    }
+
 
     filtroTablaListaOrdenesVistaCabecera() {
         $('#modal-filtro-lista-ordenes-elaboradas').modal({
@@ -1514,11 +1512,11 @@ class ListaOrdenView {
                     text: '<span class="far fa-file-excel" aria-hidden="true"></span> Descargar',
                     attr: {
                         id: 'btnDescargarListaOrdenesElaboradasExcel',
-                        disabled: true
+                        disabled: false
 
                     },
                     action: () => {
-                        // this.descargarListaRequerimientosElaboradosExcel();
+                        this.exportarListaOrdenesElaboradasNivelCabeceraExcel();
 
                     },
                     className: 'btn-default btn-sm'
@@ -1745,11 +1743,11 @@ class ListaOrdenView {
                     text: '<span class="far fa-file-excel" aria-hidden="true"></span> Descargar',
                     attr: {
                         id: 'btnDescargarListaItemsOrdenesElaboradasExcel',
-                        disabled: true
+                        disabled: false
 
                     },
                     action: () => {
-                        // this.descargarListaRequerimientosElaboradosExcel();
+                        this.exportarListaOrdenesElaboradasNivelDetalleExcel();
 
                     },
                     className: 'btn-default btn-sm'
@@ -1799,6 +1797,8 @@ class ListaOrdenView {
                 { 'data': 'part_number_producto', 'name': 'part_number_producto' },
                 { 'data': 'cod_softlink_producto', 'name': 'cod_softlink_producto' },
                 { 'data': 'descripcion_producto', 'name': 'descripcion_producto' },
+                { 'data': 'cantidad', 'name': 'cantidad' },
+                { 'data': 'abreviatura_unidad_medida_det_orden', 'name': 'abreviatura_unidad_medida_det_orden' },
                 { 'data': 'precio', 'className': 'text-right',
                 render: function (data, type, row) {
                     return row.simbolo_moneda_orden + $.number(row.precio,2);
@@ -1812,7 +1812,7 @@ class ListaOrdenView {
                 { 'data': 'fecha_emision', 'name': 'fecha_emision','className': 'text-center' },
                 { 'data': 'plazo_entrega', 'name': 'plazo_entrega','className': 'text-center' },
                 { 'data': 'fecha_ingreso_almacen', 'name': 'fecha_ingreso_almacen' ,'className': 'text-center'},
-                { 'data': 'tiempo_atencion_proveedor', 'name': 'tiempo_atencion_proveedor' },
+                // { 'data': 'tiempo_atencion_proveedor', 'name': 'tiempo_atencion_proveedor' },
                 { 'data': 'descripcion_sede_empresa', 'name': 'descripcion_sede_empresa' },
                 { 'data': 'descripcion_estado', 'className': 'text-center',
                 render: function (data, type, row) {
@@ -1883,7 +1883,7 @@ class ListaOrdenView {
             },
             "createdRow": function (row, data, dataIndex) {
 
-                $(row.childNodes[16]).css('background-color', '#b4effd');
+                $(row.childNodes[18]).css('background-color', '#b4effd');
 
             }
         });
@@ -1893,4 +1893,13 @@ class ListaOrdenView {
             $('#btnBuscarItemOrden').html('<span class="glyphicon glyphicon-time" aria-hidden="true"></span>').attr('disabled', true);
         });
     }
+
+
+    exportarListaOrdenesElaboradasNivelCabeceraExcel() {
+        window.open('exportar-lista-ordenes-elaboradas-nivel-cabecera-excel');
+    }
+    exportarListaOrdenesElaboradasNivelDetalleExcel() {
+        window.open('exportar-lista-ordenes-elaboradas-nivel-detalle-excel');
+    }
+
 }

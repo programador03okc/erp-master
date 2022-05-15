@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Exports;
-use App\Models\Logistica\Orden;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use App\Http\Controllers\OrdenController;
@@ -21,29 +20,24 @@ class ListOrdenesHeadExport implements FromCollection, WithHeadings
     public function headings(): array
     {
         return [
-            "Cuadro costos",
-            "Proveedor", 
             "Nro. orden", 
-            "Cod. softlink", 
-            "Req/Cuadro comp.",
-            "Estado",
-            "Fecha vencimiento",
-            "Fecha llegada",
-            "Estado aprobación CC",
-            "Fecha aprobación CC",
-            "Fecha requerimiento",
-            "Leadtime",
-            "Empresa / Sede",
+            "Tipo orden", 
+            "Cod. softlink",
+            "Cod. req.",
+            "Cod. CDP",
+            "Empresa - sede",
             "Moneda",
+            "Fecha emisión",
+            "Fecha llegada",
+            "Tiempo atención logística",
+            "Fecha último ingreso almacén",
+            "Proveedor",
             "Condición",
-            "Fecha em.",
-            "Tiem. atenc. log.",
-            "Tiem. atenc. prov.",
-            "Facturas",
-            "Monto presup. CC",
-            "Monto orden",
-            "Detalle pago",
-            "Tipo cambio compra"
+            "Estado de orden",
+            "Estado de pago",
+            "Importe total orden",
+            "Importe total CDP"
+   
         ];
     }
 }
