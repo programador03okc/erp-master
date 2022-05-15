@@ -25,7 +25,7 @@ Revisar/aprobar
             <!-- Nav tabs -->
             <ul class="nav nav-tabs" role="tablist">
                 <li role="presentation" class="handleClickTabDocumentosPendientesRevisar active"><a href="#documentos_pendientes" aria-controls="documentos_pendientes" role="tab" data-toggle="tab">Documentos para revisar</a></li>
-                <li role="presentation" class="handleClickTabDocumentosRevisados"><a href="#documentos_revisados" aria-controls="documentos_revisados" role="tab" data-toggle="tab">Documentos revisados</a></li>
+                <!-- <li role="presentation" class="handleClickTabDocumentosRevisados"><a href="#documentos_revisados" aria-controls="documentos_revisados" role="tab" data-toggle="tab">Documentos revisados</a></li> -->
             </ul>
             <!-- Tab panes -->
             <div class="tab-content">
