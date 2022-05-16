@@ -89,12 +89,13 @@ Gestión de estados
                                         <th>Part number</th>
                                         <th>Cod. soft.</th>
                                         <th>Descripción</th>
+                                        <th>Cantidad</th>
+                                        <th>Und. medida</th>
                                         <th>Precio Un.</th>
                                         <th>Precio Un. CDP</th>
                                         <th>Fecha emisión ord.</th>
                                         <th>Plazo entrega</th>
                                         <th>Fecha ingreso almacén</th>
-                                        <th>Tiempo atención Prov.</th>
                                         <th>Empresa - sede</th>
                                         <th>Estado</th>
                                         <th style="width:5%">Acción</th>

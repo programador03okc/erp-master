@@ -85,7 +85,7 @@ function obteneAdjuntosPago(idRequerimiento) {
 function verAgregarAdjuntosRequerimiento(obj) {
     let idRequerimiento= obj.dataset.idRequerimiento;
     let codigoRequerimiento= obj.dataset.codigoRequerimiento;
-
+    tempArchivoAdjuntoRequerimientoCabeceraList=[];
     $('#modal-ver-agregar-adjuntos-requerimiento-compra').modal({
         show: true,
         backdrop: 'static'

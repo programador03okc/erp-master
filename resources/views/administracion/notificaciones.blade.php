@@ -90,14 +90,6 @@
     <script>
     $(document).ready(function(){
         seleccionarMenu(window.location);
-        inicializar(
-        //     "{{route('logistica.gestion-logistica.orden.por-requerimiento.requerimientos-pendientes')}}",
-        //     "{{route('logistica.gestion-logistica.orden.por-requerimiento.requerimientos-atendidos')}}",
-        //     "{{route('logistica.gestion-logistica.orden.por-requerimiento.requerimiento-orden')}}",
-        //     "{{route('logistica.gestion-logistica.orden.por-requerimiento.guardar')}}",
-        //     "{{route('logistica.gestion-logistica.orden.por-requerimiento.revertir')}}"
-        );
-        //     tieneAccion('{{Auth::user()->tieneAccion(114)}}','{{Auth::user()->tieneAccion(115)}}');
     });
     </script>
 @endsection

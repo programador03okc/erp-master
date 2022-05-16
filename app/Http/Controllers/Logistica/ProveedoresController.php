@@ -438,4 +438,5 @@ class ProveedoresController extends Controller
             return response()->json(['data' => null, 'tipo_estado'=>$tipoEstado, 'mensaje' => 'Hubo un problema en el controllador para  obtener los datos del contribuyente. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
         }
     }
+
 }
