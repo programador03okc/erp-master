@@ -3581,7 +3581,7 @@ class RequerimientoController extends Controller
         foreach ($requerimiento['det_req'] as $key => $data) {
 
             $html .= '<tr>';
-            $html .= '<td width="10%">' . $data['descripcion_centro_costo'] . '</td>';
+            $html .= '<td width="10%">' . $data['codigo_centro_costo'] . '</td>';
             $html .= '<td width="12%" style="word-wrap: break-word">' . ($data['id_tipo_item'] == 1 ? ($data['producto_part_number'] ? $data['producto_part_number'] : $data['part_number']) : '(Servicio)') . ($data['tiene_transformacion'] > 0 ? '<br><span style="display: inline-block; font-size: 8px; background:#ddd; color: #666; border-radius:8px; padding:2px 10px;">Transformado</span>' : '') . '</td>';
             $html .= '<td width="30%">' . ($data['producto_descripcion'] ? $data['producto_descripcion'] : ($data['descripcion'] ? $data['descripcion'] : '')) . '</td>';
             $html .= '<td width="5%" style="text-align:center;">' . $data['unidad_medida'] . '</td>';
