@@ -958,7 +958,6 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('obtener-data-listado', 'Logistica\ProveedoresController@obtenerDataListado')->name('obtenerDataListado');
 				Route::get('listar_ubigeos', 'AlmacenController@listar_ubigeos')->name('listarUbigeos');
 				Route::post('obtener-data-contribuyente-segun-nro-documento', 'Logistica\ProveedoresController@obtenerDataContribuyenteSegunNroDocumento');
-				Route::get('llenar-nro-documento-sin-nro-documento', 'Logistica\ProveedoresController@llenarNroDocumentoSinNroDocumento');
 			});
 
 			Route::group(['as' => 'reportes.', 'prefix' => 'reportes'], function () {

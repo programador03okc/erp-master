@@ -439,18 +439,4 @@ class ProveedoresController extends Controller
         }
     }
 
-    public function llenarNroDocumentoSinNroDocumento(){ // ? correr este método es temporal, para evitar que mgcp tome un contribuyente con nro documento nulo, ya no será necesario cuando se actualice el método obtenerCliente en RequerimientoHelper de MGCP
-        $contribuyentesSinNroDocumento = Contribuyente::whereNull('nro_documento')->orWhere('nro_documento','')->get();
-        $contribuyentesNroDocumentoTemporal=Contribuyente::where('nro_documento','like','SIN-NUMERO-%')->get();
-        $iniciarCorrelativo = $contribuyentesNroDocumentoTemporal->count()+1??0;
-
-        foreach ($contribuyentesSinNroDocumento as $contribuyente) {
-            # code...
-            $actualContribuyente = Contribuyente::find($contribuyente->id_contribuyente);
-            $actualContribuyente->nro_documento= 'SIN-NUMERO-'.$iniciarCorrelativo;
-            $actualContribuyente->save();
-            $iniciarCorrelativo++;
-        }
-        return $contribuyentesSinNroDocumento;
-    }
 }
