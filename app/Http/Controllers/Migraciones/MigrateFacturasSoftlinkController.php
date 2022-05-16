@@ -219,7 +219,7 @@ class MigrateFacturasSoftlinkController extends Controller
                                             'pre_neto' => ($det->precio_unitario !== null ? ($det->precio_unitario * $det->cantidad) : 0),
                                             'impto1' => $igv,
                                             'imp_item' => ($det->precio_unitario !== null ? ($det->precio_unitario * $det->cantidad) : 0),
-                                            'flg_serie' => ($cod_prod == '005675' ? 0 : ($det->series ? 1 : 0)),
+                                            'flg_serie' => 0, //($cod_prod == '005675' ? 0 : ($det->series ? 1 : 0)),
                                             // 'ok_serie' => ($det->series ? '1' : '0'),
                                         ]);
                                 } else {
@@ -503,7 +503,7 @@ class MigrateFacturasSoftlinkController extends Controller
                 'descargo' => '*',
                 'trecord' => '',
                 'cod_model' => '',
-                'flg_serie' => ($cod_prod == '005675' ? 0 : ($det->series ? 1 : 0)),
+                'flg_serie' => 0, //($cod_prod == '005675' ? 0 : ($det->series ? 1 : 0)),
                 'series' => '',
                 'entrega' => 0,
                 'notas' => '',
@@ -527,7 +527,7 @@ class MigrateFacturasSoftlinkController extends Controller
                 'por_detrac' => 0,
                 'cod_detrac' => '',
                 'mon_detrac' => 0,
-                'tipoprecio' => ''
+                'tipoprecio' => 6
             ]
         );
         DB::table('almacen.doc_com_det')
