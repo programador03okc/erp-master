@@ -86,6 +86,7 @@ function verAgregarAdjuntosRequerimiento(obj) {
     let idRequerimiento= obj.dataset.idRequerimiento;
     let codigoRequerimiento= obj.dataset.codigoRequerimiento;
     tempArchivoAdjuntoRequerimientoCabeceraList=[];
+    calcTamañoTotalAdjuntoLogisticoParaSubir();
     $('#modal-ver-agregar-adjuntos-requerimiento-compra').modal({
         show: true,
         backdrop: 'static'
@@ -178,7 +179,7 @@ function verAgregarAdjuntosRequerimiento(obj) {
 
 
 function estaHabilitadoLaExtension(file) {
-    let extension = file.name.match(/(?<=\.)\w+$/g)[0].toLowerCase(); // assuming that this file has any extension
+    let extension = (file.name.match(/(?<=\.)\w+$/g) !=null)?file.name.match(/(?<=\.)\w+$/g)[0].toLowerCase():''; // assuming that this file has any extension
     if (extension === 'dwg'
         || extension === 'dwt'
         || extension === 'cdr'
@@ -198,6 +199,7 @@ function estaHabilitadoLaExtension(file) {
         || extension === 'flv'
         || extension === 'mov'
         || extension === 'wmv'
+        || extension === ''
     ) {
         return false;
     } else {
@@ -218,32 +220,53 @@ function makeId() {
 function agregarAdjuntoRequerimientoCabeceraCompra(obj){
     if (obj.files != undefined && obj.files.length > 0) {
         // console.log(obj.files);
+        if((obj.files.length + tempArchivoAdjuntoRequerimientoCabeceraList.length)>5){
+            Swal.fire(
+                '',
+                'Solo puedes subir un máximo de 5 archivos',
+                'warning'
+            );
+        }else{
+            Array.prototype.forEach.call(obj.files, (file) => {
+    
+                if (estaHabilitadoLaExtension(file) == true) {
+                    let payload = {
+                        id: makeId(),
+                        category: 1, //default: otros adjuntos
+                        nameFile: file.name,
+                        action: 'GUARDAR',
+                        file: file
+                    };
+                    addToTablaArchivosRequerimientoCabecera(payload);
+    
+                    tempArchivoAdjuntoRequerimientoCabeceraList.push(payload);
+                } else {
+                    Swal.fire(
+                        'Este tipo de archivo no esta permitido adjuntar',
+                        file.name,
+                        'warning'
+                    );
+                }
+            });
 
-        Array.prototype.forEach.call(obj.files, (file) => {
+        }
 
-            if (estaHabilitadoLaExtension(file) == true) {
-                let payload = {
-                    id: makeId(),
-                    category: 1, //default: otros adjuntos
-                    nameFile: file.name,
-                    action: 'GUARDAR',
-                    file: file
-                };
-                addToTablaArchivosRequerimientoCabecera(payload);
-
-                tempArchivoAdjuntoRequerimientoCabeceraList.push(payload);
-            } else {
-                Swal.fire(
-                    'Este tipo de archivo no esta permitido adjuntar',
-                    file.name,
-                    'warning'
-                );
-            }
-        });
 
     }
+    calcTamañoTotalAdjuntoLogisticoParaSubir();
+
     return false;
 
+}
+
+function calcTamañoTotalAdjuntoLogisticoParaSubir(){
+    let tamañoTotalArchivoParaSubir=0;
+
+    tempArchivoAdjuntoRequerimientoCabeceraList.forEach(element => {
+        tamañoTotalArchivoParaSubir+=element.size;
+        
+    });
+        document.querySelector("div[id='modal-ver-agregar-adjuntos-requerimiento-compra'] span[id='tamaño_total_archivos_para_subir']").textContent= $.number((tamañoTotalArchivoParaSubir/1000000),2)+'MB';
 }
 
 function getcategoriaAdjunto() {

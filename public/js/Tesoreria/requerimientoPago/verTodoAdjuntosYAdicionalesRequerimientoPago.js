@@ -80,7 +80,7 @@ function verAgregarAdjuntosRequerimientoPago(idRequerimientoPago) {
     });
     $(":file").filestyle('clear');
     tempArchivoAdjuntoRequerimientoPagoCabeceraList=[];
-
+    calcTamañoTotalAdjuntoPagoParaSubir();
     document.querySelector("div[id='modal-ver-agregar-adjuntos-requerimiento-pago'] input[name='id_requerimiento_pago']").value =idRequerimientoPago;
     if (idRequerimientoPago > 0) {
         limpiarTabla('adjuntosPago');
@@ -145,7 +145,7 @@ function verAgregarAdjuntosRequerimientoPago(idRequerimientoPago) {
 
 
 function estaHabilitadoLaExtension(file) {
-    let extension = file.name.match(/(?<=\.)\w+$/g)[0].toLowerCase(); // assuming that this file has any extension
+    let extension = (file.name.match(/(?<=\.)\w+$/g) !=null)?file.name.match(/(?<=\.)\w+$/g)[0].toLowerCase():''; // assuming that this file has any extension
     if (extension === 'dwg'
         || extension === 'dwt'
         || extension === 'cdr'
@@ -165,6 +165,7 @@ function estaHabilitadoLaExtension(file) {
         || extension === 'flv'
         || extension === 'mov'
         || extension === 'wmv'
+        || extension === ''
     ) {
         return false;
     } else {
@@ -185,32 +186,52 @@ function makeId() {
 function agregarAdjuntoRequerimientoPagoCabecera(obj){
     if (obj.files != undefined && obj.files.length > 0) {
         // console.log(obj.files);
+        if((obj.files.length + tempArchivoAdjuntoRequerimientoPagoCabeceraList.length)>5){
+            Swal.fire(
+                '',
+                'Solo puedes subir un máximo de 5 archivos',
+                'warning'
+            );
+        }else{
+            Array.prototype.forEach.call(obj.files, (file) => {
+                
+                if (estaHabilitadoLaExtension(file) == true) {
+                    let payload = {
+                        id: makeId(),
+                        category: 1, //default: otros adjuntos
+                        size: file.size,
+                        nameFile: file.name,
+                        action: 'GUARDAR',
+                        file: file
+                    };
+                    addToTablaArchivosRequerimientoPagoCabecera(payload);
+                    
+                    tempArchivoAdjuntoRequerimientoPagoCabeceraList.push(payload);
+                } else {
+                    Swal.fire(
+                        'Este tipo de archivo no esta permitido adjuntar',
+                        file.name,
+                        'warning'
+                        );
+                    }
+                });
+        }
+            
+        }
 
-        Array.prototype.forEach.call(obj.files, (file) => {
-
-            if (estaHabilitadoLaExtension(file) == true) {
-                let payload = {
-                    id: makeId(),
-                    category: 1, //default: otros adjuntos
-                    nameFile: file.name,
-                    action: 'GUARDAR',
-                    file: file
-                };
-                addToTablaArchivosRequerimientoPagoCabecera(payload);
-
-                tempArchivoAdjuntoRequerimientoPagoCabeceraList.push(payload);
-            } else {
-                Swal.fire(
-                    'Este tipo de archivo no esta permitido adjuntar',
-                    file.name,
-                    'warning'
-                );
-            }
-        });
-
+        calcTamañoTotalAdjuntoPagoParaSubir();
+        return false;
+        
     }
-    return false;
+    
+function calcTamañoTotalAdjuntoPagoParaSubir(){
+    let tamañoTotalArchivoParaSubir=0;
 
+    tempArchivoAdjuntoRequerimientoPagoCabeceraList.forEach(element => {
+        tamañoTotalArchivoParaSubir+=element.size;
+        
+    });
+        document.querySelector("div[id='modal-ver-agregar-adjuntos-requerimiento-pago'] span[id='tamaño_total_archivos_para_subir']").textContent= $.number((tamañoTotalArchivoParaSubir/1000000),2)+'MB';
 }
 
 function getcategoriaAdjunto() {
@@ -231,7 +252,7 @@ function getcategoriaAdjunto() {
 
 function addToTablaArchivosRequerimientoPagoCabecera(payload) {
     getcategoriaAdjunto().then((categoriaAdjuntoList) => {
-        console.log(categoriaAdjuntoList);
+        // console.log(categoriaAdjuntoList);
         let html = '';
         html = `<tr id="${payload.id}" style="text-align:center">
         <td style="text-align:left;">${payload.nameFile}</td>

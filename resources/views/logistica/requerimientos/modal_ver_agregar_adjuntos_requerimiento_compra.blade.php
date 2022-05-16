@@ -14,6 +14,10 @@
                             <div class="col-md-12">
                                 <input type="file" multiple="multiple" class="filestyle handleChangeAgregarAdjuntoRequerimientoCompraCabecera" name="nombre_archivo" placeholder="Seleccionar archivo" data-buttonName="btn-primary" data-buttonText="Seleccionar archivo" data-size="sm" data-iconName="fa fa-folder-open" />
                                 <br>
+                                <div style="display:flex; justify-content: space-between;">
+                                    <h6>Máximo 5 archivos de seleccieon multiple y con un máximo de 100MB por subida.</h6>
+                                    <h6>Carga actual: <span class="label label-default" id="tamaño_total_archivos_para_subir">0MB</span></h6>
+                                </div>
                             </div>
                         </div>
                     </fieldset>
