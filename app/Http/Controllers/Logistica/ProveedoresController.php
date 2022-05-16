@@ -438,4 +438,19 @@ class ProveedoresController extends Controller
             return response()->json(['data' => null, 'tipo_estado'=>$tipoEstado, 'mensaje' => 'Hubo un problema en el controllador para  obtener los datos del contribuyente. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
         }
     }
+
+    public function llenarNroDocumentoSinCodigo(){ // ? correr este método es temporal, para evitar que mgcp tome un contribuyente con nro documento nulo, ya no será necesario cuando se actualice el método obtenerCliente en RequerimientoHelper de MGCP
+        $contribuyentesSinCodigo = Contribuyente::whereNull('nro_documento')->orWhere('nro_documento','')->get();
+        $contribuyentesCodigoTemporal=Contribuyente::where('nro_documento','like','SIN-NUMERO-%')->get();
+        $iniciarCorrelativo = $contribuyentesCodigoTemporal->count()+1??0;
+
+        foreach ($contribuyentesSinCodigo as $contribuyente) {
+            # code...
+            $actualContribuyente = Contribuyente::find($contribuyente->id_contribuyente);
+            $actualContribuyente->nro_documento= 'SIN-NUMERO-'.$iniciarCorrelativo;
+            $actualContribuyente->save();
+            $iniciarCorrelativo++;
+        }
+        return $contribuyentesSinCodigo;
+    }
 }
