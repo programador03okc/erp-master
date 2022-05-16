@@ -188,7 +188,7 @@ class Requerimiento extends Model
     {
 
         $reservas = Reserva::leftJoin('almacen.alm_det_req', 'alm_reserva.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento')
-            ->where([['alm_det_req.id_requerimiento', $this->attributes['id_requerimiento']], ['alm_reserva.estado', '!=', 7]])
+            ->where([['alm_det_req.id_requerimiento', $this->attributes['id_requerimiento']], ['alm_reserva.estado', '=', 1]])
             ->select(['alm_reserva.id_reserva', 'alm_reserva.codigo','alm_reserva.stock_comprometido'])
             ->get();
 

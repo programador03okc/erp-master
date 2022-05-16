@@ -36,7 +36,7 @@ class TrazabilidadRequerimientoController extends Controller
             ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
             ->where([
                 ['alm_req.id_requerimiento', '=', $id_requerimiento],
-                ['alm_reserva.estado', '!=', 7]
+                ['alm_reserva.estado', '=', 1]
             ])
             ->whereNull('id_guia_com_det')
             ->distinct()
