@@ -325,19 +325,19 @@ class Requerimiento extends Model
 
 
                 foreach ($alm_det_req as $det_req) {
-                    if ($det_req->estado == '1') {
+                    if (intval($det_req->estado) == 1) {
                         $total_estado_elaborado += 1;
                     }
-                    if ($det_req->estado == '5') {
+                    if (!in_array(intval($det_req->estado),array(1,15,28,27,7))) { // *atendidos total y posterior
                         $total_estado_atentido_total += 1;
                     }
-                    if ($det_req->estado == '15') {
+                    if (intval($det_req->estado) == 15) {
                         $total_estado_atentido_parcial += 1;
                     }
-                    if ($det_req->estado == '28') {
+                    if (intval($det_req->estado) == 28) {
                         $total_estado_almacen_total += 1;
                     }
-                    if ($det_req->estado == '27') {
+                    if (intval($det_req->estado) == 27) {
                         $total_estado_almacen_parcial += 1;
                     }
                 }

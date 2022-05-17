@@ -2701,7 +2701,7 @@ class OrdenController extends Controller
         $alm_det_req = DetalleRequerimiento::with(['reserva' => function ($q) {
             $q->where('alm_reserva.estado', '=', 1);
         }])
-            ->where('alm_det_req.estado', '!=', 7)
+            ->where([['alm_det_req.tiene_transformacion', false],['alm_det_req.estado', '!=', 7]])
             ->whereIn('alm_det_req.id_requerimiento', $idRequerimientoList)
             ->get();
 
@@ -2714,7 +2714,7 @@ class OrdenController extends Controller
         $itemBase = [];
         foreach ($detalleRequerimiento as $value) {
 
-            if ($value->tiene_transformacion == false) {
+            if ($value->tiene_transformacion == false || $value->tiene_transformacion == null) {
                 $stock_comprometido = 0;
                 if (count($value->reserva) > 0) {
                     foreach ($value->reserva as $reserva) {

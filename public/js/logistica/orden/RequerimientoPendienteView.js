@@ -1950,12 +1950,13 @@ class RequerimientoPendienteView {
 
                 {
                     render: function (data, type, row) {
+                        
                         return `<center><div class="btn-group" role="group" style="margin-bottom: 5px;">
                     <button type="button" class="btn btn-xs btn-success handleClickSeleccionarAlmacenParaReserva" 
                         data-id-almacen="${row.id_almacen ?? ''}" 
                         data-almacen-requerimiento="${row.codigo}-${row.descripcion}" 
                         data-stock-disponible="${(row.stock - row.cantidad_stock_comprometido)}" 
-                        title="Agregar y guardar" >Seleccionar</button>
+                        title="Agregar y guardar" ${(row.stock - row.cantidad_stock_comprometido)==0?'disabled':''} >Seleccionar</button>
                     </div></center>`;
 
                     }
