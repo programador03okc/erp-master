@@ -56,21 +56,21 @@ class ListaOrdenModel {
     //             });
     //         });
     // }
-    // obtenerDetalleOrdenElaboradas(id){
-    //     return new Promise(function(resolve, reject) {
-    //         $.ajax({
-    //             type: 'GET',
-    //             url:`detalle-orden/${id}`,
-    //             dataType: 'JSON',
-    //             success(response) {
-    //                 resolve(response);
-    //             },
-    //             error: function(err) {
-    //             reject(err) // Reject the promise and go to catch()
-    //             }
-    //             });
-    //         });
-    // }
+    obtenerDetalleOrdenElaboradas(id){
+        return new Promise(function(resolve, reject) {
+            $.ajax({
+                type: 'GET',
+                url:`detalle-orden/${id}`,
+                dataType: 'JSON',
+                success(response) {
+                    resolve(response);
+                },
+                error: function(err) {
+                reject(err) // Reject the promise and go to catch()
+                }
+                });
+            });
+    }
 
 
     // lista por item

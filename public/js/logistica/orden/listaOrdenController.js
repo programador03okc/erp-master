@@ -23,9 +23,9 @@ class ListaOrdenCtrl {
 
     // }
 
-    // obtenerDetalleOrdenElaboradas(id) {
-    //     return this.listaOrdenModel.obtenerDetalleOrdenElaboradas(id);
-    // }
+    obtenerDetalleOrdenElaboradas(id) {
+        return this.listaOrdenModel.obtenerDetalleOrdenElaboradas(id);
+    }
 
 
 
