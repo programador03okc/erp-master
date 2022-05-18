@@ -654,7 +654,7 @@ class ListarRequerimientoPagoView {
         // console.log( data.adjunto);
         let idFila = data != null && data.id_requerimiento_pago_detalle > 0 ? data.id_requerimiento_pago_detalle : (this.makeId());
         let cantidadAdjuntos = data != null && data.adjunto ? (data.adjunto).filter((element, i) => element.id_estado != 7).length : 0;
-
+        console.log(data);
         document.querySelector("tbody[id='body_detalle_requerimiento_pago']").insertAdjacentHTML('beforeend', `<tr style="background-color:${data != null && data.id_estado == '7' ? '#f1d7d7' : ''}; text-align:center">
         <td>    
             <input type="hidden"  class="idEstado" name="idEstado[]" value="${data != null && data.id_estado}">
@@ -1111,7 +1111,6 @@ class ListarRequerimientoPagoView {
         let TableTBody = document.querySelector("tbody[id='body_detalle_requerimiento_pago']");
         let childrenTableTbody = TableTBody.children;
         for (let index = 0; index < childrenTableTbody.length; index++) {
-
             let cantidad = parseFloat(childrenTableTbody[index].querySelector("input[class~='cantidad']").value ? childrenTableTbody[index].querySelector("input[class~='cantidad']").value : 0);
             let precioUnitario = parseFloat(childrenTableTbody[index].querySelector("input[class~='precio']").value ? childrenTableTbody[index].querySelector("input[class~='precio']").value : 0);
             childrenTableTbody[index].querySelector("span[class~='subtotal']").textContent = (cantidad * precioUnitario);
@@ -1126,11 +1125,13 @@ class ListarRequerimientoPagoView {
         let total = 0;
         for (let index = 0; index < childrenTableTbody.length; index++) {
             // console.log(childrenTableTbody[index]);
-            let cantidad = parseFloat(childrenTableTbody[index].querySelector("input[class~='cantidad']").value ? childrenTableTbody[index].querySelector("input[class~='cantidad']").value : 0);
-            let precioUnitario = parseFloat(childrenTableTbody[index].querySelector("input[class~='precio']").value ? childrenTableTbody[index].querySelector("input[class~='precio']").value : 0);
-            total += (cantidad * precioUnitario);
+            if(parseInt(childrenTableTbody[index].querySelector("input[class='idEstado']").value) !=7){
+                console.log('emtra');
+                let cantidad = parseFloat(childrenTableTbody[index].querySelector("input[class~='cantidad']").value ? childrenTableTbody[index].querySelector("input[class~='cantidad']").value : 0);
+                let precioUnitario = parseFloat(childrenTableTbody[index].querySelector("input[class~='precio']").value ? childrenTableTbody[index].querySelector("input[class~='precio']").value : 0);
+                total += (cantidad * precioUnitario);
+            }
         }
-
         let allLabelTotal = document.querySelectorAll("div[id='modal-requerimiento-pago'] label[name='total']");
         allLabelTotal.forEach(element => {
             element.textContent = Util.formatoNumero(total, 2);
