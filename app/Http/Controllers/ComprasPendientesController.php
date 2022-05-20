@@ -1475,7 +1475,7 @@ class ComprasPendientesController extends Controller
                                 $detalleRequerimiento->estado =7;
                             }
         
-                            if( (isset($request->estadoAtendidoTotal[$i]) && $request->estadoAtendidoTotal[$i] ==true) || ($detalleRequerimiento->cantidad ==  (floatval($request->atencionOrden[$i])+floatval($request->stockComprometido[$i])) ) ){
+                            if( $request->cantidadParaAnular[$i] !=0 && (isset($request->estadoAtendidoTotal[$i]) && $request->estadoAtendidoTotal[$i] ==true) && ($detalleRequerimiento->cantidad ==  (floatval($request->atencionOrden[$i])+floatval($request->stockComprometido[$i])) ) ){
                                 $detalleRequerimiento->estado =5;
                             }
                             $detalleRequerimiento->razon_ajuste_necesidad = ($request->razonesDeAjusteDeNecesidad[$i]!=null?$request->razonesDeAjusteDeNecesidad[$i]:'Sin justificar');
