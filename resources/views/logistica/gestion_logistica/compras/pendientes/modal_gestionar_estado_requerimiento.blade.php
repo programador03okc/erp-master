@@ -28,7 +28,7 @@
                         <div class="col-md-12">
                             <div style="display: flex; justify-content: space-between;">
                                 <h4>Ajuste en items</h4>
-                                <button class="btn btn-sm btn-primary handleClickControlTodoCheckEnAtencionTotal" type="button" id="btnControlTodoCheckEnAtencionTotal"><i class="far fa-square" id="icoEstadoCheck"></i> Todo en atención total</button>
+                                <!-- <button class="btn btn-sm btn-primary handleClickControlTodoCheckEnAtencionTotal" type="button" id="btnControlTodoCheckEnAtencionTotal"><i class="far fa-square" id="icoEstadoCheck"></i> Todo en atención total</button> -->
                             </div>
                             <fieldset class="group-table" style="padding-top: 20px;">
                                 <table class="mytable table table-condensed table-striped table-hover table-bordered table-okc-view dataTable no-footer" id="listaItemsRequerimientoPendientesParaAjustarCantidadSolicitada" width="100%">
@@ -41,7 +41,7 @@
                                             <th>Unidad</th>
                                             <th>Cantidad original</th>
                                             <th>Cantidad para anular</th>
-                                            <th>Atención total ?</th>
+                                            <th>Cantidad virtual</th>
                                             <th>Razones de ajuste</th>
                                             <th>Reserva almacén</th>
                                             <th>Atención orden</th>

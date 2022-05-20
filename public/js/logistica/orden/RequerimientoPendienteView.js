@@ -119,12 +119,12 @@ class RequerimientoPendienteView {
         $('#listaRequerimientosPendientes tbody').on("click", "button.handleClickGestionarEstadoRequerimiento", (e) => {
             this.gestionarEstadoRequerimiento(e.currentTarget);
         });
-        $('#modal-gestionar-estado-requerimiento').on("click", "button.handleClickControlTodoCheckEnAtencionTotal", (e) => {
-            this.controlCheckEnAtencionTotal(e.currentTarget);
-        });
-        $('#modal-gestionar-estado-requerimiento').on("click", "input.handleCheckPressMarcarItemAtendidoTotal", (e) => {
-            this.checkPressItemAtendidoTotal(e.currentTarget);
-        });
+        // $('#modal-gestionar-estado-requerimiento').on("click", "button.handleClickControlTodoCheckEnAtencionTotal", (e) => {
+        //     this.controlCheckEnAtencionTotal(e.currentTarget);
+        // });
+        // $('#modal-gestionar-estado-requerimiento').on("click", "input.handleCheckPressMarcarItemAtendidoTotal", (e) => {
+        //     this.checkPressItemAtendidoTotal(e.currentTarget);
+        // });
         $('#modal-gestionar-estado-requerimiento').on("blur", "input.handleBlurUpdateValorNuevaCantidad", (e) => {
             this.updateValorNuevaCantidad(e.currentTarget);
         });
@@ -2847,6 +2847,7 @@ class RequerimientoPendienteView {
     }
     updateValorNuevaCantidad(obj) {
         if(obj.value != '' || parseFloat(obj.value) >0){
+            let cantidadOriginal = parseFloat(obj.closest('tr').querySelector("input[class~='cantidadOriginal']").value);
             let cantidadAtendidaTotal = parseFloat(obj.closest('tr').querySelector("input[class~='atencionOrden']").value) + parseFloat(obj.closest('tr').querySelector("input[class~='stockComprometido']").value)
             let maximaCantidadToleradaParaAnular= (parseFloat(obj.getAttribute("max"))-cantidadAtendidaTotal);
             if ((parseFloat(obj.value)+cantidadAtendidaTotal) <= parseFloat(obj.getAttribute("max"))) {
@@ -2859,6 +2860,7 @@ class RequerimientoPendienteView {
                 obj.value = maximaCantidadToleradaParaAnular;
     
             }
+            obj.closest('tr').querySelector("input[class~='cantidadVirtual']").value=parseFloat(cantidadOriginal- obj.value);
         }
         this.determinarNuevoEstadoPorAjuste();
 
@@ -2888,7 +2890,7 @@ class RequerimientoPendienteView {
         let cantidadTotalItems = response.length;
         if (cantidadTotalItems > 0) {
             response.forEach(function (element) {
-                if (([1,15].includes(element.estado)) && (element.tiene_transformacion == false || element.tiene_transformacion == null || element.tiene_transformacion == '')) {
+                if ((element.tiene_transformacion == false || element.tiene_transformacion == null || element.tiene_transformacion == '')) {
                     let stockComprometido = 0;
                     (element.reserva).forEach(reserva => {
                         if (reserva.estado != 7) {
@@ -2906,6 +2908,7 @@ class RequerimientoPendienteView {
                     });
 
                     // if (parseFloat(atencionOrden + stockComprometido) < (element.cantidad > 0 ? element.cantidad : 0)) { //considerar solo no atendidos menores a la cantidad solicitada
+                    // <td style="border: none; text-align:center; vertical-align: middle;"><input type="checkbox" class="checkEstadoAtendidoTotal handleCheckPressMarcarItemAtendidoTotal" name="estadoAtendidoTotal[]"></td>
 
                         document.querySelector("tbody[id='tbody_listaItemsRequerimientoPendientesParaAjustarCantidadSolicitada']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
                     <td style="border: none; text-align:center; vertical-align: middle;" data-part-number="${element.part_number}" data-producto-part-number="${element.producto_part_number}">${(element.producto_part_number != null ? element.producto_part_number : (element.part_number != null ? element.part_number : ''))} ${element.tiene_transformacion == true ? '<br><span class="label label-default">Transformado</span>' : ''}
@@ -2916,11 +2919,11 @@ class RequerimientoPendienteView {
                     <td style="border: none; text-align:left; vertical-align: middle;">${element.producto_descripcion != null ? element.producto_descripcion : (element.descripcion ? element.descripcion : '')}</td>
                     <td style="border: none; text-align:center; vertical-align: middle;">${element.abreviatura != null ? element.abreviatura : ''}</td>
                     <td style="border: none; text-align:center; vertical-align: middle;">${element.cantidad > 0 ? element.cantidad : ''} <input type="text" class="cantidadOriginal" name="cantidadOriginal[]" value="${element.cantidad > 0 ? element.cantidad : ''}" hidden></td>
-                    <td style="border: none; text-align:center; vertical-align: middle;"><input type="number" max="${element.cantidad > 0 ? element.cantidad : 0}" class="form-control cantidadParaAnular handleBlurUpdateValorNuevaCantidad" name="cantidadParaAnular[]"></td>
-                    <td style="border: none; text-align:center; vertical-align: middle;"><input type="checkbox" class="checkEstadoAtendidoTotal handleCheckPressMarcarItemAtendidoTotal" name="estadoAtendidoTotal[]"></td>
+                    <td style="border: none; text-align:center; vertical-align: middle;"><input type="number" max="${element.cantidad > 0 ? element.cantidad : 0}" class="form-control cantidadParaAnular handleBlurUpdateValorNuevaCantidad" name="cantidadParaAnular[]" ${([1,15].includes(element.estado))?'':'readOnly'} ></td>
+                    <td style="border: none; text-align:center; vertical-align: middle;"><input type="number" class="form-control cantidadVirtual" name="cantidadVirtual[]" value="" readOnly> </td>
                     <td style="border: none; text-align:center; vertical-align: middle;">
                         <div class="form-group">
-                            <textarea type="text" class="form-control razonesDeAjusteDeNecesidad" name="razonesDeAjusteDeNecesidad[]" placeholder="ejm: Ajuste a pedido del area usuario / ajuste por compra eficiente" style="height: 60px;overflow: scroll;width: 200px;"></textarea></td>
+                            <textarea type="text" class="form-control razonesDeAjusteDeNecesidad" name="razonesDeAjusteDeNecesidad[]" placeholder="ejm: Ajuste a pedido del area usuario / ajuste por compra eficiente" style="height: 60px;overflow: scroll;width: 200px;" ${([1,15].includes(element.estado))?'':'readOnly'}>${element.razon_ajuste_necesidad??''}</textarea></td>
                         </div>
                     <td style="border: none; text-align:center; vertical-align: middle;">
                         ${stockComprometido != null && parseFloat(stockComprometido) > 0 ? stockComprometido : '0'} <input type="text" class="stockComprometido" name="stockComprometido[]" value="${stockComprometido != null && parseFloat(stockComprometido) > 0 ? stockComprometido : 0}" hidden>
@@ -2952,44 +2955,44 @@ class RequerimientoPendienteView {
         this.determinarNuevoEstadoPorAjuste();
 
     }
-    controlCheckEnAtencionTotal(obj) {
-        obj.classList.toggle("active");
-        if (obj.classList.contains("active")) {
-            obj.childNodes[0].classList.replace("far", "fas");
-            obj.childNodes[0].classList.replace("fa-square", "fa-check-square");
-            (document.querySelector("tbody[id='tbody_listaItemsRequerimientoPendientesParaAjustarCantidadSolicitada']").childNodes).forEach(element => {
-                element.querySelector("input[class~='checkEstadoAtendidoTotal']").checked = true;
-                document.querySelector("div[id='modal-gestionar-estado-requerimiento'] span[id='estadoVirtualRequerimiento']").textContent = 'Atención total';
-                document.querySelector("div[id='modal-gestionar-estado-requerimiento'] input[name='idNuevoEstado']").value = 5;
-            });
-        } else {
-            obj.childNodes[0].classList.replace("fas", "far");
-            obj.childNodes[0].classList.replace("fa-check-square", "fa-square");
-            (document.querySelector("tbody[id='tbody_listaItemsRequerimientoPendientesParaAjustarCantidadSolicitada']").childNodes).forEach(element => {
-                element.querySelector("input[class~='checkEstadoAtendidoTotal']").checked = false;
-                this.determinarNuevoEstadoPorAjuste();
+    // controlCheckEnAtencionTotal(obj) {
+    //     obj.classList.toggle("active");
+    //     if (obj.classList.contains("active")) {
+    //         obj.childNodes[0].classList.replace("far", "fas");
+    //         obj.childNodes[0].classList.replace("fa-square", "fa-check-square");
+    //         (document.querySelector("tbody[id='tbody_listaItemsRequerimientoPendientesParaAjustarCantidadSolicitada']").childNodes).forEach(element => {
+    //             // element.querySelector("input[class~='checkEstadoAtendidoTotal']").checked = true;
+    //             document.querySelector("div[id='modal-gestionar-estado-requerimiento'] span[id='estadoVirtualRequerimiento']").textContent = 'Atención total';
+    //             document.querySelector("div[id='modal-gestionar-estado-requerimiento'] input[name='idNuevoEstado']").value = 5;
+    //         });
+    //     } else {
+    //         obj.childNodes[0].classList.replace("fas", "far");
+    //         obj.childNodes[0].classList.replace("fa-check-square", "fa-square");
+    //         (document.querySelector("tbody[id='tbody_listaItemsRequerimientoPendientesParaAjustarCantidadSolicitada']").childNodes).forEach(element => {
+    //             // element.querySelector("input[class~='checkEstadoAtendidoTotal']").checked = false;
+    //             this.determinarNuevoEstadoPorAjuste();
 
-            });
-        }
-    }
+    //         });
+    //     }
+    // }
 
 
-    checkPressItemAtendidoTotal() {
-        let cantidadCheckedMarcadoAtencionTotal = 0;
-        let cantidadTotalItem = document.querySelector("tbody[id='tbody_listaItemsRequerimientoPendientesParaAjustarCantidadSolicitada']").childNodes.length;
-        (document.querySelector("tbody[id='tbody_listaItemsRequerimientoPendientesParaAjustarCantidadSolicitada']").childNodes).forEach(element => {
-            if (element.querySelector("input[class~='checkEstadoAtendidoTotal']").checked == true) {
-                cantidadCheckedMarcadoAtencionTotal++;
-            }
-        });
-        if (cantidadTotalItem == cantidadCheckedMarcadoAtencionTotal) {
-            document.querySelector("div[id='modal-gestionar-estado-requerimiento'] span[id='estadoVirtualRequerimiento']").textContent = 'Atención total';
-            document.querySelector("div[id='modal-gestionar-estado-requerimiento'] input[name='idNuevoEstado']").value = 5;
-        } else {
-            document.querySelector("div[id='modal-gestionar-estado-requerimiento'] span[id='estadoVirtualRequerimiento']").textContent = 'Atención parcial';
-            document.querySelector("div[id='modal-gestionar-estado-requerimiento'] input[name='idNuevoEstado']").value = 15;
-        }
-    }
+    // checkPressItemAtendidoTotal() {
+    //     let cantidadCheckedMarcadoAtencionTotal = 0;
+    //     let cantidadTotalItem = document.querySelector("tbody[id='tbody_listaItemsRequerimientoPendientesParaAjustarCantidadSolicitada']").childNodes.length;
+    //     (document.querySelector("tbody[id='tbody_listaItemsRequerimientoPendientesParaAjustarCantidadSolicitada']").childNodes).forEach(element => {
+    //         if (element.querySelector("input[class~='checkEstadoAtendidoTotal']").checked == true) {
+    //             cantidadCheckedMarcadoAtencionTotal++;
+    //         }
+    //     });
+    //     if (cantidadTotalItem == cantidadCheckedMarcadoAtencionTotal) {
+    //         document.querySelector("div[id='modal-gestionar-estado-requerimiento'] span[id='estadoVirtualRequerimiento']").textContent = 'Atención total';
+    //         document.querySelector("div[id='modal-gestionar-estado-requerimiento'] input[name='idNuevoEstado']").value = 5;
+    //     } else {
+    //         document.querySelector("div[id='modal-gestionar-estado-requerimiento'] span[id='estadoVirtualRequerimiento']").textContent = 'Atención parcial';
+    //         document.querySelector("div[id='modal-gestionar-estado-requerimiento'] input[name='idNuevoEstado']").value = 15;
+    //     }
+    // }
 
 
 
@@ -3020,7 +3023,7 @@ class RequerimientoPendienteView {
         let estado = 'success';
         let cantidadTextAreaRazonDeAjusteSinData = 0;
         (document.querySelector("tbody[id='tbody_listaItemsRequerimientoPendientesParaAjustarCantidadSolicitada']").childNodes).forEach(element => {
-            if ((element.querySelector("input[class~='cantidadParaAnular']").value > 0) || (element.querySelector("input[class~='checkEstadoAtendidoTotal']").checked == true)) {
+            if ((element.querySelector("input[class~='cantidadParaAnular']").value > 0)) {
                 if (!element.querySelector("textarea[class~='razonesDeAjusteDeNecesidad']").value != '') {
                     estado = 'warning';
                     cantidadTextAreaRazonDeAjusteSinData++;
