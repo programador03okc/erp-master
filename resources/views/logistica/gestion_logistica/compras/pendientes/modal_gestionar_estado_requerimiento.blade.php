@@ -4,7 +4,7 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal-gestionar-estado-requerimiento" onClick="$('#modal-gestionar-estado-requerimiento').modal('hide');"><span aria-hidden="true">&times;</span></button>
                 <h3 class="modal-title" style="display: flex;justify-content: space-between;">
-                    <div>Gestionar estado requerimiento <span id="codigoRequerimiento"></span></div>
+                    <div>Ajuste de necesidad del requerimiento <span id="codigoRequerimiento"></span></div>
                     <div style="font-size: 2rem;">
                         <span>Estado actual: <span class="label label-default" id="estadoActualRequerimiento"></span></span>
                         <span>Estado virtual: <span class="label label-info" id="estadoVirtualRequerimiento"></span></span>
