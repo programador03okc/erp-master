@@ -129,7 +129,7 @@ function listarReservasAlmacen(id_usuario) {
             {
                 'render': function (data, type, row) {
 
-                    return `${id_usuario == '3' || id_usuario == '17' || id_usuario == '93' ?
+                    return `${id_usuario == '3' || id_usuario == '16' || id_usuario == '17' || id_usuario == '93' ?
                         `<button type="button" class="editar btn btn-primary btn-flat boton" data-toggle="tooltip" 
                     data-placement="bottom" title="Editar Reserva"  data-id="${row['id_reserva']}"
                     data-almacen="${row['id_almacen_reserva']}"  data-stock="${row['stock_comprometido']}"
