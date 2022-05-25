@@ -193,7 +193,7 @@ function mostrar_ordenes_seleccionadas() {
                 title="El producto fue creado con Categoría = Por definir"></i>`: '')
             + element.descripcion + ' <br><strong>' + html_ser + '</strong>'}
             </td>
-            <td><input class="right" type="number" id="${element.id_oc_det !== null ? element.id_oc_det : 'p' + element.id_producto}cantidad" value="${element.cantidad}" 
+            <td><input class="right" type="number" id="${element.id_oc_det !== null ? element.id_oc_det : 'p' + element.id_producto}cantidad" step="0.01" value="${element.cantidad}" 
                 min="1" ${element.id_oc_det !== null ? `max="${element.cantidad}"` : ''} style="width:80px;"/></td>
             <td>${element.abreviatura}</td>
             <td class="text-right">${formatNumber.decimal(element.precio, element.simbolo, -4)}</td>
