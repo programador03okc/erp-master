@@ -378,7 +378,7 @@ class TransferenciaController extends Controller
             $detalle = DB::table('almacen.trans_detalle')
                 ->select('trans_detalle.*', 'trans.id_requerimiento')
                 ->join('almacen.trans', 'trans.id_transferencia', '=', 'trans_detalle.id_transferencia')
-                ->where('id_transferencia', $id_transferencia)
+                ->where('trans_detalle.id_transferencia', $id_transferencia)
                 ->get();
 
             foreach ($detalle as $det) {
