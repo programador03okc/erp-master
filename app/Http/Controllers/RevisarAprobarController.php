@@ -7,6 +7,8 @@ use App\Mail\EmailNotificarUsuarioPropietarioDeDocumento;
 use App\Models\Administracion\Aprobacion;
 use App\Models\Administracion\Division;
 use App\Models\Administracion\Documento;
+use App\Models\Administracion\DocumentosAprobadosView;
+use App\Models\Administracion\DocumentosView;
 use App\Models\Administracion\Flujo;
 use App\Models\Administracion\Operacion;
 use App\Models\Almacen\DetalleRequerimiento;
@@ -376,6 +378,18 @@ class RevisarAprobarController extends Controller{
         $output = ['data' => $payload, 'mensaje'=>$mensaje];
         return $output;
 
+    }
+
+    public function mostrarListaDeDocumentosAprobados(Request $request){
+ 
+        $allRol = Auth::user()->getAllRol();
+        $idRolUsuarioList = [];
+        foreach ($allRol as  $rol) {
+            $idRolUsuarioList[] = $rol->id_rol;
+        }
+
+        $documentos = DocumentosView::where('id_estado',2)->whereIn('ultimo_rol_aprobador',$idRolUsuarioList)->get();
+        return datatables($documentos)->toJson();
     }
 
     public function obtenerRelacionadoAIdDocumento($tipoDocumento,$idDocumento){

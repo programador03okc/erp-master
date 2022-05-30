@@ -1,5 +1,6 @@
 
-let $tablaRevisarAprobarDocumento;
+let $tablaDocumentosPorRevisarAprobar;
+let $tablaDocumentosRevisados;
 var tempArchivoAdjuntoRequerimientoPagoCabeceraList = [];
 var tempArchivoAdjuntoRequerimientoPagoDetalleList = [];
 var objBotonAdjuntoRequerimientoPagoDetalleSeleccionado = [];
@@ -33,6 +34,12 @@ class RevisarAprobarDocumentoView {
     initializeEventHandler() {
 
 
+        $('#lista_documentos_para_revisar_aprobar').on("click", "li.handleClickTabDocumentosPendientesRevisar", (e) => {
+            this.listarDocumentosPendientesParaRevisarAprobar();
+        });
+        $('#lista_documentos_para_revisar_aprobar').on("click", "li.handleClickTabDocumentosAprobados", (e) => {
+            this.construirTablaListarDocumentosAprobados();
+        });
         $('#listaDocumetosParaRevisarAprobar').on("click", "button.handleClickVerEnVistaRapidaDocumento", (e) => {
             this.verEnVistaRapidaDocumento(e.currentTarget);
         });
@@ -43,6 +50,13 @@ class RevisarAprobarDocumentoView {
             this.observarDocumento(e.currentTarget);
         });
         $('#listaDocumetosParaRevisarAprobar').on("click", "button.handleClickRechazarDocumento", (e) => {
+            this.rechazarDocumento(e.currentTarget);
+        });
+
+        $('#listaDocumetosRevisados').on("click", "button.handleClickObservarDocumento", (e) => {
+            this.observarDocumento(e.currentTarget);
+        });
+        $('#listaDocumetosRevisados').on("click", "button.handleClickRechazarDocumento", (e) => {
             this.rechazarDocumento(e.currentTarget);
         });
         // $('#listaDocumetosParaRevisarAprobar').on("click", "button.handleClickVerEnVistaRapidaRequerimientoPago", (e) => {
@@ -133,7 +147,7 @@ class RevisarAprobarDocumentoView {
         let that = this;
         vista_extendida();
         var vardataTables = funcDatatables();
-        $tablaRevisarAprobarDocumento = $('#listaDocumetosParaRevisarAprobar').DataTable({
+        $tablaDocumentosPorRevisarAprobar = $('#listaDocumetosParaRevisarAprobar').DataTable({
             'dom': 'Bfrtip',
             'buttons': [
                 // {
@@ -267,7 +281,7 @@ class RevisarAprobarDocumentoView {
                 //     }
                 // });
                 // $('#btnBuscar').on('click', (e) => {
-                //     $tablaRevisarAprobarDocumento.search($input.val()).draw();
+                //     $tablaDocumentosPorRevisarAprobar.search($input.val()).draw();
                 // })
                 // //Fin boton de busqueda
 
@@ -292,11 +306,117 @@ class RevisarAprobarDocumentoView {
             }
         });
         //Desactiva el buscador del DataTable al realizar una busqueda
-        // $tablaRevisarAprobarDocumento.on('search.dt', function () {
+        // $tablaDocumentosPorRevisarAprobar.on('search.dt', function () {
         //     $('#tableDatos_filter input').prop('disabled', true);
         //     $('#btnBuscar').html('<span class="glyphicon glyphicon-time" aria-hidden="true"></span>').attr('disabled', true);
         // });
     }
+
+    construirTablaListarDocumentosAprobados() {
+        let that = this;
+        vista_extendida();
+        var vardataTables = funcDatatables();
+        $tablaDocumentosRevisados = $('#listaDocumetosRevisados').DataTable({
+            'dom': 'Bfrtip',
+            'buttons': [
+            ],
+            'language': vardataTables[0],
+            'order': [[0, 'desc']],
+            'bLengthChange': false,
+            // 'serverSide': false,
+            'destroy': true,
+            'ajax': {
+                'url': 'documentos-aprobados',
+                'type': 'POST',
+                beforeSend: data => {
+
+                }
+
+            },
+                'columns': [
+                    {
+                        'render': function (data, type, row) {
+                            switch (parseInt(row['id_prioridad'])) {
+                                case 1:
+                                    return '<div class="text-center"> <i class="fas fa-thermometer-empty green"  data-toggle="tooltip" data-placement="right" title="Normal"></i> </div>';
+                                    break;
+    
+                                case 2:
+                                    return '<div class="text-center"> <i class="fas fa-thermometer-half orange"  data-toggle="tooltip" data-placement="right" title="Alta"></i> </div>';
+                                    break;
+    
+                                case 3:
+                                    return '<div class="text-center"> <i class="fas fa-thermometer-full red"  data-toggle="tooltip" data-placement="right" title="Crítica"></i> </div>';
+                                    break;
+    
+                                default:
+                                    return '';
+                                    break;
+                            }
+                            return '';
+                        }
+                    },
+                { 'data': 'tipo_documento', 'name': 'tipo_documento', 'className': 'text-center' },
+                { 'data': 'codigo', 'name': 'codigo', 'className': 'text-center' },
+                { 'data': 'concepto', 'name': 'concepto', 'className': 'text-left' },
+                { 'data': 'tipo_requerimiento', 'name': 'tipo_requerimiento', 'className': 'text-center' },
+                { 'data': 'fecha_registro', 'name': 'fecha_registro', 'className': 'text-center' },
+                { 'data': 'empresa', 'name': 'empresa', 'className': 'text-center' },
+                { 'data': 'sede', 'name': 'sede', 'className': 'text-center' },
+                { 'data': 'grupo', 'name': 'grupo', 'className': 'text-center' },
+                { 'data': 'division', 'name': 'division', 'className': 'text-center' },
+                {
+                    'data': 'monto_total','className': 'text-center', 
+                    render: function (data, type, row) {
+                        return row.simbolo_moneda + $.number(row.monto_total,2);
+                    }
+                },
+                { 'data': 'creado_por', 'name': 'creado_por', 'className': 'text-center' },
+                {
+                    'data': 'estado','className': 'text-center', 
+                    render: function (data, type, row) {
+                        let estado = `<span class="labelEstado label label-${row.bootstrap_color}" title="Estado de documento">${row.estado}</span>`;
+                            estado+= `\n<span class="labelEstado label label-default" title="Estado de documento">${(row.cantidad_ordenes>0 && row.cantidad_reservas>0)?'En atención logística, con reserva':(row.cantidad_ordenes>0 && row.cantidad_reservas==0)?'En atención logística':(row.cantidad_ordenes==0 && row.cantidad_reservas>0)?'Con reserva':(row.cantidad_ordenes==0 && row.cantidad_reservas==0)?'Aun sin atención':''}</span>`;
+                        return estado;
+                    }
+                },
+                {
+                    'data': 'id','className': 'text-center', 
+                    render: function (data, type, row) {
+
+                        let dataset = `data-id-documento="${row.id ?? ''}" 
+                                    data-id-tipo-documento="${row.id_tp_documento ?? ''}" 
+                                    data-tipo-documento="${row.tipo_documento ?? ''}" 
+                                    data-id-requerimiento="${row.id_requerimiento_logistico ?? ''}" 
+                                    data-id-requerimiento-pago="${row.id_requerimiento_pago ?? ''}" 
+                                    data-codigo="${row.codigo ?? ''}" 
+                                    data-id-rol-aprobante="${row.ultimo_rol_aprobador ?? ''}" 
+                                    data-id-usuario-aprobante="${auth_user.id_usuario ?? ''}"
+                                    data-id-usuario-propietario-documento="${row.id_usuario ?? ''}"
+                                    data-id-flujo="${row.id_flujo ?? ''}" 
+                                    `;
+                        let containerOpenBrackets = '<center><div style="display:flex;" >';
+                        let containerCloseBrackets = '</div></center>';
+                        let btnVerEnModal = '<button type="button" role="button" class="btn btn-flat btn-xs btn-info handleClickVerEnVistaRapidaDocumento" name="btnVerEnVistaRapidaDocumento" ' + dataset + ' title="Vista rápida"><i class="fas fa-eye"></i></button>';
+                        let btnObservar = '<button type="button" role="button" class="btn btn-flat btn-xs btn-warning handleClickObservarDocumento" name="btnObservarDocumento" ' + dataset + ' title="Observar"><i class="fas fa-exclamation-circle"></i></button>';
+                        let btnAnular = '<button type="button" role="button" class="btn btn-flat btn-xs btn-danger handleClickRechazarDocumento" name="btnRechazarDocumento" ' + dataset + ' title="Rechazar"><i class="fas fa-ban"></i></button>';
+
+                        return containerOpenBrackets + btnVerEnModal + btnObservar + btnAnular + containerCloseBrackets;
+                    }
+                },
+            ],
+            'columnDefs': [
+   
+
+            ],
+            'initComplete': function () {
+
+            },
+            "drawCallback": function (settings) {
+            }
+        });
+    }
+
     // inicio adjunto cabecera requerimiento de pago 
     modalAdjuntarArchivosCabecera(obj) { // TODO pasar al btn el id y no usar de un input para ambos casos de mostrar solo lectura y mostrar con carga
         $('#modal-adjuntar-archivos-requerimiento-pago').modal({
@@ -1076,18 +1196,18 @@ class RevisarAprobarDocumentoView {
         if (!payload.idFlujo.length > 0) {
             mensaje.push("No se encontro un ID de flujo valido");
         }
-        if (!payload.idOperacion.length > 0) {
-            mensaje.push("No se encontro un ID de operación valido");
-        }
+        // if (!payload.idOperacion.length > 0) {
+        //     mensaje.push("No se encontro un ID de operación valido");
+        // }
         if (!payload.idRolAprobante.length > 0) {
             mensaje.push("No se encontro un ID rol del aprobante valido");
         }
-        if (!payload.aprobacionFinalOPendiente.length > 0) {
-            mensaje.push("no se sabe si es una aprobación final o pendiente");
-        }
-        if (!payload.tieneRolConSiguienteAprobacion.length > 0) {
-            mensaje.push("No se sabe si el rol del usuario actual tiene una siguiente aprobación");
-        }
+        // if (!payload.aprobacionFinalOPendiente.length > 0) {
+        //     mensaje.push("no se sabe si es una aprobación final o pendiente");
+        // }
+        // if (!payload.tieneRolConSiguienteAprobacion.length > 0) {
+        //     mensaje.push("No se sabe si el rol del usuario actual tiene una siguiente aprobación");
+        // }
 
         return mensaje;
     }
@@ -1101,7 +1221,7 @@ class RevisarAprobarDocumentoView {
                 data: payload,
                 beforeSend: function (data) {
 
-                    $('#listaDocumetosParaRevisarAprobar').LoadingOverlay("show", {
+                    $("[class='tab-content']").LoadingOverlay("show", {
                         imageAutoResize: true,
                         progress: true,
                         imageColor: "#3c8dbc"
@@ -1109,11 +1229,11 @@ class RevisarAprobarDocumentoView {
                 },
                 success(response) {
                     resolve(response);
-                    $('#listaDocumetosParaRevisarAprobar').LoadingOverlay("hide", true);
+                    $("[class='tab-content']").LoadingOverlay("hide", true);
 
                 },
                 fail: function (jqXHR, textStatus, errorThrown) {
-                    $('#listaDocumetosParaRevisarAprobar').LoadingOverlay("hide", true);
+                    $("[class='tab-content']").LoadingOverlay("hide", true);
                     console.log(jqXHR);
                     console.log(textStatus);
                     console.log(errorThrown);
@@ -1168,15 +1288,26 @@ class RevisarAprobarDocumentoView {
         } else {
             Swal.fire(
                 'Error en validación',
-                validarCargaUtil.mensaje.toString(),
+                validarCargaUtil.toString(),
                 'error'
             );
         }
     }
+
+    obtenerTabActivo(){
+        let allTab= document.querySelector("ul[class='nav nav-tabs']").children;
+        for (let index = 0; index < allTab.length; index++) {
+            if(allTab[index].classList.contains("active")==true){
+                return allTab[index].classList[0];
+            }  
+        }
+    }
     observarDocumento(obj) {
+
         let payload = this.obtenerCargaUtil(obj);
         payload.accion = 3;
         let validarCargaUtil = this.validarCargaUtil(payload);
+        console.log(validarCargaUtil);
         if (validarCargaUtil.length == 0) {
             Swal.fire({
                 title: `Esta seguro que desea observar el ${payload.tipoDocumento}: ${payload.codigo}`,
@@ -1222,8 +1353,13 @@ class RevisarAprobarDocumentoView {
                                         'error'
                                     );
                                 }
-
-                                this.listarDocumentosPendientesParaRevisarAprobar();
+                                if(this.obtenerTabActivo()=='handleClickTabDocumentosPendientesRevisar'){
+                                    this.listarDocumentosPendientesParaRevisarAprobar();
+                                    
+                                }else if(this.obtenerTabActivo()=='handleClickTabDocumentosAprobados'){
+                                    this.construirTablaListarDocumentosAprobados();
+                                    
+                                }
                             });
                         }
                     })
@@ -1233,7 +1369,7 @@ class RevisarAprobarDocumentoView {
         } else {
             Swal.fire(
                 'Error en validación',
-                validarCargaUtil.mensaje.toString(),
+                validarCargaUtil.toString(),
                 'error'
             );
         }
@@ -1288,7 +1424,13 @@ class RevisarAprobarDocumentoView {
                                         'error'
                                     );
                                 }
-                                this.listarDocumentosPendientesParaRevisarAprobar();
+                                if(this.obtenerTabActivo()=='handleClickTabDocumentosPendientesRevisar'){
+                                    this.listarDocumentosPendientesParaRevisarAprobar();
+                                    
+                                }else if(this.obtenerTabActivo()=='handleClickTabDocumentosAprobados'){
+                                    this.construirTablaListarDocumentosAprobados();
+                                    
+                                }
                             });
                         }
                     })
@@ -1298,7 +1440,7 @@ class RevisarAprobarDocumentoView {
         } else {
             Swal.fire(
                 'Error en validación',
-                validarCargaUtil.mensaje.toString(),
+                validarCargaUtil.toString(),
                 'error'
             );
         }

@@ -785,6 +785,7 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::group(['as' => 'listado.', 'prefix' => 'listado'], function () {
 				Route::get('index', 'RevisarAprobarController@viewListaRequerimientoPagoPendienteParaAprobacion')->name('index');
 				Route::post('documentos-pendientes', 'RevisarAprobarController@mostrarListaDeDocumentosPendientes');
+				Route::post('documentos-aprobados', 'RevisarAprobarController@mostrarListaDeDocumentosAprobados');
 				Route::get('imprimir-requerimiento-pago-pdf/{id}', 'Tesoreria\RequerimientoPagoController@imprimirRequerimientoPagoPdf');
 				Route::post('guardar-respuesta', 'RevisarAprobarController@guardarRespuesta');
 				Route::get('mostrar-requerimiento-pago/{idRequerimientoPago}', 'Tesoreria\RequerimientoPagoController@mostrarRequerimientoPago');

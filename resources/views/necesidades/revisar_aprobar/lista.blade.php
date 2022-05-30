@@ -25,7 +25,7 @@ Revisar/aprobar
             <!-- Nav tabs -->
             <ul class="nav nav-tabs" role="tablist">
                 <li role="presentation" class="handleClickTabDocumentosPendientesRevisar active"><a href="#documentos_pendientes" aria-controls="documentos_pendientes" role="tab" data-toggle="tab">Documentos para revisar</a></li>
-                <!-- <li role="presentation" class="handleClickTabDocumentosRevisados"><a href="#documentos_revisados" aria-controls="documentos_revisados" role="tab" data-toggle="tab">Documentos revisados</a></li> -->
+                <li role="presentation" class="handleClickTabDocumentosAprobados"><a href="#documentos_aprobados" aria-controls="documentos_aprobados" role="tab" data-toggle="tab">Documentos aprobados sin atención</a></li>
             </ul>
             <!-- Tab panes -->
             <div class="tab-content">
@@ -53,7 +53,7 @@ Revisar/aprobar
                                                             <th class="text-center">División</th>
                                                             <th class="text-center">Monto Total</th>
                                                             <th class="text-center">Creado por</th>
-                                                            <th class="text-center">Estado / Aprob.</th>
+                                                            <th class="text-center">Estado</th>
                                                             <th class="text-center" width="10%">Acción</th>
                                                         </tr>
                                                     </thead>
@@ -67,7 +67,7 @@ Revisar/aprobar
                         </div>
                     </div>
                 </div>
-                <div role="tabpanel" class="tab-pane" id="documentos_revisados">
+                <div role="tabpanel" class="tab-pane" id="documentos_aprobados">
                     <div class="panel panel-default">
                         <div class="panel-body">
                             <div class="row">
@@ -78,7 +78,6 @@ Revisar/aprobar
                                                 <table class="mytable table table-condensed table-striped table-hover table-bordered table-okc-view" id="listaDocumetosRevisados">
                                                     <thead>
                                                         <tr>
-                                                            <th></th>
                                                             <th class="text-center">Prio.</th>
                                                             <th class="text-center">Tipo doc.</th>
                                                             <th class="text-center">Código</th>
@@ -91,7 +90,7 @@ Revisar/aprobar
                                                             <th class="text-center">División</th>
                                                             <th class="text-center">Monto Total</th>
                                                             <th class="text-center">Creado por</th>
-                                                            <th class="text-center">Estado / Aprob.</th>
+                                                            <th class="text-center">Estado</th>
                                                             <th class="text-center" width="10%">Acción</th>
                                                         </tr>
                                                     </thead>
