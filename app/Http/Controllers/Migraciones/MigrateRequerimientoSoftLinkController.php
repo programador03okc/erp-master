@@ -470,7 +470,7 @@ class MigrateRequerimientoSoftLinkController extends Controller
                 'dsctocompra' => '0.000',
                 'cod_prov' => '',
                 'costo_unit' => '0.000000',
-                'margen' => '0.00',
+                // 'margen' => '0.00',
                 'gasto1' => '0.00',
                 'gasto2' => '0.00',
                 'flg_detrac' => 0,
