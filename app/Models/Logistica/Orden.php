@@ -21,7 +21,7 @@ class Orden extends Model
 
     protected $table = 'logistica.log_ord_compra';
     protected $primaryKey = 'id_orden_compra';
-    protected $appends = ['cuadro_costo', 'monto','fecha_formato', 'requerimientos', 'oportunidad', 'tiene_transformacion', 'cantidad_equipos', 'estado_orden', 'requerimientos_codigo','cantidad_ingresos_almacen'];
+    protected $appends = ['cuadro_costo', 'monto','fecha_formato', 'requerimientos', 'oportunidad', 'tiene_transformacion', 'cantidad_equipos', 'estado_orden','cantidad_ingresos_almacen'];
 
     public $timestamps = false;
 
@@ -343,18 +343,18 @@ class Orden extends Model
         return $this->hasOne('App\Models\Logistica\EstadoCompra', 'id_estado', 'estado');
     }
 
-    public function getRequerimientosCodigoAttribute()
-    {
+    // public function getRequerimientosCodigoAttribute()
+    // {
 
-        $requerimientos = OrdenCompraDetalle::leftJoin('almacen.alm_det_req', 'log_det_ord_compra.id_detalle_requerimiento', 'alm_det_req.id_detalle_requerimiento')
-            ->Join('almacen.alm_req', 'alm_req.id_requerimiento', 'alm_det_req.id_requerimiento')
-            ->leftJoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'alm_req.id_usuario')
-            ->where('log_det_ord_compra.id_orden_compra', $this->attributes['id_orden_compra'])
-            ->select(['alm_req.id_requerimiento', 'alm_req.codigo', 'alm_req.estado', 'sis_usua.nombre_corto'])->distinct()->get();
-        $resultado = [];
-        foreach ($requerimientos as $req) {
-            array_push($resultado, $req->codigo);
-        }
-        return implode(', ', $resultado);
-    }
+    //     $requerimientos = OrdenCompraDetalle::leftJoin('almacen.alm_det_req', 'log_det_ord_compra.id_detalle_requerimiento', 'alm_det_req.id_detalle_requerimiento')
+    //         ->Join('almacen.alm_req', 'alm_req.id_requerimiento', 'alm_det_req.id_requerimiento')
+    //         ->leftJoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'alm_req.id_usuario')
+    //         ->where('log_det_ord_compra.id_orden_compra', $this->attributes['id_orden_compra'])
+    //         ->select(['alm_req.id_requerimiento', 'alm_req.codigo', 'alm_req.estado', 'sis_usua.nombre_corto'])->distinct()->get();
+    //     $resultado = [];
+    //     foreach ($requerimientos as $req) {
+    //         array_push($resultado, $req->codigo);
+    //     }
+    //     return implode(', ', $resultado);
+    // }
 }

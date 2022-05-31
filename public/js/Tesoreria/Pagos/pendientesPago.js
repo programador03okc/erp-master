@@ -294,8 +294,8 @@
                 { 'aTargets': [0], 'sClass': 'invisible' },
                 {
                     render: function (data, type, row) {
-                        console.log(row.requerimientos_codigo);
-                        console.log(row.requerimientos);
+                        // console.log(row.requerimientos_codigo);
+                        // console.log(row.requerimientos);
                         var text = '';
                         row.requerimientos.forEach(element => {
                             text += `<a href="/necesidades/requerimiento/elaboracion/index?id=${element.id_requerimiento}" 
