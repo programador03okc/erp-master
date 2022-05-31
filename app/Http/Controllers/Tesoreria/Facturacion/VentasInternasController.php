@@ -48,6 +48,44 @@ class VentasInternasController extends Controller
 
             if (($doc_ven->id_doc_ven !== null) && count($detalle) > 0) {
 
+                $id_condicion_softlink = '';
+
+                if ($doc_ven->id_condicion == 1) {
+                    $id_condicion_softlink = '02';
+                } else if ($doc_ven->id_condicion == 2) {
+                    switch ($doc_ven->credito_dias) {
+                        case 60:
+                            $id_condicion_softlink = '03';
+                            break;
+                        case 20:
+                            $id_condicion_softlink = '23';
+                            break;
+                        case 30:
+                            $id_condicion_softlink = '01';
+                            break;
+                        case 45:
+                            $id_condicion_softlink = '22';
+                            break;
+                        case 15:
+                            $id_condicion_softlink = '06';
+                            break;
+                        case 7:
+                            $id_condicion_softlink = '05';
+                            break;
+                        case 3:
+                            $id_condicion_softlink = '14';
+                            break;
+                        case 40:
+                            $id_condicion_softlink = '25';
+                            break;
+                        case 35:
+                            $id_condicion_softlink = '24';
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
                 $id_doc = DB::table('almacen.doc_com')->insertGetId(
                     [
                         'serie' => strtoupper($doc_ven->serie),
@@ -60,7 +98,7 @@ class VentasInternasController extends Controller
                         'id_condicion' => $doc_ven->id_condicion,
                         'credito_dias' => $doc_ven->credito_dias,
                         'moneda' => $doc_ven->moneda,
-                        // 'tipo_cambio' => $tc,
+                        'id_condicion_softlink' => $id_condicion_softlink,
                         'sub_total' => $doc_ven->sub_total,
                         'total_igv' => $doc_ven->total_igv,
                         'porcen_igv' => $doc_ven->porcen_igv,
@@ -147,6 +185,7 @@ class VentasInternasController extends Controller
                         'codigo' => $codigo_oc,
                         'id_condicion' => $doc_ven->id_condicion,
                         'plazo_dias' => $doc_ven->credito_dias,
+                        'id_condicion_softlink' => $id_condicion_softlink,
                         'plazo_entrega' => 0,
                         'en_almacen' => true,
                         'id_sede' => $detalle->first()->id_sede,

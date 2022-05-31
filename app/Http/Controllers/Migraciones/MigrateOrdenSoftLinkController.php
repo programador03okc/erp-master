@@ -590,6 +590,7 @@ class MigrateOrdenSoftLinkController extends Controller
                 'cod_prov' => '',
                 'costo_unit' => 0,
                 // 'margen' => 0,
+                'peso' => 0,
                 'gasto1' => 0,
                 'gasto2' => 0,
                 'flg_detrac' => 0,
