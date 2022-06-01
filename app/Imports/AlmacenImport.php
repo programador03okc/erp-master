@@ -210,14 +210,23 @@ class AlmacenImport implements ToCollection, WithHeadingRow
             $this->numRows++;
         } else {
             if ($tipo == 2) {
-                $estado = $query->first()->estado;
+                // $estado = $query->first()->estado;
+                // $id_producto = $query->first()->id_producto;
+                // if ($estado == 7) {
+                //     DB::table('almacen.alm_prod')->where('id_producto', $id_producto)->update(['estado' => 1]);
+                // } else if ($estado == 1) {
+                //     $id_und = ($query_und != '') ? $query_und->id_unidad_medida : null;
+                //     DB::table('almacen.alm_prod')->where('id_producto', $id_producto)->update(['id_unidad_medida' => $id_und, 'id_moneda' => $tip_moneda]);
+                // }
                 $id_producto = $query->first()->id_producto;
-                if ($estado == 7) {
-                    DB::table('almacen.alm_prod')->where('id_producto', $id_producto)->update(['estado' => 1]);
-                } else if ($estado == 1) {
-                    $id_und = ($query_und != '') ? $query_und->id_unidad_medida : null;
-                    DB::table('almacen.alm_prod')->where('id_producto', $id_producto)->update(['id_unidad_medida' => $id_und, 'id_moneda' => $tip_moneda]);
-                }
+                $id_und = ($query_und != '') ? $query_und->id_unidad_medida : null;
+                DB::table('almacen.alm_prod')->where('id_producto', $id_producto)->update([
+                    'part_number'       => $part_no,
+                    'id_unidad_medida'  => $id_und,
+                    'id_moneda'         => $tip_moneda,
+                    'descripcion'       => $descripcion,
+                    'series'            => $flg_serie
+                ]);
                 $this->numRowsStatus++;
             }
         }
@@ -261,20 +270,78 @@ class AlmacenImport implements ToCollection, WithHeadingRow
         $query_alm = DB::table('almacen.alm_almacen')->where('codigo', $cod_alma)->first();
         $query_pro = DB::table('almacen.alm_prod')->where('cod_softlink', $cod_prod)->first();
 
-        $id_alm = ($query_alm != '') ? $query_alm->id_almacen : null;
+        // $id_alm = ($query_alm != '') ? $query_alm->id_almacen : null;
+        // $id_pro = ($query_pro != '') ? $query_pro->id_producto : null;
+        // DB::table('almacen.alm_prod_ubi')->insertGetId([
+        //     'id_producto'       => $id_pro,
+        //     'stock'             => $stock,
+        //     'estado'            => 1,
+        //     'fecha_registro'    => new Carbon(),
+        //     'costo_promedio'    => $costo_promedio,
+        //     'id_almacen'        => $id_alm,
+        //     'valorizacion'      => $valorizacion
+        // ], 'id_prod_ubi');
+
         $id_pro = ($query_pro != '') ? $query_pro->id_producto : null;
+        
+        if ($query_alm != null) {
+            $codigo = 'INI-'.$query_alm->codigo.'-22-00';
+            $queryMov = DB::table('almacen.mov_alm')->where('codigo', $codigo);
+            
+            if ($queryMov->count() > 0) {
+                $movimiento = $queryMov->first()->id_mov_alm;
 
-        DB::table('almacen.alm_prod_ubi')->insertGetId([
-            'id_producto'       => $id_pro,
-            'stock'             => $stock,
-            'estado'            => 1,
-            'fecha_registro'    => new Carbon(),
-            'costo_promedio'    => $costo_promedio,
-            'id_almacen'        => $id_alm,
-            'valorizacion'      => $valorizacion
-        ], 'id_prod_ubi');
+                $det = DB::table('almacen.mov_alm_det')->where('id_mov_alm', $movimiento);
+                
+                if ($det->count() > 0) {
+                    DB::table('almacen.mov_alm_det')->where('id_mov_alm', $movimiento)->update([
+                        'cantidad'      => $stock,
+                        'valorizacion'  => $valorizacion,
+                        'costo_promedio'=> $costo_promedio,
+                    ]);
 
-        $this->numRows++;
+                    $this->numRowsStatus++;
+                } else {
+                    DB::table('almacen.mov_alm_det')->insertGetId([
+                        'id_mov_alm'    => $movimiento,
+                        'id_producto'   => $id_pro,
+                        'cantidad'      => $stock,
+                        'valorizacion'  => $valorizacion,
+                        'costo_promedio'=> $costo_promedio,
+                        'usuario'       => 1,
+                        'estado'        => 1,
+                        'fecha_registro'=> new Carbon(),
+                    ], 'id_mov_alm_det');
+
+                    $this->numRows++;
+                }
+            } else {
+                $movimiento = DB::table('almacen.mov_alm')->insertGetId([
+                    'id_almacen'    => $query_alm->id_almacen,
+                    'id_tp_mov'     => 0,
+                    'codigo'        => $codigo,
+                    'fecha_emision' => new Carbon(),
+                    'usuario'       => 1,
+                    'estado'        => 1,
+                    'fecha_registro'=> new Carbon(),
+                    'revisado'      => 0,
+                    'id_operacion'  => 16,
+                ], 'id_mov_alm');
+
+                DB::table('almacen.mov_alm_det')->insertGetId([
+                    'id_mov_alm'    => $movimiento,
+                    'id_producto'   => $id_pro,
+                    'cantidad'      => $stock,
+                    'valorizacion'  => $valorizacion,
+                    'costo_promedio'=> $costo_promedio,
+                    'usuario'       => 1,
+                    'estado'        => 1,
+                    'fecha_registro'=> new Carbon(),
+                ], 'id_mov_alm_det');
+
+                $this->numRows++;
+            }
+        }
     }
 
     public function leftZero($lenght, $number)
