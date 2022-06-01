@@ -59,6 +59,9 @@ class RevisarAprobarDocumentoView {
         $('#listaDocumetosRevisados').on("click", "button.handleClickRechazarDocumento", (e) => {
             this.rechazarDocumento(e.currentTarget);
         });
+        $('#listaDocumetosRevisados').on("click", "button.handleClickVerEnVistaRapidaDocumento", (e) => {
+            this.verEnVistaRapidaDocumento(e.currentTarget);
+        });
         // $('#listaDocumetosParaRevisarAprobar').on("click", "button.handleClickVerEnVistaRapidaRequerimientoPago", (e) => {
         //     this.verEnVistaRapidaRequerimientoPago(e.currentTarget);
         // });
@@ -321,7 +324,7 @@ class RevisarAprobarDocumentoView {
             'buttons': [
             ],
             'language': vardataTables[0],
-            'order': [[0, 'desc']],
+            'order': [[12, 'asc']],
             'bLengthChange': false,
             // 'serverSide': false,
             'destroy': true,
@@ -376,7 +379,7 @@ class RevisarAprobarDocumentoView {
                     'data': 'estado','className': 'text-center', 
                     render: function (data, type, row) {
                         let estado = `<span class="labelEstado label label-${row.bootstrap_color}" title="Estado de documento">${row.estado}</span>`;
-                            estado+= `\n<span class="labelEstado label label-default" title="Estado de documento">${(row.cantidad_ordenes>0 && row.cantidad_reservas>0)?'En atención logística, con reserva':(row.cantidad_ordenes>0 && row.cantidad_reservas==0)?'En atención logística':(row.cantidad_ordenes==0 && row.cantidad_reservas>0)?'Con reserva':(row.cantidad_ordenes==0 && row.cantidad_reservas==0)?'Aun sin atención':''}</span>`;
+                            estado+= `<br><span class="labelEstado label label-default" title="Estado de documento">${(row.cantidad_ordenes>0 && row.cantidad_reservas>0)?'En atención logística, con reserva':(row.cantidad_ordenes>0 && row.cantidad_reservas==0)?'En atención logística':(row.cantidad_ordenes==0 && row.cantidad_reservas>0)?'Con reserva':(row.cantidad_ordenes==0 && row.cantidad_reservas==0)?'Aun sin atención':''}</span>`;
                         return estado;
                     }
                 },
@@ -401,7 +404,7 @@ class RevisarAprobarDocumentoView {
                         let btnObservar = '<button type="button" role="button" class="btn btn-flat btn-xs btn-warning handleClickObservarDocumento" name="btnObservarDocumento" ' + dataset + ' title="Observar"><i class="fas fa-exclamation-circle"></i></button>';
                         let btnAnular = '<button type="button" role="button" class="btn btn-flat btn-xs btn-danger handleClickRechazarDocumento" name="btnRechazarDocumento" ' + dataset + ' title="Rechazar"><i class="fas fa-ban"></i></button>';
 
-                        return containerOpenBrackets + btnVerEnModal + btnObservar + btnAnular + containerCloseBrackets;
+                        return containerOpenBrackets + btnVerEnModal + (row.id_estado ==2 && (row.pago_autorizado==false && row.pagado==false)?(btnObservar + btnAnular):'') + containerCloseBrackets;
                     }
                 },
             ],

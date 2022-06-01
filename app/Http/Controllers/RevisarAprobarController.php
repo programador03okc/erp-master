@@ -12,7 +12,9 @@ use App\Models\Administracion\DocumentosView;
 use App\Models\Administracion\Flujo;
 use App\Models\Administracion\Operacion;
 use App\Models\Almacen\DetalleRequerimiento;
+use App\Models\Almacen\Producto;
 use App\Models\Almacen\Requerimiento;
+use App\Models\Almacen\Reserva;
 use App\Models\Almacen\Trazabilidad;
 use App\Models\Configuracion\Usuario;
 use App\Models\Configuracion\UsuarioDivision;
@@ -387,8 +389,7 @@ class RevisarAprobarController extends Controller{
         foreach ($allRol as  $rol) {
             $idRolUsuarioList[] = $rol->id_rol;
         }
-
-        $documentos = DocumentosView::where('id_estado',2)->whereIn('ultimo_rol_aprobador',$idRolUsuarioList)->get();
+        $documentos = DocumentosView::whereNotIn('id_estado',[1,7])->whereIn('ultimo_rol_aprobador',$idRolUsuarioList)->get();
         return datatables($documentos)->toJson();
     }
 
@@ -602,13 +603,36 @@ class RevisarAprobarController extends Controller{
             $mensaje='Documento aprobado';
         }elseif($accion ==2){
             $mensaje='Documento rechazado';
-            
+            $this->limpiarMapeoDeDocumento($idDocumento);
         }elseif($accion ==3){
             $mensaje='Documento observado';
+            $this->limpiarMapeoDeDocumento($idDocumento);
             
         }
 
         return ['data'=>$aprobacion,'mensaje'=>$mensaje];
+    }
+
+    public function limpiarMapeoDeDocumento($idDocAprob){
+        $documento = Documento::where([['id_doc_aprob',$idDocAprob]])->first();
+        if($documento->id_tp_documento==1){
+            $detalle = DetalleRequerimiento::where('id_requerimiento',$documento->id_doc)->get();
+            foreach ($detalle as $value) {
+                $det = DetalleRequerimiento::find($value->id_detalle_requerimiento);
+                
+                $cantidadDetalleConProducto = DetalleRequerimiento::where([['id_producto',$det->id_producto],['id_requerimiento','!=',$det->id_requerimiento]])->count();
+                $cantiadReservaConProd = Reserva::where('id_producto',$det->id_producto)->count();
+                if($cantidadDetalleConProducto==0 && $cantiadReservaConProd==0){
+                    $prod=Producto::find($det->id_producto);
+                    $prod->estado=7;
+                    $prod->save();
+                }
+
+                
+                $det->id_producto= null;
+                $det->save();
+            }
+        }
     }
 
     public function guardarRespuesta(Request $request){
