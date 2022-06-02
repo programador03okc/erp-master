@@ -157,7 +157,7 @@ function listarRequerimientosPendientes(usuario) {
                     if (row["codigo_oportunidad"] !== null) {
                         return (
                             '<a target="_blank" href="https://mgcp.okccloud.com/mgcp/cuadro-costos/detalles/' + row['id_oportunidad'] + '">' +
-                            row["codigo_oportunidad"] + "</a><br>" + row['estado_aprobacion_cuadro']
+                            row["codigo_oportunidad"] + "</a><br>" + (row['estado_aprobacion_cuadro'] ?? '')
                         );
                     } else {
                         return '';
