@@ -961,6 +961,11 @@ class MigrateOrdenSoftLinkController extends Controller
                 ]
             );
         }
+
+        DB::table('almacen.alm_und_medida')
+            ->where('abreviatura', trim($abreviatura))
+            ->update(['cod_softlink' => $cod_unid]);
+
         return $cod_unid;
     }
 
