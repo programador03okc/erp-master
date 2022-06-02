@@ -152,7 +152,7 @@ function listarRequerimientosPendientes(usuario) {
             },
             { data: 'occ', name: 'oc_propias_view.occ' },
             {
-                data: 'codigo_oportunidad', name: 'oc_propias_view.codigo_oportunidad',
+                data: 'codigo_oportunidad', name: 'oportunidades.codigo_oportunidad',
                 render: function (data, type, row) {
                     if (row["codigo_oportunidad"] !== null) {
                         return (
