@@ -3661,7 +3661,7 @@ class OrdenController extends Controller
                         // PM (Helen Ayma, Maricielo Hinostroza y Boris Correa) //id_usuario (95,87,82)
                         // Vendedor (según el CDP),
                         // Manuel Rivera, Jonathan Medina // id_usuario (26,6)
-                        // Mail::to($correosAnulaciónOrden)->send(new EmailOrdenAnulada($orden, $finalizadosORestablecido['lista_restablecidos'], Auth::user()->nombre_corto));
+                        Mail::to($correosAnulaciónOrden)->send(new EmailOrdenAnulada($orden, $finalizadosORestablecido['lista_restablecidos'], Auth::user()->nombre_corto));
 
 
                         // final de envio correo de anulación de orden
@@ -4093,7 +4093,7 @@ class OrdenController extends Controller
                             $correoFinalizacionCuadroPresupuesto[] = Usuario::find($requerimiento->id_usuario)->email;
                         }
 
-                        // Mail::to(array_unique($correoFinalizacionCuadroPresupuesto))->send(new EmailFinalizacionCuadroPresupuesto($codigoOportunidad, $payloadCuadroPresupuestoFinalizado, Auth::user()->nombre_corto));
+                        Mail::to(array_unique($correoFinalizacionCuadroPresupuesto))->send(new EmailFinalizacionCuadroPresupuesto($codigoOportunidad, $payloadCuadroPresupuestoFinalizado, Auth::user()->nombre_corto));
                         $tipoStatus = "success";
                         $mensaje = "La notificación fue enviada";
 
@@ -4107,7 +4107,7 @@ class OrdenController extends Controller
                                 ->first();
                             $logoEmpresa = empty($transformacion->logo_empresa) ? null : $transformacion->logo_empresa;
                             $codigoTransformacion = empty($transformacion->codigo) ? null : $transformacion->codigo;
-                            // Mail::to($correosOrdenServicioTransformacion)->send(new EmailOrdenServicioOrdenTransformacion($pl['oportunidad'], $logoEmpresa, $codigoTransformacion));
+                            Mail::to($correosOrdenServicioTransformacion)->send(new EmailOrdenServicioOrdenTransformacion($pl['oportunidad'], $logoEmpresa, $codigoTransformacion));
                         }
                     } else {
                         $tipoStatus = "warning";
