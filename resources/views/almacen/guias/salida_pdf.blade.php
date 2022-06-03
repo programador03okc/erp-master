@@ -33,6 +33,9 @@
         width: 100%;
         /*page-break-after: always;
         page-break-before: always;*/
+        
+    }
+    table tr {
         page-break-inside: avoid;
     }
 
