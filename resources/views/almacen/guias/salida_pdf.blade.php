@@ -188,8 +188,8 @@
         <tbody>
             @foreach ($detalle as $prod)
             <tr>
-                <td class="text-center">{{$prod['codigo']}}</td>
-                <td class="text-center">{{$prod['part_number']}}</td>
+                <td class="text-center" rowspan="2">{{$prod['codigo']}}</td>
+                <td class="text-center" rowspan="2">>{{$prod['part_number']}}</td>
                 <td>{{$prod['descripcion']}}</td>
                 <td class="text-center">{{$prod['cantidad']}}</td>
                 <td class="text-center">{{$prod['abreviatura']}}</td>
@@ -202,7 +202,7 @@
             </tr>
             @if ($prod['series']!=='')
             <tr>
-                <td colspan="9"><div class="space">{{$prod['series']}}</div></td>
+                <td colspan="@if ($salida->id_operacion == 27) 7 @else 6 @endif"><div class="space">{{$prod['series']}}</div></td>
             </tr>
             @endif
             @endforeach
