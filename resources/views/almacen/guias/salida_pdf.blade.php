@@ -194,21 +194,16 @@
             $series = '';
 
             if ($det_series!==null) {
-                foreach ($det_series as $s) {
-                    if ($s->serie !== null){
-                        if ($series !== '') {
-                            $series .= ', ' . $s->serie;
-                        } else {
-                            $series = 'Serie(s): ' . $s->serie;
-                        }
-                    }
-                }
+                // foreach ($det_series as $s) {
+                //     if ($s->serie !== null){
+                //         if ($series !== '') {
+                //             $series .= ', ' . $s->serie;
+                //         } else {
+                //             $series = 'Serie(s): ' . $s->serie;
+                //         }
+                //     }
+                // }
             }
-
-            // $unitario = ($prod->cantidad !== null
-            //                 ? ($prod->valorizacion / $prod->cantidad)
-            //                 : 0);
-            // $valorizacion = $unitario * ($prod->cantidad);
 
             ?>
             <tr>
@@ -217,7 +212,6 @@
                 <td>{{$prod['descripcion']}} <br><strong> {{$series}}</strong></td>
                 <td class="text-center">{{$prod['cantidad']}}</td>
                 <td class="text-center">{{$prod['abreviatura']}}</td>
-                {{-- <td class="text-right">{{$prod->moneda_doc!==null?$prod->moneda_doc:'S/'}}</td> --}}
                 <td class="text-right">{{$prod['simbolo']}}</td>
                 <td class="text-right">{{round($prod['costo_promedio'],2,PHP_ROUND_HALF_UP)}}</td>
                 @if($salida->id_operacion == 27)
